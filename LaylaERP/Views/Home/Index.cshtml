@@ -1,0 +1,202 @@
+﻿
+@{
+    var user = LaylaERP.UTILITIES.CommanUtilities.Provider.GetCurrent();
+    ViewBag.Title = "Dashboard";
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="~/Images/layla32.png">
+    <title>Layla ERP - @ViewBag.Title</title>
+    @*@Styles.Render("~/Content/css")
+        @Scripts.Render("~/bundles/modernizr")*@
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+    <!-- Font Awesome -->
+    <link href="~/Content/AdminLTE-3.1.0/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+    <!-- icheck bootstrap -->
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <!-- Theme style -->
+    <link href="~/Content/AdminLTE-3.1.0/adminlte.min.css" rel="stylesheet" />
+    <link href="~/Content/AdminLTE-3.1.0/_all-skins.min.css" rel="stylesheet" />
+    <link href="~/Content/dx/dx.light.css" rel="stylesheet" />
+    <link href="~/Content/alert/sweetalert2.min.css" rel="stylesheet" />
+    <!-- jQuery -->
+    <script src="~/Content/AdminLTE-3.1.0/jquery/jquery.min.js"></script>
+    <script src="~/Content/alert/sweetalert2.all.min.js"></script>
+</head>
+<body class="skin-blue sidebar-mini fixed">
+    <div class="wrapper" style="height: auto; min-height: 100%;">
+
+        <header class="main-header">
+
+            <!-- Logo -->
+            <a href="index2.html" class="logo">
+                <!-- mini logo for sidebar mini 50x50 pixels -->
+                <span class="logo-mini"><img src="~/Images/layla32.png" /></span>
+                <!-- logo for regular state and mobile devices -->
+                <span class="logo-lg"><img src="~/Images/layla1-logo.png" /></span>
+            </a>
+
+            <!-- Header Navbar: style can be found in header.less -->
+            <nav class="navbar navbar-static-top">
+                <!-- Sidebar toggle button-->
+                @*<a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+                        <span class="sr-only">Toggle navigation</span>
+                    </a>*@
+                <a href="#" class="sidebar-toggle fa5" data-toggle="offcanvas" role="button">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </a>
+                <!-- Navbar Right Menu -->
+                <div class="navbar-custom-menu">
+                    <ul class="nav navbar-nav">
+                        <!-- User Account: style can be found in dropdown.less -->
+                        <li class="dropdown user user-menu">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <i class="fa fa-user"></i>
+                                <span class="hidden-xs">@(user.UserName)</span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <!-- User image -->
+                                <li class="user-header">
+                                    <img src="~/Images/userprofile2.png" class="img-circle" alt="User Image">
+
+                                    <p>
+                                        @(user.UserName)
+                                        <small>@(user.EmailID)</small>
+                                    </p>
+                                </li>
+                                <!-- Menu Body -->
+                                <li class="user-body">
+                                    <div class="row">
+                                        <div class="col-xs-4 text-center">
+                                            <a href="#">Followers</a>
+                                        </div>
+                                        <div class="col-xs-4 text-center">
+                                            <a href="#">Sales</a>
+                                        </div>
+                                        <div class="col-xs-4 text-center">
+                                            <a href="#">Friends</a>
+                                        </div>
+                                    </div>
+                                    <!-- /.row -->
+                                </li>
+                                <!-- Menu Footer-->
+                                <li class="user-footer">
+                                    <div class="pull-left">
+                                        <a href="#" class="btn btn-default btn-flat">Profile</a>
+                                    </div>
+                                    <div class="pull-right">
+                                        <a href="#" id="btnExit" class="btn btn-default btn-flat">Sign out</a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- Control Sidebar Toggle Button -->
+                        <li>
+                            <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
+                        </li>
+                    </ul>
+                </div>
+
+            </nav>
+        </header>
+
+        <!-- Main Sidebar Container -->
+        <aside class="main-sidebar">
+            <!-- sidebar: style can be found in sidebar.less -->
+            <section class="sidebar" style="height: auto;">
+                <!-- Sidebar user panel -->
+                <div class="user-panel">
+                    <div class="pull-left image">
+                        <img src="~/Images/userprofile2.png" class="img-circle" alt="User Image">
+                    </div>
+                    <div class="pull-left info">
+                        <p>@(user.UserName)</p>
+                        <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+                    </div>
+                </div>
+                <!-- search form -->
+                <form action="#" method="get" class="sidebar-form">
+                    <div class="input-group">
+                        <input type="text" name="q" class="form-control" placeholder="Search...">
+                        <span class="input-group-btn">
+                            <button type="submit" name="search" id="search-btn" class="btn btn-flat">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </span>
+                    </div>
+                </form>
+                <!-- /.search form -->
+                <!-- sidebar menu: : style can be found in sidebar.less -->
+                <ul class="sidebar-menu tree" data-widget="tree">
+                </ul>
+                @*<ul class="sidebar-menu tree" data-widget="tree">
+                        <li class="header">MAIN NAVIGATION</li>
+                    </ul>*@
+            </section>
+            <!-- /.sidebar -->
+        </aside>
+
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper" id="renderbody" style="min-height: 421px;">
+            <div class="content-iframe ">
+                <div class="tab-content " id="tab-content">
+                    <iframe class="tab_iframe" frameborder="no" border="0" marginwidth="0" marginheight="0" scrolling="yes" allowtransparency="yes" width="100%"></iframe>
+                </div>
+            </div>
+        </div>
+        <!-- /.content-wrapper -->
+        <footer class="main-footer">
+            <strong>Copyright &copy; 2021 <a href="#"></a>.</strong>All rights reserved.
+            <div class="pull-right hidden-xs">
+                <b>Version</b> 1.0.0
+            </div>
+        </footer>
+    </div>
+    <!-- Bootstrap 4 -->
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <!-- jQuery -->
+    <script src="~/Content/AdminLTE-3.1.0/jquery/jquery.min.js"></script>
+    <script src="~/Content/AdminLTE-3.1.0/fastclick.js"></script>
+    <!-- AdminLTE App -->
+    <script src="~/Content/AdminLTE-3.1.0/adminlte.min.js"></script>
+    <script src="~/js/app.js"></script>
+    <script src="~/Content/dx/dx.all.js"></script>
+    <script>
+        var GetUserID = parseInt('@(user.UserID)') || 0;
+        $(document).ready(function () {
+            setTimeout(function () {
+                addTabs({ id: '10008', title: 'Home', close: false, url: '/home/Dashboard', urlType: "relative" });
+                App.fixIframeCotent();
+            }, 100);
+            setTimeout(function () { filluserMenu(); }, 50); // wait 50ms until menu load finishes.
+            $(document).on('click', '#btnExit', function () {
+                top.window.location.href = top.window.location.origin + '/Home/Login';
+            });
+        });
+
+        function filluserMenu() {
+            var obj = { userId: GetUserID };
+            jQuery.ajax({
+                url: '/AccountAPI/getMenus', dataType: 'json', type: "Post",
+                beforeSend: function () {
+                    //$("#loading-div-background").show();
+                },
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(obj),
+                success: function (data) {$('.sidebar-menu').sidebarMenu({ data: data });},
+                error: function (jqXHR, textStatus, errorThrown) { swal('Error!', errorThrown, "error");}
+            });
+        }
+    </script>
+</body>
+</html>

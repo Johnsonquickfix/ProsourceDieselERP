@@ -151,7 +151,12 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="BAL\Users.cs" />
     <Compile Include="Controllers\AccountAPIController.cs" />
+    <Compile Include="Controllers\CustomerController.cs" />
+    <Compile Include="Controllers\ExportController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\OrdersController.cs" />
+    <Compile Include="Controllers\ReportsController.cs" />
+    <Compile Include="Controllers\SettingController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="DAL\SQLHelper.cs" />
     <Compile Include="Global.asax.cs">
@@ -234,8 +239,16 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Home\Login.cshtml" />
     <Content Include="Views\Users\Users.cshtml" />
-    <Content Include="Views\Home\ActivityLog.cshtml" />
     <Content Include="Views\Home\Dashboard.cshtml" />
+    <Content Include="Views\Customer\Customer.cshtml" />
+    <Content Include="Views\Export\Export.cshtml" />
+    <Content Include="Views\Export\RoleBaseReport.cshtml" />
+    <Content Include="Views\Orders\NewOrders.cshtml" />
+    <Content Include="Views\Orders\OrdersHistory.cshtml" />
+    <Content Include="Views\Reports\Index.cshtml" />
+    <Content Include="Views\Setting\ActivityLog.cshtml" />
+    <Content Include="Views\Setting\Setting.cshtml" />
+    <Content Include="Views\Users\AssignRole.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

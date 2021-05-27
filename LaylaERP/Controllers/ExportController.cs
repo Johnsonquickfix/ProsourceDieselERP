@@ -3,20 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using LaylaERP.Models;
 
 namespace LaylaERP.Controllers
 {
-    public class UsersController : Controller
+    public class ExportController : Controller
     {
-        // GET: Users
-        public ActionResult Users()
+        // GET: Export
+        public ActionResult Export()
         {
             return View();
         }
 
-        // GET: Assign Role
-        public ActionResult AssignRole()
+        // GET: RoleBaseReport
+        public ActionResult RoleBaseReport()
         {
             return View();
         }

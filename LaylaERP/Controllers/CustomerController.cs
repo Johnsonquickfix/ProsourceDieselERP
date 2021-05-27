@@ -7,16 +7,10 @@ using LaylaERP.Models;
 
 namespace LaylaERP.Controllers
 {
-    public class UsersController : Controller
+    public class CustomerController : Controller
     {
-        // GET: Users
-        public ActionResult Users()
-        {
-            return View();
-        }
-
-        // GET: Assign Role
-        public ActionResult AssignRole()
+        // GET: Customer
+        public ActionResult Customer()
         {
             return View();
         }

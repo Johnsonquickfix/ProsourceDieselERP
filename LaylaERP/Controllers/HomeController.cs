@@ -22,10 +22,6 @@
         {
             return View();
         }
-        public ActionResult ActivityLog()
-        {
-            return View();
-        }
 
         public ActionResult About()
         {

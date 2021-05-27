@@ -23,6 +23,7 @@
     <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
     <!-- Theme style -->
     <link href="~/Content/AdminLTE-3.1.0/adminlte.min.css" rel="stylesheet" />
+    <link href="~/Content/css/tabcss.css" rel="stylesheet" />
     <link href="~/Content/AdminLTE-3.1.0/_all-skins.min.css" rel="stylesheet" />
     <link href="~/Content/dx/dx.light.css" rel="stylesheet" />
     <link href="~/Content/alert/sweetalert2.min.css" rel="stylesheet" />
@@ -47,8 +48,8 @@
             <nav class="navbar navbar-static-top">
                 <!-- Sidebar toggle button-->
                 @*<a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
-                        <span class="sr-only">Toggle navigation</span>
-                    </a>*@
+                    <span class="sr-only">Toggle navigation</span>
+                </a>*@
                 <a href="#" class="sidebar-toggle fa5" data-toggle="offcanvas" role="button">
                     <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
@@ -140,26 +141,53 @@
                 <ul class="sidebar-menu tree" data-widget="tree">
                 </ul>
                 @*<ul class="sidebar-menu tree" data-widget="tree">
-                        <li class="header">MAIN NAVIGATION</li>
-                    </ul>*@
+                    <li class="header">MAIN NAVIGATION</li>
+                </ul>*@
             </section>
             <!-- /.sidebar -->
         </aside>
 
         <!-- Content Wrapper. Contains page content -->
-        <div class="content-wrapper" id="renderbody" style="min-height: 421px;">
-            <div class="content-iframe ">
+        <div class="content-wrapper" id="content-wrapper" style="min-height: 421px;">
+            <!--Bootstrap tab style multi-tab page-->
+            <div class="content-tabs">
+                <button id="leftTabScroll" class="roll-nav roll-left tabLeft" onclick="javascript:scrollTabLeft()">
+                    <i class="fa fa-backward"></i>
+                </button>
+                <nav class="page-tabs menuTabs tab-ui-menu" id="tab-menu">
+                    <div class="page-tabs-content" style="margin-left: 0px;">
+                    </div>
+                </nav>
+                <button id="rightTabScroll" class="roll-nav roll-right tabRight" onclick="javascript:scrollTabRight()">
+                    <i class="fa fa-forward" style="margin-left: 3px;"></i>
+                </button>
+                <div class="btn-group roll-nav roll-right">
+                    <button class="dropdown tabClose" data-toggle="dropdown">
+                        Operation<i class="fa fa-caret-down" style="padding-left: 0px;"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-right" style="min-width: 128px;">
+                        <li><a class="tabReload" href="javascript:refreshTab();">Refresh current</a></li>
+                        <li><a class="tabCloseCurrent" href="javascript:closeCurrentTab();">Close current</a></li>
+                        <li><a class="tabCloseAll" href="javascript:closeOtherTabs(true);">Close all</a></li>
+                        <li><a class="tabCloseOther" href="javascript:closeOtherTabs();">All except this</a></li>
+                    </ul>
+                </div>
+                <button id="fullScreen" class="roll-nav roll-right fullscreen" onclick="App.handleFullScreen()">
+                    <i class="fa fa-arrows-alt"></i>
+                </button>
+            </div>
+            <div class="content-iframe " style="background-color: #ffffff;">
                 <div class="tab-content " id="tab-content">
-                    <iframe class="tab_iframe" frameborder="no" border="0" marginwidth="0" marginheight="0" scrolling="yes" allowtransparency="yes" width="100%"></iframe>
                 </div>
             </div>
         </div>
         <!-- /.content-wrapper -->
         <footer class="main-footer">
-            <strong>Copyright &copy; 2021 <a href="#"></a>.</strong>All rights reserved.
             <div class="pull-right hidden-xs">
-                <b>Version</b> 1.0.0
+                <b>Version</b> 1.0.1
             </div>
+            <strong>Copyright &copy; 2020 <a href="#">-</a>.</strong> All rights
+            reserved.
         </footer>
     </div>
     <!-- Bootstrap 4 -->
@@ -175,7 +203,7 @@
         var GetUserID = parseInt('@(user.UserID)') || 0;
         $(document).ready(function () {
             setTimeout(function () {
-                addTabs({ id: '10008', title: 'Home', close: false, url: '/home/Dashboard', urlType: "relative" });
+                addTabs({ id: '10008', title: 'Home', close: false, url: '/home/Dashboard', urlType: "none" });
                 App.fixIframeCotent();
             }, 100);
             setTimeout(function () { filluserMenu(); }, 50); // wait 50ms until menu load finishes.

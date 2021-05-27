@@ -157,7 +157,8 @@
                     row.Add("text", dr["menu_name"]);
                     if (dr["menu_url"].ToString().Trim() != "#")
                         row.Add("url", dr["menu_url"]);
-                    row.Add("targetType", "iframe");
+                    row.Add("urlType", "none");
+                    row.Add("targetType", "iframe-tab");
                     row.Add("level", dr["level"]);
                     row.Add("icon", dr["menu_icon"]);
                     if (dr["parent_id"] != DBNull.Value)
@@ -182,7 +183,8 @@
                 row.Add("text", dr["menu_name"]);
                 if (dr["menu_url"].ToString().Trim() != "#")
                     row.Add("url", dr["menu_url"]);
-                row.Add("targetType", "iframe");
+                row.Add("urlType", "none");
+                row.Add("targetType", "iframe-tab");
                 row.Add("level", dr["level"]);
                 row.Add("icon", dr["menu_icon"]);
                 if (dr["parent_id"] != DBNull.Value)

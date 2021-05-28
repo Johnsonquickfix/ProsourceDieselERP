@@ -38,11 +38,12 @@ namespace LaylaERP.Controllers
         [HttpPost]
         public JsonResult GetActivityLogList(SearchModel model)
         {
-            string JSONresult = string.Empty;
+            string result = string.Empty;
+            int TotalRecord = 0;
             try
             {
-                long urid = 0; int TotalRecord = 0;
-                DateTime fromdate = DateTime.Now, todate = DateTime.Now;
+                long urid = 0; 
+                 DateTime fromdate = DateTime.Now, todate = DateTime.Now;
                 if (!string.IsNullOrEmpty(model.strValue1))
                     urid = Convert.ToInt64(model.strValue1);
                 if (!string.IsNullOrEmpty(model.strValue2))
@@ -50,12 +51,11 @@ namespace LaylaERP.Controllers
                 if (!string.IsNullOrEmpty(model.strValue3))
                     todate = Convert.ToDateTime(model.strValue3);
                 DataTable dt = UTILITIES.UserActivityLog.GetActivityLog(urid, fromdate, todate, model.PageNo, model.PageSize, out TotalRecord);
-                JSONresult = JsonConvert.SerializeObject(dt);
-
-                //JSONresult = JsonConvert.SerializeObject("{\"sEcho\":" + 1 + ", \"recordsTotal\":" + TotalRecord + ", \"recordsFiltered\":" + TotalRecord + ", \"iTotalRecords\":" + TotalRecord + ", \"iTotalDisplayRecords\":" + TotalRecord + ", \"aaData\":" + JSONresult + "}");
+                result = JsonConvert.SerializeObject(dt);
             }
             catch { }
-            return Json(JSONresult, 0);
+            //return Json(JSONresult, 0);
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
         }
     }
 }

@@ -79,11 +79,11 @@
             {
                 string strWhr = string.Empty;
 
-                string strSql = "SELECT  " + ((pageno * pagesize) - pageno).ToString() + " + ROW_NUMBER() OVER(Order BY log_date DESC) ROWNUM,ual.user_id,User_Login,user_email,cast(log_date as date) log_date_on,log_date,ip_address,mac_id,module_name,description,log_type_id,"
+                string strSql = "SELECT  " + ((pageno * pagesize) - pageno).ToString() + " + ROW_NUMBER() OVER(Order BY log_date DESC) ROWNUM,ual.user_id,User_Login,user_email,cast(log_date as date) log_date_on,DATE_FORMAT(log_date, '%a %b %e %Y %H:%i') log_date,ip_address,mac_id,module_name,description,log_type_id,"
                             + " CASE log_type_id WHEN 0 THEN 'Other' WHEN 1 THEN 'Log In' WHEN 2 THEN 'Log Out' WHEN 3 THEN 'Access' WHEN 4 THEN 'Added' WHEN 5 THEN 'Delete' WHEN 6 THEN 'Modify' WHEN 7 THEN 'Submit' END log_type"
                             + " FROM wp_users_activitylog ual INNER JOIN wp_users ur ON ur.id = ual.user_id WHERE 1 = 1";
                 if (userid > 0)
-                    strWhr += " and ur.user_id = " + userid.ToString();
+                    strWhr += " and ur.id = " + userid.ToString();
                 strWhr += " and cast(log_date as date) >= cast('" + fromdate.ToString("yyyy-MM-dd") + "' as date) ";
                 strWhr += " and cast(log_date as date) <= cast('" + todate.ToString("yyyy-MM-dd") + "' as date) ";
 
@@ -94,7 +94,7 @@
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
                 if (ds.Tables[1].Rows.Count > 0)
-                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalPage"].ToString());
+                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
             }
             catch { }
             return dt;

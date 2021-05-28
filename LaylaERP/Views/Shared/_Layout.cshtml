@@ -35,7 +35,7 @@
     <div class="wrapper" style="height: auto; min-height: 100%;">
         <div class="clearfix"></div>
         <!-- Content Wrapper. Contains page content -->
-        <div class="container-fluid">
+        <div class="container-fluid" style="padding-right: 0px; padding-left: 0px;">
             @RenderBody()
         </div>
     </div>
@@ -48,6 +48,7 @@
         var GetUserID = parseInt('@(user.UserID)') || 0;
         $(document).ready(function () {
         });
+        @RenderSection("scripts", required: false)
     </script>
 </body>
 </html>

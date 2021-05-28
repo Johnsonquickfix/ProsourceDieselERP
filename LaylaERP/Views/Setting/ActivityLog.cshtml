@@ -28,19 +28,29 @@
             </div>
         </div>
         <div class="col-sm-4">
-            <button type="button" class="btn btn-primary btn-flat"><i class="fa fa-search"></i> Search</button>
+            <button type="button" id="btnSearch" class="btn btn-primary btn-flat"><i class="fa fa-search"></i> Search</button>
         </div>
     </div>
     <div class="row">
         <div class="col-md-12">
             <table id="dtdata" class="table table-bordered table-striped dataTable" width="100%">
+                <thead>
+                    <tr>
+                        <th>Sr. No.</th>
+                        <th>Date</th>
+                        <th>User Name</th>
+                        <th>Email</th>
+                        <th>IP Address</th>
+                        <th>Module Name</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
             </table>
         </div>
     </div>
 </section>
 <script>
-    $(document).ready(function () {
-        dataGridLoad();
+    $(document).ready(function () {        
         $("#ddlUser").select2({
             allowClear: true, minimumInputLength: 1, placeholder: "Search User",
             ajax: {
@@ -62,31 +72,37 @@
             autoUpdateInput: true, alwaysShowCalendars: true,
             locale: { format: 'DD/MM/YYYY', cancelLabel: 'Clear' }
         });
-        
+        $("#btnSearch").click(function () { dataGridLoad(); return false; });
+        setTimeout(function () { dataGridLoad(); }, 50);
     });
 
     function dataGridLoad() {
-        var obj = { strValue1: 0, strValue1: '', strValue2: '', PageNo: 0, PageSize: 10 };
+        var urid = parseInt($("#ddlUser").val()) || 0;
+        var dfa = $('#txtLogDate').val().split('-');
+        var obj = { strValue1: urid, strValue2: dfa[0], strValue3: dfa[1], PageNo: 0, PageSize: 10, sEcho: 1 };
         $('#dtdata').DataTable({
             destroy: true, bProcessing: true, bServerSide: true,
             sPaginationType: "full_numbers", searching: false, ordering: false, lengthChange: false,
-            bAutoWidth: true, scrollX: true, scrollY: ($(window).height() - 200),
+            bAutoWidth: true, scrollX: true, scrollY: ($(window).height() - 215),
             lengthMenu: [[10, 20, 50], [10, 20, 50]],
             sAjaxSource: "/Setting/GetActivityLogList",
             fnServerData: function (sSource, aoData, fnCallback, oSettings) {
                 obj.sEcho = aoData[0].value; obj.PageSize = oSettings._iDisplayLength; obj.PageNo = oSettings._iDisplayStart;
                 $.ajax({
                     type: "POST", url: sSource, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
-                    success: function (data) { console.log(data);return fnCallback(data); },
+                    success: function (data) {                        
+                        var dtOption = { sEcho: data.sEcho, recordsTotal: data.recordsTotal, recordsFiltered: data.recordsFiltered, iTotalRecords: data.iTotalRecords, iTotalDisplayRecords: data.iTotalDisplayRecords, aaData: JSON.parse(data.aaData) };
+                        return fnCallback(dtOption);
+                    },
                     error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
                     async: false
                 });
             },
             aoColumns: [
-                { data: 'ROWNUM', title: 'Sr. No.', sWidth: "10%" },
+                { data: 'ROWNUM', title: 'Sr. No.', sWidth: "5%" },
                 { data: 'log_date', title: 'Date', sWidth: "10%" },
                 { data: 'User_Login', title: 'User Name', sWidth: "10%" },
-                { data: 'user_email', title: 'Email', sWidth: "10%" },
+                { data: 'user_email', title: 'Email', sWidth: "15%" },
                 { data: 'ip_address', title: 'IP Address', sWidth: "10%" },
                 { data: 'module_name', title: 'Module Name', sWidth: "10%" },
                 { data: 'description', title: 'Description', sWidth: "30%" }

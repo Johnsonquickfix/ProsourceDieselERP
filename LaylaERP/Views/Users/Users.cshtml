@@ -1,90 +1,140 @@
-﻿
+﻿@model LaylaERP.Models.clsUserDetails
 @{
     ViewBag.Title = "Users";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
 }
 
 <h2>Users</h2>
-<div>
-    <form action="">
-        <select name="bulkaction" id="bulkactions">
-            <option value="0">Bulk Action</option>
-            <option value="1">Delete</option>
+@*<div>
+        <form action="">
+            <select name="bulkaction" id="bulkactions">
+                <option value="0">Bulk Action</option>
+                <option value="1">Delete</option>
+            </select>
+            <br>
+            <input type="submit" value="Apply">
+        </form>
+
+        <select name="userrole" id="userrole">
+            <option value="0">Select User Role</option>
+            <option value="1">Administrator</option>
+            <option value="1">Mod Squad</option>
         </select>
-        <br>
-        <input type="submit" value="Apply">
-    </form>
 
-    <select name="userrole" id="userrole">
-        <option value="0">Select User Role</option>
-        <option value="1">Administrator</option>
-        <option value="1">Mod Squad</option>
-    </select>
-
-    <select name="useractivate" id="useractivate">
-        <option value="0">Active</option>
-        <option value="1">InActive</option>
-    </select>
+        <select name="useractivate" id="useractivate">
+            <option value="0">Active</option>
+            <option value="1">InActive</option>
+        </select>
 
 
-</div>
-<br>
-<br>
-<table id="data-table" class="table table-striped table-bordered nowrap" width="100%">
-    <tr>
-        <th><input name="select_all" value="1" type="checkbox"> All</th>
-        <th>UserID</th>
-        <th>UserName</th>
-        <th>Role</th>
-        <th>Status</th>
-        <th>Email</th>
-    </tr>
-    <tr>
-        <td><input type="checkbox" name="name1" /></td>
-        <td>1</td>
-        <td>david</td>
-        <td>Administrator</td>
-        <td>Active</td>
-        <td>david.quickfix1@gmail.com</td>
-    </tr>
-    <tr>
-        <td><input type="checkbox" name="name1" /></td>
-        <td>2</td>
-        <td>david002</td>
-        <td>Administrator</td>
-        <td>Active</td>
-        <td>david2.quickfix1@gmail.com</td>
-    </tr>
-</table>
+    </div>
+    <br>
+    <br>
+    <table id="data-table" class="table table-striped table-bordered nowrap" width="100%">
+        <tr>
+            <th><input name="select_all" value="1" type="checkbox"> All</th>
+            <th>UserID</th>
+            <th>UserName</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Email</th>
+        </tr>
+        <tr>
+            <td><input type="checkbox" name="name1" /></td>
+            <td>1</td>
+            <td>david</td>
+            <td>Administrator</td>
+            <td>Active</td>
+            <td>david.quickfix1@gmail.com</td>
+        </tr>
+        <tr>
+            <td><input type="checkbox" name="name1" /></td>
+            <td>2</td>
+            <td>david002</td>
+            <td>Administrator</td>
+            <td>Active</td>
+            <td>david2.quickfix1@gmail.com</td>
+        </tr>
+    </table>
 
-<style>
-    table {
-        width: 100%;
-    }
+    <style>
+        table {
+            width: 100%;
+        }
 
-    table, th, td {
-        border: 1px solid black;
-        border-collapse: collapse;
-    }
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
 
-    th, td {
-        padding: 15px;
-        text-align: left;
-    }
+        th, td {
+            padding: 15px;
+            text-align: left;
+        }
 
-    tr:nth-child(even) {
-        background-color: #eee;
-    }
+        tr:nth-child(even) {
+            background-color: #eee;
+        }
 
-    tr:nth-child(odd) {
-        background-color: #fff;
-    }
+        tr:nth-child(odd) {
+            background-color: #fff;
+        }
 
-    th {
-        background-color: orange;
-        color: white;
-    }
-</style>
+        th {
+            background-color: orange;
+            color: white;
+        }
+    </style>*@
+
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="dx-viewport demo-container">
+                <div id="gridContainer">
+                    <h3 class="text-center text-uppercase">Order Details</h3>
+                    <table id="example" class="table table-bordered" style="width:100%;">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>User ID</th>
+                                <th>Email</th>
+                               
+                            </tr>
+                        </thead>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+
+@section scripts{
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#example').DataTable({
+                "ajax": {
+                    "url": '/Users/GetData',
+                    "type": 'GET',
+                    "dataType": 'json',
+                },
+                "columns": [
+                    { 'data': 'user_login' },
+                    { 'data': 'user_email' },
+                    
+                    
+                ]
+                
+            });
+        });
+    </script>
+}
+
+
+
+
+
 
 <script>
     var dataTable = document.getElementById('data-table');

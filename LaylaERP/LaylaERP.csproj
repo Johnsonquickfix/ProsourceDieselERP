@@ -171,6 +171,7 @@
     <Compile Include="Models\Export_Details.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\SearchModel.cs" />
+    <Compile Include="Models\UsersRepositry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UTILITIES\CommanUtilities.cs" />
     <Compile Include="UTILITIES\CryptorEngine.cs" />
@@ -498,6 +499,7 @@
     <Content Include="Views\Users\AssignRole.cshtml" />
     <Content Include="Views\Customer\NewUser.cshtml" />
     <Content Include="Views\Shared\_ExportLayout.cshtml" />
+    <Content Include="Views\Shared\_UserLayout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

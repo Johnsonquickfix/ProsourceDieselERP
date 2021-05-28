@@ -2,12 +2,54 @@
  Core script to handle the entire theme and core functions
  **/
 var App = function () {
+
     // IE mode
     var isRTL = false;
     var isIE8 = false;
     var isIE9 = false;
     var isIE10 = false;
+
     var resizeHandlers = [];
+
+    var basePath = '../content/superui/';
+
+    var globalImgPath = 'global/img/';
+
+    var globalPluginsPath = 'base/plugins/';
+
+    var globalCssPath = 'global/css/';
+
+    // theme layout color set
+
+    var brandColors = {
+        'blue': '#89C4F4',
+        'red': '#F3565D',
+        'green': '#1bbc9b',
+        'purple': '#9b59b6',
+        'grey': '#95a5a6',
+        'yellow': '#F8CB00',
+        'lightblue': '364150'
+    };
+
+    // initializes main settings
+    var handleInit = function () {
+
+        if ($('body').css('direction') === 'rtl') {
+            isRTL = true;
+        }
+
+        isIE8 = !!navigator.userAgent.match(/MSIE 8.0/);
+        isIE9 = !!navigator.userAgent.match(/MSIE 9.0/);
+        isIE10 = !!navigator.userAgent.match(/MSIE 10.0/);
+
+        if (isIE10) {
+            $('html').addClass('ie10'); // detect IE10 version
+        }
+
+        if (isIE10 || isIE9 || isIE8) {
+            $('html').addClass('ie'); // detect IE10 version
+        }
+    };
 
     // runs callback functions set by App.addResponsiveHandler().
     var _runResizeHandlers = function () {
@@ -32,7 +74,7 @@ var App = function () {
         }
 
         $(".tab_iframe").css({
-            height: height,
+            height: height -6,
             width: "100%"
         });
 
@@ -54,6 +96,59 @@ var App = function () {
             App.scrollTop();
             $("#iframe-main").attr("src", $(this).attr('href'));
         });
+    };
+
+    var isFullScreen = false;
+
+    var requestFullScreen = function () {
+        var de = document.documentElement;
+
+        if (de.requestFullscreen) {
+            de.requestFullscreen();
+        } else if (de.mozRequestFullScreen) {
+            de.mozRequestFullScreen();
+        } else if (de.webkitRequestFullScreen) {
+            de.webkitRequestFullScreen();
+        }
+        else {
+            App.alert({ message: "The browser does not support full screen！", type: "danger" });
+        }
+
+    };
+
+    var requestFullScreen2 = function (element) {
+        // Judge various browsers and find the right way
+        var requestMethod = element.requestFullScreen || //W3C
+            element.webkitRequestFullScreen ||    //Chrome, etc.
+            element.mozRequestFullScreen || //FireFox
+            element.msRequestFullScreen; //IE11
+        if (requestMethod) {
+            requestMethod.call(element);
+        }
+        else if (typeof window.ActiveXObject !== "undefined") {//for Internet Explorer
+            var wscript = new ActiveXObject("WScript.Shell");
+            if (wscript !== null) {
+                wscript.SendKeys("{F11}");
+            }
+        }
+    };
+
+    //Exit full screen to determine the browser type
+    var exitFull = function () {
+        // Judge various browsers and find the right way
+        var exitMethod = document.exitFullscreen || //W3C
+            document.mozCancelFullScreen ||    //Chrome etc.
+            document.webkitExitFullscreen || //FireFox
+            document.webkitExitFullscreen; //IE11
+        if (exitMethod) {
+            exitMethod.call(document);
+        }
+        else if (typeof window.ActiveXObject !== "undefined") {//for Internet Explorer
+            var wscript = new ActiveXObject("WScript.Shell");
+            if (wscript !== null) {
+                wscript.SendKeys("{F11}");
+            }
+        }
     };
 
     // handle the layout reinitialization on window resize
@@ -87,6 +182,257 @@ var App = function () {
         }
     };
 
+    // Handles portlet tools & actions
+    var handlePortletTools = function () {
+        // handle portlet remove
+        $('body').on('click', '.portlet > .portlet-title > .tools > a.remove', function (e) {
+            e.preventDefault();
+            var portlet = $(this).closest(".portlet");
+
+            if ($('body').hasClass('page-portlet-fullscreen')) {
+                $('body').removeClass('page-portlet-fullscreen');
+            }
+
+            portlet.find('.portlet-title .fullscreen').tooltip('destroy');
+            portlet.find('.portlet-title > .tools > .reload').tooltip('destroy');
+            portlet.find('.portlet-title > .tools > .remove').tooltip('destroy');
+            portlet.find('.portlet-title > .tools > .config').tooltip('destroy');
+            portlet.find('.portlet-title > .tools > .collapse, .portlet > .portlet-title > .tools > .expand').tooltip('destroy');
+
+            portlet.remove();
+        });
+
+        // handle portlet fullscreen
+        $('body').on('click', '.portlet > .portlet-title .fullscreen', function (e) {
+            e.preventDefault();
+            var portlet = $(this).closest(".portlet");
+            if (portlet.hasClass('portlet-fullscreen')) {
+                $(this).removeClass('on');
+                portlet.removeClass('portlet-fullscreen');
+                $('body').removeClass('page-portlet-fullscreen');
+                portlet.children('.portlet-body').css('height', 'auto');
+            } else {
+                var height = App.getViewPort().height -
+                    portlet.children('.portlet-title').outerHeight() -
+                    parseInt(portlet.children('.portlet-body').css('padding-top')) -
+                    parseInt(portlet.children('.portlet-body').css('padding-bottom'));
+
+                $(this).addClass('on');
+                portlet.addClass('portlet-fullscreen');
+                $('body').addClass('page-portlet-fullscreen');
+                portlet.children('.portlet-body').css('height', height);
+            }
+        });
+
+        $('body').on('click', '.portlet > .portlet-title > .tools > a.reload', function (e) {
+            e.preventDefault();
+            var el = $(this).closest(".portlet").children(".portlet-body");
+            var url = $(this).attr("data-url");
+            var error = $(this).attr("data-error-display");
+            if (url) {
+                App.blockUI({
+                    target: el,
+                    animate: true,
+                    overlayColor: 'none'
+                });
+                $.ajax({
+                    type: "GET",
+                    cache: false,
+                    url: url,
+                    dataType: "html",
+                    success: function (res) {
+                        App.unblockUI(el);
+                        el.html(res);
+                        App.initAjax() // reinitialize elements & plugins for newly loaded content
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        App.unblockUI(el);
+                        var msg = 'Error on reloading the content. Please check your connection and try again.';
+                        if (error == "toastr" && toastr) {
+                            toastr.error(msg);
+                        } else if (error == "notific8" && $.notific8) {
+                            $.notific8('zindex', 11500);
+                            $.notific8(msg, {
+                                theme: 'ruby',
+                                life: 3000
+                            });
+                        } else {
+                            alert(msg);
+                        }
+                    }
+                });
+            } else {
+                // for demo purpose
+                App.blockUI({
+                    target: el,
+                    animate: true,
+                    overlayColor: 'none'
+                });
+                window.setTimeout(function () {
+                    App.unblockUI(el);
+                }, 1000);
+            }
+        });
+
+        // load ajax data on page init
+        $('.portlet .portlet-title a.reload[data-load="true"]').click();
+
+        $('body').on('click', '.portlet > .portlet-title > .tools > .collapse, .portlet .portlet-title > .tools > .expand', function (e) {
+            e.preventDefault();
+            var el = $(this).closest(".portlet").children(".portlet-body");
+            if ($(this).hasClass("collapse")) {
+                $(this).removeClass("collapse").addClass("expand");
+                el.slideUp(200);
+            } else {
+                $(this).removeClass("expand").addClass("collapse");
+                el.slideDown(200);
+            }
+        });
+    };
+
+    // Handles custom checkboxes & radios using jQuery Uniform plugin
+    var handleUniform = function () {
+        if (!$().uniform) {
+            return;
+        }
+        var test = $("input[type=checkbox]:not(.toggle, .md-check, .md-radiobtn, .make-switch, .icheck), input[type=radio]:not(.toggle, .md-check, .md-radiobtn, .star, .make-switch, .icheck)");
+        if (test.size() > 0) {
+            test.each(function () {
+                if ($(this).parents(".checker").size() === 0) {
+                    $(this).show();
+                    $(this).uniform();
+                }
+            });
+        }
+    };
+
+    // Handlesmaterial design checkboxes
+    var handleMaterialDesign = function () {
+
+        // Material design ckeckbox and radio effects
+        $('body').on('click', '.md-checkbox > label, .md-radio > label', function () {
+            var the = $(this);
+            // find the first span which is our circle/bubble
+            var el = $(this).children('span:first-child');
+
+            // add the bubble class (we do this so it doesnt show on page load)
+            el.addClass('inc');
+
+            // clone it
+            var newone = el.clone(true);
+
+            // add the cloned version before our original
+            el.before(newone);
+
+            // remove the original so that it is ready to run on next click
+            $("." + el.attr("class") + ":last", the).remove();
+        });
+
+        if ($('body').hasClass('page-md')) {
+            // Material design click effect
+            // credit where credit's due; http://thecodeplayer.com/walkthrough/ripple-click-effect-google-material-design       
+            var element, circle, d, x, y;
+            $('body').on('click', 'a.btn, button.btn, input.btn, label.btn', function (e) {
+                element = $(this);
+
+                if (element.find(".md-click-circle").length == 0) {
+                    element.prepend("<span class='md-click-circle'></span>");
+                }
+
+                circle = element.find(".md-click-circle");
+                circle.removeClass("md-click-animate");
+
+                if (!circle.height() && !circle.width()) {
+                    d = Math.max(element.outerWidth(), element.outerHeight());
+                    circle.css({ height: d, width: d });
+                }
+
+                x = e.pageX - element.offset().left - circle.width() / 2;
+                y = e.pageY - element.offset().top - circle.height() / 2;
+
+                circle.css({ top: y + 'px', left: x + 'px' }).addClass("md-click-animate");
+
+                setTimeout(function () {
+                    circle.remove();
+                }, 1000);
+            });
+        }
+
+        // Floating labels
+        var handleInput = function (el) {
+            if (el.val() != "") {
+                el.addClass('edited');
+            } else {
+                el.removeClass('edited');
+            }
+        }
+
+        $('body').on('keydown', '.form-md-floating-label .form-control', function (e) {
+            handleInput($(this));
+        });
+        $('body').on('blur', '.form-md-floating-label .form-control', function (e) {
+            handleInput($(this));
+        });
+
+        $('.form-md-floating-label .form-control').each(function () {
+            if ($(this).val().length > 0) {
+                $(this).addClass('edited');
+            }
+        });
+    };
+
+    // Handles custom checkboxes & radios using jQuery iCheck plugin
+    var handleiCheck = function () {
+        if (!$().iCheck) {
+            return;
+        }
+
+        $('.icheck').each(function () {
+            var checkboxClass = $(this).attr('data-checkbox') ? $(this).attr('data-checkbox') : 'icheckbox_minimal-grey';
+            var radioClass = $(this).attr('data-radio') ? $(this).attr('data-radio') : 'iradio_minimal-grey';
+
+            if (checkboxClass.indexOf('_line') > -1 || radioClass.indexOf('_line') > -1) {
+                $(this).iCheck({
+                    checkboxClass: checkboxClass,
+                    radioClass: radioClass,
+                    insert: '<div class="icheck_line-icon"></div>' + $(this).attr("data-label")
+                });
+            } else {
+                $(this).iCheck({
+                    checkboxClass: checkboxClass,
+                    radioClass: radioClass
+                });
+            }
+        });
+    };
+
+    // Handles Bootstrap switches
+    var handleBootstrapSwitch = function () {
+        if (!$().bootstrapSwitch) {
+            return;
+        }
+        $('.make-switch').bootstrapSwitch();
+    };
+
+    // Handles Bootstrap confirmations
+    var handleBootstrapConfirmation = function () {
+        if (!$().confirmation) {
+            return;
+        }
+        $('[data-toggle=confirmation]').confirmation({
+            container: 'body',
+            btnOkClass: 'btn btn-sm btn-success',
+            btnCancelClass: 'btn btn-sm btn-danger'
+        });
+    };
+
+    // Handles Bootstrap Accordions.
+    var handleAccordions = function () {
+        $('body').on('shown.bs.collapse', '.accordion.scrollable', function (e) {
+            App.scrollTo($(e.target));
+        });
+    };
+
     // Handles Bootstrap Tabs.
     var handleTabs = function () {
         //activate tab if tab id provided in the URL
@@ -105,6 +451,169 @@ var App = function () {
             });
         }
     };
+
+    // Handles Bootstrap Modals.
+    var handleModals = function () {
+        // fix stackable modal issue: when 2 or more modals opened, closing one of modal will remove .modal-open class. 
+        $('body').on('hide.bs.modal', function () {
+            if ($('.modal:visible').size() > 1 && $('html').hasClass('modal-open') === false) {
+                $('html').addClass('modal-open');
+            } else if ($('.modal:visible').size() <= 1) {
+                $('html').removeClass('modal-open');
+            }
+        });
+
+        // fix page scrollbars issue
+        $('body').on('show.bs.modal', '.modal', function () {
+            if ($(this).hasClass("modal-scroll")) {
+                $('body').addClass("modal-open-noscroll");
+            }
+        });
+
+        // fix page scrollbars issue
+        $('body').on('hide.bs.modal', '.modal', function () {
+            $('body').removeClass("modal-open-noscroll");
+        });
+
+        // remove ajax content and remove cache on modal closed 
+        $('body').on('hidden.bs.modal', '.modal:not(.modal-cached)', function () {
+            $(this).removeData('bs.modal');
+        });
+    };
+
+    // Handles Bootstrap Dropdowns
+    var handleDropdowns = function () {
+        /*
+         Hold dropdown on click
+         */
+        $('body').on('click', '.dropdown-menu.hold-on-click', function (e) {
+            e.stopPropagation();
+        });
+    };
+
+    // Handle textarea autosize 
+    var handleTextareaAutosize = function () {
+        if (typeof (autosize) == "function") {
+            autosize(document.querySelector('textarea.autosizeme'));
+        }
+    };
+
+    // Handles scrollable contents using jQuery SlimScroll plugin.
+    var handleScrollers = function () {
+        App.initSlimScroll('.scroller');
+    };
+
+    // Handles Image Preview using jQuery Fancybox plugin
+    var handleFancybox = function () {
+        if (!jQuery.fancybox) {
+            return;
+        }
+
+        if ($(".fancybox-button").size() > 0) {
+            $(".fancybox-button").fancybox({
+                groupAttr: 'data-rel',
+                prevEffect: 'none',
+                nextEffect: 'none',
+                closeBtn: true,
+                helpers: {
+                    title: {
+                        type: 'inside'
+                    }
+                }
+            });
+        }
+    };
+
+    // Handles counterup plugin wrapper
+    var handleCounterup = function () {
+        if (!$().counterUp) {
+            return;
+        }
+
+        $("[data-counter='counterup']").counterUp({
+            delay: 10,
+            time: 1000
+        });
+    };
+
+    // Fix input placeholder issue for IE8 and IE9
+    var handleFixInputPlaceholderForIE = function () {
+        //fix html5 placeholder attribute for ie7 & ie8
+        if (isIE8 || isIE9) { // ie8 & ie9
+            // this is html5 placeholder fix for inputs, inputs with placeholder-no-fix class will be skipped(e.g: we need this for password fields)
+            $('input[placeholder]:not(.placeholder-no-fix), textarea[placeholder]:not(.placeholder-no-fix)').each(function () {
+                var input = $(this);
+
+                if (input.val() === '' && input.attr("placeholder") !== '') {
+                    input.addClass("placeholder").val(input.attr('placeholder'));
+                }
+
+                input.focus(function () {
+                    if (input.val() == input.attr('placeholder')) {
+                        input.val('');
+                    }
+                });
+
+                input.blur(function () {
+                    if (input.val() === '' || input.val() == input.attr('placeholder')) {
+                        input.val(input.attr('placeholder'));
+                    }
+                });
+            });
+        }
+    };
+
+    // Handle Select2 Dropdowns
+    var handleSelect2 = function () {
+        if ($().select2) {
+            $.fn.select2.defaults.set("theme", "bootstrap");
+            $('.select2me').select2({
+                placeholder: "Select",
+                width: 'auto',
+                allowClear: true
+            });
+        }
+    };
+
+    // handle group element heights
+    var handleHeight = function () {
+        $('[data-auto-height]').each(function () {
+            var parent = $(this);
+            var items = $('[data-height]', parent);
+            var height = 0;
+            var mode = parent.attr('data-mode');
+            var offset = parseInt(parent.attr('data-offset') ? parent.attr('data-offset') : 0);
+
+            items.each(function () {
+                if ($(this).attr('data-height') == "height") {
+                    $(this).css('height', '');
+                } else {
+                    $(this).css('min-height', '');
+                }
+
+                var height_ = (mode == 'base-height' ? $(this).outerHeight() : $(this).outerHeight(true));
+                if (height_ > height) {
+                    height = height_;
+                }
+            });
+
+            height = height + offset;
+
+            items.each(function () {
+                if ($(this).attr('data-height') == "height") {
+                    $(this).css('height', height);
+                } else {
+                    $(this).css('min-height', height);
+                }
+            });
+
+            if (parent.attr('data-related')) {
+                $(parent.attr('data-related')).css('height', parent.height());
+            }
+        });
+    };
+
+    //* END:CORE HANDLERS *//
 
     return {
 
@@ -125,11 +634,8 @@ var App = function () {
             handleFancybox(); // handle fancy box
             handleSelect2(); // handle custom Select2 dropdowns
             handlePortletTools(); // handles portlet action bar functionality(refresh, configure, toggle, remove)
-            handleAlerts(); //handle closabled alerts
             handleDropdowns(); // handle dropdowns
             handleTabs(); // handle tabs
-            handleTooltips(); // handle bootstrap tooltips
-            handlePopovers(); // handles bootstrap popovers
             handleAccordions(); //handles accordions 
             handleModals(); // handle modals
             handleBootstrapConfirmation(); // handle bootstrap confirmations
@@ -142,6 +648,39 @@ var App = function () {
 
             // Hacks
             handleFixInputPlaceholderForIE(); //IE8 & IE9 input placeholder issue fix
+        },
+
+        //main function to initiate core javascript after ajax complete
+        initAjax: function () {
+            handleUniform(); // handles custom radio & checkboxes     
+            handleiCheck(); // handles custom icheck radio and checkboxes
+            handleBootstrapSwitch(); // handle bootstrap switch plugin
+            handleDropdownHover(); // handles dropdown hover       
+            handleScrollers(); // handles slim scrolling contents 
+            handleSelect2(); // handle custom Select2 dropdowns
+            handleFancybox(); // handle fancy box
+            handleDropdowns(); // handle dropdowns
+            handleAccordions(); //handles accordions 
+            handleBootstrapConfirmation(); // handle bootstrap confirmations
+        },
+        handleFullScreen: function () {
+            if (isFullScreen) {
+                exitFull();
+                isFullScreen = false;
+            } else {
+                requestFullScreen();
+                isFullScreen = true;
+            }
+        },
+        fixIframeTab: function () {
+            handleIframeContent();
+        },
+        getIframeLayoutHeight: function () {
+            return handleIframeLayoutHeight();
+        },
+        //init main components 
+        initComponents: function () {
+            this.initAjax();
         },
         fixIframeCotent: function () {
             setTimeout(function () {
@@ -162,6 +701,103 @@ var App = function () {
         //public functon to call _runresizeHandlers
         runResizeHandlers: function () {
             _runResizeHandlers();
+        },
+
+        // wrApper function to scroll(focus) to an element
+        scrollTo: function (el, offeset) {
+            var pos = (el && el.size() > 0) ? el.offset().top : 0;
+
+            if (el) {
+                if ($('body').hasClass('page-header-fixed')) {
+                    pos = pos - $('.page-header').height();
+                } else if ($('body').hasClass('page-header-top-fixed')) {
+                    pos = pos - $('.page-header-top').height();
+                } else if ($('body').hasClass('page-header-menu-fixed')) {
+                    pos = pos - $('.page-header-menu').height();
+                }
+                pos = pos + (offeset ? offeset : -1 * el.height());
+            }
+
+            $('html,body').animate({
+                scrollTop: pos
+            }, 'slow');
+        },
+
+        initSlimScroll: function (el) {
+            $(el).each(function () {
+                if ($(this).attr("data-initialized")) {
+                    return; // exit
+                }
+
+                var height;
+
+                if ($(this).attr("data-height")) {
+                    height = $(this).attr("data-height");
+                } else {
+                    height = $(this).css('height');
+                }
+
+                $(this).slimScroll({
+                    allowPageScroll: true, // allow page scroll when the element scroll is ended
+                    size: '7px',
+                    color: ($(this).attr("data-handle-color") ? $(this).attr("data-handle-color") : '#bbb'),
+                    wrapperClass: ($(this).attr("data-wrapper-class") ? $(this).attr("data-wrapper-class") : 'slimScrollDiv'),
+                    railColor: ($(this).attr("data-rail-color") ? $(this).attr("data-rail-color") : '#eaeaea'),
+                    position: isRTL ? 'left' : 'right',
+                    height: height,
+                    alwaysVisible: ($(this).attr("data-always-visible") == "1" ? true : false),
+                    railVisible: ($(this).attr("data-rail-visible") == "1" ? true : false),
+                    disableFadeOut: true
+                });
+
+                $(this).attr("data-initialized", "1");
+            });
+        },
+
+        destroySlimScroll: function (el) {
+            $(el).each(function () {
+                if ($(this).attr("data-initialized") === "1") { // destroy existing instance before updating the height
+                    $(this).removeAttr("data-initialized");
+                    $(this).removeAttr("style");
+
+                    var attrList = {};
+
+                    // store the custom attribures so later we will reassign.
+                    if ($(this).attr("data-handle-color")) {
+                        attrList["data-handle-color"] = $(this).attr("data-handle-color");
+                    }
+                    if ($(this).attr("data-wrapper-class")) {
+                        attrList["data-wrapper-class"] = $(this).attr("data-wrapper-class");
+                    }
+                    if ($(this).attr("data-rail-color")) {
+                        attrList["data-rail-color"] = $(this).attr("data-rail-color");
+                    }
+                    if ($(this).attr("data-always-visible")) {
+                        attrList["data-always-visible"] = $(this).attr("data-always-visible");
+                    }
+                    if ($(this).attr("data-rail-visible")) {
+                        attrList["data-rail-visible"] = $(this).attr("data-rail-visible");
+                    }
+
+                    $(this).slimScroll({
+                        wrapperClass: ($(this).attr("data-wrapper-class") ? $(this).attr("data-wrapper-class") : 'slimScrollDiv'),
+                        destroy: true
+                    });
+
+                    var the = $(this);
+
+                    // reassign custom attributes
+                    $.each(attrList, function (key, value) {
+                        the.attr(key, value);
+                    });
+
+                }
+            });
+        },
+
+        // function to scroll to the top
+        scrollTop: function () {
+            App.scrollTo();
         },
 
         // wrApper function to  block element(indicate loading)
@@ -301,6 +937,30 @@ var App = function () {
             return id;
         },
 
+        // initializes uniform elements
+        initUniform: function (els) {
+            if (els) {
+                $(els).each(function () {
+                    if ($(this).parents(".checker").size() === 0) {
+                        $(this).show();
+                        $(this).uniform();
+                    }
+                });
+            } else {
+                handleUniform();
+            }
+        },
+
+        //wrApper function to update/sync jquery uniform checkbox & radios
+        updateUniform: function (els) {
+            $.uniform.update(els); // update the uniform checkbox & radios UI after the actual input control state changed
+        },
+
+        //public function to initialize the fancybox plugin
+        initFancybox: function () {
+            handleFancybox();
+        },
+
         //public helper function to get actual input value(used in IE9 and IE8 due to placeholder attribute not supported)
         getActualVal: function (el) {
             el = $(el);
@@ -373,6 +1033,43 @@ var App = function () {
             return (typeof angular == 'undefined') ? false : true;
         },
 
+        getbasePath: function () {
+            return basePath;
+        },
+
+        setbasePath: function (path) {
+            basePath = path;
+        },
+
+        setGlobalImgPath: function (path) {
+            globalImgPath = path;
+        },
+
+        getGlobalImgPath: function () {
+            return basePath + globalImgPath;
+        },
+
+        setGlobalPluginsPath: function (path) {
+            globalPluginsPath = path;
+        },
+
+        getGlobalPluginsPath: function () {
+            return basePath + globalPluginsPath;
+        },
+
+        getGlobalCssPath: function () {
+            return basePath + globalCssPath;
+        },
+
+        // get layout color code by color name
+        getBrandColor: function (name) {
+            if (brandColors[name]) {
+                return brandColors[name];
+            } else {
+                return '';
+            }
+        },
+
         getResponsiveBreakpoint: function (size) {
             // bootstrap responsive breakpoints
             var sizes = {
@@ -385,7 +1082,233 @@ var App = function () {
             return sizes[size] ? sizes[size] : 0;
         }
     };
+
 }();
+
+jQuery(document).ready(function () {
+    App.init(); // init metronic core componets
+});
+/*
+ * Context.js
+ * Copyright Jacob Kelley
+ * MIT License
+ *
+ * Modified by Joshua Christman
+ */
+
+context = (function () {
+
+    var options = {
+        fadeSpeed: 100,
+        filter: function ($obj) {
+            // Modify $obj, Do not return
+        },
+        above: 'auto',
+        left: 'auto',
+        preventDoubleContext: true,
+        compress: false
+    };
+
+    function initialize(opts) {
+
+        options = $.extend({}, options, opts);
+
+        $(document).on('click', function () {
+            $('.dropdown-context').fadeOut(options.fadeSpeed, function () {
+                $('.dropdown-context').css({ display: '' }).find('.drop-left').removeClass('drop-left');
+            });
+        });
+        if (options.preventDoubleContext) {
+            $(document).on('contextmenu', '.dropdown-context', function (e) {
+                e.preventDefault();
+            });
+        }
+        $(document).on('mouseenter', '.dropdown-submenu', function () {
+            var $sub = $(this).find('.dropdown-context-sub:first'),
+                subWidth = $sub.width(),
+                subLeft = $sub.offset().left,
+                collision = (subWidth + subLeft) > window.innerWidth;
+            if (collision) {
+                $sub.addClass('drop-left');
+            }
+        });
+
+    }
+
+    function updateOptions(opts) {
+        options = $.extend({}, options, opts);
+    }
+
+    function buildMenu(data, id, subMenu) {
+        var subClass = (subMenu) ? ' dropdown-context-sub' : '',
+            compressed = options.compress ? ' compressed-context' : '',
+            $menu = $('<ul class="dropdown-menu dropdown-context' + subClass + compressed + '" id="dropdown-' + id + '"></ul>');
+
+        return buildMenuItems($menu, data, id, subMenu);
+    }
+
+    function buildMenuItems($menu, data, id, subMenu, addDynamicTag) {
+        var linkTarget = '';
+        for (var i = 0; i < data.length; i++) {
+            if (typeof data[i].divider !== 'undefined') {
+                var divider = '<li class="divider';
+                divider += (addDynamicTag) ? ' dynamic-menu-item' : '';
+                divider += '"></li>';
+                $menu.append(divider);
+            } else if (typeof data[i].header !== 'undefined') {
+                var header = '<li class="nav-header';
+                header += (addDynamicTag) ? ' dynamic-menu-item' : '';
+                header += '">' + data[i].header + '</li>';
+                $menu.append(header);
+            } else if (typeof data[i].menu_item_src !== 'undefined') {
+                var funcName;
+                if (typeof data[i].menu_item_src === 'function') {
+                    if (data[i].menu_item_src.name === "") { // The function is declared like "foo = function() {}"
+                        for (var globalVar in window) {
+                            if (data[i].menu_item_src == window[globalVar]) {
+                                funcName = globalVar;
+                                break;
+                            }
+                        }
+                    } else {
+                        funcName = data[i].menu_item_src.name;
+                    }
+                } else {
+                    funcName = data[i].menu_item_src;
+                }
+                $menu.append('<li class="dynamic-menu-src" data-src="' + funcName + '"></li>');
+            } else {
+                if (typeof data[i].href == 'undefined') {
+                    data[i].href = '#';
+                }
+                if (typeof data[i].target !== 'undefined') {
+                    linkTarget = ' target="' + data[i].target + '"';
+                }
+                if (typeof data[i].subMenu !== 'undefined') {
+                    var sub_menu = '<li class="dropdown-submenu';
+                    sub_menu += (addDynamicTag) ? ' dynamic-menu-item' : '';
+                    sub_menu += '"><a tabindex="-1" href="' + data[i].href + '">' + data[i].text + '</a></li>'
+                    $sub = (sub_menu);
+                } else {
+                    var element = '<li';
+                    element += (addDynamicTag) ? ' class="dynamic-menu-item"' : '';
+                    element += '><a tabindex="-1" href="' + data[i].href + '"' + linkTarget + '>';
+                    if (typeof data[i].icon !== 'undefined')
+                        element += '<span class="glyphicon ' + data[i].icon + '"></span> ';
+                    element += data[i].text + '</a></li>';
+                    $sub = $(element);
+                }
+                if (typeof data[i].action !== 'undefined') {
+                    $action = data[i].action;
+                    $sub
+                        .find('a')
+                        .addClass('context-event')
+                        .on('click', createCallback($action));
+                }
+                $menu.append($sub);
+                if (typeof data[i].subMenu != 'undefined') {
+                    var subMenuData = buildMenu(data[i].subMenu, id, true);
+                    $menu.find('li:last').append(subMenuData);
+                }
+            }
+            if (typeof options.filter == 'function') {
+                options.filter($menu.find('li:last'));
+            }
+        }
+        return $menu;
+    }
+
+    function addContext(selector, data) {
+        if (typeof data.id !== 'undefined' && typeof data.data !== 'undefined') {
+            var id = data.id;
+            $menu = $('body').find('#dropdown-' + id)[0];
+            if (typeof $menu === 'undefined') {
+                $menu = buildMenu(data.data, id);
+                $('body').append($menu);
+            }
+        } else {
+            var d = new Date(),
+                id = d.getTime(),
+                $menu = buildMenu(data, id);
+            $('body').append($menu);
+        }
+
+        //右键事件
+        $(selector).on('contextmenu', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            rightClickEvent = e;
+            currentContextSelector = $(this);
+
+            $('.dropdown-context:not(.dropdown-context-sub)').hide();
+
+            $dd = $('#dropdown-' + id);
+
+            $dd.find('.dynamic-menu-item').remove(); // Destroy any old dynamic menu items
+            $dd.find('.dynamic-menu-src').each(function (idx, element) {
+                var menuItems = window[$(element).data('src')]($(selector));
+                $parentMenu = $(element).closest('.dropdown-menu.dropdown-context');
+                $parentMenu = buildMenuItems($parentMenu, menuItems, id, undefined, true);
+            });
+
+            if (typeof options.above == 'boolean' && options.above) {
+                $dd.addClass('dropdown-context-up').css({
+                    top: e.pageY - 20 - $('#dropdown-' + id).height(),
+                    left: e.pageX - 13
+                }).fadeIn(options.fadeSpeed);
+            } else if (typeof options.above == 'string' && options.above == 'auto') {
+                $dd.removeClass('dropdown-context-up');
+                var autoH = $dd.height() + 12;
+                if ((e.pageY + autoH) > $('html').height()) {
+                    $dd.addClass('dropdown-context-up').css({
+                        top: e.pageY - 20 - autoH,
+                        left: e.pageX - 13
+                    }).fadeIn(options.fadeSpeed);
+                } else {
+                    $dd.css({
+                        top: e.pageY + 10,
+                        left: e.pageX - 13
+                    }).fadeIn(options.fadeSpeed);
+                }
+            }
+
+            if (typeof options.left == 'boolean' && options.left) {
+                $dd.addClass('dropdown-context-left').css({
+                    left: e.pageX - $dd.width()
+                }).fadeIn(options.fadeSpeed);
+            } else if (typeof options.left == 'string' && options.left == 'auto') {
+                $dd.removeClass('dropdown-context-left');
+                var autoL = $dd.width() - 12;
+                if ((e.pageX + autoL) > $('html').width()) {
+                    $dd.addClass('dropdown-context-left').css({
+                        left: e.pageX - $dd.width() + 13
+                    });
+                }
+            }
+        });
+    }
+
+    function destroyContext(selector) {
+        $(document).off('contextmenu', selector).off('click', '.context-event');
+    }
+
+    return {
+        init: initialize,
+        settings: updateOptions,
+        attach: addContext,
+        destroy: destroyContext
+    };
+})();
+
+var createCallback = function (func) {
+    return function (event) {
+        func(event, currentContextSelector, rightClickEvent)
+    };
+};
+
+var currentContextSelector = undefined;
+var rightClickEvent = undefined;
 
 /*! Copyright (c) 2011 Piotr Rochala (http://rocha.la)
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
@@ -835,10 +1758,478 @@ var App = function () {
 
 })(jQuery);
 
+//Save the field of the page id
+var pageIdField = "data-pageId";
 
-/*! Slider Menu Bind
- *
+function getPageId(element) {
+    if (element instanceof jQuery) {
+        return element.attr(pageIdField);
+    } else {
+        return $(element).attr(pageIdField);
+    }
+}
+
+function findTabTitle(pageId) {
+    var $ele = null;
+    $(".page-tabs-content").find("a.menu_tab").each(function () {
+        var $a = $(this);
+        if ($a.attr(pageIdField) == pageId) {
+            $ele = $a;
+            return false;//Exit loop
+        }
+    });
+    return $ele;
+}
+
+function findTabPanel(pageId) {
+    var $ele = null;
+    $("#tab-content").find("div.tab-pane").each(function () {
+        var $div = $(this);
+        if ($div.attr(pageIdField) == pageId) {
+            $ele = $div;
+            return false;//Exit loop
+        }
+    });
+    return $ele;
+}
+
+function findIframeById(pageId) {
+    return findTabPanel(pageId).children("iframe");
+}
+
+function getActivePageId() {
+    var $a = $('.page-tabs-content').find('.active');
+    return getPageId($a);
+}
+
+function canRemoveTab(pageId) {
+    return findTabTitle(pageId).find('.fa-remove').size() > 0;
+}
+
+//Add tab
+var addTabs = function (options) {
+    var defaultTabOptions = {
+        id: Math.random() * 200,
+        urlType: "relative",
+        title: "New Page"
+    };
+
+    options = $.extend(true, defaultTabOptions, options);
+
+    if (options.urlType === "relative") {
+        // var url = window.location.protocol + '//' + window.location.host + "/";
+        var basePath = window.location.pathname + "/../";
+        options.url = basePath + options.url;
+    }
+
+    var pageId = options.id;
+
+    //Determine whether the tab of this id already exists. If it does not exist, create a new one.
+    if (findTabPanel(pageId) === null) {
+
+        //Create a new TAB title
+        // title = '<a  id="tab_' + pageId + '"  data-id="' + pageId + '"  class="menu_tab" >';
+
+        var $title = $('<a href="javascript:void(0);"></a>').attr(pageIdField, pageId).addClass("menu_tab");
+
+        var $text = $("<span class='page_tab_title'></span>").text(options.title).appendTo($title);
+        // title += '<span class="page_tab_title">' + options.title + '</span>';
+
+        //Whether to allow closure
+        if (options.close) {
+            var $i = $("<i class='fas fa-times page_tab_close' style='cursor: pointer' onclick='closeTab(this);'></i>").attr(pageIdField, pageId).appendTo($title);
+            // title += ' <i class="fa fa-remove page_tab_close" style="cursor: pointer;" data-id="' + pageId + '" onclick="closeTab(this)"></i>';
+        }
+
+        //Join TABS
+        $(".page-tabs-content").append($title);
+
+
+        var $tabPanel = $('<div role="tabpanel" class="tab-pane"></div>').attr(pageIdField, pageId);
+
+        if (options.content) {
+            //Whether to specify TAB content
+            $tabPanel.append(options.content);
+        } else {
+            //No content, use IFRAME to open the link
+
+            App.blockUI({
+                target: '#tab-content',
+                boxed: true,
+                message: 'Loading......'//,
+                // animate: true
+            });
+
+            var $iframe = $("<iframe></iframe>").attr("src", options.url).css("width", "100%").attr("frameborder", "no").attr("id", "iframe_" + pageId).addClass("tab_iframe").attr(pageIdField, pageId);
+            //frameborder="no" border="0" marginwidth="0" marginheight="0" scrolling="yes"  allowtransparency="yes"
+
+            //iframe Load completion event
+            //$iframe.load(function () {
+            //    App.unblockUI('#tab-content');//Unlock interface
+            //    App.fixIframeCotent();//Corrected height
+            //});
+            $iframe.on('load', function () {
+                App.unblockUI('#tab-content');//Unlock interface
+                App.fixIframeCotent();//Corrected height
+                var obj = { ModuleURL: options.url, ModuleName: options.title };
+                setTimeout(function () { addActivityLog(obj); }, 50);
+            });
+
+            $tabPanel.append($iframe);
+
+        }
+
+        // $tab = $(content);
+        $("#tab-content").append($tabPanel);
+
+        //iframe Load completion event
+        /*$tab.find("iframe").load(function () {
+         App.fixIframeCotent();
+         });*/
+    }
+
+    activeTabByPageId(pageId);
+
+};
+
+//Add Activity Log
+var addActivityLog = function (options) {
+    var defaultOptions = {
+        ModuleURL: '/Home/Dashboard',
+        ModuleName: "Dashboard",
+    };
+    options = $.extend(true, defaultOptions, options);
+    jQuery.ajax({
+        url: '/AccountAPI/menuWriteDbLog', dataType: 'json', type: "Post",
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(options),
+        success: function (data) { },
+        error: function (jqXHR, textStatus, errorThrown) { alert(errorThrown); }
+    });
+};
+
+//Close tab
+var closeTab = function (item) {
+    //Item can be a tag or i tag
+    //They all have a data-id attribute, and it’s okay after the acquisition is complete.
+    var pageId = getPageId(item);
+    closeTabByPageId(pageId);
+};
+
+function closeTabByPageId(pageId) {
+    var $title = findTabTitle(pageId);//Tab title
+    var $tabPanel = findTabPanel(pageId);//With iframe
+
+    if ($title.hasClass("active")) {
+        //The tab to be closed is active
+        //To pass the active class to other tabs
+
+        //Give priority to the next tab, if not, pass it to the previous one
+        var $nextTitle = $title.next();
+        var activePageId;
+        if ($nextTitle.size() > 0) {
+            activePageId = getPageId($nextTitle);
+        } else {
+            activePageId = getPageId($title.prev());
+        }
+
+        setTimeout(function () {
+            //Some kind of bug that needs to be delayed
+            activeTabByPageId(activePageId);
+        }, 100);
+
+    } else {
+        // The tab to be closed is not active
+        // Directly remove it, no need to pass active class
+
+    }
+
+    $title.remove();
+    $tabPanel.remove();
+    // scrollToTab($('.menu_tab.active')[0]);
+
+}
+
+function closeTabOnly(pageId) {
+    var $title = findTabTitle(pageId);//Tab title
+    var $tabPanel = findTabPanel(pageId);//With iframe
+    $title.remove();
+    $tabPanel.remove();
+}
+
+var closeCurrentTab = function () {
+    var pageId = getActivePageId();
+    if (canRemoveTab(pageId)) {
+        closeTabByPageId(pageId);
+    }
+};
+
+function refreshTabById(pageId) {
+    var $iframe = findIframeById(pageId);
+    var url = $iframe.attr('src');
+
+    if (url.indexOf(top.document.domain) < 0) {
+        $iframe.attr("src", url);// Reset the url under cross-domain conditions
+    } else {
+        $iframe[0].contentWindow.location.reload(true);//With parameter refresh
+    }
+
+    App.blockUI({
+        target: '#tab-content',
+        boxed: true,
+        message: 'Loading......'//,
+        // animate: true
+    });
+}
+
+var refreshTab = function () {
+    //Refresh current tab
+    var pageId = getActivePageId();
+    refreshTabById(pageId);
+};
+
+function getTabUrlById(pageId) {
+    var $iframe = findIframeById(pageId);
+    return $iframe[0].contentWindow.location.href;
+}
+
+function getTabUrl(element) {
+    var pageId = getPageId(element);
+    getTabUrlById(pageId);
+}
+
+
+/**
+ * Edit the title of the tab
+ * @param pageId
+ * @param title
  */
+function editTabTitle(pageId, title) {
+    var $title = findTabTitle(pageId);//Tab title
+    var $span = $title.children("span.page_tab_title");
+    $span.text(title);
+}
+
+//Calculate the width and width of multiple jq objects
+var calSumWidth = function (element) {
+    var width = 0;
+    $(element).each(function () {
+        width += $(this).outerWidth(true);
+    });
+    return width;
+};
+//Scroll to the specified tab
+var scrollToTab = function (element) {
+    //element is tab (a tag), with the title
+    //div.content-tabs > div.page-tabs-content
+    var marginLeftVal = calSumWidth($(element).prevAll()),//The total width of all the tabs in front
+        marginRightVal = calSumWidth($(element).nextAll());//The total width of all the tabs behind
+    //The total width of some buttons (left, right)
+    var tabOuterWidth = calSumWidth($(".content-tabs").children().not(".menuTabs"));
+    // Tab (a label) shows the total width of the area
+    var visibleWidth = $(".content-tabs").outerWidth(true) - tabOuterWidth;
+    //The length to be scrolled
+    var scrollVal = 0;
+    if ($(".page-tabs-content").outerWidth() < visibleWidth) {
+        //All tabs can be displayed
+        scrollVal = 0;
+    } else if (marginRightVal <= (visibleWidth - $(element).outerWidth(true) - $(element).next().outerWidth(true))) {
+        // Scroll right
+        //marginRightVal (the total width of all subsequent tabs) is less than the visible area - (the width of the current tab and the next tab)
+        if ((visibleWidth - $(element).next().outerWidth(true)) > marginRightVal) {
+            scrollVal = marginLeftVal;
+            var tabElement = element;
+            while ((scrollVal - $(tabElement).outerWidth()) > ($(".page-tabs-content").outerWidth() - visibleWidth)) {
+                scrollVal -= $(tabElement).prev().outerWidth();
+                tabElement = $(tabElement).prev();
+            }
+        }
+    } else if (marginLeftVal > (visibleWidth - $(element).outerWidth(true) - $(element).prev().outerWidth(true))) {
+        //Scroll left
+        scrollVal = marginLeftVal - $(element).prev().outerWidth(true);
+    }
+    //Execution animation
+    $('.page-tabs-content').animate({
+        marginLeft: 0 - scrollVal + 'px'
+    }, "fast");
+};
+//Scroll bar scrolls to the left
+var scrollTabLeft = function () {
+    var marginLeftVal = Math.abs(parseInt($('.page-tabs-content').css('margin-left')));
+    var tabOuterWidth = calSumWidth($(".content-tabs").children().not(".menuTabs"));
+    var visibleWidth = $(".content-tabs").outerWidth(true) - tabOuterWidth;
+    var scrollVal = 0;
+    if ($(".page-tabs-content").width() < visibleWidth) {
+        return false;
+    } else {
+        var tabElement = $(".menu_tab:first");
+        var offsetVal = 0;
+        while ((offsetVal + $(tabElement).outerWidth(true)) <= marginLeftVal) {
+            offsetVal += $(tabElement).outerWidth(true);
+            tabElement = $(tabElement).next();
+        }
+        offsetVal = 0;
+        if (calSumWidth($(tabElement).prevAll()) > visibleWidth) {
+            while ((offsetVal + $(tabElement).outerWidth(true)) < (visibleWidth) && tabElement.length > 0) {
+                offsetVal += $(tabElement).outerWidth(true);
+                tabElement = $(tabElement).prev();
+            }
+            scrollVal = calSumWidth($(tabElement).prevAll());
+        }
+    }
+    $('.page-tabs-content').animate({
+        marginLeft: 0 - scrollVal + 'px'
+    }, "fast");
+};
+//Scroll bar scrolls to the right
+var scrollTabRight = function () {
+    var marginLeftVal = Math.abs(parseInt($('.page-tabs-content').css('margin-left')));
+    var tabOuterWidth = calSumWidth($(".content-tabs").children().not(".menuTabs"));
+    var visibleWidth = $(".content-tabs").outerWidth(true) - tabOuterWidth;
+    var scrollVal = 0;
+    if ($(".page-tabs-content").width() < visibleWidth) {
+        return false;
+    } else {
+        var tabElement = $(".menu_tab:first");
+        var offsetVal = 0;
+        while ((offsetVal + $(tabElement).outerWidth(true)) <= marginLeftVal) {
+            offsetVal += $(tabElement).outerWidth(true);
+            tabElement = $(tabElement).next();
+        }
+        offsetVal = 0;
+        while ((offsetVal + $(tabElement).outerWidth(true)) < (visibleWidth) && tabElement.length > 0) {
+            offsetVal += $(tabElement).outerWidth(true);
+            tabElement = $(tabElement).next();
+        }
+        scrollVal = calSumWidth($(tabElement).prevAll());
+        if (scrollVal > 0) {
+            $('.page-tabs-content').animate({
+                marginLeft: 0 - scrollVal + 'px'
+            }, "fast");
+        }
+    }
+};
+
+//Close other tabs
+var closeOtherTabs = function (isAll) {
+    if (isAll) {
+        //Close all
+        $('.page-tabs-content').children("[" + pageIdField + "]").find('.fa-remove').parents('a').each(function () {
+            var $a = $(this);
+            var pageId = getPageId($a);
+            closeTabOnly(pageId);
+
+            // closeTab($a);
+            /*$('#' + $(this).data('id')).remove();
+             $(this).remove();*/
+        });
+        var firstChild = $(".page-tabs-content").children().eq(0); //Select the first menu that cannot be deleted
+        if (firstChild) {
+            //Activate this tab
+            activeTabByPageId(getPageId(firstChild));
+
+            /*$('#' + firstChild.data('id')).addClass('active');
+             firstChild.addClass('active');*/
+        }
+    } else {
+        //Delete all except
+        $('.page-tabs-content').children("[" + pageIdField + "]").find('.fa-remove').parents('a').not(".active").each(function () {
+            var $a = $(this);
+            var pageId = getPageId($a);
+            closeTabOnly(pageId);
+
+            // closeTab($a);
+            /*$('#' + $(this).data('id')).remove();
+             $(this).remove();*/
+        });
+
+    }
+};
+
+//Activate Tab, by id
+function activeTabByPageId(pageId) {
+    $(".menu_tab").removeClass("active");
+    $("#tab-content").find(".active").removeClass("active");
+    //Activate TAB
+    var $title = findTabTitle(pageId).addClass('active');
+    findTabPanel(pageId).addClass("active");
+    // scrollToTab($('.menu_tab.active'));
+    scrollToTab($title[0]);
+}
+
+$(function () {
+    var $tabs = $(".menuTabs");
+    //Activate tab when you click on the tab
+    $tabs.on("click", ".menu_tab", function () {
+        var pageId = getPageId(this);
+        activeTabByPageId(pageId);
+    });
+
+    //Double click on the tab to refresh the page
+    $tabs.on("dblclick", ".menu_tab", function () {
+        // console.log("dbclick");
+        var pageId = getPageId(this);
+        refreshTabById(pageId);
+    });
+
+    //Tab right-click menu
+    function findTabElement(target) {
+        var $ele = $(target);
+        if (!$ele.is("a")) {
+            $ele = $ele.parents("a.menu_tab");
+        }
+        return $ele;
+    }
+
+    context.init({
+        preventDoubleContext: false,//Do not disable the original right-click menu
+        compress: true//Less padding
+    });
+    context.attach('.page-tabs-content', [
+        //            {header: 'Options'},
+        {
+            text: 'Refresh',
+            action: function (e, $selector, rightClickEvent) {
+                //e is the event that clicks on the menu
+                //$selector is $(".page-tabs-content")
+                //rightClickEvent is the event that right-clicks on the menu.
+
+                var pageId = getPageId(findTabElement(rightClickEvent.target));
+                refreshTabById(pageId);
+
+            }
+        },
+        {
+            text: "Open in new window",
+            action: function (e, $selector, rightClickEvent) {
+
+                var pageId = getPageId(findTabElement(rightClickEvent.target));
+                var url = getTabUrlById(pageId);
+                window.open(url);
+
+            }
+        }
+        //            {text: 'Open in new Window', href: '#'},
+        //            {divider: true},
+        //            {text: 'Copy', href: '#'},
+        //            {text: 'Dafuq!?', href: '#'}
+    ]);
+
+});
+/*!
+ * jQuery blockUI plugin
+ * Version 2.70.0-2014.11.23
+ * Requires jQuery v1.7 or later
+ *
+ * Examples at: http://malsup.com/jquery/block/
+ * Copyright (c) 2007-2013 M. Alsup
+ * Dual licensed under the MIT and GPL licenses:
+ * http://www.opensource.org/licenses/mit-license.php
+ * http://www.gnu.org/licenses/gpl.html
+ *
+ * Thanks to Amir-Hossein Sobhi for some excellent contributions!
+ */
+!function () { "use strict"; function e(e) { function t(t, n) { var s, h, k = t == window, y = n && void 0 !== n.message ? n.message : void 0; if (n = e.extend({}, e.blockUI.defaults, n || {}), !n.ignoreIfBlocked || !e(t).data("blockUI.isBlocked")) { if (n.overlayCSS = e.extend({}, e.blockUI.defaults.overlayCSS, n.overlayCSS || {}), s = e.extend({}, e.blockUI.defaults.css, n.css || {}), n.onOverlayClick && (n.overlayCSS.cursor = "pointer"), h = e.extend({}, e.blockUI.defaults.themedCSS, n.themedCSS || {}), y = void 0 === y ? n.message : y, k && p && o(window, { fadeOut: 0 }), y && "string" != typeof y && (y.parentNode || y.jquery)) { var m = y.jquery ? y[0] : y, v = {}; e(t).data("blockUI.history", v), v.el = m, v.parent = m.parentNode, v.display = m.style.display, v.position = m.style.position, v.parent && v.parent.removeChild(m) } e(t).data("blockUI.onUnblock", n.onUnblock); var g, I, w, U, x = n.baseZ; g = e(r || n.forceIframe ? '<iframe class="blockUI" style="z-index:' + x++ + ';display:none;border:none;margin:0;padding:0;position:absolute;width:100%;height:100%;top:0;left:0" src="' + n.iframeSrc + '"></iframe>' : '<div class="blockUI" style="display:none"></div>'), I = e(n.theme ? '<div class="blockUI blockOverlay ui-widget-overlay" style="z-index:' + x++ + ';display:none"></div>' : '<div class="blockUI blockOverlay" style="z-index:' + x++ + ';display:none;border:none;margin:0;padding:0;width:100%;height:100%;top:0;left:0"></div>'), n.theme && k ? (U = '<div class="blockUI ' + n.blockMsgClass + ' blockPage ui-dialog ui-widget ui-corner-all" style="z-index:' + (x + 10) + ';display:none;position:fixed">', n.title && (U += '<div class="ui-widget-header ui-dialog-titlebar ui-corner-all blockTitle">' + (n.title || "&nbsp;") + "</div>"), U += '<div class="ui-widget-content ui-dialog-content"></div>', U += "</div>") : n.theme ? (U = '<div class="blockUI ' + n.blockMsgClass + ' blockElement ui-dialog ui-widget ui-corner-all" style="z-index:' + (x + 10) + ';display:none;position:absolute">', n.title && (U += '<div class="ui-widget-header ui-dialog-titlebar ui-corner-all blockTitle">' + (n.title || "&nbsp;") + "</div>"), U += '<div class="ui-widget-content ui-dialog-content"></div>', U += "</div>") : U = k ? '<div class="blockUI ' + n.blockMsgClass + ' blockPage" style="z-index:' + (x + 10) + ';display:none;position:fixed"></div>' : '<div class="blockUI ' + n.blockMsgClass + ' blockElement" style="z-index:' + (x + 10) + ';display:none;position:absolute"></div>', w = e(U), y && (n.theme ? (w.css(h), w.addClass("ui-widget-content")) : w.css(s)), n.theme || I.css(n.overlayCSS), I.css("position", k ? "fixed" : "absolute"), (r || n.forceIframe) && g.css("opacity", 0); var C = [g, I, w], S = e(k ? "body" : t); e.each(C, function () { this.appendTo(S) }), n.theme && n.draggable && e.fn.draggable && w.draggable({ handle: ".ui-dialog-titlebar", cancel: "li" }); var O = f && (!e.support.boxModel || e("object,embed", k ? null : t).length > 0); if (u || O) { if (k && n.allowBodyStretch && e.support.boxModel && e("html,body").css("height", "100%"), (u || !e.support.boxModel) && !k) var E = d(t, "borderTopWidth"), T = d(t, "borderLeftWidth"), M = E ? "(0 - " + E + ")" : 0, B = T ? "(0 - " + T + ")" : 0; e.each(C, function (e, t) { var o = t[0].style; if (o.position = "absolute", 2 > e) k ? o.setExpression("height", "Math.max(document.body.scrollHeight, document.body.offsetHeight) - (jQuery.support.boxModel?0:" + n.quirksmodeOffsetHack + ') + "px"') : o.setExpression("height", 'this.parentNode.offsetHeight + "px"'), k ? o.setExpression("width", 'jQuery.support.boxModel && document.documentElement.clientWidth || document.body.clientWidth + "px"') : o.setExpression("width", 'this.parentNode.offsetWidth + "px"'), B && o.setExpression("left", B), M && o.setExpression("top", M); else if (n.centerY) k && o.setExpression("top", '(document.documentElement.clientHeight || document.body.clientHeight) / 2 - (this.offsetHeight / 2) + (blah = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop) + "px"'), o.marginTop = 0; else if (!n.centerY && k) { var i = n.css && n.css.top ? parseInt(n.css.top, 10) : 0, s = "((document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop) + " + i + ') + "px"'; o.setExpression("top", s) } }) } if (y && (n.theme ? w.find(".ui-widget-content").append(y) : w.append(y), (y.jquery || y.nodeType) && e(y).show()), (r || n.forceIframe) && n.showOverlay && g.show(), n.fadeIn) { var j = n.onBlock ? n.onBlock : c, H = n.showOverlay && !y ? j : c, z = y ? j : c; n.showOverlay && I._fadeIn(n.fadeIn, H), y && w._fadeIn(n.fadeIn, z) } else n.showOverlay && I.show(), y && w.show(), n.onBlock && n.onBlock.bind(w)(); if (i(1, t, n), k ? (p = w[0], b = e(n.focusableElements, p), n.focusInput && setTimeout(l, 20)) : a(w[0], n.centerX, n.centerY), n.timeout) { var W = setTimeout(function () { k ? e.unblockUI(n) : e(t).unblock(n) }, n.timeout); e(t).data("blockUI.timeout", W) } } } function o(t, o) { var s, l = t == window, a = e(t), d = a.data("blockUI.history"), c = a.data("blockUI.timeout"); c && (clearTimeout(c), a.removeData("blockUI.timeout")), o = e.extend({}, e.blockUI.defaults, o || {}), i(0, t, o), null === o.onUnblock && (o.onUnblock = a.data("blockUI.onUnblock"), a.removeData("blockUI.onUnblock")); var r; r = l ? e("body").children().filter(".blockUI").add("body > .blockUI") : a.find(">.blockUI"), o.cursorReset && (r.length > 1 && (r[1].style.cursor = o.cursorReset), r.length > 2 && (r[2].style.cursor = o.cursorReset)), l && (p = b = null), o.fadeOut ? (s = r.length, r.stop().fadeOut(o.fadeOut, function () { 0 === --s && n(r, d, o, t) })) : n(r, d, o, t) } function n(t, o, n, i) { var s = e(i); if (!s.data("blockUI.isBlocked")) { t.each(function () { this.parentNode && this.parentNode.removeChild(this) }), o && o.el && (o.el.style.display = o.display, o.el.style.position = o.position, o.el.style.cursor = "default", o.parent && o.parent.appendChild(o.el), s.removeData("blockUI.history")), s.data("blockUI.static") && s.css("position", "static"), "function" == typeof n.onUnblock && n.onUnblock(i, n); var l = e(document.body), a = l.width(), d = l[0].style.width; l.width(a - 1).width(a), l[0].style.width = d } } function i(t, o, n) { var i = o == window, l = e(o); if ((t || (!i || p) && (i || l.data("blockUI.isBlocked"))) && (l.data("blockUI.isBlocked", t), i && n.bindEvents && (!t || n.showOverlay))) { var a = "mousedown mouseup keydown keypress keyup touchstart touchend touchmove"; t ? e(document).bind(a, n, s) : e(document).unbind(a, s) } } function s(t) { if ("keydown" === t.type && t.keyCode && 9 == t.keyCode && p && t.data.constrainTabKey) { var o = b, n = !t.shiftKey && t.target === o[o.length - 1], i = t.shiftKey && t.target === o[0]; if (n || i) return setTimeout(function () { l(i) }, 10), !1 } var s = t.data, a = e(t.target); return a.hasClass("blockOverlay") && s.onOverlayClick && s.onOverlayClick(t), a.parents("div." + s.blockMsgClass).length > 0 ? !0 : 0 === a.parents().children().filter("div.blockUI").length } function l(e) { if (b) { var t = b[e === !0 ? b.length - 1 : 0]; t && t.focus() } } function a(e, t, o) { var n = e.parentNode, i = e.style, s = (n.offsetWidth - e.offsetWidth) / 2 - d(n, "borderLeftWidth"), l = (n.offsetHeight - e.offsetHeight) / 2 - d(n, "borderTopWidth"); t && (i.left = s > 0 ? s + "px" : "0"), o && (i.top = l > 0 ? l + "px" : "0") } function d(t, o) { return parseInt(e.css(t, o), 10) || 0 } e.fn._fadeIn = e.fn.fadeIn; var c = e.noop || function () { }, r = /MSIE/.test(navigator.userAgent), u = /MSIE 6.0/.test(navigator.userAgent) && !/MSIE 8.0/.test(navigator.userAgent), f = (document.documentMode || 0, e.isFunction(document.createElement("div").style.setExpression)); e.blockUI = function (e) { t(window, e) }, e.unblockUI = function (e) { o(window, e) }, e.growlUI = function (t, o, n, i) { var s = e('<div class="growlUI"></div>'); t && s.append("<h1>" + t + "</h1>"), o && s.append("<h2>" + o + "</h2>"), void 0 === n && (n = 3e3); var l = function (t) { t = t || {}, e.blockUI({ message: s, fadeIn: "undefined" != typeof t.fadeIn ? t.fadeIn : 700, fadeOut: "undefined" != typeof t.fadeOut ? t.fadeOut : 1e3, timeout: "undefined" != typeof t.timeout ? t.timeout : n, centerY: !1, showOverlay: !1, onUnblock: i, css: e.blockUI.defaults.growlCSS }) }; l(); s.css("opacity"); s.mouseover(function () { l({ fadeIn: 0, timeout: 3e4 }); var t = e(".blockMsg"); t.stop(), t.fadeTo(300, 1) }).mouseout(function () { e(".blockMsg").fadeOut(1e3) }) }, e.fn.block = function (o) { if (this[0] === window) return e.blockUI(o), this; var n = e.extend({}, e.blockUI.defaults, o || {}); return this.each(function () { var t = e(this); n.ignoreIfBlocked && t.data("blockUI.isBlocked") || t.unblock({ fadeOut: 0 }) }), this.each(function () { "static" == e.css(this, "position") && (this.style.position = "relative", e(this).data("blockUI.static", !0)), this.style.zoom = 1, t(this, o) }) }, e.fn.unblock = function (t) { return this[0] === window ? (e.unblockUI(t), this) : this.each(function () { o(this, t) }) }, e.blockUI.version = 2.7, e.blockUI.defaults = { message: "<h1>Please wait...</h1>", title: null, draggable: !0, theme: !1, css: { padding: 0, margin: 0, width: "30%", top: "40%", left: "35%", textAlign: "center", color: "#000", border: "3px solid #aaa", backgroundColor: "#fff", cursor: "wait" }, themedCSS: { width: "30%", top: "40%", left: "35%" }, overlayCSS: { backgroundColor: "#000", opacity: .6, cursor: "wait" }, cursorReset: "default", growlCSS: { width: "350px", top: "10px", left: "", right: "10px", border: "none", padding: "5px", opacity: .6, cursor: "default", color: "#fff", backgroundColor: "#000", "-webkit-border-radius": "10px", "-moz-border-radius": "10px", "border-radius": "10px" }, iframeSrc: /^https/i.test(window.location.href || "") ? "javascript:false" : "about:blank", forceIframe: !1, baseZ: 1e3, centerX: !0, centerY: !0, allowBodyStretch: !0, bindEvents: !0, constrainTabKey: !0, fadeIn: 200, fadeOut: 400, timeout: 0, showOverlay: !0, focusInput: !0, focusableElements: ":input:enabled:visible", onBlock: null, onUnblock: null, onOverlayClick: null, quirksmodeOffsetHack: 4, blockMsgClass: "blockMsg", ignoreIfBlocked: !1 }; var p = null, b = [] } "function" == typeof define && define.amd && define.amd.jQuery ? define(["jquery"], e) : e(jQuery) }();
 (function ($) {
     $.fn.sidebarMenu = function (options) {
         options = $.extend({}, $.fn.sidebarMenu.defaults, options || {});
@@ -867,12 +2258,13 @@ var App = function () {
                 }
 
                 //header
-                var li = $('<li class="treeview" data-level="' + level + '"></li>');
+                var li = $('<li class="treeview " data-level="' + level + '"></li>');
 
+                //a
                 var $a;
                 if (level > 0) {
-                    $a = $('<a style="padding-left:' + (level * 20) + 'px"></a>');
-                    //$a = $('<a style="padding-left:' + (level * 10) + 'px"></a>');
+                    //$a = $('<a style="padding-left:' + (level * 20) + 'px"></a>');
+                    $a = $('<a style="padding-left:' + (level * 10) + 'px"></a>');
                 } else {
                     $a = $('<a></a>');
                 }
@@ -911,7 +2303,7 @@ var App = function () {
                     li.append(menus);
                 }
                 else {
-                    li.removeClass("treeview");
+
                     if (item.targetType != null && item.targetType === "blank") //Representative opens a new page
                     {
                         $a.attr("href", item.url);
@@ -928,13 +2320,9 @@ var App = function () {
                         $a.attr('onclick', href);
                     }
                     else if (item.targetType != null && item.targetType === "iframe") { //Represents a single iframe page
-                        //$a.attr("href", item.url);
-                        //$a.addClass("iframeOpen");
-                        //$("#iframe-main").addClass("tab_iframe");
-                        item.urlType = item.urlType ? item.urlType : 'relative';
-                        var href = 'addTabs({id:\'' + item.id + '\',title: \'' + item.text + '\',close: true,url: \'' + item.url + '\',urlType: \'' + item.urlType + '\'});';
-                        href += "App.fixIframeCotent();";
-                        $a.attr('onclick', href);
+                        $a.attr("href", item.url);
+                        $a.addClass("iframeOpen");
+                        $("#iframe-main").addClass("tab_iframe");
                     } else {
                         $a.attr("href", item.url);
                         $a.addClass("iframeOpen");
@@ -952,6 +2340,17 @@ var App = function () {
                 $menu_ul.append(li);
             });
         }
+
+        //In addition, the binding menu is clicked and other actions are taken.
+        $menu_ul.on("click", "li.treeview a", function () {
+            var $a = $(this);
+            //if ($a.next().size() == 0) {
+            if ($a.next().length == 0) {
+                if ($(window).width() < $.AdminLTE.options.screenSizes.sm) {
+                    $($.AdminLTE.options.sidebarToggleSelector).click();
+                }
+            }
+        });
     };
 
     $.fn.sidebarMenu.defaults = {
@@ -961,48 +2360,3 @@ var App = function () {
         isHeader: false
     };
 })(jQuery);
-
-//Add tab
-var addTabs = function (options) {
-    var defaultTabOptions = {
-        id: Math.random() * 200,
-        urlType: "relative",
-        title: "New Page"
-    };
-
-    options = $.extend(true, defaultTabOptions, options);
-
-    //if (options.urlType === "relative") {
-    //    // var url = window.location.protocol + '//' + window.location.host + "/";
-    //    var basePath = window.location.pathname + "/../";
-    //    options.url = basePath + options.url;
-    //}
-
-    var $iframe = $("<iframe></iframe>").attr("src", options.url).css("width", "100%").attr("frameborder", "no").attr("id", "iframe_").addClass("tab_iframe");
-
-    //iframe Load completion event
-    //$iframe.load(function () {
-    //    //App.unblockUI('#tab-content');//Unlock interface
-    //    App.fixIframeCotent();//Corrected height
-    //});
-    App.fixIframeCotent();//Corrected height
-    $('#tab-content').empty().append($iframe);
-    var obj = { ModuleURL: options.url, ModuleName: options.title };
-    setTimeout(function () { addActivityLog(obj); }, 50);
-};
-
-//Add Activity Log
-var addActivityLog = function (options) {
-    var defaultOptions = {
-        ModuleURL: '/Home/Dashboard',
-        ModuleName: "Dashboard",
-    };
-    options = $.extend(true, defaultOptions, options);
-    jQuery.ajax({
-        url: '/AccountAPI/menuWriteDbLog', dataType: 'json', type: "Post",
-        contentType: "application/json; charset=utf-8",
-        data: JSON.stringify(options),
-        success: function (data) { },
-        error: function (jqXHR, textStatus, errorThrown) { alert(errorThrown); }
-    });
-};

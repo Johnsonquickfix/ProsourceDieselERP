@@ -15,7 +15,6 @@
             success: function (data) {
                 //$("#loading-div-background").hide();
                 if (data.status == true) {
-                   // alert(data.url);
                     window.open(top.window.location.origin + '/' + data.url, "_self");
                 }
                 else {

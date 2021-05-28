@@ -51,6 +51,18 @@
             return dt;
         }
 
+        public static DataTable GetUsers(string strSearch)
+        {
+            DataTable DT = new DataTable();
+            try
+            {
+                DT = SQLHelper.ExecuteDataTable("select id,CONCAT(User_Login, ' [ ', user_email, ']') as displayname from wp_users as ur inner join wp_usermeta um on ur.id = um.user_id and um.meta_key='wp_capabilities' and meta_value not like '%customer%' where CONCAT(User_Login, ' [ ', user_email, ']') like '%"+ strSearch + "%' limit 20;");
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DT;
+        }
+
         public static DataTable GetUserMenuAuth(long UserID)
         {
             DataTable DT = new DataTable();

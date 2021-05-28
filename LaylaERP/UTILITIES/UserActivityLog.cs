@@ -2,6 +2,7 @@
 {
     using System;
     using System.ComponentModel;
+    using System.Data;
     using System.IO;
     using System.Management;
     using System.Net;
@@ -48,7 +49,6 @@
         {
             int result = 0;
 
-            MySql.Data.MySqlClient.MySqlCommand _cmd = new MySql.Data.MySqlClient.MySqlCommand();
             try
             {
                 OperatorModel OM = CommanUtilities.Provider.GetCurrent();
@@ -69,6 +69,35 @@
             }
             catch { }
             return result;
+        }
+
+        public static DataTable GetActivityLog(long userid, DateTime fromdate, DateTime todate, int pageno, int pagesize, out int totalrows)
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                string strWhr = string.Empty;
+
+                string strSql = "SELECT  " + ((pageno * pagesize) - pageno).ToString() + " + ROW_NUMBER() OVER(Order BY log_date DESC) ROWNUM,ual.user_id,User_Login,user_email,cast(log_date as date) log_date_on,log_date,ip_address,mac_id,module_name,description,log_type_id,"
+                            + " CASE log_type_id WHEN 0 THEN 'Other' WHEN 1 THEN 'Log In' WHEN 2 THEN 'Log Out' WHEN 3 THEN 'Access' WHEN 4 THEN 'Added' WHEN 5 THEN 'Delete' WHEN 6 THEN 'Modify' WHEN 7 THEN 'Submit' END log_type"
+                            + " FROM wp_users_activitylog ual INNER JOIN wp_users ur ON ur.id = ual.user_id WHERE 1 = 1";
+                if (userid > 0)
+                    strWhr += " and ur.user_id = " + userid.ToString();
+                strWhr += " and cast(log_date as date) >= cast('" + fromdate.ToString("yyyy-MM-dd") + "' as date) ";
+                strWhr += " and cast(log_date as date) <= cast('" + todate.ToString("yyyy-MM-dd") + "' as date) ";
+
+                strSql += strWhr + " order by log_date DESC  LIMIT " + (pageno * pagesize).ToString() + ", " + pagesize.ToString();
+
+                strSql += "; SELECT ceil(Count(ual.user_id)/" + pagesize.ToString() + ") TotalPage,Count(ual.user_id) TotalRecord FROM wp_users_activitylog ual INNER JOIN wp_users ur ON ur.id = ual.user_id WHERE 1 = 1 " + strWhr.ToString();
+
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dt = ds.Tables[0];
+                if (ds.Tables[1].Rows.Count > 0)
+                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalPage"].ToString());
+            }
+            catch { }
+            return dt;
         }
 
         public static void LogError(Exception ex, string URL)

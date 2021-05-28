@@ -167,7 +167,7 @@
     </Compile>
     <Compile Include="Models\clsUserDetails.cs" />
     <Compile Include="Models\CustomerModel.cs" />
-    <Compile Include="Models\CustomerRepository.cs" />
+    <Compile Include="BAL\CustomerRepository.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UTILITIES\CommanUtilities.cs" />
@@ -200,6 +200,7 @@
     <Content Include="Images\layla32.png" />
     <Content Include="Images\userprofile2.png" />
     <Content Include="js\app.js" />
+    <Content Include="js\Customer\Customer.js" />
     <Content Include="js\Users\UserLogin.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

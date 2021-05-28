@@ -141,7 +141,7 @@
                 {
                     throw new DataException("You don't have permission to access.");
                 }
-                if (query.ToUpper().StartsWith("SELECT"))
+                if (query.ToUpper().StartsWith("SELECT") | query.ToUpper().StartsWith("INSERT"))
                 {
                     cmd.CommandType = CommandType.Text;
                 }

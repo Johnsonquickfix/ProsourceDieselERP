@@ -25,24 +25,46 @@ namespace LaylaERP.Controllers
             return View();
         }
         [HttpPost]
-        public ActionResult NewUser(CustomerModel model)
+        public JsonResult NewUser(CustomerModel model)
         {
-            var Data = Repo.AddNewCustomer(model);
-            if(Data.ID>0)
+            if (ModelState.IsValid)
             {
-                Adduser_MetaData(model, Data.ID);
-                Adduser_MetaData_BillingAddress(model, Data.ID);
-                Adduser_MetaData_ShippingAddress(model, Data.ID);
 
-                ViewBag.Message = "Customer Record has been saved successfully!!";
-                ModelState.Clear();
+                int ID = Repo.AddNewCustomer(model);
+                if (ID > 0)
+                {
+                    Adduser_MetaData(model, ID);
+                    Adduser_MetaData_BillingAddress(model, ID);
+                    Adduser_MetaData_ShippingAddress(model, ID);
+                    ModelState.Clear();
+                    return Json(new { status = true, message = "Customer Record has been saved successfully!!", url = "" }, 0);
+                }
+                else
+                {
+                    return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                }
             }
-            else
-            {
-                ViewBag.Message = "Error!!";
-            }
-            return View();
+            return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
         }
+
+        //public ActionResult NewUser(CustomerModel model)
+        //{
+        //    int ID = Repo.AddNewCustomer(model);
+        //    if(ID>0)
+        //    {
+        //        Adduser_MetaData(model, ID);
+        //        Adduser_MetaData_BillingAddress(model, ID);
+        //        Adduser_MetaData_ShippingAddress(model,ID);
+
+        //        ViewBag.Message = "Customer Record has been saved successfully!!";
+        //        ModelState.Clear();
+        //    }
+        //    else
+        //    {
+        //        ViewBag.Message = "Error!!";
+        //    }
+        //    return View();
+        //}
         private void Adduser_MetaData(CustomerModel model, long id)
         {
             string[] varQueryArr1 = new string[14];

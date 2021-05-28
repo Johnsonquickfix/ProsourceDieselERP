@@ -168,7 +168,6 @@
     <Compile Include="Models\clsUserDetails.cs" />
     <Compile Include="Models\CustomerModel.cs" />
     <Compile Include="Models\CustomerRepository.cs" />
-    <Compile Include="Models\Export_Details.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\SearchModel.cs" />
     <Compile Include="Models\UsersRepositry.cs" />
@@ -361,6 +360,7 @@
     <Content Include="Images\layla32.png" />
     <Content Include="Images\userprofile2.png" />
     <Content Include="js\app.js" />
+    <Content Include="js\Customer\Customer.js" />
     <Content Include="js\Users\UserLogin.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

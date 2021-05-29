@@ -153,6 +153,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="BAL\CustomerRepository.cs" />
+    <Compile Include="BAL\OrderRepository.cs" />
     <Compile Include="BAL\Users.cs" />
     <Compile Include="Controllers\AccountAPIController.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
@@ -170,6 +171,7 @@
     <Compile Include="Models\CustomerModel.cs" />
     <Compile Include="Models\Export_Details.cs" />
     <Compile Include="Models\LoginModel.cs" />
+    <Compile Include="Models\OrderModel.cs" />
     <Compile Include="Models\SearchModel.cs" />
     <Compile Include="Models\UsersRepositry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

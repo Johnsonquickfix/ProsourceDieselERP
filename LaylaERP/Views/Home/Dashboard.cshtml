@@ -4,7 +4,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="row">
+<div class="row d-flex align-items-center">
     <div class="col-xs-6">
         <h2 class="page-heading gs-open">
             Dashboard
@@ -13,9 +13,7 @@
             </div>
         </h2>
     </div>
-</div>
-<div class="row">
-    <div class="col-xs-12 ">
+    <div class="col-xs-6 ">
         <div class="dropdown item pull-right">
             <a aria-expanded="true" aria-haspopup="true" class="dropdown-toggle btn btn-default" data-toggle="dropdown" href="#">Manage widgets</a>
             <ul class="dropdown-menu dropdown-menu-right widget-dropdown toggling-dropdown">
@@ -46,8 +44,67 @@
 </div>
 
 
-<div class="row">
-    <div class="col-xs-12 ">
-        <div class="top dashboard-small-widget"><div class="widgets-small-column ui-sortable" data-location="top"><div class="widget-common widget-sortable widget-small widget-id-activity" data-widget-id="activity" data-widget-style="small" id="widget_activity" style="position: relative; left: 0px; top: 0px;"><div class="widget-sortable-header"><div class="widget-title">Weekly Activity<i class="hi hi-info widget-tooltip a-tooltip" data-placement="top" title="" data-original-title="Calculated by dividing the total mouse and keyboard activity by the total time"></i></div><div class="dropdown widget-menu"><a aria-expanded="true" aria-haspopup="true" class="btn btn-icon btn-xs" data-toggle="dropdown" href="#"><i class="hi hi-more"></i></a><ul class="dropdown-menu dropdown-menu-right"><li><a class="remove" href="#">Remove</a></li></ul></div></div><div class="widget-sortable-body"><div class="text-value shimmer-placeholder">57%</div><div class="widget-footer"><div class="text-difference positive"><i class="hi caret hi-10"></i>57%</div><div class="widget-graph rickshaw_graph" data-graph="[{&quot;x&quot;:1621814400,&quot;y&quot;:0},{&quot;x&quot;:1621900800,&quot;y&quot;:61},{&quot;x&quot;:1621987200,&quot;y&quot;:51},{&quot;x&quot;:1622073600,&quot;y&quot;:0},{&quot;x&quot;:1622160000,&quot;y&quot;:0},{&quot;x&quot;:1622246400,&quot;y&quot;:0},{&quot;x&quot;:1622332800,&quot;y&quot;:0}]"><svg width="80" height="20"><g><path d="M0,20L13.333333333333332,0.1980198019801982L26.666666666666664,3.444246063950658L40,20L53.33333333333333,20L66.66666666666667,20L80,20L80,20L66.66666666666667,20L53.33333333333333,20L40,20L26.666666666666664,20L13.333333333333332,20L0,20Z" class="area"></path><path d="M0,20L13.333333333333332,0.1980198019801982L26.666666666666664,3.444246063950658L40,20L53.33333333333333,20L66.66666666666667,20L80,20" class="line" fill="none" stroke="true" stroke-width="2"></path></g><defs><linearGradient id="areaGradient-blue" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#1dcbff" stop-opacity="1"></stop><stop offset="100%" stop-color="white" stop-opacity="1"></stop></linearGradient></defs><defs><linearGradient id="areaGradient-purple" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#7365ff" stop-opacity="1"></stop><stop offset="100%" stop-color="white" stop-opacity="1"></stop></linearGradient></defs></svg></div></div></div></div><div class="widget-common widget-sortable widget-small widget-id-earned_week " data-widget-id="earned_week" data-widget-style="small" id="widget_earned_week"><div class="widget-sortable-header"><div class="widget-title">Earned this week<i class="hi hi-info widget-tooltip a-tooltip" data-placement="top" title="" data-original-title="Calculated by multiplying the time worked by the organization and project pay rates"></i></div><div class="dropdown widget-menu"><a aria-expanded="true" aria-haspopup="true" class="btn btn-icon btn-xs" data-toggle="dropdown" href="#"><i class="hi hi-more"></i></a><ul class="dropdown-menu dropdown-menu-right"><li><a class="remove" href="#">Remove</a></li></ul></div></div><div class="widget-sortable-body"><div class="text-value shimmer-placeholder">$0.00</div><div class="widget-footer"><div class="text-difference shimmer-placeholder">--</div><div class="widget-graph rickshaw_graph" data-graph="[{&quot;x&quot;:1621814400,&quot;y&quot;:0},{&quot;x&quot;:1621900800,&quot;y&quot;:&quot;0.0&quot;},{&quot;x&quot;:1621987200,&quot;y&quot;:&quot;0.0&quot;},{&quot;x&quot;:1622073600,&quot;y&quot;:0},{&quot;x&quot;:1622160000,&quot;y&quot;:0},{&quot;x&quot;:1622246400,&quot;y&quot;:0},{&quot;x&quot;:1622332800,&quot;y&quot;:0}]"><svg width="80" height="20"><g><path d="M0,20L13.333333333333332,20L26.666666666666664,20L40,20L53.33333333333333,20L66.66666666666667,20L80,20L80,20L66.66666666666667,20L53.33333333333333,20L40,20L26.666666666666664,20L13.333333333333332,20L0,20Z" class="area"></path><path d="M0,20L13.333333333333332,20L26.666666666666664,20L40,20L53.33333333333333,20L66.66666666666667,20L80,20" class="line" fill="none" stroke="true" stroke-width="2"></path></g><defs><linearGradient id="areaGradient-blue" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#1dcbff" stop-opacity="1"></stop><stop offset="100%" stop-color="white" stop-opacity="1"></stop></linearGradient></defs><defs><linearGradient id="areaGradient-purple" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#7365ff" stop-opacity="1"></stop><stop offset="100%" stop-color="white" stop-opacity="1"></stop></linearGradient></defs></svg></div></div></div></div><div class="widget-common widget-sortable widget-small widget-id-this_week_total " data-widget-id="this_week_total" data-widget-style="small" id="widget_this_week_total"><div class="widget-sortable-header"><div class="widget-title">Worked this week</div><div class="dropdown widget-menu"><a aria-expanded="true" aria-haspopup="true" class="btn btn-icon btn-xs" data-toggle="dropdown" href="#"><i class="hi hi-more"></i></a><ul class="dropdown-menu dropdown-menu-right"><li><a href="/time_entries/weekly">Add time</a></li><li><a class="remove" href="#">Remove</a></li></ul></div></div><div class="widget-sortable-body"><div class="text-value shimmer-placeholder"><data value="13:49:30" class="duration">13:49:30</data></div><div class="widget-footer"><div class="text-difference positive"><i class="hi caret hi-10"></i><data value="13:49:30" class="duration">13:49:30</data></div><div class="widget-graph rickshaw_graph" data-graph="[{&quot;x&quot;:1621814400,&quot;y&quot;:0},{&quot;x&quot;:1621900800,&quot;y&quot;:28828},{&quot;x&quot;:1621987200,&quot;y&quot;:20942},{&quot;x&quot;:1622073600,&quot;y&quot;:0},{&quot;x&quot;:1622160000,&quot;y&quot;:0},{&quot;x&quot;:1622246400,&quot;y&quot;:0},{&quot;x&quot;:1622332800,&quot;y&quot;:0}]"><svg width="80" height="20"><g><path d="M0,20L13.333333333333332,0.19801980198019464L26.666666666666664,5.614920587382727L40,20L53.33333333333333,20L66.66666666666667,20L80,20L80,20L66.66666666666667,20L53.33333333333333,20L40,20L26.666666666666664,20L13.333333333333332,20L0,20Z" class="area"></path><path d="M0,20L13.333333333333332,0.19801980198019464L26.666666666666664,5.614920587382727L40,20L53.33333333333333,20L66.66666666666667,20L80,20" class="line" fill="none" stroke="true" stroke-width="2"></path></g><defs><linearGradient id="areaGradient-blue" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#1dcbff" stop-opacity="1"></stop><stop offset="100%" stop-color="white" stop-opacity="1"></stop></linearGradient></defs><defs><linearGradient id="areaGradient-purple" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#7365ff" stop-opacity="1"></stop><stop offset="100%" stop-color="white" stop-opacity="1"></stop></linearGradient></defs></svg></div></div></div></div><div class="widget-common widget-sortable widget-small widget-id-projects_worked " data-widget-id="projects_worked" data-widget-style="small" id="widget_projects_worked"><div class="widget-sortable-header"><div class="widget-title">Projects worked</div><div class="dropdown widget-menu"><a aria-expanded="true" aria-haspopup="true" class="btn btn-icon btn-xs" data-toggle="dropdown" href="#"><i class="hi hi-more"></i></a><ul class="dropdown-menu dropdown-menu-right"><li><a class="remove" href="#">Remove</a></li></ul></div></div><div class="widget-sortable-body"><div class="text-value shimmer-placeholder">1</div><div class="widget-footer"><div class="text-difference positive"><i class="hi caret hi-10"></i>1</div><div class="widget-graph rickshaw_graph" data-graph="[{&quot;x&quot;:1621814400,&quot;y&quot;:0},{&quot;x&quot;:1621900800,&quot;y&quot;:1},{&quot;x&quot;:1621987200,&quot;y&quot;:1},{&quot;x&quot;:1622073600,&quot;y&quot;:0},{&quot;x&quot;:1622160000,&quot;y&quot;:0},{&quot;x&quot;:1622246400,&quot;y&quot;:0},{&quot;x&quot;:1622332800,&quot;y&quot;:0}]"><svg width="80" height="20"><g><path d="M0,20L13.333333333333332,0.1980198019801982L26.666666666666664,0.1980198019801982L40,20L53.33333333333333,20L66.66666666666667,20L80,20L80,20L66.66666666666667,20L53.33333333333333,20L40,20L26.666666666666664,20L13.333333333333332,20L0,20Z" class="area"></path><path d="M0,20L13.333333333333332,0.1980198019801982L26.666666666666664,0.1980198019801982L40,20L53.33333333333333,20L66.66666666666667,20L80,20" class="line" fill="none" stroke="true" stroke-width="2"></path></g><defs><linearGradient id="areaGradient-blue" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#1dcbff" stop-opacity="1"></stop><stop offset="100%" stop-color="white" stop-opacity="1"></stop></linearGradient></defs><defs><linearGradient id="areaGradient-purple" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#7365ff" stop-opacity="1"></stop><stop offset="100%" stop-color="white" stop-opacity="1"></stop></linearGradient></defs></svg></div></div></div></div></div></div>
+<!--dashboard info section-->
+
+<div class="row dashboard-info">
+    <div class="col-lg-3 col-sm-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-info">
+            <div class="inner">
+                <h3>150</h3>
+
+                <p>New Orders</p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-bag"></i>
+            </div>
+            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
     </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-sm-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-success">
+            <div class="inner">
+                <h3>53<sup style="font-size: 20px">%</sup></h3>
+
+                <p>Bounce Rate</p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-stats-bars"></i>
+            </div>
+            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-sm-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-warning">
+            <div class="inner">
+                <h3>44</h3>
+
+                <p>User Registrations</p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-person-add"></i>
+            </div>
+            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-sm-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-danger">
+            <div class="inner">
+                <h3>65</h3>
+
+                <p>Unique Visitors</p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-pie-graph"></i>
+            </div>
+            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+    </div>
+    <!-- ./col -->
 </div>

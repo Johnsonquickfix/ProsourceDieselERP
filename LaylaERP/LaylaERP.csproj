@@ -152,6 +152,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="BAL\CustomerRepository.cs" />
     <Compile Include="BAL\Users.cs" />
     <Compile Include="Controllers\AccountAPIController.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
@@ -167,7 +168,7 @@
     </Compile>
     <Compile Include="Models\clsUserDetails.cs" />
     <Compile Include="Models\CustomerModel.cs" />
-    <Compile Include="Models\CustomerRepository.cs" />
+    <Compile Include="Models\Export_Details.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\SearchModel.cs" />
     <Compile Include="Models\UsersRepositry.cs" />
@@ -352,6 +353,8 @@
     <Content Include="Content\dx\dx.light.css" />
     <Content Include="Content\AdminLTE-3.1.0\jquery\jquery.min.js" />
     <Content Include="Content\fontawesome-all.min.css" />
+    <Content Include="css\layoutStyle.css" />
+    <Content Include="css\indexStyle.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -363,7 +366,6 @@
     <Content Include="js\Customer\Customer.js" />
     <Content Include="js\Users\UserLogin.js" />
     <Content Include="Scripts\bootstrap.js" />
-    <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Content\dx\icons\dxicons.ttf" />
     <Content Include="Content\dx\icons\dxicons.woff" />
     <Content Include="Content\dx\icons\dxicons.woff2" />
@@ -383,6 +385,7 @@
     <Content Include="Content\DataTables\css\mixins.scss" />
     <Content Include="Content\DataTables\css\semanticui.scss" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
+    <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\DataTables\autoFill.bootstrap.js" />
     <Content Include="Scripts\DataTables\autoFill.bootstrap.min.js" />
     <Content Include="Scripts\DataTables\autoFill.bootstrap4.js" />

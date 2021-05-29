@@ -10,7 +10,7 @@
             <div class="dx-viewport demo-container">
                 <div id="gridContainer">
                     <h3 class="text-center text-uppercase">Order Details</h3>
-                    <table id="example" class="table table-bordered" style="width:100%;">
+                    <table id="exportdata" class="table table-bordered" style="width:100%;">
                         <thead class="thead-dark">
                             <tr>
                                 <th>Order Id</th>
@@ -37,7 +37,7 @@
 
     <script type="text/javascript">
             $(document).ready(function () {
-                $('#example').DataTable({
+                $('#exportdata').DataTable({
                     "ajax": {
                         "url": '/Export/GetData',
                         "type": 'GET',

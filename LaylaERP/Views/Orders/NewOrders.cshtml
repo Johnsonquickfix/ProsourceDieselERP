@@ -3,6 +3,257 @@
     ViewBag.Title = "NewOrders";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<link href="~/Content/AdminLTE-3.1.0/smartwizard/smart_wizard_all.css" rel="stylesheet" />
 
-<h2>NewOrders</h2>
+<section class="content-header">
+    <h1 class="page-heading">
+        Add New Order
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-shopping-cart"></i> Home</a></li>
+        <li><a href="#">Orders</a></li>
+        <li class="active">Add New Order</li>
+    </ol>
+</section>
+<section class="content">
+    <div class="row">
+        <!-- SmartWizard html -->
+        <div id="smartwizard">
+            <ul class="nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="#step-1" data-repo="1">
+                        <strong>Search Customer</strong>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#step-2" data-repo="2">
+                        <strong>Add Product(s)</strong>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#step-3" data-repo="3">
+                        <strong>Add Coupon/Shipping/Tax/Payment</strong>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#step-4" data-repo="3">
+                        <strong>Place Order</strong>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#step-5" data-repo="3">
+                        <strong>Confirm Order</strong>
+                    </a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div id="step-1" class="tab-pane" role="tabpanel" aria-labelledby="step-1">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group col-md-8">
+                                <label>Customer Email</label>
+                                <select class="form-control select2" id="ddlUser" placeholder="Select Customer Email" style="width: 100%;">
+                                </select>
+                            </div>
+                            <div class="form-group col-md-4">
+                            </div>
+                        </div>
+                        <!-- /.col -->
+                        <div class="col-md-6">
+                            <div class="form-group col-md-6">
+                                <label>Status</label>
+                                <select class="form-control select2" id="ddlStatus" placeholder="Select Status" style="width: 100%;">
+                                </select>
+                            </div>
+                        </div>
+                        <!-- /.col -->
+                    </div>
+                    <div class="row">
+                        <fieldset class="col-md-6">
+                            <legend>Billing Address</legend>
+                            <div class="form-group col-md-6">
+                                <input type="email" class="form-control" id="txtbillfirstname" placeholder="First Name">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <input type="text" class="form-control" id="txtbilllastname" placeholder="Last Name">
+                            </div>
+                            <div class="form-group col-md-12">
+                                <input type="text" class="form-control" id="txtbillcompany" placeholder="Company">
+                            </div>
+                            <div class="form-group col-md-12">
+                                <input type="text" class="form-control" id="txtbilladdress1" placeholder="Enter Address Line 1">
+                            </div>
+                            <div class="form-group col-md-12">
+                                <input type="text" class="form-control" id="txtbilladdress2" placeholder="Enter Address Line 2">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <input type="text" class="form-control" id="txtbillzipcode" placeholder="ZipCode / PostCode">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <input type="text" class="form-control" id="txtbillcity" placeholder="Enter City">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <select class="form-control select2" id="ddlbillcountry" placeholder="Country / Region" style="width: 100%;"></select>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <select class="form-control select2" id="ddlbillstate" placeholder="State / County" style="width: 100%;"></select>
+                            </div>
+                            <div class="form-group col-md-12">
+                                <input type="text" class="form-control" id="txtbillemail" placeholder="Enter Email Address">
+                            </div>
+                            <div class="form-group col-md-12">
+                                <input type="text" class="form-control" id="txtbillphone" placeholder="Enter Phone/Mobile">
+                            </div>
+                        </fieldset>
+                        <fieldset class="col-md-6">
+                            <legend>Shipping Address</legend>
+                            <div class="form-group col-md-6">
+                                <input type="email" class="form-control" id="txtshipfirstname" placeholder="First Name">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <input type="text" class="form-control" id="txtshiplastname" placeholder="Last Name">
+                            </div>
+                            <div class="form-group col-md-12">
+                                <input type="text" class="form-control" id="txtshipcompany" placeholder="Company">
+                            </div>
+                            <div class="form-group col-md-12">
+                                <input type="text" class="form-control" id="txtshipaddress1" placeholder="Enter Address Line 1">
+                            </div>
+                            <div class="form-group col-md-12">
+                                <input type="text" class="form-control" id="txtshipaddress2" placeholder="Enter Address Line 2">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <input type="text" class="form-control" id="txtshipzipcode" placeholder="ZipCode / PostCode">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <input type="text" class="form-control" id="txtshipcity" placeholder="Enter City">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <select class="form-control select2" id="ddlshipcountry" placeholder="Country / Region" style="width: 100%;" ></select>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <select class="form-control select2" id="ddlshipstate" placeholder="State / County" style="width: 100%;" ></select>
+                            </div>
+                            <div class="form-group col-md-12">
+                                <input type="text" class="form-control" id="txtCustomerNotes" placeholder="Customer notes about the order" multiple="">
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+                <div id="step-2" class="tab-pane" role="tabpanel" aria-labelledby="step-2">
+                </div>
+                <div id="step-3" class="tab-pane" role="tabpanel" aria-labelledby="step-3">
+                </div>
+                <div id="step-4" class="tab-pane" role="tabpanel" aria-labelledby="step-4">
+                </div>
+                <div id="step-5" class="tab-pane" role="tabpanel" aria-labelledby="step-5">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Include SmartWizard JavaScript source -->
+<script src="~/Content/AdminLTE-3.1.0/smartwizard/jquery.smartWizard.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#ddlUser").select2();
+        // Toolbar extra buttons
+        var btnFinish = $('<button></button>').text('Finish')
+            .addClass('btn btn-info')
+            .on('click', function () { alert('Finish Clicked'); });
+        var btnCancel = $('<button></button>').text('Cancel')
+            .addClass('btn btn-danger')
+            .on('click', function () { $('#smartwizard').smartWizard("reset"); });
 
+        // Step show event
+        $("#smartwizard").on("showStep", function (e, anchorObject, stepNumber, stepDirection, stepPosition) {
+            $("#prev-btn").removeClass('disabled');
+            $("#next-btn").removeClass('disabled');
+            if (stepPosition === 'first') {
+                $("#prev-btn").addClass('disabled');
+            } else if (stepPosition === 'last') {
+                $("#next-btn").addClass('disabled');
+            } else {
+                $("#prev-btn").removeClass('disabled');
+                $("#next-btn").removeClass('disabled');
+            }
+        });
+
+        $("#smartwizard").on("stepContent", function (e, anchorObject, stepIndex, stepDirection) {
+
+
+        });
+
+        // Smart Wizard
+        $('#smartwizard').smartWizard({
+            theme: 'arrows',
+            selected: 0,
+            transition: {
+                animation: 'slide-horizontal', // Effect on navigation, none/fade/slide-horizontal/slide-vertical/slide-swing
+            },
+            toolbarSettings: {
+                toolbarPosition: 'bottom', // both bottom
+                toolbarExtraButtons: [btnFinish, btnCancel]
+            }
+        });
+
+        // External Button Events
+        $("#reset-btn").on("click", function () {
+            // Reset wizard
+            $('#smartwizard').smartWizard("reset");
+            return true;
+        });
+
+        $("#prev-btn").on("click", function () {
+            // Navigate previous
+            $('#smartwizard').smartWizard("prev");
+            return true;
+        });
+
+        $("#next-btn").on("click", function () {
+            // Navigate next
+            $('#smartwizard').smartWizard("next");
+            return true;
+        });
+
+
+        // Demo Button Events
+        $("#got_to_step").on("change", function () {
+            // Go to step
+            var step_index = $(this).val() - 1;
+            $('#smartwizard').smartWizard("goToStep", step_index);
+            return true;
+        });
+
+        $("#is_justified").on("click", function () {
+            // Change Justify
+            var options = {
+                justified: $(this).prop("checked")
+            };
+
+            $('#smartwizard').smartWizard("setOptions", options);
+            return true;
+        });
+
+        $("#animation").on("change", function () {
+            // Change theme
+            var options = {
+                transition: {
+                    animation: $(this).val()
+                },
+            };
+            $('#smartwizard').smartWizard("setOptions", options);
+            return true;
+        });
+
+        $("#theme_selector").on("change", function () {
+            // Change theme
+            var options = {
+                theme: $(this).val()
+            };
+            $('#smartwizard').smartWizard("setOptions", options);
+            return true;
+        });
+
+    });
+</script>

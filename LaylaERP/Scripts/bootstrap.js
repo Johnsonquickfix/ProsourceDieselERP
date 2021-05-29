@@ -348,7 +348,6 @@ if (typeof jQuery === 'undefined') {
       case 39: this.next(); break
       default: return
     }
-
     e.preventDefault()
   }
 

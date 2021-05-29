@@ -88,5 +88,35 @@ namespace LaylaERP.Models
                 throw Ex;
             }
         }
+
+        public static DataTable CustomerList(int userstatus,string searchid, int pageno, int pagesize, out int totalrows)
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                string strWhr = string.Empty;
+
+                string strSql = "SELECT ur.id,null User_Image,user_nicename, user_registered, user_status, if(user_status=0,'Active','InActive') as status,user_email,umph.meta_value "
+                             + " from wp_users ur INNER JOIN wp_usermeta um on um.meta_key='wp_capabilities' And um.user_id = ur.ID And um.meta_value LIKE '%customer%'"
+                             + " LEFT OUTER JOIN wp_usermeta umph on umph.meta_key='billing_phone' And umph.user_id = ur.ID WHERE 1 = 1";
+                if (!string.IsNullOrEmpty(searchid)) {
+                    strWhr += " and (User_Email='"+ searchid + "' OR User_Login='" + searchid + "' OR user_nicename='" + searchid + "' OR ID='" + searchid + "' )"; 
+                }
+                strWhr += " and (ur.user_status='"+userstatus+"') ";
+             
+                strSql += strWhr + " order by id DESC  LIMIT " + (pageno * pagesize).ToString() + ", " + pagesize.ToString();
+
+                strSql += "; SELECT ceil(Count(ur.id)/" + pagesize.ToString() + ") TotalPage,Count(ur.id) TotalRecord from wp_users ur INNER JOIN wp_usermeta um on um.meta_key='wp_capabilities' And um.user_id = ur.ID And um.meta_value LIKE '%customer%' WHERE 1 = 1 " + strWhr.ToString();
+
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dt = ds.Tables[0];
+                if (ds.Tables[1].Rows.Count > 0)
+                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+            }
+            catch { }
+            return dt;
+        }
+       
     }
 }

@@ -5,6 +5,8 @@ using System.Web;
 using System.Web.Mvc;
 using LaylaERP.Models;
 using LaylaERP.BAL;
+using System.Data;
+using Newtonsoft.Json;
 
 namespace LaylaERP.Controllers
 {
@@ -21,6 +23,26 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        [HttpPost]
+        public JsonResult GetCustomerList(CustomerModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                int urid = 0;
+                
+                if (model.user_status>0)
+                    urid = Convert.ToInt32(model.user_status);
+                string searchid = model.Search;
+                DataTable dt = CustomerRepository.CustomerList(urid,searchid, model.PageNo, model.PageSize, out TotalRecord);
+                result = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            //return Json(JSONresult, 0);
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+        }
+
         public ActionResult NewUser()
         {
             return View();
@@ -47,25 +69,6 @@ namespace LaylaERP.Controllers
             }
             return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
         }
-
-        //public ActionResult NewUser(CustomerModel model)
-        //{
-        //    int ID = Repo.AddNewCustomer(model);
-        //    if(ID>0)
-        //    {
-        //        Adduser_MetaData(model, ID);
-        //        Adduser_MetaData_BillingAddress(model, ID);
-        //        Adduser_MetaData_ShippingAddress(model,ID);
-
-        //        ViewBag.Message = "Customer Record has been saved successfully!!";
-        //        ModelState.Clear();
-        //    }
-        //    else
-        //    {
-        //        ViewBag.Message = "Error!!";
-        //    }
-        //    return View();
-        //}
         private void Adduser_MetaData(CustomerModel model, long id)
         {
             string[] varQueryArr1 = new string[14];

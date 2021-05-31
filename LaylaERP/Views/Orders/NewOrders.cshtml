@@ -76,7 +76,11 @@
                                     <input type="text" class="form-control" id="txtbillcity" placeholder="Enter City">
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <select class="form-control select2" id="ddlbillcountry" placeholder="Country / Region" style="width: 100%;"></select>
+                                    <select class="form-control select2" id="ddlbillcountry" placeholder="Country / Region" style="width: 100%;">
+                                        <option value="">Select a country / region…</option>
+                                        <option value="CA">Canada</option>
+                                        <option value="US" selected>United States (US)</option>
+                                    </select>
                                 </div>
                                 <div class="form-group col-md-6">
                                     <select class="form-control select2" id="ddlbillstate" placeholder="State / County" style="width: 100%;"></select>
@@ -112,7 +116,11 @@
                                     <input type="text" class="form-control" id="txtshipcity" placeholder="Enter City">
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <select class="form-control select2" id="ddlshipcountry" placeholder="Country / Region" style="width: 100%;"></select>
+                                    <select class="form-control select2" id="ddlshipcountry" placeholder="Country / Region" style="width: 100%;">
+                                        <option value="">Select a country / region…</option>
+                                        <option value="CA">Canada</option>
+                                        <option value="US" selected>United States (US)</option>
+                                    </select>
                                 </div>
                                 <div class="form-group col-md-6">
                                     <select class="form-control select2" id="ddlshipstate" placeholder="State / County" style="width: 100%;"></select>
@@ -132,21 +140,33 @@
             <div class="card">
                 <div class="card-body">
                     <div class="box-body no-padding">
-                        <div class="table-responsive" id="divAddItemFinal">
-                            <table id="tblAddItemFinal" class="table table-striped table-bordered table-condensed table-hover total_data imagetable table-margin-bottom">
-                                <thead>
-                                    <tr>
-                                        <th class="text-center" style="width: 5%">Actions</th>
-                                        <th style="width: 40%">Item</th>
-                                        <th style="width: 15%">Size/Color</th>
-                                        <th class="text-right" style="width: 10%">Sale Price</th>
-                                        <th class="text-right" style="width: 10%">Quantity</th>
-                                        <th class="text-right" style="width: 10%">Discount</th>
-                                        <th class="text-right" style="width: 10%">Total</th>
-                                    </tr>
-                                </thead>
-                                <tbody></tbody>
-                            </table>
+                        <div class="row">
+                            <div class="col-sm-8 form-group">
+                                <label class="col-sm-3 control-label text-right">Product</label>
+                                <div class="col-sm-9 controls">
+                                    <select class="form-control select2" id="ddlproduct" placeholder="Select Products" style="width: 100%;"></select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="table-responsive" id="divAddItemFinal">
+                                    <table id="tblAddItemFinal" class="table table-striped table-bordered table-condensed table-hover total_data imagetable table-margin-bottom">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center" style="width: 5%">Actions</th>
+                                                <th style="width: 55%">Item</th>
+                                                <th class="text-right" style="width: 10%">Sale Price</th>
+                                                <th class="text-right" style="width: 10%">Quantity</th>
+                                                <th class="text-right" style="width: 10%">Discount</th>
+                                                <th class="text-right" style="width: 10%">Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="row">
@@ -181,7 +201,7 @@
                                         <div class="col-sm-2 controls text-right">
                                             <span id="salesTaxTotal">0.00</span>
                                         </div>
-                                    </div>                                    
+                                    </div>
                                     <div class="form-group">
                                         <label class="col-sm-10 control-label">Order Total</label>
                                         <div class="col-sm-2 controls text-right">
@@ -201,5 +221,5 @@
 <script src="~/Content/AdminLTE-3.1.0/smartwizard/jquery.smartWizard.js"></script>
 <script src="@Url.Content("~/js/Orders/NewOrder.js?v=" + DateTime.Now.ToString("ddMMyyyymmss"))" asp-append-version="true"></script>
 <script type="text/javascript">
-    
+
 </script>

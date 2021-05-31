@@ -31,7 +31,7 @@
                 {
                     new MySqlParameter("@user_id", id),
                 };
-                DT = SQLHelper.ExecuteDataTable("select umeta_id,user_id,meta_key,meta_value from wp_usermeta where user_id= @user_id");
+                DT = SQLHelper.ExecuteDataTable("select umeta_id,user_id,meta_key,meta_value from wp_usermeta where user_id= @user_id and (meta_key like 'billing_%' OR meta_key like 'shipping_%')", parameters);
             }
             catch (Exception ex)
             { throw ex; }
@@ -49,7 +49,7 @@
                 model.post_date = DateTime.Now;
                 model.post_date_gmt = DateTime.UtcNow;
                 model.post_content = string.Empty;
-                model.post_title = "Order &ndash; " + model.post_date.ToString("MMMM dd, yyyy HH:mm tt");
+                model.post_title = "Order &ndash; " + model.post_date.ToString("MMMM dd, yyyy @ HH:mm tt");
                 model.post_excerpt = string.Empty;
                 model.post_status = "auto-draft";
                 model.comment_status = "open";
@@ -76,7 +76,7 @@
                                     + " @to_ping,@pinged,@post_modified,@post_modified_gmt,@post_content_filtered,@post_parent,@guid,@menu_order,@post_type,@post_mime_type,@comment_count)";
 
                 strSQL = strSQL + "; SELECT LAST_INSERT_ID();";
-                MySqlParameter[] para =
+                MySqlParameter[] parameters =
                 {
                     new MySqlParameter("@post_author", model.post_author),
                     new MySqlParameter("@post_date", model.post_date),
@@ -101,7 +101,7 @@
                     new MySqlParameter("@post_mime_type", model.post_mime_type),
                     new MySqlParameter("@comment_count", model.comment_count)
                 };
-                result = Convert.ToInt64(SQLHelper.ExecuteScalar(strSQL, para));
+                result = Convert.ToInt64(SQLHelper.ExecuteScalar(strSQL, parameters));
             }
             catch (MySql.Data.MySqlClient.MySqlException ex)
             {
@@ -109,6 +109,23 @@
 
             }
             return result;
+        }
+        public static DataTable GetProducts(string strSearch)
+        {
+            DataTable DT = new DataTable();
+            try
+            {
+                string strSQl = "SELECT DISTINCT post.id,ps.ID pr_id,CONCAT(post.post_title, ' - ' ,LTRIM(REPLACE(REPLACE(COALESCE(ps.post_excerpt,''),'Size:', ''),'Color:', ''))) as post_title,COALESCE(meta_value,0) sale_price"
+                            + " ,CONCAT(post.id,'$',COALESCE(ps.id,0)) r_id,CONCAT(post.id,'$',COALESCE(ps.id,0),'$',COALESCE(pr.meta_value,0)) rd_id FROM wp_posts as post"
+                            + " LEFT OUTER JOIN wp_posts ps ON ps.post_parent = post.id and ps.post_type LIKE 'product_variation'"
+                            + " left outer join wp_postmeta pr on pr.post_id = COALESCE(ps.id, post.id) and pr.meta_key = '_sale_price'"
+                            + " WHERE post.post_type = 'product' AND post.post_status = 'publish' AND CONCAT(post.post_title, ' - ' ,LTRIM(REPLACE(REPLACE(COALESCE(ps.post_excerpt,''),'Size:', ''),'Color:', ''))) like '%" + strSearch + "%' "
+                            + " ORDER BY post.ID limit 50;";
+                DT = SQLHelper.ExecuteDataTable(strSQl);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DT;
         }
     }
 }

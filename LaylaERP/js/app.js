@@ -1803,7 +1803,8 @@ function getActivePageId() {
 }
 
 function canRemoveTab(pageId) {
-    return findTabTitle(pageId).find('.fa-remove').size() > 0;
+    //return findTabTitle(pageId).find('.fa-remove').size() > 0;
+    return findTabTitle(pageId).find('.fa-timescloseOtherTabs').length > 0;
 }
 
 //Add tab
@@ -1927,7 +1928,8 @@ function closeTabByPageId(pageId) {
         //Give priority to the next tab, if not, pass it to the previous one
         var $nextTitle = $title.next();
         var activePageId;
-        if ($nextTitle.size() > 0) {
+        //if ($nextTitle.size() > 0) {
+        if ($nextTitle.length > 0) {
             activePageId = getPageId($nextTitle);
         } else {
             activePageId = getPageId($title.prev());
@@ -2114,7 +2116,8 @@ var scrollTabRight = function () {
 var closeOtherTabs = function (isAll) {
     if (isAll) {
         //Close all
-        $('.page-tabs-content').children("[" + pageIdField + "]").find('.fa-remove').parents('a').each(function () {
+        //$('.page-tabs-content').children("[" + pageIdField + "]").find('.fa-remove').parents('a').each(function () {
+        $('.page-tabs-content').children("[" + pageIdField + "]").find('.fa-times').parents('a').each(function () {
             var $a = $(this);
             var pageId = getPageId($a);
             closeTabOnly(pageId);
@@ -2133,7 +2136,8 @@ var closeOtherTabs = function (isAll) {
         }
     } else {
         //Delete all except
-        $('.page-tabs-content').children("[" + pageIdField + "]").find('.fa-remove').parents('a').not(".active").each(function () {
+        //$('.page-tabs-content').children("[" + pageIdField + "]").find('.fa-remove').parents('a').not(".active").each(function () {
+        $('.page-tabs-content').children("[" + pageIdField + "]").find('.fa-times').parents('a').not(".active").each(function () {
             var $a = $(this);
             var pageId = getPageId($a);
             closeTabOnly(pageId);

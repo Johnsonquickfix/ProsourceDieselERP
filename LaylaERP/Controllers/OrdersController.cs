@@ -16,7 +16,7 @@
         // GET: New Orders
         public ActionResult NewOrders()
         {
-            ViewBag.OrderNo = OrderRepository.AddOrdersPost();
+            //ViewBag.OrderNo = OrderRepository.AddOrdersPost();
             return View();
         }
 
@@ -48,6 +48,18 @@
                 if (!string.IsNullOrEmpty(model.strValue1))
                     id = Convert.ToInt64(model.strValue1);
                 DataTable DT = OrderRepository.GetCustomersInfo(id);
+                JSONresult = JsonConvert.SerializeObject(DT);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+        [HttpPost]
+        public JsonResult GetProductList(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable DT = OrderRepository.GetProducts(model.strValue1);
                 JSONresult = JsonConvert.SerializeObject(DT);
             }
             catch { }

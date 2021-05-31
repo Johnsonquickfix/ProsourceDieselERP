@@ -68,4 +68,26 @@ margin-left:auto;
 }
 .main-sidebar section.sidebar {
     border-top: 1px solid #ddd;
-}   
+}
+.main-header .logo .logo-lg {
+    height: 100%;
+}
+
+    .main-header .logo .logo-lg img {
+        max-height: 100%;
+        padding: 5px 0px;
+    }
+.content-iframe {
+    background: #ecf0f5 !important;
+}
+.skin-blue .sidebar-form {
+    border-radius: 0px;margin-right:0px;
+    border: 1px solid #c3c3c3;
+}
+    .skin-blue .sidebar-form input[type="text"], .skin-blue .sidebar-form .btn {
+        box-shadow: none;
+        background-color: #fff;
+    }
+    .skin-blue .sidebar-form .btn {
+        border-left: 1px solid #c3c3c3;
+    }

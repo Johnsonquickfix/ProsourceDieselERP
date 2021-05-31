@@ -1,14 +1,41 @@
-﻿.select2-container--default .select2-selection--single, .select2-selection .select2-selection--single {
+﻿body {
+    background-color: #f0f0f0;
+    font-size: 13px;
+    font-family: 'Open Sans','arial';
+    line-height: 23px;
+    font-weight: 400;
+}
+.card {
+    word-wrap: break-word;
+}
+
+.card {
+    position: relative;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 1px solid rgba(0,0,0,.125);
+    border-radius: .25rem;
+}
+
+.card-body {
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    padding: 1.25rem;
+}
+.select2-container--default .select2-selection--single, .select2-selection .select2-selection--single {
     border: 1px solid #d2d6de;
     border-radius: 0;
     padding: 6px 8px;
     height: 30px;
 }
 
-.form-control {
-    height: 30px !important;
-    padding: 6px 8px !important;
-}
+
 
 .input-group-addon {
     padding: 6px 8px !important;
@@ -39,3 +66,7 @@ legend {
     padding: 5px 5px 5px 10px;
     background-color: #ffffff;
 }
+
+element.style {
+}
+

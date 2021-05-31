@@ -14,13 +14,13 @@ namespace LaylaERP.Models
         string _user_email = string.Empty;
         string _user_nicename = string.Empty;
         string _display_name = string.Empty;
-
+        string _user_status = string.Empty;
         string _first_name = string.Empty;
         string _last_name = string.Empty;
         string _address = string.Empty;
         string _country = string.Empty;
         string _phone = string.Empty;
-        byte[] _User_Image = null;
+        public static byte[] _User_Image = null;
 
         // user_login,user_pass,user_type,status,Email_Id
 
@@ -66,7 +66,7 @@ namespace LaylaERP.Models
             set { _phone = value; }
         }
 
-        public byte[] User_Image
+        public static byte[] User_Image
         {
             get { return _User_Image; }
             set { _User_Image = value; }
@@ -97,6 +97,16 @@ namespace LaylaERP.Models
         {
             get { return _user_role; }
             set { _user_role = value; }
+        }
+        public string user_status
+        {
+            get { return _user_status; }
+            set { _user_status = value; }
+        }
+
+        public int ID
+        {
+            get; set;
         }
     }
 }

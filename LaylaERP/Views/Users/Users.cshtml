@@ -92,13 +92,16 @@
         <div class="row">
             <div class="dx-viewport demo-container">
                 <div id="gridContainer">
-                    <h3 class="text-center text-uppercase">Order Details</h3>
+                    <h3 class="text-center text-uppercase">User Details</h3>
                     <table id="example" class="table table-bordered" style="width:100%;">
                         <thead class="thead-dark">
                             <tr>
+
                                 <th>User ID</th>
+                                <th>User Name</th>
                                 <th>Email</th>
-                               
+                                <th>Status</th>
+                                <th>Role</th>
                             </tr>
                         </thead>
 
@@ -120,22 +123,17 @@
                     "dataType": 'json',
                 },
                 "columns": [
+                    { 'data': 'ID' },
                     { 'data': 'user_login' },
                     { 'data': 'user_email' },
-                    
-                    
+                    { 'data': 'user_status' },
+                    { 'data': 'user_role' },
                 ]
-                
+
             });
         });
     </script>
 }
-
-
-
-
-
-
 <script>
     var dataTable = document.getElementById('data-table');
     var checkItAll = dataTable.querySelector('input[name="select_all"]');

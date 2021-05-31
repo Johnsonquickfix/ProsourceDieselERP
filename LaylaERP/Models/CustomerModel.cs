@@ -59,6 +59,10 @@ namespace LaylaERP.Models
         public string meta_value { get; set; }
         public long umeta_id { get; set; }
         public long user_id { get; set; }
+        public int PageNo { get; set; }
+        public int PageSize { get; set; }
+        public int sEcho { get; set; }
+        public string Search { get; set; }
 
     }
 }

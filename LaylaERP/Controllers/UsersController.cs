@@ -25,10 +25,11 @@ namespace LaylaERP.Controllers
             return View();
         }
 
-        public ActionResult GetData()
+        public JsonResult GetData()
         {
-             Models.UsersRepositry.ShowUsersDetails();
-             return Json(new { data =Models.UsersRepositry.userslist }, JsonRequestBehavior.AllowGet);
+           
+            Models.UsersRepositry.ShowUsersDetails();
+            return Json(new { data =Models.UsersRepositry.userslist }, JsonRequestBehavior.AllowGet);
         }
     }
 }

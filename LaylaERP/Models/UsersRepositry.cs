@@ -7,6 +7,7 @@ using LaylaERP.Models;
 using MySql.Data.MySqlClient;
 using System.Data;
 using System.Configuration;
+using Newtonsoft.Json;
 
 
 namespace LaylaERP.Models
@@ -20,6 +21,7 @@ namespace LaylaERP.Models
             try
             {
                 DataSet ds1 = new DataSet();
+                ds1.Clear();
                 string sqlquery = "select ID, User_Image, user_login, user_status, if(user_status=0,'Active','InActive') as status,user_email,user_pass,meta_value from wp_users, wp_usermeta WHERE  wp_usermeta.meta_key='wp_capabilities' And wp_users.ID=wp_usermeta.user_id And wp_users.ID IN (SELECT user_id FROM wp_usermeta WHERE meta_key = 'wp_capabilities' AND meta_value NOT LIKE '%customer%') ORDER BY ID ASC";
                 ds1 = DAL.SQLHelper.ExecuteDataSet(sqlquery);
 
@@ -33,7 +35,6 @@ namespace LaylaERP.Models
                     if ((ds1.Tables[0].Rows[i]["user_status"].ToString() == "0"))
                     { uobj.user_status = "Active"; }
                     else { uobj.user_status = "InActive"; }
-
                     userslist.Add(uobj);
                 }
 
@@ -42,6 +43,7 @@ namespace LaylaERP.Models
             {
 
             }
+            
         }
     }
 }

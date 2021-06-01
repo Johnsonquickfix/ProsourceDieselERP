@@ -78,10 +78,10 @@ margin-left:auto;
         padding: 5px 0px;
     }
 .content-iframe {
-    background: #ecf0f5 !important;
+   /* background: #ecf0f5 !important;*/
 }
 .skin-blue .sidebar-form {
-    border-radius: 0px;margin-right:0px;
+    border-radius: 0px;margin-right:15px;
     border: 1px solid #c3c3c3;
 }
     .skin-blue .sidebar-form input[type="text"], .skin-blue .sidebar-form .btn {
@@ -91,3 +91,12 @@ margin-left:auto;
     .skin-blue .sidebar-form .btn {
         border-left: 1px solid #c3c3c3;
     }
+.skin-blue .sidebar-menu > li > .treeview-menu {
+margin:0px;
+}
+.skin-blue .sidebar-menu > li.active > .treeview-menu {
+    border-left: 3px solid #3c8dbc;
+}
+/*.skin-blue .sidebar-menu > li > .treeview-menu {
+    background: #fff;
+}*/

@@ -4,7 +4,7 @@
     header
 ********/
 .skin-blue.layla-skin .main-header .navbar {
-    background: #F1F1F1;
+    background: #e0e0e0;
 }
 
     .skin-blue.layla-skin .main-header .navbar .sidebar-toggle:before {
@@ -12,7 +12,7 @@
     }
 
 .skin-blue.layla-skin .main-header .logo, .skin-blue .main-header .navbar .sidebar-toggle:hover {
-    background: #F1F1F1;
+    background: #e0e0e0;
 }
 
 .layla-skin .navbar-custom-menu .navbar-nav li a {
@@ -55,7 +55,7 @@
 margin-left:auto;
 }
 .skin-blue.layla-skin .wrapper, .skin-blue.layla-skin .main-sidebar, .skin-blue.layla-skin .left-side {
-    background: #f1f1f1;
+    background: #e0e0e0;
 }
 .skin-blue.layla-skin .user-panel > .info, .skin-blue.layla-skin .user-panel > .info > a {
     color: #000;
@@ -67,7 +67,7 @@ margin-left:auto;
     padding: 0px 15px;
 }
 .main-sidebar section.sidebar {
-    border-top: 1px solid #ddd;
+    border-top: 1px solid #c5c5c5;
 }
 .main-header .logo .logo-lg {
     height: 100%;
@@ -100,3 +100,15 @@ margin:0px;
 /*.skin-blue .sidebar-menu > li > .treeview-menu {
     background: #fff;
 }*/
+.content-tabs {
+    border-top: 1px solid #c5c5c5;
+    border-bottom: 1px solid #c5c5c5;
+    background: #f9f9f9 !important;
+}
+.content-tabs {
+    line-height: 40px;
+}
+.slimScrollBar {
+max-height:120px;}
+.treeview.activeLink .nav-link {
+background:#000 !important; color:#fff !important;}

@@ -2262,8 +2262,8 @@ $(function () {
                 }
 
                 //header
-                var li = $('<li class="treeview " data-level="' + level + '"></li>');
-
+                var li = $('<li data-level="' + level + '"></li>');
+               
                 //a
                 var $a;
                 if (level > 0) {
@@ -2344,7 +2344,9 @@ $(function () {
                 $menu_ul.append(li);
             });
         }
-
+        $(document).on("each", ".sidebar-menu li", function () {
+            $(this).has('ul').addClass('treeview');
+        });
         //In addition, the binding menu is clicked and other actions are taken.
         $menu_ul.on("click", "li.treeview a", function () {
             var $a = $(this);

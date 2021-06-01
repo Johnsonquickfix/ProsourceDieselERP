@@ -86,68 +86,80 @@
         }
     </style>*@
 
+@using (Html.BeginForm("Users", "Users", FormMethod.Post))
+{
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        @Html.DropDownList("UserStatus", new List<SelectListItem>
+                            {
+                            new SelectListItem{ Text="Active", Value = "0" },
+                            new SelectListItem{ Text="Inactive", Value = "1" },
+                            })                       
+                    </div>
+                    
+                </div>
+                <div class="dx-viewport demo-container">
+                    <div id="gridContainer">
+                        <h3 class="text-center text-uppercase">User Details</h3>
 
-<section class="content">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="dx-viewport demo-container">
-                <div id="gridContainer">
-                    <h3 class="text-center text-uppercase">User Details</h3>
-                    <table id="userslist" class="table table-bordered table-striped dataTable" style="width:100%;">
-                        <thead class="thead-dark">
-                            <tr>
-                                <th></th>
-                                <th>ID</th>
-                                <th>User Name</th>
-                                <th>Email</th>
-                                <th>Status</th>
-                                <th>Role</th>
-                            </tr>
-                        </thead>
+                        <table id="userslist" class="table table-bordered table-striped dataTable" style="width:100%;">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th></th>
+                                    <th>ID</th>
+                                    <th>User Name</th>
+                                    <th>Email</th>
+                                    <th>Status</th>
+                                    <th>Role</th>
+                                </tr>
+                            </thead>
 
-                    </table>
+                        </table>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div><!-- /.container-fluid -->
-</section>
+        </div><!-- /.container-fluid -->
+    </section> }
 
 @section scripts{
 
     <script type="text/javascript">
         $(document).ready(function () {
             $('#userslist').DataTable({
-               destroy:true,
-               bAutoWidth: false,
+                destroy: true,
+                bAutoWidth: false,
                 "ajax": {
                     "url": '/Users/GetData',
                     "type": 'GET',
                     "dataType": 'json',
                 },
                 "columns": [
-                    { 'data': '', 'sWidth': "5%"},
+                    { 'data': '', 'sWidth': "5%" },
                     { 'data': 'ID', 'sWidth': "5%" },
-                    { 'data': 'user_login','sWidth': "20%" },
-                    { 'data': 'user_email','sWidth': "20%" },
-                    { 'data': 'user_status','sWidth': "20%" },
-                    { 'data': 'user_role', 'sWidth': "30%"},
+                    { 'data': 'user_login', 'sWidth': "20%" },
+                    { 'data': 'user_email', 'sWidth': "20%" },
+                    { 'data': 'user_status', 'sWidth': "20%" },
+                    { 'data': 'my', 'sWidth': "30%" },
                 ],
 
-               
+
                 columnDefs: [{
                     orderable: false,
                     className: 'select-checkbox',
                     targets: 0,
                     data: null,
                     defaultContent: '',
-                    
+
                 }],
                 "select": {
                     "style": 'os',
                     "selector": 'td:first-child'
                 },
                 "order": [[1, 'asc']],
-                
+
             });
         });
     </script>

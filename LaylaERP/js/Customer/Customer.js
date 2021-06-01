@@ -1,5 +1,8 @@
 ﻿
 function AddCustomer() {
+    debugger
+
+    ID = $("#hfid").val();
     Email= $("#txtUserEmail").val();
     NickName= $("#txtUserNickName").val();
     FirstName= $("#txtFirstName").val();
@@ -11,7 +14,7 @@ function AddCustomer() {
     BillingState= $("#txtBillingState").val();
     BillingCity= $("#txtBillingCity").val();
     BillingPhone= $("#txtBillingPhone").val();
-    debugger
+    
     if (Email == "") { swal('alert', 'Please Enter Email', 'error') }
     else if (NickName == "") { swal('alert', 'Please Enter Nick Name', 'error') }
     else if (FirstName == "") { swal('alert', 'Please Enter First Name', 'error') }
@@ -25,14 +28,16 @@ function AddCustomer() {
     else if (BillingPhone == "") { swal('alert', 'Please Enter Contact No.', 'error') }
     else {
         var obj = {
+            ID:ID,
             user_email: Email, user_nicename: NickName, first_name: FirstName, last_name: LastName, billing_address_1: BillingAddress1,
             billing_address_2: BillingAddress2, billing_postcode: BillingPostcode, billing_country: BillingCountry,
             billing_state: BillingState, billing_city: BillingCity, billing_phone: BillingPhone
         }
         $.ajax({
-            url: '/Customer/NewUser', dataType: 'json', type: 'Post',
+            url: '/Customer/NewUser/', dataType: 'json', type: 'Post',
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify(obj),
+            dataType: "json",
             success: function (data) {
                 if (data.status == true) {
                     $('#parent > input:text').val('');  
@@ -47,5 +52,25 @@ function AddCustomer() {
             },
         })
     }
+
+}
+
+function getdatabyzip() {
+    debugger
+
+        var obj = {
+          billing_postcode: BillingPostcode
+        }
+       var BillingPostcode = $("#txtBillingPostCode").val();
+        $.ajax({
+            url: "http://ziptasticapi.com/" + BillingPostcode,
+            type: "POST",
+            success: function (data) {
+                alert('Get Successfully');
+                //window.location.href = "../Index";
+            },
+            error: function (msg) { alert(msg); }
+        });
+   
 
 }

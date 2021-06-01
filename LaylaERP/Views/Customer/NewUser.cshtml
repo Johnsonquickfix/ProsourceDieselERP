@@ -32,7 +32,7 @@
                 <div class="box-body">
                     <div class="row">
                         <div class="form-horizontal" id="parent">
-
+                            <input type="hidden" id="hfid" value="@ViewBag.id" />
                             <div class="form-group">
                                 <label class="control-label col-md-2" for="Email">Email</label>
                                 <div class="col-md-8">
@@ -103,7 +103,7 @@
 
                             <div class="form-group">
                                 <div class="col-md-offset-2 col-md-8">
-                                    <input type="submit" value="Create" id="btnSave" class="btn btn-default" />
+                                    <input type="submit" value="Submit" id="btnSave" class="btn btn-default" />
                                     @Html.ActionLink("Back to List", "Customer", null, new { @class = "btn btn-default" })
 
                                 </div>
@@ -129,8 +129,13 @@
 <script src="@Url.Content("~/js/Customer/Customer.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 <script>
     $(document).ready(function () {
+       
         $(document).on('click', "#btnSave", function () {
             AddCustomer();
+        })
+        $('#txtBillingPostCode').change(function () {
+            debugger
+            getdatabyzip();
         })
     });
 </script>

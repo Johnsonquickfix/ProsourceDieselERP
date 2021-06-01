@@ -34,11 +34,48 @@ namespace LaylaERP.Models
                 throw Ex;
             }
         }
+
+        public int EditCustomer(CustomerModel model,long userid)
+        {
+            try
+            {
+                string strsql = "update wp_users set user_nicename=@user_nicename, user_email=@user_email where Id=" + userid + "";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@user_nicename", model.user_nicename),
+                    new MySqlParameter("@user_email", model.user_email),
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
         public void AddUserMetaData(CustomerModel model, long id, string varFieldsName, string varFieldsValue)
         {
             try
             {
                 string strsql = "INSERT INTO wp_usermeta(user_id,meta_key,meta_value) VALUES(user_id,@meta_key,@meta_value); select LAST_INSERT_ID() as ID;";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@user_id", id),
+                    new MySqlParameter("@meta_key", varFieldsName),
+                    new MySqlParameter("@meta_value", varFieldsValue),
+                };
+                SQLHelper.ExecuteNonQuery(strsql, para);
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+        public void UpdateUserMetaData(CustomerModel model, long id, string varFieldsName, string varFieldsValue)
+        {
+            try
+            {
+                string strsql = "update wp_usermeta set meta_value=@meta_value where user_id=@user_id and meta_key=@meta_key";
                 MySqlParameter[] para =
                 {
                     new MySqlParameter("@user_id", id),
@@ -70,6 +107,25 @@ namespace LaylaERP.Models
                 throw Ex;
             }
         }
+
+        public void UpdateUserMetaDataBillingAddress(CustomerModel model, long id, string varFieldsName, string varFieldsValue)
+        {
+            try
+            {
+                string strsql = "update wp_usermeta set meta_value=@meta_value where user_id=@user_id and meta_key=meta_key";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@user_id", id),
+                    new MySqlParameter("@meta_key", varFieldsName),
+                    new MySqlParameter("@meta_value", varFieldsValue),
+                };
+                SQLHelper.ExecuteNonQuery(strsql, para);
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
         public void AddUserMetaDataShippingAddress(CustomerModel model, long id, string varFieldsName, string varFieldsValue)
         {
             try
@@ -88,7 +144,24 @@ namespace LaylaERP.Models
                 throw Ex;
             }
         }
-
+        public void UpdateUserMetaDataShippingAddress(CustomerModel model, long id, string varFieldsName, string varFieldsValue)
+        {
+            try
+            {
+                string strsql = "Update wp_usermeta set meta_value=@meta_value where user_id=@user_id and meta_key=meta_key";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@user_id", id),
+                    new MySqlParameter("@meta_key", varFieldsName),
+                    new MySqlParameter("@meta_value", varFieldsValue),
+                };
+                SQLHelper.ExecuteNonQuery(strsql, para);
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
         public static DataTable CustomerList(int userstatus,string searchid, int pageno, int pagesize, out int totalrows)
         {
             DataTable dt = new DataTable();

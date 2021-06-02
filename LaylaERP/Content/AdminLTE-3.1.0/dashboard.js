@@ -20,12 +20,12 @@ $(function () {
   $('.connectedSortable .box-header, .connectedSortable .nav-tabs-custom').css('cursor', 'move');
 
   // jQuery UI sortable for the todo list
-  $('.todo-list').sortable({
-    placeholder         : 'sort-highlight',
-    handle              : '.handle',
-    forcePlaceholderSize: true,
-    zIndex              : 999999
-  });
+  //$('.todo-list').sortable({
+  //  placeholder         : 'sort-highlight',
+  //  handle              : '.handle',
+  //  forcePlaceholderSize: true,
+  //  zIndex              : 999999
+  //});
 
   // bootstrap WYSIHTML5 - text editor
   $('.textarea').wysihtml5();
@@ -196,15 +196,6 @@ $(function () {
     donut.redraw();
     line.redraw();
   });
-
-  /* The todo list plugin */
-  $('.todo-list').todoList({
-    onCheck  : function () {
-      window.console.log($(this), 'The element has been checked');
-    },
-    onUnCheck: function () {
-      window.console.log($(this), 'The element has been unchecked');
-    }
-  });
+  
 
 });

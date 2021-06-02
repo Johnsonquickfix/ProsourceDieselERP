@@ -155,6 +155,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="BAL\CustomerRepository.cs" />
+    <Compile Include="BAL\DashboardRepository.cs" />
     <Compile Include="BAL\OrderRepository.cs" />
     <Compile Include="BAL\Users.cs" />
     <Compile Include="Controllers\AccountAPIController.cs" />
@@ -199,6 +200,7 @@
     <Content Include="Content\AdminLTE-3.1.0\bower_components\morris.js\morris.css" />
     <Content Include="Content\AdminLTE-3.1.0\bower_components\morris.js\morris.min.js" />
     <Content Include="Content\AdminLTE-3.1.0\bower_components\raphael\raphael.min.js" />
+    <Content Include="Content\AdminLTE-3.1.0\custom.js" />
     <Content Include="Content\AdminLTE-3.1.0\dashboard.js" />
     <Content Include="Content\AdminLTE-3.1.0\datatables\Buttons-1.6.1\css\buttons.bootstrap.css" />
     <Content Include="Content\AdminLTE-3.1.0\datatables\Buttons-1.6.1\css\buttons.bootstrap.min.css" />
@@ -595,6 +597,7 @@
     <Content Include="Views\Customer\NewUser.cshtml" />
     <Content Include="Views\Shared\_ExportLayout.cshtml" />
     <Content Include="Views\Shared\_UserLayout.cshtml" />
+    <Content Include="Views\Shared\_LayoutDashboard.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

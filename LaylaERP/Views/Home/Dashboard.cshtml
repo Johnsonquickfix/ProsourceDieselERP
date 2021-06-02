@@ -1,17 +1,19 @@
 ﻿
 @{
     ViewBag.Title = "Dashboard";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
 }
  
 <div class="row d-flex align-items-center">
     <div class="col-xs-6">
-        <h2 class="page-heading gs-open">
-            Dashboard
-            <div class="sub-heading">
-                <time datetime="2021-05-24">Mon, May 26, 2021</time> - <time datetime="2021-05-30">Sun, May 26, 2021</time>
-            </div>
-        </h2>
+        <div class="page-title">
+            <h2 class="page-heading gs-open">
+                Dashboard
+                <span class="sub-heading">
+                    <time datetime="2021-05-24">Mon, May 26, 2021</time> - <time datetime="2021-05-30">Sun, May 26, 2021</time>
+                </span>
+            </h2>
+        </div>
     </div>
     <div class="col-xs-6 ">
         <div class="dropdown item pull-right">

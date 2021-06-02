@@ -46,7 +46,7 @@ dashboard
 
 .sub-heading {
     font-size: 15px;
-    color: #000;
+    color: #333;
 }
 
 .dashboard-info {
@@ -57,3 +57,8 @@ dashboard
         padding: 0px 7.5px;
     }
 
+
+
+    /**********users*/
+.page-title h2 {
+font-size:28px;}

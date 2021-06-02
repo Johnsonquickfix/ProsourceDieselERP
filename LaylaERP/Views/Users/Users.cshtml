@@ -3,8 +3,23 @@
     ViewBag.Title = "Users";
     Layout = "~/Views/Shared/_UserLayout.cshtml";
 }
-
-<h2>Users</h2>
+<div class="page-title">
+    <h2 class="page-heading">Users</h2>
+    <a href="#" class="page-title-action">Add New</a>
+</div>
+<ul class="user_subCrumbs">
+    <li class="all"><a href="#" class="current" aria-current="page">All <span class="count">(61,602)</span></a> |</li>
+    <li class="accounting"><a href="#">Accounting <span class="count">(1)</span></a> |</li>
+    <li class="administrator"><a href="#">Administrator <span class="count">(4)</span></a> |</li>
+    <li class="author"><a href="#">Author <span class="count">(2)</span></a> |</li>
+    <li class="customer"><a href="#">Customer <span class="count">(61,526)</span></a> |</li>
+    <li class="modsquad"><a href="#">Mod Squad <span class="count">(29)</span></a> |</li>
+    <li class="shop_manager"><a href="#">Shop manager <span class="count">(1)</span></a> |</li>
+    <li class="subscriber"><a href="#">Subscriber <span class="count">(1)</span></a> |</li>
+    <li class="supplychainmanager"><a href="#">Supply Chain Manager <span class="count">(1)</span></a> |</li>
+    <li class="wpseo_editor"><a href="#">SEO Editor <span class="count">(1)</span></a> |</li>
+    <li class="none"><a href="#">No role <span class="count">(7)</span></a></li>
+</ul>
 @*<div>
         <form action="">
             <select name="bulkaction" id="bulkactions">

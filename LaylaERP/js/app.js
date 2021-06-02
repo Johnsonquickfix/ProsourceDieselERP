@@ -1916,7 +1916,12 @@ var closeTab = function (item) {
     var pageId = getPageId(item);
     closeTabByPageId(pageId);
 };
-
+function sidemenu_breadcrumb(ids) {
+    $('.sidebar-menu li').removeClass('activeLink');
+    $('.sidebar-menu .treeview').removeClass('active');
+    $('.treeview-menu').removeClass('menu-open').css("display", "none");
+    $('.sidebar-menu [data-menuid="' + ids + '"]').addClass('activeLink').parents('.treeview-menu').addClass('menu-open').css("display", "block").parents('.treeview').addClass('active');
+}
 function closeTabByPageId(pageId) {
     var $title = findTabTitle(pageId);//Tab title
     var $tabPanel = findTabPanel(pageId);//With iframe
@@ -1928,11 +1933,14 @@ function closeTabByPageId(pageId) {
         //Give priority to the next tab, if not, pass it to the previous one
         var $nextTitle = $title.next();
         var activePageId;
+        
         //if ($nextTitle.size() > 0) {
         if ($nextTitle.length > 0) {
             activePageId = getPageId($nextTitle);
+            sidemenu_breadcrumb(activePageId)
         } else {
             activePageId = getPageId($title.prev());
+            sidemenu_breadcrumb(activePageId)
         }
 
         setTimeout(function () {

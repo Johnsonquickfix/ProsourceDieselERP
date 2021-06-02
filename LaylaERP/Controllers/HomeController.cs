@@ -6,6 +6,10 @@
     using System.Linq;
     using System.Web;
     using System.Web.Mvc;
+    using System.Data;
+    using LaylaERP.Models;
+    using Newtonsoft.Json;
+    using System.Globalization;
 
     public class HomeController : Controller
     {
@@ -19,7 +23,10 @@
             return View();
         }
         public ActionResult Dashboard()
-        {
+        {   ViewBag.totalorders = BAL.DashboardRepository.Total_Orders();
+            ViewBag.totalsales = BAL.DashboardRepository.Total_Sales();
+            ViewBag.totalcustomers = BAL.DashboardRepository.Total_Customer();
+            ViewBag.totalordercompleted = BAL.DashboardRepository.Total_Order_Completed();
             return View();
         }
 

@@ -199,6 +199,7 @@
     <Content Include="Content\AdminLTE-3.1.0\bower_components\morris.js\morris.css" />
     <Content Include="Content\AdminLTE-3.1.0\bower_components\morris.js\morris.min.js" />
     <Content Include="Content\AdminLTE-3.1.0\bower_components\raphael\raphael.min.js" />
+    <Content Include="Content\AdminLTE-3.1.0\custom.js" />
     <Content Include="Content\AdminLTE-3.1.0\dashboard.js" />
     <Content Include="Content\AdminLTE-3.1.0\datatables\Buttons-1.6.1\css\buttons.bootstrap.css" />
     <Content Include="Content\AdminLTE-3.1.0\datatables\Buttons-1.6.1\css\buttons.bootstrap.min.css" />

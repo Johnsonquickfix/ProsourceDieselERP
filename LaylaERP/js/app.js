@@ -2262,13 +2262,13 @@ $(function () {
                 }
 
                 //header
-                var li = $('<li data-level="' + level + '"></li>');
+                var li = $('<li data-level="' + level + '" data-menuId="' + item.id+'"></li>');
                
                 //a
                 var $a;
                 if (level > 0) {
                     //$a = $('<a style="padding-left:' + (level * 20) + 'px"></a>');
-                    $a = $('<a style="padding-left:' + (level * 10) + 'px"></a>');
+                    $a = $('<a style="padding-left:' + (level * 0) + 'px"></a>');
                 } else {
                     $a = $('<a></a>');
                 }
@@ -2342,13 +2342,16 @@ $(function () {
                     li.append($a);
                 }
                 $menu_ul.append(li);
-            });
+               });
         }
-        $(document).on("each", ".sidebar-menu li", function () {
-            $(this).has('ul').addClass('treeview');
-        });
+        
         //In addition, the binding menu is clicked and other actions are taken.
+        $('.sidebar-menu > li:first').addClass('activeLink');
+        $(".sidebar-menu  ul li").each(function (i) {
+            $(this).parents('li').addClass('treeview');
+        });
         $menu_ul.on("click", "li.treeview a", function () {
+            
             var $a = $(this);
             //if ($a.next().size() == 0) {
             if ($a.next().length == 0) {
@@ -2356,6 +2359,10 @@ $(function () {
                     $($.AdminLTE.options.sidebarToggleSelector).click();
                 }
             }
+        });
+        $(".sidebar-menu li a[onclick]").click(function (e) {
+                $('.sidebar-menu li').removeClass('activeLink');
+                $(this).parent().addClass('activeLink');
         });
     };
 
@@ -2366,3 +2373,6 @@ $(function () {
         isHeader: false
     };
 })(jQuery);
+
+
+

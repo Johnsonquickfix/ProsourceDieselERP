@@ -108,5 +108,9 @@ namespace LaylaERP.Models
         {
             get; set;
         }
+        public string my
+        {
+            get; set;
+        }
     }
 }

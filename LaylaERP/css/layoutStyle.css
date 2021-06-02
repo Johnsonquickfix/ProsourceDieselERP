@@ -161,3 +161,17 @@ border:0px;}
     padding: 12px 10px;
     color: #555;
 }
+
+/************settings*/
+.setting-save a {
+    display: inline-flex;
+    height: 50px;
+    justify-content: center;
+    min-width: initial;
+    padding: 0px 25px;
+    align-items: center;
+    font-size: 18px;
+    background: #EE4823; color:#fff;
+}
+    .setting-save a i {
+    margin-right:10px;}

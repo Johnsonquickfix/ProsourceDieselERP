@@ -3,23 +3,7 @@
     ViewBag.Title = "Users";
     Layout = "~/Views/Shared/_UserLayout.cshtml";
 }
-<div class="page-title">
-    <h2 class="page-heading">Users</h2>
-    <a href="#" class="page-title-action">Add New</a>
-</div>
-<ul class="user_subCrumbs">
-    <li class="all"><a href="#" class="current" aria-current="page">All <span class="count">(61,602)</span></a> |</li>
-    <li class="accounting"><a href="#">Accounting <span class="count">(1)</span></a> |</li>
-    <li class="administrator"><a href="#">Administrator <span class="count">(4)</span></a> |</li>
-    <li class="author"><a href="#">Author <span class="count">(2)</span></a> |</li>
-    <li class="customer"><a href="#">Customer <span class="count">(61,526)</span></a> |</li>
-    <li class="modsquad"><a href="#">Mod Squad <span class="count">(29)</span></a> |</li>
-    <li class="shop_manager"><a href="#">Shop manager <span class="count">(1)</span></a> |</li>
-    <li class="subscriber"><a href="#">Subscriber <span class="count">(1)</span></a> |</li>
-    <li class="supplychainmanager"><a href="#">Supply Chain Manager <span class="count">(1)</span></a> |</li>
-    <li class="wpseo_editor"><a href="#">SEO Editor <span class="count">(1)</span></a> |</li>
-    <li class="none"><a href="#">No role <span class="count">(7)</span></a></li>
-</ul>
+
 @*<div>
         <form action="">
             <select name="bulkaction" id="bulkactions">
@@ -102,24 +86,33 @@
     </style>*@
 
 @using (Html.BeginForm("Users", "Users", FormMethod.Post))
-{
-    <section class="content">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="form-group">
-                        @Html.DropDownList("UserStatus", new List<SelectListItem>
+{<div class="page-title">
+    <h2 class="page-heading">Users</h2>
+    <a href="#" class="page-title-action">Add New</a>
+    @Html.DropDownList("UserStatus", new List<SelectListItem>
                             {
                             new SelectListItem{ Text="Active", Value = "0" },
                             new SelectListItem{ Text="Inactive", Value = "1" },
-                            })                       
-                    </div>
-                    
-                </div>
-                <div class="dx-viewport demo-container">
+                            })
+</div>
+    <div class="user_subCrumbs">
+        <ul>
+            <li class="all"><a href="#" class="current" aria-current="page">All <span class="count">(61,602)</span></a> |</li>
+            <li class="accounting"><a href="#">Accounting <span class="count">(1)</span></a> |</li>
+            <li class="administrator"><a href="#">Administrator <span class="count">(4)</span></a> |</li>
+            <li class="author"><a href="#">Author <span class="count">(2)</span></a> |</li>
+            <li class="customer"><a href="#">Customer <span class="count">(61,526)</span></a> |</li>
+            <li class="modsquad"><a href="#">Mod Squad <span class="count">(29)</span></a> |</li>
+            <li class="shop_manager"><a href="#">Shop manager <span class="count">(1)</span></a> |</li>
+            <li class="subscriber"><a href="#">Subscriber <span class="count">(1)</span></a> |</li>
+            <li class="supplychainmanager"><a href="#">Supply Chain Manager <span class="count">(1)</span></a> |</li>
+            <li class="wpseo_editor"><a href="#">SEO Editor <span class="count">(1)</span></a> |</li>
+            <li class="none"><a href="#">No role <span class="count">(7)</span></a></li>
+        </ul>
+    </div>
+    <section class="content section-content">
+                <div class="dx-viewport demo-container data-table-container">
                     <div id="gridContainer">
-                        <h3 class="text-center text-uppercase">User Details</h3>
-
                         <table id="userslist" class="table table-bordered table-striped dataTable" style="width:100%;">
                             <thead class="thead-dark">
                                 <tr>
@@ -135,9 +128,8 @@
                         </table>
                     </div>
                 </div>
-            </div>
-        </div><!-- /.container-fluid -->
-    </section> }
+    </section>
+}
 
 @section scripts{
 

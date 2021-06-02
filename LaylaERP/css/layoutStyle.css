@@ -60,5 +60,104 @@ dashboard
 
 
     /**********users*/
+.page-title {
+    display: flex;
+    align-items: center; margin:20px 0px 10px;
+}
 .page-title h2 {
-font-size:28px;}
+    font-size: 28px; margin:0px 10px 0px 0px;
+}
+    .page-title-action, .page-title #UserStatus {
+        padding: 4px 8px;
+        text-decoration: none;
+        border: 1px solid #0071a1;
+        border-radius: 2px;
+        font-size: 13px;
+        line-height: normal;
+        color: #0071a1;
+        background: #f3f5f6;
+        cursor: pointer;
+    }
+    .page-title #UserStatus {
+        padding-top: 3px;
+        padding-bottom: 3px;
+        margin-left: 10px;
+    }
+.user_subCrumbs ul {
+    list-style: none;
+    margin: 8px 0 0;
+    padding: 0;
+    font-size: 13px;
+    float: left;
+    color: #666;
+}
+.user_subCrumbs ul li {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    white-space: nowrap;
+}
+.user_subCrumbs a {
+    line-height: 2;
+    padding: .2em;
+    text-decoration: none;
+}
+    .user_subCrumbs a.current {
+        font-weight: 600;
+        border: none;
+        color: #000;
+    }
+.user_subCrumbs {
+display:inline-block; width:100%;}
+.section-content {
+padding:0px;}
+    body .data-table-container {background:transparent;
+    }
+.data-table-container input[type="text"],
+.data-table-container input[type="search"],
+.data-table-container select {
+    box-shadow: 0 0 0 transparent;
+    border-radius: 4px;
+    border: 1px solid #7e8993;
+    background-color: #fff;
+    color: #32373c;
+    padding: 0 8px;
+    line-height: 2;
+    min-height: 30px;
+    -webkit-appearance: textfield;
+    height: 30px;
+}
+.section-content {
+margin-top:20px;}
+#userslist_wrapper {
+padding:0px;}
+#userslist {
+    background: #fff;
+    table-layout: fixed;
+    border: 1px solid #ccd0d4;
+    box-shadow: 0 1px 1px rgb(0 0 0 / 4%);
+    border-spacing: 0;
+    width: 100%;
+    clear: both;
+    margin: 0;
+}
+    #userslist thead th {
+        border-bottom: 1px solid #ccd0d4;
+    }
+    table.dataTable tbody td.select-checkbox:before, table.dataTable tbody td.select-checkbox:after, table.dataTable tbody th.select-checkbox:before, table.dataTable tbody th.select-checkbox:after {
+        width: 16px !important;
+        height: 16px !important;
+        border: 1px solid #7e8993 !important;
+    }
+.table-bordered > thead > tr > th, .table-bordered > tbody > tr > th, .table-bordered > tfoot > tr > th, .table-bordered > thead > tr > td, .table-bordered > tbody > tr > td, .table-bordered > tfoot > tr > td {
+border:0px;}
+#userslist tbody .odd {
+    background-color: #f9f9f9;
+}
+#userslist tbody .even {
+    background-color: #fff;
+}
+#userslist th, #userslist td {
+    padding: 12px 10px;
+    color: #555;
+}

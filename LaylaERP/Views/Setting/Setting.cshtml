@@ -3,6 +3,64 @@
     ViewBag.Title = "Setting";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<div class="page-title">
+    <h2 class="page-heading">Setting</h2>
+</div>
+<div class="nav-tabs-custom">
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="#tab_1" data-toggle="tab">Payment Method</a></li>
+        <li><a href="#tab_2" data-toggle="tab">Email Setting</a></li>
+        <li><a href="#tab_3" data-toggle="tab">Paypal Setting</a></li>
+        <li><a href="#tab_4" data-toggle="tab">Authorize.Net Setting</a></li>
+        <li><a href="#tab_5" data-toggle="tab">Amazon Pay Setting</a></li>
+        <li><a href="#tab_6" data-toggle="tab">TaxJar Setting</a></li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane active" id="tab_1">
+            <h2>Select Payment Method</h2>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="authorizenet">
+                <label class="form-check-label" for="authorizenet">
+                    Authorize.Net
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="paypal">
+                <label class="form-check-label" for="Paypal">
+                    Paypal
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="amazonpay">
+                <label class="form-check-label" for="amazonpay">
+                    Amazon Pay
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="creditcustomer">
+                <label class="form-check-label" for="creditcustomer">
+                    Credit Customer
+                </label>
+            </div>
+        </div>
+            <!-- /.tab-pane -->
+            <div class="tab-pane" id="tab_2">
 
-<h2>Setting</h2>
+            </div>
+            <!-- /.tab-pane -->
+            <div class="tab-pane" id="tab_3">
 
+            </div>
+            <div class="tab-pane" id="tab_4">
+
+            </div>
+            <div class="tab-pane" id="tab_5">
+
+            </div>
+            <div class="tab-pane" id="tab_6">
+
+            </div>
+            <!-- /.tab-pane -->
+        </div>
+    <!-- /.tab-content -->
+</div>

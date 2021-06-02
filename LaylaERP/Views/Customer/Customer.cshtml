@@ -43,6 +43,7 @@
             <table id="dtdata" class="table table-bordered table-striped dataTable" width="100%">
                 <thead>
                     <tr>
+                        <th><input type="checkbox" id="chkall" name="CheckAll" /> Check All</th>
                         <th>Cust ID</th>
                         <th>Customer Name</th>
                         <th>E-mail</th>
@@ -70,7 +71,7 @@
         var obj = { user_status: urid, Search: sid, PageNo: 0, PageSize: 10, sEcho: 1 };
         $('#dtdata').DataTable({
             destroy: true, bProcessing: true, bServerSide: true,
-            sPaginationType: "full_numbers", searching: false, ordering: false, lengthChange: false,
+            sPaginationType: "full_numbers", searching: false, ordering: true, lengthChange: true,
             bAutoWidth: true, scrollX: true, scrollY: ($(window).height() - 215),
             lengthMenu: [[10, 20, 50], [10, 20, 50]],
             sAjaxSource: "/Customer/GetCustomerList",
@@ -87,13 +88,19 @@
                 });
             },
             aoColumns: [
-
+                {
+                    'data': 'id', sWidth: "10%" ,
+                    'render': function (id, type, full, meta) {
+                        debugger
+                        return '<input type="checkbox" id="chkSingle" value="' + id + '">'
+                    }
+                },
                 { data: 'id', title: 'Cust ID', sWidth: "10%" },
                 { data: 'user_nicename', title: 'Customer Name', sWidth: "15%" },
                 { data: 'user_email', title: 'E-mail', sWidth: "15%" },
                 { data: 'status', title: 'Status', sWidth: "10%" },
                 { data: 'meta_value', title: 'Phone', sWidth: "10%" },
-                { data: 'user_registered', title: 'Registration Date', sWidth: "30%" },
+                { data: 'user_registered', title: 'Registration Date', sWidth: "10%" },
                 {
                     'data': 'id',
                     'render': function (id, type, full, meta) {
@@ -104,4 +111,5 @@
             ]
         });
     }
+
 </script>

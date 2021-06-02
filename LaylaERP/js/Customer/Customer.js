@@ -3,18 +3,18 @@ function AddCustomer() {
     debugger
 
     ID = $("#hfid").val();
-    Email= $("#txtUserEmail").val();
-    NickName= $("#txtUserNickName").val();
-    FirstName= $("#txtFirstName").val();
-    LastName= $("#txtLastName").val();
-    BillingAddress1= $("#txtBillingAddress1").val();
-    BillingAddress2= $("#txtBillingAddress2").val();
-    BillingPostcode= $("#txtBillingPostCode").val();
-    BillingCountry= $("#txtBillingCountry").val();
-    BillingState= $("#txtBillingState").val();
-    BillingCity= $("#txtBillingCity").val();
-    BillingPhone= $("#txtBillingPhone").val();
-    
+    Email = $("#txtUserEmail").val();
+    NickName = $("#txtUserNickName").val();
+    FirstName = $("#txtFirstName").val();
+    LastName = $("#txtLastName").val();
+    BillingAddress1 = $("#txtBillingAddress1").val();
+    BillingAddress2 = $("#txtBillingAddress2").val();
+    BillingPostcode = $("#txtBillingPostCode").val();
+    BillingCountry = $("#txtBillingCountry").val();
+    BillingState = $("#txtBillingState").val();
+    BillingCity = $("#txtBillingCity").val();
+    BillingPhone = $("#txtBillingPhone").val();
+
     if (Email == "") { swal('alert', 'Please Enter Email', 'error') }
     else if (NickName == "") { swal('alert', 'Please Enter Nick Name', 'error') }
     else if (FirstName == "") { swal('alert', 'Please Enter First Name', 'error') }
@@ -28,7 +28,7 @@ function AddCustomer() {
     else if (BillingPhone == "") { swal('alert', 'Please Enter Contact No.', 'error') }
     else {
         var obj = {
-            ID:ID,
+            ID: ID,
             user_email: Email, user_nicename: NickName, first_name: FirstName, last_name: LastName, billing_address_1: BillingAddress1,
             billing_address_2: BillingAddress2, billing_postcode: BillingPostcode, billing_country: BillingCountry,
             billing_state: BillingState, billing_city: BillingCity, billing_phone: BillingPhone
@@ -40,7 +40,7 @@ function AddCustomer() {
             dataType: "json",
             success: function (data) {
                 if (data.status == true) {
-                    $('#parent > input:text').val('');  
+                    $('#parent > input:text').val('');
                     swal('Alert!', data.message, 'success');
                 }
                 else {
@@ -56,21 +56,18 @@ function AddCustomer() {
 }
 
 function getdatabyzip() {
-    debugger
-
-        var obj = {
-          billing_postcode: BillingPostcode
-        }
-       var BillingPostcode = $("#txtBillingPostCode").val();
-        $.ajax({
-            url: "http://ziptasticapi.com/" + BillingPostcode,
-            type: "POST",
-            success: function (data) {
-                alert('Get Successfully');
-                //window.location.href = "../Index";
-            },
-            error: function (msg) { alert(msg); }
-        });
-   
+    var BillingPostcode = $("#txtBillingPostCode").val();
+    $.ajax({
+        url: "https://ziptasticapi.com/" + BillingPostcode,
+        type: "GET",
+        dataType: 'JSON',
+        data: [], 
+        success: function (data) {
+            $("#txtBillingCountry").val(data.country);
+            $("#txtBillingState").val(data.state);
+            $("#txtBillingCity").val(data.city);
+        },
+        error: function (msg) { alert(msg); }
+    });
 
 }

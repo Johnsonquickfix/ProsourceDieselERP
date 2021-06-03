@@ -3,6 +3,8 @@
     ViewBag.Title = "Setting";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
+
 <div class="page-title">
     <h2 class="page-heading">Setting</h2>
 </div>
@@ -17,28 +19,62 @@
             <li><a href="#tab_6" data-toggle="tab">TaxJar Setting</a></li>
         </ul>
         <div class="tab-content">
+            <input type="hidden" id="hfid" value="@ViewBag.id" />
             <div class="tab-pane active" id="tab_1">
                 <h2>Select Payment Method</h2>
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="authorizenet">
+                    @{
+                        var style = "checked";
+                    }
+                    @if (Convert.ToInt32(ViewBag.AuthorizeNet) == 1)
+                    {
+                        <input class="form-check-input" type="checkbox" id="authorizenet" checked="@style">
+                    }
+                    else
+                    {
+                        <input class="form-check-input" type="checkbox" value="" id="authorizenet">
+                    }
+
                     <label class="form-check-label" for="authorizenet">
                         Authorize.Net
                     </label>
                 </div>
+
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="paypalpaymet">
+                    @if (Convert.ToInt32(ViewBag.Paypal) == 1)
+                    {
+                        <input class="form-check-input" type="checkbox" value="" id="paypalpaymet" checked="@style">}
+                    else
+                    {
+                        <input class="form-check-input" type="checkbox" value="" id="paypalpaymet">
+                    }
+
                     <label class="form-check-label" for="paypalpaymet">
                         Paypal
                     </label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="amazonpay">
+                    @if (Convert.ToInt32(ViewBag.AmazonPay) == 1)
+                    {
+                        <input class="form-check-input" type="checkbox" value="" id="amazonpay" checked="@style">
+                    }
+                    else
+                    {
+                        <input class="form-check-input" type="checkbox" value="" id="amazonpay" >
+                    }
+
                     <label class="form-check-label" for="amazonpay">
                         Amazon Pay
                     </label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="creditcustomer">
+                    @if (Convert.ToInt32(ViewBag.CreditCustomer) == 1)
+                    {
+                        <input class="form-check-input" type="checkbox" value="" id="creditcustomer" checked="@style">}
+                    else
+                    {
+                        <input class="form-check-input" type="checkbox" value="" id="creditcustomer">
+                    }
                     <label class="form-check-label" for="creditcustomer">
                         Credit Customer
                     </label>
@@ -46,28 +82,29 @@
             </div>
             <!-- /.tab-pane -->
             <div class="tab-pane" id="tab_2">
+
                 <div class="form-group d-flex">
                     <label for="inputEmail3" class="col-sm-2 control-label">E-mail ID</label>
                     <div class="col-sm-10">
-                        <input type="email" class="form-control">
+                        <input type="email" class="form-control" id="email" value="@ViewBag.SenderEmailID">
                     </div>
                 </div>
                 <div class="form-group d-flex">
                     <label for="inputEmail3" class="col-sm-2 control-label">Password</label>
                     <div class="col-sm-10">
-                        <input type="password" class="form-control">
+                        <input type="password" class="form-control" id="SenderEmailPwd" value="@ViewBag.SenderEmailPwd">
                     </div>
                 </div>
                 <div class="form-group d-flex">
                     <label for="inputEmail3" class="col-sm-2 control-label">SMTP Server</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control">
+                        <input type="text" class="form-control" id="SMTPServerName" value="@ViewBag.SMTPServerName">
                     </div>
                 </div>
                 <div class="form-group d-flex">
                     <label for="inputEmail3" class="col-sm-2 control-label">SMTP Port No.</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control">
+                        <input type="text" class="form-control" id="SMTPServerPortNo" value="@ViewBag.SMTPServerPortNo">
                     </div>
                 </div>
             </div>
@@ -76,13 +113,13 @@
                 <div class="form-group d-flex">
                     <label for="inputEmail3" class="col-sm-2 control-label">Paypal Client ID:</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control">
+                        <input type="text" class="form-control" id="PaypalClientId" value="@ViewBag.PaypalClientId">
                     </div>
                 </div>
                 <div class="form-group d-flex">
                     <label for="inputEmail3" class="col-sm-2 control-label">Paypal Secret ID</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control">
+                        <input type="text" class="form-control" id="PaypalSecret" value="@ViewBag.PaypalSecret">
                     </div>
                 </div>
             </div>
@@ -90,19 +127,19 @@
                 <div class="form-group d-flex">
                     <label for="inputEmail3" class="col-sm-2 control-label">API Login ID:</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control">
+                        <input type="text" class="form-control" id="AuthorizeAPILogin" value="@ViewBag.AuthorizeAPILogin">
                     </div>
                 </div>
                 <div class="form-group d-flex">
                     <label for="inputEmail3" class="col-sm-2 control-label">Transaction Key:</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control">
+                        <input type="text" class="form-control" id="AuthorizeTransKey" value="@ViewBag.AuthorizeTransKey">
                     </div>
                 </div>
                 <div class="form-group d-flex">
                     <label for="inputEmail3" class="col-sm-2 control-label">Key:</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control">
+                        <input type="text" class="form-control" id="AuthorizeKey" value="@ViewBag.AuthorizeKey">
                     </div>
                 </div>
             </div>
@@ -110,19 +147,19 @@
                 <div class="form-group d-flex">
                     <label for="inputEmail3" class="col-sm-2 control-label">API ID:</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control">
+                        <input type="text" class="form-control" id="AmazonAPIId" value="@ViewBag.AmazonAPIId">
                     </div>
                 </div>
                 <div class="form-group d-flex">
                     <label for="inputEmail3" class="col-sm-2 control-label">User Name:</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control">
+                        <input type="text" class="form-control" id="AmazonUser" value="@ViewBag.AmazonUser">
                     </div>
                 </div>
                 <div class="form-group d-flex">
                     <label for="inputEmail3" class="col-sm-2 control-label">Password:</label>
                     <div class="col-sm-10">
-                        <input type="password" class="form-control">
+                        <input type="password" class="form-control" id="AmazonPwd" value="@ViewBag.AmazonPwd">
                     </div>
                 </div>
             </div>
@@ -130,19 +167,19 @@
                 <div class="form-group d-flex">
                     <label for="inputEmail3" class="col-sm-2 control-label">API ID:</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control">
+                        <input type="text" class="form-control" id="TaxjarAPIId" value="@ViewBag.TaxjarAPIId">
                     </div>
                 </div>
                 <div class="form-group d-flex">
                     <label for="inputEmail3" class="col-sm-2 control-label">User Name:</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control">
+                        <input type="text" class="form-control" id="TaxjarUser" value="@ViewBag.TaxjarUser">
                     </div>
                 </div>
                 <div class="form-group d-flex">
                     <label for="inputEmail3" class="col-sm-2 control-label">Password:</label>
                     <div class="col-sm-10">
-                        <input type="password" class="form-control">
+                        <input type="password" class="form-control" id="TaxjarPwd" value="@ViewBag.TaxjarPwd">
                     </div>
                 </div>
             </div>
@@ -152,7 +189,79 @@
     </div>
     <div class="setting-save text-right">
         <a class="btn btn-app">
-            <i class="fa fa-save"></i> Save
+        @*<input type="button" id="btnSave" value="Save" />*@
+        <i class="fa fa-save" id="btnSave"></i> Save
         </a>
     </div>
 </div>
+
+<script>
+    $(document).ready(function () {
+        $(document).on('click', "#btnSave", function () {
+            AddCustomer();
+        })
+      
+    });
+    
+
+    function AddCustomer() {
+        ID = $("#hfid").val();
+        Email = $("#email").val();
+        SenderEmailPwd = $("#SenderEmailPwd").val();
+        SMTPServerName = $("#SMTPServerName").val();
+        SMTPServerPortNo = $("#SMTPServerPortNo").val();
+        PaypalClientId = $("#PaypalClientId").val();
+        PaypalSecret = $("#PaypalSecret").val();
+        AuthorizeAPILogin = $("#AuthorizeAPILogin").val();
+        AuthorizeTransKey = $("#AuthorizeTransKey").val();
+        AuthorizeKey = $("#AuthorizeKey").val();
+        AmazonAPIId = $("#AmazonAPIId").val();
+        AmazonUser = $("#AmazonUser").val();
+        AmazonPwd = $("#AmazonPwd").val();
+        TaxjarAPIId = $("#TaxjarAPIId").val();
+        TaxjarUser = $("#TaxjarUser").val();
+        TaxjarPwd = $("#TaxjarPwd").val();
+
+            var obj = {
+                ID: ID,
+                SenderEmailID: Email,
+                SenderEmailPwd: SenderEmailPwd,
+                SMTPServerName: SMTPServerName,
+                SMTPServerPortNo: SMTPServerPortNo,
+                PaypalClientId: PaypalClientId,
+                PaypalSecret: PaypalSecret,
+                AuthorizeAPILogin: AuthorizeAPILogin,
+                AuthorizeTransKey: AuthorizeTransKey,
+                AuthorizeKey: AuthorizeKey,
+                AmazonAPIId: AmazonAPIId,
+                AmazonUser: AmazonUser,
+                AmazonPwd: AmazonPwd,
+                TaxjarAPIId: TaxjarAPIId,
+                TaxjarUser: TaxjarUser,
+                TaxjarPwd: TaxjarPwd,
+
+            }
+            $.ajax({
+                url: '/Setting/NewUser/', dataType: 'json', type: 'Post',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(obj),
+                dataType: "json",
+                success: function (data) {
+                    if (data.status == true) {
+                        
+                        swal('Alert!', data.message, 'success');
+                    }
+                    else {
+                        swal('Alert!', data.message, 'error')
+                    }
+                },
+                error: function (error) {
+                    swal('Error!', 'something went wrong', 'error');
+                },
+            })
+        }
+
+
+</script>
+
+

@@ -33,7 +33,8 @@
                     else
                         op.IsActive = false;
                     op.UserPassword = model.PassWord;
-                    op.GetUrl = "home/index";
+                    Session["UserId"] = op.UserID;
+                    op.GetUrl = "home/MobileVerification";
                     if (!string.IsNullOrEmpty(op.UserType) && op.UserType.Length > 5 && op.UserType.ToString().Substring(0, 2) == "a:")
                     {
                         if (op.UserType == "a:0:{}")

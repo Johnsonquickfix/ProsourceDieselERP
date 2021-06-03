@@ -440,6 +440,8 @@
     <Content Include="Content\dx\dx.light.css" />
     <Content Include="Content\AdminLTE-3.1.0\jquery\jquery.min.js" />
     <Content Include="Content\fontawesome-all.min.css" />
+    <Content Include="Content\Style11.css" />
+    <Content Include="Content\Style12.css" />
     <Content Include="css\layoutStyle.css" />
     <Content Include="css\indexStyle.css" />
     <Content Include="favicon.ico" />
@@ -595,6 +597,7 @@
     <Content Include="Views\Customer\NewUser.cshtml" />
     <Content Include="Views\Shared\_ExportLayout.cshtml" />
     <Content Include="Views\Shared\_UserLayout.cshtml" />
+    <Content Include="Views\Home\MobileVerification.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

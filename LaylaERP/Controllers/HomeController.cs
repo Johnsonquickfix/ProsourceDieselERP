@@ -3,7 +3,9 @@
     using LaylaERP.UTILITIES;
     using System;
     using System.Collections.Generic;
+    using System.Configuration;
     using System.Linq;
+    using System.Net.Mail;
     using System.Web;
     using System.Web.Mvc;
 
@@ -14,12 +16,75 @@
             CommanUtilities.Provider.RemoveCurrent();
             return View();
         }
+       
         public ActionResult Index()
         {
             return View();
         }
         public ActionResult Dashboard()
         {
+            return View();
+        }
+        public ActionResult MobileVerification()
+        {
+            Random _rdm = new Random();
+            int OTP = _rdm.Next(1000, 9999);
+            Session["OTP"] = OTP;
+
+            using (MailMessage mailMessage = new MailMessage())
+
+            {
+
+                mailMessage.From = new MailAddress(ConfigurationManager.AppSettings["UserName"], "Lyra ERP");
+
+                mailMessage.Subject = "Your OTP for verifiction....";
+
+                mailMessage.Body = "Your OTP is" + OTP;
+
+                mailMessage.IsBodyHtml = true;
+
+                mailMessage.To.Add(new MailAddress("contact.prashantpal@gmail.com"));
+
+                SmtpClient smtp = new SmtpClient();
+
+                smtp.Host = ConfigurationManager.AppSettings["Host"];
+
+                smtp.EnableSsl = Convert.ToBoolean(ConfigurationManager.AppSettings["EnableSsl"]);
+
+                System.Net.NetworkCredential NetworkCred = new System.Net.NetworkCredential();
+
+                NetworkCred.UserName = ConfigurationManager.AppSettings["UserName"]; //reading from web.config  
+
+                NetworkCred.Password = ConfigurationManager.AppSettings["Password"]; //reading from web.config  
+
+                smtp.UseDefaultCredentials = true;
+
+                smtp.Credentials = NetworkCred;
+
+                smtp.Port = int.Parse(ConfigurationManager.AppSettings["Port"]); //reading from web.config  
+
+                smtp.Send(mailMessage);
+
+            }
+
+
+
+
+            return View();
+        }
+        [HttpPost]
+        public ActionResult MobileVerification(int OTP)
+        {
+            if (Convert.ToInt32(Session["OTP"]) == OTP)
+            {
+
+                return RedirectToAction("Index", "Home");
+            }
+            else
+            {
+                ViewBag.Result = "Verification Faild...";
+            }
+
             return View();
         }
 

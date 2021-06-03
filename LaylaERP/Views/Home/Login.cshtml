@@ -18,46 +18,189 @@
     <link href="~/Content/AdminLTE-3.1.0/_all-skins.min.css" rel="stylesheet" />
     <link href="~/Content/alert/sweetalert2.min.css" rel="stylesheet" />
     <link href="~/Content/dx/dx.light.css" rel="stylesheet" />
-    <!-- jQuery -->
+    <!-- jQuery -->ss
     <script src="~/Content/AdminLTE-3.1.0/jquery/jquery.min.js"></script>
     <script src="~/Content/alert/sweetalert2.all.min.js"></script>
+
+   
+    <link href="~/Content/Style11.css" rel="stylesheet" />
+    <link href="~/Content/Style12.css" rel="stylesheet" />
+
 </head>
 <body class="hold-transition login-page">
-    <div class="login-box">
-        <div class="login-logo">
-            <a href="Login"><b>Layla </b>Sleep</a>
-        </div>
-        <!-- /.login-logo -->
-        <div class="login-box-body">
-            <p class="login-box-msg">Sign in to start your session</p>
+   
+    <div id="a-page">
+        <div class="a-section a-padding-medium auth-workflow">
+            <div class="a-section a-spacing-none auth-navbar">
 
-            <form>
-                <div class="form-group has-feedback" style="margin-top:30px;">
-                    <input type="email" id="txtUserId" class="form-control" placeholder="User Name" value="david003">
-                    <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
-                </div>
-                <div class="form-group has-feedback">
-                    <input type="password" id="txturPassword" class="form-control" placeholder="Password" value="Peter@007">
-                    <span class="glyphicon glyphicon-lock form-control-feedback"></span>
-                </div>
-                <div class="row">
-                    <div class="col-md-4">
-                    </div>
-                    <div class="col-md-12">
-                        <span class="psw"> <a href="#" onclick="swal('Please contact Admin for Password')">Forgot password?</a></span>
-                    </div>
-                </div>
-                <div class="normal" style="margin-top:30px;">
-                    <button id="btnLogin" class="btn btn-block" style="background-color:#dd4b39; color:#fff; margin-top:20px;" type="button">LOGIN</button>
-                </div>
-            </form>
+                <div class="a-section a-spacing-medium a-text-center">
 
-            <div class="social-auth-links text-center">
+                    <a class="a-link-nav-icon" tabindex="-1" href="">                      
+                        <img src="~/Images/layla1-logo.png" />                     
+                    </a>
+                </div>
+            </div>
+            <div id="authportal-center-section" class="a-section">
+
+                <div id="authportal-main-section" class="a-section">
+
+                    <div class="a-section a-spacing-base auth-pagelet-container">
+
+                    </div>
+
+                    <div class="a-section auth-pagelet-container">
+
+                        <div class="a-section a-spacing-base">
+                            <div class="a-section">
+
+                                <form name="signIn" method="post" novalidate="" action="" class="auth-validate-form auth-real-time-validation a-spacing-none" data-fwcim-id="yvbVq8CQ">
+                                    <div class="a-section">
+                                        <div class="a-box">
+                                            <div class="a-box-inner a-padding-extra-large">
+                                                <h1 class="a-spacing-small">
+                                                    Sign-In
+                                                </h1>
+                                                <!-- optional subheading element -->
+
+                                                <div class="a-row a-spacing-base">
+                                                    <label for="ap_email" class="a-form-label" id="lblEmail">
+                                                        Enter User Email
+                                                    </label>
+
+                                                    <input type="email" maxlength="128" id="txtUserId" name="Email" tabindex="1" class="a-input-text a-span12 auth-autofocus auth-required-field"  value="david003">
+
+                                                    <label for="ap_email"  id="lblPasswod" class="a-form-label">
+                                                        Enter User Password
+                                                    </label>
+                                                    <input type="password" maxlength="128" id="txturPassword" name="Pass" tabindex="1" class="a-input-text a-span12 auth-autofocus auth-required-field" value="Peter@007">
+
+                                                   
+
+                                                    <div id="auth-email-missing-alert" class="a-box a-alert-inline a-alert-inline-error auth-inlined-error-message a-spacing-top-mini" aria-live="assertive" role="alert">
+                                                        <div class="a-box-inner a-alert-container">
+                                                            <i class="a-icon a-icon-alert"></i><div class="a-alert-content">
+                                                                Enter your email or mobile phone number
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+
+
+                                                <input type="hidden" name="create" value="0">
+
+                                           
+                                                    <span class="btn btn-block" style="background-color:#dd4b39; color:#fff;">
+                                                        <span class="a-button-inner">
+                                                            <input id="btnLogin" tabindex="5" class="a-button-input" type="button" aria-labelledby="continue-announce"> <span id="btnLogin" class="a-button-text" aria-hidden="true">
+                                                                Continue
+                                                            </span>
+                                                        </span>
+                                                    </span>
+
+                                                    <div id="legalTextRow" class="a-row a-spacing-top-medium a-size-small">
+                                                        By continuing, you agree to LaylaERP <a href="">Conditions of Use</a> and <a href="">Privacy Notice</a>.
+                                                    </div>
+
+
+                                                </div>
+
+                                                <div class="a-section">
+                                                    <div aria-live="polite" class="a-row a-expander-container a-expander-inline-container">
+                                                        <a href="" data-action="a-expander-toggle" class="a-expander-header a-declarative a-expander-inline-header a-link-expander" data-a-expander-toggle="{&quot;allowLinkDefault&quot;:true, &quot;expand_prompt&quot;:&quot;&quot;, &quot;collapse_prompt&quot;:&quot;&quot;}">
+                                                            <i class="a-icon a-icon-expand"></i><span class="a-expander-prompt">
+                                                                Need help?
+                                                            </span>
+                                                        </a>
+
+                                                        <div aria-expanded="false" class="a-expander-content a-expander-inline-content a-expander-inner" style="display:none">
+
+                                                            <a id="auth-fpp-link-bottom" class="a-link-normal" href="">
+                                                                Forgot Password
+                                                            </a>
+                                                        </div>
+
+                                                        <div aria-expanded="false" class="a-expander-content a-expander-inline-content a-expander-inner" style="display:none">
+                                                            <a id="ap-other-signin-issues-link" class="a-link-normal" href="">
+                                                                Other issues with Sign-In
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <input name="metadata1" type="hidden" value="">
+                                </form>
+                            </div>
+
+
+                            <div class="a-divider a-divider-break"><h5>New to LaylaERP?</h5></div>
+                            <span id="auth-create-account-link" class="a-button a-button-span12 a-button-base">
+                                <span class="a-button-inner">
+                                    <a id="createAccountSubmit" tabindex="6" href="/Home/Register" class="a-button-text" role="button">
+                                        Create your LylaERP account
+                                    </a>
+                                </span>
+                            </span>
+
+                        </div>
+
+                    </div>
+                </div>
+
+
+            </div>
+
+            <div id="right-2">
+            </div>
+
+            <div class="a-section a-spacing-top-extra-large auth-footer">
+
+                <div class="a-divider a-divider-section"><div class="a-divider-inner"></div></div>
+
+                <div class="a-section a-spacing-small a-text-center a-size-mini">
+                    <span class="auth-footer-seperator"></span>
+
+
+                    <a class="a-link-normal" target="_blank" href="">
+                        Conditions of Use
+                    </a>
+                    <span class="auth-footer-seperator"></span>
+
+
+                    <a class="a-link-normal" target="_blank" href="">
+                        Privacy Notice
+                    </a>
+                    <span class="auth-footer-seperator"></span>
+
+
+                    <a class="a-link-normal" target="_blank" href="">
+                        Help
+                    </a>
+                    <span class="auth-footer-seperator"></span>
+
+                </div>
+
+                <div class="a-section a-spacing-none a-text-center">
+
+                    <span class="a-size-mini a-color-secondary">
+                        © 1996-2021, LaylaERP, Inc. or its affiliates
+                    </span>
+
+                </div>
 
             </div>
         </div>
-        <!-- /.login-box-body -->
+
+        <div id="auth-external-javascript" class="auth-external-javascript" data-external-javascripts="">
+        </div>
+
+        <!-- cache slot rendered -->
+
     </div>
+
     <!-- /.login-box -->
     <!-- jQuery -->
     <script src="~/Content/AdminLTE-3.1.0/jquery/jquery.min.js"></script>

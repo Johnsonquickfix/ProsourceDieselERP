@@ -23,10 +23,12 @@
             return View();
         }
         public ActionResult Dashboard()
-        {   ViewBag.totalorders = BAL.DashboardRepository.Total_Orders();
-            ViewBag.totalsales = BAL.DashboardRepository.Total_Sales();
-            ViewBag.totalcustomers = BAL.DashboardRepository.Total_Customer();
-            ViewBag.totalordercompleted = BAL.DashboardRepository.Total_Order_Completed();
+        {
+            CultureInfo us = new CultureInfo("en-US");
+            ViewBag.totalorders = Convert.ToDecimal(BAL.DashboardRepository.Total_Orders()).ToString("N0",us); //BAL.DashboardRepository.Total_Orders();
+            ViewBag.totalsales = Convert.ToDecimal(BAL.DashboardRepository.Total_Sales()).ToString("N2",us);
+            ViewBag.totalcustomers = Convert.ToDecimal(BAL.DashboardRepository.Total_Customer()).ToString("N0",us);
+            ViewBag.totalordercompleted = Convert.ToDecimal(BAL.DashboardRepository.Total_Order_Completed()).ToString("N0",us);
             return View();
         }
 

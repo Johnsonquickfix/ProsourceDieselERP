@@ -31,7 +31,7 @@
                 {
                     new MySqlParameter("@user_id", id),
                 };
-                DT = SQLHelper.ExecuteDataTable("select umeta_id,user_id,meta_key,meta_value from wp_usermeta where user_id= @user_id and (meta_key like 'billing_%' OR meta_key like 'shipping_%')", parameters);
+                DT = SQLHelper.ExecuteDataTable("select umeta_id,user_id,meta_key,meta_value from wp_usermeta where user_id= @user_id and (meta_key like 'billing_%' OR meta_key like 'shipping_%') order by meta_key", parameters);
             }
             catch (Exception ex)
             { throw ex; }
@@ -115,11 +115,11 @@
             DataTable DT = new DataTable();
             try
             {
-                string strSQl = "SELECT DISTINCT post.id,ps.ID pr_id,CONCAT(post.post_title, ' - ' ,LTRIM(REPLACE(REPLACE(COALESCE(ps.post_excerpt,''),'Size:', ''),'Color:', ''))) as post_title,COALESCE(meta_value,0) sale_price"
-                            + " ,CONCAT(post.id,'$',COALESCE(ps.id,0)) r_id,CONCAT(post.id,'$',COALESCE(ps.id,0),'$',COALESCE(pr.meta_value,0)) rd_id FROM wp_posts as post"
+                string strSQl = "SELECT DISTINCT post.id,ps.ID pr_id,CONCAT(post.post_title, ' (' , COALESCE(psku.meta_value,'') , ') - ' ,LTRIM(REPLACE(REPLACE(COALESCE(ps.post_excerpt,''),'Size:', ''),'Color:', ''))) as post_title"
+                            + " , CONCAT(post.id, '$', COALESCE(ps.id, 0)) r_id FROM wp_posts as post"
                             + " LEFT OUTER JOIN wp_posts ps ON ps.post_parent = post.id and ps.post_type LIKE 'product_variation'"
-                            + " left outer join wp_postmeta pr on pr.post_id = COALESCE(ps.id, post.id) and pr.meta_key = '_sale_price'"
-                            + " WHERE post.post_type = 'product' AND post.post_status = 'publish' AND CONCAT(post.post_title, ' - ' ,LTRIM(REPLACE(REPLACE(COALESCE(ps.post_excerpt,''),'Size:', ''),'Color:', ''))) like '%" + strSearch + "%' "
+                            + " left outer join wp_postmeta psku on psku.post_id = ps.id and psku.meta_key = '_sku'"
+                            + " WHERE post.post_type = 'product' AND post.post_status = 'publish' AND CONCAT(post.post_title, ' (' , COALESCE(psku.meta_value,'') , ') - ' ,LTRIM(REPLACE(REPLACE(COALESCE(ps.post_excerpt,''),'Size:', ''),'Color:', ''))) like '%" + strSearch + "%' "
                             + " ORDER BY post.ID limit 50;";
                 DT = SQLHelper.ExecuteDataTable(strSQl);
             }
@@ -127,5 +127,54 @@
             { throw ex; }
             return DT;
         }
+        public static OrderProductsModel GetProductDetails(long product_id, long variation_id)
+        {
+            OrderProductsModel productsModel = new OrderProductsModel();
+            try
+            {
+                DataTable DT = new DataTable();
+                MySqlParameter[] parameters =
+                {
+                    new MySqlParameter("@product_id", product_id),
+                    new MySqlParameter("@variation_id", variation_id)
+                };
+                string strSQl = "SELECT DISTINCT post.id,ps.ID pr_id,CONCAT(post.post_title, ' (' , COALESCE(psku.meta_value,'') , ') - ' ,LTRIM(REPLACE(REPLACE(COALESCE(ps.post_excerpt,''),'Size:', ''),'Color:', ''))) as post_title"
+                            + " , COALESCE(pr.meta_value, 0) price,COALESCE(psr.meta_value, 0) sale_price FROM wp_posts as post"
+                            + " LEFT OUTER JOIN wp_posts ps ON ps.post_parent = post.id and ps.post_type LIKE 'product_variation'"
+                            + " left outer join wp_postmeta psku on psku.post_id = ps.id and psku.meta_key = '_sku'"
+                            + " left outer join wp_postmeta pr on pr.post_id = ps.id and pr.meta_key = '_price'"
+                            + " left outer join wp_postmeta psr on psr.post_id = COALESCE(ps.id, post.id) and psr.meta_key = '_sale_price'"
+                            + " WHERE post.post_type = 'product' and post.id = @product_id and ps.id = @variation_id";
+                MySqlDataReader sdr = SQLHelper.ExecuteReader(strSQl, parameters);
+                while (sdr.Read())
+                {
+                    if (sdr["id"] != DBNull.Value)
+                        productsModel.product_id = Convert.ToInt64(sdr["id"]);
+                    else
+                        productsModel.product_id = 0;
+                    if (sdr["pr_id"] != DBNull.Value)
+                        productsModel.variation_id = Convert.ToInt64(sdr["pr_id"]);
+                    else
+                        productsModel.variation_id = 0;
+                    if (sdr["post_title"] != DBNull.Value)
+                        productsModel.product_name = sdr["post_title"].ToString();
+                    else
+                        productsModel.product_name = string.Empty;
+                    if (sdr["price"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["price"].ToString().Trim()))
+                        productsModel.price = decimal.Parse(sdr["price"].ToString());
+                    else
+                        productsModel.price = 0;
+                    if (sdr["sale_price"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["sale_price"].ToString().Trim()))
+                        productsModel.sale_price = decimal.Parse(sdr["sale_price"].ToString().Trim());
+                    else
+                        productsModel.sale_price = productsModel.price;
+
+                }
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return productsModel;
+        }
+
     }
 }

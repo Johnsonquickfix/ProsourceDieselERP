@@ -57,4 +57,24 @@
 
         public string comment_count { get; set; }
     }
+    public class OrderPostMetaModel
+    {
+        public long post_id { get; set; }
+
+        public string meta_key { get; set; }
+
+        public string meta_value { get; set; }
+    }
+    public class OrderProductsModel
+    {
+        public long product_id { get; set; }
+        public long variation_id { get; set; }
+        public string product_name { get; set; }
+        public decimal quantity { get; set; }
+        public decimal price { get; set; }
+        public decimal sale_price { get; set; }
+        public decimal total { get; set; }
+        public decimal discount { get; set; }
+        public decimal tax_amount { get; set; }
+    }
 }

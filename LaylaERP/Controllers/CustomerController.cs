@@ -80,6 +80,23 @@ namespace LaylaERP.Controllers
             }
             return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
         }
+        [HttpPost]
+        public JsonResult UpdateCustomer(CustomerModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (model.ID > 0)
+                {
+                    Repo.EditCustomerStatus(model, model.ID);
+                    return Json(new { status = true, message = "Customer Status has been updated successfully!!", url = "" }, 0);
+                }
+                else
+                {
+                    return Json(new { status = false, message = "Something went wrong", url = "" }, 0);
+                }
+            }
+            return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+        }
         private void Adduser_MetaData(CustomerModel model, long id)
         {
             string[] varQueryArr1 = new string[14];

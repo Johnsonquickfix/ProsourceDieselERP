@@ -1,17 +1,19 @@
 ﻿
 @{
     ViewBag.Title = "Dashboard";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
 }
  
 <div class="row d-flex align-items-center">
     <div class="col-xs-6">
-        <h2 class="page-heading gs-open">
-            Dashboard
-            <div class="sub-heading">
-                <time datetime="2021-05-24">Mon, May 26, 2021</time> - <time datetime="2021-05-30">Sun, May 26, 2021</time>
-            </div>
-        </h2>
+        <div class="page-title">
+            <h2 class="page-heading gs-open">
+                Dashboard
+                <span class="sub-heading">
+                    <time datetime="2021-05-24">Mon, May 26, 2021</time> - <time datetime="2021-05-30">Sun, May 26, 2021</time>
+                </span>
+            </h2>
+        </div>
     </div>
     <div class="col-xs-6 ">
         <div class="dropdown item pull-right">
@@ -51,9 +53,9 @@
         <!-- small box -->
         <div class="small-box bg-info">
             <div class="inner">
-                <h3>150</h3>
+                <h3>@ViewBag.totalorders</h3>
 
-                <p>New Orders</p>
+                <p>Total Orders</p>
             </div>
             <div class="icon">
                 <i class="ion ion-bag"></i>
@@ -66,9 +68,9 @@
         <!-- small box -->
         <div class="small-box bg-success">
             <div class="inner">
-                <h3>53<sup style="font-size: 20px">%</sup></h3>
+                <h3>@ViewBag.totalsales<sup style="font-size: 20px"></sup></h3>
 
-                <p>Bounce Rate</p>
+                <p>Total Sales</p>
             </div>
             <div class="icon">
                 <i class="ion ion-stats-bars"></i>
@@ -81,9 +83,9 @@
         <!-- small box -->
         <div class="small-box bg-warning">
             <div class="inner">
-                <h3>44</h3>
+                <h3>@ViewBag.totalcustomers</h3>
 
-                <p>User Registrations</p>
+                <p>Total Customers</p>
             </div>
             <div class="icon">
                 <i class="ion ion-person-add"></i>
@@ -96,9 +98,9 @@
         <!-- small box -->
         <div class="small-box bg-danger">
             <div class="inner">
-                <h3>65</h3>
+                <h3>@ViewBag.totalordercompleted</h3>
 
-                <p>Unique Visitors</p>
+                <p>Completed Orders</p>
             </div>
             <div class="icon">
                 <i class="ion ion-pie-graph"></i>

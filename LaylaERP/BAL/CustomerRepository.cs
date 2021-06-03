@@ -190,6 +190,23 @@ namespace LaylaERP.Models
             catch { }
             return dt;
         }
-       
+        public int EditCustomerStatus(CustomerModel model, long userid)
+        {
+            try
+            {
+                string strsql = "update wp_users set user_status=@user_status, user_email=@user_email where Id=" + userid + "";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@user_status", model.user_status)
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
     }
+    
 }

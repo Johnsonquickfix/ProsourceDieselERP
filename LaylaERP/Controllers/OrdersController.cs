@@ -25,7 +25,17 @@
         {
             return View();
         }
-
+        [HttpPost]
+        public JsonResult GetNewOrderNo(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                JSONresult = OrderRepository.AddOrdersPost().ToString();
+            }
+            catch { }
+            return Json(new { status = true, message = JSONresult, url = "" }, 0);
+        }
         [HttpPost]
         public JsonResult GetCustomerList(SearchModel model)
         {
@@ -64,6 +74,22 @@
             }
             catch { }
             return Json(JSONresult, 0);
+        }
+        [HttpPost]
+        public JsonResult GetProductInfo(SearchModel model)
+        {
+            OrderProductsModel obj = new OrderProductsModel();
+            try
+            {
+                long pid = 0, vid = 0;
+                if (!string.IsNullOrEmpty(model.strValue1))
+                    pid = Convert.ToInt64(model.strValue1);
+                if (!string.IsNullOrEmpty(model.strValue2))
+                    vid = Convert.ToInt64(model.strValue2);
+                obj = OrderRepository.GetProductDetails(pid, vid);
+            }
+            catch { }
+            return Json(obj, 0);
         }
     }
 }

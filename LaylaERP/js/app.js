@@ -1916,7 +1916,12 @@ var closeTab = function (item) {
     var pageId = getPageId(item);
     closeTabByPageId(pageId);
 };
-
+function sidemenu_breadcrumb(ids) {
+    $('.sidebar-menu li').removeClass('activeLink');
+    $('.sidebar-menu .treeview').removeClass('active');
+    $('.treeview-menu').removeClass('menu-open').css("display", "none");
+    $('.sidebar-menu [data-menuid="' + ids + '"]').addClass('activeLink').parents('.treeview-menu').addClass('menu-open').css("display", "block").parents('.treeview').addClass('active');
+}
 function closeTabByPageId(pageId) {
     var $title = findTabTitle(pageId);//Tab title
     var $tabPanel = findTabPanel(pageId);//With iframe
@@ -1928,11 +1933,14 @@ function closeTabByPageId(pageId) {
         //Give priority to the next tab, if not, pass it to the previous one
         var $nextTitle = $title.next();
         var activePageId;
+        
         //if ($nextTitle.size() > 0) {
         if ($nextTitle.length > 0) {
             activePageId = getPageId($nextTitle);
+            sidemenu_breadcrumb(activePageId)
         } else {
             activePageId = getPageId($title.prev());
+            sidemenu_breadcrumb(activePageId)
         }
 
         setTimeout(function () {
@@ -2262,13 +2270,13 @@ $(function () {
                 }
 
                 //header
-                var li = $('<li class="treeview " data-level="' + level + '"></li>');
-
+                var li = $('<li data-level="' + level + '" data-menuId="' + item.id+'"></li>');
+               
                 //a
                 var $a;
                 if (level > 0) {
                     //$a = $('<a style="padding-left:' + (level * 20) + 'px"></a>');
-                    $a = $('<a style="padding-left:' + (level * 10) + 'px"></a>');
+                    $a = $('<a style="padding-left:' + (level * 0) + 'px"></a>');
                 } else {
                     $a = $('<a></a>');
                 }
@@ -2342,11 +2350,16 @@ $(function () {
                     li.append($a);
                 }
                 $menu_ul.append(li);
-            });
+               });
         }
-
+        
         //In addition, the binding menu is clicked and other actions are taken.
+        $('.sidebar-menu > li:first').addClass('activeLink');
+        $(".sidebar-menu  ul li").each(function (i) {
+            $(this).parents('li').addClass('treeview');
+        });
         $menu_ul.on("click", "li.treeview a", function () {
+            
             var $a = $(this);
             //if ($a.next().size() == 0) {
             if ($a.next().length == 0) {
@@ -2354,6 +2367,10 @@ $(function () {
                     $($.AdminLTE.options.sidebarToggleSelector).click();
                 }
             }
+        });
+        $(".sidebar-menu li a[onclick]").click(function (e) {
+                $('.sidebar-menu li').removeClass('activeLink');
+                $(this).parent().addClass('activeLink');
         });
     };
 
@@ -2364,3 +2381,6 @@ $(function () {
         isHeader: false
     };
 })(jQuery);
+
+
+

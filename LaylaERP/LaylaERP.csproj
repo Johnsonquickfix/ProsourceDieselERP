@@ -155,7 +155,9 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="BAL\CustomerRepository.cs" />
+    <Compile Include="BAL\DashboardRepository.cs" />
     <Compile Include="BAL\OrderRepository.cs" />
+    <Compile Include="BAL\SettingRepository.cs" />
     <Compile Include="BAL\Users.cs" />
     <Compile Include="Controllers\AccountAPIController.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
@@ -176,6 +178,7 @@
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\OrderModel.cs" />
     <Compile Include="Models\SearchModel.cs" />
+    <Compile Include="Models\SettingModel.cs" />
     <Compile Include="Models\UsersRepositry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UTILITIES\CommanUtilities.cs" />
@@ -199,6 +202,7 @@
     <Content Include="Content\AdminLTE-3.1.0\bower_components\morris.js\morris.css" />
     <Content Include="Content\AdminLTE-3.1.0\bower_components\morris.js\morris.min.js" />
     <Content Include="Content\AdminLTE-3.1.0\bower_components\raphael\raphael.min.js" />
+    <Content Include="Content\AdminLTE-3.1.0\custom.js" />
     <Content Include="Content\AdminLTE-3.1.0\dashboard.js" />
     <Content Include="Content\AdminLTE-3.1.0\datatables\Buttons-1.6.1\css\buttons.bootstrap.css" />
     <Content Include="Content\AdminLTE-3.1.0\datatables\Buttons-1.6.1\css\buttons.bootstrap.min.css" />
@@ -597,7 +601,6 @@
     <Content Include="Views\Customer\NewUser.cshtml" />
     <Content Include="Views\Shared\_ExportLayout.cshtml" />
     <Content Include="Views\Shared\_UserLayout.cshtml" />
-    <Content Include="Views\Home\MobileVerification.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

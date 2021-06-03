@@ -52,13 +52,13 @@
 
                 mailMessage.IsBodyHtml = true;
 
-                mailMessage.To.Add(new MailAddress("contact.prashantpal@gmail.com"));
+                mailMessage.To.Add(new MailAddress("david.quickfix1@gmail.com"));
 
                 SmtpClient smtp = new SmtpClient();
 
                 smtp.Host = ConfigurationManager.AppSettings["Host"];
 
-                smtp.EnableSsl = Convert.ToBoolean(ConfigurationManager.AppSettings["EnableSsl"]);
+                //smtp.EnableSsl = Convert.ToBoolean(ConfigurationManager.AppSettings["EnableSsl"]);
 
                 System.Net.NetworkCredential NetworkCred = new System.Net.NetworkCredential();
 
@@ -72,7 +72,7 @@
 
                 smtp.Port = int.Parse(ConfigurationManager.AppSettings["Port"]); //reading from web.config  
 
-                smtp.Send(mailMessage);
+               // smtp.Send(mailMessage);
 
             }
 

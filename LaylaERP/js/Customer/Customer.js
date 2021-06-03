@@ -55,6 +55,38 @@ function AddCustomer() {
 
 }
 
+function UpdateCustomerStatus() {
+    debugger
+    BillingPhone = $("#txtBillingPhone").val();
+
+    if (Email == "") { swal('alert', 'Please Enter Email', 'error') }
+   
+    else {
+        var obj = {
+             billing_phone: BillingPhone
+        }
+        $.ajax({
+            url: '/Customer/UpdateCustomer/', dataType: 'json', type: 'Post',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(obj),
+            dataType: "json",
+            success: function (data) {
+                if (data.status == true) {
+                    $('#parent > input:text').val('');
+                    swal('Alert!', data.message, 'success');
+                }
+                else {
+                    swal('Alert!', data.message, 'error')
+                }
+            },
+            error: function (error) {
+                swal('Error!', 'something went wrong', 'error');
+            },
+        })
+    }
+
+}
+
 function getdatabyzip() {
     var BillingPostcode = $("#txtBillingPostCode").val();
     $.ajax({

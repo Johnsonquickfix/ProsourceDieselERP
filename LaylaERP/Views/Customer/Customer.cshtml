@@ -17,7 +17,7 @@
 </section>
 <section class="content">
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="form-group">
                 <select class="form-control select2" id="ddlStatus" placeholder="Select User">
                     <option value="0">Active</option>
@@ -25,7 +25,7 @@
                 </select>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="form-group">
                 <input type="text" id="txtSearch" class="form-control" placeholder="Search" />
             </div>
@@ -35,15 +35,20 @@
             <button type="button" id="btnSearch" class="btn btn-primary btn-flat"><i class="fa fa-search"></i> Search</button>
         </div>
         <div class="col-sm-2">
+            <button type="button" id="btnUpdate" class="btn btn-primary btn-flat"><i class="fas fa-edit"></i> Update All</button>
+        </div>
+        <div class="col-sm-2">
             <a href="../../Customer/NewUser" class="btn btn-primary btn-flat"><i class="fa fa-user"></i> Add New User</a>
         </div>
+
+
     </div>
     <div class="row">
         <div class="col-md-12">
             <table id="dtdata" class="table table-bordered table-striped dataTable" width="100%">
                 <thead>
                     <tr>
-                        <th><input type="checkbox" id="chkall" name="CheckAll" /> Check All</th>
+                        <th><input type="checkbox" name="checkAll" id="checkAll"> Check All</th>
                         <th>Cust ID</th>
                         <th>Customer Name</th>
                         <th>E-mail</th>
@@ -64,12 +69,12 @@
         $("#btnSearch").click(function () { dataGridLoad(); return false; });
         setTimeout(function () { dataGridLoad(); }, 50);
     });
-
     function dataGridLoad() {
         var urid = parseInt($("#ddlStatus").val()) || 0;
         var sid = $('#txtSearch').val();
         var obj = { user_status: urid, Search: sid, PageNo: 0, PageSize: 10, sEcho: 1 };
         $('#dtdata').DataTable({
+            columnDefs: [{ "orderable": false, "targets": 0 }], order: [],
             destroy: true, bProcessing: true, bServerSide: true,
             sPaginationType: "full_numbers", searching: false, ordering: true, lengthChange: true,
             bAutoWidth: true, scrollX: true, scrollY: ($(window).height() - 215),
@@ -90,9 +95,8 @@
             aoColumns: [
                 {
                     'data': 'id', sWidth: "10%" ,
-                    'render': function (id, type, full, meta) {
-                        debugger
-                        return '<input type="checkbox" id="chkSingle" value="' + id + '">'
+                    'render': function (data, type, full, meta) {
+                        return '<input type="checkbox" name="" id="CheckSingle" value="' + $('<div/>').text(data).html() + '">';
                     }
                 },
                 { data: 'id', title: 'Cust ID', sWidth: "10%" },
@@ -102,14 +106,33 @@
                 { data: 'meta_value', title: 'Phone', sWidth: "10%" },
                 { data: 'user_registered', title: 'Registration Date', sWidth: "10%" },
                 {
-                    'data': 'id',
+                    'data': 'id', sWidth: "5%",
                     'render': function (id, type, full, meta) {
-                        debugger
                         return '<a href="../Customer/NewUser/' + id + '"><i class="glyphicon glyphicon-pencil"></i></a>'
                     }
                 }
             ]
         });
     }
+    $('#checkAll').click(function () {
+        debugger
+        var isChecked = $(this).prop("checked");
+        $('#dtdata tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
+        
+    });
+    $('#dtdata tr:has(td)').find('input[type="checkbox"]').click(function () {
+        var isChecked = $(this).prop("checked");
+        var isHeaderChecked = $("#checkAll").prop("checked");
+        if (isChecked == false && isHeaderChecked)
+            $("#checkAll").prop('checked', isChecked);
+        
+        else {
+            $('#dtdata tr:has(td)').find('input[type="checkbox"]').each(function () {
+                if ($(this).prop("checked") == false)
+                    isChecked = false;
+            });
+            $("#checkAll").prop('checked', isChecked);
+        }
+    });
 
 </script>

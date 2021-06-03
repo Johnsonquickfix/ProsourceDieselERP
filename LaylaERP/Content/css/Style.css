@@ -28,6 +28,7 @@
     flex: 1 1 auto;
     padding: 1.25rem;
 }
+
 .select2-container--default .select2-selection--single, .select2-selection .select2-selection--single {
     border: 1px solid #d2d6de;
     border-radius: 0;
@@ -67,6 +68,45 @@ legend {
     background-color: #ffffff;
 }
 
-element.style {
+.tablelist_wrapper {
+    padding: 0px;
+}
+
+.tablelist {
+    background: #fff;
+    table-layout: fixed;
+    border: 1px solid #ccd0d4;
+    box-shadow: 0 1px 1px rgb(0 0 0 / 4%);
+    border-spacing: 0;
+    width: 100%;
+    clear: both;
+    margin: 0;
+}
+
+    .tablelist thead th {
+        border-bottom: 1px solid #ccd0d4;
+    }
+
+table.dataTable tbody td.select-checkbox:before, table.dataTable tbody td.select-checkbox:after, table.dataTable tbody th.select-checkbox:before, table.dataTable tbody th.select-checkbox:after {
+    width: 16px !important;
+    height: 16px !important;
+    border: 1px solid #7e8993 !important;
+}
+
+.table-bordered > thead > tr > th, .table-bordered > tbody > tr > th, .table-bordered > tfoot > tr > th, .table-bordered > thead > tr > td, .table-bordered > tbody > tr > td, .table-bordered > tfoot > tr > td {
+    border: 0px;
+}
+
+.tablelist tbody .odd {
+    background-color: #f9f9f9;
+}
+
+.tablelist tbody .even {
+    background-color: #fff;
+}
+
+.tablelist th, .tablelist td {
+    padding: 12px 10px;
+    color: #555;
 }
 

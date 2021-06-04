@@ -14,17 +14,18 @@ namespace LaylaERP.Controllers
     {
         //SettingRepository Repo = null;
         // GET: Setting
-        public ActionResult Setting()
+        public ActionResult Setting(SettingModel model)
         {
             string JSONresult = string.Empty;
             try
             {
                 DataTable DT = SettingRepository.DisplaySettings();
                 ViewBag.AuthorizeNet = DT.Rows[0]["AuthorizeNet"].ToString();
+                
                 ViewBag.id = DT.Rows[0]["ID"].ToString();
                 ViewBag.Paypal = DT.Rows[0]["Paypal"].ToString();
                 ViewBag.AmazonPay = DT.Rows[0]["AmazonPay"].ToString();
-                ViewBag.CreditCustomer = DT.Rows[0]["AmazonPay"].ToString();
+                ViewBag.CreditCustomer = DT.Rows[0]["CreditCustomer"].ToString();
                 ViewBag.SenderEmailID = DT.Rows[0]["SenderEmailID"].ToString();
                 ViewBag.SenderEmailPwd = DT.Rows[0]["SenderEmailPwd"].ToString();
                 ViewBag.SMTPServerName = DT.Rows[0]["SMTPServerName"].ToString();
@@ -86,7 +87,7 @@ namespace LaylaERP.Controllers
             return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
         }
 
-
+        //Code for setting start
         private void Update_Setting(SettingModel model, long id)
         {
             string email = model.SenderEmailID;
@@ -109,7 +110,7 @@ namespace LaylaERP.Controllers
         }
 
         [HttpPost]
-        public JsonResult NewUser(SettingModel model)
+        public JsonResult settingdone(SettingModel model)
         {
             if (ModelState.IsValid)
             {
@@ -123,6 +124,6 @@ namespace LaylaERP.Controllers
             return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
         }
 
-        
+        //Code for setting end
     }
 }

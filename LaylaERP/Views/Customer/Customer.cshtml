@@ -45,7 +45,7 @@
     </div>
     <div class="row">
         <div class="col-md-12">
-            <table id="dtdata" class="table table-bordered table-striped dataTable" width="100%">
+            <table id="dtdata" class="table table-bordered table-striped dataTable " width="100%">
                 <thead>
                     <tr>
                         <th><input type="checkbox" name="checkAll" id="checkAll"> Check All</th>
@@ -74,7 +74,7 @@
         var sid = $('#txtSearch').val();
         var obj = { user_status: urid, Search: sid, PageNo: 0, PageSize: 10, sEcho: 1 };
         $('#dtdata').DataTable({
-            columnDefs: [{ "orderable": false, "targets": 0 }], order: [],
+            columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
             destroy: true, bProcessing: true, bServerSide: true,
             sPaginationType: "full_numbers", searching: false, ordering: true, lengthChange: true,
             bAutoWidth: true, scrollX: true, scrollY: ($(window).height() - 215),

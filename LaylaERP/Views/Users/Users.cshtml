@@ -143,7 +143,8 @@
                     "type": 'GET',
                     "dataType": 'json',
                 },
-                lengthMenu: [[10, 20, 50, 100], [10, 20, 50, 100]],
+                lengthMenu: [[10, 20, 50, 100], [10, 20, 50, 100]],                   
+
                 "columns": [
                     { 'data': '', 'sWidth': "5%" },
                     { 'data': 'ID', 'sWidth': "5%" },
@@ -153,16 +154,18 @@
                     { 'data': 'my', 'sWidth': "30%" },
                 ],
 
-
                 columnDefs: [{
                     orderable: false,
                     className: 'select-checkbox',
                     targets: 0,
+                    'checkboxes': {
+                        'selectRow': true
+                    },
                     data: null,
                     defaultContent: '',
                 }],
                 "select": {
-                    "style": 'os',
+                    "style": 'multi',
                     "selector": 'td:first-child'
                 },
                 "order": [[1, 'desc']],

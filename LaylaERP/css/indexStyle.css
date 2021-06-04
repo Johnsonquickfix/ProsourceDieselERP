@@ -111,7 +111,9 @@ max-height:120px;}
 .treeview.activeLink .nav-link {
 background:#000 !important; color:#fff !important;}
 .activeLink a {
-color:#fff !important; background:#000 !important;}
+    color: #fff !important;
+    background: #ff4100 !important;
+}
 .sidebar-menu .active > a > .pull-right-container > .fa-angle-left {
     -webkit-transform: rotate( -90deg );
     -ms-transform: rotate(-90deg);
@@ -131,7 +133,7 @@ border-left:0px solid transparent;
 .skin-blue .sidebar-menu > li > a {
 border:0px;}
 .skin-blue .sidebar-menu > li:hover > a, .skin-blue .sidebar-menu > li.active > a, .skin-blue .sidebar-menu > li.menu-open > a {
-    background: #949494;
+    background: #adadad;
     /*color: #000;*/
 }
 .skin-blue .sidebar-menu > li > .treeview-menu {

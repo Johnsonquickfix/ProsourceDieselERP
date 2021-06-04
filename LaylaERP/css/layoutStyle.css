@@ -215,3 +215,6 @@ font-weight:400; margin:0px; user-select:none;}
 }
 .mt-1 {
 margin-top:.5rem;   }
+.nav-tabs-custom > .nav-tabs > li.active {
+    border-top-color: #ff4100;
+}

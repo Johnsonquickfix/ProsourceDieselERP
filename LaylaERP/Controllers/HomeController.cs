@@ -34,6 +34,7 @@
             ViewBag.totalordercompleted = Convert.ToDecimal(BAL.DashboardRepository.Total_Order_Completed()).ToString("N0",us);
             return View();
         }
+
         public ActionResult MobileVerification()
         {
             Random _rdm = new Random();

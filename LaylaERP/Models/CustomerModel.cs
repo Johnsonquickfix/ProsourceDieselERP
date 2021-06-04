@@ -6,14 +6,14 @@ using System.Web;
 
 namespace LaylaERP.Models
 {
-    public class CustomerModel
+    public class CustomerModel : PaggingModel
     {
         public long ID { get; set; }
         public string user_login { get; set; }
-        [Display(Name ="Nick Name")]
+        [Display(Name = "Nick Name")]
         [Required]
         public string user_nicename { get; set; }
-        [Display(Name ="Email")]
+        [Display(Name = "Email")]
         [Required]
         [RegularExpression(@"^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$", ErrorMessage = "Please enter a valid e-mail adress")]
         public string user_email { get; set; }
@@ -59,9 +59,6 @@ namespace LaylaERP.Models
         public string meta_value { get; set; }
         public long umeta_id { get; set; }
         public long user_id { get; set; }
-        public int PageNo { get; set; }
-        public int PageSize { get; set; }
-        public int sEcho { get; set; }
         public string Search { get; set; }
 
     }

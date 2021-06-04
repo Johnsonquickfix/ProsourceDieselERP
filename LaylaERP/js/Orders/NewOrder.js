@@ -25,7 +25,7 @@ $(document).ready(function () {
             error: function (xhr, status, err) { }, cache: true
         }
     });
-    $("#ddlProduct").change(function () { getItemList(); });
+    $("#ddlProduct").change(function () { if ($('#ddlProduct').val() == null) return false; getItemList(); $('#ddlProduct').val('').trigger('change'); });
     $(document).on("click", "#btnApplyCoupon", function (t) { t.preventDefault(); CouponModal(); });
     //$(document).on("click", "#btnAddItem", function (t) { t.preventDefault(); ProductModal(); });
     //$("#billModal").on("change", ".ddlTempProductFooter", function (t) { t.preventDefault(); ProductModalItemRow(); });
@@ -96,7 +96,7 @@ function CustomerAddress() {
         $('#txtbillfirstname,#txtbilllastname,#txtbillcompany,#txtbilladdress1,#txtbilladdress2,#txtbillzipcode,#txtbillcity,#txtbillemail,#txtbillphone').val('');
         $('#ddlbillcountry').val('US').trigger('change');
         $('#txtshipfirstname,#txtshiplastname,#txtshipcompany,#txtshipaddress1,#txtshipaddress2,#txtshipzipcode,#txtshipcity').val('');
-        $('#ddlshipcountry').val('US').trigger('change');
+        $('#ddlshipcountry').val('US').trigger('change'); $('#hfTaxRate').val('0');
     }
 }
 ///Get New Order No
@@ -104,9 +104,7 @@ function GetTaxRate() {
     var opt = { strValue1: $("#txtshipzipcode").val(), strValue2: $("#txtshipcity").val(), strValue3: $("#ddlshipcountry").val() };
     $.ajax({
         type: "POST", url: '/Orders/GetTaxRate', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
-        success: function (result) {
-            console.log(result.message);
-        },
+        success: function (result) { $('#hfTaxRate').val(result.message); },
         error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
         async: false
     });
@@ -240,13 +238,14 @@ function getItemList() {
     var res = $('#ddlProduct').val().split('$');
     var pid = parseInt(res[0]) || 0, vid = parseInt(res[1]) || 0;
     var obj = { strValue1: pid, strValue2: vid };
+    var tax_rate = parseFloat($('#hfTaxRate').val()) || 0.00;
     $.ajax({
         type: "POST", url: '/Orders/GetProductInfo', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
         success: function (data) {
             console.log(data);
             var itemsDetailsxml = [];
             itemsDetailsxml.push({
-                "PKey": data.product_id + '_' + data.variation_id, "product_id": data.product_id, "variation_id": data.variation_id, "product_name": data.product_name, "quantity": 1, "sale_rate": data.sale_price, "total": (data.sale_price * 1), "discount": 0, "tax_amount": 0.00
+                "PKey": data.product_id + '_' + data.variation_id, "product_id": data.product_id, "variation_id": data.variation_id, "product_name": data.product_name, "quantity": 1, "sale_rate": data.sale_price, "total": (data.sale_price * 1.0), "discount": 0, "tax_amount": (((data.sale_price * 1.0) * tax_rate) / 100).toFixed(2)
             });
             bindItemListDataTable(itemsDetailsxml);
         },
@@ -267,8 +266,9 @@ function bindItemListDataTable(data) {
                     layoutHtml += '<td>' + data[i].product_name + '</td>';
                     layoutHtml += '<td class="text-right">' + data[i].sale_rate + '</td>';
                     layoutHtml += '<td><input class="form-control billinfo number" type="number" id="txt_ItemQty_' + data[i].PKey + '" value="' + data[i].quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
-                    layoutHtml += '<td class="TotalAmount text-right" data-salerate="' + data[i].sale_rate + '" data-discount="' + data[i].discount + '" data-amount="' + data[i].total + '">' + data[i].total + '</td>';
+                    layoutHtml += '<td class="TotalAmount text-right" data-salerate="' + data[i].sale_rate + '" data-discount="' + data[i].discount + '" data-amount="' + data[i].total + '" data-taxamount="' + data[i].tax_amount + '">' + data[i].total + '</td>';
                     layoutHtml += '<td class="text-right">' + data[i].discount + '</td>';
+                    layoutHtml += '<td class="text-right">' + data[i].tax_amount + '</td>';
                     layoutHtml += '</tr>';
                 }
                 else {
@@ -282,7 +282,6 @@ function bindItemListDataTable(data) {
         //$('.number').numeric({ allowThouSep: false, maxDecimalPlaces: 2 });
         // Bind calcLineAmount function to each textbox and send parent TR
         $("#divAddItemFinal").find("input:text").blur(function () { calcLineAmount(this, $(this).parents('tr')[0]); });
-        $("#divAddItemFinal").find(".ddl_ItemDiscOn").change(function (event) { calcLineAmount(this, $(this).parents('tr')[0]); });
 
         //calcLineAmount($('#txt_ItemQty_' + data[0].ItemId), $($('#txt_ItemQty_' + data[0].ItemId)).parents('tr')[0]);
     }
@@ -292,14 +291,73 @@ function bindItemListDataTable(data) {
         layoutHtml += '<tr>';
         layoutHtml += '<th class="text-center" style="width: 5%">Actions</th>';
         layoutHtml += '< th style = "width: 55%" > Item</th >';
-        layoutHtml += '<th class="text-right" style="width: 10%">Sale Price</th>';
-        layoutHtml += '<th class="text-right" style="width: 10%">Quantity</th>';
-        layoutHtml += '<th class="text-right" style="width: 10%">Total</th>';
-        layoutHtml += '<th class="text-right" style="width: 10%">Discount</th>';
+        layoutHtml += '<th class="text-right" style="width: 8%">Sale Price</th>';
+        layoutHtml += '<th class="text-right" style="width: 8%">Quantity</th>';
+        layoutHtml += '<th class="text-right" style="width: 8%">Total</th>';
+        layoutHtml += '<th class="text-right" style="width: 8%">Discount</th>';
+        layoutHtml += '<th class="text-right" style="width: 8%">Tax</th>';
         layoutHtml += '</tr>';
         layoutHtml += '</thead>';
         layoutHtml += '<tbody></tbody>';
         layoutHtml += '</table>';
         $('#divAddItemFinal').empty().html(layoutHtml);
     }
+    calcFinalTotals();
+}
+
+//------ Calculate Rows Amount --------------------------------
+function calcRowAmount(objControl, objRow) // objRow is row object
+{
+    var zMRP = 0.00, zQty = 0.00, zDiscOn = 'A', zSaleDisc1 = 0.00, zCGSTPer = 0.00, zSGSTPer = 0.00, zIGSTPer = 0.00;
+
+    zMRP = parseFloat($(objRow).data("rate")) || 0.00;
+    zQty = parseFloat($(objRow).find("[name=txt_ItemQty]").val());
+    zDiscOn = $(objRow).data("don");
+    zSaleDisc1 = parseFloat($(objRow).data("dby")) || 0.00;
+
+    zCGSTPer = parseFloat($(objRow).data("cper")) || 0.00;
+    zSGSTPer = parseFloat($(objRow).data("sper")) || 0.00;
+    zIGSTPer = parseFloat($(objRow).data("iper")) || 0.00;
+
+    /// Gross Amount
+    var zGrossAmount = zMRP * zQty;
+    var zDisAmt = 0.00;
+    // Discount
+    if (zDiscOn == "A") { zDisAmt = ((parseFloat(zGrossAmount) * parseFloat(zSaleDisc1)) / 100); }
+    else if (zDiscOn == "F") { zDisAmt = parseFloat(zSaleDisc1); }
+    else if (zDiscOn == "Q") { zDisAmt = (parseFloat(zMRP) * parseFloat(zSaleDisc1)); }
+    $(objRow).data("damt", zDisAmt.toFixed(2));
+    //Taxation 
+    // GST
+    var zCGSTAmt = 0.00, zSGSTAmt = 0.00, zIGSTAmt = 0.00, zTotalTax = 0.00;
+    $(objRow).find(".GrossAmount").text((zGrossAmount).toFixed(2)); $(objRow).data("gamt", zGrossAmount.toFixed(2));
+    zGrossAmount = zGrossAmount - zDisAmt;
+
+    zCGSTAmt = parseFloat(((parseFloat(zGrossAmount) * parseFloat(zCGSTPer)) / 100));
+    $(objRow).data('camt', zCGSTAmt);
+    zSGSTAmt = parseFloat(((parseFloat(zGrossAmount) * parseFloat(zSGSTPer)) / 100));
+    $(objRow).data('samt', zSGSTAmt);
+    zIGSTAmt = parseFloat(((parseFloat(zGrossAmount) * parseFloat(zIGSTPer)) / 100));
+    $(objRow).data('iamt', zIGSTAmt);
+    zTotalTax = parseFloat(zCGSTAmt) + parseFloat(zSGSTAmt) + parseFloat(zIGSTAmt);
+
+    $(objRow).data("amt", (zGrossAmount + zTotalTax).toFixed(2));
+    calcFinalTotals();
+}
+function calcFinalTotals() {
+    //TTotal
+    var zQty = 0.00, zGAmt = 0.00, zTDiscount = 0.00, zTotalTax = 0.00;
+    var rowCount = $('#tblAddItemFinal >tbody >tr').length;
+    $("#tblAddItemFinal > tbody  > tr").each(function () {
+        zQty = zQty + (parseFloat($(this).find("[name=txt_ItemQty]").val()) || 0.00);
+        zGAmt = zGAmt + parseFloat($(this).find(".TotalAmount").data("amount"));
+        zTDiscount = zTDiscount + parseFloat($(this).find(".TotalAmount").data("discount"));
+        zTotalTax = zTotalTax + parseFloat($(this).find(".TotalAmount").data("taxamount"));
+    });
+    $("#SubTotal").text(zGAmt.toFixed(2));
+    $("#discountTotal").text(zTDiscount.toFixed(2));
+    $("#salesTaxTotal").text(zTotalTax.toFixed(2));
+    //$("#ts_con").text(zTotalTax.toFixed(2));
+    //$("#total-payable").text((zGAmt - zTDiscount + zTotalTax).toFixed(2));
+    $("#orderTotal").html((zGAmt - zTDiscount + zTotalTax).toFixed(2));
 }

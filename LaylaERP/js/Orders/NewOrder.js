@@ -98,6 +98,18 @@ function CustomerAddress() {
         $('#ddlshipcountry').val('US').trigger('change');
     }
 }
+///Get New Order No
+function GetTaxRate() {
+    var opt = { strValue1: '' };
+    //$.ajax({
+    //    type: "POST", url: '/Orders/GetNewOrderNo', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
+    //    success: function (result) {
+    //        $('#hfOrderNo').val(result.message); $('#lblOrderNo').text('Order #' + result.message + ' detail ');
+    //    },
+    //    error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
+    //    async: false
+    //});
+}
 
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Post and Post Meta ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function getPostMeta() {
@@ -142,7 +154,7 @@ function CouponModal() {
     myHtml += '<h4 class="modal-title" id="myModalLabel">Apply Coupon</h4>';
     myHtml += '</div>';
     myHtml += '<div class="modal-body">Enter a coupon code to apply. Discounts are applied to line totals, before taxes.';
-    myHtml += '<input class="number" type="text" id="txt_Coupon" name="txt_Coupon" placeholder="Coupon Code" maxlength="25">';
+    myHtml += '<input class="form-control number" type="text" id="txt_Coupon" name="txt_Coupon" placeholder="Coupon Code" maxlength="25">';
     myHtml += '</div > ';
     myHtml += '<div class="modal-footer">';
     myHtml += '<button type="button" class="btn btn-primary" id="btnAddItemFinal">Add</button>';
@@ -150,7 +162,7 @@ function CouponModal() {
     myHtml += '</div>';
     myHtml += '</div>';
     $("#billModal").empty().html(myHtml);
-    $("#billModal").modal({ backdrop: 'static' });
+    $("#billModal").modal({ backdrop: 'static' }); $("#txt_Coupon").focus();
 }
 ///Add Modal Product
 function ProductModal() {
@@ -205,7 +217,7 @@ function ProductModalItemRow() {
     myHtml += '</select > ';
     myHtml += '</td> ';
     myHtml += '<td style="text-align:right; border-bottom: 1px solid #EEE;width: 20%;">';
-    myHtml += '<input class="number" type="number" id="txt_TempQty_1" value="1" name="txt_TempQty" placeholder="Qty">';
+    myHtml += '<input class="form-control number" type="number" id="txt_TempQty_1" value="1" name="txt_TempQty" placeholder="Qty">';
     myHtml += '</td>';
     myHtml += '</tr>';
     $('.ddlTempProductFooter').val('').trigger('change');
@@ -253,7 +265,7 @@ function bindItemListDataTable(data) {
                     layoutHtml += '<td class="text-center"><a class="btn menu-icon-gr vd_red btnDeleteItem billinfo" tabitem_itemid="' + data[i].PKey + '" onclick="removeItemsInTable(' + data[i].PKey + ');"> <i class="glyphicon glyphicon-trash"></i> </a></td>';
                     layoutHtml += '<td>' + data[i].product_name + '</td>';
                     layoutHtml += '<td class="text-right">' + data[i].sale_rate + '</td>';
-                    layoutHtml += '<td><input class="billinfo number" type="number" id="txt_ItemQty_' + data[i].PKey + '" value="' + data[i].quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
+                    layoutHtml += '<td><input class="form-control billinfo number" type="number" id="txt_ItemQty_' + data[i].PKey + '" value="' + data[i].quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
                     layoutHtml += '<td class="TotalAmount text-right" data-salerate="' + data[i].sale_rate + '" data-discount="' + data[i].discount + '" data-amount="' + data[i].total + '">' + data[i].total + '</td>';
                     layoutHtml += '<td class="text-right">' + data[i].discount + '</td>';
                     layoutHtml += '</tr>';

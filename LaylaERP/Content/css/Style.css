@@ -83,8 +83,8 @@ legend {
     margin: 0;
 }
 
-    .tablelist thead th {
-        border-bottom: 1px solid #ccd0d4;
+    .tablelist thead tr th {
+        border-bottom: 1px solid #ccd0d4 !important;
     }
 
 table.dataTable tbody td.select-checkbox:before, table.dataTable tbody td.select-checkbox:after, table.dataTable tbody th.select-checkbox:before, table.dataTable tbody th.select-checkbox:after {

@@ -181,3 +181,37 @@ margin-bottom:35px;}
 .sm-heading {
     font-size:22px; margin-top:0px;
 }
+.form-check label {position:relative; padding-left:25px;
+font-weight:400; margin:0px; user-select:none;}
+.form-check [type="checkbox"] {
+    opacity: 0;display:none;
+    visibility: hidden;
+}
+.form-check label:before {
+    content: "";
+    position: absolute;
+    left: 0px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    border: 1px solid #7e8993;
+    border-radius: 2px;
+}
+.form-check label:after {
+    content: ""; opacity:0;
+    left: 3px;
+    top: 50%; margin-top:-5px;
+    width: 12px;
+    height: 6px;
+    border-width: 0px 0px 1px 1px;
+    border-color: #dc3545;
+    border-style: solid;
+    position: absolute; transition:.5s all;
+    transform: rotate( 310deg );
+}
+.form-check [type="checkbox"]:checked + label:after {
+    opacity: 1;
+}
+.mt-1 {
+margin-top:.5rem;   }

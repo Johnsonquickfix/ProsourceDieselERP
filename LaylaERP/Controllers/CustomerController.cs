@@ -35,7 +35,7 @@ namespace LaylaERP.Controllers
                 if (model.user_status > 0)
                     urid = Convert.ToInt32(model.user_status);
                 string searchid = model.Search;
-                DataTable dt = CustomerRepository.CustomerList(urid, searchid, model.PageNo, model.PageSize, out TotalRecord);
+                DataTable dt = CustomerRepository.CustomerList(urid, searchid, model.PageNo, model.PageSize, out TotalRecord, model.SortCol,model.SortDir);
                 result = JsonConvert.SerializeObject(dt);
             }
             catch { }

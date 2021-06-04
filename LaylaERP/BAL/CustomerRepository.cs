@@ -162,7 +162,7 @@ namespace LaylaERP.Models
                 throw Ex;
             }
         }
-        public static DataTable CustomerList(int userstatus,string searchid, int pageno, int pagesize, out int totalrows)
+        public static DataTable CustomerList(int userstatus,string searchid, int pageno, int pagesize, out int totalrows,string SortCol = "id", string SortDir = "DESC")
         {
             DataTable dt = new DataTable();
             totalrows = 0;
@@ -174,11 +174,11 @@ namespace LaylaERP.Models
                              + " from wp_users ur INNER JOIN wp_usermeta um on um.meta_key='wp_capabilities' And um.user_id = ur.ID And um.meta_value LIKE '%customer%'"
                              + " LEFT OUTER JOIN wp_usermeta umph on umph.meta_key='billing_phone' And umph.user_id = ur.ID WHERE 1 = 1";
                 if (!string.IsNullOrEmpty(searchid)) {
-                    strWhr += " and (User_Email='"+ searchid + "' OR User_Login='" + searchid + "' OR user_nicename='" + searchid + "' OR ID='" + searchid + "' )"; 
+                    strWhr += " and (User_Email like '%"+ searchid + "%' OR User_Login='%" + searchid + "%' OR user_nicename='%" + searchid + "%' OR ID='%" + searchid + "%' )"; 
                 }
                 strWhr += " and (ur.user_status='"+userstatus+"') ";
              
-                strSql += strWhr + " order by id DESC  LIMIT " + (pageno * pagesize).ToString() + ", " + pagesize.ToString();
+                strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}" , SortCol, SortDir, (pageno * pagesize).ToString() , pagesize.ToString());
 
                 strSql += "; SELECT ceil(Count(ur.id)/" + pagesize.ToString() + ") TotalPage,Count(ur.id) TotalRecord from wp_users ur INNER JOIN wp_usermeta um on um.meta_key='wp_capabilities' And um.user_id = ur.ID And um.meta_value LIKE '%customer%' WHERE 1 = 1 " + strWhr.ToString();
 

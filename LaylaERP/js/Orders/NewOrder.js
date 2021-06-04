@@ -29,7 +29,7 @@ $(document).ready(function () {
     $(document).on("click", "#btnApplyCoupon", function (t) { t.preventDefault(); CouponModal(); });
     //$(document).on("click", "#btnAddItem", function (t) { t.preventDefault(); ProductModal(); });
     //$("#billModal").on("change", ".ddlTempProductFooter", function (t) { t.preventDefault(); ProductModalItemRow(); });
-    
+    $(document).on("blur", "#txtshipzipcode", function (t) { t.preventDefault(); GetTaxRate(); });
 });
 ///Bind States of Country
 function BindStateCounty(ctr, obj) {
@@ -89,6 +89,7 @@ function CustomerAddress() {
             complete: function () { $('.billinfo').prop("disabled", false); },
             async: false
         });
+        GetTaxRate();
     }
     else {
         $('.billinfo').prop("disabled", true);
@@ -100,15 +101,15 @@ function CustomerAddress() {
 }
 ///Get New Order No
 function GetTaxRate() {
-    var opt = { strValue1: '' };
-    //$.ajax({
-    //    type: "POST", url: '/Orders/GetNewOrderNo', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
-    //    success: function (result) {
-    //        $('#hfOrderNo').val(result.message); $('#lblOrderNo').text('Order #' + result.message + ' detail ');
-    //    },
-    //    error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
-    //    async: false
-    //});
+    var opt = { strValue1: $("#txtshipzipcode").val(), strValue2: $("#txtshipcity").val(), strValue3: $("#ddlshipcountry").val() };
+    $.ajax({
+        type: "POST", url: '/Orders/GetTaxRate', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
+        success: function (result) {
+            console.log(result.message);
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
+        async: false
+    });
 }
 
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Post and Post Meta ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

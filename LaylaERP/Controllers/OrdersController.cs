@@ -2,6 +2,7 @@
 {
     using BAL;
     using Models;
+    using UTILITIES;
     using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
@@ -90,6 +91,17 @@
             }
             catch { }
             return Json(obj, 0);
+        }
+        [HttpPost]
+        public JsonResult GetTaxRate(SearchModel model)
+        {
+            decimal JSONresult = 0;
+            try
+            {
+                JSONresult = clsTaxJar.GetTaxCombinedRate(model.strValue1, model.strValue2, model.strValue3);
+            }
+            catch (Exception ex) { }
+            return Json(new { status = true, message = JSONresult, url = "" }, 0);
         }
     }
 }

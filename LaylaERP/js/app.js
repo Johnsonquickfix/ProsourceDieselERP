@@ -2369,8 +2369,11 @@ $(function () {
             }
         });
         $(".sidebar-menu li a[onclick]").click(function (e) {
-                $('.sidebar-menu li').removeClass('activeLink');
-                $(this).parent().addClass('activeLink');
+            $('.sidebar-menu li').removeClass('activeLink');
+            $('.sidebar-menu .treeview').removeClass('active');
+            $('.sidebar-menu li').removeClass('activeLink');
+            $('.treeview-menu').removeClass('menu-open').css("display", "none");
+            $(this).parent().addClass('activeLink').parents('.treeview-menu').addClass('menu-open').css("display", "block").parents('.treeview').addClass('active');
         });
     };
 

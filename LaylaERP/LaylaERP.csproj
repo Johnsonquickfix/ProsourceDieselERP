@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props')" />
   <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -27,7 +26,6 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <TargetFrameworkProfile />
-    <TypeScriptToolsVersion>4.2</TypeScriptToolsVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -54,6 +52,12 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="MySql.Data, Version=6.9.12.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <HintPath>..\packages\MySql.Data.6.9.12\lib\net45\MySql.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="RestSharp, Version=106.6.9.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
+      <HintPath>..\packages\RestSharp.106.6.9\lib\net452\RestSharp.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -119,10 +123,10 @@
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="System.Xml.Linq" />
+    <Reference Include="TaxJar, Version=3.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\TaxJar.3.1.1\lib\net452\TaxJar.dll</HintPath>
+    </Reference>
     <Reference Include="WebGrease">
       <Private>True</Private>
       <HintPath>..\packages\WebGrease.1.6.0\lib\WebGrease.dll</HintPath>
@@ -133,9 +137,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="System.Net.Http.Formatting">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.7\lib\net45\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
@@ -181,6 +182,7 @@
     <Compile Include="Models\SettingModel.cs" />
     <Compile Include="Models\UsersRepositry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UTILITIES\clsTaxJar.cs" />
     <Compile Include="UTILITIES\CommanUtilities.cs" />
     <Compile Include="UTILITIES\CryptorEngine.cs" />
     <Compile Include="UTILITIES\Net.cs" />
@@ -202,7 +204,6 @@
     <Content Include="Content\AdminLTE-3.1.0\bower_components\morris.js\morris.css" />
     <Content Include="Content\AdminLTE-3.1.0\bower_components\morris.js\morris.min.js" />
     <Content Include="Content\AdminLTE-3.1.0\bower_components\raphael\raphael.min.js" />
-    <Content Include="Content\AdminLTE-3.1.0\custom.js" />
     <Content Include="Content\AdminLTE-3.1.0\dashboard.js" />
     <Content Include="Content\AdminLTE-3.1.0\datatables\Buttons-1.6.1\css\buttons.bootstrap.css" />
     <Content Include="Content\AdminLTE-3.1.0\datatables\Buttons-1.6.1\css\buttons.bootstrap.min.css" />
@@ -216,6 +217,8 @@
     <Content Include="Content\AdminLTE-3.1.0\datatables\Buttons-1.6.1\css\buttons.jqueryui.min.css" />
     <Content Include="Content\AdminLTE-3.1.0\datatables\Buttons-1.6.1\css\buttons.semanticui.css" />
     <Content Include="Content\AdminLTE-3.1.0\datatables\Buttons-1.6.1\css\buttons.semanticui.min.css" />
+    <Content Include="Content\AdminLTE-3.1.0\datatables\Buttons-1.6.1\css\common.scss" />
+    <Content Include="Content\AdminLTE-3.1.0\datatables\Buttons-1.6.1\css\mixins.scss" />
     <Content Include="Content\AdminLTE-3.1.0\datatables\Buttons-1.6.1\js\buttons.bootstrap.js" />
     <Content Include="Content\AdminLTE-3.1.0\datatables\Buttons-1.6.1\js\buttons.bootstrap.min.js" />
     <Content Include="Content\AdminLTE-3.1.0\datatables\Buttons-1.6.1\js\buttons.bootstrap4.js" />
@@ -268,21 +271,35 @@
     <Content Include="Content\AdminLTE-3.1.0\datatables\DataTables-1.10.20\js\jquery.dataTables.min.js" />
     <Content Include="Content\AdminLTE-3.1.0\datatables\datatables.min.css" />
     <Content Include="Content\AdminLTE-3.1.0\datatables\datatables.min.js" />
-    <Content Include="Content\AdminLTE-3.1.0\fontawesome\css\all.min.css" />
-    <Content Include="Content\AdminLTE-3.1.0\fontawesome\webfonts\fa-brands-400.svg" />
-    <Content Include="Content\AdminLTE-3.1.0\fontawesome\webfonts\fa-regular-400.svg" />
-    <Content Include="Content\AdminLTE-3.1.0\fontawesome\webfonts\fa-solid-900.svg" />
+    <Content Include="Content\AdminLTE-3.1.0\fastclick.js" />
+    <Content Include="Content\AdminLTE-3.1.0\font-awesome\css\font-awesome.css" />
+    <Content Include="Content\AdminLTE-3.1.0\font-awesome\css\font-awesome.min.css" />
+    <Content Include="Content\AdminLTE-3.1.0\font-awesome\css\font-awesome4.7.min.css" />
+    <Content Include="Content\AdminLTE-3.1.0\font-awesome\fonts\fontawesome-webfont.svg" />
+    <Content Include="Content\AdminLTE-3.1.0\font-awesome\webfonts\fa-brands-400.svg" />
+    <Content Include="Content\AdminLTE-3.1.0\font-awesome\webfonts\fa-regular-400.svg" />
+    <Content Include="Content\AdminLTE-3.1.0\font-awesome\webfonts\fa-solid-900.svg" />
     <Content Include="Content\AdminLTE-3.1.0\icheck-bootstrap.min.css" />
     <Content Include="Content\AdminLTE-3.1.0\plugins\bootstrap-wysihtml5\bootstrap3-wysihtml5.all.min.js" />
     <Content Include="Content\AdminLTE-3.1.0\plugins\bootstrap-wysihtml5\bootstrap3-wysihtml5.min.css" />
     <Content Include="Content\AdminLTE-3.1.0\plugins\jvectormap\jquery-jvectormap-1.2.2.min.js" />
     <Content Include="Content\AdminLTE-3.1.0\plugins\jvectormap\jquery-jvectormap-world-mill-en.js" />
+    <Content Include="Content\AdminLTE-3.1.0\select2\select2.min.css" />
+    <Content Include="Content\AdminLTE-3.1.0\select2\select2.min.js" />
+    <Content Include="Content\AdminLTE-3.1.0\smartwizard\jquery.smartWizard.js" />
+    <Content Include="Content\AdminLTE-3.1.0\smartwizard\smart_wizard_all.css" />
+    <Content Include="Content\AdminLTE-3.1.0\_all-skins.min.css" />
     <Content Include="Content\alert\sweetalert2.all.min.js" />
     <Content Include="Content\alert\sweetalert2.min.css" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\css\Style.css" />
+    <Content Include="Content\css\tabcss.css" />
+    <Content Include="Content\AdminLTE-3.1.0\daterangepicker\daterangepicker.css" />
+    <Content Include="Content\AdminLTE-3.1.0\daterangepicker\daterangepicker.js" />
+    <Content Include="Content\AdminLTE-3.1.0\daterangepicker\moment.min.js" />
     <Content Include="Content\DataTables\css\autoFill.bootstrap.css" />
     <Content Include="Content\DataTables\css\autoFill.bootstrap.min.css" />
     <Content Include="Content\DataTables\css\autoFill.bootstrap4.css" />
@@ -444,46 +461,46 @@
     <Content Include="Content\dx\dx.light.css" />
     <Content Include="Content\AdminLTE-3.1.0\jquery\jquery.min.js" />
     <Content Include="Content\fontawesome-all.min.css" />
-    <Content Include="Content\Style11.css" />
-    <Content Include="Content\Style12.css" />
-    <Content Include="css\layoutStyle.css" />
     <Content Include="css\indexStyle.css" />
+    <Content Include="css\layoutStyle.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <Content Include="Images\layla1-logo.png" />
     <Content Include="Images\layla32.png" />
-    <Content Include="Images\user2-160x160.jpg" />
-    <Content Include="Images\user3-128x128.jpg" />
-    <Content Include="Images\user4-128x128.jpg" />
     <Content Include="Images\userprofile2.png" />
     <Content Include="js\app.js" />
     <Content Include="js\Customer\Customer.js" />
+    <Content Include="js\Orders\NewOrder.js" />
     <Content Include="js\Users\UserLogin.js" />
     <Content Include="Scripts\bootstrap.js" />
+    <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Content\dx\icons\dxicons.ttf" />
     <Content Include="Content\dx\icons\dxicons.woff" />
     <Content Include="Content\dx\icons\dxicons.woff2" />
-    <Content Include="Content\AdminLTE-3.1.0\fontawesome\webfonts\fa-brands-400.eot" />
-    <Content Include="Content\AdminLTE-3.1.0\fontawesome\webfonts\fa-brands-400.ttf" />
-    <Content Include="Content\AdminLTE-3.1.0\fontawesome\webfonts\fa-brands-400.woff" />
-    <Content Include="Content\AdminLTE-3.1.0\fontawesome\webfonts\fa-brands-400.woff2" />
-    <Content Include="Content\AdminLTE-3.1.0\fontawesome\webfonts\fa-regular-400.eot" />
-    <Content Include="Content\AdminLTE-3.1.0\fontawesome\webfonts\fa-regular-400.ttf" />
-    <Content Include="Content\AdminLTE-3.1.0\fontawesome\webfonts\fa-regular-400.woff" />
-    <Content Include="Content\AdminLTE-3.1.0\fontawesome\webfonts\fa-regular-400.woff2" />
-    <Content Include="Content\AdminLTE-3.1.0\fontawesome\webfonts\fa-solid-900.eot" />
-    <Content Include="Content\AdminLTE-3.1.0\fontawesome\webfonts\fa-solid-900.ttf" />
-    <Content Include="Content\AdminLTE-3.1.0\fontawesome\webfonts\fa-solid-900.woff" />
-    <Content Include="Content\AdminLTE-3.1.0\fontawesome\webfonts\fa-solid-900.woff2" />
     <Content Include="Content\DataTables\css\common.scss" />
     <Content Include="Content\DataTables\css\mixins.scss" />
     <Content Include="Content\DataTables\css\semanticui.scss" />
-    <Content Include="Content\AdminLTE-3.1.0\datatables\Buttons-1.6.1\css\common.scss" />
-    <Content Include="Content\AdminLTE-3.1.0\datatables\Buttons-1.6.1\css\mixins.scss" />
+    <Content Include="Content\AdminLTE-3.1.0\font-awesome\css\font-awesome.css.map" />
+    <Content Include="Content\AdminLTE-3.1.0\font-awesome\fonts\fontawesome-webfont.eot" />
+    <Content Include="Content\AdminLTE-3.1.0\font-awesome\fonts\fontawesome-webfont.ttf" />
+    <Content Include="Content\AdminLTE-3.1.0\font-awesome\fonts\fontawesome-webfont.woff" />
+    <Content Include="Content\AdminLTE-3.1.0\font-awesome\fonts\fontawesome-webfont.woff2" />
+    <Content Include="Content\AdminLTE-3.1.0\font-awesome\fonts\FontAwesome.otf" />
+    <Content Include="Content\AdminLTE-3.1.0\font-awesome\webfonts\fa-brands-400.eot" />
+    <Content Include="Content\AdminLTE-3.1.0\font-awesome\webfonts\fa-brands-400.ttf" />
+    <Content Include="Content\AdminLTE-3.1.0\font-awesome\webfonts\fa-brands-400.woff" />
+    <Content Include="Content\AdminLTE-3.1.0\font-awesome\webfonts\fa-brands-400.woff2" />
+    <Content Include="Content\AdminLTE-3.1.0\font-awesome\webfonts\fa-regular-400.eot" />
+    <Content Include="Content\AdminLTE-3.1.0\font-awesome\webfonts\fa-regular-400.ttf" />
+    <Content Include="Content\AdminLTE-3.1.0\font-awesome\webfonts\fa-regular-400.woff" />
+    <Content Include="Content\AdminLTE-3.1.0\font-awesome\webfonts\fa-regular-400.woff2" />
+    <Content Include="Content\AdminLTE-3.1.0\font-awesome\webfonts\fa-solid-900.eot" />
+    <Content Include="Content\AdminLTE-3.1.0\font-awesome\webfonts\fa-solid-900.ttf" />
+    <Content Include="Content\AdminLTE-3.1.0\font-awesome\webfonts\fa-solid-900.woff" />
+    <Content Include="Content\AdminLTE-3.1.0\font-awesome\webfonts\fa-solid-900.woff2" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
-    <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\DataTables\autoFill.bootstrap.js" />
     <Content Include="Scripts\DataTables\autoFill.bootstrap.min.js" />
     <Content Include="Scripts\DataTables\autoFill.bootstrap4.js" />
@@ -619,15 +636,11 @@
     <Content Include="Scripts\jquery-3.4.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.4.1.min.map" />
   </ItemGroup>
-  <ItemGroup>
-    <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
-  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets')" />
   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
   <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">

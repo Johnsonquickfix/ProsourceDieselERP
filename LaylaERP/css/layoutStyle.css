@@ -50,7 +50,7 @@ dashboard
 }
 
 .dashboard-info {
-    margin: 15px -7.5px 0px;
+    margin: 0px -7.5px;
 }
 
     .dashboard-info > .col-sm-3 {
@@ -62,7 +62,7 @@ dashboard
     /**********users*/
 .page-title {
     display: flex;
-    align-items: center; margin:20px 0px 10px;
+    align-items: center; margin:20px 0px;
 }
 .page-title h2 {
     font-size: 28px; margin:0px 10px 0px 0px;
@@ -174,4 +174,10 @@ border:0px;}
     background: #EE4823; color:#fff;
 }
     .setting-save a i {
-    margin-right:10px;}
+        margin-right: 10px;
+    }
+.mb-35 {
+margin-bottom:35px;}
+.sm-heading {
+    font-size:22px; margin-top:0px;
+}

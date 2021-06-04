@@ -65,10 +65,17 @@ margin-left:auto;
 }
 #tab-menu .page-tabs-content a {
     padding: 0px 15px;
+    
 }
-.main-sidebar section.sidebar {
-    border-top: 1px solid #c5c5c5;
+#tab-menu .page-tabs-content a.active {
+    background: #fd4c0f;
+    border: 0px;
 }
+    #tab-menu .page-tabs-content a.active i {
+    color:#fff;     }
+    .main-sidebar section.sidebar {
+        border-top: 1px solid #c5c5c5;
+    }
 .main-header .logo .logo-lg {
     height: 100%;
 }

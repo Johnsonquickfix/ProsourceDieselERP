@@ -601,6 +601,7 @@
     <Content Include="Views\Customer\NewUser.cshtml" />
     <Content Include="Views\Shared\_ExportLayout.cshtml" />
     <Content Include="Views\Shared\_UserLayout.cshtml" />
+    <Content Include="Views\Home\MobileVerification.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

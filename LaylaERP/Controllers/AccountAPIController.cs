@@ -34,6 +34,7 @@
                         op.IsActive = false;
                     op.UserPassword = model.PassWord;
                     Session["UserId"] = op.UserID;
+                    Session["EmailID"] = op.EmailID;
                     op.GetUrl = "home/MobileVerification";
                     if (!string.IsNullOrEmpty(op.UserType) && op.UserType.Length > 5 && op.UserType.ToString().Substring(0, 2) == "a:")
                     {

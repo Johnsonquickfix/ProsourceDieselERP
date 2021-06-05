@@ -39,6 +39,7 @@
             Random _rdm = new Random();
             int OTP = _rdm.Next(1000, 9999);
             Session["OTP"] = OTP;
+            
 
             using (MailMessage mailMessage = new MailMessage())
 
@@ -52,13 +53,14 @@
 
                 mailMessage.IsBodyHtml = true;
 
-                mailMessage.To.Add(new MailAddress("david.quickfix1@gmail.com"));
+                mailMessage.To.Add(new MailAddress(Session["EmailID"].ToString()));
+               
 
                 SmtpClient smtp = new SmtpClient();
 
                 smtp.Host = ConfigurationManager.AppSettings["Host"];
 
-                //smtp.EnableSsl = Convert.ToBoolean(ConfigurationManager.AppSettings["EnableSsl"]);
+                smtp.EnableSsl = Convert.ToBoolean(ConfigurationManager.AppSettings["EnableSsl"]);
 
                 System.Net.NetworkCredential NetworkCred = new System.Net.NetworkCredential();
 
@@ -72,27 +74,34 @@
 
                 smtp.Port = int.Parse(ConfigurationManager.AppSettings["Port"]); //reading from web.config  
 
-               // smtp.Send(mailMessage);
+               smtp.Send(mailMessage);
 
             }
 
-
-
+            Session["OTPTime"] = DateTime.Now;
 
             return View();
         }
         [HttpPost]
         public ActionResult MobileVerification(int OTP)
         {
-            if (Convert.ToInt32(Session["OTP"]) == OTP)
-            {
+            DateTime OTPTime = DateTime.Parse(Session["OTPTime"].ToString());
+            if (OTPTime.AddMinutes(1)>DateTime.Now) {
+                if (Convert.ToInt32(Session["OTP"]) == OTP)
+                {
 
-                return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    ViewBag.Result = "Verification Faild...";
+                }
             }
             else
             {
-                ViewBag.Result = "Verification Faild...";
+                ViewBag.Result = "OTP Expired...";
             }
+
 
             return View();
         }

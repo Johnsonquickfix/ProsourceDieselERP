@@ -37,8 +37,10 @@ namespace LaylaERP.Controllers
 
         public JsonResult GetData(clsUserDetails details)
         {
-            
-            Models.UsersRepositry.ShowUsersDetails();
+            string status = "0";
+            if (details.user_status != "0")
+                status = details.user_status.ToString();
+            Models.UsersRepositry.ShowUsersDetails(status);
             return Json(new { data = Models.UsersRepositry.userslist }, JsonRequestBehavior.AllowGet);
         }
         

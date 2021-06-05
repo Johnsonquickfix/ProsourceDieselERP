@@ -175,6 +175,60 @@
             { throw ex; }
             return productsModel;
         }
-
+        public static OrderShippingModel GetProductShippingCharge(long product_id)
+        {
+            OrderShippingModel productsModel = new OrderShippingModel();
+            try
+            {
+                DataTable DT = new DataTable();
+                MySqlParameter[] parameters =
+                {
+                    new MySqlParameter("@product_id", product_id)
+                };
+                string strSQl = "select * from wp_ship_value where productid=@product_id";
+                MySqlDataReader sdr = SQLHelper.ExecuteReader(strSQl, parameters);
+                while (sdr.Read())
+                {
+                    if (sdr["productid"] != DBNull.Value)
+                        productsModel.product_id = Convert.ToInt64(sdr["id"]);
+                    else
+                        productsModel.product_id = 0;
+                    if (sdr["AK"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["AK"].ToString().Trim()))
+                        productsModel.AK = decimal.Parse(sdr["AK"].ToString());
+                    else
+                        productsModel.AK = 0;
+                    if (sdr["HI"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["HI"].ToString().Trim()))
+                        productsModel.HI = decimal.Parse(sdr["HI"].ToString().Trim());
+                    else
+                        productsModel.HI = 0;
+                    if (sdr["CA"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["CA"].ToString().Trim()))
+                        productsModel.CA = decimal.Parse(sdr["CA"].ToString().Trim());
+                    else
+                        productsModel.CA = 0;
+                }
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return productsModel;
+        }
+        public static DataTable GetCouponDiscount(string strCoupon)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                MySqlParameter[] parameters =
+                {
+                    new MySqlParameter("@strCoupon", strCoupon)
+                };
+                string strSQl = "select post_title,max(case when pm.meta_key = 'discount_type' then pm.meta_value else '' end) discount_type,max(case when pm.meta_key = 'product_ids' then pm.meta_value else '' end) product_ids,"
+                                + "     max(case when pm.meta_key = 'date_expires' then pm.meta_value else '' end) date_expires,max(case when pm.meta_key = 'coupon_amount' then pm.meta_value else '' end) coupon_amount"
+                                + " from wp_posts p inner join wp_postmeta pm on pm.post_id = p.id"
+                                + " where post_title = @strCoupon And post_name = @strCoupon And post_type = 'shop_coupon' group by pm.post_id";
+                dt = SQLHelper.ExecuteDataTable(strSQl, parameters);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dt;
+        }
     }
 }

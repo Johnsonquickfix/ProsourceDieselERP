@@ -5,7 +5,7 @@ $(document).ready(function () {
     $('#txtLogDate').daterangepicker({ singleDatePicker: true, autoUpdateInput: true, locale: { format: 'DD/MM/YYYY', cancelLabel: 'Clear' } });
     $(".select2").select2(); BindStateCounty("ddlbillstate", { id: 'US' }); BindStateCounty("ddlshipstate", { id: 'US' });
     $("#ddlUser").select2({
-        allowClear: true, minimumInputLength: 1, placeholder: "Search Customer",
+        allowClear: true, minimumInputLength: 3, placeholder: "Search Customer",
         ajax: {
             url: '/Orders/GetCustomerList', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
             data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
@@ -17,7 +17,7 @@ $(document).ready(function () {
     $("#ddlbillcountry").change(function () { var obj = { id: $("#ddlbillcountry").val() }; BindStateCounty("ddlbillstate", obj); });
     $("#ddlshipcountry").change(function () { var obj = { id: $("#ddlshipcountry").val() }; BindStateCounty("ddlshipstate", obj); });
     $('#ddlProduct').select2({
-        allowClear: true, minimumInputLength: 1, placeholder: "Search Product",
+        allowClear: true, minimumInputLength: 3, placeholder: "Search Product",
         ajax: {
             url: '/Orders/GetProductList', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
             data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
@@ -27,6 +27,8 @@ $(document).ready(function () {
     });
     $("#ddlProduct").change(function () { if ($('#ddlProduct').val() == null) return false; getItemList(); $('#ddlProduct').val('').trigger('change'); });
     $(document).on("click", "#btnApplyCoupon", function (t) { t.preventDefault(); CouponModal(); });
+    $("#billModal").on("keypress", function (e) { if (e.which == 13 && e.target.type != "textarea") { $("#btnCouponAdd").click(); } });
+    $("#billModal").on("click", "#btnCouponAdd", function (t) { t.preventDefault(); ApplyCoupon(); });
     //$(document).on("click", "#btnAddItem", function (t) { t.preventDefault(); ProductModal(); });
     //$("#billModal").on("change", ".ddlTempProductFooter", function (t) { t.preventDefault(); ProductModalItemRow(); });
     $(document).on("blur", "#txtshipzipcode", function (t) { t.preventDefault(); GetTaxRate(); });
@@ -156,13 +158,101 @@ function CouponModal() {
     myHtml += '<input class="form-control number" type="text" id="txt_Coupon" name="txt_Coupon" placeholder="Coupon Code" maxlength="25">';
     myHtml += '</div > ';
     myHtml += '<div class="modal-footer">';
-    myHtml += '<button type="button" class="btn btn-primary" id="btnAddItemFinal">Add</button>';
+    myHtml += '<button type="button" class="btn btn-primary" id="btnCouponAdd">Add</button>';
     myHtml += '</div>';
     myHtml += '</div>';
     myHtml += '</div>';
     $("#billModal").empty().html(myHtml);
     $("#billModal").modal({ backdrop: 'static' }); $("#txt_Coupon").focus();
 }
+function ApplyCoupon() {
+    if ($('#txt_Coupon').val() == '') { swal('Alert!', 'Please enter Coupon Code!', "info").then((result) => { return false; });}
+    var obj = { strValue1: $('#txt_Coupon').val() };
+    $.ajax({
+        type: "POST", url: '/Orders/GetCouponAmount', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
+        success: function (result) {
+            var data = JSON.parse(result); console.log(data);
+            bindCouponList(data);
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
+        async: false
+    });
+    //$("#billModal").modal({ backdrop: 'static' }); $("#txt_Coupon").focus();
+}
+function bindCouponList(data) {
+    var layoutHtml = '';
+    if (data.length > 0) {
+        if ($('#li_' + data[0].post_title).length <= 0) {
+            layoutHtml += '<li id="li_' + data[0].post_title + '" data-couponamt= "' + data[0].coupon_amount + '" data-disctype= "' + data[0].discount_type + '">';
+            layoutHtml += '<a href="javascript:void(0);">';
+            layoutHtml += '<i class="fa fa-gift"></i>';
+            layoutHtml += '<span>' + data[0].post_title + '</span>';
+            layoutHtml += '<button type="button" class="btn btn-box-tool pull-right" onclick="removeCouponInList(\'' + data[0].post_title + '\');">';
+            layoutHtml += '<i class="fa fa-times"></i>';
+            layoutHtml += '</button>';
+            layoutHtml += '</a>';
+            layoutHtml += '</li>';
+        }
+        else {
+            swal('Alert!', 'Coupon code already applied!', "info").then((result) => { return false; });
+        }
+        $('#billCoupon').append(layoutHtml);
+
+        var tax_rate = parseFloat($('#hfTaxRate').val()) || 0.00;
+        var zCouponAmt = parseFloat(data[0].coupon_amount) || 0.00, zDiscType = data[0].discount_type, zTotalQty = 1, zQty = 0.00, zGrossAmount = 0.00, zDisAmt = 0.00, zProductIDs = data[0].product_ids.split(',');
+        var isUsedAll = data[0].product_ids.length > 0 ? 0 : 1; zTotalQty = parseFloat($('#totalQty').text()) || 0.00;
+        if (zDiscType == 'fixed_cart') { zCouponAmt = (zCouponAmt / zTotalQty); }
+        $("#tblAddItemFinal > tbody  > tr").each(function () {
+            if (jQuery.inArray($(this).data("vid").toString(), zProductIDs) == -1 && isUsedAll == 0) {
+                swal('Alert!', 'Sorry, this coupon is not applicable to selected products.', "info").then((result) => { return false; });
+            }
+            else {
+                zQty = parseFloat($(this).find("[name=txt_ItemQty]").val()) || 0.00;
+                zGrossAmount = parseFloat($(this).find(".TotalAmount").data("amount")) || 0.00;
+                $(this).find(".RowDiscount").data("disctype", zDiscType);
+                $(this).find(".RowDiscount").data("couponamt", zCouponAmt);
+                if (zDiscType == 'fixed_product') { zDisAmt = zCouponAmt * zQty; }
+                else if (zDiscType == 'fixed_cart') { zDisAmt = zCouponAmt * zQty; }
+                else if (zDiscType == 'percent') { zDisAmt = (zGrossAmount * zCouponAmt) / 100; }
+                $(this).find(".RowDiscount").text(zDisAmt.toFixed(2)); $(this).find(".TotalAmount").data("discount", zDisAmt.toFixed(2));
+
+                //Taxation                     
+                zTotalTax = (((zGrossAmount - zDisAmt) * tax_rate) / 100);
+                $(this).find(".RowTax").text(zTotalTax.toFixed(2)); $(this).find(".TotalAmount").data("taxamount", zTotalTax.toFixed(2));
+                calcFinalTotals();
+            }
+        });
+        $("#billModal").modal('hide');
+    }
+    else {
+        var msg = 'Coupon "' + obj.strValue1 + '" does not exist!';
+        swal('Alert!', msg, "info");
+    }
+}
+function removeCouponInList(id) {
+    //------------- Remove data in Temp AddItemList-----
+    swal({ title: "Are you sure?", text: 'Would you like to Remove this Coupon?', type: "question", showCancelButton: true })
+        .then((result) => {
+            if (result.value) {
+                var tax_rate = parseFloat($('#hfTaxRate').val()) || 0.00;
+                var zCouponAmt = 0.00, zDiscType = 'fixed_product', zGrossAmount = 0.00, zDisAmt = 0.00;
+                $("#tblAddItemFinal > tbody  > tr").each(function () {
+                    zQty = parseFloat($(this).find("[name=txt_ItemQty]").val()) || 0.00;
+                    zGrossAmount = parseFloat($(this).find(".TotalAmount").data("amount")) || 0.00;
+                    $(this).find(".RowDiscount").data("disctype", zDiscType);
+                    $(this).find(".RowDiscount").data("couponamt", zCouponAmt);
+                    $(this).find(".RowDiscount").text(zDisAmt.toFixed(2)); $(this).find(".TotalAmount").data("discount", zDisAmt.toFixed(2));
+
+                    //Taxation                     
+                    zTotalTax = (((zGrossAmount - zDisAmt) * tax_rate) / 100);
+                    $(this).find(".RowTax").text(zTotalTax.toFixed(2)); $(this).find(".TotalAmount").data("taxamount", zTotalTax.toFixed(2));
+                    calcFinalTotals();
+                });
+                $('#li_' + id).remove();
+            }
+        });
+}
+
 ///Add Modal Product
 function ProductModal() {
     var myHtml = '';
@@ -242,7 +332,6 @@ function getItemList() {
     $.ajax({
         type: "POST", url: '/Orders/GetProductInfo', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
         success: function (data) {
-            console.log(data);
             var itemsDetailsxml = [];
             itemsDetailsxml.push({
                 "PKey": data.product_id + '_' + data.variation_id, "product_id": data.product_id, "variation_id": data.variation_id, "product_name": data.product_name, "quantity": 1, "sale_rate": data.sale_price, "total": (data.sale_price * 1.0), "discount": 0, "tax_amount": (((data.sale_price * 1.0) * tax_rate) / 100).toFixed(2)
@@ -262,18 +351,18 @@ function bindItemListDataTable(data) {
             if (data[i].product_id > 0) {
                 if ($('#tritemId_' + data[i].PKey).length <= 0) {
                     layoutHtml += '<tr id="tritemId_' + data[i].PKey + '" data-id="' + data[i].PKey + '" data-pid="' + data[i].product_id + '" data-vid="' + data[i].variation_id + '">';
-                    layoutHtml += '<td class="text-center"><a class="btn menu-icon-gr vd_red btnDeleteItem billinfo" tabitem_itemid="' + data[i].PKey + '" onclick="removeItemsInTable(' + data[i].PKey + ');"> <i class="glyphicon glyphicon-trash"></i> </a></td>';
+                    layoutHtml += '<td class="text-center"><a class="btn menu-icon-gr vd_red btnDeleteItem billinfo" tabitem_itemid="' + data[i].PKey + '" onclick="removeItemsInTable(\'' + data[i].PKey + '\');"> <i class="glyphicon glyphicon-trash"></i> </a></td>';
                     layoutHtml += '<td>' + data[i].product_name + '</td>';
                     layoutHtml += '<td class="text-right">' + data[i].sale_rate + '</td>';
-                    layoutHtml += '<td><input class="form-control billinfo number" type="number" id="txt_ItemQty_' + data[i].PKey + '" value="' + data[i].quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
+                    layoutHtml += '<td><input class="form-control billinfo number rowCalulate" type="number" id="txt_ItemQty_' + data[i].PKey + '" value="' + data[i].quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
                     layoutHtml += '<td class="TotalAmount text-right" data-salerate="' + data[i].sale_rate + '" data-discount="' + data[i].discount + '" data-amount="' + data[i].total + '" data-taxamount="' + data[i].tax_amount + '">' + data[i].total + '</td>';
-                    layoutHtml += '<td class="text-right">' + data[i].discount + '</td>';
-                    layoutHtml += '<td class="text-right">' + data[i].tax_amount + '</td>';
+                    layoutHtml += '<td class="text-right RowDiscount" data-disctype="-" data-couponamt="0">' + data[i].discount + '</td>';
+                    layoutHtml += '<td class="text-right RowTax">' + data[i].tax_amount + '</td>';
                     layoutHtml += '</tr>';
                 }
                 else {
-                    $('#txt_ItemQty_' + data[i].rd_id).val(roundToTwo(parseFloat($('#txt_ItemQty_' + data[i].rd_id).val()) + 1).toFixed(2));
-                    calcLineAmount($('#txt_ItemQty_' + data[i].rd_id), $($('#txt_ItemQty_' + data[i].rd_id)).parents('tr')[0]);
+                    $('#txt_ItemQty_' + data[i].rd_id).val(roundToTwo(parseFloat($('#txt_ItemQty_' + data[i].PKey).val()) + 1).toFixed(2));
+                    calcRowAmount($('#txt_ItemQty_' + data[i].rd_id), $($('#txt_ItemQty_' + data[i].PKey)).parents('tr')[0]);
                 }
             }
         }
@@ -281,9 +370,8 @@ function bindItemListDataTable(data) {
         //$("#txt_ItemSearch").val('');
         //$('.number').numeric({ allowThouSep: false, maxDecimalPlaces: 2 });
         // Bind calcLineAmount function to each textbox and send parent TR
-        $("#divAddItemFinal").find("input:text").blur(function () { calcLineAmount(this, $(this).parents('tr')[0]); });
-
-        //calcLineAmount($('#txt_ItemQty_' + data[0].ItemId), $($('#txt_ItemQty_' + data[0].ItemId)).parents('tr')[0]);
+        //$("#divAddItemFinal").find(".rowCalulate").blur(function () { calcRowAmount(this, $(this).parents('tr')[0]); });
+        $("#divAddItemFinal").find(".rowCalulate").change(function () { calcRowAmount(this, $(this).parents('tr')[0]); });
     }
     else {
         layoutHtml += '<table id="tblAddItemFinal" class="table table-striped table-bordered table-condensed table-hover total_data imagetable table-margin-bottom">';
@@ -305,43 +393,40 @@ function bindItemListDataTable(data) {
     calcFinalTotals();
 }
 
+//-----Remove row in Itemtable Table--------------
+function removeItemsInTable(id) {
+    //------------- Remove data in Temp AddItemList-----
+    swal({ title: "Are you sure?", text: 'Would you like to Remove this Item?', type: "question", showCancelButton: true })
+        .then((result) => {
+            if (result.value) { $('#tritemId_' + id).remove(); }
+        });
+}
+
 //------ Calculate Rows Amount --------------------------------
 function calcRowAmount(objControl, objRow) // objRow is row object
 {
-    var zMRP = 0.00, zQty = 0.00, zDiscOn = 'A', zSaleDisc1 = 0.00, zCGSTPer = 0.00, zSGSTPer = 0.00, zIGSTPer = 0.00;
+    var zMRP = 0.00, zQty = 0.00, zDiscType = 'fixed_product', zCouponAmt = 0.00, zDisAmt = 0.00, tax_rate = 0.00, zTotalTax = 0.00;
 
-    zMRP = parseFloat($(objRow).data("rate")) || 0.00;
+    zMRP = parseFloat($(objRow).find(".TotalAmount").data("salerate")) || 0.00;
     zQty = parseFloat($(objRow).find("[name=txt_ItemQty]").val());
-    zDiscOn = $(objRow).data("don");
-    zSaleDisc1 = parseFloat($(objRow).data("dby")) || 0.00;
-
-    zCGSTPer = parseFloat($(objRow).data("cper")) || 0.00;
-    zSGSTPer = parseFloat($(objRow).data("sper")) || 0.00;
-    zIGSTPer = parseFloat($(objRow).data("iper")) || 0.00;
-
     /// Gross Amount
     var zGrossAmount = zMRP * zQty;
-    var zDisAmt = 0.00;
     // Discount
-    if (zDiscOn == "A") { zDisAmt = ((parseFloat(zGrossAmount) * parseFloat(zSaleDisc1)) / 100); }
-    else if (zDiscOn == "F") { zDisAmt = parseFloat(zSaleDisc1); }
-    else if (zDiscOn == "Q") { zDisAmt = (parseFloat(zMRP) * parseFloat(zSaleDisc1)); }
-    $(objRow).data("damt", zDisAmt.toFixed(2));
-    //Taxation 
-    // GST
-    var zCGSTAmt = 0.00, zSGSTAmt = 0.00, zIGSTAmt = 0.00, zTotalTax = 0.00;
-    $(objRow).find(".GrossAmount").text((zGrossAmount).toFixed(2)); $(objRow).data("gamt", zGrossAmount.toFixed(2));
+    zDiscType = $(objRow).find(".RowDiscount").data("disctype");
+    zCouponAmt = parseFloat($(objRow).find(".RowDiscount").data("couponamt")) || 0;
+    if (zDiscType == 'fixed_product') { zDisAmt = zCouponAmt * zQty; }
+    else if (zDiscType == 'fixed_cart') { zDisAmt = zCouponAmt * zQty; }
+    else if (zDiscType == 'percent') { zDisAmt = (zGrossAmount * zCouponAmt) / 100; }
+    $(objRow).find(".RowDiscount").text(zDisAmt.toFixed(2)); $(objRow).find(".TotalAmount").data("discount", zDisAmt.toFixed(2));
+
+    $(objRow).find(".TotalAmount").text((zGrossAmount).toFixed(2)); $(objRow).find(".TotalAmount").data("amount", zGrossAmount.toFixed(2));
     zGrossAmount = zGrossAmount - zDisAmt;
 
-    zCGSTAmt = parseFloat(((parseFloat(zGrossAmount) * parseFloat(zCGSTPer)) / 100));
-    $(objRow).data('camt', zCGSTAmt);
-    zSGSTAmt = parseFloat(((parseFloat(zGrossAmount) * parseFloat(zSGSTPer)) / 100));
-    $(objRow).data('samt', zSGSTAmt);
-    zIGSTAmt = parseFloat(((parseFloat(zGrossAmount) * parseFloat(zIGSTPer)) / 100));
-    $(objRow).data('iamt', zIGSTAmt);
-    zTotalTax = parseFloat(zCGSTAmt) + parseFloat(zSGSTAmt) + parseFloat(zIGSTAmt);
+    //Taxation 
+    tax_rate = parseFloat($('#hfTaxRate').val()) || 0.00
+    zTotalTax = ((zGrossAmount * tax_rate) / 100);
 
-    $(objRow).data("amt", (zGrossAmount + zTotalTax).toFixed(2));
+    $(objRow).find(".RowTax").text(zTotalTax.toFixed(2)); $(objRow).find(".TotalAmount").data("taxamount", zTotalTax.toFixed(2));
     calcFinalTotals();
 }
 function calcFinalTotals() {
@@ -354,6 +439,7 @@ function calcFinalTotals() {
         zTDiscount = zTDiscount + parseFloat($(this).find(".TotalAmount").data("discount"));
         zTotalTax = zTotalTax + parseFloat($(this).find(".TotalAmount").data("taxamount"));
     });
+    $("#totalQty").text(zQty.toFixed(2));
     $("#SubTotal").text(zGAmt.toFixed(2));
     $("#discountTotal").text(zTDiscount.toFixed(2));
     $("#salesTaxTotal").text(zTotalTax.toFixed(2));

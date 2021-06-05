@@ -31,13 +31,17 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "Update wp_system_settings set SenderEmailID=@SenderEmailID, SenderEmailPwd=@SenderEmailPwd, SMTPServerName=@SMTPServerName," +
+                string strsql = "Update wp_system_settings set AuthorizeNet=@AuthorizeNet,Paypal=@Paypal,AmazonPay=@AmazonPay,CreditCustomer=@CreditCustomer, SenderEmailID=@SenderEmailID, SenderEmailPwd=@SenderEmailPwd, SMTPServerName=@SMTPServerName," +
                     "SMTPServerPortNo=@SMTPServerPortNo, PaypalClientId=@PaypalClientId, PaypalSecret=@PaypalSecret, AuthorizeAPILogin=@AuthorizeAPILogin, " +
                     " AuthorizeTransKey=@AuthorizeTransKey,AmazonAPIId=@AmazonAPIId,AmazonUser=@AmazonUser,AmazonPwd=@AmazonPwd,TaxjarAPIId=@TaxjarAPIId, " +
                     "TaxjarAPIId=@TaxjarAPIId,TaxjarUser=@TaxjarUser,TaxjarPwd=@TaxjarPwd where ID=@user_id";
                 MySqlParameter[] para =
                 {
                     new MySqlParameter("@user_id", id),
+                    new MySqlParameter("@AuthorizeNet",model.AuthorizeNet),
+                    new MySqlParameter("@Paypal", model.Paypal),
+                    new MySqlParameter("@AmazonPay",model.AmazonPay),
+                    new MySqlParameter("@CreditCustomer",model.CreditCustomer),
                     new MySqlParameter("@SenderEmailID", SenderEmailID),
                     new MySqlParameter("@SenderEmailPwd", model.SenderEmailPwd),
                     new MySqlParameter("@SMTPServerName", model.SMTPServerName),

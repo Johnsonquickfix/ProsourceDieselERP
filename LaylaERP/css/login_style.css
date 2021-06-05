@@ -68,15 +68,36 @@ padding:0px !important;}
 margin:0px !important;}
 #btnLogin {
     color: #fff;
-    background-color: #ee4823;
-    padding: 0px 50px; 
-    height:42px; border-radius:2px;
-    line-height:42px;
+   
+    padding: 0px 50px;
+    height: 42px;
+    border-radius: 3px; background:transparent;
+    line-height: 42px;
     font-size: 16px;
     display: inline-block;
+    
 }
-.login-page, .register-page {
-background:#fff;}
+.login-continue .login-inner, .a-button-primary.otp-varification-btn .a-button-inner {
+    border-radius: 3px;
+    background: #ee4823;
+    box-shadow: 0 1px 0 rgb(255 255 255 / 40%) inset;
+    background: -moz-linear-gradient(top, #ee4823 0%, #ed3b17 100%);
+    background: -webkit-linear-gradient(top, #ee4823 0%,#ed3b17 100%);
+    background: linear-gradient(to bottom, #ee4823 0%,#ed3b17 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ee4823', endColorstr='#ed3b17',GradientType=0 );
+}
+    .login-continue .login-inner:hover, .a-button-primary.otp-varification-btn  .a-button-inner:hover{
+        background: #ed3b17;
+        background: -moz-linear-gradient(top, #ed3b17 0%, #ee4823 100%);
+        background: -webkit-linear-gradient(top, #ed3b17 0%,#ee4823 100%);
+        background: linear-gradient(to bottom, #ed3b17 0%,#ee4823 100%);
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ed3b17', endColorstr='#ee4823',GradientType=0 );
+    }
+.a-button-primary.otp-varification-btn  {
+border:0px;}
+    .login-page, .register-page {
+        background: #fff;
+    }
 .login-h1 {
     color: #ff4500;
     font-size: 34px;
@@ -118,8 +139,12 @@ padding-top:0px; padding-bottom:0px; height:42px; line-height:42px;}
     line-height: 42px;
 }
     .otp-varification-btn .a-button-text, .otp-varification-btn .a-button-inner {
-        line-height: 40px; font-size:16px; height:40px;
+        line-height: 42px;
+        font-size: 16px;
+        height: 42px;
+        color: #fff;
     }
+
 .login-page.login-varification label {
     padding-bottom: 5px;
 }

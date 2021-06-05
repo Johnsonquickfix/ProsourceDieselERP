@@ -1,0 +1,125 @@
+﻿body, html, .login_box-section {
+    height: 100% !important;
+}
+
+.login_box-section {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+/**content*/
+.main-login-box {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0px !important;
+    margin: 0px !important;
+    flex-direction: column;
+}
+/**footer*/
+.main-login-footer {
+    margin: 15px 0px 0px !important;
+    padding: 0px !important;
+}
+.main-login-footer .a-divider-inner:after
+{content:none !important;
+}
+.login-inner-box {
+    display: flex;
+    align-items: stretch;
+    max-width: 750px;
+    border-radius: 10px;
+    border: 1px solid #D2D6DE; overflow:hidden;
+    width: 100%;
+    background: #fff;
+}
+
+.login-varification .login-inner-box {
+    max-width: 650px;
+}
+.main-login-box.auth-workflow .auth-pagelet-container {
+    width: 100%;
+    margin: 0px;
+}
+.login-inner-box #authportal-center-section {
+    width: 60%;
+    margin: 0px;
+    padding:40px 30px;
+}
+.login-inner-box .auth-navbar {
+    display: flex;
+    border-right: 1px solid #D2D6DE;
+    align-items: center;
+    padding: 30px;
+    background: #f9f9f9;
+    width: 40%;
+}
+.login-continue {
+    text-align: left;
+    padding: 0px;
+}
+.login-page .a-spacing-base, .a-ws .a-ws-spacing-base {
+    margin: 0px !important;
+}
+.login-inner-box .a-padding-extra-large {
+padding:0px !important;}
+.login-page #authportal-main-section {
+margin:0px !important;}
+#btnLogin {
+    color: #fff;
+    background-color: #ee4823;
+    padding: 0px 50px; 
+    height:42px; border-radius:2px;
+    line-height:42px;
+    font-size: 16px;
+    display: inline-block;
+}
+.login-page, .register-page {
+background:#fff;}
+.login-h1 {
+    color: #ff4500;
+    font-size: 34px;
+    margin-bottom: 20px !important;
+}
+.login-page [type="email"], .login-page [type="password"] {
+    border: 1px solid #D2D6DE;
+    height: 42px;
+    background: #fff;
+    padding: 0px 15px;
+    width: 100%;
+    margin-top: 3px;
+}
+.login-page label {
+ padding-bottom:15px;
+    font-weight:400;
+}
+.login-continue .login-inner {
+    display:inline-block;position:relative;
+}
+.login-continue {
+box-shadow:none !important; cursor:context-menu;
+}
+.forgot-section {
+    margin-top: 15px;
+}
+    .forgot-section .auth-footer-seperator {
+    width:15px;}
+.footer-menu-login {
+margin-bottom:5px;}
+#varification-box {
+margin:0px !important;border:0px;}
+    #varification-box .a-box-inner {
+    padding:0px;}
+#auth-verify-button {
+padding-top:0px; padding-bottom:0px; height:42px; line-height:42px;}
+.otp-varification-btn {
+    height: 42px; max-width:160px;
+    line-height: 42px;
+}
+    .otp-varification-btn .a-button-text, .otp-varification-btn .a-button-inner {
+        line-height: 40px; font-size:16px; height:40px;
+    }
+.login-page.login-varification label {
+    padding-bottom: 5px;
+}

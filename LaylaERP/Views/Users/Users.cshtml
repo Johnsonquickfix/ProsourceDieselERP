@@ -89,11 +89,14 @@
 {<div class="page-title">
     <h2 class="page-heading">Users</h2>
     <a href="#" class="page-title-action">Add New</a>
-    @Html.DropDownList("UserStatus", new List<SelectListItem>
-                            {
-                            new SelectListItem{ Text="Active", Value = "0" },
-                            new SelectListItem{ Text="Inactive", Value = "1" },
-                            })
+    <select id="ddlStatus" placeholder="Select User">
+        <option value="0">Active</option>
+        <option value="1">InActive</option>
+    </select>
+
+    <div class="col-sm-2">
+        <button type="button" id="btnSearch" class="btn btn-primary btn-flat"><i class="fa fa-search"></i> Search</button>
+    </div>
 </div>
     <div class="user_subCrumbs">
         <ul>
@@ -110,31 +113,87 @@
             <li class="none"><a href="#">No role <span class="count">(7)</span></a></li>
         </ul>
     </div>
-    <section class="content section-content">
-                <div class="dx-viewport demo-container data-table-container">
-                    <div id="gridContainer">
-                        <table id="userslist" class="table table-bordered table-striped dataTable" style="width:100%;">
-                            <thead class="thead-dark">
-                                <tr>
-                                    <th></th>
-                                    <th>ID</th>
-                                    <th>User Name</th>
-                                    <th>Email</th>
-                                    <th>Status</th>
-                                    <th>Role</th>
-                                </tr>
-                            </thead>
 
-                        </table>
-                    </div>
+    <section class="content section-content">
+        <div class="user-top-section">
+            <div class="user-search-box">
+                <input type="search" id="user-search-input" name="s" value="">
+                <input type="submit" id="search-submit" class="button" value="Search Users">
+            </div>
+            <div class="tablenav top">
+                <div class="alignleft actions bulkactions">
+                    <select name="action" id="bulk-action-selector-top">
+                        <option value="-1">Bulk actions</option>
+                        <option value="delete">Delete</option>
+                    </select>
+                    <input type="submit" id="doaction" class="button action" value="Apply">
                 </div>
+                <div class="alignleft actions">
+                    <select name="new_role" id="new_role">
+                        <option value="">Change role to…</option>
+                        <option value="wpseo_editor">SEO Editor</option>
+                        <option value="wpseo_manager">SEO Manager</option>
+                        <option value="supplychainmanager">Supply Chain Manager</option>
+                        <option value="subscriber">Subscriber</option>
+                        <option value="shop_manager">Shop manager</option>
+                        <option value="modsquad">Mod Squad</option>
+                        <option value="editor">Editor</option>
+                        <option value="customer">Customer</option>
+                        <option value="contributor">Contributor</option>
+                        <option value="author">Author</option>
+                        <option value="administrator">Administrator</option>
+                        <option value="accounting">Accounting</option>
+                    </select>
+                    <input type="submit" name="changeit" id="changeit" class="button" value="Change">
+                </div>
+                <div class="tablenav-pages">
+                    <span class="displaying-num">61,641 items</span>
+                    <span class="pagination-links">
+                        <span class="tablenav-pages-navspan button disabled" aria-hidden="true">«</span>
+                        <span class="tablenav-pages-navspan button disabled" aria-hidden="true">‹</span>
+                        <span class="paging-input">
+                            <input class="current-page" id="current-page-selector" type="text" name="paged" value="1" size="4" aria-describedby="table-paging">
+                            <span class="tablenav-paging-text"> of <span class="total-pages">3,083</span></span>
+                        </span>
+                        <a class="next-page button" href="http://173.247.242.204/~rpsisr/woo/wp-admin/users.php?paged=2"><span aria-hidden="true">›</span></a>
+                        <a class="last-page button" href="http://173.247.242.204/~rpsisr/woo/wp-admin/users.php?paged=3083"><span aria-hidden="true">»</span></a>
+                    </span>
+                </div>
+                <br class="clear">
+            </div>
+        </div>
+        <div class="dx-viewport demo-container data-table-container">
+            <div id="gridContainer">
+                <table id="userslist" class="table table-bordered table-striped dataTable" style="width:100%;">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th></th>
+                            <th>ID</th>
+                            <th>User Name</th>
+                            <th>Email</th>
+                            <th>Status</th>
+                            <th>Role</th>
+                        </tr>
+                    </thead>
+
+                </table>
+            </div>
+        </div>
     </section>
 }
 
 @section scripts{
 
     <script type="text/javascript">
+
         $(document).ready(function () {
+            //$("#btnSearch").click(function () { Datagrid(); return false; });
+            Datagrid();
+        });
+
+        function Datagrid() {
+            var status = parseInt($("#ddlStatus").val()) || "0";
+            var obj = { user_status: status};
             $('#userslist').DataTable({
                 destroy: true,
                 bAutoWidth: false,
@@ -144,6 +203,7 @@
                     "dataType": 'json',
                 },
                 lengthMenu: [[10, 20, 50, 100], [10, 20, 50, 100]],
+
                 "columns": [
                     { 'data': '', 'sWidth': "5%" },
                     { 'data': 'ID', 'sWidth': "5%" },
@@ -153,22 +213,24 @@
                     { 'data': 'my', 'sWidth': "30%" },
                 ],
 
-
                 columnDefs: [{
                     orderable: false,
                     className: 'select-checkbox',
                     targets: 0,
+                    'checkboxes': {
+                        'selectRow': true
+                    },
                     data: null,
                     defaultContent: '',
                 }],
                 "select": {
-                    "style": 'os',
+                    "style": 'multi',
                     "selector": 'td:first-child'
                 },
                 "order": [[1, 'desc']],
 
             });
-        });
+        };
     </script>
 }
 <script>

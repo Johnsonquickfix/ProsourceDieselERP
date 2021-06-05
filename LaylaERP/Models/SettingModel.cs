@@ -133,5 +133,22 @@ namespace LaylaERP.Models
             get { return _ID; }
             set { _ID = value; }
         }
+        public bool IsPayment { get; set; }
+    }
+
+    public static class GlobalVariables
+    {
+        public static string strEmailNotSendMsg = string.Empty;
+        public static string strSenderEmailPwd = string.Empty;
+        public static string strSMTPServerName = string.Empty;
+        public static string strSMTPServerPortNo = string.Empty;
+
+        public static string strTaxRate_glb = string.Empty;
+        public static string strTaxRate_glb_pct = string.Empty;
+
+        public static bool bl_AuthorizeNet_glb = false;
+        public static bool bl_Paypal_glb = false;
+        public static bool bl_AmazonPay_glb = false;
+        public static bool bl_CreditCustomer_glb = false;
     }
 }

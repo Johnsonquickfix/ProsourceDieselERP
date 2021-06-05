@@ -20,5 +20,7 @@ namespace LaylaERP.Models
         public int PageNo { get; set; }
         public int PageSize { get; set; }
         public int sEcho { get; set; }
+        public string SortCol { get; set; }
+        public string SortDir { get; set; }
     }
 }

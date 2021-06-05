@@ -23,12 +23,13 @@
             <div class="tab-pane active" id="tab_1">
                 <h2>Select Payment Method</h2>
                 <div class="form-check">
+                   
                     @{
-                        var style = "checked";
+                        var value = "checked";
                     }
                     @if (Convert.ToInt32(ViewBag.AuthorizeNet) == 1)
                     {
-                        <input class="form-check-input" type="checkbox" id="authorizenet" checked="@style">
+                        <input class="form-check-input" type="checkbox" id="authorizenet" checked="@value">
                     }
                     else
                     {
@@ -43,20 +44,20 @@
                 <div class="form-check">
                     @if (Convert.ToInt32(ViewBag.Paypal) == 1)
                     {
-                        <input class="form-check-input" type="checkbox" value="" id="paypalpaymet" checked="@style">}
+                        <input class="form-check-input" type="checkbox" value="" id="paypal" checked="@value">}
                     else
                     {
-                        <input class="form-check-input" type="checkbox" value="" id="paypalpaymet">
+                        <input class="form-check-input" type="checkbox" value="" id="paypal">
                     }
 
-                    <label class="form-check-label" for="paypalpaymet">
+                    <label class="form-check-label" for="paypal">
                         Paypal
                     </label>
                 </div>
                 <div class="form-check">
                     @if (Convert.ToInt32(ViewBag.AmazonPay) == 1)
                     {
-                        <input class="form-check-input" type="checkbox" value="" id="amazonpay" checked="@style">
+                        <input class="form-check-input" type="checkbox" value="" id="amazonpay" checked="@value">
                     }
                     else
                     {
@@ -70,12 +71,13 @@
                 <div class="form-check">
                     @if (Convert.ToInt32(ViewBag.CreditCustomer) == 1)
                     {
-                        <input class="form-check-input" type="checkbox" value="" id="creditcustomer" checked="@style">}
+                        <input class="form-check-input" type="checkbox" value="" id="CreditCustomer" checked="@value">}
                     else
                     {
-                        <input class="form-check-input" type="checkbox" value="" id="creditcustomer">
+                        <input class="form-check-input" type="checkbox" value="" id="CreditCustomer">
                     }
-                    <label class="form-check-label" for="creditcustomer">
+                    
+                    <label class="form-check-label" for="CreditCustomer">
                         Credit Customer
                     </label>
                 </div>
@@ -187,10 +189,10 @@
         </div>
         <!-- /.tab-content -->
     </div>
-    <div class="setting-save text-right">
-        <a class="btn btn-app">
+    <div class="setting-save text-right" >
+        <a class="btn btn-app" id="btnSave">
         @*<input type="button" id="btnSave" value="Save" />*@
-        <i class="fa fa-save" id="btnSave"></i> Save
+        <i class="fa fa-save" style=""> Save</i>
         </a>
     </div>
 </div>
@@ -198,13 +200,12 @@
 <script>
     $(document).ready(function () {
         $(document).on('click', "#btnSave", function () {
-            AddCustomer();
+            UpdateSetting();  
         })
-      
     });
     
-
-    function AddCustomer() {
+    function UpdateSetting() {
+        
         ID = $("#hfid").val();
         Email = $("#email").val();
         SenderEmailPwd = $("#SenderEmailPwd").val();
@@ -222,8 +223,41 @@
         TaxjarUser = $("#TaxjarUser").val();
         TaxjarPwd = $("#TaxjarPwd").val();
 
+        if ($(authorizenet).prop("checked")) {
+            authorizenet = 1;
+        }
+        else {
+            authorizenet = 0;
+        }
+
+        if ($(paypal).prop("checked")) {
+            paypal = 1;
+        }
+        else {
+            paypal = 0;
+        }
+
+        if ($(amazonpay).prop("checked")) {
+            amazonpay = 1;
+        }
+        else {
+            amazonpay = 0;
+        }
+
+        if ($(CreditCustomer).prop("checked")) {
+            CreditCustomer = 1;
+            alert(1);
+        }
+        else {
+            CreditCustomer = 0;
+        }
+
             var obj = {
                 ID: ID,
+                authorizenet: authorizenet,
+                paypal: paypal,
+                amazonpay: amazonpay,
+                CreditCustomer: CreditCustomer,
                 SenderEmailID: Email,
                 SenderEmailPwd: SenderEmailPwd,
                 SMTPServerName: SMTPServerName,
@@ -240,9 +274,11 @@
                 TaxjarUser: TaxjarUser,
                 TaxjarPwd: TaxjarPwd,
 
-            }
+        }
+
+        
             $.ajax({
-                url: '/Setting/NewUser/', dataType: 'json', type: 'Post',
+                url: '/Setting/settingdone/', dataType: 'json', type: 'Post',
                 contentType: "application/json; charset=utf-8",
                 data: JSON.stringify(obj),
                 dataType: "json",
@@ -258,10 +294,14 @@
                 error: function (error) {
                     swal('Error!', 'something went wrong', 'error');
                 },
+
+                
             })
-        }
+    }
 
-
+    $(document).ajaxStop(function(){
+    window.location.reload();
+});
 </script>
 
 

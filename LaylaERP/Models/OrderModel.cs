@@ -77,4 +77,11 @@
         public decimal discount { get; set; }
         public decimal tax_amount { get; set; }
     }
+    public class OrderShippingModel
+    {
+        public long product_id { get; set; }
+        public decimal AK { get; set; }
+        public decimal HI { get; set; }
+        public decimal CA { get; set; }
+    }
 }

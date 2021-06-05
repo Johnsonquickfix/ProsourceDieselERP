@@ -463,6 +463,7 @@
     <Content Include="Content\fontawesome-all.min.css" />
     <Content Include="css\indexStyle.css" />
     <Content Include="css\layoutStyle.css" />
+    <Content Include="css\login_style.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />

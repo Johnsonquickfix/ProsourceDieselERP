@@ -90,6 +90,10 @@ namespace LaylaERP.Controllers
         //Code for setting start
         private void Update_Setting(SettingModel model, long id)
         {
+            bool AuthorizeNet = model.AuthorizeNet;
+            bool Paypal = model.Paypal;
+            bool AmazonPay = model.AmazonPay;
+            bool CreditCustomer = model.CreditCustomer;
             string email = model.SenderEmailID;
             string SenderEmailPwd = model.SenderEmailPwd;
             string SMTPServerName = model.SMTPServerName;

@@ -15,13 +15,13 @@ namespace LaylaERP.Controllers
         // GET: Users
         public ActionResult Users()
         {
-            ViewBag.admin = Convert.ToInt32(UsersRepositry.Adminstrator());
-            return View();
+            
+               return View();
         }
+
         [HttpPost]
         public ActionResult Users(FormCollection dt)
         {
-
             //FormCollection fm = new FormCollection();
             //var j = fm["UserStatus"].ToString();
             //Models.UsersRepositry.ShowUsersDetails(j);
@@ -32,6 +32,7 @@ namespace LaylaERP.Controllers
         // GET: Assign Role
         public ActionResult AssignRole()
         {
+            GetRoles();
             return View();
         }
 
@@ -45,19 +46,6 @@ namespace LaylaERP.Controllers
             Models.UsersRepositry.ShowUsersDetails();
             return Json(new { data = Models.UsersRepositry.userslist }, JsonRequestBehavior.AllowGet);
         }
-
-        //[HttpPost]
-        public ActionResult settingdone(clsUserDetails model)
-        {
-
-            //string urid = "0";
-            //urid = model.user_status;
-            //Models.UsersRepositry.ShowUsersDetails(urid);
-            //string result = Models.UsersRepositry.userslist.ToString();
-            ////UsersRepositry.userslist.Clear();
-            //return Json(new { data = Models.UsersRepositry.userslist }, JsonRequestBehavior.AllowGet);
-            return View();            
-        }
-
+        
     }
 }

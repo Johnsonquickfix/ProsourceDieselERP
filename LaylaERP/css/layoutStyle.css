@@ -196,7 +196,7 @@ font-weight:400; margin:0px; user-select:none;}
     width: 18px;
     height: 18px;
     border: 1px solid #7e8993;
-    border-radius: 2px;
+    border-radius: 2px; transition:.5s all;
 }
 .form-check label:after {
     content: ""; opacity:0;
@@ -210,11 +210,15 @@ font-weight:400; margin:0px; user-select:none;}
     position: absolute; transition:.5s all;
     transform: rotate( 310deg );
 }
+
+.form-check [type="checkbox"]:checked + label:before {
+    border-color: #dc3545;
+}
 .form-check [type="checkbox"]:checked + label:after {
     opacity: 1;
 }
 .mt-1 {
-margin-top:.5rem;   }
+margin-top:1rem;   }
 .nav-tabs-custom > .nav-tabs > li.active {
     border-top-color: #ff4100;
 }
@@ -268,4 +272,58 @@ padding-top:5px; padding-bottom:5px;}
 .tablenav .tablenav-pages {
     float: right;
     margin: 0 0 9px;
+}
+.tab-pane h2 {
+    font-size: 22px;
+    margin-top: 0px;
+    margin-bottom: 15px;
+}
+.tab-pane .form-check {
+    margin-bottom: 12px;
+}
+#calendar .table-condensed {
+    width: 100%;
+}
+.nav-tabs-custom > .tab-content {
+padding-top:20px;}
+.activity-section {
+padding:0px;}
+    .activity-section .select2-container--default .select2-selection--single, .activity-section .select2-selection .select2-selection--single {
+        padding: 0px;
+        height: auto;
+    }
+    .activity-section .select2-container .select2-selection--single .select2-selection__rendered {
+        margin-top: 0px;
+    }
+.form-group label {
+font-weight:normal;}
+.user-top-section select {
+}
+body table.dataTable tbody td.select-checkbox:before, body table.dataTable tbody th.select-checkbox:before {
+    top: 50%;
+    width: 18px !important;
+    height: 18px !important;
+    margin: 0px;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    border-radius: 2px !important;
+    transition: .5s all;
+}
+body table.dataTable tr.selected td.select-checkbox:after, body table.dataTable tr.selected th.select-checkbox:after {
+    content: "";
+    left: 50%;
+    top: 50%;
+    width: 12px !important;
+    height: 6px !important;
+    border-width: 0px 0px 1px 1px !important;
+    border-color: #dc3545 !important;
+    border-style: solid !important;
+    position: absolute;
+    transition: .5s all;
+    margin: 0px;
+    margin-top: -7px;
+    transform: rotate( 310deg ) translate(-50%, -50%);
+}
+body table.dataTable tr.selected td.select-checkbox:before, body table.dataTable tr.selected th.select-checkbox:before {
+    border-color: #dc3545 !important;
 }

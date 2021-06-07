@@ -9,104 +9,104 @@
 <script src="~/Content/AdminLTE-3.1.0/datatables/datatables.min.js" type="text/javascript"></script>
 <script src="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/js/dataTables.bootstrap.min.js" type="text/javascript"></script>
 
-<section class="content-header">
-    <h1 class="page-heading ">
+<div class="page-title">
+    <h2 class="page-heading">
         User Activity Log
-    </h1>
-</section>
-<section class="content">
-    <div class="row">
-        <div class="col-md-4">
-            <div class="form-group">
-                <select class="form-control select2" id="ddlUser" placeholder="Select User"></select>
+    </h2>
+</div>
+        <section class="content activity-section">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <select class="form-control select2" id="ddlUser" placeholder="Select User"></select>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                        <input id="txtLogDate" data-auto-update-input="false" readonly="readonly" class="form-control">
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <button type="button" id="btnSearch" class="btn btn-primary btn-flat"><i class="fa fa-search"></i> Search</button>
+                </div>
             </div>
-        </div>
-        <div class="col-sm-4">
-            <div class="input-group">
-                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                <input id="txtLogDate" data-auto-update-input="false" readonly="readonly" class="form-control">
+            <div class="row">
+                <div class="col-md-12">
+                    <table id="dtdata" class="table table-bordered table-striped dataTable" width="100%">
+                        <thead>
+                            <tr>
+                                <th>Sr. No.</th>
+                                <th>Date</th>
+                                <th>User Name</th>
+                                <th>Email</th>
+                                <th>IP Address</th>
+                                <th>Module Name</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
             </div>
-        </div>
-        <div class="col-sm-4">
-            <button type="button" id="btnSearch" class="btn btn-primary btn-flat"><i class="fa fa-search"></i> Search</button>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <table id="dtdata" class="table table-bordered table-striped dataTable" width="100%">
-                <thead>
-                    <tr>
-                        <th>Sr. No.</th>
-                        <th>Date</th>
-                        <th>User Name</th>
-                        <th>Email</th>
-                        <th>IP Address</th>
-                        <th>Module Name</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-            </table>
-        </div>
-    </div>
-</section>
-<script>
-    $(document).ready(function () {        
-        $("#ddlUser").select2({
-            allowClear: true, minimumInputLength: 1, placeholder: "Search User",
-            ajax: {
-                url: '/Setting/GetUserList', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
-                data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
-                processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.displayname, name: item.displayname, id: item.id } }) }; },
-                error: function (xhr, status, err) { }, cache: true
-            }
-        });
-        $('#txtLogDate').daterangepicker({
-            ranges: {
-                'Today': [moment(), moment()],
-                'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-                'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-                'This Month': [moment().startOf('month'), moment().endOf('month')],
-                'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-            },
-            autoUpdateInput: true, alwaysShowCalendars: true,
-            locale: { format: 'DD/MM/YYYY', cancelLabel: 'Clear' }
-        });
-        $("#btnSearch").click(function () { dataGridLoad(); return false; });
-        setTimeout(function () { dataGridLoad(); }, 50);
-    });
-
-    function dataGridLoad() {
-        var urid = parseInt($("#ddlUser").val()) || 0;
-        var dfa = $('#txtLogDate').val().split('-');
-        var obj = { strValue1: urid, strValue2: dfa[0], strValue3: dfa[1], PageNo: 0, PageSize: 10, sEcho: 1 };
-        $('#dtdata').DataTable({
-            destroy: true, bProcessing: true, bServerSide: true,
-            sPaginationType: "full_numbers", searching: false, ordering: false, lengthChange: false,
-            bAutoWidth: true, scrollX: true, scrollY: ($(window).height() - 215),
-            lengthMenu: [[10, 20, 50], [10, 20, 50]],
-            sAjaxSource: "/Setting/GetActivityLogList",
-            fnServerData: function (sSource, aoData, fnCallback, oSettings) {
-                obj.sEcho = aoData[0].value; obj.PageSize = oSettings._iDisplayLength; obj.PageNo = oSettings._iDisplayStart;
-                $.ajax({
-                    type: "POST", url: sSource, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
-                    success: function (data) {                        
-                        var dtOption = { sEcho: data.sEcho, recordsTotal: data.recordsTotal, recordsFiltered: data.recordsFiltered, iTotalRecords: data.iTotalRecords, iTotalDisplayRecords: data.iTotalDisplayRecords, aaData: JSON.parse(data.aaData) };
-                        return fnCallback(dtOption);
-                    },
-                    error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
-                    async: false
+        </section>
+        <script>
+            $(document).ready(function () {
+                $("#ddlUser").select2({
+                    allowClear: true, minimumInputLength: 1, placeholder: "Search User",
+                    ajax: {
+                        url: '/Setting/GetUserList', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+                        data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
+                        processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.displayname, name: item.displayname, id: item.id } }) }; },
+                        error: function (xhr, status, err) { }, cache: true
+                    }
                 });
-            },
-            aoColumns: [
-                { data: 'ROWNUM', title: 'Sr. No.', sWidth: "5%" },
-                { data: 'log_date', title: 'Date', sWidth: "10%" },
-                { data: 'User_Login', title: 'User Name', sWidth: "10%" },
-                { data: 'user_email', title: 'Email', sWidth: "15%" },
-                { data: 'ip_address', title: 'IP Address', sWidth: "10%" },
-                { data: 'module_name', title: 'Module Name', sWidth: "10%" },
-                { data: 'description', title: 'Description', sWidth: "30%" }
-            ]
-        });
-    }
-</script>
+                $('#txtLogDate').daterangepicker({
+                    ranges: {
+                        'Today': [moment(), moment()],
+                        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                        'This Month': [moment().startOf('month'), moment().endOf('month')],
+                        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                    },
+                    autoUpdateInput: true, alwaysShowCalendars: true,
+                    locale: { format: 'DD/MM/YYYY', cancelLabel: 'Clear' }
+                });
+                $("#btnSearch").click(function () { dataGridLoad(); return false; });
+                setTimeout(function () { dataGridLoad(); }, 50);
+            });
+
+            function dataGridLoad() {
+                var urid = parseInt($("#ddlUser").val()) || 0;
+                var dfa = $('#txtLogDate').val().split('-');
+                var obj = { strValue1: urid, strValue2: dfa[0], strValue3: dfa[1], PageNo: 0, PageSize: 10, sEcho: 1 };
+                $('#dtdata').DataTable({
+                    destroy: true, bProcessing: true, bServerSide: true,
+                    sPaginationType: "full_numbers", searching: false, ordering: false, lengthChange: false,
+                    bAutoWidth: true, scrollX: true, scrollY: ($(window).height() - 215),
+                    lengthMenu: [[10, 20, 50], [10, 20, 50]],
+                    sAjaxSource: "/Setting/GetActivityLogList",
+                    fnServerData: function (sSource, aoData, fnCallback, oSettings) {
+                        obj.sEcho = aoData[0].value; obj.PageSize = oSettings._iDisplayLength; obj.PageNo = oSettings._iDisplayStart;
+                        $.ajax({
+                            type: "POST", url: sSource, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
+                            success: function (data) {
+                                var dtOption = { sEcho: data.sEcho, recordsTotal: data.recordsTotal, recordsFiltered: data.recordsFiltered, iTotalRecords: data.iTotalRecords, iTotalDisplayRecords: data.iTotalDisplayRecords, aaData: JSON.parse(data.aaData) };
+                                return fnCallback(dtOption);
+                            },
+                            error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
+                            async: false
+                        });
+                    },
+                    aoColumns: [
+                        { data: 'ROWNUM', title: 'Sr. No.', sWidth: "5%" },
+                        { data: 'log_date', title: 'Date', sWidth: "10%" },
+                        { data: 'User_Login', title: 'User Name', sWidth: "10%" },
+                        { data: 'user_email', title: 'Email', sWidth: "15%" },
+                        { data: 'ip_address', title: 'IP Address', sWidth: "10%" },
+                        { data: 'module_name', title: 'Module Name', sWidth: "10%" },
+                        { data: 'description', title: 'Description', sWidth: "30%" }
+                    ]
+                });
+            }
+        </script>

@@ -295,6 +295,7 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\css\intlTelInput.css" />
     <Content Include="Content\css\Style.css" />
     <Content Include="Content\css\tabcss.css" />
     <Content Include="Content\AdminLTE-3.1.0\daterangepicker\daterangepicker.css" />
@@ -461,6 +462,8 @@
     <Content Include="Content\dx\dx.light.css" />
     <Content Include="Content\AdminLTE-3.1.0\jquery\jquery.min.js" />
     <Content Include="Content\fontawesome-all.min.css" />
+    <Content Include="Content\img\flags%402x.png" />
+    <Content Include="Content\img\flags.png" />
     <Content Include="css\indexStyle.css" />
     <Content Include="css\layoutStyle.css" />
     <Content Include="favicon.ico" />
@@ -580,6 +583,7 @@
     <Content Include="Scripts\DataTables\responsive.semanticui.js" />
     <Content Include="Scripts\DataTables\responsive.semanticui.min.js" />
     <Content Include="Scripts\DataTables\vfs_fonts.js" />
+    <Content Include="Scripts\intlTelInput.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
     <Content Include="Scripts\jquery-3.4.1.slim.js" />

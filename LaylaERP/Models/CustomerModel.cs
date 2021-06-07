@@ -60,6 +60,6 @@ namespace LaylaERP.Models
         public long umeta_id { get; set; }
         public long user_id { get; set; }
         public string Search { get; set; }
-
+        public string strVal { get; set; }
     }
 }

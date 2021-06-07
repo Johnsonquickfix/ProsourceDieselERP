@@ -75,7 +75,7 @@
 
                 smtp.Port = int.Parse(ConfigurationManager.AppSettings["Port"]); //reading from web.config  
 
-               //smtp.Send(mailMessage);
+               smtp.Send(mailMessage);
 
             }
 
@@ -87,7 +87,7 @@
         public ActionResult MobileVerification(int OTP)
         {
             DateTime OTPTime = DateTime.Parse(Session["OTPTime"].ToString());
-            if (OTPTime.AddMinutes(1)>DateTime.Now) {
+            if (OTPTime.AddMinutes(10)>DateTime.Now) {
                 if (Convert.ToInt32(Session["OTP"]) == OTP)
                 {
 

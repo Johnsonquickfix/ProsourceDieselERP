@@ -27,11 +27,12 @@ $(document).ready(function () {
     });
     $("#ddlProduct").change(function () { if ($('#ddlProduct').val() == null) return false; getItemList(); $('#ddlProduct').val('').trigger('change'); });
     $(document).on("click", "#btnApplyCoupon", function (t) { t.preventDefault(); CouponModal(); });
-    $("#billModal").on("keypress", function (e) { if (e.which == 13 && e.target.type != "textarea") { $("#btnCouponAdd").click(); } });
+    //$("#billModal").on("keypress", function (e) { if (e.which == 13 && e.target.type != "textarea") { $("#btnCouponAdd").click(); } });
     $("#billModal").on("click", "#btnCouponAdd", function (t) { t.preventDefault(); ApplyCoupon(); });
     //$(document).on("click", "#btnAddItem", function (t) { t.preventDefault(); ProductModal(); });
     //$("#billModal").on("change", ".ddlTempProductFooter", function (t) { t.preventDefault(); ProductModalItemRow(); });
     $(document).on("blur", "#txtshipzipcode", function (t) { t.preventDefault(); GetTaxRate(); });
+    $(document).on("click", "#btnPlaceOrder", function (t) { t.preventDefault(); saveCO(); });
 });
 ///Bind States of Country
 function BindStateCounty(ctr, obj) {
@@ -45,14 +46,14 @@ function BindStateCounty(ctr, obj) {
 ///Get New Order No
 function NewOrderNo() {
     var opt = { strValue1: '' };
-    //$.ajax({
-    //    type: "POST", url: '/Orders/GetNewOrderNo', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
-    //    success: function (result) {
-    //        $('#hfOrderNo').val(result.message); $('#lblOrderNo').text('Order #' + result.message + ' detail ');
-    //    },
-    //    error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
-    //    async: false
-    //});
+    $.ajax({
+        type: "POST", url: '/Orders/GetNewOrderNo', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
+        success: function (result) {
+            $('#hfOrderNo').val(result.message); $('#lblOrderNo').text('Order #' + result.message + ' detail ');
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
+        async: false
+    });
 }
 ///Find Address of Customer
 function CustomerAddress() {
@@ -89,7 +90,7 @@ function CustomerAddress() {
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) { $('.billinfo').prop("disabled", true); swal('Alert!', errorThrown, "error"); },
             complete: function () { $('.billinfo').prop("disabled", false); },
-            async: false
+            async: true
         });
         GetTaxRate();
     }
@@ -108,39 +109,8 @@ function GetTaxRate() {
         type: "POST", url: '/Orders/GetTaxRate', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
         success: function (result) { $('#hfTaxRate').val(result.message); },
         error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
-        async: false
+        async: true
     });
-}
-
-///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Post and Post Meta ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-function getPostMeta() {
-    var oid = $('#hfOrderNo').val();
-    var postMetaxml = [];
-    postMetaxml.push(
-        { post_id: oid, meta_key: '_order_key', meta_value: 'wc_order_' }, { post_id: oid, meta_key: '_customer_user', meta_value: '1' },
-        { post_id: oid, meta_key: '_payment_method', meta_value: 'cod' }, { post_id: oid, meta_key: '_payment_method_title', meta_value: 'cash on delivery' },
-        { post_id: oid, meta_key: '_customer_ip_address', meta_value: '::1' }, { post_id: oid, meta_key: '_customer_user_agent', meta_value: '0' },
-        { post_id: oid, meta_key: '_created_via', meta_value: 'checkout' }, { post_id: oid, meta_key: '_cart_hash', meta_value: '0' },
-        { post_id: oid, meta_key: '_billing_first_name', meta_value: $('#txtbillfirstname').val() }, { post_id: oid, meta_key: '_billing_last_name', meta_value: $('#txtbilllastname').val() },
-        { post_id: oid, meta_key: '_billing_address_1', meta_value: $('#txtbilladdress1').val() }, { post_id: oid, meta_key: '_billing_address_2', meta_value: $('#txtbilladdress2').val() },
-        { post_id: oid, meta_key: '_billing_city', meta_value: $('#txtbillcity').val() }, { post_id: oid, meta_key: '_billing_state', meta_value: $('#ddlbillstate').val() },
-        { post_id: oid, meta_key: '_billing_postcode', meta_value: $('#txtbillzipcode').val() }, { post_id: oid, meta_key: '_billing_country', meta_value: $('#ddlbillcountry').val() },
-        { post_id: oid, meta_key: '_billing_email', meta_value: $('#txtbillemail').val() }, { post_id: oid, meta_key: '_billing_phone', meta_value: $('#txtbillphone').val() },
-        { post_id: oid, meta_key: '_order_currency', meta_value: 'USD' }, { post_id: oid, meta_key: '_cart_discount', meta_value: '0' },
-        { post_id: oid, meta_key: '_cart_discount_tax', meta_value: '0' }, { post_id: oid, meta_key: '_order_shipping', meta_value: '0' },
-        { post_id: oid, meta_key: '_order_shipping_tax', meta_value: '0' }, { post_id: oid, meta_key: '_order_tax', meta_value: '0' },
-        { post_id: oid, meta_key: '_order_version', meta_value: '0' }, { post_id: oid, meta_key: '_prices_include_tax', meta_value: 'no' },
-        { post_id: oid, meta_key: '_shipping_address_index', meta_value: '' }, { post_id: oid, meta_key: 'is_vat_exempt', meta_value: 'no' },
-        { post_id: oid, meta_key: '_download_permissions_granted', meta_value: 'yes' }, { post_id: oid, meta_key: '_recorded_sales', meta_value: 'yes' },
-        { post_id: oid, meta_key: '_recorded_coupon_usage_counts', meta_value: 'yes' }, { post_id: oid, meta_key: '_order_stock_reduced', meta_value: 'yes' },
-        { post_id: oid, meta_key: '_edit_lock', meta_value: '1' }, { post_id: oid, meta_key: '_shipping_first_name', meta_value: $('#txtshipfirstname').val() },
-        { post_id: oid, meta_key: '_shipping_last_name', meta_value: $('#txtshiplastname').val() }, { post_id: oid, meta_key: '_shipping_address_1', meta_value: $('#txtshipaddress1').val() },
-        { post_id: oid, meta_key: '_shipping_address_2', meta_value: $('#txtshipaddress2').val() }, { post_id: oid, meta_key: '_shipping_city', meta_value: $('#txtshipcity').val() },
-        { post_id: oid, meta_key: '_shipping_state', meta_value: $('#ddlshipstate').val() }, { post_id: oid, meta_key: '_shipping_postcode', meta_value: $('#txtshipzipcode').val() },
-        { post_id: oid, meta_key: '_shipping_country', meta_value: $('#ddlshipcountry').val() }, { post_id: oid, meta_key: '_shipping_email', meta_value: '' },
-        { post_id: oid, meta_key: '_shipping_phone', meta_value: '' }, { post_id: oid, meta_key: '_order_tax', meta_value: $('salesTaxTotal').html() }, { post_id: oid, meta_key: '_order_total', meta_value: $('orderTotal').html() }
-    );
-    return postMetaxml;
 }
 
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Coupon and Product Modal ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -166,12 +136,12 @@ function CouponModal() {
     $("#billModal").modal({ backdrop: 'static' }); $("#txt_Coupon").focus();
 }
 function ApplyCoupon() {
-    if ($('#txt_Coupon').val() == '') { swal('Alert!', 'Please enter Coupon Code!', "info").then((result) => { return false; });}
+    if ($('#txt_Coupon').val() == '') { swal('Alert!', 'Please enter Coupon Code!', "info").then((result) => { return false; }); }
     var obj = { strValue1: $('#txt_Coupon').val() };
     $.ajax({
         type: "POST", url: '/Orders/GetCouponAmount', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
         success: function (result) {
-            var data = JSON.parse(result); console.log(data);
+            var data = JSON.parse(result);
             bindCouponList(data);
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
@@ -323,6 +293,24 @@ function ProductModalItemRow() {
     });
 }
 
+///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Shipping Charges ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+function getItemShippingCharge(options) {
+    var defaultTabOptions = { strValue1: 0, strValue2: 0 };
+
+    options = $.extend(true, defaultTabOptions, options);
+
+    $.ajax({
+        type: "POST", url: '/Orders/GetProductShipping', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(options),
+        success: function (data) {
+            $('#tritemId_' + options.strValue1 + "_" + options.strValue2).find(".TotalAmount").data("shippingamt", data.amount);
+            calcFinalTotals();
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
+        async: false
+    });
+
+}
+
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Item Tab Section ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function getItemList() {
     var res = $('#ddlProduct').val().split('$');
@@ -334,14 +322,14 @@ function getItemList() {
         success: function (data) {
             var itemsDetailsxml = [];
             itemsDetailsxml.push({
-                "PKey": data.product_id + '_' + data.variation_id, "product_id": data.product_id, "variation_id": data.variation_id, "product_name": data.product_name, "quantity": 1, "sale_rate": data.sale_price, "total": (data.sale_price * 1.0), "discount": 0, "tax_amount": (((data.sale_price * 1.0) * tax_rate) / 100).toFixed(2)
+                "PKey": data.product_id + '_' + data.variation_id, "product_id": data.product_id, "variation_id": data.variation_id, "product_name": data.product_name, "quantity": 1, "sale_rate": data.sale_price, "total": (data.sale_price * 1.0), "discount": 0, "tax_amount": (((data.sale_price * 1.0) * tax_rate) / 100).toFixed(2), "shipping_amount": 0
             });
             bindItemListDataTable(itemsDetailsxml);
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
         async: false
     });
-
+    getItemShippingCharge({ strValue1: pid, strValue2: vid, strValue3: $("#ddlshipcountry").val() });
 }
 //-----bind Item Table ---------------------------
 function bindItemListDataTable(data) {
@@ -350,12 +338,12 @@ function bindItemListDataTable(data) {
         for (var i = 0; i < data.length; i++) {
             if (data[i].product_id > 0) {
                 if ($('#tritemId_' + data[i].PKey).length <= 0) {
-                    layoutHtml += '<tr id="tritemId_' + data[i].PKey + '" data-id="' + data[i].PKey + '" data-pid="' + data[i].product_id + '" data-vid="' + data[i].variation_id + '">';
+                    layoutHtml += '<tr id="tritemId_' + data[i].PKey + '" data-id="' + data[i].PKey + '" data-pid="' + data[i].product_id + '" data-vid="' + data[i].variation_id + '" data-pname="' + data[i].product_name + '">';
                     layoutHtml += '<td class="text-center"><a class="btn menu-icon-gr vd_red btnDeleteItem billinfo" tabitem_itemid="' + data[i].PKey + '" onclick="removeItemsInTable(\'' + data[i].PKey + '\');"> <i class="glyphicon glyphicon-trash"></i> </a></td>';
                     layoutHtml += '<td>' + data[i].product_name + '</td>';
                     layoutHtml += '<td class="text-right">' + data[i].sale_rate + '</td>';
                     layoutHtml += '<td><input class="form-control billinfo number rowCalulate" type="number" id="txt_ItemQty_' + data[i].PKey + '" value="' + data[i].quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
-                    layoutHtml += '<td class="TotalAmount text-right" data-salerate="' + data[i].sale_rate + '" data-discount="' + data[i].discount + '" data-amount="' + data[i].total + '" data-taxamount="' + data[i].tax_amount + '">' + data[i].total + '</td>';
+                    layoutHtml += '<td class="TotalAmount text-right" data-salerate="' + data[i].sale_rate + '" data-discount="' + data[i].discount + '" data-amount="' + data[i].total + '" data-taxamount="' + data[i].tax_amount + '" data-shippingamt="' + data[i].shipping_amount + '">' + data[i].total + '</td>';
                     layoutHtml += '<td class="text-right RowDiscount" data-disctype="-" data-couponamt="0">' + data[i].discount + '</td>';
                     layoutHtml += '<td class="text-right RowTax">' + data[i].tax_amount + '</td>';
                     layoutHtml += '</tr>';
@@ -431,19 +419,118 @@ function calcRowAmount(objControl, objRow) // objRow is row object
 }
 function calcFinalTotals() {
     //TTotal
-    var zQty = 0.00, zGAmt = 0.00, zTDiscount = 0.00, zTotalTax = 0.00;
+    var zQty = 0.00, zGAmt = 0.00, zTDiscount = 0.00, zTotalTax = 0.00, zShippingAmt = 0.00;
     var rowCount = $('#tblAddItemFinal >tbody >tr').length;
     $("#tblAddItemFinal > tbody  > tr").each(function () {
         zQty = zQty + (parseFloat($(this).find("[name=txt_ItemQty]").val()) || 0.00);
         zGAmt = zGAmt + parseFloat($(this).find(".TotalAmount").data("amount"));
         zTDiscount = zTDiscount + parseFloat($(this).find(".TotalAmount").data("discount"));
         zTotalTax = zTotalTax + parseFloat($(this).find(".TotalAmount").data("taxamount"));
+        zShippingAmt = zShippingAmt + parseFloat($(this).find(".TotalAmount").data("shippingamt"));
     });
     $("#totalQty").text(zQty.toFixed(2));
     $("#SubTotal").text(zGAmt.toFixed(2));
     $("#discountTotal").text(zTDiscount.toFixed(2));
     $("#salesTaxTotal").text(zTotalTax.toFixed(2));
-    //$("#ts_con").text(zTotalTax.toFixed(2));
-    //$("#total-payable").text((zGAmt - zTDiscount + zTotalTax).toFixed(2));
-    $("#orderTotal").html((zGAmt - zTDiscount + zTotalTax).toFixed(2));
+    $("#shippingTotal").text(zShippingAmt.toFixed(2));
+    $("#orderTotal").html((zGAmt - zTDiscount + zShippingAmt + zTotalTax).toFixed(2));
+}
+
+///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Post and Post Meta ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+function createPostMeta() {
+    var oid = $('#hfOrderNo').val();
+    var postMetaxml = [];
+    postMetaxml.push(
+        { post_id: oid, meta_key: '_order_key', meta_value: 'wc_order_' }, { post_id: oid, meta_key: '_customer_user', meta_value: '1' },
+        { post_id: oid, meta_key: '_payment_method', meta_value: 'cod' }, { post_id: oid, meta_key: '_payment_method_title', meta_value: 'cash on delivery' },
+        { post_id: oid, meta_key: '_customer_ip_address', meta_value: '::1' }, { post_id: oid, meta_key: '_customer_user_agent', meta_value: '0' },
+        { post_id: oid, meta_key: '_created_via', meta_value: 'checkout' }, { post_id: oid, meta_key: '_cart_hash', meta_value: '0' },
+        { post_id: oid, meta_key: '_billing_first_name', meta_value: $('#txtbillfirstname').val() }, { post_id: oid, meta_key: '_billing_last_name', meta_value: $('#txtbilllastname').val() },
+        { post_id: oid, meta_key: '_billing_address_1', meta_value: $('#txtbilladdress1').val() }, { post_id: oid, meta_key: '_billing_address_2', meta_value: $('#txtbilladdress2').val() },
+        { post_id: oid, meta_key: '_billing_city', meta_value: $('#txtbillcity').val() }, { post_id: oid, meta_key: '_billing_state', meta_value: $('#ddlbillstate').val() },
+        { post_id: oid, meta_key: '_billing_postcode', meta_value: $('#txtbillzipcode').val() }, { post_id: oid, meta_key: '_billing_country', meta_value: $('#ddlbillcountry').val() },
+        { post_id: oid, meta_key: '_billing_email', meta_value: $('#txtbillemail').val() }, { post_id: oid, meta_key: '_billing_phone', meta_value: $('#txtbillphone').val() },
+        { post_id: oid, meta_key: '_order_version', meta_value: '0' }, { post_id: oid, meta_key: '_prices_include_tax', meta_value: 'no' },
+        { post_id: oid, meta_key: '_shipping_address_index', meta_value: '' }, { post_id: oid, meta_key: 'is_vat_exempt', meta_value: 'no' },
+        { post_id: oid, meta_key: '_download_permissions_granted', meta_value: 'yes' }, { post_id: oid, meta_key: '_recorded_sales', meta_value: 'yes' },
+        { post_id: oid, meta_key: '_recorded_coupon_usage_counts', meta_value: 'yes' }, { post_id: oid, meta_key: '_order_stock_reduced', meta_value: 'yes' },
+        { post_id: oid, meta_key: '_edit_lock', meta_value: '1' }, { post_id: oid, meta_key: '_shipping_first_name', meta_value: $('#txtshipfirstname').val() },
+        { post_id: oid, meta_key: '_shipping_last_name', meta_value: $('#txtshiplastname').val() }, { post_id: oid, meta_key: '_shipping_address_1', meta_value: $('#txtshipaddress1').val() },
+        { post_id: oid, meta_key: '_shipping_address_2', meta_value: $('#txtshipaddress2').val() }, { post_id: oid, meta_key: '_shipping_city', meta_value: $('#txtshipcity').val() },
+        { post_id: oid, meta_key: '_shipping_state', meta_value: $('#ddlshipstate').val() }, { post_id: oid, meta_key: '_shipping_postcode', meta_value: $('#txtshipzipcode').val() },
+        { post_id: oid, meta_key: '_shipping_country', meta_value: $('#ddlshipcountry').val() }, { post_id: oid, meta_key: '_shipping_email', meta_value: '' },
+        { post_id: oid, meta_key: '_shipping_phone', meta_value: '' }, { post_id: oid, meta_key: '_order_currency', meta_value: 'USD' },
+        { post_id: oid, meta_key: '_order_total', meta_value: parseFloat($('orderTotal').text()) || 0.00 }, { post_id: oid, meta_key: '_cart_discount', meta_value: parseFloat($('discountTotal').text()) || 0.00 },
+        { post_id: oid, meta_key: '_cart_discount_tax', meta_value: '0' }, { post_id: oid, meta_key: '_order_shipping', meta_value: parseFloat($('shippingTotal').text()) || 0.00 },
+        { post_id: oid, meta_key: '_order_shipping_tax', meta_value: parseFloat($('salesTaxTotal').text()) || 0.00 }, { post_id: oid, meta_key: '_order_tax', meta_value: parseFloat($('salesTaxTotal').text()) || 0.00 }
+    );
+    return postMetaxml;
+}
+function createPostStatus() {
+    var oid = $('#hfOrderNo').val();
+    var postStatus = {
+        order_id: oid,
+        parent_id: 0,
+        returning_customer: 0,
+        customer_id: parseInt($('#ddlUser').val()) || 0,
+        num_items_sold: parseInt($('#totalQty').text()) || 0,
+        total_sales: parseFloat($('#orderTotal').text()) || 0,
+        tax_total: parseFloat($('#salesTaxTotal').text()) || 0,
+        shipping_total: parseFloat($('#shippingTotal').text()) || 0,
+        net_total: (parseFloat($('#orderTotal').text()) || 0) - (parseFloat($('#salesTaxTotal').text()) || 0),
+        status: $('#ddlStatus').val()
+    };
+    return postStatus;
+}
+///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Save Details ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+function saveCO() {
+    $('#btnPlaceOrder').prop("disabled", true);
+    var oid = parseInt($('#hfOrderNo').val()) || 0;
+    var cid = parseInt($('#ddlUser').val()) || 0;
+    //if (oid <= 0) { swal('Alert!', 'Please Select Customer.', "info").then((result) => { return false; }); }
+    if (cid <= 0) { swal('Alert!', 'Please Select Customer.', "info").then((result) => { return false; }); }
+    var postMeta = createPostMeta(); var postStatus = createPostStatus();
+    var itemsDetails = [];
+    $('#tblAddItemFinal > tbody  > tr').each(function (index, tr) {
+        var pKey = parseInt(index);
+        var qty = parseFloat($(this).find("[name=txt_ItemQty]").val()) || 0.00;
+        var rate = parseFloat($(this).find(".TotalAmount").data('salerate')) || 0.00;
+        var grossAmount = parseFloat($(this).find(".TotalAmount").data('amount')) || 0.00;
+        var discountAmount = parseFloat($(this).find(".TotalAmount").data('discount')) || 0.00;
+        var taxAmount = parseFloat($(this).find(".TotalAmount").data('taxamount')) || 0.00;
+        var shippinAmount = parseFloat($(this).find(".TotalAmount").data('shippingamt')) || 0.00;
+
+        itemsDetails.push({
+            "PKey": pKey, "order_id": oid, "customer_id": cid, "product_id": $(this).data('pid'), "variation_id": $(this).data('vid'), "product_name": $(this).data('pname'), "quantity": qty, "sale_rate": rate, "total": grossAmount, "discount": discountAmount, "tax_amount": taxAmount, "shipping_amount": shippinAmount, "shipping_tax_amount": 0
+        });
+    });
+    if (itemsDetails.length == 0) { swal('Alert!', 'Please add product.', "info").then((result) => { return false; }); }
+    var obj = { OrderPostMeta: postMeta, OrderProducts: itemsDetails, OrderPostStatus: postStatus };
+
+    console.log(obj);
+    //if (itemsDetailsxml.length == 0) { bootbox.alert('Please add product.'); return false; }
+    //var obj = {}; obj.VDate = $("#txtvdate").val(); obj.Narration = $("#note").val(); obj.cMobile = $("#txtpartyNo").val();
+    //obj.cName = $("#txtpartyname").val(); obj.cPNRNo = $("#txtPNRNo").val(); obj.GVD = itemsDetailsxml; //obj.GVD = JSON.stringify(rdata);
+    //obj.cPaidBy = $("#paid_by").val(); obj.TxnID = $("#trx_id").val();
+    ////console.log(obj);
+    $.ajax({
+        type: "POST", contentType: "application/json; charset=utf-8",
+        url: "/Orders/SaveCustomerOrder", // Controller/View
+        data: JSON.stringify(obj), dataType: "json", beforeSend: function (xhr) { },
+        success: function (data) {
+            console.log(data);
+            //var logdata = JSON.parse(data.d);
+            //if (logdata.state == true) {
+            //    posClearPersonInfo(); $("#ds_per").html(''); $("#ds_per").data('don', 'A'); var itemsDetailsxml = []; bindPOSItemsTable(itemsDetailsxml);
+            //    $("#payModal").modal("hide");
+            //    window.setTimeout(function () {
+            //        window.open('PrintSlip.aspx?vno=' + logdata.data + '', '_blank', '"height=700,width=950,menubar=no,resizable=no,directories=no,location=no');
+            //    }, 500);
+            //}
+            //else { bootbox.alert(logdata.message); return false; }
+        },
+        error: function (xhr, status, err) { $('#btnPlaceOrder').prop("disabled", false); alert(err); },
+        complete: function () { $('#btnPlaceOrder').prop("disabled", false); },
+    });
+    return false;
 }

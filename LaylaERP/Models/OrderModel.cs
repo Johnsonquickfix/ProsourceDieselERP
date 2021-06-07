@@ -8,6 +8,9 @@
 
     public class OrderModel
     {
+        public List<OrderPostMetaModel> OrderPostMeta { get; set; }
+        public List<OrderProductsModel> OrderProducts { get; set; }
+        public OrderPostStatusModel OrderPostStatus { get; set; }
     }
     public class OrderPostModel
     {
@@ -65,6 +68,21 @@
 
         public string meta_value { get; set; }
     }
+    public class OrderPostStatusModel
+    {
+        public long order_id { get; set; }
+        public long parent_id { get; set; }
+        public long returning_customer { get; set; }
+        public long customer_id { get; set; }
+        public DateTime date_created { get; set; }
+        public DateTime date_created_gmt { get; set; }
+        public int num_items_sold { get; set; }
+        public double total_sales { get; set; }
+        public double tax_total { get; set; }
+        public double shipping_total { get; set; }
+        public double net_total { get; set; }
+        public string status { get; set; }
+    }
     public class OrderProductsModel
     {
         public long product_id { get; set; }
@@ -76,6 +94,8 @@
         public decimal total { get; set; }
         public decimal discount { get; set; }
         public decimal tax_amount { get; set; }
+        public decimal shipping_amount { get; set; }
+        public decimal shipping_tax_amount { get; set; }
     }
     public class OrderShippingModel
     {

@@ -31,7 +31,6 @@ namespace LaylaERP.Controllers
             try
             {
                 int urid = 0;
-
                 if (model.user_status > 0)
                     urid = Convert.ToInt32(model.user_status);
                 string searchid = model.Search;
@@ -87,7 +86,7 @@ namespace LaylaERP.Controllers
             {
                 if (model.ID > 0)
                 {
-                    Repo.EditCustomerStatus(model, model.ID);
+                    Repo.EditCustomerStatus(model);
                     return Json(new { status = true, message = "Customer Status has been updated successfully!!", url = "" }, 0);
                 }
                 else
@@ -96,6 +95,21 @@ namespace LaylaERP.Controllers
                 }
             }
             return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+        }
+        [HttpPost]
+        public JsonResult DeleteCustomer(CustomerModel model)
+        {
+            string strID = model.strVal;
+                if (strID != "")
+                {
+                    Repo.DeleteCustomer(strID);
+                    return Json(new { status = true, message = "Customer Status has been Deleted successfully!!", url = "" }, 0);
+                }
+                else
+                {
+                    return Json(new { status = false, message = "Something went wrong", url = "" }, 0);
+                }
+            
         }
         private void Adduser_MetaData(CustomerModel model, long id)
         {

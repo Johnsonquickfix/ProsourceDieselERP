@@ -6,7 +6,7 @@
 <link href="~/Content/css/Style.css" rel="stylesheet" />
 
 <div class="page-title">
-    <h2 class="page-heading">Add New Order</h2>    
+    <h2 class="page-heading">Add New Order</h2>
 </div>
 
 <section class="content section-content">
@@ -162,10 +162,25 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-12">
+        <div class="col-sm-6">
+            <div class="box box-solid">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Coupon(s)</h3>
+                    <div class="box-tools">
+                        <button type="button" id="btnApplyCoupon" class="btn btn-primary billinfo">Apply coupon</button>
+                    </div>
+                </div>
+                <div class="box-body no-padding">
+                    <ul class="nav nav-pills nav-stacked" id="billCoupon">                        
+                    </ul>
+                </div>
+                <!-- /.box-body -->
+            </div>
+        </div>
+        <div class="col-sm-6">
             <div class="form-horizontal bg-gray font-bold">
                 <div class="form-group">
-                    <label class="col-sm-10 control-label">Sub-Total</label>
+                    <label class="col-sm-10 control-label">Sub-Total (<span id="totalQty">0</span>)</label>
                     <div class="col-sm-2 controls text-right">
                         <span id="SubTotal">0.00</span>
                     </div>
@@ -205,7 +220,7 @@
     </div>
     <div class="row">
         <div class="col-sm-12 text-right">
-            <button type="button" id="btnApplyCoupon" class="btn btn-primary billinfo">Apply coupon</button>
+            
         </div>
     </div>
     <div class="row">

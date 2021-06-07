@@ -86,11 +86,12 @@ margin:0px !important;}
     background: linear-gradient(to bottom, #ee4823 0%,#ed3b17 100%);
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ee4823', endColorstr='#ed3b17',GradientType=0 );
 }
-    .login-continue .login-inner:hover, .a-button-primary.otp-varification-btn  .a-button-inner:hover{
+    .login-continue .login-inner:hover, .a-button-primary.otp-varification-btn .a-button-inner:hover {
         background: #ed3b17;
         background: -moz-linear-gradient(top, #ed3b17 0%, #ee4823 100%);
         background: -webkit-linear-gradient(top, #ed3b17 0%,#ee4823 100%);
-        background: linear-gradient(to bottom, #ed3b17 0%,#ee4823 100%);
+        /*background: linear-gradient(to bottom, #ed3b17 0%,#ee4823 100%);*/
+        background: linear-gradient(to bottom, orange 0%,orange 100%);
         filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ed3b17', endColorstr='#ee4823',GradientType=0 );
     }
 .a-button-primary.otp-varification-btn  {

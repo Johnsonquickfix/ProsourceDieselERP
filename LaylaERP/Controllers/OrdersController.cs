@@ -93,6 +93,22 @@
             return Json(obj, 0);
         }
         [HttpPost]
+        public JsonResult GetProductShipping(SearchModel model)
+        {
+            OrderShippingModel obj = new OrderShippingModel();
+            try
+            {
+                long pid = 0, vid = 0;
+                if (!string.IsNullOrEmpty(model.strValue1))
+                    pid = Convert.ToInt64(model.strValue1);
+                if (!string.IsNullOrEmpty(model.strValue2))
+                    vid = Convert.ToInt64(model.strValue2);
+                obj = OrderRepository.GetProductShippingCharge(vid);
+            }
+            catch { }
+            return Json(obj, 0);
+        }
+        [HttpPost]
         public JsonResult GetTaxRate(SearchModel model)
         {
             decimal JSONresult = 0;
@@ -102,6 +118,18 @@
             }
             catch (Exception ex) { }
             return Json(new { status = true, message = JSONresult, url = "" }, 0);
+        }
+        [HttpPost]
+        public JsonResult GetCouponAmount(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable DT = OrderRepository.GetCouponDiscount(model.strValue1);
+                JSONresult = JsonConvert.SerializeObject(DT);
+            }
+            catch (Exception ex) { }
+            return Json(JSONresult, 0);
         }
     }
 }

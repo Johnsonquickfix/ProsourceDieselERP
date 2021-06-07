@@ -56,6 +56,8 @@
                         <th>Action</th>
                     </tr>
                 </thead>
+
+
             </table>
         </div>
     </div>
@@ -71,11 +73,12 @@
 <div class="col-sm-2">
     <button type="button" id="btnApply" class="btn btn-primary btn-flat">Apply</button>
 </div>
+<script src="@Url.Content("~/js/Customer/Customer.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 <script>
     $(document).ready(function () {
 
         $("#btnSearch").click(function () { dataGridLoad(); return false; });
-        setTimeout(function () { dataGridLoad(); }, 50);
+        setTimeout(function () { dataGridLoad(); }, 50);        
     });
     function dataGridLoad() {
         var urid = ""//parseInt($("#ddlStatus").val()) || 0;
@@ -112,7 +115,7 @@
                 {
                     'data': 'id', sWidth: "10%" ,
                     'render': function (data, type, full, meta) {
-                        return '<input type="checkbox" name="" id="CheckSingle" value="' + $('<div/>').text(data).html() + '">';
+                        return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + $('<div/>').text(data).html() + '">';
                     }
                 },
                 { data: 'id', title: 'Cust ID', sWidth: "10%" },
@@ -130,19 +133,18 @@
             ]
         });
     }
-
     $('#checkAll').click(function () {
         var isChecked = $(this).prop("checked");
         $('#dtdata tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
+
         
     });
-    $('#dtdata tr:has(td)').find('input[type="checkbox"]').click(function () {
-        debugger
+    function Singlecheck() {
         var isChecked = $(this).prop("checked");
         var isHeaderChecked = $("#checkAll").prop("checked");
         if (isChecked == false && isHeaderChecked)
             $("#checkAll").prop('checked', isChecked);
-        
+
         else {
             $('#dtdata tr:has(td)').find('input[type="checkbox"]').each(function () {
                 if ($(this).prop("checked") == false)
@@ -150,6 +152,27 @@
             });
             $("#checkAll").prop('checked', isChecked);
         }
-    });
+    }
+
+   $('#btnApply').click(function () {
+        var id = "";
+       var status = $("#ddlStatus").val();
+       $("input:checkbox[name=CheckSingle]:checked").each(function () {
+           id += $(this).val() + ",";
+        
+       });
+        if (status == "1") {
+            UpdateCustomerStatus();
+        }
+        else {
+            id = id.replace(/,(?=\s*$)/, '');
+            DeleteCustomer(id);
+            dataGridLoad();
+        }
+        $("input:checkbox[name=CheckSingle]:checked").each(function () {
+            //alert("Id: " + $(this).attr("id") + " Value: " + $(this).val());
+        });
+    })
+   
 
 </script>

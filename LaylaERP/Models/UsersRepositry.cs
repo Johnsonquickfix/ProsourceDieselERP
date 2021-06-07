@@ -9,23 +9,25 @@ using System.Data;
 using System.Configuration;
 using Newtonsoft.Json;
 using System.Collections;
+using LaylaERP.DAL;
 
 namespace LaylaERP.Models
 {
     public class UsersRepositry
     {
         public static List<clsUserDetails> userslist = new List<clsUserDetails>();
-
-        public static void ShowUsersDetails(string urid)
+        //string result = string.Empty;
+        public static void ShowUsersDetails()
         {
+            
             try
             {
-               
+                userslist.Clear();
                 DataSet ds1 = new DataSet();
-                string sqlquery = "select ID, User_Image, user_login, user_status, if(user_status=0,'Active','InActive') as status,user_email,user_pass,meta_value from wp_users, wp_usermeta WHERE user_status='"+urid+"' and wp_usermeta.meta_key='wp_capabilities' And wp_users.ID=wp_usermeta.user_id And wp_users.ID IN (SELECT user_id FROM wp_usermeta WHERE meta_key = 'wp_capabilities' AND meta_value NOT LIKE '%customer%') ORDER BY ID ASC";
-                
+                string sqlquery = "select ID, User_Image, user_login, user_status, if(user_status=0,'Active','InActive') as status,user_email,user_pass,meta_value from wp_users, wp_usermeta WHERE wp_usermeta.meta_key='wp_capabilities' And wp_users.ID=wp_usermeta.user_id And wp_users.ID IN (SELECT user_id FROM wp_usermeta WHERE meta_key = 'wp_capabilities' AND meta_value NOT LIKE '%customer%') ORDER BY ID ASC";
                 ds1 = DAL.SQLHelper.ExecuteDataSet(sqlquery);
                 string result = string.Empty;
+                
                 for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
                 {
                     clsUserDetails uobj = new clsUserDetails();
@@ -33,10 +35,14 @@ namespace LaylaERP.Models
 
                     if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["meta_value"].ToString()) && ds1.Tables[0].Rows[i]["meta_value"].ToString().Length > 5 && ds1.Tables[0].Rows[i]["meta_value"].ToString().Substring(0, 2) == "a:")
                     {
+                        
                         if (ds1.Tables[0].Rows[i]["meta_value"].ToString().Trim() == "a:0:{}")
                             ds1.Tables[0].Rows[i]["meta_value"] = "Unknown";
+                        //result = ds1.Tables[0].Rows[i]["meta_value"].ToString();
+
                         else
                             ds1.Tables[0].Rows[i]["meta_value"] = User_Role_Name(ds1.Tables[0].Rows[i]["meta_value"].ToString());
+                        
                     }
                     else
                     {
@@ -55,12 +61,13 @@ namespace LaylaERP.Models
                     //Code For Role End
                     userslist.Add(uobj);
                 }
-
+                
             }
             catch (Exception e)
             {
 
             }
+            
             
         }
 
@@ -111,6 +118,15 @@ namespace LaylaERP.Models
                 }
             }
             return varUserType;
+        }
+
+
+        public static int Adminstrator()
+        {
+            int count = 0;
+            string strQuery = "SELECT count(meta_value) from wp_usermeta where meta_value like '%administrator%'";
+            count = Convert.ToInt32(SQLHelper.ExecuteScalar(strQuery).ToString());
+            return count;
         }
     }
 }

@@ -8,6 +8,7 @@
     using DAL;
     using Models;
     using MySql.Data.MySqlClient;
+    using System.Text;
 
     public class OrderRepository
     {
@@ -144,7 +145,7 @@
                             + " left outer join wp_postmeta psku on psku.post_id = ps.id and psku.meta_key = '_sku'"
                             + " left outer join wp_postmeta pr on pr.post_id = ps.id and pr.meta_key = '_price'"
                             + " left outer join wp_postmeta psr on psr.post_id = COALESCE(ps.id, post.id) and psr.meta_key = '_sale_price'"
-                            + " WHERE post.post_type = 'product' and post.id = @product_id and ps.id = @variation_id";
+                            + " WHERE post.post_type = 'product' and post.id = @product_id and ps.id = @variation_id;";
                 MySqlDataReader sdr = SQLHelper.ExecuteReader(strSQl, parameters);
                 while (sdr.Read())
                 {
@@ -190,7 +191,7 @@
                 while (sdr.Read())
                 {
                     if (sdr["productid"] != DBNull.Value)
-                        productsModel.product_id = Convert.ToInt64(sdr["id"]);
+                        productsModel.product_id = Convert.ToInt64(sdr["productid"]);
                     else
                         productsModel.product_id = 0;
                     if (sdr["AK"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["AK"].ToString().Trim()))
@@ -230,5 +231,61 @@
             { throw ex; }
             return dt;
         }
+
+        public static int SaveOrder(OrderModel model)
+        {
+            int result = 0;
+            try
+            {
+                DateTime cDate = DateTime.Now, cUTFDate = DateTime.UtcNow;
+                StringBuilder strSql = new StringBuilder(string.Format("delete from wp_postmeta where post_id = {0}; ", model.OrderPostStatus.order_id));
+                strSql.Append(string.Format("delete from wp_wc_order_product_lookup where order_id = {0}; ", model.OrderPostStatus.order_id));
+                strSql.Append(string.Format("delete from wp_wc_order_stats where order_id = {0}; ", model.OrderPostStatus.order_id));
+                strSql.Append(string.Format("delete from wp_woocommerce_order_itemmeta where order_item_id in (select order_item_id from wp_woocommerce_order_items where order_id = {0}); ", model.OrderPostStatus.order_id));
+                strSql.Append(string.Format("delete from wp_woocommerce_order_items where order_id = {0}; ", model.OrderPostStatus.order_id));
+
+                var i = 0;
+                /// step 1 : wp_postmeta                
+                strSql.Append(" insert into wp_postmeta (post_id,meta_key,meta_value) values ");
+                foreach (OrderPostMetaModel obj in model.OrderPostMeta)
+                {
+                    if (++i == model.OrderPostMeta.Count)
+                        strSql.Append(string.Format("('{0}','{1}','{2}') ", obj.post_id, obj.meta_key, obj.meta_value));
+                    else
+                        strSql.Append(string.Format("('{0}','{1}','{2}'), ", obj.post_id, obj.meta_key, obj.meta_value));
+                }
+                /// step 2 : wp_wc_order_stats
+                strSql.Append("; insert into wp_wc_order_stats (order_id,parent_id,date_created,date_created_gmt,num_items_sold,total_sales,tax_total,shipping_total,net_total,returning_customer,status,customer_id) value");
+                strSql.Append(string.Format("('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}') ;", model.OrderPostStatus.order_id, model.OrderPostStatus.parent_id, cDate.ToString("yyyy/MM/dd HH:mm:ss"), cUTFDate.ToString("yyyy/MM/dd HH:mm:ss"), model.OrderPostStatus.num_items_sold,
+                                    model.OrderPostStatus.total_sales, model.OrderPostStatus.tax_total, model.OrderPostStatus.shipping_total, model.OrderPostStatus.net_total, model.OrderPostStatus.returning_customer, model.OrderPostStatus.status, model.OrderPostStatus.customer_id));
+
+                /// step 3 : wp_woocommerce_order_items
+                foreach (OrderProductsModel obj in model.OrderProducts)
+                {
+                    strSql.Append(string.Format(" insert into wp_woocommerce_order_items(order_item_name,order_item_type,order_id) value('{0}','{1}','{2}'); ", obj.product_name, "line_item", model.OrderPostStatus.order_id));
+
+                    strSql.Append(" insert into wp_wc_order_product_lookup(order_item_id,order_id,product_id,variation_id,customer_id,date_created,product_qty,product_net_revenue,product_gross_revenue,coupon_amount,tax_amount,shipping_amount,shipping_tax_amount) ");
+                    strSql.Append(string.Format(" select LAST_INSERT_ID(),'{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}'; ", model.OrderPostStatus.order_id, obj.product_id, obj.variation_id, model.OrderPostStatus.customer_id,
+                            cDate.ToString("yyyy/MM/dd HH:mm:ss"),obj.quantity,(obj.total - obj.discount), (obj.total - obj.discount +obj.tax_amount), obj.discount, obj.tax_amount, obj.shipping_amount, obj.shipping_tax_amount));
+                }
+                /// step 4 : wp_woocommerce_order_items
+                strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'_product_id',product_id from wp_wc_order_product_lookup where order_id = {0}; ", model.OrderPostStatus.order_id));
+                strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'_variation_id',variation_id from wp_wc_order_product_lookup where order_id = {0}; ", model.OrderPostStatus.order_id));
+                strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'_qty',product_qty from wp_wc_order_product_lookup where order_id = {0}; ", model.OrderPostStatus.order_id));
+                strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'_tax_class','' from wp_wc_order_product_lookup where order_id = {0}; ", model.OrderPostStatus.order_id));
+                strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'_line_subtotal',product_net_revenue from wp_wc_order_product_lookup where order_id = {0}; ", model.OrderPostStatus.order_id));
+                strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'_line_subtotal_tax',tax_amount from wp_wc_order_product_lookup where order_id = {0}; ", model.OrderPostStatus.order_id));
+                strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'_line_total',product_net_revenue from wp_wc_order_product_lookup where order_id = {0}; ", model.OrderPostStatus.order_id));
+                strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'_line_tax',tax_amount from wp_wc_order_product_lookup where order_id = {0}; ", model.OrderPostStatus.order_id));
+                strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'_line_tax_data','0' from wp_wc_order_product_lookup where order_id = {0}; ", model.OrderPostStatus.order_id));
+                strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'size','' from wp_wc_order_product_lookup where order_id = {0}; ", model.OrderPostStatus.order_id));
+                strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'_reduced_stock',product_qty from wp_wc_order_product_lookup where order_id = {0}; ", model.OrderPostStatus.order_id));
+
+                result = SQLHelper.ExecuteNonQuery(strSql.ToString());
+            }
+            catch { }
+            return result;
+        }
+
     }
 }

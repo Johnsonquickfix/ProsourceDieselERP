@@ -11,12 +11,9 @@
     <div class="row mb-35">
         <div class="col-md-6">
             <div class="form-group">
-                <label>Minimal</label>
-                <select class="form-control select2" style="width: 100%;">
-                    <option selected="selected">Enter User Type</option>
-                    <option>Customer</option>
-                    <option>User</option>
-                    <option>Admin</option>
+                <label>User Roles</label>
+                <select id="userrole" class="form-control select2" style="width: 100%;">
+                    <option selected="selected">Select Type</option>                    
                 </select>
             </div>
         </div>
@@ -98,3 +95,22 @@
     </div>
 </div>
 
+<script type="text/javascript">
+    $(function () {
+        $.ajax({
+            type: "POST",
+            url: "Users/GetRoles",
+            data: '{}',
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (r) {
+                console.log(r);
+                var userrole = $("[id*=userrole]");
+                userrole.empty().append('<option selected="selected" value="0">Please select</option>');
+                $.each(r.d, function () {
+                    userrole.append($("<option></option>").val(this['Value']).html(this['Text']));
+                });
+            }
+        });
+    });
+</script>

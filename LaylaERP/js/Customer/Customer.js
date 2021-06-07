@@ -61,7 +61,7 @@ function getdatabyzip() {
         url: "https://ziptasticapi.com/" + BillingPostcode,
         type: "GET",
         dataType: 'JSON',
-        data: [], 
+        data: [],
         success: function (data) {
             $("#txtBillingCountry").val(data.country);
             $("#txtBillingState").val(data.state);
@@ -71,3 +71,47 @@ function getdatabyzip() {
     });
 
 }
+
+function UpdateCustomerStatus() {
+    var obj = { strVal: ID }
+    $.ajax({
+        url: '/Customer/UpdateCustomer/', dataType: 'json', type: 'Post',
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(obj),
+        dataType: "json",
+        success: function (data) {
+            if (data.status == true) {
+                swal('Alert!', data.message, 'success');
+            }
+            else {
+                swal('Alert!', data.message, 'error')
+            }
+        },
+        error: function (error) {
+            swal('Error!', 'something went wrong', 'error');
+        },
+    })
+}
+
+function DeleteCustomer(id) {
+    debugger
+    var obj = { strVal: id }
+    $.ajax({
+        url: '/Customer/DeleteCustomer/', dataType: 'json', type: 'Post',
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(obj),
+        dataType: "json",
+        success: function (data) {
+            if (data.status == true) {
+                swal('Alert!', data.message, 'success');
+            }
+            else {
+                swal('Alert!', data.message, 'error')
+            }
+        },
+        error: function (error) {
+            swal('Error!', 'something went wrong', 'error');
+        },
+    })
+}
+

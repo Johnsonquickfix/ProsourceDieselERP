@@ -51,6 +51,20 @@
             return dt;
         }
 
+        public static DataTable  GetSystemRoles()
+        {
+            
+                DataTable dtr = new DataTable();
+            try
+            {
+                string strquery = "select  DISTINCT id , user_type from wp_user_classification";
+                dtr = SQLHelper.ExecuteDataTable(strquery);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dtr;
+        }
+
         public static DataTable GetUsers(string strSearch)
         {
             DataTable DT = new DataTable();

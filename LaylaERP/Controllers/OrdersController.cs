@@ -95,7 +95,7 @@
         [HttpPost]
         public JsonResult GetProductShipping(SearchModel model)
         {
-            OrderShippingModel obj = new OrderShippingModel();
+            decimal ShippingAmt = 0;
             try
             {
                 long pid = 0, vid = 0;
@@ -103,10 +103,19 @@
                     pid = Convert.ToInt64(model.strValue1);
                 if (!string.IsNullOrEmpty(model.strValue2))
                     vid = Convert.ToInt64(model.strValue2);
-                obj = OrderRepository.GetProductShippingCharge(vid);
+                vid = vid > 0 ? vid : pid;
+                OrderShippingModel obj = OrderRepository.GetProductShippingCharge(vid);
+                if (model.strValue3 == "AK")
+                    ShippingAmt = obj.AK;
+                else if (model.strValue3 == "HI")
+                    ShippingAmt = obj.HI;
+                else if (model.strValue3 == "CA")
+                    ShippingAmt = obj.CA;
+                else
+                    ShippingAmt = 0;
             }
             catch { }
-            return Json(obj, 0);
+            return Json(new { amount = ShippingAmt }, 0);
         }
         [HttpPost]
         public JsonResult GetTaxRate(SearchModel model)
@@ -130,6 +139,20 @@
             }
             catch (Exception ex) { }
             return Json(JSONresult, 0);
+        }
+        [HttpPost]
+        public JsonResult SaveCustomerOrder(OrderModel model)
+        {
+            string JSONresult = string.Empty; bool status = false;
+            try
+            {
+                int result = OrderRepository.SaveOrder(model);
+                if (result > 0)
+                { status = true; JSONresult = "Order placed successfully."; }
+                //JSONresult = JsonConvert.SerializeObject(DT);
+            }
+            catch (Exception ex) { }
+            return Json(new { status = status, message = JSONresult }, 0);
         }
     }
 }

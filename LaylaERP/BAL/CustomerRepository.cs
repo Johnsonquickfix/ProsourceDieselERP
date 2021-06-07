@@ -172,7 +172,7 @@ namespace LaylaERP.Models
 
                 string strSql = "SELECT ur.id,null User_Image,user_nicename, user_registered, user_status, if(user_status=0,'Active','InActive') as status,user_email,umph.meta_value "
                              + " from wp_users ur INNER JOIN wp_usermeta um on um.meta_key='wp_capabilities' And um.user_id = ur.ID And um.meta_value LIKE '%customer%'"
-                             + " LEFT OUTER JOIN wp_usermeta umph on umph.meta_key='billing_phone' And umph.user_id = ur.ID WHERE 1 = 1";
+                             + " inner JOIN wp_usermeta umph on umph.meta_key='billing_phone' And umph.user_id = ur.ID WHERE 1 = 1";
                 if (!string.IsNullOrEmpty(searchid)) {
                     strWhr += " and (User_Email like '%"+ searchid + "%' OR User_Login='%" + searchid + "%' OR user_nicename='%" + searchid + "%' OR ID='%" + searchid + "%' )"; 
                 }
@@ -190,14 +190,31 @@ namespace LaylaERP.Models
             catch { }
             return dt;
         }
-        public int EditCustomerStatus(CustomerModel model, long userid)
-        {
+        public int EditCustomerStatus(CustomerModel model)
+        {               
             try
             {
-                string strsql = "update wp_users set user_status=@user_status, user_email=@user_email where Id=" + userid + "";
+                string strsql = "update wp_users set user_status=@user_status where Id=" + model.ID + "";
                 MySqlParameter[] para =
                 {
                     new MySqlParameter("@user_status", model.user_status)
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+        public int DeleteCustomer(string ID)
+        {
+            try
+            {
+                string strsql = "update wp_users set user_status=@user_status where Id in(" +ID + ")";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@user_status", "1")
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
                 return result;

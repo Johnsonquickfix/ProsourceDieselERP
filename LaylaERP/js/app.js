@@ -1933,7 +1933,7 @@ function closeTabByPageId(pageId) {
         //Give priority to the next tab, if not, pass it to the previous one
         var $nextTitle = $title.next();
         var activePageId;
-        
+       
         //if ($nextTitle.size() > 0) {
         if ($nextTitle.length > 0) {
             activePageId = getPageId($nextTitle);
@@ -1942,7 +1942,10 @@ function closeTabByPageId(pageId) {
             activePageId = getPageId($title.prev());
             sidemenu_breadcrumb(activePageId)
         }
+        if (($title.prev().data('pageid') === 10008) && !($title.next().length)) {
 
+            $('.sidebar-menu [data-menuid="' + 1 + '"]').addClass('activeLink');
+        }
         setTimeout(function () {
             //Some kind of bug that needs to be delayed
             activeTabByPageId(activePageId);

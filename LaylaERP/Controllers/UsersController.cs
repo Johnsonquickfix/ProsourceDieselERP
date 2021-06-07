@@ -31,7 +31,7 @@ namespace LaylaERP.Controllers
         // GET: Assign Role
         public ActionResult AssignRole()
         {
-            GetRoles();
+            //GetRoles();
             return View();
         }
 
@@ -44,10 +44,10 @@ namespace LaylaERP.Controllers
             return Json(new { data = Models.UsersRepositry.userslist }, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult GetRoles()
-        {
-            return Json(new { data = BAL.Users.GetSystemRoles() },JsonRequestBehavior.AllowGet);
-        }
+        //public JsonResult GetRoles()
+        //{
+        //    return Json(new { data = BAL.Users.GetSystemRoles() },JsonRequestBehavior.AllowGet);
+        //}
         
     }
 }

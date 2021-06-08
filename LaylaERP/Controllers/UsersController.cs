@@ -61,12 +61,16 @@ namespace LaylaERP.Controllers
 
         public JsonResult GetRoles()
         {
+            string t1 = "";
+            DataTable dt = new DataTable();
+            dt = BAL.Users.GetSystemRoles();
             List<string> usertype = new List<string>();
-            usertype.Add("Admin");
-            usertype.Add("Mod Squad");
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                t1 = dt.Rows[i]["user_type"].ToString();
+                usertype.Add(t1);
+            }
             return Json(usertype, JsonRequestBehavior.AllowGet);
-
-           // return Json(new { data = BAL.Users.GetSystemRoles() },JsonRequestBehavior.AllowGet);
         }
 
        

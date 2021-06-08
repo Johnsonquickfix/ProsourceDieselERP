@@ -15,7 +15,8 @@ namespace LaylaERP.Controllers
         // GET: Users
         public ActionResult Users()
         {
-           return View();
+            
+               return View();
         }
 
         [HttpPost]
@@ -37,17 +38,19 @@ namespace LaylaERP.Controllers
 
         public JsonResult GetData(clsUserDetails details)
         {
-            string status = "0";
-            if (details.user_status != "0")
-                status = details.user_status.ToString();
-            Models.UsersRepositry.ShowUsersDetails(status);
+            //string urid = "0";
+            //urid = details.user_status;
+            //string result = Models.UsersRepositry.userslist.ToString();
+            //UsersRepositry.userslist.Clear();
+
+            Models.UsersRepositry.ShowUsersDetails();
             return Json(new { data = Models.UsersRepositry.userslist }, JsonRequestBehavior.AllowGet);
         }
 
-        //public JsonResult GetRoles()
-        //{
-        //    return Json(new { data = BAL.Users.GetSystemRoles() },JsonRequestBehavior.AllowGet);
-        //}
+        public JsonResult GetRoles()
+        {
+            return Json(new { data = BAL.Users.GetSystemRoles() },JsonRequestBehavior.AllowGet);
+        }
         
     }
 }

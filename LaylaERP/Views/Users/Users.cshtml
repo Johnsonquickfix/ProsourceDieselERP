@@ -87,22 +87,21 @@
 
 @using (Html.BeginForm("Users", "Users", FormMethod.Post))
 {<div class="page-title">
-    <h2 class="page-heading">Users</h2>
-    <a href="#" class="page-title-action">Add New</a>
-    <select id="ddlStatus" placeholder="Select User">
-        <option value="0">Active</option>
-        <option value="1">InActive</option>
-    </select>
-
-    <div class="col-sm-2">
-        <button type="button" id="btnSearch" class="btn btn-primary btn-flat"><i class="fa fa-search"></i> Search</button>
+        <h2 class="page-heading">Users</h2>
+        <a href="#" class="page-title-action">Add New</a>
+        @*<select id="ddlStatus" placeholder="Select User">
+                <option value="0">Active</option>
+                <option value="1">InActive</option>
+            </select>*@
+        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<div>
+            <p id="selectStatus"><label><b>Status</b></label><br></p>
+        </div>
     </div>
-</div>
     <div class="user_subCrumbs">
         <ul>
             <li class="all"><a href="#" class="current" aria-current="page">All <span class="count">(61,602)</span></a> |</li>
             <li class="accounting"><a href="#">Accounting <span class="count">(1)</span></a> |</li>
-            <li class="administrator"><a href="#">Administrator <span class="count">(4)</span></a> |</li>
+            <li class="administrator"><a href="#">Administrator <span class="count">(17)</span></a> |</li>
             <li class="author"><a href="#">Author <span class="count">(2)</span></a> |</li>
             <li class="customer"><a href="#">Customer <span class="count">(61,526)</span></a> |</li>
             <li class="modsquad"><a href="#">Mod Squad <span class="count">(29)</span></a> |</li>
@@ -116,10 +115,10 @@
 
     <section class="content section-content">
         <div class="user-top-section">
-            <div class="user-search-box">
-                <input type="search" id="user-search-input" name="s" value="">
-                <input type="submit" id="search-submit" class="button" value="Search Users">
-            </div>
+            @*<div class="user-search-box">
+                    <input type="search" id="user-search-input" name="s" value="">
+                    <input type="submit" id="search-submit" class="button" value="Search Users">
+                </div>*@
             <div class="tablenav top">
                 <div class="alignleft actions bulkactions">
                     <select name="action" id="bulk-action-selector-top">
@@ -146,19 +145,19 @@
                     </select>
                     <input type="submit" name="changeit" id="changeit" class="button" value="Change">
                 </div>
-                <div class="tablenav-pages">
-                    <span class="displaying-num">61,641 items</span>
-                    <span class="pagination-links">
-                        <span class="tablenav-pages-navspan button disabled" aria-hidden="true">«</span>
-                        <span class="tablenav-pages-navspan button disabled" aria-hidden="true">‹</span>
-                        <span class="paging-input">
-                            <input class="current-page" id="current-page-selector" type="text" name="paged" value="1" size="4" aria-describedby="table-paging">
-                            <span class="tablenav-paging-text"> of <span class="total-pages">3,083</span></span>
+                @*<div class="tablenav-pages">
+                        <span class="displaying-num">61,641 items</span>
+                        <span class="pagination-links">
+                            <span class="tablenav-pages-navspan button disabled" aria-hidden="true">«</span>
+                            <span class="tablenav-pages-navspan button disabled" aria-hidden="true">‹</span>
+                            <span class="paging-input">
+                                <input class="current-page" id="current-page-selector" type="text" name="paged" value="1" size="4" aria-describedby="table-paging">
+                                <span class="tablenav-paging-text"> of <span class="total-pages">3,083</span></span>
+                            </span>
+                            <a class="next-page button" href="http://173.247.242.204/~rpsisr/woo/wp-admin/users.php?paged=2"><span aria-hidden="true">›</span></a>
+                            <a class="last-page button" href="http://173.247.242.204/~rpsisr/woo/wp-admin/users.php?paged=3083"><span aria-hidden="true">»</span></a>
                         </span>
-                        <a class="next-page button" href="http://173.247.242.204/~rpsisr/woo/wp-admin/users.php?paged=2"><span aria-hidden="true">›</span></a>
-                        <a class="last-page button" href="http://173.247.242.204/~rpsisr/woo/wp-admin/users.php?paged=3083"><span aria-hidden="true">»</span></a>
-                    </span>
-                </div>
+                    </div>*@
                 <br class="clear">
             </div>
         </div>
@@ -187,19 +186,24 @@
     <script type="text/javascript">
 
         $(document).ready(function () {
-            //$("#btnSearch").click(function () { Datagrid(); return false; });
+            //$("#ddlStatus").change(function () {
+            //    alert($("#ddlStatus").val());
+            //    drop();
+            //    Datagrid(); return false;
+            //});
             Datagrid();
         });
 
         function Datagrid() {
-            var status = parseInt($("#ddlStatus").val()) || "0";
-            var obj = { user_status: status};
+            //var status = parseInt($("#ddlStatus").val()) || "0";
+            //var obj = { user_status: status};
             $('#userslist').DataTable({
                 destroy: true,
                 bAutoWidth: false,
                 "ajax": {
                     "url": '/Users/GetData',
                     "type": 'GET',
+
                     "dataType": 'json',
                 },
                 lengthMenu: [[10, 20, 50, 100], [10, 20, 50, 100]],
@@ -229,9 +233,66 @@
                 },
                 "order": [[1, 'desc']],
 
+
+                initComplete: function () {
+                    var column = this.api().column(4);
+
+                    var select = $('<select class="filter"><option value="All">Select</option></select>')
+                        .appendTo('#selectStatus')
+                        .on('change', function () {
+                            var val = $(this).val();
+                            column.search(val ? '^' + $(this).val() + '$' : val, true, false).draw();
+                            //column.search(val).draw()
+                        });
+
+                    var offices = [];
+                    column.data().toArray().forEach(function (s) {
+                        s = s.split(',');
+                        s.forEach(function (d) {
+                            if (!~offices.indexOf(d)) {
+                                offices.push(d)
+                                select.append('<option value="' + d + '">' + d + '</option>');
+                            }
+                        })
+                    })
+                    /*
+              column.data().unique().sort().each(function(d, j) {
+                select.append('<option value="' + d + '">' + d + '</option>');
+              });
+             */
+                }
+
             });
         };
     </script>
+
+    @*<script>
+            function drop() {
+                var urid = $("#ddlStatus").val();
+                var obj = { user_status: urid };
+
+                $.ajax({
+                    url: '/Users/GetData/', dataType: 'json', type: 'Post',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(obj),
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.status == true) {
+
+                            swal('Alert!', data.message, 'success');
+                        }
+                        else {
+                            swal('Alert!', data.message, 'error')
+                        }
+                    },
+                    error: function (error) {
+                        swal('Error!', 'something went wrong', 'error');
+                    },
+
+
+                })
+            }
+        </script>*@
 }
 <script>
     var dataTable = document.getElementById('data-table');

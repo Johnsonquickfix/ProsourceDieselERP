@@ -1,5 +1,7 @@
-﻿body {
+﻿@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
+body {
     background: #f9f9f9;
+    font-family: 'Open Sans', sans-serif !important;
 }
 /*****
 dashboard
@@ -33,14 +35,16 @@ dashboard
 }
 
 .bg-danger {
-    background-color: #dc3545 !important;
+    background-color: #FF4100 !important;
 }
 
 .d-flex {
     display: flex;
 }
-
-.align-items-center {
+.small-box h3 {
+    font-size: 32px;
+}
+    .align-items-center {
     align-items: center;
 }
 
@@ -326,4 +330,73 @@ body table.dataTable tr.selected td.select-checkbox:after, body table.dataTable 
 }
 body table.dataTable tr.selected td.select-checkbox:before, body table.dataTable tr.selected th.select-checkbox:before {
     border-color: #dc3545 !important;
+}
+.user-panel > .info > p {
+    font-weight:400;
+}
+/***user profile and create*/
+
+.form-control:focus {
+    box-shadow: none;
+    border-color: #BA68C8
+}
+    
+.create-user-box {
+ 
+}
+.user-body .container-fluid, .user-body .wrapper {
+    height: 100%;
+}
+.createuser-section {
+    min-height: calc(100% - 100px);
+}
+.btn-danger {
+    background: #ff4100 !important; color:#fff;
+}
+.form-address {
+min-height:110px;}
+.create-user-primary {
+    min-height: calc(100vh - 100px);
+}
+.add-profile:hover .edit-pic-profile {
+    opacity:1;
+}
+.add-profile i.fa.fa-image {
+    font-size: 16px;
+    margin-right: 3px;
+}
+.add-profile .edit-pic-profile {
+    position: absolute;
+opacity:0; transition:.5s all;    right: -25px;
+    display: flex;
+    align-items: center;cursor:pointer;
+    top: 0px;
+    border-radius: 5px;
+    background: #FD4C0F;
+    color: #fff;
+    font-size: 12px;
+    padding: 2px 6px;
+}
+
+.user-box-profile {
+text-align:center;}
+.add-profile {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 5px;
+}
+   
+.genrate_password {
+    color: #ff4100;
+    background: #f5f5f5;
+    font-size: 9px;
+    padding: 2px 8px;
+    position: absolute;opacity:0; transition:.5s all; cursor:pointer;
+    right: 0px;
+    top: 3px;
+}
+.form-password-group {
+position:relative;}
+.form-password-group:hover .genrate_password {
+    opacity: 1;
 }

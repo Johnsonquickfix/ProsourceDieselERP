@@ -1,4 +1,6 @@
-﻿body {
+﻿@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
+body {
+    font-family: 'Open Sans', sans-serif !important;
 }
 /********
     header
@@ -61,7 +63,8 @@ margin-left:auto;
     color: #000;
 }
 .skin-blue.layla-skin .sidebar a {
-    color: #000;
+    text-transform: capitalize;
+    color: #4f4f4f;
 }
 #tab-menu .page-tabs-content a {
     padding: 0px 15px;
@@ -194,3 +197,33 @@ margin-top:1px;}
 }
 .main-footer {
 color:#000;}
+.tab_iframe {
+    display: block;
+}
+.layla-skin .navbar-custom-menu .navbar-nav li a {
+    color: #ff4100 !important;
+    font-size: 13px;
+}
+    .layla-skin .navbar-custom-menu .navbar-nav li a i {
+        color: #a0a0a0;
+        margin-right: 3px;
+        font-size: 15px;
+    }
+
+.loading-message {
+position:fixed; top:0px; left:0px; background:rgba(255,255,255, .5); width:100%; height:100%;}
+    .loading-message img {
+    position:fixed; top:50%; left:50%; transform:translate(-50%, -50%);}
+.main-sidebar .slimScrollDiv {
+    border-right: 1px solid #c5c5c5;
+}
+    /***************changes*/
+    .skin-blue.layla-skin .wrapper, .skin-blue.layla-skin .main-sidebar, .skin-blue.layla-skin .left-side {
+        background: #f1f1f1;
+    }
+.skin-blue.layla-skin .main-header .navbar {
+    background: #f1f1f1;
+}
+.skin-blue.layla-skin .main-header .logo, .skin-blue .main-header .navbar .sidebar-toggle:hover {
+    background: #f1f1f1;
+}

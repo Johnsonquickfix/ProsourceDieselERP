@@ -74,7 +74,7 @@ var App = function () {
         }
 
         $(".tab_iframe").css({
-            height: height -6,
+            height: height,
             width: "100%"
         });
 
@@ -1804,7 +1804,7 @@ function getActivePageId() {
 
 function canRemoveTab(pageId) {
     //return findTabTitle(pageId).find('.fa-remove').size() > 0;
-    return findTabTitle(pageId).find('.fa-timescloseOtherTabs').length > 0;
+    return findTabTitle(pageId).find('.fa-times').length > 0;
 }
 
 //Add tab
@@ -1972,6 +1972,7 @@ function closeTabOnly(pageId) {
 
 var closeCurrentTab = function () {
     var pageId = getActivePageId();
+    alert(pageId);
     if (canRemoveTab(pageId)) {
         closeTabByPageId(pageId);
     }

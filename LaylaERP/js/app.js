@@ -1972,7 +1972,6 @@ function closeTabOnly(pageId) {
 
 var closeCurrentTab = function () {
     var pageId = getActivePageId();
-    alert(pageId);
     if (canRemoveTab(pageId)) {
         closeTabByPageId(pageId);
     }
@@ -2142,7 +2141,10 @@ var closeOtherTabs = function (isAll) {
         if (firstChild) {
             //Activate this tab
             activeTabByPageId(getPageId(firstChild));
-
+            $('.sidebar-menu li').removeClass('activeLink');
+            $('.sidebar-menu .treeview').removeClass('active');
+            $('.treeview-menu').removeClass('menu-open').css("display", "none");
+            $('.sidebar-menu [data-menuid="' + 1 + '"]').addClass('activeLink');
             /*$('#' + firstChild.data('id')).addClass('active');
              firstChild.addClass('active');*/
         }

@@ -1,6 +1,8 @@
 ﻿@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
 body {
     font-family: 'Open Sans', sans-serif !important;
+    color: #4f4f4f !important;
+    font-size: 15px !important;
 }
 /********
     header
@@ -60,7 +62,7 @@ margin-left:auto;
     background: #e0e0e0;
 }
 .skin-blue.layla-skin .user-panel > .info, .skin-blue.layla-skin .user-panel > .info > a {
-    color: #000;
+    color: #4f4f4f;
 }
 .skin-blue.layla-skin .sidebar a {
     text-transform: capitalize;

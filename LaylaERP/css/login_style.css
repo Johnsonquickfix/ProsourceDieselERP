@@ -3,7 +3,8 @@
 }
 body, h1, h2, h3, h4 {
     font-family: 'Open Sans', sans-serif !important;
-    color: #4f4f4f;
+    color: #4f4f4f !important;
+    font-size: 15px !important;
 }
 .login_box-section {
     position: relative;

@@ -74,7 +74,7 @@ var App = function () {
         }
 
         $(".tab_iframe").css({
-            height: height,
+            height: height -6,
             width: "100%"
         });
 
@@ -1804,7 +1804,7 @@ function getActivePageId() {
 
 function canRemoveTab(pageId) {
     //return findTabTitle(pageId).find('.fa-remove').size() > 0;
-    return findTabTitle(pageId).find('.fa-times').length > 0;
+    return findTabTitle(pageId).find('.fa-timescloseOtherTabs').length > 0;
 }
 
 //Add tab
@@ -2141,10 +2141,7 @@ var closeOtherTabs = function (isAll) {
         if (firstChild) {
             //Activate this tab
             activeTabByPageId(getPageId(firstChild));
-            $('.sidebar-menu li').removeClass('activeLink');
-            $('.sidebar-menu .treeview').removeClass('active');
-            $('.treeview-menu').removeClass('menu-open').css("display", "none");
-            $('.sidebar-menu [data-menuid="' + 1 + '"]').addClass('activeLink');
+
             /*$('#' + firstChild.data('id')).addClass('active');
              firstChild.addClass('active');*/
         }

@@ -33,6 +33,9 @@ $(document).ready(function () {
     //$("#billModal").on("change", ".ddlTempProductFooter", function (t) { t.preventDefault(); ProductModalItemRow(); });
     $(document).on("blur", "#txtshipzipcode", function (t) { t.preventDefault(); GetTaxRate(); });
     $(document).on("click", "#btnPlaceOrder", function (t) { t.preventDefault(); saveCO(); });
+    $(document).on("click", "#btnpay", function (t) { t.preventDefault(); PaymentModal(); });
+    $("#billModal").on("click", "#btnPayment", function (t) { t.preventDefault(); AcceptPayment(); });
+
 });
 ///Bind States of Country
 function BindStateCounty(ctr, obj) {
@@ -90,9 +93,9 @@ function CustomerAddress() {
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) { $('.billinfo').prop("disabled", true); swal('Alert!', errorThrown, "error"); },
             complete: function () { $('.billinfo').prop("disabled", false); },
-            async: true
+            async: false
         });
-        GetTaxRate();
+        setTimeout(function () { GetTaxRate(); }, 100);
     }
     else {
         $('.billinfo').prop("disabled", true);
@@ -109,7 +112,7 @@ function GetTaxRate() {
         type: "POST", url: '/Orders/GetTaxRate', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
         success: function (result) { $('#hfTaxRate').val(result.message); },
         error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
-        async: true
+        async: false
     });
 }
 
@@ -153,7 +156,7 @@ function bindCouponList(data) {
     var layoutHtml = '';
     if (data.length > 0) {
         if ($('#li_' + data[0].post_title).length <= 0) {
-            layoutHtml += '<li id="li_' + data[0].post_title + '" data-couponamt= "' + data[0].coupon_amount + '" data-disctype= "' + data[0].discount_type + '">';
+            layoutHtml += '<li id="li_' + data[0].post_title + '" data-coupon= "' + data[0].post_title + '" data-couponamt= "' + data[0].coupon_amount + '" data-disctype= "' + data[0].discount_type + '">';
             layoutHtml += '<a href="javascript:void(0);">';
             layoutHtml += '<i class="fa fa-gift"></i>';
             layoutHtml += '<span>' + data[0].post_title + '</span>';
@@ -174,7 +177,7 @@ function bindCouponList(data) {
         if (zDiscType == 'fixed_cart') { zCouponAmt = (zCouponAmt / zTotalQty); }
         $("#tblAddItemFinal > tbody  > tr").each(function () {
             if (jQuery.inArray($(this).data("vid").toString(), zProductIDs) == -1 && isUsedAll == 0) {
-                swal('Alert!', 'Sorry, this coupon is not applicable to selected products.', "info").then((result) => { return false; });
+                //swal('Alert!', 'Sorry, this coupon is not applicable to selected products.', "info").then((result) => { return false; });
             }
             else {
                 zQty = parseFloat($(this).find("[name=txt_ItemQty]").val()) || 0.00;
@@ -266,7 +269,6 @@ function ProductModal() {
 ///Add Modal Product selected add row
 function ProductModalItemRow() {
     var myHtml = '';
-    //console.log($('.ddlTempProductFooter').select2('data'));
     var id = $('.ddlTempProductFooter').val(), text = $(".ddlTempProductFooter option:selected").text();
     if (id == null) return false;
     myHtml += '<tr>';
@@ -329,7 +331,7 @@ function getItemList() {
         error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
         async: false
     });
-    getItemShippingCharge({ strValue1: pid, strValue2: vid, strValue3: $("#ddlshipcountry").val() });
+    setTimeout(function () { getItemShippingCharge({ strValue1: pid, strValue2: vid, strValue3: $("#ddlshipcountry").val() }); }, 100);
 }
 //-----bind Item Table ---------------------------
 function bindItemListDataTable(data) {
@@ -441,7 +443,7 @@ function createPostMeta() {
     var oid = $('#hfOrderNo').val();
     var postMetaxml = [];
     postMetaxml.push(
-        { post_id: oid, meta_key: '_order_key', meta_value: 'wc_order_' }, { post_id: oid, meta_key: '_customer_user', meta_value: '1' },
+        { post_id: oid, meta_key: '_order_key', meta_value: 'wc_order_' }, { post_id: oid, meta_key: '_customer_user', meta_value: parseInt($('#ddlUser').val()) || 0 },
         { post_id: oid, meta_key: '_payment_method', meta_value: 'cod' }, { post_id: oid, meta_key: '_payment_method_title', meta_value: 'cash on delivery' },
         { post_id: oid, meta_key: '_customer_ip_address', meta_value: '::1' }, { post_id: oid, meta_key: '_customer_user_agent', meta_value: '0' },
         { post_id: oid, meta_key: '_created_via', meta_value: 'checkout' }, { post_id: oid, meta_key: '_cart_hash', meta_value: '0' },
@@ -450,7 +452,7 @@ function createPostMeta() {
         { post_id: oid, meta_key: '_billing_city', meta_value: $('#txtbillcity').val() }, { post_id: oid, meta_key: '_billing_state', meta_value: $('#ddlbillstate').val() },
         { post_id: oid, meta_key: '_billing_postcode', meta_value: $('#txtbillzipcode').val() }, { post_id: oid, meta_key: '_billing_country', meta_value: $('#ddlbillcountry').val() },
         { post_id: oid, meta_key: '_billing_email', meta_value: $('#txtbillemail').val() }, { post_id: oid, meta_key: '_billing_phone', meta_value: $('#txtbillphone').val() },
-        { post_id: oid, meta_key: '_order_version', meta_value: '0' }, { post_id: oid, meta_key: '_prices_include_tax', meta_value: 'no' },
+        { post_id: oid, meta_key: '_order_version', meta_value: '4.8.0' }, { post_id: oid, meta_key: '_prices_include_tax', meta_value: 'no' },
         { post_id: oid, meta_key: '_shipping_address_index', meta_value: '' }, { post_id: oid, meta_key: 'is_vat_exempt', meta_value: 'no' },
         { post_id: oid, meta_key: '_download_permissions_granted', meta_value: 'yes' }, { post_id: oid, meta_key: '_recorded_sales', meta_value: 'yes' },
         { post_id: oid, meta_key: '_recorded_coupon_usage_counts', meta_value: 'yes' }, { post_id: oid, meta_key: '_order_stock_reduced', meta_value: 'yes' },
@@ -460,9 +462,9 @@ function createPostMeta() {
         { post_id: oid, meta_key: '_shipping_state', meta_value: $('#ddlshipstate').val() }, { post_id: oid, meta_key: '_shipping_postcode', meta_value: $('#txtshipzipcode').val() },
         { post_id: oid, meta_key: '_shipping_country', meta_value: $('#ddlshipcountry').val() }, { post_id: oid, meta_key: '_shipping_email', meta_value: '' },
         { post_id: oid, meta_key: '_shipping_phone', meta_value: '' }, { post_id: oid, meta_key: '_order_currency', meta_value: 'USD' },
-        { post_id: oid, meta_key: '_order_total', meta_value: parseFloat($('orderTotal').text()) || 0.00 }, { post_id: oid, meta_key: '_cart_discount', meta_value: parseFloat($('discountTotal').text()) || 0.00 },
-        { post_id: oid, meta_key: '_cart_discount_tax', meta_value: '0' }, { post_id: oid, meta_key: '_order_shipping', meta_value: parseFloat($('shippingTotal').text()) || 0.00 },
-        { post_id: oid, meta_key: '_order_shipping_tax', meta_value: parseFloat($('salesTaxTotal').text()) || 0.00 }, { post_id: oid, meta_key: '_order_tax', meta_value: parseFloat($('salesTaxTotal').text()) || 0.00 }
+        { post_id: oid, meta_key: '_order_total', meta_value: parseFloat($('#orderTotal').text()) || 0.00 }, { post_id: oid, meta_key: '_cart_discount', meta_value: parseFloat($('#discountTotal').text()) || 0.00 },
+        { post_id: oid, meta_key: '_cart_discount_tax', meta_value: '0' }, { post_id: oid, meta_key: '_order_shipping', meta_value: parseFloat($('#shippingTotal').text()) || 0.00 },
+        { post_id: oid, meta_key: '_order_shipping_tax', meta_value: parseFloat($('#salesTaxTotal').text()) || 0.00 }, { post_id: oid, meta_key: '_order_tax', meta_value: parseFloat($('#salesTaxTotal').text()) || 0.00 }
     );
     return postMetaxml;
 }
@@ -482,6 +484,18 @@ function createPostStatus() {
     };
     return postStatus;
 }
+function createOtherItemsList() {
+    var oid = parseInt($('#hfOrderNo').val()) || 0;
+    var otherItemsxml = [];
+    $('#billCoupon li').each(function (index) {
+        otherItemsxml.push({ order_id: oid, item_name: $(this).data('coupon'), item_type: 'coupon', amount: parseFloat($(this).data('couponamt')) || 0.00 });
+    });
+    //Add tax
+    otherItemsxml.push({ order_id: oid, item_name: 'US-IN-IN TAX-1', item_type: 'tax', amount: parseFloat($('#salesTaxTotal').text()) || 0.00 });
+    //Add Shipping
+    otherItemsxml.push({ order_id: oid, item_name: '', item_type: 'shipping', amount: parseFloat($('#shippingTotal').text()) || 0.00 });
+    return otherItemsxml;
+}
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Save Details ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function saveCO() {
     $('#btnPlaceOrder').prop("disabled", true);
@@ -489,7 +503,7 @@ function saveCO() {
     var cid = parseInt($('#ddlUser').val()) || 0;
     //if (oid <= 0) { swal('Alert!', 'Please Select Customer.', "info").then((result) => { return false; }); }
     if (cid <= 0) { swal('Alert!', 'Please Select Customer.', "info").then((result) => { return false; }); }
-    var postMeta = createPostMeta(); var postStatus = createPostStatus();
+    var postMeta = createPostMeta(); var postStatus = createPostStatus(); var otherItems = createOtherItemsList();
     var itemsDetails = [];
     $('#tblAddItemFinal > tbody  > tr').each(function (index, tr) {
         var pKey = parseInt(index);
@@ -505,32 +519,77 @@ function saveCO() {
         });
     });
     if (itemsDetails.length == 0) { swal('Alert!', 'Please add product.', "info").then((result) => { return false; }); }
-    var obj = { OrderPostMeta: postMeta, OrderProducts: itemsDetails, OrderPostStatus: postStatus };
+    var obj = { OrderPostMeta: postMeta, OrderProducts: itemsDetails, OrderPostStatus: postStatus, OrderOtherItems: otherItems };
 
     console.log(obj);
-    //if (itemsDetailsxml.length == 0) { bootbox.alert('Please add product.'); return false; }
-    //var obj = {}; obj.VDate = $("#txtvdate").val(); obj.Narration = $("#note").val(); obj.cMobile = $("#txtpartyNo").val();
-    //obj.cName = $("#txtpartyname").val(); obj.cPNRNo = $("#txtPNRNo").val(); obj.GVD = itemsDetailsxml; //obj.GVD = JSON.stringify(rdata);
-    //obj.cPaidBy = $("#paid_by").val(); obj.TxnID = $("#trx_id").val();
-    ////console.log(obj);
+    //$('#btnPlaceOrder').prop("disabled", false); return false;
     $.ajax({
         type: "POST", contentType: "application/json; charset=utf-8",
         url: "/Orders/SaveCustomerOrder", // Controller/View
         data: JSON.stringify(obj), dataType: "json", beforeSend: function (xhr) { },
         success: function (data) {
-            console.log(data);
-            //var logdata = JSON.parse(data.d);
-            //if (logdata.state == true) {
-            //    posClearPersonInfo(); $("#ds_per").html(''); $("#ds_per").data('don', 'A'); var itemsDetailsxml = []; bindPOSItemsTable(itemsDetailsxml);
-            //    $("#payModal").modal("hide");
-            //    window.setTimeout(function () {
-            //        window.open('PrintSlip.aspx?vno=' + logdata.data + '', '_blank', '"height=700,width=950,menubar=no,resizable=no,directories=no,location=no');
-            //    }, 500);
-            //}
-            //else { bootbox.alert(logdata.message); return false; }
+            if (data.status == true) {
+                //swal('Alert!', data.message, "success");
+                setTimeout(function () { PaymentModal(); }, 50);
+            }
+            else { swal('Alert!', data.message, "error").then((result) => { return false; }); }
         },
         error: function (xhr, status, err) { $('#btnPlaceOrder').prop("disabled", false); alert(err); },
         complete: function () { $('#btnPlaceOrder').prop("disabled", false); },
     });
     return false;
+}
+
+///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Payment Modal ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+///Add Modal Coupon
+function PaymentModal() {
+    var myHtml = '';
+    //header
+    myHtml += '<div class="modal-dialog">';
+    myHtml += '<div class="modal-content">';
+    myHtml += '<div class="modal-header">';
+    myHtml += '<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button>';
+    myHtml += '<h4 class="modal-title" id="myModalLabel">Select Payment Method</h4>';
+    myHtml += '</div>';
+    myHtml += '<div class="modal-body" >';
+    myHtml += '<div class="nav-tabs-custom">';
+    myHtml += '<ul class="nav nav-tabs">';
+    myHtml += '<li class="active"><a href="#tab_Authorize" data-toggle="tab"><i class="fa fa-credit-card"></i> Authorize.Net</a></li>';
+    myHtml += '<li><a href="#tab_Paypal" data-toggle="tab"><i class="fab fa-paypal"></i> Paypal</a></li>';
+    myHtml += '</ul>';
+    myHtml += '<div class="tab-content" >';
+    myHtml += '<div class="tab-pane active" id="tab_Authorize">';
+    myHtml += '<div class="form-group"> <label for="numeric" class="control-label">Full name (on the card)</label> <input type="text" class="form-control"> </div>';
+    myHtml += '<div class="form-group"><label for="cc-number" class="control-label">Card number</label><input id="cc-number" type="tel" class="form-control cc-number" autocomplete="cc-number" placeholder="•••• •••• •••• ••••"> </div>';
+    myHtml += '<div class="row">';
+    myHtml += '<div class="col-md-6">';
+    myHtml += '<div class="form-group"> <label for="cc-exp" class="control-label">Expiration</label> <input id="cc-exp" type="tel" class="form-control cc-exp" autocomplete="cc-exp" placeholder="•• / ••"> </div>';
+    myHtml += '</div>';
+    myHtml += '<div class="col-md-6">';
+    myHtml += '<div class="form-group"> <label for="cc-cvc" class="control-label">CVV</label> <input id="cc-cvc" type="tel" class="form-control cc-cvc" autocomplete="off" placeholder="••••"> </div>';
+    myHtml += '</div>';
+    myHtml += '<div class="col-md-12">';
+    myHtml += '<div class="form-group pull-right"> <button type="button" class="btn btn-primary" id="btnPayment"><i class="fa fa-credit-card"></i> Pay</button> </div>';
+    myHtml += '</div>';
+    myHtml += '</div>';
+    myHtml += '</div>';
+    myHtml += '<div class="tab-pane" id="tab_Paypal">';
+    myHtml += '<div class="form-group"> <label for="numeric" class="control-label  paypal-email">Paypal Email-id</label> <input type="text" class="form-control"> </div>';
+    myHtml += '<div class="form-group pull-right"> <button type="button" class="btn btn-primary" id="btnSendInvoice"><i class="fa fa-credit-card"></i> Send Invoice</button> </div>';
+    myHtml += '</div>';
+    myHtml += '</div>';
+    myHtml += '</div>';
+    myHtml += '</div > ';
+    myHtml += '</div>';
+    myHtml += '</div>';
+    $("#billModal").empty().html(myHtml);
+    $('.cc-number').inputmask("9999 9999 9999 9999");
+    $('.cc-exp').inputmask("99 / 99");
+    $('.cc-cvc').inputmask("9999");
+    $("#billModal").modal({ backdrop: 'static' }); $("#txt_Coupon").focus();
+}
+function AcceptPayment() {
+    
+    $('.validation').removeClass('text-danger text-success');
+    $('.validation').addClass($('.has-error').length ? 'text-danger' : 'text-success');
 }

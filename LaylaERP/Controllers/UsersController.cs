@@ -29,6 +29,18 @@ namespace LaylaERP.Controllers
             return View();
         }
 
+        // GET: Add User
+        public ActionResult CreateUser()
+        {
+            return View();
+        }
+
+        // GET: User Profile
+        public ActionResult UserProfile()
+        {
+            return View();
+        }
+
         // GET: Assign Role
         public ActionResult AssignRole()
         {

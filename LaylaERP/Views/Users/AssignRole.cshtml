@@ -98,18 +98,19 @@
 <script type="text/javascript">
     $(function () {
         $.ajax({
-            type: "POST",
-            url: "Users/GetRoles",
-            data: '{}',
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (r) {
-                console.log(r);
-                var userrole = $("[id*=userrole]");
-                userrole.empty().append('<option selected="selected" value="0">Please select</option>');
-                $.each(r.d, function () {
-                    userrole.append($("<option></option>").val(this['Value']).html(this['Text']));
-                });
+            type: "GET",
+            url: "Users/GetRoles",  
+            data: "{}",
+            success: function (data) {
+                console.log(data);
+                var s = '<option selected="selected" value="0">Please select</option>';
+                //$.each(data.d, function () {
+                //    $('#userrole').append($("<option></option>").val(this['Value']).html(this['Text']));
+                //});
+                for (var i = 0; i < data.length; i++) {
+                    s += '<option value="' + data[i].id + '">'+ data[i].user_type +'</option>';
+                }
+                $('#userrole').html(s);
             }
         });
     });

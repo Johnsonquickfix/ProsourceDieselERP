@@ -3,6 +3,7 @@
 }
 body, h1, h2, h3, h4 {
     font-family: 'Open Sans', sans-serif !important;
+    color: #4f4f4f;
 }
 .login_box-section {
     position: relative;
@@ -102,8 +103,7 @@ border:0px;}
         background: #fff;
     }
 .login-h1 {
-    color: #ff4500;
-    font-size: 34px;
+    font-size: 30px;
     margin-bottom: 20px !important;
 }
 .login-page [type="email"], .login-page [type="password"] {

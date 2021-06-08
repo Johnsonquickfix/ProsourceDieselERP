@@ -7,6 +7,7 @@ using LaylaERP.Models;
 using MySql.Data.MySqlClient;
 using System.Data;
 using System.Configuration;
+using LaylaERP.DAL;
 
 namespace LaylaERP.Controllers
 {
@@ -44,7 +45,6 @@ namespace LaylaERP.Controllers
         // GET: Assign Role
         public ActionResult AssignRole()
         {
-            //GetRoles();
             return View();
         }
 
@@ -61,8 +61,19 @@ namespace LaylaERP.Controllers
 
         public JsonResult GetRoles()
         {
-            return Json(new { data = BAL.Users.GetSystemRoles() },JsonRequestBehavior.AllowGet);
+            string t1 = "";
+            DataTable dt = new DataTable();
+            dt = BAL.Users.GetSystemRoles();
+            List<string> usertype = new List<string>();
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                t1 = dt.Rows[i]["user_type"].ToString();
+                usertype.Add(t1);
+            }
+            return Json(usertype, JsonRequestBehavior.AllowGet);
         }
-        
+
+       
+
     }
 }

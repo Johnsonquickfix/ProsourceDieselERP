@@ -1,7 +1,9 @@
 ﻿body, html, .login_box-section {
     height: 100% !important;
 }
-
+body, h1, h2, h3, h4 {
+    font-family: 'Open Sans', sans-serif !important;
+}
 .login_box-section {
     position: relative;
     display: flex;

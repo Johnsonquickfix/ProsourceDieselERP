@@ -1,5 +1,7 @@
-﻿body {
+﻿@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
+body {
     background: #f9f9f9;
+    font-family: 'Open Sans', sans-serif !important;
 }
 /*****
 dashboard
@@ -33,14 +35,16 @@ dashboard
 }
 
 .bg-danger {
-    background-color: #dc3545 !important;
+    background-color: #FF4100 !important;
 }
 
 .d-flex {
     display: flex;
 }
-
-.align-items-center {
+.small-box h3 {
+    font-size: 32px;
+}
+    .align-items-center {
     align-items: center;
 }
 
@@ -326,4 +330,7 @@ body table.dataTable tr.selected td.select-checkbox:after, body table.dataTable 
 }
 body table.dataTable tr.selected td.select-checkbox:before, body table.dataTable tr.selected th.select-checkbox:before {
     border-color: #dc3545 !important;
+}
+.user-panel > .info > p {
+    font-weight:400;
 }

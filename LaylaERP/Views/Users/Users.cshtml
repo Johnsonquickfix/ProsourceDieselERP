@@ -85,10 +85,10 @@
         }
     </style>*@
 
-@using (Html.BeginForm("Users", "Users", FormMethod.Post))
-{<div class="page-title">
+@*@using (Html.BeginForm("Users", "Users", FormMethod.Post)) { }*@
+<div class="page-title">
         <h2 class="page-heading">Users</h2>
-        <a href="#" class="page-title-action">Add New</a>
+        <a href="../../Users/AddNewUser" class="page-title-action">Add New</a>
         @*<select id="ddlStatus" placeholder="Select User">
                 <option value="0">Active</option>
                 <option value="1">InActive</option>
@@ -99,17 +99,17 @@
     </div>
     <div class="user_subCrumbs">
         <ul>
-            <li class="all"><a href="#" class="current" aria-current="page">All <span class="count">(61,602)</span></a> |</li>
-            <li class="accounting"><a href="#">Accounting <span class="count">(1)</span></a> |</li>
-            <li class="administrator"><a href="#">Administrator <span class="count">(17)</span></a> |</li>
-            <li class="author"><a href="#">Author <span class="count">(2)</span></a> |</li>
-            <li class="customer"><a href="#">Customer <span class="count">(61,526)</span></a> |</li>
-            <li class="modsquad"><a href="#">Mod Squad <span class="count">(29)</span></a> |</li>
-            <li class="shop_manager"><a href="#">Shop manager <span class="count">(1)</span></a> |</li>
-            <li class="subscriber"><a href="#">Subscriber <span class="count">(1)</span></a> |</li>
-            <li class="supplychainmanager"><a href="#">Supply Chain Manager <span class="count">(1)</span></a> |</li>
-            <li class="wpseo_editor"><a href="#">SEO Editor <span class="count">(1)</span></a> |</li>
-            <li class="none"><a href="#">No role <span class="count">(7)</span></a></li>
+            <li class="all"><a href="#" class="current" aria-current="page">All <span class="count">(@ViewBag.accounting)</span></a> |</li>
+            <li class="accounting"><a href="#">Accounting <span class="count">(@ViewBag.accounting)</span></a> |</li>
+            <li class="administrator"><a href="#">Administrator <span class="count">(@ViewBag.admin)</span></a> |</li>
+            <li class="author"><a href="#">Author <span class="count">(@ViewBag.author)</span></a> |</li>
+            <li class="customer"><a href="#">Customer <span class="count">(@ViewBag.customer)</span></a> |</li>
+            <li class="modsquad"><a href="#">Mod Squad <span class="count">(@ViewBag.modsquad)</span></a> |</li>
+            <li class="shop_manager"><a href="#">Shop manager <span class="count">(@ViewBag.shopmanager)</span></a> |</li>
+            <li class="subscriber"><a href="#">Subscriber <span class="count">(@ViewBag.subscriber)</span></a> |</li>
+            <li class="supplychainmanager"><a href="#">Supply Chain Manager <span class="count">(@ViewBag.supplychainmanager)</span></a> |</li>
+            <li class="wpseo_editor"><a href="#">SEO Editor <span class="count">(@ViewBag.seoeditor)</span></a> |</li>
+            <li class="none"><a href="#">No role <span class="count">(@ViewBag.norole)</span></a></li>
         </ul>
     </div>
 
@@ -179,7 +179,7 @@
             </div>
         </div>
     </section>
-}
+
 
 @section scripts{
 
@@ -197,6 +197,7 @@
         function Datagrid() {
             //var status = parseInt($("#ddlStatus").val()) || "0";
             //var obj = { user_status: status};
+            var ID;
             $('#userslist').DataTable({
                 destroy: true,
                 bAutoWidth: false,
@@ -214,7 +215,7 @@
                     { 'data': 'user_login', 'sWidth': "20%" },
                     { 'data': 'user_email', 'sWidth': "20%" },
                     { 'data': 'user_status', 'sWidth': "20%" },
-                    { 'data': 'my', 'sWidth': "30%" },
+                    { 'data': 'my', 'sWidth': "20%" },
                 ],
 
                 columnDefs: [{
@@ -224,7 +225,7 @@
                     'checkboxes': {
                         'selectRow': true
                     },
-                    data: null,
+                    data: ID,
                     defaultContent: '',
                 }],
                 "select": {
@@ -236,7 +237,6 @@
 
                 initComplete: function () {
                     var column = this.api().column(4);
-
                     var select = $('<select class="filter"><option value="All">Select</option></select>')
                         .appendTo('#selectStatus')
                         .on('change', function () {

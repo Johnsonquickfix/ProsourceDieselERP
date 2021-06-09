@@ -13,7 +13,7 @@
             <div class="form-group">
                 <h2 class="sm-heading">User Roles</h2>
                 <select id="userrole" class="form-control select2" style="width: 100%;">
-                    <option selected="selected">Select Type</option>                    
+                    <option selected="selected">Select Type</option>
                 </select>
             </div>
         </div>
@@ -75,7 +75,7 @@
                         </label>
                     </div>
                 </div>
-                
+
                 <div class="col-sm-6">
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" value="" id="addneworder">
@@ -92,7 +92,13 @@
                 </div>
             </div>
         </div>
+        <br />
+        <br />
+        <div class="col-sm-2">
+            <a href="#" class="btn btn-danger btn-block"><b>Save</b></a>
+        </div>
     </div>
+   
 </div>
 
 <script type="text/javascript">
@@ -106,7 +112,7 @@
 
     $("#userrole").change(function () {
         var usertype = { strvalue: $("#userrole :selected").text() };
-        alert(usertype);
+        console.log(usertype);
         $.ajax({
             url: 'Users/GetAssignRole',
             type: 'POST',
@@ -114,12 +120,11 @@
             dataType: "json",
             data: JSON.stringify(usertype),
             success: function (responce) {
-                alert(responce)
+                console.log("123" + responce)
             },
             error: function (responce) {
-                alert(responce)
+                console.log(responce)
             }
         });
-
     });
 </script>

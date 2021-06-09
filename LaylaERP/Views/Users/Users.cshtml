@@ -85,34 +85,33 @@
         }
     </style>*@
 
-@using (Html.BeginForm("Users", "Users", FormMethod.Post))
-{<div class="page-title">
+@*@using (Html.BeginForm("Users", "Users", FormMethod.Post)) { }*@
+<div class="page-title">
         <h2 class="page-heading">Users</h2>
-        <a href="#" class="page-title-action">Add New</a>
+        <a href="../../Users/AddNewUser" class="page-title-action">Add New</a>
         @*<select id="ddlStatus" placeholder="Select User">
                 <option value="0">Active</option>
                 <option value="1">InActive</option>
             </select>*@
-        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<div>
-            <p id="selectStatus"><label><b>Status</b></label><br></p>
-        </div>
     </div>
     <div class="user_subCrumbs">
         <ul>
-            <li class="all"><a href="#" class="current" aria-current="page">All <span class="count">(61,602)</span></a> |</li>
-            <li class="accounting"><a href="#">Accounting <span class="count">(1)</span></a> |</li>
-            <li class="administrator"><a href="#">Administrator <span class="count">(17)</span></a> |</li>
-            <li class="author"><a href="#">Author <span class="count">(2)</span></a> |</li>
-            <li class="customer"><a href="#">Customer <span class="count">(61,526)</span></a> |</li>
-            <li class="modsquad"><a href="#">Mod Squad <span class="count">(29)</span></a> |</li>
-            <li class="shop_manager"><a href="#">Shop manager <span class="count">(1)</span></a> |</li>
-            <li class="subscriber"><a href="#">Subscriber <span class="count">(1)</span></a> |</li>
-            <li class="supplychainmanager"><a href="#">Supply Chain Manager <span class="count">(1)</span></a> |</li>
-            <li class="wpseo_editor"><a href="#">SEO Editor <span class="count">(1)</span></a> |</li>
-            <li class="none"><a href="#">No role <span class="count">(7)</span></a></li>
+            <li class="all"><a href="#" id="all" class="current" aria-current="page">All <span class="count">(@ViewBag.all)</span></a> |</li>
+            <li class="accounting"><a href="#" id="accounting">Accounting <span class="count">(@ViewBag.accounting)</span></a> |</li>
+            <li class="administrator"><a href="#" id="administrator">Administrator <span class="count">(@ViewBag.admin)</span></a> |</li>
+            <li class="author"><a href="#" id="author">Author <span class="count">(@ViewBag.author)</span></a> |</li>
+            @*<li class="customer"><a href="#">Customer <span class="count">(@ViewBag.customer)</span></a> |</li>*@
+            <li class="modsquad"><a href="#" id="modsquad">Mod Squad <span class="count">(@ViewBag.modsquad)</span></a> |</li>
+            <li class="shop_manager"><a href="#" id="shopmanager">Shop manager <span class="count">(@ViewBag.shopmanager)</span></a> |</li>
+            <li class="subscriber"><a href="#" id="subscriber">Subscriber <span class="count">(@ViewBag.subscriber)</span></a> |</li>
+            <li class="supplychainmanager"><a href="#" id="supplychainmanager">Supply Chain Manager <span class="count">(@ViewBag.supplychainmanager)</span></a> |</li>
+            <li class="wpseo_editor" id="seo"><a href="#">SEO Editor <span class="count">(@ViewBag.seoeditor)</span></a> |</li>
+            <li class="none" id="norole"><a href="#">No role <span class="count">(@ViewBag.norole)</span></a></li>
         </ul>
     </div>
-
+    <div>
+        <p id="selectStatus"><label><b class="sm-heading">Status</b></label></p>
+    </div>
     <section class="content section-content">
         <div class="user-top-section">
             @*<div class="user-search-box">
@@ -121,11 +120,11 @@
                 </div>*@
             <div class="tablenav top">
                 <div class="alignleft actions bulkactions">
-                    <select name="action" id="bulk-action-selector-top">
-                        <option value="-1">Bulk actions</option>
-                        <option value="delete">Delete</option>
+                    <select name="action" id="ddlStatus">
+                        <option value="1">Bulk actions</option>
+                        <option value="2">Delete</option>
                     </select>
-                    <input type="submit" id="doaction" class="button action" value="Apply">
+                    <input type="submit" id="btnApply" class="button action" value="Apply">
                 </div>
                 <div class="alignleft actions">
                     <select name="new_role" id="new_role">
@@ -145,28 +144,29 @@
                     </select>
                     <input type="submit" name="changeit" id="changeit" class="button" value="Change">
                 </div>
+                <input type="hidden" name="varpass" id="varpass" value="">
                 @*<div class="tablenav-pages">
-                        <span class="displaying-num">61,641 items</span>
-                        <span class="pagination-links">
-                            <span class="tablenav-pages-navspan button disabled" aria-hidden="true">«</span>
-                            <span class="tablenav-pages-navspan button disabled" aria-hidden="true">‹</span>
-                            <span class="paging-input">
-                                <input class="current-page" id="current-page-selector" type="text" name="paged" value="1" size="4" aria-describedby="table-paging">
-                                <span class="tablenav-paging-text"> of <span class="total-pages">3,083</span></span>
-                            </span>
-                            <a class="next-page button" href="http://173.247.242.204/~rpsisr/woo/wp-admin/users.php?paged=2"><span aria-hidden="true">›</span></a>
-                            <a class="last-page button" href="http://173.247.242.204/~rpsisr/woo/wp-admin/users.php?paged=3083"><span aria-hidden="true">»</span></a>
-                        </span>
-                    </div>*@
+            <span class="displaying-num">61,641 items</span>
+            <span class="pagination-links">
+                <span class="tablenav-pages-navspan button disabled" aria-hidden="true">«</span>
+                <span class="tablenav-pages-navspan button disabled" aria-hidden="true">‹</span>
+                <span class="paging-input">
+                    <input class="current-page" id="current-page-selector" type="text" name="paged" value="1" size="4" aria-describedby="table-paging">
+                    <span class="tablenav-paging-text"> of <span class="total-pages">3,083</span></span>
+                </span>
+                <a class="next-page button" href="http://173.247.242.204/~rpsisr/woo/wp-admin/users.php?paged=2"><span aria-hidden="true">›</span></a>
+                <a class="last-page button" href="http://173.247.242.204/~rpsisr/woo/wp-admin/users.php?paged=3083"><span aria-hidden="true">»</span></a>
+            </span>
+        </div>*@
                 <br class="clear">
             </div>
         </div>
         <div class="dx-viewport demo-container data-table-container">
             <div id="gridContainer">
-                <table id="userslist" class="table table-bordered table-striped dataTable" style="width:100%;">
+                <table id="dtdata" class="table table-bordered table-striped dataTable" style="width:100%;">
                     <thead class="thead-dark">
                         <tr>
-                            <th></th>
+                            <th><input type="checkbox" name="checkAll" id="checkAll">All</th>
                             <th>ID</th>
                             <th>User Name</th>
                             <th>Email</th>
@@ -179,71 +179,83 @@
             </div>
         </div>
     </section>
-}
+
 
 @section scripts{
 
     <script type="text/javascript">
-
+        var j="";
         $(document).ready(function () {
             //$("#ddlStatus").change(function () {
             //    alert($("#ddlStatus").val());
             //    drop();
-            //    Datagrid(); return false;
+            //    Datagrid(); return false; /Users/GetData
             //});
             Datagrid();
         });
 
-        function Datagrid() {
-            //var status = parseInt($("#ddlStatus").val()) || "0";
-            //var obj = { user_status: status};
-            $('#userslist').DataTable({
+        function Datagrid(k) {
+            //
+            var myvalue = k;
+            //var obj = { rolepass: j };
+            //alert(JSON.stringify(obj));
+            var id;
+            $('#dtdata').DataTable({
                 destroy: true,
                 bAutoWidth: false,
                 "ajax": {
                     "url": '/Users/GetData',
                     "type": 'GET',
-
                     "dataType": 'json',
+                    data: { rolepass: j },
+                    contentType: "application/json; charset=utf-8",
+                   
                 },
                 lengthMenu: [[10, 20, 50, 100], [10, 20, 50, 100]],
 
                 "columns": [
-                    { 'data': '', 'sWidth': "5%" },
+                    {
+                        'data': 'ID', sWidth: "10%",
+                        'render': function (data, type, full, meta) {
+                            return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + $('<div/>').text(data).html() + '">';
+                        }
+                    },
                     { 'data': 'ID', 'sWidth': "5%" },
                     { 'data': 'user_login', 'sWidth': "20%" },
                     { 'data': 'user_email', 'sWidth': "20%" },
                     { 'data': 'user_status', 'sWidth': "20%" },
-                    { 'data': 'my', 'sWidth': "30%" },
+                    { 'data': 'my', 'sWidth': "20%" },
                 ],
 
-                columnDefs: [{
-                    orderable: false,
-                    className: 'select-checkbox',
-                    targets: 0,
-                    'checkboxes': {
-                        'selectRow': true
-                    },
-                    data: null,
-                    defaultContent: '',
-                }],
-                "select": {
-                    "style": 'multi',
-                    "selector": 'td:first-child'
-                },
-                "order": [[1, 'desc']],
+                //columnDefs: [{
+                //    orderable: false,
+                //    className: 'select-checkbox',
+                //    targets: 0,
+                //    'checkboxes': {
+                //        'selectRow': true
+                //    },
+                //    data: ID,
+                //    defaultContent: '',
+                //}],
+                //"select": {
+                //    "style": 'multi',
+                //    "selector": 'td:first-child'
+                //},
+                //"order": [[1, 'desc']],
 
 
                 initComplete: function () {
                     var column = this.api().column(4);
+                    if (myvalue != 1) {
+                        var select = $('<select class="filter"><option value="All">Select</option></select>')
+                            .appendTo('#selectStatus')
+                            .on('change', function () {
+                                var val = $(this).val();
+                                column.search(val ? '^' + $(this).val() + '$' : val, true, false).draw();
+                                //column.search(val).draw()
+                            });
+                    }
 
-                    var select = $('<select class="filter"><option value="All">Select</option></select>')
-                        .appendTo('#selectStatus')
-                        .on('change', function () {
-                            var val = $(this).val();
-                            column.search(val ? '^' + $(this).val() + '$' : val, true, false).draw();
-                            //column.search(val).draw()
-                        });
 
                     var offices = [];
                     column.data().toArray().forEach(function (s) {
@@ -264,6 +276,149 @@
 
             });
         };
+
+
+//CheckBoxes
+
+
+        $('#checkAll').click(function () {
+            var isChecked = $(this).prop("checked");
+            $('#dtdata tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
+
+
+        });
+
+        function Singlecheck() {
+            var isChecked = $(this).prop("checked");
+            var isHeaderChecked = $("#checkAll").prop("checked");
+            if (isChecked == false && isHeaderChecked)
+                $("#checkAll").prop('checked', isChecked);
+
+            else {
+                $('#dtdata tr:has(td)').find('input[type="checkbox"]').each(function () {
+                    if ($(this).prop("checked") == false)
+                        isChecked = false;
+                });
+                $("#checkAll").prop('checked', isChecked);
+            }
+        }
+
+
+        function DeleteUsers(id) {
+            debugger
+            var obj = { strVal: id }
+            $.ajax({
+                url: '/Users/DeleteUsers/', dataType: 'json', type: 'Post',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(obj),
+                dataType: "json",
+                success: function (data) {
+                    if (data.status == true) {
+                        swal('Alert!', data.message, 'success');
+                    }
+                    else {
+                        swal('Alert!', data.message, 'error')
+                    }
+                },
+                error: function (error) {
+                    swal('Error!', 'something went wrong', 'error');
+                },
+            })
+        }
+
+        $('#btnApply').click(function () {
+            var id = "";
+            var status = $("#ddlStatus").val();
+            $("input:checkbox[name=CheckSingle]:checked").each(function () {
+                id += $(this).val() + ",";
+
+            });
+            if (status == "1") {
+                //UpdateCustomerStatus();
+            }
+            else {
+                id = id.replace(/,(?=\s*$)/, '');
+                DeleteUsers(id);
+                //dataGridLoad();
+            }
+            $("input:checkbox[name=CheckSingle]:checked").each(function () {
+                //alert("Id: " + $(this).attr("id") + " Value: " + $(this).val());
+            });
+        })
+
+
+//CheckBoxes End
+
+//Count Role Grid Show
+        $('#all').click(function () {
+            j = "";
+            k = 1;
+            Datagrid(k);
+        });
+
+        $('#administrator').click(function () {
+            j = 'administrator';
+            k = 1;
+           // alert(j);
+            Datagrid(k);
+            
+        });
+        $('#accounting').click(function () {
+            j = 'accounting';
+            // alert(j);
+            k = 1;
+            Datagrid(k);
+        });
+
+        $('#author').click(function () {
+            j = 'author';
+            // alert(j);
+            k = 1;
+            Datagrid(k);
+        });
+
+        $('#modsquad').click(function () {
+            j = 'modsquad';
+            // alert(j);
+            k = 1;
+            Datagrid(k);
+        });
+
+        $('#shopmanager').click(function () {
+            j = 'shop manager';
+            // alert(j);
+            k = 1;
+            Datagrid(k);
+        });
+
+        $('#subscriber').click(function () {
+            j = 'subscriber';
+            // alert(j);
+            k = 1;
+            Datagrid(k);
+        });
+
+        $('#supplychainmanager').click(function () {
+            j = 'supplychainmanager';
+            // alert(j);
+            k = 1;
+            Datagrid(k);
+        });
+
+        $('#seo').click(function () {
+            j = 'seoeditor';
+            // alert(j);
+            k = 1;
+            Datagrid(k);
+        });
+
+        $('#norole').click(function () {
+            j = 'norole';
+            // alert(j);
+            k = 1;
+            Datagrid(k);
+        });
+  //Count Role Grid End
     </script>
 
     @*<script>
@@ -294,7 +449,7 @@
             }
         </script>*@
 }
-<script>
+@*<script>
     var dataTable = document.getElementById('data-table');
     var checkItAll = dataTable.querySelector('input[name="select_all"]');
     var inputs = dataTable.querySelectorAll('tbody>tr>td>input');
@@ -311,4 +466,4 @@
             });
         }
     });
-</script>
+</script>*@

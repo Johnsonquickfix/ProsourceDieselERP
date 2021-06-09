@@ -52,7 +52,7 @@
                 model.post_content = string.Empty;
                 model.post_title = "Order &ndash; " + model.post_date.ToString("MMMM dd, yyyy @ HH:mm tt");
                 model.post_excerpt = string.Empty;
-                model.post_status = "auto-draft";
+                model.post_status = "auto-draft";// "draft";
                 model.comment_status = "open";
                 model.ping_status = "closed";
                 model.post_password = string.Empty;
@@ -268,7 +268,7 @@
                     strSql.Append(string.Format(" select LAST_INSERT_ID(),'{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}'; ", model.OrderPostStatus.order_id, obj.product_id, obj.variation_id, model.OrderPostStatus.customer_id,
                             cDate.ToString("yyyy/MM/dd HH:mm:ss"),obj.quantity,(obj.total - obj.discount), (obj.total - obj.discount +obj.tax_amount), obj.discount, obj.tax_amount, obj.shipping_amount, obj.shipping_tax_amount));
                 }
-                /// step 4 : wp_woocommerce_order_items
+                /// step 4 : wp_woocommerce_order_itemmeta
                 strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'_product_id',product_id from wp_wc_order_product_lookup where order_id = {0}; ", model.OrderPostStatus.order_id));
                 strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'_variation_id',variation_id from wp_wc_order_product_lookup where order_id = {0}; ", model.OrderPostStatus.order_id));
                 strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'_qty',product_qty from wp_wc_order_product_lookup where order_id = {0}; ", model.OrderPostStatus.order_id));
@@ -281,11 +281,46 @@
                 strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'size','' from wp_wc_order_product_lookup where order_id = {0}; ", model.OrderPostStatus.order_id));
                 strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'_reduced_stock',product_qty from wp_wc_order_product_lookup where order_id = {0}; ", model.OrderPostStatus.order_id));
 
+                /// step 3 : wp_woocommerce_order_items
+                foreach (OrderOtherItemsModel obj in model.OrderOtherItems)
+                {
+                    strSql.Append(string.Format(" insert into wp_woocommerce_order_items(order_item_name,order_item_type,order_id) value('{0}','{1}','{2}'); ", obj.item_name, obj.item_type, model.OrderPostStatus.order_id));
+                    if (obj.item_type == "coupon")
+                    {
+                        strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select LAST_INSERT_ID(),'discount_amount',{0} ; ", obj.amount));
+                    }
+                    else if(obj.item_type == "tax")
+                    {
+                        strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select LAST_INSERT_ID(),'tax_amount',{0} ; ", obj.amount));
+                    }
+                }
+
+
+                /// step 6 : wp_posts
+                strSql.Append(string.Format(" update wp_posts set post_status = '{0}' ,comment_status = 'closed' where id = {1} ", model.OrderPostStatus.status, model.OrderPostStatus.order_id));
+
                 result = SQLHelper.ExecuteNonQuery(strSql.ToString());
             }
             catch { }
             return result;
         }
 
+        public static int UpdateOrderStatus(OrderPostMetaModel model)
+        {
+            int result = 0;
+            try
+            {
+                DateTime cDate = DateTime.Now, cUTFDate = DateTime.UtcNow;
+                StringBuilder strSql = new StringBuilder(string.Format("delete from wp_postmeta where post_id = {0} and meta_key = 'taskuidforsms'; ", model.post_id));
+                strSql.Append(string.Format("insert into wp_postmeta (post_id,meta_key,meta_value) values ('{0}','{1}','{2}') ", model.post_id, "taskuidforsms", model.meta_value));
+                
+                /// step 6 : wp_posts
+                //strSql.Append(string.Format(" update wp_posts set post_status = '{0}' ,comment_status = 'closed' where id = {1} ", model.OrderPostStatus.status, model.OrderPostStatus.order_id));
+
+                result = SQLHelper.ExecuteNonQuery(strSql.ToString());
+            }
+            catch { }
+            return result;
+        }
     }
 }

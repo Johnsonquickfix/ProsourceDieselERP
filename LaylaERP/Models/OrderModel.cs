@@ -11,6 +11,7 @@
         public List<OrderPostMetaModel> OrderPostMeta { get; set; }
         public List<OrderProductsModel> OrderProducts { get; set; }
         public OrderPostStatusModel OrderPostStatus { get; set; }
+        public List<OrderOtherItemsModel> OrderOtherItems { get; set; }
     }
     public class OrderPostModel
     {
@@ -103,5 +104,12 @@
         public decimal AK { get; set; }
         public decimal HI { get; set; }
         public decimal CA { get; set; }
+    }
+    public class OrderOtherItemsModel
+    {
+        public long order_id { get; set; }
+        public string item_name { get; set; }
+        public string item_type { get; set; }
+        public decimal amount { get; set; }
     }
 }

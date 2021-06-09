@@ -94,10 +94,32 @@ function UpdateCustomerStatus() {
 }
 
 function DeleteCustomer(id) {
-    debugger
     var obj = { strVal: id }
     $.ajax({
         url: '/Customer/DeleteCustomer/', dataType: 'json', type: 'Post',
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(obj),
+        dataType: "json",
+        success: function (data) {
+            if (data.status == true) {
+                swal('Alert!', data.message, 'success');
+            }
+            else {
+                swal('Alert!', data.message, 'error')
+            }
+        },
+        error: function (error) {
+            swal('Error!', 'something went wrong', 'error');
+        },
+    })
+}
+
+function ChangeStatus(id) {
+    debugger
+    var status = $("#ddlUserStatus").val();
+    var obj = { strVal: id, user_status: status }
+    $.ajax({
+        url: '/Customer/ChangeCustomerStatus/', dataType: 'json', type: 'Post',
         contentType: "application/json; charset=utf-8",
         data: JSON.stringify(obj),
         dataType: "json",

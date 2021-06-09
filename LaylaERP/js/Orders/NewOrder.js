@@ -32,7 +32,10 @@ $(document).ready(function () {
     //$(document).on("click", "#btnAddItem", function (t) { t.preventDefault(); ProductModal(); });
     //$("#billModal").on("change", ".ddlTempProductFooter", function (t) { t.preventDefault(); ProductModalItemRow(); });
     $(document).on("blur", "#txtshipzipcode", function (t) { t.preventDefault(); GetTaxRate(); });
-    $(document).on("click", "#btnPlaceOrder", function (t) { t.preventDefault(); saveCO(); });
+    $(document).on("click", "#btnCheckout", function (t) { t.preventDefault(); saveCO(); });
+    $(document).on("click", "#btnpay", function (t) { t.preventDefault(); PaymentModal(); });
+    $("#billModal").on("click", "#btnPlaceOrder", function (t) { t.preventDefault(); AcceptPayment(); });
+
 });
 ///Bind States of Country
 function BindStateCounty(ctr, obj) {
@@ -90,9 +93,9 @@ function CustomerAddress() {
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) { $('.billinfo').prop("disabled", true); swal('Alert!', errorThrown, "error"); },
             complete: function () { $('.billinfo').prop("disabled", false); },
-            async: true
+            async: false
         });
-        GetTaxRate();
+        setTimeout(function () { GetTaxRate(); }, 100);
     }
     else {
         $('.billinfo').prop("disabled", true);
@@ -105,11 +108,12 @@ function CustomerAddress() {
 ///Get New Order No
 function GetTaxRate() {
     var opt = { strValue1: $("#txtshipzipcode").val(), strValue2: $("#txtshipcity").val(), strValue3: $("#ddlshipcountry").val() };
+    if (opt.strValue1.length <= 0 || opt.strValue2.length <= 0 || opt.strValue3.length <= 0) { $('#hfTaxRate').val(0); return false; }
     $.ajax({
         type: "POST", url: '/Orders/GetTaxRate', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
         success: function (result) { $('#hfTaxRate').val(result.message); },
         error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
-        async: true
+        async: false
     });
 }
 
@@ -153,7 +157,7 @@ function bindCouponList(data) {
     var layoutHtml = '';
     if (data.length > 0) {
         if ($('#li_' + data[0].post_title).length <= 0) {
-            layoutHtml += '<li id="li_' + data[0].post_title + '" data-couponamt= "' + data[0].coupon_amount + '" data-disctype= "' + data[0].discount_type + '">';
+            layoutHtml += '<li id="li_' + data[0].post_title + '" data-coupon= "' + data[0].post_title + '" data-couponamt= "' + data[0].coupon_amount + '" data-disctype= "' + data[0].discount_type + '">';
             layoutHtml += '<a href="javascript:void(0);">';
             layoutHtml += '<i class="fa fa-gift"></i>';
             layoutHtml += '<span>' + data[0].post_title + '</span>';
@@ -174,7 +178,7 @@ function bindCouponList(data) {
         if (zDiscType == 'fixed_cart') { zCouponAmt = (zCouponAmt / zTotalQty); }
         $("#tblAddItemFinal > tbody  > tr").each(function () {
             if (jQuery.inArray($(this).data("vid").toString(), zProductIDs) == -1 && isUsedAll == 0) {
-                swal('Alert!', 'Sorry, this coupon is not applicable to selected products.', "info").then((result) => { return false; });
+                //swal('Alert!', 'Sorry, this coupon is not applicable to selected products.', "info").then((result) => { return false; });
             }
             else {
                 zQty = parseFloat($(this).find("[name=txt_ItemQty]").val()) || 0.00;
@@ -266,7 +270,6 @@ function ProductModal() {
 ///Add Modal Product selected add row
 function ProductModalItemRow() {
     var myHtml = '';
-    //console.log($('.ddlTempProductFooter').select2('data'));
     var id = $('.ddlTempProductFooter').val(), text = $(".ddlTempProductFooter option:selected").text();
     if (id == null) return false;
     myHtml += '<tr>';
@@ -329,7 +332,7 @@ function getItemList() {
         error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
         async: false
     });
-    getItemShippingCharge({ strValue1: pid, strValue2: vid, strValue3: $("#ddlshipcountry").val() });
+    setTimeout(function () { getItemShippingCharge({ strValue1: pid, strValue2: vid, strValue3: $("#ddlshipcountry").val() }); }, 100);
 }
 //-----bind Item Table ---------------------------
 function bindItemListDataTable(data) {
@@ -441,8 +444,8 @@ function createPostMeta() {
     var oid = $('#hfOrderNo').val();
     var postMetaxml = [];
     postMetaxml.push(
-        { post_id: oid, meta_key: '_order_key', meta_value: 'wc_order_' }, { post_id: oid, meta_key: '_customer_user', meta_value: '1' },
-        { post_id: oid, meta_key: '_payment_method', meta_value: 'cod' }, { post_id: oid, meta_key: '_payment_method_title', meta_value: 'cash on delivery' },
+        { post_id: oid, meta_key: '_order_key', meta_value: 'wc_order_' }, { post_id: oid, meta_key: '_customer_user', meta_value: parseInt($('#ddlUser').val()) || 0 },
+        { post_id: oid, meta_key: '_payment_method', meta_value: 'podium' }, { post_id: oid, meta_key: '_payment_method_title', meta_value: 'Podium Order' },
         { post_id: oid, meta_key: '_customer_ip_address', meta_value: '::1' }, { post_id: oid, meta_key: '_customer_user_agent', meta_value: '0' },
         { post_id: oid, meta_key: '_created_via', meta_value: 'checkout' }, { post_id: oid, meta_key: '_cart_hash', meta_value: '0' },
         { post_id: oid, meta_key: '_billing_first_name', meta_value: $('#txtbillfirstname').val() }, { post_id: oid, meta_key: '_billing_last_name', meta_value: $('#txtbilllastname').val() },
@@ -450,7 +453,7 @@ function createPostMeta() {
         { post_id: oid, meta_key: '_billing_city', meta_value: $('#txtbillcity').val() }, { post_id: oid, meta_key: '_billing_state', meta_value: $('#ddlbillstate').val() },
         { post_id: oid, meta_key: '_billing_postcode', meta_value: $('#txtbillzipcode').val() }, { post_id: oid, meta_key: '_billing_country', meta_value: $('#ddlbillcountry').val() },
         { post_id: oid, meta_key: '_billing_email', meta_value: $('#txtbillemail').val() }, { post_id: oid, meta_key: '_billing_phone', meta_value: $('#txtbillphone').val() },
-        { post_id: oid, meta_key: '_order_version', meta_value: '0' }, { post_id: oid, meta_key: '_prices_include_tax', meta_value: 'no' },
+        { post_id: oid, meta_key: '_order_version', meta_value: '4.8.0' }, { post_id: oid, meta_key: '_prices_include_tax', meta_value: 'no' },
         { post_id: oid, meta_key: '_shipping_address_index', meta_value: '' }, { post_id: oid, meta_key: 'is_vat_exempt', meta_value: 'no' },
         { post_id: oid, meta_key: '_download_permissions_granted', meta_value: 'yes' }, { post_id: oid, meta_key: '_recorded_sales', meta_value: 'yes' },
         { post_id: oid, meta_key: '_recorded_coupon_usage_counts', meta_value: 'yes' }, { post_id: oid, meta_key: '_order_stock_reduced', meta_value: 'yes' },
@@ -460,9 +463,9 @@ function createPostMeta() {
         { post_id: oid, meta_key: '_shipping_state', meta_value: $('#ddlshipstate').val() }, { post_id: oid, meta_key: '_shipping_postcode', meta_value: $('#txtshipzipcode').val() },
         { post_id: oid, meta_key: '_shipping_country', meta_value: $('#ddlshipcountry').val() }, { post_id: oid, meta_key: '_shipping_email', meta_value: '' },
         { post_id: oid, meta_key: '_shipping_phone', meta_value: '' }, { post_id: oid, meta_key: '_order_currency', meta_value: 'USD' },
-        { post_id: oid, meta_key: '_order_total', meta_value: parseFloat($('orderTotal').text()) || 0.00 }, { post_id: oid, meta_key: '_cart_discount', meta_value: parseFloat($('discountTotal').text()) || 0.00 },
-        { post_id: oid, meta_key: '_cart_discount_tax', meta_value: '0' }, { post_id: oid, meta_key: '_order_shipping', meta_value: parseFloat($('shippingTotal').text()) || 0.00 },
-        { post_id: oid, meta_key: '_order_shipping_tax', meta_value: parseFloat($('salesTaxTotal').text()) || 0.00 }, { post_id: oid, meta_key: '_order_tax', meta_value: parseFloat($('salesTaxTotal').text()) || 0.00 }
+        { post_id: oid, meta_key: '_order_total', meta_value: parseFloat($('#orderTotal').text()) || 0.00 }, { post_id: oid, meta_key: '_cart_discount', meta_value: parseFloat($('#discountTotal').text()) || 0.00 },
+        { post_id: oid, meta_key: '_cart_discount_tax', meta_value: '0' }, { post_id: oid, meta_key: '_order_shipping', meta_value: parseFloat($('#shippingTotal').text()) || 0.00 },
+        { post_id: oid, meta_key: '_order_shipping_tax', meta_value: parseFloat($('#shippingTaxTotal').text()) || 0.00 }, { post_id: oid, meta_key: '_order_tax', meta_value: parseFloat($('#salesTaxTotal').text()) || 0.00 }
     );
     return postMetaxml;
 }
@@ -482,14 +485,26 @@ function createPostStatus() {
     };
     return postStatus;
 }
+function createOtherItemsList() {
+    var oid = parseInt($('#hfOrderNo').val()) || 0;
+    var otherItemsxml = [];
+    $('#billCoupon li').each(function (index) {
+        otherItemsxml.push({ order_id: oid, item_name: $(this).data('coupon'), item_type: 'coupon', amount: parseFloat($(this).data('couponamt')) || 0.00 });
+    });
+    //Add tax
+    otherItemsxml.push({ order_id: oid, item_name: 'US-IN-IN TAX-1', item_type: 'tax', amount: parseFloat($('#salesTaxTotal').text()) || 0.00 });
+    //Add Shipping
+    otherItemsxml.push({ order_id: oid, item_name: '', item_type: 'shipping', amount: parseFloat($('#shippingTotal').text()) || 0.00 });
+    return otherItemsxml;
+}
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Save Details ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function saveCO() {
-    $('#btnPlaceOrder').prop("disabled", true);
+    $('#btnCheckout').prop("disabled", true); $('#btnCheckout').text("Waiting...");
     var oid = parseInt($('#hfOrderNo').val()) || 0;
     var cid = parseInt($('#ddlUser').val()) || 0;
     //if (oid <= 0) { swal('Alert!', 'Please Select Customer.', "info").then((result) => { return false; }); }
     if (cid <= 0) { swal('Alert!', 'Please Select Customer.', "info").then((result) => { return false; }); }
-    var postMeta = createPostMeta(); var postStatus = createPostStatus();
+    var postMeta = createPostMeta(); var postStatus = createPostStatus(); var otherItems = createOtherItemsList();
     var itemsDetails = [];
     $('#tblAddItemFinal > tbody  > tr').each(function (index, tr) {
         var pKey = parseInt(index);
@@ -505,32 +520,173 @@ function saveCO() {
         });
     });
     if (itemsDetails.length == 0) { swal('Alert!', 'Please add product.', "info").then((result) => { return false; }); }
-    var obj = { OrderPostMeta: postMeta, OrderProducts: itemsDetails, OrderPostStatus: postStatus };
+    var obj = { OrderPostMeta: postMeta, OrderProducts: itemsDetails, OrderPostStatus: postStatus, OrderOtherItems: otherItems };
 
     console.log(obj);
-    //if (itemsDetailsxml.length == 0) { bootbox.alert('Please add product.'); return false; }
-    //var obj = {}; obj.VDate = $("#txtvdate").val(); obj.Narration = $("#note").val(); obj.cMobile = $("#txtpartyNo").val();
-    //obj.cName = $("#txtpartyname").val(); obj.cPNRNo = $("#txtPNRNo").val(); obj.GVD = itemsDetailsxml; //obj.GVD = JSON.stringify(rdata);
-    //obj.cPaidBy = $("#paid_by").val(); obj.TxnID = $("#trx_id").val();
-    ////console.log(obj);
+    //$('#btnPlaceOrder').prop("disabled", false); return false;
     $.ajax({
         type: "POST", contentType: "application/json; charset=utf-8",
         url: "/Orders/SaveCustomerOrder", // Controller/View
         data: JSON.stringify(obj), dataType: "json", beforeSend: function (xhr) { },
         success: function (data) {
-            console.log(data);
-            //var logdata = JSON.parse(data.d);
-            //if (logdata.state == true) {
-            //    posClearPersonInfo(); $("#ds_per").html(''); $("#ds_per").data('don', 'A'); var itemsDetailsxml = []; bindPOSItemsTable(itemsDetailsxml);
-            //    $("#payModal").modal("hide");
-            //    window.setTimeout(function () {
-            //        window.open('PrintSlip.aspx?vno=' + logdata.data + '', '_blank', '"height=700,width=950,menubar=no,resizable=no,directories=no,location=no');
-            //    }, 500);
-            //}
-            //else { bootbox.alert(logdata.message); return false; }
+            if (data.status == true) {
+                //swal('Alert!', data.message, "success");
+                setTimeout(function () { PaymentModal(); }, 50);
+            }
+            else { swal('Alert!', data.message, "error").then((result) => { return false; }); }
         },
-        error: function (xhr, status, err) { $('#btnPlaceOrder').prop("disabled", false); alert(err); },
-        complete: function () { $('#btnPlaceOrder').prop("disabled", false); },
+        error: function (xhr, status, err) { $('#btnCheckout').prop("disabled", false); alert(err); },
+        complete: function () { $('#btnCheckout').prop("disabled", false); $('#btnCheckout').text("Checkout"); },
     });
+    $('#btnCheckout').text("Checkout");
     return false;
+}
+
+///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Payment Modal ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+function PaymentModal_old() {
+    var myHtml = '';
+    //header
+    myHtml += '<div class="modal-dialog">';
+    myHtml += '<div class="modal-content">';
+    myHtml += '<div class="modal-header">';
+    myHtml += '<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button>';
+    myHtml += '<h4 class="modal-title" id="myModalLabel">Select Payment Method</h4>';
+    myHtml += '</div>';
+    myHtml += '<div class="modal-body" >';
+    myHtml += '<div class="nav-tabs-custom">';
+    myHtml += '<ul class="nav nav-tabs">';
+    myHtml += '<li class="active"><a href="#tab_Authorize" data-toggle="tab"><i class="fa fa-credit-card"></i> Authorize.Net</a></li>';
+    myHtml += '<li><a href="#tab_Paypal" data-toggle="tab"><i class="fab fa-paypal"></i> Paypal</a></li>';
+    myHtml += '</ul>';
+    myHtml += '<div class="tab-content" >';
+    myHtml += '<div class="tab-pane active" id="tab_Authorize">';
+    myHtml += '<div class="form-group"> <label for="numeric" class="control-label">Full name (on the card)</label> <input id="cc-fullname" type="text" class="form-control cc-input"> </div>';
+    myHtml += '<div class="form-group"><label for="cc-number" class="control-label">Card number</label><input id="cc-number" type="tel" class="form-control cc-number cc-input" autocomplete="cc-number" placeholder="•••• •••• •••• ••••"> </div>';
+    myHtml += '<div class="row">';
+    myHtml += '<div class="col-md-6">';
+    myHtml += '<div class="form-group"> <label for="cc-exp" class="control-label">Expiration</label> <input id="cc-exp" type="tel" class="form-control cc-exp cc-input" autocomplete="cc-exp" placeholder="•• / ••"> </div>';
+    myHtml += '</div>';
+    myHtml += '<div class="col-md-6">';
+    myHtml += '<div class="form-group"> <label for="cc-cvc" class="control-label">CVV</label> <input id="cc-cvc" type="tel" class="form-control cc-cvc cc-input" autocomplete="off" placeholder="••••"> </div>';
+    myHtml += '</div>';
+    myHtml += '<div class="col-md-12">';
+    myHtml += '<div class="form-group pull-right"> <button type="button" class="btn btn-primary" id="btnPayment"><i class="fa fa-credit-card"></i> Pay</button> </div>';
+    myHtml += '</div>';
+    myHtml += '</div>';
+    myHtml += '</div>';
+    myHtml += '<div class="tab-pane" id="tab_Paypal">';
+    myHtml += '<div class="form-group"> <label for="numeric" class="control-label  paypal-email">Paypal Email-id</label> <input type="text" class="form-control"> </div>';
+    myHtml += '<div class="form-group pull-right"> <button type="button" class="btn btn-primary" id="btnSendInvoice"><i class="fa fa-credit-card"></i> Send Invoice</button> </div>';
+    myHtml += '</div>';
+    myHtml += '</div>';
+    myHtml += '</div>';
+    myHtml += '</div > ';
+    myHtml += '</div>';
+    myHtml += '</div>';
+    $("#billModal").empty().html(myHtml);
+    $('.cc-number').inputmask("9999 9999 9999 9999");
+    $('.cc-exp').inputmask("99 / 99");
+    $('.cc-cvc').inputmask("9999");
+    $("#billModal").modal({ backdrop: 'static' }); $("#txt_Coupon").focus();
+}
+function PaymentModal() {
+    var myHtml = '';
+    //header
+    myHtml += '<div class="modal-dialog">';
+    myHtml += '<div class="modal-content">';
+    myHtml += '<div class="modal-header">';
+    myHtml += '<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button>';
+    myHtml += '<h4 class="modal-title" id="myModalLabel">Order #' + $('#hfOrderNo').val() + '</h4>';
+    myHtml += '</div>';
+    myHtml += '<div class="modal-body no-padding" >';
+    myHtml += '<section class="invoice no-margin">';
+    /// row invoice-info
+    myHtml += '<div class="row invoice-info">';
+    myHtml += '<div class="col-sm-6 invoice-col">';
+    myHtml += 'Billing Address: <address class="no-margin"><strong>' + $('#txtbillfirstname').val() + ' ' + $('#txtbilllastname').val() + '</strong > <br>' + $('#txtbilladdress1').val() + '<br>' + $('#txtbilladdress1').val() + '<br>' + $('#txtbillcity').val() + ' ,' + $('#ddlbillstate').val() + ' ' + $('#txtbillzipcode').val() + '<br>Phone: ' + $('#txtbillphone').val() + '<br>Email: ' + $('#txtbillemail').val() + '</address>';
+    myHtml += '</div>';
+    myHtml += '<div class="col-sm-6 invoice-col">';
+    myHtml += 'Shipping Address: <address class="no-margin"><strong>' + $('#txtshipfirstname').val() + ' ' + $('#txtshiplastname').val() + '</strong > <br>' + $('#txtshipaddress1').val() + '<br>' + $('#txtshipaddress2').val() + '<br>' + $('#txtshipcity').val() + ' ,' + $('#ddlshipstate').val() + ' ' + $('#txtshipcity').val() + '</address>';
+    myHtml += '</div>';
+    myHtml += '</div>';
+    /// row invoice-items
+    myHtml += '<div class="row">';
+    myHtml += '<div class="col-xs-12 table-responsive">';
+    myHtml += '<table class="table table-striped" id="tblmodalitems">';
+    myHtml += '<thead>';
+    myHtml += '<tr>';
+    myHtml += '<th style="width: 60%">Product</th>';
+    myHtml += '<th style="width: 20%" class="text-right">Qty.</th>';
+    myHtml += '<th style="width: 20%" class="text-right">Amount</th>';
+    myHtml += '</tr>';
+    myHtml += '</thead>';
+    myHtml += '<tbody></tbody>';
+    myHtml += '</table>';
+    myHtml += '</div>';
+    myHtml += '</div>';
+
+    myHtml += '</section>';
+    myHtml += '</div>';
+    myHtml += '<div class="modal-footer">';
+    myHtml += '<div class="form-check col-sm-6 text-left">';
+    myHtml += '<input class="form-check-input" type="checkbox" id="Podium" checked>';
+    myHtml += '<label class="form-check-label" for="Podium">Podium</label>';
+    myHtml += '</div>';
+    myHtml += '<button type="button" class="btn btn-primary" id="btnPlaceOrder">Place Order $' + $('#orderTotal').text() + '</button>';
+    myHtml += '</div>';
+    myHtml += '</div>';
+    myHtml += '</div>';
+    $("#billModal").empty().html(myHtml);
+    myHtml = '';
+    //get items
+    $('#tblAddItemFinal > tbody  > tr').each(function (index, tr) {
+        var qty = parseFloat($(this).find("[name=txt_ItemQty]").val()) || 0.00;
+        var grossAmount = parseFloat($(this).find(".TotalAmount").data('amount')) || 0.00;
+        var discountAmount = parseFloat($(this).find(".TotalAmount").data('discount')) || 0.00;
+        var taxAmount = parseFloat($(this).find(".TotalAmount").data('taxamount')) || 0.00;
+        myHtml += '<tr>';
+        myHtml += '<td>' + $(this).data('pname') + '</td>';
+        myHtml += '<td class="text-right">' + qty + '</td>';
+        myHtml += '<td class="text-right">' + (grossAmount - discountAmount + taxAmount) + '</td>';
+        myHtml += '</tr>';
+    });
+    $('#tblmodalitems tbody').append(myHtml);
+
+    $("#billModal").modal({ backdrop: 'static' }); $("#txt_Coupon").focus();
+}
+function AcceptPayment() {
+    var opt = { clientId: '51eed2ee1dbdced0d6e17548dde7e8a8', clientSecret: '80b1f585430df45f5a71e7a1a866c54dd2329856ced8503f55deee5313a20caf' };
+    $.ajax({
+        type: "POST", url: 'https://api.podium.com/api/session', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
+        success: function (result) {
+            console.log(result.token);
+            var optinv = { employeeName: 'ABC', firstName: 'David', lastName: 'Massey', invoiceAmount: 0.00, invoiceDescription: 'Layla #00001', locationId: '155425', customer_email: 'noreply@podium.com', phone: '0000000000' };
+            $.ajax({
+                type: "POST", url: 'https://api.podium.com/api/v1/webhook/3e23125f-cf42-4348-ace4-f38f759de0c2', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(optinv),
+                beforeSend: function (xhr) { xhr.setRequestHeader("Authorization", result.token); },
+                success: function (data) {
+                    console.log(data);
+                    setTimeout(function () { updatePayment(data.taskUid); }, 50);
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
+                async: false
+            });
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
+        async: false
+    });
+}
+
+function updatePayment(taskUid) {
+    var opt = { post_id: parseInt($('#hfOrderNo').val()) || 0, meta_value: taskUid };
+    $.ajax({
+        type: "POST", url: '/Orders/UpdatePaymentDetail', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
+        success: function (result) {
+            if (result.status == true) {
+                $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true); setTimeout(function () { swal('Alert!', result.message, "success"); }, 50);
+            }
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
+        async: false
+    });
 }

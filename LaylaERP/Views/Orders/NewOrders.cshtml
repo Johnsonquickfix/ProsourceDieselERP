@@ -229,7 +229,8 @@
         <div class="col-sm-12 text-right">
             <div class="box box-solid">
                 <div class="box-body">
-                    <button type="button" id="btnPlaceOrder" class="btn btn-primary billinfo"> Place Order</button>
+                    @*<button type="button" id="btnpay" class="btn btn-primary" > Payment</button>*@
+                    <button type="button" id="btnCheckout" class="btn btn-primary billinfo" > Checkout</button>
                 </div>
                 <!-- /.box-body -->
             </div>
@@ -237,10 +238,7 @@
     </div>
     <div class="row">
         <div class="col-md-12">
-
-
-
-
+            
         </div>
     </div>
 </section>
@@ -248,7 +246,7 @@
 <div class="modal in printable autoprint" id="billModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div>
 
 <!-- Include SmartWizard JavaScript source -->
-<script src="~/Content/AdminLTE-3.1.0/smartwizard/jquery.smartWizard.js"></script>
+<script src="~/Content/AdminLTE-3.1.0/jquery/inputmask.js"></script>
 <script src="@Url.Content("~/js/Orders/NewOrder.js?v=" + DateTime.Now.ToString("ddMMyyyymmss"))" asp-append-version="true"></script>
 <script type="text/javascript">
 

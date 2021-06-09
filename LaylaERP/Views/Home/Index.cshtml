@@ -50,8 +50,8 @@
             <nav class="navbar navbar-static-top">
                 <!-- Sidebar toggle button-->
                 @*<a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
-                    <span class="sr-only">Toggle navigation</span>
-                </a>*@
+                        <span class="sr-only">Toggle navigation</span>
+                    </a>*@
                 <a href="#" class="sidebar-toggle fa5" data-toggle="offcanvas" role="button">
                     <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
@@ -95,7 +95,8 @@
                                 <!-- Menu Footer-->
                                 <li class="user-footer">
                                     <div class="pull-left">
-                                        <a href="/Users/UserProfile" class="btn btn-default btn-flat">Profile</a>
+                                        @*<a href="/Users/UserProfile" class="btn btn-default btn-flat">Profile</a>*@
+                                        <button type="button" id="btnuserprofile" class="btn btn-default btn-flat">Profile</button>
                                     </div>
                                     <div class="pull-right">
                                         <a href="#" id="btnExit" class="btn btn-default btn-flat">Sign out</a>
@@ -110,6 +111,7 @@
                     </ul>
                 </div>
 
+                <div class="modal in printable autoprint" id="userprofile" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div>
             </nav>
         </header>
 
@@ -143,8 +145,8 @@
                 <ul class="sidebar-menu tree" data-widget="tree">
                 </ul>
                 @*<ul class="sidebar-menu tree" data-widget="tree">
-                    <li class="header">MAIN NAVIGATION</li>
-                </ul>*@
+                        <li class="header">MAIN NAVIGATION</li>
+                    </ul>*@
             </section>
             <!-- /.sidebar -->
         </aside>
@@ -226,7 +228,37 @@
                 error: function (jqXHR, textStatus, errorThrown) { swal('Error!', errorThrown, "error");}
             });
         }
+
+        $(document).on("click", "#btnuserprofile", function (t) { t.preventDefault(); ProfileModal(); });
+
+ 
     </script>
     <script src="~/Content/AdminLTE-3.1.0/custom.js"></script>
+    <script src="~/Content/AdminLTE-3.1.0/jquery/inputmask.js"></script>
+    
+    <script>
+        ///Add Modal Profile
+        function ProfileModal() {
+            var myHtml = '';
+            //header
+            myHtml += '<div class="modal-dialog">';
+            myHtml += '<div class="modal-content">';
+            myHtml += '<div class="modal-header">';
+            myHtml += '<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button>';
+            myHtml += '<h4 class="modal-title" id="myModalLabel">Profile</h4>';
+            myHtml += '</div>';
+            myHtml += '<div class="modal-body">';
+            myHtml += '<input class="form-control number" type="text" id="txt_firstname" name="txt_firstname" placeholder="First Name" maxlength="50">';
+            myHtml += '</div > ';
+            myHtml += '<div class="modal-footer">';
+            myHtml += '<button type="button" class="btn btn-primary" id="btnProfile">Update Profile</button>';
+            myHtml += '</div>';
+            myHtml += '</div>';
+            myHtml += '</div>';
+            $("#userprofile").empty().html(myHtml);
+            $("#userprofile").modal({ backdrop: 'static' }); $("#txt_firstname").focus();
+        }
+    </script>
+    
 </body>
 </html>

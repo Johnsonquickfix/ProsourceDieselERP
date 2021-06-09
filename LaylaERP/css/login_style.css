@@ -115,6 +115,7 @@ border:0px;}
 }
 .login-page [type="email"], .login-page [type="password"] {
     border: 1px solid #D2D6DE;
+    border-width:0px 0px 1px 0px;
     height: 42px;
     background: #fff;
     padding: 0px 15px;

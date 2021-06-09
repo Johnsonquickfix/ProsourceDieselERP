@@ -194,18 +194,30 @@ margin-top:1px;}
     .navbar-nav > .user-menu > .dropdown-menu > .user-footer {
         background: #F1F1F1; border-top:1px solid #c5c5c5;
     }
-.navbar-nav > .user-menu > .dropdown-menu > .user-footer .btn-default {
-    background: #FF4100;
-    color: #fff !important;
-    box-shadow: none;
-    border: 0px;
-    border-radius: 3px;
-}
-.main-footer {
-    color: #fff; font-size:14px;
-    background: #494851;
-    border-top: 2px solid #fff; padding-left:15px !important; padding-right:15px !important;
-}
+        .navbar-nav > .user-menu > .dropdown-menu > .user-footer .btn-default {
+            border: 1px solid #ff4100;
+            padding: 5px 15px;
+            display: inline-block;
+            border-radius: 4px;
+            box-shadow: 0px 0px 4px #4a4f55;
+            -webkit-box-shadow: 0px 0px 4px #4a4f55;
+            color: #4a4f55;
+            transition: 0.5s ease all;
+            background-color: rgba(0,0,0,0);
+        }
+            .navbar-nav > .user-menu > .dropdown-menu > .user-footer .btn-default:hover {
+                color: #fff !important;
+                background-color: #ff4100;
+                transition: 0.5s ease all;
+            }
+            .main-footer {
+                color: #fff;
+                font-size: 14px;
+                background: #494851;
+                border-top: 2px solid #fff;
+                padding-left: 15px !important;
+                padding-right: 15px !important;
+            }
 .tab_iframe {
     display: block;
 }
@@ -240,4 +252,114 @@ position:fixed; top:0px; left:0px; background:rgba(255,255,255, .5); width:100%;
     background: #fff !important;
 }
 .navbar-nav > .user-menu > .dropdown-menu > .user-body {border:0px;
+}
+.profile-dialog {
+width:1100px;}
+    .profile-dialog .modal-content {
+    border-radius:5px; background:#f9f9f9;}
+.page-title {
+    display: flex;
+    align-items: center;
+    margin: 0px;
+}
+    .page-title h2 {
+        font-size: 25px;
+        margin: 0px 10px 0px 0px;
+    }
+/***user profile and create*/
+
+.form-control:focus {
+    box-shadow: none;
+    border-color: #BA68C8
+}
+
+.create-user-box {
+}
+
+.user-body .container-fluid, .user-body .wrapper {
+    height: 100%;
+}
+
+.createuser-section {
+    min-height: calc(100% - 100px);
+}
+
+.btn-danger {
+    background: #ff4100 !important;
+    color: #fff;
+}
+
+.form-address {
+    min-height: 110px;
+}
+
+
+.add-profile:hover .edit-pic-profile {
+    opacity: 1;
+}
+
+.add-profile i.fa {
+    font-size: 14px;
+    margin-right: 3px;
+}
+
+.add-profile .edit-pic-profile {
+    position: absolute;
+    opacity: 0;
+    transition: .5s all;
+    right: -25px;
+    top: 0px;
+    border-radius: 5px;
+    background: #FD4C0F;
+    color: #fff;
+    font-size: 12px;
+    padding: 2px 6px 4px;
+}
+
+[for="file"] {
+    display: flex;
+    font-weight: 400;
+    align-items: center;
+    cursor: pointer;
+    margin: 0px;
+}
+
+.user-box-profile {
+    text-align: center;
+}
+
+.add-profile {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 5px;
+}
+
+.genrate_password {
+    color: #ff4100;
+    background: #f5f5f5;
+    font-size: 9px;
+    padding: 2px 8px;
+    position: absolute;
+    opacity: 0;
+    transition: .5s all;
+    cursor: pointer;
+    right: 0px;
+    top: 3px;
+}
+
+.form-password-group {
+    position: relative;
+}
+
+    .form-password-group:hover .genrate_password {
+        opacity: 1;
+    }
+
+.inputfile {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
 }

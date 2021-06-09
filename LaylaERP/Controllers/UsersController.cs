@@ -7,6 +7,7 @@ using LaylaERP.Models;
 using MySql.Data.MySqlClient;
 using System.Data;
 using System.Configuration;
+using LaylaERP.BAL;
 
 namespace LaylaERP.Controllers
 {

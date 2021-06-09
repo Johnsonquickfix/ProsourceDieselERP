@@ -103,4 +103,23 @@
             })
         })
     })
+
+    $("#userrole").change(function () {
+        var usertype = { strvalue: $("#userrole :selected").text() };
+        alert(usertype);
+        $.ajax({
+            url: 'Users/GetAssignRole',
+            type: 'POST',
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            data: JSON.stringify(usertype),
+            success: function (responce) {
+                alert(responce)
+            },
+            error: function (responce) {
+                alert(responce)
+            }
+        });
+
+    });
 </script>

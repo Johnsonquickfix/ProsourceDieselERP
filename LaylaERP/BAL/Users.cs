@@ -49,6 +49,20 @@
             { throw ex; }
             return dtr;
         }
+
+        public static DataTable DisplayAssignRole(string strvalue)
+        {
+            DataTable DT = new DataTable();
+            try
+            {
+                string strquery = "Select * from wp_user_classification where User_Type="+ strvalue;
+                DT = SQLHelper.ExecuteDataTable(strquery);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DT;
+        }
+
         public static DataTable AppSystemSetting()
         {
             DataTable dt = new DataTable();

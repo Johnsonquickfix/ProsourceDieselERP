@@ -305,5 +305,22 @@
             return result;
         }
 
+        public static int UpdateOrderStatus(OrderPostMetaModel model)
+        {
+            int result = 0;
+            try
+            {
+                DateTime cDate = DateTime.Now, cUTFDate = DateTime.UtcNow;
+                StringBuilder strSql = new StringBuilder(string.Format("delete from wp_postmeta where post_id = {0} and meta_key = 'taskuidforsms'; ", model.post_id));
+                strSql.Append(string.Format("insert into wp_postmeta (post_id,meta_key,meta_value) values ('{0}','{1}','{2}') ", model.post_id, "taskuidforsms", model.meta_value));
+                
+                /// step 6 : wp_posts
+                //strSql.Append(string.Format(" update wp_posts set post_status = '{0}' ,comment_status = 'closed' where id = {1} ", model.OrderPostStatus.status, model.OrderPostStatus.order_id));
+
+                result = SQLHelper.ExecuteNonQuery(strSql.ToString());
+            }
+            catch { }
+            return result;
+        }
     }
 }

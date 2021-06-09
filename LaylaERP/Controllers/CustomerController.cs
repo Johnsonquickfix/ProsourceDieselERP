@@ -111,6 +111,20 @@ namespace LaylaERP.Controllers
                 }
             
         }
+        public JsonResult ChangeCustomerStatus(CustomerModel model)
+        {
+            string strID = model.strVal;
+            if (strID != "")
+            {
+                Repo.ChangeCustomerStatus(model,strID);
+                return Json(new { status = true, message = "Customer Status has been Changed successfully!!", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Something went wrong", url = "" }, 0);
+            }
+
+        }
         private void Adduser_MetaData(CustomerModel model, long id)
         {
             string[] varQueryArr1 = new string[14];

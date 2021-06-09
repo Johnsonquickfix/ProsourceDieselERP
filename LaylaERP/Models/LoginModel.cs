@@ -19,6 +19,8 @@
         [Display(Name = "Password")]
         [DataType(DataType.Password)]
         public string PassWord { get; set; }
+
+        public string ConfirmPassword { get; set; }
     }
     public class ActivityLogModel
     {

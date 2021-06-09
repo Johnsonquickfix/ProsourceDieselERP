@@ -9,6 +9,7 @@
     <script type="text/javascript">var ue_t0 = ue_t0 || +new Date();</script>
     <meta charset="utf-8">
     <title dir="ltr">OTP Verification</title>
+    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
     <link href="~/Content/AdminLTE-3.1.0/adminlte.min.css" rel="stylesheet" />
     <link href="~/Content/Style11.css" rel="stylesheet" />
     <link href="~/Content/Style12.css" rel="stylesheet" />
@@ -91,12 +92,12 @@
                                             </div>
                                             <div class="a-column a-span5 a-text-right a-span-last">
 
-                                                <form id="auth-resend-form" method="post" action="" class="a-spacing-mini">
-                                                    <a id="auth-resend-code-link" class="a-spacing-extra-large a-link-normal" href="#">
+                                                @*<form id="auth-resend-form" method="post" action="" class="a-spacing-mini">*@
+                                                    <a id="" class="a-spacing-extra-large a-link-normal" href="@Url.Action("MobileVerification","Home")">
                                                         Resend OTP
                                                     </a>
 
-                                                </form>
+                                                @*</form>*@
 
                                             </div>
                                         </div>
@@ -113,8 +114,12 @@
                                                     <input id="auth-verify-button" name="pvSubmit" class="a-button-input" type="submit" aria-labelledby="a-autoid-0-announce"><span class="a-button-text" aria-hidden="true" id="a-autoid-0-announce">
                                                         Verify
                                                     </span>
+                                                    
+
                                                 </span>
+                                                       
                                             </span>
+                                            <h5 style="color:black"> OTP is expired on <span id="lblCounter"></span> Seconds OTP has been sent successfully at your Email.</h5>
                                             <script type="text/javascript">cf()</script>
 
 
@@ -166,6 +171,32 @@
     @ViewBag.Result
 </body>
 </html>
+
+<script>
+    var Counter =600;
+    $(document).ready(function () {
+
+        setInterval(function () {
+            if (Counter > 0) {
+                $('#lblCounter').text(Counter);
+                Counter--;
+            }
+            else {
+                location.href = 'Login'
+            }
+            
+
+        }, 1000);
+
+
+
+
+
+
+
+    })
+
+</script>
 
 
 

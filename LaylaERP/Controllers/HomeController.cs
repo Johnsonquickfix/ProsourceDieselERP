@@ -12,6 +12,7 @@
     using LaylaERP.Models;
     using Newtonsoft.Json;
     using System.Globalization;
+    using BAL;
 
     public class HomeController : Controller
     {
@@ -20,7 +21,47 @@
             CommanUtilities.Provider.RemoveCurrent();
             return View();
         }
-       
+        [HttpGet]
+        public ActionResult ForgotPassword()
+        {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult ForgotPassword(LoginModel model)
+        {
+            if (!string.IsNullOrEmpty(model.UserName))
+            {
+                DataSet ds = Users.ForgotPassword(model.UserName);
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    Session["UserId"] = ds.Tables[0].Rows[0]["user_login"].ToString();
+                    return RedirectToAction("ResetPassword","Home");
+                }
+
+            }
+            return View();
+        }
+
+        [HttpGet]
+       public ActionResult ResetPassword()
+        {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult ResetPassword(LoginModel model)
+        {
+            if (model.PassWord == model.ConfirmPassword)
+            {
+                model.UserName = Session["UserId"].ToString();
+                int res = Users.ResetPassword(model.UserName,model.PassWord);
+                if (res > 0)
+                {
+                    return RedirectToAction("Login", "Home");
+                }
+                    
+            }
+            return View();
+        }
         public ActionResult Index()
         {
             return View();

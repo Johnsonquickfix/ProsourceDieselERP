@@ -32,7 +32,7 @@ namespace LaylaERP.Controllers
         // GET: Assign Role
         public ActionResult AssignRole()
         {
-            GetRoles();
+           // GetRoles();
             return View();
         }
 

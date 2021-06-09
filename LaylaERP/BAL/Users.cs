@@ -155,5 +155,47 @@
 
             return sb.ToString();
         }
+
+        public static DataSet ForgotPassword(string UserName)
+        {
+            DataSet ds = new DataSet();
+            try
+            {
+                string strSql = "Select user_login,user_email from wp_users  where(user_login = @UserName Or user_email = @UserName)";
+                MySqlParameter[] parameters =
+                {
+                    new MySqlParameter("@UserName", UserName)
+                };
+                ds = SQLHelper.ExecuteDataSet(strSql, parameters);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return ds;
+        }
+
+        public static int ResetPassword(string UserName, string Password)
+        {
+            int res;
+            try
+            {
+                Password = EncryptedPwd(Password);
+                string strSql = "update wp_users set user_pass=@Password  where user_login = @UserName";
+                MySqlParameter[] parameters =
+                {
+                    new MySqlParameter("@Password", Password),
+                    new MySqlParameter("@UserName", UserName)
+                };
+                res = SQLHelper.ExecuteNonQuery(strSql, parameters);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return res;
+        }
+
+
     }
 }

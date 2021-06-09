@@ -111,7 +111,7 @@
                     </ul>
                 </div>
 
-                <div class="modal in printable autoprint" id="userprofile" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div>
+
             </nav>
         </header>
 
@@ -192,11 +192,11 @@
             </div>
             Layla © Copyright 2021. All rights reserved. More Than a Mattress in a Box
         </footer>
+        <div class="modal in printable autoprint" id="userprofile" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div>
     </div>
+
     <!-- Bootstrap 4 -->
     <script src="~/Scripts/bootstrap.min.js"></script>
-    <!-- jQuery -->
-    <script src="~/Content/AdminLTE-3.1.0/jquery/jquery.min.js"></script>
     <script src="~/Content/AdminLTE-3.1.0/fastclick.js"></script>
     <!-- AdminLTE App -->
     <script src="~/Content/AdminLTE-3.1.0/adminlte.min.js"></script>
@@ -213,6 +213,7 @@
             $(document).on('click', '#btnExit', function () {
                 top.window.location.href = top.window.location.origin + '/Home/Login';
             });
+            $(document).on("click", "#btnuserprofile", function (t) { t.preventDefault(); ProfileModal(); });
         });
 
         function filluserMenu() {
@@ -228,15 +229,6 @@
                 error: function (jqXHR, textStatus, errorThrown) { swal('Error!', errorThrown, "error");}
             });
         }
-
-        $(document).on("click", "#btnuserprofile", function (t) { t.preventDefault(); ProfileModal(); });
-
- 
-    </script>
-    <script src="~/Content/AdminLTE-3.1.0/custom.js"></script>
-    <script src="~/Content/AdminLTE-3.1.0/jquery/inputmask.js"></script>
-    
-    <script>
         ///Add Modal Profile
         function ProfileModal() {
             var myHtml = '';
@@ -258,7 +250,16 @@
             $("#userprofile").empty().html(myHtml);
             $("#userprofile").modal({ backdrop: 'static' }); $("#txt_firstname").focus();
         }
+
+
+
     </script>
-    
+    <script src="~/Content/AdminLTE-3.1.0/custom.js"></script>
+    <script src="~/Content/AdminLTE-3.1.0/jquery/inputmask.js"></script>
+
+    <script>
+
+    </script>
+
 </body>
 </html>

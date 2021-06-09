@@ -7,7 +7,6 @@ using LaylaERP.Models;
 using MySql.Data.MySqlClient;
 using System.Data;
 using System.Configuration;
-using LaylaERP.BAL;
 
 namespace LaylaERP.Controllers
 {
@@ -41,16 +40,9 @@ namespace LaylaERP.Controllers
             return View();
         }
 
-        // GET: User Profile
-        public ActionResult UserProfile()
-        {
-            return View();
-        }
-
         // GET: Assign Role
         public ActionResult AssignRole()
         {
-            GetRoles();
             return View();
         }
 
@@ -95,6 +87,6 @@ namespace LaylaERP.Controllers
             }
             return Json(usertype, JsonRequestBehavior.AllowGet);
         }
-
+        
     }
 }

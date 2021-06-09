@@ -1804,7 +1804,7 @@ function getActivePageId() {
 
 function canRemoveTab(pageId) {
     //return findTabTitle(pageId).find('.fa-remove').size() > 0;
-    return findTabTitle(pageId).find('.fa-timescloseOtherTabs').length > 0;
+    return findTabTitle(pageId).find('.fa-times').length > 0;
 }
 
 //Add tab

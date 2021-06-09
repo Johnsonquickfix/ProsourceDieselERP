@@ -2,8 +2,11 @@
 body {
     background: #f9f9f9;
     font-family: 'Open Sans', sans-serif !important;
-    color:#4f4f4f !important;
-    font-size:15px !important;
+    color: #4f4f4f !important;
+    font-size: 15px !important;
+}
+button, input, select, textarea, h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+    font-family: 'Open Sans', sans-serif;
 }
 /*****
 dashboard
@@ -44,7 +47,8 @@ dashboard
     display: flex;
 }
 .small-box h3 {
-    font-size: 32px;
+    font-size: 25px;
+    font-weight: 400;
 }
     .align-items-center {
     align-items: center;
@@ -52,7 +56,6 @@ dashboard
 
 .sub-heading {
     font-size: 15px;
-    color: #333;
 }
 
 .dashboard-info {
@@ -71,7 +74,7 @@ dashboard
     align-items: center; margin:20px 0px;
 }
 .page-title h2 {
-    font-size: 28px; margin:0px 10px 0px 0px;
+    font-size: 25px; margin:0px 10px 0px 0px;
 }
     .page-title-action, .page-title #UserStatus, .user-top-section .button {
         padding: 4px 8px;
@@ -185,7 +188,9 @@ border:0px;}
 .mb-35 {
 margin-bottom:35px;}
 .sm-heading {
-    font-size:22px; margin-top:0px;
+    font-size: 22px;
+    margin-top: 0px;
+    font-weight: normal;
 }
 .form-check label {position:relative; padding-left:25px;
 font-weight:400; margin:0px; user-select:none;}
@@ -257,7 +262,6 @@ padding-top:5px; padding-bottom:5px;}
     clear: both;
     height: 30px;
     margin: 6px 0 4px;
-    padding-top: 5px;
     vertical-align: middle;
 }
     .tablenav .actions {
@@ -270,7 +274,8 @@ padding-top:5px; padding-bottom:5px;}
 .tablenav .actions select {
     float: left;
     margin-right: 6px;
-    max-width: 12.5rem;
+    max-width: 14rem;
+    width: 14rem;
 }
 #doaction, #doaction2, #post-query-submit {
     margin: 0 8px 0 0;
@@ -363,25 +368,28 @@ min-height:110px;}
 .add-profile:hover .edit-pic-profile {
     opacity:1;
 }
-.add-profile i.fa.fa-image {
-    font-size: 16px;
+.add-profile i.fa {
+    font-size: 14px;
     margin-right: 3px;
 }
 .add-profile .edit-pic-profile {
     position: absolute;
 opacity:0; transition:.5s all;    right: -25px;
-    display: flex;
-    align-items: center;cursor:pointer;
     top: 0px;
     border-radius: 5px;
     background: #FD4C0F;
     color: #fff;
     font-size: 12px;
-    padding: 2px 6px;
+    padding: 2px 6px 4px;
 }
-
+[for="file"] {
+    display: flex; font-weight:400;
+    align-items: center;
+    cursor: pointer;margin:0px;
+}
 .user-box-profile {
-text-align:center;}
+    text-align: center;
+}
 .add-profile {
     position: relative;
     display: inline-block;
@@ -402,3 +410,71 @@ position:relative;}
 .form-password-group:hover .genrate_password {
     opacity: 1;
 }
+.inputfile {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+.manage-wig-dash {
+    border: 1px solid #ff4100;
+    padding: 5px 15px;
+    display: inline-block;
+    border-radius: 4px;
+    box-shadow: 0px 0px 4px #4a4f55;
+    -webkit-box-shadow: 0px 0px 4px #4a4f55;
+    color: #4a4f55;
+    transition: 0.5s ease all;
+    background-color: rgba(0,0,0,0);
+}
+.manage-wig-dash:hover{
+    color: #fff;
+    background-color: #ff4100;
+    transition: 0.5s ease all;
+}
+.box-header > .fa, .box-header > .glyphicon, .box-header > .ion, .box-header .box-title {
+    font-size: 18px;
+}
+.nav-tabs-custom > .nav-tabs > li.header {
+    font-size: 18px;
+    color: #4f4f4f;
+}
+.nav-tabs-custom > .nav-tabs > li > a {
+    color: #4f4f4f;
+}
+.box-header {
+    color: #4f4f4f;
+}
+.box .datepicker-inline td.day.old, .box .datepicker-inline .datepicker-days td.day.old, .box .datepicker-inline > table td.day.old, .box .datepicker-inline .datepicker-days > table td.day.old, .box .datepicker-inline td.day.new, .box .datepicker-inline .datepicker-days td.day.new, .box .datepicker-inline > table td.day.new, .box .datepicker-inline .datepicker-days > table td.day.new {
+    color: #4f4f4f;
+}
+.datepicker .datepicker-switch:hover, .datepicker .next:hover, .datepicker .prev:hover, .datepicker tfoot tr th:hover {
+color:#4f4f4f;}
+.datepicker table tr td span.focused, .datepicker table tr td span:hover {
+color:#4f4f4f;}
+.profile-username {
+    font-size: 20px;
+}
+.form-control {border-width:0px 0px 1px 0px; padding-left:0px; padding-right:0px;
+color:#4f4f4f;}
+#selectStatus select {
+    font-size: 14px;
+    line-height: 2;
+    color: #32373c;
+    border-color: #7e8993;
+    box-shadow: none;
+    border-radius: 3px;
+    padding: 0 24px 0 8px;
+    min-height: 30px;
+    max-width: 25rem;
+    -webkit-appearance: none;
+    background: #fff url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M5%206l5%205%205-5%202%201-7%207-7-7%202-1z%22%20fill%3D%22%23555%22%2F%3E%3C%2Fsvg%3E) no-repeat right 5px top 55%;
+    background-size: 16px 16px;
+    cursor: pointer;
+    border: 1px solid #7e8993;
+    vertical-align: middle;
+}
+#selectStatus {margin-bottom:-10px;
+display:flex; flex-direction:column;}

@@ -112,5 +112,9 @@ namespace LaylaERP.Models
         {
             get; set;
         }
+        public string strVal
+        {
+            get; set;
+        }
     }
 }

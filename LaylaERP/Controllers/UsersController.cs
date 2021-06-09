@@ -47,14 +47,14 @@ namespace LaylaERP.Controllers
             return View();
         }
 
-        public JsonResult GetData(clsUserDetails details)
+        public JsonResult GetData(string rolepass)
         {
             //string urid = "0";
             //urid = details.user_status;
             //string result = Models.UsersRepositry.userslist.ToString();
             //UsersRepositry.userslist.Clear();
-
-            UsersRepositry.ShowUsersDetails();
+           // string role="";
+            UsersRepositry.ShowUsersDetails(rolepass);
             return Json(new { data = UsersRepositry.userslist }, JsonRequestBehavior.AllowGet);
         }
 
@@ -62,7 +62,7 @@ namespace LaylaERP.Controllers
         {
             ViewBag.admin = Convert.ToInt32(UsersRepositry.RoleCount().ToString());
             ViewBag.modsquad = Convert.ToInt32(UsersRepositry.RoleCount(1).ToString());
-            ViewBag.customer = Convert.ToInt32(UsersRepositry.RoleCount(1, 2).ToString());
+            //ViewBag.customer = Convert.ToInt32(UsersRepositry.RoleCount(1, 2).ToString());
             ViewBag.shopmanager = Convert.ToInt32(UsersRepositry.RoleCount(1, 2, 3).ToString());
             ViewBag.subscriber = Convert.ToInt32(UsersRepositry.RoleCount(1, 2, 3, 4).ToString());
             ViewBag.supplychainmanager = Convert.ToInt32(UsersRepositry.RoleCount(1, 2, 3, 4, 5).ToString());
@@ -73,7 +73,6 @@ namespace LaylaERP.Controllers
             ViewBag.all = Convert.ToInt32(UsersRepositry.RoleCount(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).ToString());
 
         }
-
 
         public JsonResult GetRoles()
         {
@@ -88,6 +87,22 @@ namespace LaylaERP.Controllers
             }
             return Json(usertype, JsonRequestBehavior.AllowGet);
         }
-        
+
+        //[HttpPost]
+        //public JsonResult DeleteUsers(clsUserDetails model)
+        //{
+        //    string strID = model.strVal;
+        //    if (strID != "")
+        //    {
+        //       UsersRepositry.DeleteUsers(strID);
+        //        return Json(new { status = true, message = "Users status has been updated successfully!!", url = "" }, 0);
+        //    }
+        //    else
+        //    {
+        //        return Json(new { status = false, message = "Something went wrong", url = "" }, 0);
+        //    }
+
+        //}
+
     }
 }

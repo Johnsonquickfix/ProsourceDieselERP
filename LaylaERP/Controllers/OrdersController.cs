@@ -146,7 +146,26 @@
             string JSONresult = string.Empty; bool status = false;
             try
             {
+                OperatorModel om = CommanUtilities.Provider.GetCurrent();
+                var o = new OrderPostMetaModel() { post_id = model.OrderPostStatus.order_id, meta_key = "employee_id", meta_value= om.UserID.ToString() };
+                model.OrderPostMeta.Add(o);
+                o = new OrderPostMetaModel() { post_id = model.OrderPostStatus.order_id, meta_key = "employee_name", meta_value = om.UserName.ToString() };
+                model.OrderPostMeta.Add(o);
                 int result = OrderRepository.SaveOrder(model);
+                if (result > 0)
+                { status = true; JSONresult = "Order placed successfully."; }
+                //JSONresult = JsonConvert.SerializeObject(DT);
+            }
+            catch (Exception ex) { }
+            return Json(new { status = status, message = JSONresult }, 0);
+        }
+        [HttpPost]
+        public JsonResult UpdatePaymentDetail(OrderPostMetaModel model)
+        {
+            string JSONresult = string.Empty; bool status = false;
+            try
+            {
+                int result = OrderRepository.UpdateOrderStatus(model);
                 if (result > 0)
                 { status = true; JSONresult = "Order placed successfully."; }
                 //JSONresult = JsonConvert.SerializeObject(DT);

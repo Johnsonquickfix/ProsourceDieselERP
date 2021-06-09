@@ -32,9 +32,9 @@ $(document).ready(function () {
     //$(document).on("click", "#btnAddItem", function (t) { t.preventDefault(); ProductModal(); });
     //$("#billModal").on("change", ".ddlTempProductFooter", function (t) { t.preventDefault(); ProductModalItemRow(); });
     $(document).on("blur", "#txtshipzipcode", function (t) { t.preventDefault(); GetTaxRate(); });
-    $(document).on("click", "#btnPlaceOrder", function (t) { t.preventDefault(); saveCO(); });
+    $(document).on("click", "#btnCheckout", function (t) { t.preventDefault(); saveCO(); });
     $(document).on("click", "#btnpay", function (t) { t.preventDefault(); PaymentModal(); });
-    $("#billModal").on("click", "#btnPayment", function (t) { t.preventDefault(); AcceptPayment(); });
+    $("#billModal").on("click", "#btnPlaceOrder", function (t) { t.preventDefault(); AcceptPayment(); });
 
 });
 ///Bind States of Country
@@ -444,7 +444,7 @@ function createPostMeta() {
     var postMetaxml = [];
     postMetaxml.push(
         { post_id: oid, meta_key: '_order_key', meta_value: 'wc_order_' }, { post_id: oid, meta_key: '_customer_user', meta_value: parseInt($('#ddlUser').val()) || 0 },
-        { post_id: oid, meta_key: '_payment_method', meta_value: 'cod' }, { post_id: oid, meta_key: '_payment_method_title', meta_value: 'cash on delivery' },
+        { post_id: oid, meta_key: '_payment_method', meta_value: 'podium' }, { post_id: oid, meta_key: '_payment_method_title', meta_value: 'Podium Order' },
         { post_id: oid, meta_key: '_customer_ip_address', meta_value: '::1' }, { post_id: oid, meta_key: '_customer_user_agent', meta_value: '0' },
         { post_id: oid, meta_key: '_created_via', meta_value: 'checkout' }, { post_id: oid, meta_key: '_cart_hash', meta_value: '0' },
         { post_id: oid, meta_key: '_billing_first_name', meta_value: $('#txtbillfirstname').val() }, { post_id: oid, meta_key: '_billing_last_name', meta_value: $('#txtbilllastname').val() },
@@ -464,7 +464,7 @@ function createPostMeta() {
         { post_id: oid, meta_key: '_shipping_phone', meta_value: '' }, { post_id: oid, meta_key: '_order_currency', meta_value: 'USD' },
         { post_id: oid, meta_key: '_order_total', meta_value: parseFloat($('#orderTotal').text()) || 0.00 }, { post_id: oid, meta_key: '_cart_discount', meta_value: parseFloat($('#discountTotal').text()) || 0.00 },
         { post_id: oid, meta_key: '_cart_discount_tax', meta_value: '0' }, { post_id: oid, meta_key: '_order_shipping', meta_value: parseFloat($('#shippingTotal').text()) || 0.00 },
-        { post_id: oid, meta_key: '_order_shipping_tax', meta_value: parseFloat($('#salesTaxTotal').text()) || 0.00 }, { post_id: oid, meta_key: '_order_tax', meta_value: parseFloat($('#salesTaxTotal').text()) || 0.00 }
+        { post_id: oid, meta_key: '_order_shipping_tax', meta_value: parseFloat($('#shippingTaxTotal').text()) || 0.00 }, { post_id: oid, meta_key: '_order_tax', meta_value: parseFloat($('#salesTaxTotal').text()) || 0.00 }
     );
     return postMetaxml;
 }
@@ -498,7 +498,7 @@ function createOtherItemsList() {
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Save Details ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function saveCO() {
-    $('#btnPlaceOrder').prop("disabled", true);
+    $('#btnCheckout').prop("disabled", true); $('#btnCheckout').text("Waiting...");
     var oid = parseInt($('#hfOrderNo').val()) || 0;
     var cid = parseInt($('#ddlUser').val()) || 0;
     //if (oid <= 0) { swal('Alert!', 'Please Select Customer.', "info").then((result) => { return false; }); }
@@ -534,15 +534,15 @@ function saveCO() {
             }
             else { swal('Alert!', data.message, "error").then((result) => { return false; }); }
         },
-        error: function (xhr, status, err) { $('#btnPlaceOrder').prop("disabled", false); alert(err); },
-        complete: function () { $('#btnPlaceOrder').prop("disabled", false); },
+        error: function (xhr, status, err) { $('#btnCheckout').prop("disabled", false); alert(err); },
+        complete: function () { $('#btnCheckout').prop("disabled", false); $('#btnCheckout').text("Checkout"); },
     });
+    $('#btnCheckout').text("Checkout");
     return false;
 }
 
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Payment Modal ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-///Add Modal Coupon
-function PaymentModal() {
+function PaymentModal_old() {
     var myHtml = '';
     //header
     myHtml += '<div class="modal-dialog">';
@@ -559,14 +559,14 @@ function PaymentModal() {
     myHtml += '</ul>';
     myHtml += '<div class="tab-content" >';
     myHtml += '<div class="tab-pane active" id="tab_Authorize">';
-    myHtml += '<div class="form-group"> <label for="numeric" class="control-label">Full name (on the card)</label> <input type="text" class="form-control"> </div>';
-    myHtml += '<div class="form-group"><label for="cc-number" class="control-label">Card number</label><input id="cc-number" type="tel" class="form-control cc-number" autocomplete="cc-number" placeholder="•••• •••• •••• ••••"> </div>';
+    myHtml += '<div class="form-group"> <label for="numeric" class="control-label">Full name (on the card)</label> <input id="cc-fullname" type="text" class="form-control cc-input"> </div>';
+    myHtml += '<div class="form-group"><label for="cc-number" class="control-label">Card number</label><input id="cc-number" type="tel" class="form-control cc-number cc-input" autocomplete="cc-number" placeholder="•••• •••• •••• ••••"> </div>';
     myHtml += '<div class="row">';
     myHtml += '<div class="col-md-6">';
-    myHtml += '<div class="form-group"> <label for="cc-exp" class="control-label">Expiration</label> <input id="cc-exp" type="tel" class="form-control cc-exp" autocomplete="cc-exp" placeholder="•• / ••"> </div>';
+    myHtml += '<div class="form-group"> <label for="cc-exp" class="control-label">Expiration</label> <input id="cc-exp" type="tel" class="form-control cc-exp cc-input" autocomplete="cc-exp" placeholder="•• / ••"> </div>';
     myHtml += '</div>';
     myHtml += '<div class="col-md-6">';
-    myHtml += '<div class="form-group"> <label for="cc-cvc" class="control-label">CVV</label> <input id="cc-cvc" type="tel" class="form-control cc-cvc" autocomplete="off" placeholder="••••"> </div>';
+    myHtml += '<div class="form-group"> <label for="cc-cvc" class="control-label">CVV</label> <input id="cc-cvc" type="tel" class="form-control cc-cvc cc-input" autocomplete="off" placeholder="••••"> </div>';
     myHtml += '</div>';
     myHtml += '<div class="col-md-12">';
     myHtml += '<div class="form-group pull-right"> <button type="button" class="btn btn-primary" id="btnPayment"><i class="fa fa-credit-card"></i> Pay</button> </div>';
@@ -588,8 +588,104 @@ function PaymentModal() {
     $('.cc-cvc').inputmask("9999");
     $("#billModal").modal({ backdrop: 'static' }); $("#txt_Coupon").focus();
 }
+function PaymentModal() {
+    var myHtml = '';
+    //header
+    myHtml += '<div class="modal-dialog">';
+    myHtml += '<div class="modal-content">';
+    myHtml += '<div class="modal-header">';
+    myHtml += '<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button>';
+    myHtml += '<h4 class="modal-title" id="myModalLabel">Order #' + $('#hfOrderNo').val() + '</h4>';
+    myHtml += '</div>';
+    myHtml += '<div class="modal-body no-padding" >';
+    myHtml += '<section class="invoice no-margin">';
+    /// row invoice-info
+    myHtml += '<div class="row invoice-info">';
+    myHtml += '<div class="col-sm-6 invoice-col">';
+    myHtml += 'Billing Address: <address class="no-margin"><strong>' + $('#txtbillfirstname').val() + ' ' + $('#txtbilllastname').val() + '</strong > <br>' + $('#txtbilladdress1').val() + '<br>' + $('#txtbilladdress1').val() + '<br>' + $('#txtbillcity').val() + ' ,' + $('#ddlbillstate').val() + ' ' + $('#txtbillzipcode').val() + '<br>Phone: ' + $('#txtbillphone').val() + '<br>Email: ' + $('#txtbillemail').val() + '</address>';
+    myHtml += '</div>';
+    myHtml += '<div class="col-sm-6 invoice-col">';
+    myHtml += 'Shipping Address: <address class="no-margin"><strong>' + $('#txtshipfirstname').val() + ' ' + $('#txtshiplastname').val() + '</strong > <br>' + $('#txtshipaddress1').val() + '<br>' + $('#txtshipaddress2').val() + '<br>' + $('#txtshipcity').val() + ' ,' + $('#ddlshipstate').val() + ' ' + $('#txtshipcity').val() + '</address>';
+    myHtml += '</div>';
+    myHtml += '</div>';
+    /// row invoice-items
+    myHtml += '<div class="row">';
+    myHtml += '<div class="col-xs-12 table-responsive">';
+    myHtml += '<table class="table table-striped" id="tblmodalitems">';
+    myHtml += '<thead>';
+    myHtml += '<tr>';
+    myHtml += '<th style="width: 60%">Product</th>';
+    myHtml += '<th style="width: 20%" class="text-right">Qty.</th>';
+    myHtml += '<th style="width: 20%" class="text-right">Amount</th>';
+    myHtml += '</tr>';
+    myHtml += '</thead>';
+    myHtml += '<tbody></tbody>';
+    myHtml += '</table>';
+    myHtml += '</div>';
+    myHtml += '</div>';
+
+    myHtml += '</section>';
+    myHtml += '</div>';
+    myHtml += '<div class="modal-footer">';
+    myHtml += '<div class="form-check col-sm-6 text-left">';
+    myHtml += '<input class="form-check-input" type="checkbox" id="Podium" checked>';
+    myHtml += '<label class="form-check-label" for="Podium">Podium</label>';
+    myHtml += '</div>';
+    myHtml += '<button type="button" class="btn btn-primary" id="btnPlaceOrder">Place Order $' + $('#orderTotal').text() + '</button>';
+    myHtml += '</div>';
+    myHtml += '</div>';
+    myHtml += '</div>';
+    $("#billModal").empty().html(myHtml);
+    myHtml = '';
+    //get items
+    $('#tblAddItemFinal > tbody  > tr').each(function (index, tr) {
+        var qty = parseFloat($(this).find("[name=txt_ItemQty]").val()) || 0.00;
+        var grossAmount = parseFloat($(this).find(".TotalAmount").data('amount')) || 0.00;
+        var discountAmount = parseFloat($(this).find(".TotalAmount").data('discount')) || 0.00;
+        var taxAmount = parseFloat($(this).find(".TotalAmount").data('taxamount')) || 0.00;
+        myHtml += '<tr>';
+        myHtml += '<td>' + $(this).data('pname') + '</td>';
+        myHtml += '<td class="text-right">' + qty + '</td>';
+        myHtml += '<td class="text-right">' + (grossAmount - discountAmount + taxAmount) + '</td>';
+        myHtml += '</tr>';
+    });
+    $('#tblmodalitems tbody').append(myHtml);
+
+    $("#billModal").modal({ backdrop: 'static' }); $("#txt_Coupon").focus();
+}
 function AcceptPayment() {
-    
-    $('.validation').removeClass('text-danger text-success');
-    $('.validation').addClass($('.has-error').length ? 'text-danger' : 'text-success');
+    var opt = { clientId: '51eed2ee1dbdced0d6e17548dde7e8a8', clientSecret: '80b1f585430df45f5a71e7a1a866c54dd2329856ced8503f55deee5313a20caf' };
+    $.ajax({
+        type: "POST", url: 'https://api.podium.com/api/session', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
+        success: function (result) {
+            console.log(result.token);
+            var optinv = { employeeName: 'ABC', firstName: 'David', lastName: 'Massey', invoiceAmount: 0.00, invoiceDescription: 'Layla #00001', locationId: '155425', customer_email: 'noreply@podium.com', phone: '0000000000' };
+            $.ajax({
+                type: "POST", url: 'https://api.podium.com/api/v1/webhook/3e23125f-cf42-4348-ace4-f38f759de0c2', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(optinv),
+                beforeSend: function (xhr) { xhr.setRequestHeader("Authorization", result.token); },
+                success: function (data) {
+                    console.log(data);
+                    setTimeout(function () { updatePayment(data.taskUid); }, 50);
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
+                async: false
+            });
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
+        async: false
+    });
+}
+
+function updatePayment(taskUid) {
+    var opt = { post_id: parseInt($('#hfOrderNo').val()) || 0, meta_value: taskUid };
+    $.ajax({
+        type: "POST", url: '/Orders/UpdatePaymentDetail', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
+        success: function (result) {
+            if (result.status == true) {
+                $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true); setTimeout(function () { swal('Alert!', result.message, "success"); }, 50);
+            }
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
+        async: false
+    });
 }

@@ -74,7 +74,7 @@ var App = function () {
         }
 
         $(".tab_iframe").css({
-            height: height,
+            height: height -6,
             width: "100%"
         });
 
@@ -456,9 +456,11 @@ var App = function () {
     var handleModals = function () {
         // fix stackable modal issue: when 2 or more modals opened, closing one of modal will remove .modal-open class. 
         $('body').on('hide.bs.modal', function () {
-            if ($('.modal:visible').size() > 1 && $('html').hasClass('modal-open') === false) {
+            //if ($('.modal:visible').size() > 1 && $('html').hasClass('modal-open') === false) {
+            if ($('.modal:visible').length > 1 && $('html').hasClass('modal-open') === false) {
                 $('html').addClass('modal-open');
-            } else if ($('.modal:visible').size() <= 1) {
+            //} else if ($('.modal:visible').size() <= 1) {
+            } else if ($('.modal:visible').length <= 1) {
                 $('html').removeClass('modal-open');
             }
         });
@@ -2141,10 +2143,7 @@ var closeOtherTabs = function (isAll) {
         if (firstChild) {
             //Activate this tab
             activeTabByPageId(getPageId(firstChild));
-            $('.sidebar-menu li').removeClass('activeLink');
-            $('.sidebar-menu .treeview').removeClass('active');
-            $('.treeview-menu').removeClass('menu-open').css("display", "none");
-            $('.sidebar-menu [data-menuid="' + 1 + '"]').addClass('activeLink');
+
             /*$('#' + firstChild.data('id')).addClass('active');
              firstChild.addClass('active');*/
         }

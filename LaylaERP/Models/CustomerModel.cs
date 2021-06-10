@@ -26,9 +26,10 @@ namespace LaylaERP.Models
         [Required]
         [Display(Name = "Address 1")]
         public string billing_address_1 { get; set; }
-        [Required]
+        
         [Display(Name = "Address 2")]
         public string billing_address_2 { get; set; }
+
         [Required]
         [Display(Name = "City")]
         public string billing_city { get; set; }

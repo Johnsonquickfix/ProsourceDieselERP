@@ -20,7 +20,7 @@ function AddCustomer() {
     else if (FirstName == "") { swal('alert', 'Please Enter First Name', 'error') }
     else if (LastName == "") { swal('alert', 'Please Enter Last Name', 'error') }
     else if (BillingAddress1 == "") { swal('alert', 'Please Enter Address 1', 'error') }
-    else if (BillingAddress2 == "") { swal('alert', 'Please Enter Address 2', 'error') }
+    //else if (BillingAddress2 == "") { swal('alert', 'Please Enter Address 2', 'error') }
     else if (BillingPostcode == "") { swal('alert', 'Please Enter Post/Zip Code', 'error') }
     else if (BillingCountry == "") { swal('alert', 'Please Enter Country/Region', 'error') }
     else if (BillingState == "") { swal('alert', 'Please Enter State/Country', 'error') }

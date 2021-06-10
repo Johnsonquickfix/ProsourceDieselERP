@@ -79,7 +79,7 @@
         [HttpPost]
         public JsonResult GetProductInfo(SearchModel model)
         {
-            OrderProductsModel obj = new OrderProductsModel();
+            List<OrderProductsModel> obj = new List<OrderProductsModel>();
             try
             {
                 long pid = 0, vid = 0;
@@ -87,7 +87,8 @@
                     pid = Convert.ToInt64(model.strValue1);
                 if (!string.IsNullOrEmpty(model.strValue2))
                     vid = Convert.ToInt64(model.strValue2);
-                obj = OrderRepository.GetProductDetails(pid, vid);
+                //obj = OrderRepository.GetProductDetails(pid, vid);
+                obj = OrderRepository.GetProductListDetails(pid, vid);
             }
             catch { }
             return Json(obj, 0);
@@ -147,7 +148,7 @@
             try
             {
                 OperatorModel om = CommanUtilities.Provider.GetCurrent();
-                var o = new OrderPostMetaModel() { post_id = model.OrderPostStatus.order_id, meta_key = "employee_id", meta_value= om.UserID.ToString() };
+                var o = new OrderPostMetaModel() { post_id = model.OrderPostStatus.order_id, meta_key = "employee_id", meta_value = om.UserID.ToString() };
                 model.OrderPostMeta.Add(o);
                 o = new OrderPostMetaModel() { post_id = model.OrderPostStatus.order_id, meta_key = "employee_name", meta_value = om.UserName.ToString() };
                 model.OrderPostMeta.Add(o);

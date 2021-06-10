@@ -176,6 +176,72 @@
             { throw ex; }
             return productsModel;
         }
+        public static List<OrderProductsModel> GetProductListDetails(long product_id, long variation_id)
+        {
+            List<OrderProductsModel> _list = new List<OrderProductsModel>();
+            try
+            {
+                OrderProductsModel productsModel = new OrderProductsModel();
+                MySqlParameter[] parameters =
+                {
+                    new MySqlParameter("@product_id", product_id),
+                    new MySqlParameter("@variation_id", variation_id)
+                };
+                string strSQl = "SELECT DISTINCT post.id,ps.ID pr_id,CONCAT(post.post_title, ' (' , COALESCE(psku.meta_value,'') , ') - ' ,LTRIM(REPLACE(REPLACE(COALESCE(ps.post_excerpt,''),'Size:', ''),'Color:', ''))) as post_title"
+                            + " , COALESCE(pr.meta_value, 0) price,COALESCE(psr.meta_value, 0) sale_price FROM wp_posts as post"
+                            + " LEFT OUTER JOIN wp_posts ps ON ps.post_parent = post.id and ps.post_type LIKE 'product_variation'"
+                            + " left outer join wp_postmeta psku on psku.post_id = ps.id and psku.meta_key = '_sku'"
+                            + " left outer join wp_postmeta pr on pr.post_id = ps.id and pr.meta_key = '_price'"
+                            + " left outer join wp_postmeta psr on psr.post_id = COALESCE(ps.id, post.id) and psr.meta_key = '_sale_price'"
+                            + " WHERE post.post_type = 'product' and post.id = @product_id and ps.id = @variation_id ";
+                if (product_id == 611172)
+                    strSQl += " OR (post.id = 78676 and COALESCE(ps.id,0) = 0);";
+                else if (product_id == 118)
+                    strSQl += " OR (post.id = 632713 and COALESCE(ps.id,0) = 0);";
+                else
+                    strSQl += ";";
+                MySqlDataReader sdr = SQLHelper.ExecuteReader(strSQl, parameters);
+                while (sdr.Read())
+                {
+                    productsModel = new OrderProductsModel();
+                    if (sdr["id"] != DBNull.Value)
+                        productsModel.product_id = Convert.ToInt64(sdr["id"]);
+                    else
+                        productsModel.product_id = 0;
+                    if (sdr["pr_id"] != DBNull.Value)
+                        productsModel.variation_id = Convert.ToInt64(sdr["pr_id"]);
+                    else
+                        productsModel.variation_id = 0;
+                    if (sdr["post_title"] != DBNull.Value)
+                        productsModel.product_name = sdr["post_title"].ToString();
+                    else
+                        productsModel.product_name = string.Empty;
+                    if (sdr["price"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["price"].ToString().Trim()))
+                        productsModel.price = decimal.Parse(sdr["price"].ToString());
+                    else
+                        productsModel.price = 0;
+                    if (sdr["sale_price"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["sale_price"].ToString().Trim()))
+                        productsModel.sale_price = decimal.Parse(sdr["sale_price"].ToString().Trim());
+                    else
+                        productsModel.sale_price = productsModel.price;
+                    productsModel.quantity = 1;
+                    /// free item
+                    if (productsModel.product_id == 78676) { productsModel.is_free = true; productsModel.quantity = 2; }
+                    else if (productsModel.product_id == 632713) { productsModel.is_free = true; productsModel.quantity = 2; }
+                    else productsModel.is_free = false;
+
+                    /// 
+                    if (product_id == 611172) productsModel.group_id = 78676;
+                    else if (product_id == 118) productsModel.group_id = 632713;
+                    else productsModel.group_id = 0;
+
+                    _list.Add(productsModel);
+                }
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return _list;
+        }
         public static OrderShippingModel GetProductShippingCharge(long product_id)
         {
             OrderShippingModel productsModel = new OrderShippingModel();
@@ -265,7 +331,7 @@
 
                     strSql.Append(" insert into wp_wc_order_product_lookup(order_item_id,order_id,product_id,variation_id,customer_id,date_created,product_qty,product_net_revenue,product_gross_revenue,coupon_amount,tax_amount,shipping_amount,shipping_tax_amount) ");
                     strSql.Append(string.Format(" select LAST_INSERT_ID(),'{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}'; ", model.OrderPostStatus.order_id, obj.product_id, obj.variation_id, model.OrderPostStatus.customer_id,
-                            cDate.ToString("yyyy/MM/dd HH:mm:ss"),obj.quantity,(obj.total - obj.discount), (obj.total - obj.discount +obj.tax_amount), obj.discount, obj.tax_amount, obj.shipping_amount, obj.shipping_tax_amount));
+                            cDate.ToString("yyyy/MM/dd HH:mm:ss"), obj.quantity, (obj.total - obj.discount), (obj.total - obj.discount + obj.tax_amount), obj.discount, obj.tax_amount, obj.shipping_amount, obj.shipping_tax_amount));
                 }
                 /// step 4 : wp_woocommerce_order_itemmeta
                 strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'_product_id',product_id from wp_wc_order_product_lookup where order_id = {0}; ", model.OrderPostStatus.order_id));
@@ -288,7 +354,7 @@
                     {
                         strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select LAST_INSERT_ID(),'discount_amount',{0} ; ", obj.amount));
                     }
-                    else if(obj.item_type == "tax")
+                    else if (obj.item_type == "tax")
                     {
                         strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select LAST_INSERT_ID(),'tax_amount',{0} ; ", obj.amount));
                     }
@@ -312,7 +378,7 @@
                 DateTime cDate = DateTime.Now, cUTFDate = DateTime.UtcNow;
                 StringBuilder strSql = new StringBuilder(string.Format("delete from wp_postmeta where post_id = {0} and meta_key = 'taskuidforsms'; ", model.post_id));
                 strSql.Append(string.Format("insert into wp_postmeta (post_id,meta_key,meta_value) values ('{0}','{1}','{2}') ", model.post_id, "taskuidforsms", model.meta_value));
-                
+
                 /// step 6 : wp_posts
                 //strSql.Append(string.Format(" update wp_posts set post_status = '{0}' ,comment_status = 'closed' where id = {1} ", model.OrderPostStatus.status, model.OrderPostStatus.order_id));
 
@@ -330,7 +396,7 @@
 
                 string strSql = "SELECT order_id, order_id as chkorder,meta_value,num_items_sold,Cast(total_sales As DECIMAL(10, 2)) as total_sales, wp_wc_order_stats.customer_id as customer_id, status,date_created FROM wp_wc_order_stats left join wp_postmeta on wp_wc_order_stats.order_id = wp_postmeta.post_id WHERE wp_postmeta.meta_key = '_billing_first_name' "
                             + " order by order_id DESC, date_created DESC limit 0, 5";
-               
+
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
             }

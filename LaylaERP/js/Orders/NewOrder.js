@@ -323,10 +323,13 @@ function getItemList() {
     $.ajax({
         type: "POST", url: '/Orders/GetProductInfo', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
         success: function (data) {
+            console.log(data);
             var itemsDetailsxml = [];
-            itemsDetailsxml.push({
-                "PKey": data.product_id + '_' + data.variation_id, "product_id": data.product_id, "variation_id": data.variation_id, "product_name": data.product_name, "quantity": 1, "sale_rate": data.sale_price, "total": (data.sale_price * 1.0), "discount": 0, "tax_amount": (((data.sale_price * 1.0) * tax_rate) / 100).toFixed(2), "shipping_amount": 0
-            });
+            for (var i = 0; i < data.length; i++) {
+                itemsDetailsxml.push({
+                    "PKey": data[i].product_id + '_' + data[i].variation_id, "product_id": data[i].product_id, "variation_id": data[i].variation_id, "product_name": data[i].product_name, "quantity": data[i].quantity, "sale_rate": data[i].sale_price, "total": (data[i].sale_price * data[i].quantity), "discount": 0, "tax_amount": (((data[i].sale_price * data[i].quantity) * tax_rate) / 100).toFixed(2), "shipping_amount": 0, "is_free": data[i].is_free, "group_id": data[i].group_id
+                });
+            }
             bindItemListDataTable(itemsDetailsxml);
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
@@ -341,18 +344,22 @@ function bindItemListDataTable(data) {
         for (var i = 0; i < data.length; i++) {
             if (data[i].product_id > 0) {
                 if ($('#tritemId_' + data[i].PKey).length <= 0) {
-                    layoutHtml += '<tr id="tritemId_' + data[i].PKey + '" data-id="' + data[i].PKey + '" data-pid="' + data[i].product_id + '" data-vid="' + data[i].variation_id + '" data-pname="' + data[i].product_name + '">';
+                    layoutHtml += '<tr id="tritemId_' + data[i].PKey + '" data-id="' + data[i].PKey + '" data-pid="' + data[i].product_id + '" data-vid="' + data[i].variation_id + '" data-pname="' + data[i].product_name + '" data-gid="' + data[i].group_id + '">';
                     layoutHtml += '<td class="text-center"><a class="btn menu-icon-gr vd_red btnDeleteItem billinfo" tabitem_itemid="' + data[i].PKey + '" onclick="removeItemsInTable(\'' + data[i].PKey + '\');"> <i class="glyphicon glyphicon-trash"></i> </a></td>';
                     layoutHtml += '<td>' + data[i].product_name + '</td>';
                     layoutHtml += '<td class="text-right">' + data[i].sale_rate + '</td>';
-                    layoutHtml += '<td><input class="form-control billinfo number rowCalulate" type="number" id="txt_ItemQty_' + data[i].PKey + '" value="' + data[i].quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
+                    if (data[i].is_free)
+                        layoutHtml += '<td><input disabled class="form-control billinfo number rowCalulate" type="number" id="txt_ItemQty_' + data[i].PKey + '" value="' + data[i].quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
+                    else
+                        layoutHtml += '<td><input class="form-control billinfo number rowCalulate" type="number" id="txt_ItemQty_' + data[i].PKey + '" value="' + data[i].quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
                     layoutHtml += '<td class="TotalAmount text-right" data-salerate="' + data[i].sale_rate + '" data-discount="' + data[i].discount + '" data-amount="' + data[i].total + '" data-taxamount="' + data[i].tax_amount + '" data-shippingamt="' + data[i].shipping_amount + '">' + data[i].total + '</td>';
                     layoutHtml += '<td class="text-right RowDiscount" data-disctype="-" data-couponamt="0">' + data[i].discount + '</td>';
                     layoutHtml += '<td class="text-right RowTax">' + data[i].tax_amount + '</td>';
                     layoutHtml += '</tr>';
                 }
                 else {
-                    $('#txt_ItemQty_' + data[i].rd_id).val(roundToTwo(parseFloat($('#txt_ItemQty_' + data[i].PKey).val()) + 1).toFixed(2));
+                    var zQty = parseFloat($('#txt_ItemQty_' + data[i].rd_id).val()) || 0.00 +
+                        $('#txt_ItemQty_' + data[i].rd_id).val((parseFloat($('#txt_ItemQty_' + data[i].PKey).val()) + data[i].quantity).toFixed(2));
                     calcRowAmount($('#txt_ItemQty_' + data[i].rd_id), $($('#txt_ItemQty_' + data[i].PKey)).parents('tr')[0]);
                 }
             }
@@ -389,7 +396,7 @@ function removeItemsInTable(id) {
     //------------- Remove data in Temp AddItemList-----
     swal({ title: "Are you sure?", text: 'Would you like to Remove this Item?', type: "question", showCancelButton: true })
         .then((result) => {
-            if (result.value) { $('#tritemId_' + id).remove(); }
+            if (result.value) { $('#tritemId_' + id).remove(); calcFinalTotals(); }
         });
 }
 
@@ -400,6 +407,10 @@ function calcRowAmount(objControl, objRow) // objRow is row object
 
     zMRP = parseFloat($(objRow).find(".TotalAmount").data("salerate")) || 0.00;
     zQty = parseFloat($(objRow).find("[name=txt_ItemQty]").val());
+    //free item Qty
+    //var zFreeQty = parseFloat($('#txt_ItemQty_' + $(objRow).data("gid") + '_0').val()) || 0.00;
+    $('#txt_ItemQty_' + $(objRow).data("gid") + '_0').val(zQty * 2);
+
     /// Gross Amount
     var zGrossAmount = zMRP * zQty;
     // Discount
@@ -628,10 +639,17 @@ function PaymentModal() {
     myHtml += '</section>';
     myHtml += '</div>';
     myHtml += '<div class="modal-footer">';
-    myHtml += '<div class="form-check col-sm-6 text-left">';
-    myHtml += '<input class="form-check-input" type="checkbox" id="Podium" checked>';
-    myHtml += '<label class="form-check-label" for="Podium">Podium</label>';
+    myHtml += '<div class="col-md-8">';
+    myHtml += '<select class="form-control select2" id="ddlPaymentMethod" style="width: 100%;">';
+    myHtml += '<option value="podium" selected="selected">Podium</option>';
+    myHtml += '<option value="paypal">PayPal</option>';
+    myHtml += '</select>';
     myHtml += '</div>';
+    //myHtml += '<div class="form-check col-sm-6 text-left">';
+    //myHtml += '<input class="form-check-input" type="checkbox" id="Podium" checked>';
+    //myHtml += '<label class="form-check-label" for="Podium">Podium</label>';
+    //myHtml += '</div>';
+
     myHtml += '<button type="button" class="btn btn-primary" id="btnPlaceOrder">Place Order $' + $('#orderTotal').text() + '</button>';
     myHtml += '</div>';
     myHtml += '</div>';
@@ -654,7 +672,16 @@ function PaymentModal() {
 
     $("#billModal").modal({ backdrop: 'static' }); $("#txt_Coupon").focus();
 }
+
+///Accept Payment
 function AcceptPayment() {
+    if ($("#ddlPaymentMethod").val() == "paypal") { PaypalPayment(); }
+    else if ($("#ddlPaymentMethod").val() == "podium") { PodiumPayment() }
+    else { swal('Alert!', 'Please Select Payment Method.', "error"); }
+}
+
+///Accept Podium Payment
+function PodiumPayment() {
     var opt = { clientId: '51eed2ee1dbdced0d6e17548dde7e8a8', clientSecret: '80b1f585430df45f5a71e7a1a866c54dd2329856ced8503f55deee5313a20caf' };
     $.ajax({
         type: "POST", url: 'https://api.podium.com/api/session', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
@@ -676,7 +703,6 @@ function AcceptPayment() {
         async: false
     });
 }
-
 function updatePayment(taskUid) {
     var opt = { post_id: parseInt($('#hfOrderNo').val()) || 0, meta_value: taskUid };
     $.ajax({
@@ -689,4 +715,154 @@ function updatePayment(taskUid) {
         error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
         async: false
     });
+}
+
+///Accept paypal Payment
+function PaypalPayment() {
+    swal('Alert!', 'Working....', "success").then((result) => { return false; });;
+    var option = {
+        "detail": {
+            "invoice_number": "#123",
+            "reference": "deal-ref",
+            "invoice_date": "2018-11-12",
+            "currency_code": "USD",
+            "note": "Thank you for your business.",
+            "term": "No refunds after 30 days.",
+            "memo": "This is a long contract",
+            "payment_term": { "term_type": "NET_10", "due_date": "2018-11-22" }
+        },
+        "invoicer": {
+            "name": { "given_name": "David", "surname": "Larusso" },
+            "address": {
+                "address_line_1": "1234 First Street",
+                "address_line_2": "337673 Hillside Court",
+                "admin_area_2": "Anytown",
+                "admin_area_1": "CA",
+                "postal_code": "98765",
+                "country_code": "US"
+            },
+            "email_address": "merchant@example.com",
+            "phones": [{ "country_code": "001", "national_number": "4085551234", "phone_type": "MOBILE" }],
+            "website": "www.test.com",
+            "tax_id": "ABcNkWSfb5ICTt73nD3QON1fnnpgNKBy- Jb5SeuGj185MNNw6g",
+            "logo_url": "https://example.com/logo.PNG",
+            "additional_notes": "2-4"
+        },
+        "primary_recipients": [
+            {
+                "billing_info": {
+                    "name": {
+                        "given_name": "Stephanie",
+                        "surname": "Meyers"
+                    },
+                    "address": {
+                        "address_line_1": "1234 Main Street",
+                        "admin_area_2": "Anytown",
+                        "admin_area_1": "CA",
+                        "postal_code": "98765",
+                        "country_code": "US"
+                    },
+                    "email_address": "bill-me@example.com",
+                    "phones": [
+                        {
+                            "country_code": "001",
+                            "national_number": "4884551234",
+                            "phone_type": "HOME"
+                        }
+                    ],
+                    "additional_info_value": "add-info"
+                },
+                "shipping_info": {
+                    "name": {
+                        "given_name": "Stephanie",
+                        "surname": "Meyers"
+                    },
+                    "address": {
+                        "address_line_1": "1234 Main Street",
+                        "admin_area_2": "Anytown",
+                        "admin_area_1": "CA",
+                        "postal_code": "98765",
+                        "country_code": "US"
+                    }
+                }
+            }
+        ],
+        "items": [
+            {
+                "name": "Yoga Mat",
+                "description": "Elastic mat to practice yoga.",
+                "quantity": "1",
+                "unit_amount": {
+                    "currency_code": "USD",
+                    "value": "50.00"
+                },
+                "tax": {
+                    "name": "Sales Tax",
+                    "percent": "7.25"
+                },
+                "discount": {
+                    "percent": "5"
+                },
+                "unit_of_measure": "QUANTITY"
+            },
+            {
+                "name": "Yoga t-shirt",
+                "quantity": "1",
+                "unit_amount": {
+                    "currency_code": "USD",
+                    "value": "10.00"
+                },
+                "tax": {
+                    "name": "Sales Tax",
+                    "percent": "7.25"
+                },
+                "discount": {
+                    "amount": {
+                        "currency_code": "USD",
+                        "value": "5.00"
+                    }
+                },
+                "unit_of_measure": "QUANTITY"
+            }
+        ],
+        "configuration": {
+            "partial_payment": {
+                "allow_partial_payment": true,
+                "minimum_amount_due": {
+                    "currency_code": "USD",
+                    "value": "20.00"
+                }
+            },
+            "allow_tip": true,
+            "tax_calculated_after_discount": true,
+            "tax_inclusive": false,
+            "template_id": "TEMP-19V05281TU309413B"
+        },
+        "amount": {
+            "breakdown": {
+                "custom": {
+                    "label": "Packing Charges",
+                    "amount": {
+                        "currency_code": "USD",
+                        "value": "10.00"
+                    }
+                },
+                "shipping": {
+                    "amount": {
+                        "currency_code": "USD",
+                        "value": "10.00"
+                    },
+                    "tax": {
+                        "name": "Sales Tax",
+                        "percent": "7.25"
+                    }
+                },
+                "discount": {
+                    "invoice_discount": {
+                        "percent": "5"
+                    }
+                }
+            }
+        }
+    }
 }

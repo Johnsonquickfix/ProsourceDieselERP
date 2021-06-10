@@ -6,15 +6,26 @@
 }
 <link href="~/Content/css/intlTelInput.css" rel="stylesheet" />
 <!-- Content Header (Page header) -->
-<div class="page-title">
-    <h2 class="page-heading">Users</h2>
-</div>
+<section class="content-header">
+    <h1>Add New Customer</h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="#">Customer</a></li>
+        <li class="active">Add New Customer</li>
+    </ol>
+</section>
 
 <!-- Main content -->
-<section class="content section-content">
-    <div class="box box-primary col-md-10">
+<section class="content">
+
+    <!-- SELECT2 EXAMPLE -->
+    <div class="box box-default">
         <div class="box-header with-border">
             <h3 class="box-title">Add New Customer</h3>
+            <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-remove"></i></button>
+            </div>
         </div>
         <!-- /.box-header -->
         <div class="box-body">
@@ -22,76 +33,76 @@
                 <div class="form-horizontal" id="parent">
                     <input type="hidden" id="hfid" value="@ViewBag.id" />
                     <div class="form-group">
-                        <label class="control-label col-md-3" for="Email">Email</label>
-                        <div class="col-md-9">
+                        <label class="control-label col-md-2" for="Email">Email</label>
+                        <div class="col-md-8">
                             <input type="email" id="txtUserEmail" class="form-control" placeholder="Email" />
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-md-3" for="Nick Name">Nick Name</label>
-                        <div class="col-md-9">
+                        <label class="control-label col-md-2" for="Nick Name">Nick Name</label>
+                        <div class="col-md-8">
                             <input type="text" id="txtUserNickName" class="form-control" placeholder="Nick Name" />
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-md-3" for="First Name">First Name</label>
-                        <div class="col-md-9">
+                        <label class="control-label col-md-2" for="First Name">First Name</label>
+                        <div class="col-md-8">
                             <input type="text" id="txtFirstName" class="form-control" placeholder="First Name" />
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-md-3" for="Last Name">Last Name</label>
-                        <div class="col-md-9">
+                        <label class="control-label col-md-2" for="Last Name">Last Name</label>
+                        <div class="col-md-8">
                             <input type="text" id="txtLastName" class="form-control" placeholder="Last Name" />
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-md-3" for="Address 1">Address 1</label>
-                        <div class="col-md-9">
+                        <label class="control-label col-md-2" for="Address 1">Address 1</label>
+                        <div class="col-md-8">
                             <input type="text" id="txtBillingAddress1" class="form-control" placeholder="Address 1" />
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-md-3" for="Address 2">Address 2</label>
-                        <div class="col-md-9">
+                        <label class="control-label col-md-2" for="Address 2">Address 2</label>
+                        <div class="col-md-8">
                             <input type="text" id="txtBillingAddress2" class="form-control" placeholder="Address 2" />
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-md-3" for="Post/Zip Code">Post/Zip Code</label>
-                        <div class="col-md-9">
+                        <label class="control-label col-md-2" for="Post/Zip Code">Post/Zip Code</label>
+                        <div class="col-md-8">
                             <input type="text" id="txtBillingPostCode" class="form-control" placeholder="Post/Zip Code" />
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-md-3" for="Country/Region">Country/Region</label>
-                        <div class="col-md-9">
+                        <label class="control-label col-md-2" for="Country/Region">Country/Region</label>
+                        <div class="col-md-8">
                             <input type="text" id="txtBillingCountry" class="form-control" placeholder="Country/Region" />
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-md-3" for="State/Country">State/Country</label>
-                        <div class="col-md-9">
+                        <label class="control-label col-md-2" for="State/Country">State/Country</label>
+                        <div class="col-md-8">
                             <input type="text" id="txtBillingState" class="form-control" placeholder="State/Country" />
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-md-3" for="City">City</label>
-                        <div class="col-md-9">
-                            <input type="tel" id="txtBillingCity" class="form-control" placeholder="City" />
+                        <label class="control-label col-md-2" for="City">City</label>
+                        <div class="col-md-8">
+                            <input type="text" id="txtBillingCity" class="form-control" placeholder="City" />
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-md-3" for="Contact No.">Contact No.</label>
-                        <div class="col-md-9">
+                        <label class="control-label col-md-2" for="Contact No.">Contact No.</label>
+                        <div class="col-md-8">
                             <input type="tel" id="txtBillingPhone" class="form-control" placeholder="Contact No." />
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <div class="col-md-offset-3 col-md-9 text-right">
-                            <input type="submit" value="Submit" id="btnSave" class="btn btn-danger" />
-                            @Html.ActionLink("Back to List", "Customer", null, new { @class = "btn btn-danger" })
+                        <div class="col-md-offset-2 col-md-8">
+                            <input type="submit" value="Submit" id="btnSave" class="btn btn-default" />
+                            @Html.ActionLink("Back to List", "Customer", null, new { @class = "btn btn-default" })
 
                         </div>
                     </div>
@@ -115,7 +126,7 @@
 <script src="@Url.Content("~/js/Customer/Customer.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 <script>
     $(document).ready(function () {
-
+       
         $(document).on('click', "#btnSave", function () {
             AddCustomer();
         })
@@ -123,14 +134,14 @@
             getdatabyzip();
         })
 
-
+      
     });
     document.getElementById('txtBillingPhone').addEventListener('keyup', function (evt) {
         var phoneNumber = document.getElementById('txtBillingPhone');
         var charCode = (evt.which) ? evt.which : evt.keyCode;
         phoneNumber.value = phoneFormat(phoneNumber.value);
     });
-
+   
 
     function phoneFormat(input) {
         input = input.replace(/\D/g, '');

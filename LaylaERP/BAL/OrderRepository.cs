@@ -231,7 +231,6 @@
             { throw ex; }
             return dt;
         }
-
         public static int SaveOrder(OrderModel model)
         {
             int result = 0;
@@ -322,5 +321,25 @@
             catch { }
             return result;
         }
+        public static DataTable OrderList()
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                string strWhr = string.Empty;
+
+                string strSql = "SELECT order_id, order_id as chkorder,meta_value,num_items_sold,Cast(total_sales As DECIMAL(10, 2)) as total_sales, wp_wc_order_stats.customer_id as customer_id, status,date_created FROM wp_wc_order_stats left join wp_postmeta on wp_wc_order_stats.order_id = wp_postmeta.post_id WHERE wp_postmeta.meta_key = '_billing_first_name' "
+                            + " order by order_id DESC, date_created DESC limit 0, 5";
+               
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dt = ds.Tables[0];
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
     }
 }

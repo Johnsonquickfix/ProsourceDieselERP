@@ -40,8 +40,17 @@ function AddCustomer() {
             dataType: "json",
             success: function (data) {
                 if (data.status == true) {
-                    $('#parent > input:text').val('');
+                    debugger
                     swal('Alert!', data.message, 'success');
+                    $("#parent").find(":input").each(function () {
+                        switch (this.type) {
+                            case "text":
+                            case "email":
+                            case "tel":
+                                $(this).val('');
+                                break;
+                        }
+                    });
                 }
                 else {
                     swal('Alert!', data.message, 'error')

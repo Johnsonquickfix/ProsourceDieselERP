@@ -173,5 +173,17 @@
             catch (Exception ex) { }
             return Json(new { status = status, message = JSONresult }, 0);
         }
+        [HttpPost]
+        public JsonResult GetOrderList(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable DT = OrderRepository.OrderList();
+                JSONresult = JsonConvert.SerializeObject(DT);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
     }
 }

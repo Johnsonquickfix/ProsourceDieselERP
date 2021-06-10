@@ -30,9 +30,9 @@ namespace LaylaERP.Controllers
             int TotalRecord = 0;
             try
             {
-                int urid = 0;
-                if (model.user_status > 0)
-                    urid = Convert.ToInt32(model.user_status);
+                string urid = "";
+                if (model.user_status != "")
+                    urid = model.user_status;
                 string searchid = model.Search;
                 DataTable dt = CustomerRepository.CustomerList(urid, searchid, model.PageNo, model.PageSize, out TotalRecord, model.SortCol,model.SortDir);
                 result = JsonConvert.SerializeObject(dt);

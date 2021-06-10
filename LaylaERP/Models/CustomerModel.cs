@@ -53,7 +53,7 @@ namespace LaylaERP.Models
         public string user_image { get; set; }
         public string user_url { get; set; }
         public string user_activation_key { get; set; }
-        public int user_status { get; set; }
+        public string user_status { get; set; }
         public string user_pass { get; set; }
         public string meta_key { get; set; }
         public string meta_value { get; set; }

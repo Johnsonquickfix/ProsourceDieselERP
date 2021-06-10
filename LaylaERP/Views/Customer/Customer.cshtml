@@ -23,6 +23,7 @@
 
             <div class="alignleft actions bulkactions">
                 <select class="form-control select2" id="ddlSearchStatus" placeholder="Select User">
+                    <option value="">Select Status</option>
                     <option value="0">Active</option>
                     <option value="1">InActive</option>
                 </select>
@@ -85,7 +86,7 @@
         setTimeout(function () { dataGridLoad(); }, 50);
     });
     function dataGridLoad() {
-        var urid = parseInt($("#ddlSearchStatus").val()) || 0;
+        var urid = parseInt($("#ddlSearchStatus").val()) || "";
         var sid = ""//$('#txtSearch').val() ;
         var obj = { user_status: urid, Search: sid, PageNo: 0, PageSize: 10, sEcho: 1, SortCol: 'id', SortDir: 'desc' };
         $('#dtdata').DataTable({

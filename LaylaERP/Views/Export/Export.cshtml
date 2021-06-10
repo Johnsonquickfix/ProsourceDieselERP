@@ -4,13 +4,14 @@
     ViewBag.Title = "Export";
     Layout = "~/Views/Shared/_ExportLayout.cshtml";
 }
-<section class="content">
-    <div class="container-fluid">
+<div class="page-title">
+    <h2 class="page-heading">Order Details</h2>
+</div>
+<section class="content activity-section export-section table-design">
         <div class="row">
             <div class="dx-viewport demo-container">
                 <div id="gridContainer">
-                    <h3 class="text-center text-uppercase">Order Details</h3>
-                    <table id="exportdata" class="table table-bordered" style="width:100%;">
+                    <table id="exportdata" class="table table-bordered check-table" style="width:100%;">
                         <thead class="thead-dark">
                             <tr>
                                 <th>Order Id</th>
@@ -30,7 +31,6 @@
                 </div>
             </div>
         </div>
-    </div><!-- /.container-fluid -->
 </section>
 
 @section scripts{
@@ -67,12 +67,12 @@
 
                         {
                             extend: 'csv',
-                            className: 'btn btn-dark rounded-0',
+                            className: 'button unique-btn',
                             text: '<i class="fas fa-file-csv"></i> CSV'
                         },
                         {
                             extend: 'print',
-                            className: 'btn btn-dark rounded-0',
+                            className: 'button unique-btn',
                             text: '<i class="fas fa-print"></i> Print'
                         }
                     ]

@@ -564,3 +564,39 @@ padding-left:50px;}
         width: 83.33333333%;
     }
 }
+#txtLogDate {
+height:30px;}
+.setting-bulk {
+display:inline-flex;}
+    .setting-bulk > * {
+    margin-right:15px;}
+.export-section .dx-theme-generic-typography {background:transparent;
+}
+.dataTables_filter [type="search"] {
+    box-shadow: 0 0 0 transparent;
+    border-radius: 4px;
+    border: 1px solid #7e8993;
+    background-color: #fff;
+    color: #32373c;
+    padding: 0 8px;
+    line-height: 2;
+    min-height: 30px;
+    -webkit-appearance: textfield;
+    height: 30px;
+}
+.export-section #exportdata_info {
+float:left;
+}
+.export-section #exportdata_paginate {
+float:right;}
+.unique-btn {
+    border: 1px solid #ff4100;
+    padding: 5px 15px;
+    display: inline-block;
+    border-radius: 4px;
+    box-shadow: 0px 0px 4px #4a4f55;
+    -webkit-box-shadow: 0px 0px 4px #4a4f55;
+    color: #4a4f55;
+    transition: 0.5s ease all;
+    background-color: rgba(0,0,0,0);
+}

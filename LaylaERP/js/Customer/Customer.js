@@ -20,7 +20,7 @@ function AddCustomer() {
     else if (FirstName == "") { swal('alert', 'Please Enter First Name', 'error') }
     else if (LastName == "") { swal('alert', 'Please Enter Last Name', 'error') }
     else if (BillingAddress1 == "") { swal('alert', 'Please Enter Address 1', 'error') }
-    else if (BillingAddress2 == "") { swal('alert', 'Please Enter Address 2', 'error') }
+   // else if (BillingAddress2 == "") { swal('alert', 'Please Enter Address 2', 'error') }
     else if (BillingPostcode == "") { swal('alert', 'Please Enter Post/Zip Code', 'error') }
     else if (BillingCountry == "") { swal('alert', 'Please Enter Country/Region', 'error') }
     else if (BillingState == "") { swal('alert', 'Please Enter State/Country', 'error') }
@@ -135,5 +135,57 @@ function ChangeStatus(id) {
             swal('Error!', 'something went wrong', 'error');
         },
     })
+}
+
+function dataGridLoad() {
+    var urid = parseInt($("#ddlSearchStatus").val()) || "";
+    var sid = ""//$('#txtSearch').val() ;
+    var obj = { user_status: urid, Search: sid, PageNo: 0, PageSize: 10, sEcho: 1, SortCol: 'id', SortDir: 'desc' };
+    $('#dtdata').DataTable({
+        columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
+        destroy: true, bProcessing: true, bServerSide: true,
+        sPaginationType: "full_numbers", searching: true, ordering: true, lengthChange: true,
+        bAutoWidth: true, scrollX: true, scrollY: ($(window).height() - 215),
+        lengthMenu: [[10, 20, 50], [10, 20, 50]],
+        sAjaxSource: "/Customer/GetCustomerList",
+        fnServerData: function (sSource, aoData, fnCallback, oSettings) {
+            obj.Search = aoData[45].value;
+            var col = 'id';
+            if (oSettings.aaSorting.length > 0) {
+                var col = oSettings.aaSorting[0][0] == 2 ? "user_nicename" : oSettings.aaSorting[0][0] == 3 ? "user_email" : oSettings.aaSorting[0][0] == 4 ? "status" : oSettings.aaSorting[0][0] == 5 ? "meta_value" : oSettings.aaSorting[0][0] == 6 ? "user_registered" : "id";
+                obj.SortCol = col; obj.SortDir = oSettings.aaSorting.length > 0 ? oSettings.aaSorting[0][1] : "desc";
+            }
+            obj.sEcho = aoData[0].value; obj.PageSize = oSettings._iDisplayLength; obj.PageNo = oSettings._iDisplayStart;
+            $.ajax({
+                type: "POST", url: sSource, async: true, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
+                success: function (data) {
+                    var dtOption = { sEcho: data.sEcho, recordsTotal: data.recordsTotal, recordsFiltered: data.recordsFiltered, iTotalRecords: data.iTotalRecords, iTotalDisplayRecords: data.iTotalDisplayRecords, aaData: JSON.parse(data.aaData) };
+                    return fnCallback(dtOption);
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
+                async: false
+            });
+        },
+        aoColumns: [
+            {
+                'data': 'id', sWidth: "2%   ",
+                'render': function (data, type, full, meta) {
+                    return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + $('<div/>').text(data).html() + '"><label></label>';
+                }
+            },
+            { data: 'id', title: 'Cust ID', sWidth: "8%" },
+            { data: 'user_nicename', title: 'Customer Name', sWidth: "14%" },
+            { data: 'user_email', title: 'E-mail', sWidth: "23%" },
+            { data: 'status', title: 'Status', sWidth: "8%" },
+            { data: 'meta_value', title: 'Phone', sWidth: "10%" },
+            { data: 'user_registered', title: 'Registration Date', sWidth: "17%" },
+            {
+                'data': 'id', sWidth: "8%",
+                'render': function (id, type, full, meta) {
+                    return '<a href="../Customer/NewUser/' + id + '"><i class="glyphicon glyphicon-pencil"></i></a>'
+                }
+            }
+        ]
+    });
 }
 

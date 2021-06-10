@@ -173,7 +173,7 @@
             DataSet ds = new DataSet();
             try
             {
-                string strSql = "Select user_login,user_email from wp_users  where(user_login = @UserName Or user_email = @UserName)";
+                string strSql = "Select user_login,user_email,user_nicename from wp_users  where(user_login = @UserName Or user_email = @UserName)";
                 MySqlParameter[] parameters =
                 {
                     new MySqlParameter("@UserName", UserName)

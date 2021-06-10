@@ -44,7 +44,7 @@
 
                     {
 
-                        mailMessage.From = new MailAddress(ConfigurationManager.AppSettings["UserName"], "Lyra ERP");
+                        mailMessage.From = new MailAddress(ConfigurationManager.AppSettings["UserName"], "Layla ERP");
 
                         mailMessage.Subject = "Request for Reset Password....";
 
@@ -73,7 +73,7 @@
 
                         smtp.Port = int.Parse(ConfigurationManager.AppSettings["Port"]); //reading from web.config  
 
-                        smtp.Send(mailMessage);
+                        //smtp.Send(mailMessage);
                        
 
                     }
@@ -81,7 +81,7 @@
 
 
                     Session["UserId"] = ds.Tables[0].Rows[0]["user_login"].ToString();
-                    ViewBag.Result = "Your password recovery query submitted to administrator. Contact you soon!!!";
+                    ViewBag.Result = "Your password recovery query submitted to the administrator. Will contact you soon!!!";
                     
                   
                 }

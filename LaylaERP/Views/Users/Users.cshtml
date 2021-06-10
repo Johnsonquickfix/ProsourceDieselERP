@@ -162,11 +162,11 @@
             </div>
         </div>
         <div class="dx-viewport demo-container data-table-container">
-            <div id="gridContainer">
-                <table id="dtdata" class="table table-bordered table-striped dataTable" style="width:100%;">
+            <div id="gridContainer" class="margin-15-rem">
+                <table id="dtdata" class="table table-bordered table-striped dataTable check-table" style="width:100%;">
                     <thead class="thead-dark">
                         <tr>
-                            <th><input type="checkbox" name="checkAll" id="checkAll">All</th>
+                            <th><input type="checkbox" name="checkAll" id="checkAll"><label></label></th>
                             <th>ID</th>
                             <th>User Name</th>
                             <th>Email</th>
@@ -215,9 +215,9 @@
 
                 "columns": [
                     {
-                        'data': 'ID', sWidth: "10%",
+                        'data': 'ID', sWidth: "5%",
                         'render': function (data, type, full, meta) {
-                            return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + $('<div/>').text(data).html() + '">';
+                            return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + $('<div/>').text(data).html() + '"><label></label>';
                         }
                     },
                     { 'data': 'ID', 'sWidth': "5%" },

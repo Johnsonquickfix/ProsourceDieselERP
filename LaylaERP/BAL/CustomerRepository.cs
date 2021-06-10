@@ -57,7 +57,7 @@ namespace LaylaERP.Models
         {
             try
             {
-                string strsql = "INSERT INTO wp_usermeta(user_id,meta_key,meta_value) VALUES(user_id,@meta_key,@meta_value); select LAST_INSERT_ID() as ID;";
+                string strsql = "INSERT INTO wp_usermeta(user_id,meta_key,meta_value) VALUES(@user_id,@meta_key,@meta_value); select LAST_INSERT_ID() as ID;";
                 MySqlParameter[] para =
                 {
                     new MySqlParameter("@user_id", id),
@@ -93,7 +93,7 @@ namespace LaylaERP.Models
         {
             try
             {
-                string strsql = "INSERT INTO wp_usermeta(user_id,meta_key,meta_value) VALUES(user_id,@meta_key,@meta_value); select LAST_INSERT_ID() as ID;";
+                string strsql = "INSERT INTO wp_usermeta(user_id,meta_key,meta_value) VALUES(@user_id,@meta_key,@meta_value); select LAST_INSERT_ID() as ID;";
                 MySqlParameter[] para =
                 {
                     new MySqlParameter("@user_id", id),
@@ -130,7 +130,7 @@ namespace LaylaERP.Models
         {
             try
             {
-                string strsql = "INSERT INTO wp_usermeta(user_id,meta_key,meta_value) VALUES(user_id,@meta_key,@meta_value); select LAST_INSERT_ID() as ID;";
+                string strsql = "INSERT INTO wp_usermeta(user_id,meta_key,meta_value) VALUES(@user_id,@meta_key,@meta_value); select LAST_INSERT_ID() as ID;";
                 MySqlParameter[] para =
                 {
                     new MySqlParameter("@user_id", id),
@@ -162,7 +162,7 @@ namespace LaylaERP.Models
                 throw Ex;
             }
         }
-        public static DataTable CustomerList(int userstatus,string searchid, int pageno, int pagesize, out int totalrows,string SortCol = "id", string SortDir = "DESC")
+        public static DataTable CustomerList(string userstatus,string searchid, int pageno, int pagesize, out int totalrows,string SortCol = "id", string SortDir = "DESC")
         {
             DataTable dt = new DataTable();
             totalrows = 0;
@@ -176,8 +176,10 @@ namespace LaylaERP.Models
                 if (!string.IsNullOrEmpty(searchid)) {
                     strWhr += " and (User_Email like '%"+ searchid + "%' OR User_Login='%" + searchid + "%' OR user_nicename='%" + searchid + "%' OR ID='%" + searchid + "%' OR um.meta_value like '%" + searchid + "%')"; 
                 }
-                strWhr += " and (ur.user_status='"+userstatus+"') ";
-             
+                if (userstatus != null)
+                {
+                    strWhr += " and (ur.user_status='" + userstatus + "') ";
+                }
                 strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}" , SortCol, SortDir, (pageno * pagesize).ToString() , pagesize.ToString());
 
                 strSql += "; SELECT ceil(Count(ur.id)/" + pagesize.ToString() + ") TotalPage,Count(ur.id) TotalRecord from wp_users ur INNER JOIN wp_usermeta um on um.meta_key='wp_capabilities' And um.user_id = ur.ID And um.meta_value LIKE '%customer%' WHERE 1 = 1 " + strWhr.ToString();

@@ -209,6 +209,24 @@ namespace LaylaERP.BAL
             return count;
         }
 
+        public static int EditCustomerStatus(CustomerModel model)
+        {
+            try
+            {
+                string strsql = "update wp_users set user_status=@user_status where Id=" + model.ID + "";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@user_status", model.user_status)
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
         public static int DeleteUsers(string ID)
         {
             try
@@ -226,5 +244,70 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
+
+        //Add customers
+        public static int AddNewCustomer(clsUserDetails model)
+        {
+            try
+            {
+                string strsql = "insert into wp_users(user_login,user_nicename, user_email, user_registered, display_name, user_image) values(@user_login,@user_nicename, @user_email, @user_registered, @display_name, @user_image);SELECT LAST_INSERT_ID();";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@user_login", model.user_nicename),
+                    new MySqlParameter("@user_nicename", model.user_nicename),
+                    new MySqlParameter("@user_email", model.user_email),
+                    new MySqlParameter("@user_registered", Convert.ToDateTime(DateTime.UtcNow.ToString("yyyy-MM-dd"))),
+                    new MySqlParameter("@display_name", model.user_nicename),
+                    new MySqlParameter("@user_image", "None"),
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+        public static void AddUserMetaData(clsUserDetails model, long id, string varFieldsName, string varFieldsValue)
+        {
+            try
+            {
+                string strsql = "INSERT INTO wp_usermeta(user_id,meta_key,meta_value) VALUES(@user_id,@meta_key,@meta_value); select LAST_INSERT_ID() as ID;";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@user_id", id),
+                    new MySqlParameter("@meta_key", varFieldsName),
+                    new MySqlParameter("@meta_value", varFieldsValue),
+                };
+                SQLHelper.ExecuteNonQuery(strsql, para);
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+
+        public static void AddUserMoreMeta(clsUserDetails model, long id, string varFieldsName, string varFieldsValue)
+        {
+            try
+            {
+                string strsql = "INSERT INTO wp_usermeta(user_id,meta_key,meta_value) VALUES(@user_id,@meta_key,@meta_value); select LAST_INSERT_ID() as ID;";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@user_id", id),
+                    new MySqlParameter("@meta_key", varFieldsName),
+                    new MySqlParameter("@meta_value", varFieldsValue),
+                };
+                SQLHelper.ExecuteNonQuery(strsql, para);
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+        //-----------------end
     }
 }

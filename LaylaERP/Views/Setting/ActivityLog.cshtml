@@ -14,41 +14,41 @@
         User Activity Log
     </h2>
 </div>
-        <section class="content activity-section">
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="form-group">
+<section class="content activity-section table-design">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="user-top-section">
+                <div class="tablenav top">
+                    <div class="alignleft actions bulkactions setting-bulk">
                         <select class="form-control select2" id="ddlUser" placeholder="Select User"></select>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            <input id="txtLogDate" data-auto-update-input="false" readonly="readonly" class="form-control">
+                        </div>
+                        <button type="button" id="btnSearch" class="button">Search</button>
                     </div>
                 </div>
-                <div class="col-sm-4">
-                    <div class="input-group">
-                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                        <input id="txtLogDate" data-auto-update-input="false" readonly="readonly" class="form-control">
-                    </div>
-                </div>
-                <div class="col-sm-4">
-                    <button type="button" id="btnSearch" class="btn btn-primary btn-flat"><i class="fa fa-search"></i> Search</button>
-                </div>
             </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <table id="dtdata" class="table table-bordered table-striped dataTable" width="100%">
-                        <thead>
-                            <tr>
-                                <th>Sr. No.</th>
-                                <th>Date</th>
-                                <th>User Name</th>
-                                <th>Email</th>
-                                <th>IP Address</th>
-                                <th>Module Name</th>
-                                <th>Description</th>
-                            </tr>
-                        </thead>
-                    </table>
-                </div>
-            </div>
-        </section>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <table id="dtdata" class="table table-bordered table-striped dataTable" width="100%">
+                <thead>
+                    <tr>
+                        <th>Sr. No.</th>
+                        <th>Date</th>
+                        <th>User Name</th>
+                        <th>Email</th>
+                        <th>IP Address</th>
+                        <th>Module Name</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</section>
         <script>
             $(document).ready(function () {
                 $("#ddlUser").select2({

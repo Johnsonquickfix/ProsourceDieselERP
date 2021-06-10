@@ -3,27 +3,28 @@
     ViewBag.Title = "OrdersHistory";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
-<h2>OrdersHistory</h2>
-
-<div class="tab">
-    <button class="tablinks" onclick="openCity(event, 'Listing')">Orders Listing</button>
-    <button class="tablinks" onclick="openCity(event, 'Details')">Order Details</button>
-    <button class="tablinks" onclick="openCity(event, 'Address')">Order Address</button>
+<div class="page-title">
+    <h2 class="page-heading">Orders History</h2>
 </div>
+<section class="content section-content">
+    <div class="tab">
+        <button class="tablinks" onclick="openCity(event, 'Listing')">Orders Listing</button>
+        <button class="tablinks" onclick="openCity(event, 'Details')">Order Details</button>
+        <button class="tablinks" onclick="openCity(event, 'Address')">Order Address</button>
+    </div>-->
+    <!-- Tab content -->
+    <div id="Listing" class="tabcontent">
+        <h3>Orders Listing</h3>
+        <p></p>
+    </div>
 
-<!-- Tab content -->
-<div id="Listing" class="tabcontent">
-    <h3>Orders Listing</h3>
-    <p></p>
-</div>
+    <div id="Details" class="tabcontent">
+        <h3>Order Details</h3>
+        <p></p>
+    </div>
 
-<div id="Details" class="tabcontent">
-    <h3>Order Details</h3>
-    <p></p>
-</div>
-
-<div id="Address" class="tabcontent">
-    <h3>Order Address</h3>
-    <p></p>
-</div>
+    <div id="Address" class="tabcontent">
+        <h3>Order Address</h3>
+        <p></p>
+    </div>
+</section>

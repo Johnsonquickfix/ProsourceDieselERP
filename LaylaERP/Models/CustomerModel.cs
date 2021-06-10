@@ -26,9 +26,10 @@ namespace LaylaERP.Models
         [Required]
         [Display(Name = "Address 1")]
         public string billing_address_1 { get; set; }
-        [Required]
+        
         [Display(Name = "Address 2")]
         public string billing_address_2 { get; set; }
+
         [Required]
         [Display(Name = "City")]
         public string billing_city { get; set; }
@@ -53,7 +54,7 @@ namespace LaylaERP.Models
         public string user_image { get; set; }
         public string user_url { get; set; }
         public string user_activation_key { get; set; }
-        public int user_status { get; set; }
+        public string user_status { get; set; }
         public string user_pass { get; set; }
         public string meta_key { get; set; }
         public string meta_value { get; set; }

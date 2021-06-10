@@ -115,7 +115,7 @@ border:0px;}
 }
 .login-page [type="email"], .login-page [type="password"] {
     border: 1px solid #D2D6DE;
-    border-width:0px 0px 1px 0px;
+    /*border-width:0px 0px 1px 0px;*/
     height: 42px;
     background: #fff;
     padding: 0px 15px;
@@ -159,3 +159,7 @@ padding-top:0px; padding-bottom:0px; height:42px; line-height:42px;}
 .login-page.login-varification label {
     padding-bottom: 5px;
 }
+#auth-pv-form h5 {
+font-weight:normal; color:#4f4f4f !important;}
+    #auth-pv-form h5 #lblCounter {
+    font-weight:700;}

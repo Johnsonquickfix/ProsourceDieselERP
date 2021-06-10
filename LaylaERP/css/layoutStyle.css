@@ -32,7 +32,7 @@ dashboard
 }
 
 .bg-info {
-    background-color: #15b3ff !important;
+    background-color: #3c8dbc !important;
 }
 
 .bg-warning {
@@ -164,11 +164,11 @@ padding:0px;}
     margin: 0;
 }
     #userslist thead th, table thead th {
-        background: #15b3ff;
+        background: #3c8dbc;
         text-transform: uppercase;
         font-size: 12px;
         border-bottom: 1px solid #0090d6;
-        color: #fff;
+        color: #fff !important;
     }
     table.dataTable tbody td.select-checkbox:before, table.dataTable tbody td.select-checkbox:after, table.dataTable tbody th.select-checkbox:before, table.dataTable tbody th.select-checkbox:after {
         width: 16px !important;
@@ -264,8 +264,8 @@ margin-bottom:35px;}
     border-color: #fff !important;
 }
 .form-check [type="checkbox"]:checked + label:before, .check-table [type="checkbox"]:checked + label:before {
-    background: #15b3ff !important;
-    border-color: #15b3ff !important;
+    background: #3c8dbc !important;
+    border-color: #3c8dbc !important;
 }
     .form-check [type="checkbox"]:checked + label:after, .check-table [type="checkbox"]:checked + label:after {
         opacity: 1;
@@ -396,8 +396,8 @@ body table.dataTable tr.selected td.select-checkbox:after, body table.dataTable 
     transform: rotate( 310deg ) translate(-50%, -50%);
 }
 body table.dataTable tr.selected td.select-checkbox:before, body table.dataTable tr.selected th.select-checkbox:before {
-    background: #15b3ff !important;
-    border-color: #15b3ff !important;
+    background: #3c8dbc !important;
+    border-color: #3c8dbc !important;
 }
 .user-panel > .info > p {
     font-weight:400;
@@ -546,7 +546,7 @@ table.dataTable thead .sorting:before, table.dataTable thead .sorting:after, tab
     top: 50%;bottom:auto; transform:translateY(-50%);
 }
 .pagination > .active > a, .pagination > .active > a:focus, .pagination > .active > a:hover, .pagination > .active > span, .pagination > .active > span:focus, .pagination > .active > span:hover {
-    background: #15B3FF
+    background: #3c8dbc
 }
 table.dataTable thead .sorting:after, table.dataTable thead .sorting_asc:after, table.dataTable thead .sorting_desc:after, table.dataTable thead .sorting_asc_disabled:after, table.dataTable thead .sorting_desc_disabled:after {
 right:12px;}
@@ -564,8 +564,9 @@ padding-left:50px;}
         width: 83.33333333%;
     }
 }
-#txtLogDate {
-height:30px;}
+.setting-bulk #txtLogDate {
+    height: 30px;
+}
 .setting-bulk {
 display:inline-flex;}
     .setting-bulk > * {
@@ -599,4 +600,64 @@ float:right;}
     color: #4a4f55;
     transition: 0.5s ease all;
     background-color: rgba(0,0,0,0);
+}
+.create-new-customer .form-group {
+margin:0px 0px 15px 0px;}
+.row-small {
+margin:0px -5px;}
+    .row-small > div {
+    padding:0px 5px;}
+.box-sections .form-group {
+margin-bottom:10px !important;}
+.box-sections #txtCustomerNotes {
+height:78px;}
+.neworder-section .select2-container--default .select2-selection--single,
+.neworder-section .select2-selection .select2-selection--single {
+    border: 1px solid #d2d6de;
+    border-radius: 0;
+    padding: 0px 0px;
+    height: 34px;
+}
+.neworder-section .select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: #4f4f4f;
+    line-height: 32px;
+    margin-top: 0px;
+}
+    .neworder-section .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 32px;
+    }
+    .neworder-section .select2-container--default .select2-selection--single .select2-selection__placeholder {
+        color: #4f4f4f;
+    }
+.neworder-section table .select2-container--default .select2-selection--single .select2-selection__placeholder {
+font-weight:500;}
+.thead-dark {
+    border-top: 1px solid #ccd0d4;
+}
+.neworder-section [onclick].menu-icon-gr {
+    padding: 0px;
+}
+.neworder-section .rowCalulate {
+    box-shadow: 0 0 0 transparent;
+    border-radius: 4px;
+    border: 1px solid #7e8993;
+    background-color: #fff;
+    color: #32373c;
+    padding: 0 8px;
+    line-height: 2;
+    min-height: 30px;
+    -webkit-appearance: textfield;
+    height: 30px;
+}
+.chechout-tables .text-right {
+    text-align:center !important;
+}
+.neworder-section .box-title {
+margin-top:0px;}
+.box-title {
+    font-size: 22px;
+}
+body .checkout-box-total .control-label {
+    padding-top: 0px;
+    font-weight: 600;
 }

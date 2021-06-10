@@ -3,17 +3,37 @@
     ViewBag.Title = "OrdersHistory";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<div class="page-title">
+    <h2 class="page-heading">Orders History</h2>
+</div>
+<section class="content section-content">
+    <div class="nav-tabs-custom">
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#tab_1" data-toggle="tab">Orders Listing</a></li>
+            <li><a href="#tab_2" data-toggle="tab">Order Details</a></li>
+            <li><a href="#tab_3" data-toggle="tab">Order Address</a></li>
 
-<h2>OrdersHistory</h2>
-
-<div class="tab">
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane active" id="tab_1">
+                <h3>Orders Listing</h3>
+            </div>
+            <div class="tab-pane" id="tab_2">
+                <h3>Orders Details</h3>
+            </div>
+            <div class="tab-pane" id="tab_3">
+                <h3>Orders Address</h3>
+            </div>
+        </div>
+    </div>
+</section>
+<!--<div class="tab">
     <button class="tablinks" onclick="openCity(event, 'Listing')">Orders Listing</button>
     <button class="tablinks" onclick="openCity(event, 'Details')">Order Details</button>
     <button class="tablinks" onclick="openCity(event, 'Address')">Order Address</button>
-</div>
-
+</div>-->
 <!-- Tab content -->
-<div id="Listing" class="tabcontent">
+<!--<div id="Listing" class="tabcontent">
     <h3>Orders Listing</h3>
     <p></p>
 </div>
@@ -26,4 +46,4 @@
 <div id="Address" class="tabcontent">
     <h3>Order Address</h3>
     <p></p>
-</div>
+</div>-->

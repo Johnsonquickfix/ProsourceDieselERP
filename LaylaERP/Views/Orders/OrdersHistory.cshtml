@@ -49,6 +49,7 @@
                     <th>Order Total</th>
                     <th>Status</th>
                     <th>Creation Date</th>
+                    <th></th>
                 </tr>
             </thead>
         </table>
@@ -72,11 +73,11 @@
             sAjaxSource: "/Orders/GetOrderList",
             fnServerData: function (sSource, aoData, fnCallback, oSettings) {
                 obj.Search = aoData[45].value;
-                var col = 'id';
-                //if (oSettings.aaSorting.length > 0) {
-                //    var col = oSettings.aaSorting[0][0] == 2 ? "user_nicename" : oSettings.aaSorting[0][0] == 3 ? "user_email" : oSettings.aaSorting[0][0] == 4 ? "status" : oSettings.aaSorting[0][0] == 5 ? "meta_value" : oSettings.aaSorting[0][0] == 6 ? "user_registered" : "id";
-                //    obj.SortCol = col; obj.SortDir = oSettings.aaSorting.length > 0 ? oSettings.aaSorting[0][1] : "desc";
-                //}
+                var col = 'order_id';
+                if (oSettings.aaSorting.length > 0) {
+                    var col = oSettings.aaSorting[0][0] == 2 ? "customer_id" : oSettings.aaSorting[0][0] == 3 ? "FirstName" : oSettings.aaSorting[0][0] == 4 ? "LastName" : oSettings.aaSorting[0][0] == 5 ? "num_items_sold" : oSettings.aaSorting[0][0] == 6 ? "total_sales" : oSettings.aaSorting[0][0] == 6 ? "status" : oSettings.aaSorting[0][0] == 6 ? "date_created" : "order_id";
+                    obj.SortCol = col; obj.SortDir = oSettings.aaSorting.length > 0 ? oSettings.aaSorting[0][1] : "desc";
+                }
                 obj.sEcho = aoData[0].value; obj.PageSize = oSettings._iDisplayLength; obj.PageNo = oSettings._iDisplayStart;
                 $.ajax({
                     type: "POST", url: sSource, async: true, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
@@ -90,15 +91,15 @@
             },
             aoColumns: [
                 {
-                    'data': 'chkorder', sWidth: "2%   ",
+                    'data': 'chkorder', sWidth: "5%   ",
                     'render': function (data, type, full, meta) {
                         return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + $('<div/>').text(data).html() + '"><label></label>';
                     }
                 },
                 { data: 'chkorder', title: 'OrderID', sWidth: "8%" },
-                { data: 'customer_id', title: 'Customer ID', sWidth: "14%" },
-                { data: 'meta_value', title: 'First Name', sWidth: "23%" },
-                { data: 'meta_value', title: 'Last Name', sWidth: "8%" },
+                { data: 'customer_id', title: 'Customer ID', sWidth: "8%" },
+                { data: 'FirstName', title: 'First Name', sWidth: "10%" },
+                { data: 'LastName', title: 'Last Name', sWidth: "10%" },
                 { data: 'num_items_sold', title: 'No. of Items', sWidth: "10%" },
                 { data: 'total_sales', title: 'Order Total', sWidth: "10%" },
                 { data: 'status', title: 'Status', sWidth: "10%" },

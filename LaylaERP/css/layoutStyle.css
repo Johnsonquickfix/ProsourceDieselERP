@@ -664,3 +664,8 @@ body .checkout-box-total .control-label {
     padding-top: 0px;
     font-weight: 600;
 }
+
+body .dx-theme-generic-typography {
+font-size:15px;}
+.setting-section .nav-tabs-custom {
+box-shadow:none; margin-bottom:0px;}

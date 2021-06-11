@@ -142,7 +142,7 @@
                         <option value="administrator">Administrator</option>
                         <option value="accounting">Accounting</option>
                     </select>
-                    <input type="submit"   id="changeit" class="button action" value="Change">
+                    <input type="submit" name="changeit" id="changeit" class="button" value="Change">
                 </div>
                 <input type="hidden" name="varpass" id="varpass" value="">
                 @*<div class="tablenav-pages">
@@ -175,16 +175,18 @@
                         </tr>
                     </thead>
 
-                </table>
+                    </table>
+                </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
 
 @section scripts{
 
     <script type="text/javascript">
-        var j="";
+        var j = "";
         $(document).ready(function () {
             //$("#ddlStatus").change(function () {
             //    alert($("#ddlStatus").val());
@@ -209,7 +211,7 @@
                     "dataType": 'json',
                     data: { rolepass: j },
                     contentType: "application/json; charset=utf-8",
-                   
+
                 },
                 lengthMenu: [[10, 20, 50, 100], [10, 20, 50, 100]],
 
@@ -323,10 +325,6 @@
 
  
 
-            });
-        };
-
-
 //CheckBoxes
         $('#checkAll').click(function () {
             var isChecked = $(this).prop("checked");
@@ -422,40 +420,10 @@
             })
         }
 
-
-       
-        function changeRole(ID) {
-
-            ID = ID;
-            user_status = $("#new_role").val();
-            var obj = {
-                strVal: ID,
-                user_status: user_status                 
-            }
-            $.ajax({
-                url: '/Users/changeRole/', dataType: 'json', type: 'Post',
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify(obj),
-                dataType: "json",
-                success: function (data) {
-                    if (data.status == true) {
-                        swal('Alert!', data.message, 'success');
-                        DatagridLoade();
-                    }
-                    else {
-                        swal('Alert!', data.message, 'error')
-                    }
-                },
-                error: function (error) {
-                    swal('Error!', 'something went wrong', 'error');
-                },
-            })
-        }
-
        
 //CheckBoxes End
 
-//Count Role Grid Show
+        //Count Role Grid Show
         $('#all').click(function () {
             j = "";
             k = 1;
@@ -465,9 +433,9 @@
         $('#administrator').click(function () {
             j = 'administrator';
             k = 1;
-           // alert(j);
+            // alert(j);
             Datagrid(k);
-            
+
         });
         $('#accounting').click(function () {
             j = 'accounting';
@@ -524,7 +492,7 @@
             k = 1;
             Datagrid(k);
         });
-  //Count Role Grid End
+      //Count Role Grid End
 
 
 
@@ -559,20 +527,20 @@
         </script>*@
 }
 @*<script>
-    var dataTable = document.getElementById('data-table');
-    var checkItAll = dataTable.querySelector('input[name="select_all"]');
-    var inputs = dataTable.querySelectorAll('tbody>tr>td>input');
+        var dataTable = document.getElementById('data-table');
+        var checkItAll = dataTable.querySelector('input[name="select_all"]');
+        var inputs = dataTable.querySelectorAll('tbody>tr>td>input');
 
-    checkItAll.addEventListener('change', function () {
-        if (checkItAll.checked) {
-            inputs.forEach(function (input) {
-                input.checked = true;
-            });
-        }
-        else {
-            inputs.forEach(function (input) {
-                input.checked = false;
-            });
-        }
-    });
-</script>*@
+        checkItAll.addEventListener('change', function () {
+            if (checkItAll.checked) {
+                inputs.forEach(function (input) {
+                    input.checked = true;
+                });
+            }
+            else {
+                inputs.forEach(function (input) {
+                    input.checked = false;
+                });
+            }
+        });
+    </script>*@

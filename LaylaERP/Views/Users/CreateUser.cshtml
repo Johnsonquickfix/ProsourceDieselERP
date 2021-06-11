@@ -35,86 +35,84 @@
             </div>
             <!-- /.col -->
             <div class="col-md-9">
-                <div class="box box-primary create-user-primary">
-                    <div class="box-header with-border">
-                        <div class="col-sm-4">
-                            <div class="form-group">
-                                <input type="hidden" id="hfid" value="@ViewBag.id" />
-                                <label for="exampleInputEmail1">First Name</label>
-                                <input type="text" class="form-control" id="txtFirstName" placeholder="First Name">
+                    <div class="box box-primary create-user-primary">
+                        <div class="box-header with-border">
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <input type="hidden" id="hfid" value="@ViewBag.id" />
+                                    <label for="exampleInputEmail1">First Name</label>
+                                    <input type="text" class="form-control" id="txtFirstName" placeholder="First Name">
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">Last Name</label>
+                                    <input type="text" class="form-control" id="txtLastName" placeholder="Last Name">
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">User Status</label>
+                                    <select class="form-control">
+                                        <option>Select User Status</option>
+                                        <option value="0">Active</option>
+                                        <option value="1">InActive</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">User Type</label>
+                                    <select class="form-control" id="txtUserRole">
+                                        <option>Select User Type</option>
+                                        <option value="accounting">Accounting</option>
+                                        <option value="administrator">Administrator</option>
+                                        <option value="author">Author</option>
+                                        <option value="modsquad">Mod Squad</option>
+                                        <option value="seoeditor">SEO Editor</option>
+                                        <option value="seomanager">SEO Manager</option>
+                                        <option value="shopmanager">Shop manager</option>
+                                        <option value="subscriber">Subscriber</option>
+                                        <option value="supplychainmanager">Supply Chain Manager</option>
+                                    </select>
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label for="exampleInputEmail1">Last Name</label>
-                                <input type="text" class="form-control" id="txtLastName" placeholder="Last Name">
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">Contact Number</label>
+                                    <input type="text" class="form-control" id="txtPhone" placeholder="Enter Your Phone Number">
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">Country</label>
+                                    <select class="form-control" id="txtCountry">
+                                        <option value="CA - Canada">CA - Canada</option>
+                                        <option value="GB - United Kingdom">GB - United Kingdom</option>
+                                        <option value="US - United States">US - United States</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">Address</label>
+                                    <textarea class="form-control form-address" id="txtAddress" placeholder="Enter Your Address"></textarea>
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label for="exampleInputEmail1">User Status</label>
-                                <select class="form-control">
-                                    <option>Select User Status</option>
-                                    <option value="0">Active</option>
-                                    <option value="1">InActive</option>
-                                </select>
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">E-mail</label>
+                                    <input type="text" class="form-control" id="txtUserEmail" placeholder="Enter Your Mail Address">
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">User Name</label>
+                                    <input type="text" class="form-control" id="txtUserNickName" placeholder="Enter User Name">
+                                </div>
+                                <div class="form-group form-password-group">
+                                    <label for="exampleInputEmail1">Password</label>
+                                    <input type="password" class="form-control" id="txtPassword" placeholder="Enter Your Password">
+                                    @*<span class="genrate_password" id="message">Generate Password</span>*@
+                                </div>
+                                <div class="form-group form-password-group">
+                                    <label for="exampleInputEmail1">Confirm Password</label>
+                                    <input type="password" class="form-control" id="txtConfirmPassword" placeholder="Confirm Your Password">
+                                    <span class="genrate_password" id="message"></span>
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label for="exampleInputEmail1">User Type</label>
-                                <select class="form-control" id="txtUserRole">
-                                    <option>Select User Type</option>
-                                    <option value="accounting">Accounting</option>
-                                    <option value="administrator">Administrator</option>
-                                    <option value="author">Author</option>
-                                    <option value="modsquad">Mod Squad</option>
-                                    <option value="seoeditor">SEO Editor</option>
-                                    <option value="seomanager">SEO Manager</option>
-                                    <option value="shopmanager">Shop manager</option>
-                                    <option value="subscriber">Subscriber</option>
-                                    <option value="supplychainmanager">Supply Chain Manager</option>
-                                </select>
+                            <div class="col-offset-8 col-sm-4 mt-1" >
+                                <a href="#" class="btn btn-danger btn-block" id="btnSave"><b>Create User</b></a>
                             </div>
                         </div>
-                        <div class="col-sm-4">
-                            <div class="form-group">
-                                <label for="exampleInputEmail1">Contact Number</label>
-                                <input type="text" class="form-control" id="txtPhone" placeholder="Enter Your Phone Number">
-                            </div>
-                            <div class="form-group">
-                                <label for="exampleInputEmail1">Country</label>
-                                <select class="form-control" id="txtCountry">
-                                    <option value="US - United States">US - United States</option>
-                                    <option value="CA - Canada">CA - Canada</option>
-
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="exampleInputEmail1">Address</label>
-                                <textarea class="form-control form-address" id="txtAddress" placeholder="Enter Your Address"></textarea>
-                            </div>
-                        </div>
-                        <div class="col-sm-4">
-                            <div class="form-group">
-                                <label for="exampleInputEmail1">E-mail</label>
-                                <input type="text" class="form-control" id="txtUserEmail" placeholder="Enter Your Mail Address">
-                            </div>
-                            <div class="form-group">
-                                <label for="exampleInputEmail1">User Name</label>
-                                <input type="text" class="form-control" id="txtUserNickName" placeholder="Enter User Name">
-                            </div>
-                            <div class="form-group form-password-group">
-                                <label for="exampleInputEmail1">Password</label>
-                                <input type="password" class="form-control" id="txtPassword" placeholder="Enter Your Password">
-                                @*<span class="genrate_password" id="message">Generate Password</span>*@
-                            </div>
-                            <span id='result'></span>
-                            <div class="form-group form-password-group">
-                                <label for="exampleInputEmail1">Confirm Password</label>
-                                <input type="password" class="form-control" id="txtConfirmPassword" placeholder="Confirm Your Password">
-                                <span class="genrate_password" id="message"></span>
-                            </div>
-                            <span id='resultConfirm'></span>
-                        </div>
-                        <div class="col-offset-8 col-sm-4 mt-1">
-                            <a href="#" class="btn btn-danger btn-block" id="btnSave"><b>Create User</b></a>
-                        </div>
-                    </div>
                 </div>
                 <!-- /.nav-tabs-custom -->
             </div>

@@ -8,6 +8,8 @@ using MySql.Data.MySqlClient;
 using System.Data;
 using System.Configuration;
 using LaylaERP.BAL;
+using System.Dynamic;
+using Newtonsoft.Json;
 
 namespace LaylaERP.Controllers
 {
@@ -44,6 +46,7 @@ namespace LaylaERP.Controllers
         // GET: Assign Role
         public ActionResult AssignRole()
         {
+             
             return View();
         }
 
@@ -87,6 +90,33 @@ namespace LaylaERP.Controllers
             }
             return Json(usertype, JsonRequestBehavior.AllowGet);
         }
+        [HttpPost]
+        public JsonResult GetAssignRole(UserClassification model)
+        {
+            //List<Dictionary<String, Object>> tableRows = new List<Dictionary<String, Object>>();
+            //Dictionary<String, Object> row;
+            string result = string.Empty;
+            try
+            {
+                
+                DataTable dt = BAL.Users.GetMenuByUser(model.User_Type);             
+                result = JsonConvert.SerializeObject(dt);
+               
+            }
+            catch { }
+            return Json(result, 0) ;
+        }
+
+        public JsonResult Save(UserClassification model)
+        {
+            JsonResult result = new JsonResult(); 
+            var resultOne = BAL.Users.UpdateUserClassifications(model);             
+            if (resultOne > 0)
+            {
+                result = this.Json(resultOne);
+            }
+            return result;
+        }
 
         [HttpPost]
         public JsonResult UpdateCustomer(CustomerModel model)
@@ -122,6 +152,21 @@ namespace LaylaERP.Controllers
 
         }
 
+        [HttpPost]
+        public JsonResult changeRole(CustomerModel model)
+        {
+            string strID = model.strVal;
+            if (strID != "")
+            {
+                    UsersRepositry.changeRoleStatus(model);
+                    return Json(new { status = true, message = "User Role Status has been updated successfully!!", url = "" }, 0);
+                }
+                else
+                {
+                    return Json(new { status = false, message = "Something went wrong", url = "" }, 0);
+                }            
+             
+        }
 
         public ActionResult CreateUser(long id = 0)
         {

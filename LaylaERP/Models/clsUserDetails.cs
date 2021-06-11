@@ -120,5 +120,6 @@ namespace LaylaERP.Models
         {
             get; set;
         }
+
     }
 }

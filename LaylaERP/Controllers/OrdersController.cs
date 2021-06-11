@@ -10,7 +10,10 @@
     using System.Linq;
     using System.Web;
     using System.Web.Mvc;
-
+    using System.Net.Http;
+    using System.Net.Http.Headers;
+    using System.Net;
+    using System.Text;
 
     public class OrdersController : Controller
     {
@@ -175,16 +178,51 @@
             return Json(new { status = status, message = JSONresult }, 0);
         }
         [HttpPost]
-        public JsonResult GetOrderList(SearchModel model)
+        public JsonResult GetOrderList(OrderPostStatusModel model)
         {
-            string JSONresult = string.Empty;
+            string result = string.Empty;
+            int TotalRecord = 0;
             try
             {
-                DataTable DT = OrderRepository.OrderList();
-                JSONresult = JsonConvert.SerializeObject(DT);
+                string urid = "";
+                if (model.status != "")
+                    urid = model.status;
+                string searchid = model.Search;
+                DataTable dt = OrderRepository.OrderList(urid, searchid, model.PageNo, model.PageSize, out TotalRecord, model.SortCol, model.SortDir);
+                result = JsonConvert.SerializeObject(dt);
             }
             catch { }
-            return Json(JSONresult, 0);
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+        }
+        [HttpPost]
+        public JsonResult GetPayPalToken(SearchModel model)
+        {
+            JsonResult result = new JsonResult();
+            try
+            {
+                string clientId = "AcuqRFTJWTspIMomXNjD8qqaY3FYB3POMIKoJOI3P79e85Nluk0b8OME0k-zBnEllg2e03LoBLXbJ0l0", clientSecret = "EA_mO1Ia607bvwcFf5wHMYW-XLx4QST-S41Sr7iG8gCfWkDDzM794mvBjbysx1Nb_5P-MrruKBLWng-u";
+                var client = new HttpClient();
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Add("Accept", "application/json");
+                client.DefaultRequestHeaders.Add("Accept-Language", "en_US");
+                //client.DefaultRequestHeaders.Add("Authorization", string.Format("Basic {0}{1}", clientId , clientSecret));
+                Encoding encoding = Encoding.GetEncoding("iso-8859-1");
+                string usernamePassword = encoding.GetString(Convert.FromBase64String(clientId + ":"+ clientSecret));
+                client.DefaultRequestHeaders.Add("Authorization", string.Format("Basic {0}", usernamePassword));
+                string json = Newtonsoft.Json.JsonConvert.SerializeObject("{grant_type: 'client_credentials'}");
+                StringContent content = new StringContent(json, System.Text.Encoding.UTF8, "application/x-www-form-urlencoded");
+                var response = new HttpResponseMessage();
+                ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+                response = client.PostAsync("https://api.sandbox.paypal.com/v1/oauth2/token", content).Result;
+                client.Dispose();
+                if (response != null && response.IsSuccessStatusCode)
+                {
+                    result = this.Json(response.Content.ReadAsStringAsync().Result, JsonRequestBehavior.AllowGet);
+                }           
+
+            }
+            catch(Exception ex) { }
+            return result;
         }
     }
 }

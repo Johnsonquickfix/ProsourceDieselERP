@@ -99,11 +99,12 @@
                                 <div class="form-group form-password-group">
                                     <label for="exampleInputEmail1">Password</label>
                                     <input type="password" class="form-control" id="txtPassword" placeholder="Enter Your Password">
-                                    @*<span class="genrate_password">Genrate Password</span>*@
+                                    @*<span class="genrate_password" id="message">Generate Password</span>*@
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group form-password-group">
                                     <label for="exampleInputEmail1">Confirm Password</label>
                                     <input type="password" class="form-control" id="txtConfirmPassword" placeholder="Confirm Your Password">
+                                    <span class="genrate_password" id="message"></span>
                                 </div>
                             </div>
                             <div class="col-offset-8 col-sm-4 mt-1" >
@@ -123,6 +124,7 @@
         $(document).on('click', "#btnSave", function () {
             AddCustomer();
         })
+        passwordcheck();
     });
 
 
@@ -159,7 +161,8 @@
                 address: address,
                 country: country,
                 phone: Phone,
-                user_role: UserRole
+                user_role: UserRole,
+                password: ConfirmPassword
             }
             $.ajax({
                 url: '/Users/CreateUser/', dataType: 'json', type: 'Post',
@@ -184,8 +187,8 @@
     }
 
 
-    document.getElementById('txtBillingPhone').addEventListener('keyup', function (evt) {
-        var phoneNumber = document.getElementById('txtBillingPhone');
+    document.getElementById('txtPhone').addEventListener('keyup', function (evt) {
+        var phoneNumber = document.getElementById('txtPhone');
         var charCode = (evt.which) ? evt.which : evt.keyCode;
         phoneNumber.value = phoneFormat(phoneNumber.value);
     });
@@ -206,7 +209,7 @@
         }
         return input;
     }
-    var input = document.querySelector("#txtBillingPhone");
+    var input = document.querySelector("#txtPhone");
     window.intlTelInput(input, {
         // allowDropdown: false,
         // autoHideDialCode: false,
@@ -231,11 +234,12 @@
         utilsScript: "~/Scripts/intlTelInput.js",
     });
 
-    //$('#txtPassword, #txtConfirmPassword').on('keyup', function () {
-    //    if ($('#txtPassword').val() == $('#txtConfirmPassword').val()) {
-    //        $('#message').html('Matching').css('color', 'green');
-    //    } else
-    //        $('#message').html('Not Matching').css('color', 'red');
-    //});
-
+    function passwordcheck(){
+        $('#txtPassword, #txtConfirmPassword').on('keyup', function () {
+            if ($('#txtPassword').val() == $('#txtConfirmPassword').val()) {
+                $('#message').html('Matching').css('color', 'green');
+            } else
+                $('#message').html('Not Matching').css('color', 'red');
+        });
+    }
 </script>

@@ -252,7 +252,7 @@ namespace LaylaERP.BAL
         public static int changeRoleStatus(CustomerModel model)
         {
             try
-            {
+            { 
                 string strsql = "update wp_usermeta set meta_value=@meta_value where meta_Key = 'wp_capabilities' and user_id in(" + model.strVal + ")";
                 MySqlParameter[] para =
                 {

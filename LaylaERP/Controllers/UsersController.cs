@@ -154,7 +154,7 @@ namespace LaylaERP.Controllers
 
         [HttpPost]
         public JsonResult changeRole(CustomerModel model)
-        {
+        { 
             string strID = model.strVal;
             if (strID != "")
             {

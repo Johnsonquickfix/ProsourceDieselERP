@@ -11,10 +11,11 @@ button, input, select, textarea, h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5
 .p-0 {
     padding: 0px !important;
 }
+
 /*****
 dashboard
 *******/
-.bg-success, .bg-success > a { 
+.bg-success, .bg-success > a {
     color: #fff !important;
 }
 
@@ -140,7 +141,7 @@ padding:0px;}
     }
 .data-table-container input[type="text"],
 .data-table-container input[type="search"],
-.data-table-container select, .user-top-section input[type="text"], .user-top-section input[type="search"] {
+.data-table-container select, .user-top-section input[type="text"], .user-top-section input[type="search"], [name="dtdata_length"] {
     box-shadow: 0 0 0 transparent;
     border-radius: 4px;
     border: 1px solid #7e8993;
@@ -156,7 +157,7 @@ padding:0px;}
 margin-top:20px;}
 #userslist_wrapper {
 padding:0px;}
-#userslist, table {
+#userslist, table.table-blue {
     background: #fff;
     table-layout: fixed;
     border: 1px solid #ccd0d4 !important;
@@ -166,7 +167,7 @@ padding:0px;}
     clear: both;
     margin: 0;
 }
-    #userslist thead th, table thead th {
+    #userslist thead th, table.table-blue thead th {
         background: #3c8dbc;
         text-transform: uppercase;
         font-size: 12px;
@@ -180,15 +181,15 @@ padding:0px;}
     }
 .table-bordered > thead > tr > th, .table-bordered > tbody > tr > th, .table-bordered > tfoot > tr > th, .table-bordered > thead > tr > td, .table-bordered > tbody > tr > td, .table-bordered > tfoot > tr > td {
 border:0px;}
-#userslist tbody .odd, table tbody .odd {
-    background-color: #f9f9f9;
+#userslist tbody .odd, table.table-blue tbody .odd {
+    background-color: #f1f1f1 !important;
 }
-#userslist tbody .even, table tbody .even {
-    background-color: #fff;
+#userslist tbody .even, table.table-blue tbody .even {
+    background-color: #fff !important;
 }
-#userslist th, #userslist td, table th, table td {
+#userslist th, #userslist td, table.table-blue th, table.table-blue td {
     padding: 10px 10px !important;
-    color: #4f4f4f ;
+    color: #4f4f4f;
 }
 .dataTables_scrollBody {
 height:auto !important;}
@@ -214,6 +215,9 @@ margin-left:-15px !important; margin-right:-15px !important;}
     .setting-save a i {
         margin-right: 10px;
     }
+.mb-0 {
+    margin-bottom: 0px !important;
+}
 .mb-35 {
 margin-bottom:35px;}
 .sm-heading {
@@ -424,10 +428,12 @@ body table.dataTable tr.selected td.select-checkbox:before, body table.dataTable
 .btn-danger {
     background: #ff4100 !important; color:#fff;
 }
+.dib-full {
+display:inline-block; width:100%;}
 .form-address {
 min-height:110px;}
 .create-user-primary {
-    min-height: calc(100vh - 100px);
+   /* min-height: calc(100vh - 100px);*/
 }
 .add-profile:hover .edit-pic-profile {
     opacity:1;
@@ -664,3 +670,7 @@ body .checkout-box-total .control-label {
     padding-top: 0px;
     font-weight: 600;
 }
+body .dx-theme-generic-typography {
+font-size:15px;}
+.setting-section .nav-tabs-custom {
+box-shadow:none; margin-bottom:0px;}

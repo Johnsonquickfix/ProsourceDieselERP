@@ -69,7 +69,7 @@
 
         public string meta_value { get; set; }
     }
-    public class OrderPostStatusModel
+    public class OrderPostStatusModel : PaggingModel
     {
         public long order_id { get; set; }
         public long parent_id { get; set; }
@@ -83,6 +83,7 @@
         public double shipping_total { get; set; }
         public double net_total { get; set; }
         public string status { get; set; }
+        public string Search { get; set; }
     }
     public class OrderProductsModel
     {

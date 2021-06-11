@@ -10,11 +10,15 @@ using System.Configuration;
 using Newtonsoft.Json;
 using System.Collections;
 using LaylaERP.DAL;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace LaylaERP.BAL
 {
     public class UsersRepositry
     {
+        private static string itoa64 = "./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+        public static string UserPassword;
         public static List<clsUserDetails> userslist = new List<clsUserDetails>();
         //string result = string.Empty;
         public static void ShowUsersDetails(string rolee)
@@ -209,6 +213,24 @@ namespace LaylaERP.BAL
             return count;
         }
 
+        public static int EditCustomerStatus(CustomerModel model)
+        {
+            try
+            {
+                string strsql = "update wp_users set user_status=@user_status where Id=" + model.ID + "";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@user_status", model.user_status)
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
         public static int DeleteUsers(string ID)
         {
             try
@@ -226,5 +248,147 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
+
+        //Add customers
+        public static int AddNewCustomer(clsUserDetails model)
+        {
+            try
+            {
+
+                model.password = EncryptedPwd(model.password);
+                string strsql = "insert into wp_users(user_login,user_pass,user_nicename, user_email, user_registered, display_name, user_image) values(@user_login,@user_pass,@user_nicename, @user_email, @user_registered, @display_name, @user_image);SELECT LAST_INSERT_ID();";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@user_login", model.user_nicename),
+                    new MySqlParameter("@user_pass", model.password),
+                    new MySqlParameter("@user_nicename", model.user_nicename),
+                    new MySqlParameter("@user_email", model.user_email),
+                    new MySqlParameter("@user_registered", Convert.ToDateTime(DateTime.UtcNow.ToString("yyyy-MM-dd"))),
+                    new MySqlParameter("@display_name", model.user_nicename),
+                    new MySqlParameter("@user_image", "None"),
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+        public static void AddUserMetaData(clsUserDetails model, long id, string varFieldsName, string varFieldsValue)
+        {
+            try
+            {
+                string strsql = "INSERT INTO wp_usermeta(user_id,meta_key,meta_value) VALUES(@user_id,@meta_key,@meta_value); select LAST_INSERT_ID() as ID;";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@user_id", id),
+                    new MySqlParameter("@meta_key", varFieldsName),
+                    new MySqlParameter("@meta_value", varFieldsValue),
+                };
+                SQLHelper.ExecuteNonQuery(strsql, para);
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+
+        public static void AddUserMoreMeta(clsUserDetails model, long id, string varFieldsName, string varFieldsValue)
+        {
+            try
+            {
+                string strsql = "INSERT INTO wp_usermeta(user_id,meta_key,meta_value) VALUES(@user_id,@meta_key,@meta_value); select LAST_INSERT_ID() as ID;";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@user_id", id),
+                    new MySqlParameter("@meta_key", varFieldsName),
+                    new MySqlParameter("@meta_value", varFieldsValue),
+                };
+                SQLHelper.ExecuteNonQuery(strsql, para);
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+        //-----------------end
+
+
+        //Password----------------
+
+        public static string EncryptedPwd(string varPassword)
+        {
+            string expected = "$P$BPGbwPLs6N6VlZ7OqRUvIY1Uvo/Bh9/";
+            return MD5Encode(varPassword, expected);
+        }
+        static string MD5Encode(string password, string hash)
+        {
+            string output = "*0";
+            if (hash == null) return output;
+            if (hash.StartsWith(output)) output = "*1";
+
+            string id = hash.Substring(0, 3);
+            // We use "$P$", phpBB3 uses "$H$" for the same thing
+            if (id != "$P$" && id != "$H$") return output;
+
+            // get who many times will generate the hash
+            int count_log2 = itoa64.IndexOf(hash[3]);
+            if (count_log2 < 7 || count_log2 > 30)
+                return output;
+
+            int count = 1 << count_log2;
+
+            string salt = hash.Substring(4, 8);
+            if (salt.Length != 8)
+                return output;
+
+            byte[] hashBytes = { };
+            using (MD5 md5Hash = MD5.Create())
+            {
+                hashBytes = md5Hash.ComputeHash(Encoding.ASCII.GetBytes(salt + password));
+                byte[] passBytes = Encoding.ASCII.GetBytes(password);
+                do
+                {
+                    hashBytes = md5Hash.ComputeHash(hashBytes.Concat(passBytes).ToArray());
+                } while (--count > 0);
+            }
+
+            output = hash.Substring(0, 12);
+            string newHash = Encode64(hashBytes, 16);
+
+            return output + newHash;
+        }
+        static string Encode64(byte[] input, int count)
+        {
+            StringBuilder sb = new StringBuilder();
+            int i = 0;
+            do
+            {
+                int value = (int)input[i++];
+                sb.Append(itoa64[value & 0x3f]); // to uppercase
+                if (i < count)
+                    value = value | ((int)input[i] << 8);
+                sb.Append(itoa64[(value >> 6) & 0x3f]);
+                if (i++ >= count)
+                    break;
+                if (i < count)
+                    value = value | ((int)input[i] << 16);
+                sb.Append(itoa64[(value >> 12) & 0x3f]);
+                if (i++ >= count)
+                    break;
+                sb.Append(itoa64[(value >> 18) & 0x3f]);
+            } while (i < count);
+
+            return sb.ToString();
+        }
+        //Password End--------------
+
+        
+
+
     }
 }

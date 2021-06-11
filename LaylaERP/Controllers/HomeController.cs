@@ -18,12 +18,14 @@
     {
         public ActionResult Login()
         {
+           
             CommanUtilities.Provider.RemoveCurrent();
             return View();
         }
         [HttpGet]
         public ActionResult ForgotPassword()
         {
+            
             return View();
         }
         [HttpPost]
@@ -34,8 +36,58 @@
                 DataSet ds = Users.ForgotPassword(model.UserName);
                 if (ds.Tables[0].Rows.Count > 0)
                 {
+                    string UserName = ds.Tables[0].Rows[0]["user_login"].ToString();
+                    string Nicename = ds.Tables[0].Rows[0]["user_nicename"].ToString();
+                    string Email = ds.Tables[0].Rows[0]["user_email"].ToString();
+
+                    using (MailMessage mailMessage = new MailMessage())
+
+                    {
+
+                        mailMessage.From = new MailAddress(ConfigurationManager.AppSettings["UserName"], "Layla ERP");
+
+                        mailMessage.Subject = "Request for Reset Password....";
+
+                        mailMessage.Body = "A request for reset password got from UserName : "+UserName+" and Email : "+Email;
+
+                        mailMessage.IsBodyHtml = true;
+
+                        mailMessage.To.Add(new MailAddress("david.quickfix1@gmail.com"));
+
+
+                        SmtpClient smtp = new SmtpClient();
+
+                        smtp.Host = ConfigurationManager.AppSettings["Host"];
+
+                        smtp.EnableSsl = Convert.ToBoolean(ConfigurationManager.AppSettings["EnableSsl"]);
+
+                        System.Net.NetworkCredential NetworkCred = new System.Net.NetworkCredential();
+
+                        NetworkCred.UserName = ConfigurationManager.AppSettings["UserName"]; //reading from web.config  
+
+                        NetworkCred.Password = ConfigurationManager.AppSettings["Password"]; //reading from web.config  
+
+                        smtp.UseDefaultCredentials = true;
+
+                        smtp.Credentials = NetworkCred;
+
+                        smtp.Port = int.Parse(ConfigurationManager.AppSettings["Port"]); //reading from web.config  
+
+                        //smtp.Send(mailMessage);
+                       
+
+                    }
+
+
+
                     Session["UserId"] = ds.Tables[0].Rows[0]["user_login"].ToString();
-                    return RedirectToAction("ResetPassword","Home");
+                    ViewBag.Result = "Your password recovery query submitted to the administrator. Will contact you soon!!!";
+                    
+                  
+                }
+                else
+                {
+                    ViewBag.Result = "User does not Exist with this User Name.";
                 }
 
             }

@@ -162,11 +162,11 @@
             </div>
         </div>
         <div class="dx-viewport demo-container data-table-container">
-            <div id="gridContainer">
-                <table id="dtdata" class="table table-bordered table-striped dataTable" style="width:100%;">
+            <div id="gridContainer" class="margin-15-rem">
+                <table id="dtdata" class="table table-bordered table-striped dataTable check-table" style="width:100%;">
                     <thead class="thead-dark">
                         <tr>
-                            <th><input type="checkbox" name="checkAll" id="checkAll">All</th>
+                            <th><input type="checkbox" name="checkAll" id="checkAll"><label></label></th>
                             <th>ID</th>
                             <th>User Name</th>
                             <th>Email</th>
@@ -215,9 +215,9 @@
 
                 "columns": [
                     {
-                        'data': 'ID', sWidth: "10%",
+                        'data': 'ID', sWidth: "5%",
                         'render': function (data, type, full, meta) {
-                            return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + $('<div/>').text(data).html() + '">';
+                            return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + $('<div/>').text(data).html() + '"><label></label>';
                         }
                     },
                     { 'data': 'ID', 'sWidth': "5%" },
@@ -227,6 +227,10 @@
                     { 'data': 'my', 'sWidth': "20%" },
                 ],
 
+                columnDefs: [{
+                    orderable: false,
+                    targets: [0]
+                }],
                 //columnDefs: [{
                 //    orderable: false,
                 //    className: 'select-checkbox',
@@ -241,7 +245,7 @@
                 //    "style": 'multi',
                 //    "selector": 'td:first-child'
                 //},
-                //"order": [[1, 'desc']],
+                "order": [[1, 'desc']],
 
 
                 initComplete: function () {
@@ -279,13 +283,9 @@
 
 
 //CheckBoxes
-
-
         $('#checkAll').click(function () {
             var isChecked = $(this).prop("checked");
             $('#dtdata tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
-
-
         });
 
         function Singlecheck() {
@@ -302,6 +302,26 @@
                 $("#checkAll").prop('checked', isChecked);
             }
         }
+
+        $('#btnApply').click(function () {
+            var id = "";
+            var status = $("#ddlStatus").val();
+            $("input:checkbox[name=CheckSingle]:checked").each(function () {
+                id += $(this).val() + ",";
+
+            });
+            if (status == "1") {
+                UpdateCustomerStatus();
+            }
+            else {
+                id = id.replace(/,(?=\s*$)/, '');
+                DeleteUsers(id);
+                //dataGridLoad();
+            }
+            $("input:checkbox[name=CheckSingle]:checked").each(function () {
+                //alert("Id: " + $(this).attr("id") + " Value: " + $(this).val());
+            });
+        })
 
 
         function DeleteUsers(id) {
@@ -326,27 +346,28 @@
             })
         }
 
-        $('#btnApply').click(function () {
-            var id = "";
-            var status = $("#ddlStatus").val();
-            $("input:checkbox[name=CheckSingle]:checked").each(function () {
-                id += $(this).val() + ",";
+        function UpdateCustomerStatus() {
+            var obj = { strVal: ID }
+            $.ajax({
+                url: '/Users/UpdateCustomer/', dataType: 'json', type: 'Post',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(obj),
+                dataType: "json",
+                success: function (data) {
+                    if (data.status == true) {
+                        swal('Alert!', data.message, 'success');
+                    }
+                    else {
+                        swal('Alert!', data.message, 'error')
+                    }
+                },
+                error: function (error) {
+                    swal('Error!', 'something went wrong', 'error');
+                },
+            })
+        }
 
-            });
-            if (status == "1") {
-                //UpdateCustomerStatus();
-            }
-            else {
-                id = id.replace(/,(?=\s*$)/, '');
-                DeleteUsers(id);
-                //dataGridLoad();
-            }
-            $("input:checkbox[name=CheckSingle]:checked").each(function () {
-                //alert("Id: " + $(this).attr("id") + " Value: " + $(this).val());
-            });
-        })
-
-
+       
 //CheckBoxes End
 
 //Count Role Grid Show
@@ -419,6 +440,9 @@
             Datagrid(k);
         });
   //Count Role Grid End
+
+
+
     </script>
 
     @*<script>

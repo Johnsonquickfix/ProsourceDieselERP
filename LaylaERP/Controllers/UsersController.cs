@@ -38,10 +38,10 @@ namespace LaylaERP.Controllers
         }
 
         // GET: Add User
-        public ActionResult CreateUser()
-        {
-            return View();
-        }
+        //public ActionResult CreateUser()
+        //{
+        //    return View();
+        //}
 
         // GET: Assign Role
         public ActionResult AssignRole()
@@ -118,21 +118,97 @@ namespace LaylaERP.Controllers
             return result;
         }
 
-        //[HttpPost]
-        //public JsonResult DeleteUsers(clsUserDetails model)
-        //{
-        //    string strID = model.strVal;
-        //    if (strID != "")
-        //    {
-        //       UsersRepositry.DeleteUsers(strID);
-        //        return Json(new { status = true, message = "Users status has been updated successfully!!", url = "" }, 0);
-        //    }
-        //    else
-        //    {
-        //        return Json(new { status = false, message = "Something went wrong", url = "" }, 0);
-        //    }
+        [HttpPost]
+        public JsonResult UpdateCustomer(CustomerModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (model.ID > 0)
+                {
+                   UsersRepositry.EditCustomerStatus(model);
+                    return Json(new { status = true, message = "Customer Status has been updated successfully!!", url = "" }, 0);
+                }
+                else
+                {
+                    return Json(new { status = false, message = "Something went wrong", url = "" }, 0);
+                }
+            }
+            return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+        }
 
-        //}
+        [HttpPost]
+        public JsonResult DeleteUsers(CustomerModel model)
+        {
+            string strID = model.strVal;
+            if (strID != "")
+            {
+                UsersRepositry.DeleteUsers(strID);
+                return Json(new { status = true, message = "Users status has been updated successfully!!", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Something went wrong", url = "" }, 0);
+            }
+
+        }
+
+
+        public ActionResult CreateUser(long id = 0)
+        {
+            clsUserDetails model = new clsUserDetails();
+            ViewBag.id = id;
+            return View(model);
+        }
+        [HttpPost]
+        public JsonResult CreateUser(clsUserDetails model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (model.ID > 0)
+                {
+                    
+                }
+                else
+                {
+                    int ID = UsersRepositry.AddNewCustomer(model);
+                    if (ID > 0)
+                    {
+                        Adduser_MetaData(model, ID);
+                        Adduser_MetaData_More(model, ID);
+                        ModelState.Clear();
+                        return Json(new { status = true, message = "User record has been saved successfully!!", url = "" }, 0);
+                    }
+                    else
+                    {
+                        return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                    }
+                }
+            }
+            return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+        }
+
+
+        private void Adduser_MetaData(clsUserDetails model, long id)
+        {
+            string[] varQueryArr1 = new string[14];
+            string[] varFieldsName = new string[14] { "nickname", "first_name", "last_name", "description", "rich_editing", "syntax_highlighting", "comment_shortcuts", "admin_color", "use_ssl", "show_admin_bar_front", "locale", "wp_capabilities", "wp_user_level", "dismissed_wp_pointers" };
+            string[] varFieldsValue = new string[14] { model.user_nicename, model.first_name, model.last_name, "", "true", "true", "false", "fresh", "0", "true", "", model.user_role, "", "" };
+            for (int n = 0; n < 14; n++)
+            {
+               UsersRepositry.AddUserMetaData(model, id, varFieldsName[n], varFieldsValue[n]);
+            }
+        }
+
+        private void Adduser_MetaData_More(clsUserDetails model, long id)
+        {
+            string[] varQueryArr1 = new string[3];
+            string[] varFieldsName = new string[3] { "user_address", "user_country", "user_phone" };
+            string[] varFieldsValue = new string[3] { model.address, model.country, model.phone};
+            for (int n = 0; n < 2; n++)
+            {
+                UsersRepositry.AddUserMoreMeta(model, id, varFieldsName[n], varFieldsValue[n]);
+            }
+        }
 
     }
 }

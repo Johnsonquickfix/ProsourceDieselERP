@@ -9,153 +9,92 @@
 @*datatables js*@
 <script src="~/Content/AdminLTE-3.1.0/datatables/datatables.min.js" type="text/javascript"></script>
 <script src="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/js/dataTables.bootstrap.min.js" type="text/javascript"></script>
-
 @*<section class="content-header">
         <h1 class="page-heading ">
             Customer
         </h1>
     </section>*@
-<section class="content">
-    <div class="row">
-        <div class="col-md-3">
-                <div class="form-group">
-                    <select class="form-control select2" id="ddlSearchStatus" placeholder="Select User">
+<div class="page-title">
+    <h2 class="page-heading">Customers</h2>
+</div>
+<section class="content section-content table-design">
+    <div class="user-top-section">
+        <div class="tablenav top">
+
+            <div class="alignleft actions bulkactions">
+                <select class="form-control select2" id="ddlSearchStatus" placeholder="Select User">
+                    <option value="">Select Status</option>
+                    <option value="0">Active</option>
+                    <option value="1">InActive</option>
+                </select>
+                <button type="button" id="btnSearch" class="btn btn-primary btn-flat button">Search</button>
+            </div>
+            <br class="clear">
+            @*<div class="col-md-3">
+            <div class="form-group">
+                <input type="text" id="txtSearch" class="form-control" placeholder="Search" />
+            </div>
+        </div>*@
+            @*<div class="col-sm-2">
+            <a href="../../Customer/NewUser" class="btn btn-primary btn-flat"><i class="fa fa-user"></i> Add New User</a>
+        </div>*@
+
+        </div>
+            <!---sdf-->
+            <div class="tablenav top tablenav-top2">
+                <div class="alignleft actions bulkactions">
+                    <select class="form-control" id="ddlStatus">
+                        <option value="1">Bulk Action</option>
+                        <option value="2">Delete</option>
+                    </select>
+                    <button type="button" id="btnApply" class="btn btn-primary btn-flat button">Apply</button>
+                </div>
+                <div class="alignleft actions bulkactions">
+                    <select class="form-control" id="ddlUserStatus">
                         <option value="0">Active</option>
                         <option value="1">InActive</option>
                     </select>
+                    <button type="button" id="btnChange" class="btn btn-primary btn-flat button">Change</button>
                 </div>
-            </div>
-            @*<div class="col-md-3">
-                <div class="form-group">
-                    <input type="text" id="txtSearch" class="form-control" placeholder="Search" />
-                </div>
-            </div>*@
-
-            <div class="col-sm-2">
-                <button type="button" id="btnSearch" class="btn btn-primary btn-flat"><i class="fa fa-search"></i> Search</button>
-            </div>
-
-            @*<div class="col-sm-2">
-                <a href="../../Customer/NewUser" class="btn btn-primary btn-flat"><i class="fa fa-user"></i> Add New User</a>
-            </div>*@
-
-
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <table id="dtdata" class="table table-bordered table-striped dataTable " width="100%">
-                <thead>
-                    <tr>
-                        <th><input type="checkbox" name="checkAll" id="checkAll"> Check All</th>
-                        <th>Cust ID</th>
-                        <th>Customer Name</th>
-                        <th>E-mail</th>
-                        <th>Status</th>
-                        <th>Phone</th>
-                        <th>Registration Date</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-
-
-            </table>
         </div>
     </div>
+        <!-- end top-->
+        <div class="row">
+            <div class="col-md-12">
+                <table id="dtdata" class="table check-table table-bordered table-striped dataTable " width="100%">
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" name="checkAll" id="checkAll"><label></label></th>
+                            <th>Cust ID</th>
+                            <th>Customer Name</th>
+                            <th>E-mail</th>
+                            <th>Status</th>
+                            <th>Phone</th>
+                            <th>Registration Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
 </section>
-<div class="col-md-2">
-    <div class="form-group">
-        <select class="form-control" id="ddlStatus">
-            <option value="1">Bulk Action</option>
-            <option value="2">Delete</option>
-        </select>
-    </div>
-</div>
-<div class="col-sm-1">
-    <button type="button" id="btnApply" class="btn btn-primary btn-flat">Apply</button>
-</div>
-<div class="col-md-2">
-    <div class="form-group">
-        <select class="form-control" id="ddlUserStatus">
-            <option value="0">Active</option>
-            <option value="1">InActive</option>
-        </select>
-    </div>
-</div>
-<div class="col-sm-2">
-    <button type="button" id="btnChange" class="btn btn-primary btn-flat">Change</button>
-</div>
+
 <script src="@Url.Content("~/js/Customer/Customer.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 <script>
     $(document).ready(function () {
-
         $("#btnSearch").click(function () { dataGridLoad(); return false; });
         setTimeout(function () { dataGridLoad(); }, 50);
     });
-    function dataGridLoad() {
-        var urid = parseInt($("#ddlSearchStatus").val()) || 0;
-        var sid = ""//$('#txtSearch').val() ;
-        var obj = { user_status: urid, Search: sid, PageNo: 0, PageSize: 10, sEcho: 1, SortCol: 'id', SortDir: 'desc' };
-
-
-        $('#dtdata').DataTable({
-            columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
-            destroy: true, bProcessing: true, bServerSide: true,
-            sPaginationType: "full_numbers", searching: true, ordering: true, lengthChange: true,
-            bAutoWidth: true, scrollX: true, scrollY: ($(window).height() - 215),
-            lengthMenu: [[10, 20, 50], [10, 20, 50]],
-            sAjaxSource: "/Customer/GetCustomerList",
-            fnServerData: function (sSource, aoData, fnCallback, oSettings) {
-                obj.Search = aoData[45].value;
-                var col = 'id';
-                if (oSettings.aaSorting.length > 0) {
-                    var col = oSettings.aaSorting[0][0] == 2 ? "user_nicename" : oSettings.aaSorting[0][0] == 3 ? "user_email" : oSettings.aaSorting[0][0] == 4 ? "status" : oSettings.aaSorting[0][0] == 5 ? "meta_value" : oSettings.aaSorting[0][0] == 6 ? "user_registered" : "id";
-                    obj.SortCol = col; obj.SortDir = oSettings.aaSorting.length > 0 ? oSettings.aaSorting[0][1] : "desc";
-                }
-                obj.sEcho = aoData[0].value; obj.PageSize = oSettings._iDisplayLength; obj.PageNo = oSettings._iDisplayStart;
-                $.ajax({
-                    type: "POST", url: sSource, async: true, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
-                    success: function (data) {
-                        var dtOption = { sEcho: data.sEcho, recordsTotal: data.recordsTotal, recordsFiltered: data.recordsFiltered, iTotalRecords: data.iTotalRecords, iTotalDisplayRecords: data.iTotalDisplayRecords, aaData: JSON.parse(data.aaData) };
-                        return fnCallback(dtOption);
-                    },
-                    error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
-                    async: false
-                });
-            },
-            aoColumns: [
-                {
-                    'data': 'id', sWidth: "10%",
-                    'render': function (data, type, full, meta) {
-                        return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + $('<div/>').text(data).html() + '">';
-                    }
-                },
-                { data: 'id', title: 'Cust ID', sWidth: "10%" },
-                { data: 'user_nicename', title: 'Customer Name', sWidth: "15%" },
-                { data: 'user_email', title: 'E-mail', sWidth: "15%" },
-                { data: 'status', title: 'Status', sWidth: "10%" },
-                { data: 'meta_value', title: 'Phone', sWidth: "10%" },
-                { data: 'user_registered', title: 'Registration Date', sWidth: "10%" },
-                {
-                    'data': 'id', sWidth: "5%",
-                    'render': function (id, type, full, meta) {
-                        return '<a href="../Customer/NewUser/' + id + '"><i class="glyphicon glyphicon-pencil"></i></a>'
-                    }
-                }
-            ]
-        });
-    }
-
+   
     $('#checkAll').click(function () {
         var isChecked = $(this).prop("checked");
         $('#dtdata tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
-
     });
     function Singlecheck() {
         var isChecked = $(this).prop("checked");
         var isHeaderChecked = $("#checkAll").prop("checked");
         if (isChecked == false && isHeaderChecked)
             $("#checkAll").prop('checked', isChecked);
-
         else {
             $('#dtdata tr:has(td)').find('input[type="checkbox"]').each(function () {
                 if ($(this).prop("checked") == false)
@@ -172,7 +111,7 @@
             id += $(this).val() + ",";
         });
         if (status == "1") {
-            UpdateCustomerStatus();
+            //UpdateCustomerStatus();
         }
         else {
             id = id.replace(/,(?=\s*$)/, '');
@@ -191,6 +130,7 @@
         dataGridLoad();
         $("#checkAll").prop('checked', false);
     })
+
 
 
 </script>

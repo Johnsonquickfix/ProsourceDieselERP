@@ -104,7 +104,7 @@ namespace LaylaERP.Models
             set { _user_status = value; }
         }
 
-        public int ID
+        public long ID
         {
             get; set;
         }
@@ -116,5 +116,10 @@ namespace LaylaERP.Models
         {
             get; set;
         }
+        public string password
+        {
+            get; set;
+        }
+
     }
 }

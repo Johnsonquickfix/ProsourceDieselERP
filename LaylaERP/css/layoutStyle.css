@@ -8,6 +8,9 @@ body {
 button, input, select, textarea, h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     font-family: 'Open Sans', sans-serif;
 }
+.p-0 {
+    padding: 0px !important;
+}
 /*****
 dashboard
 *******/
@@ -32,7 +35,7 @@ dashboard
 }
 
 .bg-info {
-    background-color: #15b3ff !important;
+    background-color: #3c8dbc !important;
 }
 
 .bg-warning {
@@ -107,7 +110,7 @@ max-height:200px;overflow:auto;}
     }
 .user_subCrumbs ul {
     list-style: none;
-    margin: 8px 0 0;
+    margin: 0px 0 10px;
     padding: 0;
     font-size: 13px;
     float: left;
@@ -153,20 +156,22 @@ padding:0px;}
 margin-top:20px;}
 #userslist_wrapper {
 padding:0px;}
-#userslist {
+#userslist, table {
     background: #fff;
     table-layout: fixed;
-    border: 1px solid #ccd0d4;
-    box-shadow: 0 1px 1px rgb(0 0 0 / 4%);
+    border: 1px solid #ccd0d4 !important;
+    box-shadow: 0 1px 1px rgb(0 0 0 / 4%) !important;
     border-spacing: 0;
-    width: 100%;
+    width: 100% !important;
     clear: both;
     margin: 0;
 }
-    #userslist thead th {
-        background: #15b3ff;
+    #userslist thead th, table thead th {
+        background: #3c8dbc;
+        text-transform: uppercase;
+        font-size: 12px;
         border-bottom: 1px solid #0090d6;
-        color: #fff;
+        color: #fff !important;
     }
     table.dataTable tbody td.select-checkbox:before, table.dataTable tbody td.select-checkbox:after, table.dataTable tbody th.select-checkbox:before, table.dataTable tbody th.select-checkbox:after {
         width: 16px !important;
@@ -175,17 +180,25 @@ padding:0px;}
     }
 .table-bordered > thead > tr > th, .table-bordered > tbody > tr > th, .table-bordered > tfoot > tr > th, .table-bordered > thead > tr > td, .table-bordered > tbody > tr > td, .table-bordered > tfoot > tr > td {
 border:0px;}
-#userslist tbody .odd {
+#userslist tbody .odd, table tbody .odd {
     background-color: #f9f9f9;
 }
-#userslist tbody .even {
+#userslist tbody .even, table tbody .even {
     background-color: #fff;
 }
-#userslist th, #userslist td {
-    padding: 10px 10px;
-    color: #555;
+#userslist th, #userslist td, table th, table td {
+    padding: 10px 10px !important;
+    color: #4f4f4f ;
 }
-
+.dataTables_scrollBody {
+height:auto !important;}
+.margin-15-rem {
+margin-left:-15px !important; margin-right:-15px !important;}
+.table-design #dtdata thead th {
+    visibility: hidden;
+    opacity: 0;
+    padding: 0px 10px !important;
+}
 /************settings*/
 .setting-save a {
     display: inline-flex;
@@ -195,7 +208,8 @@ border:0px;}
     padding: 0px 25px;
     align-items: center;
     font-size: 18px;
-    background: #EE4823; color:#fff;
+    background: #EE4823;
+    color: #fff;
 }
     .setting-save a i {
         margin-right: 10px;
@@ -207,45 +221,78 @@ margin-bottom:35px;}
     margin-top: 0px;
     font-weight: normal;
 }
-.form-check label {position:relative; padding-left:25px;
-font-weight:400; margin:0px; user-select:none;}
-.form-check [type="checkbox"] {
-    opacity: 0;display:none;
+.form-check label, .check-table [type="checkbox"] + label {
+    position: relative;
+    padding-left: 25px;
+    font-weight: 400;
+    margin: 0px;
+    user-select: none;
+}
+.form-check [type="checkbox"], .check-table [type="checkbox"] {
+    opacity: 0;
+    display: none;
     visibility: hidden;
 }
-.form-check label:before {
-    content: "";
-    position: absolute;
-    left: 0px;
-    top: 50%;
-    transform: translateY(-50%);
+    .form-check label:before, .check-table [type="checkbox"] + label:before {
+        content: "";
+        position: absolute;
+        left: 0px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 18px;
+        height: 18px;
+        border: 1px solid #7e8993;
+        border-radius: 2px;
+        transition: .5s all;
+    }
+    .form-check label:after, .check-table [type="checkbox"] + label:after {
+        content: "";
+        opacity: 0;
+        left: 2.5px;
+        top: 50%;
+        margin-top: -4.5px;
+        width: 12px;
+        height: 6px;
+        border-width: 0px 0px 2px 2px;
+        border-color: #fff;
+        border-style: solid;
+        position: absolute;
+        transition: .5s all;
+        transform: rotate( 310deg );
+    }
+    .check-table th [type="checkbox"] + label:before {
+        border-color:#fff;
+    }
+.check-table th [type="checkbox"]:checked + label:before {
+    border-color: #fff !important;
+}
+.form-check [type="checkbox"]:checked + label:before, .check-table [type="checkbox"]:checked + label:before {
+    background: #3c8dbc !important;
+    border-color: #3c8dbc !important;
+}
+    .form-check [type="checkbox"]:checked + label:after, .check-table [type="checkbox"]:checked + label:after {
+        opacity: 1;
+    }
+.check-table [type="checkbox"] {
     width: 18px;
     height: 18px;
-    border: 1px solid #7e8993;
-    border-radius: 2px; transition:.5s all;
+    position: absolute; visibility:visible; display:block;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9;margin:0px;
 }
-.form-check label:after {
-    content: ""; opacity:0;
-    left: 2.5px;
-    top: 50%; margin-top:-4.5px;
-    width: 12px;
-    height: 6px;
-    border-width: 0px 0px 2px 2px;
-    border-color: #fff;
-    border-style: solid;
-    position: absolute; transition:.5s all;
-    transform: rotate( 310deg );
-}
-
-.form-check [type="checkbox"]:checked + label:before {
-    background: #15b3ff !important;
-    border-color: #15b3ff !important;
-}
-.form-check [type="checkbox"]:checked + label:after {
-    opacity: 1;
-}
-.mt-1 {
-margin-top:1rem;   }
+    .check-table [type="checkbox"] + label {
+        position: relative;
+        padding: 0px;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);width:20px; height:20px;
+    }
+    .mt-1 {
+        margin-top: 1rem;
+    }
 .nav-tabs-custom > .nav-tabs > li.active {
     border-top-color: #ff4100;
 }
@@ -260,7 +307,7 @@ margin-bottom:20px;}
     line-height: 2;
     color: #32373c;
     border-color: #7e8993;
-    box-shadow: none;
+    box-shadow: none;height:30px;
     border-radius: 3px;
     padding: 0 24px 0 8px;
     min-height: 30px;
@@ -352,8 +399,8 @@ body table.dataTable tr.selected td.select-checkbox:after, body table.dataTable 
     transform: rotate( 310deg ) translate(-50%, -50%);
 }
 body table.dataTable tr.selected td.select-checkbox:before, body table.dataTable tr.selected th.select-checkbox:before {
-    background: #15b3ff !important;
-    border-color: #15b3ff !important;
+    background: #3c8dbc !important;
+    border-color: #3c8dbc !important;
 }
 .user-panel > .info > p {
     font-weight:400;
@@ -475,13 +522,10 @@ color:#4f4f4f;}
     font-size: 20px;
 }
 .form-control {
-    /*border-width: 0px 0px 1px 0px;
-    padding-left: 0px;
-    padding-right: 0px;*/
     color: #4f4f4f;
 }
 #selectStatus select {
-    font-size: 14px;
+    font-size: 14px;height:30px;
     line-height: 2;
     color: #32373c;
     border-color: #7e8993;
@@ -505,5 +549,118 @@ table.dataTable thead .sorting:before, table.dataTable thead .sorting:after, tab
     top: 50%;bottom:auto; transform:translateY(-50%);
 }
 .pagination > .active > a, .pagination > .active > a:focus, .pagination > .active > a:hover, .pagination > .active > span, .pagination > .active > span:focus, .pagination > .active > span:hover {
-    background: #15B3FF
+    background: #3c8dbc
+}
+table.dataTable thead .sorting:after, table.dataTable thead .sorting_asc:after, table.dataTable thead .sorting_desc:after, table.dataTable thead .sorting_asc_disabled:after, table.dataTable thead .sorting_desc_disabled:after {
+right:12px;}
+#dtdata td:first-child, .check-table th:first-child {
+    text-align: center;
+    position: relative;
+}
+.tablenav-top2 {
+margin-top:12px;}
+#txtBillingPhone {
+padding-left:50px;}
+
+@media(min-width:992px) {
+    .box.col-md-10 {
+        width: 83.33333333%;
+    }
+}
+.setting-bulk #txtLogDate {
+    height: 30px;
+}
+.setting-bulk {
+display:inline-flex;}
+    .setting-bulk > * {
+    margin-right:15px;}
+.export-section .dx-theme-generic-typography {background:transparent;
+}
+.dataTables_filter [type="search"] {
+    box-shadow: 0 0 0 transparent;
+    border-radius: 4px;
+    border: 1px solid #7e8993;
+    background-color: #fff;
+    color: #32373c;
+    padding: 0 8px;
+    line-height: 2;
+    min-height: 30px;
+    -webkit-appearance: textfield;
+    height: 30px;
+}
+.export-section #exportdata_info {
+float:left;
+}
+.export-section #exportdata_paginate {
+float:right;}
+.unique-btn {
+    border: 1px solid #ff4100;
+    padding: 5px 15px;
+    display: inline-block;
+    border-radius: 4px;
+    box-shadow: 0px 0px 4px #4a4f55;
+    -webkit-box-shadow: 0px 0px 4px #4a4f55;
+    color: #4a4f55;
+    transition: 0.5s ease all;
+    background-color: rgba(0,0,0,0);
+}
+.create-new-customer .form-group {
+margin:0px 0px 15px 0px;}
+.row-small {
+margin:0px -5px;}
+    .row-small > div {
+    padding:0px 5px;}
+.box-sections .form-group {
+margin-bottom:10px !important;}
+.box-sections #txtCustomerNotes {
+height:78px;}
+.neworder-section .select2-container--default .select2-selection--single,
+.neworder-section .select2-selection .select2-selection--single {
+    border: 1px solid #d2d6de;
+    border-radius: 0;
+    padding: 0px 0px;
+    height: 34px;
+}
+.neworder-section .select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: #4f4f4f;
+    line-height: 32px;
+    margin-top: 0px;
+}
+    .neworder-section .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 32px;
+    }
+    .neworder-section .select2-container--default .select2-selection--single .select2-selection__placeholder {
+        color: #4f4f4f;
+    }
+.neworder-section table .select2-container--default .select2-selection--single .select2-selection__placeholder {
+font-weight:500;}
+.thead-dark {
+    border-top: 1px solid #ccd0d4;
+}
+.neworder-section [onclick].menu-icon-gr {
+    padding: 0px;
+}
+.neworder-section .rowCalulate {
+    box-shadow: 0 0 0 transparent;
+    border-radius: 4px;
+    border: 1px solid #7e8993;
+    background-color: #fff;
+    color: #32373c;
+    padding: 0 8px;
+    line-height: 2;
+    min-height: 30px;
+    -webkit-appearance: textfield;
+    height: 30px;
+}
+.chechout-tables .text-right {
+    text-align:center !important;
+}
+.neworder-section .box-title {
+margin-top:0px;}
+.box-title {
+    font-size: 22px;
+}
+body .checkout-box-total .control-label {
+    padding-top: 0px;
+    font-weight: 600;
 }

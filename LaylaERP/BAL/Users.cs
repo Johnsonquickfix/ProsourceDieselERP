@@ -209,5 +209,24 @@
         }
 
 
+        public static DataSet GetEmailCredentials()
+        {
+            DataSet ds = new DataSet();
+            try
+            {
+                string strSql = "Select * from wp_system_settings;";
+                MySqlParameter[] parameters =
+                {
+                    
+                };
+                ds = SQLHelper.ExecuteDataSet(strSql, parameters);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return ds;
+        }
+
     }
 }

@@ -249,6 +249,24 @@ namespace LaylaERP.BAL
             }
         }
 
+        public static int changeRoleStatus(CustomerModel model)
+        {
+            try
+            {
+                string strsql = "update wp_usermeta set meta_value=@meta_value where meta_Key = 'wp_capabilities' and user_id in(" + model.strVal + ")";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@meta_value", model.user_status)
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
         //Add customers
         public static int AddNewCustomer(clsUserDetails model)
         {

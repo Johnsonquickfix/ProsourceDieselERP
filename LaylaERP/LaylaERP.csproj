@@ -479,6 +479,7 @@
     <Content Include="js\app.js" />
     <Content Include="js\Customer\Customer.js" />
     <Content Include="js\Orders\NewOrder.js" />
+    <Content Include="js\Orders\OrderHistory.js" />
     <Content Include="js\Users\UserLogin.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -592,10 +593,12 @@
     <Content Include="Scripts\jquery-3.4.1.slim.js" />
     <Content Include="Scripts\jquery-3.4.1.slim.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\passwordStrengthMeter.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -630,7 +633,6 @@
     <Content Include="Views\Home\MobileVerification.cshtml" />
     <Content Include="Views\Home\ResetPassword.cshtml" />
     <Content Include="Views\Home\ForgotPassword.cshtml" />
-    <Content Include="Views\Users\CreateUser.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -406,6 +406,32 @@
             }
             return dt;
         }
+        public static DataTable OrderList(string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "order_id", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                string strWhr = string.Empty;
+
+                string strSql = "SELECT order_id, order_id as chkorder,num_items_sold,Cast(total_sales As DECIMAL(10, 2)) as total_sales, wp_wc_order_stats.customer_id as customer_id, status,date_created,MAX( case when meta_key = '_billing_first_name' THEN meta_value ELSE '' END) FirstName,MAX( case when meta_key = '_billing_last_name' THEN meta_value ELSE '' END) LastName FROM wp_wc_order_stats left join wp_postmeta on wp_wc_order_stats.order_id = wp_postmeta.post_id WHERE wp_postmeta.meta_key in ('_billing_first_name', '_billing_last_name') GROUP BY order_id,num_items_sold, total_sales, wp_wc_order_stats.customer_id, status,date_created"
+                            + " order by " + SortCol + " " + SortDir + " limit " + (pageno * pagesize).ToString() + ", " + pagesize + "";
+                if (!string.IsNullOrEmpty(searchid))
+                {
+                    strWhr += " and (order_id like '%" + searchid + "%' OR num_items_sold='%" + searchid + "%' OR total_sales='%" + searchid + "%' OR wp_wc_order_stats.customer_id='%" + searchid + "%' OR status like '%" + searchid + "%' OR date_created like '%" + searchid + "%')";
+                }
+                strSql += "; SELECT ceil(Count(order_id)/" + pagesize.ToString() + ") TotalPage,Count(order_id) TotalRecord from wp_wc_order_stats WHERE 1 = 1 " + strWhr.ToString();
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dt = ds.Tables[0];
+                if (ds.Tables[1].Rows.Count > 0)
+                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
 
     }
 }

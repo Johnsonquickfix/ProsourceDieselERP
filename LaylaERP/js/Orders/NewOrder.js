@@ -35,7 +35,11 @@ $(document).ready(function () {
     $(document).on("click", "#btnCheckout", function (t) { t.preventDefault(); saveCO(); });
     $(document).on("click", "#btnpay", function (t) { t.preventDefault(); PaymentModal(); });
     $("#billModal").on("click", "#btnPlaceOrder", function (t) { t.preventDefault(); AcceptPayment(); });
-
+    $("#billModal").on("change", "#ddlPaymentMethod", function (t) {
+        t.preventDefault(); if ($("#ddlPaymentMethod").val() == "paypal") { $("#txtpaypalemail").removeClass('hidden'); $("#txtpaypalemail").focus(); }
+        else if ($("#ddlPaymentMethod").val() == "podium") { $("#txtpaypalemail").addClass('hidden'); }
+        else { $("#txtpaypalemail").addClass('hidden'); }
+    });
 });
 ///Bind States of Country
 function BindStateCounty(ctr, obj) {
@@ -49,14 +53,14 @@ function BindStateCounty(ctr, obj) {
 ///Get New Order No
 function NewOrderNo() {
     var opt = { strValue1: '' };
-    $.ajax({
-        type: "POST", url: '/Orders/GetNewOrderNo', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
-        success: function (result) {
-            $('#hfOrderNo').val(result.message); $('#lblOrderNo').text('Order #' + result.message + ' detail ');
-        },
-        error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
-        async: false
-    });
+    //$.ajax({
+    //    type: "POST", url: '/Orders/GetNewOrderNo', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
+    //    success: function (result) {
+    //        $('#hfOrderNo').val(result.message); $('#lblOrderNo').text('Order #' + result.message + ' detail ');
+    //    },
+    //    error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
+    //    async: false
+    //});
 }
 ///Find Address of Customer
 function CustomerAddress() {
@@ -554,56 +558,10 @@ function saveCO() {
 }
 
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Payment Modal ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-function PaymentModal_old() {
-    var myHtml = '';
-    //header
-    myHtml += '<div class="modal-dialog">';
-    myHtml += '<div class="modal-content">';
-    myHtml += '<div class="modal-header">';
-    myHtml += '<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button>';
-    myHtml += '<h4 class="modal-title" id="myModalLabel">Select Payment Method</h4>';
-    myHtml += '</div>';
-    myHtml += '<div class="modal-body" >';
-    myHtml += '<div class="nav-tabs-custom">';
-    myHtml += '<ul class="nav nav-tabs">';
-    myHtml += '<li class="active"><a href="#tab_Authorize" data-toggle="tab"><i class="fa fa-credit-card"></i> Authorize.Net</a></li>';
-    myHtml += '<li><a href="#tab_Paypal" data-toggle="tab"><i class="fab fa-paypal"></i> Paypal</a></li>';
-    myHtml += '</ul>';
-    myHtml += '<div class="tab-content" >';
-    myHtml += '<div class="tab-pane active" id="tab_Authorize">';
-    myHtml += '<div class="form-group"> <label for="numeric" class="control-label">Full name (on the card)</label> <input id="cc-fullname" type="text" class="form-control cc-input"> </div>';
-    myHtml += '<div class="form-group"><label for="cc-number" class="control-label">Card number</label><input id="cc-number" type="tel" class="form-control cc-number cc-input" autocomplete="cc-number" placeholder="•••• •••• •••• ••••"> </div>';
-    myHtml += '<div class="row">';
-    myHtml += '<div class="col-md-6">';
-    myHtml += '<div class="form-group"> <label for="cc-exp" class="control-label">Expiration</label> <input id="cc-exp" type="tel" class="form-control cc-exp cc-input" autocomplete="cc-exp" placeholder="•• / ••"> </div>';
-    myHtml += '</div>';
-    myHtml += '<div class="col-md-6">';
-    myHtml += '<div class="form-group"> <label for="cc-cvc" class="control-label">CVV</label> <input id="cc-cvc" type="tel" class="form-control cc-cvc cc-input" autocomplete="off" placeholder="••••"> </div>';
-    myHtml += '</div>';
-    myHtml += '<div class="col-md-12">';
-    myHtml += '<div class="form-group pull-right"> <button type="button" class="btn btn-primary" id="btnPayment"><i class="fa fa-credit-card"></i> Pay</button> </div>';
-    myHtml += '</div>';
-    myHtml += '</div>';
-    myHtml += '</div>';
-    myHtml += '<div class="tab-pane" id="tab_Paypal">';
-    myHtml += '<div class="form-group"> <label for="numeric" class="control-label  paypal-email">Paypal Email-id</label> <input type="text" class="form-control"> </div>';
-    myHtml += '<div class="form-group pull-right"> <button type="button" class="btn btn-primary" id="btnSendInvoice"><i class="fa fa-credit-card"></i> Send Invoice</button> </div>';
-    myHtml += '</div>';
-    myHtml += '</div>';
-    myHtml += '</div>';
-    myHtml += '</div > ';
-    myHtml += '</div>';
-    myHtml += '</div>';
-    $("#billModal").empty().html(myHtml);
-    $('.cc-number').inputmask("9999 9999 9999 9999");
-    $('.cc-exp').inputmask("99 / 99");
-    $('.cc-cvc').inputmask("9999");
-    $("#billModal").modal({ backdrop: 'static' }); $("#txt_Coupon").focus();
-}
 function PaymentModal() {
     var myHtml = '';
     //header
-    myHtml += '<div class="modal-dialog">';
+    myHtml += '<div class="modal-dialog modal-lg">';
     myHtml += '<div class="modal-content">';
     myHtml += '<div class="modal-header">';
     myHtml += '<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button>';
@@ -638,20 +596,22 @@ function PaymentModal() {
 
     myHtml += '</section>';
     myHtml += '</div>';
+
     myHtml += '<div class="modal-footer">';
-    myHtml += '<div class="col-md-8">';
-    myHtml += '<select class="form-control select2" id="ddlPaymentMethod" style="width: 100%;">';
+    myHtml += '<div class="col-md-7 ">';
+    myHtml += '<div class="input-group">';
+    myHtml += '<span class="input-group-btn"  >';
+    myHtml += '<select class="form-control select2" id="ddlPaymentMethod" style="width: auto;">';
     myHtml += '<option value="podium" selected="selected">Podium</option>';
     myHtml += '<option value="paypal">PayPal</option>';
     myHtml += '</select>';
+    myHtml += '</span>';
+    myHtml += '<input class="form-control hidden" type="text" id="txtpaypalemail" name="txtpaypalemail" placeholder="PayPal Email" maxlength="60"/>';
     myHtml += '</div>';
-    //myHtml += '<div class="form-check col-sm-6 text-left">';
-    //myHtml += '<input class="form-check-input" type="checkbox" id="Podium" checked>';
-    //myHtml += '<label class="form-check-label" for="Podium">Podium</label>';
-    //myHtml += '</div>';
-
+    myHtml += '</div>';
     myHtml += '<button type="button" class="btn btn-primary" id="btnPlaceOrder">Place Order $' + $('#orderTotal').text() + '</button>';
     myHtml += '</div>';
+
     myHtml += '</div>';
     myHtml += '</div>';
     $("#billModal").empty().html(myHtml);
@@ -721,69 +681,37 @@ function updatePayment(taskUid) {
 function PaypalPayment() {
     swal('Alert!', 'Working....', "success").then((result) => { return false; });;
     var option = {
-        "detail": {
-            "invoice_number": "#123",
-            "reference": "deal-ref",
-            "invoice_date": "2018-11-12",
-            "currency_code": "USD",
-            "note": "Thank you for your business.",
-            "term": "No refunds after 30 days.",
-            "memo": "This is a long contract",
-            "payment_term": { "term_type": "NET_10", "due_date": "2018-11-22" }
+        detail: {
+            invoice_number: $('#hfOrderNo').val(),
+            reference: "",
+            invoice_date: "2018-11-12",
+            currency_code: "USD",
+            note: "Layla Invoice.",
+            term: "",
+            memo: "",
+            payment_term: { term_type: "NET_10", due_date: "2018-11-22" }
         },
-        "invoicer": {
-            "name": { "given_name": "David", "surname": "Larusso" },
-            "address": {
-                "address_line_1": "1234 First Street",
-                "address_line_2": "337673 Hillside Court",
-                "admin_area_2": "Anytown",
-                "admin_area_1": "CA",
-                "postal_code": "98765",
-                "country_code": "US"
-            },
-            "email_address": "merchant@example.com",
-            "phones": [{ "country_code": "001", "national_number": "4085551234", "phone_type": "MOBILE" }],
-            "website": "www.test.com",
-            "tax_id": "ABcNkWSfb5ICTt73nD3QON1fnnpgNKBy- Jb5SeuGj185MNNw6g",
-            "logo_url": "https://example.com/logo.PNG",
-            "additional_notes": "2-4"
+        invoicer: {
+            name: { given_name: "", surname: "" },
+            address: { address_line_1: "157 Church Street Suite 1956", address_line_2: "", admin_area_2: "New Haven", admin_area_1: "CT", postal_code: "06510", country_code: "US" },
+            email_address: "david.quick.fix1-facilitator@gmail.com",
+            phones: [{ country_code: "001", national_number: "8553581676", phone_type: "PHONE" }],
+            website: "www.laylasleep.com/",
+            //tax_id: "ABcNkWSfb5ICTt73nD3QON1fnnpgNKBy- Jb5SeuGj185MNNw6g",
+            logo_url: "https://laylasleep-quickfix1.netdna-ssl.com/wp-content/themes/layla-white/images/logo.png",
+            additional_notes: ""
         },
-        "primary_recipients": [
+        primary_recipients: [
             {
-                "billing_info": {
-                    "name": {
-                        "given_name": "Stephanie",
-                        "surname": "Meyers"
-                    },
-                    "address": {
-                        "address_line_1": "1234 Main Street",
-                        "admin_area_2": "Anytown",
-                        "admin_area_1": "CA",
-                        "postal_code": "98765",
-                        "country_code": "US"
-                    },
-                    "email_address": "bill-me@example.com",
-                    "phones": [
-                        {
-                            "country_code": "001",
-                            "national_number": "4884551234",
-                            "phone_type": "HOME"
-                        }
-                    ],
-                    "additional_info_value": "add-info"
+                billing_info: {
+                    name: { given_name: $('#txtbillfirstname').val(), surname: $('#txtbilllastname').val() },
+                    address: { address_line_1: $('#txtbilladdress1').val() + ' ' + $('#txtbilladdress2').val(), admin_area_2: $('#txtbillcity').val(), admin_area_1: $('#ddlbillstate').val(), postal_code: $('#txtbillzipcode').val(), country_code: $('#ddlbillcountry').val() },
+                    email_address: $('#txtbillemail').val(),
+                    phones: [{ country_code: "001", national_number: $('#txtbillphone').val(), phone_type: "HOME" }]
                 },
-                "shipping_info": {
-                    "name": {
-                        "given_name": "Stephanie",
-                        "surname": "Meyers"
-                    },
-                    "address": {
-                        "address_line_1": "1234 Main Street",
-                        "admin_area_2": "Anytown",
-                        "admin_area_1": "CA",
-                        "postal_code": "98765",
-                        "country_code": "US"
-                    }
+                shipping_info: {
+                    name: { given_name: $('#txtshipfirstname').val(), surname: $('#txtshiplastname').val() },
+                    address: { address_line_1: $('#txtshipaddress1').val() + ' ' + $('#txtshipaddress2').val(), admin_area_2: $('#txtshipcity').val(), admin_area_1: $('#ddlshipstate').val(), postal_code: $('#txtshipzipcode').val(), country_code: $('#ddlshipcountry').val() }
                 }
             }
         ],
@@ -792,77 +720,57 @@ function PaypalPayment() {
                 "name": "Yoga Mat",
                 "description": "Elastic mat to practice yoga.",
                 "quantity": "1",
-                "unit_amount": {
-                    "currency_code": "USD",
-                    "value": "50.00"
-                },
-                "tax": {
-                    "name": "Sales Tax",
-                    "percent": "7.25"
-                },
-                "discount": {
-                    "percent": "5"
-                },
+                "unit_amount": { "currency_code": "USD", "value": "50.00" },
+                "tax": { "name": "Sales Tax", "percent": "7.25" },
+                "discount": { "percent": "5" },
                 "unit_of_measure": "QUANTITY"
             },
             {
                 "name": "Yoga t-shirt",
                 "quantity": "1",
-                "unit_amount": {
-                    "currency_code": "USD",
-                    "value": "10.00"
-                },
-                "tax": {
-                    "name": "Sales Tax",
-                    "percent": "7.25"
-                },
-                "discount": {
-                    "amount": {
-                        "currency_code": "USD",
-                        "value": "5.00"
-                    }
-                },
+                "unit_amount": { "currency_code": "USD", "value": "10.00" },
+                "tax": { "name": "Sales Tax", "percent": "7.25" },
+                "discount": { "amount": { "currency_code": "USD", "value": "5.00" } },
                 "unit_of_measure": "QUANTITY"
             }
         ],
-        "configuration": {
-            "partial_payment": {
-                "allow_partial_payment": true,
-                "minimum_amount_due": {
-                    "currency_code": "USD",
-                    "value": "20.00"
-                }
+        configuration: {
+            partial_payment: {
+                allow_partial_payment: true,
+                minimum_amount_due: { "currency_code": "USD", "value": "20.00" }
             },
-            "allow_tip": true,
-            "tax_calculated_after_discount": true,
-            "tax_inclusive": false,
-            "template_id": "TEMP-19V05281TU309413B"
+            allow_tip: true,
+            tax_calculated_after_discount: true,
+            tax_inclusive: false,
+            template_id: "TEMP-19V05281TU309413B"
         },
-        "amount": {
-            "breakdown": {
-                "custom": {
-                    "label": "Packing Charges",
-                    "amount": {
-                        "currency_code": "USD",
-                        "value": "10.00"
-                    }
-                },
-                "shipping": {
-                    "amount": {
-                        "currency_code": "USD",
-                        "value": "10.00"
-                    },
-                    "tax": {
-                        "name": "Sales Tax",
-                        "percent": "7.25"
-                    }
-                },
-                "discount": {
-                    "invoice_discount": {
-                        "percent": "5"
-                    }
-                }
+        amount: {
+            breakdown: {
+                custom: { label: "Packing Charges", amount: { currency_code: "USD", value: "10.00" } },
+                shipping: { amount: { currency_code: "USD", value: "10.00" }, tax: { name: "Sales Tax", percent: "7.25" } },
+                discount: { invoice_discount: { percent: "5" } }
             }
         }
     }
+
+    $.ajax({
+        //type: "POST", url: '/Orders/GetPayPalToken', contentType: "application/json; charset=utf-8", dataType: "json", data: { },
+        type: "POST", url: 'https://api-m.sandbox.paypal.com/v1/oauth2/token', contentType: "application/x-www-form-urlencoded", dataType: "json", data: { grant_type: 'client_credentials' },
+        beforeSend: function (xhr) { xhr.setRequestHeader("Authorization", "Basic " + btoa("AcuqRFTJWTspIMomXNjD8qqaY3FYB3POMIKoJOI3P79e85Nluk0b8OME0k-zBnEllg2e03LoBLXbJ0l0:EA_mO1Ia607bvwcFf5wHMYW-XLx4QST-S41Sr7iG8gCfWkDDzM794mvBjbysx1Nb_5P-MrruKBLWng-u")); },
+        success: function (result) {
+            console.log(result);
+            //$.ajax({
+            //    type: "POST", url: 'https://api-m.sandbox.paypal.com/v2/invoicing/invoices', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(option),
+            //    beforeSend: function (xhr) { xhr.setRequestHeader("Authorization", result.token); },
+            //    success: function (data) {
+            //        console.log(data);
+            //    },
+            //    error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
+            //    async: false
+            //});
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
+        async: false
+    });
+
 }

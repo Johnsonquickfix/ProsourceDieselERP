@@ -152,6 +152,21 @@ namespace LaylaERP.Controllers
 
         }
 
+        [HttpPost]
+        public JsonResult changeRole(CustomerModel model)
+        {
+            string strID = model.strVal;
+            if (strID != "")
+            {
+                    UsersRepositry.changeRoleStatus(model);
+                    return Json(new { status = true, message = "User Role Status has been updated successfully!!", url = "" }, 0);
+                }
+                else
+                {
+                    return Json(new { status = false, message = "Something went wrong", url = "" }, 0);
+                }            
+             
+        }
 
         public ActionResult CreateUser(long id = 0)
         {

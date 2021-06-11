@@ -3,7 +3,9 @@
     ViewBag.Title = "CreateUser";
     Layout = "~/Views/Shared/_UserLayout.cshtml";
 }
-
+ 
+<script src="~/Scripts/jquery.js" type="text/javascript"></script>
+<script src="~/Scripts/passwordStrengthMeter.js" type="text/javascript"></script>
 <div class="page-title">
     <h2 class="page-heading">Create User</h2>
 </div>
@@ -107,10 +109,8 @@
                                     <span class="genrate_password" id="message"></span>
                                 </div>
                             </div>
-                        </div>
-                        <div class="box-footer text-right">
-                            <div class="col-sm-12">
-                                <a href="#" class="btn btn-danger" id="btnSave"><b>Create User</b></a>
+                            <div class="col-offset-8 col-sm-4 mt-1" >
+                                <a href="#" class="btn btn-danger btn-block" id="btnSave"><b>Create User</b></a>
                             </div>
                         </div>
                 </div>
@@ -127,6 +127,40 @@
             AddCustomer();
         })
         passwordcheck();
+        $('#txtPassword').keyup(function () {
+            $('#result').html(passwordStrength($('#txtPassword').val(), ""))
+            result = $('#result').html();
+            if (result == "Too short") {
+                $('#result').attr({ 'style': 'color:Red;' });
+            }
+            if (result == "Bad") {
+                $('#result').attr({ 'style': 'color:Olive;' });
+            }
+            if (result == "Good") {
+                $('#result').attr({ 'style': 'color:Lime;' });
+            }
+            if (result == "Strong") {
+                $('#result').attr({ 'style': 'color:Green;' });
+            }
+
+        })
+        $('#txtConfirmPassword').keyup(function () {
+            $('#resultConfirm').html(passwordStrength($('#txtConfirmPassword').val(), ""))
+            result = $('#resultConfirm').html();
+            if (result == "Too short") {
+                $('#resultConfirm').attr({ 'style': 'color:Red;' });
+            }
+            if (result == "Bad") {
+                $('#reresultConfirmsult').attr({ 'style': 'color:Olive;' });
+            }
+            if (result == "Good") {
+                $('#resultConfirm').attr({ 'style': 'color:Lime;' });
+            }
+            if (result == "Strong") {
+                $('#resultConfirm').attr({ 'style': 'color:Green;' });
+            }
+
+        })
     });
 
 
@@ -236,7 +270,7 @@
         utilsScript: "~/Scripts/intlTelInput.js",
     });
 
-    function passwordcheck(){
+    function passwordcheck() {
         $('#txtPassword, #txtConfirmPassword').on('keyup', function () {
             if ($('#txtPassword').val() == $('#txtConfirmPassword').val()) {
                 $('#message').html('Matching').css('color', 'green');

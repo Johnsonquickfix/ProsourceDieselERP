@@ -142,7 +142,7 @@
                         <option value="administrator">Administrator</option>
                         <option value="accounting">Accounting</option>
                     </select>
-                    <input type="submit" name="changeit" id="changeit" class="button" value="Change">
+                    <input type="submit"   id="changeit" class="button action" value="Change">
                 </div>
                 <input type="hidden" name="varpass" id="varpass" value="">
                 @*<div class="tablenav-pages">
@@ -281,6 +281,51 @@
             });
         };
 
+        function DatagridLoade(k) {
+            //
+            var myvalue = k;
+            //var obj = { rolepass: j };
+            //alert(JSON.stringify(obj));
+            var id;
+            $('#dtdata').DataTable({
+                destroy: true,
+                bAutoWidth: false,
+                "ajax": {
+                    "url": '/Users/GetData',
+                    "type": 'GET',
+                    "dataType": 'json',
+                    data: { rolepass: j },
+                    contentType: "application/json; charset=utf-8",
+
+                },
+                lengthMenu: [[10, 20, 50, 100], [10, 20, 50, 100]],
+
+                "columns": [
+                    {
+                        'data': 'ID', sWidth: "5%",
+                        'render': function (data, type, full, meta) {
+                            return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + $('<div/>').text(data).html() + '"><label></label>';
+                        }
+                    },
+                    { 'data': 'ID', 'sWidth': "5%" },
+                    { 'data': 'user_login', 'sWidth': "20%" },
+                    { 'data': 'user_email', 'sWidth': "20%" },
+                    { 'data': 'user_status', 'sWidth': "20%" },
+                    { 'data': 'my', 'sWidth': "20%" },
+                ],
+
+                columnDefs: [{
+                    orderable: false,
+                    targets: [0]
+                }],
+    
+                "order": [[1, 'desc']],
+
+ 
+
+            });
+        };
+
 
 //CheckBoxes
         $('#checkAll').click(function () {
@@ -322,6 +367,16 @@
                 //alert("Id: " + $(this).attr("id") + " Value: " + $(this).val());
             });
         })
+        $("#changeit").click(function () {
+            var ID = "";
+            var new_role = $("#new_role").val();
+            $("input:checkbox[name=CheckSingle]:checked").each(function () {
+                ID += $(this).val() + ",";
+
+            });
+            ID = ID.replace(/,(?=\s*$)/, '');
+            changeRole(ID);
+        })
 
 
         function DeleteUsers(id) {
@@ -356,6 +411,36 @@
                 success: function (data) {
                     if (data.status == true) {
                         swal('Alert!', data.message, 'success');
+                    }
+                    else {
+                        swal('Alert!', data.message, 'error')
+                    }
+                },
+                error: function (error) {
+                    swal('Error!', 'something went wrong', 'error');
+                },
+            })
+        }
+
+
+       
+        function changeRole(ID) {
+
+            ID = ID;
+            user_status = $("#new_role").val();
+            var obj = {
+                strVal: ID,
+                user_status: user_status                 
+            }
+            $.ajax({
+                url: '/Users/changeRole/', dataType: 'json', type: 'Post',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(obj),
+                dataType: "json",
+                success: function (data) {
+                    if (data.status == true) {
+                        swal('Alert!', data.message, 'success');
+                        DatagridLoade();
                     }
                     else {
                         swal('Alert!', data.message, 'error')

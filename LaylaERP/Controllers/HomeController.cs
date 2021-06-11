@@ -33,12 +33,13 @@
         {
             if (!string.IsNullOrEmpty(model.UserName))
             {
-                DataSet ds = Users.ForgotPassword(model.UserName);
-                if (ds.Tables[0].Rows.Count > 0)
+                DataSet u = Users.ForgotPassword(model.UserName);
+                DataSet ds = Users.GetEmailCredentials();
+                if (u.Tables[0].Rows.Count > 0)
                 {
-                    string UserName = ds.Tables[0].Rows[0]["user_login"].ToString();
-                    string Nicename = ds.Tables[0].Rows[0]["user_nicename"].ToString();
-                    string Email = ds.Tables[0].Rows[0]["user_email"].ToString();
+                    string UserName = u.Tables[0].Rows[0]["user_login"].ToString();
+                    string Nicename = u.Tables[0].Rows[0]["user_nicename"].ToString();
+                    string Email = u.Tables[0].Rows[0]["user_email"].ToString();
 
                     using (MailMessage mailMessage = new MailMessage())
 
@@ -57,21 +58,21 @@
 
                         SmtpClient smtp = new SmtpClient();
 
-                        smtp.Host = ConfigurationManager.AppSettings["Host"];
+                        smtp.Host = ds.Tables[0].Rows[0]["SMTPServerName"].ToString();
 
                         smtp.EnableSsl = Convert.ToBoolean(ConfigurationManager.AppSettings["EnableSsl"]);
 
                         System.Net.NetworkCredential NetworkCred = new System.Net.NetworkCredential();
 
-                        NetworkCred.UserName = ConfigurationManager.AppSettings["UserName"]; //reading from web.config  
+                        NetworkCred.UserName = ds.Tables[0].Rows[0]["SenderEmailID"].ToString(); //reading from web.config  
 
-                        NetworkCred.Password = ConfigurationManager.AppSettings["Password"]; //reading from web.config  
+                        NetworkCred.Password = ds.Tables[0].Rows[0]["SenderEmailPwd"].ToString(); //reading from web.config  
 
                         smtp.UseDefaultCredentials = true;
 
                         smtp.Credentials = NetworkCred;
 
-                        smtp.Port = int.Parse(ConfigurationManager.AppSettings["Port"]); //reading from web.config  
+                        smtp.Port = Convert.ToInt32(ds.Tables[0].Rows[0]["SMTPServerPortNo"]); //reading from web.config  
 
                         //smtp.Send(mailMessage);
                        
@@ -80,7 +81,7 @@
 
 
 
-                    Session["UserId"] = ds.Tables[0].Rows[0]["user_login"].ToString();
+                    Session["UserId"] = u.Tables[0].Rows[0]["user_login"].ToString();
                     ViewBag.Result = "Your password recovery query submitted to the administrator. Will contact you soon!!!";
                     
                   
@@ -130,6 +131,8 @@
 
         public ActionResult MobileVerification()
         {
+            DataSet ds = Users.GetEmailCredentials();
+
             Random _rdm = new Random();
             int OTP = _rdm.Next(1000, 9999);
             Session["OTP"] = OTP;
@@ -152,23 +155,28 @@
 
                 SmtpClient smtp = new SmtpClient();
 
-                smtp.Host = ConfigurationManager.AppSettings["Host"];
-
+                //smtp.Host = ConfigurationManager.AppSettings["Host"];
+                smtp.Host = ds.Tables[0].Rows[0]["SMTPServerName"].ToString();
+                
                 smtp.EnableSsl = Convert.ToBoolean(ConfigurationManager.AppSettings["EnableSsl"]);
 
                 System.Net.NetworkCredential NetworkCred = new System.Net.NetworkCredential();
 
-                NetworkCred.UserName = ConfigurationManager.AppSettings["UserName"]; //reading from web.config  
+                //NetworkCred.UserName = ConfigurationManager.AppSettings["UserName"]; //reading from web.config  
 
-                NetworkCred.Password = ConfigurationManager.AppSettings["Password"]; //reading from web.config  
+                //NetworkCred.Password = ConfigurationManager.AppSettings["Password"]; //reading from web.config  
+                NetworkCred.UserName = ds.Tables[0].Rows[0]["SenderEmailID"].ToString();
+                NetworkCred.Password = ds.Tables[0].Rows[0]["SenderEmailPwd"].ToString();
 
                 smtp.UseDefaultCredentials = true;
 
                 smtp.Credentials = NetworkCred;
 
-                smtp.Port = int.Parse(ConfigurationManager.AppSettings["Port"]); //reading from web.config  
+                //smtp.Port = int.Parse(ConfigurationManager.AppSettings["Port"]); //reading from web.config  
 
-               //smtp.Send(mailMessage);
+                smtp.Port = Convert.ToInt32(ds.Tables[0].Rows[0]["SMTPServerPortNo"]);
+
+                //smtp.Send(mailMessage);
 
             }
 

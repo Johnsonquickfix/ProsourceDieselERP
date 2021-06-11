@@ -112,6 +112,8 @@
                 $('<option>').val(value).text(value).appendTo("#userrole");
             })
         })
+
+        main_submenu_tick();
     })
 
     $("#userrole").change(function () {
@@ -177,5 +179,24 @@
     }
     function resetForm() {
         saveForm.reset();
+    }
+
+    function main_submenu_tick() {
+        var chkuser = $("input[type='checkbox'][value='1']");
+        var chkcreatenew = $("input[type='checkbox'][value='2']");
+        var chkchangepwd = $("input[type='checkbox'][value='3']");
+        var chkorder = $("input[type='checkbox'][value='4']");
+        var chkaddorder = $("input[type='checkbox'][value='5']");
+        var chkvieweditorder = $("input[type='checkbox'][value='6']");
+
+        chkuser.on('change', function () {
+            chkcreatenew.prop('checked', this.checked);
+            chkchangepwd.prop('checked', this.checked);
+        });
+
+        chkorder.on('change', function () {
+            chkaddorder.prop('checked', this.checked);
+            chkvieweditorder.prop('checked', this.checked);
+        });
     }
 </script>

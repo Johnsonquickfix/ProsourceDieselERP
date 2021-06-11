@@ -35,7 +35,7 @@
             {
                 DataSet u = Users.ForgotPassword(model.UserName);
                 DataSet ds = Users.GetEmailCredentials();
-                if (ds.Tables[0].Rows.Count > 0)
+                if (u.Tables[0].Rows.Count > 0)
                 {
                     string UserName = u.Tables[0].Rows[0]["user_login"].ToString();
                     string Nicename = u.Tables[0].Rows[0]["user_nicename"].ToString();

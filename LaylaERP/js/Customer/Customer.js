@@ -20,7 +20,7 @@ function AddCustomer() {
     else if (FirstName == "") { swal('alert', 'Please Enter First Name', 'error') }
     else if (LastName == "") { swal('alert', 'Please Enter Last Name', 'error') }
     else if (BillingAddress1 == "") { swal('alert', 'Please Enter Address 1', 'error') }
-   // else if (BillingAddress2 == "") { swal('alert', 'Please Enter Address 2', 'error') }
+    else if (BillingAddress2 == "") { swal('alert', 'Please Enter Address 2', 'error') }
     else if (BillingPostcode == "") { swal('alert', 'Please Enter Post/Zip Code', 'error') }
     else if (BillingCountry == "") { swal('alert', 'Please Enter Country/Region', 'error') }
     else if (BillingState == "") { swal('alert', 'Please Enter State/Country', 'error') }
@@ -38,14 +38,29 @@ function AddCustomer() {
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify(obj),
             dataType: "json",
+            beforeSend: function () {
+                $("#loader").show();
+            },
             success: function (data) {
                 if (data.status == true) {
-                    $('#parent > input:text').val('');
+                    
                     swal('Alert!', data.message, 'success');
+                    $("#parent").find(":input").each(function () {
+                        switch (this.type) {
+                            case "text":
+                            case "email":
+                            case "tel":
+                                $(this).val('');
+                                break;
+                        }
+                    });
                 }
                 else {
                     swal('Alert!', data.message, 'error')
                 }
+            },
+            complete: function () {
+                $("#loader").hide();
             },
             error: function (error) {
                 swal('Error!', 'something went wrong', 'error');
@@ -137,6 +152,10 @@ function ChangeStatus(id) {
     })
 }
 
+//-------------------------------------------------------------------
+//    Fill Grid
+//-------------------------------------------------------------------
+
 function dataGridLoad() {
     var urid = parseInt($("#ddlSearchStatus").val()) || "";
     var sid = ""//$('#txtSearch').val() ;
@@ -188,4 +207,3 @@ function dataGridLoad() {
         ]
     });
 }
-

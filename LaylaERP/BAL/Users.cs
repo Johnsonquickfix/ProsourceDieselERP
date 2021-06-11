@@ -9,6 +9,7 @@
     using System.Security.Cryptography;
     using System.Text;
     using System.Web;
+    using LaylaERP.Models;
 
 
     public class Users
@@ -100,6 +101,38 @@
             catch (Exception ex)
             { throw ex; }
             return DT;
+        }
+
+        public static DataTable GetMenuByUser(string strvalue)
+        {
+            DataTable DT = new DataTable();
+            try
+            {
+                string strquery = "Select * from wp_user_classification where User_Type like '%" + strvalue + "%' limit 20;";
+                DT = SQLHelper.ExecuteDataTable(strquery);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DT;
+        }
+
+        public static int UpdateUserClassifications(UserClassification model)
+        {
+            int result = 0;
+            try
+            {
+                
+                StringBuilder strSql = new StringBuilder(string.Format("delete from wp_user_classification where User_Type = '{0}'; ", model.User_Type));                
+                strSql.Append(string.Format("insert into wp_user_classification ( User_Type ,Create_User,Customers,Orders_Mnu,System_Settings,Add_Coupon,Show_Coupon,Add_New_Orders,Show_Update_Orders) values ('{0}',{1},{2},{3},{4},{5},{6},{7},{8}) ", model.User_Type, model.Create_User, model.Customers,model.Orders_Mnu,model.System_Settings,model.Add_Coupon,model.Show_Coupon,model.Add_New_Orders,model.Show_Update_Orders));
+
+                /// step 6 : wp_posts
+                //strSql.Append(string.Format(" update wp_posts set post_status = '{0}' ,comment_status = 'closed' where id = {1} ", model.OrderPostStatus.status, model.OrderPostStatus.order_id));
+
+                result = SQLHelper.ExecuteNonQuery(strSql.ToString());
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return result;
         }
 
         public static string EncryptedPwd(string varPassword)

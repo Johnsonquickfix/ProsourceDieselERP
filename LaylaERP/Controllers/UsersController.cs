@@ -8,6 +8,8 @@ using MySql.Data.MySqlClient;
 using System.Data;
 using System.Configuration;
 using LaylaERP.BAL;
+using System.Dynamic;
+using Newtonsoft.Json;
 
 namespace LaylaERP.Controllers
 {
@@ -44,6 +46,7 @@ namespace LaylaERP.Controllers
         // GET: Assign Role
         public ActionResult AssignRole()
         {
+             
             return View();
         }
 
@@ -86,6 +89,33 @@ namespace LaylaERP.Controllers
                 usertype.Add(t1);
             }
             return Json(usertype, JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public JsonResult GetAssignRole(UserClassification model)
+        {
+            //List<Dictionary<String, Object>> tableRows = new List<Dictionary<String, Object>>();
+            //Dictionary<String, Object> row;
+            string result = string.Empty;
+            try
+            {
+                
+                DataTable dt = BAL.Users.GetMenuByUser(model.User_Type);             
+                result = JsonConvert.SerializeObject(dt);
+               
+            }
+            catch { }
+            return Json(result, 0) ;
+        }
+
+        public JsonResult Save(UserClassification model)
+        {
+            JsonResult result = new JsonResult(); 
+            var resultOne = BAL.Users.UpdateUserClassifications(model);             
+            if (resultOne > 0)
+            {
+                result = this.Json(resultOne);
+            }
+            return result;
         }
 
         [HttpPost]

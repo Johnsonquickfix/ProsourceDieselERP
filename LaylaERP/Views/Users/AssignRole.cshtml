@@ -1,4 +1,4 @@
-﻿
+﻿@model dynamic
 @{
     ViewBag.Title = "AssignRole";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -8,95 +8,101 @@
     <h2 class="page-heading">Role Management</h2>
 </div>
 <div class="userrole_section section_wrapper">
-    <div class="row mb-35">
-        <div class="col-md-3">
-            <div class="form-group">
-                <h2 class="sm-heading">User Roles</h2>
-                <select id="userrole" class="form-control select2" style="width: 100%;">
-                    <option selected="selected">Select Type</option>
-                </select>
-            </div>
-        </div>
-    </div>
-    <div class="row mb-35">
-        <div class="col-sm-12">
-            <h2 class="sm-heading">Main Menu</h2>
-            <div class="row">
-                <div class="col-sm-3">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="user">
-                        <label class="form-check-label" for="user">
-                            User
-                        </label>
-                    </div>
-                </div>
-                <div class="col-sm-3">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="customer">
-                        <label class="form-check-label" for="customer">
-                            Customer
-                        </label>
-                    </div>
-                </div>
-                <div class="col-sm-3">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="orders">
-                        <label class="form-check-label" for="orders">
-                            Order(s)
-                        </label>
-                    </div>
-                </div>
-                <div class="col-sm-3">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="setting">
-                        <label class="form-check-label" for="setting">
-                            Setting
-                        </label>
-                    </div>
+    <form id="saveForm" name="saveForm" method="post" autocomplete="off">
+        <div class="row mb-35">
+            <div class="col-md-3">
+                <div class="form-group">
+                    <h2 class="sm-heading">User Roles</h2>
+                    <select id="userrole" class="form-control select2" style="width: 100%;">
+                        <option selected="selected">Select Type</option>
+                    </select>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-12 mb-35">
-            <h2 class="sm-heading">Sub Menu</h2>
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="createnew">
-                        <label class="form-check-label" for="createnew">
-                            Create New
-                        </label>
-                    </div>
-                    <div class="form-check mt-1">
-                        <input class="form-check-input" type="checkbox" value="" id="changepassword">
-                        <label class="form-check-label" for="changepassword">
-                            Change Password
-                        </label>
-                    </div>
-                </div>
+        <div class="row mb-35">
+            <div class="col-sm-12">
+                <h2 class="sm-heading">Main Menu</h2>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="Create_User" id="create_user">
+                            <label class="form-check-label" for="create_user">
+                                User
+                            </label>
 
-                <div class="col-sm-6">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="addneworder">
-                        <label class="form-check-label" for="addneworder">
-                            Add New Order
-                        </label>
+                        </div>
                     </div>
-                    <div class="form-check mt-1">
-                        <input class="form-check-input" type="checkbox" value="" id="vieweditorders">
-                        <label class="form-check-label" for="vieweditorders">
-                            View / Edit Order(s)
-                        </label>
+                    <div class="col-sm-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="Customers" id="customers">
+                            <label class="form-check-label" for="customers">
+                                Customer
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="Orders_Mnu" id="orders_mnu">
+                            <label class="form-check-label" for="orders_mnu">
+                                Order(s)
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="System_Settings" id="system_settings">
+                            <label class="form-check-label" for="system_settings">
+                                Setting
+                            </label>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-offset-9 col-md-3 text-left setting-save">
-            <a href="#" class="btn btn-danger"><b>Save</b></a>
+        <div class="row mb-35">
+            <div class="col-sm-12">
+                <h2 class="sm-heading">Sub Menu</h2>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="Add_Coupon" id="add_coupon">
+                            <label class="form-check-label" for="add_coupon">
+                                Create New
+                            </label>
+                        </div>
+                        <div class="form-check mt-1">
+                            <input class="form-check-input" type="checkbox" name="Show_Coupon" id="show_coupon">
+                            <label class="form-check-label" for="show_coupon">
+                                Change Password
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="Add_New_Orders" id="add_new_orders">
+                            <label class="form-check-label" for="add_new_orders">
+                                Add New Order
+                            </label>
+                        </div>
+                        <div class="form-check mt-1">
+                            <input class="form-check-input" type="checkbox" name="Show_Update_Orders" id="show_update_orders">
+                            <label class="form-check-label" for="show_update_orders">
+                                View / Edit Order(s)
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
-   
+        <div class="row">
+            <div class="col-sm-offset-9 col-sm-3">
+                @*<a href="#" class="btn btn-danger btn-block"><b>Save</b></a>*@
+                <button type="button" id="saveBtn" class="btn btn-danger "><i class="fa fa-save"></i> Save</button>
+            </div>
+        </div>
+        <input type="hidden" name="User_Type" id="user_type" />
+        @Html.AntiForgeryToken()
+    </form>
 </div>
 
 <script type="text/javascript">
@@ -109,20 +115,67 @@
     })
 
     $("#userrole").change(function () {
-        var usertype = { strvalue: $("#userrole :selected").text() };
-        console.log(usertype);
+
+        var User_Type = { User_Type: $("#userrole :selected").text() };
+        //  console.log(usertype);
+        // alert($("#userrole :selected").text());
+        $("#user_type").val($("#userrole :selected").text());
         $.ajax({
-            url: 'Users/GetAssignRole',
+            url: '/Users/GetAssignRole',
             type: 'POST',
             contentType: "application/json; charset=utf-8",
             dataType: "json",
-            data: JSON.stringify(usertype),
-            success: function (responce) {
-                console.log("123" + responce)
+            data: JSON.stringify(User_Type),
+            success: function (data) {
+                console.log(data);
+                var obj = JSON.parse(data);
+                //$("#Create_User").prop('checked', true);
+                if (obj[0].Create_User == 1) $("#create_user").prop('checked', true); else $("#create_user").prop('checked', false);
+                if (obj[0].Customers == 1) $("#customers").prop('checked', true); else $("#customers").prop('checked', false);
+                if (obj[0].Orders_Mnu == 1) $("#orders_mnu").prop('checked', true); else $("#orders_mnu").prop('checked', false);
+                if (obj[0].System_Settings == 1) $("#system_settings").prop('checked', true); else $("#system_settings").prop('checked', false);
+                if (obj[0].Add_Coupon == 1) $("#add_coupon").prop('checked', true); else $("#add_coupon").prop('checked', false);
+                if (obj[0].Show_Coupon == 1) $("#show_coupon").prop('checked', true); else $("#show_coupon").prop('checked', false);
+                if (obj[0].Add_New_Orders == 1) $("#add_new_orders").prop('checked', true); else $("#add_new_orders").prop('checked', false);
+                if (obj[0].Show_Update_Orders == 1) $("#show_update_orders").prop('checked', true); else $("#show_update_orders").prop('checked', false);
+
+
             },
             error: function (responce) {
                 console.log(responce)
             }
         });
     });
+
+
+    $("#saveBtn").click(function () {
+        saveData();
+    });
+    function saveData() {
+
+        $("#create_user").val($("#create_user").is(':checked'));
+        $("#customers").val($("#customers").is(':checked'));
+        $("#orders_mnu").val($("#orders_mnu").is(':checked'));
+        $("#system_settings").val($("#system_settings").is(':checked'));
+        $("#add_coupon").val($("#add_coupon").is(':checked'));
+        $("#show_coupon").val($("#show_coupon").is(':checked'));
+        $("#add_new_orders").val($("#add_new_orders").is(':checked'));
+        $("#show_update_orders").val($("#show_update_orders").is(':checked'));
+
+
+        $.post("/Users/Save", $("#saveForm").serialize(), function (response) {
+            response = JSON.parse(response);
+            if (response == 2) {
+                swal('Alert!', "Updated Successfully", 'success');
+                resetForm();
+            }
+            else {
+                swal('Error!', 'something went wrong', 'error');
+            }
+
+        });
+    }
+    function resetForm() {
+        saveForm.reset();
+    }
 </script>

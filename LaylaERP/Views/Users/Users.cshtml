@@ -324,35 +324,7 @@
     
                 "order": [[1, 'desc']],
 
-                initComplete: function () {
-                    var column = this.api().column(4);
-                    if (myvalue != 1) {
-                        var select = $('<select class="filter"><option value="All">Select</option></select>')
-                            .appendTo('#selectStatus')
-                            .on('change', function () {
-                                var val = $(this).val();
-                                column.search(val ? '^' + $(this).val() + '$' : val, true, false).draw();
-                                //column.search(val).draw()
-                            });
-                    }
-
-
-                    var offices = [];
-                    column.data().toArray().forEach(function (s) {
-                        s = s.split(',');
-                        s.forEach(function (d) {
-                            if (!~offices.indexOf(d)) {
-                                offices.push(d)
-                                select.append('<option value="' + d + '">' + d + '</option>');
-                            }
-                        })
-                    })
-                    /*
-              column.data().unique().sort().each(function(d, j) {
-                select.append('<option value="' + d + '">' + d + '</option>');
-              });
-             */
-                }
+               
 
             });
         };

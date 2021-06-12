@@ -3,7 +3,7 @@
     ViewBag.Title = "CreateUser";
     Layout = "~/Views/Shared/_UserLayout.cshtml";
 }
- 
+
 <script src="~/Scripts/jquery.js" type="text/javascript"></script>
 <script src="~/Scripts/passwordStrengthMeter.js" type="text/javascript"></script>
 <div class="page-title">
@@ -20,107 +20,112 @@
                         <div class="user-box-profile">
                             <div class="add-profile">
                                 <span class="edit-pic-profile">
-                                    <input type="file" name="file" id="file" class="inputfile" />
-                                    <label for="file"><i class="fa fa-edit"></i>Edit</label>
+                                    <input type="file" onchange="readURL(this);"  name="file" id="file" class="inputfile" />
+                                    <label id="btnPhotoLibrary" for="file"><i class="fa fa-edit"></i>Edit</label>
                                 </span>
-                                <img class="profile-user-img img-responsive img-circle" width="90" height="90" src="~/Images/userprofile2.png" alt="User profile picture">
+                                <img runat="server" id="show_picture" class="profile-user-img img-responsive img-circle"   src="~/Images/userprofile2.png" alt="User profile picture">                               
+                                <canvas style="visibility: hidden" id="canvas" width="50" height="50"></canvas>
+                                <input runat="server" type="hidden" id="hidimage" /><input type="hidden" id="hidimagetype" />                             
                             </div>
                         </div>
-                        <h3 class="profile-username text-center">Layla Sleep</h3>
-                        <p class="text-muted text-center">laylasleep@acb.com</p>
-                        <p class="text-center">Washington Dc</p>
+                  
                     </div>
-                    <!-- /.box-body -->
+                
+                    <h3 class="profile-username text-center">Layla Sleep</h3>
+                    <p class="text-muted text-center">laylasleep@acb.com</p>
+                    <p class="text-center">Washington Dc</p>
                 </div>
+                <!-- /.box-body -->
             </div>
-            <!-- /.col -->
-            <div class="col-md-9">
-                <div class="box box-primary create-user-primary">
-                    <div class="box-header with-border">
-                        <div class="col-sm-4">
-                            <div class="form-group">
-                                <input type="hidden" id="hfid" value="@ViewBag.id" />
-                                <label for="exampleInputEmail1">First Name</label>
-                                <input type="text" class="form-control" id="txtFirstName" placeholder="First Name">
-                            </div>
-                            <div class="form-group">
-                                <label for="exampleInputEmail1">Last Name</label>
-                                <input type="text" class="form-control" id="txtLastName" placeholder="Last Name">
-                            </div>
-                            <div class="form-group">
-                                <label for="exampleInputEmail1">User Status</label>
-                                <select class="form-control">
-                                    <option>Select User Status</option>
-                                    <option value="0">Active</option>
-                                    <option value="1">InActive</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="exampleInputEmail1">User Type</label>
-                                <select class="form-control" id="txtUserRole">
-                                    <option>Select User Type</option>
-                                    <option value="accounting">Accounting</option>
-                                    <option value="administrator">Administrator</option>
-                                    <option value="author">Author</option>
-                                    <option value="modsquad">Mod Squad</option>
-                                    <option value="seoeditor">SEO Editor</option>
-                                    <option value="seomanager">SEO Manager</option>
-                                    <option value="shopmanager">Shop manager</option>
-                                    <option value="subscriber">Subscriber</option>
-                                    <option value="supplychainmanager">Supply Chain Manager</option>
-                                </select>
-                            </div>
-                        </div> 
-                        <div class="col-sm-4">
-                            <div class="form-group">
-                                <label for="exampleInputEmail1">Contact Number</label>
-                                <input type="text" class="form-control" id="txtPhone" placeholder="Enter Your Phone Number">
-                            </div>
-                            <div class="form-group">
-                                <label for="exampleInputEmail1">Country</label>
-                                <select class="form-control" id="txtCountry">
-                                    <option value="US - United States">US - United States</option>
-                                    <option value="CA - Canada">CA - Canada</option>
+       
+        <!-- /.col -->
+        <div class="col-md-9">
+            <div class="box box-primary create-user-primary">
+                <div class="box-header with-border">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <input type="hidden" id="hfid" value="@ViewBag.id" />
+                            <label for="exampleInputEmail1">First Name</label>
+                            <input type="text" class="form-control" id="txtFirstName" placeholder="First Name">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">Last Name</label>
+                            <input type="text" class="form-control" id="txtLastName" placeholder="Last Name">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">User Status</label>
+                            <select class="form-control">
+                                <option>Select User Status</option>
+                                <option value="0">Active</option>
+                                <option value="1">InActive</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">User Type</label>
+                            <select class="form-control" id="txtUserRole">
+                                <option>Select User Type</option>
+                                <option value="accounting">Accounting</option>
+                                <option value="administrator">Administrator</option>
+                                <option value="author">Author</option>
+                                <option value="modsquad">Mod Squad</option>
+                                <option value="seoeditor">SEO Editor</option>
+                                <option value="seomanager">SEO Manager</option>
+                                <option value="shopmanager">Shop manager</option>
+                                <option value="subscriber">Subscriber</option>
+                                <option value="supplychainmanager">Supply Chain Manager</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">Contact Number</label>
+                            <input type="text" class="form-control" id="txtPhone" placeholder="Enter Your Phone Number">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">Country</label>
+                            <select class="form-control" id="txtCountry">
+                                <option value="US - United States">US - United States</option>
+                                <option value="CA - Canada">CA - Canada</option>
 
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="exampleInputEmail1">Address</label>
-                                <textarea class="form-control form-address" id="txtAddress" placeholder="Enter Your Address"></textarea>
-                            </div>
+                            </select>
                         </div>
-                        <div class="col-sm-4">
-                            <div class="form-group">
-                                <label for="exampleInputEmail1">E-mail</label>
-                                <input type="text" class="form-control" id="txtUserEmail" placeholder="Enter Your Mail Address">
-                            </div>
-                            <div class="form-group">
-                                <label for="exampleInputEmail1">User Name</label>
-                                <input type="text" class="form-control" id="txtUserNickName" placeholder="Enter User Name">
-                            </div>
-                            <div class="form-group form-password-group">
-                                <label for="exampleInputEmail1">Password</label>
-                                <input type="password" class="form-control" id="txtPassword" placeholder="Enter Your Password">
-                                @*<span class="genrate_password" id="message">Generate Password</span>*@
-                            </div>
-                            <span id='result'></span>
-                            <div class="form-group form-password-group">
-                                <label for="exampleInputEmail1">Confirm Password</label>
-                                <input type="password" class="form-control" id="txtConfirmPassword" placeholder="Confirm Your Password">
-                                <span class="genrate_password" id="message"></span>
-                            </div>
-                            <span id='resultConfirm'></span>
-                        </div>
-                        <div class="col-offset-8 col-sm-4 mt-1">
-                            <a href="#" class="btn btn-danger btn-block" id="btnSave"><b>Create User</b></a>
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">Address</label>
+                            <textarea class="form-control form-address" id="txtAddress" placeholder="Enter Your Address"></textarea>
                         </div>
                     </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">E-mail</label>
+                            <input type="text" class="form-control" id="txtUserEmail" placeholder="Enter Your Mail Address">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">User Name</label>
+                            <input type="text" class="form-control" id="txtUserNickName" placeholder="Enter User Name">
+                        </div>
+                        <div class="form-group form-password-group">
+                            <label for="exampleInputEmail1">Password</label>
+                            <input type="password" class="form-control" id="txtPassword" placeholder="Enter Your Password">
+                            @*<span class="genrate_password" id="message">Generate Password</span>*@
+                        </div>
+                        <span id='result'></span>
+                        <div class="form-group form-password-group">
+                            <label for="exampleInputEmail1">Confirm Password</label>
+                            <input type="password" class="form-control" id="txtConfirmPassword" placeholder="Confirm Your Password">
+                            <span class="genrate_password" id="message"></span>
+                        </div>
+                        <span id='resultConfirm'></span>
+                    </div>
+                    <div class="col-offset-8 col-sm-4 mt-1">
+                        <a href="#" class="btn btn-danger btn-block" id="btnSave"><b>Create User</b></a>
+                    </div>
                 </div>
-                <!-- /.nav-tabs-custom -->
             </div>
-            <!-- /.col -->
+            <!-- /.nav-tabs-custom -->
         </div>
+        <!-- /.col -->
     </div>
+</div>
 </div>
 
 <script>
@@ -128,6 +133,10 @@
         $(document).on('click', "#btnSave", function () {
             AddCustomer();
         })
+        $("#btnPhotoLibrary").click(function () {
+            $("#hidimage").val('');
+            $("#hidimagetype").val('2');
+        });
         passwordcheck();
         $('#txtPassword').keyup(function () {
             $('#result').html(passwordStrength($('#txtPassword').val(), ""))
@@ -168,7 +177,24 @@
 
     function AddCustomer() {
         debugger
+        var ImageURL;
+        var canvas = document.createElement('canvas');
+        var objimg = document.getElementById('show_picture');
+        canvas.width = objimg.width;
+        canvas.height = objimg.height;
+        var ctx = canvas.getContext('2d').drawImage(objimg, 0, 0, canvas.width, canvas.height);
+        var can = document.getElementById('canvas');
+        ImageType = "jpeg";
+        var img = canvas.toDataURL("image/jpeg", 30 / 100);
+        var result_image_obj = new Image();
+        result_image_obj.src = img;
+        $("#show_picture").attr("src", result_image_obj.src);
+        ImageURL = result_image_obj.src;
+        var block = ImageURL.split(";");
+        var realData = block[1].split(",")[1];
+        $("#hidimage").val(realData);
 
+        Picture = $("#hidimage").val();
         ID = $("#hfid").val();
         Email = $("#txtUserEmail").val();
         NickName = $("#txtUserNickName").val();
@@ -200,7 +226,8 @@
                 country: country,
                 phone: Phone,
                 user_role: UserRole,
-                password: ConfirmPassword
+                password: ConfirmPassword,
+                User_Image : Picture
             }
             $.ajax({
                 url: '/Users/CreateUser/', dataType: 'json', type: 'Post',
@@ -280,4 +307,16 @@
                 $('#message').html('Not Matching').css('color', 'red');
         });
     }
+
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#show_picture').attr('src', e.target.result);
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
 </script>
+ 
+ 

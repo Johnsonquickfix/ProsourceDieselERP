@@ -20,7 +20,7 @@ namespace LaylaERP.Models
         string _address = string.Empty;
         string _country = string.Empty;
         string _phone = string.Empty;
-        public static byte[] _User_Image = null;
+        byte[] _User_Image = null;
 
         // user_login,user_pass,user_type,status,Email_Id
 
@@ -66,7 +66,7 @@ namespace LaylaERP.Models
             set { _phone = value; }
         }
 
-        public static byte[] User_Image
+        public  byte[] User_Image
         {
             get { return _User_Image; }
             set { _User_Image = value; }

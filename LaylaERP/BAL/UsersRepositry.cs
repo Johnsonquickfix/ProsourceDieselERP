@@ -283,7 +283,7 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@user_email", model.user_email),
                     new MySqlParameter("@user_registered", Convert.ToDateTime(DateTime.UtcNow.ToString("yyyy-MM-dd"))),
                     new MySqlParameter("@display_name", model.user_nicename),
-                    new MySqlParameter("@user_image", "None"),
+                    new MySqlParameter("@user_image", model.User_Image),
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
                 return result;

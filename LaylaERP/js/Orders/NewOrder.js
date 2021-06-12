@@ -327,7 +327,6 @@ function getItemList() {
     $.ajax({
         type: "POST", url: '/Orders/GetProductInfo', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
         success: function (data) {
-            console.log(data);
             var itemsDetailsxml = [];
             for (var i = 0; i < data.length; i++) {
                 itemsDetailsxml.push({
@@ -514,7 +513,7 @@ function createOtherItemsList() {
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Save Details ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function saveCO() {
-    $('#btnCheckout').prop("disabled", true); $('#btnCheckout').text("Waiting...");
+    $('#btnCheckout').prop("disabled", true); $('.billinfo').prop("disabled", true); $('#btnCheckout').text("Waiting...");
     var oid = parseInt($('#hfOrderNo').val()) || 0;
     var cid = parseInt($('#ddlUser').val()) || 0;
     //if (oid <= 0) { swal('Alert!', 'Please Select Customer.', "info").then((result) => { return false; }); }
@@ -537,7 +536,7 @@ function saveCO() {
     if (itemsDetails.length == 0) { swal('Alert!', 'Please add product.', "info").then((result) => { return false; }); }
     var obj = { OrderPostMeta: postMeta, OrderProducts: itemsDetails, OrderPostStatus: postStatus, OrderOtherItems: otherItems };
 
-    console.log(obj);
+    //console.log(obj);
     //$('#btnPlaceOrder').prop("disabled", false); return false;
     $.ajax({
         type: "POST", contentType: "application/json; charset=utf-8",
@@ -550,8 +549,8 @@ function saveCO() {
             }
             else { swal('Alert!', data.message, "error").then((result) => { return false; }); }
         },
-        error: function (xhr, status, err) { $('#btnCheckout').prop("disabled", false); alert(err); },
-        complete: function () { $('#btnCheckout').prop("disabled", false); $('#btnCheckout').text("Checkout"); },
+        error: function (xhr, status, err) { $('#btnCheckout').prop("disabled", false); $('.billinfo').prop("disabled", false); alert(err); },
+        complete: function () { $('#btnCheckout').prop("disabled", false); $('.billinfo').prop("disabled", false);$('#btnCheckout').text("Checkout"); },
     });
     $('#btnCheckout').text("Checkout");
     return false;
@@ -683,9 +682,11 @@ function updatePayment(taskUid) {
 ///Accept paypal Payment
 function PaypalPayment() {
     //swal('Alert!', 'Working....', "success").then((result) => { return false; });
+    var dfa = $('#txtLogDate').val().split(/\//); df = [dfa[2], dfa[1], dfa[0]].join('-');
     var oid = parseInt($('#hfOrderNo').val()) || 0;
     var cid = parseInt($('#ddlUser').val()) || 0;
     var taxPer = parseFloat($('#hfTaxRate').val()) || 0.00;
+    var shipping_total = parseFloat($('#shippingTotal').text()) || 0.00;
     var itemsList = [];
     //get items
     $('#tblAddItemFinal > tbody  > tr').each(function (index, tr) {
@@ -706,24 +707,21 @@ function PaypalPayment() {
     if (oid <= 0) { swal('Alert!', 'Please create new order.', "info").then((result) => { return false; }); }
     if (itemsList.length <= 0) { swal('Alert!', 'Please add Items.', "info").then((result) => { return false; }); }
 
-
     var option = {
         detail: {
             invoice_number: oid,
             reference: "",
-            invoice_date: "2018-11-12",
+            invoice_date: df,
             currency_code: "USD",
             note: "Layla Invoice.",
-            term: "",
-            memo: "",
-            payment_term: { term_type: "NET_10", due_date: "2018-11-22" }
+            payment_term: { term_type: "NET_10"}
         },
         invoicer: {
             name: { given_name: "", surname: "" },
             address: { address_line_1: "157 Church Street Suite 1956", address_line_2: "", admin_area_2: "New Haven", admin_area_1: "CT", postal_code: "06510", country_code: "US" },
             email_address: "david.quick.fix1-facilitator@gmail.com",
             phones: [{ country_code: "001", national_number: "8553581676", phone_type: "MOBILE" }],
-            website: "www.laylasleep.com/",
+            website: "www.laylasleep.com",
             logo_url: "https://laylasleep-quickfix1.netdna-ssl.com/wp-content/themes/layla-white/images/logo.png",
             additional_notes: ""
         },
@@ -750,15 +748,18 @@ function PaypalPayment() {
         amount: {
             breakdown: {
                 //custom: { label: "Packing Charges", amount: { currency_code: "USD", value: "10.00" } },
-                shipping: { amount: { currency_code: "USD", value: "10.00" }, tax: { name: "Sales Tax", percent: taxPer } },
+                shipping: { amount: { currency_code: "USD", value: shipping_total }, tax: { name: "Sales Tax", percent: taxPer } },
                 //discount: { invoice_discount: { percent: "5" } }
             }
         }
     }
 
+    $('#btnPlaceOrder').prop("disabled", true);
+    var opt = { strValue1: oid }
     $.ajax({
-        type: "POST", url: '/Orders/GetPayPalToken', contentType: "application/json; charset=utf-8", dataType: "json", data: {},
+        type: "POST", url: '/Orders/GetPayPalToken', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
         success: function (result) {
+            //console.log(result);
             /// Create Invoice
             $.ajax({
                 type: "POST", url: 'https://api-m.sandbox.paypal.com/v2/invoicing/invoices', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(option),
@@ -779,9 +780,10 @@ function PaypalPayment() {
                         },
                         success: function (data) {
                             console.log(data);
-                            $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true); setTimeout(function () { swal('Alert!', result.message, "success"); }, 50);
+                            $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true); setTimeout(function () { swal('Order received!', 'Thank you. Your invoice has been send on your email for payment.', "success"); }, 50);
                         },
-                        error: function (XMLHttpRequest, textStatus, errorThrown) { console.log(XMLHttpRequest); swal('Order received!', 'Thank you. Your invoice has been send on your email for payment.', "error"); },
+                        error: function (XMLHttpRequest, textStatus, errorThrown) { console.log(XMLHttpRequest); swal('Alert!', errorThrown, "error"); },
+                        complete: function () { $('#btnPlaceOrder').prop("disabled", false); },
                         async: false
                     });
                 },
@@ -790,7 +792,9 @@ function PaypalPayment() {
             });
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
+        complete: function () { $('#btnPlaceOrder').prop("disabled", false); },
         async: false
+
     });
 
 }

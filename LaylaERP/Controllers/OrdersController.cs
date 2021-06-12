@@ -195,34 +195,46 @@
             return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
         }
         [HttpPost]
+        public JsonResult ChangeOrderStatus(OrderPostStatusModel model)
+        {
+            string strID = model.strVal;
+            if (strID != "")
+            {
+                OrderRepository or = new OrderRepository();
+                or.ChangeOrderStatus(model, strID);
+                return Json(new { status = true, message = "Order Status has been Changed successfully!!", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Something went wrong", url = "" }, 0);
+            }
+
+        }
+        [HttpPost]
         public JsonResult GetPayPalToken(SearchModel model)
         {
-            JsonResult result = new JsonResult();
+            string result = string.Empty;
+            bool status = false;
             try
             {
-                string clientId = "AcuqRFTJWTspIMomXNjD8qqaY3FYB3POMIKoJOI3P79e85Nluk0b8OME0k-zBnEllg2e03LoBLXbJ0l0", clientSecret = "EA_mO1Ia607bvwcFf5wHMYW-XLx4QST-S41Sr7iG8gCfWkDDzM794mvBjbysx1Nb_5P-MrruKBLWng-u";
-                var client = new HttpClient();
-                client.DefaultRequestHeaders.Clear();
-                client.DefaultRequestHeaders.Add("Accept", "application/json");
-                client.DefaultRequestHeaders.Add("Accept-Language", "en_US");
-                //client.DefaultRequestHeaders.Add("Authorization", string.Format("Basic {0}{1}", clientId , clientSecret));
-                Encoding encoding = Encoding.GetEncoding("iso-8859-1");
-                string usernamePassword = encoding.GetString(Convert.FromBase64String(clientId + ":"+ clientSecret));
-                client.DefaultRequestHeaders.Add("Authorization", string.Format("Basic {0}", usernamePassword));
-                string json = Newtonsoft.Json.JsonConvert.SerializeObject("{grant_type: 'client_credentials'}");
-                StringContent content = new StringContent(json, System.Text.Encoding.UTF8, "application/x-www-form-urlencoded");
-                var response = new HttpResponseMessage();
-                ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
-                response = client.PostAsync("https://api.sandbox.paypal.com/v1/oauth2/token", content).Result;
-                client.Dispose();
-                if (response != null && response.IsSuccessStatusCode)
+                long oid = 0;
+                if (!string.IsNullOrEmpty(model.strValue1)) { oid = Convert.ToInt64(model.strValue1); }
+                if (oid <= 0)
                 {
-                    result = this.Json(response.Content.ReadAsStringAsync().Result, JsonRequestBehavior.AllowGet);
-                }           
-
+                    throw new Exception("Invalid Data");
+                }
+                List<OrderPostMetaModel> _list = new List<OrderPostMetaModel>();
+                _list.Add(new OrderPostMetaModel() { post_id = oid, meta_key = "_payment_method", meta_value = "PPal" });
+                _list.Add(new OrderPostMetaModel() { post_id = oid, meta_key = "_payment_method_title", meta_value = "PayPal" });
+                int res = OrderRepository.UpdatePayPalStatus(_list);
+                if (res > 0)
+                {
+                    result = clsPayPal.GetToken();
+                    status = true;
+                }
             }
-            catch(Exception ex) { }
-            return result;
+            catch { status = false; result = ""; }
+            return Json(new { status = status, message = result }, 0);
         }
     }
 }

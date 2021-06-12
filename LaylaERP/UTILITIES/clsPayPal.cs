@@ -1,0 +1,52 @@
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
+using System.Threading.Tasks;
+using System.Web;
+
+namespace LaylaERP.UTILITIES
+{
+    public class clsPayPal
+    {
+        public static string GetToken()
+        {
+            string clientId = "AcuqRFTJWTspIMomXNjD8qqaY3FYB3POMIKoJOI3P79e85Nluk0b8OME0k-zBnEllg2e03LoBLXbJ0l0", clientSecret = "EA_mO1Ia607bvwcFf5wHMYW-XLx4QST-S41Sr7iG8gCfWkDDzM794mvBjbysx1Nb_5P-MrruKBLWng-u";
+            List<KeyValuePair<string, string>> tokenServerPairs = new List<KeyValuePair<string, string>>();
+            tokenServerPairs.Add(new KeyValuePair<string, string>("grant_type", "client_credentials"));
+            var content = new FormUrlEncodedContent(tokenServerPairs);
+            clsAccessToken result = new clsAccessToken();
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("https://api.sandbox.paypal.com/v1/oauth2/token");
+                client.DefaultRequestHeaders.AcceptLanguage.Add(new StringWithQualityHeaderValue("en_US"));
+
+                var base64String = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{clientId}:{clientSecret}"));
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", base64String);
+                ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+                var response = client.PostAsync("", content).Result;
+
+                if (response != null && response.IsSuccessStatusCode)
+                {
+                    result = JsonConvert.DeserializeObject<clsAccessToken>(response.Content.ReadAsStringAsync().Result);
+                }
+                else { result.access_token = string.Empty; }
+            }
+            return result.access_token;
+        }
+    }
+    public class clsAccessToken
+    { 
+        public string scope { get; set; }
+        public string access_token { get; set; }
+        public string token_type { get; set; }
+        public string expires_in { get; set; }
+        public string app_id { get; set; }
+        public string nonce { get; set; }
+    }
+}

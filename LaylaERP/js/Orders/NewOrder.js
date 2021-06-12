@@ -36,7 +36,7 @@ $(document).ready(function () {
     $(document).on("click", "#btnpay", function (t) { t.preventDefault(); PaymentModal(); });
     $("#billModal").on("click", "#btnPlaceOrder", function (t) { t.preventDefault(); AcceptPayment(); });
     $("#billModal").on("change", "#ddlPaymentMethod", function (t) {
-        t.preventDefault(); if ($("#ddlPaymentMethod").val() == "paypal") { $("#txtpaypalemail").removeClass('hidden'); $("#txtpaypalemail").focus(); }
+        t.preventDefault(); if ($("#ddlPaymentMethod").val() == "paypal") { $("#txtpaypalemail").removeClass('hidden'); $("#txtpaypalemail").focus(); $("#txtpaypalemail").val($("#txtbillemail").val()); }
         else if ($("#ddlPaymentMethod").val() == "podium") { $("#txtpaypalemail").addClass('hidden'); }
         else { $("#txtpaypalemail").addClass('hidden'); }
     });
@@ -53,14 +53,14 @@ function BindStateCounty(ctr, obj) {
 ///Get New Order No
 function NewOrderNo() {
     var opt = { strValue1: '' };
-    //$.ajax({
-    //    type: "POST", url: '/Orders/GetNewOrderNo', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
-    //    success: function (result) {
-    //        $('#hfOrderNo').val(result.message); $('#lblOrderNo').text('Order #' + result.message + ' detail ');
-    //    },
-    //    error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
-    //    async: false
-    //});
+    $.ajax({
+        type: "POST", url: '/Orders/GetNewOrderNo', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
+        success: function (result) {
+            $('#hfOrderNo').val(result.message); $('#lblOrderNo').text('Order #' + result.message + ' detail ');
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
+        async: false
+    });
 }
 ///Find Address of Customer
 function CustomerAddress() {
@@ -635,7 +635,10 @@ function PaymentModal() {
 
 ///Accept Payment
 function AcceptPayment() {
-    if ($("#ddlPaymentMethod").val() == "paypal") { PaypalPayment(); }
+    if ($("#ddlPaymentMethod").val() == "paypal") {
+        if ($("#txtpaypalemail").val().length <= 5) { swal('Alert!', 'Please enter PayPal Email.', "info").then((result) => { return false; }); }
+        PaypalPayment();
+    }
     else if ($("#ddlPaymentMethod").val() == "podium") { PodiumPayment() }
     else { swal('Alert!', 'Please Select Payment Method.', "error"); }
 }
@@ -679,10 +682,34 @@ function updatePayment(taskUid) {
 
 ///Accept paypal Payment
 function PaypalPayment() {
-    swal('Alert!', 'Working....', "success").then((result) => { return false; });;
+    //swal('Alert!', 'Working....', "success").then((result) => { return false; });
+    var oid = parseInt($('#hfOrderNo').val()) || 0;
+    var cid = parseInt($('#ddlUser').val()) || 0;
+    var taxPer = parseFloat($('#hfTaxRate').val()) || 0.00;
+    var itemsList = [];
+    //get items
+    $('#tblAddItemFinal > tbody  > tr').each(function (index, tr) {
+        var qty = parseFloat($(this).find("[name=txt_ItemQty]").val()) || 0.00;
+        var rate = parseFloat($(this).find(".TotalAmount").data('salerate')) || 0.00;
+        var taxAmount = parseFloat($(this).find(".TotalAmount").data('taxamount')) || 0.00;
+        var discountAmount = parseFloat($(this).find(".TotalAmount").data('discount')) || 0.00;
+        itemsList.push({
+            name: $(this).data('pname'),
+            quantity: qty,
+            unit_amount: { currency_code: "USD", value: rate },
+            tax: { name: "Sales Tax", value: taxAmount, percent: taxPer },
+            discount: { amount: { currency_code: "USD", value: discountAmount } },
+            unit_of_measure: "QUANTITY"
+        });
+    });
+    if (cid <= 0) { swal('Alert!', 'Please Select Customer.', "info").then((result) => { return false; }); }
+    if (oid <= 0) { swal('Alert!', 'Please create new order.', "info").then((result) => { return false; }); }
+    if (itemsList.length <= 0) { swal('Alert!', 'Please add Items.', "info").then((result) => { return false; }); }
+
+
     var option = {
         detail: {
-            invoice_number: $('#hfOrderNo').val(),
+            invoice_number: oid,
             reference: "",
             invoice_date: "2018-11-12",
             currency_code: "USD",
@@ -695,9 +722,8 @@ function PaypalPayment() {
             name: { given_name: "", surname: "" },
             address: { address_line_1: "157 Church Street Suite 1956", address_line_2: "", admin_area_2: "New Haven", admin_area_1: "CT", postal_code: "06510", country_code: "US" },
             email_address: "david.quick.fix1-facilitator@gmail.com",
-            phones: [{ country_code: "001", national_number: "8553581676", phone_type: "PHONE" }],
+            phones: [{ country_code: "001", national_number: "8553581676", phone_type: "MOBILE" }],
             website: "www.laylasleep.com/",
-            //tax_id: "ABcNkWSfb5ICTt73nD3QON1fnnpgNKBy- Jb5SeuGj185MNNw6g",
             logo_url: "https://laylasleep-quickfix1.netdna-ssl.com/wp-content/themes/layla-white/images/logo.png",
             additional_notes: ""
         },
@@ -706,8 +732,8 @@ function PaypalPayment() {
                 billing_info: {
                     name: { given_name: $('#txtbillfirstname').val(), surname: $('#txtbilllastname').val() },
                     address: { address_line_1: $('#txtbilladdress1').val() + ' ' + $('#txtbilladdress2').val(), admin_area_2: $('#txtbillcity').val(), admin_area_1: $('#ddlbillstate').val(), postal_code: $('#txtbillzipcode').val(), country_code: $('#ddlbillcountry').val() },
-                    email_address: $('#txtbillemail').val(),
-                    phones: [{ country_code: "001", national_number: $('#txtbillphone').val(), phone_type: "HOME" }]
+                    email_address: $('#txtpaypalemail').val(),
+                    //phones: [{ country_code: "001", national_number: $('#txtbillphone').val(), phone_type: "HOME" }]
                 },
                 shipping_info: {
                     name: { given_name: $('#txtshipfirstname').val(), surname: $('#txtshiplastname').val() },
@@ -715,59 +741,53 @@ function PaypalPayment() {
                 }
             }
         ],
-        "items": [
-            {
-                "name": "Yoga Mat",
-                "description": "Elastic mat to practice yoga.",
-                "quantity": "1",
-                "unit_amount": { "currency_code": "USD", "value": "50.00" },
-                "tax": { "name": "Sales Tax", "percent": "7.25" },
-                "discount": { "percent": "5" },
-                "unit_of_measure": "QUANTITY"
-            },
-            {
-                "name": "Yoga t-shirt",
-                "quantity": "1",
-                "unit_amount": { "currency_code": "USD", "value": "10.00" },
-                "tax": { "name": "Sales Tax", "percent": "7.25" },
-                "discount": { "amount": { "currency_code": "USD", "value": "5.00" } },
-                "unit_of_measure": "QUANTITY"
-            }
-        ],
+        items: itemsList,
         configuration: {
-            partial_payment: {
-                allow_partial_payment: true,
-                minimum_amount_due: { "currency_code": "USD", "value": "20.00" }
-            },
             allow_tip: true,
             tax_calculated_after_discount: true,
             tax_inclusive: false,
-            template_id: "TEMP-19V05281TU309413B"
         },
         amount: {
             breakdown: {
-                custom: { label: "Packing Charges", amount: { currency_code: "USD", value: "10.00" } },
-                shipping: { amount: { currency_code: "USD", value: "10.00" }, tax: { name: "Sales Tax", percent: "7.25" } },
-                discount: { invoice_discount: { percent: "5" } }
+                //custom: { label: "Packing Charges", amount: { currency_code: "USD", value: "10.00" } },
+                shipping: { amount: { currency_code: "USD", value: "10.00" }, tax: { name: "Sales Tax", percent: taxPer } },
+                //discount: { invoice_discount: { percent: "5" } }
             }
         }
     }
 
     $.ajax({
-        //type: "POST", url: '/Orders/GetPayPalToken', contentType: "application/json; charset=utf-8", dataType: "json", data: { },
-        type: "POST", url: 'https://api-m.sandbox.paypal.com/v1/oauth2/token', contentType: "application/x-www-form-urlencoded", dataType: "json", data: { grant_type: 'client_credentials' },
-        beforeSend: function (xhr) { xhr.setRequestHeader("Authorization", "Basic " + btoa("AcuqRFTJWTspIMomXNjD8qqaY3FYB3POMIKoJOI3P79e85Nluk0b8OME0k-zBnEllg2e03LoBLXbJ0l0:EA_mO1Ia607bvwcFf5wHMYW-XLx4QST-S41Sr7iG8gCfWkDDzM794mvBjbysx1Nb_5P-MrruKBLWng-u")); },
+        type: "POST", url: '/Orders/GetPayPalToken', contentType: "application/json; charset=utf-8", dataType: "json", data: {},
         success: function (result) {
-            console.log(result);
-            //$.ajax({
-            //    type: "POST", url: 'https://api-m.sandbox.paypal.com/v2/invoicing/invoices', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(option),
-            //    beforeSend: function (xhr) { xhr.setRequestHeader("Authorization", result.token); },
-            //    success: function (data) {
-            //        console.log(data);
-            //    },
-            //    error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
-            //    async: false
-            //});
+            /// Create Invoice
+            $.ajax({
+                type: "POST", url: 'https://api-m.sandbox.paypal.com/v2/invoicing/invoices', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(option),
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("Accept", "application/json");
+                    xhr.setRequestHeader("Accept-Language", "en_US");
+                    xhr.setRequestHeader("Authorization", "Bearer " + result.message);
+                },
+                success: function (data) {
+                    var sendURL = data.href + '/send'
+                    ///send Invoice
+                    $.ajax({
+                        type: "POST", url: sendURL, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify({ send_to_invoicer: true }),
+                        beforeSend: function (xhr) {
+                            xhr.setRequestHeader("Accept", "application/json");
+                            xhr.setRequestHeader("Accept-Language", "en_US");
+                            xhr.setRequestHeader("Authorization", "Bearer " + result.message);
+                        },
+                        success: function (data) {
+                            console.log(data);
+                            $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true); setTimeout(function () { swal('Alert!', result.message, "success"); }, 50);
+                        },
+                        error: function (XMLHttpRequest, textStatus, errorThrown) { console.log(XMLHttpRequest); swal('Order received!', 'Thank you. Your invoice has been send on your email for payment.', "error"); },
+                        async: false
+                    });
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) { console.log(XMLHttpRequest); swal('Alert!', errorThrown, "error"); },
+                async: false
+            });
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
         async: false

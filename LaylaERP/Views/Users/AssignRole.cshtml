@@ -178,25 +178,69 @@
         });
     }
     function resetForm() {
-        saveForm.reset();
+        //saveForm.reset();
     }
-
+    //Checkbox tick for subpart start
     function main_submenu_tick() {
-        var chkuser = $("input[type='checkbox'][value='1']");
-        var chkcreatenew = $("input[type='checkbox'][value='2']");
-        var chkchangepwd = $("input[type='checkbox'][value='3']");
-        var chkorder = $("input[type='checkbox'][value='4']");
-        var chkaddorder = $("input[type='checkbox'][value='5']");
-        var chkvieweditorder = $("input[type='checkbox'][value='6']");
+        
+        $("#create_user").on('change', function () {
+            if ($(this).is(":checked")) {
+                $("#add_coupon").prop('checked', true);
+                $("#show_coupon").prop('checked', true);
+            }
+            else {
+                $("#add_coupon").prop('checked', false);
+                $("#show_coupon").prop('checked', false);
+            }
 
-        chkuser.on('change', function () {
-            chkcreatenew.prop('checked', this.checked);
-            chkchangepwd.prop('checked', this.checked);
         });
 
-        chkorder.on('change', function () {
-            chkaddorder.prop('checked', this.checked);
-            chkvieweditorder.prop('checked', this.checked);
+        $("#orders_mnu").on('change', function () {
+            if ($(this).is(":checked")) {
+                $("#add_new_orders").prop('checked', true);
+                $("#show_update_orders").prop('checked', true);
+            }
+            else {
+                $("#add_new_orders").prop('checked', false);
+                $("#show_update_orders").prop('checked', false);
+            }
+        });
+
+        $("#show_coupon").on('change', function () {
+            if ($(this).is(":checked")) {
+                $("#create_user").prop('checked', true);
+            }
+            else {
+                $("#create_user").prop('checked', false);
+            }
+        });
+
+        $("#add_coupon").on('change', function () {
+            if ($(this).is(":checked")) {
+                $("#create_user").prop('checked', true);
+            }
+            else {
+                $("#create_user").prop('checked', false);
+            }
+        });
+
+        $("#add_new_orders").on('change', function () {
+            if ($(this).is(":checked")) {
+                $("#orders_mnu").prop('checked', true);
+            }
+            else {
+                $("#orders_mnu").prop('checked', false);
+            }
+        });
+
+        $("#show_update_orders").on('change', function () {
+            if ($(this).is(":checked")) {
+                $("#orders_mnu").prop('checked', true);
+            }
+            else {
+                $("#orders_mnu").prop('checked', false);
+            }
         });
     }
+    //checked box sub part end
 </script>

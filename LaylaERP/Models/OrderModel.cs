@@ -84,6 +84,7 @@
         public double net_total { get; set; }
         public string status { get; set; }
         public string Search { get; set; }
+        public string strVal { get; set; }
     }
     public class OrderProductsModel
     {

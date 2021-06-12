@@ -86,16 +86,19 @@
 <script src="@Url.Content("~/js/Customer/Customer.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 <script>
     $(document).ready(function () {
+       
         $("#btnSearch").click(function () { dataGridLoad(); return false; });
         setTimeout(function () { dataGridLoad(); }, 50);
     });
    
     $('#checkAll').click(function () {
+        debugger
         var isChecked = $(this).prop("checked");
         $('#dtdata tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
     });
+
     function Singlecheck() {
-        var isChecked = $(this).prop("checked");
+        var isChecked = $('#CheckSingle').prop("checked");
         var isHeaderChecked = $("#checkAll").prop("checked");
         if (isChecked == false && isHeaderChecked)
             $("#checkAll").prop('checked', isChecked);

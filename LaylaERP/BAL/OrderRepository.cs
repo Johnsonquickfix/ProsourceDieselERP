@@ -369,7 +369,6 @@
             catch { }
             return result;
         }
-
         public static int UpdateOrderStatus(OrderPostMetaModel model)
         {
             int result = 0;
@@ -386,6 +385,45 @@
             }
             catch { }
             return result;
+        }
+        public static int UpdatePayPalStatus(List<OrderPostMetaModel> model)
+        {
+            int result = 0;
+            try
+            {
+                var i = 0;
+                StringBuilder strSql = new StringBuilder();
+                foreach (OrderPostMetaModel obj in model)
+                {
+                    strSql.Append(string.Format("update wp_postmeta set meta_value = '{0}' where post_id = '{1}' and meta_key = '{2}' ; ", obj.meta_value, obj.post_id, obj.meta_key));
+                }
+
+                /// step 6 : wp_posts
+                //strSql.Append(string.Format(" update wp_posts set post_status = '{0}' ,comment_status = 'closed' where id = {1} ", model.OrderPostStatus.status, model.OrderPostStatus.order_id));
+
+                result = SQLHelper.ExecuteNonQuery(strSql.ToString());
+            }
+            catch { }
+            return result;
+        }
+        public int ChangeOrderStatus(OrderPostStatusModel model, string ID)
+        {
+            try
+            {
+                string strsql = "update wp_wc_order_stats set status=@status,date_created=@date_created where order_id  in (" + ID + ")";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@status", model.status),
+                    new MySqlParameter("@date_created", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
+
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
         }
         public static DataTable OrderList()
         {

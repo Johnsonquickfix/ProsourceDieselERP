@@ -211,7 +211,6 @@
                 $("#create_user").prop('checked', true);
             }
             else if ($('#add_user').is(":checked")) {
-                console.log(2);
                 $("#create_user").prop('checked', true);
             }
             else {
@@ -224,7 +223,6 @@
                 $("#create_user").prop('checked', true);
             }
             else if ($('#show_user').is(":checked")) {
-                console.log(1);
                 $("#create_user").prop('checked', true);
             }
             else {
@@ -236,6 +234,9 @@
             if ($(this).is(":checked")) {
                 $("#orders_mnu").prop('checked', true);
             }
+            else if ($('#show_update_orders').is(":checked")) {
+                $("#orders_mnu").prop('checked', true);
+            }
             else {
                 $("#orders_mnu").prop('checked', false);
             }
@@ -243,6 +244,9 @@
 
         $("#show_update_orders").on('change', function () {
             if ($(this).is(":checked")) {
+                $("#orders_mnu").prop('checked', true);
+            }
+            else if ($('#add_new_orders').is(":checked")) {
                 $("#orders_mnu").prop('checked', true);
             }
             else {

@@ -65,14 +65,14 @@
                 <div class="row">
                     <div class="col-sm-6">
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="Add_Coupon" id="add_coupon">
-                            <label class="form-check-label" for="add_coupon">
+                            <input class="form-check-input" type="checkbox" name="add_user" id="add_user">
+                            <label class="form-check-label" for="add_user">
                                 Create New
                             </label>
                         </div>
                         <div class="form-check mt-1">
-                            <input class="form-check-input" type="checkbox" name="Show_Coupon" id="show_coupon">
-                            <label class="form-check-label" for="show_coupon">
+                            <input class="form-check-input" type="checkbox" name="show_user" id="show_user">
+                            <label class="form-check-label" for="show_user">
                                 Change Password
                             </label>
                         </div>
@@ -136,8 +136,8 @@
                 if (obj[0].Customers == 1) $("#customers").prop('checked', true); else $("#customers").prop('checked', false);
                 if (obj[0].Orders_Mnu == 1) $("#orders_mnu").prop('checked', true); else $("#orders_mnu").prop('checked', false);
                 if (obj[0].System_Settings == 1) $("#system_settings").prop('checked', true); else $("#system_settings").prop('checked', false);
-                if (obj[0].Add_Coupon == 1) $("#add_coupon").prop('checked', true); else $("#add_coupon").prop('checked', false);
-                if (obj[0].Show_Coupon == 1) $("#show_coupon").prop('checked', true); else $("#show_coupon").prop('checked', false);
+                if (obj[0].add_user == 1) $("#add_user").prop('checked', true); else $("#add_user").prop('checked', false);
+                if (obj[0].show_user == 1) $("#show_user").prop('checked', true); else $("#show_user").prop('checked', false);
                 if (obj[0].Add_New_Orders == 1) $("#add_new_orders").prop('checked', true); else $("#add_new_orders").prop('checked', false);
                 if (obj[0].Show_Update_Orders == 1) $("#show_update_orders").prop('checked', true); else $("#show_update_orders").prop('checked', false);
 
@@ -159,8 +159,8 @@
         $("#customers").val($("#customers").is(':checked'));
         $("#orders_mnu").val($("#orders_mnu").is(':checked'));
         $("#system_settings").val($("#system_settings").is(':checked'));
-        $("#add_coupon").val($("#add_coupon").is(':checked'));
-        $("#show_coupon").val($("#show_coupon").is(':checked'));
+        $("#add_user").val($("#add_user").is(':checked'));
+        $("#show_user").val($("#show_user").is(':checked'));
         $("#add_new_orders").val($("#add_new_orders").is(':checked'));
         $("#show_update_orders").val($("#show_update_orders").is(':checked'));
 
@@ -185,12 +185,12 @@
         
         $("#create_user").on('change', function () {
             if ($(this).is(":checked")) {
-                $("#add_coupon").prop('checked', true);
-                $("#show_coupon").prop('checked', true);
+                $("#add_user").prop('checked', true);
+                $("#show_user").prop('checked', true);
             }
             else {
-                $("#add_coupon").prop('checked', false);
-                $("#show_coupon").prop('checked', false);
+                $("#add_user").prop('checked', false);
+                $("#show_user").prop('checked', false);
             }
 
         });
@@ -206,8 +206,11 @@
             }
         });
 
-        $("#show_coupon").on('change', function () {
+        $("#show_user").on('change', function () {
             if ($(this).is(":checked")) {
+                $("#create_user").prop('checked', true);
+            }
+            else if ($('#add_user').is(":checked")) {
                 $("#create_user").prop('checked', true);
             }
             else {
@@ -215,8 +218,11 @@
             }
         });
 
-        $("#add_coupon").on('change', function () {
+        $("#add_user").on('change', function () {
             if ($(this).is(":checked")) {
+                $("#create_user").prop('checked', true);
+            }
+            else if ($('#show_user').is(":checked")) {
                 $("#create_user").prop('checked', true);
             }
             else {
@@ -228,6 +234,9 @@
             if ($(this).is(":checked")) {
                 $("#orders_mnu").prop('checked', true);
             }
+            else if ($('#show_update_orders').is(":checked")) {
+                $("#orders_mnu").prop('checked', true);
+            }
             else {
                 $("#orders_mnu").prop('checked', false);
             }
@@ -235,6 +244,9 @@
 
         $("#show_update_orders").on('change', function () {
             if ($(this).is(":checked")) {
+                $("#orders_mnu").prop('checked', true);
+            }
+            else if ($('#add_new_orders').is(":checked")) {
                 $("#orders_mnu").prop('checked', true);
             }
             else {

@@ -12,7 +12,7 @@
     <span>&nbsp;&nbsp;Loading......</span>
 </div>
 <div class="page-title">
-    <h2 class="page-heading">Add New Customer</h2>
+    <h2 class="page-heading" id="lbltitle">Add New Customer</h2>
 </div>
 <!-- Main content -->
 <section class="content content-section p-0">
@@ -69,7 +69,7 @@
                         <div class="form-group">
                             <label class="control-label " for="Country/Region">Country/Region</label>
                             <div class="">
-                                <input type="text" id="txtBillingCountry" class="form-control" placeholder="Country/Region" />
+                                <input type="text" id="txtBillingCountry" class="form-control" placeholder="Country/Region"  disabled/>
                             </div>
                         </div>
                     </div>
@@ -77,13 +77,13 @@
                         <div class="form-group">
                             <label class="control-label " for="State/Country">State/Country</label>
                             <div class="">
-                                <input type="text" id="txtBillingState" class="form-control" placeholder="State/Country" />
+                                <input type="text" id="txtBillingState" class="form-control" placeholder="State/Country" disabled/>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label " for="City">City</label>
                             <div class="">
-                                <input type="tel" id="txtBillingCity" class="form-control" placeholder="City" />
+                                <input type="tel" id="txtBillingCity" class="form-control" placeholder="City" disabled/>
                             </div>
                         </div>
                         <div class="form-group">
@@ -114,6 +114,16 @@
 <script>
     $(document).ready(function () {
         $("#loader").hide();
+        var url = window.location.pathname;
+        var id = url.substring(url.lastIndexOf('/') + 1);
+
+        if (id != "") {
+            debugger
+            $("#lbltitle").text("Update Customer");
+            GetCustomerByID(id);
+        }
+
+      
         $(document).on('click', "#btnSave", function () {
             AddCustomer();
         })
@@ -123,6 +133,7 @@
 
       
     });
+
     document.getElementById('txtBillingPhone').addEventListener('keyup', function (evt) {
         var phoneNumber = document.getElementById('txtBillingPhone');
         var charCode = (evt.which) ? evt.which : evt.keyCode;

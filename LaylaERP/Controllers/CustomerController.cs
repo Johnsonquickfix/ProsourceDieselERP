@@ -41,6 +41,19 @@ namespace LaylaERP.Controllers
             //return Json(JSONresult, 0);
             return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
         }
+
+        public JsonResult GetCustomerByID(CustomerModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+               
+                DataTable dt = CustomerRepository.CustomerByID(model);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
         public ActionResult NewUser(long id = 0)
         {
             CustomerModel model = new CustomerModel();

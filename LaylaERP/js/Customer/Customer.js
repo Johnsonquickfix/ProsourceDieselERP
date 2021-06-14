@@ -207,3 +207,33 @@ function dataGridLoad() {
         ]
     });
 }
+
+function GetCustomerByID(id) {
+    var ID = id;
+    var obj = {};
+    $.ajax({
+        url: "/Customer/GetCustomerByID/" + ID,
+        type: "GET",
+        contentType: "application/json; charset=utf-8",
+        dataType: 'JSON',
+        data: JSON.stringify(obj),
+        success: function (data) {
+            var d = JSON.parse(data);
+            console.log(d[0].user_email)
+            $("#txtUserEmail").val(d[0].user_email);
+            $("#txtUserNickName").val(d[0].user_nicename);
+            $("#txtFirstName").val(d[0].first_name);
+            $("#txtLastName").val(d[0].last_name);
+            $("#txtBillingAddress1").val(d[0].billing_address_1);
+            $("#txtBillingAddress2").val(d[0].billing_address_2);
+            $("#txtBillingPostCode").val(d[0].billing_postcode);
+            $("#txtBillingCountry").val(d[0].billing_country);
+            $("#txtBillingState").val(d[0].billing_state);
+            $("#txtBillingCity").val(d[0].billing_city);
+            $("#txtBillingPhone").val(d[0].billing_phone);
+           
+        },
+        error: function (msg) { alert(msg); }
+    });
+
+}

@@ -65,14 +65,14 @@
                 <div class="row">
                     <div class="col-sm-6">
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="add_user" id="add_user">
-                            <label class="form-check-label" for="add_user">
+                            <input class="form-check-input" type="checkbox" name="user_mnu" id="User_Mnu">
+                            <label class="form-check-label" for="User_Mnu">
                                 Create New
                             </label>
                         </div>
                         <div class="form-check mt-1">
-                            <input class="form-check-input" type="checkbox" name="show_user" id="show_user">
-                            <label class="form-check-label" for="show_user">
+                            <input class="form-check-input" type="checkbox" name="user_classification" id="User_Classification">
+                            <label class="form-check-label" for="User_Classification">
                                 Change Password
                             </label>
                         </div>
@@ -136,8 +136,8 @@
                 if (obj[0].Customers == 1) $("#customers").prop('checked', true); else $("#customers").prop('checked', false);
                 if (obj[0].Orders_Mnu == 1) $("#orders_mnu").prop('checked', true); else $("#orders_mnu").prop('checked', false);
                 if (obj[0].System_Settings == 1) $("#system_settings").prop('checked', true); else $("#system_settings").prop('checked', false);
-                if (obj[0].add_user == 1) $("#add_user").prop('checked', true); else $("#add_user").prop('checked', false);
-                if (obj[0].show_user == 1) $("#show_user").prop('checked', true); else $("#show_user").prop('checked', false);
+                if (obj[0].User_Mnu == 1) $("#User_Mnu").prop('checked', true); else $("#User_Mnu").prop('checked', false);
+                if (obj[0].User_Classification == 1) $("#User_Classification").prop('checked', true); else $("#User_Classification").prop('checked', false);
                 if (obj[0].Add_New_Orders == 1) $("#add_new_orders").prop('checked', true); else $("#add_new_orders").prop('checked', false);
                 if (obj[0].Show_Update_Orders == 1) $("#show_update_orders").prop('checked', true); else $("#show_update_orders").prop('checked', false);
 
@@ -155,12 +155,12 @@
     });
     function saveData() {
 
+        $("#User_Mnu").val($("#User_Mnu").is(':checked'));
+        $("#User_Classification").val($("#User_Classification").is(':checked'));
         $("#create_user").val($("#create_user").is(':checked'));
         $("#customers").val($("#customers").is(':checked'));
         $("#orders_mnu").val($("#orders_mnu").is(':checked'));
         $("#system_settings").val($("#system_settings").is(':checked'));
-        $("#add_user").val($("#add_user").is(':checked'));
-        $("#show_user").val($("#show_user").is(':checked'));
         $("#add_new_orders").val($("#add_new_orders").is(':checked'));
         $("#show_update_orders").val($("#show_update_orders").is(':checked'));
 
@@ -185,12 +185,12 @@
         
         $("#create_user").on('change', function () {
             if ($(this).is(":checked")) {
-                $("#add_user").prop('checked', true);
-                $("#show_user").prop('checked', true);
+                $("#User_Mnu").prop('checked', true);
+                $("#User_Classification").prop('checked', true);
             }
             else {
-                $("#add_user").prop('checked', false);
-                $("#show_user").prop('checked', false);
+                $("#User_Mnu").prop('checked', false);
+                $("#User_Classification").prop('checked', false);
             }
 
         });
@@ -206,11 +206,11 @@
             }
         });
 
-        $("#show_user").on('change', function () {
+        $("#User_Classification").on('change', function () {
             if ($(this).is(":checked")) {
                 $("#create_user").prop('checked', true);
             }
-            else if ($('#add_user').is(":checked")) {
+            else if ($('#User_Mnu').is(":checked")) {
                 $("#create_user").prop('checked', true);
             }
             else {
@@ -218,11 +218,11 @@
             }
         });
 
-        $("#add_user").on('change', function () {
+        $("#User_Mnu").on('change', function () {
             if ($(this).is(":checked")) {
                 $("#create_user").prop('checked', true);
             }
-            else if ($('#show_user').is(":checked")) {
+            else if ($('#User_Classification').is(":checked")) {
                 $("#create_user").prop('checked', true);
             }
             else {

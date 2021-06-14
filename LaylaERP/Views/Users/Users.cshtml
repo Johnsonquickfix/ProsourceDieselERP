@@ -325,14 +325,34 @@
                     { 'data': 'user_email', 'sWidth': "20%" },
                     { 'data': 'user_status', 'sWidth': "20%" },
                     { 'data': 'my', 'sWidth': "20%" },
+                    {
+                        'data': 'ID', sWidth: "8%",
+                        'render': function (ID, type, full, meta) {
+                            return '<a href="../Users/UserDetails?id=' + ID + '"><i class="glyphicon glyphicon-pencil"></i></a>'
+                        }
+                    }
                 ],
 
                 columnDefs: [{
                     orderable: false,
                     targets: [0]
                 }],
-    
+                //columnDefs: [{
+                //    orderable: false,
+                //    className: 'select-checkbox',
+                //    targets: 0,
+                //    'checkboxes': {
+                //        'selectRow': true
+                //    },
+                //    data: ID,
+                //    defaultContent: '',
+                //}],
+                //"select": {
+                //    "style": 'multi',
+                //    "selector": 'td:first-child'
+                //},
                 "order": [[1, 'desc']],
+
 
                
 
@@ -411,6 +431,7 @@
                 success: function (data) {
                     if (data.status == true) {
                         swal('Alert!', data.message, 'success');
+                        DatagridLoade();
                     }
                     else {
                         swal('Alert!', data.message, 'error')

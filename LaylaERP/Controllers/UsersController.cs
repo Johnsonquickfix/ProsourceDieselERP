@@ -166,7 +166,7 @@ namespace LaylaERP.Controllers
                 return Json(new { status = false, message = "Something went wrong", url = "" }, 0);
             }
 
-        }
+        } 
 
         [HttpPost]
         public JsonResult changeRole(CustomerModel model)

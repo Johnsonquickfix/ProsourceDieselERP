@@ -14,7 +14,7 @@ using System.Security.Cryptography;
 using System.Text;
 
 namespace LaylaERP.BAL
-{
+{ 
     public class UsersRepositry
     {
         private static string itoa64 = "./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";

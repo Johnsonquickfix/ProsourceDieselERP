@@ -14,7 +14,7 @@ using System.Security.Cryptography;
 using System.Text;
 
 namespace LaylaERP.BAL
-{
+{ 
     public class UsersRepositry
     {
         private static string itoa64 = "./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
@@ -248,7 +248,23 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
-
+        public static int ActiveUsers(string ID)
+        {
+            try
+            {
+                string strsql = "update wp_users set user_status=@user_status where Id in(" + ID + ")";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@user_status", "0")
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
         public static int changeRoleStatus(CustomerModel model)
         {
             try
@@ -294,6 +310,30 @@ namespace LaylaERP.BAL
             }
         }
 
+        public static int UpdateUsers(clsUserDetails model)
+        {
+            try
+            {
+
+                 
+                string strsql = "update wp_users set user_login=@user_login,user_nicename=@user_nicename,user_email=@user_email,display_name=@display_name,user_image=@user_image where ID in(" + model.ID + ")";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@user_login", model.user_nicename),                     
+                    new MySqlParameter("@user_nicename", model.user_nicename),
+                    new MySqlParameter("@user_email", model.user_email),                     
+                    new MySqlParameter("@display_name", model.user_nicename),
+                    new MySqlParameter("@user_image", model.User_Image)
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
         public static void AddUserMetaData(clsUserDetails model, long id, string varFieldsName, string varFieldsValue)
         {
             try
@@ -313,12 +353,52 @@ namespace LaylaERP.BAL
             }
         }
 
+        public static void UpdateUserMetaData(clsUserDetails model, long id, string varFieldsName, string varFieldsValue)
+        {
+            try
+            {
+                string strsql = "update wp_usermeta set meta_value=@meta_value where user_id=@user_id and meta_key=@meta_key";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@user_id", id),
+                    new MySqlParameter("@meta_key", varFieldsName),
+                    new MySqlParameter("@meta_value", varFieldsValue),
+                };
+                SQLHelper.ExecuteNonQuery(strsql, para);
+             
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
 
         public static void AddUserMoreMeta(clsUserDetails model, long id, string varFieldsName, string varFieldsValue)
         {
             try
             {
                 string strsql = "INSERT INTO wp_usermeta(user_id,meta_key,meta_value) VALUES(@user_id,@meta_key,@meta_value); select LAST_INSERT_ID() as ID;";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@user_id", id),
+                    new MySqlParameter("@meta_key", varFieldsName),
+                    new MySqlParameter("@meta_value", varFieldsValue),
+                };
+                SQLHelper.ExecuteNonQuery(strsql, para);
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+        public static void UpdateUserMoreMeta(clsUserDetails model, long id, string varFieldsName, string varFieldsValue)
+        {
+            try
+            {
+                 
+                string strsql = "update wp_usermeta set meta_value=@meta_value where user_id=@user_id and meta_key=@meta_key";
                 MySqlParameter[] para =
                 {
                     new MySqlParameter("@user_id", id),

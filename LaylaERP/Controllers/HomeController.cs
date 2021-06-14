@@ -117,6 +117,7 @@
         }
         public ActionResult Index()
         {
+            ViewBag.id = Session["UserId"];
             return View();
         }
         public ActionResult Dashboard()
@@ -208,8 +209,43 @@
             return View();
         }
 
+        private void UpdateUserProfile(clsUserDetails model, long id)
+        {
+            string user_nicename = model.user_nicename;
+            string user_email = model.user_email;
+            string user_status = model.user_status;
+            UserProfileRepository.EditUserProfile(model, id);
+        }
+
+        [HttpPost]
+        public JsonResult Update_UserProfile(clsUserDetails model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (model.ID > 0)
+                {
+                    UpdateUserProfile(model, model.ID);
+                    //UpdateProfile_MetaData(model, model.ID);
+                    return Json(new { status = true, message = "Profile has been saved successfully!!", url = "" }, 0);
+                }
+
+            }
+            return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+        }
+        private void UpdateProfile_MetaData(clsUserDetails model, long id)
+        {
+            string[] varQueryArr1 = new string[14];
+            string[] varFieldsName = new string[14] { "nickname", "first_name", "last_name", "description", "rich_editing", "syntax_highlighting", "comment_shortcuts", "admin_color", "use_ssl", "show_admin_bar_front", "locale", "wp_capabilities", "wp_user_level", "dismissed_wp_pointers" };
+            string[] varFieldsValue = new string[14] { model.user_nicename, model.first_name, model.last_name, "", "true", "true", "false", "fresh", "0", "true", "", model.user_role, "", "" };
+            for (int n = 0; n < 14; n++)
+            {
+               UserProfileRepository.UpdateProfileMetaData(model, id, varFieldsName[n], varFieldsValue[n]);
+            }
+        }
+
         public ActionResult About()
         {
+
             ViewBag.Message = "Your application description page.";
 
             return View();

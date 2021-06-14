@@ -159,6 +159,7 @@
     <Compile Include="BAL\DashboardRepository.cs" />
     <Compile Include="BAL\OrderRepository.cs" />
     <Compile Include="BAL\SettingRepository.cs" />
+    <Compile Include="BAL\UserProfileRepository.cs" />
     <Compile Include="BAL\Users.cs" />
     <Compile Include="BAL\UsersRepositry.cs" />
     <Compile Include="Controllers\AccountAPIController.cs" />
@@ -183,6 +184,7 @@
     <Compile Include="Models\SettingModel.cs" />
     <Compile Include="Models\UserClassification.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UTILITIES\clsPayPal.cs" />
     <Compile Include="UTILITIES\clsTaxJar.cs" />
     <Compile Include="UTILITIES\CommanUtilities.cs" />
     <Compile Include="UTILITIES\CryptorEngine.cs" />
@@ -620,7 +622,7 @@
     <Content Include="Views\Home\Dashboard.cshtml" />
     <Content Include="Views\Customer\Customer.cshtml" />
     <Content Include="Views\Export\Export.cshtml" />
-    <Content Include="Views\Export\RoleBaseReport.cshtml" />
+    <Content Include="Views\Reports\RoleBaseReport.cshtml" />
     <Content Include="Views\Orders\NewOrders.cshtml" />
     <Content Include="Views\Orders\OrdersHistory.cshtml" />
     <Content Include="Views\Reports\Index.cshtml" />
@@ -634,6 +636,7 @@
     <Content Include="Views\Home\ResetPassword.cshtml" />
     <Content Include="Views\Home\ForgotPassword.cshtml" />
     <Content Include="Views\Users\CreateUser.cshtml" />
+    <Content Include="Views\Users\UserDetails.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

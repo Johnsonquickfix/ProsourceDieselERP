@@ -12,7 +12,7 @@
             </select>
             <br>
             <input type="submit" value="Apply">
-        </form>
+        </form> 
 
         <select name="userrole" id="userrole">
             <option value="0">Select User Role</option>
@@ -115,14 +115,15 @@
     <section class="content section-content">
         <div class="user-top-section">
             @*<div class="user-search-box">
-                    <input type="search" id="user-search-input" name="s" value="">
-                    <input type="submit" id="search-submit" class="button" value="Search Users">
-                </div>*@
+                <input type="search" id="user-search-input" name="s" value="">
+                <input type="submit" id="search-submit" class="button" value="Search Users">
+            </div>*@
             <div class="tablenav top">
                 <div class="alignleft actions bulkactions">
                     <select name="action" id="ddlStatus">
                         <option value="1">Bulk actions</option>
-                        <option value="2">Delete</option>
+                        <option value="2">Active</option>
+                        <option value="3">InActive</option>
                     </select>
                     <input type="submit" id="btnApply" class="button action" value="Apply">
                 </div>
@@ -146,41 +147,44 @@
                 </div>
                 <input type="hidden" name="varpass" id="varpass" value="">
                 @*<div class="tablenav-pages">
-            <span class="displaying-num">61,641 items</span>
-            <span class="pagination-links">
-                <span class="tablenav-pages-navspan button disabled" aria-hidden="true">«</span>
-                <span class="tablenav-pages-navspan button disabled" aria-hidden="true">‹</span>
-                <span class="paging-input">
-                    <input class="current-page" id="current-page-selector" type="text" name="paged" value="1" size="4" aria-describedby="table-paging">
-                    <span class="tablenav-paging-text"> of <span class="total-pages">3,083</span></span>
-                </span>
-                <a class="next-page button" href="http://173.247.242.204/~rpsisr/woo/wp-admin/users.php?paged=2"><span aria-hidden="true">›</span></a>
-                <a class="last-page button" href="http://173.247.242.204/~rpsisr/woo/wp-admin/users.php?paged=3083"><span aria-hidden="true">»</span></a>
-            </span>
-        </div>*@
+                    <span class="displaying-num">61,641 items</span>
+                    <span class="pagination-links">
+                        <span class="tablenav-pages-navspan button disabled" aria-hidden="true">«</span>
+                        <span class="tablenav-pages-navspan button disabled" aria-hidden="true">‹</span>
+                        <span class="paging-input">
+                            <input class="current-page" id="current-page-selector" type="text" name="paged" value="1" size="4" aria-describedby="table-paging">
+                            <span class="tablenav-paging-text"> of <span class="total-pages">3,083</span></span>
+                        </span>
+                        <a class="next-page button" href="http://173.247.242.204/~rpsisr/woo/wp-admin/users.php?paged=2"><span aria-hidden="true">›</span></a>
+                        <a class="last-page button" href="http://173.247.242.204/~rpsisr/woo/wp-admin/users.php?paged=3083"><span aria-hidden="true">»</span></a>
+                    </span>
+                </div>*@
                 <br class="clear">
             </div>
         </div>
-        <div class="dx-viewport demo-container data-table-container">
-            <div id="gridContainer" class="margin-15-rem">
-                <table id="dtdata" class="table table-bordered table-striped dataTable check-table" style="width:100%;">
-                    <thead class="thead-dark">
-                        <tr>
-                            <th><input type="checkbox" name="checkAll" id="checkAll"><label></label></th>
-                            <th>ID</th>
-                            <th>User Name</th>
-                            <th>Email</th>
-                            <th>Status</th>
-                            <th>Role</th>
-                        </tr>
-                    </thead>
+        <div class="box box-primary">
+            <div class="box-header">
+                <div class="dx-viewport demo-container data-table-container">
+                    <div id="gridContainer" class="margin-15-rem">
+                        <table id="dtdata" class="table table-blue table-bordered table-striped dataTable check-table" style="width:100%;">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th><input type="checkbox" name="checkAll" id="checkAll"><label></label></th>
+                                    <th>ID</th>
+                                    <th>User Name</th>
+                                    <th>Email</th>
+                                    <th>Status</th>
+                                    <th>Role</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
 
-                    </table>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
 
 @section scripts{
@@ -227,6 +231,12 @@
                     { 'data': 'user_email', 'sWidth': "20%" },
                     { 'data': 'user_status', 'sWidth': "20%" },
                     { 'data': 'my', 'sWidth': "20%" },
+                    {
+                        'data': 'ID', sWidth: "8%",
+                        'render': function (ID, type, full, meta) {
+                            return '<a href="../Users/UserDetails?id=' + ID + '"><i class="glyphicon glyphicon-pencil"></i></a>'
+                        }
+                    }
                 ],
 
                 columnDefs: [{
@@ -363,9 +373,15 @@
             if (status == "1") {
                 UpdateCustomerStatus();
             }
-            else {
+            if (status == "3") {
                 id = id.replace(/,(?=\s*$)/, '');
                 DeleteUsers(id);
+                //dataGridLoad();
+            }
+            if (status == "2") {
+               
+                id = id.replace(/,(?=\s*$)/, '');
+                ActiveUsers(id);
                 //dataGridLoad();
             }
             $("input:checkbox[name=CheckSingle]:checked").each(function () {
@@ -405,6 +421,32 @@
                 },
             })
         }
+
+        function ActiveUsers(id) {
+           
+            debugger
+            var obj = { strVal: id }
+          
+            $.ajax({
+                url: '/Users/ActiveUsers/', dataType: 'json', type: 'Post',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(obj),
+                dataType: "json",
+                success: function (data) {
+                    if (data.status == true) {
+                        swal('Alert!', data.message, 'success');
+                        DatagridLoade();
+                    }
+                    else {
+                        swal('Alert!', data.message, 'error')
+                    }
+                },
+                error: function (error) {
+                    swal('Error!', 'something went wrong', 'error');
+                },
+            })
+        }
+
 
         function UpdateCustomerStatus() {
             var obj = { strVal: ID }

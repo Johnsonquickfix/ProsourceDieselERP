@@ -182,6 +182,7 @@
             </div>
             <div class="content-iframe " style="background-color: #ffffff;">
                 <div class="tab-content " id="tab-content">
+                    <input type="hidden" id="hfid" name="hfid" value="@ViewBag.id" /> 
                 </div>
             </div>
         </div>
@@ -276,56 +277,53 @@
                                     <div class="col-sm-6">
                                         <div class="form-group">
                                             <label for="exampleInputEmail1">First Name</label>
-                                            <input type="text" class="form-control" placeholder="First Name">
+                                            <input type="text" id="txtFirstName" class="form-control" placeholder="First Name">
                                         </div>
                                         <div class="form-group">
                                             <label for="exampleInputEmail1">Last Name</label>
-                                            <input type="text" class="form-control" placeholder="Last Name">
+                                            <input type="text" id="txtLastName" class="form-control" placeholder="Last Name">
                                         </div>
                                         <div class="form-group">
                                             <label for="exampleInputEmail1">User Status</label>
-                                            <select class="form-control">
-                                                <option>Select User Status</option>
-                                                <option>Active</option>
-                                                <option>Away</option>
-                                                <option>Do not disturb</option>
+                                            <select class="form-control" id="user_status">
+                                                <option value="0">Active</option>
+                                                <option value="1">Inactive</option>
                                             </select>
                                         </div>
                                         <div class="form-group">
                                             <label for="exampleInputEmail1">User Type</label>
-                                            <select class="form-control">
+                                            <select id="txtUserRole" class="form-control">
                                                 <option>Select User Type</option>
-                                                <option>Admin</option>
-                                                <option>Customer</option>
+                                                <option value="Author">Author</option>
                                             </select>
                                         </div>
                                         <div class="form-group">
                                             <label for="exampleInputEmail1">User Name</label>
-                                            <input type="text" class="form-control" placeholder="Enter User Name">
+                                            <input type="text" id="user_nicename" class="form-control" placeholder="Enter User Name">
                                         </div>
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="form-group">
                                             <label for="exampleInputEmail1">E-mail</label>
-                                            <input type="text" class="form-control" placeholder="Enter Your Mail Address">
+                                            <input type="text" id="user_email" class="form-control" placeholder="Enter Your Mail Address">
                                         </div>
                                         <div class="form-group">
                                             <label for="exampleInputEmail1">Contact Number</label>
-                                            <input type="text" class="form-control" placeholder="Enter Your Phone Number">
+                                            <input id="txtPhone" type="text" class="form-control" placeholder="Enter Your Phone Number">
                                         </div>
                                         <div class="form-group">
                                             <label for="exampleInputEmail1">Country</label>
-                                            <select class="form-control">
+                                            <select id="txtCountry" class="form-control">
                                                 <option>Select Country/Region</option>
                                             </select>
                                         </div>
                                         <div class="form-group">
                                             <label for="exampleInputEmail1">Address</label>
-                                            <textarea class="form-control form-address" placeholder="Enter Your Address"></textarea>
+                                            <textarea id="txtAddress" class="form-control form-address" placeholder="Enter Your Address"></textarea>
                                         </div>
                                     </div>
                                     <div class="col-sm-12 text-right">
-                                        <span class="pop-btn"><a href="#" class="btn btn-danger btn-block"><b>Update Profile</b></a>
+                                        <span class="pop-btn"><a href="#" class="btn btn-danger btn-block" id="btnSave"><b>Update Profile</b></a>
                                         </span><span class="pop-btn"><a href="#" class="btn btn-danger btn-block"><b>Reset Password</b></a></span>
                                     </div>
                                 </div>
@@ -350,7 +348,65 @@
     <script src="~/Content/AdminLTE-3.1.0/jquery/inputmask.js"></script>
 
     <script>
+        $(document).ready(function () {
+            $(document).on('click', "#btnSave", function () {
+                UpdateProfile();
+            })
+        });
 
+        function UpdateProfile() {
+
+            
+            ID = $("#hfid").val();
+            user_nicename = $("#user_nicename").val();
+            user_email = $("#user_email").val();
+            user_status = $("#user_status").val();
+            //FirstName = $("#txtFirstName").val();
+            //LastName = $("#txtLastName").val();
+            //address = $("#txtAddress").val();
+            //country = $("#txtCountry").val();
+            //UserRole = $("#txtUserRole").val();
+            //Phone = $("#txtPhone").val();
+
+            if (user_email == "") { swal('alert', 'Please Enter Email', 'error') }
+            else if (user_nicename == "") { swal('alert', 'Please Enter User Name', 'error') }
+            else {
+                var obj = {
+                    ID: ID,
+                    user_nicename: user_nicename,
+                    user_email: user_email,
+                    user_status: user_status,
+                    //first_name=FirstName,
+                    //last_name: LastName,
+                    //address: address,
+                    //country: country,
+                    //phone: Phone,
+                    //user_role: UserRole,  
+                }
+            }
+
+
+            $.ajax({
+                url: '/Home/Update_UserProfile/', dataType: 'json', type: 'Post',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(obj),
+                dataType: "json",
+                success: function (data) {
+                    if (data.status == true) {
+
+                        swal('Alert!', data.message, 'success');
+                    }
+                    else {
+                        swal('Alert!', data.message, 'error')
+                    }
+                },
+                error: function (error) {
+                    swal('Error!', 'something went wrong', 'error');
+                },
+
+
+            })
+        }
     </script>
 
 </body>

@@ -181,10 +181,10 @@ padding:0px;}
     }
 .table-bordered > thead > tr > th, .table-bordered > tbody > tr > th, .table-bordered > tfoot > tr > th, .table-bordered > thead > tr > td, .table-bordered > tbody > tr > td, .table-bordered > tfoot > tr > td {
 border:0px;}
-#userslist tbody .odd, table.table-blue tbody .odd {
-    background-color: #f9f9f9;
+#userslist tbody .odd, table.table-blue tbody .odd, .table-blue tbody tr:nth-child(odd) {
+    background-color: #f1f1f1;
 }
-#userslist tbody .even, table.table-blue tbody .even {
+#userslist tbody .even, table.table-blue tbody .even, .table-blue tbody tr:nth-child(even) {
     background-color: #fff;
 }
 #userslist th, #userslist td, .table-blue th, .table-blue td {

@@ -34,7 +34,7 @@ namespace LaylaERP.BAL
                 string strsql = "Update wp_system_settings set AuthorizeNet=@AuthorizeNet,Paypal=@Paypal,AmazonPay=@AmazonPay,CreditCustomer=@CreditCustomer, SenderEmailID=@SenderEmailID, SenderEmailPwd=@SenderEmailPwd, SMTPServerName=@SMTPServerName," +
                     "SMTPServerPortNo=@SMTPServerPortNo, PaypalClientId=@PaypalClientId, PaypalSecret=@PaypalSecret, AuthorizeAPILogin=@AuthorizeAPILogin, " +
                     " AuthorizeTransKey=@AuthorizeTransKey,AmazonAPIId=@AmazonAPIId,AmazonUser=@AmazonUser,AmazonPwd=@AmazonPwd,TaxjarAPIId=@TaxjarAPIId, " +
-                    "TaxjarAPIId=@TaxjarAPIId,TaxjarUser=@TaxjarUser,TaxjarPwd=@TaxjarPwd where ID=@user_id";
+                    "TaxjarAPIId=@TaxjarAPIId,TaxjarUser=@TaxjarUser,TaxjarPwd=@TaxjarPwd,podiumAPIKey=@podiumAPIKey,podiumSecretKey=@podiumSecretKey where ID=@user_id";
                 MySqlParameter[] para =
                 {
                     new MySqlParameter("@user_id", id),
@@ -56,6 +56,8 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@TaxjarAPIId",model.TaxjarAPIId),
                     new MySqlParameter("@TaxjarUser", model.TaxjarUser),
                     new MySqlParameter("@TaxjarPwd", model.TaxjarPwd),
+                    new MySqlParameter("@podiumAPIKey",model.podiumAPIKey),
+                    new MySqlParameter("@podiumSecretKey",model.podiumSecretKey),
                     
                 };
                 SQLHelper.ExecuteNonQuery(strsql, para);

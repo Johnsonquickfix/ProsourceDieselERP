@@ -136,7 +136,7 @@
             {
                 
                 StringBuilder strSql = new StringBuilder(string.Format("delete from wp_user_classification where User_Type = '{0}'; ", model.User_Type));                
-                strSql.Append(string.Format("insert into wp_user_classification ( User_Type ,Create_User,Customers,Orders_Mnu,System_Settings,Add_Coupon,Show_Coupon,Add_New_Orders,Show_Update_Orders) values ('{0}',{1},{2},{3},{4},{5},{6},{7},{8}) ", model.User_Type, model.Create_User, model.Customers,model.Orders_Mnu,model.System_Settings,model.Add_Coupon,model.Show_Coupon,model.Add_New_Orders,model.Show_Update_Orders));
+                strSql.Append(string.Format("insert into wp_user_classification ( User_Type,User_Mnu,User_Classification,Create_User,Customers,Orders_Mnu,System_Settings,Add_New_Orders,Show_Update_Orders) values ('{0}',{1},{2},{3},{4},{5},{6},{7},{8}) ",  model.User_Type, model.User_Mnu, model.User_Classification, model.Create_User, model.Customers,model.Orders_Mnu,model.System_Settings,model.Add_New_Orders,model.Show_Update_Orders));
 
                 /// step 6 : wp_posts
                 //strSql.Append(string.Format(" update wp_posts set post_status = '{0}' ,comment_status = 'closed' where id = {1} ", model.OrderPostStatus.status, model.OrderPostStatus.order_id));

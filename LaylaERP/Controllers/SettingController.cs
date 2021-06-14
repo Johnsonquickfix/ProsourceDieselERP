@@ -41,7 +41,9 @@ namespace LaylaERP.Controllers
                 ViewBag.TaxjarAPIId = DT.Rows[0]["TaxjarAPIId"].ToString();
                 ViewBag.TaxjarUser = DT.Rows[0]["TaxjarUser"].ToString();
                 ViewBag.TaxjarPwd = DT.Rows[0]["TaxjarPwd"].ToString();
-                
+                ViewBag.podiumAPIKey = DT.Rows[0]["podiumAPIKey"].ToString();
+                ViewBag.podiumSecretKey = DT.Rows[0]["podiumSecretKey"].ToString();
+
             }
             catch { }
             return View();
@@ -109,6 +111,8 @@ namespace LaylaERP.Controllers
             string TaxjarAPIId = model.TaxjarAPIId;
             string TaxjarUser = model.TaxjarUser;
             string TaxjarPwd = model.TaxjarPwd;
+            string podiumAPIKey = model.podiumAPIKey;
+            string podiumSecretKey = model.podiumSecretKey;
             SettingRepository.Updatesetting(model, id,email);
             
         }

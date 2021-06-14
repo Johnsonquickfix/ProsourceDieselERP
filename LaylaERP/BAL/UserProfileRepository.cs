@@ -49,5 +49,27 @@ namespace LaylaERP.BAL
             }
         }
 
+        public static DataTable DisplayProfileDetails(clsUserDetails model, long id)
+        {
+            DataTable DT = new DataTable();
+            try
+            {
+                //string strquery = "select user_login, if(user_status=0,'Active','InActive'),user_email,(SELECT meta_value FROM wp_usermeta WHERE meta_key = 'firstname' and user_id="+id+"),meta_key from wp_users inner join wp_usermeta on wp_users.ID=wp_usermeta.user_id WHERE wp_users.ID=" + id+"";
+                //string strquery = "select user_login, user_email, user_status from wp_users where ID=" + id + "";
+                string strquery = "SELECT u.ID, u.user_login, u.user_email, u.user_status, " +
+        "(SELECT meta_value FROM wp_usermeta WHERE user_id = " + id + " AND meta_key = 'first_name') as first_name, " +
+        "(SELECT meta_value FROM wp_usermeta WHERE user_id = " + id + " AND meta_key = 'last_name') as last_name, " +
+        "(SELECT meta_value FROM wp_usermeta WHERE user_id = " + id + " AND meta_key = 'user_phone') as user_phone, " +
+        "(SELECT meta_value FROM wp_usermeta WHERE user_id = " + id + " AND meta_key = 'user_country') as user_country, " +
+        "(SELECT meta_value FROM wp_usermeta WHERE user_id = " + id + " AND meta_key = 'user_address') as user_address " +
+         "FROM wp_users u LEFT JOIN wp_usermeta um ON um.user_id = u.ID where u.ID = " + id + " GROUP by u.id";
+                  DT = SQLHelper.ExecuteDataTable(strquery);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DT;
+        }
+
     }
 }
+

@@ -156,7 +156,7 @@ padding:0px;}
 margin-top:20px;}
 #userslist_wrapper {
 padding:0px;}
-#userslist, table, table.table-blue {
+#userslist, table.table-blue {
     background: #fff;
     table-layout: fixed;
     border: 1px solid #ccd0d4 !important;
@@ -166,7 +166,7 @@ padding:0px;}
     clear: both;
     margin: 0;
 }
-    #userslist thead th, table thead th, table.table-blue thead th {
+    #userslist thead th, table.table-blue thead th {
         background: #3c8dbc;
         text-transform: uppercase;
         font-size: 12px;
@@ -181,13 +181,13 @@ padding:0px;}
     }
 .table-bordered > thead > tr > th, .table-bordered > tbody > tr > th, .table-bordered > tfoot > tr > th, .table-bordered > thead > tr > td, .table-bordered > tbody > tr > td, .table-bordered > tfoot > tr > td {
 border:0px;}
-#userslist tbody .odd, table tbody .odd, table.table-blue tbody .odd {
+#userslist tbody .odd, table.table-blue tbody .odd {
     background-color: #f9f9f9;
 }
-#userslist tbody .even, table tbody .even, table.table-blue tbody .even {
+#userslist tbody .even, table.table-blue tbody .even {
     background-color: #fff;
 }
-#userslist th, #userslist td, table th, table td, .table-blue th, .table-blue td {
+#userslist th, #userslist td, .table-blue th, .table-blue td {
     padding: 10px 10px !important;
     color: #4f4f4f;
 }

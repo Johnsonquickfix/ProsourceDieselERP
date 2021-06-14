@@ -11,7 +11,7 @@
     using System.Web;
     using LaylaERP.Models;
 
-
+     
     public class Users
     {
         private static string itoa64 = "./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
@@ -109,6 +109,19 @@
             try
             {
                 string strquery = "Select * from wp_user_classification where User_Type like '%" + strvalue + "%' limit 20;";
+                DT = SQLHelper.ExecuteDataTable(strquery);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DT;
+        }
+
+        public static DataTable GetDetailsUser(long ID)
+        {
+            DataTable DT = new DataTable();
+            try
+            {
+                string strquery = "select ID, User_Image, user_login, user_status, if(user_status=0,'Active','InActive') as status,user_email,display_name,User_nicename,(select meta_value from wp_usermeta where wp_usermeta.meta_key = 'wp_capabilities' and wp_usermeta.user_id = wp_users.ID) user_role,(select meta_value from wp_usermeta where wp_usermeta.meta_key = 'first_name' and wp_usermeta.user_id = wp_users.ID) first_name,(select meta_value from wp_usermeta where wp_usermeta.meta_key = 'last_name' and wp_usermeta.user_id = wp_users.ID) last_name,(select meta_value from wp_usermeta where wp_usermeta.meta_key = 'user_country' and wp_usermeta.user_id = wp_users.ID) country,(select meta_value from wp_usermeta where wp_usermeta.meta_key = 'user_address' and wp_usermeta.user_id = wp_users.ID) address,(select meta_value from wp_usermeta where wp_usermeta.meta_key='user_phone' and wp_usermeta.user_id =wp_users.ID) phone from wp_users where id = " + ID + " limit 20;";
                 DT = SQLHelper.ExecuteDataTable(strquery);
             }
             catch (Exception ex)

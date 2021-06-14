@@ -12,7 +12,7 @@
             </select>
             <br>
             <input type="submit" value="Apply">
-        </form>
+        </form> 
 
         <select name="userrole" id="userrole">
             <option value="0">Select User Role</option>
@@ -122,7 +122,8 @@
                 <div class="alignleft actions bulkactions">
                     <select name="action" id="ddlStatus">
                         <option value="1">Bulk actions</option>
-                        <option value="2">Delete</option>
+                        <option value="2">Active</option>
+                        <option value="3">InActive</option>
                     </select>
                     <input type="submit" id="btnApply" class="button action" value="Apply">
                 </div>
@@ -172,6 +173,7 @@
                             <th>Email</th>
                             <th>Status</th>
                             <th>Role</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
 
@@ -227,6 +229,12 @@
                     { 'data': 'user_email', 'sWidth': "20%" },
                     { 'data': 'user_status', 'sWidth': "20%" },
                     { 'data': 'my', 'sWidth': "20%" },
+                    {
+                        'data': 'ID', sWidth: "8%",
+                        'render': function (ID, type, full, meta) {
+                            return '<a href="../Users/UserDetails?id=' + ID + '"><i class="glyphicon glyphicon-pencil"></i></a>'
+                        }
+                    }
                 ],
 
                 columnDefs: [{
@@ -363,9 +371,15 @@
             if (status == "1") {
                 UpdateCustomerStatus();
             }
-            else {
+            if (status == "3") {
                 id = id.replace(/,(?=\s*$)/, '');
                 DeleteUsers(id);
+                //dataGridLoad();
+            }
+            if (status == "2") {
+               
+                id = id.replace(/,(?=\s*$)/, '');
+                ActiveUsers(id);
                 //dataGridLoad();
             }
             $("input:checkbox[name=CheckSingle]:checked").each(function () {
@@ -405,6 +419,32 @@
                 },
             })
         }
+
+        function ActiveUsers(id) {
+           
+            debugger
+            var obj = { strVal: id }
+          
+            $.ajax({
+                url: '/Users/ActiveUsers/', dataType: 'json', type: 'Post',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(obj),
+                dataType: "json",
+                success: function (data) {
+                    if (data.status == true) {
+                        swal('Alert!', data.message, 'success');
+                        DatagridLoade();
+                    }
+                    else {
+                        swal('Alert!', data.message, 'error')
+                    }
+                },
+                error: function (error) {
+                    swal('Error!', 'something went wrong', 'error');
+                },
+            })
+        }
+
 
         function UpdateCustomerStatus() {
             var obj = { strVal: ID }

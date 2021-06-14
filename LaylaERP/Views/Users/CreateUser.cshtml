@@ -136,7 +136,7 @@
         $("#btnPhotoLibrary").click(function () {
             $("#hidimage").val('');
             $("#hidimagetype").val('2');
-        });
+        }); 
         passwordcheck();
         $('#txtPassword').keyup(function () {
             $('#result').html(passwordStrength($('#txtPassword').val(), ""))
@@ -317,6 +317,7 @@
             reader.readAsDataURL(input.files[0]);
         }
     }
+
 </script>
  
  

@@ -622,7 +622,7 @@
     <Content Include="Views\Home\Dashboard.cshtml" />
     <Content Include="Views\Customer\Customer.cshtml" />
     <Content Include="Views\Export\Export.cshtml" />
-    <Content Include="Views\Export\RoleBaseReport.cshtml" />
+    <Content Include="Views\Reports\RoleBaseReport.cshtml" />
     <Content Include="Views\Orders\NewOrders.cshtml" />
     <Content Include="Views\Orders\OrdersHistory.cshtml" />
     <Content Include="Views\Reports\Index.cshtml" />

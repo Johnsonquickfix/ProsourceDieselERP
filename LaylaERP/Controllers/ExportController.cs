@@ -16,12 +16,6 @@ namespace LaylaERP.Controllers
             return View();
         }
 
-        // GET: RoleBaseReport
-        public ActionResult RoleBaseReport()
-        {
-            return View();
-        }
-
         public ActionResult GetData()
         {
             Export_Details objuser = new Export_Details();

@@ -1,0 +1,270 @@
+﻿@model dynamic
+@{
+    ViewBag.Title = "UserDetails";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+<script src="~/Scripts/jquery.js" type="text/javascript"></script>
+<script src="~/Scripts/passwordStrengthMeter.js" type="text/javascript"></script>
+<div class="page-title">
+    <h2 class="page-heading">User Details</h2>
+</div>
+<div class="createuser-section section_wrapper">
+    <div class="create-user-box">
+        <div class="row">
+            <div class="col-md-3">
+
+                <!-- Profile Image -->
+                <div class="box box-primary">
+                    <div class="box-body box-profile">
+                        <div class="user-box-profile">
+                            <div class="add-profile">
+                                <span class="edit-pic-profile">
+                                    <input type="file" onchange="readURL(this);" name="file" id="file" class="inputfile" />
+                                    <label id="btnPhotoLibrary" for="file"><i class="fa fa-edit"></i>Edit</label>
+                                </span>
+                                <img runat="server" id="show_picture" class="profile-user-img img-responsive img-circle" src="data:image;base64,@System.Convert.ToBase64String(Model.User_Image)" alt="User profile picture">
+                                <canvas style="visibility: hidden" id="canvas" width="50" height="50"></canvas>
+                                <input runat="server" type="hidden" id="hidimage" /><input type="hidden" id="hidimagetype" />
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <h3 class="profile-username text-center">Layla Sleep</h3>
+                    <p class="text-muted text-center">laylasleep@acb.com</p>
+                    <p class="text-center">Washington Dc</p>
+                </div>
+                <!-- /.box-body -->
+            </div>
+
+            <!-- /.col -->
+            <div class="col-md-9">
+                <div class="box box-primary create-user-primary">
+                    <div class="box-header with-border">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <input type="hidden" id="hfid" value="@Model.ID" />
+                                <label for="exampleInputEmail1">First Name</label>
+                                <input type="text" class="form-control" value="@Model.first_name" id="txtFirstName" placeholder="First Name">
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Last Name</label>
+                                <input type="text" class="form-control" value="@Model.last_name" id="txtLastName" placeholder="Last Name">
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">User Status</label>
+                                <select class="form-control" selected="@Model.user_status">
+                                    <option>Select User Status</option>
+                                    <option selected="selected" value="0">Active</option>
+                                    <option value="1">InActive</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                
+                                <label for="exampleInputEmail1">User Type</label>
+                                <select class="form-control" id="txtUserRole">
+                                    <option>Select User Type</option>                    
+                                    <option selected="selected" value="@Model.user_role">@Model.user_role</option>
+                                    <option value="accounting">Accounting</option>
+                                    <option value="administrator">Administrator</option>
+                                    <option value="author">Author</option>
+                                    <option value="modsquad">Mod Squad</option>
+                                    <option value="seoeditor">SEO Editor</option>
+                                    <option value="seomanager">SEO Manager</option>
+                                    <option value="shopmanager">Shop manager</option>
+                                    <option value="subscriber">Subscriber</option>
+                                    <option value="supplychainmanager">Supply Chain Manager</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Contact Number</label>
+                                <input type="text" class="form-control" id="txtPhone"  value="@Model.phone" placeholder="Enter Your Phone Number">
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Country</label>
+                                <select class="form-control" selected="@Model.country"  id="txtCountry">
+                                    <option value="US - United States">US - United States</option>
+                                    <option value="CA - Canada">CA - Canada</option>
+
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Address</label>
+                                <input class="form-control form-address"  id="txtAddress" value="@Model.address"  placeholder="Enter Your Address"> 
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">E-mail</label>
+                                <input type="text" class="form-control" value="@Model.user_email" id="txtUserEmail" placeholder="Enter Your Mail Address">
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">User Name</label>
+                                <input type="text" class="form-control" id="txtUserNickName" value="@Model.user_login" placeholder="Enter User Name">
+                            </div>
+                         
+                        </div>
+                        <div class="col-offset-8 col-sm-4 mt-1">
+                            <a href="#" class="btn btn-danger btn-block" id="btnSave"><b>Update User</b></a>
+                            <br />
+                            @Html.ActionLink("Back to List", "Users", null, new { @class = "btn btn-danger" })
+                        </div>
+                    </div>
+                </div>
+                <!-- /.nav-tabs-custom -->
+            </div>
+            <!-- /.col -->
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $(document).on('click', "#btnSave", function () {
+            AddCustomer();
+        })
+        $("#btnPhotoLibrary").click(function () {
+            $("#hidimage").val('');
+            $("#hidimagetype").val('2');
+        });
+    
+    });
+
+
+    function AddCustomer() {
+      
+        debugger
+        var ImageURL;
+        var canvas = document.createElement('canvas');
+        var objimg = document.getElementById('show_picture');
+        canvas.width = objimg.width;
+        canvas.height = objimg.height;
+        var ctx = canvas.getContext('2d').drawImage(objimg, 0, 0, canvas.width, canvas.height);
+        var can = document.getElementById('canvas');
+        ImageType = "jpeg";
+        var img = canvas.toDataURL("image/jpeg", 30 / 100);
+        var result_image_obj = new Image();
+        result_image_obj.src = img;
+        $("#show_picture").attr("src", result_image_obj.src);
+        ImageURL = result_image_obj.src;
+        var block = ImageURL.split(";");
+        var realData = block[1].split(",")[1];
+        $("#hidimage").val(realData);
+
+
+        Picture = $("#hidimage").val();
+        ID = $("#hfid").val();
+        Email = $("#txtUserEmail").val();
+        NickName = $("#txtUserNickName").val();
+        FirstName = $("#txtFirstName").val();
+        LastName = $("#txtLastName").val();
+        address = $("#txtAddress").val();
+        country = $("#txtCountry").val();
+        UserRole = $("#txtUserRole").val();   
+        Phone = $("#txtPhone").val();
+
+        if (Email == "") { swal('alert', 'Please Enter Email', 'error') }
+        else if (NickName == "") { swal('alert', 'Please Enter Nick Name', 'error') }
+        else if (FirstName == "") { swal('alert', 'Please Enter First Name', 'error') }
+        else if (LastName == "") { swal('alert', 'Please Enter Last Name', 'error') }
+        else if (address == "") { swal('alert', 'Please Enter Address', 'error') }         
+        else if (Phone == "") { swal('alert', 'Please Enter Contact No.', 'error') }
+        else {
+            var obj = {
+                ID: ID,
+                user_email: Email,
+                user_nicename: NickName,
+                first_name: FirstName,
+                last_name: LastName,
+                address: address,
+                country: country,
+                phone: Phone,
+                user_role: UserRole,               
+                User_Image: Picture
+            }
+            $.ajax({
+                url: '/Users/UpdateUser/', dataType: 'json', type: 'Post',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(obj),
+                dataType: "json",
+                success: function (data) {
+                    if (data.status == true) {
+                        $('#parent > input:text').val('');
+                        swal('Alert!', data.message, 'success');
+                    }
+                    else {
+                        swal('Alert!', data.message, 'error')
+                    }
+                },
+                error: function (error) {
+                    swal('Error!', 'something went wrong', 'error');
+                },
+            })
+        }
+
+    }
+
+
+    document.getElementById('txtPhone').addEventListener('keyup', function (evt) {
+        var phoneNumber = document.getElementById('txtPhone');
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        phoneNumber.value = phoneFormat(phoneNumber.value);
+    });
+
+
+    function phoneFormat(input) {
+        input = input.replace(/\D/g, '');
+        input = input.substring(0, 10);
+        var size = input.length;
+        if (size == 0) {
+            input = input;
+        } else if (size < 4) {
+            input = '(' + input;
+        } else if (size < 7) {
+            input = '(' + input.substring(0, 3) + ') ' + input.substring(3, 6);
+        } else {
+            input = '(' + input.substring(0, 3) + ') ' + input.substring(3, 6) + ' - ' + input.substring(6, 10);
+        }
+        return input;
+    }
+    var input = document.querySelector("#txtPhone");
+    window.intlTelInput(input, {
+        // allowDropdown: false,
+        // autoHideDialCode: false,
+        // autoPlaceholder: "off",
+        // dropdownContainer: document.body,
+        // excludeCountries: ["us"],
+        // formatOnDisplay: false,
+        // geoIpLookup: function(callback) {
+        //   $.get("http://ipinfo.io", function() {}, "jsonp").always(function(resp) {
+        //     var countryCode = (resp && resp.country) ? resp.country : "";
+        //     callback(countryCode);
+        //   });
+        // },
+        // hiddenInput: "full_number",
+        // initialCountry: "auto",
+        // localizedCountries: { 'de': 'Deutschland' },
+        // nationalMode: false,
+        // onlyCountries: ['us', 'gb', 'ch', 'ca', 'do'],
+        // placeholderNumberType: "MOBILE",
+        // preferredCountries: ['cn', 'jp'],
+        // separateDialCode: true,
+        utilsScript: "~/Scripts/intlTelInput.js",
+    });
+
+  
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#show_picture').attr('src', e.target.result);
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+</script>
+

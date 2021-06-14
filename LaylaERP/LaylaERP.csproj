@@ -634,6 +634,7 @@
     <Content Include="Views\Home\ResetPassword.cshtml" />
     <Content Include="Views\Home\ForgotPassword.cshtml" />
     <Content Include="Views\Users\CreateUser.cshtml" />
+    <Content Include="Views\Users\UserDetails.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

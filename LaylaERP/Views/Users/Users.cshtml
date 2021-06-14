@@ -115,9 +115,9 @@
     <section class="content section-content">
         <div class="user-top-section">
             @*<div class="user-search-box">
-                    <input type="search" id="user-search-input" name="s" value="">
-                    <input type="submit" id="search-submit" class="button" value="Search Users">
-                </div>*@
+                <input type="search" id="user-search-input" name="s" value="">
+                <input type="submit" id="search-submit" class="button" value="Search Users">
+            </div>*@
             <div class="tablenav top">
                 <div class="alignleft actions bulkactions">
                     <select name="action" id="ddlStatus">
@@ -147,42 +147,44 @@
                 </div>
                 <input type="hidden" name="varpass" id="varpass" value="">
                 @*<div class="tablenav-pages">
-            <span class="displaying-num">61,641 items</span>
-            <span class="pagination-links">
-                <span class="tablenav-pages-navspan button disabled" aria-hidden="true">«</span>
-                <span class="tablenav-pages-navspan button disabled" aria-hidden="true">‹</span>
-                <span class="paging-input">
-                    <input class="current-page" id="current-page-selector" type="text" name="paged" value="1" size="4" aria-describedby="table-paging">
-                    <span class="tablenav-paging-text"> of <span class="total-pages">3,083</span></span>
-                </span>
-                <a class="next-page button" href="http://173.247.242.204/~rpsisr/woo/wp-admin/users.php?paged=2"><span aria-hidden="true">›</span></a>
-                <a class="last-page button" href="http://173.247.242.204/~rpsisr/woo/wp-admin/users.php?paged=3083"><span aria-hidden="true">»</span></a>
-            </span>
-        </div>*@
+                    <span class="displaying-num">61,641 items</span>
+                    <span class="pagination-links">
+                        <span class="tablenav-pages-navspan button disabled" aria-hidden="true">«</span>
+                        <span class="tablenav-pages-navspan button disabled" aria-hidden="true">‹</span>
+                        <span class="paging-input">
+                            <input class="current-page" id="current-page-selector" type="text" name="paged" value="1" size="4" aria-describedby="table-paging">
+                            <span class="tablenav-paging-text"> of <span class="total-pages">3,083</span></span>
+                        </span>
+                        <a class="next-page button" href="http://173.247.242.204/~rpsisr/woo/wp-admin/users.php?paged=2"><span aria-hidden="true">›</span></a>
+                        <a class="last-page button" href="http://173.247.242.204/~rpsisr/woo/wp-admin/users.php?paged=3083"><span aria-hidden="true">»</span></a>
+                    </span>
+                </div>*@
                 <br class="clear">
             </div>
         </div>
-        <div class="dx-viewport demo-container data-table-container">
-            <div id="gridContainer" class="margin-15-rem">
-                <table id="dtdata" class="table table-bordered table-striped dataTable check-table" style="width:100%;">
-                    <thead class="thead-dark">
-                        <tr>
-                            <th><input type="checkbox" name="checkAll" id="checkAll"><label></label></th>
-                            <th>ID</th>
-                            <th>User Name</th>
-                            <th>Email</th>
-                            <th>Status</th>
-                            <th>Role</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
+        <div class="box box-primary">
+            <div class="box-header">
+                <div class="dx-viewport demo-container data-table-container">
+                    <div id="gridContainer" class="margin-15-rem">
+                        <table id="dtdata" class="table table-blue table-bordered table-striped dataTable check-table" style="width:100%;">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th><input type="checkbox" name="checkAll" id="checkAll"><label></label></th>
+                                    <th>ID</th>
+                                    <th>User Name</th>
+                                    <th>Email</th>
+                                    <th>Status</th>
+                                    <th>Role</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
 
-                    </table>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
 
 @section scripts{

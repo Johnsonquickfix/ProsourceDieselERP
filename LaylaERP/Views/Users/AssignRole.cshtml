@@ -65,14 +65,14 @@
                 <div class="row">
                     <div class="col-sm-6">
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="user_mnu" id="User_Mnu">
-                            <label class="form-check-label" for="User_Mnu">
+                            <input class="form-check-input" type="checkbox" name="add_user" id="add_user">
+                            <label class="form-check-label" for="add_user">
                                 Create New
                             </label>
                         </div>
                         <div class="form-check mt-1">
-                            <input class="form-check-input" type="checkbox" name="user_classification" id="User_Classification">
-                            <label class="form-check-label" for="User_Classification">
+                            <input class="form-check-input" type="checkbox" name="show_user" id="show_user">
+                            <label class="form-check-label" for="show_user">
                                 Change Password
                             </label>
                         </div>
@@ -104,7 +104,6 @@
         @Html.AntiForgeryToken()
     </form>
 </div>
-
 <script type="text/javascript">
     $(document).ready(function () {
         $.get('GetRoles', function (data) {
@@ -182,7 +181,7 @@
     }
     //Checkbox tick for subpart start
     function main_submenu_tick() {
-        
+
         $("#create_user").on('change', function () {
             if ($(this).is(":checked")) {
                 $("#User_Mnu").prop('checked', true);
@@ -254,5 +253,5 @@
             }
         });
     }
-    //checked box sub part end
+            //checked box sub part end
 </script>

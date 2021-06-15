@@ -277,11 +277,11 @@
                                     <div class="col-sm-6">
                                         <div class="form-group">
                                             <label for="exampleInputEmail1">First Name</label>
-                                            <input type="text" id="txtFirstName" class="form-control" placeholder="First Name">
+                                            <input type="text" id="txtFirstName" class="form-control" placeholder="First Name" value=@ViewBag.first_name>
                                         </div>
                                         <div class="form-group">
                                             <label for="exampleInputEmail1">Last Name</label>
-                                            <input type="text" id="txtLastName" class="form-control" placeholder="Last Name">
+                                            <input type="text" id="txtLastName" class="form-control" placeholder="Last Name" value=@ViewBag.last_name>
                                         </div>
                                         <div class="form-group">
                                             <label for="exampleInputEmail1">User Status</label>
@@ -293,38 +293,46 @@
                                         <div class="form-group">
                                             <label for="exampleInputEmail1">User Type</label>
                                             <select id="txtUserRole" class="form-control">
-                                                <option>Select User Type</option>
+                                                <option value="Accounting">Accounting</option>
+                                                <option value="Administrator">Administrator</option>
                                                 <option value="Author">Author</option>
+                                                <option value="Modsquad">Mod Squad</option>
+                                                <option value="Seoeditor">SEO Editor</option>
+                                                <option value="Seomanager">SEO Manager</option>
+                                                <option value="Shopmanager">Shop manager</option>
+                                                <option value="Subscriber">Subscriber</option>
+                                                <option value="Supplychainmanager">Supply Chain Manager</option>
                                             </select>
                                         </div>
                                         <div class="form-group">
                                             <label for="exampleInputEmail1">User Name</label>
-                                            <input type="text" id="user_nicename" class="form-control" placeholder="Enter User Name">
+                                            <input type="text" id="user_nicename" class="form-control" placeholder="Enter User Name" value=@ViewBag.user_login readonly>
                                         </div>
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="form-group">
                                             <label for="exampleInputEmail1">E-mail</label>
-                                            <input type="text" id="user_email" class="form-control" placeholder="Enter Your Mail Address">
+                                            <input type="text" id="user_email" class="form-control" placeholder="Enter Your Mail Address" value=@ViewBag.user_email>
                                         </div>
                                         <div class="form-group">
                                             <label for="exampleInputEmail1">Contact Number</label>
-                                            <input id="txtPhone" type="text" class="form-control" placeholder="Enter Your Phone Number">
+                                            <input id="txtPhone" type="text" class="form-control" placeholder="Enter Your Phone Number" value=@ViewBag.user_phone>
                                         </div>
                                         <div class="form-group">
                                             <label for="exampleInputEmail1">Country</label>
                                             <select id="txtCountry" class="form-control">
-                                                <option>Select Country/Region</option>
+                                                <option value="US - United States">US - United States</option>
+                                                <option value="CA - Canada">CA - Canada</option>
                                             </select>
                                         </div>
                                         <div class="form-group">
                                             <label for="exampleInputEmail1">Address</label>
-                                            <textarea id="txtAddress" class="form-control form-address" placeholder="Enter Your Address"></textarea>
+                                            <textarea id="txtAddress" class="form-control form-address" placeholder="Enter Your Address" value=@ViewBag.user_address></textarea>
                                         </div>
                                     </div>
                                     <div class="col-sm-12 text-right">
                                         <span class="pop-btn"><a href="#" class="btn btn-danger btn-block" id="btnSave"><b>Update Profile</b></a>
-                                        </span><span class="pop-btn"><a href="#" class="btn btn-danger btn-block"><b>Reset Password</b></a></span>
+                                        <!-- </span><span class="pop-btn"><a href="#" class="btn btn-danger btn-block"><b>Reset Password</b></a></span> -->
                                     </div>
                                 </div>
                             </div>
@@ -356,57 +364,108 @@
 
         function UpdateProfile() {
 
-            
             ID = $("#hfid").val();
             user_nicename = $("#user_nicename").val();
             user_email = $("#user_email").val();
             user_status = $("#user_status").val();
-            //FirstName = $("#txtFirstName").val();
-            //LastName = $("#txtLastName").val();
-            //address = $("#txtAddress").val();
-            //country = $("#txtCountry").val();
-            //UserRole = $("#txtUserRole").val();
-            //Phone = $("#txtPhone").val();
+            FirstName = $("#txtFirstName").val();
+            LastName = $("#txtLastName").val();
+            address = $("#txtAddress").val();
+            country = $("#txtCountry").val();
+            UserRole = $("#txtUserRole").val();
+            Phone = $("#txtPhone").val();
 
-            if (user_email == "") { swal('alert', 'Please Enter Email', 'error') }
-            else if (user_nicename == "") { swal('alert', 'Please Enter User Name', 'error') }
+            if (FirstName == "") { swal('alert', 'Please Enter First Name', 'error') }
+            else if (LastName == "") { swal('alert', 'Please Enter Last Name', 'error') }
+            else if (user_email == "") { swal('alert', 'Please Enter User Email', 'error') }
+            else if (address == "") { swal('alert', 'Please Enter User Address', 'error') } 
+            else if (Phone == "") { swal('alert', 'Please Enter User Phone Number', 'error') }
+
             else {
                 var obj = {
                     ID: ID,
                     user_nicename: user_nicename,
                     user_email: user_email,
                     user_status: user_status,
-                    //first_name=FirstName,
-                    //last_name: LastName,
-                    //address: address,
-                    //country: country,
-                    //phone: Phone,
-                    //user_role: UserRole,  
+                    first_name: FirstName,
+                    last_name: LastName,
+                    address: address,
+                    country: country,
+                    phone: Phone,
+                    user_role: UserRole,
                 }
+                $.ajax({
+                    url: '/Home/Update_UserProfile/', dataType: 'json', type: 'Post',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(obj),
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.status == true) {
+
+                            swal('Alert!', data.message, 'success');
+                        }
+                        else {
+                            swal('Alert!', data.message, 'error')
+                        }
+                    },
+                    error: function (error) {
+                        swal('Error!', 'something went wrong', 'error');
+                    },
+                })
             }
-
-
-            $.ajax({
-                url: '/Home/Update_UserProfile/', dataType: 'json', type: 'Post',
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify(obj),
-                dataType: "json",
-                success: function (data) {
-                    if (data.status == true) {
-
-                        swal('Alert!', data.message, 'success');
-                    }
-                    else {
-                        swal('Alert!', data.message, 'error')
-                    }
-                },
-                error: function (error) {
-                    swal('Error!', 'something went wrong', 'error');
-                },
-
-
-            })
         }
+
+        document.getElementById('txtPhone').addEventListener('keyup', function (evt) {
+            var phoneNumber = document.getElementById('txtPhone');
+            var charCode = (evt.which) ? evt.which : evt.keyCode;
+            phoneNumber.value = phoneFormat(phoneNumber.value);
+        });
+
+        function phoneFormat(input) {
+            input = input.replace(/\D/g, '');
+            input = input.substring(0, 10);
+            var size = input.length;
+            if (size == 0) {
+                input = input;
+            } else if (size < 4) {
+                input = '(' + input;
+            } else if (size < 7) {
+                input = '(' + input.substring(0, 3) + ') ' + input.substring(3, 6);
+            } else {
+                input = '(' + input.substring(0, 3) + ') ' + input.substring(3, 6) + ' - ' + input.substring(6, 10);
+            }
+            return input;
+        }
+
+        var input = document.querySelector("#txtPhone");
+        window.intlTelInput(input, {
+            // allowDropdown: false,
+            // autoHideDialCode: false,
+            // autoPlaceholder: "off",
+            // dropdownContainer: document.body,
+            // excludeCountries: ["us"],
+            // formatOnDisplay: false,
+            // geoIpLookup: function(callback) {
+            //   $.get("http://ipinfo.io", function() {}, "jsonp").always(function(resp) {
+            //     var countryCode = (resp && resp.country) ? resp.country : "";
+            //     callback(countryCode);
+            //   });
+            // },
+            // hiddenInput: "full_number",
+            // initialCountry: "auto",
+            // localizedCountries: { 'de': 'Deutschland' },
+            // nationalMode: false,
+            // onlyCountries: ['us', 'gb', 'ch', 'ca', 'do'],
+            // placeholderNumberType: "MOBILE",
+            // preferredCountries: ['cn', 'jp'],
+            // separateDialCode: true,
+            utilsScript: "~/Scripts/intlTelInput.js",
+        });
+
+
+        
+
+
     </script>
 
 </body>

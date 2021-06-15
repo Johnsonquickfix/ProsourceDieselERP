@@ -115,9 +115,19 @@
             }
             return View();
         }
+
         public ActionResult Index()
         {
+            clsUserDetails model = new clsUserDetails();
             ViewBag.id = Session["UserId"];
+            //-----------Code Start------
+            long id = 0;
+            id = ViewBag.id;
+            if (id > 0)
+            {
+                GetUserDetails(model, id);
+            }
+            //--------------Code End----------
             return View();
         }
         public ActionResult Dashboard()
@@ -225,7 +235,7 @@
                 if (model.ID > 0)
                 {
                     UpdateUserProfile(model, model.ID);
-                    //UpdateProfile_MetaData(model, model.ID);
+                    UpdateProfile_MetaData(model, model.ID);
                     return Json(new { status = true, message = "Profile has been saved successfully!!", url = "" }, 0);
                 }
 
@@ -234,13 +244,31 @@
         }
         private void UpdateProfile_MetaData(clsUserDetails model, long id)
         {
-            string[] varQueryArr1 = new string[14];
-            string[] varFieldsName = new string[14] { "nickname", "first_name", "last_name", "description", "rich_editing", "syntax_highlighting", "comment_shortcuts", "admin_color", "use_ssl", "show_admin_bar_front", "locale", "wp_capabilities", "wp_user_level", "dismissed_wp_pointers" };
-            string[] varFieldsValue = new string[14] { model.user_nicename, model.first_name, model.last_name, "", "true", "true", "false", "fresh", "0", "true", "", model.user_role, "", "" };
-            for (int n = 0; n < 14; n++)
+            string[] varQueryArr1 = new string[7];
+            string[] varFieldsName = new string[7] { "nickname", "first_name", "last_name", "user_address", "user_country", "user_phone", "wp_capabilities" };
+            string[] varFieldsValue = new string[7] { model.user_nicename, model.first_name, model.last_name,model.address,model.country,model.phone, model.user_role };
+            for (int n = 0; n < 7; n++)
             {
                UserProfileRepository.UpdateProfileMetaData(model, id, varFieldsName[n], varFieldsValue[n]);
             }
+        }
+
+        private void GetUserDetails( clsUserDetails model,long id)
+        {
+            
+            try
+            {
+                DataTable DT = UserProfileRepository.DisplayProfileDetails(model,id);
+                ViewBag.user_login = DT.Rows[0]["user_login"].ToString();
+                ViewBag.user_email = DT.Rows[0]["user_email"].ToString();
+                ViewBag.use_status = DT.Rows[0]["user_status"].ToString();
+                ViewBag.first_name = DT.Rows[0]["first_name"].ToString();
+                ViewBag.last_name = DT.Rows[0]["last_name"].ToString();
+                ViewBag.user_phone = DT.Rows[0]["user_phone"].ToString();
+                ViewBag.user_address = DT.Rows[0]["user_address"].ToString();
+                
+            }
+            catch { }
         }
 
         public ActionResult About()

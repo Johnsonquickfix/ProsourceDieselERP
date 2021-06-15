@@ -20,7 +20,6 @@
 <section class="content section-content table-design">
     <div class="user-top-section">
         <div class="tablenav top">
-
             <div class="alignleft actions bulkactions">
                 <select class="form-control select2" id="ddlSearchStatus" placeholder="Select User">
                     <option value="">Select Status</option>
@@ -86,7 +85,6 @@
 <script src="@Url.Content("~/js/Customer/Customer.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 <script>
     $(document).ready(function () {
-       
         $("#btnSearch").click(function () { dataGridLoad(); return false; });
         setTimeout(function () { dataGridLoad(); }, 50);
     });
@@ -137,7 +135,4 @@
         dataGridLoad();
         $("#checkAll").prop('checked', false);
     })
-
-
-
 </script>

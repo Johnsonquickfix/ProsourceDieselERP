@@ -31,14 +31,14 @@ $(document).ready(function () {
     $("#billModal").on("click", "#btnCouponAdd", function (t) { t.preventDefault(); ApplyCoupon(); });
     //$(document).on("click", "#btnAddItem", function (t) { t.preventDefault(); ProductModal(); });
     //$("#billModal").on("change", ".ddlTempProductFooter", function (t) { t.preventDefault(); ProductModalItemRow(); });
-    $(document).on("blur", "#txtshipzipcode", function (t) { t.preventDefault(); GetTaxRate(); });
+    $(document).on("blur", "#txtshipzipcode", function (t) { t.preventDefault(); GetCityByZip($(this).val()); });
     $(document).on("click", "#btnCheckout", function (t) { t.preventDefault(); saveCO(); });
     $(document).on("click", "#btnpay", function (t) { t.preventDefault(); PaymentModal(); });
     $("#billModal").on("click", "#btnPlaceOrder", function (t) { t.preventDefault(); AcceptPayment(); });
     $("#billModal").on("change", "#ddlPaymentMethod", function (t) {
-        t.preventDefault(); if ($("#ddlPaymentMethod").val() == "paypal") { $("#txtpaypalemail").removeClass('hidden'); $("#txtpaypalemail").focus(); $("#txtpaypalemail").val($("#txtbillemail").val()); }
-        else if ($("#ddlPaymentMethod").val() == "podium") { $("#txtpaypalemail").addClass('hidden'); }
-        else { $("#txtpaypalemail").addClass('hidden'); }
+        t.preventDefault(); if ($("#ddlPaymentMethod").val() == "paypal") { $("#txtPPEmail").removeClass('hidden'); $("#txtPPEmail").focus(); $("#txtPPEmail").val($("#txtbillemail").val()); }
+        else if ($("#ddlPaymentMethod").val() == "podium") { $("#txtPPEmail").addClass('hidden'); }
+        else { $("#txtPPEmail").addClass('hidden'); }
     });
 });
 ///Bind States of Country
@@ -115,9 +115,23 @@ function GetTaxRate() {
     if (opt.strValue1.length <= 0 || opt.strValue2.length <= 0 || opt.strValue3.length <= 0) { $('#hfTaxRate').val(0); return false; }
     $.ajax({
         type: "POST", url: '/Orders/GetTaxRate', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
-        success: function (result) { $('#hfTaxRate').val(result.message); },
+        success: function (result) { $('#hfTaxRate').val(result.message); calcRowTaxAmount(result.message); },
         error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
         async: false
+    });
+}
+/// Get City By Pin code
+function GetCityByZip(zipcode) {
+    $.ajax({
+        url: "https://ziptasticapi.com/" + zipcode,
+        type: "GET",
+        dataType: 'JSON',
+        data: [],
+        success: function (data) {
+            $("#txtshipcity").val(data.city); $("#ddlshipcountry").val(data.country).trigger('change'); $("#ddlshipstate").val(data.state).trigger('change');
+            GetTaxRate();
+        },
+        error: function (msg) { alert(msg); }
     });
 }
 
@@ -393,7 +407,6 @@ function bindItemListDataTable(data) {
     }
     calcFinalTotals();
 }
-
 //-----Remove row in Itemtable Table--------------
 function removeItemsInTable(id) {
     //------------- Remove data in Temp AddItemList-----
@@ -402,7 +415,26 @@ function removeItemsInTable(id) {
             if (result.value) { $('#tritemId_' + id).remove(); calcFinalTotals(); }
         });
 }
+//------ Calculate Tax Amount --------------------------------
+function calcRowTaxAmount(tax_rate) {
+    //var tax_rate = parseFloat($('#hfTaxRate').val()) || 0.00;
+    var zCouponAmt = 0.00, zDiscType = 'fixed_product', zQty = 0.00, zGrossAmount = 0.00, zDisAmt = 0.00, zTotalTax = 0.00;
+    $("#tblAddItemFinal > tbody  > tr").each(function () {
+        zQty = parseFloat($(this).find("[name=txt_ItemQty]").val()) || 0.00;
+        zGrossAmount = parseFloat($(this).find(".TotalAmount").data("amount")) || 0.00;
+        zCouponAmt = parseFloat($(this).find(".RowDiscount").data("couponamt")) || 0.00;
+        zDiscType = $(this).find(".RowDiscount").data("disctype")
+        if (zDiscType == 'fixed_product') { zDisAmt = zCouponAmt * zQty; }
+        else if (zDiscType == 'fixed_cart') { zDisAmt = zCouponAmt * zQty; }
+        else if (zDiscType == 'percent') { zDisAmt = (zGrossAmount * zCouponAmt) / 100; }
+        $(this).find(".RowDiscount").text(zDisAmt.toFixed(2)); $(this).find(".TotalAmount").data("discount", zDisAmt.toFixed(2));
 
+        //Taxation                     
+        zTotalTax = (((zGrossAmount - zDisAmt) * tax_rate) / 100);
+        $(this).find(".RowTax").text(zTotalTax.toFixed(2)); $(this).find(".TotalAmount").data("taxamount", zTotalTax.toFixed(2));
+    });
+    calcFinalTotals();
+}
 //------ Calculate Rows Amount --------------------------------
 function calcRowAmount(objControl, objRow) // objRow is row object
 {
@@ -533,7 +565,7 @@ function saveCO() {
             "PKey": pKey, "order_id": oid, "customer_id": cid, "product_id": $(this).data('pid'), "variation_id": $(this).data('vid'), "product_name": $(this).data('pname'), "quantity": qty, "sale_rate": rate, "total": grossAmount, "discount": discountAmount, "tax_amount": taxAmount, "shipping_amount": shippinAmount, "shipping_tax_amount": 0
         });
     });
-    if (itemsDetails.length == 0) { swal('Alert!', 'Please add product.', "info").then((result) => { return false; }); }
+    if (itemsDetails.length <= 0) { swal('Alert!', 'Please add product.', "info").then((result) => { return false; }); }
     var obj = { OrderPostMeta: postMeta, OrderProducts: itemsDetails, OrderPostStatus: postStatus, OrderOtherItems: otherItems };
 
     //console.log(obj);
@@ -550,7 +582,7 @@ function saveCO() {
             else { swal('Alert!', data.message, "error").then((result) => { return false; }); }
         },
         error: function (xhr, status, err) { $('#btnCheckout').prop("disabled", false); $('.billinfo').prop("disabled", false); alert(err); },
-        complete: function () { $('#btnCheckout').prop("disabled", false); $('.billinfo').prop("disabled", false);$('#btnCheckout').text("Checkout"); },
+        complete: function () { $('#btnCheckout').prop("disabled", false); $('.billinfo').prop("disabled", false); $('#btnCheckout').text("Checkout"); },
     });
     $('#btnCheckout').text("Checkout");
     return false;
@@ -605,10 +637,11 @@ function PaymentModal() {
     myHtml += '<option value="paypal">PayPal</option>';
     myHtml += '</select>';
     myHtml += '</span>';
-    myHtml += '<input class="form-control hidden" type="text" id="txtpaypalemail" name="txtpaypalemail" placeholder="PayPal Email" maxlength="60"/>';
+    myHtml += '<input class="form-control hidden" type="text" id="txtPPEmail" name="txtPPEmail" placeholder="PayPal Email" maxlength="60">';
     myHtml += '</div>';
     myHtml += '</div>';
     myHtml += '<button type="button" class="btn btn-primary" id="btnPlaceOrder">Place Order $' + $('#orderTotal').text() + '</button>';
+    myHtml += '<button type="button" class="btn btn-primary hidden" id="btnResendInv">Resend Invoice $' + $('#orderTotal').text() + '</button>';
     myHtml += '</div>';
 
     myHtml += '</div>';
@@ -635,8 +668,12 @@ function PaymentModal() {
 ///Accept Payment
 function AcceptPayment() {
     if ($("#ddlPaymentMethod").val() == "paypal") {
-        if ($("#txtpaypalemail").val().length <= 5) { swal('Alert!', 'Please enter PayPal Email.', "info").then((result) => { return false; }); }
-        PaypalPayment();
+        if ($("#txtPPEmail").val().length <= 5) {
+            swal('Alert!', 'Please enter PayPal Email.', "info").then((result) => { return false; });
+        }
+        else {
+            PaypalPayment($("#txtPPEmail").val());
+        }
     }
     else if ($("#ddlPaymentMethod").val() == "podium") { PodiumPayment() }
     else { swal('Alert!', 'Please Select Payment Method.', "error"); }
@@ -680,11 +717,34 @@ function updatePayment(taskUid) {
 }
 
 ///Accept paypal Payment
-function PaypalPayment() {
+function PaypalPayment(ppemail) {
     //swal('Alert!', 'Working....', "success").then((result) => { return false; });
     var dfa = $('#txtLogDate').val().split(/\//); df = [dfa[2], dfa[1], dfa[0]].join('-');
     var oid = parseInt($('#hfOrderNo').val()) || 0;
     var cid = parseInt($('#ddlUser').val()) || 0;
+    //var ppemail = $("txtPPEmail").val();
+    console.log(ppemail);
+    if (cid <= 0) { swal('Alert!', 'Please Select Customer.', "info").then((result) => { return false; }); }
+    if (oid <= 0) { swal('Alert!', 'Please create new order.', "info").then((result) => { return false; }); }
+
+    $('#btnPlaceOrder').prop("disabled", true);
+    var opt = { strValue1: oid}
+    $.ajax({
+        type: "POST", url: '/Orders/GetPayPalToken', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
+        success: function (result) {
+            //console.log(result);
+            /// Create Invoice
+            CreatePaypalInvoice(oid, ppemail, result.message);
+            //CreatePaypalInvoice(oid, 'david.quick.fix1-buyer@gmail.com', result.message);
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
+        complete: function () { $('#btnPlaceOrder').prop("disabled", false); },
+        async: false
+
+    });
+
+}
+function CreatePaypalInvoice(oid, pp_email, access_token) {
     var taxPer = parseFloat($('#hfTaxRate').val()) || 0.00;
     var shipping_total = parseFloat($('#shippingTotal').text()) || 0.00;
     var itemsList = [];
@@ -703,10 +763,6 @@ function PaypalPayment() {
             unit_of_measure: "QUANTITY"
         });
     });
-    if (cid <= 0) { swal('Alert!', 'Please Select Customer.', "info").then((result) => { return false; }); }
-    if (oid <= 0) { swal('Alert!', 'Please create new order.', "info").then((result) => { return false; }); }
-    if (itemsList.length <= 0) { swal('Alert!', 'Please add Items.', "info").then((result) => { return false; }); }
-
     var option = {
         detail: {
             invoice_number: oid,
@@ -714,7 +770,7 @@ function PaypalPayment() {
             invoice_date: df,
             currency_code: "USD",
             note: "Layla Invoice.",
-            payment_term: { term_type: "NET_10"}
+            payment_term: { term_type: "NET_10" }
         },
         invoicer: {
             name: { given_name: "", surname: "" },
@@ -730,7 +786,7 @@ function PaypalPayment() {
                 billing_info: {
                     name: { given_name: $('#txtbillfirstname').val(), surname: $('#txtbilllastname').val() },
                     address: { address_line_1: $('#txtbilladdress1').val() + ' ' + $('#txtbilladdress2').val(), admin_area_2: $('#txtbillcity').val(), admin_area_1: $('#ddlbillstate').val(), postal_code: $('#txtbillzipcode').val(), country_code: $('#ddlbillcountry').val() },
-                    email_address: $('#txtpaypalemail').val(),
+                    email_address: pp_email,
                     //phones: [{ country_code: "001", national_number: $('#txtbillphone').val(), phone_type: "HOME" }]
                 },
                 shipping_info: {
@@ -740,11 +796,7 @@ function PaypalPayment() {
             }
         ],
         items: itemsList,
-        configuration: {
-            allow_tip: true,
-            tax_calculated_after_discount: true,
-            tax_inclusive: false,
-        },
+        configuration: { allow_tip: false, tax_calculated_after_discount: true, tax_inclusive: false, },
         amount: {
             breakdown: {
                 //custom: { label: "Packing Charges", amount: { currency_code: "USD", value: "10.00" } },
@@ -753,39 +805,64 @@ function PaypalPayment() {
             }
         }
     }
+    console.log(option);
+    $.ajax({
+        type: "POST", url: 'https://api-m.sandbox.paypal.com/v2/invoicing/invoices', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(option),
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader("Accept", "application/json");
+            xhr.setRequestHeader("Accept-Language", "en_US");
+            xhr.setRequestHeader("Authorization", "Bearer " + access_token);
+        },
+        success: function (data) {
+            console.log(data);
+            var sendURL = data.href + '/send';
+            $("txtPPEmail").data('surl', sendURL);
+            ///send Invoice
+            SendPaypalInvoice(access_token, sendURL)
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) { console.log(XMLHttpRequest); swal('Alert!', errorThrown, "error"); },
+        async: false
+    });
+}
+function SendPaypalInvoice(access_token, sendURL) {
+    $.ajax({
+        type: "POST", url: sendURL, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify({ send_to_invoicer: true }),
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader("Accept", "application/json");
+            xhr.setRequestHeader("Accept-Language", "en_US");
+            xhr.setRequestHeader("Authorization", "Bearer " + access_token);
+        },
+        success: function (senddata) {
+            console.log(senddata);
+            $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true); setTimeout(function () { swal('Order received!', 'Thank you. Your invoice has been send on your email for payment.', "success"); }, 50);
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            $('#ddlPaymentMethod').prop("disabled", true); $('#btnPlaceOrder').addClass('hidden'); $('#btnResendInv').removeClass('hidden');
+            console.log(XMLHttpRequest); swal('Alert!', 'PayPal Invoice successfully created but not send. please Resend it.', "error");
+        },
+        complete: function () { $('#btnPlaceOrder').prop("disabled", false); },
+        async: false
+    });
+}
 
-    $('#btnPlaceOrder').prop("disabled", true);
+function DeletePaypalInvoice() {
+    var oid = parseInt($('#hfOrderNo').val()) || 0;
     var opt = { strValue1: oid }
     $.ajax({
         type: "POST", url: '/Orders/GetPayPalToken', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
         success: function (result) {
             //console.log(result);
-            /// Create Invoice
             $.ajax({
                 type: "POST", url: 'https://api-m.sandbox.paypal.com/v2/invoicing/invoices', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(option),
                 beforeSend: function (xhr) {
                     xhr.setRequestHeader("Accept", "application/json");
                     xhr.setRequestHeader("Accept-Language", "en_US");
-                    xhr.setRequestHeader("Authorization", "Bearer " + result.message);
+                    xhr.setRequestHeader("Authorization", "Bearer " + access_token);
                 },
                 success: function (data) {
-                    var sendURL = data.href + '/send'
-                    ///send Invoice
-                    $.ajax({
-                        type: "POST", url: sendURL, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify({ send_to_invoicer: true }),
-                        beforeSend: function (xhr) {
-                            xhr.setRequestHeader("Accept", "application/json");
-                            xhr.setRequestHeader("Accept-Language", "en_US");
-                            xhr.setRequestHeader("Authorization", "Bearer " + result.message);
-                        },
-                        success: function (data) {
-                            console.log(data);
-                            $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true); setTimeout(function () { swal('Order received!', 'Thank you. Your invoice has been send on your email for payment.', "success"); }, 50);
-                        },
-                        error: function (XMLHttpRequest, textStatus, errorThrown) { console.log(XMLHttpRequest); swal('Alert!', errorThrown, "error"); },
-                        complete: function () { $('#btnPlaceOrder').prop("disabled", false); },
-                        async: false
-                    });
+                    console.log(data);
+                    //CreatePaypalInvoice(oid, pp_email, result.message);
+                    CreatePaypalInvoice(oid, 'david.quick.fix1-buyer@gmail.com', result.message);
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) { console.log(XMLHttpRequest); swal('Alert!', errorThrown, "error"); },
                 async: false

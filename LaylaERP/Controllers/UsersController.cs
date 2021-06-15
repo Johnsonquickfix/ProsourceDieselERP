@@ -184,6 +184,39 @@ namespace LaylaERP.Controllers
              
         }
 
+
+        [HttpPost]
+        public JsonResult Grantrole(CustomerModel model)
+        {
+            string strID = model.strVal;
+            if (strID != "")
+            {
+                UsersRepositry.GrantroleStatus(model);
+                return Json(new { status = true, message = "User Role Status has been updated successfully!!", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Something went wrong", url = "" }, 0);
+            }
+
+        }
+
+        [HttpPost]
+        public JsonResult Revokerole(CustomerModel model)
+        {
+            string strID = model.strVal;
+            if (strID != "")
+            {
+                UsersRepositry.RevokeroleStatus(model);
+                return Json(new { status = true, message = "User Role Status has been updated successfully!!", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Something went wrong", url = "" }, 0);
+            }
+
+        }
+
         public ActionResult UserDetails(long id)
         {
 
@@ -210,7 +243,8 @@ namespace LaylaERP.Controllers
             myModel.last_name = dt.Rows[0]["last_name"];
             myModel.country = dt.Rows[0]["country"];
             myModel.address = dt.Rows[0]["address"];
-            myModel.user_login = dt.Rows[0]["user_login"];
+            myModel.user_login = dt.Rows[0]["user_login"];  
+
             myModel.user_role = dt.Rows[0]["user_role"];
             myModel.phone = dt.Rows[0]["phone"];
             return PartialView("UserDetails", myModel);

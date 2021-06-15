@@ -257,7 +257,7 @@
 
 
     document.getElementById('txtPhone').addEventListener('keyup', function (evt) {
-        var phoneNumber = document.getElementById('txtPhone');
+        var phoneNumber = document.getElementById('txtPhone');    
         var charCode = (evt.which) ? evt.which : evt.keyCode;
         phoneNumber.value = phoneFormat(phoneNumber.value);
     });

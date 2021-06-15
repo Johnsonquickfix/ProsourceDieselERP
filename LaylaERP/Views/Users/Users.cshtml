@@ -137,7 +137,6 @@
                         <option value="shop_manager">Shop manager</option>
                         <option value="modsquad">Mod Squad</option>
                         <option value="editor">Editor</option>
-                        <option value="customer">Customer</option>
                         <option value="contributor">Contributor</option>
                         <option value="author">Author</option>
                         <option value="administrator">Administrator</option>
@@ -145,20 +144,55 @@
                     </select>
                     <input type="submit" name="changeit" id="changeit" class="button" value="Change">
                 </div>
+
+                <div class="alignleft actions">
+                    <select name="grant_role" id="grant_role">
+                        <option value="">Grant Roal to…</option>
+                        <option value="wpseo_editor">SEO Editor</option>
+                        <option value="wpseo_manager">SEO Manager</option>
+                        <option value="supplychainmanager">Supply Chain Manager</option>
+                        <option value="subscriber">Subscriber</option>
+                        <option value="shop_manager">Shop manager</option>
+                        <option value="modsquad">Mod Squad</option>
+                        <option value="editor">Editor</option>
+                        <option value="contributor">Contributor</option>
+                        <option value="author">Author</option>
+                        <option value="administrator">Administrator</option>
+                        <option value="accounting">Accounting</option>
+                    </select>
+                    <input type="submit" name="Grantrole" id="Grantrole" class="button" value="Grant">
+                </div>
+                @*<div class="alignleft actions">
+                    <select name="revoke_role" id="revoke_role">
+                        <option value="">Revoke Roal to…</option>
+                        <option value="wpseo_editor">SEO Editor</option>
+                        <option value="wpseo_manager">SEO Manager</option>
+                        <option value="supplychainmanager">Supply Chain Manager</option>
+                        <option value="subscriber">Subscriber</option>
+                        <option value="shop_manager">Shop manager</option>
+                        <option value="modsquad">Mod Squad</option>
+                        <option value="editor">Editor</option>
+                        <option value="contributor">Contributor</option>
+                        <option value="author">Author</option>
+                        <option value="administrator">Administrator</option>
+                        <option value="accounting">Accounting</option>
+                    </select>
+                    <input type="submit" name="Revoke" id="Revoke" class="button" value="Revoke">
+                </div>*@
                 <input type="hidden" name="varpass" id="varpass" value="">
                 @*<div class="tablenav-pages">
-                    <span class="displaying-num">61,641 items</span>
-                    <span class="pagination-links">
-                        <span class="tablenav-pages-navspan button disabled" aria-hidden="true">«</span>
-                        <span class="tablenav-pages-navspan button disabled" aria-hidden="true">‹</span>
-                        <span class="paging-input">
-                            <input class="current-page" id="current-page-selector" type="text" name="paged" value="1" size="4" aria-describedby="table-paging">
-                            <span class="tablenav-paging-text"> of <span class="total-pages">3,083</span></span>
-                        </span>
-                        <a class="next-page button" href="http://173.247.242.204/~rpsisr/woo/wp-admin/users.php?paged=2"><span aria-hidden="true">›</span></a>
-                        <a class="last-page button" href="http://173.247.242.204/~rpsisr/woo/wp-admin/users.php?paged=3083"><span aria-hidden="true">»</span></a>
-                    </span>
-                </div>*@
+            <span class="displaying-num">61,641 items</span>
+            <span class="pagination-links">
+                <span class="tablenav-pages-navspan button disabled" aria-hidden="true">«</span>
+                <span class="tablenav-pages-navspan button disabled" aria-hidden="true">‹</span>
+                <span class="paging-input">
+                    <input class="current-page" id="current-page-selector" type="text" name="paged" value="1" size="4" aria-describedby="table-paging">
+                    <span class="tablenav-paging-text"> of <span class="total-pages">3,083</span></span>
+                </span>
+                <a class="next-page button" href="http://173.247.242.204/~rpsisr/woo/wp-admin/users.php?paged=2"><span aria-hidden="true">›</span></a>
+                <a class="last-page button" href="http://173.247.242.204/~rpsisr/woo/wp-admin/users.php?paged=3083"><span aria-hidden="true">»</span></a>
+            </span>
+        </div>*@
                 <br class="clear">
             </div>
         </div>
@@ -417,7 +451,29 @@
             ID = ID.replace(/,(?=\s*$)/, '');
             changeRole(ID);
         })
+        //Grantrole
+        $("#Grantrole").click(function () {
+            var ID = "";
+            var new_role = $("#grant_role").val();
+            $("input:checkbox[name=CheckSingle]:checked").each(function () {
+                ID += $(this).val() + ",";
 
+            });
+            ID = ID.replace(/,(?=\s*$)/, '');
+            Grantrole(ID);
+        })
+        //Revoke
+
+        //$("#Revoke").click(function () {
+        //    var ID = "";
+        //    var new_role = $("#revoke_role").val();
+        //    $("input:checkbox[name=CheckSingle]:checked").each(function () {
+        //        ID += $(this).val() + ",";
+
+        //    });
+        //    ID = ID.replace(/,(?=\s*$)/, '');
+        //    Revokerole(ID);
+        //})
 
         function DeleteUsers(id) {
             debugger
@@ -517,6 +573,64 @@
                 },
             })
         }
+
+        function Grantrole(ID) {
+
+            ID = ID;
+            user_status = $("#grant_role").val();
+           
+            var obj = {
+                strVal: ID,
+                user_status: user_status
+            }
+            $.ajax({
+                url: '/Users/Grantrole/', dataType: 'json', type: 'Post',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(obj),
+                dataType: "json",
+                success: function (data) {
+                    if (data.status == true) {
+                        swal('Alert!', data.message, 'success');
+                        DatagridLoade();
+                    }
+                    else {
+                        swal('Alert!', data.message, 'error')
+                    }
+                },
+                error: function (error) {
+                    swal('Error!', 'something went wrong', 'error');
+                },
+            })
+        }
+
+        //function Revokerole(ID) {
+
+        //    ID = ID;
+        //    user_status = $("#revoke_role").val();
+        //    alert(user_status);
+        //    var obj = {
+        //        strVal: ID,
+        //        user_status: user_status
+        //    }
+        //    $.ajax({
+        //        url: '/Users/Revokerole/', dataType: 'json', type: 'Post',
+        //        contentType: "application/json; charset=utf-8",
+        //        data: JSON.stringify(obj),
+        //        dataType: "json",
+        //        success: function (data) {
+        //            if (data.status == true) {
+        //                swal('Alert!', data.message, 'success');
+        //                DatagridLoade();
+        //            }
+        //            else {
+        //                swal('Alert!', data.message, 'error')
+        //            }
+        //        },
+        //        error: function (error) {
+        //            swal('Error!', 'something went wrong', 'error');
+        //        },
+        //    })
+        //}
 
        
 //CheckBoxes End

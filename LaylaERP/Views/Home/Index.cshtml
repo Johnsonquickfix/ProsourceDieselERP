@@ -5,7 +5,8 @@
     //Layout = "~/Views/Shared/_Layout.cshtml";
     Layout = null;
 }
-
+<script src="~/Scripts/jquery.js" type="text/javascript"></script>
+ 
 <!DOCTYPE html>
 <html>
 <head>
@@ -257,10 +258,19 @@
                                     <div class="user-box-profile">
                                         <div class="add-profile">
                                             <span class="edit-pic-profile">
-                                                <input type="file" name="file" id="file" class="inputfile">
-                                                <label for="file"><i class="fa fa-edit"></i>Edit</label>
+                                                <input type="file" onchange="readURL(this);" name="file" id="file" class="inputfile" />
+                                                <label id="btnPhotoLibrary" for="file"><i class="fa fa-edit"></i>Edit</label>
                                             </span>
-                                            <img class="profile-user-img img-responsive img-circle" width="90" height="90" src="/Images/userprofile2.png" alt="User profile picture">
+                                              @if (ViewBag.User_Image.Length > 0 && ViewBag.User_Image != null)
+                                                {
+                                                    <img runat="server" id="show_picture" class="profile-user-img img-responsive img-circle" src="data:image;base64,@System.Convert.ToBase64String(ViewBag.User_Image)" alt="User profile picture">
+                                                }
+                                                else
+                                                {
+                                                    <img runat="server" id="show_picture" class="profile-user-img img-responsive img-circle" src="~/Images/userprofile2.png" alt="User profile picture">
+                                                }
+                                            <canvas style="visibility: hidden" id="canvas" width="50" height="50"></canvas>
+                                           <input runat="server" type="hidden" id="hidimage" /><input type="hidden" id="hidimagetype" />
                                         </div>
                                     </div>
                                     <h3 class="profile-username text-center">Layla Sleep</h3>
@@ -293,6 +303,7 @@
                                         <div class="form-group">
                                             <label for="exampleInputEmail1">User Type</label>
                                             <select id="txtUserRole" class="form-control">
+                                                <option selected="selected" value="@ViewBag.user_role">@ViewBag.user_role</option>
                                                 <option value="Accounting">Accounting</option>
                                                 <option value="Administrator">Administrator</option>
                                                 <option value="Author">Author</option>
@@ -315,8 +326,8 @@
                                             <input type="text" id="user_email" class="form-control" placeholder="Enter Your Mail Address" value=@ViewBag.user_email>
                                         </div>
                                         <div class="form-group">
-                                            <label for="exampleInputEmail1">Contact Number</label>
-                                            <input id="txtPhone" type="text" class="form-control" placeholder="Enter Your Phone Number" value=@ViewBag.user_phone>
+                                            <label for="exampleInputEmail1">Contact Number</label>                                          
+                                             <input type="text" class="form-control" id="txtPhone"  value="@ViewBag.user_phone" placeholder="Enter Your Phone Number">
                                         </div>
                                         <div class="form-group">
                                             <label for="exampleInputEmail1">Country</label>
@@ -327,7 +338,7 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="exampleInputEmail1">Address</label>
-                                            <textarea id="txtAddress" class="form-control form-address" placeholder="Enter Your Address" value=@ViewBag.user_address></textarea>
+                                            <input id="txtAddress" class="form-control form-address" placeholder="Enter Your Address" value=@ViewBag.user_address></input>
                                         </div>
                                     </div>
                                     <div class="col-sm-12 text-right">
@@ -344,25 +355,52 @@
             </div>
         </div >
     </div>
-</div>`;
+</div>`
+                 ;
             $("#userprofile").empty().html(myHtml);
             $("#userprofile").modal({ backdrop: 'static' }); $("#txt_firstname").focus();
+
+
+
         }
 
 
 
     </script>
-    <script src="~/Content/AdminLTE-3.1.0/custom.js"></script>
-    <script src="~/Content/AdminLTE-3.1.0/jquery/inputmask.js"></script>
+    @*<script src="~/Content/AdminLTE-3.1.0/custom.js"></script>
+    <script src="~/Content/AdminLTE-3.1.0/jquery/inputmask.js"></script>*@
 
     <script>
         $(document).ready(function () {
             $(document).on('click', "#btnSave", function () {
                 UpdateProfile();
             })
+            $("#btnPhotoLibrary").click(function () {
+                $("#hidimage").val('');
+                $("#hidimagetype").val('2');
+            });
+
+
         });
 
         function UpdateProfile() {
+            var ImageURL;
+            var canvas = document.createElement('canvas');
+            var objimg = document.getElementById('show_picture');
+            canvas.width = objimg.width;
+            canvas.height = objimg.height;
+            var ctx = canvas.getContext('2d').drawImage(objimg, 0, 0, canvas.width, canvas.height);
+            var can = document.getElementById('canvas');
+            ImageType = "jpeg";
+            var img = canvas.toDataURL("image/jpeg", 30 / 100);
+            var result_image_obj = new Image();
+            result_image_obj.src = img;
+            $("#show_picture").attr("src", result_image_obj.src);
+            ImageURL = result_image_obj.src;
+            var block = ImageURL.split(";");
+            var realData = block[1].split(",")[1];
+            $("#hidimage").val(realData);
+            Picture = $("#hidimage").val();
 
             ID = $("#hfid").val();
             user_nicename = $("#user_nicename").val();
@@ -393,6 +431,7 @@
                     country: country,
                     phone: Phone,
                     user_role: UserRole,
+                    User_Image: Picture
                 }
                 $.ajax({
                     url: '/Home/Update_UserProfile/', dataType: 'json', type: 'Post',
@@ -415,12 +454,15 @@
             }
         }
 
-        document.getElementById('txtPhone').addEventListener('keyup', function (evt) {
-            var phoneNumber = document.getElementById('txtPhone');
-            var charCode = (evt.which) ? evt.which : evt.keyCode;
-            phoneNumber.value = phoneFormat(phoneNumber.value);
-        });
+        
+            document.getElementById('txtPhone').addEventListener('keyup', function (evt) {
+                var phoneNumber = document.getElementById('txtPhone');
+                alert('HI');
+                var charCode = (evt.which) ? evt.which : evt.keyCode;
+                phoneNumber.value = phoneFormat(phoneNumber.value);
+            });
 
+        
         function phoneFormat(input) {
             input = input.replace(/\D/g, '');
             input = input.substring(0, 10);
@@ -436,36 +478,24 @@
             }
             return input;
         }
-
         var input = document.querySelector("#txtPhone");
         window.intlTelInput(input, {
-            // allowDropdown: false,
-            // autoHideDialCode: false,
-            // autoPlaceholder: "off",
-            // dropdownContainer: document.body,
-            // excludeCountries: ["us"],
-            // formatOnDisplay: false,
-            // geoIpLookup: function(callback) {
-            //   $.get("http://ipinfo.io", function() {}, "jsonp").always(function(resp) {
-            //     var countryCode = (resp && resp.country) ? resp.country : "";
-            //     callback(countryCode);
-            //   });
-            // },
-            // hiddenInput: "full_number",
-            // initialCountry: "auto",
-            // localizedCountries: { 'de': 'Deutschland' },
-            // nationalMode: false,
-            // onlyCountries: ['us', 'gb', 'ch', 'ca', 'do'],
-            // placeholderNumberType: "MOBILE",
-            // preferredCountries: ['cn', 'jp'],
-            // separateDialCode: true,
+          
             utilsScript: "~/Scripts/intlTelInput.js",
         });
 
 
         
 
-
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#show_picture').attr('src', e.target.result);
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
     </script>
 
 </body>

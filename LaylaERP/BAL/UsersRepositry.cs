@@ -282,6 +282,41 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
+        public static int GrantroleStatus(CustomerModel model)
+        {
+            try
+            {
+                string strsql = "update wp_usermeta set meta_value= CONCAT(@meta_value, meta_value) where meta_Key = 'wp_capabilities' and user_id in(" + model.strVal + ")";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@meta_value", model.user_status + ',')
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+        public static int RevokeroleStatus(CustomerModel model)
+        {
+            try
+            {
+                string strsql = "update wp_usermeta set meta_value= REPLACE(meta_value,@meta_value,'') where meta_Key = 'wp_capabilities' and user_id in(" + model.strVal + ")";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@meta_value",  model.user_status+',')
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
 
         //Add customers
         public static int AddNewCustomer(clsUserDetails model)

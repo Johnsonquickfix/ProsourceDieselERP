@@ -4,95 +4,10 @@
     Layout = "~/Views/Shared/_UserLayout.cshtml";
 }
 
-@*<div>
-        <form action="">
-            <select name="bulkaction" id="bulkactions">
-                <option value="0">Bulk Action</option>
-                <option value="1">Delete</option>
-            </select>
-            <br>
-            <input type="submit" value="Apply">
-        </form> 
-
-        <select name="userrole" id="userrole">
-            <option value="0">Select User Role</option>
-            <option value="1">Administrator</option>
-            <option value="1">Mod Squad</option>
-        </select>
-
-        <select name="useractivate" id="useractivate">
-            <option value="0">Active</option>
-            <option value="1">InActive</option>
-        </select>
-
-
-    </div>
-    <br>
-    <br>
-    <table id="data-table" class="table table-striped table-bordered nowrap" width="100%">
-        <tr>
-            <th><input name="select_all" value="1" type="checkbox"> All</th>
-            <th>UserID</th>
-            <th>UserName</th>
-            <th>Role</th>
-            <th>Status</th>
-            <th>Email</th>
-        </tr>
-        <tr>
-            <td><input type="checkbox" name="name1" /></td>
-            <td>1</td>
-            <td>david</td>
-            <td>Administrator</td>
-            <td>Active</td>
-            <td>david.quickfix1@gmail.com</td>
-        </tr>
-        <tr>
-            <td><input type="checkbox" name="name1" /></td>
-            <td>2</td>
-            <td>david002</td>
-            <td>Administrator</td>
-            <td>Active</td>
-            <td>david2.quickfix1@gmail.com</td>
-        </tr>
-    </table>
-
-    <style>
-        table {
-            width: 100%;
-        }
-
-        table, th, td {
-            border: 1px solid black;
-            border-collapse: collapse;
-        }
-
-        th, td {
-            padding: 15px;
-            text-align: left;
-        }
-
-        tr:nth-child(even) {
-            background-color: #eee;
-        }
-
-        tr:nth-child(odd) {
-            background-color: #fff;
-        }
-
-        th {
-            background-color: orange;
-            color: white;
-        }
-    </style>*@
-
 @*@using (Html.BeginForm("Users", "Users", FormMethod.Post)) { }*@
 <div class="page-title">
     <h2 class="page-heading">Users</h2>
-    @* <a href="../../Users/AddNewUser" class="page-title-action">Add New</a>
-        <select id="ddlStatus" placeholder="Select User">
-                <option value="0">Active</option>
-                <option value="1">InActive</option>
-            </select>*@
+   
 </div>
     <div class="user_subCrumbs">
         <ul>
@@ -100,12 +15,15 @@
             <li class="accounting"><a href="#" id="accounting">Accounting <span class="count">(@ViewBag.accounting)</span></a> |</li>
             <li class="administrator"><a href="#" id="administrator">Administrator <span class="count">(@ViewBag.admin)</span></a> |</li>
             <li class="author"><a href="#" id="author">Author <span class="count">(@ViewBag.author)</span></a> |</li>
+            <li class="contributor"><a href="#" id="contributor">Contributor <span class="count">(@ViewBag.contributor)</span></a> |</li>
             @*<li class="customer"><a href="#">Customer <span class="count">(@ViewBag.customer)</span></a> |</li>*@
+            <li class="editor"><a href="#" id="editor">Editor <span class="count">(@ViewBag.editor)</span></a> |</li>
             <li class="modsquad"><a href="#" id="modsquad">Mod Squad <span class="count">(@ViewBag.modsquad)</span></a> |</li>
-            <li class="shop_manager"><a href="#" id="shopmanager">Shop manager <span class="count">(@ViewBag.shopmanager)</span></a> |</li>
+            <li class="shop_manager"><a href="#" id="shopmanager">Shop Manager <span class="count">(@ViewBag.shopmanager)</span></a> |</li>
             <li class="subscriber"><a href="#" id="subscriber">Subscriber <span class="count">(@ViewBag.subscriber)</span></a> |</li>
             <li class="supplychainmanager"><a href="#" id="supplychainmanager">Supply Chain Manager <span class="count">(@ViewBag.supplychainmanager)</span></a> |</li>
             <li class="wpseo_editor" id="seo"><a href="#">SEO Editor <span class="count">(@ViewBag.seoeditor)</span></a> |</li>
+            <li class="wpseo_editor" id="seomanager"><a href="#">SEO Manager <span class="count">(@ViewBag.seomanager)</span></a> |</li>
             <li class="none" id="norole"><a href="#">No role <span class="count">(@ViewBag.norole)</span></a></li>
         </ul>
     </div>
@@ -114,10 +32,7 @@
     </div>
     <section class="content section-content">
         <div class="user-top-section">
-            @*<div class="user-search-box">
-                <input type="search" id="user-search-input" name="s" value="">
-                <input type="submit" id="search-submit" class="button" value="Search Users">
-            </div>*@
+            
             <div class="tablenav top">
                 <div class="alignleft actions bulkactions">
                     <select name="action" id="ddlStatus">
@@ -130,27 +45,17 @@
                 <div class="alignleft actions">
                     <select name="new_role" id="new_role">
                         <option value="">Change role to…</option>
-                        @*<option value="wpseo_editor">SEO Editor</option>
-                        <option value="wpseo_manager">SEO Manager</option>
-                        <option value="supplychainmanager">Supply Chain Manager</option>
-                        <option value="subscriber">Subscriber</option>
-                        <option value="shop_manager">Shop manager</option>
-                        <option value="modsquad">Mod Squad</option>
-                        <option value="editor">Editor</option>
-                        <option value="contributor">Contributor</option>
-                        <option value="author">Author</option>
-                        <option value="administrator">Administrator</option>
-                        <option value="accounting">Accounting</option>*@
                         <option value="Accounting">Accounting</option>
                         <option value="Administrator">Administrator</option>
-                        <option value="ModSquad">Mod Squad</option>
-                        <option value="SEOEditor">SEO Editor</option>
-                        <option value="SEOManager">SEO Manager</option>
-                        <option value="Shopmanager">Shop manager</option>
-                        <option value="Subscriber">Subscriber</option>
-                        <option value="SupplyChainManager">Supply Chain Manager</option>
-                        <option value="Editor">Editor</option>                     
                         <option value="Author">Author</option>
+                        <option value="Contributor">Contributor</option>
+                        <option value="Editor">Editor</option>
+                        <option value="Mod_Squad">Mod Squad</option>
+                        <option value="SEO_Editor">SEO Editor</option>
+                        <option value="SEO_Manager">SEO Manager</option>
+                        <option value="Shop_Manager">Shop Manager</option>
+                        <option value="Subscriber">Subscriber</option>
+                        <option value="Supply_Chain_Manager">Supply Chain Manager</option>
                     </select>
                     <input type="submit" name="changeit" id="changeit" class="button" value="Change">
                 </div>
@@ -158,47 +63,37 @@
                 <div class="alignleft actions">
                     <select name="grant_role" id="grant_role">
                         <option value="">Grant Roal to…</option>
-                        @*<option value="wpseo_editor">SEO Editor</option>
-                        <option value="wpseo_manager">SEO Manager</option>
-                        <option value="supplychainmanager">Supply Chain Manager</option>
-                        <option value="subscriber">Subscriber</option>
-                        <option value="shop_manager">Shop manager</option>
-                        <option value="modsquad">Mod Squad</option>
-                        <option value="editor">Editor</option>
-                        <option value="contributor">Contributor</option>
-                        <option value="author">Author</option>
-                        <option value="administrator">Administrator</option>
-                        <option value="accounting">Accounting</option>*@
                         <option value="Accounting">Accounting</option>
                         <option value="Administrator">Administrator</option>
-                        <option value="ModSquad">Mod Squad</option>
-                        <option value="SEOEditor">SEO Editor</option>
-                        <option value="SEOManager">SEO Manager</option>
-                        <option value="Shopmanager">Shop manager</option>
-                        <option value="Subscriber">Subscriber</option>
-                        <option value="SupplyChainManager">Supply Chain Manager</option>
-                        <option value="Editor">Editor</option>               
                         <option value="Author">Author</option>
+                        <option value="Contributor">Contributor</option>
+                        <option value="Editor">Editor</option>
+                        <option value="Mod_Squad">Mod Squad</option>
+                        <option value="SEO_Editor">SEO Editor</option>
+                        <option value="SEO_Manager">SEO Manager</option>
+                        <option value="Shop_Manager">Shop Manager</option>
+                        <option value="Subscriber">Subscriber</option>
+                        <option value="Supply_Chain_Manager">Supply Chain Manager</option>
                     </select>
                     <input type="submit" name="Grantrole" id="Grantrole" class="button" value="Grant">
                 </div>
-                @*<div class="alignleft actions">
+                        @*<div class="alignleft actions">
                     <select name="revoke_role" id="revoke_role">
                         <option value="">Revoke Roal to…</option>
-                        <option value="wpseo_editor">SEO Editor</option>
-                        <option value="wpseo_manager">SEO Manager</option>
-                        <option value="supplychainmanager">Supply Chain Manager</option>
-                        <option value="subscriber">Subscriber</option>
-                        <option value="shop_manager">Shop manager</option>
-                        <option value="modsquad">Mod Squad</option>
-                        <option value="editor">Editor</option>
-                        <option value="contributor">Contributor</option>
-                        <option value="author">Author</option>
-                        <option value="administrator">Administrator</option>
-                        <option value="accounting">Accounting</option>
+                       <option value="Accounting">Accounting</option>
+                        <option value="Administrator">Administrator</option>
+                        <option value="Author">Author</option>
+                        <option value="Contributor">Contributor</option>
+                        <option value="Editor">Editor</option>
+                        <option value="Mod_Squad">Mod Squad</option>
+                        <option value="SEO_Editor">SEO Editor</option>
+                        <option value="SEO_Manager">SEO Manager</option>
+                        <option value="Shop_Manager">Shop Manager</option>
+                        <option value="Subscriber">Subscriber</option>
+                        <option value="Supply_Chain_Manager">Supply Chain Manager</option>
                     </select>
-                    <input type="submit" name="Revoke" id="Revoke" class="button" value="Revoke">
-                </div>*@
+            <input type="submit" name="Revoke" id="Revoke" class="button" value="Revoke">
+        </div>*@
                 <input type="hidden" name="varpass" id="varpass" value="">
                 @*<div class="tablenav-pages">
             <span class="displaying-num">61,641 items</span>

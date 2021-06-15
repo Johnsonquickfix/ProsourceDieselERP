@@ -55,8 +55,7 @@
                         </div>
                         <div class="form-group">
                             <label for="exampleInputEmail1">User Status</label>
-                            <select class="form-control">
-                                <option>Select User Status</option>
+                            <select class="form-control" id="userstatus">
                                 <option value="0">Active</option>
                                 <option value="1">InActive</option>
                             </select>
@@ -64,18 +63,18 @@
                         <div class="form-group">
                             <label for="exampleInputEmail1">User Type</label>
                             <select class="form-control" id="txtUserRole">
-                                <option>Select User Type</option>
+                                <option value="0">Select User Type</option>
                                 <option value="Accounting">Accounting</option>
-                                <option value="Administrator">Administrator</option>                        
-                                <option value="ModSquad">Mod Squad</option>
-                                <option value="SEOEditor">SEO Editor</option>
-                                <option value="SEOManager">SEO Manager</option>
-                                <option value="Shop manager">Shop manager</option>
-                                <option value="Subscriber">Subscriber</option>
-                                <option value="Supply Chain manager">Supply Chain Manager</option>
-                                <option value="Editor">Editor</option>
-                                <option value="Contributor">Contributor</option>
+                                <option value="Administrator">Administrator</option>
                                 <option value="Author">Author</option>
+                                <option value="Contributor">Contributor</option>
+                                <option value="Editor">Editor</option>
+                                <option value="Mod_Squad">Mod Squad</option>
+                                <option value="SEO_Editor">SEO Editor</option>
+                                <option value="SEO_Manager">SEO Manager</option>
+                                <option value="Shop_Manager">Shop Manager</option>
+                                <option value="Subscriber">Subscriber</option>
+                                <option value="Supply_Chain_Manager">Supply Chain Manager</option>
                             </select>
                         </div>
                     </div>
@@ -87,8 +86,8 @@
                         <div class="form-group">
                             <label for="exampleInputEmail1">Country</label>
                             <select class="form-control" id="txtCountry">
-                                <option value="US - United States">US - United States</option>
-                                <option value="CA - Canada">CA - Canada</option>
+                                <option value="US-United States">US-United States</option>
+                                <option value="CA-Canada">CA-Canada</option>
 
                             </select>
                         </div>
@@ -100,7 +99,7 @@
                     <div class="col-sm-4">
                         <div class="form-group">
                             <label for="exampleInputEmail1">E-mail</label>
-                            <input type="text" class="form-control" id="txtUserEmail" placeholder="Enter Your Mail Address">
+                            <input type="email" class="form-control" id="txtUserEmail" placeholder="Enter Your Mail Address">
                         </div>
                         <div class="form-group">
                             <label for="exampleInputEmail1">User Name</label>
@@ -144,7 +143,7 @@
         $("#btnPhotoLibrary").click(function () {
             $("#hidimage").val('');
             $("#hidimagetype").val('2');
-        }); 
+        });
         passwordcheck();
         $('#txtPassword').keyup(function () {
             $('#result').html(passwordStrength($('#txtPassword').val(), ""))
@@ -214,17 +213,38 @@
         Password = $("#txtPassword").val();
         ConfirmPassword = $("#txtConfirmPassword").val();
         Phone = $("#txtPhone").val();
-
-    
-        if (FirstName == "") { swal('alert', 'Please Enter First Name', 'error') }
-        else if (LastName == "") { swal('alert', 'Please Enter Last Name', 'error') }
-        else if (Phone == "") { swal('alert', 'Please Enter Contact No.', 'error') }
-        else if (address == "") { swal('alert', 'Please Enter Address', 'error') }
-        else if (Email == "") { swal('alert', 'Please Enter Email', 'error') }
-        else if (NickName == "") { swal('alert', 'Please Enter User Name', 'error') }
-        else if (Password == "") { swal('alert', 'Please Enter Password', 'error') }
-        else if (ConfirmPassword == "") { swal('alert', 'Please Enter Confirmpassword', 'error') }   
        
+        if (FirstName == "") {
+            swal('Alert', 'Please Enter First Name', 'Error').then(function () { swal.close(); $('#txtFirstName').focus(); });
+        }
+        else if (LastName == "") {
+            swal('Alert', 'Please Enter Last Name', 'Error').then(function () { swal.close(); $('#txtLastName').focus(); });
+        }
+        else if ($('#txtUserRole').val() == 0) {
+            swal('Alert', 'Please Select User Type', 'Error').then(function () { swal.close(); $('#txtUserRole').focus(); });
+        }
+        else if (Phone == "") {
+            swal('Alert', 'Please Enter Contact No.', 'Error').then(function () { swal.close(); $('#txtPhone').focus(); });
+        }
+        else if (address == "") {
+            swal('Alert', 'Please Enter Address', 'Error').then(function () { swal.close(); $('#txtAddress').focus(); });
+        }
+        else if (Email == "") {
+            swal('Alert', 'Please Enter Email', 'Error').then(function () { swal.close(); $('#txtUserEmail').focus(); });
+        }
+        else if (NickName == "") {
+            swal('Alert', 'Please Enter User Name', 'Error').then(function () { swal.close(); $('#txtUserNickName').focus(); });
+        }
+        else if (Password == "") {
+            swal('Alert', 'Please Enter Password', 'Error').then(function () { swal.close(); $('#txtPassword').focus(); });
+        }
+        else if (ConfirmPassword == "") {
+            swal('Alert', 'Please Enter Confirm Password', 'Error').then(function () { swal.close(); $('#txtConfirmPassword').focus(); });
+        }
+        else if (Password !== ConfirmPassword) {
+            swal('Alert', 'Confirm Password is not matching.', 'Error').then(function () { swal.close(); $('#txtConfirmPassword').focus(); });
+        }
+
         else {
             var obj = {
                 ID: ID,
@@ -250,20 +270,19 @@
                         swal('Alert!', data.message, 'success');
                     }
                     else {
-                        swal('Alert!', data.message, 'error')
+                        swal('Alert!', data.message, 'Error')
                     }
                 },
                 error: function (error) {
-                    swal('Error!', 'something went wrong', 'error');
+                    swal('Error!', 'something went wrong', 'Error');
                 },
             })
         }
 
     }
 
-
     document.getElementById('txtPhone').addEventListener('keyup', function (evt) {
-        var phoneNumber = document.getElementById('txtPhone');    
+        var phoneNumber = document.getElementById('txtPhone');
         var charCode = (evt.which) ? evt.which : evt.keyCode;
         phoneNumber.value = phoneFormat(phoneNumber.value);
     });

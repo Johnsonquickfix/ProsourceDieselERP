@@ -38,7 +38,6 @@
             { throw ex; }
             return DT;
         }
-
         public static long AddOrdersPost()
         {
             long result = 0;
@@ -338,7 +337,7 @@
                 strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'_variation_id',variation_id from wp_wc_order_product_lookup where order_id = {0}; ", model.OrderPostStatus.order_id));
                 strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'_qty',product_qty from wp_wc_order_product_lookup where order_id = {0}; ", model.OrderPostStatus.order_id));
                 strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'_tax_class','' from wp_wc_order_product_lookup where order_id = {0}; ", model.OrderPostStatus.order_id));
-                strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'_line_subtotal',product_net_revenue from wp_wc_order_product_lookup where order_id = {0}; ", model.OrderPostStatus.order_id));
+                strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'_line_subtotal',product_net_revenue + coupon_amount from wp_wc_order_product_lookup where order_id = {0}; ", model.OrderPostStatus.order_id));
                 strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'_line_subtotal_tax',tax_amount from wp_wc_order_product_lookup where order_id = {0}; ", model.OrderPostStatus.order_id));
                 strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'_line_total',product_net_revenue from wp_wc_order_product_lookup where order_id = {0}; ", model.OrderPostStatus.order_id));
                 strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'_line_tax',tax_amount from wp_wc_order_product_lookup where order_id = {0}; ", model.OrderPostStatus.order_id));
@@ -424,6 +423,110 @@
             {
                 throw Ex;
             }
+        }
+        public static DataTable GetOrders(long OrderID)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                MySqlParameter[] parameters =
+                {
+                    new MySqlParameter("@order_id", OrderID)
+                };
+                string strSQl = "select os.order_id,DATE_FORMAT(os.date_created,'%d/%m/%Y') date_created,os.customer_id,CONCAT(u.User_Login, ' [ ', u.user_email, ']') as customer_name,os.status,"
+                            + " max(case meta_key when '_payment_method_title' then meta_value else '' end) payment_method,"
+                            + " max(case meta_key when '_customer_ip_address' then meta_value else '' end) ip_address,max(case meta_key when '_created_via' then meta_value else '' end) created_via,"
+                            + " max(case meta_key when '_billing_first_name' then meta_value else '' end) b_first_name,max(case meta_key when '_billing_last_name' then meta_value else '' end) b_last_name,"
+                            + " max(case meta_key when '_billing_address_1' then meta_value else '' end) b_address_1,max(case meta_key when '_billing_address_2' then meta_value else '' end) b_address_2,"
+                            + " max(case meta_key when '_billing_postcode' then meta_value else '' end) b_postcode,max(case meta_key when '_billing_city' then meta_value else '' end) b_city,"
+                            + " max(case meta_key when '_billing_country' then meta_value else '' end) b_country,max(case meta_key when '_billing_state' then meta_value else '' end) b_state,"
+                            + " max(case meta_key when '_billing_email' then meta_value else '' end) b_email,max(case meta_key when '_billing_phone' then meta_value else '' end) b_phone,"
+                            + " max(case meta_key when '_shipping_first_name' then meta_value else '' end) s_first_name,max(case meta_key when '_shipping_last_name' then meta_value else '' end) s_last_name,"
+                            + " max(case meta_key when '_shipping_address_1' then meta_value else '' end) s_address_1,max(case meta_key when '_shipping_address_2' then meta_value else '' end) s_address_2,"
+                            + " max(case meta_key when '_shipping_postcode' then meta_value else '' end) s_postcode,max(case meta_key when '_shipping_city' then meta_value else '' end) s_city,"
+                            + " max(case meta_key when '_shipping_country' then meta_value else '' end) s_country,max(case meta_key when '_shipping_state' then meta_value else '' end) s_state"
+                            + " from wp_wc_order_stats os"
+                            + " inner join wp_postmeta pm on pm.post_id = os.order_id"
+                            + " left outer join wp_users u on u.id = os.customer_id"
+                            + " where os.order_id = @order_id "
+                            + " group by os.order_id,os.date_created,os.customer_id,u.User_Login,u.user_email,os.status";
+                dt = SQLHelper.ExecuteDataTable(strSQl, parameters);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dt;
+        }
+        public static List<OrderProductsModel> GetOrderProductList(long OrderID)
+        {
+            List<OrderProductsModel> _list = new List<OrderProductsModel>();
+            try
+            {
+                OrderProductsModel productsModel = new OrderProductsModel();
+                MySqlParameter[] parameters =
+                {
+                    new MySqlParameter("order_id", OrderID)
+                };
+                string strSQl = "select oi.order_id,oi.order_item_name,"
+                            + " max(case meta_key when '_product_id' then meta_value else '' end) p_id,max(case meta_key when '_variation_id' then meta_value else '' end) v_id,"
+                            + " max(case meta_key when '_qty' then meta_value else '' end) qty,max(case meta_key when '_line_subtotal' then meta_value else '' end) line_subtotal,"
+                            + " max(case meta_key when '_line_total' then meta_value else '' end) line_total,max(case meta_key when '_line_tax' then meta_value else '' end) tax"
+                            + " from wp_woocommerce_order_items oi"
+                            + " inner join wp_woocommerce_order_itemmeta oim on oim.order_item_id = oi.order_item_id"
+                            + " where oi.order_item_type = 'line_item' and oi.order_id = @order_id"
+                            + " group by oi.order_id,oi.order_item_name ";
+                MySqlDataReader sdr = SQLHelper.ExecuteReader(strSQl, parameters);
+                while (sdr.Read())
+                {
+                    productsModel = new OrderProductsModel();
+                    if (sdr["p_id"] != DBNull.Value)
+                        productsModel.product_id = Convert.ToInt64(sdr["p_id"]);
+                    else
+                        productsModel.product_id = 0;
+                    if (sdr["v_id"] != DBNull.Value)
+                        productsModel.variation_id = Convert.ToInt64(sdr["v_id"]);
+                    else
+                        productsModel.variation_id = 0;
+                    if (sdr["order_item_name"] != DBNull.Value)
+                        productsModel.product_name = sdr["order_item_name"].ToString();
+                    else
+                        productsModel.product_name = string.Empty;
+                    //if (sdr["price"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["price"].ToString().Trim()))
+                    //    productsModel.price = decimal.Parse(sdr["price"].ToString());
+                    //else
+                    //    productsModel.price = 0;
+                    if (sdr["qty"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["qty"].ToString().Trim()))
+                        productsModel.quantity = decimal.Parse(sdr["qty"].ToString().Trim());
+                    else
+                        productsModel.quantity = 0;
+                    if (sdr["line_subtotal"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["line_subtotal"].ToString().Trim()))
+                        productsModel.sale_price = decimal.Parse(sdr["line_subtotal"].ToString().Trim());
+                    else
+                        productsModel.sale_price = productsModel.price;
+                    productsModel.total = productsModel.sale_price;
+                    productsModel.sale_price = productsModel.sale_price / productsModel.quantity;
+
+                    if (sdr["tax"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["tax"].ToString().Trim()))
+                        productsModel.tax_amount = decimal.Parse(sdr["tax"].ToString().Trim());
+                    else
+                        productsModel.tax_amount = productsModel.price;
+
+
+                    /// free item
+                    if (productsModel.product_id == 78676) { productsModel.is_free = true; productsModel.quantity = 2; }
+                    else if (productsModel.product_id == 632713) { productsModel.is_free = true; productsModel.quantity = 2; }
+                    else productsModel.is_free = false;
+
+                    /// 
+                    if (productsModel.product_id == 611172) productsModel.group_id = 78676;
+                    else if (productsModel.product_id == 118) productsModel.group_id = 632713;
+                    else productsModel.group_id = 0;
+
+                    _list.Add(productsModel);
+                }
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return _list;
         }
         public static DataTable OrderList()
         {

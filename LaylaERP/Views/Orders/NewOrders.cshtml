@@ -9,9 +9,12 @@
 <section class="content section-content neworder-section">
     <div class="box box-primary create-user-primary mb-35">
         <div class="box-header with-border">
-            <input type="hidden" id="hfOrderNo" value="0" />
+            <input type="hidden" id="hfOrderNo" value="@ViewBag.id" />
             <input type="hidden" id="hfTaxRate" value="0" />
-            <h4 class="box-title" id="lblOrderNo">Order #000000 detail</h4>
+            <h4 class="box-title" id="lblOrderNo">Order #000000 detail</h4>            
+            <div class="box-tools pull-right">
+                <h5 class="payment-history"></h5>
+            </div>
         </div>
         <div class="box-body box-sections">
             <div class="row">
@@ -178,8 +181,8 @@
                     </ul>
                 </div>
             </div>
-                <!-- /.box-body -->
-            </div>
+            <!-- /.box-body -->
+        </div>
         <div class="col-sm-6 checkout-box-total">
             <div class="box box-primary">
                 <div class="box-header with-border">
@@ -232,7 +235,7 @@
                 </div>
             </div>
         </div>
-        </div>
+    </div>
 </section>
 
 <div class="modal in printable autoprint" id="billModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div>

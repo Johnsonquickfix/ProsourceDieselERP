@@ -125,7 +125,7 @@
             //id = ViewBag.id;
             //if (id > 0)
             //{
-            //    GetUserDetails(model, id);
+                GetUserDetails(model, ViewBag.id);
             //}
             //--------------Code End----------
             return View();

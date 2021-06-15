@@ -18,9 +18,9 @@
     public class OrdersController : Controller
     {
         // GET: New Orders
-        public ActionResult NewOrders()
+        public ActionResult NewOrders(long id = 0)
         {
-            //ViewBag.OrderNo = OrderRepository.AddOrdersPost();
+            ViewBag.id = id;
             return View();
         }
 
@@ -28,6 +28,41 @@
         public ActionResult OrdersHistory()
         {
             return View();
+        }
+        [HttpPost]
+        public JsonResult GetOrderInfo(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                long oid = 0;
+                if (!string.IsNullOrEmpty(model.strValue1)) { oid = Convert.ToInt64(model.strValue1); }
+                if (oid <= 0)
+                {
+                    throw new Exception("Invalid Data");
+                }
+                DataTable DT = OrderRepository.GetOrders(oid);
+                JSONresult = JsonConvert.SerializeObject(DT);
+            }
+            catch  { }
+            return Json(JSONresult, 0);
+        }
+        [HttpPost]
+        public JsonResult GetOrderProductList(SearchModel model)
+        {
+            List<OrderProductsModel> _list = new List<OrderProductsModel>();
+            try
+            {
+                long oid = 0;
+                if (!string.IsNullOrEmpty(model.strValue1)) { oid = Convert.ToInt64(model.strValue1); }
+                if (oid <= 0)
+                {
+                    throw new Exception("Invalid Data");
+                }
+                _list = OrderRepository.GetOrderProductList(oid);
+            }
+            catch { }
+            return Json(_list, 0);
         }
         [HttpPost]
         public JsonResult GetNewOrderNo(SearchModel model)

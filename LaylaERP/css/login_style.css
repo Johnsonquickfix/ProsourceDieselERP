@@ -124,7 +124,7 @@ border:0px;}
 }
 .login-page label {
  padding-bottom:15px;
-    font-weight:400;
+    font-weight:400; width:100%;
 }
 .login-continue .login-inner {
     display:inline-block;position:relative;
@@ -163,3 +163,79 @@ padding-top:0px; padding-bottom:0px; height:42px; line-height:42px;}
 font-weight:normal; color:#4f4f4f !important;}
     #auth-pv-form h5 #lblCounter {
     font-weight:700;}
+.login-continue {
+    text-align: left !important;
+    padding-left: 2px !important;
+}
+/**faq style*/
+.faq-dialog.modal-dialog {
+    width: 1100px;
+}
+.faq-dialog .container {
+max-width:100%;}
+.faq-dialog.modal-dialog .modal-content {
+    border-radius: 5px;
+    background: #f9f9f9;
+}
+.faq-dialog .modal-title {
+    text-align:center;
+}
+.faq-dialog .modal-header {
+    padding-top: 35px;
+    background-color: #f8f8f8;
+    padding-bottom: 35px;
+}
+.faq-dialog .modal-title {
+    font-size: 32px; font-weight:400;
+}
+.toggtitle.open i {
+    transition: 0.5s ease all;
+    transform: rotate( 45deg );
+}
+.faq-dialog .row {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    margin-right: -15px;
+    margin-left: -15px;
+}
+    .faq-row h3 {
+    font-size: 28px;
+    margin-top: 30px;
+    margin-bottom: 20px;
+    text-align: left;
+    font-style: italic;
+    font-weight: 600;
+}
+.faq-row .col-sm-6 {
+    margin-bottom: 50px;
+    padding: 0px 25px 0px 15px;
+}
+.faq-row h5 {
+    font-size: 20px; font-weight:400;
+}
+.sep-faq {
+    border-bottom: 1px solid #c8c8c8;
+    padding: 15px 30px 15px 15px;
+}
+.toggtitle {
+    color: #4f4f4f;
+    position: relative;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+}
+    .toggtitle i {
+        position: absolute;
+        right: -20px;
+        font-size: 10px;
+        transition: 0.5s ease all;
+        color: #4f4f4f;
+        top: 4px;
+    }
+.toggcontent {
+    display: none;
+    padding-top: 4px;
+    padding-left: 15px;
+}

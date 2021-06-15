@@ -11,7 +11,7 @@
     using System.Web;
     using LaylaERP.Models;
 
-
+     
     public class Users
     {
         private static string itoa64 = "./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
@@ -116,6 +116,19 @@
             return DT;
         }
 
+        public static DataTable GetDetailsUser(long ID)
+        {
+            DataTable DT = new DataTable();
+            try
+            {
+                string strquery = "select ID, User_Image, user_login, user_status, if(user_status=0,'Active','InActive') as status,user_email,display_name,User_nicename,(select meta_value from wp_usermeta where wp_usermeta.meta_key = 'wp_capabilities' and wp_usermeta.user_id = wp_users.ID) user_role,(select meta_value from wp_usermeta where wp_usermeta.meta_key = 'first_name' and wp_usermeta.user_id = wp_users.ID) first_name,(select meta_value from wp_usermeta where wp_usermeta.meta_key = 'last_name' and wp_usermeta.user_id = wp_users.ID) last_name,(select meta_value from wp_usermeta where wp_usermeta.meta_key = 'user_country' and wp_usermeta.user_id = wp_users.ID) country,(select meta_value from wp_usermeta where wp_usermeta.meta_key = 'user_address' and wp_usermeta.user_id = wp_users.ID) address,(select meta_value from wp_usermeta where wp_usermeta.meta_key='user_phone' and wp_usermeta.user_id =wp_users.ID) phone from wp_users where id = " + ID + " limit 20;";
+                DT = SQLHelper.ExecuteDataTable(strquery);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DT;
+        }
+
         public static int UpdateUserClassifications(UserClassification model)
         {
             int result = 0;
@@ -123,7 +136,7 @@
             {
                 
                 StringBuilder strSql = new StringBuilder(string.Format("delete from wp_user_classification where User_Type = '{0}'; ", model.User_Type));                
-                strSql.Append(string.Format("insert into wp_user_classification ( User_Type ,Create_User,Customers,Orders_Mnu,System_Settings,Add_Coupon,Show_Coupon,Add_New_Orders,Show_Update_Orders) values ('{0}',{1},{2},{3},{4},{5},{6},{7},{8}) ", model.User_Type, model.Create_User, model.Customers,model.Orders_Mnu,model.System_Settings,model.Add_Coupon,model.Show_Coupon,model.Add_New_Orders,model.Show_Update_Orders));
+                strSql.Append(string.Format("insert into wp_user_classification ( User_Type,User_Mnu,User_Classification,Create_User,Customers,Orders_Mnu,System_Settings,Add_New_Orders,Show_Update_Orders) values ('{0}',{1},{2},{3},{4},{5},{6},{7},{8}) ",  model.User_Type, model.User_Mnu, model.User_Classification, model.Create_User, model.Customers,model.Orders_Mnu,model.System_Settings,model.Add_New_Orders,model.Show_Update_Orders));
 
                 /// step 6 : wp_posts
                 //strSql.Append(string.Format(" update wp_posts set post_status = '{0}' ,comment_status = 'closed' where id = {1} ", model.OrderPostStatus.status, model.OrderPostStatus.order_id));

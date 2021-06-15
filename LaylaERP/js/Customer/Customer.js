@@ -20,7 +20,7 @@ function AddCustomer() {
     else if (FirstName == "") { swal('alert', 'Please Enter First Name', 'error') }
     else if (LastName == "") { swal('alert', 'Please Enter Last Name', 'error') }
     else if (BillingAddress1 == "") { swal('alert', 'Please Enter Address 1', 'error') }
-    else if (BillingAddress2 == "") { swal('alert', 'Please Enter Address 2', 'error') }
+    //else if (BillingAddress2 == "") { swal('alert', 'Please Enter Address 2', 'error') }
     else if (BillingPostcode == "") { swal('alert', 'Please Enter Post/Zip Code', 'error') }
     else if (BillingCountry == "") { swal('alert', 'Please Enter Country/Region', 'error') }
     else if (BillingState == "") { swal('alert', 'Please Enter State/Country', 'error') }
@@ -164,7 +164,7 @@ function dataGridLoad() {
         columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true,
         sPaginationType: "full_numbers", searching: true, ordering: true, lengthChange: true,
-        bAutoWidth: true, scrollX: true, scrollY: ($(window).height() - 215),
+        bAutoWidth: false, scrollX: false, scrollY: ($(window).height() - 215),
         lengthMenu: [[10, 20, 50], [10, 20, 50]],
         sAjaxSource: "/Customer/GetCustomerList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
@@ -206,4 +206,34 @@ function dataGridLoad() {
             }
         ]
     });
+}
+
+function GetCustomerByID(id) {
+    var ID = id;
+    var obj = {};
+    $.ajax({
+        url: "/Customer/GetCustomerByID/" + ID,
+        type: "GET",
+        contentType: "application/json; charset=utf-8",
+        dataType: 'JSON',
+        data: JSON.stringify(obj),
+        success: function (data) {
+            var d = JSON.parse(data);
+            console.log(d[0].user_email)
+            $("#txtUserEmail").val(d[0].user_email);
+            $("#txtUserNickName").val(d[0].user_nicename);
+            $("#txtFirstName").val(d[0].first_name);
+            $("#txtLastName").val(d[0].last_name);
+            $("#txtBillingAddress1").val(d[0].billing_address_1);
+            $("#txtBillingAddress2").val(d[0].billing_address_2);
+            $("#txtBillingPostCode").val(d[0].billing_postcode);
+            $("#txtBillingCountry").val(d[0].billing_country);
+            $("#txtBillingState").val(d[0].billing_state);
+            $("#txtBillingCity").val(d[0].billing_city);
+            $("#txtBillingPhone").val(d[0].billing_phone);
+           
+        },
+        error: function (msg) { alert(msg); }
+    });
+
 }

@@ -33,7 +33,7 @@
                 
                     <h3 class="profile-username text-center">Layla Sleep</h3>
                     <p class="text-muted text-center">laylasleep@acb.com</p>
-                    <p class="text-center">Washington Dc</p>
+                    <p class="text-center dib-full">Washington Dc</p>
                 </div>
                 <!-- /.box-body -->
             </div>
@@ -42,6 +42,7 @@
         <div class="col-md-9">
             <div class="box box-primary create-user-primary">
                 <div class="box-header with-border">
+                    <div class="row">
                     <div class="col-sm-4">
                         <div class="form-group">
                             <input type="hidden" id="hfid" value="@ViewBag.id" />
@@ -116,8 +117,11 @@
                         </div>
                         <span id='resultConfirm'></span>
                     </div> 
-                    <div class="col-offset-8 col-sm-4 mt-1">
-                        <a href="#" class="btn btn-danger btn-block" id="btnSave"><b>Create User</b></a>
+                    </div>
+                </div>
+                <div class="box-footer">
+                    <div class="text-right">
+                        <a href="#" class="btn btn-danger" id="btnSave"><b>Create User</b></a>
                     </div>
                 </div>
             </div>
@@ -136,7 +140,7 @@
         $("#btnPhotoLibrary").click(function () {
             $("#hidimage").val('');
             $("#hidimagetype").val('2');
-        });
+        }); 
         passwordcheck();
         $('#txtPassword').keyup(function () {
             $('#result').html(passwordStrength($('#txtPassword').val(), ""))
@@ -317,6 +321,7 @@
             reader.readAsDataURL(input.files[0]);
         }
     }
+
 </script>
  
  

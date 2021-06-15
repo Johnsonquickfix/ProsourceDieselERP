@@ -224,8 +224,12 @@
                     throw new Exception("Invalid Data");
                 }
                 List<OrderPostMetaModel> _list = new List<OrderPostMetaModel>();
-                _list.Add(new OrderPostMetaModel() { post_id = oid, meta_key = "_payment_method", meta_value = "PPal" });
+                _list.Add(new OrderPostMetaModel() { post_id = oid, meta_key = "_payment_method", meta_value = "ppec_paypal" });
                 _list.Add(new OrderPostMetaModel() { post_id = oid, meta_key = "_payment_method_title", meta_value = "PayPal" });
+                _list.Add(new OrderPostMetaModel() { post_id = oid, meta_key = "_customer_ip_address", meta_value = Net.Ip });
+                _list.Add(new OrderPostMetaModel() { post_id = oid, meta_key = "_customer_user_agent", meta_value = Net.BrowserInfo });
+                //_list.Add(new OrderPostMetaModel() { post_id = oid, meta_key = "_paypal_status", meta_value = "pending" });
+                //_list.Add(new OrderPostMetaModel() { post_id = oid, meta_key = "Payer PayPal address", meta_value = model.strValue2 });
                 int res = OrderRepository.UpdatePayPalStatus(_list);
                 if (res > 0)
                 {

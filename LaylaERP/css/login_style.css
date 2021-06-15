@@ -239,3 +239,14 @@ max-width:100%;}
     padding-top: 4px;
     padding-left: 15px;
 }
+.modal-header .close {
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    font-size: 21px;
+    line-height: 1;
+    color: #000;
+    text-shadow: 0 1px 0 #fff;
+    filter: alpha(opacity=20);
+    opacity: .2;
+}

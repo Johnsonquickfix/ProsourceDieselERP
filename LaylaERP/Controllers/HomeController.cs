@@ -121,12 +121,12 @@
             clsUserDetails model = new clsUserDetails();
             ViewBag.id = Session["UserId"];
             //-----------Code Start------
-            //long id = 0;
-            //id = ViewBag.id;
-            //if (id > 0)
-            //{
-            //    GetUserDetails(model, id);
-            //}
+            long id = 0;
+            id = ViewBag.id;
+            if (id > 0)
+            {
+                GetUserDetails(model, id);
+            }
             //--------------Code End----------
             return View();
         }

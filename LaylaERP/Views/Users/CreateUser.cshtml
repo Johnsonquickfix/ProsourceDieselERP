@@ -65,15 +65,17 @@
                             <label for="exampleInputEmail1">User Type</label>
                             <select class="form-control" id="txtUserRole">
                                 <option>Select User Type</option>
-                                <option value="accounting">Accounting</option>
-                                <option value="administrator">Administrator</option>
-                                <option value="author">Author</option>
-                                <option value="modsquad">Mod Squad</option>
-                                <option value="seoeditor">SEO Editor</option>
-                                <option value="seomanager">SEO Manager</option>
-                                <option value="shopmanager">Shop manager</option>
-                                <option value="subscriber">Subscriber</option>
-                                <option value="supplychainmanager">Supply Chain Manager</option>
+                                <option value="Accounting">Accounting</option>
+                                <option value="Administrator">Administrator</option>                        
+                                <option value="ModSquad">Mod Squad</option>
+                                <option value="SEOEditor">SEO Editor</option>
+                                <option value="SEOManager">SEO Manager</option>
+                                <option value="Shop manager">Shop manager</option>
+                                <option value="Subscriber">Subscriber</option>
+                                <option value="Supply Chain manager">Supply Chain Manager</option>
+                                <option value="Editor">Editor</option>
+                                <option value="Contributor">Contributor</option>
+                                <option value="Author">Author</option>
                             </select>
                         </div>
                     </div>
@@ -109,13 +111,15 @@
                             <input type="password" class="form-control" id="txtPassword" placeholder="Enter Your Password">
                             @*<span class="genrate_password" id="message">Generate Password</span>*@
                         </div>
+                       
                         <span id='result'></span>
                         <div class="form-group form-password-group">
                             <label for="exampleInputEmail1">Confirm Password</label>
                             <input type="password" class="form-control" id="txtConfirmPassword" placeholder="Confirm Your Password">
                             <span class="genrate_password" id="message"></span>
                         </div>
-                        <span id='resultConfirm'></span>
+                        
+                        @*<span id='resultConfirm'></span>*@
                     </div> 
                     </div>
                 </div>
@@ -145,37 +149,37 @@
         $('#txtPassword').keyup(function () {
             $('#result').html(passwordStrength($('#txtPassword').val(), ""))
             result = $('#result').html();
-            if (result == "Too short") {
+            if (result == "Your password is too short") {
                 $('#result').attr({ 'style': 'color:Red;' });
             }
-            if (result == "Bad") {
+            if (result == "Your password is low") {
                 $('#result').attr({ 'style': 'color:Olive;' });
             }
-            if (result == "Good") {
+            if (result == "Your password is Good") {
                 $('#result').attr({ 'style': 'color:Lime;' });
             }
-            if (result == "Strong") {
+            if (result == "Your password is high") {
                 $('#result').attr({ 'style': 'color:Green;' });
             }
 
         })
-        $('#txtConfirmPassword').keyup(function () {
-            $('#resultConfirm').html(passwordStrength($('#txtConfirmPassword').val(), ""))
-            result = $('#resultConfirm').html();
-            if (result == "Too short") {
-                $('#resultConfirm').attr({ 'style': 'color:Red;' });
-            }
-            if (result == "Bad") {
-                $('#reresultConfirmsult').attr({ 'style': 'color:Olive;' });
-            }
-            if (result == "Good") {
-                $('#resultConfirm').attr({ 'style': 'color:Lime;' });
-            }
-            if (result == "Strong") {
-                $('#resultConfirm').attr({ 'style': 'color:Green;' });
-            }
+        //$('#txtConfirmPassword').keyup(function () {
+        //    $('#resultConfirm').html(passwordStrength($('#txtConfirmPassword').val(), ""))
+        //    result = $('#resultConfirm').html();
+        //    if (result == "Your password is too short") {
+        //        $('#resultConfirm').attr({ 'style': 'color:Red;' });
+        //    }
+        //    if (result == "Your password is low") {
+        //        $('#reresultConfirmsult').attr({ 'style': 'color:Olive;' });
+        //    }
+        //    if (result == "Your password is Good") {
+        //        $('#resultConfirm').attr({ 'style': 'color:Lime;' });
+        //    }
+        //    if (result == "Your password is high") {
+        //        $('#resultConfirm').attr({ 'style': 'color:Green;' });
+        //    }
 
-        })
+        //})
     });
 
 
@@ -211,14 +215,16 @@
         ConfirmPassword = $("#txtConfirmPassword").val();
         Phone = $("#txtPhone").val();
 
-        if (Email == "") { swal('alert', 'Please Enter Email', 'error') }
-        else if (NickName == "") { swal('alert', 'Please Enter User Name', 'error') }
-        else if (FirstName == "") { swal('alert', 'Please Enter First Name', 'error') }
+    
+        if (FirstName == "") { swal('alert', 'Please Enter First Name', 'error') }
         else if (LastName == "") { swal('alert', 'Please Enter Last Name', 'error') }
-        else if (address == "") { swal('alert', 'Please Enter Address', 'error') }
-        else if (Password == "") { swal('alert', 'Please Enter Password', 'error') }
-        else if (ConfirmPassword == "") { swal('alert', 'Please Enter Confirmpassword', 'error') }
         else if (Phone == "") { swal('alert', 'Please Enter Contact No.', 'error') }
+        else if (address == "") { swal('alert', 'Please Enter Address', 'error') }
+        else if (Email == "") { swal('alert', 'Please Enter Email', 'error') }
+        else if (NickName == "") { swal('alert', 'Please Enter User Name', 'error') }
+        else if (Password == "") { swal('alert', 'Please Enter Password', 'error') }
+        else if (ConfirmPassword == "") { swal('alert', 'Please Enter Confirmpassword', 'error') }   
+       
         else {
             var obj = {
                 ID: ID,

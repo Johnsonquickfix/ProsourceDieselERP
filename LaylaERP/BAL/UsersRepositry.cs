@@ -304,12 +304,30 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "update wp_usermeta set meta_value= REPLACE(meta_value,@meta_value,'') where meta_Key = 'wp_capabilities' and user_id in(" + model.strVal + ")";
-                MySqlParameter[] para =
+                int count = 0;
+                string strsql = String.Empty;
+                int result = 0;
+                string strQuery = "select COUNT(meta_value) from wp_usermeta where user_id in ("+ model.strVal + ") and meta_Key = 'wp_capabilities' and meta_value like '%" + model.user_status + ',' + "%'";
+                count = Convert.ToInt32(SQLHelper.ExecuteScalar(strQuery).ToString());
+                if (count > 0)
                 {
+                     strsql = "update wp_usermeta set meta_value= REPLACE(meta_value,@meta_value,'') where meta_Key = 'wp_capabilities' and user_id in(" + model.strVal + ")";
+                    MySqlParameter[] para =
+                    {
                     new MySqlParameter("@meta_value",  model.user_status+',')
                 };
-                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                     result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                }
+                else
+                {
+                     strsql = "update wp_usermeta set meta_value= REPLACE(meta_value,@meta_value,'') where meta_Key = 'wp_capabilities' and user_id in(" + model.strVal + ")";
+                    MySqlParameter[] para =
+                    {
+                    new MySqlParameter("@meta_value", ',' + model.user_status)
+                    };
+                     result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                }
+              
                 return result;
             }
             catch (Exception Ex)

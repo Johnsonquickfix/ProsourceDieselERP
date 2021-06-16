@@ -65,7 +65,17 @@ dashboard
 .sub-heading {
     font-size: 15px;
 }
+ #loader {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    background: rgba(255,255,255, .5);
+    width: 100%;
+    z-index: 999;
+    height: 100%; display:flex; align-items:center; justify-content:center;
+}
 
+   
 .dashboard-info {
     margin: 0px -7.5px;
 }
@@ -578,20 +588,29 @@ body table.dataTable tr.selected td.select-checkbox:before, body table.dataTable
     position: relative;
     display: inline-block;
     margin-bottom: 5px;
+    width: 100px;
+    height: 100px; border-radius:100%;
+    padding: 3px;
+    border: 3px solid #d2d6de;
 }
-
-.genrate_password {
-    color: #ff4100;
-    background: #f5f5f5;
-    font-size: 9px;
-    padding: 2px 8px;
-    position: absolute;
-    opacity: 0;
-    transition: .5s all;
-    cursor: pointer;
-    right: 0px;
-    top: 3px;
-}
+    .add-profile .profile-user-img {
+        padding: 0px;
+        border: 0px;
+        object-fit: cover;
+        height: 100%;
+    }
+    .genrate_password {
+        color: #ff4100;
+        background: #f5f5f5;
+        font-size: 9px;
+        padding: 2px 8px;
+        position: absolute;
+        opacity: 0;
+        transition: .5s all;
+        cursor: pointer;
+        right: 0px;
+        top: 3px;
+    }
 
 .form-password-group {
     position: relative;
@@ -935,4 +954,4 @@ span#result {
     font-size: 12px;
 }
 #exportdata td:first-child {
-text-align:center;}     
+text-align:center;}

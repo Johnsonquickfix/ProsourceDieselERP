@@ -42,35 +42,124 @@ namespace LaylaERP.Models
         public string total { get; set; }
         public List<Export_Details> exportdetails { get; set; }
 
-        public static string ssql = "SELECT o.ID as order_id, o.post_date as order_created, oi.order_item_name as product_name,oi.order_item_type as item_type," +
-        "(SELECT meta_value FROM wp_woocommerce_order_itemmeta WHERE order_item_id = oi.order_item_id AND meta_key = '_product_id') as product_id," +
-        "(SELECT meta_value FROM wp_woocommerce_order_itemmeta WHERE order_item_id = oi.order_item_id AND meta_key = '_product_variation_id') as variant_id," +
-        "(SELECT meta_value FROM wp_woocommerce_order_itemmeta WHERE order_item_id = oi.order_item_id AND meta_key = '_qty') as qty," +
-        "(SELECT meta_value FROM wp_woocommerce_order_itemmeta WHERE order_item_id = oi.order_item_id AND meta_key = '_line_subtotal') as subtotal," +
-        "(SELECT meta_value FROM wp_woocommerce_order_itemmeta WHERE order_item_id = oi.order_item_id AND meta_key = '_line_total') as total" +
-        " FROM wp_posts o LEFT JOIN wp_woocommerce_order_items oi ON oi.order_id = o.id LEFT JOIN wp_posts p ON p.ID = oi.order_item_id WHERE o.post_type = 'shop_order' limit 50 ";
+        //Export Users
 
+        int _user_active;
+        string _user_login = string.Empty;
+        string _user_pass = string.Empty;
+        string _user_role = string.Empty;
+        string _user_email = string.Empty;
+        string _user_nicename = string.Empty;
+        string _display_name = string.Empty;
+        string _user_status = string.Empty;
+        string _first_name = string.Empty;
+        string _last_name = string.Empty;
+        string _address = string.Empty;
+        string _country = string.Empty;
+        string _phone = string.Empty;
+        byte[] _User_Image = null;
 
-        public static List<Export_Details> userlist = new List<Export_Details>();
+        // user_login,user_pass,user_type,status,Email_Id
 
-        public static void Show_Export_Data()
+        public string user_nicename
         {
-            DataSet ds1 = new DataSet();
-            ds1 = DAL.SQLHelper.ExecuteDataSet(ssql);
-            for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
-            {
-                Export_Details uobj = new Export_Details();
-                uobj.order_id = Convert.ToInt32(ds1.Tables[0].Rows[i]["order_id"].ToString());
-                uobj.order_created = Convert.ToDateTime(ds1.Tables[0].Rows[i]["order_created"].ToString());
-                uobj.product_name = ds1.Tables[0].Rows[i]["product_name"].ToString();
-                uobj.item_type = ds1.Tables[0].Rows[i]["item_type"].ToString();
-                uobj.product_id = ds1.Tables[0].Rows[i]["product_id"].ToString();
-                uobj.variant_id = ds1.Tables[0].Rows[i]["variant_id"].ToString();
-                uobj.qty = ds1.Tables[0].Rows[i]["qty"].ToString();
-                uobj.subtotal = ds1.Tables[0].Rows[i]["subtotal"].ToString();
-                uobj.total = ds1.Tables[0].Rows[i]["total"].ToString();
-                userlist.Add(uobj);
-            }
+            get { return _user_nicename; }
+            set { _user_nicename = value; }
+        }
+
+        public string display_name
+        {
+            get { return _display_name; }
+            set { _display_name = value; }
+        }
+
+        public string first_name
+        {
+            get { return _first_name; }
+            set { _first_name = value; }
+        }
+
+        public string last_name
+        {
+            get { return _last_name; }
+            set { _last_name = value; }
+        }
+
+        public string address
+        {
+            get { return _address; }
+            set { _address = value; }
+        }
+
+        public string country
+        {
+            get { return _country; }
+            set { _country = value; }
+        }
+
+        public string phone
+        {
+            get { return _phone; }
+            set { _phone = value; }
+        }
+
+        public byte[] User_Image
+        {
+            get { return _User_Image; }
+            set { _User_Image = value; }
+        }
+
+        public int user_active
+        {
+            get { return _user_active; }
+            set { _user_active = value; }
+        }
+        public string user_login
+        {
+            get { return _user_login; }
+            set { _user_login = value; }
+        }
+        public string user_pass
+        {
+            get { return _user_pass; }
+            set { _user_pass = value; }
+        }
+
+        public string user_email
+        {
+            get { return _user_email; }
+            set { _user_email = value; }
+        }
+        public string user_role
+        {
+            get { return _user_role; }
+            set { _user_role = value; }
+        }
+        public string user_status
+        {
+            get { return _user_status; }
+            set { _user_status = value; }
+        }
+
+        public long UID
+        {
+            get; set;
+        }
+        public string my
+        {
+            get; set;
+        }
+        public string strVal
+        {
+            get; set;
+        }
+        public string password
+        {
+            get; set;
+        }
+        public DateTime created_date
+        {
+            get; set;
         }
     }
 }

@@ -213,6 +213,18 @@
             return Json(new { status = status, message = JSONresult }, 0);
         }
         [HttpPost]
+        public JsonResult GetOrdersCount(SearchModel model)
+        {
+            string result = string.Empty;
+            try
+            {
+                DataTable dt = OrderRepository.OrderCounts();
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
+        [HttpPost]
         public JsonResult GetOrderList(OrderPostStatusModel model)
         {
             string result = string.Empty;

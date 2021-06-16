@@ -88,6 +88,7 @@
     }
     public class OrderProductsModel
     {
+        public string product_type { get; set; }
         public long product_id { get; set; }
         public long variation_id { get; set; }
         public string product_name { get; set; }

@@ -20,7 +20,7 @@ function AddCustomer() {
     else if (FirstName == "") { swal('alert', 'Please Enter First Name', 'error') }
     else if (LastName == "") { swal('alert', 'Please Enter Last Name', 'error') }
     else if (BillingAddress1 == "") { swal('alert', 'Please Enter Address 1', 'error') }
-    //else if (BillingAddress2 == "") { swal('alert', 'Please Enter Address 2', 'error') }
+   /* else if (BillingAddress2 == "") { swal('alert', 'Please Enter Address 2', 'error') }*/
     else if (BillingPostcode == "") { swal('alert', 'Please Enter Post/Zip Code', 'error') }
     else if (BillingCountry == "") { swal('alert', 'Please Enter Country/Region', 'error') }
     else if (BillingState == "") { swal('alert', 'Please Enter State/Country', 'error') }
@@ -219,7 +219,6 @@ function GetCustomerByID(id) {
         data: JSON.stringify(obj),
         success: function (data) {
             var d = JSON.parse(data);
-            console.log(d[0].user_email)
             $("#txtUserEmail").val(d[0].user_email);
             $("#txtUserNickName").val(d[0].user_nicename);
             $("#txtFirstName").val(d[0].first_name);

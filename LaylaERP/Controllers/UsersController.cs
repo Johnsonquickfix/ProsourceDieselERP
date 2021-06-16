@@ -380,10 +380,10 @@ namespace LaylaERP.Controllers
 
         private void Updateuser_MetaData(clsUserDetails model, long id)
         {
-            string[] varQueryArr1 = new string[14];
-            string[] varFieldsName = new string[14] { "nickname", "first_name", "last_name", "description", "rich_editing", "syntax_highlighting", "comment_shortcuts", "admin_color", "use_ssl", "show_admin_bar_front", "locale", "wp_capabilities", "wp_user_level", "dismissed_wp_pointers" };
-            string[] varFieldsValue = new string[14] { model.user_nicename, model.first_name, model.last_name, "", "true", "true", "false", "fresh", "0", "true", "", model.user_role, "", "" };
-            for (int n = 0; n < 14; n++)
+            string[] varQueryArr1 = new string[13];
+            string[] varFieldsName = new string[13] { "nickname", "first_name", "last_name", "description", "rich_editing", "syntax_highlighting", "comment_shortcuts", "admin_color", "use_ssl", "show_admin_bar_front", "locale", "wp_user_level", "dismissed_wp_pointers" };
+            string[] varFieldsValue = new string[13] { model.user_nicename, model.first_name, model.last_name, "", "true", "true", "false", "fresh", "0", "true", "", "", "" };
+            for (int n = 0; n < 13; n++)
             {
                 UsersRepositry.UpdateUserMetaData(model, id, varFieldsName[n], varFieldsValue[n]);
             }

@@ -157,7 +157,8 @@
                 <div class="box-footer">
                     <div class="text-right">
                         <a href="#" class="btn btn-danger" id="btnSave"><b>Create User</b></a>
-                        @Html.ActionLink("Back to List", "Users", null, new { @class = "btn btn-danger" })
+                        @*@Html.ActionLink("Back to List", "Users/Users", null, new { @class = "btn btn-danger" })*@
+                        @*<a class="btn btn-danger" href="/Users/Users" id="tab2">Back to List</a>*@
                     </div>
                 </div>
             </div>
@@ -169,6 +170,7 @@
 </div>
 
 <script>
+
     $(document).ready(function () {
         $("#loader").hide();
         $.get('GetCity', function (data) {
@@ -332,7 +334,8 @@
                 },
                 complete: function () {
                     $("#loader").hide();
-                    location.href = '/Users/Users/';
+                    //location.href = '/Users/Users/';
+                    //window.location.href = '/Users/Users/';
                      
                 },
                 error: function (error) {

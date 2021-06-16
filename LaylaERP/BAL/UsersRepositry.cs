@@ -60,7 +60,27 @@ namespace LaylaERP.BAL
                     uobj.ID = Convert.ToInt32(ds1.Tables[0].Rows[i]["ID"].ToString());
                     uobj.user_login = ds1.Tables[0].Rows[i]["user_login"].ToString();
                     result = ds1.Tables[0].Rows[i]["meta_value"].ToString();
-                    uobj.my = result;
+
+                    if (result == "Mod_Squad") {
+                        result = "Mod Squad";
+                    } else if (result == "SEO_Editor") {
+                        result = "SEO Editor";
+                    } else if (result == "SEO_Manager") {
+                        result = "SEO Manager";
+                    } else if (result == "Shop_Manager") {
+                        result = "Shop Manager";
+                    } else if (result == "Supply_Chain_Manager") {
+                        result = "Supply Chain Manager";
+                    } else if (result == "administrator") {
+                        result = "Administrator";
+                    } else if (result == "author") {
+                        result = "Author";
+                    } else if (result == "editor") {
+                        result = "Editor";
+                    } else {                       
+                        uobj.my = result;
+                    } 
+       
                     uobj.user_email = ds1.Tables[0].Rows[i]["user_email"].ToString();
                     if ((ds1.Tables[0].Rows[i]["user_status"].ToString() == "0"))
                     { uobj.user_status = "Active"; }

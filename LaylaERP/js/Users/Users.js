@@ -28,7 +28,10 @@
             { 'data': 'user_login', 'sWidth': "18%" },
             { 'data': 'user_email', 'sWidth': "35%" },
             { 'data': 'user_status', 'sWidth': "10%" },
-            { 'data': 'my', 'sWidth': "25%" },
+            {
+                'data': 'my', 'sWidth': "25%", 
+
+            },
             {
                 'data': 'ID', sWidth: "8%",
                 'render': function (ID, type, full, meta) {
@@ -94,7 +97,7 @@
 
 function DatagridLoade() {
     //
-    var myvalue = k;
+    //var myvalue = k;
     //var obj = { rolepass: j };
     //alert(JSON.stringify(obj));
     var id;

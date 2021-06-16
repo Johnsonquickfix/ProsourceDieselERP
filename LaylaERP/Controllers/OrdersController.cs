@@ -224,10 +224,10 @@
                     urid = model.status;
                 string searchid = model.Search;
                 DataTable dt = OrderRepository.OrderList(urid, searchid, model.PageNo, model.PageSize, out TotalRecord, model.SortCol, model.SortDir);
-                result = JsonConvert.SerializeObject(dt);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
             }
             catch { }
-            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, aaData = result }, 0);
         }
         [HttpPost]
         public JsonResult ChangeOrderStatus(OrderPostStatusModel model)

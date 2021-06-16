@@ -230,8 +230,8 @@
                     else productsModel.is_free = false;
 
                     /// 
-                    if (product_id == 611172) productsModel.group_id = 78676;
-                    else if (product_id == 118) productsModel.group_id = 632713;
+                    if (productsModel.product_id == 611172) productsModel.group_id = 78676;
+                    else if (productsModel.product_id == 118) productsModel.group_id = 632713;
                     else productsModel.group_id = 0;
 
                     _list.Add(productsModel);
@@ -433,8 +433,8 @@
                 {
                     new MySqlParameter("@order_id", OrderID)
                 };
-                string strSQl = "select os.order_id,DATE_FORMAT(os.date_created,'%d/%m/%Y') date_created,os.customer_id,CONCAT(u.User_Login, ' [ ', u.user_email, ']') as customer_name,os.status,"
-                            + " max(case meta_key when '_payment_method_title' then meta_value else '' end) payment_method,"
+                string strSQl = "select os.order_id,DATE_FORMAT(os.date_created,'%d/%m/%Y') date_created,os.customer_id,CONCAT(COALESCE(u.User_Login,''), ' [ ', COALESCE(u.user_email,''), ']') as customer_name,os.status,"
+                            + " os.shipping_total,max(case meta_key when '_payment_method_title' then meta_value else '' end) payment_method,"
                             + " max(case meta_key when '_customer_ip_address' then meta_value else '' end) ip_address,max(case meta_key when '_created_via' then meta_value else '' end) created_via,"
                             + " max(case meta_key when '_billing_first_name' then meta_value else '' end) b_first_name,max(case meta_key when '_billing_last_name' then meta_value else '' end) b_last_name,"
                             + " max(case meta_key when '_billing_address_1' then meta_value else '' end) b_address_1,max(case meta_key when '_billing_address_2' then meta_value else '' end) b_address_2,"
@@ -466,61 +466,74 @@
                 {
                     new MySqlParameter("order_id", OrderID)
                 };
-                string strSQl = "select oi.order_id,oi.order_item_name,"
+                string strSQl = "select oi.order_id,oi.order_item_name,oi.order_item_type,"
                             + " max(case meta_key when '_product_id' then meta_value else '' end) p_id,max(case meta_key when '_variation_id' then meta_value else '' end) v_id,"
                             + " max(case meta_key when '_qty' then meta_value else '' end) qty,max(case meta_key when '_line_subtotal' then meta_value else '' end) line_subtotal,"
                             + " max(case meta_key when '_line_total' then meta_value else '' end) line_total,max(case meta_key when '_line_tax' then meta_value else '' end) tax"
                             + " from wp_woocommerce_order_items oi"
                             + " inner join wp_woocommerce_order_itemmeta oim on oim.order_item_id = oi.order_item_id"
-                            + " where oi.order_item_type = 'line_item' and oi.order_id = @order_id"
-                            + " group by oi.order_id,oi.order_item_name ";
+                            + " where oi.order_id = @order_id"
+                            + " group by oi.order_id,oi.order_item_name,oi.order_item_type ";
                 MySqlDataReader sdr = SQLHelper.ExecuteReader(strSQl, parameters);
                 while (sdr.Read())
                 {
                     productsModel = new OrderProductsModel();
-                    if (sdr["p_id"] != DBNull.Value)
-                        productsModel.product_id = Convert.ToInt64(sdr["p_id"]);
+                    if (sdr["order_item_type"] != DBNull.Value)
+                        productsModel.product_type = sdr["order_item_type"].ToString().Trim();
                     else
-                        productsModel.product_id = 0;
-                    if (sdr["v_id"] != DBNull.Value)
-                        productsModel.variation_id = Convert.ToInt64(sdr["v_id"]);
-                    else
-                        productsModel.variation_id = 0;
+                        productsModel.product_type = "line_item";
                     if (sdr["order_item_name"] != DBNull.Value)
                         productsModel.product_name = sdr["order_item_name"].ToString();
                     else
                         productsModel.product_name = string.Empty;
-                    //if (sdr["price"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["price"].ToString().Trim()))
-                    //    productsModel.price = decimal.Parse(sdr["price"].ToString());
-                    //else
-                    //    productsModel.price = 0;
-                    if (sdr["qty"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["qty"].ToString().Trim()))
-                        productsModel.quantity = decimal.Parse(sdr["qty"].ToString().Trim());
-                    else
-                        productsModel.quantity = 0;
-                    if (sdr["line_subtotal"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["line_subtotal"].ToString().Trim()))
-                        productsModel.sale_price = decimal.Parse(sdr["line_subtotal"].ToString().Trim());
-                    else
-                        productsModel.sale_price = productsModel.price;
-                    productsModel.total = productsModel.sale_price;
-                    productsModel.sale_price = productsModel.sale_price / productsModel.quantity;
 
-                    if (sdr["tax"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["tax"].ToString().Trim()))
-                        productsModel.tax_amount = decimal.Parse(sdr["tax"].ToString().Trim());
-                    else
-                        productsModel.tax_amount = productsModel.price;
+                    if (productsModel.product_type == "line_item")
+                    {
+                        if (sdr["p_id"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["p_id"].ToString().Trim()))
+                            productsModel.product_id = Convert.ToInt64(sdr["p_id"]);
+                        else
+                            productsModel.product_id = 0;
+                        if (sdr["v_id"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["v_id"].ToString().Trim()))
+                            productsModel.variation_id = Convert.ToInt64(sdr["v_id"]);
+                        else
+                            productsModel.variation_id = 0;
+
+                        //if (sdr["price"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["price"].ToString().Trim()))
+                        //    productsModel.price = decimal.Parse(sdr["price"].ToString());
+                        //else
+                        //    productsModel.price = 0;
+                        if (sdr["qty"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["qty"].ToString().Trim()))
+                            productsModel.quantity = decimal.Parse(sdr["qty"].ToString().Trim());
+                        else
+                            productsModel.quantity = 0;
+                        if (sdr["line_subtotal"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["line_subtotal"].ToString().Trim()))
+                            productsModel.sale_price = decimal.Parse(sdr["line_subtotal"].ToString().Trim());
+                        else
+                            productsModel.sale_price = productsModel.price;
+                        productsModel.total = productsModel.sale_price;
+                        productsModel.sale_price = productsModel.sale_price / productsModel.quantity;
+                        if (sdr["line_total"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["line_total"].ToString().Trim()))
+                            productsModel.discount = decimal.Parse(sdr["line_total"].ToString().Trim());
+                        else
+                            productsModel.discount = 0;
+                        productsModel.discount = productsModel.discount <= productsModel.total ? productsModel.total - productsModel.discount : 0;
+
+                        if (sdr["tax"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["tax"].ToString().Trim()))
+                            productsModel.tax_amount = decimal.Parse(sdr["tax"].ToString().Trim());
+                        else
+                            productsModel.tax_amount = productsModel.price;
 
 
-                    /// free item
-                    if (productsModel.product_id == 78676) { productsModel.is_free = true; productsModel.quantity = 2; }
-                    else if (productsModel.product_id == 632713) { productsModel.is_free = true; productsModel.quantity = 2; }
-                    else productsModel.is_free = false;
+                        /// free item
+                        if (productsModel.product_id == 78676) { productsModel.is_free = true; productsModel.quantity = 2; }
+                        else if (productsModel.product_id == 632713) { productsModel.is_free = true; productsModel.quantity = 2; }
+                        else productsModel.is_free = false;
 
-                    /// 
-                    if (productsModel.product_id == 611172) productsModel.group_id = 78676;
-                    else if (productsModel.product_id == 118) productsModel.group_id = 632713;
-                    else productsModel.group_id = 0;
-
+                        /// 
+                        if (productsModel.product_id == 611172) productsModel.group_id = 78676;
+                        else if (productsModel.product_id == 118) productsModel.group_id = 632713;
+                        else productsModel.group_id = 0;
+                    }
                     _list.Add(productsModel);
                 }
             }
@@ -554,14 +567,18 @@
             try
             {
                 string strWhr = string.Empty;
-
-                string strSql = "SELECT order_id, order_id as chkorder,num_items_sold,Cast(total_sales As DECIMAL(10, 2)) as total_sales, wp_wc_order_stats.customer_id as customer_id, status,date_created,MAX( case when meta_key = '_billing_first_name' THEN meta_value ELSE '' END) FirstName,MAX( case when meta_key = '_billing_last_name' THEN meta_value ELSE '' END) LastName FROM wp_wc_order_stats left join wp_postmeta on wp_wc_order_stats.order_id = wp_postmeta.post_id WHERE wp_postmeta.meta_key in ('_billing_first_name', '_billing_last_name') GROUP BY order_id,num_items_sold, total_sales, wp_wc_order_stats.customer_id, status,date_created"
-                            + " order by " + SortCol + " " + SortDir + " limit " + (pageno * pagesize).ToString() + ", " + pagesize + "";
                 if (!string.IsNullOrEmpty(searchid))
                 {
-                    strWhr += " and (order_id like '%" + searchid + "%' OR num_items_sold='%" + searchid + "%' OR total_sales='%" + searchid + "%' OR wp_wc_order_stats.customer_id='%" + searchid + "%' OR status like '%" + searchid + "%' OR date_created like '%" + searchid + "%')";
+                    strWhr += " and (os.order_id like '%" + searchid + "%' OR os.num_items_sold='%" + searchid + "%' OR os.total_sales='%" + searchid + "%' OR os.customer_id='%" + searchid + "%' OR os.status like '%" + searchid + "%' OR os.date_created like '%" + searchid + "%')";
                 }
-                strSql += "; SELECT ceil(Count(order_id)/" + pagesize.ToString() + ") TotalPage,Count(order_id) TotalRecord from wp_wc_order_stats WHERE 1 = 1 " + strWhr.ToString();
+
+                string strSql = "SELECT os.order_id, os.order_id as chkorder,os.num_items_sold,Cast(os.total_sales As DECIMAL(10, 2)) as total_sales, os.customer_id as customer_id,os.status,DATE_FORMAT(os.date_created, '%M %d %Y') date_created,"
+                            + " MAX(case meta_key when '_billing_first_name' THEN meta_value ELSE '' END) FirstName,MAX(case meta_key when '_billing_last_name' THEN meta_value ELSE '' END) LastName"
+                            + " FROM wp_wc_order_stats os left join wp_postmeta pm on os.order_id = pm.post_id WHERE pm.meta_key in ('_billing_first_name', '_billing_last_name')" + strWhr  
+                            + " GROUP BY os.order_id,os.num_items_sold,os.total_sales,os.customer_id,os.status,os.date_created"
+                            + " order by " + SortCol + " " + SortDir + " limit " + (pageno * pagesize).ToString() + ", " + pagesize + "";
+               
+                strSql += "; SELECT ceil(Count(os.order_id)/" + pagesize.ToString() + ") TotalPage,Count(os.order_id) TotalRecord from wp_wc_order_stats os WHERE 1 = 1 " + strWhr.ToString();
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
                 if (ds.Tables[1].Rows.Count > 0)

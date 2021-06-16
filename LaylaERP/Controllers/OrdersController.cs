@@ -213,6 +213,18 @@
             return Json(new { status = status, message = JSONresult }, 0);
         }
         [HttpPost]
+        public JsonResult GetOrdersCount(SearchModel model)
+        {
+            string result = string.Empty;
+            try
+            {
+                DataTable dt = OrderRepository.OrderCounts();
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
+        [HttpPost]
         public JsonResult GetOrderList(OrderPostStatusModel model)
         {
             string result = string.Empty;
@@ -224,10 +236,10 @@
                     urid = model.status;
                 string searchid = model.Search;
                 DataTable dt = OrderRepository.OrderList(urid, searchid, model.PageNo, model.PageSize, out TotalRecord, model.SortCol, model.SortDir);
-                result = JsonConvert.SerializeObject(dt);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
             }
             catch { }
-            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, aaData = result }, 0);
         }
         [HttpPost]
         public JsonResult ChangeOrderStatus(OrderPostStatusModel model)

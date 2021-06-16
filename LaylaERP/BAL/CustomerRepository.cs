@@ -170,7 +170,7 @@ namespace LaylaERP.Models
             {
                 string strWhr = string.Empty;
 
-                string strSql = "SELECT ur.id,null User_Image,user_nicename, user_registered, user_status, if(user_status=0,'Active','InActive') as status,user_email,umph.meta_value "
+                string strSql = "SELECT ur.id,null User_Image,user_nicename, DATE_FORMAT(user_registered, '%M %d %Y') user_registered, user_status, if(user_status=0,'Active','InActive') as status,user_email,umph.meta_value "
                             + " from wp_users ur INNER JOIN wp_usermeta um on um.meta_key='wp_capabilities' And um.user_id = ur.ID And um.meta_value LIKE '%customer%'"
                             + " LEFT OUTER JOIN wp_usermeta umph on umph.meta_key='billing_phone' And umph.user_id = ur.ID WHERE 1 = 1";
                 if (!string.IsNullOrEmpty(searchid)) {

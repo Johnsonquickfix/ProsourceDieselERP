@@ -110,14 +110,23 @@ function CustomerAddress() {
 }
 ///Get New Order No
 function GetTaxRate() {
-    var opt = { strValue1: $("#txtshipzipcode").val(), strValue2: $("#txtshipcity").val(), strValue3: $("#ddlshipcountry").val() };
-    if (opt.strValue1.length <= 0 || opt.strValue2.length <= 0 || opt.strValue3.length <= 0) { $('#hfTaxRate').val(0); return false; }
-    $.ajax({
-        type: "POST", url: '/Orders/GetTaxRate', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
-        success: function (result) { $('#hfTaxRate').val(result.message); calcRowTaxAmount(result.message); },
-        error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
-        async: false
-    });
+    ///Tax Calculate for state
+    var tax_states = ["CA", "CO", "CT", "IL", "IN", "MI", "MS", "NC", "NE", "NJ", "NM", "PA", "TN", "TX", "WA", "AR", "FL", "GA", "IA", "MO", "OH", "SC", "WI"];
+    var s_state = $("#ddlshipstate").val();
+    if (tax_states.indexOf(s_state) > 0) {
+        var opt = { strValue1: $("#txtshipzipcode").val(), strValue2: $("#txtshipcity").val(), strValue3: $("#ddlshipcountry").val() };
+        if (opt.strValue1.length <= 0 || opt.strValue2.length <= 0 || opt.strValue3.length <= 0) { $('#hfTaxRate').val(0); return false; }
+        $.ajax({
+            type: "POST", url: '/Orders/GetTaxRate', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
+            success: function (result) { $('#hfTaxRate').val(result.message); calcRowTaxAmount(result.message); },
+            error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
+            async: false
+        });
+    }
+    else {
+        $('#hfTaxRate').val(0.00); calcRowTaxAmount(0.00);
+    }
+
 }
 /// Get City By Pin code
 function GetCityByZip(zipcode) {
@@ -138,22 +147,22 @@ function GetCityByZip(zipcode) {
 function getOrderInfo() {
     var oid = parseInt($('#hfOrderNo').val()) || 0;
     if (oid > 0) {
-        $('.page-heading').text('Edit order'); $('#lblOrderNo').text('Order #' + oid + ' detail '); $('#hfOrderNo').val(oid);
-
+        $('.page-heading').text('Edit order ').append('<a class="btn btn-danger" href="/Orders/OrdersHistory">Back to List</a>'); $('#lblOrderNo').text('Order #' + oid + ' detail '); $('#hfOrderNo').val(oid);
+        $('#btnCheckout').remove(); $('.footer-finalbutton').append('<a class="btn btn-danger" href="/Orders/OrdersHistory">Back to List</a>');
         var opt = { strValue1: oid };
         $.ajax({
             type: "POST", url: '/Orders/GetOrderInfo', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
             success: function (result) {
-                var data = JSON.parse(result); console.log(data);
+                var data = JSON.parse(result);
                 if (data.length > 0) {
                     $('.payment-history').text('Payment via ' + data[0].payment_method + ' ' + data[0].created_via + '. Customer IP: ' + data[0].ip_address);
-                    $('#txtLogDate').val(data[0].date_created); 
+                    $('#txtLogDate').val(data[0].date_created);
                     $('#ddlStatus').val(data[0].status.trim()).trigger('change'); $('#ddlUser').prop("disabled", true);
                     $("#ddlUser").empty().append('<option value="' + data[0].customer_id + '" selected>' + data[0].customer_name + '</option>');
                     ///billing_Details
                     $('#txtbillfirstname').val(data[0].b_first_name); $('#txtbilllastname').val(data[0].b_last_name); $('#txtbilladdress1').val(data[0].b_address_1); $('#txtbilladdress2').val(data[0].b_address_2);
                     $('#txtbillzipcode').val(data[0].b_postcode); $('#txtbillcity').val(data[0].b_city); $('#txtbillemail').val(data[0].b_email); $('#txtbillphone').val(data[0].b_phone);
-                    $('#ddlbillcountry').val(data[0].b_country.trim()).trigger('change'); $('#ddlbillstate').val(data[0].b_state).trigger('change'); 
+                    $('#ddlbillcountry').val(data[0].b_country.trim()).trigger('change'); $('#ddlbillstate').val(data[0].b_state).trigger('change');
                     ///shipping_Details
                     $('#txtshipfirstname').val(data[0].s_first_name); $('#txtshiplastname').val(data[0].s_last_name); $('#txtshipaddress1').val(data[0].s_address_1); $('#txtshipaddress2').val(data[0].s_address_2);
                     $('#txtshipzipcode').val(data[0].s_postcode); $('#txtshipcity').val(data[0].s_city);
@@ -162,12 +171,12 @@ function getOrderInfo() {
                     //bind Product
                     getOrderItemList(oid);
                     $('.billinfo').prop("disabled", true);
+
                 }
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
             async: false
         });
-        
     }
     else {
         $('.page-heading').text('Add New Order');
@@ -178,13 +187,27 @@ function getOrderItemList(oid) {
     $.ajax({
         type: "POST", url: '/Orders/GetOrderProductList', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
         success: function (data) {
-            var itemsDetailsxml = [];
+            var itemsDetailsxml = []; var layoutHtml = '';
             for (var i = 0; i < data.length; i++) {
-                itemsDetailsxml.push({
-                    "PKey": data[i].product_id + '_' + data[i].variation_id, "product_id": data[i].product_id, "variation_id": data[i].variation_id, "product_name": data[i].product_name, "quantity": data[i].quantity, "sale_rate": data[i].sale_price, "total": data[i].total, "discount": 0, "tax_amount": data[i].tax_amount, "shipping_amount": 0, "is_free": data[i].is_free, "group_id": data[i].group_id
-                });
+                if (data[i].product_type == 'line_item') {
+                    itemsDetailsxml.push({
+                        "PKey": data[i].product_id + '_' + data[i].variation_id, "product_id": data[i].product_id, "variation_id": data[i].variation_id, "product_name": data[i].product_name, "quantity": data[i].quantity, "sale_rate": data[i].sale_price, "total": data[i].total, "discount": data[i].discount, "tax_amount": data[i].tax_amount, "shipping_amount": 0, "is_free": data[i].is_free, "group_id": data[i].group_id
+                    });
+                }
+                else if (data[i].product_type == 'coupon') {
+                    layoutHtml += '<li id="li_' + data[i].product_name + '" data-coupon= "' + data[i].product_name + '" data-couponamt= "0" data-disctype= "">';
+                    layoutHtml += '<a href="javascript:void(0);">';
+                    layoutHtml += '<i class="fa fa-gift"></i>';
+                    layoutHtml += '<span>' + data[i].product_name + '</span>';
+                    layoutHtml += '<button type="button" class="btn btn-box-tool pull-right billinfo" onclick="removeCouponInList(\'' + data[i].product_name + '\');">';
+                    layoutHtml += '<i class="fa fa-times"></i>';
+                    layoutHtml += '</button>';
+                    layoutHtml += '</a>';
+                    layoutHtml += '</li>';
+                }
             }
             bindItemListDataTable(itemsDetailsxml);
+            $('#billCoupon').append(layoutHtml);
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
         async: false
@@ -203,7 +226,7 @@ function CouponModal() {
     myHtml += '<h4 class="modal-title" id="myModalLabel">Apply Coupon</h4>';
     myHtml += '</div>';
     myHtml += '<div class="modal-body">Enter a coupon code to apply. Discounts are applied to line totals, before taxes.';
-    myHtml += '<input class="form-control number" type="text" id="txt_Coupon" name="txt_Coupon" placeholder="Coupon Code" maxlength="25">';
+    myHtml += '<input class="form-control" type="text" id="txt_Coupon" name="txt_Coupon" placeholder="Coupon Code" maxlength="25">';
     myHtml += '</div > ';
     myHtml += '<div class="modal-footer">';
     myHtml += '<button type="button" class="btn btn-primary" id="btnCouponAdd">Add</button>';
@@ -301,75 +324,6 @@ function removeCouponInList(id) {
         });
 }
 
-///Add Modal Product
-function ProductModal() {
-    var myHtml = '';
-    //header
-    myHtml += '<div class="modal-dialog">';
-    myHtml += '<div class="modal-content">';
-    myHtml += '<div class="modal-header">';
-    myHtml += '<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button>';
-    myHtml += '<h4 class="modal-title" id="myModalLabel">Add products</h4>';
-    myHtml += '</div>';
-    myHtml += '<div class="modal-body">';
-    myHtml += '<table class="stable" width="100%"><thead><tr><th>Product</th><th>Quantity</th></tr >';
-    myHtml += '<tbody></tbody><tfoot>';
-    myHtml += '<tr>';
-    myHtml += '<td style="border-bottom: 1px solid #EEE;width: 80%;">';
-    myHtml += '<select class="form-control select2 ddlTempProductFooter" id="ddlTempProduct" placeholder="Select Products" style="width: 95%;"></select>';
-    myHtml += '</td> ';
-    myHtml += '<td style="text-align:right; border-bottom: 1px solid #EEE;width: 20%;">';
-    myHtml += '<input class="number" type="number" id="txt_TempQty_1" value="1" name="txt_TempQty" placeholder="Qty">';
-    myHtml += '</td>';
-    myHtml += '</tr></tfoot></table>';
-    myHtml += '</div > ';
-    myHtml += '<div class="modal-footer">';
-    myHtml += '<button type="button" class="btn btn-primary" id="btnAddItemFinal">Add</button>';
-    myHtml += '</div>';
-    myHtml += '</div>';
-    myHtml += '</div>';
-    $("#billModal").empty().html(myHtml);
-
-    $('.ddlTempProductFooter').select2({
-        allowClear: true, minimumInputLength: 1, placeholder: "Search Product",
-        ajax: {
-            url: '/Orders/GetProductList', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
-            data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
-            processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.post_title, name: item.post_title, id: item.r_id } }) }; },
-            error: function (xhr, status, err) { }, cache: true
-        }
-    });
-    $("#billModal").modal({ backdrop: 'static' });
-}
-///Add Modal Product selected add row
-function ProductModalItemRow() {
-    var myHtml = '';
-    var id = $('.ddlTempProductFooter').val(), text = $(".ddlTempProductFooter option:selected").text();
-    if (id == null) return false;
-    myHtml += '<tr>';
-    myHtml += '<td style="border-bottom: 1px solid #EEE;width: 80%;">';
-    myHtml += '<select class="form-control select2 ddlTempProduct" id="ddlTempProduct_2" placeholder="Select Products" style="width: 95%;">';
-    myHtml += '<option value="' + id + '">' + text + '</option>';
-    myHtml += '</select > ';
-    myHtml += '</td> ';
-    myHtml += '<td style="text-align:right; border-bottom: 1px solid #EEE;width: 20%;">';
-    myHtml += '<input class="form-control number" type="number" id="txt_TempQty_1" value="1" name="txt_TempQty" placeholder="Qty">';
-    myHtml += '</td>';
-    myHtml += '</tr>';
-    $('.ddlTempProductFooter').val('').trigger('change');
-    $('#billModal tbody').append(myHtml);
-
-    $('.ddlTempProduct').select2({
-        allowClear: true, minimumInputLength: 1, placeholder: "Search Product",
-        ajax: {
-            url: '/Orders/GetProductList', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
-            data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
-            processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.post_title, name: item.post_title, id: item.r_id } }) }; },
-            error: function (xhr, status, err) { }, cache: true
-        }
-    });
-}
-
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Shipping Charges ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function getItemShippingCharge(options) {
     var defaultTabOptions = { strValue1: 0, strValue2: 0 };
@@ -422,24 +376,24 @@ function bindItemListDataTable(data) {
                     layoutHtml += '<td>' + data[i].product_name + '</td>';
                     layoutHtml += '<td class="text-right">' + data[i].sale_rate + '</td>';
                     if (data[i].is_free)
-                        layoutHtml += '<td><input disabled class="form-control billinfo number rowCalulate" type="number" id="txt_ItemQty_' + data[i].PKey + '" value="' + data[i].quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
+                        layoutHtml += '<td><input min="1" autocomplete="off" disabled class="form-control billinfo number rowCalulate" type="number" id="txt_ItemQty_' + data[i].PKey + '" value="' + data[i].quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
                     else
-                        layoutHtml += '<td><input class="form-control billinfo number rowCalulate" type="number" id="txt_ItemQty_' + data[i].PKey + '" value="' + data[i].quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
+                        layoutHtml += '<td><input min="1" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_ItemQty_' + data[i].PKey + '" value="' + data[i].quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
                     layoutHtml += '<td class="TotalAmount text-right" data-salerate="' + data[i].sale_rate + '" data-discount="' + data[i].discount + '" data-amount="' + data[i].total + '" data-taxamount="' + data[i].tax_amount + '" data-shippingamt="' + data[i].shipping_amount + '">' + data[i].total + '</td>';
                     layoutHtml += '<td class="text-right RowDiscount" data-disctype="-" data-couponamt="0">' + data[i].discount + '</td>';
                     layoutHtml += '<td class="text-right RowTax">' + data[i].tax_amount + '</td>';
                     layoutHtml += '</tr>';
                 }
                 else {
-                    var zQty = parseFloat($('#txt_ItemQty_' + data[i].rd_id).val()) || 0.00 +
-                        $('#txt_ItemQty_' + data[i].rd_id).val((parseFloat($('#txt_ItemQty_' + data[i].PKey).val()) + data[i].quantity).toFixed(2));
+                    var zQty = parseFloat($('#txt_ItemQty_' + data[i].rd_id).val()) || 0.00;
+                    $('#txt_ItemQty_' + data[i].rd_id).val((parseFloat($('#txt_ItemQty_' + data[i].PKey).val()) + data[i].quantity).toFixed(2));
                     calcRowAmount($('#txt_ItemQty_' + data[i].rd_id), $($('#txt_ItemQty_' + data[i].PKey)).parents('tr')[0]);
                 }
             }
         }
         $('#tblAddItemFinal tbody').append(layoutHtml);
         //$("#txt_ItemSearch").val('');
-        //$('.number').numeric({ allowThouSep: false, maxDecimalPlaces: 2 });
+        //$('.number').numeric({ min: 2, allowMinus: false, allowThouSep: false, maxDecimalPlaces: 2 });
         // Bind calcLineAmount function to each textbox and send parent TR
         //$("#divAddItemFinal").find(".rowCalulate").blur(function () { calcRowAmount(this, $(this).parents('tr')[0]); });
         $("#divAddItemFinal").find(".rowCalulate").change(function () { calcRowAmount(this, $(this).parents('tr')[0]); });
@@ -497,10 +451,15 @@ function calcRowAmount(objControl, objRow) // objRow is row object
     var zMRP = 0.00, zQty = 0.00, zDiscType = 'fixed_product', zCouponAmt = 0.00, zDisAmt = 0.00, tax_rate = 0.00, zTotalTax = 0.00;
 
     zMRP = parseFloat($(objRow).find(".TotalAmount").data("salerate")) || 0.00;
-    zQty = parseFloat($(objRow).find("[name=txt_ItemQty]").val());
+    zQty = parseFloat($(objRow).find("[name=txt_ItemQty]").val()) || 0.00;
     //free item Qty
-    //var zFreeQty = parseFloat($('#txt_ItemQty_' + $(objRow).data("gid") + '_0').val()) || 0.00;
-    $('#txt_ItemQty_' + $(objRow).data("gid") + '_0').val(zQty * 2);
+    var zFreeQty = 0.00, gid = parseInt($(objRow).data("gid")) || 0;
+    $("#tblAddItemFinal > tbody  > tr").each(function () {
+        if ($(this).data('gid') == gid && $(this).data('pid') != gid) {
+            zFreeQty = parseFloat($(this).find("[name=txt_ItemQty]").val()) || 0.00;
+        }
+    });
+    $('#txt_ItemQty_' + $(objRow).data("gid") + '_0').val(zFreeQty * 2);
 
     /// Gross Amount
     var zGrossAmount = zMRP * zQty;
@@ -533,7 +492,7 @@ function calcFinalTotals() {
         zTotalTax = zTotalTax + parseFloat($(this).find(".TotalAmount").data("taxamount"));
         zShippingAmt = zShippingAmt + parseFloat($(this).find(".TotalAmount").data("shippingamt"));
     });
-    $("#totalQty").text(zQty.toFixed(2));
+    $("#totalQty").text(zQty.toFixed(0));
     $("#SubTotal").text(zGAmt.toFixed(2));
     $("#discountTotal").text(zTDiscount.toFixed(2));
     $("#salesTaxTotal").text(zTotalTax.toFixed(2));
@@ -601,11 +560,11 @@ function createOtherItemsList() {
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Save Details ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function saveCO() {
-    $('#btnCheckout').prop("disabled", true); $('.billinfo').prop("disabled", true); $('#btnCheckout').text("Waiting...");
+    
     var oid = parseInt($('#hfOrderNo').val()) || 0;
     var cid = parseInt($('#ddlUser').val()) || 0;
     //if (oid <= 0) { swal('Alert!', 'Please Select Customer.', "info").then((result) => { return false; }); }
-    if (cid <= 0) { swal('Alert!', 'Please Select Customer.', "info").then((result) => { return false; }); }
+    if (cid <= 0) { swal('Alert!', 'Please Select Customer.', "error").then((result) => { $('#ddlUser').select2('focus'); return false;}); return false; }
     var postMeta = createPostMeta(); var postStatus = createPostStatus(); var otherItems = createOtherItemsList();
     var itemsDetails = [];
     $('#tblAddItemFinal > tbody  > tr').each(function (index, tr) {
@@ -621,9 +580,10 @@ function saveCO() {
             "PKey": pKey, "order_id": oid, "customer_id": cid, "product_id": $(this).data('pid'), "variation_id": $(this).data('vid'), "product_name": $(this).data('pname'), "quantity": qty, "sale_rate": rate, "total": grossAmount, "discount": discountAmount, "tax_amount": taxAmount, "shipping_amount": shippinAmount, "shipping_tax_amount": 0
         });
     });
-    if (itemsDetails.length <= 0) { swal('Alert!', 'Please add product.', "info").then((result) => { return false; }); }
+    if (itemsDetails.length <= 0) { swal('Alert!', 'Please add product.', "error").then((result) => { $('#ddlProduct').select2('open'); return false;}); return false;}
     var obj = { OrderPostMeta: postMeta, OrderProducts: itemsDetails, OrderPostStatus: postStatus, OrderOtherItems: otherItems };
 
+    $('#btnCheckout').prop("disabled", true); $('.billinfo').prop("disabled", true); $('#btnCheckout').text("Waiting...");
     //console.log(obj);
     //$('#btnPlaceOrder').prop("disabled", false); return false;
     $.ajax({
@@ -890,7 +850,8 @@ function SendPaypalInvoice(access_token, sendURL) {
         },
         success: function (senddata) {
             console.log(senddata);
-            $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true); setTimeout(function () { swal('Order received!', 'Thank you. Your invoice has been send on your email for payment.', "success"); }, 50);
+            $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true);
+            setTimeout(function () { swal('Order received!', 'Thank you. Your invoice has been send on your email for payment.', "success").then((result) => { window.location.href = window.location.href; }); }, 50);
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
             $('#ddlPaymentMethod').prop("disabled", true); $('#btnPlaceOrder').addClass('hidden'); $('#btnResendInv').removeClass('hidden');

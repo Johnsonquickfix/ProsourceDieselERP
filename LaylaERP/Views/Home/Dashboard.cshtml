@@ -236,13 +236,13 @@
             <div class="box-body">
                 <form action="#" method="post">
                     <div class="form-group">
-                        <input type="email" class="form-control" name="emailto" placeholder="Email to:">
+                        <input type="email" class="form-control" name="emailto" id="emailto" placeholder="Email to:">
                     </div>
                     <div class="form-group">
-                        <input type="text" class="form-control" name="subject" placeholder="Subject">
+                        <input type="text" class="form-control" name="subject" id="subject" placeholder="Subject">
                     </div>
                     <div>
-                        <textarea class="textarea" placeholder="Message"
+                        <textarea id="content" class="textarea" placeholder="Message"
                                   style="width: 100%; height: 125px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"></textarea>
                     </div>
                 </form>
@@ -390,3 +390,52 @@
     </section>
     <!-- right col -->
 </div>
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script>
+    $(document).ready(function(){
+
+        $('#sendEmail').click(function(){
+            debugger;
+            var emails = $('#emailto').val();
+            var subject = $('#subject').val();
+            var content = $('#content').val();
+            var isVal = 1;
+
+            if (emails == '' || emails == undefined) {
+                alert("Please enter EmailID");
+                isVal = 0;
+                return false;
+            }
+            if (content == '' || content == undefined) {
+                alert("Please enter EmailID");
+                isVal = 0;
+                return false;
+            }
+            if (isVal == 1) {
+
+                var obj = { emails: emails, subject: subject, content:content }
+                $.ajax({
+                    url: '/AccountAPI/QuicksendEmail', dataType: 'json', type: "Post",
+                    beforeSend: function () {
+                        //$("#loading-div-background").show();
+                    },
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(obj),
+                    success: function (data) {
+                        //$("#loading-div-background").hide();
+
+                        swal('success!', "Message send Successfully", "success");
+                        $('#emailto').val('');
+                        $('#subject').val('');
+                        $('#content').empty();
+
+                    },
+                    error: function (errormessage) {
+                        //$("#loading-div-background").hide();
+                        swal('Error!', "Something went wrong .", "error");
+                    }
+                });
+            }
+        })
+    });
+</script>

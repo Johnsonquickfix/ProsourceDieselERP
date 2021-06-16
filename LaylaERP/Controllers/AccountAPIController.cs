@@ -8,6 +8,9 @@
     using System.Linq;
     using System.Web.Mvc;
     using System.Data;
+    using System.Net.Mail;
+    using System.Configuration;
+    using System.Text.RegularExpressions;
 
     public class AccountAPIController : Controller
     {
@@ -211,6 +214,61 @@
                 return Json(new { message = ex.Message }, 0);
             }
             return Json(new { message = strmsg }, 0);
+        }
+        [HttpPost]
+        public ActionResult QuicksendEmail(string emails, string subject, string content)
+        {
+            DataSet ds = Users.GetEmailCredentials();
+
+            List<string> lstEmail = emails.Split(',').ToList();
+
+            using (MailMessage mailMessage = new MailMessage())
+
+            {
+                mailMessage.From = new MailAddress(ds.Tables[0].Rows[0]["SenderEmailID"].ToString(), "Lyra ERP");
+
+                mailMessage.Subject = subject;
+
+                mailMessage.Body = content;
+
+                mailMessage.IsBodyHtml = true;
+
+
+                for (int i = 0; i < lstEmail.Count; i++)
+                {
+                    bool isEmail = Regex.IsMatch(lstEmail[i], @"\A(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)\Z", RegexOptions.IgnoreCase);
+                    if (isEmail)
+                        mailMessage.To.Add(lstEmail[i]);
+                }
+
+
+                SmtpClient smtp = new SmtpClient();
+
+                //smtp.Host = ConfigurationManager.AppSettings["Host"];
+                smtp.Host = ds.Tables[0].Rows[0]["SMTPServerName"].ToString();
+
+                smtp.EnableSsl = Convert.ToBoolean(ConfigurationManager.AppSettings["EnableSsl"]);
+
+                System.Net.NetworkCredential NetworkCred = new System.Net.NetworkCredential();
+
+                //NetworkCred.UserName = ConfigurationManager.AppSettings["UserName"]; //reading from web.config  
+
+                //NetworkCred.Password = ConfigurationManager.AppSettings["Password"]; //reading from web.config  
+                NetworkCred.UserName = ds.Tables[0].Rows[0]["SenderEmailID"].ToString();
+                NetworkCred.Password = ds.Tables[0].Rows[0]["SenderEmailPwd"].ToString();
+
+                smtp.UseDefaultCredentials = true;
+
+                smtp.Credentials = NetworkCred;
+
+                //smtp.Port = int.Parse(ConfigurationManager.AppSettings["Port"]); //reading from web.config  
+
+                smtp.Port = Convert.ToInt32(ds.Tables[0].Rows[0]["SMTPServerPortNo"]);
+
+                //smtp.Send(mailMessage);
+
+            }
+            return Json(true, 0);
         }
     }
 }

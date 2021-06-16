@@ -484,6 +484,7 @@
     <Content Include="js\Orders\NewOrder.js" />
     <Content Include="js\Orders\OrderHistory.js" />
     <Content Include="js\Users\UserLogin.js" />
+    <Content Include="js\Users\Users.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Content\dx\icons\dxicons.ttf" />

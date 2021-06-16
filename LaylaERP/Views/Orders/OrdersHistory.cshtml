@@ -15,73 +15,92 @@
     <span>&nbsp;&nbsp;Loading......</span>
 </div>
 
-<h2>OrdersHistory</h2>
+<div class="page-title">
+    <h2 class="page-heading">Orders History</h2>
+</div>
+<section class="content section-content neworder-section">
+    @*<div class="tab">
+            <button class="tablinks" onclick="openCity(event, 'Listing')">Orders Listing</button>
+            <button class="tablinks" onclick="openCity(event, 'Details')">Order Details</button>
+            <button class="tablinks" onclick="openCity(event, 'Address')">Order Address</button>
+        </div>*@
 
-@*<div class="tab">
-    <button class="tablinks" onclick="openCity(event, 'Listing')">Orders Listing</button>
-    <button class="tablinks" onclick="openCity(event, 'Details')">Order Details</button>
-    <button class="tablinks" onclick="openCity(event, 'Address')">Order Address</button>
-</div>*@
+    <!-- Tab content -->
+    @*<div id="Listing" class="tabcontent">
+            <h3>Orders Listing</h3>
+            <p></p>
+        </div>
 
-<!-- Tab content -->
-@*<div id="Listing" class="tabcontent">
-        <h3>Orders Listing</h3>
-        <p></p>
-    </div>
+        <div id="Details" class="tabcontent">
+            <h3>Order Details</h3>
+            <p></p>
+        </div>
 
-    <div id="Details" class="tabcontent">
-        <h3>Order Details</h3>
-        <p></p>
-    </div>
-
-    <div id="Address" class="tabcontent">
-        <h3>Order Address</h3>
-        <p></p>
-    </div>*@
-
-<div class="row">
-    
-    <div class="col-md-12">
-        <div class="tablenav top tablenav-top2">
-            
-            <div class="alignleft actions bulkactions">
-                <select class="form-control" id="ddlOrderStatus">
-                    <option value="wc-pending">Pending Payment</option>
-                    <option value="wc-processing">Processing</option>
-                    <option value="wc-on-hold">On hold</option>
-                    <option value="wc-completed">Completed</option>
-                    <option value="wc-cancelled">Cancelled</option>
-                    <option value="wc-refunded">Refunded</option>
-                    <option value="wc-failed">Failed</option>
-
-                </select>
-                <button type="button" id="btnChange" onclick="orderStatus();" class="btn btn-primary btn-flat button">Change</button>
+        <div id="Address" class="tabcontent">
+            <h3>Order Address</h3>
+            <p></p>
+        </div>*@
+    <div class="row">
+        <div class="col-md-12">
+            <div class="user_subCrumbs">
+                <ul class="subsubsub">
+                    <li class="all"><a id="all" href="#" class="current">All (<span class="count">0</span></a>) |</li>
+                    <li class="mine"><a id="mine">Mine (<span class="count">0</span>)</a> |</li>
+                    <li class="draft"><a id="draft">Draft (<span class="count">0</span>)</a> |</li>
+                    <li class="wc-pending"><a id="wc-pending">Pending payment (<span class="count">0</span>)</a> |</li>
+                    <li class="wc-processing"><a id="wc-processing">Processing (<span class="count">0</span>)</a> |</li>
+                    <li class="wc-on-hold"><a id="wc-on-hold">On hold (<span class="count">0</span>)</a> |</li>
+                    <li class="wc-completed"><a id="wc-completed">Completed (<span class="count">0</span>)</a> |</li>
+                    <li class="wc-cancelled"><a id="wc-cancelled">Cancelled (<span class="count">0</span>)</a> |</li>
+                    <li class="wc-refunded"><a id="wc-refunded">Refunded (<span class="count">0</span>)</a> |</li>
+                    <li class="wc-failed"><a id="wc-failed">Failed (<span class="count">0</span>)</a> </li>
+                </ul>
             </div>
         </div>
-        <table id="dtdata" class="table table-bordered table-striped dataTable " width="100%">
-            <thead>
-                <tr>
-                    <th><input type="checkbox" name="checkall" id="checkall" onClick="CheckAll();"> check all</th>
-                    <th>Order ID</th>
-                    <th>Customer ID</th>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>No. of Items</th>
-                    <th>Order Total</th>
-                    <th>Status</th>
-                    <th>Creation Date</th>
-                    <th></th>
-                </tr>
-            </thead>
-        </table>
     </div>
-</div>
-
+    <div class="row">
+        <div class="col-md-12">
+            <div class="user-top-section mb-0">
+                <div class="tablenav top tablenav-top2">
+                    <div class="alignleft actions bulkactions">
+                        <select class="form-control" id="ddlOrderStatus">
+                            <option value="wc-pending">Pending Payment</option>
+                            <option value="wc-processing">Processing</option>
+                            <option value="wc-on-hold">On hold</option>
+                            <option value="wc-completed">Completed</option>
+                            <option value="wc-cancelled">Cancelled</option>
+                            <option value="wc-refunded">Refunded</option>
+                            <option value="wc-failed">Failed</option>
+                        </select>
+                        <button type="button" id="btnChange" onclick="orderStatus();" class="btn btn-primary btn-flat button">Change</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <table id="dtdata" class="table-blue table check-table table-bordered table-striped dataTable" width="100%">
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" name="checkall" id="checkall" onClick="CheckAll();"> check all</th>
+                        <th>Order ID</th>
+                        <th>Customer ID</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>No. of Items</th>
+                        <th>Order Total</th>
+                        <th>Status</th>
+                        <th>Creation Date</th>
+                        <th></th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</section>
 <script src="@Url.Content("~/js/Orders/OrderHistory.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 <script>
-    $(document).ready(function () {
-        $("#loader").hide();
-        dataGridLoad();
-    });
+    
 
 </script>

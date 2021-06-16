@@ -7,7 +7,100 @@
 <div class="page-title">
     <h2 class="page-heading">Order Details</h2>
 </div>
-<section class="content activity-section export-section table-design">
+
+<div class="setting-section">
+    <div class="nav-tabs-custom">
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#tab_1" data-toggle="tab">Orders</a></li>
+            <li><a href="#tab_2" data-toggle="tab">Customers</a></li>
+            <li><a href="#tab_3" data-toggle="tab">Users</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane active" id="tab_1">
+                <div class="user_subCrumbs">
+
+                </div>
+                <div id="poststuff" class="woocommerce-reports-wide">
+                    <div class="postbox">
+                        <div class="inside reports-wide">
+                            <div class="widefat">
+                                <table id="exportdata" class="table-blue table table-bordered check-table" style="width:100%;">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th>Order Id</th>
+                                            <th>Order Date</th>
+                                            <th>Product Name</th>
+                                            <th>Item Type</th>
+                                            <th>Product Id</th>
+                                            <th>Variant Id </th>
+                                            <th>Qty</th>
+                                            <th>Subtotal</th>
+                                            <th>Total</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div><!--end tab one-->
+            <div class="tab-pane" id="tab_2">
+                <div class="user_subCrumbs">
+                    
+                </div>
+                <div id="poststuff" class="woocommerce-reports-wide">
+                    <div class="postbox">
+                        <div class="inside reports-wide">
+                            <div class="widefat">
+                                <table id="exportusersdata" class="table-blue table table-bordered check-table" style="width:100%;">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>User Name</th>
+                                            <th>Email</th>
+                                            <th>Status</th>
+                                            <th>Role</th>
+                                            <th>Date</th>
+                                        </tr>
+                                    </thead>
+                                   
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div><!--end tab two-->
+            <div class="tab-pane" id="tab_3">
+                <div class="user_subCrumbs">
+                    
+                </div>
+                <div id="poststuff" class="woocommerce-reports-wide">
+                    <div class="postbox">
+                        <div class="inside reports-wide">
+                            <div class="widefat">
+                                <table class="table-blue">
+                                   
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div><!--end tab three-->
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+@*<section class="content activity-section export-section table-design">
         <div class="box box-primary">
             <div class="box-header">
     <div class="row">
@@ -33,12 +126,17 @@
                     </div>
                 </div>
             </div>
-</section>
+</section>*@
 
 @section scripts{
 
     <script type="text/javascript">
-            $(document).ready(function () {
+        $(document).ready(function () {
+            DatagridOrder();
+            DatagridUsers();
+        });
+
+        function DatagridOrder() {
                 $('#exportdata').DataTable({
                     "ajax": {
                         "url": '/Export/GetData',
@@ -79,6 +177,53 @@
                         }
                     ]
                 });
+        }
+        function DatagridUsers() {
+            $('#exportusersdata').DataTable({
+                "ajax": {
+                    "url": '/Export/UsersExport',
+                    "type": 'GET',
+                    "dataType": 'json',
+                },
+                "columns": [ 
+                    //{
+                    //    'data': 'order_created',
+                    //    'render': function (jsonDate) {
+                    //        var date = new Date(parseInt(jsonDate.substr(6)));
+                    //        var month = ("0" + (date.getMonth() + 1)).slice(-2);
+                    //        return ("0" + date.getDate()).slice(-2) + '-' + month + '-' + date.getFullYear();
+                    //    }
+                    //},
+                    { 'data': 'UID', 'sWidth': "5%" },
+                    { 'data': 'user_login', 'sWidth': "20%" },
+                    { 'data': 'user_email', 'sWidth': "20%" },
+                    { 'data': 'user_status', 'sWidth': "10%" },
+                    { 'data': 'my', 'sWidth': "10%" },
+                    {
+                        'data': 'created_date',
+                        'render': function (jsonDate) {
+                            var date = new Date(parseInt(jsonDate.substr(6)));
+                            var month = ("0" + (date.getMonth() + 1)).slice(-2);
+                            return ("0" + date.getDate()).slice(-2) + '-' + month + '-' + date.getFullYear();
+                        }
+                    },
+
+                ],
+                "dom": 'Bfrtip',
+                "buttons": [
+
+                    {
+                        extend: 'csv',
+                        className: 'button',
+                        text: '<i class="fas fa-file-csv"></i> CSV'
+                    },
+                    {
+                        extend: 'print',
+                        className: 'button',
+                        text: '<i class="fas fa-print"></i> Print'
+                    }
+                ]
             });
+        }
     </script>
 }

@@ -5,6 +5,8 @@ using System.Web;
 using System.Web.Mvc;
 using System.Data;
 using LaylaERP.Models;
+using LaylaERP.BAL;
+using Newtonsoft.Json;
 
 namespace LaylaERP.Controllers
 {
@@ -18,9 +20,20 @@ namespace LaylaERP.Controllers
 
         public ActionResult GetData()
         {
-            Export_Details objuser = new Export_Details();
-            Models.Export_Details.Show_Export_Data();
-            return Json(new { data = Models.Export_Details.userlist }, JsonRequestBehavior.AllowGet);
+            ExportRepository.ExportOrderDetails();
+            return Json(new { data = ExportRepository.userlist }, JsonRequestBehavior.AllowGet);
+        }
+
+
+        public JsonResult UsersExport()
+        {
+
+            ExportRepository.ExportUsersDetails();
+            return Json(new { data = ExportRepository.usersexportlist }, JsonRequestBehavior.AllowGet);
+            //string result = string.Empty;
+            //DataTable dt = ExportRepository.Show_Export_Data();
+            ////result = dt;
+            //return Json(new { data = dt }, 0);
         }
     }
 }

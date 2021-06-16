@@ -60,6 +60,23 @@ namespace LaylaERP.Controllers
             UsersRepositry.ShowUsersDetails(rolepass);
             return Json(new { data = UsersRepositry.userslist }, JsonRequestBehavior.AllowGet);
         }
+        public JsonResult GetDetails(CustomerModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                string urid = "";
+                if (model.user_status != "")
+                    urid = model.user_status;
+                string searchid = model.Search;
+                DataTable dt = UsersRepositry.GetDetails(urid, searchid, model.PageNo, model.PageSize, out TotalRecord, model.SortCol, model.SortDir);
+                result = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            //return Json(JSONresult, 0);
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+        }
 
         private void RoleCounter()
         {
@@ -90,6 +107,35 @@ namespace LaylaERP.Controllers
             }
             return Json(usertype, JsonRequestBehavior.AllowGet);
         }
+
+        public JsonResult GetCity()
+        {
+            string t1 = "";
+            DataTable dt = new DataTable();
+            dt = BAL.Users.GetCity();
+            List<string> usertype = new List<string>();
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                t1 = dt.Rows[i]["City"].ToString();
+                usertype.Add(t1);
+            }
+            return Json(usertype, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetState()
+        {
+            string t1 = "";
+            DataTable dt = new DataTable();
+            dt = BAL.Users.GetState();
+            List<string> usertype = new List<string>();
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                t1 = dt.Rows[i]["State"].ToString();
+                usertype.Add(t1);
+            }
+            return Json(usertype, JsonRequestBehavior.AllowGet);
+        }
+
         [HttpPost]
         public JsonResult GetAssignRole(UserClassification model)
         {
@@ -244,9 +290,15 @@ namespace LaylaERP.Controllers
             myModel.country = dt.Rows[0]["country"];
             myModel.address = dt.Rows[0]["address"];
             myModel.user_login = dt.Rows[0]["user_login"];  
-
-            myModel.user_role = dt.Rows[0]["user_role"];
+            string role = dt.Rows[0]["user_role"].ToString();
+            role = role.Replace("_", " ");           
+            myModel.user_role = role;      
             myModel.phone = dt.Rows[0]["phone"];
+            myModel.State = dt.Rows[0]["State"];
+            myModel.City = dt.Rows[0]["City"];
+            myModel.address2 = dt.Rows[0]["address2"];
+            myModel.postcode = dt.Rows[0]["postcode"];
+
             return PartialView("UserDetails", myModel);
            // return myModel;
         }
@@ -267,7 +319,7 @@ namespace LaylaERP.Controllers
                 }
                 else
                 {
-                  
+                    
                     int ID = UsersRepositry.AddNewCustomer(model);
                     if (ID > 0)
                     {
@@ -317,10 +369,10 @@ namespace LaylaERP.Controllers
 
         private void Adduser_MetaData_More(clsUserDetails model, long id)
         {
-            string[] varQueryArr1 = new string[3];
-            string[] varFieldsName = new string[3] { "user_address", "user_country", "user_phone" };
-            string[] varFieldsValue = new string[3] { model.address, model.country, model.phone};
-            for (int n = 0; n < 3; n++)
+            string[] varQueryArr1 = new string[7];
+            string[] varFieldsName = new string[7] { "billing_address_1", "billing_country", "billing_phone", "billing_address_2", "billing_city", "billing_state", "billing_postcode" };
+            string[] varFieldsValue = new string[7] { model.address, model.country, model.phone,model.billing_address_2,model.billing_city,model.billing_state,model.billing_postcode};
+            for (int n = 0; n < 7; n++)
             {
                 UsersRepositry.AddUserMoreMeta(model, id, varFieldsName[n], varFieldsValue[n]);
             }
@@ -339,10 +391,10 @@ namespace LaylaERP.Controllers
 
         private void Updateuser_MetaData_More(clsUserDetails model, long id)
         {
-            string[] varQueryArr1 = new string[3];
-            string[] varFieldsName = new string[3] { "user_address", "user_country", "user_phone" };
-            string[] varFieldsValue = new string[3] { model.address, model.country, model.phone };
-            for (int n = 0; n < 3; n++)
+            string[] varQueryArr1 = new string[7];
+            string[] varFieldsName = new string[7] { "billing_address_1", "billing_country", "billing_phone", "billing_address_2", "billing_city", "billing_state", "billing_postcode" };
+            string[] varFieldsValue = new string[7] { model.address, model.country, model.phone, model.billing_address_2, model.billing_city, model.billing_state, model.billing_postcode };
+            for (int n = 0; n < 7; n++)
             {
                 UsersRepositry.UpdateUserMoreMeta(model, id, varFieldsName[n], varFieldsValue[n]);
             }

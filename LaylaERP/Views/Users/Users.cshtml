@@ -7,135 +7,136 @@
 @*@using (Html.BeginForm("Users", "Users", FormMethod.Post)) { }*@
 <div class="page-title">
     <h2 class="page-heading">Users</h2>
-   
+
 </div>
-    <div class="user_subCrumbs">
-        <ul>
-            <li class="all"><a href="#" id="all" class="current" aria-current="page">All <span class="count">(@ViewBag.all)</span></a> |</li>
-            <li class="accounting"><a href="#" id="accounting">Accounting <span class="count">(@ViewBag.accounting)</span></a> |</li>
-            <li class="administrator"><a href="#" id="administrator">Administrator <span class="count">(@ViewBag.admin)</span></a> |</li>
-            <li class="author"><a href="#" id="author">Author <span class="count">(@ViewBag.author)</span></a> |</li>
-            <li class="contributor"><a href="#" id="contributor">Contributor <span class="count">(@ViewBag.contributor)</span></a> |</li>
-            @*<li class="customer"><a href="#">Customer <span class="count">(@ViewBag.customer)</span></a> |</li>*@
-            <li class="editor"><a href="#" id="editor">Editor <span class="count">(@ViewBag.editor)</span></a> |</li>
-            <li class="modsquad"><a href="#" id="modsquad">Mod Squad <span class="count">(@ViewBag.modsquad)</span></a> |</li>
-            <li class="shop_manager"><a href="#" id="shopmanager">Shop Manager <span class="count">(@ViewBag.shopmanager)</span></a> |</li>
-            <li class="subscriber"><a href="#" id="subscriber">Subscriber <span class="count">(@ViewBag.subscriber)</span></a> |</li>
-            <li class="supplychainmanager"><a href="#" id="supplychainmanager">Supply Chain Manager <span class="count">(@ViewBag.supplychainmanager)</span></a> |</li>
-            <li class="wpseo_editor" id="seo"><a href="#">SEO Editor <span class="count">(@ViewBag.seoeditor)</span></a> |</li>
-            <li class="wpseo_editor" id="seomanager"><a href="#">SEO Manager <span class="count">(@ViewBag.seomanager)</span></a> |</li>
-            <li class="none" id="norole"><a href="#">No role <span class="count">(@ViewBag.norole)</span></a></li>
-        </ul>
-    </div>
-    <div>
-        <p id="selectStatus"><label><b class="sm-heading">Status</b></label></p>
-    </div>
-    <section class="content section-content">
-        <div class="user-top-section">
-            
-            <div class="tablenav top">
-                <div class="alignleft actions bulkactions">
-                    <select name="action" id="ddlStatus">
-                        <option value="1">Bulk actions</option>
-                        <option value="2">Active</option>
-                        <option value="3">InActive</option>
-                    </select>
-                    <input type="submit" id="btnApply" class="button action" value="Apply">
-                </div>
-                <div class="alignleft actions">
-                    <select name="new_role" id="new_role">
-                        <option value="">Change role to…</option>
-                        <option value="Accounting">Accounting</option>
-                        <option value="Administrator">Administrator</option>
-                        <option value="Author">Author</option>
-                        <option value="Contributor">Contributor</option>
-                        <option value="Editor">Editor</option>
-                        <option value="Mod_Squad">Mod Squad</option>
-                        <option value="SEO_Editor">SEO Editor</option>
-                        <option value="SEO_Manager">SEO Manager</option>
-                        <option value="Shop_Manager">Shop Manager</option>
-                        <option value="Subscriber">Subscriber</option>
-                        <option value="Supply_Chain_Manager">Supply Chain Manager</option>
-                    </select>
-                    <input type="submit" name="changeit" id="changeit" class="button" value="Change">
-                </div>
+<div class="user_subCrumbs">
+    <ul>
+        <li class="all"><a href="#" id="all" class="current" aria-current="page">All <span class="count">(@ViewBag.all)</span></a> |</li>
+        <li class="accounting"><a href="#" id="accounting">Accounting <span class="count">(@ViewBag.accounting)</span></a> |</li>
+        <li class="administrator"><a href="#" id="administrator">Administrator <span class="count">(@ViewBag.admin)</span></a> |</li>
+        <li class="author"><a href="#" id="author">Author <span class="count">(@ViewBag.author)</span></a> |</li>
+        <li class="contributor"><a href="#" id="contributor">Contributor <span class="count">(@ViewBag.contributor)</span></a> |</li>
+        @*<li class="customer"><a href="#">Customer <span class="count">(@ViewBag.customer)</span></a> |</li>*@
+        <li class="editor"><a href="#" id="editor">Editor <span class="count">(@ViewBag.editor)</span></a> |</li>
+        <li class="modsquad"><a href="#" id="modsquad">Mod Squad <span class="count">(@ViewBag.modsquad)</span></a> |</li>
+        <li class="shop_manager"><a href="#" id="shopmanager">Shop Manager <span class="count">(@ViewBag.shopmanager)</span></a> |</li>
+        <li class="subscriber"><a href="#" id="subscriber">Subscriber <span class="count">(@ViewBag.subscriber)</span></a> |</li>
+        <li class="supplychainmanager"><a href="#" id="supplychainmanager">Supply Chain Manager <span class="count">(@ViewBag.supplychainmanager)</span></a> |</li>
+        <li class="wpseo_editor" id="seo"><a href="#">SEO Editor <span class="count">(@ViewBag.seoeditor)</span></a> |</li>
+        <li class="wpseo_editor" id="seomanager"><a href="#">SEO Manager <span class="count">(@ViewBag.seomanager)</span></a> |</li>
+        <li class="none" id="norole"><a href="#">No role <span class="count">(@ViewBag.norole)</span></a></li>
+    </ul>
+</div>
+<div>
+    <p id="selectStatus"><label><b class="sm-heading">Status</b></label></p>
+</div>
+<section class="content section-content">
+    <div class="user-top-section">
 
-                <div class="alignleft actions">
-                    <select name="grant_role" id="grant_role">
-                        <option value="">Grant Roal to…</option>
+        <div class="tablenav top">
+            <div class="alignleft actions bulkactions">
+                <select name="action" id="ddlStatus">
+                    <option value="1">Bulk actions</option>
+                    <option value="2">Active</option>
+                    <option value="3">InActive</option>
+                </select>
+                <input type="submit" id="btnApply" class="button action" value="Apply">
+            </div>
+            <div class="alignleft actions">
+                <select name="new_role" id="new_role">
+                    <option value="">Change role to…</option>
+                    <option value="Accounting">Accounting</option>
+                    <option value="Administrator">Administrator</option>
+                    <option value="Author">Author</option>
+                    <option value="Contributor">Contributor</option>
+                    <option value="Editor">Editor</option>
+                    <option value="Mod_Squad">Mod Squad</option>
+                    <option value="SEO_Editor">SEO Editor</option>
+                    <option value="SEO_Manager">SEO Manager</option>
+                    <option value="Shop_Manager">Shop Manager</option>
+                    <option value="Subscriber">Subscriber</option>
+                    <option value="Supply_Chain_Manager">Supply Chain Manager</option>
+                </select>
+                <input type="submit" name="changeit" id="changeit" class="button" value="Change">
+            </div>
+
+            <div class="alignleft actions">
+                <select name="grant_role" id="grant_role">
+                    <option value="">Grant Roal to…</option>
+                    <option value="Accounting">Accounting</option>
+                    <option value="Administrator">Administrator</option>
+                    <option value="Author">Author</option>
+                    <option value="Contributor">Contributor</option>
+                    <option value="Editor">Editor</option>
+                    <option value="Mod_Squad">Mod Squad</option>
+                    <option value="SEO_Editor">SEO Editor</option>
+                    <option value="SEO_Manager">SEO Manager</option>
+                    <option value="Shop_Manager">Shop Manager</option>
+                    <option value="Subscriber">Subscriber</option>
+                    <option value="Supply_Chain_Manager">Supply Chain Manager</option>
+                </select>
+                <input type="submit" name="Grantrole" id="Grantrole" class="button" value="Grant">
+            </div>
+            <div class="alignleft actions">
+                     <select name="revoke_role" id="revoke_role">
+                         <option value="">Revoke Roal to…</option>
                         <option value="Accounting">Accounting</option>
-                        <option value="Administrator">Administrator</option>
-                        <option value="Author">Author</option>
-                        <option value="Contributor">Contributor</option>
-                        <option value="Editor">Editor</option>
-                        <option value="Mod_Squad">Mod Squad</option>
-                        <option value="SEO_Editor">SEO Editor</option>
-                        <option value="SEO_Manager">SEO Manager</option>
-                        <option value="Shop_Manager">Shop Manager</option>
-                        <option value="Subscriber">Subscriber</option>
-                        <option value="Supply_Chain_Manager">Supply Chain Manager</option>
-                    </select>
-                    <input type="submit" name="Grantrole" id="Grantrole" class="button" value="Grant">
+                         <option value="Administrator">Administrator</option>
+                         <option value="Author">Author</option>
+                         <option value="Contributor">Contributor</option>
+                         <option value="Editor">Editor</option>
+                         <option value="Mod_Squad">Mod Squad</option>
+                         <option value="SEO_Editor">SEO Editor</option>
+                         <option value="SEO_Manager">SEO Manager</option>
+                         <option value="Shop_Manager">Shop Manager</option>
+                         <option value="Subscriber">Subscriber</option>
+                         <option value="Supply_Chain_Manager">Supply Chain Manager</option>
+                     </select>
+                    <input type="submit" name="Revoke" id="Revoke" class="button" value="Revoke">
                 </div>
-                        @*<div class="alignleft actions">
-                    <select name="revoke_role" id="revoke_role">
-                        <option value="">Revoke Roal to…</option>
-                       <option value="Accounting">Accounting</option>
-                        <option value="Administrator">Administrator</option>
-                        <option value="Author">Author</option>
-                        <option value="Contributor">Contributor</option>
-                        <option value="Editor">Editor</option>
-                        <option value="Mod_Squad">Mod Squad</option>
-                        <option value="SEO_Editor">SEO Editor</option>
-                        <option value="SEO_Manager">SEO Manager</option>
-                        <option value="Shop_Manager">Shop Manager</option>
-                        <option value="Subscriber">Subscriber</option>
-                        <option value="Supply_Chain_Manager">Supply Chain Manager</option>
-                    </select>
-            <input type="submit" name="Revoke" id="Revoke" class="button" value="Revoke">
-        </div>*@
-                <input type="hidden" name="varpass" id="varpass" value="">
-                @*<div class="tablenav-pages">
-            <span class="displaying-num">61,641 items</span>
-            <span class="pagination-links">
-                <span class="tablenav-pages-navspan button disabled" aria-hidden="true">«</span>
-                <span class="tablenav-pages-navspan button disabled" aria-hidden="true">‹</span>
-                <span class="paging-input">
-                    <input class="current-page" id="current-page-selector" type="text" name="paged" value="1" size="4" aria-describedby="table-paging">
-                    <span class="tablenav-paging-text"> of <span class="total-pages">3,083</span></span>
-                </span>
-                <a class="next-page button" href="http://173.247.242.204/~rpsisr/woo/wp-admin/users.php?paged=2"><span aria-hidden="true">›</span></a>
-                <a class="last-page button" href="http://173.247.242.204/~rpsisr/woo/wp-admin/users.php?paged=3083"><span aria-hidden="true">»</span></a>
-            </span>
-        </div>*@
-                <br class="clear">
+            <input type="hidden" name="varpass" id="varpass" value="">
+            @*<div class="tablenav-pages">
+                    <span class="displaying-num">61,641 items</span>
+                    <span class="pagination-links">
+                        <span class="tablenav-pages-navspan button disabled" aria-hidden="true">«</span>
+                        <span class="tablenav-pages-navspan button disabled" aria-hidden="true">‹</span>
+                        <span class="paging-input">
+                            <input class="current-page" id="current-page-selector" type="text" name="paged" value="1" size="4" aria-describedby="table-paging">
+                            <span class="tablenav-paging-text"> of <span class="total-pages">3,083</span></span>
+                        </span>
+                        <a class="next-page button" href="http://173.247.242.204/~rpsisr/woo/wp-admin/users.php?paged=2"><span aria-hidden="true">›</span></a>
+                        <a class="last-page button" href="http://173.247.242.204/~rpsisr/woo/wp-admin/users.php?paged=3083"><span aria-hidden="true">»</span></a>
+                    </span>
+                </div>*@
+            <br class="clear">
+        </div>
+    </div>
+    <div class="box box-primary">
+        <div class="box-header">
+            <div class="dx-viewport demo-container data-table-container">
+                <div id="gridContainer" class="margin-15-rem">
+                    <table id="dtdata" class="table table-blue table-bordered table-striped dataTable check-table" style="width:100%;">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th><input type="checkbox" name="checkAll" id="checkAll"><label></label></th>
+                                <th>ID</th>
+                                <th>User Name</th>
+                                <th>Email</th>
+                                <th>Status</th>
+                                <th>Role</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+
+                    </table>
+                </div>
             </div>
         </div>
-        <div class="box box-primary">
-            <div class="box-header">
-                <div class="dx-viewport demo-container data-table-container">
-                    <div id="gridContainer" class="margin-15-rem">
-                        <table id="dtdata" class="table table-blue table-bordered table-striped dataTable check-table" style="width:100%;">
-                            <thead class="thead-dark">
-                                <tr>
-                                    <th><input type="checkbox" name="checkAll" id="checkAll"><label></label></th>
-                                    <th>ID</th>
-                                    <th>User Name</th>
-                                    <th>Email</th>
-                                    <th>Status</th>
-                                    <th>Role</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+    </div>
+</section>
 
 
+<script src="@Url.Content("~/js/Users/Users.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 @section scripts{
 
     <script type="text/javascript">
@@ -149,168 +150,9 @@
             Datagrid();
         });
 
-        function Datagrid(k) {
-            //
-            var myvalue = k;
-            //var obj = { rolepass: j };
-            //alert(JSON.stringify(obj));
-            var id;
-            $('#dtdata').DataTable({
-                destroy: true,
-                bAutoWidth: false,
-                "ajax": {
-                    "url": '/Users/GetData',
-                    "type": 'GET',
-                    "dataType": 'json',
-                    data: { rolepass: j },
-                    contentType: "application/json; charset=utf-8",
+       
 
-                },
-                lengthMenu: [[10, 20, 50, 100], [10, 20, 50, 100]],
-
-                "columns": [
-                    {
-                        'data': 'ID', sWidth: "5%",
-                        'render': function (data, type, full, meta) {
-                            return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + $('<div/>').text(data).html() + '"><label></label>';
-                        }
-                    },
-                    { 'data': 'ID', 'sWidth': "8%" },
-                    { 'data': 'user_login', 'sWidth': "18%" },
-                    { 'data': 'user_email', 'sWidth': "35%" },
-                    { 'data': 'user_status', 'sWidth': "10%" },
-                    { 'data': 'my', 'sWidth': "25%" },
-                    {
-                        'data': 'ID', sWidth: "8%",
-                        'render': function (ID, type, full, meta) {
-                            return '<a href="../Users/UserDetails?id=' + ID + '"><i class="glyphicon glyphicon-pencil"></i></a>'
-                        }
-                    }
-                ],
-
-                columnDefs: [{
-                    orderable: false,
-                    targets: [0]
-                }],
-                //columnDefs: [{
-                //    orderable: false,
-                //    className: 'select-checkbox',
-                //    targets: 0,
-                //    'checkboxes': {
-                //        'selectRow': true
-                //    },
-                //    data: ID,
-                //    defaultContent: '',
-                //}],
-                //"select": {
-                //    "style": 'multi',
-                //    "selector": 'td:first-child'
-                //},
-                "order": [[1, 'desc']],
-
-
-                initComplete: function () {
-                    var column = this.api().column(4);
-                    if (myvalue != 1) {
-                        var select = $('<select class="filter"><option value="All">Select</option></select>')
-                            .appendTo('#selectStatus')
-                            .on('change', function () {
-                                var val = $(this).val();
-                                column.search(val ? '^' + $(this).val() + '$' : val, true, false).draw();
-                                //column.search(val).draw()
-                            });
-                    }
-
-
-                    var offices = [];
-                    column.data().toArray().forEach(function (s) {
-                        s = s.split(',');
-                        s.forEach(function (d) {
-                            if (!~offices.indexOf(d)) {
-                                offices.push(d)
-                                select.append('<option value="' + d + '">' + d + '</option>');
-                            }
-                        })
-                    });
-                }
-                    /*
-              column.data().unique().sort().each(function(d, j) {
-                select.append('<option value="' + d + '">' + d + '</option>');
-              });
-             */
-                
-
-            });
-        }
-
-        function DatagridLoade(k) {
-            //
-            var myvalue = k;
-            //var obj = { rolepass: j };
-            //alert(JSON.stringify(obj));
-            var id;
-            $('#dtdata').DataTable({
-                destroy: true,
-                bAutoWidth: false,
-                "ajax": {
-                    "url": '/Users/GetData',
-                    "type": 'GET',
-                    "dataType": 'json',
-                    data: { rolepass: j },
-                    contentType: "application/json; charset=utf-8",
-
-                },
-                lengthMenu: [[10, 20, 50, 100], [10, 20, 50, 100]],
-
-                "columns": [
-                    {
-                        'data': 'ID', sWidth: "5%",
-                        'render': function (data, type, full, meta) {
-                            return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + $('<div/>').text(data).html() + '"><label></label>';
-                        }
-                    },
-                    { 'data': 'ID', 'sWidth': "5%" },
-                    { 'data': 'user_login', 'sWidth': "20%" },
-                    { 'data': 'user_email', 'sWidth': "20%" },
-                    { 'data': 'user_status', 'sWidth': "20%" },
-                    { 'data': 'my', 'sWidth': "20%" },
-                    {
-                        'data': 'ID', sWidth: "8%",
-                        'render': function (ID, type, full, meta) {
-                            return '<a href="../Users/UserDetails?id=' + ID + '"><i class="glyphicon glyphicon-pencil"></i></a>'
-                        }
-                    }
-                ],
-
-                columnDefs: [{
-                    orderable: false,
-                    targets: [0]
-                }],
-                //columnDefs: [{
-                //    orderable: false,
-                //    className: 'select-checkbox',
-                //    targets: 0,
-                //    'checkboxes': {
-                //        'selectRow': true
-                //    },
-                //    data: ID,
-                //    defaultContent: '',
-                //}],
-                //"select": {
-                //    "style": 'multi',
-                //    "selector": 'td:first-child'
-                //},
-                "order": [[1, 'desc']],
-
-               
-
-            });
-        };
-
-
- 
-
-//CheckBoxes
+        //CheckBoxes
         $('#checkAll').click(function () {
             var isChecked = $(this).prop("checked");
             $('#dtdata tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
@@ -347,7 +189,7 @@
                 //dataGridLoad();
             }
             if (status == "2") {
-               
+
                 id = id.replace(/,(?=\s*$)/, '');
                 ActiveUsers(id);
                 //dataGridLoad();
@@ -378,176 +220,18 @@
             Grantrole(ID);
         })
         //Revoke
-        //$("#Revoke").click(function () {
-        //    var ID = "";
-        //    var new_role = $("#revoke_role").val();
-        //    $("input:checkbox[name=CheckSingle]:checked").each(function () {
-        //        ID += $(this).val() + ",";
+        $("#Revoke").click(function () {
+            var ID = "";
+            var new_role = $("#revoke_role").val();
+            $("input:checkbox[name=CheckSingle]:checked").each(function () {
+                ID += $(this).val() + ",";
 
-        //    });
-        //    ID = ID.replace(/,(?=\s*$)/, '');
-        //    Revokerole(ID);
-        //})
-
-        function DeleteUsers(id) {
-            debugger
-            var obj = { strVal: id }
-            $.ajax({
-                url: '/Users/DeleteUsers/', dataType: 'json', type: 'Post',
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify(obj),
-                dataType: "json",
-                success: function (data) {
-                    if (data.status == true) {
-                        swal('Alert!', data.message, 'success');
-                    }
-                    else {
-                        swal('Alert!', data.message, 'error')
-                    }
-                },
-                error: function (error) {
-                    swal('Error!', 'something went wrong', 'error');
-                },
-            })
-        }
-
-        function ActiveUsers(id) {
-           
-            debugger
-            var obj = { strVal: id }
-          
-            $.ajax({
-                url: '/Users/ActiveUsers/', dataType: 'json', type: 'Post',
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify(obj),
-                dataType: "json",
-                success: function (data) {
-                    if (data.status == true) {
-                        swal('Alert!', data.message, 'success');
-                        DatagridLoade();
-                    }
-                    else {
-                        swal('Alert!', data.message, 'error')
-                    }
-                },
-                error: function (error) {
-                    swal('Error!', 'something went wrong', 'error');
-                },
-            })
-        }
+            });
+            ID = ID.replace(/,(?=\s*$)/, '');
+            Revokerole(ID);
+        })
 
 
-        function UpdateCustomerStatus() {
-            var obj = { strVal: ID }
-            $.ajax({
-                url: '/Users/UpdateCustomer/', dataType: 'json', type: 'Post',
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify(obj),
-                dataType: "json",
-                success: function (data) {
-                    if (data.status == true) {
-                        swal('Alert!', data.message, 'success');
-                    }
-                    else {
-                        swal('Alert!', data.message, 'error')
-                    }
-                },
-                error: function (error) {
-                    swal('Error!', 'something went wrong', 'error');
-                },
-            })
-        } 
-
-
-       
-        function changeRole(ID) {
-
-            ID = ID;
-            user_status = $("#new_role").val();
-            var obj = {
-                strVal: ID,
-                user_status: user_status                 
-            } 
-            $.ajax({
-                url: '/Users/changeRole/', dataType: 'json', type: 'Post',
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify(obj),
-                dataType: "json",
-                success: function (data) {
-                    if (data.status == true) {
-                        swal('Alert!', data.message, 'success');
-                        DatagridLoade();
-                    }
-                    else {
-                        swal('Alert!', data.message, 'error')
-                    }
-                },
-                error: function (error) {
-                    swal('Error!', 'something went wrong', 'error');
-                },
-            })
-        }
-
-        function Grantrole(ID) {
-
-            ID = ID;
-            user_status = $("#grant_role").val();
-           
-            var obj = {
-                strVal: ID,
-                user_status: user_status
-            }
-            $.ajax({
-                url: '/Users/Grantrole/', dataType: 'json', type: 'Post',
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify(obj),
-                dataType: "json",
-                success: function (data) {
-                    if (data.status == true) {
-                        swal('Alert!', data.message, 'success');
-                        DatagridLoade();
-                    }
-                    else {
-                        swal('Alert!', data.message, 'error')
-                    }
-                },
-                error: function (error) {
-                    swal('Error!', 'something went wrong', 'error');
-                },
-            })
-        }
-
-        //function Revokerole(ID) {
-
-        //    ID = ID;
-        //    user_status = $("#revoke_role").val();
-        //    alert(user_status);
-        //    var obj = {
-        //        strVal: ID,
-        //        user_status: user_status
-        //    }
-        //    $.ajax({
-        //        url: '/Users/Revokerole/', dataType: 'json', type: 'Post',
-        //        contentType: "application/json; charset=utf-8",
-        //        data: JSON.stringify(obj),
-        //        dataType: "json",
-        //        success: function (data) {
-        //            if (data.status == true) {
-        //                swal('Alert!', data.message, 'success');
-        //                DatagridLoade();
-        //            }
-        //            else {
-        //                swal('Alert!', data.message, 'error')
-        //            }
-        //        },
-        //        error: function (error) {
-        //            swal('Error!', 'something went wrong', 'error');
-        //        },
-        //    })
-        //}
-
-       
-//CheckBoxes End
 
         //Count Role Grid Show
         $('#all').click(function () {
@@ -618,7 +302,7 @@
             k = 1;
             Datagrid(k);
         });
-      //Count Role Grid End
+          //Count Role Grid End
 
 
 

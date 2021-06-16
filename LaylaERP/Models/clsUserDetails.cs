@@ -21,6 +21,11 @@ namespace LaylaERP.Models
         string _country = string.Empty;
         string _phone = string.Empty;
         byte[] _User_Image = null;
+        string _billing_address_2 =string.Empty;
+        string _billing_city = string.Empty;
+        string _billing_postcode = string.Empty;
+        string _billing_state = string.Empty;
+
 
         // user_login,user_pass,user_type,status,Email_Id
 
@@ -103,6 +108,29 @@ namespace LaylaERP.Models
             get { return _user_status; }
             set { _user_status = value; }
         }
+        public string billing_address_2
+        {
+            get { return _billing_address_2; }
+            set { _billing_address_2 = value; }
+        }
+        public string billing_city
+        {
+            get { return _billing_city; }
+            set { _billing_city = value; }
+        }
+
+        public string billing_postcode
+        {
+            get { return _billing_postcode; }
+            set { _billing_postcode = value; }
+        }
+
+        public string billing_state
+        {
+            get { return _billing_state; }
+            set { _billing_state = value; }
+        }
+
 
         public long ID
         {

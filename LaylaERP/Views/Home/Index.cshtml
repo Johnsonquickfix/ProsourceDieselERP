@@ -302,18 +302,8 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="exampleInputEmail1">User Type</label>
-                                            <select id="txtUserRole" class="form-control">
-                                                <option selected="selected" value="@ViewBag.user_role">@ViewBag.user_role</option>
-                                                <option value="Accounting">Accounting</option>
-                                                <option value="Administrator">Administrator</option>
-                                                <option value="Author">Author</option>
-                                                <option value="Modsquad">Mod Squad</option>
-                                                <option value="Seoeditor">SEO Editor</option>
-                                                <option value="Seomanager">SEO Manager</option>
-                                                <option value="Shopmanager">Shop manager</option>
-                                                <option value="Subscriber">Subscriber</option>
-                                                <option value="Supplychainmanager">Supply Chain Manager</option>
-                                            </select>
+                                            <input type="text" class="form-control" value="@ViewBag.user_role" id="txtUserRole" placeholder="Last Name" readonly>
+                                           
                                         </div>
                                         <div class="form-group">
                                             <label for="exampleInputEmail1">User Name</label>
@@ -326,7 +316,7 @@
                                             <input type="text" id="user_email" class="form-control" placeholder="Enter Your Mail Address" value=@ViewBag.user_email>
                                         </div>
                                         <div class="form-group">
-                                            <label for="exampleInputEmail1">Contact Number</label>                                          
+                                            <label for="exampleInputEmail1">Contact Number</label>
                                              <input type="text" class="form-control" id="txtPhone"  value="@ViewBag.user_phone" placeholder="Enter Your Phone Number">
                                         </div>
                                         <div class="form-group">
@@ -413,11 +403,28 @@
             UserRole = $("#txtUserRole").val();
             Phone = $("#txtPhone").val();
 
-            if (FirstName == "") { swal('alert', 'Please Enter First Name', 'error') }
-            else if (LastName == "") { swal('alert', 'Please Enter Last Name', 'error') }
-            else if (user_email == "") { swal('alert', 'Please Enter User Email', 'error') }
-            else if (address == "") { swal('alert', 'Please Enter User Address', 'error') } 
-            else if (Phone == "") { swal('alert', 'Please Enter User Phone Number', 'error') }
+
+            if (FirstName == "") {
+                swal('Alert', 'Please Enter First Name', 'Error').then(function () { swal.close(); $('#txtFirstName').focus(); });
+            }
+            else if (LastName == "") {
+                swal('Alert', 'Please Enter Last Name', 'Error').then(function () { swal.close(); $('#txtLastName').focus(); });
+            }
+            else if ($('#txtUserRole').val() == 0) {
+                swal('Alert', 'Please Select User Type', 'Error').then(function () { swal.close(); $('#txtUserRole').focus(); });
+            }
+            else if (Phone == "") {
+                swal('Alert', 'Please Enter Contact No.', 'Error').then(function () { swal.close(); $('#txtPhone').focus(); });
+            }
+            else if (address == "") {
+                swal('Alert', 'Please Enter Address', 'Error').then(function () { swal.close(); $('#txtAddress').focus(); });
+            }
+            else if (Email == "") {
+                swal('Alert', 'Please Enter Email', 'Error').then(function () { swal.close(); $('#txtUserEmail').focus(); });
+            }
+            else if (NickName == "") {
+                swal('Alert', 'Please Enter User Name', 'Error').then(function () { swal.close(); $('#txtUserNickName').focus(); });
+            }
 
             else {
                 var obj = {

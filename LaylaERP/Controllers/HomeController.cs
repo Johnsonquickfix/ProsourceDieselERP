@@ -125,7 +125,7 @@
             //id = ViewBag.id;
             //if (id > 0)
             //{
-            //    GetUserDetails(model, id);
+                GetUserDetails(model, ViewBag.id);
             //}
             //--------------Code End----------
             return View();
@@ -258,17 +258,23 @@
             
             try
             {
-                DataTable DT = UserProfileRepository.DisplayProfileDetails(model,id);
+                DataTable DT = BAL.Users.GetDetailsUser(id);
+               // DataTable DT = UserProfileRepository.DisplayProfileDetails(model,id);
                 ViewBag.user_login = DT.Rows[0]["user_login"].ToString();
                 ViewBag.user_email = DT.Rows[0]["user_email"].ToString();
                 ViewBag.use_status = DT.Rows[0]["user_status"].ToString();
                 ViewBag.first_name = DT.Rows[0]["first_name"].ToString();
                 ViewBag.last_name = DT.Rows[0]["last_name"].ToString();
-                ViewBag.user_phone = DT.Rows[0]["user_phone"].ToString();
-                ViewBag.user_address = DT.Rows[0]["user_address"].ToString();
-                
+                ViewBag.user_phone = DT.Rows[0]["phone"].ToString();
+                ViewBag.user_address = DT.Rows[0]["address"].ToString();
+                ViewBag.User_Image = DT.Rows[0]["User_Image"];
+                ViewBag.user_role = DT.Rows[0]["user_role"];
+                ViewBag.user_status = DT.Rows[0]["user_status"];
+
             }
-            catch { }
+            catch  {
+               
+            }
         }
 
         public ActionResult About()

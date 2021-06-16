@@ -3,10 +3,10 @@
 // Firas Kassem  phiras.wordpress.com || phiras at gmail {dot} com
 // for more information : http://phiras.wordpress.com/2007/04/08/password-strength-meter-a-jquery-plugin/
 
-var shortPass = 'Too short'
-var badPass = 'Bad'
-var goodPass = 'Good'
-var strongPass = 'Strong'
+var shortPass = 'Password strength is weak'
+var badPass = 'Password Strength is low'
+var goodPass = 'Password strength is medium'
+var strongPass = 'Password strength is strong'
 
 
 

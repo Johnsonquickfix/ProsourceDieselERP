@@ -541,18 +541,21 @@
             { throw ex; }
             return _list;
         }
-        public static DataTable OrderList()
+        public static DataTable OrderCounts()
         {
             DataTable dt = new DataTable();
             try
             {
                 string strWhr = string.Empty;
 
-                string strSql = "SELECT order_id, order_id as chkorder,meta_value,num_items_sold,Cast(total_sales As DECIMAL(10, 2)) as total_sales, wp_wc_order_stats.customer_id as customer_id, status,date_created FROM wp_wc_order_stats left join wp_postmeta on wp_wc_order_stats.order_id = wp_postmeta.post_id WHERE wp_postmeta.meta_key = '_billing_first_name' "
-                            + " order by order_id DESC, date_created DESC limit 0, 5";
+                string strSql = "select sum(case when post_status != 'auto-draft' then 1 else 0 end) AllOrder,sum(case when post_author = 8 and post_status != 'auto-draft' then 1 else 0 end) Mine,"
+                            + " sum(case when post_author != 8 and post_status = 'draft' then 1 else 0 end) Drafts,sum(case post_status when 'wc-pending' then 1 else 0 end) Pending,"
+                            + " sum(case post_status when 'wc-processing' then 1 else 0 end) Processing,sum(case post_status when 'wc-on-hold' then 1 else 0 end) OnHold,"
+                            + " sum(case post_status when 'wc-completed' then 1 else 0 end) Completed,sum(case post_status when 'wc-cancelled' then 1 else 0 end) Cancelled,"
+                            + " sum(case post_status when 'wc-refunded' then 1 else 0 end) Refunded,sum(case post_status when 'wc-failed' then 1 else 0 end) Failed"
+                            + " from wp_posts p where p.post_type = 'shop_order' ";
 
-                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
-                dt = ds.Tables[0];
+                dt = SQLHelper.ExecuteDataTable(strSql);
             }
             catch (Exception ex)
             {
@@ -567,18 +570,28 @@
             try
             {
                 string strWhr = string.Empty;
+                if (!string.IsNullOrEmpty(userstatus))
+                {
+                    if (userstatus == "mine") { strWhr += " and p.post_author = 8 and os.status != 'auto-draft'"; }
+                    else { strWhr += " and status = '" + userstatus + "'"; }
+                }
+                else
+                    strWhr += " and status != 'auto-draft' ";
+
                 if (!string.IsNullOrEmpty(searchid))
                 {
-                    strWhr += " and (os.order_id like '%" + searchid + "%' OR os.num_items_sold='%" + searchid + "%' OR os.total_sales='%" + searchid + "%' OR os.customer_id='%" + searchid + "%' OR os.status like '%" + searchid + "%' OR os.date_created like '%" + searchid + "%')";
+                    strWhr += " and (os.id like '%" + searchid + "%' OR os.num_items_sold='%" + searchid + "%' OR os.total_sales='%" + searchid + "%' OR os.customer_id='%" + searchid + "%' OR os.status like '%" + searchid + "%' OR p.post_date like '%" + searchid + "%')";
                 }
 
-                string strSql = "SELECT os.order_id, os.order_id as chkorder,os.num_items_sold,Cast(os.total_sales As DECIMAL(10, 2)) as total_sales, os.customer_id as customer_id,os.status,DATE_FORMAT(os.date_created, '%M %d %Y') date_created,"
-                            + " MAX(case meta_key when '_billing_first_name' THEN meta_value ELSE '' END) FirstName,MAX(case meta_key when '_billing_last_name' THEN meta_value ELSE '' END) LastName"
-                            + " FROM wp_wc_order_stats os left join wp_postmeta pm on os.order_id = pm.post_id WHERE pm.meta_key in ('_billing_first_name', '_billing_last_name')" + strWhr  
-                            + " GROUP BY os.order_id,os.num_items_sold,os.total_sales,os.customer_id,os.status,os.date_created"
+                string strSql = "SELECT os.order_id, os.order_id as chkorder,os.num_items_sold,Cast(os.total_sales As DECIMAL(10, 2)) as total_sales, os.customer_id as customer_id,"
+                            + " os.status status, DATE_FORMAT(os.date_created, '%M %d %Y') date_created,COALESCE(pmf.meta_value, '') FirstName,COALESCE(pml.meta_value, '') LastName"
+                            + " FROM wp_wc_order_stats os"
+                            + " left join wp_postmeta pmf on os.order_id = pmf.post_id and pmf.meta_key = '_billing_first_name'"
+                            + " left join wp_postmeta pml on os.order_id = pml.post_id and pml.meta_key = '_billing_last_name'"
+                            + " WHERE 1=1 " + strWhr
                             + " order by " + SortCol + " " + SortDir + " limit " + (pageno * pagesize).ToString() + ", " + pagesize + "";
-               
-                strSql += "; SELECT ceil(Count(os.order_id)/" + pagesize.ToString() + ") TotalPage,Count(os.order_id) TotalRecord from wp_wc_order_stats os WHERE 1 = 1 " + strWhr.ToString();
+
+                strSql += "; SELECT Count(distinct os.order_id) TotalRecord from wp_wc_order_stats os WHERE 1 = 1 " + strWhr.ToString();
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
                 if (ds.Tables[1].Rows.Count > 0)

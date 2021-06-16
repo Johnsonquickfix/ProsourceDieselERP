@@ -15,17 +15,38 @@ function AddCustomer() {
     BillingCity = $("#txtBillingCity").val();
     BillingPhone = $("#txtBillingPhone").val();
 
-    if (Email == "") { swal('alert', 'Please Enter Email', 'error') }
-    else if (NickName == "") { swal('alert', 'Please Enter Nick Name', 'error') }
-    else if (FirstName == "") { swal('alert', 'Please Enter First Name', 'error') }
-    else if (LastName == "") { swal('alert', 'Please Enter Last Name', 'error') }
-    else if (BillingAddress1 == "") { swal('alert', 'Please Enter Address 1', 'error') }
+    if (Email == "") {
+        swal('alert', 'Please Enter Email', 'error').then(function () { swal.close(); $('#txtUserEmail').focus(); })
+    }
+    else if (NickName == "") {
+        swal('alert', 'Please Enter User Name', 'error').then(function () { swal.close(); $('#txtUserNickName').focus(); })
+    }
+    else if (FirstName == "") {
+        swal('alert', 'Please Enter First Name', 'error').then(function () { swal.close(); $('#txtFirstName').focus(); })
+    }
+
+    else if (LastName == "") {
+        swal('alert', 'Please Enter Last Name', 'error').then(function () { swal.close(); $('#txtLastName').focus(); })
+    }
+    else if (BillingAddress1 == "") {
+        swal('alert', 'Please Enter Address 1', 'error').then(function () { swal.close(); $('#txtBillingAddress1').focus(); })
+    }
    /* else if (BillingAddress2 == "") { swal('alert', 'Please Enter Address 2', 'error') }*/
-    else if (BillingPostcode == "") { swal('alert', 'Please Enter Post/Zip Code', 'error') }
-    else if (BillingCountry == "") { swal('alert', 'Please Enter Country/Region', 'error') }
-    else if (BillingState == "") { swal('alert', 'Please Enter State/Country', 'error') }
-    else if (BillingCity == "") { swal('alert', 'Please Enter City', 'error') }
-    else if (BillingPhone == "") { swal('alert', 'Please Enter Contact No.', 'error') }
+    else if (BillingPostcode == "") {
+        swal('alert', 'Please Enter Post/Zip Code', 'error').then(function () { swal.close(); $('#txtBillingPostCode').focus(); })
+    }
+    else if (BillingCountry == "") {
+        swal('alert', 'Please Enter Country/Region', 'error').then(function () { swal.close(); $('#txtBillingCountry').focus(); })
+    }
+    else if (BillingState == "") {
+        swal('alert', 'Please Enter State/Country', 'error').then(function () { swal.close(); $('#txtBillingState').focus(); })
+    }
+    else if (BillingCity == "") {
+        swal('alert', 'Please Enter City', 'error').then(function () { swal.close(); $('#txtBillingCity').focus(); })
+    }
+    else if (BillingPhone == "") {
+        swal('alert', 'Please Enter Contact No.', 'error').then(function () { swal.close(); $('#txtBillingPhone').focus(); })
+    }
     else {
         var obj = {
             ID: ID,
@@ -218,7 +239,7 @@ function GetCustomerByID(id) {
         dataType: 'JSON',
         data: JSON.stringify(obj),
         success: function (data) {
-            var d = JSON.parse(data);
+            var d = JSON.parse(data);           
             $("#txtUserEmail").val(d[0].user_email);
             $("#txtUserNickName").val(d[0].user_nicename);
             $("#txtFirstName").val(d[0].first_name);

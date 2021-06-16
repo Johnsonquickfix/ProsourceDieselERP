@@ -329,7 +329,7 @@
                         reset();
                     }
                     else {
-                        swal('Alert!', data.message, 'Error')
+                        swal('Alert!', data.message, 'error')
                     }
                 },
                 complete: function () {
@@ -339,7 +339,7 @@
                      
                 },
                 error: function (error) {
-                    swal('Error!', 'something went wrong', 'Error');
+                    swal('Error!', 'something went wrong', 'error');
                 },
             })
         }

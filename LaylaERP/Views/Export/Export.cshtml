@@ -5,20 +5,23 @@
     Layout = "~/Views/Shared/_ExportLayout.cshtml";
 }
 <div class="page-title">
-    <h2 class="page-heading">Order Details</h2>
+    <h2 class="page-heading">Export</h2>
 </div>
 
 <div class="setting-section">
     <div class="nav-tabs-custom">
         <ul class="nav nav-tabs">
             <li class="active"><a href="#tab_1" data-toggle="tab">Orders</a></li>
-            <li><a href="#tab_2" data-toggle="tab">Customers</a></li>
-            <li><a href="#tab_3" data-toggle="tab">Users</a></li>
+            <li><a href="#tab_2" data-toggle="tab">Users</a></li>
+            <li><a href="#tab_3" data-toggle="tab">Customers</a></li>
         </ul>
         <div class="tab-content">
             <div class="tab-pane active" id="tab_1">
                 <div class="user_subCrumbs">
-
+                    @*@using (Html.BeginForm())
+                    {
+                        @Html.EditorFor(model => model.created_date, new {htmlAttributes = new {@class = "datepicker" } })
+                    }*@
                 </div>
                 <div id="poststuff" class="woocommerce-reports-wide">
                     <div class="postbox">
@@ -30,9 +33,9 @@
                                             <th>Order Id</th>
                                             <th>Order Date</th>
                                             <th>Product Name</th>
-                                            <th>Item Type</th>
+                                            @*<th>Item Type</th>*@
                                             <th>Product Id</th>
-                                            <th>Variant Id </th>
+                                            @*<th>Variant Id </th>*@
                                             <th>Qty</th>
                                             <th>Subtotal</th>
                                             <th>Total</th>
@@ -55,12 +58,12 @@
                                 <table id="exportusersdata" class="table-blue table table-bordered check-table" style="width:100%;">
                                     <thead>
                                         <tr>
-                                            <th>ID</th>
-                                            <th>User Name</th>
+                                            <th>Id</th>
+                                            <th>Name</th>
                                             <th>Email</th>
                                             <th>Status</th>
                                             <th>Role</th>
-                                            <th>Date</th>
+                                            @*<th>Date</th>*@
                                         </tr>
                                     </thead>
                                    
@@ -132,6 +135,7 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
+            
             DatagridOrder();
             DatagridUsers();
         });
@@ -142,6 +146,7 @@
                         "url": '/Export/GetData',
                         "type": 'GET',
                         "dataType": 'json',
+                        
                     },
                     "columns": [
                         { 'data': 'order_id' },
@@ -154,9 +159,9 @@
                             }
                         },
                         { 'data': 'product_name' },
-                        { 'data': 'item_type' },
+                        //{ 'data': 'item_type' },
                         { 'data': 'product_id' },
-                        { 'data': 'variant_id' },
+                        //{ 'data': 'variant_id' },
                         { 'data': 'qty' },
                         { 'data': 'subtotal' },
                         { 'data': 'total' }
@@ -186,29 +191,23 @@
                     "dataType": 'json',
                 },
                 "columns": [ 
+                   
+                    { 'data': 'UID', 'sWidth': "5%" },
+                    { 'data': 'user_login', 'sWidth': "20%" },
+                    { 'data': 'user_email', 'sWidth': "20%" },
+                    { 'data': 'user_status', 'sWidth': "10%" },
+                    { 'data': 'my', 'sWidth': "10%" },
                     //{
-                    //    'data': 'order_created',
+                    //    'data': 'created_date',
                     //    'render': function (jsonDate) {
                     //        var date = new Date(parseInt(jsonDate.substr(6)));
                     //        var month = ("0" + (date.getMonth() + 1)).slice(-2);
                     //        return ("0" + date.getDate()).slice(-2) + '-' + month + '-' + date.getFullYear();
                     //    }
                     //},
-                    { 'data': 'UID', 'sWidth': "5%" },
-                    { 'data': 'user_login', 'sWidth': "20%" },
-                    { 'data': 'user_email', 'sWidth': "20%" },
-                    { 'data': 'user_status', 'sWidth': "10%" },
-                    { 'data': 'my', 'sWidth': "10%" },
-                    {
-                        'data': 'created_date',
-                        'render': function (jsonDate) {
-                            var date = new Date(parseInt(jsonDate.substr(6)));
-                            var month = ("0" + (date.getMonth() + 1)).slice(-2);
-                            return ("0" + date.getDate()).slice(-2) + '-' + month + '-' + date.getFullYear();
-                        }
-                    },
 
                 ],
+                "order":[0, 'desc'],
                 "dom": 'Bfrtip',
                 "buttons": [
 
@@ -226,4 +225,6 @@
             });
         }
     </script>
+
+   
 }

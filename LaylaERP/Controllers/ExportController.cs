@@ -16,22 +16,26 @@ namespace LaylaERP.Controllers
         // GET: Export
         public ActionResult Export()
         {
+           
             return View();
         }
 
         public ActionResult GetData()
         {
-           
             ExportRepository.ExportOrderDetails();
-            return Json(new { data = ExportRepository.userlist }, JsonRequestBehavior.AllowGet);
+            var k = Json(new { data = ExportRepository.exportorderlist }, JsonRequestBehavior.AllowGet);
+            k.MaxJsonLength = int.MaxValue;
+            return k;
         }
 
 
         public JsonResult UsersExport()
         {
+           
             ExportRepository.ExportUsersDetails();
-            return Json(new { data = ExportRepository.usersexportlist }, JsonRequestBehavior.AllowGet);
-            
+            var j = Json(new { data = ExportRepository.usersexportlist }, JsonRequestBehavior.AllowGet);
+            j.MaxJsonLength = int.MaxValue;
+            return j;
         }
     }
 }

@@ -1,8 +1,10 @@
 ﻿using LaylaERP.DAL;
 using LaylaERP.Models;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Linq;
 using System.Web;
@@ -14,11 +16,8 @@ namespace LaylaERP.BAL
         public static List<Export_Details> usersexportlist = new List<Export_Details>();
         public static void ExportUsersDetails()
         {
-            
-
             try
             {
-                
                 usersexportlist.Clear();
                 DataSet ds1 = new DataSet();
                 string sqlquery = "select ID, User_Image, user_login, user_status, if(user_status=0,'Active','InActive') as status,user_email,user_pass,meta_value from wp_users, wp_usermeta WHERE wp_users.user_registered IS NOT NULL and wp_usermeta.meta_key='wp_capabilities' And wp_users.ID=wp_usermeta.user_id And wp_users.ID IN (SELECT user_id FROM wp_usermeta WHERE meta_key = 'wp_capabilities' AND meta_value NOT LIKE '%customer%') ORDER BY ID DESC";
@@ -120,51 +119,35 @@ namespace LaylaERP.BAL
         //"(SELECT format(meta_value, 2) FROM wp_woocommerce_order_itemmeta WHERE order_item_id = oi.order_item_id AND meta_key = '_line_subtotal') as subtotal," +
         //"(SELECT format(meta_value, 2) FROM wp_woocommerce_order_itemmeta WHERE order_item_id = oi.order_item_id AND meta_key = '_line_total') as total" +
         //" FROM wp_posts o LEFT JOIN wp_woocommerce_order_items oi ON oi.order_id = o.id LEFT JOIN wp_posts p ON p.ID = oi.order_item_id WHERE o.post_type = 'shop_order' limit 2000 ";
-        public static string ssql = "select ws.order_id as order_id, ws.date_created as order_created,  ws.num_items_sold as qty,format(ws.total_sales, 2) as subtotal,format(ws.net_total, 2) as total, ws.customer_id as customer_id from wp_wc_order_stats ws, wp_users wu where ws.customer_id = wu.ID order by ws.order_id desc limit 1000";
+        public static string ssql = "select ws.order_id as order_id, ws.date_created as order_created, substring(ws.status,4) as status,  ws.num_items_sold as qty,format(ws.total_sales, 2) as subtotal,format(ws.net_total, 2) as total, ws.customer_id as customer_id from wp_wc_order_stats ws, wp_users wu where ws.customer_id = wu.ID order by ws.order_id desc limit 6000";
 
 
-        public static List<Export_Details> userlist = new List<Export_Details>();
+        public static List<Export_Details> exportorderlist = new List<Export_Details>();
 
         public static void ExportOrderDetails()
         {
-            userlist.Clear();
-            DataSet ds1 = new DataSet();
-            ds1 = DAL.SQLHelper.ExecuteDataSet(ssql);
-            for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
-            {
-                Export_Details uobj = new Export_Details();
-                uobj.order_id = Convert.ToInt32(ds1.Tables[0].Rows[i]["order_id"].ToString());
-                uobj.order_created = Convert.ToDateTime(ds1.Tables[0].Rows[i]["order_created"].ToString());
-                uobj.customer_id = ds1.Tables[0].Rows[i]["customer_id"].ToString();
-                //uobj.item_type = ds1.Tables[0].Rows[i]["item_type"].ToString();
-                //uobj.product_id = ds1.Tables[0].Rows[i]["product_id"].ToString();
-                //uobj.variant_id = ds1.Tables[0].Rows[i]["variant_id"].ToString();
-                uobj.qty = ds1.Tables[0].Rows[i]["qty"].ToString();
-                uobj.subtotal = ds1.Tables[0].Rows[i]["subtotal"].ToString();
-                uobj.total = ds1.Tables[0].Rows[i]["total"].ToString();
-                userlist.Add(uobj);
-            }
-        }
-
-        public static DataTable ExportMyResult()
-        {
-            DataTable DT = new DataTable();
             try
             {
-
-                //        string strquery = "SELECT u.ID, u.user_login, u.user_email, u.user_status, " +
-                //"(SELECT meta_value FROM wp_usermeta WHERE u.ID = um.user_id AND meta_key = 'first_name') as first_name, " +
-                //"(SELECT meta_value FROM wp_usermeta WHERE u.ID = um.user_id AND meta_key = 'last_name') as last_name, " +
-                //"(SELECT meta_value FROM wp_usermeta WHERE u.ID = um.user_id AND meta_key = 'user_phone') as user_phone, " +
-                //"(SELECT meta_value FROM wp_usermeta WHERE u.ID = um.user_id AND meta_key = 'user_country') as user_country, " +
-                //"(SELECT meta_value FROM wp_usermeta WHERE u.ID = um.user_id AND meta_key = 'user_address') as user_address " +
-                // "FROM wp_users u LEFT JOIN wp_usermeta um ON um.user_id = u.ID where u.ID = um.user_id GROUP by u.id";
-                string strquery = "select ws.order_id, ws.num_items_sold,ws.total_sales,ws.net_total,customer_id from wp_wc_order_stats ws, wp_users wu where ws.customer_id = wu.ID order by ws.order_id DESC";
-                DT = SQLHelper.ExecuteDataTable(strquery);
+                exportorderlist.Clear();
+                DataSet ds1 = new DataSet();
+                ds1 = DAL.SQLHelper.ExecuteDataSet(ssql);
+                for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
+                {
+                    Export_Details uobj = new Export_Details();
+                    uobj.order_id = Convert.ToInt32(ds1.Tables[0].Rows[i]["order_id"].ToString());
+                    uobj.order_created = Convert.ToDateTime(ds1.Tables[0].Rows[i]["order_created"].ToString());
+                    uobj.customer_id = ds1.Tables[0].Rows[i]["customer_id"].ToString();
+                    uobj.orderstatus = ds1.Tables[0].Rows[i]["status"].ToString();
+                    //uobj.product_id = ds1.Tables[0].Rows[i]["product_id"].ToString();
+                    //uobj.variant_id = ds1.Tables[0].Rows[i]["variant_id"].ToString();
+                    uobj.qty = ds1.Tables[0].Rows[i]["qty"].ToString();
+                    uobj.subtotal = ds1.Tables[0].Rows[i]["subtotal"].ToString();
+                    uobj.total = ds1.Tables[0].Rows[i]["total"].ToString();
+                    exportorderlist.Add(uobj);
+                }
             }
-            catch (Exception ex)
-            { throw ex; }
-            return DT;
+            catch (Exception ex) { throw ex; }
         }
+
     }
 }

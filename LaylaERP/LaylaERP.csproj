@@ -184,6 +184,7 @@
     <Compile Include="Models\SearchModel.cs" />
     <Compile Include="Models\SettingModel.cs" />
     <Compile Include="Models\UserClassification.cs" />
+    <Compile Include="Models\UsersModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UTILITIES\clsPayPal.cs" />
     <Compile Include="UTILITIES\clsTaxJar.cs" />

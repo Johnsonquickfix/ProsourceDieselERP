@@ -15,88 +15,122 @@ using System.Text;
 
 namespace LaylaERP.BAL
 { 
-    public class UsersRepositry
+    public class UsersRepositry 
     {
         private static string itoa64 = "./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
         public static string UserPassword;
         public static List<clsUserDetails> userslist = new List<clsUserDetails>();
         //string result = string.Empty;
-        public static void ShowUsersDetails(string rolee)
+        //public static void ShowUsersDetails(string rolee)
+        //{
+
+        //    try
+        //    {
+        //        if(rolee==null || rolee == "")
+        //        {
+        //            rolee = "%";
+        //        }
+        //        userslist.Clear();
+        //        DataSet ds1 = new DataSet();
+        //        string sqlquery = "select ID, User_Image, user_login, user_status, if(user_status=0,'Active','InActive') as status,user_email,user_pass,meta_value from wp_users, wp_usermeta WHERE wp_usermeta.meta_value like '%"+rolee+"%' And wp_usermeta.meta_key='wp_capabilities' And wp_users.ID=wp_usermeta.user_id And wp_users.ID IN (SELECT user_id FROM wp_usermeta WHERE meta_key = 'wp_capabilities' AND meta_value NOT LIKE '%customer%') ORDER BY ID ASC";
+        //        ds1 = DAL.SQLHelper.ExecuteDataSet(sqlquery);
+        //        string result = string.Empty;
+
+        //        for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
+        //        {
+        //            clsUserDetails uobj = new clsUserDetails();
+        //            //Code for role
+
+        //            if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["meta_value"].ToString()) && ds1.Tables[0].Rows[i]["meta_value"].ToString().Length > 5 && ds1.Tables[0].Rows[i]["meta_value"].ToString().Substring(0, 2) == "a:")
+        //            {
+
+        //                if (ds1.Tables[0].Rows[i]["meta_value"].ToString().Trim() == "a:0:{}")
+        //                    ds1.Tables[0].Rows[i]["meta_value"] = "Unknown";
+        //                //result = ds1.Tables[0].Rows[i]["meta_value"].ToString();
+
+        //                else
+        //                    ds1.Tables[0].Rows[i]["meta_value"] = User_Role_Name(ds1.Tables[0].Rows[i]["meta_value"].ToString());
+
+        //            }
+        //            else
+        //            {
+        //                    ds1.Tables[0].Rows[i]["meta_value"] = ds1.Tables[0].Rows[i]["meta_value"];
+        //            }
+
+        //            uobj.ID = Convert.ToInt32(ds1.Tables[0].Rows[i]["ID"].ToString());
+        //            uobj.user_login = ds1.Tables[0].Rows[i]["user_login"].ToString();
+        //            result = ds1.Tables[0].Rows[i]["meta_value"].ToString();
+
+        //            if (result == "Mod_Squad") {
+        //                result = "Mod Squad";
+        //            } else if (result == "SEO_Editor") {
+        //                result = "SEO Editor";
+        //            } else if (result == "SEO_Manager") {
+        //                result = "SEO Manager";
+        //            } else if (result == "Shop_Manager") {
+        //                result = "Shop Manager";
+        //            } else if (result == "Supply_Chain_Manager") {
+        //                result = "Supply Chain Manager";
+        //            } else if (result == "administrator") {
+        //                result = "Administrator";
+        //            } else if (result == "author") {
+        //                result = "Author";
+        //            } else if (result == "editor") {
+        //                result = "Editor";
+        //            } else {                       
+        //                uobj.my = result;
+        //            } 
+
+        //            uobj.user_email = ds1.Tables[0].Rows[i]["user_email"].ToString();
+        //            if ((ds1.Tables[0].Rows[i]["user_status"].ToString() == "0"))
+        //            { uobj.user_status = "Active"; }
+        //            else { uobj.user_status = "InActive"; }
+
+        //            //Code For Role End
+        //            userslist.Add(uobj);
+        //        }
+
+        //    }
+        //    catch (Exception e)
+        //    {
+
+        //    }
+
+
+        //}
+
+        public static DataTable ShowUsersDetails(string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
         {
-            
+            DataTable dt = new DataTable();
+            totalrows = 0;
             try
             {
-                if(rolee==null || rolee == "")
+                string strWhr = string.Empty;
+
+                string strSql = "select ID, User_Image, user_login, user_status, if(user_status=0,'Active','InActive') as status,user_email,MAX(case wp_usermeta.meta_key when 'wp_capabilities' THEN wp_usermeta.meta_value ELSE '' END) Role,user_pass from wp_users INNER JOIN wp_usermeta on wp_users.ID = wp_usermeta.user_id and wp_usermeta.meta_key = 'wp_capabilities' AND meta_value NOT LIKE '%customer%' GROUP BY ID, User_Image, user_login, user_status, user_email";
+
+                if (!string.IsNullOrEmpty(searchid))
                 {
-                    rolee = "%";
+                    strWhr += " and (User_Email like '%" + searchid + "%' OR User_Login='%" + searchid + "%' OR user_nicename='%" + searchid + "%' OR ID='%" + searchid + "%' OR um.meta_value like '%" + searchid + "%')";
                 }
-                userslist.Clear();
-                DataSet ds1 = new DataSet();
-                string sqlquery = "select ID, User_Image, user_login, user_status, if(user_status=0,'Active','InActive') as status,user_email,user_pass,meta_value from wp_users, wp_usermeta WHERE wp_usermeta.meta_value like '%"+rolee+"%' And wp_usermeta.meta_key='wp_capabilities' And wp_users.ID=wp_usermeta.user_id And wp_users.ID IN (SELECT user_id FROM wp_usermeta WHERE meta_key = 'wp_capabilities' AND meta_value NOT LIKE '%customer%') ORDER BY ID ASC";
-                ds1 = DAL.SQLHelper.ExecuteDataSet(sqlquery);
-                string result = string.Empty;
-                
-                for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
+                if (userstatus != null)
                 {
-                    clsUserDetails uobj = new clsUserDetails();
-                    //Code for role
-
-                    if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["meta_value"].ToString()) && ds1.Tables[0].Rows[i]["meta_value"].ToString().Length > 5 && ds1.Tables[0].Rows[i]["meta_value"].ToString().Substring(0, 2) == "a:")
-                    {
-                        
-                        if (ds1.Tables[0].Rows[i]["meta_value"].ToString().Trim() == "a:0:{}")
-                            ds1.Tables[0].Rows[i]["meta_value"] = "Unknown";
-                        //result = ds1.Tables[0].Rows[i]["meta_value"].ToString();
-
-                        else
-                            ds1.Tables[0].Rows[i]["meta_value"] = User_Role_Name(ds1.Tables[0].Rows[i]["meta_value"].ToString());
-                        
-                    }
-                    else
-                    {
-                            ds1.Tables[0].Rows[i]["meta_value"] = ds1.Tables[0].Rows[i]["meta_value"];
-                    }
-
-                    uobj.ID = Convert.ToInt32(ds1.Tables[0].Rows[i]["ID"].ToString());
-                    uobj.user_login = ds1.Tables[0].Rows[i]["user_login"].ToString();
-                    result = ds1.Tables[0].Rows[i]["meta_value"].ToString();
-
-                    if (result == "Mod_Squad") {
-                        result = "Mod Squad";
-                    } else if (result == "SEO_Editor") {
-                        result = "SEO Editor";
-                    } else if (result == "SEO_Manager") {
-                        result = "SEO Manager";
-                    } else if (result == "Shop_Manager") {
-                        result = "Shop Manager";
-                    } else if (result == "Supply_Chain_Manager") {
-                        result = "Supply Chain Manager";
-                    } else if (result == "administrator") {
-                        result = "Administrator";
-                    } else if (result == "author") {
-                        result = "Author";
-                    } else if (result == "editor") {
-                        result = "Editor";
-                    } else {                       
-                        uobj.my = result;
-                    } 
-       
-                    uobj.user_email = ds1.Tables[0].Rows[i]["user_email"].ToString();
-                    if ((ds1.Tables[0].Rows[i]["user_status"].ToString() == "0"))
-                    { uobj.user_status = "Active"; }
-                    else { uobj.user_status = "InActive"; }
-
-                    //Code For Role End
-                    userslist.Add(uobj);
+                    strWhr += " and (ur.user_status='" + userstatus + "') ";
                 }
-                
+                strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, (pageno * pagesize).ToString(), pagesize.ToString());
+
+                strSql += "; SELECT ceil(Count(wp_users.id)/" + pagesize.ToString() + ") TotalPage,Count(wp_users.id) TotalRecord from wp_users INNER JOIN wp_usermeta on wp_users.ID = wp_usermeta.user_id and wp_usermeta.meta_key = 'wp_capabilities' AND meta_value NOT LIKE '%customer%'" + strWhr.ToString();
+
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dt = ds.Tables[0];
+                if (ds.Tables[1].Rows.Count > 0)
+                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-
+                throw ex;
             }
-            
-            
+            return dt;
         }
 
         public static DataTable GetDetails(string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")

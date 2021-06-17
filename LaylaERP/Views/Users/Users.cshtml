@@ -10,21 +10,20 @@
 
 </div>
 <div class="user_subCrumbs">
-    <ul>
-        <li class="all"><a href="#" id="all" class="current" aria-current="page">All <span class="count">(@ViewBag.all)</span></a> |</li>
-        <li class="accounting"><a href="#" id="accounting">Accounting <span class="count">(@ViewBag.accounting)</span></a> |</li>
-        <li class="administrator"><a href="#" id="administrator">Administrator <span class="count">(@ViewBag.admin)</span></a> |</li>
-        <li class="author"><a href="#" id="author">Author <span class="count">(@ViewBag.author)</span></a> |</li>
-        <li class="contributor"><a href="#" id="contributor">Contributor <span class="count">(@ViewBag.contributor)</span></a> |</li>
-        @*<li class="customer"><a href="#">Customer <span class="count">(@ViewBag.customer)</span></a> |</li>*@
-        <li class="editor"><a href="#" id="editor">Editor <span class="count">(@ViewBag.editor)</span></a> |</li>
-        <li class="modsquad"><a href="#" id="modsquad">Mod Squad <span class="count">(@ViewBag.modsquad)</span></a> |</li>
-        <li class="shop_manager"><a href="#" id="shopmanager">Shop Manager <span class="count">(@ViewBag.shopmanager)</span></a> |</li>
-        <li class="subscriber"><a href="#" id="subscriber">Subscriber <span class="count">(@ViewBag.subscriber)</span></a> |</li>
-        <li class="supplychainmanager"><a href="#" id="supplychainmanager">Supply Chain Manager <span class="count">(@ViewBag.supplychainmanager)</span></a> |</li>
-        <li class="wpseo_editor" id="seo"><a href="#">SEO Editor <span class="count">(@ViewBag.seoeditor)</span></a> |</li>
-        <li class="wpseo_editor" id="seomanager"><a href="#">SEO Manager <span class="count">(@ViewBag.seomanager)</span></a> |</li>
-        <li class="none" id="norole"><a href="#">No role <span class="count">(@ViewBag.norole)</span></a></li>
+    <ul class="subsubsub">
+        <li class="all"><a href="#" id="all" class="current" aria-current="page">All (<span class="count">0</span>)</a> |</li>
+        <li class="accounting"><a href="#" id="accounting">Accounting (<span class="count">0</span>)</a> |</li>
+        <li class="administrator"><a href="#" id="administrator">Administrator (<span class="count">0</span>)</a> |</li>
+        <li class="author"><a href="#" id="author">Author (<span class="count">0</span>)</a> |</li>
+        <li class="contributor"><a href="#" id="contributor">Contributor (<span class="count">0</span>)</a> |</li>
+        <li class="editor"><a href="#" id="editor">Editor (<span class="count">0</span>)</a> |</li>
+        <li class="modsquad"><a href="#" id="modsquad">Mod Squad (<span class="count">0</span>)</a> |</li>
+        <li class="shop_manager"><a href="#" id="shopmanager">Shop Manager (<span class="count">0</span>)</a> |</li>
+        <li class="subscriber"><a href="#" id="subscriber">Subscriber (<span class="count">0</span>)</a> |</li>
+        <li class="supplychainmanager"><a href="#" id="supplychainmanager">Supply Chain Manager (<span class="count">0</span>)</a> |</li>
+        <li class="wpseo_editor"><a href="#" id="seo">SEO Editor (<span class="count">0</span>)</a> |</li>
+        <li class="wpseo_editor"><a href="#" id="seomanager">SEO Manager (<span class="count">0</span>)</a> |</li>
+        <li class="none"><a href="#" id="norole">No role (<span class="count">0</span>)</a></li>
     </ul>
 </div>
 <div>
@@ -78,22 +77,22 @@
                 <input type="submit" name="Grantrole" id="Grantrole" class="button" value="Grant">
             </div>
             <div class="alignleft actions">
-                     <select name="revoke_role" id="revoke_role">
-                         <option value="">Revoke Roal to…</option>
-                        <option value="Accounting">Accounting</option>
-                         <option value="Administrator">Administrator</option>
-                         <option value="Author">Author</option>
-                         <option value="Contributor">Contributor</option>
-                         <option value="Editor">Editor</option>
-                         <option value="Mod_Squad">Mod Squad</option>
-                         <option value="SEO_Editor">SEO Editor</option>
-                         <option value="SEO_Manager">SEO Manager</option>
-                         <option value="Shop_Manager">Shop Manager</option>
-                         <option value="Subscriber">Subscriber</option>
-                         <option value="Supply_Chain_Manager">Supply Chain Manager</option>
-                     </select>
-                    <input type="submit" name="Revoke" id="Revoke" class="button" value="Revoke">
-                </div>
+                <select name="revoke_role" id="revoke_role">
+                    <option value="">Revoke Roal to…</option>
+                    <option value="Accounting">Accounting</option>
+                    <option value="Administrator">Administrator</option>
+                    <option value="Author">Author</option>
+                    <option value="Contributor">Contributor</option>
+                    <option value="Editor">Editor</option>
+                    <option value="Mod_Squad">Mod Squad</option>
+                    <option value="SEO_Editor">SEO Editor</option>
+                    <option value="SEO_Manager">SEO Manager</option>
+                    <option value="Shop_Manager">Shop Manager</option>
+                    <option value="Subscriber">Subscriber</option>
+                    <option value="Supply_Chain_Manager">Supply Chain Manager</option>
+                </select>
+                <input type="submit" name="Revoke" id="Revoke" class="button" value="Revoke">
+            </div>
             <input type="hidden" name="varpass" id="varpass" value="">
             @*<div class="tablenav-pages">
                     <span class="displaying-num">61,641 items</span>
@@ -113,44 +112,40 @@
     </div>
     <div class="box box-primary">
         <div class="box-header">
-            <div class="dx-viewport demo-container data-table-container">
-                <div id="gridContainer" class="margin-15-rem">
-                    <table id="dtdata" class="table table-blue table-bordered table-striped dataTable check-table" style="width:100%;">
-                        <thead class="thead-dark">
-                            <tr>
-                                <th><input type="checkbox" name="checkAll" id="checkAll"><label></label></th>
-                                <th>ID</th>
-                                <th>User Name</th>
-                                <th>Email</th>
-                                <th>Status</th>
-                                <th>Role</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
+            <div id="gridContainer" class="margin-15-rem">
+                <table id="dtdata" class="table table-blue table-bordered table-striped dataTable check-table" style="width:100%;">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th><input type="checkbox" name="checkAll" id="checkAll"><label></label></th>
+                            <th>ID</th>
+                            <th>User Name</th>
+                            <th>Email</th>
+                            <th>Status</th>
+                            <th>Role</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
 
-                    </table>
-                </div>
+                </table>
             </div>
         </div>
     </div>
 </section>
 
-
+<script src="~/js/common.js"></script>
 <script src="@Url.Content("~/js/Users/Users.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 @section scripts{
 
     <script type="text/javascript">
         var j = "";
         $(document).ready(function () {
-            //$("#ddlStatus").change(function () {
-            //    alert($("#ddlStatus").val());
-            //    drop();
-            //    Datagrid(); return false; /Users/GetData
-            //});
-            Datagrid();
+            $(".subsubsub li a").click(function (e) {
+                $('.subsubsub li a').removeClass('current');
+                $(this).addClass('current');
+            });
+            GetUsersCount();
+            setTimeout(function () { Datagrid(1); }, 50);
         });
-
-       
 
         //CheckBoxes
         $('#checkAll').click(function () {
@@ -176,13 +171,8 @@
         $('#btnApply').click(function () {
             var id = "";
             var status = $("#ddlStatus").val();
-            $("input:checkbox[name=CheckSingle]:checked").each(function () {
-                id += $(this).val() + ",";
-
-            });
-            if (status == "1") {
-                UpdateCustomerStatus();
-            }
+            $("input:checkbox[name=CheckSingle]:checked").each(function () { id += $(this).val() + ","; });
+            if (status == "1") { UpdateCustomerStatus(); }
             if (status == "3") {
                 id = id.replace(/,(?=\s*$)/, '');
                 DeleteUsers(id);
@@ -201,10 +191,7 @@
         $("#changeit").click(function () {
             var ID = "";
             var new_role = $("#new_role").val();
-            $("input:checkbox[name=CheckSingle]:checked").each(function () {
-                ID += $(this).val() + ",";
-
-            });
+            $("input:checkbox[name=CheckSingle]:checked").each(function () { ID += $(this).val() + ","; });
             ID = ID.replace(/,(?=\s*$)/, '');
             changeRole(ID);
         })
@@ -230,8 +217,6 @@
             ID = ID.replace(/,(?=\s*$)/, '');
             Revokerole(ID);
         })
-
-
 
         //Count Role Grid Show
         $('#all').click(function () {
@@ -302,7 +287,9 @@
             k = 1;
             Datagrid(k);
         });
-          //Count Role Grid End
+        $('#norole').click(function () {            j = 'norole', k = 1;            Datagrid(k);
+        });
+                                      //Count Role Grid End
 
 
 

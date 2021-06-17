@@ -80,11 +80,11 @@ function dataGridLoad() {
                 }
             },
             { data: 'order_id', title: 'OrderID', sWidth: "8%" },
-            { data: 'customer_id', title: 'Cust ID', sWidth: "8%" },
-            { data: 'FirstName', title: 'First Name', sWidth: "10%" },
+            { data: 'customer_id', title: 'Customer ID', sWidth: "8%" },
+            { data: 'FirstName', title: 'First Name', sWidth: "13%" },
             { data: 'LastName', title: 'Last Name', sWidth: "10%" },
-            { data: 'num_items_sold', title: 'Items', sWidth: "5%",  },
-            { data: 'total_sales', title: 'Total', sWidth: "10%" , render: $.fn.dataTable.render.number(',', '.', 2, '') },
+            { data: 'num_items_sold', title: 'No. of Items', sWidth: "10%", className: "text-right" },
+            { data: 'total_sales', title: 'Order Total', sWidth: "10%", className: "text-right" , render: $.fn.dataTable.render.number(',', '.', 2, '') },
             {
                 data: 'status', title: 'Status', sWidth: "10%", render: function (data, type, row) {
                     if (data == 'wc-pending') return 'Pending payment';
@@ -97,9 +97,9 @@ function dataGridLoad() {
                     else '';
                 }
             },
-            { data: 'date_created', title: 'Date', sWidth: "10%" },
+            { data: 'date_created', title: 'Creation Date', sWidth: "10%" },
             {
-                'data': 'order_id', title: 'Action', sWidth: "8%",
+                'data': 'order_id', sWidth: "5%",
                 'render': function (id, type, full, meta) {
                     return '<a href="../Orders/NewOrders/' + id + '"><i class="glyphicon glyphicon-eye-open"></i></a>'
                 }

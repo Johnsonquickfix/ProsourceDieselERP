@@ -43,8 +43,8 @@
                     </div>
 
                     @*<h3 class="profile-username text-center">Layla Sleep</h3>
-                    <p class="text-muted text-center">laylasleep@acb.com</p>
-                    <p class="text-center">Washington Dc</p>*@
+                        <p class="text-muted text-center">laylasleep@acb.com</p>
+                        <p class="text-center">Washington Dc</p>*@
                 </div>
                 <!-- /.box-body -->
             </div>
@@ -143,7 +143,7 @@
                         <div class="col-offset-8 col-sm-4 mt-1">
                             <a href="#" class="btn btn-danger btn-block" id="btnSave"><b>Update User</b></a>
                             <br />
-                            @Html.ActionLink("Back to List", "Users/Users", null, new { @class = "btn btn-danger" })
+                            <a class="btn btn-danger" href="/Users/Users">Back to List</a>
                         </div>
                     </div>
                 </div>
@@ -166,7 +166,7 @@
                     $('<option>').val(value).text(value).appendTo("#txtCity");
             })
         })
-        //txtState 
+        //txtState
         $.get('GetState', function (data) {
             var st = $("#hfState").val();
             $.each(data, function (index, value) {
@@ -285,27 +285,18 @@
                 contentType: "application/json; charset=utf-8",
                 data: JSON.stringify(obj),
                 dataType: "json",
-                beforeSend: function () {
-                    $("#loader").show();
-                },
+                beforeSend: function () { $("#loader").show(); },
                 success: function (data) {
                     if (data.status == true) {
                         $('#parent > input:text').val('');
-                        swal('Alert!', data.message, 'success');
-                      /*  location.href = '/Users/Users/';*/
-                       
+                        swal('Alert!', data.message, 'success').then((result) => { location.href = 'Users/Users'; });
                     }
                     else {
-                        swal('Alert!', data.message, 'error')
+                        swal('Alert!', data.message, 'error');
                     }
                 },
-                complete: function () {
-                    $("#loader").hide();
-                    
-                },
-                error: function (error) {
-                    swal('Error!', 'something went wrong', 'error');
-                },
+                complete: function () { $("#loader").hide(); },
+                error: function (error) { swal('Error!', 'something went wrong', 'error'); },
             })
         }
 
@@ -319,7 +310,7 @@
             dataType: 'JSON',
             data: [],
             success: function (data) {
-            /*    $("#txtCountry").val(data.country);*/
+                /*    $("#txtCountry").val(data.country);*/
                 $("#txtState").val(data.state);
                 $("#txtCity").val(data.city);
             },

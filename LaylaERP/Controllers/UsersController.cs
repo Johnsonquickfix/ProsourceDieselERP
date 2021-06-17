@@ -19,7 +19,7 @@ namespace LaylaERP.Controllers
         public ActionResult Users()
         {
 
-            RoleCounter();
+            //RoleCounter();
             return View();
         }
 
@@ -50,31 +50,15 @@ namespace LaylaERP.Controllers
             return View();
         }
 
-        //public JsonResult GetData(string rolepass)
-        //{
-        //    //string urid = "0";
-        //    //urid = details.user_status;
-        //    //string result = Models.UsersRepositry.userslist.ToString();
-        //    //UsersRepositry.userslist.Clear();
-        //   // string role="";
-        //    UsersRepositry.ShowUsersDetails(rolepass);
-        //    return Json(new { data = UsersRepositry.userslist }, JsonRequestBehavior.AllowGet);
-        //}
-        public JsonResult GetUserList(UsersModel model)
+        public JsonResult GetData(string rolepass)
         {
-            string result = string.Empty;
-            int TotalRecord = 0;
-            try
-            {
-                string urid = "";
-                if (model.user_status != "")
-                    urid = model.user_status;
-                string searchid = model.Search;
-                DataTable dt = UsersRepositry.ShowUsersDetails(urid, searchid, model.PageNo, model.PageSize, out TotalRecord, model.SortCol, model.SortDir);
-                result = JsonConvert.SerializeObject(dt);
-            }
-            catch { }
-            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+            //string urid = "0";
+            //urid = details.user_status;
+            //string result = Models.UsersRepositry.userslist.ToString();
+            //UsersRepositry.userslist.Clear();
+           // string role="";
+            UsersRepositry.ShowUsersDetails(rolepass);
+            return Json(new { data = UsersRepositry.userslist }, JsonRequestBehavior.AllowGet);
         }
         public JsonResult GetDetails(CustomerModel model)
         {
@@ -416,5 +400,17 @@ namespace LaylaERP.Controllers
             }
         }
 
+        [HttpPost]
+        public JsonResult GetUsersCount(SearchModel model)
+        {
+            string result = string.Empty;
+            try
+            {
+                DataTable dt = UsersRepositry.UsersCounts();
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
     }
 }

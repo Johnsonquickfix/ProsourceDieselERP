@@ -56,7 +56,7 @@
             DataTable dtr = new DataTable();
             try
             {
-                string strquery = "select distinct City,City from ZIPCodes1";
+                string strquery = "select distinct City,City from ZIPCodes1 order by City";
                 dtr = SQLHelper.ExecuteDataTable(strquery);
             }
             catch (Exception ex)
@@ -69,7 +69,7 @@
             DataTable dtr = new DataTable();
             try
             {
-                string strquery = "select distinct State,State from ZIPCodes1";
+                string strquery = "select distinct State,State from ZIPCodes1 order by State";
                 dtr = SQLHelper.ExecuteDataTable(strquery);
             }
             catch (Exception ex)

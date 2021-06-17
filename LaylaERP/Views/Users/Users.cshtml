@@ -5,9 +5,9 @@
 }
 
 @*@using (Html.BeginForm("Users", "Users", FormMethod.Post)) { }*@
+<input type="hidden" id="hfStatusType" value="" />
 <div class="page-title">
     <h2 class="page-heading">Users</h2>
-
 </div>
 <div class="user_subCrumbs">
     <ul class="subsubsub">
@@ -44,17 +44,17 @@
             <div class="alignleft actions">
                 <select name="new_role" id="new_role">
                     <option value="">Change role to…</option>
-                    <option value="Accounting">Accounting</option>
-                    <option value="Administrator">Administrator</option>
-                    <option value="Author">Author</option>
-                    <option value="Contributor">Contributor</option>
-                    <option value="Editor">Editor</option>
-                    <option value="Mod_Squad">Mod Squad</option>
-                    <option value="SEO_Editor">SEO Editor</option>
-                    <option value="SEO_Manager">SEO Manager</option>
-                    <option value="Shop_Manager">Shop Manager</option>
-                    <option value="Subscriber">Subscriber</option>
-                    <option value="Supply_Chain_Manager">Supply Chain Manager</option>
+                    <option value="accounting">Accounting</option>
+                    <option value="administrator">Administrator</option>
+                    <option value="author">Author</option>
+                    <option value="contributor">Contributor</option>
+                    <option value="editor">Editor</option>
+                    <option value="modsquad">Mod Squad</option>
+                    <option value="wpseo_editor">SEO Editor</option>
+                    <option value="seo_manager">SEO Manager</option>
+                    <option value="shop_manager">Shop Manager</option>
+                    <option value="subscriber">Subscriber</option>
+                    <option value="supplychainmanager">Supply Chain Manager</option>
                 </select>
                 <input type="submit" name="changeit" id="changeit" class="button" value="Change">
             </div>
@@ -62,34 +62,34 @@
             <div class="alignleft actions">
                 <select name="grant_role" id="grant_role">
                     <option value="">Grant Roal to…</option>
-                    <option value="Accounting">Accounting</option>
-                    <option value="Administrator">Administrator</option>
-                    <option value="Author">Author</option>
-                    <option value="Contributor">Contributor</option>
-                    <option value="Editor">Editor</option>
-                    <option value="Mod_Squad">Mod Squad</option>
-                    <option value="SEO_Editor">SEO Editor</option>
-                    <option value="SEO_Manager">SEO Manager</option>
-                    <option value="Shop_Manager">Shop Manager</option>
-                    <option value="Subscriber">Subscriber</option>
-                    <option value="Supply_Chain_Manager">Supply Chain Manager</option>
+                    <option value="accounting">Accounting</option>
+                    <option value="administrator">Administrator</option>
+                    <option value="author">Author</option>
+                    <option value="contributor">Contributor</option>
+                    <option value="editor">Editor</option>
+                    <option value="modsquad">Mod Squad</option>
+                    <option value="wpseo_editor">SEO Editor</option>
+                    <option value="seo_manager">SEO Manager</option>
+                    <option value="shop_manager">Shop Manager</option>
+                    <option value="subscriber">Subscriber</option>
+                    <option value="supplychainmanager">Supply Chain Manager</option>
                 </select>
                 <input type="submit" name="Grantrole" id="Grantrole" class="button" value="Grant">
             </div>
             <div class="alignleft actions">
                 <select name="revoke_role" id="revoke_role">
                     <option value="">Revoke Roal to…</option>
-                    <option value="Accounting">Accounting</option>
-                    <option value="Administrator">Administrator</option>
-                    <option value="Author">Author</option>
-                    <option value="Contributor">Contributor</option>
-                    <option value="Editor">Editor</option>
-                    <option value="Mod_Squad">Mod Squad</option>
-                    <option value="SEO_Editor">SEO Editor</option>
-                    <option value="SEO_Manager">SEO Manager</option>
-                    <option value="Shop_Manager">Shop Manager</option>
-                    <option value="Subscriber">Subscriber</option>
-                    <option value="Supply_Chain_Manager">Supply Chain Manager</option>
+                    <option value="accounting">Accounting</option>
+                    <option value="administrator">Administrator</option>
+                    <option value="author">Author</option>
+                    <option value="contributor">Contributor</option>
+                    <option value="editor">Editor</option>
+                    <option value="modsquad">Mod Squad</option>
+                    <option value="wpseo_editor">SEO Editor</option>
+                    <option value="seo_manager">SEO Manager</option>
+                    <option value="shop_manager">Shop Manager</option>
+                    <option value="subscriber">Subscriber</option>
+                    <option value="supplychainmanager">Supply Chain Manager</option>
                 </select>
                 <input type="submit" name="Revoke" id="Revoke" class="button" value="Revoke">
             </div>
@@ -134,152 +134,105 @@
 
 <script src="~/js/common.js"></script>
 <script src="@Url.Content("~/js/Users/Users.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
-@section scripts{
 
-    <script type="text/javascript">
-        var j = "";
-        $(document).ready(function () {
-            $(".subsubsub li a").click(function (e) {
-                $('.subsubsub li a').removeClass('current');
-                $(this).addClass('current');
+<script type="text/javascript">
+    var j = "";
+    $(document).ready(function () {
+        $(".subsubsub li a").click(function (e) {
+            $('.subsubsub li').removeClass('current');
+            $('.subsubsub li a').removeClass('current');
+            $(this).addClass('current'); $(this).parent().addClass('current');
+        });
+        GetUsersCount();
+        setTimeout(function () { Datagrid(''); }, 50);
+
+        //Count Role Grid Show
+        $('#all').click(function () { var role_type = ""; $('#hfStatusType').val(role_type); Datagrid(role_type); });
+        $('#administrator').click(function () { var role_type = 'administrator'; $('#hfStatusType').val(role_type); Datagrid(role_type); });
+        $('#accounting').click(function () { var role_type = 'accounting'; $('#hfStatusType').val(role_type); Datagrid(role_type); });
+        $('#author').click(function () { var role_type = 'author'; $('#hfStatusType').val(role_type); Datagrid(role_type); });
+        $('#modsquad').click(function () { var role_type = 'modsquad'; $('#hfStatusType').val(role_type); Datagrid(role_type); });
+        $('#shopmanager').click(function () { var role_type = 'shop manager'; $('#hfStatusType').val(role_type); Datagrid(role_type); });
+        $('#subscriber').click(function () { var role_type = 'subscriber'; $('#hfStatusType').val(role_type); Datagrid(role_type); });
+        $('#supplychainmanager').click(function () { var role_type = 'supplychainmanager'; $('#hfStatusType').val(role_type); Datagrid(role_type); });
+        $('#seo').click(function () { var role_type = 'wpseo_editor'; $('#hfStatusType').val(role_type); Datagrid(role_type); });
+        $('#norole').click(function () { var role_type = 'norole'; $('#hfStatusType').val(role_type); Datagrid(role_type); });
+        $('#contributor').click(function () { var role_type = 'contributor'; $('#hfStatusType').val(role_type); Datagrid(role_type); });
+        $('#editor').click(function () { var role_type = 'editor'; $('#hfStatusType').val(role_type); Datagrid(role_type); });
+        $('#seomanager').click(function () { var role_type = 'seo_manager'; $('#hfStatusType').val(role_type); Datagrid(role_type); });
+        //Count Role Grid End
+    });
+
+    //CheckBoxes
+    $('#checkAll').click(function () {
+        var isChecked = $(this).prop("checked");
+        $('#dtdata tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
+    });
+
+    function Singlecheck() {
+        var isChecked = $(this).prop("checked");
+        var isHeaderChecked = $("#checkAll").prop("checked");
+        if (isChecked == false && isHeaderChecked)
+            $("#checkAll").prop('checked', isChecked);
+
+        else {
+            $('#dtdata tr:has(td)').find('input[type="checkbox"]').each(function () {
+                if ($(this).prop("checked") == false)
+                    isChecked = false;
             });
-            GetUsersCount();
-            setTimeout(function () { Datagrid(''); }, 50);
-
-            //Count Role Grid Show
-            $('#all').click(function () { var role_type = ""; Datagrid(role_type); });
-            $('#administrator').click(function () { var role_type = 'administrator'; Datagrid(role_type); });
-            $('#accounting').click(function () { var role_type = 'accounting'; Datagrid(role_type); });
-            $('#author').click(function () { var role_type = 'author'; Datagrid(role_type); });
-            $('#modsquad').click(function () { var role_type = 'modsquad'; Datagrid(role_type); });
-            $('#shopmanager').click(function () { var role_type = 'shop manager'; Datagrid(role_type); });
-            $('#subscriber').click(function () { var role_type = 'subscriber'; Datagrid(role_type); });
-            $('#supplychainmanager').click(function () { var role_type = 'supplychainmanager'; Datagrid(role_type); });
-            $('#seo').click(function () { var role_type = 'wpseo_editor'; Datagrid(role_type); });
-            $('#norole').click(function () { var role_type = 'norole'; Datagrid(role_type); });
-            $('#contributor').click(function () { var role_type = 'contributor'; Datagrid(role_type); });
-            $('#editor').click(function () { var role_type = 'editor'; Datagrid(role_type); });
-            $('#seomanager').click(function () { var role_type = 'seo_manager'; Datagrid(role_type); });
-            //Count Role Grid End
-        });
-
-        //CheckBoxes
-        $('#checkAll').click(function () {
-            var isChecked = $(this).prop("checked");
-            $('#dtdata tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
-        });
-
-        function Singlecheck() {
-            var isChecked = $(this).prop("checked");
-            var isHeaderChecked = $("#checkAll").prop("checked");
-            if (isChecked == false && isHeaderChecked)
-                $("#checkAll").prop('checked', isChecked);
-
-            else {
-                $('#dtdata tr:has(td)').find('input[type="checkbox"]').each(function () {
-                    if ($(this).prop("checked") == false)
-                        isChecked = false;
-                });
-                $("#checkAll").prop('checked', isChecked);
-            }
+            $("#checkAll").prop('checked', isChecked);
         }
+    }
 
-        $('#btnApply').click(function () {
-            var id = "";
-            var status = $("#ddlStatus").val();
-            $("input:checkbox[name=CheckSingle]:checked").each(function () { id += $(this).val() + ","; });
-            if (status == "1") { UpdateCustomerStatus(); }
-            if (status == "3") {
-                id = id.replace(/,(?=\s*$)/, '');
-                DeleteUsers(id);
-                //dataGridLoad();
-            }
-            if (status == "2") {
+    $('#btnApply').click(function () {
+        var id = "";
+        var status = $("#ddlStatus").val();
+        $("input:checkbox[name=CheckSingle]:checked").each(function () { id += $(this).val() + ","; });
+        if (status == "1") { UpdateCustomerStatus(); }
+        if (status == "3") {
+            id = id.replace(/,(?=\s*$)/, '');
+            DeleteUsers(id);
+            //dataGridLoad();
+        }
+        if (status == "2") {
 
-                id = id.replace(/,(?=\s*$)/, '');
-                ActiveUsers(id);
-                //dataGridLoad();
-            }
-            $("input:checkbox[name=CheckSingle]:checked").each(function () {
-                //alert("Id: " + $(this).attr("id") + " Value: " + $(this).val());
-            });
-        })
-        $("#changeit").click(function () {
-            var ID = "";
-            var new_role = $("#new_role").val();
-            $("input:checkbox[name=CheckSingle]:checked").each(function () { ID += $(this).val() + ","; });
-            ID = ID.replace(/,(?=\s*$)/, '');
-            changeRole(ID);
-        })
-        //Grantrole
-        $("#Grantrole").click(function () {
-            var ID = "";
-            var new_role = $("#grant_role").val();
-            $("input:checkbox[name=CheckSingle]:checked").each(function () {
-                ID += $(this).val() + ",";
-
-            });
-            ID = ID.replace(/,(?=\s*$)/, '');
-            Grantrole(ID);
-        })
-        //Revoke
-        $("#Revoke").click(function () {
-            var ID = "";
-            var new_role = $("#revoke_role").val();
-            $("input:checkbox[name=CheckSingle]:checked").each(function () {
-                ID += $(this).val() + ",";
-
-            });
-            ID = ID.replace(/,(?=\s*$)/, '');
-            Revokerole(ID);
-        })
-
-
-    </script>
-
-    @*<script>
-            function drop() {
-                var urid = $("#ddlStatus").val();
-                var obj = { user_status: urid };
-
-                $.ajax({
-                    url: '/Users/GetData/', dataType: 'json', type: 'Post',
-                    contentType: "application/json; charset=utf-8",
-                    data: JSON.stringify(obj),
-                    dataType: "json",
-                    success: function (data) {
-                        if (data.status == true) {
-
-                            swal('Alert!', data.message, 'success');
-                        }
-                        else {
-                            swal('Alert!', data.message, 'error')
-                        }
-                    },
-                    error: function (error) {
-                        swal('Error!', 'something went wrong', 'error');
-                    },
-
-
-                })
-            }
-        </script>*@
-}
-@*<script>
-        var dataTable = document.getElementById('data-table');
-        var checkItAll = dataTable.querySelector('input[name="select_all"]');
-        var inputs = dataTable.querySelectorAll('tbody>tr>td>input');
-
-        checkItAll.addEventListener('change', function () {
-            if (checkItAll.checked) {
-                inputs.forEach(function (input) {
-                    input.checked = true;
-                });
-            }
-            else {
-                inputs.forEach(function (input) {
-                    input.checked = false;
-                });
-            }
+            id = id.replace(/,(?=\s*$)/, '');
+            ActiveUsers(id);
+            //dataGridLoad();
+        }
+        $("input:checkbox[name=CheckSingle]:checked").each(function () {
+            //alert("Id: " + $(this).attr("id") + " Value: " + $(this).val());
         });
-    </script>*@
+    })
+    $("#changeit").click(function () {
+        var ID = "";
+        var new_role = $("#new_role").val();
+        $("input:checkbox[name=CheckSingle]:checked").each(function () { ID += $(this).val() + ","; });
+        ID = ID.replace(/,(?=\s*$)/, '');
+        changeRole(ID);
+    })
+    //Grantrole
+    $("#Grantrole").click(function () {
+        var ID = "";
+        var new_role = $("#grant_role").val();
+        $("input:checkbox[name=CheckSingle]:checked").each(function () {
+            ID += $(this).val() + ",";
+
+        });
+        ID = ID.replace(/,(?=\s*$)/, '');
+        Grantrole(ID);
+    })
+    //Revoke
+    $("#Revoke").click(function () {
+        var ID = "";
+        var new_role = $("#revoke_role").val();
+        $("input:checkbox[name=CheckSingle]:checked").each(function () {
+            ID += $(this).val() + ",";
+
+        });
+        ID = ID.replace(/,(?=\s*$)/, '');
+        Revokerole(ID);
+    })
+
+
+</script>

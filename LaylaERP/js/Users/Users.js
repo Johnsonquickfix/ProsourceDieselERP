@@ -56,7 +56,7 @@ function Datagrid(role_type) {
             {
                 'data': 'ID', sWidth: "8%",
                 'render': function (ID, type, full, meta) {
-                    return '<a href="../Users/UserDetails?id=' + ID + '"><i class="glyphicon glyphicon-pencil"></i></a>'
+                    return '<a href="javascript:void(0);" onClick="EditUser(' + ID+')"><i class="glyphicon glyphicon-pencil"></i></a>'
                 }
             }
         ],
@@ -158,6 +158,10 @@ function DatagridLoade() {
 
     });
 };
+
+function EditUser(id) {
+    window.location.href = 'UserDetails?id=' + id;
+}
 
 function getdatabyzip() {
     var BillingPostcode = $("#txtPostCode").val();

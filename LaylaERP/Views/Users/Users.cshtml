@@ -22,7 +22,7 @@
         <li class="subscriber"><a href="#" id="subscriber">Subscriber (<span class="count">0</span>)</a> |</li>
         <li class="supplychainmanager"><a href="#" id="supplychainmanager">Supply Chain Manager (<span class="count">0</span>)</a> |</li>
         <li class="wpseo_editor"><a href="#" id="seo">SEO Editor (<span class="count">0</span>)</a> |</li>
-        <li class="wpseo_editor"><a href="#" id="seomanager">SEO Manager (<span class="count">0</span>)</a> |</li>
+        <li class="seomanager"><a href="#" id="seomanager">SEO Manager (<span class="count">0</span>)</a> |</li>
         <li class="none"><a href="#" id="norole">No role (<span class="count">0</span>)</a></li>
     </ul>
 </div>
@@ -144,7 +144,7 @@
                 $(this).addClass('current');
             });
             GetUsersCount();
-            setTimeout(function () { Datagrid(1); }, 50);
+            setTimeout(function () { Datagrid(''); }, 50);
 
             //Count Role Grid Show
             $('#all').click(function () { var role_type = ""; Datagrid(role_type); });
@@ -155,7 +155,7 @@
             $('#shopmanager').click(function () { var role_type = 'shop manager'; Datagrid(role_type); });
             $('#subscriber').click(function () { var role_type = 'subscriber'; Datagrid(role_type); });
             $('#supplychainmanager').click(function () { var role_type = 'supplychainmanager'; Datagrid(role_type); });
-            $('#seo').click(function () { var role_type = 'seoeditor'; Datagrid(role_type); });
+            $('#seo').click(function () { var role_type = 'wpseo_editor'; Datagrid(role_type); });
             $('#norole').click(function () { var role_type = 'norole'; Datagrid(role_type); });
             $('#contributor').click(function () { var role_type = 'contributor'; Datagrid(role_type); });
             $('#editor').click(function () { var role_type = 'editor'; Datagrid(role_type); });

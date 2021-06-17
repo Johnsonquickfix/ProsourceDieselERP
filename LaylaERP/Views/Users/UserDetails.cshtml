@@ -143,7 +143,7 @@
                         <div class="col-offset-8 col-sm-4 mt-1">
                             <a href="#" class="btn btn-danger btn-block" id="btnSave"><b>Update User</b></a>
                             <br />
-                            <a class="btn btn-danger" href="/Users/Users">Back to List</a>
+                            <a class="btn btn-danger" href="Users">Back to List</a>
                         </div>
                     </div>
                 </div>
@@ -289,7 +289,7 @@
                 success: function (data) {
                     if (data.status == true) {
                         $('#parent > input:text').val('');
-                        swal('Alert!', data.message, 'success').then((result) => { location.href = 'Users/Users'; });
+                        swal('Alert!', data.message, 'success').then((result) => { location.href = 'Users'; });
                     }
                     else {
                         swal('Alert!', data.message, 'error');

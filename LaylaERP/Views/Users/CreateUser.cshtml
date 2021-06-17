@@ -78,18 +78,17 @@
                             <div class="form-group">
                                 <label for="exampleInputEmail1">User Role</label>
                                 <select class="form-control" id="txtUserRole">
-                                    <option value="0">Select User Role</option>
-                                    <option value="Accounting">Accounting</option>
-                                    <option value="Administrator">Administrator</option>
-                                    <option value="Author">Author</option>
-                                    <option value="Contributor">Contributor</option>
-                                    <option value="Editor">Editor</option>
-                                    <option value="Mod_Squad">Mod Squad</option>
-                                    <option value="SEO_Editor">SEO Editor</option>
-                                    <option value="SEO_Manager">SEO Manager</option>
-                                    <option value="Shop_Manager">Shop Manager</option>
-                                    <option value="Subscriber">Subscriber</option>
-                                    <option value="Supply_Chain_Manager">Supply Chain Manager</option>
+                                    <option value="accounting">Accounting</option>
+                                    <option value="administrator">Administrator</option>
+                                    <option value="author">Author</option>
+                                    <option value="contributor">Contributor</option>
+                                    <option value="editor">Editor</option>
+                                    <option value="modsquad">Mod Squad</option>
+                                    <option value="wpseo_editor">SEO Editor</option>
+                                    <option value="seo_manager">SEO Manager</option>
+                                    <option value="shop_manager">Shop Manager</option>
+                                    <option value="subscriber">Subscriber</option>
+                                    <option value="supplychainmanager">Supply Chain Manager</option>
                                 </select>
                             </div>
 
@@ -157,8 +156,8 @@
                 <div class="box-footer">
                     <div class="text-right">
                         <a href="#" class="btn btn-danger" id="btnSave"><b>Create User</b></a>
-                        @*@Html.ActionLink("Back to List", "Users/Users", null, new { @class = "btn btn-danger" })*@
-                        @*<a class="btn btn-danger" href="/Users/Users" id="tab2">Back to List</a>*@
+               
+                        <a class="btn btn-danger" href="Users">Back to List</a>
                     </div>
                 </div>
             </div>
@@ -325,7 +324,8 @@
                 success: function (data) {
                     if (data.status == true) {
                         $('#parent > input:text').val('');
-                        swal('Alert!', data.message, 'success');
+                        $('#parent > input:text').val('');
+                        swal('Alert!', data.message, 'success').then((result) => { location.href = 'Users'; });
                         reset();
                     }
                     else {

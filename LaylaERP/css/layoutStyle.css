@@ -61,7 +61,15 @@ dashboard
 .align-items-center {
     align-items: center;
 }
+.form-user-role select {
+    width: auto;
+    margin-right: 15px;
+}
 
+.form-user-role {
+    display: flex;
+    align-items: center;
+}
 .sub-heading {
     font-size: 15px;
 }
@@ -964,4 +972,12 @@ span#result {
 #exportdata td:first-child {
 text-align:center;}
 .tablenav .btn {
+}
+.customer-manage table td:nth-child(3) {
+word-break:break-all;}
+#exportdata_info, #exportusersdata_info {
+    float: left;
+}
+#exportdata_paginate, #exportusersdata_paginate {
+    float: right;
 }

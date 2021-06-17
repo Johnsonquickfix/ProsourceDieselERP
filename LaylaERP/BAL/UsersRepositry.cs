@@ -628,5 +628,25 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
+
+        //Add role
+        public int AddNewRole(UserClassification model)
+        {
+            try
+            {
+                string strsql = "insert into wp_user_classification(User_Type)values(@User_Type);SELECT LAST_INSERT_ID();";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@User_Type", model.User_Type),
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
     }
 }

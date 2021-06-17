@@ -32,11 +32,8 @@
                                         <tr>
                                             <th>Order Id</th>
                                             <th>Order Date</th>
-                                            <th>Product Name</th>
-                                            @*<th>Item Type</th>*@
-                                            <th>Product Id</th>
-                                            @*<th>Variant Id </th>*@
-                                            <th>Qty</th>
+                                            <th>Customer Id</th>
+                                            <th>Number Of Items</th>
                                             <th>Subtotal</th>
                                             <th>Total</th>
                                         </tr>
@@ -158,15 +155,18 @@
                                 return ("0" + date.getDate()).slice(-2) + '-' + month + '-' + date.getFullYear();
                             }
                         },
-                        { 'data': 'product_name' },
-                        //{ 'data': 'item_type' },
-                        { 'data': 'product_id' },
-                        //{ 'data': 'variant_id' },
+                        { 'data': 'customer_id' },
                         { 'data': 'qty' },
                         { 'data': 'subtotal' },
                         { 'data': 'total' }
 
                     ],
+                    columnDefs: [{
+                        orderable: false,
+                        targets: [1]
+                    }],
+                    "order": [0, 'desc'],
+
                     "dom": 'Bfrtip',
                     "buttons": [
 

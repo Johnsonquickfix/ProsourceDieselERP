@@ -69,7 +69,7 @@ namespace LaylaERP.BAL
 
                     uobj.ID = Convert.ToInt32(ds1.Tables[0].Rows[i]["ID"].ToString());
                     uobj.user_login = ds1.Tables[0].Rows[i]["user_login"].ToString();
-                    result = ds1.Tables[0].Rows[i]["meta_value"].ToString();
+                    result = ds1.Tables[0].Rows[i]["meta_value"].ToString().TrimEnd(','); 
 
                     if (result == "Mod_Squad") {
                         result = "Mod Squad";

@@ -4,7 +4,7 @@ function GetUsersCount() {
     $.ajax({
         type: "POST", url: '/Users/GetUsersCount', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
         success: function (result) {
-            var data = JSON.parse(result); console.log(data);
+            var data = JSON.parse(result); 
             if (data.length > 0) {
                 $('#all').find(".count").text(number_format(data[0].AllUser));
                 $('#accounting').find(".count").text(number_format(data[0].Accounting));
@@ -25,10 +25,7 @@ function GetUsersCount() {
         async: false
     });
 }
-function Datagrid(k) {
-    var myvalue = k;
-    //var obj = { rolepass: j };
-    //alert(JSON.stringify(obj));
+function Datagrid(role_type) {
     var id;
     $('#dtdata').DataTable({
         destroy: true,
@@ -37,9 +34,8 @@ function Datagrid(k) {
             "url": '/Users/GetData',
             "type": 'GET',
             "dataType": 'json',
-            data: { rolepass: j },
+            data: { rolepass: role_type },
             contentType: "application/json; charset=utf-8",
-
         },
         lengthMenu: [[10, 20, 50, 100], [10, 20, 50, 100]],
         "columns": [

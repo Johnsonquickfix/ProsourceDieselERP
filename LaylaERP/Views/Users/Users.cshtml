@@ -5,26 +5,25 @@
 }
 
 @*@using (Html.BeginForm("Users", "Users", FormMethod.Post)) { }*@
+<input type="hidden" id="hfStatusType" value="" />
 <div class="page-title">
-    <h2 class="page-heading">Users</h2>
-
+    <h2 class="page-heading">Users</h2> <a class="btn btn-danger" href="CreateUser">Create User</a>
 </div>
 <div class="user_subCrumbs">
-    <ul>
-        <li class="all"><a href="#" id="all" class="current" aria-current="page">All <span class="count">(@ViewBag.all)</span></a> |</li>
-        <li class="accounting"><a href="#" id="accounting">Accounting <span class="count">(@ViewBag.accounting)</span></a> |</li>
-        <li class="administrator"><a href="#" id="administrator">Administrator <span class="count">(@ViewBag.admin)</span></a> |</li>
-        <li class="author"><a href="#" id="author">Author <span class="count">(@ViewBag.author)</span></a> |</li>
-        <li class="contributor"><a href="#" id="contributor">Contributor <span class="count">(@ViewBag.contributor)</span></a> |</li>
-        @*<li class="customer"><a href="#">Customer <span class="count">(@ViewBag.customer)</span></a> |</li>*@
-        <li class="editor"><a href="#" id="editor">Editor <span class="count">(@ViewBag.editor)</span></a> |</li>
-        <li class="modsquad"><a href="#" id="modsquad">Mod Squad <span class="count">(@ViewBag.modsquad)</span></a> |</li>
-        <li class="shop_manager"><a href="#" id="shopmanager">Shop Manager <span class="count">(@ViewBag.shopmanager)</span></a> |</li>
-        <li class="subscriber"><a href="#" id="subscriber">Subscriber <span class="count">(@ViewBag.subscriber)</span></a> |</li>
-        <li class="supplychainmanager"><a href="#" id="supplychainmanager">Supply Chain Manager <span class="count">(@ViewBag.supplychainmanager)</span></a> |</li>
-        <li class="wpseo_editor" id="seo"><a href="#">SEO Editor <span class="count">(@ViewBag.seoeditor)</span></a> |</li>
-        <li class="wpseo_editor" id="seomanager"><a href="#">SEO Manager <span class="count">(@ViewBag.seomanager)</span></a> |</li>
-        <li class="none" id="norole"><a href="#">No role <span class="count">(@ViewBag.norole)</span></a></li>
+    <ul class="subsubsub">
+        <li class="all"><a href="#" id="all" class="current" aria-current="page">All (<span class="count">0</span>)</a> |</li>
+        <li class="accounting"><a href="#" id="accounting">Accounting (<span class="count">0</span>)</a> |</li>
+        <li class="administrator"><a href="#" id="administrator">Administrator (<span class="count">0</span>)</a> |</li>
+        <li class="author"><a href="#" id="author">Author (<span class="count">0</span>)</a> |</li>
+        <li class="contributor"><a href="#" id="contributor">Contributor (<span class="count">0</span>)</a> |</li>
+        <li class="editor"><a href="#" id="editor">Editor (<span class="count">0</span>)</a> |</li>
+        <li class="modsquad"><a href="#" id="modsquad">Mod Squad (<span class="count">0</span>)</a> |</li>
+        <li class="shop_manager"><a href="#" id="shopmanager">Shop Manager (<span class="count">0</span>)</a> |</li>
+        <li class="subscriber"><a href="#" id="subscriber">Subscriber (<span class="count">0</span>)</a> |</li>
+        <li class="supplychainmanager"><a href="#" id="supplychainmanager">Supply Chain Manager (<span class="count">0</span>)</a> |</li>
+        <li class="wpseo_editor"><a href="#" id="seo">SEO Editor (<span class="count">0</span>)</a> |</li>
+        <li class="seomanager"><a href="#" id="seomanager">SEO Manager (<span class="count">0</span>)</a> |</li>
+        <li class="none"><a href="#" id="norole">No role (<span class="count">0</span>)</a></li>
     </ul>
 </div>
 <div>
@@ -45,17 +44,17 @@
             <div class="alignleft actions">
                 <select name="new_role" id="new_role">
                     <option value="">Change role to…</option>
-                    <option value="Accounting">Accounting</option>
-                    <option value="Administrator">Administrator</option>
-                    <option value="Author">Author</option>
-                    <option value="Contributor">Contributor</option>
-                    <option value="Editor">Editor</option>
-                    <option value="Mod_Squad">Mod Squad</option>
-                    <option value="SEO_Editor">SEO Editor</option>
-                    <option value="SEO_Manager">SEO Manager</option>
-                    <option value="Shop_Manager">Shop Manager</option>
-                    <option value="Subscriber">Subscriber</option>
-                    <option value="Supply_Chain_Manager">Supply Chain Manager</option>
+                    <option value="accounting">Accounting</option>
+                    <option value="administrator">Administrator</option>
+                    <option value="author">Author</option>
+                    <option value="contributor">Contributor</option>
+                    <option value="editor">Editor</option>
+                    <option value="modsquad">Mod Squad</option>
+                    <option value="wpseo_editor">SEO Editor</option>
+                    <option value="seo_manager">SEO Manager</option>
+                    <option value="shop_manager">Shop Manager</option>
+                    <option value="subscriber">Subscriber</option>
+                    <option value="supplychainmanager">Supply Chain Manager</option>
                 </select>
                 <input type="submit" name="changeit" id="changeit" class="button" value="Change">
             </div>
@@ -63,37 +62,37 @@
             <div class="alignleft actions">
                 <select name="grant_role" id="grant_role">
                     <option value="">Grant Roal to…</option>
-                    <option value="Accounting">Accounting</option>
-                    <option value="Administrator">Administrator</option>
-                    <option value="Author">Author</option>
-                    <option value="Contributor">Contributor</option>
-                    <option value="Editor">Editor</option>
-                    <option value="Mod_Squad">Mod Squad</option>
-                    <option value="SEO_Editor">SEO Editor</option>
-                    <option value="SEO_Manager">SEO Manager</option>
-                    <option value="Shop_Manager">Shop Manager</option>
-                    <option value="Subscriber">Subscriber</option>
-                    <option value="Supply_Chain_Manager">Supply Chain Manager</option>
+                    <option value="accounting">Accounting</option>
+                    <option value="administrator">Administrator</option>
+                    <option value="author">Author</option>
+                    <option value="contributor">Contributor</option>
+                    <option value="editor">Editor</option>
+                    <option value="modsquad">Mod Squad</option>
+                    <option value="wpseo_editor">SEO Editor</option>
+                    <option value="seo_manager">SEO Manager</option>
+                    <option value="shop_manager">Shop Manager</option>
+                    <option value="subscriber">Subscriber</option>
+                    <option value="supplychainmanager">Supply Chain Manager</option>
                 </select>
                 <input type="submit" name="Grantrole" id="Grantrole" class="button" value="Grant">
             </div>
             <div class="alignleft actions">
-                     <select name="revoke_role" id="revoke_role">
-                         <option value="">Revoke Roal to…</option>
-                        <option value="Accounting">Accounting</option>
-                         <option value="Administrator">Administrator</option>
-                         <option value="Author">Author</option>
-                         <option value="Contributor">Contributor</option>
-                         <option value="Editor">Editor</option>
-                         <option value="Mod_Squad">Mod Squad</option>
-                         <option value="SEO_Editor">SEO Editor</option>
-                         <option value="SEO_Manager">SEO Manager</option>
-                         <option value="Shop_Manager">Shop Manager</option>
-                         <option value="Subscriber">Subscriber</option>
-                         <option value="Supply_Chain_Manager">Supply Chain Manager</option>
-                     </select>
-                    <input type="submit" name="Revoke" id="Revoke" class="button" value="Revoke">
-                </div>
+                <select name="revoke_role" id="revoke_role">
+                    <option value="">Revoke Roal to…</option>
+                    <option value="accounting">Accounting</option>
+                    <option value="administrator">Administrator</option>
+                    <option value="author">Author</option>
+                    <option value="contributor">Contributor</option>
+                    <option value="editor">Editor</option>
+                    <option value="modsquad">Mod Squad</option>
+                    <option value="wpseo_editor">SEO Editor</option>
+                    <option value="seo_manager">SEO Manager</option>
+                    <option value="shop_manager">Shop Manager</option>
+                    <option value="subscriber">Subscriber</option>
+                    <option value="supplychainmanager">Supply Chain Manager</option>
+                </select>
+                <input type="submit" name="Revoke" id="Revoke" class="button" value="Revoke">
+            </div>
             <input type="hidden" name="varpass" id="varpass" value="">
             @*<div class="tablenav-pages">
                     <span class="displaying-num">61,641 items</span>
@@ -113,244 +112,127 @@
     </div>
     <div class="box box-primary">
         <div class="box-header">
-            <div class="dx-viewport demo-container data-table-container">
-                <div id="gridContainer" class="margin-15-rem">
-                    <table id="dtdata" class="table table-blue table-bordered table-striped dataTable check-table" style="width:100%;">
-                        <thead class="thead-dark">
-                            <tr>
-                                <th><input type="checkbox" name="checkAll" id="checkAll"><label></label></th>
-                                <th>ID</th>
-                                <th>User Name</th>
-                                <th>Email</th>
-                                <th>Status</th>
-                                <th>Role</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
+            <div id="gridContainer" class="margin-15-rem">
+                <table id="dtdata" class="table table-blue table-bordered table-striped dataTable check-table" style="width:100%;">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th><input type="checkbox" name="checkAll" id="checkAll"><label></label></th>
+                            <th>ID</th>
+                            <th>User Name</th>
+                            <th>Email</th>
+                            <th>Status</th>
+                            <th>Role</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
 
-                    </table>
-                </div>
+                </table>
             </div>
         </div>
     </div>
 </section>
 
-
+<script src="~/js/common.js"></script>
 <script src="@Url.Content("~/js/Users/Users.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
-@section scripts{
 
-    <script type="text/javascript">
-        var j = "";
-        $(document).ready(function () {
-            //$("#ddlStatus").change(function () {
-            //    alert($("#ddlStatus").val());
-            //    drop();
-            //    Datagrid(); return false; /Users/GetData
-            //});
-            Datagrid();
+<script type="text/javascript">
+    var j = "";
+    $(document).ready(function () {
+        $(".subsubsub li a").click(function (e) {
+            $('.subsubsub li').removeClass('current');
+            $('.subsubsub li a').removeClass('current');
+            $(this).addClass('current'); $(this).parent().addClass('current');
         });
-
-       
-
-        //CheckBoxes
-        $('#checkAll').click(function () {
-            var isChecked = $(this).prop("checked");
-            $('#dtdata tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
-        });
-
-        function Singlecheck() {
-            var isChecked = $(this).prop("checked");
-            var isHeaderChecked = $("#checkAll").prop("checked");
-            if (isChecked == false && isHeaderChecked)
-                $("#checkAll").prop('checked', isChecked);
-
-            else {
-                $('#dtdata tr:has(td)').find('input[type="checkbox"]').each(function () {
-                    if ($(this).prop("checked") == false)
-                        isChecked = false;
-                });
-                $("#checkAll").prop('checked', isChecked);
-            }
-        }
-
-        $('#btnApply').click(function () {
-            var id = "";
-            var status = $("#ddlStatus").val();
-            $("input:checkbox[name=CheckSingle]:checked").each(function () {
-                id += $(this).val() + ",";
-
-            });
-            if (status == "1") {
-                UpdateCustomerStatus();
-            }
-            if (status == "3") {
-                id = id.replace(/,(?=\s*$)/, '');
-                DeleteUsers(id);
-                //dataGridLoad();
-            }
-            if (status == "2") {
-
-                id = id.replace(/,(?=\s*$)/, '');
-                ActiveUsers(id);
-                //dataGridLoad();
-            }
-            $("input:checkbox[name=CheckSingle]:checked").each(function () {
-                //alert("Id: " + $(this).attr("id") + " Value: " + $(this).val());
-            });
-        })
-        $("#changeit").click(function () {
-            var ID = "";
-            var new_role = $("#new_role").val();
-            $("input:checkbox[name=CheckSingle]:checked").each(function () {
-                ID += $(this).val() + ",";
-
-            });
-            ID = ID.replace(/,(?=\s*$)/, '');
-            changeRole(ID);
-        })
-        //Grantrole
-        $("#Grantrole").click(function () {
-            var ID = "";
-            var new_role = $("#grant_role").val();
-            $("input:checkbox[name=CheckSingle]:checked").each(function () {
-                ID += $(this).val() + ",";
-
-            });
-            ID = ID.replace(/,(?=\s*$)/, '');
-            Grantrole(ID);
-        })
-        //Revoke
-        $("#Revoke").click(function () {
-            var ID = "";
-            var new_role = $("#revoke_role").val();
-            $("input:checkbox[name=CheckSingle]:checked").each(function () {
-                ID += $(this).val() + ",";
-
-            });
-            ID = ID.replace(/,(?=\s*$)/, '');
-            Revokerole(ID);
-        })
-
-
+        GetUsersCount();
+        setTimeout(function () { Datagrid(''); }, 50);
 
         //Count Role Grid Show
-        $('#all').click(function () {
-            j = "";
-            k = 1;
-            Datagrid(k);
+        $('#all').click(function () { var role_type = ""; $('#hfStatusType').val(role_type); Datagrid(role_type); });
+        $('#administrator').click(function () { var role_type = 'administrator'; $('#hfStatusType').val(role_type); Datagrid(role_type); });
+        $('#accounting').click(function () { var role_type = 'accounting'; $('#hfStatusType').val(role_type); Datagrid(role_type); });
+        $('#author').click(function () { var role_type = 'author'; $('#hfStatusType').val(role_type); Datagrid(role_type); });
+        $('#modsquad').click(function () { var role_type = 'modsquad'; $('#hfStatusType').val(role_type); Datagrid(role_type); });
+        $('#shopmanager').click(function () { var role_type = 'shop manager'; $('#hfStatusType').val(role_type); Datagrid(role_type); });
+        $('#subscriber').click(function () { var role_type = 'subscriber'; $('#hfStatusType').val(role_type); Datagrid(role_type); });
+        $('#supplychainmanager').click(function () { var role_type = 'supplychainmanager'; $('#hfStatusType').val(role_type); Datagrid(role_type); });
+        $('#seo').click(function () { var role_type = 'wpseo_editor'; $('#hfStatusType').val(role_type); Datagrid(role_type); });
+        $('#norole').click(function () { var role_type = 'norole'; $('#hfStatusType').val(role_type); Datagrid(role_type); });
+        $('#contributor').click(function () { var role_type = 'contributor'; $('#hfStatusType').val(role_type); Datagrid(role_type); });
+        $('#editor').click(function () { var role_type = 'editor'; $('#hfStatusType').val(role_type); Datagrid(role_type); });
+        $('#seomanager').click(function () { var role_type = 'seo_manager'; $('#hfStatusType').val(role_type); Datagrid(role_type); });
+        //Count Role Grid End
+    });
+
+    //CheckBoxes
+    $('#checkAll').click(function () {
+        var isChecked = $(this).prop("checked");
+        $('#dtdata tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
+    });
+
+    function Singlecheck() {
+        var isChecked = $(this).prop("checked");
+        var isHeaderChecked = $("#checkAll").prop("checked");
+        if (isChecked == false && isHeaderChecked)
+            $("#checkAll").prop('checked', isChecked);
+
+        else {
+            $('#dtdata tr:has(td)').find('input[type="checkbox"]').each(function () {
+                if ($(this).prop("checked") == false)
+                    isChecked = false;
+            });
+            $("#checkAll").prop('checked', isChecked);
+        }
+    }
+
+    $('#btnApply').click(function () {
+        var id = "";
+        var status = $("#ddlStatus").val();
+        $("input:checkbox[name=CheckSingle]:checked").each(function () { id += $(this).val() + ","; });
+        if (status == "1") { UpdateCustomerStatus(); }
+        if (status == "3") {
+            id = id.replace(/,(?=\s*$)/, '');
+            DeleteUsers(id);
+            //dataGridLoad();
+        }
+        if (status == "2") {
+
+            id = id.replace(/,(?=\s*$)/, '');
+            ActiveUsers(id);
+            //dataGridLoad();
+        }
+        $("input:checkbox[name=CheckSingle]:checked").each(function () {
+            //alert("Id: " + $(this).attr("id") + " Value: " + $(this).val());
         });
-
-        $('#administrator').click(function () {
-            j = 'administrator';
-            k = 1;
-            // alert(j);
-            Datagrid(k);
+    })
+    $("#changeit").click(function () {
+        var ID = "";
+        var new_role = $("#new_role").val();
+        $("input:checkbox[name=CheckSingle]:checked").each(function () { ID += $(this).val() + ","; });
+        ID = ID.replace(/,(?=\s*$)/, '');
+        changeRole(ID);
+    })
+    //Grantrole
+    $("#Grantrole").click(function () {
+        var ID = "";
+        var new_role = $("#grant_role").val();
+        $("input:checkbox[name=CheckSingle]:checked").each(function () {
+            ID += $(this).val() + ",";
 
         });
-        $('#accounting').click(function () {
-            j = 'accounting';
-            // alert(j);
-            k = 1;
-            Datagrid(k);
+        ID = ID.replace(/,(?=\s*$)/, '');
+        Grantrole(ID);
+    })
+    //Revoke
+    $("#Revoke").click(function () {
+        var ID = "";
+        var new_role = $("#revoke_role").val();
+        $("input:checkbox[name=CheckSingle]:checked").each(function () {
+            ID += $(this).val() + ",";
+
         });
-
-        $('#author').click(function () {
-            j = 'author';
-            // alert(j);
-            k = 1;
-            Datagrid(k);
-        });
-
-        $('#modsquad').click(function () {
-            j = 'modsquad';
-            // alert(j);
-            k = 1;
-            Datagrid(k);
-        });
-
-        $('#shopmanager').click(function () {
-            j = 'shop manager';
-            // alert(j);
-            k = 1;
-            Datagrid(k);
-        });
-
-        $('#subscriber').click(function () {
-            j = 'subscriber';
-            // alert(j);
-            k = 1;
-            Datagrid(k);
-        });
-
-        $('#supplychainmanager').click(function () {
-            j = 'supplychainmanager';
-            // alert(j);
-            k = 1;
-            Datagrid(k);
-        });
-
-        $('#seo').click(function () {
-            j = 'seoeditor';
-            // alert(j);
-            k = 1;
-            Datagrid(k);
-        });
-
-        $('#norole').click(function () {
-            j = 'norole';
-            // alert(j);
-            k = 1;
-            Datagrid(k);
-        });
-          //Count Role Grid End
+        ID = ID.replace(/,(?=\s*$)/, '');
+        Revokerole(ID);
+    })
 
 
-
-    </script>
-
-    @*<script>
-            function drop() {
-                var urid = $("#ddlStatus").val();
-                var obj = { user_status: urid };
-
-                $.ajax({
-                    url: '/Users/GetData/', dataType: 'json', type: 'Post',
-                    contentType: "application/json; charset=utf-8",
-                    data: JSON.stringify(obj),
-                    dataType: "json",
-                    success: function (data) {
-                        if (data.status == true) {
-
-                            swal('Alert!', data.message, 'success');
-                        }
-                        else {
-                            swal('Alert!', data.message, 'error')
-                        }
-                    },
-                    error: function (error) {
-                        swal('Error!', 'something went wrong', 'error');
-                    },
-
-
-                })
-            }
-        </script>*@
-}
-@*<script>
-        var dataTable = document.getElementById('data-table');
-        var checkItAll = dataTable.querySelector('input[name="select_all"]');
-        var inputs = dataTable.querySelectorAll('tbody>tr>td>input');
-
-        checkItAll.addEventListener('change', function () {
-            if (checkItAll.checked) {
-                inputs.forEach(function (input) {
-                    input.checked = true;
-                });
-            }
-            else {
-                inputs.forEach(function (input) {
-                    input.checked = false;
-                });
-            }
-        });
-    </script>*@
+</script>

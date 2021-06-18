@@ -23,4 +23,28 @@ namespace LaylaERP.Models
         public string SortCol { get; set; }
         public string SortDir { get; set; }
     }
+    public class JqDataTableModel
+    {
+        public string sEcho { get; set; }
+
+        public string sSearch { get; set; }
+        public int iDisplayLength { get; set; }
+        public int iDisplayStart { get; set; }
+
+        public int? iColumns { get; set; }
+
+        public int? iSortingCols { get; set; }
+        public string sColumns { get; set; }
+
+        public int iSortCol_0 { get; set; }
+        public string sSortColName { get; set; }
+        public string sSortDir_0 { get; set; }
+
+        public string strValue1 { get; set; }
+        public string strValue2 { get; set; }
+        public string strValue3 { get; set; }
+        public string strValue4 { get; set; }
+        public string strValue5 { get; set; }
+        public string strValue6 { get; set; }
+    }
 }

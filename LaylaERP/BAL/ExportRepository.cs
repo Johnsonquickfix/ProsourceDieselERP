@@ -113,13 +113,14 @@ namespace LaylaERP.BAL
         }
 
 
-        public static string ssql = "SELECT o.ID as order_id, o.post_date as order_created, oi.order_item_name as product_name,oi.order_item_type as item_type," +
-        "(SELECT meta_value FROM wp_woocommerce_order_itemmeta WHERE order_item_id = oi.order_item_id AND meta_key = '_product_id') as product_id," +
-        "(SELECT meta_value FROM wp_woocommerce_order_itemmeta WHERE order_item_id = oi.order_item_id AND meta_key = '_product_variation_id') as variant_id," +
-        "(SELECT meta_value FROM wp_woocommerce_order_itemmeta WHERE order_item_id = oi.order_item_id AND meta_key = '_qty') as qty," +
-        "(SELECT format(meta_value, 2) FROM wp_woocommerce_order_itemmeta WHERE order_item_id = oi.order_item_id AND meta_key = '_line_subtotal') as subtotal," +
-        "(SELECT format(meta_value, 2) FROM wp_woocommerce_order_itemmeta WHERE order_item_id = oi.order_item_id AND meta_key = '_line_total') as total" +
-        " FROM wp_posts o LEFT JOIN wp_woocommerce_order_items oi ON oi.order_id = o.id LEFT JOIN wp_posts p ON p.ID = oi.order_item_id WHERE o.post_type = 'shop_order' limit 2000 ";
+        //public static string ssql = "SELECT o.ID as order_id, o.post_date as order_created, oi.order_item_name as product_name,oi.order_item_type as item_type," +
+        //"(SELECT meta_value FROM wp_woocommerce_order_itemmeta WHERE order_item_id = oi.order_item_id AND meta_key = '_product_id') as product_id," +
+        //"(SELECT meta_value FROM wp_woocommerce_order_itemmeta WHERE order_item_id = oi.order_item_id AND meta_key = '_product_variation_id') as variant_id," +
+        //"(SELECT meta_value FROM wp_woocommerce_order_itemmeta WHERE order_item_id = oi.order_item_id AND meta_key = '_qty') as qty," +
+        //"(SELECT format(meta_value, 2) FROM wp_woocommerce_order_itemmeta WHERE order_item_id = oi.order_item_id AND meta_key = '_line_subtotal') as subtotal," +
+        //"(SELECT format(meta_value, 2) FROM wp_woocommerce_order_itemmeta WHERE order_item_id = oi.order_item_id AND meta_key = '_line_total') as total" +
+        //" FROM wp_posts o LEFT JOIN wp_woocommerce_order_items oi ON oi.order_id = o.id LEFT JOIN wp_posts p ON p.ID = oi.order_item_id WHERE o.post_type = 'shop_order' limit 2000 ";
+        public static string ssql = "select ws.order_id as order_id, ws.date_created as order_created,  ws.num_items_sold as qty,format(ws.total_sales, 2) as subtotal,format(ws.net_total, 2) as total, ws.customer_id as customer_id from wp_wc_order_stats ws, wp_users wu where ws.customer_id = wu.ID order by ws.order_id desc limit 1000";
 
 
         public static List<Export_Details> userlist = new List<Export_Details>();
@@ -134,10 +135,10 @@ namespace LaylaERP.BAL
                 Export_Details uobj = new Export_Details();
                 uobj.order_id = Convert.ToInt32(ds1.Tables[0].Rows[i]["order_id"].ToString());
                 uobj.order_created = Convert.ToDateTime(ds1.Tables[0].Rows[i]["order_created"].ToString());
-                uobj.product_name = ds1.Tables[0].Rows[i]["product_name"].ToString();
-                uobj.item_type = ds1.Tables[0].Rows[i]["item_type"].ToString();
-                uobj.product_id = ds1.Tables[0].Rows[i]["product_id"].ToString();
-                uobj.variant_id = ds1.Tables[0].Rows[i]["variant_id"].ToString();
+                uobj.customer_id = ds1.Tables[0].Rows[i]["customer_id"].ToString();
+                //uobj.item_type = ds1.Tables[0].Rows[i]["item_type"].ToString();
+                //uobj.product_id = ds1.Tables[0].Rows[i]["product_id"].ToString();
+                //uobj.variant_id = ds1.Tables[0].Rows[i]["variant_id"].ToString();
                 uobj.qty = ds1.Tables[0].Rows[i]["qty"].ToString();
                 uobj.subtotal = ds1.Tables[0].Rows[i]["subtotal"].ToString();
                 uobj.total = ds1.Tables[0].Rows[i]["total"].ToString();
@@ -151,13 +152,14 @@ namespace LaylaERP.BAL
             try
             {
 
-                string strquery = "SELECT u.ID, u.user_login, u.user_email, u.user_status, " +
-        "(SELECT meta_value FROM wp_usermeta WHERE u.ID = um.user_id AND meta_key = 'first_name') as first_name, " +
-        "(SELECT meta_value FROM wp_usermeta WHERE u.ID = um.user_id AND meta_key = 'last_name') as last_name, " +
-        "(SELECT meta_value FROM wp_usermeta WHERE u.ID = um.user_id AND meta_key = 'user_phone') as user_phone, " +
-        "(SELECT meta_value FROM wp_usermeta WHERE u.ID = um.user_id AND meta_key = 'user_country') as user_country, " +
-        "(SELECT meta_value FROM wp_usermeta WHERE u.ID = um.user_id AND meta_key = 'user_address') as user_address " +
-         "FROM wp_users u LEFT JOIN wp_usermeta um ON um.user_id = u.ID where u.ID = um.user_id GROUP by u.id";
+                //        string strquery = "SELECT u.ID, u.user_login, u.user_email, u.user_status, " +
+                //"(SELECT meta_value FROM wp_usermeta WHERE u.ID = um.user_id AND meta_key = 'first_name') as first_name, " +
+                //"(SELECT meta_value FROM wp_usermeta WHERE u.ID = um.user_id AND meta_key = 'last_name') as last_name, " +
+                //"(SELECT meta_value FROM wp_usermeta WHERE u.ID = um.user_id AND meta_key = 'user_phone') as user_phone, " +
+                //"(SELECT meta_value FROM wp_usermeta WHERE u.ID = um.user_id AND meta_key = 'user_country') as user_country, " +
+                //"(SELECT meta_value FROM wp_usermeta WHERE u.ID = um.user_id AND meta_key = 'user_address') as user_address " +
+                // "FROM wp_users u LEFT JOIN wp_usermeta um ON um.user_id = u.ID where u.ID = um.user_id GROUP by u.id";
+                string strquery = "select ws.order_id, ws.num_items_sold,ws.total_sales,ws.net_total,customer_id from wp_wc_order_stats ws, wp_users wu where ws.customer_id = wu.ID order by ws.order_id DESC";
                 DT = SQLHelper.ExecuteDataTable(strquery);
             }
             catch (Exception ex)

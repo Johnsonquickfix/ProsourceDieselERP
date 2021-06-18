@@ -19,7 +19,7 @@ namespace LaylaERP.Controllers
         public ActionResult Users()
         {
 
-            RoleCounter();
+            //RoleCounter();
             return View();
         }
 
@@ -163,6 +163,8 @@ namespace LaylaERP.Controllers
             }
             return result;
         }
+
+
 
         [HttpPost]
         public JsonResult UpdateCustomer(CustomerModel model)
@@ -400,5 +402,38 @@ namespace LaylaERP.Controllers
             }
         }
 
+        [HttpPost]
+        public JsonResult GetUsersCount(SearchModel model)
+        {
+            string result = string.Empty;
+            try
+            {
+                DataTable dt = UsersRepositry.UsersCounts();
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
+
+        [HttpPost]
+        public JsonResult NewRole(UserClassification model)
+        {
+            if (ModelState.IsValid)
+            {
+                
+                    int ID = new UsersRepositry().AddNewRole(model);
+                    if (ID > 0)
+                    {
+                        ModelState.Clear();
+                        return Json(new { status = true, message = "Role has been saved successfully!!", url = "" }, 0);
+                    }
+                    else
+                    {
+                        return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                    }
+                
+            }
+            return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+        }
     }
 }

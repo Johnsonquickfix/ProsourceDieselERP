@@ -119,13 +119,13 @@
         public ActionResult Index()
         {
             clsUserDetails model = new clsUserDetails();
-            ViewBag.id = Session["UserId"];
+            //ViewBag.id = Session["UserId"];
             //-----------Code Start------
             //long id = 0;
             //id = ViewBag.id;
             //if (id > 0)
             //{
-                GetUserDetails(model, ViewBag.id);
+                GetUserDetails(model, CommanUtilities.Provider.GetCurrent().UserID);
             //}
             //--------------Code End----------
             return View();

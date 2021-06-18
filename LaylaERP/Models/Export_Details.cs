@@ -40,7 +40,9 @@ namespace LaylaERP.Models
         public string subtotal { get; set; }
         public string tax { get; set; }
         public string total { get; set; }
+        public string customer_id { get; set; }
         public List<Export_Details> exportdetails { get; set; }
+
 
         //Export Users
 

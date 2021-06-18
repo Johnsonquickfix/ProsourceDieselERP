@@ -32,7 +32,17 @@ namespace LaylaERP.BAL
                 }
                 userslist.Clear();
                 DataSet ds1 = new DataSet();
-                string sqlquery = "select ID, User_Image, user_login, user_status, if(user_status=0,'Active','InActive') as status,user_email,user_pass,meta_value from wp_users, wp_usermeta WHERE wp_usermeta.meta_value like '%"+rolee+"%' And wp_usermeta.meta_key='wp_capabilities' And wp_users.ID=wp_usermeta.user_id And wp_users.ID IN (SELECT user_id FROM wp_usermeta WHERE meta_key = 'wp_capabilities' AND meta_value NOT LIKE '%customer%') ORDER BY ID ASC";
+                string sqlquery = "select ID, User_Image, user_login, user_status, if(user_status=0,'Active','InActive') as status,user_email,user_pass,"
+                            + " CONCAT((case when meta_value like '%administrator%' then 'Administrator,' else '' end),(case when meta_value like '%accounting%' then 'Accounting,' else '' end),"
+                            + " (case when meta_value like '%author%' then 'Author,' else '' end),(case when meta_value like '%modsquad%' then 'Mod Squad,' else '' end),"
+                            + " (case when meta_value like '%shop_manager%' then 'Shop Manager,' else '' end),(case when meta_value like '%subscriber%' then 'Subscriber,' else '' end),"
+                            + " (case when meta_value like '%supplychainmanager%' then 'Supply Chain Manager,' else '' end),(case when meta_value like '%wpseo_editor%' then 'SEO Editor,' else '' end),"
+                            + " (case when meta_value like '%editor%' then 'Editor,' else '' end),(case when meta_value like '%seo_manager%' then 'SEO Manager,' else '' end),"
+                            + " (case when meta_value like '%contributor%' then 'SEO Contributor,' else '' end)) meta_value"
+                            + " from wp_users u"
+                            + " inner join wp_usermeta um on um.user_id = u.id and um.meta_key = 'wp_capabilities' and meta_value NOT LIKE '%customer%'"
+                            + " WHERE um.meta_value like '%"+rolee+"%' ORDER BY ID ASC";
+
                 ds1 = DAL.SQLHelper.ExecuteDataSet(sqlquery);
                 string result = string.Empty;
                 
@@ -48,8 +58,8 @@ namespace LaylaERP.BAL
                             ds1.Tables[0].Rows[i]["meta_value"] = "Unknown";
                         //result = ds1.Tables[0].Rows[i]["meta_value"].ToString();
 
-                        else
-                            ds1.Tables[0].Rows[i]["meta_value"] = User_Role_Name(ds1.Tables[0].Rows[i]["meta_value"].ToString());
+                        //else
+                        //    ds1.Tables[0].Rows[i]["meta_value"] = User_Role_Name(ds1.Tables[0].Rows[i]["meta_value"].ToString());
                         
                     }
                     else
@@ -59,7 +69,7 @@ namespace LaylaERP.BAL
 
                     uobj.ID = Convert.ToInt32(ds1.Tables[0].Rows[i]["ID"].ToString());
                     uobj.user_login = ds1.Tables[0].Rows[i]["user_login"].ToString();
-                    result = ds1.Tables[0].Rows[i]["meta_value"].ToString();
+                    result = ds1.Tables[0].Rows[i]["meta_value"].ToString().TrimEnd(','); 
 
                     if (result == "Mod_Squad") {
                         result = "Mod Squad";
@@ -593,8 +603,50 @@ namespace LaylaERP.BAL
         }
         //Password End--------------
 
-        
+        public static DataTable UsersCounts()
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                string strWhr = string.Empty;
 
+                string strSql = "select COUNT(meta_value) as AllUser,sum(case when meta_value like '%administrator%' then 1 else 0 end) Administrator,"
+                            + " sum(case when meta_value like '%accounting%' then 1 else 0 end) Accounting,sum(case when meta_value like '%author%' then 1 else 0 end) Author,"
+                            + " sum(case when meta_value like '%modsquad%' then 1 else 0 end) ModSquad,sum(case when meta_value like '%shop_manager%' then 1 else 0 end) ShopManager,"
+                            + " sum(case when meta_value like '%subscriber%' then 1 else 0 end) Subscriber,sum(case when meta_value like '%supplychainmanager%' then 1 else 0 end) SupplyChainManager,"
+                            + " sum(case when meta_value like '%wpseo_editor%' then 1 else 0 end) SEOEditor,sum(case when meta_value like '%none%' then 1 else 0 end) Norole,"
+                            + " sum(case when meta_value like '%editor%' then 1 else 0 end) Editor,sum(case when meta_value like '%seo_manager%' then 1 else 0 end) SEOManager,"
+                            + " sum(case when meta_value like '%contributor%' then 1 else 0 end) Contributor"
+                            + " from wp_users as ur"
+                            + " inner join wp_usermeta um on ur.id = um.user_id and um.meta_key = 'wp_capabilities' and meta_value NOT like '%customer%' ";
+
+                dt = SQLHelper.ExecuteDataTable(strSql);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        //Add role
+        public int AddNewRole(UserClassification model)
+        {
+            try
+            {
+                string strsql = "insert into wp_user_classification(User_Type)values(@User_Type);SELECT LAST_INSERT_ID();";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@User_Type", model.User_Type),
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
 
     }
 }

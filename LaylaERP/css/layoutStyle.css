@@ -61,7 +61,15 @@ dashboard
 .align-items-center {
     align-items: center;
 }
+.form-user-role select {
+    width: auto;
+    margin-right: 15px;
+}
 
+.form-user-role {
+    display: flex;
+    align-items: center;
+}
 .sub-heading {
     font-size: 15px;
 }
@@ -114,18 +122,22 @@ dashboard
     background: #f3f5f6;
     cursor: pointer;
 }
-
-.page-title-action {
-    border: 1px solid #ff4100;
-    padding: 5px 15px;
-    display: inline-block;
-    border-radius: 4px;
-    box-shadow: 0px 0px 4px #4a4f55;
-    -webkit-box-shadow: 0px 0px 4px #4a4f55;
-    color: #4a4f55;
-    transition: 0.5s ease all;
-    background-color: rgba(0,0,0,0);
-}
+    .user-top-section .button:focus {
+        color: #4f4f4f;
+        background: #f3f5f6;
+        border: 1px solid #adadad;
+    }
+    .page-title-action {
+        border: 1px solid #ff4100;
+        padding: 5px 15px;
+        display: inline-block;
+        border-radius: 4px;
+        box-shadow: 0px 0px 4px #4a4f55;
+        -webkit-box-shadow: 0px 0px 4px #4a4f55;
+        color: #4a4f55;
+        transition: 0.5s ease all;
+        background-color: rgba(0,0,0,0);
+    }
 
 .page-title #UserStatus {
     padding-top: 3px;
@@ -419,6 +431,8 @@ table.dataTable tbody td.select-checkbox:before, table.dataTable tbody td.select
 
     .tablenav .actions {
         padding: 0 8px 0 0;
+        display: flex;
+        align-items: center;
     }
 
 .alignleft {
@@ -706,7 +720,9 @@ body table.dataTable tr.selected td.select-checkbox:before, body table.dataTable
 #selectStatus {
     margin-bottom: -10px;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+}
+#selectStatus label{margin-right:10px;
 }
 
 #userslist th {
@@ -955,3 +971,13 @@ span#result {
 }
 #exportdata td:first-child {
 text-align:center;}
+.tablenav .btn {
+}
+.customer-manage table td:nth-child(3) {
+word-break:break-all;}
+#exportdata_info, #exportusersdata_info {
+    float: left;
+}
+#exportdata_paginate, #exportusersdata_paginate {
+    float: right;
+}

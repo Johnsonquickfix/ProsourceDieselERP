@@ -49,6 +49,7 @@ function Datagrid(role_type) {
             { 'data': 'user_login', 'sWidth': "18%" },
             { 'data': 'user_email', 'sWidth': "35%" },
             { 'data': 'user_status', 'sWidth': "10%" },
+            { 'data': 'phone', 'sWidth': "10%" },
             {
                 'data': 'my', 'sWidth': "25%",
 

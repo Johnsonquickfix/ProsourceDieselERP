@@ -57,6 +57,7 @@
 
                             <div class="form-group">
                                 <input type="hidden" id="hfid" value="@Model.ID" />
+                                <input type="hidden" id="hfzipstatus" />
                                 <input type="hidden" id="hfState" value="@Model.State" />
                                 <input type="hidden" id="hfCity" value="@Model.City" />
                                 <label for="exampleInputEmail1">User Name</label>
@@ -108,26 +109,28 @@
 
                             </div>
                             <div class="form-group">
-                                <label class="control-label" for="Post/Zip Code">Post/Zip Code</label>
-                                <div class="">
-                                    <input type="text" id="txtPostCode" value="@Model.postcode" class="form-control" placeholder="Post/Zip Code">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-4">
-                            <div class="form-group">
                                 <label for="exampleInputEmail1">City</label>
                                 <select class="form-control" id="txtCity">
                                     <option></option>
                                 </select>
 
                             </div>
+
+                        </div>
+                        <div class="col-sm-4">
+                          
                             <div class="form-group">
                                 <label for="exampleInputEmail1">State</label>
                                 <select class="form-control" id="txtState">
                                     <option></option>
                                 </select>
 
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label" for="Post/Zip Code">Post/Zip Code</label>
+                                <div class="">
+                                    <input type="text" id="txtPostCode" value="@Model.postcode" class="form-control" placeholder="Post/Zip Code">
+                                </div>
                             </div>
 
                             <div class="form-group">
@@ -182,8 +185,39 @@
             AddCustomer();
         })
         $('#txtPostCode').change(function () {
-            getdatabyzip();
-        })
+       
+            City = $("#txtCity").val();
+            State = $("#txtState").val();
+            PostalCode = $("#txtPostCode").val();
+            var obj = {
+                billing_state: State,
+                billing_city: City,
+                billing_postcode: PostalCode
+            }
+            $.ajax({
+                url: '/Users/CityStateZip/', dataType: 'json', type: 'Post',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(obj),
+                dataType: "json",
+                success: function (data) {
+                    if (data.status == true) {
+                       // swal('Alert!', 'Post zip code is valid for City and State', 'success')
+                       // $('#hfzipstatus').val(data.status);
+                        $('#hfzipstatus').val(data.status);
+                      
+                    }
+                    else {
+                        $("#txtPostCode").val("");
+                        $('#hfzipstatus').val(data.status);
+                        swal('Alert', 'Post zip code is not valid for City and State', 'error').then(function () { swal.close(); $('#txtPostCode').focus(); });
+                    }
+                },
+
+                error: function (error) {
+                    swal('Error!', 'something went wrong', 'error');
+                },
+            })
+        });
         $("#btnPhotoLibrary").click(function () {
             $("#hidimage").val('');
             $("#hidimagetype").val('2');
@@ -193,111 +227,116 @@
 
 
     function AddCustomer() {
-        debugger
-        var ImageURL;
-        var canvas = document.createElement('canvas');
-        var objimg = document.getElementById('show_picture');
-        canvas.width = objimg.width;
-        canvas.height = objimg.height;
-        var ctx = canvas.getContext('2d').drawImage(objimg, 0, 0, canvas.width, canvas.height);
-        var can = document.getElementById('canvas');
-        ImageType = "jpeg";
-        var img = canvas.toDataURL("image/jpeg", 30 / 100);
-        var result_image_obj = new Image();
-        result_image_obj.src = img;
-        $("#show_picture").attr("src", result_image_obj.src);
-        ImageURL = result_image_obj.src;
-        var block = ImageURL.split(";");
-        var realData = block[1].split(",")[1];
-        $("#hidimage").val(realData);
+        debugger        
+        $("#txtPostCode").change();
+        if ($("#hfzipstatus").val() == "true") {
+     
+            var ImageURL;
+            var canvas = document.createElement('canvas');
+            var objimg = document.getElementById('show_picture');
+            canvas.width = objimg.width;
+            canvas.height = objimg.height;
+            var ctx = canvas.getContext('2d').drawImage(objimg, 0, 0, canvas.width, canvas.height);
+            var can = document.getElementById('canvas');
+            ImageType = "jpeg";
+            var img = canvas.toDataURL("image/jpeg", 30 / 100);
+            var result_image_obj = new Image();
+            result_image_obj.src = img;
+            $("#show_picture").attr("src", result_image_obj.src);
+            ImageURL = result_image_obj.src;
+            var block = ImageURL.split(";");
+            var realData = block[1].split(",")[1];
+            $("#hidimage").val(realData);
 
 
-        Picture = $("#hidimage").val();
-        ID = $("#hfid").val();
-        Email = $("#txtUserEmail").val();
-        NickName = $("#txtUserNickName").val();
-        FirstName = $("#txtFirstName").val();
-        LastName = $("#txtLastName").val();
-        address = $("#txtAddress").val();
-        country = $("#txtCountry").val();
-        UserRole = $("#txtUserRole").val();
-        Phone = $("#txtPhone").val();
-        Zipcode = $("#txtPostCode").val();
-        City = $("#txtCity").val();
-        State = $("#txtState").val();
-        address2 = $("#txtAddress2").val();
+            Picture = $("#hidimage").val();
+            ID = $("#hfid").val();
+            Email = $("#txtUserEmail").val();
+            NickName = $("#txtUserNickName").val();
+            FirstName = $("#txtFirstName").val();
+            LastName = $("#txtLastName").val();
+            address = $("#txtAddress").val();
+            country = $("#txtCountry").val();
+            UserRole = $("#txtUserRole").val();
+            Phone = $("#txtPhone").val();
+            Zipcode = $("#txtPostCode").val();
+            City = $("#txtCity").val();
+            State = $("#txtState").val();
+            address2 = $("#txtAddress2").val();
 
-        if (NickName == "") {
-            swal('Alert', 'Please Enter User Name', 'error').then(function () { swal.close(); $('#txtUserNickName').focus(); });
-        }
-        else if (Email == "") {
-            swal('Alert', 'Please Enter Email', 'error').then(function () { swal.close(); $('#txtUserEmail').focus(); });
-        }
-        else if (FirstName == "") {
-            swal('Alert', 'Please Enter First Name', 'error').then(function () { swal.close(); $('#txtFirstName').focus(); });
-        }
-        else if (LastName == "") {
-            swal('Alert', 'Please Enter Last Name', 'error').then(function () { swal.close(); $('#txtLastName').focus(); });
-        }
-        else if ($('#txtUserRole').val() == 0) {
-            swal('Alert', 'Please Select User Type', 'error').then(function () { swal.close(); $('#txtUserRole').focus(); });
-        }
-        else if (Phone == "") {
-            swal('Alert', 'Please Enter Contact No.', 'error').then(function () { swal.close(); $('#txtPhone').focus(); });
-        }
-        else if (address == "") {
-            swal('Alert', 'Please Enter Address ', 'error').then(function () { swal.close(); $('#txtAddress').focus(); });
-        }
-        else if (Zipcode == "") {
-            swal('Alert', 'Please Enter Post/Zip Code', 'error').then(function () { swal.close(); $('#txtPostCode').focus(); });
-        }
-        else if ($('#txtCity').val() == 0) {
-            swal('Alert', 'Please Select City', 'error').then(function () { swal.close(); $('#txtCity').focus(); });
-        }
-        else if ($('#txtState').val() == 0) {
-            swal('Alert', 'Please Select State', 'error').then(function () { swal.close(); $('#txtState').focus(); });
-        }
-        else if ($('#txtCountry').val() == 0) {
-            swal('Alert', 'Please Select Country', 'error').then(function () { swal.close(); $('#txtCountry').focus(); });
-        }
-
-
-
-        else {
-            var obj = {
-                ID: ID,
-                user_email: Email,
-                user_nicename: NickName,
-                first_name: FirstName,
-                last_name: LastName,
-                address: address,
-                country: country,
-                phone: Phone,
-                user_role: UserRole,
-                User_Image: Picture,
-                billing_postcode: Zipcode,
-                billing_state: State,
-                billing_city: City,
-                billing_address_2: address2
+            if (NickName == "") {
+                swal('Alert', 'Please Enter User Name', 'error').then(function () { swal.close(); $('#txtUserNickName').focus(); });
             }
-            $.ajax({
-                url: '/Users/UpdateUser/', dataType: 'json', type: 'Post',
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify(obj),
-                dataType: "json",
-                beforeSend: function () { $("#loader").show(); },
-                success: function (data) {
-                    if (data.status == true) {
-                        $('#parent > input:text').val('');
-                        swal('Alert!', data.message, 'success').then((result) => { location.href = 'Users'; });
-                    }
-                    else {
-                        swal('Alert!', data.message, 'error');
-                    }
-                },
-                complete: function () { $("#loader").hide(); },
-                error: function (error) { swal('Error!', 'something went wrong', 'error'); },
-            })
+            else if (Email == "") {
+                swal('Alert', 'Please Enter Email', 'error').then(function () { swal.close(); $('#txtUserEmail').focus(); });
+            }
+            else if (FirstName == "") {
+                swal('Alert', 'Please Enter First Name', 'error').then(function () { swal.close(); $('#txtFirstName').focus(); });
+            }
+            else if (LastName == "") {
+                swal('Alert', 'Please Enter Last Name', 'error').then(function () { swal.close(); $('#txtLastName').focus(); });
+            }
+            else if ($('#txtUserRole').val() == 0) {
+                swal('Alert', 'Please Select User Type', 'error').then(function () { swal.close(); $('#txtUserRole').focus(); });
+            }
+            else if (Phone == "") {
+                swal('Alert', 'Please Enter Contact No.', 'error').then(function () { swal.close(); $('#txtPhone').focus(); });
+            }
+            else if (address == "") {
+                swal('Alert', 'Please Enter Address ', 'error').then(function () { swal.close(); $('#txtAddress').focus(); });
+            }
+
+            else if ($('#txtCity').val() == 0) {
+                swal('Alert', 'Please Select City', 'error').then(function () { swal.close(); $('#txtCity').focus(); });
+            }
+            else if ($('#txtState').val() == 0) {
+                swal('Alert', 'Please Select State', 'error').then(function () { swal.close(); $('#txtState').focus(); });
+            }
+            else if (Zipcode == "") {
+                swal('Alert', 'Please Enter Post/Zip Code', 'error').then(function () { swal.close(); $('#txtPostCode').focus(); });
+            }
+            else if ($('#txtCountry').val() == 0) {
+                swal('Alert', 'Please Select Country', 'error').then(function () { swal.close(); $('#txtCountry').focus(); });
+            }
+
+
+
+            else {
+                var obj = {
+                    ID: ID,
+                    user_email: Email,
+                    user_nicename: NickName,
+                    first_name: FirstName,
+                    last_name: LastName,
+                    address: address,
+                    country: country,
+                    phone: Phone,
+                    user_role: UserRole,
+                    User_Image: Picture,
+                    billing_postcode: Zipcode,
+                    billing_state: State,
+                    billing_city: City,
+                    billing_address_2: address2
+                }
+                $.ajax({
+                    url: '/Users/UpdateUser/', dataType: 'json', type: 'Post',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(obj),
+                    dataType: "json",
+                    beforeSend: function () { $("#loader").show(); },
+                    success: function (data) {
+                        if (data.status == true) {
+                            $('#parent > input:text').val('');
+                            swal('Alert!', data.message, 'success').then((result) => { location.href = 'Users'; });
+                        }
+                        else {
+                            swal('Alert!', data.message, 'error');
+                        }
+                    },
+                    complete: function () { $("#loader").hide(); },
+                    error: function (error) { swal('Error!', 'something went wrong', 'error'); },
+                })
+            }
         }
 
     }

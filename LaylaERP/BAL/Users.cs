@@ -69,7 +69,7 @@
             DataTable dtr = new DataTable();
             try
             {
-                string strquery = "select distinct State,State from ZIPCodes1 order by State";
+                string strquery = "select distinct StateFullName,StateFullName from ZIPCodes1 order by StateFullName";
                 dtr = SQLHelper.ExecuteDataTable(strquery);
             }
             catch (Exception ex)

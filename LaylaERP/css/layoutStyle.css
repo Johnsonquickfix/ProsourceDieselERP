@@ -62,7 +62,7 @@ dashboard
     align-items: center;
 }
 .form-user-role select {
-    width: auto;
+    width: 200px;
     margin-right: 15px;
 }
 

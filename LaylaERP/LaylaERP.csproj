@@ -166,6 +166,7 @@
     <Compile Include="Controllers\AccountAPIController.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
     <Compile Include="Controllers\ExportController.cs" />
+    <Compile Include="Controllers\FeeNTaxController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\OrdersController.cs" />
     <Compile Include="Controllers\ReportsController.cs" />
@@ -481,6 +482,7 @@
     <Content Include="Images\layla32.png" />
     <Content Include="Images\userprofile2.png" />
     <Content Include="js\app.js" />
+    <Content Include="js\common.js" />
     <Content Include="js\Customer\Customer.js" />
     <Content Include="js\Orders\NewOrder.js" />
     <Content Include="js\Orders\OrderHistory.js" />
@@ -641,6 +643,7 @@
     <Content Include="Views\Users\CreateUser.cshtml" />
     <Content Include="Views\Users\UserDetails.cshtml" />
     <Content Include="Views\Shared\_LayoutDashboard.cshtml" />
+    <Content Include="Views\FeeNTax\StateRecycleTax.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

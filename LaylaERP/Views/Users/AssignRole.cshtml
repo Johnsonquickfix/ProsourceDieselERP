@@ -1,6 +1,6 @@
 ﻿@model dynamic
 @{ ViewBag.Title = "AssignRole";
-                Layout = "~/Views/Shared/_Layout.cshtml"; }
+    Layout = "~/Views/Shared/_Layout.cshtml"; }
 
 <div class="page-title">
     <h2 class="page-heading">Role Management</h2>
@@ -10,12 +10,16 @@
         <div class="box box-primary">
             <div class="box-header with-border">
                 <div class="row">
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <h2 class="sm-heading">User Roles</h2>
-                            <select id="userrole" class="form-control select2" style="width: 100%;">
+                    <div class="col-md-12">
+                        <h2 class="sm-heading">User Roles</h2>
+                        <div class="form-group form-user-role">
+                            <select id="userrole" class="form-control select2">
                                 <option selected="selected">Select Type</option>
                             </select>
+                            <button type="button" id="btnAddRole" class="btn btn-danger" data-toggle="modal" data-target="#roleModal">
+                                <i class="fa fa-plus"></i> Add New Role
+                            </button>
+                            @*<button type="button" id="btnRole" class="btn btn-danger" data-target="#exampleModalCenter"><i class="fa fa-plus"></i> Add New Role</button>*@
                         </div>
                     </div>
                 </div>
@@ -109,19 +113,47 @@
         </div>
     </form>
 </div>
+<div class="modal fade" id="roleModal" tabindex="-1" role="dialog" aria-labelledby="roleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="exampleModalLongTitle">Add New Role</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="form-group">
+                        <label class="control-label col-md-3 text-right" for="Email">Role Name</label>
+                        <div class="col-md-9">
+                            <input type="text" id="txtRoleName" class="form-control" placeholder="Role Name" />
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" id="btnSaveRole" class="btn btn-danger"><i class="fa fa-save"></i> Save changes</button>
+                </div>
+            </div>
+    </div>
+</div>
 <script type="text/javascript">
     $(document).ready(function () {
+        GetRoles();
+    })
+    function GetRoles() {
         $.get('GetRoles', function (data) {
+            $('#userrole').empty();
             $.each(data, function (index, value) {
                 $('<option>').val(value).text(value).appendTo("#userrole");
             })
         })
-
         main_submenu_tick();
-    })
-
+    }
     $("#userrole").change(function () {
-
+        debugger
         var User_Type = { User_Type: $("#userrole :selected").text() };
         //  console.log(usertype);
         // alert($("#userrole :selected").text());
@@ -144,8 +176,6 @@
                 if (obj[0].User_Classification == 1) $("#User_Classification").prop('checked', true); else $("#User_Classification").prop('checked', false);
                 if (obj[0].Add_New_Orders == 1) $("#add_new_orders").prop('checked', true); else $("#add_new_orders").prop('checked', false);
                 if (obj[0].Show_Update_Orders == 1) $("#show_update_orders").prop('checked', true); else $("#show_update_orders").prop('checked', false);
-
-
             },
             error: function (responce) {
                 console.log(responce)
@@ -259,4 +289,31 @@
         });
     }
             //checked box sub part end
+
+    $('#btnSaveRole').click(function () {
+       
+
+        var role = $('#txtRoleName').val();
+        if (role == "") {
+            swal("alert", "Please enter role name", "error").then(function () { swal.close(); $('#txtRoleName').focus(); })
+        }
+        else {
+            var obj = { User_Type : role }
+            $.ajax({
+                url: '/Users/NewRole/', dataType: 'json', type: 'Post',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(obj),
+                dataType: "json",
+                success: function (data) {
+                    $("#roleModal .close").click();
+                    swal("alert", data.message, "success");
+                    GetRoles();
+
+                },
+                error: function () {
+                    swal("alert", "something went wrong", "error");
+                }
+            })
+        }
+    });
 </script>

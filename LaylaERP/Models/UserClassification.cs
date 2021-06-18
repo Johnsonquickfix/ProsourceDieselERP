@@ -26,7 +26,7 @@ namespace LaylaERP.Models
         bool _Payments;
         string _User_Type = string.Empty;
 
-
+     
         public bool User_Mnu
         {
             get { return _User_Mnu; }
@@ -125,5 +125,6 @@ namespace LaylaERP.Models
             get { return _Payments; }
             set { _Payments = value; }
         }
+      
     }
 }

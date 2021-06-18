@@ -11,6 +11,7 @@
     using System.Net.Mail;
     using System.Configuration;
     using System.Text.RegularExpressions;
+    using recaptcha;
 
     public class AccountAPIController : Controller
     {
@@ -269,6 +270,55 @@
 
             }
             return Json(true, 0);
+        }
+        [HttpPost]
+        //[ValidateAntiForgeryToken]
+        //[ValidateGoogleCaptcha]
+        public ActionResult ContactUs(string name, string email, string subject, string content)
+        {
+            DataSet ds = Users.GetEmailCredentials();
+
+            List<string> lstEmail = email.Split(',').ToList();
+
+            using (MailMessage mailMessage = new MailMessage())
+
+            {
+
+                mailMessage.From = new MailAddress(ConfigurationManager.AppSettings["UserName"], "Layla ERP");
+
+                mailMessage.Subject = subject;
+
+                mailMessage.Body = content;
+
+                mailMessage.IsBodyHtml = true;
+
+                mailMessage.To.Add(new MailAddress("david.quickfix1@gmail.com"));
+
+
+                SmtpClient smtp = new SmtpClient();
+
+                smtp.Host = ds.Tables[0].Rows[0]["SMTPServerName"].ToString();
+
+                smtp.EnableSsl = Convert.ToBoolean(ConfigurationManager.AppSettings["EnableSsl"]);
+
+                System.Net.NetworkCredential NetworkCred = new System.Net.NetworkCredential();
+
+                NetworkCred.UserName = ds.Tables[0].Rows[0]["SenderEmailID"].ToString(); //reading from web.config  
+
+                NetworkCred.Password = ds.Tables[0].Rows[0]["SenderEmailPwd"].ToString(); //reading from web.config  
+
+                smtp.UseDefaultCredentials = true;
+
+                smtp.Credentials = NetworkCred;
+
+                smtp.Port = Convert.ToInt32(ds.Tables[0].Rows[0]["SMTPServerPortNo"]); //reading from web.config  
+
+                //smtp.Send(mailMessage);
+
+
+            }
+            return Json(new { status = true, message = "Users status has been updated successfully!!", url = "" }, 0);
+            //return Json(true,0);
         }
     }
 }

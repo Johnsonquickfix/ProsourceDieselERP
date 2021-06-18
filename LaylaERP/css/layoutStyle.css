@@ -14,6 +14,17 @@ button, input, select, textarea, h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5
 .p-0 {
     padding: 0px !important;
 }
+
+.form-user-role select {
+    width: 200px;
+    margin-right: 15px;
+}
+
+.form-user-role {
+    display: flex;
+    align-items: center;
+}
+
 /*****
 dashboard
 *******/
@@ -964,4 +975,12 @@ span#result {
 #exportdata td:first-child {
 text-align:center;}
 .tablenav .btn {
+}
+.customer-manage table td:nth-child(3) {
+word-break:break-all;}
+#exportdata_info, #exportusersdata_info {
+    float: left;
+}
+#exportdata_paginate, #exportusersdata_paginate {
+    float: right;
 }

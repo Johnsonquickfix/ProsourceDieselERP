@@ -1,4 +1,6 @@
 ﻿@model LaylaERP.Models.LoginModel
+@*@using LaylaERP.recaptcha*@
+
 @{
     ViewBag.Title = "Login";
     Layout = null;
@@ -232,7 +234,7 @@
                                                                                size="40"
                                                                                aria-required="true"
                                                                                aria-invalid="false"
-                                                                               class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" />
+                                                                               class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" id="name" name="name" />
                                                                     </span>
                                                                     <!---->
                                                                 </div>
@@ -246,7 +248,7 @@
                                                                                size="40"
                                                                                aria-required="true"
                                                                                aria-invalid="false"
-                                                                               class="wpcf7-form-control wpcf7-text wpcf7-email wpcf7-validates-as-required wpcf7-validates-as-email" />
+                                                                               class="wpcf7-form-control wpcf7-text wpcf7-email wpcf7-validates-as-required wpcf7-validates-as-email" id="email" name="email"/>
                                                                     </span>
                                                                     <!----><!---->
                                                                 </div>
@@ -260,7 +262,7 @@
                                                                                size="40"
                                                                                aria-required="true"
                                                                                aria-invalid="false"
-                                                                               class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" />
+                                                                               class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required"  id="subject" name="subject"/>
                                                                     </span>
                                                                     <!---->
                                                                 </div>
@@ -268,14 +270,20 @@
                                                                     <label _ngcontent-serverapp-c35=""> Your Question/Message</label><br _ngcontent-serverapp-c35="" />
                                                                     <span _ngcontent-serverapp-c35="" class="wpcf7-form-control-wrap your-message">
                                                                         <textarea _ngcontent-serverapp-c35="" formcontrolname="yourMessage" ngmodel="" cols="10"
-                                                                                  rows="5" aria-invalid="false" class="wpcf7-form-control wpcf7-textarea">
+                                                                                  rows="5" aria-invalid="false" class="wpcf7-form-control wpcf7-textarea" id="content" name="content">
                                 </textarea>
                                                                     </span>
                                                                 </div>
+                                                                @*@Html.GoogleCaptcha()*@
+
+                                                                
+
                                                                 <div _ngcontent-serverapp-c35="" class="col-md-12">
                                                                     <span _ngcontent-serverapp-c35="" class="wpcf7-form-control-wrap your-recaptcha g-recaptcha">
                                                                         <re-captcha _ngcontent-serverapp-c35="" formcontrolname="recaptchaReactive"
                                                                                     sitekey="6Le-yIYUAAAAALHEdxqPayGJNNeWtTCESVJdnW_I" id="ngrecaptcha-0" class="">
+                                                                       
+                                                                        
                                                                             <div style="width: 304px; height: 78px;">
                                                                                 <div>
                                                                                     <iframe title="reCAPTCHA"
@@ -298,10 +306,13 @@
                                                                     </span>
                                                                 </div>
                                                                 <div _ngcontent-serverapp-c35="" class="col-md-12">
-                                                                    <input _ngcontent-serverapp-c35="" type="submit" value="submit" class="wpcf7-form-control wpcf7-submit" />
+                                                                    <input _ngcontent-serverapp-c35="" type="button" value="submit" class="wpcf7-form-control wpcf7-submit" id="sendquery"/>
+                                                                  
                                                                 </div>
+
                                                             </div>
                                                         </form>
+
                                                     </div>
                                                 </div>
                                             </div>
@@ -341,11 +352,15 @@
                         <!-- cache slot rendered -->
                         <!-- /.login-box -->
                         <!-- jQuery -->
+                         <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+
                         <script src="~/Content/AdminLTE-3.1.0/jquery/jquery.min.js"></script>
                         <script src="~/Content/AdminLTE-3.1.0/fastclick.js"></script>
                         <!-- AdminLTE App -->
                         <script src="~/Content/AdminLTE-3.1.0/adminlte.min.js"></script>
+                        
 
+                        <script src="https://www.google.com/recaptcha/api.js"></script>
                         <script src="@Url.Content("~/js/Users/UserLogin.js?v=" + DateTime.Now.ToString("ddMMyyyymmss"))" asp-append-version="true"></script>
                         <script>
                             $(document).ready(function () {
@@ -353,6 +368,38 @@
                                     userAuthenticateLogin();
                                 });
 
+                                $('#sendquery').click(function () {
+                                        debugger;
+                                        var name = $('#name').val();
+                                        var email = $('#email').val();
+                                        var subject = $('#subject').val();
+                                        var content = $('#content').val();
+                                        
+                                        var obj = { name: name, email: email, subject: subject, content: content }         
+                                        $.ajax({
+                                            url: '/AccountAPI/ContactUs', dataType: 'json', type: "Post",
+                                           
+                                            contentType: "application/json; charset=utf-8",
+                                            data: JSON.stringify(obj),
+                                            success: function (data) {
+                                              
+                                                console.log(data);
+                                                //$("#loading-div-background").hide();
+                                                
+                                                swal('success!', "Message send Successfully", "success");
+                                                $('#name').val('');
+                                                $('#email').val('');
+                                                $('#subject').val('');
+                                                $('#content').val(0);
+
+                                            },
+                                            error: function (errormessage) {
+                                                //$("#loading-div-background").hide();
+                                                swal('Error!', "Something went wrong .", "error");
+                                            }
+                                        });
+
+                                    });
 
                             });
                         </script>

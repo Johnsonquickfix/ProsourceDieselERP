@@ -12,6 +12,7 @@
         public List<OrderProductsModel> OrderProducts { get; set; }
         public OrderPostStatusModel OrderPostStatus { get; set; }
         public List<OrderOtherItemsModel> OrderOtherItems { get; set; }
+        public List<OrderTaxItemsModel> OrderTaxItems { get; set; }
     }
     public class OrderPostModel
     {
@@ -115,6 +116,15 @@
         public long order_id { get; set; }
         public string item_name { get; set; }
         public string item_type { get; set; }
+        public decimal amount { get; set; }
+    }
+    public class OrderTaxItemsModel
+    {
+        public long tax_rate_id { get; set; }
+        public string tax_rate_country { get; set; }
+        public string tax_rate_state { get; set; }
+        public string tax_rate_name { get; set; }
+        public decimal tax_rate { get; set; }
         public decimal amount { get; set; }
     }
 }

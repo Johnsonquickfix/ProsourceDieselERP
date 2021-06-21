@@ -47,10 +47,9 @@ function Datagrid(role_type) {
             },
             { 'data': 'ID', 'sWidth': "8%" },
             { 'data': 'user_login', 'sWidth': "18%" },
-            { 'data': 'user_email', 'sWidth': "30%" },
+            { 'data': 'user_email', 'sWidth': "35%" },
             { 'data': 'user_status', 'sWidth': "10%" },
-            { 'data': 'phone', 'sWidth': "15%" },
-            { 'data': 'address', 'sWidth': "15%" },
+            { 'data': 'phone', 'sWidth': "10%" },
             {
                 'data': 'my', 'sWidth': "25%",
 

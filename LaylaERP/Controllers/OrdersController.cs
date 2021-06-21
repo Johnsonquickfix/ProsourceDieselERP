@@ -44,7 +44,7 @@
                 DataTable DT = OrderRepository.GetOrders(oid);
                 JSONresult = JsonConvert.SerializeObject(DT);
             }
-            catch  { }
+            catch { }
             return Json(JSONresult, 0);
         }
         [HttpPost]
@@ -186,10 +186,11 @@
             try
             {
                 OperatorModel om = CommanUtilities.Provider.GetCurrent();
-                var o = new OrderPostMetaModel() { post_id = model.OrderPostStatus.order_id, meta_key = "employee_id", meta_value = om.UserID.ToString() };
-                model.OrderPostMeta.Add(o);
-                o = new OrderPostMetaModel() { post_id = model.OrderPostStatus.order_id, meta_key = "employee_name", meta_value = om.UserName.ToString() };
-                model.OrderPostMeta.Add(o);
+                model.OrderPostMeta.Add(new OrderPostMetaModel() { post_id = model.OrderPostStatus.order_id, meta_key = "_customer_ip_address", meta_value = Net.Ip });
+                model.OrderPostMeta.Add(new OrderPostMetaModel() { post_id = model.OrderPostStatus.order_id, meta_key = "_customer_user_agent", meta_value = Net.BrowserInfo });
+                model.OrderPostMeta.Add(new OrderPostMetaModel() { post_id = model.OrderPostStatus.order_id, meta_key = "employee_id", meta_value = om.UserID.ToString() });
+                model.OrderPostMeta.Add(new OrderPostMetaModel() { post_id = model.OrderPostStatus.order_id, meta_key = "employee_name", meta_value = om.UserName.ToString() });
+
                 int result = OrderRepository.SaveOrder(model);
                 if (result > 0)
                 { status = true; JSONresult = "Order placed successfully."; }

@@ -50,6 +50,7 @@ function Datagrid(role_type) {
             { 'data': 'user_email', 'sWidth': "30%" },
             { 'data': 'user_status', 'sWidth': "10%" },
             { 'data': 'phone', 'sWidth': "15%" },
+            { 'data': 'address', 'sWidth': "15%" },
             {
                 'data': 'my', 'sWidth': "25%",
 

@@ -414,16 +414,11 @@ namespace LaylaERP.Controllers
                 return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
             }
 
-            // }
-            //return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
         }
 
 
         public JsonResult CityStateZip(clsUserDetails model)
         {
-            //if (ModelState.IsValid)
-            //{
-              
 
                     int ID = UsersRepositry.ZipcodeByCity(model);
                     if (ID > 0)
@@ -435,9 +430,39 @@ namespace LaylaERP.Controllers
                     {
                         return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
                     }
-                 
-           // }
-            //return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+
+        }
+
+        public JsonResult GetUserName(clsUserDetails model)
+        {
+
+            int ID = UsersRepositry.GetUserName(model);
+            if (ID > 0)
+            {
+
+                return Json(new { status = true, message = "User record has been saved successfully!!", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+
+        }
+        public JsonResult GetEmailName(clsUserDetails model)
+        {
+           
+            int ID = UsersRepositry.GetEmailName(model);
+            if (ID > 0)
+            {
+
+                return Json(new { status = true, message = "User record has been saved successfully!!", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+
+           
         }
 
         [HttpPost]

@@ -10,6 +10,7 @@ using System.Configuration;
 using LaylaERP.BAL;
 using System.Dynamic;
 using Newtonsoft.Json;
+using System.Text;
 
 namespace LaylaERP.Controllers
 {
@@ -120,6 +121,32 @@ namespace LaylaERP.Controllers
                 usertype.Add(t1);
             }
             return Json(usertype, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public JsonResult GetCity(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable DT = BAL.Users.GetCity(model.strValue1);
+                JSONresult = JsonConvert.SerializeObject(DT);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+
+        [HttpPost]
+        public JsonResult GetState(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable DT = BAL.Users.GetState(model.strValue1);
+                JSONresult = JsonConvert.SerializeObject(DT);
+            }
+            catch { }
+            return Json(JSONresult, 0);
         }
 
         public JsonResult GetState()
@@ -365,6 +392,30 @@ namespace LaylaERP.Controllers
                 }
             }
             return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+        }
+
+        public JsonResult CreatePassword(clsUserDetails model)
+        {
+ 
+            int length = 16;
+            const string valid = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890*$-+?_&=!%{}/";
+            StringBuilder res = new StringBuilder();
+            Random rnd = new Random();
+            while (0 < length--)
+            {
+                res.Append(valid[rnd.Next(valid.Length)]);
+            }             
+            if (!(string.IsNullOrEmpty(res.ToString())))
+            {
+                return Json(new { status = true, message = res.ToString(), url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+
+            // }
+            //return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
         }
 
 

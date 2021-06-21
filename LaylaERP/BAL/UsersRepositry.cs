@@ -648,5 +648,29 @@ namespace LaylaERP.BAL
             }
         }
 
+        public int ChangePermission(string ID, int role_id)
+        {
+            string[] values = ID.Split(',');
+            for(int i = 1; i <= values.Length; i++)
+            {
+                ID = values[i].ToString();
+            }
+            //try
+            //{
+            //    string strsql = "insert into wp_erprole_rest(role_id,erpmenu_id) values(@role_id,'" + ID+"')";
+            //    MySqlParameter[] para =
+            //    {
+            //        new MySqlParameter("@role_id", role_id)
+            //    };
+            //    int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+            //    return result;
+            //}
+            //catch (Exception Ex)
+            //{
+            //    throw Ex;
+            //}
+            return 1;
+        }
+
     }
 }

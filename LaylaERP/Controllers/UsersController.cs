@@ -107,6 +107,20 @@ namespace LaylaERP.Controllers
             }
             return Json(usertype, JsonRequestBehavior.AllowGet);
         }
+      
+
+        public JsonResult GetMenuNames()
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+
+                DataTable dt = BAL.Users.GetMenuNames();
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
 
         public JsonResult GetCity()
         {
@@ -434,6 +448,23 @@ namespace LaylaERP.Controllers
                 
             }
             return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+        }
+
+        public JsonResult ChangePermission(UserClassification model)
+        {
+            int role_id = model.role_id;
+            string strID = model.strVal;
+            if (strID != "")
+            {
+                new UsersRepositry().ChangePermission(strID, role_id);
+                return Json(new { status = true, message = "User Permission has been Changed successfully!!", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Something went wrong", url = "" }, 0);
+            }
+
+
         }
     }
 }

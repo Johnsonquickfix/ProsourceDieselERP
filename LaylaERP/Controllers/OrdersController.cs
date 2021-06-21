@@ -224,18 +224,14 @@
             catch { }
             return Json(result, 0);
         }
-        [HttpPost]
-        public JsonResult GetOrderList(OrderPostStatusModel model)
+        [HttpGet]
+        public JsonResult GetOrderList(JqDataTableModel model)
         {
             string result = string.Empty;
             int TotalRecord = 0;
             try
             {
-                string urid = "";
-                if (model.status != "")
-                    urid = model.status;
-                string searchid = model.Search;
-                DataTable dt = OrderRepository.OrderList(urid, searchid, model.PageNo, model.PageSize, out TotalRecord, model.SortCol, model.SortDir);
+                DataTable dt = OrderRepository.OrderList(model.strValue1, model.strValue2, model.strValue3, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
                 result = JsonConvert.SerializeObject(dt, Formatting.Indented);
             }
             catch { }

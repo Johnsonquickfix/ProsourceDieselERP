@@ -10,6 +10,7 @@ using System.Configuration;
 using LaylaERP.BAL;
 using System.Dynamic;
 using Newtonsoft.Json;
+using System.Text;
 
 namespace LaylaERP.Controllers
 {
@@ -122,6 +123,32 @@ namespace LaylaERP.Controllers
             return Json(usertype, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpPost]
+        public JsonResult GetCity(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable DT = BAL.Users.GetCity(model.strValue1);
+                JSONresult = JsonConvert.SerializeObject(DT);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+
+        [HttpPost]
+        public JsonResult GetState(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable DT = BAL.Users.GetState(model.strValue1);
+                JSONresult = JsonConvert.SerializeObject(DT);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+
         public JsonResult GetState()
         {
             string t1 = "";
@@ -130,7 +157,7 @@ namespace LaylaERP.Controllers
             List<string> usertype = new List<string>();
             for (int i = 0; i < dt.Rows.Count; i++)
             {
-                t1 = dt.Rows[i]["State"].ToString();
+                t1 = dt.Rows[i]["StateFullName"].ToString();
                 usertype.Add(t1);
             }
             return Json(usertype, JsonRequestBehavior.AllowGet);
@@ -293,7 +320,35 @@ namespace LaylaERP.Controllers
             myModel.address = dt.Rows[0]["address"];
             myModel.user_login = dt.Rows[0]["user_login"];  
             string role = dt.Rows[0]["user_role"].ToString();
-            role = role.Replace("_", " ");           
+            if (role == "accounting")
+                role = "Accounting";
+            else if (role == "administrator")
+                role = "Administrator";
+            else if (role == "author")
+                role = "Author";
+            else if (role == "contributor")
+                role = "Contributor";
+            else if (role == "editor")
+                role = "Editor";
+            else if (role == "modsquad")
+                role = "Mod Squad";
+            else if (role == "wpseo_editor")
+                role = "SEO Editor";
+            else if (role == "seo_manager")
+                role = "SEO Manager";
+            else if (role == "shop_manager")
+                role = "Shop Manager";
+            else if (role == "shop_manager")
+                role = "Shop Manager";
+            else if (role == "subscriber")
+                role = "Subscriber";
+            else if (role == "supplychainmanager")
+                role = "Supply Chain Manager";
+            else
+                role = role;
+
+
+            // role = role.Replace("_", " ");           
             myModel.user_role = role;      
             myModel.phone = dt.Rows[0]["phone"];
             myModel.State = dt.Rows[0]["State"];
@@ -337,6 +392,77 @@ namespace LaylaERP.Controllers
                 }
             }
             return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+        }
+
+        public JsonResult CreatePassword(clsUserDetails model)
+        {
+ 
+            int length = 16;
+            const string valid = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890*$-+?_&=!%{}/";
+            StringBuilder res = new StringBuilder();
+            Random rnd = new Random();
+            while (0 < length--)
+            {
+                res.Append(valid[rnd.Next(valid.Length)]);
+            }             
+            if (!(string.IsNullOrEmpty(res.ToString())))
+            {
+                return Json(new { status = true, message = res.ToString(), url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+
+        }
+
+
+        public JsonResult CityStateZip(clsUserDetails model)
+        {
+
+                    int ID = UsersRepositry.ZipcodeByCity(model);
+                    if (ID > 0)
+                    {
+                        
+                        return Json(new { status = true, message = "User record has been saved successfully!!", url = "" }, 0);
+                    }
+                    else
+                    {
+                        return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                    }
+
+        }
+
+        public JsonResult GetUserName(clsUserDetails model)
+        {
+
+            int ID = UsersRepositry.GetUserName(model);
+            if (ID > 0)
+            {
+
+                return Json(new { status = true, message = "User record has been saved successfully!!", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+
+        }
+        public JsonResult GetEmailName(clsUserDetails model)
+        {
+           
+            int ID = UsersRepositry.GetEmailName(model);
+            if (ID > 0)
+            {
+
+                return Json(new { status = true, message = "User record has been saved successfully!!", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+
+           
         }
 
         [HttpPost]

@@ -32,16 +32,24 @@ namespace LaylaERP.BAL
                 }
                 userslist.Clear();
                 DataSet ds1 = new DataSet();
-                string sqlquery = "select ID, User_Image, user_login, user_status, if(user_status=0,'Active','InActive') as status,user_email,user_pass,"
-                            + " CONCAT((case when meta_value like '%administrator%' then 'Administrator,' else '' end),(case when meta_value like '%accounting%' then 'Accounting,' else '' end),"
-                            + " (case when meta_value like '%author%' then 'Author,' else '' end),(case when meta_value like '%modsquad%' then 'Mod Squad,' else '' end),"
-                            + " (case when meta_value like '%shop_manager%' then 'Shop Manager,' else '' end),(case when meta_value like '%subscriber%' then 'Subscriber,' else '' end),"
-                            + " (case when meta_value like '%supplychainmanager%' then 'Supply Chain Manager,' else '' end),(case when meta_value like '%wpseo_editor%' then 'SEO Editor,' else '' end),"
-                            + " (case when meta_value like '%editor%' then 'Editor,' else '' end),(case when meta_value like '%seo_manager%' then 'SEO Manager,' else '' end),"
-                            + " (case when meta_value like '%contributor%' then 'SEO Contributor,' else '' end)) meta_value"
+                string sqlquery = "select ID, user_login, user_status, if(user_status=0,'Active','InActive') as status,user_email,user_pass,"
+                            + " CONCAT((case when um.meta_value like '%administrator%' then 'Administrator,' else '' end),(case when um.meta_value like '%accounting%' then 'Accounting,' else '' end),"
+                            + " (case when um.meta_value like '%author%' then 'Author,' else '' end),(case when um.meta_value like '%modsquad%' then 'Mod Squad,' else '' end),"
+                            + " (case when um.meta_value like '%shop_manager%' then 'Shop Manager,' else '' end),(case when um.meta_value like '%subscriber%' then 'Subscriber,' else '' end),"
+                            + " (case when um.meta_value like '%supplychainmanager%' then 'Supply Chain Manager,' else '' end),(case when um.meta_value like '%wpseo_editor%' then 'SEO Editor,' else '' end),"
+                            + " (case when um.meta_value like '%editor%' then 'Editor,' else '' end),(case when um.meta_value like '%seo_manager%' then 'SEO Manager,' else '' end),"
+                            + " (case when um.meta_value like '%contributor%' then 'SEO Contributor,' else '' end)) meta_value,"
+                            + " umph.meta_value Phone,"
+                            + " CONCAT(umadd.meta_value, ' ',COALESCE(umadd2.meta_value,''), ' ' ,umacity.meta_value, ' ' , umastate.meta_value, ' ',umapostalcode.meta_value )  address"
                             + " from wp_users u"
                             + " inner join wp_usermeta um on um.user_id = u.id and um.meta_key = 'wp_capabilities' and meta_value NOT LIKE '%customer%'"
-                            + " WHERE um.meta_value like '%"+rolee+"%' ORDER BY ID ASC";
+                            + " LEFT OUTER JOIN wp_usermeta umph on umph.meta_key='billing_phone' And umph.user_id = u.ID"
+                            + " LEFT OUTER JOIN wp_usermeta umadd on umadd.meta_key='billing_address_1' And umadd.user_id = u.ID"
+                            + " LEFT OUTER JOIN wp_usermeta umadd2 on umadd2.meta_key='billing_address_2' And umadd2.user_id = u.ID"
+                            + " LEFT OUTER JOIN wp_usermeta umacity on umacity.meta_key='billing_city' And umacity.user_id = u.ID"
+                            + " LEFT OUTER JOIN wp_usermeta umastate on umastate.meta_key='billing_state' And umastate.user_id = u.ID"
+                            + " LEFT OUTER JOIN wp_usermeta umapostalcode on umapostalcode.meta_key='billing_postcode' And umapostalcode.user_id = u.ID"
+                            + " WHERE um.meta_value like '%" + rolee+ "%'  ORDER BY ID ASC";
 
                 ds1 = DAL.SQLHelper.ExecuteDataSet(sqlquery);
                 string result = string.Empty;
@@ -92,10 +100,12 @@ namespace LaylaERP.BAL
                     } 
        
                     uobj.user_email = ds1.Tables[0].Rows[i]["user_email"].ToString();
+                   
                     if ((ds1.Tables[0].Rows[i]["user_status"].ToString() == "0"))
                     { uobj.user_status = "Active"; }
                     else { uobj.user_status = "InActive"; }
-
+                    uobj.phone = ds1.Tables[0].Rows[i]["Phone"].ToString();
+                    uobj.address = ds1.Tables[0].Rows[i]["address"].ToString();
                     //Code For Role End
                     userslist.Add(uobj);
                 }
@@ -428,6 +438,58 @@ namespace LaylaERP.BAL
             }
         }
 
+        public static int ZipcodeByCity(clsUserDetails model)
+        {
+            try
+            {
+                string strquery = "select count(ZipCode) from ZIPCodes1 where city = '"+ model.billing_city + "' and statefullname = '"+ model.billing_state  + "' and ZipCode = '"+model.billing_postcode+"' ";                 
+                MySqlParameter[] para =
+                {
+                     
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strquery).ToString());
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+        //GetUserName
+        public static int GetUserName(clsUserDetails model)
+        {
+            try
+            {
+                string strquery = "select count(ID) from wp_users where user_login = '" + model.user_login  + "' ";
+                MySqlParameter[] para =
+                {
+
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strquery).ToString());
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+        public static int GetEmailName(clsUserDetails model)
+        {
+            try
+            {
+                string strquery = "select count(ID) from wp_users where user_email = '" + model.user_email + "' ";
+                MySqlParameter[] para =
+                {
+
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strquery).ToString());
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
         public static int UpdateUsers(clsUserDetails model)
         {
             try

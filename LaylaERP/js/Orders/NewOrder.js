@@ -251,8 +251,24 @@ function ApplyCoupon() {
     //$("#billModal").modal({ backdrop: 'static' }); $("#txt_Coupon").focus();
 }
 function bindCouponList(data) {
+    console.log(data);
     var layoutHtml = '';
     if (data.length > 0) {
+        //
+        if (data[0].date_expires != "" && data[0].date_expires != null) {
+            let exp_date = new Date(parseInt(data[0].date_expires) * 1000);
+            let today = new Date();
+            if (exp_date < today) { swal('Alert!', 'Coupon code has been expired.', "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false; }
+        }
+        var zPCnt = 0, zProductIDs = data[0].product_ids.split(','), zExcPCnt = 0, zExcludeProductIDs = data[0].exclude_product_ids.split(',');
+        //get pdorduct
+        $("#tblAddItemFinal > tbody  > tr").each(function () {
+            if (jQuery.inArray($(this).data("vid").toString(), zProductIDs) != -1) { zPCnt++; }
+            if (jQuery.inArray($(this).data("vid").toString(), zExcludeProductIDs) == -1) { zExcPCnt++; }
+        });
+        console.log(zPCnt); console.log(zExcPCnt);
+        if (zPCnt == 0 && zExcPCnt == 0) { swal('Alert!', 'Invalid code entered. Please try again.!', "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false; }
+
         if ($('#li_' + data[0].post_title).length <= 0) {
             layoutHtml += '<li id="li_' + data[0].post_title + '" data-coupon= "' + data[0].post_title + '" data-couponamt= "' + data[0].coupon_amount + '" data-disctype= "' + data[0].discount_type + '">';
             layoutHtml += '<a href="javascript:void(0);">';
@@ -270,7 +286,7 @@ function bindCouponList(data) {
         $('#billCoupon').append(layoutHtml);
 
         var tax_rate = parseFloat($('#hfTaxRate').val()) || 0.00;
-        var zCouponAmt = parseFloat(data[0].coupon_amount) || 0.00, zDiscType = data[0].discount_type, zTotalQty = 1, zQty = 0.00, zGrossAmount = 0.00, zDisAmt = 0.00, zProductIDs = data[0].product_ids.split(',');
+        var zCouponAmt = parseFloat(data[0].coupon_amount) || 0.00, zDiscType = data[0].discount_type, zTotalQty = 1, zQty = 0.00, zGrossAmount = 0.00, zDisAmt = 0.00;
         var isUsedAll = data[0].product_ids.length > 0 ? 0 : 1; zTotalQty = parseFloat($('#totalQty').text()) || 0.00;
         if (zDiscType == 'fixed_cart') { zCouponAmt = (zCouponAmt / zTotalQty); }
         $("#tblAddItemFinal > tbody  > tr").each(function () {
@@ -560,11 +576,11 @@ function createOtherItemsList() {
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Save Details ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function saveCO() {
-    
+
     var oid = parseInt($('#hfOrderNo').val()) || 0;
     var cid = parseInt($('#ddlUser').val()) || 0;
     //if (oid <= 0) { swal('Alert!', 'Please Select Customer.', "info").then((result) => { return false; }); }
-    if (cid <= 0) { swal('Alert!', 'Please Select Customer.', "error").then((result) => { $('#ddlUser').select2('focus'); return false;}); return false; }
+    if (cid <= 0) { swal('Alert!', 'Please Select Customer.', "error").then((result) => { $('#ddlUser').select2('focus'); return false; }); return false; }
     var postMeta = createPostMeta(); var postStatus = createPostStatus(); var otherItems = createOtherItemsList();
     var itemsDetails = [];
     $('#tblAddItemFinal > tbody  > tr').each(function (index, tr) {
@@ -580,7 +596,7 @@ function saveCO() {
             "PKey": pKey, "order_id": oid, "customer_id": cid, "product_id": $(this).data('pid'), "variation_id": $(this).data('vid'), "product_name": $(this).data('pname'), "quantity": qty, "sale_rate": rate, "total": grossAmount, "discount": discountAmount, "tax_amount": taxAmount, "shipping_amount": shippinAmount, "shipping_tax_amount": 0
         });
     });
-    if (itemsDetails.length <= 0) { swal('Alert!', 'Please add product.', "error").then((result) => { $('#ddlProduct').select2('open'); return false;}); return false;}
+    if (itemsDetails.length <= 0) { swal('Alert!', 'Please add product.', "error").then((result) => { $('#ddlProduct').select2('open'); return false; }); return false; }
     var obj = { OrderPostMeta: postMeta, OrderProducts: itemsDetails, OrderPostStatus: postStatus, OrderOtherItems: otherItems };
 
     $('#btnCheckout').prop("disabled", true); $('.billinfo').prop("disabled", true); $('#btnCheckout').text("Waiting...");

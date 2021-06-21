@@ -64,18 +64,44 @@
             return dtr;
         }
 
+        public static DataTable GetCity(string strSearch)
+        {
+            DataTable DT = new DataTable();
+            try
+            {
+                DT = SQLHelper.ExecuteDataTable("select distinct City,City from ZIPCodes1 where City like '" + strSearch + "%' order by City limit 50;");
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DT;
+        }
+
         public static DataTable GetState()
         {
             DataTable dtr = new DataTable();
             try
             {
-                string strquery = "select distinct State,State from ZIPCodes1 order by State";
+                string strquery = "select distinct StateFullName,StateFullName from ZIPCodes1 order by StateFullName";
                 dtr = SQLHelper.ExecuteDataTable(strquery);
             }
             catch (Exception ex)
             { throw ex; }
             return dtr;
         }
+
+        public static DataTable GetState(string strSearch)
+        {
+            DataTable DT = new DataTable();
+            try
+            {
+                DT = SQLHelper.ExecuteDataTable("select distinct StateFullName,StateFullName from ZIPCodes1 where StateFullName like '" + strSearch + "%' order by StateFullName limit 50;");
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DT;
+        }
+
+        
 
         public static DataTable DisplayAssignRole(string strvalue)
         {

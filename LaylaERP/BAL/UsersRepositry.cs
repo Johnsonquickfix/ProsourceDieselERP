@@ -40,7 +40,7 @@ namespace LaylaERP.BAL
                             + " (case when um.meta_value like '%editor%' then 'Editor,' else '' end),(case when um.meta_value like '%seo_manager%' then 'SEO Manager,' else '' end),"
                             + " (case when um.meta_value like '%contributor%' then 'SEO Contributor,' else '' end)) meta_value,"
                             + " umph.meta_value Phone,"
-                            + " CONCAT(umadd.meta_value, ' ',umadd2.meta_value, ' ' ,umacity.meta_value, ' ' , umastate.meta_value, ' ',umapostalcode.meta_value )  address"
+                            + " CONCAT(umadd.meta_value, ' ',COALESCE(umadd2.meta_value,''), ' ' ,umacity.meta_value, ' ' , umastate.meta_value, ' ',umapostalcode.meta_value )  address"
                             + " from wp_users u"
                             + " inner join wp_usermeta um on um.user_id = u.id and um.meta_key = 'wp_capabilities' and meta_value NOT LIKE '%customer%'"
                             + " LEFT OUTER JOIN wp_usermeta umph on umph.meta_key='billing_phone' And umph.user_id = u.ID"

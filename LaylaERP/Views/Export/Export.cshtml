@@ -18,11 +18,12 @@
         <div class="tab-content">
             <div class="tab-pane active" id="tab_1">
                 <div class="user_subCrumbs">
-                    @*@using (Html.BeginForm())
-                    {
-                        @Html.EditorFor(model => model.created_date, new {htmlAttributes = new {@class = "datepicker" } })
-                    }*@
-                </div>
+                    From <input type="text" name="fromdate" id="fromdate" />
+                    To<input type="text" name="todate" id="todate" />
+                    @*From <input type="date" name="fromdate" id="fromdate">
+            To <input type="date" name="todate" id="todate" >*@
+                    <input type="button" id="btnSave" class="button" value="Submit" />
+                </div><br /><br />
                 <div id="poststuff" class="woocommerce-reports-wide">
                     <div class="postbox">
                         <div class="inside reports-wide">
@@ -30,6 +31,7 @@
                                 <table id="exportdata" class="table-blue table table-bordered check-table" style="width:100%;">
                                     <thead class="thead-dark">
                                         <tr>
+                                            <th></th>
                                             <th>Order Id</th>
                                             <th>Order Date</th>
                                             <th>Customer Id</th>
@@ -46,21 +48,25 @@
             </div><!--end tab one-->
             <div class="tab-pane" id="tab_2">
                 <div class="user_subCrumbs">
-                    
+                    From <input type="text" name="fromdateusers" id="fromdateusers" />
+                    To<input type="text" name="todateusers" id="todateusers" />
+                    <input type="button" id="btnSave1" class="button" value="Submit" />
+                    <br /><br />
                 </div>
                 <div id="poststuff" class="woocommerce-reports-wide">
                     <div class="postbox">
                         <div class="inside reports-wide">
                             <div class="widefat">
-                                <table id="exportusersdata" class="table-blue table table-bordered check-table" style="width:100%;">
+                                <table id="exportusersdata" class="table-blue table table-bordered check-table display" style="width:100%;">
                                     <thead>
                                         <tr>
+                                            <th></th>
                                             <th>Id</th>
                                             <th>Name</th>
                                             <th>Email</th>
                                             <th>Status</th>
                                             <th>Role</th>
-                                            @*<th>Date</th>*@
+                                            <th>Date</th>
                                         </tr>
                                     </thead>
                                    
@@ -89,16 +95,6 @@
         </div>
     </div>
 </div>
-
-
-
-
-
-
-
-
-
-
 
 @*<section class="content activity-section export-section table-design">
         <div class="box box-primary">
@@ -135,17 +131,33 @@
             
             DatagridOrder();
             DatagridUsers();
+            $(document).on('click', "#btnSave", function () {
+                DatagridOrder();
+            })
+            $(document).on('click', "#btnSave1", function () {
+                DatagridUsers();
+            })
+
+           
         });
 
         function DatagridOrder() {
-                $('#exportdata').DataTable({
+            var from_date = $("#fromdate").val();
+            var to_date = $("#todate").val();
+            //var obj = { mydate: mydate };
+            $('#exportdata').DataTable({
+                destroy: true,
+                searching:false,
                     "ajax": {
                         "url": '/Export/GetData',
-                        "type": 'GET',
+                        "type": 'POST',
                         "dataType": 'json',
+                        "data": { from_date: from_date, to_date: to_date }
+                        //"data": JSON.stringify(obj)
                         
                     },
-                    "columns": [
+                "columns": [
+                    { 'data': null },
                         { 'data': 'order_id' },
                         {
                             'data': 'order_created',
@@ -156,16 +168,27 @@
                             }
                         },
                         { 'data': 'customer_id' },
+                        //{ 'data':'orderstatus' },
                         { 'data': 'qty' },
                         { 'data': 'subtotal' },
                         { 'data': 'total' }
 
                     ],
-                    columnDefs: [{
-                        orderable: false,
-                        targets: [1]
-                    }],
-                    "order": [0, 'desc'],
+                columnDefs: [{
+                    orderable: false,
+                    className: 'select-checkbox',
+                    targets: 0,
+                    'checkboxes': {
+                        'selectRow': true
+                    },
+                    data: null,
+                    defaultContent: '',
+                }],
+                "select": {
+                    "style": 'multi',
+                    "selector": 'td:first-child'
+                },
+                    "order": [1, 'desc'],
 
                     "dom": 'Bfrtip',
                     "buttons": [
@@ -180,33 +203,53 @@
                             className: 'button',
                             text: '<i class="fas fa-print"></i> Print'
                         }
-                    ]
+                ],
+                
                 });
         }
         function DatagridUsers() {
+            var fromdateusers = $("#fromdateusers").val();
+            var todateusers = $("#todateusers").val();
             $('#exportusersdata').DataTable({
+                destroy: true,
+                searching: false,
                 "ajax": {
                     "url": '/Export/UsersExport',
-                    "type": 'GET',
+                    "type": 'POST',
                     "dataType": 'json',
+                    "data": { from_dateusers: fromdateusers, to_dateusers: todateusers}
                 },
-                "columns": [ 
-                   
+
+                "columns": [
+                    { 'data': null, 'swidth': "5%" },
                     { 'data': 'UID', 'sWidth': "5%" },
                     { 'data': 'user_login', 'sWidth': "20%" },
                     { 'data': 'user_email', 'sWidth': "20%" },
                     { 'data': 'user_status', 'sWidth': "10%" },
                     { 'data': 'my', 'sWidth': "10%" },
-                    //{
-                    //    'data': 'created_date',
-                    //    'render': function (jsonDate) {
-                    //        var date = new Date(parseInt(jsonDate.substr(6)));
-                    //        var month = ("0" + (date.getMonth() + 1)).slice(-2);
-                    //        return ("0" + date.getDate()).slice(-2) + '-' + month + '-' + date.getFullYear();
-                    //    }
-                    //},
+                    {
+                        'data': 'created_date',
+                        'render': function (jsonDate) {
+                            var date = new Date(parseInt(jsonDate.substr(6)));
+                            var month = ("0" + (date.getMonth() + 1)).slice(-2);
+                            return ("0" + date.getDate()).slice(-2) + '-' + month + '-' + date.getFullYear();
+                        }
+                    },
 
                 ],
+                columnDefs: [{
+                    orderable: false,
+                    className: 'select-checkbox',
+                    targets: 0,
+                    'checkboxes': { 'selectRow': true },
+                    data: null,
+                    defaultContent:'',
+                }],
+                select:{
+                    style: 'multi',
+                    selector:'td:first-child',
+                },
+
                 "order":[0, 'desc'],
                 "dom": 'Bfrtip',
                 "buttons": [
@@ -221,10 +264,34 @@
                         className: 'button',
                         text: '<i class="fas fa-print"></i> Print'
                     }
-                ]
+                ],
+
             });
         }
     </script>
+    <script>
+        $(function () {
+            $("#fromdate").datepicker({
+                format: 'yyyy-mm-dd',
+               });
+            
 
+            $("#todate").datepicker({
+                format: 'yyyy-mm-dd',
+            });
+
+
+            $("#fromdateusers").datepicker({
+                format: 'yyyy-mm-dd',
+            });
+
+
+            $("#todateusers").datepicker({
+                format: 'yyyy-mm-dd',
+            });
+
+        });
+
+    </script>
    
 }

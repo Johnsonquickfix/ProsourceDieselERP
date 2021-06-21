@@ -16,7 +16,7 @@ $(document).ready(function () {
     });
     GetOrderDetails();
     setTimeout(function () { dataGridLoad(''); }, 100);
-    $("#loader").hide();
+    //$("#loader").hide();
     $('#all').click(function () { var order_type = ""; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
     $('#mine').click(function () { var order_type = "mine"; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
     $('#draft').click(function () { var order_type = "draft"; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
@@ -119,9 +119,10 @@ function dataGridLoad(order_type) {
             },
             { data: 'order_id', title: 'OrderID', sWidth: "8%" },
             { data: 'customer_id', title: 'Customer ID', sWidth: "8%" },
-            { data: 'FirstName', title: 'First Name', sWidth: "13%" },
+            { data: 'FirstName', title: 'First Name', sWidth: "10%" },
             { data: 'LastName', title: 'Last Name', sWidth: "10%" },
-            { data: 'num_items_sold', title: 'No. of Items', sWidth: "10%", className: "text-right" },
+            { data: 'billing_phone', title: 'Phone No.', sWidth: "10%" },
+            { data: 'num_items_sold', title: 'No. of Items', sWidth: "8%", className: "text-right" },
             { data: 'total_sales', title: 'Order Total', sWidth: "10%", className: "text-right", render: $.fn.dataTable.render.number(',', '.', 2, '') },
             {
                 data: 'status', title: 'Status', sWidth: "10%", render: function (data, type, row) {
@@ -136,7 +137,7 @@ function dataGridLoad(order_type) {
                     else return '-';
                 }
             },
-            { data: 'date_created', title: 'Creation Date', sWidth: "10%" },
+            { data: 'date_created', title: 'Creation Date', sWidth: "8%" },
             {
                 'data': 'order_id', sWidth: "5%",
                 'render': function (id, type, full, meta) {

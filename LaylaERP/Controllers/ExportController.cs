@@ -41,5 +41,14 @@ namespace LaylaERP.Controllers
             return j;
 
         }
+
+        [HttpPost]
+        public JsonResult CustomersExport(string from_datecustomers, string to_datecustomers)
+        {
+            ExportRepository.ExportCustomersDetails(from_datecustomers, to_datecustomers);
+            var j = Json(new { data = ExportRepository.customersexportlist }, JsonRequestBehavior.AllowGet);
+            j.MaxJsonLength = int.MaxValue;
+            return j;
+        }
     }
 }

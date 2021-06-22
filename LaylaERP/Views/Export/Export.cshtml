@@ -18,11 +18,12 @@
         <div class="tab-content">
             <div class="tab-pane active" id="tab_1">
                 <div class="user_subCrumbs">
+                    <input type="button" id="showall" class="button" value="Show All" />
                     From <input type="text" name="fromdate" id="fromdate" />
                     To<input type="text" name="todate" id="todate" />
                     @*From <input type="date" name="fromdate" id="fromdate">
-            To <input type="date" name="todate" id="todate" >*@
-                    <input type="button" id="btnSave" class="button" value="Submit" />
+        To <input type="date" name="todate" id="todate" >*@
+                <input type="button" id="btnSubmit" class="button" value="GO" />
                 </div><br /><br />
                 <div id="poststuff" class="woocommerce-reports-wide">
                     <div class="postbox">
@@ -48,9 +49,10 @@
             </div><!--end tab one-->
             <div class="tab-pane" id="tab_2">
                 <div class="user_subCrumbs">
+                    <input type="button" id="showallusers" class="button" value="Show All" />
                     From <input type="text" name="fromdateusers" id="fromdateusers" />
                     To<input type="text" name="todateusers" id="todateusers" />
-                    <input type="button" id="btnSave1" class="button" value="Submit" />
+                    <input type="button" id="btnSubmit1" class="button" value="GO" />
                     <br /><br />
                 </div>
                 <div id="poststuff" class="woocommerce-reports-wide">
@@ -78,14 +80,27 @@
             </div><!--end tab two-->
             <div class="tab-pane" id="tab_3">
                 <div class="user_subCrumbs">
-                    
+                    <input type="button" id="showallcustomers" class="button" value="Show All" />
+                    From <input type="text" name="fromdatecustomers" id="fromdatecustomers" />
+                    To<input type="text" name="todatecustomers" id="todatecustomers" />
+                    <input type="button" id="btnSave2" class="button" value="GO" /><br /><br />
                 </div>
                 <div id="poststuff" class="woocommerce-reports-wide">
                     <div class="postbox">
                         <div class="inside reports-wide">
                             <div class="widefat">
-                                <table class="table-blue">
-                                   
+                                <table class="table-blue" id="exportcustomersdata">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>Id</th>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                            <th>Status</th>
+                                            <th>Phone</th>
+                                            <th>Date</th>
+                                        </tr>
+                                    </thead>
                                 </table>
                             </div>
                         </div>
@@ -127,20 +142,76 @@
 @section scripts{
 
     <script type="text/javascript">
+       
         $(document).ready(function () {
-            
-            DatagridOrder();
-            DatagridUsers();
-            $(document).on('click', "#btnSave", function () {
-                DatagridOrder();
-            })
-            $(document).on('click', "#btnSave1", function () {
-                DatagridUsers();
-            })
 
-           
+            //DatagridOrder();
+            //DatagridUsers();
+            //DatagridCustomer();
+            
+            $("#btnSubmit").click(function () {
+                
+                if ($("#fromdate").val() == "") {
+                    swal('Alert', 'Please Enter From Date', 'error').then(function () { swal.close(); $('#fromdate').focus(); });
+                }
+                else if ($("#todate").val() == "") {
+                    swal('Alert', 'Please Enter To Date', 'error').then(function () { swal.close(); $('#todate').focus(); });
+                }
+                else {
+                        DatagridOrder();
+                        $("#fromdate").val("");
+                        $("#todate").val("");
+                        return false;
+                }
+            });
+            setTimeout(function () { DatagridOrder(); }, 50);
+
+            //$(document).on('click', "#btnSave", function () {
+            //    DatagridOrder();
+            //})
+            $("#btnSubmit1").click(function () {
+
+                if ($("#fromdateusers").val() == "") {
+                    swal('Alert', 'Please Enter From Date', 'error').then(function () { swal.close(); $('#fromdateusers').focus(); });
+                }
+                else if ($("#todateusers").val() == "") {
+                    swal('Alert', 'Please Enter To Date', 'error').then(function () { swal.close(); $('#todateusers').focus(); });
+                }
+                else {
+                    DatagridUsers();
+                    $("#fromdateusers").val("");
+                    $("#todateusers").val("");
+                    return false;
+                }
+            });
+            setTimeout(function () { DatagridUsers(); }, 50);
+
+            $("#btnSave2").click(function () {
+
+                if ($("#fromdatecustomers").val() == "") {
+                    swal('Alert', 'Please Enter From Date', 'error').then(function () { swal.close(); $('#fromdatecustomers').focus(); });
+                }
+                else if ($("#todatecustomers").val() == "") {
+                    swal('Alert', 'Please Enter To Date', 'error').then(function () { swal.close(); $('#todatecustomers').focus(); });
+                }
+                else {
+                    DatagridCustomer();
+                    $("#fromdatecustomers").val("");
+                    $("#todatecustomers").val("");
+                    return false;
+                }
+            });
+            setTimeout(function () { DatagridCustomer(); }, 50);
+            //$(document).on('click', "#btnSave2", function () {
+            //    DatagridCustomer();
+            //})
+
+            $("#showall").click(function () { DatagridOrder(); return false; });
+            $("#showallusers").click(function () { DatagridUsers(); return false; });
+            $("#showallcustomers").click(function () { DatagridCustomer(); return false; });
         });
 
+        //----------------Orders DataGrid Start---------------------
         function DatagridOrder() {
             var from_date = $("#fromdate").val();
             var to_date = $("#todate").val();
@@ -196,7 +267,7 @@
                         {
                             extend: 'csv',
                             className: 'button',
-                            text: '<i class="fas fa-file-csv"></i> CSV'
+                            text: '<i class="fas fa-file-csv"></i> CSV',
                         },
                         {
                             extend: 'print',
@@ -207,6 +278,8 @@
                 
                 });
         }
+        //------------Orders DataGrid End----------------
+        //-----------Users DataGrid Start----------------
         function DatagridUsers() {
             var fromdateusers = $("#fromdateusers").val();
             var todateusers = $("#todateusers").val();
@@ -268,6 +341,72 @@
 
             });
         }
+        //-----------Users DataGrid End------------------------
+        //--------Customer Datagrid Start-----------------------
+        function DatagridCustomer() {
+            var fromdatecustomers = $("#fromdatecustomers").val();
+            var todatecustomers = $("#todatecustomers").val();
+            $('#exportcustomersdata').DataTable({
+                destroy: true,
+                searching: false,
+                "ajax": {
+                    "url": '/Export/CustomersExport',
+                    "type": 'POST',
+                    "dataType": 'json',
+                    "data": { from_datecustomers: fromdatecustomers, to_datecustomers: todatecustomers }
+                },
+
+                "columns": [
+                    { 'data': null, 'swidth': "5%" },
+                    { 'data': 'UID', 'sWidth': "5%" },
+                    { 'data': 'user_login', 'sWidth': "20%" },
+                    { 'data': 'user_email', 'sWidth': "20%" },
+                    { 'data': 'user_status', 'sWidth': "10%" },
+                    { 'data': 'phone', 'sWidth': "10%" },
+                    {
+                        'data': 'created_date',
+                        'render': function (jsonDate) {
+                            var date = new Date(parseInt(jsonDate.substr(6)));
+                            var month = ("0" + (date.getMonth() + 1)).slice(-2);
+                            return ("0" + date.getDate()).slice(-2) + '-' + month + '-' + date.getFullYear();
+                        }
+                    },
+
+                ],
+                columnDefs: [{
+                    orderable: false,
+                    className: 'select-checkbox',
+                    targets: 0,
+                    'checkboxes': { 'selectRow': true },
+                    data: null,
+                    defaultContent: '',
+                }],
+                select: {
+                    style: 'multi',
+                    selector: 'td:first-child',
+                },
+
+                "order": [0, 'desc'],
+                "dom": 'Bfrtip',
+                "buttons": [
+
+                    {
+                        extend: 'csv',
+                        className: 'button',
+                        text: '<i class="fas fa-file-csv"></i> CSV'
+                    },
+                    {
+                        extend: 'print',
+                        className: 'button',
+                        text: '<i class="fas fa-print"></i> Print'
+                    }
+                ],
+
+            });
+        }
+
+        //--------------Customer DataGrid End------------
+
     </script>
     <script>
         $(function () {
@@ -290,7 +429,26 @@
                 format: 'yyyy-mm-dd',
             });
 
+            $("#fromdatecustomers").datepicker({
+                format: 'yyyy-mm-dd',
+            });
+
+
+            $("#todatecustomers").datepicker({
+                format: 'yyyy-mm-dd',
+            });
+
         });
+
+
+        function datevalidation() {
+            var d1 = $("#fromdate").val();
+            var d2 = $("#todate").val();
+            if (d1 > d2) {
+                window.alert("d1 is greater");
+            }
+
+        }
 
     </script>
    

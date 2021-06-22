@@ -46,7 +46,7 @@ namespace LaylaERP.Controllers
         // GET: Assign Role
         public ActionResult AssignRole()
         {
-             
+
             return View();
         }
 
@@ -56,7 +56,7 @@ namespace LaylaERP.Controllers
             //urid = details.user_status;
             //string result = Models.UsersRepositry.userslist.ToString();
             //UsersRepositry.userslist.Clear();
-           // string role="";
+            // string role="";
             UsersRepositry.ShowUsersDetails(rolepass);
             return Json(new { data = UsersRepositry.userslist }, JsonRequestBehavior.AllowGet);
         }
@@ -96,18 +96,21 @@ namespace LaylaERP.Controllers
 
         public JsonResult GetRoles()
         {
-            string t1 = "";
             DataTable dt = new DataTable();
             dt = BAL.Users.GetSystemRoles();
-            List<string> usertype = new List<string>();
+            List<SelectListItem> usertype = new List<SelectListItem>();
             for (int i = 0; i < dt.Rows.Count; i++)
             {
-                t1 = dt.Rows[i]["user_type"].ToString();
-                usertype.Add(t1);
+                usertype.Add(new SelectListItem
+                {
+                    Value = dt.Rows[i]["id"].ToString(),
+                    Text = dt.Rows[i]["user_type"].ToString()
+
+                });
             }
             return Json(usertype, JsonRequestBehavior.AllowGet);
         }
-      
+
 
         public JsonResult GetMenuNames()
         {
@@ -158,19 +161,19 @@ namespace LaylaERP.Controllers
             string result = string.Empty;
             try
             {
-                
-                DataTable dt = BAL.Users.GetMenuByUser(model.User_Type);             
+
+                DataTable dt = BAL.Users.GetMenuByUser(model.User_Type);
                 result = JsonConvert.SerializeObject(dt);
-               
+
             }
             catch { }
-            return Json(result, 0) ;
+            return Json(result, 0);
         }
 
         public JsonResult Save(UserClassification model)
         {
-            JsonResult result = new JsonResult(); 
-            var resultOne = BAL.Users.UpdateUserClassifications(model);             
+            JsonResult result = new JsonResult();
+            var resultOne = BAL.Users.UpdateUserClassifications(model);
             if (resultOne > 0)
             {
                 result = this.Json(resultOne);
@@ -187,7 +190,7 @@ namespace LaylaERP.Controllers
             {
                 if (model.ID > 0)
                 {
-                   UsersRepositry.EditCustomerStatus(model);
+                    UsersRepositry.EditCustomerStatus(model);
                     return Json(new { status = true, message = "Customer Status has been updated successfully!!", url = "" }, 0);
                 }
                 else
@@ -228,22 +231,22 @@ namespace LaylaERP.Controllers
                 return Json(new { status = false, message = "Something went wrong", url = "" }, 0);
             }
 
-        } 
+        }
 
         [HttpPost]
         public JsonResult changeRole(CustomerModel model)
-        { 
+        {
             string strID = model.strVal;
             if (strID != "")
             {
-                    UsersRepositry.changeRoleStatus(model);
-                    return Json(new { status = true, message = "User Role Status has been updated successfully!!", url = "" }, 0);
-                }
-                else
-                {
-                    return Json(new { status = false, message = "Something went wrong", url = "" }, 0);
-                }            
-             
+                UsersRepositry.changeRoleStatus(model);
+                return Json(new { status = true, message = "User Role Status has been updated successfully!!", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Something went wrong", url = "" }, 0);
+            }
+
         }
 
 
@@ -305,10 +308,10 @@ namespace LaylaERP.Controllers
             myModel.last_name = dt.Rows[0]["last_name"];
             myModel.country = dt.Rows[0]["country"];
             myModel.address = dt.Rows[0]["address"];
-            myModel.user_login = dt.Rows[0]["user_login"];  
+            myModel.user_login = dt.Rows[0]["user_login"];
             string role = dt.Rows[0]["user_role"].ToString();
-            role = role.Replace("_", " ");           
-            myModel.user_role = role;      
+            role = role.Replace("_", " ");
+            myModel.user_role = role;
             myModel.phone = dt.Rows[0]["phone"];
             myModel.State = dt.Rows[0]["State"];
             myModel.City = dt.Rows[0]["City"];
@@ -316,7 +319,7 @@ namespace LaylaERP.Controllers
             myModel.postcode = dt.Rows[0]["postcode"];
 
             return PartialView("UserDetails", myModel);
-           // return myModel;
+            // return myModel;
         }
         public ActionResult CreateUser(long id = 0)
         {
@@ -331,11 +334,11 @@ namespace LaylaERP.Controllers
             {
                 if (model.ID > 0)
                 {
-                    
+
                 }
                 else
                 {
-                    
+
                     int ID = UsersRepositry.AddNewCustomer(model);
                     if (ID > 0)
                     {
@@ -356,20 +359,20 @@ namespace LaylaERP.Controllers
         [HttpPost]
         public JsonResult UpdateUser(clsUserDetails model)
         {
-             
-              int ID = UsersRepositry.UpdateUsers(model);
-              if (ID > 0)
-              {
-              Updateuser_MetaData(model, model.ID);
-              Updateuser_MetaData_More(model, model.ID);
-              ModelState.Clear();
-                  return Json(new { status = true, message = "User record has been saved successfully!!", url = "" }, 0);
-              }
-              else
-              {
-                  return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
-              }
- 
+
+            int ID = UsersRepositry.UpdateUsers(model);
+            if (ID > 0)
+            {
+                Updateuser_MetaData(model, model.ID);
+                Updateuser_MetaData_More(model, model.ID);
+                ModelState.Clear();
+                return Json(new { status = true, message = "User record has been saved successfully!!", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+
         }
 
         private void Adduser_MetaData(clsUserDetails model, long id)
@@ -379,7 +382,7 @@ namespace LaylaERP.Controllers
             string[] varFieldsValue = new string[14] { model.user_nicename, model.first_name, model.last_name, "", "true", "true", "false", "fresh", "0", "true", "", model.user_role, "", "" };
             for (int n = 0; n < 14; n++)
             {
-               UsersRepositry.AddUserMetaData(model, id, varFieldsName[n], varFieldsValue[n]);
+                UsersRepositry.AddUserMetaData(model, id, varFieldsName[n], varFieldsValue[n]);
             }
         }
 
@@ -387,7 +390,7 @@ namespace LaylaERP.Controllers
         {
             string[] varQueryArr1 = new string[7];
             string[] varFieldsName = new string[7] { "billing_address_1", "billing_country", "billing_phone", "billing_address_2", "billing_city", "billing_state", "billing_postcode" };
-            string[] varFieldsValue = new string[7] { model.address, model.country, model.phone,model.billing_address_2,model.billing_city,model.billing_state,model.billing_postcode};
+            string[] varFieldsValue = new string[7] { model.address, model.country, model.phone, model.billing_address_2, model.billing_city, model.billing_state, model.billing_postcode };
             for (int n = 0; n < 7; n++)
             {
                 UsersRepositry.AddUserMoreMeta(model, id, varFieldsName[n], varFieldsValue[n]);
@@ -434,18 +437,18 @@ namespace LaylaERP.Controllers
         {
             if (ModelState.IsValid)
             {
-                
-                    int ID = new UsersRepositry().AddNewRole(model);
-                    if (ID > 0)
-                    {
-                        ModelState.Clear();
-                        return Json(new { status = true, message = "Role has been saved successfully!!", url = "" }, 0);
-                    }
-                    else
-                    {
-                        return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
-                    }
-                
+
+                int ID = new UsersRepositry().AddNewRole(model);
+                if (ID > 0)
+                {
+                    ModelState.Clear();
+                    return Json(new { status = true, message = "Role has been saved successfully!!", url = "" }, 0);
+                }
+                else
+                {
+                    return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                }
+
             }
             return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
         }

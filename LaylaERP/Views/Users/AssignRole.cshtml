@@ -129,14 +129,14 @@
                     </div>
                 </div>
             </div>*@
-            <div class="box-footer">
+            <!--<div class="box-footer">
                 <div class="row">
-                    <div class="col-sm-offset-9 col-sm-3">
+                    <div class="col-sm-offset-9 col-sm-3">-->
                         @*<a href="#" class="btn btn-danger btn-block"><b>Save</b></a>*@
-                        <button type="button" id="saveBtn" class="btn btn-danger "><i class="fa fa-save"></i> Save</button>
+                        <!--<button type="button" id="saveBtn" class="btn btn-danger "><i class="fa fa-save"></i> Save</button>
                     </div>
                 </div>
-            </div>
+            </div>-->
             <input type="hidden" name="User_Type" id="user_type" />
             @Html.AntiForgeryToken()
         </div>
@@ -179,9 +179,9 @@
 
     $("#userrole").change(function () {
         debugger
+        var isChecked = $('#CheckSingle').prop("checked");
+        $('#dtdata tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
         var User_Type = { User_Type: $("#userrole :selected").text() };
-        //  console.log(usertype);
-        // alert($("#userrole :selected").text());
         $("#user_type").val($("#userrole :selected").text());
         $.ajax({
             url: '/Users/GetAssignRole',
@@ -190,17 +190,15 @@
             dataType: "json",
             data: JSON.stringify(User_Type),
             success: function (data) {
-                console.log(data);
                 var obj = JSON.parse(data);
-                //$("#Create_User").prop('checked', true);
-                if (obj[0].Create_User == 1) $("#create_user").prop('checked', true); else $("#create_user").prop('checked', false);
-                if (obj[0].Customers == 1) $("#customers").prop('checked', true); else $("#customers").prop('checked', false);
-                if (obj[0].Orders_Mnu == 1) $("#orders_mnu").prop('checked', true); else $("#orders_mnu").prop('checked', false);
-                if (obj[0].System_Settings == 1) $("#system_settings").prop('checked', true); else $("#system_settings").prop('checked', false);
-                if (obj[0].User_Mnu == 1) $("#User_Mnu").prop('checked', true); else $("#User_Mnu").prop('checked', false);
-                if (obj[0].User_Classification == 1) $("#User_Classification").prop('checked', true); else $("#User_Classification").prop('checked', false);
-                if (obj[0].Add_New_Orders == 1) $("#add_new_orders").prop('checked', true); else $("#add_new_orders").prop('checked', false);
-                if (obj[0].Show_Update_Orders == 1) $("#show_update_orders").prop('checked', true); else $("#show_update_orders").prop('checked', false);
+                console.log(data);
+                for (i = 0; i < obj.length; i++) {
+                    if (obj[i].erpmenu_id != null) {
+                        ($('#CheckSingle').prop("checked") == true);
+                    }
+                    console.log(obj[i].erpmenu_id);
+                }
+              
             },
             error: function (responce) {
                 console.log(responce)

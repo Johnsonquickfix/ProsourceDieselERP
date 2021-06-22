@@ -43,7 +43,7 @@
             DataTable dtr = new DataTable();
             try
             {
-                string strquery = "select id, user_type from wp_user_classification";
+                string strquery = "select id, user_type from wp_user_classification order by id desc";
                 dtr = SQLHelper.ExecuteDataTable(strquery);
             }
             catch (Exception ex)
@@ -158,12 +158,24 @@
         //    return DT;
         //}
 
+        //public static DataTable GetMenuByUser(string strvalue)
+        //{
+        //    DataTable DT = new DataTable();
+        //    try
+        //    {
+        //        string strquery = "Select * from wp_user_classification where User_Type like '%" + strvalue + "%' limit 20;";
+        //        DT = SQLHelper.ExecuteDataTable(strquery);
+        //    }
+        //    catch (Exception ex)
+        //    { throw ex; }
+        //    return DT;
+        //}
         public static DataTable GetMenuByUser(string strvalue)
         {
             DataTable DT = new DataTable();
             try
             {
-                string strquery = "Select * from wp_user_classification where User_Type like '%" + strvalue + "%' limit 20;";
+                string strquery = "Select wuc.user_type, wer.role_id,wer.erpmenu_id,wer.add_,wer.edit_,wer.delete_ from wp_erprole_rest wer left join wp_user_classification wuc on wer.role_ID = wuc.ID and User_Type like '%" + strvalue + "%';";
                 DT = SQLHelper.ExecuteDataTable(strquery);
             }
             catch (Exception ex)

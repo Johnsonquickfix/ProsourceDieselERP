@@ -4,7 +4,7 @@
         items += "<option value='' disabled selected>Please select</option>";
         $('#userrole').empty();
         $.each(data, function (index, value) {
-            items +=  $('<option>').val(value).text(value).appendTo("#userrole");
+            items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#userrole");
         })
         $('#userrole').bind(items);
     })

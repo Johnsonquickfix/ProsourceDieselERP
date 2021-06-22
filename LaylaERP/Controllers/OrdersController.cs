@@ -44,7 +44,7 @@
                 DataTable DT = OrderRepository.GetOrders(oid);
                 JSONresult = JsonConvert.SerializeObject(DT);
             }
-            catch  { }
+            catch { }
             return Json(JSONresult, 0);
         }
         [HttpPost]
@@ -186,10 +186,11 @@
             try
             {
                 OperatorModel om = CommanUtilities.Provider.GetCurrent();
-                var o = new OrderPostMetaModel() { post_id = model.OrderPostStatus.order_id, meta_key = "employee_id", meta_value = om.UserID.ToString() };
-                model.OrderPostMeta.Add(o);
-                o = new OrderPostMetaModel() { post_id = model.OrderPostStatus.order_id, meta_key = "employee_name", meta_value = om.UserName.ToString() };
-                model.OrderPostMeta.Add(o);
+                model.OrderPostMeta.Add(new OrderPostMetaModel() { post_id = model.OrderPostStatus.order_id, meta_key = "_customer_ip_address", meta_value = Net.Ip });
+                model.OrderPostMeta.Add(new OrderPostMetaModel() { post_id = model.OrderPostStatus.order_id, meta_key = "_customer_user_agent", meta_value = Net.BrowserInfo });
+                model.OrderPostMeta.Add(new OrderPostMetaModel() { post_id = model.OrderPostStatus.order_id, meta_key = "employee_id", meta_value = om.UserID.ToString() });
+                model.OrderPostMeta.Add(new OrderPostMetaModel() { post_id = model.OrderPostStatus.order_id, meta_key = "employee_name", meta_value = om.UserName.ToString() });
+
                 int result = OrderRepository.SaveOrder(model);
                 if (result > 0)
                 { status = true; JSONresult = "Order placed successfully."; }
@@ -224,18 +225,14 @@
             catch { }
             return Json(result, 0);
         }
-        [HttpPost]
-        public JsonResult GetOrderList(OrderPostStatusModel model)
+        [HttpGet]
+        public JsonResult GetOrderList(JqDataTableModel model)
         {
             string result = string.Empty;
             int TotalRecord = 0;
             try
             {
-                string urid = "";
-                if (model.status != "")
-                    urid = model.status;
-                string searchid = model.Search;
-                DataTable dt = OrderRepository.OrderList(urid, searchid, model.PageNo, model.PageSize, out TotalRecord, model.SortCol, model.SortDir);
+                DataTable dt = OrderRepository.OrderList(model.strValue1, model.strValue2, model.strValue3, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
                 result = JsonConvert.SerializeObject(dt, Formatting.Indented);
             }
             catch { }

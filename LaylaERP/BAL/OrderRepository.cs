@@ -286,10 +286,10 @@
                 {
                     new MySqlParameter("@strCoupon", strCoupon)
                 };
-                string strSQl = "select post_title,max(case when pm.meta_key = 'discount_type' then pm.meta_value else '' end) discount_type,max(case when pm.meta_key = 'product_ids' then pm.meta_value else '' end) product_ids,"
+                string strSQl = "select post_title,max(case when pm.meta_key = 'discount_type' then pm.meta_value else '' end) discount_type,max(case when pm.meta_key = 'product_ids' then pm.meta_value else '' end) product_ids,max(case when pm.meta_key = 'exclude_product_ids' then pm.meta_value else '' end) exclude_product_ids,"
                                 + "     max(case when pm.meta_key = 'date_expires' then pm.meta_value else '' end) date_expires,max(case when pm.meta_key = 'coupon_amount' then pm.meta_value else '' end) coupon_amount"
                                 + " from wp_posts p inner join wp_postmeta pm on pm.post_id = p.id"
-                                + " where post_title = @strCoupon And post_name = @strCoupon And post_type = 'shop_coupon' group by pm.post_id";
+                                + " where lower(post_title) = @strCoupon And post_type = 'shop_coupon' group by pm.post_id";
                 dt = SQLHelper.ExecuteDataTable(strSQl, parameters);
             }
             catch (Exception ex)
@@ -353,12 +353,22 @@
                     {
                         strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select LAST_INSERT_ID(),'discount_amount',{0} ; ", obj.amount));
                     }
-                    else if (obj.item_type == "tax")
+                    else if (obj.item_type == "fee")
                     {
-                        strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select LAST_INSERT_ID(),'tax_amount',{0} ; ", obj.amount));
+                        strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select LAST_INSERT_ID(),'tax_status','{0}' ; ", "taxable"));
+                        strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select LAST_INSERT_ID(),'line_total',{0} ; ", obj.amount));
                     }
                 }
 
+                /// step 3 : wp_woocommerce_order_items (Tax)
+                foreach (OrderTaxItemsModel obj in model.OrderTaxItems)
+                {
+                    strSql.Append(string.Format(" insert into wp_woocommerce_order_items(order_item_name,order_item_type,order_id) value('{0}-{1}-{2} TAX-1','tax','{3}'); ", obj.tax_rate_country, obj.tax_rate_state, obj.tax_rate_state, model.OrderPostStatus.order_id));
+
+                    strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select LAST_INSERT_ID(),'label','{0} Tax' ; ", obj.tax_rate_state));
+                    strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select LAST_INSERT_ID(),'tax_amount','{0}' ; ", obj.amount));
+                    strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select LAST_INSERT_ID(),'rate_percent','{0}' ; ", obj.tax_rate));
+                }
 
                 /// step 6 : wp_posts
                 strSql.Append(string.Format(" update wp_posts set post_status = '{0}' ,comment_status = 'closed' where id = {1} ", model.OrderPostStatus.status, model.OrderPostStatus.order_id));
@@ -409,12 +419,13 @@
         {
             try
             {
-                string strsql = "update wp_wc_order_stats set status=@status,date_created=@date_created where order_id  in (" + ID + ")";
+                string strsql = string.Format("update wp_wc_order_stats set status=@status where order_id  in ({0}); ", ID)
+                    + string.Format("update wp_posts set post_status=@status,post_modified=@date_created,post_modified_gmt=@post_modified_gmt where id  in ({0}); ", ID);
                 MySqlParameter[] para =
                 {
                     new MySqlParameter("@status", model.status),
-                    new MySqlParameter("@date_created", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
-
+                    new MySqlParameter("@date_created", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")),
+                    new MySqlParameter("post_modified_gmt", DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"))
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
                 return result;
@@ -563,7 +574,7 @@
             }
             return dt;
         }
-        public static DataTable OrderList(string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "order_id", string SortDir = "DESC")
+        public static DataTable OrderList(string sMonths, string CustomerID, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "order_id", string SortDir = "DESC")
         {
             DataTable dt = new DataTable();
             totalrows = 0;
@@ -572,26 +583,50 @@
                 string strWhr = string.Empty;
                 if (!string.IsNullOrEmpty(userstatus))
                 {
-                    if (userstatus == "mine") { strWhr += " and p.post_author = 8 and os.status != 'auto-draft'"; }
-                    else { strWhr += " and status = '" + userstatus + "'"; }
+                    if (userstatus == "mine") { strWhr += " and p.post_author = 8 and p.post_status != 'auto-draft'"; }
+                    else { strWhr += " and p.post_status = '" + userstatus + "'"; }
                 }
                 else
-                    strWhr += " and status != 'auto-draft' ";
+                    strWhr += " and p.post_status != 'auto-draft' ";
 
                 if (!string.IsNullOrEmpty(searchid))
                 {
-                    strWhr += " and (os.id like '%" + searchid + "%' OR os.num_items_sold='%" + searchid + "%' OR os.total_sales='%" + searchid + "%' OR os.customer_id='%" + searchid + "%' OR os.status like '%" + searchid + "%' OR p.post_date like '%" + searchid + "%')";
+                    strWhr += " and (p.id like '%" + searchid + "%' "
+                            + " OR os.num_items_sold='%" + searchid + "%' "
+                            + " OR os.total_sales='%" + searchid + "%' "
+                            + " OR os.customer_id='%" + searchid + "%' " 
+                            + " OR p.post_status like '%" + searchid + "%' " 
+                            + " OR p.post_date like '%" + searchid + "%' "
+                            + " OR COALESCE(pmf.meta_value, '') like '%" + searchid + "%' "
+                            + " OR COALESCE(pml.meta_value, '') like '%" + searchid + "%' "
+                            + " OR replace(replace(replace(replace(pmp.meta_value, '-', ''), ' ', ''), '(', ''), ')', '') like '%" + searchid + "%'" 
+                            + " )";
                 }
 
-                string strSql = "SELECT os.order_id, os.order_id as chkorder,os.num_items_sold,Cast(os.total_sales As DECIMAL(10, 2)) as total_sales, os.customer_id as customer_id,"
-                            + " os.status status, DATE_FORMAT(os.date_created, '%M %d %Y') date_created,COALESCE(pmf.meta_value, '') FirstName,COALESCE(pml.meta_value, '') LastName"
-                            + " FROM wp_wc_order_stats os"
+                if (!string.IsNullOrEmpty(sMonths))
+                {
+                    strWhr += " and DATE_FORMAT(p.post_date,'%Y%m') = '" + sMonths + "' ";
+                }
+                if (!string.IsNullOrEmpty(CustomerID))
+                {
+                    strWhr += " and os.customer_id= '" + CustomerID + "' ";
+                }
+
+                string strSql = "SELECT p.id order_id, p.id as chkorder,os.num_items_sold,Cast(os.total_sales As DECIMAL(10, 2)) as total_sales, os.customer_id as customer_id,"
+                            + " p.post_status status, DATE_FORMAT(p.post_date, '%M %d %Y') date_created,COALESCE(pmf.meta_value, '') FirstName,COALESCE(pml.meta_value, '') LastName,"
+                            + " replace(replace(replace(replace(pmp.meta_value,'-', ''),' ',''),'(',''),')','') billing_phone"
+                            + " FROM wp_posts p inner join wp_wc_order_stats os on p.id = os.order_id"
                             + " left join wp_postmeta pmf on os.order_id = pmf.post_id and pmf.meta_key = '_billing_first_name'"
                             + " left join wp_postmeta pml on os.order_id = pml.post_id and pml.meta_key = '_billing_last_name'"
-                            + " WHERE 1=1 " + strWhr
-                            + " order by " + SortCol + " " + SortDir + " limit " + (pageno * pagesize).ToString() + ", " + pagesize + "";
+                            + " left join wp_postmeta pmp on os.order_id = pmp.post_id and pmp.meta_key = '_billing_phone'"
+                            + " WHERE p.post_type = 'shop_order' " + strWhr
+                            + " order by " + SortCol + " " + SortDir + " limit " + (pageno).ToString() + ", " + pagesize + "";
 
-                strSql += "; SELECT Count(distinct os.order_id) TotalRecord from wp_wc_order_stats os WHERE 1 = 1 " + strWhr.ToString();
+                strSql += "; SELECT Count(distinct p.id) TotalRecord from wp_wc_order_stats os inner join wp_posts p on p.id = os.order_id "
+                        + " left join wp_postmeta pmf on os.order_id = pmf.post_id and pmf.meta_key = '_billing_first_name'"
+                        + " left join wp_postmeta pml on os.order_id = pml.post_id and pml.meta_key = '_billing_last_name'"
+                        + " left join wp_postmeta pmp on os.order_id = pmp.post_id and pmp.meta_key = '_billing_phone'"
+                        + " WHERE p.post_type = 'shop_order' " + strWhr.ToString();
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
                 if (ds.Tables[1].Rows.Count > 0)

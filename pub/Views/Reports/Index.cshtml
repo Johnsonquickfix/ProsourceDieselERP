@@ -1,0 +1,263 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Style = "/css/rolebase.css";
+    ViewBag.UiStyle = "/Content/AdminLTE-3.1.0/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css";
+    ViewBag.UiJs = "/Content/AdminLTE-3.1.0/bower_components/jquery-ui/jquery-ui.min.js";
+}
+
+<div class="page-title">
+    <h2 class="page-heading">Role Base Report</h2>
+</div>
+<div class="setting-section">
+    <div class="nav-tabs-custom">
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#tab_1" data-toggle="tab">Orders</a></li>
+            <li><a href="#tab_2" data-toggle="tab">Customers</a></li>
+            <li><a href="#tab_3" data-toggle="tab">Stock</a></li>
+            <li><a href="#tab_4" data-toggle="tab">Taxes</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane active" id="tab_1">
+                <div class="user_subCrumbs">
+                    <ul>
+                        <li><a href="#" class="current">Sales by date</a> | </li>
+                        <li><a href="#" class="">Sales by product</a> | </li>
+                        <li><a href="#" class="">Sales by category</a> | </li>
+                        <li><a href="#" class="">Coupons by date</a> | </li>
+                        <li><a href="#" class="">Customer downloads</a></li>
+                    </ul>
+                </div>
+                <div id="poststuff" class="woocommerce-reports-wide">
+                    <div class="postbox">
+                        <div class="stats_range">
+                            <a href="#" class="export_csv"><i class="fa fa-arrow-down"></i>&nbsp;Export CSV</a>
+                            <ul>
+                                <li class="active"><a href="#">Year</a></li>
+                                <li class=""><a href="#">Last month</a></li>
+                                <li class=""><a href="#">This month</a></li>
+                                <li class=""><a href="#">Last 7 days</a></li>
+                                <li class="custom">
+                                    Custom:
+                                    <form method="GET">
+                                        <div>
+                                            <input type="text" size="11" placeholder="yyyy-mm-dd" name="start_date" class="range_datepicker from hasDatepicker" autocomplete="off"> <span>–</span> <input type="text" size="11" placeholder="yyyy-mm-dd" name="end_date" class="range_datepicker to hasDatepicker" autocomplete="off">
+                                            <button type="submit" class="button" value="Go">Go</button>
+                                        </div>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="inside chart-with-sidebar">
+                            <div class="chart-sidebar">
+                                <ul class="chart-legend">
+                                    <li style="border-color: #b1d4ea" class="highlight_series tips" data-series="6">
+                                        <strong><bdi><span>$</span>8,965.42</bdi></strong> gross sales in this period
+                                    </li>
+                                    <li style="border-color: #b1d4ea" class="highlight_series " data-series="2" data-tip="">
+                                        <strong><bdi><span>$</span>896.54</bdi></strong> average gross daily sales
+                                    </li>
+                                    <li style="border-color: #3498db" class="highlight_series tips" data-series="7">
+                                        <strong><bdi><span>$</span>8,965.42</bdi></strong> net sales in this period
+                                    </li>
+                                    <li style="border-color: #3498db" class="highlight_series " data-series="3" data-tip="">
+                                        <strong><bdi><span>$</span>896.54</bdi></strong> average net daily sales
+                                    </li>
+                                    <li style="border-color: #dbe1e3" class="highlight_series " data-series="1" data-tip="">
+                                        <strong>7</strong> orders placed
+                                    </li>
+                                    <li style="border-color: #ecf0f1" class="highlight_series " data-series="0" data-tip="">
+                                        <strong>20</strong> items purchased
+                                    </li>
+                                    <li style="border-color: #e74c3c" class="highlight_series " data-series="8" data-tip="">
+                                        <strong><bdi><span>$</span>0.00</bdi></strong> refunded 0 orders (0 items)
+                                    </li>
+                                    <li style="border-color: #5cc488" class="highlight_series " data-series="5" data-tip="">
+                                        <strong><bdi><span>$</span>0.00</bdi></strong> charged for shipping
+                                    </li>
+                                    <li style="border-color: #f1c40f" class="highlight_series " data-series="4" data-tip="">
+                                        <strong><bdi><span>$</span>400.00</bdi></strong> worth of coupons used
+                                    </li>
+                                </ul>
+                                <ul class="chart-widgets">
+                                </ul>
+                            </div>
+                            <div class="main">
+                                <div class="chart-container">
+                                    <div class="chart-placeholder main" style="padding: 0px;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div><!--end tab one-->
+            <div class="tab-pane" id="tab_2">
+                <div class="user_subCrumbs">
+                    <ul>
+                        <li><a href="#" class="current">Customers vs. guests</a> | </li>
+                        <li><a href="#" class="">Customer list</a></li>
+                    </ul>
+                </div>
+                <div id="poststuff" class="woocommerce-reports-wide">
+                    <div class="postbox">
+                        <div class="stats_range">
+                            <a href="#" class="export_csv"><i class="fa fa-arrow-down"></i>&nbsp;Export CSV</a>
+                            <ul>
+                                <li class="active"><a href="#">Year</a></li>
+                                <li class=""><a href="#">Last month</a></li>
+                                <li class=""><a href="#">This month</a></li>
+                                <li class=""><a href="#">Last 7 days</a></li>
+                                <li class="custom">
+                                    Custom:
+                                    <form method="GET">
+                                        <div>
+                                            <input type="text" size="11" placeholder="yyyy-mm-dd" name="start_date" class="range_datepicker from hasDatepicker" autocomplete="off"> <span>–</span> <input type="text" size="11" placeholder="yyyy-mm-dd" name="end_date" class="range_datepicker to hasDatepicker" autocomplete="off">
+                                            <button type="submit" class="button" value="Go">Go</button>
+                                        </div>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="inside chart-with-sidebar">
+                            <div class="chart-sidebar">
+                                <ul class="chart-legend">
+                                    <li style="border-color: #b1d4ea" class="highlight_series tips" data-series="6">
+                                        <strong><bdi>35</bdi></strong> signups in this period
+                                    </li>
+                                </ul>
+                                <ul class="chart-widgets">
+                                </ul>
+                            </div>
+                            <div class="main">
+                                <div class="chart-container">
+                                    <div class="chart-placeholder main" style="padding: 0px;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div><!--end tab two-->
+            <div class="tab-pane" id="tab_3">
+                <div class="user_subCrumbs">
+                    <ul>
+                        <li><a href="#" class="current">Low in stock</a> | </li>
+                        <li><a href="#" class="">Out of stock</a> | </li>
+                        <li><a href="#" class="">Most stocked</a></li>
+                    </ul>
+                </div>
+                <div id="poststuff" class="woocommerce-reports-wide">
+                    <div class="postbox">
+                        <div class="inside reports-wide">
+                            <div class="widefat">
+                                <table class="wp-list-table widefat fixed striped table-view-list stock">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col" id="product" class="manage-column column-product column-primary">Product</th>
+                                            <th scope="col" id="parent" class="manage-column column-parent">Parent</th>
+                                            <th scope="col" id="stock_level" class="manage-column column-stock_level">Units in stock</th>
+                                            <th scope="col" id="stock_status" class="manage-column column-stock_status">Stock status</th>
+                                            <th scope="col" id="wc_actions" class="manage-column column-wc_actions">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="the-list" data-wp-lists="list:stock">
+                                        <tr class="no-items"><td class="colspanchange" colspan="5">No low in stock products found.</td></tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th scope="col" class="manage-column column-product column-primary">Product</th>
+                                            <th scope="col" class="manage-column column-parent">Parent</th>
+                                            <th scope="col" class="manage-column column-stock_level">Units in stock</th>
+                                            <th scope="col" class="manage-column column-stock_status">Stock status</th>
+                                            <th scope="col" class="manage-column column-wc_actions">Actions</th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane" id="tab_4">
+                <div class="user_subCrumbs">
+                    <ul>
+                        <li><a href="#" class="current">Taxes by code</a> | </li>
+                        <li><a href="#" class="">Taxes by date</a></li>
+                    </ul>
+                </div>
+                <div id="poststuff" class="woocommerce-reports-wide">
+                    <div class="postbox">
+                        <div class="stats_range">
+                            <a href="#" class="export_csv"><i class="fa fa-arrow-down"></i>&nbsp;Export CSV</a>
+                            <ul>
+                                <li class="active"><a href="#">Year</a></li>
+                                <li class=""><a href="#">Last month</a></li>
+                                <li class=""><a href="#">This month</a></li>
+                                <li class=""><a href="#">Last 7 days</a></li>
+                                <li class="custom">
+                                    Custom:
+                                    <form method="GET">
+                                        <div>
+                                            <input type="text" size="11" placeholder="yyyy-mm-dd" name="start_date" class="range_datepicker from hasDatepicker" autocomplete="off"> <span>–</span> <input type="text" size="11" placeholder="yyyy-mm-dd" name="end_date" class="range_datepicker to hasDatepicker" autocomplete="off">
+                                            <button type="submit" class="button" value="Go">Go</button>
+                                        </div>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="inside reports-wide">
+                            <div class="widefat">
+                                <table class="table-blue">
+                                    <thead>
+                                        <tr>
+                                            <th>Tax</th>
+                                            <th>Rate</th>
+                                            <th class="total_row">Number of orders</th>
+                                            <th class="total_row">Tax amount</th>
+                                            <th class="total_row">Shipping tax amount</th>
+                                            <th class="total_row">Total tax</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th scope="row">US-CA-CA TAX-1</th>
+                                            <td>8.5000%</td>
+                                            <td>10</td>
+                                            <td>$334.28</td>
+                                            <td>$0.00</td>
+                                            <td>$334.28</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">US-WA-WA TAX-1</th>
+                                            <td>10.1000%</td>
+                                            <td>6</td>
+                                            <td>$239.89</td>
+                                            <td>$0.00</td>
+                                            <td>$239.89</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">US-TX-TX TAX-1</th>
+                                            <td>8.2500%</td>
+                                            <td>4</td>
+                                            <td>$178.99</td>
+                                            <td>$0.00</td>
+                                            <td>$178.99</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div><!--end tab three-->
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    jQuery(function ($) {
+        $('[name="start_date"], [name="end_date"]').datepicker();
+    });
+</script>

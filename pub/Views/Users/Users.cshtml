@@ -1,0 +1,240 @@
+﻿@model LaylaERP.Models.clsUserDetails
+@{
+    ViewBag.Title = "Users";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+@*@using (Html.BeginForm("Users", "Users", FormMethod.Post)) { }*@
+<input type="hidden" id="hfStatusType" value="" />
+<div class="page-title">
+    <h2 class="page-heading">Users</h2> <a class="btn btn-danger" href="CreateUser">Create User</a>
+</div>
+<div class="user_subCrumbs">
+    <ul class="subsubsub">
+        <li class="all"><a href="#" id="all" class="current" aria-current="page">All (<span class="count">0</span>)</a> |</li>
+        <li class="accounting"><a href="#" id="accounting">Accounting (<span class="count">0</span>)</a> |</li>
+        <li class="administrator"><a href="#" id="administrator">Administrator (<span class="count">0</span>)</a> |</li>
+        <li class="author"><a href="#" id="author">Author (<span class="count">0</span>)</a> |</li>
+        <li class="contributor"><a href="#" id="contributor">Contributor (<span class="count">0</span>)</a> |</li>
+        <li class="editor"><a href="#" id="editor">Editor (<span class="count">0</span>)</a> |</li>
+        <li class="modsquad"><a href="#" id="modsquad">Mod Squad (<span class="count">0</span>)</a> |</li>
+        <li class="shop_manager"><a href="#" id="shopmanager">Shop Manager (<span class="count">0</span>)</a> |</li>
+        <li class="subscriber"><a href="#" id="subscriber">Subscriber (<span class="count">0</span>)</a> |</li>
+        <li class="supplychainmanager"><a href="#" id="supplychainmanager">Supply Chain Manager (<span class="count">0</span>)</a> |</li>
+        <li class="wpseo_editor"><a href="#" id="seo">SEO Editor (<span class="count">0</span>)</a> |</li>
+        <li class="seomanager"><a href="#" id="seomanager">SEO Manager (<span class="count">0</span>)</a> |</li>
+        <li class="none"><a href="#" id="norole">No role (<span class="count">0</span>)</a></li>
+    </ul>
+</div>
+<div>
+    <p id="selectStatus"><label><b class="sm-heading">Status</b></label></p>
+</div>
+<section class="content section-content">
+    <div class="user-top-section">
+
+        <div class="tablenav top">
+            <div class="alignleft actions bulkactions">
+                <select name="action" id="ddlStatus">
+                    <option value="1">Bulk actions</option>
+                    <option value="2">Active</option>
+                    <option value="3">InActive</option>
+                </select>
+                <input type="submit" id="btnApply" class="button action" value="Apply">
+            </div>
+            <div class="alignleft actions">
+                <select name="new_role" id="new_role">
+                    <option value="">Change role to…</option>
+                    <option value="accounting">Accounting</option>
+                    <option value="administrator">Administrator</option>
+                    <option value="author">Author</option>
+                    <option value="contributor">Contributor</option>
+                    <option value="editor">Editor</option>
+                    <option value="modsquad">Mod Squad</option>
+                    <option value="wpseo_editor">SEO Editor</option>
+                    <option value="seo_manager">SEO Manager</option>
+                    <option value="shop_manager">Shop Manager</option>
+                    <option value="subscriber">Subscriber</option>
+                    <option value="supplychainmanager">Supply Chain Manager</option>
+                </select>
+                <input type="submit" name="changeit" id="changeit" class="button" value="Change">
+            </div>
+
+            <div class="alignleft actions">
+                <select name="grant_role" id="grant_role">
+                    <option value="">Grant Roal to…</option>
+                    <option value="accounting">Accounting</option>
+                    <option value="administrator">Administrator</option>
+                    <option value="author">Author</option>
+                    <option value="contributor">Contributor</option>
+                    <option value="editor">Editor</option>
+                    <option value="modsquad">Mod Squad</option>
+                    <option value="wpseo_editor">SEO Editor</option>
+                    <option value="seo_manager">SEO Manager</option>
+                    <option value="shop_manager">Shop Manager</option>
+                    <option value="subscriber">Subscriber</option>
+                    <option value="supplychainmanager">Supply Chain Manager</option>
+                </select>
+                <input type="submit" name="Grantrole" id="Grantrole" class="button" value="Grant">
+            </div>
+            <div class="alignleft actions">
+                <select name="revoke_role" id="revoke_role">
+                    <option value="">Revoke Roal to…</option>
+                    <option value="accounting">Accounting</option>
+                    <option value="administrator">Administrator</option>
+                    <option value="author">Author</option>
+                    <option value="contributor">Contributor</option>
+                    <option value="editor">Editor</option>
+                    <option value="modsquad">Mod Squad</option>
+                    <option value="wpseo_editor">SEO Editor</option>
+                    <option value="seo_manager">SEO Manager</option>
+                    <option value="shop_manager">Shop Manager</option>
+                    <option value="subscriber">Subscriber</option>
+                    <option value="supplychainmanager">Supply Chain Manager</option>
+                </select>
+                <input type="submit" name="Revoke" id="Revoke" class="button" value="Revoke">
+            </div>
+            <input type="hidden" name="varpass" id="varpass" value="">
+            @*<div class="tablenav-pages">
+                    <span class="displaying-num">61,641 items</span>
+                    <span class="pagination-links">
+                        <span class="tablenav-pages-navspan button disabled" aria-hidden="true">«</span>
+                        <span class="tablenav-pages-navspan button disabled" aria-hidden="true">‹</span>
+                        <span class="paging-input">
+                            <input class="current-page" id="current-page-selector" type="text" name="paged" value="1" size="4" aria-describedby="table-paging">
+                            <span class="tablenav-paging-text"> of <span class="total-pages">3,083</span></span>
+                        </span>
+                        <a class="next-page button" href="http://173.247.242.204/~rpsisr/woo/wp-admin/users.php?paged=2"><span aria-hidden="true">›</span></a>
+                        <a class="last-page button" href="http://173.247.242.204/~rpsisr/woo/wp-admin/users.php?paged=3083"><span aria-hidden="true">»</span></a>
+                    </span>
+                </div>*@
+            <br class="clear">
+        </div>
+    </div>
+    <div class="box box-primary">
+        <div class="box-header">
+            <div id="gridContainer" class="margin-15-rem">
+                <table id="dtdata" class="table table-blue table-bordered table-striped dataTable check-table" style="width:100%;">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th><input type="checkbox" name="checkAll" id="checkAll"><label></label></th>
+                            <th>ID</th>
+                            <th>User Name</th>
+                            <th>Email</th>
+                            <th>Status</th>
+                            <th>Phone</th>
+                            <th>Address</th>
+                            <th>Role</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="~/js/common.js"></script>
+<script src="@Url.Content("~/js/Users/Users.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+
+<script type="text/javascript"> 
+    var j = "";
+    $(document).ready(function () {
+        $(".subsubsub li a").click(function (e) {
+            $('.subsubsub li').removeClass('current');
+            $('.subsubsub li a').removeClass('current');
+            $(this).addClass('current'); $(this).parent().addClass('current');
+        });
+        GetUsersCount();
+        setTimeout(function () { Datagrid(''); }, 50);
+
+        //Count Role Grid Show
+        $('#all').click(function () { var role_type = ""; $('#hfStatusType').val(role_type); Datagrid(role_type); });
+        $('#administrator').click(function () { var role_type = 'administrator'; $('#hfStatusType').val(role_type); Datagrid(role_type); });
+        $('#accounting').click(function () { var role_type = 'accounting'; $('#hfStatusType').val(role_type); Datagrid(role_type); });
+        $('#author').click(function () { var role_type = 'author'; $('#hfStatusType').val(role_type); Datagrid(role_type); });
+        $('#modsquad').click(function () { var role_type = 'modsquad'; $('#hfStatusType').val(role_type); Datagrid(role_type); });
+        $('#shopmanager').click(function () { var role_type = 'shop manager'; $('#hfStatusType').val(role_type); Datagrid(role_type); });
+        $('#subscriber').click(function () { var role_type = 'subscriber'; $('#hfStatusType').val(role_type); Datagrid(role_type); });
+        $('#supplychainmanager').click(function () { var role_type = 'supplychainmanager'; $('#hfStatusType').val(role_type); Datagrid(role_type); });
+        $('#seo').click(function () { var role_type = 'wpseo_editor'; $('#hfStatusType').val(role_type); Datagrid(role_type); });
+        $('#norole').click(function () { var role_type = 'norole'; $('#hfStatusType').val(role_type); Datagrid(role_type); });
+        $('#contributor').click(function () { var role_type = 'contributor'; $('#hfStatusType').val(role_type); Datagrid(role_type); });
+        $('#editor').click(function () { var role_type = 'editor'; $('#hfStatusType').val(role_type); Datagrid(role_type); });
+        $('#seomanager').click(function () { var role_type = 'seo_manager'; $('#hfStatusType').val(role_type); Datagrid(role_type); });
+        //Count Role Grid End
+    });
+
+    //CheckBoxes
+    $('#checkAll').click(function () {
+        var isChecked = $(this).prop("checked");
+        $('#dtdata tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
+    });
+
+    function Singlecheck() {
+        var isChecked = $(this).prop("checked");
+        var isHeaderChecked = $("#checkAll").prop("checked");
+        if (isChecked == false && isHeaderChecked)
+            $("#checkAll").prop('checked', isChecked);
+
+        else {
+            $('#dtdata tr:has(td)').find('input[type="checkbox"]').each(function () {
+                if ($(this).prop("checked") == false)
+                    isChecked = false;
+            });
+            $("#checkAll").prop('checked', isChecked);
+        }
+    }
+
+    $('#btnApply').click(function () {
+        var id = "";
+        var status = $("#ddlStatus").val();
+        $("input:checkbox[name=CheckSingle]:checked").each(function () { id += $(this).val() + ","; });
+        if (status == "1") { UpdateCustomerStatus(); }
+        if (status == "3") {
+            id = id.replace(/,(?=\s*$)/, '');
+            DeleteUsers(id);
+            //dataGridLoad();
+        }
+        if (status == "2") {
+
+            id = id.replace(/,(?=\s*$)/, '');
+            ActiveUsers(id);
+            //dataGridLoad();
+        }
+        $("input:checkbox[name=CheckSingle]:checked").each(function () {
+            //alert("Id: " + $(this).attr("id") + " Value: " + $(this).val());
+        });
+    })
+    $("#changeit").click(function () {
+        var ID = "";
+        var new_role = $("#new_role").val();
+        $("input:checkbox[name=CheckSingle]:checked").each(function () { ID += $(this).val() + ","; });
+        ID = ID.replace(/,(?=\s*$)/, '');
+        changeRole(ID);
+    })
+    //Grantrole
+    $("#Grantrole").click(function () {
+        var ID = "";
+        var new_role = $("#grant_role").val();
+        $("input:checkbox[name=CheckSingle]:checked").each(function () {
+            ID += $(this).val() + ",";
+
+        });
+        ID = ID.replace(/,(?=\s*$)/, '');
+        Grantrole(ID);
+    })
+    //Revoke
+    $("#Revoke").click(function () {
+        var ID = "";
+        var new_role = $("#revoke_role").val();
+        $("input:checkbox[name=CheckSingle]:checked").each(function () {
+            ID += $(this).val() + ",";
+
+        });
+        ID = ID.replace(/,(?=\s*$)/, '');
+        Revokerole(ID);
+    })
+
+
+</script>

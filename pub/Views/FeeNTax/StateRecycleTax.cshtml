@@ -1,0 +1,83 @@
+﻿
+@{
+    Layout = null;
+    ViewBag.Title = "Fee & Tax";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="page-title">
+    <h2 class="page-heading">State Recycle Tax</h2>
+</div>
+<section class="content content-section p-0">
+    <div class="col-sm-10">
+        <div class="row">
+            <div class="box box-primary">
+                <div class="box-body">
+                    <div class="form-horizontal create-new-customer fee_tax-box">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label " for="StateRecycleFee ">State Recycle Fee </label>
+                                    <div class="">
+                                        <input type="text" id="StateRecycleFee" class="form-control" placeholder="State Recycle Fee " />
+                                    </div>
+                                </div>
+                                @*<div class="form-group">
+                                    <label class="control-label " for="Item_Parent_id">Item Parent Id</label>
+                                    <div class="">
+                                        <input type="text" id="Item_Parent_id" class="form-control" placeholder="Item Parent Id" />
+                                    </div>
+                                </div>*@
+                                <div class="form-group">
+                                    <label class="control-label " for="Item_Name">Item/Product Name</label>
+                                    <div class="">
+                                        <input type="text" id="Item_Name" class="form-control" placeholder="Item Name" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label " for="ShipCity">Ship City</label>
+                                    <div class="">
+                                        <Select class="form-control">
+                                            <option>Ship City</option>
+                                        </Select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label " for="ShipState">Ship State</label>
+                                    <div class="">
+                                        <Select class="form-control">
+                                            <option>Ship State</option>
+                                        </Select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label " for="Ship_Zip_PostCode">ShipZip/PostCode</label>
+                                    <div class="">
+                                        <input type="text" id="Ship_Zip_PostCode" class="form-control" placeholder="ShipZip/PostCode" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label " for="ShipState">Ship Country</label>
+                                    <div class="">
+                                        <Select class="form-control">
+                                            <option>Ship Country</option>
+                                        </Select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="box-footer">
+                    <div class="text-right">
+                        <input type="submit" value="Submit" class="btn btn-danger" />
+                    </div>
+                </div>
+                <!-- /.row -->
+            </div>
+        </div>
+    </div>
+</section>

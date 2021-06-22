@@ -1,0 +1,197 @@
+﻿
+@{
+    Layout = null;
+    ViewBag.Title = "Marketing | Coupons";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.UiStyle = "/Content/AdminLTE-3.1.0/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css";
+    ViewBag.UiJs = "/Content/AdminLTE-3.1.0/bower_components/jquery-ui/jquery-ui.min.js";
+}
+
+<div class="page-title">
+    <h2 class="page-heading">Coupons</h2>
+</div>
+<section class="content content-section p-0 coupons-section">
+    <div class="col-sm-10">
+        <div class="row">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h4 class="box-title">Generate Coupon Code</h4>
+                </div>
+                <div class="box-body">
+                    <div class="form-group">
+                        <div class="d-flex align-items-center generate-boxs">
+                            <input type="text" id="genrate_coupon_code" class="form-control" placeholder="Generate Coupon Code" />
+                            <a href="#" class="btn btn-danger generate-coupon-code">Generate coupon code</a>
+                        </div>
+                    </div>
+
+                </div>
+            </div><!--end primary-->
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h4 class="box-title">Coupon Data</h4>
+                </div>
+                <div class="box-body">
+                    <div class="nav-tabs-custom">
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a href="#tab_1" data-toggle="tab">General</a></li>
+                            <li><a href="#tab_2" data-toggle="tab">Usage restriction</a></li>
+                            <li><a href="#tab_3" data-toggle="tab">Usage limits</a></li>
+                        </ul>
+                        <div class="tab-content coupons-content">
+                            <div class="tab-pane active" id="tab_1">
+                                <div class="row">
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Discount type</label>
+                                        <div class="col-sm-9">
+                                            <select class="form-control">
+                                                <option value="percent">Percentage discount</option>
+                                                <option value="fixed_cart" selected="selected">Fixed cart discount</option>
+                                                <option value="fixed_product">Fixed product discount</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Coupon amount</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" class="form-control" value="0" placeholder="0">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Allow free shipping</label>
+                                        <div class="col-sm-9">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="free_ship" id="free_ship">
+                                                <label class="form-check-label" for="free_ship">
+                                                    Check this box if the coupon grants free shipping. A free shipping method must be enabled in your shipping zone and be set to require "a valid free shipping coupon" (see the "Free Shipping Requires" setting).
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Coupon expiry date</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" placeholder="yyyy-mm-dd" name="expiry_date" class="date-datepicker hasDatepicker form-control" autocomplete="off">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /.tab-pane -->
+                            <div class="tab-pane" id="tab_2">
+                                <div class="row">
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Minimum spend</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" class="form-control" placeholder="No minimum">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Maximum spend</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" class="form-control" placeholder="No Maximum">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Individual use only</label>
+                                        <div class="col-sm-9">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="individual_only" id="individual_only">
+                                                <label class="form-check-label" for="individual_only">
+                                                    Check this box if the coupon cannot be used in conjunction with other coupons.
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Exclude sale items</label>
+                                        <div class="col-sm-9">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="exclude_items" id="exclude_items">
+                                                <label class="form-check-label" for="exclude_items">
+                                                    Check this box if the coupon should not apply to items on sale. Per-item coupons will only work if the item is not on sale. Per-cart coupons will only work if there are items in the cart that are not on sale.
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <hr>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Products</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" class="form-control" placeholder="Search for a product…">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Exclude products</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" class="form-control" placeholder="Search for a product…">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <hr>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Product categories</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" class="form-control" placeholder="Any category">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Exclude categories</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" class="form-control" placeholder="No category">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <hr>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Allowed emails</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" class="form-control" placeholder="No restrictions">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /.tab-pane -->
+                            <div class="tab-pane" id="tab_3">
+                                <div class="row">
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Usage limit per coupon</label>
+                                        <div class="col-sm-9">
+                                            <input type="number" class="form-control" placeholder="Unlimited usage" min="0">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Limit usage to X items</label>
+                                        <div class="col-sm-9">
+                                            <input type="number" class="form-control" placeholder="Apply to all qualifying items in cart" min="0">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Usage limit per user</label>
+                                        <div class="col-sm-9">
+                                            <input type="number" class="form-control" placeholder="Unlimited usage" min="0">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="box-footer">
+                    <div class="text-right">
+                        <input type="submit" value="Submit" class="btn btn-danger" />
+                    </div>
+                </div>
+                <!-- /.row -->
+            </div>
+        </div>
+    </div>
+</section>
+<script type="text/javascript">
+    jQuery(function ($) {
+        $('[name="expiry_date"]').datepicker();
+    });
+</script>

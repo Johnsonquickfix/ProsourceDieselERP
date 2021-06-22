@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameters>
+  <setParameter name="IIS Web Application Name" value="LaylaERP" />
+  <setParameter name="constr-Web.config Connection String" value="User ID=rpsisr_woo;Password=Peter@007;Host=173.247.242.204;Port=3306;Database=rpsisr_woo;Protocol=TCP;Compress=false;Pooling=true;Min Pool Size=0;Max Pool Size=100;Connection Lifetime=0; convert zero datetime=True" />
+</parameters>

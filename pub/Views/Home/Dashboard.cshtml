@@ -1,0 +1,441 @@
+﻿
+@{
+    ViewBag.Title = "Dashboard";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+ 
+<div class="row d-flex align-items-center">
+    <div class="col-xs-6">
+        <div class="page-title">
+            <h2 class="page-heading gs-open">
+                Dashboard
+                <span class="sub-heading">
+                    <time datetime="2021-05-24">Mon, May 26, 2021</time> - <time datetime="2021-05-30">Sun, May 26, 2021</time>
+                </span>
+            </h2>
+        </div>
+    </div>
+    <div class="col-xs-6 ">
+        <div class="dropdown item pull-right">
+            <a aria-expanded="true" aria-haspopup="true" class="dropdown-toggle btn btn-default manage-wig-dash" data-toggle="dropdown" href="#">Manage widgets</a>
+            <ul class="dropdown-menu dropdown-menu-right widget-dropdown toggling-dropdown">
+                <li class="dropdown-header">Small widgets</li>
+                <li data-widget="earned_week" data-widget-style="small" class="is-on"><a class="d-flex icon-link" href="#">Earned this week</a></li>
+                <li data-widget="earned_today" data-widget-style="small"><a class="d-flex icon-link" href="#">Earned today</a></li>
+                <li data-widget="projects_worked" data-widget-style="small" class="is-on"><a class="d-flex icon-link" href="#">Projects worked</a></li>
+                <li data-widget="today_activity" data-widget-style="small"><a class="d-flex icon-link" href="#">Today's Activity</a></li>
+                <li data-widget="activity" data-widget-style="small" class="is-on"><a class="d-flex icon-link" href="#">Weekly Activity</a></li>
+                <li data-widget="this_week_total" data-widget-style="small" class="is-on"><a class="d-flex icon-link" href="#">Worked this week</a></li>
+                <li data-widget="worked_today" data-widget-style="small"><a class="d-flex icon-link" href="#">Worked today</a></li>
+                <hr>
+                <li class="dropdown-header">Large widgets</li>
+                <li data-widget="apps_urls" data-widget-style="large" class="is-on"><a class="d-flex icon-link" href="#">Apps &amp; URLs</a></li>
+                <li data-widget="missed_shifts" data-widget-style="large"><a class="d-flex icon-link" href="#">Late &amp; Missed Shifts</a></li>
+                <li data-widget="manual_time_log" data-widget-style="large"><a class="d-flex icon-link" href="#">Manual Time</a></li>
+                <li data-widget="past_payments" data-widget-style="large"><a class="d-flex icon-link" href="#">Payments</a></li>
+                <li data-widget="projects" data-widget-style="large" class="is-on"><a class="d-flex icon-link" href="#">Projects</a></li>
+                <li data-widget="my_recent_activity" data-widget-style="large" class="is-on"><a class="d-flex icon-link" href="#">Recent activity</a></li>
+                <li data-widget="this_week" data-widget-style="large" class="is-on"><a class="d-flex icon-link" href="#">This week</a></li>
+                <li data-widget="time_off_balances" data-widget-style="large"><a class="d-flex icon-link" href="#">Time off balances</a></li>
+                <li data-widget="time_off_requests" data-widget-style="large"><a class="d-flex icon-link" href="#">Time off requested</a></li>
+                <li data-widget="timesheet" data-widget-style="large" class="is-on"><a class="d-flex icon-link" href="#">Timesheet</a></li>
+                <li data-widget="tasks" data-widget-style="large" class="is-on"><a class="d-flex icon-link" href="#">To-dos</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+<!--dashboard info section-->
+
+<div class="row dashboard-info">
+    <div class="col-lg-3 col-sm-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-info">
+            <div class="inner">
+                <h3>@ViewBag.totalorders</h3>
+
+                <p>Total Orders</p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-bag"></i>
+            </div>
+            <a href="/Orders/OrdersHistory" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-sm-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-success">
+            <div class="inner">
+                <h3>$ @ViewBag.totalsales<sup style="font-size: 20px"></sup></h3>
+
+                <p>Total Sales</p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-stats-bars"></i>
+            </div>
+            <a href="/Orders/OrdersHistory" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-sm-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-warning">
+            <div class="inner">
+                <h3>@ViewBag.totalcustomers</h3>
+
+                <p>Total Customers</p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-person-add"></i>
+            </div>
+            <a href="/Customer/Customer" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-sm-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-danger">
+            <div class="inner">
+                <h3>@ViewBag.totalordercompleted</h3>
+
+                <p>Completed Orders</p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-pie-graph"></i>
+            </div>
+            <a href="/Orders/OrdersHistory" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+    </div>
+    <!-- ./col -->
+</div>
+
+<!-- ui shortable -->
+
+<div class="row">
+    <!-- Left col -->
+    <section class="col-lg-7 col-sm-7 connectedSortable">
+        <!-- Custom tabs (Charts with tabs)-->
+        <div class="nav-tabs-custom">
+            <!-- Tabs within a box -->
+            <ul class="nav nav-tabs pull-right">
+                <li class="active"><a href="#revenue-chart" data-toggle="tab">Area</a></li>
+                <li><a href="#sales-chart" data-toggle="tab">Donut</a></li>
+                <li class="pull-left header"><i class="fa fa-inbox"></i> Sales</li>
+            </ul>
+            <div class="tab-content no-padding">
+                <!-- Morris chart - Sales -->
+                <div class="chart tab-pane active" id="revenue-chart" style="position: relative; height: 300px;"></div>
+                <div class="chart tab-pane" id="sales-chart" style="position: relative; height: 300px;"></div>
+            </div>
+        </div>
+        <!-- /.nav-tabs-custom -->
+        <!-- Chat box -->
+        <div class="box box-success">
+            <div class="box-header">
+                <i class="fa fad fa-comments"></i>
+
+                <h3 class="box-title">Chat</h3>
+
+                <div class="box-tools pull-right" data-toggle="tooltip" title="Status">
+                    <div class="btn-group" data-toggle="btn-toggle">
+                        <button type="button" class="btn btn-default btn-sm active">
+                            <i class="fa fa-square text-green"></i>
+                        </button>
+                        <button type="button" class="btn btn-default btn-sm"><i class="fa fa-square text-red"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="box-body chat" id="chat-box">
+                <!-- chat item -->
+                <div class="item">
+                    <img src="~/Images/user4-128x128.jpg" alt="user image" class="online">
+
+                    <p class="message">
+                        <a href="#" class="name">
+                            <small class="text-muted pull-right"><i class="fa fa-clock-o"></i> 2:15</small>
+                            Mike Doe
+                        </a>
+                        I would like to meet you to discuss the latest news about
+                        the arrival of the new theme. They say it is going to be one the
+                        best themes on the market
+                    </p>
+                    <div class="attachment">
+                        <h4>Attachments:</h4>
+
+                        <p class="filename">
+                            Theme-thumbnail-image.jpg
+                        </p>
+
+                        <div class="pull-right">
+                            <button type="button" class="btn btn-primary btn-sm btn-flat">Open</button>
+                        </div>
+                    </div>
+                    <!-- /.attachment -->
+                </div>
+                <!-- /.item -->
+                <!-- chat item -->
+                <div class="item">
+                    <img src="~/Images/user3-128x128.jpg" alt="user image" class="offline">
+
+                    <p class="message">
+                        <a href="#" class="name">
+                            <small class="text-muted pull-right"><i class="fa fa-clock-o"></i> 5:15</small>
+                            Alexander Pierce
+                        </a>
+                        I would like to meet you to discuss the latest news about
+                        the arrival of the new theme. They say it is going to be one the
+                        best themes on the market
+                    </p>
+                </div>
+                <!-- /.item -->
+                <!-- chat item -->
+                <div class="item">
+                    <img src="~/Images/user2-160x160.jpg" alt="user image" class="offline">
+
+                    <p class="message">
+                        <a href="#" class="name">
+                            <small class="text-muted pull-right"><i class="fa fa-clock-o"></i> 5:30</small>
+                            Susan Doe
+                        </a>
+                        I would like to meet you to discuss the latest news about
+                        the arrival of the new theme. They say it is going to be one the
+                        best themes on the market
+                    </p>
+                </div>
+                <!-- /.item -->
+            </div>
+            <!-- /.chat -->
+            <div class="box-footer">
+                <div class="input-group">
+                    <input class="form-control" placeholder="Type message...">
+
+                    <div class="input-group-btn">
+                        <button type="button" class="btn btn-success"><i class="fa fa-plus"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /.box (chat box) -->
+         <!-- quick email widget -->
+        <div class="box box-info">
+            <div class="box-header">
+                <i class="fa fa-envelope"></i>
+
+                <h3 class="box-title">Quick Email</h3>
+                <!-- tools box -->
+                <div class="pull-right box-tools">
+                    <button type="button" class="btn btn-info btn-sm" data-widget="remove" data-toggle="tooltip"
+                            title="Remove">
+                        <i class="fa fa-times"></i>
+                    </button>
+                </div>
+                <!-- /. tools -->
+            </div>
+            <div class="box-body">
+                <form action="#" method="post">
+                    <div class="form-group">
+                        <input type="email" class="form-control" name="emailto" id="emailto" placeholder="Email to:">
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="subject" id="subject" placeholder="Subject">
+                    </div>
+                    <div>
+                        <textarea id="content" class="textarea" placeholder="Message"
+                                  style="width: 100%; height: 125px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="box-footer clearfix">
+                <button type="button" class="pull-right btn btn-default" id="sendEmail">
+                    Send
+                    <i class="fa fa-arrow-circle-right"></i>
+                </button>
+            </div>
+        </div>
+
+    </section>
+    <!-- /.Left col -->
+    <!-- right col (We are only adding the ID to make the widgets sortable)-->
+    <section class="col-lg-5 col-sm-5 connectedSortable">
+
+        <!-- /.box -->
+        <!-- solid sales graph -->
+        <div class="box box-solid bg-teal-gradient">
+            <div class="box-header">
+                <i class="fa fa-th"></i>
+
+                <h3 class="box-title">Sales Graph</h3>
+
+                <div class="box-tools pull-right">
+                    <button type="button" class="btn bg-teal btn-sm" data-widget="collapse">
+                        <i class="fa fa-minus"></i>
+                    </button>
+                    <button type="button" class="btn bg-teal btn-sm" data-widget="remove">
+                        <i class="fa fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="box-body border-radius-none">
+                <div class="chart" id="line-chart" style="height: 250px;"></div>
+            </div>
+            <!-- /.box-body -->
+            <div class="box-footer no-border">
+                <div class="row">
+                    <div class="col-xs-4 text-center" style="border-right: 1px solid #f4f4f4">
+                        <input type="text" class="knob" data-readonly="true" value="20" data-width="60" data-height="60"
+                               data-fgColor="#39CCCC">
+                        <div class="knob-label">Mail-Orders</div>
+                    </div>
+                    <!-- ./col -->
+                    <div class="col-xs-4 text-center" style="border-right: 1px solid #f4f4f4">
+                        <input type="text" class="knob" data-readonly="true" value="50" data-width="60" data-height="60"
+                               data-fgColor="#39CCCC">
+                        <div class="knob-label">Online</div>
+                    </div>
+                    <!-- ./col -->
+                    <div class="col-xs-4 text-center">
+                        <input type="text" class="knob" data-readonly="true" value="30" data-width="60" data-height="60"
+                               data-fgColor="#39CCCC">
+                        <div class="knob-label">In-Store</div>
+                    </div>
+                    <!-- ./col -->
+                </div>
+                <!-- /.row -->
+            </div>
+            <!-- /.box-footer -->
+        </div>
+        <!-- /.box -->
+        <!-- Calendar -->
+        <div class="box box-solid bg-green-gradient">
+            <div class="box-header">
+                <i class="fa fa-calendar"></i>
+
+                <h3 class="box-title">Calendar</h3>
+                <!-- tools box -->
+                <div class="pull-right box-tools">
+                    <!-- button with a dropdown -->
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <ul class="dropdown-menu pull-right" role="menu">
+                            <li><a href="#">Add new event</a></li>
+                            <li><a href="#">Clear events</a></li>
+                            <li class="divider"></li>
+                            <li><a href="#">View calendar</a></li>
+                        </ul>
+                    </div>
+                    <button type="button" class="btn btn-success btn-sm" data-widget="collapse">
+                        <i class="fa fa-minus"></i>
+                    </button>
+                    <button type="button" class="btn btn-success btn-sm" data-widget="remove">
+                        <i class="fa fa-times"></i>
+                    </button>
+                </div>
+                <!-- /. tools -->
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body no-padding">
+                <!--The calendar -->
+                <div id="calendar" style="width: 100%"></div>
+            </div>
+            <!-- /.box-body -->
+            <div class="box-footer text-black">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <!-- Progress bars -->
+                        <div class="clearfix">
+                            <span class="pull-left">Task #1</span>
+                            <small class="pull-right">90%</small>
+                        </div>
+                        <div class="progress xs">
+                            <div class="progress-bar progress-bar-green" style="width: 90%;"></div>
+                        </div>
+
+                        <div class="clearfix">
+                            <span class="pull-left">Task #2</span>
+                            <small class="pull-right">70%</small>
+                        </div>
+                        <div class="progress xs">
+                            <div class="progress-bar progress-bar-green" style="width: 70%;"></div>
+                        </div>
+                    </div>
+                    <!-- /.col -->
+                    <div class="col-sm-6">
+                        <div class="clearfix">
+                            <span class="pull-left">Task #3</span>
+                            <small class="pull-right">60%</small>
+                        </div>
+                        <div class="progress xs">
+                            <div class="progress-bar progress-bar-green" style="width: 60%;"></div>
+                        </div>
+
+                        <div class="clearfix">
+                            <span class="pull-left">Task #4</span>
+                            <small class="pull-right">40%</small>
+                        </div>
+                        <div class="progress xs">
+                            <div class="progress-bar progress-bar-green" style="width: 40%;"></div>
+                        </div>
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <!-- /.row -->
+            </div>
+        </div>
+        <!-- /.box -->
+
+    </section>
+    <!-- right col -->
+</div>
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script>
+    $(document).ready(function(){
+
+        $('#sendEmail').click(function(){
+            debugger;
+            var emails = $('#emailto').val();
+            var subject = $('#subject').val();
+            var content = $('#content').val();
+            var isVal = 1;
+
+            if (emails == '' || emails == undefined) {
+                alert("Please enter EmailID");
+                isVal = 0;
+                return false;
+            }
+            if (content == '' || content == undefined) {
+                alert("Please enter EmailID");
+                isVal = 0;
+                return false;
+            }
+            if (isVal == 1) {
+
+                var obj = { emails: emails, subject: subject, content:content }
+                $.ajax({
+                    url: '/AccountAPI/QuicksendEmail', dataType: 'json', type: "Post",
+                    beforeSend: function () {
+                        //$("#loading-div-background").show();
+                    },
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(obj),
+                    success: function (data) {
+                        //$("#loading-div-background").hide();
+
+                        swal('success!', "Message send Successfully", "success");
+                        $('#emailto').val('');
+                        $('#subject').val('');
+                        $('#content').val('');
+
+                    },
+                    error: function (errormessage) {
+                        //$("#loading-div-background").hide();
+                        swal('Error!', "Something went wrong .", "error");
+                    }
+                });
+            }
+        })
+    });
+</script>

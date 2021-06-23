@@ -1,4 +1,5 @@
 ﻿@model LaylaERP.Models.clsUserDetails
+
 @{
     ViewBag.Title = "Users";
     Layout = "~/Views/Shared/_UserLayout.cshtml";
@@ -6,6 +7,7 @@
 
 @*@using (Html.BeginForm("Users", "Users", FormMethod.Post)) { }*@
 <input type="hidden" id="hfStatusType" value="" />
+<input type="hidden" id="hfroletype" value="@ViewBag.user_role" />
 <div class="page-title">
     <h2 class="page-heading">Users</h2> <a class="btn btn-danger" href="CreateUser">Create User</a>
 </div>
@@ -125,6 +127,7 @@
                             <th>Address</th>
                             <th>Role</th>
                             <th>Action</th>
+
                         </tr>
                     </thead>
 
@@ -137,8 +140,9 @@
 <script src="~/js/common.js"></script>
 <script src="@Url.Content("~/js/Users/Users.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 
-<script type="text/javascript"> 
+<script type="text/javascript">
     var j = "";
+
     $(document).ready(function () {
         $(".subsubsub li a").click(function (e) {
             $('.subsubsub li').removeClass('current');
@@ -146,22 +150,22 @@
             $(this).addClass('current'); $(this).parent().addClass('current');
         });
         GetUsersCount();
-        setTimeout(function () { Datagrid(''); }, 50);
+        setTimeout(function () { Datagrid('', $("#hfroletype").val()); }, 50);
 
         //Count Role Grid Show
-        $('#all').click(function () { var role_type = ""; $('#hfStatusType').val(role_type); Datagrid(role_type); });
-        $('#administrator').click(function () { var role_type = 'administrator'; $('#hfStatusType').val(role_type); Datagrid(role_type); });
-        $('#accounting').click(function () { var role_type = 'accounting'; $('#hfStatusType').val(role_type); Datagrid(role_type); });
-        $('#author').click(function () { var role_type = 'author'; $('#hfStatusType').val(role_type); Datagrid(role_type); });
-        $('#modsquad').click(function () { var role_type = 'modsquad'; $('#hfStatusType').val(role_type); Datagrid(role_type); });
-        $('#shopmanager').click(function () { var role_type = 'shop manager'; $('#hfStatusType').val(role_type); Datagrid(role_type); });
-        $('#subscriber').click(function () { var role_type = 'subscriber'; $('#hfStatusType').val(role_type); Datagrid(role_type); });
-        $('#supplychainmanager').click(function () { var role_type = 'supplychainmanager'; $('#hfStatusType').val(role_type); Datagrid(role_type); });
-        $('#seo').click(function () { var role_type = 'wpseo_editor'; $('#hfStatusType').val(role_type); Datagrid(role_type); });
-        $('#norole').click(function () { var role_type = 'norole'; $('#hfStatusType').val(role_type); Datagrid(role_type); });
-        $('#contributor').click(function () { var role_type = 'contributor'; $('#hfStatusType').val(role_type); Datagrid(role_type); });
-        $('#editor').click(function () { var role_type = 'editor'; $('#hfStatusType').val(role_type); Datagrid(role_type); });
-        $('#seomanager').click(function () { var role_type = 'seo_manager'; $('#hfStatusType').val(role_type); Datagrid(role_type); });
+        $('#all').click(function () { var role_type = ""; $('#hfStatusType').val(role_type); Datagrid(role_type, $("#hfroletype").val()); });
+        $('#administrator').click(function () { var role_type = 'administrator'; $('#hfStatusType').val(role_type); Datagrid(role_type, $("#hfroletype").val()); });
+        $('#accounting').click(function () { var role_type = 'accounting'; $('#hfStatusType').val(role_type); Datagrid(role_type, $("#hfroletype").val()); });
+        $('#author').click(function () { var role_type = 'author'; $('#hfStatusType').val(role_type); Datagrid(role_type, $("#hfroletype").val()); });
+        $('#modsquad').click(function () { var role_type = 'modsquad'; $('#hfStatusType').val(role_type); Datagrid(role_type, $("#hfroletype").val()); });
+        $('#shopmanager').click(function () { var role_type = 'shop manager'; $('#hfStatusType').val(role_type); Datagrid(role_type, $("#hfroletype").val()); });
+        $('#subscriber').click(function () { var role_type = 'subscriber'; $('#hfStatusType').val(role_type); Datagrid(role_type, $("#hfroletype").val()); });
+        $('#supplychainmanager').click(function () { var role_type = 'supplychainmanager'; $('#hfStatusType').val(role_type); Datagrid(role_type, $("#hfroletype").val()); });
+        $('#seo').click(function () { var role_type = 'wpseo_editor'; $('#hfStatusType').val(role_type); Datagrid(role_type, $("#hfroletype").val()); });
+        $('#norole').click(function () { var role_type = 'norole'; $('#hfStatusType').val(role_type); Datagrid(role_type, $("#hfroletype").val()); });
+        $('#contributor').click(function () { var role_type = 'contributor'; $('#hfStatusType').val(role_type); Datagrid(role_type, $("#hfroletype").val()); });
+        $('#editor').click(function () { var role_type = 'editor'; $('#hfStatusType').val(role_type); Datagrid(role_type, $("#hfroletype").val()); });
+        $('#seomanager').click(function () { var role_type = 'seo_manager'; $('#hfStatusType').val(role_type); Datagrid(role_type, $("#hfroletype").val()); });
         //Count Role Grid End
     });
 

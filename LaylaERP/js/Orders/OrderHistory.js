@@ -35,10 +35,10 @@ function GetMonths() {
     var ydiff = d2.getYear() - d1.getYear();
     var mdiff = d2.getMonth() - d1.getMonth();
     var diff = (ydiff * 12 + mdiff);
-    
+
     $("#filter-by-date").html('<option value="0">All dates</option>');
     for (i = 0; i <= diff; i++) {
-        console.log(d2);
+        //console.log(d2);
         if (i == 0)
             d2.setMonth(d2.getMonth());
         else
@@ -121,7 +121,16 @@ function dataGridLoad(order_type) {
             { data: 'customer_id', title: 'Customer ID', sWidth: "8%" },
             { data: 'FirstName', title: 'First Name', sWidth: "10%" },
             { data: 'LastName', title: 'Last Name', sWidth: "10%" },
-            { data: 'billing_phone', title: 'Phone No.', sWidth: "10%" },
+            {
+                data: 'billing_phone', title: 'Phone No.', sWidth: "10%", render: function (toFormat) {
+                    var tPhone = '';
+                    if (toFormat != null) {
+                        tPhone = toFormat.toString();
+                        tPhone = '(' + tPhone.substring(0, 3) + ') ' + tPhone.substring(3, 6) + ' ' + tPhone.substring(6, 10);
+                    }
+                    return tPhone
+                }
+            },
             { data: 'num_items_sold', title: 'No. of Items', sWidth: "8%", className: "text-right" },
             { data: 'total_sales', title: 'Order Total', sWidth: "10%", className: "text-right", render: $.fn.dataTable.render.number(',', '.', 2, '') },
             {

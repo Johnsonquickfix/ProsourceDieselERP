@@ -11,6 +11,7 @@ using LaylaERP.BAL;
 using System.Dynamic;
 using Newtonsoft.Json;
 using System.Text;
+using LaylaERP.UTILITIES;
 
 namespace LaylaERP.Controllers
 {
@@ -21,6 +22,7 @@ namespace LaylaERP.Controllers
         {
 
             //RoleCounter();
+            ViewBag.user_role = CommanUtilities.Provider.GetCurrent().UserType;
             return View();
         }
 
@@ -188,12 +190,10 @@ namespace LaylaERP.Controllers
             string result = string.Empty;
             try
             {
-
                 DataTable dt = BAL.Users.GetMenuByUser(model.User_Type);
                 result = JsonConvert.SerializeObject(dt);
-
             }
-            catch { }
+            catch(Exception ex) { throw ex; }
             return Json(result, 0);
         }
 
@@ -337,8 +337,36 @@ namespace LaylaERP.Controllers
             myModel.address = dt.Rows[0]["address"];
             myModel.user_login = dt.Rows[0]["user_login"];
             string role = dt.Rows[0]["user_role"].ToString();
-            role = role.Replace("_", " ");           
-            myModel.user_role = role;      
+            if (role == "accounting")
+                role = "Accounting";
+            else if (role == "administrator")
+                role = "Administrator";
+            else if (role == "author")
+                role = "Author";
+            else if (role == "contributor")
+                role = "Contributor";
+            else if (role == "editor")
+                role = "Editor";
+            else if (role == "modsquad")
+                role = "Mod Squad";
+            else if (role == "wpseo_editor")
+                role = "SEO Editor";
+            else if (role == "seo_manager")
+                role = "SEO Manager";
+            else if (role == "shop_manager")
+                role = "Shop Manager";
+            else if (role == "shop_manager")
+                role = "Shop Manager";
+            else if (role == "subscriber")
+                role = "Subscriber";
+            else if (role == "supplychainmanager")
+                role = "Supply Chain Manager";
+            else
+                role = role;
+
+
+            // role = role.Replace("_", " ");           
+            myModel.user_role = role;
             myModel.phone = dt.Rows[0]["phone"];
             myModel.State = dt.Rows[0]["State"];
             myModel.City = dt.Rows[0]["City"];
@@ -555,7 +583,11 @@ namespace LaylaERP.Controllers
         {
             int role_id = model.role_id;
             string strID = model.strVal;
-            if (strID != "")
+            if (role_id == 65)
+            {
+                return Json(new { status = false, message = "You can not change administrator permission", url = "" }, 0);
+            }
+            else if (strID != "")
             {
                 new UsersRepositry().ChangePermission(strID, role_id);
                 return Json(new { status = true, message = "User Permission has been Changed successfully!!", url = "" }, 0);

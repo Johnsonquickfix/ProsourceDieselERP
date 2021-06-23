@@ -981,3 +981,22 @@ word-break:break-all;}
 #exportdata_paginate, #exportusersdata_paginate {
     float: right;
 }
+button#btnGeneratePassword {
+    float: right;
+    border: 1px solid #ff4100;
+    padding: 3px 10px;
+    display: inline-block;
+    border-radius: 4px;
+    box-shadow: 0px 0px 4px #4a4f55;
+    -webkit-box-shadow: 0px 0px 4px #4a4f55;
+    color: #4a4f55;
+    font-size: 12px;
+    transition: 0.5s ease all;
+    background-color: rgba(0,0,0,0);
+}
+
+    button#btnGeneratePassword:hover {
+        color: #fff;
+        background-color: #ff4100;
+        transition: 0.5s ease all;
+    }

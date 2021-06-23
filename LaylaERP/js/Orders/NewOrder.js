@@ -39,6 +39,7 @@ $(document).ready(function () {
         else if ($("#ddlPaymentMethod").val() == "podium") { $("#txtPPEmail").addClass('hidden'); }
         else { $("#txtPPEmail").addClass('hidden'); }
     });
+    $("#billModal").on("click", "#btnNewOrder", function (t) { t.preventDefault(); window.location.href = window.location.href; });
 });
 ///Bind States of Country
 function BindStateCounty(ctr, obj) {
@@ -94,7 +95,7 @@ function CustomerAddress() {
                     else if (data[i].meta_key == 'shipping_state') { $('#ddlshipstate').val(data[i].meta_value.trim()).trigger('change'); }
                 }
             },
-            error: function (XMLHttpRequest, textStatus, errorThrown) { $('.billinfo').prop("disabled", true); swal('Alert!', errorThrown, "error"); },
+            error: function (XMLHttpRequest, textStatus, errorThrown) { $('.billinfo').prop("disabled", true); alert(errorThrown); },
             complete: function () { $('.billinfo').prop("disabled", false); },
             async: false
         });
@@ -486,7 +487,7 @@ function bindItemListDataTable(data) {
         //$('.number').numeric({ min: 2, allowMinus: false, allowThouSep: false, maxDecimalPlaces: 2 });
         // Bind calcLineAmount function to each textbox and send parent TR
         //$("#divAddItemFinal").find(".rowCalulate").blur(function () { calcRowAmount(this, $(this).parents('tr')[0]); });
-        $("#divAddItemFinal").find(".rowCalulate").change(function () { calculateDiscountAcount();});
+        $("#divAddItemFinal").find(".rowCalulate").change(function () { calculateDiscountAcount(); });
     }
     else {
         layoutHtml += '<table id="tblAddItemFinal" class="table table-striped table-bordered table-condensed table-hover total_data imagetable table-margin-bottom">';
@@ -751,12 +752,15 @@ function AcceptPayment() {
 
 ///Accept Podium Payment
 function PodiumPayment() {
+    var oid = parseInt($('#hfOrderNo').val()) || 0;
+    var order_total = parseFloat($('#orderTotal').text()) || 0.00;
+    var order_phone = $('#txtbillphone').val();
     var opt = { clientId: '51eed2ee1dbdced0d6e17548dde7e8a8', clientSecret: '80b1f585430df45f5a71e7a1a866c54dd2329856ced8503f55deee5313a20caf' };
     $.ajax({
         type: "POST", url: 'https://api.podium.com/api/session', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
         success: function (result) {
-            //console.log(result.token);
-            var optinv = { employeeName: 'ABC', firstName: 'David', lastName: 'Massey', invoiceAmount: 0.00, invoiceDescription: 'Layla #00001', locationId: '155425', customer_email: 'noreply@podium.com', phone: '0000000000' };
+            var optinv = { employeeName: 'Layla', firstName: $('#txtbillfirstname').val(), lastName: $('#txtbilllastname').val(), invoiceAmount: order_total, invoiceDescription: 'Layla #' + oid, invoiceId: oid, locationId: '155425', customer_email: 'noreply@podium.com', phone: order_phone };
+            console.log(optinv);
             $.ajax({
                 type: "POST", url: 'https://api.podium.com/api/v1/webhook/3e23125f-cf42-4348-ace4-f38f759de0c2', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(optinv),
                 beforeSend: function (xhr) { xhr.setRequestHeader("Authorization", result.token); },
@@ -778,7 +782,9 @@ function updatePayment(taskUid) {
         type: "POST", url: '/Orders/UpdatePaymentDetail', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
         success: function (result) {
             if (result.status == true) {
-                $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true); setTimeout(function () { swal('Alert!', result.message, "success"); }, 50);
+                $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true);
+                //setTimeout(function () { swal('Alert!', result.message, "success"); }, 50);
+                setTimeout(function () { successModal('podium'); }, 50);
             }
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
@@ -905,7 +911,8 @@ function SendPaypalInvoice(access_token, sendURL) {
         success: function (senddata) {
             console.log(senddata);
             $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true);
-            setTimeout(function () { swal('Order received!', 'Thank you. Your invoice has been send on your email for payment.', "success").then((result) => { window.location.href = window.location.href; }); }, 50);
+            //setTimeout(function () { swal('Order received!', 'Thank you. Your invoice has been send on your email for payment.', "success").then((result) => { window.location.href = window.location.href; }); }, 50);
+            setTimeout(function () { successModal('PayPal'); }, 50);
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
             $('#ddlPaymentMethod').prop("disabled", true); $('#btnPlaceOrder').addClass('hidden'); $('#btnResendInv').removeClass('hidden');
@@ -914,4 +921,68 @@ function SendPaypalInvoice(access_token, sendURL) {
         complete: function () { $('#btnPlaceOrder').prop("disabled", false); },
         async: false
     });
+}
+
+///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Success modal ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+function successModal(paymode) {
+    var myHtml = '';
+    //header
+    myHtml += '<div class="modal-dialog modal-lg">';
+    myHtml += '<div class="modal-content">';
+    myHtml += '<div class="modal-body no-padding" >';
+
+    myHtml += '<div  class="order-detail-page">';
+    myHtml += '<h1  class="thankyou-order-received">';
+    myHtml += '<strong  class="thankpage-logo"><a  href="/"><img alt="Layla Logo" src="https://quickfix16.com/wp-content/themes/layla-white/images/logo.png"></a></strong>';
+    myHtml += '<span >Thank you.</span> Your order has been received.';
+    myHtml += '</h1>';
+    myHtml += '<div  class="thankyou-for-your-order">';
+
+    myHtml += '<div  class="order-detail-box">';
+    myHtml += '<ul  class=" order_details order-detail-ul">';
+    myHtml += '<li> Order number: <strong >' + $('#hfOrderNo').val() + '</strong></li><li> Date: <strong >' + $('#txtLogDate').val() + '</strong></li><li> Total:<strong>$' + $('#orderTotal').text() + '</strong></li><li> Payment Method: <strong >' + paymode + '</strong></li>';
+    myHtml += '</ul>';
+    myHtml += '</div>';
+
+    myHtml += '<div  class="container">';
+    myHtml += '<section  class="order-details">';
+    myHtml += '<h2>Order details</h2>';
+    myHtml += '<table id="tblorder_details" class="shop_table order_details">';
+    myHtml += '<thead><tr><th class=" product-name">Product</th><th class="product-total">Total</th></tr></thead>';
+    myHtml += '<tbody></tbody>';
+    myHtml += '<tfoot>';
+    myHtml += '<tr><th  scope="row">Subtotal:</th><td ><span  class=" amount">$' + $('#SubTotal').text() + '</span></td></tr>';
+    myHtml += '<tr><th  scope="row">Discount:</th><td >-<span  class=" amount">$' + $('#discountTotal').text() + '</span></td></tr>';
+    myHtml += '<tr><th  scope="row">Shipping:</th><td >' + $('#shippingTotal').text() + '</td></tr>';
+    myHtml += '<tr ><th  scope="row">Tax:</th><td >$' + $('#salesTaxTotal').text() + '</td></tr>';
+    myHtml += '<tr ><th  scope="row">State Recycling Fee:</th><td >$' + $('#stateRecyclingFeeTotal').text() + '</td></tr>';
+    myHtml += '<tr ><th  scope="row">Total:</th><td ><span  class=" amount">$' + $('#orderTotal').text() + '</span></td></tr>';
+    myHtml += '</tfoot>';
+
+    myHtml += '</table>';
+    myHtml += '</section>';
+    myHtml += '</div>';
+
+    myHtml += '</div>';
+    myHtml += '</div >';
+
+    myHtml += '</div>';
+
+    myHtml += '<div class="modal-footer">';
+    myHtml += '<button type="button" class="btn btn-primary" id="btnNewOrder">OK</button>';
+    myHtml += '</div>';
+
+    myHtml += '</div>';
+    myHtml += '</div>';
+
+    $("#billModal").empty().html(myHtml);
+    myHtml = '';
+    $('#tblAddItemFinal > tbody  > tr').each(function (index, tr) {
+        var qty = parseFloat($(this).find("[name=txt_ItemQty]").val()) || 0.00;
+        var grossAmount = parseFloat($(this).find(".TotalAmount").data('amount')) || 0.00;
+        myHtml += '<tr class="order_item"><td class="product-name"><span>' + $(this).data('pname') + '</span><strong class="product-quantity">× ' + qty + '</strong></td><td class="product-total"><span class="amount">$' + grossAmount + '</span></td></tr>';
+    });
+    $('#tblorder_details tbody').append(myHtml);
+
+    $("#billModal").modal({ backdrop: 'static' });
 }

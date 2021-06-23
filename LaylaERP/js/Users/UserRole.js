@@ -1,4 +1,5 @@
-﻿function GetRoles() {
+﻿$("#loader").hide();
+function GetRoles() {
     $.get('GetRoles', function (data) {
         var items = "";
         items += "<option value='' disabled selected>Please select</option>";
@@ -8,7 +9,7 @@
         })
         $('#userrole').bind(items);
     })
-    //main_submenu_tick();
+    ischecked();
 };
 //bind grid
 function RoleGrid() {
@@ -31,12 +32,6 @@ function RoleGrid() {
                     { data: 'menu_id', title: 'Menu ID', sWidth: "8%" },
                     { data: 'menu_name', title: 'Menu Name', sWidth: "14%" },
                     { data: 'menu_url', title: 'Menu URL', sWidth: "14%" },
-                    //{
-                    //    'data': 'id', sWidth: "8%",
-                    //    'render': function (id, type, full, meta) {
-                    //        return '<a href="../Customer/NewUser/' + id + '"><i class="glyphicon glyphicon-pencil"></i></a>'
-                    //    }
-                    //}
                 ]
             });
         },
@@ -72,7 +67,6 @@ function Singlecheck() {
 $('#btnApprove').click(function () {
     debugger
     var id = "";
-   
     $("input:checkbox[name=CheckSingle]:checked").each(function () {
         id += $(this).val() + ",";
     });
@@ -89,6 +83,9 @@ function ChangePermission(id) {
         contentType: "application/json; charset=utf-8",
         data: JSON.stringify(obj),
         dataType: "json",
+        beforeSend: function () {
+            $("#loader").show();
+        },
         success: function (data) {
             if (data.status == true) {
                 swal('Alert!', data.message, 'success');
@@ -97,83 +94,65 @@ function ChangePermission(id) {
                 swal('Alert!', data.message, 'error')
             }
         },
+        complete: function () {
+            $("#loader").hide();
+        },
         error: function (error) {
             swal('Error!', 'something went wrong', 'error');
         },
     })
 }
 
- function main_submenu_tick() {
+$("#userrole").change(function () {
+    ischecked();
+});
 
-        $("#create_user").on('change', function () {
-            if ($(this).is(":checked")) {
-                $("#User_Mnu").prop('checked', true);
-                $("#User_Classification").prop('checked', true);
+function ischecked() {
+    debugger
+    var User_Type = { User_Type: $("#userrole :selected").text() };
+    $("#user_type").val($("#userrole :selected").text());
+    $.ajax({
+        url: '/Users/GetAssignRole',
+        type: 'POST',
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        data: JSON.stringify(User_Type),
+        success: function (data) {
+            var obj = JSON.parse(data);
+            $('#dtdata tr:has(td)').find('input[type="checkbox"]').prop('checked', false);
+            for (i = 0; i < obj.length; i++) {
+                $('#dtdata tr:has(td)').find('input[type="checkbox"][value="' + obj[i].erpmenu_id + '"]').prop('checked', true);
             }
-            else {
-                $("#User_Mnu").prop('checked', false);
-                $("#User_Classification").prop('checked', false);
-            }
+        },
+        error: function (responce) {
+            console.log(responce)
+        }
+    });
+}
 
-        });
-
-        $("#orders_mnu").on('change', function () {
-            if ($(this).is(":checked")) {
-                $("#add_new_orders").prop('checked', true);
-                $("#show_update_orders").prop('checked', true);
-            }
-            else {
-                $("#add_new_orders").prop('checked', false);
-                $("#show_update_orders").prop('checked', false);
-            }
-        });
-
-        $("#User_Classification").on('change', function () {
-            if ($(this).is(":checked")) {
-                $("#create_user").prop('checked', true);
-            }
-            else if ($('#User_Mnu').is(":checked")) {
-                $("#create_user").prop('checked', true);
-            }
-            else {
-                $("#create_user").prop('checked', false);
-            }
-        });
-
-        $("#User_Mnu").on('change', function () {
-            if ($(this).is(":checked")) {
-                $("#create_user").prop('checked', true);
-            }
-            else if ($('#User_Classification').is(":checked")) {
-                $("#create_user").prop('checked', true);
-            }
-            else {
-                $("#create_user").prop('checked', false);
-            }
-        });
-
-        $("#add_new_orders").on('change', function () {
-            if ($(this).is(":checked")) {
-                $("#orders_mnu").prop('checked', true);
-            }
-            else if ($('#show_update_orders').is(":checked")) {
-                $("#orders_mnu").prop('checked', true);
-            }
-            else {
-                $("#orders_mnu").prop('checked', false);
-            }
-        });
-
-        $("#show_update_orders").on('change', function () {
-            if ($(this).is(":checked")) {
-                $("#orders_mnu").prop('checked', true);
-            }
-            else if ($('#add_new_orders').is(":checked")) {
-                $("#orders_mnu").prop('checked', true);
-            }
-            else {
-                $("#orders_mnu").prop('checked', false);
-            }
-        });
+//add new role
+$('#btnSaveRole').click(function () {
+    var role = $('#txtRoleName').val();
+    if (role == "") {
+        swal("alert", "Please enter role name", "error").then(function () { swal.close(); $('#txtRoleName').focus(); })
     }
+    else {
+        var obj = { User_Type: role }
+        $.ajax({
+            url: '/Users/NewRole/', dataType: 'json', type: 'Post',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(obj),
+            dataType: "json",
+            success: function (data) {
+                $("#roleModal .close").click();
+                swal("alert", data.message, "success");
+                GetRoles();
+
+            },
+            error: function () {
+                swal("alert", "something went wrong", "error");
+            }
+        })
+    }
+});
 

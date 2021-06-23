@@ -11,6 +11,7 @@ using LaylaERP.BAL;
 using System.Dynamic;
 using Newtonsoft.Json;
 using System.Text;
+using LaylaERP.UTILITIES;
 
 namespace LaylaERP.Controllers
 {
@@ -21,6 +22,7 @@ namespace LaylaERP.Controllers
         {
 
             //RoleCounter();
+            ViewBag.user_role = CommanUtilities.Provider.GetCurrent().UserType;
             return View();
         }
 

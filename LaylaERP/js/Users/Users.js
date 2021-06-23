@@ -25,7 +25,26 @@ function GetUsersCount() {
         async: false
     });
 }
-function Datagrid(role_type) {
+function Datagrid(role_type, type) {
+   // var type = "Accounting";
+    
+    var columnDefs = [        
+    ]
+
+    if (type == "Administrator") {
+        columnDefs = [
+
+            {
+
+                "targets": [5],
+                "visible": false
+            },
+            {
+                "targets": [6],
+                "visible": false
+            },      
+        ]
+    }
     var id;
     $('#dtdata').DataTable({
         destroy: true,
@@ -62,7 +81,8 @@ function Datagrid(role_type) {
                 }
             }
         ],
-        columnDefs: [{ orderable: false, targets: [0] }],
+       
+        columnDefs:  columnDefs,
         "order": [[1, 'desc']],
         initComplete: function () {
             var column = this.api().column(4);
@@ -192,7 +212,7 @@ function DeleteUsers(id) {
         dataType: "json",
         success: function (data) {
             if (data.status == true) {
-                swal('Alert!', data.message, 'success').then((result) => { GetUsersCount(); var role_type = $('#hfStatusType').val(); Datagrid(role_type); });
+                swal('Alert!', data.message, 'success').then((result) => { GetUsersCount(); var role_type = $('#hfStatusType').val(); Datagrid(role_type, $("#hfroletype").val()); });
             }
             else {
                 swal('Alert!', data.message, 'error')
@@ -213,7 +233,7 @@ function ActiveUsers(id) {
         dataType: "json",
         success: function (data) {
             if (data.status == true) {
-                swal('Alert!', data.message, 'success').then((result) => { GetUsersCount(); var role_type = $('#hfStatusType').val(); Datagrid(role_type); });
+                swal('Alert!', data.message, 'success').then((result) => { GetUsersCount(); var role_type = $('#hfStatusType').val(); Datagrid(role_type, $("#hfroletype").val()); });
             }
             else {
                 swal('Alert!', data.message, 'error')
@@ -234,7 +254,7 @@ function UpdateCustomerStatus() {
         dataType: "json",
         success: function (data) {
             if (data.status == true) {
-                swal('Alert!', data.message, 'success').then((result) => { GetUsersCount(); var role_type = $('#hfStatusType').val(); Datagrid(role_type); });
+                swal('Alert!', data.message, 'success').then((result) => { GetUsersCount(); var role_type = $('#hfStatusType').val(); Datagrid(role_type, $("#hfroletype").val()); });
             }
             else {
                 swal('Alert!', data.message, 'error')
@@ -256,7 +276,7 @@ function changeRole(ID) {
         dataType: "json",
         success: function (data) {
             if (data.status == true) {
-                swal('Alert!', data.message, 'success').then((result) => { GetUsersCount(); var role_type = $('#hfStatusType').val(); Datagrid(role_type); });
+                swal('Alert!', data.message, 'success').then((result) => { GetUsersCount(); var role_type = $('#hfStatusType').val(); Datagrid(role_type, $("#hfroletype").val()); });
             }
             else {
                 swal('Alert!', data.message, 'error')
@@ -281,7 +301,7 @@ function Grantrole(ID) {
         dataType: "json",
         success: function (data) {
             if (data.status == true) {
-                swal('Alert!', data.message, 'success').then((result) => { GetUsersCount(); var role_type = $('#hfStatusType').val(); Datagrid(role_type); });
+                swal('Alert!', data.message, 'success').then((result) => { GetUsersCount(); var role_type = $('#hfStatusType').val(); Datagrid(role_type, $("#hfroletype").val()); });
             }
             else {
                 swal('Alert!', data.message, 'error');
@@ -305,7 +325,7 @@ function Revokerole(ID) {
         dataType: "json",
         success: function (data) {
             if (data.status == true) {
-                swal('Alert!', data.message, 'success').then((result) => { GetUsersCount(); var role_type = $('#hfStatusType').val(); Datagrid(role_type);});
+                swal('Alert!', data.message, 'success').then((result) => { GetUsersCount(); var role_type = $('#hfStatusType').val(); Datagrid(role_type, $("#hfroletype").val());});
             }
             else {
                 swal('Alert!', data.message, 'error');

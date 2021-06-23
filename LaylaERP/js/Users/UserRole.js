@@ -8,7 +8,7 @@
         })
         $('#userrole').bind(items);
     })
-    //main_submenu_tick();
+    ischecked();
 };
 //bind grid
 function RoleGrid() {
@@ -103,77 +103,31 @@ function ChangePermission(id) {
     })
 }
 
- function main_submenu_tick() {
+$("#userrole").change(function () {
+    ischecked();
+});
 
-        $("#create_user").on('change', function () {
-            if ($(this).is(":checked")) {
-                $("#User_Mnu").prop('checked', true);
-                $("#User_Classification").prop('checked', true);
+function ischecked() {
+    debugger
+    var User_Type = { User_Type: $("#userrole :selected").text() };
+    $("#user_type").val($("#userrole :selected").text());
+    $.ajax({
+        url: '/Users/GetAssignRole',
+        type: 'POST',
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        data: JSON.stringify(User_Type),
+        success: function (data) {
+            var obj = JSON.parse(data);
+            console.log(data);
+            $('#dtdata tr:has(td)').find('input[type="checkbox"]').prop('checked', false);
+            for (i = 0; i < obj.length; i++) {
+                $('#dtdata tr:has(td)').find('input[type="checkbox"][value="' + obj[i].erpmenu_id + '"]').prop('checked', true);
             }
-            else {
-                $("#User_Mnu").prop('checked', false);
-                $("#User_Classification").prop('checked', false);
-            }
-
-        });
-
-        $("#orders_mnu").on('change', function () {
-            if ($(this).is(":checked")) {
-                $("#add_new_orders").prop('checked', true);
-                $("#show_update_orders").prop('checked', true);
-            }
-            else {
-                $("#add_new_orders").prop('checked', false);
-                $("#show_update_orders").prop('checked', false);
-            }
-        });
-
-        $("#User_Classification").on('change', function () {
-            if ($(this).is(":checked")) {
-                $("#create_user").prop('checked', true);
-            }
-            else if ($('#User_Mnu').is(":checked")) {
-                $("#create_user").prop('checked', true);
-            }
-            else {
-                $("#create_user").prop('checked', false);
-            }
-        });
-
-        $("#User_Mnu").on('change', function () {
-            if ($(this).is(":checked")) {
-                $("#create_user").prop('checked', true);
-            }
-            else if ($('#User_Classification').is(":checked")) {
-                $("#create_user").prop('checked', true);
-            }
-            else {
-                $("#create_user").prop('checked', false);
-            }
-        });
-
-        $("#add_new_orders").on('change', function () {
-            if ($(this).is(":checked")) {
-                $("#orders_mnu").prop('checked', true);
-            }
-            else if ($('#show_update_orders').is(":checked")) {
-                $("#orders_mnu").prop('checked', true);
-            }
-            else {
-                $("#orders_mnu").prop('checked', false);
-            }
-        });
-
-        $("#show_update_orders").on('change', function () {
-            if ($(this).is(":checked")) {
-                $("#orders_mnu").prop('checked', true);
-            }
-            else if ($('#add_new_orders').is(":checked")) {
-                $("#orders_mnu").prop('checked', true);
-            }
-            else {
-                $("#orders_mnu").prop('checked', false);
-            }
-        });
-    }
+        },
+        error: function (responce) {
+            console.log(responce)
+        }
+    });
+}
 

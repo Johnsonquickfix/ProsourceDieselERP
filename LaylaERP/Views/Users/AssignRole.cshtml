@@ -176,35 +176,7 @@
         //GetMenues(); 
     })
 
-
-    $("#userrole").change(function () {
-        debugger
-        var isChecked = $('#CheckSingle').prop("checked");
-        $('#dtdata tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
-        var User_Type = { User_Type: $("#userrole :selected").text() };
-        $("#user_type").val($("#userrole :selected").text());
-        $.ajax({
-            url: '/Users/GetAssignRole',
-            type: 'POST',
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            data: JSON.stringify(User_Type),
-            success: function (data) {
-                var obj = JSON.parse(data);
-                console.log(data);
-                for (i = 0; i < obj.length; i++) {
-                    if (obj[i].erpmenu_id != null) {
-                        ($('#CheckSingle').prop("checked") == true);
-                    }
-                    console.log(obj[i].erpmenu_id);
-                }
-              
-            },
-            error: function (responce) {
-                console.log(responce)
-            }
-        });
-    });
+ 
 
 
     $("#saveBtn").click(function () {

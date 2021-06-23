@@ -188,12 +188,10 @@ namespace LaylaERP.Controllers
             string result = string.Empty;
             try
             {
-
                 DataTable dt = BAL.Users.GetMenuByUser(model.User_Type);
                 result = JsonConvert.SerializeObject(dt);
-
             }
-            catch { }
+            catch(Exception ex) { throw ex; }
             return Json(result, 0);
         }
 

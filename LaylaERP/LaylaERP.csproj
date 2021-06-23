@@ -158,6 +158,7 @@
     <Compile Include="BAL\CustomerRepository.cs" />
     <Compile Include="BAL\DashboardRepository.cs" />
     <Compile Include="BAL\ExportRepository.cs" />
+    <Compile Include="BAL\FeeNTaxRepository.cs" />
     <Compile Include="BAL\OrderRepository.cs" />
     <Compile Include="BAL\SettingRepository.cs" />
     <Compile Include="BAL\UserProfileRepository.cs" />
@@ -181,6 +182,7 @@
     <Compile Include="Models\clsUserDetails.cs" />
     <Compile Include="Models\CustomerModel.cs" />
     <Compile Include="Models\Export_Details.cs" />
+    <Compile Include="Models\FeeNTax.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\OrderModel.cs" />
     <Compile Include="Models\SearchModel.cs" />
@@ -488,6 +490,7 @@
     <Content Include="js\app.js" />
     <Content Include="js\common.js" />
     <Content Include="js\Customer\Customer.js" />
+    <Content Include="js\FeeNTax\FeeNTax.js" />
     <Content Include="js\Orders\NewOrder.js" />
     <Content Include="js\Orders\OrderHistory.js" />
     <Content Include="js\Users\UserLogin.js" />

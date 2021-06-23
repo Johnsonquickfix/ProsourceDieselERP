@@ -337,8 +337,36 @@ namespace LaylaERP.Controllers
             myModel.address = dt.Rows[0]["address"];
             myModel.user_login = dt.Rows[0]["user_login"];
             string role = dt.Rows[0]["user_role"].ToString();
-            role = role.Replace("_", " ");           
-            myModel.user_role = role;      
+            if (role == "accounting")
+                role = "Accounting";
+            else if (role == "administrator")
+                role = "Administrator";
+            else if (role == "author")
+                role = "Author";
+            else if (role == "contributor")
+                role = "Contributor";
+            else if (role == "editor")
+                role = "Editor";
+            else if (role == "modsquad")
+                role = "Mod Squad";
+            else if (role == "wpseo_editor")
+                role = "SEO Editor";
+            else if (role == "seo_manager")
+                role = "SEO Manager";
+            else if (role == "shop_manager")
+                role = "Shop Manager";
+            else if (role == "shop_manager")
+                role = "Shop Manager";
+            else if (role == "subscriber")
+                role = "Subscriber";
+            else if (role == "supplychainmanager")
+                role = "Supply Chain Manager";
+            else
+                role = role;
+
+
+            // role = role.Replace("_", " ");           
+            myModel.user_role = role;
             myModel.phone = dt.Rows[0]["phone"];
             myModel.State = dt.Rows[0]["State"];
             myModel.City = dt.Rows[0]["City"];

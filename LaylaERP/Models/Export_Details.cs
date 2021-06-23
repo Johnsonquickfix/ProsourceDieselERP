@@ -12,7 +12,7 @@ namespace LaylaERP.Models
 
         public int order_item_id
         {
-            get; set;
+             get; set;
         }
         public string orde_item_name
         {

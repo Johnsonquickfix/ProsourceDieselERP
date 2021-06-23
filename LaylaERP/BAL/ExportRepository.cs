@@ -18,7 +18,7 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string sqlquery = string.Empty;
+                 string sqlquery = string.Empty;
                 if (from_dateusers !="" && to_dateusers !="")
                 {
                     sqlquery = "select ID, User_Image, user_login, user_status, DATE(wp_users.user_registered) as created_date, if(user_status=0,'Active','InActive') as status,user_email,user_pass,meta_value from wp_users, wp_usermeta WHERE DATE(wp_users.user_registered)>='"+from_dateusers+ "' and DATE(wp_users.user_registered)<='" + to_dateusers + "' and wp_usermeta.meta_key='wp_capabilities' And wp_users.ID=wp_usermeta.user_id And wp_users.ID IN (SELECT user_id FROM wp_usermeta WHERE meta_key = 'wp_capabilities' AND meta_value NOT LIKE '%customer%') ORDER BY ID DESC";

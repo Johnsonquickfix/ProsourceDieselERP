@@ -14,7 +14,7 @@ using System.Security.Cryptography;
 using System.Text;
 
 namespace LaylaERP.BAL
-{ 
+{
     public class UsersRepositry
     {
         private static string itoa64 = "./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
@@ -23,10 +23,10 @@ namespace LaylaERP.BAL
         //string result = string.Empty;
         public static void ShowUsersDetails(string rolee)
         {
-            
+
             try
             {
-                if(rolee==null || rolee == "")
+                if (rolee == null || rolee == "")
                 {
                     rolee = "%";
                 }
@@ -43,17 +43,11 @@ namespace LaylaERP.BAL
                             + " CONCAT(umadd.meta_value, ' ',COALESCE(umadd2.meta_value,''), ' ' ,umacity.meta_value, ' ' , umastate.meta_value, ' ',umapostalcode.meta_value )  address"
                             + " from wp_users u"
                             + " inner join wp_usermeta um on um.user_id = u.id and um.meta_key = 'wp_capabilities' and meta_value NOT LIKE '%customer%'"
-                            + " LEFT OUTER JOIN wp_usermeta umph on umph.meta_key='billing_phone' And umph.user_id = u.ID"
-                            + " LEFT OUTER JOIN wp_usermeta umadd on umadd.meta_key='billing_address_1' And umadd.user_id = u.ID"
-                            + " LEFT OUTER JOIN wp_usermeta umadd2 on umadd2.meta_key='billing_address_2' And umadd2.user_id = u.ID"
-                            + " LEFT OUTER JOIN wp_usermeta umacity on umacity.meta_key='billing_city' And umacity.user_id = u.ID"
-                            + " LEFT OUTER JOIN wp_usermeta umastate on umastate.meta_key='billing_state' And umastate.user_id = u.ID"
-                            + " LEFT OUTER JOIN wp_usermeta umapostalcode on umapostalcode.meta_key='billing_postcode' And umapostalcode.user_id = u.ID"
-                            + " WHERE um.meta_value like '%" + rolee+ "%'  ORDER BY ID ASC";
+                            + " WHERE um.meta_value like '%"+rolee+"%' ORDER BY ID ASC";
 
                 ds1 = DAL.SQLHelper.ExecuteDataSet(sqlquery);
                 string result = string.Empty;
-                
+
                 for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
                 {
                     clsUserDetails uobj = new clsUserDetails();
@@ -61,44 +55,61 @@ namespace LaylaERP.BAL
 
                     if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["meta_value"].ToString()) && ds1.Tables[0].Rows[i]["meta_value"].ToString().Length > 5 && ds1.Tables[0].Rows[i]["meta_value"].ToString().Substring(0, 2) == "a:")
                     {
-                        
+
                         if (ds1.Tables[0].Rows[i]["meta_value"].ToString().Trim() == "a:0:{}")
                             ds1.Tables[0].Rows[i]["meta_value"] = "Unknown";
                         //result = ds1.Tables[0].Rows[i]["meta_value"].ToString();
 
                         //else
                         //    ds1.Tables[0].Rows[i]["meta_value"] = User_Role_Name(ds1.Tables[0].Rows[i]["meta_value"].ToString());
-                        
+
                     }
                     else
                     {
-                            ds1.Tables[0].Rows[i]["meta_value"] = ds1.Tables[0].Rows[i]["meta_value"];
+                        ds1.Tables[0].Rows[i]["meta_value"] = ds1.Tables[0].Rows[i]["meta_value"];
                     }
 
                     uobj.ID = Convert.ToInt32(ds1.Tables[0].Rows[i]["ID"].ToString());
                     uobj.user_login = ds1.Tables[0].Rows[i]["user_login"].ToString();
-                    result = ds1.Tables[0].Rows[i]["meta_value"].ToString().TrimEnd(','); 
+                    result = ds1.Tables[0].Rows[i]["meta_value"].ToString().TrimEnd(',');
 
-                    if (result == "Mod_Squad") {
+                    if (result == "Mod_Squad")
+                    {
                         result = "Mod Squad";
-                    } else if (result == "SEO_Editor") {
+                    }
+                    else if (result == "SEO_Editor")
+                    {
                         result = "SEO Editor";
-                    } else if (result == "SEO_Manager") {
+                    }
+                    else if (result == "SEO_Manager")
+                    {
                         result = "SEO Manager";
-                    } else if (result == "Shop_Manager") {
+                    }
+                    else if (result == "Shop_Manager")
+                    {
                         result = "Shop Manager";
-                    } else if (result == "Supply_Chain_Manager") {
+                    }
+                    else if (result == "Supply_Chain_Manager")
+                    {
                         result = "Supply Chain Manager";
-                    } else if (result == "administrator") {
+                    }
+                    else if (result == "administrator")
+                    {
                         result = "Administrator";
-                    } else if (result == "author") {
+                    }
+                    else if (result == "author")
+                    {
                         result = "Author";
-                    } else if (result == "editor") {
+                    }
+                    else if (result == "editor")
+                    {
                         result = "Editor";
-                    } else {                       
+                    }
+                    else
+                    {
                         uobj.my = result;
-                    } 
-       
+                    }
+
                     uobj.user_email = ds1.Tables[0].Rows[i]["user_email"].ToString();
                    
                     if ((ds1.Tables[0].Rows[i]["user_status"].ToString() == "0"))
@@ -109,14 +120,14 @@ namespace LaylaERP.BAL
                     //Code For Role End
                     userslist.Add(uobj);
                 }
-                
+
             }
             catch (Exception e)
             {
 
             }
-            
-            
+
+
         }
 
         public static DataTable GetDetails(string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
@@ -221,7 +232,7 @@ namespace LaylaERP.BAL
             return count;
         }
 
-        public static int RoleCount(int a,int b)
+        public static int RoleCount(int a, int b)
         {
             int count = 0;
             string strQuery = "select count(meta_value) from wp_users as ur inner join wp_usermeta um on ur.id = um.user_id and um.meta_key='wp_capabilities' and meta_value not like '%customer%'";
@@ -343,7 +354,7 @@ namespace LaylaERP.BAL
         public static int changeRoleStatus(CustomerModel model)
         {
             try
-            { 
+            {
                 string strsql = "update wp_usermeta set meta_value=@meta_value where meta_Key = 'wp_capabilities' and user_id in(" + model.strVal + ")";
                 MySqlParameter[] para =
                 {
@@ -382,27 +393,27 @@ namespace LaylaERP.BAL
                 int count = 0;
                 string strsql = String.Empty;
                 int result = 0;
-                string strQuery = "select COUNT(meta_value) from wp_usermeta where user_id in ("+ model.strVal + ") and meta_Key = 'wp_capabilities' and meta_value like '%" + model.user_status + ',' + "%'";
+                string strQuery = "select COUNT(meta_value) from wp_usermeta where user_id in (" + model.strVal + ") and meta_Key = 'wp_capabilities' and meta_value like '%" + model.user_status + ',' + "%'";
                 count = Convert.ToInt32(SQLHelper.ExecuteScalar(strQuery).ToString());
                 if (count > 0)
                 {
-                     strsql = "update wp_usermeta set meta_value= REPLACE(meta_value,@meta_value,'') where meta_Key = 'wp_capabilities' and user_id in(" + model.strVal + ")";
+                    strsql = "update wp_usermeta set meta_value= REPLACE(meta_value,@meta_value,'') where meta_Key = 'wp_capabilities' and user_id in(" + model.strVal + ")";
                     MySqlParameter[] para =
                     {
                     new MySqlParameter("@meta_value",  model.user_status+',')
                 };
-                     result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                    result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
                 }
                 else
                 {
-                     strsql = "update wp_usermeta set meta_value= REPLACE(meta_value,@meta_value,'') where meta_Key = 'wp_capabilities' and user_id in(" + model.strVal + ")";
+                    strsql = "update wp_usermeta set meta_value= REPLACE(meta_value,@meta_value,'') where meta_Key = 'wp_capabilities' and user_id in(" + model.strVal + ")";
                     MySqlParameter[] para =
                     {
                     new MySqlParameter("@meta_value", ',' + model.user_status)
                     };
-                     result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                    result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
                 }
-              
+
                 return result;
             }
             catch (Exception Ex)
@@ -495,13 +506,13 @@ namespace LaylaERP.BAL
             try
             {
 
-                 
+
                 string strsql = "update wp_users set user_login=@user_login,user_nicename=@user_nicename,user_email=@user_email,display_name=@display_name,user_image=@user_image where ID in(" + model.ID + ")";
                 MySqlParameter[] para =
                 {
-                    new MySqlParameter("@user_login", model.user_nicename),                     
+                    new MySqlParameter("@user_login", model.user_nicename),
                     new MySqlParameter("@user_nicename", model.user_nicename),
-                    new MySqlParameter("@user_email", model.user_email),                     
+                    new MySqlParameter("@user_email", model.user_email),
                     new MySqlParameter("@display_name", model.user_nicename),
                     new MySqlParameter("@user_image", model.User_Image)
                 };
@@ -545,7 +556,7 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@meta_value", varFieldsValue),
                 };
                 SQLHelper.ExecuteNonQuery(strsql, para);
-             
+
             }
             catch (Exception Ex)
             {
@@ -577,7 +588,7 @@ namespace LaylaERP.BAL
         {
             try
             {
-                 
+
                 string strsql = "update wp_usermeta set meta_value=@meta_value where user_id=@user_id and meta_key=@meta_key";
                 MySqlParameter[] para =
                 {
@@ -709,6 +720,53 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
+
+        public int ChangePermission(string ID, int role_id)
+        {
+            try
+            {
+                DeletePermission(role_id);
+                int result = 0;
+                string[] values = ID.Split(',');
+
+                for (int i = 0; i <= values.Length-1; i++)
+                {
+                    ID = values[i].ToString();
+                    string strsql = "insert into wp_erprole_rest(role_id,erpmenu_id) values(@role_id,'" + ID + "')";
+                    MySqlParameter[] para =
+                     {
+                    new MySqlParameter("@role_id", role_id)
+                     };
+                     result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                }
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+
+        }
+
+        public int DeletePermission(int role_id)
+        {
+            try
+            {
+                    string strsql = "delete from wp_erprole_rest where role_id=@role_id";
+                    MySqlParameter[] para =
+                     {
+                    new MySqlParameter("@role_id", role_id)
+                     };
+                  int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+
+        }
+
 
     }
 }

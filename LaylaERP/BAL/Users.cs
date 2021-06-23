@@ -11,7 +11,7 @@
     using System.Web;
     using LaylaERP.Models;
 
-     
+
     public class Users
     {
         private static string itoa64 = "./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
@@ -43,7 +43,20 @@
             DataTable dtr = new DataTable();
             try
             {
-                string strquery = "select id, user_type from wp_user_classification";
+                string strquery = "select id, user_type from wp_user_classification order by id desc";
+                dtr = SQLHelper.ExecuteDataTable(strquery);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dtr;
+        }
+
+        public static DataTable GetMenuNames()
+        {
+            DataTable dtr = new DataTable();
+            try
+            {
+                string strquery = "Select * from wp_erpmenus;";
                 dtr = SQLHelper.ExecuteDataTable(strquery);
             }
             catch (Exception ex)
@@ -108,7 +121,7 @@
             DataTable DT = new DataTable();
             try
             {
-                string strquery = "Select * from wp_user_classification where User_Type="+ strvalue;
+                string strquery = "Select * from wp_user_classification where User_Type=" + strvalue;
                 DT = SQLHelper.ExecuteDataTable(strquery);
             }
             catch (Exception ex)
@@ -135,32 +148,60 @@
             DataTable DT = new DataTable();
             try
             {
-                DT = SQLHelper.ExecuteDataTable("select id,CONCAT(User_Login, ' [ ', user_email, ']') as displayname from wp_users as ur inner join wp_usermeta um on ur.id = um.user_id and um.meta_key='wp_capabilities' and meta_value not like '%customer%' where CONCAT(User_Login, ' [ ', user_email, ']') like '%"+ strSearch + "%' limit 20;");
+                DT = SQLHelper.ExecuteDataTable("select id,CONCAT(User_Login, ' [ ', user_email, ']') as displayname from wp_users as ur inner join wp_usermeta um on ur.id = um.user_id and um.meta_key='wp_capabilities' and meta_value not like '%customer%' where CONCAT(User_Login, ' [ ', user_email, ']') like '%" + strSearch + "%' limit 20;");
             }
             catch (Exception ex)
             { throw ex; }
             return DT;
         }
 
-        public static DataTable GetUserMenuAuth(long UserID)
+        public static DataTable GetUserMenuAuth(string UserType)
         {
             DataTable DT = new DataTable();
             try
             {
-                MySqlParameter[] para = { new MySqlParameter("@UserID", UserID), new MySqlParameter("@flag", "UML") };
-                DT = SQLHelper.ExecuteDataTable("wp_erpmenus_search", para);
+                MySqlParameter[] para =
+                    {
+                    new MySqlParameter("@User_Type", UserType),
+                };
+                DT = SQLHelper.ExecuteDataTable("Select wuc.User_Type,wem.menu_id,wem.menu_code,wem.menu_name,wem.menu_url,wem.menu_icon,wem.parent_id, if(wem.parent_id is null, 0, 1) as  level  from wp_erprole_rest wer left join wp_erpmenus wem on wem.menu_id = wer.erpmenu_id inner join wp_user_classification wuc on wer.role_id = wuc.ID where User_Type = @User_Type;", para);
             }
             catch (Exception ex)
             { throw ex; }
             return DT;
         }
 
+        //public static DataTable GetUserMenuAuth(long UserID)
+        //{
+        //    DataTable DT = new DataTable();
+        //    try
+        //    {
+        //        MySqlParameter[] para = { new MySqlParameter("@UserID", UserID), new MySqlParameter("@flag", "UML") };
+        //        DT = SQLHelper.ExecuteDataTable("wp_erpmenus_search", para);
+        //    }
+        //    catch (Exception ex)
+        //    { throw ex; }
+        //    return DT;
+        //}
+
+        //public static DataTable GetMenuByUser(string strvalue)
+        //{
+        //    DataTable DT = new DataTable();
+        //    try
+        //    {
+        //        string strquery = "Select * from wp_user_classification where User_Type like '%" + strvalue + "%' limit 20;";
+        //        DT = SQLHelper.ExecuteDataTable(strquery);
+        //    }
+        //    catch (Exception ex)
+        //    { throw ex; }
+        //    return DT;
+        //}
         public static DataTable GetMenuByUser(string strvalue)
         {
             DataTable DT = new DataTable();
             try
             {
-                string strquery = "Select * from wp_user_classification where User_Type like '%" + strvalue + "%' limit 20;";
+                string strquery = "Select wuc.user_type, wer.role_id,wer.erpmenu_id,wer.add_,wer.edit_,wer.delete_ from wp_erprole_rest wer left join wp_user_classification wuc on wer.role_ID = wuc.ID and User_Type like '%" + strvalue + "%';";
                 DT = SQLHelper.ExecuteDataTable(strquery);
             }
             catch (Exception ex)
@@ -186,9 +227,9 @@
             int result = 0;
             try
             {
-                
-                StringBuilder strSql = new StringBuilder(string.Format("delete from wp_user_classification where User_Type = '{0}'; ", model.User_Type));                
-                strSql.Append(string.Format("insert into wp_user_classification ( User_Type,User_Mnu,User_Classification,Create_User,Customers,Orders_Mnu,System_Settings,Add_New_Orders,Show_Update_Orders) values ('{0}',{1},{2},{3},{4},{5},{6},{7},{8}) ",  model.User_Type, model.User_Mnu, model.User_Classification, model.Create_User, model.Customers,model.Orders_Mnu,model.System_Settings,model.Add_New_Orders,model.Show_Update_Orders));
+
+                StringBuilder strSql = new StringBuilder(string.Format("delete from wp_user_classification where User_Type = '{0}'; ", model.User_Type));
+                strSql.Append(string.Format("insert into wp_user_classification ( User_Type,User_Mnu,User_Classification,Create_User,Customers,Orders_Mnu,System_Settings,Add_New_Orders,Show_Update_Orders) values ('{0}',{1},{2},{3},{4},{5},{6},{7},{8}) ", model.User_Type, model.User_Mnu, model.User_Classification, model.Create_User, model.Customers, model.Orders_Mnu, model.System_Settings, model.Add_New_Orders, model.Show_Update_Orders));
 
                 /// step 6 : wp_posts
                 //strSql.Append(string.Format(" update wp_posts set post_status = '{0}' ,comment_status = 'closed' where id = {1} ", model.OrderPostStatus.status, model.OrderPostStatus.order_id));
@@ -315,7 +356,7 @@
                 string strSql = "Select * from wp_system_settings;";
                 MySqlParameter[] parameters =
                 {
-                    
+
                 };
                 ds = SQLHelper.ExecuteDataSet(strSql, parameters);
             }

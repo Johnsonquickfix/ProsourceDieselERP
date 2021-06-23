@@ -353,9 +353,10 @@
                     {
                         strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select LAST_INSERT_ID(),'discount_amount',{0} ; ", obj.amount));
                     }
-                    else if (obj.item_type == "tax")
+                    else if (obj.item_type == "fee")
                     {
-                        strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select LAST_INSERT_ID(),'tax_amount',{0} ; ", obj.amount));
+                        strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select LAST_INSERT_ID(),'tax_status','{0}' ; ", "taxable"));
+                        strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select LAST_INSERT_ID(),'line_total',{0} ; ", obj.amount));
                     }
                 }
 
@@ -365,8 +366,8 @@
                     strSql.Append(string.Format(" insert into wp_woocommerce_order_items(order_item_name,order_item_type,order_id) value('{0}-{1}-{2} TAX-1','tax','{3}'); ", obj.tax_rate_country, obj.tax_rate_state, obj.tax_rate_state, model.OrderPostStatus.order_id));
 
                     strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select LAST_INSERT_ID(),'label','{0} Tax' ; ", obj.tax_rate_state));
-                    strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select LAST_INSERT_ID(),'tax_amount',{0} ; ", obj.amount));
-                    strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select LAST_INSERT_ID(),'rate_percent',{0} ; ", obj.tax_rate));
+                    strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select LAST_INSERT_ID(),'tax_amount','{0}' ; ", obj.amount));
+                    strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select LAST_INSERT_ID(),'rate_percent','{0}' ; ", obj.tax_rate));
                 }
 
                 /// step 6 : wp_posts

@@ -1,0 +1,319 @@
+﻿@model dynamic
+@{ ViewBag.Title = "AssignRole";
+    Layout = "~/Views/Shared/_Layout.cshtml"; }
+
+<div class="page-title">
+    <h2 class="page-heading">Role Management</h2>
+</div>
+<div class="userrole_section section_wrapper">
+    <form id="saveForm" name="saveForm" method="post" autocomplete="off">
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h2 class="sm-heading">User Roles</h2>
+                        <div class="form-group form-user-role">
+                            <select id="userrole" class="form-control select2">
+                                <option selected="selected">Select Type</option>
+                            </select>
+                            <button type="button" id="btnAddRole" class="btn btn-danger" data-toggle="modal" data-target="#roleModal">
+                                <i class="fa fa-plus"></i> Add New Role
+                            </button>
+                            @*<button type="button" id="btnRole" class="btn btn-danger" data-target="#exampleModalCenter"><i class="fa fa-plus"></i> Add New Role</button>*@
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="box-body">
+                <div class="row mt-1 mb-35">
+                    <div class="col-sm-12">
+                        <h2 class="sm-heading">Main Menu</h2>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="Create_User" id="create_user">
+                                    <label class="form-check-label" for="create_user">
+                                        User
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="Customers" id="customers">
+                                    <label class="form-check-label" for="customers">
+                                        Customer
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="Orders_Mnu" id="orders_mnu">
+                                    <label class="form-check-label" for="orders_mnu">
+                                        Order(s)
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="System_Settings" id="system_settings">
+                                    <label class="form-check-label" for="system_settings">
+                                        Setting
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-35">
+                    <div class="col-sm-12">
+                        <h2 class="sm-heading">Sub Menu</h2>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="user_mnu" id="User_Mnu">
+                                    <label class="form-check-label" for="User_Mnu">
+                                        Create New
+                                    </label>
+                                </div>
+                                <div class="form-check mt-1">
+                                    <input class="form-check-input" type="checkbox" name="user_classification" id="User_Classification">
+                                    <label class="form-check-label" for="User_Classification">
+                                        Change Password
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="Add_New_Orders" id="add_new_orders">
+                                    <label class="form-check-label" for="add_new_orders">
+                                        Add New Order
+                                    </label>
+                                </div>
+                                <div class="form-check mt-1">
+                                    <input class="form-check-input" type="checkbox" name="Show_Update_Orders" id="show_update_orders">
+                                    <label class="form-check-label" for="show_update_orders">
+                                        View / Edit Order(s)
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="box-footer">
+                <div class="row">
+                    <div class="col-sm-offset-9 col-sm-3">
+                        @*<a href="#" class="btn btn-danger btn-block"><b>Save</b></a>*@
+                        <button type="button" id="saveBtn" class="btn btn-danger "><i class="fa fa-save"></i> Save</button>
+                    </div>
+                </div>
+            </div>
+            <input type="hidden" name="User_Type" id="user_type" />
+            @Html.AntiForgeryToken()
+        </div>
+    </form>
+</div>
+<div class="modal fade" id="roleModal" tabindex="-1" role="dialog" aria-labelledby="roleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="exampleModalLongTitle">Add New Role</h4>
+                @*<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>*@
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="form-group">
+                        <label class="control-label col-md-3 text-right" for="Email">Role Name</label>
+                        <div class="col-md-9">
+                            <input type="text" id="txtRoleName" class="form-control" placeholder="Role Name" />
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" id="btnSaveRole" class="btn btn-danger"><i class="fa fa-save"></i> Save changes</button>
+                </div>
+            </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        GetRoles();
+    })
+    function GetRoles() {
+        $.get('GetRoles', function (data) {
+            $('#userrole').empty();
+            $.each(data, function (index, value) {
+                $('<option>').val(value).text(value).appendTo("#userrole");
+            })
+        })
+        main_submenu_tick();
+    }
+    $("#userrole").change(function () {
+        debugger
+        var User_Type = { User_Type: $("#userrole :selected").text() };
+        //  console.log(usertype);
+        // alert($("#userrole :selected").text());
+        $("#user_type").val($("#userrole :selected").text());
+        $.ajax({
+            url: '/Users/GetAssignRole',
+            type: 'POST',
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            data: JSON.stringify(User_Type),
+            success: function (data) {
+                console.log(data);
+                var obj = JSON.parse(data);
+                //$("#Create_User").prop('checked', true);
+                if (obj[0].Create_User == 1) $("#create_user").prop('checked', true); else $("#create_user").prop('checked', false);
+                if (obj[0].Customers == 1) $("#customers").prop('checked', true); else $("#customers").prop('checked', false);
+                if (obj[0].Orders_Mnu == 1) $("#orders_mnu").prop('checked', true); else $("#orders_mnu").prop('checked', false);
+                if (obj[0].System_Settings == 1) $("#system_settings").prop('checked', true); else $("#system_settings").prop('checked', false);
+                if (obj[0].User_Mnu == 1) $("#User_Mnu").prop('checked', true); else $("#User_Mnu").prop('checked', false);
+                if (obj[0].User_Classification == 1) $("#User_Classification").prop('checked', true); else $("#User_Classification").prop('checked', false);
+                if (obj[0].Add_New_Orders == 1) $("#add_new_orders").prop('checked', true); else $("#add_new_orders").prop('checked', false);
+                if (obj[0].Show_Update_Orders == 1) $("#show_update_orders").prop('checked', true); else $("#show_update_orders").prop('checked', false);
+            },
+            error: function (responce) {
+                console.log(responce)
+            }
+        });
+    });
+
+
+    $("#saveBtn").click(function () {
+        saveData();
+    });
+    function saveData() {
+
+        $("#User_Mnu").val($("#User_Mnu").is(':checked'));
+        $("#User_Classification").val($("#User_Classification").is(':checked'));
+        $("#create_user").val($("#create_user").is(':checked'));
+        $("#customers").val($("#customers").is(':checked'));
+        $("#orders_mnu").val($("#orders_mnu").is(':checked'));
+        $("#system_settings").val($("#system_settings").is(':checked'));
+        $("#add_new_orders").val($("#add_new_orders").is(':checked'));
+        $("#show_update_orders").val($("#show_update_orders").is(':checked'));
+
+
+        $.post("/Users/Save", $("#saveForm").serialize(), function (response) {
+            response = JSON.parse(response);
+            if (response == 2) {
+                swal('Alert!', "Updated Successfully", 'success');
+                resetForm();
+            }
+            else {
+                swal('Error!', 'something went wrong', 'error');
+            }
+
+        });
+    }
+    function resetForm() {
+        //saveForm.reset();
+    }
+    //Checkbox tick for subpart start
+    function main_submenu_tick() {
+
+        $("#create_user").on('change', function () {
+            if ($(this).is(":checked")) {
+                $("#User_Mnu").prop('checked', true);
+                $("#User_Classification").prop('checked', true);
+            }
+            else {
+                $("#User_Mnu").prop('checked', false);
+                $("#User_Classification").prop('checked', false);
+            }
+
+        });
+
+        $("#orders_mnu").on('change', function () {
+            if ($(this).is(":checked")) {
+                $("#add_new_orders").prop('checked', true);
+                $("#show_update_orders").prop('checked', true);
+            }
+            else {
+                $("#add_new_orders").prop('checked', false);
+                $("#show_update_orders").prop('checked', false);
+            }
+        });
+
+        $("#User_Classification").on('change', function () {
+            if ($(this).is(":checked")) {
+                $("#create_user").prop('checked', true);
+            }
+            else if ($('#User_Mnu').is(":checked")) {
+                $("#create_user").prop('checked', true);
+            }
+            else {
+                $("#create_user").prop('checked', false);
+            }
+        });
+
+        $("#User_Mnu").on('change', function () {
+            if ($(this).is(":checked")) {
+                $("#create_user").prop('checked', true);
+            }
+            else if ($('#User_Classification').is(":checked")) {
+                $("#create_user").prop('checked', true);
+            }
+            else {
+                $("#create_user").prop('checked', false);
+            }
+        });
+
+        $("#add_new_orders").on('change', function () {
+            if ($(this).is(":checked")) {
+                $("#orders_mnu").prop('checked', true);
+            }
+            else if ($('#show_update_orders').is(":checked")) {
+                $("#orders_mnu").prop('checked', true);
+            }
+            else {
+                $("#orders_mnu").prop('checked', false);
+            }
+        });
+
+        $("#show_update_orders").on('change', function () {
+            if ($(this).is(":checked")) {
+                $("#orders_mnu").prop('checked', true);
+            }
+            else if ($('#add_new_orders').is(":checked")) {
+                $("#orders_mnu").prop('checked', true);
+            }
+            else {
+                $("#orders_mnu").prop('checked', false);
+            }
+        });
+    }
+            //checked box sub part end
+
+    $('#btnSaveRole').click(function () {
+       
+
+        var role = $('#txtRoleName').val();
+        if (role == "") {
+            swal("alert", "Please enter role name", "error").then(function () { swal.close(); $('#txtRoleName').focus(); })
+        }
+        else {
+            var obj = { User_Type : role }
+            $.ajax({
+                url: '/Users/NewRole/', dataType: 'json', type: 'Post',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(obj),
+                dataType: "json",
+                success: function (data) {
+                    $("#roleModal .close").click();
+                    swal("alert", data.message, "success");
+                    GetRoles();
+
+                },
+                error: function () {
+                    swal("alert", "something went wrong", "error");
+                }
+            })
+        }
+    });
+</script>

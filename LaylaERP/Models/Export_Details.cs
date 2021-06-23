@@ -41,7 +41,6 @@ namespace LaylaERP.Models
         public string tax { get; set; }
         public string total { get; set; }
         public string customer_id { get; set; }
-        public string orderstatus { get; set; }
         public List<Export_Details> exportdetails { get; set; }
 
 

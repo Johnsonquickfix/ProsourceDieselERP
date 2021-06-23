@@ -1,0 +1,248 @@
+﻿@{
+    ViewBag.Title = "NewOrders";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/Content/css/Style.css" rel="stylesheet" />
+<div class="page-title">
+    <h2 class="page-heading">Add New Order</h2>
+</div>
+<section class="content section-content neworder-section">
+    <div class="box box-primary create-user-primary mb-35">
+        <div class="box-header with-border">
+            <input type="hidden" id="hfOrderNo" value="@ViewBag.id" />
+            <input type="hidden" id="hfTaxRate" value="0" />
+            <h4 class="box-title" id="lblOrderNo">Order #000000 detail</h4>
+            <div class="box-tools pull-right">
+                <h5 class="payment-history"></h5>
+            </div>
+        </div>
+        <div class="box-body box-sections">
+            <div class="row">
+                <div class="col-md-4">
+                    <h2 class="sm-heading">General</h2>
+                    <div class="form-group">
+                        <label>Create Date</label>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            <input id="txtLogDate" data-auto-update-input="false" readonly="readonly" disabled class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select class="form-control select2" id="ddlStatus" placeholder="Select Status" style="width: 100%;">
+                            <option value="wc-pending" selected="selected">Pending payment</option>
+                            <option value="wc-processing">Processing</option>
+                            <option value="wc-on-hold">On hold</option>
+                            <option value="wc-completed">Completed</option>
+                            <option value="wc-cancelled">Cancelled</option>
+                            <option value="wc-refunded">Refunded</option>
+                            <option value="wc-failed">Failed</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Customer</label>
+                        <select class="form-control select2" id="ddlUser" placeholder="Select Customer Email" style="width: 100%;">
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <h2 class="sm-heading">Billing Address</h2>
+                    <div class="row row-small">
+                        <div class="form-group col-md-6">
+                            <input type="email" class="form-control billinfo" id="txtbillfirstname" placeholder="First Name">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <input type="text" class="form-control billinfo" id="txtbilllastname" placeholder="Last Name">
+                        </div>
+                        <div class="form-group col-md-12">
+                            <input type="text" class="form-control billinfo" id="txtbillcompany" placeholder="Company">
+                        </div>
+                        <div class="form-group col-md-12">
+                            <input type="text" class="form-control billinfo" id="txtbilladdress1" placeholder="Enter Address Line 1">
+                        </div>
+                        <div class="form-group col-md-12">
+                            <input type="text" class="form-control billinfo" id="txtbilladdress2" placeholder="Enter Address Line 2">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <input type="text" class="form-control billinfo" id="txtbillzipcode" placeholder="ZipCode / PostCode">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <input type="text" class="form-control billinfo" id="txtbillcity" placeholder="Enter City">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <select class="form-control select2 billinfo" id="ddlbillcountry" placeholder="Country / Region" style="width: 100%;">
+                                <option value="">Select a country / region…</option>
+                                <option value="CA">Canada</option>
+                                <option value="US" selected>United States (US)</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <select class="form-control select2 billinfo" id="ddlbillstate" placeholder="State / County" style="width: 100%;"></select>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <input type="text" class="form-control billinfo" id="txtbillemail" placeholder="Enter Email Address">
+                        </div>
+                        <div class="form-group col-md-12">
+                            <input type="text" class="form-control billinfo" id="txtbillphone" placeholder="Enter Phone/Mobile">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <h2 class="sm-heading">Shipping Address</h2>
+                    <div class="row row-small">
+                        <div class="form-group col-md-6">
+                            <input type="email" class="form-control billinfo" id="txtshipfirstname" placeholder="First Name">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <input type="text" class="form-control billinfo" id="txtshiplastname" placeholder="Last Name">
+                        </div>
+                        <div class="form-group col-md-12">
+                            <input type="text" class="form-control billinfo" id="txtshipcompany" placeholder="Company">
+                        </div>
+                        <div class="form-group col-md-12">
+                            <input type="text" class="form-control billinfo" id="txtshipaddress1" placeholder="Enter Address Line 1">
+                        </div>
+                        <div class="form-group col-md-12">
+                            <input type="text" class="form-control billinfo" id="txtshipaddress2" placeholder="Enter Address Line 2">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <input type="text" class="form-control billinfo" id="txtshipzipcode" placeholder="ZipCode / PostCode">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <input type="text" class="form-control billinfo" id="txtshipcity" placeholder="Enter City">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <select class="form-control select2 billinfo" id="ddlshipcountry" placeholder="Country / Region" style="width: 100%;">
+                                <option value="">Select a country / region…</option>
+                                <option value="CA">Canada</option>
+                                <option value="US" selected>United States (US)</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <select class="form-control select2 billinfo" id="ddlshipstate" placeholder="State / County" style="width: 100%;"></select>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <textarea class="form-control billinfo" id="txtCustomerNotes" placeholder="Customer notes about the order" rows="3"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--table start-->
+    <div class="row mb-35">
+        <div class="col-sm-12">
+            <div class="box box-primary mb-0">
+                <div class="box-header">
+                    <div class="table-responsive" id="divAddItemFinal">
+                        <table id="tblAddItemFinal" class="table table-blue chechout-tables check-table table-bordered table-striped dataTable tablelist">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th class="text-center" style="width: 8%">Actions</th>
+                                    <th style="width: 50%">Item</th>
+                                    <th class="text-right" style="width: 10%">Sale Price</th>
+                                    <th class="text-right" style="width: 8%">Quantity</th>
+                                    <th class="text-right" style="width: 10%">Total</th>
+                                    <th class="text-right" style="width: 8%">Discount</th>
+                                    <th class="text-right" style="width: 9%">Tax</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                            <tfoot class="thead-dark">
+                                <tr>
+                                    <th colspan="2" class="text-left" style="width: 58%">
+                                        <select class="form-control select2 billinfo" id="ddlProduct" placeholder="Select Products" style="width: 100%;"></select>
+                                    </th>
+                                    <th class="text-right" style="width: 8%"></th>
+                                    <th class="text-right" style="width: 10%"></th>
+                                    <th class="text-right" style="width: 8%"></th>
+                                    <th class="text-right" style="width: 9%"></th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Coupon(s)</h3>
+                </div>
+                <div class="box-header with-border">
+                    <div class="text-right">
+                        <button type="button" id="btnApplyCoupon" class="btn btn-danger billinfo">Apply coupon</button>
+                    </div>
+                </div>
+                <div class="box-body no-padding">
+                    <ul class="nav nav-pills nav-stacked" id="billCoupon">
+                    </ul>
+                </div>
+            </div>
+            <!-- /.box-body -->
+        </div>
+        <div class="col-sm-6 checkout-box-total">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Totals(s)</h3>
+                </div>
+                <div class="box-body text-right">
+                    <div class="form-horizontal font-bold">
+                        <div class="form-group">
+                            <label class="col-sm-10 control-label">Sub-Total (<span id="totalQty">0</span>)</label>
+                            <div class="col-sm-2 controls text-right">
+                                <span id="SubTotal">0.00</span>
+                            </div>
+                        </div>
+                        <div class="form-group ">
+                            <label class="col-sm-10 control-label">Discount</label>
+                            <div class="col-sm-2 controls text-right">
+                                <span id="discountTotal">0.00</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-10 control-label">Shipping</label>
+                            <div class="col-sm-2 controls text-right">
+                                <span id="shippingTotal">0.00</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-10 control-label">Shipping Tax</label>
+                            <div class="col-sm-2 controls text-right">
+                                <span id="shippingTaxTotal">0.00</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-10 control-label">State Recycling Fee</label>
+                            <div class="col-sm-2 controls text-right">
+                                <span id="stateRecyclingFeeTotal">0.00</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-10 control-label">Order Total</label>
+                            <div class="col-sm-2 controls text-right">
+                                <span id="orderTotal">0.00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.box-body -->
+                <div class="box-footer text-right footer-finalbutton">
+                    @*<button type="button" id="btnpay" class="btn btn-primary" > Payment</button>*@
+                    <button type="button" id="btnCheckout" class="btn btn-danger billinfo"> Checkout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="modal in printable autoprint" id="billModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div>
+
+<!-- Include SmartWizard JavaScript source -->
+<script src="~/Content/AdminLTE-3.1.0/jquery/inputmask.js"></script>
+<script src="@Url.Content("~/js/Orders/NewOrder.js?v=" + DateTime.Now.ToString("ddMMyyyymmss"))" asp-append-version="true"></script>
+<script type="text/javascript">
+
+</script>

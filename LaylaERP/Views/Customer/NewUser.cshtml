@@ -117,10 +117,9 @@
         var url = window.location.pathname;
         var id = url.substring(url.lastIndexOf('/') + 1);
 
-        if (id !="" && id != "NewUser") {
-            //alert(id);
+        if (id != "") {
             debugger
-            $("#lbltitle").text("Update Customer");
+            //$("#lbltitle").text("Update Customer");
             GetCustomerByID(id);
         }
 

@@ -14,14 +14,26 @@ namespace LaylaERP.BAL
     public class ExportRepository
     {
         public static List<Export_Details> usersexportlist = new List<Export_Details>();
+        public static List<Export_Details> customersexportlist = new List<Export_Details>();
+
         public static void ExportUsersDetails(string from_dateusers, string to_dateusers)
         {
             try
             {
-                
+                string sqlquery = string.Empty;
+                if (!string.IsNullOrEmpty(from_dateusers) && !string.IsNullOrEmpty(to_dateusers))
+                {
+                    DateTime fromdateuser = DateTime.Parse(from_dateusers);
+                    DateTime todateusers = DateTime.Parse(to_dateusers);
+                    sqlquery = "select ID, User_Image, user_login, user_status, DATE(wp_users.user_registered) as created_date, if(user_status=0,'Active','InActive') as status,user_email,user_pass,meta_value from wp_users, wp_usermeta WHERE DATE(wp_users.user_registered)>='" + fromdateuser.ToString("yyyy-MM-dd") + "' and DATE(wp_users.user_registered)<='" + todateusers.ToString("yyyy-MM-dd") + "' and wp_usermeta.meta_key='wp_capabilities' And wp_users.ID=wp_usermeta.user_id And wp_users.ID IN (SELECT user_id FROM wp_usermeta WHERE meta_key = 'wp_capabilities' AND meta_value NOT LIKE '%customer%') ORDER BY ID DESC";
+                }
+                else
+                {
+                    sqlquery = "select ID, User_Image, user_login, user_status, DATE(wp_users.user_registered) as created_date, if(user_status=0,'Active','InActive') as status,user_email,user_pass,meta_value from wp_users, wp_usermeta WHERE wp_users.user_registered IS NOT NULL and wp_usermeta.meta_key='wp_capabilities' And wp_users.ID=wp_usermeta.user_id And wp_users.ID IN (SELECT user_id FROM wp_usermeta WHERE meta_key = 'wp_capabilities' AND meta_value NOT LIKE '%customer%') ORDER BY ID DESC";
+                }
                 usersexportlist.Clear();
                 DataSet ds1 = new DataSet();
-                string sqlquery = "select ID, User_Image, user_login, user_status, if(user_status=0,'Active','InActive') as status,user_email,user_pass,meta_value from wp_users, wp_usermeta WHERE wp_users.user_registered IS NOT NULL and wp_usermeta.meta_key='wp_capabilities' And wp_users.ID=wp_usermeta.user_id And wp_users.ID IN (SELECT user_id FROM wp_usermeta WHERE meta_key = 'wp_capabilities' AND meta_value NOT LIKE '%customer%') ORDER BY ID DESC";
+
                 ds1 = DAL.SQLHelper.ExecuteDataSet(sqlquery);
                 string result = string.Empty;
 
@@ -167,6 +179,54 @@ namespace LaylaERP.BAL
             }
             catch (Exception ex) { throw ex; }
         }
+
+
+        public static void ExportCustomersDetails(string from_dateusers, string to_dateusers)
+        {
+            try
+            {
+                string sqlquery = string.Empty;
+                if (!string.IsNullOrEmpty(from_dateusers) && !string.IsNullOrEmpty(to_dateusers))
+                {
+                    DateTime fromdateuser = DateTime.Parse(from_dateusers);
+                    DateTime todateusers = DateTime.Parse(to_dateusers);
+                    
+
+                    sqlquery = "select ur.ID,null User_Image, user_login , user_status, DATE(ur.user_registered) as created_date, if(user_status=0,'Active','InActive') as status,user_email,umph.meta_value" +
+                        " from wp_users ur INNER JOIN wp_usermeta um on um.meta_key='wp_capabilities' And um.user_id = ur.ID And um.meta_value LIKE '%customer%'  LEFT OUTER JOIN wp_usermeta umph on umph.meta_key='billing_phone' And umph.user_id = ur.ID WHERE DATE(ur.user_registered)>='" + fromdateuser.ToString("yyyy-MM-dd") + "' and DATE(ur.user_registered)<='" + todateusers.ToString("yyyy-MM-dd") + "' ORDER BY ur.ID DESC";
+                }
+                else
+                {
+                    sqlquery = "select ur.ID,null User_Image, user_login , user_status, DATE(ur.user_registered) as created_date, if(user_status=0,'Active','InActive') as status,user_email,umph.meta_value" +
+                        " from wp_users ur INNER JOIN wp_usermeta um on um.meta_key='wp_capabilities' And um.user_id = ur.ID And um.meta_value LIKE '%customer%'  LEFT OUTER JOIN wp_usermeta umph on umph.meta_key='billing_phone' And umph.user_id = ur.ID ORDER BY ur.ID DESC limit 100";
+                }
+                customersexportlist.Clear();
+                DataSet ds1 = new DataSet();
+
+                ds1 = DAL.SQLHelper.ExecuteDataSet(sqlquery);
+                string result = string.Empty;
+
+                for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
+                {
+                    Export_Details uobj = new Export_Details();
+
+                    uobj.UID = Convert.ToInt32(ds1.Tables[0].Rows[i]["ID"].ToString());
+                    uobj.customer_login = ds1.Tables[0].Rows[i]["user_login"].ToString();
+                    uobj.customer_phone = ds1.Tables[0].Rows[i]["meta_value"].ToString();
+                    uobj.customer_email = ds1.Tables[0].Rows[i]["user_email"].ToString();
+                    uobj.customer_status = ds1.Tables[0].Rows[i]["status"].ToString();
+                    uobj.customerdate_created = Convert.ToDateTime(ds1.Tables[0].Rows[i]["created_date"].ToString());
+                    customersexportlist.Add(uobj);
+                }
+
+            }
+            catch (Exception e)
+            {
+
+            }
+
+        }
+
 
         public static void myexport(string mydate)
         {

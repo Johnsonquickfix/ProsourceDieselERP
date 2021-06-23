@@ -164,5 +164,34 @@ namespace LaylaERP.Models
         {
             get; set;
         }
+
+        //customer
+        public string customer_login
+        {
+            get;
+            set;
+        }
+
+        public string customer_my
+        {
+            get; set;
+        }
+        public string customer_email
+        {
+            get;
+            set;
+        }
+        public string customer_status
+        {
+            get;
+            set;
+        }
+
+        public string customer_phone
+        {
+            get;
+            set;
+        }
+        public DateTime customerdate_created { get; set; }
     }
 }

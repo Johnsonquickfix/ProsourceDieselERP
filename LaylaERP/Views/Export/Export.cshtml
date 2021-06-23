@@ -18,11 +18,13 @@
         <div class="tab-content">
             <div class="tab-pane active" id="tab_1">
                 <div class="user_subCrumbs">
-                    @*@using (Html.BeginForm())
-                    {
-                        @Html.EditorFor(model => model.created_date, new {htmlAttributes = new {@class = "datepicker" } })
-                    }*@
-                </div>
+                    <input type="button" id="btnvieworders" class="button" value="View All" />
+                    From <input type="text" name="fromdate" id="fromdate" />
+                    To<input type="text" name="todate" id="todate" />
+                    @*From <input type="date" name="fromdate" id="fromdate">
+        To <input type="date" name="todate" id="todate" >*@
+                    <input type="button" id="btnorder" class="button" value="GO" />
+                </div><br /><br />
                 <div id="poststuff" class="woocommerce-reports-wide">
                     <div class="postbox">
                         <div class="inside reports-wide">
@@ -30,6 +32,7 @@
                                 <table id="exportdata" class="table-blue table table-bordered check-table" style="width:100%;">
                                     <thead class="thead-dark">
                                         <tr>
+                                            <th></th>
                                             <th>Order Id</th>
                                             <th>Order Date</th>
                                             <th>Customer Id</th>
@@ -46,24 +49,29 @@
             </div><!--end tab one-->
             <div class="tab-pane" id="tab_2">
                 <div class="user_subCrumbs">
-                    
+                    <input type="button" id="btnviewusers" class="button" value="View All" />
+                    From <input type="text" name="fromdateusers" id="fromdateusers" />
+                    To<input type="text" name="todateusers" id="todateusers" />
+                    <input type="button" id="btnusers" class="button" value="GO" />
+                    <br /><br />
                 </div>
                 <div id="poststuff" class="woocommerce-reports-wide">
                     <div class="postbox">
                         <div class="inside reports-wide">
                             <div class="widefat">
-                                <table id="exportusersdata" class="table-blue table table-bordered check-table" style="width:100%;">
+                                <table id="exportusersdata" class="table-blue table table-bordered check-table display" style="width:100%;">
                                     <thead>
                                         <tr>
+                                            <th></th>
                                             <th>Id</th>
                                             <th>Name</th>
                                             <th>Email</th>
                                             <th>Status</th>
                                             <th>Role</th>
-                                            @*<th>Date</th>*@
+                                            <th>Date</th>
                                         </tr>
                                     </thead>
-                                   
+
                                 </table>
                             </div>
                         </div>
@@ -72,15 +80,13 @@
             </div><!--end tab two-->
             <div class="tab-pane" id="tab_3">
                 <div class="user_subCrumbs">
-                    
+
                 </div>
                 <div id="poststuff" class="woocommerce-reports-wide">
                     <div class="postbox">
                         <div class="inside reports-wide">
                             <div class="widefat">
-                                <table class="table-blue">
-                                   
-                                </table>
+                                <table class="table-blue"></table>
                             </div>
                         </div>
                     </div>
@@ -90,124 +96,133 @@
     </div>
 </div>
 
-
-
-
-
-
-
-
-
-
-
 @*<section class="content activity-section export-section table-design">
-        <div class="box box-primary">
-            <div class="box-header">
-    <div class="row">
-                <div class="dx-viewport demo-container">
-                    <div id="gridContainer">
-                        <table id="exportdata" class="table-blue table table-bordered check-table" style="width:100%;">
-                            <thead class="thead-dark">
-                                <tr>
-                                    <th>Order Id</th>
-                                    <th>Order Date</th>
-                                    <th>Product Name</th>
-                                    <th>Item Type</th>
-                                    <th>Product Id</th>
-                                    <th>Variant Id </th>
-                                    <th>Qty</th>
-                                    <th>Subtotal</th>
-                                    <th>Total</th>
-                                </tr>
-                            </thead>
-                        </table>
-                    </div>
-                    </div>
+            <div class="box box-primary">
+                <div class="box-header">
+        <div class="row">
+                    <div class="dx-viewport demo-container">
+                        <div id="gridContainer">
+                            <table id="exportdata" class="table-blue table table-bordered check-table" style="width:100%;">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th>Order Id</th>
+                                        <th>Order Date</th>
+                                        <th>Product Name</th>
+                                        <th>Item Type</th>
+                                        <th>Product Id</th>
+                                        <th>Variant Id </th>
+                                        <th>Qty</th>
+                                        <th>Subtotal</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                        </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-</section>*@
+    </section>*@
 
 @section scripts{
 
     <script type="text/javascript">
         $(document).ready(function () {
-            
-            DatagridOrder();
-            DatagridUsers();
+
+            //DatagridOrder();
+            //DatagridUsers();
+            $("#btnorder").click(function () {
+                if ($("#fromdate").val() == "") {
+                    swal('Alert', 'Please Enter From Date', 'error').then(function () { swal.close(); $('#fromdate').focus(); });
+                }
+                else if ($("#todate").val() == "") {
+                    swal('Alert', 'Please Enter To Date', 'error').then(function () { swal.close(); $('#todate').focus(); });
+                }
+                else {
+                    DatagridOrder();
+                    $("#fromdate").val("");
+                    $("#todate").val("");
+                    return false;
+                }
+            });
+            setTimeout(function () { DatagridOrder(); }, 50);
+
+
+            $("#btnusers").click(function () {
+                if ($("#fromdateusers").val() == "") {
+                    swal('Alert', 'Please Enter From Date', 'error').then(function () { swal.close(); $('#fromdateusers').focus(); });
+                }
+                else if ($("#todateusers").val() == "") {
+                    swal('Alert', 'Please Enter To Date', 'error').then(function () { swal.close(); $('#todateusers').focus(); });
+                }
+                else {
+                    DatagridOrder();
+                    $("#fromdateusers").val("");
+                    $("#todateusers").val("");
+                    return false;
+                }
+            });
+            setTimeout(function () { DatagridUsers(); }, 50);
+            //$(document).on('click', "#btnorder", function () {
+            //    DatagridOrder();
+            //})
+            //$(document).on('click', "#btnuser", function () {
+            //    DatagridUsers();
+            //})
+
+            $("#btnvieworders").click(function () { DatagridOrder(); });
+            $("#btnviewusers").click(function () { DatagridUsers(); });
         });
 
         function DatagridOrder() {
-                $('#exportdata').DataTable({
-                    "ajax": {
-                        "url": '/Export/GetData',
-                        "type": 'GET',
-                        "dataType": 'json',
-                        
-                    },
-                    "columns": [
-                        { 'data': 'order_id' },
-                        {
-                            'data': 'order_created',
-                            'render': function (jsonDate) {
-                                var date = new Date(parseInt(jsonDate.substr(6)));
-                                var month = ("0" + (date.getMonth() + 1)).slice(-2);
-                                return ("0" + date.getDate()).slice(-2) + '-' + month + '-' + date.getFullYear();
-                            }
-                        },
-                        { 'data': 'customer_id' },
-                        { 'data': 'qty' },
-                        { 'data': 'subtotal' },
-                        { 'data': 'total' }
-
-                    ],
-                    columnDefs: [{
-                        orderable: false,
-                        targets: [1]
-                    }],
-                    "order": [0, 'desc'],
-
-                    "dom": 'Bfrtip',
-                    "buttons": [
-
-                        {
-                            extend: 'csv',
-                            className: 'button',
-                            text: '<i class="fas fa-file-csv"></i> CSV'
-                        },
-                        {
-                            extend: 'print',
-                            className: 'button',
-                            text: '<i class="fas fa-print"></i> Print'
-                        }
-                    ]
-                });
-        }
-        function DatagridUsers() {
-            $('#exportusersdata').DataTable({
+            var from_date = $("#fromdate").val();
+            var to_date = $("#todate").val();
+            //var obj = { mydate: mydate };
+            $('#exportdata').DataTable({
+                destroy: true,
+                searching: false,
                 "ajax": {
-                    "url": '/Export/UsersExport',
-                    "type": 'GET',
+                    "url": '/Export/GetData',
+                    "type": 'POST',
                     "dataType": 'json',
+                    "data": { from_date: from_date, to_date: to_date }
+                    //"data": JSON.stringify(obj)
+
                 },
-                "columns": [ 
-                   
-                    { 'data': 'UID', 'sWidth': "5%" },
-                    { 'data': 'user_login', 'sWidth': "20%" },
-                    { 'data': 'user_email', 'sWidth': "20%" },
-                    { 'data': 'user_status', 'sWidth': "10%" },
-                    { 'data': 'my', 'sWidth': "10%" },
-                    //{
-                    //    'data': 'created_date',
-                    //    'render': function (jsonDate) {
-                    //        var date = new Date(parseInt(jsonDate.substr(6)));
-                    //        var month = ("0" + (date.getMonth() + 1)).slice(-2);
-                    //        return ("0" + date.getDate()).slice(-2) + '-' + month + '-' + date.getFullYear();
-                    //    }
-                    //},
+                "columns": [
+                    { 'data': null },
+                    { 'data': 'order_id' },
+                    {
+                        'data': 'order_created',
+                        'render': function (jsonDate) {
+                            var date = new Date(parseInt(jsonDate.substr(6)));
+                            var month = ("0" + (date.getMonth() + 1)).slice(-2);
+                            return ("0" + date.getDate()).slice(-2) + '-' + month + '-' + date.getFullYear();
+                        }
+                    },
+                    { 'data': 'customer_id' },
+                    //{ 'data':'orderstatus' },
+                    { 'data': 'qty' },
+                    { 'data': 'subtotal' },
+                    { 'data': 'total' }
 
                 ],
-                "order":[0, 'desc'],
+                columnDefs: [{
+                    orderable: false,
+                    className: 'select-checkbox',
+                    targets: 0,
+                    'checkboxes': {
+                        'selectRow': true
+                    },
+                    data: null,
+                    defaultContent: '',
+                }],
+                "select": {
+                    "style": 'multi',
+                    "selector": 'td:first-child'
+                },
+                "order": [1, 'desc'],
+
                 "dom": 'Bfrtip',
                 "buttons": [
 
@@ -221,10 +236,95 @@
                         className: 'button',
                         text: '<i class="fas fa-print"></i> Print'
                     }
-                ]
+                ],
+
+            });
+        }
+        function DatagridUsers() {
+            var fromdateusers = $("#fromdateusers").val();
+            var todateusers = $("#todateusers").val();
+            $('#exportusersdata').DataTable({
+                destroy: true,
+                searching: false,
+                "ajax": {
+                    "url": '/Export/UsersExport',
+                    "type": 'POST',
+                    "dataType": 'json',
+                    "data": { from_dateusers: fromdateusers, to_dateusers: todateusers }
+                },
+
+                "columns": [
+                    { 'data': null, 'swidth': "5%" },
+                    { 'data': 'UID', 'sWidth': "5%" },
+                    { 'data': 'user_login', 'sWidth': "20%" },
+                    { 'data': 'user_email', 'sWidth': "20%" },
+                    { 'data': 'user_status', 'sWidth': "10%" },
+                    { 'data': 'my', 'sWidth': "10%" },
+                    {
+                        'data': 'created_date',
+                        'render': function (jsonDate) {
+                            var date = new Date(parseInt(jsonDate.substr(6)));
+                            var month = ("0" + (date.getMonth() + 1)).slice(-2);
+                            return ("0" + date.getDate()).slice(-2) + '-' + month + '-' + date.getFullYear();
+                        }
+                    },
+
+                ],
+                columnDefs: [{
+                    orderable: false,
+                    className: 'select-checkbox',
+                    targets: 0,
+                    'checkboxes': { 'selectRow': true },
+                    data: null,
+                    defaultContent: '',
+                }],
+                select: {
+                    style: 'multi',
+                    selector: 'td:first-child',
+                },
+
+                "order": [0, 'desc'],
+                "dom": 'Bfrtip',
+                "buttons": [
+
+                    {
+                        extend: 'csv',
+                        className: 'button',
+                        text: '<i class="fas fa-file-csv"></i> CSV'
+                    },
+                    {
+                        extend: 'print',
+                        className: 'button',
+                        text: '<i class="fas fa-print"></i> Print'
+                    }
+                ],
+
             });
         }
     </script>
+    <script>
+        $(function () {
+            $("#fromdate").datepicker({
+                format: 'yyyy-mm-dd',
+            });
 
-   
+
+            $("#todate").datepicker({
+                format: 'yyyy-mm-dd',
+            });
+
+
+            $("#fromdateusers").datepicker({
+                format: 'yyyy-mm-dd',
+            });
+
+
+            $("#todateusers").datepicker({
+                format: 'yyyy-mm-dd',
+            });
+
+        });
+
+    </script>
+
 }

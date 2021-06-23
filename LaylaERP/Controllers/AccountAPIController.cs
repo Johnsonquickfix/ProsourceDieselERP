@@ -36,64 +36,69 @@
                         op.IsActive = true;
                     else
                         op.IsActive = false;
-                    op.UserPassword = model.PassWord;
-                    Session["UserId"] = op.UserID;
-                    Session["EmailID"] = op.EmailID;
-                    op.GetUrl = "home/MobileVerification";
-                    if (!string.IsNullOrEmpty(op.UserType) && op.UserType.Length > 5 && op.UserType.ToString().Substring(0, 2) == "a:")
+                    if (op.IsActive == false)
                     {
-                        if (op.UserType == "a:0:{}")
-                            op.UserType = "Unknown";
-                        else
-                            op.UserType = User_Role_Name(op.UserType); // "34444444123";  // string.Format(formatString, dt.Rows[x].ItemArray);
+                        op.UserPassword = model.PassWord;
+                        Session["UserId"] = op.UserID;
+                        Session["EmailID"] = op.EmailID;
+                        op.GetUrl = "home/MobileVerification";
+                        if (!string.IsNullOrEmpty(op.UserType) && op.UserType.Length > 5 && op.UserType.ToString().Substring(0, 2) == "a:")
+                        {
+                            if (op.UserType == "a:0:{}")
+                                op.UserType = "Unknown";
+                            else
+                                op.UserType = User_Role_Name(op.UserType); // "34444444123";  // string.Format(formatString, dt.Rows[x].ItemArray);
+                        }
+
+                        if (ds.Tables[1].Rows.Count > 0)
+                        {
+                            if (ds.Tables[1].Rows[0]["AuthorizeNet"].ToString() == "1")
+                                op.AuthorizeNet = true;
+                            else
+                                op.AuthorizeNet = false;
+
+                            if (ds.Tables[1].Rows[0]["Paypal"].ToString() == "1")
+                                op.Paypal = true;
+                            else
+                                op.Paypal = false;
+
+                            if (ds.Tables[1].Rows[0]["AmazonPay"].ToString() == "1")
+                                op.AmazonPay = true;
+                            else
+                                op.AmazonPay = false;
+
+                            if (ds.Tables[1].Rows[0]["CreditCustomer"].ToString() == "1")
+                                op.CreditCustomer = true;
+                            else
+                                op.CreditCustomer = false;
+                            if (ds.Tables[1].Rows[0]["SenderEmailID"] != DBNull.Value)
+                                op.SenderEmailID = ds.Tables[1].Rows[0]["SenderEmailID"].ToString();
+                            else
+                                op.SenderEmailID = string.Empty;
+                            if (ds.Tables[1].Rows[0]["SenderEmailPwd"] != DBNull.Value)
+                                op.SenderEmailPwd = ds.Tables[1].Rows[0]["SenderEmailPwd"].ToString();
+                            else
+                                op.SenderEmailPwd = string.Empty;
+                            if (ds.Tables[1].Rows[0]["SMTPServerName"] != DBNull.Value)
+                                op.SMTPServerName = ds.Tables[1].Rows[0]["SMTPServerName"].ToString();
+                            else
+                                op.SMTPServerName = string.Empty;
+                            if (ds.Tables[1].Rows[0]["SMTPServerPortNo"] != DBNull.Value)
+                                op.SMTPServerPortNo = ds.Tables[1].Rows[0]["SMTPServerPortNo"].ToString();
+                            else
+                                op.SMTPServerPortNo = string.Empty;
+                        }
+                        op.LoginIPAddress = Net.Ip;
+                        op.LoginMacAddress = string.Empty;
+                        CommanUtilities.Provider.AddCurrent(op);
+
+                        string loginDesc = op.UserName + " Login on " + DateTime.Now.ToString("dddd, dd MMMM yyyy hh:mm tt") + ", " + Net.BrowserInfo;
+                        UserActivityLog.WriteDbLog(LogType.Login, "Login", loginDesc);
+
+                        return Json(new { status = true, message = "Login sucess", url = op.GetUrl }, 0);
                     }
-
-                    if (ds.Tables[1].Rows.Count > 0)
-                    {
-                        if (ds.Tables[1].Rows[0]["AuthorizeNet"].ToString() == "1")
-                            op.AuthorizeNet = true;
-                        else
-                            op.AuthorizeNet = false;
-
-                        if (ds.Tables[1].Rows[0]["Paypal"].ToString() == "1")
-                            op.Paypal = true;
-                        else
-                            op.Paypal = false;
-
-                        if (ds.Tables[1].Rows[0]["AmazonPay"].ToString() == "1")
-                            op.AmazonPay = true;
-                        else
-                            op.AmazonPay = false;
-
-                        if (ds.Tables[1].Rows[0]["CreditCustomer"].ToString() == "1")
-                            op.CreditCustomer = true;
-                        else
-                            op.CreditCustomer = false;
-                        if (ds.Tables[1].Rows[0]["SenderEmailID"] != DBNull.Value)
-                            op.SenderEmailID = ds.Tables[1].Rows[0]["SenderEmailID"].ToString();
-                        else
-                            op.SenderEmailID = string.Empty;
-                        if (ds.Tables[1].Rows[0]["SenderEmailPwd"] != DBNull.Value)
-                            op.SenderEmailPwd = ds.Tables[1].Rows[0]["SenderEmailPwd"].ToString();
-                        else
-                            op.SenderEmailPwd = string.Empty;
-                        if (ds.Tables[1].Rows[0]["SMTPServerName"] != DBNull.Value)
-                            op.SMTPServerName = ds.Tables[1].Rows[0]["SMTPServerName"].ToString();
-                        else
-                            op.SMTPServerName = string.Empty;
-                        if (ds.Tables[1].Rows[0]["SMTPServerPortNo"] != DBNull.Value)
-                            op.SMTPServerPortNo = ds.Tables[1].Rows[0]["SMTPServerPortNo"].ToString();
-                        else
-                            op.SMTPServerPortNo = string.Empty;
-                    }
-                    op.LoginIPAddress = Net.Ip;
-                    op.LoginMacAddress = string.Empty;
-                    CommanUtilities.Provider.AddCurrent(op);
-
-                    string loginDesc = op.UserName + " Login on " + DateTime.Now.ToString("dddd, dd MMMM yyyy hh:mm tt") + ", " + Net.BrowserInfo;
-                    UserActivityLog.WriteDbLog(LogType.Login, "Login", loginDesc);
-
-                    return Json(new { status = true, message = "Login sucess", url = op.GetUrl }, 0);
+                    else
+                        return Json(new { status = false, message = "Your account has been suspended. Please contact to your Administrator", url = "" }, 0);
                 }
                 else
                     return Json(new { status = false, message = "Please Check Username and Password!", url = "" }, 0);

@@ -472,6 +472,8 @@
     <Content Include="Content\fontawesome-all.min.css" />
     <Content Include="Content\img\flags%402x.png" />
     <Content Include="Content\img\flags.png" />
+    <Content Include="Content\Style11.css" />
+    <Content Include="Content\Style12.css" />
     <Content Include="css\indexStyle.css" />
     <Content Include="css\layoutStyle.css" />
     <Content Include="css\login_style.css" />
@@ -489,6 +491,7 @@
     <Content Include="js\Orders\NewOrder.js" />
     <Content Include="js\Orders\OrderHistory.js" />
     <Content Include="js\Users\UserLogin.js" />
+    <Content Include="js\Users\UserRole.js" />
     <Content Include="js\Users\Users.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -650,6 +653,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Properties\PublishProfiles\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

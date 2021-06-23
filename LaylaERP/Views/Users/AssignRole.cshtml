@@ -2,6 +2,13 @@
 @{ ViewBag.Title = "AssignRole";
     Layout = "~/Views/Shared/_Layout.cshtml"; }
 
+@*datatables CSS*@
+<link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+<link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
+@*datatables js*@
+<script src="~/Content/AdminLTE-3.1.0/datatables/datatables.min.js" type="text/javascript"></script>
+<script src="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/js/dataTables.bootstrap.min.js" type="text/javascript"></script>
+
 <div class="page-title">
     <h2 class="page-heading">Role Management</h2>
 </div>
@@ -19,14 +26,36 @@
                             <button type="button" id="btnAddRole" class="btn btn-danger" data-toggle="modal" data-target="#roleModal">
                                 <i class="fa fa-plus"></i> Add New Role
                             </button>
-                            @*<button type="button" id="btnRole" class="btn btn-danger" data-target="#exampleModalCenter"><i class="fa fa-plus"></i> Add New Role</button>*@
+                        </div>
+                        <div class="form-group form-user-role">
+                            <button type="button" id="btnApprove" class="btn btn-danger"><i class="fa fa-check"></i> Approve</button>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="box-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="box box-primary">
+                        <div class="box-header">
+                            <table id="dtdata" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
+                                <thead>
+                                    <tr>
+                                        <th><input type="checkbox" name="checkAll" id="checkAll"><label></label></th>
+                                        <th>Menu ID</th>
+                                        <th>Menu Name</th>
+                                        <th>Menu URL</th>
+                                        @*<th>Action</th>*@
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @*<div class="box-body">
                 <div class="row mt-1 mb-35">
                     <div class="col-sm-12">
+                        <input class="form-check-input" type="checkbox" name="Create_User" id="checklist">
                         <h2 class="sm-heading">Main Menu</h2>
                         <div class="row">
                             <div class="col-sm-3">
@@ -99,15 +128,15 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="box-footer">
+            </div>*@
+            <!--<div class="box-footer">
                 <div class="row">
-                    <div class="col-sm-offset-9 col-sm-3">
+                    <div class="col-sm-offset-9 col-sm-3">-->
                         @*<a href="#" class="btn btn-danger btn-block"><b>Save</b></a>*@
-                        <button type="button" id="saveBtn" class="btn btn-danger "><i class="fa fa-save"></i> Save</button>
+                        <!--<button type="button" id="saveBtn" class="btn btn-danger "><i class="fa fa-save"></i> Save</button>
                     </div>
                 </div>
-            </div>
+            </div>-->
             <input type="hidden" name="User_Type" id="user_type" />
             @Html.AntiForgeryToken()
         </div>
@@ -130,58 +159,24 @@
                             <input type="text" id="txtRoleName" class="form-control" placeholder="Role Name" />
                         </div>
                     </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" id="btnSaveRole" class="btn btn-danger"><i class="fa fa-save"></i> Save changes</button>
                 </div>
             </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" id="btnSaveRole" class="btn btn-danger"><i class="fa fa-save"></i> Save changes</button>
+            </div>
+        </div>
     </div>
 </div>
+<script src="@Url.Content("~/js/Users/UserRole.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 <script type="text/javascript">
     $(document).ready(function () {
         GetRoles();
+        RoleGrid();
+        //GetMenues(); 
     })
-    function GetRoles() {
-        $.get('GetRoles', function (data) {
-            $('#userrole').empty();
-            $.each(data, function (index, value) {
-                $('<option>').val(value).text(value).appendTo("#userrole");
-            })
-        })
-        main_submenu_tick();
-    }
-    $("#userrole").change(function () {
-        debugger
-        var User_Type = { User_Type: $("#userrole :selected").text() };
-        //  console.log(usertype);
-        // alert($("#userrole :selected").text());
-        $("#user_type").val($("#userrole :selected").text());
-        $.ajax({
-            url: '/Users/GetAssignRole',
-            type: 'POST',
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            data: JSON.stringify(User_Type),
-            success: function (data) {
-                console.log(data);
-                var obj = JSON.parse(data);
-                //$("#Create_User").prop('checked', true);
-                if (obj[0].Create_User == 1) $("#create_user").prop('checked', true); else $("#create_user").prop('checked', false);
-                if (obj[0].Customers == 1) $("#customers").prop('checked', true); else $("#customers").prop('checked', false);
-                if (obj[0].Orders_Mnu == 1) $("#orders_mnu").prop('checked', true); else $("#orders_mnu").prop('checked', false);
-                if (obj[0].System_Settings == 1) $("#system_settings").prop('checked', true); else $("#system_settings").prop('checked', false);
-                if (obj[0].User_Mnu == 1) $("#User_Mnu").prop('checked', true); else $("#User_Mnu").prop('checked', false);
-                if (obj[0].User_Classification == 1) $("#User_Classification").prop('checked', true); else $("#User_Classification").prop('checked', false);
-                if (obj[0].Add_New_Orders == 1) $("#add_new_orders").prop('checked', true); else $("#add_new_orders").prop('checked', false);
-                if (obj[0].Show_Update_Orders == 1) $("#show_update_orders").prop('checked', true); else $("#show_update_orders").prop('checked', false);
-            },
-            error: function (responce) {
-                console.log(responce)
-            }
-        });
-    });
+
+ 
 
 
     $("#saveBtn").click(function () {
@@ -215,90 +210,17 @@
         //saveForm.reset();
     }
     //Checkbox tick for subpart start
-    function main_submenu_tick() {
 
-        $("#create_user").on('change', function () {
-            if ($(this).is(":checked")) {
-                $("#User_Mnu").prop('checked', true);
-                $("#User_Classification").prop('checked', true);
-            }
-            else {
-                $("#User_Mnu").prop('checked', false);
-                $("#User_Classification").prop('checked', false);
-            }
-
-        });
-
-        $("#orders_mnu").on('change', function () {
-            if ($(this).is(":checked")) {
-                $("#add_new_orders").prop('checked', true);
-                $("#show_update_orders").prop('checked', true);
-            }
-            else {
-                $("#add_new_orders").prop('checked', false);
-                $("#show_update_orders").prop('checked', false);
-            }
-        });
-
-        $("#User_Classification").on('change', function () {
-            if ($(this).is(":checked")) {
-                $("#create_user").prop('checked', true);
-            }
-            else if ($('#User_Mnu').is(":checked")) {
-                $("#create_user").prop('checked', true);
-            }
-            else {
-                $("#create_user").prop('checked', false);
-            }
-        });
-
-        $("#User_Mnu").on('change', function () {
-            if ($(this).is(":checked")) {
-                $("#create_user").prop('checked', true);
-            }
-            else if ($('#User_Classification').is(":checked")) {
-                $("#create_user").prop('checked', true);
-            }
-            else {
-                $("#create_user").prop('checked', false);
-            }
-        });
-
-        $("#add_new_orders").on('change', function () {
-            if ($(this).is(":checked")) {
-                $("#orders_mnu").prop('checked', true);
-            }
-            else if ($('#show_update_orders').is(":checked")) {
-                $("#orders_mnu").prop('checked', true);
-            }
-            else {
-                $("#orders_mnu").prop('checked', false);
-            }
-        });
-
-        $("#show_update_orders").on('change', function () {
-            if ($(this).is(":checked")) {
-                $("#orders_mnu").prop('checked', true);
-            }
-            else if ($('#add_new_orders').is(":checked")) {
-                $("#orders_mnu").prop('checked', true);
-            }
-            else {
-                $("#orders_mnu").prop('checked', false);
-            }
-        });
-    }
-            //checked box sub part end
 
     $('#btnSaveRole').click(function () {
-       
+
 
         var role = $('#txtRoleName').val();
         if (role == "") {
             swal("alert", "Please enter role name", "error").then(function () { swal.close(); $('#txtRoleName').focus(); })
         }
         else {
-            var obj = { User_Type : role }
+            var obj = { User_Type: role }
             $.ajax({
                 url: '/Users/NewRole/', dataType: 'json', type: 'Post',
                 contentType: "application/json; charset=utf-8",

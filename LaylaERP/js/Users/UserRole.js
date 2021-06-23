@@ -1,4 +1,5 @@
-﻿function GetRoles() {
+﻿$("#loader").hide();
+function GetRoles() {
     $.get('GetRoles', function (data) {
         var items = "";
         items += "<option value='' disabled selected>Please select</option>";
@@ -31,12 +32,6 @@ function RoleGrid() {
                     { data: 'menu_id', title: 'Menu ID', sWidth: "8%" },
                     { data: 'menu_name', title: 'Menu Name', sWidth: "14%" },
                     { data: 'menu_url', title: 'Menu URL', sWidth: "14%" },
-                    //{
-                    //    'data': 'id', sWidth: "8%",
-                    //    'render': function (id, type, full, meta) {
-                    //        return '<a href="../Customer/NewUser/' + id + '"><i class="glyphicon glyphicon-pencil"></i></a>'
-                    //    }
-                    //}
                 ]
             });
         },
@@ -88,6 +83,9 @@ function ChangePermission(id) {
         contentType: "application/json; charset=utf-8",
         data: JSON.stringify(obj),
         dataType: "json",
+        beforeSend: function () {
+            $("#loader").show();
+        },
         success: function (data) {
             if (data.status == true) {
                 swal('Alert!', data.message, 'success');
@@ -95,6 +93,9 @@ function ChangePermission(id) {
             else {
                 swal('Alert!', data.message, 'error')
             }
+        },
+        complete: function () {
+            $("#loader").hide();
         },
         error: function (error) {
             swal('Error!', 'something went wrong', 'error');
@@ -118,7 +119,6 @@ function ischecked() {
         data: JSON.stringify(User_Type),
         success: function (data) {
             var obj = JSON.parse(data);
-            console.log(data);
             $('#dtdata tr:has(td)').find('input[type="checkbox"]').prop('checked', false);
             for (i = 0; i < obj.length; i++) {
                 $('#dtdata tr:has(td)').find('input[type="checkbox"][value="' + obj[i].erpmenu_id + '"]').prop('checked', true);
@@ -129,4 +129,30 @@ function ischecked() {
         }
     });
 }
+
+//add new role
+$('#btnSaveRole').click(function () {
+    var role = $('#txtRoleName').val();
+    if (role == "") {
+        swal("alert", "Please enter role name", "error").then(function () { swal.close(); $('#txtRoleName').focus(); })
+    }
+    else {
+        var obj = { User_Type: role }
+        $.ajax({
+            url: '/Users/NewRole/', dataType: 'json', type: 'Post',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(obj),
+            dataType: "json",
+            success: function (data) {
+                $("#roleModal .close").click();
+                swal("alert", data.message, "success");
+                GetRoles();
+
+            },
+            error: function () {
+                swal("alert", "something went wrong", "error");
+            }
+        })
+    }
+});
 

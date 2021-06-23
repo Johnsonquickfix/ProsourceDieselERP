@@ -583,7 +583,11 @@ namespace LaylaERP.Controllers
         {
             int role_id = model.role_id;
             string strID = model.strVal;
-            if (strID != "")
+            if (role_id == 65)
+            {
+                return Json(new { status = false, message = "You can not change administrator permission", url = "" }, 0);
+            }
+            else if (strID != "")
             {
                 new UsersRepositry().ChangePermission(strID, role_id);
                 return Json(new { status = true, message = "User Permission has been Changed successfully!!", url = "" }, 0);

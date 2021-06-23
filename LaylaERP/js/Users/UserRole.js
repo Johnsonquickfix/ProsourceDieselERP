@@ -72,7 +72,6 @@ function Singlecheck() {
 $('#btnApprove').click(function () {
     debugger
     var id = "";
-   
     $("input:checkbox[name=CheckSingle]:checked").each(function () {
         id += $(this).val() + ",";
     });

@@ -38,7 +38,7 @@ function GetMonths() {
 
     $("#filter-by-date").html('<option value="0">All dates</option>');
     for (i = 0; i <= diff; i++) {
-        console.log(d2);
+        //console.log(d2);
         if (i == 0)
             d2.setMonth(d2.getMonth());
         else
@@ -123,9 +123,11 @@ function dataGridLoad(order_type) {
             { data: 'LastName', title: 'Last Name', sWidth: "10%" },
             {
                 data: 'billing_phone', title: 'Phone No.', sWidth: "10%", render: function (toFormat) {
-                    var tPhone;
-                    tPhone = toFormat.toString();
-                    tPhone = '(' + tPhone.substring(0, 3) + ') ' + tPhone.substring(3, 6) + ' ' + tPhone.substring(6, 10);
+                    var tPhone = '';
+                    if (toFormat != null) {
+                        tPhone = toFormat.toString();
+                        tPhone = '(' + tPhone.substring(0, 3) + ') ' + tPhone.substring(3, 6) + ' ' + tPhone.substring(6, 10);
+                    }
                     return tPhone
                 }
             },

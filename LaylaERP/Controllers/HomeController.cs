@@ -119,6 +119,7 @@
         public ActionResult Index()
         {
             clsUserDetails model = new clsUserDetails();
+          
             //ViewBag.id = Session["UserId"];
             //-----------Code Start------
             //long id = 0;
@@ -234,20 +235,32 @@
             {
                 if (model.ID > 0)
                 {
-                    UpdateUserProfile(model, model.ID);
-                    UpdateProfile_MetaData(model, model.ID);
+                  UpdateUserProfile(model, model.ID);
+                  UpdateProfile_MetaData(model, model.ID);
                     return Json(new { status = true, message = "Profile has been saved successfully!!", url = "" }, 0);
                 }
 
             }
             return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
         }
+        [HttpPost]
+        public JsonResult Update_Password(clsUserDetails model)
+        {
+             
+                if (model.ID > 0)
+                {
+                     UserProfileRepository.Update_Password(model, model.ID);
+                    return Json(new { status = true, message = "Password has been update successfully!!", url = "" }, 0);
+                }
+                else             
+                     return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+        }
         private void UpdateProfile_MetaData(clsUserDetails model, long id)
         {
-            string[] varQueryArr1 = new string[7];
-            string[] varFieldsName = new string[7] { "nickname", "first_name", "last_name", "user_address", "user_country", "user_phone", "wp_capabilities" };
-            string[] varFieldsValue = new string[7] { model.user_nicename, model.first_name, model.last_name,model.address,model.country,model.phone, model.user_role };
-            for (int n = 0; n < 7; n++)
+            string[] varQueryArr1 = new string[10];
+            string[] varFieldsName = new string[10] { "nickname", "first_name", "last_name", "billing_address_1", "billing_country", "billing_phone",  "billing_address_2", "billing_city", "billing_state", "billing_postcode" };
+            string[] varFieldsValue = new string[10] { model.user_nicename, model.first_name, model.last_name,model.address,model.country,model.phone, model.billing_address_2, model.billing_city, model.billing_state, model.billing_postcode };
+            for (int n = 0; n < 10; n++)
             {
                UserProfileRepository.UpdateProfileMetaData(model, id, varFieldsName[n], varFieldsValue[n]);
             }
@@ -268,9 +281,41 @@
                 ViewBag.user_phone = DT.Rows[0]["phone"].ToString();
                 ViewBag.user_address = DT.Rows[0]["address"].ToString();
                 ViewBag.User_Image = DT.Rows[0]["User_Image"];
-                ViewBag.user_role = DT.Rows[0]["user_role"];
+                string role = DT.Rows[0]["user_role"].ToString();
+                if (role == "accounting")
+                    role = "Accounting";
+                else if (role == "administrator")
+                    role = "Administrator";
+                else if (role == "author")
+                    role = "Author";
+                else if (role == "contributor")
+                    role = "Contributor";
+                else if (role == "editor")
+                    role = "Editor";
+                else if (role == "modsquad")
+                    role = "Mod Squad";
+                else if (role == "wpseo_editor")
+                    role = "SEO Editor";
+                else if (role == "seo_manager")
+                    role = "SEO Manager";
+                else if (role == "shop_manager")
+                    role = "Shop Manager";
+                else if (role == "shop_manager")
+                    role = "Shop Manager";
+                else if (role == "subscriber")
+                    role = "Subscriber";
+                else if (role == "supplychainmanager")
+                    role = "Supply Chain Manager";
+                else
+                    role = role;
+                ViewBag.user_role = role;
                 ViewBag.user_status = DT.Rows[0]["user_status"];
-
+                ViewBag.id = id;
+                ViewBag.phone = DT.Rows[0]["phone"];
+                ViewBag.State = DT.Rows[0]["State"];
+                ViewBag.City = DT.Rows[0]["City"];
+                ViewBag.address2 = DT.Rows[0]["address2"];
+                ViewBag.postcode = DT.Rows[0]["postcode"];
             }
             catch  {
                

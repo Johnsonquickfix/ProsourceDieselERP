@@ -17,7 +17,6 @@ namespace LaylaERP.Controllers
         // GET: Export
         public ActionResult Export()
         {
-
             return View();
         }
 

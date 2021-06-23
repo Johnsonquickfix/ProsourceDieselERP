@@ -18,20 +18,10 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string sqlquery = string.Empty;
-                if (!string.IsNullOrEmpty(from_dateusers) && !string.IsNullOrEmpty(to_dateusers))
-                {
-                    DateTime fromdateuser = DateTime.Parse(from_dateusers);
-                    DateTime todateusers = DateTime.Parse(to_dateusers);
-                    sqlquery = "select ID, User_Image, user_login, user_status, DATE(wp_users.user_registered) as created_date, if(user_status=0,'Active','InActive') as status,user_email,user_pass,meta_value from wp_users, wp_usermeta WHERE DATE(wp_users.user_registered)>='" + fromdateuser.ToString("yyyy-MM-dd") + "' and DATE(wp_users.user_registered)<='" + todateusers.ToString("yyyy-MM-dd") + "' and wp_usermeta.meta_key='wp_capabilities' And wp_users.ID=wp_usermeta.user_id And wp_users.ID IN (SELECT user_id FROM wp_usermeta WHERE meta_key = 'wp_capabilities' AND meta_value NOT LIKE '%customer%') ORDER BY ID DESC";
-                }
-                else
-                {
-                    sqlquery = "select ID, User_Image, user_login, user_status, DATE(wp_users.user_registered) as created_date, if(user_status=0,'Active','InActive') as status,user_email,user_pass,meta_value from wp_users, wp_usermeta WHERE wp_users.user_registered IS NOT NULL and wp_usermeta.meta_key='wp_capabilities' And wp_users.ID=wp_usermeta.user_id And wp_users.ID IN (SELECT user_id FROM wp_usermeta WHERE meta_key = 'wp_capabilities' AND meta_value NOT LIKE '%customer%') ORDER BY ID DESC";
-                }
+                
                 usersexportlist.Clear();
                 DataSet ds1 = new DataSet();
-
+                string sqlquery = "select ID, User_Image, user_login, user_status, if(user_status=0,'Active','InActive') as status,user_email,user_pass,meta_value from wp_users, wp_usermeta WHERE wp_users.user_registered IS NOT NULL and wp_usermeta.meta_key='wp_capabilities' And wp_users.ID=wp_usermeta.user_id And wp_users.ID IN (SELECT user_id FROM wp_usermeta WHERE meta_key = 'wp_capabilities' AND meta_value NOT LIKE '%customer%') ORDER BY ID DESC";
                 ds1 = DAL.SQLHelper.ExecuteDataSet(sqlquery);
                 string result = string.Empty;
 

@@ -265,7 +265,7 @@ function UpdateCustomerStatus() {
         },
     })
 }
-
+ 
 function changeRole(ID) {
     user_status = $("#new_role").val();
     var obj = { strVal: ID, user_status: user_status };

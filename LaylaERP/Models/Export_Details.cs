@@ -12,7 +12,7 @@ namespace LaylaERP.Models
 
         public int order_item_id
         {
-            get; set;
+             get; set;
         }
         public string orde_item_name
         {
@@ -41,6 +41,7 @@ namespace LaylaERP.Models
         public string tax { get; set; }
         public string total { get; set; }
         public string customer_id { get; set; }
+        public string orderstatus { get; set; }
         public List<Export_Details> exportdetails { get; set; }
 
 

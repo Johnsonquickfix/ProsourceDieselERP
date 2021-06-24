@@ -18,7 +18,14 @@ namespace LaylaERP.Controllers
             return View("StateRecycleTax");
         }
         [HttpGet]
-        public ActionResult StateRecycleTax(long id = 0)
+        //public ActionResult StateRecycleTax(long id = 0)
+        //{
+        //    FeeNTax model = new FeeNTax();
+        //    ViewBag.id = id;
+        //    return View(model);
+        //}
+
+        public ActionResult CreateNew(long id = 0)
         {
             FeeNTax model = new FeeNTax();
             ViewBag.id = id;
@@ -114,6 +121,21 @@ namespace LaylaERP.Controllers
             }
             return Json(lststu, JsonRequestBehavior.AllowGet);
         }
+
+        //[HttpGet]
+        //public JsonResult GetFeeNTaxList()
+        //{
+        //    string result = string.Empty;
+        //    FeeNTax FNT = new FeeNTax();
+        //    DataTable dt = new DataTable();
+        //    dt = FeeNTaxRepository.FeeNTaxList();
+
+
+        //    result = JsonConvert.SerializeObject(dt);
+
+
+        //    return Json(new { data = result }, 0);
+        //}
 
     }
 }

@@ -139,11 +139,11 @@
                     new MySqlParameter("@variation_id", variation_id)
                 };
                 string strSQl = "SELECT DISTINCT post.id,ps.ID pr_id,CONCAT(post.post_title, ' (' , COALESCE(psku.meta_value,'') , ') - ' ,LTRIM(REPLACE(REPLACE(COALESCE(ps.post_excerpt,''),'Size:', ''),'Color:', ''))) as post_title"
-                            + " , COALESCE(pr.meta_value, 0) price,COALESCE(psr.meta_value, 0) sale_price FROM wp_posts as post"
+                            + " , COALESCE(pr.meta_value, 0) reg_price,COALESCE(psr.meta_value, 0) sale_price FROM wp_posts as post"
                             + " LEFT OUTER JOIN wp_posts ps ON ps.post_parent = post.id and ps.post_type LIKE 'product_variation'"
                             + " left outer join wp_postmeta psku on psku.post_id = ps.id and psku.meta_key = '_sku'"
-                            + " left outer join wp_postmeta pr on pr.post_id = ps.id and pr.meta_key = '_price'"
-                            + " left outer join wp_postmeta psr on psr.post_id = COALESCE(ps.id, post.id) and psr.meta_key = '_sale_price'"
+                            + " left outer join wp_postmeta pr on pr.post_id = ps.id and pr.meta_key = '_regular_price'"
+                            + " left outer join wp_postmeta psr on psr.post_id = COALESCE(ps.id, post.id) and psr.meta_key = '_price'"
                             + " WHERE post.post_type = 'product' and post.id = @product_id and ps.id = @variation_id;";
                 MySqlDataReader sdr = SQLHelper.ExecuteReader(strSQl, parameters);
                 while (sdr.Read())
@@ -160,8 +160,8 @@
                         productsModel.product_name = sdr["post_title"].ToString();
                     else
                         productsModel.product_name = string.Empty;
-                    if (sdr["price"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["price"].ToString().Trim()))
-                        productsModel.price = decimal.Parse(sdr["price"].ToString());
+                    if (sdr["reg_price"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["price"].ToString().Trim()))
+                        productsModel.price = decimal.Parse(sdr["reg_price"].ToString());
                     else
                         productsModel.price = 0;
                     if (sdr["sale_price"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["sale_price"].ToString().Trim()))
@@ -187,11 +187,11 @@
                     new MySqlParameter("@variation_id", variation_id)
                 };
                 string strSQl = "SELECT DISTINCT post.id,ps.ID pr_id,CONCAT(post.post_title, ' (' , COALESCE(psku.meta_value,'') , ') - ' ,LTRIM(REPLACE(REPLACE(COALESCE(ps.post_excerpt,''),'Size:', ''),'Color:', ''))) as post_title"
-                            + " , COALESCE(pr.meta_value, 0) price,COALESCE(psr.meta_value, 0) sale_price FROM wp_posts as post"
+                            + " , COALESCE(pr.meta_value, 0) reg_price,COALESCE(psr.meta_value, 0) sale_price FROM wp_posts as post"
                             + " LEFT OUTER JOIN wp_posts ps ON ps.post_parent = post.id and ps.post_type LIKE 'product_variation'"
                             + " left outer join wp_postmeta psku on psku.post_id = ps.id and psku.meta_key = '_sku'"
-                            + " left outer join wp_postmeta pr on pr.post_id = ps.id and pr.meta_key = '_price'"
-                            + " left outer join wp_postmeta psr on psr.post_id = COALESCE(ps.id, post.id) and psr.meta_key = '_sale_price'"
+                            + " left outer join wp_postmeta pr on pr.post_id = ps.id and pr.meta_key = '_regular_price'"
+                            + " left outer join wp_postmeta psr on psr.post_id = COALESCE(ps.id, post.id) and psr.meta_key = '_price'"
                             + " WHERE post.post_type = 'product' and post.id = @product_id and ps.id = @variation_id ";
                 if (product_id == 611172)
                     strSQl += " OR (post.id = 78676 and COALESCE(ps.id,0) = 0);";
@@ -215,14 +215,15 @@
                         productsModel.product_name = sdr["post_title"].ToString();
                     else
                         productsModel.product_name = string.Empty;
-                    if (sdr["price"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["price"].ToString().Trim()))
-                        productsModel.price = decimal.Parse(sdr["price"].ToString());
+                    if (sdr["reg_price"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["reg_price"].ToString().Trim()))
+                        productsModel.reg_price = decimal.Parse(sdr["reg_price"].ToString());
                     else
-                        productsModel.price = 0;
+                        productsModel.reg_price = 0;
                     if (sdr["sale_price"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["sale_price"].ToString().Trim()))
                         productsModel.sale_price = decimal.Parse(sdr["sale_price"].ToString().Trim());
                     else
-                        productsModel.sale_price = productsModel.price;
+                        productsModel.sale_price = productsModel.reg_price;
+                    productsModel.price = productsModel.sale_price;
                     productsModel.quantity = 1;
                     /// free item
                     if (productsModel.product_id == 78676) { productsModel.is_free = true; productsModel.quantity = 2; }
@@ -286,7 +287,7 @@
                 {
                     new MySqlParameter("@strCoupon", strCoupon)
                 };
-                string strSQl = "select post_title,max(case when pm.meta_key = 'discount_type' then pm.meta_value else '' end) discount_type,max(case when pm.meta_key = 'product_ids' then pm.meta_value else '' end) product_ids,max(case when pm.meta_key = 'exclude_product_ids' then pm.meta_value else '' end) exclude_product_ids,"
+                string strSQl = "select post_title,post_title title,'add_coupon' type,max(case when pm.meta_key = 'discount_type' then pm.meta_value else '' end) discount_type,max(case when pm.meta_key = 'product_ids' then pm.meta_value else '' end) product_ids,max(case when pm.meta_key = 'exclude_product_ids' then pm.meta_value else '' end) exclude_product_ids,"
                                 + "     max(case when pm.meta_key = 'date_expires' then pm.meta_value else '' end) date_expires,max(case when pm.meta_key = 'coupon_amount' then pm.meta_value else '' end) coupon_amount"
                                 + " from wp_posts p inner join wp_postmeta pm on pm.post_id = p.id"
                                 + " where lower(post_title) = @strCoupon And post_type = 'shop_coupon' group by pm.post_id";

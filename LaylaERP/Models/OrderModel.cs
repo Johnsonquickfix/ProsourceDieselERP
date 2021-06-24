@@ -96,6 +96,7 @@
         public bool is_free { get; set; }
         public long group_id { get; set; }
         public decimal quantity { get; set; }
+        public decimal reg_price { get; set; }
         public decimal price { get; set; }
         public decimal sale_price { get; set; }
         public decimal total { get; set; }

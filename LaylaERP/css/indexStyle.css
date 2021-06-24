@@ -384,21 +384,26 @@ display:inline-block; padding-left:30px;}
 }
 /***select2*/
 #userprofile .select2-container .select2-selection--single,
-#userprofile .select2-selection .select2-selection--single {
-    border: 1px solid #d2d6de;
+#userprofile .select2-selection .select2-selection--single,
+.select2-container--default .select2-selection--single,
+.select2-selection .select2-selection--single {
+    border: 1px solid #d2d6de !important;
     border-radius: 0;
-    padding: 0px 0px;
-    height: 34px;
+    padding: 0px 0px !important;
+    height: 34px !important;
 }
 
-    #userprofile .select2-container .select2-selection--single .select2-selection__rendered {
-        color: #4f4f4f;
-        line-height: 32px;
-        margin-top: 0px;
+    #userprofile .select2-container .select2-selection--single .select2-selection__rendered,
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        color: #4f4f4f !important;
+        line-height: 32px !important;
+        margin-top: 0px !important;
+        padding-left:12px !important
     }
 
-    #userprofile .select2-container .select2-selection--single .select2-selection__arrow {
-        height: 32px;
+    #userprofile .select2-container .select2-selection--single .select2-selection__arrow,
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 32px !important;
     }
 
     #userprofile .select2-container .select2-selection--single .select2-selection__placeholder {
@@ -457,4 +462,10 @@ button#btnGeneratePassword {
 }
 div#resetpassword {
     z-index: 99999;
+}
+.swal2-container {
+    z-index: 99999 !important;
+}
+.select2-container .select2-selection--single .select2-selection__clear {
+    float: right !important;
 }

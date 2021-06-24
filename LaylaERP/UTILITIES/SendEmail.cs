@@ -11,14 +11,49 @@
 
     public class SendEmail
     {
-        public void SendEmailToUser(string varReceipientEmailId, string varOTP)
+        public static string SendEmails(string varReceipientEmailId, string strSubject, string strBody)
         {
+            string result = "Your mail has been sent successfuly !";
             try
             {
-                GlobalVariable.strEmailNotSendMsg = string.Empty;
-                if (GlobalVariable.strSenderEmailId.ToString().Length != 0 && GlobalVariable.strSenderEmailPwd.ToString().Length != 0 && GlobalVariable.strSMTPServerName.ToString().Length != 0 && GlobalVariable.strSMTPServerPortNo.ToString().Length != 0)
+                OperatorModel om = CommanUtilities.Provider.GetCurrent();
+                if (om.SenderEmailID.Length != 0 && om.SenderEmailPwd.Length != 0 && om.SMTPServerName.Length != 0 && om.SMTPServerPortNo.Length != 0)
                 {
-                    using (MailMessage mm = new MailMessage(GlobalVariable.strSenderEmailId.ToString(), varReceipientEmailId.ToString()))
+                    using (MailMessage mm = new MailMessage(om.SenderEmailID.ToString(), varReceipientEmailId, strSubject, strBody))
+                    {
+                        //mm.IsBodyHtml = false;
+                        SmtpClient smtp = new SmtpClient();
+                        smtp.Host = om.SMTPServerName.ToString(); // "smtp.gmail.com";
+                        smtp.EnableSsl = true;
+                        NetworkCredential NetworkCred = new NetworkCredential(om.SenderEmailID.ToString(), om.SenderEmailPwd.ToString());
+                        smtp.UseDefaultCredentials = false;
+                        smtp.Credentials = NetworkCred;
+                        //smtp.Timeout = 5000;
+                        //GlobalVariable.strSMTPServerPortNo = "587";
+                        smtp.Port = Convert.ToInt32(om.SMTPServerPortNo); // 587;
+                        smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
+                        smtp.Send(mm);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                result = "Some problems occurred with the OTP email. Please contact your Administrator!!";
+
+                //throw ex;
+            }
+            return result;
+        }
+
+        public string SendEmailToUser(string varReceipientEmailId, string varOTP)
+        {
+            string result = "Your mail has been sent successfuly !";
+            try
+            {
+                OperatorModel om = CommanUtilities.Provider.GetCurrent();
+                if (om.SenderEmailID.Length != 0 && om.SenderEmailPwd.Length != 0 && om.SMTPServerName.Length != 0 && om.SMTPServerPortNo.Length != 0)
+                {
+                    using (MailMessage mm = new MailMessage(om.SenderEmailID.ToString(), varReceipientEmailId.ToString()))
                     {
 
                         mm.Subject = "User Information";
@@ -29,68 +64,28 @@
 
                         //mm.IsBodyHtml = false;
                         SmtpClient smtp = new SmtpClient();
-                        smtp.Host = GlobalVariable.strSMTPServerName.ToString(); // "smtp.gmail.com";
+                        smtp.Host = om.SMTPServerName.ToString(); // "smtp.gmail.com";
                         smtp.EnableSsl = true;
-                        NetworkCredential NetworkCred = new NetworkCredential(GlobalVariable.strSenderEmailId.ToString(), GlobalVariable.strSenderEmailPwd.ToString());
+                        NetworkCredential NetworkCred = new NetworkCredential(om.SenderEmailID.ToString(), om.SenderEmailPwd.ToString());
                         smtp.UseDefaultCredentials = false;
                         smtp.Credentials = NetworkCred;
                         //smtp.Timeout = 5000;
                         //GlobalVariable.strSMTPServerPortNo = "587";
-                        smtp.Port = Convert.ToInt32(GlobalVariable.strSMTPServerPortNo.ToString()); // 587;
+                        smtp.Port = Convert.ToInt32(om.SMTPServerPortNo); // 587;
                         smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
                         smtp.Send(mm);
+
                     }
                 }
             }
             catch (Exception ex)
             {
-                //adderrorlog(ex.Message.ToString(), " Email Status ");
-                //GlobalVariable.strEmailNotSendMsg = "Some problems occurred with the OTP email. Please contact your Administrator!! ";
-                throw ex;
+                result = "Some problems occurred with the OTP email. Please contact your Administrator!!";
+                
+                //throw ex;
             }
+            return result;
         }
-
-        public void SendEmailToCustomer(string varReceipientEmailId, string varfilepath, string varBodyMessage)
-        {
-            try
-            {
-                GlobalVariable.strEmailNotSendMsg = string.Empty;
-                if (GlobalVariable.strSenderEmailId.ToString().Length != 0 && GlobalVariable.strSenderEmailPwd.ToString().Length != 0 && GlobalVariable.strSMTPServerName.ToString().Length != 0 && GlobalVariable.strSMTPServerPortNo.ToString().Length != 0)
-                {
-                    using (MailMessage mm = new MailMessage(GlobalVariable.strSenderEmailId.ToString(), varReceipientEmailId.ToString()))
-                    {
-
-                        mm.Subject = "Order Information";
-
-                        mm.Body = varBodyMessage + "\n" + "This is auto generated email having related to your order details.";
-
-
-
-                        if (varfilepath.Length != 0)
-                            mm.Attachments.Add(new Attachment(varfilepath));
-                        //mm.IsBodyHtml = false;
-                        SmtpClient smtp = new SmtpClient();
-                        smtp.Host = GlobalVariable.strSMTPServerName.ToString(); // "smtp.gmail.com";
-                        smtp.EnableSsl = true;
-                        NetworkCredential NetworkCred = new NetworkCredential(GlobalVariable.strSenderEmailId.ToString(), GlobalVariable.strSenderEmailPwd.ToString());
-                        smtp.UseDefaultCredentials = false;
-                        smtp.Credentials = NetworkCred;
-                        //smtp.Timeout = 5000;
-                        //GlobalVariable.strSMTPServerPortNo = "587";
-                        smtp.Port = Convert.ToInt32(GlobalVariable.strSMTPServerPortNo.ToString()); // 587;
-                        smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
-                        smtp.Send(mm);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                //adderrorlog(ex.Message.ToString(), " Email Status ");
-                GlobalVariable.strEmailNotSendMsg = "Some problems occurred with the OTP email. Please contact your Administrator!! ";
-            }
-        }
-
-
     }
 
 }

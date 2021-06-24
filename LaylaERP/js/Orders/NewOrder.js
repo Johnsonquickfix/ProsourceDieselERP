@@ -53,14 +53,14 @@ function BindStateCounty(ctr, obj) {
 ///Get New Order No
 function NewOrderNo() {
     var opt = { strValue1: '' };
-    $.ajax({
-        type: "POST", url: '/Orders/GetNewOrderNo', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
-        success: function (result) {
-            $('#hfOrderNo').val(result.message); $('#lblOrderNo').text('Order #' + result.message + ' detail ');
-        },
-        error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
-        async: false
-    });
+    //$.ajax({
+    //    type: "POST", url: '/Orders/GetNewOrderNo', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
+    //    success: function (result) {
+    //        $('#hfOrderNo').val(result.message); $('#lblOrderNo').text('Order #' + result.message + ' detail ');
+    //    },
+    //    error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
+    //    async: false
+    //});
 }
 ///Find Address of Customer
 function CustomerAddress() {
@@ -332,7 +332,6 @@ function bindCouponList(code, data) {
             let today = new Date();
             if (exp_date < today) { swal('Alert!', 'Coupon code has been expired.', "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false; }
         }
-        console.log(data);
         //var zPCnt = 0, rq_prd_ids = [], zExcPCnt = 0, exclude_ids = [];
         //if (data[0].exclude_product_ids != "" && data[0].exclude_product_ids != null) {
         //    exclude_ids = data[0].exclude_product_ids.split(",").map((el) => parseInt(el));
@@ -356,7 +355,7 @@ function bindCouponList(code, data) {
                 layoutHtml += '<span>' + data[0].title + ' $ ' + data[0].coupon_amount + '</span>';
             else
                 layoutHtml += '<span>' + data[0].title + '</span>';
-            if (data[0].type != 'auto_coupon') {
+            if (data[0].type == 'add_coupon') {
                 layoutHtml += '<button type="button" class="btn btn-box-tool pull-right" onclick="removeCouponInList(\'' + data[0].post_title + '\');">';
                 layoutHtml += '<i class="fa fa-times"></i>';
                 layoutHtml += '</button>';
@@ -417,7 +416,7 @@ function calculateDiscountAcount() {
                         var pid = $(this).data('pid'), vid = $(this).data('vid');
                         if (!exclude_ids.includes(pid) && !exclude_ids.includes(vid) && ((rq_prd_ids.includes(pid) || rq_prd_ids.includes(vid)) || rq_prd_ids == 0)) {
                             zQty = parseFloat($(this).find("[name=txt_ItemQty]").val()) || 0.00;
-                            zGrossAmount = parseFloat($(this).find(".TotalAmount").data("salerate")) || 0.00;
+                            zGrossAmount = parseFloat($(this).find(".TotalAmount").data("regprice")) || 0.00;
                             zGrossAmount = zGrossAmount * zQty;
                             $(this).find(".TotalAmount").data("amount", zGrossAmount.toFixed(2)); $(this).find(".TotalAmount").text(zGrossAmount.toFixed(2));
 
@@ -457,7 +456,7 @@ function calculateDiscountAcount() {
         var zCouponAmt = 0.00, zDiscType = 'fixed', zQty = 0.00, zGrossAmount = 0.00, zDisAmt = 0.00;
         $("#tblAddItemFinal > tbody  > tr").each(function () {
             zQty = parseFloat($(this).find("[name=txt_ItemQty]").val()) || 0.00;
-            zGrossAmount = parseFloat($(this).find(".TotalAmount").data("salerate")) || 0.00;
+            zGrossAmount = parseFloat($(this).find(".TotalAmount").data("regprice")) || 0.00;
             zGrossAmount = zGrossAmount * zQty;
             $(this).find(".TotalAmount").data("amount", zGrossAmount.toFixed(2)); $(this).find(".TotalAmount").text(zGrossAmount.toFixed(2));
 
@@ -505,6 +504,25 @@ function calculateStateRecyclingFee() {
 
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Item Tab Section ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function getItemList() {
+    var coupon_title = {
+        "118": "Memory Foam Mattress",
+        "611172": "Hybrid Mattress",
+        "14023": "Kapok Pillow",
+        "611238": "Memory Foam Pillow",
+        "20861": "Mattress Foundation",
+        "31729": "Bed Frame",
+        "611252": "Platform Bed",
+        "611286": "Adjustable Base",
+        "124524": "Bamboo Sheets",
+        "128244": "Weighted Blanket",
+        "56774": "Memory Foam Topper",
+        "611268": "Essential Mattress Protector",
+        "612955": "Full Encasement Mattress Protector",
+        "612947": "Cooling Mattress Protector",
+        "611220": "Pet Bed",
+        "612995": "Adjustable Base Plus",
+        "733500": "Metal Platform Base",
+    };
     var res = $('#ddlProduct').val().split('$');
     var pid = parseInt(res[0]) || 0, vid = parseInt(res[1]) || 0;
     var obj = { strValue1: pid, strValue2: vid };
@@ -512,11 +530,25 @@ function getItemList() {
     $.ajax({
         type: "POST", url: '/Orders/GetProductInfo', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
         success: function (data) {
-            var itemsDetailsxml = [];
+            var itemsDetailsxml = [], auto_code = [];
             for (var i = 0; i < data.length; i++) {
+                let coupon_amt = 0.00; let coupon_type = 'fixed_product';
+                if (!data[i].is_free) {
+                    if (data[i].reg_price > data[i].sale_price) {
+                        let coupon_amt = (data[i].reg_price - data[i].sale_price) * data[i].quantity;
+                        let cpn_name = coupon_title[data[i].product_id];
+                        let pro_ids = data[i].variation_id + " ";
+                        auto_code.push({
+                            post_title: data[i].product_id + '_' + data[i].variation_id, title: cpn_name, type: 'diff', discount_type: coupon_type, coupon_amount: coupon_amt, product_ids: pro_ids, exclude_product_ids: ''
+                        });
+                    }
+                    bindCouponList(data[i].product_id + '_' + data[i].variation_id, auto_code);
+                }
+
                 itemsDetailsxml.push({
-                    "PKey": data[i].product_id + '_' + data[i].variation_id, "product_id": data[i].product_id, "variation_id": data[i].variation_id, "product_name": data[i].product_name, "quantity": data[i].quantity, "sale_rate": data[i].sale_price, "total": (data[i].sale_price * data[i].quantity), "discount": 0, "tax_amount": (((data[i].sale_price * data[i].quantity) * tax_rate) / 100).toFixed(2), "shipping_amount": 0, "is_free": data[i].is_free, "group_id": data[i].group_id
+                    PKey: data[i].product_id + '_' + data[i].variation_id, product_id: data[i].product_id, variation_id: data[i].variation_id, product_name: data[i].product_name, quantity: data[i].quantity, reg_price: data[i].reg_price, sale_rate: data[i].sale_price, total: (data[i].reg_price * data[i].quantity), discount_type: coupon_type, discount: coupon_amt, tax_amount: (((data[i].reg_price * data[i].quantity) * tax_rate) / 100).toFixed(2), shipping_amount: 0, is_free: data[i].is_free, group_id: data[i].group_id
                 });
+
             }
             bindItemListDataTable(itemsDetailsxml);
         },
@@ -535,13 +567,13 @@ function bindItemListDataTable(data) {
                     layoutHtml += '<tr id="tritemId_' + data[i].PKey + '" data-id="' + data[i].PKey + '" data-pid="' + data[i].product_id + '" data-vid="' + data[i].variation_id + '" data-pname="' + data[i].product_name + '" data-gid="' + data[i].group_id + '" data-freeitem="' + data[i].is_free + '">';
                     layoutHtml += '<td class="text-center"><a class="btn menu-icon-gr vd_red btnDeleteItem billinfo" tabitem_itemid="' + data[i].PKey + '" onclick="removeItemsInTable(\'' + data[i].PKey + '\');"> <i class="glyphicon glyphicon-trash"></i> </a></td>';
                     layoutHtml += '<td>' + data[i].product_name + '</td>';
-                    layoutHtml += '<td class="text-right">' + data[i].sale_rate + '</td>';
+                    layoutHtml += '<td class="text-right">' + data[i].reg_price + '</td>';
                     if (data[i].is_free)
                         layoutHtml += '<td><input min="1" autocomplete="off" disabled class="form-control billinfo number rowCalulate" type="number" id="txt_ItemQty_' + data[i].PKey + '" value="' + data[i].quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
                     else
                         layoutHtml += '<td><input min="1" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_ItemQty_' + data[i].PKey + '" value="' + data[i].quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
-                    layoutHtml += '<td class="TotalAmount text-right" data-salerate="' + data[i].sale_rate + '" data-discount="' + data[i].discount + '" data-amount="' + data[i].total + '" data-taxamount="' + data[i].tax_amount + '" data-shippingamt="' + data[i].shipping_amount + '">' + data[i].total + '</td>';
-                    layoutHtml += '<td class="text-right RowDiscount" data-disctype="-" data-couponamt="0">' + data[i].discount + '</td>';
+                    layoutHtml += '<td class="TotalAmount text-right" data-regprice="' + data[i].reg_price + '"data-salerate="' + data[i].sale_rate + '" data-discount="' + data[i].discount + '" data-amount="' + data[i].total + '" data-taxamount="' + data[i].tax_amount + '" data-shippingamt="' + data[i].shipping_amount + '">' + data[i].total + '</td>';
+                    layoutHtml += '<td class="text-right RowDiscount" data-disctype="' + data[i].discount_type + '" data-couponamt="0">' + data[i].discount + '</td>';
                     layoutHtml += '<td class="text-right RowTax">' + data[i].tax_amount + '</td>';
                     layoutHtml += '</tr>';
                 }
@@ -587,7 +619,7 @@ function removeItemsInTable(id) {
     swal({ title: "Are you sure?", text: 'Would you like to Remove this Item?', type: "question", showCancelButton: true })
         .then((result) => {
             if (result.value) {
-                $('#tritemId_' + id).remove();                 
+                $('#tritemId_' + id).remove();
                 //auto Coupon add
                 ApplyAutoCoupon();
                 calculateDiscountAcount();
@@ -704,7 +736,7 @@ function saveCO() {
     $('#tblAddItemFinal > tbody  > tr').each(function (index, tr) {
         var pKey = parseInt(index);
         var qty = parseFloat($(this).find("[name=txt_ItemQty]").val()) || 0.00;
-        var rate = parseFloat($(this).find(".TotalAmount").data('salerate')) || 0.00;
+        var rate = parseFloat($(this).find(".TotalAmount").data('regprice')) || 0.00;
         var grossAmount = parseFloat($(this).find(".TotalAmount").data('amount')) || 0.00;
         var discountAmount = parseFloat($(this).find(".TotalAmount").data('discount')) || 0.00;
         var taxAmount = parseFloat($(this).find(".TotalAmount").data('taxamount')) || 0.00;
@@ -906,7 +938,7 @@ function CreatePaypalInvoice(oid, pp_email, access_token) {
     //get items
     $('#tblAddItemFinal > tbody  > tr').each(function (index, tr) {
         var qty = parseFloat($(this).find("[name=txt_ItemQty]").val()) || 0.00;
-        var rate = parseFloat($(this).find(".TotalAmount").data('salerate')) || 0.00;
+        var rate = parseFloat($(this).find(".TotalAmount").data('regprice')) || 0.00;
         var taxAmount = parseFloat($(this).find(".TotalAmount").data('taxamount')) || 0.00;
         var discountAmount = parseFloat($(this).find(".TotalAmount").data('discount')) || 0.00;
         itemsList.push({

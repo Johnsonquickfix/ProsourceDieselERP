@@ -26,12 +26,11 @@ function GetUsersCount() {
     });
 }
 function Datagrid(role_type, type) {
-   // var type = "Accounting";
-    
+   // var type = "Accounting";     
     var columnDefs = [        
     ]
 
-    if (type == "Administrator") {
+    if (type.toUpperCase() == "ADMINISTRATOR") {
         columnDefs = [
 
             {

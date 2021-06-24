@@ -112,7 +112,7 @@
                             <div class="form-group">
                                 <label for="exampleInputEmail1">City</label>
                                 <select class="form-control" id="txtCity">
-                                    <option></option>
+                                    <option selected value="@Model.City">@Model.City </option>
                                 </select>
 
                             </div>
@@ -123,7 +123,7 @@
                             <div class="form-group">
                                 <label for="exampleInputEmail1">State</label>
                                 <select class="form-control" id="txtState">
-                                    <option></option>
+                                    <option selected value="@Model.State">@Model.State </option>
                                 </select>
 
                             </div>
@@ -186,14 +186,14 @@
                 error: function (xhr, status, err) { }, cache: true
             }
         });
-        $.get('GetCity', function (data) {
-            var Ct = $("#hfCity").val();
-            $.each(data, function (index, value) {
-                if (Ct == value)
-                    $('<option selected>').val(value).text(value).appendTo("#txtCity");
+        //$.get('GetCity', function (data) {
+        //    var Ct = $("#hfCity").val();
+        //    $.each(data, function (index, value) {
+        //        if (Ct == value)
+        //            $('<option selected>').val(value).text(value).appendTo("#txtCity");
 
-            })
-        })
+        //    })
+        //})
 
         $("#txtState").select2({
             allowClear: true, minimumInputLength: 3, placeholder: "Search State",
@@ -205,14 +205,14 @@
             }
         });
 
-        $.get('GetState', function (data) {
-            var st = $("#hfState").val();
-            $.each(data, function (index, value) {
-                if (st == value)
-                    $('<option selected>').val(value).text(value).appendTo("#txtState");
+        //$.get('GetState', function (data) {
+        //    var st = $("#hfState").val();
+        //    $.each(data, function (index, value) {
+        //        if (st == value)
+        //            $('<option selected>').val(value).text(value).appendTo("#txtState");
 
-            })
-        })
+        //    })
+        //})
 
         $(document).on('click', "#btnSave", function () {
             AddCustomer();
@@ -285,29 +285,39 @@
 
         $('#txtUserEmail').change(function () {
 
-            email = $("#txtUserEmail").val();
-            var obj = {
-                user_email: email
+            var emailReg = /^([\w-\.]+@@([\w-]+\.)+[\w-]{2,4})?$/;
+            var emailaddressVal = $("#txtUserEmail").val();
+            if (!emailReg.test(emailaddressVal)) {
+                $("#txtUserEmail").val('');
+                swal('Alert', 'Is not a valid email', 'error').then(function () { swal.close(); $('#txtUserEmail').focus(); });
             }
-            $.ajax({
-                url: '/Users/GetEmailName/', dataType: 'json', type: 'Post',
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify(obj),
-                dataType: "json",
-                success: function (data) {
-                    if (data.status == false) {
+            else {
 
-                    }
-                    else {
-                        $("#txtUserEmail").val("");
-                        swal('Alert', 'User email is already exists ', 'error').then(function () { swal.close(); $('#txtUserEmail').focus(); });
-                    }
-                },
+                email = $("#txtUserEmail").val();
+                var obj = {
+                    user_email: email
+                }
+                $.ajax({
+                    url: '/Users/GetEmailName/', dataType: 'json', type: 'Post',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(obj),
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.status == false) {
 
-                error: function (error) {
-                    swal('Error!', 'something went wrong', 'error');
-                },
-            })
+                        }
+                        else {
+                            $("#txtUserEmail").val("");
+                            swal('Alert', 'User email is already exists ', 'error').then(function () { swal.close(); $('#txtUserEmail').focus(); });
+                        }
+                    },
+
+                    error: function (error) {
+                        swal('Error!', 'something went wrong', 'error');
+                    },
+                })
+            }
+
         });
 
     });

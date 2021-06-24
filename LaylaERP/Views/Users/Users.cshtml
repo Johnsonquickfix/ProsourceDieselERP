@@ -45,53 +45,20 @@
             </div>
             <div class="alignleft actions">
                 <select name="new_role" id="new_role">
-                    <option value="">Change role to…</option>
-                    <option value="accounting">Accounting</option>
-                    <option value="administrator">Administrator</option>
-                    <option value="author">Author</option>
-                    <option value="contributor">Contributor</option>
-                    <option value="editor">Editor</option>
-                    <option value="modsquad">Mod Squad</option>
-                    <option value="wpseo_editor">SEO Editor</option>
-                    <option value="seo_manager">SEO Manager</option>
-                    <option value="shop_manager">Shop Manager</option>
-                    <option value="subscriber">Subscriber</option>
-                    <option value="supplychainmanager">Supply Chain Manager</option>
+                    <option value="">Change role to…</option>                   
                 </select>
                 <input type="submit" name="changeit" id="changeit" class="button" value="Change">
             </div>
 
             <div class="alignleft actions">
                 <select name="grant_role" id="grant_role">
-                    <option value="">Grant Roal to…</option>
-                    <option value="accounting">Accounting</option>
-                    <option value="administrator">Administrator</option>
-                    <option value="author">Author</option>
-                    <option value="contributor">Contributor</option>
-                    <option value="editor">Editor</option>
-                    <option value="modsquad">Mod Squad</option>
-                    <option value="wpseo_editor">SEO Editor</option>
-                    <option value="seo_manager">SEO Manager</option>
-                    <option value="shop_manager">Shop Manager</option>
-                    <option value="subscriber">Subscriber</option>
-                    <option value="supplychainmanager">Supply Chain Manager</option>
+                    <option value="">Grant Roal to…</option>                   
                 </select>
                 <input type="submit" name="Grantrole" id="Grantrole" class="button" value="Grant">
             </div>
             <div class="alignleft actions">
                 <select name="revoke_role" id="revoke_role">
-                    <option value="">Revoke Roal to…</option>
-                    <option value="accounting">Accounting</option>
-                    <option value="administrator">Administrator</option>
-                    <option value="author">Author</option>
-                    <option value="contributor">Contributor</option>
-                    <option value="editor">Editor</option>
-                    <option value="modsquad">Mod Squad</option>
-                    <option value="wpseo_editor">SEO Editor</option>
-                    <option value="seo_manager">SEO Manager</option>
-                    <option value="shop_manager">Shop Manager</option>
-                    <option value="subscriber">Subscriber</option>
-                    <option value="supplychainmanager">Supply Chain Manager</option>
+                    <option value="">Revoke Roal to…</option>                   
                 </select>
                 <input type="submit" name="Revoke" id="Revoke" class="button" value="Revoke">
             </div>
@@ -149,6 +116,26 @@
             $('.subsubsub li a').removeClass('current');
             $(this).addClass('current'); $(this).parent().addClass('current');
         });
+
+        $.get('/Users/GetRolesType', function (data) {
+            var items = "";
+            $.each(data, function (index, value) {
+                items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#new_role");
+            })
+        })
+        $.get('/Users/GetRolesType', function (data) {
+            var items = "";
+            $.each(data, function (index, value) {
+                items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#grant_role");
+            })
+        })
+        $.get('/Users/GetRolesType', function (data) {
+            var items = "";
+            $.each(data, function (index, value) {
+                items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#revoke_role");
+            })
+        })
+
         GetUsersCount();
         setTimeout(function () { Datagrid('', $("#hfroletype").val()); }, 50);
 

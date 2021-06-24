@@ -477,10 +477,10 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strquery = "select count(ID) from wp_users where user_login = '" + model.user_login  + "' ";
+                string strquery = "select count(ID) from wp_users where user_login = '" + model.user_nicename  + "' ";
                 MySqlParameter[] para =
                 {
-
+                      
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strquery).ToString());
                 return result;
@@ -497,7 +497,7 @@ namespace LaylaERP.BAL
                 string strquery = "select count(ID) from wp_users where user_email = '" + model.user_email + "' ";
                 MySqlParameter[] para =
                 {
-
+                      
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strquery).ToString());
                 return result;

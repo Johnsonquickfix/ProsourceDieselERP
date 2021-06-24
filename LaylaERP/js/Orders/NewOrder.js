@@ -599,7 +599,7 @@ function bindItemListDataTable(data) {
         layoutHtml += '< th style = "width: 55%" > Item</th >';
         layoutHtml += '<th class="text-right" style="width: 8%">Sale Price</th>';
         layoutHtml += '<th class="text-right" style="width: 8%">Quantity</th>';
-        layoutHtml += '<th class="text-right" style="width: 8%">Total</th>';
+        layoutHtml += '<th class="text-right" style="width: 8%">Sub-Total</th>';
         layoutHtml += '<th class="text-right" style="width: 8%">Discount</th>';
         layoutHtml += '<th class="text-right" style="width: 8%">Tax</th>';
         layoutHtml += '</tr>';

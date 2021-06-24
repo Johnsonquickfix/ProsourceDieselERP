@@ -80,18 +80,7 @@
                             <div class="form-group">
                                 <label for="exampleInputEmail1">User Role</label>
                                 <select class="form-control" id="txtUserRole">
-                                    <option value="0">Select Role</option>
-                                    <option value="accounting">Accounting</option>
-                                    <option value="administrator">Administrator</option>
-                                    <option value="author">Author</option>
-                                    <option value="contributor">Contributor</option>
-                                    <option value="editor">Editor</option>
-                                    <option value="modsquad">Mod Squad</option>
-                                    <option value="wpseo_editor">SEO Editor</option>
-                                    <option value="seo_manager">SEO Manager</option>
-                                    <option value="shop_manager">Shop Manager</option>
-                                    <option value="subscriber">Subscriber</option>
-                                    <option value="supplychainmanager">Supply Chain Manager</option>
+                                    <option selected="selected" value="0">Select Type</option>
                                 </select>
                             </div>
 
@@ -212,8 +201,15 @@
         //    })
         //})
 
+        $.get('GetRolesType', function (data) {
+            var items = "";          
+            $.each(data, function (index, value) {
+                items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#txtUserRole");
+            })            
+        })
+        
 
-        $(document).on('click', "#btnSave", function () {
+        $(document).on('click', "#btnSave", function () {           
             AddCustomer();
         })
         

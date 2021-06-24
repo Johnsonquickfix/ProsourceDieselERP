@@ -21,6 +21,7 @@
                     <input type="button" id="btnvieworders" class="button" value="View All" />
                     From <input type="text" name="fromdate" id="fromdate" />
                     To<input type="text" name="todate" id="todate" />
+
                     @*From <input type="date" name="fromdate" id="fromdate">
         To <input type="date" name="todate" id="todate" >*@
                     <input type="button" id="btnorder" class="button" value="GO" />
@@ -90,7 +91,7 @@
                     <div class="postbox">
                         <div class="inside reports-wide">
                             <div class="widefat">
-                                <table class="table-blue" id="exportcustomersdata">
+                                <table class="table-blue" id="exportcustomersdata" style="width:100%;">
                                     <thead>
                                         <tr>
                                             <th></th>
@@ -120,6 +121,10 @@
             //DatagridCustomers();
             //DatagridOrder();
             //DatagridUsers();
+
+            
+
+            
 //Button click for Orders
             $("#btnorder").click(function () {
                 if ($("#fromdate").val() == "") {
@@ -134,11 +139,11 @@
                     var d3 = new Date();
                     var d4 = d3.getFullYear() + '-' + ("0" + (d3.getMonth() + 1)).slice(-2) + '-' + d3.getDate();
                     if (d1 > d2) {
-                        swal('Alert', 'Please check From date should not be greater than To date ', 'error').then(function () { swal.close(); $('#fromdate').focus(); });
+                        swal('Alert', 'Please check, From date should not be greater than To date ', 'error').then(function () { swal.close(); $('#fromdate').focus(); });
                     }
                     else if (d2 > d4)
                     {
-                        swal('Alert', 'Please check To date should not be greater than current date ', 'error').then(function () { swal.close(); $('#todate').focus(); });
+                        swal('Alert', 'Please check, To date should not be greater than current date ', 'error').then(function () { swal.close(); $('#todate').focus(); });
                     }
                     else {
                         DatagridOrder();
@@ -162,7 +167,7 @@
                     d5 = $("#fromdateusers").val();
                     d6 = $("#todateusers").val();
                     if (d5 > d6) {
-                        swal('Alert', 'Please check From date should not be greater than To date ', 'error').then(function () { swal.close(); $('#fromdateusers').focus(); });
+                        swal('Alert', 'Please check, From date should not be greater than To date ', 'error').then(function () { swal.close(); $('#fromdateusers').focus(); });
                     }
                     else {
                         DatagridUsers();
@@ -174,10 +179,14 @@
             });
             setTimeout(function () { DatagridUsers(); }, 50);
 
+           
+
 //Button click for customer
             $("#btncustomers").click(function () {
                 var dt = $("#fromdatecustomers").val();
                 var dt1 = $("#todatecustomers").val();
+                var dt2 = new Date();
+                var dt3 = dt2.getFullYear() + '-' + ("0" + (dt2.getMonth() + 1)).slice(-2) + '-' + dt2.getDate();
 
                 if ($("#fromdatecustomers").val() == "") {
                     swal('Alert', 'Please Enter From Date', 'error').then(function () { swal.close(); $('#fromdatecustomers').focus(); });
@@ -187,7 +196,11 @@
                 }
                 else if (dt > dt1)
                 {
-                    swal('Alert', 'Please check From date should not be greater than To date ', 'error').then(function () { swal.close(); $('#fromdatecustomers').focus(); });
+                    swal('Alert', 'Please check, From date should not be greater than To date ', 'error').then(function () { swal.close(); $('#fromdatecustomers').focus(); });
+                }
+                else if (dt1 > dt3)
+                {
+                    swal('Alert', 'Please check, To date should not be greater than current date', 'error').then(function () { swa.close(); $('#todatecustomers').focus(); });
                 }
                 else {
                     DatagridCustomers();
@@ -204,10 +217,12 @@
             //$(document).on('click', "#btnuser", function () {
             //    DatagridUsers();
             //})
-
+           
             $("#btnvieworders").click(function () { DatagridOrder(); });
             $("#btnviewusers").click(function () { DatagridUsers(); });
             $("#btnviewcustomers").click(function () { DatagridCustomers(); });
+
+           
         });
 
         //-------------Order DataGrid Start----------------
@@ -227,7 +242,8 @@
 
                 },
                 "columns": [
-                    { 'data': null },
+
+                    { 'data': null, sWidth: "5%" },
                     { 'data': 'order_id' },
                     {
                         'data': 'order_created',
@@ -249,14 +265,14 @@
                     className: 'select-checkbox',
                     targets: 0,
                     'checkboxes': {
-                        'selectRow': true
+                        "selectRow": false,
                     },
                     data: null,
                     defaultContent: '',
                 }],
                 "select": {
                     "style": 'multi',
-                    "selector": 'td:first-child'
+                    "selector": 'td:first-child',
                 },
                 "order": [1, 'desc'],
 
@@ -287,6 +303,7 @@
             $('#exportusersdata').DataTable({
                 destroy: true,
                 searching: false,
+                bAutoWidth: false,
                 "ajax": {
                     "url": '/Export/UsersExport',
                     "type": 'POST',
@@ -295,14 +312,14 @@
                 },
 
                 "columns": [
-                    { 'data': null, 'swidth': "5%" },
-                    { 'data': 'UID', 'sWidth': "5%" },
-                    { 'data': 'user_login', 'sWidth': "20%" },
-                    { 'data': 'user_email', 'sWidth': "20%" },
-                    { 'data': 'user_status', 'sWidth': "10%" },
-                    { 'data': 'my', 'sWidth': "10%" },
+                    { 'data': null, sWidth:"5%" },
+                    { 'data': 'UID', sWidth: "10%"},
+                    { 'data': 'user_login', sWidth: "10%"},
+                    { 'data': 'user_email', sWidth: "25%" },
+                    { 'data': 'user_status', sWidth: "20%" },
+                    { 'data': 'my', sWidth:"20%" },
                     {
-                        'data': 'created_date',
+                        'data': 'created_date', sWidth:"10%",
                         'render': function (jsonDate) {
                             var date = new Date(parseInt(jsonDate.substr(6)));
                             var month = ("0" + (date.getMonth() + 1)).slice(-2);
@@ -318,6 +335,7 @@
                     'checkboxes': { 'selectRow': true },
                     data: null,
                     defaultContent: '',
+                    
                 }],
                 select: {
                     style: 'multi',
@@ -351,6 +369,7 @@
             $('#exportcustomersdata').DataTable({
                 destroy: true,
                 searching: false,
+                bAutoWidth: false,
                 "ajax": {
                     "url": '/Export/CustomersExport',
                     "type": 'POST',
@@ -359,12 +378,12 @@
                 },
 
                 "columns": [
-                    { 'data': null, 'swidth': "5%" },
-                    { 'data': 'UID', 'sWidth': "5%" },
+                    { 'data': null, sWidth: "5%" },
+                    { 'data': 'UID', 'sWidth': "10%" },
                     { 'data': 'customer_login', 'sWidth': "20%" },
                     { 'data': 'customer_email', 'sWidth': "20%" },
                     { 'data': 'customer_status', 'sWidth': "10%" },
-                    { 'data': 'customer_phone', 'sWidth': "10%" },
+                    { 'data': 'customer_phone', 'sWidth': "20%" },
                     {
                         'data': 'customerdate_created',
                         'render': function (jsonDate) {
@@ -442,5 +461,6 @@
         });
 
     </script>
+
 
 }

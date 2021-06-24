@@ -657,6 +657,7 @@
     <Content Include="Views\Shared\_LayoutDashboard.cshtml" />
     <Content Include="Views\FeeNTax\StateRecycleTax.cshtml" />
     <Content Include="Views\Coupons\Coupons.cshtml" />
+    <Content Include="Views\FeeNTax\CreateNew.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

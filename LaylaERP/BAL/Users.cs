@@ -55,7 +55,7 @@
             DataTable dtr = new DataTable();
             try
             {
-                string strquery = "select user_value, user_type from wp_user_classification order by id desc";
+                string strquery = "select user_value, user_type from wp_user_classification order by user_type desc";
                 dtr = SQLHelper.ExecuteDataTable(strquery);
             }
             catch (Exception ex)

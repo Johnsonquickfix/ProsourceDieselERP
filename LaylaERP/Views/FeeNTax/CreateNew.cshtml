@@ -18,35 +18,33 @@
     <div class="box box-primary">
         <div class="box-body">
             <div class="form-horizontal create-new-customer" id="parent">
-                <input type="hidden" id="hfid" value="@ViewBag.id" />
+                <input type="hidden" id="hfid" />
+                <input type="hidden" id="hfcity"  />
+                <input type="hidden" id="hfstate"  />
+                <input type="hidden" id="hfproduct"  />
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="control-label " for="StateRecycleFee ">State Recycle Fee </label>
                             <div class="">
-                                <input type="text" id="StateRecycleFee" value="@Model.staterecyclefee" class="form-control" placeholder="State Recycle Fee " />
+                                <input type="text" id="StateRecycleFee"  class="form-control" placeholder="State Recycle Fee " />
                             </div>
-                        </div>
-                        @*<div class="form-group">
-                <label class="control-label " for="Item_Parent_id">Item Parent Id</label>
-                <div class="">
-                    <input type="text" id="Item_Parent_id" class="form-control" placeholder="Item Parent Id" />
-                </div>
-            </div>*@
+                        </div> 
                         <div class="form-group">
                             <label class="control-label " for="Item_Name">Item/Product Name</label>
                             <div class="">
-                                <input type="text" id="Item_Name" value="@Model.item_name" class="form-control" placeholder="Item Name" />
+                                <select class="form-control" id="Item_Name">
+                                    <option value=""></option>
+                                </select>
+                               
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label " for="ShipCity">Ship City</label>
                             <div class="">
                                 <Select class="form-control" id="shipcity">
-                                    <option></option>
-                                    @*<option>Ship2 City</option>
-                        <option>Ship3 City</option>*@
-                                </Select>
+                                    <option ></option> 
+                                </Select>                                 
                             </div>
                         </div>
                     </div>
@@ -56,25 +54,22 @@
                             <label class="control-label " for="ShipState">Ship State</label>
                             <div class="">
                                 <Select class="form-control" id="shipstate">
-                                    <option></option>
-                                    @*<option>Ship2 State</option>
-                        <option>Ship3 State</option>*@
+                                    <option></option> 
                                 </Select>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label " for="Ship_Zip_PostCode">ShipZip/PostCode</label>
                             <div class="">
-                                <input type="text" id="Ship_Zip_PostCode" value="@Model.zip" class="form-control" placeholder="ShipZip/PostCode" />
+                                <input type="text" id="Ship_Zip_PostCode" class="form-control" placeholder="ShipZip/PostCode" />
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label " for="ShipState">Ship Country</label>
                             <div class="">
                                 <Select class="form-control" id="shipcountry">
-                                    <option>Ship1 Country</option>
-                                    <option>Ship2 Country</option>
-                                    <option>Ship3 Country</option>
+                                    <option value="US - United States" selected>US - United States</option>
+                                    <option value="CA - Canada">CA - Canada</option>
                                 </Select>
                             </div>
                         </div>
@@ -84,8 +79,9 @@
         </div>
         <div class="box-footer">
             <div class="text-right">
-                <input type="submit" value="Submit" id="btnSave" class="btn btn-danger" />               
-                <a class="btn btn-danger" href="Index">Back to List</a>
+                <input type="submit" value="Submit" id="btnSave" class="btn btn-danger" />
+          
+                @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-danger" })
             </div>
         </div>
         <!-- /.row -->
@@ -97,16 +93,83 @@
 <script src="@Url.Content("~/js/FeeNTax/FeeNTax.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 <script>
     $(document).ready(function () {
-        $("#loader").hide();
+        $("#loader").hide();    
+
+        $("#shipcity").select2({
+            allowClear: true, minimumInputLength: 3, placeholder: "Search City",
+            ajax: {
+                url: '/Users/GetCity', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+                data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
+                processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.City, name: item.City, id: item.City } }) }; },
+                error: function (xhr, status, err) { }, cache: true
+            }
+        });
+      
+        $("#shipstate").select2({
+            allowClear: true, minimumInputLength: 3, placeholder: "Search State",
+            ajax: {
+                url: '/Users/GetState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+                data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
+                processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.StateFullName, name: item.StateFullName, id: item.StateFullName } }) }; },
+                error: function (xhr, status, err) { }, cache: true
+            }
+        });
+
+        $("#Item_Name").select2({
+            allowClear: true, minimumInputLength: 3, placeholder: "Search Item",
+            ajax: {
+                url: '/FeeNTax/Getproduct', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+                data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
+                processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.post_title, name: item.post_title, id: item.ID } }) }; },
+                error: function (xhr, status, err) { }, cache: true
+            }
+        });
         var url = window.location.pathname;
         var id = url.substring(url.lastIndexOf('/') + 1);
 
         if (id != "") {
-            debugger
-            //$("#lbltitle").text("Update Customer");
-            GetCustomerByID(id);
+            $("#hfid").val(id);
+            GetFeeNTaxByID(id);            
         }
+        $("#ShipCity").empty().append('<option>' + $("#cityid").val() + '</option>');
+        $('#Ship_Zip_PostCode').change(function () {
 
+            City = $("#shipcity").val();
+            State = $("#shipstate").val();
+            PostalCode = $("#Ship_Zip_PostCode").val();
+             
+            var obj = {
+                billing_state: State,
+                billing_city: City,
+                billing_postcode: PostalCode
+            }
+            $.ajax({
+                url: '/Users/CityStateZip/', dataType: 'json', type: 'Post',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(obj),
+                dataType: "json",
+                success: function (data) {
+                    if (data.status == true) {
+                        // swal('Alert!', 'Post zip code is valid for City and State', 'success')
+                        // $('#hfzipstatus').val(data.status);
+                        //$('#hfzipstatus').val(data.status);
+
+                    }
+                    else {
+                        $("#Ship_Zip_PostCode").val("");
+                       // $('#hfzipstatus').val(data.status);
+                        swal('Alert', 'Post/Zip code is not valid for City and State', 'error').then(function () { swal.close(); $('#txtPostCode').focus(); });
+                    }
+                },
+
+                error: function (error) {
+                    swal('Error!', 'something went wrong', 'error');
+                },
+            })
+        });
+
+       
+     
 
         $(document).on('click', "#btnSave", function () {
             AddFeeNTax();
@@ -114,6 +177,19 @@
 
     });
 
-
+    document.getElementById('StateRecycleFee').addEventListener('keyup', function (evt) {
+        var Digit = document.getElementById('StateRecycleFee');
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        Digit.value = Format(Digit.value);
+    });
+    function Format(input) {
+        input = input.replace(/\D/g, '');
+        input = input.substring(0, 10);        
+        return input;
+    }
+    var input = document.querySelector("#StateRecycleFee");
+    window.intlTelInput(input, {       
+        utilsScript: "~/Scripts/intlTelInput.js",
+    });
 
 </script>

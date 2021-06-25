@@ -53,14 +53,14 @@ function BindStateCounty(ctr, obj) {
 ///Get New Order No
 function NewOrderNo() {
     var opt = { strValue1: '' };
-    //$.ajax({
-    //    type: "POST", url: '/Orders/GetNewOrderNo', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
-    //    success: function (result) {
-    //        $('#hfOrderNo').val(result.message); $('#lblOrderNo').text('Order #' + result.message + ' detail ');
-    //    },
-    //    error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
-    //    async: false
-    //});
+    $.ajax({
+        type: "POST", url: '/Orders/GetNewOrderNo', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
+        success: function (result) {
+            $('#hfOrderNo').val(result.message); $('#lblOrderNo').text('Order #' + result.message + ' detail ');
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
+        async: false
+    });
 }
 ///Find Address of Customer
 function CustomerAddress() {

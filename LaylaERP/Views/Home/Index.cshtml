@@ -44,7 +44,7 @@
         <header class="main-header">
 
             <!-- Logo -->
-            <a href="index2.html" class="logo">
+            <a href="Index" class="logo">
                 <!-- mini logo for sidebar mini 50x50 pixels -->
                 <span class="logo-mini"><img src="~/Images/layla32.png" /></span>
                 <!-- logo for regular state and mobile devices -->
@@ -220,7 +220,7 @@
         var GetUserID = parseInt('@(user.UserID)') || 0;
         $(document).ready(function () {
             setTimeout(function () {
-                addTabs({ id: '10008', title: 'Home', close: false, url: '/home/Dashboard', urlType: "none" });
+                addTabs({ id: '10008', title: '', close: false, url: '/home/Dashboard', urlType: "none" });
                 App.fixIframeCotent();
             }, 100);
             setTimeout(function () { filluserMenu(); }, 50); // wait 50ms until menu load finishes.

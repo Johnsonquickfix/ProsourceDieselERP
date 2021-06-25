@@ -16,7 +16,7 @@ namespace LaylaERP.Models
 
         public string city { get; set; }
         public string state { get; set; }
-        public Int64 zip { get; set; }
+        public string zip { get; set; }
         public string country { get; set; }
         public List<FeeNTax> lst { get; set; }
     }

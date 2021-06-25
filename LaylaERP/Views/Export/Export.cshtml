@@ -18,10 +18,9 @@
         <div class="tab-content">
             <div class="tab-pane active" id="tab_1">
                 <div class="user_subCrumbs">
-                    <input type="button" id="btnvieworders" class="button" value="View All" />
+                    <input type="button" id="btnvieworders" class="button" value="Refresh" />
                     From <input type="text" name="fromdate" id="fromdate" />
                     To<input type="text" name="todate" id="todate" />
-
                     @*From <input type="date" name="fromdate" id="fromdate">
         To <input type="date" name="todate" id="todate" >*@
                     <input type="button" id="btnorder" class="button" value="GO" />
@@ -50,7 +49,7 @@
             </div><!--end tab one-->
             <div class="tab-pane" id="tab_2">
                 <div class="user_subCrumbs">
-                    <input type="button" id="btnviewusers" class="button" value="View All" />
+                    <input type="button" id="btnviewusers" class="button" value="Refresh" />
                     From <input type="text" name="fromdateusers" id="fromdateusers" />
                     To<input type="text" name="todateusers" id="todateusers" />
                     <input type="button" id="btnusers" class="button" value="GO" />
@@ -81,7 +80,7 @@
             </div><!--end tab two-->
             <div class="tab-pane" id="tab_3">
                 <div class="user_subCrumbs">
-                    <input type="button" id="btnviewcustomers" class="button" value="View All" />
+                    <input type="button" id="btnviewcustomers" class="button" value="Refresh" />
                     From <input type="text" name="fromdatecustomers" id="fromdatecustomers" />
                     To<input type="text" name="todatecustomers" id="todatecustomers" />
                     <input type="button" id="btncustomers" class="button" value="GO" />
@@ -121,10 +120,7 @@
             //DatagridCustomers();
             //DatagridOrder();
             //DatagridUsers();
-
-            
-
-            
+           
 //Button click for Orders
             $("#btnorder").click(function () {
                 if ($("#fromdate").val() == "") {
@@ -157,24 +153,28 @@
 
 //Button Click for users
             $("#btnusers").click(function () {
+                var d5 = $("#fromdateusers").val();
+                var d6 = $("#todateusers").val();
+                var d7 = new Date();
+                var currentdate = d7.getFullYear() + '-' + ("0" + (d7.getMonth() + 1)).slice(-2) + '-' + d7.getDate();
+
                 if ($("#fromdateusers").val() == "") {
                     swal('Alert', 'Please Enter From Date', 'error').then(function () { swal.close(); $('#fromdateusers').focus(); });
                 }
                 else if ($("#todateusers").val() == "") {
                     swal('Alert', 'Please Enter To Date', 'error').then(function () { swal.close(); $('#todateusers').focus(); });
                 }
+                else if (d5 > d6) {
+                    swal('Alert', 'Please check, From date should not be greater than To date ', 'error').then(function () { swal.close(); $('#fromdateusers').focus(); });
+                }
+                else if (d6 > currentdate) {
+                    swal('Alert', 'Please check, To date should not be greater than Current date ', 'error').then(function () { swal.close(); $('#todateusers').focus(); });
+                }
                 else {
-                    d5 = $("#fromdateusers").val();
-                    d6 = $("#todateusers").val();
-                    if (d5 > d6) {
-                        swal('Alert', 'Please check, From date should not be greater than To date ', 'error').then(function () { swal.close(); $('#fromdateusers').focus(); });
-                    }
-                    else {
                         DatagridUsers();
                         $("#fromdateusers").val("");
                         $("#todateusers").val("");
                         return false;
-                    }
                 }
             });
             setTimeout(function () { DatagridUsers(); }, 50);
@@ -200,7 +200,7 @@
                 }
                 else if (dt1 > dt3)
                 {
-                    swal('Alert', 'Please check, To date should not be greater than current date', 'error').then(function () { swa.close(); $('#todatecustomers').focus(); });
+                    swal('Alert', 'Please check, To date should not be greater than Current date', 'error').then(function () { swa.close(); $('#todatecustomers').focus(); });
                 }
                 else {
                     DatagridCustomers();
@@ -222,7 +222,6 @@
             $("#btnviewusers").click(function () { DatagridUsers(); });
             $("#btnviewcustomers").click(function () { DatagridCustomers(); });
 
-           
         });
 
         //-------------Order DataGrid Start----------------
@@ -231,6 +230,7 @@
             var to_date = $("#todate").val();
             //var obj = { mydate: mydate };
             $('#exportdata').DataTable({
+                "lengthMenu": [[10, 20, 50, 100], [10, 20, 50, 100]],
                 destroy: true,
                 searching: false,
                 "ajax": {
@@ -241,6 +241,7 @@
                     //"data": JSON.stringify(obj)
 
                 },
+                
                 "columns": [
 
                     { 'data': null, sWidth: "5%" },
@@ -276,7 +277,7 @@
                 },
                 "order": [1, 'desc'],
 
-                "dom": 'Bfrtip',
+                "dom": 'lBfrtip',
                 "buttons": [
 
                     {
@@ -310,6 +311,7 @@
                     "dataType": 'json',
                     "data": { from_dateusers: fromdateusers, to_dateusers: todateusers }
                 },
+                "lengthMenu": [[10, 20, 50, 100], [10, 20, 50, 100]],
 
                 "columns": [
                     { 'data': null, sWidth:"5%" },
@@ -343,7 +345,7 @@
                 },
 
                 "order": [0, 'desc'],
-                "dom": 'Bfrtip',
+                "dom": 'lBfrtip',
                 "buttons": [
 
                     {
@@ -376,6 +378,7 @@
                     "dataType": 'json',
                     "data": { from_datecustomers: fromdatecustomers, to_datecustomers: todatecustomers }
                 },
+                "lengthMenu": [[10, 20, 50, 100], [10, 20, 50, 100]],
 
                 "columns": [
                     { 'data': null, sWidth: "5%" },
@@ -408,7 +411,7 @@
                 },
 
                 "order": [0, 'desc'],
-                "dom": 'Bfrtip',
+                "dom": 'lBfrtip',
                 "buttons": [
 
                     {
@@ -461,6 +464,4 @@
         });
 
     </script>
-
-
 }

@@ -160,6 +160,7 @@
     <Compile Include="BAL\ExportRepository.cs" />
     <Compile Include="BAL\FeeNTaxRepository.cs" />
     <Compile Include="BAL\OrderRepository.cs" />
+    <Compile Include="BAL\ReportsRepository.cs" />
     <Compile Include="BAL\SettingRepository.cs" />
     <Compile Include="BAL\UserProfileRepository.cs" />
     <Compile Include="BAL\Users.cs" />
@@ -658,10 +659,12 @@
     <Content Include="Views\FeeNTax\StateRecycleTax.cshtml" />
     <Content Include="Views\Coupons\Coupons.cshtml" />
     <Content Include="Views\FeeNTax\CreateNew.cshtml" />
+    <Content Include="Views\Reports\AJBaseReport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Properties\PublishProfiles\" />
+    <Folder Include="Views\ReportsRepository\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

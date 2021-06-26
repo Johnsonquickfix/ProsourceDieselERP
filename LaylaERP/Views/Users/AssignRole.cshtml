@@ -38,13 +38,110 @@
                     </div>
                 </div>
             </div>
-
-            <div id="jquery-script-menu">
-                <div class="jquery-script-center">
-                    <div class="jquery-script-clear"></div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="box box-primary">
+                        <div class="box-header">
+                            <table id="dtdata" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
+                                <thead>
+                                    <tr>
+                                        <th><input type="checkbox" name="checkAll" id="checkAll"><label></label></th>
+                                        <th>Menu ID</th>
+                                        <th>Menu Name</th>
+                                        <th>Menu URL</th>
+                                        @*<th>Action</th>*@
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
-
+            @*<div class="box-body">
+                <div class="row mt-1 mb-35">
+                    <div class="col-sm-12">
+                        <input class="form-check-input" type="checkbox" name="Create_User" id="checklist">
+                        <h2 class="sm-heading">Main Menu</h2>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="Create_User" id="create_user">
+                                    <label class="form-check-label" for="create_user">
+                                        User
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="Customers" id="customers">
+                                    <label class="form-check-label" for="customers">
+                                        Customer
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="Orders_Mnu" id="orders_mnu">
+                                    <label class="form-check-label" for="orders_mnu">
+                                        Order(s)
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="System_Settings" id="system_settings">
+                                    <label class="form-check-label" for="system_settings">
+                                        Setting
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-35">
+                    <div class="col-sm-12">
+                        <h2 class="sm-heading">Sub Menu</h2>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="user_mnu" id="User_Mnu">
+                                    <label class="form-check-label" for="User_Mnu">
+                                        Create New
+                                    </label>
+                                </div>
+                                <div class="form-check mt-1">
+                                    <input class="form-check-input" type="checkbox" name="user_classification" id="User_Classification">
+                                    <label class="form-check-label" for="User_Classification">
+                                        Change Password
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="Add_New_Orders" id="add_new_orders">
+                                    <label class="form-check-label" for="add_new_orders">
+                                        Add New Order
+                                    </label>
+                                </div>
+                                <div class="form-check mt-1">
+                                    <input class="form-check-input" type="checkbox" name="Show_Update_Orders" id="show_update_orders">
+                                    <label class="form-check-label" for="show_update_orders">
+                                        View / Edit Order(s)
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>*@
+            <!--<div class="box-footer">
+                <div class="row">
+                    <div class="col-sm-offset-9 col-sm-3">-->
+                        @*<a href="#" class="btn btn-danger btn-block"><b>Save</b></a>*@
+                        <!--<button type="button" id="saveBtn" class="btn btn-danger "><i class="fa fa-save"></i> Save</button>
+                    </div>
+                </div>
+            </div>-->
             <input type="hidden" name="User_Type" id="user_type" />
             @Html.AntiForgeryToken()
         </div>

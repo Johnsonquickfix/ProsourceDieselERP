@@ -155,6 +155,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="BAL\AppearanceRepository.cs" />
     <Compile Include="BAL\CustomerRepository.cs" />
     <Compile Include="BAL\DashboardRepository.cs" />
     <Compile Include="BAL\ExportRepository.cs" />
@@ -165,6 +166,7 @@
     <Compile Include="BAL\Users.cs" />
     <Compile Include="BAL\UsersRepositry.cs" />
     <Compile Include="Controllers\AccountAPIController.cs" />
+    <Compile Include="Controllers\AppearanceController.cs" />
     <Compile Include="Controllers\CouponsController.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
     <Compile Include="Controllers\ExportController.cs" />
@@ -178,6 +180,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Appearance.cs" />
     <Compile Include="Models\clsSerialization.cs" />
     <Compile Include="Models\clsUserDetails.cs" />
     <Compile Include="Models\CustomerModel.cs" />
@@ -660,9 +663,11 @@
     <Content Include="Views\FeeNTax\StateRecycleTax.cshtml" />
     <Content Include="Views\Coupons\Coupons.cshtml" />
     <Content Include="Views\FeeNTax\CreateNew.cshtml" />
+    <Content Include="Views\Appearance\Menus.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="js\Appearance\" />
     <Folder Include="Properties\PublishProfiles\" />
   </ItemGroup>
   <ItemGroup>

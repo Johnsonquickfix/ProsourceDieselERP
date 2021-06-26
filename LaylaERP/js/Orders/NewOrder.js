@@ -163,6 +163,28 @@ function GetCityByZip(zipcode) {
     });
 }
 
+///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Search Popup on Add new Order ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+function searchOrderModal() {
+    let modalHtml = '';
+    modalHtml += '<div class="modal-dialog modal-lg">';
+    modalHtml += '<div class="modal-content">';
+    modalHtml += '<div class="modal-header">';
+    modalHtml += '<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button>';
+    modalHtml += '<h4 class="modal-title" id="myModalLabel">Search Customer</h4>';
+    modalHtml += '</div>';
+    modalHtml += '<div class="modal-body no-padding" ></div>';
+    modalHtml += '<div class="modal-footer">';
+    modalHtml += '<button type="button" class="btn btn-primary">OK</button>';
+    modalHtml += '</div>';
+    modalHtml += '</div>';
+    modalHtml += '</div>';
+    $("#billModal").empty().html(modalHtml);
+
+    let myHtml = '';   
+    $('#billModal .modal-body').append(myHtml);
+   
+    $("#billModal").modal({ backdrop: 'static', keyboard: false });
+}
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Edit Order ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function getOrderInfo() {
     var oid = parseInt($('#hfOrderNo').val()) || 0;
@@ -199,7 +221,7 @@ function getOrderInfo() {
         });
     }
     else {
-        $('.page-heading').text('Add New Order');
+        $('.page-heading').text('Add New Order'); //searchOrderModal();
     }
 }
 function getOrderItemList(oid) {
@@ -211,7 +233,7 @@ function getOrderItemList(oid) {
             for (var i = 0; i < data.length; i++) {
                 if (data[i].product_type == 'line_item') {
                     itemsDetailsxml.push({
-                        "PKey": data[i].product_id + '_' + data[i].variation_id, "product_id": data[i].product_id, "variation_id": data[i].variation_id, "product_name": data[i].product_name, "quantity": data[i].quantity, "sale_rate": data[i].sale_price, "total": data[i].total, "discount": data[i].discount, "tax_amount": data[i].tax_amount, "shipping_amount": 0, "is_free": data[i].is_free, "group_id": data[i].group_id
+                        PKey: data[i].product_id + '_' + data[i].variation_id, product_id: data[i].product_id, variation_id: data[i].variation_id, product_name: data[i].product_name, quantity: data[i].quantity, reg_price: data[i].reg_price,sale_rate: data[i].sale_price, total: data[i].total, discount: data[i].discount, "tax_amount": data[i].tax_amount, shipping_amount: 0, is_free: data[i].is_free, group_id: data[i].group_id
                     });
                 }
                 else if (data[i].product_type == 'coupon') {

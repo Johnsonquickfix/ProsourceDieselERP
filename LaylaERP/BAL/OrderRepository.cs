@@ -528,6 +528,7 @@
                             productsModel.sale_price = decimal.Parse(sdr["line_subtotal"].ToString().Trim());
                         else
                             productsModel.sale_price = productsModel.price;
+                        productsModel.reg_price = productsModel.sale_price;
                         productsModel.total = productsModel.sale_price;
                         productsModel.sale_price = productsModel.sale_price / productsModel.quantity;
                         if (sdr["line_total"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["line_total"].ToString().Trim()))

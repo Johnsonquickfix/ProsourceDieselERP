@@ -665,6 +665,8 @@
     <Content Include="Views\FeeNTax\StateRecycleTax.cshtml" />
     <Content Include="Views\Coupons\Coupons.cshtml" />
     <Content Include="Views\FeeNTax\CreateNew.cshtml" />
+    <Content Include="Views\Appearance\Menus.cshtml" />
+    <Content Include="Views\Reports\AJBaseReport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

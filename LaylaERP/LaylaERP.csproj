@@ -484,9 +484,11 @@
     <Content Include="Content\Style11.css" />
     <Content Include="Content\Style12.css" />
     <Content Include="css\indexStyle.css" />
+    <Content Include="css\jquery.treeview.css" />
     <Content Include="css\layoutStyle.css" />
     <Content Include="css\login_style.css" />
     <Content Include="css\rolebase.css" />
+    <Content Include="css\rolebase2.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -616,6 +618,7 @@
     <Content Include="Scripts\jquery-3.4.1.slim.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery.js" />
+    <Content Include="Scripts\jquery.treeview.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />

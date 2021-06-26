@@ -35,11 +35,11 @@ namespace LaylaERP.Controllers
         public ActionResult StateRecycleTax(FeeNTax model)
         {
             FeeNTaxRepository FNT = new FeeNTaxRepository();
-            //if (ModelState.IsValid)
-            //{
+            if (ModelState.IsValid)
+            {
                 if (model.id > 0)
                 {
- 
+
                     FNT.EditFeeNTaxStatus(model);
                     return Json(new { status = true, message = "Customer Record has been updated successfully!!", url = "" }, 0);
                 }
@@ -54,8 +54,8 @@ namespace LaylaERP.Controllers
 
 
                 }
-            //}
-            //return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+            return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
         }
 
         public JsonResult GetFeeNTaxByID(FeeNTax model)
@@ -85,62 +85,57 @@ namespace LaylaERP.Controllers
         }
 
 
-        
 
-        [HttpPost]
-        public JsonResult Getproduct(SearchModel model)
+        [HttpGet]
+        public ActionResult GetFeeNTaxList()
         {
-            string JSONresult = string.Empty;
-            try
+            FeeNTax FNT = new FeeNTax();
+            DataTable dt = new DataTable();
+            dt = FeeNTaxRepository.FeeNTaxList();
+            List<FeeNTax> lststu = new List<FeeNTax>();
+            if (dt != null)
             {
-                DataTable DT = BAL.FeeNTaxRepository.Getproduct(model.strValue1);
-                JSONresult = JsonConvert.SerializeObject(DT);
+
+                if (dt.Rows.Count > 0)
+                {
+                    for (int i = 0; i < dt.Rows.Count; i++)
+                    {
+
+                        FeeNTax obj = new FeeNTax();
+                        obj.staterecyclefee = Convert.ToUInt64(dt.Rows[i]["staterecyclefee"].ToString());
+                        obj.item_name = dt.Rows[i]["item_name"].ToString();
+                        obj.state = dt.Rows[i]["state"].ToString();
+                        obj.id = Convert.ToInt32(dt.Rows[i]["id"].ToString());
+                        obj.zip = Convert.ToInt32(dt.Rows[i]["zip"].ToString());
+                        obj.city = dt.Rows[i]["city"].ToString();
+                        obj.country = dt.Rows[i]["country"].ToString();
+
+                        lststu.Add(obj);
+                    }
+
+
+                }
+
+                FNT.lst = lststu;
+
             }
-            catch { }
-            return Json(JSONresult, 0);
+            return Json(lststu, JsonRequestBehavior.AllowGet);
         }
+
         //[HttpGet]
-        //public ActionResult GetFeeNTaxList()
+        //public JsonResult GetFeeNTaxList()
         //{
+        //    string result = string.Empty;
         //    FeeNTax FNT = new FeeNTax();
         //    DataTable dt = new DataTable();
         //    dt = FeeNTaxRepository.FeeNTaxList();
-        //    List<FeeNTax> lststu = new List<FeeNTax>();
-        //    if (dt != null)
-        //    {
-
-        //        if (dt.Rows.Count > 0)
-        //        {
-        //            for (int i = 0; i < dt.Rows.Count; i++)
-        //            {
-
-        //                FeeNTax obj = new FeeNTax();
-        //                obj.staterecyclefee = Convert.ToUInt64(dt.Rows[i]["staterecyclefee"].ToString());
-        //                obj.item_name = dt.Rows[i]["item_name"].ToString();
-        //                obj.state = dt.Rows[i]["state"].ToString();
-        //                obj.id = Convert.ToInt32(dt.Rows[i]["id"].ToString());
-        //                obj.zip = Convert.ToInt32(dt.Rows[i]["zip"].ToString());
-        //                obj.city = dt.Rows[i]["city"].ToString();
-        //                obj.country = dt.Rows[i]["country"].ToString();
-
-        //                lststu.Add(obj);
-        //            }
 
 
-        //        }
+        //    result = JsonConvert.SerializeObject(dt);
 
-        //        FNT.lst = lststu;
 
-        //    }
-        //    return Json(lststu, JsonRequestBehavior.AllowGet);
+        //    return Json(new { data = result }, 0);
         //}
-
-        [HttpGet]
-        public JsonResult GetFeeNTaxList()
-        {
-            FeeNTaxRepository.GetFeeNTaxList();
-            return Json(new { data = FeeNTaxRepository.FeeNTaxlist }, JsonRequestBehavior.AllowGet);
-        }
 
     }
 }

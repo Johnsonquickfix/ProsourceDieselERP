@@ -272,6 +272,9 @@ function ApplyAutoCoupon() {
     if (!cart_prnt_ids.includes(118) || !cart_prnt_ids.includes(56774)) {
         $('#li_matt-topper').remove();
     }
+    if (!cart_prnt_ids.includes(118) || !cart_prnt_ids.includes(31729)) {
+        $('#li_matt-bedframe').remove();
+    }
     if (!cart_prnt_ids.includes(118) || !cart_prnt_ids.includes(124524)) {
         $('#li_matt-sheet').remove();
     }
@@ -281,17 +284,24 @@ function ApplyAutoCoupon() {
     if (!cart_prnt_ids.includes(118) || !cart_prnt_ids.includes(14023)) {
         $('#li_matt-pillow').remove();
     }
+    if (!cart_prnt_ids.includes(31729) || !cart_prnt_ids.includes(20861)) {
+        $('#li_found-frame').remove();
+    }
     let auto_code = [];
     if (cart_prnt_ids.includes(118)) {
         if (cart_prnt_ids.includes(20861)) {
             auto_code.push({
                 post_title: "matt-found", title: "Mattress-Foundation", type: 'auto_coupon', discount_type: 'fixed_cart', coupon_amount: 10, product_ids: '20861,118', exclude_product_ids: ''
             });
-
         }
         if (cart_prnt_ids.includes(56774)) {
             auto_code.push({
                 post_title: "matt-topper", title: "Mattress-Topper", type: 'auto_coupon', discount_type: 'fixed_cart', coupon_amount: 10, product_ids: '56774,118', exclude_product_ids: ''
+            });
+        }
+        if (cart_prnt_ids.includes(31729)) {
+            auto_code.push({
+                post_title: "matt-bedframe", title: "Mattress-Bedframe", type: 'auto_coupon', discount_type: 'fixed_cart', coupon_amount: 10, product_ids: '56774,118', exclude_product_ids: ''
             });
         }
         if (cart_prnt_ids.includes(124524)) {
@@ -309,6 +319,11 @@ function ApplyAutoCoupon() {
                 post_title: "matt-pillow", title: "Mattress-Pillow", type: 'auto_coupon', discount_type: 'fixed_cart', coupon_amount: 10, product_ids: '14023,118', exclude_product_ids: ''
             });
         }
+    }
+    if (cart_prnt_ids.includes(31729) && cart_prnt_ids.includes(20861)) {
+        auto_code.push({
+            post_title: "found-frame", title: "Bundle Discount", type: 'auto_coupon', discount_type: 'fixed_cart', coupon_amount: 25, product_ids: '31729,20861', exclude_product_ids: ''
+        });
     }
     if (auto_code.length > 0) { bindCouponList(auto_code); }
 }
@@ -918,6 +933,25 @@ function saveCO() {
 
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Payment Modal ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function PaymentModal() {
+    let billing_first_name = $('#txtbillfirstname').val();
+    let billing_last_name = $('#txtbilllastname').val();
+    let billing_address_1 = $('#txtbilladdress1').val();
+    let billing_address_2 = $('#txtbilladdress2').val();
+    let billing_city = $('#txtbillcity').val();
+    let billing_state = $('#ddlbillstate').val();
+    let billing_postcode = $('#txtbillzipcode').val();
+    let billing_phone = $('#txtbillphone').val();
+    let billing_email = $('#txtbillemail').val();
+
+    let shipping_first_name = $('#txtshipfirstname').val();
+    let shipping_last_name = $('#txtshiplastname').val();
+    let shipping_country = "";
+    let shipping_address_1 = $('#txtshipaddress1').val();
+    let shipping_address_2 = $('#txtshipaddress2').val();
+    let shipping_city = $('#txtshipcity').val();
+    let shipping_state = $('#ddlshipstate').val();
+    let shipping_postcode = $('#txtshipzipcode').val();
+
     var myHtml = '';
     //header
     myHtml += '<div class="modal-dialog modal-lg">';
@@ -931,10 +965,10 @@ function PaymentModal() {
     /// row invoice-info
     myHtml += '<div class="row invoice-info">';
     myHtml += '<div class="col-sm-6 invoice-col">';
-    myHtml += 'Billing Address: <address class="no-margin"><strong>' + $('#txtbillfirstname').val() + ' ' + $('#txtbilllastname').val() + '</strong > <br>' + $('#txtbilladdress1').val() + '<br>' + $('#txtbilladdress2').val() + '<br>' + $('#txtbillcity').val() + ' ,' + $('#ddlbillstate').val() + ' ' + $('#txtbillzipcode').val() + '<br>Phone: ' + $('#txtbillphone').val() + '<br>Email: ' + $('#txtbillemail').val() + '</address>';
+    myHtml += 'Billing Address: <address class="no-margin"><strong>' + billing_first_name + ' ' + billing_last_name + '</strong > <br>' + billing_address_1 + (billing_address_2 > 0 ? '<br>' : '') + billing_address_2 + '<br>' + billing_city + ' ,' + billing_state + ' ' + billing_postcode + '<br>Phone: ' + billing_phone + '<br>Email: ' + billing_email + '</address>';
     myHtml += '</div>';
     myHtml += '<div class="col-sm-6 invoice-col">';
-    myHtml += 'Shipping Address: <address class="no-margin"><strong>' + $('#txtshipfirstname').val() + ' ' + $('#txtshiplastname').val() + '</strong > <br>' + $('#txtshipaddress1').val() + '<br>' + $('#txtshipaddress2').val() + '<br>' + $('#txtshipcity').val() + ' ,' + $('#ddlshipstate').val() + ' ' + $('#txtshipcity').val() + '</address>';
+    myHtml += 'Shipping Address: <address class="no-margin"><strong>' + shipping_first_name + ' ' + shipping_last_name + '</strong > <br>' + shipping_address_1 + (shipping_address_2 > 0 ? '<br>' : '')+ shipping_address_2 + '<br>' + shipping_city + ' ,' + shipping_state + ' ' + shipping_postcode + '</address>';
     myHtml += '</div>';
     myHtml += '</div>';
     /// row invoice-items

@@ -159,7 +159,7 @@
             Dictionary<String, Object> row;
             try
             {
-                DataTable DT = Users.GetUserMenuAuth(CommanUtilities.Provider.GetCurrent().UserType);
+                DataTable DT = Users.GetUserMenuAuth(CommanUtilities.Provider.GetCurrent().UserID);
                 DataRow[] rows = DT.Select("level = 0", "menu_code");
                 foreach (DataRow dr in rows)
                 {

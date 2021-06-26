@@ -1,61 +1,74 @@
 ﻿
-//function Datagrid() {
-
-//    $('#dtdata').dataTable();
-//        $.ajax({
-//            type: "GET",
-//            url: "/FeeNTax/GetFeeNTaxList",
-//            contentType: "application/json; charset=utf-8",
-//            data: "{}",
-//            dataType: "json",
-//            success: function (data) {
-//                console.log(data);
-//                $.each(data, function (key, i) {
-//                    $("#dtdata").append("<tr><td>" + i.id + "</td><td>" + i.staterecyclefee + "</td><td>" + i.state + "</td><td>" + i.item_name + "</td><td>" + i.city + "</td><td>" + i.zip + "</td><td>" + i.country + "</td><td><a href='#'>Edit</a></td></tr>");
-//                });
-
-//            },
-//            error: function (result) {
-//                alert("Error");
-//            }
-//        })
-//    };
-
 function Datagrid() {
 
-    var id;
-    $('#dtdata').DataTable({
-        destroy: true,
-        bAutoWidth: false,
-        "ajax": {
-            "url": "/FeeNTax/GetFeeNTaxList",
-            "type": 'GET',
-            "dataType": 'json',
-            data: {},
-            contentType: "application/json; charset=utf-8",
-        },
-        lengthMenu: [[10, 20, 50, 100], [10, 20, 50, 100]],
-        "columns": [
+    $('#dtdata').dataTable();
 
-            { 'data': 'id', 'sWidth': "8%" },
-            { 'data': 'staterecyclefee', 'sWidth': "15%" },
-            { 'data': 'item_name', 'sWidth': "20%" },
-            { 'data': 'city', 'sWidth': "10%" },
-            { 'data': 'state', 'sWidth': "15%" },      
-            { 'data': 'zip', 'sWidth': "10%" },
-            { 'data': 'country', 'sWidth': "10%" },
-             
-            {
-                'data': 'id', sWidth: "12%",
-                'render': function (id, type, full, meta) {
-                   
-                    return '<a href="../FeeNTax/CreateNew/' + id + '"><i class="glyphicon glyphicon-pencil"></i></a>'
-                }
+
+
+        $.ajax({
+            type: "GET",
+            url: "/FeeNTax/GetFeeNTaxList",
+            contentType: "application/json; charset=utf-8",
+            data: "{}",
+            dataType: "json",
+            success: function (data) {
+                console.log(data);
+                $.each(data, function (key, i) {
+                    $("#dtdata").append("<tr><td>" + i.id + "</td><td>" + i.staterecyclefee + "</td><td>" + i.state + "</td><td>" + i.item_name + "</td><td>" + i.city + "</td><td>" + i.zip + "</td><td>" + i.country + "</td><td><a href='#'>Edit</a></td></tr>");
+                });
+
+            },
+            error: function (result) {
+                alert("Error");
             }
-        ],
-        "order": [[1, 'desc']],
-    });
-}
+        })
+    };
+
+
+
+    //destroy: true,
+    //    bAutoWidth: false,
+    //        "ajax": {
+    //        "url": "/FeeNTax/GetFeeNTaxList",
+    //        "type": 'GET',
+    //            "dataType": 'json',
+    //                data: {},
+    //    contentType: "application/json; charset=utf-8",
+    //    },
+    //lengthMenu: [[10, 20, 50, 100], [10, 20, 50, 100]],
+    //    "columns": [
+           
+    //        { 'data': 'id', 'sWidth': "8%" },
+    //        { 'data': 'staterecyclefee', 'sWidth': "12%" },
+    //        { 'data': 'state', 'sWidth': "25%" },
+    //        { 'data': 'item_name', 'sWidth': "10%" },
+    //        { 'data': 'zip', 'sWidth': "15%" },
+    //        { 'data': 'country', 'sWidth': "30%" },
+    //        {
+    //            'data': 'my', 'sWidth': "22%",
+
+    //        },
+    //        {
+    //            'data': 'ID', sWidth: "8%",
+    //            'render': function (ID, type, full, meta) {
+    //                return '<a href="javascript:void(0);" onClick="EditUser(' + ID + ')"><i class="glyphicon glyphicon-pencil"></i></a>'
+    //            }
+    //        }
+    //    ],
+    //    "order": [[1, 'desc']],
+    //});
+ 
+
+
+//function EditUser(id) {
+//    window.location.href = 'Index?id=' + id;
+//}
+
+
+
+
+
+
 //    $.ajax({
 //        type: "GET",
 //        url: "/FeeNTax/GetFeeNTaxList",
@@ -77,14 +90,16 @@ function Datagrid() {
 
 function AddFeeNTax() {
     debugger
-    id = $("#hfid").val();
-    Staterecyclefee = $("#StateRecycleFee").val(); 
-    Item_name = $("#Item_Name").text().trim();
+
+    Id = $("#hfid").val();
+    Staterecyclefee = $("#StateRecycleFee").val();
+    //item_parent_id = $("#").val();
+    Item_name = $("#Item_Name").val();
     City = $("#shipcity").val();
     State = $("#shipstate").val();
     Zip = $("#Ship_Zip_PostCode").val();
     Country = $("#shipcountry").val();
-    item_parent_id = $("#Item_Name").val();  
+
 
     if (Staterecyclefee == "") {
         swal('alert', 'Please Enter StateRecyclefee', 'error').then(function () { swal.close(); $('#StateRecycleFee').focus(); })
@@ -92,33 +107,25 @@ function AddFeeNTax() {
     else if (Item_name == "") {
         swal('alert', 'Please Enter item_name', 'error').then(function () { swal.close(); $('#Item_Name').focus(); })
     }
-    else if (City == "") {
-        swal('alert', 'Please Select City', 'error').then(function () { swal.close(); $('#shipcity').focus(); })
-    }
-    else if (State == "") {
-        swal('alert', 'Please Select State', 'error').then(function () { swal.close(); $('#shipstate').focus(); })
-    }
     else if (Zip == "") {
         swal('alert', 'Please Enter zip', 'error').then(function () { swal.close(); $('#Ship_Zip_PostCode').focus(); })
     }
 
     else {
         var obj = {
-            id: id, staterecyclefee: Staterecyclefee, item_name: Item_name, city: City, state: State, zip: Zip,
-            country: Country, item_parent_id: item_parent_id
+            staterecyclefee: Staterecyclefee, item_name: Item_name, city: City, state: State, zip: Zip,
+            country: Country
         }
         $.ajax({
             url: '/FeeNTax/StateRecycleTax/', dataType: 'json', type: 'Post',
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify(obj),
             dataType: "json",
-            beforeSend: function () {
-                $("#loader").show();
-            },
             success: function (data) {
                 if (data.status == true) {
-                    $('#parent > input:text').val('');
-                    swal('Alert!', data.message, 'success').then((result) => { location.href = 'Index'; });    
+
+                    swal('Alert!', data.message, 'success');
+
                 }
                 else {
                     swal('Alert!', data.message, 'error')
@@ -138,8 +145,8 @@ function AddFeeNTax() {
     }
 }
 
-function GetFeeNTaxByID(id) {  
-   
+function GetFeeNTaxByID(id) {
+            debugger
             var ID = id;
             var obj = {};
             $.ajax({
@@ -151,14 +158,13 @@ function GetFeeNTaxByID(id) {
                 data: JSON.stringify(obj),
                 success: function (data) {
                     var i = JSON.parse(data);
-                    console.log(i);
                     $("#StateRecycleFee").val(i[0].staterecyclefee);
-                    $("#shipcity").empty().append('<option value="' + i[0].city + '" selected>' + i[0].city + '</option>');
-                    $("#shipstate").empty().append('<option value="' + i[0].state + '" selected>' + i[0].state + '</option>');
-                    $("#Item_Name").empty().append('<option value="' + i[0].item_parent_id + '" selected>' + i[0].item_name + '</option>');                        
+                    $("#shipstate").val(i[0].state);
+                    $("#Item_Name").val(i[0].item_name);
+                    $("#shipcity").val(i[0].city);
                     $("#Ship_Zip_PostCode").val(i[0].zip);
-                   // $("#shipcountry").val(i[0].country);
-                  //  $('#Item_Name').val(i[0].item_name.trim()).trigger('change');
+                    $("#shipcountry").val(i[0].country);
+
 
                 },
                 error: function (msg) { alert(msg); }

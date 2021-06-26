@@ -29,7 +29,7 @@ namespace LaylaERP.Models
         public string meta_key { get; set; }
         public string meta_value { get; set; }
         public string post_type { get; set; }
-        public string order_created { get; set; }
+        public DateTime order_created { get; set; }
         public int ID { get; set; }
         public string product_id { get; set; }
         public string variant_id { get; set; }
@@ -160,7 +160,7 @@ namespace LaylaERP.Models
         {
             get; set;
         }
-        public string created_date
+        public DateTime created_date
         {
             get; set;
         }
@@ -192,6 +192,6 @@ namespace LaylaERP.Models
             get;
             set;
         }
-        public string customerdate_created { get; set; }
+        public DateTime customerdate_created { get; set; }
     }
 }

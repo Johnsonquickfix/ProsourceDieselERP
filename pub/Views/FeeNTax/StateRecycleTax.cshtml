@@ -1,83 +1,114 @@
-﻿
+﻿ 
 @{
-    Layout = null;
-    ViewBag.Title = "Fee & Tax";
+
+    ViewBag.Title = "StateRecycleTax";
+    //ViewBag.Title = "Fee & Tax";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
 }
 
+
+<!-- datatables CSS -->
+<link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+<link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
+<!-- datatables js -->
+<script src="~/Content/AdminLTE-3.1.0/datatables/datatables.min.js" type="text/javascript"></script>
+<script src="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/js/dataTables.bootstrap4.min.js" type="text/javascript"></script>
 <div class="page-title">
-    <h2 class="page-heading">State Recycle Tax</h2>
+    <h2 class="page-heading">State Recycle Tax</h2> <a class="btn btn-danger" href="CreateNew">Create New</a>
 </div>
 <section class="content content-section p-0">
-    <div class="col-sm-10">
-        <div class="row">
+    <div class="row">
+        <div class="col-md-12">
             <div class="box box-primary">
-                <div class="box-body">
-                    <div class="form-horizontal create-new-customer fee_tax-box">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="control-label " for="StateRecycleFee ">State Recycle Fee </label>
-                                    <div class="">
-                                        <input type="text" id="StateRecycleFee" class="form-control" placeholder="State Recycle Fee " />
-                                    </div>
-                                </div>
-                                @*<div class="form-group">
-                                    <label class="control-label " for="Item_Parent_id">Item Parent Id</label>
-                                    <div class="">
-                                        <input type="text" id="Item_Parent_id" class="form-control" placeholder="Item Parent Id" />
-                                    </div>
-                                </div>*@
-                                <div class="form-group">
-                                    <label class="control-label " for="Item_Name">Item/Product Name</label>
-                                    <div class="">
-                                        <input type="text" id="Item_Name" class="form-control" placeholder="Item Name" />
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="control-label " for="ShipCity">Ship City</label>
-                                    <div class="">
-                                        <Select class="form-control">
-                                            <option>Ship City</option>
-                                        </Select>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="control-label " for="ShipState">Ship State</label>
-                                    <div class="">
-                                        <Select class="form-control">
-                                            <option>Ship State</option>
-                                        </Select>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="control-label " for="Ship_Zip_PostCode">ShipZip/PostCode</label>
-                                    <div class="">
-                                        <input type="text" id="Ship_Zip_PostCode" class="form-control" placeholder="ShipZip/PostCode" />
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="control-label " for="ShipState">Ship Country</label>
-                                    <div class="">
-                                        <Select class="form-control">
-                                            <option>Ship Country</option>
-                                        </Select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="box-header">
+                    <table id="dtdata" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>State Recycle Fee</th>
+                                <th>Item/Product Name</th>
+                                <th>Ship City</th>
+                                <th>Ship State</th>
+                                <th>ShipZip/PostCode</th>
+                                <th>Ship Country</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                    </table>
                 </div>
-                <div class="box-footer">
-                    <div class="text-right">
-                        <input type="submit" value="Submit" class="btn btn-danger" />
-                    </div>
-                </div>
-                <!-- /.row -->
             </div>
         </div>
     </div>
+
+
+    @*<script src="~/Scripts/jquery-3.4.1.min.js"></script>*@
+     
+    <script src="@Url.Content("~/js/FeeNTax/FeeNTax.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+    <script>
+
+        $(document).ready(function () {             
+            setTimeout(function () { Datagrid(); }, 50);      
+        });
+
+      
+            @*var id = @ViewBag.id;
+            if(id> 0){
+                GetFeeNTaxByID(id);
+            }*@
+
+           //datagridLoad();
+
+
+
+            //$.get('/Users/GetCity', function (data) {
+            //    debugger
+
+            //    var Ct = $("#hfCity").val();
+            //    $.each(data, function (index, value) {
+            //        if (Ct == value)
+            //            $('<option selected>').val(value).text(value).appendTo("#shipcity");
+            //        else
+            //            $('<option>').val(value).text(value).appendTo("#shipcity");
+            //    })
+            //})
+            //txtState
+            //$.get('/Users/GetState', function (data) {
+            //    debugger
+
+            //    var st = $("#hfState").val();
+            //    $.each(data, function (index, value) {
+            //        if (st == value)
+            //            $('<option selected>').val(value).text(value).appendTo("#shipstate");
+            //        else
+            //            $('<option>').val(value).text(value).appendTo("#shipstate");
+            //    })
+            //})
+
+
+            //$(document).on('click', "#btnsave", function () {
+            //    debugger
+            //    AddFeeNTax();
+            //})
+
+
+
+            //function getdatazip() {
+            //    var Postcode = $("#Ship_Zip_PostCode").val();
+            //    $.ajax({
+            //        url: "https://ziptasticapi.com/" + Postcode,
+            //        type: "GET",
+            //        dataType: 'JSON',
+            //        data: [],
+            //        success: function (data) {
+            //            /*    $("#txtCountry").val(data.country);*/
+            //            $("#shipstate").val(data.state);
+            //            $("#shipcity").val(data.city);
+            //        },
+            //        error: function (msg) { alert(msg); }
+            //    });
+
+            //}
+       
+    </script>
 </section>

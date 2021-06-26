@@ -32,7 +32,7 @@
                                 <table id="exportdata" class="table-blue table table-bordered check-table" style="width:100%;">
                                     <thead class="thead-dark">
                                         <tr>
-                                            <th></th>
+                                            <th><input type="checkbox" class="selectAll" name="selectAll" value="all"><label></label></th>
                                             <th>Order Id</th>
                                             <th>Order Date</th>
                                             <th>Customer Id</th>
@@ -62,7 +62,7 @@
                                 <table id="exportusersdata" class="table-blue table table-bordered check-table display" style="width:100%;">
                                     <thead>
                                         <tr>
-                                            <th></th>
+                                            <th><input type="checkbox" class="selectAllUsers" name="selectAllUsers" value="all"><label></label></th>
                                             <th>Id</th>
                                             <th>Name</th>
                                             <th>Email</th>
@@ -90,10 +90,10 @@
                     <div class="postbox">
                         <div class="inside reports-wide">
                             <div class="widefat">
-                                <table class="table-blue" id="exportcustomersdata" style="width:100%;">
+                                <table class="table-blue table table-bordered check-table display" id="exportcustomersdata" style="width:100%;">
                                     <thead>
                                         <tr>
-                                            <th></th>
+                                            <th><input type="checkbox" class="selectAllCustomers" name="selectAllCustomers" value="all"><label></label></th>
                                             <th>Id</th>
                                             <th>Name</th>
                                             <th>Email</th>
@@ -119,6 +119,7 @@
         $(document).ready(function () {
             //DatagridCustomers();
             //DatagridOrder();
+           
             //DatagridUsers();
            
 //Button click for Orders
@@ -248,11 +249,11 @@
                     { 'data': 'order_id' },
                     {
                         'data': 'order_created',
-                        'render': function (jsonDate) {
-                            var date = new Date(parseInt(jsonDate.substr(6)));
-                            var month = ("0" + (date.getMonth() + 1)).slice(-2);
-                            return ("0" + date.getDate()).slice(-2) + '-' + month + '-' + date.getFullYear();
-                        }
+                        //'render': function (jsonDate) {
+                        //    var date = new Date(parseInt(jsonDate.substr(6)));
+                        //    var month = ("0" + (date.getMonth() + 1)).slice(-2);
+                        //    return ("0" + date.getDate()).slice(-2) + '-' + month + '-' + date.getFullYear();
+                        //}
                     },
                     { 'data': 'customer_id' },
                     //{ 'data':'orderstatus' },
@@ -293,6 +294,16 @@
                 ],
 
             });
+
+            //------------SELECT ALL CHEBOX-----------
+            var DT1 = $('#exportdata').DataTable();
+            $(".selectAll").on("click", function (e) {
+                if ($(this).is(":checked")) {
+                    DT1.rows().select();
+                } else {
+                    DT1.rows().deselect();
+                }
+            });
         }
 
         //---------------Order DataGrid End---------------
@@ -315,18 +326,18 @@
 
                 "columns": [
                     { 'data': null, sWidth:"5%" },
-                    { 'data': 'UID', sWidth: "10%"},
+                    { 'data': 'UID', sWidth: "5%"},
                     { 'data': 'user_login', sWidth: "10%"},
                     { 'data': 'user_email', sWidth: "25%" },
-                    { 'data': 'user_status', sWidth: "20%" },
+                    { 'data': 'user_status', sWidth: "15%" },
                     { 'data': 'my', sWidth:"20%" },
                     {
-                        'data': 'created_date', sWidth:"10%",
-                        'render': function (jsonDate) {
-                            var date = new Date(parseInt(jsonDate.substr(6)));
-                            var month = ("0" + (date.getMonth() + 1)).slice(-2);
-                            return ("0" + date.getDate()).slice(-2) + '-' + month + '-' + date.getFullYear();
-                        }
+                        'data': 'created_date', sWidth:"15%"
+                        //'render': function (jsonDate) {
+                        //    var date = new Date(parseInt(jsonDate.substr(6)));
+                        //    var month = ("0" + (date.getMonth() + 1)).slice(-2);
+                        //    return ("0" + date.getDate()).slice(-2) + '-' + month + '-' + date.getFullYear();
+                        //}
                     },
 
                 ],
@@ -361,6 +372,16 @@
                 ],
 
             });
+
+//------------------SELECT ALL CHECKBOXES---------------
+            var DT2 = $('#exportusersdata').DataTable();
+            $(".selectAllUsers").on("click", function (e) {
+                if ($(this).is(":checked")) {
+                    DT2.rows().select();
+                } else {
+                    DT2.rows().deselect();
+                }
+            });
         }
         //----------------Users DataGrid End--------------
 
@@ -389,11 +410,11 @@
                     { 'data': 'customer_phone', 'sWidth': "20%" },
                     {
                         'data': 'customerdate_created',
-                        'render': function (jsonDate) {
-                            var date = new Date(parseInt(jsonDate.substr(6)));
-                            var month = ("0" + (date.getMonth() + 1)).slice(-2);
-                            return ("0" + date.getDate()).slice(-2) + '-' + month + '-' + date.getFullYear();
-                        }
+                        //'render': function (jsonDate) {
+                        //    var date = new Date(parseInt(jsonDate.substr(6)));
+                        //    var month = ("0" + (date.getMonth() + 1)).slice(-2);
+                        //    return ("0" + date.getDate()).slice(-2) + '-' + month + '-' + date.getFullYear();
+                        //}
                     },
 
                 ],
@@ -427,6 +448,16 @@
                 ],
 
             });
+//----------------------SELECT ALL CUSTOMER----------
+            var DT3 = $('#exportcustomersdata').DataTable();
+            $(".selectAllCustomers").on("click", function (e) {
+                if ($(this).is(":checked")) {
+                    DT3.rows().select();
+                } else {
+                    DT3.rows().deselect();
+                }
+            });
+
         }
 
         //----------------Customers DataGrid End-----------------

@@ -287,8 +287,12 @@
                 {
                     new MySqlParameter("@strCoupon", strCoupon)
                 };
-                string strSQl = "select post_title,post_title title,'add_coupon' type,max(case when pm.meta_key = 'discount_type' then pm.meta_value else '' end) discount_type,max(case when pm.meta_key = 'product_ids' then pm.meta_value else '' end) product_ids,max(case when pm.meta_key = 'exclude_product_ids' then pm.meta_value else '' end) exclude_product_ids,"
-                                + "     max(case when pm.meta_key = 'date_expires' then pm.meta_value else '' end) date_expires,max(case when pm.meta_key = 'coupon_amount' then pm.meta_value else '' end) coupon_amount"
+                string strSQl = "select post_title,post_title title,max(case when pm.meta_key = 'discount_type' then pm.meta_value else '' end) discount_type,max(case when pm.meta_key = 'product_ids' then pm.meta_value else '' end) product_ids,max(case when pm.meta_key = 'exclude_product_ids' then pm.meta_value else '' end) exclude_product_ids,"
+                                + "     max(case when pm.meta_key = 'date_expires' then pm.meta_value else '' end) date_expires,max(case when pm.meta_key = 'coupon_amount' then pm.meta_value else '' end) coupon_amount,"
+                                + "     max(case when pm.meta_key = 'individual_use' then pm.meta_value else '' end) individual_use,max(case when pm.meta_key = '_wjecf_products_and' then pm.meta_value else 'no' end) and_or,"
+                                + "     max(case when pm.meta_key = 'limit_x_items' then pm.meta_value else '' end) limit_x_items,max(case when pm.meta_key = 'cus_email' then pm.meta_value else '' end) cus_email,"
+                                + "     max(case when pm.meta_key = 'usage_limit' then pm.meta_value else '' end) usage_limit,max(case when pm.meta_key = 'usage_limit_per_user' then pm.meta_value else '' end) usage_limit_per_user,"
+                                + "     max(case when pm.meta_key = '_wjecf_is_auto_coupon' then(case when pm.meta_value = 'yes' then 'auto_coupon' else 'add_coupon' end) else 'add_coupon' end) type"
                                 + " from wp_posts p inner join wp_postmeta pm on pm.post_id = p.id"
                                 + " where lower(post_title) = @strCoupon And post_type = 'shop_coupon' group by pm.post_id";
                 dt = SQLHelper.ExecuteDataTable(strSQl, parameters);
@@ -360,8 +364,10 @@
                         strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'_line_total','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}'; ", obj.amount, model.OrderPostStatus.order_id, obj.item_type));
                     }
                 }
+                /// step 4 : wp_posts (Coupon used by)
+                strSql.Append(string.Format(" insert into wp_postmeta (post_id,meta_key,meta_value) select id,'_used_by',{0} from wp_posts wp inner join wp_woocommerce_order_items oi on lower(oi.order_item_name) = lower(wp.post_title) and oi.order_item_type = 'coupon' and oi.order_id = {1} where post_type = 'shop_coupon'; ", model.OrderPostStatus.customer_id, model.OrderPostStatus.order_id));
 
-                /// step 3 : wp_woocommerce_order_items (Tax)
+                /// step 5 : wp_woocommerce_order_items (Tax)
                 foreach (OrderTaxItemsModel obj in model.OrderTaxItems)
                 {
                     strSql.Append(string.Format(" insert into wp_woocommerce_order_items(order_item_name,order_item_type,order_id) value('{0}-{1}-{2} TAX-1','tax','{3}'); ", obj.tax_rate_country, obj.tax_rate_state, obj.tax_rate_state, model.OrderPostStatus.order_id));

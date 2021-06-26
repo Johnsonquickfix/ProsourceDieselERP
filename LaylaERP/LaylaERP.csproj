@@ -155,6 +155,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="BAL\AppearanceRepository.cs" />
     <Compile Include="BAL\CustomerRepository.cs" />
     <Compile Include="BAL\DashboardRepository.cs" />
     <Compile Include="BAL\ExportRepository.cs" />
@@ -166,6 +167,7 @@
     <Compile Include="BAL\Users.cs" />
     <Compile Include="BAL\UsersRepositry.cs" />
     <Compile Include="Controllers\AccountAPIController.cs" />
+    <Compile Include="Controllers\AppearanceController.cs" />
     <Compile Include="Controllers\CouponsController.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
     <Compile Include="Controllers\ExportController.cs" />
@@ -179,6 +181,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Appearance.cs" />
     <Compile Include="Models\clsSerialization.cs" />
     <Compile Include="Models\clsUserDetails.cs" />
     <Compile Include="Models\CustomerModel.cs" />
@@ -482,9 +485,11 @@
     <Content Include="Content\Style11.css" />
     <Content Include="Content\Style12.css" />
     <Content Include="css\indexStyle.css" />
+    <Content Include="css\jquery.treeview.css" />
     <Content Include="css\layoutStyle.css" />
     <Content Include="css\login_style.css" />
     <Content Include="css\rolebase.css" />
+    <Content Include="css\rolebase2.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -614,6 +619,7 @@
     <Content Include="Scripts\jquery-3.4.1.slim.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery.js" />
+    <Content Include="Scripts\jquery.treeview.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
@@ -659,10 +665,10 @@
     <Content Include="Views\FeeNTax\StateRecycleTax.cshtml" />
     <Content Include="Views\Coupons\Coupons.cshtml" />
     <Content Include="Views\FeeNTax\CreateNew.cshtml" />
-    <Content Include="Views\Reports\AJBaseReport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="js\Appearance\" />
     <Folder Include="Properties\PublishProfiles\" />
     <Folder Include="Views\ReportsRepository\" />
   </ItemGroup>

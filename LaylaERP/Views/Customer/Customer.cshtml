@@ -15,17 +15,11 @@
         </h1>
     </section>*@
 <div class="page-title">
-    <h2 class="page-heading">Customers</h2> <a href="../../Customer/NewUser" class="btn btn-danger">Add New</a>
+    <h2 class="page-heading">Customers</h2>
 </div>
 <section class="content section-content table-design">
     <div class="user-top-section">
-            @*<div class="col-md-3">
-            <div class="form-group">
-                <input type="text" id="txtSearch" class="form-control" placeholder="Search" />
-            </div>
-        </div>*@
-            <!---sdf-->
-        <div class="tablenav top tablenav-top2">
+        <div class="tablenav top">
             <div class="alignleft actions bulkactions">
                 <select class="form-control select2" id="ddlSearchStatus" placeholder="Select User">
                     <option value="">Select Status</option>
@@ -34,22 +28,35 @@
                 </select>
                 <button type="button" id="btnSearch" class="btn btn-primary btn-flat button">Search</button>
             </div>
-            <div class="alignleft actions bulkactions">
-                <select class="form-control" id="ddlStatus">
-                    <option value="1">Bulk Action</option>
-                    <option value="2">Delete</option>
-                </select>
-                <button type="button" id="btnApply" class="btn btn-primary btn-flat button">Apply</button>
+            <br class="clear">
+            @*<div class="col-md-3">
+            <div class="form-group">
+                <input type="text" id="txtSearch" class="form-control" placeholder="Search" />
             </div>
-            <div class="alignleft actions bulkactions">
-                <select class="form-control" id="ddlUserStatus">
-                    <option value="0">Active</option>
-                    <option value="1">InActive</option>
-                </select>
-                <button type="button" id="btnChange" class="btn btn-primary btn-flat button">Change</button>
-            </div>
+        </div>*@
+            @*<div class="col-sm-2">
+            <a href="../../Customer/NewUser" class="btn btn-primary btn-flat"><i class="fa fa-user"></i> Add New User</a>
+        </div>*@
+
         </div>
+            <!---sdf-->
+            <div class="tablenav top tablenav-top2">
+                <div class="alignleft actions bulkactions">
+                    <select class="form-control" id="ddlStatus">
+                        <option value="1">Bulk Action</option>
+                        <option value="2">Delete</option>
+                    </select>
+                    <button type="button" id="btnApply" class="btn btn-primary btn-flat button">Apply</button>
+                </div>
+                <div class="alignleft actions bulkactions">
+                    <select class="form-control" id="ddlUserStatus">
+                        <option value="0">Active</option>
+                        <option value="1">InActive</option>
+                    </select>
+                    <button type="button" id="btnChange" class="btn btn-primary btn-flat button">Change</button>
+                </div>
         </div>
+    </div>
         <!-- end top-->
         <div class="row">
             <div class="col-md-12">

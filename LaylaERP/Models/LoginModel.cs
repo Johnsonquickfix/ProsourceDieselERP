@@ -21,6 +21,7 @@
         public string PassWord { get; set; }
 
         public string ConfirmPassword { get; set; }
+        public int roleid { get; set; }
     }
     public class ActivityLogModel
     {

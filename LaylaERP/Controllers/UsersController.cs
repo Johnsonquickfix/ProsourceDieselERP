@@ -135,7 +135,6 @@ namespace LaylaERP.Controllers
             string JSONresult = string.Empty;
             try
             {
-
                 DataTable dt = BAL.Users.GetMenuNames();
                 JSONresult = JsonConvert.SerializeObject(dt);
             }
@@ -198,19 +197,17 @@ namespace LaylaERP.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetAssignRole(UserClassification model)
-        {
-            //List<Dictionary<String, Object>> tableRows = new List<Dictionary<String, Object>>();
-            //Dictionary<String, Object> row;
-            string result = string.Empty;
-            try
-            {
-                DataTable dt = BAL.Users.GetMenuByUser(model.User_Type);
-                result = JsonConvert.SerializeObject(dt);
-            }
-            catch(Exception ex) { throw ex; }
-            return Json(result, 0);
-        }
+        //public JsonResult GetAssignRole(UserClassification model)
+        //{
+        //    string result = string.Empty;
+        //    try
+        //    {
+        //        DataTable dt = BAL.Users.GetMenuByUser(model.User_Type);
+        //        result = JsonConvert.SerializeObject(dt);
+        //    }
+        //    catch(Exception ex) { throw ex; }
+        //    return Json(result, 0);
+        //}
 
         public JsonResult Save(UserClassification model)
         {
@@ -613,6 +610,62 @@ namespace LaylaERP.Controllers
             }
 
 
+        }
+        public JsonResult getUserAuthMenu(LoginModel model)
+        {
+            List<Dictionary<String, Object>> tableRows = new List<Dictionary<String, Object>>();
+            Dictionary<String, Object> row;
+            try
+            {
+                
+                DataTable DT = BAL.Users.GetUserAuth(model.roleid);
+                DataRow[] rows = DT.Select("level = 0", "menu_code");
+                foreach (DataRow dr in rows)
+                {
+                    row = new Dictionary<String, Object>();
+                    row.Add("id", dr["menu_id"]);
+                    row.Add("text", dr["menu_name"]);
+                    if (dr["menu_url"].ToString().Trim() != "#")
+                        row.Add("url", dr["menu_url"]);                    
+                    row.Add("level", dr["level"]);                  
+                    if (dr["parent_id"] != DBNull.Value)
+                        row.Add("parent", dr["parent_id"]);
+                    if (dr["checked"] != DBNull.Value)
+                        row.Add("checked", dr["checked"]);
+                    List<Dictionary<string, object>> list2 = Getdata(DT, Convert.ToInt32(dr["menu_id"]));
+                    row.Add("children", list2);
+                    tableRows.Add(row);
+                }
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(tableRows, 0);
+        }
+
+        public static List<Dictionary<string, object>> Getdata(DataTable DT, int ParentID)
+        {
+            List<Dictionary<string, object>> list = new List<Dictionary<string, object>>();
+            Dictionary<String, Object> row;
+            DataRow[] rows = DT.Select("parent_id = " + ParentID.ToString(), "menu_code");
+            foreach (DataRow dr in rows)
+            {
+                row = new Dictionary<String, Object>();
+                row.Add("id", dr["menu_id"]);
+                row.Add("text", dr["menu_name"]);
+                if (dr["menu_url"].ToString().Trim() != "#")
+                    row.Add("url", dr["menu_url"]);
+                row.Add("urlType", "none");
+                row.Add("targetType", "iframe-tab");
+                row.Add("level", dr["level"]);
+                row.Add("icon", dr["menu_icon"]);
+                if (dr["parent_id"] != DBNull.Value)
+                    row.Add("parent", dr["parent_id"]);
+                if (dr["checked"] != DBNull.Value)
+                    row.Add("checked", dr["checked"]);
+                List<Dictionary<string, object>> list2 = Getdata(DT, Convert.ToInt32(dr["menu_id"]));
+                row.Add("children", list2);
+                list.Add(row);
+            }
+            return list;
         }
     }
 }

@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Data;
 using LaylaERP.BAL;
+using Newtonsoft.Json;
 
 
 namespace LaylaERP.Controllers
@@ -17,10 +18,26 @@ namespace LaylaERP.Controllers
             return View("Menus");
         }
 
-        public ActionResult GetERPMenus()
+        public ActionResult Menus()
         {
-            AppearanceRepository.GetERPMenus();
-            return Json(new { data = AppearanceRepository.GetERPMenus() }, JsonRequestBehavior.AllowGet);
+            return View();
+        }
+        public ActionResult Appearance()
+        {
+            return View();
+        }
+
+
+        public JsonResult GetERPMenus()
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = AppearanceRepository.GetERPMenus();
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
         }
     }
 }

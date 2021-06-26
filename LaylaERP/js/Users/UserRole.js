@@ -174,7 +174,7 @@ function fillCheckMenu() {
             $('.treeview').empty();
 
             var tw = new TreeView(data, { showAlwaysCheckBox: true, fold: false });
-            document.body.appendChild(tw.root);
+            $('#chktree').append(tw.root);
         },
         error: function (jqXHR, textStatus, errorThrown) { swal('Error!', errorThrown, "error"); }
     });

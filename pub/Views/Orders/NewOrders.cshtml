@@ -3,6 +3,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <link href="~/Content/css/Style.css" rel="stylesheet" />
+<link href="~/css/order_style.css" rel="stylesheet" />
 <div class="page-title">
     <h2 class="page-heading">Add New Order</h2>
 </div>
@@ -135,14 +136,14 @@
             <div class="box box-primary mb-0">
                 <div class="box-header">
                     <div class="table-responsive" id="divAddItemFinal">
-                        <table id="tblAddItemFinal" class="table table-blue chechout-tables check-table table-bordered table-striped dataTable tablelist">
+                        <table id="tblAddItemFinal" class="table table-blue check-table table-bordered table-striped dataTable tablelist">
                             <thead class="thead-dark">
                                 <tr>
                                     <th class="text-center" style="width: 8%">Actions</th>
                                     <th style="width: 50%">Item</th>
                                     <th class="text-right" style="width: 10%">Sale Price</th>
                                     <th class="text-right" style="width: 8%">Quantity</th>
-                                    <th class="text-right" style="width: 10%">Total</th>
+                                    <th class="text-right" style="width: 10%">Sub-Total</th>
                                     <th class="text-right" style="width: 8%">Discount</th>
                                     <th class="text-right" style="width: 9%">Tax</th>
                                 </tr>
@@ -197,7 +198,7 @@
                             </div>
                         </div>
                         <div class="form-group ">
-                            <label class="col-sm-10 control-label">Discount</label>
+                            <label class="col-sm-10 control-label">Total Savings</label>
                             <div class="col-sm-2 controls text-right">
                                 <span id="discountTotal">0.00</span>
                             </div>
@@ -212,6 +213,12 @@
                             <label class="col-sm-10 control-label">Shipping Tax</label>
                             <div class="col-sm-2 controls text-right">
                                 <span id="shippingTaxTotal">0.00</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-10 control-label">Sale Tax</label>
+                            <div class="col-sm-2 controls text-right">
+                                <span id="salesTaxTotal">0.00</span>
                             </div>
                         </div>
                         <div class="form-group">

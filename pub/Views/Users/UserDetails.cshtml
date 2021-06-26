@@ -42,10 +42,10 @@
                         </div>
 
                     </div>
-
+                    
                     @*<h3 class="profile-username text-center">Layla Sleep</h3>
-                        <p class="text-muted text-center">laylasleep@acb.com</p>
-                        <p class="text-center">Washington Dc</p>*@
+        <p class="text-muted text-center">laylasleep@acb.com</p>
+        <p class="text-center">Washington Dc</p>*@
                 </div>
                 <!-- /.box-body -->
             </div>
@@ -112,18 +112,18 @@
                             <div class="form-group">
                                 <label for="exampleInputEmail1">City</label>
                                 <select class="form-control" id="txtCity">
-                                    <option></option>
+                                    <option selected value="@Model.City">@Model.City </option>
                                 </select>
 
                             </div>
 
                         </div>
                         <div class="col-sm-4">
-                          
+
                             <div class="form-group">
                                 <label for="exampleInputEmail1">State</label>
                                 <select class="form-control" id="txtState">
-                                    <option></option>
+                                    <option selected value="@Model.State">@Model.State </option>
                                 </select>
 
                             </div>
@@ -144,11 +144,10 @@
                             </div>
 
                         </div>
-                        <div class="col-offset-8 col-sm-4 mt-1">
-                            <a href="#" class="btn btn-danger btn-block" id="btnSave"><b>Update User</b></a>
-                            <br />
-                            <a class="btn btn-danger" href="Users">Back to List</a>
-                        </div>
+                    </div>
+                    <div class="box-footer text-right">
+                        <a href="#" class="btn btn-danger" id="btnSave"><b>Update User</b></a>
+                        <a class="btn btn-danger" href="Users">Back to List</a>
                     </div>
                 </div>
                 <!-- /.nav-tabs-custom -->
@@ -161,8 +160,8 @@
 <script>
     $(document).ready(function () {
         $("#loader").hide();
-   
-       
+
+
         //$.get('GetState', function (data) {
         //    var st = $("#hfState").val();
         //    $.each(data, function (index, value) {
@@ -173,7 +172,7 @@
         //    })
         //})
         $("#txtCity").select2({
-          
+
             allowClear: true, minimumInputLength: 3, placeholder: "Search City",
             ajax: {
                 url: '/Users/GetCity', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
@@ -182,20 +181,20 @@
                     var jobj = JSON.parse(data);
                     $("#txtCity").empty().append('<option value="' + data[0].City + '" selected>' + data[0].City + '</option>');
                     return { results: $.map(jobj, function (item) { return { text: item.City, name: item.City, id: item.City } }) };
-                   
+
                 },
                 error: function (xhr, status, err) { }, cache: true
             }
-        });
-        $.get('GetCity', function (data) {
-            var Ct = $("#hfCity").val();
-            $.each(data, function (index, value) {
-                if (Ct == value)
-                    $('<option selected>').val(value).text(value).appendTo("#txtCity");
+        }); 
+        //$.get('GetCity', function (data) {
+        //    var Ct = $("#hfCity").val();
+        //    $.each(data, function (index, value) {
+        //        if (Ct == value)
+        //            $('<option selected>').val(value).text(value).appendTo("#txtCity");
 
-            })
-        })
-         
+        //    })
+        //})
+
         $("#txtState").select2({
             allowClear: true, minimumInputLength: 3, placeholder: "Search State",
             ajax: {
@@ -206,20 +205,20 @@
             }
         });
 
-        $.get('GetState', function (data) {
-            var st = $("#hfState").val();
-            $.each(data, function (index, value) {
-                if (st == value)
-                    $('<option selected>').val(value).text(value).appendTo("#txtState");
-               
-            })
-        })
+        //$.get('GetState', function (data) {
+        //    var st = $("#hfState").val();
+        //    $.each(data, function (index, value) {
+        //        if (st == value)
+        //            $('<option selected>').val(value).text(value).appendTo("#txtState");
+
+        //    })
+        //})
 
         $(document).on('click', "#btnSave", function () {
             AddCustomer();
         })
         $('#txtPostCode').change(function () {
-       
+
             City = $("#txtCity").val();
             State = $("#txtState").val();
             PostalCode = $("#txtPostCode").val();
@@ -235,10 +234,10 @@
                 dataType: "json",
                 success: function (data) {
                     if (data.status == true) {
-                       // swal('Alert!', 'Post zip code is valid for City and State', 'success')
-                       // $('#hfzipstatus').val(data.status);
+                        // swal('Alert!', 'Post zip code is valid for City and State', 'success')
+                        // $('#hfzipstatus').val(data.status);
                         $('#hfzipstatus').val(data.status);
-                      
+
                     }
                     else {
                         $("#txtPostCode").val("");
@@ -286,111 +285,121 @@
 
         $('#txtUserEmail').change(function () {
 
-            email = $("#txtUserEmail").val();
-            var obj = {
-                user_email: email
+            var emailReg = /^([\w-\.]+@@([\w-]+\.)+[\w-]{2,4})?$/;
+            var emailaddressVal = $("#txtUserEmail").val();
+            if (!emailReg.test(emailaddressVal)) {
+                $("#txtUserEmail").val('');
+                swal('Alert', 'Is not a valid email', 'error').then(function () { swal.close(); $('#txtUserEmail').focus(); });
             }
-            $.ajax({
-                url: '/Users/GetEmailName/', dataType: 'json', type: 'Post',
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify(obj),
-                dataType: "json",
-                success: function (data) {
-                    if (data.status == false) {
+            else {
 
-                    }
-                    else {
-                        $("#txtUserEmail").val("");
-                        swal('Alert', 'User email is already exists ', 'error').then(function () { swal.close(); $('#txtUserEmail').focus(); });
-                    }
-                },
+                email = $("#txtUserEmail").val();
+                var obj = {
+                    user_email: email
+                }
+                $.ajax({
+                    url: '/Users/GetEmailName/', dataType: 'json', type: 'Post',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(obj),
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.status == false) {
 
-                error: function (error) {
-                    swal('Error!', 'something went wrong', 'error');
-                },
-            })
+                        }
+                        else {
+                            $("#txtUserEmail").val("");
+                            swal('Alert', 'User email is already exists ', 'error').then(function () { swal.close(); $('#txtUserEmail').focus(); });
+                        }
+                    },
+
+                    error: function (error) {
+                        swal('Error!', 'something went wrong', 'error');
+                    },
+                })
+            }
+
         });
 
     });
 
 
     function AddCustomer() {
-        debugger        
-       
-     
-            var ImageURL;
-            var canvas = document.createElement('canvas');
-            var objimg = document.getElementById('show_picture');
-            canvas.width = objimg.width;
-            canvas.height = objimg.height;
-            var ctx = canvas.getContext('2d').drawImage(objimg, 0, 0, canvas.width, canvas.height);
-            var can = document.getElementById('canvas');
-            ImageType = "jpeg";
-            var img = canvas.toDataURL("image/jpeg", 30 / 100);
-            var result_image_obj = new Image();
-            result_image_obj.src = img;
-            $("#show_picture").attr("src", result_image_obj.src);
-            ImageURL = result_image_obj.src;
-            var block = ImageURL.split(";");
-            var realData = block[1].split(",")[1];
-            $("#hidimage").val(realData);
+        debugger
 
 
-            Picture = $("#hidimage").val();
-            ID = $("#hfid").val();
-            Email = $("#txtUserEmail").val();
-            NickName = $("#txtUserNickName").val();
-            FirstName = $("#txtFirstName").val();
-            LastName = $("#txtLastName").val();
-            address = $("#txtAddress").val();
-            country = $("#txtCountry").val();
-            UserRole = $("#txtUserRole").val();
-            Phone = $("#txtPhone").val();
-            Zipcode = $("#txtPostCode").val();
-            City = $("#txtCity").val();
-            State = $("#txtState").val();
-            address2 = $("#txtAddress2").val();
-
-            if (NickName == "") {
-                swal('Alert', 'Please Enter User Name', 'error').then(function () { swal.close(); $('#txtUserNickName').focus(); });
-            }
-            else if (Email == "") {
-                swal('Alert', 'Please Enter Email', 'error').then(function () { swal.close(); $('#txtUserEmail').focus(); });
-            }
-            else if (FirstName == "") {
-                swal('Alert', 'Please Enter First Name', 'error').then(function () { swal.close(); $('#txtFirstName').focus(); });
-            }
-            else if (LastName == "") {
-                swal('Alert', 'Please Enter Last Name', 'error').then(function () { swal.close(); $('#txtLastName').focus(); });
-            }
-            else if ($('#txtUserRole').val() == 0) {
-                swal('Alert', 'Please Select User Type', 'error').then(function () { swal.close(); $('#txtUserRole').focus(); });
-            }
-            else if (Phone == "") {
-                swal('Alert', 'Please Enter Contact No.', 'error').then(function () { swal.close(); $('#txtPhone').focus(); });
-            }
-            else if (address == "") {
-                swal('Alert', 'Please Enter Address ', 'error').then(function () { swal.close(); $('#txtAddress').focus(); });
-            }
-
-            else if ($('#txtCity').val() == 0) {
-                swal('Alert', 'Please Select City', 'error').then(function () { swal.close(); $('#txtCity').focus(); });
-            }
-            else if ($('#txtState').val() == 0) {
-                swal('Alert', 'Please Select State', 'error').then(function () { swal.close(); $('#txtState').focus(); });
-            }
-            else if (Zipcode == "") {
-                swal('Alert', 'Please Enter Post/Zip Code', 'error').then(function () { swal.close(); $('#txtPostCode').focus(); });
-            }
-            else if ($('#txtCountry').val() == 0) {
-                swal('Alert', 'Please Select Country', 'error').then(function () { swal.close(); $('#txtCountry').focus(); });
-            }
+        var ImageURL;
+        var canvas = document.createElement('canvas');
+        var objimg = document.getElementById('show_picture');
+        canvas.width = objimg.width;
+        canvas.height = objimg.height;
+        var ctx = canvas.getContext('2d').drawImage(objimg, 0, 0, canvas.width, canvas.height);
+        var can = document.getElementById('canvas');
+        ImageType = "jpeg";
+        var img = canvas.toDataURL("image/jpeg", 30 / 100);
+        var result_image_obj = new Image();
+        result_image_obj.src = img;
+        $("#show_picture").attr("src", result_image_obj.src);
+        ImageURL = result_image_obj.src;
+        var block = ImageURL.split(";");
+        var realData = block[1].split(",")[1];
+        $("#hidimage").val(realData);
 
 
+        Picture = $("#hidimage").val();
+        ID = $("#hfid").val();
+        Email = $("#txtUserEmail").val();
+        NickName = $("#txtUserNickName").val();
+        FirstName = $("#txtFirstName").val();
+        LastName = $("#txtLastName").val();
+        address = $("#txtAddress").val();
+        country = $("#txtCountry").val();
+        UserRole = $("#txtUserRole").val();
+        Phone = $("#txtPhone").val();
+        Zipcode = $("#txtPostCode").val();
+        City = $("#txtCity").val();
+        State = $("#txtState").val();
+        address2 = $("#txtAddress2").val();
 
-            else {
-                $("#txtPostCode").change();
-                if ($("#hfzipstatus").val() == "true") {
+        if (NickName == "") {
+            swal('Alert', 'Please Enter User Name', 'error').then(function () { swal.close(); $('#txtUserNickName').focus(); });
+        }
+        else if (Email == "") {
+            swal('Alert', 'Please Enter Email', 'error').then(function () { swal.close(); $('#txtUserEmail').focus(); });
+        }
+        else if (FirstName == "") {
+            swal('Alert', 'Please Enter First Name', 'error').then(function () { swal.close(); $('#txtFirstName').focus(); });
+        }
+        else if (LastName == "") {
+            swal('Alert', 'Please Enter Last Name', 'error').then(function () { swal.close(); $('#txtLastName').focus(); });
+        }
+        else if ($('#txtUserRole').val() == 0) {
+            swal('Alert', 'Please Select User Type', 'error').then(function () { swal.close(); $('#txtUserRole').focus(); });
+        }
+        else if (Phone == "") {
+            swal('Alert', 'Please Enter Contact No.', 'error').then(function () { swal.close(); $('#txtPhone').focus(); });
+        }
+        else if (address == "") {
+            swal('Alert', 'Please Enter Address ', 'error').then(function () { swal.close(); $('#txtAddress').focus(); });
+        }
+
+        else if ($('#txtCity').val() == 0) {
+            swal('Alert', 'Please Select City', 'error').then(function () { swal.close(); $('#txtCity').focus(); });
+        }
+        else if ($('#txtState').val() == 0) {
+            swal('Alert', 'Please Select State', 'error').then(function () { swal.close(); $('#txtState').focus(); });
+        }
+        else if (Zipcode == "") {
+            swal('Alert', 'Please Enter Post/Zip Code', 'error').then(function () { swal.close(); $('#txtPostCode').focus(); });
+        }
+        else if ($('#txtCountry').val() == 0) {
+            swal('Alert', 'Please Select Country', 'error').then(function () { swal.close(); $('#txtCountry').focus(); });
+        }
+
+
+
+        else {
+            $("#txtPostCode").change();
+            if ($("#hfzipstatus").val() == "true") {
                 var obj = {
                     ID: ID,
                     user_email: Email,

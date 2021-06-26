@@ -1,9 +1,9 @@
-﻿@model LaylaERP.Models.CustomerModel
-
+﻿@model LaylaERP.Models.FeeNTax
 @{
-    ViewBag.Title = "NewUser";
+    ViewBag.Title = "CreateNew";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
 <link href="~/Content/css/intlTelInput.css" rel="stylesheet" />
 <!-- Content Header (Page header) -->
 
@@ -12,84 +12,70 @@
     <span>&nbsp;&nbsp;Loading......</span>
 </div>
 <div class="page-title">
-    <h2 class="page-heading" id="lbltitle">Add New Customer</h2>
+    <h2 class="page-heading" id="lbltitle">Add New State Recycle Fee</h2>
 </div>
-<!-- Main content -->
 <section class="content content-section p-0">
     <div class="box box-primary">
         <div class="box-body">
             <div class="form-horizontal create-new-customer" id="parent">
                 <input type="hidden" id="hfid" value="@ViewBag.id" />
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <div class="form-group">
-                            <label class="control-label " for="Email">Email</label>
+                            <label class="control-label " for="StateRecycleFee ">State Recycle Fee </label>
                             <div class="">
-                                <input type="email" id="txtUserEmail" class="form-control" placeholder="Email" />
+                                <input type="text" id="StateRecycleFee" value="@Model.staterecyclefee" class="form-control" placeholder="State Recycle Fee " />
+                            </div>
+                        </div>
+                        @*<div class="form-group">
+                <label class="control-label " for="Item_Parent_id">Item Parent Id</label>
+                <div class="">
+                    <input type="text" id="Item_Parent_id" class="form-control" placeholder="Item Parent Id" />
+                </div>
+            </div>*@
+                        <div class="form-group">
+                            <label class="control-label " for="Item_Name">Item/Product Name</label>
+                            <div class="">
+                                <input type="text" id="Item_Name" value="@Model.item_name" class="form-control" placeholder="Item Name" />
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label " for="User Name">User Name</label>
+                            <label class="control-label " for="ShipCity">Ship City</label>
                             <div class="">
-                                <input type="text" id="txtUserNickName" class="form-control" placeholder="User Name" />
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label " for="First Name">First Name</label>
-                            <div class="">
-                                <input type="text" id="txtFirstName" class="form-control" placeholder="First Name" />
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label " for="Last Name">Last Name</label>
-                            <div class="">
-                                <input type="text" id="txtLastName" class="form-control" placeholder="Last Name" />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="control-label " for="Address 1">Address 1</label>
-                            <div class="">
-                                <input type="text" id="txtBillingAddress1" class="form-control" placeholder="Address 1" />
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label " for="Address 2">Address 2</label>
-                            <div class="">
-                                <input type="text" id="txtBillingAddress2" class="form-control" placeholder="Address 2" />
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label " for="Post/Zip Code">Post/Zip Code</label>
-                            <div class="">
-                                <input type="text" id="txtBillingPostCode" class="form-control" placeholder="Post/Zip Code" />
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label " for="Country/Region">Country/Region</label>
-                            <div class="">
-                                <input type="text" id="txtBillingCountry" class="form-control" placeholder="Country/Region"  disabled/>
+                                <Select class="form-control" id="shipcity">
+                                    <option></option>
+                                    @*<option>Ship2 City</option>
+                        <option>Ship3 City</option>*@
+                                </Select>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-4">
+
+                    <div class="col-md-6">
                         <div class="form-group">
-                            <label class="control-label " for="State/Country">State/Country</label>
+                            <label class="control-label " for="ShipState">Ship State</label>
                             <div class="">
-                                <input type="text" id="txtBillingState" class="form-control" placeholder="State/Country" disabled/>
+                                <Select class="form-control" id="shipstate">
+                                    <option></option>
+                                    @*<option>Ship2 State</option>
+                        <option>Ship3 State</option>*@
+                                </Select>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label " for="City">City</label>
+                            <label class="control-label " for="Ship_Zip_PostCode">ShipZip/PostCode</label>
                             <div class="">
-                                <input type="tel" id="txtBillingCity" class="form-control" placeholder="City" disabled/>
+                                <input type="text" id="Ship_Zip_PostCode" value="@Model.zip" class="form-control" placeholder="ShipZip/PostCode" />
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label " for="Contact No.">Contact No.</label>
+                            <label class="control-label " for="ShipState">Ship Country</label>
                             <div class="">
-                                <input type="tel" id="txtBillingPhone" class="form-control" placeholder="Contact No." />
+                                <Select class="form-control" id="shipcountry">
+                                    <option>Ship1 Country</option>
+                                    <option>Ship2 Country</option>
+                                    <option>Ship3 Country</option>
+                                </Select>
                             </div>
                         </div>
                     </div>
@@ -97,20 +83,18 @@
             </div>
         </div>
         <div class="box-footer">
-                <div class="text-right">
-                    <input type="submit" value="Submit" id="btnSave" class="btn btn-danger" />
-                    @Html.ActionLink("Back to List", "Customer", null, new { @class = "btn btn-danger" })
+            <div class="text-right">
+                <input type="submit" value="Submit" id="btnSave" class="btn btn-danger" />               
+                <a class="btn btn-danger" href="Index">Back to List</a>
             </div>
         </div>
         <!-- /.row -->
     </div>
 </section>
-<!-- /.content -->
-@*@section Scripts {
-        @Scripts.Render("~/bundles/jqueryval")
-    }*@
-<script src="~/Scripts/intlTelInput.js"></script>
-<script src="@Url.Content("~/js/Customer/Customer.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+
+ 
+<script src="~/FeeNTax/FeeNTax.js"></script>
+<script src="@Url.Content("~/js/FeeNTax/FeeNTax.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 <script>
     $(document).ready(function () {
         $("#loader").hide();
@@ -123,63 +107,13 @@
             GetCustomerByID(id);
         }
 
-      
+
         $(document).on('click', "#btnSave", function () {
-            AddCustomer();
-        })
-        $('#txtBillingPostCode').change(function () {
-            getdatabyzip();
+            AddFeeNTax();
         })
 
-      
     });
 
-    document.getElementById('txtBillingPhone').addEventListener('keyup', function (evt) {
-        var phoneNumber = document.getElementById('txtBillingPhone');
-        var charCode = (evt.which) ? evt.which : evt.keyCode;
-        phoneNumber.value = phoneFormat(phoneNumber.value);
-    });
-   
 
-    function phoneFormat(input) {
-        input = input.replace(/\D/g, '');
-        input = input.substring(0, 10);
-        var size = input.length;
-        if (size == 0) {
-            input = input;
-        } else if (size < 4) {
-            input = '(' + input;
-        } else if (size < 7) {
-            input = '(' + input.substring(0, 3) + ') ' + input.substring(3, 6);
-        } else {
-            input = '(' + input.substring(0, 3) + ') ' + input.substring(3, 6) + ' - ' + input.substring(6, 10);
-        }
-        return input;
-    }
-    var input = document.querySelector("#txtBillingPhone");
-    window.intlTelInput(input, {
-        // allowDropdown: false,
-        // autoHideDialCode: false,
-        // autoPlaceholder: "off",
-        // dropdownContainer: document.body,
-        // excludeCountries: ["us"],
-        // formatOnDisplay: false,
-        // geoIpLookup: function(callback) {
-        //   $.get("http://ipinfo.io", function() {}, "jsonp").always(function(resp) {
-        //     var countryCode = (resp && resp.country) ? resp.country : "";
-        //     callback(countryCode);
-        //   });
-        // },
-        // hiddenInput: "full_number",
-        // initialCountry: "auto",
-        // localizedCountries: { 'de': 'Deutschland' },
-        // nationalMode: false,
-        // onlyCountries: ['us', 'gb', 'ch', 'ca', 'do'],
-        // placeholderNumberType: "MOBILE",
-        // preferredCountries: ['cn', 'jp'],
-        // separateDialCode: true,
-        utilsScript: "~/Scripts/intlTelInput.js",
-    });
 
 </script>
-

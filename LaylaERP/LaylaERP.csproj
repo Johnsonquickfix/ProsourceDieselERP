@@ -155,6 +155,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="BAL\AppearanceRepository.cs" />
     <Compile Include="BAL\CustomerRepository.cs" />
     <Compile Include="BAL\DashboardRepository.cs" />
     <Compile Include="BAL\ExportRepository.cs" />
@@ -179,6 +180,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Appearance.cs" />
     <Compile Include="Models\clsSerialization.cs" />
     <Compile Include="Models\clsUserDetails.cs" />
     <Compile Include="Models\CustomerModel.cs" />
@@ -663,6 +665,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="js\Appearance\" />
     <Folder Include="Properties\PublishProfiles\" />
   </ItemGroup>
   <ItemGroup>

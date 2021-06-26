@@ -1103,9 +1103,7 @@ button#btnGeneratePassword {
 }
 .setting-section .dataTables_length {
 float:left;}
-.setting-section .dt-buttons {
-    float: right;
-}
+
 .setting-section .dataTables_wrapper {
     padding: 0px;
 }

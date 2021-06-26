@@ -8,7 +8,7 @@
     <h2 class="page-heading">Export</h2>
 </div>
  
-<div class="setting-section">
+<div class="contennt setting-section">
     <div class="nav-tabs-custom">
         <ul class="nav nav-tabs">
             <li class="active"><a href="#tab_1" data-toggle="tab">Orders</a></li>
@@ -17,100 +17,101 @@
         </ul>
         <div class="tab-content">
             <div class="tab-pane active" id="tab_1">
-                <div class="user_subCrumbs">
-                    <input type="button" id="btnvieworders" class="button" value="View All" />
-                    From <input type="text" name="fromdate" id="fromdate" />
-                    To<input type="text" name="todate" id="todate" />
-
-                    @*From <input type="date" name="fromdate" id="fromdate">
-        To <input type="date" name="todate" id="todate" >*@
-                    <input type="button" id="btnorder" class="button" value="GO" />
-                </div><br /><br />
+                <div class="user-top-section">
+                    <div class="tablenav top">
+                        <div class="alignleft actions bulkactions">
+                            <span class="even-space">From</span><input type="text" name="fromdate" id="fromdate" />
+                            <span class="even-space">To</span><input type="text" name="todate" id="todate" />
+                            @*From <input type="date" name="fromdate" id="fromdate">
+                        To<input type="date" name="todate" id="todate" >*@
+                            <input type="button" id="btnorder" class="button action" value="GO" />
+                            <input type="button" id="btnvieworders" class="button action" value="Refresh" />
+                        </div>
+                    </div>
+                </div>
                 <div id="poststuff" class="woocommerce-reports-wide">
-                    <div class="postbox">
-                        <div class="inside reports-wide">
-                            <div class="widefat">
-                                <table id="exportdata" class="table-blue table table-bordered check-table" style="width:100%;">
-                                    <thead class="thead-dark">
-                                        <tr>
-                                            <th></th>
-                                            <th>Order Id</th>
-                                            <th>Order Date</th>
-                                            <th>Customer Id</th>
-                                            <th>Number Of Items</th>
-                                            <th>Subtotal</th>
-                                            <th>Total</th>
-                                        </tr>
-                                    </thead>
-                                </table>
-                            </div>
+                    <div class="box box-primary">
+                        <div class="box-header">
+                            <table id="exportdata" class="table-blue table table-bordered check-table" style="width:100%;">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th><input type="checkbox" class="selectAll" name="selectAll" value="all"><label></label></th>
+                                        <th>Order Id</th>
+                                        <th>Order Date</th>
+                                        <th>Customer Id</th>
+                                        <th>Number Of Items</th>
+                                        <th>Subtotal</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                            </table>
                         </div>
                     </div>
                 </div>
             </div><!--end tab one-->
             <div class="tab-pane" id="tab_2">
-                <div class="user_subCrumbs">
-                    <input type="button" id="btnviewusers" class="button" value="View All" />
-                    From <input type="text" name="fromdateusers" id="fromdateusers" />
-                    To<input type="text" name="todateusers" id="todateusers" />
-                    <input type="button" id="btnusers" class="button" value="GO" />
-                    <br /><br />
-                </div>
-                <div id="poststuff" class="woocommerce-reports-wide">
-                    <div class="postbox">
-                        <div class="inside reports-wide">
-                            <div class="widefat">
-                                <table id="exportusersdata" class="table-blue table table-bordered check-table display" style="width:100%;">
-                                    <thead>
-                                        <tr>
-                                            <th></th>
-                                            <th>Id</th>
-                                            <th>Name</th>
-                                            <th>Email</th>
-                                            <th>Status</th>
-                                            <th>Role</th>
-                                            <th>Date</th>
-                                        </tr>
-                                    </thead>
-
-                                </table>
-                            </div>
+                <div class="user-top-section">
+                    <div class="tablenav top">
+                        <div class="alignleft actions bulkactions">
+                            <span>From</span><input type="text" name="fromdateusers" id="fromdateusers" />
+                            <span>To</span><input type="text" name="todateusers" id="todateusers" />
+                            <input type="button" id="btnusers" class="button" value="GO" />
+                            <input type="button" id="btnviewusers" class="button" value="Refresh" />
                         </div>
                     </div>
                 </div>
-            </div><!--end tab two-->
+                        <div id="poststuff" class="woocommerce-reports-wide">
+                            <div class="box box-primary">
+                                <div class="box-header">
+                                    <table id="exportusersdata" class="table-blue table table-bordered check-table display" style="width:100%;">
+                                        <thead>
+                                            <tr>
+                                                <th><input type="checkbox" class="selectAllUsers" name="selectAllUsers" value="all"><label></label></th>
+                                                <th>Id</th>
+                                                <th>Name</th>
+                                                <th>Email</th>
+                                                <th>Status</th>
+                                                <th>Role</th>
+                                                <th>Date</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div><!--end tab two-->
             <div class="tab-pane" id="tab_3">
-                <div class="user_subCrumbs">
-                    <input type="button" id="btnviewcustomers" class="button" value="View All" />
-                    From <input type="text" name="fromdatecustomers" id="fromdatecustomers" />
-                    To<input type="text" name="todatecustomers" id="todatecustomers" />
-                    <input type="button" id="btncustomers" class="button" value="GO" />
-                    <br /><br />
+                <div class="user-top-section">
+                    <div class="tablenav top">
+                        <div class="alignleft actions bulkactions">
+                            <span>From</span><input type="text" name="fromdatecustomers" id="fromdatecustomers"/>
+                            <span>To</span><input type="text" name="todatecustomers" id="todatecustomers"/>
+                            <input type="button" id="btncustomers" class="button" value="GO" />
+                            <input type="button" id="btnviewcustomers" class="button" value="Refresh" />
+                        </div>
+                    </div>
                 </div>
                 <div id="poststuff" class="woocommerce-reports-wide">
-                    <div class="postbox">
-                        <div class="inside reports-wide">
-                            <div class="widefat">
-                                <table class="table-blue" id="exportcustomersdata" style="width:100%;">
-                                    <thead>
-                                        <tr>
-                                            <th></th>
-                                            <th>Id</th>
-                                            <th>Name</th>
-                                            <th>Email</th>
-                                            <th>Status</th>
-                                            <th>Phone</th>
-                                            <th>Date</th>
-                                        </tr>
-                                    </thead>
-
-                                </table>
-                            </div>
+                    <div class="box box-primary">
+                        <div class="box-header">
+                            <table class="table-blue table table-bordered check-table display" id="exportcustomersdata" style="width:100%;">
+                                <thead>
+                                    <tr>
+                                        <th style="width:5%;"><input type="checkbox" class="selectAllCustomers" name="selectAllCustomers" value="all"><label></label></th>
+                                        <th style="width:8%;">Id</th>
+                                        <th style="width:15%;">Name</th>
+                                        <th style="width:22%;">Email</th>
+                                        <th style="width:10%;">Status</th>
+                                        <th style="width:13%;">Phone</th>
+                                        <th style="width:10%;">Date</th>
+                                    </tr>
+                                </thead>
+                            </table>
                         </div>
                     </div>
                 </div>
             </div><!--end tab three-->
-        </div>
+                        </div>
     </div>
 </div>
 
@@ -385,12 +386,12 @@
                     { 'data': 'customer_status', 'sWidth': "10%" },
                     { 'data': 'customer_phone', 'sWidth': "20%" },
                     {
-                        'data': 'customerdate_created',
-                        'render': function (jsonDate) {
-                            var date = new Date(parseInt(jsonDate.substr(6)));
-                            var month = ("0" + (date.getMonth() + 1)).slice(-2);
-                            return ("0" + date.getDate()).slice(-2) + '-' + month + '-' + date.getFullYear();
-                        }
+                        'data': 'customerdate_created', 'sWidth': "20%"
+                        //'render': function (jsonDate) {
+                        //    var date = new Date(parseInt(jsonDate.substr(6)));
+                        //    var month = ("0" + (date.getMonth() + 1)).slice(-2);
+                        //    return ("0" + date.getDate()).slice(-2) + '-' + month + '-' + date.getFullYear();
+                        //}
                     },
 
                 ],

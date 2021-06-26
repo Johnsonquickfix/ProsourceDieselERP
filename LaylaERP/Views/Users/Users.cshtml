@@ -163,7 +163,7 @@
     });
 
     function Singlecheck() {
-        var isChecked = $(this).prop("checked");
+        var isChecked = $('#CheckSingle').prop("checked");
         var isHeaderChecked = $("#checkAll").prop("checked");
         if (isChecked == false && isHeaderChecked)
             $("#checkAll").prop('checked', isChecked);

@@ -121,9 +121,11 @@
         $(document).ready(function () {
             //DatagridCustomers();
             //DatagridOrder();
-           
             //DatagridUsers();
-           
+
+            
+
+            
 //Button click for Orders
             $("#btnorder").click(function () {
                 if ($("#fromdate").val() == "") {
@@ -156,28 +158,24 @@
 
 //Button Click for users
             $("#btnusers").click(function () {
-                var d5 = $("#fromdateusers").val();
-                var d6 = $("#todateusers").val();
-                var d7 = new Date();
-                var currentdate = d7.getFullYear() + '-' + ("0" + (d7.getMonth() + 1)).slice(-2) + '-' + d7.getDate();
-
                 if ($("#fromdateusers").val() == "") {
                     swal('Alert', 'Please Enter From Date', 'error').then(function () { swal.close(); $('#fromdateusers').focus(); });
                 }
                 else if ($("#todateusers").val() == "") {
                     swal('Alert', 'Please Enter To Date', 'error').then(function () { swal.close(); $('#todateusers').focus(); });
                 }
-                else if (d5 > d6) {
-                    swal('Alert', 'Please check, From date should not be greater than To date ', 'error').then(function () { swal.close(); $('#fromdateusers').focus(); });
-                }
-                else if (d6 > currentdate) {
-                    swal('Alert', 'Please check, To date should not be greater than Current date ', 'error').then(function () { swal.close(); $('#todateusers').focus(); });
-                }
                 else {
+                    d5 = $("#fromdateusers").val();
+                    d6 = $("#todateusers").val();
+                    if (d5 > d6) {
+                        swal('Alert', 'Please check, From date should not be greater than To date ', 'error').then(function () { swal.close(); $('#fromdateusers').focus(); });
+                    }
+                    else {
                         DatagridUsers();
                         $("#fromdateusers").val("");
                         $("#todateusers").val("");
                         return false;
+                    }
                 }
             });
             setTimeout(function () { DatagridUsers(); }, 50);
@@ -203,7 +201,7 @@
                 }
                 else if (dt1 > dt3)
                 {
-                    swal('Alert', 'Please check, To date should not be greater than Current date', 'error').then(function () { swa.close(); $('#todatecustomers').focus(); });
+                    swal('Alert', 'Please check, To date should not be greater than current date', 'error').then(function () { swa.close(); $('#todatecustomers').focus(); });
                 }
                 else {
                     DatagridCustomers();
@@ -225,6 +223,7 @@
             $("#btnviewusers").click(function () { DatagridUsers(); });
             $("#btnviewcustomers").click(function () { DatagridCustomers(); });
 
+           
         });
 
         //-------------Order DataGrid Start----------------
@@ -233,7 +232,6 @@
             var to_date = $("#todate").val();
             //var obj = { mydate: mydate };
             $('#exportdata').DataTable({
-                "lengthMenu": [[10, 20, 50, 100], [10, 20, 50, 100]],
                 destroy: true,
                 searching: false,
                 "ajax": {
@@ -244,18 +242,17 @@
                     //"data": JSON.stringify(obj)
 
                 },
-                
                 "columns": [
 
                     { 'data': null, sWidth: "5%" },
                     { 'data': 'order_id' },
                     {
                         'data': 'order_created',
-                        //'render': function (jsonDate) {
-                        //    var date = new Date(parseInt(jsonDate.substr(6)));
-                        //    var month = ("0" + (date.getMonth() + 1)).slice(-2);
-                        //    return ("0" + date.getDate()).slice(-2) + '-' + month + '-' + date.getFullYear();
-                        //}
+                        'render': function (jsonDate) {
+                            var date = new Date(parseInt(jsonDate.substr(6)));
+                            var month = ("0" + (date.getMonth() + 1)).slice(-2);
+                            return ("0" + date.getDate()).slice(-2) + '-' + month + '-' + date.getFullYear();
+                        }
                     },
                     { 'data': 'customer_id' },
                     //{ 'data':'orderstatus' },
@@ -280,7 +277,7 @@
                 },
                 "order": [1, 'desc'],
 
-                "dom": 'lBfrtip',
+                "dom": 'Bfrtip',
                 "buttons": [
 
                     {
@@ -295,16 +292,6 @@
                     }
                 ],
 
-            });
-
-            //------------SELECT ALL CHEBOX-----------
-            var DT1 = $('#exportdata').DataTable();
-            $(".selectAll").on("click", function (e) {
-                if ($(this).is(":checked")) {
-                    DT1.rows().select();
-                } else {
-                    DT1.rows().deselect();
-                }
             });
         }
 
@@ -324,22 +311,21 @@
                     "dataType": 'json',
                     "data": { from_dateusers: fromdateusers, to_dateusers: todateusers }
                 },
-                "lengthMenu": [[10, 20, 50, 100], [10, 20, 50, 100]],
 
                 "columns": [
                     { 'data': null, sWidth:"5%" },
-                    { 'data': 'UID', sWidth: "5%"},
+                    { 'data': 'UID', sWidth: "10%"},
                     { 'data': 'user_login', sWidth: "10%"},
                     { 'data': 'user_email', sWidth: "25%" },
-                    { 'data': 'user_status', sWidth: "15%" },
+                    { 'data': 'user_status', sWidth: "20%" },
                     { 'data': 'my', sWidth:"20%" },
                     {
-                        'data': 'created_date', sWidth:"15%"
-                        //'render': function (jsonDate) {
-                        //    var date = new Date(parseInt(jsonDate.substr(6)));
-                        //    var month = ("0" + (date.getMonth() + 1)).slice(-2);
-                        //    return ("0" + date.getDate()).slice(-2) + '-' + month + '-' + date.getFullYear();
-                        //}
+                        'data': 'created_date', sWidth:"10%",
+                        'render': function (jsonDate) {
+                            var date = new Date(parseInt(jsonDate.substr(6)));
+                            var month = ("0" + (date.getMonth() + 1)).slice(-2);
+                            return ("0" + date.getDate()).slice(-2) + '-' + month + '-' + date.getFullYear();
+                        }
                     },
 
                 ],
@@ -358,7 +344,7 @@
                 },
 
                 "order": [0, 'desc'],
-                "dom": 'lBfrtip',
+                "dom": 'Bfrtip',
                 "buttons": [
 
                     {
@@ -373,16 +359,6 @@
                     }
                 ],
 
-            });
-
-//------------------SELECT ALL CHECKBOXES---------------
-            var DT2 = $('#exportusersdata').DataTable();
-            $(".selectAllUsers").on("click", function (e) {
-                if ($(this).is(":checked")) {
-                    DT2.rows().select();
-                } else {
-                    DT2.rows().deselect();
-                }
             });
         }
         //----------------Users DataGrid End--------------
@@ -401,7 +377,6 @@
                     "dataType": 'json',
                     "data": { from_datecustomers: fromdatecustomers, to_datecustomers: todatecustomers }
                 },
-                "lengthMenu": [[10, 20, 50, 100], [10, 20, 50, 100]],
 
                 "columns": [
                     { 'data': null, sWidth: "5%" },
@@ -434,7 +409,7 @@
                 },
 
                 "order": [0, 'desc'],
-                "dom": 'lBfrtip',
+                "dom": 'Bfrtip',
                 "buttons": [
 
                     {
@@ -450,16 +425,6 @@
                 ],
 
             });
-//----------------------SELECT ALL CUSTOMER----------
-            var DT3 = $('#exportcustomersdata').DataTable();
-            $(".selectAllCustomers").on("click", function (e) {
-                if ($(this).is(":checked")) {
-                    DT3.rows().select();
-                } else {
-                    DT3.rows().deselect();
-                }
-            });
-
         }
 
         //----------------Customers DataGrid End-----------------
@@ -497,4 +462,6 @@
         });
 
     </script>
+
+
 }

@@ -9,42 +9,41 @@ function GetRoles() {
         })
         $('#userrole').bind(items);
     })
-    ischecked();
+    //ischecked();
 };
 //bind grid
-function RoleGrid() {
-    debugger
-    $.ajax({
-        url: '/Users/GetMenuNames',
-        method: 'post',
-        datatype: 'json',
-        contentType: "application/json; charset=utf-8",
-        success: function (data) {
-            $('#dtdata').dataTable({
-                data: JSON.parse(data),
-                "columns": [
-                    {
-                        'data': 'menu_id', sWidth: "2%   ",
-                        'render': function (data, type, full, meta) {
-                            return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + $('<div/>').text(data).html() + '"><label></label>';
-                        }
-                    },
-                    { data: 'menu_id', title: 'Menu ID', sWidth: "8%" },
-                    { data: 'menu_name', title: 'Menu Name', sWidth: "14%" },
-                    { data: 'menu_url', title: 'Menu URL', sWidth: "14%" },
-                ]
-            });
-        },
-        error: function (xhr, ajaxOptions, thrownError) {
-            alert(xhr.responseText);
-        }
-    });
+//function RoleGrid() {
+//    debugger
+//    $.ajax({
+//        url: '/Users/GetMenuNames',
+//        method: 'post',
+//        datatype: 'json',
+//        contentType: "application/json; charset=utf-8",
+//        success: function (data) {
+//            $('#dtdata').dataTable({
+//                data: JSON.parse(data),
+//                "columns": [
+//                    {
+//                        'data': 'menu_id', sWidth: "2%   ",
+//                        'render': function (data, type, full, meta) {
+//                            return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + $('<div/>').text(data).html() + '"><label></label>';
+//                        }
+//                    },
+//                    { data: 'menu_id', title: 'Menu ID', sWidth: "8%" },
+//                    { data: 'menu_name', title: 'Menu Name', sWidth: "14%" },
+//                    { data: 'menu_url', title: 'Menu URL', sWidth: "14%" },
+//                ]
+//            });
+//        },
+//        error: function (xhr, ajaxOptions, thrownError) {
+//            alert(xhr.responseText);
+//        }
+//    });
 
-}
+//}
 
 //checkbox start
 $('#checkAll').click(function () {
-    debugger
     var isChecked = $(this).prop("checked");
     $('#dtdata tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
 });
@@ -65,17 +64,20 @@ function Singlecheck() {
 
 //Give Permission
 $('#btnApprove').click(function () {
-    debugger
     var id = "";
-    $("input:checkbox[name=CheckSingle]:checked").each(function () {
+    $('.treeview input:checkbox[class=item]:checked').each(function () {
         id += $(this).val() + ",";
     });
+    //$("input:checkbox[name=CheckSingle]:checked").each(function () {
+    //    id += $(this).val() + ",";
+    //});
     id = id.replace(/,(?=\s*$)/, '');
-    ChangePermission(id);
+    //ChangePermission(id);
+    console.log(id);
+
 })
 
 function ChangePermission(id) {
-    debugger
     var role_id = $("#userrole").val();
     var obj = { strVal: id, role_id: role_id }
     $.ajax({
@@ -104,31 +106,30 @@ function ChangePermission(id) {
 }
 
 $("#userrole").change(function () {
-    ischecked();
+    fillCheckMenu();
 });
 
-function ischecked() {
-    debugger
-    var User_Type = { User_Type: $("#userrole :selected").text() };
-    $("#user_type").val($("#userrole :selected").text());
-    $.ajax({
-        url: '/Users/GetAssignRole',
-        type: 'POST',
-        contentType: "application/json; charset=utf-8",
-        dataType: "json",
-        data: JSON.stringify(User_Type),
-        success: function (data) {
-            var obj = JSON.parse(data);
-            $('#dtdata tr:has(td)').find('input[type="checkbox"]').prop('checked', false);
-            for (i = 0; i < obj.length; i++) {
-                $('#dtdata tr:has(td)').find('input[type="checkbox"][value="' + obj[i].erpmenu_id + '"]').prop('checked', true);
-            }
-        },
-        error: function (responce) {
-            console.log(responce)
-        }
-    });
-}
+//function ischecked() {
+//    var User_Type = { User_Type: $("#userrole :selected").text() };
+//    $("#user_type").val($("#userrole :selected").text());
+//    $.ajax({
+//        url: '/Users/GetAssignRole',
+//        type: 'POST',
+//        contentType: "application/json; charset=utf-8",
+//        dataType: "json",
+//        data: JSON.stringify(User_Type),
+//        success: function (data) {
+//            var obj = JSON.parse(data);
+//            $('#dtdata tr:has(td)').find('input[type="checkbox"]').prop('checked', false);
+//            for (i = 0; i < obj.length; i++) {
+//                $('#dtdata tr:has(td)').find('input[type="checkbox"][value="' + obj[i].erpmenu_id + '"]').prop('checked', true);
+//            }
+//        },
+//        error: function (responce) {
+//            console.log(responce)
+//        }
+//    });
+//}
 
 //add new role
 $('#btnSaveRole').click(function () {
@@ -155,4 +156,27 @@ $('#btnSaveRole').click(function () {
         })
     }
 });
+
+//Fill Menu
+
+function fillCheckMenu() {
+    var roleid = $('#userrole').val();
+    var obj = { roleid: roleid };
+    jQuery.ajax({
+        url: '/Users/getUserAuthMenu', dataType: 'json', type: "Post",
+        beforeSend: function () {
+            //$("#loading-div-background").show();
+        },
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(obj),
+        success: function (data) {
+            console.log(data);
+            $('.treeview').empty();
+
+            var tw = new TreeView(data, { showAlwaysCheckBox: true, fold: false });
+            document.body.appendChild(tw.root);
+        },
+        error: function (jqXHR, textStatus, errorThrown) { swal('Error!', errorThrown, "error"); }
+    });
+}
 

@@ -25,26 +25,11 @@ namespace LaylaERP.BAL
                 {
                     DateTime fromdateuser = DateTime.Parse(from_dateusers);
                     DateTime todateusers = DateTime.Parse(to_dateusers);
-                    //sqlquery = "select ID, User_Image, user_login, user_status, DATE(wp_users.user_registered) as created_date, if(user_status=0,'Active','InActive') as status,user_email,user_pass, meta_value from wp_users, wp_usermeta WHERE DATE(wp_users.user_registered)>='" + fromdateuser.ToString("yyyy-MM-dd") + "' and DATE(wp_users.user_registered)<='" + todateusers.ToString("yyyy-MM-dd") + "' and wp_usermeta.meta_key='wp_capabilities' And wp_users.ID=wp_usermeta.user_id And wp_users.ID IN (SELECT user_id FROM wp_usermeta WHERE meta_key = 'wp_capabilities' AND meta_value NOT LIKE '%customer%') ORDER BY ID DESC";
-                   sqlquery= "select ID, User_Image, user_login, user_status, DATE_FORMAT(wp_users.user_registered,'%M %d %Y') as created_date, if(user_status=0,'Active','InActive') as status,user_email,user_pass, " +
-                        "CONCAT((case when um.meta_value like '%administrator%' then 'Administrator,' else '' end),(case when um.meta_value like '%accounting%' then 'Accounting,' else '' end),"
-                            + " (case when um.meta_value like '%author%' then 'Author,' else '' end),(case when um.meta_value like '%modsquad%' then 'Mod Squad,' else '' end),"
-                            + " (case when um.meta_value like '%shop_manager%' then 'Shop Manager,' else '' end),(case when um.meta_value like '%subscriber%' then 'Subscriber,' else '' end),"
-                            + " (case when um.meta_value like '%supplychainmanager%' then 'Supply Chain Manager,' else '' end),(case when um.meta_value like '%wpseo_editor%' then 'SEO Editor,' else '' end),"
-                            + " (case when um.meta_value like '%editor%' then 'Editor,' else '' end),(case when um.meta_value like '%seo_manager%' then 'SEO Manager,' else '' end),"
-                            + " (case when um.meta_value like '%contributor%' then 'SEO Contributor,' else '' end)) meta_value" +
-                        " from wp_users, wp_usermeta um WHERE DATE(wp_users.user_registered)>='" + fromdateuser.ToString("yyyy-MM-dd") + "' and DATE(wp_users.user_registered)<='" + todateusers.ToString("yyyy-MM-dd") + "' and um.meta_key='wp_capabilities' And wp_users.ID=um.user_id And wp_users.ID IN (SELECT user_id FROM wp_usermeta WHERE meta_key = 'wp_capabilities' AND meta_value NOT LIKE '%customer%') ORDER BY ID DESC";
+                    sqlquery = "select ID, User_Image, user_login, user_status, DATE(wp_users.user_registered) as created_date, if(user_status=0,'Active','InActive') as status,user_email,user_pass, meta_value from wp_users, wp_usermeta WHERE DATE(wp_users.user_registered)>='" + fromdateuser.ToString("yyyy-MM-dd") + "' and DATE(wp_users.user_registered)<='" + todateusers.ToString("yyyy-MM-dd") + "' and wp_usermeta.meta_key='wp_capabilities' And wp_users.ID=wp_usermeta.user_id And wp_users.ID IN (SELECT user_id FROM wp_usermeta WHERE meta_key = 'wp_capabilities' AND meta_value NOT LIKE '%customer%') ORDER BY ID DESC";
                 }
                 else
                 {
-                    sqlquery = "select ID, User_Image, user_login, user_status, DATE_FORMAT(wp_users.user_registered,'%M %d %Y') as created_date, if(user_status=0,'Active','InActive') as status,user_email,user_pass, " +
-                        "CONCAT((case when um.meta_value like '%administrator%' then 'Administrator,' else '' end),(case when um.meta_value like '%accounting%' then 'Accounting,' else '' end),"
-                            + " (case when um.meta_value like '%author%' then 'Author,' else '' end),(case when um.meta_value like '%modsquad%' then 'Mod Squad,' else '' end),"
-                            + " (case when um.meta_value like '%shop_manager%' then 'Shop Manager,' else '' end),(case when um.meta_value like '%subscriber%' then 'Subscriber,' else '' end),"
-                            + " (case when um.meta_value like '%supplychainmanager%' then 'Supply Chain Manager,' else '' end),(case when um.meta_value like '%wpseo_editor%' then 'SEO Editor,' else '' end),"
-                            + " (case when um.meta_value like '%editor%' then 'Editor,' else '' end),(case when um.meta_value like '%seo_manager%' then 'SEO Manager,' else '' end),"
-                            + " (case when um.meta_value like '%contributor%' then 'SEO Contributor,' else '' end)) meta_value" +
-                        " from wp_users, wp_usermeta um WHERE um.meta_key='wp_capabilities' And wp_users.ID=um.user_id And wp_users.ID IN (SELECT user_id FROM wp_usermeta WHERE meta_key = 'wp_capabilities' AND meta_value NOT LIKE '%customer%') ORDER BY ID DESC";
+                    sqlquery = "select ID, User_Image, user_login, user_status, DATE(wp_users.user_registered) as created_date, if(user_status=0,'Active','InActive') as status,user_email,user_pass, meta_value from wp_users, wp_usermeta WHERE wp_users.user_registered IS NOT NULL and wp_usermeta.meta_key='wp_capabilities' And wp_users.ID=wp_usermeta.user_id And wp_users.ID IN (SELECT user_id FROM wp_usermeta WHERE meta_key = 'wp_capabilities' AND meta_value NOT LIKE '%customer%') ORDER BY ID DESC";
                 }
                 usersexportlist.Clear();
                 DataSet ds1 = new DataSet();
@@ -75,50 +60,14 @@ namespace LaylaERP.BAL
 
                     uobj.UID = Convert.ToInt32(ds1.Tables[0].Rows[i]["ID"].ToString());
                     uobj.user_login = ds1.Tables[0].Rows[i]["user_login"].ToString();
-                    result = ds1.Tables[0].Rows[i]["meta_value"].ToString().TrimEnd(',');
-
-                    if (result == "Mod_Squad")
-                    {
-                        result = "Mod Squad";
-                    }
-                    else if (result == "SEO_Editor")
-                    {
-                        result = "SEO Editor";
-                    }
-                    else if (result == "SEO_Manager")
-                    {
-                        result = "SEO Manager";
-                    }
-                    else if (result == "Shop_Manager")
-                    {
-                        result = "Shop Manager";
-                    }
-                    else if (result == "Supply_Chain_Manager")
-                    {
-                        result = "Supply Chain Manager";
-                    }
-                    else if (result == "administrator")
-                    {
-                        result = "Administrator";
-                    }
-                    else if (result == "author")
-                    {
-                        result = "Author";
-                    }
-                    else if (result == "editor")
-                    {
-                        result = "Editor";
-                    }
-                    else
-                    {
-                        uobj.my = result;
-                    }
-                    //uobj.my = result;
+                    result = ds1.Tables[0].Rows[i]["meta_value"].ToString();
+                    uobj.my = result;
                     uobj.user_email = ds1.Tables[0].Rows[i]["user_email"].ToString();
                     uobj.user_status = ds1.Tables[0].Rows[i]["status"].ToString();
-                    uobj.created_date = ds1.Tables[0].Rows[i]["created_date"].ToString();
+                    uobj.created_date = Convert.ToDateTime(ds1.Tables[0].Rows[i]["created_date"].ToString());
                     usersexportlist.Add(uobj);
                 }
+
 
             }
             catch (Exception e)
@@ -196,18 +145,18 @@ namespace LaylaERP.BAL
                 exportorderlist.Clear();
                 string ssql;
 
-                if (!string.IsNullOrEmpty(from_date) && !string.IsNullOrEmpty(to_date))
+                if (from_date != "" && to_date != "")
                 {
                     DateTime fromdate = DateTime.Now, todate = DateTime.Now;
                     fromdate = DateTime.Parse(from_date);
                     todate = DateTime.Parse(to_date);
 
-                    ssql = "select ws.order_id as order_id, DATE_FORMAT(ws.date_created,'%M %d %Y') as order_created, substring(ws.status,4) as status,  ws.num_items_sold as qty,format(ws.total_sales, 2) as subtotal,format(ws.net_total, 2) as total, ws.customer_id as customer_id from wp_wc_order_stats ws, wp_users wu where ws.customer_id = wu.ID and DATE(ws.date_created)>='" + fromdate.ToString("yyyy-MM-dd") + "' and DATE(ws.date_created)<='" + todate.ToString("yyyy-MM-dd") + "' order by ws.order_id desc";
+                    ssql = "select ws.order_id as order_id, ws.date_created as order_created, substring(ws.status,4) as status,  ws.num_items_sold as qty,format(ws.total_sales, 2) as subtotal,format(ws.net_total, 2) as total, ws.customer_id as customer_id from wp_wc_order_stats ws, wp_users wu where ws.customer_id = wu.ID and DATE(ws.date_created)>='" + fromdate.ToString("yyyy-MM-dd") + "' and DATE(ws.date_created)<='" + todate.ToString("yyyy-MM-dd") + "' order by ws.order_id desc limit 100";
 
                 }
                 else
                 {
-                    ssql = "select ws.order_id as order_id, DATE_FORMAT(ws.date_created, '%M %d %Y') as order_created, substring(ws.status,4) as status,  ws.num_items_sold as qty,format(ws.total_sales, 2) as subtotal,format(ws.net_total, 2) as total, ws.customer_id as customer_id from wp_wc_order_stats ws, wp_users wu where ws.customer_id = wu.ID order by ws.order_id desc limit 1000";
+                    ssql = "select ws.order_id as order_id, ws.date_created as order_created, substring(ws.status,4) as status,  ws.num_items_sold as qty,format(ws.total_sales, 2) as subtotal,format(ws.net_total, 2) as total, ws.customer_id as customer_id from wp_wc_order_stats ws, wp_users wu where ws.customer_id = wu.ID order by ws.order_id desc limit 1000";
                 }
 
 
@@ -217,7 +166,7 @@ namespace LaylaERP.BAL
                 {
                     Export_Details uobj = new Export_Details();
                     uobj.order_id = Convert.ToInt32(ds1.Tables[0].Rows[i]["order_id"].ToString());
-                    uobj.order_created = ds1.Tables[0].Rows[i]["order_created"].ToString();
+                    uobj.order_created = Convert.ToDateTime(ds1.Tables[0].Rows[i]["order_created"].ToString());
                     uobj.customer_id = ds1.Tables[0].Rows[i]["customer_id"].ToString();
                     uobj.orderstatus = ds1.Tables[0].Rows[i]["status"].ToString();
                     //uobj.product_id = ds1.Tables[0].Rows[i]["product_id"].ToString();
@@ -243,12 +192,12 @@ namespace LaylaERP.BAL
                     DateTime todateusers = DateTime.Parse(to_dateusers);
                     
 
-                    sqlquery = "select ur.ID,null User_Image, user_login , user_status, DATE_FORMAT(ur.user_registered,'%M %d %Y') as created_date, if(user_status=0,'Active','InActive') as status,user_email,umph.meta_value" +
+                    sqlquery = "select ur.ID,null User_Image, user_login , user_status, DATE(ur.user_registered) as created_date, if(user_status=0,'Active','InActive') as status,user_email,umph.meta_value" +
                         " from wp_users ur INNER JOIN wp_usermeta um on um.meta_key='wp_capabilities' And um.user_id = ur.ID And um.meta_value LIKE '%customer%'  LEFT OUTER JOIN wp_usermeta umph on umph.meta_key='billing_phone' And umph.user_id = ur.ID WHERE DATE(ur.user_registered)>='" + fromdateuser.ToString("yyyy-MM-dd") + "' and DATE(ur.user_registered)<='" + todateusers.ToString("yyyy-MM-dd") + "' ORDER BY ur.ID DESC";
                 }
                 else
                 {
-                    sqlquery = "select ur.ID,null User_Image, user_login , user_status, DATE_FORMAT(ur.user_registered,'%M %d %Y') as created_date, if(user_status=0,'Active','InActive') as status,user_email,umph.meta_value" +
+                    sqlquery = "select ur.ID,null User_Image, user_login , user_status, DATE(ur.user_registered) as created_date, if(user_status=0,'Active','InActive') as status,user_email,umph.meta_value" +
                         " from wp_users ur INNER JOIN wp_usermeta um on um.meta_key='wp_capabilities' And um.user_id = ur.ID And um.meta_value LIKE '%customer%'  LEFT OUTER JOIN wp_usermeta umph on umph.meta_key='billing_phone' And umph.user_id = ur.ID ORDER BY ur.ID DESC limit 1000";
                 }
                 customersexportlist.Clear();
@@ -266,7 +215,7 @@ namespace LaylaERP.BAL
                     uobj.customer_phone = ds1.Tables[0].Rows[i]["meta_value"].ToString();
                     uobj.customer_email = ds1.Tables[0].Rows[i]["user_email"].ToString();
                     uobj.customer_status = ds1.Tables[0].Rows[i]["status"].ToString();
-                    uobj.customerdate_created = ds1.Tables[0].Rows[i]["created_date"].ToString();
+                    uobj.customerdate_created = Convert.ToDateTime(ds1.Tables[0].Rows[i]["created_date"].ToString());
                     customersexportlist.Add(uobj);
                 }
 
@@ -277,6 +226,7 @@ namespace LaylaERP.BAL
             }
 
         }
+
 
         public static void myexport(string mydate)
         {

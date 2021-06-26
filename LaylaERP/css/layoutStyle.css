@@ -1021,6 +1021,7 @@ button#btnGeneratePassword {
         background-color: #ff4100;
         transition: 0.5s ease all;
     }
+
 .select2-container--default .select2-selection--single,
 .select2-selection .select2-selection--single {
     border: 1px solid #d2d6de !important;
@@ -1042,4 +1043,60 @@ button#btnGeneratePassword {
 
 .swal2-container {
     z-index: 99999;
+}
+
+.table-row div {
+    flex: 1;
+    font-size: 14px;
+    padding: 10px;
+    font-weight: 600;
+}
+
+.table-row:first-child {
+    border-top: 0px;
+}
+
+.table-row {
+    display: flex;
+    background-color: #f1f1f1;
+    border-top: 1px solid #ccd0d4;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+    .table-row.blue-row > div {
+        font-size: 12px;
+    }
+    .table-row button, .table-row input {
+   font-weight:400; font-size:12px; }
+    .table-row.blue-row {
+        font-size: 12px;
+        background: #3c8dbc;
+        color: #fff;
+        font-weight: 600
+    }
+
+.div-table {
+    display: flex;
+    border: 1px solid #ccd0d4;
+    flex-direction: column;
+}
+
+.table-row div:first-child {
+    flex: 1.5;
+}
+
+.table-row div:nth-child(2) {
+    flex: 2;
+    text-align: right;
+}
+
+.table-row:nth-child(2n) {
+    background-color: #fff;
+}
+
+.table-row .table-row {
+    width: 100%;
+    flex: unset;
+    padding: 0px;
 }

@@ -72,14 +72,14 @@ function BindStateCounty(ctr, obj) {
 ///Get New Order No
 function NewOrderNo() {
     var opt = { strValue1: '' };
-    //$.ajax({
-    //    type: "POST", url: '/Orders/GetNewOrderNo', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
-    //    success: function (result) {
-    //        $('#hfOrderNo').val(result.message); $('#lblOrderNo').text('Order #' + result.message + ' detail ');
-    //    },
-    //    error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
-    //    async: false
-    //});
+    $.ajax({
+        type: "POST", url: '/Orders/GetNewOrderNo', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
+        success: function (result) {
+            $('#hfOrderNo').val(result.message); $('#lblOrderNo').text('Order #' + result.message + ' detail ');
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
+        async: false
+    });
 }
 ///Find Address of Customer
 function CustomerAddress() {
@@ -477,7 +477,7 @@ function deleteAllCoupons(coupon_type) {
                                 let cpn_name = coupon_title[pid];
                                 let pro_ids = pid + " ";
                                 auto_code.push({
-                                    post_title: row_key, title: cpn_name, type: 'diff', discount_type: coupon_type, coupon_amount: coupon_amt, product_ids: pro_ids, exclude_product_ids: ''
+                                    post_title: row_key, title: cpn_name, type: 'diff', discount_type: 'fixed_product', coupon_amount: coupon_amt, product_ids: pro_ids, exclude_product_ids: ''
                                 });
                             }
                             let zGrossAmount = reg_price * zQty;

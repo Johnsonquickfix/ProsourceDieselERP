@@ -33,7 +33,7 @@ $(document).ready(function () {
             error: function (xhr, status, err) { }, cache: true
         }
     });
-    $("#ddlUser").change(function () { setTimeout(function () { NewOrderNo(); }, 50); CustomerAddress(); return false; });
+    $("#ddlUser").change(function () { setTimeout(function () { NewOrderNo(); }, 50); CustomerAddress($("#ddlUser").val()); return false; });
     $("#ddlbillcountry").change(function () { var obj = { id: $("#ddlbillcountry").val() }; BindStateCounty("ddlbillstate", obj); });
     $("#ddlshipcountry").change(function () { var obj = { id: $("#ddlshipcountry").val() }; BindStateCounty("ddlshipstate", obj); });
     $("#ddlshipstate").change(function () { getItemShippingCharge(); });
@@ -71,6 +71,18 @@ $(document).ready(function () {
             }
         });
     });
+    $("#billModal").on("click", "#btnSelectDefaltAddress", function (t) {
+        t.preventDefault();
+        let cus_id = parseInt($("#ddlCustomerSearch").val()) || 0, cus_text = $("#ddlCustomerSearch option:selected").text();
+        if (cus_id > 0) {
+            $("#ddlUser").empty().append('<option value="' + cus_id + '" selected>' + cus_text + '</option>');
+            setTimeout(function () { NewOrderNo(); }, 50);
+            $("#billModal").modal('hide'); CustomerAddress(cus_id); return false;
+        }
+        else {
+            swal('Alert!', 'Please Search Customer.', "info").then((result) => { $('#ddlCustomerSearch').select2('open'); return false; }); return false;
+        }
+    });
 });
 ///Bind States of Country
 function BindStateCounty(ctr, obj) {
@@ -84,18 +96,19 @@ function BindStateCounty(ctr, obj) {
 ///Get New Order No
 function NewOrderNo() {
     var opt = { strValue1: '' };
-    $.ajax({
-        type: "POST", url: '/Orders/GetNewOrderNo', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
-        success: function (result) {
-            $('#hfOrderNo').val(result.message); $('#lblOrderNo').text('Order #' + result.message + ' detail ');
-        },
-        error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
-        async: false
-    });
+    //$.ajax({
+    //    type: "POST", url: '/Orders/GetNewOrderNo', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
+    //    success: function (result) {
+    //        $('#hfOrderNo').val(result.message); $('#lblOrderNo').text('Order #' + result.message + ' detail ');
+    //    },
+    //    error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
+    //    async: false
+    //});
 }
 ///Find Address of Customer
-function CustomerAddress() {
-    var opt = { strValue1: parseInt($("#ddlUser").val()) || 0 };
+function CustomerAddress(id) {
+    //$("#ddlUser").val()
+    var opt = { strValue1: parseInt(id) || 0 };
     if (opt.strValue1 > 0) {
         $.ajax({
             type: "POST", url: '/Orders/GetCustomerAddress', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
@@ -181,13 +194,13 @@ function searchOrderModal() {
     modalHtml += '<div class="modal-dialog modal-lg">';
     modalHtml += '<div class="modal-content">';
     modalHtml += '<div class="modal-header">';
-    modalHtml += '<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button>';
+    //modalHtml += '<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button>';
     modalHtml += '<h4 class="modal-title" id="myModalLabel">Search Customer</h4>';
     modalHtml += '</div>';
     modalHtml += '<div class="modal-body" ></div>';
-    modalHtml += '<div class="modal-footer">';
-    modalHtml += '<button type="button" class="btn btn-primary">OK</button>';
-    modalHtml += '</div>';
+    //modalHtml += '<div class="modal-footer">';
+    //modalHtml += '<button type="button" class="btn btn-primary">OK</button>';
+    //modalHtml += '</div>';
     modalHtml += '</div>';
     modalHtml += '</div>';
     $("#billModal").empty().html(modalHtml);
@@ -201,26 +214,28 @@ function searchOrderModal() {
     myHtml += '</select>';
     myHtml += '</div>';
     myHtml += '</div>';
+    myHtml += '<div class="col-md-4">';
+    myHtml += '<button type="button" id="btnSelectDefaltAddress" class="btn btn-danger billinfo">Select Defalt Address</button>';
+    myHtml += '</div>';
     myHtml += '</div>';
 
     myHtml += '<div class="row">';
     myHtml += '<div class="col-md-12">';
-    //<div class="table-responsive" id="divAddItemFinal">
-    //    <table id="tblAddItemFinal" class="table table-blue check-table table-bordered table-striped dataTable tablelist">
-    //        <thead class="thead-dark">
-    //            <tr>
-    //                <th class="text-center" style="width: 8%">Actions</th>
-    //                <th style="width: 10%">Order No</th>
-    //                <th class="text-right" style="width: 10%">Creation Date</th>
-    //                <th class="text-right" style="width: 8%">Quantity</th>
-    //                <th class="text-right" style="width: 10%">Sub-Total</th>
-    //                <th class="text-right" style="width: 8%">Discount</th>
-    //                <th class="text-right" style="width: 9%">Order Total</th>
-    //            </tr>
-    //        </thead>
-    //        <tbody></tbody>            
-    //    </table>
-    //</div>
+    myHtml += '<div class="table-responsive" id="divAddItemFinal">';
+    myHtml += '<table id="tblAddItemFinal" class="table table-blue check-table table-bordered table-striped dataTable tablelist">';
+    myHtml += '<thead class="thead-dark">';
+    myHtml += '<tr>';
+    myHtml += '<th class="text-center" style="width: 8%">Actions</th>';
+    myHtml += '<th style="width: 10%">Order No</th>';
+    myHtml += '<th class="text-right" style="width: 10%">Creation Date</th>';
+    myHtml += '<th class="text-right" style="width: 30%">Billing Address</th>';
+    myHtml += '<th class="text-right" style="width: 30%">Shipping Address</th>';
+    myHtml += '<th class="text-right" style="width: 10%">Amount</th>';
+    myHtml += '</tr>';
+    myHtml += '</thead>';
+    myHtml += '<tbody></tbody>';      
+    myHtml += '</table>';
+    myHtml += '</div>';
     myHtml += '</div>';
     myHtml += '</div>';
 
@@ -266,7 +281,7 @@ function getOrderInfo() {
         });
     }
     else {
-        $('.page-heading').text('Add New Order'); //searchOrderModal();
+        $('.page-heading').text('Add New Order'); searchOrderModal();
     }
 }
 function getOrderItemList(oid) {

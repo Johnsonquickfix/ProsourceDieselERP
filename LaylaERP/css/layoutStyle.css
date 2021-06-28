@@ -117,12 +117,12 @@ dashboard
     overflow: auto;
 }
 
-.page-title-action, .page-title #UserStatus, .user-top-section .button {
-    padding: 4px 8px;
+.page-title-action, .page-title #UserStatus, .user-top-section .button, .treeview p.group .button {
+    padding: 3px 8px;
     text-decoration: none;
     border: 1px solid #adadad;
-    border-radius: 2px;
-    font-size: 13px;
+    border-radius: 3px;
+    font-size: 12px;
     line-height: normal;
     color: #4f4f4f;
     background: #f3f5f6;
@@ -1046,9 +1046,7 @@ button#btnGeneratePassword {
 
 .table-row div {
     flex: 1;
-    font-size: 14px;
-    padding: 10px;
-    font-weight: 600;
+   
 }
 
 .table-row:first-child {
@@ -1057,8 +1055,8 @@ button#btnGeneratePassword {
 
 .table-row {
     display: flex;
-    background-color: #f1f1f1;
-    border-top: 1px solid #ccd0d4;
+
+    
     flex-wrap: wrap;
     align-items: center;
 }
@@ -1090,9 +1088,7 @@ button#btnGeneratePassword {
     text-align: right;
 }
 
-.table-row:nth-child(2n) {
-    background-color: #fff;
-}
+
 
 .table-row .table-row {
     width: 100%;
@@ -1106,4 +1102,38 @@ float:left;}
 
 .setting-section .dataTables_wrapper {
     padding: 0px;
+}
+/*********/
+.treeview > p.group {
+    padding-left: 0px;
+    background: #f1f1f1;
+    border-top: 1px solid #ccd0d4;
+    font-size: 14px;
+    padding: 0px 10px 0px 20px;
+    font-weight: 600; position:relative;
+}
+    .treeview > p.group:nth-child(2n) {
+        background-color: #fff;
+    }
+.treeview p.group [fold-button] {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+   height:45px;
+    padding: 0px;
+    width: 22px;
+    display: flex; border-radius:0px;
+    justify-content: center;
+    align-items: center;
+}
+.treeview .group .item {
+width:100%; position:relative; padding:10px 0px 10px 20px;}
+    .treeview .group .item > .fa {
+        position: absolute;
+        left: 5px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+.treeview .group .item:hover {
+    background: transparent;
 }

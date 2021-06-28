@@ -42,6 +42,22 @@ namespace LaylaERP.Models
         public string total { get; set; }
         public string customer_id { get; set; }
         public string orderstatus { get; set; }
+        public string billing_address_1 { get; set; }
+        public string billing_city { get; set; }
+        public string billing_state { get; set; }
+        public string billing_postcode { get; set; }
+        public string billing_country { get; set; }
+        public string shipping_address_1 { get; set; }
+        public string shipping_city { get; set; }
+        public string shipping_state { get; set; }
+        public string shipping_postcode { get; set; }
+        public string shipping_country { get; set; }
+        public string provider { get; set; }
+        public string transaction_type { get; set; }
+        public string transaction_reference_id { get; set; }
+        public string shipping_amount { get; set; }
+        public string handling_amount { get; set; }
+        public string Discount { get; set; }
         public List<Export_Details> exportdetails { get; set; }
 
 

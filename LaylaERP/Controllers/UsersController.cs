@@ -624,7 +624,7 @@ namespace LaylaERP.Controllers
                 {
                     row = new Dictionary<String, Object>();
                     row.Add("id", dr["menu_id"]);
-                    row.Add("text", "<div class=\"table-row\"><div>"+ dr["menu_name"].ToString() + "</div><div>&nbsp;</div><div><button class=\"button\">None</button></div><div><button class=\"button\">View</button></div><div><button class=\"button\">View & Edit</button></div><div><button class=\"button\">Admin</button></div></div>");
+                    row.Add("text", "<div class=\"table-row\"><div>"+ dr["menu_name"].ToString() + "</div><div>&nbsp;</div><div><input type=\"checkbox\" name =\"checkAll\" id="+ dr["menu_id"] + "></input><label>Add</label></div><div><input type=\"checkbox\" name =\"checkAll\" id=" + dr["menu_id"] + "></input><label>Add</label></div><div><input type=\"checkbox\" name =\"checkAll\" id=" + dr["menu_id"] + "></input><label>View & Edit</label></div><div><input type=\"checkbox\" name =\"checkAll\" id=" + dr["menu_id"] + "></input><label>Admin</label></div></div>");
                     if (dr["menu_url"].ToString().Trim() != "#")
                         row.Add("url", dr["menu_url"]);                    
                     row.Add("level", dr["level"]);                  

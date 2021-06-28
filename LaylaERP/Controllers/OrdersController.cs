@@ -134,27 +134,13 @@
         [HttpPost]
         public JsonResult GetProductShipping(SearchModel model)
         {
-            decimal ShippingAmt = 0;
+            List<OrderShippingModel> _list = new List<OrderShippingModel>();
             try
             {
-                long pid = 0, vid = 0;
-                if (!string.IsNullOrEmpty(model.strValue1))
-                    pid = Convert.ToInt64(model.strValue1);
-                if (!string.IsNullOrEmpty(model.strValue2))
-                    vid = Convert.ToInt64(model.strValue2);
-                vid = vid > 0 ? vid : pid;
-                OrderShippingModel obj = OrderRepository.GetProductShippingCharge(vid);
-                if (model.strValue3 == "AK")
-                    ShippingAmt = obj.AK;
-                else if (model.strValue3 == "HI")
-                    ShippingAmt = obj.HI;
-                else if (model.strValue3 == "CA")
-                    ShippingAmt = obj.CA;
-                else
-                    ShippingAmt = 0;
+                _list = OrderRepository.GetProductShippingCharge(model.strValue1, model.strValue2);
             }
             catch { }
-            return Json(new { amount = ShippingAmt }, 0);
+            return Json(_list, 0);
         }
         [HttpPost]
         public JsonResult GetTaxRate(SearchModel model)

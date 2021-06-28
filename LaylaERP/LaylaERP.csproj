@@ -666,6 +666,7 @@
     <Content Include="Views\FeeNTax\CreateNew.cshtml" />
     <Content Include="Views\Appearance\Menus.cshtml" />
     <Content Include="Views\Reports\AJBaseReport.cshtml" />
+    <Content Include="Views\Appearance\AddMenu.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

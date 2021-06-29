@@ -717,6 +717,13 @@
     <Content Include="Views\Reports\AJBaseReport.cshtml" />
     <Content Include="Views\Appearance\AddMenu.cshtml" />
     <Content Include="Views\Appearance\AddMenuDetails.cshtml" />
+    <Content Include="Views\Reports\ArizonaSalesOrderExport.cshtml" />
+    <Content Include="Views\Reports\MattressAverageOrderValueReport.cshtml" />
+    <Content Include="Views\Reports\MRFReport.cshtml" />
+    <Content Include="Views\Reports\PodiumOrderReport.cshtml" />
+    <Content Include="Views\Reports\SalesTaxRefundReport.cshtml" />
+    <Content Include="Views\Reports\TaxJarSalesTaxOrderExport.cshtml" />
+    <Content Include="Views\Reports\ZeroOrdersReport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

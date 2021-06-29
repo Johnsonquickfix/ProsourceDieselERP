@@ -185,6 +185,7 @@
     <Compile Include="Models\clsSerialization.cs" />
     <Compile Include="Models\clsUserDetails.cs" />
     <Compile Include="Models\CustomerModel.cs" />
+    <Compile Include="Models\ExportModel.cs" />
     <Compile Include="Models\Export_Details.cs" />
     <Compile Include="Models\FeeNTax.cs" />
     <Compile Include="Models\LoginModel.cs" />
@@ -714,6 +715,8 @@
     <Content Include="Views\FeeNTax\CreateNew.cshtml" />
     <Content Include="Views\Appearance\Menus.cshtml" />
     <Content Include="Views\Reports\AJBaseReport.cshtml" />
+    <Content Include="Views\Appearance\AddMenu.cshtml" />
+    <Content Include="Views\Appearance\AddMenuDetails.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

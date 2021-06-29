@@ -1,5 +1,4 @@
-﻿@model dynamic
-
+﻿
 @{
     ViewBag.Title = "AddMenu";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -10,7 +9,7 @@
     <span>&nbsp;&nbsp;Loading......</span>
 </div>
 <div class="page-title">
-    <h2 class="page-heading">Update Menu</h2>
+    <h2 class="page-heading">Add Menu</h2>
 </div>
 <div class="createuser-section section_wrapper">
     <div class="create-user-box">
@@ -25,30 +24,30 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Menu Code</label>
-                                    <input type="email" class="form-control" id="txtmenucode" placeholder="Enter Menu Code" value="@Model.menu_code">
+                                    <input type="email" class="form-control" id="txtmenucode" placeholder="Enter Menu Code">
                                 </div>
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Menu Name</label>
-                                    <input type="email" class="form-control" id="txtmenuname" placeholder="Enter Menu Name" value="@Model.menu_name">
+                                    <input type="email" class="form-control" id="txtmenuname" placeholder="Enter Menu Name">
                                 </div>
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Menu Url</label>
-                                    <input type="text" class="form-control" id="txtmenuurl" placeholder="Enter Menu Url" value="@Model.menu_url">
+                                    <input type="text" class="form-control" id="txtmenuurl" placeholder="Enter Menu Url">
                                 </div>
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Menu Icon</label>
-                                    <input type="text" class="form-control" id="txtmenuicon" placeholder="Enter Menu Icon" value="@Model.menu_icon">
+                                    <input type="text" class="form-control" id="txtmenuicon" placeholder="Enter Menu Icon">
                                 </div>
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Parent Id</label>
-                                    <input type="text" class="form-control" id="txtmenuparent" placeholder="Enter Parent ID" value="@Model.parent_id">
+                                    <input type="text" class="form-control" id="txtmenuparent" placeholder="Enter Parent ID">
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="box-footer">
                         <div class="text-left">
-                            <a href="#" class="btn btn-danger" id="btnSave"><b>Update</b></a>
+                            <a href="#" class="btn btn-danger" id="btnSave"><b>Add Menu</b></a>
 
                             <a class="btn btn-danger" href="Menus">Back to List</a>
                         </div>
@@ -66,13 +65,13 @@
         $(document).on('click', "#btnSave", function () {
             UpdateMenus();
         })
-       
+
     });
 </script>
 
 <script>
     function UpdateMenus() {
-        
+        debugger
         menucode = $("#txtmenucode").val();
         menuid = $("#hfid").val();
         menuname = $("#txtmenuname").val();
@@ -92,8 +91,9 @@
         else if (menuicon == "") {
             swal('Alert', 'Please Enter Menu Icon', 'error').then(function () { swal.close(); $('#txtmenuicon').focus(); });
         }
-        
-        else { 
+       
+        else {
+
             var obj = {
                 menu_id: menuid,
                 menu_code: menucode,
@@ -103,7 +103,7 @@
                 parent_id: parentid
                 }
                 $.ajax({
-                    url: '/Appearance/UpdateMenus/', dataType: 'json', type: 'Post',
+                    url: '/Appearance/CreateMenus/', dataType: 'json', type: 'Post',
                     contentType: "application/json; charset=utf-8",
                     data: JSON.stringify(obj),
                     dataType: "json",
@@ -120,7 +120,7 @@
                     complete: function () { $("#loader").hide(); },
                     error: function (error) { swal('Error!', 'something went wrong', 'error'); },
                 })
-            
+
         }
 
     }

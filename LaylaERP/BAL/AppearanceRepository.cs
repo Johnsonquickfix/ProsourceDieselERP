@@ -26,17 +26,14 @@ namespace LaylaERP.BAL
             return dtr;
         }
 
-        public static DataTable MenuByID(Appearance model)
+        public static DataTable MenuByID(int id)
         {
             DataTable dt = new DataTable();
 
             try
             {
-                string strWhr = string.Empty;
-
-                //string strSql = "SELECT ur.ID,ur.user_nicename, ur.user_email,MAX( case when um.meta_key = 'first_name' THEN um.meta_value ELSE '' END) first_name,MAX( case when um.meta_key = 'last_name' THEN um.meta_value ELSE '' END) last_name, MAX( case when um.meta_key = 'billing_address_1' THEN um.meta_value ELSE '' END) billing_address_1,MAX( case when um.meta_key = 'billing_address_2' THEN um.meta_value ELSE '' END) billing_address_2,MAX( case when um.meta_key = 'billing_city' THEN um.meta_value ELSE '' END) billing_city,MAX( case when um.meta_key = 'billing_postcode' THEN um.meta_value ELSE '' END) billing_postcode,MAX( case when um.meta_key = 'billing_country' THEN um.meta_value ELSE '' END) billing_country,MAX( case when um.meta_key = 'billing_state' THEN um.meta_value ELSE '' END) billing_state,MAX( case when um.meta_key = 'billing_phone' THEN um.meta_value ELSE '' END) billing_phone from wp_users ur INNER JOIN wp_usermeta um on ur.ID = um.user_id WHERE 1 = 1 and ur.id = '" + model.ID + "' GROUP BY ur.ID,ur.user_nicename, ur.user_email";
-                string strSql = "SELECT * from wp_erpmenus where menu_id =" + model.menu_id + "";
-
+               
+                string strSql = "SELECT menu_id, menu_code, menu_name, menu_url, menu_icon, parent_id from wp_erpmenus where menu_id =" + id + "";
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
 
@@ -46,6 +43,50 @@ namespace LaylaERP.BAL
                 throw ex;
             }
             return dt;
+        }
+
+        public static int UpdateMenus(Appearance model)
+        {
+            try
+            {
+                string strsql = "update wp_erpmenus set menu_code=@menu_code, menu_name=@menu_name, menu_url=@menu_url, menu_icon=@menu_icon, parent_id=@parent_id where menu_id in(" + model.menu_id + ")";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@menu_code", model.menu_code),
+                    new MySqlParameter("@menu_name", model.menu_name),
+                    new MySqlParameter("@menu_url", model.menu_url),
+                    new MySqlParameter("@menu_icon", model.menu_icon),
+                    new MySqlParameter("@parent_id", model.parent_id)
+            };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+        public static int AddNewMenu(Appearance model)
+        {
+            try
+            {
+                string strsql = "insert into wp_erpmenus(menu_code, menu_name, menu_url, menu_icon, parent_id) values(@menu_code,@menu_name,@menu_url, @menu_icon, @parent_id);SELECT LAST_INSERT_ID();";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@menu_code", model.menu_code),
+                    new MySqlParameter("@menu_name", model.menu_name),
+                    new MySqlParameter("@menu_url", model.menu_url),
+                    new MySqlParameter("@menu_icon", model.menu_icon),
+                    new MySqlParameter("@parent_id", model.parent_id)
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
         }
     }
 

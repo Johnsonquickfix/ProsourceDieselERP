@@ -17,6 +17,7 @@
         <div class="box box-primary">
             <div class="row">
                 <div class="col-md-12">
+                    <div><a class="btn btn-danger" href="AddMenuDetails">Add Menu</a></div>
                     <div class="box box-primary">
                         <div class="box-header">
                             <table id="dtdata" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
@@ -51,7 +52,7 @@
 
 <script>
     function MenuGrid() {
-        debugger
+       
         $.ajax({
             url: '/Appearance/GetERPMenus',
             method: 'post',
@@ -63,7 +64,7 @@
                     destroy: true,
                     data: JSON.parse(data),
                     "columns": [
-                        { data: 'menu_id', title: 'Menu Code', sWidth: "10%" },
+                        { data: 'menu_id', title: 'Menu Id', sWidth: "10%" },
                         { data: 'menu_code', title: 'Menu Code', sWidth: "10%" },
                         { data: 'menu_name', title: 'Menu Name', sWidth: "20%" },
                         { data: 'menu_url', title: 'Menu URL', sWidth: "30%" },
@@ -72,7 +73,7 @@
                         {
                             'data': 'menu_id', sWidth: "8%",
                             'render': function (menu_id, type, full, meta) {
-                                return '<a href="../Appearance/AddMenu/'+ menu_id +'"><i class="glyphicon glyphicon-pencil"></i></a>'
+                                return '<a href="javascript:void(0);" onClick="EditUser(' + menu_id + ')"><i class="glyphicon glyphicon-pencil"></i></a>'
                             }
                         }
                     ],
@@ -83,6 +84,10 @@
             }
         });
 
+    }
+
+    function EditUser(menu_id) {
+        window.location.href = 'AddMenu?menu_id=' + menu_id;
     }
 </script>
 

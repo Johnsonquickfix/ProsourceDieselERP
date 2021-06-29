@@ -772,6 +772,54 @@ namespace LaylaERP.BAL
             }
 
         }
+        public int UpdateAddPermission(int role_id, string strAdd)
+        {
+            try
+            {
+              
+                int result = 0;
+                    string strsql = "update wp_erprole_rest set add_=1 where role_id="+ role_id + " and erpmenu_id in (" + strAdd+");";
+                    result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+
+        }
+        public int UpdateEditPermission(int role_id, string strEdit)
+        {
+            try
+            {
+
+                int result = 0;
+                string strsql = "update wp_erprole_rest set edit_=1 where role_id=" + role_id + " and erpmenu_id in (" + strEdit + ");";
+                result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+
+        }
+        public int UpdateDeletePermission(int role_id, string strDel)
+        {
+            try
+            {
+
+                int result = 0;
+                string strsql = "update wp_erprole_rest set delete_=1 where role_id=" + role_id + " and erpmenu_id in (" + strDel + ");";
+                result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+
+        }
 
 
     }

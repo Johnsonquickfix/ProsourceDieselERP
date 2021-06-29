@@ -7,7 +7,7 @@
 <div class="page-title">
     <h2 class="page-heading">Export</h2>
 </div>
- 
+
 <div class="contennt setting-section">
     <div class="nav-tabs-custom">
         <ul class="nav nav-tabs">
@@ -23,7 +23,7 @@
                             <span class="even-space">From</span><input type="text" name="fromdate" id="fromdate" />
                             <span class="even-space">To</span><input type="text" name="todate" id="todate" />
                             @*From <input type="date" name="fromdate" id="fromdate">
-                        To<input type="date" name="todate" id="todate" >*@
+                                To<input type="date" name="todate" id="todate" >*@
                             <input type="button" id="btnorder" class="button action" value="Go" />
                             <input type="button" id="btnvieworders" class="button action" value="Refresh" />
                         </div>
@@ -35,7 +35,7 @@
                             <table id="exportdata" class="table table-blue table-bordered table-striped dataTable check-table" style="width:100%;">
                                 <thead class="thead-dark">
                                     <tr>
-                                        <th><input type="checkbox" id="selectAll" name="selectAll"><label></label></th>
+                                        <th><input type="checkbox" class="selectAll" name="selectAll" value="all"><label></label></th>
                                         <th>Order Id</th>
                                         <th>Order Date</th>
                                         <th>Customer Id</th>
@@ -60,32 +60,32 @@
                         </div>
                     </div>
                 </div>
-                        <div id="poststuff" class="woocommerce-reports-wide">
-                            <div class="box box-primary">
-                                <div class="box-header">
-                                    <table id="exportusersdata" class="table-blue table table-bordered check-table display" style="width:100%;">
-                                        <thead>
-                                            <tr>
-                                                <th><input type="checkbox" class="selectAllUsers" name="selectAllUsers" value="all"><label></label></th>
-                                                <th>Id</th>
-                                                <th>Name</th>
-                                                <th>Email</th>
-                                                <th>Status</th>
-                                                <th>Role</th>
-                                                <th>Date</th>
-                                            </tr>
-                                        </thead>
-                                    </table>
-                                </div>
-                            </div>
+                <div id="poststuff" class="woocommerce-reports-wide">
+                    <div class="box box-primary">
+                        <div class="box-header">
+                            <table id="exportusersdata" class="table-blue table table-bordered check-table display" style="width:100%;">
+                                <thead>
+                                    <tr>
+                                        <th><input type="checkbox" class="selectAllUsers" name="selectAllUsers" value="all"><label></label></th>
+                                        <th>Id</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Status</th>
+                                        <th>Role</th>
+                                        <th>Date</th>
+                                    </tr>
+                                </thead>
+                            </table>
                         </div>
-                    </div><!--end tab two-->
+                    </div>
+                </div>
+            </div><!--end tab two-->
             <div class="tab-pane" id="tab_3">
                 <div class="user-top-section">
                     <div class="tablenav top">
                         <div class="alignleft actions bulkactions">
-                            <span>From</span><input type="text" name="fromdatecustomers" id="fromdatecustomers"/>
-                            <span>To</span><input type="text" name="todatecustomers" id="todatecustomers"/>
+                            <span>From</span><input type="text" name="fromdatecustomers" id="fromdatecustomers" />
+                            <span>To</span><input type="text" name="todatecustomers" id="todatecustomers" />
                             <input type="button" id="btncustomers" class="button" value="Go" />
                             <input type="button" id="btnviewcustomers" class="button" value="Refresh" />
                         </div>
@@ -111,7 +111,7 @@
                     </div>
                 </div>
             </div><!--end tab three-->
-                        </div>
+        </div>
     </div>
 </div>
 
@@ -121,12 +121,10 @@
         $(document).ready(function () {
             //DatagridCustomers();
             //DatagridOrder();
+
             //DatagridUsers();
 
-            
-
-            
-//Button click for Orders
+            //Button click for Orders
             $("#btnorder").click(function () {
                 if ($("#fromdate").val() == "") {
                     swal('Alert', 'Please Enter From Date', 'error').then(function () { swal.close(); $('#fromdate').focus(); });
@@ -142,8 +140,7 @@
                     if (d1 > d2) {
                         swal('Alert', 'Please check, From date should not be greater than To date ', 'error').then(function () { swal.close(); $('#fromdate').focus(); });
                     }
-                    else if (d2 > d4)
-                    {
+                    else if (d2 > d4) {
                         swal('Alert', 'Please check, To date should not be greater than current date ', 'error').then(function () { swal.close(); $('#todate').focus(); });
                     }
                     else {
@@ -156,33 +153,37 @@
             });
             setTimeout(function () { DatagridOrder(); }, 50);
 
-//Button Click for users
+            //Button Click for users
             $("#btnusers").click(function () {
+                var d5 = $("#fromdateusers").val();
+                var d6 = $("#todateusers").val();
+                var d7 = new Date();
+                var currentdate = d7.getFullYear() + '-' + ("0" + (d7.getMonth() + 1)).slice(-2) + '-' + d7.getDate();
+
                 if ($("#fromdateusers").val() == "") {
                     swal('Alert', 'Please Enter From Date', 'error').then(function () { swal.close(); $('#fromdateusers').focus(); });
                 }
                 else if ($("#todateusers").val() == "") {
                     swal('Alert', 'Please Enter To Date', 'error').then(function () { swal.close(); $('#todateusers').focus(); });
                 }
+                else if (d5 > d6) {
+                    swal('Alert', 'Please check, From date should not be greater than To date ', 'error').then(function () { swal.close(); $('#fromdateusers').focus(); });
+                }
+                else if (d6 > currentdate) {
+                    swal('Alert', 'Please check, To date should not be greater than Current date ', 'error').then(function () { swal.close(); $('#todateusers').focus(); });
+                }
                 else {
-                    d5 = $("#fromdateusers").val();
-                    d6 = $("#todateusers").val();
-                    if (d5 > d6) {
-                        swal('Alert', 'Please check, From date should not be greater than To date ', 'error').then(function () { swal.close(); $('#fromdateusers').focus(); });
-                    }
-                    else {
-                        DatagridUsers();
-                        $("#fromdateusers").val("");
-                        $("#todateusers").val("");
-                        return false;
-                    }
+                    DatagridUsers();
+                    $("#fromdateusers").val("");
+                    $("#todateusers").val("");
+                    return false;
                 }
             });
             setTimeout(function () { DatagridUsers(); }, 50);
 
-           
 
-//Button click for customer
+
+            //Button click for customer
             $("#btncustomers").click(function () {
                 var dt = $("#fromdatecustomers").val();
                 var dt1 = $("#todatecustomers").val();
@@ -195,13 +196,11 @@
                 else if ($("#todatecustomers").val() == "") {
                     swal('Alert', 'Please Enter To Date', 'error').then(function () { swal.close(); $('#todatecustomers').focus(); });
                 }
-                else if (dt > dt1)
-                {
+                else if (dt > dt1) {
                     swal('Alert', 'Please check, From date should not be greater than To date ', 'error').then(function () { swal.close(); $('#fromdatecustomers').focus(); });
                 }
-                else if (dt1 > dt3)
-                {
-                    swal('Alert', 'Please check, To date should not be greater than current date', 'error').then(function () { swa.close(); $('#todatecustomers').focus(); });
+                else if (dt1 > dt3) {
+                    swal('Alert', 'Please check, To date should not be greater than Current date', 'error').then(function () { swa.close(); $('#todatecustomers').focus(); });
                 }
                 else {
                     DatagridCustomers();
@@ -218,45 +217,26 @@
             //$(document).on('click', "#btnuser", function () {
             //    DatagridUsers();
             //})
-           
+
             $("#btnvieworders").click(function () { DatagridOrder(); });
             $("#btnviewusers").click(function () { DatagridUsers(); });
             $("#btnviewcustomers").click(function () { DatagridCustomers(); });
 
-           
         });
+
 
         //-------------Order DataGrid Start----------------
 
-        //CheckBoxes
-        $('#selectAll').click(function () {
-           // alert(1);
-            var isChecked = $(this).prop("checked");
-            $('#exportdata tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
-        });
-
-        function Singlecheck() {
-            var isChecked = $('#CheckSingle').prop("checked");
-            var isHeaderChecked = $("#selectAll").prop("checked");
-            if (isChecked == false && isHeaderChecked)
-                $("#selectAll").prop('checked', isChecked);
-
-            else {
-                $('#exportdata tr:has(td)').find('input[type="checkbox"]').each(function () {
-                    if ($(this).prop("checked") == false)
-                        isChecked = false;
-                });
-                $("#selectAll").prop('checked', isChecked);
-            }
-        }
-
+        //-------------Order DataGrid Start----------------
         function DatagridOrder() {
             var from_date = $("#fromdate").val();
             var to_date = $("#todate").val();
             //var obj = { mydate: mydate };
             $('#exportdata').DataTable({
+                "lengthMenu": [[10, 20, 50, 100], [10, 20, 50, 100]],
                 destroy: true,
                 searching: false,
+                bAutoWidth: false,
                 "ajax": {
                     "url": '/Export/GetData',
                     "type": 'POST',
@@ -265,22 +245,18 @@
                     //"data": JSON.stringify(obj)
 
                 },
+
                 "columns": [
 
-                    {
-                        'data': 'ID', sWidth: "5%",
-                        'render': function (data, type, full, meta) {
-                            return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + $('<div/>').text(data).html() + '"><label></label>';
-                        }
-                    },
+                    { 'data': null, sWidth: "5%" },
                     { 'data': 'order_id' },
                     {
                         'data': 'order_created',
-                        'render': function (jsonDate) {
-                            var date = new Date(parseInt(jsonDate.substr(6)));
-                            var month = ("0" + (date.getMonth() + 1)).slice(-2);
-                            return ("0" + date.getDate()).slice(-2) + '-' + month + '-' + date.getFullYear();
-                        }
+                        //'render': function (jsonDate) {
+                        //    var date = new Date(parseInt(jsonDate.substr(6)));
+                        //    var month = ("0" + (date.getMonth() + 1)).slice(-2);
+                        //    return ("0" + date.getDate()).slice(-2) + '-' + month + '-' + date.getFullYear();
+                        //}
                     },
                     { 'data': 'customer_id' },
                     //{ 'data':'orderstatus' },
@@ -289,14 +265,23 @@
                     { 'data': 'total' }
 
                 ],
-
                 columnDefs: [{
                     orderable: false,
-                    targets: [0]
+                    className: 'select-checkbox',
+                    targets: 0,
+                    'checkboxes': {
+                        "selectRow": false,
+                    },
+                    data: null,
+                    defaultContent: '',
                 }],
+                "select": {
+                    "style": 'multi',
+                    "selector": 'td:first-child',
+                },
                 "order": [1, 'desc'],
 
-                "dom": 'Bfrtip',
+                "dom": 'lBfrtip',
                 "buttons": [
 
                     {
@@ -304,17 +289,26 @@
                         className: 'button',
                         text: '<i class="fas fa-file-csv"></i> CSV'
                     },
-                    {
-                        extend: 'print',
-                        className: 'button',
-                        text: '<i class="fas fa-print"></i> Print'
-                    }
+                    //{
+                    //    extend: 'print',
+                    //    className: 'button',
+                    //    text: '<i class="fas fa-print"></i> Print'
+                        
+                    //}
                 ],
 
             });
-        }
 
-       
+            //------------SELECT ALL CHEBOX-----------
+            var DT1 = $('#exportdata').DataTable();
+            $(".selectAll").on("click", function (e) {
+                if ($(this).is(":checked")) {
+                    DT1.rows().select();
+                } else {
+                    DT1.rows().deselect();
+                }
+            });
+        }
 
         //---------------Order DataGrid End---------------
 
@@ -332,21 +326,22 @@
                     "dataType": 'json',
                     "data": { from_dateusers: fromdateusers, to_dateusers: todateusers }
                 },
+                "lengthMenu": [[10, 20, 50, 100], [10, 20, 50, 100]],
 
                 "columns": [
-                    { 'data': null, sWidth:"5%" },
-                    { 'data': 'UID', sWidth: "10%"},
-                    { 'data': 'user_login', sWidth: "10%"},
+                    { 'data': null, sWidth: "5%" },
+                    { 'data': 'UID', sWidth: "10%" },
+                    { 'data': 'user_login', sWidth: "10%" },
                     { 'data': 'user_email', sWidth: "25%" },
-                    { 'data': 'user_status', sWidth: "20%" },
-                    { 'data': 'my', sWidth:"20%" },
+                    { 'data': 'user_status', sWidth: "15%" },
+                    { 'data': 'my', sWidth: "20%" },
                     {
-                        'data': 'created_date', sWidth:"10%",
-                        'render': function (jsonDate) {
-                            var date = new Date(parseInt(jsonDate.substr(6)));
-                            var month = ("0" + (date.getMonth() + 1)).slice(-2);
-                            return ("0" + date.getDate()).slice(-2) + '-' + month + '-' + date.getFullYear();
-                        }
+                        'data': 'created_date', sWidth: "15%",
+                        //'render': function (jsonDate) {
+                        //    var date = new Date(parseInt(jsonDate.substr(6)));
+                        //    var month = ("0" + (date.getMonth() + 1)).slice(-2);
+                        //    return ("0" + date.getDate()).slice(-2) + '-' + month + '-' + date.getFullYear();
+                        //}
                     },
 
                 ],
@@ -354,18 +349,18 @@
                     orderable: false,
                     className: 'select-checkbox',
                     targets: 0,
-                    'checkboxes': { 'selectRow': true },
+                    'checkboxes': { 'selectRow': false },
                     data: null,
                     defaultContent: '',
-                    
+
                 }],
                 select: {
                     style: 'multi',
                     selector: 'td:first-child',
                 },
 
-                "order": [0, 'desc'],
-                "dom": 'Bfrtip',
+                "order": [1, 'desc'],
+                "dom": 'lBfrtip',
                 "buttons": [
 
                     {
@@ -373,13 +368,23 @@
                         className: 'button',
                         text: '<i class="fas fa-file-csv"></i> CSV'
                     },
-                    {
-                        extend: 'print',
-                        className: 'button',
-                        text: '<i class="fas fa-print"></i> Print'
-                    }
+                    //{
+                    //    extend: 'print',
+                    //    className: 'button',
+                    //    text: '<i class="fas fa-print"></i> Print'
+                    //}
                 ],
 
+            });
+
+            //------------------SELECT ALL CHECKBOXES---------------
+            var DT2 = $('#exportusersdata').DataTable();
+            $(".selectAllUsers").on("click", function (e) {
+                if ($(this).is(":checked")) {
+                    DT2.rows().select();
+                } else {
+                    DT2.rows().deselect();
+                }
             });
         }
         //----------------Users DataGrid End--------------
@@ -398,6 +403,7 @@
                     "dataType": 'json',
                     "data": { from_datecustomers: fromdatecustomers, to_datecustomers: todatecustomers }
                 },
+                "lengthMenu": [[10, 20, 50, 100], [10, 20, 50, 100]],
 
                 "columns": [
                     { 'data': null, sWidth: "5%" },
@@ -407,7 +413,7 @@
                     { 'data': 'customer_status', 'sWidth': "10%" },
                     { 'data': 'customer_phone', 'sWidth': "20%" },
                     {
-                        'data': 'customerdate_created', 'sWidth': "20%"
+                        'data': 'customerdate_created',
                         //'render': function (jsonDate) {
                         //    var date = new Date(parseInt(jsonDate.substr(6)));
                         //    var month = ("0" + (date.getMonth() + 1)).slice(-2);
@@ -420,7 +426,7 @@
                     orderable: false,
                     className: 'select-checkbox',
                     targets: 0,
-                    'checkboxes': { 'selectRow': true },
+                    'checkboxes': { 'selectRow': false },
                     data: null,
                     defaultContent: '',
                 }],
@@ -429,8 +435,8 @@
                     selector: 'td:first-child',
                 },
 
-                "order": [0, 'desc'],
-                "dom": 'Bfrtip',
+                "order": [1, 'desc'],
+                "dom": 'lBfrtip',
                 "buttons": [
 
                     {
@@ -438,14 +444,24 @@
                         className: 'button',
                         text: '<i class="fas fa-file-csv"></i> CSV'
                     },
-                    {
-                        extend: 'print',
-                        className: 'button',
-                        text: '<i class="fas fa-print"></i> Print'
-                    }
+                    //{
+                    //    extend: 'print',
+                    //    className: 'button',
+                    //    text: '<i class="fas fa-print"></i> Print'
+                    //}
                 ],
 
             });
+
+            var DT3 = $('#exportcustomersdata').DataTable();
+            $(".selectAllCustomers").on("click", function (e) {
+                if ($(this).is(":checked")) {
+                    DT3.rows().select();
+                } else {
+                    DT3.rows().deselect();
+                }
+            });
+
         }
 
         //----------------Customers DataGrid End-----------------
@@ -482,9 +498,5 @@
 
         });
 
-       
-
     </script>
-
-
 }

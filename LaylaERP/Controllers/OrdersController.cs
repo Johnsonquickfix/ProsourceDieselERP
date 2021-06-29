@@ -225,6 +225,18 @@
             return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, aaData = result }, 0);
         }
         [HttpPost]
+        public JsonResult GetCustomersOrderList(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            try
+            {
+                DataTable dt = OrderRepository.SearchCustomersOrders(model.strValue1);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
+        [HttpPost]
         public JsonResult ChangeOrderStatus(OrderPostStatusModel model)
         {
             string strID = model.strVal;
@@ -270,5 +282,6 @@
             catch { status = false; result = ""; }
             return Json(new { status = status, message = result }, 0);
         }
+
     }
 }

@@ -32,7 +32,7 @@
                 <div id="poststuff" class="woocommerce-reports-wide">
                     <div class="box box-primary">
                         <div class="box-header">
-                            <table id="exportdata" class="table table-blue table-bordered table-striped dataTable check-table" style="width:100%;">
+                            <table id="exportdata" class="table-blue table table-bordered check-table" style="width:100%;">
                                 <thead class="thead-dark">
                                     <tr>
                                         <th><input type="checkbox" class="selectAll" name="selectAll" value="all"><label></label></th>
@@ -227,7 +227,28 @@
 
         //-------------Order DataGrid Start----------------
 
-        //-------------Order DataGrid Start----------------
+        //CheckBoxes
+        $('#selectAll').click(function () {
+           // alert(1);
+            var isChecked = $(this).prop("checked");
+            $('#exportdata tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
+        });
+
+        function Singlecheck() {
+            var isChecked = $('#CheckSingle').prop("checked");
+            var isHeaderChecked = $("#selectAll").prop("checked");
+            if (isChecked == false && isHeaderChecked)
+                $("#selectAll").prop('checked', isChecked);
+
+            else {
+                $('#exportdata tr:has(td)').find('input[type="checkbox"]').each(function () {
+                    if ($(this).prop("checked") == false)
+                        isChecked = false;
+                });
+                $("#selectAll").prop('checked', isChecked);
+            }
+        }
+
         function DatagridOrder() {
             var from_date = $("#fromdate").val();
             var to_date = $("#todate").val();

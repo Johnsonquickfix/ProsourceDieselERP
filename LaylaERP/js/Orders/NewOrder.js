@@ -60,13 +60,17 @@ $(document).ready(function () {
         else { $("#txtPPEmail").addClass('hidden'); }
     });
     $("#billModal").on("click", "#btnNewOrder", function (t) { t.preventDefault(); window.location.href = window.location.href; });
+    /*Start New order Popup function*/
     $('#billModal').on('shown.bs.modal', function () {
         $('#ddlCustomerSearch').select2({
             dropdownParent: $("#billModal"), allowClear: true, minimumInputLength: 3, placeholder: "Search Customer",
+            language: {
+                noResults: function (data) { return $("<a id='btnaddcustomer' href='javascript:;'>Add Customer</a>"); }
+            },
             ajax: {
                 url: '/Orders/GetCustomerList', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
                 data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
-                processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.displayname + ' [' + item.billing_phone + ']', id: item.id } }) }; },
+                processResults: function (data, page) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.displayname + ' [' + item.billing_phone + ']', id: item.id } }) }; },
                 error: function (xhr, status, err) { }, cache: true
             }
         });
@@ -83,6 +87,41 @@ $(document).ready(function () {
             swal('Alert!', 'Please Search Customer.', "info").then((result) => { $('#ddlCustomerSearch').select2('open'); return false; }); return false;
         }
     });
+    $("#billModal").on("change", "#ddlCustomerSearch", function (t) {
+        t.preventDefault();
+        let cus_id = parseInt($("#ddlCustomerSearch").val()) || 0;
+        if (cus_id > 0)
+            bindCustomerOrders(cus_id);
+        else
+            $('#tblCusOrders').dataTable().fnClearTable();
+    });
+    $("#billModal").on("click", "#btnaddcustomer", function (t) {
+        t.preventDefault();
+        let cus_text = $("#ddlCustomerSearch option:selected").text();
+        $("#billModal").modal('hide'); addCustomerModal(cus_text);
+    });
+    $("#billModal").on("click", "#btnBackSerchCusrtomer", function (t) {
+        t.preventDefault();$("#billModal").modal('hide'); searchOrderModal();
+    });
+    $("#billModal").on("blur", "#txtBillingPostCode", function (t) {
+        t.preventDefault();
+        if ($(this).val().length > 0) {
+            $.ajax({
+                url: "https://ziptasticapi.com/" + $(this).val(),
+                type: "GET",
+                dataType: 'JSON',
+                data: [],
+                success: function (data) {
+                    $("#txtBillingCity").val(data.city); $("#txtBillingCountry").val(data.country); $("#txtBillingState").val(data.state);
+                },
+                error: function (msg) { alert(msg); }
+            });
+        }
+        else {
+            $("#txtBillingCity,#txtBillingCountry,#txtBillingState").val(''); 
+        }
+    });
+    /*end New order Popup function*/
 });
 ///Bind States of Country
 function BindStateCounty(ctr, obj) {
@@ -96,14 +135,14 @@ function BindStateCounty(ctr, obj) {
 ///Get New Order No
 function NewOrderNo() {
     var opt = { strValue1: '' };
-    //$.ajax({
-    //    type: "POST", url: '/Orders/GetNewOrderNo', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
-    //    success: function (result) {
-    //        $('#hfOrderNo').val(result.message); $('#lblOrderNo').text('Order #' + result.message + ' detail ');
-    //    },
-    //    error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
-    //    async: false
-    //});
+    $.ajax({
+        type: "POST", url: '/Orders/GetNewOrderNo', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
+        success: function (result) {
+            $('#hfOrderNo').val(result.message); $('#lblOrderNo').text('Order #' + result.message + ' detail ');
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
+        async: false
+    });
 }
 ///Find Address of Customer
 function CustomerAddress(id) {
@@ -198,9 +237,6 @@ function searchOrderModal() {
     modalHtml += '<h4 class="modal-title" id="myModalLabel">Search Customer</h4>';
     modalHtml += '</div>';
     modalHtml += '<div class="modal-body" ></div>';
-    //modalHtml += '<div class="modal-footer">';
-    //modalHtml += '<button type="button" class="btn btn-primary">OK</button>';
-    //modalHtml += '</div>';
     modalHtml += '</div>';
     modalHtml += '</div>';
     $("#billModal").empty().html(modalHtml);
@@ -209,7 +245,6 @@ function searchOrderModal() {
     myHtml += '<div class="row">';
     myHtml += '<div class="col-md-8">';
     myHtml += '<div class="form-group">';
-    myHtml += '<label>Customer</label>';
     myHtml += '<select class="form-control select2" id="ddlCustomerSearch" placeholder="Select Customer Email" style="width: 100%;">';
     myHtml += '</select>';
     myHtml += '</div>';
@@ -221,24 +256,197 @@ function searchOrderModal() {
 
     myHtml += '<div class="row">';
     myHtml += '<div class="col-md-12">';
-    myHtml += '<div class="table-responsive" id="divAddItemFinal">';
-    myHtml += '<table id="tblAddItemFinal" class="table table-blue check-table table-bordered table-striped dataTable tablelist">';
+    myHtml += '<div class="table-responsive">';
+    myHtml += '<table id="tblCusOrders" class="table table-blue check-table table-bordered table-striped dataTable tablelist">';
     myHtml += '<thead class="thead-dark">';
     myHtml += '<tr>';
-    myHtml += '<th class="text-center" style="width: 8%">Actions</th>';
     myHtml += '<th style="width: 10%">Order No</th>';
-    myHtml += '<th class="text-right" style="width: 10%">Creation Date</th>';
-    myHtml += '<th class="text-right" style="width: 30%">Billing Address</th>';
-    myHtml += '<th class="text-right" style="width: 30%">Shipping Address</th>';
+    myHtml += '<th style="width: 10%">Creation Date</th>';
+    myHtml += '<th style="width: 25%">Billing Address</th>';
+    myHtml += '<th style="width: 25%">Shipping Address</th>';
     myHtml += '<th class="text-right" style="width: 10%">Amount</th>';
+    myHtml += '<th style="width: 10%">Status</th>';
+    myHtml += '<th class="text-center" style="width: 10%">Actions</th>';
     myHtml += '</tr>';
     myHtml += '</thead>';
-    myHtml += '<tbody></tbody>';      
+    myHtml += '<tbody></tbody>';
     myHtml += '</table>';
     myHtml += '</div>';
     myHtml += '</div>';
     myHtml += '</div>';
 
+    $('#billModal .modal-body').append(myHtml);
+
+    $("#billModal").modal({ backdrop: 'static', keyboard: false });
+}
+function bindCustomerOrders(id) {
+    let opt = { strValue1: parseInt(id) || 0 };
+    $.ajax({
+        type: "post", url: '/Orders/GetCustomersOrderList', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
+        success: function (data) {
+            $('#tblCusOrders').dataTable({
+                destroy: true,
+                data: JSON.parse(data),
+                columns: [
+                    { data: 'ID', title: 'ORDER NO', sWidth: "10%" },
+                    { data: 'post_date', title: 'CREATION DATE', sWidth: "10%" },
+                    {
+                        data: 'billing_first_name', title: 'BILLING ADDRESS', sWidth: "25%", render: function (data, type, row) {
+                            let val = '<address class="no-margin">' + row.billing_first_name + ' ' + row.billing_last_name + '<br>' + row.billing_address_1 + (row.billing_address_2 > 0 ? '<br>' : '') + row.billing_address_2 + '<br>' + row.billing_city + ' ,' + row.billing_state + ' ' + row.billing_postcode + '<br>Phone: ' + row.billing_phone + '<br>Email: ' + row.billing_email + '</address>';
+                            return val;
+                        }
+                    },
+                    {
+                        data: 'shipping_first_name', title: 'SHIPPING ADDRESS', sWidth: "25%", render: function (data, type, row) {
+                            let val = '<address class="no-margin">' + row.shipping_first_name + ' ' + row.shipping_last_name + '<br>' + row.shipping_address_1 + (row.shipping_address_2 > 0 ? '<br>' : '') + row.shipping_address_2 + '<br>' + row.shipping_city + ' ,' + row.shipping_state + ' ' + row.shipping_postcode + '</address>';
+                            return val;
+                        }
+                    },
+                    { data: 'total_sales', title: 'Order Total', sWidth: "10%", className: "text-right", render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                    {
+                        data: 'post_status', title: 'Status', sWidth: "10%", render: function (data, type, row) {
+                            if (data == 'wc-pending') return 'Pending payment';
+                            else if (data == 'wc-processing') return 'Processing';
+                            else if (data == 'wc-on-hold') return 'On hold';
+                            else if (data == 'wc-completed') return 'Completed';
+                            else if (data == 'wc-cancelled') return 'Cancelled';
+                            else if (data == 'wc-refunded') return 'Refunded';
+                            else if (data == 'wc-failed') return 'Failed';
+                            else if (data == 'draft') return 'draft';
+                            else return '-';
+                        }
+                    },
+                    {
+                        'data': 'order_id', sWidth: "10%", class: "text-center",
+                        'render': function (id, type, row, meta) {
+                            let val = ' data-bfn="' + row.billing_first_name + '" data-bln="' + row.billing_last_name + '" data-ba1="' + row.billing_address_1 + '" data-ba2="' + row.billing_address_2 + '" data-bc="' + row.billing_city + '" data-bs="' + row.billing_state + '" data-bct="' + row.billing_country + '" data-bpc="' + row.billing_postcode + '" data-bp="' + row.billing_phone + '" data-bem="' + row.billing_email + '"';
+                            val += ' data-sfn="' + row.shipping_first_name + '" data-sln="' + row.shipping_last_name + '" data-sa1="' + row.shipping_address_1 + '" data-sa2="' + row.shipping_address_2 + '" data-sc="' + row.shipping_city + '" data-ss="' + row.shipping_state + '" data-sct="' + row.billing_country + '" data-spc="' + row.shipping_postcode + '"';
+
+                            return '<a href="javascript:;" class="glyphicon glyphicon glyphicon-check" onclick="selectOrderAddress(this);" ' + val + '></a>';
+                        }
+                    }
+                ]
+            });
+        },
+        error: function (xhr, ajaxOptions, thrownError) { alert(xhr.responseText); },
+        async: false
+    });
+}
+function selectOrderAddress(ele) {
+    var cnt = $(ele);
+    console.log(ele);
+    let cus_id = parseInt($("#ddlCustomerSearch").val()) || 0, cus_text = $("#ddlCustomerSearch option:selected").text();
+    if (cus_id > 0) {
+        $("#ddlUser").empty().append('<option value="' + cus_id + '" selected>' + cus_text + '</option>');
+        setTimeout(function () { NewOrderNo(); }, 50);
+        $("#billModal").modal('hide'); $('.billinfo').prop("disabled", false);
+        ///billing_Details
+        $('#txtbillfirstname').val($(ele).data('bfn'));
+        $('#txtbilllastname').val($(ele).data('bln'));
+        $('#txtbillcompany').val('');
+        $('#txtbilladdress1').val($(ele).data('ba1'));
+        $('#txtbilladdress2').val($(ele).data('ba2'));
+        $('#txtbillzipcode').val($(ele).data('bpc'));
+        $('#txtbillcity').val($(ele).data('bc'));
+        $('#ddlbillcountry').val($(ele).data('bct')).trigger('change');
+        $('#ddlbillstate').val($(ele).data('bs')).trigger('change');
+        $('#txtbillemail').val($(ele).data('bem'));
+        $('#txtbillphone').val($(ele).data('bp'));
+        ///shipping_Details
+        $('#txtshipfirstname').val($(ele).data('sfn'));
+        $('#txtshiplastname').val($(ele).data('sln'));
+        $('#txtshipcompany').val('');
+        $('#txtshipaddress1').val($(ele).data('sa1'));
+        $('#txtshipaddress2').val($(ele).data('sa2'));
+        $('#txtshipzipcode').val($(ele).data('spc'));
+        $('#txtshipcity').val($(ele).data('sc'));
+        $('#ddlshipcountry').val($(ele).data('sct').trim()).trigger('change');
+        $('#ddlshipstate').val($(ele).data('ss').trim()).trigger('change');
+
+
+    }
+}
+function addCustomerModal(cus_name) {
+    let modalHtml = '';
+    modalHtml += '<div class="modal-dialog modal-lg">';
+    modalHtml += '<div class="modal-content">';
+    modalHtml += '<div class="modal-header">';
+    //modalHtml += '<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button>';
+    modalHtml += '<h4 class="modal-title" id="myModalLabel">Add Customer</h4>';
+    modalHtml += '</div>';
+    modalHtml += '<div class="modal-body" ></div>';   
+    modalHtml += '<div class="modal-footer">';
+    modalHtml += '<button type="button" class="btn btn-primary" id="btnBackSerchCusrtomer">Back Serch Cusrtomer</button>';
+    modalHtml += '<button type="button" class="btn btn-primary" id="btnSaveCustomer">Save Customer</button>';
+    modalHtml += '</div>';
+    modalHtml += '</div>';
+    modalHtml += '</div>';
+    $("#billModal").empty().html(modalHtml);
+
+    let myHtml = '';
+    myHtml += '<div class="row">';
+    myHtml += '<div class="col-md-4" >';
+    myHtml += '<div class="form-group">';
+    myHtml += '<label class="control-label " for="Email">Email</label>';
+    myHtml += '<div class=""><input type="email" id="txtUserEmail" class="form-control" placeholder="Email" /></div>';
+    myHtml += '</div>';
+
+    myHtml += '<div class="form-group">';
+    myHtml += '<label class="control-label " for="User Name">User Name</label>';
+    myHtml += '<div class=""><input type="text" id="txtUserNickName" class="form-control" placeholder="User Name" /></div>';
+    myHtml += '</div>';
+
+    myHtml += '<div class="form-group">';
+    myHtml += '<label class="control-label " for="First Name">First Name</label>';
+    myHtml += '<div class=""><input type="text" id="txtFirstName" class="form-control" placeholder="First Name" /></div>';
+    myHtml += '</div>';
+
+    myHtml += '<div class="form-group">';
+    myHtml += '<label class="control-label " for="Last Name">Last Name</label>';
+    myHtml += '<div class=""><input type="text" id="txtLastName" class="form-control" placeholder="Last Name" /></div>';
+    myHtml += '</div>';
+    myHtml += '</div >';
+
+    myHtml += '<div class="col-md-4">';
+    myHtml += '<div class="form-group">';
+    myHtml += '<label class="control-label " for="Address 1">Address 1</label>';
+    myHtml += '<div class=""><input type="text" id="txtBillingAddress1" class="form-control" placeholder="Address 1" /></div>';
+    myHtml += '</div>';
+
+    myHtml += '<div class="form-group">';
+    myHtml += '<label class="control-label " for="Address 2">Address 2</label>';
+    myHtml += '<div class=""><input type="text" id="txtBillingAddress2" class="form-control" placeholder="Address 2" /></div>';
+    myHtml += '</div>';
+
+    myHtml += '<div class="form-group">';
+    myHtml += '<label class="control-label " for="Post/Zip Code">Post/Zip Code</label>';
+    myHtml += '<div class=""><input type="text" id="txtBillingPostCode" class="form-control" placeholder="Post/Zip Code" /></div>';
+    myHtml += '</div>';
+
+    myHtml += '<div class="form-group">';
+    myHtml += '<label class="control-label " for="Country/Region">Country/Region</label>';
+    myHtml += '<div class=""><input type="text" id="txtBillingCountry" class="form-control" placeholder="Country/Region" disabled /></div>';
+    myHtml += '</div>';
+    myHtml += '</div>';
+
+    myHtml += '<div class="col-md-4">';
+    myHtml += '<div class="form-group">';
+    myHtml += '<label class="control-label " for="State/Country">State/Country</label>';
+    myHtml += '<div class=""><input type="text" id="txtBillingState" class="form-control" placeholder="State/Country" disabled /></div>';
+    myHtml += '</div>';
+
+    myHtml += '<div class="form-group">';
+    myHtml += '<label class="control-label " for="City">City</label>';
+    myHtml += '<div class=""><input type="tel" id="txtBillingCity" class="form-control" placeholder="City" disabled /></div>';
+    myHtml += '</div>';
+
+    myHtml += '<div class="form-group">';
+    myHtml += '<label class="control-label " for="Contact No.">Contact No.</label>';
+    myHtml += '<div class=""><input type="tel" id="txtBillingPhone" class="form-control" placeholder="Contact No." /></div>';
+    myHtml += '</div>';
+
+    myHtml += '</div>';
+    myHtml += '</div >';
 
     $('#billModal .modal-body').append(myHtml);
 
@@ -336,7 +544,7 @@ function CouponModal() {
     myHtml += '</div>';
     myHtml += '</div>';
     $("#billModal").empty().html(myHtml);
-    $("#billModal").modal({ backdrop: 'static' }); $("#txt_Coupon").focus();
+    $("#billModal").modal({ backdrop: 'static', keyboard: false }); $("#txt_Coupon").focus();
 }
 function getAllCoupons() {
     var coupons = [];
@@ -1112,7 +1320,7 @@ function PaymentModal() {
     });
     $('#tblmodalitems tbody').append(myHtml);
 
-    $("#billModal").modal({ backdrop: 'static' }); $("#txt_Coupon").focus();
+    $("#billModal").modal({ backdrop: 'static', keyboard: false }); $("#txt_Coupon").focus();
 }
 
 ///Accept Payment
@@ -1386,7 +1594,7 @@ function successModal(paymode) {
     });
     $('#tblorder_details tbody').append(myHtml);
 
-    $("#billModal").modal({ backdrop: 'static' });
+    $("#billModal").modal({ backdrop: 'static', keyboard: false });
 }
 
 function successModal_old(paymode) {

@@ -21,8 +21,8 @@
                                 + " from wp_users as ur"
                                 + " inner join wp_usermeta um on ur.id = um.user_id and um.meta_key = 'wp_capabilities' and meta_value like '%customer%'"
                                 + " left outer join wp_usermeta ump on ur.id = ump.user_id and ump.meta_key = 'billing_phone'";
-                strWhr += " where (User_Login  like '%" + strSearch + "%' or user_email like '%" + strSearch + "%' ";
-                strWhr += " OR replace(replace(replace(replace(ump.meta_value, '-', ''), ' ', ''), '(', ''), ')', '') like '%" + strSearch + "%' ) limit 50;";
+                strWhr += " where User_Login  like '%" + strSearch + "%' or user_email like '%" + strSearch + "%' limit 50;";
+                //strWhr += " OR replace(replace(replace(replace(ump.meta_value, '-', ''), ' ', ''), '(', ''), ')', '') like '%" + strSearch + "%' limit 50;";
 
                 DT = SQLHelper.ExecuteDataTable(strWhr);
             }
@@ -670,6 +670,39 @@
             }
             return dt;
         }
+        public static DataTable SearchCustomersOrders(string CustomerID)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                string strWhr = string.Empty;                
+                if (!string.IsNullOrEmpty(CustomerID))
+                {
+                    strWhr += " and os.customer_id= '" + CustomerID + "' ";
+                }
 
+                string strSql = "SELECT po.ID, DATE_FORMAT(po.post_date, '%M %d %Y') post_date,po.post_status ,os.customer_id,Cast(os.total_sales As DECIMAL(10, 2)) as total_sales,"
+                            + " max(case when pm.meta_key = '_billing_first_name' then pm.meta_value else '' end) billing_first_name,max(case when pm.meta_key = '_billing_last_name' then pm.meta_value else '' end) billing_last_name,"
+                            + " max(case when pm.meta_key = '_billing_address_1' then pm.meta_value else '' end) billing_address_1,max(case when pm.meta_key = '_billing_address_2' then pm.meta_value else '' end) billing_address_2,"
+                            + " max(case when pm.meta_key = '_billing_city' then pm.meta_value else '' end) billing_city,max(case when pm.meta_key = '_billing_state' then pm.meta_value else '' end) billing_state,"
+                            + " max(case when pm.meta_key = '_billing_postcode' then pm.meta_value else '' end) billing_postcode,max(case when pm.meta_key = '_billing_country' then pm.meta_value else '' end) billing_country,"
+                            + " max(case when pm.meta_key = '_billing_email' then pm.meta_value else '' end) billing_email,max(case when pm.meta_key = '_billing_phone' then replace(replace(replace(replace(pm.meta_value, '-', ''), ' ', ''), '(', ''), ')', '') else '' end) billing_phone,"
+                            + " max(case when pm.meta_key = '_shipping_first_name' then pm.meta_value else '' end) shipping_first_name,max(case when pm.meta_key = '_shipping_last_name' then pm.meta_value else '' end) shipping_last_name,"
+                            + " max(case when pm.meta_key = '_shipping_address_1' then pm.meta_value else '' end) shipping_address_1,max(case when pm.meta_key = 'shipping_address_2' then pm.meta_value else '' end) shipping_address_2,"
+                            + " max(case when pm.meta_key = '_shipping_city' then pm.meta_value else '' end) shipping_city,max(case when pm.meta_key = '_shipping_state' then pm.meta_value else '' end) shipping_state,"
+                            + " max(case when pm.meta_key = '_shipping_postcode' then pm.meta_value else '' end) shipping_postcode,max(case when pm.meta_key = '_shipping_country' then pm.meta_value else '' end) shipping_country"
+                            + "   FROM wp_posts po inner join wp_wc_order_stats os on po.id = os.order_id"
+                            + " LEFT OUTER JOIN wp_postmeta pm on pm.post_id = po.ID "
+                            + " WHERE po.post_type = 'shop_order' " + strWhr
+                            + " group by po.ID,po.post_date,po.post_status ,os.customer_id,os.total_sales order by ID desc limit 0, 1000";
+
+                dt = SQLHelper.ExecuteDataTable(strSql);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
     }
 }

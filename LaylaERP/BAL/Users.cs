@@ -176,7 +176,7 @@
                     {
                     new MySqlParameter("@UserID", UserID),
                 };
-                DT = SQLHelper.ExecuteDataTable("Select wer.role_id,wem.menu_id,wem.menu_code,wem.menu_name,wem.menu_url,wem.menu_icon,wem.parent_id, if(wem.parent_id is null, 0, 1) as  level, if (wer.role_id is null, false, true) as checked,add_,edit_,delete_ from wp_erpmenus wem left outer join  wp_erprole_rest wer on wem.menu_id = wer.erpmenu_id and wer.role_id = @UserID;", para);
+                DT = SQLHelper.ExecuteDataTable("Select wer.role_id,wem.menu_id,wem.menu_code,wem.menu_name,wem.menu_url,wem.menu_icon,wem.parent_id,if(wem.parent_id is null, 0, 1) as  level, if (wer.role_id is null, false, true) as checked,if (add_ is null, false, true) as RoleAdd,if (edit_ is null, false, true) as RoleEdit,if (delete_ is null, false, true) as RoleDelete from wp_erpmenus wem left outer join  wp_erprole_rest wer on wem.menu_id = wer.erpmenu_id and wer.role_id = @UserID;", para);
             }
             catch (Exception ex)
             { throw ex; }

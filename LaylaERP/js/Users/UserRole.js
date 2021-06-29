@@ -64,21 +64,47 @@ function Singlecheck() {
 
 //Give Permission
 $('#btnApprove').click(function () {
-    CheckNone();
-        var nodes = $('#tt').tree('getChecked');
-        var id = '';
-        for (var i = 0; i < nodes.length; i++) {
-            if (id != '') id += ',';
-            id += nodes[i].id;
+    var nodes = $('#tt').tree('getChecked');
+    var addnodes = '';
+    
+    var id = '';
+    var addid = '';
+    var editid = '';
+    var deleteid = '';
+
+    for (var i = 0; i < nodes.length; i++) {
+        addnodes = $('#chk_add_' + nodes[i].id).prop('checked');
+        editnodes = $('#chk_edit_' + nodes[i].id).prop('checked');
+        deletenodes = $('#chk_del_' + nodes[i].id).prop('checked');
+
+        if (id != '') id += ',';
+        id += nodes[i].id;
+
+        if (addnodes == true) {
+            if (addid != '') addid += ',';
+            addid += nodes[i].id;
         }
-    //ChangePermission(id);
+        if (editnodes == true) {
+            if (editid != '') editid += ',';
+            editid += nodes[i].id;
+        }
+        if (deletenodes == true) {
+            if (deleteid != '') deleteid += ',';
+            deleteid += nodes[i].id;
+        }
+        //console.log($('#chk_add_' + nodes[i].id), $('#chk_edit_' + nodes[i].id), $('#chk_del_' + nodes[i].id));
+    }
+    //console.log(addid);
+    //console.log(editid);
+    //console.log(deleteid);
+    ChangePermission(id, addid, editid, deleteid);
    
 
 })
 
-function ChangePermission(id) {
+function ChangePermission(id, addid, editid, deleteid) {
     var role_id = $("#userrole").val();
-    var obj = { strVal: id, role_id: role_id }
+    var obj = { strVal: id, strAdd: addid, strEdit: editid, strDel: deleteid, role_id: role_id }
     $.ajax({
         url: '/Users/ChangePermission/', dataType: 'json', type: 'Post',
         contentType: "application/json; charset=utf-8",
@@ -170,7 +196,7 @@ function fillCheckMenu() {
         data: JSON.stringify(obj),
         success: function (data) {
             console.log(data);
-            $('.treeview').empty();
+           /* $('.treeview').empty();*/
             $('#tt').tree({
                 data: data,
                 idField: 'id',

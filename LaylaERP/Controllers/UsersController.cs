@@ -595,6 +595,10 @@ namespace LaylaERP.Controllers
         {
             int role_id = model.role_id;
             string strID = model.strVal;
+            string strAdd = model.strAdd;
+            string strEdit = model.strEdit;
+            string strDel = model.strDel;
+
             if (role_id == 65)
             {
                 return Json(new { status = false, message = "You can not change administrator permission", url = "" }, 0);
@@ -602,6 +606,9 @@ namespace LaylaERP.Controllers
             else if (strID != "")
             {
                 new UsersRepositry().ChangePermission(strID, role_id);
+                new UsersRepositry().UpdateAddPermission(role_id, strAdd);
+                new UsersRepositry().UpdateEditPermission(role_id, strEdit);
+                new UsersRepositry().UpdateDeletePermission(role_id, strDel);
                 return Json(new { status = true, message = "User Permission has been Changed successfully!!", url = "" }, 0);
             }
             else
@@ -622,19 +629,44 @@ namespace LaylaERP.Controllers
                 DataRow[] rows = DT.Select("level = 0", "menu_code");
                 foreach (DataRow dr in rows)
                 {
+                    string myhtml = "";
+                    myhtml = "<div class=\"table-row\"><div>" + dr["menu_name"].ToString() + "</div><div>&nbsp;</div><div><input type=\"checkbox\" id=\"chk_add_" + dr["menu_id"] + "\" {0}></input> <label>Add</label></div><div><input type=\"checkbox\" id=\"chk_edit_" + dr["menu_id"] + "\" {0}></input> <label>View & Edit</label></div><div><input type=\"checkbox\" id =\"chk_del_" + dr["menu_id"] + "\" {0}></input> <label>Delete</label></div></div>";
+
                     row = new Dictionary<String, Object>();
                     row.Add("id", dr["menu_id"]);
-                    row.Add("add", dr["add_"]);
-                    row.Add("edit", dr["edit_"]);
-                    row.Add("delete", dr["delete_"]);
-                    row.Add("text", "<div class=\"table-row\"><div>"+ dr["menu_name"].ToString() + "</div><div>&nbsp;</div><div><input type=\"checkbox\" id=\"CheckNone\" onClick=\"CheckNone(); \" name =\"CheckNone\"></input> <label>None</label></div><div><input type=\"checkbox\" id=\"CheckAdd\" onClick=\"CheckAdd(); \" name =\"CheckAdd\"></input> <label>Add</label></div><div><input type=\"checkbox\" id=\"CheckViewEdit\" onClick=\"CheckViewEdit(); \" name =\"CheckViewEdit\"></input> <label>View & Edit</label></div><div><input type=\"checkbox\" id=\"CheckAdmin\" onClick=\"CheckAdmin(); \" name =\"CheckAdmin\"></input> <label>Admin</label></div></div>");
+                    row.Add("add", dr["RoleAdd"]);
+                    row.Add("edit", dr["RoleEdit"]);
+                    row.Add("delete", dr["RoleDelete"]);
                     if (dr["menu_url"].ToString().Trim() != "#")
                         row.Add("url", dr["menu_url"]);                    
                     row.Add("level", dr["level"]);                  
                     if (dr["parent_id"] != DBNull.Value)
                         row.Add("parent", dr["parent_id"]);
+                    //if (dr["RoleAdd"] != DBNull.Value)
+                    //    row.Add("add", "(#chk_add_" + dr["menu_id"] + ").prop('checked','true')");
+                    if (dr["RoleAdd"].ToString() != "0")
+                        myhtml = string.Format(myhtml, "checked");
+                    else
+                    {
+                        myhtml = string.Format(myhtml, "");
+                    }
+                    if (dr["RoleEdit"].ToString() != "0")
+                        myhtml = string.Format(myhtml, "checked");
+                    else
+                    {
+                        myhtml = string.Format(myhtml, "");
+                    }
+                    if (dr["RoleDelete"].ToString() != "0")
+                        myhtml = string.Format(myhtml, "checked");
+                    else
+                    {
+                        myhtml = string.Format(myhtml, "");
+                    }
+                    //myhtml.Replace("{0}", "checked");
                     if (dr["checked"] != DBNull.Value)
                         row.Add("checked", dr["checked"]);
+                    row.Add("text", myhtml);
+
                     List<Dictionary<string, object>> list2 = Getdata(DT, Convert.ToInt32(dr["menu_id"]));
                     row.Add("children", list2);
                     tableRows.Add(row);
@@ -651,12 +683,14 @@ namespace LaylaERP.Controllers
             DataRow[] rows = DT.Select("parent_id = " + ParentID.ToString(), "menu_code");
             foreach (DataRow dr in rows)
             {
+                string myhtml = "";
+                myhtml = "<div class=\"table-row\"><div>" + dr["menu_name"].ToString() + "</div><div>&nbsp;</div><div><input type=\"checkbox\" id=\"chk_add_" + dr["menu_id"] + "\" {0}></input> <label>Add</label></div><div><input type=\"checkbox\" id=\"chk_edit_" + dr["menu_id"] + "\" {0}></input> <label>View & Edit</label></div><div><input type=\"checkbox\" id =\"chk_del_" + dr["menu_id"] + "\" {0}></input> <label>Delete</label></div></div>";
+
                 row = new Dictionary<String, Object>();
                 row.Add("id", dr["menu_id"]);
-                row.Add("add", dr["add_"]);
-                row.Add("edit", dr["edit_"]);
-                row.Add("delete", dr["delete_"]);
-                row.Add("text", dr["menu_name"]);
+                row.Add("add", dr["RoleAdd"]);
+                row.Add("edit", dr["RoleEdit"]);
+                row.Add("delete", dr["RoleDelete"]);
                 if (dr["menu_url"].ToString().Trim() != "#")
                     row.Add("url", dr["menu_url"]);
                 row.Add("urlType", "none");
@@ -665,8 +699,27 @@ namespace LaylaERP.Controllers
                 row.Add("icon", dr["menu_icon"]);
                 if (dr["parent_id"] != DBNull.Value)
                     row.Add("parent", dr["parent_id"]);
+                if (dr["RoleAdd"].ToString() != "0")
+                    myhtml = string.Format(myhtml, "checked");
+                else
+                {
+                    myhtml = string.Format(myhtml, "");
+                }
+                if (dr["RoleEdit"].ToString() != "0")
+                    myhtml = string.Format(myhtml, "checked");
+                else
+                {
+                    myhtml = string.Format(myhtml, "");
+                }
+                if (dr["RoleDelete"].ToString() != "0")
+                    myhtml = string.Format(myhtml, "checked");
+                else
+                {
+                    myhtml = string.Format(myhtml, "");
+                }
                 if (dr["checked"] != DBNull.Value)
                     row.Add("checked", dr["checked"]);
+                 row.Add("text", myhtml);
                 List<Dictionary<string, object>> list2 = Getdata(DT, Convert.ToInt32(dr["menu_id"]));
                 row.Add("children", list2);
                 list.Add(row);

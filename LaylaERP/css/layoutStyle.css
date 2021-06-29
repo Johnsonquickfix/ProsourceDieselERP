@@ -1137,3 +1137,108 @@ width:100%; position:relative; padding:10px 0px 10px 20px;}
 .treeview .group .item:hover {
     background: transparent;
 }
+/****29_6*/
+body .tree-title {
+width:100%; margin:0px; padding:0px;}
+body .tree-node {
+height:auto;}
+    body .tree-node > span {
+    margin:0px;}
+        body .tree-node > span input {
+        margin:0px;}
+.tree-icon.tree-folder, .tree-icon.tree-file {
+    display: none;
+}
+body .tree-indent, body .tree-hit {
+display:none;}
+body .tree-node-hover {
+    background: transparent;
+    color: #4f4f4f;
+}
+body .tree-node-selected {
+background:transparent;color:#4f4f4f;}
+.table-row label {
+    position: relative;
+    margin: 0px;
+}
+body .easyui-tree {
+    border: 1px solid #ccd0d4;
+}
+body .easyui-tree li {
+    padding: 5px 0px;
+}
+body .easyui-tree > li {
+    background: #f1f1f1;
+    border-top: 1px solid #ccd0d4;
+    font-size: 14px;
+    padding: 10px;
+    /*    padding: 0px 10px 0px 20px;*/
+    font-weight: 600;
+    position: relative;
+}
+    body .easyui-tree > li:nth-child(2n) {
+        background-color: #fff;
+    }
+    body .easyui-tree > li li {
+    padding-left:20px;}
+    body .easyui-tree > li > .tree-node {
+        padding-left: 20px;
+    }
+        body .easyui-tree > li > .tree-node .table-row div:first-child {
+         /*padding-right:20px;*/
+
+        }
+        body .easyui-tree > li > .tree-node > .tree-checkbox {
+        /*margin-left:-20px;*/ 
+
+        }
+            /*
+.table-row [type="checkbox"] {
+   
+}
+
+    .table-row [type="checkbox"] + label:before {
+        content: "";
+        position: absolute;
+        left: 0px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 18px;
+        height: 18px;
+        border: 1px solid #7e8993;
+        border-radius: 2px;
+        transition: .5s all;
+    }
+
+    .form-check label:after, .check-table [type="checkbox"] + label:after {
+        content: "";
+        opacity: 0;
+        left: 2.5px;
+        top: 50%;
+        margin-top: -4.5px;
+        width: 12px;
+        height: 6px;
+        border-width: 0px 0px 2px 2px;
+        border-color: #fff;
+        border-style: solid;
+        position: absolute;
+        transition: .5s all;
+        transform: rotate( 310deg );
+    }
+
+.check-table th [type="checkbox"] + label:before {
+    border-color: #fff;
+}
+
+.check-table th [type="checkbox"]:checked + label:before {
+    border-color: #fff !important;
+}
+
+.form-check [type="checkbox"]:checked + label:before, .check-table [type="checkbox"]:checked + label:before {
+    background: #3c8dbc !important;
+    border-color: #3c8dbc !important;
+}
+
+.form-check [type="checkbox"]:checked + label:after, .check-table [type="checkbox"]:checked + label:after {
+    opacity: 1;
+}*/

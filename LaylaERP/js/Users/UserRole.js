@@ -223,3 +223,17 @@ function fillCheckMenu() {
     });
 }
 
+function CheckNone() {
+    var isChecked = $('#CheckNone').prop("checked");
+    var nodes = $('#CheckNone').tree('getChecked');
+    var id = '';
+    for (var i = 0; i < nodes.length; i++) {
+        if (id != '') id += ',';
+        id += nodes[i].id;
+    }
+    //ChangePermission(id);
+    console.log(id);
+    console.log(isChecked);
+    
+}
+

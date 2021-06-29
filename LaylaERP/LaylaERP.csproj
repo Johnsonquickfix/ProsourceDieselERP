@@ -517,9 +517,31 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Images\accordion_arrows.png" />
+    <Content Include="Images\blank.gif" />
+    <Content Include="Images\calendar_arrows.png" />
+    <Content Include="Images\combo_arrow.png" />
+    <Content Include="Images\datagrid_icons.png" />
+    <Content Include="Images\datebox_arrow.png" />
     <Content Include="Images\layla1-logo.png" />
     <Content Include="Images\layla32.png" />
+    <Content Include="Images\layout_arrows.png" />
+    <Content Include="Images\linkbutton_bg.png" />
+    <Content Include="Images\loading.gif" />
+    <Content Include="Images\menu_arrows.png" />
+    <Content Include="Images\messager_icons.png" />
+    <Content Include="Images\pagination_icons.png" />
+    <Content Include="Images\panel_tools.png" />
+    <Content Include="Images\passwordbox_close.png" />
+    <Content Include="Images\passwordbox_open.png" />
+    <Content Include="Images\searchbox_button.png" />
+    <Content Include="Images\slider_handle.png" />
+    <Content Include="Images\spinner_arrows.png" />
+    <Content Include="Images\tabs_icons.png" />
+    <Content Include="Images\tagbox_icons.png" />
+    <Content Include="Images\tree_icons.png" />
     <Content Include="Images\userprofile2.png" />
+    <Content Include="Images\validatebox_warning.png" />
     <Content Include="js\app.js" />
     <Content Include="js\common.js" />
     <Content Include="js\Customer\Customer.js" />
@@ -650,6 +672,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\passwordStrengthMeter.js" />
+    <Content Include="Views\Users\AssignRole.cshtml" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -677,7 +700,6 @@
     <Content Include="Views\Reports\Index.cshtml" />
     <Content Include="Views\Setting\ActivityLog.cshtml" />
     <Content Include="Views\Setting\Setting.cshtml" />
-    <Content Include="Views\Users\AssignRole.cshtml" />
     <Content Include="Views\Customer\NewUser.cshtml" />
     <Content Include="Views\Shared\_ExportLayout.cshtml" />
     <Content Include="Views\Shared\_UserLayout.cshtml" />

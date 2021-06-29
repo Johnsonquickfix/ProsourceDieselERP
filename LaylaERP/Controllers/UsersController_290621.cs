@@ -624,10 +624,7 @@ namespace LaylaERP.Controllers
                 {
                     row = new Dictionary<String, Object>();
                     row.Add("id", dr["menu_id"]);
-                    row.Add("add", dr["add_"]);
-                    row.Add("edit", dr["edit_"]);
-                    row.Add("delete", dr["delete_"]);
-                    row.Add("text", "<div class=\"table-row\"><div>"+ dr["menu_name"].ToString() + "</div><div>&nbsp;</div><div><input type=\"checkbox\" id=\"CheckNone\" onClick=\"CheckNone(); \" name =\"CheckNone\"></input> <label>None</label></div><div><input type=\"checkbox\" id=\"CheckAdd\" onClick=\"CheckAdd(); \" name =\"CheckAdd\"></input> <label>Add</label></div><div><input type=\"checkbox\" id=\"CheckViewEdit\" onClick=\"CheckViewEdit(); \" name =\"CheckViewEdit\"></input> <label>View & Edit</label></div><div><input type=\"checkbox\" id=\"CheckAdmin\" onClick=\"CheckAdmin(); \" name =\"CheckAdmin\"></input> <label>Admin</label></div></div>");
+                    row.Add("text", "<div class=\"table-row\"><div>"+ dr["menu_name"].ToString() + "</div><div>&nbsp;</div><div><input type=\"checkbox\" name =\"checkAll\" id="+ dr["menu_id"] + "></input><label>Add</label></div><div><input type=\"checkbox\" name =\"checkAll\" id=" + dr["menu_id"] + "></input><label>Add</label></div><div><input type=\"checkbox\" name =\"checkAll\" id=" + dr["menu_id"] + "></input><label>View & Edit</label></div><div><input type=\"checkbox\" name =\"checkAll\" id=" + dr["menu_id"] + "></input><label>Admin</label></div></div>");
                     if (dr["menu_url"].ToString().Trim() != "#")
                         row.Add("url", dr["menu_url"]);                    
                     row.Add("level", dr["level"]);                  
@@ -653,9 +650,6 @@ namespace LaylaERP.Controllers
             {
                 row = new Dictionary<String, Object>();
                 row.Add("id", dr["menu_id"]);
-                row.Add("add", dr["add_"]);
-                row.Add("edit", dr["edit_"]);
-                row.Add("delete", dr["delete_"]);
                 row.Add("text", dr["menu_name"]);
                 if (dr["menu_url"].ToString().Trim() != "#")
                     row.Add("url", dr["menu_url"]);

@@ -657,7 +657,6 @@
     <Content Include="Scripts\DataTables\responsive.semanticui.js" />
     <Content Include="Scripts\DataTables\responsive.semanticui.min.js" />
     <Content Include="Scripts\DataTables\vfs_fonts.js" />
-    <Content Include="Scripts\hummingbird-treeview.js" />
     <Content Include="Scripts\intlTelInput.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />

@@ -634,7 +634,9 @@ namespace LaylaERP.Controllers
 
                     row = new Dictionary<String, Object>();
                     row.Add("id", dr["menu_id"]);
-                    row.Add("text", "<div class=\"table-row\"><div>"+ dr["menu_name"].ToString() + "</div><div>&nbsp;</div><div><input type=\"checkbox\" name =\"checkAll\" id="+ dr["menu_id"] + "></input><label>Add</label></div><div><input type=\"checkbox\" name =\"checkAll\" id=" + dr["menu_id"] + "></input><label>Add</label></div><div><input type=\"checkbox\" name =\"checkAll\" id=" + dr["menu_id"] + "></input><label>View & Edit</label></div><div><input type=\"checkbox\" name =\"checkAll\" id=" + dr["menu_id"] + "></input><label>Admin</label></div></div>");
+                    row.Add("add", dr["RoleAdd"]);
+                    row.Add("edit", dr["RoleEdit"]);
+                    row.Add("delete", dr["RoleDelete"]);
                     if (dr["menu_url"].ToString().Trim() != "#")
                         row.Add("url", dr["menu_url"]);                    
                     row.Add("level", dr["level"]);                  
@@ -686,7 +688,9 @@ namespace LaylaERP.Controllers
 
                 row = new Dictionary<String, Object>();
                 row.Add("id", dr["menu_id"]);
-                row.Add("text", dr["menu_name"]);
+                row.Add("add", dr["RoleAdd"]);
+                row.Add("edit", dr["RoleEdit"]);
+                row.Add("delete", dr["RoleDelete"]);
                 if (dr["menu_url"].ToString().Trim() != "#")
                     row.Add("url", dr["menu_url"]);
                 row.Add("urlType", "none");

@@ -64,16 +64,41 @@ function Singlecheck() {
 
 //Give Permission
 $('#btnApprove').click(function () {
-    var id = "";
-    $('.treeview input:checkbox[class=item]:checked').each(function () {
-        id += $(this).val() + ",";
-    });
-    //$("input:checkbox[name=CheckSingle]:checked").each(function () {
-    //    id += $(this).val() + ",";
-    //});
-    id = id.replace(/,(?=\s*$)/, '');
-    //ChangePermission(id);
-    console.log(id);
+    var nodes = $('#tt').tree('getChecked');
+    var addnodes = '';
+    
+    var id = '';
+    var addid = '';
+    var editid = '';
+    var deleteid = '';
+
+    for (var i = 0; i < nodes.length; i++) {
+        addnodes = $('#chk_add_' + nodes[i].id).prop('checked');
+        editnodes = $('#chk_edit_' + nodes[i].id).prop('checked');
+        deletenodes = $('#chk_del_' + nodes[i].id).prop('checked');
+
+        if (id != '') id += ',';
+        id += nodes[i].id;
+
+        if (addnodes == true) {
+            if (addid != '') addid += ',';
+            addid += nodes[i].id;
+        }
+        if (editnodes == true) {
+            if (editid != '') editid += ',';
+            editid += nodes[i].id;
+        }
+        if (deletenodes == true) {
+            if (deleteid != '') deleteid += ',';
+            deleteid += nodes[i].id;
+        }
+        //console.log($('#chk_add_' + nodes[i].id), $('#chk_edit_' + nodes[i].id), $('#chk_del_' + nodes[i].id));
+    }
+    //console.log(addid);
+    //console.log(editid);
+    //console.log(deleteid);
+    ChangePermission(id, addid, editid, deleteid);
+   
 
 })
 
@@ -171,7 +196,25 @@ function fillCheckMenu() {
         data: JSON.stringify(obj),
         success: function (data) {
             console.log(data);
-            $('.treeview').empty();
+           /* $('.treeview').empty();*/
+            $('#tt').tree({
+                data: data,
+                idField: 'id',
+                treeField: 'text',
+                height: '100%',
+                //columns: [[
+                //    { title: 'text', field: 'text', width: 240 },
+                //    {
+                //        title: 'id', field: 'id', width: 50, editor: {
+                //            type: 'checkbox',
+                //            options: {
+                //                on: true,
+                //                off: false
+                //            }
+                //        }
+                //    }
+                //]],
+            });
 
             //var tw = new TreeView(data, { showAlwaysCheckBox: true, fold: false });
             //$('#chktree').append(tw.root);

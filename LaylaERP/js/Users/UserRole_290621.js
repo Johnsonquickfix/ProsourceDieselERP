@@ -64,15 +64,16 @@ function Singlecheck() {
 
 //Give Permission
 $('#btnApprove').click(function () {
-    CheckNone();
-        var nodes = $('#tt').tree('getChecked');
-        var id = '';
-        for (var i = 0; i < nodes.length; i++) {
-            if (id != '') id += ',';
-            id += nodes[i].id;
-        }
+    var id = "";
+    $('.treeview input:checkbox[class=item]:checked').each(function () {
+        id += $(this).val() + ",";
+    });
+    //$("input:checkbox[name=CheckSingle]:checked").each(function () {
+    //    id += $(this).val() + ",";
+    //});
+    id = id.replace(/,(?=\s*$)/, '');
     //ChangePermission(id);
-   
+    console.log(id);
 
 })
 
@@ -171,43 +172,11 @@ function fillCheckMenu() {
         success: function (data) {
             console.log(data);
             $('.treeview').empty();
-            $('#tt').tree({
-                data: data,
-                idField: 'id',
-                treeField: 'text',
-                height: '100%',
-                //columns: [[
-                //    { title: 'text', field: 'text', width: 240 },
-                //    {
-                //        title: 'id', field: 'id', width: 50, editor: {
-                //            type: 'checkbox',
-                //            options: {
-                //                on: true,
-                //                off: false
-                //            }
-                //        }
-                //    }
-                //]],
-            });
 
-            //var tw = new TreeView(data, { showAlwaysCheckBox: true, fold: false });
-            //$('#chktree').append(tw.root);
+            var tw = new TreeView(data, { showAlwaysCheckBox: true, fold: false });
+            $('#chktree').append(tw.root);
         },
         error: function (jqXHR, textStatus, errorThrown) { swal('Error!', errorThrown, "error"); }
     });
-}
-
-function CheckNone() {
-    var isChecked = $('#CheckNone').prop("checked");
-    var nodes = $('#CheckNone').tree('getChecked');
-    var id = '';
-    for (var i = 0; i < nodes.length; i++) {
-        if (id != '') id += ',';
-        id += nodes[i].id;
-    }
-    //ChangePermission(id);
-    console.log(id);
-    console.log(isChecked);
-    
 }
 

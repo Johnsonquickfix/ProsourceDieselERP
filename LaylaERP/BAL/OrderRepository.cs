@@ -17,14 +17,7 @@
             DataTable DT = new DataTable();
             try
             {
-                string strWhr = "select id,CONCAT(User_Login, ' [ ', user_email, ']') as displayname,replace(replace(replace(replace(ump.meta_value, '-', ''), ' ', ''), '(', ''), ')', '')  billing_phone"
-                                + " from wp_users as ur"
-                                + " inner join wp_usermeta um on ur.id = um.user_id and um.meta_key = 'wp_capabilities' and meta_value like '%customer%'"
-                                + " left outer join wp_usermeta ump on ur.id = ump.user_id and ump.meta_key = 'billing_phone'";
-                strWhr += " where (User_Login  like '%" + strSearch + "%' or user_email like '%" + strSearch + "%' ";
-                strWhr += " OR replace(replace(replace(replace(ump.meta_value, '-', ''), ' ', ''), '(', ''), ')', '') like '%" + strSearch + "%' ) limit 50;";
-
-                DT = SQLHelper.ExecuteDataTable(strWhr);
+                DT = SQLHelper.ExecuteDataTable("select id,CONCAT(User_Login, ' [ ', user_email, ']') as displayname from wp_users as ur inner join wp_usermeta um on ur.id = um.user_id and um.meta_key='wp_capabilities' and meta_value like '%customer%' where CONCAT(User_Login, ' [ ', user_email, ']') like '%" + strSearch + "%' limit 50;");
             }
             catch (Exception ex)
             { throw ex; }
@@ -187,14 +180,6 @@
             List<OrderProductsModel> _list = new List<OrderProductsModel>();
             try
             {
-                string free_products = string.Empty;
-                if (product_id == 118)
-                    free_products = "632713";
-                else if (product_id == 611172)
-                    free_products = "78676";
-                else
-                    free_products = "";
-
                 OrderProductsModel productsModel = new OrderProductsModel();
                 MySqlParameter[] parameters =
                 {
@@ -208,10 +193,10 @@
                             + " left outer join wp_postmeta pr on pr.post_id = ps.id and pr.meta_key = '_regular_price'"
                             + " left outer join wp_postmeta psr on psr.post_id = COALESCE(ps.id, post.id) and psr.meta_key = '_price'"
                             + " WHERE post.post_type = 'product' and post.id = @product_id and ps.id = @variation_id ";
-                if (product_id == 611172 && !string.IsNullOrEmpty(free_products))
-                    strSQl += " OR (post.id in ("+ free_products + ") and COALESCE(ps.id,0) = 0);";
-                else if (product_id == 118 && !string.IsNullOrEmpty(free_products))
-                    strSQl += " OR (post.id in (" + free_products + ") and COALESCE(ps.id,0) = 0);";
+                if (product_id == 611172)
+                    strSQl += " OR (post.id = 78676 and COALESCE(ps.id,0) = 0);";
+                else if (product_id == 118)
+                    strSQl += " OR (post.id = 632713 and COALESCE(ps.id,0) = 0);";
                 else
                     strSQl += ";";
                 MySqlDataReader sdr = SQLHelper.ExecuteReader(strSQl, parameters);
@@ -257,50 +242,41 @@
             { throw ex; }
             return _list;
         }
-        public static List<OrderShippingModel> GetProductShippingCharge(string variation_ids, string shipping_state)
+        public static OrderShippingModel GetProductShippingCharge(long product_id)
         {
-            List<OrderShippingModel> _list = new List<OrderShippingModel>();
+            OrderShippingModel productsModel = new OrderShippingModel();
             try
             {
                 DataTable DT = new DataTable();
                 MySqlParameter[] parameters =
                 {
-                    new MySqlParameter("@product_id", variation_ids)
+                    new MySqlParameter("@product_id", product_id)
                 };
-                string strSQl = "select * from wp_ship_value where productid in (@product_id) ";
+                string strSQl = "select * from wp_ship_value where productid=@product_id";
                 MySqlDataReader sdr = SQLHelper.ExecuteReader(strSQl, parameters);
                 while (sdr.Read())
                 {
-                    OrderShippingModel productsModel = new OrderShippingModel();
                     if (sdr["productid"] != DBNull.Value)
                         productsModel.product_id = Convert.ToInt64(sdr["productid"]);
                     else
                         productsModel.product_id = 0;
-
-                    if (sdr[shipping_state] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr[shipping_state].ToString().Trim()))
-                        productsModel.AK = decimal.Parse(sdr[shipping_state].ToString());
+                    if (sdr["AK"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["AK"].ToString().Trim()))
+                        productsModel.AK = decimal.Parse(sdr["AK"].ToString());
                     else
                         productsModel.AK = 0;
-
-                    //if (sdr["AK"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["AK"].ToString().Trim()))
-                    //    productsModel.AK = decimal.Parse(sdr["AK"].ToString());
-                    //else
-                    //    productsModel.AK = 0;
-                    //if (sdr["HI"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["HI"].ToString().Trim()))
-                    //    productsModel.HI = decimal.Parse(sdr["HI"].ToString().Trim());
-                    //else
-                    //    productsModel.HI = 0;
-                    //if (sdr["CA"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["CA"].ToString().Trim()))
-                    //    productsModel.CA = decimal.Parse(sdr["CA"].ToString().Trim());
-                    //else
-                    //    productsModel.CA = 0;
-
-                    _list.Add(productsModel);
+                    if (sdr["HI"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["HI"].ToString().Trim()))
+                        productsModel.HI = decimal.Parse(sdr["HI"].ToString().Trim());
+                    else
+                        productsModel.HI = 0;
+                    if (sdr["CA"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["CA"].ToString().Trim()))
+                        productsModel.CA = decimal.Parse(sdr["CA"].ToString().Trim());
+                    else
+                        productsModel.CA = 0;
                 }
             }
             catch (Exception ex)
             { throw ex; }
-            return _list;
+            return productsModel;
         }
         public static DataTable GetCouponDiscount(string strCoupon)
         {
@@ -670,39 +646,6 @@
             }
             return dt;
         }
-        public static DataTable SearchCustomersOrders(string CustomerID)
-        {
-            DataTable dt = new DataTable();
-            try
-            {
-                string strWhr = string.Empty;                
-                if (!string.IsNullOrEmpty(CustomerID))
-                {
-                    strWhr += " and os.customer_id= '" + CustomerID + "' ";
-                }
 
-                string strSql = "SELECT po.ID, DATE_FORMAT(po.post_date, '%M %d %Y') post_date,po.post_status ,os.customer_id,Cast(os.total_sales As DECIMAL(10, 2)) as total_sales,"
-                            + " max(case when pm.meta_key = '_billing_first_name' then pm.meta_value else '' end) billing_first_name,max(case when pm.meta_key = '_billing_last_name' then pm.meta_value else '' end) billing_last_name,"
-                            + " max(case when pm.meta_key = '_billing_address_1' then pm.meta_value else '' end) billing_address_1,max(case when pm.meta_key = '_billing_address_2' then pm.meta_value else '' end) billing_address_2,"
-                            + " max(case when pm.meta_key = '_billing_city' then pm.meta_value else '' end) billing_city,max(case when pm.meta_key = '_billing_state' then pm.meta_value else '' end) billing_state,"
-                            + " max(case when pm.meta_key = '_billing_postcode' then pm.meta_value else '' end) billing_postcode,max(case when pm.meta_key = '_billing_country' then pm.meta_value else '' end) billing_country,"
-                            + " max(case when pm.meta_key = '_billing_email' then pm.meta_value else '' end) billing_email,max(case when pm.meta_key = '_billing_phone' then replace(replace(replace(replace(pm.meta_value, '-', ''), ' ', ''), '(', ''), ')', '') else '' end) billing_phone,"
-                            + " max(case when pm.meta_key = '_shipping_first_name' then pm.meta_value else '' end) shipping_first_name,max(case when pm.meta_key = '_shipping_last_name' then pm.meta_value else '' end) shipping_last_name,"
-                            + " max(case when pm.meta_key = '_shipping_address_1' then pm.meta_value else '' end) shipping_address_1,max(case when pm.meta_key = 'shipping_address_2' then pm.meta_value else '' end) shipping_address_2,"
-                            + " max(case when pm.meta_key = '_shipping_city' then pm.meta_value else '' end) shipping_city,max(case when pm.meta_key = '_shipping_state' then pm.meta_value else '' end) shipping_state,"
-                            + " max(case when pm.meta_key = '_shipping_postcode' then pm.meta_value else '' end) shipping_postcode,max(case when pm.meta_key = '_shipping_country' then pm.meta_value else '' end) shipping_country"
-                            + "   FROM wp_posts po inner join wp_wc_order_stats os on po.id = os.order_id"
-                            + " LEFT OUTER JOIN wp_postmeta pm on pm.post_id = po.ID "
-                            + " WHERE po.post_type = 'shop_order' " + strWhr
-                            + " group by po.ID,po.post_date,po.post_status ,os.customer_id,os.total_sales order by ID desc limit 0, 1000";
-
-                dt = SQLHelper.ExecuteDataTable(strSql);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            return dt;
-        }
     }
 }

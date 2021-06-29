@@ -186,7 +186,7 @@ function dataGridLoad() {
         destroy: true, bProcessing: true, bServerSide: true,
         sPaginationType: "full_numbers", searching: true, ordering: true, lengthChange: true,
         bAutoWidth: false, scrollX: false, scrollY: ($(window).height() - 215),
-        lengthMenu: [[10, 20, 50, 100], [10, 20, 50, 100]],
+        lengthMenu: [[10, 20, 50], [10, 20, 50]],
         sAjaxSource: "/Customer/GetCustomerList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
             obj.Search = aoData[45].value;

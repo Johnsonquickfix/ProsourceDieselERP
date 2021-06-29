@@ -128,6 +128,9 @@ namespace LaylaERP.Models
             set { _Payments = value; }
         }
         public string strVal { get; set; }
+        public string strAdd { get; set; }
+        public string strEdit { get; set; }
+        public string strDel { get; set; }
         public int role_id { get; set; }
     }
 }

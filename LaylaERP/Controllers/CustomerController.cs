@@ -34,7 +34,7 @@ namespace LaylaERP.Controllers
                 if (model.user_status != "")
                     urid = model.user_status;
                 string searchid = model.Search;
-                DataTable dt = CustomerRepository.CustomerList(urid, searchid, model.PageNo, model.PageSize, out TotalRecord, model.SortCol,model.SortDir);
+                DataTable dt = CustomerRepository.CustomerList(urid, searchid, model.PageNo, model.PageSize, out TotalRecord, model.SortCol, model.SortDir);
                 result = JsonConvert.SerializeObject(dt);
             }
             catch { }
@@ -47,7 +47,7 @@ namespace LaylaERP.Controllers
             string JSONresult = string.Empty;
             try
             {
-               
+
                 DataTable dt = CustomerRepository.CustomerByID(model);
                 JSONresult = JsonConvert.SerializeObject(dt);
             }
@@ -71,7 +71,7 @@ namespace LaylaERP.Controllers
                     Updateuser_MetaData(model, model.ID);
                     Updateuser_MetaData_BillingAddress(model, model.ID);
                     Updateuser_MetaData_ShippingAddress(model, model.ID);
-                    return Json(new { status = true, message = "Customer Record has been updated successfully!!", url = "" }, 0);
+                    return Json(new { status = true, message = "Customer Record has been updated successfully!!", url = "", id = model.ID }, 0);
                 }
                 else
                 {
@@ -82,15 +82,15 @@ namespace LaylaERP.Controllers
                         Adduser_MetaData_BillingAddress(model, ID);
                         Adduser_MetaData_ShippingAddress(model, ID);
                         ModelState.Clear();
-                        return Json(new { status = true, message = "Customer Record has been saved successfully!!", url = "" }, 0);
+                        return Json(new { status = true, message = "Customer Record has been saved successfully!!", url = "", id = ID }, 0);
                     }
                     else
                     {
-                        return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                        return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
                     }
                 }
             }
-            return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
         }
         [HttpPost]
         public JsonResult UpdateCustomer(CustomerModel model)
@@ -113,23 +113,23 @@ namespace LaylaERP.Controllers
         public JsonResult DeleteCustomer(CustomerModel model)
         {
             string strID = model.strVal;
-                if (strID != "")
-                {
-                    Repo.DeleteCustomer(strID);
-                    return Json(new { status = true, message = "Customer Status has been Deleted successfully!!", url = "" }, 0);
-                }
-                else
-                {
-                    return Json(new { status = false, message = "Something went wrong", url = "" }, 0);
-                }
-            
+            if (strID != "")
+            {
+                Repo.DeleteCustomer(strID);
+                return Json(new { status = true, message = "Customer Status has been Deleted successfully!!", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Something went wrong", url = "" }, 0);
+            }
+
         }
         public JsonResult ChangeCustomerStatus(CustomerModel model)
         {
             string strID = model.strVal;
             if (strID != "")
             {
-                Repo.ChangeCustomerStatus(model,strID);
+                Repo.ChangeCustomerStatus(model, strID);
                 return Json(new { status = true, message = "Customer Status has been Changed successfully!!", url = "" }, 0);
             }
             else

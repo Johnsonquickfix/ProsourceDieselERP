@@ -20,6 +20,7 @@ var coupon_title = {
 };
 
 $(document).ready(function () {
+    $("#loader").hide();
     setTimeout(function () { getOrderInfo(); }, 50);
     $('.billinfo').prop("disabled", true);
     $('#txtLogDate').daterangepicker({ singleDatePicker: true, autoUpdateInput: true, locale: { format: 'DD/MM/YYYY', cancelLabel: 'Clear' } });
@@ -74,7 +75,7 @@ $(document).ready(function () {
         $('#ddlCustomerSearch').select2({
             dropdownParent: $("#billModal"), allowClear: true, minimumInputLength: 3, placeholder: "Search Customer",
             language: {
-                noResults: function (data) { return $("<a id='btnaddcustomer' href='javascript:;'>Add Customer</a>"); }
+                noResults: function () { return $("<a id='btnaddcustomer' href='javascript:;'>Add Customer</a>"); }
             },
             ajax: {
                 url: '/Orders/GetCustomerList', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
@@ -109,10 +110,10 @@ $(document).ready(function () {
     });
     $("#billModal").on("click", "#btnaddcustomer", function (t) {
         t.preventDefault();
-        let cus_text = $("#ddlCustomerSearch option:selected").text();
+        let cus_text = $("#ddlCustomerSearch").data("select2").dropdown.$search.val();
         $("#billModal").modal('hide'); addCustomerModal(cus_text);
     });
-    $("#billModal").on("click", "#btnBackSerchCusrtomer", function (t) {
+    $("#billModal").on("click", "#btnBackSearchCusrtomer", function (t) {
         t.preventDefault(); $("#billModal").modal('hide'); searchOrderModal();
     });
     $("#billModal").on("blur", "#txtBillingPostCode", function (t) {
@@ -133,6 +134,9 @@ $(document).ready(function () {
             $("#txtBillingCity,#txtBillingCountry,#txtBillingState").val('');
         }
     });
+    $("#billModal").on("click", "#btnSaveCustomer", function (t) {
+        t.preventDefault(); saveCustomer();
+    });
     /*end New order Popup function*/
 });
 ///Bind States of Country
@@ -149,10 +153,12 @@ function NewOrderNo() {
     var opt = { strValue1: '' };
     $.ajax({
         type: "POST", url: '/Orders/GetNewOrderNo', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
+        beforeSend: function () { $("#loader").show(); },
         success: function (result) {
             $('#hfOrderNo').val(result.message); $('#lblOrderNo').text('Order #' + result.message + ' detail ');
         },
-        error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
+        complete: function () { $("#loader").hide(); },
+        error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); },
         async: false
     });
 }
@@ -262,7 +268,7 @@ function searchOrderModal() {
     myHtml += '</div>';
     myHtml += '</div>';
     myHtml += '<div class="col-md-4">';
-    myHtml += '<button type="button" id="btnSelectDefaltAddress" class="btn btn-danger billinfo">Select Defalt Address</button>';
+    myHtml += '<button type="button" id="btnSelectDefaltAddress" class="btn btn-danger billinfo">Select Default Address</button>';
     myHtml += '</div>';
     myHtml += '</div>';
 
@@ -380,13 +386,13 @@ function addCustomerModal(cus_name) {
     modalHtml += '<div class="modal-dialog modal-lg">';
     modalHtml += '<div class="modal-content">';
     modalHtml += '<div class="modal-header">';
-    //modalHtml += '<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button>';
+    modalHtml += '<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button>';
     modalHtml += '<h4 class="modal-title" id="myModalLabel">Add Customer</h4>';
     modalHtml += '</div>';
     modalHtml += '<div class="modal-body" ></div>';
     modalHtml += '<div class="modal-footer">';
-    modalHtml += '<button type="button" class="btn btn-primary" id="btnBackSerchCusrtomer">Back Serch Cusrtomer</button>';
-    modalHtml += '<button type="button" class="btn btn-primary" id="btnSaveCustomer">Save Customer</button>';
+    modalHtml += '<button type="button" class="btn btn-primary" id="btnBackSearchCusrtomer"><i class="glyphicon glyphicon-arrow-left"></i> Back Search Customer</button>';
+    modalHtml += '<button type="button" class="btn btn-danger" id="btnSaveCustomer"><i class="glyphicon glyphicon-floppy-saved"></i> Save Customer</button>';
     modalHtml += '</div>';
     modalHtml += '</div>';
     modalHtml += '</div>';
@@ -396,29 +402,29 @@ function addCustomerModal(cus_name) {
     myHtml += '<div class="row">';
     myHtml += '<div class="col-md-4" >';
     myHtml += '<div class="form-group">';
-    myHtml += '<label class="control-label " for="Email">Email</label>';
-    myHtml += '<div class=""><input type="email" id="txtUserEmail" class="form-control" placeholder="Email" /></div>';
+    myHtml += '<label class="control-label " for="Email">Email<span class="text-red">*</span></label>';
+    myHtml += '<div class=""><input type="email" id="txtUserEmail" class="form-control" placeholder="Email"/></div>';
     myHtml += '</div>';
 
     myHtml += '<div class="form-group">';
-    myHtml += '<label class="control-label " for="User Name">User Name</label>';
-    myHtml += '<div class=""><input type="text" id="txtUserNickName" class="form-control" placeholder="User Name" /></div>';
+    myHtml += '<label class="control-label " for="User Name">User Name<span class="text-red">*</span></label>';
+    myHtml += '<div class=""><input type="text" id="txtUserNickName" class="form-control" placeholder="User Name" value="' + cus_name + '"/></div>';
     myHtml += '</div>';
 
     myHtml += '<div class="form-group">';
-    myHtml += '<label class="control-label " for="First Name">First Name</label>';
+    myHtml += '<label class="control-label " for="First Name">First Name<span class="text-red">*</span></label>';
     myHtml += '<div class=""><input type="text" id="txtFirstName" class="form-control" placeholder="First Name" /></div>';
     myHtml += '</div>';
 
     myHtml += '<div class="form-group">';
-    myHtml += '<label class="control-label " for="Last Name">Last Name</label>';
+    myHtml += '<label class="control-label " for="Last Name">Last Name<span class="text-red">*</span></label>';
     myHtml += '<div class=""><input type="text" id="txtLastName" class="form-control" placeholder="Last Name" /></div>';
     myHtml += '</div>';
     myHtml += '</div >';
 
     myHtml += '<div class="col-md-4">';
     myHtml += '<div class="form-group">';
-    myHtml += '<label class="control-label " for="Address 1">Address 1</label>';
+    myHtml += '<label class="control-label " for="Address 1">Address 1<span class="text-red">*</span></label>';
     myHtml += '<div class=""><input type="text" id="txtBillingAddress1" class="form-control" placeholder="Address 1" /></div>';
     myHtml += '</div>';
 
@@ -428,30 +434,30 @@ function addCustomerModal(cus_name) {
     myHtml += '</div>';
 
     myHtml += '<div class="form-group">';
-    myHtml += '<label class="control-label " for="Post/Zip Code">Post/Zip Code</label>';
+    myHtml += '<label class="control-label " for="Post/Zip Code">Post/Zip Code<span class="text-red">*</span></label>';
     myHtml += '<div class=""><input type="text" id="txtBillingPostCode" class="form-control" placeholder="Post/Zip Code" /></div>';
     myHtml += '</div>';
 
     myHtml += '<div class="form-group">';
-    myHtml += '<label class="control-label " for="Country/Region">Country/Region</label>';
+    myHtml += '<label class="control-label " for="Country/Region">Country/Region<span class="text-red">*</span></label>';
     myHtml += '<div class=""><input type="text" id="txtBillingCountry" class="form-control" placeholder="Country/Region" disabled /></div>';
     myHtml += '</div>';
     myHtml += '</div>';
 
     myHtml += '<div class="col-md-4">';
     myHtml += '<div class="form-group">';
-    myHtml += '<label class="control-label " for="State/Country">State/Country</label>';
+    myHtml += '<label class="control-label " for="State/Country">State/Country<span class="text-red">*</span></label>';
     myHtml += '<div class=""><input type="text" id="txtBillingState" class="form-control" placeholder="State/Country" disabled /></div>';
     myHtml += '</div>';
 
     myHtml += '<div class="form-group">';
-    myHtml += '<label class="control-label " for="City">City</label>';
+    myHtml += '<label class="control-label " for="City">City<span class="text-red">*</span></label>';
     myHtml += '<div class=""><input type="tel" id="txtBillingCity" class="form-control" placeholder="City" disabled /></div>';
     myHtml += '</div>';
 
     myHtml += '<div class="form-group">';
-    myHtml += '<label class="control-label " for="Contact No.">Contact No.</label>';
-    myHtml += '<div class=""><input type="tel" id="txtBillingPhone" class="form-control" placeholder="Contact No." /></div>';
+    myHtml += '<label class="control-label " for="Contact No.">Contact No.<span class="text-red">*</span></label>';
+    myHtml += '<div class=""><input type="tel" id="txtBillingMobile" class="form-control" placeholder="Contact No."  maxlength="11"/></div>';
     myHtml += '</div>';
 
     myHtml += '</div>';
@@ -459,7 +465,91 @@ function addCustomerModal(cus_name) {
 
     $('#billModal .modal-body').append(myHtml);
 
-    $("#billModal").modal({ backdrop: 'static', keyboard: false });
+    $("#billModal").modal({ backdrop: 'static', keyboard: false }); $("#txtUserEmail").focus();
+}
+function saveCustomer() {
+    var oid = parseInt($('#hfOrderNo').val()) || 0;
+    let Email = $("#txtUserEmail").val();
+    let NickName = $("#txtUserNickName").val();
+    let FirstName = $("#txtFirstName").val();
+    let LastName = $("#txtLastName").val();
+    let BillingAddress1 = $("#txtBillingAddress1").val();
+    let BillingAddress2 = $("#txtBillingAddress2").val();
+    let BillingPostcode = $("#txtBillingPostCode").val();
+    let BillingCountry = $("#txtBillingCountry").val();
+    let BillingState = $("#txtBillingState").val();
+    let BillingCity = $("#txtBillingCity").val();
+    let BillingPhone = $("#txtBillingMobile").val();
+
+    if (Email == "") {
+        swal('alert', 'Please Enter Email', 'error').then(function () { swal.close(); $('#txtUserEmail').focus(); })
+    }
+    else if (NickName == "") {
+        swal('alert', 'Please Enter User Name', 'error').then(function () { swal.close(); $('#txtUserNickName').focus(); })
+    }
+    else if (FirstName == "") {
+        swal('alert', 'Please Enter First Name', 'error').then(function () { swal.close(); $('#txtFirstName').focus(); })
+    }
+    else if (LastName == "") {
+        swal('alert', 'Please Enter Last Name', 'error').then(function () { swal.close(); $('#txtLastName').focus(); })
+    }
+    else if (BillingAddress1 == "") {
+        swal('alert', 'Please Enter Address 1', 'error').then(function () { swal.close(); $('#txtBillingAddress1').focus(); })
+    }
+    else if (BillingPostcode == "") {
+        swal('alert', 'Please Enter Post/Zip Code', 'error').then(function () { swal.close(); $('#txtBillingPostCode').focus(); })
+    }
+    else if (BillingCountry == "") {
+        swal('alert', 'Please Enter Country/Region', 'error').then(function () { swal.close(); $('#txtBillingCountry').focus(); })
+    }
+    else if (BillingState == "") {
+        swal('alert', 'Please Enter State/Country', 'error').then(function () { swal.close(); $('#txtBillingState').focus(); })
+    }
+    else if (BillingCity == "") {
+        swal('alert', 'Please Enter City', 'error').then(function () { swal.close(); $('#txtBillingCity').focus(); })
+    }
+    else if (BillingPhone == "") {
+        swal('alert', 'Please Enter Contact No.', 'error').then(function () { swal.close(); $('#txtBillingMobile').focus(); })
+    }
+    else {
+        var obj = {
+            ID: 0,
+            user_email: Email, user_nicename: NickName, first_name: FirstName, last_name: LastName, billing_address_1: BillingAddress1,
+            billing_address_2: BillingAddress2, billing_postcode: BillingPostcode, billing_country: BillingCountry,
+            billing_state: BillingState, billing_city: BillingCity, billing_phone: BillingPhone
+        }
+        console.log(obj);
+        $.ajax({
+            url: '/Customer/NewUser/', dataType: 'json', type: 'Post', contentType: "application/json; charset=utf-8", data: JSON.stringify(obj),
+            beforeSend: function () { $("#loader").show(); },
+            success: function (data) {
+                if (data.status == true) {
+                    swal('Alert!', data.message, 'success');
+                    $("#ddlUser").empty().append('<option value="' + data.id + '" selected>' + Email + '</option>');
+                    if (oid == 0) { setTimeout(function () { NewOrderNo(); }, 50); }
+                    $("#billModal").modal('hide'); $('.billinfo').prop("disabled", false);
+                    ///billing_Details
+                    $('#txtbillfirstname,#txtshipfirstname').val(FirstName);
+                    $('#txtbilllastname,#txtshiplastname').val(LastName);
+                    $('#txtbillcompany,#txtshipcompany').val('');
+                    $('#txtbilladdress1,#txtshipaddress1').val(BillingAddress1);
+                    $('#txtbilladdress2,#txtshipaddress2').val(BillingAddress2);
+                    $('#txtbillzipcode,#txtshipzipcode').val(BillingPostcode);
+                    $('#txtbillcity,#txtshipcity').val(BillingCity);
+                    $('#ddlbillcountry,#ddlshipcountry').val(BillingCountry).trigger('change');
+                    $('#ddlbillstate,#ddlshipstate').val(BillingState).trigger('change');
+                    $('#txtbillemail').val(Email);
+                    $('#txtbillphone').val(BillingPhone);
+                }
+                else {
+                    swal('Alert!', data.message, 'error')
+                }
+            },
+            complete: function () { $("#loader").hide(); },
+            error: function (error) { swal('Error!', 'something went wrong', 'error'); },
+        })
+    }
+
 }
 
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Edit Order ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -472,6 +562,7 @@ function getOrderInfo() {
         var opt = { strValue1: oid };
         $.ajax({
             type: "POST", url: '/Orders/GetOrderInfo', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
+            beforeSend: function () { $("#loader").show(); },
             success: function (result) {
                 var data = JSON.parse(result);
                 if (data.length > 0) {
@@ -494,7 +585,8 @@ function getOrderInfo() {
 
                 }
             },
-            error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
+            complete: function () { $("#loader").hide(); },
+            error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); },
             async: false
         });
     }
@@ -1222,7 +1314,7 @@ function saveCO() {
     $.ajax({
         type: "POST", contentType: "application/json; charset=utf-8",
         url: "/Orders/SaveCustomerOrder", // Controller/View
-        data: JSON.stringify(obj), dataType: "json", beforeSend: function (xhr) { },
+        data: JSON.stringify(obj), dataType: "json", beforeSend: function () { $("#loader").show(); },
         success: function (data) {
             if (data.status == true) {
                 //swal('Alert!', data.message, "success");
@@ -1230,8 +1322,8 @@ function saveCO() {
             }
             else { swal('Alert!', data.message, "error").then((result) => { return false; }); }
         },
-        error: function (xhr, status, err) { $('#btnCheckout').prop("disabled", false); $('.billinfo').prop("disabled", false); alert(err); },
-        complete: function () { $('#btnCheckout').prop("disabled", false); $('.billinfo').prop("disabled", false); $('#btnCheckout').text("Checkout"); },
+        error: function (xhr, status, err) { $("#loader").hide(); $('#btnCheckout').prop("disabled", false); $('.billinfo').prop("disabled", false); alert(err); },
+        complete: function () { $("#loader").hide(); $('#btnCheckout').prop("disabled", false); $('.billinfo').prop("disabled", false); $('#btnCheckout').text("Checkout"); },
     });
     $('#btnCheckout').text("Checkout");
     return false;

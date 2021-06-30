@@ -82,8 +82,8 @@
             var Year = $("#year").val();
             //var obj = { mydate: mydate };
             $('#dtdata').DataTable({
-                destroy: true,
-                searching: false,
+                destroy: true,                
+                searching: false,             
                 "ajax": {
                     "url": '/Reports/GetArizonaSalesOrder',
                     "type": 'POST',
@@ -95,37 +95,38 @@
                 "columns": [
 
 
-                    { 'data': 'provider' },
-                    { 'data': 'order_id' },
-                    { 'data': 'transaction_type' },
-                    { 'data': 'transaction_reference_id' },
+                    { 'data': 'provider', 'sWidth': "15%" },
+                    { 'data': 'order_id', 'sWidth': "15%" },
+                    { 'data': 'transaction_type', 'sWidth': "15%" },
+                    { 'data': 'transaction_reference_id', 'sWidth': "15%" },
                     {
-                        'data': 'order_created',
+                        'data': 'order_created', sWidth: "15%",
                         'render': function (jsonDate) {
                             var date = new Date(parseInt(jsonDate.substr(6)));
                             var month = ("0" + (date.getMonth() + 1)).slice(-2);
                             return ("0" + date.getDate()).slice(-2) + '-' + month + '-' + date.getFullYear() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds() + ' UTC';
                         }
                     },
-                    { 'data': 'first_name' },
+                    { 'data': 'first_name', 'sWidth': "15%" },
                     //{ 'data':'orderstatus' },
-                    { 'data': 'shipping_address_1' },
-                    { 'data': 'shipping_city' },
-                    { 'data': 'shipping_state' },
-                    { 'data': 'shipping_postcode' },
-                    { 'data': 'shipping_country' },
-                    { 'data': 'billing_address_1' },
-                    { 'data': 'billing_city' },                  
-                    { 'data': 'billing_state' },
-                    { 'data': 'billing_postcode' },
-                    { 'data': 'billing_country' },
-                    { 'data': 'shipping_amount' },
-                    { 'data': 'handling_amount' },
-                    { 'data': 'Discount' },
-                    { 'data': 'total' },
-                    { 'data': 'tax'}
+                    { 'data': 'shipping_address_1', 'sWidth': "15%" },
+                    { 'data': 'shipping_city', 'sWidth': "15%" },
+                    { 'data': 'shipping_state', 'sWidth': "15%" },
+                    { 'data': 'shipping_postcode', 'sWidth': "15%" },
+                    { 'data': 'shipping_country', 'sWidth': "15%" },
+                    { 'data': 'billing_address_1', 'sWidth': "15%" },
+                    { 'data': 'billing_city', 'sWidth': "15%" },
+                    { 'data': 'billing_state', 'sWidth': "15%" },
+                    { 'data': 'billing_postcode', 'sWidth': "15%" },
+                    { 'data': 'billing_country', 'sWidth': "15%" },
+                    { 'data': 'shipping_amount', 'sWidth': "15%" },
+                    { 'data': 'handling_amount', 'sWidth': "15%" },
+                    { 'data': 'Discount', 'sWidth': "15%" },
+                    { 'data': 'total', 'sWidth': "12%" },
+                    { 'data': 'tax', 'sWidth': "12%" }
                    
                 ],
+             
                 columnDefs: [{
                     orderable: false,
                     data: null,
@@ -149,6 +150,7 @@
                     },
 
                 ],
+               
 
             });
         }

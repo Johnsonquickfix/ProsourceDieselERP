@@ -13,10 +13,10 @@
     <h2>Zero Orders Report</h2>
 </div>
 
-    <section class="content content-section p-0">
-        <div class="row">
-            <div style="width: auto;float: left;margin-right: 10px;">
-
+<section class="content content-section p-0 reports-section">
+    <div class="user-top-section">
+        <div class="tablenav top">
+            <div class="alignleft actions bulkactions">
                 <select class="form-control" id="month">
                     <option value="">Month</option>
                     <option value="1">January</option>
@@ -32,120 +32,118 @@
                     <option value="11">November</option>
                     <option value="12">December</option>
                 </select>
-            </div>
-            <div style="width: auto;float: left;margin-right: 10px;">
-
                 <select class="form-control" id="year">
                     <option value="">Year</option>
                     <option value="2019">2019</option>
                     <option value="2020">2020</option>
                     <option value="2021">2021</option>
                 </select>
-            </div>
-            <div style="width: auto;float: left;margin-right: 10px;">
                 <input type="button" id="filtersrchexp" value="Search" class="button" />
                 @*<input type="submit" name="filtersrchexp" value="Export" class="button button-primary" />*@
             </div>
-            <div class="col-md-12">
-                <div class="box box-primary">
-                    <div class="box-header">
-                        <table id="dtdata" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
-                            <thead>
-                                <tr>
-                                    <th>Order ID</th>
-                                    <th>Order Date</th>
-                                    <th>Status</th>
-                                    <th>Order Item(s)</th>
-                                    <th>Order By</th>
-                                    <th>Order Total</th>
-                                </tr>
-                            </thead>
-                        </table>
-                    </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <table id="dtdata" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Order Date</th>
+                                <th>Status</th>
+                                <th>Order Item(s)</th>
+                                <th>Order By</th>
+                                <th>Order Total</th>
+                            </tr>
+                        </thead>
+                    </table>
                 </div>
             </div>
         </div>
+    </div>
 
-        <script>
-            $(document).ready(function () {
-                //setTimeout(function () { DatagridOrder(); }, 50);
-                $("#filtersrchexp").click(function () {
-                    if ($("#month").val() == "") {
-                        swal('Alert', 'Please Select Month', 'error').then(function () { swal.close(); $('#month').focus(); });
-                    }
-                    else if ($("#year").val() == "") {
-                        swal('Alert', 'Please Select Year', 'error').then(function () { swal.close(); $('#year').focus(); });
-                    }
-                    else {
+    <script>
+        $(document).ready(function () {
+            //setTimeout(function () { DatagridOrder(); }, 50);
+            $("#filtersrchexp").click(function () {
+                if ($("#month").val() == "") {
+                    swal('Alert', 'Please Select Month', 'error').then(function () { swal.close(); $('#month').focus(); });
+                }
+                else if ($("#year").val() == "") {
+                    swal('Alert', 'Please Select Year', 'error').then(function () { swal.close(); $('#year').focus(); });
+                }
+                else {
 
-                        DatagridOrder();
-                        //$("#month").val("");
-                       // $("#year").val("");
-                        return false;
+                    DatagridOrder();
+                    //$("#month").val("");
+                    // $("#year").val("");
+                    return false;
 
-                    }
-                });
+                }
             });
+        });
 
-            function DatagridOrder() {
-                var Month = $("#month").val();
-                var Year = $("#year").val();
-                //var obj = { mydate: mydate };
-                $('#dtdata').DataTable({
-                    destroy: true,
-                    searching: false,
-                    "ajax": {
-                        "url": '/Reports/GetZeroOrder',
-                        "type": 'POST',
-                        "dataType": 'json',
-                        "data": { Month: Month, Year: Year }
-                        //"data": JSON.stringify(obj)
+        function DatagridOrder() {
+            var Month = $("#month").val();
+            var Year = $("#year").val();
+            //var obj = { mydate: mydate };
+            $('#dtdata').DataTable({
+                destroy: true,
+                searching: false,
+                "ajax": {
+                    "url": '/Reports/GetZeroOrder',
+                    "type": 'POST',
+                    "dataType": 'json',
+                    "data": { Month: Month, Year: Year }
+                    //"data": JSON.stringify(obj)
 
+                },
+                "columns": [
+
+
+                    { 'data': 'order_item_type', 'sWidth': "10%" },
+                    {
+                        'data': 'order_created', sWidth: "20%",
+                        'render': function (jsonDate) {
+                            var date = new Date(parseInt(jsonDate.substr(6)));
+                            var datevalue = ("0" + (date.getDate())).slice(-2);
+                            return ("0" + (date.getMonth() + 1)).slice(-2) + '-' + datevalue + '-' + date.getFullYear() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds() + ' UTC';
+                        }
                     },
-                    "columns": [
+                    { 'data': 'orderstatus', 'sWidth': "10%" },
+                    { 'data': 'orde_item_name', 'sWidth': "25%" },
+                    { 'data': 'address', 'sWidth': "25%" },
+                    { 'data': 'total', 'sWidth': "10%" }
 
+                ],
+                columnDefs: [{
+                    orderable: false,
+                    data: null,
+                    defaultContent: '',
+                }],
 
-                        { 'data': 'order_item_type', 'sWidth': "10%" },
-                        {
-                            'data': 'order_created', sWidth: "20%",
-                            'render': function (jsonDate) {
-                                var date = new Date(parseInt(jsonDate.substr(6)));
-                                var datevalue = ("0" + (date.getDate())).slice(-2);
-                                return ("0" + (date.getMonth() + 1)).slice(-2) + '-' + datevalue + '-' + date.getFullYear() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds() + ' UTC';
-                            }
+                "order": [1, 'asc'],
+
+                "dom": 'Bfrtip',
+                "buttons": [
+
+                    {
+                        extend: 'csv',
+                        className: 'button',
+                        text: '<i class="fas fa-file-csv"></i> Export',
+                        filename: function () {
+                            var d = new Date();
+                            return 'Zero_Orders_' + "0" + + $("#month").val() + '_' + $("#year").val();
                         },
-                        { 'data': 'orderstatus', 'sWidth': "10%" },
-                        { 'data': 'orde_item_name', 'sWidth': "10%" },
-                        { 'data': 'address', 'sWidth': "40%" },
-                        { 'data': 'total', 'sWidth': "10%" }
+                    },
 
-                    ],
-                    columnDefs: [{
-                        orderable: false,
-                        data: null,
-                        defaultContent: '',
-                    }],
+                ],
 
-                    "order": [1, 'asc'],
-
-                    "dom": 'Bfrtip',
-                    "buttons": [
-
-                        {
-                            extend: 'csv',
-                            className: 'button',
-                            text: '<i class="fas fa-file-csv"></i> Export',
-                            filename: function () {
-                                var d = new Date();
-                                return 'Zero_Orders_' + "0" + + $("#month").val() + '_' + $("#year").val();
-                            },
-                        },
-
-                    ],
-
-                });
-            }
+            });
+        }
 
 
-        </script>
-    </section>
+    </script>
+</section>

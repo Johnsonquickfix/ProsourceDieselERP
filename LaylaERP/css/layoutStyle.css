@@ -82,7 +82,7 @@ dashboard
     left: 0px;
     background: rgba(255,255,255, .5);
     width: 100%;
-    z-index: 999;
+    z-index: 999999;
     height: 100%;
     display: flex;
     align-items: center;
@@ -1291,4 +1291,28 @@ span.menu-names2 {
 
 .table-row [type="checkbox"]:checked + label:after {
     opacity: 1;
+}
+/**reports**/
+.reports-section .buttons-csv {
+    margin-bottom: 8px;
+}
+.reports-section #dtdata_info {
+    float: left;
+}
+.reports-section #dtdata_paginate {
+    float: right;
+}
+.arizona-box table.table-blue {table-layout:auto;
+}
+.arizona-box .box-header {
+    overflow:auto;
+}
+.arizona-box table.table-blue thead th {
+    padding-right:20px !important;
+}
+.reports-section .table-blue th:before,
+.reports-section .table-blue th:after {
+    bottom: 0px !important;
+}
+.arizona-box .dataTables_scrollBody thead th {padding-top:0px !important; padding-bottom:0px !important; height:0px;
 }

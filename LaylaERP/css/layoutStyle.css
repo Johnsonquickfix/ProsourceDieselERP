@@ -1252,15 +1252,15 @@ span.menu-names2 {
 
 .table-row button {
     position: relative;
-    padding: 2px 20px;
+    padding: 2px 20px; 
 }
 
     .table-row button [type="checkbox"] {
         position: absolute;
-        width: calc(100% + 2px);
-        height: calc(100% + 2px);
-        left: -1px;
-        top: -1px;
+        width: calc(100% + 4px);
+        height: calc(100% + 4px);
+        left: -2px;
+        top: -2px;
         opacity: 0;
         z-index: 9;
     }

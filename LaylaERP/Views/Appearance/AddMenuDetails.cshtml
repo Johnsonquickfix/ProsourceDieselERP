@@ -14,14 +14,12 @@
 <div class="createuser-section section_wrapper">
     <div class="create-user-box">
         <div class="row">
-            <div class="col-md-9">
+            <div class="col-md-12">
                 <div class="box box-primary create-user-primary">
                     <div class="box-header with-border">
                         <div class="row">
-                            <div class="col-sm-4">
-                                <div class="form-group">
-                                    <input type="hidden" id="hfid" value="@Model.menu_id" />
-                                </div>
+                            <div class="col-sm-6">
+                                <input type="hidden" id="hfid" value="@Model.menu_id" />
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Menu Code</label>
                                     <input type="email" class="form-control" id="txtmenucode" placeholder="Enter Menu Code">
@@ -34,6 +32,8 @@
                                     <label for="exampleInputEmail1">Menu Url</label>
                                     <input type="text" class="form-control" id="txtmenuurl" placeholder="Enter Menu Url">
                                 </div>
+                            </div>
+                            <div class="col-sm-6">
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Menu Icon</label>
                                     <input type="text" class="form-control" id="txtmenuicon" placeholder="Enter Menu Icon">
@@ -46,7 +46,7 @@
                         </div>
                     </div>
                     <div class="box-footer">
-                        <div class="text-left">
+                        <div class="text-right">
                             <a href="#" class="btn btn-danger" id="btnSave"><b>Add Menu</b></a>
 
                             <a class="btn btn-danger" href="Menus">Back to List</a>

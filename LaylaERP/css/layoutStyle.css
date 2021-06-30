@@ -1167,13 +1167,13 @@ body .tree-node {
     align-items: center;
 }
 
-    body .tree-node > span {
-        margin: 0px;
-    }
+body .tree-node > span {
+margin: 0px;
+}
 
-        body .tree-node > span input {
-            margin: 0px;
-        }
+body .tree-node > span input {
+    margin: 0px;
+}
 
 .tree-icon.tree-folder, .tree-icon.tree-file {
     display: none;

@@ -61,6 +61,15 @@ $(document).ready(function () {
     });
     $("#billModal").on("click", "#btnNewOrder", function (t) { t.preventDefault(); window.location.href = window.location.href; });
     /*Start New order Popup function*/
+    $(document).on("click", "#btnSearch", function (t) {
+        t.preventDefault();
+        $('.page-heading').text('Add New Order'); searchOrderModal();
+        let cus_id = parseInt($("#ddlUser").val()) || 0, cus_text = $("#ddlUser option:selected").text();
+        if (cus_id > 0) {
+            $("#ddlCustomerSearch").empty().append('<option value="' + cus_id + '" selected>' + cus_text + '</option>');
+            bindCustomerOrders(cus_id);
+        }
+    });
     $('#billModal').on('shown.bs.modal', function () {
         $('#ddlCustomerSearch').select2({
             dropdownParent: $("#billModal"), allowClear: true, minimumInputLength: 3, placeholder: "Search Customer",
@@ -78,9 +87,12 @@ $(document).ready(function () {
     $("#billModal").on("click", "#btnSelectDefaltAddress", function (t) {
         t.preventDefault();
         let cus_id = parseInt($("#ddlCustomerSearch").val()) || 0, cus_text = $("#ddlCustomerSearch option:selected").text();
+        var oid = parseInt($('#hfOrderNo').val()) || 0;
         if (cus_id > 0) {
             $("#ddlUser").empty().append('<option value="' + cus_id + '" selected>' + cus_text + '</option>');
-            setTimeout(function () { NewOrderNo(); }, 50);
+            if (oid == 0) {
+                setTimeout(function () { NewOrderNo(); }, 50);
+            }
             $("#billModal").modal('hide'); CustomerAddress(cus_id); return false;
         }
         else {
@@ -101,7 +113,7 @@ $(document).ready(function () {
         $("#billModal").modal('hide'); addCustomerModal(cus_text);
     });
     $("#billModal").on("click", "#btnBackSerchCusrtomer", function (t) {
-        t.preventDefault();$("#billModal").modal('hide'); searchOrderModal();
+        t.preventDefault(); $("#billModal").modal('hide'); searchOrderModal();
     });
     $("#billModal").on("blur", "#txtBillingPostCode", function (t) {
         t.preventDefault();
@@ -118,7 +130,7 @@ $(document).ready(function () {
             });
         }
         else {
-            $("#txtBillingCity,#txtBillingCountry,#txtBillingState").val(''); 
+            $("#txtBillingCity,#txtBillingCountry,#txtBillingState").val('');
         }
     });
     /*end New order Popup function*/
@@ -233,7 +245,7 @@ function searchOrderModal() {
     modalHtml += '<div class="modal-dialog modal-lg">';
     modalHtml += '<div class="modal-content">';
     modalHtml += '<div class="modal-header">';
-    //modalHtml += '<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button>';
+    modalHtml += '<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button>';
     modalHtml += '<h4 class="modal-title" id="myModalLabel">Search Customer</h4>';
     modalHtml += '</div>';
     modalHtml += '<div class="modal-body" ></div>';
@@ -333,12 +345,11 @@ function bindCustomerOrders(id) {
     });
 }
 function selectOrderAddress(ele) {
-    var cnt = $(ele);
-    console.log(ele);
     let cus_id = parseInt($("#ddlCustomerSearch").val()) || 0, cus_text = $("#ddlCustomerSearch option:selected").text();
+    var oid = parseInt($('#hfOrderNo').val()) || 0;
     if (cus_id > 0) {
         $("#ddlUser").empty().append('<option value="' + cus_id + '" selected>' + cus_text + '</option>');
-        setTimeout(function () { NewOrderNo(); }, 50);
+        if (oid == 0) { setTimeout(function () { NewOrderNo(); }, 50); }
         $("#billModal").modal('hide'); $('.billinfo').prop("disabled", false);
         ///billing_Details
         $('#txtbillfirstname').val($(ele).data('bfn'));
@@ -362,8 +373,6 @@ function selectOrderAddress(ele) {
         $('#txtshipcity').val($(ele).data('sc'));
         $('#ddlshipcountry').val($(ele).data('sct').trim()).trigger('change');
         $('#ddlshipstate').val($(ele).data('ss').trim()).trigger('change');
-
-
     }
 }
 function addCustomerModal(cus_name) {
@@ -374,7 +383,7 @@ function addCustomerModal(cus_name) {
     //modalHtml += '<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button>';
     modalHtml += '<h4 class="modal-title" id="myModalLabel">Add Customer</h4>';
     modalHtml += '</div>';
-    modalHtml += '<div class="modal-body" ></div>';   
+    modalHtml += '<div class="modal-body" ></div>';
     modalHtml += '<div class="modal-footer">';
     modalHtml += '<button type="button" class="btn btn-primary" id="btnBackSerchCusrtomer">Back Serch Cusrtomer</button>';
     modalHtml += '<button type="button" class="btn btn-primary" id="btnSaveCustomer">Save Customer</button>';
@@ -457,6 +466,7 @@ function addCustomerModal(cus_name) {
 function getOrderInfo() {
     var oid = parseInt($('#hfOrderNo').val()) || 0;
     if (oid > 0) {
+        $('#btnSearch').prop("disabled", true);
         $('.page-heading').text('Edit order ').append('<a class="btn btn-danger" href="/Orders/OrdersHistory">Back to List</a>'); $('#lblOrderNo').text('Order #' + oid + ' detail '); $('#hfOrderNo').val(oid);
         $('#btnCheckout').remove(); $('.footer-finalbutton').append('<a class="btn btn-danger" href="/Orders/OrdersHistory">Back to List</a>');
         var opt = { strValue1: oid };
@@ -489,7 +499,7 @@ function getOrderInfo() {
         });
     }
     else {
-        $('.page-heading').text('Add New Order'); searchOrderModal();
+        $('.page-heading').text('Add New Order'); $('#btnSearch').prop("disabled", false); searchOrderModal();
     }
 }
 function getOrderItemList(oid) {

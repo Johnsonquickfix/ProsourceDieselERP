@@ -201,6 +201,7 @@
     <Compile Include="UTILITIES\CommanUtilities.cs" />
     <Compile Include="UTILITIES\CryptorEngine.cs" />
     <Compile Include="UTILITIES\Net.cs" />
+    <Compile Include="UTILITIES\SendEmail.cs" />
     <Compile Include="UTILITIES\UserActivityLog.cs" />
   </ItemGroup>
   <ItemGroup>

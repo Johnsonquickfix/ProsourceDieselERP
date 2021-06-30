@@ -11,42 +11,13 @@ function GetRoles() {
     })
     //ischecked();
 };
-//bind grid
-//function RoleGrid() {
-//    debugger
-//    $.ajax({
-//        url: '/Users/GetMenuNames',
-//        method: 'post',
-//        datatype: 'json',
-//        contentType: "application/json; charset=utf-8",
-//        success: function (data) {
-//            $('#dtdata').dataTable({
-//                data: JSON.parse(data),
-//                "columns": [
-//                    {
-//                        'data': 'menu_id', sWidth: "2%   ",
-//                        'render': function (data, type, full, meta) {
-//                            return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + $('<div/>').text(data).html() + '"><label></label>';
-//                        }
-//                    },
-//                    { data: 'menu_id', title: 'Menu ID', sWidth: "8%" },
-//                    { data: 'menu_name', title: 'Menu Name', sWidth: "14%" },
-//                    { data: 'menu_url', title: 'Menu URL', sWidth: "14%" },
-//                ]
-//            });
-//        },
-//        error: function (xhr, ajaxOptions, thrownError) {
-//            alert(xhr.responseText);
-//        }
-//    });
-
-//}
 
 //checkbox start
-$('#checkAll').click(function () {
-    var isChecked = $(this).prop("checked");
-    $('#dtdata tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
-});
+//$('#checkAll').click(function () {
+//    var isChecked = $(this).prop("checked");
+//    $('#tt ul:has(li)').find('input[type="checkbox"]').prop('checked', isChecked);
+
+//});
 function Singlecheck() {
     var isChecked = $('#CheckSingle').prop("checked");
     var isHeaderChecked = $("#checkAll").prop("checked");
@@ -66,7 +37,7 @@ function Singlecheck() {
 $('#btnApprove').click(function () {
     var nodes = $('#tt').tree('getChecked');
     var addnodes = '';
-    
+
     var id = '';
     var addid = '';
     var editid = '';
@@ -98,7 +69,7 @@ $('#btnApprove').click(function () {
     //console.log(editid);
     //console.log(deleteid);
     ChangePermission(id, addid, editid, deleteid);
-   
+
 
 })
 
@@ -133,28 +104,6 @@ function ChangePermission(id, addid, editid, deleteid) {
 $("#userrole").change(function () {
     fillCheckMenu();
 });
-
-//function ischecked() {
-//    var User_Type = { User_Type: $("#userrole :selected").text() };
-//    $("#user_type").val($("#userrole :selected").text());
-//    $.ajax({
-//        url: '/Users/GetAssignRole',
-//        type: 'POST',
-//        contentType: "application/json; charset=utf-8",
-//        dataType: "json",
-//        data: JSON.stringify(User_Type),
-//        success: function (data) {
-//            var obj = JSON.parse(data);
-//            $('#dtdata tr:has(td)').find('input[type="checkbox"]').prop('checked', false);
-//            for (i = 0; i < obj.length; i++) {
-//                $('#dtdata tr:has(td)').find('input[type="checkbox"][value="' + obj[i].erpmenu_id + '"]').prop('checked', true);
-//            }
-//        },
-//        error: function (responce) {
-//            console.log(responce)
-//        }
-//    });
-//}
 
 //add new role
 $('#btnSaveRole').click(function () {
@@ -196,44 +145,79 @@ function fillCheckMenu() {
         data: JSON.stringify(obj),
         success: function (data) {
             console.log(data);
-           /* $('.treeview').empty();*/
             $('#tt').tree({
                 data: data,
                 idField: 'id',
                 treeField: 'text',
                 height: '100%',
-                //columns: [[
-                //    { title: 'text', field: 'text', width: 240 },
-                //    {
-                //        title: 'id', field: 'id', width: 50, editor: {
-                //            type: 'checkbox',
-                //            options: {
-                //                on: true,
-                //                off: false
-                //            }
-                //        }
-                //    }
-                //]],
             });
-
-            //var tw = new TreeView(data, { showAlwaysCheckBox: true, fold: false });
-            //$('#chktree').append(tw.root);
+            collapseAll();
         },
         error: function (jqXHR, textStatus, errorThrown) { swal('Error!', errorThrown, "error"); }
     });
 }
 
-function CheckNone() {
-    var isChecked = $('#CheckNone').prop("checked");
-    var nodes = $('#CheckNone').tree('getChecked');
-    var id = '';
-    for (var i = 0; i < nodes.length; i++) {
-        if (id != '') id += ',';
-        id += nodes[i].id;
-    }
-    //ChangePermission(id);
-    console.log(id);
-    console.log(isChecked);
-    
+function collapseAll() {
+    $('#tt').tree('collapseAll');
 }
+
+$('#checkAdd').click(function () {
+
+    var nodes = $('#tt').tree('getChecked', ['checked', 'unchecked']);
+    var isChecked = $('#checkAdd').prop("checked");
+    for (var i = 0; i < nodes.length; i++) {
+        if (isChecked == true) {
+            $('#chk_add_' + nodes[i].id).prop('checked', true);
+        }
+        else {
+            $('#chk_add_' + nodes[i].id).prop('checked', false);
+        }
+    }
+ 
+});
+$('#checkEdit').click(function () {
+    var nodes = $('#tt').tree('getChecked', ['checked', 'unchecked']);
+    var isChecked = $('#checkEdit').prop("checked");
+    for (var i = 0; i < nodes.length; i++) {
+        if (isChecked == true) {
+            $('#chk_edit_' + nodes[i].id).prop('checked', true);
+        }
+        else {
+            $('#chk_edit_' + nodes[i].id).prop('checked', false);
+        }
+    }
+});
+$('#checkDelete').click(function () {
+    var nodes = $('#tt').tree('getChecked', ['checked', 'unchecked']);
+    var isChecked = $('#checkDelete').prop("checked");
+    for (var i = 0; i < nodes.length; i++) {
+        if (isChecked == true) {
+            $('#chk_del_' + nodes[i].id).prop('checked', true);
+        }
+        else {
+            $('#chk_del_' + nodes[i].id).prop('checked', false);
+        }
+    }
+});
+$('#checkAll').click(function () {
+    var isChecked = $(this).prop("checked");
+    var roots = $('#tt').tree('getRoots');  // because it can be more roots
+    console.log(roots);
+    for (var i = 0; i < roots.length; i++) {
+        if (isChecked)
+            $("#tt").tree('check', roots[i].target);
+        else
+            $("#tt").tree('uncheck', roots[i].target);
+    };
+    var nodes = $('#tt').tree('getChecked', ['checked', 'unchecked']);
+    for (var i = 0; i < nodes.length; i++) {
+        if (isChecked == true) {
+            $('#chk_add_' + nodes[i].id).prop('checked', true);
+        }
+        else {
+            $('#chk_add_' + nodes[i].id).prop('checked', false);
+        }
+    }
+
+});
 

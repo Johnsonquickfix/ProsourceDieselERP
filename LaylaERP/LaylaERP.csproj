@@ -167,6 +167,7 @@
     <Compile Include="BAL\Users.cs" />
     <Compile Include="BAL\UsersRepositry.cs" />
     <Compile Include="Controllers\AccountAPIController.cs" />
+    <Compile Include="Controllers\AgentCommissionRateController.cs" />
     <Compile Include="Controllers\AppearanceController.cs" />
     <Compile Include="Controllers\CouponsController.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
@@ -181,6 +182,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\AgentCommissionRate.cs" />
     <Compile Include="Models\Appearance.cs" />
     <Compile Include="Models\clsSerialization.cs" />
     <Compile Include="Models\clsUserDetails.cs" />
@@ -723,6 +725,7 @@
     <Content Include="Views\Reports\SalesTaxRefundReport.cshtml" />
     <Content Include="Views\Reports\TaxJarSalesTaxOrderExport.cshtml" />
     <Content Include="Views\Reports\ZeroOrdersReport.cshtml" />
+    <Content Include="Views\AgentCommissionRate\AgentCommissionRate.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

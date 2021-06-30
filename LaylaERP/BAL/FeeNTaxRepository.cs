@@ -11,6 +11,7 @@ namespace LaylaERP.BAL
 {
     public class FeeNTaxRepository
     {
+        public static List<FeeNTax> FeeNTaxlist = new List<FeeNTax>();
         public void AddFeeNTax(FeeNTax model)
         {
             try
@@ -37,6 +38,8 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
+
+
 
         public int EditFeeNTaxStatus(FeeNTax model)
         {
@@ -82,6 +85,57 @@ namespace LaylaERP.BAL
                 throw ex;
             }
             return dt;
+        }
+
+        public static DataTable Getproduct(string strSearch)
+        {
+            DataTable dtr = new DataTable();
+            try
+            {
+                string strquery = "SELECT ID,post_title FROM wp_posts WHERE post_type='product' and post_status='publish' and post_title like '" + strSearch + "%' order by post_title";
+                dtr = SQLHelper.ExecuteDataTable(strquery);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dtr;
+        }
+
+        public static void GetFeeNTaxList()
+        {
+
+            try
+            {
+                FeeNTaxlist.Clear();
+                DataSet ds1 = new DataSet();
+                string sqlquery = "SELECT id, staterecyclefee, item_parent_id, item_name, city, state, zip, country FROM wp_staterecyclefee WHERE 1";
+
+                ds1 = DAL.SQLHelper.ExecuteDataSet(sqlquery);
+                string result = string.Empty;
+
+                for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
+                {
+                    FeeNTax uobj = new FeeNTax();
+                    //Code for role
+
+                    uobj.id = Convert.ToInt32(ds1.Tables[0].Rows[i]["id"].ToString());
+                    uobj.staterecyclefee = Convert.ToUInt64(ds1.Tables[0].Rows[i]["staterecyclefee"].ToString());
+
+                    uobj.item_name = ds1.Tables[0].Rows[i]["item_name"].ToString();
+                    uobj.city = ds1.Tables[0].Rows[i]["city"].ToString();
+                    uobj.state = ds1.Tables[0].Rows[i]["state"].ToString();
+                    uobj.zip = ds1.Tables[0].Rows[i]["zip"].ToString();
+                    uobj.country = ds1.Tables[0].Rows[i]["country"].ToString();
+                    //Code For Role End
+                    FeeNTaxlist.Add(uobj);
+                }
+
+            }
+            catch (Exception e)
+            {
+
+            }
+
+
         }
 
         public static DataTable FeeNTaxList()

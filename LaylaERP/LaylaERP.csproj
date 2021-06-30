@@ -508,7 +508,6 @@
     <Content Include="Content\Style11.css" />
     <Content Include="Content\Style12.css" />
     <Content Include="Content\easyui\easyui.css" />
-    <Content Include="css\hummingbird-treeview.css" />
     <Content Include="css\indexStyle.css" />
     <Content Include="css\jquery.treeview.css" />
     <Content Include="css\layoutStyle.css" />
@@ -658,7 +657,6 @@
     <Content Include="Scripts\DataTables\responsive.semanticui.js" />
     <Content Include="Scripts\DataTables\responsive.semanticui.min.js" />
     <Content Include="Scripts\DataTables\vfs_fonts.js" />
-    <Content Include="Scripts\hummingbird-treeview.js" />
     <Content Include="Scripts\intlTelInput.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
@@ -717,6 +715,13 @@
     <Content Include="Views\Reports\AJBaseReport.cshtml" />
     <Content Include="Views\Appearance\AddMenu.cshtml" />
     <Content Include="Views\Appearance\AddMenuDetails.cshtml" />
+    <Content Include="Views\Reports\ArizonaSalesOrderExport.cshtml" />
+    <Content Include="Views\Reports\MattressAverageOrderValueReport.cshtml" />
+    <Content Include="Views\Reports\MRFReport.cshtml" />
+    <Content Include="Views\Reports\PodiumOrderReport.cshtml" />
+    <Content Include="Views\Reports\SalesTaxRefundReport.cshtml" />
+    <Content Include="Views\Reports\TaxJarSalesTaxOrderExport.cshtml" />
+    <Content Include="Views\Reports\ZeroOrdersReport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

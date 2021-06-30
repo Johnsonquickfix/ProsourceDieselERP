@@ -1,4 +1,4 @@
-﻿ 
+﻿
 @{
 
     ViewBag.Title = "StateRecycleTax";
@@ -27,10 +27,10 @@
                             <tr>
                                 <th>ID</th>
                                 <th>State Recycle Fee</th>
-                                <th>Item/Product Name</th>
+                                <th>Product Name</th>
                                 <th>Ship City</th>
                                 <th>Ship State</th>
-                                <th>ShipZip/PostCode</th>
+                                <th>ShipZip</th>
                                 <th>Ship Country</th>
                                 <th>Action</th>
                             </tr>
@@ -43,15 +43,15 @@
 
 
     @*<script src="~/Scripts/jquery-3.4.1.min.js"></script>*@
-     
+
     <script src="@Url.Content("~/js/FeeNTax/FeeNTax.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
     <script>
 
-        $(document).ready(function () {             
-            setTimeout(function () { Datagrid(); }, 50);      
+        $(document).ready(function () {
+            setTimeout(function () { Datagrid(); }, 50);
         });
 
-      
+
             @*var id = @ViewBag.id;
             if(id> 0){
                 GetFeeNTaxByID(id);
@@ -109,6 +109,6 @@
             //    });
 
             //}
-       
+
     </script>
 </section>

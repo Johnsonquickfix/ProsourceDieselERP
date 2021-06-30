@@ -63,13 +63,14 @@ $(document).ready(function () {
     $("#billModal").on("click", "#btnNewOrder", function (t) { t.preventDefault(); window.location.href = window.location.href; });
     /*Start New order Popup function*/
     $(document).on("click", "#btnSearch", function (t) {
-        t.preventDefault();
+        t.preventDefault(); $("#loader").show();
         $('.page-heading').text('Add New Order'); searchOrderModal();
         let cus_id = parseInt($("#ddlUser").val()) || 0, cus_text = $("#ddlUser option:selected").text();
         if (cus_id > 0) {
             $("#ddlCustomerSearch").empty().append('<option value="' + cus_id + '" selected>' + cus_text + '</option>');
             bindCustomerOrders(cus_id);
         }
+        $("#loader").hide(); 
     });
     $('#billModal').on('shown.bs.modal', function () {
         $('#ddlCustomerSearch').select2({
@@ -278,7 +279,7 @@ function searchOrderModal() {
     myHtml += '<table id="tblCusOrders" class="table table-blue check-table table-bordered table-striped dataTable tablelist">';
     myHtml += '<thead class="thead-dark">';
     myHtml += '<tr>';
-    myHtml += '<th style="width: 10%">Order No</th>';
+    myHtml += '<th style="width: 10%">No</th>';
     myHtml += '<th style="width: 10%">Creation Date</th>';
     myHtml += '<th style="width: 25%">Billing Address</th>';
     myHtml += '<th style="width: 25%">Shipping Address</th>';
@@ -304,9 +305,9 @@ function bindCustomerOrders(id) {
         success: function (data) {
             $('#tblCusOrders').dataTable({
                 destroy: true,
-                data: JSON.parse(data),
+                data: JSON.parse(data), order: [[0, "desc"]],
                 columns: [
-                    { data: 'ID', title: 'ORDER NO', sWidth: "10%" },
+                    { data: 'ID', title: 'NO', sWidth: "10%" },
                     { data: 'post_date', title: 'CREATION DATE', sWidth: "10%" },
                     {
                         data: 'billing_first_name', title: 'BILLING ADDRESS', sWidth: "25%", render: function (data, type, row) {
@@ -1014,9 +1015,10 @@ function getItemShippingCharge() {
     $("#tblAddItemFinal > tbody  > tr").each(function () { v_ids.push($(this).data('vid')); });
     let shipping_state = $("#ddlshipcountry").val() == 'US' ? $("#ddlshipstate").val() : $("#ddlshipcountry").val();
     var options = { strValue1: v_ids.join(','), strValue2: shipping_state };
-
+    $(".TotalAmount").data("shippingamt", 0.00);
     $.ajax({
         type: "POST", url: '/Orders/GetProductShipping', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(options),
+        beforeSend: function () { $("#loader").show(); },
         success: function (data) {
             $("#tblAddItemFinal > tbody  > tr").each(function () {
                 let proudct_item = data.find(el => el.product_id === $(this).data('vid'));
@@ -1025,7 +1027,8 @@ function getItemShippingCharge() {
                 }
             });
         },
-        error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
+        complete: function () { $("#loader").hide(); },
+        error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); },
         async: false
     });
     calcFinalTotals();

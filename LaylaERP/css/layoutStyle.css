@@ -1302,17 +1302,21 @@ span.menu-names2 {
 .reports-section #dtdata_paginate {
     float: right;
 }
-.arizona-box table.table-blue {table-layout:auto;
-}
-.arizona-box .box-header {
-    overflow:auto;
-}
-.arizona-box table.table-blue thead th {
-    padding-right:20px !important;
+.not-fixed .box-header {
+    overflow: auto;
 }
 .reports-section .table-blue th:before,
 .reports-section .table-blue th:after {
     bottom: 0px !important;
 }
 .arizona-box .dataTables_scrollBody thead th {padding-top:0px !important; padding-bottom:0px !important; height:0px;
+}
+.not-fixed .table-blue {
+table-layout:auto;}
+.not-fixed thead th {
+white-space:nowrap; padding-right:20px !important;}
+.not-fixed .dataTables_scrollBody thead th {
+padding-top: 0px !important;
+padding-bottom: 0px !important;
+height: 0px !important;
 }

@@ -12,44 +12,41 @@
 <div class="page-title">
     <h2>Tax Jar Sales Tax Order Export</h2>
 </div>
-<section class="content content-section p-0">
+<section class="content content-section p-0 reports-section not-fixed">
+    <div class="user-top-section">
+        <div class="tablenav top">
+            <div class="alignleft actions bulkactions">
+                <select class="form-control" id="month">
+                    <option value="">Month</option>
+                    <option value="1">January</option>
+                    <option value="2">February</option>
+                    <option value="3">March</option>
+                    <option value="4">April</option>
+                    <option value="5">May</option>
+                    <option value="6">Jun</option>
+                    <option value="7">July</option>
+                    <option value="8">August</option>
+                    <option value="9">September</option>
+                    <option value="10">October</option>
+                    <option value="11">November</option>
+                    <option value="12">December</option>
+                </select>
+                <select class="form-control" id="year">
+                    <option value="">Year</option>
+                    <option value="2019">2019</option>
+                    <option value="2020">2020</option>
+                    <option value="2021">2021</option>
+                </select>
+                <select class="form-control" id="txtState">
+                    <option value="">State</option>
+                    <option value="ALL">ALL</option>
+                </select>
+                <input type="button" id="filtersrchexp" value="Search" class="button" />
+                @*<input type="submit" name="filtersrchexp" value="Export" class="button button-primary" />*@
+            </div>
+        </div>
+    </div>
     <div class="row">
-        <div style="width: auto;float: left;margin-right: 10px;">
-            <select class="form-control" id="month">
-                <option value="">Month</option>
-                <option value="1">January</option>
-                <option value="2">February</option>
-                <option value="3">March</option>
-                <option value="4">April</option>
-                <option value="5">May</option>
-                <option value="6">Jun</option>
-                <option value="7">July</option>
-                <option value="8">August</option>
-                <option value="9">September</option>
-                <option value="10">October</option>
-                <option value="11">November</option>
-                <option value="12">December</option>
-            </select>
-        </div>
-        <div style="width: auto;float: left;margin-right: 10px;">
-            <select class="form-control" id="year">
-                <option value="">Year</option>
-                <option value="2019">2019</option>
-                <option value="2020">2020</option>
-                <option value="2021">2021</option>
-            </select>
-        </div>
-        <div style="width: auto;float: left;margin-right: 10px;">
-            <select class="form-control" id="txtState">
-                <option value="">State</option>
-                <option value="ALL">ALL</option>
-            </select>
-        </div>
-
-        <div style="width: auto;float: left;margin-right: 10px;">
-            <input type="button" id="filtersrchexp" value="Search" class="button" />
-            @*<input type="submit" name="filtersrchexp" value="Export" class="button button-primary" />*@
-        </div>
         <div class="col-md-12">
             <div class="box box-primary">
                 <div class="box-header">
@@ -125,6 +122,7 @@
             //var obj = { mydate: mydate };
             $('#dtdata').DataTable({
                 destroy: true,
+                "scrollX": true,
                 searching: false,
                 "ajax": {
                     "url": '/Reports/GetTaxJarOrder',
@@ -185,7 +183,7 @@
                         text: '<i class="fas fa-file-csv"></i> Export',
                         filename: function () {
                             var d = new Date();
-                            return  "0"  + $("#month").val() + '_' + $("#year").val() + '_' + $("#txtState").val() + '_' + ("0" + (d.getMonth() + 1)).slice(-2) + '-' + d.getDate() + '-' + d.getFullYear();
+                            return "0" + $("#month").val() + '_' + $("#year").val() + '_' + $("#txtState").val() + '_' + ("0" + (d.getMonth() + 1)).slice(-2) + '-' + d.getDate() + '-' + d.getFullYear();
                         },
 
                     },

@@ -133,9 +133,8 @@
                             'data': 'order_created',
                             'render': function (jsonDate) {
                                 var date = new Date(parseInt(jsonDate.substr(6)));
-                                var month = ("0" + (date.getMonth() + 1)).slice(-2);
-                                let hour = date.getUTCHours();
-                                return ("0" + date.getDate()).slice(-2) + '-' + month + '-' + date.getFullYear() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds() + ' UTC';
+                                var datevalue = ("0" + (date.getDate())).slice(-2);
+                                return ("0" + (date.getMonth() + 1)).slice(-2) + '-' + datevalue + '-' + date.getFullYear() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds() + ' UTC';
                                 
                             }
                         },                        

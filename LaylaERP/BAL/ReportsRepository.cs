@@ -51,12 +51,15 @@ namespace LaylaERP.BAL
                 for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
                 {
                     Export_Details uobj = new Export_Details();
-                    uobj.order_id = Convert.ToInt32(ds1.Tables[0].Rows[i]["ID"].ToString());
+                    uobj.order_item_type = "#" + ds1.Tables[0].Rows[i]["ID"].ToString();
                     uobj.order_created = Convert.ToDateTime(ds1.Tables[0].Rows[i]["post_date"].ToString()); 
                     uobj.orderstatus = ds1.Tables[0].Rows[i]["post_status"].ToString();
                     uobj.address = ds1.Tables[0].Rows[i]["address"].ToString();
                     uobj.first_name = ds1.Tables[0].Rows[i]["Name"].ToString();
-                    uobj.total = ds1.Tables[0].Rows[i]["Total"].ToString();
+                    if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["Total"].ToString()))
+                        uobj.total = "$" + ds1.Tables[0].Rows[i]["Total"].ToString();
+                    else
+                        uobj.total = "$0";        
                     exportorderlist.Add(uobj);
                 }
             }
@@ -234,7 +237,7 @@ namespace LaylaERP.BAL
                     + " LEFT OUTER JOIN wp_postmeta umatotal on umatotal.meta_key = '_order_total' And umatotal.post_id = u.ID"
                     + " LEFT OUTER JOIN wp_postmeta umadiscount on umadiscount.meta_key = '_cart_discount' And umadiscount.post_id = u.ID"
                     + " LEFT OUTER JOIN wp_postmeta umatax on umatax.meta_key = '_order_tax' And umatax.post_id = u.ID"
-                    + " LEFT OUTER JOIN wp_postmeta umpodiumdate on umpodiumdate.meta_key = '_podium_paid_date' And umpodiumdate.post_id = u.ID"
+                    + " LEFT OUTER JOIN wp_postmeta umpodiumdate on umpodiumdate.meta_key = 'post_date' And umpodiumdate.post_id = u.ID"
                     + " LEFT OUTER JOIN wp_postmeta umtransaction on umtransaction.meta_key = '_transaction_id' And umtransaction.post_id = u.ID"
                     + " LEFT OUTER JOIN wp_postmeta umempname on umempname.meta_key = 'employee_name' And umempname.post_id = u.ID"
                     + " LEFT OUTER JOIN wp_woocommerce_order_items umorerItem on umorerItem.order_item_type='line_item' And umorerItem.order_id = u.ID"

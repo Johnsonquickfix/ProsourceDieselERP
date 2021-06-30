@@ -78,8 +78,8 @@
                 else {
 
                     DatagridOrder();
-                    $("#month").val("");
-                    $("#year").val("");
+                   // $("#month").val("");
+                   // $("#year").val("");
                     return false;
 
                 }
@@ -104,13 +104,13 @@
                 "columns": [
 
                     
-                    { 'data': 'order_id', 'sWidth': "15%" },
+                    { 'data': 'order_item_type', 'sWidth': "15%" },
                     {
                         'data': 'order_created', sWidth: "20%",
                         'render': function (jsonDate) {
                             var date = new Date(parseInt(jsonDate.substr(6)));                         
-                            var month = ("0" + (date.getMonth() + 1)).slice(-2);
-                            return ("0" + date.getDate()).slice(-2) + '-' + month + '-' + date.getFullYear() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds() + ' UTC' ;
+                            var datevalue = ("0" + (date.getDate())).slice(-2);
+                            return ("0" + (date.getMonth() + 1)).slice(-2) + '-' + datevalue + '-' + date.getFullYear() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds() + ' UTC' ;
                         }
                     },
                     { 'data': 'orderstatus','sWidth': "10%" },
@@ -133,7 +133,11 @@
                     {
                         extend: 'csv',
                         className: 'button',
-                        text: '<i class="fas fa-file-csv"></i> Export'
+                        text: '<i class="fas fa-file-csv"></i> Export',
+                         filename: function () {
+                            var d = new Date();
+                            return 'AJBase_Report_' + "0" + + $("#month").val() + '_' + $("#year").val();
+                        },
                     },
                     
                 ],

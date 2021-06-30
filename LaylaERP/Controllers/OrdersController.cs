@@ -282,6 +282,18 @@
             catch { status = false; result = ""; }
             return Json(new { status = status, message = result }, 0);
         }
-
+        [HttpPost]
+        public JsonResult SendMailInvoice(SearchModel model)
+        {
+            string result = string.Empty;
+            bool status = false;
+            try
+            {
+                status = true;
+                result = SendEmail.SendEmails(model.strValue1, model.strValue2, model.strValue3);
+            }
+            catch { status = false; result = ""; }
+            return Json(new { status = status, message = result }, 0);
+        }
     }
 }

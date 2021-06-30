@@ -21,7 +21,7 @@
                 {
                     using (MailMessage mm = new MailMessage(om.SenderEmailID.ToString(), varReceipientEmailId, strSubject, strBody))
                     {
-                        //mm.IsBodyHtml = false;
+                        mm.IsBodyHtml = true;
                         SmtpClient smtp = new SmtpClient();
                         smtp.Host = om.SMTPServerName.ToString(); // "smtp.gmail.com";
                         smtp.EnableSsl = true;

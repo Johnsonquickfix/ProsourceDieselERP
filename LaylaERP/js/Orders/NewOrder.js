@@ -1697,6 +1697,15 @@ function successModal(paymode) {
     $('#tblorder_details tbody').append(myHtml);
 
     $("#billModal").modal({ backdrop: 'static', keyboard: false });
+    var opt = { strValue1: $('#txtbillemail').val(), strValue2: 'Your order #' + $('#hfOrderNo').val() + ' has been received', strValue3: $('#billModal .modal-body').html() }
+    if (opt.strValue1.length > 5) {
+        $.ajax({
+            type: "POST", url: '/Orders/SendMailInvoice', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
+            success: function (result) { console.log(result); },
+            error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
+            complete: function () { }, async: false
+        });
+    }
 }
 
 function successModal_old(paymode) {

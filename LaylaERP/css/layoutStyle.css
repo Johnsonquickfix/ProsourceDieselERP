@@ -1180,9 +1180,11 @@ body .tree-node {
 }
 
 body .tree-indent, body .tree-hit {
-    position: absolute;
+    position: absolute;z-index:9;
     left: 0px;
-    top: 5px;
+}
+body .tree-hit {
+ top:13px;   z-index: 9;
 }
 
 body .tree-node-hover {

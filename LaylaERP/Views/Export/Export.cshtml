@@ -232,14 +232,14 @@
                 else
                     $(".selectAll").prop('checked', true);
 
-                var tRow = $('#exportusersdata').DataTable().row({ selected: false }).length; console.log(tRow);
-                if (tRow > 0)
+                var tRowuser = $('#exportusersdata').DataTable().row({ selected: false }).length; console.log(tRowuser);
+                if (tRowuser > 0)
                     $(".selectAllUsers").prop('checked', false);
                 else
                     $(".selectAllUsers").prop('checked', true);
 
-                var tRow = $('#exportcustomersdata').DataTable().row({ selected: false }).length; console.log(tRow);
-                if (tRow > 0)
+                var tRowcus = $('#exportcustomersdata').DataTable().row({ selected: false }).length; console.log(tRowcus);
+                if (tRowcus > 0)
                     $(".selectAllCustomers").prop('checked', false);
                 else
                     $(".selectAllCustomers").prop('checked', true);

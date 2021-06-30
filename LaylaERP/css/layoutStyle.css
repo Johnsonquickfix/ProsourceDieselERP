@@ -1021,6 +1021,7 @@ button#btnGeneratePassword {
         background-color: #ff4100;
         transition: 0.5s ease all;
     }
+
 .select2-container--default .select2-selection--single,
 .select2-selection .select2-selection--single {
     border: 1px solid #d2d6de !important;
@@ -1046,7 +1047,6 @@ button#btnGeneratePassword {
 
 .table-row div {
     flex: 1;
-   
 }
 
 .table-row:first-child {
@@ -1055,17 +1055,20 @@ button#btnGeneratePassword {
 
 .table-row {
     display: flex;
-
-    
     flex-wrap: wrap;
     align-items: center;
+    width: 100%;
 }
 
     .table-row.blue-row > div {
         font-size: 12px;
     }
+
     .table-row button, .table-row input {
-   font-weight:400; font-size:12px; }
+        font-weight: 400;
+        font-size: 12px;
+    }
+
     .table-row.blue-row {
         font-size: 12px;
         background: #3c8dbc;
@@ -1079,13 +1082,10 @@ button#btnGeneratePassword {
     flex-direction: column;
 }
 
-.table-row div:first-child {
-    flex: 1.5;
-}
 
-.table-row div:nth-child(2) {
-    flex: 2;
-    text-align: right;
+
+.table-row > div {
+    justify-content: center;
 }
 
 
@@ -1095,10 +1095,14 @@ button#btnGeneratePassword {
     flex: unset;
     padding: 0px;
 }
-.setting-section .bulkactions > *{margin-right:10px;
+
+.setting-section .bulkactions > * {
+    margin-right: 10px;
 }
+
 .setting-section .dataTables_length {
-float:left;}
+    float: left;
+}
 
 .setting-section .dataTables_wrapper {
     padding: 0px;
@@ -1110,135 +1114,179 @@ float:left;}
     border-top: 1px solid #ccd0d4;
     font-size: 14px;
     padding: 0px 10px 0px 20px;
-    font-weight: 600; position:relative;
+    font-weight: 600;
+    position: relative;
 }
+
     .treeview > p.group:nth-child(2n) {
         background-color: #fff;
     }
+
 .treeview p.group [fold-button] {
     position: absolute;
     left: 0px;
     top: 0px;
-   height:45px;
+    height: 45px;
     padding: 0px;
     width: 22px;
-    display: flex; border-radius:0px;
+    display: flex;
+    border-radius: 0px;
     justify-content: center;
     align-items: center;
 }
+
 .treeview .group .item {
-width:100%; position:relative; padding:10px 0px 10px 20px;}
+    width: 100%;
+    position: relative;
+    padding: 10px 0px 10px 20px;
+}
+
     .treeview .group .item > .fa {
         position: absolute;
         left: 5px;
         top: 50%;
         transform: translateY(-50%);
     }
-.treeview .group .item:hover {
-    background: transparent;
-}
+
+    .treeview .group .item:hover {
+        background: transparent;
+    }
 /****29_6*/
 body .tree-title {
-width:100%; margin:0px; padding:0px;}
+    width: 100%;
+    display: flex;
+    align-items: center;
+    margin: 0px;
+    padding: 0px;
+    height: auto;
+}
+
 body .tree-node {
-height:auto;}
+    height: auto;
+    display: flex;
+    align-items: center;
+}
+
     body .tree-node > span {
-    margin:0px;}
+        margin: 0px;
+    }
+
         body .tree-node > span input {
-        margin:0px;}
+            margin: 0px;
+        }
+
 .tree-icon.tree-folder, .tree-icon.tree-file {
     display: none;
 }
+
 body .tree-indent, body .tree-hit {
-display:none;}
+    position: absolute;
+    left: 0px;
+    top: 5px;
+}
+
 body .tree-node-hover {
     background: transparent;
     color: #4f4f4f;
 }
+
 body .tree-node-selected {
-background:transparent;color:#4f4f4f;}
+    background: transparent;
+    color: #4f4f4f;
+}
+
 .table-row label {
     position: relative;
     margin: 0px;
 }
+
 body .easyui-tree {
     border: 1px solid #ccd0d4;
 }
+
 body .easyui-tree li {
     padding: 5px 0px;
 }
-body .easyui-tree > li {
-    background: #f1f1f1;
-    border-top: 1px solid #ccd0d4;
-    font-size: 14px;
-    padding: 10px;
-    /*    padding: 0px 10px 0px 20px;*/
-    font-weight: 600;
+
+body .easyui-tree li ul {
+    padding-top: 5px;
+}
+
+    body .easyui-tree > li {
+        background: #f1f1f1;
+        border-top: 1px solid #ccd0d4;
+        font-size: 14px;
+        padding: 10px 10px 10px 20px;
+        font-weight: 600;
+        position: relative;
+    }
+
+        body .easyui-tree > li:nth-child(2n) {
+            background-color: #fff;
+        }
+
+        body .easyui-tree > li li {
+            padding-left: 20px;
+        }
+
+        body .easyui-tree > li > .tree-node {
+            padding-left: 20px;
+        }
+
+            body .easyui-tree > li > .tree-node .table-row div:first-child {
+                /*padding-right:20px;*/
+            }
+
+            body .easyui-tree > li > .tree-node > .tree-checkbox {
+                margin-left: -20px;
+                margin-right: 20px;
+            }
+
+span.menu-names {
+    margin-left: -15px;
+}
+
+span.menu-names2 {
+    margin-left: 5px;
+}
+
+.table-row button {
     position: relative;
-}
-    body .easyui-tree > li:nth-child(2n) {
-        background-color: #fff;
-    }
-    body .easyui-tree > li li {
-    padding-left:20px;}
-    body .easyui-tree > li > .tree-node {
-        padding-left: 20px;
-    }
-        body .easyui-tree > li > .tree-node .table-row div:first-child {
-         /*padding-right:20px;*/
-
-        }
-        body .easyui-tree > li > .tree-node > .tree-checkbox {
-        /*margin-left:-20px;*/ 
-
-        }
-            /*
-.table-row [type="checkbox"] {
-   
+    padding: 2px 20px;
 }
 
-    .table-row [type="checkbox"] + label:before {
+    .table-row button [type="checkbox"] {
+        position: absolute;
+        width: calc(100% + 2px);
+        height: calc(100% + 2px);
+        left: -1px;
+        top: -1px;
+        opacity: 0;
+        z-index: 9;
+    }
+
+.table-row [type="checkbox"] + label {
+    display: flex;
+    align-items: center;
+}
+
+    .table-row [type="checkbox"] + label:after {
         content: "";
         position: absolute;
-        left: 0px;
+        left: calc(100% + 2px);
         top: 50%;
-        transform: translateY(-50%);
-        width: 18px;
-        height: 18px;
-        border: 1px solid #7e8993;
-        border-radius: 2px;
-        transition: .5s all;
-    }
-
-    .form-check label:after, .check-table [type="checkbox"] + label:after {
-        content: "";
-        opacity: 0;
-        left: 2.5px;
-        top: 50%;
-        margin-top: -4.5px;
+        margin-top: -5px;
         width: 12px;
         height: 6px;
-        border-width: 0px 0px 2px 2px;
-        border-color: #fff;
+        opacity: 0;
+        margin-left: 3px;
+        border-width: 0px 0px 1px 1px;
+        border-color: green;
         border-style: solid;
-        position: absolute;
         transition: .5s all;
         transform: rotate( 310deg );
     }
 
-.check-table th [type="checkbox"] + label:before {
-    border-color: #fff;
-}
-
-.check-table th [type="checkbox"]:checked + label:before {
-    border-color: #fff !important;
-}
-
-.form-check [type="checkbox"]:checked + label:before, .check-table [type="checkbox"]:checked + label:before {
-    background: #3c8dbc !important;
-    border-color: #3c8dbc !important;
-}
-
-.form-check [type="checkbox"]:checked + label:after, .check-table [type="checkbox"]:checked + label:after {
+.table-row [type="checkbox"]:checked + label:after {
     opacity: 1;
-}*/
+}

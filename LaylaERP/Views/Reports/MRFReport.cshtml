@@ -139,8 +139,8 @@
                         'data': 'order_created', sWidth: "20%",
                         'render': function (jsonDate) {
                             var date = new Date(parseInt(jsonDate.substr(6)));
-                            var month = ("0" + (date.getMonth() + 1)).slice(-2); 
-                            return ("0" + date.getDate()).slice(-2) + '-' + month + '-' + date.getFullYear();
+                            var datevalue = ("0" + (date.getDate())).slice(-2);
+                            return ("0" + (date.getMonth() + 1)).slice(-2) + '-' + datevalue + '-' + date.getFullYear();
                         }
                     },
                     { 'data': 'first_name', 'sWidth': "10%" },

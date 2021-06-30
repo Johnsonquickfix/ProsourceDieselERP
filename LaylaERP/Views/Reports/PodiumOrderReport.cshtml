@@ -119,11 +119,8 @@
                         'data': 'order_created', sWidth: "10%",
                         'render': function (jsonDate) {
                             var date = new Date(parseInt(jsonDate.substr(6)));                            
-                            var month = ("0" + (date.getMonth() + 1)).slice(-2);
-                            if (date = 'Mon Jan 01 0001 05:53:28 GMT+0553 (India Standard Time)')
-                                return null;
-                                else
-                            return ("0" + date.getDate()).slice(-2) + '-' + month + '-' + date.getFullYear() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds() + ' UTC';
+                            var datevalue = ("0" + (date.getDate())).slice(-2);
+                            return ("0" + (date.getMonth() + 1)).slice(-2) + '-' + datevalue + '-' + date.getFullYear() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds() + ' UTC';
                         }
                     },
                    

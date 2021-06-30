@@ -119,6 +119,8 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
+
+
             //DatagridCustomers();
             //DatagridOrder();
 
@@ -222,14 +224,19 @@
             $("#btnviewusers").click(function () { DatagridUsers(); });
             $("#btnviewcustomers").click(function () { DatagridCustomers(); });
 
+            $(document).on("click", "tbody .select-checkbox", function (t) {
+                t.preventDefault();
+                var tRow = $('#exportdata').DataTable().row({ selected: false }).length; console.log(tRow);
+                if (tRow > 0)
+                    $(".selectAll").prop('checked', false);
+                else
+                    $(".selectAll").prop('checked', true);
+            });
         });
 
-
         //-------------Order DataGrid Start----------------
-
-        //CheckBoxes
         $('#selectAll').click(function () {
-           // alert(1);
+            // alert(1);
             var isChecked = $(this).prop("checked");
             $('#exportdata tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
         });
@@ -484,6 +491,10 @@
             });
 
         }
+
+
+        //CheckBoxes
+      
 
         //----------------Customers DataGrid End-----------------
     </script>

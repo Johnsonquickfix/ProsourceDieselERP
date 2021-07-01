@@ -2,22 +2,26 @@
 function GetRoles() {
     $.get('GetRoles', function (data) {
         var items = "";
-        items += "<option value='' disabled selected>Please select</option>";
-        $('#userrole').empty();
+        //$('#userrole').empty();
+        items += "<option value=''>Please select</option>";
         $.each(data, function (index, value) {
             items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#userrole");
         })
         $('#userrole').bind(items);
     })
-    //ischecked();
 };
 
-//checkbox start
-//$('#checkAll').click(function () {
-//    var isChecked = $(this).prop("checked");
-//    $('#tt ul:has(li)').find('input[type="checkbox"]').prop('checked', isChecked);
+function CopyRoles() {
+    $.get('GetRoles', function (data) {
+        var items = "";
+        items += "<option value=''>Please select</option>";
+        $.each(data, function (index, value) {
+            items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddlCopyRole");
+        })
+        $('#ddlCopyRole').bind(items);
+    })
+};
 
-//});
 function Singlecheck() {
     var isChecked = $('#CheckSingle').prop("checked");
     var isHeaderChecked = $("#checkAll").prop("checked");
@@ -36,12 +40,7 @@ function Singlecheck() {
 //Give Permission
 $('#btnApprove').click(function () {
     var nodes = $('#tt').tree('getChecked');
-    var addnodes = '';
-
-    var id = '';
-    var addid = '';
-    var editid = '';
-    var deleteid = '';
+    var addnodes = ''; var id = ''; var addid = ''; var editid = ''; var deleteid = '';
 
     for (var i = 0; i < nodes.length; i++) {
         addnodes = $('#chk_add_' + nodes[i].id).prop('checked');
@@ -51,23 +50,10 @@ $('#btnApprove').click(function () {
         if (id != '') id += ',';
         id += nodes[i].id;
 
-        if (addnodes == true) {
-            if (addid != '') addid += ',';
-            addid += nodes[i].id;
-        }
-        if (editnodes == true) {
-            if (editid != '') editid += ',';
-            editid += nodes[i].id;
-        }
-        if (deletenodes == true) {
-            if (deleteid != '') deleteid += ',';
-            deleteid += nodes[i].id;
-        }
-        //console.log($('#chk_add_' + nodes[i].id), $('#chk_edit_' + nodes[i].id), $('#chk_del_' + nodes[i].id));
+        if (addnodes == true) { if (addid != '') addid += ','; addid += nodes[i].id; }
+        if (editnodes == true) { if (editid != '') editid += ','; editid += nodes[i].id; }
+        if (deletenodes == true) { if (deleteid != '') deleteid += ','; deleteid += nodes[i].id; }
     }
-    //console.log(addid);
-    //console.log(editid);
-    //console.log(deleteid);
     ChangePermission(id, addid, editid, deleteid);
 
 
@@ -123,6 +109,36 @@ $('#btnSaveRole').click(function () {
                 swal("alert", data.message, "success");
                 GetRoles();
 
+            },
+            error: function () {
+                swal("alert", "something went wrong", "error");
+            }
+        })
+    }
+});
+
+//add new role
+$('#btnCopyRole').click(function () {
+    var rolefrom = $('#userrole').val();
+    var roleto = $('#ddlCopyRole').val();
+    if (rolefrom == "") { swal("alert", "Please select role from", "error").then(function () { swal.close(); $('#userrole').focus(); }) }
+    else if (roleto == "") { swal("alert", "Please select role to", "error").then(function () { swal.close(); $('#ddlCopyRole').focus(); }) }
+    else {
+        var obj = { role_id: rolefrom, roleto: roleto }
+        $.ajax({
+            url: '/Users/CopyPermission/', dataType: 'json', type: 'Post',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(obj),
+            dataType: "json",
+            beforeSend: function () {
+                $("#loader").show();
+            },
+            success: function (data) {
+                swal("alert", data.message, "success");
+                fillCheckMenu();
+            },
+            complete: function () {
+                $("#loader").hide();
             },
             error: function () {
                 swal("alert", "something went wrong", "error");
@@ -209,15 +225,17 @@ $('#checkAll').click(function () {
         else
             $("#tt").tree('uncheck', roots[i].target);
     };
-    var nodes = $('#tt').tree('getChecked', ['checked', 'unchecked']);
-    for (var i = 0; i < nodes.length; i++) {
-        if (isChecked == true) {
-            $('#chk_add_' + nodes[i].id).prop('checked', true);
-        }
-        else {
-            $('#chk_add_' + nodes[i].id).prop('checked', false);
-        }
-    }
+   
 
 });
+
+function checkchange(elem) {
+    var myNode = $('#tt').tree('find', $(elem).data("id"));
+        $("#tt").tree('check', myNode.target);
+    console.log(isChecked);
+}
+
+function rootChange(elem) {
+    console.log(elem);
+}
 

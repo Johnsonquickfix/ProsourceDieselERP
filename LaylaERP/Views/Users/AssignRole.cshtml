@@ -32,12 +32,20 @@
                         <h2 class="sm-heading">User Roles</h2>
                         <div class="form-group form-user-role">
                             <select id="userrole" class="form-control select2">
-                                <option selected="selected">Select Type</option>
+                                 <option selected="selected" value="">Please select</option>
                             </select>
+                            <label style="margin-right: 10px;">Copy role to  </label>
+                            <select id="ddlCopyRole" class="form-control select2">
+                                <option selected="selected" value="">Please select</option>
+                            </select>
+                            <button type="button" id="btnCopyRole" class="btn btn-danger" style="margin-right: 10px;">
+                                <i class="fa fa-check"></i> Go
+                            </button>
                             <button type="button" id="btnAddRole" class="btn btn-danger" data-toggle="modal" data-target="#roleModal">
                                 <i class="fa fa-plus"></i> Add New Role
                             </button>
                         </div>
+
                         <div class="form-group form-user-role">
                             <button type="button" id="btnApprove" class="btn btn-danger"><i class="fa fa-check"></i> Role Approve</button>
                         </div>
@@ -92,6 +100,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         GetRoles();
+        CopyRoles();
         fillCheckMenu();
     })
 </script>

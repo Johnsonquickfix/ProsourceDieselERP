@@ -132,6 +132,5 @@ namespace LaylaERP.Models
         public string strEdit { get; set; }
         public string strDel { get; set; }
         public int role_id { get; set; }
-        public int roleto { get; set; }
     }
 }

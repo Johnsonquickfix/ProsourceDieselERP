@@ -459,10 +459,10 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strquery = "select count(ZipCode) from ZIPCodes1 where city = '" + model.billing_city + "' and statefullname = '" + model.billing_state + "' and ZipCode = '" + model.billing_postcode + "' ";
+                string strquery = "select count(ZipCode) from ZIPCodes1 where city = '"+ model.billing_city + "' and statefullname = '"+ model.billing_state  + "' and ZipCode = '"+model.billing_postcode+"' ";                 
                 MySqlParameter[] para =
                 {
-
+                     
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strquery).ToString());
                 return result;
@@ -477,10 +477,10 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strquery = "select count(ID) from wp_users where user_login = '" + model.user_nicename + "' ";
+                string strquery = "select count(ID) from wp_users where user_login = '" + model.user_nicename  + "' ";
                 MySqlParameter[] para =
                 {
-
+                      
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strquery).ToString());
                 return result;
@@ -497,7 +497,7 @@ namespace LaylaERP.BAL
                 string strquery = "select count(ID) from wp_users where user_email = '" + model.user_email + "' ";
                 MySqlParameter[] para =
                 {
-
+                      
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strquery).ToString());
                 return result;
@@ -735,7 +735,7 @@ namespace LaylaERP.BAL
                 int result = 0;
                 string[] values = ID.Split(',');
 
-                for (int i = 0; i <= values.Length - 1; i++)
+                for (int i = 0; i <= values.Length-1; i++)
                 {
                     ID = values[i].ToString();
                     string strsql = "insert into wp_erprole_rest(role_id,erpmenu_id) values(@role_id,'" + ID + "')";
@@ -743,7 +743,7 @@ namespace LaylaERP.BAL
                      {
                     new MySqlParameter("@role_id", role_id)
                      };
-                    result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                     result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
                 }
                 return result;
             }
@@ -753,34 +753,17 @@ namespace LaylaERP.BAL
             }
 
         }
-        public int CopyPermission(int roleto, int role_id)
-        {
-            try
-            {
-                DeletePermission(roleto);
-                int result = 0;
-                  
-                    string strsql = "insert into wp_erprole_rest(role_id,erpmenu_id,add_,edit_,delete_) Select " + roleto + ",erpmenu_id,add_,edit_,delete_ from wp_erprole_rest where role_id=" + role_id + ";";
-                    result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql));
-                
-                return result;
-            }
-            catch (Exception Ex)
-            {
-                throw Ex;
-            }
-        }
 
         public int DeletePermission(int role_id)
         {
             try
             {
-                string strsql = "delete from wp_erprole_rest where role_id=@role_id";
-                MySqlParameter[] para =
-                 {
+                    string strsql = "delete from wp_erprole_rest where role_id=@role_id";
+                    MySqlParameter[] para =
+                     {
                     new MySqlParameter("@role_id", role_id)
                      };
-                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                  int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
                 return result;
             }
             catch (Exception Ex)
@@ -793,10 +776,10 @@ namespace LaylaERP.BAL
         {
             try
             {
-
+              
                 int result = 0;
-                string strsql = "update wp_erprole_rest set add_=1 where role_id=" + role_id + " and erpmenu_id in (" + strAdd + ");";
-                result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql));
+                    string strsql = "update wp_erprole_rest set add_=1 where role_id="+ role_id + " and erpmenu_id in (" + strAdd+");";
+                    result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql));
                 return result;
             }
             catch (Exception Ex)

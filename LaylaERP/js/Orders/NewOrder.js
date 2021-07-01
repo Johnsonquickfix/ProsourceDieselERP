@@ -30,7 +30,7 @@ $(document).ready(function () {
         ajax: {
             url: '/Orders/GetCustomerList', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
             data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
-            processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.displayname, name: item.displayname, id: item.id } }) }; },
+            processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.displayname + ' [' + item.billing_phone + ']', name: item.displayname + ' [' + item.billing_phone + ']', id: item.id } }) }; },
             error: function (xhr, status, err) { }, cache: true
         }
     });

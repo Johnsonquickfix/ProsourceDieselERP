@@ -155,6 +155,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="BAL\AgentCommissionRateRepository.cs" />
     <Compile Include="BAL\AppearanceRepository.cs" />
     <Compile Include="BAL\CustomerRepository.cs" />
     <Compile Include="BAL\DashboardRepository.cs" />
@@ -167,6 +168,7 @@
     <Compile Include="BAL\Users.cs" />
     <Compile Include="BAL\UsersRepositry.cs" />
     <Compile Include="Controllers\AccountAPIController.cs" />
+    <Compile Include="Controllers\AgentCommissionRateController.cs" />
     <Compile Include="Controllers\AppearanceController.cs" />
     <Compile Include="Controllers\CouponsController.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
@@ -181,6 +183,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\AgentCommissionRate.cs" />
     <Compile Include="Models\Appearance.cs" />
     <Compile Include="Models\clsSerialization.cs" />
     <Compile Include="Models\clsUserDetails.cs" />
@@ -287,6 +290,8 @@
     <Content Include="Content\AdminLTE-3.1.0\datatables\DataTables-1.10.20\js\jquery.dataTables.min.js" />
     <Content Include="Content\AdminLTE-3.1.0\datatables\datatables.min.css" />
     <Content Include="Content\AdminLTE-3.1.0\datatables\datatables.min.js" />
+    <Content Include="Content\AdminLTE-3.1.0\daterangepicker\daterangepicker.monthpicker.css" />
+    <Content Include="Content\AdminLTE-3.1.0\daterangepicker\daterangepicker.monthpicker.js" />
     <Content Include="Content\AdminLTE-3.1.0\fastclick.js" />
     <Content Include="Content\AdminLTE-3.1.0\font-awesome\css\font-awesome.css" />
     <Content Include="Content\AdminLTE-3.1.0\font-awesome\css\font-awesome.min.css" />
@@ -725,6 +730,9 @@
     <Content Include="Views\Reports\ZeroOrdersReport.cshtml" />
     <Content Include="Views\Reports\PodiumOrder.cshtml" />
     <Content Include="Views\Reports\CommissionEarnAgent.cshtml" />
+    <Content Include="Views\AgentCommissionRate\AddCommissionRate.cshtml" />
+    <Content Include="Views\AgentCommissionRate\AgentCommissionRate.cshtml" />
+    <Content Include="Views\AgentCommissionRate\UpdateCommission.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

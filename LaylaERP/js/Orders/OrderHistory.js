@@ -4,7 +4,19 @@ $(document).ready(function () {
         $('.subsubsub li a').removeClass('current');
         $(this).addClass('current');
     });
-    GetMonths();
+    datePickers(
+        moment().subtract(24, 'month').startOf('month'),
+        moment().subtract(0, 'month').endOf('month'),
+        $('#txtOrderDate'), 'YYYY-MM', true,
+        {
+            'This Month': [moment().startOf('month'), moment().endOf('month')],
+            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+            'Last Three Months': [moment().subtract(3, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+            'Last Year': [moment().subtract(12, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        },
+        true, true
+    );
+    //GetMonths();
     $("#ddlUser").select2({
         allowClear: true, minimumInputLength: 3, placeholder: "Search Customer",
         ajax: {
@@ -76,6 +88,8 @@ function GetOrderDetails() {
 function dataGridLoad(order_type) {
     var monthYear = '', cus_id = (parseInt($('#ddlUser').val()) || 0);
     if ($('#filter-by-date').val() != "0") monthYear = $('#filter-by-date').val();
+    let dfa = "'" + $('#txtOrderDate').val().replace(' - ', '\' AND \'') + "'" ;
+    dfa = dfa.replaceAll('-', '');
     $('#dtdata').DataTable({
         columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true,
@@ -93,7 +107,8 @@ function dataGridLoad(order_type) {
         },
         sAjaxSource: "/Orders/GetOrderList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
-            aoData.push({ name: "strValue1", value: monthYear });
+            //aoData.push({ name: "strValue1", value: monthYear });
+            aoData.push({ name: "strValue1", value: dfa });
             aoData.push({ name: "strValue2", value: (cus_id > 0 ? cus_id : '') });
             aoData.push({ name: "strValue3", value: order_type });
             var col = 'order_id';
@@ -101,7 +116,7 @@ function dataGridLoad(order_type) {
                 var col = oSettings.aaSorting[0][0] == 2 ? "customer_id" : oSettings.aaSorting[0][0] == 3 ? "FirstName" : oSettings.aaSorting[0][0] == 4 ? "LastName" : oSettings.aaSorting[0][0] == 5 ? "num_items_sold" : oSettings.aaSorting[0][0] == 6 ? "total_sales" : oSettings.aaSorting[0][0] == 6 ? "status" : oSettings.aaSorting[0][0] == 6 ? "date_created" : "order_id";
                 aoData.push({ name: "sSortColName", value: col });
             }
-            //console.log(aoData);
+            console.log(aoData);
             oSettings.jqXHR = $.ajax({
                 dataType: 'json', type: "GET", url: sSource, data: aoData,
                 "success": function (data) {

@@ -615,21 +615,8 @@ namespace LaylaERP.Controllers
             {
                 return Json(new { status = false, message = "Something went wrong", url = "" }, 0);
             }
-        }
-        public JsonResult CopyPermission(UserClassification model)
-        {
-            int role_id = model.role_id;
-            int roletoid = model.roleto;
-         
-            if (roletoid > 0)
-            {
-                new UsersRepositry().CopyPermission(roletoid, role_id);
-                return Json(new { status = true, message = "User Permission has been Copied successfully!!", url = "" }, 0);
-            }
-            else
-            {
-                return Json(new { status = false, message = "Something went wrong", url = "" }, 0);
-            }
+
+
         }
         public JsonResult getUserAuthMenu(LoginModel model)
         {
@@ -643,7 +630,7 @@ namespace LaylaERP.Controllers
                 foreach (DataRow dr in rows)
                 {
                     string myhtml = "";
-                    myhtml = "<div class=\"table-row\"><div><span class='menu-names'>" + dr["menu_name"].ToString() + "</span></div><div>&nbsp;</div><div><button><input type=\"checkbox\" id=\"chk_add_" + dr["menu_id"] + "\" onChange=\"checkchange(this);\" data-id=\"" + dr["menu_id"] + "\" {0}></input> <label>Add</label></button></div><div><button><input type=\"checkbox\" id=\"chk_edit_" + dr["menu_id"] + "\" {0}></input> <label>View & Edit</label></button></div><div><button><input type=\"checkbox\" id =\"chk_del_" + dr["menu_id"] + "\" onChange=\"checkchange(this);\" data-id=\"" + dr["menu_id"] + "\" {0}></input> <label>Delete</label></button></div></div>";
+                    myhtml = "<div class=\"table-row\"><div><span class='menu-names'>" + dr["menu_name"].ToString() + "</span></div><div>&nbsp;</div><div><button><input type=\"checkbox\" id=\"chk_add_" + dr["menu_id"] + "\" {0}></input> <label>Add</label></button></div><div><button><input type=\"checkbox\" id=\"chk_edit_" + dr["menu_id"] + "\" {0}></input> <label>View & Edit</label></button></div><div><button><input type=\"checkbox\" id =\"chk_del_" + dr["menu_id"] + "\" {0}></input> <label>Delete</label></button></div></div>";
 
                     row = new Dictionary<String, Object>();
                     row.Add("id", dr["menu_id"]);
@@ -697,7 +684,7 @@ namespace LaylaERP.Controllers
             foreach (DataRow dr in rows)
             {
                 string myhtml = "";
-                myhtml = "<div class=\"table-row\"><div><span class='menu-names2'>" + dr["menu_name"].ToString() + "</span></div><div>&nbsp;</div><div><button><input type=\"checkbox\" class=\"checkAdd\" id=\"chk_add_" + dr["menu_id"] + "\" onChange=\"checkchange(this);\" data-id=\"" + dr["menu_id"] + "\" {0}></input> <label>Add</label></button></div><div><button><input type=\"checkbox\"  onChange=\"checkchange(this);\" data-id=\"" + dr["menu_id"] + "\" id=\"chk_edit_" + dr["menu_id"] + "\" {0}></input> <label>View & Edit</label></button></div><div><button><input type=\"checkbox\"  onChange=\"checkchange(this);\" data-id=\"" + dr["menu_id"] + "\" id =\"chk_del_" + dr["menu_id"] + "\" {0}></input> <label>Delete</label></button></div></div>";
+                myhtml = "<div class=\"table-row\"><div><span class='menu-names2'>" + dr["menu_name"].ToString() + "</span></div><div>&nbsp;</div><div><button><input type=\"checkbox\" id=\"chk_add_" + dr["menu_id"] + "\" {0}></input> <label>Add</label></button></div><div><button><input type=\"checkbox\" id=\"chk_edit_" + dr["menu_id"] + "\" {0}></input> <label>View & Edit</label></button></div><div><button><input type=\"checkbox\" id =\"chk_del_" + dr["menu_id"] + "\" {0}></input> <label>Delete</label></button></div></div>";
 
                 row = new Dictionary<String, Object>();
                 row.Add("id", dr["menu_id"]);

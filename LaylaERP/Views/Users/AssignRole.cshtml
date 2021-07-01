@@ -32,12 +32,20 @@
                         <h2 class="sm-heading">User Roles</h2>
                         <div class="form-group form-user-role">
                             <select id="userrole" class="form-control select2">
-                                <option selected="selected">Select Type</option>
+                                 <option selected="selected" value="">Please select</option>
                             </select>
+                            <label style="margin-right: 10px;">Copy role to  </label>
+                            <select id="ddlCopyRole" class="form-control select2">
+                                <option selected="selected" value="">Please select</option>
+                            </select>
+                            <button type="button" id="btnCopyRole" class="btn btn-danger" style="margin-right: 10px;">
+                                <i class="fa fa-check"></i> Go
+                            </button>
                             <button type="button" id="btnAddRole" class="btn btn-danger" data-toggle="modal" data-target="#roleModal">
                                 <i class="fa fa-plus"></i> Add New Role
                             </button>
                         </div>
+
                         <div class="form-group form-user-role">
                             <button type="button" id="btnApprove" class="btn btn-danger"><i class="fa fa-check"></i> Role Approve</button>
                         </div>
@@ -46,11 +54,15 @@
             </div>
             <div class="col-md-12">
                 <div class="row">
-                <div class="box box-primary">
-                    <div class="box-header">
-                        <ul id="tt" class="easyui-tree" data-options="animate:true,checkbox:true"></ul>
+                    @*<input type="checkbox" name="checkAll" id="checkAll"><label>Check All</label>
+                    <input type="checkbox" name="checkAdd" id="checkAdd"><label>Check Add</label>
+                    <input type="checkbox" name="checkEdit" id="checkEdit"><label>Check Edit</label>
+                    <input type="checkbox" name="checkDelete" id="checkDelete"><label>Check Delete</label>*@
+                    <div class="box box-primary">
+                        <div class="box-header">
+                            <ul id="tt" class="easyui-tree" data-options="animate:true,checkbox:true"></ul>
+                        </div>
                     </div>
-                </div>
                 </div>
             </div>
             <input type="hidden" name="User_Type" id="user_type" />
@@ -88,6 +100,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         GetRoles();
+        CopyRoles();
         fillCheckMenu();
     })
 </script>

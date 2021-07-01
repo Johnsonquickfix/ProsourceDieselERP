@@ -2,51 +2,26 @@
 function GetRoles() {
     $.get('GetRoles', function (data) {
         var items = "";
-        items += "<option value='' disabled selected>Please select</option>";
-        $('#userrole').empty();
+        //$('#userrole').empty();
+        items += "<option value=''>Please select</option>";
         $.each(data, function (index, value) {
             items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#userrole");
         })
         $('#userrole').bind(items);
     })
-    //ischecked();
 };
-//bind grid
-//function RoleGrid() {
-//    debugger
-//    $.ajax({
-//        url: '/Users/GetMenuNames',
-//        method: 'post',
-//        datatype: 'json',
-//        contentType: "application/json; charset=utf-8",
-//        success: function (data) {
-//            $('#dtdata').dataTable({
-//                data: JSON.parse(data),
-//                "columns": [
-//                    {
-//                        'data': 'menu_id', sWidth: "2%   ",
-//                        'render': function (data, type, full, meta) {
-//                            return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + $('<div/>').text(data).html() + '"><label></label>';
-//                        }
-//                    },
-//                    { data: 'menu_id', title: 'Menu ID', sWidth: "8%" },
-//                    { data: 'menu_name', title: 'Menu Name', sWidth: "14%" },
-//                    { data: 'menu_url', title: 'Menu URL', sWidth: "14%" },
-//                ]
-//            });
-//        },
-//        error: function (xhr, ajaxOptions, thrownError) {
-//            alert(xhr.responseText);
-//        }
-//    });
 
-//}
+function CopyRoles() {
+    $.get('GetRoles', function (data) {
+        var items = "";
+        items += "<option value=''>Please select</option>";
+        $.each(data, function (index, value) {
+            items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddlCopyRole");
+        })
+        $('#ddlCopyRole').bind(items);
+    })
+};
 
-//checkbox start
-$('#checkAll').click(function () {
-    var isChecked = $(this).prop("checked");
-    $('#dtdata tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
-});
 function Singlecheck() {
     var isChecked = $('#CheckSingle').prop("checked");
     var isHeaderChecked = $("#checkAll").prop("checked");
@@ -65,12 +40,7 @@ function Singlecheck() {
 //Give Permission
 $('#btnApprove').click(function () {
     var nodes = $('#tt').tree('getChecked');
-    var addnodes = '';
-    
-    var id = '';
-    var addid = '';
-    var editid = '';
-    var deleteid = '';
+    var addnodes = ''; var id = ''; var addid = ''; var editid = ''; var deleteid = '';
 
     for (var i = 0; i < nodes.length; i++) {
         addnodes = $('#chk_add_' + nodes[i].id).prop('checked');
@@ -80,25 +50,12 @@ $('#btnApprove').click(function () {
         if (id != '') id += ',';
         id += nodes[i].id;
 
-        if (addnodes == true) {
-            if (addid != '') addid += ',';
-            addid += nodes[i].id;
-        }
-        if (editnodes == true) {
-            if (editid != '') editid += ',';
-            editid += nodes[i].id;
-        }
-        if (deletenodes == true) {
-            if (deleteid != '') deleteid += ',';
-            deleteid += nodes[i].id;
-        }
-        //console.log($('#chk_add_' + nodes[i].id), $('#chk_edit_' + nodes[i].id), $('#chk_del_' + nodes[i].id));
+        if (addnodes == true) { if (addid != '') addid += ','; addid += nodes[i].id; }
+        if (editnodes == true) { if (editid != '') editid += ','; editid += nodes[i].id; }
+        if (deletenodes == true) { if (deleteid != '') deleteid += ','; deleteid += nodes[i].id; }
     }
-    //console.log(addid);
-    //console.log(editid);
-    //console.log(deleteid);
     ChangePermission(id, addid, editid, deleteid);
-   
+
 
 })
 
@@ -134,28 +91,6 @@ $("#userrole").change(function () {
     fillCheckMenu();
 });
 
-//function ischecked() {
-//    var User_Type = { User_Type: $("#userrole :selected").text() };
-//    $("#user_type").val($("#userrole :selected").text());
-//    $.ajax({
-//        url: '/Users/GetAssignRole',
-//        type: 'POST',
-//        contentType: "application/json; charset=utf-8",
-//        dataType: "json",
-//        data: JSON.stringify(User_Type),
-//        success: function (data) {
-//            var obj = JSON.parse(data);
-//            $('#dtdata tr:has(td)').find('input[type="checkbox"]').prop('checked', false);
-//            for (i = 0; i < obj.length; i++) {
-//                $('#dtdata tr:has(td)').find('input[type="checkbox"][value="' + obj[i].erpmenu_id + '"]').prop('checked', true);
-//            }
-//        },
-//        error: function (responce) {
-//            console.log(responce)
-//        }
-//    });
-//}
-
 //add new role
 $('#btnSaveRole').click(function () {
     var role = $('#txtRoleName').val();
@@ -182,6 +117,36 @@ $('#btnSaveRole').click(function () {
     }
 });
 
+//add new role
+$('#btnCopyRole').click(function () {
+    var rolefrom = $('#userrole').val();
+    var roleto = $('#ddlCopyRole').val();
+    if (rolefrom == "") { swal("alert", "Please select user role first.", "error").then(function () { swal.close(); $('#userrole').focus(); }) }
+    else if (roleto == "") { swal("alert", "Please select copy to user role.", "error").then(function () { swal.close(); $('#ddlCopyRole').focus(); }) }
+    else {
+        var obj = { role_id: rolefrom, roleto: roleto }
+        $.ajax({
+            url: '/Users/CopyPermission/', dataType: 'json', type: 'Post',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(obj),
+            dataType: "json",
+            beforeSend: function () {
+                $("#loader").show();
+            },
+            success: function (data) {
+                swal("alert", data.message, "success");
+                fillCheckMenu();
+            },
+            complete: function () {
+                $("#loader").hide();
+            },
+            error: function () {
+                swal("alert", "something went wrong", "error");
+            }
+        })
+    }
+});
+
 //Fill Menu
 
 function fillCheckMenu() {
@@ -196,44 +161,81 @@ function fillCheckMenu() {
         data: JSON.stringify(obj),
         success: function (data) {
             console.log(data);
-           /* $('.treeview').empty();*/
             $('#tt').tree({
                 data: data,
                 idField: 'id',
                 treeField: 'text',
                 height: '100%',
-                //columns: [[
-                //    { title: 'text', field: 'text', width: 240 },
-                //    {
-                //        title: 'id', field: 'id', width: 50, editor: {
-                //            type: 'checkbox',
-                //            options: {
-                //                on: true,
-                //                off: false
-                //            }
-                //        }
-                //    }
-                //]],
             });
-
-            //var tw = new TreeView(data, { showAlwaysCheckBox: true, fold: false });
-            //$('#chktree').append(tw.root);
+            collapseAll();
         },
         error: function (jqXHR, textStatus, errorThrown) { swal('Error!', errorThrown, "error"); }
     });
 }
 
-function CheckNone() {
-    var isChecked = $('#CheckNone').prop("checked");
-    var nodes = $('#CheckNone').tree('getChecked');
-    var id = '';
+function collapseAll() {
+    $('#tt').tree('collapseAll');
+}
+
+$('#checkAdd').click(function () {
+
+    var nodes = $('#tt').tree('getChecked', ['checked', 'unchecked']);
+    var isChecked = $('#checkAdd').prop("checked");
     for (var i = 0; i < nodes.length; i++) {
-        if (id != '') id += ',';
-        id += nodes[i].id;
+        if (isChecked == true) {
+            $('#chk_add_' + nodes[i].id).prop('checked', true);
+        }
+        else {
+            $('#chk_add_' + nodes[i].id).prop('checked', false);
+        }
     }
-    //ChangePermission(id);
-    console.log(id);
+ 
+});
+$('#checkEdit').click(function () {
+    var nodes = $('#tt').tree('getChecked', ['checked', 'unchecked']);
+    var isChecked = $('#checkEdit').prop("checked");
+    for (var i = 0; i < nodes.length; i++) {
+        if (isChecked == true) {
+            $('#chk_edit_' + nodes[i].id).prop('checked', true);
+        }
+        else {
+            $('#chk_edit_' + nodes[i].id).prop('checked', false);
+        }
+    }
+});
+$('#checkDelete').click(function () {
+    var nodes = $('#tt').tree('getChecked', ['checked', 'unchecked']);
+    var isChecked = $('#checkDelete').prop("checked");
+    for (var i = 0; i < nodes.length; i++) {
+        if (isChecked == true) {
+            $('#chk_del_' + nodes[i].id).prop('checked', true);
+        }
+        else {
+            $('#chk_del_' + nodes[i].id).prop('checked', false);
+        }
+    }
+});
+$('#checkAll').click(function () {
+    var isChecked = $(this).prop("checked");
+    var roots = $('#tt').tree('getRoots');  // because it can be more roots
+    console.log(roots);
+    for (var i = 0; i < roots.length; i++) {
+        if (isChecked)
+            $("#tt").tree('check', roots[i].target);
+        else
+            $("#tt").tree('uncheck', roots[i].target);
+    };
+   
+
+});
+
+function checkchange(elem) {
+    var myNode = $('#tt').tree('find', $(elem).data("id"));
+        $("#tt").tree('check', myNode.target);
     console.log(isChecked);
-    
+}
+
+function rootChange(elem) {
+    console.log(elem);
 }
 

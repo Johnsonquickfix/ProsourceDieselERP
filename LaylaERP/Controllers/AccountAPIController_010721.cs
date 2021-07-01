@@ -152,36 +152,6 @@
             return varUserType;
         }
 
-        //[HttpPost]
-        //public JsonResult getMenus(LoginModel model)
-        //{
-        //    List<Dictionary<String, Object>> tableRows = new List<Dictionary<String, Object>>();
-        //    Dictionary<String, Object> row;
-        //    try
-        //    {
-        //        DataTable DT = Users.GetUserMenuAuth(CommanUtilities.Provider.GetCurrent().UserID);
-        //        DataRow[] rows = DT.Select("level = 0", "menu_code");
-        //        foreach (DataRow dr in rows)
-        //        {
-        //            row = new Dictionary<String, Object>();
-        //            row.Add("id", dr["menu_id"]);
-        //            row.Add("text", dr["menu_name"]);
-        //            if (dr["menu_url"].ToString().Trim() != "#")
-        //                row.Add("url", dr["menu_url"]);
-        //            row.Add("urlType", "none");
-        //            row.Add("targetType", "iframe-tab");
-        //            row.Add("level", dr["level"]);
-        //            row.Add("icon", dr["menu_icon"]);
-        //            if (dr["parent_id"] != DBNull.Value)
-        //                row.Add("parent", dr["parent_id"]);
-        //            List<Dictionary<string, object>> list2 = Getdata(DT, Convert.ToInt32(dr["menu_id"]));
-        //            row.Add("children", list2);
-        //            tableRows.Add(row);
-        //        }
-        //    }
-        //    catch (Exception ex) { throw ex; }
-        //    return Json(tableRows, 0);
-        //}
         [HttpPost]
         public JsonResult getMenus(LoginModel model)
         {
@@ -189,8 +159,7 @@
             Dictionary<String, Object> row;
             try
             {
-                DataTable DT = Users.GetUserMenuAuth(CommanUtilities.Provider.GetCurrent().UserType);
-                //DataTable DT = Users.GetUserAuth(model.userId.Value);
+                DataTable DT = Users.GetUserMenuAuth(CommanUtilities.Provider.GetCurrent().UserID);
                 DataRow[] rows = DT.Select("level = 0", "menu_code");
                 foreach (DataRow dr in rows)
                 {
@@ -210,9 +179,39 @@
                     tableRows.Add(row);
                 }
             }
-            catch { }
+            catch (Exception ex) { throw ex; }
             return Json(tableRows, 0);
         }
+        //[HttpPost]
+        //public JsonResult getMenus(LoginModel model)
+        //{
+        //    List<Dictionary<String, Object>> tableRows = new List<Dictionary<String, Object>>();
+        //    Dictionary<String, Object> row;
+        //    try
+        //    {
+        //        DataTable DT = Users.GetUserMenuAuth(model.userId.Value);
+        //        DataRow[] rows = DT.Select("level = 0", "menu_code");
+        //        foreach (DataRow dr in rows)
+        //        {
+        //            row = new Dictionary<String, Object>();
+        //            row.Add("id", dr["menu_id"]);
+        //            row.Add("text", dr["menu_name"]);
+        //            if (dr["menu_url"].ToString().Trim() != "#")
+        //                row.Add("url", dr["menu_url"]);
+        //            row.Add("urlType", "none");
+        //            row.Add("targetType", "iframe-tab");
+        //            row.Add("level", dr["level"]);
+        //            row.Add("icon", dr["menu_icon"]);
+        //            if (dr["parent_id"] != DBNull.Value)
+        //                row.Add("parent", dr["parent_id"]);
+        //            List<Dictionary<string, object>> list2 = Getdata(DT, Convert.ToInt32(dr["menu_id"]));
+        //            row.Add("children", list2);
+        //            tableRows.Add(row);
+        //        }
+        //    }
+        //    catch { }
+        //    return Json(tableRows, 0);
+        //}
         public static List<Dictionary<string, object>> Getdata(DataTable DT, int ParentID)
         {
             List<Dictionary<string, object>> list = new List<Dictionary<string, object>>();

@@ -1014,7 +1014,14 @@ function getItemShippingCharge() {
     var v_ids = [];
     $("#tblAddItemFinal > tbody  > tr").each(function () { v_ids.push($(this).data('vid')); });
     let shipping_state = $("#ddlshipcountry").val() == 'US' ? $("#ddlshipstate").val() : $("#ddlshipcountry").val();
+    console.log(shipping_state);
+
+    if (shipping_state == "CA") {
+        shipping_state = "CAA";
+    }
+
     var options = { strValue1: v_ids.join(','), strValue2: shipping_state };
+    console.log(options);
     $(".TotalAmount").data("shippingamt", 0.00);
     $.ajax({
         type: "POST", url: '/Orders/GetProductShipping', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(options),

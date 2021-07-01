@@ -10,7 +10,7 @@
 <script src="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/js/dataTables.bootstrap.min.js" type="text/javascript"></script>
 
 <div class="page-title">
-    <h2 class="page-heading">Commission</h2><a class="btn btn-danger" href="AddCommissionRate">Add</a>
+    <h2 class="page-heading">Commission Rate</h2><a class="btn btn-danger" href="AddCommissionRate">Add</a>
 </div>
 <div class="userrole_section section_wrapper">
     @*<form id="saveForm" name="saveForm" method="post" autocomplete="off">*@
@@ -22,7 +22,7 @@
                         <th>Id</th>
                         <th>AOV Range1</th>
                         <th>AOV Range2</th>
-                        <th>Commission Rate</th>
+                        <th>Commission Rate (%)</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -58,7 +58,7 @@
                         { data: 'id', title: 'Id', sWidth: "10%" },
                         { data: 'AOV_Range1', title: 'AOV Range1', sWidth: "10%" },
                         { data: 'AOV_Range2', title: 'AOV Range2', sWidth: "20%" },
-                        { data: 'Comm_Rate', title: 'Commission Rate', sWidth: "20%" },
+                        { data: 'Comm_Rate', title: 'Commission Rate (%)', sWidth: "20%" },
                         {
                             'data': 'id', sWidth: "10%",
                             'render': function (id, type, full, meta) {

@@ -16,7 +16,7 @@ namespace LaylaERP.BAL
             DataTable dtr = new DataTable();
             try
             {
-                string strquery = "Select * from wp_agent_commission order by id;";
+                string strquery = "Select id, AOV_Range1, AOV_Range2,Format(Comm_Rate,2) as Comm_Rate from wp_agent_commission order by id;";
                 dtr = SQLHelper.ExecuteDataTable(strquery);
             }
             catch (Exception ex)
@@ -51,7 +51,7 @@ namespace LaylaERP.BAL
             try
             {
 
-                string strSql = "SELECT id, AOV_Range1, AOV_Range2, Comm_Rate from wp_agent_commission where id =" + id + "";
+                string strSql = "SELECT id, AOV_Range1, AOV_Range2, Format(Comm_Rate,2) as Comm_Rate from wp_agent_commission where id =" + id + "";
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
 

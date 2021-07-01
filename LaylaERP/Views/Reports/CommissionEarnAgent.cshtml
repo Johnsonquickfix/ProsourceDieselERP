@@ -1,0 +1,283 @@
+﻿
+@{
+    ViewBag.Title = "CommissionEarnAgent";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+<link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
+<!-- datatables js -->
+<script src="~/Content/AdminLTE-3.1.0/datatables/datatables.min.js" type="text/javascript"></script>
+<script src="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/js/dataTables.bootstrap4.min.js" type="text/javascript"></script>
+<div class="page-title">
+    <h2>Commission Earn Agent</h2>
+</div>
+
+<div class="contennt setting-section">
+    <div class="nav-tabs-custom">
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#tab_1" data-toggle="tab">Commission Orders Details</a></li>
+            <li><a href="#tab_2" data-toggle="tab">Commission Earn Agent</a></li>
+         
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane active" id="tab_1">
+                <div class="user-top-section">
+                    <div class="tablenav top">
+                        <div class="alignleft actions bulkactions">
+                            <form method="GET">
+                                <div>
+                                    <input type="text" size="11" id="start_date" placeholder="mm-dd-yyyy" name="start_date" class="range_datepicker from hasDatepicker" autocomplete="off">
+
+                                    <input type="text" size="11" id="end_date" placeholder="mm-dd-yyyy" name="end_date" class="range_datepicker to hasDatepicker" autocomplete="off">
+                                    <input type="button" id="filtersrchexp" value="Search" class="button" />
+                                </div>
+                            </form>
+
+                            @*<input type="submit" name="filtersrchexp" value="Export" class="button button-primary" />*@
+                        </div>
+                    </div>
+                </div>
+                <div id="poststuff" class="woocommerce-reports-wide">
+                    <div class="box box-primary">
+                        <div class="box-header">
+                            <table id="dtdata" class="table-blue table check-table table-bordered table-striped dataTable" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>Order ID</th>
+                                        <th>Employee Name</th>
+                                        <th>Grand Total</th>
+                                        <th>Merchandise Total</th>
+                                        <th>Tax</th>
+                                        <th>Recycling Fee</th>
+                                        <th>Coupon Amount</th>
+                                        <th>Commissionable Amount</th>
+                                        <th>Status</th>
+                                        <th>Paid Date</th>
+                                        <th>Transaction ID</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane" id="tab_2">
+                <div class="user-top-section">
+                    <div class="tablenav top">
+                        <div class="alignleft actions bulkactions">
+                            <div class="alignleft actions bulkactions">
+                                <form method="GET">
+                                    <div>
+                                        <input type="text" size="11" id="start_dateE" placeholder="mm-dd-yyyy" name="start_dateE" class="range_datepicker from hasDatepicker" autocomplete="off">
+
+                                        <input type="text" size="11" id="end_dateE" placeholder="mm-dd-yyyy" name="end_dateE" class="range_datepicker to hasDatepicker" autocomplete="off">
+                                        <input type="button" id="filtersrchexpE" value="Search" class="button" />
+                                    </div>
+                                </form>
+
+                                @*<input type="submit" name="filtersrchexp" value="Export" class="button button-primary" />*@
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="poststuff" class="woocommerce-reports-wide">
+                    <div class="box box-primary">
+                        <div class="box-header">
+                            <table id="dtdataemployee" class="table-blue table check-table table-bordered table-striped dataTable" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>Row Labels</th>
+                                        <th>Sum of Commissionable Amount</th>
+                                        <th>Count of Order ID</th>
+                                        <th>AOV</th>
+                                        <th>Commission Earned</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        //setTimeout(function () { DatagridOrder(); }, 50);
+        $("#filtersrchexp").click(function () {
+            if ($("#start_date").val() == "") {
+                swal('Alert', 'Please Enter Start_Date', 'error').then(function () { swal.close(); $('#start_date').focus(); });
+            }
+            else if ($("#end_date").val() == "") {
+                swal('Alert', 'Please enter End_Date', 'error').then(function () { swal.close(); $('#end_date').focus(); });
+            }
+            else {
+
+                DatagridOrder();
+           
+                //$("#month").val("");
+                //  $("#year").val("");
+                return false;
+
+            }
+        });
+      //  setTimeout(function () { DatagridOrder(); }, 50);
+        $("#filtersrchexpE").click(function () {
+            if ($("#start_dateE").val() == "") {
+                swal('Alert', 'Please Enter Start_Date', 'error').then(function () { swal.close(); $('#start_dateE').focus(); });
+            }
+            else if ($("#end_dateE").val() == "") {
+                swal('Alert', 'Please enter End_Date', 'error').then(function () { swal.close(); $('#end_dateE').focus(); });
+            }
+            else {
+
+               
+                DatagridOrderDetails();
+                //$("#month").val("");
+                //  $("#year").val("");
+                return false;
+
+            }
+        });
+       // setTimeout(function () { DatagridOrderDetails(); }, 50);
+    });
+
+    function DatagridOrder() {
+        var Month = $("#start_date").val();
+        var Year = $("#end_date").val();
+        //var obj = { mydate: mydate };
+        $('#dtdata').DataTable({
+            destroy: true,
+            "scrollX": true,
+            searching: false,
+            "ajax": {
+                "url": '/Reports/GetPodiumOrderDetails',
+                "type": 'POST',
+                "dataType": 'json',
+                "data": { Month: Month, Year: Year }
+                //"data": JSON.stringify(obj)
+
+            },
+            "columns": [
+
+
+                { 'data': 'order_id', 'sWidth': "5%" },
+                { 'data': 'first_name', 'sWidth': "15%" },
+                { 'data': 'total', 'sWidth': "10%" },
+                { 'data': 'subtotal', 'sWidth': "15%" },
+                { 'data': 'tax', 'sWidth': "5%" },
+                { 'data': 'fee', 'sWidth': "10%" },
+                { 'data': 'address', 'sWidth': "15%" },
+                { 'data': 'Discount', 'sWidth': "10%" },
+                { 'data': 'orderstatus', 'sWidth': "10%" },
+                {
+                    'data': 'created_date', sWidth: "10%",
+                    'render': function (jsonDate) {
+                        var date = new Date(parseInt(jsonDate.substr(6)));
+                        var datevalue = ("0" + (date.getDate())).slice(-2);
+                        return ("0" + (date.getMonth() + 1)).slice(-2) + '-' + datevalue + '-' + date.getFullYear() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+                    }
+                },
+
+                //{ 'data':'orderstatus' },
+                { 'data': 'customer_id', 'sWidth': "15%" },
+
+
+            ],
+            columnDefs: [{
+                orderable: false,
+                data: null,
+                defaultContent: '',
+            }],
+
+            "order": [1, 'asc'],
+
+            "dom": 'Bfrtip',
+            "buttons": [
+
+                {
+                    extend: 'csv',
+                    className: 'button',
+                    text: '<i class="fas fa-file-csv"></i> Export',
+                    filename: function () {
+                        var from = $("#start_date").val();
+                        var to = $("#end_date").val();
+                        from.replace('/', '.');
+                        to.replace('/', '.');
+                        return from + '-' + to;
+                    },
+                },
+
+            ],
+
+        });
+    }
+    function DatagridOrderDetails() {
+        var Month = $("#start_date").val();
+        var Year = $("#end_date").val();
+        //var obj = { mydate: mydate };
+        $('#dtdataemployee').DataTable({
+            destroy: true,
+            "scrollX": true,
+            searching: false,
+            "ajax": {
+                "url": '/Reports/GetPodiumEmployeeOrderDetails',
+                "type": 'POST',
+                "dataType": 'json',
+                "data": { Month: Month, Year: Year }
+                //"data": JSON.stringify(obj)
+
+            },
+            "columns": [
+
+
+                { 'data': 'first_name', 'sWidth': "5%" },
+                { 'data': 'fee', 'sWidth': "15%" },
+                { 'data': 'order_id', 'sWidth': "10%" },
+                { 'data': 'tax', 'sWidth': "15%" },
+                { 'data': 'total', 'sWidth': "5%" },
+
+
+
+            ],
+            columnDefs: [{
+                orderable: false,
+                data: null,
+                defaultContent: '',
+            }],
+
+            "order": [1, 'asc'],
+
+            "dom": 'Bfrtip',
+            "buttons": [
+
+                {
+                    extend: 'csv',
+                    className: 'button',
+                    text: '<i class="fas fa-file-csv"></i> Export',
+                    filename: function () {
+                        var from = $("#start_date").val();
+                        var to = $("#end_date").val();
+                        from.replace('/', '.');
+                        to.replace('/', '.');
+                        return from + '-' + to;
+                    },
+                },
+
+            ],
+
+        });
+    }
+
+    jQuery(function ($) {
+        $('[name="start_date"], [name="end_date"]').datepicker();
+    });
+    jQuery(function ($) {
+        $('[name="start_dateE"], [name="end_dateE"]').datepicker();
+    });
+</script>
+ 
+

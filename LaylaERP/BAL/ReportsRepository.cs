@@ -228,7 +228,7 @@ namespace LaylaERP.BAL
                     + " format(umatotal.meta_value, 2) Total,"
                     + " format(umadiscount.meta_value, 2) Discount,"
                     + " format(umatax.meta_value, 2) Tax,"
-                    + " umpodiumdate.meta_value Podiumdate,"
+                    + " post_date Podiumdate,"
                     + " umtransaction.meta_value TransactionID,"
                     + " umorerItemmeta.meta_value SubTotal,"
                     + " umorerItemmetafee.meta_value Fee,"
@@ -236,8 +236,7 @@ namespace LaylaERP.BAL
                     + " FROM wp_posts u"                    
                     + " LEFT OUTER JOIN wp_postmeta umatotal on umatotal.meta_key = '_order_total' And umatotal.post_id = u.ID"
                     + " LEFT OUTER JOIN wp_postmeta umadiscount on umadiscount.meta_key = '_cart_discount' And umadiscount.post_id = u.ID"
-                    + " LEFT OUTER JOIN wp_postmeta umatax on umatax.meta_key = '_order_tax' And umatax.post_id = u.ID"
-                    + " LEFT OUTER JOIN wp_postmeta umpodiumdate on umpodiumdate.meta_key = 'post_date' And umpodiumdate.post_id = u.ID"
+                    + " LEFT OUTER JOIN wp_postmeta umatax on umatax.meta_key = '_order_tax' And umatax.post_id = u.ID"              
                     + " LEFT OUTER JOIN wp_postmeta umtransaction on umtransaction.meta_key = '_transaction_id' And umtransaction.post_id = u.ID"
                     + " LEFT OUTER JOIN wp_postmeta umempname on umempname.meta_key = 'employee_name' And umempname.post_id = u.ID"
                     + " LEFT OUTER JOIN wp_woocommerce_order_items umorerItem on umorerItem.order_item_type='line_item' And umorerItem.order_id = u.ID"
@@ -274,7 +273,148 @@ namespace LaylaERP.BAL
             }
             catch (Exception ex) { throw ex; }
         }
-          
+
+        public static void GetPodiumOrderDetails(string from_date, string to_date)
+        {
+            try
+            {
+                exportorderlist.Clear();
+                string ssql;
+
+                if (from_date != "" && to_date != "")
+                {
+                    DateTime fromdate = DateTime.Now, todate = DateTime.Now;
+                    fromdate = DateTime.Parse(from_date);
+                    todate = DateTime.Parse(to_date);
+
+                    ssql = "SELECT distinct ID,post_date,REPLACE(u.post_status, 'wc-', '') post_status,"
+                    + " format(umatotal.meta_value + IFNULL(umatax.meta_value,0) + IFNULL(umorerItemmetafee.meta_value,0) , 2) Total,"
+                    + " format(umadiscount.meta_value, 2) Discount,"
+                    + " format((umatotal.meta_value + umadiscount.meta_value) - umadiscount.meta_value, 2) CommissionableAmount,"
+                    + " format(umatax.meta_value, 2) Tax,"
+                    + " post_date Podiumdate,"
+                    + " umtransaction.meta_value TransactionID,"
+                    + " format(umatotal.meta_value + umadiscount.meta_value,2) SubTotal,"
+                    + " format(umorerItemmetafee.meta_value,2) Fee,"
+                    + " umempname.meta_value EName"
+                    + " FROM wp_posts u"
+                    + " LEFT OUTER JOIN wp_postmeta umatotal on umatotal.meta_key = '_order_total' And umatotal.post_id = u.ID"
+                    + " LEFT OUTER JOIN wp_postmeta umadiscount on umadiscount.meta_key = '_cart_discount' And umadiscount.post_id = u.ID"
+                    + " LEFT OUTER JOIN wp_postmeta umatax on umatax.meta_key = '_order_tax' And umatax.post_id = u.ID"                
+                    + " LEFT OUTER JOIN wp_postmeta umtransaction on umtransaction.meta_key = '_transaction_id' And umtransaction.post_id = u.ID"
+                    + " LEFT OUTER JOIN wp_postmeta umempname on umempname.meta_key = 'employee_name' And umempname.post_id = u.ID"
+
+                    //+ " LEFT OUTER JOIN wp_woocommerce_order_items umorerItem on umorerItem.order_item_type='line_item' And umorerItem.order_id = u.ID"
+                    //+ " LEFT OUTER JOIN wp_woocommerce_order_itemmeta umorerItemmeta on umorerItemmeta.meta_key='_line_subtotal' And umorerItemmeta.order_item_id = umorerItem.order_id"
+
+                    + " LEFT OUTER JOIN wp_woocommerce_order_items umorerfee on umorerfee.order_item_type='fee' And umorerfee.order_id = u.ID"
+                    + " LEFT OUTER JOIN wp_woocommerce_order_itemmeta umorerItemmetafee on umorerItemmetafee.meta_key='_fee_amount' And umorerItemmetafee.order_item_id = umorerfee.order_item_id"
+                    + " WHERE post_status IN ('wc-completed','wc-processing') and  DATE(post_date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and DATE(post_date)<= '" + todate.ToString("yyyy-MM-dd") + "' order by post_status";
+
+                }
+                else
+                {
+                    ssql = "";
+                }
+
+
+                DataSet ds1 = new DataSet();
+                ds1 = DAL.SQLHelper.ExecuteDataSet(ssql);
+                for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
+                {
+                    Export_Details uobj = new Export_Details();
+                    uobj.order_id = Convert.ToInt32(ds1.Tables[0].Rows[i]["ID"].ToString());
+                    if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["Podiumdate"].ToString()))
+                        uobj.created_date = Convert.ToDateTime(ds1.Tables[0].Rows[i]["Podiumdate"].ToString());
+                    uobj.orderstatus = ds1.Tables[0].Rows[i]["post_status"].ToString();
+                    if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["Discount"].ToString()))
+                        uobj.address = "$" + ds1.Tables[0].Rows[i]["Discount"].ToString();
+                    else
+                        uobj.address = "";
+                    if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["Tax"].ToString()))
+                        uobj.tax = "$" + ds1.Tables[0].Rows[i]["Tax"].ToString();
+                    else
+                        uobj.tax = "";
+                    if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["Total"].ToString()))
+                        uobj.total = "$" + ds1.Tables[0].Rows[i]["Total"].ToString();
+                    else
+                        uobj.total = "";
+                    uobj.customer_id = ds1.Tables[0].Rows[i]["TransactionID"].ToString();
+                    uobj.first_name = ds1.Tables[0].Rows[i]["EName"].ToString();
+                    if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["Fee"].ToString()))
+                        uobj.fee = "$" + ds1.Tables[0].Rows[i]["Fee"].ToString();
+                    else
+                        uobj.fee = "";
+                    if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["SubTotal"].ToString()))
+                        uobj.subtotal = "$" + ds1.Tables[0].Rows[i]["SubTotal"].ToString();
+                    else
+                        uobj.subtotal = "";
+                    if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["CommissionableAmount"].ToString()))
+                        uobj.Discount = "$"+ ds1.Tables[0].Rows[i]["CommissionableAmount"].ToString();
+                    else                
+                        uobj.Discount = "";
+                    exportorderlist.Add(uobj);
+                }
+            }
+            catch (Exception ex) { throw ex; }
+        }
+
+        public static void GetPodiumEmployeeOrderDetails(string from_date, string to_date)
+        {
+            try
+            {
+                exportorderlist.Clear();
+                string ssql;
+
+                if (from_date != "" && to_date != "")
+                {
+                    DateTime fromdate = DateTime.Now, todate = DateTime.Now;
+                    fromdate = DateTime.Parse(from_date);
+                    todate = DateTime.Parse(to_date);
+
+                    ssql = "SELECT count(ID) CunrID,sum(umatotal.meta_value) CommissionableAmount,umempname.meta_value EName,"
+                    + " sum(umatotal.meta_value)/count(ID) AOV,"
+                    + " case when sum(umatotal.meta_value)/count(ID) <= 1299 then 3.50 when  sum(umatotal.meta_value)/count(ID)  <= 1799   then 3.75 when  sum(umatotal.meta_value)/count(ID) >= 1800 then 4.00 end AS ComEarned ,"
+                    + " ((case when sum(umatotal.meta_value)/count(ID) <= 1299 then 3.50 when  sum(umatotal.meta_value)/count(ID)  <= 1799   then 3.75 when  sum(umatotal.meta_value)/count(ID) >= 1800 then 4.00 end) * (sum(umatotal.meta_value))) / 100 CommissionEarned"                    
+                    + " FROM wp_posts u"
+                    + " LEFT OUTER JOIN wp_postmeta umatotal on umatotal.meta_key = '_order_total' And umatotal.post_id = u.ID "
+                    + " LEFT OUTER JOIN wp_postmeta umempname on umempname.meta_key = 'employee_name' And umempname.post_id = u.ID "     
+                    + " WHERE post_status IN ('wc-completed','wc-processing') and  DATE(post_date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and DATE(post_date)<= '" + todate.ToString("yyyy-MM-dd") + "' group by EName";
+
+                }
+                else
+                {
+                    ssql = "";
+                }
+
+
+                DataSet ds1 = new DataSet();
+                ds1 = DAL.SQLHelper.ExecuteDataSet(ssql);
+                for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
+                {
+                    Export_Details uobj = new Export_Details();
+                    uobj.order_id = Convert.ToInt32(ds1.Tables[0].Rows[i]["CunrID"].ToString());
+                   
+                    if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["CommissionableAmount"].ToString()))
+                        uobj.fee = "$" + ds1.Tables[0].Rows[i]["CommissionableAmount"].ToString();
+                    else
+                        uobj.fee = "";
+                    uobj.first_name = ds1.Tables[0].Rows[i]["EName"].ToString();
+                    if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["AOV"].ToString()))
+                        uobj.tax = "$" + ds1.Tables[0].Rows[i]["AOV"].ToString();
+                    else
+                        uobj.tax = "";
+                    if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["CommissionEarned"].ToString()))
+                        uobj.total = "$" + ds1.Tables[0].Rows[i]["CommissionEarned"].ToString();
+                    else
+                        uobj.total = "";
+                     
+                    exportorderlist.Add(uobj);
+                }
+            }
+            catch (Exception ex) { throw ex; }
+        }
+
         public static DataTable GetState()
         {
             DataTable dtr = new DataTable();

@@ -38,7 +38,7 @@ function Datagrid() {
         "columns": [
 
             { 'data': 'id', 'sWidth': "8%" },
-            { 'data': 'staterecyclefee', 'sWidth': "15%" },
+            { 'data': 'recyclefee', 'sWidth': "15%" },
             { 'data': 'item_name', 'sWidth': "20%" },
             { 'data': 'city', 'sWidth': "10%" },
             { 'data': 'state', 'sWidth': "15%" },

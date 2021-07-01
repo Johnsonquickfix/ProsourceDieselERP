@@ -115,7 +115,7 @@
                     { 'data': 'address', 'sWidth': "15%" },
                     { 'data': 'orderstatus', 'sWidth': "10%" },
                     {
-                        'data': 'order_created', sWidth: "10%",
+                        'data': 'created_date', sWidth: "10%",
                         'render': function (jsonDate) {
                             var date = new Date(parseInt(jsonDate.substr(6)));
                             var datevalue = ("0" + (date.getDate())).slice(-2);

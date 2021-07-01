@@ -18,6 +18,7 @@ namespace LaylaERP.Models
         public string state { get; set; }
         public string zip { get; set; }
         public string country { get; set; }
+        public string recyclefee { get; set; }
         public List<FeeNTax> lst { get; set; }
     }
 }

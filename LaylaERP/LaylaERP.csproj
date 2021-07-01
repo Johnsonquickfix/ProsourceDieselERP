@@ -201,6 +201,7 @@
     <Compile Include="UTILITIES\CommanUtilities.cs" />
     <Compile Include="UTILITIES\CryptorEngine.cs" />
     <Compile Include="UTILITIES\Net.cs" />
+    <Compile Include="UTILITIES\SendEmail.cs" />
     <Compile Include="UTILITIES\UserActivityLog.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -722,6 +723,8 @@
     <Content Include="Views\Reports\SalesTaxRefundReport.cshtml" />
     <Content Include="Views\Reports\TaxJarSalesTaxOrderExport.cshtml" />
     <Content Include="Views\Reports\ZeroOrdersReport.cshtml" />
+    <Content Include="Views\Reports\PodiumOrder.cshtml" />
+    <Content Include="Views\Reports\CommissionEarnAgent.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

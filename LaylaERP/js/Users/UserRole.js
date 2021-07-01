@@ -121,8 +121,8 @@ $('#btnSaveRole').click(function () {
 $('#btnCopyRole').click(function () {
     var rolefrom = $('#userrole').val();
     var roleto = $('#ddlCopyRole').val();
-    if (rolefrom == "") { swal("alert", "Please select role from", "error").then(function () { swal.close(); $('#userrole').focus(); }) }
-    else if (roleto == "") { swal("alert", "Please select role to", "error").then(function () { swal.close(); $('#ddlCopyRole').focus(); }) }
+    if (rolefrom == "") { swal("alert", "Please Select User Role First.", "error").then(function () { swal.close(); $('#userrole').focus(); }) }
+    else if (roleto == "") { swal("alert", "Please Select Copy To User Role.", "error").then(function () { swal.close(); $('#ddlCopyRole').focus(); }) }
     else {
         var obj = { role_id: rolefrom, roleto: roleto }
         $.ajax({

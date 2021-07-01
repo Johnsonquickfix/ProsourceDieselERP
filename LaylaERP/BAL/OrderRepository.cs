@@ -637,7 +637,7 @@
 
                 if (!string.IsNullOrEmpty(sMonths))
                 {
-                    strWhr += " and DATE_FORMAT(p.post_date,'%Y%m') = '" + sMonths + "' ";
+                    strWhr += " and DATE_FORMAT(p.post_date,'%Y%m') BETWEEN " + sMonths;
                 }
                 if (!string.IsNullOrEmpty(CustomerID))
                 {

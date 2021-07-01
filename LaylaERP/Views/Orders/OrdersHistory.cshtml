@@ -75,28 +75,16 @@
                         </select>
                         <button type="button" id="btnChange" onclick="orderStatus();" class="btn btn-primary btn-flat button">Change</button>
                     </div>
-                    <div class="alignleft actions">
+                    @*<div class="alignleft actions">
                         <select name="m" id="filter-by-date" class="form-control select2">
                             <option selected="selected" value="0">All dates</option>
-                            <option value="202106">June 2021</option>
-                            <option value="202105">May 2021</option>
-                            <option value="202104">April 2021</option>
-                            <option value="202103">March 2021</option>
-                            <option value="202102">February 2021</option>
-                            <option value="202101">January 2021</option>
-                            <option value="202012">December 2020</option>
-                            <option value="202011">November 2020</option>
-                            <option value="202010">October 2020</option>
-                            <option value="202009">September 2020</option>
-                            <option value="202008">August 2020</option>
-                            <option value="202007">July 2020</option>
-                            <option value="202006">June 2020</option>
-                            <option value="202005">May 2020</option>
-                            <option value="202004">April 2020</option>
-                            <option value="202003">March 2020</option>
-                            <option value="202002">February 2020</option>
-                            <option value="202001">January 2020</option>
                         </select>
+                    </div>*@
+                    <div class="alignleft actions">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            <input id="txtOrderDate" data-auto-update-input="false" readonly="readonly" class="form-control">
+                        </div>
                     </div>
                     <div class="alignleft actions">
                         <select class="form-control select2" id="ddlUser" placeholder="Filter by registered customer" style="width: 100%;">
@@ -136,6 +124,8 @@
         </div>
     </div>
 </section>
+<link href="~/Content/AdminLTE-3.1.0/daterangepicker/daterangepicker.monthpicker.css" rel="stylesheet" />
+<script src="~/Content/AdminLTE-3.1.0/daterangepicker/daterangepicker.monthpicker.js"></script>
 <script src="~/js/common.js"></script>
 <script src="@Url.Content("~/js/Orders/OrderHistory.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 <script>

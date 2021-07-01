@@ -178,6 +178,7 @@
     <Compile Include="Controllers\OrdersController.cs" />
     <Compile Include="Controllers\ReportsController.cs" />
     <Compile Include="Controllers\SettingController.cs" />
+    <Compile Include="Controllers\ShipController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="DAL\SQLHelper.cs" />
     <Compile Include="Global.asax.cs">
@@ -731,6 +732,7 @@
     <Content Include="Views\AgentCommissionRate\AgentCommissionRate.cshtml" />
     <Content Include="Views\AgentCommissionRate\AddCommissionRate.cshtml" />
     <Content Include="Views\AgentCommissionRate\UpdateCommission.cshtml" />
+    <Content Include="Views\Ship\ShipStation.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

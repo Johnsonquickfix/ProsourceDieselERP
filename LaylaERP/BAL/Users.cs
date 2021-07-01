@@ -182,19 +182,34 @@
             { throw ex; }
             return DT;
         }
-
-        public static DataTable GetUserMenuAuth(long UserID)
+        public static DataTable GetUserMenuAuth(string UserType)
         {
             DataTable DT = new DataTable();
             try
             {
-                MySqlParameter[] para = { new MySqlParameter("@UserID", UserID), new MySqlParameter("@flag", "UML") };
-                DT = SQLHelper.ExecuteDataTable("wp_erpmenus_search", para);
+                MySqlParameter[] para =
+                    {
+                    new MySqlParameter("@User_Type", UserType),
+                };
+                DT = SQLHelper.ExecuteDataTable("Select wuc.User_Type,wem.menu_id,wem.menu_code,wem.menu_name,wem.menu_url,wem.menu_icon,wem.parent_id, if(wem.parent_id is null, 0, 1) as  level  from wp_erprole_rest wer left join wp_erpmenus wem on wem.menu_id = wer.erpmenu_id inner join wp_user_classification wuc on wer.role_id = wuc.ID where User_Type = @User_Type;", para);
             }
             catch (Exception ex)
             { throw ex; }
             return DT;
         }
+
+        //public static DataTable GetUserMenuAuth(long UserID)
+        //{
+        //    DataTable DT = new DataTable();
+        //    try
+        //    {
+        //        MySqlParameter[] para = { new MySqlParameter("@UserID", UserID), new MySqlParameter("@flag", "UML") };
+        //        DT = SQLHelper.ExecuteDataTable("wp_erpmenus_search", para);
+        //    }
+        //    catch (Exception ex)
+        //    { throw ex; }
+        //    return DT;
+        //}
 
         //public static DataTable GetMenuByUser(string strvalue)
         //{

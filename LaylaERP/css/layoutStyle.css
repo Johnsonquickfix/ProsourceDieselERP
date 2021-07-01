@@ -1040,7 +1040,20 @@ button#btnGeneratePassword {
     .select2-container--default .select2-selection--single .select2-selection__arrow {
         height: 32px !important;
     }
-
+.tablenav.top .select2-container--default .select2-selection--single,
+.tablenav.top .select2-selection .select2-selection--single{
+    height: 30px !important;
+}
+.tablenav.top .form-control {
+height:30px;}
+    .tablenav.top .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height: 28px !important;
+    }
+    .tablenav.top .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 30px !important;
+    }
+.tablenav.top .select2.select2-container {
+margin-right:10px;}
 .swal2-container {
     z-index: 99999;
 }
@@ -1320,3 +1333,7 @@ padding-top: 0px !important;
 padding-bottom: 0px !important;
 height: 0px !important;
 }
+.coupons-content .tab-pane .form-group {
+display:inline-block; width:100%;}
+.woocommerce-reports-wide .dataTables_length {
+margin-right:15px;}

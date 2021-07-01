@@ -1,6 +1,7 @@
 ﻿@{
     ViewBag.Title = "ActivityLog";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.rangePicker = "/Content/AdminLTE-3.1.0/bower_components/bootstrap-daterangepicker/daterangepicker.css";
 }
 <!-- datatables CSS -->
 <link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap.min.css" rel="stylesheet" />
@@ -53,64 +54,64 @@
         </div>
     </div>
 </section>
-        <script>
-            $(document).ready(function () {
-                $("#ddlUser").select2({
-                    allowClear: true, minimumInputLength: 1, placeholder: "Search User",
-                    ajax: {
-                        url: '/Setting/GetUserList', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
-                        data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
-                        processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.displayname, name: item.displayname, id: item.id } }) }; },
-                        error: function (xhr, status, err) { }, cache: true
-                    }
-                });
-                $('#txtLogDate').daterangepicker({
-                    ranges: {
-                        'Today': [moment(), moment()],
-                        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-                        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-                        'This Month': [moment().startOf('month'), moment().endOf('month')],
-                        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-                    },
-                    autoUpdateInput: true, alwaysShowCalendars: true,
-                    locale: { format: 'DD/MM/YYYY', cancelLabel: 'Clear' }
-                });
-                $("#btnSearch").click(function () { dataGridLoad(); return false; });
-                setTimeout(function () { dataGridLoad(); }, 50);
-            });
-
-            function dataGridLoad() {
-                var urid = parseInt($("#ddlUser").val()) || 0;
-                var dfa = $('#txtLogDate').val().split('-');
-                var obj = { strValue1: urid, strValue2: dfa[0], strValue3: dfa[1], PageNo: 0, PageSize: 10, sEcho: 1 };
-                $('#dtdata').DataTable({
-                    destroy: true, bProcessing: true, bServerSide: true,
-                    sPaginationType: "full_numbers", searching: false, ordering: false, lengthChange: false,
-                    bAutoWidth: true, scrollX: true, scrollY: ($(window).height() - 215),
-                    lengthMenu: [[10, 20, 50], [10, 20, 50]],
-                    sAjaxSource: "/Setting/GetActivityLogList",
-                    fnServerData: function (sSource, aoData, fnCallback, oSettings) {
-                        obj.sEcho = aoData[0].value; obj.PageSize = oSettings._iDisplayLength; obj.PageNo = oSettings._iDisplayStart;
-                        $.ajax({
-                            type: "POST", url: sSource, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
-                            success: function (data) {
-                                var dtOption = { sEcho: data.sEcho, recordsTotal: data.recordsTotal, recordsFiltered: data.recordsFiltered, iTotalRecords: data.iTotalRecords, iTotalDisplayRecords: data.iTotalDisplayRecords, aaData: JSON.parse(data.aaData) };
-                                return fnCallback(dtOption);
-                            },
-                            error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
-                            async: false
-                        });
-                    },
-                    aoColumns: [
-                        { data: 'ROWNUM', title: 'Sr. No.', sWidth: "5%" },
-                        { data: 'log_date', title: 'Date', sWidth: "10%" },
-                        { data: 'User_Login', title: 'User Name', sWidth: "10%" },
-                        { data: 'user_email', title: 'Email', sWidth: "15%" },
-                        { data: 'ip_address', title: 'IP Address', sWidth: "10%" },
-                        { data: 'module_name', title: 'Module Name', sWidth: "10%" },
-                        { data: 'description', title: 'Description', sWidth: "30%" }
-                    ]
-                });
+<script>
+    $(document).ready(function () {
+        $("#ddlUser").select2({
+            allowClear: true, minimumInputLength: 1, placeholder: "Search User",
+            ajax: {
+                url: '/Setting/GetUserList', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+                data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
+                processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.displayname, name: item.displayname, id: item.id } }) }; },
+                error: function (xhr, status, err) { }, cache: true
             }
-        </script>
+        });
+        $('#txtLogDate').daterangepicker({
+            ranges: {
+                'Today': [moment(), moment()],
+                'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                'This Month': [moment().startOf('month'), moment().endOf('month')],
+                'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+            },
+            autoUpdateInput: true, alwaysShowCalendars: true,
+            locale: { format: 'DD/MM/YYYY', cancelLabel: 'Clear' }
+        });
+        $("#btnSearch").click(function () { dataGridLoad(); return false; });
+        setTimeout(function () { dataGridLoad(); }, 50);
+    });
+
+    function dataGridLoad() {
+        var urid = parseInt($("#ddlUser").val()) || 0;
+        var dfa = $('#txtLogDate').val().split('-');
+        var obj = { strValue1: urid, strValue2: dfa[0], strValue3: dfa[1], PageNo: 0, PageSize: 10, sEcho: 1 };
+        $('#dtdata').DataTable({
+            destroy: true, bProcessing: true, bServerSide: true,
+            sPaginationType: "full_numbers", searching: false, ordering: false, lengthChange: false,
+            bAutoWidth: true, scrollX: true, scrollY: ($(window).height() - 215),
+            lengthMenu: [[10, 20, 50], [10, 20, 50]],
+            sAjaxSource: "/Setting/GetActivityLogList",
+            fnServerData: function (sSource, aoData, fnCallback, oSettings) {
+                obj.sEcho = aoData[0].value; obj.PageSize = oSettings._iDisplayLength; obj.PageNo = oSettings._iDisplayStart;
+                $.ajax({
+                    type: "POST", url: sSource, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
+                    success: function (data) {
+                        var dtOption = { sEcho: data.sEcho, recordsTotal: data.recordsTotal, recordsFiltered: data.recordsFiltered, iTotalRecords: data.iTotalRecords, iTotalDisplayRecords: data.iTotalDisplayRecords, aaData: JSON.parse(data.aaData) };
+                        return fnCallback(dtOption);
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
+                    async: false
+                });
+            },
+            aoColumns: [
+                { data: 'ROWNUM', title: 'Sr. No.', sWidth: "5%" },
+                { data: 'log_date', title: 'Date', sWidth: "10%" },
+                { data: 'User_Login', title: 'User Name', sWidth: "10%" },
+                { data: 'user_email', title: 'Email', sWidth: "25%" },
+                { data: 'ip_address', title: 'IP Address', sWidth: "10%" },
+                { data: 'module_name', title: 'Module Name', sWidth: "10%" },
+                { data: 'description', title: 'Description', sWidth: "20%" }
+            ]
+        });
+    }
+</script>

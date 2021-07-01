@@ -118,8 +118,8 @@ namespace LaylaERP.BAL
                     //Code for role
 
                     uobj.id = Convert.ToInt32(ds1.Tables[0].Rows[i]["id"].ToString());
-                    uobj.staterecyclefee = Convert.ToUInt64(ds1.Tables[0].Rows[i]["staterecyclefee"].ToString());
-
+                   // uobj.staterecyclefee = Convert.ToUInt64(ds1.Tables[0].Rows[i]["staterecyclefee"].ToString());
+                    uobj.staterecyclefee = float.Parse(ds1.Tables[0].Rows[i]["staterecyclefee"].ToString());
                     uobj.item_name = ds1.Tables[0].Rows[i]["item_name"].ToString();
                     uobj.city = ds1.Tables[0].Rows[i]["city"].ToString();
                     uobj.state = ds1.Tables[0].Rows[i]["state"].ToString();

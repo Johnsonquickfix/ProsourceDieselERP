@@ -12,6 +12,35 @@
 
     public class OrderRepository
     {
+        public static ZipCodeModel GetCityByZip(string zipcode)
+        {
+            ZipCodeModel obj = new ZipCodeModel();
+            try
+            {
+                string strquery = "select distinct ZipCode,State,StateFullName,City from ZIPCodes1 where ZipCode = '" + zipcode.Trim() + "' ";
+                MySqlDataReader sdr = SQLHelper.ExecuteReader(strquery);
+                while (sdr.Read())
+                {
+                    if (sdr["ZipCode"] != DBNull.Value)
+                        obj.ZipCode = sdr["ZipCode"].ToString().Trim();
+                    else
+                        obj.ZipCode = string.Empty;
+                    if (sdr["State"] != DBNull.Value)
+                        obj.state = sdr["State"].ToString().Trim();
+                    else
+                        obj.state = string.Empty;
+                    if (sdr["City"] != DBNull.Value)
+                        obj.city = sdr["City"].ToString().Trim();
+                    else
+                        obj.city = string.Empty;
+
+                    obj.country = string.Empty;
+                }
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return obj;
+        }
         public static DataTable GetCustomers(string strSearch)
         {
             DataTable DT = new DataTable();
@@ -209,7 +238,7 @@
                             + " left outer join wp_postmeta psr on psr.post_id = COALESCE(ps.id, post.id) and psr.meta_key = '_price'"
                             + " WHERE post.post_type = 'product' and post.id = @product_id and ps.id = @variation_id ";
                 if (product_id == 611172 && !string.IsNullOrEmpty(free_products))
-                    strSQl += " OR (post.id in ("+ free_products + ") and COALESCE(ps.id,0) = 0);";
+                    strSQl += " OR (post.id in (" + free_products + ") and COALESCE(ps.id,0) = 0);";
                 else if (product_id == 118 && !string.IsNullOrEmpty(free_products))
                     strSQl += " OR (post.id in (" + free_products + ") and COALESCE(ps.id,0) = 0);";
                 else
@@ -626,12 +655,12 @@
                     strWhr += " and (p.id like '%" + searchid + "%' "
                             + " OR os.num_items_sold='%" + searchid + "%' "
                             + " OR os.total_sales='%" + searchid + "%' "
-                            + " OR os.customer_id='%" + searchid + "%' " 
-                            + " OR p.post_status like '%" + searchid + "%' " 
+                            + " OR os.customer_id='%" + searchid + "%' "
+                            + " OR p.post_status like '%" + searchid + "%' "
                             + " OR p.post_date like '%" + searchid + "%' "
                             + " OR COALESCE(pmf.meta_value, '') like '%" + searchid + "%' "
                             + " OR COALESCE(pml.meta_value, '') like '%" + searchid + "%' "
-                            + " OR replace(replace(replace(replace(pmp.meta_value, '-', ''), ' ', ''), '(', ''), ')', '') like '%" + searchid + "%'" 
+                            + " OR replace(replace(replace(replace(pmp.meta_value, '-', ''), ' ', ''), '(', ''), ')', '') like '%" + searchid + "%'"
                             + " )";
                 }
 
@@ -675,7 +704,7 @@
             DataTable dt = new DataTable();
             try
             {
-                string strWhr = string.Empty;                
+                string strWhr = string.Empty;
                 if (!string.IsNullOrEmpty(CustomerID))
                 {
                     strWhr += " and os.customer_id= '" + CustomerID + "' ";

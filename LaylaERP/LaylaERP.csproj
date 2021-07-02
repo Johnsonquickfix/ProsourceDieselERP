@@ -155,7 +155,6 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
-    <Compile Include="BAL\AgentCommissionRateRepository.cs" />
     <Compile Include="BAL\AppearanceRepository.cs" />
     <Compile Include="BAL\CustomerRepository.cs" />
     <Compile Include="BAL\DashboardRepository.cs" />
@@ -168,7 +167,6 @@
     <Compile Include="BAL\Users.cs" />
     <Compile Include="BAL\UsersRepositry.cs" />
     <Compile Include="Controllers\AccountAPIController.cs" />
-    <Compile Include="Controllers\AgentCommissionRateController.cs" />
     <Compile Include="Controllers\AppearanceController.cs" />
     <Compile Include="Controllers\CouponsController.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
@@ -178,12 +176,12 @@
     <Compile Include="Controllers\OrdersController.cs" />
     <Compile Include="Controllers\ReportsController.cs" />
     <Compile Include="Controllers\SettingController.cs" />
+    <Compile Include="Controllers\ShipController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="DAL\SQLHelper.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\AgentCommissionRate.cs" />
     <Compile Include="Models\Appearance.cs" />
     <Compile Include="Models\clsSerialization.cs" />
     <Compile Include="Models\clsUserDetails.cs" />
@@ -486,68 +484,25 @@
     <Content Include="Content\dx\dx.all.js" />
     <Content Include="Content\dx\dx.light.css" />
     <Content Include="Content\AdminLTE-3.1.0\jquery\jquery.min.js" />
-    <Content Include="Content\easyui\images\accordion_arrows.png" />
-    <Content Include="Content\easyui\images\blank.gif" />
-    <Content Include="Content\easyui\images\calendar_arrows.png" />
-    <Content Include="Content\easyui\images\combo_arrow.png" />
-    <Content Include="Content\easyui\images\datagrid_icons.png" />
-    <Content Include="Content\easyui\images\datebox_arrow.png" />
-    <Content Include="Content\easyui\images\layout_arrows.png" />
-    <Content Include="Content\easyui\images\linkbutton_bg.png" />
-    <Content Include="Content\easyui\images\loading.gif" />
-    <Content Include="Content\easyui\images\menu_arrows.png" />
-    <Content Include="Content\easyui\images\messager_icons.png" />
-    <Content Include="Content\easyui\images\pagination_icons.png" />
-    <Content Include="Content\easyui\images\panel_tools.png" />
-    <Content Include="Content\easyui\images\passwordbox_close.png" />
-    <Content Include="Content\easyui\images\passwordbox_open.png" />
-    <Content Include="Content\easyui\images\searchbox_button.png" />
-    <Content Include="Content\easyui\images\slider_handle.png" />
-    <Content Include="Content\easyui\images\spinner_arrows.png" />
-    <Content Include="Content\easyui\images\tabs_icons.png" />
-    <Content Include="Content\easyui\images\tagbox_icons.png" />
-    <Content Include="Content\easyui\images\tree_icons.png" />
-    <Content Include="Content\easyui\images\validatebox_warning.png" />
     <Content Include="Content\fontawesome-all.min.css" />
     <Content Include="Content\img\flags%402x.png" />
     <Content Include="Content\img\flags.png" />
     <Content Include="Content\Style11.css" />
     <Content Include="Content\Style12.css" />
-    <Content Include="Content\easyui\easyui.css" />
     <Content Include="css\indexStyle.css" />
     <Content Include="css\jquery.treeview.css" />
     <Content Include="css\layoutStyle.css" />
+    <Content Include="css\layoutStyle==110621.css" />
     <Content Include="css\login_style.css" />
+    <Content Include="css\order_style.css" />
     <Content Include="css\rolebase.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
-    <Content Include="Images\accordion_arrows.png" />
-    <Content Include="Images\blank.gif" />
-    <Content Include="Images\calendar_arrows.png" />
-    <Content Include="Images\combo_arrow.png" />
-    <Content Include="Images\datagrid_icons.png" />
-    <Content Include="Images\datebox_arrow.png" />
     <Content Include="Images\layla1-logo.png" />
     <Content Include="Images\layla32.png" />
-    <Content Include="Images\layout_arrows.png" />
-    <Content Include="Images\linkbutton_bg.png" />
-    <Content Include="Images\loading.gif" />
-    <Content Include="Images\menu_arrows.png" />
-    <Content Include="Images\messager_icons.png" />
-    <Content Include="Images\pagination_icons.png" />
-    <Content Include="Images\panel_tools.png" />
-    <Content Include="Images\passwordbox_close.png" />
-    <Content Include="Images\passwordbox_open.png" />
-    <Content Include="Images\searchbox_button.png" />
-    <Content Include="Images\slider_handle.png" />
-    <Content Include="Images\spinner_arrows.png" />
-    <Content Include="Images\tabs_icons.png" />
-    <Content Include="Images\tagbox_icons.png" />
-    <Content Include="Images\tree_icons.png" />
     <Content Include="Images\userprofile2.png" />
-    <Content Include="Images\validatebox_warning.png" />
     <Content Include="js\app.js" />
     <Content Include="js\common.js" />
     <Content Include="js\Customer\Customer.js" />
@@ -669,7 +624,6 @@
     <Content Include="Scripts\jquery-3.4.1.slim.js" />
     <Content Include="Scripts\jquery-3.4.1.slim.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
-    <Content Include="Content\easyui\jquery.easyui.min.js" />
     <Content Include="Scripts\jquery.js" />
     <Content Include="Scripts\jquery.treeview.js" />
     <Content Include="Scripts\jquery.validate.js" />
@@ -677,7 +631,6 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\passwordStrengthMeter.js" />
-    <Content Include="Views\Users\AssignRole.cshtml" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -705,6 +658,7 @@
     <Content Include="Views\Reports\Index.cshtml" />
     <Content Include="Views\Setting\ActivityLog.cshtml" />
     <Content Include="Views\Setting\Setting.cshtml" />
+    <Content Include="Views\Users\AssignRole.cshtml" />
     <Content Include="Views\Customer\NewUser.cshtml" />
     <Content Include="Views\Shared\_ExportLayout.cshtml" />
     <Content Include="Views\Shared\_UserLayout.cshtml" />
@@ -718,27 +672,12 @@
     <Content Include="Views\Coupons\Coupons.cshtml" />
     <Content Include="Views\FeeNTax\CreateNew.cshtml" />
     <Content Include="Views\Appearance\Menus.cshtml" />
-    <Content Include="Views\Reports\AJBaseReport.cshtml" />
-    <Content Include="Views\Appearance\AddMenu.cshtml" />
-    <Content Include="Views\Appearance\AddMenuDetails.cshtml" />
-    <Content Include="Views\Reports\ArizonaSalesOrderExport.cshtml" />
-    <Content Include="Views\Reports\MattressAverageOrderValueReport.cshtml" />
-    <Content Include="Views\Reports\MRFReport.cshtml" />
-    <Content Include="Views\Reports\PodiumOrderReport.cshtml" />
-    <Content Include="Views\Reports\SalesTaxRefundReport.cshtml" />
-    <Content Include="Views\Reports\TaxJarSalesTaxOrderExport.cshtml" />
-    <Content Include="Views\Reports\ZeroOrdersReport.cshtml" />
-    <Content Include="Views\Reports\PodiumOrder.cshtml" />
-    <Content Include="Views\Reports\CommissionEarnAgent.cshtml" />
-    <Content Include="Views\AgentCommissionRate\AddCommissionRate.cshtml" />
-    <Content Include="Views\AgentCommissionRate\AgentCommissionRate.cshtml" />
-    <Content Include="Views\AgentCommissionRate\UpdateCommission.cshtml" />
+    <Content Include="Views\Ship\ShipStation.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="js\Appearance\" />
     <Folder Include="Properties\PublishProfiles\" />
-    <Folder Include="Views\ReportsRepository\" />
+    <Folder Include="Views\ShipStation\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

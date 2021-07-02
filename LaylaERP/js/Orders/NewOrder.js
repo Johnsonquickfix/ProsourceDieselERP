@@ -37,7 +37,7 @@ $(document).ready(function () {
     $("#ddlUser").change(function () { setTimeout(function () { NewOrderNo(); }, 50); CustomerAddress($("#ddlUser").val()); return false; });
     $("#ddlbillcountry").change(function () { var obj = { id: $("#ddlbillcountry").val() }; BindStateCounty("ddlbillstate", obj); });
     $("#ddlshipcountry").change(function () { var obj = { id: $("#ddlshipcountry").val() }; BindStateCounty("ddlshipstate", obj); });
-    $("#ddlshipstate").change(function () { getItemShippingCharge(); });
+    $("#ddlshipstate").change(function () { GetTaxRate(); getItemShippingCharge(); });
     $('#ddlProduct').select2({
         allowClear: true, minimumInputLength: 3, placeholder: "Search Product",
         ajax: {
@@ -51,7 +51,8 @@ $(document).ready(function () {
     $(document).on("click", "#btnApplyCoupon", function (t) { t.preventDefault(); CouponModal(); });
     //$("#billModal").on("keypress", function (e) { if (e.which == 13 && e.target.type != "textarea") { $("#btnCouponAdd").click(); } });
     $("#billModal").on("click", "#btnCouponAdd", function (t) { t.preventDefault(); ApplyCoupon(); });
-    $(document).on("blur", "#txtshipzipcode", function (t) { t.preventDefault(); GetCityByZip($(this).val()); });
+    $(document).on("blur", "#txtbillzipcode", function (t) { t.preventDefault(); GetCityByZip($(this).val(), $("#txtbillcity"), $("#ddlbillstate"), $("#ddlbillcountry")); });
+    $(document).on("blur", "#txtshipzipcode", function (t) { t.preventDefault(); GetCityByZip($(this).val(), $("#txtshipcity"), $("#ddlshipstate"), $("#ddlshipcountry")); });
     $(document).on("click", "#btnCheckout", function (t) { t.preventDefault(); saveCO(); });
     $(document).on("click", "#btnpay", function (t) { t.preventDefault(); PaymentModal(); });
     $("#billModal").on("click", "#btnPlaceOrder", function (t) { t.preventDefault(); AcceptPayment(); });
@@ -70,7 +71,7 @@ $(document).ready(function () {
             $("#ddlCustomerSearch").empty().append('<option value="' + cus_id + '" selected>' + cus_text + '</option>');
             bindCustomerOrders(cus_id);
         }
-        $("#loader").hide(); 
+        $("#loader").hide();
     });
     $('#billModal').on('shown.bs.modal', function () {
         $('#ddlCustomerSearch').select2({
@@ -144,8 +145,10 @@ $(document).ready(function () {
 function BindStateCounty(ctr, obj) {
     var res = wc_users_params.filter(element => element.abbreviation == obj.id);
     $("#" + ctr + "").html('<option value="0">Select</option>');
-    for (i = 0; i < res[0].states.length; i++) {
-        $("#" + ctr + "").append('<option value="' + res[0].states[i].abbreviation + '">' + res[0].states[i].name + '</option>');
+    if (res.length > 0) {
+        for (i = 0; i < res[0].states.length; i++) {
+            $("#" + ctr + "").append('<option value="' + res[0].states[i].abbreviation + '">' + res[0].states[i].name + '</option>');
+        }
     }
 }
 
@@ -213,37 +216,59 @@ function CustomerAddress(id) {
 }
 ///Get New Order No
 function GetTaxRate() {
+    console.log('Tax');
     ///Tax Calculate for state
     var tax_states = ["CA", "CO", "CT", "IL", "IN", "MI", "MS", "NC", "NE", "NJ", "NM", "PA", "TN", "TX", "WA", "AR", "FL", "GA", "IA", "MO", "OH", "SC", "WI"];
     var s_state = $("#ddlshipstate").val();
     if (tax_states.indexOf(s_state) > 0) {
         var opt = { strValue1: $("#txtshipzipcode").val(), strValue2: $("#txtshipcity").val(), strValue3: $("#ddlshipcountry").val() };
-        if (opt.strValue1.length <= 0 || opt.strValue2.length <= 0 || opt.strValue3.length <= 0) { $('#hfTaxRate').val(0); return false; }
-        $.ajax({
-            type: "POST", url: '/Orders/GetTaxRate', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
-            success: function (result) { $('#hfTaxRate').val(result.message); },
-            error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
-            async: false
-        });
+        if (opt.strValue1.length <= 0 || opt.strValue2.length <= 0 || opt.strValue3.length <= 0) {
+            $('#hfTaxRate').val(0);
+        }
+        else {
+            $.ajax({
+                type: "POST", url: '/Orders/GetTaxRate', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
+                success: function (result) { $('#hfTaxRate').val(result.message); },
+                error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
+                async: false
+            });
+        }
     }
     else {
         $('#hfTaxRate').val(0.00);
     }
+    console.log($('#hfTaxRate').val());
     calculateDiscountAcount();
 }
 /// Get City By Pin code
-function GetCityByZip(zipcode) {
+function GetCityByZip(zipcode, ctrcity, ctrstate, ctrcountry) {
+    var option = { strValue1: zipcode };
     $.ajax({
-        url: "https://ziptasticapi.com/" + zipcode,
-        type: "GET",
-        dataType: 'JSON',
-        data: [],
-        success: function (data) {
-            $("#txtshipcity").val(data.city); $("#ddlshipcountry").val(data.country).trigger('change'); $("#ddlshipstate").val(data.state).trigger('change');
-            GetTaxRate();
+        type: "POST", url: '/Orders/GetCity', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(option),
+        beforeSend: function () { $("#loader").show(); },
+        success: function (result) {
+            Object.keys(wc_users_params).forEach(function (k) {
+                let coun = wc_users_params[k].states.filter(element => element.abbreviation == 'NY');
+                if (coun.length > 0) { result.country = wc_users_params[k].abbreviation; return; }
+            });
+            ctrcity.val(result.city); ctrcountry.val(result.country).trigger('change'); ctrstate.val(result.state).trigger('change');
         },
-        error: function (msg) { alert(msg); }
+        error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); },
+        complete: function () { $("#loader").hide(); },
+        async: false
     });
+
+    //$.ajax({
+    //    url: "https://ziptasticapi.com/" + zipcode,
+    //    type: "GET",
+    //    dataType: 'JSON',
+    //    data: [],
+    //    success: function (data) {
+    //        $("#txtshipcity").val(data.city); $("#ddlshipcountry").val(data.country).trigger('change'); $("#ddlshipstate").val(data.state).trigger('change');
+    //        GetTaxRate();
+    //    },
+    //    error: function (msg) { alert(msg); }
+    //});
 }
 
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Search Popup on Add new Order ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -551,6 +576,19 @@ function saveCustomer() {
         })
     }
 
+}
+function copyBillingAddress() {
+    $("#loader").show();
+    $('#txtshipfirstname').val($("#txtbillfirstname").val());
+    $('#txtshiplastname').val($("#txtbilllastname").val());
+    $('#txtshipcompany').val($("#txtbillcompany").val());
+    $('#txtshipaddress1').val($("#txtbilladdress1").val());
+    $('#txtshipaddress2').val($("#txtbilladdress2").val());
+    $('#txtshipzipcode').val($("#txtbillzipcode").val());
+    $('#txtshipcity').val($("#txtbillcity").val());
+    $('#ddlshipcountry').val($("#ddlbillcountry").val()).trigger('change');
+    $('#ddlshipstate').val($("#ddlbillstate").val()).trigger('change');
+    $("#loader").hide();
 }
 
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Edit Order ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1011,21 +1049,16 @@ function calculateDiscountAcount() {
 
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Shipping Charges ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function getItemShippingCharge() {
-    var v_ids = [];
+    let v_ids = []; let sh_state = $("#ddlshipstate").val() == 'CA' ? "CAA" : $("#ddlshipstate").val();
     $("#tblAddItemFinal > tbody  > tr").each(function () { v_ids.push($(this).data('vid')); });
-    let shipping_state = $("#ddlshipcountry").val() == 'US' ? $("#ddlshipstate").val() : $("#ddlshipcountry").val();
-    console.log(shipping_state);
+    let shipping_state = $("#ddlshipcountry").val() == 'US' ? sh_state : $("#ddlshipcountry").val();
 
-    if (shipping_state == "CA") {
-        shipping_state = "CAA";
-    }
-
-    var options = { strValue1: v_ids.join(','), strValue2: shipping_state };
-    console.log(options);
+    $("#loader").show();
+    let options = { strValue1: v_ids.join(','), strValue2: shipping_state };
     $(".TotalAmount").data("shippingamt", 0.00);
     $.ajax({
         type: "POST", url: '/Orders/GetProductShipping', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(options),
-        beforeSend: function () { $("#loader").show(); },
+        beforeSend: function () { },
         success: function (data) {
             $("#tblAddItemFinal > tbody  > tr").each(function () {
                 let proudct_item = data.find(el => el.product_id === $(this).data('vid'));
@@ -1039,6 +1072,7 @@ function getItemShippingCharge() {
         async: false
     });
     calcFinalTotals();
+    $("#loader").hide();
 }
 function calculateStateRecyclingFee() {
     var ship_state = $("#ddlshipstate").val();

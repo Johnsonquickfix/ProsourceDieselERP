@@ -24,6 +24,23 @@
             return View();
         }
 
+        //\
+        [HttpPost]
+        public JsonResult GetCity(SearchModel model)
+        {
+            ZipCodeModel obj = new ZipCodeModel();
+            try
+            {
+                if (string.IsNullOrEmpty(model.strValue1))
+                {
+                    throw new Exception("Invalid Data");
+                }
+                obj =  OrderRepository.GetCityByZip(model.strValue1);
+            }
+            catch { }
+            return Json(obj, 0);
+        }
+
         // GET: Orders History/View
         public ActionResult OrdersHistory()
         {

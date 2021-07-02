@@ -101,7 +101,7 @@ namespace LaylaERP.Controllers
                     int ID = AppearanceRepository.AddNewMenu(model);
                     if (ID > 0)
                     {
-
+                        AppearanceRepository.AddAdminRole(ID);
                         return Json(new { status = true, message = "Data has been saved successfully!!", url = "" }, 0);
                     }
                     else

@@ -88,6 +88,24 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
+
+        public static int AddAdminRole(int erpmenu_id)
+        {
+            try
+            {
+                string strsql = "Insert into wp_erprole_rest(role_id,erpmenu_id,add_,edit_,delete_) values(65,@erpmenu_id,1,1,1);SELECT LAST_INSERT_ID();";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@erpmenu_id", erpmenu_id)
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
     }
 
 

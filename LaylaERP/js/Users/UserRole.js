@@ -111,6 +111,7 @@ $('#btnSaveRole').click(function () {
                 $("#roleModal").modal('hide');
                 GetRoles();
                 CopyRoles();
+                parent.location.reload();
             },
             error: function () {
                 swal("alert", "something went wrong", "error");

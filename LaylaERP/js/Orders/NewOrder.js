@@ -216,7 +216,6 @@ function CustomerAddress(id) {
 }
 ///Get New Order No
 function GetTaxRate() {
-    console.log('Tax');
     ///Tax Calculate for state
     var tax_states = ["CA", "CO", "CT", "IL", "IN", "MI", "MS", "NC", "NE", "NJ", "NM", "PA", "TN", "TX", "WA", "AR", "FL", "GA", "IA", "MO", "OH", "SC", "WI"];
     var s_state = $("#ddlshipstate").val();
@@ -237,7 +236,6 @@ function GetTaxRate() {
     else {
         $('#hfTaxRate').val(0.00);
     }
-    console.log($('#hfTaxRate').val());
     calculateDiscountAcount();
 }
 /// Get City By Pin code
@@ -544,7 +542,7 @@ function saveCustomer() {
             billing_address_2: BillingAddress2, billing_postcode: BillingPostcode, billing_country: BillingCountry,
             billing_state: BillingState, billing_city: BillingCity, billing_phone: BillingPhone
         }
-        console.log(obj);
+        //console.log(obj);
         $.ajax({
             url: '/Customer/NewUser/', dataType: 'json', type: 'Post', contentType: "application/json; charset=utf-8", data: JSON.stringify(obj),
             beforeSend: function () { $("#loader").show(); },
@@ -891,7 +889,7 @@ function deleteAllCoupons(coupon_type) {
                 $('#li_' + id).remove();
                 for (var i = 0; i < rq_prd_ids.length; i++) {
                     let row_id = '#tritemId_' + id + '_' + rq_prd_ids[i];
-                    console.log($(row_id));
+                    //console.log($(row_id));
                     //Remove Discount to Items
                     let zQty = parseFloat($(row_id).find("[name=txt_ItemQty]").val()) || 0.00;
                     let zGrossAmount = parseFloat($(row_id).find(".TotalAmount").data("regprice")) || 0.00;
@@ -1329,11 +1327,12 @@ function createTaxItemsList() {
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Save Details ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function saveCO() {
-
     var oid = parseInt($('#hfOrderNo').val()) || 0;
     var cid = parseInt($('#ddlUser').val()) || 0;
     //if (oid <= 0) { swal('Alert!', 'Please Select Customer.', "info").then((result) => { return false; }); }
     if (cid <= 0) { swal('Alert!', 'Please Select Customer.', "error").then((result) => { $('#ddlUser').select2('focus'); return false; }); return false; }
+    if (!ValidateData()) { $("#loader").hide(); return false };
+
     var postMeta = createPostMeta(); var postStatus = createPostStatus(); var otherItems = createOtherItemsList(); var taxItems = createTaxItemsList();
     var itemsDetails = [];
     $('#tblAddItemFinal > tbody  > tr').each(function (index, tr) {
@@ -1371,6 +1370,24 @@ function saveCO() {
     });
     $('#btnCheckout').text("Checkout");
     return false;
+}
+function ValidateData() {
+    if ($('#txtbillfirstname').val() == '') { swal('Alert!', 'Please Enter Billing First Name.', "info").then((result) => { $('#txtbillfirstname').focus(); return false; }); return false; }
+    else if ($('#txtbilllastname').val() == '') { swal('Alert!', 'Please Enter Billing Last Name.', "info").then((result) => { $('#txtbilllastname').focus(); return false; }); return false; }
+    else if ($('#txtbilladdress1').val() == '') { swal('Alert!', 'Please Enter Billing Address.', "info").then((result) => { $('#txtbilladdress1').focus(); return false; }); return false; }
+    else if ($('#txtbillzipcode').val() == '') { swal('Alert!', 'Please Enter Billing Post Code.', "info").then((result) => { $('#txtbillzipcode').focus(); return false; }); return false; }
+    else if ($('#txtbillcity').val() == '') { swal('Alert!', 'Please Enter Billing City.', "info").then((result) => { $('#txtbillcity').focus(); return false; }); return false; }
+    else if ($('#ddlbillcountry').val() == '') { swal('Alert!', 'Please Select Billing Country.', "info").then((result) => { $('#ddlbillcountry').select2('open'); return false; }); return false; }
+    else if ($('#ddlbillstate').val() == '' || $('#ddlbillstate').val() == '0') { swal('Alert!', 'Please Select Billing State.', "info").then((result) => { $('#ddlbillstate').select2('open'); return false; }); return false; }
+    else if ($('#txtbillemail').val() == '') { swal('Alert!', 'Please Select Billing EMail Address.', "info").then((result) => { $('#txtbillemail').focus(); return false; }); return false; }
+    else if ($('#txtshipfirstname').val() == '') { swal('Alert!', 'Please Enter Shipping First Name.', "info").then((result) => { $('#txtshipfirstname').focus(); return false; }); return false; }
+    else if ($('#txtshiplastname').val() == '') { swal('Alert!', 'Please Enter Shipping Last Name.', "info").then((result) => { $('#txtshiplastname').focus(); return false; }); return false; }
+    else if ($('#txtshipaddress1').val() == '') { swal('Alert!', 'Please Enter Shipping Address.', "info").then((result) => { $('#txtshipaddress1').focus(); return false; }); return false; }
+    else if ($('#txtshipzipcode').val() == '') { swal('Alert!', 'Please Enter Shipping Post Code.', "info").then((result) => { $('#txtshipzipcode').focus(); return false; }); return false; }
+    else if ($('#txtshipcity').val() == '') { swal('Alert!', 'Please Enter Shipping City.', "info").then((result) => { $('#txtshipcity').focus(); return false; }); return false; }    
+    else if ($('#ddlshipcountry').val() == '') { swal('Alert!', 'Please Select Shipping Country.', "info").then((result) => { $('#ddlshipcountry').select2('open'); return false; }); return false; }
+    else if ($('#ddlshipstate').val() == '' || $('#ddlshipstate').val() == '0') { swal('Alert!', 'Please Select Shipping State.', "info").then((result) => { $('#ddlshipstate').select2('open'); return false; }); return false; }
+    return true;
 }
 
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Payment Modal ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

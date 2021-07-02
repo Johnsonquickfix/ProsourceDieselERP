@@ -540,7 +540,8 @@
                 string strSQl = "select oi.order_id,oi.order_item_name,oi.order_item_type,"
                             + " max(case meta_key when '_product_id' then meta_value else '' end) p_id,max(case meta_key when '_variation_id' then meta_value else '' end) v_id,"
                             + " max(case meta_key when '_qty' then meta_value else '' end) qty,max(case meta_key when '_line_subtotal' then meta_value else '' end) line_subtotal,"
-                            + " max(case meta_key when '_line_total' then meta_value else '' end) line_total,max(case meta_key when '_line_tax' then meta_value else '' end) tax"
+                            + " max(case meta_key when '_line_total' then meta_value else '' end) line_total,max(case meta_key when '_line_tax' then meta_value else '' end) tax,"
+                            + " max(case meta_key when 'discount_amount' then meta_value else '' end) discount_amount"
                             + " from wp_woocommerce_order_items oi"
                             + " inner join wp_woocommerce_order_itemmeta oim on oim.order_item_id = oi.order_item_id"
                             + " where oi.order_id = @order_id"
@@ -605,6 +606,13 @@
                         if (productsModel.product_id == 611172) productsModel.group_id = 78676;
                         else if (productsModel.product_id == 118) productsModel.group_id = 632713;
                         else productsModel.group_id = 0;
+                    }
+                    else if (productsModel.product_type == "coupon")
+                    {
+                        if (sdr["discount_amount"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["discount_amount"].ToString().Trim()))
+                            productsModel.discount = decimal.Parse(sdr["discount_amount"].ToString().Trim());
+                        else
+                            productsModel.discount = 0;
                     }
                     _list.Add(productsModel);
                 }

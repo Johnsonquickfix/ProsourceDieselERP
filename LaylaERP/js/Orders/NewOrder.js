@@ -636,15 +636,31 @@ function getOrderItemList(oid) {
     $.ajax({
         type: "POST", url: '/Orders/GetOrderProductList', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
         success: function (data) {
-            var itemsDetailsxml = []; var layoutHtml = '';
+            let itemsDetailsxml = []; let layoutHtml = '', itemHtml = '';
             for (var i = 0; i < data.length; i++) {
                 if (data[i].product_type == 'line_item') {
-                    itemsDetailsxml.push({
-                        PKey: data[i].product_id + '_' + data[i].variation_id, product_id: data[i].product_id, variation_id: data[i].variation_id, product_name: data[i].product_name, quantity: data[i].quantity, reg_price: data[i].reg_price, sale_rate: data[i].sale_price, total: data[i].total, discount: data[i].discount, "tax_amount": data[i].tax_amount, shipping_amount: 0, is_free: data[i].is_free, group_id: data[i].group_id
-                    });
+                    //itemsDetailsxml.push({
+                    //    PKey: data[i].product_id + '_' + data[i].variation_id, product_id: data[i].product_id, variation_id: data[i].variation_id, product_name: data[i].product_name, quantity: data[i].quantity, reg_price: data[i].reg_price, sale_rate: data[i].sale_price, total: data[i].total, discount: data[i].discount, "tax_amount": data[i].tax_amount, shipping_amount: 0, is_free: data[i].is_free, group_id: data[i].group_id
+                    //});
+
+                    itemHtml += '<tr id="tritemId_' + data[i].product_id + '_' + data[i].variation_id + '" data-id="' + data[i].product_id + '_' + data[i].variation_id + '" data-pid="' + data[i].product_id + '" data-vid="' + data[i].variation_id + '" data-pname="' + data[i].product_name + '" data-gid="' + data[i].group_id + '" data-freeitem="' + data[i].is_free + '">';
+                    if (data[i].is_free)
+                        itemHtml += '<td class="text-center"></td>';
+                    else
+                        itemHtml += '<td class="text-center"><a class="btn menu-icon-gr vd_red btnDeleteItem billinfo" tabitem_itemid="' + data[i].PKey + '" onclick="removeItemsInTable(\'' + data[i].PKey + '\');"> <i class="glyphicon glyphicon-trash"></i> </a></td>';
+                    itemHtml += '<td>' + data[i].product_name + '</td>';
+                    itemHtml += '<td class="text-right">' + data[i].reg_price.toFixed(2) + '</td>';
+                    if (data[i].is_free)
+                        itemHtml += '<td><input min="1" autocomplete="off" disabled class="form-control billinfo number rowCalulate" type="number" id="txt_ItemQty_' + data[i].PKey + '" value="' + data[i].quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
+                    else
+                        itemHtml += '<td><input min="1" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_ItemQty_' + data[i].PKey + '" value="' + data[i].quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
+                    itemHtml += '<td class="TotalAmount text-right" data-regprice="' + data[i].reg_price + '"data-salerate="' + data[i].sale_rate + '" data-discount="' + data[i].discount + '" data-amount="' + data[i].total + '" data-taxamount="' + data[i].tax_amount + '" data-shippingamt="' + data[i].shipping_amount + '">' + data[i].total.toFixed(2) + '</td>';
+                    itemHtml += '<td class="text-right RowDiscount" data-disctype="' + data[i].discount_type + '" data-couponamt="0">' + data[i].discount.toFixed(2) + '</td>';
+                    itemHtml += '<td class="text-right RowTax">' + data[i].tax_amount + '</td>';
+                    itemHtml += '</tr>';
                 }
                 else if (data[i].product_type == 'coupon') {
-                    layoutHtml += '<li id="li_' + data[i].product_name + '" data-coupon= "' + data[i].product_name + '" data-couponamt= "0" data-disctype= "">';
+                    layoutHtml += '<li id="li_' + data[i].product_name + '" data-coupon= "' + data[i].product_name + '" data-couponamt= "' + data[i].discount.toFixed(2) + '" data-disctype= "">';
                     layoutHtml += '<a href="javascript:void(0);">';
                     layoutHtml += '<i class="fa fa-gift"></i>';
                     layoutHtml += '<span>' + data[i].product_name + '</span>';
@@ -655,8 +671,10 @@ function getOrderItemList(oid) {
                     layoutHtml += '</li>';
                 }
             }
-            bindItemListDataTable(itemsDetailsxml);
+            //bindItemListDataTable(itemsDetailsxml);
+            $('#tblAddItemFinal tbody').append(itemHtml);
             $('#billCoupon').append(layoutHtml);
+            calcFinalTotals();
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
         async: false

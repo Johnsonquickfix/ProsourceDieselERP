@@ -15,29 +15,27 @@
 
 <div class="contennt setting-section">
     <div class="nav-tabs-custom">
+        <div class="user-top-section">
+            <div class="tablenav top">
+                <div class="alignleft actions bulkactions">
+                    <form method="GET">
+                        <div>
+                            <input type="text" size="11" id="start_date" placeholder="Start date mm-dd-yyyy" name="start_date" class="range_datepicker from hasDatepicker" autocomplete="off">
+                            <input type="text" size="11" id="end_date" placeholder="End date mm-dd-yyyy" name="end_date" class="range_datepicker to hasDatepicker" autocomplete="off">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
         <ul class="nav nav-tabs">
-            <li class="active"><a href="#tab_1" data-toggle="tab">Commission Orders Details</a></li>
-            <li><a href="#tab_2" data-toggle="tab">Commission Earn Agent</a></li>
-         
+            <li class="active"><a href="#tab_1" data-toggle="tab">Commission Orders Data</a></li>
+            <li><a href="#tab_2" data-toggle="tab">Commission Earned Agent</a></li>
+
         </ul>
+
         <div class="tab-content">
             <div class="tab-pane active" id="tab_1">
-                <div class="user-top-section">
-                    <div class="tablenav top">
-                        <div class="alignleft actions bulkactions">
-                            <form method="GET">
-                                <div>
-                                    <input type="text" size="11" id="start_date" placeholder="mm-dd-yyyy" name="start_date" class="range_datepicker from hasDatepicker" autocomplete="off">
-
-                                    <input type="text" size="11" id="end_date" placeholder="mm-dd-yyyy" name="end_date" class="range_datepicker to hasDatepicker" autocomplete="off">
-                                    <input type="button" id="filtersrchexp" value="Search" class="button" />
-                                </div>
-                            </form>
-
-                            @*<input type="submit" name="filtersrchexp" value="Export" class="button button-primary" />*@
-                        </div>
-                    </div>
-                </div>
+               <input type="button" id="filtersrchexp" value="Show" class="button" />
                 <div id="poststuff" class="woocommerce-reports-wide">
                     <div class="box box-primary">
                         <div class="box-header">
@@ -63,25 +61,8 @@
                 </div>
             </div>
 
-            <div class="tab-pane" id="tab_2">
-                <div class="user-top-section">
-                    <div class="tablenav top">
-                        <div class="alignleft actions bulkactions">
-                            <div class="alignleft actions bulkactions">
-                                <form method="GET">
-                                    <div>
-                                        <input type="text" size="11" id="start_dateE" placeholder="mm-dd-yyyy" name="start_dateE" class="range_datepicker from hasDatepicker" autocomplete="off">
-
-                                        <input type="text" size="11" id="end_dateE" placeholder="mm-dd-yyyy" name="end_dateE" class="range_datepicker to hasDatepicker" autocomplete="off">
-                                        <input type="button" id="filtersrchexpE" value="Search" class="button" />
-                                    </div>
-                                </form>
-
-                                @*<input type="submit" name="filtersrchexp" value="Export" class="button button-primary" />*@
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="tab-pane" id="tab_2">     
+               <input type="button" id="filtersrchexpE" value="Show" class="button" />
                 <div id="poststuff" class="woocommerce-reports-wide">
                     <div class="box box-primary">
                         <div class="box-header">
@@ -95,6 +76,18 @@
                                         <th>Commission Earned</th>
                                     </tr>
                                 </thead>
+                                <tfoot>
+
+                                    <tr>
+                                        <th>
+                                            Grand Total
+                                        </th>
+                                        <th><label id="txtStatus1"></label></th>
+                                        <th><label id="txtcount"></label></th>
+                                        <th><label id="txtaov"></label></th>
+                                        <th><label id="txtComEar"></label></th>
+                                    </tr>
+                                </tfoot>
                             </table>
                         </div>
                     </div>
@@ -126,11 +119,11 @@
         });
       //  setTimeout(function () { DatagridOrder(); }, 50);
         $("#filtersrchexpE").click(function () {
-            if ($("#start_dateE").val() == "") {
-                swal('Alert', 'Please Enter Start_Date', 'error').then(function () { swal.close(); $('#start_dateE').focus(); });
+            if ($("#start_date").val() == "") {
+                swal('Alert', 'Please Enter Start_Date', 'error').then(function () { swal.close(); $('#start_date').focus(); });
             }
-            else if ($("#end_dateE").val() == "") {
-                swal('Alert', 'Please enter End_Date', 'error').then(function () { swal.close(); $('#end_dateE').focus(); });
+            else if ($("#end_date").val() == "") {
+                swal('Alert', 'Please enter End_Date', 'error').then(function () { swal.close(); $('#end_date').focus(); });
             }
             else {
 
@@ -203,10 +196,8 @@
                     className: 'button',
                     text: '<i class="fas fa-file-csv"></i> Export',
                     filename: function () {
-                        var from = $("#start_date").val();
-                        var to = $("#end_date").val();
-                        from.replace('/', '.');
-                        to.replace('/', '.');
+                        var from = $("#start_date").val().replaceAll('/', '.');
+                        var to = $("#end_date").val().replaceAll('/', '.');
                         return from + '-' + to;
                     },
                 },
@@ -243,6 +234,36 @@
 
 
             ],
+            footerCallback: function (row, data, start, end, display) {
+                var api = this.api(), data;
+                // Remove the formatting to get integer data for summation
+                var intVal = function (i) {
+                    return typeof i === 'string' ? i.replace(/[\$,]/g, '') * 1 : typeof i === 'number' ? i : 0;
+                };
+                // Total over this page
+                data = api.column(2, {
+                    page: 'current'
+                }).data(); pageTotalCount = data.length ? data.reduce(function (a, b) { return intVal(a) + intVal(b); }) : 0;
+
+                data = api.column(1, {
+                    page: 'current'
+                }).data(); pageTotalCoomiAm = data.length ? data.reduce(function (a, b) { return intVal(a) + intVal(b); }) : 0;
+
+                data = api.column(3, {
+                    page: 'current'
+                }).data(); pageTotalAOV = data.length ? data.reduce(function (a, b) { return intVal(a) + intVal(b); }) : 0;
+
+                data = api.column(4, {
+                    page: 'current'
+                }).data(); pageTotalCommitEarned = data.length ? data.reduce(function (a, b) { return intVal(a) + intVal(b); }) : 0;
+
+                $(api.column(1).footer()).html('$' + pageTotalCoomiAm);
+                $(api.column(2).footer()).html(pageTotalCount);
+                $(api.column(3).footer()).html('$' + pageTotalAOV);
+                $(api.column(4).footer()).html('$' + pageTotalCommitEarned);
+                
+            },
+             
             columnDefs: [{
                 orderable: false,
                 data: null,
@@ -255,15 +276,13 @@
             "buttons": [
 
                 {
-                    extend: 'csv',
+                    extend: 'csv', footer: true,
                     className: 'button',
                     text: '<i class="fas fa-file-csv"></i> Export',
                     filename: function () {
-                        var from = $("#start_date").val();
-                        var to = $("#end_date").val();
-                        from.replace('/', '.');
-                        to.replace('/', '.');
-                        return from + '-' + to;
+                        var from = $("#start_date").val().replaceAll('/', '.');
+                        var to = $("#end_date").val().replaceAll('/', '.');                     
+                        return  from + '-' + to;
                     },
                 },
 

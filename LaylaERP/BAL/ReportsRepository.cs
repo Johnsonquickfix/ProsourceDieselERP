@@ -372,9 +372,9 @@ namespace LaylaERP.BAL
                     fromdate = DateTime.Parse(from_date);
                     todate = DateTime.Parse(to_date);
 
-                    ssql = "SELECT count(ID) CunrID,"
+                    ssql = "SELECT count(distinct  ID) CunrID,"
                     + " format(sum((umatotal.meta_value) - (IFNULL(umatax.meta_value,0)+ IFNULL(umorerItemmetafee.meta_value,0))),2) CommissionableAmount,"
-                    + " umempname.meta_value EName,"
+                    + " umempname.meta_value EName," 
                     + " format(sum((umatotal.meta_value) - (IFNULL(umatax.meta_value,0)+ IFNULL(umorerItemmetafee.meta_value,0)))/count(ID),2) AOV,"
                     + " format(((select Comm_Rate from  wp_agent_commission where AOV_Range1 <= (sum((umatotal.meta_value) - (IFNULL(umatax.meta_value,0)+ IFNULL(umorerItemmetafee.meta_value,0)))/count(u.id)) and AOV_Range2 >= (sum((umatotal.meta_value) - (IFNULL(umatax.meta_value,0)+ IFNULL(umorerItemmetafee.meta_value,0)))/count(u.id)) ) * (sum((umatotal.meta_value) - (IFNULL(umatax.meta_value,0)+ IFNULL(umorerItemmetafee.meta_value,0))))) /100,2)  CommissionEarned,"
                     + " format(((select Comm_Rate from  wp_agent_commission where AOV_Range1 <= (sum((umatotal.meta_value) - (IFNULL(umatax.meta_value,0)+ IFNULL(umorerItemmetafee.meta_value,0)))/count(u.id)) and AOV_Range2 >= (sum((umatotal.meta_value) - (IFNULL(umatax.meta_value,0)+ IFNULL(umorerItemmetafee.meta_value,0)))/count(u.id)) )),2)  Valued"

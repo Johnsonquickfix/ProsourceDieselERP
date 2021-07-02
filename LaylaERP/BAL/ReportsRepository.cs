@@ -372,7 +372,7 @@ namespace LaylaERP.BAL
                     fromdate = DateTime.Parse(from_date);
                     todate = DateTime.Parse(to_date);
 
-                    ssql = "SELECT count(distinct  ID) CunrID,"
+                    ssql = "SELECT count(ID) CunrID,"
                     + " format(sum((umatotal.meta_value) - (IFNULL(umatax.meta_value,0)+ IFNULL(umorerItemmetafee.meta_value,0))),2) CommissionableAmount,"
                     + " umempname.meta_value EName," 
                     + " format(sum((umatotal.meta_value) - (IFNULL(umatax.meta_value,0)+ IFNULL(umorerItemmetafee.meta_value,0)))/count(ID),2) AOV,"

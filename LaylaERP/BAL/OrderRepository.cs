@@ -409,12 +409,16 @@
                     strSql.Append(string.Format(" insert into wp_woocommerce_order_items(order_item_name,order_item_type,order_id) value('{0}','{1}','{2}'); ", obj.item_name, obj.item_type, model.OrderPostStatus.order_id));
                     if (obj.item_type == "coupon")
                     {
-                        strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'discount_amount',{0} from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}' and order_item_type = '{3}'; ", obj.amount, model.OrderPostStatus.order_id, obj.item_type, obj.item_name));
+                        strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'discount_amount',{0} from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}' and order_item_name = '{3}'; ", obj.amount, model.OrderPostStatus.order_id, obj.item_type, obj.item_name));
                     }
                     else if (obj.item_type == "fee")
                     {
                         strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'tax_status','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}'; ", "taxable", model.OrderPostStatus.order_id, obj.item_type));
                         strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'_line_total','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}'; ", obj.amount, model.OrderPostStatus.order_id, obj.item_type));
+                    }
+                    else if (obj.item_type == "shipping")
+                    {
+                        strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'cost',{0} from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}'; ", obj.amount, model.OrderPostStatus.order_id, obj.item_type));
                     }
                 }
                 /// step 4 : wp_posts (Coupon used by)
@@ -541,7 +545,7 @@
                             + " max(case meta_key when '_product_id' then meta_value else '' end) p_id,max(case meta_key when '_variation_id' then meta_value else '' end) v_id,"
                             + " max(case meta_key when '_qty' then meta_value else '' end) qty,max(case meta_key when '_line_subtotal' then meta_value else '' end) line_subtotal,"
                             + " max(case meta_key when '_line_total' then meta_value else '' end) line_total,max(case meta_key when '_line_tax' then meta_value else '' end) tax,"
-                            + " max(case meta_key when 'discount_amount' then meta_value else '' end) discount_amount"
+                            + " max(case meta_key when 'discount_amount' then meta_value else '' end) discount_amount,max(case meta_key when 'cost' then meta_value else '' end) shipping_amount"
                             + " from wp_woocommerce_order_items oi"
                             + " inner join wp_woocommerce_order_itemmeta oim on oim.order_item_id = oi.order_item_id"
                             + " where oi.order_id = @order_id"
@@ -584,7 +588,7 @@
                             productsModel.sale_price = productsModel.price;
                         productsModel.reg_price = productsModel.sale_price;
                         productsModel.total = productsModel.sale_price;
-                        productsModel.sale_price = productsModel.sale_price / productsModel.quantity;
+                        productsModel.reg_price = productsModel.sale_price / productsModel.quantity;
                         if (sdr["line_total"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["line_total"].ToString().Trim()))
                             productsModel.discount = decimal.Parse(sdr["line_total"].ToString().Trim());
                         else
@@ -597,15 +601,15 @@
                             productsModel.tax_amount = productsModel.price;
 
 
-                        /// free item
-                        if (productsModel.product_id == 78676) { productsModel.is_free = true; productsModel.quantity = 2; }
-                        else if (productsModel.product_id == 632713) { productsModel.is_free = true; productsModel.quantity = 2; }
-                        else productsModel.is_free = false;
+                        ///// free item
+                        //if (productsModel.product_id == 78676) { productsModel.is_free = true; productsModel.quantity = 2; }
+                        //else if (productsModel.product_id == 632713) { productsModel.is_free = true; productsModel.quantity = 2; }
+                        //else productsModel.is_free = false;
 
-                        /// 
-                        if (productsModel.product_id == 611172) productsModel.group_id = 78676;
-                        else if (productsModel.product_id == 118) productsModel.group_id = 632713;
-                        else productsModel.group_id = 0;
+                        ///// 
+                        //if (productsModel.product_id == 611172) productsModel.group_id = 78676;
+                        //else if (productsModel.product_id == 118) productsModel.group_id = 632713;
+                        //else productsModel.group_id = 0;
                     }
                     else if (productsModel.product_type == "coupon")
                     {
@@ -613,6 +617,20 @@
                             productsModel.discount = decimal.Parse(sdr["discount_amount"].ToString().Trim());
                         else
                             productsModel.discount = 0;
+                    }
+                    else if (productsModel.product_type == "fee")
+                    {
+                        if (sdr["line_total"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["line_total"].ToString().Trim()))
+                            productsModel.total = decimal.Parse(sdr["line_total"].ToString().Trim());
+                        else
+                            productsModel.total = 0;
+                    }
+                    else if (productsModel.product_type == "shipping")
+                    {
+                        if (sdr["shipping_amount"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["shipping_amount"].ToString().Trim()))
+                            productsModel.total = decimal.Parse(sdr["shipping_amount"].ToString().Trim());
+                        else
+                            productsModel.total = 0;
                     }
                     _list.Add(productsModel);
                 }

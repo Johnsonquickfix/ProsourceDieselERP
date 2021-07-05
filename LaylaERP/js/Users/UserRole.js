@@ -235,7 +235,6 @@ $('#checkAll').click(function () {
 function checkchange(elem) {
     var myNode = $('#tt').tree('find', $(elem).data("id"));
         $("#tt").tree('check', myNode.target);
-    console.log(isChecked);
 }
 
 function rootChange(elem) {

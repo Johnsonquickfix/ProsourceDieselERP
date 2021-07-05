@@ -798,6 +798,13 @@ function ApplyAutoCoupon() {
             post_title: "found-frame", title: "Bundle Discount", type: 'auto_coupon', discount_type: 'fixed_cart', coupon_amount: 25, product_ids: '31729,20861', exclude_product_ids: ''
         });
     }
+    var cart_coupons = getAllCoupons();
+    //14023 - Layla Kapok Pillow
+    if (cart_prnt_ids.includes(14023) && !cart_coupons.includes('melanieff35') && !cart_coupons.includes('idmecoupon') && !cart_coupons.includes('ffdbmatt01ck0621') && !cart_coupons.includes('ffrphybr01q0621')) {
+        auto_code.push({
+            post_title: "kapok-pillow", title: "Kapok Pillow", type: 'auto_coupon', discount_type: '2x_percent', coupon_amount: 50, product_ids: '14023,14023', exclude_product_ids: ''
+        });
+    }
     if (auto_code.length > 0) { bindCouponList(auto_code); }
 }
 function ApplyCoupon() {
@@ -1012,7 +1019,7 @@ function calculateDiscountAcount() {
     if (countCoupon > 0) {
         $('#billCoupon li').each(function (index) {
             let cou_amt = 0.00;
-            let zCouponAmt = parseFloat($(this).data('couponamt')) || 0.00, zDiscType = $(this).data('disctype'), zQty = 0.00, zGrossAmount = 0.00, zDisAmt = 0.00;
+            let zCouponAmt = parseFloat($(this).data('couponamt')) || 0.00, zDiscType = $(this).data('disctype'), zQty = 0.00, zRegPrice = 0.00, zGrossAmount = 0.00, zDisAmt = 0.00;
 
             let rq_prd_ids = [], exclude_ids = [];
             if (zDiscType == 'fixed_cart') {
@@ -1036,8 +1043,8 @@ function calculateDiscountAcount() {
                         var pid = $(this).data('pid'), vid = $(this).data('vid');
                         if (!exclude_ids.includes(pid) && !exclude_ids.includes(vid) && ((rq_prd_ids.includes(pid) || rq_prd_ids.includes(vid)) || rq_prd_ids == 0)) {
                             zQty = parseFloat($(this).find("[name=txt_ItemQty]").val()) || 0.00;
-                            zGrossAmount = parseFloat($(this).find(".TotalAmount").data("regprice")) || 0.00;
-                            zGrossAmount = zGrossAmount * zQty;
+                            zRegPrice = parseFloat($(this).find(".TotalAmount").data("regprice")) || 0.00;
+                            zGrossAmount = zRegPrice * zQty;
                             $(this).find(".TotalAmount").data("amount", zGrossAmount.toFixed(2)); $(this).find(".TotalAmount").text(zGrossAmount.toFixed(2));
 
                             //free item Qty
@@ -1052,6 +1059,7 @@ function calculateDiscountAcount() {
                             if (zDiscType == 'fixed_product') { zDisAmt = zCouponAmt * zQty; }
                             else if (zDiscType == 'fixed_cart') { zDisAmt = zCouponAmt * zQty; }
                             else if (zDiscType == 'percent') { zDisAmt = (zGrossAmount * zCouponAmt) / 100; }
+                            else if (zDiscType == '2x_percent') { zDisAmt = ((zRegPrice * zCouponAmt) / 100) * Math.floor(zQty / 2); }
                             //Coupon Amount Total
                             cou_amt += zDisAmt;
 
@@ -1068,6 +1076,10 @@ function calculateDiscountAcount() {
 
             //update Coupon Amount
             $(this).find("#cou_discamt").text(cou_amt.toFixed(2))
+            if (cou_amt > 0)
+                $(this).removeClass('hidden');
+            else
+                $(this).addClass('hidden');
         });
     }
     else {
@@ -1354,7 +1366,7 @@ function createOtherItemsList() {
         otherItemsxml.push({ order_id: oid, item_name: $(this).data('coupon'), item_type: 'coupon', amount: parseFloat($(this).find("#cou_discamt").text()) || 0.00 });
     });
     //Add State Recycling Fee
-    otherItemsxml.push({ order_id: oid, item_name: 'State Recycling Fee', item_type: '`', amount: parseFloat($('#stateRecyclingFeeTotal').text()) || 0.00 });
+    otherItemsxml.push({ order_id: oid, item_name: 'State Recycling Fee', item_type: 'fee', amount: parseFloat($('#stateRecyclingFeeTotal').text()) || 0.00 });
     //Add Shipping
     otherItemsxml.push({ order_id: oid, item_name: '', item_type: 'shipping', amount: parseFloat($('#shippingTotal').text()) || 0.00 });
     return otherItemsxml;
@@ -1428,7 +1440,7 @@ function ValidateData() {
     else if ($('#txtshiplastname').val() == '') { swal('Alert!', 'Please Enter Shipping Last Name.', "info").then((result) => { $('#txtshiplastname').focus(); return false; }); return false; }
     else if ($('#txtshipaddress1').val() == '') { swal('Alert!', 'Please Enter Shipping Address.', "info").then((result) => { $('#txtshipaddress1').focus(); return false; }); return false; }
     else if ($('#txtshipzipcode').val() == '') { swal('Alert!', 'Please Enter Shipping Post Code.', "info").then((result) => { $('#txtshipzipcode').focus(); return false; }); return false; }
-    else if ($('#txtshipcity').val() == '') { swal('Alert!', 'Please Enter Shipping City.', "info").then((result) => { $('#txtshipcity').focus(); return false; }); return false; }
+    else if ($('#txtshipcity').val() == '') { swal('Alert!', 'Please Enter Shipping City.', "info").then((result) => { $('#txtshipcity').focus(); return false; }); return false; }    
     else if ($('#ddlshipcountry').val() == '') { swal('Alert!', 'Please Select Shipping Country.', "info").then((result) => { $('#ddlshipcountry').select2('open'); return false; }); return false; }
     else if ($('#ddlshipstate').val() == '' || $('#ddlshipstate').val() == '0') { swal('Alert!', 'Please Select Shipping State.', "info").then((result) => { $('#ddlshipstate').select2('open'); return false; }); return false; }
     return true;

@@ -13,29 +13,28 @@
     <h2>Commission Earn Agent</h2>
 </div>
 
-<div class="contennt setting-section">
-    <div class="nav-tabs-custom">
-        <div class="user-top-section">
-            <div class="tablenav top">
-                <div class="alignleft actions bulkactions">
-                    <form method="GET">
-                        <div>
-                            <input type="text" size="11" id="start_date" placeholder="Start date mm-dd-yyyy" name="start_date" class="range_datepicker from hasDatepicker" autocomplete="off">
-                            <input type="text" size="11" id="end_date" placeholder="End date mm-dd-yyyy" name="end_date" class="range_datepicker to hasDatepicker" autocomplete="off">
-                        </div>
-                    </form>
-                </div>
+<div class="content section-content commission-section not-fixed">
+    <div class="user-top-section">
+        <div class="tablenav top">
+            <div class="alignleft actions bulkactions">
+                <form method="GET">
+                    <div class="agent-form-date">
+                        <input type="text" size="11" id="start_date" placeholder="Start date mm-dd-yyyy" name="start_date" class="range_datepicker from hasDatepicker" autocomplete="off">
+                        <input type="text" size="11" id="end_date" placeholder="End date mm-dd-yyyy" name="end_date" class="range_datepicker to hasDatepicker" autocomplete="off">
+                        <input type="button" id="filtersrchexp" value="Show" class="button" />
+                    </div>
+                </form>
             </div>
         </div>
+    </div>
+    <div class="nav-tabs-custom">
         <ul class="nav nav-tabs">
             <li class="active"><a href="#tab_1" data-toggle="tab">Commission Orders Data</a></li>
             <li><a href="#tab_2" data-toggle="tab">Commission Earned Agent</a></li>
-
         </ul>
 
         <div class="tab-content">
             <div class="tab-pane active" id="tab_1">
-               <input type="button" id="filtersrchexp" value="Show" class="button" />
                 <div id="poststuff" class="woocommerce-reports-wide">
                     <div class="box box-primary">
                         <div class="box-header">
@@ -51,7 +50,9 @@
                                         <th>Coupon Amount</th>
                                         <th>Commissionable Amount</th>
                                         <th>Status</th>
-                                        <th>Paid Date</th>
+                                        <th>Paid Date&nbsp;&nbsp;&nbsp;&nbsp;
+                                        &nbsp;&nbsp;&nbsp;&nbsp;
+                                        &nbsp;&nbsp;&nbsp;&nbsp;</th>
                                         <th>Transaction ID</th>
                                     </tr>
                                 </thead>
@@ -61,8 +62,7 @@
                 </div>
             </div>
 
-            <div class="tab-pane" id="tab_2">     
-               <input type="button" id="filtersrchexpE" value="Show" class="button" />
+            <div class="tab-pane" id="tab_2">
                 <div id="poststuff" class="woocommerce-reports-wide">
                     <div class="box box-primary">
                         <div class="box-header">

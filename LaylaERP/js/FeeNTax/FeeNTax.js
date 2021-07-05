@@ -26,6 +26,7 @@ function Datagrid() {
     var id;
     $('#dtdata').DataTable({
         destroy: true,
+        scrollX: true,
         bAutoWidth: false,
         "ajax": {
             "url": "/FeeNTax/GetFeeNTaxList",

@@ -8,7 +8,7 @@
     <h2 class="page-heading">Export</h2>
 </div>
 
-<div class="contennt setting-section">
+<div class="contennt setting-section table-design export-section">
     <div class="nav-tabs-custom">
         <ul class="nav nav-tabs">
             <li class="active"><a href="#tab_1" data-toggle="tab">Orders</a></li>
@@ -275,6 +275,7 @@
             //var obj = { mydate: mydate };
             $('#exportdata').DataTable({
                 "lengthMenu": [[10, 20, 50, 100], [10, 20, 50, 100]],
+                scrollX: true,
                 destroy: true,
                 searching: false,
                 bAutoWidth: false,
@@ -358,6 +359,7 @@
             var fromdateusers = $("#fromdateusers").val();
             var todateusers = $("#todateusers").val();
             $('#exportusersdata').DataTable({
+                scrollX: true,
                 destroy: true,
                 searching: false,
                 bAutoWidth: false,
@@ -435,6 +437,7 @@
             var fromdatecustomers = $("#fromdatecustomers").val();
             var todatecustomers = $("#todatecustomers").val();
             $('#exportcustomersdata').DataTable({
+                scrollX: true,
                 destroy: true,
                 searching: false,
                 bAutoWidth: false,

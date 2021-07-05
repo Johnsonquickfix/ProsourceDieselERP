@@ -272,19 +272,19 @@ function GetCityByZip(zipcode, ctrcity, ctrstate, ctrcountry) {
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Search Popup on Add new Order ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function searchOrderModal() {
     let modalHtml = '';
-    modalHtml += '<div class="modal-dialog modal-lg">';
+    modalHtml += '<div class="modal-dialog modal-lg modal-1040">';
     modalHtml += '<div class="modal-content">';
     modalHtml += '<div class="modal-header">';
     modalHtml += '<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button>';
     modalHtml += '<h4 class="modal-title" id="myModalLabel">Search Customer</h4>';
     modalHtml += '</div>';
-    modalHtml += '<div class="modal-body" ></div>';
+    modalHtml += '<div class="modal-body"></div>';
     modalHtml += '</div>';
     modalHtml += '</div>';
     $("#billModal").empty().html(modalHtml);
 
     let myHtml = '';
-    myHtml += '<div class="row">';
+    myHtml += '<div class="row nowrap-row">';
     myHtml += '<div class="col-md-8">';
     myHtml += '<div class="form-group">';
     myHtml += '<select class="form-control select2" id="ddlCustomerSearch" placeholder="Select Customer Email" style="width: 100%;">';
@@ -295,7 +295,8 @@ function searchOrderModal() {
     myHtml += '<button type="button" id="btnSelectDefaltAddress" class="btn btn-danger billinfo">Select Default Address</button>';
     myHtml += '</div>';
     myHtml += '</div>';
-
+    myHtml += '<div class="box box-primary mt-1">';
+    myHtml += '<div class="box-body">';
     myHtml += '<div class="row">';
     myHtml += '<div class="col-md-12">';
     myHtml += '<div class="table-responsive">';
@@ -303,16 +304,18 @@ function searchOrderModal() {
     myHtml += '<thead class="thead-dark">';
     myHtml += '<tr>';
     myHtml += '<th style="width: 10%">No</th>';
-    myHtml += '<th style="width: 10%">Creation Date</th>';
+    myHtml += '<th style="width: 15%">Creation Date</th>';
     myHtml += '<th style="width: 25%">Billing Address</th>';
     myHtml += '<th style="width: 25%">Shipping Address</th>';
-    myHtml += '<th class="text-right" style="width: 10%">Amount</th>';
+    myHtml += '<th style="width: 10%">Amount</th>';
     myHtml += '<th style="width: 10%">Status</th>';
     myHtml += '<th class="text-center" style="width: 10%">Actions</th>';
     myHtml += '</tr>';
     myHtml += '</thead>';
     myHtml += '<tbody></tbody>';
     myHtml += '</table>';
+    myHtml += '</div>';
+    myHtml += '</div>';
     myHtml += '</div>';
     myHtml += '</div>';
     myHtml += '</div>';
@@ -636,13 +639,13 @@ function getOrderItemList(oid) {
     $.ajax({
         type: "POST", url: '/Orders/GetOrderProductList', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
         success: function (data) {
-            let itemsDetailsxml = []; let layoutHtml = '', itemHtml = '';
+            let layoutHtml = '', itemHtml = ''; console.log(data);
+            let zQty = 0.00, zGAmt = 0.00, zTDiscount = 0.00, zTotalTax = 0.00, zShippingAmt = 0.00, stateRecyclingFee = 0.00;
             for (var i = 0; i < data.length; i++) {
                 if (data[i].product_type == 'line_item') {
                     //itemsDetailsxml.push({
                     //    PKey: data[i].product_id + '_' + data[i].variation_id, product_id: data[i].product_id, variation_id: data[i].variation_id, product_name: data[i].product_name, quantity: data[i].quantity, reg_price: data[i].reg_price, sale_rate: data[i].sale_price, total: data[i].total, discount: data[i].discount, "tax_amount": data[i].tax_amount, shipping_amount: 0, is_free: data[i].is_free, group_id: data[i].group_id
-                    //});
-
+                    //});                    
                     itemHtml += '<tr id="tritemId_' + data[i].product_id + '_' + data[i].variation_id + '" data-id="' + data[i].product_id + '_' + data[i].variation_id + '" data-pid="' + data[i].product_id + '" data-vid="' + data[i].variation_id + '" data-pname="' + data[i].product_name + '" data-gid="' + data[i].group_id + '" data-freeitem="' + data[i].is_free + '">';
                     if (data[i].is_free)
                         itemHtml += '<td class="text-center"></td>';
@@ -658,23 +661,46 @@ function getOrderItemList(oid) {
                     itemHtml += '<td class="text-right RowDiscount" data-disctype="' + data[i].discount_type + '" data-couponamt="0">' + data[i].discount.toFixed(2) + '</td>';
                     itemHtml += '<td class="text-right RowTax">' + data[i].tax_amount + '</td>';
                     itemHtml += '</tr>';
+                    zQty = zQty + (parseFloat(data[i].quantity) || 0.00);
+                    zGAmt = zGAmt + (parseFloat(data[i].total) || 0.00);
+                    zTotalTax = zTotalTax + (parseFloat(data[i].tax_amount) || 0.00);
                 }
                 else if (data[i].product_type == 'coupon') {
+                    let cpn_name = coupon_title[data[i].product_name] ? coupon_title[data[i].product_name] : data[i].product_name;
+                    let cou_amt = parseFloat(data[i].discount) || 0.00;
                     layoutHtml += '<li id="li_' + data[i].product_name + '" data-coupon= "' + data[i].product_name + '" data-couponamt= "' + data[i].discount.toFixed(2) + '" data-disctype= "">';
                     layoutHtml += '<a href="javascript:void(0);">';
                     layoutHtml += '<i class="fa fa-gift"></i>';
-                    layoutHtml += '<span>' + data[i].product_name + '</span>';
-                    layoutHtml += '<button type="button" class="btn btn-box-tool pull-right billinfo" onclick="removeCouponInList(\'' + data[i].product_name + '\');">';
-                    layoutHtml += '<i class="fa fa-times"></i>';
-                    layoutHtml += '</button>';
+                    layoutHtml += '<span>' + cpn_name + '</span>';
+                    layoutHtml += '<div class="pull-right">';
+                    layoutHtml += '$<span id="cou_discamt">' + cou_amt.toFixed(2) + '</span>';
+                    //layoutHtml += '<button type="button" class="btn btn-box-tool pull-right" onclick="removeCouponInList(\'' + data[i].product_name + '\');">';
+                    //layoutHtml += '<i class="fa fa-times"></i>';
+                    //layoutHtml += '</button>';
+                    layoutHtml += '</div>';
                     layoutHtml += '</a>';
                     layoutHtml += '</li>';
+                    zTDiscount = zTDiscount + cou_amt;
+                }
+                else if (data[i].product_type == 'fee') {
+                    stateRecyclingFee = stateRecyclingFee + (parseFloat(data[i].total) || 0.00);
+                }
+                else if (data[i].product_type == 'shipping') {
+                    zShippingAmt = zShippingAmt + (parseFloat(data[i].total) || 0.00);
                 }
             }
             //bindItemListDataTable(itemsDetailsxml);
             $('#tblAddItemFinal tbody').append(itemHtml);
             $('#billCoupon').append(layoutHtml);
-            calcFinalTotals();
+            //Calculate Final
+            $("#totalQty").text(zQty.toFixed(0)); $("#totalQty").data('qty', zQty.toFixed(0));
+            $("#SubTotal").text(zGAmt.toFixed(2));
+            $("#discountTotal").text(zTDiscount.toFixed(2));
+            $("#salesTaxTotal").text(zTotalTax.toFixed(2));
+            $("#shippingTotal").text(zShippingAmt.toFixed(2));
+            $("#stateRecyclingFeeTotal").text(stateRecyclingFee.toFixed(2));
+            $("#orderTotal").html((zGAmt - zTDiscount + zShippingAmt + zTotalTax + stateRecyclingFee).toFixed(2));
+
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
         async: false
@@ -696,7 +722,7 @@ function CouponModal() {
     myHtml += '<input class="form-control" type="text" id="txt_Coupon" name="txt_Coupon" placeholder="Coupon Code" maxlength="25">';
     myHtml += '</div > ';
     myHtml += '<div class="modal-footer">';
-    myHtml += '<button type="button" class="btn btn-primary" id="btnCouponAdd">Add</button>';
+    myHtml += '<button type="button" class="btn btn-danger" id="btnCouponAdd">Add</button>';
     myHtml += '</div>';
     myHtml += '</div>';
     myHtml += '</div>';
@@ -772,6 +798,13 @@ function ApplyAutoCoupon() {
             post_title: "found-frame", title: "Bundle Discount", type: 'auto_coupon', discount_type: 'fixed_cart', coupon_amount: 25, product_ids: '31729,20861', exclude_product_ids: ''
         });
     }
+    var cart_coupons = getAllCoupons();
+    //14023 - Layla Kapok Pillow
+    if (cart_prnt_ids.includes(14023) && !cart_coupons.includes('melanieff35') && !cart_coupons.includes('idmecoupon') && !cart_coupons.includes('ffdbmatt01ck0621') && !cart_coupons.includes('ffrphybr01q0621')) {
+        auto_code.push({
+            post_title: "kapok-pillow", title: "Kapok Pillow", type: 'auto_coupon', discount_type: '2x_percent', coupon_amount: 50, product_ids: '14023,14023', exclude_product_ids: ''
+        });
+    }
     if (auto_code.length > 0) { bindCouponList(auto_code); }
 }
 function ApplyCoupon() {
@@ -793,6 +826,9 @@ function ApplyCoupon() {
         type: "POST", url: '/Orders/GetCouponAmount', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
         success: function (result) {
             var data = JSON.parse(result);
+            if (data.length == 0) {
+                swal('Alert!', 'Invalid code entered. Please try again.', "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false;
+            }
             //Check valid for email
             if (data[0].cus_email.length && data[0].cus_email != '') {
                 var get_email_arr = res[0].cus_email;
@@ -986,7 +1022,7 @@ function calculateDiscountAcount() {
     if (countCoupon > 0) {
         $('#billCoupon li').each(function (index) {
             let cou_amt = 0.00;
-            let zCouponAmt = parseFloat($(this).data('couponamt')) || 0.00, zDiscType = $(this).data('disctype'), zQty = 0.00, zGrossAmount = 0.00, zDisAmt = 0.00;
+            let zCouponAmt = parseFloat($(this).data('couponamt')) || 0.00, zDiscType = $(this).data('disctype'), zQty = 0.00, zRegPrice = 0.00, zGrossAmount = 0.00, zDisAmt = 0.00;
 
             let rq_prd_ids = [], exclude_ids = [];
             if (zDiscType == 'fixed_cart') {
@@ -1010,8 +1046,8 @@ function calculateDiscountAcount() {
                         var pid = $(this).data('pid'), vid = $(this).data('vid');
                         if (!exclude_ids.includes(pid) && !exclude_ids.includes(vid) && ((rq_prd_ids.includes(pid) || rq_prd_ids.includes(vid)) || rq_prd_ids == 0)) {
                             zQty = parseFloat($(this).find("[name=txt_ItemQty]").val()) || 0.00;
-                            zGrossAmount = parseFloat($(this).find(".TotalAmount").data("regprice")) || 0.00;
-                            zGrossAmount = zGrossAmount * zQty;
+                            zRegPrice = parseFloat($(this).find(".TotalAmount").data("regprice")) || 0.00;
+                            zGrossAmount = zRegPrice * zQty;
                             $(this).find(".TotalAmount").data("amount", zGrossAmount.toFixed(2)); $(this).find(".TotalAmount").text(zGrossAmount.toFixed(2));
 
                             //free item Qty
@@ -1026,6 +1062,7 @@ function calculateDiscountAcount() {
                             if (zDiscType == 'fixed_product') { zDisAmt = zCouponAmt * zQty; }
                             else if (zDiscType == 'fixed_cart') { zDisAmt = zCouponAmt * zQty; }
                             else if (zDiscType == 'percent') { zDisAmt = (zGrossAmount * zCouponAmt) / 100; }
+                            else if (zDiscType == '2x_percent') { zDisAmt = ((zRegPrice * zCouponAmt) / 100) * Math.floor(zQty / 2); }
                             //Coupon Amount Total
                             cou_amt += zDisAmt;
 
@@ -1042,6 +1079,10 @@ function calculateDiscountAcount() {
 
             //update Coupon Amount
             $(this).find("#cou_discamt").text(cou_amt.toFixed(2))
+            if (cou_amt > 0)
+                $(this).removeClass('hidden');
+            else
+                $(this).addClass('hidden');
         });
     }
     else {
@@ -1325,7 +1366,7 @@ function createOtherItemsList() {
     var oid = parseInt($('#hfOrderNo').val()) || 0;
     var otherItemsxml = [];
     $('#billCoupon li').each(function (index) {
-        otherItemsxml.push({ order_id: oid, item_name: $(this).data('coupon'), item_type: 'coupon', amount: parseFloat($(this).data('couponamt')) || 0.00 });
+        otherItemsxml.push({ order_id: oid, item_name: $(this).data('coupon'), item_type: 'coupon', amount: parseFloat($(this).find("#cou_discamt").text()) || 0.00 });
     });
     //Add State Recycling Fee
     otherItemsxml.push({ order_id: oid, item_name: 'State Recycling Fee', item_type: 'fee', amount: parseFloat($('#stateRecyclingFeeTotal').text()) || 0.00 });

@@ -15,12 +15,13 @@
 <section class="content section-content neworder-section table-design">
     <div class="row">
         <div class="col-md-12">
-            Daily: <input id="radtype"
+            Daily: <input checked="checked"
+                          id="radtype"
                           name="radtype"
                           type="radio"
                           value="daily" />
 
-            Weekly: <input checked="checked"
+            Weekly: <input 
                            id="radtype"
                            name="radtype"
                            type="radio"
@@ -51,7 +52,7 @@
 
 <script>
     $(document).ready(function () {
-
+       
         dataGridLoad();
         $("#radtype")
             .change(function () {
@@ -60,12 +61,19 @@
                     dataGridLoad();
                 }
             });
+        $('#dtdata_previous').removeAttr('disabled');
+        $('#dtdata_next').removeAttr('disabled');
     });
 
     function dataGridLoad() {
 
         let dfa = $("input[name='radtype']:checked").val();
         $('#dtdata').DataTable({
+         
+            "lengthChange": false,
+            "searching": false,
+            "info": false,
+           
             columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
             destroy: true, bProcessing: true, bServerSide: true,
             //sPaginationType: "full_numbers", searching: true, ordering: true, lengthChange: true,

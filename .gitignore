@@ -361,3 +361,8 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+*.cs
+*.js
+/LaylaERP/Views/Appearance
+/LaylaERP/Views/Reports
+*.cshtml

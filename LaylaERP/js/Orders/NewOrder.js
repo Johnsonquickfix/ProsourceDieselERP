@@ -37,7 +37,7 @@ $(document).ready(function () {
     $("#ddlUser").change(function () { setTimeout(function () { NewOrderNo(); }, 50); CustomerAddress($("#ddlUser").val()); return false; });
     $("#ddlbillcountry").change(function () { var obj = { id: $("#ddlbillcountry").val() }; BindStateCounty("ddlbillstate", obj); });
     $("#ddlshipcountry").change(function () { var obj = { id: $("#ddlshipcountry").val() }; BindStateCounty("ddlshipstate", obj); });
-    $("#ddlshipstate").change(function () { getItemShippingCharge(); });
+    $("#ddlshipstate").change(function () { GetTaxRate(); getItemShippingCharge(); });
     $('#ddlProduct').select2({
         allowClear: true, minimumInputLength: 3, placeholder: "Search Product",
         ajax: {
@@ -51,7 +51,8 @@ $(document).ready(function () {
     $(document).on("click", "#btnApplyCoupon", function (t) { t.preventDefault(); CouponModal(); });
     //$("#billModal").on("keypress", function (e) { if (e.which == 13 && e.target.type != "textarea") { $("#btnCouponAdd").click(); } });
     $("#billModal").on("click", "#btnCouponAdd", function (t) { t.preventDefault(); ApplyCoupon(); });
-    $(document).on("blur", "#txtshipzipcode", function (t) { t.preventDefault(); GetCityByZip($(this).val()); });
+    $(document).on("blur", "#txtbillzipcode", function (t) { t.preventDefault(); GetCityByZip($(this).val(), $("#txtbillcity"), $("#ddlbillstate"), $("#ddlbillcountry")); });
+    $(document).on("blur", "#txtshipzipcode", function (t) { t.preventDefault(); GetCityByZip($(this).val(), $("#txtshipcity"), $("#ddlshipstate"), $("#ddlshipcountry")); });
     $(document).on("click", "#btnCheckout", function (t) { t.preventDefault(); saveCO(); });
     $(document).on("click", "#btnpay", function (t) { t.preventDefault(); PaymentModal(); });
     $("#billModal").on("click", "#btnPlaceOrder", function (t) { t.preventDefault(); AcceptPayment(); });
@@ -70,7 +71,7 @@ $(document).ready(function () {
             $("#ddlCustomerSearch").empty().append('<option value="' + cus_id + '" selected>' + cus_text + '</option>');
             bindCustomerOrders(cus_id);
         }
-        $("#loader").hide(); 
+        $("#loader").hide();
     });
     $('#billModal').on('shown.bs.modal', function () {
         $('#ddlCustomerSearch').select2({
@@ -144,8 +145,10 @@ $(document).ready(function () {
 function BindStateCounty(ctr, obj) {
     var res = wc_users_params.filter(element => element.abbreviation == obj.id);
     $("#" + ctr + "").html('<option value="0">Select</option>');
-    for (i = 0; i < res[0].states.length; i++) {
-        $("#" + ctr + "").append('<option value="' + res[0].states[i].abbreviation + '">' + res[0].states[i].name + '</option>');
+    if (res.length > 0) {
+        for (i = 0; i < res[0].states.length; i++) {
+            $("#" + ctr + "").append('<option value="' + res[0].states[i].abbreviation + '">' + res[0].states[i].name + '</option>');
+        }
     }
 }
 
@@ -218,13 +221,17 @@ function GetTaxRate() {
     var s_state = $("#ddlshipstate").val();
     if (tax_states.indexOf(s_state) > 0) {
         var opt = { strValue1: $("#txtshipzipcode").val(), strValue2: $("#txtshipcity").val(), strValue3: $("#ddlshipcountry").val() };
-        if (opt.strValue1.length <= 0 || opt.strValue2.length <= 0 || opt.strValue3.length <= 0) { $('#hfTaxRate').val(0); return false; }
-        $.ajax({
-            type: "POST", url: '/Orders/GetTaxRate', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
-            success: function (result) { $('#hfTaxRate').val(result.message); },
-            error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
-            async: false
-        });
+        if (opt.strValue1.length <= 0 || opt.strValue2.length <= 0 || opt.strValue3.length <= 0) {
+            $('#hfTaxRate').val(0);
+        }
+        else {
+            $.ajax({
+                type: "POST", url: '/Orders/GetTaxRate', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
+                success: function (result) { $('#hfTaxRate').val(result.message); },
+                error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
+                async: false
+            });
+        }
     }
     else {
         $('#hfTaxRate').val(0.00);
@@ -232,18 +239,34 @@ function GetTaxRate() {
     calculateDiscountAcount();
 }
 /// Get City By Pin code
-function GetCityByZip(zipcode) {
+function GetCityByZip(zipcode, ctrcity, ctrstate, ctrcountry) {
+    var option = { strValue1: zipcode };
     $.ajax({
-        url: "https://ziptasticapi.com/" + zipcode,
-        type: "GET",
-        dataType: 'JSON',
-        data: [],
-        success: function (data) {
-            $("#txtshipcity").val(data.city); $("#ddlshipcountry").val(data.country).trigger('change'); $("#ddlshipstate").val(data.state).trigger('change');
-            GetTaxRate();
+        type: "POST", url: '/Orders/GetCity', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(option),
+        beforeSend: function () { $("#loader").show(); },
+        success: function (result) {
+            Object.keys(wc_users_params).forEach(function (k) {
+                let coun = wc_users_params[k].states.filter(element => element.abbreviation == 'NY');
+                if (coun.length > 0) { result.country = wc_users_params[k].abbreviation; return; }
+            });
+            ctrcity.val(result.city); ctrcountry.val(result.country).trigger('change'); ctrstate.val(result.state).trigger('change');
         },
-        error: function (msg) { alert(msg); }
+        error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); },
+        complete: function () { $("#loader").hide(); },
+        async: false
     });
+
+    //$.ajax({
+    //    url: "https://ziptasticapi.com/" + zipcode,
+    //    type: "GET",
+    //    dataType: 'JSON',
+    //    data: [],
+    //    success: function (data) {
+    //        $("#txtshipcity").val(data.city); $("#ddlshipcountry").val(data.country).trigger('change'); $("#ddlshipstate").val(data.state).trigger('change');
+    //        GetTaxRate();
+    //    },
+    //    error: function (msg) { alert(msg); }
+    //});
 }
 
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Search Popup on Add new Order ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -519,7 +542,7 @@ function saveCustomer() {
             billing_address_2: BillingAddress2, billing_postcode: BillingPostcode, billing_country: BillingCountry,
             billing_state: BillingState, billing_city: BillingCity, billing_phone: BillingPhone
         }
-        console.log(obj);
+        //console.log(obj);
         $.ajax({
             url: '/Customer/NewUser/', dataType: 'json', type: 'Post', contentType: "application/json; charset=utf-8", data: JSON.stringify(obj),
             beforeSend: function () { $("#loader").show(); },
@@ -551,6 +574,19 @@ function saveCustomer() {
         })
     }
 
+}
+function copyBillingAddress() {
+    $("#loader").show();
+    $('#txtshipfirstname').val($("#txtbillfirstname").val());
+    $('#txtshiplastname').val($("#txtbilllastname").val());
+    $('#txtshipcompany').val($("#txtbillcompany").val());
+    $('#txtshipaddress1').val($("#txtbilladdress1").val());
+    $('#txtshipaddress2').val($("#txtbilladdress2").val());
+    $('#txtshipzipcode').val($("#txtbillzipcode").val());
+    $('#txtshipcity').val($("#txtbillcity").val());
+    $('#ddlshipcountry').val($("#ddlbillcountry").val()).trigger('change');
+    $('#ddlshipstate').val($("#ddlbillstate").val()).trigger('change');
+    $("#loader").hide();
 }
 
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Edit Order ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -600,15 +636,31 @@ function getOrderItemList(oid) {
     $.ajax({
         type: "POST", url: '/Orders/GetOrderProductList', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
         success: function (data) {
-            var itemsDetailsxml = []; var layoutHtml = '';
+            let itemsDetailsxml = []; let layoutHtml = '', itemHtml = '';
             for (var i = 0; i < data.length; i++) {
                 if (data[i].product_type == 'line_item') {
-                    itemsDetailsxml.push({
-                        PKey: data[i].product_id + '_' + data[i].variation_id, product_id: data[i].product_id, variation_id: data[i].variation_id, product_name: data[i].product_name, quantity: data[i].quantity, reg_price: data[i].reg_price, sale_rate: data[i].sale_price, total: data[i].total, discount: data[i].discount, "tax_amount": data[i].tax_amount, shipping_amount: 0, is_free: data[i].is_free, group_id: data[i].group_id
-                    });
+                    //itemsDetailsxml.push({
+                    //    PKey: data[i].product_id + '_' + data[i].variation_id, product_id: data[i].product_id, variation_id: data[i].variation_id, product_name: data[i].product_name, quantity: data[i].quantity, reg_price: data[i].reg_price, sale_rate: data[i].sale_price, total: data[i].total, discount: data[i].discount, "tax_amount": data[i].tax_amount, shipping_amount: 0, is_free: data[i].is_free, group_id: data[i].group_id
+                    //});
+
+                    itemHtml += '<tr id="tritemId_' + data[i].product_id + '_' + data[i].variation_id + '" data-id="' + data[i].product_id + '_' + data[i].variation_id + '" data-pid="' + data[i].product_id + '" data-vid="' + data[i].variation_id + '" data-pname="' + data[i].product_name + '" data-gid="' + data[i].group_id + '" data-freeitem="' + data[i].is_free + '">';
+                    if (data[i].is_free)
+                        itemHtml += '<td class="text-center"></td>';
+                    else
+                        itemHtml += '<td class="text-center"><a class="btn menu-icon-gr vd_red btnDeleteItem billinfo" tabitem_itemid="' + data[i].PKey + '" onclick="removeItemsInTable(\'' + data[i].PKey + '\');"> <i class="glyphicon glyphicon-trash"></i> </a></td>';
+                    itemHtml += '<td>' + data[i].product_name + '</td>';
+                    itemHtml += '<td class="text-right">' + data[i].reg_price.toFixed(2) + '</td>';
+                    if (data[i].is_free)
+                        itemHtml += '<td><input min="1" autocomplete="off" disabled class="form-control billinfo number rowCalulate" type="number" id="txt_ItemQty_' + data[i].PKey + '" value="' + data[i].quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
+                    else
+                        itemHtml += '<td><input min="1" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_ItemQty_' + data[i].PKey + '" value="' + data[i].quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
+                    itemHtml += '<td class="TotalAmount text-right" data-regprice="' + data[i].reg_price + '"data-salerate="' + data[i].sale_rate + '" data-discount="' + data[i].discount + '" data-amount="' + data[i].total + '" data-taxamount="' + data[i].tax_amount + '" data-shippingamt="' + data[i].shipping_amount + '">' + data[i].total.toFixed(2) + '</td>';
+                    itemHtml += '<td class="text-right RowDiscount" data-disctype="' + data[i].discount_type + '" data-couponamt="0">' + data[i].discount.toFixed(2) + '</td>';
+                    itemHtml += '<td class="text-right RowTax">' + data[i].tax_amount + '</td>';
+                    itemHtml += '</tr>';
                 }
                 else if (data[i].product_type == 'coupon') {
-                    layoutHtml += '<li id="li_' + data[i].product_name + '" data-coupon= "' + data[i].product_name + '" data-couponamt= "0" data-disctype= "">';
+                    layoutHtml += '<li id="li_' + data[i].product_name + '" data-coupon= "' + data[i].product_name + '" data-couponamt= "' + data[i].discount.toFixed(2) + '" data-disctype= "">';
                     layoutHtml += '<a href="javascript:void(0);">';
                     layoutHtml += '<i class="fa fa-gift"></i>';
                     layoutHtml += '<span>' + data[i].product_name + '</span>';
@@ -619,8 +671,10 @@ function getOrderItemList(oid) {
                     layoutHtml += '</li>';
                 }
             }
-            bindItemListDataTable(itemsDetailsxml);
+            //bindItemListDataTable(itemsDetailsxml);
+            $('#tblAddItemFinal tbody').append(itemHtml);
             $('#billCoupon').append(layoutHtml);
+            calcFinalTotals();
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
         async: false
@@ -853,7 +907,7 @@ function deleteAllCoupons(coupon_type) {
                 $('#li_' + id).remove();
                 for (var i = 0; i < rq_prd_ids.length; i++) {
                     let row_id = '#tritemId_' + id + '_' + rq_prd_ids[i];
-                    console.log($(row_id));
+                    //console.log($(row_id));
                     //Remove Discount to Items
                     let zQty = parseFloat($(row_id).find("[name=txt_ItemQty]").val()) || 0.00;
                     let zGrossAmount = parseFloat($(row_id).find(".TotalAmount").data("regprice")) || 0.00;
@@ -1011,21 +1065,16 @@ function calculateDiscountAcount() {
 
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Shipping Charges ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function getItemShippingCharge() {
-    var v_ids = [];
+    let v_ids = []; let sh_state = $("#ddlshipstate").val() == 'CA' ? "CAA" : $("#ddlshipstate").val();
     $("#tblAddItemFinal > tbody  > tr").each(function () { v_ids.push($(this).data('vid')); });
-    let shipping_state = $("#ddlshipcountry").val() == 'US' ? $("#ddlshipstate").val() : $("#ddlshipcountry").val();
-    console.log(shipping_state);
+    let shipping_state = $("#ddlshipcountry").val() == 'US' ? sh_state : $("#ddlshipcountry").val();
 
-    if (shipping_state == "CA") {
-        shipping_state = "CAA";
-    }
-
-    var options = { strValue1: v_ids.join(','), strValue2: shipping_state };
-    console.log(options);
+    $("#loader").show();
+    let options = { strValue1: v_ids.join(','), strValue2: shipping_state };
     $(".TotalAmount").data("shippingamt", 0.00);
     $.ajax({
         type: "POST", url: '/Orders/GetProductShipping', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(options),
-        beforeSend: function () { $("#loader").show(); },
+        beforeSend: function () { },
         success: function (data) {
             $("#tblAddItemFinal > tbody  > tr").each(function () {
                 let proudct_item = data.find(el => el.product_id === $(this).data('vid'));
@@ -1039,6 +1088,7 @@ function getItemShippingCharge() {
         async: false
     });
     calcFinalTotals();
+    $("#loader").hide();
 }
 function calculateStateRecyclingFee() {
     var ship_state = $("#ddlshipstate").val();
@@ -1295,11 +1345,12 @@ function createTaxItemsList() {
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Save Details ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function saveCO() {
-
     var oid = parseInt($('#hfOrderNo').val()) || 0;
     var cid = parseInt($('#ddlUser').val()) || 0;
     //if (oid <= 0) { swal('Alert!', 'Please Select Customer.', "info").then((result) => { return false; }); }
     if (cid <= 0) { swal('Alert!', 'Please Select Customer.', "error").then((result) => { $('#ddlUser').select2('focus'); return false; }); return false; }
+    if (!ValidateData()) { $("#loader").hide(); return false };
+
     var postMeta = createPostMeta(); var postStatus = createPostStatus(); var otherItems = createOtherItemsList(); var taxItems = createTaxItemsList();
     var itemsDetails = [];
     $('#tblAddItemFinal > tbody  > tr').each(function (index, tr) {
@@ -1337,6 +1388,24 @@ function saveCO() {
     });
     $('#btnCheckout').text("Checkout");
     return false;
+}
+function ValidateData() {
+    if ($('#txtbillfirstname').val() == '') { swal('Alert!', 'Please Enter Billing First Name.', "info").then((result) => { $('#txtbillfirstname').focus(); return false; }); return false; }
+    else if ($('#txtbilllastname').val() == '') { swal('Alert!', 'Please Enter Billing Last Name.', "info").then((result) => { $('#txtbilllastname').focus(); return false; }); return false; }
+    else if ($('#txtbilladdress1').val() == '') { swal('Alert!', 'Please Enter Billing Address.', "info").then((result) => { $('#txtbilladdress1').focus(); return false; }); return false; }
+    else if ($('#txtbillzipcode').val() == '') { swal('Alert!', 'Please Enter Billing Post Code.', "info").then((result) => { $('#txtbillzipcode').focus(); return false; }); return false; }
+    else if ($('#txtbillcity').val() == '') { swal('Alert!', 'Please Enter Billing City.', "info").then((result) => { $('#txtbillcity').focus(); return false; }); return false; }
+    else if ($('#ddlbillcountry').val() == '') { swal('Alert!', 'Please Select Billing Country.', "info").then((result) => { $('#ddlbillcountry').select2('open'); return false; }); return false; }
+    else if ($('#ddlbillstate').val() == '' || $('#ddlbillstate').val() == '0') { swal('Alert!', 'Please Select Billing State.', "info").then((result) => { $('#ddlbillstate').select2('open'); return false; }); return false; }
+    else if ($('#txtbillemail').val() == '') { swal('Alert!', 'Please Select Billing EMail Address.', "info").then((result) => { $('#txtbillemail').focus(); return false; }); return false; }
+    else if ($('#txtshipfirstname').val() == '') { swal('Alert!', 'Please Enter Shipping First Name.', "info").then((result) => { $('#txtshipfirstname').focus(); return false; }); return false; }
+    else if ($('#txtshiplastname').val() == '') { swal('Alert!', 'Please Enter Shipping Last Name.', "info").then((result) => { $('#txtshiplastname').focus(); return false; }); return false; }
+    else if ($('#txtshipaddress1').val() == '') { swal('Alert!', 'Please Enter Shipping Address.', "info").then((result) => { $('#txtshipaddress1').focus(); return false; }); return false; }
+    else if ($('#txtshipzipcode').val() == '') { swal('Alert!', 'Please Enter Shipping Post Code.', "info").then((result) => { $('#txtshipzipcode').focus(); return false; }); return false; }
+    else if ($('#txtshipcity').val() == '') { swal('Alert!', 'Please Enter Shipping City.', "info").then((result) => { $('#txtshipcity').focus(); return false; }); return false; }    
+    else if ($('#ddlshipcountry').val() == '') { swal('Alert!', 'Please Select Shipping Country.', "info").then((result) => { $('#ddlshipcountry').select2('open'); return false; }); return false; }
+    else if ($('#ddlshipstate').val() == '' || $('#ddlshipstate').val() == '0') { swal('Alert!', 'Please Select Shipping State.', "info").then((result) => { $('#ddlshipstate').select2('open'); return false; }); return false; }
+    return true;
 }
 
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Payment Modal ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

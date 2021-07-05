@@ -12,6 +12,35 @@
 
     public class OrderRepository
     {
+        public static ZipCodeModel GetCityByZip(string zipcode)
+        {
+            ZipCodeModel obj = new ZipCodeModel();
+            try
+            {
+                string strquery = "select distinct ZipCode,State,StateFullName,City from ZIPCodes1 where ZipCode = '" + zipcode.Trim() + "' ";
+                MySqlDataReader sdr = SQLHelper.ExecuteReader(strquery);
+                while (sdr.Read())
+                {
+                    if (sdr["ZipCode"] != DBNull.Value)
+                        obj.ZipCode = sdr["ZipCode"].ToString().Trim();
+                    else
+                        obj.ZipCode = string.Empty;
+                    if (sdr["State"] != DBNull.Value)
+                        obj.state = sdr["State"].ToString().Trim();
+                    else
+                        obj.state = string.Empty;
+                    if (sdr["City"] != DBNull.Value)
+                        obj.city = sdr["City"].ToString().Trim();
+                    else
+                        obj.city = string.Empty;
+
+                    obj.country = string.Empty;
+                }
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return obj;
+        }
         public static DataTable GetCustomers(string strSearch)
         {
             DataTable DT = new DataTable();
@@ -209,7 +238,7 @@
                             + " left outer join wp_postmeta psr on psr.post_id = COALESCE(ps.id, post.id) and psr.meta_key = '_price'"
                             + " WHERE post.post_type = 'product' and post.id = @product_id and ps.id = @variation_id ";
                 if (product_id == 611172 && !string.IsNullOrEmpty(free_products))
-                    strSQl += " OR (post.id in ("+ free_products + ") and COALESCE(ps.id,0) = 0);";
+                    strSQl += " OR (post.id in (" + free_products + ") and COALESCE(ps.id,0) = 0);";
                 else if (product_id == 118 && !string.IsNullOrEmpty(free_products))
                     strSQl += " OR (post.id in (" + free_products + ") and COALESCE(ps.id,0) = 0);";
                 else
@@ -380,7 +409,7 @@
                     strSql.Append(string.Format(" insert into wp_woocommerce_order_items(order_item_name,order_item_type,order_id) value('{0}','{1}','{2}'); ", obj.item_name, obj.item_type, model.OrderPostStatus.order_id));
                     if (obj.item_type == "coupon")
                     {
-                        strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'discount_amount',{0} from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}'; ", obj.amount, model.OrderPostStatus.order_id, obj.item_type));
+                        strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'discount_amount',{0} from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}' and order_item_type = '{3}'; ", obj.amount, model.OrderPostStatus.order_id, obj.item_type, obj.item_name));
                     }
                     else if (obj.item_type == "fee")
                     {
@@ -511,7 +540,8 @@
                 string strSQl = "select oi.order_id,oi.order_item_name,oi.order_item_type,"
                             + " max(case meta_key when '_product_id' then meta_value else '' end) p_id,max(case meta_key when '_variation_id' then meta_value else '' end) v_id,"
                             + " max(case meta_key when '_qty' then meta_value else '' end) qty,max(case meta_key when '_line_subtotal' then meta_value else '' end) line_subtotal,"
-                            + " max(case meta_key when '_line_total' then meta_value else '' end) line_total,max(case meta_key when '_line_tax' then meta_value else '' end) tax"
+                            + " max(case meta_key when '_line_total' then meta_value else '' end) line_total,max(case meta_key when '_line_tax' then meta_value else '' end) tax,"
+                            + " max(case meta_key when 'discount_amount' then meta_value else '' end) discount_amount"
                             + " from wp_woocommerce_order_items oi"
                             + " inner join wp_woocommerce_order_itemmeta oim on oim.order_item_id = oi.order_item_id"
                             + " where oi.order_id = @order_id"
@@ -577,6 +607,13 @@
                         else if (productsModel.product_id == 118) productsModel.group_id = 632713;
                         else productsModel.group_id = 0;
                     }
+                    else if (productsModel.product_type == "coupon")
+                    {
+                        if (sdr["discount_amount"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["discount_amount"].ToString().Trim()))
+                            productsModel.discount = decimal.Parse(sdr["discount_amount"].ToString().Trim());
+                        else
+                            productsModel.discount = 0;
+                    }
                     _list.Add(productsModel);
                 }
             }
@@ -626,12 +663,12 @@
                     strWhr += " and (p.id like '%" + searchid + "%' "
                             + " OR os.num_items_sold='%" + searchid + "%' "
                             + " OR os.total_sales='%" + searchid + "%' "
-                            + " OR os.customer_id='%" + searchid + "%' " 
-                            + " OR p.post_status like '%" + searchid + "%' " 
+                            + " OR os.customer_id='%" + searchid + "%' "
+                            + " OR p.post_status like '%" + searchid + "%' "
                             + " OR p.post_date like '%" + searchid + "%' "
                             + " OR COALESCE(pmf.meta_value, '') like '%" + searchid + "%' "
                             + " OR COALESCE(pml.meta_value, '') like '%" + searchid + "%' "
-                            + " OR replace(replace(replace(replace(pmp.meta_value, '-', ''), ' ', ''), '(', ''), ')', '') like '%" + searchid + "%'" 
+                            + " OR replace(replace(replace(replace(pmp.meta_value, '-', ''), ' ', ''), '(', ''), ')', '') like '%" + searchid + "%'"
                             + " )";
                 }
 
@@ -675,7 +712,7 @@
             DataTable dt = new DataTable();
             try
             {
-                string strWhr = string.Empty;                
+                string strWhr = string.Empty;
                 if (!string.IsNullOrEmpty(CustomerID))
                 {
                     strWhr += " and os.customer_id= '" + CustomerID + "' ";

@@ -114,7 +114,7 @@
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <h2 class="sm-heading">Shipping Address</h2>
+                    <h2 class="sm-heading">Shipping Address <a href="javascript:;" class="billinfo" onclick="copyBillingAddress();"> Copy Billing Address</a></h2>
                     <div class="row row-small">
                         <div class="form-group col-md-6">
                             <input type="email" class="form-control billinfo" id="txtshipfirstname" placeholder="First Name">
@@ -234,7 +234,7 @@
                                 <span id="shippingTotal">0.00</span>
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group hidden">
                             <label class="col-sm-10 control-label">Shipping Tax</label>
                             <div class="col-sm-2 controls text-right">
                                 <span id="shippingTaxTotal">0.00</span>

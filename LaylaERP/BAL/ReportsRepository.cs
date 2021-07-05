@@ -288,13 +288,13 @@ namespace LaylaERP.BAL
                     todate = DateTime.Parse(to_date);
 
                     ssql = "SELECT distinct ID,post_date,REPLACE(u.post_status, 'wc-', '') post_status,"
-                    + " format(umatotal.meta_value + IFNULL(umatax.meta_value,0) + IFNULL(umorerItemmetafee.meta_value,0) , 2) Total,"
+                    + " format(umatotal.meta_value, 2) Total,"
                     + " format(umadiscount.meta_value, 2) Discount,"
-                    + " format((umatotal.meta_value + umadiscount.meta_value) - umadiscount.meta_value, 2) CommissionableAmount,"
+                    + " format((umatotal.meta_value) - (IFNULL(umatax.meta_value,0)+ IFNULL(umorerItemmetafee.meta_value,0)), 2) CommissionableAmount,"
                     + " format(umatax.meta_value, 2) Tax,"
                     + " post_date Podiumdate,"
                     + " umtransaction.meta_value TransactionID,"
-                    + " format(umatotal.meta_value + umadiscount.meta_value,2) SubTotal,"
+                    + " format((umatotal.meta_value - (IFNULL(umatax.meta_value,0) +IFNULL(umorerItemmetafee.meta_value,0))) + umadiscount.meta_value,2) SubTotal,"
                     + " format(umorerItemmetafee.meta_value,2) Fee,"
                     + " umempname.meta_value EName"
                     + " FROM wp_posts u"
@@ -372,13 +372,18 @@ namespace LaylaERP.BAL
                     fromdate = DateTime.Parse(from_date);
                     todate = DateTime.Parse(to_date);
 
-                    ssql = "SELECT count(ID) CunrID,sum(umatotal.meta_value) CommissionableAmount,umempname.meta_value EName,"
-                    + " sum(umatotal.meta_value)/count(ID) AOV,"
-                    + " case when sum(umatotal.meta_value)/count(ID) <= 1299 then 3.50 when  sum(umatotal.meta_value)/count(ID)  <= 1799   then 3.75 when  sum(umatotal.meta_value)/count(ID) >= 1800 then 4.00 end AS ComEarned ,"
-                    + " ((case when sum(umatotal.meta_value)/count(ID) <= 1299 then 3.50 when  sum(umatotal.meta_value)/count(ID)  <= 1799   then 3.75 when  sum(umatotal.meta_value)/count(ID) >= 1800 then 4.00 end) * (sum(umatotal.meta_value))) / 100 CommissionEarned"                    
+                    ssql = "SELECT count(ID) CunrID,"
+                    + " format(sum((umatotal.meta_value) - (IFNULL(umatax.meta_value,0)+ IFNULL(umorerItemmetafee.meta_value,0))),2) CommissionableAmount,"
+                    + " umempname.meta_value EName," 
+                    + " format(sum((umatotal.meta_value) - (IFNULL(umatax.meta_value,0)+ IFNULL(umorerItemmetafee.meta_value,0)))/count(ID),2) AOV,"
+                    + " format(((select Comm_Rate from  wp_agent_commission where AOV_Range1 <= (sum((umatotal.meta_value) - (IFNULL(umatax.meta_value,0)+ IFNULL(umorerItemmetafee.meta_value,0)))/count(u.id)) and AOV_Range2 >= (sum((umatotal.meta_value) - (IFNULL(umatax.meta_value,0)+ IFNULL(umorerItemmetafee.meta_value,0)))/count(u.id)) ) * (sum((umatotal.meta_value) - (IFNULL(umatax.meta_value,0)+ IFNULL(umorerItemmetafee.meta_value,0))))) /100,2)  CommissionEarned,"
+                    + " format(((select Comm_Rate from  wp_agent_commission where AOV_Range1 <= (sum((umatotal.meta_value) - (IFNULL(umatax.meta_value,0)+ IFNULL(umorerItemmetafee.meta_value,0)))/count(u.id)) and AOV_Range2 >= (sum((umatotal.meta_value) - (IFNULL(umatax.meta_value,0)+ IFNULL(umorerItemmetafee.meta_value,0)))/count(u.id)) )),2)  Valued"
                     + " FROM wp_posts u"
                     + " LEFT OUTER JOIN wp_postmeta umatotal on umatotal.meta_key = '_order_total' And umatotal.post_id = u.ID "
-                    + " LEFT OUTER JOIN wp_postmeta umempname on umempname.meta_key = 'employee_name' And umempname.post_id = u.ID "     
+                    + " LEFT OUTER JOIN wp_postmeta umempname on umempname.meta_key = 'employee_name' And umempname.post_id = u.ID "
+                    + " LEFT OUTER JOIN wp_postmeta umatax on umatax.meta_key = '_order_tax' And umatax.post_id = u.ID "
+                    + " LEFT OUTER JOIN wp_woocommerce_order_items umorerfee on umorerfee.order_item_type='fee' And umorerfee.order_id = u.ID "
+                    + " LEFT OUTER JOIN wp_woocommerce_order_itemmeta umorerItemmetafee on umorerItemmetafee.meta_key='_fee_amount' And umorerItemmetafee.order_item_id = umorerfee.order_item_id "
                     + " WHERE post_status IN ('wc-completed','wc-processing') and  DATE(post_date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and DATE(post_date)<= '" + todate.ToString("yyyy-MM-dd") + "' group by EName";
 
                 }

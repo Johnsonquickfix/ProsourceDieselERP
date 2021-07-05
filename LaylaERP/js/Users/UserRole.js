@@ -16,6 +16,7 @@ function CopyRoles() {
         var items = "";
         $('#ddlCopyRole').empty();
         items += "<option value=''>Please select</option>";
+
         $.each(data, function (index, value) {
             items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddlCopyRole");
         })

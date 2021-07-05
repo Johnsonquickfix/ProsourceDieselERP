@@ -469,3 +469,8 @@ div#resetpassword {
 .select2-container .select2-selection--single .select2-selection__clear {
     float: right !important;
 }
+@media(max-width:767px) {
+    .user-menu .fa-user {
+    margin:0px !important;
+    }
+}

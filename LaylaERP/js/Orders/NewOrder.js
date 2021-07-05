@@ -272,19 +272,19 @@ function GetCityByZip(zipcode, ctrcity, ctrstate, ctrcountry) {
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Search Popup on Add new Order ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function searchOrderModal() {
     let modalHtml = '';
-    modalHtml += '<div class="modal-dialog modal-lg">';
+    modalHtml += '<div class="modal-dialog modal-lg modal-1040">';
     modalHtml += '<div class="modal-content">';
     modalHtml += '<div class="modal-header">';
     modalHtml += '<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button>';
     modalHtml += '<h4 class="modal-title" id="myModalLabel">Search Customer</h4>';
     modalHtml += '</div>';
-    modalHtml += '<div class="modal-body" ></div>';
+    modalHtml += '<div class="modal-body"></div>';
     modalHtml += '</div>';
     modalHtml += '</div>';
     $("#billModal").empty().html(modalHtml);
 
     let myHtml = '';
-    myHtml += '<div class="row">';
+    myHtml += '<div class="row nowrap-row">';
     myHtml += '<div class="col-md-8">';
     myHtml += '<div class="form-group">';
     myHtml += '<select class="form-control select2" id="ddlCustomerSearch" placeholder="Select Customer Email" style="width: 100%;">';
@@ -295,7 +295,8 @@ function searchOrderModal() {
     myHtml += '<button type="button" id="btnSelectDefaltAddress" class="btn btn-danger billinfo">Select Default Address</button>';
     myHtml += '</div>';
     myHtml += '</div>';
-
+    myHtml += '<div class="box box-primary mt-1">';
+    myHtml += '<div class="box-body">';
     myHtml += '<div class="row">';
     myHtml += '<div class="col-md-12">';
     myHtml += '<div class="table-responsive">';
@@ -303,16 +304,18 @@ function searchOrderModal() {
     myHtml += '<thead class="thead-dark">';
     myHtml += '<tr>';
     myHtml += '<th style="width: 10%">No</th>';
-    myHtml += '<th style="width: 10%">Creation Date</th>';
+    myHtml += '<th style="width: 15%">Creation Date</th>';
     myHtml += '<th style="width: 25%">Billing Address</th>';
     myHtml += '<th style="width: 25%">Shipping Address</th>';
-    myHtml += '<th class="text-right" style="width: 10%">Amount</th>';
+    myHtml += '<th style="width: 10%">Amount</th>';
     myHtml += '<th style="width: 10%">Status</th>';
     myHtml += '<th class="text-center" style="width: 10%">Actions</th>';
     myHtml += '</tr>';
     myHtml += '</thead>';
     myHtml += '<tbody></tbody>';
     myHtml += '</table>';
+    myHtml += '</div>';
+    myHtml += '</div>';
     myHtml += '</div>';
     myHtml += '</div>';
     myHtml += '</div>';
@@ -696,7 +699,7 @@ function CouponModal() {
     myHtml += '<input class="form-control" type="text" id="txt_Coupon" name="txt_Coupon" placeholder="Coupon Code" maxlength="25">';
     myHtml += '</div > ';
     myHtml += '<div class="modal-footer">';
-    myHtml += '<button type="button" class="btn btn-primary" id="btnCouponAdd">Add</button>';
+    myHtml += '<button type="button" class="btn btn-danger" id="btnCouponAdd">Add</button>';
     myHtml += '</div>';
     myHtml += '</div>';
     myHtml += '</div>';

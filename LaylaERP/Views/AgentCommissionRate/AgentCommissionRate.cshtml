@@ -12,7 +12,7 @@
 <div class="page-title">
     <h2 class="page-heading">Commission Rate</h2><a class="btn btn-danger" href="AddCommissionRate">Add</a>
 </div>
-<div class="userrole_section section_wrapper">
+<div class="userrole_section section_wrapper table-design">
     @*<form id="saveForm" name="saveForm" method="post" autocomplete="off">*@
     <div class="box box-primary">
         <div class="box-header">
@@ -52,6 +52,7 @@
             processing: true,
             success: function (data) {
                 $('#dtdata').dataTable({
+                    scrollX: true,
                     destroy: true,
                     data: JSON.parse(data),
                     "columns": [

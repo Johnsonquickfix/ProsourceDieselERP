@@ -94,7 +94,7 @@ function dataGridLoad(order_type) {
         columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true,
         //sPaginationType: "full_numbers", searching: true, ordering: true, lengthChange: true,
-        bAutoWidth: false, scrollX: false, scrollY: ($(window).height() - 215),
+        bAutoWidth: false, scrollX: true, scrollY: ($(window).height() - 215),
         responsive: true,
         lengthMenu: [[10, 20, 50], [10, 20, 50]],
         language: {
@@ -146,8 +146,8 @@ function dataGridLoad(order_type) {
                     return tPhone
                 }
             },
-            { data: 'num_items_sold', title: 'No. of Items', sWidth: "8%", className: "text-right" },
-            { data: 'total_sales', title: 'Order Total', sWidth: "10%", className: "text-right", render: $.fn.dataTable.render.number(',', '.', 2, '') },
+            { data: 'num_items_sold', title: 'No. of Items', sWidth: "10%" },
+            { data: 'total_sales', title: 'Order Total', sWidth: "10%", render: $.fn.dataTable.render.number(',', '.', 2, '') },
             {
                 data: 'status', title: 'Status', sWidth: "10%", render: function (data, type, row) {
                     if (data == 'wc-pending') return 'Pending payment';
@@ -161,9 +161,9 @@ function dataGridLoad(order_type) {
                     else return '-';
                 }
             },
-            { data: 'date_created', title: 'Creation Date', sWidth: "8%" },
+            { data: 'date_created', title: 'Creation Date', sWidth: "12%" },
             {
-                'data': 'order_id', sWidth: "5%",
+                'data': 'order_id', title: 'Action', sWidth: "5%",
                 'render': function (id, type, full, meta) {
                     return '<a href="NewOrders/' + id + '"><i class="glyphicon glyphicon-eye-open"></i></a>'
                 }

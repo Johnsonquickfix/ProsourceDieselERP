@@ -1275,7 +1275,11 @@ body .easyui-tree {
 
 /*********/
 
-
+.nav-tabs-custom > .nav-tabs > li.active > a {
+background:#f1f1f1 !important; color:#4f4f4f !important;}
+.nav-tabs-custom > .nav-tabs > li > a:hover {
+    background: #fff !important; color:#4f4f4f !important;
+}
 span.menu-names {
     margin-left: -15px;
 }
@@ -1286,25 +1290,38 @@ span.menu-names2 {
 
 .table-row button {
     position: relative;
-    padding: 2px 20px;
+    /*padding: 2px 20px;*/
+    padding: 0px;
+     cursor:pointer; border:0px;
 }
 
     .table-row button [type="checkbox"] {
         position: absolute;
-        width: calc(100% + 4px);
-        height: calc(100% + 4px);
-        left: -2px;
-        top: -2px;
+        width: calc(100% + 2px);
+        height: calc(100% + 2px);
+        left: -1px;
+        top: -1px;
         opacity: 0;
-        z-index: 9;
+        z-index: 9; cursor:pointer;
     }
 
 .table-row [type="checkbox"] + label {
     display: flex;
+    padding: 3px 20px;
     align-items: center;
+    color: #4f4f4f;
+    border: 1px solid #767676;
+    border-radius: 2px;
+}
+.table-row [type="checkbox"]:checked + label {
+    color: #fff;
+    background: #22b922; cursor:pointer;
 }
 
-    .table-row [type="checkbox"] + label:after {
+table.dataTable tbody > tr.selected td, table.dataTable tbody > tr > .selected {
+    color:#4f4f4f !important;
+}
+/*    .table-row [type="checkbox"] + label:after {
         content: "";
         position: absolute;
         left: calc(100% + 2px);
@@ -1323,7 +1340,7 @@ span.menu-names2 {
 
 .table-row [type="checkbox"]:checked + label:after {
     opacity: 1;
-}
+}*/
 /**reports**/
 .reports-section .buttons-csv {
     margin-bottom: 8px;
@@ -1641,3 +1658,28 @@ display:flex;}
 .nowrap-row .col-md-8 {
     width: auto;
 }
+#radtype + label { margin-right:10px;
+    display: inline-flex;
+    padding: 4px 35px 4px 20px;
+    align-items: center;
+    color: #4f4f4f;
+    border: 1px solid #767676;
+    border-radius: 2px; font-weight:400; position:relative;
+}
+#radtype {display:none;
+visibility:hidden; opacity:0;}
+#radtype + label:after {
+    content: "";
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    margin-top: -9px;
+    width: 18px;
+    height: 18px;
+    border: 2px solid #d5d5d5;
+    border-radius: 100%;
+}
+    #radtype:checked + label:after {
+        background: #3c8dbc;
+        border-color: #3c8dbc;
+    }

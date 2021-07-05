@@ -826,6 +826,9 @@ function ApplyCoupon() {
         type: "POST", url: '/Orders/GetCouponAmount', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
         success: function (result) {
             var data = JSON.parse(result);
+            if (data.length == 0) {
+                swal('Alert!', 'Invalid code entered. Please try again.', "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false;
+            }
             //Check valid for email
             if (data[0].cus_email.length && data[0].cus_email != '') {
                 var get_email_arr = res[0].cus_email;

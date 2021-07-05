@@ -157,6 +157,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="BAL\AgentCommissionRateRepository.cs" />
     <Compile Include="BAL\AppearanceRepository.cs" />
+    <Compile Include="BAL\CouponsRepository.cs" />
     <Compile Include="BAL\CustomerRepository.cs" />
     <Compile Include="BAL\DashboardRepository.cs" />
     <Compile Include="BAL\ExportRepository.cs" />
@@ -187,6 +188,7 @@
     <Compile Include="Models\Appearance.cs" />
     <Compile Include="Models\clsSerialization.cs" />
     <Compile Include="Models\clsUserDetails.cs" />
+    <Compile Include="Models\CouponsModel.cs" />
     <Compile Include="Models\CustomerModel.cs" />
     <Compile Include="Models\ExportModel.cs" />
     <Compile Include="Models\Export_Details.cs" />
@@ -552,6 +554,7 @@
     <Content Include="js\common.js" />
     <Content Include="js\Customer\Customer.js" />
     <Content Include="js\FeeNTax\FeeNTax.js" />
+    <Content Include="js\Marketing\Coupons.js" />
     <Content Include="js\Orders\NewOrder.js" />
     <Content Include="js\Orders\OrderHistory.js" />
     <Content Include="js\Users\UserLogin.js" />

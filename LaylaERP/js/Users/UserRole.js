@@ -2,7 +2,7 @@
 function GetRoles() {
     $.get('GetRoles', function (data) {
         var items = "";
-        //$('#userrole').empty();
+        $('#userrole').empty();
         items += "<option value=''>Please select</option>";
         $.each(data, function (index, value) {
             items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#userrole");
@@ -14,6 +14,7 @@ function GetRoles() {
 function CopyRoles() {
     $.get('GetRoles', function (data) {
         var items = "";
+        $('#ddlCopyRole').empty();
         items += "<option value=''>Please select</option>";
         $.each(data, function (index, value) {
             items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddlCopyRole");
@@ -105,10 +106,11 @@ $('#btnSaveRole').click(function () {
             data: JSON.stringify(obj),
             dataType: "json",
             success: function (data) {
-                $("#roleModal .close").click();
                 swal("alert", data.message, "success");
+                $("#roleModal").modal('hide');
                 GetRoles();
-
+                CopyRoles();
+                parent.location.reload();
             },
             error: function () {
                 swal("alert", "something went wrong", "error");
@@ -232,7 +234,6 @@ $('#checkAll').click(function () {
 function checkchange(elem) {
     var myNode = $('#tt').tree('find', $(elem).data("id"));
         $("#tt").tree('check', myNode.target);
-    console.log(isChecked);
 }
 
 function rootChange(elem) {

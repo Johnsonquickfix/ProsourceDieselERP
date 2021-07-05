@@ -141,6 +141,48 @@
             return View();
         }
 
+        [HttpGet]
+        public JsonResult GetOrderList(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+               
+
+                //DayOfWeek weekStart = DayOfWeek.Monday; // or Sunday, or whenever
+               // DateTime startingDate = DateTime.Today;
+                DateTime startDate = DateTime.Now;
+                DateTime endDate = DateTime.Now;
+
+                if (model.strValue1 == "daily")
+                {
+                    startDate = DateTime.Now;
+                    endDate = DateTime.Now;
+                }
+                else
+                {
+                    //while (startingDate.DayOfWeek != weekStart)
+                    //    startingDate = startingDate.AddDays(-1);
+                    // previousWeekStart = startingDate.AddDays(-7);
+                    // previousWeekEnd = startingDate.AddDays(-1);
+                    DateTime date = DateTime.Now.AddDays(-7);
+                    while (date.DayOfWeek != DayOfWeek.Monday)
+                    {
+                        date = date.AddDays(-1);
+                    }
+
+                    startDate = date;
+                    endDate = date.AddDays(7);
+                }
+              
+
+                DataTable dt = OrderRepository.OrderListDashboard(startDate.ToString(), endDate.ToString(), model.strValue3, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, aaData = result }, 0);
+        }
         public ActionResult MobileVerification()
         {
             DataSet ds = Users.GetEmailCredentials();

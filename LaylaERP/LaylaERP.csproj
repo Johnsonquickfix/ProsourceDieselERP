@@ -716,8 +716,8 @@
     <Content Include="Views\Reports\SalesTaxRefundReport.cshtml" />
     <Content Include="Views\Reports\TaxJarSalesTaxOrderExport.cshtml" />
     <Content Include="Views\Reports\ZeroOrdersReport.cshtml" />
-    <Content Include="Views\Shared\Calendar.cshtml" />
     <Content Include="Views\Home\OrderList.cshtml" />
+    <Content Include="Views\Shared\_Calendar.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -128,4 +128,10 @@
         public decimal tax_rate { get; set; }
         public decimal amount { get; set; }
     }
+    public class SplitOrderItemsModel
+    {
+        public string product_id { get; set; }
+        public string variation_id { get; set; }
+        public string order_prefix { get; set; }
+    }
 }

@@ -116,7 +116,7 @@ function dataGridLoad(order_type) {
                 var col = oSettings.aaSorting[0][0] == 2 ? "customer_id" : oSettings.aaSorting[0][0] == 3 ? "FirstName" : oSettings.aaSorting[0][0] == 4 ? "LastName" : oSettings.aaSorting[0][0] == 5 ? "num_items_sold" : oSettings.aaSorting[0][0] == 6 ? "total_sales" : oSettings.aaSorting[0][0] == 6 ? "status" : oSettings.aaSorting[0][0] == 6 ? "date_created" : "order_id";
                 aoData.push({ name: "sSortColName", value: col });
             }
-            console.log(aoData);
+            //console.log(aoData);
             oSettings.jqXHR = $.ajax({
                 dataType: 'json', type: "GET", url: sSource, data: aoData,
                 "success": function (data) {

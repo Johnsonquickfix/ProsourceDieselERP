@@ -1373,7 +1373,7 @@ table.dataTable tbody > tr.selected td, table.dataTable tbody > tr > .selected {
     table-layout: auto;
 }
 
-.not-fixed thead th {
+.not-fixed thead th, .not-fixed tbody td {
     white-space: nowrap;
     padding-right: 20px !important;
 }
@@ -1396,26 +1396,24 @@ table.dataTable tbody > tr.selected td, table.dataTable tbody > tr > .selected {
     .neworder-section .table-blue th {
   }
 .neworder-section table.dataTable thead .sorting:before,
-.neworder-section table.dataTable thead .sorting:after,
-.neworder-section table.dataTable thead .sorting_asc:before,
-.neworder-section table.dataTable thead .sorting_asc:after,
-.neworder-section table.dataTable thead .sorting_desc:before,
-.neworder-section table.dataTable thead .sorting_desc:after,
-.neworder-section table.dataTable thead .sorting_asc_disabled:before,
-.neworder-section table.dataTable thead .sorting_asc_disabled:after,
-.neworder-section table.dataTable thead .sorting_desc_disabled:before,
-.neworder-section table.dataTable thead .sorting_desc_disabled:after {
-    top: 50%; margin-top:-4px;
-}
 body table.dataTable thead .sorting:before,
+.neworder-section table.dataTable thead .sorting:after,
 body table.dataTable thead .sorting:after,
+.neworder-section table.dataTable thead .sorting_asc:before,
 body table.dataTable thead .sorting_asc:before,
+.neworder-section table.dataTable thead .sorting_asc:after,
 body table.dataTable thead .sorting_asc:after,
+.neworder-section table.dataTable thead .sorting_desc:before,
 body table.dataTable thead .sorting_desc:before,
+.neworder-section table.dataTable thead .sorting_desc:after,
 body table.dataTable thead .sorting_desc:after,
+.neworder-section table.dataTable thead .sorting_asc_disabled:before,
 body table.dataTable thead .sorting_asc_disabled:before,
+.neworder-section table.dataTable thead .sorting_asc_disabled:after,
 body table.dataTable thead .sorting_asc_disabled:after,
+.neworder-section table.dataTable thead .sorting_desc_disabled:before,
 body table.dataTable thead .sorting_desc_disabled:before,
+.neworder-section table.dataTable thead .sorting_desc_disabled:after,
 body table.dataTable thead .sorting_desc_disabled:after {
     top: 50%;
     margin-top: -4px;
@@ -1658,13 +1656,36 @@ display:flex;}
 .nowrap-row .col-md-8 {
     width: auto;
 }
-#radtype + label { margin-left:10px; margin-right:0px !important;   
+.dashboard-order-list .box-header > .box-tools {
+    display:flex;
+}
+.btn-span {
+display:flex;}
+    .btn-span .btn {
+        margin-left: 5px;
+    }
+.dashboard-order-list .box-title {
+    margin: 0px auto 0px 0px !important;
+}
+.radtype_span {
+    margin: -5px 73px 0px 0px;
+}
+.dashboard-order-list .box-header {
+display:flex;}
+#radtype + label {
+    margin-bottom: 0px;
+    cursor: pointer;
+    margin-left: 1px;
+    margin-right: 0px !important;
     display: inline-flex;
-    padding: 3px 35px 3px 20px;
+    padding: 4px 35px 3px 20px;
     align-items: center;
-    color: #4f4f4f;
-    border: 1px solid #767676;
-    border-radius: 2px; font-weight:400; position:relative;
+    color: #fff;
+    background: #3c8dbc;
+    border: 1px solid #367fa9;
+    border-radius: 3px;
+    font-weight: 400;
+    position: relative;
 }
 #radtype {display:none;
 visibility:hidden; opacity:0;}
@@ -1673,15 +1694,67 @@ visibility:hidden; opacity:0;}
     position: absolute;
     right: 10px;
     top: 50%;
-    margin-top: -9px;
-    width: 18px;
-    height: 18px;
-    border: 2px solid #d5d5d5;
+    margin-top: -7.5px; width: 15px;
+    height: 15px;
+    border: 2px solid #fff;
     border-radius: 100%;
 }
-    #radtype:checked + label:after {
-        background: #3c8dbc;
-        border-color: #3c8dbc;
-    }
+#radtype:checked + label:after {
+    background: #fff;
+}
 .dashboard-order-list .box.box-primary {
-margin:0px -15px; width:auto;}
+margin-left: -15px; margin-right: -15px; width:auto;}
+.calender-board iframe {
+    width: 100% !important;
+    display: block;
+    border: 0px !important;
+    height: 420px;
+}
+.calender-board {display:flex; height:100%; width:100%;}
+.box-calender-dash {
+    flex: 1;
+    max-height: 395px;
+    overflow: hidden;
+}
+.table-design .table-blue td, .table-design table td {
+font-size:13px;}
+.chat-box-dash.collapsed-box .slimScrollDiv {display:none;}
+@media(max-width:767px) {
+     #dtdata_wrapper > .row:first-child {display: flex;align-items: center;}
+     #dtdata_wrapper > .row:first-child .col-md-6 {font-size: 12px;}
+     div.dataTables_wrapper div.dataTables_filter input {width: 95px !important;}
+     #dtdata_wrapper > .row:first-child .col-sm-6:first-child,
+     #dtdata_wrapper > .row:first-child .col-md-6:first-child {margin-right: auto;}
+    .dashboard-order-list table.table-blue {table-layout: initial;}
+    .dashboard-order-list table.table-blue thead th {white-space: nowrap; min-width: 100px;}
+    .dashboard-order-list table.table-blue thead th:nth-child(2) {min-width: 150px;}
+    /******/
+    .customer-section .table-blue {
+    width:1400px !important;}
+}
+@media(max-width:450px) {
+    span.radtype_span {margin: 8px 0px 0px 0px; width: 100%;}
+    .dashboard-order-list .box-header {flex-wrap:wrap;}
+    .calender-board iframe {height:350px;}
+    .box-calender-dash {max-height:325px;}
+}
+@media(max-width:950px) {
+    .manage-user-section table.table-blue thead th {
+        width: 150px !important;
+    }
+    .manage-user-section table.table-blue thead th:first-child {
+        width: 60px !important;
+    }
+    .manage-user-section table.table-blue thead th:nth-child(2) {
+        width: 100px !important;
+    }
+    .manage-user-section table.table-blue thead th:nth-child(4) {
+        width: 230px !important;
+    }
+    .manage-user-section #dtdata_wrapper .row:first-child + .row{
+        margin-left:0px; margin-right:0px;
+    }
+    .manage-user-section #dtdata_wrapper .row:first-child + .row .col-sm-12 {
+        padding-left: 0px; padding-right:0px; overflow-x:auto;
+    }
+}

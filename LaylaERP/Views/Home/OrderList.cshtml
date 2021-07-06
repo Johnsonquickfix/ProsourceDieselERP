@@ -1,134 +1,68 @@
-﻿
-@{
-    ViewBag.Title = "OrderList";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+﻿@model dynamic
+            <div class="dashboard-order-list">
+                        @if (ViewData.Model == null)
+                        {
+                            <div class="row">
+                                <div class="col-md-12 col-sm-12 col-xs-12 errordiv pd-l-2">
+                                    <table border="1" cellpadding="5">
+                                        <thead>
+                                            <tr>
 
+                                                <th>Order ID</th>
+                                                <th>Customer Name</th>
+                                                <th>Status</th>
+                                                <th>Date Created</th>
+                                                <th>Total</th>
 
-}
-<link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
-<link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
-<!-- datatables js -->
-<script src="~/Content/AdminLTE-3.1.0/datatables/datatables.min.js" type="text/javascript"></script>
-<script src="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/js/dataTables.bootstrap4.min.js" type="text/javascript"></script>
-<!-- datatables CSS -->
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td colspan="5" align="center"> No Any Order For Today .</td>
+                                            </tr>
+                                   
+                                         </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <table border="1" cellpadding="5">
+                                <thead>
+                                    <tr>
 
-<section class="table-design">
-    <div class="    ">
-        <div class="dashboard-order-list">
+                                        <th>Order ID</th>
+                                        <th>Customer Name</th>
+                                        <th>Status</th>
+                                        <th>Date Created</th>
+                                        <th>Total</th>
 
-            <div class="box box-primary">
-                <div class="box-header">
-                    <h3 class="box-title">Date Created</h3>
-                    <input id="radtype"
-                           name="radtype"
-                           type="radio"
-                           value="daily" /><label for="radtype">Daily</label>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var record in ViewData.Model)
+                                    {
 
-                    <input checked="checked"
-                           id="radtype"
-                           name="radtype"
-                           type="radio"
-                           value="weekly" /><label for="radtype">Weekly</label>
-                </div>
-                <div class="box-body">
-                    <div class="not-fixed ">
-                        <table id="dtdata" class="table-blue table check-table table-bordered table-striped dataTable" width="100%">
-                            <thead>
-                                <tr>
-                                    <th>Order ID</th>
-                                    <th>Customer Name</th>
-                                    <th>Status</th>
-                                    <th>Date Created</th>
-                                    <th>Total</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                        </table>
-                    </div>
-                </div>
+                                        <tr>
+                                            <td> @record["order_id"]</td>
+                                            <td> @record["FirstName"]</td>
+                                            <td> @record["status"]</td>
+                                            <td> @record["date_created"]</td>
+                                            <td> @record["total_sales"]</td>
+                                        </tr>
+
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                     
             </div>
-        </div>
-    </div>
-</section>
 <script src="~/js/common.js"></script>
-
-
 <script>
     $(document).ready(function () {
-
-        dataGridLoad();
-        $("#radtype")
-            .change(function () {
-                if ($(this).is(":checked")) {
-                    var val = $(this).val();
-                    dataGridLoad();
-                }
-            });
+     
+       
     });
-
-    function dataGridLoad() {
-
-        let dfa = $("input[name='radtype']:checked").val();
-        $('#dtdata').DataTable({
-            columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
-            destroy: true, bProcessing: true, bServerSide: true,
-            //sPaginationType: "full_numbers", searching: true, ordering: true, lengthChange: true,
-            bAutoWidth: false, scrollX: true, scrollY: ($(window).height() - 215),
-            responsive: true,
-            lengthMenu: [[10, 20, 50], [10, 20, 50]],
-            language: {
-
-                zeroRecords: "Sorry no records found",
-                infoFiltered: "",
-                infoEmpty: "No records found",
-                processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
-            },
-            sAjaxSource: "/Home/GetOrderList",
-            fnServerData: function (sSource, aoData, fnCallback, oSettings) {
-                //aoData.push({ name: "strValue1", value: monthYear });
-                aoData.push({ name: "strValue1", value: dfa });
-                aoData.push({ name: "strValue2", value: '' });
-                aoData.push({ name: "strValue3", value: '' });
-                var col = 'order_id';
-                if (oSettings.aaSorting.length > 0) {
-                    var col = oSettings.aaSorting[0][0] == 1 ? "customer_id" : oSettings.aaSorting[0][0] == 2 ? "FirstName" : oSettings.aaSorting[0][0] == 3 ? "status" : oSettings.aaSorting[0][0] == 4 ? "date_created" : oSettings.aaSorting[0][0] == 5 ? "total_sales" : "order_id";
-                    aoData.push({ name: "sSortColName", value: col });
-                }
-                console.log(aoData);
-                oSettings.jqXHR = $.ajax({
-                    dataType: 'json', type: "GET", url: sSource, data: aoData,
-                    "success": function (data) {
-                        var dtOption = { sEcho: data.sEcho, recordsTotal: data.recordsTotal, recordsFiltered: data.recordsFiltered, aaData: JSON.parse(data.aaData) };
-                        return fnCallback(dtOption);
-                    }
-                });
-            },
-            columns: [
-
-                { data: 'order_id', title: 'Order ID', sWidth: "20%" },
-                { data: 'FirstName', title: 'Customer Name', sWidth: "20%" },
-                {
-                    data: 'status', title: 'Status', sWidth: "20%", render: function (data, type, row) {
-                        if (data == 'wc-pending') return 'Pending payment';
-                        else if (data == 'wc-processing') return 'Processing';
-                        else if (data == 'wc-on-hold') return 'On hold';
-                        else if (data == 'wc-completed') return 'Completed';
-                        else if (data == 'wc-cancelled') return 'Cancelled';
-                        else if (data == 'wc-refunded') return 'Refunded';
-                        else if (data == 'wc-failed') return 'Failed';
-                        else if (data == 'draft') return 'draft';
-                        else return '-';
-                    }
-                },
-                {
-                    data: 'date_created', sWidth: "20%",
-
-                },
-                { data: 'total_sales', title: 'Total', sWidth: "20%", className: "text-right", render: $.fn.dataTable.render.number(',', '.', 2, '') },
-
-
-
-            ]
-        });
-    }
+     
 </script>

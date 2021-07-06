@@ -1,11 +1,8 @@
 ﻿
 @{ ViewBag.Title = "Dashboard";
+                Layout = "~/Views/Shared/_LayoutDashboard.cshtml"; }
 
-    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
-}
-
-
-<div class="row d-flex header-dashboard align-items-center">
+<div class="row d-flex align-items-center">
     <div class="col-xs-6">
         <div class="page-title">
             <h2 class="page-heading gs-open">
@@ -61,7 +58,7 @@
             <div class="icon">
                 <i class="ion ion-bag"></i>
             </div>
-            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            <a href="../Orders/OrdersHistory" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
         </div>
     </div>
     <!-- ./col -->
@@ -91,7 +88,7 @@
             <div class="icon">
                 <i class="ion ion-person-add"></i>
             </div>
-            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            <a href="../Customer/Customer" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
         </div>
     </div>
     <!-- ./col -->
@@ -113,26 +110,45 @@
 </div>
 
 <!-- ui shortable -->
-<div class="row">
-    @Html.Partial("OrderList")
-</div>
+
 <div class="row">
     <!-- Left col -->
     <section class="col-lg-7 col-sm-7 connectedSortable">
         <!-- Custom tabs (Charts with tabs)-->
-        <!--<div class="nav-tabs-custom">-->
-        <!-- Tabs within a box -->
-        <!--<ul class="nav nav-tabs pull-right">
-            <li class="active"><a href="#revenue-chart" data-toggle="tab">Area</a></li>
-            <li><a href="#sales-chart" data-toggle="tab">Donut</a></li>
-            <li class="pull-left header"><i class="fa fa-inbox"></i> Sales</li>
-        </ul>
-        <div class="tab-content no-padding">-->
-        <!-- Morris chart - Sales -->
-        <!--<div class="chart tab-pane active" id="revenue-chart" style="position: relative; height: 300px;"></div>
+        <div class="nav-tabs-custom">
+            <form id="saveForm" method="post">
+                <div class="row">
+                    Order Details ( Top <label id="lblorder">@ViewBag.TotalOrder</label> Records) :
+                    Total Sales <label id="lblsale">@ViewBag.TotalSale</label>  :
+                   and Total Orders <label id="lblordercounting">@ViewBag.TotalOrder</label>  
+
+                </div> 
+                    <div class="row">
+                        <div class="box-header">
+                            <h3 class="box-title">Date Created</h3>
+                            <input id="strValue1" checked="checked"
+                                   name="strValue1"
+                                   type="radio"
+                                   value="daily" /><label for="radtype">Daily</label>
+
+                            <input id="strValue2"
+                                   name="strValue1"
+                                   type="radio"
+                                   value="weekly" /><label for="radtype">Weekly</label>
+
+                        </div>
+                        <div id="content">
+                            @*@Html.Partial("OrderList")*@
+                        </div>
+                    </div>
+                    @Html.AntiForgeryToken()
+            </form>
+            <div class="tab-content no-padding">
+                <!-- Morris chart - Sales -->
+                @*<div class="chart tab-pane active" id="revenue-chart" style="position: relative; height: 300px;"></div>*@
                 <div class="chart tab-pane" id="sales-chart" style="position: relative; height: 300px;"></div>
             </div>
-        </div>-->
+        </div>
         <!-- /.nav-tabs-custom -->
         <!-- Chat box -->
         <div class="box box-success">
@@ -265,7 +281,7 @@
 
         <!-- /.box -->
         <!-- solid sales graph -->
-        <!--<div class="box box-solid bg-teal-gradient">
+        <div class="box box-solid bg-teal-gradient">
             <div class="box-header">
                 <i class="fa fa-th"></i>
 
@@ -282,40 +298,39 @@
             </div>
             <div class="box-body border-radius-none">
                 <div class="chart" id="line-chart" style="height: 250px;"></div>
-            </div>-->
-        <!-- /.box-body -->
-        <!--<div class="box-footer no-border">
-            <div class="row">
-                <div class="col-xs-4 text-center" style="border-right: 1px solid #f4f4f4">
-                    <input type="text" class="knob" data-readonly="true" value="20" data-width="60" data-height="60"
-                           data-fgColor="#39CCCC">
-                    <div class="knob-label">Mail-Orders</div>
-                </div>-->
-        <!-- ./col -->
-        <!--<div class="col-xs-4 text-center" style="border-right: 1px solid #f4f4f4">
-            <input type="text" class="knob" data-readonly="true" value="50" data-width="60" data-height="60"
-                   data-fgColor="#39CCCC">
-            <div class="knob-label">Online</div>
-        </div>-->
-        <!-- ./col -->
-        <!--<div class="col-xs-4 text-center">
-            <input type="text" class="knob" data-readonly="true" value="30" data-width="60" data-height="60"
-                   data-fgColor="#39CCCC">
-            <div class="knob-label">In-Store</div>
-        </div>-->
-        <!-- ./col -->
-        <!--</div>-->
-        <!-- /.row -->
-        <!--</div>-->
-        <!-- /.box-footer -->
-        <!--</div>-->
+            </div>
+            <!-- /.box-body -->
+            <div class="box-footer no-border">
+                <div class="row">
+                    <div class="col-xs-4 text-center" style="border-right: 1px solid #f4f4f4">
+                        <input type="text" class="knob" data-readonly="true" value="20" data-width="60" data-height="60"
+                               data-fgColor="#39CCCC">
+                        <div class="knob-label">Mail-Orders</div>
+                    </div>
+                    <!-- ./col -->
+                    <div class="col-xs-4 text-center" style="border-right: 1px solid #f4f4f4">
+                        <input type="text" class="knob" data-readonly="true" value="50" data-width="60" data-height="60"
+                               data-fgColor="#39CCCC">
+                        <div class="knob-label">Online</div>
+                    </div>
+                    <!-- ./col -->
+                    <div class="col-xs-4 text-center">
+                        <input type="text" class="knob" data-readonly="true" value="30" data-width="60" data-height="60"
+                               data-fgColor="#39CCCC">
+                        <div class="knob-label">In-Store</div>
+                    </div>
+                    <!-- ./col -->
+                </div>
+                <!-- /.row -->
+            </div>
+            <!-- /.box-footer -->
+        </div>
         <!-- /.box -->
         <!-- Calendar -->
         <div class="box box-solid bg-green-gradient">
             <div class="box-header">
                 <i class="fa fa-calendar"></i>
-
-                <h3 class="box-title">Calendar</h3>
+                @Html.Partial("../Shared/_Calendar")                 
                 <!-- tools box -->
                 <div class="pull-right box-tools">
                     <!-- button with a dropdown -->
@@ -342,7 +357,7 @@
             <!-- /.box-header -->
             <div class="box-body no-padding">
                 <!--The calendar -->
-                @Html.Partial("../Shared/_Calendar")
+                <div id="calendar" style="width: 100%"></div>
             </div>
             <!-- /.box-body -->
             <div class="box-footer text-black">
@@ -393,11 +408,11 @@
     </section>
     <!-- right col -->
 </div>
- 
- 
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
 <script>
     $(document).ready(function () {
-
+        loadData();
+        gettotal();
         $('#sendEmail').click(function () {
             debugger;
             var emails = $('#emailto').val();
@@ -441,7 +456,49 @@
                 });
             }
         })
-
+        $('#strValue1').change(function () {
+            loadData();
+           gettotal();
+        });
+        $('#strValue2').change(function () {
+            loadData();
+            gettotal();
+        });
     });
+    function loadData() {
 
+        $.post("/Home/GetOrderList", $("#saveForm").serialize(), function (response) {
+            //alert(response);
+            $("#content").html(response);
+        });
+
+    }
+    function gettotal() {
+
+        var daily = $("input[name='strValue1']:checked").val();
+ 
+        var obj = {
+            strValue1: daily
+        };
+        $.ajax({
+            url: '/Home/GettotalDetsils/',
+            type: 'post',
+            contentType: "application/json; charset=utf-8",
+            dataType: 'JSON',
+            data: JSON.stringify(obj),
+            success: function (data) {
+            var i = JSON.parse(data);
+                if (parseInt(i[0].TotalOrder) > 10)
+                    $("#lblorder").text('10');
+                else
+                $("#lblorder").text(i[0].TotalOrder);
+                $("#lblsale").text(i[0].TotalSale);
+                $("#lblordercounting").text(i[0].TotalOrder);
+            //$("#content").html(response);
+            },
+            error: function (msg) { alert(msg); }
+        });
+
+    }
+   
 </script>

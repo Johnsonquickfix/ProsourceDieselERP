@@ -13,6 +13,7 @@
     using Newtonsoft.Json;
     using System.Globalization;
     using BAL;
+    using System.Dynamic;
 
     public class HomeController : Controller
     {
@@ -133,28 +134,101 @@
         }
         public ActionResult Dashboard()
         {
+            DateTime startDate = DateTime.Now;
+            DateTime endDate = DateTime.Now;
             CultureInfo us = new CultureInfo("en-US");
             ViewBag.totalorders = Convert.ToDecimal(BAL.DashboardRepository.Total_Orders()).ToString("N0",us); //BAL.DashboardRepository.Total_Orders();
             ViewBag.totalsales = Convert.ToDecimal(BAL.DashboardRepository.Total_Sales()).ToString("N2",us);
             ViewBag.totalcustomers = Convert.ToDecimal(BAL.DashboardRepository.Total_Customer()).ToString("N0",us);
-            ViewBag.totalordercompleted = Convert.ToDecimal(BAL.DashboardRepository.Total_Order_Completed()).ToString("N0",us);
+            ViewBag.totalordercompleted = Convert.ToDecimal(BAL.DashboardRepository.Total_Order_Completed()).ToString("N0",us);          
+            ViewBag.TotalOrder = Convert.ToInt32(DashboardRepository.TotalOrder(startDate.ToString(), endDate.ToString()).ToString());
+            if (ViewBag.TotalOrder > 10)
+                ViewBag.TotalOrder = 10;
+            var sale= Convert.ToInt32(DashboardRepository.TotalSale(startDate.ToString(), endDate.ToString()).ToString());
+            ViewBag.TotalSale = "$" + sale;
+            ViewBag.TotalOrderCounting = Convert.ToInt32(DashboardRepository.TotalOrder(startDate.ToString(), endDate.ToString()).ToString());
             return View();
         }
 
-        [HttpGet]
-        public JsonResult GetOrderList(JqDataTableModel model)
+
+        public ActionResult GetOrderList(JqDataTableModel model)
         {
-            string result = string.Empty;
-            int TotalRecord = 0;
+            dynamic dynamicModel = new ExpandoObject();
+            DateTime startDate = DateTime.Now;
+            DateTime endDate = DateTime.Now;
+            dynamicModel.DETAILS = null;
+            if (model.strValue1 == null)
+                model.strValue1 = "daily";
+            if (model.strValue1 == "daily")
+            {
+                startDate = DateTime.Now;
+                endDate = DateTime.Now;
+            }
+            else
+            {
+                DateTime date = DateTime.Now.AddDays(-7);
+                while (date.DayOfWeek != DayOfWeek.Monday)
+                {
+                    date = date.AddDays(-1);
+                }
+
+                startDate = date;
+                endDate = date.AddDays(7);
+            }
+            DataTable dt = OrderRepository.OrderListDashboard(startDate.ToString(), endDate.ToString(), model.strValue3, model.sSearch, model.iDisplayStart, model.iDisplayLength, model.sSortColName, model.sSortDir_0);
+            var result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            if (dt.Rows.Count > 0)
+                ViewData.Model = dt.AsEnumerable();
+            else
+                ViewData.Model = null;
+            return PartialView("OrderList", ViewData.Model);
+
+
+        }
+        public ActionResult Gettotal(JqDataTableModel model)
+        {
+            DateTime startDate = DateTime.Now;
+            DateTime endDate = DateTime.Now;
+            if (model.strValue1 == null)
+                model.strValue1 = "daily";
+            if (model.strValue1 == "daily")
+            {
+                startDate = DateTime.Now;
+                endDate = DateTime.Now;
+            }
+            else
+            {
+                DateTime date = DateTime.Now.AddDays(-7);
+                while (date.DayOfWeek != DayOfWeek.Monday)
+                {
+                    date = date.AddDays(-1);
+                }
+
+                startDate = date;
+                endDate = date.AddDays(7);
+            }
+            ViewBag.TotalOrder = Convert.ToInt32(DashboardRepository.TotalOrder(startDate.ToString(), endDate.ToString()).ToString());
+            if (ViewBag.TotalOrder > 10)
+                ViewBag.TotalOrder = 10;
+            ViewBag.TotalSale = Convert.ToInt32(DashboardRepository.TotalSale(startDate.ToString(), endDate.ToString()).ToString());
+            ViewBag.TotalOrderCounting = Convert.ToInt32(DashboardRepository.TotalOrder(startDate.ToString(), endDate.ToString()).ToString());
+
+            // ViewBag.modsquad = Convert.ToInt32(DashboardRepository.RoleCount(1).ToString());
+
+            return View();
+        }
+
+        public JsonResult GettotalDetsils(JqDataTableModel model)
+        {
+            string JSONresult = string.Empty;
             try
             {
-               
-
-                //DayOfWeek weekStart = DayOfWeek.Monday; // or Sunday, or whenever
-               // DateTime startingDate = DateTime.Today;
+                dynamic dynamicModel = new ExpandoObject();
                 DateTime startDate = DateTime.Now;
                 DateTime endDate = DateTime.Now;
-
+                dynamicModel.DETAILS = null;
+                if (model.strValue1 == null)
+                    model.strValue1 = "daily";
                 if (model.strValue1 == "daily")
                 {
                     startDate = DateTime.Now;
@@ -162,10 +236,6 @@
                 }
                 else
                 {
-                    //while (startingDate.DayOfWeek != weekStart)
-                    //    startingDate = startingDate.AddDays(-1);
-                    // previousWeekStart = startingDate.AddDays(-7);
-                    // previousWeekEnd = startingDate.AddDays(-1);
                     DateTime date = DateTime.Now.AddDays(-7);
                     while (date.DayOfWeek != DayOfWeek.Monday)
                     {
@@ -175,14 +245,14 @@
                     startDate = date;
                     endDate = date.AddDays(7);
                 }
-              
 
-                DataTable dt = OrderRepository.OrderListDashboard(startDate.ToString(), endDate.ToString(), model.strValue3, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
-                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+                DataTable dt = DashboardRepository.Gettotal(startDate.ToString(), endDate.ToString());
+                JSONresult = JsonConvert.SerializeObject(dt);
             }
             catch { }
-            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, aaData = result }, 0);
+            return Json(JSONresult, 0);
         }
+
         public ActionResult MobileVerification()
         {
             DataSet ds = Users.GetEmailCredentials();

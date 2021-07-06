@@ -152,6 +152,29 @@ $('#btnCopyRole').click(function () {
 
 //Fill Menu
 
+//function fillCheckMenu() {
+//    var roleid = $('#userrole').val();
+//    var obj = { roleid: roleid };
+//    jQuery.ajax({
+//        url: '/Users/getUserAuthMenu', dataType: 'json', type: "Post",
+//        beforeSend: function () {
+//            //$("#loading-div-background").show();
+//        },
+//        contentType: "application/json; charset=utf-8",
+//        data: JSON.stringify(obj),
+//        success: function (data) {
+//            $('#tt').tree({
+//                data: data,
+//                idField: 'id',
+//                treeField: 'text',
+//                height: '100%',
+//            });
+//            collapseAll();
+//        },
+//        error: function (jqXHR, textStatus, errorThrown) { swal('Error!', errorThrown, "error"); }
+//    });
+//}
+
 function fillCheckMenu() {
     var roleid = $('#userrole').val();
     var obj = { roleid: roleid };
@@ -169,6 +192,15 @@ function fillCheckMenu() {
                 idField: 'id',
                 treeField: 'text',
                 height: '100%',
+                onCheck: function (node, checked) {
+                    $('#chk_add_' + node.id).prop('checked', checked);
+                    $('#chk_edit_' + node.id).prop('checked', checked);
+                    $('#chk_del_' + node.id).prop('checked', checked);
+                    console.log(node);
+                    if (node.level == 1) {
+
+                    }
+                },
             });
             collapseAll();
         },
@@ -221,7 +253,6 @@ $('#checkDelete').click(function () {
 $('#checkAll').click(function () {
     var isChecked = $(this).prop("checked");
     var roots = $('#tt').tree('getRoots');  // because it can be more roots
-    console.log(roots);
     for (var i = 0; i < roots.length; i++) {
         if (isChecked)
             $("#tt").tree('check', roots[i].target);
@@ -232,12 +263,34 @@ $('#checkAll').click(function () {
 
 });
 
-function checkchange(elem) {
+function checkchange(elem,_Action) {
     var myNode = $('#tt').tree('find', $(elem).data("id"));
+    var add = $('#chk_add_' + myNode.id).prop('checked');
+    var edit = $('#chk_edit_' + myNode.id).prop('checked');
+    var del = $('#chk_del_' + myNode.id).prop('checked');
+
+    var isChecked = $(myNode).prop("checked");
+    if (isChecked) {
+        if (add || edit || del) {
+            $("#tt").tree('check', myNode.target);
+        }
+        else {    
+            $("#tt").tree('uncheck', myNode.target);
+        }
+    }
+    else {
         $("#tt").tree('check', myNode.target);
+    }
 }
 
-function rootChange(elem) {
-    console.log(elem);
+function rootChange() {
+    var roots = $('#tt').tree('getRoots');  
+    for (var i = 0; i < roots.length; i++) {
+        if (isChecked)
+            $("#tt").tree('check', roots[i].target);
+        else
+            $("#tt").tree('uncheck', roots[i].target);
+    };
+    console.log(roots);
 }
 

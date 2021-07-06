@@ -643,7 +643,7 @@ namespace LaylaERP.Controllers
                 foreach (DataRow dr in rows)
                 {
                     string myhtml = "";
-                    myhtml = "<div class=\"table-row\"><div><span class='menu-names'>" + dr["menu_name"].ToString() + "</span></div><div>&nbsp;</div><div><button><input type=\"checkbox\" id=\"chk_add_" + dr["menu_id"] + "\" onChange=\"checkchange(this);\" data-id=\"" + dr["menu_id"] + "\" {0}></input> <label>Add</label></button></div><div><button><input type=\"checkbox\" id=\"chk_edit_" + dr["menu_id"] + "\" {0}></input> <label>View & Edit</label></button></div><div><button><input type=\"checkbox\" id =\"chk_del_" + dr["menu_id"] + "\" onChange=\"checkchange(this);\" data-id=\"" + dr["menu_id"] + "\" {0}></input> <label>Delete</label></button></div></div>";
+                    myhtml = "<div class=\"table-row\"><div><span class='menu-names'>" + dr["menu_name"].ToString() + "</span></div><div>&nbsp;</div><div><button><input type=\"checkbox\" id=\"chk_add_" + dr["menu_id"] + "\" onChange=\"checkchange(this,'A');\" data-id=\"" + dr["menu_id"] + "\" {0}></input> <label>Add</label></button></div><div><button><input type=\"checkbox\" id=\"chk_edit_" + dr["menu_id"] + "\" onChange=\"checkchange(this,'E');\" data-id=\"" + dr["menu_id"] + "\" {0}></input> <label>Edit</label></button></div><div><button><input type=\"checkbox\" id =\"chk_del_" + dr["menu_id"] + "\" onChange=\"checkchange(this,'D');\" data-id=\"" + dr["menu_id"] + "\" {0}></input> <label>Delete</label></button></div></div>";
 
                     row = new Dictionary<String, Object>();
                     row.Add("id", dr["menu_id"]);
@@ -697,7 +697,7 @@ namespace LaylaERP.Controllers
             foreach (DataRow dr in rows)
             {
                 string myhtml = "";
-                myhtml = "<div class=\"table-row\"><div><span class='menu-names2'>" + dr["menu_name"].ToString() + "</span></div><div>&nbsp;</div><div><button><input type=\"checkbox\" class=\"checkAdd\" id=\"chk_add_" + dr["menu_id"] + "\" onChange=\"checkchange(this);\" data-id=\"" + dr["menu_id"] + "\" {0}></input> <label>Add</label></button></div><div><button><input type=\"checkbox\"  onChange=\"checkchange(this);\" data-id=\"" + dr["menu_id"] + "\" id=\"chk_edit_" + dr["menu_id"] + "\" {0}></input> <label>View & Edit</label></button></div><div><button><input type=\"checkbox\"  onChange=\"checkchange(this);\" data-id=\"" + dr["menu_id"] + "\" id =\"chk_del_" + dr["menu_id"] + "\" {0}></input> <label>Delete</label></button></div></div>";
+                myhtml = "<div class=\"table-row\"><div><span class='menu-names2'>" + dr["menu_name"].ToString() + "</span></div><div>&nbsp;</div><div><button><input type=\"checkbox\" class=\"checkAdd\" id=\"chk_add_" + dr["menu_id"] + "\" onChange=\"checkchange(this,'A');\" data-id=\"" + dr["menu_id"] + "\" {0}></input> <label>Add</label></button></div><div><button><input type=\"checkbox\"  onChange=\"checkchange(this,'D');\" data-id=\"" + dr["menu_id"] + "\" id=\"chk_edit_" + dr["menu_id"] + "\" {0}></input> <label>Edit</label></button></div><div><button><input type=\"checkbox\"  onChange=\"checkchange(this,'D');\" data-id=\"" + dr["menu_id"] + "\" id =\"chk_del_" + dr["menu_id"] + "\" {0}></input> <label>Delete</label></button></div></div>";
 
                 row = new Dictionary<String, Object>();
                 row.Add("id", dr["menu_id"]);

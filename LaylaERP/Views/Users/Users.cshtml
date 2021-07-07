@@ -15,7 +15,7 @@
         $.each(data, function (index, value) {
             items += $('<li class="' + this['Text'].toLowerCase().replace(/ +/g, "").trim() + '"><a href="#" id="' + this['Text'].toLowerCase().replace(/ +/g, "").trim() + '">' + this['Text'] + '(<span class="count">0</span>)</a > |</li >').appendTo("#role-ul");
         })
-        items += '<li class="none"><a href="#" id="norole">No role (<span class="count">0</span>)</a></li>';
+        items += $('<li class="none"><a href="#" id="norole">No role (<span class="count">0</span>)</a></li>').appendTo("#role-ul");
 
         GetUsersCount();
         setTimeout(function () { Datagrid('', $("#hfroletype").val()); }, 50);

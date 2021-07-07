@@ -76,7 +76,7 @@ function Datagrid(role_type, type) {
             {
                 'data': 'ID', sWidth: "8%",
                 'render': function (ID, type, full, meta) {
-                    return '<a href="javascript:void(0);" onClick="EditUser(' + ID+')"><i class="glyphicon glyphicon-pencil"></i></a>'
+                    return '<a href="javascript:void(0);" onClick="EditUser(' + ID +')"><i class="glyphicon glyphicon-pencil"></i></a>'
                 }
             }
         ],

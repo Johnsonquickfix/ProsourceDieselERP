@@ -9,7 +9,7 @@
 <input type="hidden" id="hfStatusType" value="" />
 <input type="hidden" id="hfroletype" value="@ViewBag.user_role" />
 <div class="page-title">
-    <h2 class="page-heading">Users</h2> <a class="btn btn-danger" href="CreateUser">Create User</a>
+    <h2 class="page-heading">Users</h2> <a class="btn btn-danger" id="btnCreateUser" href="CreateUser">Create User</a>
 </div>
 <div class="user_subCrumbs">
     <ul class="subsubsub">
@@ -45,20 +45,20 @@
             </div>
             <div class="alignleft actions">
                 <select name="new_role" id="new_role">
-                    <option value="">Change role to…</option>                   
+                    <option value="">Change role to…</option>
                 </select>
                 <input type="submit" name="changeit" id="changeit" class="button" value="Change">
             </div>
 
             <div class="alignleft actions">
                 <select name="grant_role" id="grant_role">
-                    <option value="">Grant Roal to…</option>                   
+                    <option value="">Grant Roal to…</option>
                 </select>
                 <input type="submit" name="Grantrole" id="Grantrole" class="button" value="Grant">
             </div>
             <div class="alignleft actions">
                 <select name="revoke_role" id="revoke_role">
-                    <option value="">Revoke Roal to…</option>                   
+                    <option value="">Revoke Roal to…</option>
                 </select>
                 <input type="submit" name="Revoke" id="Revoke" class="button" value="Revoke">
             </div>
@@ -93,7 +93,7 @@
                             <th>Phone</th>
                             <th>Address</th>
                             <th>Role</th>
-                            <th>Action</th>
+                            <th id="btnAction" name="action">Action</th>
 
                         </tr>
                     </thead>
@@ -106,11 +106,17 @@
 
 <script src="~/js/common.js"></script>
 <script src="@Url.Content("~/js/Users/Users.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+<script src="@Url.Content("~/js/Users/RolePermission.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+
 
 <script type="text/javascript">
     var j = "";
 
     $(document).ready(function () {
+        var loc = window.location.pathname;
+        alert(loc);
+        CheckPermissions("#btnCreateUser", "#btnAction","",loc);
+
         $(".subsubsub li a").click(function (e) {
             $('.subsubsub li').removeClass('current');
             $('.subsubsub li a').removeClass('current');

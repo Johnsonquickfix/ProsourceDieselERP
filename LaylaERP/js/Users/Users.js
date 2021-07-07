@@ -1,4 +1,4 @@
-﻿let myvalue = 0;
+﻿let myvalue = 1;
 ///Get User Counts
 function GetUsersCount() {
     var opt = { strValue1: '' };

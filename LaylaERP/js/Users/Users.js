@@ -1,4 +1,5 @@
-﻿///Get User Counts
+﻿let myvalue = 0;
+///Get User Counts
 function GetUsersCount() {
     var opt = { strValue1: '' };
     $.ajax({
@@ -16,7 +17,7 @@ function GetUsersCount() {
                 $('#shopmanager').find(".count").text(number_format(data[0].ShopManager));
                 $('#subscriber').find(".count").text(number_format(data[0].Subscriber));
                 $('#supplychainmanager').find(".count").text(number_format(data[0].SupplyChainManager));
-                $('#seo').find(".count").text(number_format(data[0].SEOEditor));
+                $('#seoeditor').find(".count").text(number_format(data[0].SEOEditor));
                 $('#seomanager').find(".count").text(number_format(data[0].SEOManager));
                 $('#norole').find(".count").text(number_format(data[0].Norole));
             }

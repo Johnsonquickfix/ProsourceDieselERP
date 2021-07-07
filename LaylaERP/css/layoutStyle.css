@@ -1660,7 +1660,7 @@ overflow-x: auto !important;
     width: auto;
 }
 .modal-lg.modal-1040 {
-    width: 1040px; max-width:100%;
+    width: 1040px; max-width:calc(100% - 20px);
 }
 .table-design.not-fixed.popuptable th,
 .table-design.not-fixed.popuptable td {
@@ -1747,6 +1747,8 @@ height:190px; overflow:auto;}
 .li-hr {
 border-top:1px solid #eee; margin-top:8px; margin-bottom:8px;}
 @media(max-width:1000px) {
+    .manage-user-section .table-blue {
+    width:1100px !important;}
     [name="strValue1"] + label {
         padding-left: 12px;
     }
@@ -1785,7 +1787,8 @@ border-top:1px solid #eee; margin-top:8px; margin-bottom:8px;}
 }
 @media(max-width:767px) {
      #dtdata_wrapper > .row:first-child {display: flex;align-items: center;}
-     #dtdata_wrapper > .row:first-child .col-md-6 {font-size: 12px;}
+        #dtdata_wrapper > .row:first-child .col-md-6,
+        #dtdata_wrapper > .row:first-child .col-sm-6 {font-size: 12px;}
      div.dataTables_wrapper div.dataTables_filter input {width: 95px !important;}
      #dtdata_wrapper > .row:first-child .col-sm-6:first-child,
      #dtdata_wrapper > .row:first-child .col-md-6:first-child {margin-right: auto;}
@@ -1795,10 +1798,59 @@ border-top:1px solid #eee; margin-top:8px; margin-bottom:8px;}
     /******/
     .customer-section .table-blue {
     width:1400px !important;}
+    .main-header {
+    position:relative;}
+    .checkout-box-total .form-group label {
+    margin-bottom:0px;}
+    .checkout-box-total .form-group {
+        display: flex;
+        align-items: center;
+    }
+    .neworder-section .box-sections .form-group {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
 }
 @media(max-width:450px) {
     span.radtype_span {margin: 8px 0px 0px 0px; width: 100%;}
     .dashboard-order-list .box-header {flex-wrap:wrap;}
     .calender-board iframe {height:350px;}
     .box-calender-dash {max-height:325px;}
-}
+    /**erp*/
+    .user-top-section .tablenav .actions {
+        width: 100%;
+        display: flex;
+    }
+    .user-top-section .tablenav .actions > * {
+        flex: 1;
+    }
+    .user-top-section .tablenav .actions select {
+        flex: 2;
+        max-width: initial;
+        width: auto;
+    }
+    .dashboard-dropy {
+        flex-wrap: wrap;
+        position: relative;
+    }
+    .dashboard-dropy .col-xs-6 {width:100%;}
+    .col-drop-dash {position:absolute; right:0px; top:17px;}
+    .page-heading .sub-heading {margin-top: 10px;}
+    .manage-wig-dash {padding: 4px 15px;}
+    #saveForm .box-body.with-border h5 {line-height: 1.5;}
+    .chat-box-dash .filename {margin-bottom: 5px !important;}
+    div.dataTables_wrapper div.dataTables_filter input {width: 80px !important;}
+    .form-user-role #btnAddRole, .form-user-role #btnApprove {
+        width: 100%;
+    }
+    #billModal .modal-body > .nowrap-row {
+    flex-wrap:wrap;}
+        #billModal .modal-body > .nowrap-row > div {
+        width:100%;}
+            #billModal .modal-body > .nowrap-row > div:first-child {
+            margin-bottom:8px;}
+    #btnSelectDefaltAddress {
+    width:100%;}
+    }
+

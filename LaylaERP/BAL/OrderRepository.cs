@@ -727,10 +727,10 @@
         }
 
 
-        public static DataTable OrderListDashboard(string from_date, string to_date, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "order_id", string SortDir = "DESC")
+        public static DataTable OrderListDashboard(string from_date, string to_date, string userstatus, string searchid, int pageno, int pagesize, string SortCol = "order_id", string SortDir = "DESC")
         {
             DataTable dt = new DataTable();
-            totalrows = 0;
+            // totalrows = 0;
             try
             {
                 string strWhr = string.Empty;
@@ -753,19 +753,19 @@
 
                 if (!string.IsNullOrEmpty(from_date))
                 {
-                    strWhr += " and DATE(p.post_date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and DATE(post_date)<= '" + todate.ToString("yyyy-MM-dd") + "' " ;                   
+                    strWhr += " and DATE(p.post_date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and DATE(post_date)<= '" + todate.ToString("yyyy-MM-dd") + "' ";
                 }
-               
 
-                string strSql = "SELECT p.id order_id, p.id as chkorder,os.num_items_sold,Cast(os.total_sales As DECIMAL(10, 2)) as total_sales, os.customer_id as customer_id,"
-                            + " p.post_status status, DATE_FORMAT(p.post_date, '%M %d %Y') date_created,CONCAT(pmf.meta_value, ' ', COALESCE(pml.meta_value, '')) FirstName,COALESCE(pml.meta_value, '') LastName,"
+
+                string strSql = "SELECT  p.id order_id, p.id as chkorder,os.num_items_sold,Cast(os.total_sales As DECIMAL(10, 2)) as total_sales, os.customer_id as customer_id,"
+                            + " REPLACE(p.post_status, 'wc-', '') status, DATE_FORMAT(p.post_date, '%M %d %Y') date_created,CONCAT(pmf.meta_value, ' ', COALESCE(pml.meta_value, '')) FirstName,COALESCE(pml.meta_value, '') LastName,"
                             + " replace(replace(replace(replace(pmp.meta_value,'-', ''),' ',''),'(',''),')','') billing_phone"
                             + " FROM wp_posts p inner join wp_wc_order_stats os on p.id = os.order_id"
                             + " left join wp_postmeta pmf on os.order_id = pmf.post_id and pmf.meta_key = '_billing_first_name'"
                             + " left join wp_postmeta pml on os.order_id = pml.post_id and pml.meta_key = '_billing_last_name'"
                             + " left join wp_postmeta pmp on os.order_id = pmp.post_id and pmp.meta_key = '_billing_phone'"
-                            + " WHERE p.post_type = 'shop_order' " + strWhr
-                            + " order by " + SortCol + " " + SortDir + " limit " + (pageno).ToString() + ", " + pagesize + "";
+                            + " WHERE p.post_type = 'shop_order' " + strWhr.ToString()
+                            + " limit 10 ";
 
                 strSql += "; SELECT Count(distinct p.id) TotalRecord from wp_wc_order_stats os inner join wp_posts p on p.id = os.order_id "
                         + " left join wp_postmeta pmf on os.order_id = pmf.post_id and pmf.meta_key = '_billing_first_name'"
@@ -774,8 +774,8 @@
                         + " WHERE p.post_type = 'shop_order' " + strWhr.ToString();
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
-                if (ds.Tables[1].Rows.Count > 0)
-                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+                //if (ds.Tables[1].Rows.Count > 0)
+                //    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
             }
             catch (Exception ex)
             {
@@ -816,6 +816,60 @@
                 throw ex;
             }
             return dt;
+        }
+        //Split Order on Status Change Processing
+        public static int SplitOrder(OrderPostStatusModel model)
+        {
+            int result = 0;
+            try
+            {
+                List<SplitOrderItemsModel> _list = new List<SplitOrderItemsModel>();
+                _list.Add(new SplitOrderItemsModel { order_prefix = "-MTE", product_id = "118, 56774, 78676, 106923, 1595, 1610, 1619, 208417, 306817, 611172, 611220, 632713, 611172, 716434, 716425, 716418, 787847", variation_id = "684957" });
+                _list.Add(new SplitOrderItemsModel { order_prefix = "-PSW", product_id = "124524", variation_id = "684958" });
+                _list.Add(new SplitOrderItemsModel { order_prefix = "-KP", product_id = "14023", variation_id = "" });
+                _list.Add(new SplitOrderItemsModel { order_prefix = "-W", product_id = "128244", variation_id = "" });
+                _list.Add(new SplitOrderItemsModel { order_prefix = "-B", product_id = "31729", variation_id = "684960" });
+                _list.Add(new SplitOrderItemsModel { order_prefix = "-F", product_id = "20861", variation_id = "684961" });
+                _list.Add(new SplitOrderItemsModel { order_prefix = "-PB", product_id = "611252", variation_id = "684962" });
+                _list.Add(new SplitOrderItemsModel { order_prefix = "-FMF", product_id = "727138,612940,727126", variation_id = "684959" });
+                _list.Add(new SplitOrderItemsModel { order_prefix = "-AJ", product_id = "611286,612995,613207", variation_id = "684963" });
+                _list.Add(new SplitOrderItemsModel { order_prefix = "-CPB", product_id = "733500", variation_id = "" });
+                _list.Add(new SplitOrderItemsModel { order_prefix = "-PRO", product_id = "612955,612947,611268", variation_id = "" });
+                _list.Add(new SplitOrderItemsModel { order_prefix = "-SMF", product_id = "611238", variation_id = "" });
+                _list.Add(new SplitOrderItemsModel { order_prefix = "-COM", product_id = "772065,787909", variation_id = "" });
+
+                DataTable dt = SQLHelper.ExecuteDataTable(string.Format("SELECT * FROM split_record WHERE main_order_id={0}; ", model.order_id));
+                if (dt.Rows.Count == 0)
+                {
+                    DateTime cDate = DateTime.Now, cUTFDate = DateTime.UtcNow;
+                    string strSql = string.Format("INSERT INTO split_record (main_order_id) values({0});", model.order_id);
+                    strSql += string.Format(" INSERT INTO split_meta (split_id,meta_key,meta_value) SELECT split_id,p.meta_key,p.meta_value FROM split_record sr INNER JOIN wp_postmeta p on p.post_id = sr.main_order_id where p.post_id = {0} and (p.meta_key like '_billing_%' or p.meta_key like '_shipping_%') order by p.meta_key; ", model.order_id);
+
+                    foreach (SplitOrderItemsModel o in _list)
+                    {
+                        strSql += " INSERT INTO split_detail (split_id,order_name) SELECT distinct sr.split_id,CONCAT('#',oi.order_id,'" + o.order_prefix + "') order_id FROM split_record sr ";
+                        strSql += " INNER JOIN wp_woocommerce_order_items oi on oi.order_id = sr.main_order_id and oi.order_item_type = 'line_item' INNER JOIN wp_woocommerce_order_itemmeta oim on oim.order_item_id = oi.order_item_id";
+                        strSql += " where oi.order_id = " + model.order_id + " group by sr.split_id, oi.order_id, oi.order_item_name, oi.order_item_type";
+                        strSql += " having max(case meta_key when '_product_id' then meta_value else '' end) in (" + o.product_id + ") ";
+                        if (!string.IsNullOrEmpty(o.variation_id))
+                            strSql += " OR max(case meta_key when '_variation_id' then meta_value else '' end) in (" + o.variation_id + "); ";
+                        else
+                            strSql += " ; ";
+
+                        strSql += " INSERT INTO split_detail_items (split_detail_id,product_id,variation_id,qty,meta_key,meta_value) select sd.split_detail_id,max(case meta_key when '_product_id' then meta_value else '' end) p_id,max(case meta_key when '_variation_id' then meta_value else '' end) v_id,max(case meta_key when '_qty' then meta_value else '' end) qty,'' meta_key,'' meta_value ";
+                        strSql += " from split_detail sd inner join wp_woocommerce_order_items oi on CONCAT('#',oi.order_id,'" + o.order_prefix + "') = sd.order_name and oi.order_item_type = 'line_item' and oi.order_id = " + model.order_id;
+                        strSql += " inner join wp_woocommerce_order_itemmeta oim on oim.order_item_id = oi.order_item_id group by oi.order_id, oi.order_item_name, oi.order_item_type ";
+                        strSql += " having max(case meta_key when '_product_id' then meta_value else '' end) in (" + o.product_id + ") ";
+                        if (!string.IsNullOrEmpty(o.variation_id))
+                            strSql += " OR max(case meta_key when '_variation_id' then meta_value else '' end) in (" + o.variation_id + "); ";
+                        else
+                            strSql += " ; ";
+                    }
+                    result = SQLHelper.ExecuteNonQuery(strSql.ToString());
+                }
+            }
+            catch (Exception Ex) { throw Ex; }
+            return result;
         }
     }
 }

@@ -35,7 +35,7 @@
                 {
                     throw new Exception("Invalid Data");
                 }
-                obj =  OrderRepository.GetCityByZip(model.strValue1);
+                obj = OrderRepository.GetCityByZip(model.strValue1);
             }
             catch { }
             return Json(obj, 0);
@@ -311,6 +311,21 @@
             }
             catch { status = false; result = ""; }
             return Json(new { status = status, message = result }, 0);
+        }
+
+        [HttpPost]
+        public JsonResult SplitOrderByStatus(OrderPostStatusModel model)
+        {
+            string JSONresult = string.Empty; bool status = false;
+            try
+            {
+                int result = OrderRepository.SplitOrder(model);
+                if (result > 0)
+                { status = true; JSONresult = "Order splited successfully."; }
+                //JSONresult = JsonConvert.SerializeObject(DT);
+            }
+            catch (Exception ex) { JSONresult = ex.Message; }
+            return Json(new { status = status, message = JSONresult }, 0);
         }
     }
 }

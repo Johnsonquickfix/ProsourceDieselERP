@@ -1,68 +1,50 @@
 ﻿@model dynamic
-            <div class="dashboard-order-list">
-                        @if (ViewData.Model == null)
-                        {
-                            <div class="row">
-                                <div class="col-md-12 col-sm-12 col-xs-12 errordiv pd-l-2">
-                                    <table border="1" cellpadding="5">
-                                        <thead>
-                                            <tr>
-
-                                                <th>Order ID</th>
-                                                <th>Customer Name</th>
-                                                <th>Status</th>
-                                                <th>Date Created</th>
-                                                <th>Total</th>
-
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td colspan="5" align="center"> No Any Order For Today .</td>
-                                            </tr>
-                                   
-                                         </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        }
-                        else
-                        {
-                            <table border="1" cellpadding="5">
-                                <thead>
-                                    <tr>
-
-                                        <th>Order ID</th>
-                                        <th>Customer Name</th>
-                                        <th>Status</th>
-                                        <th>Date Created</th>
-                                        <th>Total</th>
-
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var record in ViewData.Model)
-                                    {
-
-                                        <tr>
-                                            <td> @record["order_id"]</td>
-                                            <td> @record["FirstName"]</td>
-                                            <td> @record["status"]</td>
-                                            <td> @record["date_created"]</td>
-                                            <td> @record["total_sales"]</td>
-                                        </tr>
-
-                                    }
-                                </tbody>
-                            </table>
-                        }
-                     
-            </div>
+<div class="table-responsive dash-table">
+    @if (ViewData.Model == null)
+    {
+    <table class="table-blue table check-table">
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Customer Name</th>
+                <th>Status</th>
+                <th>Date Created</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td colspan="5" align="center">No Any Order For Today.</td>
+            </tr>
+        </tbody>
+    </table>
+    }
+    else
+    {
+        <table class="table-blue table check-table">
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Customer Name</th>
+                    <th>Status</th>
+                    <th>Date Created</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var record in ViewData.Model)
+                {
+                    <tr>
+                        <td> @record["order_id"]</td>
+                        <td> @record["FirstName"]</td>
+                        <td> @record["status"]</td>
+                        <td> @record["date_created"]</td>
+                        <td> @record["total_sales"]</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
 <script src="~/js/common.js"></script>
-<script>
-    $(document).ready(function () {
-     
-       
-    });
-     
-</script>
+

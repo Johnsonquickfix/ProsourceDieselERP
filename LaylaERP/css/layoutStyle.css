@@ -743,12 +743,28 @@ body table.dataTable tr.selected td.select-checkbox:before, body table.dataTable
 
 #userslist th {
 }
-
-table.dataTable thead .sorting:before, table.dataTable thead .sorting:after, table.dataTable thead .sorting_asc:before, table.dataTable thead .sorting_asc:after, table.dataTable thead .sorting_desc:before, table.dataTable thead .sorting_desc:after, table.dataTable thead .sorting_asc_disabled:before, table.dataTable thead .sorting_asc_disabled:after, table.dataTable thead .sorting_desc_disabled:before, table.dataTable thead .sorting_desc_disabled:after {
-    top: 50%;
-    bottom: auto;
-    transform: translateY(-50%);
+#saveForm .box-body.with-border {
+    border-bottom: 1px solid #f4f4f4;
 }
+#saveForm .box-body.with-border .lbl-space {
+    margin: 0px 3px;
+}
+#saveForm .box-body.with-border h5 span {
+    display: inline-block;
+    margin: 0px 5px;
+}
+
+#saveForm .box-body.with-border label {
+    margin: 0px;
+}
+#saveForm .box-body.with-border h5{display:flex; flex-wrap:wrap; align-items:center;
+    margin: 0px;
+}
+    table.dataTable thead .sorting:before, table.dataTable thead .sorting:after, table.dataTable thead .sorting_asc:before, table.dataTable thead .sorting_asc:after, table.dataTable thead .sorting_desc:before, table.dataTable thead .sorting_desc:after, table.dataTable thead .sorting_asc_disabled:before, table.dataTable thead .sorting_asc_disabled:after, table.dataTable thead .sorting_desc_disabled:before, table.dataTable thead .sorting_desc_disabled:after {
+        top: 50%;
+        bottom: auto;
+        transform: translateY(-50%);
+    }
 
 .pagination > .active > a, .pagination > .active > a:focus, .pagination > .active > a:hover, .pagination > .active > span, .pagination > .active > span:focus, .pagination > .active > span:hover {
     background: #3c8dbc
@@ -758,7 +774,7 @@ table.dataTable thead .sorting:after, table.dataTable thead .sorting_asc:after, 
     right: 12px;
 }
 
-#dtdata td:first-child, .check-table th:first-child {
+#dtdata td:first-child, .check-table th:first-child, .check-table td:first-child {
     text-align: center;
     position: relative;
 }
@@ -1431,7 +1447,7 @@ body table.dataTable thead .sorting_desc_disabled:after {
 
 @media(max-width:1000px) {
     .feentax-section .table-blue {
-    width:1100px !important;
+        width: 1100px !important;
     }
     .export-section .table-blue {
         width: 1100px !important;
@@ -1650,8 +1666,7 @@ overflow-x: auto !important;
 .table-design.not-fixed.popuptable td {
     padding-right:20px !important;
 }
-.nowrap-row {
-display:flex;}
+.nowrap-row {display:flex;}
 .nowrap-row .col-md-4,
 .nowrap-row .col-md-8 {
     width: auto;
@@ -1670,40 +1685,47 @@ display:flex;}
 .radtype_span {
     margin: -5px 73px 0px 0px;
 }
-.dashboard-order-list .box-header {
-display:flex;}
-#radtype + label {
-    margin-bottom: 0px;
-    cursor: pointer;
-    margin-left: 1px;
-    margin-right: 0px !important;
-    display: inline-flex;
-    padding: 4px 35px 3px 20px;
-    align-items: center;
-    color: #fff;
-    background: #3c8dbc;
-    border: 1px solid #367fa9;
-    border-radius: 3px;
-    font-weight: 400;
-    position: relative;
+.dashboard-order-list .box-header {display:flex;}
+[name="strValue1"] + label {
+margin-bottom: 0px;
+cursor: pointer;
+margin-left: 1px;
+margin-right: 0px !important;
+display: inline-flex;
+padding: 4px 35px 3px 20px;
+align-items: center;
+color: #fff;
+background: #3c8dbc;
+border: 1px solid #367fa9;
+border-radius: 3px;
+font-weight: 400;
+position: relative;
 }
-#radtype {display:none;
-visibility:hidden; opacity:0;}
-#radtype + label:after {
-    content: "";
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    margin-top: -7.5px; width: 15px;
-    height: 15px;
-    border: 2px solid #fff;
-    border-radius: 100%;
+[name="strValue1"] {
+display: none;
+visibility: hidden;
+opacity: 0;
 }
-#radtype:checked + label:after {
-    background: #fff;
+[name="strValue1"] + label:after {
+content: "";
+position: absolute;
+right: 10px;
+top: 50%;
+margin-top: -7.5px;
+width: 15px;
+height: 15px;
+border: 2px solid #fff;
+border-radius: 100%;
+}
+[name="strValue1"]:checked + label:after {
+background: #fff;
+}
+.table-blue.table.check-table {
+    table-layout: initial;
 }
 .dashboard-order-list .box.box-primary {
-margin-left: -15px; margin-right: -15px; width:auto;}
+    width: auto;
+}
 .calender-board iframe {
     width: 100% !important;
     display: block;
@@ -1717,8 +1739,50 @@ margin-left: -15px; margin-right: -15px; width:auto;}
     overflow: hidden;
 }
 .table-design .table-blue td, .table-design table td {
-font-size:13px;}
+    font-size: 13px;
+}
 .chat-box-dash.collapsed-box .slimScrollDiv {display:none;}
+.dash-drop-menu {
+height:190px; overflow:auto;}
+.li-hr {
+border-top:1px solid #eee; margin-top:8px; margin-bottom:8px;}
+@media(max-width:1000px) {
+    [name="strValue1"] + label {
+        padding-left: 12px;
+    }
+    .dash-table .table-blue {
+        width: 700px;
+        max-width: initial;
+    }
+}
+@media(max-width:950px) {
+    .manage-user-section table.table-blue thead th {
+        width: 150px !important;
+    }
+
+        .manage-user-section table.table-blue thead th:first-child {
+            width: 60px !important;
+        }
+
+        .manage-user-section table.table-blue thead th:nth-child(2) {
+            width: 100px !important;
+        }
+
+        .manage-user-section table.table-blue thead th:nth-child(4) {
+            width: 230px !important;
+        }
+
+    .manage-user-section #dtdata_wrapper .row:first-child + .row {
+        margin-left: 0px;
+        margin-right: 0px;
+    }
+
+        .manage-user-section #dtdata_wrapper .row:first-child + .row .col-sm-12 {
+            padding-left: 0px;
+            padding-right: 0px;
+            overflow-x: auto;
+        }
+}
 @media(max-width:767px) {
      #dtdata_wrapper > .row:first-child {display: flex;align-items: center;}
      #dtdata_wrapper > .row:first-child .col-md-6 {font-size: 12px;}
@@ -1737,24 +1801,4 @@ font-size:13px;}
     .dashboard-order-list .box-header {flex-wrap:wrap;}
     .calender-board iframe {height:350px;}
     .box-calender-dash {max-height:325px;}
-}
-@media(max-width:950px) {
-    .manage-user-section table.table-blue thead th {
-        width: 150px !important;
-    }
-    .manage-user-section table.table-blue thead th:first-child {
-        width: 60px !important;
-    }
-    .manage-user-section table.table-blue thead th:nth-child(2) {
-        width: 100px !important;
-    }
-    .manage-user-section table.table-blue thead th:nth-child(4) {
-        width: 230px !important;
-    }
-    .manage-user-section #dtdata_wrapper .row:first-child + .row{
-        margin-left:0px; margin-right:0px;
-    }
-    .manage-user-section #dtdata_wrapper .row:first-child + .row .col-sm-12 {
-        padding-left: 0px; padding-right:0px; overflow-x:auto;
-    }
 }

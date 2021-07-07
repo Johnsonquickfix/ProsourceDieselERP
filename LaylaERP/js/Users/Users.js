@@ -1,4 +1,5 @@
-﻿///Get User Counts
+﻿let myvalue = 1;
+///Get User Counts
 function GetUsersCount() {
     var opt = { strValue1: '' };
     $.ajax({
@@ -16,7 +17,7 @@ function GetUsersCount() {
                 $('#shopmanager').find(".count").text(number_format(data[0].ShopManager));
                 $('#subscriber').find(".count").text(number_format(data[0].Subscriber));
                 $('#supplychainmanager').find(".count").text(number_format(data[0].SupplyChainManager));
-                $('#seo').find(".count").text(number_format(data[0].SEOEditor));
+                $('#seoeditor').find(".count").text(number_format(data[0].SEOEditor));
                 $('#seomanager').find(".count").text(number_format(data[0].SEOManager));
                 $('#norole').find(".count").text(number_format(data[0].Norole));
             }
@@ -76,7 +77,7 @@ function Datagrid(role_type, type) {
             {
                 'data': 'ID', sWidth: "8%",
                 'render': function (ID, type, full, meta) {
-                    return '<a href="javascript:void(0);" onClick="EditUser(' + ID+')"><i class="glyphicon glyphicon-pencil"></i></a>'
+                    return '<a href="javascript:void(0);" onClick="EditUser(' + ID +')"><i class="glyphicon glyphicon-pencil"></i></a>'
                 }
             }
         ],

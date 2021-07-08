@@ -484,14 +484,28 @@
             try
             {
                 string strsql = string.Format("update wp_wc_order_stats set status=@status where order_id  in ({0}); ", ID)
-                    + string.Format("update wp_posts set post_status=@status,post_modified=@date_created,post_modified_gmt=@post_modified_gmt where id  in ({0}); ", ID);
+                    + string.Format("update wp_posts set post_status=@status,post_modified=@post_modified,post_modified_gmt=@post_modified_gmt where id  in ({0}); ", ID);
                 MySqlParameter[] para =
                 {
                     new MySqlParameter("@status", model.status),
-                    new MySqlParameter("@date_created", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")),
-                    new MySqlParameter("post_modified_gmt", DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"))
+                    new MySqlParameter("@post_modified", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")),
+                    new MySqlParameter("@post_modified_gmt", DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"))
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                if (result > 0 && model.status == "wc-processing")
+                {
+                    var orders = ID.Split(',');
+                    for (int i = 0; i < orders.Length; i++)
+                    {
+                        try
+                        {
+                            OrderPostStatusModel o = new OrderPostStatusModel();
+                            o.order_id = Convert.ToInt64(orders[i]);
+                            SplitOrder(o);
+                        }
+                        catch { }
+                    }
+                }
                 return result;
             }
             catch (Exception Ex)
@@ -817,6 +831,7 @@
             }
             return dt;
         }
+
         //Split Order on Status Change Processing
         public static int SplitOrder(OrderPostStatusModel model)
         {
@@ -870,6 +885,58 @@
             }
             catch (Exception Ex) { throw Ex; }
             return result;
+        }
+        //Get Shipping Order
+        public static DataTable ProcessingOrders(DateTime from_date, DateTime to_date)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                string strSql = "SELECT p.ID,p.post_date,p.post_modified,sd.split_detail_id,sd.order_name,max(case meta_key when '_payment_method_title' then meta_value else '' end) pm_title, "
+                        + " max(case meta_key when '_billing_first_name' then meta_value else '' end) b_fn,max(case meta_key when '_billing_last_name' then meta_value else '' end) b_ln, "
+                        + " max(case meta_key when '_billing_company' then meta_value else 'company name' end) b_com,max(case meta_key when '_billing_email' then meta_value else '' end) b_email, "
+                        + " max(case meta_key when '_billing_phone' then meta_value else '' end) b_phone, "
+                        + " max(case meta_key when '_shipping_first_name' then meta_value else '' end) s_fn,max(case meta_key when '_shipping_last_name' then meta_value else '' end) s_ln, "
+                        + " max(case meta_key when '_shipping_company' then meta_value else 'company name' end) s_com,max(case meta_key when '_shipping_address_1' then meta_value else '' end) s_add1, "
+                        + " max(case meta_key when '_shipping_address_2' then meta_value else '' end) s_add2,max(case meta_key when '_shipping_city' then meta_value else '' end) s_city, "
+                        + " max(case meta_key when '_shipping_state' then meta_value else '' end) s_state,max(case meta_key when '_shipping_postcode' then meta_value else '' end) s_postcode, "
+                        + " max(case meta_key when '_shipping_country' then meta_value else '' end) s_country "
+                        + " FROM wp_posts p inner join split_record sr on sr.main_order_id = p.ID inner join split_detail sd on sd.split_id = sr.split_id "
+                        + " inner join wp_postmeta pm on pm.post_id = p.ID "
+                        + " WHERE post_status = 'wc-processing' AND post_type = 'shop_order' "
+                        + " AND DATE_FORMAT(p.post_modified_gmt,'%Y-%m-%d %h:%i:%s') BETWEEN DATE_FORMAT('" + from_date.ToString("yyyy-MM-dd hh:mm:ss") + "','%Y-%m-%d %h:%i:%s') AND DATE_FORMAT('" + to_date.ToString("yyyy-MM-dd hh:mm:ss") + "','%Y-%m-%d %h:%i:%s') "
+                        + " group by p.ID,p.post_date,sr.split_id,sd.order_name";
+                dt = SQLHelper.ExecuteDataTable(strSql);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+        public static DataTable ProcessingOrdersItemsDetails(string order_id, string split_detail_id)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                string strSql = "SELECT sdi.product_id,sdi.variation_id,sdi.qty,pp.post_title,pvp.post_title variation_title,psku.meta_value sku,sdi.meta_key,sdi.meta_value,"
+                                + "     (select max(case oim.meta_key when '_line_total' then oim.meta_value else '' end) from wp_woocommerce_order_items oi "
+                                + "         inner join wp_woocommerce_order_itemmeta oim on oim.order_item_id = oi.order_item_id"
+                                + "         where oi.order_item_type = 'line_item' and oi.order_id = " + order_id.ToString() + " group by oi.order_item_id"
+                                + "         having max(case oim.meta_key when '_product_id' then oim.meta_value else '' end) = sdi.product_id"
+                                + "             and max(case oim.meta_key when '_variation_id' then oim.meta_value else '' end) = sdi.variation_id) line_total"
+                                + " FROM split_detail_items sdi"
+                                + " inner join wp_posts pp on pp.ID = sdi.product_id AND pp.post_type = 'product'"
+                                + " left outer join wp_posts pvp on pvp.ID = sdi.variation_id"
+                                + " left outer join wp_postmeta psku on psku.post_id = pp.id and psku.meta_key = '_sku'"
+                                + " where sdi.split_detail_id = " + split_detail_id.ToString();
+                dt = SQLHelper.ExecuteDataTable(strSql);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
         }
     }
 }

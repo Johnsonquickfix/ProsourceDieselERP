@@ -8,13 +8,27 @@
 @*@using (Html.BeginForm("Users", "Users", FormMethod.Post)) { }*@
 <input type="hidden" id="hfStatusType" value="" />
 <input type="hidden" id="hfroletype" value="@ViewBag.user_role" />
+
+<script>
+    $.get('/Users/GetRolesType', function (data) {
+        var items = "";
+        $.each(data, function (index, value) {
+            items += $('<li class="' + this['Text'].toLowerCase().replace(/ +/g, "").trim() + '"><a href="javascript:void(0);" id="' + this['Text'].toLowerCase().replace(/ +/g, "").trim() + '">' + this['Text'] + '(<span class="count">0</span>)</a > |</li >').appendTo("#role-ul");
+        })
+        items += $('<li class="none"><a href="#" id="norole">No role (<span class="count">0</span>)</a></li>').appendTo("#role-ul");
+
+        GetUsersCount();
+        setTimeout(function () { Datagrid('', $("#hfroletype").val()); }, 50);
+    })
+</script>
+
 <div class="page-title">
     <h2 class="page-heading">Users</h2> <a class="btn btn-danger" id="btnCreateUser" href="CreateUser">Create User</a>
 </div>
 <div class="user_subCrumbs">
-    <ul class="subsubsub">
+    <ul class="subsubsub" id="role-ul">
         <li class="all"><a href="#" id="all" class="current" aria-current="page">All (<span class="count">0</span>)</a> |</li>
-        <li class="accounting"><a href="#" id="accounting">Accounting (<span class="count">0</span>)</a> |</li>
+        @*<li class="accounting"><a href="#" id="accounting">Accounting (<span class="count">0</span>)</a> |</li>
         <li class="administrator"><a href="#" id="administrator">Administrator (<span class="count">0</span>)</a> |</li>
         <li class="author"><a href="#" id="author">Author (<span class="count">0</span>)</a> |</li>
         <li class="contributor"><a href="#" id="contributor">Contributor (<span class="count">0</span>)</a> |</li>
@@ -25,7 +39,7 @@
         <li class="supplychainmanager"><a href="#" id="supplychainmanager">Supply Chain Manager (<span class="count">0</span>)</a> |</li>
         <li class="wpseo_editor"><a href="#" id="seo">SEO Editor (<span class="count">0</span>)</a> |</li>
         <li class="seomanager"><a href="#" id="seomanager">SEO Manager (<span class="count">0</span>)</a> |</li>
-        <li class="none"><a href="#" id="norole">No role (<span class="count">0</span>)</a></li>
+        <li class="none"><a href="#" id="norole">No role (<span class="count">0</span>)</a></li>*@
     </ul>
 </div>
 <div>
@@ -112,6 +126,7 @@
 
 <script type="text/javascript">
     var j = "";
+    var ur = "";
 
     $(document).ready(function () {
         
@@ -143,27 +158,54 @@
             })
         })
 
-        GetUsersCount();
+        //GetUsersCount();
         
-        setTimeout(function () { Datagrid('', $("#hfroletype").val()); CheckPermissions("#btnCreateUser", "#hfEdit", "", loc); }, 50);
-        setTimeout(function () { CheckPermissions("#btnCreateUser", "#hfEdit", "", loc); }, 50);
+        setTimeout(function () { CheckPermissions("#btnCreateUser", "#hfEdit", "", loc); }, 0);
 
         //Count Role Grid Show
-        $('#all').click(function () { var role_type = ""; $('#hfStatusType').val(role_type); Datagrid(role_type, $("#hfroletype").val()); });
-        $('#administrator').click(function () { var role_type = 'administrator'; $('#hfStatusType').val(role_type); Datagrid(role_type, $("#hfroletype").val()); });
-        $('#accounting').click(function () { var role_type = 'accounting'; $('#hfStatusType').val(role_type); Datagrid(role_type, $("#hfroletype").val()); });
-        $('#author').click(function () { var role_type = 'author'; $('#hfStatusType').val(role_type); Datagrid(role_type, $("#hfroletype").val()); });
-        $('#modsquad').click(function () { var role_type = 'modsquad'; $('#hfStatusType').val(role_type); Datagrid(role_type, $("#hfroletype").val()); });
-        $('#shopmanager').click(function () { var role_type = 'shop manager'; $('#hfStatusType').val(role_type); Datagrid(role_type, $("#hfroletype").val()); });
-        $('#subscriber').click(function () { var role_type = 'subscriber'; $('#hfStatusType').val(role_type); Datagrid(role_type, $("#hfroletype").val()); });
-        $('#supplychainmanager').click(function () { var role_type = 'supplychainmanager'; $('#hfStatusType').val(role_type); Datagrid(role_type, $("#hfroletype").val()); });
-        $('#seo').click(function () { var role_type = 'wpseo_editor'; $('#hfStatusType').val(role_type); Datagrid(role_type, $("#hfroletype").val()); });
-        $('#norole').click(function () { var role_type = 'norole'; $('#hfStatusType').val(role_type); Datagrid(role_type, $("#hfroletype").val()); });
-        $('#contributor').click(function () { var role_type = 'contributor'; $('#hfStatusType').val(role_type); Datagrid(role_type, $("#hfroletype").val()); });
-        $('#editor').click(function () { var role_type = 'editor'; $('#hfStatusType').val(role_type); Datagrid(role_type, $("#hfroletype").val()); });
-        $('#seomanager').click(function () { var role_type = 'seo_manager'; $('#hfStatusType').val(role_type); Datagrid(role_type, $("#hfroletype").val()); });
+        //$('#all').click(function () { var role_type = ""; $('#hfStatusType').val(role_type); Datagrid(role_type, $("#hfroletype").val()); });
+        //$('#administrator').click(function () { var role_type = 'administrator'; $('#hfStatusType').val(role_type); Datagrid(role_type, $("#hfroletype").val()); });
+        //$('#accounting').click(function () { var role_type = 'accounting'; $('#hfStatusType').val(role_type); Datagrid(role_type, $("#hfroletype").val()); });
+        //$('#author').click(function () { var role_type = 'author'; $('#hfStatusType').val(role_type); Datagrid(role_type, $("#hfroletype").val()); });
+        //$('#modsquad').click(function () { var role_type = 'modsquad'; $('#hfStatusType').val(role_type); Datagrid(role_type, $("#hfroletype").val()); });
+        //$('#shopmanager').click(function () { var role_type = 'shop manager'; $('#hfStatusType').val(role_type); Datagrid(role_type, $("#hfroletype").val()); });
+        //$('#subscriber').click(function () { var role_type = 'subscriber'; $('#hfStatusType').val(role_type); Datagrid(role_type, $("#hfroletype").val()); });
+        //$('#supplychainmanager').click(function () { var role_type = 'supplychainmanager'; $('#hfStatusType').val(role_type); Datagrid(role_type, $("#hfroletype").val()); });
+        //$('#seoeditor').click(function () { var role_type = 'wpseo_editor'; $('#hfStatusType').val(role_type); Datagrid(role_type, $("#hfroletype").val()); });
+        //$('#norole').click(function () { var role_type = 'norole'; $('#hfStatusType').val(role_type); Datagrid(role_type, $("#hfroletype").val()); });
+        //$('#contributor').click(function () { var role_type = 'contributor'; $('#hfStatusType').val(role_type); Datagrid(role_type, $("#hfroletype").val()); });
+        //$('#editor').click(function () { var role_type = 'editor'; $('#hfStatusType').val(role_type); Datagrid(role_type, $("#hfroletype").val()); });
+        //$('#seomanager').click(function () { var role_type = 'seo_manager'; $('#hfStatusType').val(role_type); Datagrid(role_type, $("#hfroletype").val()); });
+
+        $('a').click(function () {
+            var role_type = $(this).attr("id");
+            if (role_type === "seoeditor") {
+                role_type = "wpseo_editor";
+            } else if (role_type === "seomanager") {
+                role_type = "seo_manager";
+            } else if (role_type === "all") {
+                role_type = "";
+            } else if (role_type === "shopmanager") {
+                role_type = "shopmanager";
+            }
+
+            console.log(role_type);
+            $('#hfStatusType').val(role_type);
+            Datagrid(role_type, $("#hfroletype").val());
+        });
+        
         //Count Role Grid End
     });
+
+    //function showData(ur) {
+    //    console.log(ur);
+    //    //var role_type = ur;
+    //    //console.log(role_type);
+    //    $('#hfStatusType').val(role_type);
+    //    Datagrid(role_type, $("#hfroletype").val());
+    //}
+
+   
 
     //CheckBoxes
     $('#checkAll').click(function () {

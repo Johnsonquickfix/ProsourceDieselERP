@@ -12,6 +12,7 @@
     using System.Configuration;
     using System.Text.RegularExpressions;
     using recaptcha;
+    using Newtonsoft.Json;
 
     public class AccountAPIController : Controller
     {
@@ -196,9 +197,13 @@
                 {
                     row = new Dictionary<String, Object>();
                     row.Add("id", dr["menu_id"]);
+                    row.Add("add", dr["add_"]);
+                    row.Add("edit", dr["edit_"]);
+                    row.Add("delete", dr["delete_"]);
                     row.Add("text", dr["menu_name"]);
                     if (dr["menu_url"].ToString().Trim() != "#")
                         row.Add("url", dr["menu_url"]);
+
                     row.Add("urlType", "none");
                     row.Add("targetType", "iframe-tab");
                     row.Add("level", dr["level"]);
@@ -222,6 +227,9 @@
             {
                 row = new Dictionary<String, Object>();
                 row.Add("id", dr["menu_id"]);
+                row.Add("add", dr["add_"]);
+                row.Add("edit", dr["edit_"]);
+                row.Add("delete", dr["delete_"]);
                 row.Add("text", dr["menu_name"]);
                 if (dr["menu_url"].ToString().Trim() != "#")
                     row.Add("url", dr["menu_url"]);
@@ -236,6 +244,18 @@
                 list.Add(row);
             }
             return list;
+        }
+
+        public JsonResult getUserPermissions(LoginModel model)
+        {
+            string result = string.Empty;
+            try
+            {
+                DataTable dt = Users.GetPermissions(CommanUtilities.Provider.GetCurrent().UserType,model.menu_url);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
         }
 
         [HttpPost]

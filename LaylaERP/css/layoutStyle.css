@@ -743,12 +743,28 @@ body table.dataTable tr.selected td.select-checkbox:before, body table.dataTable
 
 #userslist th {
 }
-
-table.dataTable thead .sorting:before, table.dataTable thead .sorting:after, table.dataTable thead .sorting_asc:before, table.dataTable thead .sorting_asc:after, table.dataTable thead .sorting_desc:before, table.dataTable thead .sorting_desc:after, table.dataTable thead .sorting_asc_disabled:before, table.dataTable thead .sorting_asc_disabled:after, table.dataTable thead .sorting_desc_disabled:before, table.dataTable thead .sorting_desc_disabled:after {
-    top: 50%;
-    bottom: auto;
-    transform: translateY(-50%);
+#saveForm .box-body.with-border {
+    border-bottom: 1px solid #f4f4f4;
 }
+#saveForm .box-body.with-border .lbl-space {
+    margin: 0px 3px;
+}
+#saveForm .box-body.with-border h5 span {
+    display: inline-block;
+    margin: 0px 5px;
+}
+
+#saveForm .box-body.with-border label {
+    margin: 0px;
+}
+#saveForm .box-body.with-border h5{display:flex; flex-wrap:wrap; align-items:center;
+    margin: 0px;
+}
+    table.dataTable thead .sorting:before, table.dataTable thead .sorting:after, table.dataTable thead .sorting_asc:before, table.dataTable thead .sorting_asc:after, table.dataTable thead .sorting_desc:before, table.dataTable thead .sorting_desc:after, table.dataTable thead .sorting_asc_disabled:before, table.dataTable thead .sorting_asc_disabled:after, table.dataTable thead .sorting_desc_disabled:before, table.dataTable thead .sorting_desc_disabled:after {
+        top: 50%;
+        bottom: auto;
+        transform: translateY(-50%);
+    }
 
 .pagination > .active > a, .pagination > .active > a:focus, .pagination > .active > a:hover, .pagination > .active > span, .pagination > .active > span:focus, .pagination > .active > span:hover {
     background: #3c8dbc
@@ -758,7 +774,7 @@ table.dataTable thead .sorting:after, table.dataTable thead .sorting_asc:after, 
     right: 12px;
 }
 
-#dtdata td:first-child, .check-table th:first-child {
+#dtdata td:first-child, .check-table th:first-child, .check-table td:first-child {
     text-align: center;
     position: relative;
 }
@@ -1373,7 +1389,7 @@ table.dataTable tbody > tr.selected td, table.dataTable tbody > tr > .selected {
     table-layout: auto;
 }
 
-.not-fixed thead th {
+.not-fixed thead th, .not-fixed tbody td {
     white-space: nowrap;
     padding-right: 20px !important;
 }
@@ -1396,26 +1412,24 @@ table.dataTable tbody > tr.selected td, table.dataTable tbody > tr > .selected {
     .neworder-section .table-blue th {
   }
 .neworder-section table.dataTable thead .sorting:before,
-.neworder-section table.dataTable thead .sorting:after,
-.neworder-section table.dataTable thead .sorting_asc:before,
-.neworder-section table.dataTable thead .sorting_asc:after,
-.neworder-section table.dataTable thead .sorting_desc:before,
-.neworder-section table.dataTable thead .sorting_desc:after,
-.neworder-section table.dataTable thead .sorting_asc_disabled:before,
-.neworder-section table.dataTable thead .sorting_asc_disabled:after,
-.neworder-section table.dataTable thead .sorting_desc_disabled:before,
-.neworder-section table.dataTable thead .sorting_desc_disabled:after {
-    top: 50%; margin-top:-4px;
-}
 body table.dataTable thead .sorting:before,
+.neworder-section table.dataTable thead .sorting:after,
 body table.dataTable thead .sorting:after,
+.neworder-section table.dataTable thead .sorting_asc:before,
 body table.dataTable thead .sorting_asc:before,
+.neworder-section table.dataTable thead .sorting_asc:after,
 body table.dataTable thead .sorting_asc:after,
+.neworder-section table.dataTable thead .sorting_desc:before,
 body table.dataTable thead .sorting_desc:before,
+.neworder-section table.dataTable thead .sorting_desc:after,
 body table.dataTable thead .sorting_desc:after,
+.neworder-section table.dataTable thead .sorting_asc_disabled:before,
 body table.dataTable thead .sorting_asc_disabled:before,
+.neworder-section table.dataTable thead .sorting_asc_disabled:after,
 body table.dataTable thead .sorting_asc_disabled:after,
+.neworder-section table.dataTable thead .sorting_desc_disabled:before,
 body table.dataTable thead .sorting_desc_disabled:before,
+.neworder-section table.dataTable thead .sorting_desc_disabled:after,
 body table.dataTable thead .sorting_desc_disabled:after {
     top: 50%;
     margin-top: -4px;
@@ -1433,7 +1447,7 @@ body table.dataTable thead .sorting_desc_disabled:after {
 
 @media(max-width:1000px) {
     .feentax-section .table-blue {
-    width:1100px !important;
+        width: 1100px !important;
     }
     .export-section .table-blue {
         width: 1100px !important;
@@ -1646,42 +1660,197 @@ overflow-x: auto !important;
     width: auto;
 }
 .modal-lg.modal-1040 {
-    width: 1040px; max-width:100%;
+    width: 1040px; max-width:calc(100% - 20px);
 }
 .table-design.not-fixed.popuptable th,
 .table-design.not-fixed.popuptable td {
     padding-right:20px !important;
 }
-.nowrap-row {
-display:flex;}
+.nowrap-row {display:flex;}
 .nowrap-row .col-md-4,
 .nowrap-row .col-md-8 {
     width: auto;
 }
-#radtype + label { margin-left:10px; margin-right:0px !important;   
-    display: inline-flex;
-    padding: 3px 35px 3px 20px;
-    align-items: center;
-    color: #4f4f4f;
-    border: 1px solid #767676;
-    border-radius: 2px; font-weight:400; position:relative;
+.dashboard-order-list .box-header > .box-tools {
+    display:flex;
 }
-#radtype {display:none;
-visibility:hidden; opacity:0;}
-#radtype + label:after {
-    content: "";
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    margin-top: -9px;
-    width: 18px;
-    height: 18px;
-    border: 2px solid #d5d5d5;
-    border-radius: 100%;
-}
-    #radtype:checked + label:after {
-        background: #3c8dbc;
-        border-color: #3c8dbc;
+.btn-span {
+display:flex;}
+    .btn-span .btn {
+        margin-left: 5px;
     }
+.dashboard-order-list .box-title {
+    margin: 0px auto 0px 0px !important;
+}
+.radtype_span {
+    margin: -5px 73px 0px 0px;
+}
+.dashboard-order-list .box-header {display:flex;}
+[name="strValue1"] + label {
+margin-bottom: 0px;
+cursor: pointer;
+margin-left: 1px;
+margin-right: 0px !important;
+display: inline-flex;
+padding: 4px 35px 3px 20px;
+align-items: center;
+color: #fff;
+background: #3c8dbc;
+border: 1px solid #367fa9;
+border-radius: 3px;
+font-weight: 400;
+position: relative;
+}
+[name="strValue1"] {
+display: none;
+visibility: hidden;
+opacity: 0;
+}
+[name="strValue1"] + label:after {
+content: "";
+position: absolute;
+right: 10px;
+top: 50%;
+margin-top: -7.5px;
+width: 15px;
+height: 15px;
+border: 2px solid #fff;
+border-radius: 100%;
+}
+[name="strValue1"]:checked + label:after {
+background: #fff;
+}
+.table-blue.table.check-table {
+    table-layout: initial;
+}
 .dashboard-order-list .box.box-primary {
-margin:0px -15px; width:auto;}
+    width: auto;
+}
+.calender-board iframe {
+    width: 100% !important;
+    display: block;
+    border: 0px !important;
+    height: 420px;
+}
+.calender-board {display:flex; height:100%; width:100%;}
+.box-calender-dash {
+    flex: 1;
+    max-height: 395px;
+    overflow: hidden;
+}
+.table-design .table-blue td, .table-design table td {
+    font-size: 13px;
+}
+.chat-box-dash.collapsed-box .slimScrollDiv {display:none;}
+.dash-drop-menu {
+height:190px; overflow:auto;}
+.li-hr {
+border-top:1px solid #eee; margin-top:8px; margin-bottom:8px;}
+@media(max-width:1000px) {
+    .manage-user-section .table-blue {
+    width:1100px !important;}
+    [name="strValue1"] + label {
+        padding-left: 12px;
+    }
+    .dash-table .table-blue {
+        width: 700px;
+        max-width: initial;
+    }
+}
+@media(max-width:950px) {
+    .manage-user-section table.table-blue thead th {
+        width: 150px !important;
+    }
+
+        .manage-user-section table.table-blue thead th:first-child {
+            width: 60px !important;
+        }
+
+        .manage-user-section table.table-blue thead th:nth-child(2) {
+            width: 100px !important;
+        }
+
+        .manage-user-section table.table-blue thead th:nth-child(4) {
+            width: 230px !important;
+        }
+
+    .manage-user-section #dtdata_wrapper .row:first-child + .row {
+        margin-left: 0px;
+        margin-right: 0px;
+    }
+
+        .manage-user-section #dtdata_wrapper .row:first-child + .row .col-sm-12 {
+            padding-left: 0px;
+            padding-right: 0px;
+            overflow-x: auto;
+        }
+}
+@media(max-width:767px) {
+     #dtdata_wrapper > .row:first-child {display: flex;align-items: center;}
+        #dtdata_wrapper > .row:first-child .col-md-6,
+        #dtdata_wrapper > .row:first-child .col-sm-6 {font-size: 12px;}
+     div.dataTables_wrapper div.dataTables_filter input {width: 95px !important;}
+     #dtdata_wrapper > .row:first-child .col-sm-6:first-child,
+     #dtdata_wrapper > .row:first-child .col-md-6:first-child {margin-right: auto;}
+    .dashboard-order-list table.table-blue {table-layout: initial;}
+    .dashboard-order-list table.table-blue thead th {white-space: nowrap; min-width: 100px;}
+    .dashboard-order-list table.table-blue thead th:nth-child(2) {min-width: 150px;}
+    /******/
+    .customer-section .table-blue {
+    width:1400px !important;}
+    .main-header {
+    position:relative;}
+    .checkout-box-total .form-group label {
+    margin-bottom:0px;}
+    .checkout-box-total .form-group {
+        display: flex;
+        align-items: center;
+    }
+    .neworder-section .box-sections .form-group {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+}
+@media(max-width:450px) {
+    span.radtype_span {margin: 8px 0px 0px 0px; width: 100%;}
+    .dashboard-order-list .box-header {flex-wrap:wrap;}
+    .calender-board iframe {height:350px;}
+    .box-calender-dash {max-height:325px;}
+    /**erp*/
+    .user-top-section .tablenav .actions {
+        width: 100%;
+        display: flex;
+    }
+    .user-top-section .tablenav .actions > * {
+        flex: 1;
+    }
+    .user-top-section .tablenav .actions select {
+        flex: 2;
+        max-width: initial;
+        width: auto;
+    }
+    .dashboard-dropy {
+        flex-wrap: wrap;
+        position: relative;
+    }
+    .dashboard-dropy .col-xs-6 {width:100%;}
+    .col-drop-dash {position:absolute; right:0px; top:17px;}
+    .page-heading .sub-heading {margin-top: 10px;}
+    .manage-wig-dash {padding: 4px 15px;}
+    #saveForm .box-body.with-border h5 {line-height: 1.5;}
+    .chat-box-dash .filename {margin-bottom: 5px !important;}
+    div.dataTables_wrapper div.dataTables_filter input {width: 80px !important;}
+    .form-user-role #btnAddRole, .form-user-role #btnApprove {
+        width: 100%;
+    }
+    #billModal .modal-body > .nowrap-row {
+    flex-wrap:wrap;}
+        #billModal .modal-body > .nowrap-row > div {
+        width:100%;}
+            #billModal .modal-body > .nowrap-row > div:first-child {
+            margin-bottom:8px;}
+    #btnSelectDefaltAddress {
+    width:100%;}
+    }
+

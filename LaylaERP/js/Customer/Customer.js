@@ -222,7 +222,9 @@ function dataGridLoad() {
             {
                 'data': 'id', sWidth: "8%",
                 'render': function (id, type, full, meta) {
-                    return '<a href="../Customer/NewUser/' + id + '"><i class="glyphicon glyphicon-pencil"></i></a>'
+                    if ($('#hfEdit').val() == "1")
+                        return '<a href="../Customer/NewUser/' + id + '"><i class="glyphicon glyphicon-pencil"></i></a>'
+                    else return "";
                 }
             }
         ]

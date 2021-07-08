@@ -29,7 +29,7 @@ button, input, select, textarea, h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5
 .layla-skin .main-header .sidebar-toggle .icon-bar {
     display: block;
     position: relative;
-    width: 35px;
+    width: 30px;
     height: 2px;
     border-radius: 1px;
     background: #ff4100;
@@ -470,7 +470,43 @@ div#resetpassword {
     float: right !important;
 }
 @media(max-width:767px) {
-    .user-menu .fa-user {
-    margin:0px !important;
+    .layla-skin .navbar-custom-menu .navbar-nav li a i {
+    color:#ff4100; font-size:20px;
     }
+    .navbar-custom-menu > .navbar-nav > li > .dropdown-menu {
+        margin-top:0px; right:0px;
+    }
+    .user-menu .fa-user {
+        margin: 0px !important;
+    }
+    .main-header > .logo {
+        position: absolute;
+        left: 50%;
+        top: 0px;
+        transform: translateX(-50%);width:auto; z-index:9999;
+    }
+    .fixed .content-wrapper, .fixed .right-side {
+        padding-top: 50px;
+    }
+    .main-header .user-menu + li {
+    display:none;}
+}
+
+
+html, body, body > .wrapper {
+    height: 100% !important;
+}
+#content-wrapper {
+    height: calc(100% - 40px) !important;
+    min-height: initial !important;
+}
+.content-iframe {
+height:calc(100% - 40px);}
+    .content-iframe #tab-content, .content-iframe #tab-content .tab-pane {
+    height:100%;}
+    .content-iframe .tab_iframe {
+    height:100% !important; min-height:initial !important;}
+@media(max-width:1000px) {
+    .content-iframe {
+    height:100%;}
 }

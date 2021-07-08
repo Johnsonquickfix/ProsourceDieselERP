@@ -4,8 +4,8 @@ function GetUsersCount() {
     $.ajax({
         type: "POST", url: '/Users/GetUsersCount', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
         success: function (result) {
-            var data = JSON.parse(result); 
-            if (data.length > 0) { 
+            var data = JSON.parse(result);
+            if (data.length > 0) {
                 $('#all').find(".count").text(number_format(data[0].AllUser));
                 $('#accounting').find(".count").text(number_format(data[0].Accounting));
                 $('#administrator').find(".count").text(number_format(data[0].Administrator));
@@ -26,8 +26,8 @@ function GetUsersCount() {
     });
 }
 function Datagrid(role_type, type) {
-   // var type = "Accounting";     
-    var columnDefs = [        
+    // var type = "Accounting";     
+    var columnDefs = [
     ]
 
     if (type.toUpperCase() == "ADMINISTRATOR") {
@@ -41,7 +41,7 @@ function Datagrid(role_type, type) {
             {
                 "targets": [6],
                 "visible": false
-            },      
+            },
         ]
     }
     var id;
@@ -70,18 +70,20 @@ function Datagrid(role_type, type) {
             { 'data': 'phone', 'sWidth': "15%" },
             { 'data': 'address', 'sWidth': "30%" },
             {
-                'data': 'my', 'sWidth': "22%", 
+                'data': 'my', 'sWidth': "22%",
 
             },
             {
                 'data': 'ID', sWidth: "8%",
                 'render': function (ID, type, full, meta) {
-                    return '<a href="javascript:void(0);" onClick="EditUser(' + ID+')"><i class="glyphicon glyphicon-pencil"></i></a>'
+                    if ($('#hfEdit').val() == "1")
+                        return '<a href="javascript:void(0);" class="editbutton" onClick="EditUser(' + ID + ')"><i class="glyphicon glyphicon-pencil"></i></a>'
+                    else return "";
                 }
             }
         ],
-       
-        columnDefs:  columnDefs,
+
+        columnDefs: columnDefs,
         "order": [[1, 'desc']],
         initComplete: function () {
             var column = this.api().column(4);
@@ -264,7 +266,7 @@ function UpdateCustomerStatus() {
         },
     })
 }
- 
+
 function changeRole(ID) {
     user_status = $("#new_role").val();
     var obj = { strVal: ID, user_status: user_status };
@@ -324,7 +326,7 @@ function Revokerole(ID) {
         dataType: "json",
         success: function (data) {
             if (data.status == true) {
-                swal('Alert!', data.message, 'success').then((result) => { GetUsersCount(); var role_type = $('#hfStatusType').val(); Datagrid(role_type, $("#hfroletype").val());});
+                swal('Alert!', data.message, 'success').then((result) => { GetUsersCount(); var role_type = $('#hfStatusType').val(); Datagrid(role_type, $("#hfroletype").val()); });
             }
             else {
                 swal('Alert!', data.message, 'error');

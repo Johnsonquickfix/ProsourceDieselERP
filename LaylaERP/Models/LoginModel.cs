@@ -22,6 +22,8 @@
 
         public string ConfirmPassword { get; set; }
         public int roleid { get; set; }
+        public int menu_id { get; set; }
+        public string menu_url { get; set; }
     }
     public class ActivityLogModel
     {

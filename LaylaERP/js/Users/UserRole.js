@@ -41,7 +41,8 @@ function Singlecheck() {
 
 //Give Permission
 $('#btnApprove').click(function () {
-    var nodes = $('#tt').tree('getChecked');
+    //var nodes = $('#tt').tree('getChecked');
+    var nodes = $('#tt').tree('getChecked', ['checked', 'indeterminate']);
     var addnodes = ''; var id = ''; var addid = ''; var editid = ''; var deleteid = '';
 
     for (var i = 0; i < nodes.length; i++) {
@@ -214,6 +215,7 @@ function collapseAll() {
 
 $('#checkAdd').click(function () {
 
+    //var nodes = $('#tt').tree('getChecked', ['checked', 'unchecked']);
     var nodes = $('#tt').tree('getChecked', ['checked', 'unchecked']);
     var isChecked = $('#checkAdd').prop("checked");
     for (var i = 0; i < nodes.length; i++) {

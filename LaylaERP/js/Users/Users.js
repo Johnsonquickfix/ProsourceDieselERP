@@ -6,6 +6,7 @@ function GetUsersCount() {
         type: "POST", url: '/Users/GetUsersCount', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
         success: function (result) {
             var data = JSON.parse(result);
+            console.log(data);
             if (data.length > 0) {
                 $('#all').find(".count").text(number_format(data[0].AllUser));
                 $('#accounting').find(".count").text(number_format(data[0].Accounting));

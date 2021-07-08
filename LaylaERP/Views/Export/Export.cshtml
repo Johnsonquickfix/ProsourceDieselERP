@@ -32,7 +32,7 @@
                 <div id="poststuff" class="woocommerce-reports-wide">
                     <div class="box box-primary">
                         <div class="box-header">
-                            <table id="exportdata" class="table-blue table table-bordered check-table" style="width:100%;">
+                            <table id="exportorderdata" class="table-blue table table-bordered check-table" style="width:100%;">
                                 <thead class="thead-dark">
                                     <tr>
                                         <th><input type="checkbox" class="selectAll" name="selectAll" value="all"><label></label></th>
@@ -56,6 +56,10 @@
                             <span>From</span><input type="text" name="fromdateusers" id="fromdateusers" />
                             <span>To</span><input type="text" name="todateusers" id="todateusers" />
                             <input type="button" id="btnusers" class="button" value="Go" />&nbsp;&nbsp;
+                            <select name="new_role" id="new_role" style="width:initial">
+                                <option value="">Choose role</option>
+                            </select>
+                            <input type="button" name="changeit" id="changeit" class="button" value="Go"/>
                             <input type="button" id="btnviewusers" class="button" value="Refresh" />
                         </div>
                     </div>
@@ -63,7 +67,7 @@
                 <div id="poststuff" class="woocommerce-reports-wide">
                     <div class="box box-primary">
                         <div class="box-header">
-                            <table id="exportusersdata" class="table-blue table table-bordered check-table display" style="width:100%;">
+                            <table id="exportuserdata" class="table-blue table table-bordered check-table display" style="width:100%;">
                                 <thead>
                                     <tr>
                                         <th><input type="checkbox" class="selectAllUsers" name="selectAllUsers" value="all"><label></label></th>
@@ -94,7 +98,7 @@
                 <div id="poststuff" class="woocommerce-reports-wide">
                     <div class="box box-primary">
                         <div class="box-header">
-                            <table class="table-blue table table-bordered check-table display" id="exportcustomersdata" style="width:100%;">
+                            <table class="table-blue table table-bordered check-table display" id="exportcustomerdata" style="width:100%;">
                                 <thead>
                                     <tr>
                                         <th style="width:5%;"><input type="checkbox" class="selectAllCustomers" name="selectAllCustomers" value="all"><label></label></th>
@@ -102,7 +106,7 @@
                                         <th style="width:15%;">Name</th>
                                         <th style="width:22%;">Email</th>
                                         <th style="width:10%;">Status</th>
-                                        <th style="width:13%;">Phone</th>
+                                        <th style="width:13%;">Phone Number</th>
                                         <th style="width:10%;">Date</th>
                                     </tr>
                                 </thead>
@@ -111,11 +115,12 @@
                     </div>
                 </div>
             </div><!--end tab three-->
+
         </div>
     </div>
 </div>
 
-@section scripts{
+
 
     <script type="text/javascript">
         $(document).ready(function () {
@@ -221,61 +226,53 @@
             //})
 
             $("#btnvieworders").click(function () { DatagridOrder(); });
-            $("#btnviewusers").click(function () { DatagridUsers(); });
+            $("#btnviewusers").click(function () { $("#new_role").val(""); DatagridUsers(); });
             $("#btnviewcustomers").click(function () { DatagridCustomers(); });
 
             $(document).on("click", "tbody .select-checkbox", function (t) {
                 t.preventDefault();
-                var tRow = $('#exportdata').DataTable().row({ selected: false }).length; console.log(tRow);
+                var tRow = $('#exportorderdata').DataTable().row({ selected: false }).length; console.log(tRow);
                 if (tRow > 0)
                     $(".selectAll").prop('checked', false);
                 else
                     $(".selectAll").prop('checked', true);
 
-                var tRowuser = $('#exportusersdata').DataTable().row({ selected: false }).length; console.log(tRowuser);
+                var tRowuser = $('#exportuserdata').DataTable().row({ selected: false }).length; console.log(tRowuser);
                 if (tRowuser > 0)
                     $(".selectAllUsers").prop('checked', false);
                 else
                     $(".selectAllUsers").prop('checked', true);
 
-                var tRowcus = $('#exportcustomersdata').DataTable().row({ selected: false }).length; console.log(tRowcus);
+                var tRowcus = $('#exportcustomerdata').DataTable().row({ selected: false }).length; console.log(tRowcus);
                 if (tRowcus > 0)
                     $(".selectAllCustomers").prop('checked', false);
                 else
                     $(".selectAllCustomers").prop('checked', true);
 
             });
+
+            $("#changeit").click(function () {
+                DatagridUsers();
+            });
+
+            $.get('/Export/GetUserRoles', function (data) {
+                var items = "";
+                $.each(data, function (index, value) {
+                    items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#new_role");
+                })
+            });
         });
 
         //-------------Order DataGrid Start----------------
-        $('#selectAll').click(function () {
-            // alert(1);
-            var isChecked = $(this).prop("checked");
-            $('#exportdata tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
-        });
-
-        function Singlecheck() {
-            var isChecked = $('#CheckSingle').prop("checked");
-            var isHeaderChecked = $("#selectAll").prop("checked");
-            if (isChecked == false && isHeaderChecked)
-                $("#selectAll").prop('checked', isChecked);
-
-            else {
-                $('#exportdata tr:has(td)').find('input[type="checkbox"]').each(function () {
-                    if ($(this).prop("checked") == false)
-                        isChecked = false;
-                });
-                $("#selectAll").prop('checked', isChecked);
-            }
-        }
+       
 
         function DatagridOrder() {
             var from_date = $("#fromdate").val();
             var to_date = $("#todate").val();
             //var obj = { mydate: mydate };
-            $('#exportdata').DataTable({
+            $('#exportorderdata').DataTable({
                 "lengthMenu": [[10, 20, 50, 100], [10, 20, 50, 100]],
-                scrollX: true,
+                
                 destroy: true,
                 searching: false,
                 bAutoWidth: false,
@@ -291,20 +288,21 @@
                 "columns": [
 
                     { 'data': null, sWidth: "5%" },
-                    { 'data': 'order_id' },
+                    { 'data': 'order_id', title: 'Order Id', sWidth:"10%" },
                     {
-                        'data': 'order_created',
+                        'data': 'order_created', title: 'Order Date', sWidth:"10%" 
                         //'render': function (jsonDate) {
                         //    var date = new Date(parseInt(jsonDate.substr(6)));
                         //    var month = ("0" + (date.getMonth() + 1)).slice(-2);
                         //    return ("0" + date.getDate()).slice(-2) + '-' + month + '-' + date.getFullYear();
                         //}
+                       
                     },
-                    { 'data': 'customer_id' },
+                    { 'data': 'customer_id', title: 'Customer Id', sWidth:"10%" },
                     //{ 'data':'orderstatus' },
-                    { 'data': 'qty' },
-                    { 'data': 'subtotal' },
-                    { 'data': 'total' }
+                    { 'data': 'qty', title: 'Number Of Items', sWidth: "10%" },
+                    { 'data': 'subtotal', title: 'Subtotal', sWidth: "10%" },
+                    { 'data': 'total', title: 'Total', sWidth:"10%" }
 
                 ],
                 columnDefs: [{
@@ -335,14 +333,14 @@
                     //    extend: 'print',
                     //    className: 'button',
                     //    text: '<i class="fas fa-print"></i> Print'
-                        
+
                     //}
                 ],
 
             });
 
             //------------SELECT ALL CHEBOX-----------
-            var DT1 = $('#exportdata').DataTable();
+            var DT1 = $('#exportorderdata').DataTable();
             $(".selectAll").on("click", function (e) {
                 if ($(this).is(":checked")) {
                     DT1.rows().select();
@@ -358,8 +356,9 @@
         function DatagridUsers() {
             var fromdateusers = $("#fromdateusers").val();
             var todateusers = $("#todateusers").val();
-            $('#exportusersdata').DataTable({
-                scrollX: true,
+            var userrole = $("#new_role").val();
+            $('#exportuserdata').DataTable({
+                
                 destroy: true,
                 searching: false,
                 bAutoWidth: false,
@@ -367,19 +366,19 @@
                     "url": '/Export/UsersExport',
                     "type": 'POST',
                     "dataType": 'json',
-                    "data": { from_dateusers: fromdateusers, to_dateusers: todateusers }
+                    "data": { from_dateusers: fromdateusers, to_dateusers: todateusers, rolee: userrole }
                 },
                 "lengthMenu": [[10, 20, 50, 100], [10, 20, 50, 100]],
 
                 "columns": [
                     { 'data': null, sWidth: "5%" },
-                    { 'data': 'UID', sWidth: "10%" },
-                    { 'data': 'user_login', sWidth: "10%" },
-                    { 'data': 'user_email', sWidth: "25%" },
-                    { 'data': 'user_status', sWidth: "15%" },
-                    { 'data': 'my', sWidth: "20%" },
+                    { 'data': 'UID', title: 'ID',sWidth: "10%" },
+                    { 'data': 'user_login', title: 'Name', sWidth: "10%" },
+                    { 'data': 'user_email', title: 'Email', sWidth: "25%" },
+                    { 'data': 'user_status', title: 'Status', sWidth: "15%" },
+                    { 'data': 'my', title:'Role', sWidth: "20%" },
                     {
-                        'data': 'created_date', sWidth: "15%",
+                        'data': 'created_date', title:'Date', sWidth: "15%",
                         //'render': function (jsonDate) {
                         //    var date = new Date(parseInt(jsonDate.substr(6)));
                         //    var month = ("0" + (date.getMonth() + 1)).slice(-2);
@@ -421,7 +420,7 @@
             });
 
             //------------------SELECT ALL CHECKBOXES---------------
-            var DT2 = $('#exportusersdata').DataTable();
+            var DT2 = $('#exportuserdata').DataTable();
             $(".selectAllUsers").on("click", function (e) {
                 if ($(this).is(":checked")) {
                     DT2.rows().select();
@@ -436,8 +435,8 @@
         function DatagridCustomers() {
             var fromdatecustomers = $("#fromdatecustomers").val();
             var todatecustomers = $("#todatecustomers").val();
-            $('#exportcustomersdata').DataTable({
-                scrollX: true,
+            $('#exportcustomerdata').DataTable({
+                
                 destroy: true,
                 searching: false,
                 bAutoWidth: false,
@@ -497,7 +496,7 @@
 
             });
 
-            var DT3 = $('#exportcustomersdata').DataTable();
+            var DT3 = $('#exportcustomerdata').DataTable();
             $(".selectAllCustomers").on("click", function (e) {
                 if ($(this).is(":checked")) {
                     DT3.rows().select();
@@ -510,7 +509,7 @@
 
 
         //CheckBoxes
-      
+
 
         //----------------Customers DataGrid End-----------------
     </script>
@@ -547,4 +546,4 @@
         });
 
     </script>
-}
+ 

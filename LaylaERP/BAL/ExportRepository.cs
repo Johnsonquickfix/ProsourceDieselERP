@@ -15,8 +15,8 @@ namespace LaylaERP.BAL
     {
         public static List<ExportModel> usersexportlist = new List<ExportModel>();
         public static List<ExportModel> customersexportlist = new List<ExportModel>();
-
-        public static void ExportUsersDetails(string from_dateusers, string to_dateusers)
+        
+        public static void ExportUsersDetails(string from_dateusers, string to_dateusers, string rolee)
         {
             try
             {
@@ -35,6 +35,17 @@ namespace LaylaERP.BAL
                              + " (case when um.meta_value like '%contributor%' then 'SEO Contributor,' else '' end)) meta_value" +
                          " from wp_users, wp_usermeta um WHERE DATE(wp_users.user_registered)>='" + fromdateuser.ToString("yyyy-MM-dd") + "' and DATE(wp_users.user_registered)<='" + todateusers.ToString("yyyy-MM-dd") + "' and um.meta_key='wp_capabilities' And wp_users.ID=um.user_id And wp_users.ID IN (SELECT user_id FROM wp_usermeta WHERE meta_key = 'wp_capabilities' AND meta_value NOT LIKE '%customer%') ORDER BY ID DESC";
                 }
+                else if(!string.IsNullOrEmpty(rolee))
+                {
+                    sqlquery = "select ID, User_Image, user_login, user_status, DATE_FORMAT(wp_users.user_registered,'%M %d %Y') as created_date, if(user_status=0,'Active','InActive') as status,user_email,user_pass, " +
+                         "CONCAT((case when um.meta_value like '%administrator%' then 'Administrator,' else '' end),(case when um.meta_value like '%accounting%' then 'Accounting,' else '' end),"
+                             + " (case when um.meta_value like '%author%' then 'Author,' else '' end),(case when um.meta_value like '%modsquad%' then 'Mod Squad,' else '' end),"
+                             + " (case when um.meta_value like '%shop_manager%' then 'Shop Manager,' else '' end),(case when um.meta_value like '%subscriber%' then 'Subscriber,' else '' end),"
+                             + " (case when um.meta_value like '%supplychainmanager%' then 'Supply Chain Manager,' else '' end),(case when um.meta_value like '%wpseo_editor%' then 'SEO Editor,' else '' end),"
+                             + " (case when um.meta_value like '%editor%' then 'Editor,' else '' end),(case when um.meta_value like '%seo_manager%' then 'SEO Manager,' else '' end),"
+                             + " (case when um.meta_value like '%contributor%' then 'SEO Contributor,' else '' end)) meta_value" +
+                         " from wp_users, wp_usermeta um WHERE um.meta_value like '%" + rolee + "%' and um.meta_key='wp_capabilities' And wp_users.ID=um.user_id And wp_users.ID IN (SELECT user_id FROM wp_usermeta WHERE meta_key = 'wp_capabilities' AND meta_value NOT LIKE '%customer%') ORDER BY ID DESC";
+                }
                 else
                 {
                     sqlquery = "select ID, User_Image, user_login, user_status, DATE_FORMAT(wp_users.user_registered,'%M %d %Y') as created_date, if(user_status=0,'Active','InActive') as status,user_email,user_pass, " +
@@ -46,6 +57,7 @@ namespace LaylaERP.BAL
                             + " (case when um.meta_value like '%contributor%' then 'SEO Contributor,' else '' end)) meta_value" +
                         " from wp_users, wp_usermeta um WHERE um.meta_key='wp_capabilities' And wp_users.ID=um.user_id And wp_users.ID IN (SELECT user_id FROM wp_usermeta WHERE meta_key = 'wp_capabilities' AND meta_value NOT LIKE '%customer%') ORDER BY ID DESC";
                 }
+                //WHERE um.meta_value like '%" + rolee + "%'
                 usersexportlist.Clear();
                 DataSet ds1 = new DataSet();
 
@@ -278,11 +290,19 @@ namespace LaylaERP.BAL
 
         }
 
-        public static void myexport(string mydate)
+        public static DataTable GetUserRoles()
         {
-            string my = string.Empty;
-            my = mydate;
+            DataTable dtr = new DataTable();
+            try
+            {
+                string strquery = "select user_value, user_type from wp_user_classification where user_value is not null order by user_type";
+                dtr = SQLHelper.ExecuteDataTable(strquery);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dtr;
         }
+
 
     }
 }

@@ -31,10 +31,10 @@ namespace LaylaERP.Controllers
         }
 
         [HttpPost]
-        public JsonResult UsersExport(string from_dateusers, string to_dateusers)
+        public JsonResult UsersExport(string from_dateusers, string to_dateusers, string rolee)
         {
             //ExportRepository.myexport();
-            ExportRepository.ExportUsersDetails(from_dateusers, to_dateusers);
+            ExportRepository.ExportUsersDetails(from_dateusers, to_dateusers, rolee);
             var j = Json(new { data = ExportRepository.usersexportlist }, JsonRequestBehavior.AllowGet);
             j.MaxJsonLength = int.MaxValue;
             return j;
@@ -49,6 +49,29 @@ namespace LaylaERP.Controllers
             j.MaxJsonLength = int.MaxValue;
             return j;
             
+        }
+
+        public JsonResult GetUserRoles()
+        {
+            DataTable dt = new DataTable();
+            dt = BAL.ExportRepository.GetUserRoles();
+            List<SelectListItem> usertype = new List<SelectListItem>();
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                usertype.Add(new SelectListItem
+                {
+                   
+                    Value = dt.Rows[i]["user_value"].ToString(),
+                    Text = dt.Rows[i]["user_type"].ToString()
+
+                });
+            }
+            return Json(usertype, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult Export1()
+        {
+            return View();
         }
     }
 }

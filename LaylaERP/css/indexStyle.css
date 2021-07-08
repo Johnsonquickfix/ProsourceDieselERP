@@ -506,7 +506,28 @@ height:calc(100% - 40px);}
     height:100%;}
     .content-iframe .tab_iframe {
     height:100% !important; min-height:initial !important;}
+@media(max-width:1199px) {
+    .profile-dialog {
+        max-width: calc(100% - 20px);
+        margin: 10px auto;
+    }
+    .create-user-primary .select2-container {
+        max-width: 100%;
+        width: 100% !important;
+    }
+}
 @media(max-width:1000px) {
     .content-iframe {
     height:100%;}
+}
+@media(max-width:575px) {
+    .create-user-primary .box-header .col-sm-4 {
+        padding: 0px;
+    }
+    .create-user-primary .box-header .form-group {
+    display:flex; flex-direction:column;}
+    .create-user-primary .box-footer .text-right .pop-btn { padding:0px;
+    }
+    .create-user-primary .box-footer .text-right {display:flex; justify-content:space-between;
+    margin:0px;}
 }

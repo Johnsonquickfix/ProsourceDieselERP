@@ -529,8 +529,10 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Images\Customer.png" />
     <Content Include="Images\layla1-logo.png" />
     <Content Include="Images\layla32.png" />
+    <Content Include="Images\order.png" />
     <Content Include="Images\userprofile2.png" />
     <Content Include="js\app.js" />
     <Content Include="js\common.js" />

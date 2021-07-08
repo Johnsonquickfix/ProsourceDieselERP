@@ -1122,14 +1122,6 @@ button#btnGeneratePassword {
     flex-direction: column;
 }
 
-
-
-.table-row > div {
-    justify-content: center;
-}
-
-
-
 .table-row .table-row {
     width: 100%;
     flex: unset;
@@ -1444,7 +1436,8 @@ body table.dataTable thead .sorting_desc_disabled:after {
     padding-bottom: 0px;
 }
 
-
+.create-user-primary .form-group .select2-container {
+max-width:100%; width:100% !important;}
 @media(max-width:1000px) {
     .feentax-section .table-blue {
         width: 1100px !important;
@@ -1746,6 +1739,8 @@ background: #fff;
 height:190px; overflow:auto;}
 .li-hr {
 border-top:1px solid #eee; margin-top:8px; margin-bottom:8px;}
+.setting-section .nav-tabs-custom > .nav-tabs > li {margin-right:0px;
+}
 @media(max-width:1000px) {
     .manage-user-section .table-blue {
     width:1100px !important;}
@@ -1812,6 +1807,23 @@ border-top:1px solid #eee; margin-top:8px; margin-bottom:8px;}
         width: 100%;
     }
 }
+@media(max-width:600px) and (min-width:500px) {
+    .manage-user-section .tablenav, .customer-section .tablenav {
+        display: flex;
+        flex-wrap: wrap;
+        margin: 0px -5px;
+        width: auto;
+    }
+        .manage-user-section .tablenav .actions, .customer-section .tablenav .actions { margin:5px 0px;
+        width:50%; padding:0px 5px;display:flex;}
+        .manage-user-section .tablenav *, .customer-section .tablenav * {
+        flex:1;}
+        .manage-user-section .tablenav select, .customer-section .tablenav select {
+            flex: 2.5;
+            width: auto;
+            max-width: 100%;
+        }
+}
 @media(max-width:450px) {
     span.radtype_span {margin: 8px 0px 0px 0px; width: 100%;}
     .dashboard-order-list .box-header {flex-wrap:wrap;}
@@ -1820,7 +1832,7 @@ border-top:1px solid #eee; margin-top:8px; margin-bottom:8px;}
     /**erp*/
     .user-top-section .tablenav .actions {
         width: 100%;
-        display: flex;
+        display: flex; padding-right:0px;
     }
     .user-top-section .tablenav .actions > * {
         flex: 1;
@@ -1852,5 +1864,46 @@ border-top:1px solid #eee; margin-top:8px; margin-bottom:8px;}
             margin-bottom:8px;}
     #btnSelectDefaltAddress {
     width:100%;}
+    a.billinfo {
+        float: right;
+        font-size: 14px;
+    }
+    .setting-section .nav-tabs-custom > .nav-tabs > li:not(.active) {
+        width: 100%;
+        border: 1px solid #d2d6de;
+        margin-bottom: 5px;
+    }
+    .setting-section .nav-tabs-custom > .nav-tabs > li.active {
+        width: 100%;
+        margin-bottom: 5px;
+        border-bottom: 1px solid #d2d6de;
+        border-left: 1px solid #d2d6de;
+        border-right: 1px solid #d2d6de;
+    }
+    .setting-section .nav-tabs-custom .tab-content {
+    padding-left:0px; padding-right:0px;}
+    .setting-section .nav-tabs-custom > .nav-tabs {
+    border:0px;}
+    .setting-section .nav-tabs-custom li a {
+        background:#f1f1f1;
+    }
+    .setting-section .nav-tabs-custom li.active a {
+        background:#f9f9f9;
+    }
+    .activity-section .user-top-section .tablenav .setting-bulk {
+        display: flex;
+        flex-direction: column;
+    }
+    .activity-section .user-top-section .select2.select2-container {
+        margin-right: 0px;
+    }
+    .activity-section .user-top-section .setting-bulk > * {
+        margin-right:0px; margin-bottom:10px;
+    }
+    .activity-section .user-top-section .select2.select2-container, .activity-section .user-top-section .button {
+        width: 100% !important;
+    }
+    .pagination > li {
+    margin-top:10px;}
     }
 

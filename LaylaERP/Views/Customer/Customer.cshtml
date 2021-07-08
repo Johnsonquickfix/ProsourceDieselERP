@@ -13,7 +13,7 @@
         </h1>
     </section>*@
 <div class="page-title">
-    <h2 class="page-heading">Customers</h2><a href="../../Customer/NewUser" class="btn btn-danger">Add New User</a>
+    <h2 class="page-heading">Customers</h2><a href="../../Customer/NewUser" class="btn btn-danger" id="btnAddUser">Add New User</a>
 </div>
 <section class="content section-content table-design customer-section">
     <div class="user-top-section">
@@ -71,13 +71,20 @@
             </div>
         </div>
     </div>
+    <input type="hidden" id="hfEdit" />
 </section>
 
 <script src="@Url.Content("~/js/Customer/Customer.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+<script src="@Url.Content("~/js/Users/RolePermission.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 <script>
     $(document).ready(function () {
+       
+
+        var loc = window.location.pathname;
+       
+
         $("#btnSearch").click(function () { dataGridLoad(); return false; });
-        setTimeout(function () { dataGridLoad(); }, 50);
+        setTimeout(function () { dataGridLoad(); CheckPermissions("#btnAddUser", "#btnAction", "", loc);}, 50);
     });
 
     $('#checkAll').click(function () {

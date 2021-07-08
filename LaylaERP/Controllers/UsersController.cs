@@ -128,7 +128,7 @@ namespace LaylaERP.Controllers
                 });
             }
             return Json(usertype, JsonRequestBehavior.AllowGet);
-        }
+        } 
 
         public JsonResult GetMenuNames()
         {

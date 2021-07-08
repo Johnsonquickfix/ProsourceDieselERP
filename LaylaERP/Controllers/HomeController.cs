@@ -117,7 +117,7 @@
             return View();
         }
 
-        public ActionResult Index()
+        public ActionResult Index(string strValue1,string strValue2)
         {
             clsUserDetails model = new clsUserDetails();
           
@@ -126,10 +126,13 @@
             //long id = 0;
             //id = ViewBag.id;
             //if (id > 0)
-            //{
-                GetUserDetails(model, CommanUtilities.Provider.GetCurrent().UserID);
-            //}
-            //--------------Code End----------
+            //{GetUsers()
+            GetUserDetails(model, CommanUtilities.Provider.GetCurrent().UserID);
+           // if (!string.IsNullOrEmpty(modeldetails.strValue2))
+            GetUsersDetails(strValue1, strValue2);
+            ViewBag.Type = strValue1;
+            //else
+            //  GetUsers();
             return View();
         }
         public ActionResult Dashboard()
@@ -185,6 +188,98 @@
 
 
         }
+
+        public ActionResult GetUsers()
+        {
+            dynamic mymodel = new ExpandoObject();
+            DataTable dtusers = DashboardRepository.GetUsers();
+       
+            DataTable dtcustmer = DashboardRepository.GetCustomer();
+            DataTable dtorder = DashboardRepository.Getorder();
+            var resultusers = JsonConvert.SerializeObject(dtusers, Formatting.Indented);
+            var resulcustmer = JsonConvert.SerializeObject(dtcustmer, Formatting.Indented);
+            var resultorder = JsonConvert.SerializeObject(dtorder, Formatting.Indented); 
+            mymodel.Users = dtusers.AsEnumerable();
+            mymodel.Customer = dtcustmer.AsEnumerable();
+            mymodel.order = dtorder.AsEnumerable(); 
+            return View(mymodel);
+        }
+
+        public ActionResult GetUsersDetails(string strValue1, string strValue2)
+        {
+            dynamic mymodel = new ExpandoObject();
+            mymodel.Users = null;
+            mymodel.Customer = null;
+            mymodel.order = null;
+            if (!string.IsNullOrEmpty(strValue2))
+            {
+                if (strValue1 == "users")
+                {
+                    DataTable dtusers = DashboardRepository.GetUsersDetails(strValue2);
+                    var resultusers = JsonConvert.SerializeObject(dtusers, Formatting.Indented);
+                    mymodel.Users = dtusers.AsEnumerable();
+                    DataTable dtcustmer = DashboardRepository.GetCustomer();
+                    DataTable dtorder = DashboardRepository.Getorder();
+                    var resulcustmer = JsonConvert.SerializeObject(dtcustmer, Formatting.Indented);
+                    var resultorder = JsonConvert.SerializeObject(dtorder, Formatting.Indented);
+                    mymodel.Customer = dtcustmer.AsEnumerable();
+                    mymodel.order = dtorder.AsEnumerable();
+                }
+                else if (strValue1 == "customers")
+                {
+                    DataTable dtcustmer = DashboardRepository.GetCustomerDetails(strValue2);
+                    var resulcustmer = JsonConvert.SerializeObject(dtcustmer, Formatting.Indented);
+                    mymodel.Customer = dtcustmer.AsEnumerable();
+                    DataTable dtusers = DashboardRepository.GetUsers();
+                    DataTable dtorder = DashboardRepository.Getorder();
+                    var resultusers = JsonConvert.SerializeObject(dtusers, Formatting.Indented);
+                    var resultorder = JsonConvert.SerializeObject(dtorder, Formatting.Indented);
+                    mymodel.Users = dtusers.AsEnumerable();
+                    mymodel.order = dtorder.AsEnumerable();
+
+                }
+                else
+                {
+                    DataTable dtorder = DashboardRepository.GetorderDetails(strValue2);
+                    var resultorder = JsonConvert.SerializeObject(dtorder, Formatting.Indented);
+                    mymodel.order = dtorder.AsEnumerable();
+                    DataTable dtusers = DashboardRepository.GetUsers();
+                    DataTable dtcustmer = DashboardRepository.GetCustomer();
+                    var resultusers = JsonConvert.SerializeObject(dtusers, Formatting.Indented);
+                    var resulcustmer = JsonConvert.SerializeObject(dtcustmer, Formatting.Indented);
+                    mymodel.Users = dtusers.AsEnumerable();
+                    mymodel.Customer = dtcustmer.AsEnumerable();
+                }
+            }
+            else
+            {
+                DataTable dtusers = DashboardRepository.GetUsers();
+
+                DataTable dtcustmer = DashboardRepository.GetCustomer();
+                DataTable dtorder = DashboardRepository.Getorder();
+                var resultusers = JsonConvert.SerializeObject(dtusers, Formatting.Indented);
+                var resulcustmer = JsonConvert.SerializeObject(dtcustmer, Formatting.Indented);
+                var resultorder = JsonConvert.SerializeObject(dtorder, Formatting.Indented);
+                mymodel.Users = dtusers.AsEnumerable();
+                mymodel.Customer = dtcustmer.AsEnumerable();
+                mymodel.order = dtorder.AsEnumerable();
+                //model.strValue2 = "007armin";
+                //DataTable dtcustmer = DashboardRepository.GetCustomerDetails(model.strValue2);
+                //var resulcustmer = JsonConvert.SerializeObject(dtcustmer, Formatting.Indented);
+                //mymodel.Customer = dtcustmer.AsEnumerable();
+                //DataTable dtusers = DashboardRepository.GetUsers();
+                //DataTable dtorder = DashboardRepository.Getorder();
+                //var resultusers = JsonConvert.SerializeObject(dtusers, Formatting.Indented);
+                //var resultorder = JsonConvert.SerializeObject(dtorder, Formatting.Indented);
+                //mymodel.Users = dtusers.AsEnumerable();
+                //mymodel.order = dtorder.AsEnumerable();
+
+            }
+            return View(mymodel);
+            
+        }
+
+
         public ActionResult Gettotal(JqDataTableModel model)
         {
             DateTime startDate = DateTime.Now;

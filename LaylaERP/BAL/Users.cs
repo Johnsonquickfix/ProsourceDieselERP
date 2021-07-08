@@ -191,13 +191,28 @@
                     {
                     new MySqlParameter("@User_Type", UserType),
                 };
-                DT = SQLHelper.ExecuteDataTable("Select wuc.User_Type,wem.menu_id,wem.menu_code,wem.menu_name,wem.menu_url,wem.menu_icon,wem.parent_id, if(wem.parent_id is null, 0, 1) as  level  from wp_erprole_rest wer left join wp_erpmenus wem on wem.menu_id = wer.erpmenu_id inner join wp_user_classification wuc on wer.role_id = wuc.ID where User_Type = @User_Type;", para);
+                DT = SQLHelper.ExecuteDataTable("Select wuc.User_Type,wem.menu_id,wem.menu_code,wem.menu_name,wem.menu_url,wem.menu_icon,wem.parent_id,wer.add_,wer.edit_,wer.delete_, if(wem.parent_id is null, 0, 1) as  level  from wp_erprole_rest wer left join wp_erpmenus wem on wem.menu_id = wer.erpmenu_id inner join wp_user_classification wuc on wer.role_id = wuc.ID where User_Type = @User_Type;", para);
             }
             catch (Exception ex)
             { throw ex; }
             return DT;
         }
-
+        public static DataTable GetPermissions(string UserType, string menu_url)
+        {
+            DataTable DT = new DataTable();
+            try
+            {
+                MySqlParameter[] para =
+                    {
+                    new MySqlParameter("@User_Type", UserType),
+                     new MySqlParameter("@menu_url", menu_url)
+                };
+                DT = SQLHelper.ExecuteDataTable("Select wuc.User_Type,wem.menu_id,wem.menu_code,wem.menu_name,wem.menu_url,wem.menu_icon,wem.parent_id,wer.add_,wer.edit_,wer.delete_, if(wem.parent_id is null, 0, 1) as  level  from wp_erprole_rest wer left join wp_erpmenus wem on wem.menu_id = wer.erpmenu_id inner join wp_user_classification wuc on wer.role_id = wuc.ID where User_Type = @User_Type and menu_url=@menu_url;", para);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DT;
+        }
         //public static DataTable GetUserMenuAuth(long UserID)
         //{
         //    DataTable DT = new DataTable();

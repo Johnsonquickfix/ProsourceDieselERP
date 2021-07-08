@@ -513,6 +513,7 @@
     <Content Include="Content\easyui\images\tree_icons.png" />
     <Content Include="Content\easyui\images\validatebox_warning.png" />
     <Content Include="Content\easyui\jquery.easyui.min.js" />
+    <Content Include="Content\easyui\jquery.easyui.min1.js" />
     <Content Include="Content\fontawesome-all.min.css" />
     <Content Include="Content\img\flags%402x.png" />
     <Content Include="Content\img\flags.png" />
@@ -529,8 +530,10 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Images\Customer.png" />
     <Content Include="Images\layla1-logo.png" />
     <Content Include="Images\layla32.png" />
+    <Content Include="Images\order.png" />
     <Content Include="Images\userprofile2.png" />
     <Content Include="js\app.js" />
     <Content Include="js\common.js" />
@@ -539,6 +542,7 @@
     <Content Include="js\Marketing\Coupons.js" />
     <Content Include="js\Orders\NewOrder.js" />
     <Content Include="js\Orders\OrderHistory.js" />
+    <Content Include="js\Users\RolePermission.js" />
     <Content Include="js\Users\UserLogin.js" />
     <Content Include="js\Users\UserRole.js" />
     <Content Include="js\Users\Users.js" />

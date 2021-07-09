@@ -537,13 +537,11 @@
                                                             </td>
                                                         </tr>
                                                     }
-
                                                 </tbody>
                                             </table>
                                        }
                                          </div>
                                         </div>
-
                                     </div>
                                     <div class="col-sm-4">
                                         <div class="form-group">
@@ -567,7 +565,7 @@
                                                         <tr> <td>
                                                              <img src="~/Images/Customer.png" width="55" height="55"   class="">
                                                               </td>
-                                                            <td> @record["user_login"] <BR>
+                                                            <td><h5>@record["user_login"]</h5>
                                                                 @record["user_email"]
                                                       <a id="acustomer" href="javascript:;" onclick="addTabs({id:'16',title: 'Manage Customer',close: true,url: '/Customer/Customer?name=@record["user_login"]',urlType: 'none'});App.fixIframeCotent();"><i class="glyphicon glyphicon-eye-open"></i></a>
                                                             </td>
@@ -603,7 +601,7 @@
                                                         <tr> <td>
                                                              <img src="~/Images/order.png" width="55" height="55"   class="">
                                                               </td>
-                                                            <td> @record["chkorder"] <BR>
+                                                            <td><h5>@record["chkorder"]</h5>
                                                                 @record["date_created"]
                                                    <a id="aorder" href="javascript:;" onclick="addTabs({id:'8',title: 'Orders History',close: true,url: '/Orders/OrdersHistory?name=@record["chkorder"]',urlType: 'none'});App.fixIframeCotent();"><i class="glyphicon glyphicon-eye-open"></i></a>
                                                              

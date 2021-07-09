@@ -33,6 +33,10 @@ namespace LaylaERP.Controllers
         [HttpPost]
         public JsonResult UsersExport(string from_dateusers, string to_dateusers, string rolee)
         {
+            if(rolee=="")
+            {
+                rolee = "NULL";
+            }
             //ExportRepository.myexport();
             ExportRepository.ExportUsersDetails(from_dateusers, to_dateusers, rolee);
             var j = Json(new { data = ExportRepository.usersexportlist }, JsonRequestBehavior.AllowGet);
@@ -60,7 +64,6 @@ namespace LaylaERP.Controllers
             {
                 usertype.Add(new SelectListItem
                 {
-                   
                     Value = dt.Rows[i]["user_value"].ToString(),
                     Text = dt.Rows[i]["user_type"].ToString()
 

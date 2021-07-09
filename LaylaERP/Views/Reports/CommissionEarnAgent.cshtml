@@ -33,7 +33,7 @@
             <li><a href="#tab_2" data-toggle="tab">Commission Earned Agent</a></li>
         </ul>
 
-        <div class="tab-content">
+        <div class="tab-content commission-tab">
             <div class="tab-pane active" id="tab_1">
                 <input type="button" id="filtersrchexp" value="Show" class="button" />
                 <div id="poststuff" class="woocommerce-reports-wide">
@@ -300,6 +300,22 @@
     });
     jQuery(function ($) {
         $('[name="start_dateE"], [name="end_dateE"]').datepicker();
+    });
+    jQuery(function ($) {
+        function res() {
+        var ele = $('.agent-form-date'),
+            top1 = ele.offset().top,
+            left1 = ele.offset().left,
+            wid1 = ele.outerWidth(true),
+            left1 = left1 + wid1;
+        $('#filtersrchexp, #filtersrchexpE').css({
+            'left': left1, 'top':top1
+        });
+        }
+        res();
+        $(window).resize(function () {
+            res();
+        });
     });
 </script>
  

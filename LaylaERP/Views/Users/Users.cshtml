@@ -160,7 +160,7 @@
 
         //GetUsersCount();
         
-        setTimeout(function () { CheckPermissions("#btnCreateUser", "#hfEdit", "", loc); }, 0);
+        //setTimeout(function () { CheckPermissions("#btnCreateUser", "#hfEdit", "", loc); }, 0);
 
         //Count Role Grid Show
         //$('#all').click(function () { var role_type = ""; $('#hfStatusType').val(role_type); Datagrid(role_type, $("#hfroletype").val()); });
@@ -255,6 +255,7 @@
         ID = ID.replace(/,(?=\s*$)/, '');
         changeRole(ID);
     })
+
     //Grantrole
     $("#Grantrole").click(function () {
         var ID = "";

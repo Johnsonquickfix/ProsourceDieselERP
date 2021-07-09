@@ -109,28 +109,37 @@
                                 <input type="text" class="form-control" id="txtAddress2" value="@Model.address2" placeholder="Enter Your Address 1">
 
                             </div>
-                            <div class="form-group">
+                            @*<div class="form-group">
                                 <label for="exampleInputEmail1">City</label>
                                 <select class="form-control" id="txtCity">
                                     <option selected value="@Model.City">@Model.City </option>
                                 </select>
 
+                            </div>*@
+
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">City</label>
+                                <input type="text" class="form-control" id="txtCity" value="@Model.City">                                   
                             </div>
 
                         </div>
                         <div class="col-sm-4">
 
-                            <div class="form-group">
+                            @*<div class="form-group">
                                 <label for="exampleInputEmail1">State</label>
                                 <select class="form-control" id="txtState">
                                     <option selected value="@Model.State">@Model.State </option>
                                 </select>
 
+                            </div>*@
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">State</label>
+                                <input type="text" class="form-control" id="txtState" value="@Model.State">                                  
                             </div>
                             <div class="form-group">
-                                <label class="control-label" for="Post/Zip Code">Post/Zip Code</label>
+                                <label class="control-label" for="Post/Zip Code">Zip Code</label>
                                 <div class="">
-                                    <input type="text" id="txtPostCode" value="@Model.postcode" class="form-control" placeholder="Post/Zip Code">
+                                    <input type="text" id="txtPostCode" value="@Model.postcode" class="form-control" placeholder="Zip Code">
                                 </div>
                             </div>
 

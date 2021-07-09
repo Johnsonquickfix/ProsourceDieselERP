@@ -660,9 +660,9 @@ function getOrderInfo() {
 
                     //bind Product
                     getOrderItemList(oid);
-                    //if (data[0].status.trim() == "wc-pending") {
+                    if (data[0].status.trim() == "wc-pending") {
                         $('.box-tools').append('<a class="btn btn-danger" href="javascript:;" id="btnEditOrder"><i class="glyphicon glyphicon-edit"></i> Edit</a>');
-                    //}
+                    }
                 }
             },
             complete: function () { $("#loader").hide(); $('.billinfo').prop("disabled", true); },

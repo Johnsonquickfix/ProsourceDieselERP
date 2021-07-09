@@ -1,4 +1,31 @@
 ﻿var wc_users_params = [{ "name": "United States", "abbreviation": "US", "states": [{ "name": "Alabama", "abbreviation": "AL" }, { "name": "Alaska", "abbreviation": "AK" }, { "name": "American Samoa", "abbreviation": "AS" }, { "name": "Arizona", "abbreviation": "AZ" }, { "name": "Arkansas", "abbreviation": "AR" }, { "name": "California", "abbreviation": "CA" }, { "name": "Colorado", "abbreviation": "CO" }, { "name": "Connecticut", "abbreviation": "CT" }, { "name": "Delaware", "abbreviation": "DE" }, { "name": "District Of Columbia", "abbreviation": "DC" }, { "name": "Federated States Of Micronesia", "abbreviation": "FM" }, { "name": "Florida", "abbreviation": "FL" }, { "name": "Georgia", "abbreviation": "GA" }, { "name": "Guam", "abbreviation": "GU" }, { "name": "Hawaii", "abbreviation": "HI" }, { "name": "Idaho", "abbreviation": "ID" }, { "name": "Illinois", "abbreviation": "IL" }, { "name": "Indiana", "abbreviation": "IN" }, { "name": "Iowa", "abbreviation": "IA" }, { "name": "Kansas", "abbreviation": "KS" }, { "name": "Kentucky", "abbreviation": "KY" }, { "name": "Louisiana", "abbreviation": "LA" }, { "name": "Maine", "abbreviation": "ME" }, { "name": "Marshall Islands", "abbreviation": "MH" }, { "name": "Maryland", "abbreviation": "MD" }, { "name": "Massachusetts", "abbreviation": "MA" }, { "name": "Michigan", "abbreviation": "MI" }, { "name": "Minnesota", "abbreviation": "MN" }, { "name": "Mississippi", "abbreviation": "MS" }, { "name": "Missouri", "abbreviation": "MO" }, { "name": "Montana", "abbreviation": "MT" }, { "name": "Nebraska", "abbreviation": "NE" }, { "name": "Nevada", "abbreviation": "NV" }, { "name": "New Hampshire", "abbreviation": "NH" }, { "name": "New Jersey", "abbreviation": "NJ" }, { "name": "New Mexico", "abbreviation": "NM" }, { "name": "New York", "abbreviation": "NY" }, { "name": "North Carolina", "abbreviation": "NC" }, { "name": "North Dakota", "abbreviation": "ND" }, { "name": "Northern Mariana Islands", "abbreviation": "MP" }, { "name": "Ohio", "abbreviation": "OH" }, { "name": "Oklahoma", "abbreviation": "OK" }, { "name": "Oregon", "abbreviation": "OR" }, { "name": "Palau", "abbreviation": "PW" }, { "name": "Pennsylvania", "abbreviation": "PA" }, { "name": "Puerto Rico", "abbreviation": "PR" }, { "name": "Rhode Island", "abbreviation": "RI" }, { "name": "South Carolina", "abbreviation": "SC" }, { "name": "South Dakota", "abbreviation": "SD" }, { "name": "Tennessee", "abbreviation": "TN" }, { "name": "Texas", "abbreviation": "TX" }, { "name": "Utah", "abbreviation": "UT" }, { "name": "Vermont", "abbreviation": "VT" }, { "name": "Virgin Islands", "abbreviation": "VI" }, { "name": "Virginia", "abbreviation": "VA" }, { "name": "Washington", "abbreviation": "WA" }, { "name": "West Virginia", "abbreviation": "WV" }, { "name": "Wisconsin", "abbreviation": "WI" }, { "name": "Wyoming", "abbreviation": "WY" }] }, { "name": "Canada", "abbreviation": "CA", "states": [{ "name": "Alberta", "abbreviation": "AB" }, { "name": "British Columbia", "abbreviation": "BC" }, { "name": "Manitoba", "abbreviation": "MB" }, { "name": "New Brunswick", "abbreviation": "NB" }, { "name": "Newfoundland and Labrador", "abbreviation": "NL" }, { "name": "Northwest Territories", "abbreviation": "NT" }, { "name": "Nova Scotia", "abbreviation": "NS" }, { "name": "Nunavut", "abbreviation": "NU" }, { "name": "Ontario", "abbreviation": "ON" }, { "name": "Prince Edward Island", "abbreviation": "PE" }, { "name": "Quebec", "abbreviation": "QC" }, { "name": "Saskatchewan", "abbreviation": "SK" }, { "name": "Yukon Territory", "abbreviation": "YT" }] }]
+
+var auto_coupon = [{ post_title: "matt-found", title: "Mattress-Foundation", type: 'auto_coupon', discount_type: 'fixed_cart', coupon_amount: 10, product_ids: '20861,118', exclude_product_ids: '' },
+{ post_title: "matt-topper", title: "Mattress-Topper", type: 'auto_coupon', discount_type: 'fixed_cart', coupon_amount: 10, product_ids: '56774,118', exclude_product_ids: '' },
+{ post_title: "matt-bedframe", title: "Mattress-Bedframe", type: 'auto_coupon', discount_type: 'fixed_cart', coupon_amount: 10, product_ids: '56774,118', exclude_product_ids: '' },
+{ post_title: "matt-sheet", title: "Mattress-Sheet", type: 'auto_coupon', discount_type: 'fixed_cart', coupon_amount: 10, product_ids: '124524,118', exclude_product_ids: '' },
+{ post_title: "matt-blanket", title: "Mattress-Blanket", type: 'auto_coupon', discount_type: 'fixed_cart', coupon_amount: 10, product_ids: '128244,118', exclude_product_ids: '' },
+{ post_title: "matt-pillow", title: "Mattress-Pillow", type: 'auto_coupon', discount_type: 'fixed_cart', coupon_amount: 10, product_ids: '14023,118', exclude_product_ids: '' },
+{ post_title: "found-frame", title: "Bundle Discount", type: 'auto_coupon', discount_type: 'fixed_cart', coupon_amount: 25, product_ids: '31729,20861', exclude_product_ids: '' },
+{ post_title: "kapok-pillow", title: "Kapok Pillow", type: 'diff', discount_type: '2x_percent', coupon_amount: 50, product_ids: '14023,14023', exclude_product_ids: '' },
+{ post_title: '118', title: 'Memory Foam Mattress', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, product_ids: "118 ", exclude_product_ids: '' },
+{ post_title: '611172', title: 'Hybrid Mattress', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, product_ids: "611172 ", exclude_product_ids: '' },
+{ post_title: '14023', title: 'Memory Foam Mattress', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, product_ids: "14023 ", exclude_product_ids: '' },
+{ post_title: '611238', title: 'Memory Foam Pillow', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, product_ids: "611238 ", exclude_product_ids: '' },
+{ post_title: '20861', title: 'Mattress Foundation', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, product_ids: "20861 ", exclude_product_ids: '' },
+{ post_title: '31729', title: 'Bed Frame', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, product_ids: "31729 ", exclude_product_ids: '' },
+{ post_title: '611252', title: 'Platform Bed', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, product_ids: "611252 ", exclude_product_ids: '' },
+{ post_title: '611286', title: 'Adjustable Base', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, product_ids: "611286 ", exclude_product_ids: '' },
+{ post_title: '124524', title: 'Bamboo Sheets', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, product_ids: "124524 ", exclude_product_ids: '' },
+{ post_title: '128244', title: 'Weighted Blanket', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, product_ids: "128244 ", exclude_product_ids: '' },
+{ post_title: '56774', title: 'Memory Foam Topper', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, product_ids: "56774 ", exclude_product_ids: '' },
+{ post_title: '611268', title: 'Essential Mattress Protector', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, product_ids: "611268 ", exclude_product_ids: '' },
+{ post_title: '612955', title: 'Full Encasement Mattress Protector', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, product_ids: "612955 ", exclude_product_ids: '' },
+{ post_title: '612947', title: 'Cooling Mattress Protector', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, product_ids: "612947 ", exclude_product_ids: '' },
+{ post_title: '611220', title: 'Pet Bed', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, product_ids: "611220 ", exclude_product_ids: '' },
+{ post_title: '612995', title: 'Adjustable Base Plus', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, product_ids: "612995 ", exclude_product_ids: '' },
+{ post_title: '733500', title: 'Metal Platform Base', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, product_ids: "733500 ", exclude_product_ids: '' }
+];
 var coupon_title = {
     "118": "Memory Foam Mattress",
     "611172": "Hybrid Mattress",
@@ -21,8 +48,10 @@ var coupon_title = {
 
 $(document).ready(function () {
     $("#loader").hide();
-    setTimeout(function () { getOrderInfo(); }, 50);
     $('.billinfo').prop("disabled", true);
+    //getOrderInfo();
+    setTimeout(function () { getOrderInfo(); }, 20);
+
     $('#txtLogDate').daterangepicker({ singleDatePicker: true, autoUpdateInput: true, locale: { format: 'DD/MM/YYYY', cancelLabel: 'Clear' } });
     $(".select2").select2(); BindStateCounty("ddlbillstate", { id: 'US' }); BindStateCounty("ddlshipstate", { id: 'US' });
     $("#ddlUser").select2({
@@ -72,6 +101,13 @@ $(document).ready(function () {
             bindCustomerOrders(cus_id);
         }
         $("#loader").hide();
+    });
+    $(document).on("click", "#btnEditOrder", function (t) {
+        t.preventDefault();
+        //if ($('#ddlStatus').val() == "wc-pending") {
+            $('#ddlStatus').prop("disabled", true); $('.billinfo').prop("disabled", false); $('#txtbillfirstname').focus();
+            $('.footer-finalbutton').empty().append('<button type="button" id="btnCheckout" class="btn btn-danger billinfo"> Checkout</button>');
+        //}
     });
     $('#billModal').on('shown.bs.modal', function () {
         $('#ddlCustomerSearch').select2({
@@ -219,7 +255,7 @@ function GetTaxRate() {
     ///Tax Calculate for state
     var tax_states = ["CA", "CO", "CT", "IL", "IN", "MI", "MS", "NC", "NE", "NJ", "NM", "PA", "TN", "TX", "WA", "AR", "FL", "GA", "IA", "MO", "OH", "SC", "WI"];
     var s_state = $("#ddlshipstate").val();
-    if (tax_states.indexOf(s_state) > 0) {
+    if (tax_states.includes(s_state)) {
         var opt = { strValue1: $("#txtshipzipcode").val(), strValue2: $("#txtshipcity").val(), strValue3: $("#ddlshipcountry").val() };
         if (opt.strValue1.length <= 0 || opt.strValue2.length <= 0 || opt.strValue3.length <= 0) {
             $('#hfTaxRate').val(0);
@@ -596,15 +632,17 @@ function copyBillingAddress() {
 function getOrderInfo() {
     var oid = parseInt($('#hfOrderNo').val()) || 0;
     if (oid > 0) {
-        $('#btnSearch').prop("disabled", true);
-        $('.page-heading').text('Edit order ').append('<a class="btn btn-danger" href="/Orders/OrdersHistory">Back to List</a>'); $('#lblOrderNo').text('Order #' + oid + ' detail '); $('#hfOrderNo').val(oid);
+        $('#ddlStatus,#btnSearch').prop("disabled", true);
+        $('.page-heading').text('Edit order ').append('<a class="btn btn-danger" href="/Orders/OrdersHistory">Back to List</a>');
+        $('#lblOrderNo').text('Order #' + oid + ' detail '); $('#hfOrderNo').val(oid);
+
         $('#btnCheckout').remove(); $('.footer-finalbutton').append('<a class="btn btn-danger" href="/Orders/OrdersHistory">Back to List</a>');
         var opt = { strValue1: oid };
         $.ajax({
             type: "POST", url: '/Orders/GetOrderInfo', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
             beforeSend: function () { $("#loader").show(); },
             success: function (result) {
-                var data = JSON.parse(result);
+                var data = JSON.parse(result); console.log(data);
                 if (data.length > 0) {
                     $('.payment-history').text('Payment via ' + data[0].payment_method + ' ' + data[0].created_via + '. Customer IP: ' + data[0].ip_address);
                     $('#txtLogDate').val(data[0].date_created);
@@ -613,7 +651,8 @@ function getOrderInfo() {
                     ///billing_Details
                     $('#txtbillfirstname').val(data[0].b_first_name); $('#txtbilllastname').val(data[0].b_last_name); $('#txtbilladdress1').val(data[0].b_address_1); $('#txtbilladdress2').val(data[0].b_address_2);
                     $('#txtbillzipcode').val(data[0].b_postcode); $('#txtbillcity').val(data[0].b_city); $('#txtbillemail').val(data[0].b_email); $('#txtbillphone').val(data[0].b_phone);
-                    $('#ddlbillcountry').val(data[0].b_country.trim()).trigger('change'); $('#ddlbillstate').val(data[0].b_state).trigger('change');
+                    $('#ddlbillcountry').val(data[0].b_country.trim()).trigger('change'); $('#ddlbillstate').val(data[0].b_state.trim()).trigger('change');
+
                     ///shipping_Details
                     $('#txtshipfirstname').val(data[0].s_first_name); $('#txtshiplastname').val(data[0].s_last_name); $('#txtshipaddress1').val(data[0].s_address_1); $('#txtshipaddress2').val(data[0].s_address_2);
                     $('#txtshipzipcode').val(data[0].s_postcode); $('#txtshipcity').val(data[0].s_city);
@@ -621,11 +660,12 @@ function getOrderInfo() {
 
                     //bind Product
                     getOrderItemList(oid);
-                    $('.billinfo').prop("disabled", true);
-
+                    //if (data[0].status.trim() == "wc-pending") {
+                        $('.box-tools').append('<a class="btn btn-danger" href="javascript:;" id="btnEditOrder"><i class="glyphicon glyphicon-edit"></i> Edit</a>');
+                    //}
                 }
             },
-            complete: function () { $("#loader").hide(); },
+            complete: function () { $("#loader").hide(); $('.billinfo').prop("disabled", true); },
             error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); },
             async: false
         });
@@ -636,50 +676,77 @@ function getOrderInfo() {
 }
 function getOrderItemList(oid) {
     var obj = { strValue1: oid };
+    //let coupon_list = [];
     $.ajax({
         type: "POST", url: '/Orders/GetOrderProductList', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
         success: function (data) {
-            let layoutHtml = '', itemHtml = ''; console.log(data);
+            console.log(data);
+            let itemHtml = '', layoutHtml = '';
             let zQty = 0.00, zGAmt = 0.00, zTDiscount = 0.00, zTotalTax = 0.00, zShippingAmt = 0.00, stateRecyclingFee = 0.00;
             for (var i = 0; i < data.length; i++) {
                 if (data[i].product_type == 'line_item') {
+                    let PKey = data[i].product_id + '_' + data[i].variation_id;
                     //itemsDetailsxml.push({
                     //    PKey: data[i].product_id + '_' + data[i].variation_id, product_id: data[i].product_id, variation_id: data[i].variation_id, product_name: data[i].product_name, quantity: data[i].quantity, reg_price: data[i].reg_price, sale_rate: data[i].sale_price, total: data[i].total, discount: data[i].discount, "tax_amount": data[i].tax_amount, shipping_amount: 0, is_free: data[i].is_free, group_id: data[i].group_id
                     //});                    
-                    itemHtml += '<tr id="tritemId_' + data[i].product_id + '_' + data[i].variation_id + '" data-id="' + data[i].product_id + '_' + data[i].variation_id + '" data-pid="' + data[i].product_id + '" data-vid="' + data[i].variation_id + '" data-pname="' + data[i].product_name + '" data-gid="' + data[i].group_id + '" data-freeitem="' + data[i].is_free + '">';
+                    itemHtml += '<tr id="tritemId_' + PKey + '" data-id="' + PKey + '" data-pid="' + data[i].product_id + '" data-vid="' + data[i].variation_id + '" data-pname="' + data[i].product_name + '" data-gid="' + data[i].group_id + '" data-freeitem="' + data[i].is_free + '">';
                     if (data[i].is_free)
                         itemHtml += '<td class="text-center"></td>';
                     else
-                        itemHtml += '<td class="text-center"><a class="btn menu-icon-gr vd_red btnDeleteItem billinfo" tabitem_itemid="' + data[i].PKey + '" onclick="removeItemsInTable(\'' + data[i].PKey + '\');"> <i class="glyphicon glyphicon-trash"></i> </a></td>';
+                        itemHtml += '<td class="text-center"><a class="btn menu-icon-gr vd_red btnDeleteItem billinfo" tabitem_itemid="' + PKey + '" onclick="removeItemsInTable(\'' + PKey + '\');"> <i class="glyphicon glyphicon-trash"></i> </a></td>';
                     itemHtml += '<td>' + data[i].product_name + '</td>';
                     itemHtml += '<td class="text-right">' + data[i].reg_price.toFixed(2) + '</td>';
                     if (data[i].is_free)
-                        itemHtml += '<td><input min="1" autocomplete="off" disabled class="form-control billinfo number rowCalulate" type="number" id="txt_ItemQty_' + data[i].PKey + '" value="' + data[i].quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
+                        itemHtml += '<td><input min="1" autocomplete="off" disabled class="form-control billinfo number rowCalulate" type="number" id="txt_ItemQty_' + PKey + '" value="' + data[i].quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
                     else
-                        itemHtml += '<td><input min="1" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_ItemQty_' + data[i].PKey + '" value="' + data[i].quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
+                        itemHtml += '<td><input min="1" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_ItemQty_' + PKey + '" value="' + data[i].quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
                     itemHtml += '<td class="TotalAmount text-right" data-regprice="' + data[i].reg_price + '"data-salerate="' + data[i].sale_rate + '" data-discount="' + data[i].discount + '" data-amount="' + data[i].total + '" data-taxamount="' + data[i].tax_amount + '" data-shippingamt="' + data[i].shipping_amount + '">' + data[i].total.toFixed(2) + '</td>';
                     itemHtml += '<td class="text-right RowDiscount" data-disctype="' + data[i].discount_type + '" data-couponamt="0">' + data[i].discount.toFixed(2) + '</td>';
-                    itemHtml += '<td class="text-right RowTax">' + data[i].tax_amount + '</td>';
+                    itemHtml += '<td class="text-right RowTax">' + data[i].tax_amount.toFixed(2) + '</td>';
                     itemHtml += '</tr>';
                     zQty = zQty + (parseFloat(data[i].quantity) || 0.00);
                     zGAmt = zGAmt + (parseFloat(data[i].total) || 0.00);
                     zTotalTax = zTotalTax + (parseFloat(data[i].tax_amount) || 0.00);
                 }
                 else if (data[i].product_type == 'coupon') {
-                    let cpn_name = coupon_title[data[i].product_name] ? coupon_title[data[i].product_name] : data[i].product_name;
                     let cou_amt = parseFloat(data[i].discount) || 0.00;
-                    layoutHtml += '<li id="li_' + data[i].product_name + '" data-coupon= "' + data[i].product_name + '" data-couponamt= "' + data[i].discount.toFixed(2) + '" data-disctype= "">';
-                    layoutHtml += '<a href="javascript:void(0);">';
-                    layoutHtml += '<i class="fa fa-gift"></i>';
-                    layoutHtml += '<span>' + cpn_name + '</span>';
-                    layoutHtml += '<div class="pull-right">';
-                    layoutHtml += '$<span id="cou_discamt">' + cou_amt.toFixed(2) + '</span>';
-                    //layoutHtml += '<button type="button" class="btn btn-box-tool pull-right" onclick="removeCouponInList(\'' + data[i].product_name + '\');">';
-                    //layoutHtml += '<i class="fa fa-times"></i>';
-                    //layoutHtml += '</button>';
-                    layoutHtml += '</div>';
-                    layoutHtml += '</a>';
-                    layoutHtml += '</li>';
+                    let coupon_list = auto_coupon.filter(element => element.post_title == data[i].product_name);
+                    for (var j = 0; j < coupon_list.length; j++) {
+                        layoutHtml += '<li id="li_' + coupon_list[j].post_title + '" data-coupon= "' + coupon_list[j].post_title + '" data-couponamt= "' + coupon_list[j].coupon_amount + '" data-disctype= "' + coupon_list[j].discount_type + '" data-rqprdids= "' + coupon_list[j].product_ids + '" data-excludeids= "' + coupon_list[j].exclude_product_ids + '" data-type= "' + coupon_list[j].type + '">';
+                        layoutHtml += '<a href="javascript:void(0);">';
+                        layoutHtml += '<i class="fa fa-gift"></i>';
+                        layoutHtml += '<span>' + coupon_list[j].title + '</span>';
+                        layoutHtml += '<div class="pull-right">';
+
+                        if (coupon_list[j].type == 'add_coupon') {
+                            layoutHtml += '$<span id="cou_discamt">' + cou_amt.toFixed(2) + '</span>';
+                            layoutHtml += '<button type="button" class="btn btn-box-tool pull-right billinfo" onclick="removeCouponInList(\'' + coupon_list[j].post_title + '\');">';
+                            layoutHtml += '<i class="fa fa-times"></i>';
+                            layoutHtml += '</button>';
+                        }
+                        else {
+                            layoutHtml += '$<span id="cou_discamt" style ="margin-right: 20px;">' + cou_amt.toFixed(2) + '</span>';
+                        }
+                        layoutHtml += '</div>';
+                        layoutHtml += '</a>';
+                        layoutHtml += '</li>';
+                    }
+                    if (coupon_list.length == 0) {
+                        let cpn_name = data[i].product_name;
+                        
+                        layoutHtml += '<li id="li_' + data[i].product_name + '" data-coupon= "' + data[i].product_name + '" data-couponamt= "' + data[i].discount.toFixed(2) + '" data-disctype= "">';
+                        layoutHtml += '<a href="javascript:void(0);">';
+                        layoutHtml += '<i class="fa fa-gift"></i>';
+                        layoutHtml += '<span>' + cpn_name + '</span>';
+                        layoutHtml += '<div class="pull-right">';
+                        layoutHtml += '$<span id="cou_discamt">' + cou_amt.toFixed(2) + '</span>';
+                        layoutHtml += '<button type="button" class="btn btn-box-tool pull-right billinfo" onclick="removeCouponInList(\'' + data[i].product_name + '\');">';
+                        layoutHtml += '<i class="fa fa-times"></i>';
+                        layoutHtml += '</button>'
+                        layoutHtml += '</div>';
+                        layoutHtml += '</a>';
+                        layoutHtml += '</li>';
+                    }
                     zTDiscount = zTDiscount + cou_amt;
                 }
                 else if (data[i].product_type == 'fee') {
@@ -689,7 +756,6 @@ function getOrderItemList(oid) {
                     zShippingAmt = zShippingAmt + (parseFloat(data[i].total) || 0.00);
                 }
             }
-            //bindItemListDataTable(itemsDetailsxml);
             $('#tblAddItemFinal tbody').append(itemHtml);
             $('#billCoupon').append(layoutHtml);
             //Calculate Final
@@ -700,7 +766,7 @@ function getOrderItemList(oid) {
             $("#shippingTotal").text(zShippingAmt.toFixed(2));
             $("#stateRecyclingFeeTotal").text(stateRecyclingFee.toFixed(2));
             $("#orderTotal").html((zGAmt - zTDiscount + zShippingAmt + zTotalTax + stateRecyclingFee).toFixed(2));
-
+            $("#divAddItemFinal").find(".rowCalulate").change(function () { calculateDiscountAcount(); });
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
         async: false
@@ -862,7 +928,7 @@ function ApplyCoupon() {
     //$("#billModal").modal({ backdrop: 'static' }); $("#txt_Coupon").focus();
 }
 function bindCouponList(data) {
-    var layoutHtml = ''; 
+    var layoutHtml = '';
     if (data.length > 0) {
 
         //var zPCnt = 0, rq_prd_ids = [], zExcPCnt = 0, exclude_ids = [];

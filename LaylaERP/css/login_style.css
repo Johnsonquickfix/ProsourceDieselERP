@@ -372,6 +372,7 @@ box-shadow:none;border:1px solid #c5c5c5;}
     background: #f9f9f9;
     border: 0px;
 }
+.post-faq-row .toggcontent table{text-align:center;}
 @media(min-width:992px) and (max-width:1199px) {
 .container-dialog.modal-dialog {
     max-width: 950px;

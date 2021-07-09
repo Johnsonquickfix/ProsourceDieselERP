@@ -537,13 +537,11 @@
                                                             </td>
                                                         </tr>
                                                     }
-
                                                 </tbody>
                                             </table>
                                        }
                                          </div>
                                         </div>
-
                                     </div>
                                     <div class="col-sm-4">
                                         <div class="form-group">
@@ -567,7 +565,7 @@
                                                         <tr> <td>
                                                              <img src="~/Images/Customer.png" width="55" height="55"   class="">
                                                               </td>
-                                                            <td> @record["user_login"] <BR>
+                                                            <td><h5>@record["user_login"]</h5>
                                                                 @record["user_email"]
                                                               <a href="/Customer/Customer?name=@record["user_login"]"><i class="glyphicon glyphicon-eye-open"></i></a>
                                                             </td>
@@ -603,7 +601,7 @@
                                                         <tr> <td>
                                                              <img src="~/Images/order.png" width="55" height="55"   class="">
                                                               </td>
-                                                            <td> @record["chkorder"] <BR>
+                                                            <td><h5>@record["chkorder"]</h5>
                                                                 @record["date_created"]
                                                              <a href="/Orders/OrdersHistory?id=@record["chkorder"]"><i class="glyphicon glyphicon-eye-open"></i></a>
                                                             </td>

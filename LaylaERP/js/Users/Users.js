@@ -17,14 +17,14 @@ function GetUsersCount() {
             console.log(data);
             if (data.length > 0) {
                 $('#all').find(".count").text(number_format(data[0].AllUser));
-                $('#accounting').find(".count").text(number_format(data[0].Accounting));
-                $('#administrator').find(".count").text(number_format(data[0].Administrator));
-                $('#author').find(".count").text(number_format(data[0].Author));
-                $('#contributor').find(".count").text(number_format(data[0].Contributor));
-                $('#editor').find(".count").text(number_format(data[0].Editor));
-                $('#modsquad').find(".count").text(number_format(data[0].ModSquad));
+                $('#Accounting').find(".count").text(number_format(data[0].Accounting));
+                $('#Administrator').find(".count").text(number_format(data[0].Administrator));
+                $('#Author').find(".count").text(number_format(data[0].Author));
+                $('#Contributor').find(".count").text(number_format(data[0].Contributor));
+                $('#Editor').find(".count").text(number_format(data[0].Editor));
+                $('#Modsquad').find(".count").text(number_format(data[0].ModSquad));
                 $('#shopmanager').find(".count").text(number_format(data[0].ShopManager));
-                $('#subscriber').find(".count").text(number_format(data[0].Subscriber));
+                $('#Subscriber').find(".count").text(number_format(data[0].Subscriber));
                 $('#supplychainmanager').find(".count").text(number_format(data[0].SupplyChainManager));
                 $('#seoeditor').find(".count").text(number_format(data[0].SEOEditor));
                 $('#seomanager').find(".count").text(number_format(data[0].SEOManager));
@@ -36,7 +36,7 @@ function GetUsersCount() {
     });
 }
 function Datagrid(role_type, type) {
- 
+    console.log(role_type);
     var columnDefs = [
     ]
     
@@ -121,7 +121,7 @@ function Datagrid(role_type, type) {
             { 'data': 'user_status', 'sWidth': "10%" },
             { 'data': 'phone', 'sWidth': "15%" },
             { 'data': 'address', 'sWidth': "30%" },
-            {
+            { 
                 'data': 'my', 'sWidth': "22%",
 
             },

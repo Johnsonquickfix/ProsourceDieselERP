@@ -13,7 +13,7 @@
     $.get('/Users/GetRolesType', function (data) {
         var items = "";
         $.each(data, function (index, value) {
-            items += $('<li class="' + this['Text'].toLowerCase().replace(/ +/g, "").trim() + '"><a href="javascript:void(0);" id="' + this['Text'].toLowerCase().replace(/ +/g, "").trim() + '">' + this['Text'] + '(<span class="count">0</span>)</a > |</li >').appendTo("#role-ul");
+            items += $('<li class="' + this['Text'].toLowerCase().replace(/ +/g, "").trim() + '"><a href="javascript:void(0);" id="' + this['Text'].trim() + '">' + this['Text'] + '(<span class="count">0</span>)</a > |</li >').appendTo("#role-ul");
         })
         items += $('<li class="none"><a href="#" id="norole">No role (<span class="count">0</span>)</a></li>').appendTo("#role-ul");
 

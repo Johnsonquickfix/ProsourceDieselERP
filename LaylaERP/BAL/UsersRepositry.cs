@@ -59,7 +59,7 @@ namespace LaylaERP.BAL
                                   + " LEFT OUTER JOIN wp_usermeta umadd2 on umadd2.meta_key = 'billing_address_2' And umadd2.user_id = u.ID"
                                   + " LEFT OUTER JOIN wp_usermeta umacity on umacity.meta_key = 'billing_city' And umacity.user_id = u.ID"
                                   + " LEFT OUTER JOIN wp_usermeta umastate on umastate.meta_key = 'billing_state' And umastate.user_id = u.ID"
-                                  + " LEFT OUTER JOIN wp_usermeta umapostalcode on umapostalcode.meta_key = 'billing_postcode' And umapostalcode.user_id = u.ID ORDER BY ID ASC";
+                                  + " LEFT OUTER JOIN wp_usermeta umapostalcode on umapostalcode.meta_key = 'billing_postcode' And umapostalcode.user_id = u.ID WHERE um.meta_value like '%" + rolee + "%'  ORDER BY ID ASC";
 
                 ds1 = DAL.SQLHelper.ExecuteDataSet(sqlquery);
                 string result = string.Empty;
@@ -120,6 +120,10 @@ namespace LaylaERP.BAL
                     else if (result == "editor")
                     {
                         result = "Editor";
+                    }
+                    else if (result == "")
+                    {
+                        result = "No Role Assign.";
                     }
                     else
                     {

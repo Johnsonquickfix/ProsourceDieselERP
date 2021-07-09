@@ -32,24 +32,34 @@ namespace LaylaERP.BAL
                 }
                 userslist.Clear();
                 DataSet ds1 = new DataSet();
-                string sqlquery = "select ID, user_login, user_status, if(user_status=0,'Active','InActive') as status,user_email,user_pass,"
-                            + " CONCAT((case when um.meta_value like '%administrator%' then 'Administrator,' else '' end),(case when um.meta_value like '%accounting%' then 'Accounting,' else '' end),"
-                            + " (case when um.meta_value like '%author%' then 'Author,' else '' end),(case when um.meta_value like '%modsquad%' then 'Mod Squad,' else '' end),"
-                            + " (case when um.meta_value like '%shop_manager%' then 'Shop Manager,' else '' end),(case when um.meta_value like '%subscriber%' then 'Subscriber,' else '' end),"
-                            + " (case when um.meta_value like '%supplychainmanager%' then 'Supply Chain Manager,' else '' end),(case when um.meta_value like '%wpseo_editor%' then 'SEO Editor,' else '' end),"
-                            + " (case when um.meta_value like '%editor%' then 'Editor,' else '' end),(case when um.meta_value like '%seo_manager%' then 'SEO Manager,' else '' end),"
-                            + " (case when um.meta_value like '%contributor%' then 'SEO Contributor,' else '' end)) meta_value,"
-                            + " umph.meta_value Phone,"
-                            + " CONCAT(umadd.meta_value, ' ',COALESCE(umadd2.meta_value,''), ' ' ,umacity.meta_value, ' ' , umastate.meta_value, ' ',umapostalcode.meta_value )  address"
-                            + " from wp_users u"
-                            + " inner join wp_usermeta um on um.user_id = u.id and um.meta_key = 'wp_capabilities' and meta_value NOT LIKE '%customer%'"
-                            + " LEFT OUTER JOIN wp_usermeta umph on umph.meta_key='billing_phone' And umph.user_id = u.ID"
-                            + " LEFT OUTER JOIN wp_usermeta umadd on umadd.meta_key='billing_address_1' And umadd.user_id = u.ID"
-                            + " LEFT OUTER JOIN wp_usermeta umadd2 on umadd2.meta_key='billing_address_2' And umadd2.user_id = u.ID"
-                            + " LEFT OUTER JOIN wp_usermeta umacity on umacity.meta_key='billing_city' And umacity.user_id = u.ID"
-                            + " LEFT OUTER JOIN wp_usermeta umastate on umastate.meta_key='billing_state' And umastate.user_id = u.ID"
-                            + " LEFT OUTER JOIN wp_usermeta umapostalcode on umapostalcode.meta_key='billing_postcode' And umapostalcode.user_id = u.ID"
-                            + " WHERE um.meta_value like '%" + rolee + "%'  ORDER BY ID ASC";
+                //string sqlquery = "select ID, user_login, user_status, if(user_status=0,'Active','InActive') as status,user_email,user_pass,"
+                //            + " CONCAT((case when um.meta_value like '%administrator%' then 'Administrator,' else '' end),(case when um.meta_value like '%accounting%' then 'Accounting,' else '' end),"
+                //            + " (case when um.meta_value like '%author%' then 'Author,' else '' end),(case when um.meta_value like '%modsquad%' then 'Mod Squad,' else '' end),"
+                //            + " (case when um.meta_value like '%shop_manager%' then 'Shop Manager,' else '' end),(case when um.meta_value like '%subscriber%' then 'Subscriber,' else '' end),"
+                //            + " (case when um.meta_value like '%supplychainmanager%' then 'Supply Chain Manager,' else '' end),(case when um.meta_value like '%wpseo_editor%' then 'SEO Editor,' else '' end),"
+                //            + " (case when um.meta_value like '%editor%' then 'Editor,' else '' end),(case when um.meta_value like '%seo_manager%' then 'SEO Manager,' else '' end),"
+                //            + " (case when um.meta_value like '%contributor%' then 'SEO Contributor,' else '' end)) meta_value,"
+                //            + " umph.meta_value Phone,"
+                //            + " CONCAT(umadd.meta_value, ' ',COALESCE(umadd2.meta_value,''), ' ' ,umacity.meta_value, ' ' , umastate.meta_value, ' ',umapostalcode.meta_value )  address"
+                //            + " from wp_users u"
+                //            + " inner join wp_usermeta um on um.user_id = u.id and um.meta_key = 'wp_capabilities' and meta_value NOT LIKE '%customer%'"
+                //            + " LEFT OUTER JOIN wp_usermeta umph on umph.meta_key='billing_phone' And umph.user_id = u.ID"
+                //            + " LEFT OUTER JOIN wp_usermeta umadd on umadd.meta_key='billing_address_1' And umadd.user_id = u.ID"
+                //            + " LEFT OUTER JOIN wp_usermeta umadd2 on umadd2.meta_key='billing_address_2' And umadd2.user_id = u.ID"
+                //            + " LEFT OUTER JOIN wp_usermeta umacity on umacity.meta_key='billing_city' And umacity.user_id = u.ID"
+                //            + " LEFT OUTER JOIN wp_usermeta umastate on umastate.meta_key='billing_state' And umastate.user_id = u.ID"
+                //            + " LEFT OUTER JOIN wp_usermeta umapostalcode on umapostalcode.meta_key='billing_postcode' And umapostalcode.user_id = u.ID"
+                //            + " WHERE um.meta_value like '%" + rolee + "%'  ORDER BY ID ASC";
+
+                string sqlquery = "select ID, user_login, user_status, if (user_status = 0,'Active','InActive') as status,user_email,user_pass,"
+                                  + "um.meta_value, umph.meta_value Phone, CONCAT(umadd.meta_value, ' ', COALESCE(umadd2.meta_value, ''), ' ', umacity.meta_value, ' ', umastate.meta_value, ' ', umapostalcode.meta_value )  address"
+                                  + " from wp_users u inner join wp_usermeta um on um.user_id = u.id and um.meta_key = 'wp_capabilities' and meta_value NOT LIKE '%customer%'"
+                                  + " LEFT OUTER JOIN wp_usermeta umph on umph.meta_key = 'billing_phone' And umph.user_id = u.ID"
+                                  + " LEFT OUTER JOIN wp_usermeta umadd on umadd.meta_key = 'billing_address_1' And umadd.user_id = u.ID"
+                                  + " LEFT OUTER JOIN wp_usermeta umadd2 on umadd2.meta_key = 'billing_address_2' And umadd2.user_id = u.ID"
+                                  + " LEFT OUTER JOIN wp_usermeta umacity on umacity.meta_key = 'billing_city' And umacity.user_id = u.ID"
+                                  + " LEFT OUTER JOIN wp_usermeta umastate on umastate.meta_key = 'billing_state' And umastate.user_id = u.ID"
+                                  + " LEFT OUTER JOIN wp_usermeta umapostalcode on umapostalcode.meta_key = 'billing_postcode' And umapostalcode.user_id = u.ID ORDER BY ID ASC";
 
                 ds1 = DAL.SQLHelper.ExecuteDataSet(sqlquery);
                 string result = string.Empty;
@@ -83,11 +93,11 @@ namespace LaylaERP.BAL
                     {
                         result = "Mod Squad";
                     }
-                    else if (result == "SEO_Editor")
+                    else if (result == "wpseo_editor")
                     {
                         result = "SEO Editor";
                     }
-                    else if (result == "SEO_Manager")
+                    else if (result == "seo_manager")
                     {
                         result = "SEO Manager";
                     }

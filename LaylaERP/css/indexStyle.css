@@ -506,6 +506,10 @@ height:calc(100% - 40px);}
     height:100%;}
     .content-iframe .tab_iframe {
     height:100% !important; min-height:initial !important;}
+.search-box-indy .box-header > .col-sm-12 {
+    padding: 0px 10px;
+}
+
 @media(max-width:1199px) {
     .profile-dialog {
         max-width: calc(100% - 20px);
@@ -515,10 +519,27 @@ height:calc(100% - 40px);}
         max-width: 100%;
         width: 100% !important;
     }
+    form#saveForm > .col-sm-4 {
+        padding: 0px 10px;
+    }
+    .table-indy td h5 {
+        font-size: 13px;
+    }
 }
 @media(max-width:1000px) {
+   
     .content-iframe {
     height:100%;}
+    form#saveForm {
+    flex-direction:column;}
+    form#saveForm > .col-sm-4 { margin-top:25px;
+        width: 100%;
+    }
+        form#saveForm > .col-sm-4:first-child {
+        margin-top:0px;} 
+}
+@media(max-width:767px) {
+   
 }
 @media(max-width:575px) {
     .create-user-primary .box-header .col-sm-4 {
@@ -530,6 +551,14 @@ height:calc(100% - 40px);}
     }
     .create-user-primary .box-footer .text-right {display:flex; justify-content:space-between;
     margin:0px;}
+    .search-box-indy .create-user-box > .row .col-md-12 {
+    padding-left:10px; padding-right:10px;}
+    .search-box-indy .modal-header .page-heading{margin-left:-5px;
+    }
+    .search-box-indy .box-header > .col-sm-12 {
+    padding:0px;}
+    form#saveForm > .col-sm-4{padding:0px;
+    }
 }
 
 .search-box-indy #txtsearch {
@@ -588,7 +617,7 @@ position:relative;}
 }
     .table-indy th, .table-indy td {position:relative; vertical-align:middle; font-size:14px; word-break:break-all; border-bottom:1px solid #d2d6de; border-collapse:collapse; padding:5px;
     }
-        .table-indy td:first-child {
+        .table-indy td:first-child {width:60px;
         border-right:1px solid #d2d6de;}
         form#saveForm .col-sm-4 {
             display: flex;
@@ -603,9 +632,11 @@ form#saveForm .form-group {
 form#saveForm {
     display: flex;
     margin-bottom: 0px;
+    margin-left:0px; margin-right:0px;
 }
+
 .search-box-indy .create-user-primary {
-    margin-bottom:0px;
+    margin-bottom: 0px;
 }
 .table-indy td img {
 width:50px; height:50px; border-radius:100%; padding:3px; border:1px solid #d2d6de;}
@@ -615,3 +646,6 @@ width:50px; height:50px; border-radius:100%; padding:3px; border:1px solid #d2d6
     right: 10px;
     top: 10px;
 }
+
+
+

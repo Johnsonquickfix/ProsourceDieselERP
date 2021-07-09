@@ -55,7 +55,7 @@
                         <div class="alignleft actions bulkactions">
                             <span>From</span><input type="text" name="fromdateusers" id="fromdateusers" />
                             <span>To</span><input type="text" name="todateusers" id="todateusers" />
-                            <input type="button" id="btnusers" class="button" value="Go" />&nbsp;&nbsp;
+                            <input type="button" id="btnusers" class="button" value="Go" />
                             <select name="new_role" id="new_role" style="width:initial">
                                 <option value="%">Choose role</option>
                             </select>
@@ -272,7 +272,7 @@
             //var obj = { mydate: mydate };
             $('#exportorderdata').DataTable({
                 "lengthMenu": [[10, 20, 50, 100], [10, 20, 50, 100]],
-                
+                scrollX:true,
                 destroy: true,
                 searching: false,
                 bAutoWidth: false,
@@ -364,7 +364,7 @@
             //}
 
             $('#exportuserdata').DataTable({
-                
+                scrollX: true,
                 destroy: true,
                 searching: false,
                 bAutoWidth: false,
@@ -443,7 +443,7 @@
             var fromdatecustomers = $("#fromdatecustomers").val();
             var todatecustomers = $("#todatecustomers").val();
             $('#exportcustomerdata').DataTable({
-                
+                scrollX: true,
                 destroy: true,
                 searching: false,
                 bAutoWidth: false,

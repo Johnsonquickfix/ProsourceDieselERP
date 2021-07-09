@@ -616,14 +616,14 @@
 
 
                         ///// free item
-                        //if (productsModel.product_id == 78676) { productsModel.is_free = true; productsModel.quantity = 2; }
-                        //else if (productsModel.product_id == 632713) { productsModel.is_free = true; productsModel.quantity = 2; }
-                        //else productsModel.is_free = false;
+                        if (productsModel.product_id == 78676) { productsModel.is_free = true;  }
+                        else if (productsModel.product_id == 632713) { productsModel.is_free = true;  }
+                        else productsModel.is_free = false;
 
-                        ///// 
-                        //if (productsModel.product_id == 611172) productsModel.group_id = 78676;
-                        //else if (productsModel.product_id == 118) productsModel.group_id = 632713;
-                        //else productsModel.group_id = 0;
+                        /// 
+                        if (productsModel.product_id == 611172) productsModel.group_id = 78676;
+                        else if (productsModel.product_id == 118) productsModel.group_id = 632713;
+                        else productsModel.group_id = 0;
                     }
                     else if (productsModel.product_type == "coupon")
                     {
@@ -892,7 +892,7 @@
             DataTable dt = new DataTable();
             try
             {
-                string strSql = "SELECT p.ID,p.post_date,p.post_modified,sd.split_detail_id,sd.order_name,max(case meta_key when '_payment_method_title' then meta_value else '' end) pm_title, "
+                string strSql = "SELECT p.ID,p.post_date_gmt,p.post_modified_gmt,sd.split_detail_id,sd.order_name,max(case meta_key when '_payment_method_title' then meta_value else '' end) pm_title, "
                         + " max(case meta_key when '_billing_first_name' then meta_value else '' end) b_fn,max(case meta_key when '_billing_last_name' then meta_value else '' end) b_ln, "
                         + " max(case meta_key when '_billing_company' then meta_value else 'company name' end) b_com,max(case meta_key when '_billing_email' then meta_value else '' end) b_email, "
                         + " max(case meta_key when '_billing_phone' then meta_value else '' end) b_phone, "

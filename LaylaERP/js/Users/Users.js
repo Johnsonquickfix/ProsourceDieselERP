@@ -1,5 +1,13 @@
 ﻿let myvalue = 1;
+searchText = getUrlVars();
 ///Get User Counts
+
+function getUrlVars() {
+    var sPageURL = decodeURIComponent(window.location.search.substring(1));
+    sPageURL = sPageURL.split('name=');
+    var sURLVariables = sPageURL.toString().replace(',', '');
+    return sURLVariables
+}
 function GetUsersCount() {
     var opt = { strValue1: '' };
     $.ajax({
@@ -28,10 +36,10 @@ function GetUsersCount() {
     });
 }
 function Datagrid(role_type, type) {
-    // var type = "Accounting";     
+ 
     var columnDefs = [
     ]
-
+    
     if (type.toUpperCase() == "ADMINISTRATOR") {
         columnDefs = [
 
@@ -46,8 +54,50 @@ function Datagrid(role_type, type) {
             },
         ]
     }
-    var id;
+
+    if ($('#hfEdit').val() == 1) {
+        columnDefs = [
+
+            {
+
+                "targets": [7],
+                "visible": true
+            }
+            ]
+    } else if (type.toUpperCase() == "ADMINISTRATOR") {
+
+        columnDefs = [
+
+            {
+
+                "targets": [7],
+                "visible": true
+            },
+            {
+
+                "targets": [5],
+                "visible": false
+            },
+            {
+                "targets": [6],
+                "visible": false
+            },
+            ]
+        
+    } else {
+        columnDefs = [
+
+            {
+
+                "targets": [7],
+                "visible": false
+            }
+            ]
+    }
+
+        var id;
     $('#dtdata').DataTable({
+        oSearch: { "sSearch": searchText },
         destroy: true,
         bAutoWidth: false,
         "ajax": {
@@ -77,10 +127,8 @@ function Datagrid(role_type, type) {
             },
             {
                 'data': 'ID', sWidth: "8%",
-                'render': function (ID, type, full, meta) {
-                    if ($('#hfEdit').val() == "1")
-                        return '<a href="javascript:void(0);" class="editbutton" onClick="EditUser(' + ID + ')"><i class="glyphicon glyphicon-pencil"></i></a>'
-                    else return "";
+                'render': function (ID, type, full, meta) {                                       
+                        return '<a href="javascript:void(0);" class="editbutton" onClick="EditUser(' + ID + ')"><i class="glyphicon glyphicon-pencil"></i></a>'                    
                 }
             }
         ],
@@ -271,6 +319,7 @@ function UpdateCustomerStatus() {
 
 function changeRole(ID) {
     user_status = $("#new_role").val();
+    //alert(user_status);
     var obj = { strVal: ID, user_status: user_status };
     $.ajax({
         url: '/Users/changeRole/', dataType: 'json', type: 'Post',

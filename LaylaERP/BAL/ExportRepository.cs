@@ -43,8 +43,9 @@ namespace LaylaERP.BAL
                              + " (case when um.meta_value like '%shop_manager%' then 'Shop Manager,' else '' end),(case when um.meta_value like '%subscriber%' then 'Subscriber,' else '' end),"
                              + " (case when um.meta_value like '%supplychainmanager%' then 'Supply Chain Manager,' else '' end),(case when um.meta_value like '%wpseo_editor%' then 'SEO Editor,' else '' end),"
                              + " (case when um.meta_value like '%editor%' then 'Editor,' else '' end),(case when um.meta_value like '%seo_manager%' then 'SEO Manager,' else '' end),"
-                             + " (case when um.meta_value like '%contributor%' then 'SEO Contributor,' else '' end)) meta_value" +
-                         " from wp_users, wp_usermeta um WHERE um.meta_value like '%" + rolee + "%' and um.meta_key='wp_capabilities' And wp_users.ID=um.user_id And wp_users.ID IN (SELECT user_id FROM wp_usermeta WHERE meta_key = 'wp_capabilities' AND meta_value NOT LIKE '%customer%') ORDER BY ID DESC";
+                             + " (case when um.meta_value like '%contributor%' then 'SEO Contributor,' else '' end),"
+                             + " (case when um.meta_value like '%test%' then 'Test,' else '' end)) meta_value"
+                         +" from wp_users, wp_usermeta um WHERE um.meta_value like '%" + rolee + "%' and um.meta_key='wp_capabilities' And wp_users.ID=um.user_id And wp_users.ID IN (SELECT user_id FROM wp_usermeta WHERE meta_key = 'wp_capabilities' AND meta_value NOT LIKE '%customer%') ORDER BY ID DESC";
                 }
                 else
                 {
@@ -54,8 +55,9 @@ namespace LaylaERP.BAL
                             + " (case when um.meta_value like '%shop_manager%' then 'Shop Manager,' else '' end),(case when um.meta_value like '%subscriber%' then 'Subscriber,' else '' end),"
                             + " (case when um.meta_value like '%supplychainmanager%' then 'Supply Chain Manager,' else '' end),(case when um.meta_value like '%wpseo_editor%' then 'SEO Editor,' else '' end),"
                             + " (case when um.meta_value like '%editor%' then 'Editor,' else '' end),(case when um.meta_value like '%seo_manager%' then 'SEO Manager,' else '' end),"
-                            + " (case when um.meta_value like '%contributor%' then 'SEO Contributor,' else '' end)) meta_value" +
-                        " from wp_users, wp_usermeta um WHERE um.meta_key='wp_capabilities' And wp_users.ID=um.user_id And wp_users.ID IN (SELECT user_id FROM wp_usermeta WHERE meta_key = 'wp_capabilities' AND meta_value NOT LIKE '%customer%') ORDER BY ID DESC";
+                            + " (case when um.meta_value like '%contributor%' then 'SEO Contributor,' else '' end),"
+                            +" (case when um.meta_value like '%test%' then 'Test,' else '' end)) meta_value"
+                        +" from wp_users, wp_usermeta um WHERE um.meta_key='wp_capabilities' And wp_users.ID=um.user_id And wp_users.ID IN (SELECT user_id FROM wp_usermeta WHERE meta_key = 'wp_capabilities' AND meta_value NOT LIKE '%customer%') ORDER BY ID DESC";
                 }
                 //WHERE um.meta_value like '%" + rolee + "%'
                 usersexportlist.Clear();
@@ -120,6 +122,10 @@ namespace LaylaERP.BAL
                     else if (result == "editor")
                     {
                         result = "Editor";
+                    }
+                    else if (result == "test")
+                    {
+                        result = "Test";
                     }
                     else
                     {
@@ -214,15 +220,23 @@ namespace LaylaERP.BAL
                     fromdate = DateTime.Parse(from_date);
                     todate = DateTime.Parse(to_date);
 
-                    ssql = "select ws.order_id as id, ws.order_id as order_id, DATE_FORMAT(ws.date_created, '%M %d %Y') order_created, substring(ws.status,4) as status,  ws.num_items_sold as qty,format(ws.total_sales, 2) as subtotal,format(ws.net_total, 2) as total, ws.customer_id as customer_id from wp_wc_order_stats ws, wp_users wu where ws.customer_id = wu.ID and DATE(ws.date_created)>='" + fromdate.ToString("yyyy-MM-dd") + "' and DATE(ws.date_created)<='" + todate.ToString("yyyy-MM-dd") + "' order by ws.order_id desc limit 100";
+                    //ssql = "select ws.order_id as id, ws.order_id as order_id, DATE_FORMAT(ws.date_created, '%M %d %Y') order_created, substring(ws.status,4) as status,  ws.num_items_sold as qty,format(ws.total_sales, 2) as subtotal,format(ws.net_total, 2) as total, ws.customer_id as customer_id from wp_wc_order_stats ws, wp_users wu where ws.customer_id = wu.ID and DATE(ws.date_created)>='" + fromdate.ToString("yyyy-MM-dd") + "' and DATE(ws.date_created)<='" + todate.ToString("yyyy-MM-dd") + "' order by ws.order_id desc limit 100";
+                   ssql = "SELECT p.id order_id, p.id as chkorder,os.num_items_sold as qty,Cast(os.total_sales As DECIMAL(10, 2)) as subtotal,format(os.net_total, 2) as total, os.customer_id as customer_id, REPLACE(p.post_status, 'wc-', '') as status, DATE_FORMAT(os.date_created, '%M %d %Y') order_created,CONCAT(pmf.meta_value, ' ', COALESCE(pml.meta_value, '')) FirstName"
+                        + " FROM wp_posts p inner join wp_wc_order_stats os on p.id = os.order_id"
+                        + " left join wp_postmeta pmf on os.order_id = pmf.post_id and pmf.meta_key = '_billing_first_name'"
+                        + " left join wp_postmeta pml on os.order_id = pml.post_id and pml.meta_key = '_billing_last_name'"
+                        + " WHERE p.post_type = 'shop_order' and DATE(os.date_created)>='" + fromdate.ToString("yyyy-MM-dd") + "' and DATE(os.date_created)<='" + todate.ToString("yyyy-MM-dd") + "' order by p.id DESC limit 500";
 
                 }
                 else
                 {
-                    ssql = "select ws.order_id as id,ws.order_id as order_id, DATE_FORMAT(ws.date_created, '%M %d %Y') order_created, substring(ws.status,4) as status,  ws.num_items_sold as qty,format(ws.total_sales, 2) as subtotal,format(ws.net_total, 2) as total, ws.customer_id as customer_id from wp_wc_order_stats ws, wp_users wu where ws.customer_id = wu.ID order by ws.order_id desc limit 1000";
-                }
-
-
+                    //ssql = "select ws.order_id as id,ws.order_id as order_id,DATE_FORMAT(ws.date_created, '%M %d %Y') order_created,substring(ws.status,4) as status,ws.num_items_sold as qty,format(ws.total_sales, 2) as subtotal,format(ws.net_total, 2) as total,ws.customer_id as customer_id from wp_wc_order_stats ws, wp_users wu where ws.customer_id = wu.ID order by ws.order_id desc limit 1000";
+                    ssql = "SELECT p.id order_id, p.id as chkorder,os.num_items_sold as qty,Cast(os.total_sales As DECIMAL(10, 2)) as subtotal,format(os.net_total, 2) as total, os.customer_id as customer_id, REPLACE(p.post_status, 'wc-', '') as status, DATE_FORMAT(os.date_created, '%M %d %Y') order_created,CONCAT(pmf.meta_value, ' ', COALESCE(pml.meta_value, '')) FirstName"
+                            + " FROM wp_posts p inner join wp_wc_order_stats os on p.id = os.order_id"
+                            + " left join wp_postmeta pmf on os.order_id = pmf.post_id and pmf.meta_key = '_billing_first_name'"
+                            + " left join wp_postmeta pml on os.order_id = pml.post_id and pml.meta_key = '_billing_last_name'"
+                            + " WHERE p.post_type = 'shop_order' order by p.id DESC limit 500";
+                 }
                 DataSet ds1 = new DataSet();
                 ds1 = DAL.SQLHelper.ExecuteDataSet(ssql);
                 for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
@@ -230,13 +244,13 @@ namespace LaylaERP.BAL
                     ExportModel uobj = new ExportModel();
                     uobj.order_id = Convert.ToInt32(ds1.Tables[0].Rows[i]["order_id"].ToString());
                     uobj.order_created = ds1.Tables[0].Rows[i]["order_created"].ToString();
-                    uobj.customer_id = ds1.Tables[0].Rows[i]["customer_id"].ToString();
+                    uobj.first_name = ds1.Tables[0].Rows[i]["FirstName"].ToString();
                     uobj.orderstatus = ds1.Tables[0].Rows[i]["status"].ToString();
                     //uobj.product_id = ds1.Tables[0].Rows[i]["product_id"].ToString();
                     //uobj.variant_id = ds1.Tables[0].Rows[i]["variant_id"].ToString();
                     uobj.qty = ds1.Tables[0].Rows[i]["qty"].ToString();
-                    uobj.subtotal = ds1.Tables[0].Rows[i]["subtotal"].ToString();
-                    uobj.total = ds1.Tables[0].Rows[i]["total"].ToString();
+                    uobj.subtotal = "$" + ds1.Tables[0].Rows[i]["subtotal"].ToString();
+                    uobj.total = "$" + ds1.Tables[0].Rows[i]["total"].ToString();
                     exportorderlist.Add(uobj);
                 }
             }
@@ -295,7 +309,7 @@ namespace LaylaERP.BAL
             DataTable dtr = new DataTable();
             try
             {
-                string strquery = "select user_value, user_type from wp_user_classification where user_value is not null order by user_type";
+                string strquery = "select user_value, user_type from wp_user_classification order by user_type";
                 dtr = SQLHelper.ExecuteDataTable(strquery);
             }
             catch (Exception ex)

@@ -38,8 +38,8 @@
                                         <th><input type="checkbox" class="selectAll" name="selectAll" value="all"><label></label></th>
                                         <th>Order Id</th>
                                         <th>Order Date</th>
-                                        <th>Customer Id</th>
-                                        <th>Number Of Items</th>
+                                        <th>Customer Name</th>
+                                        <th>Items Sold</th>
                                         <th>Subtotal</th>
                                         <th>Total</th>
                                     </tr>
@@ -57,7 +57,7 @@
                             <span>To</span><input type="text" name="todateusers" id="todateusers" />
                             <input type="button" id="btnusers" class="button" value="Go" />
                             <select name="new_role" id="new_role" style="width:initial">
-                                <option value="">Choose role</option>
+                                <option value="%">Choose role</option>
                             </select>
                             <input type="button" name="changeit" id="changeit" class="button" value="Go"/>
                             <input type="button" id="btnviewusers" class="button" value="Refresh" />
@@ -72,7 +72,7 @@
                                     <tr>
                                         <th><input type="checkbox" class="selectAllUsers" name="selectAllUsers" value="all"><label></label></th>
                                         <th>Id</th>
-                                        <th>Name</th>
+                                        <th>User Name</th>
                                         <th>Email</th>
                                         <th>Status</th>
                                         <th>Role</th>
@@ -226,7 +226,7 @@
             //})
 
             $("#btnvieworders").click(function () { DatagridOrder(); });
-            $("#btnviewusers").click(function () { $("#new_role").val(""); DatagridUsers(); });
+            $("#btnviewusers").click(function () { $("#new_role").val("%"); DatagridUsers(); });
             $("#btnviewcustomers").click(function () { DatagridCustomers(); });
 
             $(document).on("click", "tbody .select-checkbox", function (t) {
@@ -298,9 +298,9 @@
                         //}
                        
                     },
-                    { 'data': 'customer_id', title: 'Customer Id', sWidth:"10%" },
+                    { 'data': 'first_name', title: 'Customer Name', sWidth:"10%" },
                     //{ 'data':'orderstatus' },
-                    { 'data': 'qty', title: 'Number Of Items', sWidth: "10%" },
+                    { 'data': 'qty', title: 'Items Sold', sWidth: "10%" },
                     { 'data': 'subtotal', title: 'Subtotal', sWidth: "10%" },
                     { 'data': 'total', title: 'Total', sWidth:"10%" }
 
@@ -327,7 +327,8 @@
                     {
                         extend: 'csv',
                         className: 'button',
-                        text: '<i class="fas fa-file-csv"></i> CSV'
+                        text: '<i class="fas fa-file-csv"></i> CSV',
+                        filename: 'Order'
                     },
                     //{
                     //    extend: 'print',
@@ -354,9 +355,14 @@
 
         //--------------Users DataGrid Start-----------------
         function DatagridUsers() {
+            debugger
             var fromdateusers = $("#fromdateusers").val();
             var todateusers = $("#todateusers").val();
             var userrole = $("#new_role").val();
+            //if (userrole == "") {
+            //    userrole = null;
+            //}
+
             $('#exportuserdata').DataTable({
                 scrollX: true,
                 destroy: true,
@@ -373,7 +379,7 @@
                 "columns": [
                     { 'data': null, sWidth: "5%" },
                     { 'data': 'UID', title: 'ID',sWidth: "10%" },
-                    { 'data': 'user_login', title: 'Name', sWidth: "10%" },
+                    { 'data': 'user_login', title: 'User Name', sWidth: "10%" },
                     { 'data': 'user_email', title: 'Email', sWidth: "25%" },
                     { 'data': 'user_status', title: 'Status', sWidth: "15%" },
                     { 'data': 'my', title:'Role', sWidth: "20%" },
@@ -408,7 +414,8 @@
                     {
                         extend: 'csv',
                         className: 'button',
-                        text: '<i class="fas fa-file-csv"></i> CSV'
+                        text: '<i class="fas fa-file-csv"></i> CSV',
+                        filename:'Users'
                     },
                     //{
                     //    extend: 'print',
@@ -485,7 +492,8 @@
                     {
                         extend: 'csv',
                         className: 'button',
-                        text: '<i class="fas fa-file-csv"></i> CSV'
+                        text: '<i class="fas fa-file-csv"></i> CSV',
+                        filename:'Customers'
                     },
                     //{
                     //    extend: 'print',

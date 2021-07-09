@@ -509,6 +509,7 @@ height:calc(100% - 40px);}
 .search-box-indy .box-header > .col-sm-12 {
     padding: 0px 10px;
 }
+
 @media(max-width:1199px) {
     .profile-dialog {
         max-width: calc(100% - 20px);

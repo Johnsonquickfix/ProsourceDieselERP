@@ -1,5 +1,4 @@
 ﻿@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
-
 body {
     background: #f9f9f9;
     font-family: 'Open Sans', sans-serif !important;
@@ -1368,7 +1367,7 @@ table.dataTable tbody > tr.selected td, table.dataTable tbody > tr > .selected {
 
 .reports-section .table-blue th:before,
 .reports-section .table-blue th:after {
-    bottom: 0px !important;
+    /*bottom: 0px !important;*/
 }
 
 .arizona-box .dataTables_scrollBody thead th {
@@ -1382,16 +1381,20 @@ table.dataTable tbody > tr.selected td, table.dataTable tbody > tr > .selected {
 }
 
 .not-fixed thead th, .not-fixed tbody td {
-    white-space: nowrap;
     padding-right: 20px !important;
 }
-
+.not-fixed thead th {
+    white-space: nowrap;
+}
 .not-fixed .dataTables_scrollBody thead th {
     padding-top: 0px !important;
     padding-bottom: 0px !important;
     height: 0px !important;
 }
-
+.commission-section #filtersrchexp, .commission-section #filtersrchexpE {
+    position: absolute;
+    height: 30px;
+}
 .coupons-content .tab-pane .form-group {
     display: inline-block;
     width: 100%;
@@ -1438,7 +1441,15 @@ body table.dataTable thead .sorting_desc_disabled:after {
 
 .create-user-primary .form-group .select2-container {
 max-width:100%; width:100% !important;}
+.reports-section .dataTables_scrollBody thead th {
+padding-top:0px; padding-bottom:0px; overflow:hidden; opacity:0;}
+/***podium*/
+/*.podiam-section .table-blue thead th{padding-left:0px; padding-right:0px; overflow:hidden; opacity:0;
+}
+.tax-jar-section .table-blue thead th {
+padding-left:0px; padding-right:0px; overflow:hidden; opacity:0;}*/
 @media(max-width:1000px) {
+
     .feentax-section .table-blue {
         width: 1100px !important;
     }
@@ -1572,6 +1583,9 @@ width: 30%;
 @media(min-width:992px) and (max-width:1199px) {
 }
 @media(max-width:991px) {
+    .appearance-menu-section .table-blue {
+        width: 1200px !important;
+    }
     .export-section .tablenav .bulkactions [type="text"] {width:140px;
     }
     div.dataTables_wrapper div.dataTables_paginate ul.pagination {
@@ -1741,6 +1755,22 @@ height:190px; overflow:auto;}
 border-top:1px solid #eee; margin-top:8px; margin-bottom:8px;}
 .setting-section .nav-tabs-custom > .nav-tabs > li {margin-right:0px;
 }
+.export-section .dataTables_scrollBody thead th {
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
+    height: 0px;
+    overflow: hidden;
+}
+.appearance-menu-section .dataTables_scrollBody thead th {
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
+    height: 0px;
+    overflow: hidden;
+}
+#billModal #tblCusOrders, #divAddItemFinal #tblAddItemFinal {
+    margin: 0px !important;
+}
+.table-responsive{border:0px !important;}
 @media(max-width:1000px) {
     .manage-user-section .table-blue {
     width:1100px !important;}
@@ -1825,54 +1855,141 @@ border-top:1px solid #eee; margin-top:8px; margin-bottom:8px;}
         }
 }
 @media(max-width:450px) {
-    span.radtype_span {margin: 8px 0px 0px 0px; width: 100%;}
-    .dashboard-order-list .box-header {flex-wrap:wrap;}
-    .calender-board iframe {height:350px;}
-    .box-calender-dash {max-height:325px;}
+    .reports-section #dtdata {
+    width:1000px !important;}
+    body .chat .item > .attachment {
+        margin-left: auto;
+        margin-right: 0px;
+    }
+
+    body .chat .item > .message {
+        margin-top: 12px;
+        margin-left: 0px;
+    }
+
+    .dash-table [colspan="5"][align="center"] {
+        text-align: left;
+        padding-left: 100px !important;
+    }
+
+    .export-section #exportorderdata_wrapper .dt-buttons,
+    .export-section #exportuserdata_wrapper .dt-buttons,
+    .export-section #exportcustomerdata_wrapper .dt-buttons {
+        width: auto;
+    }
+
+    .export-section.setting-section .nav-tabs-custom {
+        background: transparent;
+    }
+
+    span.radtype_span {
+        margin: 8px 0px 0px 0px;
+        width: 100%;
+    }
+
+    .dashboard-order-list .box-header {
+        flex-wrap: wrap;
+    }
+
+    .calender-board iframe {
+        height: 350px;
+    }
+
+    .box-calender-dash {
+        max-height: 325px;
+    }
     /**erp*/
     .user-top-section .tablenav .actions {
         width: 100%;
-        display: flex; padding-right:0px;
+        justify-content: space-between;
+        display: flex;
+        padding-right: 0px;
     }
-    .user-top-section .tablenav .actions > * {
-        flex: 1;
-    }
-    .user-top-section .tablenav .actions select {
-        flex: 2;
-        max-width: initial;
-        width: auto;
-    }
+
+        .user-top-section .tablenav .actions > * {
+            flex: 1;
+            /*margin: 5px 0px;*/
+        }
+
+        .user-top-section .tablenav .actions #btnorder,
+        .user-top-section .tablenav .actions #btnvieworders,
+        .user-top-section .tablenav #btncustomers,
+        .user-top-section .tablenav #btnviewcustomers {
+            max-width: calc(50% - 7.5px);
+        }
+
+        .user-top-section .tablenav .actions select {
+            flex: 2;
+            max-width: initial;
+            width: auto;
+        }
+
     .dashboard-dropy {
         flex-wrap: wrap;
         position: relative;
     }
-    .dashboard-dropy .col-xs-6 {width:100%;}
-    .col-drop-dash {position:absolute; right:0px; top:17px;}
-    .page-heading .sub-heading {margin-top: 10px;}
-    .manage-wig-dash {padding: 4px 15px;}
-    #saveForm .box-body.with-border h5 {line-height: 1.5;}
-    .chat-box-dash .filename {margin-bottom: 5px !important;}
-    div.dataTables_wrapper div.dataTables_filter input {width: 80px !important;}
+
+        .dashboard-dropy .col-xs-6 {
+            width: 100%;
+        }
+
+    .col-drop-dash {
+        position: absolute;
+        right: 0px;
+        top: 17px;
+    }
+
+    .page-heading .sub-heading {
+        margin-top: 10px;
+    }
+
+    .manage-wig-dash {
+        padding: 4px 15px;
+    }
+
+    #saveForm .box-body.with-border h5 {
+        line-height: 1.5;
+    }
+
+    .chat-box-dash .filename {
+        margin-bottom: 5px !important;
+    }
+
+    div.dataTables_wrapper div.dataTables_filter input {
+        width: 80px !important;
+    }
+
     .form-user-role #btnAddRole, .form-user-role #btnApprove {
         width: 100%;
     }
+
     #billModal .modal-body > .nowrap-row {
-    flex-wrap:wrap;}
+        flex-wrap: wrap;
+    }
+
         #billModal .modal-body > .nowrap-row > div {
-        width:100%;}
+            width: 100%;
+        }
+
             #billModal .modal-body > .nowrap-row > div:first-child {
-            margin-bottom:8px;}
+                margin-bottom: 8px;
+            }
+
     #btnSelectDefaltAddress {
-    width:100%;}
+        width: 100%;
+    }
+
     a.billinfo {
         float: right;
         font-size: 14px;
     }
+
     .setting-section .nav-tabs-custom > .nav-tabs > li:not(.active) {
         width: 100%;
         border: 1px solid #d2d6de;
         margin-bottom: 5px;
     }
+
     .setting-section .nav-tabs-custom > .nav-tabs > li.active {
         width: 100%;
         margin-bottom: 5px;
@@ -1880,30 +1997,117 @@ border-top:1px solid #eee; margin-top:8px; margin-bottom:8px;}
         border-left: 1px solid #d2d6de;
         border-right: 1px solid #d2d6de;
     }
+
     .setting-section .nav-tabs-custom .tab-content {
-    padding-left:0px; padding-right:0px;}
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+
     .setting-section .nav-tabs-custom > .nav-tabs {
-    border:0px;}
+        border: 0px;
+    }
+
     .setting-section .nav-tabs-custom li a {
-        background:#f1f1f1;
+        background: #f1f1f1;
     }
+
     .setting-section .nav-tabs-custom li.active a {
-        background:#f9f9f9;
+        /*background: #f9f9f9;*/
     }
+
     .activity-section .user-top-section .tablenav .setting-bulk {
         display: flex;
         flex-direction: column;
     }
+
     .activity-section .user-top-section .select2.select2-container {
         margin-right: 0px;
     }
+
     .activity-section .user-top-section .setting-bulk > * {
-        margin-right:0px; margin-bottom:10px;
+        margin-right: 0px;
+        margin-bottom: 10px;
     }
+
     .activity-section .user-top-section .select2.select2-container, .activity-section .user-top-section .button {
         width: 100% !important;
     }
+
     .pagination > li {
-    margin-top:10px;}
+        margin-top: 10px;
     }
+
+    .export-section #changeit, .export-section #btnusers {
+        margin-left: 5px;
+    }
+
+    .export-section .user-top-section .actions span {
+        width: 100%;
+        flex: 0 0 100%;
+    }
+
+    .export-section .user-top-section #fromdate, .export-section .user-top-section #todate, .export-section .user-top-section #todatecustomers {
+        flex: 0 0 100%;
+        width: 100%;
+    }
+
+    .export-section #todateusers, .export-section #new_role {
+        flex: 0 0 calc(100% - 80px);
+    }
+
+    .export-section .nav-tabs-custom > .tab-content {
+        background: transparent;
+    }
+    .export-section .tablenav.top .actions #btnorder,
+    .export-section .tablenav.top .actions #btnvieworders {
+    margin-right:0px;}
+    .userrole_section #saveForm .box-header.mb-35{margin-bottom:20px !important;
+    }
+    #btnCopyRole {
+    margin-right:0px !important;}
+    #ddlCopyRole {
+    width:calc(100% - 75px); margin-right:auto;}
+    #userrole + label {
+    margin-right:0px;}
+    #userrole {
+        width: 100%;
+        margin-right: 0px;
+    }
+    .user_subCrumbs ul {
+    font-size:12px;}
+    .commission-section table.table-blue {
+    width:700px !important;}
+    .commission-section #dtdata_info,
+    .commission-section #dtdata_paginate {
+        width: 100%;
+        text-align: center;
+    }
+    .form-check label:before, .check-table [type="checkbox"] + label:before {
+    top:5px; transform:none;}
+    .form-check label:after, .check-table [type="checkbox"] + label:after {
+    top:0px; margin-top:10px;}
+    #dtdata_info, #dtdata_paginate {
+        text-align: center;
+        width: 100%;
+    }
+    .reports-section #dtdata {
+        /*width: 700px !important;*/
+    }
+    .reports-section .box-header {
+    overflow:auto;}
+    .mrf-reports-section .user-top-section .actions,
+    .tax-jar-section .user-top-section .actions,
+    .sale-tax-section .user-top-section .actions,
+    .average-report-section .user-top-section .actions{
+        flex-wrap: wrap;
+    }
+        .mrf-reports-section .user-top-section .actions > *,
+        .tax-jar-section .user-top-section .actions > *,
+        .sale-tax-section .user-top-section .actions > *,
+        .average-report-section .user-top-section .actions > *{
+            flex: 0 0 calc(50% - 5px) !important;
+            margin: 5px 0px;
+        }
+    
+}
 

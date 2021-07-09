@@ -55,13 +55,13 @@ namespace LaylaERP.Controllers
                         str += "<OrderID><![CDATA[" + DR["order_name"].ToString().Replace("#", "") + "]]></OrderID>";
                         str += "<OrderNumber><![CDATA[" + DR["order_name"].ToString().Replace("#", "") + "]]></OrderNumber>";
                         if (DR["post_date"] != DBNull.Value)
-                            str += "<OrderDate>" + Convert.ToDateTime(DR["post_date"].ToString()).ToString("MM/dd/yyyy hh:mm") + "</OrderDate>";
+                            str += "<OrderDate>" + Convert.ToDateTime(DR["post_date_gmt"].ToString()).ToString("MM/dd/yyyy hh:mm") + "</OrderDate>";
                         else
                             str += "<OrderDate></OrderDate>";
                         //str += "<OrderDate>'.gmdate("m / d / Y H: i", strtotime($each_order->post_date) - $tz_offset).'</OrderDate>";
                         str += "<OrderStatus><![CDATA[processing]]></OrderStatus>";
                         if (DR["post_modified"] != DBNull.Value)
-                            str += "<LastModified>" + Convert.ToDateTime(DR["post_modified"].ToString()).ToString("MM/dd/yyyy hh:mm") + "</LastModified>";
+                            str += "<LastModified>" + Convert.ToDateTime(DR["post_modified_gmt"].ToString()).ToString("MM/dd/yyyy hh:mm") + "</LastModified>";
                         else
                             str += "<LastModified></LastModified>";
                         //str += "<LastModified>'.gmdate("m / d / Y H: i", strtotime($each_order->post_modified) - $tz_offset).'</LastModified>";

@@ -1,5 +1,13 @@
 ﻿let myvalue = 1;
+searchText = getUrlVars();
 ///Get User Counts
+
+function getUrlVars() {
+    var sPageURL = decodeURIComponent(window.location.search.substring(1));
+    sPageURL = sPageURL.split('name=');
+    var sURLVariables = sPageURL.toString().replace(',', '');
+    return sURLVariables
+}
 function GetUsersCount() {
     var opt = { strValue1: '' };
     $.ajax({
@@ -28,7 +36,7 @@ function GetUsersCount() {
     });
 }
 function Datagrid(role_type, type) {
-    // var type = "Accounting";     
+ 
     var columnDefs = [
     ]
     
@@ -89,6 +97,7 @@ function Datagrid(role_type, type) {
 
         var id;
     $('#dtdata').DataTable({
+        oSearch: { "sSearch": searchText },
         destroy: true,
         bAutoWidth: false,
         "ajax": {

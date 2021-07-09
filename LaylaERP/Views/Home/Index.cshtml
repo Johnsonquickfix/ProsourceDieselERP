@@ -237,7 +237,7 @@
             });
             $(document).on("click", "#btnuserprofile", function (t) { t.preventDefault(); ProfileModal(); });
             $(document).on("click", "#btnsearch", function (t) {
-                t.preventDefault(); SearchbarModal();
+                t.preventDefault(); SearchbarModal();                
             });
 
             $('#userprofile').on('shown.bs.modal', function () {
@@ -533,7 +533,7 @@
                                                               </td>
                                                             <td> <h5>@record["user_login"] </h5>
                                                                 @record["user_email"]
-                                                              <a href="/Users/Users?name=@record["user_login"]"><i class="glyphicon glyphicon-eye-open"></i></a>
+                                                               <a id="auser" href="javascript:;" onclick="addTabs({id:'3',title: 'Manage User',close: true,url: '/Users/Users?name=@record["ID"]',urlType: 'none'});App.fixIframeCotent();"><i class="glyphicon glyphicon-eye-open"></i></a>
                                                             </td>
                                                         </tr>
                                                     }
@@ -567,7 +567,7 @@
                                                               </td>
                                                             <td><h5>@record["user_login"]</h5>
                                                                 @record["user_email"]
-                                                              <a href="/Customer/Customer?name=@record["user_login"]"><i class="glyphicon glyphicon-eye-open"></i></a>
+                                                      <a id="acustomer" href="javascript:;" onclick="addTabs({id:'16',title: 'Manage Customer',close: true,url: '/Customer/Customer?name=@record["user_login"]',urlType: 'none'});App.fixIframeCotent();"><i class="glyphicon glyphicon-eye-open"></i></a>
                                                             </td>
                                                         </tr>
                                                     }
@@ -603,7 +603,8 @@
                                                               </td>
                                                             <td><h5>@record["chkorder"]</h5>
                                                                 @record["date_created"]
-                                                             <a href="/Orders/OrdersHistory?id=@record["chkorder"]"><i class="glyphicon glyphicon-eye-open"></i></a>
+                                                   <a id="aorder" href="javascript:;" onclick="addTabs({id:'8',title: 'Orders History',close: true,url: '/Orders/OrdersHistory?name=@record["chkorder"]',urlType: 'none'});App.fixIframeCotent();"><i class="glyphicon glyphicon-eye-open"></i></a>
+                                                             
                                                             </td>
                                                         </tr>
                                                     }
@@ -656,6 +657,15 @@
                 t.preventDefault(); ResetPasswordModal();
             });
 
+            $(document).on('click', "#auser", function () {
+                $('#searchbar').modal('hide');
+            });
+            $(document).on('click', "#acustomer", function () {
+                    $('#searchbar').modal('hide');
+            });
+        $(document).on('click', "#aorder", function () {
+                $('#searchbar').modal('hide');
+            });
             $(document).on('click', "#btnsearchbar", function () {
                 var checkid = $("input[name='strValue1']:checked").val();
                 var search = $("#txtsearch").val();
@@ -687,7 +697,7 @@
 
         });
 
-
+    
 
         function loadData() {
             $("#tblCustomer tbody").empty();

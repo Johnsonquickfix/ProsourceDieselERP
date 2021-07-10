@@ -1,4 +1,11 @@
-﻿
+﻿var searchText = getUrlVars();
+
+function getUrlVars() {
+    var sPageURL = decodeURIComponent(window.location.search.substring(1));
+    sPageURL = sPageURL.split('name=');
+    var sURLVariables = sPageURL.toString().replace(',', '');
+    return sURLVariables
+}
 function AddCustomer() {
     debugger
 
@@ -182,6 +189,7 @@ function dataGridLoad() {
     var sid = ""//$('#txtSearch').val() ;
     var obj = { user_status: urid, Search: sid, PageNo: 0, PageSize: 10, sEcho: 1, SortCol: 'id', SortDir: 'desc' };
     $('#dtdata').DataTable({
+        oSearch: { "sSearch": searchText },
         columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true,
         sPaginationType: "full_numbers", searching: true, ordering: true, lengthChange: true,

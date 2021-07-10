@@ -86,11 +86,14 @@ function GetOrderDetails() {
 }
 
 function dataGridLoad(order_type) {
+    var urlParams = new URLSearchParams(window.location.search);
+    let searchText = urlParams.get('name') ? urlParams.get('name') : '';
     var monthYear = '', cus_id = (parseInt($('#ddlUser').val()) || 0);
     if ($('#filter-by-date').val() != "0") monthYear = $('#filter-by-date').val();
-    let dfa = "'" + $('#txtOrderDate').val().replace(' - ', '\' AND \'') + "'" ;
+    let dfa = "'" + $('#txtOrderDate').val().replace(' - ', '\' AND \'') + "'";
     dfa = dfa.replaceAll('-', '');
     $('#dtdata').DataTable({
+        oSearch: { "sSearch": searchText },
         columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true,
         //sPaginationType: "full_numbers", searching: true, ordering: true, lengthChange: true,
@@ -132,10 +135,9 @@ function dataGridLoad(order_type) {
                     return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck(this);" value="' + $('<div/>').text(data).html() + '"><label></label>';
                 }
             },
-            { data: 'order_id', title: 'OrderID', sWidth: "8%" },
-            { data: 'customer_id', title: 'Customer ID', sWidth: "8%" },
-            { data: 'FirstName', title: 'First Name', sWidth: "10%" },
-            { data: 'LastName', title: 'Last Name', sWidth: "10%" },
+            { data: 'order_id', title: 'OrderID', sWidth: "8%", render: $.fn.dataTable.render.number('', '.', 0, '#') },
+            { data: 'FirstName', title: 'First Name', sWidth: "12%" },
+            { data: 'LastName', title: 'Last Name', sWidth: "12%" },
             {
                 data: 'billing_phone', title: 'Phone No.', sWidth: "10%", render: function (toFormat) {
                     var tPhone = '';
@@ -147,9 +149,9 @@ function dataGridLoad(order_type) {
                 }
             },
             { data: 'num_items_sold', title: 'No. of Items', sWidth: "10%" },
-            { data: 'total_sales', title: 'Order Total', sWidth: "10%", render: $.fn.dataTable.render.number(',', '.', 2, '') },
+            { data: 'total_sales', title: 'Order Total', sWidth: "10%", render: $.fn.dataTable.render.number(',', '.', 2, '$') },
             {
-                data: 'status', title: 'Status', sWidth: "10%", render: function (data, type, row) {
+                data: 'status', title: 'Status', sWidth: "14%", render: function (data, type, row) {
                     if (data == 'wc-pending') return 'Pending payment';
                     else if (data == 'wc-processing') return 'Processing';
                     else if (data == 'wc-on-hold') return 'On hold';

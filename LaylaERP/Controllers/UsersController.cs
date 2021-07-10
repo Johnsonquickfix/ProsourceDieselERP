@@ -349,6 +349,7 @@ namespace LaylaERP.Controllers
             myModel.address = dt.Rows[0]["address"];
             myModel.user_login = dt.Rows[0]["user_login"];
             string role = dt.Rows[0]["user_role"].ToString();
+
             if (role == "accounting")
                 role = "Accounting";
             else if (role == "administrator")
@@ -374,7 +375,7 @@ namespace LaylaERP.Controllers
             else if (role == "supplychainmanager")
                 role = "Supply Chain Manager";
             else
-                role = role;
+                role = dt.Rows[0]["user_role"].ToString();
 
 
             // role = role.Replace("_", " ");           

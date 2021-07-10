@@ -1,5 +1,13 @@
 ﻿let myvalue = 1;
+searchText = getUrlVars();
 ///Get User Counts
+
+function getUrlVars() {
+    var sPageURL = decodeURIComponent(window.location.search.substring(1));
+    sPageURL = sPageURL.split('name=');
+    var sURLVariables = sPageURL.toString().replace(',', '');
+    return sURLVariables
+}
 function GetUsersCount() {
     var opt = { strValue1: '' };
     $.ajax({
@@ -9,14 +17,14 @@ function GetUsersCount() {
             console.log(data);
             if (data.length > 0) {
                 $('#all').find(".count").text(number_format(data[0].AllUser));
-                $('#accounting').find(".count").text(number_format(data[0].Accounting));
-                $('#administrator').find(".count").text(number_format(data[0].Administrator));
-                $('#author').find(".count").text(number_format(data[0].Author));
-                $('#contributor').find(".count").text(number_format(data[0].Contributor));
-                $('#editor').find(".count").text(number_format(data[0].Editor));
-                $('#modsquad').find(".count").text(number_format(data[0].ModSquad));
+                $('#Accounting').find(".count").text(number_format(data[0].Accounting));
+                $('#Administrator').find(".count").text(number_format(data[0].Administrator));
+                $('#Author').find(".count").text(number_format(data[0].Author));
+                $('#Contributor').find(".count").text(number_format(data[0].Contributor));
+                $('#Editor').find(".count").text(number_format(data[0].Editor));
+                $('#Modsquad').find(".count").text(number_format(data[0].ModSquad));
                 $('#shopmanager').find(".count").text(number_format(data[0].ShopManager));
-                $('#subscriber').find(".count").text(number_format(data[0].Subscriber));
+                $('#Subscriber').find(".count").text(number_format(data[0].Subscriber));
                 $('#supplychainmanager').find(".count").text(number_format(data[0].SupplyChainManager));
                 $('#seoeditor').find(".count").text(number_format(data[0].SEOEditor));
                 $('#seomanager').find(".count").text(number_format(data[0].SEOManager));
@@ -28,10 +36,10 @@ function GetUsersCount() {
     });
 }
 function Datagrid(role_type, type) {
-    // var type = "Accounting";     
+    console.log(role_type);
     var columnDefs = [
     ]
-
+    
     if (type.toUpperCase() == "ADMINISTRATOR") {
         columnDefs = [
 
@@ -46,8 +54,50 @@ function Datagrid(role_type, type) {
             },
         ]
     }
-    var id;
+
+    if ($('#hfEdit').val() == 1) {
+        columnDefs = [
+
+            {
+
+                "targets": [7],
+                "visible": true
+            }
+            ]
+    } else if (type.toUpperCase() == "ADMINISTRATOR") {
+
+        columnDefs = [
+
+            {
+
+                "targets": [7],
+                "visible": true
+            },
+            {
+
+                "targets": [5],
+                "visible": false
+            },
+            {
+                "targets": [6],
+                "visible": false
+            },
+            ]
+        
+    } else {
+        columnDefs = [
+
+            {
+
+                "targets": [7],
+                "visible": false
+            }
+            ]
+    }
+
+        var id;
     $('#dtdata').DataTable({
+        oSearch: { "sSearch": searchText },
         destroy: true,
         bAutoWidth: false,
         "ajax": {
@@ -71,19 +121,14 @@ function Datagrid(role_type, type) {
             { 'data': 'user_status', 'sWidth': "10%" },
             { 'data': 'phone', 'sWidth': "15%" },
             { 'data': 'address', 'sWidth': "30%" },
-            {
+            { 
                 'data': 'my', 'sWidth': "22%",
 
             },
             {
                 'data': 'ID', sWidth: "8%",
-                'render': function (ID, type, full, meta) {
-                    var ed = $('#hfEdit').val();
-                    console.log(ed);
-                    if ($('#hfEdit').val() == "1") {
-                        return '<a href="javascript:void(0);" class="editbutton" onClick="EditUser(' + ID + ')"><i class="glyphicon glyphicon-pencil"></i></a>'
-                    }
-                    else return "No Permission";
+                'render': function (ID, type, full, meta) {                                       
+                        return '<a href="javascript:void(0);" class="editbutton" onClick="EditUser(' + ID + ')"><i class="glyphicon glyphicon-pencil"></i></a>'                    
                 }
             }
         ],
@@ -274,6 +319,7 @@ function UpdateCustomerStatus() {
 
 function changeRole(ID) {
     user_status = $("#new_role").val();
+    //alert(user_status);
     var obj = { strVal: ID, user_status: user_status };
     $.ajax({
         url: '/Users/changeRole/', dataType: 'json', type: 'Post',

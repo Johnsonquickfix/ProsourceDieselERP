@@ -13,7 +13,7 @@
     <h2>MRF Report</h2>
 </div>
 
-<section class="content content-section p-0 reports-section">
+<section class="content content-section p-0 reports-section mrf-reports-section">
     <div class="user-top-section">
         <div class="tablenav top">
             <div class="alignleft actions bulkactions">
@@ -111,6 +111,7 @@
             //var obj = { mydate: mydate };
             $('#dtdata').DataTable({
                 destroy: true,
+                "scrollX": true,
                 searching: false,
                 "ajax": {
                     "url": '/Reports/GetMRF',

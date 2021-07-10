@@ -76,7 +76,7 @@ function Datagrid(role_type, type) {
         }
         
     } else if (type.toUpperCase() == "ADMINISTRATOR") {
-        alert('ddd');
+        
         columnDefs = [
 
             {
@@ -96,7 +96,7 @@ function Datagrid(role_type, type) {
             ]
         
     } else {
-        alert('ddd');
+  
         columnDefs = [
 
             {

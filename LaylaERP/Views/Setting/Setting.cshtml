@@ -219,12 +219,17 @@
         </div>
     </div>
 </div>
+<script src="@Url.Content("~/js/Users/RolePermission.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 
 <script>
+ 
     $(document).ready(function () {
         $(document).on('click', "#btnSave", function () {
-            UpdateSetting();  
+            UpdateSetting();
+
         })
+        var loc = window.location.pathname;
+        CheckPermissions("#btnSave", "#hfEdit", "", loc);
     });
     
     function UpdateSetting() {

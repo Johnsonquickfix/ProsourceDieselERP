@@ -224,7 +224,9 @@ function dataGridLoad() {
                 'render': function (id, type, full, meta) {
                     if ($('#hfEdit').val() == "1")
                         return '<a href="../Customer/NewUser/' + id + '"><i class="glyphicon glyphicon-pencil"></i></a>'
-                    else return "";
+                    else return "No Permission";
+
+
                 }
             }
         ]

@@ -58,8 +58,6 @@ $('#btnApprove').click(function () {
         if (deletenodes == true) { if (deleteid != '') deleteid += ','; deleteid += nodes[i].id; }
     }
     ChangePermission(id, addid, editid, deleteid);
-
-
 })
 
 function ChangePermission(id, addid, editid, deleteid) {
@@ -112,10 +110,11 @@ $('#btnSaveRole').click(function () {
                 $("#roleModal").modal('hide');
                 GetRoles();
                 CopyRoles();
-                parent.location.reload();
+                //parent.location.reload();
             },
             error: function () {
                 swal("alert", "something went wrong", "error");
+                $("#roleModal").modal('hide');
             }
         })
     }

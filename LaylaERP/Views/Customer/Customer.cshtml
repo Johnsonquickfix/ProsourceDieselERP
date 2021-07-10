@@ -1,6 +1,6 @@
 ﻿
 @{ ViewBag.Title = "Customer";
-                Layout = "~/Views/Shared/_Layout.cshtml"; }
+    Layout = "~/Views/Shared/_Layout.cshtml"; }
 @*datatables CSS*@
 <link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap.min.css" rel="stylesheet" />
 <link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
@@ -12,6 +12,8 @@
             Customer
         </h1>
     </section>*@
+<input type="hidden" id="hfEdit" value="" />
+
 <div class="page-title">
     <h2 class="page-heading">Customers</h2><a href="../../Customer/NewUser" class="btn btn-danger" id="btnAddUser">Add New User</a>
 </div>
@@ -71,24 +73,22 @@
             </div>
         </div>
     </div>
-    <input type="hidden" id="hfEdit" />
 </section>
 
 <script src="@Url.Content("~/js/Customer/Customer.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 <script src="@Url.Content("~/js/Users/RolePermission.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 <script>
     $(document).ready(function () {
-       
+
 
         var loc = window.location.pathname;
-       
+
 
         $("#btnSearch").click(function () { dataGridLoad(); return false; });
-        setTimeout(function () { dataGridLoad(); CheckPermissions("#btnAddUser", "#btnAction", "", loc);}, 50);
+        setTimeout(function () { CheckPermissions("#btnAddUser", "#hfEdit", "", loc); dataGridLoad(); }, 50);
     });
 
     $('#checkAll').click(function () {
-        debugger
         var isChecked = $(this).prop("checked");
         $('#dtdata tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
     });

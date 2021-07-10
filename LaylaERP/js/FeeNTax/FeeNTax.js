@@ -49,8 +49,9 @@ function Datagrid() {
             {
                 'data': 'id', sWidth: "12%",
                 'render': function (id, type, full, meta) {
-
-                    return '<a href="../FeeNTax/CreateNew/' + id + '"><i class="glyphicon glyphicon-pencil"></i></a>'
+                    if ($('#hfEdit').val() == "1")
+                        return '<a href="../FeeNTax/CreateNew/' + id + '"><i class="glyphicon glyphicon-pencil"></i></a>'
+                    else return "No Permission";
                 }
             }
         ],

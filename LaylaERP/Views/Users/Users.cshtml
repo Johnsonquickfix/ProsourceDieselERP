@@ -5,6 +5,11 @@
     Layout = "~/Views/Shared/_UserLayout.cshtml";
 }
 
+
+<script src="~/js/common.js"></script>
+<script src="@Url.Content("~/js/Users/Users.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+<script src="@Url.Content("~/js/Users/RolePermission.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+
 @*@using (Html.BeginForm("Users", "Users", FormMethod.Post)) { }*@
 <input type="hidden" id="hfStatusType" value="" />
 <input type="hidden" id="hfroletype" value="@ViewBag.user_role" />
@@ -13,7 +18,7 @@
     $.get('/Users/GetRolesType', function (data) {
         var items = "";
         $.each(data, function (index, value) {
-            items += $('<li class="' + this['Text'].toLowerCase().replace(/ +/g, "").trim() + '"><a href="javascript:void(0);" id="' + this['Text'].trim() + '">' + this['Text'] + '(<span class="count">0</span>)</a > |</li >').appendTo("#role-ul");
+            items += $('<li class="' + this['Text'].toLowerCase().replace(/ +/g, "").trim() + '"><a href="javascript:void(0);" id="' + this['Text'] + '">' + this['Text'] + '(<span class="count">0</span>)</a > |</li >').appendTo("#role-ul");
         })
         items += $('<li class="none"><a href="#" id="norole">No role (<span class="count">0</span>)</a></li>').appendTo("#role-ul");
 
@@ -29,17 +34,17 @@
     <ul class="subsubsub" id="role-ul">
         <li class="all"><a href="#" id="all" class="current" aria-current="page">All (<span class="count">0</span>)</a> |</li>
         @*<li class="accounting"><a href="#" id="accounting">Accounting (<span class="count">0</span>)</a> |</li>
-        <li class="administrator"><a href="#" id="administrator">Administrator (<span class="count">0</span>)</a> |</li>
-        <li class="author"><a href="#" id="author">Author (<span class="count">0</span>)</a> |</li>
-        <li class="contributor"><a href="#" id="contributor">Contributor (<span class="count">0</span>)</a> |</li>
-        <li class="editor"><a href="#" id="editor">Editor (<span class="count">0</span>)</a> |</li>
-        <li class="modsquad"><a href="#" id="modsquad">Mod Squad (<span class="count">0</span>)</a> |</li>
-        <li class="shop_manager"><a href="#" id="shopmanager">Shop Manager (<span class="count">0</span>)</a> |</li>
-        <li class="subscriber"><a href="#" id="subscriber">Subscriber (<span class="count">0</span>)</a> |</li>
-        <li class="supplychainmanager"><a href="#" id="supplychainmanager">Supply Chain Manager (<span class="count">0</span>)</a> |</li>
-        <li class="wpseo_editor"><a href="#" id="seo">SEO Editor (<span class="count">0</span>)</a> |</li>
-        <li class="seomanager"><a href="#" id="seomanager">SEO Manager (<span class="count">0</span>)</a> |</li>
-        <li class="none"><a href="#" id="norole">No role (<span class="count">0</span>)</a></li>*@
+            <li class="administrator"><a href="#" id="administrator">Administrator (<span class="count">0</span>)</a> |</li>
+            <li class="author"><a href="#" id="author">Author (<span class="count">0</span>)</a> |</li>
+            <li class="contributor"><a href="#" id="contributor">Contributor (<span class="count">0</span>)</a> |</li>
+            <li class="editor"><a href="#" id="editor">Editor (<span class="count">0</span>)</a> |</li>
+            <li class="modsquad"><a href="#" id="modsquad">Mod Squad (<span class="count">0</span>)</a> |</li>
+            <li class="shop_manager"><a href="#" id="shopmanager">Shop Manager (<span class="count">0</span>)</a> |</li>
+            <li class="subscriber"><a href="#" id="subscriber">Subscriber (<span class="count">0</span>)</a> |</li>
+            <li class="supplychainmanager"><a href="#" id="supplychainmanager">Supply Chain Manager (<span class="count">0</span>)</a> |</li>
+            <li class="wpseo_editor"><a href="#" id="seo">SEO Editor (<span class="count">0</span>)</a> |</li>
+            <li class="seomanager"><a href="#" id="seomanager">SEO Manager (<span class="count">0</span>)</a> |</li>
+            <li class="none"><a href="#" id="norole">No role (<span class="count">0</span>)</a></li>*@
     </ul>
 </div>
 <div>
@@ -119,9 +124,6 @@
     <input type="hidden" id="hfEdit" />
 </section>
 
-<script src="~/js/common.js"></script>
-<script src="@Url.Content("~/js/Users/Users.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
-<script src="@Url.Content("~/js/Users/RolePermission.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 
 
 <script type="text/javascript">
@@ -129,9 +131,9 @@
     var ur = "";
 
     $(document).ready(function () {
-        
+
         var loc = window.location.pathname;
-        
+
 
         $(".subsubsub li a").click(function (e) {
             $('.subsubsub li').removeClass('current');
@@ -193,7 +195,7 @@
             $('#hfStatusType').val(role_type);
             Datagrid(role_type, $("#hfroletype").val());
         });
-        
+
         //Count Role Grid End
     });
 
@@ -205,7 +207,7 @@
     //    Datagrid(role_type, $("#hfroletype").val());
     //}
 
-   
+
 
     //CheckBoxes
     $('#checkAll').click(function () {

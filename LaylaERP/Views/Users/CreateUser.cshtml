@@ -125,7 +125,7 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="control-label" for="Post/Zip Code">Zip Code</label>
+                                    <label class="control-label" for="Zip Code">Zip Code</label>
                                     <div class="">
                                         <input type="text" id="txtPostCode" class="form-control" placeholder="Zip Code">
                                     </div>
@@ -185,7 +185,7 @@
 
 
 
-        $("#txtCity").select2({
+       /* $("#txtCity").select2({
             allowClear: true, minimumInputLength: 3, placeholder: "Search City",
             ajax: {
                 url: '/Users/GetCity', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
@@ -193,10 +193,11 @@
                 processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.City, name: item.City, id: item.City } }) }; },
                 error: function (xhr, status, err) { }, cache: true
             }
-        });
+        });*/
+
         // $("#txtCity").change(function () { setTimeout(function () { NewOrderNo(); }, 50); CustomerAddress(); return false; });
 
-        $("#txtState").select2({
+       /* $("#txtState").select2({
             allowClear: true, minimumInputLength: 3, placeholder: "Search State",
             ajax: {
                 url: '/Users/GetState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
@@ -204,7 +205,7 @@
                 processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.StateFullName, name: item.StateFullName, id: item.StateFullName } }) }; },
                 error: function (xhr, status, err) { }, cache: true
             }
-        });
+        });*/
 
         //txtState
         //$.get('GetState', function (data) {
@@ -291,7 +292,7 @@
                     else {
                         $("#txtPostCode").val("");
                         $('#hfzipstatus').val(data.status);
-                        swal('Alert', 'Post/Zip code is not valid for City and State', 'error').then(function () { swal.close(); $('#txtPostCode').focus(); });
+                        swal('Alert', 'Zip code is not valid for City and State', 'error').then(function () { swal.close(); $('#txtPostCode').focus(); });
                     }
                 },
 
@@ -480,7 +481,7 @@
             swal('Alert', 'Please Select State', 'error').then(function () { swal.close(); $('#txtState').focus(); });
         }
         else if (Zipcode == "") {
-            swal('Alert', 'Please Enter Post/Zip Code', 'error').then(function () { swal.close(); $('#txtPostCode').focus(); });
+            swal('Alert', 'Please Enter Zip Code', 'error').then(function () { swal.close(); $('#txtPostCode').focus(); });
         }
         else if ($('#txtCountry').val() == 0) {
             swal('Alert', 'Please Select Country', 'error').then(function () { swal.close(); $('#txtCountry').focus(); });

@@ -6,19 +6,20 @@
 }
 
 
-<script src="~/js/common.js"></script>
-<script src="@Url.Content("~/js/Users/Users.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
-<script src="@Url.Content("~/js/Users/RolePermission.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 
 @*@using (Html.BeginForm("Users", "Users", FormMethod.Post)) { }*@
 <input type="hidden" id="hfStatusType" value="" />
 <input type="hidden" id="hfroletype" value="@ViewBag.user_role" />
 
+<script src="~/js/common.js"></script>
+<script src="@Url.Content("~/js/Users/Users.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+<script src="@Url.Content("~/js/Users/RolePermission.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+
 <script>
-    $.get('/Users/GetRolesType', function (data) {
+    $.get('/Users/GetRolesTypeTopBar', function (data) {
         var items = "";
         $.each(data, function (index, value) {
-            items += $('<li class="' + this['Text'].toLowerCase().replace(/ +/g, "").trim() + '"><a href="javascript:void(0);" id="' + this['Text'] + '">' + this['Text'] + '(<span class="count">0</span>)</a > |</li >').appendTo("#role-ul");
+            items += $('<li class="' + this['Text'].toLowerCase().replace(/ +/g, "").trim() + '"><a href="javascript:void(0);" id="' + this['Value'] + '">' + this['Text'] + '</a > |</li >').appendTo("#role-ul"); //(<span class="count">0</span>)
         })
         items += $('<li class="none"><a href="#" id="norole">No role (<span class="count">0</span>)</a></li>').appendTo("#role-ul");
 
@@ -256,6 +257,7 @@
         $("input:checkbox[name=CheckSingle]:checked").each(function () { ID += $(this).val() + ","; });
         ID = ID.replace(/,(?=\s*$)/, '');
         changeRole(ID);
+        
     })
 
     //Grantrole

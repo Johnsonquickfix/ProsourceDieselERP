@@ -50,12 +50,26 @@
             { throw ex; }
             return dtr;
         }
+
         public static DataTable GetRolesType()
         {
             DataTable dtr = new DataTable();
             try
             {
-                string strquery = "select user_value, user_type from wp_user_classification order by user_type";
+                 string strquery = "select user_value, user_type from wp_user_classification order by user_type";                
+                dtr = SQLHelper.ExecuteDataTable(strquery);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dtr;
+        }
+
+        public static DataTable GetRolesTypeTopBar()
+        {
+            DataTable dtr = new DataTable();
+            try
+            {               
+               string strquery = "select COALESCE(meta_value) user_value, CONCAT(COALESCE(meta_value, ''), '(', count(meta_value), ')') user_type from wp_users as ur inner join wp_usermeta um on ur.id = um.user_id and um.meta_key = 'wp_capabilities' and meta_value NOT like '%customer%' and meta_value not like '%a:1%' and meta_value not like '%a:2%' and meta_value not like '%a:5%' and meta_value not like '%a:0%' and meta_value not like '%a:8%'  and meta_value  not like '%,%' GROUP BY meta_value";
                 dtr = SQLHelper.ExecuteDataTable(strquery);
             }
             catch (Exception ex)

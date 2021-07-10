@@ -128,7 +128,24 @@ namespace LaylaERP.Controllers
                 });
             }
             return Json(usertype, JsonRequestBehavior.AllowGet);
-        } 
+        }
+
+        public JsonResult GetRolesTypeTopBar()
+        {
+            DataTable dt = new DataTable();
+            dt = BAL.Users.GetRolesTypeTopBar();
+            List<SelectListItem> usertype = new List<SelectListItem>();
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                usertype.Add(new SelectListItem
+                {
+                    Value = dt.Rows[i]["user_value"].ToString(),
+                    Text = dt.Rows[i]["user_type"].ToString()
+
+                });
+            }
+            return Json(usertype, JsonRequestBehavior.AllowGet);
+        }
 
         public JsonResult GetMenuNames()
         {

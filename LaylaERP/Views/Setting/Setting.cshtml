@@ -229,7 +229,7 @@
 
         })
         var loc = window.location.pathname;
-        CheckPermissions("#btnSave", "#hfEdit", "", loc);
+        CheckPermissions("#btnSave", "", "", loc);
     });
     
     function UpdateSetting() {
@@ -332,7 +332,7 @@
     }
 
     $(document).ajaxStop(function(){
-    window.location.reload();
+    //window.location.reload();
 });
 </script>
 

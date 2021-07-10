@@ -12,7 +12,7 @@
             Customer
         </h1>
     </section>*@
-<input type="hidden" id="hfEdit" value="" />
+
 
 <div class="page-title">
     <h2 class="page-heading">Customers</h2><a href="../../Customer/NewUser" class="btn btn-danger" id="btnAddUser">Add New User</a>
@@ -48,6 +48,7 @@
                 </select>
                 <button type="button" id="btnChange" class="btn btn-primary btn-flat button">Change</button>
             </div>
+            <label id="hfEdit">Label</label>
         </div>
     </div>
     <!-- end top-->
@@ -74,13 +75,11 @@
         </div>
     </div>
 </section>
-
+@*<input type="hidden" id="hfEdit" value="" />*@
 <script src="@Url.Content("~/js/Customer/Customer.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 <script src="@Url.Content("~/js/Users/RolePermission.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 <script>
     $(document).ready(function () {
-
-
         var loc = window.location.pathname;
 
 

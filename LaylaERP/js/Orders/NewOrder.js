@@ -390,7 +390,7 @@ function bindCustomerOrders(id) {
                             let defval = row.IsDefault != '' ? '<span class="label label-success">' + row.IsDefault + '</span>' : '';
                             let val = ' data-bfn="' + row.billing_first_name + '" data-bln="' + row.billing_last_name + '" data-ba1="' + row.billing_address_1 + '" data-ba2="' + row.billing_address_2 + '" data-bc="' + row.billing_city + '" data-bs="' + row.billing_state + '" data-bct="' + row.billing_country + '" data-bpc="' + row.billing_postcode + '" data-bp="' + row.billing_phone + '" data-bem="' + row.billing_email + '"';
                             val += ' data-sfn="' + row.shipping_first_name + '" data-sln="' + row.shipping_last_name + '" data-sa1="' + row.shipping_address_1 + '" data-sa2="' + row.shipping_address_2 + '" data-sc="' + row.shipping_city + '" data-ss="' + row.shipping_state + '" data-sct="' + row.billing_country + '" data-spc="' + row.shipping_postcode + '"';
-                            return defval + ' <button type="button" id="btnUseAddress" class="btn btn-danger hidden" onclick="selectOrderAddress(this);" ' + val + '>Use Address</button>'
+                            return defval + ' <button type="button" id="btnUseAddress" class="btn btn-danger hidden" onclick="selectOrderAddress(this);" ' + val + '>Use Address for Order</button>'
                             //return '<a href="javascript:;" class="glyphicon glyphicon glyphicon-check" onclick="selectOrderAddress(this);" ' + val + '></a>';
                         }
                     }

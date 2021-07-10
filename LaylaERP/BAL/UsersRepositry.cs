@@ -721,13 +721,30 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
+        public int CheckDuplicateUserRole(UserClassification model)
+        {
+            try
+            {
+                string strquery = "select count(User_Type) from wp_user_classification where User_Type = '" + model.User_Type + "' ";
+                MySqlParameter[] para =
+                {
 
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strquery).ToString());
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+     
         //Add role
         public int AddNewRole(UserClassification model)
         {
             try
             {
-                string strsql = "insert into wp_user_classification(User_Type)values(@User_Type);SELECT LAST_INSERT_ID();";
+                string strsql = "insert into wp_user_classification(User_Type,User_Value)values(@User_Type,@User_Type);SELECT LAST_INSERT_ID();";
                 MySqlParameter[] para =
                 {
                     new MySqlParameter("@User_Type", model.User_Type),

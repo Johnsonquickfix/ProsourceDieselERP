@@ -230,9 +230,14 @@ function dataGridLoad() {
             {
                 'data': 'id', sWidth: "8%",
                 'render': function (id, type, full, meta) {
-                    if ($('#hfEdit').val() == "1")
-                        return '<a href="../Customer/NewUser/' + id + '"><i class="glyphicon glyphicon-pencil"></i></a>'
-                    else return "";
+                    debugger
+                    if (sessionStorage.hfEdit == "1") {
+                        return '<a href="../Customer/NewUser/' + id + '"><i class="glyphicon glyphicon-pencil"></i></a>';
+                        sessionStorage.removeItem(hfEdit);
+                    }
+                    else { return "No Permission"; }
+
+
                 }
             }
         ]

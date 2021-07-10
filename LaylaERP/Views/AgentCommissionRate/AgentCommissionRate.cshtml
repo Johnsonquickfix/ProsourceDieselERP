@@ -10,7 +10,7 @@
 <script src="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/js/dataTables.bootstrap.min.js" type="text/javascript"></script>
 
 <div class="page-title">
-    <h2 class="page-heading">Commission Rate</h2><a class="btn btn-danger" href="AddCommissionRate">Add</a>
+    <h2 class="page-heading">Commission Rate</h2><a class="btn btn-danger" href="AddCommissionRate" id="btnAdd">Add</a>
 </div>
 <div class="userrole_section commission-section section_wrapper table-design">
     @*<form id="saveForm" name="saveForm" method="post" autocomplete="off">*@
@@ -31,17 +31,23 @@
     </div>
     @*</form>*@
 </div>
+<input type="hidden" id="hfEdit" />
 
-
+<script src="@Url.Content("~/js/Users/RolePermission.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 
 <script type="text/javascript">
     $(document).ready(function () {
-        MenuGrid();
 
+        var loc = window.location.pathname;
+        CheckPermissions("#btnAdd", "#hfEdit", "", loc);
+
+        MenuGrid();
     })
 </script>
 
 <script>
+
+
     function MenuGrid() {
 
         $.ajax({
@@ -63,7 +69,11 @@
                         {
                             'data': 'id', sWidth: "10%",
                             'render': function (id, type, full, meta) {
-                                return '<a href="javascript:void(0);" onClick="EditUser(' + id + ')"><i class="glyphicon glyphicon-pencil"></i></a>'
+                                if (sessionStorage.hfEdit == "1") {
+                                    return '<a href="javascript:void(0);" onClick="EditUser(' + id + ')"><i class="glyphicon glyphicon-pencil"></i></a>'
+                                    sessionStorage.removeItem(hfEdit);
+                                }
+                                else { return "No Permission"; }
                             }
                         }
                     ],

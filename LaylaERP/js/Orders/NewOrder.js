@@ -327,9 +327,9 @@ function searchOrderModal() {
     myHtml += '</select>';
     myHtml += '</div>';
     myHtml += '</div>';
-    myHtml += '<div class="col-md-4">';
-    myHtml += '<button type="button" id="btnSelectDefaltAddress" class="btn btn-danger billinfo">Select Default Address</button>';
-    myHtml += '</div>';
+    //myHtml += '<div class="col-md-4">';
+    //myHtml += '<button type="button" id="btnSelectDefaltAddress" class="btn btn-danger billinfo">Select Default Address</button>';
+    //myHtml += '</div>';
     myHtml += '</div>';
     myHtml += '<div class="box box-primary mt-1">';
     myHtml += '<div class="box-body">';
@@ -339,13 +339,10 @@ function searchOrderModal() {
     myHtml += '<table id="tblCusOrders" class="table table-blue check-table table-bordered table-striped dataTable tablelist">';
     myHtml += '<thead class="thead-dark">';
     myHtml += '<tr>';
-    myHtml += '<th style="width: 10%">No</th>';
-    myHtml += '<th style="width: 15%">Creation Date</th>';
-    myHtml += '<th style="width: 25%">Billing Address</th>';
-    myHtml += '<th style="width: 25%">Shipping Address</th>';
-    myHtml += '<th style="width: 10%">Amount</th>';
-    myHtml += '<th style="width: 10%">Status</th>';
-    myHtml += '<th class="text-center" style="width: 10%">Actions</th>';
+    myHtml += '<th style="width: 15%">No</th>';
+    myHtml += '<th style="width: 35%">Billing Address</th>';
+    myHtml += '<th style="width: 35%">Shipping Address</th>';
+    myHtml += '<th class="text-center" style="width: 15%">Actions</th>';
     myHtml += '</tr>';
     myHtml += '</thead>';
     myHtml += '<tbody></tbody>';
@@ -363,14 +360,18 @@ function searchOrderModal() {
 function bindCustomerOrders(id) {
     let opt = { strValue1: parseInt(id) || 0 };
     $.ajax({
-        type: "post", url: '/Orders/GetCustomersOrderList', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
+        type: "post", url: '/Orders/GetCustomersAddresssList', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
         success: function (data) {
             $('#tblCusOrders').dataTable({
                 destroy: true,
                 data: JSON.parse(data), order: [[0, "desc"]],
                 columns: [
-                    { data: 'ID', title: 'NO', sWidth: "10%" },
-                    { data: 'post_date', title: 'CREATION DATE', sWidth: "10%" },
+                    {
+                        data: 'customer_id', title: 'NO', sWidth: "10%",
+                        render: function (data, type, full, meta) {
+                            return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="ShowUseAddress(this);" value="' + $('<div/>').text(data).html() + '"><label></label>';
+                        }
+                    },
                     {
                         data: 'billing_first_name', title: 'BILLING ADDRESS', sWidth: "25%", render: function (data, type, row) {
                             let val = '<address class="no-margin">' + row.billing_first_name + ' ' + row.billing_last_name + '<br>' + row.billing_address_1 + (row.billing_address_2 > 0 ? '<br>' : '') + row.billing_address_2 + '<br>' + row.billing_city + ' ,' + row.billing_state + ' ' + row.billing_postcode + '<br>Phone: ' + row.billing_phone + '<br>Email: ' + row.billing_email + '</address>';
@@ -383,27 +384,14 @@ function bindCustomerOrders(id) {
                             return val;
                         }
                     },
-                    { data: 'total_sales', title: 'Order Total', sWidth: "10%", className: "text-right", render: $.fn.dataTable.render.number(',', '.', 2, '') },
                     {
-                        data: 'post_status', title: 'Status', sWidth: "10%", render: function (data, type, row) {
-                            if (data == 'wc-pending') return 'Pending payment';
-                            else if (data == 'wc-processing') return 'Processing';
-                            else if (data == 'wc-on-hold') return 'On hold';
-                            else if (data == 'wc-completed') return 'Completed';
-                            else if (data == 'wc-cancelled') return 'Cancelled';
-                            else if (data == 'wc-refunded') return 'Refunded';
-                            else if (data == 'wc-failed') return 'Failed';
-                            else if (data == 'draft') return 'draft';
-                            else return '-';
-                        }
-                    },
-                    {
-                        'data': 'order_id', sWidth: "10%", class: "text-center",
+                        'data': 'customer_id', sWidth: "10%", class: "text-center",
                         'render': function (id, type, row, meta) {
+                            let defval = row.IsDefault != '' ? '<span class="label label-success">' + row.IsDefault + '</span>' : '';
                             let val = ' data-bfn="' + row.billing_first_name + '" data-bln="' + row.billing_last_name + '" data-ba1="' + row.billing_address_1 + '" data-ba2="' + row.billing_address_2 + '" data-bc="' + row.billing_city + '" data-bs="' + row.billing_state + '" data-bct="' + row.billing_country + '" data-bpc="' + row.billing_postcode + '" data-bp="' + row.billing_phone + '" data-bem="' + row.billing_email + '"';
                             val += ' data-sfn="' + row.shipping_first_name + '" data-sln="' + row.shipping_last_name + '" data-sa1="' + row.shipping_address_1 + '" data-sa2="' + row.shipping_address_2 + '" data-sc="' + row.shipping_city + '" data-ss="' + row.shipping_state + '" data-sct="' + row.billing_country + '" data-spc="' + row.shipping_postcode + '"';
-
-                            return '<a href="javascript:;" class="glyphicon glyphicon glyphicon-check" onclick="selectOrderAddress(this);" ' + val + '></a>';
+                            return defval + ' <button type="button" id="btnUseAddress" class="btn btn-danger hidden" onclick="selectOrderAddress(this);" ' + val + '>Use Address</button>'
+                            //return '<a href="javascript:;" class="glyphicon glyphicon glyphicon-check" onclick="selectOrderAddress(this);" ' + val + '></a>';
                         }
                     }
                 ]
@@ -412,6 +400,14 @@ function bindCustomerOrders(id) {
         error: function (xhr, ajaxOptions, thrownError) { alert(xhr.responseText); },
         async: false
     });
+}
+function ShowUseAddress(chk) {
+    var isChecked = $(chk).prop("checked");
+    if (isChecked == false)
+        $(chk).parent().parent().find('#btnUseAddress').addClass('hidden');
+    else {
+        $(chk).parent().parent().find('#btnUseAddress').removeClass('hidden');
+    }
 }
 function selectOrderAddress(ele) {
     let cus_id = parseInt($("#ddlCustomerSearch").val()) || 0, cus_text = $("#ddlCustomerSearch option:selected").text();

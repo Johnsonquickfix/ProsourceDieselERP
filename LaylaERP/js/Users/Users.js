@@ -40,32 +40,43 @@ function Datagrid(role_type, type) {
     var columnDefs = [
     ]
     
-    if (type.toUpperCase() == "ADMINISTRATOR") {
-        columnDefs = [
+    
+    if ($('#hfEdit').val() == 1 ) {
+        if (type.toUpperCase() == "ADMINISTRATOR") {
+            columnDefs = [
 
-            {
 
-                "targets": [5],
-                "visible": false
-            },
-            {
-                "targets": [6],
-                "visible": false
-            },
-        ]
-    }
+                {
 
-    if ($('#hfEdit').val() == 1) {
-        columnDefs = [
+                    "targets": [5],
+                    "visible": false
+                },
+                {
+                    "targets": [6],
+                    "visible": false
+                },
+                {
 
-            {
+                    "targets": [7],
+                    "visible": true
+                },
 
-                "targets": [7],
-                "visible": true
-            }
             ]
-    } else if (type.toUpperCase() == "ADMINISTRATOR") {
+        }
+        else {
+            columnDefs = [
 
+                {
+
+                    "targets": [7],
+                    "visible": true
+                },
+
+            ]
+        }
+        
+    } else if (type.toUpperCase() == "ADMINISTRATOR") {
+        alert('ddd');
         columnDefs = [
 
             {
@@ -85,6 +96,7 @@ function Datagrid(role_type, type) {
             ]
         
     } else {
+        alert('ddd');
         columnDefs = [
 
             {

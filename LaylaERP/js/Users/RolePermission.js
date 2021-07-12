@@ -7,7 +7,6 @@
         success: function (data) {
             data = JSON.parse(data); 
             sessionStorage.setItem("hfEdit", JSON.stringify(data[0].edit_));
-            console.log(sessionStorage.hfEdit);
             $(hfEdit).val(data[0].edit_);
             if (data[0].add_ == 1) { $(add).show(); } else { $(add).remove(); }
             if (data[0].delete_ == 1) { $(del).show(); } else { $(del).remove(); }

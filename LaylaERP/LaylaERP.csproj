@@ -512,8 +512,8 @@
     <Content Include="Content\easyui\images\tagbox_icons.png" />
     <Content Include="Content\easyui\images\tree_icons.png" />
     <Content Include="Content\easyui\images\validatebox_warning.png" />
+    <Content Include="Content\easyui\jquery.easyui.min2.js" />
     <Content Include="Content\easyui\jquery.easyui.min.js" />
-    <Content Include="Content\easyui\jquery.easyui.min1.js" />
     <Content Include="Content\fontawesome-all.min.css" />
     <Content Include="Content\img\flags%402x.png" />
     <Content Include="Content\img\flags.png" />

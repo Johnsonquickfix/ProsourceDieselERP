@@ -24,19 +24,19 @@ function CopyRoles() {
     })
 };
 
-function Singlecheck() {
-    var isChecked = $('#CheckSingle').prop("checked");
-    var isHeaderChecked = $("#checkAll").prop("checked");
-    if (isChecked == false && isHeaderChecked)
-        $("#checkAll").prop('checked', isChecked);
-    else {
-        $('#dtdata tr:has(td)').find('input[type="checkbox"]').each(function () {
-            if ($(this).prop("checked") == false)
-                isChecked = false;
-        });
-        $("#checkAll").prop('checked', isChecked);
-    }
-}
+//function Singlecheck() {
+//    var isChecked = $('#CheckSingle').prop("checked");
+//    var isHeaderChecked = $("#checkAll").prop("checked");
+//    if (isChecked == false && isHeaderChecked)
+//        $("#checkAll").prop('checked', isChecked);
+//    else {
+//        $('#dtdata tr:has(td)').find('input[type="checkbox"]').each(function () {
+//            if ($(this).prop("checked") == false)
+//                isChecked = false;
+//        });
+//        $("#checkAll").prop('checked', isChecked);
+//    }
+//}
 //checkbox end
 
 //Give Permission
@@ -192,15 +192,14 @@ function fillCheckMenu() {
                 idField: 'id',
                 treeField: 'text',
                 height: '100%',
-                onCheck: function (node, checked) {
-                    $('#chk_add_' + node.id).prop('checked', checked);
-                    $('#chk_edit_' + node.id).prop('checked', checked);
-                    $('#chk_del_' + node.id).prop('checked', checked);
-                    console.log(node);
-                    if (node.level == 1) {
-
-                    }
-                },
+                //onCheck: function (node, checked) {
+                //    $('#chk_add_' + node.id).prop('checked', checked);
+                //    $('#chk_edit_' + node.id).prop('checked', checked);
+                //    $('#chk_del_' + node.id).prop('checked', checked);
+                //    console.log(node);
+                //    if (node.level == 1) {
+                //    }
+                //},
             });
             collapseAll();
         },
@@ -212,86 +211,85 @@ function collapseAll() {
     $('#tt').tree('collapseAll');
 }
 
-$('#checkAdd').click(function () {
+//$('#checkAdd').click(function () {
 
-    //var nodes = $('#tt').tree('getChecked', ['checked', 'unchecked']);
-    var nodes = $('#tt').tree('getChecked', ['checked', 'unchecked']);
-    var isChecked = $('#checkAdd').prop("checked");
-    for (var i = 0; i < nodes.length; i++) {
-        if (isChecked == true) {
-            $('#chk_add_' + nodes[i].id).prop('checked', true);
-        }
-        else {
-            $('#chk_add_' + nodes[i].id).prop('checked', false);
-        }
-    }
+//    //var nodes = $('#tt').tree('getChecked', ['checked', 'unchecked']);
+//    var nodes = $('#tt').tree('getChecked', ['checked', 'unchecked']);
+//    var isChecked = $('#checkAdd').prop("checked");
+//    for (var i = 0; i < nodes.length; i++) {
+//        if (isChecked == true) {
+//            $('#chk_add_' + nodes[i].id).prop('checked', true);
+//        }
+//        else {
+//            $('#chk_add_' + nodes[i].id).prop('checked', false);
+//        }
+//    }
  
-});
-$('#checkEdit').click(function () {
-    var nodes = $('#tt').tree('getChecked', ['checked', 'unchecked']);
-    var isChecked = $('#checkEdit').prop("checked");
-    for (var i = 0; i < nodes.length; i++) {
-        if (isChecked == true) {
-            $('#chk_edit_' + nodes[i].id).prop('checked', true);
-        }
-        else {
-            $('#chk_edit_' + nodes[i].id).prop('checked', false);
-        }
-    }
-});
-$('#checkDelete').click(function () {
-    var nodes = $('#tt').tree('getChecked', ['checked', 'unchecked']);
-    var isChecked = $('#checkDelete').prop("checked");
-    for (var i = 0; i < nodes.length; i++) {
-        if (isChecked == true) {
-            $('#chk_del_' + nodes[i].id).prop('checked', true);
-        }
-        else {
-            $('#chk_del_' + nodes[i].id).prop('checked', false);
-        }
-    }
-});
-$('#checkAll').click(function () {
-    var isChecked = $(this).prop("checked");
-    var roots = $('#tt').tree('getRoots');  // because it can be more roots
-    for (var i = 0; i < roots.length; i++) {
-        if (isChecked)
-            $("#tt").tree('check', roots[i].target);
-        else
-            $("#tt").tree('uncheck', roots[i].target);
-    };
-   
+//});
+//$('#checkEdit').click(function () {
+//    var nodes = $('#tt').tree('getChecked', ['checked', 'unchecked']);
+//    var isChecked = $('#checkEdit').prop("checked");
+//    for (var i = 0; i < nodes.length; i++) {
+//        if (isChecked == true) {
+//            $('#chk_edit_' + nodes[i].id).prop('checked', true);
+//        }
+//        else {
+//            $('#chk_edit_' + nodes[i].id).prop('checked', false);
+//        }
+//    }
+//});
+//$('#checkDelete').click(function () {
+//    var nodes = $('#tt').tree('getChecked', ['checked', 'unchecked']);
+//    var isChecked = $('#checkDelete').prop("checked");
+//    for (var i = 0; i < nodes.length; i++) {
+//        if (isChecked == true) {
+//            $('#chk_del_' + nodes[i].id).prop('checked', true);
+//        }
+//        else {
+//            $('#chk_del_' + nodes[i].id).prop('checked', false);
+//        }
+//    }
+//});
 
-});
+//$('#checkAll').click(function () {
+//    var isChecked = $(this).prop("checked");
+//    var roots = $('#tt').tree('getRoots');  // because it can be more roots
+//    for (var i = 0; i < roots.length; i++) {
+//        if (isChecked)
+//            $("#tt").tree('check', roots[i].target);
+//        else
+//            $("#tt").tree('uncheck', roots[i].target);
+//    };
+//});
 
-function checkchange(elem,_Action) {
+function checkchange(elem) {
     var myNode = $('#tt').tree('find', $(elem).data("id"));
     var add = $('#chk_add_' + myNode.id).prop('checked');
     var edit = $('#chk_edit_' + myNode.id).prop('checked');
     var del = $('#chk_del_' + myNode.id).prop('checked');
 
-    var isChecked = $(myNode).prop("checked");
-    if (isChecked) {
-        if (add || edit || del) {
-            $("#tt").tree('check', myNode.target);
-        }
-        else {    
-            $("#tt").tree('uncheck', myNode.target);
-        }
-    }
-    else {
-        $("#tt").tree('check', myNode.target);
-    }
+    //var isChecked = $(myNode).prop("checked");
+    //if (isChecked) {
+    //    if (add || edit || del) {
+    //        $("#tt").tree('check', myNode.target);
+    //    }
+    //    else {    
+    //        $("#tt").tree('uncheck', myNode.target);
+    //    }
+    //}
+    //else {
+    //    $("#tt").tree('check', myNode.target);
+    //}
 }
 
-function rootChange() {
-    var roots = $('#tt').tree('getRoots');  
-    for (var i = 0; i < roots.length; i++) {
-        if (isChecked)
-            $("#tt").tree('check', roots[i].target);
-        else
-            $("#tt").tree('uncheck', roots[i].target);
-    };
-    console.log(roots);
-}
+//function rootChange() {
+//    var roots = $('#tt').tree('getRoots');  
+//    for (var i = 0; i < roots.length; i++) {
+//        if (isChecked)
+//            $("#tt").tree('check', roots[i].target);
+//        else
+//            $("#tt").tree('uncheck', roots[i].target);
+//    };
+//    console.log(roots);
+//}
 

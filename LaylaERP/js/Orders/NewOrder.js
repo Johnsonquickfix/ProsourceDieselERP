@@ -656,9 +656,9 @@ function getOrderInfo() {
 
                     //bind Product
                     getOrderItemList(oid);
-                    if (data[0].status.trim() == "wc-pending") {
-                        $('.box-tools').append('<a class="btn btn-danger" href="javascript:;" id="btnEditOrder"><i class="glyphicon glyphicon-edit"></i> Edit</a>');
-                    }
+                    //if (data[0].status.trim() == "wc-pending") {
+                    $('.box-tools').append('<a class="btn btn-danger" href="javascript:;" id="btnEditOrder"><i class="glyphicon glyphicon-edit"></i> Edit</a>');
+                    //}
                 }
             },
             complete: function () { $("#loader").hide(); $('.billinfo').prop("disabled", true); },
@@ -1476,9 +1476,13 @@ function saveCO() {
     $('#btnCheckout').prop("disabled", true); $('.billinfo').prop("disabled", true); $('#btnCheckout').text("Waiting...");
     //console.log(obj);
     //$('#btnPlaceOrder').prop("disabled", false); return false;
+    let sURL = "/Orders/SaveCustomerOrder";
+    if ($('#ddlStatus').val() == 'wc-processing' || $('#ddlStatus').val() == 'wc-on-hold' || $('#ddlStatus').val() == 'wc-completed')
+        sURL = "/Orders/UpdateCustomerOrder";
+
     $.ajax({
         type: "POST", contentType: "application/json; charset=utf-8",
-        url: "/Orders/SaveCustomerOrder", // Controller/View
+        url: sURL, // Controller/View
         data: JSON.stringify(obj), dataType: "json", beforeSend: function () { $("#loader").show(); },
         success: function (data) {
             if (data.status == true) {

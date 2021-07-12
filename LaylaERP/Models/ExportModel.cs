@@ -55,6 +55,7 @@ namespace LaylaERP.Models
         public string shipping_amount { get; set; }
         public string handling_amount { get; set; }
         public string Discount { get; set; }
+        public string coupon { get; set; }
         public List<Export_Details> exportdetails { get; set; }
 
 
@@ -156,6 +157,11 @@ namespace LaylaERP.Models
             get { return _user_status; }
             set { _user_status = value; }
         }
+        public string user_address
+        {
+            get;
+            set;
+        }
 
         public long UID
         {
@@ -211,5 +217,7 @@ namespace LaylaERP.Models
             set;
         }
         public string customerdate_created { get; set; }
+
+       
     }
 }

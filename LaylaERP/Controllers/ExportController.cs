@@ -33,7 +33,7 @@ namespace LaylaERP.Controllers
         [HttpPost]
         public JsonResult UsersExport(string from_dateusers, string to_dateusers, string rolee)
         {
-            if(rolee=="")
+            if (rolee == "")
             {
                 rolee = "NULL";
             }

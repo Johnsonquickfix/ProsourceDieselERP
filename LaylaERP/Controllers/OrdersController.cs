@@ -254,6 +254,18 @@
             return Json(result, 0);
         }
         [HttpPost]
+        public JsonResult GetCustomersAddresssList(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            try
+            {
+                DataTable dt = OrderRepository.SearchCustomerAddress(model.strValue1);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
+        [HttpPost]
         public JsonResult ChangeOrderStatus(OrderPostStatusModel model)
         {
             string strID = model.strVal;

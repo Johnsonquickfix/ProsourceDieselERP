@@ -205,6 +205,11 @@ namespace LaylaERP.Models
             get;
             set;
         }
+        public string customer_name
+        {
+            get;
+            set;
+        }
         public string customerdate_created { get; set; }
     }
 }

@@ -435,7 +435,7 @@
                 }
 
                 /// step 6 : wp_posts
-                strSql.Append(string.Format(" update wp_posts set post_status = '{0}' ,comment_status = 'closed' where id = {1} ", model.OrderPostStatus.status, model.OrderPostStatus.order_id));
+                strSql.Append(string.Format(" update wp_posts set post_status = '{0}' ,comment_status = 'closed',post_modified = '{1}',post_modified_gmt = '{2}' where id = {3} ", model.OrderPostStatus.status, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"), model.OrderPostStatus.order_id));
 
                 result = SQLHelper.ExecuteNonQuery(strSql.ToString());
             }
@@ -555,11 +555,13 @@
                 {
                     new MySqlParameter("order_id", OrderID)
                 };
-                string strSQl = "select oi.order_id,oi.order_item_name,oi.order_item_type,"
-                            + " max(case meta_key when '_product_id' then meta_value else '' end) p_id,max(case meta_key when '_variation_id' then meta_value else '' end) v_id,"
+                string strSQl = "select oi.order_id,oi.order_item_name,oi.order_item_type,max(case meta_key when '_product_id' then meta_value else '' end) p_id,max(case meta_key when '_variation_id' then meta_value else '' end) v_id,"
                             + " max(case meta_key when '_qty' then meta_value else '' end) qty,max(case meta_key when '_line_subtotal' then meta_value else '' end) line_subtotal,"
                             + " max(case meta_key when '_line_total' then meta_value else '' end) line_total,max(case meta_key when '_line_tax' then meta_value else '' end) tax,"
-                            + " max(case meta_key when 'discount_amount' then meta_value else '' end) discount_amount,max(case meta_key when 'cost' then meta_value else '' end) shipping_amount"
+                            + " max(case meta_key when 'discount_amount' then meta_value else '' end) discount_amount,max(case meta_key when 'cost' then meta_value else '' end) shipping_amount,"
+                            + " (select COALESCE(psr.meta_value, 0) sale_price from wp_postmeta psr where psr.meta_key = '_price' "
+                            + "         and psr.post_id = (case when max(case oim.meta_key when '_variation_id' then oim.meta_value else '' end) != '0' then max(case oim.meta_key when '_variation_id' then oim.meta_value else '' end)"
+                            + "             else max(case oim.meta_key when '_product_id' then oim.meta_value else '' end) end)) sale_price"
                             + " from wp_woocommerce_order_items oi"
                             + " inner join wp_woocommerce_order_itemmeta oim on oim.order_item_id = oi.order_item_id"
                             + " where oi.order_id = @order_id"
@@ -588,27 +590,26 @@
                         else
                             productsModel.variation_id = 0;
 
-                        //if (sdr["price"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["price"].ToString().Trim()))
-                        //    productsModel.price = decimal.Parse(sdr["price"].ToString());
-                        //else
-                        //    productsModel.price = 0;
+                        if (sdr["line_subtotal"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["line_subtotal"].ToString().Trim()))
+                            productsModel.price = decimal.Parse(sdr["line_subtotal"].ToString());
+                        else
+                            productsModel.price = 0;
                         if (sdr["qty"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["qty"].ToString().Trim()))
                             productsModel.quantity = decimal.Parse(sdr["qty"].ToString().Trim());
                         else
                             productsModel.quantity = 0;
-                        if (sdr["line_subtotal"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["line_subtotal"].ToString().Trim()))
-                            productsModel.sale_price = decimal.Parse(sdr["line_subtotal"].ToString().Trim());
+                        if (sdr["sale_price"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["sale_price"].ToString().Trim()))
+                            productsModel.sale_price = decimal.Parse(sdr["sale_price"].ToString().Trim());
                         else
-                            productsModel.sale_price = productsModel.price;
-                        productsModel.reg_price = productsModel.sale_price;
-                        productsModel.total = productsModel.sale_price;
-                        productsModel.reg_price = productsModel.sale_price / productsModel.quantity;
+                            productsModel.sale_price = 0;
+                        productsModel.reg_price = productsModel.price / productsModel.quantity;
+                        productsModel.total = productsModel.price;
+
                         if (sdr["line_total"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["line_total"].ToString().Trim()))
                             productsModel.discount = decimal.Parse(sdr["line_total"].ToString().Trim());
                         else
                             productsModel.discount = 0;
                         productsModel.discount = productsModel.discount <= productsModel.total ? productsModel.total - productsModel.discount : 0;
-
                         if (sdr["tax"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["tax"].ToString().Trim()))
                             productsModel.tax_amount = decimal.Parse(sdr["tax"].ToString().Trim());
                         else
@@ -616,8 +617,8 @@
 
 
                         ///// free item
-                        if (productsModel.product_id == 78676) { productsModel.is_free = true;  }
-                        else if (productsModel.product_id == 632713) { productsModel.is_free = true;  }
+                        if (productsModel.product_id == 78676) { productsModel.is_free = true; }
+                        else if (productsModel.product_id == 632713) { productsModel.is_free = true; }
                         else productsModel.is_free = false;
 
                         /// 
@@ -822,6 +823,44 @@
                             + " LEFT OUTER JOIN wp_postmeta pm on pm.post_id = po.ID "
                             + " WHERE po.post_type = 'shop_order' " + strWhr
                             + " group by po.ID,po.post_date,po.post_status ,os.customer_id,os.total_sales order by ID desc limit 0, 1000";
+
+                dt = SQLHelper.ExecuteDataTable(strSql);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+        public static DataTable SearchCustomerAddress(string CustomerID)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                string strSql = "SELECT 'Default' IsDefault,user_id customer_id,max(case when meta_key = 'billing_first_name' then meta_value else '' end) billing_first_name,max(case when meta_key = 'billing_last_name' then meta_value else '' end) billing_last_name,"
+                                + " max(case when meta_key = 'billing_address_1' then meta_value else '' end) billing_address_1,max(case when meta_key = 'billing_address_2' then meta_value else '' end) billing_address_2,"
+                                + " max(case when meta_key = 'billing_city' then meta_value else '' end) billing_city,max(case when meta_key = 'billing_state' then meta_value else '' end) billing_state,"
+                                + " max(case when meta_key = 'billing_postcode' then meta_value else '' end) billing_postcode,max(case when meta_key = 'billing_country' then meta_value else '' end) billing_country,"
+                                + " max(case when meta_key = 'billing_email' then meta_value else '' end) billing_email,max(case when meta_key = 'billing_phone' then replace(replace(replace(replace(meta_value, '-', ''), ' ', ''), '(', ''), ')', '') else '' end) billing_phone,"
+                                + " max(case when meta_key = 'shipping_first_name' then meta_value else '' end) shipping_first_name,max(case when meta_key = 'shipping_last_name' then meta_value else '' end) shipping_last_name,"
+                                + " max(case when meta_key = 'shipping_address_1' then meta_value else '' end) shipping_address_1,max(case when meta_key = 'shipping_address_2' then meta_value else '' end) shipping_address_2,"
+                                + " max(case when meta_key = 'shipping_city' then meta_value else '' end) shipping_city,max(case when meta_key = 'shipping_state' then meta_value else '' end) shipping_state,"
+                                + " max(case when meta_key = 'shipping_postcode' then meta_value else '' end) shipping_postcode,max(case when meta_key = 'shipping_country' then meta_value else '' end) shipping_country"
+                                + " FROM wp_usermeta WHERE user_id = 61788 and(meta_key like 'billing_%' OR meta_key like 'shipping_%') group by user_id"
+                                + " UNION ALL "
+                                + " select distinct '' IsDefault,customer_id,billing_first_name,billing_last_name,billing_address_1,billing_address_2,billing_city,billing_state,billing_postcode,billing_country,"
+                                + " billing_email,billing_phone,shipping_first_name,shipping_last_name,shipping_address_1,shipping_address_2,shipping_city,shipping_state,shipping_postcode,shipping_country from"
+                                + " (SELECT po.ID, os.customer_id, max(case when pm.meta_key = '_billing_first_name' then pm.meta_value else '' end) billing_first_name,max(case when pm.meta_key = '_billing_last_name' then pm.meta_value else '' end) billing_last_name,"
+                                + " max(case when pm.meta_key = '_billing_address_1' then pm.meta_value else '' end) billing_address_1,max(case when pm.meta_key = '_billing_address_2' then pm.meta_value else '' end) billing_address_2,"
+                                + " max(case when pm.meta_key = '_billing_city' then pm.meta_value else '' end) billing_city,max(case when pm.meta_key = '_billing_state' then pm.meta_value else '' end) billing_state,"
+                                + " max(case when pm.meta_key = '_billing_postcode' then pm.meta_value else '' end) billing_postcode,max(case when pm.meta_key = '_billing_country' then pm.meta_value else '' end) billing_country,"
+                                + " max(case when pm.meta_key = '_billing_email' then pm.meta_value else '' end) billing_email,max(case when pm.meta_key = '_billing_phone' then replace(replace(replace(replace(pm.meta_value, '-', ''), ' ', ''), '(', ''), ')', '') else '' end) billing_phone,"
+                                + " max(case when pm.meta_key = '_shipping_first_name' then pm.meta_value else '' end) shipping_first_name,max(case when pm.meta_key = '_shipping_last_name' then pm.meta_value else '' end) shipping_last_name,"
+                                + " max(case when pm.meta_key = '_shipping_address_1' then pm.meta_value else '' end) shipping_address_1,max(case when pm.meta_key = '_shipping_address_2' then pm.meta_value else '' end) shipping_address_2,"
+                                + " max(case when pm.meta_key = '_shipping_city' then pm.meta_value else '' end) shipping_city,max(case when pm.meta_key = '_shipping_state' then pm.meta_value else '' end) shipping_state,"
+                                + " max(case when pm.meta_key = '_shipping_postcode' then pm.meta_value else '' end) shipping_postcode,max(case when pm.meta_key = '_shipping_country' then pm.meta_value else '' end) shipping_country"
+                                + " FROM wp_posts po inner join wp_wc_order_stats os on po.id = os.order_id LEFT OUTER JOIN wp_postmeta pm on pm.post_id = po.ID"
+                                + " WHERE po.post_type = 'shop_order' and os.customer_id = '" + CustomerID + "' group by po.ID,os.customer_id ) tt";
 
                 dt = SQLHelper.ExecuteDataTable(strSql);
             }

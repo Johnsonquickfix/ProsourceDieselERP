@@ -140,7 +140,7 @@ namespace LaylaERP.Controllers
                 usertype.Add(new SelectListItem
                 {
                     Value = dt.Rows[i]["user_value"].ToString(),
-                    Text = dt.Rows[i]["user_type"].ToString()
+                    Text = dt.Rows[i]["user_type"].ToString() + " (" + dt.Rows[i]["cnt"].ToString() + ")"
 
                 });
             }

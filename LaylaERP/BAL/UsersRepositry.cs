@@ -79,7 +79,51 @@ namespace LaylaERP.BAL
                         //else
                         //    ds1.Tables[0].Rows[i]["meta_value"] = User_Role_Name(ds1.Tables[0].Rows[i]["meta_value"].ToString());
 
-                    }
+                        //string varUserType = string.Empty;
+                        //varUserType = ds1.Tables[0].Rows[i]["meta_value"].ToString().Trim();
+
+                        //Models.clsSerialization vardeserilaziation = new Models.clsSerialization();
+                        //    Hashtable ht = (Hashtable)vardeserilaziation.Deserialize(varUserType);
+
+                        //    if (ht.ContainsKey("administrator"))
+                        //    {
+                        //        ds1.Tables[0].Rows[i]["meta_value"] = "Administrator";
+                        //    }
+                        //    else if (ht.ContainsKey("accounting"))
+                        //    {
+                        //        ds1.Tables[0].Rows[i]["meta_value"] = "Accounting";
+                        //    }
+                        //    else if (ht.ContainsKey("modsquad"))
+                        //    {
+                        //        ds1.Tables[0].Rows[i]["meta_value"] = "Mod Squad";
+                        //    }
+                        //    else if (ht.ContainsKey("author"))
+                        //    {
+                        //        ds1.Tables[0].Rows[i]["meta_value"] = "Author";
+                        //    }
+                        //    else if (ht.ContainsKey("shop_manager"))
+                        //    {
+                        //        ds1.Tables[0].Rows[i]["meta_value"] = "Shop Manager";
+                        //    }
+                        //    else if (ht.ContainsKey("subscriber"))
+                        //    {
+                        //        ds1.Tables[0].Rows[i]["meta_value"] = "Subscriber";
+                        //    }
+                        //    else if (ht.ContainsKey("supplychainmanager"))
+                        //    {
+                        //        ds1.Tables[0].Rows[i]["meta_value"] = "Supply Chain Manager";
+                        //    }
+                        //    else if (ht.ContainsKey("wpseo_editor"))
+                        //    {
+                        //        ds1.Tables[0].Rows[i]["meta_value"] = "SEO Editor";
+                        //    }
+                        //    else
+                        //    {
+                        //    ds1.Tables[0].Rows[i]["meta_value"] = "Not Assigned";
+                        //    }
+                        }
+
+                   
                     else
                     {
                         ds1.Tables[0].Rows[i]["meta_value"] = ds1.Tables[0].Rows[i]["meta_value"];
@@ -127,8 +171,10 @@ namespace LaylaERP.BAL
                     }
                     else
                     {
-                        uobj.my = result;
+                        result = ds1.Tables[0].Rows[i]["meta_value"].ToString().TrimEnd(','); 
                     }
+
+                    uobj.my = result;
 
                     uobj.user_email = ds1.Tables[0].Rows[i]["user_email"].ToString();
 

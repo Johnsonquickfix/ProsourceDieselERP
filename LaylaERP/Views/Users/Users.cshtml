@@ -173,7 +173,13 @@
         //$('#editor').click(function () { var role_type = 'editor'; $('#hfStatusType').val(role_type); Datagrid(role_type, $("#hfroletype").val()); });
         //$('#seomanager').click(function () { var role_type = 'seo_manager'; $('#hfStatusType').val(role_type); Datagrid(role_type, $("#hfroletype").val()); });
 
-        $('a').click(function () {
+        $(document).on("click", ".ccount", function (t) { 
+        //$('a').click(function () {
+            t.preventDefault();
+            //console.log('a', $(this));
+            $('.subsubsub li').removeClass('current');
+            $('.subsubsub li a').removeClass('current');
+            $(this).addClass('current');
             var role_type = $(this).attr("id");
             //if (role_type === "seoeditor") {
             //    role_type = "wpseo_editor";
@@ -189,7 +195,7 @@
                 role_type = "";
             }
 
-            alert(role_type);
+            //alert(role_type);
             //console.log(role_type);
             $('#hfStatusType').val(role_type);
             Datagrid(role_type, $("#hfroletype").val());

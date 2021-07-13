@@ -69,7 +69,8 @@
             DataTable dtr = new DataTable();
             try
             {               
-               string strquery = "select COALESCE(meta_value) user_value, CONCAT(COALESCE(meta_value, ''), '(', count(meta_value), ')') user_type from wp_users as ur inner join wp_usermeta um on ur.id = um.user_id and um.meta_key = 'wp_capabilities' and meta_value NOT like '%customer%' and meta_value not like '%a:1%' and meta_value not like '%a:2%' and meta_value not like '%a:5%' and meta_value not like '%a:0%' and meta_value not like '%a:8%'  and meta_value  not like '%,%' GROUP BY meta_value";
+               //string strquery = "select COALESCE(meta_value) user_value, CONCAT(COALESCE(meta_value, ''), '(', count(meta_value), ')') user_type from wp_users as ur inner join wp_usermeta um on ur.id = um.user_id and um.meta_key = 'wp_capabilities' and meta_value NOT like '%customer%' and meta_value not like '%a:1%' and meta_value not like '%a:2%' and meta_value not like '%a:5%' and meta_value not like '%a:0%' and meta_value not like '%a:8%'  and meta_value  not like '%,%' GROUP BY meta_value";
+               string strquery = "select User_Type,User_Value,(select count(umc.user_id) from wp_usermeta umc where umc.meta_key = 'wp_capabilities' and umc.meta_value like CONCAT('%', User_Value, '%')) cnt from wp_user_classification as ur order BY ur.User_Type #inner join wp_usermeta um on ur.id = um.user_id and um.meta_key = 'wp_capabilities' and meta_value NOT like '%customer%' and meta_value not like '%a:1%' and meta_value not like '%a:2%' and meta_value not like '%a:5%' and meta_value not like '%a:0%' and meta_value not like '%a:8%' and meta_value not like '%,%' order BY ur.User_Type";
                 dtr = SQLHelper.ExecuteDataTable(strquery);
             }
             catch (Exception ex)

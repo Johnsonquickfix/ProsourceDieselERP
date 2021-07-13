@@ -16,16 +16,9 @@
 <script src="@Url.Content("~/js/Users/RolePermission.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 
 <script>
-    $.get('/Users/GetRolesTypeTopBar', function (data) {
-        var items = "";
-        $.each(data, function (index, value) {
-            items += $('<li class="' + this['Text'].toLowerCase().replace(/ +/g, "").trim() + '"><a href="javascript:void(0);" id="' + this['Value'] + '">' + this['Text'] + '</a > |</li >').appendTo("#role-ul"); //(<span class="count">0</span>)
-        })
-        items += $('<li class="none"><a href="#" id="norole">No role (<span class="count">0</span>)</a></li>').appendTo("#role-ul");
-
-        GetUsersCount();
-        setTimeout(function () { Datagrid('', $("#hfroletype").val()); }, 50);
-    })
+    GetUsersCount();
+        setTimeout(function () { Datagrid('', $("#hfroletype").val()); }, 100);
+        
 </script>
 
 <div class="page-title">
@@ -33,8 +26,8 @@
 </div>
 <div class="user_subCrumbs">
     <ul class="subsubsub" id="role-ul">
-        <li class="all"><a href="#" id="all" class="current" aria-current="page">All (<span class="count">0</span>)</a> |</li>
-        @*<li class="accounting"><a href="#" id="accounting">Accounting (<span class="count">0</span>)</a> |</li>
+        @*<li class="all"><a href="#" id="all" class="current" aria-current="page">All (<span class="count">0</span>)</a> |</li>
+        <li class="accounting"><a href="#" id="accounting">Accounting (<span class="count">0</span>)</a> |</li>
             <li class="administrator"><a href="#" id="administrator">Administrator (<span class="count">0</span>)</a> |</li>
             <li class="author"><a href="#" id="author">Author (<span class="count">0</span>)</a> |</li>
             <li class="contributor"><a href="#" id="contributor">Contributor (<span class="count">0</span>)</a> |</li>
@@ -182,17 +175,22 @@
 
         $('a').click(function () {
             var role_type = $(this).attr("id");
-            if (role_type === "seoeditor") {
-                role_type = "wpseo_editor";
-            } else if (role_type === "seomanager") {
-                role_type = "seo_manager";
-            } else if (role_type === "all") {
+            //if (role_type === "seoeditor") {
+            //    role_type = "wpseo_editor";
+            //} else if (role_type === "seomanager") {
+            //    role_type = "seo_manager";
+            //} else if (role_type === "all") {
+            //    role_type = "";
+            //} else if (role_type === "shopmanager") {
+            //    role_type = "shopmanager";
+            //}
+
+            if (role_type === "all") {
                 role_type = "";
-            } else if (role_type === "shopmanager") {
-                role_type = "shopmanager";
             }
 
-            console.log(role_type);
+            alert(role_type);
+            //console.log(role_type);
             $('#hfStatusType').val(role_type);
             Datagrid(role_type, $("#hfroletype").val());
         });

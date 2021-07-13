@@ -38,9 +38,11 @@
                                         <th><input type="checkbox" class="selectAll" name="selectAll" value="all"><label></label></th>
                                         <th>Order Id</th>
                                         <th>Name</th>
-                                        <th>Tax</th>
-                                        <th>Subtotal</th>
                                         <th>Total</th>
+                                        @*<th>Coupon Amount</th>*@
+                                        <th>Tax</th>
+                                        @*<th>Shipping Amount</th>*@
+                                        <th>Order Total</th>
                                         <th>Order Date</th>
                                     </tr>
                                 </thead>
@@ -73,9 +75,10 @@
                                         <th><input type="checkbox" class="selectAllUsers" name="selectAllUsers" value="all"><label></label></th>
                                         <th>Id</th>
                                         <th>Name</th>
-                                        <th>Email</th>
-                                        @*<th>Status</th>*@
                                         <th>Role</th>
+                                        <th>Email</th>
+                                        <th>Address</th>
+                                        <th>Phone Number</th>
                                         <th>Date</th>
                                     </tr>
                                 </thead>
@@ -105,7 +108,7 @@
                                         <th>Id</th>
                                         <th>Name</th>
                                         <th>Email</th>
-                                        @*<th style="width:10%;">Status</th>*@
+                                        <th>Address</th>
                                         <th>Phone Number</th>
                                         <th>Date</th>
                                     </tr>
@@ -289,13 +292,14 @@
 
                 { 'data': null, sWidth: "5%" },
                 { 'data': 'order_id', title: 'Order Id', sWidth: "10%" },
-                { 'data': 'first_name', title: 'Name', sWidth: "10%" },
+                { 'data': 'first_name', title: 'Name', sWidth: "15%" },
                 //{ 'data':'orderstatus' },
                 //{ 'data': 'qty', title: 'Items Sold', sWidth: "10%" },
-                { 'data': 'tax', title: 'Tax', sWidth: "10%" },
-                { 'data': 'subtotal', title: 'Subtotal', sWidth: "10%" },
                 { 'data': 'total', title: 'Total', sWidth: "10%" },
-                
+                //{ 'data': 'coupon', title: 'Coupon Amount', sWidth: "10%" },
+                { 'data': 'tax', title: 'Tax', sWidth: "10%" },
+                //{ 'data': 'shipping_amount', title: 'Shipping Amount', sWidth: "10%" },
+                { 'data': 'subtotal', title: 'Order Total', sWidth: "10%" },
                 {
                     'data': 'order_created', title: 'Order Date', sWidth: "10%"
                     //'render': function (jsonDate) {
@@ -329,7 +333,8 @@
                 {
                     extend: 'csv',
                     className: 'button',
-                    text: '<i class="fas fa-file-csv"></i> CSV'
+                    text: '<i class="fas fa-file-csv"></i> CSV',
+                    filename:'Order'
                 },
                 //{
                 //    extend: 'print',
@@ -360,9 +365,8 @@
         var todateusers = $("#todateusers").val();
         var userrole = $("#new_role").val();
         $('#exportuserdata').DataTable({
-
             destroy: true,
-            searching: true,
+            searching: false,
             bAutoWidth: false,
             "ajax": {
                 "url": '/Export/UsersExport',
@@ -375,12 +379,13 @@
             "columns": [
                 { 'data': null, sWidth: "5%" },
                 { 'data': 'UID', title: 'ID', sWidth: "10%" },
-                { 'data': 'user_login', title: 'Name', sWidth: "10%" },
-                { 'data': 'user_email', title: 'Email', sWidth: "25%" },
-                //{ 'data': 'user_status', title: 'Status', sWidth: "15%" },
+                { 'data': 'first_name', title: 'Name', sWidth: "10%" },
                 { 'data': 'my', title: 'Role', sWidth: "20%" },
+                { 'data': 'user_email', title: 'Email', sWidth: "15%" },
+                { 'data': 'user_address', title: 'Address', sWidth: "15%" },
+                { 'data': 'phone', title: 'Phone Number', sWidth: "10%" },
                 {
-                    'data': 'created_date', title: 'Date', sWidth: "15%",
+                    'data': 'created_date', title: 'Date', sWidth: "10%"
                     //'render': function (jsonDate) {
                     //    var date = new Date(parseInt(jsonDate.substr(6)));
                     //    var month = ("0" + (date.getMonth() + 1)).slice(-2);
@@ -410,7 +415,8 @@
                 {
                     extend: 'csv',
                     className: 'button',
-                    text: '<i class="fas fa-file-csv"></i> CSV'
+                    text: '<i class="fas fa-file-csv"></i> CSV',
+                    filename:'User'
                 },
                 //{
                 //    extend: 'print',
@@ -453,10 +459,10 @@
             "columns": [
                 { 'data': null, sWidth: "5%" },
                 { 'data': 'UID', title:'ID', sWidth: "10%" },
-                { 'data': 'customer_name', title: 'Name', sWidth: "20%" },
+                { 'data': 'customer_name', title: 'Name', sWidth: "10%" },
                 { 'data': 'customer_email', title: 'Email', sWidth: "20%" },
-                //{ 'data': 'customer_status', title: 'Status', sWidth: "10%" },
-                { 'data': 'customer_phone', title:'Phone Number', sWidth: "20%" },
+                { 'data': 'customer_status', title: 'Address', sWidth: "20%" },
+                { 'data': 'customer_phone', title: 'Phone Number', sWidth: "20%" },
                 {
                     'data': 'customerdate_created', title: 'Date', sWidth:"15%"
                     //'render': function (jsonDate) {
@@ -487,7 +493,8 @@
                 {
                     extend: 'csv',
                     className: 'button',
-                    text: '<i class="fas fa-file-csv"></i> CSV'
+                    text: '<i class="fas fa-file-csv"></i> CSV',
+                    filename:'Customer'
                 },
                 //{
                 //    extend: 'print',

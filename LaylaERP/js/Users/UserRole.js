@@ -41,28 +41,37 @@ function CopyRoles() {
 
 //Give Permission
 $('#btnApprove').click(function () {
-    //var nodes = $('#tt').tree('getChecked');
-    var nodes = $('#tt').tree('getChecked', ['checked', 'indeterminate']);
-    var addnodes = ''; var id = ''; var addid = ''; var editid = ''; var deleteid = '';
+    var n1 = $('#tt').tree('getChecked');  // get checked nodes
+    var n2 = $('#tt').tree('getChecked', 'indeterminate');	// get indeterminate nodes
+    var nodes = n1.concat(n2);
+
+    //var nodes = $('#tt').tree('getChecked', ['checked', 'indeterminate']);
+    debugger
+    var addnodes = ''; var id = ''; var flag = ''; var addid = ''; var editid = ''; var deleteid = '';
 
     for (var i = 0; i < nodes.length; i++) {
         addnodes = $('#chk_add_' + nodes[i].id).prop('checked');
         editnodes = $('#chk_edit_' + nodes[i].id).prop('checked');
         deletenodes = $('#chk_del_' + nodes[i].id).prop('checked');
-
-        if (id != '') id += ',';
-        id += nodes[i].id;
-
+        if (id != '') id += ','; id += nodes[i].id;
+       
         if (addnodes == true) { if (addid != '') addid += ','; addid += nodes[i].id; }
         if (editnodes == true) { if (editid != '') editid += ','; editid += nodes[i].id; }
         if (deletenodes == true) { if (deleteid != '') deleteid += ','; deleteid += nodes[i].id; }
     }
-    ChangePermission(id, addid, editid, deleteid);
+    for (var i = 0; i < n1.length; i++) {
+        if (flag != '') flag += ','; flag += 'C';
+    }
+    for (var i = 0; i < n2.length; i++) {
+        if (flag != '') flag += ','; flag += 'I';
+    }
+   
+    ChangePermission(id, addid, editid, deleteid,flag);
 })
 
-function ChangePermission(id, addid, editid, deleteid) {
+function ChangePermission(id, addid, editid, deleteid,flag) {
     var role_id = $("#userrole").val();
-    var obj = { strVal: id, strAdd: addid, strEdit: editid, strDel: deleteid, role_id: role_id }
+    var obj = { strVal: id, strAdd: addid, strEdit: editid, strDel: deleteid, role_id: role_id, flag:flag }
     $.ajax({
         url: '/Users/ChangePermission/', dataType: 'json', type: 'Post',
         contentType: "application/json; charset=utf-8",
@@ -192,14 +201,15 @@ function fillCheckMenu() {
                 idField: 'id',
                 treeField: 'text',
                 height: '100%',
-                //onCheck: function (node, checked) {
-                //    $('#chk_add_' + node.id).prop('checked', checked);
-                //    $('#chk_edit_' + node.id).prop('checked', checked);
-                //    $('#chk_del_' + node.id).prop('checked', checked);
-                //    console.log(node);
-                //    if (node.level == 1) {
-                //    }
-                //},
+                onCheck: function (node, checked) {
+                    $('#chk_add_' + node.id).prop('checked', checked);
+                    $('#chk_edit_' + node.id).prop('checked', checked);
+                    $('#chk_del_' + node.id).prop('checked', checked);
+                    console.log(node.level);
+                    //if (node.level == 0) {
+
+                    //}
+                },
             });
             collapseAll();
         },
@@ -211,45 +221,44 @@ function collapseAll() {
     $('#tt').tree('collapseAll');
 }
 
-//$('#checkAdd').click(function () {
+$('#checkAdd').click(function () {
 
-//    //var nodes = $('#tt').tree('getChecked', ['checked', 'unchecked']);
-//    var nodes = $('#tt').tree('getChecked', ['checked', 'unchecked']);
-//    var isChecked = $('#checkAdd').prop("checked");
-//    for (var i = 0; i < nodes.length; i++) {
-//        if (isChecked == true) {
-//            $('#chk_add_' + nodes[i].id).prop('checked', true);
-//        }
-//        else {
-//            $('#chk_add_' + nodes[i].id).prop('checked', false);
-//        }
-//    }
- 
-//});
-//$('#checkEdit').click(function () {
-//    var nodes = $('#tt').tree('getChecked', ['checked', 'unchecked']);
-//    var isChecked = $('#checkEdit').prop("checked");
-//    for (var i = 0; i < nodes.length; i++) {
-//        if (isChecked == true) {
-//            $('#chk_edit_' + nodes[i].id).prop('checked', true);
-//        }
-//        else {
-//            $('#chk_edit_' + nodes[i].id).prop('checked', false);
-//        }
-//    }
-//});
-//$('#checkDelete').click(function () {
-//    var nodes = $('#tt').tree('getChecked', ['checked', 'unchecked']);
-//    var isChecked = $('#checkDelete').prop("checked");
-//    for (var i = 0; i < nodes.length; i++) {
-//        if (isChecked == true) {
-//            $('#chk_del_' + nodes[i].id).prop('checked', true);
-//        }
-//        else {
-//            $('#chk_del_' + nodes[i].id).prop('checked', false);
-//        }
-//    }
-//});
+    //var nodes = $('#tt').tree('getChecked', ['checked', 'unchecked']);
+    var nodes = $('#tt').tree('getChecked', ['checked', 'unchecked']);
+    var isChecked = $('#checkAdd').prop("checked");
+    for (var i = 0; i < nodes.length; i++) {
+        if (isChecked == true) {
+            $('#chk_add_' + nodes[i].id).prop('checked', true);
+        }
+        else {
+            $('#chk_add_' + nodes[i].id).prop('checked', false);
+        }
+    }
+});
+$('#checkEdit').click(function () {
+    var nodes = $('#tt').tree('getChecked', ['checked', 'unchecked']);
+    var isChecked = $('#checkEdit').prop("checked");
+    for (var i = 0; i < nodes.length; i++) {
+        if (isChecked == true) {
+            $('#chk_edit_' + nodes[i].id).prop('checked', true);
+        }
+        else {
+            $('#chk_edit_' + nodes[i].id).prop('checked', false);
+        }
+    }
+});
+$('#checkDelete').click(function () {
+    var nodes = $('#tt').tree('getChecked', ['checked', 'unchecked']);
+    var isChecked = $('#checkDelete').prop("checked");
+    for (var i = 0; i < nodes.length; i++) {
+        if (isChecked == true) {
+            $('#chk_del_' + nodes[i].id).prop('checked', true);
+        }
+        else {
+            $('#chk_del_' + nodes[i].id).prop('checked', false);
+        }
+    }
+});
 
 //$('#checkAll').click(function () {
 //    var isChecked = $(this).prop("checked");
@@ -268,18 +277,18 @@ function checkchange(elem) {
     var edit = $('#chk_edit_' + myNode.id).prop('checked');
     var del = $('#chk_del_' + myNode.id).prop('checked');
 
-    //var isChecked = $(myNode).prop("checked");
-    //if (isChecked) {
-    //    if (add || edit || del) {
-    //        $("#tt").tree('check', myNode.target);
-    //    }
-    //    else {    
-    //        $("#tt").tree('uncheck', myNode.target);
-    //    }
-    //}
-    //else {
-    //    $("#tt").tree('check', myNode.target);
-    //}
+    var isChecked = $(myNode).prop("checked");
+    if (isChecked) {
+        if (add || edit || del) {
+            $("#tt").tree('check', myNode.target);
+        }
+        else {    
+            $("#tt").tree('uncheck', myNode.target);
+        }
+    }
+    else {
+        $("#tt").tree('check', myNode.target);
+    }
 }
 
 //function rootChange() {

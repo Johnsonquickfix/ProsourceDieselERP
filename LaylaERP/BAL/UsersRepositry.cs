@@ -758,18 +758,25 @@ namespace LaylaERP.BAL
             }
         }
 
-        public int ChangePermission(string ID, int role_id)
+        public int ChangePermission(string ID, int role_id, string flag)
         {
             try
             {
                 DeletePermission(role_id);
                 int result = 0;
                 string[] values = ID.Split(',');
+                string[] strflag =  flag.Split(',');
+
+
 
                 for (int i = 0; i <= values.Length - 1; i++)
                 {
                     ID = values[i].ToString();
-                    string strsql = "insert into wp_erprole_rest(role_id,erpmenu_id) values(@role_id,'" + ID + "')";
+                    flag = strflag[i].ToString();
+
+
+
+                    string strsql = "insert into wp_erprole_rest(role_id,erpmenu_id,flag) values(@role_id,'" + ID + "','" + flag + "')";
                     MySqlParameter[] para =
                      {
                     new MySqlParameter("@role_id", role_id)

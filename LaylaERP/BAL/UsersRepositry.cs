@@ -79,7 +79,51 @@ namespace LaylaERP.BAL
                         //else
                         //    ds1.Tables[0].Rows[i]["meta_value"] = User_Role_Name(ds1.Tables[0].Rows[i]["meta_value"].ToString());
 
-                    }
+                        //string varUserType = string.Empty;
+                        //varUserType = ds1.Tables[0].Rows[i]["meta_value"].ToString().Trim();
+
+                        //Models.clsSerialization vardeserilaziation = new Models.clsSerialization();
+                        //    Hashtable ht = (Hashtable)vardeserilaziation.Deserialize(varUserType);
+
+                        //    if (ht.ContainsKey("administrator"))
+                        //    {
+                        //        ds1.Tables[0].Rows[i]["meta_value"] = "Administrator";
+                        //    }
+                        //    else if (ht.ContainsKey("accounting"))
+                        //    {
+                        //        ds1.Tables[0].Rows[i]["meta_value"] = "Accounting";
+                        //    }
+                        //    else if (ht.ContainsKey("modsquad"))
+                        //    {
+                        //        ds1.Tables[0].Rows[i]["meta_value"] = "Mod Squad";
+                        //    }
+                        //    else if (ht.ContainsKey("author"))
+                        //    {
+                        //        ds1.Tables[0].Rows[i]["meta_value"] = "Author";
+                        //    }
+                        //    else if (ht.ContainsKey("shop_manager"))
+                        //    {
+                        //        ds1.Tables[0].Rows[i]["meta_value"] = "Shop Manager";
+                        //    }
+                        //    else if (ht.ContainsKey("subscriber"))
+                        //    {
+                        //        ds1.Tables[0].Rows[i]["meta_value"] = "Subscriber";
+                        //    }
+                        //    else if (ht.ContainsKey("supplychainmanager"))
+                        //    {
+                        //        ds1.Tables[0].Rows[i]["meta_value"] = "Supply Chain Manager";
+                        //    }
+                        //    else if (ht.ContainsKey("wpseo_editor"))
+                        //    {
+                        //        ds1.Tables[0].Rows[i]["meta_value"] = "SEO Editor";
+                        //    }
+                        //    else
+                        //    {
+                        //    ds1.Tables[0].Rows[i]["meta_value"] = "Not Assigned";
+                        //    }
+                        }
+
+                   
                     else
                     {
                         ds1.Tables[0].Rows[i]["meta_value"] = ds1.Tables[0].Rows[i]["meta_value"];
@@ -127,8 +171,10 @@ namespace LaylaERP.BAL
                     }
                     else
                     {
-                        uobj.my = result;
+                        result = ds1.Tables[0].Rows[i]["meta_value"].ToString().TrimEnd(','); 
                     }
+
+                    uobj.my = result;
 
                     uobj.user_email = ds1.Tables[0].Rows[i]["user_email"].ToString();
 
@@ -758,18 +804,25 @@ namespace LaylaERP.BAL
             }
         }
 
-        public int ChangePermission(string ID, int role_id)
+        public int ChangePermission(string ID, int role_id, string flag)
         {
             try
             {
                 DeletePermission(role_id);
                 int result = 0;
                 string[] values = ID.Split(',');
+                string[] strflag =  flag.Split(',');
+
+
 
                 for (int i = 0; i <= values.Length - 1; i++)
                 {
                     ID = values[i].ToString();
-                    string strsql = "insert into wp_erprole_rest(role_id,erpmenu_id) values(@role_id,'" + ID + "')";
+                    flag = strflag[i].ToString();
+
+
+
+                    string strsql = "insert into wp_erprole_rest(role_id,erpmenu_id,flag) values(@role_id,'" + ID + "','" + flag + "')";
                     MySqlParameter[] para =
                      {
                     new MySqlParameter("@role_id", role_id)

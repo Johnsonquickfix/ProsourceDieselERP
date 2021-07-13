@@ -12,27 +12,40 @@ function GetUsersCount() {
     $("#role-ul").empty();
     $.get('/Users/GetRolesTypeTopBar', function (data) {
         var items = "";
-        items += $('<li class="all"><a href="javascript:void(0);" id="all" class="current" aria-current="page">All (<span class="count">0</span>)</a> |</li>').appendTo("#role-ul");
+        var alltotal = 0;
+        let totstr = "";
+
+        items += $('<li class="all"><a class="ccount" href="javascript:void(0);" id="all" aria-current="page">All (<span class="count">0</span>)</a> |</li>').appendTo("#role-ul");
         $.each(data, function (index, value) {
-            items += $('<li class="' + this['Text'].toLowerCase().replace(/ +/g, "").trim() + '"><a href="javascript:void(0);" id="' + this['Value'] + '">' + this['Text'] + '</a > |</li >').appendTo("#role-ul"); //(<span class="count">0</span>)
+            items += $('<li class="' + this['Value'].toLowerCase().replace(/ +/g, "").trim() + '"><a class="ccount" href="javascript:void(0);" id="' + this['Value'] + '">' + this['Text'] + '</a > |</li >').appendTo("#role-ul"); //(<span class="count">0</span>)
+
+            totstr = this['Text'].split(" (");
+            totstr = totstr[1].replace(/^\D+|\D+$/g, "")
+            alltotal = parseInt(alltotal) + parseInt(totstr);
         })
-        items += $('<li class="none"><a href="javascript:void(0);" id="norole">No role (<span class="count">0</span>)</a></li>').appendTo("#role-ul");
+        items += $('<li class="none"><a class="ccount" href="javascript:void(0);" id="norole">No role (<span class="count">0</span>)</a></li>').appendTo("#role-ul");
+        //alert(alltotal);
+        $('#all').find(".count").text(number_format(alltotal));
+        let id = $("#hfStatusType").val();
+        if (id!='')
+            $('#' + id).addClass('current');
+        else
+            $('#all').addClass('current');
     });
 
-    
 }
 
-function GetUserCountTopBar(){
+function GetUserCountTopBar() {
     var opt = { strValue1: '' };
     $.ajax({
         type: "POST", url: '/Users/GetUsersCount', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
         success: function (result) {
             var data = JSON.parse(result);
-            console.log(data);
+            //console.log(data);
             if (data.length > 0) {
                 $('#all').find(".count").text(number_format(data[0].AllUser));
-                //$('#Accounting').find(".count").text(number_format(data[0].Accounting));
-                //$('#Administrator').find(".count").text(number_format(data[0].Administrator));
+                $('#accounting').find(".count").text(number_format(data[0].Accounting));
+                $('#administrator').find(".count").text(number_format(data[0].Administrator));
                 //$('#Author').find(".count").text(number_format(data[0].Author));
                 //$('#Contributor').find(".count").text(number_format(data[0].Contributor));
                 //$('#Editor').find(".count").text(number_format(data[0].Editor));
@@ -54,9 +67,9 @@ function Datagrid(role_type, type) {
     //alert(type);
     var columnDefs = [
     ]
-    
-    
-    if ($('#hfEdit').val() == 1 ) {
+
+
+    if ($('#hfEdit').val() == 1) {
         if (type.toUpperCase() == "ADMINISTRATOR") {
             columnDefs = [
 
@@ -89,9 +102,9 @@ function Datagrid(role_type, type) {
 
             ]
         }
-        
+
     } else if (type.toUpperCase() == "ADMINISTRATOR") {
-        
+
         columnDefs = [
 
             {
@@ -108,10 +121,10 @@ function Datagrid(role_type, type) {
                 "targets": [6],
                 "visible": false
             },
-            ]
-        
+        ]
+
     } else {
-  
+
         columnDefs = [
 
             {
@@ -119,10 +132,10 @@ function Datagrid(role_type, type) {
                 "targets": [7],
                 "visible": false
             }
-            ]
+        ]
     }
 
-        var id;
+    var id;
     $('#dtdata').DataTable({
         oSearch: { "sSearch": searchText },
         destroy: true,
@@ -148,14 +161,14 @@ function Datagrid(role_type, type) {
             { 'data': 'user_status', 'sWidth': "10%" },
             { 'data': 'phone', 'sWidth': "15%" },
             { 'data': 'address', 'sWidth': "30%" },
-            { 
+            {
                 'data': 'my', 'sWidth': "22%",
 
             },
             {
                 'data': 'ID', sWidth: "8%",
                 'render': function (ID, type, full, meta) {
-                    debugger
+                    // debugger
                     if (sessionStorage.hfEdit == "1") {
                         return '<a href="javascript:void(0);" class="editbutton" onClick="EditUser(' + ID + ')"><i class="glyphicon glyphicon-pencil"></i></a>';
                         sessionStorage.removeItem(hfEdit);
@@ -199,7 +212,7 @@ function Datagrid(role_type, type) {
 
     });
 
-    
+
 }
 
 function DatagridLoade() {
@@ -288,7 +301,7 @@ function getdatabyzip() {
 }
 
 function DeleteUsers(id) {
-   // debugger
+    // debugger
     var obj = { strVal: id }
     $.ajax({
         url: '/Users/DeleteUsers/', dataType: 'json', type: 'Post',

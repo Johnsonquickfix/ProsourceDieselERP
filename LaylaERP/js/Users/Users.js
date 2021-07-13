@@ -12,14 +12,22 @@ function GetUsersCount() {
     $("#role-ul").empty();
     $.get('/Users/GetRolesTypeTopBar', function (data) {
         var items = "";
+        var alltotal = 0;
+        let totstr = "";
+       
         items += $('<li class="all"><a href="javascript:void(0);" id="all" class="current" aria-current="page">All (<span class="count">0</span>)</a> |</li>').appendTo("#role-ul");
         $.each(data, function (index, value) {
-            items += $('<li class="' + this['Text'].toLowerCase().replace(/ +/g, "").trim() + '"><a href="javascript:void(0);" id="' + this['Value'] + '">' + this['Text'] + '</a > |</li >').appendTo("#role-ul"); //(<span class="count">0</span>)
+            items += $('<li class="' + this['Value'].toLowerCase().replace(/ +/g, "").trim() + '"><a href="javascript:void(0);" id="' + this['Value'] + '">' + this['Text'] + '</a > |</li >').appendTo("#role-ul"); //(<span class="count">0</span>)
+
+            totstr = this['Text'].split(" (");
+            totstr=totstr[1].replace(/^\D+|\D+$/g, "")
+            alltotal = parseInt(alltotal) + parseInt(totstr);
         })
         items += $('<li class="none"><a href="javascript:void(0);" id="norole">No role (<span class="count">0</span>)</a></li>').appendTo("#role-ul");
+        //alert(alltotal);
+        $('#all').find(".count").text(number_format(alltotal));
     });
 
-    
 }
 
 function GetUserCountTopBar(){
@@ -28,11 +36,11 @@ function GetUserCountTopBar(){
         type: "POST", url: '/Users/GetUsersCount', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
         success: function (result) {
             var data = JSON.parse(result);
-            console.log(data);
+            //console.log(data);
             if (data.length > 0) {
                 $('#all').find(".count").text(number_format(data[0].AllUser));
-                //$('#Accounting').find(".count").text(number_format(data[0].Accounting));
-                //$('#Administrator').find(".count").text(number_format(data[0].Administrator));
+                $('#accounting').find(".count").text(number_format(data[0].Accounting));
+                $('#administrator').find(".count").text(number_format(data[0].Administrator));
                 //$('#Author').find(".count").text(number_format(data[0].Author));
                 //$('#Contributor').find(".count").text(number_format(data[0].Contributor));
                 //$('#Editor').find(".count").text(number_format(data[0].Editor));
@@ -155,7 +163,7 @@ function Datagrid(role_type, type) {
             {
                 'data': 'ID', sWidth: "8%",
                 'render': function (ID, type, full, meta) {
-                    debugger
+                   // debugger
                     if (sessionStorage.hfEdit == "1") {
                         return '<a href="javascript:void(0);" class="editbutton" onClick="EditUser(' + ID + ')"><i class="glyphicon glyphicon-pencil"></i></a>';
                         sessionStorage.removeItem(hfEdit);

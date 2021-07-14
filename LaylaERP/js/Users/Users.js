@@ -161,7 +161,7 @@ function Datagrid(role_type, type) {
             { 'data': 'phone', 'sWidth': "15%" },
             { 'data': 'address', 'sWidth': "30%" },
             {
-                data: 'my', title: 'Status', sWidth: "22%", render: function (data, type, row) {
+                data: 'my', title: 'Role', sWidth: "22%", render: function (data, type, row) {
                     let str = getAllUserType(data);
                     return str;
                 }

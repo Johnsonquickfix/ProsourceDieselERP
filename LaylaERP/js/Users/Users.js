@@ -10,27 +10,32 @@ function getUrlVars() {
 }
 function GetUsersCount() {
     $("#role-ul").empty();
-    $.get('/Users/GetRolesTypeTopBar', function (data) {
-        var items = "";
-        var alltotal = 0;
-        let totstr = "";
-       
-        items += $('<li class="all"><a href="javascript:void(0);" id="all" class="current" aria-current="page">All (<span class="count">0</span>)</a> |</li>').appendTo("#role-ul");
-        $.each(data, function (index, value) {
-            items += $('<li class="' + this['Value'].toLowerCase().replace(/ +/g, "").trim() + '"><a href="javascript:void(0);" id="' + this['Value'] + '">' + this['Text'] + '</a > |</li >').appendTo("#role-ul"); //(<span class="count">0</span>)
-
-            totstr = this['Text'].split(" (");
-            totstr=totstr[1].replace(/^\D+|\D+$/g, "")
-            alltotal = parseInt(alltotal) + parseInt(totstr);
-        })
-        items += $('<li class="none"><a href="javascript:void(0);" id="norole">No role (<span class="count">0</span>)</a></li>').appendTo("#role-ul");
-        //alert(alltotal);
-        $('#all').find(".count").text(number_format(alltotal));
+    $.ajax({
+        type: "POST", url: '/Users/GetRolesTypeTopBar', contentType: "application/json; charset=utf-8", dataType: "json", data: [],
+        beforeSend: function () { $("#loader").show(); },
+        success: function (result) {
+            var data = JSON.parse(result);
+            let alltotal = 0;
+            let items = $('<li class="all" data-uservalue="" data-usertext=""><a class="caction" href="javascript:void(0);" id="all" aria-current="page">All (<span class="count">0</span>)</a> |</li>').appendTo("#role-ul");
+            $.each(data, function (index, value) {
+                items += $('<li data-uservalue="' + value.User_Value + '" data-usertext="' + value.User_Type + '" class="' + value.User_Value.toLowerCase().replace(/ +/g, "").trim() + '"><a class="caction" href="javascript:void(0);" id="' + value.User_Value + '">' + value.User_Type + ' (' + value.cnt + ')</a > |</li >').appendTo("#role-ul"); //(<span class="count">0</span>)
+                alltotal = alltotal + parseInt(value.cnt);
+            })
+            items += $('<li class="none" data-uservalue="" data-usertext=""><a class="caction" href="javascript:void(0);" id="norole">No role (<span class="count">0</span>)</a></li>').appendTo("#role-ul");
+            $('#all').find(".count").text(number_format(alltotal));
+            let id = $("#hfStatusType").val();
+            if (id != '')
+                $('#' + id).addClass('current');
+            else
+                $('#all').addClass('current');
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
+        complete: function () { $("#loader").hide(); },
+        async: false
     });
-
 }
 
-function GetUserCountTopBar(){
+function GetUserCountTopBar() {
     var opt = { strValue1: '' };
     $.ajax({
         type: "POST", url: '/Users/GetUsersCount', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
@@ -60,11 +65,10 @@ function GetUserCountTopBar(){
 
 function Datagrid(role_type, type) {
     //alert(type);
-    var columnDefs = [
-    ]
-    
-    
-    if ($('#hfEdit').val() == 1 ) {
+    var columnDefs = [];
+
+
+    if ($('#hfEdit').val() == 1) {
         if (type.toUpperCase() == "ADMINISTRATOR") {
             columnDefs = [
 
@@ -97,9 +101,9 @@ function Datagrid(role_type, type) {
 
             ]
         }
-        
+
     } else if (type.toUpperCase() == "ADMINISTRATOR") {
-        
+
         columnDefs = [
 
             {
@@ -116,10 +120,10 @@ function Datagrid(role_type, type) {
                 "targets": [6],
                 "visible": false
             },
-            ]
-        
+        ]
+
     } else {
-  
+
         columnDefs = [
 
             {
@@ -127,10 +131,10 @@ function Datagrid(role_type, type) {
                 "targets": [7],
                 "visible": false
             }
-            ]
+        ]
     }
-
-        var id;
+    console.log(role_type, type);
+    var id;
     $('#dtdata').DataTable({
         oSearch: { "sSearch": searchText },
         destroy: true,
@@ -156,22 +160,23 @@ function Datagrid(role_type, type) {
             { 'data': 'user_status', 'sWidth': "10%" },
             { 'data': 'phone', 'sWidth': "15%" },
             { 'data': 'address', 'sWidth': "30%" },
-            { 
-                'data': 'my', 'sWidth': "22%",
-
+            {
+                data: 'my', title: 'Status', sWidth: "22%", render: function (data, type, row) {
+                    let str = getAllUserType(data);
+                    return str;
+                }
             },
             {
                 'data': 'ID', sWidth: "8%",
                 'render': function (ID, type, full, meta) {
-                    if ($("#hfEdit").val() == "1")
-                    {
+                   // debugger
+                    if (sessionStorage.hfEdit == "1") {
                         return '<a href="javascript:void(0);" class="editbutton" onClick="EditUser(' + ID + ')"><i class="glyphicon glyphicon-pencil"></i></a>';
                     }
                     else { return "No Permission"; }
                 }
             }
         ],
-
         columnDefs: columnDefs,
         "order": [[1, 'desc']],
         initComplete: function () {
@@ -206,7 +211,21 @@ function Datagrid(role_type, type) {
 
     });
 
-    
+
+}
+
+function getAllUserType(sValue) {
+    if (sValue != null) {
+        var user_type = '';
+        $('.subsubsub li').each(function (index) {
+            let val = $(this).data('uservalue'), txt = $(this).data('usertext');
+            let i = sValue.toLowerCase().trim().indexOf(val);
+            if (i > -1) user_type = (user_type.length > 0 ? user_type + ',' : '') + txt;
+        });
+        return user_type.substring(0, user_type.length - 1);
+    }
+    else
+        return '';
 }
 
 function DatagridLoade() {
@@ -295,7 +314,7 @@ function getdatabyzip() {
 }
 
 function DeleteUsers(id) {
-   // debugger
+    // debugger
     var obj = { strVal: id }
     $.ajax({
         url: '/Users/DeleteUsers/', dataType: 'json', type: 'Post',

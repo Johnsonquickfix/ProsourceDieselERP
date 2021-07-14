@@ -18,8 +18,9 @@
 <script src="@Url.Content("~/js/Users/RolePermission.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 
 <script>
-        GetUsersCount();
-    setTimeout(function () { Datagrid('', $("#hfroletype").val()); }, 3000);
+    GetUsersCount();
+        setTimeout(function () { Datagrid('', $("#hfroletype").val()); }, 100);
+        
 </script>
 
 <div class="page-title">
@@ -126,7 +127,7 @@
 
     $(document).ready(function () {
         var loc = window.location.pathname;
-        CheckPermissions("#btnCreateUser", "#hfEdit", "", loc);
+        
 
         $(".subsubsub li a").click(function (e) {
             $('.subsubsub li').removeClass('current');
@@ -172,7 +173,12 @@
         //$('#editor').click(function () { var role_type = 'editor'; $('#hfStatusType').val(role_type); Datagrid(role_type, $("#hfroletype").val()); });
         //$('#seomanager').click(function () { var role_type = 'seo_manager'; $('#hfStatusType').val(role_type); Datagrid(role_type, $("#hfroletype").val()); });
 
-        $('a').click(function () {
+        $(document).on("click", ".caction", function (t) { 
+            t.preventDefault();
+            console.log('a', $(this));
+            $('.subsubsub li').removeClass('current');
+            $('.subsubsub li a').removeClass('current');
+            $(this).addClass('current');
             var role_type = $(this).attr("id");
             //if (role_type === "seoeditor") {
             //    role_type = "wpseo_editor";

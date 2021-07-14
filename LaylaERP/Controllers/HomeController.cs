@@ -21,7 +21,7 @@
         {
            
             CommanUtilities.Provider.RemoveCurrent();
-            return View();
+             return View();
         }
         [HttpGet]
         public ActionResult ForgotPassword()

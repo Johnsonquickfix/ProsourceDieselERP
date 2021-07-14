@@ -84,7 +84,7 @@ function AddCustomer() {
                     });
                 }
                 else {
-                    swal('Alert!', data.message, 'error')
+                    //swal('Alert!', data.message, 'error')
                 }
             },
             complete: function () {
@@ -110,7 +110,9 @@ function getdatabyzip() {
             $("#txtBillingState").val(data.state);
             $("#txtBillingCity").val(data.city);
         },
-        error: function (msg) { alert(msg); }
+        error: function (msg) {
+            swal('Alert!', msg, 'error')
+        }
     });
 
 }
@@ -222,10 +224,10 @@ function dataGridLoad() {
                 }
             },
             { data: 'id', title: 'Cust ID', sWidth: "8%" },
-            { data: 'user_nicename', title: 'Customer Name', sWidth: "14%" },
+            { data: 'name', title: 'Customer Name', sWidth: "14%" },
             { data: 'user_email', title: 'E-mail', sWidth: "23%" },
             { data: 'status', title: 'Status', sWidth: "8%" },
-            { data: 'meta_value', title: 'Phone', sWidth: "10%" },
+            { data: 'billing_phone', title: 'Phone', sWidth: "10%" },
             { data: 'user_registered', title: 'Registration Date', sWidth: "17%" },
             {
                 'data': 'id', sWidth: "8%",

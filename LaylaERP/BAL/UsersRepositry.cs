@@ -53,7 +53,7 @@ namespace LaylaERP.BAL
 
                 string sqlquery = "select ID, user_login, user_status, if (user_status = 0,'Active','InActive') as status,user_email,user_pass,"
                                   + "um.meta_value, umph.meta_value Phone, CONCAT(umadd.meta_value, ' ', COALESCE(umadd2.meta_value, ''), ' ', umacity.meta_value, ' ', umastate.meta_value, ' ', umapostalcode.meta_value )  address"
-                                  + " from wp_users u inner join wp_usermeta um on um.user_id = u.id and um.meta_key = 'wp_capabilities' and meta_value NOT LIKE '%customer%' and meta_value not like '%a:1%' and meta_value not like '%a:2%' and meta_value not like '%a:5%' and meta_value not like '%a:0%' and meta_value not like '%a:8%'"
+                                  + " from wp_users u inner join wp_usermeta um on um.user_id = u.id and um.meta_key = 'wp_capabilities' and meta_value NOT LIKE '%customer%'"
                                   + " LEFT OUTER JOIN wp_usermeta umph on umph.meta_key = 'billing_phone' And umph.user_id = u.ID"
                                   + " LEFT OUTER JOIN wp_usermeta umadd on umadd.meta_key = 'billing_address_1' And umadd.user_id = u.ID"
                                   + " LEFT OUTER JOIN wp_usermeta umadd2 on umadd2.meta_key = 'billing_address_2' And umadd2.user_id = u.ID"
@@ -69,112 +69,66 @@ namespace LaylaERP.BAL
                     clsUserDetails uobj = new clsUserDetails();
                     //Code for role
 
-                    if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["meta_value"].ToString()) && ds1.Tables[0].Rows[i]["meta_value"].ToString().Length > 5 && ds1.Tables[0].Rows[i]["meta_value"].ToString().Substring(0, 2) == "a:")
-                    {
+                    //if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["meta_value"].ToString()) && ds1.Tables[0].Rows[i]["meta_value"].ToString().Length > 5 && ds1.Tables[0].Rows[i]["meta_value"].ToString().Substring(0, 2) == "a:")
+                    //{
 
-                        if (ds1.Tables[0].Rows[i]["meta_value"].ToString().Trim() == "a:0:{}")
-                            ds1.Tables[0].Rows[i]["meta_value"] = "Unknown";
-                        //result = ds1.Tables[0].Rows[i]["meta_value"].ToString();
+                    //    if (ds1.Tables[0].Rows[i]["meta_value"].ToString().Trim() == "a:0:{}")
+                    //        ds1.Tables[0].Rows[i]["meta_value"] = "Unknown";
+                    //    //result = ds1.Tables[0].Rows[i]["meta_value"].ToString();
 
-                        //else
-                        //    ds1.Tables[0].Rows[i]["meta_value"] = User_Role_Name(ds1.Tables[0].Rows[i]["meta_value"].ToString());
+                    //    //else
+                    //    //    ds1.Tables[0].Rows[i]["meta_value"] = User_Role_Name(ds1.Tables[0].Rows[i]["meta_value"].ToString());
 
-                        //string varUserType = string.Empty;
-                        //varUserType = ds1.Tables[0].Rows[i]["meta_value"].ToString().Trim();
-
-                        //Models.clsSerialization vardeserilaziation = new Models.clsSerialization();
-                        //    Hashtable ht = (Hashtable)vardeserilaziation.Deserialize(varUserType);
-
-                        //    if (ht.ContainsKey("administrator"))
-                        //    {
-                        //        ds1.Tables[0].Rows[i]["meta_value"] = "Administrator";
-                        //    }
-                        //    else if (ht.ContainsKey("accounting"))
-                        //    {
-                        //        ds1.Tables[0].Rows[i]["meta_value"] = "Accounting";
-                        //    }
-                        //    else if (ht.ContainsKey("modsquad"))
-                        //    {
-                        //        ds1.Tables[0].Rows[i]["meta_value"] = "Mod Squad";
-                        //    }
-                        //    else if (ht.ContainsKey("author"))
-                        //    {
-                        //        ds1.Tables[0].Rows[i]["meta_value"] = "Author";
-                        //    }
-                        //    else if (ht.ContainsKey("shop_manager"))
-                        //    {
-                        //        ds1.Tables[0].Rows[i]["meta_value"] = "Shop Manager";
-                        //    }
-                        //    else if (ht.ContainsKey("subscriber"))
-                        //    {
-                        //        ds1.Tables[0].Rows[i]["meta_value"] = "Subscriber";
-                        //    }
-                        //    else if (ht.ContainsKey("supplychainmanager"))
-                        //    {
-                        //        ds1.Tables[0].Rows[i]["meta_value"] = "Supply Chain Manager";
-                        //    }
-                        //    else if (ht.ContainsKey("wpseo_editor"))
-                        //    {
-                        //        ds1.Tables[0].Rows[i]["meta_value"] = "SEO Editor";
-                        //    }
-                        //    else
-                        //    {
-                        //    ds1.Tables[0].Rows[i]["meta_value"] = "Not Assigned";
-                        //    }
-                        }
-
-                   
-                    else
-                    {
-                        ds1.Tables[0].Rows[i]["meta_value"] = ds1.Tables[0].Rows[i]["meta_value"];
-                    }
+                    //}
+                    //else
+                    //{
+                    //    ds1.Tables[0].Rows[i]["meta_value"] = ds1.Tables[0].Rows[i]["meta_value"];
+                    //}
 
                     uobj.ID = Convert.ToInt32(ds1.Tables[0].Rows[i]["ID"].ToString());
                     uobj.user_login = ds1.Tables[0].Rows[i]["user_login"].ToString();
                     result = ds1.Tables[0].Rows[i]["meta_value"].ToString().TrimEnd(',');
-
-                    if (result == "Mod_Squad")
-                    {
-                        result = "Mod Squad";
-                    }
-                    else if (result == "wpseo_editor")
-                    {
-                        result = "SEO Editor";
-                    }
-                    else if (result == "seo_manager")
-                    {
-                        result = "SEO Manager";
-                    }
-                    else if (result == "Shop_Manager")
-                    {
-                        result = "Shop Manager";
-                    }
-                    else if (result == "Supply_Chain_Manager")
-                    {
-                        result = "Supply Chain Manager";
-                    }
-                    else if (result == "administrator")
-                    {
-                        result = "Administrator";
-                    }
-                    else if (result == "author")
-                    {
-                        result = "Author";
-                    }
-                    else if (result == "editor")
-                    {
-                        result = "Editor";
-                    }
-                    else if (result == "")
-                    {
-                        result = "No Role Assign.";
-                    }
-                    else
-                    {
-                        result = ds1.Tables[0].Rows[i]["meta_value"].ToString().TrimEnd(','); 
-                    }
-
-                    uobj.my = result;
+                    uobj.my = ds1.Tables[0].Rows[i]["meta_value"].ToString();
+                    //if (result == "Mod_Squad")
+                    //{
+                    //    result = "Mod Squad";
+                    //}
+                    //else if (result == "wpseo_editor")
+                    //{
+                    //    result = "SEO Editor";
+                    //}
+                    //else if (result == "seo_manager")
+                    //{
+                    //    result = "SEO Manager";
+                    //}
+                    //else if (result == "Shop_Manager")
+                    //{
+                    //    result = "Shop Manager";
+                    //}
+                    //else if (result == "Supply_Chain_Manager")
+                    //{
+                    //    result = "Supply Chain Manager";
+                    //}
+                    //else if (result == "administrator")
+                    //{
+                    //    result = "Administrator";
+                    //}
+                    //else if (result == "author")
+                    //{
+                    //    result = "Author";
+                    //}
+                    //else if (result == "editor")
+                    //{
+                    //    result = "Editor";
+                    //}
+                    //else if (result == "")
+                    //{
+                    //    result = "No Role Assign.";
+                    //}
+                    //else
+                    //{
+                    //    uobj.my = result;
+                    //}
 
                     uobj.user_email = ds1.Tables[0].Rows[i]["user_email"].ToString();
 

@@ -132,25 +132,14 @@ namespace LaylaERP.Controllers
 
         public JsonResult GetRolesTypeTopBar()
         {
-            int ccount = 0;
-            DataTable dt = new DataTable();
-            dt = BAL.Users.GetRolesTypeTopBar();
-            List<SelectListItem> usertype = new List<SelectListItem>();
-            for (int i = 0; i < dt.Rows.Count; i++)
+            string JSONresult = string.Empty;
+            try
             {
-                usertype.Add(new SelectListItem
-                {
-                    Value = dt.Rows[i]["user_value"].ToString(),
-                    Text = dt.Rows[i]["user_type"].ToString() + " (" + dt.Rows[i]["cnt"].ToString() + ")"
-
-                });
-
-                
-                ccount += int.Parse(dt.Rows[i]["cnt"].ToString());
+                DataTable DT = BAL.Users.GetRolesTypeTopBar();
+                JSONresult = JsonConvert.SerializeObject(DT);
             }
-     
-
-            return Json(usertype, JsonRequestBehavior.AllowGet );
+            catch { }
+            return Json(JSONresult, 0);
         }
 
         public JsonResult GetMenuNames()

@@ -21,13 +21,13 @@ function AddCustomer() {
     BillingState = $("#txtBillingState").val();
     BillingCity = $("#txtBillingCity").val();
     BillingPhone = $("#txtBillingPhone").val();
-
-    if (Email == "") {
-        swal('alert', 'Please Enter Email', 'error').then(function () { swal.close(); $('#txtUserEmail').focus(); })
-    }
-    else if (NickName == "") {
+    if (NickName == "") {
         swal('alert', 'Please Enter User Name', 'error').then(function () { swal.close(); $('#txtUserNickName').focus(); })
     }
+    else if (Email == "") {
+        swal('alert', 'Please Enter Email', 'error').then(function () { swal.close(); $('#txtUserEmail').focus(); })
+    }
+
     else if (FirstName == "") {
         swal('alert', 'Please Enter First Name', 'error').then(function () { swal.close(); $('#txtFirstName').focus(); })
     }
@@ -41,21 +41,21 @@ function AddCustomer() {
     else if (BillingAddress1 == "") {
         swal('alert', 'Please Enter Address 1', 'error').then(function () { swal.close(); $('#txtBillingAddress1').focus(); })
     }
-        /* else if (BillingAddress2 == "") { swal('alert', 'Please Enter Address 2', 'error') }*/
+    /* else if (BillingAddress2 == "") { swal('alert', 'Please Enter Address 2', 'error') }*/
     else if (BillingCity == "") {
         swal('alert', 'Please Enter City', 'error').then(function () { swal.close(); $('#txtBillingCity').focus(); })
     }
     else if (BillingState == "") {
-        swal('alert', 'Please Enter State/Country', 'error').then(function () { swal.close(); $('#txtBillingState').focus(); })
+        swal('alert', 'Please Enter State', 'error').then(function () { swal.close(); $('#txtBillingState').focus(); })
     }
     else if (BillingPostcode == "") {
-        swal('alert', 'Please Enter Post/Zip Code', 'error').then(function () { swal.close(); $('#txtBillingPostCode').focus(); })
+        swal('alert', 'Please Enter Zip Code', 'error').then(function () { swal.close(); $('#txtBillingPostCode').focus(); })
     }
 
     else if (BillingCountry == "") {
-        swal('alert', 'Please Enter Country/Region', 'error').then(function () { swal.close(); $('#txtBillingCountry').focus(); })
+        swal('alert', 'Please Enter Country', 'error').then(function () { swal.close(); $('#txtBillingCountry').focus(); })
     }
-   
+
     else {
         var obj = {
             ID: ID,
@@ -73,7 +73,7 @@ function AddCustomer() {
             },
             success: function (data) {
                 if (data.status == true) {
-                    
+
                     swal('Alert!', data.message, 'success');
                     $("#parent").find(":input").each(function () {
                         switch (this.type) {
@@ -246,9 +246,9 @@ function dataGridLoad() {
 }
 
 function GetCustomerByID(id) {
-    debugger
+    
     var ID = id;
-    if (ID == "NewUser") { $('#lbltitle').text("Add New Customer"); } else { $('#lbltitle').text("Update Customer");}
+    if (ID == "NewUser") { $('#lbltitle').text("Add New Customer"); } else { $('#lbltitle').text("Update Customer"); }
     var obj = {};
     $.ajax({
         url: "/Customer/GetCustomerByID/" + ID,
@@ -258,7 +258,7 @@ function GetCustomerByID(id) {
         data: JSON.stringify(obj),
         success: function (data) {
             var d = JSON.parse(data);
-            
+            debugger
             $("#txtUserEmail").val(d[0].user_email);
             $("#txtUserNickName").val(d[0].user_nicename);
             $("#txtFirstName").val(d[0].first_name);
@@ -267,10 +267,10 @@ function GetCustomerByID(id) {
             $("#txtBillingAddress2").val(d[0].billing_address_2);
             $("#txtBillingPostCode").val(d[0].billing_postcode);
             $("#txtBillingCountry").val(d[0].billing_country);
-            $("#txtBillingState").val(d[0].billing_state);
+            $("#txtBillingState").text(d[0].billing_state);
             $("#txtBillingCity").val(d[0].billing_city);
             $("#txtBillingPhone").val(d[0].billing_phone);
-           
+
         },
         error: function (msg) { alert(msg); }
     });

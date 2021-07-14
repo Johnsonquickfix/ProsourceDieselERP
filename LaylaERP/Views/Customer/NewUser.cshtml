@@ -76,32 +76,39 @@
                         
                     </div>
                     <div class="col-md-4">
-                        <div class="form-group">
+                        @*<div class="form-group">
                             <label class="control-label " for="State/Country">State</label>
                             <div class="">
                                 <input type="text" id="txtBillingState" class="form-control" placeholder="State/Country" />
                             </div>
+                        </div>*@
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">State</label>
+                            <select class="form-control" id="txtBillingState">
+                                <option selected value=""> </option>
+                            </select>
+
                         </div>
 
                         <div class="form-group">
                             <label class="control-label " for="Post/Zip Code">Zip Code</label>
                             <div class="">
-                                <input type="text" id="txtBillingPostCode" class="form-control" placeholder="Post/Zip Code" />
+                                <input type="text" id="txtBillingPostCode" class="form-control" placeholder="Zip Code" />
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="exampleInputEmail1">Country</label>
                             <select class="form-control" id="txtBillingCountry">
-                                <option value="US-United States">US-United States</option>
-                                <option value="CA-Canada">CA-Canada</option>
+                                <option value="US - United States">US - United States</option>
+                                <option value="CA - Canada">CA - Canada</option>
                             </select>
                         </div>
                         @*<div class="form-group">
-                            <label class="control-label " for="Country/Region">Country/Region</label>
-                            <div class="">
-                                <input type="text" id="txtBillingCountry" class="form-control" placeholder="Country/Region" />
-                            </div>
-                        </div>*@
+            <label class="control-label " for="Country/Region">Country/Region</label>
+            <div class="">
+                <input type="text" id="txtBillingCountry" class="form-control" placeholder="Country/Region" />
+            </div>
+        </div>*@
                     </div>
                 </div>
             </div>
@@ -140,8 +147,51 @@
         //$('#txtBillingPostCode').change(function () {
         //    getdatabyzip();
         //})
-
+        $("#txtBillingState").select2({
+            allowClear: true, minimumInputLength: 3, placeholder: "Search State",
+            ajax: {
+                url: '/Users/GetState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+                data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
+                processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.StateFullName, name: item.StateFullName, id: item.StateFullName } }) }; },
+                error: function (xhr, status, err) { }, cache: true
+            }
+        });
       
+    });
+
+    $('#txtBillingPostCode').change(function () {
+
+        City = $("#txtBillingCity").val();
+        State = $("#txtBillingState").val();
+        PostalCode = $("#txtBillingPostCode").val();
+        var obj = {
+            billing_state: State,
+            billing_city: City,
+            billing_postcode: PostalCode
+        }
+        $.ajax({
+            url: '/Users/CityStateZip/', dataType: 'json', type: 'Post',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(obj),
+            dataType: "json",
+            success: function (data) {
+                if (data.status == true) {
+                    // swal('Alert!', 'Post zip code is valid for City and State', 'success')
+                    // $('#hfzipstatus').val(data.status);
+                    $('#hfzipstatus').val(data.status);
+
+                }
+                else {
+                    $("#txtPostCode").val("");
+                    $('#hfzipstatus').val(data.status);
+                    swal('Alert', 'Zip code is not valid for the State', 'error').then(function () { swal.close(); $('#txtPostCode').focus(); });
+                }
+            },
+
+            error: function (error) {
+                swal('Error!', 'something went wrong', 'error');
+            },
+        })
     });
 
     document.getElementById('txtBillingPhone').addEventListener('keyup', function (evt) {

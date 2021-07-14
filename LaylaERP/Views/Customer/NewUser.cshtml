@@ -50,6 +50,12 @@
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
+                            <label class="control-label " for="Contact No.">Contact No.</label>
+                            <div class="">
+                                <input type="tel" id="txtBillingPhone" class="form-control" placeholder="Contact No." />
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label class="control-label " for="Address 1">Address 1</label>
                             <div class="">
                                 <input type="text" id="txtBillingAddress1" class="form-control" placeholder="Address 1" />
@@ -62,37 +68,40 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label " for="Post/Zip Code">Post/Zip Code</label>
+                            <label class="control-label " for="City">City</label>
                             <div class="">
-                                <input type="text" id="txtBillingPostCode" class="form-control" placeholder="Post/Zip Code" />
+                                <input type="tel" id="txtBillingCity" class="form-control" placeholder="City" />
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="control-label " for="Country/Region">Country/Region</label>
-                            <div class="">
-                                <input type="text" id="txtBillingCountry" class="form-control" placeholder="Country/Region" />
-                            </div>
-                        </div>
+                        
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
                             <label class="control-label " for="State/Country">State/Country</label>
                             <div class="">
-                                <input type="text" id="txtBillingState" class="form-control" placeholder="State/Country"/>
+                                <input type="text" id="txtBillingState" class="form-control" placeholder="State/Country" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label " for="Post/Zip Code">Zip Code</label>
+                            <div class="">
+                                <input type="text" id="txtBillingPostCode" class="form-control" placeholder="Post/Zip Code" />
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label " for="City">City</label>
-                            <div class="">
-                                <input type="tel" id="txtBillingCity" class="form-control" placeholder="City"/>
-                            </div>
+                            <label for="exampleInputEmail1">Country</label>
+                            <select class="form-control" id="txtBillingCountry">
+                                <option value="US-United States">US-United States</option>
+                                <option value="CA-Canada">CA-Canada</option>
+                            </select>
                         </div>
-                        <div class="form-group">
-                            <label class="control-label " for="Contact No.">Contact No.</label>
+                        @*<div class="form-group">
+                            <label class="control-label " for="Country/Region">Country/Region</label>
                             <div class="">
-                                <input type="tel" id="txtBillingPhone" class="form-control" placeholder="Contact No." />
+                                <input type="text" id="txtBillingCountry" class="form-control" placeholder="Country/Region" />
                             </div>
-                        </div>
+                        </div>*@
                     </div>
                 </div>
             </div>
@@ -128,9 +137,9 @@
         $(document).on('click', "#btnSave", function () {
             AddCustomer();
         })
-        $('#txtBillingPostCode').change(function () {
-            getdatabyzip();
-        })
+        //$('#txtBillingPostCode').change(function () {
+        //    getdatabyzip();
+        //})
 
       
     });

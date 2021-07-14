@@ -35,25 +35,27 @@ function AddCustomer() {
     else if (LastName == "") {
         swal('alert', 'Please Enter Last Name', 'error').then(function () { swal.close(); $('#txtLastName').focus(); })
     }
+    else if (BillingPhone == "") {
+        swal('alert', 'Please Enter Contact No.', 'error').then(function () { swal.close(); $('#txtBillingPhone').focus(); })
+    }
     else if (BillingAddress1 == "") {
         swal('alert', 'Please Enter Address 1', 'error').then(function () { swal.close(); $('#txtBillingAddress1').focus(); })
     }
-   /* else if (BillingAddress2 == "") { swal('alert', 'Please Enter Address 2', 'error') }*/
-    else if (BillingPostcode == "") {
-        swal('alert', 'Please Enter Post/Zip Code', 'error').then(function () { swal.close(); $('#txtBillingPostCode').focus(); })
-    }
-    else if (BillingCountry == "") {
-        swal('alert', 'Please Enter Country/Region', 'error').then(function () { swal.close(); $('#txtBillingCountry').focus(); })
+        /* else if (BillingAddress2 == "") { swal('alert', 'Please Enter Address 2', 'error') }*/
+    else if (BillingCity == "") {
+        swal('alert', 'Please Enter City', 'error').then(function () { swal.close(); $('#txtBillingCity').focus(); })
     }
     else if (BillingState == "") {
         swal('alert', 'Please Enter State/Country', 'error').then(function () { swal.close(); $('#txtBillingState').focus(); })
     }
-    else if (BillingCity == "") {
-        swal('alert', 'Please Enter City', 'error').then(function () { swal.close(); $('#txtBillingCity').focus(); })
+    else if (BillingPostcode == "") {
+        swal('alert', 'Please Enter Post/Zip Code', 'error').then(function () { swal.close(); $('#txtBillingPostCode').focus(); })
     }
-    else if (BillingPhone == "") {
-        swal('alert', 'Please Enter Contact No.', 'error').then(function () { swal.close(); $('#txtBillingPhone').focus(); })
+
+    else if (BillingCountry == "") {
+        swal('alert', 'Please Enter Country/Region', 'error').then(function () { swal.close(); $('#txtBillingCountry').focus(); })
     }
+   
     else {
         var obj = {
             ID: ID,

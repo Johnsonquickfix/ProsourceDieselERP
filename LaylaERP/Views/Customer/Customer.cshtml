@@ -2,6 +2,8 @@
 @{ ViewBag.Title = "Customer";
     Layout = "~/Views/Shared/_Layout.cshtml"; }
 @*datatables CSS*@
+<input type="hidden" id="hfEdit" value="" />
+
 <link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap.min.css" rel="stylesheet" />
 <link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
 @*datatables js*@
@@ -15,7 +17,7 @@
 
 
 <div class="page-title">
-    <h2 class="page-heading">Customers</h2><a href="../../Customer/NewUser" class="btn btn-danger" id="btnAddUser">Add New User</a>
+    <h2 class="page-heading">Customers</h2><a href="../../Customer/NewUser" class="btn btn-danger" id="btnAddUser">Add New Customer</a>
 </div>
 <section class="content section-content table-design customer-section">
     <div class="user-top-section">
@@ -48,7 +50,6 @@
                 </select>
                 <button type="button" id="btnChange" class="btn btn-primary btn-flat button">Change</button>
             </div>
-            <label id="hfEdit">Label</label>
         </div>
     </div>
     <!-- end top-->
@@ -82,9 +83,9 @@
     $(document).ready(function () {
         var loc = window.location.pathname;
 
-
+        CheckPermissions("#btnAddUser", "#hfEdit", "", loc);
         $("#btnSearch").click(function () { dataGridLoad(); return false; });
-        setTimeout(function () { CheckPermissions("#btnAddUser", "#hfEdit", "", loc); dataGridLoad(); }, 50);
+        setTimeout(function () { dataGridLoad(); }, 3000);
     });
 
     $('#checkAll').click(function () {

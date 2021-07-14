@@ -231,13 +231,10 @@ function dataGridLoad() {
                 'data': 'id', sWidth: "8%",
                 'render': function (id, type, full, meta) {
                     debugger
-                    if (sessionStorage.hfEdit == "1") {
+                    if ($("#hfEdit").val() == "1") {
                         return '<a href="../Customer/NewUser/' + id + '"><i class="glyphicon glyphicon-pencil"></i></a>';
-                        sessionStorage.removeItem(hfEdit);
                     }
                     else { return "No Permission"; }
-
-
                 }
             }
         ]
@@ -245,7 +242,9 @@ function dataGridLoad() {
 }
 
 function GetCustomerByID(id) {
+    debugger
     var ID = id;
+    if (ID == "NewUser") { $('#lbltitle').text("Add New Customer"); } else { $('#lbltitle').text("Update Customer");}
     var obj = {};
     $.ajax({
         url: "/Customer/GetCustomerByID/" + ID,
@@ -254,7 +253,8 @@ function GetCustomerByID(id) {
         dataType: 'JSON',
         data: JSON.stringify(obj),
         success: function (data) {
-            var d = JSON.parse(data);           
+            var d = JSON.parse(data);
+            
             $("#txtUserEmail").val(d[0].user_email);
             $("#txtUserNickName").val(d[0].user_nicename);
             $("#txtFirstName").val(d[0].first_name);

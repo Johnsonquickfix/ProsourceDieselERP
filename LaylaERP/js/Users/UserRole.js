@@ -38,8 +38,8 @@ function CopyRoles() {
 //    }
 //}
 //checkbox end
-
 //Give Permission
+
 $('#btnApprove').click(function () {
     var n1 = $('#tt').tree('getChecked');  // get checked nodes
     var n2 = $('#tt').tree('getChecked', 'indeterminate');	// get indeterminate nodes
@@ -159,31 +159,6 @@ $('#btnCopyRole').click(function () {
     }
 });
 
-//Fill Menu
-
-//function fillCheckMenu() {
-//    var roleid = $('#userrole').val();
-//    var obj = { roleid: roleid };
-//    jQuery.ajax({
-//        url: '/Users/getUserAuthMenu', dataType: 'json', type: "Post",
-//        beforeSend: function () {
-//            //$("#loading-div-background").show();
-//        },
-//        contentType: "application/json; charset=utf-8",
-//        data: JSON.stringify(obj),
-//        success: function (data) {
-//            $('#tt').tree({
-//                data: data,
-//                idField: 'id',
-//                treeField: 'text',
-//                height: '100%',
-//            });
-//            collapseAll();
-//        },
-//        error: function (jqXHR, textStatus, errorThrown) { swal('Error!', errorThrown, "error"); }
-//    });
-//}
-
 function fillCheckMenu() {
     var roleid = $('#userrole').val();
     var obj = { roleid: roleid };
@@ -195,7 +170,6 @@ function fillCheckMenu() {
         contentType: "application/json; charset=utf-8",
         data: JSON.stringify(obj),
         success: function (data) {
-            console.log(data);
             $('#tt').tree({
                 data: data,
                 idField: 'id',
@@ -205,7 +179,6 @@ function fillCheckMenu() {
                     $('#chk_add_' + node.id).prop('checked', checked);
                     $('#chk_edit_' + node.id).prop('checked', checked);
                     $('#chk_del_' + node.id).prop('checked', checked);
-                    console.log(node.level);
                     //if (node.level == 0) {
 
                     //}
@@ -299,6 +272,5 @@ function checkchange(elem) {
 //        else
 //            $("#tt").tree('uncheck', roots[i].target);
 //    };
-//    console.log(roots);
 //}
 

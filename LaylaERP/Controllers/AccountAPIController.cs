@@ -189,6 +189,7 @@
             List<Dictionary<String, Object>> tableRows = new List<Dictionary<String, Object>>();
             Dictionary<String, Object> row;
             try
+            
             {
                 DataTable DT = Users.GetUserMenuAuth(CommanUtilities.Provider.GetCurrent().UserType);
                 //DataTable DT = Users.GetUserAuth(model.userId.Value);

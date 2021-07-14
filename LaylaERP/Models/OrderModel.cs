@@ -89,6 +89,7 @@
     }
     public class OrderProductsModel
     {
+        public long order_item_id { get; set; }
         public string product_type { get; set; }
         public long product_id { get; set; }
         public long variation_id { get; set; }
@@ -114,6 +115,7 @@
     }
     public class OrderOtherItemsModel
     {
+        public long order_item_id { get; set; }
         public long order_id { get; set; }
         public string item_name { get; set; }
         public string item_type { get; set; }
@@ -121,6 +123,7 @@
     }
     public class OrderTaxItemsModel
     {
+        public long order_item_id { get; set; }
         public long tax_rate_id { get; set; }
         public string tax_rate_country { get; set; }
         public string tax_rate_state { get; set; }

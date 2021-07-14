@@ -125,17 +125,17 @@
                         </div>
                         <div class="col-sm-4">
 
-                            @*<div class="form-group">
+                            <div class="form-group">
                                 <label for="exampleInputEmail1">State</label>
                                 <select class="form-control" id="txtState">
                                     <option selected value="@Model.State">@Model.State </option>
                                 </select>
 
-                            </div>*@
-                            <div class="form-group">
+                            </div>
+                            @*<div class="form-group">
                                 <label for="exampleInputEmail1">State</label>
                                 <input type="text" class="form-control" id="txtState" value="@Model.State">                                  
-                            </div>
+                            </div>*@
                             <div class="form-group">
                                 <label class="control-label" for="Zip Code">Zip Code</label>
                                 <div class="">
@@ -206,7 +206,7 @@
         //    })
         //})
 
-       /* $("#txtState").select2({
+        $("#txtState").select2({
             allowClear: true, minimumInputLength: 3, placeholder: "Search State",
             ajax: {
                 url: '/Users/GetState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
@@ -214,7 +214,7 @@
                 processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.StateFullName, name: item.StateFullName, id: item.StateFullName } }) }; },
                 error: function (xhr, status, err) { }, cache: true
             }
-        });*/
+        });
 
         //$.get('GetState', function (data) {
         //    var st = $("#hfState").val();
@@ -253,7 +253,7 @@
                     else {
                         $("#txtPostCode").val("");
                         $('#hfzipstatus').val(data.status);
-                        swal('Alert', 'Zip code is not valid for City and State', 'error').then(function () { swal.close(); $('#txtPostCode').focus(); });
+                        swal('Alert', 'Zip code is not valid for the State', 'error').then(function () { swal.close(); $('#txtPostCode').focus(); });
                     }
                 },
 

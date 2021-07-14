@@ -394,8 +394,9 @@ function changeRole(ID) {
         dataType: "json",
         success: function (data) {
             if (data.status == true) {
-                swal('Alert!', data.message, 'success').then((result) => { GetUsersCount(); var role_type = $('#hfStatusType').val(); Datagrid(role_type, $("#hfroletype").val()); }); //GetUsersCount();
-
+                //swal('Alert!', data.message, 'success').then((result) => { GetUsersCount(); var role_type = $('#hfStatusType').val(); Datagrid(role_type, $("#hfroletype").val()); }); //GetUsersCount();
+                swal('Alert!', data.message, 'success').then((result) => { setTimeout(function () { GetUsersCount(); var role_type = $('#hfStatusType').val(); Datagrid(role_type, $("#hfroletype").val()); }, 50); }); //GetUsersCount();
+                
                 //swal('Alert!', data.message, 'success').then((result) => { location.href = 'Users'; });
             }
             else {
@@ -421,7 +422,8 @@ function Grantrole(ID) {
         dataType: "json",
         success: function (data) {
             if (data.status == true) {
-                swal('Alert!', data.message, 'success').then((result) => { GetUsersCount(); var role_type = $('#hfStatusType').val(); Datagrid(role_type, $("#hfroletype").val()); });
+                //swal('Alert!', data.message, 'success').then((result) => { GetUsersCount(); var role_type = $('#hfStatusType').val(); Datagrid(role_type, $("#hfroletype").val()); });
+                swal('Alert!', data.message, 'success').then((result) => { setTimeout(function () { GetUsersCount(); var role_type = $('#hfStatusType').val(); Datagrid(role_type, $("#hfroletype").val()); }, 50);  });
             }
             else {
                 swal('Alert!', data.message, 'error');
@@ -445,7 +447,8 @@ function Revokerole(ID) {
         dataType: "json",
         success: function (data) {
             if (data.status == true) {
-                swal('Alert!', data.message, 'success').then((result) => { GetUsersCount(); var role_type = $('#hfStatusType').val(); Datagrid(role_type, $("#hfroletype").val()); });
+                //swal('Alert!', data.message, 'success').then((result) => { GetUsersCount(); var role_type = $('#hfStatusType').val(); Datagrid(role_type, $("#hfroletype").val()); });
+                swal('Alert!', data.message, 'success').then((result) => { setTimeout(function () { GetUsersCount(); var role_type = $('#hfStatusType').val(); Datagrid(role_type, $("#hfroletype").val()); }, 50); });
             }
             else {
                 swal('Alert!', data.message, 'error');

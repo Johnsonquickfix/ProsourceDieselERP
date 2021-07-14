@@ -473,7 +473,8 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strquery = "select count(ZipCode) from ZIPCodes1 where city = '" + model.billing_city + "' and (statefullname = '" + model.billing_state + "' Or state='" + model.billing_state + "') and ZipCode = '" + model.billing_postcode + "' ";
+                //string strquery = "select count(ZipCode) from ZIPCodes1 where city = '" + model.billing_city + "' and (statefullname = '" + model.billing_state + "' Or state='" + model.billing_state + "') and ZipCode = '" + model.billing_postcode + "' ";
+                string strquery = "select count(ZipCode) from ZIPCodes1 where ZipCode = '" + model.billing_postcode + "' And (statefullname = '" + model.billing_state + "' Or state='" + model.billing_state + "') ";
                 MySqlParameter[] para =
                 {
 

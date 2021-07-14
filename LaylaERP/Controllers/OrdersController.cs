@@ -21,6 +21,7 @@
         public ActionResult NewOrders(long id = 0)
         {
             ViewBag.id = id;
+            ViewBag.mode = id > 0 ? "E" : "I";
             return View();
         }
 

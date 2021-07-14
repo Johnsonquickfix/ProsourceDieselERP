@@ -32,6 +32,7 @@
 <section class="content section-content neworder-section">
     <div class="box box-primary create-user-primary mb-35">
         <div class="box-header with-border">
+            <input type="hidden" id="hfMode" value="@ViewBag.mode" />
             <input type="hidden" id="hfOrderNo" value="@ViewBag.id" />
             <input type="hidden" id="hfTaxRate" value="0" />
             <h4 class="box-title" id="lblOrderNo">Order #000000 detail</h4>
@@ -162,8 +163,8 @@
             <div class="box box-primary mb-0">
                 <div class="box-header">
                     <div class="table-responsive" id="divAddItemFinal">
-                        <table id="tblAddItemFinal" class="table table-blue check-table table-bordered table-striped dataTable tablelist">
-                            <thead class="thead-dark">
+                        <table id="tblAddItemFinal" class="table-blue table check-table table-bordered table-striped dataTable">
+                            <thead>
                                 <tr>
                                     <th class="text-center" style="width: 8%">Actions</th>
                                     <th style="width: 42%">Item</th>
@@ -232,7 +233,7 @@
                         <div class="form-group">
                             <label class="col-sm-10 control-label">Shipping</label>
                             <div class="col-sm-2 controls text-right">
-                                $<span id="shippingTotal">0.00</span>
+                                $<span id="shippingTotal" data-orderitemid="0">0.00</span>
                             </div>
                         </div>
                         <div class="form-group hidden">
@@ -244,13 +245,13 @@
                         <div class="form-group">
                             <label class="col-sm-10 control-label">Sale Tax</label>
                             <div class="col-sm-2 controls text-right">
-                                $<span id="salesTaxTotal">0.00</span>
+                                $<span id="salesTaxTotal" data-orderitemid="0">0.00</span>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-10 control-label">State Recycling Fee</label>
                             <div class="col-sm-2 controls text-right">
-                                $<span id="stateRecyclingFeeTotal">0.00</span>
+                                $<span id="stateRecyclingFeeTotal" data-orderitemid="0">0.00</span>
                             </div>
                         </div>
                         <div class="form-group">

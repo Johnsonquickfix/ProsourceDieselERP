@@ -169,12 +169,18 @@ function Datagrid(role_type, type) {
             {
                 'data': 'ID', sWidth: "8%",
                 'render': function (ID, type, full, meta) {
-                    if (sessionStorage.hfEdit == "1") {
+                    if ($("#hfEdit").val() == "1") {
                         return '<a href="javascript:void(0);" class="editbutton" onClick="EditUser(' + ID + ')"><i class="glyphicon glyphicon-pencil"></i></a>';
-                        sessionStorage.removeItem(hfEdit);
                     }
                     else { return "No Permission"; }
                 }
+                //'render': function (ID, type, full, meta) {
+                //    if (sessionStorage.hfEdit == "1") {
+                //        return '<a href="javascript:void(0);" class="editbutton" onClick="EditUser(' + ID + ')"><i class="glyphicon glyphicon-pencil"></i></a>';
+                //        sessionStorage.removeItem(hfEdit);
+                //    }
+                //    else { return "No Permission"; }
+                //}
             }
         ],
         columnDefs: columnDefs,

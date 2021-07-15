@@ -44,8 +44,8 @@ namespace LaylaERP.Controllers
             {
 
                 CouponsRepository.EditCoupons(model, model.ID);
-                Update_MetaData(model, model.ID);
-                return Json(new { status = true, message = "Coupons Record has been updated successfully!!", url = "" }, 0);
+               Update_MetaData(model, model.ID);
+                return Json(new { status = true, message = "Coupons Record has been updated successfully!!", url = "Manage" }, 0);
             }
             else
             {

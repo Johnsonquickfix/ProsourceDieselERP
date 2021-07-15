@@ -209,8 +209,13 @@ function AddCoupons() {
                 },
                 success: function (data) {
                     if (data.status == true) {
-                        $('#fetch_results > input:text').val('');
-                        swal('Alert!', data.message, 'success').then((result) => { location.href = 'ManageCoupons'; });
+                        if (data.url == "Manage") {
+                            swal('Alert!', data.message, 'success').then((result) => { location.href = '../ManageCoupons'; });
+                        }
+                        else {
+                            $('#fetch_results > input:text').val('');
+                            swal('Alert!', data.message, 'success').then((result) => { location.href = 'ManageCoupons'; });
+                        }
                        //$('#ddlProduct').val(null).trigger('change');
                        //clear_fetch();
                        

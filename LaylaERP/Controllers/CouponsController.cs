@@ -42,9 +42,9 @@ namespace LaylaERP.Controllers
         {
             if (model.ID > 0)
             {
-               
-               // Repo.EditCoupons(model, model.ID);
-               // Update_MetaData(model, model.ID);        
+
+                CouponsRepository.EditCoupons(model, model.ID);
+                Update_MetaData(model, model.ID);
                 return Json(new { status = true, message = "Coupons Record has been updated successfully!!", url = "" }, 0);
             }
             else
@@ -81,7 +81,7 @@ namespace LaylaERP.Controllers
             string[] varFieldsValue = new string[21] { model.discount_type, model.coupon_amount, model.free_shipping, model.date_expires.ToString(), model.min_subtotal, model.max_subtotal, model.individual_use, model.exclude_sale_items, model.wjecf_is_auto_coupon, model.product_ids, model.exclude_product_ids, model.categories_ids, model.exclude_categories_ids, model.usage_limit, model.limit_usage_to_x_items, model.usage_limit_per_user, "0", "no", "no", "no", model.cus_email };
             for (int n = 0; n < 21; n++)
             {
-                Repo.UpdateMetaData(model, id, varFieldsName[n], varFieldsValue[n]);
+                CouponsRepository.UpdateMetaData(model, id, varFieldsName[n], varFieldsValue[n]);
             }
         }
         [HttpPost]
@@ -133,6 +133,31 @@ namespace LaylaERP.Controllers
             {
 
                 DataTable dt = CouponsRepository.GetDataByID(model);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+
+        public JsonResult GetProdctByID(OrderPostStatusModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+
+                DataTable dt = CouponsRepository.GetProdctByID(model);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+        public JsonResult GetCategoryProdctByID(OrderPostStatusModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+
+                DataTable dt = CouponsRepository.GetCategoryProdctByID(model);
                 JSONresult = JsonConvert.SerializeObject(dt);
             }
             catch { }

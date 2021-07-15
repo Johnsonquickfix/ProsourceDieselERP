@@ -38,14 +38,14 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
-        public int EditCoupons(CouponsModel model, long ID)
+        public static int EditCoupons(CouponsModel model, long ID)
         {
             try
             {
                 string strsql = "update wp_posts set post_excerpt=@post_excerpt  where ID =" + ID + "";
                 MySqlParameter[] para =
                 {
-                    new MySqlParameter("@post_excerpt", model.post_excerpt)
+                    new MySqlParameter("@post_excerpt", model.post_excerpt),
                     //new MySqlParameter("@post_title", model.post_title),
                     //new MySqlParameter("@post_name", model.post_name),
                 };
@@ -75,7 +75,7 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
-        public void UpdateMetaData(CouponsModel model, long id, string varFieldsName, string varFieldsValue)
+        public static void UpdateMetaData(CouponsModel model, long id, string varFieldsName, string varFieldsValue)
         {
             try
             {
@@ -285,6 +285,47 @@ namespace LaylaERP.BAL
             return dt;
         }
 
+        public static DataTable GetProdctByID(OrderPostStatusModel model)
+        {
+            DataTable dt = new DataTable();
+
+            try
+            {
+                string strWhr = string.Empty;
+                string strSQl = "SELECT DISTINCT post.id,ps.ID pr_id,CONCAT(post.post_title, ' (' , COALESCE(psku.meta_value,'') , ') - ' ,LTRIM(REPLACE(REPLACE(COALESCE(ps.post_excerpt,''),'Size:', ''),'Color:', ''))) as post_title"
+                             + " , CONCAT(post.id, '$', COALESCE(ps.id, 0)) r_id FROM wp_posts as post"
+                             + " LEFT OUTER JOIN wp_posts ps ON ps.post_parent = post.id and ps.post_type LIKE 'product_variation'"
+                             + " left outer join wp_postmeta psku on psku.post_id = ps.id and psku.meta_key = '_sku'"
+                             + " WHERE post.post_type = 'product' AND post.post_status = 'publish' and ps.id in (" + model.strVal + ") "
+                             + " ORDER BY post.ID limit 50;";
+                dt = SQLHelper.ExecuteDataTable(strSQl);   
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+        public static DataTable GetCategoryProdctByID(OrderPostStatusModel model)
+        {
+            DataTable dt = new DataTable();
+
+            try
+            {
+                string strWhr = string.Empty;
+
+                string strSQl = "Select * From wp_terms Left Join wp_term_taxonomy On wp_terms.term_id = wp_term_taxonomy.term_id"
+                              + " WHERE wp_term_taxonomy.taxonomy = 'product_cat' and wp_terms.term_id in (" + model.strVal + ")";
+                dt = SQLHelper.ExecuteDataTable(strSQl);
+
+                
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
 
     }
 

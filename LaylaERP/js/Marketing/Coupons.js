@@ -7,9 +7,13 @@ $(document).ready(function () {
     var id = url.substring(url.lastIndexOf('/') + 1);
 
     if (id != "" && id != "Index") {
-        $("#hfid").val(id);
-  
-        GetDataByID(id);
+        $("#hfid").val(id);  
+        setTimeout(function () { GetDataByID(id); }, 10);
+       // $("#hfprodcid").val("629,632");
+        setTimeout(function () { GetProdctByID($("#hfprodcid").val()); }, 2000);
+        setTimeout(function () { GetExProdctByID($("#hfexprodcid").val()); }, 2020);
+        setTimeout(function () { GetCategoryProdctByID($("#hfcategid").val()); }, 2040);
+        setTimeout(function () { GetExCategoryProdctByID($("#exhfcategid").val()); }, 2050);
     }
 
     $("#txtCouponAmount").keyup(function () {
@@ -280,16 +284,22 @@ function GetDataByID(order_id) {
             if (i[0].exclude_sale_items == "yes")
                  $("#exclude_items").prop("checked", true);
             if (i[0]._wjecf_is_auto_coupon == "yes")
-                 $("#auto_coupon").prop("checked", true);
-            $("#ddlProduct").empty().append('<option value="' + i[0].product_ids + '" selected>' + i[0].product_ids + '</option>');
-            $("#ddlProductExlude").empty().append('<option value="' + i[0].exclude_product_ids + '" selected>' + i[0].exclude_product_ids + '</option>');
-            $("#ddlProductCategories").empty().append('<option value="' + i[0].product_categories + '" selected>' + i[0].product_categories + '</option>');
-            $("#ddlExcludeCategories").empty().append('<option value="' + i[0].exclude_product_categories + '" selected>' + i[0].exclude_product_categories + '</option>');
+                $("#auto_coupon").prop("checked", true);
+         
+       
+           // $("#ddlProduct").empty().append('<option value="' + i[0].product_ids + '" selected>' + i[0].product_ids + '</option>');
+           // $("#ddlProductExlude").empty().append('<option value="' + i[0].exclude_product_ids + '" selected>' + i[0].exclude_product_ids + '</option>');
+          //  $("#ddlProductCategories").empty().append('<option value="' + i[0].product_categories + '" selected>' + i[0].product_categories + '</option>');
+          //  $("#ddlExcludeCategories").empty().append('<option value="' + i[0].exclude_product_categories + '" selected>' + i[0].exclude_product_categories + '</option>');
             $("#txtAllowedEmails").val(i[0].customer_email);
             $("#txtUsageLimitPerCoupon").val(i[0].usage_limit);
             $("#txtLimitUsagetoXItems").val(i[0].limit_usage_to_x_items);
             $("#txtUsageLimitPerUser").val(i[0].usage_limit_per_user);
-           
+            $("#hfprodcid").val(i[0].product_ids);
+            $("#hfexprodcid").val(i[0].exclude_product_ids);
+            $("#hfcategid").val(i[0].product_categories);
+            $("#exhfcategid").val(i[0].exclude_product_categories);
+            
             // $("#shipcountry").val(i[0].country);
             //  $('#Item_Name').val(i[0].item_name.trim()).trigger('change');
 
@@ -298,3 +308,96 @@ function GetDataByID(order_id) {
     });
 
 }
+
+function GetProdctByID(ProdctID) {
+
+    var ID = ProdctID;
+    var obj = { strVal: ProdctID }
+    $.ajax({
+
+        url: '/Coupons/GetProdctByID/' + ID,
+        type: 'post',
+        contentType: "application/json; charset=utf-8",
+        dataType: 'JSON',
+        data: JSON.stringify(obj),
+        success: function (data) {
+            var datalog = JSON.parse(data);
+            for (var i = 0; i < datalog.length; i++) {    
+                $("#ddlProduct").append('<option value="' + datalog[i].pr_id + '" selected>' + datalog[i].post_title + '</option>');               
+            }
+           
+        },
+        error: function (msg) { alert(msg); }
+    });
+
+}
+
+function GetExProdctByID(ProdctID) {
+    
+    var ID = ProdctID;
+    var obj = { strVal: ProdctID }
+    $.ajax({
+
+        url: '/Coupons/GetProdctByID/' + ID,
+        type: 'post',
+        contentType: "application/json; charset=utf-8",
+        dataType: 'JSON',
+        data: JSON.stringify(obj),
+        success: function (data) {
+            var datalog = JSON.parse(data);
+            for (var i = 0; i < datalog.length; i++) {
+                $("#ddlProductExlude").append('<option value="' + datalog[i].pr_id + '" selected>' + datalog[i].post_title + '</option>');
+            }
+
+        },
+        error: function (msg) { alert(msg); }
+    });
+
+}
+
+function GetCategoryProdctByID(ProdctID) {
+    
+    var ID = ProdctID;
+    var obj = { strVal: ProdctID }
+    $.ajax({
+
+        url: '/Coupons/GetCategoryProdctByID/' + ID,
+        type: 'post',
+        contentType: "application/json; charset=utf-8",
+        dataType: 'JSON',
+        data: JSON.stringify(obj),
+        success: function (data) {
+            var datalog = JSON.parse(data);
+            for (var i = 0; i < datalog.length; i++) {
+                $("#ddlProductCategories").append('<option value="' + datalog[i].term_id + '" selected>' + datalog[i].name + '</option>');
+            }
+
+        },
+        error: function (msg) { alert(msg); }
+    });
+
+}
+
+function GetExCategoryProdctByID(ProdctID) {  
+    var ID = ProdctID;
+    var obj = { strVal: ProdctID }
+    $.ajax({
+
+        url: '/Coupons/GetCategoryProdctByID/' + ID,
+        type: 'post',
+        contentType: "application/json; charset=utf-8",
+        dataType: 'JSON',
+        data: JSON.stringify(obj),
+        success: function (data) {
+            var datalog = JSON.parse(data);
+            for (var i = 0; i < datalog.length; i++) {
+                $("#ddlExcludeCategories").append('<option value="' + datalog[i].term_id + '" selected>' + datalog[i].name + '</option>');
+            }
+
+        },
+        error: function (msg) { alert(msg); }
+    });
+
+}
+
+ 

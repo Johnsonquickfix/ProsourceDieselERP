@@ -561,11 +561,13 @@
     <Content Include="Images\validatebox_warning.png" />
     <Content Include="js\app.js" />
     <Content Include="js\common.js" />
+    <Content Include="js\Customer\Customer.js" />
     <Content Include="js\FeeNTax\FeeNTax.js" />
     <Content Include="js\Marketing\Coupons.js" />
     <Content Include="js\Marketing\CouponsManage.js" />
     <Content Include="js\Orders\NewOrder.js" />
     <Content Include="js\Orders\OrderHistory.js" />
+    <Content Include="js\Ship\ShipStation.js" />
     <Content Include="js\Users\RolePermission.js" />
     <Content Include="js\Users\UserLogin.js" />
     <Content Include="js\Users\UserRole.js" />

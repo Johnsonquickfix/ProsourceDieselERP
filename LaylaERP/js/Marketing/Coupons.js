@@ -99,7 +99,7 @@ function AddCoupons() {
          freeship = "yes";
      else
         freeship = "no";
-
+   
     if ($("#individual_only").prop('checked') == true)
         Individualval = "yes";
     else
@@ -135,11 +135,18 @@ function AddCoupons() {
     UsageLimitPerUser = $("#txtUsageLimitPerUser").val();
     discription = $("#txtdiscription").val();
 
-   
+    alert('yy');
     if (CouponAmount == "")
         CouponAmount = "0.00";
     else
         CouponAmount = addZeroes(CouponAmount);
+    if (DiscountType == "percent") {
+        if (parseInt(CouponAmount) > 100) {
+            CouponAmount = "0";
+            swal('Alert', 'Please Enter Coupon Amount Within 100 %', 'error').then(function () { swal.close(); $('#txtCouponAmount').focus(); });
+        }
+    }
+
     if (MinimumSpend == "")
         MinimumSpend = "0";
     if (MaximumSpend == "")
@@ -158,13 +165,8 @@ function AddCoupons() {
 
     else {
 
-        if (DiscountType == "percent") {
-            if (parseInt(CouponAmount) > 100) {
-                CouponAmount = "0";
-                swal('Alert', 'Please Enter Coupon Amount Within 100 %', 'error').then(function () { swal.close(); $('#txtCouponAmount').focus(); });
-            }
-        }
-        else {
+        
+        
         var obj = {
                 ID: ID,
                 post_title: couponcode,
@@ -220,7 +222,7 @@ function AddCoupons() {
             })
         }
         
-    }
+     
 
 }
 

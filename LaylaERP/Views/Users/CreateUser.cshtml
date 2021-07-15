@@ -493,6 +493,12 @@
         else if (Password.length < 8 ) {
             swal('Alert', 'Passwords must be 8 characters.', 'error').then(function () { swal.close(); $('#txtPassword').focus(); });
         }
+        else if (ConfirmPassword == "") {
+            swal('Alert', 'Please Enter Confirm Password', 'error').then(function () { swal.close(); $('#txtConfirmPassword').focus(); });
+        }
+        else if (Password !== ConfirmPassword) {
+            swal('Alert', 'Confirm Password is not matching.', 'error').then(function () { swal.close(); $('#txtConfirmPassword').focus(); });
+        }
         else if (Password.length >= 8) {
             var strength = 1;
             var arr = [/.{5,}/, /[a-z]+/, /[0-9]+/, /[A-Z]+/];
@@ -506,12 +512,6 @@
             });
 
             
-        }
-        else if (ConfirmPassword == "") {
-            swal('Alert', 'Please Enter Confirm Password', 'error').then(function () { swal.close(); $('#txtConfirmPassword').focus(); });
-        }
-        else if (Password !== ConfirmPassword) {
-            swal('Alert', 'Confirm Password is not matching.', 'error').then(function () { swal.close(); $('#txtConfirmPassword').focus(); });
         }
         
         else {

@@ -254,7 +254,6 @@ function clear_fetch() {
 
 
 function GetDataByID(order_id) {
-    alert('tt');
     var ID = order_id;
     var obj = { strVal: order_id }
     $.ajax({

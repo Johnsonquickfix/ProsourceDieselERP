@@ -193,6 +193,18 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(JSONresult, 0);
         }
+        public JsonResult GetCustState(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+
+                DataTable DT = BAL.Users.GetCanadaState(model.strValue1, model.strValue2);
+                JSONresult = JsonConvert.SerializeObject(DT);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
 
         public JsonResult GetState()
         {

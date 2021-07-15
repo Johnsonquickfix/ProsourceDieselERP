@@ -562,9 +562,9 @@
     <Content Include="Images\validatebox_warning.png" />
     <Content Include="js\app.js" />
     <Content Include="js\common.js" />
-    <Content Include="js\Customer\Customer.js" />
     <Content Include="js\FeeNTax\FeeNTax.js" />
     <Content Include="js\Marketing\Coupons.js" />
+    <Content Include="js\Marketing\CouponsManage.js" />
     <Content Include="js\Orders\NewOrder.js" />
     <Content Include="js\Orders\OrderHistory.js" />
     <Content Include="js\Users\RolePermission.js" />
@@ -747,6 +747,7 @@
     <Content Include="Views\Reports\ZeroOrdersReport.cshtml" />
     <Content Include="Views\Home\OrderList.cshtml" />
     <Content Include="Views\Shared\_Calendar.cshtml" />
+    <Content Include="Views\Coupons\ManageCoupons.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -7,6 +7,7 @@
 
 }
 
+<input type="hidden" id="hfEdit" />
 
 <!-- datatables CSS -->
 <link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
@@ -40,7 +41,6 @@
             </div>
         </div>
     </div>
-    <input type="hidden" id="hfEdit" />
 
     @*<script src="~/Scripts/jquery-3.4.1.min.js"></script>*@
 
@@ -54,7 +54,7 @@
             var loc = window.location.pathname;
             CheckPermissions("#btnAdd", "#hfEdit", "", loc);
 
-            setTimeout(function () { Datagrid(); }, 50);
+            setTimeout(function () { Datagrid(); }, 2000);
 
         });
 

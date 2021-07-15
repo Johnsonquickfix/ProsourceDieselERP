@@ -134,8 +134,8 @@
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Country</label>
                                     <select class="form-control" id="txtCountry">
-                                        <option value="US-United States">US - United States</option>
-                                        <option value="CA-Canada">CA - Canada</option>
+                                        <option value="US - United States">US - United States</option>
+                                        <option value="CA - Canada">CA - Canada</option>
                                     </select>
                                 </div>
                                 <div class="form-group form-password-group">
@@ -173,7 +173,7 @@
 </div>
 
 <script>
-
+    var strength=1;
     $(document).ready(function () {
         $("#loader").hide();
         //$.get('GetCity', function (data) {
@@ -197,15 +197,39 @@
 
         // $("#txtCity").change(function () { setTimeout(function () { NewOrderNo(); }, 50); CustomerAddress(); return false; });
 
+        $(document).on('change', "#txtCountry", function () {
+            $('#txtState').empty();
+        })
+
         $("#txtState").select2({
+            //allowClear: true, minimumInputLength: 3, placeholder: "Search State",
+            //ajax: {
+            //    url: '/Users/GetState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+            //    data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
+            //    processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.StateFullName, name: item.StateFullName, id: item.StateFullName } }) }; },
+            //    error: function (xhr, status, err) { }, cache: true
+            //}
+
             allowClear: true, minimumInputLength: 3, placeholder: "Search State",
-            ajax: {
-                url: '/Users/GetState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
-                data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
-                processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.StateFullName, name: item.StateFullName, id: item.StateFullName } }) }; },
-                error: function (xhr, status, err) { }, cache: true
-            }
+                ajax: {
+                    url: '/Users/GetCustState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+                    data: function (params) {
+                        var obj = { strValue1: params.term, strValue2: $("#txtCountry").val() };
+                        return JSON.stringify(obj);
+                    },
+                    processResults: function (data) {
+                        var jobj = JSON.parse(data);
+                        console.log(jobj);
+                        return {
+                            results: $.map(jobj, function (item) {
+                                return { text: item.StateFullName, name: item.StateFullName, id: item.StateFullName }
+                            })
+                        };
+                    },
+                    error: function (xhr, status, err) { }, cache: true
+                }
         });
+      
 
         //txtState
         //$.get('GetState', function (data) {
@@ -290,9 +314,11 @@
 
                     }
                     else {
-                        $("#txtPostCode").val("");
-                        $('#hfzipstatus').val(data.status);
-                        swal('Alert', 'Zip code is not valid for the State', 'error').then(function () { swal.close(); $('#txtPostCode').focus(); });
+                        if ($('#txtCountry').val() == "US - United States") {
+                            $("#txtPostCode").val("");
+                            $('#hfzipstatus').val(data.status);
+                            swal('Alert', 'Zip code is not valid for the State', 'error').then(function () { swal.close(); $('#txtPostCode').focus(); });
+                        }
                     }
                 },
 
@@ -390,7 +416,13 @@
         if (result == "Password strength is strong") {
             $('#result').attr({ 'style': 'color:Green;' });
         }
-
+        Password = $("#txtPassword").val();
+        strength = 1;
+        var arr = [/.{5,}/, /[a-z]+/, /[0-9]+/, /[A-Z]+/];
+        jQuery.map(arr, function (regexp) {
+            if (Password.match(regexp)) 
+                strength++;           
+        });
 
     })
     $("#txtPassword").on("input", function () {
@@ -409,15 +441,31 @@
         if (result == "Password strength is strong") {
             $('#result').attr({ 'style': 'color:Green;' });
         }
-
+        Password = $("#txtPassword").val();
+        strength = 1;
+        var arr = [/.{5,}/, /[a-z]+/, /[0-9]+/, /[A-Z]+/];
+        jQuery.map(arr, function (regexp) {
+            if (Password.match(regexp)) 
+                strength++;  
+        });
 
     })
 
-
+    //$('#txtPassword').on('keyup', function () {
+    //    strength = 1;
+    //    var arr = [/.{5,}/, /[a-z]+/, /[0-9]+/, /[A-Z]+/];
+    //    jQuery.map(arr, function (regexp) {
+    //        if (Password.match(regexp)) {
+    //            strength++;
+    //            alert(strength);
+    //        } else {
+    //            swal('Alert', 'Passwords must be have number,one special and one capital characters.', 'error').then(function () { swal.close(); $('#txtPassword').focus(); });
+    //        }
+    //    });
+    //});
 
     function AddCustomer() {
-        debugger
-
+        //debugger
         var ImageURL;
         var canvas = document.createElement('canvas');
         var objimg = document.getElementById('show_picture');
@@ -486,14 +534,17 @@
         else if ($('#txtCountry').val() == 0) {
             swal('Alert', 'Please Select Country', 'error').then(function () { swal.close(); $('#txtCountry').focus(); });
         }
-
         else if (Password == "") {
             swal('Alert', 'Please Enter Password', 'error').then(function () { swal.close(); $('#txtPassword').focus(); });
         }
         else if (Password.length < 8 ) {
             swal('Alert', 'Passwords must be 8 characters.', 'error').then(function () { swal.close(); $('#txtPassword').focus(); });
         }
+        else if (strength < 5) {
+                    swal('Alert', 'Passwords must be have number,one special and one capital characters.', 'error').then(function () { swal.close(); $('#txtPassword').focus(); });
+        }
         else if (ConfirmPassword == "") {
+            console.log(strength);
             swal('Alert', 'Please Enter Confirm Password', 'error').then(function () { swal.close(); $('#txtConfirmPassword').focus(); });
         }
         else if (Password !== ConfirmPassword) {

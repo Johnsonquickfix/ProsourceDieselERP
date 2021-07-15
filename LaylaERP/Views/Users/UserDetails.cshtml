@@ -206,12 +206,35 @@
         //    })
         //})
 
+        $(document).on('change', "#txtCountry", function () {
+            $('#txtState').empty();
+        })
+
         $("#txtState").select2({
+            //allowClear: true, minimumInputLength: 3, placeholder: "Search State",
+            //ajax: {
+            //    url: '/Users/GetState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+            //    data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
+            //    processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.StateFullName, name: item.StateFullName, id: item.StateFullName } }) }; },
+            //    error: function (xhr, status, err) { }, cache: true
+            //}
+
             allowClear: true, minimumInputLength: 3, placeholder: "Search State",
             ajax: {
-                url: '/Users/GetState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
-                data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
-                processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.StateFullName, name: item.StateFullName, id: item.StateFullName } }) }; },
+                url: '/Users/GetCustState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+                data: function (params) {
+                    var obj = { strValue1: params.term, strValue2: $("#txtCountry").val() };
+                    return JSON.stringify(obj);
+                },
+                processResults: function (data) {
+                    var jobj = JSON.parse(data);
+                    console.log(jobj);
+                    return {
+                        results: $.map(jobj, function (item) {
+                            return { text: item.StateFullName, name: item.StateFullName, id: item.StateFullName }
+                        })
+                    };
+                },
                 error: function (xhr, status, err) { }, cache: true
             }
         });
@@ -251,9 +274,11 @@
 
                     }
                     else {
-                        $("#txtPostCode").val("");
-                        $('#hfzipstatus').val(data.status);
-                        swal('Alert', 'Zip code is not valid for the State', 'error').then(function () { swal.close(); $('#txtPostCode').focus(); });
+                        if ($('#txtCountry').val() == "US - United States") {
+                            $("#txtPostCode").val("");
+                            $('#hfzipstatus').val(data.status);
+                            swal('Alert', 'Zip code is not valid for the State', 'error').then(function () { swal.close(); $('#txtPostCode').focus(); });
+                        }
                     }
                 },
 

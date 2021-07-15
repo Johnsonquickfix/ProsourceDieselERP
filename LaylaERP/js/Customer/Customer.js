@@ -249,7 +249,7 @@ function GetCustomerByID(id) {
     
     var ID = id;
     if (ID == "NewUser") { $('#lbltitle').text("Add New Customer"); } else { $('#lbltitle').text("Update Customer"); }
-    var obj = {};
+    var obj =  
     $.ajax({
         url: "/Customer/GetCustomerByID/" + ID,
         type: "GET",
@@ -267,9 +267,19 @@ function GetCustomerByID(id) {
             $("#txtBillingAddress2").val(d[0].billing_address_2);
             $("#txtBillingPostCode").val(d[0].billing_postcode);
             $("#txtBillingCountry").val(d[0].billing_country);
-            $("#txtBillingState").select2('destroy').empty().select2({ data: [{ value: d[0].billing_state, text: d[0].billing_state }] });
+            $("#txtBillingState").select2('').empty().select2({ data: [{ name: d[0].billing_state, id: d[0].billing_state , text: d[0].billing_state }] })
+            //$("#txtBillingState").select2('destroy').empty().select2({ data: [{ value: d[0].billing_state, text: d[0].billing_state }] });
             $("#txtBillingCity").val(d[0].billing_city);
             $("#txtBillingPhone").val(d[0].billing_phone);
+            $("#txtBillingState").select2({
+                allowClear: true, minimumInputLength: 3, placeholder: "Search State",
+                ajax: {
+                    url: '/Users/GetState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+                    data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
+                    processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.StateFullName, name: item.StateFullName, id: item.StateFullName } }) }; },
+                    error: function (xhr, status, err) { }, cache: true
+                }
+            });
 
         },
         error: function (msg) { alert(msg); }

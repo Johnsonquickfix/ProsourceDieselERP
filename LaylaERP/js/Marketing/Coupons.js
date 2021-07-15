@@ -135,7 +135,7 @@ function AddCoupons() {
     UsageLimitPerUser = $("#txtUsageLimitPerUser").val();
     discription = $("#txtdiscription").val();
 
-    alert('yy');
+     
     if (CouponAmount == "")
         CouponAmount = "0.00";
     else

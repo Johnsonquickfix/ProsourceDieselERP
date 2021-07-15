@@ -77,6 +77,16 @@ $('#btnGenerateCoupon').click(function () {
             error: function (xhr, status, err) { }, cache: true
         }
     });
+    $('#txtCouponAmount').change(function () {
+       var DiscountType = $("#ddlDiscountType").val();
+        var CouponAmount = $("#txtCouponAmount").val();
+        if (DiscountType == "percent") {
+            if (parseInt(CouponAmount) > 100) {
+                $("#txtCouponAmount").val("0");
+                swal('Alert', 'Please Enter Coupon Amount Within 100 %', 'error').then(function () { swal.close(); $('#txtCouponAmount').focus(); });
+            }
+        }
+    });
     $(document).on('click', "#btnSave", function () {
         AddCoupons();
     })
@@ -144,12 +154,7 @@ function AddCoupons() {
         CouponAmount = "0.00";
     else
         CouponAmount = addZeroes(CouponAmount);
-    if (DiscountType == "percent") {
-        if (parseInt(CouponAmount) > 100) {
-            CouponAmount = "0";
-            swal('Alert', 'Please Enter Coupon Amount Within 100 %', 'error').then(function () { swal.close(); $('#txtCouponAmount').focus(); });
-        }
-    }
+   
 
     if (MinimumSpend == "")
         MinimumSpend = "0";
@@ -259,6 +264,7 @@ function clear_fetch() {
 
 function GetDataByID(order_id) {
     var ID = order_id;
+    if (ID == "Add New Coupons") { $('#lbltitle').text("Add New Customer"); } else { $('#lbltitle').text("Update / View  Coupons"); }
     var obj = { strVal: order_id }
     $.ajax({
 

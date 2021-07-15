@@ -135,7 +135,7 @@ function AddCoupons() {
     UsageLimitPerUser = $("#txtUsageLimitPerUser").val();
     discription = $("#txtdiscription").val();
 
-    alert('yy');
+     
     if (CouponAmount == "")
         CouponAmount = "0.00";
     else
@@ -254,7 +254,6 @@ function clear_fetch() {
 
 
 function GetDataByID(order_id) {
-    alert('tt');
     var ID = order_id;
     var obj = { strVal: order_id }
     $.ajax({

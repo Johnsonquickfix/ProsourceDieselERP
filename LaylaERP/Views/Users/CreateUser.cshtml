@@ -493,20 +493,6 @@
         else if (Password.length < 8 ) {
             swal('Alert', 'Passwords must be 8 characters.', 'error').then(function () { swal.close(); $('#txtPassword').focus(); });
         }
-        else if (Password.length >= 8) {
-            var strength = 1;
-            var arr = [/.{5,}/, /[a-z]+/, /[0-9]+/, /[A-Z]+/];
-            jQuery.map(arr, function (regexp) {
-                if (Password.match(regexp)) {
-                    strength++;
-                    //alert(strength);
-                } else {
-                    swal('Alert', 'Passwords must be have number,one special and one capital characters.', 'error').then(function () { swal.close(); $('#txtPassword').focus(); });
-                }
-            });
-
-            
-        }
         else if (ConfirmPassword == "") {
             swal('Alert', 'Please Enter Confirm Password', 'error').then(function () { swal.close(); $('#txtConfirmPassword').focus(); });
         }

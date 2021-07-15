@@ -226,9 +226,9 @@ function getAllUserType(sValue) {
         $('.subsubsub li').each(function (index) {
             let val = $(this).data('uservalue'), txt = $(this).data('usertext');
             let i = sValue.toLowerCase().trim().indexOf(val);
-            if (i > -1) user_type = (user_type.length > 0 ? user_type + ',' : '') + txt;
+            if (i > -1) user_type = (user_type.length > 0 ? user_type + ', ' : '') + txt;
         });
-        return user_type.substring(0, user_type.length - 1);
+        return user_type.substring(0, user_type.length - 2);
     }
     else
         return '';

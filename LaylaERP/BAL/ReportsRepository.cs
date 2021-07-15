@@ -290,7 +290,7 @@ namespace LaylaERP.BAL
                     ssql = "SELECT distinct ID,post_date,REPLACE(u.post_status, 'wc-', '') post_status,"
                     + " format(umatotal.meta_value, 2) Total,"
                     + " format(umadiscount.meta_value, 2) Discount,"
-                    + " case when post_status in ('wc-refunded') then - format((umatotal.meta_value) - (IFNULL(umatax.meta_value,0)+ IFNULL(umorerItemmetafee.meta_value,0)), 2) else format((umatotal.meta_value) - (IFNULL(umatax.meta_value,0)+ IFNULL(umorerItemmetafee.meta_value,0)), 2) end CommissionableAmount,"
+                    + " case when post_status in ('wc-refunded') then  (format(-umatotal.meta_value, 2)) else format((umatotal.meta_value) - (IFNULL(umatax.meta_value,0)+ IFNULL(umorerItemmetafee.meta_value,0)), 2) end CommissionableAmount,"
                     + " format(umatax.meta_value, 2) Tax,"
                     + " post_date Podiumdate,"
                     + " umtransaction.meta_value TransactionID,"
@@ -386,7 +386,8 @@ namespace LaylaERP.BAL
                     //+ " LEFT OUTER JOIN wp_woocommerce_order_itemmeta umorerItemmetafee on umorerItemmetafee.meta_key='_fee_amount' And umorerItemmetafee.order_item_id = umorerfee.order_item_id "
                     //+ " WHERE post_status IN ('wc-completed','wc-processing','wc-refunded') and  DATE(post_date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and DATE(post_date)<= '" + todate.ToString("yyyy-MM-dd") + "' group by EName";
                     ssql = "SELECT count(ID) CunrID,"
-                  + " format(sum((umatotal.meta_value) - (IFNULL(umatax.meta_value,0)+ IFNULL(umorerItemmetafee.meta_value,0))) - IFNULL(sum((umatotalrefunded.meta_value) - (IFNULL(umatax.meta_value,0)+ IFNULL(umorerItemmetafee.meta_value,0))),0),2) CommissionableAmount,"
+                        + " format(sum((umatotal.meta_value) - (IFNULL(umatax.meta_value,0)+ IFNULL(umorerItemmetafee.meta_value,0))),2)  CommissionableAmount,"
+                  //+ " format(sum((umatotal.meta_value) - (IFNULL(umatax.meta_value,0)+ IFNULL(umorerItemmetafee.meta_value,0))) - IFNULL(sum((umatotalrefunded.meta_value) - (IFNULL(umatax.meta_value,0)+ IFNULL(umorerItemmetafee.meta_value,0))),0),2) CommissionableAmount,"
                   + " umempname.meta_value EName,"
                   + " format((sum((umatotal.meta_value) - (IFNULL(umatax.meta_value,0)+ IFNULL(umorerItemmetafee.meta_value,0))) - IFNULL(sum((umatotalrefunded.meta_value) - (IFNULL(umatax.meta_value,0)+ IFNULL(umorerItemmetafee.meta_value,0))),0))/count(ID),2) AOV,"
                   + " format(((select Comm_Rate from  wp_agent_commission where AOV_Range1 <=  (sum((umatotal.meta_value) - (IFNULL(umatax.meta_value,0)+ IFNULL(umorerItemmetafee.meta_value,0))) - IFNULL(sum((umatotalrefunded.meta_value) - (IFNULL(umatax.meta_value,0)+ IFNULL(umorerItemmetafee.meta_value,0))),0))/count(u.id)  and AOV_Range2 >=  (sum((umatotal.meta_value) - (IFNULL(umatax.meta_value,0)+ IFNULL(umorerItemmetafee.meta_value,0))) - IFNULL(sum((umatotalrefunded.meta_value) - (IFNULL(umatax.meta_value,0)+ IFNULL(umorerItemmetafee.meta_value,0))),0))/count(u.id) )),2) Valued"

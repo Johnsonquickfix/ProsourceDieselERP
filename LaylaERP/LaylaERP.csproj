@@ -512,7 +512,6 @@
     <Content Include="Content\easyui\images\tagbox_icons.png" />
     <Content Include="Content\easyui\images\tree_icons.png" />
     <Content Include="Content\easyui\images\validatebox_warning.png" />
-    <Content Include="Content\easyui\jquery.easyui.min2.js" />
     <Content Include="Content\easyui\jquery.easyui.min.js" />
     <Content Include="Content\fontawesome-all.min.css" />
     <Content Include="Content\img\flags%402x.png" />
@@ -565,8 +564,10 @@
     <Content Include="js\Customer\Customer.js" />
     <Content Include="js\FeeNTax\FeeNTax.js" />
     <Content Include="js\Marketing\Coupons.js" />
+    <Content Include="js\Marketing\CouponsManage.js" />
     <Content Include="js\Orders\NewOrder.js" />
     <Content Include="js\Orders\OrderHistory.js" />
+    <Content Include="js\Ship\ShipStation.js" />
     <Content Include="js\Users\RolePermission.js" />
     <Content Include="js\Users\UserLogin.js" />
     <Content Include="js\Users\UserRole.js" />
@@ -747,6 +748,7 @@
     <Content Include="Views\Reports\ZeroOrdersReport.cshtml" />
     <Content Include="Views\Home\OrderList.cshtml" />
     <Content Include="Views\Shared\_Calendar.cshtml" />
+    <Content Include="Views\Coupons\ManageCoupons.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

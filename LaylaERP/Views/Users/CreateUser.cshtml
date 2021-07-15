@@ -134,8 +134,8 @@
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Country</label>
                                     <select class="form-control" id="txtCountry">
-                                        <option value="US-United States">US-United States</option>
-                                        <option value="CA-Canada">CA-Canada</option>
+                                        <option value="US-United States">US - United States</option>
+                                        <option value="CA-Canada">CA - Canada</option>
                                     </select>
                                 </div>
                                 <div class="form-group form-password-group">
@@ -490,13 +490,16 @@
         else if (Password == "") {
             swal('Alert', 'Please Enter Password', 'error').then(function () { swal.close(); $('#txtPassword').focus(); });
         }
+        else if (Password.length < 8 ) {
+            swal('Alert', 'Passwords must be 8 characters.', 'error').then(function () { swal.close(); $('#txtPassword').focus(); });
+        }
         else if (ConfirmPassword == "") {
             swal('Alert', 'Please Enter Confirm Password', 'error').then(function () { swal.close(); $('#txtConfirmPassword').focus(); });
         }
         else if (Password !== ConfirmPassword) {
             swal('Alert', 'Confirm Password is not matching.', 'error').then(function () { swal.close(); $('#txtConfirmPassword').focus(); });
         }
-
+        
         else {
             $("#txtPostCode").change();
             if ($("#hfzipstatus").val() == "true") {

@@ -141,8 +141,26 @@
             { throw ex; }
             return DT;
         }
+        public static DataTable GetCanadaState(string strSearch, string country)
+        {
+            DataTable DT = new DataTable();
+            try
+            {
+                if (country == "CA - Canada")
+                {
+                    DT = SQLHelper.ExecuteDataTable("select distinct StateFullName from StateList where StateFullName like '" + strSearch + "%' order by StateFullName limit 50;");
+                }
+                else
+                {
+                    DT = SQLHelper.ExecuteDataTable("select distinct StateFullName,StateFullName from ZIPCodes1 where StateFullName like '" + strSearch + "%' order by StateFullName limit 50;");
+                }
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DT;
+        }
 
-        
+
 
         public static DataTable DisplayAssignRole(string strvalue)
         {

@@ -17,7 +17,7 @@ namespace LaylaERP.Models
         public string usage_limit_per_user { get; set; }
         public string limit_usage_to_x_items { get; set; }
         public string usage_count { get; set; }
-        public DateTime? date_expires { get; set; }
+        public string date_expires { get; set; }
         public string free_shipping { get; set; }
         public string exclude_sale_items { get; set; }
         public string shareasale_wc_tracker_coupon_upload_enabled { get; set; }
@@ -26,5 +26,14 @@ namespace LaylaERP.Models
         public string _wjecf_is_auto_coupon { get; set; }
         public string _wjecf_apply_silently { get; set; }
         public string _used_by { get; set; }
+        public string min_subtotal { get; set; }
+        public string max_subtotal { get; set; }
+        public string product_ids { get; set; }
+        public string exclude_product_ids { get; set; }
+        public string categories_ids { get; set; }
+        public string exclude_categories_ids { get; set; }
+        public string wjecf_is_auto_coupon { get; set; }
+        public string cus_email { get; set; }
+        public string post_excerpt { get; set; }   
     }
 }

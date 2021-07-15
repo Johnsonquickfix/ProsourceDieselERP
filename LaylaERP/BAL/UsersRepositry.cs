@@ -745,10 +745,11 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "insert into wp_user_classification(User_Type,User_Value)values(@User_Type,@User_Type);SELECT LAST_INSERT_ID();";
+                string strsql = "insert into wp_user_classification(User_Type,User_Value)values(@User_Type,@User_Value);SELECT LAST_INSERT_ID();";
                 MySqlParameter[] para =
                 {
                     new MySqlParameter("@User_Type", model.User_Type),
+                    new MySqlParameter("@User_Value", model.User_Type.ToLower().Replace(" ",String.Empty)),
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
                 return result;

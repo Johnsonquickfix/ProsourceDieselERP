@@ -47,7 +47,7 @@
             DataTable DT = new DataTable();
             try
             {
-                string strWhr = "select id,CONCAT(User_Login, ' [ ', user_email, ']') as displayname,replace(replace(replace(replace(ump.meta_value, '-', ''), ' ', ''), '(', ''), ')', '')  billing_phone"
+                string strWhr = "select id,CONCAT(User_Login, ' (#',id,' - ', user_email, ')') as displayname,replace(replace(replace(replace(ump.meta_value, '-', ''), ' ', ''), '(', ''), ')', '')  billing_phone"
                                 + " from wp_users as ur"
                                 + " inner join wp_usermeta um on ur.id = um.user_id and um.meta_key = 'wp_capabilities' and meta_value like '%customer%'"
                                 + " left outer join wp_usermeta ump on ur.id = ump.user_id and ump.meta_key = 'billing_phone'";
@@ -434,7 +434,7 @@
                 }
 
                 /// step 6 : wp_posts
-                strSql.Append(string.Format(" update wp_posts set post_status = '{0}' ,comment_status = 'closed',post_modified = '{1}',post_modified_gmt = '{2}' where id = {3} ", model.OrderPostStatus.status, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"), model.OrderPostStatus.order_id));
+                strSql.Append(string.Format(" update wp_posts set post_status = '{0}' ,comment_status = 'closed',post_modified = '{1}',post_modified_gmt = '{2}',post_excerpt = '{3}' where id = {4} ", model.OrderPostStatus.status, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"), model.OrderPostStatus.Search, model.OrderPostStatus.order_id));
 
                 result = SQLHelper.ExecuteNonQuery(strSql.ToString());
             }
@@ -624,7 +624,7 @@
                     }
                 }
                 /// step 8 : wp_posts
-                strSql.Append(string.Format(" update wp_posts set post_status = '{0}' ,comment_status = 'closed',post_modified = '{1}',post_modified_gmt = '{2}' where id = {3} ", model.OrderPostStatus.status, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"), model.OrderPostStatus.order_id));
+                strSql.Append(string.Format(" update wp_posts set post_status = '{0}' ,comment_status = 'closed',post_modified = '{1}',post_modified_gmt = '{2}',post_excerpt = '{3}' where id = {4} ", model.OrderPostStatus.status, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"), model.OrderPostStatus.Search, model.OrderPostStatus.order_id));
                 result = SQLHelper.ExecuteNonQuery(strSql.ToString());
             }
             catch (Exception Ex) { throw Ex; }
@@ -800,23 +800,22 @@
                 {
                     new MySqlParameter("@order_id", OrderID)
                 };
-                string strSQl = "select os.order_id,DATE_FORMAT(os.date_created,'%d/%m/%Y') date_created,os.customer_id,CONCAT(COALESCE(u.User_Login,''), ' [ ', COALESCE(u.user_email,''), ']') as customer_name,os.status,"
-                            + " os.shipping_total,max(case meta_key when '_payment_method_title' then meta_value else '' end) payment_method,"
+                string strSQl = "select os.id order_id,DATE_FORMAT(os.post_date,'%d/%m/%Y') date_created,max(case meta_key when '_customer_user' then meta_value else '' end) customer_id,max(CONCAT(COALESCE(u.User_Login,''), ' (', COALESCE(u.user_email,''), ')')) as customer_name,os.post_status status,"
+                            + " os.post_excerpt,0 shipping_total,max(case meta_key when '_payment_method_title' then meta_value else '' end) payment_method,"
                             + " max(case meta_key when '_customer_ip_address' then meta_value else '' end) ip_address,max(case meta_key when '_created_via' then meta_value else '' end) created_via,"
                             + " max(case meta_key when '_billing_first_name' then meta_value else '' end) b_first_name,max(case meta_key when '_billing_last_name' then meta_value else '' end) b_last_name,"
-                            + " max(case meta_key when '_billing_address_1' then meta_value else '' end) b_address_1,max(case meta_key when '_billing_address_2' then meta_value else '' end) b_address_2,"
+                            + " max(case meta_key when '_billing_company' then meta_value else '' end) b_company,max(case meta_key when '_billing_address_1' then meta_value else '' end) b_address_1,max(case meta_key when '_billing_address_2' then meta_value else '' end) b_address_2,"
                             + " max(case meta_key when '_billing_postcode' then meta_value else '' end) b_postcode,max(case meta_key when '_billing_city' then meta_value else '' end) b_city,"
                             + " max(case meta_key when '_billing_country' then meta_value else '' end) b_country,max(case meta_key when '_billing_state' then meta_value else '' end) b_state,"
                             + " max(case meta_key when '_billing_email' then meta_value else '' end) b_email,max(case meta_key when '_billing_phone' then meta_value else '' end) b_phone,"
                             + " max(case meta_key when '_shipping_first_name' then meta_value else '' end) s_first_name,max(case meta_key when '_shipping_last_name' then meta_value else '' end) s_last_name,"
-                            + " max(case meta_key when '_shipping_address_1' then meta_value else '' end) s_address_1,max(case meta_key when '_shipping_address_2' then meta_value else '' end) s_address_2,"
+                            + " max(case meta_key when '_shipping_company' then meta_value else '' end) s_company,max(case meta_key when '_shipping_address_1' then meta_value else '' end) s_address_1,max(case meta_key when '_shipping_address_2' then meta_value else '' end) s_address_2,"
                             + " max(case meta_key when '_shipping_postcode' then meta_value else '' end) s_postcode,max(case meta_key when '_shipping_city' then meta_value else '' end) s_city,"
                             + " max(case meta_key when '_shipping_country' then meta_value else '' end) s_country,max(case meta_key when '_shipping_state' then meta_value else '' end) s_state"
-                            + " from wp_wc_order_stats os"
-                            + " inner join wp_postmeta pm on pm.post_id = os.order_id"
-                            + " left outer join wp_users u on u.id = os.customer_id"
-                            + " where os.order_id = @order_id "
-                            + " group by os.order_id,os.date_created,os.customer_id,u.User_Login,u.user_email,os.status";
+                            + " from wp_posts os inner join wp_postmeta pm on pm.post_id = os.id"
+                            + " left outer join wp_users u on u.id = meta_value and meta_key='_customer_user'"
+                            + " where os.id = @order_id "
+                            + " group by os.id,os.post_date,os.post_status,os.post_excerpt";
                 dt = SQLHelper.ExecuteDataTable(strSQl, parameters);
             }
             catch (Exception ex)
@@ -1120,25 +1119,25 @@
             try
             {
                 string strSql = "SELECT 'Default' IsDefault,user_id customer_id,max(case when meta_key = 'billing_first_name' then meta_value else '' end) billing_first_name,max(case when meta_key = 'billing_last_name' then meta_value else '' end) billing_last_name,"
-                                + " max(case when meta_key = 'billing_address_1' then meta_value else '' end) billing_address_1,max(case when meta_key = 'billing_address_2' then meta_value else '' end) billing_address_2,"
+                                + " max(case when meta_key = 'billing_company' then meta_value else '' end) billing_company,max(case when meta_key = 'billing_address_1' then meta_value else '' end) billing_address_1,max(case when meta_key = 'billing_address_2' then meta_value else '' end) billing_address_2,"
                                 + " max(case when meta_key = 'billing_city' then meta_value else '' end) billing_city,max(case when meta_key = 'billing_state' then meta_value else '' end) billing_state,"
                                 + " max(case when meta_key = 'billing_postcode' then meta_value else '' end) billing_postcode,max(case when meta_key = 'billing_country' then meta_value else '' end) billing_country,"
                                 + " max(case when meta_key = 'billing_email' then meta_value else '' end) billing_email,max(case when meta_key = 'billing_phone' then replace(replace(replace(replace(meta_value, '-', ''), ' ', ''), '(', ''), ')', '') else '' end) billing_phone,"
                                 + " max(case when meta_key = 'shipping_first_name' then meta_value else '' end) shipping_first_name,max(case when meta_key = 'shipping_last_name' then meta_value else '' end) shipping_last_name,"
-                                + " max(case when meta_key = 'shipping_address_1' then meta_value else '' end) shipping_address_1,max(case when meta_key = 'shipping_address_2' then meta_value else '' end) shipping_address_2,"
+                                + " max(case when meta_key = 'shipping_company' then meta_value else '' end) shipping_company,max(case when meta_key = 'shipping_address_1' then meta_value else '' end) shipping_address_1,max(case when meta_key = 'shipping_address_2' then meta_value else '' end) shipping_address_2,"
                                 + " max(case when meta_key = 'shipping_city' then meta_value else '' end) shipping_city,max(case when meta_key = 'shipping_state' then meta_value else '' end) shipping_state,"
                                 + " max(case when meta_key = 'shipping_postcode' then meta_value else '' end) shipping_postcode,max(case when meta_key = 'shipping_country' then meta_value else '' end) shipping_country"
                                 + " FROM wp_usermeta WHERE user_id = '" + CustomerID + "' and(meta_key like 'billing_%' OR meta_key like 'shipping_%') group by user_id"
                                 + " UNION ALL "
-                                + " select distinct '' IsDefault,customer_id,billing_first_name,billing_last_name,billing_address_1,billing_address_2,billing_city,billing_state,billing_postcode,billing_country,"
-                                + " billing_email,billing_phone,shipping_first_name,shipping_last_name,shipping_address_1,shipping_address_2,shipping_city,shipping_state,shipping_postcode,shipping_country from"
+                                + " select distinct '' IsDefault,customer_id,billing_first_name,billing_last_name,billing_company,billing_address_1,billing_address_2,billing_city,billing_state,billing_postcode,billing_country,"
+                                + " billing_email,billing_phone,shipping_first_name,shipping_last_name,shipping_company,shipping_address_1,shipping_address_2,shipping_city,shipping_state,shipping_postcode,shipping_country from"
                                 + " (SELECT po.ID, os.customer_id, max(case when pm.meta_key = '_billing_first_name' then pm.meta_value else '' end) billing_first_name,max(case when pm.meta_key = '_billing_last_name' then pm.meta_value else '' end) billing_last_name,"
-                                + " max(case when pm.meta_key = '_billing_address_1' then pm.meta_value else '' end) billing_address_1,max(case when pm.meta_key = '_billing_address_2' then pm.meta_value else '' end) billing_address_2,"
+                                + " max(case when pm.meta_key = '_billing_company' then pm.meta_value else '' end) billing_company,max(case when pm.meta_key = '_billing_address_1' then pm.meta_value else '' end) billing_address_1,max(case when pm.meta_key = '_billing_address_2' then pm.meta_value else '' end) billing_address_2,"
                                 + " max(case when pm.meta_key = '_billing_city' then pm.meta_value else '' end) billing_city,max(case when pm.meta_key = '_billing_state' then pm.meta_value else '' end) billing_state,"
                                 + " max(case when pm.meta_key = '_billing_postcode' then pm.meta_value else '' end) billing_postcode,max(case when pm.meta_key = '_billing_country' then pm.meta_value else '' end) billing_country,"
                                 + " max(case when pm.meta_key = '_billing_email' then pm.meta_value else '' end) billing_email,max(case when pm.meta_key = '_billing_phone' then replace(replace(replace(replace(pm.meta_value, '-', ''), ' ', ''), '(', ''), ')', '') else '' end) billing_phone,"
                                 + " max(case when pm.meta_key = '_shipping_first_name' then pm.meta_value else '' end) shipping_first_name,max(case when pm.meta_key = '_shipping_last_name' then pm.meta_value else '' end) shipping_last_name,"
-                                + " max(case when pm.meta_key = '_shipping_address_1' then pm.meta_value else '' end) shipping_address_1,max(case when pm.meta_key = '_shipping_address_2' then pm.meta_value else '' end) shipping_address_2,"
+                                + " max(case when pm.meta_key = '_shipping_company' then pm.meta_value else '' end) shipping_company,max(case when pm.meta_key = '_shipping_address_1' then pm.meta_value else '' end) shipping_address_1,max(case when pm.meta_key = '_shipping_address_2' then pm.meta_value else '' end) shipping_address_2,"
                                 + " max(case when pm.meta_key = '_shipping_city' then pm.meta_value else '' end) shipping_city,max(case when pm.meta_key = '_shipping_state' then pm.meta_value else '' end) shipping_state,"
                                 + " max(case when pm.meta_key = '_shipping_postcode' then pm.meta_value else '' end) shipping_postcode,max(case when pm.meta_key = '_shipping_country' then pm.meta_value else '' end) shipping_country"
                                 + " FROM wp_posts po inner join wp_wc_order_stats os on po.id = os.order_id LEFT OUTER JOIN wp_postmeta pm on pm.post_id = po.ID"

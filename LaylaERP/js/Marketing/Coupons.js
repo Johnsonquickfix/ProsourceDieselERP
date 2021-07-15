@@ -6,8 +6,9 @@ $(document).ready(function () {
     var url = window.location.pathname;
     var id = url.substring(url.lastIndexOf('/') + 1);
 
-    if (id != "") {
+    if (id != "" && id != "Index") {
         $("#hfid").val(id);
+  
         GetDataByID(id);
     }
 
@@ -250,7 +251,8 @@ function clear_fetch() {
 }
 
 
-function GetDataByID(order_id) {  
+function GetDataByID(order_id) {
+    alert('tt');
     var ID = order_id;
     var obj = { strVal: order_id }
     $.ajax({

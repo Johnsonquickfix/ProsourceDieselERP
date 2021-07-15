@@ -176,6 +176,28 @@ $(document).ready(function () {
         t.preventDefault(); saveCustomer();
     });
     /*end New order Popup function*/
+    /*Start Return Items*/
+    $(document).on("click", "#btnRefundItem", function (t) {
+        t.preventDefault();
+        $('.refund-action').empty().append('<button type="button" id="btnRefundCancel" class="btn btn-danger billinfo">Cancel</button> <button type="button" id="btnRefundOk" class="btn btn-danger billinfo">Refund $0.00 manually</button>');
+        $('#tblAddItemFinal > tbody  > tr').each(function (index, tr) {
+            if (!$(this).data('freeitem'))
+                $(tr).find(".item-action").empty().append('<input type="checkbox" name="chk_return" id="chk_return_' + $(this).data('id') + '" onclick="refundItem(this);" value="' + $(this).data('id') + '">');
+            else
+                $(tr).find(".item-action").empty().append('<input disabled type="checkbox" name="chk_return" id="chk_return_' + $(this).data('id') + '" onclick="Singlecheck(this);" value="' + $(this).data('id') + '">');
+        });
+    });
+    $(document).on("click", "#btnRefundCancel", function (t) {
+        t.preventDefault();
+        $('.refund-action').empty().append('<button type="button" id="btnAddFee" class="btn btn-danger billinfo">Add Fee</button> <button type="button" id="btnRefundItem" class="btn btn-danger billinfo">Refund</button>');
+        $('#tblAddItemFinal > tbody  > tr').each(function (index, tr) {
+            if (!$(this).data('freeitem'))
+                $(tr).find(".item-action").empty().append('<a class="btn menu-icon-gr vd_red btnDeleteItem billinfo" tabitem_itemid = "' + $(this).data('id') + '" onclick = "removeItemsInTable(\'' + $(this).data('id') + '\');" > <i class="glyphicon glyphicon-trash"></i></a>');
+            else
+                $(tr).find(".item-action").empty();
+        });
+    });
+    /*End Return Items*/
 });
 ///Bind States of Country
 function BindStateCounty(ctr, obj) {
@@ -215,7 +237,7 @@ function CustomerAddress(id) {
                     ///billing_Details
                     if (data[i].meta_key == 'billing_first_name') { $('#txtbillfirstname').val(data[i].meta_value); }
                     else if (data[i].meta_key == 'billing_last_name') { $('#txtbilllastname').val(data[i].meta_value); }
-                    else if (data[i].meta_key == 'billing_company_name') { $('#txtbillcompany').val(data[i].meta_value); }
+                    else if (data[i].meta_key == 'billing_company') { $('#txtbillcompany').val(data[i].meta_value); }
                     else if (data[i].meta_key == 'billing_address_1') { $('#txtbilladdress1').val(data[i].meta_value); }
                     else if (data[i].meta_key == 'billing_address_2') { $('#txtbilladdress2').val(data[i].meta_value); }
                     else if (data[i].meta_key == 'billing_postcode') { $('#txtbillzipcode').val(data[i].meta_value); }
@@ -227,7 +249,7 @@ function CustomerAddress(id) {
                     ///shipping_Details
                     else if (data[i].meta_key == 'shipping_first_name') { $('#txtshipfirstname').val(data[i].meta_value); }
                     else if (data[i].meta_key == 'shipping_last_name') { $('#txtshiplastname').val(data[i].meta_value); }
-                    else if (data[i].meta_key == 'shipping_company_name') { $('#txtshipcompany').val(data[i].meta_value); }
+                    else if (data[i].meta_key == 'shipping_company') { $('#txtshipcompany').val(data[i].meta_value); }
                     else if (data[i].meta_key == 'shipping_address_1') { $('#txtshipaddress1').val(data[i].meta_value); }
                     else if (data[i].meta_key == 'shipping_address_2') { $('#txtshipaddress2').val(data[i].meta_value); }
                     else if (data[i].meta_key == 'shipping_postcode') { $('#txtshipzipcode').val(data[i].meta_value); }
@@ -374,13 +396,13 @@ function bindCustomerOrders(id) {
                     },
                     {
                         data: 'billing_first_name', title: 'BILLING ADDRESS', sWidth: "25%", render: function (data, type, row) {
-                            let val = '<address class="no-margin">' + row.billing_first_name + ' ' + row.billing_last_name + '<br>' + row.billing_address_1 + (row.billing_address_2 > 0 ? '<br>' : '') + row.billing_address_2 + '<br>' + row.billing_city + ' ,' + row.billing_state + ' ' + row.billing_postcode + '<br>Phone: ' + row.billing_phone + '<br>Email: ' + row.billing_email + '</address>';
+                            let val = '<address class="no-margin">' + row.billing_first_name + ' ' + row.billing_last_name + '<br>' + (row.billing_company != '' ? row.billing_company + '<br>' : '') + row.billing_address_1 + (row.billing_address_2 > 0 ? '<br>' : '') + row.billing_address_2 + '<br>' + row.billing_city + ' ,' + row.billing_state + ' ' + row.billing_postcode + '<br>Phone: ' + row.billing_phone + '<br>Email: ' + row.billing_email + '</address>';
                             return val;
                         }
                     },
                     {
                         data: 'shipping_first_name', title: 'SHIPPING ADDRESS', sWidth: "25%", render: function (data, type, row) {
-                            let val = '<address class="no-margin">' + row.shipping_first_name + ' ' + row.shipping_last_name + '<br>' + row.shipping_address_1 + (row.shipping_address_2 > 0 ? '<br>' : '') + row.shipping_address_2 + '<br>' + row.shipping_city + ' ,' + row.shipping_state + ' ' + row.shipping_postcode + '</address>';
+                            let val = '<address class="no-margin">' + row.shipping_first_name + ' ' + row.shipping_last_name + '<br>' + (row.shipping_company != '' ? row.shipping_company + '<br>' : '') + row.shipping_address_1 + (row.shipping_address_2 > 0 ? '<br>' : '') + row.shipping_address_2 + '<br>' + row.shipping_city + ' ,' + row.shipping_state + ' ' + row.shipping_postcode + '</address>';
                             return val;
                         }
                     },
@@ -388,8 +410,8 @@ function bindCustomerOrders(id) {
                         'data': 'customer_id', sWidth: "10%", class: "text-center",
                         'render': function (id, type, row, meta) {
                             let defval = row.IsDefault != '' ? '<span class="label label-success">' + row.IsDefault + '</span>' : '';
-                            let val = ' data-bfn="' + row.billing_first_name + '" data-bln="' + row.billing_last_name + '" data-ba1="' + row.billing_address_1 + '" data-ba2="' + row.billing_address_2 + '" data-bc="' + row.billing_city + '" data-bs="' + row.billing_state + '" data-bct="' + row.billing_country + '" data-bpc="' + row.billing_postcode + '" data-bp="' + row.billing_phone + '" data-bem="' + row.billing_email + '"';
-                            val += ' data-sfn="' + row.shipping_first_name + '" data-sln="' + row.shipping_last_name + '" data-sa1="' + row.shipping_address_1 + '" data-sa2="' + row.shipping_address_2 + '" data-sc="' + row.shipping_city + '" data-ss="' + row.shipping_state + '" data-sct="' + row.billing_country + '" data-spc="' + row.shipping_postcode + '"';
+                            let val = ' data-bfn="' + row.billing_first_name + '" data-bln="' + row.billing_last_name + '" data-bcom="' + row.billing_company + '" data-ba1="' + row.billing_address_1 + '" data-ba2="' + row.billing_address_2 + '" data-bc="' + row.billing_city + '" data-bs="' + row.billing_state + '" data-bct="' + row.billing_country + '" data-bpc="' + row.billing_postcode + '" data-bp="' + row.billing_phone + '" data-bem="' + row.billing_email + '"';
+                            val += ' data-sfn="' + row.shipping_first_name + '" data-sln="' + row.shipping_last_name + '" data-scom="' + row.shipping_company + '" data-sa1="' + row.shipping_address_1 + '" data-sa2="' + row.shipping_address_2 + '" data-sc="' + row.shipping_city + '" data-ss="' + row.shipping_state + '" data-sct="' + row.billing_country + '" data-spc="' + row.shipping_postcode + '"';
                             return defval + ' <button type="button" id="btnUseAddress" class="btn btn-danger hidden" onclick="selectOrderAddress(this);" ' + val + '>Use Address for Order</button>'
                             //return '<a href="javascript:;" class="glyphicon glyphicon glyphicon-check" onclick="selectOrderAddress(this);" ' + val + '></a>';
                         }
@@ -403,6 +425,10 @@ function bindCustomerOrders(id) {
 }
 function ShowUseAddress(chk) {
     var isChecked = $(chk).prop("checked");
+    $("[name='CheckSingle']").prop("checked", false);
+    $("[name='CheckSingle']").parent().parent().find('#btnUseAddress').addClass('hidden');
+    $(chk).prop("checked", isChecked);
+
     if (isChecked == false)
         $(chk).parent().parent().find('#btnUseAddress').addClass('hidden');
     else {
@@ -419,7 +445,7 @@ function selectOrderAddress(ele) {
         ///billing_Details
         $('#txtbillfirstname').val($(ele).data('bfn'));
         $('#txtbilllastname').val($(ele).data('bln'));
-        $('#txtbillcompany').val('');
+        $('#txtbillcompany').val($(ele).data('bcom'));
         $('#txtbilladdress1').val($(ele).data('ba1'));
         $('#txtbilladdress2').val($(ele).data('ba2'));
         $('#txtbillzipcode').val($(ele).data('bpc'));
@@ -431,7 +457,7 @@ function selectOrderAddress(ele) {
         ///shipping_Details
         $('#txtshipfirstname').val($(ele).data('sfn'));
         $('#txtshiplastname').val($(ele).data('sln'));
-        $('#txtshipcompany').val('');
+        $('#txtshipcompany').val($(ele).data('scom'));
         $('#txtshipaddress1').val($(ele).data('sa1'));
         $('#txtshipaddress2').val($(ele).data('sa2'));
         $('#txtshipzipcode').val($(ele).data('spc'));
@@ -638,7 +664,7 @@ function getOrderInfo() {
             type: "POST", url: '/Orders/GetOrderInfo', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
             beforeSend: function () { $("#loader").show(); },
             success: function (result) {
-                var data = JSON.parse(result);
+                var data = JSON.parse(result); console.log(data);
                 if (data.length > 0) {
                     $('.payment-history').text('Payment via ' + data[0].payment_method + ' ' + data[0].created_via + '. Customer IP: ' + data[0].ip_address);
                     $('#txtLogDate').val(data[0].date_created);
@@ -647,13 +673,13 @@ function getOrderInfo() {
                     ///billing_Details
                     $('#txtbillfirstname').val(data[0].b_first_name); $('#txtbilllastname').val(data[0].b_last_name); $('#txtbilladdress1').val(data[0].b_address_1); $('#txtbilladdress2').val(data[0].b_address_2);
                     $('#txtbillzipcode').val(data[0].b_postcode); $('#txtbillcity').val(data[0].b_city); $('#txtbillemail').val(data[0].b_email); $('#txtbillphone').val(data[0].b_phone);
-                    $('#ddlbillcountry').val(data[0].b_country.trim()).trigger('change'); $('#ddlbillstate').val(data[0].b_state.trim()).trigger('change');
+                    $('#txtbillcompany').val(data[0].b_company); $('#ddlbillcountry').val(data[0].b_country.trim()).trigger('change'); $('#ddlbillstate').val(data[0].b_state.trim()).trigger('change');
 
                     ///shipping_Details
                     $('#txtshipfirstname').val(data[0].s_first_name); $('#txtshiplastname').val(data[0].s_last_name); $('#txtshipaddress1').val(data[0].s_address_1); $('#txtshipaddress2').val(data[0].s_address_2);
-                    $('#txtshipzipcode').val(data[0].s_postcode); $('#txtshipcity').val(data[0].s_city);
+                    $('#txtshipcompany').val(data[0].s_company); $('#txtshipzipcode').val(data[0].s_postcode); $('#txtshipcity').val(data[0].s_city);
                     $('#ddlshipcountry').val(data[0].s_country.trim()).trigger('change'); $('#ddlshipstate').val(data[0].s_state.trim()).trigger('change');
-
+                    $('#txtCustomerNotes').val(data[0].post_excerpt);
                     //bind Product
                     getOrderItemList(oid);
                     //if (data[0].status.trim() == "wc-pending") {
@@ -684,15 +710,18 @@ function getOrderItemList(oid) {
                     let PKey = data[i].product_id + '_' + data[i].variation_id;
                     itemHtml += '<tr id="tritemId_' + PKey + '" data-id="' + PKey + '" data-pid="' + data[i].product_id + '" data-vid="' + data[i].variation_id + '" data-pname="' + data[i].product_name + '" data-gid="' + data[i].group_id + '" data-freeitem="' + data[i].is_free + '" data-orderitemid="' + orderitemid + '">';
                     if (data[i].is_free)
-                        itemHtml += '<td class="text-center"></td>';
+                        itemHtml += '<td class="text-center item-action"></td>';
                     else
-                        itemHtml += '<td class="text-center"><a class="btn menu-icon-gr vd_red btnDeleteItem billinfo" tabitem_itemid="' + PKey + '" onclick="removeItemsInTable(\'' + PKey + '\');"> <i class="glyphicon glyphicon-trash"></i> </a></td>';
+                        itemHtml += '<td class="text-center item-action"><a class="btn menu-icon-gr vd_red btnDeleteItem billinfo" tabitem_itemid="' + PKey + '" onclick="removeItemsInTable(\'' + PKey + '\');"> <i class="glyphicon glyphicon-trash"></i></a></td>';
+
                     itemHtml += '<td>' + data[i].product_name + '</td>';
                     itemHtml += '<td class="text-right">' + data[i].reg_price.toFixed(2) + '</td>';
-                    if (data[i].is_free)
+                    if (data[i].is_free) {
                         itemHtml += '<td><input min="1" autocomplete="off" disabled class="form-control number rowCalulate" type="number" id="txt_ItemQty_' + PKey + '" value="' + data[i].quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
-                    else
+                    }
+                    else {
                         itemHtml += '<td><input min="1" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_ItemQty_' + PKey + '" value="' + data[i].quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
+                    }
                     itemHtml += '<td class="TotalAmount text-right" data-regprice="' + data[i].reg_price + '"data-salerate="' + data[i].sale_price + '" data-discount="' + data[i].discount.toFixed(2) + '" data-amount="' + data[i].total + '" data-taxamount="' + data[i].tax_amount + '" data-shippingamt="' + data[i].shipping_amount + '">' + data[i].total.toFixed(2) + '</td>';
                     itemHtml += '<td class="text-right RowDiscount" data-disctype="' + data[i].discount_type + '" data-couponamt="0">' + data[i].discount.toFixed(2) + '</td>';
                     itemHtml += '<td class="text-right RowTax">' + data[i].tax_amount.toFixed(2) + '</td>';
@@ -755,6 +784,8 @@ function getOrderItemList(oid) {
                 }
             }
             $('#tblAddItemFinal tbody').append(itemHtml);
+            $('.refund-action').append('<button type="button" id="btnAddFee" class="btn btn-danger billinfo">Add Fee</button> ');
+            $('.refund-action').append('<button type="button" id="btnRefundItem" class="btn btn-danger billinfo">Refund</button>');
             $('#billCoupon').append(layoutHtml);
             //Calculate Final
             $("#totalQty").text(zQty.toFixed(0)); $("#totalQty").data('qty', zQty.toFixed(0));
@@ -769,6 +800,12 @@ function getOrderItemList(oid) {
         error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
         async: false
     });
+}
+///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Refund Order ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+function refundItem(ele) {
+    let isChecked = $(ele).prop("checked");
+    let id = $(ele).val();
+    $('#chk_return_' + $('#tritemId_' + id).data("gid") + '_0').prop('checked', isChecked);
 }
 
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Coupon and Product Modal ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1290,7 +1327,7 @@ function bindItemListDataTable(data) {
         $("#divAddItemFinal").find(".rowCalulate").change(function () { calculateDiscountAcount(); });
     }
     else {
-        layoutHtml += '<table id="tblAddItemFinal" class="table-blue table check-table table-bordered table-striped dataTable">';
+        layoutHtml += '<table id="tblAddItemFinal" class="table-blue table table-bordered table-striped dataTable">';
         layoutHtml += '<thead>';
         layoutHtml += '<tr>';
         layoutHtml += '<th class="text-center" style="width: 5%">Actions</th>';
@@ -1427,7 +1464,8 @@ function createPostStatus() {
         tax_total: parseFloat($('#salesTaxTotal').text()) || 0,
         shipping_total: parseFloat($('#shippingTotal').text()) || 0,
         net_total: (parseFloat($('#orderTotal').text()) || 0) - (parseFloat($('#salesTaxTotal').text()) || 0),
-        status: $('#ddlStatus').val()
+        status: $('#ddlStatus').val(),
+        Search: $('#txtCustomerNotes').val()
     };
     return postStatus;
 }
@@ -1484,7 +1522,7 @@ function saveCO() {
     //console.log(obj);
     //$('#btnPlaceOrder').prop("disabled", false); return false;
     let sURL = order_mode == "E" ? "/Orders/UpdateCustomerOrder" : "/Orders/SaveCustomerOrder";
-    
+
     //if ($('#ddlStatus').val() == 'wc-processing' || $('#ddlStatus').val() == 'wc-on-hold' || $('#ddlStatus').val() == 'wc-completed')
     //    sURL = "/Orders/UpdateCustomerOrder";
 

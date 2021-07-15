@@ -499,20 +499,6 @@
         else if (Password !== ConfirmPassword) {
             swal('Alert', 'Confirm Password is not matching.', 'error').then(function () { swal.close(); $('#txtConfirmPassword').focus(); });
         }
-        else if (Password.length >= 8) {
-            var strength = 1;
-            var arr = [/.{5,}/, /[a-z]+/, /[0-9]+/, /[A-Z]+/];
-            jQuery.map(arr, function (regexp) {
-                if (Password.match(regexp)) {
-                    strength++;
-                    //alert(strength);
-                } else {
-                    swal('Alert', 'Passwords must be have number,one special and one capital characters.', 'error').then(function () { swal.close(); $('#txtPassword').focus(); });
-                }
-            });
-
-            
-        }
         
         else {
             $("#txtPostCode").change();

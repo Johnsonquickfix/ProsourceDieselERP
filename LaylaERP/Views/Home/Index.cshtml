@@ -37,6 +37,17 @@
     <!-- jQuery -->
     <script src="~/Content/AdminLTE-3.1.0/jquery/jquery.min.js"></script>
     <script src="~/Content/alert/sweetalert2.all.min.js"></script>
+    <script type="text/javascript">
+        jQuery.browser = {};
+        (function () {
+            jQuery.browser.msie = false;
+            jQuery.browser.version = 0;
+            if (navigator.userAgent.match(/MSIE ([0-9]+)\./)) {
+                jQuery.browser.msie = true;
+                jQuery.browser.version = RegExp.$1;
+            }
+        })();
+    </script>
 </head>
 <body class="skin-blue layla-skin sidebar-mini fixed">
     <div class="wrapper" style="height: auto; min-height: 100%;">
@@ -287,11 +298,7 @@
                 }
                 return input;
             }
-            var input = document.querySelector("#txtPhone");
-            window.intlTelInput(input, {
-
-                utilsScript: "~/Scripts/intlTelInput.js",
-            });
+            
 
                 //$("#State").append("<option>" + $("#hfState").val()+ "</option>");
 

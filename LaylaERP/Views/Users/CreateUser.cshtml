@@ -253,9 +253,9 @@
 
         $(document).on('click', "#PasswordShow", function () {
             if ($('#txtPassword').val() == "")
-                swal('Alert', 'Password is not zenrated', 'error');
+                swal('Alert', 'Password is not generated!', 'error');
             else
-                swal('Alert', 'Password IS ' + $('#txtPassword').val() + '', 'success');
+                swal('Alert', 'Password is ' + $('#txtPassword').val() + '', 'success');
 
         })
 
@@ -465,7 +465,7 @@
     //});
 
     function AddCustomer() {
-        //debugger
+        debugger
         var ImageURL;
         var canvas = document.createElement('canvas');
         var objimg = document.getElementById('show_picture');
@@ -644,31 +644,7 @@
         }
         return input;
     }
-    var input = document.querySelector("#txtPhone");
-    window.intlTelInput(input, {
-        // allowDropdown: false,
-        // autoHideDialCode: false,
-        // autoPlaceholder: "off",
-        // dropdownContainer: document.body,
-        // excludeCountries: ["us"],
-        // formatOnDisplay: false,
-        // geoIpLookup: function(callback) {
-        //   $.get("http://ipinfo.io", function() {}, "jsonp").always(function(resp) {
-        //     var countryCode = (resp && resp.country) ? resp.country : "";
-        //     callback(countryCode);
-        //   });
-        // },
-        // hiddenInput: "full_number",
-        // initialCountry: "auto",
-        // localizedCountries: { 'de': 'Deutschland' },
-        // nationalMode: false,
-        // onlyCountries: ['us', 'gb', 'ch', 'ca', 'do'],
-        // placeholderNumberType: "MOBILE",
-        // preferredCountries: ['cn', 'jp'],
-        // separateDialCode: true,
-        utilsScript: "~/Scripts/intlTelInput.js",
-    });
-
+    
     function passwordcheck() {
         $('#txtPassword, #txtConfirmPassword').on('keyup', function () {
             if ($('#txtPassword').val() == $('#txtConfirmPassword').val()) {

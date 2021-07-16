@@ -155,7 +155,7 @@
                         </div>
                     </div>
                     <div class="box-footer text-right">
-                        <a href="#" class="btn btn-danger" id="btnSave"><b>Update User</b></a>
+                        <a href="javascript:void(0);" class="btn btn-danger" id="btnSave"><b>Update User</b></a>
                         <a class="btn btn-danger" href="Users">Back to List</a>
                     </div>
                 </div>
@@ -228,7 +228,7 @@
                 },
                 processResults: function (data) {
                     var jobj = JSON.parse(data);
-                    console.log(jobj);
+                    //console.log(jobj);
                     return {
                         results: $.map(jobj, function (item) {
                             return { text: item.StateFullName, name: item.StateFullName, id: item.StateFullName }
@@ -251,6 +251,7 @@
         $(document).on('click', "#btnSave", function () {
             AddCustomer();
         })
+
         $('#txtPostCode').change(function () {
 
             City = $("#txtCity").val();
@@ -434,8 +435,8 @@
 
 
         else {
-            $("#txtPostCode").change();
-            if ($("#hfzipstatus").val() == "true") {
+           // $("#txtPostCode").change();
+            /*if ($("#hfzipstatus").val() == "true") {*/
                 var obj = {
                     ID: ID,
                     user_email: Email,
@@ -460,7 +461,7 @@
                     beforeSend: function () { $("#loader").show(); },
                     success: function (data) {
                         if (data.status == true) {
-                            $('#parent > input:text').val('');
+                            //swal('Alert!', data.message, 'success').then((result) => { location.href = 'Users'; });
                             swal('Alert!', data.message, 'success').then((result) => { location.href = 'Users'; });
                         }
                         else {
@@ -470,7 +471,7 @@
                     complete: function () { $("#loader").hide(); },
                     error: function (error) { swal('Error!', 'something went wrong', 'error'); },
                 })
-            }
+            //}
         }
 
     }
@@ -514,32 +515,8 @@
         }
         return input;
     }
-    var input = document.querySelector("#txtPhone");
-    window.intlTelInput(input, {
-        // allowDropdown: false,
-        // autoHideDialCode: false,
-        // autoPlaceholder: "off",
-        // dropdownContainer: document.body,
-        // excludeCountries: ["us"],
-        // formatOnDisplay: false,
-        // geoIpLookup: function(callback) {
-        //   $.get("http://ipinfo.io", function() {}, "jsonp").always(function(resp) {
-        //     var countryCode = (resp && resp.country) ? resp.country : "";
-        //     callback(countryCode);
-        //   });
-        // },
-        // hiddenInput: "full_number",
-        // initialCountry: "auto",
-        // localizedCountries: { 'de': 'Deutschland' },
-        // nationalMode: false,
-        // onlyCountries: ['us', 'gb', 'ch', 'ca', 'do'],
-        // placeholderNumberType: "MOBILE",
-        // preferredCountries: ['cn', 'jp'],
-        // separateDialCode: true,
-        utilsScript: "~/Scripts/intlTelInput.js",
-    });
 
-
+    
     function readURL(input) {
         if (input.files && input.files[0]) {
             var reader = new FileReader();

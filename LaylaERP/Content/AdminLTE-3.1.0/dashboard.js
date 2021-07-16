@@ -124,7 +124,7 @@ $(function () {
     height: '250px'
   });
 
-  /* Morris.js Charts */
+  /* Morris.js Charts 
   // Sales chart
   var area = new Morris.Area({
     element   : 'revenue-chart',
@@ -176,7 +176,7 @@ $(function () {
     gridTextFamily   : 'Open Sans',
     gridTextSize     : 10
   });
-
+*/
   // Donut Chart
   var donut = new Morris.Donut({
     element  : 'sales-chart',

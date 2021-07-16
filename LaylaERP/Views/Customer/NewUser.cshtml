@@ -117,7 +117,7 @@
 @*@section Scripts {
         @Scripts.Render("~/bundles/jqueryval")
     }*@
-<script src="~/Scripts/intlTelInput.js"></script>
+
 <script src="@Url.Content("~/js/Customer/Customer.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 <script>
     $(document).ready(function () {
@@ -216,9 +216,11 @@
 
                 }
                 else {
-                    $("#txtBillingPostCode").val("");
-                    $('#hfzipstatus').val(data.status);
-                    swal('Alert', 'Zip code is not valid for the State', 'error').then(function () { swal.close(); $('#txtBillingPostCode').focus(); });
+                    if ($('#txtCountry').val() == "US - United States") {
+                        $("#txtBillingPostCode").val("");
+                        $('#hfzipstatus').val(data.status);
+                        swal('Alert', 'Zip code is not valid for the State', 'error').then(function () { swal.close(); $('#txtBillingPostCode').focus(); });
+                    }
                 }
             },
 
@@ -250,30 +252,7 @@
         }
         return input;
     }
-    var input = document.querySelector("#txtBillingPhone");
-    window.intlTelInput(input, {
-        // allowDropdown: false,
-        // autoHideDialCode: false,
-        // autoPlaceholder: "off",
-        // dropdownContainer: document.body,
-        // excludeCountries: ["us"],
-        // formatOnDisplay: false,
-        // geoIpLookup: function(callback) {
-        //   $.get("http://ipinfo.io", function() {}, "jsonp").always(function(resp) {
-        //     var countryCode = (resp && resp.country) ? resp.country : "";
-        //     callback(countryCode);
-        //   });
-        // },
-        // hiddenInput: "full_number",
-        // initialCountry: "auto",
-        // localizedCountries: { 'de': 'Deutschland' },
-        // nationalMode: false,
-        // onlyCountries: ['us', 'gb', 'ch', 'ca', 'do'],
-        // placeholderNumberType: "MOBILE",
-        // preferredCountries: ['cn', 'jp'],
-        // separateDialCode: true,
-        utilsScript: "~/Scripts/intlTelInput.js",
-    });
+    
 
 </script>
 

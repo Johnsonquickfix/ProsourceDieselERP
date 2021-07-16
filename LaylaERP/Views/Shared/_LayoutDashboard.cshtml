@@ -37,7 +37,17 @@
 
     <!-- jQuery -->
     <script src="~/Content/AdminLTE-3.1.0/jquery/jquery.min.js"></script>
-
+    <script type="text/javascript">
+        jQuery.browser = {};
+        (function () {
+            jQuery.browser.msie = false;
+            jQuery.browser.version = 0;
+            if (navigator.userAgent.match(/MSIE ([0-9]+)\./)) {
+                jQuery.browser.msie = true;
+                jQuery.browser.version = RegExp.$1;
+            }
+        })();
+    </script>
 </head>
 <body>
     <div class="wrapper" style="height: auto; min-height: 100%;">

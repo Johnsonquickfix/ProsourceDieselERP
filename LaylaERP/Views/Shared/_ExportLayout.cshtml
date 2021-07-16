@@ -29,8 +29,19 @@
     <link href="~/Content/DataTables/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
     <link href="~/Content/DataTables/css/buttons.bootstrap4.min.css" rel="stylesheet" />
     <link href="~/Content/DataTables/css/select.dataTables.min.css" rel="stylesheet" />
-    
+
     <link href="~/css/layoutStyle.css" rel="stylesheet" />
+    <script type="text/javascript">
+        jQuery.browser = {};
+        (function () {
+            jQuery.browser.msie = false;
+            jQuery.browser.version = 0;
+            if (navigator.userAgent.match(/MSIE ([0-9]+)\./)) {
+                jQuery.browser.msie = true;
+                jQuery.browser.version = RegExp.$1;
+            }
+        })();
+    </script>
 </head>
 <body>
     <div class="wrapper" style="height: auto; min-height: 100%;">

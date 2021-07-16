@@ -103,7 +103,7 @@ dashboard
 .page-title {
     display: flex;
     align-items: center;
-    margin: 20px 0px;
+    margin: 10px 0px;
 }
 
     .page-title h2 {
@@ -209,7 +209,7 @@ body .data-table-container {
 }
 
 .section-content {
-    margin-top: 20px;
+    margin-top: -10px;
 }
 
 #userslist_wrapper {
@@ -405,7 +405,7 @@ table.dataTable tbody td.select-checkbox:before, table.dataTable tbody td.select
 }
 
 .user-top-section {
-    margin-bottom: 20px;
+    margin-bottom: 5px;
 }
 
     .user-top-section select {

@@ -2,6 +2,8 @@
 @{ ViewBag.Title = "Dashboard";
     Layout = "~/Views/Shared/_LayoutDashboard.cshtml"; }
 
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
 <div class="row d-flex align-items-center dashboard-dropy">
     <div class="col-xs-6">
         <div class="page-title">
@@ -126,7 +128,7 @@
                                 <button type="button" class="btn btn-primary btn-sm" data-widget="collapse">
                                     <i class="fa fa-minus"></i>
                                 </button>
-                                <button type="button" class="btn btn-primary btn-sm" data-widget="collapse">
+                                <button type="button" class="btn btn-primary btn-sm" data-widget="remove">
                                     <i class="fa fa-times"></i>
                                 </button>
                             </span>
@@ -151,91 +153,8 @@
             </div>
         </div>
         <!-- /.nav-tabs-custom -->
-
-
         <!-- Chat box -->
-        <div class="box box-primary chat-box-dash">
-            <div class="box-header">
-                <i class="fa fad fa-comments"></i>
-                <h3 class="box-title">Chat</h3>
-                <div class="box-tools pull-right" data-toggle="tooltip" title="Status">
-                    <button type="button" class="btn btn-primary btn-sm" data-widget="collapse">
-                        <i class="fa fa-minus"></i>
-                    </button>
-                    <button type="button" class="btn btn-primary btn-sm">
-                        <i class="fa fa-times"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="box-body chat" id="chat-box">
-                <!-- chat item -->
-                <div class="item">
-                    <img src="~/Images/user4-128x128.jpg" alt="user image" class="online">
-
-                    <p class="message">
-                        <a href="#" class="name">
-                            <small class="text-muted pull-right"><i class="fa fa-clock-o"></i> 2:15</small>
-                            Mike Doe
-                        </a>
-                        I would like to meet you to discuss the latest news about
-                        the arrival of the new theme. They say it is going to be one the
-                        best themes on the market
-                    </p>
-                    <div class="attachment">
-                        <h4>Attachments:</h4>
-
-                        <p class="filename">
-                            Theme-thumbnail-image.jpg
-                        </p>
-
-                        <div class="pull-right">
-                            <button type="button" class="btn btn-danger btn-sm btn-flat">Open</button>
-                        </div>
-                    </div>
-                    <!-- /.attachment -->
-                </div>
-                <!-- /.item -->
-                <!-- chat item -->
-                <div class="item">
-                    <img src="~/Images/user3-128x128.jpg" alt="user image" class="offline">
-
-                    <p class="message">
-                        <a href="#" class="name">
-                            <small class="text-muted pull-right"><i class="fa fa-clock-o"></i> 5:15</small>
-                            Alexander Pierce
-                        </a>
-                        I would like to meet you to discuss the latest news about
-                        the arrival of the new theme. They say it is going to be one the
-                        best themes on the market
-                    </p>
-                </div>
-                <!-- /.item -->
-                <!-- chat item -->
-                <div class="item">
-                    <img src="~/Images/user2-160x160.jpg" alt="user image" class="offline">
-
-                    <p class="message">
-                        <a href="#" class="name">
-                            <small class="text-muted pull-right"><i class="fa fa-clock-o"></i> 5:30</small>
-                            Susan Doe
-                        </a>
-                        I would like to meet you to discuss the latest news about
-                        the arrival of the new theme. They say it is going to be one the
-                        best themes on the market
-                    </p>
-                </div>
-                <!-- /.item -->
-            </div>
-            <!-- /.chat -->
-            <div class="box-footer">
-                <div class="input-group">
-                    <input class="form-control" placeholder="Type message...">
-                    <div class="input-group-btn">
-                        <button type="button" class="btn btn-danger"><i class="fa fa-plus"></i></button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        
         <!-- /.box (chat box) -->
         <!-- quick email widget -->
         <div class="box box-primary">
@@ -244,6 +163,9 @@
                 <h3 class="box-title">Quick Email</h3>
                 <!-- tools box -->
                 <div class="pull-right box-tools">
+                    <button type="button" class="btn btn-primary btn-sm" data-widget="collapse">
+                        <i class="fa fa-minus"></i>
+                    </button>
                     <button type="button" class="btn btn-primary btn-sm" data-widget="remove" data-toggle="tooltip"
                             title="Remove">
                         <i class="fa fa-times"></i>
@@ -293,13 +215,7 @@
             </div>
             <div class="box-body border-radius-none">
                 <div class="chart" id="line-chart" style="height: 250px;">
-                    <svg height="250" version="1.1" width="512" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="overflow: hidden; position: relative; left: -0.90625px;"><desc style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">Created with Raphaël 2.2.0</desc><defs style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></defs><text x="43.8125" y="211" text-anchor="end" font-family="Open Sans" font-size="10px" stroke="none" fill="#ffffff" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: end; font-family: &quot;Open Sans&quot;; font-size: 10px; font-weight: normal;" font-weight="normal"><tspan dy="3.5" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">0</tspan></text><path fill="none" stroke="#efefef" d="M56.3125,211H487.078" stroke-width="0.4" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><text x="43.8125" y="164.5" text-anchor="end" font-family="Open Sans" font-size="10px" stroke="none" fill="#ffffff" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: end; font-family: &quot;Open Sans&quot;; font-size: 10px; font-weight: normal;" font-weight="normal"><tspan dy="3.5" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">5,000</tspan></text><path fill="none" stroke="#efefef" d="M56.3125,164.5H487.078" stroke-width="0.4" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><text x="43.8125" y="118.00000000000001" text-anchor="end" font-family="Open Sans" font-size="10px" stroke="none" fill="#ffffff" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: end; font-family: &quot;Open Sans&quot;; font-size: 10px; font-weight: normal;" font-weight="normal"><tspan dy="3.500000000000014" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">10,000</tspan></text><path fill="none" stroke="#efefef" d="M56.3125,118.00000000000001H487.078" stroke-width="0.4" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><text x="43.8125" y="71.5" text-anchor="end" font-family="Open Sans" font-size="10px" stroke="none" fill="#ffffff" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: end; font-family: &quot;Open Sans&quot;; font-size: 10px; font-weight: normal;" font-weight="normal"><tspan dy="3.5" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">15,000</tspan></text><path fill="none" stroke="#efefef" d="M56.3125,71.5H487.078" stroke-width="0.4" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><text x="43.8125" y="25.00000000000003" text-anchor="end" font-family="Open Sans" font-size="10px" stroke="none" fill="#ffffff" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: end; font-family: &quot;Open Sans&quot;; font-size: 10px; font-weight: normal;" font-weight="normal"><tspan dy="3.5000000000000284" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">20,000</tspan></text><path fill="none" stroke="#efefef" d="M56.3125,25.00000000000003H487.078" stroke-width="0.4" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><text x="408.04326063183476" y="223.5" text-anchor="middle" font-family="Open Sans" font-size="10px" stroke="none" fill="#ffffff" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: middle; font-family: &quot;Open Sans&quot;; font-size: 10px; font-weight: normal;" font-weight="normal" transform="matrix(1,0,0,1,0,7)"><tspan dy="3.5" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">2013</tspan></text><text x="216.47561421628188" y="223.5" text-anchor="middle" font-family="Open Sans" font-size="10px" stroke="none" fill="#ffffff" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: middle; font-family: &quot;Open Sans&quot;; font-size: 10px; font-weight: normal;" font-weight="normal" transform="matrix(1,0,0,1,0,7)"><tspan dy="3.5" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">2012</tspan></text><path fill="none" stroke="#efefef" d="M56.3125,186.2062C68.35090400972054,185.9458,92.42771202916161,187.775575,104.46611603888215,185.1646C116.50452004860269,182.553625,140.58132806804377,166.4743950819672,152.6197320777643,165.3184C164.52728386998785,164.17497008196722,188.342387454435,178.173325,200.24993924665856,175.9669C212.15749103888214,173.760475,235.97259462332926,149.8671487704918,247.88014641555284,147.667C259.9185504252734,145.4426737704918,283.99535844471444,155.955625,296.03376245443496,158.269C308.0721664641555,160.582375,332.1489744835966,177.16471967213116,344.1873784933171,166.174C356.09493028554067,155.30274467213115,379.91003386998784,77.67916919889502,391.8175856622114,70.8211C403.59428523693805,64.03839419889502,427.14768438639123,103.97557445054946,438.9243839611179,111.61090000000002C450.9627879708384,119.41589945054946,475.03959599027945,127.33952500000001,487.078,132.5824" stroke-width="2" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><circle cx="56.3125" cy="186.2062" r="4" fill="#efefef" stroke="#efefef" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle><circle cx="104.46611603888215" cy="185.1646" r="4" fill="#efefef" stroke="#efefef" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle><circle cx="152.6197320777643" cy="165.3184" r="4" fill="#efefef" stroke="#efefef" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle><circle cx="200.24993924665856" cy="175.9669" r="4" fill="#efefef" stroke="#efefef" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle><circle cx="247.88014641555284" cy="147.667" r="4" fill="#efefef" stroke="#efefef" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle><circle cx="296.03376245443496" cy="158.269" r="4" fill="#efefef" stroke="#efefef" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle><circle cx="344.1873784933171" cy="166.174" r="4" fill="#efefef" stroke="#efefef" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle><circle cx="391.8175856622114" cy="70.8211" r="4" fill="#efefef" stroke="#efefef" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle><circle cx="438.9243839611179" cy="111.61090000000002" r="4" fill="#efefef" stroke="#efefef" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle><circle cx="487.078" cy="132.5824" r="4" fill="#efefef" stroke="#efefef" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle></svg>
-                    <div class="morris-hover morris-default-style" style="left: 157.25px; top: 108px; display: none;">
-                        @*<div class="morris-hover-row-label">2011 Q4</div><div class="morris-hover-point" style="color: #efefef">
-                            Item 1:
-                            3,767
-                        </div>*@
-                    </div>
+                    <div id="chart_div" style="width: 600px; height: 240px;"></div>
                 </div>
             </div>
             <!-- /.box-body -->
@@ -498,4 +414,24 @@
         }
     }
 
+</script>
+
+<script type="text/javascript">
+    google.charts.load("current", { packages: ["imagelinechart"] });
+    google.charts.setOnLoadCallback(drawChart);
+    function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+            ['Year', 'Sales'],
+            ['2014', 400],
+            ['2015', 1170],
+            ['2016', 660],
+            ['2017', 1030],
+            ['2018', 900],
+            ['2019', 400],
+            ['2020', 1000],
+            ['2021', 1500]
+        ]);
+        var chart = new google.visualization.ImageLineChart(document.getElementById('chart_div'));
+        chart.draw(data, { width: 500, height: 240, min: 0 });
+    }
 </script>

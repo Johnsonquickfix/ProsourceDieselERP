@@ -50,6 +50,8 @@ namespace LaylaERP.Controllers
         public ActionResult AssignRole()
         {
 
+            ViewBag.user_role = Convert.ToInt32(UsersRepositry.GetRoleID(CommanUtilities.Provider.GetCurrent().UserType).ToString());
+           
             return View();
         }
 
@@ -663,7 +665,7 @@ namespace LaylaERP.Controllers
                 foreach (DataRow dr in rows)
                 {
                     string myhtml = "";
-                    myhtml = "<div class=\"table-row\"><div><span class='menu-names'>" + dr["menu_name"].ToString() + "</span></div><div>&nbsp;</div><div><button><input type=\"checkbox\" id=\"chk_add_" + dr["menu_id"] + "\" onChange=\"checkchange(this);\" data-id=\"" + dr["menu_id"] + "\" " + dr["CheckAdd"] + "></input> <label>Add</label></button></div><div><button><input type=\"checkbox\" id=\"chk_edit_" + dr["menu_id"] + "\" onChange=\"checkchange(this);\" data-id=\"" + dr["menu_id"] + "\" " + dr["CheckEdit"] + "></input> <label>Edit</label></button></div><div><button><input type=\"checkbox\" id =\"chk_del_" + dr["menu_id"] + "\" onChange=\"checkchange(this);\" data-id=\"" + dr["menu_id"] + "\" " + dr["CheckDelete"] + "></input> <label>Delete</label></button></div></div>";
+                    myhtml = "<div class=\"table-row\"><div><span class='menu-names'>" + dr["menu_name"].ToString() + "</span></div><div>&nbsp;</div><div><button><input type=\"checkbox\" id=\"chk_add_" + dr["menu_id"] + "\" onChange=\"checkchange(this);\" data-id=\"" + dr["menu_id"] + "\" " + dr["CheckAdd"] + "></input> <label>Add</label></button></div><div><button><input type=\"checkbox\" id=\"chk_edit_" + dr["menu_id"] + "\" onChange=\"checkchange(this);\" data-id=\"" + dr["menu_id"] + "\" " + dr["CheckEdit"] + "></input> <label>Edit</label></button></div><div><button><input type=\"checkbox\" id =\"chk_del_" + dr["menu_id"] + "\" onChange=\"checkchange(this);\" data-id=\"" + dr["menu_id"] + "\" " + dr["CheckDelete"] + "></input> <label>View</label></button></div></div>";
                     row = new Dictionary<String, Object>();
                     row.Add("id", dr["menu_id"]);
                     row.Add("add", dr["RoleAdd"]);
@@ -698,7 +700,7 @@ namespace LaylaERP.Controllers
             foreach (DataRow dr in rows)
             {
                 string myhtml = "";
-                myhtml = "<div class=\"table-row\"><div><span class='menu-names2'>" + dr["menu_name"].ToString() + "</span></div><div>&nbsp;</div><div><button><input type=\"checkbox\" class=\"checkAdd\" id=\"chk_add_" + dr["menu_id"] + "\" onChange=\"checkchange(this);\" data-id=\"" + dr["menu_id"] + "\" " + dr["CheckAdd"] + "></input> <label>Add</label></button></div><div><button><input type=\"checkbox\"  onChange=\"checkchange(this);\" data-id=\"" + dr["menu_id"] + "\" id=\"chk_edit_" + dr["menu_id"] + "\" " + dr["CheckEdit"] + "></input> <label>Edit</label></button></div><div><button><input type=\"checkbox\"  onChange=\"checkchange(this);\" data-id=\"" + dr["menu_id"] + "\" id =\"chk_del_" + dr["menu_id"] + "\" " + dr["CheckDelete"] + "></input> <label>Delete</label></button></div></div>";
+                myhtml = "<div class=\"table-row\"><div><span class='menu-names2'>" + dr["menu_name"].ToString() + "</span></div><div>&nbsp;</div><div><button><input type=\"checkbox\" class=\"checkAdd\" id=\"chk_add_" + dr["menu_id"] + "\" onChange=\"checkchange(this);\" data-id=\"" + dr["menu_id"] + "\" " + dr["CheckAdd"] + "></input> <label>Add</label></button></div><div><button><input type=\"checkbox\"  onChange=\"checkchange(this);\" data-id=\"" + dr["menu_id"] + "\" id=\"chk_edit_" + dr["menu_id"] + "\" " + dr["CheckEdit"] + "></input> <label>Edit</label></button></div><div><button><input type=\"checkbox\"  onChange=\"checkchange(this);\" data-id=\"" + dr["menu_id"] + "\" id =\"chk_del_" + dr["menu_id"] + "\" " + dr["CheckDelete"] + "></input> <label>View</label></button></div></div>";
 
                 row = new Dictionary<String, Object>();
                 row.Add("id", dr["menu_id"]);

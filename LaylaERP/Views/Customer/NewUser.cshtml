@@ -127,7 +127,7 @@
         var id = url.substring(url.lastIndexOf('/') + 1);
 
         if (id != "") {
-            debugger
+            //debugger
             //$("#lbltitle").text("Update Customer");
             GetCustomerByID(id);
         }
@@ -260,61 +260,181 @@
 
 </script>
 
-<!-- [START maps_places_autocomplete_addressform] -->
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Place Autocomplete Address Form</title>
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
-    <link href="https://fonts.googleapis.com/css?family=Roboto:400,500"
-          rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="./style.css" />
-    <script src="./index.js"></script>
-</head>
-<body>
-   
-    <form id="address-form" action="" method="get" autocomplete="off">
-        <p class="title">Sample address form for North America</p>
-        <p class="note"><em>* = required field</em></p>
-        <label class="full-field">
-            <!-- Avoid the word "address" in id, name, or label text to avoid browser autofill from conflicting with Place Autocomplete. Star or comment bug https://crbug.com/587466 to request Chromium to honor autocomplete="off" attribute. -->
-            <span class="form-label">Deliver to*</span>
-            <input id="ship-address"
-                   name="ship-address"
-                   required
-                   autocomplete="off" />
-        </label>
-        <label class="full-field">
-            <span class="form-label">Apartment, unit, suite, or floor #</span>
-            <input id="address2" name="address2" />
-        </label>
-        <label class="full-field">
-            <span class="form-label">City*</span>
-            <input id="locality" name="locality" required />
-        </label>
-        <label class="slim-field-left">
-            <span class="form-label">State/Province*</span>
-            <input id="state" name="state" required />
-        </label>
-        <label class="slim-field-right" for="postal_code">
-            <span class="form-label">Postal code*</span>
-            <input id="postcode" name="postcode" required />
-        </label>
-        <label class="full-field">
-            <span class="form-label">Country/Region*</span>
-            <input id="country" name="country" required />
-        </label>
-        <button type="button" class="my-button">Save address</button>
 
-        <!-- Reset button provided for development testing convenience.
-        Not recommended for user-facing forms due to risk of mis-click when aiming for Submit button. -->
-        <input type="reset" value="Clear form" />
-    </form>
 
-    <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBIgngCCIJ3D8_s3G7aIfvQckhsDtbAe4E&callback=initAutocomplete&libraries=places&v=weekly"
-            async></script>
-</body>
-</html>
-<!-- [END maps_places_autocomplete_addressform] -->
+
+    <style>
+        .sb-title {
+            position: relative;
+            top: -12px;
+            font-family: Roboto, sans-serif;
+            font-weight: 500;
+        }
+
+        .sb-title-icon {
+            position: relative;
+            top: -5px;
+        }
+
+        .card-container {
+            display: flex;
+            height: 500px;
+            width: 600px;
+        }
+
+        .panel {
+            background: white;
+            width: 300px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+        }
+
+        .half-input-container {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .half-input {
+            max-width: 120px;
+        }
+
+        .map {
+            width: 300px;
+        }
+
+        h2 {
+            margin: 0;
+            font-family: Roboto, sans-serif;
+        }
+
+        input {
+            height: 30px;
+        }
+
+        input {
+            border: 0;
+            border-bottom: 1px solid black;
+            font-size: 14px;
+            font-family: Roboto, sans-serif;
+            font-style: normal;
+            font-weight: normal;
+        }
+
+            /*input:focus::placeholder {
+                color: white;
+            }*/
+
+        .button-cta {
+            height: 40px;
+            width: 40%;
+            background: #3367d6;
+            color: white;
+            font-size: 15px;
+            text-transform: uppercase;
+            font-family: Roboto, sans-serif;
+            border: 0;
+            border-radius: 3px;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.48);
+            cursor: pointer;
+        }
+    </style>
+    <script>
+        "use strict";
+
+        function initMap() {
+            const componentForm = [
+                'location',
+                'locality',
+                'administrative_area_level_1',
+                'country',
+                'postal_code',
+            ];
+            const map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 11,
+                center: { lat: 37.4221, lng: -122.0841 },
+                mapTypeControl: false,
+                fullscreenControl: true,
+                zoomControl: true,
+                streetViewControl: true
+            });
+            const marker = new google.maps.Marker({ map: map, draggable: false });
+            const autocompleteInput = document.getElementById('location');
+            const autocomplete = new google.maps.places.Autocomplete(autocompleteInput);
+            autocomplete.addListener('place_changed', function () {
+                marker.setVisible(false);
+                const place = autocomplete.getPlace();
+                if (!place.geometry) {
+                    // User entered the name of a Place that was not suggested and
+                    // pressed the Enter key, or the Place Details request failed.
+                    window.alert('No details available for input: \'' + place.name + '\'');
+                    return;
+                }
+                renderAddress(place);
+                fillInAddress(place);
+                
+               
+            });
+
+            function fillInAddress(place) {  // optional parameter
+                const addressNameFormat = {
+                    'street_number': 'short_name',
+                    'route': 'long_name',
+                    'locality': 'long_name',
+                    'administrative_area_level_1': 'short_name',
+                    'country': 'long_name',
+                    'postal_code': 'short_name',
+                };
+                const getAddressComp = function (type) {
+                    for (const component of place.address_components) {
+                        if (component.types[0] === type) {
+                            return component[addressNameFormat[type]];
+                        }
+                    }
+                    return '';
+                };
+                document.getElementById('location').value = getAddressComp('street_number') + ' '
+                    + getAddressComp('route');
+                document.getElementById('txtBillingCity').value = getAddressComp('street_number') + ' '
+                    + getAddressComp('route');
+                //document.getElementById('txtBillingState').innerHTML = country;
+                for (const component of componentForm) {
+                    // Location field is handled separately above as it has different logic.
+                    if (component !== 'location') {
+                        document.getElementById(component).value = getAddressComp(component);
+                    }
+                }
+            }
+
+            function renderAddress(place) {
+                map.setCenter(place.geometry.location);
+                marker.setPosition(place.geometry.location);
+                marker.setVisible(true);
+            }
+        }
+    </script>
+
+    <div class="card-container">
+        <div class="panel">
+            <div>
+                <img class="sb-title-icon" src="https://fonts.gstatic.com/s/i/googlematerialicons/location_pin/v5/24px.svg" alt="">
+                <span class="sb-title">Address Selection</span>
+            </div>
+            <input type="text" placeholder="Address" id="location" />
+            <input type="text" placeholder="Apt, Suite, etc (optional)" />
+            <input type="text" placeholder="City" id="locality" />
+            <div class="half-input-container">
+                <input type="text" class="half-input" placeholder="State/Province" id="administrative_area_level_1" />
+                <input type="text" class="half-input" placeholder="Zip/Postal code" id="postal_code" />
+            </div>
+            <input type="text" placeholder="Country" id="country" />
+            <button class="button-cta">Checkout</button>
+        </div>
+        <div class="map" id="map" style="display:none;"></div>
+    </div>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBIgngCCIJ3D8_s3G7aIfvQckhsDtbAe4E&libraries=places&callback=initMap&channel=GMPSB_addressselection_v1_cABC" async defer></script>
+        
+
+

@@ -1,5 +1,5 @@
 ﻿function CheckPermissions(add, hfEdit, del, loc) {
-    alert('ssd');
+   
     var obj = { userId: GetUserID, menu_url: loc };
     jQuery.ajax({
         url: '/AccountAPI/getUserPermissions', dataType: 'json', type: "Post",

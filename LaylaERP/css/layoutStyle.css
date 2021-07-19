@@ -452,8 +452,10 @@ table.dataTable tbody td.select-checkbox:before, table.dataTable tbody td.select
 .tablenav .actions select {
     float: left;
     margin-right: 6px;
-    max-width: 14rem;
-    width: 14rem;
+    /*max-width: 14rem;*/
+    max-width: 100%;
+    /*width: 14rem;*/
+    width: 100%;
 }
 
 #doaction, #doaction2, #post-query-submit {

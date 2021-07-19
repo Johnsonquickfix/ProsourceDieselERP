@@ -154,7 +154,6 @@
         </div>
         <!-- /.nav-tabs-custom -->
         <!-- Chat box -->
-        
         <!-- /.box (chat box) -->
         <!-- quick email widget -->
         <div class="box box-primary">
@@ -215,7 +214,9 @@
             </div>
             <div class="box-body border-radius-none">
                 <div class="chart" id="line-chart" style="height: 250px;">
-                    <div id="chart_div" style="width: 600px; height: 240px;"></div>
+                    @*<div id="chart_div" style="width: 600px; height: 240px;"></div>*@
+                    <div id="chart1" style="width: 500px; height: 240px;">
+                    </div>
                 </div>
             </div>
             <!-- /.box-body -->
@@ -316,7 +317,7 @@
             </div>
         </div>
         <!-- /.box -->
-
+        
     </section>
     <!-- right col -->
 </div>
@@ -416,22 +417,35 @@
 
 </script>
 
+@*<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>*@
+@*<script type="text/javascript" src="https://www.google.com/jsapi"></script>*@
 <script type="text/javascript">
-    google.charts.load("current", { packages: ["imagelinechart"] });
-    google.charts.setOnLoadCallback(drawChart);
+    google.load("visualization", "1", { packages: ["corechart"] });
+    google.setOnLoadCallback(drawChart);
     function drawChart() {
-        var data = google.visualization.arrayToDataTable([
-            ['Year', 'Sales'],
-            ['2014', 400],
-            ['2015', 1170],
-            ['2016', 660],
-            ['2017', 1030],
-            ['2018', 900],
-            ['2019', 400],
-            ['2020', 1000],
-            ['2021', 1500]
-        ]);
-        var chart = new google.visualization.ImageLineChart(document.getElementById('chart_div'));
-        chart.draw(data, { width: 500, height: 240, min: 0 });
+        $.ajax({
+            type: "POST",
+            url: "/Home/SalesGraph/",
+            data: '{}',
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (r) {
+                var data = google.visualization.arrayToDataTable(r);
+
+
+                var options = {
+                    title: 'Sales',
+                    is3D: true
+                };
+                var chart = new google.visualization.LineChart($("#chart1")[0]);
+                chart.draw(data, options);
+            },
+            failure: function (r) {
+                alert(r.d);
+            },
+            error: function (r) {
+                alert(r.d);
+            }
+        });
     }
 </script>

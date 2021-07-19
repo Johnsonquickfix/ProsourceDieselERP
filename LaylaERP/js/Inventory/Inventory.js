@@ -44,7 +44,7 @@ function ProductGrid() {
         aoColumns: [
            
           
-            { data: 'post_title', title: 'Product', sWidth: "14%" },
+            { data: 'post', title: 'Product', sWidth: "14%" },
             {
                 'data': 'Count', sWidth: "8%",
                 'render': function (id, type, full, meta) {

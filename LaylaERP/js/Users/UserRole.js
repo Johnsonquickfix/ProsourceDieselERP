@@ -249,17 +249,49 @@ $('#checkDelete').click(function () {
 function checkchange(elem) {
 
     var myNode = $('#tt').tree('find', $(elem).data("id"));
+
     var add = $('#chk_add_' + myNode.id).prop('checked');
     var edit = $('#chk_edit_' + myNode.id).prop('checked');
     var del = $('#chk_del_' + myNode.id).prop('checked');
 
+   
+    $("#hfvadd").val(add);
+    $("#hfedit").val(edit);
+    $("#hfview").val(del);
+   
     var isChecked = $(myNode).prop("checked");
 
-    if (add == false && edit == false && del == false) {        
+    if (add == false && edit == false && del == false) {
+      
         $("#tt").tree('uncheck', myNode.target);
     }
-    if (add  && edit  && del ) {
+    if (add && edit && del) {
+        
         $("#tt").tree('check', myNode.target);
+        
+    }
+    if (add || edit || del) {
+
+        
+       
+        $("#tt").tree('check', myNode.target);
+        
+       
+           
+         if ($("#hfvadd").val() == "false") {
+             
+             
+             $('#chk_add_' + myNode.id).prop('checked', false);
+         }
+           
+        if ($("#hfedit").val() == "false") {
+            
+            $('#chk_edit_' + myNode.id).prop('checked', false);
+        }
+        if ($("#hfview").val() == "false") {
+            
+            $('#chk_del_' + myNode.id).prop('checked', false);
+        }
     }
 
 }

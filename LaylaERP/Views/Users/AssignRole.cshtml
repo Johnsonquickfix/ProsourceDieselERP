@@ -31,8 +31,12 @@
                     <div class="col-md-12">
                         <h2 class="sm-heading">User Roles</h2>
                         <div class="form-group form-user-role">
+                            <input type="hidden" id="hfvadd" />
+                            <input type="hidden" id="hfedit" />
+                            <input type="hidden" id="hfview" />
+
                             <select id="userrole" class="form-control">
-                                 <option selected="selected" value="">Please select</option>
+                                <option selected="selected" value="">Please select</option>
                             </select>
                             <label style="margin-right: 10px;">Copy role to  </label>
                             <select id="ddlCopyRole" class="form-control select2">
@@ -102,24 +106,25 @@
     $(document).ready(function () {
         var loc = window.location.pathname;
         GetRoles();
-        CheckRolePermissions("#btnAddRole,#btnCopyRole", "#btnApprove", "", loc);
+       
         /**/
         var roletype = $('#hfroletype').val();
 
         //alert(roletype);
     /**/
         if (roletype.toUpperCase() != "65") {
-
+            CheckRolePermissions("#btnAddRole,#btnCopyRole", "#btnApprove", "", loc);
             setTimeout(function () { $('#userrole').val(roletype).trigger('change'); }, 1800);
-            setTimeout(function () { fillCheckMenu(); }, 2000);
+            setTimeout(function () { fillCheckMenu(); }, 3000);
        
             $("#userrole").prop("disabled", true);
             $("#ddlCopyRole").prop("disabled", true);
         }
         else {
             CopyRoles();
-            fillCheckMenu();
-             
+            CheckRolePermissions("#btnAddRole,#btnCopyRole", "#btnApprove", "", loc);
+            //setTimeout(function () { $('#userrole').val(roletype).trigger('change'); }, 1800);
+            setTimeout(function () { fillCheckMenu(); }, 3000);     
         }
 })
 

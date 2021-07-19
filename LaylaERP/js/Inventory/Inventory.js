@@ -19,7 +19,7 @@ function ProductGrid() {
     var urid = parseInt($("#ddlSearchStatus").val()) || "";
     var sid = "";
     var parent = $("#ddlProduct").val();
-    var obj = { user_status: urid, Search: sid, PageNo: 0, PageSize: 10, sEcho: 1, SortCol: 'id', SortDir: 'desc', strValue1: parent};
+    var obj = { user_status: urid, Search: sid, PageNo: 0, PageSize: 50, sEcho: 1, SortCol: 'id', SortDir: 'desc', strValue1: parent};
     $('#dtdata').DataTable({
         
         columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],

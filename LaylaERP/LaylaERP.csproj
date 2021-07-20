@@ -567,6 +567,8 @@
     <Content Include="js\common.js" />
     <Content Include="js\Customer\Customer.js" />
     <Content Include="js\FeeNTax\FeeNTax.js" />
+    <Content Include="js\GooglePlace\index.js" />
+    <Content Include="js\Inventory\Inventory.js" />
     <Content Include="js\Marketing\Coupons.js" />
     <Content Include="js\Orders\NewOrder.js" />
     <Content Include="js\Orders\OrderHistory.js" />
@@ -759,6 +761,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="js\Appearance\" />
     <Folder Include="Properties\PublishProfiles\" />
     <Folder Include="Views\ShipStation\" />
   </ItemGroup>

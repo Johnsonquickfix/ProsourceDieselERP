@@ -10,7 +10,12 @@
         $("#ddlProduct").html(items);
     })
 }
-$("#btnSearch").click(function () {
+//$("#btnSearch").click(function () {
+//    $("#btnSave").css("display", "block");
+//    ProductGrid();
+//})
+
+$("#ddlProduct").change(function () {
     $("#btnSave").css("display", "block");
     ProductGrid();
 })

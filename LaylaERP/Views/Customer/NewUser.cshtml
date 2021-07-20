@@ -200,7 +200,6 @@
         })
     });
     $('#txtBillingPostCode').change(function () {
-
         City = $("#txtBillingCity").val();
         State = $("#txtBillingState").val();
         PostalCode = $("#txtBillingPostCode").val();
@@ -215,6 +214,7 @@
             data: JSON.stringify(obj),
             dataType: "json",
             success: function (data) {
+                console.log(data);
                 if (data.status == true) {
                     // swal('Alert!', 'Post zip code is valid for City and State', 'success')
                     // $('#hfzipstatus').val(data.status);
@@ -222,7 +222,7 @@
 
                 }
                 else {
-                    if ($('#txtCountry').val() == "US - United States") {
+                    if ($('#txtBillingCountry').val() == "US - United States") {
                         $("#txtBillingPostCode").val("");
                         $('#hfzipstatus').val(data.status);
                         swal('Alert', 'Zip code is not valid for the State', 'error').then(function () { swal.close(); $('#txtBillingPostCode').focus(); });

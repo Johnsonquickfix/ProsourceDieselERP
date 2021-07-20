@@ -785,7 +785,7 @@ table.dataTable thead .sorting:after, table.dataTable thead .sorting_asc:after, 
 }
 
 #txtBillingPhone {
-    padding-left: 50px;
+    padding-left: 10px;
 }
 
 @media(min-width:992px) {

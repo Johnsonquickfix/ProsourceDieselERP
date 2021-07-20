@@ -175,7 +175,11 @@
                                     <th class="text-right" style="width: 10%">Tax</th>
                                 </tr>
                             </thead>
-                            <tbody></tbody>
+                            <tbody id="order_line_items"></tbody>
+                            <tbody id="order_state_recycling_fee_line_items"></tbody>
+                            <tbody id="order_fee_line_items"></tbody>
+                            <tbody id="order_shipping_line_items"></tbody>
+                            <tbody id="order_refunds"></tbody>
                             <tfoot class="thead-dark">
                                 <tr>
                                     <th colspan="2" class="text-left" style="width: 58%">
@@ -251,6 +255,12 @@
                             <label class="col-sm-10 control-label">State Recycling Fee</label>
                             <div class="col-sm-2 controls text-right">
                                 $<span id="stateRecyclingFeeTotal" data-orderitemid="0">0.00</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-10 control-label">Fee</label>
+                            <div class="col-sm-2 controls text-right">
+                                $<span id="feeTotal" data-orderitemid="0">0.00</span>
                             </div>
                         </div>
                         <div class="form-group">

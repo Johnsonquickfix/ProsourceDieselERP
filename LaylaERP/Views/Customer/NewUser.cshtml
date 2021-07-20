@@ -56,15 +56,16 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <img class="sb-title-icon" src="https://fonts.gstatic.com/s/i/googlematerialicons/location_pin/v5/24px.svg" alt="">
                             <label class="control-label " for="Address 1">Address</label>
                             <div class="">
-                                <input type="text" id="txtBillingAddress1" class="form-control" placeholder="Address" />
+                                <input type="text" id="txtBillingAddress1" class="form-control" placeholder="Address" autocomplete="off" />
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label " for="Address 2">Address 1</label>
                             <div class="">
-                                <input type="text" id="txtBillingAddress2" class="form-control" placeholder="Address 1" />
+                                <input type="text" id="txtBillingAddress2" class="form-control" placeholder="Address 1 optional" />
                             </div>
                         </div>
                         <div class="form-group">
@@ -141,7 +142,7 @@
         //})
         $("#txtBillingState").select2({
 
-            allowClear: true, minimumInputLength: 3, placeholder: "Search State",
+            allowClear: true, minimumInputLength: 2, placeholder: "Search State",
             ajax: {
                 url: '/Users/GetCustState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
                 data: function (params) {
@@ -361,7 +362,7 @@
                 streetViewControl: true
             });
             const marker = new google.maps.Marker({ map: map, draggable: false });
-            const autocompleteInput = document.getElementById('location');
+            const autocompleteInput = document.getElementById('txtBillingAddress1');
             const autocomplete = new google.maps.places.Autocomplete(autocompleteInput);
             autocomplete.addListener('place_changed', function () {
                 marker.setVisible(false);
@@ -397,9 +398,21 @@
                 };
                 document.getElementById('location').value = getAddressComp('street_number') + ' '
                     + getAddressComp('route');
-                document.getElementById('txtBillingCity').value = getAddressComp('street_number') + ' '
+                document.getElementById('txtBillingAddress1').value = getAddressComp('street_number') + ' '
                     + getAddressComp('route');
-                //document.getElementById('txtBillingState').innerHTML = country;
+
+                document.getElementById('txtBillingCity').value = getAddressComp('locality');
+
+                document.getElementById('txtBillingState').value = getAddressComp('administrative_area_level_1');
+
+                document.getElementById('txtBillingPostCode').value = getAddressComp('postal_code');
+
+                if (getAddressComp('country') == "USA" || getAddressComp('country') == "United States") {
+                    document.getElementById('txtBillingCountry').value = "US - United States";
+                } else if (getAddressComp('country') == "Canada") {
+                    document.getElementById('txtBillingCountry').value = "CA - Canada";
+                }
+
                 for (const component of componentForm) {
                     // Location field is handled separately above as it has different logic.
                     if (component !== 'location') {

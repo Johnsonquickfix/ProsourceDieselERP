@@ -152,7 +152,7 @@
                 }
                 else
                 {
-                    DT = SQLHelper.ExecuteDataTable("select distinct StateFullName,StateFullName from ZIPCodes1 where StateFullName like '" + strSearch + "%' order by StateFullName limit 50;");
+                    DT = SQLHelper.ExecuteDataTable("select distinct StateFullName,StateFullName,State from ZIPCodes1 where StateFullName like '" + strSearch + "%' or State like '" + strSearch + "%' order by StateFullName limit 50;");
                 }
             }
             catch (Exception ex)

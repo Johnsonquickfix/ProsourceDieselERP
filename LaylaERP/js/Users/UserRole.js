@@ -162,6 +162,7 @@ $('#btnCopyRole').click(function () {
 });
 
 function fillCheckMenu() {
+  
     var roleid = $('#userrole').val();
     var obj = { roleid: roleid };
     jQuery.ajax({
@@ -178,6 +179,67 @@ function fillCheckMenu() {
                 treeField: 'text',
                 height: '100%',
                 onCheck: function (node, checked) {
+
+
+                    var data = $(this).tree('getData', node.target);
+
+                    //var myNode = $('#tt').tree('find', data("id"));
+                 //alert(data.checked);
+                    if (data.checked == true) {
+                        //if (data.children) {
+
+                            for (var i = 0; i < data.children.length; i++) {
+                                
+                                $('#chk_add_' + data.children[i].id).prop('checked', true);
+                                $('#chk_edit_' + data.children[i].id).prop('checked', true);
+                                $('#chk_del_' + data.children[i].id).prop('checked', true);
+                            }
+                       // }
+                    }
+                    else {
+                      //  alert('fgfg');
+                        //if (data.children) {
+                        //$('#chk_add_' + node.id).prop('checked', false);
+                        //$('#chk_edit_' + node.id).prop('checked', false);
+                        //$('#chk_del_' + node.id).prop('checked', false);
+                            for (var i = 0; i < data.children.length; i++) {
+                                //alert('dd');
+                                $('#chk_add_' + data.children[i].id).prop('checked', false);
+                                $('#chk_edit_' + data.children[i].id).prop('checked', false);
+                                $('#chk_del_' + data.children[i].id).prop('checked', false);
+                        }
+
+                        //}
+                    }
+
+                    //var roots = $('#tt').tree('getParent', node.target);
+                    //alert(roots);
+                    //for (var i = 0; i < roots.length; i++) {
+                    //    if (isChecked)
+                    //        $("#tt").tree('check', roots[i].target);
+                    //    else
+                    //        $("#tt").tree('uncheck', roots[i].target);
+                    //}
+
+                    //var parentNode = $("#tt").tree('getParent', node.target);
+                    //alert(parentNode);
+                    //if (parentNode != null) {
+                     
+                    //    $("#tt").tree('uncheck', parentNode.target);
+
+                    //}
+
+                    //else {
+                    //    var childNode = $("#tt").tree('getChildren', node.target);
+                    //    alert(childNod+'c');
+                    //    if (childNode.length > 0) {
+                    //        for (var i = 0; i < childNode.length; i) {
+                    //            $("#tt").tree('uncheck', childNode.target);
+                    //        }
+                    //    }
+                    //}
+                  
+                   
                     $('#chk_add_' + node.id).prop('checked', checked);
                     $('#chk_edit_' + node.id).prop('checked', checked);
                     $('#chk_del_' + node.id).prop('checked', checked);
@@ -197,7 +259,7 @@ function collapseAll() {
 }
 
 $('#checkAdd').click(function () {
- 
+    alert('hhh');
     //var nodes = $('#tt').tree('getChecked', ['checked', 'unchecked']);
     var nodes = $('#tt').tree('getChecked', ['checked', 'unchecked']);
     var isChecked = $('#checkAdd').prop("checked");
@@ -211,6 +273,7 @@ $('#checkAdd').click(function () {
     }
 });
 $('#checkEdit').click(function () {
+    alert('hhh');
     var nodes = $('#tt').tree('getChecked', ['checked', 'unchecked']);
     var isChecked = $('#checkEdit').prop("checked");
     for (var i = 0; i < nodes.length; i++) {
@@ -223,6 +286,7 @@ $('#checkEdit').click(function () {
     }
 });
 $('#checkDelete').click(function () {
+    alert('hhh');
     var nodes = $('#tt').tree('getChecked', ['checked', 'unchecked']);
     var isChecked = $('#checkDelete').prop("checked");
     for (var i = 0; i < nodes.length; i++) {
@@ -236,6 +300,7 @@ $('#checkDelete').click(function () {
 });
 
 //$('#checkAll').click(function () {
+   
 //    var isChecked = $(this).prop("checked");
 //    var roots = $('#tt').tree('getRoots');  // because it can be more roots
 //    for (var i = 0; i < roots.length; i++) {
@@ -247,7 +312,7 @@ $('#checkDelete').click(function () {
 //});
 
 function checkchange(elem) {
-
+ 
     var myNode = $('#tt').tree('find', $(elem).data("id"));
 
     var add = $('#chk_add_' + myNode.id).prop('checked');
@@ -296,13 +361,17 @@ function checkchange(elem) {
 
 }
 
-//function rootChange() {
-//    var roots = $('#tt').tree('getRoots');  
-//    for (var i = 0; i < roots.length; i++) {
-//        if (isChecked)
-//            $("#tt").tree('check', roots[i].target);
-//        else
-//            $("#tt").tree('uncheck', roots[i].target);
-//    };
-//}
+
+
+
+function rootChange(elem) {
+     
+    var roots = $('#tt').tree('getRoots');  
+    for (var i = 0; i < roots.length; i++) {
+        if (isChecked)
+            $("#tt").tree('check', roots[i].target);
+        else
+            $("#tt").tree('uncheck', roots[i].target);
+    };
+}
 

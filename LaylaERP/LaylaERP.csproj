@@ -178,6 +178,7 @@
     <Compile Include="Controllers\FeeNTaxController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\OrdersController.cs" />
+    <Compile Include="Controllers\ProductController.cs" />
     <Compile Include="Controllers\ReportsController.cs" />
     <Compile Include="Controllers\SettingController.cs" />
     <Compile Include="Controllers\ShipController.cs" />
@@ -749,6 +750,10 @@
     <Content Include="Views\Reports\ZeroOrdersReport.cshtml" />
     <Content Include="Views\Home\OrderList.cshtml" />
     <Content Include="Views\Shared\_Calendar.cshtml" />
+    <Content Include="Views\Product\AddNewProduct.cshtml" />
+    <Content Include="Views\Product\ListProduct.cshtml" />
+    <Content Include="Views\Product\ProductAttributes.cshtml" />
+    <Content Include="Views\Product\ProductCategories.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -9,8 +9,7 @@
         <div class="page-title">
             <h2 class="page-heading gs-open">
                 Dashboard
-                <span class="sub-heading">
-                    <time datetime="2021-05-24">Mon, May 26, 2021</time> - <time datetime="2021-05-30">Sun, May 26, 2021</time>
+                <span class="sub-heading" id="currentdatetime">
                 </span>
             </h2>
         </div>
@@ -143,7 +142,7 @@
                     <div class="box-body" id="content">
                         @*@Html.Partial("OrderList")*@
                     </div>
-                    @Html.AntiForgeryToken()
+                    @*@Html.AntiForgeryToken()*@
                 </div>
             </form>
             <div class="tab-content no-padding">
@@ -215,12 +214,12 @@
             <div class="box-body border-radius-none">
                 <div class="chart" id="line-chart" style="height: 250px;">
                     @*<div id="chart_div" style="width: 600px; height: 240px;"></div>*@
-                    <div id="chart1" style="width: 500px; height: 240px;">
+                    <div id="saleschart" style="width: 500px; height: 240px;">
                     </div>
                 </div>
             </div>
             <!-- /.box-body -->
-            <div class="box-footer no-border">
+            @*<div class="box-footer no-border">
                 <div class="row">
                     <div class="col-xs-4 text-center" style="border-right: 1px solid #f4f4f4">
                         <input type="text" class="knob" data-readonly="true" value="20" data-width="60" data-height="60"
@@ -242,7 +241,7 @@
                     <!-- ./col -->
                 </div>
                 <!-- /.row -->
-            </div>
+            </div>*@
             <!-- /.box-footer -->
         </div>
 
@@ -274,7 +273,7 @@
             </div>
             <!-- /.box-body -->
             <div class="box-footer text-black">
-                <div class="row">
+                @*<div class="row">
                     <div class="col-sm-6">
                         <!-- Progress bars -->
                         <div class="clearfix">
@@ -312,7 +311,7 @@
                         </div>
                     </div>
                     <!-- /.col -->
-                </div>
+                </div>*@
                 <!-- /.row -->
             </div>
         </div>
@@ -421,6 +420,7 @@
 @*<script type="text/javascript" src="https://www.google.com/jsapi"></script>*@
 <script type="text/javascript">
     google.load("visualization", "1", { packages: ["corechart"] });
+    //google.charts.load("current", { packages: ["corechart"] });
     google.setOnLoadCallback(drawChart);
     function drawChart() {
         $.ajax({
@@ -435,9 +435,10 @@
 
                 var options = {
                     title: 'Sales',
-                    is3D: true
+                    is3D: true,
+                    
                 };
-                var chart = new google.visualization.LineChart($("#chart1")[0]);
+                var chart = new google.visualization.LineChart($("#saleschart")[0]);
                 chart.draw(data, options);
             },
             failure: function (r) {
@@ -448,4 +449,9 @@
             }
         });
     }
+</script>
+
+<script>
+    const d = new Date();
+    document.getElementById("currentdatetime").innerHTML = d.toUTCString();
 </script>

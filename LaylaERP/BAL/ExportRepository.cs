@@ -293,7 +293,7 @@ namespace LaylaERP.BAL
                          + " FROM wp_posts p inner join wp_wc_order_stats os on p.id = os.order_id"
                          + " left join wp_postmeta pmf on os.order_id = pmf.post_id and pmf.meta_key = '_billing_first_name'"
                          + " left join wp_postmeta pml on os.order_id = pml.post_id and pml.meta_key = '_billing_last_name'"
-                         + " WHERE p.post_type = 'shop_order' and DATE(os.date_created)>='" + fromdate.ToString("yyyy-MM-dd") + "' and DATE(os.date_created)<='" + todate.ToString("yyyy-MM-dd") + "' order by p.id DESC limit 500";
+                         + " WHERE p.post_type = 'shop_order'and p.post_status != 'auto-draft' and DATE(os.date_created)>='" + fromdate.ToString("yyyy-MM-dd") + "' and DATE(os.date_created)<='" + todate.ToString("yyyy-MM-dd") + "' order by p.id DESC limit 500";
 
                 }
                 else
@@ -305,7 +305,7 @@ namespace LaylaERP.BAL
                             + " FROM wp_posts p inner join wp_wc_order_stats os on p.id = os.order_id"
                             + " left join wp_postmeta pmf on os.order_id = pmf.post_id and pmf.meta_key = '_billing_first_name'"
                             + " left join wp_postmeta pml on os.order_id = pml.post_id and pml.meta_key = '_billing_last_name'"
-                            + " WHERE p.post_type = 'shop_order' order by p.id DESC limit 500";
+                            + " WHERE p.post_type = 'shop_order' and p.post_status != 'auto-draft' order by p.id DESC limit 500";
                 }
                 DataSet ds1 = new DataSet();
                 ds1 = DAL.SQLHelper.ExecuteDataSet(ssql);

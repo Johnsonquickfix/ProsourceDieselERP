@@ -6,6 +6,8 @@ using LaylaERP.DAL;
 using System.Globalization;
 using System.Data;
 using LaylaERP.Models;
+using System.Configuration;
+using MySql.Data.MySqlClient;
 
 namespace LaylaERP.BAL
 {
@@ -193,6 +195,99 @@ namespace LaylaERP.BAL
                 throw ex;
             }
             return dt;
+        }
+
+        public static DataTable OrderListDashboard(string from_date, string to_date, string userstatus, string searchid, int pageno, int pagesize, string SortCol = "order_id", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            // totalrows = 0;
+            try
+            {
+                string strWhr = string.Empty;
+                DateTime fromdate = DateTime.Now, todate = DateTime.Now;
+                fromdate = DateTime.Parse(from_date);
+                todate = DateTime.Parse(to_date);
+                if (!string.IsNullOrEmpty(searchid))
+                {
+                    strWhr += " and (p.id like '%" + searchid + "%' "
+                            + " OR os.num_items_sold='%" + searchid + "%' "
+                            + " OR os.total_sales='%" + searchid + "%' "
+                            + " OR os.customer_id='%" + searchid + "%' "
+                            + " OR p.post_status like '%" + searchid + "%' "
+                            + " OR p.post_date like '%" + searchid + "%' "
+                            + " OR COALESCE(pmf.meta_value, '') like '%" + searchid + "%' "
+                            + " OR COALESCE(pml.meta_value, '') like '%" + searchid + "%' "
+                            + " OR replace(replace(replace(replace(pmp.meta_value, '-', ''), ' ', ''), '(', ''), ')', '') like '%" + searchid + "%'"
+                            + " )";
+                }
+
+                if (!string.IsNullOrEmpty(from_date))
+                {
+                    strWhr += " and DATE(p.post_date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and DATE(post_date)<= '" + todate.ToString("yyyy-MM-dd") + "' ";
+                }
+
+
+                string strSql = "SELECT  p.id order_id, p.id as chkorder,os.num_items_sold,Cast(os.total_sales As DECIMAL(10, 2)) as total_sales, os.customer_id as customer_id,"
+                            + " REPLACE(p.post_status, 'wc-', '') status, DATE_FORMAT(p.post_date, '%M %d %Y') date_created,CONCAT(pmf.meta_value, ' ', COALESCE(pml.meta_value, '')) FirstName,COALESCE(pml.meta_value, '') LastName,"
+                            + " replace(replace(replace(replace(pmp.meta_value,'-', ''),' ',''),'(',''),')','') billing_phone"
+                            + " FROM wp_posts p inner join wp_wc_order_stats os on p.id = os.order_id"
+                            + " left join wp_postmeta pmf on os.order_id = pmf.post_id and pmf.meta_key = '_billing_first_name'"
+                            + " left join wp_postmeta pml on os.order_id = pml.post_id and pml.meta_key = '_billing_last_name'"
+                            + " left join wp_postmeta pmp on os.order_id = pmp.post_id and pmp.meta_key = '_billing_phone'"
+                            + " WHERE p.post_type = 'shop_order' and p.post_status != 'auto-draft' " + strWhr.ToString()
+                            + " limit 10 ";
+
+                strSql += "; SELECT Count(distinct p.id) TotalRecord from wp_wc_order_stats os inner join wp_posts p on p.id = os.order_id "
+                        + " left join wp_postmeta pmf on os.order_id = pmf.post_id and pmf.meta_key = '_billing_first_name'"
+                        + " left join wp_postmeta pml on os.order_id = pml.post_id and pml.meta_key = '_billing_last_name'"
+                        + " left join wp_postmeta pmp on os.order_id = pmp.post_id and pmp.meta_key = '_billing_phone'"
+                        + " WHERE p.post_type = 'shop_order' and p.post_status != 'auto-draft' " + strWhr.ToString();
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dt = ds.Tables[0];
+                //if (ds.Tables[1].Rows.Count > 0)
+                //    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static List<object> chartData = new List<object>();
+        public static void SalesGraph1()
+        {
+            chartData.Clear();
+            string query = "select date_format(date_created,'%M %d') as Sales_date, sum(coalesce(total_sales,0)) as Total";
+            query += " from wp_wc_order_stats where date(date_created) <= NOW() and date(date_created) >= Date_add(Now(), interval - 20 day) and total_sales >=0 and (status='wc-completed' or status='wc-processing' or status='wc-pending') group by date(date_created)";
+            string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString;
+            //List<object> chartData = new List<object>();
+            chartData.Add(new object[]
+                        {
+                            "Sales_date","Total"
+                        });
+            using (MySqlConnection con = new MySqlConnection(constr))
+            {
+                using (MySqlCommand cmd = new MySqlCommand(query))
+                {
+                    cmd.CommandType = CommandType.Text;
+                    cmd.Connection = con;
+                    con.Open();
+                    using (MySqlDataReader sdr = cmd.ExecuteReader())
+                    {
+                        while (sdr.Read())
+                        {
+                            chartData.Add(new object[]
+                        {
+                            sdr["Sales_date"], sdr["Total"]
+                        });
+                        }
+                    }
+
+                    con.Close();
+                }
+            }
+
         }
     }
 }

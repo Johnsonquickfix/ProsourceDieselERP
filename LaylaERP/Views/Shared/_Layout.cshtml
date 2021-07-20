@@ -54,13 +54,13 @@
     <div class="wrapper" style="height: auto; min-height: 100%;">
         <div class="clearfix"></div>
         <!-- Content Wrapper. Contains page content -->
-        <div class="container-fluid" >
+        <div class="container-fluid">
             @RenderBody()
         </div>
     </div>
     <!-- Bootstrap 4 -->
     @**@
-    
+
     <script src="~/Content/AdminLTE-3.1.0/select2/select2.min.js"></script>
     <!-- daterangepicker -->
     @*<script src="~/Content/AdminLTE-3.1.0/daterangepicker/moment.min.js"></script>
@@ -104,5 +104,8 @@
     <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
     @*<script src="~/Content/AdminLTE-3.1.0/dashboard.js"></script>*@
     <!-- AdminLTE for demo purposes -->
+    <!--Google Place API -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBIgngCCIJ3D8_s3G7aIfvQckhsDtbAe4E&libraries=places&callback=initMap&channel=GMPSB_addressselection_v1_cABC" async defer></script>
+
 </body>
 </html>

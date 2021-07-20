@@ -10,7 +10,12 @@
         $("#ddlProduct").html(items);
     })
 }
-$("#btnSearch").click(function () {
+//$("#btnSearch").click(function () {
+//    $("#btnSave").css("display", "block");
+//    ProductGrid();
+//})
+
+$("#ddlProduct").change(function () {
     $("#btnSave").css("display", "block");
     ProductGrid();
 })
@@ -19,13 +24,13 @@ function ProductGrid() {
     var urid = parseInt($("#ddlSearchStatus").val()) || "";
     var sid = "";
     var parent = $("#ddlProduct").val();
-    var obj = { user_status: urid, Search: sid, PageNo: 0, PageSize: 10, sEcho: 1, SortCol: 'id', SortDir: 'desc', strValue1: parent};
+    var obj = { user_status: urid, Search: sid, PageNo: 0, PageSize: 50, sEcho: 1, SortCol: 'id', SortDir: 'desc', strValue1: parent};
     $('#dtdata').DataTable({
         
         columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true,
         sPaginationType: "full_numbers", searching: false, ordering: false, lengthChange: false, "paging": false, "bInfo": false,
-        bAutoWidth: false, scrollX: true, scrollY: ($(window).height() - 215),
+        bAutoWidth: false, scrollX: false, scrollY:false,
         lengthMenu: [[10, 20, 50], [10, 20, 50]],
         sAjaxSource: "/Inventory/GetVarientList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {

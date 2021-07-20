@@ -87,6 +87,7 @@
                         </div>
                         <div class="form-group col-md-12">
                             <input type="text" class="form-control billinfo" id="txtbilladdress1" placeholder="Enter Address Line 1">
+                            <input type="text" class="form-control searchAddress hidden" id="txtgoogleaddress">
                         </div>
                         <div class="form-group col-md-12">
                             <input type="text" class="form-control billinfo" id="txtbilladdress2" placeholder="Enter Address Line 2">
@@ -175,7 +176,11 @@
                                     <th class="text-right" style="width: 10%">Tax</th>
                                 </tr>
                             </thead>
-                            <tbody></tbody>
+                            <tbody id="order_line_items"></tbody>
+                            <tbody id="order_state_recycling_fee_line_items"></tbody>
+                            <tbody id="order_fee_line_items"></tbody>
+                            <tbody id="order_shipping_line_items"></tbody>
+                            <tbody id="order_refunds"></tbody>
                             <tfoot class="thead-dark">
                                 <tr>
                                     <th colspan="2" class="text-left" style="width: 58%">
@@ -254,6 +259,12 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <label class="col-sm-10 control-label">Fee</label>
+                            <div class="col-sm-2 controls text-right">
+                                $<span id="feeTotal" data-orderitemid="0">0.00</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label class="col-sm-10 control-label">Order Total</label>
                             <div class="col-sm-2 controls text-right">
                                 $<span id="orderTotal">0.00</span>
@@ -276,6 +287,8 @@
 <!-- Include SmartWizard JavaScript source -->
 <script src="~/Content/AdminLTE-3.1.0/jquery/inputmask.js"></script>
 <script src="@Url.Content("~/js/Orders/NewOrder.js?v=" + DateTime.Now.ToString("ddMMyyyymmss"))" asp-append-version="true"></script>
+<!--Google Place API -->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBIgngCCIJ3D8_s3G7aIfvQckhsDtbAe4E&libraries&callback=initMap&libraries=places&v=weekly" async></script>
 <script type="text/javascript">
 
 </script>

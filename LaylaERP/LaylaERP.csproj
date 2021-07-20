@@ -177,6 +177,7 @@
     <Compile Include="Controllers\ExportController.cs" />
     <Compile Include="Controllers\FeeNTaxController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\InventoryController.cs" />
     <Compile Include="Controllers\OrdersController.cs" />
     <Compile Include="Controllers\ProductController.cs" />
     <Compile Include="Controllers\ReportsController.cs" />
@@ -196,6 +197,7 @@
     <Compile Include="Models\ExportModel.cs" />
     <Compile Include="Models\Export_Details.cs" />
     <Compile Include="Models\FeeNTax.cs" />
+    <Compile Include="Models\InventoryModel.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\OrderModel.cs" />
     <Compile Include="Models\SearchModel.cs" />
@@ -515,7 +517,6 @@
     <Content Include="Content\easyui\images\tree_icons.png" />
     <Content Include="Content\easyui\images\validatebox_warning.png" />
     <Content Include="Content\easyui\jquery.easyui.min.js" />
-    <Content Include="Content\easyui\jquery.easyui.min1.js" />
     <Content Include="Content\fontawesome-all.min.css" />
     <Content Include="Content\img\flags%402x.png" />
     <Content Include="Content\img\flags.png" />
@@ -754,6 +755,7 @@
     <Content Include="Views\Product\ListProduct.cshtml" />
     <Content Include="Views\Product\ProductAttributes.cshtml" />
     <Content Include="Views\Product\ProductCategories.cshtml" />
+    <Content Include="Views\Inventory\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

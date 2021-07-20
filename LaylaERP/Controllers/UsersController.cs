@@ -677,7 +677,9 @@ namespace LaylaERP.Controllers
                 foreach (DataRow dr in rows)
                 {
                     string myhtml = "";
+                    string myhtmltext = "";
                     myhtml = "<div class=\"table-row\"><div><span class='menu-names'>" + dr["menu_name"].ToString() + "</span></div><div>&nbsp;</div><div><button><input type=\"checkbox\" id=\"chk_add_" + dr["menu_id"] + "\" onChange=\"checkchange(this);\" data-id=\"" + dr["menu_id"] + "\" " + dr["CheckAdd"] + "></input> <label>Add</label></button></div><div><button><input type=\"checkbox\" id=\"chk_edit_" + dr["menu_id"] + "\" onChange=\"checkchange(this);\" data-id=\"" + dr["menu_id"] + "\" " + dr["CheckEdit"] + "></input> <label>Edit</label></button></div><div><button><input type=\"checkbox\" id =\"chk_del_" + dr["menu_id"] + "\" onChange=\"checkchange(this);\" data-id=\"" + dr["menu_id"] + "\" " + dr["CheckDelete"] + "></input> <label>View</label></button></div></div>";
+                    myhtmltext = "<div class=\"table-row\"><div><span class='menu-names'>" + dr["menu_name"].ToString() + "</span></div><div>&nbsp;</div><div></div></div>";
                     row = new Dictionary<String, Object>();
                     row.Add("id", dr["menu_id"]);
                     row.Add("add", dr["RoleAdd"]);
@@ -687,13 +689,20 @@ namespace LaylaERP.Controllers
                     row.Add("CheckEdit", dr["CheckEdit"]);
                     row.Add("CheckDelete", dr["CheckDelete"]);
                     if (dr["menu_url"].ToString().Trim() != "#")
-                        row.Add("url", dr["menu_url"]);                    
+                    {
+                        row.Add("url", dr["menu_url"]);
+                        row.Add("text", myhtml);
+                    }
+                    else
+                    {
+                        row.Add("text", myhtmltext);
+                    }
                     row.Add("level", dr["level"]);                  
-                    if (dr["parent_id"] != DBNull.Value)
+                    if (dr["parent_id"] != DBNull.Value)                    
                         row.Add("parent", dr["parent_id"]);
                     if (dr["checked"] != DBNull.Value)
                         row.Add("checked", dr["checked"]);
-                    row.Add("text", myhtml);
+                  
 
                     List<Dictionary<string, object>> list2 = Getdata(DT, Convert.ToInt32(dr["menu_id"]));
                     row.Add("children", list2);

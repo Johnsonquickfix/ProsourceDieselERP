@@ -263,31 +263,20 @@
 </script>
 <script>
     function initMap() {
-        const map = new google.maps.Map(document.getElementById("map"), {
-            zoom: 11,
-            center: { lat: 37.4221, lng: -122.0841 },
-            mapTypeControl: false,
-            fullscreenControl: true,
-            zoomControl: true,
-            streetViewControl: true
+        let address1Field = document.querySelector("#txtBillingAddress1");
+        // Create the autocomplete object, restricting the search predictions to
+        // addresses in the US and Canada.
+        autocomplete = new google.maps.places.Autocomplete(address1Field, {
+            componentRestrictions: { country: ["us", "ca"] },
+            fields: ["address_components", "geometry"],
+            types: ["address"],
         });
-        const marker = new google.maps.Marker({ map: map, draggable: false });
-        const autocompleteInput = document.getElementById('txtBillingAddress1');
-        const autocomplete = new google.maps.places.Autocomplete(autocompleteInput);
-        autocomplete.addListener('place_changed', function () {
-            marker.setVisible(false);
-            const place = autocomplete.getPlace();
-            if (!place.geometry) {
-                // User entered the name of a Place that was not suggested and
-                // pressed the Enter key, or the Place Details request failed.
-                window.alert('No details available for input: \'' + place.name + '\'');
-                return;
-            }
-            renderAddress(place);
-            fillInAddress(place);
-        });
+        // When the user selects an address from the drop-down, populate the
+        // address fields in the form.
+        autocomplete.addListener("place_changed", fillInAddress);
 
-        function fillInAddress(place) {
+        function fillInAddress() {
+            const place = autocomplete.getPlace();
             //console.log(place);
             let address = '';
             let obj = place.address_components.filter(element => element.types[0] == 'street_number');
@@ -326,6 +315,10 @@
         }
     }
 </script>
+<!--Google Place API -->
+@*<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBIgngCCIJ3D8_s3G7aIfvQckhsDtbAe4E&libraries=places&callback=initMap&channel=GMPSB_addressselection_v1_cABC" async defer></script>*@
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBIgngCCIJ3D8_s3G7aIfvQckhsDtbAe4E&libraries&callback=initMap&libraries=places&v=weekly" async></script>
+
 
 
 

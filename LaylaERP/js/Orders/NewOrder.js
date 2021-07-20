@@ -134,27 +134,11 @@ $(document).ready(function () {
         let cus_text = $("#ddlCustomerSearch").data("select2").dropdown.$search.val();
         $("#billModal").modal('hide'); addCustomerModal(cus_text);
     });
+    $("#billModal").on("change", "#txtBillingCountry", function (t) { t.preventDefault(); var obj = { id: $(this).val() }; BindStateCounty("txtBillingState", obj); });
     $("#billModal").on("click", "#btnBackSearchCusrtomer", function (t) {
         t.preventDefault(); $("#billModal").modal('hide'); searchOrderModal();
     });
-    $("#billModal").on("blur", "#txtBillingPostCode", function (t) {
-        t.preventDefault();
-        if ($(this).val().length > 0) {
-            $.ajax({
-                url: "https://ziptasticapi.com/" + $(this).val(),
-                type: "GET",
-                dataType: 'JSON',
-                data: [],
-                success: function (data) {
-                    $("#txtBillingCity").val(data.city); $("#txtBillingCountry").val(data.country); $("#txtBillingState").val(data.state);
-                },
-                error: function (msg) { alert(msg); }
-            });
-        }
-        else {
-            $("#txtBillingCity,#txtBillingCountry,#txtBillingState").val('');
-        }
-    });
+    $("#billModal").on("blur", "#txtBillingPostCode", function (t) { t.preventDefault(); });
     $("#billModal").on("click", "#btnSaveCustomer", function (t) {
         t.preventDefault(); saveCustomer();
     });
@@ -191,9 +175,7 @@ function BindStateCounty(ctr, obj) {
     var res = wc_users_params.filter(element => element.abbreviation == obj.id);
     $("#" + ctr + "").html('<option value="0">Select</option>');
     if (res.length > 0) {
-        for (i = 0; i < res[0].states.length; i++) {
-            $("#" + ctr + "").append('<option value="' + res[0].states[i].abbreviation + '">' + res[0].states[i].name + '</option>');
-        }
+        for (i = 0; i < res[0].states.length; i++) { $("#" + ctr + "").append('<option value="' + res[0].states[i].abbreviation + '">' + res[0].states[i].name + '</option>'); }
     }
 }
 
@@ -504,14 +486,15 @@ function addCustomerModal(cus_name) {
     let myHtml = '';
     myHtml += '<div class="row">';
     myHtml += '<div class="col-md-4" >';
+
     myHtml += '<div class="form-group">';
-    myHtml += '<label class="control-label " for="Email">Email<span class="text-red">*</span></label>';
-    myHtml += '<div class=""><input type="email" id="txtUserEmail" class="form-control" placeholder="Email"/></div>';
+    myHtml += '<label class="control-label " for="User Name">User Name/Email<span class="text-red">*</span></label>';
+    myHtml += '<div class=""><input type="text" id="txtUserNickName" class="form-control" placeholder="User Name" value="' + cus_name + '"/></div>';
     myHtml += '</div>';
 
     myHtml += '<div class="form-group">';
-    myHtml += '<label class="control-label " for="User Name">User Name<span class="text-red">*</span></label>';
-    myHtml += '<div class=""><input type="text" id="txtUserNickName" class="form-control" placeholder="User Name" value="' + cus_name + '"/></div>';
+    myHtml += '<label class="control-label " for="Email">Email<span class="text-red">*</span></label>';
+    myHtml += '<div class=""><input type="email" id="txtUserEmail" class="form-control" placeholder="Email" value="' + cus_name + '"/></div>';
     myHtml += '</div>';
 
     myHtml += '<div class="form-group">';
@@ -527,8 +510,13 @@ function addCustomerModal(cus_name) {
 
     myHtml += '<div class="col-md-4">';
     myHtml += '<div class="form-group">';
+    myHtml += '<label class="control-label " for="Contact No.">Contact No.<span class="text-red">*</span></label>';
+    myHtml += '<div class=""><input type="tel" id="txtBillingMobile" class="form-control" placeholder="Contact No."  maxlength="11"/></div>';
+    myHtml += '</div>';
+
+    myHtml += '<div class="form-group">';
     myHtml += '<label class="control-label " for="Address 1">Address 1<span class="text-red">*</span></label>';
-    myHtml += '<div class=""><input type="text" id="txtBillingAddress1" class="form-control" placeholder="Address 1" /></div>';
+    myHtml += '<div class=""><input type="text" id="txtBillingAddress1" class="form-control searchAddress" placeholder="Address 1" /></div>';
     myHtml += '</div>';
 
     myHtml += '<div class="form-group">';
@@ -537,37 +525,31 @@ function addCustomerModal(cus_name) {
     myHtml += '</div>';
 
     myHtml += '<div class="form-group">';
-    myHtml += '<label class="control-label " for="Post/Zip Code">Post/Zip Code<span class="text-red">*</span></label>';
-    myHtml += '<div class=""><input type="text" id="txtBillingPostCode" class="form-control" placeholder="Post/Zip Code" /></div>';
-    myHtml += '</div>';
-
-    myHtml += '<div class="form-group">';
-    myHtml += '<label class="control-label " for="Country/Region">Country/Region<span class="text-red">*</span></label>';
-    myHtml += '<div class=""><input type="text" id="txtBillingCountry" class="form-control" placeholder="Country/Region" disabled /></div>';
+    myHtml += '<label class="control-label " for="City">City<span class="text-red">*</span></label>';
+    myHtml += '<div class=""><input type="tel" id="txtBillingCity" class="form-control" placeholder="City"/></div>';
     myHtml += '</div>';
     myHtml += '</div>';
 
     myHtml += '<div class="col-md-4">';
     myHtml += '<div class="form-group">';
-    myHtml += '<label class="control-label " for="State/Country">State/Country<span class="text-red">*</span></label>';
-    myHtml += '<div class=""><input type="text" id="txtBillingState" class="form-control" placeholder="State/Country" disabled /></div>';
+    myHtml += '<label class="control-label " for="State">State<span class="text-red">*</span></label>';
+    myHtml += '<div class=""><select class="form-control" id="txtBillingState"></select></div>';
     myHtml += '</div>';
 
     myHtml += '<div class="form-group">';
-    myHtml += '<label class="control-label " for="City">City<span class="text-red">*</span></label>';
-    myHtml += '<div class=""><input type="tel" id="txtBillingCity" class="form-control" placeholder="City" disabled /></div>';
+    myHtml += '<label class="control-label " for="Zip Code">Zip Code<span class="text-red">*</span></label>';
+    myHtml += '<div class=""><input type="text" id="txtBillingPostCode" class="form-control" placeholder="Zip Code" /></div>';
     myHtml += '</div>';
 
     myHtml += '<div class="form-group">';
-    myHtml += '<label class="control-label " for="Contact No.">Contact No.<span class="text-red">*</span></label>';
-    myHtml += '<div class=""><input type="tel" id="txtBillingMobile" class="form-control" placeholder="Contact No."  maxlength="11"/></div>';
+    myHtml += '<label class="control-label " for="Country">Country<span class="text-red">*</span></label>';
+    myHtml += '<div class=""><select class="form-control" id="txtBillingCountry"><option value="US">US - United States</option><option value="CA">CA - Canada</option></select></div>';
     myHtml += '</div>';
 
     myHtml += '</div>';
     myHtml += '</div >';
 
-    $('#billModal .modal-body').append(myHtml);
-
+    $('#billModal .modal-body').append(myHtml); $("#txtBillingState,#txtBillingCountry").select2(); BindStateCounty("txtBillingState", { id: 'US' });
     $("#billModal").modal({ backdrop: 'static', keyboard: false }); $("#txtUserEmail").focus();
 }
 function saveCustomer() {
@@ -666,6 +648,52 @@ function copyBillingAddress() {
     $('#ddlshipcountry').val($("#ddlbillcountry").val()).trigger('change');
     $('#ddlshipstate').val($("#ddlbillstate").val()).trigger('change');
     $("#loader").hide();
+}
+function initMap() {
+    let address1Field = document.querySelector(".searchAddress");
+    // Create the autocomplete object, restricting the search predictions to
+    // addresses in the US and Canada.
+    autocomplete = new google.maps.places.Autocomplete(address1Field, {
+        componentRestrictions: { country: ["us", "ca"] },
+        fields: ["address_components", "geometry"],
+        types: ["address"],
+    });
+    // When the user selects an address from the drop-down, populate the
+    // address fields in the form.
+    autocomplete.addListener("place_changed", fillInAddress);
+
+    function fillInAddress() {
+        const place = autocomplete.getPlace();
+        //console.log(place);
+        let address = '';
+        let obj = place.address_components.filter(element => element.types[0] == 'street_number');
+        if (obj.length > 0)
+            address = obj[0].long_name;
+        obj = place.address_components.filter(element => element.types[0] == 'route');
+        if (obj.length > 0)
+            address = address + ' ' + obj[0].long_name;
+        $("#txtBillingAddress1").val(address);
+        obj = place.address_components.filter(element => element.types[0] == 'locality');
+        if (obj.length > 0)
+            $("#txtBillingCity").val(obj[0].long_name);
+        else
+            $("#txtBillingCity").val('');
+        obj = place.address_components.filter(element => element.types[0] == 'postal_code');
+        if (obj.length > 0)
+            $("#txtBillingPostCode").val(obj[0].long_name);
+        else
+            $("#txtBillingPostCode").val('');
+        obj = place.address_components.filter(element => element.types[0] == 'administrative_area_level_1');
+        if (obj.length > 0)
+            $("#txtBillingState").empty().append('<option value="' + obj[0].short_name + '" selected>' + obj[0].long_name + '</option>');
+        else
+            $("#txtBillingState").empty();
+        obj = place.address_components.filter(element => element.types[0] == 'country');
+        if (obj.length > 0)
+            $("#txtBillingCountry").val(obj[0].short_name + ' - ' + obj[0].long_name);
+        else
+            $("#txtBillingCountry").empty();
+    }
 }
 
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Edit Order ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1636,7 +1664,7 @@ function saveCO() {
     //console.log(obj);
     $.ajax({
         type: "POST", contentType: "application/json; charset=utf-8",
-        url: "/Orders/SaveCustomerOrder", 
+        url: "/Orders/SaveCustomerOrder",
         data: JSON.stringify(obj), dataType: "json", beforeSend: function () { $("#loader").show(); },
         success: function (data) {
             if (data.status == true) {
@@ -1767,7 +1795,7 @@ function PaymentModal() {
 
     $("#billModal").modal({ backdrop: 'static', keyboard: false }); $("#txt_Coupon").focus();
 }
-function AcceptPayment() {    
+function AcceptPayment() {
     if ($("#ddlPaymentMethod").val() == "paypal") {
         if ($("#txtPPEmail").val().length <= 5) {
             swal('Alert!', 'Please enter PayPal Email.', "info").then((result) => { return false; });
@@ -1927,8 +1955,8 @@ function CreatePaypalInvoice(oid, pp_email, access_token) {
             ///send Invoice
             SendPaypalInvoice(access_token, sendURL)
         },
-        error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide();console.log(XMLHttpRequest); swal('Alert!', errorThrown, "error"); },
-        complete: function () { $("#loader").hide(); },async: false
+        error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); console.log(XMLHttpRequest); swal('Alert!', errorThrown, "error"); },
+        complete: function () { $("#loader").hide(); }, async: false
     });
 }
 function SendPaypalInvoice(access_token, sendURL) {

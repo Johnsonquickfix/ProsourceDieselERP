@@ -31,9 +31,9 @@ var recycling_item = [118, 20861, 611172];
 $(document).ready(function () {
     //$("#loader").hide();
     $('.billinfo').prop("disabled", true);
+    $("#txtbillphone").mask("(999) 999-9999"); 
     //getOrderInfo();
-    setTimeout(function () { $("#loader").show(); getOrderInfo(); }, 20);
-
+    setTimeout(function () { $("#loader").show(); getOrderInfo(); }, 20);    
     $('#txtLogDate').daterangepicker({ singleDatePicker: true, autoUpdateInput: true, locale: { format: 'DD/MM/YYYY', cancelLabel: 'Clear' } });
     $(".select2").select2(); BindStateCounty("ddlbillstate", { id: 'US' }); BindStateCounty("ddlshipstate", { id: 'US' });
     $("#ddlUser").select2({
@@ -548,7 +548,7 @@ function addCustomerModal(cus_name) {
     myHtml += '</div >';
 
     $('#billModal .modal-body').append(myHtml); $("#ddlCusBillingState,#ddlCusBillingCountry").select2(); BindStateCounty("ddlCusBillingState", { id: 'US' });
-    $("#billModal").modal({ backdrop: 'static', keyboard: false }); $("#txtCusNickName").focus();
+    $("#billModal").modal({ backdrop: 'static', keyboard: false }); $("#txtCusNickName").focus(); $("#txtCusBillingMobile").mask("(999) 999-9999"); 
     let newEl = document.getElementById('txtCusBillingAddress1');
     setupAutocomplete(newEl);
 }
@@ -698,8 +698,12 @@ function getOrderInfo() {
                     $('#ddlStatus').val(data[0].status.trim()).trigger('change'); $('#ddlUser').prop("disabled", true);
                     $("#ddlUser").empty().append('<option value="' + data[0].customer_id + '" selected>' + data[0].customer_name + '</option>');
                     ///billing_Details
+                    var tPhone = data[0].b_phone;
+                    if (tPhone != null) {
+                        tPhone = '(' + tPhone.substring(0, 3) + ') ' + tPhone.substring(3, 6) + '-' + tPhone.substring(6, 10);
+                    }
                     $('#txtbillfirstname').val(data[0].b_first_name); $('#txtbilllastname').val(data[0].b_last_name); $('#txtbilladdress1').val(data[0].b_address_1); $('#txtbilladdress2').val(data[0].b_address_2);
-                    $('#txtbillzipcode').val(data[0].b_postcode); $('#txtbillcity').val(data[0].b_city); $('#txtbillemail').val(data[0].b_email); $('#txtbillphone').val(data[0].b_phone);
+                    $('#txtbillzipcode').val(data[0].b_postcode); $('#txtbillcity').val(data[0].b_city); $('#txtbillemail').val(data[0].b_email); $('#txtbillphone').val(tPhone);
                     $('#txtbillcompany').val(data[0].b_company); $('#ddlbillcountry').val(data[0].b_country.trim()).trigger('change'); $('#ddlbillstate').val(data[0].b_state.trim()).trigger('change');
 
                     ///shipping_Details

@@ -287,8 +287,9 @@
 <div class="modal in printable autoprint table-design not-fixed popuptable" id="billModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div>
 
 <!-- Include SmartWizard JavaScript source -->
-<script src="~/Content/AdminLTE-3.1.0/jquery/inputmask.js"></script>
+<script src="~/js/jquery.mask.js" asp-append-version="true"></script>
 <script src="@Url.Content("~/js/Orders/NewOrder.js?v=" + DateTime.Now.ToString("ddMMyyyymmss"))" asp-append-version="true"></script>
+
 <!--Google Place API -->
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBIgngCCIJ3D8_s3G7aIfvQckhsDtbAe4E&libraries&callback=initMap&libraries=places&v=weekly" async defer></script>
 <script type="text/javascript">

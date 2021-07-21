@@ -31,9 +31,9 @@ var recycling_item = [118, 20861, 611172];
 $(document).ready(function () {
     //$("#loader").hide();
     $('.billinfo').prop("disabled", true);
+    $("#txtbillphone").mask("(999) 999-9999");
     //getOrderInfo();
     setTimeout(function () { $("#loader").show(); getOrderInfo(); }, 20);
-
     $('#txtLogDate').daterangepicker({ singleDatePicker: true, autoUpdateInput: true, locale: { format: 'DD/MM/YYYY', cancelLabel: 'Clear' } });
     $(".select2").select2(); BindStateCounty("ddlbillstate", { id: 'US' }); BindStateCounty("ddlshipstate", { id: 'US' });
     $("#ddlUser").select2({
@@ -548,7 +548,7 @@ function addCustomerModal(cus_name) {
     myHtml += '</div >';
 
     $('#billModal .modal-body').append(myHtml); $("#ddlCusBillingState,#ddlCusBillingCountry").select2(); BindStateCounty("ddlCusBillingState", { id: 'US' });
-    $("#billModal").modal({ backdrop: 'static', keyboard: false }); $("#txtCusNickName").focus();
+    $("#billModal").modal({ backdrop: 'static', keyboard: false }); $("#txtCusNickName").focus(); $("#txtCusBillingMobile").mask("(999) 999-9999");
     let newEl = document.getElementById('txtCusBillingAddress1');
     setupAutocomplete(newEl);
 }
@@ -698,8 +698,12 @@ function getOrderInfo() {
                     $('#ddlStatus').val(data[0].status.trim()).trigger('change'); $('#ddlUser').prop("disabled", true);
                     $("#ddlUser").empty().append('<option value="' + data[0].customer_id + '" selected>' + data[0].customer_name + '</option>');
                     ///billing_Details
+                    var tPhone = data[0].b_phone;
+                    if (tPhone != null) {
+                        tPhone = '(' + tPhone.substring(0, 3) + ') ' + tPhone.substring(3, 6) + '-' + tPhone.substring(6, 10);
+                    }
                     $('#txtbillfirstname').val(data[0].b_first_name); $('#txtbilllastname').val(data[0].b_last_name); $('#txtbilladdress1').val(data[0].b_address_1); $('#txtbilladdress2').val(data[0].b_address_2);
-                    $('#txtbillzipcode').val(data[0].b_postcode); $('#txtbillcity').val(data[0].b_city); $('#txtbillemail').val(data[0].b_email); $('#txtbillphone').val(data[0].b_phone);
+                    $('#txtbillzipcode').val(data[0].b_postcode); $('#txtbillcity').val(data[0].b_city); $('#txtbillemail').val(data[0].b_email); $('#txtbillphone').val(tPhone);
                     $('#txtbillcompany').val(data[0].b_company); $('#ddlbillcountry').val(data[0].b_country.trim()).trigger('change'); $('#ddlbillstate').val(data[0].b_state.trim()).trigger('change');
 
                     ///shipping_Details
@@ -732,7 +736,7 @@ function getOrderItemList(oid) {
         type: "POST", url: '/Orders/GetOrderProductList', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
         success: function (data) {
             let itemHtml = '', recyclingfeeHtml = '', feeHtml = '', shippingHtml = '', refundHtml = '', couponHtml = '';
-            let zQty = 0.00, zGAmt = 0.00, zTDiscount = 0.00, zTotalTax = 0.00, zShippingAmt = 0.00, zStateRecyclingAmt = 0.00, zFeeAmt = 0.00;
+            let zQty = 0.00, zGAmt = 0.00, zTDiscount = 0.00, zTotalTax = 0.00, zShippingAmt = 0.00, zStateRecyclingAmt = 0.00, zFeeAmt = 0.00, zRefundAmt = 0.00;
             for (var i = 0; i < data.length; i++) {
                 let orderitemid = parseInt(data[i].order_item_id) || 0;
                 if (data[i].product_type == 'line_item') {
@@ -827,9 +831,10 @@ function getOrderItemList(oid) {
                 }
                 else if (data[i].product_type == 'refund') {
                     refundHtml += '<tr id="tritemId_' + orderitemid + '" data-orderitemid="' + orderitemid + '" data-pname="' + data[i].product_name + '">';
-                    refundHtml += '<td class="text-center item-action"><a class="btn menu-icon-gr text-red btnDeleteItem billinfo" tabitem_itemid="' + orderitemid + '" onclick="removeItemsInTable(\'' + orderitemid + '\');"> <i class="glyphicon glyphicon-trash"></i></a></td>';
+                    refundHtml += '<td class="text-center item-action"><button class="btn menu-icon-gr text-red btnDeleteItem billinfo" tabitem_itemid="' + orderitemid + '" onclick="removeItemsInTable(\'' + orderitemid + '\');"> <i class="glyphicon glyphicon-trash"></i></button></td>';
                     refundHtml += '<td>' + data[i].product_name + '</td><td></td><td></td><td class="TotalAmount text-right">' + data[i].total.toFixed(2) + '</td><td></td><td></td>';
                     refundHtml += '</tr>';
+                    zRefundAmt = zRefundAmt + (parseFloat(data[i].total) || 0.00);
                 }
                 else if (data[i].product_type == 'tax') {
                     $("#salesTaxTotal").data("orderitemid", orderitemid);
@@ -848,6 +853,9 @@ function getOrderItemList(oid) {
             $("#stateRecyclingFeeTotal").text(zStateRecyclingAmt.toFixed(2));
             $("#feeTotal").text(zFeeAmt.toFixed(2));
             $("#orderTotal").html((zGAmt - zTDiscount + zShippingAmt + zTotalTax + zStateRecyclingAmt + zFeeAmt).toFixed(2));
+            $("#refundedTotal").text(zRefundAmt.toFixed(2));
+            $("#netPaymentTotal").text(((zGAmt - zTDiscount + zShippingAmt + zTotalTax + zStateRecyclingAmt + zFeeAmt) + zRefundAmt).toFixed(2));
+            if (zRefundAmt != 0) $(".refund-total").removeClass('hidden'); else $(".refund-total").addClass('hidden');
             $("#divAddItemFinal").find(".rowCalulate").change(function () { calculateDiscountAcount(); });
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },

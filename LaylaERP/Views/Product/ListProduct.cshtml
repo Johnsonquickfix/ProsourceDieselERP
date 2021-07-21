@@ -1,17 +1,105 @@
 ﻿
 @{
-    Layout = null;
+    ViewBag.Title = "ListProduct";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<!DOCTYPE html>
+<link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+<link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
+<!-- datatables js -->
+<script src="~/Content/AdminLTE-3.1.0/datatables/datatables.min.js" type="text/javascript"></script>
+<script src="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/js/dataTables.bootstrap4.min.js" type="text/javascript"></script>
+<div class="page-title">
+    <h2>List Product</h2>
+    @*<a class="btn btn-danger" id="btnAdd" href="Index"></a>*@
+</div>
 
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>ListProduct</title>
-</head>
-<body>
-    <div> 
+<section class="content section-content neworder-section table-design">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="user_subCrumbs">
+                <input type="hidden" id="hfType" value="" />
+                <ul class="subsubsub">
+                    <li class="all"><a id="all" href="javascript:void(0);" class="current">All (<span class="count">0</span></a>) |</li>                  
+                    <li class="published"><a href="javascript:void(0);" id="published">Published (<span class="count">0</span>)</a> |</li>           
+                    <li class="private"><a href="javascript:void(0);" id="private">Private (<span class="count">0</span>)</a> </li>   
+                    <li class="trash"><a href="javascript:void(0);" id="trash">Trash (<span class="count">0</span>)</a> </li>
+                </ul>
+            </div>
+        </div>
     </div>
-</body>
-</html>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="user-top-section">
+                <div class="tablenav top tablenav-top2">
+                    <div class="alignleft actions bulkactions">
+                        <select class="form-control" id="ddlbulkaction">
+                            <option value="0" selected="selected">Bulk actions</option>
+                            <option value="trash">Move to Trash</option>
+                        </select>
+                        <button type="button" id="btnChange" onclick="Status();" class="btn btn-primary btn-flat button">Apply</button>
+                    </div>
+
+                    <div class="alignleft actions">
+                        <select class="form-control" id="ddltype">
+                            <option value="0">Select a category</option>
+                        </select>
+                    </div>
+                    <div style="display:none" class="alignleft actions">
+                        <select class="form-control" id="ddlproducttype">
+                            <option value="0">Filter by product type</option>
+                            <option value="simple">Simple product</option>
+                            <option value="downloadable">&rarr; Downloadable</option>
+                            <option value="virtual">&rarr; Virtual</option>
+                            <option value="grouped">Grouped product</option>
+                            <option value="external">External/Affiliate product</option>
+                            <option value="variable">Variable product</option>
+                        </select>
+                    </div>
+                    <div class="alignleft actions">
+                        <select class="form-control" id="ddstockstatus">
+                            <option value="0">Filter by stock status</option>
+                            <option value="instock">In stock</option>
+                            <option value="outofstock">Out of stock</option>
+                            <option value="onbackorder">On backorder</option>
+                        </select>
+                        <input type="submit" name="filter_action" id="btnOtherFilter" class="button" value="Filter">
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-primary table-design not-fixed">
+                <div class="box-header">
+                    @*<div class="table-responsive">  *@
+                    <table id="dtdata" class="table-blue table check-table table-bordered table-striped dataTable" width="100%">
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox" name="checkall" id="checkall" onClick="CheckAll();"><label></label></th>
+                                <th>Image</th>
+                                <th>Name</th>
+                                <th>SKU</th>
+                                <th>Stock</th>
+                                <th>Price</th>
+                                <th>Categories</th>
+                                <th>*</th>
+                                <th>Date</th>
+                                <th></th>                               
+                            </tr>
+                        </thead>
+                    </table>
+                    @*</div>*@
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script src="~/js/common.js"></script>
+<script src="@Url.Content("~/js/Product/Product.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+<script>
+    $(document).ready(function () {
+    });
+</script>

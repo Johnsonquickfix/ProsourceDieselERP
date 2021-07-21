@@ -164,6 +164,7 @@
     <Compile Include="BAL\FeeNTaxRepository.cs" />
     <Compile Include="BAL\InventoryRepository.cs" />
     <Compile Include="BAL\OrderRepository.cs" />
+    <Compile Include="BAL\ProductRepository.cs" />
     <Compile Include="BAL\ReportsRepository.cs" />
     <Compile Include="BAL\SettingRepository.cs" />
     <Compile Include="BAL\ThirdPartyRepository.cs" />
@@ -575,6 +576,7 @@
     <Content Include="js\Marketing\Coupons.js" />
     <Content Include="js\Orders\NewOrder.js" />
     <Content Include="js\Orders\OrderHistory.js" />
+    <Content Include="js\Product\Product.js" />
     <Content Include="js\Ship\ShipStation.js" />
     <Content Include="js\ThirdParty\Vendor.js" />
     <Content Include="js\Users\RolePermission.js" />

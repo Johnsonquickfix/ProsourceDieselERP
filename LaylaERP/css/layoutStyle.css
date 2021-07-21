@@ -2157,7 +2157,5 @@ margin:0px;}
 padding-left:15px;}
 .custom-flex-space .col-auto {
 margin-right:15px;}
-.categorychecklist {display:flex; align-items:center; flex-wrap:wrap; width:100%; padding:0px; margin:0px;
-list-style:none;}
-.categorychecklist li {width:20%;padding-right:15px;margin-bottom:15px;
-}
+.categorychecklist {width:100%; padding:0px; margin:0px;list-style:none;}
+.categorychecklist li {margin-bottom:10px;}

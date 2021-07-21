@@ -17,6 +17,10 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult ConsignmentInventory()
+        {
+            return View();
+        }
         public JsonResult GetVarientList(InventoryModel model)
         {
             string result = string.Empty;

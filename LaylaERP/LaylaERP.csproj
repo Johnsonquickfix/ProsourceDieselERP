@@ -164,8 +164,10 @@
     <Compile Include="BAL\FeeNTaxRepository.cs" />
     <Compile Include="BAL\InventoryRepository.cs" />
     <Compile Include="BAL\OrderRepository.cs" />
+    <Compile Include="BAL\ProductRepository.cs" />
     <Compile Include="BAL\ReportsRepository.cs" />
     <Compile Include="BAL\SettingRepository.cs" />
+    <Compile Include="BAL\ThirdPartyRepository.cs" />
     <Compile Include="BAL\UserProfileRepository.cs" />
     <Compile Include="BAL\Users.cs" />
     <Compile Include="BAL\UsersRepositry.cs" />
@@ -184,6 +186,7 @@
     <Compile Include="Controllers\ReportsController.cs" />
     <Compile Include="Controllers\SettingController.cs" />
     <Compile Include="Controllers\ShipController.cs" />
+    <Compile Include="Controllers\ThirdPartyController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Controllers\WarehouseController.cs" />
     <Compile Include="DAL\SQLHelper.cs" />
@@ -204,6 +207,7 @@
     <Compile Include="Models\OrderModel.cs" />
     <Compile Include="Models\SearchModel.cs" />
     <Compile Include="Models\SettingModel.cs" />
+    <Compile Include="Models\ThirdPartyModel.cs" />
     <Compile Include="Models\UserClassification.cs" />
     <Compile Include="Models\UsersModel.cs" />
     <Compile Include="Models\WarehouseModel.cs" />
@@ -575,7 +579,9 @@
     <Content Include="js\Marketing\Coupons.js" />
     <Content Include="js\Orders\NewOrder.js" />
     <Content Include="js\Orders\OrderHistory.js" />
+    <Content Include="js\Product\Product.js" />
     <Content Include="js\Ship\ShipStation.js" />
+    <Content Include="js\ThirdParty\Vendor.js" />
     <Content Include="js\Users\RolePermission.js" />
     <Content Include="js\Users\UserLogin.js" />
     <Content Include="js\Users\UserRole.js" />
@@ -762,10 +768,6 @@
     <Content Include="Views\Product\ProductCategories.cshtml" />
     <Content Include="Views\Inventory\Index.cshtml" />
     <Content Include="Views\Inventory\ConsignmentInventory.cshtml" />
-    <Content Include="Views\Warehouse\AddNewWarehouse.cshtml" />
-    <Content Include="Views\Appearance\AddMenu.cshtml" />
-    <Content Include="Views\Appearance\AddMenuDetails.cshtml" />
-    <Content Include="Views\Warehouse\Warehouse.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

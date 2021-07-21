@@ -83,12 +83,12 @@
             return Json(_list, 0);
         }
         [HttpPost]
-        public JsonResult GetNewOrderNo(SearchModel model)
+        public JsonResult GetNewOrderNo(OrderModel model)
         {
             string JSONresult = string.Empty;
             try
             {
-                JSONresult = OrderRepository.AddOrdersPost().ToString();
+                JSONresult = OrderRepository.AddOrdersPost(model.OrderPostMeta).ToString();
             }
             catch { }
             return Json(new { status = true, message = JSONresult, url = "" }, 0);
@@ -184,6 +184,17 @@
             return Json(JSONresult, 0);
         }
         [HttpPost]
+        public JsonResult AddFee(OrderOtherItemsModel model)
+        {
+            long id = 0;
+            try
+            {
+                id = OrderRepository.AddOrderFee(model);
+            }
+            catch { }
+            return Json(new { status = true, order_item_id = id }, 0);
+        }
+        [HttpPost]
         public JsonResult SaveCustomerOrder(OrderModel model)
         {
             string JSONresult = string.Empty; bool status = false;
@@ -229,12 +240,12 @@
             string JSONresult = string.Empty; bool status = false;
             try
             {
-                int result = OrderRepository.UpdateOrderStatus(model);
+                int result = OrderRepository.UpdatePodiumStatus(model);
                 if (result > 0)
                 { status = true; JSONresult = "Order placed successfully."; }
                 //JSONresult = JsonConvert.SerializeObject(DT);
             }
-            catch (Exception ex) { }
+            catch (Exception ex) { JSONresult = ex.Message; }
             return Json(new { status = status, message = JSONresult }, 0);
         }
         [HttpPost]

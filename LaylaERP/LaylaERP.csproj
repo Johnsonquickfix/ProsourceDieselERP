@@ -179,6 +179,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\InventoryController.cs" />
     <Compile Include="Controllers\OrdersController.cs" />
+    <Compile Include="Controllers\ProductController.cs" />
     <Compile Include="Controllers\ReportsController.cs" />
     <Compile Include="Controllers\SettingController.cs" />
     <Compile Include="Controllers\ShipController.cs" />
@@ -566,9 +567,9 @@
     <Content Include="js\common.js" />
     <Content Include="js\Customer\Customer.js" />
     <Content Include="js\FeeNTax\FeeNTax.js" />
+    <Content Include="js\GooglePlace\index.js" />
     <Content Include="js\Inventory\Inventory.js" />
     <Content Include="js\Marketing\Coupons.js" />
-    <Content Include="js\Marketing\CouponsManage.js" />
     <Content Include="js\Orders\NewOrder.js" />
     <Content Include="js\Orders\OrderHistory.js" />
     <Content Include="js\Ship\ShipStation.js" />
@@ -752,12 +753,16 @@
     <Content Include="Views\Reports\ZeroOrdersReport.cshtml" />
     <Content Include="Views\Home\OrderList.cshtml" />
     <Content Include="Views\Shared\_Calendar.cshtml" />
-    <Content Include="Views\Coupons\ManageCoupons.cshtml" />
+    <Content Include="Views\Product\AddNewProduct.cshtml" />
+    <Content Include="Views\Product\ListProduct.cshtml" />
+    <Content Include="Views\Product\ProductAttributes.cshtml" />
+    <Content Include="Views\Product\ProductCategories.cshtml" />
     <Content Include="Views\Inventory\Index.cshtml" />
     <Content Include="Views\Inventory\ConsignmentInventory.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="js\Appearance\" />
     <Folder Include="Properties\PublishProfiles\" />
     <Folder Include="Views\ShipStation\" />
   </ItemGroup>

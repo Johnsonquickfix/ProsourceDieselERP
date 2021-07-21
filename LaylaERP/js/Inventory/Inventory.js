@@ -30,7 +30,7 @@ function ProductGrid() {
         columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true,
         sPaginationType: "full_numbers", searching: false, ordering: false, lengthChange: false, "paging": false, "bInfo": false,
-        bAutoWidth: false, scrollX: true, scrollY: ($(window).height() - 215),
+        bAutoWidth: false, scrollX: false, scrollY:false,
         lengthMenu: [[10, 20, 50], [10, 20, 50]],
         sAjaxSource: "/Inventory/GetVarientList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {

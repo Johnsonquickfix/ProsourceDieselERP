@@ -95,9 +95,7 @@ $(document).ready(function () {
     $('#billModal').on('shown.bs.modal', function () {
         $('#ddlCustomerSearch').select2({
             dropdownParent: $("#billModal"), allowClear: true, minimumInputLength: 3, placeholder: "Search Customer",
-            language: {
-                noResults: function () { return $("<a id='btnaddcustomer' href='javascript:;'>Add Customer</a>"); }
-            },
+            language: { noResults: function () { return $("<a id='btnaddcustomer' href='javascript:;'>Add Customer</a>"); } },
             ajax: {
                 url: '/Orders/GetCustomerList', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
                 data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
@@ -138,7 +136,7 @@ $(document).ready(function () {
     $("#billModal").on("click", "#btnBackSearchCusrtomer", function (t) {
         t.preventDefault(); $("#billModal").modal('hide'); searchOrderModal();
     });
-    $("#billModal").on("blur", "#txtBillingPostCode", function (t) { t.preventDefault(); });
+    $("#billModal").on("blur", "#ddlCusBillingCountry,#ddlCusBillingState", function (t) { t.preventDefault(); $("#txtCusBillingPostCode").val(''); });
     $("#billModal").on("click", "#btnSaveCustomer", function (t) {
         t.preventDefault(); saveCustomer();
     });
@@ -489,113 +487,95 @@ function addCustomerModal(cus_name) {
 
     myHtml += '<div class="form-group">';
     myHtml += '<label class="control-label " for="User Name">User Name/Email<span class="text-red">*</span></label>';
-    myHtml += '<div class=""><input type="text" id="txtUserNickName" class="form-control" placeholder="User Name" value="' + cus_name + '"/></div>';
+    myHtml += '<div class=""><input type="text" id="txtCusNickName" class="form-control" placeholder="User Name" value="' + cus_name + '"/></div>';
     myHtml += '</div>';
 
     myHtml += '<div class="form-group">';
     myHtml += '<label class="control-label " for="Email">Email<span class="text-red">*</span></label>';
-    myHtml += '<div class=""><input type="email" id="txtUserEmail" class="form-control" placeholder="Email" value="' + cus_name + '"/></div>';
+    myHtml += '<div class=""><input type="email" id="txtCusEmail" class="form-control" placeholder="Email" value="' + cus_name + '"/></div>';
     myHtml += '</div>';
 
     myHtml += '<div class="form-group">';
     myHtml += '<label class="control-label " for="First Name">First Name<span class="text-red">*</span></label>';
-    myHtml += '<div class=""><input type="text" id="txtFirstName" class="form-control" placeholder="First Name" /></div>';
+    myHtml += '<div class=""><input type="text" id="txtCusFirstName" class="form-control" placeholder="First Name" /></div>';
     myHtml += '</div>';
 
     myHtml += '<div class="form-group">';
     myHtml += '<label class="control-label " for="Last Name">Last Name<span class="text-red">*</span></label>';
-    myHtml += '<div class=""><input type="text" id="txtLastName" class="form-control" placeholder="Last Name" /></div>';
+    myHtml += '<div class=""><input type="text" id="txtCusLastName" class="form-control" placeholder="Last Name" /></div>';
     myHtml += '</div>';
     myHtml += '</div >';
 
     myHtml += '<div class="col-md-4">';
     myHtml += '<div class="form-group">';
     myHtml += '<label class="control-label " for="Contact No.">Contact No.<span class="text-red">*</span></label>';
-    myHtml += '<div class=""><input type="tel" id="txtBillingMobile" class="form-control" placeholder="Contact No."  maxlength="11"/></div>';
+    myHtml += '<div class=""><input type="tel" id="txtCusBillingMobile" class="form-control" placeholder="Contact No."  maxlength="11"/></div>';
     myHtml += '</div>';
 
     myHtml += '<div class="form-group">';
-    myHtml += '<label class="control-label " for="Address 1">Address 1<span class="text-red">*</span></label>';
-    myHtml += '<div class=""><input type="text" id="txtBillingAddress1" class="form-control searchAddress" placeholder="Address 1" /></div>';
+    myHtml += '<label class="control-label " for="Address"><i class="fa fa-map-marker" aria-hidden="true"></i> Address<span class="text-red">*</span></label>';
+    myHtml += '<div class=""><input type="text" id="txtCusBillingAddress1" class="form-control searchAddress" data-addresstype="cus-bill" placeholder="Address 1" /></div>';
     myHtml += '</div>';
 
     myHtml += '<div class="form-group">';
-    myHtml += '<label class="control-label " for="Address 2">Address 2</label>';
-    myHtml += '<div class=""><input type="text" id="txtBillingAddress2" class="form-control" placeholder="Address 2" /></div>';
+    myHtml += '<label class="control-label " for="Address 1">Address 1</label>';
+    myHtml += '<div class=""><input type="text" id="txtCusBillingAddress2" class="form-control" placeholder="Address 2" /></div>';
     myHtml += '</div>';
 
     myHtml += '<div class="form-group">';
     myHtml += '<label class="control-label " for="City">City<span class="text-red">*</span></label>';
-    myHtml += '<div class=""><input type="tel" id="txtBillingCity" class="form-control" placeholder="City"/></div>';
+    myHtml += '<div class=""><input type="tel" id="txtCusBillingCity" class="form-control" placeholder="City"/></div>';
     myHtml += '</div>';
     myHtml += '</div>';
 
     myHtml += '<div class="col-md-4">';
     myHtml += '<div class="form-group">';
     myHtml += '<label class="control-label " for="State">State<span class="text-red">*</span></label>';
-    myHtml += '<div class=""><select class="form-control" id="txtBillingState"></select></div>';
+    myHtml += '<div class=""><select class="form-control" id="ddlCusBillingState"></select></div>';
     myHtml += '</div>';
 
     myHtml += '<div class="form-group">';
     myHtml += '<label class="control-label " for="Zip Code">Zip Code<span class="text-red">*</span></label>';
-    myHtml += '<div class=""><input type="text" id="txtBillingPostCode" class="form-control" placeholder="Zip Code" /></div>';
+    myHtml += '<div class=""><input type="text" id="txtCusBillingPostCode" class="form-control" placeholder="Zip Code" /></div>';
     myHtml += '</div>';
 
     myHtml += '<div class="form-group">';
     myHtml += '<label class="control-label " for="Country">Country<span class="text-red">*</span></label>';
-    myHtml += '<div class=""><select class="form-control" id="txtBillingCountry"><option value="US">US - United States</option><option value="CA">CA - Canada</option></select></div>';
+    myHtml += '<div class=""><select class="form-control" id="ddlCusBillingCountry"><option value="US">US - United States</option><option value="CA">CA - Canada</option></select></div>';
     myHtml += '</div>';
 
     myHtml += '</div>';
     myHtml += '</div >';
 
-    $('#billModal .modal-body').append(myHtml); $("#txtBillingState,#txtBillingCountry").select2(); BindStateCounty("txtBillingState", { id: 'US' });
-    $("#billModal").modal({ backdrop: 'static', keyboard: false }); $("#txtUserEmail").focus();
+    $('#billModal .modal-body').append(myHtml); $("#ddlCusBillingState,#ddlCusBillingCountry").select2(); BindStateCounty("ddlCusBillingState", { id: 'US' });
+    $("#billModal").modal({ backdrop: 'static', keyboard: false }); $("#txtCusNickName").focus();
+    let newEl = document.getElementById('txtCusBillingAddress1');
+    setupAutocomplete(newEl);
 }
 function saveCustomer() {
     var oid = parseInt($('#hfOrderNo').val()) || 0;
-    let Email = $("#txtUserEmail").val();
-    let NickName = $("#txtUserNickName").val();
-    let FirstName = $("#txtFirstName").val();
-    let LastName = $("#txtLastName").val();
-    let BillingAddress1 = $("#txtBillingAddress1").val();
-    let BillingAddress2 = $("#txtBillingAddress2").val();
-    let BillingPostcode = $("#txtBillingPostCode").val();
-    let BillingCountry = $("#txtBillingCountry").val();
-    let BillingState = $("#txtBillingState").val();
-    let BillingCity = $("#txtBillingCity").val();
-    let BillingPhone = $("#txtBillingMobile").val();
+    let Email = $("#txtCusEmail").val();
+    let NickName = $("#txtCusNickName").val();
+    let FirstName = $("#txtCusFirstName").val();
+    let LastName = $("#txtCusLastName").val();
+    let BillingAddress1 = $("#txtCusBillingAddress1").val();
+    let BillingAddress2 = $("#txtCusBillingAddress2").val();
+    let BillingPostcode = $("#txtCusBillingPostCode").val();
+    let BillingCountry = $("#ddlCusBillingCountry").val();
+    let BillingState = $("#ddlCusBillingState").val();
+    let BillingCity = $("#txtCusBillingCity").val();
+    let BillingPhone = $("#txtCusBillingMobile").val();
 
-    if (Email == "") {
-        swal('alert', 'Please Enter Email', 'error').then(function () { swal.close(); $('#txtUserEmail').focus(); })
-    }
-    else if (NickName == "") {
-        swal('alert', 'Please Enter User Name', 'error').then(function () { swal.close(); $('#txtUserNickName').focus(); })
-    }
-    else if (FirstName == "") {
-        swal('alert', 'Please Enter First Name', 'error').then(function () { swal.close(); $('#txtFirstName').focus(); })
-    }
-    else if (LastName == "") {
-        swal('alert', 'Please Enter Last Name', 'error').then(function () { swal.close(); $('#txtLastName').focus(); })
-    }
-    else if (BillingAddress1 == "") {
-        swal('alert', 'Please Enter Address 1', 'error').then(function () { swal.close(); $('#txtBillingAddress1').focus(); })
-    }
-    else if (BillingPostcode == "") {
-        swal('alert', 'Please Enter Post/Zip Code', 'error').then(function () { swal.close(); $('#txtBillingPostCode').focus(); })
-    }
-    else if (BillingCountry == "") {
-        swal('alert', 'Please Enter Country/Region', 'error').then(function () { swal.close(); $('#txtBillingCountry').focus(); })
-    }
-    else if (BillingState == "") {
-        swal('alert', 'Please Enter State/Country', 'error').then(function () { swal.close(); $('#txtBillingState').focus(); })
-    }
-    else if (BillingCity == "") {
-        swal('alert', 'Please Enter City', 'error').then(function () { swal.close(); $('#txtBillingCity').focus(); })
-    }
-    else if (BillingPhone == "") {
-        swal('alert', 'Please Enter Contact No.', 'error').then(function () { swal.close(); $('#txtBillingMobile').focus(); })
-    }
+    if (Email == "") { swal('alert', 'Please Enter Email', 'error').then(function () { swal.close(); $('#txtUserEmail').focus(); }) }
+    else if (NickName == "") { swal('alert', 'Please Enter User Name', 'error').then(function () { swal.close(); $('#txtUserNickName').focus(); }) }
+    else if (FirstName == "") { swal('alert', 'Please Enter First Name', 'error').then(function () { swal.close(); $('#txtFirstName').focus(); }) }
+    else if (LastName == "") { swal('alert', 'Please Enter Last Name', 'error').then(function () { swal.close(); $('#txtLastName').focus(); }) }
+    else if (BillingAddress1 == "") { swal('alert', 'Please Enter Address 1', 'error').then(function () { swal.close(); $('#txtBillingAddress1').focus(); }) }
+    else if (BillingPostcode == "") { swal('alert', 'Please Enter Zip Code', 'error').then(function () { swal.close(); $('#txtBillingPostCode').focus(); }) }
+    else if (BillingCountry == "") { swal('alert', 'Please Enter Country', 'error').then(function () { swal.close(); $('#txtBillingCountry').focus(); }) }
+    else if (BillingState == "") { swal('alert', 'Please Enter State', 'error').then(function () { swal.close(); $('#txtBillingState').focus(); }) }
+    else if (BillingCity == "") { swal('alert', 'Please Enter City', 'error').then(function () { swal.close(); $('#txtBillingCity').focus(); }) }
+    else if (BillingPhone == "") { swal('alert', 'Please Enter Contact No.', 'error').then(function () { swal.close(); $('#txtBillingMobile').focus(); }) }
     else {
         var obj = {
             ID: 0,
@@ -603,7 +583,7 @@ function saveCustomer() {
             billing_address_2: BillingAddress2, billing_postcode: BillingPostcode, billing_country: BillingCountry,
             billing_state: BillingState, billing_city: BillingCity, billing_phone: BillingPhone
         }
-        //console.log(obj);
+        console.log(obj);
         $.ajax({
             url: '/Customer/NewUser/', dataType: 'json', type: 'Post', contentType: "application/json; charset=utf-8", data: JSON.stringify(obj),
             beforeSend: function () { $("#loader").show(); },
@@ -649,51 +629,52 @@ function copyBillingAddress() {
     $('#ddlshipstate').val($("#ddlbillstate").val()).trigger('change');
     $("#loader").hide();
 }
-function initMap() {
-    let address1Field = document.querySelector(".searchAddress");
-    // Create the autocomplete object, restricting the search predictions to
-    // addresses in the US and Canada.
-    autocomplete = new google.maps.places.Autocomplete(address1Field, {
-        componentRestrictions: { country: ["us", "ca"] },
-        fields: ["address_components", "geometry"],
-        types: ["address"],
-    });
-    // When the user selects an address from the drop-down, populate the
-    // address fields in the form.
+///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Search Google Place API ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+var autocompleteOptions = { componentRestrictions: { country: ["us", "ca"] }, fields: ["address_components", "geometry"], types: ["address"] };
+function setupAutocomplete(inputs) {
+    //console.log('setupAutocomplete...', $(inputs));
+    autocomplete = new google.maps.places.Autocomplete(inputs, autocompleteOptions);
     autocomplete.addListener("place_changed", fillInAddress);
-
     function fillInAddress() {
-        const place = autocomplete.getPlace();
-        //console.log(place);
+        let place = autocomplete.getPlace();
         let address = '';
+        let cAdd1 = 'txtCusBillingAddress1', cZipCode = 'txtCusBillingPostCode', cCity = 'txtCusBillingCity', cCountry = 'ddlCusBillingCountry', cState = 'ddlCusBillingState';
+        if ($(inputs).data('addresstype') == 'bill')
+            cAdd1 = 'txtbilladdress1', cZipCode = 'txtbillzipcode', cCity = 'txtbillcity', cCountry = 'ddlbillcountry', cState = 'ddlbillstate';
+        else if ($(inputs).data('addresstype') == 'ship')
+            cAdd1 = 'txtshipaddress1', cZipCode = 'txtshipzipcode', cCity = 'txtshipcity', cCountry = 'ddlshipcountry', cState = 'ddlshipstate';
         let obj = place.address_components.filter(element => element.types[0] == 'street_number');
         if (obj.length > 0)
             address = obj[0].long_name;
         obj = place.address_components.filter(element => element.types[0] == 'route');
         if (obj.length > 0)
             address = address + ' ' + obj[0].long_name;
-        $("#txtBillingAddress1").val(address);
-        obj = place.address_components.filter(element => element.types[0] == 'locality');
-        if (obj.length > 0)
-            $("#txtBillingCity").val(obj[0].long_name);
-        else
-            $("#txtBillingCity").val('');
+        $("#" + cAdd1).val(address);
         obj = place.address_components.filter(element => element.types[0] == 'postal_code');
         if (obj.length > 0)
-            $("#txtBillingPostCode").val(obj[0].long_name);
+            $("#" + cZipCode).val(obj[0].long_name);
         else
-            $("#txtBillingPostCode").val('');
-        obj = place.address_components.filter(element => element.types[0] == 'administrative_area_level_1');
+            $("#" + cZipCode).val('');
+        obj = place.address_components.filter(element => element.types[0] == 'locality');
         if (obj.length > 0)
-            $("#txtBillingState").empty().append('<option value="' + obj[0].short_name + '" selected>' + obj[0].long_name + '</option>');
+            $("#" + cCity).val(obj[0].long_name);
         else
-            $("#txtBillingState").empty();
+            $("#" + cCity).val('');
         obj = place.address_components.filter(element => element.types[0] == 'country');
         if (obj.length > 0)
-            $("#txtBillingCountry").val(obj[0].short_name + ' - ' + obj[0].long_name);
+            $("#" + cCountry).val(obj[0].short_name).trigger('change');
         else
-            $("#txtBillingCountry").empty();
+            $("#" + cCountry).val('US').trigger('change');
+        obj = place.address_components.filter(element => element.types[0] == 'administrative_area_level_1');
+        if (obj.length > 0)
+            $("#" + cState).empty().append('<option value="' + obj[0].short_name + '" selected>' + obj[0].long_name + '</option>');
+        else
+            $("#" + cState).empty();
     }
+}
+function initMap() {
+    var inputs = document.getElementById("txtshipaddress1"); setupAutocomplete(inputs);
+    //inputs = document.getElementById("txtshipaddress1"); setupAutocomplete(inputs);
 }
 
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Edit Order ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

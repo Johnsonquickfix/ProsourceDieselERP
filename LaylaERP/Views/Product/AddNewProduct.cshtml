@@ -5,15 +5,225 @@
 
 }
 
-<!DOCTYPE html>
-
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Add New Product</title>
-</head>
-<body>
-    <div> 
+<div class="page-title">
+    <h2 class="page-heading">Add New Product</h2>
+</div>
+<section class="content section-content new-product-section">
+    <div class="form-group">
+        <input type="text" class="form-control" placeholder="Product name">
     </div>
-</body>
-</html>
+    <div class="form-check">
+        <ul class="categorychecklist">
+            <li><input type="checkbox" id="checks1"><label for="checks1">Uncategorized</label></li>
+            <li><input type="checkbox" id="checks2"><label for="checks2"> Accessories</label></li>
+            <li><input type="checkbox" id="checks3"><label for="checks3">Base</label></li>
+            <li><input type="checkbox" id="checks4"><label for="checks4">Bedding</label></li>
+            <li><input type="checkbox" id="checks5"><label for="checks5">Blanket</label></li>
+            <li><input type="checkbox" id="checks6"><label for="checks6">Comp Pillow</label></li>
+            <li><input type="checkbox" id="checks7"><label for="checks7">Comp Topper</label></li>
+            <li><input type="checkbox" id="checks8"><label for="checks8">Mattress</label></li>
+            <li><input type="checkbox" id="checks9"><label for="checks9">Mattress Cover Gen 1</label></li>
+            <li><input type="checkbox" id="checks10"><label for="checks10">Pillow</label></li>
+            <li><input type="checkbox" id="checks11"><label for="checks11">Replacement Covers</label></li>
+            <li><input type="checkbox" id="checks12"><label for="checks12">Sheets</label></li>
+            <li><input type="checkbox" id="checks13"><label for="checks13">Shipping</label></li>
+            <li><input type="checkbox" id="checks14"><label for="checks14">Topper</label></li>
+        </ul>
+    </div>
+    <div class="custom-editor form-group">
+        <textarea id="format-custom"></textarea>
+    </div>
+    <div class="box box-primary">
+        <div class="box-header with-border">
+            <div class="user-top-section top-with-select">
+                <div class="tablenav top tablenav-top2">
+                    <div class="alignleft actions bulkactions ">
+                        <h3 class="box-title">Product Data</h3>
+                        <select class="form-control select2 billinfo" placeholder="Select Products">
+                            <optgroup label="Product Type">
+                                <option value="simple" selected="selected">Simple product</option>
+                                <option value="grouped">Grouped product</option>
+                                <option value="external">External/Affiliate product</option>
+                                <option value="variable">Variable product</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="box-body add-new-box">
+            <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#tab_1" data-toggle="tab">General</a></li>
+                    <li><a href="#tab_2" data-toggle="tab">Inventory</a></li>
+                    <li><a href="#tab_3" data-toggle="tab">Shipping</a></li>
+                    <li><a href="#tab_4" data-toggle="tab">Linked Products</a></li>
+                    <li><a href="#tab_5" data-toggle="tab">Attributes</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tab_1">
+                        <div class="form-group d-flex">
+                            <label class="col-sm-2 control-label">Regular price ($)</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group d-flex">
+                            <label class="col-sm-2 control-label">Sale price ($)</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group d-flex">
+                            <label class="col-sm-2 control-label">Tax status</label>
+                            <div class="col-sm-10">
+                                <select class="form-control">
+                                    <option value="taxable" selected="selected">Taxable</option>
+                                    <option value="shipping">Shipping only</option>
+                                    <option value="none">None</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group d-flex">
+                            <label class="col-sm-2 control-label">Tax class</label>
+                            <div class="col-sm-10">
+                                <select class="form-control">
+                                    <option value="" selected="selected">Standard</option>
+                                    <option value="reduced-rate">Reduced rate</option>
+                                    <option value="zero-rate">Zero rate</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tab_2">
+                        <div class="form-group d-flex">
+                            <label class="col-sm-2 control-label">SKU</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-check d-flex">
+                            <label class="col-sm-2 control-label">Manage stock?</label>
+                            <div class="col-sm-10">
+                                <input type="checkbox" class="form-check-input" id="enableStock"><label for="enableStock">Enable stock management at product level</label>
+                            </div>
+                        </div>
+                        <div class="form-group d-flex">
+                            <label class="col-sm-2 control-label">Stock status</label>
+                            <div class="col-sm-10">
+                                <select class="form-control">
+                                    <option value="instock" selected="selected">In stock</option>
+                                    <option value="outofstock">Out of stock</option>
+                                    <option value="onbackorder">On backorder</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-check d-flex">
+                            <label class="col-sm-2 control-label">Sold individually</label>
+                            <div class="col-sm-10">
+                                <input type="checkbox" class="form-check-input" id="solidIndividually"><label for="solidIndividually">Enable this to only allow one of this item to be bought in a single order</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tab_3">
+                        <div class="form-group d-flex">
+                            <label class="col-sm-2 control-label">Weight (lbs)</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group d-flex">
+                            <label class="col-sm-2 control-label">Dimensions (in)</label>
+                            <div class="col-sm-10">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <input type="text" class="form-control" placeholder="Length">
+                                    </div> 
+                                    <div class="col-sm-4">
+                                        <input type="text" class="form-control" placeholder="Width">
+                                    </div> 
+                                    <div class="col-sm-4">
+                                        <input type="text" class="form-control" placeholder="Height">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group d-flex">
+                            <label class="col-sm-2 control-label">Shipping class</label>
+                            <div class="col-sm-10">
+                                <select class="form-control">
+                                    <option value="-1">No shipping class</option>
+                                    <option class="level-0" value="200">Adjustabe Base (Split King)</option>
+                                    <option class="level-0" value="246">Adjustable Base (Full)</option>
+                                    <option class="level-0" value="201">Adjustable Base (King)</option>
+                                    <option class="level-0" value="199">Adjustable Base (Queen)</option>
+                                    <option class="level-0" value="198">Adjustable Base (Twin XL)</option>
+                                    <option class="level-0" value="71">Bed Frame</option>
+                                    <option class="level-0" value="114">Blanket</option>
+                                    <option class="level-0" value="30">Foundation</option>
+                                    <option class="level-0" value="50">Free Shipping</option>
+                                    <option class="level-0" value="263">Hybrid Cal King</option>
+                                    <option class="level-0" value="260">Hybrid Full</option>
+                                    <option class="level-0" value="262">Hybrid King</option>
+                                    <option class="level-0" value="261">Hybrid Queen</option>
+                                    <option class="level-0" value="258">Hybrid Twin</option>
+                                    <option class="level-0" value="259">Hybrid Twin XL</option>
+                                    <option class="level-0" value="257">Mattress Cal King</option>
+                                    <option class="level-0" value="254">Mattress Full</option>
+                                    <option class="level-0" value="256">Mattress King</option>
+                                    <option class="level-0" value="196">Mattress Protector</option>
+                                    <option class="level-0" value="255">Mattress Queen</option>
+                                    <option class="level-0" value="252">Mattress Twin</option>
+                                    <option class="level-0" value="253">Mattress Twin XL</option>
+                                    <option class="level-0" value="195">Memory Foam Pillow</option>
+                                    <option class="level-0" value="52">Pillow</option>
+                                    <option class="level-0" value="202">Platform Bed</option>
+                                    <option class="level-0" value="107">Sheets</option>
+                                    <option class="level-0" value="87">Topper</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tab_4">
+                        <div class="form-group d-flex">
+                            <label class="col-sm-2 control-label">Upsells</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group d-flex">
+                            <label class="col-sm-2 control-label">Cross-sells</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tab_5">
+                        <div class="d-flex custom-flex-space form-group">
+                            <div class="col-auto">
+                                <select class="form-control">
+                                    <option value="">Custom product attribute</option>
+                                    <option value="pa_cover">Cover</option>
+                                </select>
+                            </div>
+                            <div class="col-auto ps-1">
+                                <button type="submit" class="btn btn-danger">Add</button>
+                            </div>
+                        </div>
+                        <div class="attribute-btn">
+                            <button class="btn btn-danger">Save Attributes</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script src="https://cdn.tiny.cloud/1/qagffr3pkuv17a8on1afax661irst1hbr4e6tbv888sz91jc/tinymce/5.8.2-114/tinymce.min.js"></script>
+<script type="text/javascript">
+    tinymce.init({
+        selector: 'textarea#format-custom',
+        height: 500,
+        plugins: 'table wordcount'
+    });
+</script>

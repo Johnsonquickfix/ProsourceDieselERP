@@ -2143,3 +2143,21 @@ float:right;}
 #dtdata.inventory-table td:first-child, .check-table.inventory-table th:first-child {
     text-align: left !important;
 }
+.top-with-select .box-title {
+margin-right:10px;white-space:nowrap;}
+.top-with-select {
+margin-bottom:0px;}
+.top-with-select .tablenav.top {
+margin:0px;}
+.add-new-box .form-check label.control-label:before,
+.add-new-box .form-check label.control-label:after {
+    content: none !important;
+}
+.add-new-box .form-check label.control-label {
+padding-left:15px;}
+.custom-flex-space .col-auto {
+margin-right:15px;}
+.categorychecklist {display:flex; align-items:center; flex-wrap:wrap; width:100%; padding:0px; margin:0px;
+list-style:none;}
+.categorychecklist li {width:20%;padding-right:15px;margin-bottom:15px;
+}

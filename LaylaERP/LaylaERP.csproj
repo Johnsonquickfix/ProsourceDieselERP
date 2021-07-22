@@ -771,6 +771,7 @@
     <Content Include="Views\ThirdParty\NewVendor.cshtml" />
     <Content Include="Views\Warehouse\AddNewWarehouse.cshtml" />
     <Content Include="Views\Warehouse\Warehouse.cshtml" />
+    <Content Include="Views\Coupons\ManageCoupons.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

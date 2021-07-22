@@ -165,7 +165,7 @@ $(document).ready(function () {
     /*End Return Items*/
     /*Start Return Items*/
     $(document).on("click", "#btnAddFee", function (t) { t.preventDefault(); AddFeeModal(0, ''); });
-    $(document).on("click", "#btnApplyFee", function (t) { t.preventDefault(); ApplyFee($(this).data('orderitemid'), $('#txt_FeeAmt').val()); });
+    $(document).on("click", "#btnApplyFee", function (t) { t.preventDefault(); $("#loader").show(); ApplyFee($(this).data('orderitemid'), $('#txt_FeeAmt').val()); });
     /*End Return Items*/
 });
 ///Bind States of Country
@@ -176,6 +176,17 @@ function BindStateCounty(ctr, obj) {
         for (i = 0; i < res[0].states.length; i++) { $("#" + ctr + "").append('<option value="' + res[0].states[i].abbreviation + '">' + res[0].states[i].name + '</option>'); }
     }
 }
+///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Common ajax function ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+var ajaxFunc = function (url, data, beforeSendFun, successFun, completeFun, errorFun) {
+    $.ajax({
+        type: "POST", url: url, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(data),
+        beforeSend: beforeSendFun, success: successFun, complete: completeFun, error: errorFun,
+        async: false
+    });
+}
+function beforeSendFun() { $("#loader").show(); }
+function completeFun() { $("#loader").hide(); }
+function errorFun(XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); }
 
 ///Get New Order No
 function NewOrderNo() {
@@ -207,56 +218,41 @@ function NewOrderNo() {
         { post_id: oid, meta_key: '_order_shipping_tax', meta_value: 0.00 }, { post_id: oid, meta_key: '_order_tax', meta_value: 0.00 },
         { post_id: oid, meta_key: 'employee_id', meta_value: '0' }, { post_id: oid, meta_key: 'employee_name', meta_value: '' }
     );
-    let opt = { OrderPostMeta: postMetaxml };
-    $.ajax({
-        type: "POST", url: '/Orders/GetNewOrderNo', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
-        beforeSend: function () { $("#loader").show(); },
-        success: function (result) {
-            $('#hfOrderNo').val(result.message); $('#lblOrderNo').text('Order #' + result.message + ' detail ');
-        },
-        complete: function () { $("#loader").hide(); },
-        error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); },
-        async: false
-    });
+    let option = { OrderPostMeta: postMetaxml };
+    ajaxFunc('/Orders/GetNewOrderNo', option, beforeSendFun, function (result) { $('#hfOrderNo').val(result.message); $('#lblOrderNo').text('Order #' + result.message + ' detail '); }, completeFun, errorFun);
 }
 ///Find Address of Customer
 function CustomerAddress(id) {
     //$("#ddlUser").val()
-    var opt = { strValue1: parseInt(id) || 0 };
-    if (opt.strValue1 > 0) {
-        $.ajax({
-            type: "POST", url: '/Orders/GetCustomerAddress', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
-            success: function (result) {
-                var data = JSON.parse(result);
-                for (var i = 0; i < data.length; i++) {
-                    ///billing_Details
-                    if (data[i].meta_key == 'billing_first_name') { $('#txtbillfirstname').val(data[i].meta_value); }
-                    else if (data[i].meta_key == 'billing_last_name') { $('#txtbilllastname').val(data[i].meta_value); }
-                    else if (data[i].meta_key == 'billing_company') { $('#txtbillcompany').val(data[i].meta_value); }
-                    else if (data[i].meta_key == 'billing_address_1') { $('#txtbilladdress1').val(data[i].meta_value); }
-                    else if (data[i].meta_key == 'billing_address_2') { $('#txtbilladdress2').val(data[i].meta_value); }
-                    else if (data[i].meta_key == 'billing_postcode') { $('#txtbillzipcode').val(data[i].meta_value); }
-                    else if (data[i].meta_key == 'billing_city') { $('#txtbillcity').val(data[i].meta_value); }
-                    else if (data[i].meta_key == 'billing_country') { $('#ddlbillcountry').val(data[i].meta_value.trim()).trigger('change'); }
-                    else if (data[i].meta_key == 'billing_state') { $('#ddlbillstate').val(data[i].meta_value).trigger('change'); }
-                    else if (data[i].meta_key == 'billing_email') { $('#txtbillemail').val(data[i].meta_value); }
-                    else if (data[i].meta_key == 'billing_phone') { $('#txtbillphone').val(data[i].meta_value); }
-                    ///shipping_Details
-                    else if (data[i].meta_key == 'shipping_first_name') { $('#txtshipfirstname').val(data[i].meta_value); }
-                    else if (data[i].meta_key == 'shipping_last_name') { $('#txtshiplastname').val(data[i].meta_value); }
-                    else if (data[i].meta_key == 'shipping_company') { $('#txtshipcompany').val(data[i].meta_value); }
-                    else if (data[i].meta_key == 'shipping_address_1') { $('#txtshipaddress1').val(data[i].meta_value); }
-                    else if (data[i].meta_key == 'shipping_address_2') { $('#txtshipaddress2').val(data[i].meta_value); }
-                    else if (data[i].meta_key == 'shipping_postcode') { $('#txtshipzipcode').val(data[i].meta_value); }
-                    else if (data[i].meta_key == 'shipping_city') { $('#txtshipcity').val(data[i].meta_value); }
-                    else if (data[i].meta_key == 'shipping_country') { $('#ddlshipcountry').val(data[i].meta_value.trim()).trigger('change'); }
-                    else if (data[i].meta_key == 'shipping_state') { $('#ddlshipstate').val(data[i].meta_value.trim()).trigger('change'); }
-                }
-            },
-            error: function (XMLHttpRequest, textStatus, errorThrown) { $('.billinfo').prop("disabled", true); alert(errorThrown); },
-            complete: function () { $('.billinfo').prop("disabled", false); },
-            async: false
-        });
+    let option = { strValue1: parseInt(id) || 0 };
+    if (option.strValue1 > 0) {
+        ajaxFunc('/Orders/GetCustomerAddress', option, function () { }, function (result) {
+            var data = JSON.parse(result);
+            for (var i = 0; i < data.length; i++) {
+                ///billing_Details
+                if (data[i].meta_key == 'billing_first_name') { $('#txtbillfirstname').val(data[i].meta_value); }
+                else if (data[i].meta_key == 'billing_last_name') { $('#txtbilllastname').val(data[i].meta_value); }
+                else if (data[i].meta_key == 'billing_company') { $('#txtbillcompany').val(data[i].meta_value); }
+                else if (data[i].meta_key == 'billing_address_1') { $('#txtbilladdress1').val(data[i].meta_value); }
+                else if (data[i].meta_key == 'billing_address_2') { $('#txtbilladdress2').val(data[i].meta_value); }
+                else if (data[i].meta_key == 'billing_postcode') { $('#txtbillzipcode').val(data[i].meta_value); }
+                else if (data[i].meta_key == 'billing_city') { $('#txtbillcity').val(data[i].meta_value); }
+                else if (data[i].meta_key == 'billing_country') { $('#ddlbillcountry').val(data[i].meta_value.trim()).trigger('change'); }
+                else if (data[i].meta_key == 'billing_state') { $('#ddlbillstate').val(data[i].meta_value).trigger('change'); }
+                else if (data[i].meta_key == 'billing_email') { $('#txtbillemail').val(data[i].meta_value); }
+                else if (data[i].meta_key == 'billing_phone') { $('#txtbillphone').val(data[i].meta_value); }
+                ///shipping_Details
+                else if (data[i].meta_key == 'shipping_first_name') { $('#txtshipfirstname').val(data[i].meta_value); }
+                else if (data[i].meta_key == 'shipping_last_name') { $('#txtshiplastname').val(data[i].meta_value); }
+                else if (data[i].meta_key == 'shipping_company') { $('#txtshipcompany').val(data[i].meta_value); }
+                else if (data[i].meta_key == 'shipping_address_1') { $('#txtshipaddress1').val(data[i].meta_value); }
+                else if (data[i].meta_key == 'shipping_address_2') { $('#txtshipaddress2').val(data[i].meta_value); }
+                else if (data[i].meta_key == 'shipping_postcode') { $('#txtshipzipcode').val(data[i].meta_value); }
+                else if (data[i].meta_key == 'shipping_city') { $('#txtshipcity').val(data[i].meta_value); }
+                else if (data[i].meta_key == 'shipping_country') { $('#ddlshipcountry').val(data[i].meta_value.trim()).trigger('change'); }
+                else if (data[i].meta_key == 'shipping_state') { $('#ddlshipstate').val(data[i].meta_value.trim()).trigger('change'); }
+            }
+        }, function () { $('.billinfo').prop("disabled", false); }, function (XMLHttpRequest, textStatus, errorThrown) { $('.billinfo').prop("disabled", true); alert(errorThrown); });
         setTimeout(function () { GetTaxRate(); }, 100);
     }
     else {
@@ -278,12 +274,7 @@ function GetTaxRate() {
             $('#hfTaxRate').val(0);
         }
         else {
-            $.ajax({
-                type: "POST", url: '/Orders/GetTaxRate', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
-                success: function (result) { $('#hfTaxRate').val(result.message); },
-                error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
-                async: false
-            });
+            ajaxFunc('/Orders/GetTaxRate', opt, function () { }, function (result) { $('#hfTaxRate').val(result.message); }, function () { }, function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); });
         }
     }
     else {
@@ -735,6 +726,7 @@ function getOrderItemList(oid) {
     $.ajax({
         type: "POST", url: '/Orders/GetOrderProductList', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
         success: function (data) {
+            console.log(data);
             let itemHtml = '', recyclingfeeHtml = '', feeHtml = '', shippingHtml = '', refundHtml = '', couponHtml = '';
             let zQty = 0.00, zGAmt = 0.00, zTDiscount = 0.00, zTotalTax = 0.00, zShippingAmt = 0.00, zStateRecyclingAmt = 0.00, zFeeAmt = 0.00, zRefundAmt = 0.00;
             for (var i = 0; i < data.length; i++) {
@@ -775,8 +767,7 @@ function getOrderItemList(oid) {
 
                         if (coupon_list[j].type == 'add_coupon') {
                             couponHtml += '$<span id="cou_discamt">' + cou_amt.toFixed(2) + '</span>';
-                            couponHtml += '<button type="button" class="btn btn-box-tool pull-right billinfo" onclick="removeCouponInList(\'' + coupon_list[j].post_title + '\');">';
-                            couponHtml += '<i class="fa fa-times"></i>';
+                            couponHtml += '<button type="button" class="btn btn-box-tool pull-right billinfo" onclick="removeCouponInList(\'' + coupon_list[j].post_title + '\');"> <i class="fa fa-times"></i>';
                             couponHtml += '</button>';
                         }
                         else {
@@ -894,47 +885,51 @@ function ApplyFee(orderitemid, feevalue) {
     let oid = parseInt($('#hfOrderNo').val()) || 0, line_total = 0, zGAmt = parseFloat($("#SubTotal").text()) || 0.00;
     line_total = (feetype == '%' && startingNumber != 0) ? (zGAmt * startingNumber / 100) : startingNumber;
     let option = { order_item_id: orderitemid, order_id: oid, item_name: product_name, item_type: 'fee', amount: line_total };
-    $.ajax({
-        type: "POST", url: '/Orders/AddFee', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(option),
-        beforeSend: function () { $("#loader").show(); },
-        success: function (result) {
-            console.log(option, result);
+    ajaxFunc('/Orders/AddFee', option, beforeSendFun, function (result) {
+        let feeHtml = '';
+        if (orderitemid > 0) {
+            $('#trfeeid_' + orderitemid).data('pname', product_name); $('#trfeeid_' + orderitemid).data('feeamt', startingNumber); $('#trfeeid_' + orderitemid).data('feetype', feetype);
+            feeHtml += '<td class="text-center item-action"><button class="btn menu-icon-gr text-success  billinfo" onclick="AddFeeModal(\'' + result.order_item_id + '\',\'' + product_name + '\');"> <i class="glyphicon glyphicon-edit"></i></button>';
+            feeHtml += '<button class="btn menu-icon-gr text-red billinfo" onclick="RemoveFee(\'' + orderitemid + '\');"> <i class="glyphicon glyphicon-trash"></i></button></td>';
+            feeHtml += '<td>' + product_name + '</td><td></td><td></td><td class="TotalAmount text-right">' + line_total + '</td><td></td><td></td>';
+            $('#trfeeid_' + orderitemid).empty().append(feeHtml);
+        }
+        else {
             let feeHtml = '';
-            if (orderitemid > 0) {
-                $('#trfeeid_' + orderitemid).data('pname', product_name); $('#trfeeid_' + orderitemid).data('feeamt', startingNumber); $('#trfeeid_' + orderitemid).data('feetype', feetype);
-                feeHtml += '<td class="text-center item-action"><button class="btn menu-icon-gr text-success  billinfo" onclick="AddFeeModal(\'' + result.order_item_id + '\',\'' + product_name + '\');"> <i class="glyphicon glyphicon-edit"></i></button>';
-                feeHtml += '<button class="btn menu-icon-gr text-red billinfo" onclick="RemoveFee(\'' + orderitemid + '\');"> <i class="glyphicon glyphicon-trash"></i></button></td>';
-                feeHtml += '<td>' + product_name + '</td><td></td><td></td><td class="TotalAmount text-right">' + line_total + '</td><td></td><td></td>';
-                $('#trfeeid_' + orderitemid).empty().append(feeHtml);
-            }
-            else {
-                let feeHtml = '';
-                feeHtml += '<tr id="trfeeid_' + result.order_item_id + '" data-orderitemid="' + result.order_item_id + '" data-pname="' + product_name + '" data-feeamt="' + startingNumber + '" data-feetype="' + feetype + '">';
-                feeHtml += '<td class="text-center item-action"><button class="btn menu-icon-gr text-success  billinfo" onclick="AddFeeModal(\'' + result.order_item_id + '\',\'' + product_name + '\');"> <i class="glyphicon glyphicon-edit"></i></button>';
-                feeHtml += '<button class="btn menu-icon-gr text-red billinfo" onclick="RemoveFee(\'' + orderitemid + '\');"> <i class="glyphicon glyphicon-trash"></i></button></td>';
-                feeHtml += '<td>' + product_name + '</td><td></td><td></td><td class="TotalAmount text-right">' + line_total + '</td><td></td><td></td>';
-                feeHtml += '</tr>';
-                $('#order_fee_line_items').append(feeHtml);
-            }
-            $("#billModal").modal('hide'); calcFinalTotals();
-        },
-        complete: function () { $("#loader").hide(); }, error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); },
-        async: false
-    });
+            feeHtml += '<tr id="trfeeid_' + result.order_item_id + '" data-orderitemid="' + result.order_item_id + '" data-pname="' + product_name + '" data-feeamt="' + startingNumber + '" data-feetype="' + feetype + '">';
+            feeHtml += '<td class="text-center item-action"><button class="btn menu-icon-gr text-success  billinfo" onclick="AddFeeModal(\'' + result.order_item_id + '\',\'' + product_name + '\');"> <i class="glyphicon glyphicon-edit"></i></button>';
+            feeHtml += '<button class="btn menu-icon-gr text-red billinfo" onclick="RemoveFee(\'' + orderitemid + '\');"> <i class="glyphicon glyphicon-trash"></i></button></td>';
+            feeHtml += '<td>' + product_name + '</td><td></td><td></td><td class="TotalAmount text-right">' + line_total + '</td><td></td><td></td>';
+            feeHtml += '</tr>';
+            $('#order_fee_line_items').append(feeHtml);
+        }
+        $("#billModal").modal('hide'); calcFinalTotals();
+    }, completeFun, errorFun);
 }
 function RemoveFee(orderitemid) {
     swal({ title: "Are you sure?", text: 'Would you like to Remove this fee?', type: "question", showCancelButton: true })
         .then((result) => {
             if (result.value) {
-                $('#trfeeid_' + orderitemid).remove();
-                calcFinalTotals();
+                let option = { order_item_id: orderitemid, order_id: 0, item_name: '', item_type: 'fee', amount: 0 };
+                ajaxFunc('/Orders/RemoveFee', option, beforeSendFun, function (result) {
+                    if (result.status) { $('#trfeeid_' + orderitemid).remove(); calcFinalTotals(); }
+                    else { swal('Alert!', result.message, "error"); }
+                }, completeFun, errorFun);
             }
         });
     return false;
 }
 function CalculateFee() {
-    let zFeeAmt = 0.00;
-    $("#order_fee_line_items > tr").each(function () { zFeeAmt += parseFloat($('#order_fee_line_items').find(".TotalAmount").text()); });
+    let zFeeAmt = 0.00, zGmtAmt = parseFloat($("#SubTotal").text());
+    $("#order_fee_line_items > tr").each(function () {
+        let zAmt = 0.00
+        if ($(this).data('feetype') == '%')
+            zAmt = (zGmtAmt * (parseFloat($(this).data('feeamt')) / 100));
+        else
+            zAmt = parseFloat($(this).data('feeamt'));
+        $('#order_fee_line_items').find(".TotalAmount").text(zAmt.toFixed(2));
+        zFeeAmt += zAmt;
+    });
     $("#feeTotal").text(zFeeAmt.toFixed(2));
 }
 
@@ -1535,7 +1530,7 @@ function calcRowAmount(objControl, objRow) // objRow is row object
     calculateDiscountAcount();
 }
 function calcFinalTotals() {
-    calculateStateRecyclingFee(); CalculateFee();
+    calculateStateRecyclingFee();
     //TTotal
     var zQty = 0.00, zDiscQty = 0.00, zGAmt = 0.00, zCartDisAmt = 0.00, zTDiscount = 0.00, zTotalTax = 0.00, zShippingAmt = 0.00, zStateRecyclingAmt = 0.00;
     $("#order_line_items > tr").each(function () {
@@ -1555,6 +1550,7 @@ function calcFinalTotals() {
     $("#discountTotal").text(zTDiscount.toFixed(2));
     $("#salesTaxTotal").text(zTotalTax.toFixed(2));
     $("#shippingTotal").text(zShippingAmt.toFixed(2)); $('#order_shipping_line_items').find(".TotalAmount").text(zShippingAmt.toFixed(2));
+    CalculateFee();
     $("#orderTotal").html((zGAmt - zTDiscount + zShippingAmt + zTotalTax + zStateRecyclingAmt).toFixed(2));
 }
 
@@ -1570,7 +1566,7 @@ function createPostMeta() {
         { post_id: oid, meta_key: '_billing_address_1', meta_value: $('#txtbilladdress1').val() }, { post_id: oid, meta_key: '_billing_address_2', meta_value: $('#txtbilladdress2').val() },
         { post_id: oid, meta_key: '_billing_city', meta_value: $('#txtbillcity').val() }, { post_id: oid, meta_key: '_billing_state', meta_value: $('#ddlbillstate').val() },
         { post_id: oid, meta_key: '_billing_postcode', meta_value: $('#txtbillzipcode').val() }, { post_id: oid, meta_key: '_billing_country', meta_value: $('#ddlbillcountry').val() },
-        { post_id: oid, meta_key: '_billing_email', meta_value: $('#txtbillemail').val() }, { post_id: oid, meta_key: '_billing_phone', meta_value: $('#txtbillphone').val() },
+        { post_id: oid, meta_key: '_billing_email', meta_value: $('#txtbillemail').val() }, { post_id: oid, meta_key: '_billing_phone', meta_value: $('#txtbillphone').val().replace(/\-|\(|\)| /g, '') },
         { post_id: oid, meta_key: '_shipping_first_name', meta_value: $('#txtshipfirstname').val() }, { post_id: oid, meta_key: '_shipping_last_name', meta_value: $('#txtshiplastname').val() },
         { post_id: oid, meta_key: '_shipping_address_1', meta_value: $('#txtshipaddress1').val() }, { post_id: oid, meta_key: '_shipping_address_2', meta_value: $('#txtshipaddress2').val() },
         { post_id: oid, meta_key: '_shipping_city', meta_value: $('#txtshipcity').val() }, { post_id: oid, meta_key: '_shipping_state', meta_value: $('#ddlshipstate').val() },
@@ -1607,8 +1603,7 @@ function createOtherItemsList() {
     });
     //Add Fee
     $('#order_fee_line_items > tr').each(function (index, tr) {
-        if ($(this).data('pname') != 'State Recycling Fee')
-            otherItemsxml.push({ order_item_id: parseInt($(this).data('orderitemid')), order_id: oid, item_name: $(this).data('pname'), item_type: 'fee', amount: parseFloat($(this).find(".TotalAmount").text()) || 0.00 });
+        otherItemsxml.push({ order_item_id: parseInt($(this).data('orderitemid')), order_id: oid, item_name: $(this).data('pname'), item_type: 'fee', amount: parseFloat($(this).find(".TotalAmount").text()) || 0.00 });
     });
     //Add State Recycling Fee
     otherItemsxml.push({ order_item_id: parseInt($('#stateRecyclingFeeTotal').data('orderitemid')), order_id: oid, item_name: 'State Recycling Fee', item_type: 'fee', amount: parseFloat($('#stateRecyclingFeeTotal').text()) || 0.00 });
@@ -1735,14 +1730,17 @@ function PaymentModal() {
     myHtml += '<table class="table table-striped" id="tblmodalitems">';
     myHtml += '<thead>';
     myHtml += '<tr>';
-    myHtml += '<th style="width: 60%">Product</th>';
-    myHtml += '<th style="width: 20%" class="text-right">Qty.</th>';
-    myHtml += '<th style="width: 20%" class="text-right">Amount</th>';
+    myHtml += '<th style="width: 40%">Product</th>';
+    myHtml += '<th style="width: 15%" class="text-right">Qty.</th>';
+    myHtml += '<th style="width: 15%" class="text-right">Sub-Total</th>';
+    myHtml += '<th style="width: 15%" class="text-right">Discount</th>';
+    myHtml += '<th style="width: 15%" class="text-right">Tax</th>';
     myHtml += '</tr>';
     myHtml += '</thead>';
     myHtml += '<tbody></tbody>';
     myHtml += '</table>';
     myHtml += '</div>';
+    myHtml += '<div class="col-xs-12 text-right" id="tblmodalTotal"></div>';
     myHtml += '</div>';
 
     myHtml += '</section>';
@@ -1777,11 +1775,13 @@ function PaymentModal() {
         myHtml += '<tr>';
         myHtml += '<td>' + $(this).data('pname') + '</td>';
         myHtml += '<td class="text-right">' + qty + '</td>';
-        myHtml += '<td class="text-right">' + (grossAmount - discountAmount + taxAmount) + '</td>';
+        myHtml += '<td class="text-right">' + grossAmount.toFixed(2) + '</td>';
+        myHtml += '<td class="text-right">' + discountAmount.toFixed(2) + '</td>';
+        myHtml += '<td class="text-right">' + taxAmount.toFixed(2) + '</td>';
         myHtml += '</tr>';
     });
     $('#tblmodalitems tbody').append(myHtml);
-
+    $('#tblmodalTotal').append($('#order_final_total').html());
     $("#billModal").modal({ backdrop: 'static', keyboard: false }); $("#txt_Coupon").focus();
 }
 function AcceptPayment() {

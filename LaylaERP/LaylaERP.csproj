@@ -770,6 +770,9 @@
     <Content Include="Views\Product\ProductCategories.cshtml" />
     <Content Include="Views\Inventory\Index.cshtml" />
     <Content Include="Views\Inventory\ConsignmentInventory.cshtml" />
+    <Content Include="Views\Warehouse\AddNewWarehouse.cshtml" />
+    <Content Include="Views\Warehouse\UpdateWarehouse.cshtml" />
+    <Content Include="Views\Warehouse\Warehouse.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -65,14 +65,19 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="exampleInputEmail1">State</label>
-                                    <input type="text" id="txtCity" class="form-control" placeholder="Enter State" value="@Model.town" />
+                                    <label for="exampleInputEmail1">City</label>
+                                    <input type="text" id="txtState" class="form-control" placeholder="Enter City" value="@Model.city" />
                                 </div>
 
                                
 
                             </div>
                             <div class="col-sm-4">
+
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">State</label>
+                                    <input type="text" id="txtCity" class="form-control" placeholder="Enter State" value="@Model.town" />
+                                </div>
 
                                 <div class="form-group">
                                     <label class="control-label" for="Zip Code">Zip Code</label>
@@ -173,6 +178,7 @@
         fax = $("#txtFax").val();
         statut = $("#status").val();
         address1 = $("#txtAddress1").val();
+        city = $("#txtState").val();
 
         if (ref == "") {
             swal('Alert', 'Please Enter Reference Name', 'error').then(function () { swal.close(); $('#txtref').focus(); });
@@ -195,7 +201,8 @@
                 phone: phone,
                 fax: fax,
                 statut: statut,
-                address1: address1
+                address1: address1,
+                city: city
             }
             $.ajax({
                 url: '/Warehouse/Updatewarehouses/', dataType: 'json', type: 'Post',

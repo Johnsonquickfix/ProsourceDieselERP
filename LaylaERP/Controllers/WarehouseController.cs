@@ -87,6 +87,7 @@ namespace LaylaERP.Controllers
             myModel.town = null;
             myModel.country = null;
             myModel.address1 = null;
+            myModel.city = null;
             DataTable dt = WarehouseRepository.GetWarehouseID(rowid);
             myModel.rowid = rowid;
             myModel.reff = dt.Rows[0]["ref"];
@@ -100,6 +101,7 @@ namespace LaylaERP.Controllers
             myModel.town = dt.Rows[0]["town"];
             myModel.country = dt.Rows[0]["country"];
             myModel.address1 = dt.Rows[0]["address1"];
+            myModel.city = dt.Rows[0]["city"];
             return PartialView("UpdateWarehouse", myModel);
         }
 

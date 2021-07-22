@@ -18,6 +18,7 @@ namespace LaylaERP.Models
         public string address { get; set; }
         public string zip { get; set; }
         public string town { get; set; }
+        public string city { get; set; }
         public string country { get; set; }
         public int fk_department { get; set; }
         public int fk_pays { get; set; }

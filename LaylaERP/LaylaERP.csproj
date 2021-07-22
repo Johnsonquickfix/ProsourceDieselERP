@@ -576,7 +576,9 @@
     <Content Include="js\FeeNTax\FeeNTax.js" />
     <Content Include="js\GooglePlace\index.js" />
     <Content Include="js\Inventory\Inventory.js" />
+    <Content Include="js\jquery.mask.js" />
     <Content Include="js\Marketing\Coupons.js" />
+    <Content Include="js\Marketing\CouponsManage.js" />
     <Content Include="js\Orders\NewOrder.js" />
     <Content Include="js\Orders\OrderHistory.js" />
     <Content Include="js\Product\Product.js" />
@@ -768,9 +770,6 @@
     <Content Include="Views\Product\ProductCategories.cshtml" />
     <Content Include="Views\Inventory\Index.cshtml" />
     <Content Include="Views\Inventory\ConsignmentInventory.cshtml" />
-    <Content Include="Views\Warehouse\AddNewWarehouse.cshtml" />
-    <Content Include="Views\Warehouse\Warehouse.cshtml" />
-    <Content Include="Views\Warehouse\UpdateWarehouse.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

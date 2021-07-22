@@ -19,9 +19,9 @@
                 <div class="row">
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label class="control-label " for="Third-party name">Third-party Name</label>
+                            <label class="control-label " for="Vendor name">Vendor Name</label>
                             <div class="">
-                                <input type="text" id="txVendorName" class="form-control" placeholder="Third-party Name" />
+                                <input type="text" id="txVendorName" class="form-control" placeholder="Vendor Name" />
                             </div>
                         </div>
                         <div class="form-group">
@@ -31,25 +31,25 @@
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label class="control-label " for="Prospect / Customer">Prospect / Customer</label>
-                            <div class="">
-                                <select class="form-control" id="ddlProspect" placeholder="Prospect / Customer"></select>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label " for="Customer Code">Customer Code</label>
-                            <div class="">
-                                <input type="text" id="txtCustomerCode" class="form-control" placeholder="Customer Code" />
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label " for="Vendor">Vendor</label>
-                            <div class="">
-                                <select class="form-control" id="ddlVendor"></select>
+                        @*<div class="form-group">
+            <label class="control-label " for="Prospect / Customer">Prospect / Customer</label>
+            <div class="">
+                <select class="form-control" id="ddlProspect" placeholder="Prospect / Customer"></select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label " for="Customer Code">Customer Code</label>
+            <div class="">
+                <input type="text" id="txtCustomerCode" class="form-control" placeholder="Customer Code" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label " for="Vendor">Vendor</label>
+            <div class="">
+                <select class="form-control" id="ddlVendor"></select>
 
-                            </div>
-                        </div>
+            </div>
+        </div>*@
                         <div class="form-group">
                             <label class="control-label " for="Vendor Code">Vendor Code</label>
                             <div class="">
@@ -57,7 +57,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label " for="Address 2">Status</label>
+                            <label class="control-label " for="Status">Status</label>
                             <div class="">
                                 <select class="form-control" id="ddlStatus"></select>
                             </div>
@@ -69,18 +69,26 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label " for="Zip Code">Zip Code</label>
+                            <label class="control-label " for="Address">City</label>
                             <div class="">
-                                <input type="text" id="txtZipCode" class="form-control" placeholder="Zip Code" />
+                                <input type="text" id="txtCity" class="form-control" placeholder="City" />
                             </div>
                         </div>
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">State / Province</label>
+                            <select class="form-control" id="txtState">
+                                <option selected value="">Select State</option>
+                            </select>
+                        </div>
+                    
+
                     </div>
                     <div class="col-md-4">
 
                         <div class="form-group">
-                            <label class="control-label " for="Address">City</label>
+                            <label class="control-label " for="Zip Code">Zip Code</label>
                             <div class="">
-                                <input type="text" id="txtCity" class="form-control" placeholder="City" />
+                                <input type="text" id="txtZipCode" class="form-control" placeholder="Zip Code" />
                             </div>
                         </div>
                         <div class="form-group">
@@ -88,12 +96,6 @@
                             <select class="form-control" id="txtCountry">
                                 <option value="US - United States">US - United States</option>
                                 <option value="CA - Canada">CA - Canada</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="exampleInputEmail1">State / Province</label>
-                            <select class="form-control" id="txtState">
-                                <option selected value="">Select State</option>
                             </select>
                         </div>
 
@@ -127,21 +129,22 @@
                                 <input type="text" id="txtProfId" class="form-control" placeholder="Prof Id (FEIN)" />
                             </div>
                         </div>
+                        
+
+                    </div>
+                    <div class="col-md-4">
                         <div class="form-group">
                             <label class="control-label " for="Address">Sales tax used</label>
                             <div class="">
                                 <select class="form-control" id="ddlSalestaxused"></select>
                             </div>
                         </div>
-                         
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="control-label " for="Address">VAT ID</label>
-                            <div class="">
-                                <input type="text" id="txtVATID" class="form-control" placeholder="VAT ID" />
-                            </div>
-                        </div>
+                        @*<div class="form-group">
+            <label class="control-label " for="Address">VAT ID</label>
+            <div class="">
+                <input type="text" id="txtVATID" class="form-control" placeholder="VAT ID" />
+            </div>
+        </div>*@
                         <div class="form-group">
                             <label class="control-label " for="Third-party type">Third-party type</label>
                             <div class="">
@@ -179,12 +182,12 @@
                                 <select class="form-control col-md-3" id="ddlSalesRepresentative"></select>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="control-label " for="Address">Logo</label>
-                            <div class="">
-                                <input type="file" id="txtLogo" class="form-control" placeholder="Logo" />
-                            </div>
-                        </div>
+                        @*<div class="form-group">
+            <label class="control-label " for="Address">Logo</label>
+            <div class="">
+                <input type="file" id="txtLogo" class="form-control" placeholder="Logo" />
+            </div>
+        </div>*@
                     </div>
                 </div>
             </div>
@@ -192,7 +195,7 @@
         <div class="box-footer">
             <div class="text-right">
                 <input type="submit" value="Submit" id="btnSave" class="btn btn-danger" />
-                @Html.ActionLink("Back to List", "Customer", null, new { @class = "btn btn-danger" })
+                @Html.ActionLink("Back to List", "Vendor", null, new { @class = "btn btn-danger" })
             </div>
         </div>
         <!-- /.row -->
@@ -201,5 +204,28 @@
 </section>
 <!-- /.content -->
 <script src="@Url.Content("~/js/ThirdParty/Vendor.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
-
+<script>
+    $(document).ready(function () {
+        $("#txtState").select2({
+            allowClear: true, minimumInputLength: 2, placeholder: "Search State",
+            ajax: {
+                url: '/ThirdParty/GetState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+                data: function (params) {
+                    var obj = { strValue1: params.term, strValue2: $("#txtCountry").val() };
+                    return JSON.stringify(obj);
+                },
+                processResults: function (data) {
+                    var jobj = JSON.parse(data);
+                    console.log(jobj);
+                    return {
+                        results: $.map(jobj, function (item) {
+                            return { text: item.StateFullName, name: item.StateFullName, id: item.StateFullName }
+                        })
+                    };
+                },
+                error: function (xhr, status, err) { }, cache: true
+            }
+        });
+    })
+</script>
 

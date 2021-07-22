@@ -31,6 +31,7 @@ namespace LaylaERP.Models
         public string Workforce { get; set; }
         public string BusinessEntityType { get; set; }
         public string Capital { get; set; }
+        public string IncotermsType { get; set; }
         public string Incoterms { get; set; }
         public string AssignedToSalesRepresentative { get; set; }
         public string Logo { get; set; }

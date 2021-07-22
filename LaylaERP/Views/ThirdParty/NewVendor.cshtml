@@ -32,24 +32,24 @@
                         </div>
 
                         @*<div class="form-group">
-            <label class="control-label " for="Prospect / Customer">Prospect / Customer</label>
-            <div class="">
-                <select class="form-control" id="ddlProspect" placeholder="Prospect / Customer"></select>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label " for="Customer Code">Customer Code</label>
-            <div class="">
-                <input type="text" id="txtCustomerCode" class="form-control" placeholder="Customer Code" />
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label " for="Vendor">Vendor</label>
-            <div class="">
-                <select class="form-control" id="ddlVendor"></select>
+                                <label class="control-label " for="Prospect / Customer">Prospect / Customer</label>
+                                <div class="">
+                                    <select class="form-control" id="ddlProspect" placeholder="Prospect / Customer"></select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label " for="Customer Code">Customer Code</label>
+                                <div class="">
+                                    <input type="text" id="txtCustomerCode" class="form-control" placeholder="Customer Code" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label " for="Vendor">Vendor</label>
+                                <div class="">
+                                    <select class="form-control" id="ddlVendor"></select>
 
-            </div>
-        </div>*@
+                                </div>
+                            </div>*@
                         <div class="form-group">
                             <label class="control-label " for="Vendor Code">Vendor Code</label>
                             <div class="">
@@ -69,22 +69,25 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label " for="Address">City</label>
+                            <label class="control-label " for="Address1">Address 1</label>
+                            <div class="">
+                                <input type="tel" id="txtAddress1" class="form-control" placeholder="Address 1" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label " for="City">City</label>
                             <div class="">
                                 <input type="text" id="txtCity" class="form-control" placeholder="City" />
                             </div>
                         </div>
+                    </div>
+                    <div class="col-md-4">
                         <div class="form-group">
-                            <label for="exampleInputEmail1">State / Province</label>
+                            <label for="exampleInputEmail1">State</label>
                             <select class="form-control" id="txtState">
                                 <option selected value="">Select State</option>
                             </select>
                         </div>
-                    
-
-                    </div>
-                    <div class="col-md-4">
-
                         <div class="form-group">
                             <label class="control-label " for="Zip Code">Zip Code</label>
                             <div class="">
@@ -123,28 +126,28 @@
                                 <input type="text" id="txtWeb" class="form-control" placeholder="Web" />
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="control-label " for="Prof Id (FEIN)">Prof Id (FEIN)</label>
-                            <div class="">
-                                <input type="text" id="txtProfId" class="form-control" placeholder="Prof Id (FEIN)" />
-                            </div>
-                        </div>
-                        
+                        @*<div class="form-group">
+                                <label class="control-label " for="Prof Id (FEIN)">Prof Id (FEIN)</label>
+                                <div class="">
+                                    <input type="text" id="txtProfId" class="form-control" placeholder="Prof Id (FEIN)" />
+                                </div>
+                            </div>*@
+
 
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label class="control-label " for="Address">Sales tax used</label>
+                            <label class="control-label " for="Salestaxused">Sales tax used</label>
                             <div class="">
                                 <select class="form-control" id="ddlSalestaxused"></select>
                             </div>
                         </div>
                         @*<div class="form-group">
-            <label class="control-label " for="Address">VAT ID</label>
-            <div class="">
-                <input type="text" id="txtVATID" class="form-control" placeholder="VAT ID" />
-            </div>
-        </div>*@
+                                <label class="control-label " for="Address">VAT ID</label>
+                                <div class="">
+                                    <input type="text" id="txtVATID" class="form-control" placeholder="VAT ID" />
+                                </div>
+                            </div>*@
                         <div class="form-group">
                             <label class="control-label " for="Third-party type">Third-party type</label>
                             <div class="">
@@ -164,18 +167,18 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label " for="Address">Capital</label>
+                            <label class="control-label " for="Capital">Capital</label>
                             <div class="">
                                 <input type="text" id="txtCapital" class="form-control" placeholder="Capital" />
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="control-label " for="Incoterms">Incoterms</label>
-                            <div class="">
-                                <select class="form-control col-md-3" id="ddlIncoterms"></select>
-                                <input type="text" id="txtIncoterms" class="form-control col-md-9" placeholder="Incoterms" />
-                            </div>
-                        </div>
+                        @*<div class="form-group">
+                                <label class="control-label " for="Incoterms">Incoterms</label>
+                                <div class="">
+                                    <select class="form-control col-md-3" id="ddlIncoterms"></select>
+                                    <input type="text" id="txtIncoterms" class="form-control col-md-9" placeholder="Incoterms" />
+                                </div>
+                            </div>*@
                         <div class="form-group">
                             <label class="control-label " for="Prof Id (FEIN)">Assigned to sales representative</label>
                             <div class="">
@@ -183,11 +186,11 @@
                             </div>
                         </div>
                         @*<div class="form-group">
-            <label class="control-label " for="Address">Logo</label>
-            <div class="">
-                <input type="file" id="txtLogo" class="form-control" placeholder="Logo" />
-            </div>
-        </div>*@
+                                <label class="control-label " for="Address">Logo</label>
+                                <div class="">
+                                    <input type="file" id="txtLogo" class="form-control" placeholder="Logo" />
+                                </div>
+                            </div>*@
                     </div>
                 </div>
             </div>
@@ -195,7 +198,7 @@
         <div class="box-footer">
             <div class="text-right">
                 <input type="submit" value="Submit" id="btnSave" class="btn btn-danger" />
-                @Html.ActionLink("Back to List", "Vendor", null, new { @class = "btn btn-danger" })
+                @Html.ActionLink("Back to List", "VendorList", null, new { @class = "btn btn-danger" })
             </div>
         </div>
         <!-- /.row -->
@@ -206,6 +209,13 @@
 <script src="@Url.Content("~/js/ThirdParty/Vendor.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 <script>
     $(document).ready(function () {
+
+        var url = window.location.pathname;
+        var id = url.substring(url.lastIndexOf('/') + 1);
+        if (id != "NewVendor") {
+            GetVendorByID(id);
+        }
+
         $("#txtState").select2({
             allowClear: true, minimumInputLength: 2, placeholder: "Search State",
             ajax: {
@@ -216,7 +226,6 @@
                 },
                 processResults: function (data) {
                     var jobj = JSON.parse(data);
-                    console.log(jobj);
                     return {
                         results: $.map(jobj, function (item) {
                             return { text: item.StateFullName, name: item.StateFullName, id: item.StateFullName }
@@ -226,6 +235,7 @@
                 error: function (xhr, status, err) { }, cache: true
             }
         });
+
     })
 </script>
 

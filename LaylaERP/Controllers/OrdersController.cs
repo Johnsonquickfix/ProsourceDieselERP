@@ -195,6 +195,23 @@
             return Json(new { status = true, order_item_id = id }, 0);
         }
         [HttpPost]
+        public JsonResult RemoveFee(OrderOtherItemsModel model)
+        {
+            string result = "Invalid Details.";
+            bool state = false;
+            try
+            {
+                int res = OrderRepository.RemoveOrderFee(model);
+                if (res > 0)
+                {
+                    result = "Fee successfuly removed.";
+                    state = true;
+                }
+            }
+            catch { state = false; result = "Invalid Details."; }
+            return Json(new { status = state, message = result }, 0);
+        }
+        [HttpPost]
         public JsonResult SaveCustomerOrder(OrderModel model)
         {
             string JSONresult = string.Empty; bool status = false;

@@ -22,14 +22,14 @@
             <table id="dtdata" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
                 <thead>
                     <tr>
+                        <th>ID</th>
                         <th>Ref</th>
                         <th>Description</th>
                         <th>Short Name Location</th>
                         <th>Address</th>
                         <th>Phone</th>
-                        <th>Fax</th>
                         <th>Status</th>
-
+                        <th>Action</th>
                     </tr>
                 </thead>
             </table>
@@ -62,13 +62,19 @@
                     scrollX:true,
                     data: JSON.parse(data),
                     "columns": [
+                        { data: 'rowid', title: 'ID', sWidth: "5%" },
                         { data: 'ref', title: 'Ref', sWidth: "20%" },
                         { data: 'description', title: 'Description', sWidth: "15%" },
-                        { data: 'lieu', title: 'Short Name Location', sWidth: "20%" },
-                        { data: 'address', title: 'Address', sWidth: "10%" },
+                        { data: 'lieu', title: 'Short Name Location', sWidth: "15%" },
+                        { data: 'address', title: 'Address', sWidth: "15%" },
                         { data: 'phone', title: 'Phone', sWidth: "10%" },
-                        { data: 'fax', title: 'Fax', sWidth: "10%" },
-                        { data: 'status', title: 'Status', sWidth: "10%" }
+                        { data: 'status', title: 'Status', sWidth: "10%" },
+                        {
+                            'data': 'rowid', sWidth: "10%",
+                            'render': function (rowid, type, full, meta) {
+                                return '<a href="javascript:void(0);" onClick="EditUser(' + rowid + ')"><i class="glyphicon glyphicon-pencil"></i></a>'
+                            }
+                        }
                     ],
                 });
             },
@@ -79,6 +85,10 @@
 
     }
 
+
+    function EditUser(rowid) {
+        window.location.href = 'UpdateWarehouse?rowid=' + rowid;
+    }
 </script>
 
 

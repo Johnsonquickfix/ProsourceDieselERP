@@ -27,6 +27,7 @@ namespace LaylaERP.Models
         public int fk_user_author { get; set; }
         public string model_pdf { get; set; }
         public string import_key { get; set; }
+        public string address1 { get; set; }
         public int fk_parent { get; set; }
     }
 }

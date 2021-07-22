@@ -582,6 +582,7 @@
     <Content Include="js\Product\Product.js" />
     <Content Include="js\Ship\ShipStation.js" />
     <Content Include="js\ThirdParty\Vendor.js" />
+    <Content Include="js\ThirdParty\VendorList.js" />
     <Content Include="js\Users\RolePermission.js" />
     <Content Include="js\Users\UserLogin.js" />
     <Content Include="js\Users\UserRole.js" />
@@ -771,6 +772,7 @@
     <Content Include="Views\ThirdParty\NewVendor.cshtml" />
     <Content Include="Views\Warehouse\AddNewWarehouse.cshtml" />
     <Content Include="Views\Warehouse\Warehouse.cshtml" />
+    <Content Include="Views\ThirdParty\VendorList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

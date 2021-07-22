@@ -30,8 +30,8 @@ namespace LaylaERP.Controllers
             {
                 if (model.rowid > 0)
                 {
-                    //Repo.EditCustomer(model, model.row);
-                    //return Json(new { status = true, message = "Vendor Record has been updated successfully!!", url = "", id = model.ID }, 0);
+                    new ThirdPartyRepository().EditVendor(model, model.rowid);
+                    return Json(new { status = true, message = "Vendor Record has been updated successfully!!", url = "", id = model.rowid }, 0);
                 }
                 else
                 {
@@ -57,6 +57,39 @@ namespace LaylaERP.Controllers
             {
                 DataTable DT = BAL.ThirdPartyRepository.GetState(model.strValue1, model.strValue2);
                 JSONresult = JsonConvert.SerializeObject(DT);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+        public ActionResult VendorList()
+        {
+            return View();
+        }
+        public JsonResult GetVendorList(ThirdPartyModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                string urid = "";
+                if (model.user_status != "")
+                    urid = model.user_status;
+                string searchid = model.Search;
+                DataTable dt = ThirdPartyRepository.GetVendor(urid, searchid, model.PageNo, model.PageSize, out TotalRecord, model.SortCol, model.SortDir);
+                result = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+        }
+
+        public JsonResult GetVendorByID(long id)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+
+                DataTable dt = ThirdPartyRepository.VendorByID(id);
+                JSONresult = JsonConvert.SerializeObject(dt);
             }
             catch { }
             return Json(JSONresult, 0);

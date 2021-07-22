@@ -5,7 +5,7 @@ using System.Web;
 
 namespace LaylaERP.Models
 {
-    public class ThirdPartyModel
+    public class ThirdPartyModel : PaggingModel
     {
         public long rowid { get; set; }
         public string Name { get; set; }
@@ -16,6 +16,7 @@ namespace LaylaERP.Models
         public string VendorCode { get; set; }
         public string Status { get; set; }
         public string Address { get; set; }
+        public string Address1 { get; set; }
         public string ZipCode { get; set; }
         public string City { get; set; }
         public string Country { get; set; }
@@ -33,7 +34,10 @@ namespace LaylaERP.Models
         public string Capital { get; set; }
         public string IncotermsType { get; set; }
         public string Incoterms { get; set; }
-        public string AssignedToSalesRepresentative { get; set; }
+        public string SalesRepresentative { get; set; }
         public string Logo { get; set; }
+        public string user_status { get; set; }
+        public string Search { get; set; }
+     
     }
 }

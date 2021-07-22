@@ -726,7 +726,6 @@ function getOrderItemList(oid) {
     $.ajax({
         type: "POST", url: '/Orders/GetOrderProductList', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
         success: function (data) {
-            console.log(data);
             let itemHtml = '', recyclingfeeHtml = '', feeHtml = '', shippingHtml = '', refundHtml = '', couponHtml = '';
             let zQty = 0.00, zGAmt = 0.00, zTDiscount = 0.00, zTotalTax = 0.00, zShippingAmt = 0.00, zStateRecyclingAmt = 0.00, zFeeAmt = 0.00, zRefundAmt = 0.00;
             for (var i = 0; i < data.length; i++) {
@@ -1532,7 +1531,7 @@ function calcRowAmount(objControl, objRow) // objRow is row object
 function calcFinalTotals() {
     calculateStateRecyclingFee();
     //TTotal
-    var zQty = 0.00, zDiscQty = 0.00, zGAmt = 0.00, zCartDisAmt = 0.00, zTDiscount = 0.00, zTotalTax = 0.00, zShippingAmt = 0.00, zStateRecyclingAmt = 0.00;
+    var zQty = 0.00, zDiscQty = 0.00, zGAmt = 0.00, zCartDisAmt = 0.00, zTDiscount = 0.00, zTotalTax = 0.00, zShippingAmt = 0.00, zStateRecyclingAmt = 0.00, zFeeAmt = 0.00;
     $("#order_line_items > tr").each(function () {
         zQty = zQty + (parseFloat($(this).find("[name=txt_ItemQty]").val()) || 0.00);
         zGAmt = zGAmt + parseFloat($(this).find(".TotalAmount").data("amount"));
@@ -1551,7 +1550,8 @@ function calcFinalTotals() {
     $("#salesTaxTotal").text(zTotalTax.toFixed(2));
     $("#shippingTotal").text(zShippingAmt.toFixed(2)); $('#order_shipping_line_items').find(".TotalAmount").text(zShippingAmt.toFixed(2));
     CalculateFee();
-    $("#orderTotal").html((zGAmt - zTDiscount + zShippingAmt + zTotalTax + zStateRecyclingAmt).toFixed(2));
+    zFeeAmt = parseFloat($("#feeTotal").text()) || 0.00;
+    $("#orderTotal").html((zGAmt - zTDiscount + zShippingAmt + zTotalTax + zStateRecyclingAmt + zFeeAmt).toFixed(2));
 }
 
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Post and Post Meta ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

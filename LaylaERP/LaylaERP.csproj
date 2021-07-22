@@ -171,6 +171,7 @@
     <Compile Include="BAL\UserProfileRepository.cs" />
     <Compile Include="BAL\Users.cs" />
     <Compile Include="BAL\UsersRepositry.cs" />
+    <Compile Include="BAL\WarehouseRepository.cs" />
     <Compile Include="Controllers\AccountAPIController.cs" />
     <Compile Include="Controllers\AgentCommissionRateController.cs" />
     <Compile Include="Controllers\AppearanceController.cs" />
@@ -187,6 +188,7 @@
     <Compile Include="Controllers\ShipController.cs" />
     <Compile Include="Controllers\ThirdPartyController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
+    <Compile Include="Controllers\WarehouseController.cs" />
     <Compile Include="DAL\SQLHelper.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -208,6 +210,7 @@
     <Compile Include="Models\ThirdPartyModel.cs" />
     <Compile Include="Models\UserClassification.cs" />
     <Compile Include="Models\UsersModel.cs" />
+    <Compile Include="Models\WarehouseModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="recaptcha\recaptcha.cs" />
     <Compile Include="UTILITIES\clsPayPal.cs" />
@@ -766,6 +769,8 @@
     <Content Include="Views\Inventory\Index.cshtml" />
     <Content Include="Views\Inventory\ConsignmentInventory.cshtml" />
     <Content Include="Views\ThirdParty\NewVendor.cshtml" />
+    <Content Include="Views\Warehouse\AddNewWarehouse.cshtml" />
+    <Content Include="Views\Warehouse\Warehouse.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

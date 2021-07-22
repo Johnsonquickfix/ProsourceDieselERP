@@ -18,13 +18,6 @@
 <div class="createuser-section section_wrapper">
     <div class="create-user-box">
         <div class="row">
-            <div class="col-md-3">
-
-                <!-- Profile Image -->
-               
-                <!-- /.box-body -->
-            </div>
-
             <!-- /.col -->
             <div class="col-md-9">
                 <div class="box box-primary create-user-primary">
@@ -42,23 +35,23 @@
                                     <label for="exampleInputEmail1">Short Name Location</label>
                                     <input type="email" class="form-control" id="txtShortNameLocation" placeholder="Enter Short Name Location">
                                 </div>
-                                @*<div class="form-group">
-                                    <label for="exampleInputEmail1">Add In</label>
-                                    <select class="form-control" id="addIn">
-                                        <option value="0">Active</option>
-                                        <option value="1">InActive</option>
-                                    </select>
-                                </div>*@
+                               
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Description</label>
                                     <input type="text" class="form-control" id="txtDescription" placeholder="Enter Description">
                                 </div>
-                                
-                            </div>
-                            <div class="col-sm-4">
+
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Address </label>
                                     <input type="text" class="form-control" id="txtAddress" placeholder="Enter Address ">
+                                </div>
+
+                            </div>
+                            <div class="col-sm-4">
+
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">Address 1</label>
+                                    <input type="text" class="form-control" id="txtAddress1" placeholder="Enter Address ">
                                 </div>
 
                                 <div class="form-group">
@@ -73,8 +66,6 @@
                                     <input type="text" id="txtCity" class="form-control" placeholder="Enter State" />
                                 </div>
 
-                            </div>
-                            <div class="col-sm-4">
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Country</label>
                                     <select class="form-control" id="txtCountry">
@@ -82,6 +73,10 @@
                                         <option value="CA - Canada">CA - Canada</option>
                                     </select>
                                 </div>
+                                
+                            </div>
+                            <div class="col-sm-4">
+                                
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Phone Number</label>
                                     <input type="text" class="form-control" id="txtPhone" placeholder="Enter Phone Number">
@@ -105,8 +100,8 @@
                     </div>
                     <div class="box-footer">
                         <div class="text-right">
-                            <a href="#" class="btn btn-danger" id="btnSave"><b>Save</b></a>
-
+                            <a href="#" class="btn btn-danger" id="btnSave"><b>Submit</b></a>
+                            @Html.ActionLink("Back to List", "Warehouse", null, new { @class = "btn btn-danger" })
                             @*<a class="btn btn-danger" href="Users">Back to List</a>*@
                         </div>
                     </div>
@@ -153,26 +148,6 @@
         return input;
     }
 
-
-
-    //function reset() {
-    //    $('#show_picture').attr('src', '~/Images/userprofile2.png');
-    //    $("#txtUserEmail").val("");
-    //    $("#txtUserNickName").val("");
-    //    $("#txtFirstName").val("");
-    //    $("#txtLastName").val("");
-    //    $("#txtAddress").val("");
-    //    $("#txtCountry").val("US-United States");
-    //    $("#txtUserRole").val("0");
-    //    $("#txtPassword").val("");
-    //    $("#txtConfirmPassword").val("");
-    //    $("#txtPhone").val("");
-    //    $("#txtPostCode").val("");
-    //    $("#txtCity").val("0");
-    //    $("#txtState").val("0");
-    //    $("#txtAddress2").val("");
-    //}
-
 </script>
 
 <script>
@@ -190,7 +165,8 @@
         phone = $("#txtPhone").val();
         fax = $("#txtFax").val();
         statut = $("#status").val();
-
+        address1 = $("#txtAddress1").val();
+        
         if (ref == "") {
             swal('Alert', 'Please Enter Reference Name', 'error').then(function () { swal.close(); $('#txtref').focus(); });
         }
@@ -211,7 +187,8 @@
                 country: country,
                 phone: phone,
                 fax: fax,
-                statut: statut
+                statut: statut,
+                address1: address1
 
             }
             $.ajax({

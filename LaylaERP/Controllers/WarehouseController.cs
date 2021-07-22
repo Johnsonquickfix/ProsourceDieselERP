@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Dynamic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -49,7 +50,9 @@ namespace LaylaERP.Controllers
             {
                 if (model.rowid > 0)
                 {
-
+                    //WarehouseRepository.Updatewarehouses(model);
+                    //ModelState.Clear();
+                    //return Json(new { status = true, message = "Data has been saved successfully!!", url = "" }, 0);
                 }
                 else
                 {
@@ -66,6 +69,56 @@ namespace LaylaERP.Controllers
                 }
             }
             return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+        }
+
+        public ActionResult UpdateWarehouse(int rowid)
+        {
+            
+            dynamic myModel = new ExpandoObject();
+            myModel.rowid = null;
+            myModel.reff = null;
+            myModel.description = null;
+            myModel.lieu = null;
+            myModel.phone = null;
+            myModel.fax = null;
+            myModel.statut = null;
+            myModel.address = null;
+            myModel.zip = null;
+            myModel.town = null;
+            myModel.country = null;
+            myModel.address1 = null;
+            DataTable dt = WarehouseRepository.GetWarehouseID(rowid);
+            myModel.rowid = rowid;
+            myModel.reff = dt.Rows[0]["ref"];
+            myModel.description = dt.Rows[0]["description"];
+            myModel.lieu = dt.Rows[0]["lieu"];
+            myModel.phone = dt.Rows[0]["phone"];
+            myModel.fax = dt.Rows[0]["fax"];
+            myModel.statut = dt.Rows[0]["status"];
+            myModel.address = dt.Rows[0]["address"];
+            myModel.zip = dt.Rows[0]["zip"];
+            myModel.town = dt.Rows[0]["town"];
+            myModel.country = dt.Rows[0]["country"];
+            myModel.address1 = dt.Rows[0]["address1"];
+            return PartialView("UpdateWarehouse", myModel);
+        }
+
+        [HttpPost]
+        public JsonResult Updatewarehouses(WarehouseModel model)
+        {
+            //int menu_id = 0;
+            //AppearanceRepository.UpdateUsers(model);
+            if (model.rowid > 0)
+            {
+                WarehouseRepository.Updatewarehouses(model);
+                ModelState.Clear();
+                return Json(new { status = true, message = "Data has been saved successfully!!", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+
         }
 
     }

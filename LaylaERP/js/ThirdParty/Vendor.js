@@ -126,3 +126,92 @@ function getAssignedtoSalesRepresentative() {
     })
     $("#ddlSalesRepresentative").html(items);
 }
+
+$("#btnSave").click(function () {
+    saveVendor();
+});
+
+function saveVendor() {
+    ID = $("#hfid").val();
+    VendorName = $("#txVendorName").val();
+    AliasName = $("#txtAliasName").val();
+    VendorCode = $("#txtVendorCode").val();
+    Status = $("#ddlStatus").val();
+    Address = $("#txtAddress").val();
+    City = $("#txtCity").val();
+    State = $("#txtState").val();
+    ZipCode = $("#txtZipCode").val();
+    Country = $("#txtCountry").val();
+    Phone = $("#txtPhone").val();
+    Fax = $("#txtFax").val();
+    EMail = $("#txtEMail").val();
+    Web = $("#txtWeb").val();
+    ProfId = $("#txtProfId").val();
+    Salestaxused = $("#ddlSalestaxused").val();
+    ThirdPartyType = $("#ddlThirdPartyType").val();
+    Workforce = $("#ddlWorkforce").val();
+    BusinessEntityType = $("#txtBusinessEntityType").val();
+    Capital = $("#txtCapital").val();
+    ddlIncoterms = $("#ddlIncoterms").val();
+    Incoterms = $("#txtIncoterms").val();
+    SalesRepresentative = $("#ddlSalesRepresentative").val();
+
+    if (VendorName == "") {swal('alert', 'Please Enter Vendor Name', 'error').then(function () { swal.close(); $('#txVendorName').focus(); })}
+    else if (AliasName == "") {swal('alert', 'Please Enter Alias Name', 'error').then(function () { swal.close(); $('#txtAliasName').focus(); })}
+    else if (Status == "") {swal('alert', 'Please Enter Status', 'error').then(function () { swal.close(); $('#ddlStatus').focus(); })}
+    else if (Address == "") {swal('alert', 'Please Enter Address', 'error').then(function () { swal.close(); $('#txtAddress').focus(); })}
+    else if (City == "") {swal('alert', 'Please Enter City', 'error').then(function () { swal.close(); $('#txtCity').focus(); })}
+    else if (State == "") { swal('alert', 'Please Enter State', 'error').then(function () { swal.close(); $('#txtState').focus(); })}
+    else if (ZipCode == "") { swal('alert', 'Please Enter ZipCode', 'error').then(function () { swal.close(); $('#txtZipCode').focus(); })}
+    else if (Country == "") { swal('alert', 'Please Enter Country', 'error').then(function () { swal.close(); $('#txtCountry').focus(); })}
+    else if (Phone == "") { swal('alert', 'Please Enter Phone', 'error').then(function () { swal.close(); $('#txtPhone').focus(); })}
+    else if (Fax == "") { swal('alert', 'Please Enter Fax', 'error').then(function () { swal.close(); $('#txtFax').focus(); })}
+    else if (EMail == "") { swal('alert', 'Please Enter EMail', 'error').then(function () { swal.close(); $('#txtEMail').focus(); }) }
+    else if (Web == "") { swal('alert', 'Please Enter Web', 'error').then(function () { swal.close(); $('#txtWeb').focus(); }) }
+    else if (ProfId == "") { swal('alert', 'Please Enter Prof Id', 'error').then(function () { swal.close(); $('#txtProfId').focus(); }) }
+    else if (Salestaxused == "") { swal('alert', 'Please Select Sales tax used', 'error').then(function () { swal.close(); $('#ddlSalestaxused').focus(); }) }
+    else if (ThirdPartyType == "-1") { swal('alert', 'Please Select Third Party Type', 'error').then(function () { swal.close(); $('#ddlThirdPartyType').focus(); }) }
+    else if (Workforce == "-1") { swal('alert', 'Please Select Workforce', 'error').then(function () { swal.close(); $('#ddlWorkforce').focus(); }) }
+    else if (BusinessEntityType == "") { swal('alert', 'Please Enter Business Entity Type', 'error').then(function () { swal.close(); $('#txtBusinessEntityType').focus(); }) }
+    else if (Capital == "") { swal('alert', 'Please Enter Capital', 'error').then(function () { swal.close(); $('#txtCapital').focus(); }) }
+    else if (ddlIncoterms != "-1") { swal('alert', 'Please Enter Incoterms', 'error').then(function () { swal.close(); $('#txtIncoterms').focus(); }) }
+    else if (SalesRepresentative == "-1") { swal('alert', 'Please Select Sales Representative', 'error').then(function () { swal.close(); $('#ddlSalesRepresentative').focus(); }) }
+
+    else {
+        var obj = {
+            rowid: ID,
+            Name: VendorName, AliasName: AliasName, VendorCode: VendorCode, Status: Status, Address: Address,
+            City: City, State: State, ZipCode: ZipCode, Country: Country, Phone: Phone, Fax: Fax, EMail: EMail, Web: Web,
+            ProfId: ProfId, SalesTaxUsed: Salestaxused, ThirdPartyType: ThirdPartyType, Workforce: Workforce, BusinessEntityType: BusinessEntityType,
+            Capital: Capital, IncotermsType: ddlIncoterms, Incoterms: Incoterms, AssignedToSalesRepresentative: SalesRepresentative,
+        }
+        $.ajax({
+            url: '/ThirdParty/AddVendor/', dataType: 'json', type: 'Post',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(obj),
+            dataType: "json",
+            beforeSend: function () {
+                $("#loader").show();
+            },
+            success: function (data) {
+                if (data.status == true) {
+                    swal('Alert!', data.message, 'success');
+                    $("#parent").find(":input").each(function () {
+                        switch (this.type) {case "text":case "email":case "tel":$(this).val('');break;}
+                    });
+                }
+                else {
+                    //swal('Alert!', data.message, 'error')
+                }
+            },
+            complete: function () {
+                $("#loader").hide();
+            },
+            error: function (error) {
+                swal('Error!', 'something went wrong', 'error');
+            },
+        })
+    }
+
+}
+

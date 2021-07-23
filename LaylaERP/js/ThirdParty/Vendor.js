@@ -231,7 +231,7 @@ function saveVendor() {
                     $("#parent").find(":input").each(function () {
                         switch (this.type) {case "text":case "email":case "tel":$(this).val('');break;}
                     });
-                    window.location = "../ThirdParty/VendorList";
+                    window.location = "../../ThirdParty/VendorList";
                 }
                 else {
                     //swal('Alert!', data.message, 'error')

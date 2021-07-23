@@ -270,7 +270,7 @@ function GetCustomerByID(id) {
                 $("#txtBillingAddress2").val(d[0].billing_address_2);
                 $("#txtBillingPostCode").val(d[0].billing_postcode);
                 $("#txtBillingCountry").val(d[0].billing_country);
-                $("#txtBillingState").select2('').empty().select2({ data: [{ name: d[0].billing_state, id: d[0].billing_state, text: d[0].billing_state }] })
+                $("#txtBillingState").select2('').empty().select2({ data: [{ name: d[0].StateFullName, id: d[0].billing_state, text: d[0].StateFullName }] })
                 //$("#txtBillingState").select2('destroy').empty().select2({ data: [{ value: d[0].billing_state, text: d[0].billing_state }] });
                 $("#txtBillingCity").val(d[0].billing_city);
                 $("#txtBillingPhone").val(d[0].billing_phone);

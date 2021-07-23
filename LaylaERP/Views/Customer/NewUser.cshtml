@@ -303,9 +303,11 @@
                 $("#txtBillingState").empty();
             obj = place.address_components.filter(element => element.types[0] == 'country');
             if (obj.length > 0)
-                $("#txtBillingCountry").val(obj[0].short_name + ' - ' + obj[0].long_name);
+                $('#txtBillingCountry').val(obj[0].short_name.trim()).trigger('change'); //$("#txtBillingCountry").val(obj[0].short_name + ' - ' + obj[0].long_name);
             else
                 $("#txtBillingCountry").empty();
+
+            
         }
 
         function renderAddress(place) {

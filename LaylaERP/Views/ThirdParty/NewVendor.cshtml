@@ -65,7 +65,7 @@
                         <div class="form-group">
                             <label class="control-label " for="Address">Address</label>
                             <div class="">
-                                <input type="tel" id="txtAddress" class="form-control" placeholder="Address" />
+                                <input type="text" id="txtAddress" class="form-control" placeholder="Address" autocomplete="off"/>
                             </div>
                         </div>
                         <div class="form-group">
@@ -84,9 +84,10 @@
                     <div class="col-md-4">
                         <div class="form-group">
                             <label for="exampleInputEmail1">State</label>
-                            <select class="form-control" id="txtState">
-                                <option selected value="">Select State</option>
-                            </select>
+                            <input type="text" id="txtState" class="form-control" placeholder="State" />
+                            @*<select class="form-control" id="txtState">
+            <option selected value="">Select State</option>
+        </select>*@
                         </div>
                         <div class="form-group">
                             <label class="control-label " for="Zip Code">Zip Code</label>
@@ -97,8 +98,8 @@
                         <div class="form-group">
                             <label for="exampleInputEmail1">Country</label>
                             <select class="form-control" id="txtCountry">
-                                <option value="US - United States">US - United States</option>
-                                <option value="CA - Canada">CA - Canada</option>
+                                <option value="US">US - United States</option>
+                                <option value="CA">CA - Canada</option>
                             </select>
                         </div>
 
@@ -209,33 +210,89 @@
 <script src="@Url.Content("~/js/ThirdParty/Vendor.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 <script>
     $(document).ready(function () {
-
         var url = window.location.pathname;
         var id = url.substring(url.lastIndexOf('/') + 1);
         if (id != "NewVendor") {
             GetVendorByID(id);
         }
 
-        $("#txtState").select2({
-            allowClear: true, minimumInputLength: 2, placeholder: "Search State",
-            ajax: {
-                url: '/ThirdParty/GetState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
-                data: function (params) {
-                    var obj = { strValue1: params.term, strValue2: $("#txtCountry").val() };
-                    return JSON.stringify(obj);
-                },
-                processResults: function (data) {
-                    var jobj = JSON.parse(data);
-                    return {
-                        results: $.map(jobj, function (item) {
-                            return { text: item.StateFullName, name: item.StateFullName, id: item.StateFullName }
-                        })
-                    };
-                },
-                error: function (xhr, status, err) { }, cache: true
-            }
-        });
-
+        //$("#txtState").select2({
+        //    allowClear: true, minimumInputLength: 2, placeholder: "Search State",
+        //    ajax: {
+        //        url: '/ThirdParty/GetState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+        //        data: function (params) {
+        //            var obj = { strValue1: params.term, strValue2: $("#txtCountry").val() };
+        //            return JSON.stringify(obj);
+        //        },
+        //        processResults: function (data) {
+        //            var jobj = JSON.parse(data);
+        //            return {
+        //                results: $.map(jobj, function (item) {
+        //                    return { text: item.StateFullName, name: item.StateFullName, id: item.StateFullName }
+        //                })
+        //            };
+        //        },
+        //        error: function (xhr, status, err) { }, cache: true
+        //    }
+        //});
+       
     })
 </script>
+<script>
+    function initMap() {
+        let address1Field = document.querySelector("#txtAddress");
+        // Create the autocomplete object, restricting the search predictions to
+        // addresses in the US and Canada.
+        autocomplete = new google.maps.places.Autocomplete(address1Field, {
+            componentRestrictions: { country: ["us", "ca"] },
+            fields: ["address_components", "geometry"],
+            types: ["address"],
+        });
+        // When the user selects an address from the drop-down, populate the
+        // address fields in the form.
+        autocomplete.addListener("place_changed", fillInAddress);
+
+        function fillInAddress() {
+            const place = autocomplete.getPlace();
+            //console.log(place);
+            let address = '';
+            let obj = place.address_components.filter(element => element.types[0] == 'street_number');
+            if (obj.length > 0)
+                address = obj[0].long_name;
+            obj = place.address_components.filter(element => element.types[0] == 'route');
+            if (obj.length > 0)
+                address = address + ' ' + obj[0].long_name;
+            $("#txtAddress").val(address);
+            obj = place.address_components.filter(element => element.types[0] == 'locality');
+            if (obj.length > 0)
+                $("#txtCity").val(obj[0].long_name);
+            else
+                $("#txtCity").val('');
+            obj = place.address_components.filter(element => element.types[0] == 'postal_code');
+            if (obj.length > 0)
+                //console.log(obj[0].long_name);
+                $("#txtZipCode").val(obj[0].long_name);
+            else
+                $("#txtZipCode").val('');
+            obj = place.address_components.filter(element => element.types[0] == 'administrative_area_level_1');
+            if (obj.length > 0)
+                $("#txtState").val(obj[0].short_name)//empty().append('<option value="' + obj[0].short_name + '" selected>' + obj[0].long_name + '</option>');
+            else
+                $("#txtState").empty();
+            obj = place.address_components.filter(element => element.types[0] == 'country');
+            if (obj.length > 0)
+                $("#txtCountry").val(obj[0].short_name + ' - ' + obj[0].long_name);
+            else
+                $("#txtCountry").empty();
+        }
+
+        function renderAddress(place) {
+            //map.setCenter(place.geometry.location);
+            //marker.setPosition(place.geometry.location);
+            //marker.setVisible(true);
+        }
+    }
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBIgngCCIJ3D8_s3G7aIfvQckhsDtbAe4E&libraries&callback=initMap&libraries=places&v=weekly" async></script>
+
 

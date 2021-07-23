@@ -114,6 +114,18 @@ namespace LaylaERP.BAL
             return DT;
         }
 
+        public static DataTable GetVendorCode()
+        {
+            DataTable DT = new DataTable();
+            try
+            {
+              DT = SQLHelper.ExecuteDataTable("SELECT CONCAT('SU', DATE_FORMAT(CURDATE(),'%y%m'),'-',max(LPAD(rowid+1 ,4,0)))  as Code from wp_vendor;");
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DT;
+        }
+
         public static DataTable GetVendor(string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
         {
             DataTable dt = new DataTable();

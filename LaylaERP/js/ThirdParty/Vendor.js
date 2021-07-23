@@ -7,10 +7,16 @@ getThirdPartyType();
 getWorkforce();
 getIncoterms();
 getAssignedtoSalesRepresentative();
+getVendorCode();
 
 
-
-
+//function getVendorCode() {
+//    var d = new Date();
+//    var newMonth = d.getMonth() + 1;
+//    var prettyDate = "SU" + '' + d.getFullYear().toString().substr(-2) + '' + (newMonth < 10 ? "0" + newMonth : newMonth) + '-' + "0005";
+//    $("#txtVendorCode").val(prettyDate);
+ 
+//}
 
 function getProspect() {
     var data = [
@@ -131,15 +137,12 @@ function getAssignedtoSalesRepresentative() {
     $("#ddlSalesRepresentative").html(items);
 }
 
-
-
-
-    document.getElementById('txtPhone').addEventListener('keyup', function (evt) {
+document.getElementById('txtPhone').addEventListener('keyup', function (evt) {
         var phoneNumber = document.getElementById('txtPhone');
         var charCode = (evt.which) ? evt.which : evt.keyCode;
         phoneNumber.value = phoneFormat(phoneNumber.value);
     });
-    function phoneFormat(input) {
+function phoneFormat(input) {
         input = input.replace(/\D/g, '');
         input = input.substring(0, 10);
         var size = input.length;
@@ -154,7 +157,6 @@ function getAssignedtoSalesRepresentative() {
         }
         return input;
     }
-
 
 $("#btnSave").click(function () {
     saveVendor();
@@ -185,6 +187,7 @@ function saveVendor() {
     //ddlIncoterms = $("#ddlIncoterms").val();
     //Incoterms = $("#txtIncoterms").val();
     SalesRepresentative = $("#ddlSalesRepresentative").val();
+    var pattern = /^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
 
     if (VendorName == "") {swal('alert', 'Please Enter Vendor Name', 'error').then(function () { swal.close(); $('#txVendorName').focus(); })}
     else if (AliasName == "") {swal('alert', 'Please Enter Alias Name', 'error').then(function () { swal.close(); $('#txtAliasName').focus(); })}
@@ -197,6 +200,7 @@ function saveVendor() {
     else if (Phone == "") { swal('alert', 'Please Enter Phone', 'error').then(function () { swal.close(); $('#txtPhone').focus(); })}
     else if (Fax == "") { swal('alert', 'Please Enter Fax', 'error').then(function () { swal.close(); $('#txtFax').focus(); })}
     else if (EMail == "") { swal('alert', 'Please Enter EMail', 'error').then(function () { swal.close(); $('#txtEMail').focus(); }) }
+    else if (!pattern.test(EMail)) { swal('alert', 'not a valid e-mail address', 'error').then(function () { swal.close(); $('#txtEMail').focus(); }) }
     else if (Web == "") { swal('alert', 'Please Enter Web', 'error').then(function () { swal.close(); $('#txtWeb').focus(); }) }
     else if (Salestaxused == "") { swal('alert', 'Please Select Sales tax used', 'error').then(function () { swal.close(); $('#ddlSalestaxused').focus(); }) }
     else if (ThirdPartyType == "-1") { swal('alert', 'Please Select Third Party Type', 'error').then(function () { swal.close(); $('#ddlThirdPartyType').focus(); }) }
@@ -243,7 +247,6 @@ function saveVendor() {
 
 }
 
-
 function GetVendorByID(id) {
     var rowid = id;
     if (rowid == "NewVendor") { $('#lbltitle').text("Add New Vendor"); } else { $('#lbltitle').text("Update Vendor"); }
@@ -277,20 +280,41 @@ function GetVendorByID(id) {
                     $("#txtBusinessEntityType").val(d[0].BusinessEntityType);
                     $("#txtCapital").val(d[0].capital);
                     $("#ddlSalesRepresentative").val(d[0].SalesRepresentative);
-                    $("#txtState").select2('').empty().select2({ data: [{ name: d[0].State, id: d[0].State, text: d[0].State }] });
-                    $("#txtState").select2({
-                        allowClear: true, minimumInputLength: 3, placeholder: "Search State",
-                        ajax: {
-                            url: '/ThirdParty/GetState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
-                            data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
-                            processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.StateFullName, name: item.StateFullName, id: item.StateFullName } }) }; },
-                            error: function (xhr, status, err) { }, cache: true
-                        }
-                    });
+                    $("#txtState").val(d[0].State);
+                    //$("#txtState").select2({
+                    //    allowClear: true, minimumInputLength: 3, placeholder: "Search State",
+                    //    ajax: {
+                    //        url: '/ThirdParty/GetState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+                    //        data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
+                    //        processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.StateFullName, name: item.StateFullName, id: item.StateFullName } }) }; },
+                    //        error: function (xhr, status, err) { }, cache: true
+                    //    }
+                    //});
                 }
             },
             error: function (msg) {
                
+            }
+        });
+
+}
+
+function getVendorCode() {
+    var obj =
+        $.ajax({
+            url: "/ThirdParty/GetVendorCode/",
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            dataType: 'JSON',
+            data: JSON.stringify(obj),
+            success: function (data) {
+                var d = JSON.parse(data);
+                if (d.length > 0) {
+                    $("#txtVendorCode").val(d[0].Code);
+                }
+            },
+            error: function (msg) {
+
             }
         });
 

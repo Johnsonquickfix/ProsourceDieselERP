@@ -171,9 +171,10 @@ function saveVendor() {
     Address = $("#txtAddress").val();
     Address1 = $("#txtAddress1").val();
     City = $("#txtCity").val();
-    State = $("#txtState").val();
+    State = $("#ddlState").val();
+    StateName = $("#ddlState").find('option:selected').text();
     ZipCode = $("#txtZipCode").val();
-    Country = $("#txtCountry").val();
+    Country = $("#ddlCountry").val();
     Phone = $("#txtPhone").val();
     Fax = $("#txtFax").val();
     EMail = $("#txtEMail").val();
@@ -194,11 +195,10 @@ function saveVendor() {
     else if (Status == "") {swal('alert', 'Please Enter Status', 'error').then(function () { swal.close(); $('#ddlStatus').focus(); })}
     else if (Address == "") {swal('alert', 'Please Enter Address', 'error').then(function () { swal.close(); $('#txtAddress').focus(); })}
     else if (City == "") {swal('alert', 'Please Enter City', 'error').then(function () { swal.close(); $('#txtCity').focus(); })}
-    else if (State == "") { swal('alert', 'Please Enter State', 'error').then(function () { swal.close(); $('#txtState').focus(); })}
+    else if (State == "") { swal('alert', 'Please Enter State', 'error').then(function () { swal.close(); $('#ddlState').focus(); })}
     else if (ZipCode == "") { swal('alert', 'Please Enter ZipCode', 'error').then(function () { swal.close(); $('#txtZipCode').focus(); })}
-    else if (Country == "") { swal('alert', 'Please Enter Country', 'error').then(function () { swal.close(); $('#txtCountry').focus(); })}
+    else if (Country == "") { swal('alert', 'Please Enter Country', 'error').then(function () { swal.close(); $('#ddlCountry').focus(); })}
     else if (Phone == "") { swal('alert', 'Please Enter Phone', 'error').then(function () { swal.close(); $('#txtPhone').focus(); })}
-    else if (Fax == "") { swal('alert', 'Please Enter Fax', 'error').then(function () { swal.close(); $('#txtFax').focus(); })}
     else if (EMail == "") { swal('alert', 'Please Enter EMail', 'error').then(function () { swal.close(); $('#txtEMail').focus(); }) }
     else if (!pattern.test(EMail)) { swal('alert', 'not a valid e-mail address', 'error').then(function () { swal.close(); $('#txtEMail').focus(); }) }
     else if (Web == "") { swal('alert', 'Please Enter Web', 'error').then(function () { swal.close(); $('#txtWeb').focus(); }) }
@@ -213,7 +213,7 @@ function saveVendor() {
         var obj = {
             rowid: ID,
             Name: VendorName, AliasName: AliasName, VendorCode: VendorCode, Status: Status, Address: Address,
-            City: City, State: State, ZipCode: ZipCode, Country: Country, Phone: Phone, Fax: Fax, EMail: EMail, Web: Web,
+            City: City, State: State, StateName: StateName, ZipCode: ZipCode, Country: Country, Phone: Phone, Fax: Fax, EMail: EMail, Web: Web,
             SalesTaxUsed: Salestaxused, ThirdPartyType: ThirdPartyType, Workforce: Workforce, BusinessEntityType: BusinessEntityType,
             Capital: Capital, SalesRepresentative: SalesRepresentative, Address1: Address1,
         }
@@ -231,6 +231,7 @@ function saveVendor() {
                     $("#parent").find(":input").each(function () {
                         switch (this.type) {case "text":case "email":case "tel":$(this).val('');break;}
                     });
+                    window.location = "../VendorList";
                 }
                 else {
                     //swal('Alert!', data.message, 'error')
@@ -267,9 +268,9 @@ function GetVendorByID(id) {
                     $("#txtAddress").val(d[0].address);
                     $("#txtAddress1").val(d[0].address1);
                     $("#txtCity").val(d[0].town);
-                    $("#txtState").val(d[0].State);
+                    $("#ddlState").val(d[0].State);
                     $("#txtZipCode").val(d[0].zip);
-                    $("#txtCountry").val(d[0].Country);
+                    $("#ddlCountry").val(d[0].Country);
                     $("#txtPhone").val(d[0].phone);
                     $("#txtFax").val(d[0].fax);
                     $("#txtEMail").val(d[0].email);
@@ -280,7 +281,8 @@ function GetVendorByID(id) {
                     $("#txtBusinessEntityType").val(d[0].BusinessEntityType);
                     $("#txtCapital").val(d[0].capital);
                     $("#ddlSalesRepresentative").val(d[0].SalesRepresentative);
-                    $("#txtState").val(d[0].State);
+                    $("#ddlState").empty().append('<option value="' + d[0].State + '" selected>' + d[0].StateName + '</option>');
+                    //$("#ddlState").val(d[0].State);
                     //$("#txtState").select2({
                     //    allowClear: true, minimumInputLength: 3, placeholder: "Search State",
                     //    ajax: {

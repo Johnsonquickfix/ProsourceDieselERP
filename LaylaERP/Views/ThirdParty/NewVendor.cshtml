@@ -53,7 +53,7 @@
                         <div class="form-group">
                             <label class="control-label " for="Vendor Code">Vendor Code</label>
                             <div class="">
-                                <input type="text" id="txtVendorCode" class="form-control" placeholder="Vendor Code" />
+                                <input type="text" id="txtVendorCode" class="form-control" placeholder="Vendor Code" disabled />
                             </div>
                         </div>
                         <div class="form-group">
@@ -65,7 +65,7 @@
                         <div class="form-group">
                             <label class="control-label " for="Address">Address</label>
                             <div class="">
-                                <input type="text" id="txtAddress" class="form-control" placeholder="Address" autocomplete="off"/>
+                                <input type="text" id="txtAddress" class="form-control" placeholder="Address" autocomplete="off" />
                             </div>
                         </div>
                         <div class="form-group">
@@ -84,10 +84,10 @@
                     <div class="col-md-4">
                         <div class="form-group">
                             <label for="exampleInputEmail1">State</label>
-                            <input type="text" id="txtState" class="form-control" placeholder="State" />
-                            @*<select class="form-control" id="txtState">
-            <option selected value="">Select State</option>
-        </select>*@
+                            @*<input type="text" id="txtState" class="form-control" placeholder="State" />*@
+                            <select class="form-control" id="ddlState">
+                   
+                            </select>
                         </div>
                         <div class="form-group">
                             <label class="control-label " for="Zip Code">Zip Code</label>
@@ -97,7 +97,7 @@
                         </div>
                         <div class="form-group">
                             <label for="exampleInputEmail1">Country</label>
-                            <select class="form-control" id="txtCountry">
+                            <select class="form-control" id="ddlCountry">
                                 <option value="US">US - United States</option>
                                 <option value="CA">CA - Canada</option>
                             </select>
@@ -235,7 +235,7 @@
         //        error: function (xhr, status, err) { }, cache: true
         //    }
         //});
-       
+
     })
 </script>
 <script>
@@ -276,14 +276,16 @@
                 $("#txtZipCode").val('');
             obj = place.address_components.filter(element => element.types[0] == 'administrative_area_level_1');
             if (obj.length > 0)
-                $("#txtState").val(obj[0].short_name)//empty().append('<option value="' + obj[0].short_name + '" selected>' + obj[0].long_name + '</option>');
+                $("#ddlState").empty().append('<option value="' + obj[0].short_name + '" selected>' + obj[0].long_name + '</option>');
             else
-                $("#txtState").empty();
+                $("#ddlState").empty();
             obj = place.address_components.filter(element => element.types[0] == 'country');
             if (obj.length > 0)
-                $("#txtCountry").val(obj[0].short_name + ' - ' + obj[0].long_name);
+                //console.log(obj[0].short_name);
+            $("#ddlCountry").empty().append('<option value="' + obj[0].short_name + '" selected>' + obj[0].long_name + '</option>');
+                //$("#ddlCountry").val(obj[0].short_name + ' - ' + obj[0].long_name);
             else
-                $("#txtCountry").empty();
+                $("#ddlCountry").empty();
         }
 
         function renderAddress(place) {

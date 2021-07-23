@@ -97,8 +97,8 @@
                         <div class="form-group">
                             <label for="exampleInputEmail1">Country</label>
                             <select class="form-control" id="txtBillingCountry">
-                                <option value="US - United States">US - United States</option>
-                                <option value="CA - Canada">CA - Canada</option>
+                                <option value="US">US - United States</option>
+                                <option value="CA">CA - Canada</option>
                             </select>
                         </div>
                     </div>
@@ -222,7 +222,7 @@
 
                 }
                 else {
-                    if ($('#txtBillingCountry').val() == "US - United States") {
+                    if ($('#txtBillingCountry').val() == "US") {
                         $("#txtBillingPostCode").val("");
                         $('#hfzipstatus').val(data.status);
                         swal('Alert', 'Zip code is not valid for the State', 'error').then(function () { swal.close(); $('#txtBillingPostCode').focus(); });

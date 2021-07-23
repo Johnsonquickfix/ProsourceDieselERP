@@ -275,11 +275,11 @@ function GetCustomerByID(id) {
                 $("#txtBillingCity").val(d[0].billing_city);
                 $("#txtBillingPhone").val(d[0].billing_phone);
                 $("#txtBillingState").select2({
-                    allowClear: true, minimumInputLength: 3, placeholder: "Search State",
+                    allowClear: true, minimumInputLength: 2, placeholder: "Search State",
                     ajax: {
-                        url: '/Users/GetState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+                        url: '/Users/GetCustState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
                         data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
-                        processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.StateFullName, name: item.StateFullName, id: item.StateFullName } }) }; },
+                        processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.StateFullName, name: item.StateFullName, id: item.State } }) }; },
                         error: function (xhr, status, err) { }, cache: true
                     }
                 });

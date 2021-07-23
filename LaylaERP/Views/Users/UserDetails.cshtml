@@ -146,8 +146,8 @@
                             <div class="form-group">
                                 <label for="exampleInputEmail1">Country</label>
                                 <select class="form-control" id="txtCountry">
-                                    <option value="US - United States">US - United States</option>
-                                    <option value="CA - Canada">CA - Canada</option>
+                                    <option value="US">US - United States</option>
+                                    <option value="CA">CA - Canada</option>
 
                                 </select>
                             </div>
@@ -219,7 +219,7 @@
             //    error: function (xhr, status, err) { }, cache: true
             //}
 
-            allowClear: true, minimumInputLength: 3, placeholder: "Search State",
+            allowClear: true, minimumInputLength: 2, placeholder: "Search State",
             ajax: {
                 url: '/Users/GetCustState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
                 data: function (params) {

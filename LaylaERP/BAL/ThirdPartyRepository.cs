@@ -121,7 +121,7 @@ namespace LaylaERP.BAL
             DataTable DT = new DataTable();
             try
             {
-              DT = SQLHelper.ExecuteDataTable("SELECT CONCAT('SU', DATE_FORMAT(CURDATE(),'%y%m'),'-',max(LPAD(rowid+1 ,4,0)))  as Code from wp_vendor;");
+              DT = SQLHelper.ExecuteDataTable("SELECT CONCAT('SU', DATE_FORMAT(CURDATE(),'%y%m'),'-',max(LPAD(rowid+1 ,5,0)))  as Code from wp_vendor;");
             }
             catch (Exception ex)
             { throw ex; }

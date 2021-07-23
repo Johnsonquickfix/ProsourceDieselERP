@@ -1,6 +1,5 @@
 ﻿
 WarehouseGrid();
-<script>
     function WarehouseGrid() {
 
         $.ajax({
@@ -29,6 +28,9 @@ WarehouseGrid();
                             }
                         }
                     ],
+
+                    
+                    "order": [[0, 'desc']],
                 });
             },
             error: function (xhr, ajaxOptions, thrownError) {
@@ -42,4 +44,4 @@ WarehouseGrid();
     function EditUser(rowid) {
         window.location.href = 'UpdateWarehouse?rowid=' + rowid;
     }
-</script>
+

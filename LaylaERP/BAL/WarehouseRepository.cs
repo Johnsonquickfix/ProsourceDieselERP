@@ -16,7 +16,7 @@ namespace LaylaERP.BAL
             DataTable dtr = new DataTable();
             try
             {
-                string strquery = "SELECT rowid, ref,entity,description,lieu,concat(address,' ',town,' ',country,' ',zip)as address,phone,fax,if(statut=0,'Close','Open')as status FROM wp_warehouse";
+                string strquery = "SELECT rowid, ref,entity,description,lieu,concat(address,' ',town,' ',country,' ',zip)as address,phone,fax,if(statut=0,'Close','Open')as status FROM wp_warehouse order by rowid desc";
                 dtr = SQLHelper.ExecuteDataTable(strquery);
             }
             catch (Exception ex)

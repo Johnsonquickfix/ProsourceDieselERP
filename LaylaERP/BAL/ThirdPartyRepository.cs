@@ -19,7 +19,7 @@ namespace LaylaERP.BAL
                 string strsql = "";
                  strsql = "insert into wp_vendor(nom,name_alias,client,fournisseur,code_fournisseur,status,address,address1,zip,town," +
                     "fk_pays,fk_departement,StateName,phone,fax,email,url,siren,tva_assuj,fk_typent,fk_effectif,fk_forme_juridique,capital,location_incoterms,SalesRepresentative) " +
-                    "values(@nom, @name_alias, @client, @fournisseur, @code_fournisseur, @status, @address,@address1, @zip, @town, @fk_pays, @fk_departement,@StateName @phone, " +
+                    "values(@nom, @name_alias, @client, @fournisseur, @code_fournisseur, @status, @address,@address1, @zip, @town, @fk_pays, @fk_departement,@StateName, @phone, " +
                     "@fax, @email, @url, @siren, @tva_assuj, @fk_typent, @fk_effectif, @fk_forme_juridique, @capital, @location_incoterms,@SalesRepresentative); SELECT LAST_INSERT_ID();";
                 MySqlParameter[] para =
                 {
@@ -102,7 +102,7 @@ namespace LaylaERP.BAL
             DataTable DT = new DataTable();
             try
             {
-                if (country == "CA - Canada")
+                if (country == "CA")
                 {
                     DT = SQLHelper.ExecuteDataTable("select distinct StateFullName from StateList where StateFullName like '" + strSearch + "%' order by StateFullName limit 50;");
                 }

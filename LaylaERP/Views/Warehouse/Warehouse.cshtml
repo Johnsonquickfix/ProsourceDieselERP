@@ -1,7 +1,7 @@
 ﻿
 @{
     ViewBag.Title = "Warehouse";
-    Layout = "~/Views/Shared/_UserLayout.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 
@@ -13,7 +13,7 @@
 <script src="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/js/dataTables.bootstrap.min.js" type="text/javascript"></script>
 
 <div class="page-title">
-    <h2 class="page-heading">Warehouse</h2>
+    <h2 class="page-heading">Warehouse</h2><a class="btn btn-danger" href="AddNewWarehouse">Add Warehouse</a>
 </div>
 <div class="userrole_section section_wrapper appearance-menu-section">
     @*<form id="saveForm" name="saveForm" method="post" autocomplete="off">*@ 
@@ -39,57 +39,6 @@
 </div>
 
 
-
-<script type="text/javascript">
-    $(document).ready(function () {
-        WarehouseGrid();
-
-    })
-</script>
-
-<script>
-    function WarehouseGrid() {
-        
-        $.ajax({
-            url: '/Warehouse/GetWarehouse',
-            method: 'post',
-            datatype: 'json',
-            contentType: "application/json; charset=utf-8",
-            processing: true,
-            success: function (data) {
-                $('#dtdata').dataTable({
-                    destroy: true,
-                    scrollX:true,
-                    data: JSON.parse(data),
-                    "columns": [
-                        { data: 'rowid', title: 'ID', sWidth: "5%" },
-                        { data: 'ref', title: 'Ref', sWidth: "20%" },
-                        { data: 'description', title: 'Description', sWidth: "15%" },
-                        { data: 'lieu', title: 'Short Name Location', sWidth: "15%" },
-                        { data: 'address', title: 'Address', sWidth: "15%" },
-                        { data: 'phone', title: 'Phone', sWidth: "10%" },
-                        { data: 'status', title: 'Status', sWidth: "10%" },
-                        {
-                            'data': 'rowid', sWidth: "10%",
-                            'render': function (rowid, type, full, meta) {
-                                return '<a href="javascript:void(0);" onClick="EditUser(' + rowid + ')"><i class="glyphicon glyphicon-pencil"></i></a>'
-                            }
-                        }
-                    ],
-                });
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                alert(xhr.responseText);
-            }
-        });
-
-    }
-
-
-    function EditUser(rowid) {
-        window.location.href = 'UpdateWarehouse?rowid=' + rowid;
-    }
-</script>
-
+<script src="@Url.Content("~/js/Warehouse/warehouselist.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 
 

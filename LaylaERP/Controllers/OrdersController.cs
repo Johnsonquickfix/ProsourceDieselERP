@@ -24,6 +24,12 @@
             ViewBag.mode = id > 0 ? "E" : "I";
             return View();
         }
+        // GET: Order Refund
+        public ActionResult OrderRefund(long id = 0)
+        {
+            ViewBag.id = id;
+            return View();
+        }
 
         //\
         [HttpPost]

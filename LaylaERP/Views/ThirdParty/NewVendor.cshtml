@@ -216,25 +216,62 @@
             GetVendorByID(id);
         }
 
-        //$("#txtState").select2({
-        //    allowClear: true, minimumInputLength: 2, placeholder: "Search State",
-        //    ajax: {
-        //        url: '/ThirdParty/GetState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
-        //        data: function (params) {
-        //            var obj = { strValue1: params.term, strValue2: $("#txtCountry").val() };
-        //            return JSON.stringify(obj);
-        //        },
-        //        processResults: function (data) {
-        //            var jobj = JSON.parse(data);
-        //            return {
-        //                results: $.map(jobj, function (item) {
-        //                    return { text: item.StateFullName, name: item.StateFullName, id: item.StateFullName }
-        //                })
-        //            };
-        //        },
-        //        error: function (xhr, status, err) { }, cache: true
-        //    }
-        //});
+        $("#ddlState").select2({
+            allowClear: true, minimumInputLength: 2, placeholder: "Search State",
+            ajax: {
+                url: '/ThirdParty/GetState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+                data: function (params) {
+                    var obj = { strValue1: params.term, strValue2: $("#ddlCountry").val() };
+                    return JSON.stringify(obj);
+                },
+                processResults: function (data) {
+                    var jobj = JSON.parse(data);
+                    return {
+                        results: $.map(jobj, function (item) {
+                            return { text: item.StateFullName, name: item.StateFullName, val: item.State, id: item.State }
+                        })
+                    };
+                },
+                error: function (xhr, status, err) { }, cache: true
+            }
+        });
+
+        $('#txtZipCode').change(function () {
+            City = $("#ddlCity").val();
+            State = $("#ddlState").val();
+            PostalCode = $("#txtZipCode").val();
+            var obj = {
+                billing_state: State,
+                billing_city: City,
+                billing_postcode: PostalCode
+            }
+            $.ajax({
+                url: '/Users/CityStateZip/', dataType: 'json', type: 'Post',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(obj),
+                dataType: "json",
+                success: function (data) {
+                    console.log(data);
+                    if (data.status == true) {
+                        // swal('Alert!', 'Post zip code is valid for City and State', 'success')
+                        // $('#hfzipstatus').val(data.status);
+                        $('#hfzipstatus').val(data.status);
+
+                    }
+                    else {
+                        if ($('#ddlCountry').val() == "US") {
+                            $("#txtZipCode").val("");
+                            $('#hfzipstatus').val(data.status);
+                            swal('Alert', 'Zip code is not valid for the State', 'error').then(function () { swal.close(); $('#txtZipCode').focus(); });
+                        }
+                    }
+                },
+
+                error: function (error) {
+                    swal('Error!', 'something went wrong', 'error');
+                },
+            })
+        });
 
     })
 </script>

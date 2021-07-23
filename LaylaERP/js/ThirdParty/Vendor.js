@@ -231,7 +231,7 @@ function saveVendor() {
                     $("#parent").find(":input").each(function () {
                         switch (this.type) {case "text":case "email":case "tel":$(this).val('');break;}
                     });
-                    window.location = "../VendorList";
+                    window.location = "../../ThirdParty/VendorList";
                 }
                 else {
                     //swal('Alert!', data.message, 'error')
@@ -283,15 +283,15 @@ function GetVendorByID(id) {
                     $("#ddlSalesRepresentative").val(d[0].SalesRepresentative);
                     $("#ddlState").empty().append('<option value="' + d[0].State + '" selected>' + d[0].StateName + '</option>');
                     //$("#ddlState").val(d[0].State);
-                    //$("#txtState").select2({
-                    //    allowClear: true, minimumInputLength: 3, placeholder: "Search State",
-                    //    ajax: {
-                    //        url: '/ThirdParty/GetState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
-                    //        data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
-                    //        processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.StateFullName, name: item.StateFullName, id: item.StateFullName } }) }; },
-                    //        error: function (xhr, status, err) { }, cache: true
-                    //    }
-                    //});
+                    $("#ddlState").select2({
+                        allowClear: true, minimumInputLength: 3, placeholder: "Search State",
+                        ajax: {
+                            url: '/ThirdParty/GetState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+                            data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
+                            processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.StateFullName, name: item.StateFullName, val: item.State, id: item.State } }) }; },
+                            error: function (xhr, status, err) { }, cache: true
+                        }
+                    });
                 }
             },
             error: function (msg) {

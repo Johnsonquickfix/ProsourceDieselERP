@@ -7,10 +7,16 @@ getThirdPartyType();
 getWorkforce();
 getIncoterms();
 getAssignedtoSalesRepresentative();
+getVendorCode();
 
 
-
-
+//function getVendorCode() {
+//    var d = new Date();
+//    var newMonth = d.getMonth() + 1;
+//    var prettyDate = "SU" + '' + d.getFullYear().toString().substr(-2) + '' + (newMonth < 10 ? "0" + newMonth : newMonth) + '-' + "0005";
+//    $("#txtVendorCode").val(prettyDate);
+ 
+//}
 
 function getProspect() {
     var data = [
@@ -131,15 +137,12 @@ function getAssignedtoSalesRepresentative() {
     $("#ddlSalesRepresentative").html(items);
 }
 
-
-
-
-    document.getElementById('txtPhone').addEventListener('keyup', function (evt) {
+document.getElementById('txtPhone').addEventListener('keyup', function (evt) {
         var phoneNumber = document.getElementById('txtPhone');
         var charCode = (evt.which) ? evt.which : evt.keyCode;
         phoneNumber.value = phoneFormat(phoneNumber.value);
     });
-    function phoneFormat(input) {
+function phoneFormat(input) {
         input = input.replace(/\D/g, '');
         input = input.substring(0, 10);
         var size = input.length;
@@ -155,7 +158,6 @@ function getAssignedtoSalesRepresentative() {
         return input;
     }
 
-
 $("#btnSave").click(function () {
     saveVendor();
 });
@@ -169,9 +171,10 @@ function saveVendor() {
     Address = $("#txtAddress").val();
     Address1 = $("#txtAddress1").val();
     City = $("#txtCity").val();
-    State = $("#txtState").val();
+    State = $("#ddlState").val();
+    StateName = $("#ddlState").find('option:selected').text();
     ZipCode = $("#txtZipCode").val();
-    Country = $("#txtCountry").val();
+    Country = $("#ddlCountry").val();
     Phone = $("#txtPhone").val();
     Fax = $("#txtFax").val();
     EMail = $("#txtEMail").val();
@@ -185,18 +188,19 @@ function saveVendor() {
     //ddlIncoterms = $("#ddlIncoterms").val();
     //Incoterms = $("#txtIncoterms").val();
     SalesRepresentative = $("#ddlSalesRepresentative").val();
+    var pattern = /^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
 
     if (VendorName == "") {swal('alert', 'Please Enter Vendor Name', 'error').then(function () { swal.close(); $('#txVendorName').focus(); })}
     else if (AliasName == "") {swal('alert', 'Please Enter Alias Name', 'error').then(function () { swal.close(); $('#txtAliasName').focus(); })}
     else if (Status == "") {swal('alert', 'Please Enter Status', 'error').then(function () { swal.close(); $('#ddlStatus').focus(); })}
     else if (Address == "") {swal('alert', 'Please Enter Address', 'error').then(function () { swal.close(); $('#txtAddress').focus(); })}
     else if (City == "") {swal('alert', 'Please Enter City', 'error').then(function () { swal.close(); $('#txtCity').focus(); })}
-    else if (State == "") { swal('alert', 'Please Enter State', 'error').then(function () { swal.close(); $('#txtState').focus(); })}
+    else if (State == "") { swal('alert', 'Please Enter State', 'error').then(function () { swal.close(); $('#ddlState').focus(); })}
     else if (ZipCode == "") { swal('alert', 'Please Enter ZipCode', 'error').then(function () { swal.close(); $('#txtZipCode').focus(); })}
-    else if (Country == "") { swal('alert', 'Please Enter Country', 'error').then(function () { swal.close(); $('#txtCountry').focus(); })}
+    else if (Country == "") { swal('alert', 'Please Enter Country', 'error').then(function () { swal.close(); $('#ddlCountry').focus(); })}
     else if (Phone == "") { swal('alert', 'Please Enter Phone', 'error').then(function () { swal.close(); $('#txtPhone').focus(); })}
-    else if (Fax == "") { swal('alert', 'Please Enter Fax', 'error').then(function () { swal.close(); $('#txtFax').focus(); })}
     else if (EMail == "") { swal('alert', 'Please Enter EMail', 'error').then(function () { swal.close(); $('#txtEMail').focus(); }) }
+    else if (!pattern.test(EMail)) { swal('alert', 'not a valid e-mail address', 'error').then(function () { swal.close(); $('#txtEMail').focus(); }) }
     else if (Web == "") { swal('alert', 'Please Enter Web', 'error').then(function () { swal.close(); $('#txtWeb').focus(); }) }
     else if (Salestaxused == "") { swal('alert', 'Please Select Sales tax used', 'error').then(function () { swal.close(); $('#ddlSalestaxused').focus(); }) }
     else if (ThirdPartyType == "-1") { swal('alert', 'Please Select Third Party Type', 'error').then(function () { swal.close(); $('#ddlThirdPartyType').focus(); }) }
@@ -209,7 +213,7 @@ function saveVendor() {
         var obj = {
             rowid: ID,
             Name: VendorName, AliasName: AliasName, VendorCode: VendorCode, Status: Status, Address: Address,
-            City: City, State: State, ZipCode: ZipCode, Country: Country, Phone: Phone, Fax: Fax, EMail: EMail, Web: Web,
+            City: City, State: State, StateName: StateName, ZipCode: ZipCode, Country: Country, Phone: Phone, Fax: Fax, EMail: EMail, Web: Web,
             SalesTaxUsed: Salestaxused, ThirdPartyType: ThirdPartyType, Workforce: Workforce, BusinessEntityType: BusinessEntityType,
             Capital: Capital, SalesRepresentative: SalesRepresentative, Address1: Address1,
         }
@@ -227,6 +231,7 @@ function saveVendor() {
                     $("#parent").find(":input").each(function () {
                         switch (this.type) {case "text":case "email":case "tel":$(this).val('');break;}
                     });
+                    window.location = "../../ThirdParty/VendorList";
                 }
                 else {
                     //swal('Alert!', data.message, 'error')
@@ -242,7 +247,6 @@ function saveVendor() {
     }
 
 }
-
 
 function GetVendorByID(id) {
     var rowid = id;
@@ -264,9 +268,9 @@ function GetVendorByID(id) {
                     $("#txtAddress").val(d[0].address);
                     $("#txtAddress1").val(d[0].address1);
                     $("#txtCity").val(d[0].town);
-                    $("#txtState").val(d[0].State);
+                    $("#ddlState").val(d[0].State);
                     $("#txtZipCode").val(d[0].zip);
-                    $("#txtCountry").val(d[0].Country);
+                    $("#ddlCountry").val(d[0].Country);
                     $("#txtPhone").val(d[0].phone);
                     $("#txtFax").val(d[0].fax);
                     $("#txtEMail").val(d[0].email);
@@ -277,13 +281,14 @@ function GetVendorByID(id) {
                     $("#txtBusinessEntityType").val(d[0].BusinessEntityType);
                     $("#txtCapital").val(d[0].capital);
                     $("#ddlSalesRepresentative").val(d[0].SalesRepresentative);
-                    $("#txtState").select2('').empty().select2({ data: [{ name: d[0].State, id: d[0].State, text: d[0].State }] });
-                    $("#txtState").select2({
+                    $("#ddlState").empty().append('<option value="' + d[0].State + '" selected>' + d[0].StateName + '</option>');
+                    //$("#ddlState").val(d[0].State);
+                    $("#ddlState").select2({
                         allowClear: true, minimumInputLength: 3, placeholder: "Search State",
                         ajax: {
                             url: '/ThirdParty/GetState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
                             data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
-                            processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.StateFullName, name: item.StateFullName, id: item.StateFullName } }) }; },
+                            processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.StateFullName, name: item.StateFullName, val: item.State, id: item.State } }) }; },
                             error: function (xhr, status, err) { }, cache: true
                         }
                     });
@@ -291,6 +296,27 @@ function GetVendorByID(id) {
             },
             error: function (msg) {
                
+            }
+        });
+
+}
+
+function getVendorCode() {
+    var obj =
+        $.ajax({
+            url: "/ThirdParty/GetVendorCode/",
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            dataType: 'JSON',
+            data: JSON.stringify(obj),
+            success: function (data) {
+                var d = JSON.parse(data);
+                if (d.length > 0) {
+                    $("#txtVendorCode").val(d[0].Code);
+                }
+            },
+            error: function (msg) {
+
             }
         });
 

@@ -18,8 +18,8 @@ namespace LaylaERP.BAL
             {
                 string strsql = "";
                  strsql = "insert into wp_vendor(nom,name_alias,client,fournisseur,code_fournisseur,status,address,address1,zip,town," +
-                    "fk_pays,fk_departement,phone,fax,email,url,siren,tva_assuj,fk_typent,fk_effectif,fk_forme_juridique,capital,location_incoterms,SalesRepresentative) " +
-                    "values(@nom, @name_alias, @client, @fournisseur, @code_fournisseur, @status, @address,@address1, @zip, @town, @fk_pays, @fk_departement, @phone, " +
+                    "fk_pays,fk_departement,StateName,phone,fax,email,url,siren,tva_assuj,fk_typent,fk_effectif,fk_forme_juridique,capital,location_incoterms,SalesRepresentative) " +
+                    "values(@nom, @name_alias, @client, @fournisseur, @code_fournisseur, @status, @address,@address1, @zip, @town, @fk_pays, @fk_departement,@StateName, @phone, " +
                     "@fax, @email, @url, @siren, @tva_assuj, @fk_typent, @fk_effectif, @fk_forme_juridique, @capital, @location_incoterms,@SalesRepresentative); SELECT LAST_INSERT_ID();";
                 MySqlParameter[] para =
                 {
@@ -35,6 +35,7 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@town", model.City),
                     new MySqlParameter("@fk_pays", model.Country),
                     new MySqlParameter("@fk_departement", model.State),
+                    new MySqlParameter("@StateName", model.StateName),
                     new MySqlParameter("@phone", model.Phone),
                     new MySqlParameter("@fax", model.Fax),
                     new MySqlParameter("@email", model.EMail),
@@ -61,7 +62,7 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "update wp_vendor set nom=@nom,name_alias=@name_alias,code_fournisseur=@code_fournisseur,status=@status,address=@address,address1=@address1,zip = @zip,town = @town,fk_pays = @fk_pays,fk_departement = @fk_departement,phone = @phone,fax = @fax,email = @email,url = @url,tva_assuj = @tva_assuj,fk_typent = @fk_typent,fk_effectif = @fk_effectif,fk_forme_juridique = @fk_forme_juridique,capital = @capital,SalesRepresentative=@SalesRepresentative where rowid = " + VendorID +"";
+                string strsql = "update wp_vendor set nom=@nom,name_alias=@name_alias,code_fournisseur=@code_fournisseur,status=@status,address=@address,address1=@address1,zip = @zip,town = @town,fk_pays = @fk_pays,fk_departement = @fk_departement,StateName=@StateName,phone = @phone,fax = @fax,email = @email,url = @url,tva_assuj = @tva_assuj,fk_typent = @fk_typent,fk_effectif = @fk_effectif,fk_forme_juridique = @fk_forme_juridique,capital = @capital,SalesRepresentative=@SalesRepresentative where rowid = " + VendorID +"";
                 MySqlParameter[] para =
                 {
                     new MySqlParameter("@nom", model.Name),
@@ -75,6 +76,7 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@town", model.City),
                     new MySqlParameter("@fk_pays", model.Country),
                     new MySqlParameter("@fk_departement", model.State),
+                    new MySqlParameter("@StateName", model.StateName),
                     new MySqlParameter("@phone", model.Phone),
                     new MySqlParameter("@fax", model.Fax),
                     new MySqlParameter("@email", model.EMail),
@@ -100,7 +102,7 @@ namespace LaylaERP.BAL
             DataTable DT = new DataTable();
             try
             {
-                if (country == "CA - Canada")
+                if (country == "CA")
                 {
                     DT = SQLHelper.ExecuteDataTable("select distinct StateFullName from StateList where StateFullName like '" + strSearch + "%' order by StateFullName limit 50;");
                 }
@@ -108,6 +110,18 @@ namespace LaylaERP.BAL
                 {
                     DT = SQLHelper.ExecuteDataTable("select distinct StateFullName,StateFullName,State from ZIPCodes1 where StateFullName like '" + strSearch + "%' or State like '" + strSearch + "%' order by StateFullName limit 50;");
                 }
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DT;
+        }
+
+        public static DataTable GetVendorCode()
+        {
+            DataTable DT = new DataTable();
+            try
+            {
+              DT = SQLHelper.ExecuteDataTable("SELECT CONCAT('SU', DATE_FORMAT(CURDATE(),'%y%m'),'-',max(LPAD(rowid+1 ,4,0)))  as Code from wp_vendor;");
             }
             catch (Exception ex)
             { throw ex; }
@@ -154,7 +168,7 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "Select rowid as ID, nom as VendorName, name_alias as AliasName,entity,status,code_fournisseur as VendorCode, zip,address,address1,town,fk_departement as State, fk_pays as Country, phone,fax,url,email,fk_effectif as Workforce,fk_typent as ThirdPartyType,fk_forme_juridique as BusinessEntityType, siren as ProfId, capital, fournisseur as Vendor,location_incoterms as Incoterms, tva_assuj as Salestaxused,SalesRepresentative FROM rpsisr_woo.wp_vendor where rowid='" + id+"'";
+                string strSql = "Select rowid as ID, nom as VendorName, name_alias as AliasName,entity,status,code_fournisseur as VendorCode, zip,address,address1,town,fk_departement as State,StateName, fk_pays as Country, phone,fax,url,email,fk_effectif as Workforce,fk_typent as ThirdPartyType,fk_forme_juridique as BusinessEntityType, siren as ProfId, capital, fournisseur as Vendor,location_incoterms as Incoterms, tva_assuj as Salestaxused,SalesRepresentative FROM rpsisr_woo.wp_vendor where rowid='" + id+"'";
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];

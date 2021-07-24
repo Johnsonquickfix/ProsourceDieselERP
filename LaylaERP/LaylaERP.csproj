@@ -577,6 +577,7 @@
     <Content Include="js\FeeNTax\FeeNTax.js" />
     <Content Include="js\GooglePlace\index.js" />
     <Content Include="js\Inventory\Inventory.js" />
+    <Content Include="js\jquery.mask.js" />
     <Content Include="js\Marketing\Coupons.js" />
     <Content Include="js\Marketing\CouponsManage.js" />
     <Content Include="js\Orders\NewOrder.js" />
@@ -585,10 +586,12 @@
     <Content Include="js\Product\Product.js" />
     <Content Include="js\Ship\ShipStation.js" />
     <Content Include="js\ThirdParty\Vendor.js" />
+    <Content Include="js\ThirdParty\VendorList.js" />
     <Content Include="js\Users\RolePermission.js" />
     <Content Include="js\Users\UserLogin.js" />
     <Content Include="js\Users\UserRole.js" />
     <Content Include="js\Users\Users.js" />
+    <Content Include="js\Warehouse\warehouselist.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Content\dx\icons\dxicons.ttf" />
@@ -771,9 +774,13 @@
     <Content Include="Views\Product\ProductCategories.cshtml" />
     <Content Include="Views\Inventory\Index.cshtml" />
     <Content Include="Views\Inventory\ConsignmentInventory.cshtml" />
-    <Content Include="Views\ThirdParty\NewVendor.cshtml" />
     <Content Include="Views\Warehouse\AddNewWarehouse.cshtml" />
+    <Content Include="Views\Warehouse\UpdateWarehouse.cshtml" />
     <Content Include="Views\Warehouse\Warehouse.cshtml" />
+    <Content Include="Views\ThirdParty\NewVendor.cshtml" />
+    <Content Include="Views\ThirdParty\VendorList.cshtml" />
+    <Content Include="Views\Appearance\AddMenu.cshtml" />
+    <Content Include="Views\Appearance\AddMenuDetails.cshtml" />
     <Content Include="Views\Coupons\ManageCoupons.cshtml" />
   </ItemGroup>
   <ItemGroup>

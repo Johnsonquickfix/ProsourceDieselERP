@@ -19,9 +19,9 @@
                 <div class="row">
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label class="control-label " for="Third-party name">Third-party Name</label>
+                            <label class="control-label " for="Vendor name">Vendor Name</label>
                             <div class="">
-                                <input type="text" id="txVendorName" class="form-control" placeholder="Third-party Name" />
+                                <input type="text" id="txVendorName" class="form-control" placeholder="Vendor Name" />
                             </div>
                         </div>
                         <div class="form-group">
@@ -31,33 +31,33 @@
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label class="control-label " for="Prospect / Customer">Prospect / Customer</label>
-                            <div class="">
-                                <select class="form-control" id="ddlProspect" placeholder="Prospect / Customer"></select>
+                        @*<div class="form-group">
+                                <label class="control-label " for="Prospect / Customer">Prospect / Customer</label>
+                                <div class="">
+                                    <select class="form-control" id="ddlProspect" placeholder="Prospect / Customer"></select>
+                                </div>
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label " for="Customer Code">Customer Code</label>
-                            <div class="">
-                                <input type="text" id="txtCustomerCode" class="form-control" placeholder="Customer Code" />
+                            <div class="form-group">
+                                <label class="control-label " for="Customer Code">Customer Code</label>
+                                <div class="">
+                                    <input type="text" id="txtCustomerCode" class="form-control" placeholder="Customer Code" />
+                                </div>
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label " for="Vendor">Vendor</label>
-                            <div class="">
-                                <select class="form-control" id="ddlVendor"></select>
+                            <div class="form-group">
+                                <label class="control-label " for="Vendor">Vendor</label>
+                                <div class="">
+                                    <select class="form-control" id="ddlVendor"></select>
 
-                            </div>
-                        </div>
+                                </div>
+                            </div>*@
                         <div class="form-group">
                             <label class="control-label " for="Vendor Code">Vendor Code</label>
                             <div class="">
-                                <input type="text" id="txtVendorCode" class="form-control" placeholder="Vendor Code" />
+                                <input type="text" id="txtVendorCode" class="form-control" placeholder="Vendor Code" disabled />
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label " for="Address 2">Status</label>
+                            <label class="control-label " for="Status">Status</label>
                             <div class="">
                                 <select class="form-control" id="ddlStatus"></select>
                             </div>
@@ -65,8 +65,29 @@
                         <div class="form-group">
                             <label class="control-label " for="Address">Address</label>
                             <div class="">
-                                <input type="tel" id="txtAddress" class="form-control" placeholder="Address" />
+                                <input type="text" id="txtAddress" class="form-control" placeholder="Address" autocomplete="off" />
                             </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label " for="Address1">Address 1</label>
+                            <div class="">
+                                <input type="tel" id="txtAddress1" class="form-control" placeholder="Address 1" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label " for="City">City</label>
+                            <div class="">
+                                <input type="text" id="txtCity" class="form-control" placeholder="City" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">State</label>
+                            @*<input type="text" id="txtState" class="form-control" placeholder="State" />*@
+                            <select class="form-control" id="ddlState">
+                   
+                            </select>
                         </div>
                         <div class="form-group">
                             <label class="control-label " for="Zip Code">Zip Code</label>
@@ -74,26 +95,11 @@
                                 <input type="text" id="txtZipCode" class="form-control" placeholder="Zip Code" />
                             </div>
                         </div>
-                    </div>
-                    <div class="col-md-4">
-
-                        <div class="form-group">
-                            <label class="control-label " for="Address">City</label>
-                            <div class="">
-                                <input type="text" id="txtCity" class="form-control" placeholder="City" />
-                            </div>
-                        </div>
                         <div class="form-group">
                             <label for="exampleInputEmail1">Country</label>
-                            <select class="form-control" id="txtCountry">
-                                <option value="US - United States">US - United States</option>
-                                <option value="CA - Canada">CA - Canada</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="exampleInputEmail1">State / Province</label>
-                            <select class="form-control" id="txtState">
-                                <option selected value="">Select State</option>
+                            <select class="form-control" id="ddlCountry">
+                                <option value="US">US - United States</option>
+                                <option value="CA">CA - Canada</option>
                             </select>
                         </div>
 
@@ -121,27 +127,28 @@
                                 <input type="text" id="txtWeb" class="form-control" placeholder="Web" />
                             </div>
                         </div>
+                        @*<div class="form-group">
+                                <label class="control-label " for="Prof Id (FEIN)">Prof Id (FEIN)</label>
+                                <div class="">
+                                    <input type="text" id="txtProfId" class="form-control" placeholder="Prof Id (FEIN)" />
+                                </div>
+                            </div>*@
+
+
+                    </div>
+                    <div class="col-md-4">
                         <div class="form-group">
-                            <label class="control-label " for="Prof Id (FEIN)">Prof Id (FEIN)</label>
-                            <div class="">
-                                <input type="text" id="txtProfId" class="form-control" placeholder="Prof Id (FEIN)" />
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label " for="Address">Sales tax used</label>
+                            <label class="control-label " for="Salestaxused">Sales tax used</label>
                             <div class="">
                                 <select class="form-control" id="ddlSalestaxused"></select>
                             </div>
                         </div>
-                         
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="control-label " for="Address">VAT ID</label>
-                            <div class="">
-                                <input type="text" id="txtVATID" class="form-control" placeholder="VAT ID" />
-                            </div>
-                        </div>
+                        @*<div class="form-group">
+                                <label class="control-label " for="Address">VAT ID</label>
+                                <div class="">
+                                    <input type="text" id="txtVATID" class="form-control" placeholder="VAT ID" />
+                                </div>
+                            </div>*@
                         <div class="form-group">
                             <label class="control-label " for="Third-party type">Third-party type</label>
                             <div class="">
@@ -161,30 +168,30 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label " for="Address">Capital</label>
+                            <label class="control-label " for="Capital">Capital</label>
                             <div class="">
                                 <input type="text" id="txtCapital" class="form-control" placeholder="Capital" />
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="control-label " for="Incoterms">Incoterms</label>
-                            <div class="">
-                                <select class="form-control col-md-3" id="ddlIncoterms"></select>
-                                <input type="text" id="txtIncoterms" class="form-control col-md-9" placeholder="Incoterms" />
-                            </div>
-                        </div>
+                        @*<div class="form-group">
+                                <label class="control-label " for="Incoterms">Incoterms</label>
+                                <div class="">
+                                    <select class="form-control col-md-3" id="ddlIncoterms"></select>
+                                    <input type="text" id="txtIncoterms" class="form-control col-md-9" placeholder="Incoterms" />
+                                </div>
+                            </div>*@
                         <div class="form-group">
                             <label class="control-label " for="Prof Id (FEIN)">Assigned to sales representative</label>
                             <div class="">
                                 <select class="form-control col-md-3" id="ddlSalesRepresentative"></select>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="control-label " for="Address">Logo</label>
-                            <div class="">
-                                <input type="file" id="txtLogo" class="form-control" placeholder="Logo" />
-                            </div>
-                        </div>
+                        @*<div class="form-group">
+                                <label class="control-label " for="Address">Logo</label>
+                                <div class="">
+                                    <input type="file" id="txtLogo" class="form-control" placeholder="Logo" />
+                                </div>
+                            </div>*@
                     </div>
                 </div>
             </div>
@@ -192,7 +199,7 @@
         <div class="box-footer">
             <div class="text-right">
                 <input type="submit" value="Submit" id="btnSave" class="btn btn-danger" />
-                @Html.ActionLink("Back to List", "Customer", null, new { @class = "btn btn-danger" })
+                @Html.ActionLink("Back to List", "VendorList", null, new { @class = "btn btn-danger" })
             </div>
         </div>
         <!-- /.row -->
@@ -201,5 +208,130 @@
 </section>
 <!-- /.content -->
 <script src="@Url.Content("~/js/ThirdParty/Vendor.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+<script>
+    $(document).ready(function () {
+        var url = window.location.pathname;
+        var id = url.substring(url.lastIndexOf('/') + 1);
+        if (id != "NewVendor") {
+            GetVendorByID(id);
+        }
+
+        $("#ddlState").select2({
+            allowClear: true, minimumInputLength: 2, placeholder: "Search State",
+            ajax: {
+                url: '/ThirdParty/GetState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+                data: function (params) {
+                    var obj = { strValue1: params.term, strValue2: $("#ddlCountry").val() };
+                    return JSON.stringify(obj);
+                },
+                processResults: function (data) {
+                    var jobj = JSON.parse(data);
+                    return {
+                        results: $.map(jobj, function (item) {
+                            return { text: item.StateFullName, name: item.StateFullName, val: item.State, id: item.State }
+                        })
+                    };
+                },
+                error: function (xhr, status, err) { }, cache: true
+            }
+        });
+
+        $('#txtZipCode').change(function () {
+            City = $("#ddlCity").val();
+            State = $("#ddlState").val();
+            PostalCode = $("#txtZipCode").val();
+            var obj = {
+                billing_state: State,
+                billing_city: City,
+                billing_postcode: PostalCode
+            }
+            $.ajax({
+                url: '/Users/CityStateZip/', dataType: 'json', type: 'Post',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(obj),
+                dataType: "json",
+                success: function (data) {
+                    console.log(data);
+                    if (data.status == true) {
+                        // swal('Alert!', 'Post zip code is valid for City and State', 'success')
+                        // $('#hfzipstatus').val(data.status);
+                        $('#hfzipstatus').val(data.status);
+
+                    }
+                    else {
+                        if ($('#ddlCountry').val() == "US") {
+                            $("#txtZipCode").val("");
+                            $('#hfzipstatus').val(data.status);
+                            swal('Alert', 'Zip code is not valid for the State', 'error').then(function () { swal.close(); $('#txtZipCode').focus(); });
+                        }
+                    }
+                },
+
+                error: function (error) {
+                    swal('Error!', 'something went wrong', 'error');
+                },
+            })
+        });
+
+    })
+</script>
+<script>
+    function initMap() {
+        let address1Field = document.querySelector("#txtAddress");
+        // Create the autocomplete object, restricting the search predictions to
+        // addresses in the US and Canada.
+        autocomplete = new google.maps.places.Autocomplete(address1Field, {
+            componentRestrictions: { country: ["us", "ca"] },
+            fields: ["address_components", "geometry"],
+            types: ["address"],
+        });
+        // When the user selects an address from the drop-down, populate the
+        // address fields in the form.
+        autocomplete.addListener("place_changed", fillInAddress);
+
+        function fillInAddress() {
+            const place = autocomplete.getPlace();
+            //console.log(place);
+            let address = '';
+            let obj = place.address_components.filter(element => element.types[0] == 'street_number');
+            if (obj.length > 0)
+                address = obj[0].long_name;
+            obj = place.address_components.filter(element => element.types[0] == 'route');
+            if (obj.length > 0)
+                address = address + ' ' + obj[0].long_name;
+            $("#txtAddress").val(address);
+            obj = place.address_components.filter(element => element.types[0] == 'locality');
+            if (obj.length > 0)
+                $("#txtCity").val(obj[0].long_name);
+            else
+                $("#txtCity").val('');
+            obj = place.address_components.filter(element => element.types[0] == 'postal_code');
+            if (obj.length > 0)
+                //console.log(obj[0].long_name);
+                $("#txtZipCode").val(obj[0].long_name);
+            else
+                $("#txtZipCode").val('');
+            obj = place.address_components.filter(element => element.types[0] == 'administrative_area_level_1');
+            if (obj.length > 0)
+                $("#ddlState").empty().append('<option value="' + obj[0].short_name + '" selected>' + obj[0].long_name + '</option>');
+            else
+                $("#ddlState").empty();
+            obj = place.address_components.filter(element => element.types[0] == 'country');
+            if (obj.length > 0)
+                //console.log(obj[0].short_name);
+            $("#ddlCountry").empty().append('<option value="' + obj[0].short_name + '" selected>' + obj[0].long_name + '</option>');
+                //$("#ddlCountry").val(obj[0].short_name + ' - ' + obj[0].long_name);
+            else
+                $("#ddlCountry").empty();
+        }
+
+        function renderAddress(place) {
+            //map.setCenter(place.geometry.location);
+            //marker.setPosition(place.geometry.location);
+            //marker.setVisible(true);
+        }
+    }
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBIgngCCIJ3D8_s3G7aIfvQckhsDtbAe4E&libraries&callback=initMap&libraries=places&v=weekly" async></script>
 
 

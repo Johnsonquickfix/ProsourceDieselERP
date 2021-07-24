@@ -132,7 +132,10 @@
                             <input type="text" class="form-control billinfo" id="txtshipcompany" placeholder="Company">
                         </div>
                         <div class="form-group col-md-12">
-                            <input type="text" class="form-control billinfo searchAddress" id="txtshipaddress1" data-addresstype="ship" placeholder="Enter Address Line 1">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-map-marker"></i></span>
+                                <input type="text" class="form-control billinfo searchAddress" id="txtshipaddress1" data-addresstype="ship" placeholder="Enter Address Line 1">
+                            </div>
                         </div>
                         <div class="form-group col-md-12">
                             <input type="text" class="form-control billinfo" id="txtshipaddress2" placeholder="Enter Address Line 2">
@@ -224,7 +227,7 @@
                     <h3 class="box-title">Totals(s)</h3>
                 </div>
                 <div class="box-body text-right">
-                    <div class="form-horizontal font-bold">
+                    <div id="order_final_total">
                         <div class="form-group">
                             <label class="col-sm-10 control-label">Sub-Total (<span id="totalQty">0</span>)</label>
                             <div class="col-sm-2 controls text-right">
@@ -273,13 +276,13 @@
                                 <strong>$<span id="orderTotal">0.00</span></strong>
                             </div>
                         </div>
-                        <div class="form-group refund-total">
+                        <div class="form-group refund-total hidden">
                             <label class="col-sm-10 control-label">Refunded</label>
                             <div class="col-sm-2 controls text-right text-red text-weight-bold">
                                 <strong>$<span id="refundedTotal" data-orderitemid="0">0.00</span></strong>
                             </div>
                         </div>
-                        <div class="form-group refund-total">
+                        <div class="form-group refund-total hidden">
                             <label class="col-sm-10 control-label">Net Payment</label>
                             <div class="col-sm-2 controls text-right text-weight-bold">
                                 <strong>$<span id="netPaymentTotal" data-orderitemid="0">0.00</span></strong>
@@ -289,7 +292,7 @@
                 </div>
                 <!-- /.box-body -->
                 <div class="box-footer text-right footer-finalbutton">
-                    @*<button type="button" id="btnpay" class="btn btn-primary" > Payment</button>*@
+                    @*<button type="button" id="btnpay" class="btn btn-primary"> Payment</button>*@
                     <button type="button" id="btnCheckout" class="btn btn-danger billinfo"> Checkout</button>
                 </div>
             </div>

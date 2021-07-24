@@ -1,0 +1,56 @@
+﻿
+@{
+    ViewBag.Title = "VendorList";
+}
+
+
+<link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+<link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
+@*datatables js*@
+<script src="~/Content/AdminLTE-3.1.0/datatables/datatables.min.js" type="text/javascript"></script>
+<script src="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/js/dataTables.bootstrap.min.js" type="text/javascript"></script>
+<div class="page-title">
+    <h2 class="page-heading">Vendor List</h2>
+</div>
+<section class="content section-content table-design customer-section">
+    
+    <!-- end top-->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <table id="dtdata" class="inventory-table table-blue table check-table table-bordered table-striped dataTable " width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>Vendor Name</th>
+                                        <th>Alias Name</th>
+                                        <th>Vendor Code</th>
+                                        <th>Zip Code</th>
+                                        <th>Address</th>
+                                        <th>Phone</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="box-footer">
+                    <div class="row">
+                        <div class="col-sm-8 inventory-btn">
+                            <button type="button" id="btnSave" class="btn btn-danger" style="display:none">Save Changes</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</section>
+<script src="@Url.Content("~/js/ThirdParty/VendorList.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+
+
+

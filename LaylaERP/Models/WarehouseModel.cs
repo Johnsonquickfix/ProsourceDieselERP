@@ -18,6 +18,7 @@ namespace LaylaERP.Models
         public string address { get; set; }
         public string zip { get; set; }
         public string town { get; set; }
+        public string city { get; set; }
         public string country { get; set; }
         public int fk_department { get; set; }
         public int fk_pays { get; set; }
@@ -27,6 +28,7 @@ namespace LaylaERP.Models
         public int fk_user_author { get; set; }
         public string model_pdf { get; set; }
         public string import_key { get; set; }
+        public string address1 { get; set; }
         public int fk_parent { get; set; }
     }
 }

@@ -314,7 +314,7 @@
 
                     }
                     else {
-                        if ($('#txtCountry').val() == "US - United States") {
+                        if ($('#txtCountry').val() == "US") {
                             $("#txtPostCode").val("");
                             $('#hfzipstatus').val(data.status);
                             swal('Alert', 'Zip code is not valid for the State', 'error').then(function () { swal.close(); $('#txtPostCode').focus(); });

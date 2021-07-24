@@ -205,6 +205,7 @@
     <Compile Include="Models\InventoryModel.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\OrderModel.cs" />
+    <Compile Include="Models\ProductModel.cs" />
     <Compile Include="Models\SearchModel.cs" />
     <Compile Include="Models\SettingModel.cs" />
     <Compile Include="Models\ThirdPartyModel.cs" />
@@ -577,8 +578,10 @@
     <Content Include="js\GooglePlace\index.js" />
     <Content Include="js\Inventory\Inventory.js" />
     <Content Include="js\Marketing\Coupons.js" />
+    <Content Include="js\Marketing\CouponsManage.js" />
     <Content Include="js\Orders\NewOrder.js" />
     <Content Include="js\Orders\OrderHistory.js" />
+    <Content Include="js\Product\AddnewProduct.js" />
     <Content Include="js\Product\Product.js" />
     <Content Include="js\Ship\ShipStation.js" />
     <Content Include="js\ThirdParty\Vendor.js" />
@@ -771,6 +774,7 @@
     <Content Include="Views\ThirdParty\NewVendor.cshtml" />
     <Content Include="Views\Warehouse\AddNewWarehouse.cshtml" />
     <Content Include="Views\Warehouse\Warehouse.cshtml" />
+    <Content Include="Views\Coupons\ManageCoupons.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

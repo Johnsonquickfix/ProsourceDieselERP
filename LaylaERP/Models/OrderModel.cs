@@ -94,6 +94,7 @@
         public long product_id { get; set; }
         public long variation_id { get; set; }
         public string product_name { get; set; }
+        public string meta_data { get; set; }
         public bool is_free { get; set; }
         public long group_id { get; set; }
         public decimal quantity { get; set; }

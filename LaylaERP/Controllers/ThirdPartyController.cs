@@ -61,6 +61,35 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(JSONresult, 0);
         }
+      
+        public JsonResult GetPaymentTerm(SearchModel model)
+        {
+                DataSet ds = BAL.ThirdPartyRepository.GetPaymentTerm();
+                List<SelectListItem> productlist = new List<SelectListItem>();
+                foreach (DataRow dr in ds.Tables[0].Rows)
+                {
+
+                    productlist.Add(new SelectListItem { Text = dr["PaymentTerm"].ToString(), Value = dr["ID"].ToString() });
+
+                }
+                return Json(productlist, JsonRequestBehavior.AllowGet);
+           
+        }
+        public JsonResult GetBalanceDays (SearchModel model)
+        {
+          
+                DataSet ds = BAL.ThirdPartyRepository.GetBalanceDays();
+                List<SelectListItem> productlist = new List<SelectListItem>();
+                foreach (DataRow dr in ds.Tables[0].Rows)
+                {
+
+                    productlist.Add(new SelectListItem { Text = dr["Balance"].ToString(), Value = dr["ID"].ToString() });
+
+                }
+                return Json(productlist, JsonRequestBehavior.AllowGet);
+           
+            
+        }
         public JsonResult GetVendorCode(SearchModel model)
         {
             string JSONresult = string.Empty;

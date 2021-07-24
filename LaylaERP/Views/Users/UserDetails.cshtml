@@ -129,7 +129,7 @@
                             <div class="form-group">
                                 <label for="exampleInputEmail1">State</label>
                                 <select class="form-control" id="txtState">
-                                    <option selected value="@Model.State">@Model.State </option>
+                                    <option selected value="@Model.State">@Model.StateFullName </option>
                                 </select>
 
                             </div>
@@ -208,7 +208,7 @@
         //})
 
         $(document).on('change', "#txtCountry", function () {
-            $('#txtState').empty();
+            //$('#txtState').empty();
         })
 
         $("#txtState").select2({

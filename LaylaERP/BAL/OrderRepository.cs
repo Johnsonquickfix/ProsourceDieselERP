@@ -497,7 +497,7 @@
 
                         strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'label','{0} Tax' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}'", obj.tax_rate_state, model.OrderPostStatus.order_id, "tax"));
                         strSql.Append(string.Format(" union all select order_item_id,'tax_amount','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}'", obj.amount, model.OrderPostStatus.order_id, "tax"));
-                        strSql.Append(string.Format(" union all wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'rate_percent','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}';", obj.tax_rate, model.OrderPostStatus.order_id, "tax"));
+                        strSql.Append(string.Format(" union all select order_item_id,'rate_percent','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}';", obj.tax_rate, model.OrderPostStatus.order_id, "tax"));
                     }
                 }
 
@@ -579,7 +579,7 @@
                 model.post_date = DateTime.Now;
                 model.post_date_gmt = DateTime.UtcNow;
                 model.post_content = string.Empty;
-                model.post_title = "Refund &ndash; " + model.post_date_gmt.ToString("MMMM dd, yyyy @ HH:mm tt"); 
+                model.post_title = "Refund &ndash; " + model.post_date_gmt.ToString("MMMM dd, yyyy @ HH:mm tt");
                 model.post_excerpt = string.Empty;
                 model.post_status = "wc-completed";// "draft";
                 model.comment_status = "closed";
@@ -1025,15 +1025,22 @@
                             + " max(case meta_key when 'discount_amount' then meta_value else '' end) discount_amount,max(case meta_key when 'cost' then meta_value else '' end) shipping_amount,"
                             + " (select COALESCE(psr.meta_value, 0) sale_price from wp_postmeta psr where psr.meta_key = '_price' "
                             + "         and psr.post_id = (case when max(case oim.meta_key when '_variation_id' then oim.meta_value else '' end) != '0' then max(case oim.meta_key when '_variation_id' then oim.meta_value else '' end)"
-                            + "             else max(case oim.meta_key when '_product_id' then oim.meta_value else '' end) end)) sale_price"
+                            + "             else max(case oim.meta_key when '_product_id' then oim.meta_value else '' end) end)) sale_price,'{}' as meta_data"
                             + " from wp_woocommerce_order_items oi"
                             + " inner join wp_woocommerce_order_itemmeta oim on oim.order_item_id = oi.order_item_id"
-                            + " where oi.order_id = @order_id"
-                            + " group by oi.order_id,oi.order_item_id,oi.order_item_name,oi.order_item_type "
+                            + " where oi.order_id = @order_id and oi.order_item_type!='coupon' group by oi.order_id,oi.order_item_id,oi.order_item_name,oi.order_item_type "
+                            + " union all "
+                            + " Select oi.order_id,oi.order_item_id,oi.order_item_name,oi.order_item_type,0 p_id,0 v_id,0 qty,0 line_subtotal,0 line_total,0 tax,oim.meta_value discount_amount,0 shipping_amount,0 sale_price,"
+                            + " concat('{', group_concat(concat('\"', pm.meta_key, '\": \"', pm.meta_value, '\"') separator ','), '}') as meta_data"
+                            + " from wp_woocommerce_order_items oi"
+                            + " inner join wp_woocommerce_order_itemmeta oim on oim.order_item_id = oi.order_item_id and oim.meta_key = 'discount_amount'"
+                            + " left outer join wp_posts p on lower(p.post_title) = lower(oi.order_item_name) and p.post_type = 'shop_coupon'"
+                            + " left outer join wp_postmeta pm on pm.post_id = p.id and pm.meta_key in ('coupon_amount','discount_type', 'product_ids', 'exclude_product_ids')"
+                            + " where oi.order_id = 796050 and oi.order_item_type = 'coupon' group by oi.order_id,oi.order_item_id,oi.order_item_name,oi.order_item_type,oim.meta_value"
                             + " union all "
                             + " select p.id order_id,p.id order_item_id,concat('Refund #',p.id,' - ',DATE_FORMAT(p.post_date,'%b %e, %Y, %h:%i'),' by ',ur.user_nicename,'</br>',"
                             + " group_concat(concat(oi.order_item_name, ' x ', oim.meta_value) ORDER BY oi.order_item_name separator '</br>')) order_item_name,'refund' order_item_type,"
-                            + " 0 p_id,0 v_id,0 qty,pm.meta_value line_subtotal, pm.meta_value line_total,0 tax,0 discount_amount,0 shipping_amount,0 sale_price"
+                            + " 0 p_id,0 v_id,0 qty,pm.meta_value line_subtotal, pm.meta_value line_total,0 tax,0 discount_amount,0 shipping_amount,0 sale_price,'{}' as meta_data"
                             + " from wp_posts p inner join wp_postmeta pm on pm.post_id = p.id and pm.meta_key = '_order_total'"
                             + " inner join wp_postmeta pmur on pmur.post_id = p.id and pmur.meta_key = '_refunded_by' inner join wp_users ur on ur.id = pmur.meta_value"
                             + " inner join wp_woocommerce_order_items oi on oi.order_id = p.id and oi.order_item_type = 'line_item'"
@@ -1109,6 +1116,10 @@
                             productsModel.discount = decimal.Parse(sdr["discount_amount"].ToString().Trim());
                         else
                             productsModel.discount = 0;
+                        if (sdr["meta_data"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["meta_data"].ToString().Trim()))
+                            productsModel.meta_data = sdr["meta_data"].ToString().Trim();
+                        else
+                            productsModel.meta_data = "{}";
                     }
                     else if (productsModel.product_type == "fee")
                     {

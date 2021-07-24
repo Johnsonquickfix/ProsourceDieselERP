@@ -86,7 +86,6 @@
                             <label for="exampleInputEmail1">State</label>
                             @*<input type="text" id="txtState" class="form-control" placeholder="State" />*@
                             <select class="form-control" id="ddlState">
-                   
                             </select>
                         </div>
                         <div class="form-group">
@@ -127,12 +126,7 @@
                                 <input type="text" id="txtWeb" class="form-control" placeholder="Web" />
                             </div>
                         </div>
-                        @*<div class="form-group">
-                                <label class="control-label " for="Prof Id (FEIN)">Prof Id (FEIN)</label>
-                                <div class="">
-                                    <input type="text" id="txtProfId" class="form-control" placeholder="Prof Id (FEIN)" />
-                                </div>
-                            </div>*@
+                      
 
 
                     </div>
@@ -143,12 +137,7 @@
                                 <select class="form-control" id="ddlSalestaxused"></select>
                             </div>
                         </div>
-                        @*<div class="form-group">
-                                <label class="control-label " for="Address">VAT ID</label>
-                                <div class="">
-                                    <input type="text" id="txtVATID" class="form-control" placeholder="VAT ID" />
-                                </div>
-                            </div>*@
+                      
                         <div class="form-group">
                             <label class="control-label " for="Third-party type">Third-party type</label>
                             <div class="">
@@ -173,25 +162,84 @@
                                 <input type="text" id="txtCapital" class="form-control" placeholder="Capital" />
                             </div>
                         </div>
-                        @*<div class="form-group">
-                                <label class="control-label " for="Incoterms">Incoterms</label>
-                                <div class="">
-                                    <select class="form-control col-md-3" id="ddlIncoterms"></select>
-                                    <input type="text" id="txtIncoterms" class="form-control col-md-9" placeholder="Incoterms" />
-                                </div>
-                            </div>*@
+                      
                         <div class="form-group">
                             <label class="control-label " for="Prof Id (FEIN)">Assigned to sales representative</label>
                             <div class="">
                                 <select class="form-control col-md-3" id="ddlSalesRepresentative"></select>
                             </div>
                         </div>
-                        @*<div class="form-group">
-                                <label class="control-label " for="Address">Logo</label>
-                                <div class="">
-                                    <input type="file" id="txtLogo" class="form-control" placeholder="Logo" />
+                       
+                    </div>
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="col-md-4">
+                        
+                        <div class="form-group">
+                            <label for="Payment Terms">Payment Terms</label>
+                            <select class="form-control" id="ddlPaymentTerms">
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="Balance">Balance</label>
+                            <select class="form-control" id="ddlBalancedays">
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label " for="Payment Date">Payment Date</label>
+                            <div class="">
+                                <div class="input-group">
+                                    <input type="text" id="txtPaymentDate" class="form-control" placeholder=" Select Payment Date" />
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+
                                 </div>
-                            </div>*@
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label " for="Currency">Currency</label>
+                            <div class="">
+                                <select class="form-control" id="ddlCurrency">
+                                    <option value="USD">USD - US Dollars</option>
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="Vendor">Units of measurment</label><br />
+                            <input type="checkbox" id="chkEnableVendorUOMrounding" name="EnableVendorUOMrounding" value="Enable Vendor UOM rounding"> <label for="Enable Vendor UOM rounding">Enable Vendor UOM rounding</label><br>
+                            <input type="radio" id="roundquantityup" name="Unitsofmeasurment" value="round quantity up"> <label for="disabled">round quantity up</label><br>
+                            <input type="radio" id="roundquantitydown" name="Unitsofmeasurment" value="round quantity down"> <label for="round quantity down">round quantity down</label><br>
+                        </div>
+                        <div class="form-group">
+                            <label for="Minimum order quanity">Minimum order quanity</label><br />
+                            <input type="radio" id="disabled" name="Minimumorderquanity" value="disabled"> <label for="disabled">disabled</label><br>
+                            <input type="radio" id="forVariants" name="Minimumorderquanity" value="for Variants"> <label for="html">for Variants</label><br>
+                            <input type="radio" id="forProducts" name="Minimumorderquanity" value="for Products"> <label for="css">for Products</label><br>
+                            <input type="radio" id="forPurchaseOrder" name="Minimumorderquanity" value="for purchase order"> <label for="forPurchaseOrder">for Purchase Order</label>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="Balance">Default Tax %</label>
+                            <input type="text" id="txtDefaultTax" class="form-control" placeholder="Default Tax" />
+                        </div>
+                        <input type="checkbox" id="chkTaxIncludedinprice" name="TaxIncludedinprice" value="Tax Included in price"> <label for="Tax Included in price">Tax Included in price</label><br>
+                        <div class="form-group">
+                            <label class="control-label " for="Default Discount">Default Discount %</label>
+                            <div class="">
+                                <input type="text" id="txtDefaultDiscount" class="form-control" placeholder="Default Discount" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label " for="Credit Limit">Credit Limit</label>
+                            <div class="">
+                                <input type="text" id="txtCreditLimit" class="form-control" placeholder="Credit Limit" />
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -272,7 +320,9 @@
                 },
             })
         });
-
+        $("#txtPaymentDate").datepicker({
+            format: 'yyyy-mm-dd',
+        });
     })
 </script>
 <script>
@@ -319,8 +369,8 @@
             obj = place.address_components.filter(element => element.types[0] == 'country');
             if (obj.length > 0)
                 //console.log(obj[0].short_name);
-            $("#ddlCountry").empty().append('<option value="' + obj[0].short_name + '" selected>' + obj[0].long_name + '</option>');
-                //$("#ddlCountry").val(obj[0].short_name + ' - ' + obj[0].long_name);
+                $("#ddlCountry").empty().append('<option value="' + obj[0].short_name + '" selected>' + obj[0].long_name + '</option>');
+            //$("#ddlCountry").val(obj[0].short_name + ' - ' + obj[0].long_name);
             else
                 $("#ddlCountry").empty();
         }

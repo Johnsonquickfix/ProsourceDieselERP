@@ -39,6 +39,17 @@ namespace LaylaERP.Models
         public string Logo { get; set; }
         public string user_status { get; set; }
         public string Search { get; set; }
-     
+        public int PaymentTermsID { get; set; }
+        public int BalanceID { get; set; }
+        public DateTime PaymentDate { get; set; }
+        public string Currency { get; set; }
+        public bool EnableVendorUOM { get; set; }
+        public string UnitsofMeasurment { get; set; }
+        public string MinimumOrderQuanity { get; set; }
+        public decimal DefaultTax { get; set; }
+        public bool TaxIncludedinPrice { get; set; }
+        public decimal DefaultDiscount { get; set; }
+        public string CreditLimit { get; set; }
+
     }
 }

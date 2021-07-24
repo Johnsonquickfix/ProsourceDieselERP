@@ -1,6 +1,5 @@
 ﻿$("#loader").hide();
 getProspect();
-getVendor();
 getStatus();
 getSalesTaxUsed();
 getThirdPartyType();
@@ -8,15 +7,9 @@ getWorkforce();
 getIncoterms();
 getAssignedtoSalesRepresentative();
 getVendorCode();
+getPaymentTerm();
+getBalanceDays();
 
-
-//function getVendorCode() {
-//    var d = new Date();
-//    var newMonth = d.getMonth() + 1;
-//    var prettyDate = "SU" + '' + d.getFullYear().toString().substr(-2) + '' + (newMonth < 10 ? "0" + newMonth : newMonth) + '-' + "0005";
-//    $("#txtVendorCode").val(prettyDate);
- 
-//}
 
 function getProspect() {
     var data = [
@@ -33,19 +26,39 @@ function getProspect() {
     })
     $("#ddlProspect").html(items);
 }
-function getVendor() {
-    var data = [
-        { "ID": "1", "Text": "Yes" },
-        { "ID": "0", "Text": "No" },
 
-    ];
-    var items = "";
-    $.each(data, function (index, value) {
-        items += "<option value=" + this['ID'] + ">" + this['Text'] + "</option>";
-    })
-    $("#ddlVendor").html(items);
+
+function getPaymentTerm() {
+  
+    $.ajax({
+        url: "/ThirdParty/GetPaymentTerm",
+        type: "Get",
+        success: function (data) {
+            var opt = '<option value="-1">Please Select Payment Term</option>';
+            for (var i = 0; i < data.length; i++) {
+                opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
+            }
+            $('#ddlPaymentTerms').html(opt);
+        }
+
+    });
 }
-function getStatus(){
+function getBalanceDays() {
+
+    $.ajax({
+        url: "/ThirdParty/GetBalanceDays",
+        type: "Get",
+        success: function (data) {
+            var opt = '<option value="-1">Please Select Balance Days</option>';
+            for (var i = 0; i < data.length; i++) {
+                opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
+            }
+            $('#ddlBalancedays').html(opt);
+        }
+
+    });
+}
+function getStatus() {
     var data = [
         { "ID": "1", "Text": "Open" },
         { "ID": "0", "Text": "Closed" },
@@ -93,7 +106,7 @@ function getWorkforce() {
         { "ID": "3", "Text": "11 - 50" },
         { "ID": "4", "Text": "51 - 100" },
         { "ID": "5", "Text": "100 - 500" },
-        { "ID": "6", "Text": "> 500"},
+        { "ID": "6", "Text": "> 500" },
 
     ];
     var items = "";
@@ -138,25 +151,25 @@ function getAssignedtoSalesRepresentative() {
 }
 
 document.getElementById('txtPhone').addEventListener('keyup', function (evt) {
-        var phoneNumber = document.getElementById('txtPhone');
-        var charCode = (evt.which) ? evt.which : evt.keyCode;
-        phoneNumber.value = phoneFormat(phoneNumber.value);
-    });
+    var phoneNumber = document.getElementById('txtPhone');
+    var charCode = (evt.which) ? evt.which : evt.keyCode;
+    phoneNumber.value = phoneFormat(phoneNumber.value);
+});
 function phoneFormat(input) {
-        input = input.replace(/\D/g, '');
-        input = input.substring(0, 10);
-        var size = input.length;
-        if (size == 0) {
-            input = input;
-        } else if (size < 4) {
-            input = '(' + input;
-        } else if (size < 7) {
-            input = '(' + input.substring(0, 3) + ') ' + input.substring(3, 6);
-        } else {
-            input = '(' + input.substring(0, 3) + ') ' + input.substring(3, 6) + ' - ' + input.substring(6, 10);
-        }
-        return input;
+    input = input.replace(/\D/g, '');
+    input = input.substring(0, 10);
+    var size = input.length;
+    if (size == 0) {
+        input = input;
+    } else if (size < 4) {
+        input = '(' + input;
+    } else if (size < 7) {
+        input = '(' + input.substring(0, 3) + ') ' + input.substring(3, 6);
+    } else {
+        input = '(' + input.substring(0, 3) + ') ' + input.substring(3, 6) + ' - ' + input.substring(6, 10);
     }
+    return input;
+}
 
 $("#btnSave").click(function () {
     saveVendor();
@@ -179,26 +192,35 @@ function saveVendor() {
     Fax = $("#txtFax").val();
     EMail = $("#txtEMail").val();
     Web = $("#txtWeb").val();
-    //ProfId = $("#txtProfId").val();
     Salestaxused = $("#ddlSalestaxused").val();
     ThirdPartyType = $("#ddlThirdPartyType").val();
     Workforce = $("#ddlWorkforce").val();
     BusinessEntityType = $("#txtBusinessEntityType").val();
     Capital = $("#txtCapital").val();
-    //ddlIncoterms = $("#ddlIncoterms").val();
-    //Incoterms = $("#txtIncoterms").val();
     SalesRepresentative = $("#ddlSalesRepresentative").val();
-    var pattern = /^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
+    PaymentTerms = $("#ddlPaymentTerms").val();
+    Balancedays = $("#ddlBalancedays").val();
+    PaymentDate = $("#txtPaymentDate").val();
+    Currency = $("#ddlCurrency").val();
+    EnableVendorUOM = $('#chkEnableVendorUOMrounding').prop("checked") ? 1 : 0;
+    
+    Unitsofmeasurment = $("input[type='radio'][name='Unitsofmeasurment']:checked").val();
+    Minimumorderquanity = $("input[type='radio'][name='Minimumorderquanity']:checked").val();
+    DefaultTax = $("#txtDefaultTax").val();
+    TaxIncludedinprice = $("#chkTaxIncludedinprice").prop("checked") ? 1 : 0;
+    DefaultDiscount = $("#txtDefaultDiscount").val();
+    CreditLimit = $("#txtCreditLimit").val();
 
-    if (VendorName == "") {swal('alert', 'Please Enter Vendor Name', 'error').then(function () { swal.close(); $('#txVendorName').focus(); })}
-    else if (AliasName == "") {swal('alert', 'Please Enter Alias Name', 'error').then(function () { swal.close(); $('#txtAliasName').focus(); })}
-    else if (Status == "") {swal('alert', 'Please Enter Status', 'error').then(function () { swal.close(); $('#ddlStatus').focus(); })}
-    else if (Address == "") {swal('alert', 'Please Enter Address', 'error').then(function () { swal.close(); $('#txtAddress').focus(); })}
-    else if (City == "") {swal('alert', 'Please Enter City', 'error').then(function () { swal.close(); $('#txtCity').focus(); })}
-    else if (State == "") { swal('alert', 'Please Enter State', 'error').then(function () { swal.close(); $('#ddlState').focus(); })}
-    else if (ZipCode == "") { swal('alert', 'Please Enter ZipCode', 'error').then(function () { swal.close(); $('#txtZipCode').focus(); })}
-    else if (Country == "") { swal('alert', 'Please Enter Country', 'error').then(function () { swal.close(); $('#ddlCountry').focus(); })}
-    else if (Phone == "") { swal('alert', 'Please Enter Phone', 'error').then(function () { swal.close(); $('#txtPhone').focus(); })}
+    var pattern = /^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
+    if (VendorName == "") { swal('alert', 'Please Enter Vendor Name', 'error').then(function () { swal.close(); $('#txVendorName').focus(); }) }
+    else if (AliasName == "") { swal('alert', 'Please Enter Alias Name', 'error').then(function () { swal.close(); $('#txtAliasName').focus(); }) }
+    else if (Status == "") { swal('alert', 'Please Enter Status', 'error').then(function () { swal.close(); $('#ddlStatus').focus(); }) }
+    else if (Address == "") { swal('alert', 'Please Enter Address', 'error').then(function () { swal.close(); $('#txtAddress').focus(); }) }
+    else if (City == "") { swal('alert', 'Please Enter City', 'error').then(function () { swal.close(); $('#txtCity').focus(); }) }
+    else if (State == "") { swal('alert', 'Please Enter State', 'error').then(function () { swal.close(); $('#ddlState').focus(); }) }
+    else if (ZipCode == "") { swal('alert', 'Please Enter ZipCode', 'error').then(function () { swal.close(); $('#txtZipCode').focus(); }) }
+    else if (Country == "") { swal('alert', 'Please Enter Country', 'error').then(function () { swal.close(); $('#ddlCountry').focus(); }) }
+    else if (Phone == "") { swal('alert', 'Please Enter Phone', 'error').then(function () { swal.close(); $('#txtPhone').focus(); }) }
     else if (EMail == "") { swal('alert', 'Please Enter EMail', 'error').then(function () { swal.close(); $('#txtEMail').focus(); }) }
     else if (!pattern.test(EMail)) { swal('alert', 'not a valid e-mail address', 'error').then(function () { swal.close(); $('#txtEMail').focus(); }) }
     else if (Web == "") { swal('alert', 'Please Enter Web', 'error').then(function () { swal.close(); $('#txtWeb').focus(); }) }
@@ -215,7 +237,10 @@ function saveVendor() {
             Name: VendorName, AliasName: AliasName, VendorCode: VendorCode, Status: Status, Address: Address,
             City: City, State: State, StateName: StateName, ZipCode: ZipCode, Country: Country, Phone: Phone, Fax: Fax, EMail: EMail, Web: Web,
             SalesTaxUsed: Salestaxused, ThirdPartyType: ThirdPartyType, Workforce: Workforce, BusinessEntityType: BusinessEntityType,
-            Capital: Capital, SalesRepresentative: SalesRepresentative, Address1: Address1,
+            Capital: Capital, SalesRepresentative: SalesRepresentative, Address1: Address1, PaymentTermsID: PaymentTerms, BalanceID: Balancedays ,
+            PaymentDate: PaymentDate, Currency: Currency, EnableVendorUOM: EnableVendorUOM, UnitsofMeasurment:Unitsofmeasurment,
+            MinimumOrderQuanity: Minimumorderquanity, DefaultTax: DefaultTax, TaxIncludedinPrice:TaxIncludedinprice,
+            DefaultDiscount: DefaultDiscount, CreditLimit: CreditLimit
         }
         $.ajax({
             url: '/ThirdParty/AddVendor/', dataType: 'json', type: 'Post',
@@ -229,7 +254,7 @@ function saveVendor() {
                 if (data.status == true) {
                     swal('Alert!', data.message, 'success');
                     $("#parent").find(":input").each(function () {
-                        switch (this.type) {case "text":case "email":case "tel":$(this).val('');break;}
+                        switch (this.type) { case "text": case "email": case "tel": $(this).val(''); break; }
                     });
                     window.location = "../../ThirdParty/VendorList";
                 }
@@ -282,7 +307,6 @@ function GetVendorByID(id) {
                     $("#txtCapital").val(d[0].capital);
                     $("#ddlSalesRepresentative").val(d[0].SalesRepresentative);
                     $("#ddlState").empty().append('<option value="' + d[0].State + '" selected>' + d[0].StateName + '</option>');
-                    //$("#ddlState").val(d[0].State);
                     $("#ddlState").select2({
                         allowClear: true, minimumInputLength: 3, placeholder: "Search State",
                         ajax: {
@@ -292,10 +316,22 @@ function GetVendorByID(id) {
                             error: function (xhr, status, err) { }, cache: true
                         }
                     });
+                    $("#ddlPaymentTerms").val(d[0].PaymentTermsID);
+                    $("#ddlBalancedays").val(d[0].BalanceID);
+                    $("#txtPaymentDate").val(d[0].PaymentDate);
+                    $("#ddlCurrency").val(d[0].Currency);
+                    d[0].EnableVendorUOM == true ? $('#chkEnableVendorUOMrounding').attr("checked", "checked") : "";
+                    $('input:radio[value="' + d[0].UnitsofMeasurment + '"]').prop('checked', true);
+                    $('input:radio[value="' + d[0].MinimumOrderQuanity + '"]').prop('checked', true);
+                    $("#txtDefaultTax").val(d[0].DefaultTax);
+                    d[0].TaxIncludedinPrice == true ? $('#chkTaxIncludedinprice').attr("checked", "checked") : "";
+                    $("#txtDefaultDiscount").val(d[0].DefaultDiscount);
+                    $("#txtCreditLimit").val(d[0].CreditLimit);
+
                 }
             },
             error: function (msg) {
-               
+
             }
         });
 

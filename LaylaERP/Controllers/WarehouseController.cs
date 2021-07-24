@@ -123,5 +123,45 @@ namespace LaylaERP.Controllers
 
         }
 
+        public ActionResult MasStockTransfer()
+        {
+
+            return View();
+        }
+
+        public JsonResult Gettargetwarehouse()
+        {
+            DataTable dt = new DataTable();
+            dt = WarehouseRepository.GetSourceWarehouse();
+            List<SelectListItem> warehouselist = new List<SelectListItem>();
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                warehouselist.Add(new SelectListItem
+                {
+                    Value = dt.Rows[i]["rowid"].ToString(),
+                    Text = dt.Rows[i]["ref"].ToString()
+
+                });
+            }
+            return Json(warehouselist, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetProduct()
+        {
+            DataTable dt = new DataTable();
+            dt = WarehouseRepository.GetProduct();
+            List<SelectListItem> warehouselist = new List<SelectListItem>();
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                warehouselist.Add(new SelectListItem
+                {
+                    Value = dt.Rows[i]["pr_id"].ToString(),
+                    Text = dt.Rows[i]["post_title"].ToString()
+
+                });
+            }
+            return Json(warehouselist, JsonRequestBehavior.AllowGet);
+        }
+
     }
 }

@@ -61,7 +61,7 @@ namespace LaylaERP.BAL
             try
             {
 
-                string strSql = "SELECT rowid,ref,entity,description,lieu,phone,fax,if(statut=0,'Close','Open')as status,address, zip, town, country, address1,city FROM wp_warehouse where rowid="+ rowid + "";
+                string strSql = "SELECT rowid,ref,entity,description,lieu,phone,fax,if(statut=0,'Close','Open')as status,address, zip, town, country, address1,city FROM wp_warehouse where rowid=" + rowid + "";
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
 
@@ -100,6 +100,40 @@ namespace LaylaERP.BAL
             {
                 throw Ex;
             }
+        }
+
+        public static DataTable GetSourceWarehouse()
+        {
+            DataTable dtr = new DataTable();
+            try
+            {
+                string strquery = "select rowid, ref from wp_warehouse order by rowid desc";
+                dtr = SQLHelper.ExecuteDataTable(strquery);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dtr;
+        }
+
+        public static DataTable GetProduct()
+        {
+            DataTable dtr = new DataTable();
+            try
+            {
+                string strquery = "SELECT DISTINCT post.id,ps.ID pr_id, CONCAT(post.post_title, ' (', COALESCE(psku.meta_value, ''), ') - ', LTRIM(REPLACE(REPLACE(COALESCE(ps.post_excerpt, ''), 'Size:', ''), 'Color:', ''))) as post_title, psr.meta_value as reg_price, pr.meta_value price,"
+                              + "  CONCAT(post.id, '$', COALESCE(ps.id, 0)) r_id FROM wp_posts as post"
+                              + "  LEFT OUTER JOIN wp_posts ps ON ps.post_parent = post.id and ps.post_type LIKE 'product_variation'"
+                              + "  left outer join wp_postmeta psku on psku.post_id = ps.id and psku.meta_key = '_sku'"
+                              + " left outer join wp_postmeta pr on pr.post_id = ps.id and pr.meta_key = '_regular_price'"
+                              + " left outer join wp_postmeta psr on psr.post_id = COALESCE(ps.id, post.id) and psr.meta_key = '_price'"
+                              + "  WHERE post.post_type = 'product' AND post.post_status = 'publish' AND CONCAT(post.post_title, ' (' , COALESCE(psku.meta_value, '') , ') - ' ,LTRIM(REPLACE(REPLACE(COALESCE(ps.post_excerpt, ''), 'Size:', ''), 'Color:', ''))) like '%%%'"
+                              + " ORDER BY post.ID";
+                dtr = SQLHelper.ExecuteDataTable(strquery);
+
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dtr;
         }
     }
 }

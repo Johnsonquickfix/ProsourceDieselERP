@@ -1,0 +1,106 @@
+﻿
+@{
+    ViewBag.Title = "Mass Stock Transfer";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="page-title">
+    <h2>Mass Stock Transfer</h2>
+    @*<a class="btn btn-danger" id="btnAdd" href="Index"></a>*@
+</div>
+
+<section class="content section-content neworder-section table-design">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="user-top-section">
+                <div class="tablenav top tablenav-top2">
+                    <div class="alignleft actions bulkactions">
+                        <select class="form-control" id="ddlsourcewarehouse">
+                            <option value="0" selected="selected">Select Source warehouse</option>
+                        </select>
+                    </div>
+
+                    <div class="alignleft actions">
+                        <select class="form-control" id="ddltargetwarehouse">
+                            <option value="0">Select Target warehouse</option>
+                        </select>
+                    </div>
+                    <div class="alignleft actions">
+                        <select class="form-control select2 billinfo" id="ddlProduct" placeholder="Select Products" style="width: 100%;">
+                            <option value="0">Select Product</option>
+                        </select>
+                    </div>
+                    <div class="alignleft actions">
+                        <input type="text" name="serial" id="txtSerial" placeholder=" Lot/Serial" />
+
+                    </div>
+                    <div class="alignleft actions">
+                        <input type="text" name="qty" id="txtQty" placeholder="Qty" />
+                    </div>
+
+                    <div class="alignleft actions">
+                        <input type="submit" name="action" id="btnSelect" class="button" value="Select" />
+                    </div>
+
+                    <br />
+                    <br />
+                    <div class="alignleft actions">
+                        Movement or inventory code:<input type="text" id="dateserial" placeholder=" Movement or inventory code" />
+                    </div>
+
+                    <br />
+                    <br />
+                    <div class="alignleft actions">
+                        Label of movement:<input type="text" id="txtlabel" placeholder="Label of Movement" />
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</section>
+
+<script>
+    $(document).ready(function () {
+        $("#loader").hide();
+
+        $(document).on('click', "#btnSelect", function () {
+            debugger
+            var source = $("#ddlsourcewarehouse").val();
+            var target = $("#ddlsourcewarehouse").val();
+            var product = $("#ddlProduct").val();
+            var serial = $("#txtSerial").val();
+            var Qty = $("#txtQty").val();
+            var mydate = $("#dateserial").val();
+            var mydate = $("#dateserial").val();
+            var dt2 = new Date();
+            var dt3 = dt2.getFullYear() + ("0" + (dt2.getMonth() + 1)).slice(-2) + dt2.getDate();
+            document.getElementById("dateserial").value = dt3 + serial;
+            
+        });
+       
+        $.get('/Warehouse/Gettargetwarehouse', function (data) {
+            var items = "";
+            $.each(data, function (index, value) {
+                items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddlsourcewarehouse");
+                items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddltargetwarehouse");
+            })
+        });
+
+        $.get('/Warehouse/GetProduct', function (data) {
+            var items = "";
+            $.each(data, function (index, value) {
+                items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddlProduct"); 
+            })
+        });
+
+    });
+
+    var dt2 = new Date();
+    var dt3 = dt2.getFullYear() + ("0" + (dt2.getMonth() + 1)).slice(-2) + dt2.getDate();
+    var dt4 = dt2.getFullYear() + '-' + ("0" + (dt2.getMonth() + 1)).slice(-2) + '-' + dt2.getDate();
+    document.getElementById("dateserial").value = dt3;
+    document.getElementById("txtlabel").Value = "Stock Transfer" + dt4;
+</script>

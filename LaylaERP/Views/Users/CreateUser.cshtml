@@ -90,6 +90,7 @@
                                     <input type="text" class="form-control" id="txtPhone" placeholder="Enter Your Phone Number">
                                 </div>
                                 <div class="form-group">
+                                    <img class="sb-title-icon" src="https://fonts.gstatic.com/s/i/googlematerialicons/location_pin/v5/24px.svg" alt="">
                                     <label for="exampleInputEmail1">Address </label>
                                     <input type="text" class="form-control" id="txtAddress" placeholder="Enter Your Address ">
                                 </div>
@@ -99,15 +100,15 @@
 
                                 </div>
                                 @*<div class="form-group">
-                                    <label for="exampleInputEmail1">City</label>
-                                    <select id="txtCity" class="form-control select2">
-                                        <option></option>
-                                    </select>
+                                        <label for="exampleInputEmail1">City</label>
+                                        <select id="txtCity" class="form-control select2">
+                                            <option></option>
+                                        </select>
 
-                                </div>*@
+                                    </div>*@
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">City</label>
-                                    <input type="text" id="txtCity" class="form-control"/>                                        
+                                    <input type="text" id="txtCity" class="form-control" />
                                 </div>
 
                             </div>
@@ -115,14 +116,14 @@
 
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">State</label>
-                                    <select class="form-control select2" id="txtState">
-                                        <option></option>
+                                    <select class="form-control" id="txtState">
+                                        <option selected value=""></option>
                                     </select>
                                 </div>
                                 @*<div class="form-group">
-                                    <label for="exampleInputEmail1">State</label>
-                                    <input type="text" class="form-control" id="txtState">                                        
-                                </div>*@
+                                        <label for="exampleInputEmail1">State</label>
+                                        <input type="text" class="form-control" id="txtState">
+                                    </div>*@
 
                                 <div class="form-group">
                                     <label class="control-label" for="Zip Code">Zip Code</label>
@@ -173,7 +174,7 @@
 </div>
 
 <script>
-    var strength=1;
+    var strength = 1;
     $(document).ready(function () {
         $("#loader").hide();
         //$.get('GetCity', function (data) {
@@ -185,15 +186,15 @@
 
 
 
-       /* $("#txtCity").select2({
-            allowClear: true, minimumInputLength: 3, placeholder: "Search City",
-            ajax: {
-                url: '/Users/GetCity', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
-                data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
-                processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.City, name: item.City, id: item.City } }) }; },
-                error: function (xhr, status, err) { }, cache: true
-            }
-        });*/
+        /* $("#txtCity").select2({
+             allowClear: true, minimumInputLength: 3, placeholder: "Search City",
+             ajax: {
+                 url: '/Users/GetCity', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+                 data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
+                 processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.City, name: item.City, id: item.City } }) }; },
+                 error: function (xhr, status, err) { }, cache: true
+             }
+         });*/
 
         // $("#txtCity").change(function () { setTimeout(function () { NewOrderNo(); }, 50); CustomerAddress(); return false; });
 
@@ -211,25 +212,25 @@
             //}
 
             allowClear: true, minimumInputLength: 2, placeholder: "Search State",
-                ajax: {
-                    url: '/Users/GetCustState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
-                    data: function (params) {
-                        var obj = { strValue1: params.term, strValue2: $("#txtCountry").val() };
-                        return JSON.stringify(obj);
-                    },
-                    processResults: function (data) {
-                        var jobj = JSON.parse(data);
-                        console.log(jobj);
-                        return {
-                            results: $.map(jobj, function (item) {
-                                return { text: item.StateFullName, name: item.StateFullName, id: item.StateFullName }
-                            })
-                        };
-                    },
-                    error: function (xhr, status, err) { }, cache: true
-                }
+            ajax: {
+                url: '/Users/GetCustState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+                data: function (params) {
+                    var obj = { strValue1: params.term, strValue2: $("#txtCountry").val() };
+                    return JSON.stringify(obj);
+                },
+                processResults: function (data) {
+                    var jobj = JSON.parse(data);
+                    console.log(jobj);
+                    return {
+                        results: $.map(jobj, function (item) {
+                            return { text: item.StateFullName, name: item.StateFullName, id: item.StateFullName }
+                        })
+                    };
+                },
+                error: function (xhr, status, err) { }, cache: true
+            }
         });
-      
+
 
         //txtState
         //$.get('GetState', function (data) {
@@ -390,7 +391,7 @@
             }
 
         });
-         
+
 
         $("#btnPhotoLibrary").click(function () {
             $("#hidimage").val('');
@@ -420,8 +421,8 @@
         strength = 1;
         var arr = [/.{5,}/, /[a-z]+/, /[0-9]+/, /[A-Z]+/];
         jQuery.map(arr, function (regexp) {
-            if (Password.match(regexp)) 
-                strength++;           
+            if (Password.match(regexp))
+                strength++;
         });
 
     })
@@ -445,8 +446,8 @@
         strength = 1;
         var arr = [/.{5,}/, /[a-z]+/, /[0-9]+/, /[A-Z]+/];
         jQuery.map(arr, function (regexp) {
-            if (Password.match(regexp)) 
-                strength++;  
+            if (Password.match(regexp))
+                strength++;
         });
 
     })
@@ -537,11 +538,11 @@
         else if (Password == "") {
             swal('Alert', 'Please Enter Password', 'error').then(function () { swal.close(); $('#txtPassword').focus(); });
         }
-        else if (Password.length < 8 ) {
+        else if (Password.length < 8) {
             swal('Alert', 'Passwords must be 8 characters.', 'error').then(function () { swal.close(); $('#txtPassword').focus(); });
         }
         else if (strength < 5) {
-                    swal('Alert', 'Passwords must be have number,one special and one capital characters.', 'error').then(function () { swal.close(); $('#txtPassword').focus(); });
+            swal('Alert', 'Passwords must be have number,one special and one capital characters.', 'error').then(function () { swal.close(); $('#txtPassword').focus(); });
         }
         else if (ConfirmPassword == "") {
             console.log(strength);
@@ -550,7 +551,7 @@
         else if (Password !== ConfirmPassword) {
             swal('Alert', 'Confirm Password is not matching.', 'error').then(function () { swal.close(); $('#txtConfirmPassword').focus(); });
         }
-        
+
         else {
             $("#txtPostCode").change();
             if ($("#hfzipstatus").val() == "true") {
@@ -644,7 +645,7 @@
         }
         return input;
     }
-    
+
     function passwordcheck() {
         $('#txtPassword, #txtConfirmPassword').on('keyup', function () {
             if ($('#txtPassword').val() == $('#txtConfirmPassword').val()) {
@@ -670,7 +671,7 @@
         $("#txtFirstName").val("");
         $("#txtLastName").val("");
         $("#txtAddress").val("");
-        $("#txtCountry").val("US-United States");
+        $("#txtCountry").val("US");
         $("#txtUserRole").val("0");
         $("#txtPassword").val("");
         $("#txtConfirmPassword").val("");
@@ -684,3 +685,63 @@
 </script>
 
 
+<script>
+    function initMap() {
+        let address1Field = document.querySelector("#txtAddress");
+        // Create the autocomplete object, restricting the search predictions to
+        // addresses in the US and Canada.
+        autocomplete = new google.maps.places.Autocomplete(address1Field, {
+            componentRestrictions: { country: ["us", "ca"] },
+            fields: ["address_components", "geometry"],
+            types: ["address"],
+        });
+        // When the user selects an address from the drop-down, populate the
+        // address fields in the form.
+        autocomplete.addListener("place_changed", fillInAddress);
+
+        function fillInAddress() {
+            const place = autocomplete.getPlace();
+            //console.log(place);
+            let address = '';
+            let obj = place.address_components.filter(element => element.types[0] == 'street_number');
+            if (obj.length > 0)
+                address = obj[0].long_name;
+            obj = place.address_components.filter(element => element.types[0] == 'route');
+            if (obj.length > 0)
+                address = address + ' ' + obj[0].long_name;
+            $("#txtAddress").val(address);
+            obj = place.address_components.filter(element => element.types[0] == 'locality');
+            if (obj.length > 0)
+                $("#txtCity").val(obj[0].long_name);
+            else
+                $("#txtCity").val('');
+            obj = place.address_components.filter(element => element.types[0] == 'postal_code');
+            if (obj.length > 0)
+                $("#txtPostCode").val(obj[0].long_name);
+            else
+                $("#txtPostCode").val('');
+            obj = place.address_components.filter(element => element.types[0] == 'administrative_area_level_1');
+            
+            if (obj.length > 0)
+                $("#txtState").empty().append('<option value="' + obj[0].short_name + '" selected>' + obj[0].long_name + '</option>');
+            else
+                $("#txtState").empty();
+            obj = place.address_components.filter(element => element.types[0] == 'country');
+            if (obj.length > 0)
+                $('#txtCountry').val(obj[0].short_name.trim()).trigger('change'); //$("#txtBillingCountry").val(obj[0].short_name + ' - ' + obj[0].long_name);
+            else
+                $("#txtCountry").empty();
+
+
+        }
+
+        function renderAddress(place) {
+            //map.setCenter(place.geometry.location);
+            //marker.setPosition(place.geometry.location);
+            //marker.setVisible(true);
+        }
+    }
+</script>
+<!--Google Place API -->
+@*<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBIgngCCIJ3D8_s3G7aIfvQckhsDtbAe4E&libraries=places&callback=initMap&channel=GMPSB_addressselection_v1_cABC" async defer></script>*@
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBIgngCCIJ3D8_s3G7aIfvQckhsDtbAe4E&libraries&callback=initMap&libraries=places&v=weekly" async></script>

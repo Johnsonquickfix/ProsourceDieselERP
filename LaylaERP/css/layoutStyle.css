@@ -481,7 +481,7 @@ table.dataTable tbody td.select-checkbox:before, table.dataTable tbody td.select
     width: 100%;
 }
 
-.nav-tabs-custom > .tab-content {
+.nav-tabs-custom > .tab-content {padding:0px;
     padding-top: 20px;
 }
 

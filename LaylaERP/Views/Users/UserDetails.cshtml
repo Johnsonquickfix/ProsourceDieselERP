@@ -42,10 +42,10 @@
                         </div>
 
                     </div>
-                    
+
                     @*<h3 class="profile-username text-center">Layla Sleep</h3>
-        <p class="text-muted text-center">laylasleep@acb.com</p>
-        <p class="text-center">Washington Dc</p>*@
+                        <p class="text-muted text-center">laylasleep@acb.com</p>
+                        <p class="text-center">Washington Dc</p>*@
                 </div>
                 <!-- /.box-body -->
             </div>
@@ -100,6 +100,7 @@
                             </div>
 
                             <div class="form-group">
+                                <img class="sb-title-icon" src="https://fonts.gstatic.com/s/i/googlematerialicons/location_pin/v5/24px.svg" alt="">
                                 <label for="exampleInputEmail1">Address </label>
 
                                 <input type="text" class="form-control" id="txtAddress" value="@Model.address" placeholder="Enter Your Address ">
@@ -110,16 +111,16 @@
 
                             </div>
                             @*<div class="form-group">
-                                <label for="exampleInputEmail1">City</label>
-                                <select class="form-control" id="txtCity">
-                                    <option selected value="@Model.City">@Model.City </option>
-                                </select>
+                                    <label for="exampleInputEmail1">City</label>
+                                    <select class="form-control" id="txtCity">
+                                        <option selected value="@Model.City">@Model.City </option>
+                                    </select>
 
-                            </div>*@
+                                </div>*@
 
                             <div class="form-group">
                                 <label for="exampleInputEmail1">City</label>
-                                <input type="text" class="form-control" id="txtCity" value="@Model.City">                                   
+                                <input type="text" class="form-control" id="txtCity" value="@Model.City">
                             </div>
 
                         </div>
@@ -128,14 +129,14 @@
                             <div class="form-group">
                                 <label for="exampleInputEmail1">State</label>
                                 <select class="form-control" id="txtState">
-                                    <option selected value="@Model.State">@Model.State </option>
+                                    <option selected value="@Model.State">@Model.StateFullName </option>
                                 </select>
 
                             </div>
                             @*<div class="form-group">
-                                <label for="exampleInputEmail1">State</label>
-                                <input type="text" class="form-control" id="txtState" value="@Model.State">                                  
-                            </div>*@
+                                    <label for="exampleInputEmail1">State</label>
+                                    <input type="text" class="form-control" id="txtState" value="@Model.State">
+                                </div>*@
                             <div class="form-group">
                                 <label class="control-label" for="Zip Code">Zip Code</label>
                                 <div class="">
@@ -181,21 +182,21 @@
         //    })
         //})
 
-       /* $("#txtCity").select2({
+        /* $("#txtCity").select2({
 
-            allowClear: true, minimumInputLength: 3, placeholder: "Search City",
-            ajax: {
-                url: '/Users/GetCity', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
-                data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
-                processResults: function (data) {
-                    var jobj = JSON.parse(data);
-                    $("#txtCity").empty().append('<option value="' + data[0].City + '" selected>' + data[0].City + '</option>');
-                    return { results: $.map(jobj, function (item) { return { text: item.City, name: item.City, id: item.City } }) };
+             allowClear: true, minimumInputLength: 3, placeholder: "Search City",
+             ajax: {
+                 url: '/Users/GetCity', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+                 data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
+                 processResults: function (data) {
+                     var jobj = JSON.parse(data);
+                     $("#txtCity").empty().append('<option value="' + data[0].City + '" selected>' + data[0].City + '</option>');
+                     return { results: $.map(jobj, function (item) { return { text: item.City, name: item.City, id: item.City } }) };
 
-                },
-                error: function (xhr, status, err) { }, cache: true
-            }
-        }); */
+                 },
+                 error: function (xhr, status, err) { }, cache: true
+             }
+         }); */
 
         //$.get('GetCity', function (data) {
         //    var Ct = $("#hfCity").val();
@@ -207,7 +208,7 @@
         //})
 
         $(document).on('change', "#txtCountry", function () {
-            $('#txtState').empty();
+            //$('#txtState').empty();
         })
 
         $("#txtState").select2({
@@ -435,42 +436,42 @@
 
 
         else {
-           // $("#txtPostCode").change();
+            // $("#txtPostCode").change();
             /*if ($("#hfzipstatus").val() == "true") {*/
-                var obj = {
-                    ID: ID,
-                    user_email: Email,
-                    user_nicename: NickName,
-                    first_name: FirstName,
-                    last_name: LastName,
-                    address: address,
-                    country: country,
-                    phone: Phone,
-                    user_role: UserRole,
-                    User_Image: Picture,
-                    billing_postcode: Zipcode,
-                    billing_state: State,
-                    billing_city: City,
-                    billing_address_2: address2
-                }
-                $.ajax({
-                    url: '/Users/UpdateUser/', dataType: 'json', type: 'Post',
-                    contentType: "application/json; charset=utf-8",
-                    data: JSON.stringify(obj),
-                    dataType: "json",
-                    beforeSend: function () { $("#loader").show(); },
-                    success: function (data) {
-                        if (data.status == true) {
-                            //swal('Alert!', data.message, 'success').then((result) => { location.href = 'Users'; });
-                            swal('Alert!', data.message, 'success').then((result) => { location.href = 'Users'; });
-                        }
-                        else {
-                            swal('Alert!', data.message, 'error');
-                        }
-                    },
-                    complete: function () { $("#loader").hide(); },
-                    error: function (error) { swal('Error!', 'something went wrong', 'error'); },
-                })
+            var obj = {
+                ID: ID,
+                user_email: Email,
+                user_nicename: NickName,
+                first_name: FirstName,
+                last_name: LastName,
+                address: address,
+                country: country,
+                phone: Phone,
+                user_role: UserRole,
+                User_Image: Picture,
+                billing_postcode: Zipcode,
+                billing_state: State,
+                billing_city: City,
+                billing_address_2: address2
+            }
+            $.ajax({
+                url: '/Users/UpdateUser/', dataType: 'json', type: 'Post',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(obj),
+                dataType: "json",
+                beforeSend: function () { $("#loader").show(); },
+                success: function (data) {
+                    if (data.status == true) {
+                        //swal('Alert!', data.message, 'success').then((result) => { location.href = 'Users'; });
+                        swal('Alert!', data.message, 'success').then((result) => { location.href = 'Users'; });
+                    }
+                    else {
+                        swal('Alert!', data.message, 'error');
+                    }
+                },
+                complete: function () { $("#loader").hide(); },
+                error: function (error) { swal('Error!', 'something went wrong', 'error'); },
+            })
             //}
         }
 
@@ -516,7 +517,7 @@
         return input;
     }
 
-    
+
     function readURL(input) {
         if (input.files && input.files[0]) {
             var reader = new FileReader();
@@ -529,3 +530,66 @@
 
 </script>
 
+
+
+<script>
+    function initMap() {
+        let address1Field = document.querySelector("#txtAddress");
+        // Create the autocomplete object, restricting the search predictions to
+        // addresses in the US and Canada.
+        autocomplete = new google.maps.places.Autocomplete(address1Field, {
+            componentRestrictions: { country: ["us", "ca"] },
+            fields: ["address_components", "geometry"],
+            types: ["address"],
+        });
+        // When the user selects an address from the drop-down, populate the
+        // address fields in the form.
+        autocomplete.addListener("place_changed", fillInAddress);
+
+        function fillInAddress() {
+            const place = autocomplete.getPlace();
+            //console.log(place);
+            let address = '';
+            let obj = place.address_components.filter(element => element.types[0] == 'street_number');
+            if (obj.length > 0)
+                address = obj[0].long_name;
+            obj = place.address_components.filter(element => element.types[0] == 'route');
+            if (obj.length > 0)
+                address = address + ' ' + obj[0].long_name;
+            $("#txtAddress").val(address);
+            obj = place.address_components.filter(element => element.types[0] == 'locality');
+            if (obj.length > 0)
+                $("#txtCity").val(obj[0].long_name);
+            else
+                $("#txtCity").val('');
+            obj = place.address_components.filter(element => element.types[0] == 'postal_code');
+            if (obj.length > 0)
+                $("#txtPostCode").val(obj[0].long_name);
+            else
+                $("#txtPostCode").val('');
+            obj = place.address_components.filter(element => element.types[0] == 'administrative_area_level_1');
+            
+            if (obj.length > 0)
+                $("#txtState").empty().append('<option value="' + obj[0].short_name + '" selected>' + obj[0].long_name + '</option>');
+            else
+                $("#txtState").empty();
+
+            obj = place.address_components.filter(element => element.types[0] == 'country');
+            if (obj.length > 0)
+                $('#txtCountry').val(obj[0].short_name.trim()).trigger('change'); //$("#txtBillingCountry").val(obj[0].short_name + ' - ' + obj[0].long_name);
+            else
+                $("#txtCountry").empty();
+
+
+        }
+
+        function renderAddress(place) {
+            //map.setCenter(place.geometry.location);
+            //marker.setPosition(place.geometry.location);
+            //marker.setVisible(true);
+        }
+    }
+</script>
+<!--Google Place API -->
+@*<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBIgngCCIJ3D8_s3G7aIfvQckhsDtbAe4E&libraries=places&callback=initMap&channel=GMPSB_addressselection_v1_cABC" async defer></script>*@
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBIgngCCIJ3D8_s3G7aIfvQckhsDtbAe4E&libraries&callback=initMap&libraries=places&v=weekly" async></script>

@@ -1,4 +1,6 @@
 ﻿using LaylaERP.DAL;
+using LaylaERP.Models;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -44,6 +46,66 @@ namespace LaylaERP.BAL
             catch (Exception ex)
             { throw ex; }
             return dtr;
+        }
+        public static DataTable GetDataByID(OrderPostStatusModel model)
+        {
+            DataTable dt = new DataTable();
+
+            try
+            {
+                string strWhr = string.Empty;
+
+                string strSql = "SELECT P.ID ID,post_title,post_content,post_name,"
+                             + "  pmregularamount.meta_value regularamount,pmsaleprice.meta_value saleprice,pmtotalsales.meta_value totalsales,pmtaxstatus.meta_value axstatus,pmtaxclass.meta_value taxclass,pmmanagestock.meta_value managestock,pmsoldindividually.meta_value soldindividually,"
+                             + "  pmbackorders.meta_value backorders,pmweight.meta_value weight,pmlength.meta_value length,pmeheight.meta_value height,pmwidth.meta_value width,pmupsellids.meta_value upsellids,pmcrosssellids.meta_value crosssellids,"
+                             + "  pmstock.meta_value stock,pmstockstatus.meta_value stockstatus,pmlowstockamount.meta_value lowstockamount, pmsku.meta_value sku,"
+                             + " (select term_id  from wp_terms where term_id in ( select term_id from wp_term_taxonomy where taxonomy = 'product_type' and term_taxonomy_id in (SELECT term_taxonomy_id FROM `wp_term_relationships` where object_id = P.ID))) ProductsID,"
+                             + " (select term_id from wp_terms where term_id in ( select term_id from wp_term_taxonomy where taxonomy = 'product_shipping_class' and term_taxonomy_id in (SELECT term_taxonomy_id FROM `wp_term_relationships` where object_id = P.ID))) shippingclass,"
+                             + " (select group_concat(term_id) from wp_terms where term_id in ( select term_id from wp_term_taxonomy where taxonomy = 'product_cat' and term_taxonomy_id in ( SELECT term_taxonomy_id FROM `wp_term_relationships` where object_id =  P.ID))) CategoryID"
+                             + " FROM wp_posts P"
+                             + " left join wp_postmeta pmregularamount on P.ID = pmregularamount.post_id and pmregularamount.meta_key = '_regular_price'"
+                             + " left join wp_postmeta pmsaleprice on P.ID = pmsaleprice.post_id and pmsaleprice.meta_key = '_sale_price'"
+                             + " left join wp_postmeta pmtotalsales on P.ID = pmtotalsales.post_id and pmtotalsales.meta_key = 'total_sales'"
+                             + " left join wp_postmeta pmtaxstatus on P.ID = pmtaxstatus.post_id and pmtaxstatus.meta_key = '_tax_status'"
+                             + " left join wp_postmeta pmtaxclass on P.ID = pmtaxclass.post_id and pmtaxclass.meta_key = '_tax_class'"
+                             + " left join wp_postmeta pmmanagestock on P.ID = pmmanagestock.post_id and pmmanagestock.meta_key = '_manage_stock'"
+                             + " left join wp_postmeta pmbackorders on P.ID = pmbackorders.post_id and pmbackorders.meta_key = '_backorders'"
+                             + " left join wp_postmeta pmsoldindividually on P.ID = pmsoldindividually.post_id and pmsoldindividually.meta_key = '_sold_individually'"
+                             + " left join wp_postmeta pmweight on P.ID = pmweight.post_id and pmweight.meta_key = '_weight'"
+                             + " left join wp_postmeta pmlength on P.ID = pmlength.post_id and pmlength.meta_key = '_length'"
+                             + " left join wp_postmeta pmwidth on P.ID = pmwidth.post_id and pmwidth.meta_key = '_width'"
+                             + " left join wp_postmeta pmeheight on P.ID = pmeheight.post_id and pmeheight.meta_key = '_height'"
+                             + " left join wp_postmeta pmupsellids on P.ID = pmupsellids.post_id and pmupsellids.meta_key = '_upsell_ids'"
+                             + " left join wp_postmeta pmcrosssellids on P.ID = pmcrosssellids.post_id and pmcrosssellids.meta_key = '_crosssell_ids'"
+                             + " left join wp_postmeta pmstock on P.ID = pmstock.post_id and pmstock.meta_key = '_stock'"
+                             + " left join wp_postmeta pmstockstatus on P.ID = pmstockstatus.post_id and pmstockstatus.meta_key = '_stock_status'"
+                             + " left join wp_postmeta pmlowstockamount on P.ID = pmlowstockamount.post_id and pmlowstockamount.meta_key = '_low_stock_amount'"
+                             + " left join wp_postmeta pmsku on P.ID = pmsku.post_id and pmsku.meta_key = '_sku'"                            
+                             + " WHERE P.post_type = 'product' and P.ID = " + model.strVal + " ";
+
+
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dt = ds.Tables[0];
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+        public static DataTable GetProductcategoriesList()
+        {
+            DataTable DT = new DataTable();
+            try
+            {
+                string strSQl = "Select * From wp_terms Left Join wp_term_taxonomy On wp_terms.term_id = wp_term_taxonomy.term_id"
+                              + " WHERE wp_term_taxonomy.taxonomy = 'product_cat' ";
+                DT = SQLHelper.ExecuteDataTable(strSQl);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DT;
         }
         public static DataTable GetList(string strValue1, string userstatus, string strValue3,string strValue4, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "order_id", string SortDir = "DESC")
         {
@@ -98,7 +160,7 @@ namespace LaylaERP.BAL
                     strWhr += " and pmstc.meta_value like '%" + strValue4 + "%' ";
                 }
                 string strSql = "SELECT  p.ID,t.term_id, p.post_title, `post_excerpt`, t.name AS product_category, t.term_id AS product_id,t.slug AS product_slug,tt.term_taxonomy_id AS tt_term_taxonomia, "
-                                + " tr.term_taxonomy_id AS tr_term_taxonomia, p.post_status,post_modified_gmt,CONCAT(p.post_status, ' ', post_modified_gmt) Date,'*' Star, IFNULL(CONCAT(Min(CASE WHEN pm1.meta_key = '_price' then CONCAT('$', pm1.meta_value) ELSE NULL END), '-', MAX(CASE WHEN pm1.meta_key = '_price' then CONCAT('$', pm1.meta_value) ELSE NULL END)), '$0.00') price,"
+                                + " tr.term_taxonomy_id AS tr_term_taxonomia, p.post_status,post_date_gmt,CONCAT(p.post_status, ' ', post_date_gmt) Date,'*' Star, IFNULL(CONCAT(Min(CASE WHEN pm1.meta_key = '_price' then CONCAT('$', pm1.meta_value) ELSE NULL END), '-', MAX(CASE WHEN pm1.meta_key = '_price' then CONCAT('$', pm1.meta_value) ELSE NULL END)), '$0.00') price,"
                                 + " MAX(CASE WHEN pm1.meta_key = '_sku' then pm1.meta_value ELSE NULL END) as sku , pmstc.meta_value stockstatus"
                                   + " FROM wp_posts p"
                                   + " LEFT JOIN wp_postmeta pm1 ON pm1.post_id = p.ID"
@@ -129,6 +191,163 @@ namespace LaylaERP.BAL
             return dt;
         }
 
+        public static DataTable GetProducts(string strSearch)
+        {
+            DataTable DT = new DataTable();
+            try
+            {
+                string strSQl = "select p.id, CONCAT(p.post_title,'(',MAX(CASE WHEN pm1.meta_key = '_sku' then pm1.meta_value else null end) , ')') as Name"
+                            + " FROM wp_posts p LEFT JOIN wp_postmeta pm1 ON pm1.post_id = p.ID and pm1.meta_key = '_sku'"
+                            + " WHERE p.post_type in('product') and pm1.meta_value is not NULL and CONCAT(p.post_title, pm1.meta_value) like '%" + strSearch + "%' "
+                            + " GROUP BY p.ID limit 50;";
+                DT = SQLHelper.ExecuteDataTable(strSQl);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DT;
+        }
+
+
+        public static int AddProducts(ProductModel model)
+        {
+            try
+            {
+                string strsql = "Insert into wp_posts(post_date,post_date_gmt,post_content,post_excerpt,post_title,post_name,post_status,post_type,to_ping, pinged,post_content_filtered,post_mime_type) values(@post_date,@post_date_gmt,@post_content,@post_excerpt,@post_title,@post_name,'publish','product',@to_ping, @pinged,@post_content_filtered,@post_mime_type);SELECT LAST_INSERT_ID();";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@post_date", DateTime.Now),
+                    new MySqlParameter("@post_date_gmt", DateTime.UtcNow),
+                    new MySqlParameter("@post_content", model.post_content),
+                    new MySqlParameter("@post_excerpt", string.Empty),
+                    new MySqlParameter("@post_title", model.post_title),
+                    new MySqlParameter("@post_name", model.post_name),
+                    new MySqlParameter("@to_ping", string.Empty),
+                    new MySqlParameter("@pinged", string.Empty),
+                    new MySqlParameter("@post_content_filtered", string.Empty),
+                    new MySqlParameter("@post_mime_type", string.Empty),
+                };
+              int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+        public static int EditProducts(ProductModel model, long ID)
+        {
+            try
+            {
+                string strsql = "update wp_posts set post_title=@post_title,post_name=@post_name, post_content=@post_content  where ID =" + ID + "";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@post_content", model.post_content),
+                    new MySqlParameter("@post_title", model.post_title),
+                    new MySqlParameter("@post_name", model.post_name),
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+        public static void AddProductsMeta(ProductModel model, long id, string varFieldsName, string varFieldsValue)
+        {
+            try
+            {
+                string strsql = "Insert into wp_postmeta(post_id,meta_key,meta_value) values(@post_id,@meta_key,@meta_value); select LAST_INSERT_ID() as ID;";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@post_id", id),
+                    new MySqlParameter("@meta_key", varFieldsName),
+                    new MySqlParameter("@meta_value", varFieldsValue),
+                };
+               SQLHelper.ExecuteNonQuery(strsql, para);
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+        public static void Add_term(int TermID, int ID)
+        {
+            try
+            {
+                string strsql = "Insert into wp_term_relationships(object_id,term_taxonomy_id,term_order) values(@object_id,@term_taxonomy_id,@term_order);SELECT LAST_INSERT_ID();";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@object_id", ID),
+                    new MySqlParameter("@term_taxonomy_id", TermID),
+                    new MySqlParameter("@term_order", "0")
+                    
+                };
+               int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
+               
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+        public static void Edit_term(int TermID, int ID)
+        {
+            try
+            {
+                string strsql = "delete from wp_term_relationships where object_id=@object_id";
+                MySqlParameter[] para =
+                 {
+                    new MySqlParameter("@object_id", ID)
+                     };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+        public static void UpdateMetaData(ProductModel model, long id, string varFieldsName, string varFieldsValue)
+        {
+            try
+            {
+                string strsql = "update wp_postmeta set meta_value=@meta_value where post_id=@post_id and meta_key=@meta_key";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@post_id", id),
+                    new MySqlParameter("@meta_key", varFieldsName),
+                    new MySqlParameter("@meta_value", varFieldsValue),
+                };
+                SQLHelper.ExecuteNonQuery(strsql, para);
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+        public static DataTable GetProdctByID(OrderPostStatusModel model)
+        {
+            DataTable dt = new DataTable();
+
+            try
+            {
+                string strWhr = string.Empty;
+
+                string strSQl = "select p.id, CONCAT(p.post_title,'(',MAX(CASE WHEN pm1.meta_key = '_sku' then pm1.meta_value else null end) , ')') as Name"
+                            + " FROM wp_posts p LEFT JOIN wp_postmeta pm1 ON pm1.post_id = p.ID and pm1.meta_key = '_sku'"
+                            + " WHERE p.post_type in('product') and pm1.meta_value is not NULL and p.id in (" + model.strVal + ") "
+                            + " GROUP BY p.ID limit 50;";
+         
+                dt = SQLHelper.ExecuteDataTable(strSQl);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
 
     }
 }

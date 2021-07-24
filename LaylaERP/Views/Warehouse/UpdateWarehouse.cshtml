@@ -175,7 +175,7 @@
             AddWarehouse();
         });
 
-
+//Select 2 javascript start
         $("#txtState").select2({
             allowClear: true, minimumInputLength: 2, placeholder: "Search State",
             ajax: {
@@ -196,12 +196,51 @@
             }
         });
 
+ //Select 2 javascript end
+
+//For zip code javascript
+        $('#txtZipCode').change(function () {
+            City = $("#txtCity").val();
+            State = $("#txtState").val();
+            PostalCode = $("#txtZipCode").val();
+            var obj = {
+                billing_state: State,
+                billing_city: City,
+                billing_postcode: PostalCode
+            }
+            $.ajax({
+                url: '/Users/CityStateZip/', dataType: 'json', type: 'Post',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(obj),
+                dataType: "json",
+                success: function (data) {
+                    console.log(data);
+                    if (data.status == true) {
+
+                        $('#hfzipstatus').val(data.status);
+
+                    }
+                    else {
+                        if ($('#txtCountry').val() == "US") {
+                            $("#txtZipCode").val("");
+                            $('#hfzipstatus').val(data.status);
+                            swal('Alert', 'Zip code is not valid for the State', 'error').then(function () { swal.close(); $('#txtZipCode').focus(); });
+                        }
+                    }
+                },
+
+                error: function (error) {
+                    swal('Error!', 'something went wrong', 'error');
+                },
+            })
+        });
+
 
     });
+//For Zip Code javascript end
 
 
-
-
+//For phone number javascript 
     document.getElementById('txtPhone').addEventListener('keyup', function (evt) {
         var phoneNumber = document.getElementById('txtPhone');
         var charCode = (evt.which) ? evt.which : evt.keyCode;
@@ -225,7 +264,7 @@
         return input;
     }
 
-
+    //for phone number format javascript end
 
 </script>
 

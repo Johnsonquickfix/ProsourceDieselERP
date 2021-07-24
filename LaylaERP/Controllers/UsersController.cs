@@ -404,10 +404,11 @@ namespace LaylaERP.Controllers
                 role = dt.Rows[0]["user_role"].ToString();
 
 
-            // role = role.Replace("_", " ");           
+            // role = role.Replace("_", " ");    StateFullName       
             myModel.user_role = role;
             myModel.phone = dt.Rows[0]["phone"];
             myModel.State = dt.Rows[0]["State"];
+            myModel.StateFullName = dt.Rows[0]["StateFullName"];
             myModel.City = dt.Rows[0]["City"];
             myModel.address2 = dt.Rows[0]["address2"];
             myModel.postcode = dt.Rows[0]["postcode"];

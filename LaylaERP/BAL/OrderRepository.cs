@@ -497,7 +497,7 @@
 
                         strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'label','{0} Tax' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}'", obj.tax_rate_state, model.OrderPostStatus.order_id, "tax"));
                         strSql.Append(string.Format(" union all select order_item_id,'tax_amount','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}'", obj.amount, model.OrderPostStatus.order_id, "tax"));
-                        strSql.Append(string.Format(" union all wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'rate_percent','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}';", obj.tax_rate, model.OrderPostStatus.order_id, "tax"));
+                        strSql.Append(string.Format(" union all select order_item_id,'rate_percent','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}';", obj.tax_rate, model.OrderPostStatus.order_id, "tax"));
                     }
                 }
 

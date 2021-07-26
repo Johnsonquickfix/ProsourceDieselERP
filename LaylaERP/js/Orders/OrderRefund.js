@@ -30,6 +30,7 @@ var recycling_item = [118, 20861, 611172];
 $(document).ready(function () {
     $('.billinfo').prop("disabled", true);
     setTimeout(function () { $("#loader").show(); getOrderInfo(); }, 20);
+    $("#ddlshipcountry").change(function () { var obj = { id: $("#ddlshipcountry").val() }; BindStateCounty("ddlshipstate", obj); });
     $(document).on("click", ".btnRefundOrder", function (t) {
         t.preventDefault(); $('.billinfo').prop("disabled", false);
         $('.box-tools,.footer-finalbutton').empty().append('<button type="button" class="btn btn-danger btnRefundCancel">Cancel</button> <button type="button" class="btn btn-danger btnRefundOk">Refund $0.00 manually</button>');
@@ -45,6 +46,15 @@ var ajaxFunc = function (url, data, beforeSendFun, successFun, completeFun, erro
 function beforeSendFun() { $("#loader").css("display", ""); $("#loader").show(); }
 function completeFun() { $("#loader").css("display", "none"); $("#loader").hide(); }
 function errorFun(XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); }
+///Bind States of Country
+function BindStateCounty(ctr, obj) {
+    var res = wc_users_params.filter(element => element.abbreviation == obj.id);
+    $("#" + ctr + "").html('<option value="0">Select</option>');
+    if (res.length > 0) {
+        for (i = 0; i < res[0].states.length; i++) { $("#" + ctr + "").append('<option value="' + res[0].states[i].abbreviation + '">' + res[0].states[i].name + '</option>'); }
+    }
+}
+
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Edit Order ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function getOrderInfo() {
     let oid = parseInt($('#hfOrderNo').val()) || 0;
@@ -83,7 +93,6 @@ function getOrderInfo() {
                 $('#txtshipfirstname').val(data[0].s_first_name); $('#txtshiplastname').val(data[0].s_last_name); $('#txtshipaddress1').val(data[0].s_address_1); $('#txtshipaddress2').val(data[0].s_address_2);
                 $('#txtshipcompany').val(data[0].s_company); $('#txtshipzipcode').val(data[0].s_postcode); $('#txtshipcity').val(data[0].s_city);
                 $('#ddlshipcountry').val(data[0].s_country.trim()).trigger('change'); $('#ddlshipstate').val(data[0].s_state.trim()).trigger('change');
-                $('#txtCustomerNotes').val(data[0].post_excerpt);
                 //bind Product
                 getOrderItemList(oid);
             }
@@ -105,16 +114,16 @@ function getOrderItemList(oid) {
             let orderitemid = parseInt(data[i].order_item_id) || 0;
             if (data[i].product_type == 'line_item') {
                 let PKey = data[i].product_id + '_' + data[i].variation_id;
-                itemHtml += '<tr id="tritemId_' + PKey + '" data-id="' + PKey + '" data-pid="' + data[i].product_id + '" data-vid="' + data[i].variation_id + '" data-pname="' + data[i].product_name + '" data-gid="' + data[i].group_id + '" data-freeitem="' + data[i].is_free + '" data-orderitemid="' + orderitemid + '" data-qty="' + data[i].quantity + '">';
+                itemHtml += '<tr id="tritemId_' + PKey + '" data-id="' + PKey + '" class="' + (data[i].is_free ? 'free_item' : 'paid_item') + '" data-pid="' + data[i].product_id + '" data-vid="' + data[i].variation_id + '" data-pname="' + data[i].product_name + '" data-gid="' + data[i].group_id + '" data-freeitem="' + data[i].is_free + '" data-freeitems=\'' + data[i].free_itmes + '\' data-orderitemid="' + orderitemid + '" data-qty="' + data[i].quantity + '">';
                 itemHtml += '<td class="text-center"><i class="far fa-images"></i></td>';
                 itemHtml += '<td>' + data[i].product_name + '</td>';
                 itemHtml += '<td class="text-right">' + data[i].reg_price.toFixed(2) + '</td>';
                 itemHtml += '<td class="text-right">' + data[i].quantity + '</td>';
                 if (data[i].is_free) {
-                    itemHtml += '<td><input min="0" autocomplete="off" disabled class="form-control number rowCalulate" type="number" id="txt_RefundQty_' + PKey + '" value="0" name="txt_RefundQty" placeholder="Qty"></td>';
+                    itemHtml += '<td><input min="0" max="' + data[i].quantity + '" autocomplete="off" disabled class="form-control number rowCalulate" type="number" id="txt_RefundQty_' + PKey + '" value="0" name="txt_RefundQty" placeholder="Qty"></td>';
                 }
                 else {
-                    itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_RefundQty_' + PKey + '" value="0" name="txt_RefundQty" placeholder="Qty"></td>';
+                    itemHtml += '<td><input min="0" max="' + data[i].quantity + '" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_RefundQty_' + PKey + '" value="0" name="txt_RefundQty" placeholder="Qty"></td>';
                 }
                 itemHtml += '<td class="TotalAmount text-right" data-regprice="' + data[i].reg_price + '"data-salerate="' + data[i].sale_price + '" data-discount="' + data[i].discount.toFixed(2) + '" data-amount="' + data[i].total + '" data-taxamount="' + data[i].tax_amount + '" data-shippingamt="' + data[i].shipping_amount + '">' + data[i].total.toFixed(2) + '</td>';
                 itemHtml += '<td class="text-right RowDiscount" data-disctype="' + data[i].discount_type + '" data-couponamt="0">' + data[i].discount.toFixed(2) + '</td>';
@@ -133,15 +142,7 @@ function getOrderItemList(oid) {
                     couponHtml += '<i class="fa fa-gift"></i>';
                     couponHtml += '<span>' + coupon_list[j].title + '</span>';
                     couponHtml += '<div class="pull-right">';
-
-                    if (coupon_list[j].type == 'add_coupon') {
-                        couponHtml += '$<span id="cou_discamt">' + cou_amt.toFixed(2) + '</span>';
-                        couponHtml += '<button type="button" class="btn btn-box-tool pull-right billinfo" onclick="removeCouponInList(\'' + coupon_list[j].post_title + '\');"> <i class="fa fa-times"></i>';
-                        couponHtml += '</button>';
-                    }
-                    else {
-                        couponHtml += '$<span id="cou_discamt" style ="margin-right: 20px;">' + cou_amt.toFixed(2) + '</span>';
-                    }
+                    couponHtml += '$<span id="cou_discamt" style ="margin-right: 20px;">' + cou_amt.toFixed(2) + '</span>';
                     couponHtml += '</div>';
                     couponHtml += '</a>';
                     couponHtml += '</li>';
@@ -154,8 +155,7 @@ function getOrderItemList(oid) {
                     couponHtml += '<i class="fa fa-gift"></i>';
                     couponHtml += '<span>' + cpn_name + '</span>';
                     couponHtml += '<div class="pull-right">';
-                    couponHtml += '$<span id="cou_discamt">' + cou_amt.toFixed(2) + '</span>';
-                    couponHtml += '<button type="button" class="btn btn-box-tool pull-right billinfo" onclick="removeCouponInList(\'' + data[i].product_name + '\');"><i class="fa fa-times"></i></button>'
+                    couponHtml += '$<span id="cou_discamt" style ="margin-right: 20px;">' + cou_amt.toFixed(2) + '</span>';
                     couponHtml += '</div>';
                     couponHtml += '</a>';
                     couponHtml += '</li>';
@@ -165,7 +165,7 @@ function getOrderItemList(oid) {
             else if (data[i].product_type == 'fee' && data[i].product_name == 'State Recycling Fee') {
                 recyclingfeeHtml += '<tr id="trfeeid_' + orderitemid + '" data-orderitemid="' + orderitemid + '" data-pname="' + data[i].product_name + '">';
                 recyclingfeeHtml += '<td class="text-center item-action"><i class="fa fa-plus-circle"></i></td>';
-                recyclingfeeHtml += '<td>' + data[i].product_name + '</td><td></td><td></td><td></td><td class="TotalAmount text-right">' + data[i].total.toFixed(2) + '</td><td></td><td></td>';
+                recyclingfeeHtml += '<td>' + data[i].product_name + '</td><td></td><td></td><td class="RefundAmount text-right"></td><td class="TotalAmount text-right">' + data[i].total.toFixed(2) + '</td><td></td><td></td>';
                 recyclingfeeHtml += '</tr>';
                 zStateRecyclingAmt = zStateRecyclingAmt + (parseFloat(data[i].total) || 0.00);
                 $("#stateRecyclingFeeTotal").data("orderitemid", orderitemid);
@@ -183,7 +183,7 @@ function getOrderItemList(oid) {
             else if (data[i].product_type == 'shipping') {
                 shippingHtml += '<tr id="tritemId_' + orderitemid + '" data-orderitemid="' + orderitemid + '" data-pname="' + data[i].product_name + '">';
                 shippingHtml += '<td class="text-center item-action"><i class="fa fa-shipping-fast"></i></td>';
-                shippingHtml += '<td>Shipping</td><td></td><td></td><td></td><td class="TotalAmount text-right">' + data[i].total.toFixed(2) + '</td><td></td><td></td>';
+                shippingHtml += '<td>Shipping</td><td></td><td></td><td class="RefundAmount text-right"></td><td class="TotalAmount text-right">' + data[i].total.toFixed(2) + '</td><td></td><td></td>';
                 shippingHtml += '</tr>';
                 zShippingAmt = zShippingAmt + (parseFloat(data[i].total) || 0.00);
                 $("#shippingTotal").data("orderitemid", orderitemid);
@@ -214,11 +214,60 @@ function getOrderItemList(oid) {
         $("#orderTotal").html((zGAmt - zTDiscount + zShippingAmt + zTotalTax + zStateRecyclingAmt + zFeeAmt).toFixed(2));
         $("#refundedTotal").text(zRefundAmt.toFixed(2));
         $("#netPaymentTotal").text(((zGAmt - zTDiscount + zShippingAmt + zTotalTax + zStateRecyclingAmt + zFeeAmt) + zRefundAmt).toFixed(2));
-        if (zRefundAmt != 0) $(".refund-total").removeClass('hidden'); else $(".refund-total").addClass('hidden');
-        $("#divAddItemFinal").find(".rowCalulate").change(function () { calculateDiscountAcount(); });
+        //if (zRefundAmt != 0) $(".refund-total").removeClass('hidden'); else $(".refund-total").addClass('hidden');
+        $("#order_line_items").find(".rowCalulate").change(function () { calculateRefunAmount(); });
     }, completeFun, errorFun);
+
+    setTimeout(function () { getShippingCharge(); }, 50);
 }
 
+///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Shipping Charges ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+function getShippingCharge() {
+    let v_ids = []; let sh_state = $("#ddlshipstate").val() == 'CA' ? "CAA" : $("#ddlshipstate").val();
+    $("#order_line_items  > tr.paid_item").each(function () { v_ids.push($(this).data('vid')); });
+    let shipping_state = $("#ddlshipcountry").val() == 'US' ? sh_state : $("#ddlshipcountry").val();
+    let options = { strValue1: v_ids.join(','), strValue2: shipping_state };
+    $(".TotalAmount").data("shippingamt", 0.00);
+    let zShippingAmt = 0.00;
+    ajaxFunc('/Orders/GetProductShipping', options, beforeSendFun, function (data) {
+        $("#order_line_items > tr.paid_item").each(function (index, tr) {
+            let proudct_item = data.find(el => el.product_id === $(tr).data('vid'));
+            if (proudct_item != null) {
+                $('#tritemId_' + $(tr).data('id')).find(".TotalAmount").data("shippingamt", proudct_item.AK);
+                zShippingAmt += proudct_item.AK;
+            }
+        });
+    }, completeFun, errorFun);
+    $('#order_shipping_line_items').find(".RefundAmount").text(zShippingAmt.toFixed(2));
+}
+function getStateRecyclingCharge() {
+    let ship_state = $("#ddlshipstate").val();
+    let zStateRecyclingAmt = 0.00, matCount = 0;
+    $("#order_line_items > tr.paid_item").each(function () {
+        if (recycling_item.includes($(this).data('pid'))) { matCount = matCount + (parseInt($(this).find("[name=txt_RefundQty]").val()) || 0.00); }
+    });
+    if (ship_state == "CA") { zStateRecyclingAmt = matCount * 10.5; }
+    else if (ship_state == "CT") { zStateRecyclingAmt = matCount * 11.75; }
+    else if (ship_state == "RI") { zStateRecyclingAmt = matCount * 16; }
+    console.log(matCount, zStateRecyclingAmt);
+    $('#order_state_recycling_fee_line_items').find(".RefundAmount").text(zStateRecyclingAmt.toFixed(2));
+}
+///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Current Refund Calculate ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+function freeQtyUpdate() {
+    $("#order_line_items > tr.free_item").each(function (index, row) {
+        let zQty = 0.00, pid = parseInt($(this).data("pid")) || 0;
+        $("#order_line_items  > tr.paid_item").each(function (pindex, prow) {
+            if ($(prow).data('freeitems')[pid] != undefined) {
+                zQty += parseFloat($(prow).find("[name=txt_RefundQty]").val()) * parseFloat($(prow).data('freeitems')[pid]);
+            }
+        });
+        $(row).find("[name=txt_RefundQty]").val(zQty.toFixed(0));
+    });
+}
+function calculateRefunAmount() {
+    freeQtyUpdate();
+    getStateRecyclingCharge();
+}
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Coupon and Product Modal ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function calculateDiscountAcount() {
     var tax_rate = parseFloat($('#hfTaxRate').val()) || 0.00; var zCartDisAmt = 0.00;

@@ -95,8 +95,32 @@ function dataGridLoad(order_type) {
             { data: 'post_title', title: 'Name', sWidth: "12%" },
             { data: 'sku', title: 'SKU', sWidth: "12%" },
             { data: 'stockstatus', title: 'Stock', sWidth: "12%" },
-            { data: 'price', title: 'Price', sWidth: "12%" },
-            { data: 'product_category', title: 'Categories', sWidth: "12%" },
+            
+            {
+                data: 'price', title: 'Price', sWidth: "12%", render: function (data, type, row) {
+                    var tprice = 'toFormat';
+                     
+                    if (row.pricecodition == 'no') {
+                        tprice = '<span style ="text-decoration: line-through;"> ' + '$' + row.Regprice + '<br>' + ' </span>' + '<span style ="text-decoration: underline;"> ' + '$' + row.SalPrice + '<br>' + ' </span>';
+                       // tprice = '$' + row.Regprice + '<br>' + '$' + row.SalPrice;
+                        if (tprice == '$null$null' || tprice == '$0$null' || tprice == '$null$0' || tprice == '$0$')
+                            tprice = '$0.00';
+                        tprice = tprice.replaceAll('$null', '');
+                        if (row.Regprice == '0' && row.SalPrice == '0')
+                            tprice = '$0.00';
+                    }
+                    else {
+                        if (row.price == '$0.00-$0.00' || row.price == '$0-$0' || row.price == '$0-$' || row.price == null) {
+                            tprice = '$0.00';
+                        }
+                        else
+                            tprice = row.price;
+                    }
+
+                    return tprice
+                }
+            },
+            { data: 'itemname', title: 'Categories', sWidth: "12%" },
             {
                 'data': 'ID', sWidth: "5%   ",
                 'render': function (data, type, full, meta) {

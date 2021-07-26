@@ -1036,15 +1036,15 @@
                             + " inner join wp_woocommerce_order_itemmeta oim on oim.order_item_id = oi.order_item_id and oim.meta_key = 'discount_amount'"
                             + " left outer join wp_posts p on lower(p.post_title) = lower(oi.order_item_name) and p.post_type = 'shop_coupon'"
                             + " left outer join wp_postmeta pm on pm.post_id = p.id and pm.meta_key in ('coupon_amount','discount_type', 'product_ids', 'exclude_product_ids')"
-                            + " where oi.order_id = 796050 and oi.order_item_type = 'coupon' group by oi.order_id,oi.order_item_id,oi.order_item_name,oi.order_item_type,oim.meta_value"
+                            + " where oi.order_id = @order_id and oi.order_item_type = 'coupon' group by oi.order_id,oi.order_item_id,oi.order_item_name,oi.order_item_type,oim.meta_value"
                             + " union all "
                             + " select p.id order_id,p.id order_item_id,concat('Refund #',p.id,' - ',DATE_FORMAT(p.post_date,'%b %e, %Y, %h:%i'),' by ',ur.user_nicename,'</br>',"
-                            + " group_concat(concat(oi.order_item_name, ' x ', oim.meta_value) ORDER BY oi.order_item_name separator '</br>')) order_item_name,'refund' order_item_type,"
+                            + " coalesce(group_concat(concat(oi.order_item_name, ' x ', oim.meta_value) ORDER BY oi.order_item_name separator '</br>'),'')) order_item_name,'refund' order_item_type,"
                             + " 0 p_id,0 v_id,0 qty,pm.meta_value line_subtotal, pm.meta_value line_total,0 tax,0 discount_amount,0 shipping_amount,0 sale_price,'{}' as meta_data"
                             + " from wp_posts p inner join wp_postmeta pm on pm.post_id = p.id and pm.meta_key = '_order_total'"
                             + " inner join wp_postmeta pmur on pmur.post_id = p.id and pmur.meta_key = '_refunded_by' inner join wp_users ur on ur.id = pmur.meta_value"
-                            + " inner join wp_woocommerce_order_items oi on oi.order_id = p.id and oi.order_item_type = 'line_item'"
-                            + " inner join wp_woocommerce_order_itemmeta oim on oim.order_item_id = oi.order_item_id and oim.meta_key = '_qty'"
+                            + " left outer join wp_woocommerce_order_items oi on oi.order_id = p.id and oi.order_item_type = 'line_item'"
+                            + " left outer join wp_woocommerce_order_itemmeta oim on oim.order_item_id = oi.order_item_id and oim.meta_key = '_qty'"
                             + " where p.post_parent = @order_id group by p.id,p.post_date,ur.user_nicename,pm.meta_value order by order_id desc";
                 MySqlDataReader sdr = SQLHelper.ExecuteReader(strSQl, parameters);
                 while (sdr.Read())
@@ -1106,9 +1106,21 @@
                         else productsModel.is_free = false;
 
                         /// 
-                        if (productsModel.product_id == 611172) productsModel.group_id = 78676;
-                        else if (productsModel.product_id == 118) productsModel.group_id = 632713;
-                        else productsModel.group_id = 0;
+                        if (productsModel.product_id == 611172)
+                        {
+                            productsModel.group_id = 78676;
+                            productsModel.free_itmes = "{\"78676\":2}";
+                        }
+                        else if (productsModel.product_id == 118)
+                        {
+                            productsModel.group_id = 632713;
+                            productsModel.free_itmes = "{\"632713\":2}";
+                        }
+                        else
+                        {
+                            productsModel.group_id = 0;
+                            productsModel.free_itmes = string.Empty;
+                        }
                     }
                     else if (productsModel.product_type == "coupon")
                     {

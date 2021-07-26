@@ -125,7 +125,7 @@ namespace LaylaERP.Controllers
 
         public ActionResult MasStockTransfer()
         {
-
+            
             return View();
         }
 
@@ -161,6 +161,35 @@ namespace LaylaERP.Controllers
                 });
             }
             return Json(warehouselist, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public JsonResult AddMouvment(WarehouseModel model)
+        {
+                    int ID = WarehouseRepository.AddMouvement(model);
+                    if (ID > 0)
+                    {
+                        return Json(new { status = true, message = "Data has been saved successfully!!", url = "" }, 0);
+                    }
+                    else
+                    {
+                        return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                    }
+                
+        }
+        [HttpPost]
+        public JsonResult GetProductInfo(WarehouseModel model,int id)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = WarehouseRepository.GetProductDetails(id);
+                //model.price = Convert.ToInt32(dt.Rows[0]["sale_price"].ToString());
+                //ViewBag.price = model.price;
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
         }
 
     }

@@ -9,6 +9,7 @@ getAssignedtoSalesRepresentative();
 getVendorCode();
 getPaymentTerm();
 getBalanceDays();
+ProductList();
 
 
 function getProspect() {
@@ -356,4 +357,81 @@ function getVendorCode() {
             }
         });
 
+}
+
+function ProductList() {
+    var urid = parseInt($("#ddlSearchStatus").val()) || "";
+    var sid = "";
+    var obj = { user_status: urid, Search: sid, PageNo: 0, PageSize: 50, sEcho: 1, SortCol: 'id', SortDir: 'asc' };
+    $('#dtdata').DataTable({
+        columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "asc"]],
+        destroy: true, bProcessing: true, bServerSide: true,
+        sPaginationType: "full_numbers", searching: false, ordering: false, lengthChange: false, "paging": false, "bInfo": false,
+        bAutoWidth: false, scrollX: false, scrollY: false,
+        lengthMenu: [[10, 20, 50], [10, 20, 50]],
+        sAjaxSource: "/ThirdParty/GetProductList",
+        fnServerData: function (sSource, aoData, fnCallback, oSettings) {
+
+            obj.sEcho = aoData[0].value; obj.PageSize = oSettings._iDisplayLength; obj.PageNo = oSettings._iDisplayStart;
+            $.ajax({
+                type: "POST", url: sSource, async: true, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
+                success: function (data) {
+                    var dtOption = { sEcho: data.sEcho, recordsTotal: data.recordsTotal, recordsFiltered: data.recordsFiltered, iTotalRecords: data.iTotalRecords, iTotalDisplayRecords: data.iTotalDisplayRecords, aaData: JSON.parse(data.aaData) };
+                    return fnCallback(dtOption);
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
+                async: false
+            });
+        },
+        aoColumns: [
+            { data: 'warehouse', title: 'Warehouse', sWidth: "40%" },
+            {
+                'data': 'LeadTime', sWidth: "30%",
+                'render': function (id, type, full, meta) {
+                    return '<input type="text" name="txtLeadTime" class="form-control" value="' + full.LeadTime + '" id="' + full.id + '"  />';
+                }
+            },
+            {
+                'data': 'DaysofStock', sWidth: "30%",
+                'render': function (id, type, full, meta) {
+                    return '<input type="text" name="txtDaysofStock" class="form-control" value="' + full.DaysofStock + '" />';
+                }
+            },
+        ]
+    });
+}
+
+$("#btnSaveWarehouse").click(function () {
+    var id = "";
+    var LeadTime = "";
+    var DaysofStock = "";
+    $('#dtdata').find("input[type='text'][name='txtLeadTime']").each(function () {
+        if (LeadTime != '') LeadTime += ','; LeadTime += $(this).val();
+        if (id != '') id += ','; id += $(this).attr('id');
+    });
+    $('#dtdata').find("input[type='text'][name='txtDaysofStock']").each(function () {
+        if (DaysofStock != '') DaysofStock += ','; DaysofStock += $(this).val();
+    });
+    SaveWarehouse(id, LeadTime, DaysofStock);
+})
+
+function SaveWarehouse(id, LeadTime, DaysofStock) {
+    var obj = { WarehouseID: id, LeadTime: LeadTime, DaysofStock: DaysofStock }
+    $.ajax({
+        url: '/ThirdParty/AddVendorSetting', dataType: 'json', type: 'Post',
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(obj),
+        dataType: "json",
+        success: function (data) {
+            if (data.status == true) {
+                swal('Alert!', data.message, 'success');
+            }
+            else {
+                swal('Alert!', data.message, 'error')
+            }
+        },
+        error: function (error) {
+            swal('Error!', 'something went wrong', 'error');
+        },
+    })
 }

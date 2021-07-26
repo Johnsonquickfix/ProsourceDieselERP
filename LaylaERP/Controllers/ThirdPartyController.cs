@@ -122,17 +122,54 @@ namespace LaylaERP.Controllers
             return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
         }
 
+        public JsonResult GetProductList(ThirdPartyModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                string urid = "";
+                if (model.user_status != "")
+                    urid = model.user_status;
+                string searchid = model.Search;
+                DataTable dt = ThirdPartyRepository.GetProduct(urid, searchid, model.PageNo, model.PageSize, out TotalRecord, model.SortCol, model.SortDir);
+                result = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+        }
+
         public JsonResult GetVendorByID(long id)
         {
             string JSONresult = string.Empty;
             try
             {
-
                 DataTable dt = ThirdPartyRepository.VendorByID(id);
                 JSONresult = JsonConvert.SerializeObject(dt);
             }
             catch { }
             return Json(JSONresult, 0);
+        }
+        public JsonResult AddVendorSetting(ThirdPartyModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                string WarehouseID = model.WarehouseID;
+                int VendorID = model.VendorID;
+                string LeadTime = model.LeadTime;
+                string DaysofStock = model.DaysofStock;
+
+                if (WarehouseID !="")
+                {
+                    new ThirdPartyRepository().VendorSetting(WarehouseID, VendorID, LeadTime, DaysofStock);
+                    return Json(new { status = true, message = "Vendor has been saved successfully!!", url = "" }, 0);
+                }
+                else
+                {
+                    return Json(new { status = false, message = "Something went wrong", url = "" }, 0);
+                }
+            }
+            return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
         }
     }
 }

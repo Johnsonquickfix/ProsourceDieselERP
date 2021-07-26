@@ -211,7 +211,6 @@
     <Compile Include="Models\ThirdPartyModel.cs" />
     <Compile Include="Models\UserClassification.cs" />
     <Compile Include="Models\UsersModel.cs" />
-    <Compile Include="Models\UsersRepositry.cs" />
     <Compile Include="Models\WarehouseModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="recaptcha\recaptcha.cs" />

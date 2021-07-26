@@ -61,12 +61,8 @@
                     </address>
                 </div>
                 <div class="col-md-4">
-                    <h2 class="sm-heading">Shipping Address <a href="javascript:;" class="billinfo"><i class="fas fa-pencil-alt"></i></a></h2>
-                    <address class="shipping-address">
-                        <strong></strong><br>
-                        <br>
-                    </address>
-                    <div class="row row-small hidden">
+                    <h2 class="sm-heading">Shipping Address</h2>                   
+                    <div class="row row-small">
                         <div class="form-group col-md-6">
                             <input type="email" class="form-control billinfo" id="txtshipfirstname" placeholder="First Name">
                         </div>
@@ -86,23 +82,20 @@
                             <input type="text" class="form-control billinfo" id="txtshipaddress2" placeholder="Enter Address Line 2">
                         </div>
                         <div class="form-group col-md-6">
-                            <input type="text" class="form-control billinfo" id="txtshipzipcode" placeholder="Zip Code">
+                            <input type="text" class="form-control" id="txtshipzipcode" placeholder="Zip Code" disabled>
                         </div>
                         <div class="form-group col-md-6">
-                            <input type="text" class="form-control billinfo" id="txtshipcity" placeholder="Enter City">
+                            <input type="text" class="form-control" id="txtshipcity" placeholder="Enter City" disabled>
                         </div>
                         <div class="form-group col-md-6">
-                            <select class="form-control select2 billinfo" id="ddlshipcountry" placeholder="Country / Region" style="width: 100%;">
+                            <select class="form-control select2" id="ddlshipcountry" placeholder="Country / Region" style="width: 100%;" disabled>
                                 <option value="">Select a country / region…</option>
                                 <option value="CA">Canada</option>
                                 <option value="US" selected>United States (US)</option>
                             </select>
                         </div>
                         <div class="form-group col-md-6">
-                            <select class="form-control select2 billinfo" id="ddlshipstate" placeholder="State / County" style="width: 100%;"></select>
-                        </div>
-                        <div class="form-group col-md-12">
-                            <textarea class="form-control billinfo" id="txtCustomerNotes" placeholder="Customer notes about the order" rows="3"></textarea>
+                            <select class="form-control select2" id="ddlshipstate" placeholder="State / County" style="width: 100%;" disabled></select>
                         </div>
                     </div>
                 </div>
@@ -111,7 +104,7 @@
     </div>
     <div class="row mb-35">
         <div class="col-sm-12">
-            <table id="tblAddItemFinal" class="table-blue table table-bordered table-striped dataTable">
+            <table id="tblItemList" class="table-blue table table-bordered table-striped dataTable">
                 <thead>
                     <tr>
                         <th class="text-center" style="width: 4%"></th>
@@ -200,13 +193,13 @@
                                 <strong>$<span id="orderTotal">0.00</span></strong>
                             </div>
                         </div>
-                        <div class="form-group refund-total hidden">
+                        <div class="form-group refund-total">
                             <label class="col-sm-10 control-label">Refunded</label>
                             <div class="col-sm-2 controls text-right text-red text-weight-bold">
                                 <strong>$<span id="refundedTotal" data-orderitemid="0">0.00</span></strong>
                             </div>
                         </div>
-                        <div class="form-group refund-total hidden">
+                        <div class="form-group refund-total">
                             <label class="col-sm-10 control-label">Net Payment</label>
                             <div class="col-sm-2 controls text-right text-weight-bold">
                                 <strong>$<span id="netPaymentTotal" data-orderitemid="0">0.00</span></strong>

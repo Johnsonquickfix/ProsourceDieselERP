@@ -209,6 +209,39 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
+
+        public static DataTable GetProduct(string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "ASC")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                string strWhr = string.Empty;
+
+                string strSql = "select rowid as id,ref as warehouse, '' as LeadTime,'' as DaysofStock from wp_warehouse";
+                if (!string.IsNullOrEmpty(searchid))
+                {
+                    strWhr += " and (email like '%" + searchid + "%' OR user_nicename='%" + searchid + "%' OR ID='%" + searchid + "%' OR nom like '%" + searchid + "%')";
+                }
+                if (userstatus != null)
+                {
+                    strWhr += " and (ur.user_status='" + userstatus + "') ";
+                }
+                strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, (pageno * pagesize).ToString(), pagesize.ToString());
+
+                strSql += "; SELECT ceil(Count(rowid)/" + pagesize.ToString() + ") TotalPage,Count(rowid) TotalRecord FROM wp_warehouse WHERE 1 = 1 " + strWhr.ToString();
+
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dt = ds.Tables[0];
+                if (ds.Tables[1].Rows.Count > 0)
+                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
         public static DataTable VendorByID(long id)
         {
             DataTable dt = new DataTable();
@@ -228,6 +261,39 @@ namespace LaylaERP.BAL
                 throw ex;
             }
             return dt;
+        }
+
+        public int VendorSetting(string WarehouseID,int VendorID, string LeadTime, string DaysofStock)
+        {
+            try
+            {
+                int result = 0;
+                string[] Warehouse_ID = WarehouseID.Split(',');
+                string[] Lead_Time = LeadTime.Split(',');
+                string[] Days_of_Stock = DaysofStock.Split(',');
+
+                for (int i = 0; i <= Warehouse_ID.Length - 1; i++)
+                {
+                    WarehouseID = Warehouse_ID[i].ToString();
+                    LeadTime = Lead_Time[i].ToString();
+                    DaysofStock = Days_of_Stock[i].ToString();
+
+                    string strsql = "Insert into wp_VendorSetting(LeadTime,DaysofStock,VendorID,WarehouseID) Values(@LeadTime,@DaysofStock,@VendorID,@WarehouseID)";
+                    MySqlParameter[] para =
+                    {
+                    new MySqlParameter("@WarehouseID", WarehouseID),
+                    new MySqlParameter("@LeadTime", LeadTime),
+                    new MySqlParameter("@DaysofStock", DaysofStock),
+                    new MySqlParameter("@VendorID", VendorID)
+                    };
+                    result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                }
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
         }
     }
 }

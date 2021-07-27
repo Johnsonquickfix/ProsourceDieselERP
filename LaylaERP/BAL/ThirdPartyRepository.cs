@@ -210,15 +210,23 @@ namespace LaylaERP.BAL
             return dt;
         }
 
-        public static DataTable GetProduct(string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "ASC")
+        public static DataTable GetProduct(int id,long rowid,string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "ASC")
         {
             DataTable dt = new DataTable();
             totalrows = 0;
             try
             {
+                id = Convert.ToInt32(rowid);
                 string strWhr = string.Empty;
-
-                string strSql = "select rowid as id,ref as warehouse, '' as LeadTime,'' as DaysofStock from wp_warehouse";
+                string strSql = "";
+                if (rowid > 0)
+                {
+                    strSql = "Select v.id, w.ref as warehouse, v.LeadTime, v.DaysofStock from wp_VendorSetting v inner join wp_warehouse w on v.WarehouseID = w.rowid where VendorID='" + id + "'";
+                }
+                else
+                {
+                    strSql = "select rowid as id,ref as warehouse, '' as LeadTime,'' as DaysofStock from wp_warehouse";
+                }
                 if (!string.IsNullOrEmpty(searchid))
                 {
                     strWhr += " and (email like '%" + searchid + "%' OR user_nicename='%" + searchid + "%' OR ID='%" + searchid + "%' OR nom like '%" + searchid + "%')";
@@ -242,16 +250,45 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
+        //public static DataTable GetVendorSetting(string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "ASC")
+        //{
+        //    DataTable dt = new DataTable();
+        //    totalrows = 0;
+        //    try
+        //    {
+        //        string strWhr = string.Empty;
+
+        //        string strSql = "Select v.id, w.ref as warehouse, v.LeadTime, v.DaysofStock from wp_VendorSetting v inner join wp_warehouse w on v.WarehouseID = w.rowid where VendorID=11;";
+        //        if (!string.IsNullOrEmpty(searchid))
+        //        {
+        //            strWhr += " and (email like '%" + searchid + "%' OR user_nicename='%" + searchid + "%' OR ID='%" + searchid + "%' OR nom like '%" + searchid + "%')";
+        //        }
+        //        if (userstatus != null)
+        //        {
+        //            strWhr += " and (ur.user_status='" + userstatus + "') ";
+        //        }
+        //        strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, (pageno * pagesize).ToString(), pagesize.ToString());
+
+        //        strSql += "; SELECT ceil(Count(rowid)/" + pagesize.ToString() + ") TotalPage,Count(rowid) TotalRecord FROM wp_warehouse WHERE 1 = 1 " + strWhr.ToString();
+
+        //        DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+        //        dt = ds.Tables[0];
+        //        if (ds.Tables[1].Rows.Count > 0)
+        //            totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw ex;
+        //    }
+        //    return dt;
+        //}
         public static DataTable VendorByID(long id)
         {
             DataTable dt = new DataTable();
-
             try
             {
                 string strWhr = string.Empty;
-
                 string strSql = "Select rowid as ID, nom as VendorName, name_alias as AliasName,entity,status,code_fournisseur as VendorCode, zip,address,address1,town,fk_departement as State,StateName, fk_pays as Country, phone,fax,url,email,fk_effectif as Workforce,fk_typent as ThirdPartyType,fk_forme_juridique as BusinessEntityType, siren as ProfId, capital, fournisseur as Vendor,location_incoterms as Incoterms, tva_assuj as Salestaxused,SalesRepresentative,PaymentTermsID,BalanceID,PaymentDate,Currency ,EnableVendorUOM ,UnitsofMeasurment,MinimumOrderQuanity,DefaultTax,TaxIncludedinPrice,DefaultDiscount,CreditLimit FROM rpsisr_woo.wp_vendor where rowid='" + id + "'";
-
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
 
@@ -278,7 +315,40 @@ namespace LaylaERP.BAL
                     LeadTime = Lead_Time[i].ToString();
                     DaysofStock = Days_of_Stock[i].ToString();
 
-                    string strsql = "Insert into wp_VendorSetting(LeadTime,DaysofStock,VendorID,WarehouseID) Values(@LeadTime,@DaysofStock,@VendorID,@WarehouseID)";
+                    string strsql = "Insert into wp_VendorSetting(LeadTime,DaysofStock,VendorID,WarehouseID) Values(@LeadTime,@DaysofStock,@VendorID,@WarehouseID);SELECT LAST_INSERT_ID();";
+                    MySqlParameter[] para =
+                    {
+                    new MySqlParameter("@WarehouseID", WarehouseID),
+                    new MySqlParameter("@LeadTime", LeadTime),
+                    new MySqlParameter("@DaysofStock", DaysofStock),
+                    new MySqlParameter("@VendorID", VendorID)
+                    };
+                    result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                }
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+        public int EditVendorSetting(string WarehouseID, int VendorID, string LeadTime, string DaysofStock)
+        {
+            try
+            {
+                int result = 0;
+                string[] Warehouse_ID = WarehouseID.Split(',');
+                string[] Lead_Time = LeadTime.Split(',');
+                string[] Days_of_Stock = DaysofStock.Split(',');
+
+                for (int i = 0; i <= Warehouse_ID.Length - 1; i++)
+                {
+                    WarehouseID = Warehouse_ID[i].ToString();
+                    LeadTime = Lead_Time[i].ToString();
+                    DaysofStock = Days_of_Stock[i].ToString();
+
+                    string strsql = "Update wp_VendorSetting set LeadTime=@LeadTime,DaysofStock=@DaysofStock,VendorID=@VendorID,WarehouseID=@WarehouseID where VendorID="+VendorID+";";
                     MySqlParameter[] para =
                     {
                     new MySqlParameter("@WarehouseID", WarehouseID),

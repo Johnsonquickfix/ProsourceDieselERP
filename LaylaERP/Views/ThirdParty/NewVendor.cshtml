@@ -22,7 +22,7 @@
             <div class="contennt setting-section">
                 <div class="nav-tabs-custom">
                     <ul class="nav nav-tabs">
-                        <li class="active"><a href="#tab_1" data-toggle="tab">Add Vendor</a></li>
+                        <li class="active"><a href="#tab_1" data-toggle="tab">Vendor</a></li>
                         <li><a href="#tab_2" data-toggle="tab">Vendor Setting</a></li>
                     </ul>
                     <div class="tab-content">
@@ -30,7 +30,6 @@
                             <div class="box-body">
                                 <div class="form-horizontal create-new-customer" id="parent">
                                     <input type="hidden" id="hfid" value="@ViewBag.id" />
-
 
                                     <div class="row">
                                         <div class="col-md-4">
@@ -46,26 +45,6 @@
                                                     <input type="text" id="txtAliasName" class="form-control" placeholder="Alias name (commercial, trademark, ...)" />
                                                 </div>
                                             </div>
-
-                                            @*<div class="form-group">
-                                            <label class="control-label " for="Prospect / Customer">Prospect / Customer</label>
-                                            <div class="">
-                                                <select class="form-control" id="ddlProspect" placeholder="Prospect / Customer"></select>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="control-label " for="Customer Code">Customer Code</label>
-                                            <div class="">
-                                                <input type="text" id="txtCustomerCode" class="form-control" placeholder="Customer Code" />
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="control-label " for="Vendor">Vendor</label>
-                                            <div class="">
-                                                <select class="form-control" id="ddlVendor"></select>
-
-                                            </div>
-                                        </div>*@
                                             <div class="form-group">
                                                 <label class="control-label " for="Vendor Code">Vendor Code</label>
                                                 <div class="">
@@ -100,7 +79,6 @@
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label for="exampleInputEmail1">State</label>
-                                                @*<input type="text" id="txtState" class="form-control" placeholder="State" />*@
                                                 <select class="form-control" id="ddlState">
                                                 </select>
                                             </div>
@@ -270,7 +248,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="tab-pane" id="tab_2">
+                        <div class="tab-pane" id="tab_2" >
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="box box-primary">
@@ -296,6 +274,7 @@
                             <div class="box-footer">
                                 <div class="text-right">
                                     <input type="submit" value="Submit" id="btnSaveWarehouse" class="btn btn-danger" />
+                                    @Html.ActionLink("Back to List", "VendorList", null, new { @class = "btn btn-danger" })
                                 </div>
                             </div>
                         </div>

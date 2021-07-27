@@ -124,6 +124,9 @@ namespace LaylaERP.Controllers
 
         public JsonResult GetProductList(ThirdPartyModel model)
         {
+            int id = model.VendorID;
+            long rowid = model.rowid;
+
             string result = string.Empty;
             int TotalRecord = 0;
             try
@@ -132,7 +135,7 @@ namespace LaylaERP.Controllers
                 if (model.user_status != "")
                     urid = model.user_status;
                 string searchid = model.Search;
-                DataTable dt = ThirdPartyRepository.GetProduct(urid, searchid, model.PageNo, model.PageSize, out TotalRecord, model.SortCol, model.SortDir);
+                DataTable dt = ThirdPartyRepository.GetProduct(id,rowid,urid, searchid, model.PageNo, model.PageSize, out TotalRecord, model.SortCol, model.SortDir);
                 result = JsonConvert.SerializeObject(dt);
             }
             catch (Exception ex) { throw ex; }
@@ -159,14 +162,15 @@ namespace LaylaERP.Controllers
                 string LeadTime = model.LeadTime;
                 string DaysofStock = model.DaysofStock;
 
-                if (WarehouseID !="")
+                if (model.rowid > 0)
                 {
-                    new ThirdPartyRepository().VendorSetting(WarehouseID, VendorID, LeadTime, DaysofStock);
-                    return Json(new { status = true, message = "Vendor has been saved successfully!!", url = "" }, 0);
+                    int ID = new ThirdPartyRepository().EditVendorSetting(WarehouseID, VendorID, LeadTime, DaysofStock);
+                    return Json(new { status = true, message = "Vendor has been updated successfully!!", url = "", id = ID }, 0);
                 }
                 else
                 {
-                    return Json(new { status = false, message = "Something went wrong", url = "" }, 0);
+                    int ID = new ThirdPartyRepository().VendorSetting(WarehouseID, VendorID, LeadTime, DaysofStock);
+                    return Json(new { status = true, message = "Vendor has been saved successfully!!", url = "", id = ID }, 0);
                 }
             }
             return Json(new { status = false, message = "Invalid Details", url = "" }, 0);

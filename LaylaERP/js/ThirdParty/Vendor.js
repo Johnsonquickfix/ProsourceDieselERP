@@ -253,11 +253,12 @@ function saveVendor() {
             },
             success: function (data) {
                 if (data.status == true) {
+                    $('#hfid').val(data.id);
                     swal('Alert!', data.message, 'success');
                     $("#parent").find(":input").each(function () {
                         switch (this.type) { case "text": case "email": case "tel": $(this).val(''); break; }
                     });
-                    window.location = "../../ThirdParty/VendorList";
+                    //window.location = "../../ThirdParty/VendorList";
                 }
                 else {
                     //swal('Alert!', data.message, 'error')
@@ -328,7 +329,6 @@ function GetVendorByID(id) {
                     d[0].TaxIncludedinPrice == true ? $('#chkTaxIncludedinprice').attr("checked", "checked") : "";
                     $("#txtDefaultDiscount").val(d[0].DefaultDiscount);
                     $("#txtCreditLimit").val(d[0].CreditLimit);
-
                 }
             },
             error: function (msg) {
@@ -360,9 +360,10 @@ function getVendorCode() {
 }
 
 function ProductList() {
+    var rowid = $("#hfid").val();
     var urid = parseInt($("#ddlSearchStatus").val()) || "";
     var sid = "";
-    var obj = { user_status: urid, Search: sid, PageNo: 0, PageSize: 50, sEcho: 1, SortCol: 'id', SortDir: 'asc' };
+    var obj = { user_status: urid, Search: sid, PageNo: 0, PageSize: 50, sEcho: 1, SortCol: 'id', SortDir: 'asc', rowid: rowid };
     $('#dtdata').DataTable({
         columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "asc"]],
         destroy: true, bProcessing: true, bServerSide: true,
@@ -416,22 +417,34 @@ $("#btnSaveWarehouse").click(function () {
 })
 
 function SaveWarehouse(id, LeadTime, DaysofStock) {
-    var obj = { WarehouseID: id, LeadTime: LeadTime, DaysofStock: DaysofStock }
-    $.ajax({
-        url: '/ThirdParty/AddVendorSetting', dataType: 'json', type: 'Post',
-        contentType: "application/json; charset=utf-8",
-        data: JSON.stringify(obj),
-        dataType: "json",
-        success: function (data) {
-            if (data.status == true) {
-                swal('Alert!', data.message, 'success');
-            }
-            else {
-                swal('Alert!', data.message, 'error')
-            }
-        },
-        error: function (error) {
-            swal('Error!', 'something went wrong', 'error');
-        },
-    })
+    var VendorID = $('#hfid').val();
+    if (VendorID == 0) { swal('alert', 'Vendor not found', 'error') }
+    else {
+        var obj = { WarehouseID: id, LeadTime: LeadTime, DaysofStock: DaysofStock, VendorID: VendorID }
+        $.ajax({
+            url: '/ThirdParty/AddVendorSetting', dataType: 'json', type: 'Post',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(obj),
+            dataType: "json",
+            beforeSend: function () {
+                $("#loader").show();
+            },
+            success: function (data) {
+                ``
+                if (data.status == true) {
+
+                    swal('Alert!', data.message, 'success');
+                }
+                else {
+                    swal('Alert!', data.message, 'error')
+                }
+            },
+            complete: function () {
+                $("#loader").hide();
+            },
+            error: function (error) {
+                swal('Error!', 'something went wrong', 'error');
+            },
+        })
+    }
 }

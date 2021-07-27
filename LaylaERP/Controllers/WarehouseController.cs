@@ -50,9 +50,7 @@ namespace LaylaERP.Controllers
             {
                 if (model.rowid > 0)
                 {
-                    //WarehouseRepository.Updatewarehouses(model);
-                    //ModelState.Clear();
-                    //return Json(new { status = true, message = "Data has been saved successfully!!", url = "" }, 0);
+                    
                 }
                 else
                 {
@@ -192,5 +190,23 @@ namespace LaylaERP.Controllers
             return Json(JSONresult, 0);
         }
 
+        public ActionResult StockMouvementList()
+        {
+            return View();
+        }
+
+        public JsonResult GetStockMouvement()
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = WarehouseRepository.GetStockMouvment();
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+
+       
     }
 }

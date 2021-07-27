@@ -1,20 +1,98 @@
-﻿
-
+﻿@model LaylaERP.Models.WarehouseModel
 @{
-    ViewBag.Title = "New Proposal";
+    ViewBag.Title = "New Commercial Proposal";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-
-<!DOCTYPE html>
-
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>NewProposal</title>
-</head>
-<body>
-    <div>
+<div class="page-title">
+    <h2>New Commercial Proposal</h2>
+</div>
+<section class="content section-content massstocktransfer commercial_proposal mt-1">
+    <div class="box box-primary">
+        <div class="box-body">
+            <div class="row  flex-wrap">
+                <div class="col-md-4"><label>Ref.</label></div>
+                <div class="col-md-8">
+                    <input type="text" class="form-control" placeholder="Draft" />
+                </div>
+                <div class="col-md-4"><label>Ref. Customer</label></div>
+                <div class="col-md-8">
+                    <input type="text" class="form-control" />
+                </div>
+                <div class="col-md-4"><label>Customer</label></div>
+                <div class="col-md-8">
+                    <select class="form-control">
+                        <option value="0">--Select a third party--</option>
+                    </select>
+                </div>
+                <div class="col-md-4"><label>Date of Proposal</label></div>
+                <div class="col-md-8">
+                    <input class="form-control" type="text" placeholder="7/27/2021" /><span>Now</span>
+                </div>
+                <div class="col-md-4"><label>Validity Duration</label></div>
+                <div class="col-md-8">
+                    <input class="form-control" type="text" placeholder="15" /><span>Days</span>
+                </div>
+                <div class="col-md-4"><label>Payment Terms</label></div>
+                <div class="col-md-8">
+                    <select class="form-control">
+                        <option value="0">----</option>
+                    </select>
+                </div>
+                <div class="col-md-4"><label>Payment Type</label></div>
+                <div class="col-md-8">
+                    <select class="form-control">
+                        <option value="0">----</option>
+                    </select>
+                </div> 
+                <div class="col-md-4"><label>Source</label></div>
+                <div class="col-md-8">
+                    <select class="form-control">
+                        <option value="0">----</option>
+                    </select>
+                </div>
+                <div class="col-md-4"><label>Availability Delay(after order)</label></div>
+                <div class="col-md-8">
+                    <select class="form-control">
+                        <option value="0">----</option>
+                    </select>
+                </div>
+                <div class="col-md-4"><label>Shipping Method</label></div>
+                <div class="col-md-8">
+                    <select class="form-control">
+                        <option value="0">----</option>
+                    </select>
+                </div>
+                <div class="col-md-4"><label>Delevery Date</label></div>
+                <div class="col-md-8">
+                    <input class="form-control" type="text" /><span>Now</span>
+                </div>
+                <div class="col-md-4"><label>Incoterms</label></div>
+                <div class="col-md-8">
+                    <select class="form-control">
+                        <option value="0">----</option>
+                    </select>
+                    <input class="form-control" type="text"/>
+                </div>
+                <div class="col-md-4"><label>Default Doc Template</label></div>
+                <div class="col-md-8">
+                    <select class="form-control">
+                        <option value="0">azur</option>
+                    </select>
+                </div> 
+                <div class="col-md-4"><label>Note(Public)</label></div>
+                <div class="col-md-8">
+                    <textarea class="form-control"></textarea>
+                </div>
+                <div class="col-md-4"><label>Note(Private)</label></div>
+                <div class="col-md-8">
+                    <textarea class="form-control"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="box-footer text-right">
+            <input type="submit" class="btn btn-danger" value="Create Draft" />
+            <input type="submit" class="btn btn-danger" value="Cancle" />
+        </div>
     </div>
-</body>
-</html>
+</section>

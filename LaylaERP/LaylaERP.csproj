@@ -783,8 +783,6 @@
     <Content Include="Views\Inventory\ConsignmentInventory.cshtml" />
     <Content Include="Views\Inventory\Index.cshtml" />
     <Content Include="Views\Coupons\ManageCoupons.cshtml" />
-    <Content Include="Views\CommercialProposal\NewProposal.cshtml" />
-    <Content Include="Views\CommercialProposal\ListingProposal.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

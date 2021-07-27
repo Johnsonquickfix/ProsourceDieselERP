@@ -9,7 +9,13 @@ namespace LaylaERP.Controllers
     public class CommercialProposalController : Controller
     {
         // GET: CommercialProposal
-        public ActionResult Index()
+        public ActionResult ListingProposal()
+        {
+            return View();
+        }
+
+        // GET: NewProposal
+        public ActionResult NewProposal()
         {
             return View();
         }

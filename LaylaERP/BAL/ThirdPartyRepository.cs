@@ -208,7 +208,7 @@ namespace LaylaERP.BAL
                 {
                     strWhr += " and (ur.user_status='" + userstatus + "') ";
                 }
-                strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, (pageno * pagesize).ToString(), pagesize.ToString());
+                strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
 
                 strSql += "; SELECT ceil(Count(rowid)/" + pagesize.ToString() + ") TotalPage,Count(rowid) TotalRecord from wp_vendor  WHERE 1 = 1 " + strWhr.ToString();
 
@@ -250,38 +250,7 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
-        //public static DataTable GetVendorSetting(string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "ASC")
-        //{
-        //    DataTable dt = new DataTable();
-        //    totalrows = 0;
-        //    try
-        //    {
-        //        string strWhr = string.Empty;
-
-        //        string strSql = "Select v.id, w.ref as warehouse, v.LeadTime, v.DaysofStock from wp_VendorSetting v inner join wp_warehouse w on v.WarehouseID = w.rowid where VendorID=11;";
-        //        if (!string.IsNullOrEmpty(searchid))
-        //        {
-        //            strWhr += " and (email like '%" + searchid + "%' OR user_nicename='%" + searchid + "%' OR ID='%" + searchid + "%' OR nom like '%" + searchid + "%')";
-        //        }
-        //        if (userstatus != null)
-        //        {
-        //            strWhr += " and (ur.user_status='" + userstatus + "') ";
-        //        }
-        //        strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, (pageno * pagesize).ToString(), pagesize.ToString());
-
-        //        strSql += "; SELECT ceil(Count(rowid)/" + pagesize.ToString() + ") TotalPage,Count(rowid) TotalRecord FROM wp_warehouse WHERE 1 = 1 " + strWhr.ToString();
-
-        //        DataSet ds = SQLHelper.ExecuteDataSet(strSql);
-        //        dt = ds.Tables[0];
-        //        if (ds.Tables[1].Rows.Count > 0)
-        //            totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw ex;
-        //    }
-        //    return dt;
-        //}
+        
         public static DataTable VendorByID(long id)
         {
             DataTable dt = new DataTable();

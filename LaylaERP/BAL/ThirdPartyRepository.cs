@@ -142,7 +142,6 @@ namespace LaylaERP.BAL
             { throw ex; }
             return DT;
         }
-
         public static DataSet GetIncoterm()
         {
             DataSet DS = new DataSet();
@@ -178,7 +177,6 @@ namespace LaylaERP.BAL
             { throw ex; }
             return DS;
         }
-
         public static DataTable GetVendorCode()
         {
             DataTable DT = new DataTable();
@@ -190,7 +188,6 @@ namespace LaylaERP.BAL
             { throw ex; }
             return DT;
         }
-
         public static DataTable GetVendor(string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
         {
             DataTable dt = new DataTable();
@@ -223,7 +220,6 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
-
         public static DataTable GetProduct(int id, long rowid)
         {
             DataTable dt = new DataTable();
@@ -250,7 +246,6 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
-        
         public static DataTable VendorByID(long id)
         {
             DataTable dt = new DataTable();
@@ -268,7 +263,6 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
-
         public int VendorSetting(string WarehouseID, int VendorID, string LeadTime, string DaysofStock)
         {
             try
@@ -301,7 +295,6 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
-
         public int EditVendorSetting(string WarehouseID, int VendorID, string LeadTime, string DaysofStock)
         {
             try

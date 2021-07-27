@@ -61,7 +61,17 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(JSONresult, 0);
         }
-      
+        public JsonResult GetIncoterm(SearchModel model)
+        {
+            DataSet ds = BAL.ThirdPartyRepository.GetIncoterm();
+            List<SelectListItem> productlist = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                productlist.Add(new SelectListItem { Text = dr["IncoTerm"].ToString(), Value = dr["ID"].ToString() });
+            }
+            return Json(productlist, JsonRequestBehavior.AllowGet);
+
+        }
         public JsonResult GetPaymentTerm(SearchModel model)
         {
                 DataSet ds = BAL.ThirdPartyRepository.GetPaymentTerm();
@@ -124,19 +134,17 @@ namespace LaylaERP.Controllers
 
         public JsonResult GetProductList(ThirdPartyModel model)
         {
+            int id = model.VendorID;
+            long rowid = model.rowid;
+
             string result = string.Empty;
-            int TotalRecord = 0;
             try
             {
-                string urid = "";
-                if (model.user_status != "")
-                    urid = model.user_status;
-                string searchid = model.Search;
-                DataTable dt = ThirdPartyRepository.GetProduct(urid, searchid, model.PageNo, model.PageSize, out TotalRecord, model.SortCol, model.SortDir);
+                DataTable dt = ThirdPartyRepository.GetProduct(id,rowid);
                 result = JsonConvert.SerializeObject(dt);
             }
             catch (Exception ex) { throw ex; }
-            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+            return Json(new { aaData = result }, 0);
         }
 
         public JsonResult GetVendorByID(long id)
@@ -159,14 +167,15 @@ namespace LaylaERP.Controllers
                 string LeadTime = model.LeadTime;
                 string DaysofStock = model.DaysofStock;
 
-                if (WarehouseID !="")
+                if (model.rowid > 0)
                 {
-                    new ThirdPartyRepository().VendorSetting(WarehouseID, VendorID, LeadTime, DaysofStock);
-                    return Json(new { status = true, message = "Vendor has been saved successfully!!", url = "" }, 0);
+                    int ID = new ThirdPartyRepository().EditVendorSetting(WarehouseID, VendorID, LeadTime, DaysofStock);
+                    return Json(new { status = true, message = "Vendor has been updated successfully!!", url = "", id = ID }, 0);
                 }
                 else
                 {
-                    return Json(new { status = false, message = "Something went wrong", url = "" }, 0);
+                    int ID = new ThirdPartyRepository().VendorSetting(WarehouseID, VendorID, LeadTime, DaysofStock);
+                    return Json(new { status = true, message = "Vendor has been saved successfully!!", url = "", id = ID }, 0);
                 }
             }
             return Json(new { status = false, message = "Invalid Details", url = "" }, 0);

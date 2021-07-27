@@ -224,10 +224,9 @@ namespace LaylaERP.BAL
             return dt;
         }
 
-        public static DataTable GetProduct(int id, long rowid, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "ASC")
+        public static DataTable GetProduct(int id, long rowid)
         {
             DataTable dt = new DataTable();
-            totalrows = 0;
             try
             {
                 id = Convert.ToInt32(rowid);
@@ -241,22 +240,9 @@ namespace LaylaERP.BAL
                 {
                     strSql = "select rowid as id,ref as warehouse, '' as LeadTime,'' as DaysofStock from wp_warehouse";
                 }
-                if (!string.IsNullOrEmpty(searchid))
-                {
-                    strWhr += " and (email like '%" + searchid + "%' OR user_nicename='%" + searchid + "%' OR ID='%" + searchid + "%' OR nom like '%" + searchid + "%')";
-                }
-                if (userstatus != null)
-                {
-                    strWhr += " and (ur.user_status='" + userstatus + "') ";
-                }
-                strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, (pageno * pagesize).ToString(), pagesize.ToString());
-
-                strSql += "; SELECT ceil(Count(rowid)/" + pagesize.ToString() + ") TotalPage,Count(rowid) TotalRecord FROM wp_warehouse WHERE 1 = 1 " + strWhr.ToString();
-
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
-                if (ds.Tables[1].Rows.Count > 0)
-                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+             
             }
             catch (Exception ex)
             {

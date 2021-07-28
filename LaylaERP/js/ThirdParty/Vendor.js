@@ -254,7 +254,7 @@ $("#btnSave").click(function () {
         if (DaysofStock != '') DaysofStock += ','; DaysofStock += $(this).val();
     });
     saveVendor(id, LeadTime, DaysofStock);
-    //SaveWarehouse(id, LeadTime, DaysofStock);
+    
 });
 function saveVendor(Settingid, LeadTime, DaysofStock) {
     ID = $("#hfid").val();
@@ -497,34 +497,34 @@ function ProductList() {
 //    SaveWarehouse(id, LeadTime, DaysofStock);
 //})
 
-function SaveWarehouse(id, LeadTime, DaysofStock) {
-    var VendorID = $('#hfid').val();
-    if (VendorID == 0) { swal('alert', 'Vendor not found', 'error') }
-    else {
-        var obj = { WarehouseID: id, LeadTime: LeadTime, DaysofStock: DaysofStock, VendorID: VendorID }
-        $.ajax({
-            url: '/ThirdParty/AddVendorSetting', dataType: 'json', type: 'Post',
-            contentType: "application/json; charset=utf-8",
-            data: JSON.stringify(obj),
-            dataType: "json",
-            beforeSend: function () {
-                $("#loader").show();
-            },
-            success: function (data) {
-                if (data.status == true) {
-                    swal('Alert!', data.message, 'success');
-                    window.location = "../../ThirdParty/VendorList";
-                }
-                else {
-                    swal('Alert!', data.message, 'error')
-                }
-            },
-            complete: function () {
-                $("#loader").hide();
-            },
-            error: function (error) {
-                swal('Error!', 'something went wrong', 'error');
-            },
-        })
-    }
-}
+//function SaveWarehouse(id, LeadTime, DaysofStock) {
+//    var VendorID = $('#hfid').val();
+//    if (VendorID == 0) { swal('alert', 'Vendor not found', 'error') }
+//    else {
+//        var obj = { WarehouseID: id, LeadTime: LeadTime, DaysofStock: DaysofStock, VendorID: VendorID }
+//        $.ajax({
+//            url: '/ThirdParty/AddVendorSetting', dataType: 'json', type: 'Post',
+//            contentType: "application/json; charset=utf-8",
+//            data: JSON.stringify(obj),
+//            dataType: "json",
+//            beforeSend: function () {
+//                $("#loader").show();
+//            },
+//            success: function (data) {
+//                if (data.status == true) {
+//                    swal('Alert!', data.message, 'success');
+//                    window.location = "../../ThirdParty/VendorList";
+//                }
+//                else {
+//                    swal('Alert!', data.message, 'error')
+//                }
+//            },
+//            complete: function () {
+//                $("#loader").hide();
+//            },
+//            error: function (error) {
+//                swal('Error!', 'something went wrong', 'error');
+//            },
+//        })
+//    }
+//}

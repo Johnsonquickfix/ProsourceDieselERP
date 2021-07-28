@@ -1,72 +1,69 @@
 ﻿@model LaylaERP.Models.WarehouseModel
-
 @{
     ViewBag.Title = "Mass Stock Transfer";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
 <div class="page-title">
     <h2>Mass Stock Transfer</h2>
-    @*<a class="btn btn-danger" id="btnAdd" href="Index"></a>*@
 </div>
-
 <section class="content section-content massstocktransfer mt-1">
     <div class="row  flex-wrap">
-        <div class="col-sm-6">
+        <div class="col-sm-12 mb-1">
             <div class="box box-primary">
                 <div class="box-body">
-                    <div class="row">
-                        <div class="col-md-4"><label>Source Warehouse</label></div>
-                        <div class="col-md-8">
+                    <div class="row nowrap mx-0 flex-end">
+                        <div class="flex-auto">
+                            <label>Source Warehouse</label>
                             <input type="hidden" id="hfprice" />
                             <select class="form-control" id="ddlsourcewarehouse">
                                 <option value="0" selected="selected">--Select Source warehouse--</option>
                             </select>
                         </div>
-                        <div class="col-md-4"><label>Target Warehouse</label></div>
-                        <div class="col-md-8">
+                        <div class="flex-auto">
+                            <label>Target Warehouse</label>
                             <select class="form-control" id="ddltargetwarehouse">
                                 <option value="0">--Select Target warehouse--</option>
                             </select>
                         </div>
-                        <div class="col-md-4"><label>Product Ref.</label></div>
-                        <div class="col-md-8">
+                        <div class="flex-auto">
+                            <label>Product Ref.</label>
                             <select class="form-control select2 billinfo" id="ddlProduct" placeholder="Select Products" style="width: 100%;">
                                 <option value="0">--Select Product--</option>
                             </select>
                         </div>
-                        <div class="col-md-4"><label>Lot/Serial</label></div>
-                        <div class="col-md-8">
+                        <div class="flex-auto">
+                            <label>Lot/Serial</label>
                             <input class="form-control" type="text" name="serial" id="txtSerial" placeholder=" Lot/Serial" />
                         </div>
-                        <div class="col-md-4"><label>Qty</label></div>
-                        <div class="col-md-8">
+                        <div class="flex-auto">
+                            <label>Qty</label>
                             <input class="form-control" type="text" name="qty" id="txtQty" placeholder="Qty" />
                         </div>
+                        <div class="flex-0">
+                            <input type="submit" name="action" id="btnSelect" class="btn btn-danger" value="Select" />
+                        </div>
                     </div>
-                </div>
-                <div class="box-footer text-right">
-                    <input type="submit" name="action" id="btnSelect" class="btn btn-danger" value="Select" />
+                    
                 </div>
             </div>
         </div>
-        <div class="col-sm-6">
+        <div class="col-sm-12">
             <div class="box box-primary">
                 <div class="box-body">
-                    <div class="row">
-                        <div class="col-md-4"><label>Movement or inventory code:</label></div>
-                        <div class="col-md-8">
+                    <div class="row nowrap mx-0 flex-end">
+                        <div class="flex-0"><label>Movement or inventory code:</label></div>
+                        <div class="flex-auto">
                             <input class="form-control" type="text" id="txtdateserial" placeholder=" Movement or inventory code" />
                         </div>
-                        <div class="col-md-4"><label>Label of movement:</label></div>
-                        <div class="col-md-8">
+                        <div class="flex-0"><label>Label of movement:</label></div>
+                        <div class="flex-auto">
                             <input class="form-control" type="text" id="txtlabel" placeholder="Label of Movement" />
+                        </div>
+                        <div class="flex-0">
+                            <input type="submit" name="action" id="btntransfer" class="btn btn-danger" value="Record Transfer" />
                         </div>
                     </div>
                     </div>
-                <div class="box-footer text-right">
-                    <input type="submit" name="action" id="btntransfer" class="btn btn-danger" value="Record Transfer" />
-                </div>
             </div>
         </div>
     </div>

@@ -2167,5 +2167,5 @@ float:right;}
 .row.nowrap > div {padding:0px 10px;}
 .massstocktransfer .row label {font-weight:600;}
 .commercial_proposal .col-md-3 label {font-weight:600; margin-bottom:0px;}
-.commercial_proposal .form-control {border-top:0px; border-left:0px; border-right:0px;}
+/*.commercial_proposal .form-control {border-top:0px; border-left:0px; border-right:0px;}*/
 .commercial_proposal select + .form-control {margin-left:10px;}

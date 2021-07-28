@@ -790,7 +790,6 @@
     <Content Include="Views\Appearance\AddMenu.cshtml" />
     <Content Include="Views\Appearance\AddMenuDetails.cshtml" />
     <Content Include="Views\Warehouse\StockMouvementList.cshtml" />
-    <Content Include="Views\PurchaseOrder\NewPurchaseOrder.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -89,7 +89,7 @@ namespace LaylaERP.Controllers
             return Json(productlist, JsonRequestBehavior.AllowGet);
 
         }
-        public JsonResult NewPurchaseOrder(PurchaseOrderModel model)
+        public JsonResult NewPurchaseOrderEdit(PurchaseOrderModel model)
         {
             if (ModelState.IsValid)
             {

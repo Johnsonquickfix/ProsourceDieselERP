@@ -21,7 +21,7 @@
         <div class="box-body">
             <div class="contennt setting-section">
                 <div class="nav-tabs-custom">
-                    <ul class="nav nav-tabs">
+                    <ul class="nav nav-tabs" id="mytabs" role="tablist">
                         <li class="active"><a href="#tab_1" data-toggle="tab">Vendor</a></li>
                         <li><a href="#tab_2" data-toggle="tab">Vendor Setting</a></li>
                     </ul>
@@ -249,8 +249,9 @@
                             </div>
                             <div class="box-footer">
                                 <div class="text-right">
-                                    <input type="submit" value="Submit" id="btnSave" class="btn btn-danger" />
-                                    @Html.ActionLink("Back to List", "VendorList", null, new { @class = "btn btn-danger" })
+                                    <button type="button" id="changetabbutton" class="btn btn-danger ">Next tab</button>
+                                    @*<input type="submit" value="Submit" id="btnSave" class="btn btn-danger" />*@
+                                    @*@Html.ActionLink("Back to List", "VendorList", null, new { @class = "btn btn-danger" })*@
                                 </div>
                             </div>
                         </div>
@@ -279,7 +280,7 @@
                             </div>
                             <div class="box-footer">
                                 <div class="text-right">
-                                    <input type="submit" value="Submit" id="btnSaveWarehouse" class="btn btn-danger" />
+                                    <input type="submit" value="Submit" id="btnSave" class="btn btn-danger" />
                                     @Html.ActionLink("Back to List", "VendorList", null, new { @class = "btn btn-danger" })
                                 </div>
                             </div>

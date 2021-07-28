@@ -11,6 +11,72 @@ getBalanceDays();
 ProductList();
 getIncoterm();
 
+$('#changetabbutton').click(function (e) {
+    ID = $("#hfid").val();
+    VendorName = $("#txVendorName").val();
+    AliasName = $("#txtAliasName").val();
+    VendorCode = $("#txtVendorCode").val();
+    Status = $("#ddlStatus").val();
+    Address = $("#txtAddress").val();
+    Address1 = $("#txtAddress1").val();
+    City = $("#txtCity").val();
+    State = $("#ddlState").val();
+    StateName = $("#ddlState").find('option:selected').text();
+    ZipCode = $("#txtZipCode").val();
+    Country = $("#ddlCountry").val();
+    Phone = $("#txtPhone").val();
+    Fax = $("#txtFax").val();
+    EMail = $("#txtEMail").val();
+    Web = $("#txtWeb").val();
+    Salestaxused = $("#ddlSalestaxused").val();
+    ThirdPartyType = $("#ddlThirdPartyType").val();
+    Workforce = $("#ddlWorkforce").val();
+    BusinessEntityType = $("#txtBusinessEntityType").val();
+    Capital = $("#txtCapital").val();
+    SalesRepresentative = $("#ddlSalesRepresentative").val();
+    PaymentTerms = $("#ddlPaymentTerms").val();
+    Balancedays = $("#ddlBalancedays").val();
+    PaymentDate = $("#txtPaymentDate").val();
+    Currency = $("#ddlCurrency").val();
+    EnableVendorUOM = $('#chkEnableVendorUOMrounding').prop("checked") ? 1 : 0;
+    Unitsofmeasurment = $("input[type='radio'][name='Unitsofmeasurment']:checked").val();
+    Minimumorderquanity = $("input[type='radio'][name='Minimumorderquanity']:checked").val();
+    DefaultTax = $("#txtDefaultTax").val();
+    TaxIncludedinprice = $("#chkTaxIncludedinprice").prop("checked") ? 1 : 0;
+    DefaultDiscount = $("#txtDefaultDiscount").val();
+    CreditLimit = $("#txtCreditLimit").val();
+    IncoTermType = $("#ddlIncoTerm").val();
+    IncoTerm = $("#txtIncoTerm").val();
+
+    var pattern = /^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
+    if (VendorName == "") { swal('alert', 'Please Enter Vendor Name', 'error').then(function () { swal.close(); $('#txVendorName').focus(); }) }
+    else if (AliasName == "") { swal('alert', 'Please Enter Alias Name', 'error').then(function () { swal.close(); $('#txtAliasName').focus(); }) }
+    else if (Status == "") { swal('alert', 'Please Enter Status', 'error').then(function () { swal.close(); $('#ddlStatus').focus(); }) }
+    else if (Address == "") { swal('alert', 'Please Enter Address', 'error').then(function () { swal.close(); $('#txtAddress').focus(); }) }
+    else if (City == "") { swal('alert', 'Please Enter City', 'error').then(function () { swal.close(); $('#txtCity').focus(); }) }
+    else if (State == "") { swal('alert', 'Please Enter State', 'error').then(function () { swal.close(); $('#ddlState').focus(); }) }
+    else if (ZipCode == "") { swal('alert', 'Please Enter ZipCode', 'error').then(function () { swal.close(); $('#txtZipCode').focus(); }) }
+    else if (Country == "") { swal('alert', 'Please Enter Country', 'error').then(function () { swal.close(); $('#ddlCountry').focus(); }) }
+    else if (Phone == "") { swal('alert', 'Please Enter Phone', 'error').then(function () { swal.close(); $('#txtPhone').focus(); }) }
+    else if (EMail == "") { swal('alert', 'Please Enter EMail', 'error').then(function () { swal.close(); $('#txtEMail').focus(); }) }
+    else if (!pattern.test(EMail)) { swal('alert', 'not a valid e-mail address', 'error').then(function () { swal.close(); $('#txtEMail').focus(); }) }
+    else if (Web == "") { swal('alert', 'Please Enter Web', 'error').then(function () { swal.close(); $('#txtWeb').focus(); }) }
+    else if (Salestaxused == "") { swal('alert', 'Please Select Sales tax used', 'error').then(function () { swal.close(); $('#ddlSalestaxused').focus(); }) }
+    else if (ThirdPartyType == "-1") { swal('alert', 'Please Select Third Party Type', 'error').then(function () { swal.close(); $('#ddlThirdPartyType').focus(); }) }
+    else if (Workforce == "-1") { swal('alert', 'Please Select Workforce', 'error').then(function () { swal.close(); $('#ddlWorkforce').focus(); }) }
+    else if (BusinessEntityType == "") { swal('alert', 'Please Enter Business Entity Type', 'error').then(function () { swal.close(); $('#txtBusinessEntityType').focus(); }) }
+    else if (Capital == "") { swal('alert', 'Please Enter Capital', 'error').then(function () { swal.close(); $('#txtCapital').focus(); }) }
+    else if (IncoTermType == "-1") { swal('alert', 'Please Select IncoTerm', 'error').then(function () { swal.close(); $('#ddlIncoTerm').focus(); }) }
+    else if (IncoTerm == "") { swal('alert', 'Please Enter IncoTerm', 'error').then(function () { swal.close(); $('#txtIncoTerm').focus(); }) }
+
+    else {
+
+        e.preventDefault();
+        var link = $('#mytabs .active').next().children('a').attr('href');
+        $('#mytabs a[href="' + link + '"]').tab('show');
+    }
+});
+
 $('#ddlIncoTerm').change(function () {
     var IncotermsTypeID = $('#ddlIncoTerm').val();
     var obj = { IncotermsTypeID: IncotermsTypeID };
@@ -177,9 +243,20 @@ function phoneFormat(input) {
     return input;
 }
 $("#btnSave").click(function () {
-    saveVendor();
+    var id = "";
+    var LeadTime = "";
+    var DaysofStock = "";
+    $('#dtdata').find("input[type='text'][name='txtLeadTime']").each(function () {
+        if (LeadTime != '') LeadTime += ','; LeadTime += $(this).val();
+        if (id != '') id += ','; id += $(this).attr('id');
+    });
+    $('#dtdata').find("input[type='text'][name='txtDaysofStock']").each(function () {
+        if (DaysofStock != '') DaysofStock += ','; DaysofStock += $(this).val();
+    });
+    saveVendor(id, LeadTime, DaysofStock);
+    //SaveWarehouse(id, LeadTime, DaysofStock);
 });
-function saveVendor() {
+function saveVendor(Settingid, LeadTime, DaysofStock) {
     ID = $("#hfid").val();
     VendorName = $("#txVendorName").val();
     AliasName = $("#txtAliasName").val();
@@ -235,7 +312,7 @@ function saveVendor() {
     else if (BusinessEntityType == "") { swal('alert', 'Please Enter Business Entity Type', 'error').then(function () { swal.close(); $('#txtBusinessEntityType').focus(); }) }
     else if (Capital == "") { swal('alert', 'Please Enter Capital', 'error').then(function () { swal.close(); $('#txtCapital').focus(); }) }
     else if (IncoTermType == "-1") { swal('alert', 'Please Select IncoTerm', 'error').then(function () { swal.close(); $('#ddlIncoTerm').focus(); }) }
-    else if (IncoTerm == "-1") { swal('alert', 'Please Select IncoTerm', 'error').then(function () { swal.close(); $('#txtIncoTerm').focus(); }) }
+    else if (IncoTerm == "") { swal('alert', 'Please Enter IncoTerm', 'error').then(function () { swal.close(); $('#txtIncoTerm').focus(); }) }
 
     else {
         var obj = {
@@ -246,7 +323,9 @@ function saveVendor() {
             Capital: Capital, SalesRepresentative: SalesRepresentative, Address1: Address1, PaymentTermsID: PaymentTerms, BalanceID: Balancedays ,
             PaymentDate: PaymentDate, Currency: Currency, EnableVendorUOM: EnableVendorUOM, UnitsofMeasurment:Unitsofmeasurment,
             MinimumOrderQuanity: Minimumorderquanity, DefaultTax: DefaultTax, TaxIncludedinPrice:TaxIncludedinprice,
-            DefaultDiscount: DefaultDiscount, CreditLimit: CreditLimit, IncotermsType: IncoTermType, Incoterms: IncoTerm
+            DefaultDiscount: DefaultDiscount, CreditLimit: CreditLimit, IncotermsType: IncoTermType, Incoterms: IncoTerm,
+            WarehouseID: Settingid, LeadTime: LeadTime, DaysofStock: DaysofStock, VendorID: ID,
+
         }
         $.ajax({
             url: '/ThirdParty/AddVendor/', dataType: 'json', type: 'Post',
@@ -258,12 +337,13 @@ function saveVendor() {
             },
             success: function (data) {
                 if (data.status == true) {
-                    $('#hfid').val(data.id);
+                    /*$('#hfid').val(data.id);*/
+
                     swal('Alert!', data.message, 'success');
                     $("#parent").find(":input").each(function () {
                         switch (this.type) { case "text": case "email": case "tel": $(this).val(''); break; }
                     });
-                    //window.location = "../../ThirdParty/VendorList";
+                    window.location = "../../ThirdParty/VendorList";
                 }
                 else {
                     //swal('Alert!', data.message, 'error')
@@ -403,19 +483,19 @@ function ProductList() {
     });
 }
 
-$("#btnSaveWarehouse").click(function () {
-    var id = "";
-    var LeadTime = "";
-    var DaysofStock = "";
-    $('#dtdata').find("input[type='text'][name='txtLeadTime']").each(function () {
-        if (LeadTime != '') LeadTime += ','; LeadTime += $(this).val();
-        if (id != '') id += ','; id += $(this).attr('id');
-    });
-    $('#dtdata').find("input[type='text'][name='txtDaysofStock']").each(function () {
-        if (DaysofStock != '') DaysofStock += ','; DaysofStock += $(this).val();
-    });
-    SaveWarehouse(id, LeadTime, DaysofStock);
-})
+//$("#btnSaveWarehouse").click(function () {
+//    var id = "";
+//    var LeadTime = "";
+//    var DaysofStock = "";
+//    $('#dtdata').find("input[type='text'][name='txtLeadTime']").each(function () {
+//        if (LeadTime != '') LeadTime += ','; LeadTime += $(this).val();
+//        if (id != '') id += ','; id += $(this).attr('id');
+//    });
+//    $('#dtdata').find("input[type='text'][name='txtDaysofStock']").each(function () {
+//        if (DaysofStock != '') DaysofStock += ','; DaysofStock += $(this).val();
+//    });
+//    SaveWarehouse(id, LeadTime, DaysofStock);
+//})
 
 function SaveWarehouse(id, LeadTime, DaysofStock) {
     var VendorID = $('#hfid').val();
@@ -433,6 +513,7 @@ function SaveWarehouse(id, LeadTime, DaysofStock) {
             success: function (data) {
                 if (data.status == true) {
                     swal('Alert!', data.message, 'success');
+                    window.location = "../../ThirdParty/VendorList";
                 }
                 else {
                     swal('Alert!', data.message, 'error')

@@ -140,8 +140,8 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "insert into wp_stock_mouvement(datem,fk_product,fk_entrepot,value,type_mouvement,label,inventorycode,price) values(@datem,@fk_product,@fk_entrepot,-1*@value,1,@label,@inventorycode,@price);SELECT LAST_INSERT_ID();";
-                string strsql1 = " insert into wp_stock_mouvement(datem,fk_product,fk_entrepot,value,type_mouvement,label,inventorycode,price) values(@datem,@fk_product,@fk_entrepottarget,@value,0,@label,@inventorycode,@price);SELECT LAST_INSERT_ID();";
+                string strsql = "insert into wp_stock_mouvement(datem,fk_product,fk_entrepot,value,type_mouvement,label,inventorycode,price,fk_origin) values(@datem,@fk_product,@fk_entrepot,-1*@value,1,@label,@inventorycode,@price,0);SELECT LAST_INSERT_ID();";
+                string strsql1 = " insert into wp_stock_mouvement(datem,fk_product,fk_entrepot,value,type_mouvement,label,inventorycode,price,fk_origin) values(@datem,@fk_product,@fk_entrepottarget,@value,0,@label,@inventorycode,@price,0);SELECT LAST_INSERT_ID();";
                 MySqlParameter[] para =
                 { 
                     new MySqlParameter("@datem", Convert.ToDateTime(DateTime.UtcNow.ToString())),
@@ -190,7 +190,7 @@ namespace LaylaERP.BAL
             DataTable dtr = new DataTable();
             try
             {
-                string strquery = "SELECT wsm.rowid as ref, post.post_title as product, wsm.tms as date,ww.ref as warehouse, wsm.inventorycode as invcode," 
+                string strquery = "SELECT wsm.rowid as ref, post.post_title as product, wsm.datem as date,ww.ref as warehouse, wsm.inventorycode as invcode," 
                                   + "wsm.label as label,wsm.value,concat('$',format(wsm.price,2)) as price FROM wp_stock_mouvement wsm, wp_warehouse ww, wp_posts post where ww.rowid = wsm.fk_entrepot and post.id = wsm.fk_product";
                 dtr = SQLHelper.ExecuteDataTable(strquery);
             }

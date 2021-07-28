@@ -28,9 +28,14 @@ namespace LaylaERP.Controllers
         {
             if (ModelState.IsValid)
             {
+                string WarehouseID = model.WarehouseID;
+                int VendorID = model.VendorID;
+                string LeadTime = model.LeadTime;
+                string DaysofStock = model.DaysofStock;
                 if (model.rowid > 0)
                 {
                     new ThirdPartyRepository().EditVendor(model, model.rowid);
+                    new ThirdPartyRepository().EditVendorSetting(WarehouseID, model.rowid, LeadTime, DaysofStock);
                     return Json(new { status = true, message = "Vendor Record has been updated successfully!!", url = "", id = model.rowid }, 0);
                 }
                 else
@@ -38,6 +43,7 @@ namespace LaylaERP.Controllers
                     int ID = new ThirdPartyRepository().AddNewVendor(model);
                     if (ID > 0)
                     {
+                        new ThirdPartyRepository().VendorSetting(WarehouseID, ID, LeadTime, DaysofStock);
                         ModelState.Clear();
                         return Json(new { status = true, message = "Vendor Record has been saved successfully!!", url = "", id = ID }, 0);
                     }
@@ -49,7 +55,28 @@ namespace LaylaERP.Controllers
             }
             return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
         }
+        public JsonResult AddVendorSetting(ThirdPartyModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                string WarehouseID = model.WarehouseID;
+                int VendorID = model.VendorID;
+                string LeadTime = model.LeadTime;
+                string DaysofStock = model.DaysofStock;
 
+                if (model.rowid > 0)
+                {
+                    int ID = new ThirdPartyRepository().EditVendorSetting(WarehouseID, model.rowid, LeadTime, DaysofStock);
+                    return Json(new { status = true, message = "Vendor has been updated successfully!!", url = "", id = ID }, 0);
+                }
+                else
+                {
+                    int ID = new ThirdPartyRepository().VendorSetting(WarehouseID, VendorID, LeadTime, DaysofStock);
+                    return Json(new { status = true, message = "Vendor has been saved successfully!!", url = "", id = ID }, 0);
+                }
+            }
+            return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+        }
         public JsonResult GetState(SearchModel model)
         {
             string JSONresult = string.Empty;
@@ -170,27 +197,6 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(JSONresult, 0);
         }
-        public JsonResult AddVendorSetting(ThirdPartyModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                string WarehouseID = model.WarehouseID;
-                int VendorID = model.VendorID;
-                string LeadTime = model.LeadTime;
-                string DaysofStock = model.DaysofStock;
-
-                if (model.rowid > 0)
-                {
-                    int ID = new ThirdPartyRepository().EditVendorSetting(WarehouseID, VendorID, LeadTime, DaysofStock);
-                    return Json(new { status = true, message = "Vendor has been updated successfully!!", url = "", id = ID }, 0);
-                }
-                else
-                {
-                    int ID = new ThirdPartyRepository().VendorSetting(WarehouseID, VendorID, LeadTime, DaysofStock);
-                    return Json(new { status = true, message = "Vendor has been saved successfully!!", url = "", id = ID }, 0);
-                }
-            }
-            return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
-        }
+       
     }
 }

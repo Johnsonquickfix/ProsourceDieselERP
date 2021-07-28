@@ -72,6 +72,18 @@ namespace LaylaERP.Controllers
             return Json(productlist, JsonRequestBehavior.AllowGet);
 
         }
+        public JsonResult GetIncotermByID(ThirdPartyModel model)
+        {
+            int id = model.IncotermsTypeID;
+            string result = string.Empty;
+            try
+            {
+                DataTable dt = ThirdPartyRepository.GetIncotermByID(id);
+                result = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(result , 0);
+        }
         public JsonResult GetPaymentTerm(SearchModel model)
         {
                 DataSet ds = BAL.ThirdPartyRepository.GetPaymentTerm();

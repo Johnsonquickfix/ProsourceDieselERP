@@ -147,12 +147,24 @@ namespace LaylaERP.BAL
             DataSet DS = new DataSet();
             try
             {
-                string strSQl = "Select rowid as ID, IncoTerm from IncoTerms order by ID";
+                string strSQl = "Select rowid as ID, IncoTerm, short_description from IncoTerms order by ID";
                 DS = SQLHelper.ExecuteDataSet(strSQl);
             }
             catch (Exception ex)
             { throw ex; }
             return DS;
+        }
+        public static DataTable GetIncotermByID(int IncotermsTypeID)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                string strSQl = "Select rowid as ID, IncoTerm, short_description from IncoTerms where rowid="+ IncotermsTypeID + " order by ID;";
+                dt = SQLHelper.ExecuteDataTable(strSQl);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dt;
         }
         public static DataSet GetPaymentTerm()
         {

@@ -4,13 +4,27 @@ getStatus();
 getSalesTaxUsed();
 getThirdPartyType();
 getWorkforce();
-getIncoterms();
 getAssignedtoSalesRepresentative();
 getVendorCode();
 getPaymentTerm();
 getBalanceDays();
 ProductList();
 getIncoterm();
+
+$('#ddlIncoTerm').change(function () {
+    var IncotermsTypeID = $('#ddlIncoTerm').val();
+    var obj = { IncotermsTypeID: IncotermsTypeID };
+    jQuery.ajax({
+        url: "/ThirdParty/GetIncotermByID", dataType: 'json', type: "Post",
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(obj),
+        success: function (data) {
+            data = JSON.parse(data);
+            $('#txtIncoTerm').val(data[0].short_description);
+        },
+        error: function (jqXHR, textStatus, errorThrown) { swal('Error!', errorThrown, "error"); }
+    });
+})
 
 function getProspect() {
     var data = [
@@ -129,28 +143,7 @@ function getWorkforce() {
     })
     $("#ddlWorkforce").html(items);
 }
-function getIncoterms() {
-    var data = [
-        { "ID": "5", "Text": "CFR" },
-        { "ID": "6", "Text": "CIF" },
-        { "ID": "8", "Text": "CIP" },
-        { "ID": "7", "Text": "CPT" },
-        { "ID": "10", "Text": "DAP" },
-        { "ID": "9", "Text": "DAT" },
-        { "ID": "11", "Text": "DDP" },
-        { "ID": "12", "Text": "DPU" },
-        { "ID": "1", "Text": "EXW" },
-        { "ID": "3", "Text": "FAS" },
-        { "ID": "2", "Text": "FCA" },
-        { "ID": "4", "Text": "FOB" },
-    ];
-    var items = "";
-    items += "<option value='-1'>-- Please select Incoterms --</option>";
-    $.each(data, function (index, value) {
-        items += "<option value=" + this['ID'] + ">" + this['Text'] + "</option>";
-    })
-    $("#ddlIncoterms").html(items);
-}
+
 function getAssignedtoSalesRepresentative() {
     var data = [
         { "ID": "1", "Text": "SuperAdmin" },

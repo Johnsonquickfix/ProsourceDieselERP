@@ -2159,3 +2159,10 @@ margin-right:10px;white-space:nowrap;}
 .massstocktransfer [class^="col-md"]:last-child {margin-bottom:0px;}
 .commercial_proposal .col-md-8 {align-items:center;display:flex;}
 .commercial_proposal .col-md-8 span {padding-left:10px;}
+.mx-0 {margin-left:0px !important; margin-right:0px !important;}
+.flex-auto {flex: 1 0 0; -ms-flex: 1 0 0;}
+.row.nowrap {flex-wrap:nowrap !important; -ms-flex-wrap:nowrap !important;}
+.flex-end {align-items:flex-end; -ms-align-items:flex-end;}
+.flex-0 {flex:0; -ms-flex:0; white-space:nowrap;}
+.row.nowrap > div {padding:0px 10px;}
+.massstocktransfer .row label {font-weight:600;}

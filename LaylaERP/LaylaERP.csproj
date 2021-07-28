@@ -791,6 +791,9 @@
     <Content Include="Views\Appearance\AddMenuDetails.cshtml" />
     <Content Include="Views\Warehouse\StockMouvementList.cshtml" />
     <Content Include="Views\Warehouse\GetStockAtDate.cshtml" />
+    <Content Include="Views\CommercialProposal\ListingProposal.cshtml" />
+    <Content Include="Views\CommercialProposal\NewProposal.cshtml" />
+    <Content Include="Views\PurchaseOrder\NewPurchaseOrder.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -198,5 +198,19 @@ namespace LaylaERP.BAL
             { throw ex; }
             return dtr;
         }
+
+        public static DataTable GetStockAtDate(WarehouseModel model)
+        {
+            DataTable dtr = new DataTable();
+            try
+            {
+                string strquery = "SELECT post.post_title as ref, wsm.label as label,sum(wsm.value) as stockatdate, concat('$', format(price * sum(wsm.value), 2)) as inputvalue,concat('$', format(price * sum(wsm.value), 2)) as sellvalue, sum(wsm.value) as currentstock"
+                                  + " FROM wp_stock_mouvement wsm, wp_warehouse ww, wp_posts post where wsm.fk_entrepot = '"+model.fk_entrepot+"' and ww.rowid = '"+model.fk_entrepot+ "' and post.id = wsm.fk_product and wsm.fk_product = '" + model.fk_product + "' and Date(wsm.datem) = '"+model.mydate+"'";
+                dtr = SQLHelper.ExecuteDataTable(strquery);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dtr;
+        }
     }
 }

@@ -207,6 +207,23 @@ namespace LaylaERP.Controllers
             return Json(JSONresult, 0);
         }
 
-       
+        public ActionResult GetStockAtDate()
+        {
+            return View();
+        }
+
+        public JsonResult ListStockAtDate(WarehouseModel model)
+        {
+            //int id = model.fk_product;
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = WarehouseRepository.GetStockAtDate(model);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+
     }
 }

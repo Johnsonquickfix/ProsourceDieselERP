@@ -18,7 +18,7 @@
                     <div class="row">
                         <div class="col-md-4"><label>Source Warehouse</label></div>
                         <div class="col-md-8">
-                            <input type="hidden" id="hfprice" />
+                            <input type="text" id="hfprice" />
                             <select class="form-control" id="ddlsourcewarehouse">
                                 <option value="0" selected="selected">--Select Source warehouse--</option>
                             </select>
@@ -131,11 +131,27 @@
         var fk_product = $("#ddlProduct").val();
         var price = $("#hfprice").val();
         var value = $("#txtQty").val();
+        var lotserial = $("#txtSerial").val();
         var inventorycode = $("#txtdateserial").val();
         var label = $("#txtlabel").val();
 
-        if (fk_entrepot == fk_entrepottarget) {
-            swal('Alert', 'Target Warehouse and Source Warehouse not be same', 'error');
+        if (fk_entrepot == 0) {
+            swal('Alert', 'Please select source warehouse', 'error').then(function () { swal.close(); $('#ddlsourcewarehouse').focus(); });
+        }
+        else if (fk_entrepottarget == 0) {
+            swal('Alert', 'Please select target warehouse', 'error').then(function () { swal.close(); $('#ddltargetwarehouse').focus(); });
+        }
+        else if (fk_entrepot == fk_entrepottarget) {
+            swal('Alert', 'Target warehouse and Source warehouse will not be same', 'error').then(function () { swal.close(); $('#ddltargetwarehouse').focus(); });
+        }
+        else if (fk_product == 0) {
+            swal('Alert', 'Please select product', 'error').then(function () { swal.close(); $('#ddlProduct').focus(); });
+        }
+        else if (lotserial == '') {
+            swal('Alert', 'Please enter serial number', 'error').then(function () { swal.close(); $('#txtSerial').focus(); });
+        }
+        else if (value == '') {
+            swal('Alert', 'Please enter Qty', 'error').then(function () { swal.close(); $('#txtQty').focus(); });
         }
 
         else {
@@ -158,7 +174,7 @@
                 success: function (data) {
                     if (data.status == true) {
                         //$('#parent > input:text').val('');
-                        swal('Alert!', data.message, 'success');
+                        swal('Alert!', data.message, 'success').then((result) => { location.href = 'StockMouvementList'; });
                     }
                     else {
                         swal('Alert!', data.message, 'error');

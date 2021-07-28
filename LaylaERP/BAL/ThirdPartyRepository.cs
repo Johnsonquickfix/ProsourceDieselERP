@@ -48,7 +48,6 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@fk_effectif", model.Workforce),
                     new MySqlParameter("@fk_forme_juridique", model.BusinessEntityType),
                     new MySqlParameter("@capital", model.Capital),
-                    new MySqlParameter("@location_incoterms", model.Incoterms),
                     new MySqlParameter("@SalesRepresentative", model.SalesRepresentative),
                      new MySqlParameter("@PaymentTermsID", model.PaymentTermsID),
                     new MySqlParameter("@BalanceID", model.BalanceID),
@@ -307,7 +306,7 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
-        public int EditVendorSetting(string WarehouseID, int VendorID, string LeadTime, string DaysofStock)
+        public int EditVendorSetting(string WarehouseID, long VendorID, string LeadTime, string DaysofStock)
         {
             try
             {
@@ -322,7 +321,7 @@ namespace LaylaERP.BAL
                     LeadTime = Lead_Time[i].ToString();
                     DaysofStock = Days_of_Stock[i].ToString();
 
-                    string strsql = "Update wp_VendorSetting set LeadTime=@LeadTime,DaysofStock=@DaysofStock,VendorID=@VendorID,WarehouseID=@WarehouseID where VendorID=" + VendorID + ";";
+                    string strsql = "Update wp_VendorSetting set LeadTime=@LeadTime,DaysofStock=@DaysofStock where ID=" + WarehouseID + " and VendorID=" + VendorID + ";";
                     MySqlParameter[] para =
                     {
                     new MySqlParameter("@WarehouseID", WarehouseID),

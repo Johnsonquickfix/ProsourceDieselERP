@@ -55,6 +55,13 @@ function BindStateCounty(ctr, obj) {
         for (i = 0; i < res[0].states.length; i++) { $("#" + ctr + "").append('<option value="' + res[0].states[i].abbreviation + '">' + res[0].states[i].name + '</option>'); }
     }
 }
+function ValidateMaxValue(value, min, max) {
+    if (parseInt(value) < min || isNaN(value))
+        return 0;
+    else if (parseInt(value) > max)
+        return max;
+    else return value;
+}
 
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Edit Order ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function getOrderInfo() {
@@ -114,12 +121,12 @@ function getOrderItemList(oid) {
         for (var i = 0; i < data.length; i++) {
             let orderitemid = parseInt(data[i].order_item_id) || 0;
             if (data[i].product_type == 'line_item') {
-                let PKey = data[i].product_id + '_' + data[i].variation_id;
-                itemHtml += '<tr id="tritemId_' + PKey + '" data-id="' + PKey + '" class="' + (data[i].is_free ? 'free_item' : 'paid_item') + '" data-pid="' + data[i].product_id + '" data-vid="' + data[i].variation_id + '" data-pname="' + data[i].product_name + '" data-gid="' + data[i].group_id + '" data-freeitem="' + data[i].is_free + '" data-freeitems=\'' + data[i].free_itmes + '\' data-orderitemid="' + orderitemid + '" data-qty="' + data[i].quantity + '">';
+                let PKey = orderitemid;
+                itemHtml = '<tr id="tritemId_' + PKey + '" data-id="' + PKey + '" class="' + (data[i].is_free ? 'free_item' : 'paid_item') + '" data-pid="' + data[i].product_id + '" data-vid="' + data[i].variation_id + '" data-pname="' + data[i].product_name + '" data-gid="' + data[i].group_id + '" data-freeitem="' + data[i].is_free + '" data-freeitems=\'' + data[i].free_itmes + '\' data-orderitemid="' + orderitemid + '" data-qty="' + data[i].quantity + '" data-returnqty="0">';
                 itemHtml += '<td class="text-center"><i class="far fa-images"></i></td>';
                 itemHtml += '<td>' + data[i].product_name + '</td>';
                 itemHtml += '<td class="text-right">' + data[i].reg_price.toFixed(2) + '</td>';
-                itemHtml += '<td class="text-right">' + data[i].quantity + '</td>';
+                itemHtml += '<td class="text-right row-qty">' + data[i].quantity + '</td>';
                 if (data[i].is_free) {
                     itemHtml += '<td><input min="0" max="' + data[i].quantity + '" autocomplete="off" disabled class="form-control number rowCalulate" type="number" id="txt_RefundQty_' + PKey + '" value="0" name="txt_RefundQty" placeholder="Qty"></td>';
                 }
@@ -133,6 +140,7 @@ function getOrderItemList(oid) {
                 zQty = zQty + (parseFloat(data[i].quantity) || 0.00);
                 zGAmt = zGAmt + (parseFloat(data[i].total) || 0.00);
                 zTotalTax = zTotalTax + (parseFloat(data[i].tax_amount) || 0.00);
+                $('#order_line_items').append(itemHtml);
             }
             else if (data[i].product_type == 'coupon') {
                 let cou_amt = parseFloat(data[i].discount) || 0.00;
@@ -164,20 +172,21 @@ function getOrderItemList(oid) {
                 zTDiscount = zTDiscount + cou_amt;
             }
             else if (data[i].product_type == 'fee' && data[i].product_name == 'State Recycling Fee') {
-                recyclingfeeHtml += '<tr id="trfeeid_' + orderitemid + '" data-orderitemid="' + orderitemid + '" data-pname="' + data[i].product_name + '">';
+                recyclingfeeHtml = '<tr id="trfeeid_' + orderitemid + '" data-orderitemid="' + orderitemid + '" data-pname="' + data[i].product_name + '">';
                 recyclingfeeHtml += '<td class="text-center item-action"><i class="fa fa-plus-circle"></i></td>';
-                recyclingfeeHtml += '<td>' + data[i].product_name + '</td><td></td><td></td><td class="RefundAmount text-right"></td><td class="TotalAmount text-right">' + data[i].total.toFixed(2) + '</td><td></td><td></td>';
+                recyclingfeeHtml += '<td>' + data[i].product_name + '</td><td></td><td class="text-right row-refuntamt"></td><td class="RefundAmount text-right"></td><td class="TotalAmount text-right">' + data[i].total.toFixed(2) + '</td><td></td><td></td>';
                 recyclingfeeHtml += '</tr>';
                 zStateRecyclingAmt = zStateRecyclingAmt + (parseFloat(data[i].total) || 0.00);
                 $("#stateRecyclingFeeTotal").data("orderitemid", orderitemid);
+                $('#order_state_recycling_fee_line_items').append(recyclingfeeHtml);
             }
             else if (data[i].product_type == 'fee' && data[i].product_name != 'State Recycling Fee') {
                 let startingNumber = (data[i].product_name.match(/^-?\d+\.\d+|^-?\d+\b|^\d+(?=\w)/g) || []);
                 let feetype = data[i].product_name.match(/%/g) != null ? '%' : '';
                 let sd = feetype == '%' ? (parseFloat(startingNumber) || 0.00) : parseFloat(data[i].total);
-                feeHtml += '<tr id="trfeeid_' + orderitemid + '" data-orderitemid="' + orderitemid + '" class="' + (feetype == '%' ? 'percent_fee' : 'fixed_fee') + '" data-pname="' + data[i].product_name + '" data-feeamt="' + sd + '" data-feetype="' + feetype + '"> ';
+                feeHtml = '<tr id="trfeeid_' + orderitemid + '" data-orderitemid="' + orderitemid + '" class="' + (feetype == '%' ? 'percent_fee' : 'fixed_fee') + '" data-pname="' + data[i].product_name + '" data-feeamt="' + sd + '" data-feetype="' + feetype + '"> ';
                 feeHtml += '<td class="text-center item-action"><i class="fas fa-plus-circle"></i></td>';
-                feeHtml += '<td>' + data[i].product_name + '</td><td></td><td></td>';
+                feeHtml += '<td>' + data[i].product_name + '</td><td></td><td class="text-right row-refuntamt"></td>';
                 if (feetype == '%') {
                     feeHtml += '<td><input min="0" autocomplete="off" disabled class="form-control number rowCalulate" type="number" id="txt_FeeAmt_' + orderitemid + '" value="0" name="txt_FeeAmt" placeholder="Amount"></td>';
                 }
@@ -187,27 +196,44 @@ function getOrderItemList(oid) {
                 feeHtml += '<td class="TotalAmount text-right">' + data[i].total.toFixed(2) + '</td><td></td><td></td>';
                 feeHtml += '</tr>';
                 zFeeAmt = zFeeAmt + (parseFloat(data[i].total) || 0.00);
+                $('#order_fee_line_items').append(feeHtml);
             }
             else if (data[i].product_type == 'shipping') {
-                shippingHtml += '<tr id="tritemId_' + orderitemid + '" data-orderitemid="' + orderitemid + '" data-pname="' + data[i].product_name + '">';
+                shippingHtml = '<tr id="tritemId_' + orderitemid + '" data-orderitemid="' + orderitemid + '" data-pname="' + data[i].product_name + '">';
                 shippingHtml += '<td class="text-center item-action"><i class="fa fa-shipping-fast"></i></td>';
-                shippingHtml += '<td>Shipping</td><td></td><td></td><td class="RefundAmount text-right"></td><td class="TotalAmount text-right">' + data[i].total.toFixed(2) + '</td><td></td><td></td>';
+                shippingHtml += '<td>Shipping</td><td></td><td class="text-right row-refuntamt"></td><td class="RefundAmount text-right"></td><td class="TotalAmount text-right">' + data[i].total.toFixed(2) + '</td><td></td><td></td>';
                 shippingHtml += '</tr>';
                 zShippingAmt = zShippingAmt + (parseFloat(data[i].total) || 0.00);
                 $("#shippingTotal").data("orderitemid", orderitemid);
+                $('#order_shipping_line_items').append(shippingHtml);
             }
             else if (data[i].product_type == 'refund') {
-                refundHtml += '<tr id="tritemId_' + orderitemid + '" data-orderitemid="' + orderitemid + '" data-pname="' + data[i].product_name + '">';
+                refundHtml = '<tr id="tritemId_' + orderitemid + '" data-orderitemid="' + orderitemid + '" data-pname="' + data[i].product_name + '">';
                 refundHtml += '<td class="text-center item-action"><i class="fas fa-retweet"></i></td>';
                 refundHtml += '<td>' + data[i].product_name + '</td><td></td><td></td><td></td><td class="TotalAmount text-right">' + data[i].total.toFixed(2) + '</td><td></td><td></td>';
                 refundHtml += '</tr>';
                 zRefundAmt = zRefundAmt + (parseFloat(data[i].total) || 0.00);
+                $('#order_refunds').append(refundHtml);
             }
             else if (data[i].product_type == 'tax') {
                 $("#salesTaxTotal").data("orderitemid", orderitemid);
             }
+            else if (data[i].product_type == 'refund_items') {
+                if (data[i].product_name == "line_item") {
+                    let max_return = parseInt($("#tritemId_" + orderitemid).data("qty")) + parseInt(data[i].quantity);
+                    $("#tritemId_" + orderitemid).find('[name=txt_RefundQty]').attr({ "max": max_return, "min": 0, "onkeyup": 'this.value = ValidateMaxValue(this.value, 0, ' + max_return + ')' });
+                    $("#tritemId_" + orderitemid).data("returnqty", data[i].quantity);
+                    $("#tritemId_" + orderitemid).find('.row-qty').append('<span class="text-danger"><i class="fa fa-fw fa-undo"></i>' + data[i].quantity + '</span>');
+                }
+                else if (data[i].product_name == "fee") {
+                    $("#trfeeid_" + orderitemid).find('.row-refuntamt').append('<span class="text-danger"><i class="fa fa-fw fa-undo"></i>' + data[i].total + '</span>');
+                }
+                else if (data[i].product_name == "shipping") {
+                    $("#tritemId_" + orderitemid).find('.row-refuntamt').append('<span class="text-danger"><i class="fa fa-fw fa-undo"></i>' + data[i].total + '</span>');
+                }
+            }
         }
-        $('#order_line_items').append(itemHtml); $('#order_state_recycling_fee_line_items').append(recyclingfeeHtml); $('#order_fee_line_items').append(feeHtml); $('#order_shipping_line_items').append(shippingHtml); $('#order_refunds').append(refundHtml);
+
         $('.refund-action').append('<button type="button" id="btnAddFee" class="btn btn-danger billinfo">Add Fee</button> ');
         //$('.refund-action').append('<button type="button" id="btnRefundItem" class="btn btn-danger billinfo">Refund</button>');
         $('#billCoupon').append(couponHtml);
@@ -398,7 +424,7 @@ function saveCO() {
             if (data.status == true) {
                 $('.box-tools,.footer-finalbutton').empty().append('<button type="button" class="btn btn-danger btnRefundOrder"><i class="far fa-edit"></i> Refund</button>');
                 $('#order_line_items,#order_state_recycling_fee_line_items,#order_fee_line_items,#order_shipping_line_items,#order_refunds,#billCoupon,.refund-action').empty();
-                getOrderItemList(oid);
+                getOrderItemList(oid); $('.billinfo').prop("disabled", true);
                 swal('Alert!', data.message, "success");
             }
             else { swal('Alert!', data.message, "error").then((result) => { return false; }); }

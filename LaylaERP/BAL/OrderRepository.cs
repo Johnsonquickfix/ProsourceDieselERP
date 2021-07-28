@@ -669,7 +669,7 @@
                         strSql.Append(string.Format(" insert into wp_woocommerce_order_items(order_item_name,order_item_type,order_id) value('{0}','{1}','{2}'); ", obj.product_name, "line_item", n_orderid));
                         strSql.Append(" insert into wp_wc_order_product_lookup(order_item_id,order_id,product_id,variation_id,customer_id,date_created,product_qty,product_net_revenue,product_gross_revenue,coupon_amount,tax_amount,shipping_amount,shipping_tax_amount,refunded_item_id) ");
                         strSql.Append(string.Format(" select LAST_INSERT_ID(),'{0}','{1}','{2}','{3}','{4}','-{5}','-{6}','-{7}','{8}','-{9}','{10}','{11}','{12}'; ", n_orderid, obj.product_id, obj.variation_id, model.OrderPostStatus.customer_id,
-                                cDate.ToString("yyyy/MM/dd HH:mm:ss"), obj.quantity, obj.total, (obj.total + obj.tax_amount), 0, obj.tax_amount, obj.shipping_amount, obj.shipping_tax_amount, obj.order_item_id));
+                                cDate.ToString("yyyy/MM/dd HH:mm:ss"), obj.quantity, (obj.total - obj.discount), (obj.total - obj.discount + obj.tax_amount), 0, obj.tax_amount, obj.shipping_amount, obj.shipping_tax_amount, obj.order_item_id));
                     }
                     /// step 4 : wp_woocommerce_order_itemmeta
                     strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'_product_id',product_id from wp_wc_order_product_lookup where order_id = {0}", n_orderid));
@@ -690,14 +690,14 @@
                             strSql.Append(string.Format(" insert into wp_woocommerce_order_items(order_item_name,order_item_type,order_id) value('{0}','{1}','{2}');", obj.item_name, obj.item_type, n_orderid));
                             if (obj.item_type == "fee")
                             {
-                                strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'tax_status','{0}' from wp_woocommerce_order_items where order_id={1} and order_item_type='{2}'", "taxable", n_orderid, obj.item_type));
-                                strSql.Append(string.Format(" union all select order_item_id,'_line_total','-{0}' from wp_woocommerce_order_items where order_id={1} and order_item_type='{2}'", obj.amount, n_orderid, obj.item_type));
-                                strSql.Append(string.Format(" union all select order_item_id,'_refunded_item_id','{0}' from wp_woocommerce_order_items where order_id={1} and order_item_type='{2}';", obj.order_item_id, n_orderid, obj.item_type));
+                                strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select max(order_item_id),'tax_status','{0}' from wp_woocommerce_order_items where order_id={1} and order_item_type='{2}'", "taxable", n_orderid, obj.item_type));
+                                strSql.Append(string.Format(" union all select max(order_item_id),'_line_total','-{0}' from wp_woocommerce_order_items where order_id={1} and order_item_type='{2}'", obj.amount, n_orderid, obj.item_type));
+                                strSql.Append(string.Format(" union all select max(order_item_id),'_refunded_item_id','{0}' from wp_woocommerce_order_items where order_id={1} and order_item_type='{2}';", obj.order_item_id, n_orderid, obj.item_type));
                             }
                             else if (obj.item_type == "shipping")
                             {
-                                strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'cost','-{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}'", obj.amount, n_orderid, obj.item_type));
-                                strSql.Append(string.Format(" union all select order_item_id,'_refunded_item_id','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}'; ", obj.order_item_id, n_orderid, obj.item_type));
+                                strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select max(order_item_id),'cost','-{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}'", obj.amount, n_orderid, obj.item_type));
+                                strSql.Append(string.Format(" union all select max(order_item_id),'_refunded_item_id','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}'; ", obj.order_item_id, n_orderid, obj.item_type));
                             }
                         }
                     }
@@ -1101,17 +1101,22 @@
                             + " (select COALESCE(psr.meta_value, 0) sale_price from wp_postmeta psr where psr.meta_key = '_price' "
                             + "         and psr.post_id = (case when max(case oim.meta_key when '_variation_id' then oim.meta_value else '' end) != '0' then max(case oim.meta_key when '_variation_id' then oim.meta_value else '' end)"
                             + "             else max(case oim.meta_key when '_product_id' then oim.meta_value else '' end) end)) sale_price,'{}' as meta_data"
-                            + " from wp_woocommerce_order_items oi"
-                            + " inner join wp_woocommerce_order_itemmeta oim on oim.order_item_id = oi.order_item_id"
+                            + " from wp_woocommerce_order_items oi inner join wp_woocommerce_order_itemmeta oim on oim.order_item_id = oi.order_item_id"
                             + " where oi.order_id = @order_id and oi.order_item_type!='coupon' group by oi.order_id,oi.order_item_id,oi.order_item_name,oi.order_item_type "
                             + " union all "
-                            + " Select oi.order_id,oi.order_item_id,oi.order_item_name,oi.order_item_type,0 p_id,0 v_id,0 qty,0 line_subtotal,0 line_total,0 tax,oim.meta_value discount_amount,0 shipping_amount,0 sale_price,"
-                            + " concat('{', group_concat(concat('\"', pm.meta_key, '\": \"', pm.meta_value, '\"') separator ','), '}') as meta_data"
-                            + " from wp_woocommerce_order_items oi"
-                            + " inner join wp_woocommerce_order_itemmeta oim on oim.order_item_id = oi.order_item_id and oim.meta_key = 'discount_amount'"
+                            + " Select oi.order_id,oi.order_item_id,oi.order_item_name,oi.order_item_type,0 p_id,0 v_id,0 qty,0 line_subtotal,0 line_total,0 tax,oim.meta_value discount_amount,0 shipping_amount,0 sale_price,concat('{', group_concat(concat('\"', pm.meta_key, '\": \"', pm.meta_value, '\"') separator ','), '}') as meta_data"
+                            + " from wp_woocommerce_order_items oi inner join wp_woocommerce_order_itemmeta oim on oim.order_item_id = oi.order_item_id and oim.meta_key = 'discount_amount'"
                             + " left outer join wp_posts p on lower(p.post_title) = lower(oi.order_item_name) and p.post_type = 'shop_coupon'"
                             + " left outer join wp_postmeta pm on pm.post_id = p.id and pm.meta_key in ('coupon_amount','discount_type', 'product_ids', 'exclude_product_ids')"
                             + " where oi.order_id = @order_id and oi.order_item_type = 'coupon' group by oi.order_id,oi.order_item_id,oi.order_item_name,oi.order_item_type,oim.meta_value"
+                            + " union all "
+                            + " select p.post_parent order_id,p_oim.meta_value order_item_id,oi.order_item_type order_item_name,'refund_items' order_item_type,0 p_id,0 v_id,"
+                            + " sum(case oim.meta_key when '_qty' then oim.meta_value else '' end) qty,0 line_subtotal,sum(case oim.meta_key when '_line_total' then oim.meta_value else '' end) line_total,"
+                            + " sum(case oim.meta_key when '_line_tax' then oim.meta_value when 'tax_amount' then oim.meta_value else '' end) tax,0 discount_amount,sum(case oim.meta_key when 'cost' then oim.meta_value else '' end) shipping_amount,0 sale_price,'{}' as meta_data"
+                            + " from wp_posts p left outer join wp_woocommerce_order_items oi on oi.order_id = p.id"
+                            + " left outer join wp_woocommerce_order_itemmeta p_oim on p_oim.order_item_id = oi.order_item_id and p_oim.meta_key = '_refunded_item_id'"
+                            + " left outer join wp_woocommerce_order_itemmeta oim on oim.order_item_id = p_oim.order_item_id and oim.meta_key in ('_qty', '_line_total', '_line_tax', 'tax_amount', 'cost')"
+                            + " where p.post_parent = @order_id group by p.post_parent,oi.order_item_type,p_oim.meta_key,p_oim.meta_value"
                             + " union all "
                             + " select p.id order_id,p.id order_item_id,concat('Refund #',p.id,' - ',DATE_FORMAT(p.post_date,'%b %e, %Y, %h:%i'),' by ',ur.user_nicename,'</br>',"
                             + " coalesce(group_concat(concat(oi.order_item_name, ' x ', oim.meta_value) ORDER BY oi.order_item_name separator '</br>'),'')) order_item_name,'refund' order_item_type,"
@@ -1228,6 +1233,33 @@
                             productsModel.total = decimal.Parse(sdr["line_total"].ToString().Trim());
                         else
                             productsModel.total = 0;
+                    }
+                    else if(productsModel.product_type == "refund_items")
+                    {
+                        productsModel.product_id = 0;
+                        productsModel.variation_id = 0;
+                        if (sdr["qty"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["qty"].ToString().Trim()))
+                            productsModel.quantity = decimal.Parse(sdr["qty"].ToString().Trim());
+                        else
+                            productsModel.quantity = 0;
+
+                        if (sdr["line_total"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["line_total"].ToString().Trim()))
+                            productsModel.total = decimal.Parse(sdr["line_total"].ToString());
+                        else
+                            productsModel.total = 0;                        
+                        if (sdr["tax"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["tax"].ToString().Trim()))
+                            productsModel.tax_amount = decimal.Parse(sdr["tax"].ToString().Trim());
+                        else
+                            productsModel.tax_amount = 0;
+                        if (sdr["discount_amount"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["discount_amount"].ToString().Trim()))
+                            productsModel.discount = decimal.Parse(sdr["discount_amount"].ToString().Trim());
+                        else
+                            productsModel.discount = 0;
+                        productsModel.discount = productsModel.discount <= productsModel.total ? productsModel.total - productsModel.discount : 0;                        
+                        if (sdr["shipping_amount"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["shipping_amount"].ToString().Trim()))
+                            productsModel.shipping_amount = decimal.Parse(sdr["shipping_amount"].ToString().Trim());
+                        else
+                            productsModel.shipping_amount = 0;
                     }
                     _list.Add(productsModel);
                 }

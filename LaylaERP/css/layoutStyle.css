@@ -2143,8 +2143,7 @@ float:right;}
 #dtdata.inventory-table td:first-child, .check-table.inventory-table th:first-child {
     text-align: left !important;
 }
-.top-with-select .box-title {
-margin-right:10px;white-space:nowrap;}
+.top-with-select .box-title {margin-right:10px;white-space:nowrap;}
 .top-with-select {margin-bottom:0px;}
 .top-with-select .tablenav.top {margin:0px;}
 .add-new-box .form-check label.control-label:before,
@@ -2154,8 +2153,21 @@ margin-right:10px;white-space:nowrap;}
 .categorychecklist {width:100%; padding:0px; margin:0px;list-style:none;}
 .categorychecklist li {margin-bottom:10px;}
 .flex-wrap{flex-wrap:wrap;}
-.massstocktransfer .row {display:flex; flex-wrap:wrap;}
-.massstocktransfer [class^="col-md"] {margin-bottom:12px;}
-.massstocktransfer [class^="col-md"]:last-child {margin-bottom:0px;}
-.commercial_proposal .col-md-8 {align-items:center;display:flex;}
-.commercial_proposal .col-md-8 span {padding-left:10px;}
+.massstocktransfer .row , .rowbox{display:flex; flex-wrap:wrap;}
+.rowbox {align-items: center;}
+.massstocktransfer [class^="col-md"] {margin-bottom:12px; }
+.massstocktransfer .rowbox:last-child [class^="col-md"]{margin-bottom:0px;}
+.commercial_proposal .col-md-5 {align-items:center;display:flex;align-items:flex-end;}
+.commercial_proposal .col-md-5 span {padding-left:10px;}
+.mx-0 {margin-left:0px !important; margin-right:0px !important;}
+.flex-auto {flex: 1 0 0; -ms-flex: 1 0 0;}
+.row.nowrap {flex-wrap:nowrap !important; -ms-flex-wrap:nowrap !important;}
+.flex-end {align-items:flex-end; }
+.flex-0 {flex:0; -ms-flex:0; white-space:nowrap;}
+.row.nowrap > div {padding:0px 10px;}
+.massstocktransfer .row label {font-weight:600;}
+.commercial_proposal .col-md-3 label {font-weight:600; margin-bottom:0px;}
+/*.commercial_proposal .form-control {border-top:0px; border-left:0px; border-right:0px;}*/
+.commercial_proposal select + .form-control {margin-left:10px;}
+.new-vendor-header .dataTables_scrollHeadInner {width:100% !important;}
+    .new-vendor-header .dataTables_scrollHeadInner .inventory-table {width: 100% !important;}

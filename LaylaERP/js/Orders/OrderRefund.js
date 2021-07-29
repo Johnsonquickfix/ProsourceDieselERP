@@ -131,7 +131,7 @@ function getOrderItemList(oid) {
                     itemHtml += '<td><input min="0" max="' + data[i].quantity + '" autocomplete="off" disabled class="form-control number rowCalulate" type="number" id="txt_RefundQty_' + PKey + '" value="0" name="txt_RefundQty" placeholder="Qty"></td>';
                 }
                 else {
-                    itemHtml += '<td><input min="0" max="' + data[i].quantity + '" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_RefundQty_' + PKey + '" value="0" name="txt_RefundQty" placeholder="Qty"></td>';
+                    itemHtml += '<td><input min="0" max="' + data[i].quantity + '" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_RefundQty_' + PKey + '" value="0" name="txt_RefundQty" placeholder="Qty" onkeyup="this.value = ValidateMaxValue(this.value, 0, ' + data[i].quantity + ')"></td>';
                 }
                 itemHtml += '<td class="TotalAmount text-right" data-regprice="' + data[i].reg_price + '"data-salerate="' + data[i].sale_price + '" data-discount="' + data[i].discount.toFixed(2) + '" data-amount="' + data[i].total + '" data-taxamount="' + data[i].tax_amount + '" data-shippingamt="' + data[i].shipping_amount + '">' + data[i].total.toFixed(2) + '</td>';
                 itemHtml += '<td class="text-right RowDiscount" data-disctype="' + data[i].discount_type + '" data-couponamt="0">' + data[i].discount.toFixed(2) + '</td>';
@@ -184,14 +184,14 @@ function getOrderItemList(oid) {
                 let startingNumber = (data[i].product_name.match(/^-?\d+\.\d+|^-?\d+\b|^\d+(?=\w)/g) || []);
                 let feetype = data[i].product_name.match(/%/g) != null ? '%' : '';
                 let sd = feetype == '%' ? (parseFloat(startingNumber) || 0.00) : parseFloat(data[i].total);
-                feeHtml = '<tr id="trfeeid_' + orderitemid + '" data-orderitemid="' + orderitemid + '" class="' + (feetype == '%' ? 'percent_fee' : 'fixed_fee') + '" data-pname="' + data[i].product_name + '" data-feeamt="' + sd + '" data-feetype="' + feetype + '"> ';
+                feeHtml = '<tr id="trfeeid_' + orderitemid + '" data-orderitemid="' + orderitemid + '" class="' + (feetype == '%' ? 'percent_fee' : 'fixed_fee') + '" data-pname="' + data[i].product_name + '" data-feeamt="' + sd + '" data-feetype="' + feetype + '" data-totalamt="' + data[i].total + '"> ';
                 feeHtml += '<td class="text-center item-action"><i class="fas fa-plus-circle"></i></td>';
                 feeHtml += '<td>' + data[i].product_name + '</td><td></td><td class="text-right row-refuntamt"></td>';
                 if (feetype == '%') {
-                    feeHtml += '<td><input min="0" autocomplete="off" disabled class="form-control number rowCalulate" type="number" id="txt_FeeAmt_' + orderitemid + '" value="0" name="txt_FeeAmt" placeholder="Amount"></td>';
+                    feeHtml += '<td><input min="0" autocomplete="off" disabled class="form-control number" type="number" id="txt_FeeAmt_' + orderitemid + '" value="0" name="txt_FeeAmt" placeholder="Amount"></td>';
                 }
                 else {
-                    feeHtml += '<td><input min="0" max="' + data[i].total + '" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_FeeAmt_' + orderitemid + '" value="0" name="txt_FeeAmt" placeholder="Amount"></td>';
+                    feeHtml += '<td><input min="0" max="' + data[i].total + '" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_FeeAmt_' + orderitemid + '" value="0" name="txt_FeeAmt" placeholder="Amount" onkeyup="this.value = ValidateMaxValue(this.value, 0, ' + data[i].total + ')"></td>';
                 }
                 feeHtml += '<td class="TotalAmount text-right">' + data[i].total.toFixed(2) + '</td><td></td><td></td>';
                 feeHtml += '</tr>';
@@ -226,6 +226,8 @@ function getOrderItemList(oid) {
                     $("#tritemId_" + orderitemid).find('.row-qty').append('<span class="text-danger"><i class="fa fa-fw fa-undo"></i>' + data[i].quantity + '</span>');
                 }
                 else if (data[i].product_name == "fee") {
+                    let max_amt = parseInt($("#trfeeid_" + orderitemid).data("totalamt")) + parseInt(data[i].total);
+                    $("#trfeeid_" + orderitemid).find('[name=txt_FeeAmt]').attr({ "max": max_amt, "min": 0, "onkeyup": 'this.value = ValidateMaxValue(this.value, 0, ' + max_amt + ')' });
                     $("#trfeeid_" + orderitemid).find('.row-refuntamt').append('<span class="text-danger"><i class="fa fa-fw fa-undo"></i>' + data[i].total + '</span>');
                 }
                 else if (data[i].product_name == "shipping") {
@@ -249,7 +251,7 @@ function getOrderItemList(oid) {
         $("#refundedTotal").text(zRefundAmt.toFixed(2));
         $("#netPaymentTotal").text(((zGAmt - zTDiscount + zShippingAmt + zTotalTax + zStateRecyclingAmt + zFeeAmt) + zRefundAmt).toFixed(2));
         //if (zRefundAmt != 0) $(".refund-total").removeClass('hidden'); else $(".refund-total").addClass('hidden');
-        $("#order_line_items").find(".rowCalulate").change(function () { calculateRefunAmount(); });
+        $("#order_line_items,#order_fee_line_items").find(".rowCalulate").change(function () { calculateRefunAmount(); });
     }, completeFun, errorFun);
 
     setTimeout(function () { getShippingCharge(); }, 50);
@@ -308,9 +310,13 @@ function calculateRefunAmount() {
         total += (_items[i].total - _items[i].discount + _items[i].tax_amount + _items[i].shipping_amount);
     }
     // Fee
-    $('#order_fee_line_items > tr.percent_fee').each(function (index, tr) {
-        let zAmt = (subtotal * (parseFloat($(this).data('feeamt')) / 100));
-        $(tr).find("[name=txt_FeeAmt]").val(zAmt.toFixed(2));
+    $('#order_fee_line_items > tr').each(function (index, tr) {
+        let zAmt = 0.00;
+        if ($(tr).data('feetype') == '%') {
+            zAmt = (subtotal * (parseFloat($(this).data('feeamt')) / 100));
+            $(tr).find("[name=txt_FeeAmt]").val(zAmt.toFixed(2));
+        }
+        else { zAmt = parseFloat($(tr).find('[name=txt_FeeAmt]').val()); }
         feetotal += zAmt;
     });
 
@@ -414,7 +420,6 @@ function saveCO() {
     if (itemsDetails.length <= 0) { swal('Alert!', 'Please add product.', "error"); return false; }
     var obj = { OrderPostMeta: postMeta, OrderProducts: itemsDetails, OrderPostStatus: postStatus, OrderOtherItems: otherItems, OrderTaxItems: taxItems };
 
-    $('.btnRefundOk').prop("disabled", true); $('.billinfo').prop("disabled", true);
     console.log(obj);
     $.ajax({
         type: "POST", contentType: "application/json; charset=utf-8",
@@ -429,8 +434,8 @@ function saveCO() {
             }
             else { swal('Alert!', data.message, "error").then((result) => { return false; }); }
         },
-        error: function (xhr, status, err) { $("#loader").hide(); $('.btnRefundOk').prop("disabled", false); $('.billinfo').prop("disabled", false); alert(err); },
-        complete: function () { $("#loader").hide(); $('.btnRefundOk').prop("disabled", false); $('.billinfo').prop("disabled", false); },
+        error: function (xhr, status, err) { $("#loader").hide(); alert(err); },
+        complete: function () { $("#loader").hide(); },
     });
     return false;
 }

@@ -165,7 +165,6 @@
     <Compile Include="BAL\InventoryRepository.cs" />
     <Compile Include="BAL\OrderRepository.cs" />
     <Compile Include="BAL\ProductRepository.cs" />
-    <Compile Include="BAL\PurchaseOrderRepository.cs" />
     <Compile Include="BAL\ReportsRepository.cs" />
     <Compile Include="BAL\SettingRepository.cs" />
     <Compile Include="BAL\ThirdPartyRepository.cs" />
@@ -185,7 +184,6 @@
     <Compile Include="Controllers\InventoryController.cs" />
     <Compile Include="Controllers\OrdersController.cs" />
     <Compile Include="Controllers\ProductController.cs" />
-    <Compile Include="Controllers\PurchaseOrderController.cs" />
     <Compile Include="Controllers\ReportsController.cs" />
     <Compile Include="Controllers\SaleOrderController.cs" />
     <Compile Include="Controllers\SettingController.cs" />
@@ -210,7 +208,6 @@
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\OrderModel.cs" />
     <Compile Include="Models\ProductModel.cs" />
-    <Compile Include="Models\PurchaseOrderModel.cs" />
     <Compile Include="Models\SearchModel.cs" />
     <Compile Include="Models\SettingModel.cs" />
     <Compile Include="Models\ThirdPartyModel.cs" />
@@ -589,7 +586,6 @@
     <Content Include="js\Orders\OrderRefund.js" />
     <Content Include="js\Product\AddnewProduct.js" />
     <Content Include="js\Product\Product.js" />
-    <Content Include="js\PurchaseOrder\NewPurchase.js" />
     <Content Include="js\Ship\ShipStation.js" />
     <Content Include="js\ThirdParty\Vendor.js" />
     <Content Include="js\ThirdParty\VendorList.js" />
@@ -791,7 +787,6 @@
     <Content Include="Views\Appearance\AddMenu.cshtml" />
     <Content Include="Views\Appearance\AddMenuDetails.cshtml" />
     <Content Include="Views\Warehouse\StockMouvementList.cshtml" />
-    <Content Include="Views\Warehouse\GetStockAtDate.cshtml" />
     <Content Include="Views\CommercialProposal\ListingProposal.cshtml" />
     <Content Include="Views\CommercialProposal\NewProposal.cshtml" />
     <Content Include="Views\PurchaseOrder\NewPurchaseOrder.cshtml" />

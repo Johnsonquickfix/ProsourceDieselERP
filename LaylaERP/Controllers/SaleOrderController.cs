@@ -9,7 +9,13 @@ namespace LaylaERP.Controllers
     public class SaleOrderController : Controller
     {
         // GET: SaleOrder
-        public ActionResult Index()
+        public ActionResult SaleOrder()
+        {
+            return View();
+        }
+
+        // GET: List SaleOrder
+        public ActionResult ListSaleOrder()
         {
             return View();
         }

@@ -187,6 +187,7 @@
     <Compile Include="Controllers\ProductController.cs" />
     <Compile Include="Controllers\PurchaseOrderController.cs" />
     <Compile Include="Controllers\ReportsController.cs" />
+    <Compile Include="Controllers\SaleOrderController.cs" />
     <Compile Include="Controllers\SettingController.cs" />
     <Compile Include="Controllers\ShipController.cs" />
     <Compile Include="Controllers\ThirdPartyController.cs" />
@@ -588,7 +589,6 @@
     <Content Include="js\Orders\OrderRefund.js" />
     <Content Include="js\Product\AddnewProduct.js" />
     <Content Include="js\Product\Product.js" />
-    <Content Include="js\PurchaseOrder\NewPurchase.js" />
     <Content Include="js\Ship\ShipStation.js" />
     <Content Include="js\ThirdParty\Vendor.js" />
     <Content Include="js\ThirdParty\VendorList.js" />
@@ -790,10 +790,11 @@
     <Content Include="Views\Appearance\AddMenu.cshtml" />
     <Content Include="Views\Appearance\AddMenuDetails.cshtml" />
     <Content Include="Views\Warehouse\StockMouvementList.cshtml" />
-    <Content Include="Views\Warehouse\GetStockAtDate.cshtml" />
     <Content Include="Views\CommercialProposal\ListingProposal.cshtml" />
     <Content Include="Views\CommercialProposal\NewProposal.cshtml" />
     <Content Include="Views\PurchaseOrder\NewPurchaseOrder.cshtml" />
+    <Content Include="Views\SaleOrder\SaleOrder.cshtml" />
+    <Content Include="Views\SaleOrder\ListSaleOrder.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

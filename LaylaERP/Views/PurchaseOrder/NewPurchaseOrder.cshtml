@@ -35,7 +35,7 @@
                         <div class="form-group">
                             <label class="control-label " for="Ref. vendor">Ref. vendor</label>
                             <div class="">
-                                <input type="text" id="txtRefvendor" class="form-control" placeholder="Ref. vendor" disabled/>
+                                <input type="text" id="txtRefvendor" class="form-control" placeholder="Ref. vendor" disabled />
                             </div>
                         </div>
                         <div class="form-group">
@@ -48,39 +48,46 @@
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
+                            <label for="Balance">Balance</label>
+                            <select class="form-control" id="ddlBalancedays"></select>
+                        </div>
+                        <div class="form-group">
                             <label class="control-label " for="Contact No.">Payment Type</label>
                             <div class="">
                                 <select class="form-control" id="ddlPaymentType"></select>
                             </div>
                         </div>
                         <div class="form-group">
+
+
                             <label class="control-label " for="Planned date of delivery">Planned date of delivery</label>
                             <div class="">
-                                <input type="text" id="txtPlanneddateofdelivery" class="form-control" placeholder="Planned date of delivery" autocomplete="off" />
+                                <div class="input-group">
+                                    <input type="text" id="txtPlanneddateofdelivery" class="form-control" placeholder="Planned date of delivery" autocomplete="off" />
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label " for="Incoterms">Incoterms</label>
                             <div class="">
-                                <div class="">
                                     <select class="form-control" id="ddlIncoTerms"></select>
                                     <input type="text" id="txtIncoTerms" class="form-control" placeholder="IncoTerms" />
-                                </div>
                             </div>
                         </div>
-                        
+
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
                             <label class="control-label " for="Note (public)">Note (public)</label>
                             <div class="">
-                                <input type="tel" id="txtNotePublic" class="form-control" placeholder="Note (public)" />
+                                <textarea id="txtNotePublic" class="form-control" placeholder="Note (public)" ></textarea>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label " for="Post/Zip Code">Note (private)</label>
                             <div class="">
-                                <input type="text" id="txtNotePrivate" class="form-control" placeholder="Note (private)" />
+                                <textarea id="txtNotePrivate" class="form-control" placeholder="Note (private)"></textarea>
                             </div>
                         </div>
 
@@ -100,3 +107,10 @@
 </section>
 
 <script src="@Url.Content("~/js/PurchaseOrder/NewPurchase.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+<script>
+    $(document).ready(function () {
+        $("#txtPlanneddateofdelivery").datepicker({
+            format: 'yyyy-mm-dd',
+        });
+    });
+</script>

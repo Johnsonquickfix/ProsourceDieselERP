@@ -1,6 +1,6 @@
 ﻿VendorGrid();
 function VendorGrid() {
-    var urid = parseInt($("#ddlSearchStatus").val()) || "";
+    var urid = parseInt($("#ddlSearchStatus").val());
     var sid = "";
     var obj = { user_status: urid, Search: sid, PageNo: 0, PageSize: 50, sEcho: 1, SortCol: 'id', SortDir: 'desc' };
     $('#dtdata').DataTable({
@@ -48,3 +48,7 @@ function VendorGrid() {
         ]
     });
 }
+
+$('#btnSearch').click(function () {
+    VendorGrid();
+})

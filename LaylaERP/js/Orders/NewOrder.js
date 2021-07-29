@@ -380,8 +380,8 @@ function bindCustomerOrders(id) {
                     'render': function (id, type, dtrow, meta) {
                         let row = JSON.parse(dtrow.meta_data);
                         let defval = dtrow.IsDefault != '' ? '<span class="label label-success">' + dtrow.IsDefault + '</span>' : '';
-                        let val = ' data-bfn="' + row._billing_first_name + '" data-bln="' + row._billing_last_name + '" data-bcom="' + (row._billing_company != undefined ? row._billing_company : '') + '" data-ba1="' + row._billing_address_1 + '" data-ba2="' + row._billing_address_2 + '" data-bc="' + row._billing_city + '" data-bs="' + row._billing_state + '" data-bct="' + row._billing_country + '" data-bpc="' + row._billing_postcode + '" data-bp="' + row._billing_phone + '" data-bem="' + row._billing_email + '"';
-                        val += ' data-sfn="' + row._shipping_first_name + '" data-sln="' + row._shipping_last_name + '" data-scom="' + (row._shipping_company != undefined ? row._shipping_company : '') + '" data-sa1="' + row._shipping_address_1 + '" data-sa2="' + row._shipping_address_2 + '" data-sc="' + row._shipping_city + '" data-ss="' + row._shipping_state + '" data-sct="' + row._billing_country + '" data-spc="' + row._shipping_postcode + '"';
+                        let val = ' data-bfn="' + row._billing_first_name + '" data-bln="' + row._billing_last_name + '" data-bcom="' + (row._billing_company != undefined ? row._billing_company : '') + '" data-ba1="' + row._billing_address_1 + '" data-ba2="' + (row._billing_address_2 > 0 && row._billing_address_2 != undefined ? row._billing_address_2 : '') + '" data-bc="' + row._billing_city + '" data-bs="' + row._billing_state + '" data-bct="' + row._billing_country + '" data-bpc="' + row._billing_postcode + '" data-bp="' + row._billing_phone + '" data-bem="' + row._billing_email + '"';
+                        val += ' data-sfn="' + row._shipping_first_name + '" data-sln="' + row._shipping_last_name + '" data-scom="' + (row._shipping_company != undefined ? row._shipping_company : '') + '" data-sa1="' + row._shipping_address_1 + '" data-sa2="' + (row._shipping_address_2 > 0 && row._shipping_address_2 != undefined ? row._shipping_address_2 : '') + '" data-sc="' + row._shipping_city + '" data-ss="' + row._shipping_state + '" data-sct="' + row._billing_country + '" data-spc="' + row._shipping_postcode + '"';
                         return defval + ' <button type="button" id="btnUseAddress" class="btn btn-danger hidden" onclick="selectOrderAddress(this);" ' + val + '>Use Address for Order</button>'
                         //return '<a href="javascript:;" class="glyphicon glyphicon glyphicon-check" onclick="selectOrderAddress(this);" ' + val + '></a>';
                     }
@@ -742,9 +742,9 @@ function getOrderItemList(oid) {
                     couponHtml += '</li>';
                 }
                 if (coupon_list.length == 0) {
-                    let cpn_info = JSON.parse(data[i].meta_data); console.log(cpn_info);
+                    let cpn_info = JSON.parse(data[i].meta_data);
                     let cpn_name = data[i].product_name;
-                    couponHtml += '<li id="li_' + data[i].product_name + '" data-coupon= "' + data[i].product_name + '" data-couponamt= "' + (cpn_info.coupon_amount != '' && cpn_info.coupon_amount != undefined ? cpn_info.coupon_amount : cou_amt)  + '" data-disctype= "' + (cpn_info.discount_type != '' && cpn_info.discount_type != undefined ? cpn_info.discount_type : '') + '" data-rqprdids="' + (cpn_info.product_ids != '' && cpn_info.product_ids != undefined ? cpn_info.product_ids : '') + '" data-excludeids="' + (cpn_info.exclude_product_ids != '' && cpn_info.exclude_product_ids != undefined ? cpn_info.exclude_product_ids : '') + '" data-type= "add_coupon" data-orderitemid="' + orderitemid + '">';
+                    couponHtml += '<li id="li_' + data[i].product_name + '" data-coupon= "' + data[i].product_name + '" data-couponamt= "' + (cpn_info.coupon_amount != '' && cpn_info.coupon_amount != undefined ? cpn_info.coupon_amount : cou_amt) + '" data-disctype= "' + (cpn_info.discount_type != '' && cpn_info.discount_type != undefined ? cpn_info.discount_type : '') + '" data-rqprdids="' + (cpn_info.product_ids != '' && cpn_info.product_ids != undefined ? cpn_info.product_ids : '') + '" data-excludeids="' + (cpn_info.exclude_product_ids != '' && cpn_info.exclude_product_ids != undefined ? cpn_info.exclude_product_ids : '') + '" data-type= "add_coupon" data-orderitemid="' + orderitemid + '">';
                     couponHtml += '<a href="javascript:void(0);">';
                     couponHtml += '<i class="fa fa-gift"></i>';
                     couponHtml += '<span>' + cpn_name + '</span>';
@@ -882,11 +882,11 @@ function RemoveFee(orderitemid) {
 }
 function CalculateFee() {
     let zFeeAmt = 0.00, zGmtAmt = parseFloat($("#SubTotal").text());
-    $("#order_fee_line_items > tr").each(function () {
+    $("#order_fee_line_items > tr").each(function (index, tr) {
         let zAmt = 0.00;
-        if ($(this).data('feetype') == '%') zAmt = (zGmtAmt * (parseFloat($(this).data('feeamt')) / 100));
-        else zAmt = parseFloat($(this).data('feeamt'));
-        $('#order_fee_line_items').find(".TotalAmount").text(zAmt.toFixed(2));
+        if ($(tr).data('feetype') == '%') zAmt = (zGmtAmt * (parseFloat($(tr).data('feeamt')) / 100));
+        else zAmt = parseFloat($(tr).data('feeamt'));
+        $(tr).find(".TotalAmount").text(zAmt.toFixed(2));
         zFeeAmt += zAmt;
     });
     $("#feeTotal").text(zFeeAmt.toFixed(2));
@@ -1021,7 +1021,7 @@ function ApplyCoupon() {
     //$("#billModal").modal({ backdrop: 'static' }); $("#txt_Coupon").focus();
 }
 function bindCouponList(data) {
-    var layoutHtml = ''; console.log(data);
+    var layoutHtml = '';
     if (data.length > 0) {
 
         //var zPCnt = 0, rq_prd_ids = [], zExcPCnt = 0, exclude_ids = [];
@@ -1578,7 +1578,7 @@ function saveCO() {
     var obj = { OrderPostMeta: postMeta, OrderProducts: itemsDetails, OrderPostStatus: postStatus, OrderOtherItems: otherItems, OrderTaxItems: taxItems };
 
     $('#btnCheckout').prop("disabled", true); $('.billinfo').prop("disabled", true); $('#btnCheckout').text("Waiting...");
-    console.log(obj);
+    //console.log(obj);
     $.ajax({
         type: "POST", contentType: "application/json; charset=utf-8",
         url: "/Orders/SaveCustomerOrder",
@@ -1828,32 +1828,30 @@ function PaypalPayment(ppemail) {
 
 }
 function CreatePaypalInvoice(oid, pp_email, access_token) {
-    var taxPer = parseFloat($('#hfTaxRate').val()) || 0.00;
-    var shipping_total = parseFloat($('#shippingTotal').text()) || 0.00;
-    var itemsList = [];
+    let taxPer = parseFloat($('#hfTaxRate').val()) || 0.00;
+    let item_discount = 0.00, shipping_total = parseFloat($('#shippingTotal').text()) || 0.00, srf_total = parseFloat($('#stateRecyclingFeeTotal').text()) || 0.00, fee_total = parseFloat($('#feeTotal').text()) || 0.00;
+    let custom_label = (srf_total > 0 ? 'State Recycling Fee' : '') + (srf_total > 0 && fee_total > 0 ? ' & ' : '') + (fee_total > 0 ? 'Fee' : ''); fee_total = fee_total + srf_total;
+    let itemsList = [];
     //get items
     $('#order_line_items > tr').each(function (index, tr) {
-        var qty = parseFloat($(this).find("[name=txt_ItemQty]").val()) || 0.00;
-        var rate = parseFloat($(this).find(".TotalAmount").data('regprice')) || 0.00;
-        var taxAmount = parseFloat($(this).find(".TotalAmount").data('taxamount')) || 0.00;
-        var discountAmount = parseFloat($(this).find(".TotalAmount").data('discount')) || 0.00;
+        let qty = parseFloat($(this).find("[name=txt_ItemQty]").val()) || 0.00;
+        let rate = parseFloat($(this).find(".TotalAmount").data('regprice')) || 0.00;
+        let taxAmount = parseFloat($(this).find(".TotalAmount").data('taxamount')) || 0.00;
+        let discountAmount = parseFloat($(this).find(".TotalAmount").data('discount')) || 0.00;
         itemsList.push({
-            name: $(this).data('pname'),
-            quantity: qty,
-            unit_amount: { currency_code: "USD", value: rate },
-            tax: { name: "Sales Tax", value: taxAmount, percent: taxPer },
-            discount: { amount: { currency_code: "USD", value: discountAmount } },
-            unit_of_measure: "QUANTITY"
+            name: $(this).data('pname'), quantity: qty, unit_amount: { currency_code: "USD", value: rate },
+            tax: { name: "Sales Tax", value: taxAmount, percent: taxPer }, discount: { amount: { currency_code: "USD", value: discountAmount } }, unit_of_measure: "QUANTITY"
         });
+        item_discount += discountAmount;
     });
+    let cart_discount = (parseFloat($('#discountTotal').text()) || 0.00) - item_discount;
+    if (cart_discount > 0) {
+        itemsList.push({ name: 'Cart Discount', quantity: 1, unit_amount: { currency_code: "USD", value: 0 }, tax: { name: "Sales Tax", value: 0, percent: taxPer }, discount: { amount: { currency_code: "USD", value: cart_discount } }, unit_of_measure: "QUANTITY" });
+    }
+
     var option = {
         detail: {
-            invoice_number: oid,
-            reference: "",
-            invoice_date: df,
-            currency_code: "USD",
-            note: "Layla Invoice.",
-            payment_term: { term_type: "NET_10" }
+            invoice_number: 'WC-' + new Date().getTime(), reference: oid, invoice_date: df, currency_code: "USD", note: "Layla Invoice.", payment_term: { term_type: "NET_10" }
         },
         invoicer: {
             name: { given_name: "", surname: "" },
@@ -1882,8 +1880,9 @@ function CreatePaypalInvoice(oid, pp_email, access_token) {
         configuration: { allow_tip: false, tax_calculated_after_discount: true, tax_inclusive: false, },
         amount: {
             breakdown: {
-                //custom: { label: "Packing Charges", amount: { currency_code: "USD", value: "10.00" } },
-                shipping: { amount: { currency_code: "USD", value: shipping_total }, tax: { name: "Sales Tax", percent: taxPer } },
+                discount: { invoice_discount: { percent: 0 } }, shipping: { amount: { currency_code: "USD", value: shipping_total } },
+                custom: { label: custom_label, amount: { currency_code: "USD", value: fee_total } },
+                //shipping: { amount: { currency_code: "USD", value: shipping_total }, tax: { name: "Sales Tax", percent: taxPer } },
                 //discount: { invoice_discount: { percent: "5" } }
             }
         }
@@ -1910,7 +1909,7 @@ function CreatePaypalInvoice(oid, pp_email, access_token) {
 }
 function SendPaypalInvoice(access_token, sendURL) {
     $.ajax({
-        type: "POST", url: sendURL, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify({ send_to_invoicer: true }),
+        type: "POST", url: sendURL, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify({ send_to_invoicer: true, send_to_recipient : true }),
         beforeSend: function (xhr) {
             xhr.setRequestHeader("Accept", "application/json");
             xhr.setRequestHeader("Accept-Language", "en_US");

@@ -1,0 +1,133 @@
+﻿
+@{
+    ViewBag.Title = "New Sale Order";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="page-title">
+    <h2>New Sale Order</h2>
+</div>
+<section class="content section-content massstocktransfer commercial_proposal mt-1">
+    <div class="box box-primary">
+        <div class="box-body">
+            <div class="rowbox">
+                <div class="col-md-3"><label>Ref.</label></div>
+                <div class="col-md-5">
+                    <input type="text" class="form-control" placeholder="Draft" />
+                </div>
+            </div>
+            <div class="rowbox">
+                <div class="col-md-3"><label>Ref. Vendor</label></div>
+                <div class="col-md-5">
+                    <input type="text" class="form-control" />
+                </div>
+            </div>
+            <div class="rowbox">
+                <div class="col-md-3"><label>Vendor</label></div>
+                <div class="col-md-5">
+                    <select class="form-control">
+                        <option value="0">--Select a third party--</option>
+                    </select>
+                </div>
+            </div>
+            <div class="rowbox">
+                <div class="col-md-3"><label>Date</label></div>
+                <div class="col-md-5">
+                    <input class="form-control" type="text" placeholder="7/27/2021" /><span>Now</span>
+                </div>
+            </div>
+            <div class="rowbox">
+                <div class="col-md-3"><label>Planned date of delivery</label></div>
+                <div class="col-md-5">
+                    <input class="form-control" type="text" placeholder="7/27/2021 T 03:59" /><span>Now with time</span>
+                </div>
+            </div>
+            <div class="rowbox">
+                <div class="col-md-3"><label>Payment Terms</label></div>
+                <div class="col-md-5">
+                    <select class="form-control">
+                        <option value="0">----</option>
+                    </select><span><i class="fa fa-info-circle"></i></span>
+                </div>
+            </div>
+            <div class="rowbox">
+                <div class="col-md-3"><label>Payment Type</label></div>
+                <div class="col-md-5">
+                    <select class="form-control">
+                        <option value="0">----</option>
+                    </select><span><i class="fa fa-info-circle"></i></span>
+                </div>
+            </div>
+            <div class="rowbox">
+                <div class="col-md-3"><label>Source</label></div>
+                <div class="col-md-5">
+                    <select class="form-control">
+                        <option value="0">----</option>
+                    </select><span><i class="fa fa-info-circle"></i></span>
+                </div>
+            </div>
+            <div class="rowbox">
+                <div class="col-md-3"><label>Availability Delay(after order)</label></div>
+                <div class="col-md-5">
+                    <select class="form-control">
+                        <option value="0">----</option>
+                    </select><span><i class="fa fa-info-circle"></i></span>
+                </div>
+            </div>
+            <div class="rowbox">
+                <div class="col-md-3"><label>Shipping Method</label></div>
+                <div class="col-md-5">
+                    <select class="form-control">
+                        <option value="0">----</option>
+                    </select><span><i class="fa fa-info-circle"></i></span>
+                </div>
+            </div>
+            <div class="rowbox">
+                <div class="col-md-3"><label>Delivery Date</label></div>
+                <div class="col-md-5">
+                    <input class="form-control" type="text" /><span>Now</span>
+                </div>
+            </div>
+            
+            <div class="rowbox">
+                <div class="col-md-3"><label>Channel</label></div>
+                <div class="col-md-5">
+                    <select class="form-control">
+                        <option value="0">----</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="rowbox">
+                <div class="col-md-3"><label>Incoterms</label></div>
+                <div class="col-md-5">
+                    <select class="form-control">
+                        <option value="0">----</option>
+                    </select>
+                    <input class="form-control" type="text" />
+                </div>
+            </div>
+            <div class="rowbox">
+                <div class="col-md-3"><label>Default Doc Template</label></div>
+                <div class="col-md-5">
+                    <select class="form-control">
+                        <option value="0">azur</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-3"><label>Note(Public)</label></div>
+            <div class="col-md-9">
+                <textarea class="form-control"></textarea>
+            </div>
+            <div class="col-md-3"><label>Note(Private)</label></div>
+            <div class="col-md-9">
+                <textarea class="form-control"></textarea>
+            </div>
+        </div>
+    </div>
+    <div class="box-footer text-right">
+        <input type="submit" class="btn btn-danger" value="Create Draft" />
+        <input type="submit" class="btn btn-danger" value="Cancel" />
+    </div>
+    </div>
+</section>

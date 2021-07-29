@@ -13,7 +13,9 @@ namespace LaylaERP.Models
         public string regular_price { get; set; }
         public string sale_price { get; set; }
         public string post_content { get; set; }
+
         public string tax_status { get; set; }
+        public string post_status { get; set; }
         public string tax_class { get; set; }
         public string sku { get; set; }
         public string manage_stock { get; set; }
@@ -40,6 +42,10 @@ namespace LaylaERP.Models
 
         public int ProductTypeID { get; set; }
         public int ShippingclassID { get; set; }
+        public int updatedID { get; set; }
+        public string product_attributes { get; set; }
+        public string variation_description { get; set; }
+        public int post_parent { get; set; }
 
     }
 }

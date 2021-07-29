@@ -89,10 +89,25 @@ namespace LaylaERP.Controllers
             return Json(productlist, JsonRequestBehavior.AllowGet);
 
         }
-        public JsonResult NewPurchaseOrderEdit(PurchaseOrderModel model)
+        public JsonResult GetBalanceDays(SearchModel model)
         {
-            if (ModelState.IsValid)
+
+            DataSet ds = BAL.PurchaseOrderRepository.GetBalanceDays();
+            List<SelectListItem> productlist = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
             {
+
+                productlist.Add(new SelectListItem { Text = dr["Balance"].ToString(), Value = dr["ID"].ToString() });
+
+            }
+            return Json(productlist, JsonRequestBehavior.AllowGet);
+
+
+        }
+        public JsonResult NewPurchase(PurchaseOrderModel model)
+        {
+
+            
                 if (model.rowid > 0)
                 {
                     new PurchaseOrderRepository().EditPurchase(model, model.rowid);
@@ -111,7 +126,7 @@ namespace LaylaERP.Controllers
                         return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
                     }
                 }
-            }
+            
             return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
         }
     }

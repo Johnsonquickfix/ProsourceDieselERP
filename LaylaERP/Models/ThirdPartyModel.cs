@@ -55,5 +55,7 @@ namespace LaylaERP.Models
         public int VendorID { get; set; }
         public string LeadTime { get; set; }
         public string DaysofStock { get; set; }
+        public bool VendorStatus { get; set; }
+
     }
 }

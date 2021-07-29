@@ -2140,18 +2140,28 @@ visibility:visible; opacity:1; padding:8px 10px !important;}
 }
 .inventory-btn [type="button"] {
 float:right;}
-#dtdata.inventory-table td:first-child, .check-table.inventory-table th:first-child {
-    text-align: left !important;
-}
+#dtdata.inventory-table td:first-child, .check-table.inventory-table th:first-child {text-align: left !important;}
 .top-with-select .box-title {margin-right:10px;white-space:nowrap;}
 .top-with-select {margin-bottom:0px;}
 .top-with-select .tablenav.top {margin:0px;}
 .add-new-box .form-check label.control-label:before,
 .add-new-box .form-check label.control-label:after {content: none !important;}
 .add-new-box .form-check label.control-label {padding-left:15px;}
-.custom-flex-space .col-auto {margin-right:15px;}
+.new-product-section .nav-tabs-custom {border:0px; margin:0px; box-shadow:none;}
+.new-product-section #tab_5 {margin-top:-20px;}
+.tablenav .a-float-right {float:right;margin-top:5px;cursor:pointer;width:20px; text-align:center;}
+.custom-flex-space .col-auto {margin-right: 15px;}
+.varient-box {display:none;}
+##angle-box i {transform:rotate(0deg); transition:.5s transform;}
+img.varient-pic {max-width: 100px;height: auto;}
+.virtual-checks .form-check {padding-right:50px;}
+.virtual-checks > .col-md-12 {display:flex; align-items:center; border-top:1px solid #dedede; border-bottom:1px solid #dedede;padding-top:12px;}
+.angle-change i{transform:rotate(180deg);}
 .categorychecklist {width:100%; padding:0px; margin:0px;list-style:none;}
 .categorychecklist li {margin-bottom:10px;}
+.mt-25 {margin-top:25px !important;}
+.weight-box {display:flex;  flex-wrap:wrap;}
+.weight-box .col-md-4 {padding:0px;}
 .flex-wrap{flex-wrap:wrap;}
 .massstocktransfer .row , .rowbox{display:flex; flex-wrap:wrap;}
 .rowbox {align-items: center;}

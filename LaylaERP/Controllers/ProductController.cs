@@ -115,6 +115,7 @@ namespace LaylaERP.Controllers
             }
             else
             {
+                model.post_status = "product";
                 int ID = ProductRepository.AddProducts(model);
                 if (ID > 0)
                 {
@@ -132,26 +133,39 @@ namespace LaylaERP.Controllers
 
         private void Adduser_MetaData(ProductModel model, long id)
         {
-            string[] varQueryArr1 = new string[25];
-            string[] varFieldsName = new string[25] { "_sku", "_regular_price", "_sale_price", "total_sales", "_tax_status", "_tax_class", "_manage_stock", "_backorders", "_sold_individually", "_weight", "_length", "_width", "_height", "_upsell_ids", "_crosssell_ids", "_virtual", "_downloadable", "_download_limit", "_download_expiry", "_stock", "_stock_status", "_wc_average_rating", "_wc_review_count", "_price", "_low_stock_amount" };
-            string[] varFieldsValue = new string[25] { model.sku, model.regular_price, model.sale_price, "0", model.tax_status, model.tax_class, model.manage_stock, model.backorders, model.sold_individually, model.weight, model.length, model.width, model.height, model.upsell_ids, model.crosssell_ids, "no", "no", "-1", "-1", model.stock, model.stock_status, "0", "0", model.sale_price, model.low_stock_amount };
-            for (int n = 0; n < 25; n++)
+            string[] varQueryArr1 = new string[26];
+            string[] varFieldsName = new string[26] { "_sku", "_regular_price", "_sale_price", "total_sales", "_tax_status", "_tax_class", "_manage_stock", "_backorders", "_sold_individually", "_weight", "_length", "_width", "_height", "_upsell_ids", "_crosssell_ids", "_virtual", "_downloadable", "_download_limit", "_download_expiry", "_stock", "_stock_status", "_wc_average_rating", "_wc_review_count", "_price", "_low_stock_amount", "_product_attributes" };
+            string[] varFieldsValue = new string[26] { model.sku, model.regular_price, model.sale_price, "0", model.tax_status, model.tax_class, model.manage_stock, model.backorders, model.sold_individually, model.weight, model.length, model.width, model.height, model.upsell_ids, model.crosssell_ids, "no", "no", "-1", "-1", model.stock, model.stock_status, "0", "0", model.sale_price, model.low_stock_amount,model.product_attributes };
+            for (int n = 0; n < 26; n++)
+            {
+                ProductRepository.AddProductsMeta(model, id, varFieldsName[n], varFieldsValue[n]);
+            }
+        }
+        private void Addvariations_MetaData(ProductModel model, long id)
+        {
+            string[] varQueryArr1 = new string[26];
+            string[] varFieldsName = new string[26] { "_sku", "_regular_price", "_sale_price", "total_sales", "_tax_status", "_tax_class", "_manage_stock", "_backorders", "_sold_individually", "_weight", "_length", "_width", "_height", "_upsell_ids", "_crosssell_ids", "_virtual", "_downloadable", "_download_limit", "_download_expiry", "_stock", "_stock_status", "_wc_average_rating", "_wc_review_count", "_price", "_low_stock_amount", "_variation_description" };
+            string[] varFieldsValue = new string[26] { model.sku, model.regular_price, model.sale_price, "0", model.tax_status, model.tax_class, model.manage_stock, model.backorders, model.sold_individually, model.weight, model.length, model.width, model.height, model.upsell_ids, model.crosssell_ids, "no", "no", "-1", "-1", model.stock, model.stock_status, "0", "0", model.sale_price, model.low_stock_amount, model.variation_description };
+            for (int n = 0; n < 26; n++)
             {
                 ProductRepository.AddProductsMeta(model, id, varFieldsName[n], varFieldsValue[n]);
             }
         }
         private void Add_term(ProductModel model,int ID)
         {
+            if(model.ProductTypeID > 0 )
             ProductRepository.Add_term(model.ProductTypeID,ID);
-            ProductRepository.Add_term(model.ShippingclassID,ID);
+            if (model.ShippingclassID > 0)
+                ProductRepository.Add_term(model.ShippingclassID,ID);
             string CommaStr = model.CategoryID;
-
-            var myarray = CommaStr.Split(',');
-
-            for (var i = 0; i < myarray.Length; i++)
+            if (!string.IsNullOrEmpty(CommaStr))
             {
-                ProductRepository.Add_term(Convert.ToInt32(myarray[i]), ID);
-                 
+                var myarray = CommaStr.Split(',');
+                for (var i = 0; i < myarray.Length; i++)
+                {
+                    ProductRepository.Add_term(Convert.ToInt32(myarray[i]), ID);
+
+                }
             }
         }
         private void update_term(ProductModel model, long ID)
@@ -209,6 +223,18 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(JSONresult, 0);
         }
+        public JsonResult Getproductattributes(OrderPostStatusModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+
+                string atrribute = ProductRepository.GetProductAttributeID(model);
+                JSONresult = JsonConvert.SerializeObject(atrribute);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
         public JsonResult GetProdctByID(OrderPostStatusModel model)
         {
             string JSONresult = string.Empty;
@@ -220,6 +246,110 @@ namespace LaylaERP.Controllers
             }
             catch { }
             return Json(JSONresult, 0);
+        }
+
+ 
+        public JsonResult saveAttributes(string fields, string table,string visible,string variation, ProductModel model)
+        {
+         
+           // Attributes model = new Attributes();            
+            //var quote = "\"";
+            //string sColumns = "";
+            //string value = "";
+            //string[] name = fields.Split(',');
+            //foreach (string namelist in name)
+            //{
+            //    sColumns += quote + namelist +quote + ",";
+            // }
+            //string NameTrimed = sColumns.TrimEnd(',');
+            //string[] val = table.Split(',');
+            //foreach (string namelistval in val)
+            //{
+            //    value += quote + namelistval + quote + ",";
+            //}
+            //string valueTrimed = value.TrimEnd(',');
+            //string key = "{ Key : " + NameTrimed + " }";
+            //string valuename = "{ value : " + valueTrimed + " }";
+            //string product_attributes = key + "," + valuename;
+          
+            model.product_attributes = fields;
+            if (model.ID > 0)
+            {
+
+                ProductRepository.EditProducts(model, model.ID);
+                Update_MetaData(model, model.ID);
+                update_term(model, model.ID);
+                return Json(new { status = true, message = "Product Record has been updated successfully!!", url = "Manage" }, 0);
+            }
+            else
+            {
+                model.post_status = "draft";
+                model.post_content = "";
+                model.post_title = "";
+                model.post_name = "";
+
+                int ID = ProductRepository.AddProducts(model);
+                ViewBag.UpdatedID = ID;
+                if (ID > 0)
+                {
+                    Adduser_MetaData(model, ID);
+                    Add_term(model, ID);
+                    ModelState.Clear();
+                    return Json(new { status = true, message = "Product Attributes has been saved successfully!!", ID = ID }, 0);
+                }
+                else
+                {
+                    return Json(new { status = false, message = "Invalid Details", id = ID }, 0);
+                }
+            }
+
+            //return Json(model, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult Savevariations(string fields, string post_title, string parentid, string attributeheaderval , ProductModel model)
+        {                       
+           
+            if (model.ID > 0)
+            {
+
+                //ProductRepository.EditProducts(model, model.ID);
+                //Update_MetaData(model, model.ID);
+                //update_term(model, model.ID);
+                //return Json(new { status = true, message = "Product Record has been updated successfully!!", url = "Manage" }, 0);
+            }
+            else
+            {
+                var elements = fields.Split(',');
+
+                model.post_status = "product";
+                model.post_content = "";
+                model.post_title = post_title;
+                model.post_name = post_title;
+              //  model.post_parent = Convert.ToInt32(parentid);
+
+
+                string[] val = fields.Split(',');
+                foreach (string namelistval in val)
+                {
+
+                    //value += quote + namelistval + quote + ",";
+                }
+
+                //int ID = ProductRepository.AddProducts(model);               
+                //if (ID > 0)
+                //{
+                //    Addvariations_MetaData(model, ID);
+                //    Add_term(model, ID);
+                //    ModelState.Clear();
+                //    return Json(new { status = true, message = "Product Attributes has been saved successfully!!", ID = ID }, 0);
+                //}
+                //else
+                //{
+                //    return Json(new { status = false, message = "Invalid Details", id = ID }, 0);
+                //}
+            }
+
+            return Json(model, JsonRequestBehavior.AllowGet);
         }
     }
 }

@@ -562,6 +562,7 @@
                 strSql.Append(string.Format("insert into wp_postmeta (post_id,meta_key,meta_value) values ('{0}','{1}','{2}');", model.post_id, "taskuidforsms", model.meta_value));
                 strSql.Append(string.Format("update wp_postmeta set meta_value='{0}' where post_id='{1}' and meta_key='{2}';", "podium", model.post_id, "_payment_method"));
                 strSql.Append(string.Format("update wp_postmeta set meta_value='{0}' where post_id='{1}' and meta_key='{2}';", "Podium Order", model.post_id, "_payment_method_title"));
+                strSql.Append(string.Format("update wp_posts set post_status = '{0}' where id = {1};", "wc-processing", model.post_id));
                 result = SQLHelper.ExecuteNonQuery(strSql.ToString());
             }
             catch (Exception Ex) { }
@@ -1009,7 +1010,7 @@
                 {
                     strSql.Append(string.Format("update wp_postmeta set meta_value = '{0}' where post_id = '{1}' and meta_key = '{2}' ; ", obj.meta_value, obj.post_id, obj.meta_key));
                 }
-
+                strSql.Append(string.Format("update wp_posts set post_status = '{0}' where id = {1};", "wc-processing", model[0].post_id));
                 /// step 6 : wp_posts
                 //strSql.Append(string.Format(" update wp_posts set post_status = '{0}' ,comment_status = 'closed' where id = {1} ", model.OrderPostStatus.status, model.OrderPostStatus.order_id));
 
@@ -1331,7 +1332,8 @@
 
                 string strSql = "SELECT p.id order_id, p.id as chkorder,os.num_items_sold,Cast(os.total_sales As DECIMAL(10, 2)) as total_sales, os.customer_id as customer_id,"
                             + " p.post_status status, DATE_FORMAT(p.post_date, '%M %d %Y') date_created,COALESCE(pmf.meta_value, '') FirstName,COALESCE(pml.meta_value, '') LastName,"
-                            + " replace(replace(replace(replace(pmp.meta_value,'-', ''),' ',''),'(',''),')','') billing_phone"
+                            + " replace(replace(replace(replace(pmp.meta_value,'-', ''),' ',''),'(',''),')','') billing_phone,"
+                            + " (SELECT sum(rpm.meta_value) FROM wp_posts rp JOIN wp_postmeta rpm ON rp.ID = rpm.post_id AND meta_key = '_order_total' WHERE rp.post_parent = p.ID AND rp.post_type = 'shop_order_refund') AS refund_total"
                             + " FROM wp_posts p inner join wp_wc_order_stats os on p.id = os.order_id"
                             + " left join wp_postmeta pmf on os.order_id = pmf.post_id and pmf.meta_key = '_billing_first_name'"
                             + " left join wp_postmeta pml on os.order_id = pml.post_id and pml.meta_key = '_billing_last_name'"

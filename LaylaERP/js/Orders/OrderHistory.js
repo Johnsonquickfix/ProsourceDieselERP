@@ -149,7 +149,14 @@ function dataGridLoad(order_type) {
                 }
             },
             { data: 'num_items_sold', title: 'No. of Items', sWidth: "10%" },
-            { data: 'total_sales', title: 'Order Total', sWidth: "10%", render: $.fn.dataTable.render.number(',', '.', 2, '$') },
+            //{ data: 'total_sales', title: 'Order Total', sWidth: "10%", render: $.fn.dataTable.render.number(',', '.', 2, '$') },
+            {
+                data: 'total_sales', title: 'Order Total', sWidth: "10%", render: function (id, type, row, meta) {
+                    let refund_amt = parseFloat(row.refund_total) || 0.00;
+                    let amt = refund_amt != 0 ? '<span style="text-decoration: line-through;"> $' + row.total_sales.toFixed(2) + '<br></span><span style="text-decoration: underline;"> $' + (parseFloat(row.total_sales) + refund_amt).toFixed(2) + '</span>' : '$' + row.total_sales.toFixed(2);
+                    return amt;
+                }
+            },
             {
                 data: 'status', title: 'Status', sWidth: "14%", render: function (data, type, row) {
                     if (data == 'wc-pending') return 'Pending payment';

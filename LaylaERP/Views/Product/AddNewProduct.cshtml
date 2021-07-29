@@ -343,3 +343,11 @@
     //    plugins: 'table wordcount'
     //});
 </script>
+<script>
+    jQuery(function ($) {
+        $('#angle-box').click(function () {
+            $(this).toggleClass('angle-change');
+            $('.varient-box').slideToggle(100);
+        });
+    });
+</script>

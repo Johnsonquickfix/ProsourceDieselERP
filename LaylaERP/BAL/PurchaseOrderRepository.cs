@@ -28,7 +28,7 @@ namespace LaylaERP.BAL
             DataSet DS = new DataSet();
             try
             {
-                string strSQl = "select rowid as ID, concat(nom,' (',name_alias,')') as Name from wp_vendor order by rowid desc;";
+                string strSQl = "select rowid as ID, concat(nom,' (',name_alias,')') as Name from wp_vendor where VendorStatus=1 order by rowid desc;";
                 DS = SQLHelper.ExecuteDataSet(strSQl);
             }
             catch (Exception ex)
@@ -52,7 +52,7 @@ namespace LaylaERP.BAL
             DataTable dt = new DataTable();
             try
             {
-                string strSQl = "select rowid as ID, concat(nom,' (',name_alias,')') as Name, code_fournisseur as vendor from wp_vendor where rowid=" + VendorID + " order by ID;";
+                string strSQl = "select rowid as ID, concat(nom,' (',name_alias,')') as Name, code_fournisseur as vendor from wp_vendor where rowid=" + VendorID + " and VendorStatus=1 order by ID;";
                 dt = SQLHelper.ExecuteDataTable(strSQl);
             }
             catch (Exception ex)

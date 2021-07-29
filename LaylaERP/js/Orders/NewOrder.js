@@ -742,9 +742,9 @@ function getOrderItemList(oid) {
                     couponHtml += '</li>';
                 }
                 if (coupon_list.length == 0) {
-                    let cpn_info = JSON.parse(data[i].meta_data); 
+                    let cpn_info = JSON.parse(data[i].meta_data);
                     let cpn_name = data[i].product_name;
-                    couponHtml += '<li id="li_' + data[i].product_name + '" data-coupon= "' + data[i].product_name + '" data-couponamt= "' + (cpn_info.coupon_amount != '' && cpn_info.coupon_amount != undefined ? cpn_info.coupon_amount : cou_amt)  + '" data-disctype= "' + (cpn_info.discount_type != '' && cpn_info.discount_type != undefined ? cpn_info.discount_type : '') + '" data-rqprdids="' + (cpn_info.product_ids != '' && cpn_info.product_ids != undefined ? cpn_info.product_ids : '') + '" data-excludeids="' + (cpn_info.exclude_product_ids != '' && cpn_info.exclude_product_ids != undefined ? cpn_info.exclude_product_ids : '') + '" data-type= "add_coupon" data-orderitemid="' + orderitemid + '">';
+                    couponHtml += '<li id="li_' + data[i].product_name + '" data-coupon= "' + data[i].product_name + '" data-couponamt= "' + (cpn_info.coupon_amount != '' && cpn_info.coupon_amount != undefined ? cpn_info.coupon_amount : cou_amt) + '" data-disctype= "' + (cpn_info.discount_type != '' && cpn_info.discount_type != undefined ? cpn_info.discount_type : '') + '" data-rqprdids="' + (cpn_info.product_ids != '' && cpn_info.product_ids != undefined ? cpn_info.product_ids : '') + '" data-excludeids="' + (cpn_info.exclude_product_ids != '' && cpn_info.exclude_product_ids != undefined ? cpn_info.exclude_product_ids : '') + '" data-type= "add_coupon" data-orderitemid="' + orderitemid + '">';
                     couponHtml += '<a href="javascript:void(0);">';
                     couponHtml += '<i class="fa fa-gift"></i>';
                     couponHtml += '<span>' + cpn_name + '</span>';
@@ -1828,32 +1828,30 @@ function PaypalPayment(ppemail) {
 
 }
 function CreatePaypalInvoice(oid, pp_email, access_token) {
-    var taxPer = parseFloat($('#hfTaxRate').val()) || 0.00;
-    var shipping_total = parseFloat($('#shippingTotal').text()) || 0.00;
-    var itemsList = [];
+    let taxPer = parseFloat($('#hfTaxRate').val()) || 0.00;
+    let item_discount = 0.00, shipping_total = parseFloat($('#shippingTotal').text()) || 0.00, srf_total = parseFloat($('#stateRecyclingFeeTotal').text()) || 0.00, fee_total = parseFloat($('#feeTotal').text()) || 0.00;
+    let custom_label = (srf_total > 0 ? 'State Recycling Fee' : '') + (srf_total > 0 && fee_total > 0 ? ' & ' : '') + (fee_total > 0 ? 'Fee' : ''); fee_total = fee_total + srf_total;
+    let itemsList = [];
     //get items
     $('#order_line_items > tr').each(function (index, tr) {
-        var qty = parseFloat($(this).find("[name=txt_ItemQty]").val()) || 0.00;
-        var rate = parseFloat($(this).find(".TotalAmount").data('regprice')) || 0.00;
-        var taxAmount = parseFloat($(this).find(".TotalAmount").data('taxamount')) || 0.00;
-        var discountAmount = parseFloat($(this).find(".TotalAmount").data('discount')) || 0.00;
+        let qty = parseFloat($(this).find("[name=txt_ItemQty]").val()) || 0.00;
+        let rate = parseFloat($(this).find(".TotalAmount").data('regprice')) || 0.00;
+        let taxAmount = parseFloat($(this).find(".TotalAmount").data('taxamount')) || 0.00;
+        let discountAmount = parseFloat($(this).find(".TotalAmount").data('discount')) || 0.00;
         itemsList.push({
-            name: $(this).data('pname'),
-            quantity: qty,
-            unit_amount: { currency_code: "USD", value: rate },
-            tax: { name: "Sales Tax", value: taxAmount, percent: taxPer },
-            discount: { amount: { currency_code: "USD", value: discountAmount } },
-            unit_of_measure: "QUANTITY"
+            name: $(this).data('pname'), quantity: qty, unit_amount: { currency_code: "USD", value: rate },
+            tax: { name: "Sales Tax", value: taxAmount, percent: taxPer }, discount: { amount: { currency_code: "USD", value: discountAmount } }, unit_of_measure: "QUANTITY"
         });
+        item_discount += discountAmount;
     });
+    let cart_discount = (parseFloat($('#discountTotal').text()) || 0.00) - item_discount;
+    if (cart_discount > 0) {
+        itemsList.push({ name: 'Cart Discount', quantity: 1, unit_amount: { currency_code: "USD", value: 0 }, tax: { name: "Sales Tax", value: 0, percent: taxPer }, discount: { amount: { currency_code: "USD", value: cart_discount } }, unit_of_measure: "QUANTITY" });
+    }
+
     var option = {
         detail: {
-            invoice_number: oid,
-            reference: "",
-            invoice_date: df,
-            currency_code: "USD",
-            note: "Layla Invoice.",
-            payment_term: { term_type: "NET_10" }
+            invoice_number: 'WC-' + new Date().getTime(), reference: oid, invoice_date: df, currency_code: "USD", note: "Layla Invoice.", payment_term: { term_type: "NET_10" }
         },
         invoicer: {
             name: { given_name: "", surname: "" },
@@ -1882,8 +1880,9 @@ function CreatePaypalInvoice(oid, pp_email, access_token) {
         configuration: { allow_tip: false, tax_calculated_after_discount: true, tax_inclusive: false, },
         amount: {
             breakdown: {
-                //custom: { label: "Packing Charges", amount: { currency_code: "USD", value: "10.00" } },
-                shipping: { amount: { currency_code: "USD", value: shipping_total }, tax: { name: "Sales Tax", percent: taxPer } },
+                discount: { invoice_discount: { percent: 0 } }, shipping: { amount: { currency_code: "USD", value: shipping_total } },
+                custom: { label: custom_label, amount: { currency_code: "USD", value: fee_total } },
+                //shipping: { amount: { currency_code: "USD", value: shipping_total }, tax: { name: "Sales Tax", percent: taxPer } },
                 //discount: { invoice_discount: { percent: "5" } }
             }
         }

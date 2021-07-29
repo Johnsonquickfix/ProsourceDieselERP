@@ -292,6 +292,7 @@ function saveVendor(Settingid, LeadTime, DaysofStock) {
     CreditLimit = $("#txtCreditLimit").val();
     IncoTermType = $("#ddlIncoTerm").val();
     IncoTerm = $("#txtIncoTerm").val();
+    VendorStatus = $("#chkVendorStatus").prop("checked") ? 1 : 0;
 
     var pattern = /^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
     if (VendorName == "") { swal('alert', 'Please Enter Vendor Name', 'error').then(function () { swal.close(); $('#txVendorName').focus(); }) }
@@ -324,7 +325,7 @@ function saveVendor(Settingid, LeadTime, DaysofStock) {
             PaymentDate: PaymentDate, Currency: Currency, EnableVendorUOM: EnableVendorUOM, UnitsofMeasurment:Unitsofmeasurment,
             MinimumOrderQuanity: Minimumorderquanity, DefaultTax: DefaultTax, TaxIncludedinPrice:TaxIncludedinprice,
             DefaultDiscount: DefaultDiscount, CreditLimit: CreditLimit, IncotermsType: IncoTermType, Incoterms: IncoTerm,
-            WarehouseID: Settingid, LeadTime: LeadTime, DaysofStock: DaysofStock, VendorID: ID,
+            WarehouseID: Settingid, LeadTime: LeadTime, DaysofStock: DaysofStock, VendorID: ID, VendorStatus: VendorStatus
 
         }
         $.ajax({
@@ -337,8 +338,6 @@ function saveVendor(Settingid, LeadTime, DaysofStock) {
             },
             success: function (data) {
                 if (data.status == true) {
-                    /*$('#hfid').val(data.id);*/
-
                     swal('Alert!', data.message, 'success');
                     $("#parent").find(":input").each(function () {
                         switch (this.type) { case "text": case "email": case "tel": $(this).val(''); break; }
@@ -415,6 +414,7 @@ function GetVendorByID(id) {
                     $("#txtCreditLimit").val(d[0].CreditLimit);
                     $("#ddlIncoTerm").val(d[0].IncotermsType);
                     $("#txtIncoTerm").val(d[0].Incoterms);
+                    d[0].VendorStatus == true ? $('#chkVendorStatus').attr("checked", "checked") : "";
                     
                 }
             },

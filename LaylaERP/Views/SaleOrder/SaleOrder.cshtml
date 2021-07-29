@@ -1,11 +1,11 @@
 ﻿
 @{
-    ViewBag.Title = "New Commercial Proposal";
+    ViewBag.Title = "New Sale Order";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <div class="page-title">
-    <h2>New Commercial Proposal</h2>
+    <h2>New Sale Order</h2>
 </div>
 <section class="content section-content massstocktransfer commercial_proposal mt-1">
     <div class="box box-primary">
@@ -31,15 +31,15 @@
                 </div>
             </div>
             <div class="rowbox">
-                <div class="col-md-3"><label>Date of Proposal</label></div>
+                <div class="col-md-3"><label>Date</label></div>
                 <div class="col-md-5">
                     <input class="form-control" type="text" placeholder="7/27/2021" /><span>Now</span>
                 </div>
             </div>
             <div class="rowbox">
-                <div class="col-md-3"><label>Validity Duration</label></div>
+                <div class="col-md-3"><label>Planned date of delivery</label></div>
                 <div class="col-md-5">
-                    <input class="form-control" type="text" placeholder="15" /><span>Days</span>
+                    <input class="form-control" type="text" placeholder="7/27/2021 T 03:59" /><span>Now with time</span>
                 </div>
             </div>
             <div class="rowbox">
@@ -88,6 +88,16 @@
                     <input class="form-control" type="text" /><span>Now</span>
                 </div>
             </div>
+            
+            <div class="rowbox">
+                <div class="col-md-3"><label>Channel</label></div>
+                <div class="col-md-5">
+                    <select class="form-control">
+                        <option value="0">----</option>
+                    </select>
+                </div>
+            </div>
+
             <div class="rowbox">
                 <div class="col-md-3"><label>Incoterms</label></div>
                 <div class="col-md-5">

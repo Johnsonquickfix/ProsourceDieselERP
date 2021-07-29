@@ -35,6 +35,18 @@ namespace LaylaERP.BAL
             { throw ex; }
             return DS;
         }
+        public string GetPurchaseOrderCode()
+        {
+            string result = "";
+            try
+            {
+                string strsql = "SELECT CONCAT('PO', DATE_FORMAT(CURDATE(),'%y%m'),'-',max(LPAD(rowid+1 ,5,0)))  as Code from commerce_purchase_order;";
+                result = SQLHelper.ExecuteScalar(strsql).ToString();
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return result;
+        }
         public static DataTable GetIncotermByID(int IncotermsTypeID)
         {
             DataTable dt = new DataTable();
@@ -98,11 +110,15 @@ namespace LaylaERP.BAL
         {
             try
             {
+                 
+                string refe = GetPurchaseOrderCode();
+
                 string strsql = "";
-                strsql = "insert into commerce_purchase_order(ref,ref_supplier,fk_soc,fk_statut,source,fk_cond_reglement,BalanceDaysID,fk_mode_reglement,date_livraison,fk_incoterms,location_incoterms,note_private,note_public) values(@ref,@ref_supplier,@fk_soc,@fk_statut,@source,@fk_cond_reglement,@BalanceDaysID,@fk_mode_reglement,@date_livraison,@fk_incoterms,@location_incoterms,@note_private,@note_public); SELECT LAST_INSERT_ID();";
+                strsql = "insert into commerce_purchase_order(ref,ref_ext,ref_supplier,fk_soc,fk_statut,source,fk_cond_reglement,BalanceDaysID,fk_mode_reglement,date_livraison,fk_incoterms,location_incoterms,note_private,note_public) values(@ref,@ref_ext,@ref_supplier,@fk_soc,@fk_statut,@source,@fk_cond_reglement,@BalanceDaysID,@fk_mode_reglement,@date_livraison,@fk_incoterms,@location_incoterms,@note_private,@note_public); SELECT LAST_INSERT_ID();";
                 MySqlParameter[] para =
                 {
-                    new MySqlParameter("@ref", model.VendorCode),
+                    new MySqlParameter("@ref", refe),
+                    new MySqlParameter("@ref_ext", model.VendorCode),
                     new MySqlParameter("@ref_supplier", model.Vendor),
                     new MySqlParameter("@fk_soc", model.VendorID),
                     new MySqlParameter("@fk_statut", "2"),
@@ -134,7 +150,7 @@ namespace LaylaERP.BAL
                 string strsql = "Update commerce_purchase_order set ref=@ref,ref_supplier=@ref_supplier,fk_soc=@fk_soc,fk_statut=@fk_statut,source=@source,fk_cond_reglement = @fk_cond_reglement,BalanceDaysID = @BalanceDaysID,fk_mode_reglement = @fk_mode_reglement,date_livraison = @date_livraison,fk_incoterms = @fk_incoterms,location_incoterms = @location_incoterms,note_private = @note_private,note_public = @note_public where rowid = " + PurchaseID + "";
                 MySqlParameter[] para =
                 {
-                   new MySqlParameter("@ref", model.VendorCode),
+                    new MySqlParameter("@ref_ext", model.VendorCode),
                     new MySqlParameter("@ref_supplier", model.Vendor),
                     new MySqlParameter("@fk_soc", model.VendorID),
                     new MySqlParameter("@fk_statut", "2"),

@@ -1909,7 +1909,7 @@ function CreatePaypalInvoice(oid, pp_email, access_token) {
 }
 function SendPaypalInvoice(access_token, sendURL) {
     $.ajax({
-        type: "POST", url: sendURL, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify({ send_to_invoicer: true }),
+        type: "POST", url: sendURL, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify({ send_to_invoicer: true, send_to_recipient : true }),
         beforeSend: function (xhr) {
             xhr.setRequestHeader("Accept", "application/json");
             xhr.setRequestHeader("Accept-Language", "en_US");

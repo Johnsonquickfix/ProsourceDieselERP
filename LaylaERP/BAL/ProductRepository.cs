@@ -94,6 +94,29 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
+
+        public static string GetProductAttributeID(OrderPostStatusModel model)
+        {
+            string caregory = string.Empty;
+
+            try
+            {
+                string strWhr = string.Empty;
+
+                string strSql = "select meta_value productattributes FROM `wp_postmeta` where meta_key = '_product_attributes' and post_id = " + model.strVal + " ";
+
+
+                caregory = SQLHelper.ExecuteScalar(strSql).ToString();
+                //dt = ds.Tables[0];
+                
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return caregory;
+        }
         public static DataTable GetProductcategoriesList()
         {
             DataTable DT = new DataTable();
@@ -230,7 +253,7 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "Insert into wp_posts(post_date,post_date_gmt,post_content,post_excerpt,post_title,post_name,post_status,post_type,to_ping, pinged,post_content_filtered,post_mime_type) values(@post_date,@post_date_gmt,@post_content,@post_excerpt,@post_title,@post_name,'publish','product',@to_ping, @pinged,@post_content_filtered,@post_mime_type);SELECT LAST_INSERT_ID();";
+                string strsql = "Insert into wp_posts(post_date,post_date_gmt,post_content,post_excerpt,post_title,post_name,post_status,post_type,to_ping, pinged,post_content_filtered,post_mime_type,post_parent) values(@post_date,@post_date_gmt,@post_content,@post_excerpt,@post_title,@post_name,@post_status,@post_status,@to_ping, @pinged,@post_content_filtered,@post_mime_type,@post_parent);SELECT LAST_INSERT_ID();";
                 MySqlParameter[] para =
                 {
                     new MySqlParameter("@post_date", DateTime.Now),
@@ -238,11 +261,13 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@post_content", model.post_content),
                     new MySqlParameter("@post_excerpt", string.Empty),
                     new MySqlParameter("@post_title", model.post_title),
+                    new MySqlParameter("@post_status", model.post_status),
                     new MySqlParameter("@post_name", model.post_name),
                     new MySqlParameter("@to_ping", string.Empty),
                     new MySqlParameter("@pinged", string.Empty),
                     new MySqlParameter("@post_content_filtered", string.Empty),
                     new MySqlParameter("@post_mime_type", string.Empty),
+                    new MySqlParameter("@post_parent", model.post_parent),
                 };
               int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
                 return result;

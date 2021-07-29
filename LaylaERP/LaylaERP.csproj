@@ -195,6 +195,7 @@
     </Compile>
     <Compile Include="Models\AgentCommissionRate.cs" />
     <Compile Include="Models\Appearance.cs" />
+    <Compile Include="Models\Attributes.cs" />
     <Compile Include="Models\clsSerialization.cs" />
     <Compile Include="Models\clsUserDetails.cs" />
     <Compile Include="Models\CouponsModel.cs" />

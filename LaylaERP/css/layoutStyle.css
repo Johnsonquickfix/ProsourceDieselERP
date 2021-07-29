@@ -2140,22 +2140,44 @@ visibility:visible; opacity:1; padding:8px 10px !important;}
 }
 .inventory-btn [type="button"] {
 float:right;}
-#dtdata.inventory-table td:first-child, .check-table.inventory-table th:first-child {
-    text-align: left !important;
-}
-.top-with-select .box-title {
-margin-right:10px;white-space:nowrap;}
-.top-with-select {
-margin-bottom:0px;}
-.top-with-select .tablenav.top {
-margin:0px;}
+#dtdata.inventory-table td:first-child, .check-table.inventory-table th:first-child {text-align: left !important;}
+.top-with-select .box-title {margin-right:10px;white-space:nowrap;}
+.top-with-select {margin-bottom:0px;}
+.top-with-select .tablenav.top {margin:0px;}
 .add-new-box .form-check label.control-label:before,
-.add-new-box .form-check label.control-label:after {
-    content: none !important;
-}
-.add-new-box .form-check label.control-label {
-padding-left:15px;}
-.custom-flex-space .col-auto {
-margin-right:15px;}
+.add-new-box .form-check label.control-label:after {content: none !important;}
+.add-new-box .form-check label.control-label {padding-left:15px;}
+.new-product-section .nav-tabs-custom {border:0px; margin:0px; box-shadow:none;}
+.new-product-section #tab_5 {margin-top:-20px;}
+.tablenav .a-float-right {float:right;margin-top:5px;cursor:pointer;width:20px; text-align:center;}
+.custom-flex-space .col-auto {margin-right: 15px;}
+.varient-box {display:none;}
+##angle-box i {transform:rotate(0deg); transition:.5s transform;}
+img.varient-pic {max-width: 100px;height: auto;}
+.virtual-checks .form-check {padding-right:50px;}
+.virtual-checks > .col-md-12 {display:flex; align-items:center; border-top:1px solid #dedede; border-bottom:1px solid #dedede;padding-top:12px;}
+.angle-change i{transform:rotate(180deg);}
 .categorychecklist {width:100%; padding:0px; margin:0px;list-style:none;}
 .categorychecklist li {margin-bottom:10px;}
+.mt-25 {margin-top:25px !important;}
+.weight-box {display:flex;  flex-wrap:wrap;}
+.weight-box .col-md-4 {padding:0px;}
+.flex-wrap{flex-wrap:wrap;}
+.massstocktransfer .row , .rowbox{display:flex; flex-wrap:wrap;}
+.rowbox {align-items: center;}
+.massstocktransfer [class^="col-md"] {margin-bottom:12px; }
+.massstocktransfer .rowbox:last-child [class^="col-md"]{margin-bottom:0px;}
+.commercial_proposal .col-md-5 {align-items:center;display:flex;align-items:flex-end;}
+.commercial_proposal .col-md-5 span {padding-left:10px;}
+.mx-0 {margin-left:0px !important; margin-right:0px !important;}
+.flex-auto {flex: 1 0 0; -ms-flex: 1 0 0;}
+.row.nowrap {flex-wrap:nowrap !important; -ms-flex-wrap:nowrap !important;}
+.flex-end {align-items:flex-end; }
+.flex-0 {flex:0; -ms-flex:0; white-space:nowrap;}
+.row.nowrap > div {padding:0px 10px;}
+.massstocktransfer .row label {font-weight:600;}
+.commercial_proposal .col-md-3 label {font-weight:600; margin-bottom:0px;}
+/*.commercial_proposal .form-control {border-top:0px; border-left:0px; border-right:0px;}*/
+.commercial_proposal select + .form-control {margin-left:10px;}
+.new-vendor-header .dataTables_scrollHeadInner {width:100% !important;}
+    .new-vendor-header .dataTables_scrollHeadInner .inventory-table {width: 100% !important;}

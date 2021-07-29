@@ -1,86 +1,97 @@
-﻿
+﻿@model LaylaERP.Models.WarehouseModel
 @{
     ViewBag.Title = "Mass Stock Transfer";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
 <div class="page-title">
     <h2>Mass Stock Transfer</h2>
-    @*<a class="btn btn-danger" id="btnAdd" href="Index"></a>*@
 </div>
-
-<section class="content section-content neworder-section table-design">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="user-top-section">
-                <div class="tablenav top tablenav-top2">
-                    <div class="alignleft actions bulkactions">
-                        <select class="form-control" id="ddlsourcewarehouse">
-                            <option value="0" selected="selected">Select Source warehouse</option>
-                        </select>
+<section class="content section-content massstocktransfer mt-1">
+    <div class="row  flex-wrap">
+        <div class="col-sm-12 mb-1">
+            <div class="box box-primary">
+                <div class="box-body">
+                    <div class="row nowrap mx-0 flex-end">
+                        <div class="flex-auto">
+                            <label>Source Warehouse</label>
+                            <input type="hidden" id="hfprice" />
+                            <select class="form-control" id="ddlsourcewarehouse">
+                                <option value="0" selected="selected">--Select Source warehouse--</option>
+                            </select>
+                        </div>
+                        <div class="flex-auto">
+                            <label>Target Warehouse</label>
+                            <select class="form-control" id="ddltargetwarehouse">
+                                <option value="0">--Select Target warehouse--</option>
+                            </select>
+                        </div>
+                        <div class="flex-auto">
+                            <label>Product Ref.</label>
+                            <select class="form-control select2 billinfo" id="ddlProduct" placeholder="Select Products" style="width: 100%;">
+                                <option value="0">--Select Product--</option>
+                            </select>
+                        </div>
+                        <div class="flex-auto">
+                            <label>Lot/Serial</label>
+                            <input class="form-control" type="text" name="serial" id="txtSerial" placeholder=" Lot/Serial" />
+                        </div>
+                        <div class="flex-auto">
+                            <label>Qty</label>
+                            <input class="form-control" type="text" name="qty" id="txtQty" placeholder="Qty" />
+                        </div>
+                        <div class="flex-0">
+                            <input type="submit" name="action" id="btnSelect" class="btn btn-danger" value="Select" />
+                        </div>
                     </div>
-
-                    <div class="alignleft actions">
-                        <select class="form-control" id="ddltargetwarehouse">
-                            <option value="0">Select Target warehouse</option>
-                        </select>
-                    </div>
-                    <div class="alignleft actions">
-                        <select class="form-control select2 billinfo" id="ddlProduct" placeholder="Select Products" style="width: 100%;">
-                            <option value="0">Select Product</option>
-                        </select>
-                    </div>
-                    <div class="alignleft actions">
-                        <input type="text" name="serial" id="txtSerial" placeholder=" Lot/Serial" />
-
-                    </div>
-                    <div class="alignleft actions">
-                        <input type="text" name="qty" id="txtQty" placeholder="Qty" />
-                    </div>
-
-                    <div class="alignleft actions">
-                        <input type="submit" name="action" id="btnSelect" class="button" value="Select" />
-                    </div>
-
-                    <br />
-                    <br />
-                    <div class="alignleft actions">
-                        Movement or inventory code:<input type="text" id="dateserial" placeholder=" Movement or inventory code" />
-                    </div>
-
-                    <br />
-                    <br />
-                    <div class="alignleft actions">
-                        Label of movement:<input type="text" id="txtlabel" placeholder="Label of Movement" />
-                    </div>
-
-
+                    
                 </div>
             </div>
         </div>
+        <div class="col-sm-12">
+            <div class="box box-primary">
+                <div class="box-body">
+                    <div class="row nowrap mx-0 flex-end">
+                        <div class="flex-0"><label>Movement or inventory code:</label></div>
+                        <div class="flex-auto">
+                            <input class="form-control" type="text" id="txtdateserial" placeholder=" Movement or inventory code" />
+                        </div>
+                        <div class="flex-0"><label>Label of movement:</label></div>
+                        <div class="flex-auto">
+                            <input class="form-control" type="text" id="txtlabel" placeholder="Label of Movement" />
+                        </div>
+                        <div class="flex-0">
+                            <input type="submit" name="action" id="btntransfer" class="btn btn-danger" value="Record Transfer" />
+                        </div>
+                    </div>
+                    </div>
+            </div>
+        </div>
     </div>
-    
+
+
 </section>
 
 <script>
     $(document).ready(function () {
         $("#loader").hide();
 
+        var dt2 = new Date();
+        var dt3 = dt2.getFullYear() + ("0" + (dt2.getMonth() + 1)).slice(-2) + dt2.getDate();
+        var dt4 = dt2.getFullYear() + '-' + ("0" + (dt2.getMonth() + 1)).slice(-2) + '-' + dt2.getDate();
+        document.getElementById("txtdateserial").value = dt3;
+        document.getElementById("txtlabel").value = "Stock transfer" + " " + dt4;
+
+
         $(document).on('click', "#btnSelect", function () {
-            debugger
-            var source = $("#ddlsourcewarehouse").val();
-            var target = $("#ddlsourcewarehouse").val();
-            var product = $("#ddlProduct").val();
-            var serial = $("#txtSerial").val();
-            var Qty = $("#txtQty").val();
-            var mydate = $("#dateserial").val();
-            var mydate = $("#dateserial").val();
-            var dt2 = new Date();
-            var dt3 = dt2.getFullYear() + ("0" + (dt2.getMonth() + 1)).slice(-2) + dt2.getDate();
-            document.getElementById("dateserial").value = dt3 + serial;
-            
+            AddPrice();
+            movementcode();
+
         });
-       
+
+        $(document).on('click', "#btntransfer", function () {
+            AddMouvement();
+        });
+
         $.get('/Warehouse/Gettargetwarehouse', function (data) {
             var items = "";
             $.each(data, function (index, value) {
@@ -92,15 +103,110 @@
         $.get('/Warehouse/GetProduct', function (data) {
             var items = "";
             $.each(data, function (index, value) {
-                items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddlProduct"); 
+                items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddlProduct");
             })
         });
 
     });
 
-    var dt2 = new Date();
-    var dt3 = dt2.getFullYear() + ("0" + (dt2.getMonth() + 1)).slice(-2) + dt2.getDate();
-    var dt4 = dt2.getFullYear() + '-' + ("0" + (dt2.getMonth() + 1)).slice(-2) + '-' + dt2.getDate();
-    document.getElementById("dateserial").value = dt3;
-    document.getElementById("txtlabel").Value = "Stock Transfer" + dt4;
+    function movementcode() {
+        var dt2 = new Date();
+        var serial = $("#txtSerial").val();
+        var dt3 = dt2.getFullYear() + ("0" + (dt2.getMonth() + 1)).slice(-2) + dt2.getDate();
+        var dt4 = dt2.getFullYear() + '-' + ("0" + (dt2.getMonth() + 1)).slice(-2) + '-' + dt2.getDate();
+        document.getElementById("txtdateserial").value = dt3 + serial;
+        document.getElementById("txtlabel").value = "Stock transfer" + " " + dt4;
+    }
+</script>
+
+<script>
+
+    function AddMouvement() {
+        debugger
+        var fk_entrepot = $("#ddlsourcewarehouse").val();
+        var fk_entrepottarget = $("#ddltargetwarehouse").val();
+        var fk_product = $("#ddlProduct").val();
+        var price = $("#hfprice").val();
+        var value = $("#txtQty").val();
+        var lotserial = $("#txtSerial").val();
+        var inventorycode = $("#txtdateserial").val();
+        var label = $("#txtlabel").val();
+
+        if (fk_entrepot == 0) {
+            swal('Alert', 'Please select source warehouse', 'error').then(function () { swal.close(); $('#ddlsourcewarehouse').focus(); });
+        }
+        else if (fk_entrepottarget == 0) {
+            swal('Alert', 'Please select target warehouse', 'error').then(function () { swal.close(); $('#ddltargetwarehouse').focus(); });
+        }
+        else if (fk_entrepot == fk_entrepottarget) {
+            swal('Alert', 'Target warehouse and Source warehouse will not be same', 'error').then(function () { swal.close(); $('#ddltargetwarehouse').focus(); });
+        }
+        else if (fk_product == 0) {
+            swal('Alert', 'Please select product', 'error').then(function () { swal.close(); $('#ddlProduct').focus(); });
+        }
+        else if (lotserial == '') {
+            swal('Alert', 'Please enter serial number', 'error').then(function () { swal.close(); $('#txtSerial').focus(); });
+        }
+        else if (value == '') {
+            swal('Alert', 'Please enter Qty', 'error').then(function () { swal.close(); $('#txtQty').focus(); });
+        }
+
+        else {
+
+            var obj = {
+                fk_entrepot: fk_entrepot,
+                fk_entrepottarget: fk_entrepottarget,
+                fk_product: fk_product,
+                value: value,
+                inventorycode: inventorycode,
+                label: label,
+                price: price,
+            }
+            $.ajax({
+                url: '/Warehouse/AddMouvment/', dataType: 'json', type: 'Post',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(obj),
+                dataType: "json",
+                beforeSend: function () { $("#loader").show(); },
+                success: function (data) {
+                    if (data.status == true) {
+                        //$('#parent > input:text').val('');
+                        swal('Alert!', data.message, 'success').then((result) => { location.href = 'StockMouvementList'; });
+                    }
+                    else {
+                        swal('Alert!', data.message, 'error');
+                    }
+                },
+                complete: function () { $("#loader").hide(); },
+                error: function (error) { swal('Error!', 'something went wrong', 'error'); },
+            })
+
+        }
+    }
+</script>
+
+<script>
+
+    function AddPrice() {
+        var fk_product = $("#ddlProduct").val();
+        var obj = {
+            id: fk_product,
+        }
+        $.ajax({
+            url: '/Warehouse/GetProductInfo/', dataType: 'json', type: 'Post',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(obj),
+            dataType: "json",
+            beforeSend: function () { $("#loader").show(); },
+            success: function (data) {
+                var jobj = JSON.parse(data);
+                console.log(jobj[0].sale_price);
+                $('#hfprice').val(jobj[0].sale_price);
+            },
+            complete: function () { $("#loader").hide(); },
+            error: function (error) { swal('Error!', 'something went wrong', 'error'); },
+        })
+
+    }
+
 </script>

@@ -17,6 +17,10 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult PurchaseOrderDetails()
+        {
+            return View();
+        }
         public ActionResult PurchaseOrderList()
         {
             return View();
@@ -132,7 +136,7 @@ namespace LaylaERP.Controllers
                     }
                 }
             
-            return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
+            //return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
         }
         public JsonResult GetPurchaseOrderList(PurchaseOrderModel model)
         {
@@ -149,6 +153,17 @@ namespace LaylaERP.Controllers
             }
             catch (Exception ex) { throw ex; }
             return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+        }
+        public JsonResult GetPurchaseOrderByID(string id)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = PurchaseOrderRepository.GetPurchaseOrderByID(id);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
         }
     }
 }

@@ -202,5 +202,23 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
+
+        public static DataTable GetPurchaseOrderByID(string id)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                string strWhr = string.Empty;
+                string strSql = "Select p.rowid id, p.ref, p.ref_ext RefOrderVendor,v.SalesRepresentative RequestAuthor, v.nom VendorName,v.fk_departement City, v.zip,LEFT(CAST(p.date_livraison AS DATE), 10) PlannedDateofDelivery, s.Status from commerce_purchase_order p inner join wp_vendor v on p.fk_soc = v.rowid inner join wp_StatusMaster s on p.fk_statut = s.ID where ref='" + id + "'";
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dt = ds.Tables[0];
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
     }
 }

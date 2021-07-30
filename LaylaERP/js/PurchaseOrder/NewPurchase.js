@@ -173,3 +173,26 @@ function saveVendor() {
     }
 
 }
+function GetPurchaseOrderByID(id) {
+    var rowid = id;
+    if (rowid == "NewVendor") { $('#lbltitle').text("Add New Vendor"); } else { $('#lbltitle').text("Update Vendor"); }
+    var obj =
+        $.ajax({
+            url: "/PurchaseOrder/GetPurchaseOrderByID/" + rowid,
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            dataType: 'JSON',
+            data: JSON.stringify(obj),
+            success: function (data) {
+                var d = JSON.parse(data);
+                if (d.length > 0) {
+                    $('#lblVendor').text(d[0].ref);
+                   
+                }
+            },
+            error: function (msg) {
+
+            }
+        });
+
+}

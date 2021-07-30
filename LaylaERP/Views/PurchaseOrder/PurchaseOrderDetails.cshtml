@@ -27,63 +27,59 @@
                         <div class="form-group">
                             <label class="control-label " for="Vendor">Vendor</label>
                             <div class="">
-                                <select class="form-control" id="ddlVendor"></select>
+                                <label class="control-label " for="Vendor" id="lblVendor"></label>
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label class="control-label " for="Ref. vendor">Ref. vendor</label>
                             <div class="">
-                                <input type="text" id="txtRefvendor" class="form-control" placeholder="Ref. vendor" disabled />
+                                <label class="control-label " for="Ref. vendor" id="lblRefvendor"></label>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label " for="Payment Terms">Payment Terms</label>
                             <div class="">
-                                <select class="form-control" id="ddlPaymentTerms"></select>
-
+                                <label class="control-label " for="Payment Terms" id="lblPaymentTerms"></label>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
                             <label for="Balance">Balance</label>
-                            <select class="form-control" id="ddlBalancedays"></select>
+                            <div class="">
+                                <label class="control-label " for="Balance" id="lblBalance"></label>
+                            </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label " for="Contact No.">Payment Type</label>
+                            <label class="control-label " for="Payment Type">Payment Type</label>
                             <div class="">
-                                <select class="form-control" id="ddlPaymentType"></select>
+                                <label class="control-label " for="Payment Type" id="lblPaymentType"></label>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label " for="Planned date of delivery">Planned date of delivery</label>
                             <div class="">
-                                <div class="input-group">
-                                    <input type="text" id="txtPlanneddateofdelivery" class="form-control" placeholder="Planned date of delivery" autocomplete="off" />
-                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                </div>
+                                <label class="control-label " for="Planned date of delivery" id="lblPlanneddateofdelivery"></label>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label " for="Incoterms">Incoterms</label>
                             <div class="">
-                                <select class="form-control" id="ddlIncoTerms"></select>
-                                <input type="text" id="txtIncoTerms" class="form-control" placeholder="IncoTerms" />
-                            </div>
+                                <label class="control-label " for="Incoterms" id="lblIncoterms"></label>                            </div>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
                             <label class="control-label " for="Note (public)">Note (public)</label>
                             <div class="">
-                                <textarea id="txtNotePublic" class="form-control" placeholder="Note (public)"></textarea>
+                                <label class="control-label " for="Note (public)" id="lblNotePublic"></label>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label " for="Post/Zip Code">Note (private)</label>
                             <div class="">
-                                <textarea id="txtNotePrivate" class="form-control" placeholder="Note (private)"></textarea>
+                                <label class="control-label"  id="lblNotePrivate" for="Note (private)"></label>
                             </div>
                         </div>
 
@@ -97,9 +93,18 @@
                 @Html.ActionLink("Back to List", "PurchaseOrderList", null, new { @class = "btn btn-danger" })
             </div>
         </div>
-        <!-- /.row -->
     </div>
     <div class="map" id="map" style="display:none;"></div>
 </section>
 
 <script src="@Url.Content("~/js/PurchaseOrder/NewPurchase.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+<script>
+    $(document).ready(function () {
+        debugger
+        var url = window.location.pathname;
+        var id = url.substring(url.lastIndexOf('/') + 1);
+        if (id != "PurchaseOrderDetails") {
+            GetPurchaseOrderByID(id);
+        }
+    })
+</script>

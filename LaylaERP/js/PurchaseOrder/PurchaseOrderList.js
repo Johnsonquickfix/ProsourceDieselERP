@@ -33,7 +33,7 @@ function PurchaseOrderGrid() {
             {
                 'data': 'ref', sWidth: "10%",
                 'render': function (id, type, full, meta) {
-                    return '<a href="../PurchaseOrder/NewPurchaseOrder/' + id + '">' + id + '</a>';
+                    return '<a href="../PurchaseOrder/PurchaseOrderDetails/' + id + '">' + id + '</a>';
                 }
             },
             { data: 'RefOrderVendor', title: 'Ref Order Vendor', sWidth: "10%" },

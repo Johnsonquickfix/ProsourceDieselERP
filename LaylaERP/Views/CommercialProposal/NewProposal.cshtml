@@ -4,6 +4,9 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<link href="~/Content/DataTables/bootstrap-datepicker.css" rel="stylesheet" />
+<script src="~/Content/DataTables/bootstrap-datepicker.js"></script>
+
 <div class="page-title">
     <h2>New Commercial Proposal</h2>
 </div>
@@ -13,105 +16,120 @@
             <div class="rowbox">
                 <div class="col-md-3"><label>Ref.</label></div>
                 <div class="col-md-5">
-                    <input type="text" class="form-control" placeholder="Draft" />
+                    <input type="text" class="form-control" placeholder="Draft" id="txtref" />
                 </div>
             </div>
             <div class="rowbox">
-                <div class="col-md-3"><label>Ref. Vendor</label></div>
+                <div class="col-md-3"><label>Ref. Customer</label></div>
                 <div class="col-md-5">
-                    <input type="text" class="form-control" />
-                </div>
-            </div>
-            <div class="rowbox">
-                <div class="col-md-3"><label>Vendor</label></div>
-                <div class="col-md-5">
-                    <select class="form-control">
-                        <option value="0">--Select a third party--</option>
+                    <select class="form-control" id="ddlThirdParty">
+                        @*<option value="0">--Select third party--</option>*@
                     </select>
                 </div>
             </div>
             <div class="rowbox">
+                <div class="col-md-3"><label>Customer</label></div>
+                <div class="col-md-5">
+                    <input type="text" class="form-control" id="txtrefcustomer" />
+                </div>
+            </div>
+
+            <div class="rowbox">
                 <div class="col-md-3"><label>Date of Proposal</label></div>
                 <div class="col-md-5">
-                    <input class="form-control" type="text" placeholder="7/27/2021" /><span>Now</span>
+                    <input class="form-control" type="text" placeholder="7/27/2021" id="txtdatep" /><span>Now</span>
                 </div>
             </div>
             <div class="rowbox">
                 <div class="col-md-3"><label>Validity Duration</label></div>
                 <div class="col-md-5">
-                    <input class="form-control" type="text" placeholder="15" /><span>Days</span>
+                    <input class="form-control" type="text" placeholder="15" id="txtvalidity"/><span>Days</span>
                 </div>
             </div>
             <div class="rowbox">
                 <div class="col-md-3"><label>Payment Terms</label></div>
                 <div class="col-md-5">
-                    <select class="form-control">
-                        <option value="0">----</option>
+                    <select class="form-control" id="ddlPaymentTerms">
+                        @*<option value="0">----</option>*@
+                    </select><span><i class="fa fa-info-circle"></i></span>
+                </div>
+            </div>
+            <div class="rowbox">
+                <div class="col-md-3"><label>Balance</label></div>
+                <div class="col-md-5">
+                    <select class="form-control" id="ddlBalancedays">
+                        
                     </select><span><i class="fa fa-info-circle"></i></span>
                 </div>
             </div>
             <div class="rowbox">
                 <div class="col-md-3"><label>Payment Type</label></div>
                 <div class="col-md-5">
-                    <select class="form-control">
-                        <option value="0">----</option>
+                    <select class="form-control" id="ddlGetPaymentType">
+                        @*<option value="0">----</option>*@
                     </select><span><i class="fa fa-info-circle"></i></span>
                 </div>
             </div>
+
             <div class="rowbox">
                 <div class="col-md-3"><label>Source</label></div>
                 <div class="col-md-5">
-                    <select class="form-control">
-                        <option value="0">----</option>
+                    <select class="form-control" id="ddlGetSourceType">
+                        @*<option value="0">----</option>*@
                     </select><span><i class="fa fa-info-circle"></i></span>
                 </div>
             </div>
             <div class="rowbox">
                 <div class="col-md-3"><label>Availability Delay(after order)</label></div>
                 <div class="col-md-5">
-                    <select class="form-control">
-                        <option value="0">----</option>
+                    <select class="form-control" id="ddlavailability">
+                        <option value="0">Please Select Delay</option>
+                        <option value="1">Immediate</option>
+                        <option value="2">1 week</option>
+                        <option value="3">2 weeks</option>
+                        <option value="4">3 weeks</option>
                     </select><span><i class="fa fa-info-circle"></i></span>
                 </div>
             </div>
             <div class="rowbox">
                 <div class="col-md-3"><label>Shipping Method</label></div>
                 <div class="col-md-5">
-                    <select class="form-control">
-                        <option value="0">----</option>
+                    <select class="form-control" id="ddlshipping">
+                        <option value="0">Please Select Delivery Method</option>
+                        <option value="1">Generic transport service</option>
+                        <option value="2">In-store collection</option>
+                        <option value="3">UPS</option>
                     </select><span><i class="fa fa-info-circle"></i></span>
                 </div>
             </div>
             <div class="rowbox">
                 <div class="col-md-3"><label>Delivery Date</label></div>
                 <div class="col-md-5">
-                    <input class="form-control" type="text" /><span>Now</span>
+                    <input class="form-control" type="text" id="date" /><span class="even-space"></span>
                 </div>
             </div>
             <div class="rowbox">
                 <div class="col-md-3"><label>Incoterms</label></div>
                 <div class="col-md-5">
-                    <select class="form-control">
-                        <option value="0">----</option>
-                    </select>
-                    <input class="form-control" type="text" />
+                    <select class="form-control" id="ddlIncoTerm"></select>
+                    <input class="form-control" type="text" id="txtIncoTerm" />
                 </div>
             </div>
             <div class="rowbox">
                 <div class="col-md-3"><label>Default Doc Template</label></div>
                 <div class="col-md-5">
-                    <select class="form-control">
+                    <select class="form-control" id="ddldoc">
                         <option value="0">azur</option>
                     </select>
                 </div>
             </div>
             <div class="col-md-3"><label>Note(Public)</label></div>
             <div class="col-md-9">
-                <textarea class="form-control"></textarea>
+                <textarea class="form-control" id="txtpublic"></textarea>
             </div>
             <div class="col-md-3"><label>Note(Private)</label></div>
             <div class="col-md-9">
-                <textarea class="form-control"></textarea>
+                <textarea class="form-control" id="txtprivate"></textarea>
             </div>
         </div>
     </div>
@@ -121,3 +139,23 @@
     </div>
     </div>
 </section>
+
+<script src="@Url.Content("~/js/CommercialPorposal/NewPorposal.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+
+<script>
+    $(document).ready(function () {
+        $("#loader").hide();
+        var dt2 = new Date();
+        var dt4 = dt2.getFullYear() + '-' + ("0" + (dt2.getMonth() + 1)).slice(-2) + '-' + dt2.getDate();
+        document.getElementById("txtdatep").value = dt4;
+    });
+</script>
+<script>
+    $(function () {
+        $("#date").datepicker({
+            format: 'yyyy-mm-dd',
+        });
+    });
+
+
+</script>

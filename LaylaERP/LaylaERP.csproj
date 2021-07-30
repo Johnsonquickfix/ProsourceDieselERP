@@ -157,6 +157,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="BAL\AgentCommissionRateRepository.cs" />
     <Compile Include="BAL\AppearanceRepository.cs" />
+    <Compile Include="BAL\CommercialProposalRepositiory.cs" />
     <Compile Include="BAL\CouponsRepository.cs" />
     <Compile Include="BAL\CustomerRepository.cs" />
     <Compile Include="BAL\DashboardRepository.cs" />
@@ -202,6 +203,7 @@
     <Compile Include="Models\Attributes.cs" />
     <Compile Include="Models\clsSerialization.cs" />
     <Compile Include="Models\clsUserDetails.cs" />
+    <Compile Include="Models\CommercialProposalModel.cs" />
     <Compile Include="Models\CouponsModel.cs" />
     <Compile Include="Models\CustomerModel.cs" />
     <Compile Include="Models\ExportModel.cs" />
@@ -577,6 +579,7 @@
     <Content Include="Images\userprofile2.png" />
     <Content Include="Images\validatebox_warning.png" />
     <Content Include="js\app.js" />
+    <Content Include="js\CommercialPorposal\NewPorposal.js" />
     <Content Include="js\common.js" />
     <Content Include="js\Customer\Customer.js" />
     <Content Include="js\FeeNTax\FeeNTax.js" />
@@ -590,6 +593,7 @@
     <Content Include="js\Orders\OrderRefund.js" />
     <Content Include="js\Product\AddnewProduct.js" />
     <Content Include="js\Product\Product.js" />
+    <Content Include="js\PurchaseOrder\NewPurchase.js" />
     <Content Include="js\Ship\ShipStation.js" />
     <Content Include="js\ThirdParty\Vendor.js" />
     <Content Include="js\ThirdParty\VendorList.js" />

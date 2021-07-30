@@ -800,6 +800,7 @@
     <Content Include="Views\PurchaseOrder\NewPurchaseOrder.cshtml" />
     <Content Include="Views\SaleOrder\SaleOrder.cshtml" />
     <Content Include="Views\SaleOrder\ListSaleOrder.cshtml" />
+    <Content Include="Views\Warehouse\GetStockAtDate.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

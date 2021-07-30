@@ -34,6 +34,21 @@ function getIncoterm() {
     });
 }
 
+$('#ddlThirdParty').change(function () {
+    var VendorTypeID = $('#ddlThirdParty').val();
+    var obj = { VendorTypeID: VendorTypeID };
+    jQuery.ajax({
+        url: "/CommercialProposal/GetVendorByID", dataType: 'json', type: "Post",
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(obj),
+        success: function (data) {
+            data = JSON.parse(data);
+            $('#txtrefcustomer').val(data[0].rowid);
+        },
+        error: function (jqXHR, textStatus, errorThrown) { swal('Error!', errorThrown, "error"); }
+    });
+});
+
 $('#ddlIncoTerm').change(function () {
     var IncotermsTypeID = $('#ddlIncoTerm').val();
     var obj = { IncotermsTypeID: IncotermsTypeID };
@@ -48,7 +63,6 @@ $('#ddlIncoTerm').change(function () {
         error: function (jqXHR, textStatus, errorThrown) { swal('Error!', errorThrown, "error"); }
     });
 });
-
 
 function getPaymentTerm() {
 

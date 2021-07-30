@@ -1,7 +1,9 @@
 ﻿
 @{
-    ViewBag.Title = "New Commercial Proposal";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+                /**/
+
+                ViewBag.Title = "New Commercial Proposal";
+                Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <link href="~/Content/DataTables/bootstrap-datepicker.css" rel="stylesheet" />
@@ -20,7 +22,7 @@
                 </div>
             </div>
             <div class="rowbox">
-                <div class="col-md-3"><label>Ref. Customer</label></div>
+                <div class="col-md-3"><label>Vendor</label></div>
                 <div class="col-md-5">
                     <select class="form-control" id="ddlThirdParty">
                         @*<option value="0">--Select third party--</option>*@
@@ -28,7 +30,7 @@
                 </div>
             </div>
             <div class="rowbox">
-                <div class="col-md-3"><label>Customer</label></div>
+                <div class="col-md-3"><label>Ref. Vendor</label></div>
                 <div class="col-md-5">
                     <input type="text" class="form-control" id="txtrefcustomer" />
                 </div>
@@ -43,7 +45,7 @@
             <div class="rowbox">
                 <div class="col-md-3"><label>Validity Duration</label></div>
                 <div class="col-md-5">
-                    <input class="form-control" type="text" placeholder="15" id="txtvalidity"/><span>Days</span>
+                    <input class="form-control" type="text" placeholder="15" id="txtvalidity" /><span>Days</span>
                 </div>
             </div>
             <div class="rowbox">
@@ -57,9 +59,7 @@
             <div class="rowbox">
                 <div class="col-md-3"><label>Balance</label></div>
                 <div class="col-md-5">
-                    <select class="form-control" id="ddlBalancedays">
-                        
-                    </select><span><i class="fa fa-info-circle"></i></span>
+                    <select class="form-control" id="ddlBalancedays"></select><span><i class="fa fa-info-circle"></i></span>
                 </div>
             </div>
             <div class="rowbox">
@@ -71,14 +71,15 @@
                 </div>
             </div>
 
-            <div class="rowbox">
+            @*<div class="rowbox">
                 <div class="col-md-3"><label>Source</label></div>
                 <div class="col-md-5">
                     <select class="form-control" id="ddlGetSourceType">
-                        @*<option value="0">----</option>*@
+                        <option value="0">----</option>
                     </select><span><i class="fa fa-info-circle"></i></span>
                 </div>
-            </div>
+            </div>*@
+
             <div class="rowbox">
                 <div class="col-md-3"><label>Availability Delay(after order)</label></div>
                 <div class="col-md-5">
@@ -105,7 +106,7 @@
             <div class="rowbox">
                 <div class="col-md-3"><label>Delivery Date</label></div>
                 <div class="col-md-5">
-                    <input class="form-control" type="text" id="date" /><span class="even-space"></span>
+                    <input class="form-control" type="text" id="deliverydate" /><span class="even-space"></span>
                 </div>
             </div>
             <div class="rowbox">
@@ -134,7 +135,7 @@
         </div>
     </div>
     <div class="box-footer text-right">
-        <input type="submit" class="btn btn-danger" value="Create Draft" />
+        <input type="submit" class="btn btn-danger" id="btnSave" value="Create Draft" />
         <input type="submit" class="btn btn-danger" value="Cancel" />
     </div>
     </div>
@@ -146,16 +147,89 @@
     $(document).ready(function () {
         $("#loader").hide();
         var dt2 = new Date();
-        var dt4 = dt2.getFullYear() + '-' + ("0" + (dt2.getMonth() + 1)).slice(-2) + '-' + dt2.getDate();
+        var dt4 = dt2.getUTCFullYear() + '-' + ("0" + (dt2.getUTCMonth() + 1)).slice(-2) + '-' + dt2.getUTCDate();
         document.getElementById("txtdatep").value = dt4;
+
+        $(document).on('click', "#btnSave", function () {
+            AddCommercialProposal();
+        });
+
     });
 </script>
 <script>
     $(function () {
-        $("#date").datepicker({
+        $("#deliverydate").datepicker({
             format: 'yyyy-mm-dd',
         });
     });
 
+</script>
 
+
+<script>
+    function AddCommercialProposal() {
+        debugger
+        //rowid = $("#hfid").val();
+        ref = $("#txtref").val();
+        vendor = $("#ddlThirdParty").val();
+        refcustomer = $("#txtrefcustomer").val();
+        dateofproposal = $("#txtdatep").val();
+        validationduration = $("#txtvalidity").val();
+        paymentterms = $("#ddlPaymentTerms").val();
+        balance = $("#ddlBalancedays").val();
+        paymenttype = $("#ddlGetPaymentType").val();
+        source = $("#ddlGetSourceType").val();
+        availability = $("#ddlavailability").val();
+        shippingmethod = $("#ddlshipping").val();
+        incoterms = $("#ddlIncoTerm").val();
+        doctemplate = $("#ddldoc").val();
+        notepublic = $("#txtpublic").val();
+        noteprivate = $("#txtprivate").val();
+        deliverydate = $("#deliverydate").val();
+
+        if (ref == "") {
+            swal('Alert', 'Please Enter Reference Name', 'error').then(function () { swal.close(); $('#txtref').focus(); });
+        }
+
+        else {
+
+            var obj = {
+                reff: ref,
+                fk_vendor:vendor,
+                datep:dateofproposal,
+                fin_validite:validationduration,
+                payment_term:paymentterms,
+                balance:balance,
+                payment_type:paymenttype,
+                fk_availability:availability,
+                fk_shipping_method:shippingmethod,
+                fk_incoterms:incoterms,
+                model_pdf:doctemplate,
+                note_public:notepublic,
+                note_private: noteprivate,
+                date_delivery: deliverydate,
+                
+            }
+            $.ajax({
+                url: '/CommercialProposal/AddProposal/', dataType: 'json', type: 'Post',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(obj),
+                dataType: "json",
+                beforeSend: function () { $("#loader").show(); },
+                success: function (data) {
+                    if (data.status == true) {
+                        //$('#parent > input:text').val('');
+                        swal('Alert!', data.message, 'success');
+                    }
+                    else {
+                        swal('Alert!', data.message, 'error');
+                    }
+                },
+                complete: function () { $("#loader").hide(); },
+                error: function (error) { swal('Error!', 'something went wrong', 'error'); },
+            })
+
+        }
+    }
+                        
 </script>

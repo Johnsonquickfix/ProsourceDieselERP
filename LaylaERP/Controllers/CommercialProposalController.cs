@@ -23,14 +23,26 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
-//interconterm
+        public JsonResult GetVendorByID(CommercialProposalModel model)
+        {
+            int id = model.VendorTypeID;
+            string result = string.Empty;
+            try
+            {
+                DataTable dt = CommercialProposalRepositiory.GetVendorByID(id);
+                result = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(result, 0);
+        }
+        //interconterm
         public JsonResult GetIncotermByID(CommercialProposalModel model)
         {
             int id = model.IncotermsTypeID;
             string result = string.Empty;
             try
             {
-                DataTable dt = ThirdPartyRepository.GetIncotermByID(id);
+                DataTable dt = CommercialProposalRepositiory.GetIncotermByID(id);
                 result = JsonConvert.SerializeObject(dt);
             }
             catch (Exception ex) { throw ex; }
@@ -112,6 +124,20 @@ namespace LaylaERP.Controllers
             }
             return Json(productlist, JsonRequestBehavior.AllowGet);
 
+
+        }
+        [HttpPost]
+        public JsonResult AddProposal(CommercialProposalModel model)
+        {
+            int ID = CommercialProposalRepositiory.AddProposal(model);
+            if (ID > 0)
+            {
+                return Json(new { status = true, message = "Data has been saved successfully!!", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
 
         }
     }

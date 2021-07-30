@@ -5,7 +5,7 @@ using System.Web;
 
 namespace LaylaERP.Models
 {
-    public class PurchaseOrderModel
+    public class PurchaseOrderModel : PaggingModel
     {
         public int rowid { get; set; }
         public int VendorID { get; set; }
@@ -21,5 +21,7 @@ namespace LaylaERP.Models
         public string note_public { get; set; }
         public int IncotermType { get; set; }
         public string Incoterms { get; set; }
+        public string user_status { get; set; }
+        public string Search { get; set; }
     }
 }

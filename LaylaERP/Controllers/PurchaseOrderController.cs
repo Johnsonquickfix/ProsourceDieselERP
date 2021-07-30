@@ -17,6 +17,11 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult PurchaseOrderList()
+        {
+            return View();
+        }
+
         public JsonResult GetIncoterm(SearchModel model)
         {
             DataSet ds = BAL.PurchaseOrderRepository.GetIncoterm();
@@ -128,6 +133,22 @@ namespace LaylaERP.Controllers
                 }
             
             return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
+        }
+        public JsonResult GetPurchaseOrderList(PurchaseOrderModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                string urid = "";
+                if (model.user_status != "")
+                    urid = model.user_status;
+                string searchid = model.Search;
+                DataTable dt = PurchaseOrderRepository.GetPurchaseOrder(urid, searchid, model.PageNo, model.PageSize, out TotalRecord, model.SortCol, model.SortDir);
+                result = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
         }
     }
 }

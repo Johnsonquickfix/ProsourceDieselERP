@@ -131,9 +131,6 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@location_incoterms", model.Incoterms),
                     new MySqlParameter("@note_private", model.note_private),
                     new MySqlParameter("@note_public", model.note_public),
-
-
-
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
                 return result;

@@ -165,5 +165,22 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(JSONresult, 0);
         }
+
+        [HttpPost]
+        public JsonResult GetProductInfo(SearchModel model)
+        {
+            List<OrderProductsModel> obj = new List<OrderProductsModel>();
+            try
+            {
+                long pid = 0, vid = 0;
+                if (!string.IsNullOrEmpty(model.strValue1))
+                    pid = Convert.ToInt64(model.strValue1);
+                if (!string.IsNullOrEmpty(model.strValue2))
+                    vid = Convert.ToInt64(model.strValue2);
+                obj = PurchaseOrderRepository.GetProductListDetails(pid, vid);
+            }
+            catch { }
+            return Json(obj, 0);
+        }
     }
 }

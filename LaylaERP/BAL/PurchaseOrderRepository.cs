@@ -209,7 +209,7 @@ namespace LaylaERP.BAL
             try
             {
                 string strWhr = string.Empty;
-                string strSql = "Select p.rowid id, p.ref, p.ref_ext RefOrderVendor,v.SalesRepresentative RequestAuthor, v.nom VendorName,v.fk_departement City, v.zip,LEFT(CAST(p.date_livraison AS DATE), 10) PlannedDateofDelivery, s.Status from commerce_purchase_order p inner join wp_vendor v on p.fk_soc = v.rowid inner join wp_StatusMaster s on p.fk_statut = s.ID where ref='" + id + "'";
+                string strSql = "Select p.rowid id, p.ref, p.ref_ext RefOrderVendor,v.SalesRepresentative RequestAuthor, p.ref_supplier VendorName,v.fk_departement City, v.zip,LEFT(CAST(p.date_livraison AS DATE), 10) PlannedDateofDelivery, s.Status,concat(i.incoterm, ' - ', p.location_incoterms) as incoterms , p.note_public, p.note_private,pt.PaymentTerm,ty.PaymentType,b.Balance from commerce_purchase_order p inner join wp_vendor v on p.fk_soc = v.rowid left join wp_StatusMaster s on p.fk_statut = s.ID left join IncoTerms i on p.fk_incoterms = i.rowid left join PaymentTerms pt on p.fk_cond_reglement = pt.ID left join wp_PaymentType ty on p.fk_mode_reglement = ty.ID left join BalanceDays b on p.BalanceDaysID = b.ID where ref='" + id + "'";
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
 
@@ -219,6 +219,81 @@ namespace LaylaERP.BAL
                 throw ex;
             }
             return dt;
+        }
+        public static List<OrderProductsModel> GetProductListDetails(long product_id, long variation_id)
+        {
+            List<OrderProductsModel> _list = new List<OrderProductsModel>();
+            try
+            {
+                string free_products = string.Empty;
+                if (product_id == 118)
+                    free_products = "632713";
+                else if (product_id == 611172)
+                    free_products = "78676";
+                else
+                    free_products = "";
+
+                OrderProductsModel productsModel = new OrderProductsModel();
+                MySqlParameter[] parameters =
+                {
+                    new MySqlParameter("@product_id", product_id),
+                    new MySqlParameter("@variation_id", variation_id)
+                };
+                string strSQl = "SELECT DISTINCT post.id,ps.ID pr_id,CONCAT(post.post_title, ' (' , COALESCE(psku.meta_value,'') , ') - ' ,LTRIM(REPLACE(REPLACE(COALESCE(ps.post_excerpt,''),'Size:', ''),'Color:', ''))) as post_title"
+                            + " , COALESCE(pr.meta_value, 0) reg_price,COALESCE(psr.meta_value, 0) sale_price FROM wp_posts as post"
+                            + " LEFT OUTER JOIN wp_posts ps ON ps.post_parent = post.id and ps.post_type LIKE 'product_variation'"
+                            + " left outer join wp_postmeta psku on psku.post_id = ps.id and psku.meta_key = '_sku'"
+                            + " left outer join wp_postmeta pr on pr.post_id = ps.id and pr.meta_key = '_regular_price'"
+                            + " left outer join wp_postmeta psr on psr.post_id = COALESCE(ps.id, post.id) and psr.meta_key = '_price'"
+                            + " WHERE post.post_type = 'product' and post.id = @product_id and ps.id = @variation_id ";
+                if (product_id == 611172 && !string.IsNullOrEmpty(free_products))
+                    strSQl += " OR (post.id in (" + free_products + ") and COALESCE(ps.id,0) = 0);";
+                else if (product_id == 118 && !string.IsNullOrEmpty(free_products))
+                    strSQl += " OR (post.id in (" + free_products + ") and COALESCE(ps.id,0) = 0);";
+                else
+                    strSQl += ";";
+                MySqlDataReader sdr = SQLHelper.ExecuteReader(strSQl, parameters);
+                while (sdr.Read())
+                {
+                    productsModel = new OrderProductsModel();
+                    if (sdr["id"] != DBNull.Value)
+                        productsModel.product_id = Convert.ToInt64(sdr["id"]);
+                    else
+                        productsModel.product_id = 0;
+                    if (sdr["pr_id"] != DBNull.Value)
+                        productsModel.variation_id = Convert.ToInt64(sdr["pr_id"]);
+                    else
+                        productsModel.variation_id = 0;
+                    if (sdr["post_title"] != DBNull.Value)
+                        productsModel.product_name = sdr["post_title"].ToString();
+                    else
+                        productsModel.product_name = string.Empty;
+                    if (sdr["reg_price"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["reg_price"].ToString().Trim()))
+                        productsModel.reg_price = decimal.Parse(sdr["reg_price"].ToString());
+                    else
+                        productsModel.reg_price = 0;
+                    if (sdr["sale_price"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["sale_price"].ToString().Trim()))
+                        productsModel.sale_price = decimal.Parse(sdr["sale_price"].ToString().Trim());
+                    else
+                        productsModel.sale_price = productsModel.reg_price;
+                    productsModel.price = productsModel.sale_price;
+                    productsModel.quantity = 1;
+                    /// free item
+                    if (productsModel.product_id == 78676) { productsModel.is_free = true; productsModel.quantity = 2; }
+                    else if (productsModel.product_id == 632713) { productsModel.is_free = true; productsModel.quantity = 2; }
+                    else productsModel.is_free = false;
+
+                    /// 
+                    if (productsModel.product_id == 611172) productsModel.group_id = 78676;
+                    else if (productsModel.product_id == 118) productsModel.group_id = 632713;
+                    else productsModel.group_id = 0;
+
+                    _list.Add(productsModel);
+                }
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return _list;
         }
     }
 }

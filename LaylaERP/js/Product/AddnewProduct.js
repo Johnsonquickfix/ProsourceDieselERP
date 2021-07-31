@@ -547,7 +547,7 @@ function AddProduct() {
     else {
         var obj = {
             ID: ID,
-            UpdatedIDval: UpdatedID,
+            updatedID: UpdatedIDval,
             post_title: productname,
             post_name: productname,
             ProductTypeID: ProductTypeval,

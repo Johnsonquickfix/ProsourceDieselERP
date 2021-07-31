@@ -105,7 +105,7 @@ namespace LaylaERP.Controllers
 
         public JsonResult CreateProduct(ProductModel model)
         {
-            if (model.ID > 0)
+            if (model.ID > 0 || model.updatedID > 0)
             {
 
                 ProductRepository.EditProducts(model, model.ID);

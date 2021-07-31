@@ -305,10 +305,21 @@
                     else productsModel.is_free = false;
 
                     /// 
-                    if (productsModel.product_id == 611172) productsModel.group_id = 78676;
-                    else if (productsModel.product_id == 118) productsModel.group_id = 632713;
-                    else productsModel.group_id = 0;
-
+                    if (productsModel.product_id == 611172)
+                    {
+                        productsModel.group_id = 78676;
+                        productsModel.free_itmes = "{\"78676\":2}";
+                    }
+                    else if (productsModel.product_id == 118)
+                    {
+                        productsModel.group_id = 632713;
+                        productsModel.free_itmes = "{\"632713\":2}";
+                    }
+                    else
+                    {
+                        productsModel.group_id = 0;
+                        productsModel.free_itmes = string.Empty;
+                    }
                     _list.Add(productsModel);
                 }
             }
@@ -1063,7 +1074,7 @@
                 {
                     new MySqlParameter("@order_id", OrderID)
                 };
-                string strSQl = "select os.id order_id,DATE_FORMAT(os.post_date,'%d/%m/%Y') date_created,max(case meta_key when '_customer_user' then meta_value else '' end) customer_id,max(CONCAT(COALESCE(u.User_Login,''), ' (', COALESCE(u.user_email,''), ')')) as customer_name,os.post_status status,"
+                string strSQl = "select os.id order_id,DATE_FORMAT(os.post_date,'%m/%d/%Y') date_created,max(case meta_key when '_customer_user' then meta_value else '' end) customer_id,max(CONCAT(COALESCE(u.User_Login,''), ' (', COALESCE(u.user_email,''), ')')) as customer_name,os.post_status status,"
                             + " os.post_excerpt,0 shipping_total,max(case meta_key when '_payment_method_title' then meta_value else '' end) payment_method,"
                             + " max(case meta_key when '_customer_ip_address' then meta_value else '' end) ip_address,max(case meta_key when '_created_via' then meta_value else '' end) created_via,"
                             + " max(case meta_key when '_billing_first_name' then meta_value else '' end) b_first_name,max(case meta_key when '_billing_last_name' then meta_value else '' end) b_last_name,"
@@ -1235,7 +1246,7 @@
                         else
                             productsModel.total = 0;
                     }
-                    else if(productsModel.product_type == "refund_items")
+                    else if (productsModel.product_type == "refund_items")
                     {
                         productsModel.product_id = 0;
                         productsModel.variation_id = 0;
@@ -1247,7 +1258,7 @@
                         if (sdr["line_total"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["line_total"].ToString().Trim()))
                             productsModel.total = decimal.Parse(sdr["line_total"].ToString());
                         else
-                            productsModel.total = 0;                        
+                            productsModel.total = 0;
                         if (sdr["tax"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["tax"].ToString().Trim()))
                             productsModel.tax_amount = decimal.Parse(sdr["tax"].ToString().Trim());
                         else
@@ -1256,7 +1267,7 @@
                             productsModel.discount = decimal.Parse(sdr["discount_amount"].ToString().Trim());
                         else
                             productsModel.discount = 0;
-                        productsModel.discount = productsModel.discount <= productsModel.total ? productsModel.total - productsModel.discount : 0;                        
+                        productsModel.discount = productsModel.discount <= productsModel.total ? productsModel.total - productsModel.discount : 0;
                         if (sdr["shipping_amount"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["shipping_amount"].ToString().Trim()))
                             productsModel.shipping_amount = decimal.Parse(sdr["shipping_amount"].ToString().Trim());
                         else
@@ -1341,7 +1352,7 @@
                             + " WHERE p.post_type = 'shop_order' " + strWhr
                             + " order by " + SortCol + " " + SortDir + " limit " + (pageno).ToString() + ", " + pagesize + "";
 
-                strSql += "; SELECT Count(distinct p.id) TotalRecord from wp_wc_order_stats os inner join wp_posts p on p.id = os.order_id "
+                strSql += "; SELECT sum(1) TotalRecord from wp_wc_order_stats os inner join wp_posts p on p.id = os.order_id "
                         + " left join wp_postmeta pmf on os.order_id = pmf.post_id and pmf.meta_key = '_billing_first_name'"
                         + " left join wp_postmeta pml on os.order_id = pml.post_id and pml.meta_key = '_billing_last_name'"
                         + " left join wp_postmeta pmp on os.order_id = pmp.post_id and pmp.meta_key = '_billing_phone'"

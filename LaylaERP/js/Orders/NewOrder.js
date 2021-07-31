@@ -1,30 +1,30 @@
 ﻿var wc_users_params = [{ "name": "United States", "abbreviation": "US", "states": [{ "name": "Alabama", "abbreviation": "AL" }, { "name": "Alaska", "abbreviation": "AK" }, { "name": "American Samoa", "abbreviation": "AS" }, { "name": "Arizona", "abbreviation": "AZ" }, { "name": "Arkansas", "abbreviation": "AR" }, { "name": "California", "abbreviation": "CA" }, { "name": "Colorado", "abbreviation": "CO" }, { "name": "Connecticut", "abbreviation": "CT" }, { "name": "Delaware", "abbreviation": "DE" }, { "name": "District Of Columbia", "abbreviation": "DC" }, { "name": "Federated States Of Micronesia", "abbreviation": "FM" }, { "name": "Florida", "abbreviation": "FL" }, { "name": "Georgia", "abbreviation": "GA" }, { "name": "Guam", "abbreviation": "GU" }, { "name": "Hawaii", "abbreviation": "HI" }, { "name": "Idaho", "abbreviation": "ID" }, { "name": "Illinois", "abbreviation": "IL" }, { "name": "Indiana", "abbreviation": "IN" }, { "name": "Iowa", "abbreviation": "IA" }, { "name": "Kansas", "abbreviation": "KS" }, { "name": "Kentucky", "abbreviation": "KY" }, { "name": "Louisiana", "abbreviation": "LA" }, { "name": "Maine", "abbreviation": "ME" }, { "name": "Marshall Islands", "abbreviation": "MH" }, { "name": "Maryland", "abbreviation": "MD" }, { "name": "Massachusetts", "abbreviation": "MA" }, { "name": "Michigan", "abbreviation": "MI" }, { "name": "Minnesota", "abbreviation": "MN" }, { "name": "Mississippi", "abbreviation": "MS" }, { "name": "Missouri", "abbreviation": "MO" }, { "name": "Montana", "abbreviation": "MT" }, { "name": "Nebraska", "abbreviation": "NE" }, { "name": "Nevada", "abbreviation": "NV" }, { "name": "New Hampshire", "abbreviation": "NH" }, { "name": "New Jersey", "abbreviation": "NJ" }, { "name": "New Mexico", "abbreviation": "NM" }, { "name": "New York", "abbreviation": "NY" }, { "name": "North Carolina", "abbreviation": "NC" }, { "name": "North Dakota", "abbreviation": "ND" }, { "name": "Northern Mariana Islands", "abbreviation": "MP" }, { "name": "Ohio", "abbreviation": "OH" }, { "name": "Oklahoma", "abbreviation": "OK" }, { "name": "Oregon", "abbreviation": "OR" }, { "name": "Palau", "abbreviation": "PW" }, { "name": "Pennsylvania", "abbreviation": "PA" }, { "name": "Puerto Rico", "abbreviation": "PR" }, { "name": "Rhode Island", "abbreviation": "RI" }, { "name": "South Carolina", "abbreviation": "SC" }, { "name": "South Dakota", "abbreviation": "SD" }, { "name": "Tennessee", "abbreviation": "TN" }, { "name": "Texas", "abbreviation": "TX" }, { "name": "Utah", "abbreviation": "UT" }, { "name": "Vermont", "abbreviation": "VT" }, { "name": "Virgin Islands", "abbreviation": "VI" }, { "name": "Virginia", "abbreviation": "VA" }, { "name": "Washington", "abbreviation": "WA" }, { "name": "West Virginia", "abbreviation": "WV" }, { "name": "Wisconsin", "abbreviation": "WI" }, { "name": "Wyoming", "abbreviation": "WY" }] }, { "name": "Canada", "abbreviation": "CA", "states": [{ "name": "Alberta", "abbreviation": "AB" }, { "name": "British Columbia", "abbreviation": "BC" }, { "name": "Manitoba", "abbreviation": "MB" }, { "name": "New Brunswick", "abbreviation": "NB" }, { "name": "Newfoundland and Labrador", "abbreviation": "NL" }, { "name": "Northwest Territories", "abbreviation": "NT" }, { "name": "Nova Scotia", "abbreviation": "NS" }, { "name": "Nunavut", "abbreviation": "NU" }, { "name": "Ontario", "abbreviation": "ON" }, { "name": "Prince Edward Island", "abbreviation": "PE" }, { "name": "Quebec", "abbreviation": "QC" }, { "name": "Saskatchewan", "abbreviation": "SK" }, { "name": "Yukon Territory", "abbreviation": "YT" }] }]
 
-var auto_coupon = [{ post_title: "matt-found", title: "Mattress-Foundation", type: 'auto_coupon', discount_type: 'fixed_cart', coupon_amount: 10, product_ids: '20861,118', exclude_product_ids: '' },
-{ post_title: "matt-topper", title: "Mattress-Topper", type: 'auto_coupon', discount_type: 'fixed_cart', coupon_amount: 10, product_ids: '56774,118', exclude_product_ids: '' },
-{ post_title: "matt-bedframe", title: "Mattress-Bedframe", type: 'auto_coupon', discount_type: 'fixed_cart', coupon_amount: 10, product_ids: '56774,118', exclude_product_ids: '' },
-{ post_title: "matt-sheet", title: "Mattress-Sheet", type: 'auto_coupon', discount_type: 'fixed_cart', coupon_amount: 10, product_ids: '124524,118', exclude_product_ids: '' },
-{ post_title: "matt-blanket", title: "Mattress-Blanket", type: 'auto_coupon', discount_type: 'fixed_cart', coupon_amount: 10, product_ids: '128244,118', exclude_product_ids: '' },
-{ post_title: "matt-pillow", title: "Mattress-Pillow", type: 'auto_coupon', discount_type: 'fixed_cart', coupon_amount: 10, product_ids: '14023,118', exclude_product_ids: '' },
-{ post_title: "found-frame", title: "Bundle Discount", type: 'auto_coupon', discount_type: 'fixed_cart', coupon_amount: 25, product_ids: '31729,20861', exclude_product_ids: '' },
-{ post_title: "kapok-pillow", title: "Kapok Pillow", type: 'diff', discount_type: '2x_percent', coupon_amount: 50, product_ids: '14023,14023', exclude_product_ids: '' },
-{ post_title: '118', title: 'Memory Foam Mattress', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, product_ids: "118 ", exclude_product_ids: '' },
-{ post_title: '611172', title: 'Hybrid Mattress', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, product_ids: "611172 ", exclude_product_ids: '' },
-{ post_title: '14023', title: 'Kapok Pillow', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, product_ids: "14023 ", exclude_product_ids: '' },
-{ post_title: '611238', title: 'Memory Foam Pillow', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, product_ids: "611238 ", exclude_product_ids: '' },
-{ post_title: '20861', title: 'Mattress Foundation', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, product_ids: "20861 ", exclude_product_ids: '' },
-{ post_title: '31729', title: 'Bed Frame', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, product_ids: "31729 ", exclude_product_ids: '' },
-{ post_title: '611252', title: 'Platform Bed', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, product_ids: "611252 ", exclude_product_ids: '' },
-{ post_title: '611286', title: 'Adjustable Base', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, product_ids: "611286 ", exclude_product_ids: '' },
-{ post_title: '124524', title: 'Bamboo Sheets', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, product_ids: "124524 ", exclude_product_ids: '' },
-{ post_title: '128244', title: 'Weighted Blanket', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, product_ids: "128244 ", exclude_product_ids: '' },
-{ post_title: '56774', title: 'Memory Foam Topper', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, product_ids: "56774 ", exclude_product_ids: '' },
-{ post_title: '611268', title: 'Essential Mattress Protector', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, product_ids: "611268 ", exclude_product_ids: '' },
-{ post_title: '612955', title: 'Full Encasement Mattress Protector', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, product_ids: "612955 ", exclude_product_ids: '' },
-{ post_title: '612947', title: 'Cooling Mattress Protector', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, product_ids: "612947 ", exclude_product_ids: '' },
-{ post_title: '611220', title: 'Pet Bed', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, product_ids: "611220 ", exclude_product_ids: '' },
-{ post_title: '612995', title: 'Adjustable Base Plus', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, product_ids: "612995 ", exclude_product_ids: '' },
-{ post_title: '733500', title: 'Metal Platform Base', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, product_ids: "733500 ", exclude_product_ids: '' }
+var auto_coupon = [{ post_title: "matt-found", title: "Mattress-Foundation", type: 'auto_coupon', discount_type: 'fixed_cart', coupon_amount: 10, individual_use: 'no', product_ids: [20861, 118], exclude_product_ids: [] },
+{ post_title: "matt-topper", title: "Mattress-Topper", type: 'auto_coupon', discount_type: 'fixed_cart', coupon_amount: 10, individual_use: 'no', product_ids: [56774, 118], exclude_product_ids: [] },
+{ post_title: "matt-bedframe", title: "Mattress-Bedframe", type: 'auto_coupon', discount_type: 'fixed_cart', coupon_amount: 10, individual_use: 'no', product_ids: [56774, 118], exclude_product_ids: [] },
+{ post_title: "matt-sheet", title: "Mattress-Sheet", type: 'auto_coupon', discount_type: 'fixed_cart', coupon_amount: 10, individual_use: 'no', product_ids: [124524, 118], exclude_product_ids: [] },
+{ post_title: "matt-blanket", title: "Mattress-Blanket", type: 'auto_coupon', discount_type: 'fixed_cart', coupon_amount: 10, individual_use: 'no', product_ids: [128244, 118], exclude_product_ids: [] },
+{ post_title: "matt-pillow", title: "Mattress-Pillow", type: 'auto_coupon', discount_type: 'fixed_cart', coupon_amount: 10, individual_use: 'no', product_ids: [14023, 118], exclude_product_ids: [] },
+{ post_title: "found-frame", title: "Bundle Discount", type: 'auto_coupon', discount_type: 'fixed_cart', coupon_amount: 25, individual_use: 'no', product_ids: [31729, 20861], exclude_product_ids: [] },
+{ post_title: "kapok-pillow", title: "Kapok Pillow", type: 'diff', discount_type: '2x_percent', coupon_amount: 50, individual_use: 'no', product_ids: [14023, -1], exclude_product_ids: [] },
+{ post_title: '118', title: 'Memory Foam Mattress', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, individual_use: 'no', product_ids: [118, -1], exclude_product_ids: [] },
+{ post_title: '611172', title: 'Hybrid Mattress', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, individual_use: 'no', product_ids: [611172, -1], exclude_product_ids: [] },
+{ post_title: '14023', title: 'Kapok Pillow', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, individual_use: 'no', product_ids: [14023, -1], exclude_product_ids: [] },
+{ post_title: '611238', title: 'Memory Foam Pillow', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, individual_use: 'no', product_ids: [611238, -1], exclude_product_ids: [] },
+{ post_title: '20861', title: 'Mattress Foundation', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, individual_use: 'no', product_ids: [20861, -1], exclude_product_ids: [] },
+{ post_title: '31729', title: 'Bed Frame', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, individual_use: 'no', product_ids: [31729, -1], exclude_product_ids: [] },
+{ post_title: '611252', title: 'Platform Bed', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, individual_use: 'no', product_ids: [611252, -1], exclude_product_ids: [] },
+{ post_title: '611286', title: 'Adjustable Base', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, individual_use: 'no', product_ids: [611286, -1], exclude_product_ids: [] },
+{ post_title: '124524', title: 'Bamboo Sheets', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, individual_use: 'no', product_ids: [124524, -1], exclude_product_ids: [] },
+{ post_title: '128244', title: 'Weighted Blanket', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, individual_use: 'no', product_ids: [128244, -1], exclude_product_ids: [] },
+{ post_title: '56774', title: 'Memory Foam Topper', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, individual_use: 'no', product_ids: [56774, -1], exclude_product_ids: [] },
+{ post_title: '611268', title: 'Essential Mattress Protector', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, individual_use: 'no', product_ids: [611268, -1], exclude_product_ids: [] },
+{ post_title: '612955', title: 'Full Encasement Mattress Protector', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, individual_use: 'no', product_ids: [612955, -1], exclude_product_ids: [] },
+{ post_title: '612947', title: 'Cooling Mattress Protector', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, individual_use: 'no', product_ids: [612947, -1], exclude_product_ids: [] },
+{ post_title: '611220', title: 'Pet Bed', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, individual_use: 'no', product_ids: [611220, -1], exclude_product_ids: [] },
+{ post_title: '612995', title: 'Adjustable Base Plus', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, individual_use: 'no', product_ids: [612995, -1], exclude_product_ids: [] },
+{ post_title: '733500', title: 'Metal Platform Base', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, individual_use: 'no', product_ids: [733500, -1], exclude_product_ids: [] }
 ];
 var recycling_item = [118, 20861, 611172];
 
@@ -34,7 +34,7 @@ $(document).ready(function () {
     $("#txtbillphone").mask("(999) 999-9999");
     //getOrderInfo();
     setTimeout(function () { $("#loader").show(); getOrderInfo(); }, 20);
-    $('#txtLogDate').daterangepicker({ singleDatePicker: true, autoUpdateInput: true, locale: { format: 'DD/MM/YYYY', cancelLabel: 'Clear' } });
+    $('#txtLogDate').daterangepicker({ singleDatePicker: true, autoUpdateInput: true, locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' } });
     $(".select2").select2(); BindStateCounty("ddlbillstate", { id: 'US' }); BindStateCounty("ddlshipstate", { id: 'US' });
     $("#ddlUser").select2({
         allowClear: true, minimumInputLength: 3, placeholder: "Search Customer",
@@ -63,7 +63,7 @@ $(document).ready(function () {
     //$("#billModal").on("keypress", function (e) { if (e.which == 13 && e.target.type != "textarea") { $("#btnCouponAdd").click(); } });
     $("#billModal").on("click", "#btnCouponAdd", function (t) { t.preventDefault(); ApplyCoupon(); });
     $(document).on("blur", "#txtbillzipcode", function (t) { t.preventDefault(); GetCityByZip($(this).val(), $("#txtbillcity"), $("#ddlbillstate"), $("#ddlbillcountry")); });
-    $(document).on("blur", "#txtshipzipcode", function (t) { t.preventDefault(); GetCityByZip($(this).val(), $("#txtshipcity"), $("#ddlshipstate"), $("#ddlshipcountry")); });
+    $(document).on("blur", "#txtshipzipcode", function (t) { t.preventDefault(); $("#loader").show(); GetCityByZip($(this).val(), $("#txtshipcity"), $("#ddlshipstate"), $("#ddlshipcountry")); });
     $(document).on("click", "#btnCheckout", function (t) { t.preventDefault(); saveCO(); });
     $(document).on("click", "#btnpay", function (t) { t.preventDefault(); PaymentModal(); });
     $("#billModal").on("click", "#btnPlaceOrder", function (t) { t.preventDefault(); AcceptPayment(); });
@@ -190,8 +190,7 @@ function errorFun(XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide()
 
 ///Get New Order No
 function NewOrderNo() {
-    let oid = 0;
-    let postMetaxml = [];
+    let oid = 0, postMetaxml = [];
     postMetaxml.push(
         { post_id: oid, meta_key: '_order_key', meta_value: 'wc_order_' }, { post_id: oid, meta_key: '_customer_user', meta_value: 0 },
         { post_id: oid, meta_key: '_payment_method', meta_value: '' }, { post_id: oid, meta_key: '_payment_method_title', meta_value: '' },
@@ -219,7 +218,7 @@ function NewOrderNo() {
         { post_id: oid, meta_key: 'employee_id', meta_value: '0' }, { post_id: oid, meta_key: 'employee_name', meta_value: '' }
     );
     let option = { OrderPostMeta: postMetaxml };
-    ajaxFunc('/Orders/GetNewOrderNo', option, beforeSendFun, function (result) { $('#hfOrderNo').val(result.message); $('#lblOrderNo').text('Order #' + result.message + ' detail '); }, completeFun, errorFun);
+    //ajaxFunc('/Orders/GetNewOrderNo', option, beforeSendFun, function (result) { $('#hfOrderNo').val(result.message); $('#lblOrderNo').text('Order #' + result.message + ' detail '); }, completeFun, errorFun);
 }
 ///Find Address of Customer
 function CustomerAddress(id) {
@@ -263,22 +262,23 @@ function CustomerAddress(id) {
         $('#ddlshipcountry').val('US').trigger('change'); $('#hfTaxRate').val('0');
     }
 }
-///Get New Order No
 function GetTaxRate() {
     ///Tax Calculate for state
-    var tax_states = ["CA", "CO", "CT", "IL", "IN", "MI", "MS", "NC", "NE", "NJ", "NM", "PA", "TN", "TX", "WA", "AR", "FL", "GA", "IA", "MO", "OH", "SC", "WI"];
-    var s_state = $("#ddlshipstate").val();
+    let tax_states = ["CA", "CO", "CT", "IL", "IN", "MI", "MS", "NC", "NE", "NJ", "NM", "PA", "TN", "TX", "WA", "AR", "FL", "GA", "IA", "MO", "OH", "SC", "WI"];
+    let s_state = $("#ddlshipstate").val(), sub_total = parseFloat($("#ddlshipstate").val()) || 100, ship_total = parseFloat($("#shippingTotal").val()) || 0.00;
     if (tax_states.includes(s_state)) {
-        var opt = { strValue1: $("#txtshipzipcode").val(), strValue2: $("#txtshipcity").val(), strValue3: $("#ddlshipcountry").val() };
-        if (opt.strValue1.length <= 0 || opt.strValue2.length <= 0 || opt.strValue3.length <= 0) {
-            $('#hfTaxRate').val(0);
+        var opt = {
+            to_zip: $("#txtshipzipcode").val(), to_street: $("#txtshipaddress1").val(), to_city: $("#txtshipcity").val(), to_state: s_state, to_country: $("#ddlshipcountry").val(), amount: sub_total, shipping: ship_total
+        };
+        if (opt.to_zip.length <= 0 || opt.to_city.length <= 0 || opt.to_country.length <= 0) {
+            $('#hfTaxRate').val(0); $('#hfFreighttaxable').val(false);
         }
         else {
-            ajaxFunc('/Orders/GetTaxRate', opt, function () { }, function (result) { $('#hfTaxRate').val(result.message); }, function () { }, function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); });
+            ajaxFunc('/Orders/GetTaxAmounts', opt, function () { }, function (res) { console.log(res); $('#hfTaxRate').val(res.rate); $('#hfFreighttaxable').val(res.freight_taxable); }, function () { }, function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); });
         }
     }
     else {
-        $('#hfTaxRate').val(0.00);
+        $('#hfTaxRate').val(0.00); $('#hfFreighttaxable').val(false);
     }
     calculateDiscountAcount();
 }
@@ -299,18 +299,6 @@ function GetCityByZip(zipcode, ctrcity, ctrstate, ctrcountry) {
         complete: function () { $("#loader").hide(); },
         async: false
     });
-
-    //$.ajax({
-    //    url: "https://ziptasticapi.com/" + zipcode,
-    //    type: "GET",
-    //    dataType: 'JSON',
-    //    data: [],
-    //    success: function (data) {
-    //        $("#txtshipcity").val(data.city); $("#ddlshipcountry").val(data.country).trigger('change'); $("#ddlshipstate").val(data.state).trigger('change');
-    //        GetTaxRate();
-    //    },
-    //    error: function (msg) { alert(msg); }
-    //});
 }
 
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Search Popup on Add new Order ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -629,9 +617,9 @@ function setupAutocomplete(inputs) {
             $("#" + cCountry).val('US').trigger('change');
         obj = place.address_components.filter(element => element.types[0] == 'administrative_area_level_1');
         if (obj.length > 0)
-            $("#" + cState).empty().append('<option value="' + obj[0].short_name + '" selected>' + obj[0].long_name + '</option>');
+            $("#" + cState).val(obj[0].short_name).trigger('change');//.append('<option value="' + obj[0].short_name + '" selected>' + obj[0].long_name + '</option>');
         else
-            $("#" + cState).empty();
+            $("#" + cState).val('').trigger('change');;
     }
 }
 function initMap() {
@@ -1176,27 +1164,32 @@ function deleteAllCoupons(coupon_type) {
 function removeCouponInList(code) {
     deleteAllCoupons(code);
 }
+function freeQtyUpdate() {
+    $("#order_line_items > tr.free_item").each(function (index, row) {
+        let zQty = 0.00, pid = parseInt($(this).data("pid")) || 0;
+        $("#order_line_items  > tr.paid_item").each(function (pindex, prow) {
+            if ($(prow).data('freeitems')[pid] != undefined) {
+                zQty += parseFloat($(prow).find("[name=txt_ItemQty]").val()) * parseFloat($(prow).data('freeitems')[pid]);
+            }
+        });
+        $(row).find("[name=txt_ItemQty]").val(zQty.toFixed(0));
+    });
+}
 function calculateDiscountAcount() {
+    freeQtyUpdate();
     var tax_rate = parseFloat($('#hfTaxRate').val()) || 0.00; var zCartDisAmt = 0.00;
     //Without Coupon calculate
-    $("#order_line_items  > tr").each(function () {
+    $("#order_line_items > tr.paid_item").each(function () {
         let zQty = 0.00, zRegPrice = 0.00, zGrossAmount = 0.00;
         zQty = parseFloat($(this).find("[name=txt_ItemQty]").val()) || 0.00;
         zRegPrice = parseFloat($(this).find(".TotalAmount").data("regprice")) || 0.00;
         zGrossAmount = zRegPrice * zQty;
         $(this).find(".TotalAmount").data("amount", zGrossAmount.toFixed(2)); $(this).find(".TotalAmount").text(zGrossAmount.toFixed(2));
 
-        //free item Qty
-        var zFreeQty = 0.00, gid = parseInt($(this).data("gid")) || 0;
-        $("#order_line_items  > tr").each(function () {
-            if ($(this).data('gid') == gid && $(this).data('pid') != gid) { zFreeQty += parseFloat($(this).find("[name=txt_ItemQty]").val()) || 0.00; }
-        });
-        $('#txt_ItemQty_' + $(this).data("gid") + '_0').val(zFreeQty * 2);
-
         $(this).find(".RowDiscount").data("disctype", 'fixed'); $(this).find(".RowDiscount").data("couponamt", 0.00);
         $(this).find(".RowDiscount").text(0.00); $(this).find(".TotalAmount").data("discount", 0.00);
         //Taxation                     
-        zTotalTax = (((zGrossAmount - 0.00) * tax_rate) / 100);
+        zTotalTax = (zGrossAmount - 0.00) * tax_rate;
         $(this).find(".RowTax").text(zTotalTax.toFixed(2)); $(this).find(".TotalAmount").data("taxamount", zTotalTax.toFixed(2));
 
     });
@@ -1219,10 +1212,7 @@ function calculateDiscountAcount() {
             if ($(this).data('rqprdids') != "" && $(this).data('rqprdids') != null) {
                 rq_prd_ids = $(this).data('rqprdids').split(",").map((el) => parseInt(el));
             }
-
-            //var discounted_prc = parseFloat($('#totalQty').data('qty')) || 0.00;
-            //if (zDiscType == 'fixed_cart') { zCouponAmt = (zCouponAmt / discounted_prc); }
-            $("#order_line_items  > tr").each(function (index, row) {
+            $("#order_line_items  > tr.paid_item").each(function (index, row) {
                 //Discout Not Apply in free items
                 if (!$(this).data('freeitem')) {
                     var pid = $(row).data('pid'), vid = $(row).data('vid');
@@ -1250,9 +1240,8 @@ function calculateDiscountAcount() {
                         $(row).find(".RowDiscount").data("couponamt", zCouponAmt);
                         $(row).find(".RowDiscount").text(zDisAmt.toFixed(2));
                         //Taxation                     
-                        zTotalTax = (((zGrossAmount - zDisAmt) * tax_rate) / 100);
+                        zTotalTax = (zGrossAmount - zDisAmt) * tax_rate;
                         $(row).find(".RowTax").text(zTotalTax.toFixed(2)); $(row).find(".TotalAmount").data("taxamount", zTotalTax.toFixed(2));
-                        //console.log(cou,pid, vid, zDisAmt, $(row).find(".RowDiscount").text(), zTotalTax);
                     }
                 }
             });
@@ -1260,10 +1249,8 @@ function calculateDiscountAcount() {
 
         //update Coupon Amount
         $(this).find("#cou_discamt").text(cou_amt.toFixed(2))
-        if (zDiscType == '2x_percent' && cou_amt > 0)
-            $(this).removeClass('hidden');
-        else if (zDiscType == '2x_percent')
-            $(this).addClass('hidden');
+        if (zDiscType == '2x_percent' && cou_amt > 0) $(this).removeClass('hidden');
+        else if (zDiscType == '2x_percent') $(this).addClass('hidden');
     });
     $("#discountTotal").data('otherdisc', zCartDisAmt.toFixed(2));
     calcFinalTotals();
@@ -1297,15 +1284,15 @@ function getItemShippingCharge() {
     $("#loader").hide();
 }
 function calculateStateRecyclingFee() {
-    let ship_state = $("#ddlshipstate").val();
+    let ship_state = $("#ddlshipstate").val(), tax_rate = parseFloat($('#hfTaxRate').val()) || 0.00;
     let zStateRecyclingAmt = 0.00, matCount = 0;
     $("#order_line_items > tr").each(function () {
         if (recycling_item.includes($(this).data('pid'))) { matCount = matCount + (parseInt($(this).find("[name=txt_ItemQty]").val()) || 0.00); }
     });
 
     if (ship_state == "CA") { zStateRecyclingAmt = matCount * 10.5; }
-    else if (ship_state == "CT") { zStateRecyclingAmt = matCount * 11.75; }
-    else if (ship_state == "RI") { zStateRecyclingAmt = matCount * 16; }
+    else if (ship_state == "CT") { zStateRecyclingAmt = (matCount * 11.75) + (matCount * 11.75 * tax_rate); }
+    else if (ship_state == "RI") { zStateRecyclingAmt = (matCount * 16) + (matCount * 16 * tax_rate); }
     $("#stateRecyclingFeeTotal").text(zStateRecyclingAmt.toFixed(2));
     $('#order_state_recycling_fee_line_items').find(".TotalAmount").text(zStateRecyclingAmt.toFixed(2));
 }
@@ -1320,6 +1307,7 @@ function getItemList() {
         type: "POST", url: '/Orders/GetProductInfo', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
         beforeSend: function () { $("#loader").show(); },
         success: function (data) {
+            console.log(data);
             var itemsDetailsxml = [], auto_code = [];
             for (var i = 0; i < data.length; i++) {
                 let coupon_amt = 0.00, coupon_type = 'fixed_product', row_key = data[i].product_id + '_' + data[i].variation_id;
@@ -1335,7 +1323,7 @@ function getItemList() {
                     }
                 }
                 itemsDetailsxml.push({
-                    PKey: row_key, product_id: data[i].product_id, variation_id: data[i].variation_id, product_name: data[i].product_name, quantity: data[i].quantity, reg_price: data[i].reg_price, sale_rate: data[i].sale_price, total: (data[i].reg_price * data[i].quantity), discount_type: coupon_type, discount: coupon_amt, tax_amount: (((data[i].reg_price * data[i].quantity) * tax_rate) / 100).toFixed(2), shipping_amount: 0, is_free: data[i].is_free, group_id: data[i].group_id, order_item_id: 0
+                    PKey: row_key, product_id: data[i].product_id, variation_id: data[i].variation_id, product_name: data[i].product_name, quantity: data[i].quantity, reg_price: data[i].reg_price, sale_rate: data[i].sale_price, total: (data[i].reg_price * data[i].quantity), discount_type: coupon_type, discount: coupon_amt, tax_amount: ((data[i].reg_price * data[i].quantity) * tax_rate).toFixed(2), shipping_amount: 0, is_free: data[i].is_free, free_itmes: data[i].free_itmes, group_id: data[i].group_id, order_item_id: 0
                 });
 
             }
@@ -1358,7 +1346,7 @@ function bindItemListDataTable(data) {
         for (var i = 0; i < data.length; i++) {
             if (data[i].product_id > 0) {
                 if ($('#tritemId_' + data[i].PKey).length <= 0) {
-                    layoutHtml += '<tr id="tritemId_' + data[i].PKey + '" data-id="' + data[i].PKey + '" data-pid="' + data[i].product_id + '" data-vid="' + data[i].variation_id + '" data-pname="' + data[i].product_name + '" data-gid="' + data[i].group_id + '" data-freeitem="' + data[i].is_free + '" data-orderitemid="' + data[i].order_item_id + '">';
+                    layoutHtml += '<tr id="tritemId_' + data[i].PKey + '" data-id="' + data[i].PKey + '" class="' + (data[i].is_free ? 'free_item' : 'paid_item') + '" data-pid="' + data[i].product_id + '" data-vid="' + data[i].variation_id + '" data-pname="' + data[i].product_name + '" data-gid="' + data[i].group_id + '" data-freeitem="' + data[i].is_free + '" data-freeitems=\'' + data[i].free_itmes + '\' data-orderitemid="' + data[i].order_item_id + '">';
                     if (data[i].is_free)
                         layoutHtml += '<td class="text-center"></td>';
                     else
@@ -1382,10 +1370,6 @@ function bindItemListDataTable(data) {
             }
         }
         $('#order_line_items').append(layoutHtml);
-        //$("#txt_ItemSearch").val('');
-        //$('.number').numeric({ min: 2, allowMinus: false, allowThouSep: false, maxDecimalPlaces: 2 });
-        // Bind calcLineAmount function to each textbox and send parent TR
-        //$("#divAddItemFinal").find(".rowCalulate").blur(function () { calcRowAmount(this, $(this).parents('tr')[0]); });
         $("#divAddItemFinal").find(".rowCalulate").change(function () { calculateDiscountAcount(); });
     }
     else {
@@ -1461,19 +1445,21 @@ function calcRowAmount(objControl, objRow) // objRow is row object
 }
 function calcFinalTotals() {
     calculateStateRecyclingFee();
-    //TTotal
-    var zQty = 0.00, zDiscQty = 0.00, zGAmt = 0.00, zCartDisAmt = 0.00, zTDiscount = 0.00, zTotalTax = 0.00, zShippingAmt = 0.00, zStateRecyclingAmt = 0.00, zFeeAmt = 0.00;
-    $("#order_line_items > tr").each(function () {
-        zQty = zQty + (parseFloat($(this).find("[name=txt_ItemQty]").val()) || 0.00);
-        zGAmt = zGAmt + parseFloat($(this).find(".TotalAmount").data("amount"));
-        if (parseFloat($(this).find(".TotalAmount").data("amount")) > 0)
-            zDiscQty = zDiscQty + (parseFloat($(this).find("[name=txt_ItemQty]").val()) || 0.00);
-        zTDiscount = zTDiscount + parseFloat($(this).find(".TotalAmount").data("discount"));
-        zTotalTax = zTotalTax + parseFloat($(this).find(".TotalAmount").data("taxamount"));
-        zShippingAmt = zShippingAmt + parseFloat($(this).find(".TotalAmount").data("shippingamt"));
+    let tax_rate = parseFloat($('#hfTaxRate').val()) || 0.00, is_freighttax = $('#hfFreighttaxable').val();
+    let zQty = 0.00, zDiscQty = 0.00, zGAmt = 0.00, zCartDisAmt = 0.00, zTDiscount = 0.00, zTotalTax = 0.00, zShippingAmt = 0.00, zStateRecyclingAmt = 0.00, zFeeAmt = 0.00;
+    $("#order_line_items > tr").each(function (index, tr) {
+        zQty = zQty + (parseFloat($(tr).find("[name=txt_ItemQty]").val()) || 0.00);
+        zGAmt = zGAmt + parseFloat($(tr).find(".TotalAmount").data("amount"));
+        if (parseFloat($(tr).find(".TotalAmount").data("amount")) > 0)
+            zDiscQty = zDiscQty + (parseFloat($(tr).find("[name=txt_ItemQty]").val()) || 0.00);
+        zTDiscount = zTDiscount + parseFloat($(tr).find(".TotalAmount").data("discount"));
+        //zTotalTax = zTotalTax + parseFloat($(tr).find(".TotalAmount").data("taxamount"));
+        zShippingAmt = zShippingAmt + (parseFloat($(tr).find(".TotalAmount").data("shippingamt")) * zQty);
     });
+    if (is_freighttax) zTotalTax = zTotalTax + (zShippingAmt * tax_rate);
     zCartDisAmt = parseFloat($("#discountTotal").data('otherdisc')) | 0.00;
     zTDiscount = zTDiscount + zCartDisAmt;
+    zTotalTax = zTotalTax + ((zGAmt - zTDiscount) * tax_rate);
     zStateRecyclingAmt = parseFloat($("#stateRecyclingFeeTotal").text()) || 0.00;
     $("#totalQty").text(zQty.toFixed(0)); $("#totalQty").data('qty', zDiscQty.toFixed(0));
     $("#SubTotal").text(zGAmt.toFixed(2));
@@ -1909,7 +1895,7 @@ function CreatePaypalInvoice(oid, pp_email, access_token) {
 }
 function SendPaypalInvoice(access_token, sendURL) {
     $.ajax({
-        type: "POST", url: sendURL, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify({ send_to_invoicer: true, send_to_recipient : true }),
+        type: "POST", url: sendURL, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify({ send_to_invoicer: true, send_to_recipient: true }),
         beforeSend: function (xhr) {
             xhr.setRequestHeader("Accept", "application/json");
             xhr.setRequestHeader("Accept-Language", "en_US");

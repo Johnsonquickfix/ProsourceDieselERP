@@ -172,10 +172,20 @@
             decimal JSONresult = 0;
             try
             {
-                JSONresult = clsTaxJar.GetTaxCombinedRate(model.strValue1, model.strValue2, model.strValue3);
+                JSONresult = clsTaxJar.GetTaxCombinedRate(model.strValue1, model.strValue2, model.strValue3, model.strValue4, model.strValue5);
+            }
+            catch { JSONresult = 0; }
+            return Json(new { status = true, rate = JSONresult }, 0);
+        }
+        [HttpPost]
+        public JsonResult GetTaxAmounts(TaxJarModel model)
+        {
+            try
+            {
+                model = clsTaxJar.GetTaxes(model);
             }
             catch { }
-            return Json(new { status = true, message = JSONresult, url = "" }, 0);
+            return Json(model, 0);
         }
         [HttpPost]
         public JsonResult GetCouponAmount(SearchModel model)

@@ -307,7 +307,25 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@meta_key", varFieldsName),
                     new MySqlParameter("@meta_value", varFieldsValue),
                 };
-               SQLHelper.ExecuteNonQuery(strsql, para);
+                SQLHelper.ExecuteNonQuery(strsql, para);
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+        public static void AddProductsMetaVariation(long id, string varFieldsName, string varFieldsValue)
+        {
+            try
+            {
+                string strsql = "Insert into wp_postmeta(post_id,meta_key,meta_value) values(@post_id,@meta_key,@meta_value); select LAST_INSERT_ID() as ID;";
+                MySqlParameter[] para =
+                {
+                     new MySqlParameter("@post_id", id),
+                     new MySqlParameter("@meta_key", varFieldsName),
+                     new MySqlParameter("@meta_value", varFieldsValue),
+                 };
+                SQLHelper.ExecuteNonQuery(strsql, para);
             }
             catch (Exception Ex)
             {
@@ -324,10 +342,10 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@object_id", ID),
                     new MySqlParameter("@term_taxonomy_id", TermID),
                     new MySqlParameter("@term_order", "0")
-                    
+
                 };
-               int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
-               
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
+
             }
             catch (Exception Ex)
             {

@@ -383,7 +383,7 @@ $(document).ready(function () {
             $.ajax({
                 type: 'POST',
                 url: '/Product/saveAttributes',
-                data: "{'fields':'" + JSON.stringify(_list) + "', 'table': '" + _list + "', 'visible': '" + inputchkvisible + "', 'variation': '" + inputchkvariation + "'}",
+                data: "{'fields':'" + JSON.stringify(_list) + "','post_title': '" + $("#txtProductName").val() + "', 'table': '" + _list + "', 'visible': '" + inputchkvisible + "', 'variation': '" + inputchkvariation + "'}",
                 dataType: 'json',
                 headers: { "Content-Type": "application/json" },
                 success: function (data) {
@@ -541,7 +541,7 @@ function AddProduct() {
     if (productname == "") {
         swal('Alert', 'Please Enter Product', 'error').then(function () { swal.close(); $('#txtProductName').focus(); });
     }
-    else if (regularprice == "") {
+    else if (regularprice == "" && ProductTypeval != "4") {
         swal('Alert', 'Please Enter Regular price', 'error').then(function () { swal.close(); $('#txtregularprice').focus(); });
     }
     else {

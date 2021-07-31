@@ -45,7 +45,9 @@ namespace LaylaERP.Models
         public int updatedID { get; set; }
         public string product_attributes { get; set; }
         public string variation_description { get; set; }
+        public string post_type { get; set; }
         public int post_parent { get; set; }
+        public string comment_status { get; set; }
 
     }
 }

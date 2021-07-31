@@ -107,7 +107,7 @@ namespace LaylaERP.Controllers
         {
             if (model.ID > 0 || model.updatedID > 0)
             {
-
+                model.ID = model.updatedID;
                 ProductRepository.EditProducts(model, model.ID);
                 Update_MetaData(model, model.ID);
                 update_term(model, model.ID);
@@ -115,7 +115,9 @@ namespace LaylaERP.Controllers
             }
             else
             {
-                model.post_status = "product";
+                model.post_status = "publish";
+                model.post_type = "product";
+                model.comment_status = "open";
                 int ID = ProductRepository.AddProducts(model);
                 if (ID > 0)
                 {
@@ -179,6 +181,7 @@ namespace LaylaERP.Controllers
 
             for (var i = 0; i < myarray.Length; i++)
             {
+                if(myarray[i] != "")
                 ProductRepository.Add_term(Convert.ToInt32(myarray[i]), Convert.ToInt32(ID));
 
             }
@@ -249,7 +252,7 @@ namespace LaylaERP.Controllers
         }
 
  
-        public JsonResult saveAttributes(string fields, string table,string visible,string variation, ProductModel model)
+        public JsonResult saveAttributes(string fields,string post_title, string table,string visible,string variation, ProductModel model)
         {
          
            // Attributes model = new Attributes();            
@@ -285,9 +288,10 @@ namespace LaylaERP.Controllers
             {
                 model.post_status = "draft";
                 model.post_content = "";
-                model.post_title = "";
-                model.post_name = "";
-
+                model.post_title = post_title;
+                model.post_name = post_title;
+                model.post_type = "product";
+                model.comment_status = "open";
                 int ID = ProductRepository.AddProducts(model);
                 ViewBag.UpdatedID = ID;
                 if (ID > 0)
@@ -321,10 +325,14 @@ namespace LaylaERP.Controllers
             {
                 string[] elements = fields.Split(',');
 
-                model.post_status = "product";
+                model.post_status = "publish";
+                model.post_type = "product";
                 model.post_content = "";
                 model.post_title = post_title;
                 model.post_name = post_title;
+                model.post_type = "product_variation";
+                model.comment_status = "closed";
+                
                 if (!string.IsNullOrEmpty(parentid))
                     model.post_parent = Convert.ToInt32(parentid);
                 else
@@ -348,7 +356,7 @@ namespace LaylaERP.Controllers
                 string[] descriptionvariation = descriptionvariationval.Split(',');
                 string[] stockchecval = stockchec.Split(',');
                 string[] chkvirtu = chkvirtual.Split(',');
-                attributeheaderval = "Size,Color";
+               // attributeheaderval = "Size,Color";
                 string[] attributeheader = attributeheaderval.Split(',');
 
                 foreach (string Skulistval in skuval)
@@ -402,6 +410,7 @@ namespace LaylaERP.Controllers
                             {
                                 varFieldsValue = elements[z];
                                 ProductRepository.AddProductsMetaVariation(Convert.ToInt64(PostIDs[x]), varFieldsName, varFieldsValue);
+                                ProductRepository.UpdateProductsVariation(model.post_title + "-"+ varFieldsValue, attributeheader[y] + ": " +varFieldsValue, Convert.ToInt64(PostIDs[x]));
                             break;
                             }
                         

@@ -306,7 +306,7 @@ namespace LaylaERP.Controllers
             //return Json(model, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult Savevariations(string fields, string post_title, string parentid, string attributeheaderval , ProductModel model)
+        public JsonResult Savevariations(string fields, string post_title,string regularprice, string Salepricevariationval, string Stockquantityvariationval, string allowbackordersvariationval, string weightvariationval, string Lvariationval, string Wvariationval, string Hvariationval, string shipvariationval, string cassvariationval, string descriptionvariationval, string stockchec, string chkvirtual, string sku, string parentid, string attributeheaderval , ProductModel model)
         {                       
            
             if (model.ID > 0)
@@ -319,37 +319,218 @@ namespace LaylaERP.Controllers
             }
             else
             {
-                var elements = fields.Split(',');
+                string[] elements = fields.Split(',');
 
                 model.post_status = "product";
                 model.post_content = "";
                 model.post_title = post_title;
                 model.post_name = post_title;
-              //  model.post_parent = Convert.ToInt32(parentid);
+                if (!string.IsNullOrEmpty(parentid))
+                    model.post_parent = Convert.ToInt32(parentid);
+                else
+                    model.post_parent = 0;
+                string value = "";
+                string[] skuval = sku.Split(',');
 
+                string[] regularpriceval = regularprice.Split(',');
+                string[] Salepricl = Salepricevariationval.Split(',');
 
-                string[] val = fields.Split(',');
-                foreach (string namelistval in val)
+                string[] weightvariation = weightvariationval.Split(',');
+                string[] Lvariation = Lvariationval.Split(',');
+                string[] Wvariation = Wvariationval.Split(',');
+                string[] Hvariation = Hvariationval.Split(',');
+
+                string[] Stockquantityvariation = Stockquantityvariationval.Split(',');
+                string[] allowbackordersvariation = allowbackordersvariationval.Split(',');
+                string[] shipvariation = shipvariationval.Split(',');
+                string[] cassvariation = cassvariationval.Split(',');
+
+                string[] descriptionvariation = descriptionvariationval.Split(',');
+                string[] stockchecval = stockchec.Split(',');
+                string[] chkvirtu = chkvirtual.Split(',');
+                attributeheaderval = "Size,Color";
+                string[] attributeheader = attributeheaderval.Split(',');
+
+                foreach (string Skulistval in skuval)
                 {
+                    int ID = ProductRepository.AddProducts(model);
+                    if (ID > 0)
+                    {
+                        value += ID + ",";
 
-                    //value += quote + namelistval + quote + ",";
+                    }
+                    else
+                    {
+                        value = "";
+                    }
+                }
+                string pricevalereg = "";
+                 string PostID = value.TrimEnd(',');  
+
+               // string PostID = "1,2,3";
+                string[] PostIDs = PostID.Split(','); 
+
+                string varFieldsName = string.Empty;
+                string varFieldsValue = string.Empty;
+                for (int x = 0; x < PostIDs.Length; x++)
+                {
+                    for (int y = 0; y < attributeheader.Length; y++)
+                    {
+                        varFieldsName = "attribute_"+ attributeheader[y];
+                        int r = 0;
+                        if (x > 0)
+                        {
+                            if (x == 2)
+                            {
+                                if (y > 0)
+                                    r = x + 3;
+                                else
+                                    r = x + 2;
+                            }
+                            else
+                            {
+                                if (y > 0)
+                                    r = x + 2;
+                                else
+                                    r = x + 1;
+                            }
+                        }                      
+                        else
+                            r = y;
+
+                            for (int z = r; z < elements.Length; z++)
+                            {
+                                varFieldsValue = elements[z];
+                                ProductRepository.AddProductsMetaVariation(Convert.ToInt64(PostIDs[x]), varFieldsName, varFieldsValue);
+                            break;
+                            }
+                        
+                    }
                 }
 
-                //int ID = ProductRepository.AddProducts(model);               
-                //if (ID > 0)
-                //{
-                //    Addvariations_MetaData(model, ID);
-                //    Add_term(model, ID);
-                //    ModelState.Clear();
-                //    return Json(new { status = true, message = "Product Attributes has been saved successfully!!", ID = ID }, 0);
-                //}
+                for (int x = 0; x < PostIDs.Length; x++)
+                {
+                    for (int y = x; y < regularpriceval.Length; y++)
+                    {
+
+                        varFieldsName = "_regular_price";
+                        varFieldsValue = regularpriceval[y];
+                        ProductRepository.AddProductsMetaVariation(Convert.ToInt64(PostIDs[x]), varFieldsName, varFieldsValue);
+                        ProductRepository.AddProductsMetaVariation(Convert.ToInt64(PostIDs[x]), "total_sales", "0");
+                        ProductRepository.AddProductsMetaVariation(Convert.ToInt64(PostIDs[x]), "_download_expiry", "-1");
+                        break;
+                    }
+                    for (int z = x; z < Salepricl.Length; z++)
+                    {
+                        varFieldsName = "_sale_price";
+                        varFieldsValue = Salepricl[z];
+                        ProductRepository.AddProductsMetaVariation(Convert.ToInt64(PostIDs[x]), varFieldsName, varFieldsValue);
+                        ProductRepository.AddProductsMetaVariation(Convert.ToInt64(PostIDs[x]), "_price", varFieldsValue);
+                        ProductRepository.AddProductsMetaVariation(Convert.ToInt64(PostIDs[x]), "_download_limit", "no");
+                        break;
+                    }
+                    for (int w = x; w < skuval.Length; w++)
+                    {
+                        varFieldsName = "_sku";
+                        varFieldsValue = skuval[w];
+                        ProductRepository.AddProductsMetaVariation(Convert.ToInt64(PostIDs[x]), varFieldsName, varFieldsValue);
+                        //ProductRepository.AddProductsMetaVariation(Convert.ToInt64(PostIDs[x]), varFieldsName, varFieldsValue);
+                        ProductRepository.AddProductsMetaVariation(Convert.ToInt64(PostIDs[x]), "_downloadable", "no");
+                        break;
+                    }
+                }
+
+                for (int x = 0; x < PostIDs.Length; x++)
+                {
+                    for (int y = x; y < weightvariation.Length; y++)
+                    {
+
+                        varFieldsName = "_weight";
+                        varFieldsValue = weightvariation[y];
+                        ProductRepository.AddProductsMetaVariation(Convert.ToInt64(PostIDs[x]), varFieldsName, varFieldsValue);
+                        ProductRepository.AddProductsMetaVariation(Convert.ToInt64(PostIDs[x]), "_sold_individually", "no");
+                        break;
+                    }
+                    for (int z = x; z < Lvariation.Length; z++)
+                    {
+                        varFieldsName = "_length";
+                        varFieldsValue = Lvariation[z];
+                        ProductRepository.AddProductsMetaVariation(Convert.ToInt64(PostIDs[x]), varFieldsName, varFieldsValue);
+                        ProductRepository.AddProductsMetaVariation(Convert.ToInt64(PostIDs[x]), "_tax_status", "taxable");
+                        break;
+                    }
+                    for (int w = x; w < Wvariation.Length; w++)
+                    {
+                        varFieldsName = "_width";
+                        varFieldsValue = Wvariation[w];
+                        ProductRepository.AddProductsMetaVariation(Convert.ToInt64(PostIDs[x]), varFieldsName, varFieldsValue);
+                        ProductRepository.AddProductsMetaVariation(Convert.ToInt64(PostIDs[x]), "_wc_review_count", "0");
+                        break;
+                    }
+                    for (int u = x; u < Hvariation.Length; u++)
+                    {
+                        varFieldsName = "_height";
+                        varFieldsValue = Hvariation[u];
+                        ProductRepository.AddProductsMetaVariation(Convert.ToInt64(PostIDs[x]), varFieldsName, varFieldsValue);
+                        ProductRepository.AddProductsMetaVariation(Convert.ToInt64(PostIDs[x]), "_wc_average_rating", "0");
+                        ProductRepository.AddProductsMetaVariation(Convert.ToInt64(PostIDs[x]), "_stock_status", "instock");
+                        break;
+                    }
+                    
+                }
+
+                for (int x = 0; x < PostIDs.Length; x++)
+                {
+                   
+                    for (int y = x; y < cassvariation.Length; y++)
+                    {
+
+                        varFieldsName = "_tax_class";
+                        varFieldsValue = cassvariation[y];
+                        ProductRepository.AddProductsMetaVariation(Convert.ToInt64(PostIDs[x]), varFieldsName, varFieldsValue);
+                        break;
+                    }
+                    for (int z = x; z < allowbackordersvariation.Length; z++)
+                    {
+                        varFieldsName = "_backorders";
+                        varFieldsValue = allowbackordersvariation[z];
+                        ProductRepository.AddProductsMetaVariation(Convert.ToInt64(PostIDs[x]), varFieldsName, varFieldsValue);
+                   
+                        break;
+                    }
+                    for (int w = x; w < Stockquantityvariation.Length; w++)
+                    {
+                        varFieldsName = "_stock";
+                        varFieldsValue = Stockquantityvariation[w];
+                        ProductRepository.AddProductsMetaVariation(Convert.ToInt64(PostIDs[x]), varFieldsName, varFieldsValue);
+                  
+                        break;
+                    }
+                    for (int v = x; v < descriptionvariation.Length; v++)
+                    {
+                        varFieldsName = "_variation_description";
+                        varFieldsValue = descriptionvariation[v];
+                        ProductRepository.AddProductsMetaVariation(Convert.ToInt64(PostIDs[x]), varFieldsName, varFieldsValue);
+
+                        break;
+                    }
+
+                    for (int u = x; u < shipvariation.Length; u++)
+                    {
+                        ProductRepository.Add_term(Convert.ToInt32(shipvariation[u]), Convert.ToInt32(PostIDs[x]));
+                        break;
+                    }
+
+                   
+                }
+            }
+                return Json(new { status = true, message = "Product Variations has been saved successfully!!", ID = 1 }, 0);
+         
                 //else
                 //{
-                //    return Json(new { status = false, message = "Invalid Details", id = ID }, 0);
+                //    return Json(new { status = false, message = "Invalid Details", id = ID}, 0);
                 //}
-            }
-
-            return Json(model, JsonRequestBehavior.AllowGet);
+ 
         }
     }
 }

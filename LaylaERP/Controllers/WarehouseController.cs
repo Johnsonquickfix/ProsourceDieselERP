@@ -30,12 +30,13 @@ namespace LaylaERP.Controllers
             return View();
         }
 
-        public JsonResult GetWarehouse()
+        public JsonResult GetWarehouse(SearchModel model)
         {
+            
             string JSONresult = string.Empty;
             try
             {
-                DataTable dt = WarehouseRepository.GetWarehouseDetail();
+                DataTable dt = WarehouseRepository.GetWarehouseDetail(model);
                 JSONresult = JsonConvert.SerializeObject(dt);
             }
             catch { }

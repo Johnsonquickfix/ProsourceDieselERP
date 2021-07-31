@@ -33,6 +33,7 @@ namespace LaylaERP.Models
         public int fk_incoterms { get; set; }
         public int IncotermsTypeID { get; set; }
         public int VendorTypeID { get; set; }
+        public string location_incoterms { get; set; }
 
     }
 }

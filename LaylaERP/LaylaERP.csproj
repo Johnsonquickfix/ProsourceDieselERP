@@ -580,6 +580,7 @@
     <Content Include="Images\validatebox_warning.png" />
     <Content Include="Images\varient_pic.png" />
     <Content Include="js\app.js" />
+    <Content Include="js\CommercialPorposal\CommercialProposalList.js" />
     <Content Include="js\CommercialPorposal\NewPorposal.js" />
     <Content Include="js\common.js" />
     <Content Include="js\Customer\Customer.js" />
@@ -803,7 +804,6 @@
     <Content Include="Views\SaleOrder\SaleOrder.cshtml" />
     <Content Include="Views\SaleOrder\ListSaleOrder.cshtml" />
     <Content Include="Views\PurchaseOrder\PurchaseOrderList.cshtml" />
-    <Content Include="Views\PurchaseOrder\PurchaseOrderDetails.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

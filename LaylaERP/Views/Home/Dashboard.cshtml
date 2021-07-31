@@ -452,6 +452,21 @@
 </script>
 
 <script>
-    const d = new Date();
-    document.getElementById("currentdatetime").innerHTML = d.toUTCString();
+
+    //var myDate = new Date();
+    //var pstDate = myDate.toLocaleString("en-US", { timeZone: "America/Los_Angeles" });
+    setInterval(function () {
+    let d = new Date();
+    let options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
+    let localTime = d.getTime();
+    let localOffset = d.getTimezoneOffset() * 60000;
+    let utc = localTime + localOffset;
+    let target_offset = -7;//PST from UTC 7 hours behind right now, will need to fix for daylight
+    let los_angles = utc + (3600000 * target_offset);
+    nd = new Date(los_angles);
+    let current_day = nd.getDay();
+    let hours = nd.getHours();
+    let mins = nd.getMinutes();
+    document.getElementById("currentdatetime").innerHTML = nd.toLocaleString('en-US', options);
+    }, 1000);
 </script>

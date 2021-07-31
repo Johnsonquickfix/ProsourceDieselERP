@@ -23,6 +23,7 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        //GetVendorByID
         public JsonResult GetVendorByID(CommercialProposalModel model)
         {
             int id = model.VendorTypeID;
@@ -35,6 +36,7 @@ namespace LaylaERP.Controllers
             catch (Exception ex) { throw ex; }
             return Json(result, 0);
         }
+
         //interconterm
         public JsonResult GetIncotermByID(CommercialProposalModel model)
         {
@@ -129,6 +131,7 @@ namespace LaylaERP.Controllers
         [HttpPost]
         public JsonResult AddProposal(CommercialProposalModel model)
         {
+            
             int ID = CommercialProposalRepositiory.AddProposal(model);
             if (ID > 0)
             {
@@ -139,6 +142,30 @@ namespace LaylaERP.Controllers
                 return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
             }
 
+        }
+
+        public JsonResult GetCommerceCode(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable DT = CommercialProposalRepositiory.GetCommerceCode();
+                JSONresult = JsonConvert.SerializeObject(DT);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+
+        public JsonResult GetCommercialProposal(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable DT = CommercialProposalRepositiory.GetCommerceProposal();
+                JSONresult = JsonConvert.SerializeObject(DT);
+            }
+            catch { }
+            return Json(JSONresult, 0);
         }
     }
 }

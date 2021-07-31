@@ -15,30 +15,42 @@
 <div class="page-title">
     <h2 class="page-heading">Warehouse</h2><a class="btn btn-danger" href="AddNewWarehouse">Add Warehouse</a>
 </div>
-<div class="userrole_section section_wrapper appearance-menu-section">
-    @*<form id="saveForm" name="saveForm" method="post" autocomplete="off">*@ 
-    <div class="box box-primary">
-        <div class="box-header">
-            <table id="dtdata" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Ref</th>
-                        <th>Description</th>
-                        <th>Short Name Location</th>
-                        <th>Address</th>
-                        <th>Phone</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-            </table>
+<section class="content section-content table-design customer-section">
+    <div class="user-top-section">
+        <div class="tablenav top tablenav-top2">
+            <div class="alignleft actions bulkactions">
+                <select class="form-control select2" id="ddlSearchStatus" placeholder="Select User">
+                    <option value="1">Open</option>
+                    <option value="0">Close</option>
+                </select>
+                <button type="button" id="btnSearch" class="btn btn-primary btn-flat button">Search</button>
+            </div>
         </div>
-    </div>
-    @*</form>*@
-</div>
+        </div>
+        <div class="userrole_section section_wrapper appearance-menu-section">
+            @*<form id="saveForm" name="saveForm" method="post" autocomplete="off">*@
+            <div class="box box-primary">
+                <div class="box-header">
+                    <table id="dtdata" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Ref</th>
+                                <th>Description</th>
+                                <th>Short Name Location</th>
+                                <th>Address</th>
+                                <th>Phone</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+            @*</form>*@
+        </div>
+    </section>
 
-
-<script src="@Url.Content("~/js/Warehouse/warehouselist.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+        <script src="@Url.Content("~/js/Warehouse/warehouselist.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 
 

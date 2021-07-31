@@ -11,12 +11,19 @@ namespace LaylaERP.BAL
 {
     public class WarehouseRepository
     {
-        public static DataTable GetWarehouseDetail()
+        public static DataTable GetWarehouseDetail(SearchModel model)
         {
+            string strwhr = " where statut= '"+model.strValue1+"'";
             DataTable dtr = new DataTable();
             try
             {
-                string strquery = "SELECT rowid, ref,entity,description,lieu,concat(address,' ',town,' ',country,' ',zip)as address,phone,fax,if(statut=0,'Close','Open')as status FROM wp_warehouse order by rowid desc";
+                
+                string strquery = "SELECT rowid, ref,entity,description,lieu,concat(address,' ',town,' ',country,' ',zip)as address,phone,fax,if(statut=0,'Close','Open')as status FROM wp_warehouse";
+                if(!string.IsNullOrEmpty(model.strValue1))
+                {
+                    strquery += strwhr;
+                }
+               
                 dtr = SQLHelper.ExecuteDataTable(strquery);
             }
             catch (Exception ex)
@@ -187,6 +194,7 @@ namespace LaylaERP.BAL
 
         public static DataTable GetStockMouvment()
         {
+            
             DataTable dtr = new DataTable();
             try
             {

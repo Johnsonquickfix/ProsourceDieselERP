@@ -1,13 +1,14 @@
 ﻿
 WarehouseGrid();
-    function WarehouseGrid() {
-
+function WarehouseGrid() {
+    var obj = { strValue1: $("#ddlSearchStatus").val() }
         $.ajax({
             url: '/Warehouse/GetWarehouse',
             method: 'post',
             datatype: 'json',
             contentType: "application/json; charset=utf-8",
             processing: true,
+            data: JSON.stringify(obj),
             success: function (data) {
                 $('#dtdata').dataTable({
                     destroy: true,
@@ -45,3 +46,6 @@ WarehouseGrid();
         window.location.href = 'UpdateWarehouse?rowid=' + rowid;
     }
 
+$('#btnSearch').click(function () {
+    WarehouseGrid();
+})

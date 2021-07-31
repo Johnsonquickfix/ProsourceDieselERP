@@ -17,7 +17,7 @@ namespace LaylaERP.BAL
             DataSet DS = new DataSet();
             try
             {
-                DS = SQLHelper.ExecuteDataSet("Select rowid, nom from wp_vendor order by rowid limit 50;");
+                DS = SQLHelper.ExecuteDataSet("Select rowid, nom from wp_vendor where status='1' order by rowid limit 50;");
             }
             catch (Exception ex)
             { throw ex; }
@@ -116,8 +116,8 @@ namespace LaylaERP.BAL
             try
             {
                 string strsql = "insert into commerce_proposal" +
-                    "(ref,entity,fk_vendor,datec,datep,fin_validite,fk_user_author,fk_statut,payment_term,balance,payment_type,fk_availability,fk_shipping_method,fk_incoterms,model_pdf,note_public,note_private,date_delivery)" +
-                    " values(@ref,1,@fk_vendor,@datec,@datep,@fin_validite,1,0,@payment_term,@balance,@payment_type,@fk_availability,@fk_shipping_method,@fk_incoterms,@model_pdf,@note_public,@note_private,@date_delivery);SELECT LAST_INSERT_ID();";
+                    "(ref,entity,fk_vendor,datec,datep,fin_validite,fk_user_author,fk_statut,payment_term,balance,payment_type,fk_availability,fk_shipping_method,fk_incoterms,model_pdf,note_public,note_private,date_delivery,location_incoterms)" +
+                    " values(@ref,1,@fk_vendor,@datec,@datep,@fin_validite,1,1,@payment_term,@balance,@payment_type,@fk_availability,@fk_shipping_method,@fk_incoterms,@model_pdf,@note_public,@note_private,@date_delivery,@location_incoterms);SELECT LAST_INSERT_ID();";
                 
                 MySqlParameter[] para =
                 {
@@ -138,6 +138,7 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@note_public", model.note_public),
                     new MySqlParameter("@note_private", model.note_private),
                     new MySqlParameter("@date_delivery", model.date_delivery),
+                    new MySqlParameter("@location_incoterms", model.location_incoterms),
 
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
@@ -147,6 +148,31 @@ namespace LaylaERP.BAL
             {
                 throw Ex;
             }
+        }
+
+        public static DataTable GetCommerceCode()
+        {
+            DataTable DT = new DataTable();
+            try
+            {
+                DT = SQLHelper.ExecuteDataTable("SELECT CONCAT('PROV', DATE_FORMAT(CURDATE(),'%y%m'),'-',max(LPAD(rowid+1 ,5,0)))  as Code from commerce_proposal;");
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DT;
+        }
+
+        public static DataTable GetCommerceProposal()
+        {
+            DataTable DT = new DataTable();
+            try
+            {
+                string SqlQuery = "Select cp.rowid id, cp.ref, v.nom vendorname, v.name_alias namealias ,v.town city, v.zip,LEFT(CAST(cp.datep as DATE),10) proposaldate,LEFT(CAST(cp.fin_validite as DATE),10) enddate, s.Status status from commerce_proposal cp inner join wp_vendor v on cp.fk_vendor = v.rowid inner join wp_StatusMaster s on cp.fk_statut = s.ID where 1=1";
+                DT = SQLHelper.ExecuteDataTable(SqlQuery);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DT;
         }
     }
 }

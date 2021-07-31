@@ -253,7 +253,7 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "Insert into wp_posts(post_date,post_date_gmt,post_content,post_excerpt,post_title,post_name,post_status,post_type,to_ping, pinged,post_content_filtered,post_mime_type,post_parent) values(@post_date,@post_date_gmt,@post_content,@post_excerpt,@post_title,@post_name,@post_status,@post_status,@to_ping, @pinged,@post_content_filtered,@post_mime_type,@post_parent);SELECT LAST_INSERT_ID();";
+                string strsql = "Insert into wp_posts(post_date,post_date_gmt,post_content,post_excerpt,post_title,post_name,post_status,post_type,to_ping, pinged,post_content_filtered,post_mime_type,post_parent,ping_status,comment_status) values(@post_date,@post_date_gmt,@post_content,@post_excerpt,@post_title,@post_name,@post_status,@post_type,@to_ping, @pinged,@post_content_filtered,@post_mime_type,@post_parent,'closed',@comment_status);SELECT LAST_INSERT_ID();";
                 MySqlParameter[] para =
                 {
                     new MySqlParameter("@post_date", DateTime.Now),
@@ -262,12 +262,14 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@post_excerpt", string.Empty),
                     new MySqlParameter("@post_title", model.post_title),
                     new MySqlParameter("@post_status", model.post_status),
+                    new MySqlParameter("@post_type", model.post_type),
                     new MySqlParameter("@post_name", model.post_name),
                     new MySqlParameter("@to_ping", string.Empty),
                     new MySqlParameter("@pinged", string.Empty),
                     new MySqlParameter("@post_content_filtered", string.Empty),
                     new MySqlParameter("@post_mime_type", string.Empty),
                     new MySqlParameter("@post_parent", model.post_parent),
+                    new MySqlParameter("@comment_status", model.comment_status),
                 };
               int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
                 return result;
@@ -281,7 +283,7 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "update wp_posts set post_title=@post_title,post_name=@post_name, post_content=@post_content  where ID =" + ID + "";
+                string strsql = "update wp_posts set post_title=@post_title,post_name=@post_name, post_content=@post_content,post_type='publish'  where ID =" + ID + "";
                 MySqlParameter[] para =
                 {
                     new MySqlParameter("@post_content", model.post_content),
@@ -296,6 +298,25 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
+
+        public static int UpdateProductsVariation(string post_title,string post_excerpt, long ID)
+        {
+            try
+            {
+                string strsql = "update wp_posts set post_title='"+ post_title + "',post_excerpt='"+ post_excerpt + "'  where ID =" + ID + "";
+                MySqlParameter[] para =
+                {
+                   
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
         public static void AddProductsMeta(ProductModel model, long id, string varFieldsName, string varFieldsValue)
         {
             try
@@ -307,7 +328,25 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@meta_key", varFieldsName),
                     new MySqlParameter("@meta_value", varFieldsValue),
                 };
-               SQLHelper.ExecuteNonQuery(strsql, para);
+                SQLHelper.ExecuteNonQuery(strsql, para);
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+        public static void AddProductsMetaVariation(long id, string varFieldsName, string varFieldsValue)
+        {
+            try
+            {
+                string strsql = "Insert into wp_postmeta(post_id,meta_key,meta_value) values(@post_id,@meta_key,@meta_value); select LAST_INSERT_ID() as ID;";
+                MySqlParameter[] para =
+                {
+                     new MySqlParameter("@post_id", id),
+                     new MySqlParameter("@meta_key", varFieldsName),
+                     new MySqlParameter("@meta_value", varFieldsValue),
+                 };
+                SQLHelper.ExecuteNonQuery(strsql, para);
             }
             catch (Exception Ex)
             {
@@ -324,10 +363,10 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@object_id", ID),
                     new MySqlParameter("@term_taxonomy_id", TermID),
                     new MySqlParameter("@term_order", "0")
-                    
+
                 };
-               int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
-               
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
+
             }
             catch (Exception Ex)
             {

@@ -93,7 +93,7 @@
                         op.LoginMacAddress = string.Empty;
                         CommanUtilities.Provider.AddCurrent(op);
 
-                        string loginDesc = op.UserName + " Login on " + DateTime.Now.ToString("dddd, dd MMMM yyyy hh:mm tt") + ", " + Net.BrowserInfo;
+                        string loginDesc = op.UserName + " Login on " + DateTime.UtcNow.ToString("dddd, dd MMMM yyyy hh:mm tt") + ", " + Net.BrowserInfo;
                         UserActivityLog.WriteDbLog(LogType.Login, "Login", loginDesc);
 
                         return Json(new { status = true, message = "Login sucess", url = op.GetUrl }, 0);

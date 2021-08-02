@@ -17,36 +17,35 @@ namespace LaylaERP.BAL
             try
             {
                 string strsql = "";
-                strsql = "insert into wp_vendor(nom,name_alias,client,fournisseur,code_fournisseur,status,address,address1,zip,town," +
-                   "fk_pays,fk_departement,StateName,phone,fax,email,url,siren,tva_assuj,fk_typent,fk_effectif,fk_forme_juridique,capital,fk_incoterms,location_incoterms,SalesRepresentative," +
-                   "PaymentTermsID,BalanceID,PaymentDate,Currency ,EnableVendorUOM ,UnitsofMeasurment,MinimumOrderQuanity,DefaultTax,TaxIncludedinPrice,DefaultDiscount,CreditLimit,VendorStatus) " +
-                   "values(@nom, @name_alias, @client, @fournisseur, @code_fournisseur, @status, @address,@address1, @zip, @town, @fk_pays, @fk_departement,@StateName, @phone, " +
-                   "@fax, @email, @url, @siren, @tva_assuj, @fk_typent, @fk_effectif, @fk_forme_juridique, @capital,@fk_incoterms, @location_incoterms,@SalesRepresentative," +
+                strsql = "insert into wp_vendor(name,name_alias,client,fournisseur,code_vendor,status,address,address1,zip,town," +
+                   "fk_country,fk_state,StateName,phone,fax,email,url,salestaxused,fk_typparty,fk_workforce,fk_Business_Entity,capital,fk_incoterms,location_incoterms,SalesRepresentative," +
+                   "PaymentTermsID,BalanceID,PaymentDate,Currency,EnableVendorUOM,UnitsofMeasurment,MinimumOrderQuanity,DefaultTax,TaxIncludedinPrice,DefaultDiscount,CreditLimit,VendorStatus) " +
+                   "values(@name, @name_alias, @client, @fournisseur, @code_vendor, @status, @address,@address1, @zip, @town, @fk_country, @fk_state,@StateName, @phone, " +
+                   "@fax, @email, @url, @salestaxused, @fk_typparty, @fk_workforce, @fk_Business_Entity, @capital,@fk_incoterms, @location_incoterms,@SalesRepresentative," +
                    "@PaymentTermsID,@BalanceID,@PaymentDate,@Currency ,@EnableVendorUOM ,@UnitsofMeasurment,@MinimumOrderQuanity,@DefaultTax,@TaxIncludedinPrice,@DefaultDiscount,@CreditLimit,@VendorStatus); SELECT LAST_INSERT_ID();";
                 MySqlParameter[] para =
                 {
-                    new MySqlParameter("@nom", model.Name),
+                    new MySqlParameter("@name", model.Name),
                     new MySqlParameter("@name_alias", model.AliasName),
                     new MySqlParameter("@client", model.Prospect),
                     new MySqlParameter("@fournisseur","1"),
-                    new MySqlParameter("@code_fournisseur", model.VendorCode),
+                    new MySqlParameter("@code_vendor", model.VendorCode),
                     new MySqlParameter("@status", model.Status),
                     new MySqlParameter("@address", model.Address),
                     new MySqlParameter("@address1", model.Address1),
                     new MySqlParameter("@zip", model.ZipCode),
                     new MySqlParameter("@town", model.City),
-                    new MySqlParameter("@fk_pays", model.Country),
-                    new MySqlParameter("@fk_departement", model.State),
+                    new MySqlParameter("@fk_country", model.Country),
+                    new MySqlParameter("@fk_state", model.State),
                     new MySqlParameter("@StateName", model.StateName),
                     new MySqlParameter("@phone", model.Phone),
                     new MySqlParameter("@fax", model.Fax),
                     new MySqlParameter("@email", model.EMail),
-                    new MySqlParameter("@url", model.Web),
-                    new MySqlParameter("@siren", model.ProfId),
-                    new MySqlParameter("@tva_assuj", model.SalesTaxUsed),
-                    new MySqlParameter("@fk_typent", model.ThirdPartyType),
-                    new MySqlParameter("@fk_effectif", model.Workforce),
-                    new MySqlParameter("@fk_forme_juridique", model.BusinessEntityType),
+                    new MySqlParameter("@url", model.Web),                   
+                    new MySqlParameter("@salestaxused", model.SalesTaxUsed),
+                    new MySqlParameter("@fk_typparty", model.ThirdPartyType),
+                    new MySqlParameter("@fk_workforce", model.Workforce),
+                    new MySqlParameter("@fk_Business_Entity", model.BusinessEntityType),
                     new MySqlParameter("@capital", model.Capital),
                     new MySqlParameter("@SalesRepresentative", model.SalesRepresentative),
                      new MySqlParameter("@PaymentTermsID", model.PaymentTermsID),
@@ -77,29 +76,30 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "update wp_vendor set nom=@nom,name_alias=@name_alias,code_fournisseur=@code_fournisseur,status=@status,address=@address,address1=@address1,zip = @zip,town = @town,fk_pays = @fk_pays,fk_departement = @fk_departement,StateName=@StateName,phone = @phone,fax = @fax,email = @email,url = @url,tva_assuj = @tva_assuj,fk_typent = @fk_typent,fk_effectif = @fk_effectif,fk_forme_juridique = @fk_forme_juridique,capital = @capital,fk_incoterms=@fk_incoterms,location_incoterms=@location_incoterms,SalesRepresentative=@SalesRepresentative,PaymentTermsID=@PaymentTermsID,BalanceID=@BalanceID,PaymentDate=@PaymentDate,Currency=@Currency ,EnableVendorUOM=@EnableVendorUOM ,UnitsofMeasurment=@UnitsofMeasurment,MinimumOrderQuanity=@MinimumOrderQuanity,DefaultTax=@DefaultTax,TaxIncludedinPrice=@TaxIncludedinPrice,DefaultDiscount=@DefaultDiscount,CreditLimit=@CreditLimit,VendorStatus=@VendorStatus where rowid = " + VendorID + "";
+                string strsql = "update wp_vendor set name=@name,name_alias=@name_alias,code_vendor=@code_vendor,status=@status,address=@address,address1=@address1,zip = @zip,town = @town,fk_country = @fk_country,fk_state = @fk_state,StateName=@StateName,phone = @phone,fax = @fax,email = @email,url = @url," +
+                    "salestaxused = @salestaxused,fk_typparty = @fk_typparty,fk_workforce = @fk_workforce,fk_Business_Entity = @fk_Business_Entity,capital = @capital,fk_incoterms=@fk_incoterms,location_incoterms=@location_incoterms,SalesRepresentative=@SalesRepresentative,PaymentTermsID=@PaymentTermsID,BalanceID=@BalanceID,PaymentDate=@PaymentDate,Currency=@Currency ,EnableVendorUOM=@EnableVendorUOM ,UnitsofMeasurment=@UnitsofMeasurment,MinimumOrderQuanity=@MinimumOrderQuanity,DefaultTax=@DefaultTax,TaxIncludedinPrice=@TaxIncludedinPrice,DefaultDiscount=@DefaultDiscount,CreditLimit=@CreditLimit,VendorStatus=@VendorStatus where rowid = " + VendorID + "";
                 MySqlParameter[] para =
                 {
-                    new MySqlParameter("@nom", model.Name),
+                    new MySqlParameter("@name", model.Name),
                     new MySqlParameter("@name_alias", model.AliasName),
                     //new MySqlParameter("@client", model.Prospect),
-                    new MySqlParameter("@code_fournisseur", model.VendorCode),
+                    new MySqlParameter("@code_vendor", model.VendorCode),
                     new MySqlParameter("@status", model.Status),
                     new MySqlParameter("@address", model.Address),
                     new MySqlParameter("@address1", model.Address1),
                     new MySqlParameter("@zip", model.ZipCode),
                     new MySqlParameter("@town", model.City),
-                    new MySqlParameter("@fk_pays", model.Country),
-                    new MySqlParameter("@fk_departement", model.State),
+                    new MySqlParameter("@fk_country", model.Country),
+                    new MySqlParameter("@fk_state", model.State),
                     new MySqlParameter("@StateName", model.StateName),
                     new MySqlParameter("@phone", model.Phone),
                     new MySqlParameter("@fax", model.Fax),
                     new MySqlParameter("@email", model.EMail),
                     new MySqlParameter("@url", model.Web),
-                    new MySqlParameter("@tva_assuj", model.SalesTaxUsed),
-                    new MySqlParameter("@fk_typent", model.ThirdPartyType),
-                    new MySqlParameter("@fk_effectif", model.Workforce),
-                    new MySqlParameter("@fk_forme_juridique", model.BusinessEntityType),
+                    new MySqlParameter("@salestaxused", model.SalesTaxUsed),
+                    new MySqlParameter("@fk_typparty", model.ThirdPartyType),
+                    new MySqlParameter("@fk_workforce", model.Workforce),
+                    new MySqlParameter("@fk_Business_Entity", model.BusinessEntityType),
                     new MySqlParameter("@capital", model.Capital),
                     new MySqlParameter("@SalesRepresentative", model.SalesRepresentative),
                     new MySqlParameter("@PaymentTermsID", model.PaymentTermsID),
@@ -209,7 +209,7 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "Select rowid as ID, nom as VendorName, name_alias as AliasName,entity,status,code_fournisseur as VendorCode, zip,address,address1,town,fk_departement as State, fk_pays as Country, phone,fax,url,email,fk_effectif as Workforce,fk_typent as ThirdPartyType,fk_forme_juridique as BusinessEntityType, siren as ProfId, capital, fournisseur as Vendor,location_incoterms as Incoterms, tva_assuj as Salestaxused,SalesRepresentative,PaymentTermsID,BalanceID,PaymentDate,Currency ,EnableVendorUOM ,UnitsofMeasurment,MinimumOrderQuanity,DefaultTax,TaxIncludedinPrice,DefaultDiscount,CreditLimit,VendorStatus FROM wp_vendor where 1=1";
+                string strSql = "Select rowid as ID, name as VendorName, name_alias as AliasName,entity,status,code_vendor as VendorCode, zip,address,address1,town,fk_state as State, fk_country as Country, phone,fax,url,email,fk_workforce as Workforce,fk_typparty as ThirdPartyType,fk_business_entity as BusinessEntityType, capital, fournisseur as Vendor,location_incoterms as Incoterms, salestaxused as Salestaxused,SalesRepresentative,PaymentTermsID,BalanceID,PaymentDate,Currency ,EnableVendorUOM ,UnitsofMeasurment,MinimumOrderQuanity,DefaultTax,TaxIncludedinPrice,DefaultDiscount,CreditLimit,VendorStatus FROM wp_vendor where 1=1";
                 if (!string.IsNullOrEmpty(searchid))
                 {
                     strWhr += " and (email like '%" + searchid + "%' OR user_nicename='%" + searchid + "%' OR ID='%" + searchid + "%' OR nom like '%" + searchid + "%')";

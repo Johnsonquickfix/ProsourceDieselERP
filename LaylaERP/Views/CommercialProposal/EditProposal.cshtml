@@ -7,16 +7,17 @@
 <script src="~/Content/DataTables/bootstrap-datepicker.js"></script>
 
 <div class="page-title">
-    <h2>New Commercial Proposal</h2>
+    <h2>Edit Commercial Proposal</h2>
 </div>
-id <input type="text" id="rowid" />
+
 <section class="content section-content massstocktransfer commercial_proposal mt-1">
     <div class="box box-primary">
         <div class="box-body">
             <div class="rowbox">
+                <input type="hidden" id="hfid" />
                 <div class="col-md-3"><label>Ref.</label></div>
                 <div class="col-md-5">
-                    <input type="text" class="form-control" placeholder="Draft" id="txtreff" disabled/>
+                    <input type="text" class="form-control" placeholder="Draft" id="txtreff" disabled />
                 </div>
             </div>
             <div class="rowbox">
@@ -131,7 +132,7 @@ id <input type="text" id="rowid" />
                 <textarea class="form-control" id="txtprivate"></textarea>
             </div>
             <div class="box-footer text-right">
-                <input type="submit" class="btn btn-danger" id="btnSave" value="Create Draft" />
+                <input type="submit" class="btn btn-danger" id="btnSave" value="Update Draft" />
                 @Html.ActionLink("Back to List", "ListingProposal", null, new { @class = "btn btn-danger" })
             </div>
         </div>
@@ -146,8 +147,7 @@ id <input type="text" id="rowid" />
     $(document).ready(function () {
         var url = window.location.pathname;
         var id = url.substring(url.lastIndexOf('/') + 1);
-        GetVendorByID1(id);
-        EditProposal(id);
+        GetProposalByID(id);
 
         $("#loader").hide();
         //var dt2 = new Date();
@@ -173,7 +173,7 @@ id <input type="text" id="rowid" />
 <script>
     function AddCommercialProposal() {
         debugger
-        rowid = $("#rowid").val();
+        rowid = $("#hfid").val();
         ref = $("#txtreff").val();
         vendor = $("#ddlVendor").val();
         refcustomer = $("#txtrefvendor").val();
@@ -269,12 +269,11 @@ id <input type="text" id="rowid" />
 </script>
 
 <script>
-    function GetVendorByID1(id) {
+    function GetProposalByID(id) {
         var rowid = id;
-        //if (rowid == "NewVendor") { $('#lbltitle').text("Add New Vendor"); } else { $('#lbltitle').text("Update Vendor"); }
         var obj =
             $.ajax({
-                url: "/CommercialProposal/GetVendorByID1/" + rowid,
+                url: "/CommercialProposal/GetProposalByID/" + rowid,
                 type: "GET",
                 contentType: "application/json; charset=utf-8",
                 dataType: 'JSON',
@@ -283,7 +282,7 @@ id <input type="text" id="rowid" />
                     console.log(data);
                     var d = JSON.parse(data);
                     if (d.length > 0) {
-                        //rowid, payment_term, balance, payment_type, fk_availability, fk_shipping_method, fk_incoterms, location_incoterms, note_public, note_private
+                        
                         $("#ddlshipping").val(d[0].fk_shipping_method);
                         $("#ddlPaymentTerms").val(d[0].payment_term);
                         $("#ddlBalancedays").val(d[0].balance);
@@ -292,14 +291,14 @@ id <input type="text" id="rowid" />
                         $("#ddlIncoTerm").val(d[0].fk_incoterms);
                         $("#txtpublic").val(d[0].note_public);
                         $("#txtprivate").val(d[0].note_private);
-                        $("#rowid").val(d[0].rowid);
+                        $("#hfid").val(d[0].rowid);
                         $("#txtreff").val(d[0].ref);
                         $("#ddlVendor").val(d[0].fk_vendor);
                         $("#txtrefvendor").val(d[0].fk_vendor);
                         $("#deliverydate").val(d[0].date_delivery);
                         $("#txtvalidity").val(d[0].validity_duration);
                         $("#txtdatep").val(d[0].datep);
-                        
+                        $("#txtIncoTerm").val(d[0].location_incoterms);
                     }
                 },
                 error: function (msg) {
@@ -309,26 +308,4 @@ id <input type="text" id="rowid" />
 
     }
 
-</script>
-<script>
-    function EditProposal(id) {
-        var rowid;
-        //if (rowid == "NewVendor") { $('#lbltitle').text("Add New Vendor"); } else { $('#lbltitle').text("Update Vendor"); }
-        var obj = { rowid: id };
-            $.ajax({
-                url: "/CommercialProposal/EditProposal/",
-                type: "POST",
-                contentType: "application/json; charset=utf-8",
-                dataType: 'JSON',
-                data: JSON.stringify(obj),
-                success: function (data) {
-                    
-                    
-                },
-                error: function (msg) {
-
-                }
-            });
-
-    }
 </script>

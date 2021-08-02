@@ -24,6 +24,7 @@ namespace LaylaERP.Controllers
             return View();
         }
         //GetVendorByID
+
         public JsonResult GetVendorByID(CommercialProposalModel model)
         {
             int id = model.VendorTypeID;
@@ -71,11 +72,13 @@ namespace LaylaERP.Controllers
             List<SelectListItem> thirdpartylist = new List<SelectListItem>();
             foreach (DataRow dr in ds.Tables[0].Rows)
             {
-                thirdpartylist.Add(new SelectListItem { Text = dr["nom"].ToString(), Value = dr["rowid"].ToString() });
+                thirdpartylist.Add(new SelectListItem { Text = dr["name"].ToString(), Value = dr["rowid"].ToString() });
             }
             return Json(thirdpartylist, JsonRequestBehavior.AllowGet);
 
         }
+
+
         public JsonResult GetPaymentType(SearchModel model)
         {
             DataSet ds = BAL.CommercialProposalRepositiory.GetPaymentType();
@@ -167,5 +170,43 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(JSONresult, 0);
         }
+
+        public ActionResult EditProposal(CommercialProposalModel model)
+        {
+            //ViewBag.id = model.rowid;
+            return View();
+        }
+
+
+        public JsonResult GetProposalByID(long id)
+        {
+            //CommercialProposalModel model = new CommercialProposalModel();
+            //ViewBag.id = model.rowid;
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = CommercialProposalRepositiory.GetProposalByID(id);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateProposal(CommercialProposalModel model)
+        {
+
+            int ID = CommercialProposalRepositiory.UpdateProposal(model);
+            if (ID > 0)
+            {
+                return Json(new { status = true, message = "Data has been saved successfully!!", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+
+        }
+
     }
 }

@@ -34,6 +34,8 @@ namespace LaylaERP.Models
         public int IncotermsTypeID { get; set; }
         public int VendorTypeID { get; set; }
         public string location_incoterms { get; set; }
+        public int rowid { get; set; }
+        public int validity_duration { get; set; }
 
     }
 }

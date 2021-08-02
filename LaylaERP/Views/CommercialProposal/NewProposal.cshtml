@@ -146,7 +146,7 @@
     $(document).ready(function () {
         $("#loader").hide();
         var dt2 = new Date();
-        var dt4 = dt2.getUTCFullYear() + '-' + ("0" + (dt2.getUTCMonth() + 1)).slice(-2) + '-' + dt2.getUTCDate();
+        var dt4 = dt2.getUTCFullYear() + '-' + ("0" + (dt2.getUTCMonth() + 1)).slice(-2) + '-' + ("0" + dt2.getUTCDate()).slice(-2);
         document.getElementById("txtdatep").value = dt4;
 
         $(document).on('click', "#btnSave", function () {
@@ -223,7 +223,8 @@
                 reff: ref,
                 fk_vendor:vendor,
                 datep:dateofproposal,
-                fin_validite:validationduration,
+                fin_validite: validationduration,
+                validity_duration:validationduration,
                 payment_term:paymentterms,
                 balance:balance,
                 payment_type:paymenttype,
@@ -235,6 +236,7 @@
                 note_private: noteprivate,
                 date_delivery: deliverydate,
                 location_incoterms: incotermslocation,
+
             }
             $.ajax({
                 url: '/CommercialProposal/AddProposal/', dataType: 'json', type: 'Post',

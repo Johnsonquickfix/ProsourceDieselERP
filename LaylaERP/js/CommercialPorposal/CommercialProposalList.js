@@ -23,7 +23,14 @@ function CommercialGrid() {
                     { data: 'proposaldate', title: 'Proposal Date', sWidth: "10%" },
                     { data: 'enddate', title: 'End Date', sWidth: "10%" },
                     { data: 'status', title: 'Status', sWidth: "10%" },
-                   
+                    {
+                        'data': 'id', sWidth: "8%",
+                        'render': function (id, type, full, meta) {
+                           
+                            return '<a href="../CommercialProposal/EditProposal/' + id + '"><i class="glyphicon glyphicon-pencil"></i></a>';
+                           
+                        }
+                    }
                 ],
 
                 "order": [[0, 'desc']],

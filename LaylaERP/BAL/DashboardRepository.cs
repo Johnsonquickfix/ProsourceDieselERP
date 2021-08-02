@@ -96,7 +96,7 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
                 strWhr = "select ID,user_login,user_email from wp_users as ur inner join wp_usermeta um on ur.id = um.user_id and um.meta_key='wp_capabilities' AND um.meta_value NOT LIKE '%customer%' "
-                                    + " order by user_login LIMIT 0,5; ";
+                                    + " order by ID Desc LIMIT 0,5; ";
                 DataSet ds = SQLHelper.ExecuteDataSet(strWhr);
                 dt = ds.Tables[0];
             }
@@ -114,7 +114,7 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
                 strWhr = "select ID,user_login,user_email from wp_users as ur inner join wp_usermeta um on ur.id = um.user_id and um.meta_key='wp_capabilities' AND um.meta_value LIKE '%customer%' "
-                                    + " where User_Login != '' order by user_login LIMIT 0,5; ";
+                                    + " where User_Login != '' order by ID Desc LIMIT 0,5; ";
                 DataSet ds = SQLHelper.ExecuteDataSet(strWhr);
                 dt = ds.Tables[0];
             }
@@ -132,7 +132,7 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
                 strWhr = "select order_id as chkorder,meta_value,num_items_sold,Cast(total_sales As DECIMAL(10, 2)) as total_sales,status,date_created "
-                                    + " FROM wp_wc_order_stats left join wp_postmeta on wp_wc_order_stats.order_id = wp_postmeta.post_id WHERE wp_postmeta.meta_key = '_billing_first_name' order by date_created LIMIT 0,5; ";
+                                    + " FROM wp_wc_order_stats left join wp_postmeta on wp_wc_order_stats.order_id = wp_postmeta.post_id WHERE wp_postmeta.meta_key = '_billing_first_name' order by date_created Desc LIMIT 0,5; ";
                 DataSet ds = SQLHelper.ExecuteDataSet(strWhr);
                 dt = ds.Tables[0];
             }

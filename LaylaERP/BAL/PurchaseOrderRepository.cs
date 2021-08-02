@@ -28,7 +28,7 @@ namespace LaylaERP.BAL
             DataSet DS = new DataSet();
             try
             {
-                string strSQl = "select rowid as ID, concat(nom,' (',name_alias,')') as Name from wp_vendor where VendorStatus=1 order by rowid desc;";
+                string strSQl = "select rowid as ID, concat(name,' (',name_alias,')') as Name from wp_vendor where VendorStatus=1 order by rowid desc;";
                 DS = SQLHelper.ExecuteDataSet(strSQl);
             }
             catch (Exception ex)
@@ -64,7 +64,7 @@ namespace LaylaERP.BAL
             DataTable dt = new DataTable();
             try
             {
-                string strSQl = "select rowid as ID, concat(nom,' (',name_alias,')') as Name, code_fournisseur as vendor from wp_vendor where rowid=" + VendorID + " and VendorStatus=1 order by ID;";
+                string strSQl = "select rowid as ID, concat(name,' (',name_alias,')') as Name, code_vendor as vendor from wp_vendor where rowid=" + VendorID + " and VendorStatus=1 order by ID;";
                 dt = SQLHelper.ExecuteDataTable(strSQl);
             }
             catch (Exception ex)
@@ -178,7 +178,7 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "Select p.rowid id, p.ref, p.ref_ext RefOrderVendor,v.SalesRepresentative RequestAuthor, v.nom VendorName,v.fk_departement City, v.zip,LEFT(CAST(p.date_livraison AS DATE), 10) PlannedDateofDelivery, s.Status from commerce_purchase_order p inner join wp_vendor v on p.fk_soc = v.rowid inner join wp_StatusMaster s on p.fk_statut = s.ID where 1=1";
+                string strSql = "Select p.rowid id, p.ref, p.ref_ext RefOrderVendor,v.SalesRepresentative RequestAuthor, v.name VendorName,v.fk_state City, v.zip,LEFT(CAST(p.date_livraison AS DATE), 10) PlannedDateofDelivery, s.Status from commerce_purchase_order p inner join wp_vendor v on p.fk_soc = v.rowid inner join wp_StatusMaster s on p.fk_statut = s.ID where 1=1";
                 if (!string.IsNullOrEmpty(searchid))
                 {
                     strWhr += " and (email like '%" + searchid + "%' OR user_nicename='%" + searchid + "%' OR ID='%" + searchid + "%' OR nom like '%" + searchid + "%')";

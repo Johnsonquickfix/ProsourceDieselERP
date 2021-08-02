@@ -33,6 +33,19 @@
 
                                     <div class="row">
                                         <div class="col-md-4">
+
+                                            <div class="form-group">
+                                                <label class="control-label " for="Vendor Type">Vendor Type</label>
+                                                <div class="">
+                                                    <select class="form-control" id="ddlvendortype">
+                                                        <option value="CD2C">Classic D2C</option>
+                                                        <option value="D2C">D2C</option>
+                                                        <option value="C3PL">Classic 3 PL</option>
+                                                        <option value="3PL">3PL</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
                                             <div class="form-group">
                                                 <label class="control-label " for="Vendor name">Vendor Name</label>
                                                 <div class="">
@@ -52,7 +65,7 @@
                                                 </div>
                                             </div>
                                             <div class="form-group">
-                                                <label class="control-label " for="Status">Status</label>
+                                                <label class="control-label" for="Status">Status</label>
                                                 <div class="">
                                                     <select class="form-control" id="ddlStatus"></select>
                                                 </div>
@@ -62,7 +75,7 @@
                                                 <label class="control-label " for="Address">Address</label>
                                                 <div class="">
 
-                                                    <input type="text" id="txtAddress" class="form-control" placeholder="Address" autocomplete="off" />
+                                                    <input type="text" id="txtAddress" class="form-control" placeholder="Address" autocomplete="true" />
                                                 </div>
                                             </div>
                                             <div class="form-group">
@@ -78,11 +91,13 @@
                                                 </div>
                                             </div>
                                         </div>
+
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label for="exampleInputEmail1">State</label>
-                                                <select class="form-control" id="ddlState">
-                                                </select>
+                                                <label class="control-label" for="exampleInputEmail1">State</label>
+                                                <div class="">
+                                                    <select class="form-control" id="ddlState"></select>
+                                                </div>
                                             </div>
                                             <div class="form-group">
                                                 <label class="control-label " for="Zip Code">Zip Code</label>
@@ -122,17 +137,16 @@
                                                     <input type="text" id="txtWeb" class="form-control" placeholder="Web" />
                                                 </div>
                                             </div>
-
-
-
-                                        </div>
-                                        <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="control-label " for="Salestaxused">Sales tax used</label>
                                                 <div class="">
                                                     <select class="form-control" id="ddlSalestaxused"></select>
                                                 </div>
                                             </div>
+
+                                        </div>
+                                        <div class="col-md-4">
+                                            
 
                                             <div class="form-group">
                                                 <label class="control-label " for="Third-party type">Third-party type</label>
@@ -208,42 +222,79 @@
                                             </div>
 
                                         </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label for="Vendor">Units of measurment</label><br />
-                                                <input type="checkbox" id="chkEnableVendorUOMrounding" name="EnableVendorUOMrounding" value="Enable Vendor UOM rounding"> <label for="Enable Vendor UOM rounding">Enable Vendor UOM rounding</label><br>
-                                                <input type="radio" id="roundquantityup" name="Unitsofmeasurment" value="round quantity up"> <label for="disabled">round quantity up</label><br>
-                                                <input type="radio" id="roundquantitydown" name="Unitsofmeasurment" value="round quantity down"> <label for="round quantity down">round quantity down</label><br>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="Minimum order quanity">Minimum order quanity</label><br />
-                                                <input type="radio" id="disabled" name="Minimumorderquanity" value="disabled"> <label for="disabled">disabled</label><br>
-                                                <input type="radio" id="forVariants" name="Minimumorderquanity" value="for Variants"> <label for="html">for Variants</label><br>
-                                                <input type="radio" id="forProducts" name="Minimumorderquanity" value="for Products"> <label for="css">for Products</label><br>
-                                                <input type="radio" id="forPurchaseOrder" name="Minimumorderquanity" value="for purchase order"> <label for="forPurchaseOrder">for Purchase Order</label>
+                                        @*<div class="col-md-4">
+            <div class="form-group">
+                <label for="Vendor">Units of measurment</label><br />
+                <input type="checkbox" id="chkEnableVendorUOMrounding" name="EnableVendorUOMrounding" value="Enable Vendor UOM rounding"> <label for="Enable Vendor UOM rounding">Enable Vendor UOM rounding</label><br>
+                <input type="radio" id="roundquantityup" name="Unitsofmeasurment" value="round quantity up"> <label for="disabled">round quantity up</label><br>
+                <input type="radio" id="roundquantitydown" name="Unitsofmeasurment" value="round quantity down"> <label for="round quantity down">round quantity down</label><br>
+            </div>
+            <div class="form-group">
+                <label for="Minimum order quanity">Minimum order quanity</label><br />
+                <input type="radio" id="disabled" name="Minimumorderquanity" value="disabled"> <label for="disabled">disabled</label><br>
+                <input type="radio" id="forVariants" name="Minimumorderquanity" value="for Variants"> <label for="html">for Variants</label><br>
+                <input type="radio" id="forProducts" name="Minimumorderquanity" value="for Products"> <label for="css">for Products</label><br>
+                <input type="radio" id="forPurchaseOrder" name="Minimumorderquanity" value="for purchase order"> <label for="forPurchaseOrder">for Purchase Order</label>
+            </div>
+        </div>*@
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="Balance">Default Tax %</label>
+                                            <input type="text" id="txtDefaultTax" class="form-control" placeholder="Default Tax" />
+                                        </div>
+                                        <input type="checkbox" id="chkTaxIncludedinprice" name="TaxIncludedinprice" value="Tax Included in price"> <label for="Tax Included in price">Tax Included in price</label><br>
+                                        <div class="form-group">
+                                            <label class="control-label " for="Default Discount">Default Discount %</label>
+                                            <div class="">
+                                                <input type="text" id="txtDefaultDiscount" class="form-control" placeholder="Default Discount" />
                                             </div>
                                         </div>
+                                        <div class="form-group">
+                                            <label class="control-label " for="Credit Limit">Credit Limit</label>
+                                            <div class="">
+                                                <input type="text" id="txtCreditLimit" class="form-control" placeholder="Credit Limit" />
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="control-label " for="Min Order Qty">Minimum Order Quantity</label>
+                                            <div class="">
+                                                <input type="text" id="txtminorderqty" class="form-control" placeholder="Minimum Order Quantity" />
+                                            </div>
+                                        </div>
+                                    </div>
+
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label for="Balance">Default Tax %</label>
-                                                <input type="text" id="txtDefaultTax" class="form-control" placeholder="Default Tax" />
+                                                <label for="orderminamt">Order Min Amount</label>
+                                                <input type="text" id="txtorderminamt" class="form-control" placeholder="Order Minimum amount" />
                                             </div>
-                                            <input type="checkbox" id="chkTaxIncludedinprice" name="TaxIncludedinprice" value="Tax Included in price"> <label for="Tax Included in price">Tax Included in price</label><br>
+
                                             <div class="form-group">
-                                                <label class="control-label " for="Default Discount">Default Discount %</label>
+                                                <label class="control-label " for="ShippingMethod">Shipping Method</label>
                                                 <div class="">
-                                                    <input type="text" id="txtDefaultDiscount" class="form-control" placeholder="Default Discount" />
+                                                    <select class="form-control" id="ddlshippingmethod">
+                                                        <option value="fedex">FEDEX</option>
+                                                        <option value="shipstation">Ship Station</option>
+                                                        <option value="ups">UPS</option>
+                                                        <option value="gentransportservice">Generic Transport Service</option>
+                                                        <option value="instorecollection">In-Store Collection</option>
+                                                    </select>
                                                 </div>
                                             </div>
+
                                             <div class="form-group">
-                                                <label class="control-label " for="Credit Limit">Credit Limit</label>
+                                                <label class="control-label " for="outstanding limit">OutStanding Limit</label>
                                                 <div class="">
-                                                    <input type="text" id="txtCreditLimit" class="form-control" placeholder="Credit Limit" />
+                                                    <input type="text" id="txtoutstandinglimit" class="form-control" placeholder="Out Standing Limit" />
                                                 </div>
                                             </div>
+
                                             <input type="checkbox" id="chkVendorStatus" name="VendorStatus" value="Tax Included in price"> <label for="Active">Active</label><br>
 
                                         </div>
+
+
                                     </div>
                                 </div>
 

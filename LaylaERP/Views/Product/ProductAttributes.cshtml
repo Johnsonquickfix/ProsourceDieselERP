@@ -1,17 +1,69 @@
 ﻿
 @{
-    Layout = null;
+    ViewBag.Title = "Attributes";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
-<!DOCTYPE html>
-
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>ProductAttributes</title>
-</head>
-<body>
-    <div> 
+<div class="page-title">
+    <h2 class="page-heading" id="lbltitle">Attributes</h2>
+</div>
+<section class="content section-content category-section attributes-section">
+    <div class="row rowbox">
+        <div class="col-md-4">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h2 class="box-title">Add new attribute</h2>
+                </div>
+                <div class="box-header with-border">
+                    Attributes let you define extra product data, such as size or color. You can use these attributes in the shop sidebar using the "layered nav" widgets.
+                </div>
+                <div class="box-body">
+                    <div class="form-group">
+                        <label class="control-label">Name</label>
+                        <input type="text" class="form-control" />
+                        <span class="form-info">Name for the attribute (shown on the front-end).</span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Slug</label>
+                        <input type="text" class="form-control" />
+                        <span class="form-info">Unique slug/reference for the attribute; must be no more than 28 characters.</span>
+                    </div>
+                    <div class="form-group form-check">
+                        <input type="checkbox" id="enabel_archive" />
+                        <label for="enabel_archive">Enable Archives?</label>
+                        <span class="form-info">Enable this if you want this attribute to have product archives in your store.</span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Default sort order</label>
+                        <select class="form-control">
+                            <option>Custom ordering</option>
+                            <option>Name</option>
+                            <option>Name (numeric)</option>
+                            <option>Term ID</option>
+                        </select>
+                        <span class="form-info">Determines the sort order of the terms on the frontend shop product pages. If using custom ordering, you can drag and drop the terms in this attribute.</span>
+                    </div>
+                </div>
+                <div class="box-footer text-right">
+                    <button class="btn btn-danger">Add attribute</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="box box-primary">
+                <div class="box-body">
+                    <table class="table-blue table check-table table-bordered">
+                        <thead>
+                            <tr role="row">
+                                <th>Name</th>
+                                <th>Slug</th>
+                                <th>Order by</th>
+                                <th>Terms</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
-</body>
-</html>
+</section>
+

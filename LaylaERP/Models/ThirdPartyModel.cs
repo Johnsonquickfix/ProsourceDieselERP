@@ -8,6 +8,7 @@ namespace LaylaERP.Models
     public class ThirdPartyModel : PaggingModel
     {
         public long rowid { get; set; }
+        public int vendor_type { get; set; }
         public string Name { get; set; }
         public string AliasName { get; set; }
         public string Prospect { get; set; }
@@ -56,6 +57,9 @@ namespace LaylaERP.Models
         public string LeadTime { get; set; }
         public string DaysofStock { get; set; }
         public bool VendorStatus { get; set; }
+        public string outstanding_limit { get; set; }
+        public int fk_shipping_method { get; set; }
+        public string order_min_amount { get; set; }
 
     }
 }

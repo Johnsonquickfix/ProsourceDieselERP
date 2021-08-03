@@ -107,6 +107,8 @@ namespace LaylaERP.Controllers
         {
             if (model.ID > 0 || model.updatedID > 0)
             {
+                model.post_type = "product";
+                if (model.ID == 0)
                 model.ID = model.updatedID;
                 ProductRepository.EditProducts(model, model.ID);
                 Update_MetaData(model, model.ID);
@@ -214,6 +216,17 @@ namespace LaylaERP.Controllers
             }
         }
 
+        private void Update_AttributeMetaData(ProductModel model, long id)
+        {
+            string[] varQueryArr1 = new string[1];
+            string[] varFieldsName = new string[1] { "_product_attributes" };
+            string[] varFieldsValue = new string[1] { model.product_attributes };
+            for (int n = 0; n < 1; n++)
+            {
+                ProductRepository.UpdateMetaData(model, id, varFieldsName[n], varFieldsValue[n]);
+            }
+        }
+
         public JsonResult GetDataByID(OrderPostStatusModel model)
         {
             string JSONresult = string.Empty;
@@ -221,6 +234,18 @@ namespace LaylaERP.Controllers
             {
 
                 DataTable dt = ProductRepository.GetDataByID(model);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+        public JsonResult GetDataVariationByID(OrderPostStatusModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+
+                DataTable dt = ProductRepository.GetDataVariationByID(model);
                 JSONresult = JsonConvert.SerializeObject(dt);
             }
             catch { }
@@ -252,37 +277,16 @@ namespace LaylaERP.Controllers
         }
 
  
-        public JsonResult saveAttributes(string fields,string post_title, string table,string visible,string variation, ProductModel model)
-        {
-         
-           // Attributes model = new Attributes();            
-            //var quote = "\"";
-            //string sColumns = "";
-            //string value = "";
-            //string[] name = fields.Split(',');
-            //foreach (string namelist in name)
-            //{
-            //    sColumns += quote + namelist +quote + ",";
-            // }
-            //string NameTrimed = sColumns.TrimEnd(',');
-            //string[] val = table.Split(',');
-            //foreach (string namelistval in val)
-            //{
-            //    value += quote + namelistval + quote + ",";
-            //}
-            //string valueTrimed = value.TrimEnd(',');
-            //string key = "{ Key : " + NameTrimed + " }";
-            //string valuename = "{ value : " + valueTrimed + " }";
-            //string product_attributes = key + "," + valuename;
-          
+        public JsonResult saveAttributes(string fields,string IDs,string post_title, string table,string visible,string variation, ProductModel model)
+        {          
             model.product_attributes = fields;
-            if (model.ID > 0)
+            if (!string.IsNullOrEmpty(IDs))
             {
 
-                ProductRepository.EditProducts(model, model.ID);
-                Update_MetaData(model, model.ID);
-                update_term(model, model.ID);
-                return Json(new { status = true, message = "Product Record has been updated successfully!!", url = "Manage" }, 0);
+                // ProductRepository.EditProducts(model, model.ID);
+                Update_AttributeMetaData(model, Convert.ToInt64(IDs));
+                //update_term(model, model.ID);
+                return Json(new { status = true, message = "Product Attributes has been updated successfully!!", url = "Manage" }, 0);
             }
             else
             {
@@ -310,81 +314,43 @@ namespace LaylaERP.Controllers
             //return Json(model, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult Savevariations(string fields, string post_title,string regularprice, string Salepricevariationval, string Stockquantityvariationval, string allowbackordersvariationval, string weightvariationval, string Lvariationval, string Wvariationval, string Hvariationval, string shipvariationval, string cassvariationval, string descriptionvariationval, string stockchec, string chkvirtual, string sku, string parentid, string attributeheaderval , ProductModel model)
-        {                       
-           
-            if (model.ID > 0)
-            {
+        public JsonResult Savevariations(string fields,string UpdateList, string UpdateID, string PID, string post_title,string regularprice, string Salepricevariationval, string Stockquantityvariationval, string allowbackordersvariationval, string weightvariationval, string Lvariationval, string Wvariationval, string Hvariationval, string shipvariationval, string cassvariationval, string descriptionvariationval, string stockchec, string chkvirtual, string sku, string parentid, string attributeheaderval , ProductModel model)
+        {
+            string value = "";
+            string[] skuval = sku.Split(',');
 
-                //ProductRepository.EditProducts(model, model.ID);
-                //Update_MetaData(model, model.ID);
-                //update_term(model, model.ID);
-                //return Json(new { status = true, message = "Product Record has been updated successfully!!", url = "Manage" }, 0);
-            }
-            else
+            string[] regularpriceval = regularprice.Split(',');
+            string[] Salepricl = Salepricevariationval.Split(',');
+
+            string[] weightvariation = weightvariationval.Split(',');
+            string[] Lvariation = Lvariationval.Split(',');
+            string[] Wvariation = Wvariationval.Split(',');
+            string[] Hvariation = Hvariationval.Split(',');
+
+            string[] Stockquantityvariation = Stockquantityvariationval.Split(',');
+            string[] allowbackordersvariation = allowbackordersvariationval.Split(',');
+            string[] shipvariation = shipvariationval.Split(',');
+            string[] cassvariation = cassvariationval.Split(',');
+
+            string[] descriptionvariation = descriptionvariationval.Split(',');
+            string[] stockchecval = stockchec.Split(',');
+            string[] chkvirtu = chkvirtual.Split(',');
+            // attributeheaderval = "Size,Color";
+            string[] attributeheader = attributeheaderval.Split(',');
+            string[] UpdateListval = UpdateList.Split(',');
+            string varFieldsName = string.Empty;
+            string varFieldsValue = string.Empty;
+
+            if (!string.IsNullOrEmpty(PID))
             {
+                string[] UpdateIDs = UpdateID.Split(',');
                 string[] elements = fields.Split(',');
 
-                model.post_status = "publish";
-                model.post_type = "product";
-                model.post_content = "";
-                model.post_title = post_title;
-                model.post_name = post_title;
-                model.post_type = "product_variation";
-                model.comment_status = "closed";
-                
-                if (!string.IsNullOrEmpty(parentid))
-                    model.post_parent = Convert.ToInt32(parentid);
-                else
-                    model.post_parent = 0;
-                string value = "";
-                string[] skuval = sku.Split(',');
-
-                string[] regularpriceval = regularprice.Split(',');
-                string[] Salepricl = Salepricevariationval.Split(',');
-
-                string[] weightvariation = weightvariationval.Split(',');
-                string[] Lvariation = Lvariationval.Split(',');
-                string[] Wvariation = Wvariationval.Split(',');
-                string[] Hvariation = Hvariationval.Split(',');
-
-                string[] Stockquantityvariation = Stockquantityvariationval.Split(',');
-                string[] allowbackordersvariation = allowbackordersvariationval.Split(',');
-                string[] shipvariation = shipvariationval.Split(',');
-                string[] cassvariation = cassvariationval.Split(',');
-
-                string[] descriptionvariation = descriptionvariationval.Split(',');
-                string[] stockchecval = stockchec.Split(',');
-                string[] chkvirtu = chkvirtual.Split(',');
-               // attributeheaderval = "Size,Color";
-                string[] attributeheader = attributeheaderval.Split(',');
-
-                foreach (string Skulistval in skuval)
+                for (int x = 0; x < UpdateIDs.Length; x++)
                 {
-                    int ID = ProductRepository.AddProducts(model);
-                    if (ID > 0)
+                    for (int y = 0; y < UpdateListval.Length; y++)
                     {
-                        value += ID + ",";
-
-                    }
-                    else
-                    {
-                        value = "";
-                    }
-                }
-                string pricevalereg = "";
-                 string PostID = value.TrimEnd(',');  
-
-               // string PostID = "1,2,3";
-                string[] PostIDs = PostID.Split(','); 
-
-                string varFieldsName = string.Empty;
-                string varFieldsValue = string.Empty;
-                for (int x = 0; x < PostIDs.Length; x++)
-                {
-                    for (int y = 0; y < attributeheader.Length; y++)
-                    {
-                        varFieldsName = "attribute_"+ attributeheader[y];
+                        varFieldsName = "attribute_" + UpdateListval[y];
                         int r = 0;
                         if (x > 0)
                         {
@@ -402,18 +368,192 @@ namespace LaylaERP.Controllers
                                 else
                                     r = x + 1;
                             }
-                        }                      
+                        }
                         else
                             r = y;
 
-                            for (int z = r; z < elements.Length; z++)
-                            {
-                                varFieldsValue = elements[z];
-                                ProductRepository.AddProductsMetaVariation(Convert.ToInt64(PostIDs[x]), varFieldsName, varFieldsValue);
-                                ProductRepository.UpdateProductsVariation(model.post_title + "-"+ varFieldsValue, attributeheader[y] + ": " +varFieldsValue, Convert.ToInt64(PostIDs[x]));
+                        for (int z = r; z < elements.Length; z++)
+                        {
+                            varFieldsValue = elements[z];
+                            ProductRepository.UpdateProductsMetaVariation(Convert.ToInt64(UpdateIDs[x]), varFieldsName, varFieldsValue);
+                            ProductRepository.UpdateProductsVariation(model.post_title + "-" + varFieldsValue, UpdateListval[y] + ": " + varFieldsValue, Convert.ToInt64(UpdateIDs[x]));
                             break;
+                        }
+
+                    }
+                }
+
+                for (int x = 0; x < UpdateIDs.Length; x++)
+                {
+                    for (int y = x; y < regularpriceval.Length; y++)
+                    {
+
+                        varFieldsName = "_regular_price";
+                        varFieldsValue = regularpriceval[y];
+                        ProductRepository.UpdateProductsMetaVariation(Convert.ToInt64(UpdateIDs[x]), varFieldsName, varFieldsValue);
+            
+                        break;
+                    }
+                    for (int z = x; z < Salepricl.Length; z++)
+                    {
+                        varFieldsName = "_sale_price";
+                        varFieldsValue = Salepricl[z];
+                        ProductRepository.UpdateProductsMetaVariation(Convert.ToInt64(UpdateIDs[x]), varFieldsName, varFieldsValue);
+                  
+                        break;
+                    }
+                    for (int w = x; w < skuval.Length; w++)
+                    {
+                        varFieldsName = "_sku";
+                        varFieldsValue = skuval[w];
+                        ProductRepository.UpdateProductsMetaVariation(Convert.ToInt64(UpdateIDs[x]), varFieldsName, varFieldsValue);
+                    
+                        break;
+                    }
+
+                    for (int a = x; a < weightvariation.Length; a++)
+                    {
+
+                        varFieldsName = "_weight";
+                        varFieldsValue = weightvariation[a];
+                        ProductRepository.UpdateProductsMetaVariation(Convert.ToInt64(UpdateIDs[x]), varFieldsName, varFieldsValue);
+                        break;
+                    }
+                    for (int b = x; b < Lvariation.Length; b++)
+                    {
+                        varFieldsName = "_length";
+                        varFieldsValue = Lvariation[b];
+                        ProductRepository.UpdateProductsMetaVariation(Convert.ToInt64(UpdateIDs[x]), varFieldsName, varFieldsValue);
+                        break;
+                    }
+                    for (int c = x; c < Wvariation.Length; c++)
+                    {
+                        varFieldsName = "_width";
+                        varFieldsValue = Wvariation[c];
+                        ProductRepository.UpdateProductsMetaVariation(Convert.ToInt64(UpdateIDs[x]), varFieldsName, varFieldsValue);
+                        break;
+                    }
+                    for (int d = x; d < Hvariation.Length; d++)
+                    {
+                        varFieldsName = "_height";
+                        varFieldsValue = Hvariation[d];
+                        ProductRepository.UpdateProductsMetaVariation(Convert.ToInt64(UpdateIDs[x]), varFieldsName, varFieldsValue);
+                        break;
+                    }
+                    for (int e = x; e < cassvariation.Length; e++)
+                    {
+
+                        varFieldsName = "_tax_class";
+                        varFieldsValue = cassvariation[e];
+                        ProductRepository.UpdateProductsMetaVariation(Convert.ToInt64(UpdateIDs[x]), varFieldsName, varFieldsValue);
+                        break;
+                    }
+                    for (int f = x; f < allowbackordersvariation.Length; f++)
+                    {
+                        varFieldsName = "_backorders";
+                        varFieldsValue = allowbackordersvariation[f];
+                        ProductRepository.UpdateProductsMetaVariation(Convert.ToInt64(UpdateIDs[x]), varFieldsName, varFieldsValue);
+
+                        break;
+                    }
+                    for (int g = x; g < Stockquantityvariation.Length; g++)
+                    {
+                        varFieldsName = "_stock";
+                        varFieldsValue = Stockquantityvariation[g];
+                        ProductRepository.UpdateProductsMetaVariation(Convert.ToInt64(UpdateIDs[x]), varFieldsName, varFieldsValue);
+
+                        break;
+                    }
+                    for (int h = x; h < descriptionvariation.Length; h++)
+                    {
+                        varFieldsName = "_variation_description";
+                        varFieldsValue = descriptionvariation[h];
+                        ProductRepository.UpdateProductsMetaVariation(Convert.ToInt64(UpdateIDs[x]), varFieldsName, varFieldsValue);
+
+                        break;
+                    }
+
+                    for (int i = x; i < shipvariation.Length; i++)
+                    {
+                        ProductRepository.Edit_term(Convert.ToInt32(shipvariation[i]), Convert.ToInt32(UpdateIDs[x]));                       
+                        ProductRepository.Add_term(Convert.ToInt32(shipvariation[i]), Convert.ToInt32(UpdateIDs[x]));
+                        break;
+                    }
+                }
+                return Json(new { status = true, message = "Product Variations has been updated successfully!!", url = "Manage" }, 0);
+            }
+            else
+            {
+                string[] elements = fields.Split(',');
+
+                model.post_status = "publish";
+                model.post_type = "product";
+                model.post_content = "";
+                model.post_title = post_title;
+                model.post_name = post_title;
+                model.post_type = "product_variation";
+                model.comment_status = "closed";
+
+                if (!string.IsNullOrEmpty(parentid))
+                    model.post_parent = Convert.ToInt32(parentid);
+                else
+                    model.post_parent = 0;
+                
+
+                foreach (string Skulistval in skuval)
+                {
+                    int ID = ProductRepository.AddProducts(model);
+                    if (ID > 0)
+                    {
+                        value += ID + ",";
+
+                    }
+                    else
+                    {
+                        value = "";
+                    }
+                }
+                string pricevalereg = "";
+                string PostID = value.TrimEnd(',');
+
+                // string PostID = "1,2,3";
+                string[] PostIDs = PostID.Split(',');
+
+               
+                for (int x = 0; x < PostIDs.Length; x++)
+                {
+                    for (int y = 0; y < attributeheader.Length; y++)
+                    {
+                        varFieldsName = "attribute_" + attributeheader[y];
+                        int r = 0;
+                        if (x > 0)
+                        {
+                            if (x == 2)
+                            {
+                                if (y > 0)
+                                    r = x + 3;
+                                else
+                                    r = x + 2;
                             }
-                        
+                            else
+                            {
+                                if (y > 0)
+                                    r = x + 2;
+                                else
+                                    r = x + 1;
+                            }
+                        }
+                        else
+                            r = y;
+
+                        for (int z = r; z < elements.Length; z++)
+                        {
+                            varFieldsValue = elements[z];
+                            ProductRepository.AddProductsMetaVariation(Convert.ToInt64(PostIDs[x]), varFieldsName, varFieldsValue);
+                            ProductRepository.UpdateProductsVariation(model.post_title + "-" + varFieldsValue, attributeheader[y] + ": " + varFieldsValue, Convert.ToInt64(PostIDs[x]));
+                            break;
+                        }
+
                     }
                 }
 
@@ -485,12 +625,12 @@ namespace LaylaERP.Controllers
                         ProductRepository.AddProductsMetaVariation(Convert.ToInt64(PostIDs[x]), "_stock_status", "instock");
                         break;
                     }
-                    
+
                 }
 
                 for (int x = 0; x < PostIDs.Length; x++)
                 {
-                   
+
                     for (int y = x; y < cassvariation.Length; y++)
                     {
 
@@ -504,7 +644,7 @@ namespace LaylaERP.Controllers
                         varFieldsName = "_backorders";
                         varFieldsValue = allowbackordersvariation[z];
                         ProductRepository.AddProductsMetaVariation(Convert.ToInt64(PostIDs[x]), varFieldsName, varFieldsValue);
-                   
+
                         break;
                     }
                     for (int w = x; w < Stockquantityvariation.Length; w++)
@@ -512,7 +652,7 @@ namespace LaylaERP.Controllers
                         varFieldsName = "_stock";
                         varFieldsValue = Stockquantityvariation[w];
                         ProductRepository.AddProductsMetaVariation(Convert.ToInt64(PostIDs[x]), varFieldsName, varFieldsValue);
-                  
+
                         break;
                     }
                     for (int v = x; v < descriptionvariation.Length; v++)
@@ -530,16 +670,10 @@ namespace LaylaERP.Controllers
                         break;
                     }
 
-                   
+
                 }
-            }
                 return Json(new { status = true, message = "Product Variations has been saved successfully!!", ID = 1 }, 0);
-         
-                //else
-                //{
-                //    return Json(new { status = false, message = "Invalid Details", id = ID}, 0);
-                //}
- 
+            }
         }
     }
 }

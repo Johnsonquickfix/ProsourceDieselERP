@@ -1,12 +1,8 @@
-﻿using LaylaERP.Controllers;
-using LaylaERP.DAL;
+﻿using LaylaERP.DAL;
 using LaylaERP.Models;
 using MySql.Data.MySqlClient;
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Web;
 
 namespace LaylaERP.BAL
 {
@@ -17,16 +13,17 @@ namespace LaylaERP.BAL
             try
             {
                 string strsql = "";
-                strsql = "insert into wp_vendor(name,name_alias,client,fournisseur,code_vendor,status,address,address1,zip,town," +
+                strsql = "insert into wp_vendor(name,name_alias,vendor_type,client,fournisseur,code_vendor,status,address,address1,zip,town," +
                    "fk_country,fk_state,StateName,phone,fax,email,url,salestaxused,fk_typparty,fk_workforce,fk_Business_Entity,capital,fk_incoterms,location_incoterms,SalesRepresentative," +
-                   "PaymentTermsID,BalanceID,PaymentDate,Currency,EnableVendorUOM,UnitsofMeasurment,MinimumOrderQuanity,DefaultTax,TaxIncludedinPrice,DefaultDiscount,CreditLimit,VendorStatus) " +
-                   "values(@name, @name_alias, @client, @fournisseur, @code_vendor, @status, @address,@address1, @zip, @town, @fk_country, @fk_state,@StateName, @phone, " +
+                   "PaymentTermsID,BalanceID,PaymentDate,Currency,EnableVendorUOM,UnitsofMeasurment,MinimumOrderQuanity,DefaultTax,TaxIncludedinPrice,DefaultDiscount,CreditLimit,VendorStatus,outstanding_limit,fk_shipping_method,order_min_amount) " +
+                   "values(@name, @name_alias,@vendor_type, @client, @fournisseur, @code_vendor, @status, @address,@address1, @zip, @town, @fk_country, @fk_state,@StateName, @phone, " +
                    "@fax, @email, @url, @salestaxused, @fk_typparty, @fk_workforce, @fk_Business_Entity, @capital,@fk_incoterms, @location_incoterms,@SalesRepresentative," +
-                   "@PaymentTermsID,@BalanceID,@PaymentDate,@Currency ,@EnableVendorUOM ,@UnitsofMeasurment,@MinimumOrderQuanity,@DefaultTax,@TaxIncludedinPrice,@DefaultDiscount,@CreditLimit,@VendorStatus); SELECT LAST_INSERT_ID();";
+                   "@PaymentTermsID,@BalanceID,@PaymentDate,@Currency ,@EnableVendorUOM ,@UnitsofMeasurment,@MinimumOrderQuanity,@DefaultTax,@TaxIncludedinPrice,@DefaultDiscount,@CreditLimit,@VendorStatus,@outstanding_limit,@fk_shipping_method,@order_min_amount); SELECT LAST_INSERT_ID();";
                 MySqlParameter[] para =
                 {
                     new MySqlParameter("@name", model.Name),
                     new MySqlParameter("@name_alias", model.AliasName),
+                    new MySqlParameter("@vendor_type", model.vendor_type),
                     new MySqlParameter("@client", model.Prospect),
                     new MySqlParameter("@fournisseur","1"),
                     new MySqlParameter("@code_vendor", model.VendorCode),
@@ -41,7 +38,7 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@phone", model.Phone),
                     new MySqlParameter("@fax", model.Fax),
                     new MySqlParameter("@email", model.EMail),
-                    new MySqlParameter("@url", model.Web),                   
+                    new MySqlParameter("@url", model.Web),
                     new MySqlParameter("@salestaxused", model.SalesTaxUsed),
                     new MySqlParameter("@fk_typparty", model.ThirdPartyType),
                     new MySqlParameter("@fk_workforce", model.Workforce),
@@ -61,7 +58,11 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@fk_incoterms", model.IncotermsType),
                     new MySqlParameter("@location_incoterms", model.Incoterms),
                     new MySqlParameter("@CreditLimit", model.CreditLimit),
-                    new MySqlParameter("@VendorStatus", model.VendorStatus)
+                    new MySqlParameter("@VendorStatus", model.VendorStatus),
+                     new MySqlParameter("@outstanding_limit", model.outstanding_limit),
+                    new MySqlParameter("@fk_shipping_method", model.fk_shipping_method),
+                    new MySqlParameter("@order_min_amount", model.order_min_amount),
+                   
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
                 return result;
@@ -76,12 +77,15 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "update wp_vendor set name=@name,name_alias=@name_alias,code_vendor=@code_vendor,status=@status,address=@address,address1=@address1,zip = @zip,town = @town,fk_country = @fk_country,fk_state = @fk_state,StateName=@StateName,phone = @phone,fax = @fax,email = @email,url = @url," +
-                    "salestaxused = @salestaxused,fk_typparty = @fk_typparty,fk_workforce = @fk_workforce,fk_Business_Entity = @fk_Business_Entity,capital = @capital,fk_incoterms=@fk_incoterms,location_incoterms=@location_incoterms,SalesRepresentative=@SalesRepresentative,PaymentTermsID=@PaymentTermsID,BalanceID=@BalanceID,PaymentDate=@PaymentDate,Currency=@Currency ,EnableVendorUOM=@EnableVendorUOM ,UnitsofMeasurment=@UnitsofMeasurment,MinimumOrderQuanity=@MinimumOrderQuanity,DefaultTax=@DefaultTax,TaxIncludedinPrice=@TaxIncludedinPrice,DefaultDiscount=@DefaultDiscount,CreditLimit=@CreditLimit,VendorStatus=@VendorStatus where rowid = " + VendorID + "";
+                string strsql = "update wp_vendor set name=@name,vendor_type=@vendor_type,name_alias=@name_alias,code_vendor=@code_vendor,status=@status,address=@address,address1=@address1,zip = @zip,town = @town,fk_country = @fk_country,fk_state = @fk_state,StateName=@StateName,phone = @phone,fax = @fax,email = @email,url = @url," +
+                    "salestaxused = @salestaxused,fk_typparty = @fk_typparty,fk_workforce = @fk_workforce,fk_Business_Entity = @fk_Business_Entity,capital = @capital,fk_incoterms=@fk_incoterms,location_incoterms=@location_incoterms,SalesRepresentative=@SalesRepresentative,PaymentTermsID=@PaymentTermsID,BalanceID=@BalanceID," +
+                    "PaymentDate=@PaymentDate,Currency=@Currency ,EnableVendorUOM=@EnableVendorUOM ,UnitsofMeasurment=@UnitsofMeasurment,MinimumOrderQuanity=@MinimumOrderQuanity,DefaultTax=@DefaultTax,TaxIncludedinPrice=@TaxIncludedinPrice,DefaultDiscount=@DefaultDiscount,CreditLimit=@CreditLimit,VendorStatus=@VendorStatus," +
+                    "outstanding_limit=@outstanding_limit,fk_shipping_method=@fk_shipping_method,order_min_amount=@order_min_amount where rowid = " + VendorID + "";
                 MySqlParameter[] para =
                 {
                     new MySqlParameter("@name", model.Name),
                     new MySqlParameter("@name_alias", model.AliasName),
+                    new MySqlParameter("@vendor_type", model.vendor_type),
                     //new MySqlParameter("@client", model.Prospect),
                     new MySqlParameter("@code_vendor", model.VendorCode),
                     new MySqlParameter("@status", model.Status),
@@ -115,7 +119,12 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@fk_incoterms", model.IncotermsType),
                     new MySqlParameter("@location_incoterms", model.Incoterms),
                     new MySqlParameter("@CreditLimit", model.CreditLimit),
-                    new MySqlParameter("@VendorStatus", model.VendorStatus)
+                    new MySqlParameter("@VendorStatus", model.VendorStatus),
+                    new MySqlParameter("@outstanding_limit", model.outstanding_limit),
+                    new MySqlParameter("@fk_shipping_method", model.fk_shipping_method),
+                    new MySqlParameter("@order_min_amount", model.order_min_amount),
+                    
+
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
                 return result;
@@ -155,12 +164,36 @@ namespace LaylaERP.BAL
             { throw ex; }
             return DS;
         }
+        public static DataSet GetVendorType()
+        {
+            DataSet DS = new DataSet();
+            try
+            {
+                string strSQl = "Select rowid ID,vendor_type from wp_vendortype order by rowid";
+                DS = SQLHelper.ExecuteDataSet(strSQl);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
+        }
+        public static DataSet GetShippingMethod()
+        {
+            DataSet DS = new DataSet();
+            try
+            {
+                string strSQl = "Select ID,ShippingMethod from wp_ShippingMethod order by ID";
+                DS = SQLHelper.ExecuteDataSet(strSQl);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
+        }
         public static DataTable GetIncotermByID(int IncotermsTypeID)
         {
             DataTable dt = new DataTable();
             try
             {
-                string strSQl = "Select rowid as ID, IncoTerm, short_description from IncoTerms where rowid="+ IncotermsTypeID + " order by ID;";
+                string strSQl = "Select rowid as ID, IncoTerm, short_description from IncoTerms where rowid=" + IncotermsTypeID + " order by ID;";
                 dt = SQLHelper.ExecuteDataTable(strSQl);
             }
             catch (Exception ex)
@@ -251,7 +284,7 @@ namespace LaylaERP.BAL
                 }
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
-             
+
             }
             catch (Exception ex)
             {
@@ -265,7 +298,7 @@ namespace LaylaERP.BAL
             try
             {
                 string strWhr = string.Empty;
-                string strSql = "Select rowid as ID, nom as VendorName, name_alias as AliasName,entity,status,code_fournisseur as VendorCode, zip,address,address1,town,fk_departement as State,StateName, fk_pays as Country, phone,fax,url,email,fk_effectif as Workforce,fk_typent as ThirdPartyType,fk_forme_juridique as BusinessEntityType, siren as ProfId, capital, fournisseur as Vendor,fk_incoterms as IncotermsType,location_incoterms as Incoterms, tva_assuj as Salestaxused,SalesRepresentative,PaymentTermsID,BalanceID,LEFT(CAST(PaymentDate AS DATE), 10) PaymentDate,Currency ,EnableVendorUOM ,UnitsofMeasurment,MinimumOrderQuanity,DefaultTax,TaxIncludedinPrice,DefaultDiscount,CreditLimit,VendorStatus FROM wp_vendor where rowid='" + id + "'";
+                string strSql = "Select rowid as ID,vendor_type, name as VendorName, name_alias as AliasName,entity,status,code_vendor as VendorCode, zip,address,address1,town,fk_state as State,StateName, fk_country as Country, phone,fax,url,email,fk_workforce as Workforce,fk_typparty as ThirdPartyType,fk_business_entity as BusinessEntityType,capital, fournisseur as Vendor,fk_incoterms as IncotermsType,location_incoterms as Incoterms, salestaxused as Salestaxused,SalesRepresentative,PaymentTermsID,BalanceID,LEFT(CAST(PaymentDate AS DATE), 10) PaymentDate,Currency ,EnableVendorUOM ,UnitsofMeasurment,MinimumOrderQuanity,DefaultTax,TaxIncludedinPrice,DefaultDiscount,CreditLimit,VendorStatus,outstanding_limit,fk_shipping_method,order_min_amount FROM wp_vendor where rowid='" + id + "'";
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
 

@@ -99,6 +99,28 @@ namespace LaylaERP.Controllers
             return Json(productlist, JsonRequestBehavior.AllowGet);
 
         }
+        public JsonResult GetVendorType(SearchModel model)
+        {
+            DataSet ds = BAL.ThirdPartyRepository.GetVendorType();
+            List<SelectListItem> productlist = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                productlist.Add(new SelectListItem { Text = dr["vendor_type"].ToString(), Value = dr["ID"].ToString() });
+            }
+            return Json(productlist, JsonRequestBehavior.AllowGet);
+
+        }
+        public JsonResult GetShippingMethod(SearchModel model)
+        {
+            DataSet ds = BAL.ThirdPartyRepository.GetShippingMethod();
+            List<SelectListItem> productlist = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                productlist.Add(new SelectListItem { Text = dr["ShippingMethod"].ToString(), Value = dr["ID"].ToString() });
+            }
+            return Json(productlist, JsonRequestBehavior.AllowGet);
+
+        }
         public JsonResult GetIncotermByID(ThirdPartyModel model)
         {
             int id = model.IncotermsTypeID;

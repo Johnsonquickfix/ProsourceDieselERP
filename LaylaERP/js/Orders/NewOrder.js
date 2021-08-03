@@ -68,7 +68,7 @@ $(document).ready(function () {
     $(document).on("click", "#btnpay", function (t) { t.preventDefault(); PaymentModal(); });
     $("#billModal").on("click", "#btnPlaceOrder", function (t) { t.preventDefault(); AcceptPayment(); });
     $("#billModal").on("change", "#ddlPaymentMethod", function (t) {
-        t.preventDefault(); if ($("#ddlPaymentMethod").val() == "paypal") { $("#txtPPEmail").removeClass('hidden'); $("#txtPPEmail").focus(); $("#txtPPEmail").val($("#txtbillemail").val()); }
+        t.preventDefault(); if ($("#ddlPaymentMethod").val() == "ppec_paypal") { $("#txtPPEmail").removeClass('hidden'); $("#txtPPEmail").focus(); $("#txtPPEmail").val($("#txtbillemail").val()); }
         else if ($("#ddlPaymentMethod").val() == "podium") { $("#txtPPEmail").addClass('hidden'); }
         else { $("#txtPPEmail").addClass('hidden'); }
     });
@@ -84,14 +84,14 @@ $(document).ready(function () {
         }
         $("#loader").hide();
     });
-    $(document).on("click", "#btnEditOrder", function (t) {
+    $(document).on("click", ".btnEditOrder", function (t) {
         t.preventDefault(); $("#loader").show();
         $('#ddlStatus').prop("disabled", true); $('.billinfo').prop("disabled", false); $('#txtbillfirstname').focus();
-        $('.box-tools').empty().append('<button type="button" id="btnOrderUndo" class="btn btn-danger"><i class="fa fa-undo"></i> Cancel</button> <button type="button" id="btnOrderUpdate" class="btn btn-danger"><i class="far fa-save"></i> Update</button>');
-        $('.footer-finalbutton').empty().append('<button type="button" id="btnCheckout" class="btn btn-danger billinfo"> Checkout</button>');
+        $('.box-tools').empty().append('<button type="button" class="btn btn-danger btnOrderUndo"><i class="fa fa-undo"></i> Cancel</button> <button type="button" id="btnOrderUpdate" class="btn btn-danger"><i class="far fa-save"></i> Update</button>');
+        $('.footer-finalbutton').empty().append('<button type="button" class="btn btn-danger pull-left btnOrderUndo"><i class="fa fa-undo"></i> Cancel</button>  <button type="button" id="btnCheckout" class="btn btn-danger billinfo"> Checkout</button>');
         $("#loader").hide();
     });
-    $(document).on("click", "#btnOrderUndo", function (t) { t.preventDefault(); setTimeout(function () { $("#loader").show(); getOrderInfo(); }, 10); });
+    $(document).on("click", ".btnOrderUndo", function (t) { t.preventDefault(); setTimeout(function () { $("#loader").show(); getOrderInfo(); }, 10); });
     $(document).on("click", "#btnOrderUpdate", function (t) { t.preventDefault(); updateCO(); });
     $('#billModal').on('shown.bs.modal', function () {
         $('#ddlCustomerSearch').select2({
@@ -603,13 +603,14 @@ function getOrderInfo() {
         $('.page-heading').text('Edit order ').append('<a class="btn btn-danger" href="/Orders/OrdersHistory">Back to List</a>');
         $('#lblOrderNo').text('Order #' + oid + ' detail '); $('#hfOrderNo').val(oid);
         $('#order_line_items,#order_state_recycling_fee_line_items,#order_fee_line_items,#order_shipping_line_items,#order_refunds,#billCoupon,.refund-action').empty();
-        $('#btnCheckout').remove(); $('.footer-finalbutton').append('<a class="btn btn-danger" href="/Orders/OrdersHistory">Back to List</a>');
+        $('#btnCheckout').remove(); $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/Orders/OrdersHistory">Back to List</a>   <button type="button" class="btn btn-danger btnEditOrder"><i class="far fa-edit"></i> Edit</button>');
         var opt = { strValue1: oid };
         ajaxFunc('/Orders/GetOrderInfo', opt, beforeSendFun, function (result) {
             var data = JSON.parse(result);
             if (data.length > 0) {
+                $('#lblOrderNo').data('pay_by', data[0].payment_method); $('#lblOrderNo').data('pay_id', data[0].paypal_id);
                 if (data[0].payment_method.trim().length > 0)
-                    $('.payment-history').text('Payment via ' + data[0].payment_method + ' ' + data[0].created_via + '. Customer IP: ' + data[0].ip_address);
+                    $('.payment-history').text('Payment via ' + data[0]._payment_method_title + ' ' + data[0].created_via + '. Customer IP: ' + data[0].ip_address);
                 else
                     $('.payment-history').text('Customer IP: ' + data[0].ip_address);
                 $('#txtLogDate').val(data[0].date_created);
@@ -629,13 +630,13 @@ function getOrderInfo() {
                 //bind Product
                 getOrderItemList(oid);
                 //if (data[0].status.trim() == "wc-pending") {
-                $('.box-tools').empty().append('<button type="button" id="btnEditOrder" class="btn btn-danger"><i class="far fa-edit"></i> Edit</button>');
+                $('.box-tools').empty().append('<button type="button" class="btn btn-danger btnEditOrder"><i class="far fa-edit"></i> Edit</button>');
                 //}
             }
         }, function () { $("#loader").hide(); $('.billinfo').prop("disabled", true); }, function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); });
     }
     else {
-        $("#loader").hide();
+        $("#loader").hide(); $('#lblOrderNo').data('pay_by', ''); $('#lblOrderNo').data('pay_id', '');
         $('.refund-action').append('<button type="button" id="btnAddFee" class="btn btn-danger billinfo" disabled>Add Fee</button> ');
         $('.page-heading').text('Add New Order'); $('#btnSearch').prop("disabled", false); searchOrderModal();
     }
@@ -1576,24 +1577,16 @@ function updateCO() {
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Payment Modal ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function PaymentModal() {
-    let billing_first_name = $('#txtbillfirstname').val();
-    let billing_last_name = $('#txtbilllastname').val();
-    let billing_address_1 = $('#txtbilladdress1').val();
-    let billing_address_2 = $('#txtbilladdress2').val();
-    let billing_city = $('#txtbillcity').val();
-    let billing_state = $('#ddlbillstate').val();
-    let billing_postcode = $('#txtbillzipcode').val();
-    let billing_phone = $('#txtbillphone').val();
-    let billing_email = $('#txtbillemail').val();
+    let pay_by = $('#lblOrderNo').data('pay_by').trim() > 0 ? $('#lblOrderNo').data('pay_by').trim() : 'podium';
+    let billing_first_name = $('#txtbillfirstname').val(), billing_last_name = $('#txtbilllastname').val();
+    let billing_address_1 = $('#txtbilladdress1').val(), billing_address_2 = $('#txtbilladdress2').val();
+    let billing_city = $('#txtbillcity').val(), billing_state = $('#ddlbillstate').val(), billing_postcode = $('#txtbillzipcode').val();
+    let billing_phone = $('#txtbillphone').val(), billing_email = $('#txtbillemail').val();
 
-    let shipping_first_name = $('#txtshipfirstname').val();
-    let shipping_last_name = $('#txtshiplastname').val();
+    let shipping_first_name = $('#txtshipfirstname').val(), shipping_last_name = $('#txtshiplastname').val();
     let shipping_country = "";
-    let shipping_address_1 = $('#txtshipaddress1').val();
-    let shipping_address_2 = $('#txtshipaddress2').val();
-    let shipping_city = $('#txtshipcity').val();
-    let shipping_state = $('#ddlshipstate').val();
-    let shipping_postcode = $('#txtshipzipcode').val();
+    let shipping_address_1 = $('#txtshipaddress1').val(), shipping_address_2 = $('#txtshipaddress2').val();
+    let shipping_city = $('#txtshipcity').val(), shipping_state = $('#ddlshipstate').val(), shipping_postcode = $('#txtshipzipcode').val();
 
     var myHtml = '';
     //header
@@ -1641,8 +1634,8 @@ function PaymentModal() {
     myHtml += '<div class="input-group">';
     myHtml += '<span class="input-group-btn"  >';
     myHtml += '<select class="form-control select2" id="ddlPaymentMethod" style="width: auto;">';
-    myHtml += '<option value="podium" selected="selected">Podium</option>';
-    myHtml += '<option value="paypal">PayPal</option>';
+    myHtml += '<option value="podium">Podium</option>';
+    myHtml += '<option value="ppec_paypal">PayPal</option>';
     myHtml += '</select>';
     myHtml += '</span>';
     myHtml += '<input class="form-control hidden" type="text" id="txtPPEmail" name="txtPPEmail" placeholder="PayPal Email" maxlength="60">';
@@ -1673,6 +1666,7 @@ function PaymentModal() {
     $('#tblmodalitems tbody').append(myHtml);
     $('#tblmodalTotal').append($('#order_final_total').html());
     $("#billModal").modal({ backdrop: 'static', keyboard: false }); $("#txt_Coupon").focus();
+    $('#ddlPaymentMethod').val(pay_by).trigger('change');
 }
 function AcceptPayment() {
     if ($("#ddlPaymentMethod").val() == "paypal") {
@@ -1734,20 +1728,21 @@ function updatePayment(taskUid) {
 ///Accept paypal Payment
 function PaypalPayment(ppemail) {
     //swal('Alert!', 'Working....', "success").then((result) => { return false; });    
-    var oid = parseInt($('#hfOrderNo').val()) || 0;
-    var cid = parseInt($('#ddlUser').val()) || 0;
-    if (cid <= 0) { swal('Alert!', 'Please Select Customer.', "info").then((result) => { return false; }); }
-    if (oid <= 0) { swal('Alert!', 'Please create new order.', "info").then((result) => { return false; }); }
-
+    let oid = parseInt($('#hfOrderNo').val()) || 0, pp_no = 'WC-' + new Date().getTime();
+    let postMetaxml = [];
+    postMetaxml.push(
+        { post_id: oid, meta_key: '_payment_method', meta_value: 'ppec_paypal' }, { post_id: oid, meta_key: '_payment_method_title', meta_value: 'PayPal' },
+        { post_id: oid, meta_key: '_paypal_invoice_id', meta_value: pp_no }, { post_id: oid, meta_key: '_paypal_id', meta_value: '' },
+        { post_id: oid, meta_key: '_transaction_id', meta_value: '' }, { post_id: oid, meta_key: '_paypal_status', meta_value: '' },
+        { post_id: oid, meta_key: '_woo_pp_txnData', meta_value: '' }
+    );
     $('#btnPlaceOrder').prop("disabled", true);
-    var opt = { strValue1: oid }
+    var opt = { OrderPostMeta: postMetaxml };
     $.ajax({
         type: "POST", url: '/Orders/GetPayPalToken', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
         success: function (result) {
-            //console.log(result);
             /// Create Invoice
-            CreatePaypalInvoice(oid, ppemail, result.message);
-            //CreatePaypalInvoice(oid, 'david.quick.fix1-buyer@gmail.com', result.message);
+            CreatePaypalInvoice(oid, pp_no, ppemail, result.message);
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
         complete: function () { $('#btnPlaceOrder').prop("disabled", false); },
@@ -1756,10 +1751,10 @@ function PaypalPayment(ppemail) {
     });
 
 }
-function CreatePaypalInvoice(oid, pp_email, access_token) {
+function CreatePaypalInvoice(oid, pp_no, pp_email, access_token) {
     let dfa = $('#txtLogDate').val().split(/\//); df = [dfa[2], dfa[0], dfa[1]].join('-');
     let taxPer = parseFloat($('#hfTaxRate').val()) || 0.00;
-    let item_discount = 0.00, shipping_total = parseFloat($('#shippingTotal').text()) || 0.00, srf_total = parseFloat($('#stateRecyclingFeeTotal').text()) || 0.00, fee_total = parseFloat($('#feeTotal').text()) || 0.00;
+    let shipping_total = parseFloat($('#shippingTotal').text()) || 0.00, srf_total = parseFloat($('#stateRecyclingFeeTotal').text()) || 0.00, fee_total = parseFloat($('#feeTotal').text()) || 0.00;
     let custom_label = (srf_total > 0 ? 'State Recycling Fee' : '') + (srf_total > 0 && fee_total > 0 ? ' & ' : '') + (fee_total > 0 ? 'Fee' : ''); fee_total = fee_total + srf_total;
     let itemsList = [];
     //get items
@@ -1772,18 +1767,11 @@ function CreatePaypalInvoice(oid, pp_email, access_token) {
             name: $(this).data('pname'), quantity: qty, unit_amount: { currency_code: "USD", value: rate },
             tax: { name: "Sales Tax", value: taxAmount, percent: taxPer * 100 }, discount: { amount: { currency_code: "USD", value: discountAmount } }, unit_of_measure: "QUANTITY"
         });
-        item_discount += discountAmount;
     });
-    let cart_discount = (parseFloat($('#discountTotal').text()) || 0.00) - item_discount;
-    if (cart_discount > 0) {
-        itemsList.push({ name: 'Cart Discount', quantity: 1, unit_amount: { currency_code: "USD", value: 0 }, tax: { name: "Sales Tax", value: 0, percent: taxPer * 100 }, discount: { amount: { currency_code: "USD", value: cart_discount } }, unit_of_measure: "QUANTITY" });
-    }
-
+    let inv_id = $('#lblOrderNo').data('pay_id').trim();
     var option = {
-        status: "SENT",
-        detail: {
-            invoice_number: 'WC-' + new Date().getTime(), reference: oid, invoice_date: df, currency_code: "USD", note: "Layla Invoice.", payment_term: { term_type: "NET_10" }
-        },
+        id: inv_id, status: "DRAFT",
+        detail: { invoice_number: pp_no, reference: oid, invoice_date: df, currency_code: "USD", note: "Layla Invoice.", payment_term: { term_type: "NET_10" } },
         invoicer: {
             name: { given_name: "", surname: "" },
             address: { address_line_1: "157 Church Street Suite 1956", address_line_2: "", admin_area_2: "New Haven", admin_area_1: "CT", postal_code: "06510", country_code: "US" },
@@ -1808,31 +1796,28 @@ function CreatePaypalInvoice(oid, pp_email, access_token) {
             }
         ],
         items: itemsList,
-        configuration: { allow_tip: false, tax_calculated_after_discount: true, tax_inclusive: false, },
-        amount: {
-            breakdown: {
-                discount: { invoice_discount: { percent: 0 } }, shipping: { amount: { currency_code: "USD", value: shipping_total } },
-                custom: { label: custom_label, amount: { currency_code: "USD", value: fee_total } },
-                //shipping: { amount: { currency_code: "USD", value: shipping_total }, tax: { name: "Sales Tax", percent: taxPer } },
-                //discount: { invoice_discount: { percent: "5" } }
-            }
-        }
+        configuration: { partial_payment: { allow_partial_payment: false }, allow_tip: false, tax_calculated_after_discount: true, tax_inclusive: false },
+        amount: { breakdown: { discount: { invoice_discount: { percent: 0 } }, shipping: { amount: { currency_code: "USD", value: shipping_total } }, custom: { label: custom_label, amount: { currency_code: "USD", value: fee_total } } } }
     }
-    console.log(option);
-    $("#loader").show();
+    let create_url = 'https://api-m.sandbox.paypal.com/v2/invoicing/invoices' + (inv_id.length > 0 ? '/' + inv_id : ''), action_method = (inv_id.length > 0 ? 'PUT' : 'POST');
+    console.log(create_url, option);
     $.ajax({
-        type: "POST", url: 'https://api-m.sandbox.paypal.com/v2/invoicing/invoices', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(option),
+        type: action_method, url: create_url, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(option),
         beforeSend: function (xhr) {
             xhr.setRequestHeader("Accept", "application/json");
-            xhr.setRequestHeader("Accept-Language", "en_US");
             xhr.setRequestHeader("Authorization", "Bearer " + access_token);
         },
         success: function (data) {
             console.log(data);
             var sendURL = data.href + '/send';
             $("txtPPEmail").data('surl', sendURL);
-            ///send Invoice
-            SendPaypalInvoice(access_token, sendURL)
+            if (action_method == 'POST') {
+                SendPaypalInvoice(access_token, sendURL);
+            }
+            else {
+                $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true);
+                successModal('PayPal');
+            }
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); console.log(XMLHttpRequest); swal('Alert!', errorThrown, "error"); },
         complete: function () { $("#loader").hide(); }, async: false
@@ -1840,14 +1825,17 @@ function CreatePaypalInvoice(oid, pp_email, access_token) {
 }
 function SendPaypalInvoice(access_token, sendURL) {
     $.ajax({
-        type: "POST", url: sendURL, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify({ send_to_invoicer: true, send_to_recipient: true }),
+        type: "POST", url: sendURL, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify({ send_to_invoicer: false }),
         beforeSend: function (xhr) {
             xhr.setRequestHeader("Accept", "application/json");
-            xhr.setRequestHeader("Accept-Language", "en_US");
             xhr.setRequestHeader("Authorization", "Bearer " + access_token);
         },
         success: function (senddata) {
             console.log(senddata);
+            let _postMeta = [{ post_id: oid, meta_key: '_paypal_id', meta_value: '' }];
+            let opt = { OrderPostMeta: _postMeta };
+            ajaxFunc('/Orders/UpdatePayPalID', opt, beforeSendFun, function (result) { $('#lblOrderNo').data('pay_id', ''); }, completeFun, errorFun);
+
             $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true);
             //setTimeout(function () { swal('Order received!', 'Thank you. Your invoice has been send on your email for payment.', "success").then((result) => { window.location.href = window.location.href; }); }, 50);
             setTimeout(function () { successModal('PayPal'); }, 50);
@@ -1860,7 +1848,21 @@ function SendPaypalInvoice(access_token, sendURL) {
         async: false
     });
 }
-
+function CancelPaypalInvoice(access_token, pp_email, invoice_no) {
+    var option = { subject: "Invoice Cancelled", note: "Cancelling the invoice", send_to_invoicer: true, send_to_recipient: true, additional_recipients: [pp_email] }
+    let create_url = 'https://api-m.sandbox.paypal.com/v2/invoicing/invoices/' + invoice_no + '/cancel';
+    console.log(create_url, option);
+    $.ajax({
+        type: "POST", url: create_url, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(option),
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader("Accept", "application/json");
+            xhr.setRequestHeader("Authorization", "Bearer " + access_token);
+        },
+        success: function (data) { console.log(data); },
+        error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); console.log(XMLHttpRequest); swal('Alert!', errorThrown, "error"); },
+        complete: function () { $("#loader").hide(); }, async: false
+    });
+}
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Success modal ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function successModal(paymode) {
     var modalHtml = '';

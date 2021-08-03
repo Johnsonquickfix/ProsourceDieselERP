@@ -805,6 +805,7 @@
     <Content Include="Views\SaleOrder\ListSaleOrder.cshtml" />
     <Content Include="Views\PurchaseOrder\PurchaseOrderList.cshtml" />
     <Content Include="Views\CommercialProposal\EditProposal.cshtml" />
+    <Content Include="Views\PurchaseOrder\PurchaseOrderDetails.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

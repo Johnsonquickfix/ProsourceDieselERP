@@ -3,310 +3,196 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<link href="~/Content/DataTables/bootstrap-datepicker.css" rel="stylesheet" />
-<script src="~/Content/DataTables/bootstrap-datepicker.js"></script>
-
 <div class="page-title">
     <h2>Edit Commercial Proposal</h2>
 </div>
-
 <section class="content section-content massstocktransfer commercial_proposal mt-1">
-    <div class="box box-primary">
-        <div class="box-body">
-            <div class="rowbox">
-                <input type="hidden" id="hfid" />
-                <div class="col-md-3"><label>Ref.</label></div>
-                <div class="col-md-5">
-                    <input type="text" class="form-control" placeholder="Draft" id="txtreff" disabled />
-                </div>
-            </div>
-            <div class="rowbox">
-                <div class="col-md-3"><label>Vendor</label></div>
-                <div class="col-md-5">
-                    <select class="form-control" id="ddlVendor">
-                        @*<option value="0">--Select third party--</option>*@
-                    </select>
-                </div>
-            </div>
-            <div class="rowbox">
-                <div class="col-md-3"><label>Ref. Vendor</label></div>
-                <div class="col-md-5">
-                    <input type="text" class="form-control" id="txtrefvendor" />
-                </div>
-            </div>
-
-            <div class="rowbox">
-                <div class="col-md-3"><label>Date of Proposal</label></div>
-                <div class="col-md-5">
-                    <input class="form-control" type="text" placeholder="7/27/2021" id="txtdatep" disabled/>
-                </div>
-            </div>
-            <div class="rowbox">
-                <div class="col-md-3"><label>Validity Duration</label></div>
-                <div class="col-md-5">
-                    <input class="form-control" type="text" placeholder="15" id="txtvalidity" /><span>Days</span>
-                </div>
-            </div>
-            <div class="rowbox">
-                <div class="col-md-3"><label>Payment Terms</label></div>
-                <div class="col-md-5">
-                    <select class="form-control" id="ddlPaymentTerms">
-                        @*<option value="0">----</option>*@
-                    </select><span><i class="fa fa-info-circle"></i></span>
-                </div>
-            </div>
-            <div class="rowbox">
-                <div class="col-md-3"><label>Balance</label></div>
-                <div class="col-md-5">
-                    <select class="form-control" id="ddlBalancedays"></select><span><i class="fa fa-info-circle"></i></span>
-                </div>
-            </div>
-            <div class="rowbox">
-                <div class="col-md-3"><label>Payment Type</label></div>
-                <div class="col-md-5">
-                    <select class="form-control" id="ddlGetPaymentType">
-                        @*<option value="0">----</option>*@
-                    </select><span><i class="fa fa-info-circle"></i></span>
-                </div>
-            </div>
-
-            @*<div class="rowbox">
-                    <div class="col-md-3"><label>Source</label></div>
-                    <div class="col-md-5">
-                        <select class="form-control" id="ddlGetSourceType">
-                            <option value="0">----</option>
-                        </select><span><i class="fa fa-info-circle"></i></span>
+    <div class="nav-tabs-custom">
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#tab_1" data-toggle="tab">Commercial Proposal</a></li>
+            <li><a href="#tab_2" data-toggle="tab">Contacts/Addresses</a></li>
+            <li><a href="#tab_3" data-toggle="tab">Notes<span class="badge badge-danger">4</span></a></li>
+            <li><a href="#tab_4" data-toggle="tab">Linked files<span class="badge badge-danger">4</span></a></li>
+            <li><a href="#tab_5" data-toggle="tab">Log</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane active" id="tab_1">
+                <div class="box box-primary">
+                    <div class="box-header">
+                        <div class="d-flex proposal-top">
+                            <div class="edit-proposal-box">
+                                <div class="proposal-box">
+                                    <input type="file" name="file" id="proposal" class="inputfile">
+                                    <label for="proposal"><i class="fa fa-edit"></i></label>
+                                </div>
+                                <div class="edit-proposal-texts">
+                                    <h3 class="box-title">PROV2108-00005</h3>
+                                    <p>Ref. customer<button><i class="fas fa-pencil-alt"></i></button></p>
+                                    <p>Third-party: Lyl texttile(LYT)(Other proposals)</p>
+                                </div>
+                            </div>
+                            <div class="back-to-list">
+                                <p><button class="btn no-btn">Back to list</button></p>
+                                <p><button class="btn btn-danger">Signed(needs billing)</button></p>
+                            </div>
+                        </div>
                     </div>
-                </div>*@
-
-            <div class="rowbox">
-                <div class="col-md-3"><label>Availability Delay(after order)</label></div>
-                <div class="col-md-5">
-                    <select class="form-control" id="ddlavailability">
-                        <option value="0">Please Select Delay</option>
-                        <option value="1">Immediate</option>
-                        <option value="2">1 week</option>
-                        <option value="3">2 weeks</option>
-                        <option value="4">3 weeks</option>
-                    </select><span><i class="fa fa-info-circle"></i></span>
+                </div>
+                <div class="row rowbox proposal-row">
+                    <div class="col-md-6">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">Discounts</label>
+                                    <div class="col-md-8">
+                                        <p>This customer has a default discount of 10%</p>
+                                        <span class="form-info">The name is how it appears on your site.</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">Date of proposal</label>
+                                    <div class="col-md-8">
+                                        <p>07/26/2021</p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">Validity ending date</label>
+                                    <div class="col-md-8">
+                                        <p>08/10/2021</p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">Payment Terms</label>
+                                    <div class="col-md-8">
+                                        <p>30 days of month-end</p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">Payment Type</label>
+                                    <div class="col-md-8">
+                                        <p>Check</p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">Delivery date</label>
+                                    <div class="col-md-8">
+                                        <p><i class="fas fa-pencil-alt"></i>07/31/2021</p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">Availability delay (after order)</label>
+                                    <div class="col-md-8">
+                                        <p>2 weeks</p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">Shipping method</label>
+                                    <div class="col-md-8">
+                                        <p><i class="fas fa-pencil-alt"></i>UPS</p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">Source</label>
+                                    <div class="col-md-8">
+                                        <p>Internet</p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">Calculated weight</label>
+                                    <div class="col-md-8">
+                                        <p>1,000 Kg</p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">Calculated volume</label>
+                                    <div class="col-md-8">
+                                        <p>1,000 m<sup>3</sup></p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">Incoterms</label>
+                                    <div class="col-md-8">
+                                        <p><i class="fas fa-pencil-alt"></i>GIF</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="form-group">
+                                    <label class="col-md-6 control-label">Amount (excl. tax)</label>
+                                    <div class="col-md-6">
+                                        <p>$22,000</p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-6 control-label">Amount tax</label>
+                                    <div class="col-md-6">
+                                        <p>$2,000</p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-6 control-label">Amount (inc. tax)</label>
+                                    <div class="col-md-6">
+                                        <p>$24,000</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="box box-primary">
+                    <div class="box-body" id="proposal-table">
+                        <table class="table-blue table check-table table-bordered">
+                            <thead>
+                                <tr role="row">
+                                    <th class="text-left">Description</th>
+                                    <th>Sale tax</th>
+                                    <th>U.P.(net)</th>
+                                    <th>Qty</th>
+                                    <th>Disc</th>
+                                    <th>Total(excl.)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="text-left">Layla_Metal_Plateform_Base-Layla metal plateform base</td>
+                                    <td>6%</td>
+                                    <td>249.00</td>
+                                    <td>100</td>
+                                    <td>10%</td>
+                                    <td>24,000</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="proposals-btns">
+                            <button class="text-uppercase btn btn-danger">Re-Open</button>
+                            <button class="text-uppercase btn btn-danger">Send Email</button>
+                            <button class="text-uppercase btn btn-danger">Create Order</button>
+                            <button class="text-uppercase btn btn-danger">Create Intervention</button>
+                            <button class="text-uppercase btn btn-danger">Create Contract</button>
+                            <button class="text-uppercase btn btn-danger">Create Invoice Or Credit Note</button>
+                            <button class="text-uppercase btn btn-danger">Classify Billed</button>
+                            <button class="text-uppercase btn btn-danger">Clone</button>
+                            <button class="text-uppercase btn btn-default">Delete</button>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="rowbox">
-                <div class="col-md-3"><label>Shipping Method</label></div>
-                <div class="col-md-5">
-                    <select class="form-control" id="ddlshipping">
-                        <option value="0">Please Select Shipping Method</option>
-                        <option value="1">Generic transport service</option>
-                        <option value="2">In-store collection</option>
-                        <option value="3">UPS</option>
-                    </select><span><i class="fa fa-info-circle"></i></span>
-                </div>
+            <div class="tab-pane" id="tab_2">
+                <h2>Contacts/Addresses</h2>
             </div>
-            <div class="rowbox">
-                <div class="col-md-3"><label>Delivery Date</label></div>
-                <div class="col-md-5">
-                    <input class="form-control" type="text" id="deliverydate" /><span class="even-space"></span>
-                </div>
+            <div class="tab-pane" id="tab_3">
+                Notes
             </div>
-            <div class="rowbox">
-                <div class="col-md-3"><label>Incoterms</label></div>
-                <div class="col-md-5">
-                    <select class="form-control" id="ddlIncoTerm"></select>
-                    <input class="form-control" type="text" id="txtIncoTerm" />
-                </div>
+            <div class="tab-pane" id="tab_4">
+                Linked files
             </div>
-            <div class="rowbox">
-                <div class="col-md-3"><label>Default Doc Template</label></div>
-                <div class="col-md-5">
-                    <select class="form-control" id="ddldoc">
-                        <option value="0">azur</option>
-                    </select>
-                </div>
-            </div>
-            <div class="col-md-3"><label>Note(Public)</label></div>
-            <div class="col-md-9">
-                <textarea class="form-control" id="txtpublic"></textarea>
-            </div>
-            <div class="col-md-3"><label>Note(Private)</label></div>
-            <div class="col-md-9">
-                <textarea class="form-control" id="txtprivate"></textarea>
-            </div>
-            <div class="box-footer text-right">
-                <input type="submit" class="btn btn-danger" id="btnSave" value="Update Draft" />
-                @Html.ActionLink("Back to List", "ListingProposal", null, new { @class = "btn btn-danger" })
+            <div class="tab-pane" id="tab_5">
+                Log
             </div>
         </div>
     </div>
-
-
 </section>
-
-<script src="@Url.Content("~/js/CommercialPorposal/NewPorposal.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
-
-<script>
-    $(document).ready(function () {
-        var url = window.location.pathname;
-        var id = url.substring(url.lastIndexOf('/') + 1);
-        GetProposalByID(id);
-
-        $("#loader").hide();
-        //var dt2 = new Date();
-        //var dt4 = dt2.getUTCFullYear() + '-' + ("0" + (dt2.getUTCMonth() + 1)).slice(-2) + '-' + ("0" + (dt2.getUTCDate())).slice(-2);
-        //document.getElementById("txtdatep").value = dt4;
-
-        $(document).on('click', "#btnSave", function () {
-            AddCommercialProposal();
-        });
-
-    });
-</script>
-<script>
-    $(function () {
-        $("#deliverydate").datepicker({
-            format: 'yyyy-mm-dd',
-        });
-    });
-
-</script>
-
-
-<script>
-    function AddCommercialProposal() {
-        debugger
-        rowid = $("#hfid").val();
-        ref = $("#txtreff").val();
-        vendor = $("#ddlVendor").val();
-        refcustomer = $("#txtrefvendor").val();
-        dateofproposal = $("#txtdatep").val();
-        validationduration = $("#txtvalidity").val();
-        paymentterms = $("#ddlPaymentTerms").val();
-        balance = $("#ddlBalancedays").val();
-        paymenttype = $("#ddlGetPaymentType").val();
-        //source = $("#ddlGetSourceType").val();
-        availability = $("#ddlavailability").val();
-        shippingmethod = $("#ddlshipping").val();
-        incoterms = $("#ddlIncoTerm").val();
-        doctemplate = $("#ddldoc").val();
-        notepublic = $("#txtpublic").val();
-        noteprivate = $("#txtprivate").val();
-        deliverydate = $("#deliverydate").val();
-        incotermslocation = $("#txtIncoTerm").val();
-
-        if (ref == "") {
-            swal('Alert', 'Please enter reference name', 'error').then(function () { swal.close(); $('#txtref').focus(); });
-        }
-        else if (vendor == "-1") {
-            swal('Alert', 'Please select vendor', 'error').then(function () { swal.close(); $('#ddlVendor').focus(); });
-        }
-        else if (validationduration == "") {
-            swal('Alert', 'Please enter validity duration', 'error').then(function () { swal.close(); $('#txtvalidity').focus(); });
-        }
-        else if (paymentterms == "-1") {
-            swal('Alert', 'Please select payment terms', 'error').then(function () { swal.close(); $('#ddlPaymentTerms').focus(); });
-        }
-        else if (balance == "-1") {
-            swal('Alert', 'Please select balance', 'error').then(function () { swal.close(); $('#ddlBalancedays').focus(); });
-        }
-        else if (paymenttype == "-1") {
-            swal('Alert', 'Please select payment type', 'error').then(function () { swal.close(); $('#ddlGetPaymentType').focus(); });
-        }
-        else if (availability == "0") {
-            swal('Alert', 'Please select delay', 'error').then(function () { swal.close(); $('#ddlavailability').focus(); });
-        }
-        else if (shippingmethod == "0") {
-            swal('Alert', 'Please select shipping method', 'error').then(function () { swal.close(); $('#ddlshipping').focus(); });
-        }
-        else if (deliverydate == "") {
-            swal('Alert', 'Please enter delivery date', 'error').then(function () { swal.close(); $('#deliverydate').focus(); });
-        }
-        else if (incoterms == "-1") {
-            swal('Alert', 'Please select incoterms', 'error').then(function () { swal.close(); $('#ddlIncoTerm').focus(); });
-        }
-        else {
-
-            var obj = {
-                rowid: rowid,
-                reff: ref,
-                fk_vendor:vendor,
-                datep:dateofproposal,
-                fin_validite: validationduration,
-                validity_duration: validationduration,
-                payment_term:paymentterms,
-                balance:balance,
-                payment_type:paymenttype,
-                fk_availability:availability,
-                fk_shipping_method:shippingmethod,
-                fk_incoterms:incoterms,
-                model_pdf:doctemplate,
-                note_public:notepublic,
-                note_private: noteprivate,
-                date_delivery: deliverydate,
-                location_incoterms: incotermslocation,
-
-            }
-            $.ajax({
-                url: '/CommercialProposal/UpdateProposal/', dataType: 'json', type: 'Post',
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify(obj),
-                dataType: "json",
-                beforeSend: function () { $("#loader").show(); },
-                success: function (data) {
-                    if (data.status == true) {
-                        //$('#parent > input:text').val('');
-                        swal('Alert!', data.message, 'success').then((result) => { window.location = '../../CommercialProposal/ListingProposal'; });
-                        
-                    }
-                    else {
-                        swal('Alert!', data.message, 'error');
-                    }
-                },
-                complete: function () { $("#loader").hide(); },
-                error: function (error) { swal('Error!', 'something went wrong', 'error'); },
-            })
-
-        }
-    }
-
-</script>
-
-<script>
-    function GetProposalByID(id) {
-        var rowid = id;
-        var obj =
-            $.ajax({
-                url: "/CommercialProposal/GetProposalByID/" + rowid,
-                type: "GET",
-                contentType: "application/json; charset=utf-8",
-                dataType: 'JSON',
-                data: JSON.stringify(obj),
-                success: function (data) {
-                    console.log(data);
-                    var d = JSON.parse(data);
-                    if (d.length > 0) {
-                        
-                        $("#ddlshipping").val(d[0].fk_shipping_method);
-                        $("#ddlPaymentTerms").val(d[0].payment_term);
-                        $("#ddlBalancedays").val(d[0].balance);
-                        $("#ddlGetPaymentType").val(d[0].payment_type);
-                        $("#ddlavailability").val(d[0].fk_availability);
-                        $("#ddlIncoTerm").val(d[0].fk_incoterms);
-                        $("#txtpublic").val(d[0].note_public);
-                        $("#txtprivate").val(d[0].note_private);
-                        $("#hfid").val(d[0].rowid);
-                        $("#txtreff").val(d[0].ref);
-                        $("#ddlVendor").val(d[0].fk_vendor);
-                        $("#txtrefvendor").val(d[0].fk_vendor);
-                        $("#deliverydate").val(d[0].date_delivery);
-                        $("#txtvalidity").val(d[0].validity_duration);
-                        $("#txtdatep").val(d[0].datep);
-                        $("#txtIncoTerm").val(d[0].location_incoterms);
-                    }
-                },
-                error: function (msg) {
-
-                }
-            });
-
-    }
-
-</script>

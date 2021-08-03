@@ -17,7 +17,7 @@ namespace LaylaERP.BAL
             DataSet DS = new DataSet();
             try
             {
-                DS = SQLHelper.ExecuteDataSet("Select rowid, name from wp_vendor where status='1' order by rowid limit 50;");
+                DS = SQLHelper.ExecuteDataSet("Select rowid, name from wp_vendor where VendorStatus='1' order by rowid limit 50;");
             }
             catch (Exception ex)
             { throw ex; }
@@ -234,7 +234,7 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
-
+        
     }
 }
 

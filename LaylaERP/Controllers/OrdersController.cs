@@ -372,7 +372,7 @@
                 int res = OrderRepository.UpdatePayPalStatus(model.OrderPostMeta);
                 if (res > 0)
                 {
-                    result = "Success."
+                    result = "Success.";
                     status = true;
                 }
             }

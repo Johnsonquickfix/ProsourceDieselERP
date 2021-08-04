@@ -83,8 +83,7 @@ function getOrderInfo() {
                 $('#ddlStatus').val(data[0].status.trim()).trigger('change'); $('#ddlUser').prop("disabled", true);
                 $("#ddlUser").empty().append('<option value="' + data[0].customer_id + '" selected>' + data[0].customer_name + '</option>');
                 ///billing_Details
-                var tPhone = data[0].b_phone;
-                if (tPhone != null) { tPhone = '(' + tPhone.substring(0, 3) + ') ' + tPhone.substring(3, 6) + '-' + tPhone.substring(6, 10); }
+                var tPhone = data[0].b_phone.replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3");
                 let billing_Details = '<strong>' + data[0].b_first_name + ' ' + data[0].b_last_name + '</strong><br>';
                 billing_Details += (data[0].b_company.length > 0 ? data[0].b_company + '<br>' : '') + (data[0].b_address_1.length > 0 ? data[0].b_address_1 + '<br>' : '')
                     + (data[0].b_address_2.length > 0 ? data[0].b_address_2 + '<br>' : '') + (data[0].b_city.length > 0 ? data[0].b_city + ', ' : '') + (data[0].b_state.length > 0 ? data[0].b_state + ', ' : '')
@@ -94,11 +93,11 @@ function getOrderInfo() {
 
                 ///shipping_Details
                 let shipping_Details = '<strong>' + data[0].s_first_name + ' ' + data[0].s_last_name + '</strong><br>';
-                shipping_Details += (data[0].s_company.length > 0 ? data[0].s_company + '<br>' : '') + (data[0].s_address_1.length > 0 ? data[0].s_address_1 + '<br>' : '')
+                shipping_Details += (data[0].s_company.length > 0 ? data[0].s_company + '<br>' : '') + (data[0].s_address_1.length > 0 ? data[0].s_address_1.trim() + '<br>' : '')
                     + (data[0].s_address_2.length > 0 ? data[0].s_address_2 + '<br>' : '') + (data[0].s_city.length > 0 ? data[0].s_city + ', ' : '') + (data[0].s_state.length > 0 ? data[0].s_state + ', ' : '')
                     + (data[0].s_country.length > 0 ? data[0].s_country + ' ' : '') + (data[0].s_postcode.length > 0 ? data[0].s_postcode : '');
                 $('.shipping-address').empty().append(shipping_Details);
-                $('#txtshipfirstname').val(data[0].s_first_name); $('#txtshiplastname').val(data[0].s_last_name); $('#txtshipaddress1').val(data[0].s_address_1); $('#txtshipaddress2').val(data[0].s_address_2);
+                $('#txtshipfirstname').val(data[0].s_first_name); $('#txtshiplastname').val(data[0].s_last_name); $('#txtshipaddress1').val(data[0].s_address_1.trim()); $('#txtshipaddress2').val(data[0].s_address_2);
                 $('#txtshipcompany').val(data[0].s_company); $('#txtshipzipcode').val(data[0].s_postcode); $('#txtshipcity').val(data[0].s_city);
                 $('#ddlshipcountry').val(data[0].s_country.trim()).trigger('change'); $('#ddlshipstate').val(data[0].s_state.trim()).trigger('change');
                 //bind Product
@@ -129,11 +128,14 @@ function getOrderItemList(oid) {
                 itemHtml += '<td class="text-right row-qty">' + data[i].quantity + '</td>';
                 if (data[i].is_free) {
                     itemHtml += '<td><input min="0" max="' + data[i].quantity + '" autocomplete="off" disabled class="form-control number rowCalulate" type="number" id="txt_RefundQty_' + PKey + '" value="0" name="txt_RefundQty" placeholder="Qty"></td>';
+                    itemHtml += '<td class="TotalAmount text-right" data-regprice="' + data[i].reg_price + '"data-salerate="' + data[i].sale_price + '" data-discount="' + data[i].discount.toFixed(2) + '" data-amount="' + data[i].total + '" data-taxamount="' + data[i].tax_amount + '" data-shippingamt="' + data[i].shipping_amount + '">' + data[i].total.toFixed(2) + '</td>';
                 }
                 else {
                     itemHtml += '<td><input min="0" max="' + data[i].quantity + '" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_RefundQty_' + PKey + '" value="0" name="txt_RefundQty" placeholder="Qty" onkeyup="this.value = ValidateMaxValue(this.value, 0, ' + data[i].quantity + ')"></td>';
+                    itemHtml += '<td class="TotalAmount text-right" data-regprice="' + data[i].reg_price + '"data-salerate="' + data[i].sale_price + '" data-discount="' + data[i].discount.toFixed(2) + '" data-amount="' + data[i].total + '" data-taxamount="' + data[i].tax_amount + '" data-shippingamt="' + data[i].shipping_amount + '">' + data[i].total.toFixed(2);
+                    itemHtml += '<input min="0" max="' + data[i].total + '" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_RefundAmt_' + PKey + '" value="0" name="txt_RefundAmt" placeholder="Qty"></td>';
                 }
-                itemHtml += '<td class="TotalAmount text-right" data-regprice="' + data[i].reg_price + '"data-salerate="' + data[i].sale_price + '" data-discount="' + data[i].discount.toFixed(2) + '" data-amount="' + data[i].total + '" data-taxamount="' + data[i].tax_amount + '" data-shippingamt="' + data[i].shipping_amount + '">' + data[i].total.toFixed(2) + '</td>';
+
                 itemHtml += '<td class="text-right RowDiscount" data-disctype="' + data[i].discount_type + '" data-couponamt="0">' + data[i].discount.toFixed(2) + '</td>';
                 itemHtml += '<td class="text-right RowTax">' + data[i].tax_amount.toFixed(2) + '</td>';
                 itemHtml += '</tr>';
@@ -223,7 +225,8 @@ function getOrderItemList(oid) {
                     let max_return = parseInt($("#tritemId_" + orderitemid).data("qty")) + parseInt(data[i].quantity);
                     $("#tritemId_" + orderitemid).find('[name=txt_RefundQty]').attr({ "max": max_return, "min": 0, "onkeyup": 'this.value = ValidateMaxValue(this.value, 0, ' + max_return + ')' });
                     $("#tritemId_" + orderitemid).data("returnqty", data[i].quantity);
-                    $("#tritemId_" + orderitemid).find('.row-qty').append('<span class="text-danger"><i class="fa fa-fw fa-undo"></i>' + data[i].quantity + '</span>');
+                    $("#tritemId_" + orderitemid).find('.row-qty').append('<span class="text-danger" style="display: block;"><i class="fa fa-fw fa-undo"></i>' + data[i].quantity + '</span>');
+                    $("#tritemId_" + orderitemid).find('.TotalAmount').append('<span class="text-danger" style="display: block;"><i class="fa fa-fw fa-undo"></i>' + data[i].total + '</span>');
                 }
                 else if (data[i].product_name == "fee") {
                     let max_amt = parseInt($("#trfeeid_" + orderitemid).data("totalamt")) + parseInt(data[i].total);
@@ -384,6 +387,7 @@ function createItemsList() {
         let refundqty = parseFloat($(tr).find("[name=txt_RefundQty]").val()) || 0.00;
         let rate = parseFloat($(tr).find(".TotalAmount").data('regprice')) || 0.00;
         let grossAmount = parseFloat($(tr).find(".TotalAmount").data('amount')) || 0.00;
+        let refundamt = parseFloat($(tr).find("[name=txt_RefundAmt]").val()) || 0.00;
         let discountAmount = parseFloat($(tr).find(".TotalAmount").data('discount')) || 0.00;
         let taxAmount = parseFloat($(tr).find(".TotalAmount").data('taxamount')) || 0.00;
         let shippinAmount = parseFloat($(tr).find(".TotalAmount").data('shippingamt')) || 0.00;
@@ -392,6 +396,25 @@ function createItemsList() {
             discountAmount = discountAmount > 0 ? (discountAmount / qty) * refundqty : 0;
             taxAmount = taxAmount > 0 ? (taxAmount / qty) * refundqty : 0;
             shippinAmount = shippinAmount > 0 ? (shippinAmount / qty) * refundqty : 0;
+            itemsDetails.push({
+                order_item_id: $(this).data('orderitemid'),
+                PKey: index,
+                order_id: oid,
+                customer_id: cid,
+                product_id: $(tr).data('pid'),
+                variation_id: $(tr).data('vid'),
+                product_name: $(tr).data('pname'),
+                quantity: refundqty,
+                sale_rate: rate,
+                total: grossAmount,
+                discount: discountAmount,
+                tax_amount: taxAmount,
+                shipping_amount: shippinAmount,
+                shipping_tax_amount: 0
+            });
+        }
+        else if (refundamt > 0) {
+            grossAmount = refundamt, discountAmount = 0, taxAmount = 0, shippinAmount = 0;
             itemsDetails.push({
                 order_item_id: $(this).data('orderitemid'),
                 PKey: index,

@@ -1808,7 +1808,7 @@ function SendPaypalInvoice(oid, access_token, sendURL) {
     let _postMeta = [{ post_id: oid, meta_key: '_paypal_id', meta_value: id[id.length - 2] }];
 
     $.ajax({
-        type: "POST", url: sendURL, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify({ send_to_invoicer: false }),
+        type: "POST", url: sendURL, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify({ send_to_recipient: true, send_to_invoicer }),
         beforeSend: function (xhr) {
             xhr.setRequestHeader("Accept", "application/json");
             xhr.setRequestHeader("Authorization", "Bearer " + access_token);

@@ -75,6 +75,7 @@ function getOrderInfo() {
         ajaxFunc('/Orders/GetOrderInfo', opt, beforeSendFun, function (result) {
             var data = JSON.parse(result);
             if (data.length > 0) {
+                $('#lblOrderNo').data('pay_by', data[0].payment_method); $('#lblOrderNo').data('pay_id', data[0].paypal_id);
                 if (data[0].payment_method.trim().length > 0)
                     $('.payment-history').text('Payment via ' + data[0].payment_method + ' ' + data[0].created_via + '. Customer IP: ' + data[0].ip_address);
                 else
@@ -106,7 +107,7 @@ function getOrderInfo() {
         }, function () { $("#loader").hide(); $('.billinfo').prop("disabled", true); }, function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); });
     }
     else {
-        $("#loader").hide();
+        $("#loader").hide(); $('#lblOrderNo').data('pay_by', ''); $('#lblOrderNo').data('pay_id', '');
         $('.refund-action').append('<button type="button" id="btnAddFee" class="btn btn-danger billinfo" disabled>Add Fee</button> ');
         $('.page-heading').text('Add New Order'); $('#btnSearch').prop("disabled", false); searchOrderModal();
     }
@@ -283,7 +284,9 @@ function getStateRecyclingCharge() {
     let ship_state = $("#ddlshipstate").val();
     let zStateRecyclingAmt = 0.00, matCount = 0;
     $("#order_line_items > tr.paid_item").each(function () {
-        if (recycling_item.includes($(this).data('pid'))) { matCount = matCount + (parseInt($(this).find("[name=txt_RefundQty]").val()) || 0.00); }
+        if (parseInt($(this).find("[name=txt_RefundAmt]").val()) == 0) {
+            if (recycling_item.includes($(this).data('pid'))) { matCount = matCount + (parseInt($(this).find("[name=txt_RefundQty]").val()) || 0.00); }
+        }
     });
     if (ship_state == "CA") { zStateRecyclingAmt = matCount * 10.5; }
     else if (ship_state == "CT") { zStateRecyclingAmt = matCount * 11.75; }
@@ -334,7 +337,7 @@ function createPostMeta() {
     let oid = 0, postMetaxml = [];
     let total = parseFloat($('.btnRefundOk').data('total')) || 0.00, tax = parseFloat($('.btnRefundOk').data('tax')) || 0.00;
     postMetaxml.push(
-        { post_id: oid, meta_key: '_order_currency', meta_value: 'USD' }, { post_id: oid, meta_key: '_refund_reason', meta_value: 'Customer Cancelled' },
+        { post_id: oid, meta_key: '_order_currency', meta_value: 'USD' }, { post_id: oid, meta_key: '_refund_reason', meta_value: '' },//Customer Cancelled
         { post_id: oid, meta_key: '_cart_discount', meta_value: 0 }, { post_id: oid, meta_key: '_cart_discount_tax', meta_value: 0 },
         { post_id: oid, meta_key: '_order_shipping', meta_value: 0 }, { post_id: oid, meta_key: '_order_shipping_tax', meta_value: 0 },
         { post_id: oid, meta_key: '_order_tax', meta_value: '-' + tax }, { post_id: oid, meta_key: '_order_total', meta_value: '-' + total },
@@ -391,7 +394,7 @@ function createItemsList() {
         let discountAmount = parseFloat($(tr).find(".TotalAmount").data('discount')) || 0.00;
         let taxAmount = parseFloat($(tr).find(".TotalAmount").data('taxamount')) || 0.00;
         let shippinAmount = parseFloat($(tr).find(".TotalAmount").data('shippingamt')) || 0.00;
-        if (refundqty > 0) {
+        if (refundqty > 0 && refundamt == 0) {
             grossAmount = grossAmount > 0 ? (grossAmount / qty) * refundqty : 0;
             discountAmount = discountAmount > 0 ? (discountAmount / qty) * refundqty : 0;
             taxAmount = taxAmount > 0 ? (taxAmount / qty) * refundqty : 0;
@@ -450,10 +453,12 @@ function saveCO() {
         data: JSON.stringify(obj), dataType: "json", beforeSend: function () { $("#loader").show(); },
         success: function (data) {
             if (data.status == true) {
+                PaypalRefundsPayment();
                 $('.box-tools,.footer-finalbutton').empty().append('<button type="button" class="btn btn-danger btnRefundOrder"><i class="far fa-edit"></i> Refund</button>');
                 $('#order_line_items,#order_state_recycling_fee_line_items,#order_fee_line_items,#order_shipping_line_items,#order_refunds,#billCoupon,.refund-action').empty();
-                getOrderItemList(oid); $('.billinfo').prop("disabled", true);
+                $('.billinfo').prop("disabled", true);
                 swal('Alert!', data.message, "success");
+                setTimeout(function () { getOrderItemList(oid); }, 50);
             }
             else { swal('Alert!', data.message, "error").then((result) => { return false; }); }
         },
@@ -461,4 +466,29 @@ function saveCO() {
         complete: function () { $("#loader").hide(); },
     });
     return false;
+}
+///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ PayPal Payment Return ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+function PaypalRefundsPayment() {
+    let oid = parseInt($('#hfOrderNo').val()) || 0;
+    let postMetaxml = [{ post_id: oid, meta_key: '_payment_method', meta_value: 'ppec_paypal' }, { post_id: oid, meta_key: '_payment_method_title', meta_value: 'PayPal' }, { post_id: oid, meta_key: '_paypal_id', meta_value: $('#lblOrderNo').data('pay_id').trim() }];
+    var opt = { OrderPostMeta: postMetaxml };
+    ajaxFunc('/Orders/GetPayPalToken', opt, beforeSendFun, function (result) { RefundPaypalInvoice(result.message); }, function () { }, function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); });
+}
+function RefundPaypalInvoice(access_token) {
+    let invoice_no = $('#lblOrderNo').data('pay_id').trim(), invoice_amt = (parseFloat($('.btnRefundOk').data('nettotal')) || 0.00);
+    let date = new Date();
+    let invoice_date = date.getUTCFullYear() + '-' + (date.getUTCMonth() + 1) + '-' + date.getUTCDate();
+    let option = { method: "BANK_TRANSFER", refund_date: "2021-08-04", amount: { currency_code: "USD", value: invoice_amt } }
+    let create_url = 'https://api-m.sandbox.paypal.com/v2/invoicing/invoices/' + invoice_no + '/refunds';
+    console.log(create_url, option);
+    $.ajax({
+        type: "POST", url: create_url, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(option),
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader("Accept", "application/json");
+            xhr.setRequestHeader("Authorization", "Bearer " + access_token);
+        },
+        success: function (data) { console.log(data); },
+        error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); console.log(XMLHttpRequest); swal('Alert!', XMLHttpRequest.responseJSON.message, "error"); },
+        complete: function () { $("#loader").hide(); }, async: false
+    });
 }

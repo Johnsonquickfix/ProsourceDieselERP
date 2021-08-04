@@ -2156,15 +2156,10 @@ img.varient-pic {max-width: 100px;height: auto;}
 .row.nowrap > div {padding:0px 10px;}
 .massstocktransfer .row label {font-weight:600;}
 .commercial_proposal .col-md-3 label {font-weight:600; margin-bottom:0px;}
-/*.commercial_proposal .form-control {border-top:0px; border-left:0px; border-right:0px;}*/
 .commercial_proposal select + .form-control {margin-left:10px;}
 .new-vendor-header .dataTables_scrollHeadInner {width:100% !important;}
 .new-vendor-header .dataTables_scrollHeadInner .inventory-table {width: 100% !important;}
-.upload-btn-wrapper {
-    position: relative;
-    overflow: hidden;
-    display: inline-block;
-}
+.upload-btn-wrapper {position: relative; overflow: hidden; display: inline-block;}
 .upload-btn-wrapper input[type=file] {font-size: 100px;position: absolute; left: 0; top: 0; opacity: 0;}
 .image-upload-box img{max-width:80px;height:auto; margin-right:20px;}
 .form-info {font-size:11px;display:block;}
@@ -2188,15 +2183,24 @@ img.varient-pic {max-width: 100px;height: auto;}
 .commercial_proposal .tab-content, .commercial_proposal .nav-tabs-custom{background:transparent;}
 .commercial_proposal .badge {margin-left:5px;font-weight:400;}
 .commercial_proposal .fa-pencil-alt{font-size:12px;margin-right:4px;}
-.proposals-btns {margin-top: 20px;}
+.proposals-btns {margin-top: 15px;}
 .proposals-btns .btn {font-size:12px; padding-left:10px; padding-right:10px;}
 #proposal-table .check-table.table-blue .text-left {text-align:left !important;}
-#proposal-table.massstocktransfer [class^="col-md"]{margin-bottom: 0px;} 
-.proposal-row .box-primary .form-group {}
+#proposal-table.massstocktransfer [class^="col-md"]{margin-bottom: 0px;}
+.proposal-row .box-primary .form-group {border-bottom: 1px solid #e6e6e6;margin: 0px -10px;padding: 5px 0px;}
+.proposal-row .box-primary .box-body{padding-top:0px;padding-bottom:0px;}
+.proposal-row .box-primary .form-group:last-child{border:0px;}
 .proposal-div {align-items:flex-start;}
 .commercial_proposal .active-row .proposal-status {color:#FD4C0F;}
 .text-center.linked-th {text-align:center; vertical-align:middle;}
 .text-center.linked-th select{max-width:150px;margin:0px 8px; display:inline-block; vertical-align:middle;}
 .text-center.linked-th button {vertical-align:middle;}
 .proposal-tfoot tr {background:#adadad !important;}
-.side-proposals {float:right;}
+.side-proposals {float:right;} 
+.purchase-tfoot td{vertical-align:middle !important;}
+.purchase_textarea {margin-top:5px;}
+.purchase_textarea textarea{width:100%; height:80px;}
+.purchase-tfoot select {height:30px; padding:0px 12px;}
+.purchase-tfoot label {font-weight:400;margin:0px 5px;}
+.purchase-radio input{margin:0px;} 
+.purchase-radio {display: flex; align-items: center; margin-bottom:5px;}

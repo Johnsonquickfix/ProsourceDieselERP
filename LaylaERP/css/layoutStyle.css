@@ -2191,3 +2191,12 @@ img.varient-pic {max-width: 100px;height: auto;}
 .proposals-btns {margin-top: 20px;}
 .proposals-btns .btn {font-size:12px; padding-left:10px; padding-right:10px;}
 #proposal-table .check-table.table-blue .text-left {text-align:left !important;}
+#proposal-table.massstocktransfer [class^="col-md"]{margin-bottom: 0px;} 
+.proposal-row .box-primary .form-group {}
+.proposal-div {align-items:flex-start;}
+.commercial_proposal .active-row .proposal-status {color:#FD4C0F;}
+.text-center.linked-th {text-align:center; vertical-align:middle;}
+.text-center.linked-th select{max-width:150px;margin:0px 8px; display:inline-block; vertical-align:middle;}
+.text-center.linked-th button {vertical-align:middle;}
+.proposal-tfoot tr {background:#adadad !important;}
+.side-proposals {float:right;}

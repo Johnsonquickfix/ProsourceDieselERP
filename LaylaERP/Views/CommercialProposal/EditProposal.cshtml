@@ -6,7 +6,7 @@
 <div class="page-title">
     <h2>Edit Commercial Proposal</h2>
 </div>
-<section class="content section-content massstocktransfer commercial_proposal mt-1">
+<section class="content section-content massstocktransfer commercial_proposal mt-1" id="proposal-table">
     <div class="nav-tabs-custom">
         <ul class="nav nav-tabs">
             <li class="active"><a href="#tab_1" data-toggle="tab">Commercial Proposal</a></li>
@@ -144,7 +144,7 @@
                     </div>
                 </div>
                 <div class="box box-primary">
-                    <div class="box-body" id="proposal-table">
+                    <div class="box-body">
                         <table class="table-blue table check-table table-bordered">
                             <thead>
                                 <tr role="row">
@@ -177,6 +177,134 @@
                             <button class="text-uppercase btn btn-danger">Classify Billed</button>
                             <button class="text-uppercase btn btn-danger">Clone</button>
                             <button class="text-uppercase btn btn-default">Delete</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row rowbox proposal-div">
+                    <div class="col-md-6">
+                        <div class="box box-primary">
+                            <div class="box-header with-border">
+                                <h3 class="box-title">Linked Files</h3>
+                            </div>
+                            <div class="box-body">
+                                <table class="table-blue table check-table table-bordered">
+                                    <thead>
+                                        <tr role="row">
+                                            <th class="text-center linked-th" colspan="4">
+                                                Doc template 
+                                                <select class="form-control">
+                                                    <option>azure</option>
+                                                </select>
+                                                <button class="btn btn-danger">Generate</button>
+                                            </th>
+                                            </tr>
+                                        </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="text-left"><i class="far fa-file-pdf"></i>Pr210722.pdf <i class="fas fa-search-plus"></i></td>
+                                            <td>8554 b.</td>
+                                            <td>07/26/2021 06:10 PM</td>
+                                            <td><a href="#"><i class="fas fa-trash"></i></a></td>
+                                        </tr>
+                                    </tbody>
+                                    </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="box box-primary">
+                            <div class="box-header with-border">
+                                <h3 class="box-title">Events on proposal</h3>
+                            </div>
+                            <div class="box-body">
+                                <table class="table-blue table check-table table-bordered">
+                                    <thead>
+                                        <tr role="row">
+                                            <th class="text-left">Ref.</th>
+                                            <th>By</th>
+                                            <th>Type</th>
+                                            <th>Title</th>
+                                            <th>Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td colspan="5" class="text-left">None</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="box box-primary">
+                            <div class="box-header with-border">
+                                <h3 class="box-title">Related Objects</h3>
+                                <span class="side-proposals">
+                                    <a href="#"><i class="fas fa-link"></i>Link to..</a>
+                                </span>
+                            </div>
+                            <div class="box-body">
+                                <table class="table-blue table check-table table-bordered ">
+                                    <thead>
+                                        <tr role="row">
+                                            <th class="text-left">Type</th>
+                                            <th class="text-left">Ref.</th>
+                                            <th>Date</th>
+                                            <th>Amount(excl.)0</th>
+                                            <th>Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="active-row">
+                                            <td class="text-left">Sales Order</td>
+                                            <td>C02107-0002</td>
+                                            <td>07/30/2021</td>
+                                            <td>22,410.00</td>
+                                            <td>
+                                                <span class="proposal-status"><i class="fas fa-circle"></i></span>
+                                                <span class="proposal-links"><i class="fas fa-unlink"></i></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-left">Sales Order</td>
+                                            <td>C02107-0002</td>
+                                            <td>07/30/2021</td>
+                                            <td>22,410.00</td>
+                                            <td>
+                                                <span class="proposal-status"><i class="fas fa-circle"></i></span>
+                                                <span class="proposal-links"><i class="fas fa-unlink"></i></span>
+                                            </td>
+                                        </tr>
+                                        <tr class="active-row">
+                                            <td class="text-left">Sales Order</td>
+                                            <td>C02107-0002</td>
+                                            <td>07/30/2021</td>
+                                            <td>22,410.00</td>
+                                            <td>
+                                                <span class="proposal-status"><i class="fas fa-circle"></i></span>
+                                                <span class="proposal-links"><i class="fas fa-unlink"></i></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-left">Sales Order</td>
+                                            <td>C02107-0002</td>
+                                            <td>07/30/2021</td>
+                                            <td>22,410.00</td>
+                                            <td>
+                                                <span class="proposal-status"><i class="fas fa-circle"></i></span>
+                                                <span class="proposal-links"><i class="fas fa-unlink"></i></span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot class="proposal-tfoot">
+                                        <tr>
+                                            <td colspan="3" class="text-left">Total</td>
+                                            <td colspan="2">50,000</td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -26,9 +26,9 @@
                                     <label for="proposal"><i class="fa fa-edit"></i></label>
                                 </div>
                                 <div class="edit-proposal-texts">
-                                    <h3 class="box-title">PROV2108-00005</h3>
+                                    <h3 class="box-title" id="txtreff"></h3>
                                     <p>Ref. customer<button><i class="fas fa-pencil-alt"></i></button></p>
-                                    <p>Vendor: Lyl Textile(LYT)(Other proposals)</p>
+                                    <p id="txtvendorname">Vendor: Lyl Textile(LYT)(Other proposals)</p>
                                 </div>
                             </div>
                             <div class="back-to-list">
@@ -45,38 +45,41 @@
                                 <div class="form-group">
                                     <label class="col-md-4 control-label">Discounts</label>
                                     <div class="col-md-8">
-                                        <p>This customer has a default discount of 10%</p>
+                                        <p id="txtreff">This customer has a default discount of 10%</p>
                                         <span class="form-info">The name is how it appears on your site.</span>
                                     </div>
                                 </div>
+
+                                
+
                                 <div class="form-group">
                                     <label class="col-md-4 control-label">Date of proposal</label>
                                     <div class="col-md-8">
-                                        <p>07/26/2021</p>
+                                        <p id="txtproposaldate">07/26/2021</p>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-md-4 control-label">Validity ending date</label>
                                     <div class="col-md-8">
-                                        <p>08/10/2021</p>
+                                        <p id="txtenddate">08/10/2021</p>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-md-4 control-label">Payment Terms</label>
                                     <div class="col-md-8">
-                                        <p>30 days of month-end</p>
+                                        <p id="txtpaymentterm">30 days of month-end</p>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-md-4 control-label">Payment Type</label>
                                     <div class="col-md-8">
-                                        <p>Check</p>
+                                        <p id="txtpaymenttype">Check</p>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-md-4 control-label">Delivery date</label>
                                     <div class="col-md-8">
-                                        <p><i class="fas fa-pencil-alt"></i>07/31/2021</p>
+                                        <p id="txtdeliverydate"><i class="fas fa-pencil-alt"></i>07/31/2021</p>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -88,10 +91,10 @@
                                 <div class="form-group">
                                     <label class="col-md-4 control-label">Shipping method</label>
                                     <div class="col-md-8">
-                                        <p><i class="fas fa-pencil-alt"></i>UPS</p>
+                                        <p id="txtshippingmethod"><i class="fas fa-pencil-alt"></i>UPS</p>
                                     </div>
                                 </div>
-                                <div class="form-group">
+                                @*<div class="form-group">
                                     <label class="col-md-4 control-label">Source</label>
                                     <div class="col-md-8">
                                         <p>Internet</p>
@@ -108,11 +111,11 @@
                                     <div class="col-md-8">
                                         <p>1,000 m<sup>3</sup></p>
                                     </div>
-                                </div>
+                                </div>*@
                                 <div class="form-group">
                                     <label class="col-md-4 control-label">Incoterms</label>
                                     <div class="col-md-8">
-                                        <p><i class="fas fa-pencil-alt"></i>GIF</p>
+                                        <p id="txtincoterm"><i class="fas fa-pencil-alt"></i></p>
                                     </div>
                                 </div>
                             </div>
@@ -187,14 +190,14 @@
                                     <thead>
                                         <tr role="row">
                                             <th class="text-center linked-th" colspan="4">
-                                                Doc template 
+                                                Doc template
                                                 <select class="form-control">
                                                     <option>azure</option>
                                                 </select>
                                                 <button class="btn btn-danger">Generate</button>
                                             </th>
-                                            </tr>
-                                        </thead>
+                                        </tr>
+                                    </thead>
                                     <tbody>
                                         <tr>
                                             <td class="text-left"><i class="far fa-file-pdf"></i>Pr210722.pdf <i class="fas fa-search-plus"></i></td>
@@ -203,7 +206,7 @@
                                             <td><a href="#"><i class="fas fa-trash"></i></a></td>
                                         </tr>
                                     </tbody>
-                                    </table>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -314,7 +317,72 @@
             <div class="tab-pane" id="tab_4">
                 Linked files
             </div>
-            
+
         </div>
     </div>
 </section>
+
+<script>
+    $(document).ready(function () {
+        var url = window.location.pathname;
+        var id = url.substring(url.lastIndexOf('/') + 1);
+        GetProposalByID(id);
+
+        $("#loader").hide();
+        //var dt2 = new Date();
+        //var dt4 = dt2.getUTCFullYear() + '-' + ("0" + (dt2.getUTCMonth() + 1)).slice(-2) + '-' + ("0" + (dt2.getUTCDate())).slice(-2);
+        //document.getElementById("txtdatep").value = dt4;
+
+        $(document).on('click', "#btnSave", function () {
+            AddCommercialProposal();
+        });
+
+    });
+</script>
+<script>
+    $(function () {
+        $("#deliverydate").datepicker({
+            format: 'yyyy-mm-dd',
+        });
+    });
+
+</script>
+
+
+
+
+<script>
+    function GetProposalByID(id) {
+        var rowid = id;
+        var obj =
+            $.ajax({
+                url: "/CommercialProposal/GetProposalByID/" + rowid,
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                dataType: 'JSON',
+                data: JSON.stringify(obj),
+                success: function (data) {
+                    console.log(data);
+                    var d = JSON.parse(data);
+                    if (d.length > 0) {
+                        $("#hfid").text(d[0].rowid);
+                        $("#txtpaymentterm").text(d[0].paymentterm);
+                        $("#txtbalance").text(d[0].balance);
+                        $("#txtpaymenttype").text(d[0].paymenttype);
+                        $("#txtdeliverydate").text(d[0].deliverydate)
+                        $("#txtincoterm").text(d[0].IncoTerm);
+                        $("#txtreff").text(d[0].ref);
+                        $("#txtvendorname").text(d[0].vendorname);
+                        $("#txtshippingmethod").text(d[0].shippingmethod);
+                        $("#txtenddate").text(d[0].enddate);
+                        $("#txtproposaldate").text(d[0].proposaldate);
+                    }
+                },
+                error: function (msg) {
+
+                }
+            });
+
+    }
+
+</script>

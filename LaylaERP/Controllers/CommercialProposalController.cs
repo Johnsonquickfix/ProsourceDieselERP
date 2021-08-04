@@ -208,5 +208,10 @@ namespace LaylaERP.Controllers
 
         }
 
+        public ActionResult mypage()
+        {
+            return View();
+        }
+
     }
 }

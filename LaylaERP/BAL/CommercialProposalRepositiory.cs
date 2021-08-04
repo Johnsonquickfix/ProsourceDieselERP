@@ -182,10 +182,20 @@ namespace LaylaERP.BAL
 
             try
             {
-                string strWhr = string.Empty;
+                //string strWhr = string.Empty;
 
-                string strSql = "SELECT rowid,ref,payment_term,balance,payment_type,fk_availability,fk_shipping_method,fk_incoterms,location_incoterms,note_public,note_private,fk_vendor," +
-                    "LEFT(CAST(date_delivery as DATE),10) date_delivery,validity_duration,LEFT(CAST(datep as DATE),10) datep,location_incoterms from commerce_proposal where rowid=" + id + "";
+                //string strSql = "SELECT rowid,ref,payment_term,balance,payment_type,fk_availability,fk_shipping_method,fk_incoterms,location_incoterms,note_public,note_private,fk_vendor," +
+                //"LEFT(CAST(date_delivery as DATE),10) date_delivery,validity_duration,LEFT(CAST(datep as DATE),10) datep,location_incoterms from commerce_proposal where rowid=" + id + "";
+                string strSql = "Select cp.rowid as rowid, cp.ref, v.name vendorname, v.name_alias namealias, LEFT(CAST(cp.datep as DATE), 10) proposaldate,LEFT(CAST(cp.fin_validite as DATE), 10) enddate,"
+                + "LEFT(CAST(cp.date_delivery as DATE),10) deliverydate,s.Status as status, bd.Balance as balance, pterm.PaymentTerm as paymentterm, ptype.PaymentType as paymenttype, it.IncoTerm, sm.ShippingMethod as shippingmethod from commerce_proposal cp"
+                + " left OUTER join wp_vendor v on cp.fk_vendor = v.rowid"
+                + " left OUTER join wp_StatusMaster s on cp.fk_statut = s.ID"
+                + " left OUTER join BalanceDays bd on cp.balance = bd.ID"
+                + " left OUTER join PaymentTerms pterm on cp.payment_term = pterm.ID"
+                + " left outer join wp_PaymentType ptype on cp.payment_type = ptype.ID"
+                + " left outer join IncoTerms it on cp.fk_incoterms = it.rowid"
+                + " left OUTER join wp_ShippingMethod sm on cp.fk_shipping_method=sm.ID"
+                + " where cp.rowid=" + id + "";
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];

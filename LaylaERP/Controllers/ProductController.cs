@@ -110,6 +110,10 @@ namespace LaylaERP.Controllers
                 model.post_type = "product";
                 if (model.ID == 0)
                 model.ID = model.updatedID;
+                if (!string.IsNullOrEmpty(model.post_content))
+                    model.post_content = model.post_content;
+                else
+                    model.post_content = "";
                 ProductRepository.EditProducts(model, model.ID);
                 Update_MetaData(model, model.ID);
                 update_term(model, model.ID);
@@ -120,6 +124,10 @@ namespace LaylaERP.Controllers
                 model.post_status = "publish";
                 model.post_type = "product";
                 model.comment_status = "open";
+                if (!string.IsNullOrEmpty(model.post_content))
+                    model.post_content = model.post_content;
+                else
+                    model.post_content = "";
                 int ID = ProductRepository.AddProducts(model);
                 if (ID > 0)
                 {
@@ -277,7 +285,7 @@ namespace LaylaERP.Controllers
         }
 
  
-        public JsonResult saveAttributes(string fields,string IDs,string post_title, string table,string visible,string variation, ProductModel model)
+        public JsonResult saveAttributes(string fields,string IDs,string post_title, string table,string visible,string variation,string producttypeID, ProductModel model)
         {          
             model.product_attributes = fields;
             if (!string.IsNullOrEmpty(IDs))
@@ -291,7 +299,10 @@ namespace LaylaERP.Controllers
             else
             {
                 model.post_status = "draft";
-                model.post_content = "";
+                if (!string.IsNullOrEmpty(model.post_content))
+                    model.post_content = model.post_content;
+                else
+                    model.post_content = "";
                 model.post_title = post_title;
                 model.post_name = post_title;
                 model.post_type = "product";
@@ -301,7 +312,8 @@ namespace LaylaERP.Controllers
                 if (ID > 0)
                 {
                     Adduser_MetaData(model, ID);
-                    Add_term(model, ID);
+                    ProductRepository.Add_term(Convert.ToInt32(producttypeID), ID);
+                    //Add_term(model, ID);
                     ModelState.Clear();
                     return Json(new { status = true, message = "Product Attributes has been saved successfully!!", ID = ID }, 0);
                 }
@@ -316,6 +328,18 @@ namespace LaylaERP.Controllers
 
         public JsonResult Savevariations(string fields,string UpdateList, string UpdateID, string PID, string post_title,string regularprice, string Salepricevariationval, string Stockquantityvariationval, string allowbackordersvariationval, string weightvariationval, string Lvariationval, string Wvariationval, string Hvariationval, string shipvariationval, string cassvariationval, string descriptionvariationval, string stockchec, string chkvirtual, string sku, string parentid, string attributeheaderval , ProductModel model)
         {
+
+
+
+            // fields.ProductPostMeta
+            // model.ProductPostMeta = Convert. fields.ToList(); 
+
+            // model1.ProductPostMeta.Add(new ProductModelMetaModel() { post_id = model.OrderPostStatus.order_id, meta_key = ProductModelMetaModel., meta_value = ProductModelMetaModel });
+
+            List<char> charList = fields.ToCharArray().ToList();
+
+           // var model1 = JsonConvert.DeserializeObject<RootObject>(json);
+
             string value = "";
             string[] skuval = sku.Split(',');
 
@@ -340,7 +364,7 @@ namespace LaylaERP.Controllers
             string[] UpdateListval = UpdateList.Split(',');
             string varFieldsName = string.Empty;
             string varFieldsValue = string.Empty;
-
+            // return Json(new { status = true, message = "Product Variations has been saved successfully!!", ID = 1 }, 0);
             if (!string.IsNullOrEmpty(PID))
             {
                 string[] UpdateIDs = UpdateID.Split(',');
@@ -391,7 +415,7 @@ namespace LaylaERP.Controllers
                         varFieldsName = "_regular_price";
                         varFieldsValue = regularpriceval[y];
                         ProductRepository.UpdateProductsMetaVariation(Convert.ToInt64(UpdateIDs[x]), varFieldsName, varFieldsValue);
-            
+
                         break;
                     }
                     for (int z = x; z < Salepricl.Length; z++)
@@ -399,7 +423,7 @@ namespace LaylaERP.Controllers
                         varFieldsName = "_sale_price";
                         varFieldsValue = Salepricl[z];
                         ProductRepository.UpdateProductsMetaVariation(Convert.ToInt64(UpdateIDs[x]), varFieldsName, varFieldsValue);
-                  
+
                         break;
                     }
                     for (int w = x; w < skuval.Length; w++)
@@ -407,7 +431,7 @@ namespace LaylaERP.Controllers
                         varFieldsName = "_sku";
                         varFieldsValue = skuval[w];
                         ProductRepository.UpdateProductsMetaVariation(Convert.ToInt64(UpdateIDs[x]), varFieldsName, varFieldsValue);
-                    
+
                         break;
                     }
 
@@ -475,7 +499,7 @@ namespace LaylaERP.Controllers
 
                     for (int i = x; i < shipvariation.Length; i++)
                     {
-                        ProductRepository.Edit_term(Convert.ToInt32(shipvariation[i]), Convert.ToInt32(UpdateIDs[x]));                       
+                        ProductRepository.Edit_term(Convert.ToInt32(shipvariation[i]), Convert.ToInt32(UpdateIDs[x]));
                         ProductRepository.Add_term(Convert.ToInt32(shipvariation[i]), Convert.ToInt32(UpdateIDs[x]));
                         break;
                     }
@@ -498,7 +522,7 @@ namespace LaylaERP.Controllers
                     model.post_parent = Convert.ToInt32(parentid);
                 else
                     model.post_parent = 0;
-                
+
 
                 foreach (string Skulistval in skuval)
                 {
@@ -519,7 +543,7 @@ namespace LaylaERP.Controllers
                 // string PostID = "1,2,3";
                 string[] PostIDs = PostID.Split(',');
 
-               
+
                 for (int x = 0; x < PostIDs.Length; x++)
                 {
                     for (int y = 0; y < attributeheader.Length; y++)
@@ -575,6 +599,7 @@ namespace LaylaERP.Controllers
                         varFieldsValue = Salepricl[z];
                         ProductRepository.AddProductsMetaVariation(Convert.ToInt64(PostIDs[x]), varFieldsName, varFieldsValue);
                         ProductRepository.AddProductsMetaVariation(Convert.ToInt64(PostIDs[x]), "_price", varFieldsValue);
+                        ProductRepository.AddProductsMetaVariation(Convert.ToInt64(model.post_parent), "_price", varFieldsValue);
                         ProductRepository.AddProductsMetaVariation(Convert.ToInt64(PostIDs[x]), "_download_limit", "no");
                         break;
                     }
@@ -583,7 +608,7 @@ namespace LaylaERP.Controllers
                         varFieldsName = "_sku";
                         varFieldsValue = skuval[w];
                         ProductRepository.AddProductsMetaVariation(Convert.ToInt64(PostIDs[x]), varFieldsName, varFieldsValue);
-                        //ProductRepository.AddProductsMetaVariation(Convert.ToInt64(PostIDs[x]), varFieldsName, varFieldsValue);
+                        //ProductRepository.AddProductsMetaVariation(Convert.ToInt64(PostIDs[x]), varFieldsName, varFieldsValue); model.post_parent
                         ProductRepository.AddProductsMetaVariation(Convert.ToInt64(PostIDs[x]), "_downloadable", "no");
                         break;
                     }

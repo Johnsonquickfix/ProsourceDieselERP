@@ -1577,7 +1577,7 @@ function updateCO() {
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Payment Modal ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function PaymentModal() {
-    let pay_by = $('#lblOrderNo').data('pay_by').trim() > 0 ? $('#lblOrderNo').data('pay_by').trim() : 'podium';
+    let pay_by = $('#lblOrderNo').data('pay_by').trim();//$('#lblOrderNo').data('pay_by').trim() > 0 ? $('#lblOrderNo').data('pay_by').trim() : 'podium';
     let billing_first_name = $('#txtbillfirstname').val(), billing_last_name = $('#txtbilllastname').val();
     let billing_address_1 = $('#txtbilladdress1').val(), billing_address_2 = $('#txtbilladdress2').val();
     let billing_city = $('#txtbillcity').val(), billing_state = $('#ddlbillstate').val(), billing_postcode = $('#txtbillzipcode').val();
@@ -1666,16 +1666,13 @@ function PaymentModal() {
     $('#tblmodalitems tbody').append(myHtml);
     $('#tblmodalTotal').append($('#order_final_total').html());
     $("#billModal").modal({ backdrop: 'static', keyboard: false }); $("#txt_Coupon").focus();
-    $('#ddlPaymentMethod').val(pay_by).trigger('change');
+    pay_by = pay_by.length > 0 ? pay_by : 'podium';
+    $('#ddlPaymentMethod').val(pay_by).trigger('change'); console.log(pay_by);
 }
 function AcceptPayment() {
-    if ($("#ddlPaymentMethod").val() == "paypal") {
-        if ($("#txtPPEmail").val().length <= 5) {
-            swal('Alert!', 'Please enter PayPal Email.', "info").then((result) => { return false; });
-        }
-        else {
-            PaypalPayment($("#txtPPEmail").val());
-        }
+    if ($("#ddlPaymentMethod").val() == "ppec_paypal") {
+        if ($("#txtPPEmail").val().length <= 5) swal('Alert!', 'Please enter PayPal Email.', "info").then((result) => { return false; });
+        else PaypalPayment($("#txtPPEmail").val());
     }
     else if ($("#ddlPaymentMethod").val() == "podium") { $("#loader").show(); PodiumPayment() }
     else { swal('Alert!', 'Please Select Payment Method.', "error"); }
@@ -1729,27 +1726,10 @@ function updatePayment(taskUid) {
 function PaypalPayment(ppemail) {
     //swal('Alert!', 'Working....', "success").then((result) => { return false; });    
     let oid = parseInt($('#hfOrderNo').val()) || 0, pp_no = 'WC-' + new Date().getTime();
-    let postMetaxml = [];
-    postMetaxml.push(
-        { post_id: oid, meta_key: '_payment_method', meta_value: 'ppec_paypal' }, { post_id: oid, meta_key: '_payment_method_title', meta_value: 'PayPal' },
-        { post_id: oid, meta_key: '_paypal_invoice_id', meta_value: pp_no }, { post_id: oid, meta_key: '_paypal_id', meta_value: '' },
-        { post_id: oid, meta_key: '_transaction_id', meta_value: '' }, { post_id: oid, meta_key: '_paypal_status', meta_value: '' },
-        { post_id: oid, meta_key: '_woo_pp_txnData', meta_value: '' }
-    );
+    let postMetaxml = [{ post_id: oid, meta_key: '_payment_method', meta_value: 'ppec_paypal' }, { post_id: oid, meta_key: '_payment_method_title', meta_value: 'PayPal' }, { post_id: oid, meta_key: '_paypal_invoice_id', meta_value: pp_no }];
     $('#btnPlaceOrder').prop("disabled", true);
     var opt = { OrderPostMeta: postMetaxml };
-    $.ajax({
-        type: "POST", url: '/Orders/GetPayPalToken', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
-        success: function (result) {
-            /// Create Invoice
-            CreatePaypalInvoice(oid, pp_no, ppemail, result.message);
-        },
-        error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
-        complete: function () { $('#btnPlaceOrder').prop("disabled", false); },
-        async: false
-
-    });
-
+    ajaxFunc('/Orders/GetPayPalToken', opt, beforeSendFun, function (result) { CreatePaypalInvoice(oid, pp_no, ppemail, result.message); }, function () { $('#btnPlaceOrder').prop("disabled", false); }, function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); });
 }
 function CreatePaypalInvoice(oid, pp_no, pp_email, access_token) {
     let dfa = $('#txtLogDate').val().split(/\//); df = [dfa[2], dfa[0], dfa[1]].join('-');
@@ -1812,27 +1792,29 @@ function CreatePaypalInvoice(oid, pp_no, pp_email, access_token) {
             var sendURL = data.href + '/send';
             $("txtPPEmail").data('surl', sendURL);
             if (action_method == 'POST') {
-                SendPaypalInvoice(access_token, sendURL);
+                SendPaypalInvoice(oid, access_token, sendURL);
             }
             else {
                 $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true);
                 successModal('PayPal');
             }
         },
-        error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); console.log(XMLHttpRequest); swal('Alert!', errorThrown, "error"); },
+        error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); console.log(XMLHttpRequest); swal('Alert!', XMLHttpRequest.responseJSON.message, "error"); },
         complete: function () { $("#loader").hide(); }, async: false
     });
 }
-function SendPaypalInvoice(access_token, sendURL) {
+function SendPaypalInvoice(oid, access_token, sendURL) {
+    let id = sendURL.split('/');
+    let _postMeta = [{ post_id: oid, meta_key: '_paypal_id', meta_value: id[id.length - 2] }];
+
     $.ajax({
         type: "POST", url: sendURL, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify({ send_to_invoicer: false }),
         beforeSend: function (xhr) {
             xhr.setRequestHeader("Accept", "application/json");
             xhr.setRequestHeader("Authorization", "Bearer " + access_token);
         },
-        success: function (senddata) {
+        success: function (senddata, textStatus, jqXHR) {
             console.log(senddata);
-            let _postMeta = [{ post_id: oid, meta_key: '_paypal_id', meta_value: '' }];
             let opt = { OrderPostMeta: _postMeta };
             ajaxFunc('/Orders/UpdatePayPalID', opt, beforeSendFun, function (result) { $('#lblOrderNo').data('pay_id', ''); }, completeFun, errorFun);
 
@@ -1842,7 +1824,7 @@ function SendPaypalInvoice(access_token, sendURL) {
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
             $('#ddlPaymentMethod').prop("disabled", true); $('#btnPlaceOrder').addClass('hidden'); $('#btnResendInv').removeClass('hidden');
-            console.log(XMLHttpRequest); swal('Alert!', 'PayPal Invoice successfully created but not send. please Resend it.', "error");
+            console.log(XMLHttpRequest); swal('Alert!', XMLHttpRequest.responseJSON.message, "error");
         },
         complete: function () { $('#btnPlaceOrder').prop("disabled", false); },
         async: false

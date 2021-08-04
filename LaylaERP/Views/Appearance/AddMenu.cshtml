@@ -44,7 +44,20 @@
                                     <input type="text" class="form-control" id="txtmenuparent" placeholder="Enter Parent ID" value="@Model.parent_id">
                                 </div>
                                 <div class="form-group">
-                                    <input type="checkbox" id="chkmenustatus" name="MenuStatus" checked="checked"> <label for="Active">Active</label><br>
+
+                                    @{
+                                        var value = "checked";
+                                    }
+                                    @if (Model.status == 1)
+                                    {
+                                        <input type="checkbox" id="chkmenustatus" name="MenuStatus" checked="@value">
+                                    }
+                                    else
+                                    {
+                                        <input type="checkbox" id="chkmenustatus" name="MenuStatus">
+                                    }
+                                    <label for="Active">Active</label><br>
+
                                 </div>
                             </div>
                         </div>
@@ -82,6 +95,7 @@
         menuurl = $("#txtmenuurl").val();
         menuicon = $("#txtmenuicon").val();
         parentid = $("#txtmenuparent").val();
+        status = $("#chkmenustatus").prop("checked") ? 1 : 0;
 
         if (menucode == "") {
             swal('Alert', 'Please Enter Menu Code', 'error').then(function () { swal.close(); $('#txtmenucode').focus(); });
@@ -103,7 +117,8 @@
                 menu_name: menuname,
                 menu_url: menuurl,
                 menu_icon: menuicon,
-                parent_id: parentid
+                parent_id: parentid,
+                status: status
                 }
                 $.ajax({
                     url: '/Appearance/UpdateMenus/', dataType: 'json', type: 'Post',

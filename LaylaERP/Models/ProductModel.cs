@@ -7,6 +7,7 @@ namespace LaylaERP.Models
 {
     public class ProductModel
     {
+        public List<ProductModelMetaModel> ProductPostMeta { get; set; }
         public long ID { get; set; }
         public string post_title { get; set; }
         public string post_name { get; set; }
@@ -49,5 +50,14 @@ namespace LaylaERP.Models
         public int post_parent { get; set; }
         public string comment_status { get; set; }
 
+       
+    }
+    public class ProductModelMetaModel
+    {
+        public long post_id { get; set; }
+
+        public string meta_key { get; set; }
+
+        public string meta_value { get; set; }
     }
 }

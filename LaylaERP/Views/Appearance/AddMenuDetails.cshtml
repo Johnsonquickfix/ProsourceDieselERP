@@ -81,6 +81,7 @@
         menuurl = $("#txtmenuurl").val();
         menuicon = $("#txtmenuicon").val();
         parentid = $("#txtmenuparent").val();
+        status = $("#chkmenustatus").prop("checked") ? 1 : 0;
 
         if (menucode == "") {
             swal('Alert', 'Please Enter Menu Code', 'error').then(function () { swal.close(); $('#txtmenucode').focus(); });
@@ -103,7 +104,8 @@
                 menu_name: menuname,
                 menu_url: menuurl,
                 menu_icon: menuicon,
-                parent_id: parentid
+                parent_id: parentid,
+                status: status
                 }
                 $.ajax({
                     url: '/Appearance/CreateMenus/', dataType: 'json', type: 'Post',

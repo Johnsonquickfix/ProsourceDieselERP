@@ -284,7 +284,7 @@
             using (MailMessage mailMessage = new MailMessage())
 
             {
-                mailMessage.From = new MailAddress(ds.Tables[0].Rows[0]["SenderEmailID"].ToString(), "Lyra ERP");
+                mailMessage.From = new MailAddress(ds.Tables[0].Rows[0][" SenderEmailID"].ToString(), "Layla ERP");
                 mailMessage.Subject = subject;
                 mailMessage.Body = content;
                 mailMessage.IsBodyHtml = true;

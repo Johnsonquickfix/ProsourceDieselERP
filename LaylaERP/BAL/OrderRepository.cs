@@ -1015,17 +1015,18 @@
             int result = 0;
             try
             {
-                var i = 0;
+                string strSql_insert = string.Empty;
                 StringBuilder strSql = new StringBuilder();
                 foreach (OrderPostMetaModel obj in model)
                 {
+                    strSql_insert += (strSql_insert.Length > 0 ? " union all " : "") + string.Format("select '{0}' post_id,'{1}' meta_key,'{2}' meta_value", obj.post_id, obj.meta_key, obj.meta_value);
                     strSql.Append(string.Format("update wp_postmeta set meta_value = '{0}' where post_id = '{1}' and meta_key = '{2}' ; ", obj.meta_value, obj.post_id, obj.meta_key));
                 }
+                strSql_insert = "insert into wp_postmeta (post_id,meta_key,meta_value) select * from (" + strSql_insert + ") as tmp where tmp.meta_key not in (select meta_key from wp_postmeta where post_id = " + model[0].post_id.ToString() + ");";
+                strSql.Append(strSql_insert);
                 strSql.Append(string.Format("update wp_posts set post_status = '{0}' where id = {1};", "wc-processing", model[0].post_id));
-                /// step 6 : wp_posts
-                //strSql.Append(string.Format(" update wp_posts set post_status = '{0}' ,comment_status = 'closed' where id = {1} ", model.OrderPostStatus.status, model.OrderPostStatus.order_id));
-
-                result = SQLHelper.ExecuteNonQuery(strSql.ToString());
+                
+                result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
             }
             catch { }
             return result;
@@ -1075,7 +1076,7 @@
                     new MySqlParameter("@order_id", OrderID)
                 };
                 string strSQl = "select os.id order_id,DATE_FORMAT(os.post_date,'%m/%d/%Y') date_created,max(case meta_key when '_customer_user' then meta_value else '' end) customer_id,max(CONCAT(COALESCE(u.User_Login,''), ' (', COALESCE(u.user_email,''), ')')) as customer_name,os.post_status status,"
-                            + " os.post_excerpt,0 shipping_total,max(case meta_key when '_payment_method_title' then meta_value else '' end) payment_method,"
+                            + " os.post_excerpt,0 shipping_total,max(case meta_key when '_payment_method' then meta_value else '' end) payment_method,max(case meta_key when '_payment_method_title' then meta_value else '' end) payment_method_title,"
                             + " max(case meta_key when '_customer_ip_address' then meta_value else '' end) ip_address,max(case meta_key when '_created_via' then meta_value else '' end) created_via,"
                             + " max(case meta_key when '_billing_first_name' then meta_value else '' end) b_first_name,max(case meta_key when '_billing_last_name' then meta_value else '' end) b_last_name,"
                             + " max(case meta_key when '_billing_company' then meta_value else '' end) b_company,max(case meta_key when '_billing_address_1' then meta_value else '' end) b_address_1,max(case meta_key when '_billing_address_2' then meta_value else '' end) b_address_2,"
@@ -1085,7 +1086,8 @@
                             + " max(case meta_key when '_shipping_first_name' then meta_value else '' end) s_first_name,max(case meta_key when '_shipping_last_name' then meta_value else '' end) s_last_name,"
                             + " max(case meta_key when '_shipping_company' then meta_value else '' end) s_company,max(case meta_key when '_shipping_address_1' then meta_value else '' end) s_address_1,max(case meta_key when '_shipping_address_2' then meta_value else '' end) s_address_2,"
                             + " max(case meta_key when '_shipping_postcode' then meta_value else '' end) s_postcode,max(case meta_key when '_shipping_city' then meta_value else '' end) s_city,"
-                            + " max(case meta_key when '_shipping_country' then meta_value else '' end) s_country,max(case meta_key when '_shipping_state' then meta_value else '' end) s_state"
+                            + " max(case meta_key when '_shipping_country' then meta_value else '' end) s_country,max(case meta_key when '_shipping_state' then meta_value else '' end) s_state,"
+                            + " max(case meta_key when '_paypal_id' then meta_value else '' end) paypal_id"
                             + " from wp_posts os inner join wp_postmeta pm on pm.post_id = os.id"
                             + " left outer join wp_users u on u.id = meta_value and meta_key='_customer_user'"
                             + " where os.id = @order_id "

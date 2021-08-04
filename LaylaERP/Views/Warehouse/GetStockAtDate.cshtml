@@ -63,8 +63,9 @@
            
 
             $(document).on('click', "#btnsubmit", function () {
-               
                 StockTransferGrid();
+                var table = $('#dtdata').DataTable();
+                table.clear().draw();
             });
 
             $.get('/Warehouse/GetProduct', function (data) {
@@ -95,24 +96,39 @@
                 datatype: 'json',
                 contentType: "application/json; charset=utf-8",
                 processing: true,
-
                 data: JSON.stringify(obj),
                 success: function (data) {
-                    $('#dtdata').dataTable({
-                        destroy: true,
-                        data: JSON.parse(data),
-                        "columns": [
-                            { data: 'ref', title: 'Ref', sWidth: "20%" },
-                            { data: 'label', title: 'Label', sWidth: "15%", },
-                            { data: 'stockatdate', title: 'Stock at date', sWidth: "20%" },
-                            { data: 'inputvalue', title: 'Input value', sWidth: "15%" },
-                            { data: 'sellvalue', title: 'Sell value', sWidth: "10%" },
-                            { data: 'currentstock', title: 'Current Stock', sWidth: "15%" },
+                    var d = JSON.parse(data);
+                    if (d[0].sellvalue != null) {
 
-                        ],
-                        "order": [[0, 'desc']],
-                    });
+                        $('#dtdata').dataTable({
+                            destroy: true,
+                            data: JSON.parse(data),
+                            "columns": [
+                                { data: 'ref', title: 'Ref', sWidth: "20%" },
+                                { data: 'label', title: 'Label', sWidth: "15%", },
+                                { data: 'stockatdate', title: 'Stock at date', sWidth: "20%" },
+                                { data: 'inputvalue', title: 'Input value', sWidth: "15%" },
+                                { data: 'sellvalue', title: 'Sell value', sWidth: "10%" },
+                                { data: 'currentstock', title: 'Current Stock', sWidth: "15%" },
+
+                            ],
+
+                            "order": [[0, 'desc']],
+                        });
+                    }
+                    else {
+                        $('#dtdata').dataTable({
+                            destroy: true,
+                            "oLanguage": {
+                                "sEmptyTable": "No data available in table",
+                            }
+                        });
+                    }
+                    
                 },
+
+                
                 error: function (xhr, ajaxOptions, thrownError) {
                     alert(xhr.responseText);
                 }

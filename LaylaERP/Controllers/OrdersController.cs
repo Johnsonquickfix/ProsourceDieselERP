@@ -346,29 +346,33 @@
 
         }
         [HttpPost]
-        public JsonResult GetPayPalToken(SearchModel model)
+        public JsonResult GetPayPalToken(OrderModel model)
         {
             string result = string.Empty;
             bool status = false;
             try
             {
-                long oid = 0;
-                if (!string.IsNullOrEmpty(model.strValue1)) { oid = Convert.ToInt64(model.strValue1); }
-                if (oid <= 0)
-                {
-                    throw new Exception("Invalid Data");
-                }
-                List<OrderPostMetaModel> _list = new List<OrderPostMetaModel>();
-                _list.Add(new OrderPostMetaModel() { post_id = oid, meta_key = "_payment_method", meta_value = "ppec_paypal" });
-                _list.Add(new OrderPostMetaModel() { post_id = oid, meta_key = "_payment_method_title", meta_value = "PayPal" });
-                _list.Add(new OrderPostMetaModel() { post_id = oid, meta_key = "_customer_ip_address", meta_value = Net.Ip });
-                _list.Add(new OrderPostMetaModel() { post_id = oid, meta_key = "_customer_user_agent", meta_value = Net.BrowserInfo });
-                //_list.Add(new OrderPostMetaModel() { post_id = oid, meta_key = "_paypal_status", meta_value = "pending" });
-                //_list.Add(new OrderPostMetaModel() { post_id = oid, meta_key = "Payer PayPal address", meta_value = model.strValue2 });
-                int res = OrderRepository.UpdatePayPalStatus(_list);
+                int res = OrderRepository.UpdatePayPalStatus(model.OrderPostMeta);
                 if (res > 0)
                 {
                     result = clsPayPal.GetToken();
+                    status = true;
+                }
+            }
+            catch { status = false; result = ""; }
+            return Json(new { status = status, message = result }, 0);
+        }
+        [HttpPost]
+        public JsonResult UpdatePayPalID(OrderModel model)
+        {
+            string result = string.Empty;
+            bool status = false;
+            try
+            {
+                int res = OrderRepository.UpdatePayPalStatus(model.OrderPostMeta);
+                if (res > 0)
+                {
+                    result = "Success.";
                     status = true;
                 }
             }

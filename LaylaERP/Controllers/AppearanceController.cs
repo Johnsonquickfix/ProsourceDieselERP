@@ -33,6 +33,7 @@ namespace LaylaERP.Controllers
             myModel.menu_url = null;
             myModel.menu_icon = null;
             myModel.parent_id = null;
+            myModel.status = null;
 
             DataTable dt = AppearanceRepository.MenuByID(menu_id);
             myModel.menu_id = menu_id;
@@ -41,6 +42,7 @@ namespace LaylaERP.Controllers
             myModel.menu_url = dt.Rows[0]["menu_url"];
             myModel.menu_icon = dt.Rows[0]["menu_icon"];
             myModel.parent_id = dt.Rows[0]["parent_id"];
+            myModel.status = dt.Rows[0]["status"];
             return PartialView("AddMenu", myModel);
 
         }

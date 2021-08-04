@@ -33,7 +33,7 @@ namespace LaylaERP.BAL
             try
             {
 
-                string strSql = "SELECT menu_id, menu_code, menu_name, menu_url, menu_icon, parent_id from wp_erpmenus where menu_id =" + id + "";
+                string strSql = "SELECT menu_id, menu_code, menu_name, menu_url, menu_icon, parent_id, status from wp_erpmenus where menu_id =" + id + "";
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
 
@@ -49,14 +49,15 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "update wp_erpmenus set menu_code=@menu_code, menu_name=@menu_name, menu_url=@menu_url, menu_icon=@menu_icon, parent_id=@parent_id where menu_id in(" + model.menu_id + ")";
+                string strsql = "update wp_erpmenus set menu_code=@menu_code, menu_name=@menu_name, menu_url=@menu_url, menu_icon=@menu_icon, parent_id=@parent_id, status=@status where menu_id in(" + model.menu_id + ")";
                 MySqlParameter[] para =
                 {
                     new MySqlParameter("@menu_code", model.menu_code),
                     new MySqlParameter("@menu_name", model.menu_name),
                     new MySqlParameter("@menu_url", model.menu_url),
                     new MySqlParameter("@menu_icon", model.menu_icon),
-                    new MySqlParameter("@parent_id", model.parent_id)
+                    new MySqlParameter("@parent_id", model.parent_id),
+                    new MySqlParameter("@status", model.status)
             };
                 int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
                 return result;
@@ -69,16 +70,18 @@ namespace LaylaERP.BAL
 
         public static int AddNewMenu(Appearance model)
         {
+            
             try
             {
-                string strsql = "insert into wp_erpmenus(menu_code, menu_name, menu_url, menu_icon, parent_id) values(@menu_code,@menu_name,@menu_url, @menu_icon, @parent_id);SELECT LAST_INSERT_ID();";
+                string strsql = "insert into wp_erpmenus(menu_code, menu_name, menu_url, menu_icon, parent_id, status) values(@menu_code,@menu_name,@menu_url, @menu_icon, @parent_id, @status);SELECT LAST_INSERT_ID();";
                 MySqlParameter[] para =
                 {
                     new MySqlParameter("@menu_code", model.menu_code),
                     new MySqlParameter("@menu_name", model.menu_name),
                     new MySqlParameter("@menu_url", model.menu_url),
                     new MySqlParameter("@menu_icon", model.menu_icon),
-                    new MySqlParameter("@parent_id", model.parent_id)
+                    new MySqlParameter("@parent_id", model.parent_id),
+                    new MySqlParameter("@status", model.status)
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
                 return result;

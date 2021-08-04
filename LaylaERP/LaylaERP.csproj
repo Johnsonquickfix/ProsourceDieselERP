@@ -586,6 +586,7 @@
     <Content Include="js\Customer\Customer.js" />
     <Content Include="js\FeeNTax\FeeNTax.js" />
     <Content Include="js\GooglePlace\index.js" />
+    <Content Include="js\Inventory\ConsignmentInventory.js" />
     <Content Include="js\Inventory\Inventory.js" />
     <Content Include="js\jquery.mask.js" />
     <Content Include="js\Marketing\Coupons.js" />
@@ -805,6 +806,7 @@
     <Content Include="Views\SaleOrder\ListSaleOrder.cshtml" />
     <Content Include="Views\PurchaseOrder\PurchaseOrderList.cshtml" />
     <Content Include="Views\CommercialProposal\EditProposal.cshtml" />
+    <Content Include="Views\PurchaseOrder\PurchaseOrderDetails.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -13,12 +13,12 @@ namespace LaylaERP.BAL
     {
         public static DataTable GetWarehouseDetail(SearchModel model)
         {
-            string strwhr = " where statut= '"+model.strValue1+"'";
+            string strwhr = " where status= '"+model.strValue1+"'";
             DataTable dtr = new DataTable();
             try
             {
                 
-                string strquery = "SELECT rowid, ref,entity,description,lieu,concat(address,' ',town,' ',country,' ',zip)as address,phone,fax,if(statut=0,'Close','Open')as status FROM wp_warehouse";
+                string strquery = "SELECT rowid, ref,entity,description,lieu,concat(address,' ',town,' ',country,' ',zip)as address,phone,fax,if(status=0,'Inactive','Active')as status FROM wp_warehouse";
                 if(!string.IsNullOrEmpty(model.strValue1))
                 {
                     strquery += strwhr;
@@ -35,7 +35,7 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "insert into wp_warehouse(ref,datec,lieu,description,address,zip,town,country,phone,fax,statut,address1,city) values(@ref,@datec,@lieu,@description,@address,@zip,@town,@country,@phone,@fax,@statut,@address1,@city);SELECT LAST_INSERT_ID();";
+                string strsql = "insert into wp_warehouse(ref,datec,lieu,description,address,zip,town,country,phone,fax,statut,address1,city,status) values(@ref,@datec,@lieu,@description,@address,@zip,@town,@country,@phone,@fax,@statut,@address1,@city,@status);SELECT LAST_INSERT_ID();";
                 MySqlParameter[] para =
                 {
                     new MySqlParameter("@ref", model.reff),
@@ -50,7 +50,8 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@fax", model.fax),
                     new MySqlParameter("@statut", model.statut),
                     new MySqlParameter("@address1", model.address1),
-                    new MySqlParameter("@city", model.city)
+                    new MySqlParameter("@city", model.city),
+                    new MySqlParameter("@status",model.status)
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
                 return result;
@@ -68,7 +69,7 @@ namespace LaylaERP.BAL
             try
             {
 
-                string strSql = "SELECT rowid,ref,entity,description,lieu,phone,fax,if(statut=0,'Close','Open')as status,address, zip, town, country, address1,city FROM wp_warehouse where rowid=" + rowid + "";
+                string strSql = "SELECT rowid,ref,entity,description,lieu,phone,fax,if(statut=0,'Close','Open')as statut, address, zip, town, country, address1, city, status FROM wp_warehouse where rowid=" + rowid + "";
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
 
@@ -84,7 +85,7 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "update wp_warehouse set ref=@ref, lieu=@lieu, description=@description, address=@address, zip=@zip, town=@town, country=@country, phone=@phone, fax=@fax, statut=@statut, address1=@address1, city=@city where rowid in(" + model.rowid + ")";
+                string strsql = "update wp_warehouse set ref=@ref, lieu=@lieu, description=@description, address=@address, zip=@zip, town=@town, country=@country, phone=@phone, fax=@fax, statut=@statut, address1=@address1, city=@city, status=@status where rowid in(" + model.rowid + ")";
                 MySqlParameter[] para =
                 {
                     new MySqlParameter("@ref", model.reff),
@@ -98,7 +99,8 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@fax", model.fax),
                     new MySqlParameter("@statut", model.statut),
                     new MySqlParameter("@address1", model.address1),
-                    new MySqlParameter("@city", model.city)
+                    new MySqlParameter("@city", model.city),
+                    new MySqlParameter("@status",model.status)
             };
                 int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
                 return result;
@@ -221,6 +223,41 @@ namespace LaylaERP.BAL
             catch (Exception ex)
             { throw ex; }
             return dtr;
+        }
+
+        public static DataTable GetWarehouseByVendor(string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                string strWhr = string.Empty;
+
+                string strSql = "SELECT v.rowid as rowid, v.name as vname, w.ref as wname, concat(v.address,' ',v.town,' ',v.fk_state,' ',v.zip,' ',v.fk_country) as Vaddress, concat(w.address,' ',w.city,' ',w.town,' ',w.zip,' ',w.country) as waddress, v.phone as phone FROM wp_VendorSetting vs"
+                                + " inner JOIN wp_warehouse w on vs.WarehouseID = w.rowid"
+                                + " inner join wp_vendor v on v.rowid = vs.VendorID where 1=1";
+                if (!string.IsNullOrEmpty(searchid))
+                {
+                    //strWhr += " and (email like '%" + searchid + "%' OR user_nicename='%" + searchid + "%' OR ID='%" + searchid + "%' OR nom like '%" + searchid + "%')";
+                }
+                if (userstatus != null)
+                {
+                    strWhr += " and (status='" + userstatus + "') ";
+                }
+                strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
+
+                strSql += "; SELECT ceil(Count(v.rowid)/" + pagesize.ToString() + ") TotalPage,Count(v.rowid) TotalRecord FROM wp_VendorSetting vs inner JOIN wp_warehouse w on vs.WarehouseID = w.rowid inner join wp_vendor v on v.rowid = vs.VendorID" + strWhr.ToString();
+
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dt = ds.Tables[0];
+                if (ds.Tables[1].Rows.Count > 0)
+                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
         }
     }
 }

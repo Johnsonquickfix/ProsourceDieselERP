@@ -605,6 +605,7 @@
     <Content Include="js\Users\UserLogin.js" />
     <Content Include="js\Users\UserRole.js" />
     <Content Include="js\Users\Users.js" />
+    <Content Include="js\Warehouse\vendorwarehouselist.js" />
     <Content Include="js\Warehouse\warehouselist.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -807,6 +808,8 @@
     <Content Include="Views\PurchaseOrder\PurchaseOrderList.cshtml" />
     <Content Include="Views\CommercialProposal\EditProposal.cshtml" />
     <Content Include="Views\PurchaseOrder\PurchaseOrderDetails.cshtml" />
+    <Content Include="Views\Warehouse\GetStockAtDate.cshtml" />
+    <Content Include="Views\Warehouse\ListWarehouseByVendor.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

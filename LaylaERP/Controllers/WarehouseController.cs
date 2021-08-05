@@ -87,6 +87,7 @@ namespace LaylaERP.Controllers
             myModel.country = null;
             myModel.address1 = null;
             myModel.city = null;
+            myModel.status = null;
             DataTable dt = WarehouseRepository.GetWarehouseID(rowid);
             myModel.rowid = rowid;
             myModel.reff = dt.Rows[0]["ref"];
@@ -94,13 +95,14 @@ namespace LaylaERP.Controllers
             myModel.lieu = dt.Rows[0]["lieu"];
             myModel.phone = dt.Rows[0]["phone"];
             myModel.fax = dt.Rows[0]["fax"];
-            myModel.statut = dt.Rows[0]["status"];
+            myModel.statut = dt.Rows[0]["statut"];
             myModel.address = dt.Rows[0]["address"];
             myModel.zip = dt.Rows[0]["zip"];
             myModel.town = dt.Rows[0]["town"];
             myModel.country = dt.Rows[0]["country"];
             myModel.address1 = dt.Rows[0]["address1"];
             myModel.city = dt.Rows[0]["city"];
+            myModel.status = dt.Rows[0]["status"];
             return PartialView("UpdateWarehouse", myModel);
         }
 
@@ -226,5 +228,25 @@ namespace LaylaERP.Controllers
             return Json(JSONresult, 0);
         }
 
+        public ActionResult ListWarehouseByVendor()
+        {
+            return View();
+        }
+        public JsonResult GetWarehouseByVendor( WarehouseModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                string urid = "";
+                if (model.user_status != "")
+                    urid = model.user_status;
+                string searchid = model.Search;
+                DataTable dt = WarehouseRepository.GetWarehouseByVendor(urid, searchid, model.PageNo, model.PageSize, out TotalRecord, model.SortCol, model.SortDir);
+                result = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+        }
     }
 }

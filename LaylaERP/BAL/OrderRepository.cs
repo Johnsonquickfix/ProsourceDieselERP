@@ -84,8 +84,8 @@
                 OrderPostModel model = new OrderPostModel();
                 model.ID = 0;
                 model.post_author = "1";
-                model.post_date = DateTime.UtcNow.AddMinutes(-420);
-                model.post_date_gmt = DateTime.UtcNow;
+                model.post_date = CommonDate.CurrentDate();
+                model.post_date_gmt = CommonDate.UtcDate();
                 model.post_content = string.Empty;
                 model.post_title = "Order &ndash; " + model.post_date_gmt.ToString("MMMM dd, yyyy @ HH:mm tt");
                 model.post_excerpt = string.Empty;
@@ -402,7 +402,7 @@
             try
             {
                 string str_oiid = string.Join(",", model.OrderProducts.Select(x => x.order_item_id.ToString()).ToArray()) + "," + string.Join(",", model.OrderOtherItems.Select(x => x.order_item_id.ToString()).ToArray()) + "," + string.Join(",", model.OrderTaxItems.Select(x => x.order_item_id.ToString()).ToArray());
-                DateTime cDate = DateTime.UtcNow.AddMinutes(-420), cUTFDate = DateTime.UtcNow;
+                DateTime cDate = CommonDate.CurrentDate(), cUTFDate = CommonDate.UtcDate();
                 /// step 1 : wp_wc_order_stats
                 StringBuilder strSql = new StringBuilder(string.Format("update wp_wc_order_stats set num_items_sold='{0}',total_sales='{1}',tax_total='{2}',shipping_total='{3}',net_total='{4}',status='{5}',customer_id='{6}' where order_id='{7}';", model.OrderPostStatus.num_items_sold, model.OrderPostStatus.total_sales,
                         model.OrderPostStatus.tax_total, model.OrderPostStatus.shipping_total, model.OrderPostStatus.net_total, model.OrderPostStatus.status, model.OrderPostStatus.customer_id, model.OrderPostStatus.order_id));
@@ -588,8 +588,8 @@
                 OrderPostModel model = new OrderPostModel();
                 model.ID = 0;
                 model.post_author = "1";
-                model.post_date = DateTime.UtcNow.AddMinutes(-420);
-                model.post_date_gmt = DateTime.UtcNow;
+                model.post_date = CommonDate.CurrentDate();
+                model.post_date_gmt = CommonDate.UtcDate();
                 model.post_content = string.Empty;
                 model.post_title = "Refund &ndash; " + model.post_date_gmt.ToString("MMMM dd, yyyy @ HH:mm tt");
                 model.post_excerpt = string.Empty;
@@ -661,7 +661,7 @@
                 n_orderid = AddRefundOrderPost(model.OrderPostStatus.order_id);
                 if (n_orderid > 0)
                 {
-                    DateTime cDate = DateTime.UtcNow.AddMinutes(-420), cUTFDate = DateTime.UtcNow;
+                    DateTime cDate = CommonDate.CurrentDate(), cUTFDate = CommonDate.UtcDate();
                     /// step 1 : wp_wc_order_stats
                     StringBuilder strSql = new StringBuilder(string.Format("update wp_wc_order_stats set num_items_sold='{0}',total_sales='{1}',tax_total='{2}',shipping_total='{3}',net_total='{4}',customer_id='{5}' where order_id='{6}';", model.OrderPostStatus.num_items_sold, model.OrderPostStatus.total_sales,
                             model.OrderPostStatus.tax_total, model.OrderPostStatus.shipping_total, model.OrderPostStatus.net_total, model.OrderPostStatus.customer_id, n_orderid));

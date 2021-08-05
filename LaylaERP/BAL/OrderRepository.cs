@@ -84,7 +84,7 @@
                 OrderPostModel model = new OrderPostModel();
                 model.ID = 0;
                 model.post_author = "1";
-                model.post_date = DateTime.Now;
+                model.post_date = DateTime.UtcNow.AddMinutes(-420);
                 model.post_date_gmt = DateTime.UtcNow;
                 model.post_content = string.Empty;
                 model.post_title = "Order &ndash; " + model.post_date_gmt.ToString("MMMM dd, yyyy @ HH:mm tt");
@@ -402,7 +402,7 @@
             try
             {
                 string str_oiid = string.Join(",", model.OrderProducts.Select(x => x.order_item_id.ToString()).ToArray()) + "," + string.Join(",", model.OrderOtherItems.Select(x => x.order_item_id.ToString()).ToArray()) + "," + string.Join(",", model.OrderTaxItems.Select(x => x.order_item_id.ToString()).ToArray());
-                DateTime cDate = DateTime.Now, cUTFDate = DateTime.UtcNow;
+                DateTime cDate = DateTime.UtcNow.AddMinutes(-420), cUTFDate = DateTime.UtcNow;
                 /// step 1 : wp_wc_order_stats
                 StringBuilder strSql = new StringBuilder(string.Format("update wp_wc_order_stats set num_items_sold='{0}',total_sales='{1}',tax_total='{2}',shipping_total='{3}',net_total='{4}',status='{5}',customer_id='{6}' where order_id='{7}';", model.OrderPostStatus.num_items_sold, model.OrderPostStatus.total_sales,
                         model.OrderPostStatus.tax_total, model.OrderPostStatus.shipping_total, model.OrderPostStatus.net_total, model.OrderPostStatus.status, model.OrderPostStatus.customer_id, model.OrderPostStatus.order_id));
@@ -588,7 +588,7 @@
                 OrderPostModel model = new OrderPostModel();
                 model.ID = 0;
                 model.post_author = "1";
-                model.post_date = DateTime.Now;
+                model.post_date = DateTime.UtcNow.AddMinutes(-420);
                 model.post_date_gmt = DateTime.UtcNow;
                 model.post_content = string.Empty;
                 model.post_title = "Refund &ndash; " + model.post_date_gmt.ToString("MMMM dd, yyyy @ HH:mm tt");
@@ -661,7 +661,7 @@
                 n_orderid = AddRefundOrderPost(model.OrderPostStatus.order_id);
                 if (n_orderid > 0)
                 {
-                    DateTime cDate = DateTime.Now, cUTFDate = DateTime.UtcNow;
+                    DateTime cDate = DateTime.UtcNow.AddMinutes(-420), cUTFDate = DateTime.UtcNow;
                     /// step 1 : wp_wc_order_stats
                     StringBuilder strSql = new StringBuilder(string.Format("update wp_wc_order_stats set num_items_sold='{0}',total_sales='{1}',tax_total='{2}',shipping_total='{3}',net_total='{4}',customer_id='{5}' where order_id='{6}';", model.OrderPostStatus.num_items_sold, model.OrderPostStatus.total_sales,
                             model.OrderPostStatus.tax_total, model.OrderPostStatus.shipping_total, model.OrderPostStatus.net_total, model.OrderPostStatus.customer_id, n_orderid));
@@ -728,7 +728,7 @@
             }
             catch (Exception Ex) { }
             return result;
-        }
+        }       
 
         public static long AddShopOrderEdit(long parent_id)
         {
@@ -1282,6 +1282,74 @@
             { throw ex; }
             return _list;
         }
+        //Order comments/notes
+        public static DataTable GetOrderNotes(long OrderID)
+        {
+            DataTable DT = new DataTable();
+            try
+            {
+                MySqlParameter[] parameters =
+                {
+                    new MySqlParameter("order_id", OrderID)
+                };
+                string strSQl = "select wp_c.comment_ID,DATE_FORMAT(wp_c.comment_date, '%M %d, %Y at %H:%i') comment_date,wp_c.comment_content,wp_cm.meta_value is_customer_note from wp_comments wp_c"
+                            + " left outer join wp_commentmeta wp_cm on wp_cm.comment_id = wp_c.comment_ID and wp_cm.meta_key = 'is_customer_note'"
+                            + " where comment_type = 'order_note' and comment_post_ID = @order_id order by wp_c.comment_ID desc;";
+                DT = SQLHelper.ExecuteDataTable(strSQl, parameters);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DT;
+        }
+        public static int AddOrderNotes(OrderNotesModel obj)
+        {
+            int result = 0;
+            try
+            {
+                obj.comment_date = DateTime.UtcNow.AddMinutes(-420);
+                obj.comment_date_gmt = DateTime.UtcNow;
+
+                string strSQL = "INSERT INTO wp_comments(comment_post_ID, comment_author, comment_author_email, comment_author_url, comment_author_IP,comment_date, comment_date_gmt, comment_content, comment_karma, comment_approved,comment_agent, comment_type,comment_parent,user_id)"
+                            + " VALUES(@comment_post_ID,@comment_author,@comment_author_email,'','',@comment_date,@comment_date_gmt,@comment_content,'0','1','WooCommerce','order_note','0','0');";
+                if (obj.is_customer_note == "customer")
+                    strSQL += "insert into wp_commentmeta(comment_id,meta_key,meta_value) select LAST_INSERT_ID(),'is_customer_note','1';";
+
+                MySqlParameter[] parameters =
+                {
+                    new MySqlParameter("@comment_post_ID", obj.post_ID),
+                    new MySqlParameter("@comment_author", obj.comment_author),
+                    new MySqlParameter("@comment_author_email", obj.comment_author_email),
+                    new MySqlParameter("@comment_date", obj.comment_date),
+                    new MySqlParameter("@comment_date_gmt", obj.comment_date_gmt),
+                    new MySqlParameter("@comment_content", obj.comment_content)
+                };
+                result = SQLHelper.ExecuteNonQuery(strSQL, parameters);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return result;
+        }
+        public static int RemoveOrderNotes(OrderNotesModel obj)
+        {
+            int result = 0;
+            try
+            {
+                string strSQL = "delete from wp_comments where comment_ID = @comment_ID;";
+                MySqlParameter[] parameters =
+                {
+                    new MySqlParameter("@comment_ID", obj.comment_ID)
+                };
+                result = SQLHelper.ExecuteNonQuery(strSQL, parameters);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return result;
+        }
+
         //Get Order History
         public static DataTable OrderCounts()
         {

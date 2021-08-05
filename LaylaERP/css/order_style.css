@@ -21,3 +21,14 @@ section.order-details h2 {font-size: 20px;font-weight: 600;}
 .thankyou-for-your-order .container {max-width: 850px!important; margin-left:auto; margin-right:auto;}
 .checkout-call {display: block !important;background: #41414b; padding: 30px 15px;font-size: 20px; color: #fff; font-weight: 600; text-align: center;}
 .checkout-call a{color:#fff;}
+ul.order_notes {padding: 2px 10px 0}
+ul.order_notes li .note_content {padding: 5px 10px;background: #efefef;position: relative}
+ul.order_notes li .note_content p {margin: 0;padding: 0;word-wrap: break-word}
+ul.order_notes li p.meta {padding: 5px 10px;color: #999;margin: 0;font-size: 11px}
+ul.order_notes li p.meta .exact-date {border-bottom: 1px dotted #999}
+ul.order_notes li a.delete_note {color: #a00}
+ul.order_notes li .note_content::after {content: "";display: block;position: absolute;bottom: -10px;left: 20px;width: 0;height: 0;border-width: 10px 10px 0 0;border-style: solid;border-color: #efefef transparent}
+ul.order_notes li.system-note .note_content {background: #d7cad2}
+ul.order_notes li.system-note .note_content::after {border-color: #d7cad2 transparent}
+ul.order_notes li.customer-note .note_content {background: #a7cedc}
+ul.order_notes li.customer-note .note_content::after {border-color: #a7cedc transparent}

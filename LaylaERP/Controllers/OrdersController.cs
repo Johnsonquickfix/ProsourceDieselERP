@@ -89,6 +89,56 @@
             return Json(_list, 0);
         }
         [HttpPost]
+        public JsonResult GetOrderNotesList(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                long oid = 0;
+                if (!string.IsNullOrEmpty(model.strValue1)) { oid = Convert.ToInt64(model.strValue1); }
+                if (oid <= 0)
+                {
+                    throw new Exception("Invalid Data");
+                }
+                DataTable DT = OrderRepository.GetOrderNotes(oid);
+                JSONresult = JsonConvert.SerializeObject(DT);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+        [HttpPost]
+        public JsonResult OrderNoteAdd(OrderNotesModel model)
+        {
+            string JSONresult = string.Empty; bool b_status = false;
+            try
+            {
+                OperatorModel om = CommanUtilities.Provider.GetCurrent();
+                model.comment_author = om.UserName; model.comment_author_email = om.EmailID;
+                int res = OrderRepository.AddOrderNotes(model);
+                if (res > 0)
+                {
+                    JSONresult = "Order note added successfully."; b_status = true;
+                }
+            }
+            catch (Exception ex) { JSONresult = ex.Message; }
+            return Json(new { status = b_status, message = JSONresult }, 0);
+        }
+        [HttpPost]
+        public JsonResult OrderNoteDelete(OrderNotesModel model)
+        {
+            string JSONresult = string.Empty; bool b_status = false;
+            try
+            {
+                int res = OrderRepository.RemoveOrderNotes(model);
+                if (res > 0)
+                {
+                    JSONresult = "Order note deleted successfully."; b_status = true;
+                }
+            }
+            catch (Exception ex) { JSONresult = ex.Message; }
+            return Json(new { status = b_status, message = JSONresult }, 0);
+        }
+        [HttpPost]
         public JsonResult GetNewOrderNo(OrderModel model)
         {
             string JSONresult = string.Empty;

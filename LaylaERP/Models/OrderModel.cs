@@ -139,4 +139,15 @@
         public string variation_id { get; set; }
         public string order_prefix { get; set; }
     }
+    public class OrderNotesModel
+    {
+        public long comment_ID { get; set; }
+        public long post_ID { get; set; }
+        public string comment_author { get; set; }
+        public string comment_author_email { get; set; }
+        public DateTime comment_date { get; set; }
+        public DateTime comment_date_gmt { get; set; }
+        public string comment_content { get; set; }
+        public string is_customer_note { get; set; }
+    }
 }

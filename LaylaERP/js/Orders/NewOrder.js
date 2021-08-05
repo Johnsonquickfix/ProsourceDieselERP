@@ -146,6 +146,7 @@ $(document).ready(function () {
     $(document).on("click", "#btnAddFee", function (t) { t.preventDefault(); AddFeeModal(0, ''); });
     $(document).on("click", "#btnApplyFee", function (t) { t.preventDefault(); $("#loader").show(); ApplyFee($(this).data('orderitemid'), $('#txt_FeeAmt').val()); });
     /*End Return Items*/
+    $(document).on("click", "#btnAddnote", function (t) { t.preventDefault(); AddNotes(); });
 });
 ///Bind States of Country
 function BindStateCounty(ctr, obj) {
@@ -629,6 +630,7 @@ function getOrderInfo() {
                 $('#txtCustomerNotes').val(data[0].post_excerpt);
                 //bind Product
                 getOrderItemList(oid);
+                getOrderNotesList(oid);
                 //if (data[0].status.trim() == "wc-pending") {
                 $('.box-tools').empty().append('<button type="button" class="btn btn-danger btnEditOrder"><i class="far fa-edit"></i> Edit</button>');
                 //}
@@ -751,7 +753,6 @@ function getOrderItemList(oid) {
         }
         $('#order_line_items').append(itemHtml); $('#order_state_recycling_fee_line_items').append(recyclingfeeHtml); $('#order_fee_line_items').append(feeHtml); $('#order_shipping_line_items').append(shippingHtml); $('#order_refunds').append(refundHtml);
         $('.refund-action').append('<button type="button" id="btnAddFee" class="btn btn-danger billinfo">Add Fee</button> ');
-        //$('.refund-action').append('<button type="button" id="btnRefundItem" class="btn btn-danger billinfo">Refund</button>');
         $('#billCoupon').append(couponHtml);
         //Calculate Final
         $("#totalQty").text(zQty.toFixed(0)); $("#totalQty").data('qty', zQty.toFixed(0));
@@ -768,11 +769,42 @@ function getOrderItemList(oid) {
         $("#divAddItemFinal").find(".rowCalulate").change(function () { calculateDiscountAcount(); });
     }, completeFun, errorFun);
 }
-///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Refund Order ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-function refundItem(ele) {
-    let isChecked = $(ele).prop("checked");
-    let id = $(ele).val();
-    $('#chk_return_' + $('#tritemId_' + id).data("gid") + '_0').prop('checked', isChecked);
+function getOrderNotesList(oid) {
+    var option = { strValue1: oid };
+    ajaxFunc('/Orders/GetOrderNotesList', option, beforeSendFun, function (result) {
+        var data = JSON.parse(result);
+        let noteHtml = '';
+        for (var i = 0; i < data.length; i++) {
+            noteHtml += '<li id="linoteid_' + data[i].comment_ID + '" class="note system-note ' + (data[i].is_customer_note == '1' ? 'customer-note' : '') + '">';
+            noteHtml += '<div class="note_content"><p>' + data[i].comment_content + '</p></div>';
+            noteHtml += '<p class="meta"><abbr class="exact-date" title="' + data[i].comment_date + '">' + data[i].comment_date + '</abbr> ';
+            noteHtml += '<a href="javascript:void(0)" onclick="DeleteNotes(' + data[i].comment_ID + ');" class="delete_note billinfo" role="button">Delete note</a>';
+            noteHtml += '</p>';
+            noteHtml += '</li>';
+        }
+        $(".order_notes").empty().html(noteHtml);
+    }, completeFun, errorFun);
+}
+///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Order Notes ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+function AddNotes() {
+    let oid = parseInt($('#hfOrderNo').val()) || 0;
+    let option = { post_ID: oid, comment_content: $('#add_order_note').val(), is_customer_note: $('#order_note_type').val() };
+    ajaxFunc('/Orders/OrderNoteAdd', option, beforeSendFun, function (result) {
+        if (result.status) { getOrderNotesList(oid); $('#add_order_note').val(''); }
+        else swal('Alert!', result.message, "error");
+    }, completeFun, errorFun);
+}
+function DeleteNotes(id) {
+    let option = { comment_ID: id }; let oid = parseInt($('#hfOrderNo').val()) || 0;
+    swal({ title: "Are you sure?", text: 'Would you like to Remove this note?', type: "question", showCancelButton: true })
+        .then((result) => {
+            if (result.value) {
+                ajaxFunc('/Orders/OrderNoteDelete', option, beforeSendFun, function (result) {
+                    if (result.status) getOrderNotesList(oid);
+                    else swal('Alert!', result.message, "error");
+                }, completeFun, errorFun);
+            }
+        });
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Add Fee ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function AddFeeModal(orderitemid, feevalue) {

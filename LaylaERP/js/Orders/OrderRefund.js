@@ -102,7 +102,7 @@ function getOrderInfo() {
                 $('#txtshipcompany').val(data[0].s_company); $('#txtshipzipcode').val(data[0].s_postcode); $('#txtshipcity').val(data[0].s_city);
                 $('#ddlshipcountry').val(data[0].s_country.trim()).trigger('change'); $('#ddlshipstate').val(data[0].s_state.trim()).trigger('change');
                 //bind Product
-                getOrderItemList(oid);
+                getOrderItemList(oid); getOrderNotesList(oid);
             }
         }, function () { $("#loader").hide(); $('.billinfo').prop("disabled", true); }, function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); });
     }
@@ -260,7 +260,21 @@ function getOrderItemList(oid) {
 
     setTimeout(function () { getShippingCharge(); }, 50);
 }
-
+function getOrderNotesList(oid) {
+    var option = { strValue1: oid };
+    ajaxFunc('/Orders/GetOrderNotesList', option, beforeSendFun, function (result) {
+        var data = JSON.parse(result);
+        let noteHtml = '';
+        for (var i = 0; i < data.length; i++) {
+            noteHtml += '<li id="linoteid_' + data[i].comment_ID + '" class="note system-note ' + (data[i].is_customer_note == '1' ? 'customer-note' : '') + '">';
+            noteHtml += '<div class="note_content"><p>' + data[i].comment_content + '</p></div>';
+            noteHtml += '<p class="meta"><abbr class="exact-date" title="' + data[i].comment_date + '">' + data[i].comment_date + '</abbr> ';
+            noteHtml += '</p>';
+            noteHtml += '</li>';
+        }
+        $(".order_notes").empty().html(noteHtml);
+    }, completeFun, errorFun);
+}
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Shipping Charges ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function getShippingCharge() {
     let v_ids = []; let sh_state = $("#ddlshipstate").val() == 'CA' ? "CAA" : $("#ddlshipstate").val();

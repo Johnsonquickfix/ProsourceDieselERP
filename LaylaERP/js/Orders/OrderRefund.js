@@ -478,7 +478,7 @@ function RefundPaypalInvoice(access_token) {
     let invoice_no = $('#lblOrderNo').data('pay_id').trim(), invoice_amt = (parseFloat($('.btnRefundOk').data('nettotal')) || 0.00);
     let date = new Date();
     let invoice_date = date.getUTCFullYear() + '-' + (date.getUTCMonth() + 1) + '-' + date.getUTCDate();
-    let option = { method: "BANK_TRANSFER", refund_date: "2021-08-04", amount: { currency_code: "USD", value: invoice_amt } }
+    let option = { method: "BANK_TRANSFER", refund_date: invoice_date, amount: { currency_code: "USD", value: invoice_amt } }
     let create_url = 'https://api-m.sandbox.paypal.com/v2/invoicing/invoices/' + invoice_no + '/refunds';
     console.log(create_url, option);
     $.ajax({

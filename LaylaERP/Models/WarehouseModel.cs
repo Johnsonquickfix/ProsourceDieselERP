@@ -5,7 +5,7 @@ using System.Web;
 
 namespace LaylaERP.Models
 {
-    public class WarehouseModel
+    public class WarehouseModel: PaggingModel
     {
         public int rowid { get; set; }
         public string reff { get; set; }
@@ -30,6 +30,9 @@ namespace LaylaERP.Models
         public string import_key { get; set; }
         public string address1 { get; set; }
         public int fk_parent { get; set; }
+        public int status { get; set; }
+        public string user_status { get; set; }
+        public string Search { get; set; }
 
 
 

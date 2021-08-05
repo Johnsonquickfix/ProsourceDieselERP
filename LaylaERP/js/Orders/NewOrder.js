@@ -1848,7 +1848,7 @@ function SendPaypalInvoice(oid, access_token, sendURL) {
         success: function (senddata, textStatus, jqXHR) {
             console.log(senddata);
             let opt = { OrderPostMeta: _postMeta };
-            ajaxFunc('/Orders/UpdatePayPalID', opt, beforeSendFun, function (result) { $('#lblOrderNo').data('pay_id', ''); }, completeFun, errorFun);
+            ajaxFunc('/Orders/UpdatePayPalID', opt, beforeSendFun, function (result) { $('#lblOrderNo').data('pay_id', id); }, completeFun, errorFun);
 
             $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true);
             //setTimeout(function () { swal('Order received!', 'Thank you. Your invoice has been send on your email for payment.', "success").then((result) => { window.location.href = window.location.href; }); }, 50);

@@ -356,7 +356,7 @@
             Random _rdm = new Random();
             int OTP = _rdm.Next(1000, 9999);
             Session["OTP"] = OTP;
-            SendEmail.SendEmails(CommanUtilities.Provider.GetCurrent().EmailID, "Your OTP for verifiction....", "Your OTP is <b>" + OTP + "</b>");
+           // SendEmail.SendEmails(CommanUtilities.Provider.GetCurrent().EmailID, "Your OTP for verifiction....", "Your OTP is <b>" + OTP + "</b>");
 
             Session["OTPTime"] = DateTime.Now;
 

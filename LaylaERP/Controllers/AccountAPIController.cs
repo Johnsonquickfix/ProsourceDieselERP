@@ -189,7 +189,7 @@
             List<Dictionary<String, Object>> tableRows = new List<Dictionary<String, Object>>();
             Dictionary<String, Object> row;
             try
-            
+
             {
                 DataTable DT = Users.GetUserMenuAuth(CommanUtilities.Provider.GetCurrent().UserType);
                 //DataTable DT = Users.GetUserAuth(model.userId.Value);
@@ -252,7 +252,7 @@
             string result = string.Empty;
             try
             {
-                DataTable dt = Users.GetPermissions(CommanUtilities.Provider.GetCurrent().UserType,model.menu_url);
+                DataTable dt = Users.GetPermissions(CommanUtilities.Provider.GetCurrent().UserType, model.menu_url);
                 result = JsonConvert.SerializeObject(dt, Formatting.Indented);
             }
             catch { }
@@ -277,39 +277,23 @@
         [HttpPost]
         public ActionResult QuicksendEmail(string emails, string subject, string content)
         {
-            DataSet ds = Users.GetEmailCredentials();
-
-            List<string> lstEmail = emails.Split(',').ToList();
-
-            using (MailMessage mailMessage = new MailMessage())
-
+            bool result = false;
+            try
             {
-                mailMessage.From = new MailAddress(ds.Tables[0].Rows[0][" SenderEmailID"].ToString(), "Layla ERP");
-                mailMessage.Subject = subject;
-                mailMessage.Body = content;
-                mailMessage.IsBodyHtml = true;
+                string strEmail = string.Empty;
+                List<string> lstEmail = emails.Split(',').ToList();
                 for (int i = 0; i < lstEmail.Count; i++)
                 {
                     bool isEmail = Regex.IsMatch(lstEmail[i], @"\A(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)\Z", RegexOptions.IgnoreCase);
                     if (isEmail)
-                        mailMessage.To.Add(lstEmail[i]);
+                        strEmail += (strEmail.Length > 0 ? ";" : "") + lstEmail[i];
                 }
-                SmtpClient smtp = new SmtpClient();
-                smtp.Host = ds.Tables[0].Rows[0]["SMTPServerName"].ToString();
-                smtp.Port = Convert.ToInt32(ds.Tables[0].Rows[0]["SMTPServerPortNo"]);
-                //smtp.EnableSsl = Convert.ToBoolean(ConfigurationManager.AppSettings["EnableSsl"]);
-                smtp.EnableSsl = true;
 
-                System.Net.NetworkCredential NetworkCred = new System.Net.NetworkCredential();
-                //System.Net.NetworkCredential NetworkCred = new System.Net.NetworkCredential("david.quickfix1@gmail.com", "Quick!123");
-                NetworkCred.UserName = ds.Tables[0].Rows[0]["SenderEmailID"].ToString();
-                NetworkCred.Password = ds.Tables[0].Rows[0]["SenderEmailPwd"].ToString();
-                smtp.UseDefaultCredentials = true;
-                smtp.Credentials = NetworkCred;
-                smtp.Send(mailMessage);
-
+                SendEmail.SendEmails(emails, subject, content);
+                result = true;
             }
-            return Json(true, 0);
+            catch { result = false; }
+            return Json(result, 0);
         }
 
         [HttpPost]

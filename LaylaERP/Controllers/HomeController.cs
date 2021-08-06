@@ -130,10 +130,8 @@
             //{GetUsers()
             GetUserDetails(model, CommanUtilities.Provider.GetCurrent().UserID);
            // if (!string.IsNullOrEmpty(modeldetails.strValue2))
-            GetUsersDetails(strValue1, strValue2);
+            //GetUsersDetails(strValue1, strValue2);
             ViewBag.Type = strValue1;
-            //else
-            //  GetUsers();
             return View();
         }
         public ActionResult Dashboard()
@@ -206,79 +204,75 @@
             mymodel.order = dtorder.AsEnumerable(); 
             return View(mymodel);
         }
-
-        public ActionResult GetUsersDetails(string strValue1, string strValue2)
+        [HttpPost]
+        public JsonResult GetUsersDetails(SearchModel model)
         {
-            dynamic mymodel = new ExpandoObject();
-            mymodel.Users = null;
-            mymodel.Customer = null;
-            mymodel.order = null;
-            if (!string.IsNullOrEmpty(strValue2))
+            string result = string.Empty;
+            try
             {
-                if (strValue1 == "users")
-                {
-                    DataTable dtusers = DashboardRepository.GetUsersDetails(strValue2);
-                    var resultusers = JsonConvert.SerializeObject(dtusers, Formatting.Indented);
-                    mymodel.Users = dtusers.AsEnumerable();
-                    DataTable dtcustmer = DashboardRepository.GetCustomer();
-                    DataTable dtorder = DashboardRepository.Getorder();
-                    var resulcustmer = JsonConvert.SerializeObject(dtcustmer, Formatting.Indented);
-                    var resultorder = JsonConvert.SerializeObject(dtorder, Formatting.Indented);
-                    mymodel.Customer = dtcustmer.AsEnumerable();
-                    mymodel.order = dtorder.AsEnumerable();
-                }
-                else if (strValue1 == "customers")
-                {
-                    DataTable dtcustmer = DashboardRepository.GetCustomerDetails(strValue2);
-                    var resulcustmer = JsonConvert.SerializeObject(dtcustmer, Formatting.Indented);
-                    mymodel.Customer = dtcustmer.AsEnumerable();
-                    DataTable dtusers = DashboardRepository.GetUsers();
-                    DataTable dtorder = DashboardRepository.Getorder();
-                    var resultusers = JsonConvert.SerializeObject(dtusers, Formatting.Indented);
-                    var resultorder = JsonConvert.SerializeObject(dtorder, Formatting.Indented);
-                    mymodel.Users = dtusers.AsEnumerable();
-                    mymodel.order = dtorder.AsEnumerable();
-
-                }
-                else
-                {
-                    DataTable dtorder = DashboardRepository.GetorderDetails(strValue2);
-                    var resultorder = JsonConvert.SerializeObject(dtorder, Formatting.Indented);
-                    mymodel.order = dtorder.AsEnumerable();
-                    DataTable dtusers = DashboardRepository.GetUsers();
-                    DataTable dtcustmer = DashboardRepository.GetCustomer();
-                    var resultusers = JsonConvert.SerializeObject(dtusers, Formatting.Indented);
-                    var resulcustmer = JsonConvert.SerializeObject(dtcustmer, Formatting.Indented);
-                    mymodel.Users = dtusers.AsEnumerable();
-                    mymodel.Customer = dtcustmer.AsEnumerable();
-                }
+                DataSet ds = DashboardRepository.GetCommonSearch(model.strValue1, model.strValue2);
+                result = JsonConvert.SerializeObject(ds, Formatting.Indented);
             }
-            else
-            {
-                DataTable dtusers = DashboardRepository.GetUsers();
+            catch { }
+            return Json(result, 0);
 
-                DataTable dtcustmer = DashboardRepository.GetCustomer();
-                DataTable dtorder = DashboardRepository.Getorder();
-                var resultusers = JsonConvert.SerializeObject(dtusers, Formatting.Indented);
-                var resulcustmer = JsonConvert.SerializeObject(dtcustmer, Formatting.Indented);
-                var resultorder = JsonConvert.SerializeObject(dtorder, Formatting.Indented);
-                mymodel.Users = dtusers.AsEnumerable();
-                mymodel.Customer = dtcustmer.AsEnumerable();
-                mymodel.order = dtorder.AsEnumerable();
-                //model.strValue2 = "007armin";
-                //DataTable dtcustmer = DashboardRepository.GetCustomerDetails(model.strValue2);
-                //var resulcustmer = JsonConvert.SerializeObject(dtcustmer, Formatting.Indented);
-                //mymodel.Customer = dtcustmer.AsEnumerable();
-                //DataTable dtusers = DashboardRepository.GetUsers();
-                //DataTable dtorder = DashboardRepository.Getorder();
-                //var resultusers = JsonConvert.SerializeObject(dtusers, Formatting.Indented);
-                //var resultorder = JsonConvert.SerializeObject(dtorder, Formatting.Indented);
-                //mymodel.Users = dtusers.AsEnumerable();
-                //mymodel.order = dtorder.AsEnumerable();
+            //dynamic mymodel = new ExpandoObject();
+            //mymodel.Users = null;
+            //mymodel.Customer = null;
+            //mymodel.order = null;
+            //if (!string.IsNullOrEmpty(model.strValue2))
+            //{
+            //    if (model.strValue1 == "users")
+            //    {
+            //        DataTable dtusers = DashboardRepository.GetUsersDetails(model.strValue2);
+            //        var resultusers = JsonConvert.SerializeObject(dtusers, Formatting.Indented);
+            //        mymodel.Users = dtusers.AsEnumerable();
+            //        DataTable dtcustmer = DashboardRepository.GetCustomer();
+            //        DataTable dtorder = DashboardRepository.Getorder();
+            //        var resulcustmer = JsonConvert.SerializeObject(dtcustmer, Formatting.Indented);
+            //        var resultorder = JsonConvert.SerializeObject(dtorder, Formatting.Indented);
+            //        mymodel.Customer = dtcustmer.AsEnumerable();
+            //        mymodel.order = dtorder.AsEnumerable();
+            //    }
+            //    else if (model.strValue1 == "customers")
+            //    {
+            //        DataTable dtcustmer = DashboardRepository.GetCustomerDetails(model.strValue2);
+            //        var resulcustmer = JsonConvert.SerializeObject(dtcustmer, Formatting.Indented);
+            //        mymodel.Customer = dtcustmer.AsEnumerable();
+            //        DataTable dtusers = DashboardRepository.GetUsers();
+            //        DataTable dtorder = DashboardRepository.Getorder();
+            //        var resultusers = JsonConvert.SerializeObject(dtusers, Formatting.Indented);
+            //        var resultorder = JsonConvert.SerializeObject(dtorder, Formatting.Indented);
+            //        mymodel.Users = dtusers.AsEnumerable();
+            //        mymodel.order = dtorder.AsEnumerable();
 
-            }
-            return View(mymodel);
-            
+            //    }
+            //    else
+            //    {
+            //        DataTable dtorder = DashboardRepository.GetorderDetails(model.strValue2);
+            //        var resultorder = JsonConvert.SerializeObject(dtorder, Formatting.Indented);
+            //        mymodel.order = dtorder.AsEnumerable();
+            //        DataTable dtusers = DashboardRepository.GetUsers();
+            //        DataTable dtcustmer = DashboardRepository.GetCustomer();
+            //        var resultusers = JsonConvert.SerializeObject(dtusers, Formatting.Indented);
+            //        var resulcustmer = JsonConvert.SerializeObject(dtcustmer, Formatting.Indented);
+            //        mymodel.Users = dtusers.AsEnumerable();
+            //        mymodel.Customer = dtcustmer.AsEnumerable();
+            //    }
+            //}
+            //else
+            //{
+            //    DataTable dtusers = DashboardRepository.GetUsers();
+            //    DataTable dtcustmer = DashboardRepository.GetCustomer();
+            //    DataTable dtorder = DashboardRepository.Getorder();
+            //    var resultusers = JsonConvert.SerializeObject(dtusers, Formatting.Indented);
+            //    var resulcustmer = JsonConvert.SerializeObject(dtcustmer, Formatting.Indented);
+            //    var resultorder = JsonConvert.SerializeObject(dtorder, Formatting.Indented);
+            //    mymodel.Users = dtusers.AsEnumerable();
+            //    mymodel.Customer = dtcustmer.AsEnumerable();
+            //    mymodel.order = dtorder.AsEnumerable();
+            //}
+            //return View(mymodel);            
         }
 
 

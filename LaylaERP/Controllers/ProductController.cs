@@ -108,6 +108,7 @@ namespace LaylaERP.Controllers
             if (model.ID > 0 || model.updatedID > 0)
             {
                 model.post_type = "product";
+                model.post_status = "publish";
                 if (model.ID == 0)
                 model.ID = model.updatedID;
                 if (!string.IsNullOrEmpty(model.post_content))

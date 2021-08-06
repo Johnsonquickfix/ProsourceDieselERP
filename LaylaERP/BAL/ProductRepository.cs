@@ -136,7 +136,7 @@ namespace LaylaERP.BAL
                         + " (SELECT term_taxonomy_id FROM wp_term_relationships where object_id = p.ID) shippingclass"
                         + " FROM wp_posts p left outer join wp_postmeta pm on pm.post_id = p.id"
                         + " and(pm.meta_key in ('_regular_price', '_sale_price', 'total_sales', '_tax_status', '_tax_class', '_manage_stock', '_backorders', '_sold_individually',"
-                        + " '_weight', '_length', '_width', '_height', '_upsell_ids', '_crosssell_ids', '_stock', '_low_stock_amount', '_sku', '_product_attributes')"
+                        + " '_weight', '_length', '_width', '_height', '_upsell_ids', '_crosssell_ids', '_stock', '_low_stock_amount', '_sku', '_product_attributes','_variation_description')"
                         + " or meta_key like 'Attribute_%')"
                         + " where p.post_type = 'product_variation' and p.post_parent = " + model.strVal + " group by p.id,p.post_title,p.post_content,p.post_name order by p.id";
 
@@ -496,6 +496,12 @@ namespace LaylaERP.BAL
             {
                 string strSql_insert = string.Empty;
                 StringBuilder strSql = new StringBuilder();
+
+                foreach (ProductModelPriceModel obj in model)
+                {
+                    strSql.Append("delete from wp_postmeta where  meta_key = '_price' and post_id =" + obj.post_id+ ";");
+                }
+               
                 foreach (ProductModelPriceModel obj in model)
                 {
                     

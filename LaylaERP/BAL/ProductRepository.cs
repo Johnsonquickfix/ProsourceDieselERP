@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.Http.Results;
 using System.Web.Mvc;
@@ -403,6 +404,66 @@ namespace LaylaERP.BAL
             }
         }
 
+        public static int UpdateVariantStatus(List<ProductModelMetaModel> model)
+        {
+            int result = 0;
+            try
+            {
+                string strSql_insert = string.Empty;
+                StringBuilder strSql = new StringBuilder();
+                foreach (ProductModelMetaModel obj in model)
+                {
+                    // strSql_insert += (strSql_insert.Length > 0 ? " union all " : "") + string.Format("select '{0}' post_id,'{1}' meta_key,'{2}' meta_value", obj.post_id, obj.meta_key, obj.meta_value);
+                    strSql.Append(string.Format("update wp_postmeta set meta_value = '{0}' where post_id = '{1}' and meta_key = '{2}' ; ", obj.meta_value, obj.post_id, obj.meta_key));
+                }
+                result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
+            }
+            catch { }
+            return result;
+        }
+
+        public static int UpdateItemVariantStatus(List<ProductModelItemModel> model)
+        {
+            int result = 0;
+            try
+            {
+                string strSql_insert = string.Empty;
+                StringBuilder strSql = new StringBuilder();
+                foreach (ProductModelItemModel obj in model)
+                {
+                    strSql.Append("delete from wp_term_relationships where object_id="+ obj.object_id+";");
+                    strSql.Append("Insert into wp_term_relationships(object_id,term_taxonomy_id,term_order) values(" +obj.object_id+","+obj.term_taxonomy_id+",0);SELECT LAST_INSERT_ID();");
+                    // strSql_insert += (strSql_insert.Length > 0 ? " union all " : "") + string.Format("select '{0}' post_id,'{1}' meta_key,'{2}' meta_value", obj.post_id, obj.meta_key, obj.meta_value);
+                    //strSql.Append(string.Format("update wp_postmeta set meta_value = '{0}' where post_id = '{1}' and meta_key = '{2}' ; ", obj.meta_value, obj.post_id, obj.meta_key));
+                }
+                //  strSql_insert = "insert into wp_postmeta (post_id,meta_key,meta_value) select * from (" + strSql_insert + ") as tmp where tmp.meta_key not in (select meta_key from wp_postmeta where post_id = " + model[0].post_id.ToString() + ");";
+                // strSql.Append(strSql_insert);
+                //strSql.Append(string.Format("update wp_posts set post_status = '{0}' where id = {1};", "wc-processing", model[0].post_id));
+
+                result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
+            }
+            catch { }
+            return result;
+        }
+
+        public static int UpdatePostStatus(List<ProductModelPostModel> model)
+        {
+            int result = 0;
+            try
+            {
+                string strSql_insert = string.Empty;
+                StringBuilder strSql = new StringBuilder();
+                foreach (ProductModelPostModel obj in model)
+                {
+                   
+                    // strSql_insert += (strSql_insert.Length > 0 ? " union all " : "") + string.Format("select '{0}' post_id,'{1}' meta_key,'{2}' meta_value", obj.post_id, obj.meta_key, obj.meta_value);
+                    strSql.Append(string.Format("update wp_posts set post_title = '{0}',post_excerpt = '{1}' where ID = '{2}' ; ", obj.post_title, obj.post_excerpt, obj.ID));
+                }
+                result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
+            }
+            catch { }
+            return result;
+        }
         public static void UpdateProductsMetaVariation(long id, string varFieldsName, string varFieldsValue)
         {
             try
@@ -422,6 +483,26 @@ namespace LaylaERP.BAL
             }
         }
 
+        public static int addprice(List<ProductModelPriceModel> model)
+        {
+            int result = 0;
+            try
+            {
+                string strSql_insert = string.Empty;
+                StringBuilder strSql = new StringBuilder();
+                foreach (ProductModelPriceModel obj in model)
+                {
+                    
+                    strSql.Append("Insert into wp_postmeta(post_id,meta_key,meta_value) values(" + obj.post_id + ",'" + obj.meta_key + "','" + obj.meta_value +"');SELECT LAST_INSERT_ID();");
+                    // strSql_insert += (strSql_insert.Length > 0 ? " union all " : "") + string.Format("select '{0}' post_id,'{1}' meta_key,'{2}' meta_value", obj.post_id, obj.meta_key, obj.meta_value);
+                    //strSql.Append(string.Format("update wp_postmeta set meta_value = '{0}' where post_id = '{1}' and meta_key = '{2}' ; ", obj.meta_value, obj.post_id, obj.meta_key));
+                }
+            
+                result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
+            }
+            catch { }
+            return result;
+        }
 
         public static void Add_term(int TermID, int ID)
         {

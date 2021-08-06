@@ -2,7 +2,7 @@
 
 $(document).ready(function () {
     $("#loader").hide();
-
+ 
     var url = window.location.pathname;
     var id = url.substring(url.lastIndexOf('/') + 1);
     $('li:contains(Variations)').hide();
@@ -127,24 +127,62 @@ $(document).ready(function () {
 
     $("#addvariation").click(function (e) {
         var Edit = $("#hfid").val();
+        let IDPost = "";
+        i++;
+        itxtCnt = itxtCnt + 1;
         if (Edit == "") {
-        var ID = $("#hfUpdatedID").val();}
+            var ID = $("#hfUpdatedID").val();
+        }
         else {
             ID = Edit;
         }
         //var ID = "796103";// $("#hfUpdatedID").val();
        // alert(ID);
         if (ID != "") {
-            i++;
-            itxtCnt = itxtCnt + 1;
+
+
+            $.ajax({
+                type: 'POST',
+                url: '/Product/savevariantproduct',
+                data: "{'fields':'" + $("#hfattributeheaderval").val() + "',  'parentid': '" + $("#hfUpdatedID").val() +  "'}",
+                dataType: 'json',
+                headers: { "Content-Type": "application/json" },
+                beforeSend: function () {
+                    $("#loader").show();
+                },
+                success: function (data) {
+                    if (data.status == true) {
+                        IDPost = data.ID;
+                        //alert(data.ID);
+                        //swal('Alert!', data.message, 'success');
+                   
+       
+
+
+         
             e.preventDefault();
             ///$("#tbholdvariation").append('<tr id="row' + ID + '"><td><div class="col-md-12"> <label>Name:</label><br /><select class="inputddl" id=tb' + itxtCnt + ' /></div></td><td><br /><br /><div class="col-md-12"></div></td><td><button type="button" class="btn btn-danger btn_remove" id="' + i + '" name="remove">X</button></td></tr>');
-
+     
           //  let varHTML = '<tr id="tr_' + i + '"><td><div class="col-md-12"></div></td></tr>';
-            let varHTML = '<div class="form-group d-flex" id="tr_' + i + '"> <div class="col-sm-12"> <div class="box-header with-border user-top-section top-with-select"><div class="tablenav top tablenav-top2"><input type="hidden"  class="nmvariationid" id="hfvariationid" value="" /><div class="alignleft actions bulkactions "><table class="data-contacts1-js table table-striped" > <tbody> </tbody>  </table></div><div class="a-float-right" id="angle-box"> <span><i class="fa fa-angle-down" aria-hidden="true"></i></span>  </div> </div> </div> </div>   </div>  <div class="varient-box"> <div class="form-group d-flex"><div class="col-md-6"></div> <div class="col-md-6"><label class="control-label">SKU</label><input id="varsku" type="text" class="skucval" /></div> </div><div class="form-group d-flex virtual-checks"><div class="col-md-12"><div class="form-check-input"><input type="checkbox" class="chkproducttypevir" id="virtualcheck" value=""><label>Virtual:</label></div><div class="form-check-input"><input type="checkbox" class="chkproducttypestc" id="stockcheck"><label>Manage Stock?</label></div></div> </div><div class="form-group d-flex mt-25"><div class="col-md-6"><label class="control-label">Regular Price($)</label><input type="text"  name="txtregularvar" class="form-control" placeholder="Variation price *" /></div><div class="col-md-6"><label class="control-label">Sale Price($)</label><input type="text" name="txtSalepricevariation" class="form-control" /></div></div><div id="divstock"><div class="form-group d-flex mt-25"><div class="col-md-6"><label class="control-label">Stock quantity</label><input type="text" name="txtStockquantityvariation" class="form-control"></div><div class="form-group d-flex mt-25"> <label class="col-sm-6 control-label">Allow backorders?</label> <select class="txtallowbackordersvariation"> <option value="no" selected="selected">Do not allow</option> <option value="notify">Allow, but notify customer</option><option value="yes">Allow</option></select> </div> </div> </div> <div id="divaria"> <div class="form-group d-flex"><div class="col-md-6"><label class="control-label">Weight (lbs)</label><input type="text" name="txtweightvariation" class="form-control" placeholder="50" /></div><div class="col-md-6"><label class="control-label">Dimensions (L x W x H) (in)</label><div class="weight-box"><div class="col-md-4"><input type="text" name="txtLvariation" class="form-control" placeholder="60" /></div><div class="col-md-4"><input type="text" name="txtWvariation" class="form-control" placeholder="60" /></div><div class="col-md-4"> <input type="text" name="txtHvariation" class="form-control" placeholder="60" /></div></div></div></div></div><div class="form-group d-flex"><div class="col-md-12"><label class="control-label">Shipping Class</label><select class="txtshipvariation"> <option value="-1">shipping class</option><option class="level-0" value="200">Adjustabe Base (Split King)</option> <option class="level-0" value="246">Adjustable Base (Full)</option> <option class="level-0" value="201">Adjustable Base (King)</option><option class="level-0" value="199">Adjustable Base (Queen)</option>  <option class="level-0" value="198">Adjustable Base (Twin XL)</option><option class="level-0" value="71">Bed Frame</option><option class="level-0" value="114">Blanket</option><option class="level-0" value="30">Foundation</option> <option class="level-0" value="50">Free Shipping</option> <option class="level-0" value="263">Hybrid Cal King</option> <option class="level-0" value="260">Hybrid Full</option> <option class="level-0" value="262">Hybrid King</option> <option class="level-0" value="261">Hybrid Queen</option> <option class="level-0" value="258">Hybrid Twin</option> <option class="level-0" value="259">Hybrid Twin XL</option> <option class="level-0" value="257">Mattress Cal King</option>  <option class="level-0" value="254">Mattress Full</option><option class="level-0" value="256">Mattress King</option> <option class="level-0" value="196">Mattress Protector</option> <option class="level-0" value="255">Mattress Queen</option> <option class="level-0" value="252">Mattress Twin</option>    <option class="level-0" value="253">Mattress Twin XL</option>  <option class="level-0" value="195">Memory Foam Pillow</option><option class="level-0" value="52">Pillow</option>  <option class="level-0" value="202">Platform Bed</option> <option class="level-0" value="107">Sheets</option> <option class="level-0" value="87">Topper</option> </select></div> </div><div class="form-group d-flex"><div class="col-md-12"><label class="control-label">Tax Class</label><select class="txttaxcassvariation" ><option value="standard" selected="selected">Standard</option> <option value="reduced-rate">Reduced rate</option> <option value="zero-rate">Zero rate</option> </select></div></div><div class="form-group d-flex"><div class="col-md-12"><label class="control-label note-label"><i>Note: Setting a product as note taxable or having the "Zero rate".</i></label></div></div><div class="form-group d-flex"><div class="col-md-12"><label class="control-label">Description</label><textarea name="txtdescriptionvariation" class="form-control"></textarea></div></div><div class="box-footer text-right"></div></div>';
+                        let varHTML = '<div class="form-group d-flex" id="tr_' + i + '"> <div class="col-sm-12"> <div class="box-header with-border user-top-section top-with-select"><div class="tablenav top tablenav-top2"><input type="text" class="nmvariationid" id="hfvariationid" value="' + IDPost +'" /><div class="alignleft actions bulkactions "><table class="data-contacts1-js table table-striped" > <tbody> </tbody>  </table></div><div class="a-float-right" id="angle-box"> <span><i class="fa fa-angle-down" aria-hidden="true"></i></span>  </div> </div> </div>    <div class="varient-box"> <div class="form-group d-flex"><div class="col-md-6"></div> <div class="col-md-6"><label class="control-label">SKU</label><input id="varsku" type="text" class="skucval" /></div> </div><div class="form-group d-flex virtual-checks"><div class="col-md-12"><div class="form-check-input"><input type="checkbox" class="chkproducttypevir" id="virtualcheck" value=""><label>Virtual:</label></div><div class="form-check-input"><input type="checkbox" class="chkproducttypestc" id="stockcheck"><label>Manage Stock?</label></div></div> </div><div class="form-group d-flex mt-25"><div class="col-md-6"><label class="control-label">Regular Price($)</label><input type="text"  name="txtregularvar" class="form-control" placeholder="Variation price *" /></div><div class="col-md-6"><label class="control-label">Sale Price($)</label><input type="text" name="txtSalepricevariation" class="form-control" /></div></div><div id="divstock"><div class="form-group d-flex mt-25"><div class="col-md-6"><label class="control-label">Stock quantity</label><input type="text" name="txtStockquantityvariation" class="form-control"></div><div class="form-group d-flex mt-25"> <label class="col-sm-6 control-label">Allow backorders?</label> <select class="txtallowbackordersvariation"> <option value="no" selected="selected">Do not allow</option> <option value="notify">Allow, but notify customer</option><option value="yes">Allow</option></select> </div> </div> </div> <div id="divaria"> <div class="form-group d-flex"><div class="col-md-6"><label class="control-label">Weight (lbs)</label><input type="text" name="txtweightvariation" class="form-control" placeholder="50" /></div><div class="col-md-6"><label class="control-label">Dimensions (L x W x H) (in)</label><div class="weight-box"><div class="col-md-4"><input type="text" name="txtLvariation" class="form-control" placeholder="60" /></div><div class="col-md-4"><input type="text" name="txtWvariation" class="form-control" placeholder="60" /></div><div class="col-md-4"> <input type="text" name="txtHvariation" class="form-control" placeholder="60" /></div></div></div></div></div><div class="form-group d-flex"><div class="col-md-12"><label class="control-label">Shipping Class</label><select class="txtshipvariation"> <option value="-1">shipping class</option><option class="level-0" value="200">Adjustabe Base (Split King)</option> <option class="level-0" value="246">Adjustable Base (Full)</option> <option class="level-0" value="201">Adjustable Base (King)</option><option class="level-0" value="199">Adjustable Base (Queen)</option>  <option class="level-0" value="198">Adjustable Base (Twin XL)</option><option class="level-0" value="71">Bed Frame</option><option class="level-0" value="114">Blanket</option><option class="level-0" value="30">Foundation</option> <option class="level-0" value="50">Free Shipping</option> <option class="level-0" value="263">Hybrid Cal King</option> <option class="level-0" value="260">Hybrid Full</option> <option class="level-0" value="262">Hybrid King</option> <option class="level-0" value="261">Hybrid Queen</option> <option class="level-0" value="258">Hybrid Twin</option> <option class="level-0" value="259">Hybrid Twin XL</option> <option class="level-0" value="257">Mattress Cal King</option>  <option class="level-0" value="254">Mattress Full</option><option class="level-0" value="256">Mattress King</option> <option class="level-0" value="196">Mattress Protector</option> <option class="level-0" value="255">Mattress Queen</option> <option class="level-0" value="252">Mattress Twin</option>    <option class="level-0" value="253">Mattress Twin XL</option>  <option class="level-0" value="195">Memory Foam Pillow</option><option class="level-0" value="52">Pillow</option>  <option class="level-0" value="202">Platform Bed</option> <option class="level-0" value="107">Sheets</option> <option class="level-0" value="87">Topper</option> </select></div> </div><div class="form-group d-flex"><div class="col-md-12"><label class="control-label">Tax Class</label><select class="txttaxcassvariation" ><option value="standard" selected="selected">Standard</option> <option value="reduced-rate">Reduced rate</option> <option value="zero-rate">Zero rate</option> </select></div></div><div class="form-group d-flex"><div class="col-md-12"><label class="control-label note-label"><i>Note: Setting a product as note taxable or having the "Zero rate".</i></label></div></div><div class="form-group d-flex"><div class="col-md-12"><label class="control-label">Description</label><textarea class="txtdescriptionvariation"></textarea></div></div><div class="box-footer text-right"></div></div> </div></div>';
 
-            $("#product_variations").append(varHTML);
+                        $("#product_variations").append(varHTML);
 
+                    }
+                    // EMPTY THE ARRAY. nmvariationid
+                    // alert(response.d);
+                },
+                complete: function () {
+                    $("#loader").hide();
+                    //location.href = '/Users/Users/';
+                    //window.location.href = '/Users/Users/';
+
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    // alert(errorThrown);
+                }
+
+        });
             var obj = { strVal: ID }
             $.ajax({
 
@@ -173,7 +211,7 @@ $(document).ready(function () {
                         var tr = $("<tr></tr>");
                         //  varHTML += '<select class="inputddl" id="tb1">';
                         // varHTML += '<option value="' + value.key + '">Any ' + value.key + '</option>';
-                        varHTML += "<select class='inputddl' id='ddlAtt'><option value='" + value.key + "'>Any '" + value.key + "' </option>";
+                        varHTML += "<select class='inputddl' id='ddlAtt' data-key='" + value.key +"'><option value='" + value.key + "'>Any '" + value.key + "' </option>";
                         for (i = 0; i < _values.length; i++) {
                                varHTML += '<option value="' + _values[i] + '"> ' + _values[i] + '</option>';
                         }
@@ -218,6 +256,9 @@ $(document).ready(function () {
                 error: function (msg) { alert(msg); }
             });
 
+
+           
+
         }
         else
             swal('Alert!', " Before you can add a variation you need to add some variation attributes on the Attributes tab.", 'error');
@@ -236,139 +277,234 @@ $(document).ready(function () {
 
 
     $("#btnSavevariations").click(function (e) {
-        let _attxml=[]
+        let _attxml = [];
+        let parentID = parseInt($("#hfUpdatedID").val()) || parseInt($("#hfid").val());
+        console.log(parentID);
+      
+        
+        console.log($("#hfid").val());
+        console.log($("#hfUpdatedID").val());
         $("#product_variations > div.d-flex").each(function (index, div) {
             /*console.log('att', index);*/
             $(div).find(".inputddl").each(function () {
                 _attxml.push(
-                    { post_id: index, meta_key:'attribute_'+ $(this).data('key'), meta_value: $(this).val() }
+                    { post_id: $(div).find('.nmvariationid').val(), meta_key:'attribute_'+ $(this).data('key'), meta_value: $(this).val() }
+                );
+            });
+
+            $(div).find(".skucval").each(function () {
+                _attxml.push(
+                    { post_id: $(div).find('.nmvariationid').val(), meta_key: '_sku', meta_value: this.value }
+                );
+            });
+
+            $(div).find(".chkproducttypevir").each(function () {
+                _attxml.push(
+                    { post_id: $(div).find('.nmvariationid').val(), meta_key: '_virtual', meta_value: this.checked }
+                );
+            });
+
+            $(div).find(".chkproducttypestc").each(function () {
+                _attxml.push(
+                    { post_id: $(div).find('.nmvariationid').val(), meta_key: '_manage_stock', meta_value: this.checked }
+                );
+            });
+
+            $(div).find("input[name = txtregularvar]").each(function () {
+                _attxml.push(
+                    { post_id: $(div).find('.nmvariationid').val(), meta_key: '_regular_price', meta_value: this.value }
+                );
+            });
+
+            $(div).find("input[name = txtSalepricevariation]").each(function () {
+                _attxml.push(
+                    { post_id: $(div).find('.nmvariationid').val(), meta_key: '_sale_price', meta_value: this.value },
+                    { post_id: $(div).find('.nmvariationid').val(), meta_key: '_price', meta_value: this.value },                    
+                    { post_id: $(div).find('.nmvariationid').val(), meta_key: 'total_sales', meta_value: 0 },
+                    { post_id: $(div).find('.nmvariationid').val(), meta_key: '_download_expiry', meta_value: "-1" },
+                    { post_id: $(div).find('.nmvariationid').val(), meta_key: '_download_limit', meta_value: "no" },
+                    { post_id: $(div).find('.nmvariationid').val(), meta_key: '_downloadable', meta_value: "no" }
+                );
+            });
+
+            $(div).find("input[name = txtweightvariation]").each(function () {
+                _attxml.push(
+                    { post_id: $(div).find('.nmvariationid').val(), meta_key: '_weight', meta_value: this.value },
+                    { post_id: $(div).find('.nmvariationid').val(), meta_key: '_sold_individually', meta_value: "no" },
+                    { post_id: $(div).find('.nmvariationid').val(), meta_key: '_tax_status', meta_value: "taxable" }
+                );
+            });
+
+            $(div).find("input[name = txtLvariation]").each(function () {
+                _attxml.push(
+                    { post_id: $(div).find('.nmvariationid').val(), meta_key: '_length', meta_value: this.value },
+                    { post_id: $(div).find('.nmvariationid').val(), meta_key: '_wc_review_count', meta_value: "0" }
+                );
+            });
+
+            $(div).find("input[name = txtWvariation]").each(function () {
+                _attxml.push(
+                    { post_id: $(div).find('.nmvariationid').val(), meta_key: '_width', meta_value: this.value },
+                       { post_id: $(div).find('.nmvariationid').val(), meta_key: '_wc_average_rating', meta_value: "no" },
+                    { post_id: $(div).find('.nmvariationid').val(), meta_key: '_stock_status', meta_value: "instock" }
+                );
+            });
+
+            $(div).find("input[name = txtHvariation]").each(function () {
+                _attxml.push(
+                    { post_id: $(div).find('.nmvariationid').val(), meta_key: '_height', meta_value: this.value }
+                );
+            });
+          
+            $(div).find(".txttaxcassvariation").each(function () {
+                _attxml.push(
+                    { post_id: $(div).find('.nmvariationid').val(), meta_key: '_tax_class', meta_value: this.value }
+                );
+            });
+           
+            $(div).find(".txtallowbackordersvariation").each(function () {
+                _attxml.push(
+                    { post_id: $(div).find('.nmvariationid').val(), meta_key: '_backorders', meta_value: this.value }
+                );
+            });
+            $(div).find("input[name = txtStockquantityvariation]").each(function () {
+                _attxml.push(
+                    { post_id: $(div).find('.nmvariationid').val(), meta_key: '_stock', meta_value: this.value }
+                );
+            });
+            
+            $(div).find(".txtdescriptionvariation").each(function () {
+                _attxml.push(
+                    { post_id: $(div).find('.nmvariationid').val(), meta_key: '_variation_description', meta_value: this.value }
                 );
             });
         });
-     
-
-        let _skvxml = []
-  
-            /*console.log('att', index);*/
-        $('.skucval').each(function (index) {
-            _attxml.push(
-                    { post_id: index, meta_key: 'skv_', meta_value: this.value }
+        let _ItemProduct = []
+        $("#product_variations > div.d-flex").each(function (index, div) {
+            $(div).find(".txtshipvariation").each(function () {
+                _ItemProduct.push(
+                { object_id: $(div).find('.nmvariationid').val(), term_taxonomy_id: this.value, term_order: "0" }
                 );
             });
-         
-        console.log('skv', _attxml);
-        var obj = {
-            ProductPostMeta: _attxml
-        }
+        });
 
-        let _list = new Array();
-        let _listkey = new Array();
-        //let _list1 = [];
-        //$('#product_variations > tr').each(function (index, tr) {
-        //    _list1.push({ key: $(tr).find('.inputddl').val(), value: $(tr).find('.inputddl').val() });
-            
+
+        let _PostTitleProduct = []
+        $("#product_variations > div.d-flex").each(function (index, div) {
+            $(div).find(".inputddl").each(function () {
+                _PostTitleProduct.push(                    
+                    { ID: $(div).find('.nmvariationid').val(), post_title: $("#txtProductName").val() + '-' + $(this).val(), post_excerpt: $(this).data('key') + ':' + $(this).val() }
+                );
+            });
+        });
+
+        let _PriceProduct = []
+        $("#product_variations > div.d-flex").each(function (index, div) {
+            $(div).find("input[name = txtSalepricevariation]").each(function () {
+                _PriceProduct.push(
+                    { post_id: parentID, meta_key: '_price', meta_value: this.value },
+                );
+            });
+        });
+
+        //$('#tbhold > tr').each(function (index, tr) {
+        //    _list.push({ key: $(tr).find('.input').val(), value: $(tr).find('.inputdes').val() });
 
         //});
-        $('.inputddl').each(function () {           
-            _listkey.push($(this).data('key'));
 
-        });
-       // var uniques = _listkey.uniques();
-        $('.inputddl').each(function () {
-            if (this.value != '')
-                _list.push(this.value);
-        });
+        //let _skvxml = []
+  
+        //    /*console.log('att', index);*/
+        //$('.skucval').each(function (index) {
+        //    _attxml.push(
+        //        { post_id: index, meta_key: '_sku', meta_value: this.value }
+        //        );
+        //    }); _ItemProduct
+         
+        console.log('skv', _attxml);
+        console.log('item', _ItemProduct);
+        console.log('Title', _PostTitleProduct);
+        console.log('price', _PriceProduct);
+        var obj = {
+            ProductPostMeta: _attxml, ProductPostItemMeta: _ItemProduct, ProductPostPostMeta: _PostTitleProduct, ProductPostPriceMeta: _PriceProduct
+        }
 
-        console.log(_list);
-        //console.log(_list1);
-        let skucval = new Array();
-        $('.skucval').each(function () {
-            skucval.push(this.value);
-        });
-        let variationIDUpdate = new Array();
-        $('.nmvariationid').each(function () {         
-            variationIDUpdate.push(this.value);
-        });
-        let virtualval = new Array();
-        $('.chkproducttypevir').each(function () {
-            virtualval.push(this.checked);
-        });
-
-        let stockcheckval = new Array();
-        $('.chkproducttypestc').each(function () {
-            stockcheckval.push(this.checked);
-        });
+      
+       // let stockcheckval = new Array();
+       // $('.chkproducttypestc').each(function () {
+       //     stockcheckval.push(this.checked);
+       // });
        
-        let regularvar = new Array();
-        $("input[name=txtregularvar]").each(function () {
-            regularvar.push(this.value);
-        });
+       // let regularvar = new Array();
+       // $("input[name=txtregularvar]").each(function () {
+       //     regularvar.push(this.value);
+       // });
 
 
-        let Salepricevariation = new Array();
-        $("input[name=txtSalepricevariation]").each(function () {
-            Salepricevariation.push(this.value);
-        });
+       // let Salepricevariation = new Array();
+       // $("input[name=txtSalepricevariation]").each(function () {
+       //     Salepricevariation.push(this.value);
+       // });
 
-        let Stockquantityvariation = new Array();
-        $("input[name=txtStockquantityvariation]").each(function () {
-            Stockquantityvariation.push(this.value);
-        });
+       // let Stockquantityvariation = new Array();
+       // $("input[name=txtStockquantityvariation]").each(function () {
+       //     Stockquantityvariation.push(this.value);
+       // });
 
-        let allowbackordersvariation = new Array();
-        $('.txtallowbackordersvariation').each(function () {
-            allowbackordersvariation.push(this.value);
-        });
+       // let allowbackordersvariation = new Array();
+       // $('.txtallowbackordersvariation').each(function () {
+       //     allowbackordersvariation.push(this.value);
+       // });
 
-        let weightvariation = new Array();
-        $("input[name=txtweightvariation]").each(function () {
-            weightvariation.push(this.value);
-        });
+       // let weightvariation = new Array();
+       // $("input[name=txtweightvariation]").each(function () {
+       //     weightvariation.push(this.value);
+       // });
 
-        let Lvariation = new Array();
-        $("input[name=txtLvariation]").each(function () {
-            Lvariation.push(this.value);
-        });
+       // let Lvariation = new Array();
+       // $("input[name=txtLvariation]").each(function () {
+       //     Lvariation.push(this.value);
+       // });
 
-        let Wvariation = new Array();
-        $("input[name=txtWvariation]").each(function () {
-            Wvariation.push(this.value);
-        });
-
-
-        let Hvariation = new Array();
-        $("input[name=txtHvariation]").each(function () {
-            Hvariation.push(this.value);
-        });
-
-        let shipvariation = new Array();
-        $('.txtshipvariation').each(function () {
-            shipvariation.push(this.value);
-        });
-
-        let cassvariation = new Array();
-        $('.txttaxcassvariation').each(function () {
-            cassvariation.push(this.value);
-        });
-
-        let descriptionvariation = new Array();
-        $("input[name=txtdescriptionvariation]").each(function () {
-            descriptionvariation.push(this.value);
-        });
+       // let Wvariation = new Array();
+       // $("input[name=txtWvariation]").each(function () {
+       //     Wvariation.push(this.value);
+       // });
 
 
-        $('.inputchkvar').each(function () {
-            //if (this.value != '')
-            inputchkvariation.push(this.checked);
-        });
+       // let Hvariation = new Array();
+       // $("input[name=txtHvariation]").each(function () {
+       //     Hvariation.push(this.value);
+       // });
+
+       // let shipvariation = new Array();
+       // $('.txtshipvariation').each(function () {
+       //     shipvariation.push(this.value);
+       // });
+
+       // let cassvariation = new Array();
+       // $('.txttaxcassvariation').each(function () {
+       //     cassvariation.push(this.value);
+       // });
+
+       // let descriptionvariation = new Array();
+       // $("input[name=txtdescriptionvariation]").each(function () {
+       //     descriptionvariation.push(this.value);
+       // });
 
 
-        if (_list != '') {
+       // $('.inputchkvar').each(function () {
+       //     //if (this.value != '')
+       //     inputchkvariation.push(this.checked);
+       // });
+
+      
+        if (_attxml != '') {
             //  NOW CALL THE WEB METHOD WITH THE PARAMETERS USING AJAX.
             $.ajax({
                 type: 'POST',
                 url: '/Product/Savevariations',
-                data: "{'fields':'" + _list + "', 'UpdateList': '" + _listkey  + "', 'UpdateID': '" + variationIDUpdate + "', 'PID': '" + $("#hfid").val() + "', 'post_title': '" + $("#txtProductName").val() + "', 'regularprice': '" + regularvar + "', 'Salepricevariationval': '" + Salepricevariation + "', 'Stockquantityvariationval': '" + Stockquantityvariation + "', 'allowbackordersvariationval': '" + allowbackordersvariation + "', 'weightvariationval': '" + weightvariation + "', 'Lvariationval': '" + Lvariation + "', 'Wvariationval': '" + Wvariation + "','Hvariationval': '" + Hvariation + "','shipvariationval': '" + shipvariation + "', 'cassvariationval': '" + cassvariation + "', 'descriptionvariationval': '" + descriptionvariation + "', 'stockchec': '" + stockcheckval + "', 'chkvirtual': '" + virtualval + "','sku': '" + skucval + "', 'parentid': '" + $("#hfUpdatedID").val() + "', 'attributeheaderval': '" + $("#hfattributeheaderval").val() + "'}",
+                data: JSON.stringify(obj), //"{'fields':'" + _list + "', 'UpdateList': '" + _listkey  + "', 'UpdateID': '" + variationIDUpdate + "', 'PID': '" + $("#hfid").val() + "', 'post_title': '" + $("#txtProductName").val() + "', 'regularprice': '" + regularvar + "', 'Salepricevariationval': '" + Salepricevariation + "', 'Stockquantityvariationval': '" + Stockquantityvariation + "', 'allowbackordersvariationval': '" + allowbackordersvariation + "', 'weightvariationval': '" + weightvariation + "', 'Lvariationval': '" + Lvariation + "', 'Wvariationval': '" + Wvariation + "','Hvariationval': '" + Hvariation + "','shipvariationval': '" + shipvariation + "', 'cassvariationval': '" + cassvariation + "', 'descriptionvariationval': '" + descriptionvariation + "', 'stockchec': '" + stockcheckval + "', 'chkvirtual': '" + virtualval + "','sku': '" + skucval + "', 'parentid': '" + $("#hfUpdatedID").val() + "', 'attributeheaderval': '" + $("#hfattributeheaderval").val() + "'}",
                 dataType: 'json',
                 headers: { "Content-Type": "application/json" },
                 beforeSend: function () {
@@ -412,7 +548,7 @@ $(document).ready(function () {
                 values.push(this.value);
         });
 
-        $("#hfattributeheaderval").val(values.join(', '));
+        $("#hfattributeheaderval").val(values.join(','));
         //$('.inputdes').each(function () {
         //    if (this.value != '')
         //        valuesdescription.push(this.value);
@@ -855,7 +991,7 @@ function GetProductvariationID(VariationID) {
                 console.log(ival);          
        
 
-                let varHTML = '<div class="form-group d-flex" id="tr_' + i + '"> <div class="col-sm-12"> <div class="box-header with-border user-top-section top-with-select"><div class="tablenav top tablenav-top2"><input type="hidden" class="nmvariationid" id="hfvariationid" value="' + ival[0].ID + '" /><div class="alignleft actions bulkactions "><table class="data-contacts1-js table table-striped" > <tbody> </tbody>  </table></div><div class="a-float-right" id="angle-box"> <span><i class="fa fa-angle-down" aria-hidden="true"></i></span>  </div> </div> </div> </div>   </div>  <div class="varient-box"> <div class="form-group d-flex"><div class="col-md-6"></div> <div class="col-md-6"><label class="control-label">SKU</label><input id="varsku" type="text" class="skucval" value="' + ival[0].sku + '"/></div> </div><div class="form-group d-flex virtual-checks"><div class="col-md-12"><div class="form-check-input"><input type="checkbox" checked="true"  class="chkproducttypevir" id="virtualcheck"><label>Virtual:</label></div><div class="form-check-input"><input type="checkbox"  class="chkproducttypestc" id="stockcheck"><label>Manage Stock?</label></div></div> </div><div class="form-group d-flex mt-25"><div class="col-md-6"><label class="control-label">Regular Price($)</label><input type="text"  name="txtregularvar" class="form-control" placeholder="Variation price *" value="' + ival[0].regularamount + '" /></div><div class="col-md-6"><label class="control-label">Sale Price($)</label><input type="text" name="txtSalepricevariation" class="form-control" value="' + ival[0].saleprice + '" /></div></div><div id="divstock"><div class="form-group d-flex mt-25"><div class="col-md-6"><label class="control-label">Stock quantity</label><input type="text" name="txtStockquantityvariation" class="form-control" value="' + ival[0].stock + '"></div><div class="form-group d-flex mt-25"> <label class="col-sm-6 control-label">Allow backorders?</label> <select class="txtallowbackordersvariation"> <option value="no" selected="selected">Do not allow</option> <option value="notify">Allow, but notify customer</option><option value="yes">Allow</option></select> </div> </div> </div> <div id="divaria"> <div class="form-group d-flex"><div class="col-md-6"><label class="control-label">Weight (lbs)</label><input type="text" name="txtweightvariation" class="form-control" placeholder="50" value="' + ival[0].weight + '" /></div><div class="col-md-6"><label class="control-label">Dimensions (L x W x H) (in)</label><div class="weight-box"><div class="col-md-4"><input type="text" name="txtLvariation" class="form-control" placeholder="60" value="' + ival[0].length + '"/></div><div class="col-md-4"><input type="text" name="txtWvariation" class="form-control" placeholder="60" value="' + ival[0].height + '" /></div><div class="col-md-4"> <input type="text" name="txtHvariation" class="form-control" placeholder="60" value="' + ival[0].width + '" /></div></div></div></div></div><div class="form-group d-flex"><div class="col-md-12"><label class="control-label">Shipping Class</label><select class="txtshipvariation" > <option value="-1">shipping class</option><option class="level-0" value="200">Adjustabe Base (Split King)</option> <option class="level-0" value="246">Adjustable Base (Full)</option> <option class="level-0" value="201">Adjustable Base (King)</option><option class="level-0" value="199">Adjustable Base (Queen)</option>  <option class="level-0" value="198">Adjustable Base (Twin XL)</option><option class="level-0" value="71">Bed Frame</option><option class="level-0" value="114">Blanket</option><option class="level-0" value="30">Foundation</option> <option class="level-0" value="50">Free Shipping</option> <option class="level-0" value="263">Hybrid Cal King</option> <option class="level-0" value="260">Hybrid Full</option> <option class="level-0" value="262">Hybrid King</option> <option class="level-0" value="261">Hybrid Queen</option> <option class="level-0" value="258">Hybrid Twin</option> <option class="level-0" value="259">Hybrid Twin XL</option> <option class="level-0" value="257">Mattress Cal King</option>  <option class="level-0" value="254">Mattress Full</option><option class="level-0" value="256">Mattress King</option> <option class="level-0" value="196">Mattress Protector</option> <option class="level-0" value="255">Mattress Queen</option> <option class="level-0" value="252">Mattress Twin</option>    <option class="level-0" value="253">Mattress Twin XL</option>  <option class="level-0" value="195">Memory Foam Pillow</option><option class="level-0" value="52">Pillow</option>  <option class="level-0" value="202">Platform Bed</option> <option class="level-0" value="107">Sheets</option> <option class="level-0" value="87">Topper</option> </select></div> </div><div class="form-group d-flex"><div class="col-md-12"><label class="control-label">Tax Class</label><select class="txttaxcassvariation" ><option value="standard" selected="selected">Standard</option> <option value="reduced-rate">Reduced rate</option> <option value="zero-rate">Zero rate</option> </select></div></div><div class="form-group d-flex"><div class="col-md-12"><label class="control-label note-label"><i>Note: Setting a product as note taxable or having the "Zero rate".</i></label></div></div><div class="form-group d-flex"><div class="col-md-12"><label class="control-label">Description</label><textarea name="txtdescriptionvariation" class="form-control"></textarea></div></div><div class="box-footer text-right"></div></div>';
+                let varHTML = '<div class="form-group d-flex" id="tr_' + i + '"> <div class="col-sm-12"> <div class="box-header with-border user-top-section top-with-select"><div class="tablenav top tablenav-top2"><input type="text" class="nmvariationid" id="hfvariationid" value="' + ival[0].ID + '" /><div class="alignleft actions bulkactions "><table class="data-contacts1-js table table-striped" > <tbody> </tbody>  </table></div><div class="a-float-right" id="angle-box"> <span><i class="fa fa-angle-down" aria-hidden="true"></i></span>  </div> </div> </div>   <div class="varient-box"> <div class="form-group d-flex"><div class="col-md-6"></div> <div class="col-md-6"><label class="control-label">SKU</label><input id="varsku" type="text" class="skucval" value="' + ival[0].sku + '"/></div> </div><div class="form-group d-flex virtual-checks"><div class="col-md-12"><div class="form-check-input"><input type="checkbox" checked="true"  class="chkproducttypevir" id="virtualcheck"><label>Virtual:</label></div><div class="form-check-input"><input type="checkbox"  class="chkproducttypestc" id="stockcheck"><label>Manage Stock?</label></div></div> </div><div class="form-group d-flex mt-25"><div class="col-md-6"><label class="control-label">Regular Price($)</label><input type="text"  name="txtregularvar" class="form-control" placeholder="Variation price *" value="' + ival[0].regularamount + '" /></div><div class="col-md-6"><label class="control-label">Sale Price($)</label><input type="text" name="txtSalepricevariation" class="form-control" value="' + ival[0].saleprice + '" /></div></div><div id="divstock"><div class="form-group d-flex mt-25"><div class="col-md-6"><label class="control-label">Stock quantity</label><input type="text" name="txtStockquantityvariation" class="form-control" value="' + ival[0].stock + '"></div><div class="form-group d-flex mt-25"> <label class="col-sm-6 control-label">Allow backorders?</label> <select class="txtallowbackordersvariation"> <option value="no" selected="selected">Do not allow</option> <option value="notify">Allow, but notify customer</option><option value="yes">Allow</option></select> </div> </div> </div> <div id="divaria"> <div class="form-group d-flex"><div class="col-md-6"><label class="control-label">Weight (lbs)</label><input type="text" name="txtweightvariation" class="form-control" placeholder="50" value="' + ival[0].weight + '" /></div><div class="col-md-6"><label class="control-label">Dimensions (L x W x H) (in)</label><div class="weight-box"><div class="col-md-4"><input type="text" name="txtLvariation" class="form-control" placeholder="60" value="' + ival[0].length + '"/></div><div class="col-md-4"><input type="text" name="txtWvariation" class="form-control" placeholder="60" value="' + ival[0].height + '" /></div><div class="col-md-4"> <input type="text" name="txtHvariation" class="form-control" placeholder="60" value="' + ival[0].width + '" /></div></div></div></div></div><div class="form-group d-flex"><div class="col-md-12"><label class="control-label">Shipping Class</label><select class="txtshipvariation" > <option value="-1">shipping class</option><option class="level-0" value="200">Adjustabe Base (Split King)</option> <option class="level-0" value="246">Adjustable Base (Full)</option> <option class="level-0" value="201">Adjustable Base (King)</option><option class="level-0" value="199">Adjustable Base (Queen)</option>  <option class="level-0" value="198">Adjustable Base (Twin XL)</option><option class="level-0" value="71">Bed Frame</option><option class="level-0" value="114">Blanket</option><option class="level-0" value="30">Foundation</option> <option class="level-0" value="50">Free Shipping</option> <option class="level-0" value="263">Hybrid Cal King</option> <option class="level-0" value="260">Hybrid Full</option> <option class="level-0" value="262">Hybrid King</option> <option class="level-0" value="261">Hybrid Queen</option> <option class="level-0" value="258">Hybrid Twin</option> <option class="level-0" value="259">Hybrid Twin XL</option> <option class="level-0" value="257">Mattress Cal King</option>  <option class="level-0" value="254">Mattress Full</option><option class="level-0" value="256">Mattress King</option> <option class="level-0" value="196">Mattress Protector</option> <option class="level-0" value="255">Mattress Queen</option> <option class="level-0" value="252">Mattress Twin</option>    <option class="level-0" value="253">Mattress Twin XL</option>  <option class="level-0" value="195">Memory Foam Pillow</option><option class="level-0" value="52">Pillow</option>  <option class="level-0" value="202">Platform Bed</option> <option class="level-0" value="107">Sheets</option> <option class="level-0" value="87">Topper</option> </select></div> </div><div class="form-group d-flex"><div class="col-md-12"><label class="control-label">Tax Class</label><select class="txttaxcassvariation" ><option value="standard" selected="selected">Standard</option> <option value="reduced-rate">Reduced rate</option> <option value="zero-rate">Zero rate</option> </select></div></div><div class="form-group d-flex"><div class="col-md-12"><label class="control-label note-label"><i>Note: Setting a product as note taxable or having the "Zero rate".</i></label></div></div><div class="form-group d-flex"><div class="col-md-12"><label class="control-label">Description</label><textarea class="txtdescriptionvariation"></textarea></div></div><div class="box-footer text-right"></div> </div></div></div>';
              
                 $("#product_variations").append(varHTML);
 

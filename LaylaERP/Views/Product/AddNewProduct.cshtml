@@ -35,7 +35,7 @@
                     <div class="custom-editor">
                         <textarea id="formatcustom" class="textarea" placeholder="Description"
                                   style="width: 100%; height: 125px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"></textarea>
-                         
+
                     </div>
                 </div>
             </div>
@@ -45,9 +45,9 @@
                         <div class="tablenav top tablenav-top2">
                             <div class="alignleft actions bulkactions ">
                                 <h3 class="box-title">Product Data</h3>
-                                <select  class="form-control select2 billinfo"  id="ddlProductType" placeholder="Select Products">
+                                <select class="form-control select2 billinfo" id="ddlProductType" placeholder="Select Products">
                                     <optgroup label="Product Type">
-                                        <option   value="2" selected="selected">Simple product</option>
+                                        <option value="2" selected="selected">Simple product</option>
                                         <option value="3">Grouped product</option>
                                         <option value="5">External/Affiliate product</option>
                                         <option value="4">Variable product</option>
@@ -64,8 +64,8 @@
                             <li><a href="#tab_2" data-toggle="tab">Inventory</a></li>
                             <li><a href="#tab_3" data-toggle="tab">Shipping</a></li>
                             <li><a href="#tab_4" data-toggle="tab">Linked Products</a></li>
-                            <li><a href="#tab_5" data-toggle="tab">Attributes</a></li>                          
-                            <li><a href="#tab_6" id="ahrfVariation"  data-toggle="tab">Variations</a></li>
+                            <li><a href="#tab_5" data-toggle="tab">Attributes</a></li>
+                            <li><a href="#tab_6" id="ahrfVariation" data-toggle="tab">Variations</a></li>
                         </ul>
                         <div class="tab-content">
                             <div class="tab-pane active" id="tab_1">
@@ -239,47 +239,47 @@
                                     </div>
 
                                     @*<div>
-            <input type="text" id="tbTableName" placeholder="Enter Table Name" />
-            <button id="btAdd" type="submit" class="btn btn-danger">Add</button>
-        </div>
-        <div id="main"></div>*@
+                                            <input type="text" id="tbTableName" placeholder="Enter Table Name" />
+                                            <button id="btAdd" type="submit" class="btn btn-danger">Add</button>
+                                        </div>
+                                        <div id="main"></div>*@
                                     <div class="col-auto ps-1">
                                         <button id="add" type="submit" class="btn btn-danger">Add</button>
                                     </div>
                                 </div>
-                                    @*<form name="addrma" id="addrma" method="post">*@
-                                    <div class="col-sm-12">
-                                        <table id="tbhold">
-                                            @*<thead>
-                    <tr>
-                        <th>Varenummer</th>
-                        <th>Serienummer</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            <div class="col-md-8">
-                                <input type="text" name="Name[0]" id="Name" class="form-control" />
-                            </div>
-                        </td>
-                        <td>
-                            <div class="col-md-8">
-                                <input type="text" name="Value[0]" id="Value" class="form-control" />
-                            </div>
-                        </td>
-                        <td>
-                        </td>
-                </tbody>*@
-                                        </table>
-                                        </div>
-                                        @*</form>*@
-
-                              
-                                    <div class="attribute-btn">
-                                        <button id="btnsaveAttributes" class="btn btn-danger">Save Attributes</button>
-                                    </div>
+                                @*<form name="addrma" id="addrma" method="post">*@
+                                <div class="col-sm-12">
+                                    <table id="tbhold">
+                                        @*<thead>
+                                                <tr>
+                                                    <th>Varenummer</th>
+                                                    <th>Serienummer</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <div class="col-md-8">
+                                                            <input type="text" name="Name[0]" id="Name" class="form-control" />
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="col-md-8">
+                                                            <input type="text" name="Value[0]" id="Value" class="form-control" />
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                    </td>
+                                            </tbody>*@
+                                    </table>
                                 </div>
+                                @*</form>*@
+
+
+                                <div class="attribute-btn">
+                                    <button id="btnsaveAttributes" class="btn btn-danger">Save Attributes</button>
+                                </div>
+                            </div>
                             <div class="tab-pane" id="tab_6">
 
                                 <div class="d-flex custom-flex-space form-group">
@@ -295,41 +295,41 @@
 
                                 <div class="col-sm-12">
                                     <table id="product_variations">
-                                      
                                     </table>
                                 </div>
                                 <div class="col-sm-12">
                                     <table id="tbhproductattributes">
                                     </table>
                                 </div>
-                               
+
                                 <button id="btnSavevariations" class="btn btn-danger">Save variation</button>
                             </div>
-                            </div>
                         </div>
+                    </div>
                 </div>
             </div>
             <button id="btnSave" class="btn btn-danger">Save</button>
         </div>
-   
+
         <div class="col-md-3">
             <div class="page-title">
                 <h2 class="page-heading">Choose Category</h2>
             </div>
             <div class="box box-primary">
                 <div class="box-header">
-                    <div id="tblprodctype" class="form-check">                     
+                    <div id="tblprodctype" class="form-check">
 
                         @{
-                        int i=0;
+                            int i = 0;
                         }
                         <ul class="categorychecklist">
                             @foreach (var item in @ViewBag.product)
-                        {   <li>
-                                <input type="checkbox" name="chkproducttype" id="chkproductID@(++i)" value="@item.Value" />
-                                <label for="chkproductID@(i++)">@item.Text</label>
-</li>
-                        }
+                            {
+                                <li>
+                                    <input type="checkbox" name="chkproducttype" id="chkproductID@(++i)" value="@item.Value" />
+                                    <label for="chkproductID@(i++)">@item.Text</label>
+                                </li>
+                            }
                         </ul>
                     </div>
                 </div>
@@ -337,6 +337,7 @@
         </div>
     </div>
 </section>
+
 <script src="https://cdn.tiny.cloud/1/qagffr3pkuv17a8on1afax661irst1hbr4e6tbv888sz91jc/tinymce/5.8.2-114/tinymce.min.js"></script>
 <script src="@Url.Content("~/js/Product/AddnewProduct.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 <script type="text/javascript">
@@ -347,7 +348,7 @@
     //});
 </script>
 <script>
-   
+
     jQuery(function ($) {
         $('#angle-box').click(function () {
             $(this).toggleClass('angle-change');

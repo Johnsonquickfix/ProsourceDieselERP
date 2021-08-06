@@ -171,7 +171,7 @@ $(document).ready(function () {
                         //header
                         varHTML += '<div class="box-header with-border user-top-section top-with-select">';
                         varHTML += '<div class="tablenav top tablenav-top2">';
-                        varHTML += '<input type="text" class="nmvariationid" id="hfvariationid" value="' + data.ID + '">';
+                        varHTML += '<input type="text" class="nmvariationid" id="hfvariationid" readonly value="' + data.ID + '">';
                         varHTML += '<div class="alignleft actions bulkactions">';
                         varHTML += '<table class="data-contacts1-js table table-striped"><tbody class="variation_att">';
                         $.each(_Attlist, function (key, value) {
@@ -829,7 +829,7 @@ function GetProductvariationID(ProductID) {
                 //header
                 varHTML += '<div class="box-header with-border user-top-section top-with-select">';
                 varHTML += '<div class="tablenav top tablenav-top2">';
-                varHTML += '<input type="text" class="nmvariationid" id="hfvariationid" value="' + data[i].id + '">';
+                varHTML += '<input type="text" readonly class="nmvariationid" id="hfvariationid" value="' + data[i].id + '">';
                 varHTML += '<div class="alignleft actions bulkactions">';
                 varHTML += '<table class="data-contacts1-js table table-striped"><tbody class="variation_att">';
                 $.each(JSON.parse($("#hfvproductattributes").val()), function (key, value) {

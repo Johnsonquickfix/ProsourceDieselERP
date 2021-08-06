@@ -352,59 +352,17 @@
 
         public ActionResult MobileVerification()
         {
-            DataSet ds = Users.GetEmailCredentials();
-
+           
             Random _rdm = new Random();
             int OTP = _rdm.Next(1000, 9999);
             Session["OTP"] = OTP;
-            SendEmail.SendEmails(CommanUtilities.Provider.GetCurrent().EmailID, "Your OTP for verifiction....", "Your OTP is" + OTP);
-
-            //using (MailMessage mailMessage = new MailMessage())
-
-            //{
-
-            //    mailMessage.From = new MailAddress(ConfigurationManager.AppSettings["UserName"], "Lyra ERP");
-
-            //    mailMessage.Subject = "Your OTP for verifiction....";
-
-            //    mailMessage.Body = "Your OTP is" + OTP;
-
-            //    mailMessage.IsBodyHtml = true;
-
-            //    mailMessage.To.Add(new MailAddress(Session["EmailID"].ToString()));
-               
-
-            //    SmtpClient smtp = new SmtpClient();
-
-            //    //smtp.Host = ConfigurationManager.AppSettings["Host"];
-            //    smtp.Host = ds.Tables[0].Rows[0]["SMTPServerName"].ToString();
-                
-            //    smtp.EnableSsl = Convert.ToBoolean(ConfigurationManager.AppSettings["EnableSsl"]);
-
-            //    System.Net.NetworkCredential NetworkCred = new System.Net.NetworkCredential();
-
-            //    //NetworkCred.UserName = ConfigurationManager.AppSettings["UserName"]; //reading from web.config  
-
-            //    //NetworkCred.Password = ConfigurationManager.AppSettings["Password"]; //reading from web.config  
-            //    NetworkCred.UserName = ds.Tables[0].Rows[0]["SenderEmailID"].ToString();
-            //    NetworkCred.Password = ds.Tables[0].Rows[0]["SenderEmailPwd"].ToString();
-
-            //    smtp.UseDefaultCredentials = true;
-
-            //    smtp.Credentials = NetworkCred;
-
-            //    //smtp.Port = int.Parse(ConfigurationManager.AppSettings["Port"]); //reading from web.config  
-
-            //    smtp.Port = Convert.ToInt32(ds.Tables[0].Rows[0]["SMTPServerPortNo"]);
-
-            //    smtp.Send(mailMessage);
-
-            //}
+           // SendEmail.SendEmails(CommanUtilities.Provider.GetCurrent().EmailID, "Your OTP for verifiction....", "Your OTP is <b>" + OTP + "</b>");
 
             Session["OTPTime"] = DateTime.Now;
 
             return View();
         }
+
         [HttpPost]
         public ActionResult MobileVerification(int OTP)
         {

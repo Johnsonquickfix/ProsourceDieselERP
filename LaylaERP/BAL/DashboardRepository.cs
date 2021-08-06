@@ -69,24 +69,45 @@ namespace LaylaERP.BAL
             return totalorders;
         }
         public static DataTable Gettotal(string from_date, string to_date)
-        {           
-                DataTable dt = new DataTable();
-                // totalrows = 0;
-                try
-                {
-                    string strWhr = string.Empty;
-                    DateTime fromdate = DateTime.Now, todate = DateTime.Now;
-                    fromdate = DateTime.Parse(from_date);
-                    todate = DateTime.Parse(to_date);
-                    string strSql = "Select (SELECT IFNULL(Count(distinct p.id),0)  from wp_wc_order_stats os inner join wp_posts p on p.id = os.order_id WHERE p.post_type = 'shop_order' and DATE(p.post_date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and DATE(post_date)<= '" + todate.ToString("yyyy-MM-dd") + "' and p.post_status != 'auto-draft') TotalOrder , (SELECT IFNULL(round(sum(total_sales),0),0) from wp_wc_order_stats os inner join wp_posts p on p.id = os.order_id WHERE p.post_type = 'shop_order' and DATE(p.post_date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and DATE(post_date)<= '" + todate.ToString("yyyy-MM-dd") + "' and p.post_status in ('wc-completed','wc-pending','wc-processing','wc-on-hold','wc-refunded')) TotalSale ";
-                    DataSet ds = SQLHelper.ExecuteDataSet(strSql);
-                    dt = ds.Tables[0];
-                }
+        {
+            DataTable dt = new DataTable();
+            // totalrows = 0;
+            try
+            {
+                string strWhr = string.Empty;
+                DateTime fromdate = DateTime.Now, todate = DateTime.Now;
+                fromdate = DateTime.Parse(from_date);
+                todate = DateTime.Parse(to_date);
+                string strSql = "Select (SELECT IFNULL(Count(distinct p.id),0)  from wp_wc_order_stats os inner join wp_posts p on p.id = os.order_id WHERE p.post_type = 'shop_order' and DATE(p.post_date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and DATE(post_date)<= '" + todate.ToString("yyyy-MM-dd") + "' and p.post_status != 'auto-draft') TotalOrder , (SELECT IFNULL(round(sum(total_sales),0),0) from wp_wc_order_stats os inner join wp_posts p on p.id = os.order_id WHERE p.post_type = 'shop_order' and DATE(p.post_date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and DATE(post_date)<= '" + todate.ToString("yyyy-MM-dd") + "' and p.post_status in ('wc-completed','wc-pending','wc-processing','wc-on-hold','wc-refunded')) TotalSale ";
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dt = ds.Tables[0];
+            }
             catch (Exception ex)
             {
                 throw ex;
             }
             return dt;
+        }
+        public static DataSet GetCommonSearch(string searchOn, string searchStr)
+        {
+            DataSet ds = new DataSet();
+            // totalrows = 0;
+            try
+            {
+                string strWhr = string.Empty;
+                if (searchOn == "users" || searchOn == "all")
+                    strWhr += "select id,user_login,user_email from wp_users as ur inner join wp_usermeta um on ur.id = um.user_id and um.meta_key='wp_capabilities' AND um.meta_value NOT LIKE '%customer%' where User_Login!='' and CONCAT(User_Login,' ', user_email) LIKE '%" + searchStr + "%' order by id Desc LIMIT 0,5;";
+                 if (searchOn == "customers" || searchOn == "all")
+                    strWhr += "select id,user_login,user_email from wp_users as ur inner join wp_usermeta um on ur.id = um.user_id and um.meta_key='wp_capabilities' AND um.meta_value LIKE '%customer%' where User_Login!='' and CONCAT(User_Login,' ', user_email) LIKE '%" + searchStr + "%' order by id Desc LIMIT 0,5;";
+                if (searchOn == "orders" || searchOn == "all")
+                    strWhr += "select p.id,meta_value first_name,p.post_status,post_date FROM wp_posts p left join wp_postmeta pm on p.id = pm.post_id and pm.meta_key in ('_billing_first_name') where p.post_type = 'shop_order' and post_status != 'auto-draft' and id LIKE '%" + searchStr + "%' order by post_date Desc LIMIT 0,5;";
+                ds = SQLHelper.ExecuteDataSet(strWhr);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return ds;
         }
         public static DataTable GetUsers()
         {
@@ -142,6 +163,7 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
+
         public static DataTable GetUsersDetails(string sType)
         {
             DataTable dt = new DataTable();

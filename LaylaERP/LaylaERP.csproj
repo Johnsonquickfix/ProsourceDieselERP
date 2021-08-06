@@ -225,6 +225,7 @@
     <Compile Include="UTILITIES\clsPayPal.cs" />
     <Compile Include="UTILITIES\clsTaxJar.cs" />
     <Compile Include="UTILITIES\CommanUtilities.cs" />
+    <Compile Include="UTILITIES\CommonDate.cs" />
     <Compile Include="UTILITIES\CryptorEngine.cs" />
     <Compile Include="UTILITIES\Net.cs" />
     <Compile Include="UTILITIES\SendEmail.cs" />

@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewBag.Title = "NewVendor";
+ViewBag.Title = "NewVendor";
 }
 <link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap.min.css" rel="stylesheet" />
 <link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
@@ -16,345 +16,705 @@
     <h2 class="page-heading" id="lbltitle">Vendor</h2>
 </div>
 <!-- Main content -->
-<section class="content content-section p-0">
-    <div class="box box-primary">
-        <div class="box-body">
-            <div class="contennt setting-section">
-                <div class="nav-tabs-custom">
-                    <ul class="nav nav-tabs" id="mytabs" role="tablist">
-                        <li class="active"><a href="#tab_1" data-toggle="tab">Vendor</a></li>
-                        <li><a href="#tab_2" data-toggle="tab">Vendor Setting</a></li>
-                    </ul>
-                    <div class="tab-content">
-                        <div class="tab-pane active" id="tab_1">
-                            <div class="box-body">
-                                <div class="form-horizontal create-new-customer" id="parent">
-                                    <input type="hidden" id="hfid" value="@ViewBag.id" />
-
-                                    <div class="row">
-                                        <div class="col-md-4">
-
-                                            <div class="form-group">
-                                                <label class="control-label " for="Vendor Type">Vendor Type</label>
-                                                <div class="">
-                                                    <select class="form-control" id="ddlvendortype">
-                                                        @*<option value="CD2C">Classic D2C</option>
-                                                        <option value="D2C">D2C</option>
-                                                        <option value="C3PL">Classic 3 PL</option>
-                                                        <option value="3PL">3PL</option>*@
-                                                    </select>
-                                                </div>
-                                            </div>
-
-                                            <div class="form-group">
-                                                <label class="control-label " for="Vendor name">Vendor Name</label>
-                                                <div class="">
-                                                    <input type="text" id="txVendorName" class="form-control" placeholder="Vendor Name" />
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="control-label " for="Alias name">Alias name (commercial, trademark, ...)</label>
-                                                <div class="">
-                                                    <input type="text" id="txtAliasName" class="form-control" placeholder="Alias name (commercial, trademark, ...)" />
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="control-label " for="Vendor Code">Vendor Code</label>
-                                                <div class="">
-                                                    <input type="text" id="txtVendorCode" class="form-control" placeholder="Vendor Code" disabled />
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="control-label" for="Status">Status</label>
-                                                <div class="">
-                                                    <select class="form-control" id="ddlStatus"></select>
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <img class="sb-title-icon" src="https://fonts.gstatic.com/s/i/googlematerialicons/location_pin/v5/24px.svg" alt="">
-                                                <label class="control-label " for="Address">Address</label>
-                                                <div class="">
-
-                                                    <input type="text" id="txtAddress" class="form-control" placeholder="Address" autocomplete="true" />
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="control-label " for="Address1">Address 1</label>
-                                                <div class="">
-                                                    <input type="tel" id="txtAddress1" class="form-control" placeholder="Address 1" />
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="control-label " for="City">City</label>
-                                                <div class="">
-                                                    <input type="text" id="txtCity" class="form-control" placeholder="City" />
-                                                </div>
-                                            </div>
+<section class="content content-section p-0 vender-section1">
+    <div class="contennt setting-section">
+        <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs" id="mytabs" role="tablist">
+                <li class="active"><a href="#tab_1" data-toggle="tab">Basic Info</a></li>
+                <li><a href="#tab_2" data-toggle="tab">Additional Info</a></li>
+                <li><a href="#tab_3" data-toggle="tab">Payment Terms</a></li>
+                <li><a href="#tab_4" data-toggle="tab">Shipping</a></li>
+                <li><a href="#tab_5" data-toggle="tab">Taxes</a></li>
+                <li><a href="#tab_6" data-toggle="tab">Discounts</a></li>
+                <li><a href="#tab_7" data-toggle="tab">Payments</a></li>
+                <li><a href="#tab_8" data-toggle="tab">Link Warehouses</a></li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active" id="tab_1">
+                    <div class="create-new-customer" id="parent">
+                        <input type="hidden" id="hfid" value="@ViewBag.id" />
+                        <div class="box-header">
+                            <h2 class="box-title">Basic Info</h2>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="box box-primary">
+                                    <div class="box-body">
+                                        <div class="form-group">
+                                            <label class="control-label " for="ddlvendortype">Vendor Type</label>
+                                            <select class="form-control" id="ddlvendortype">
+                                            </select>
+                                        </div><!--1-->
+                                        <div class="form-group">
+                                            <label class="control-label " for="txtVendorCode">Vendor Code</label>
+                                            <input type="text" id="txtVendorCode" class="form-control" placeholder="Vendor Code" disabled />
+                                        </div><!--2-->
+                                        <div class="form-group">
+                                            <label class="control-label " for="txVendorName">Vendor Name</label>
+                                            <input type="text" id="txVendorName" class="form-control" placeholder="Vendor Name" />
+                                        </div><!--3-->
+                                        <div class="form-group">
+                                            <label class="control-label " for="txtAliasName">Alias Name of Vendor</label>
+                                            <input type="text" id="txtAliasName" class="form-control" placeholder="Alias Name of Vendor" />
+                                        </div><!--4-->
+                                        <div class="form-group">
+                                            <img class="sb-title-icon" src="https://fonts.gstatic.com/s/i/googlematerialicons/location_pin/v5/24px.svg" alt="">
+                                            <label class="control-label " for="Address">Address 1</label>
+                                            <input type="text" id="txtAddress" class="form-control" placeholder="Address" autocomplete="true" />
+                                        </div><!--5-->
+                                        <div class="form-group">
+                                            <label class="control-label " for="Address1">Address 2</label>
+                                            <input type="tel" id="txtAddress1" class="form-control" placeholder="Address 1" />
+                                        </div><!--6-->
+                                    </div>
+                                </div>
+                            </div><!--col-4-->
+                            <div class="col-md-4">
+                                <div class="box box-primary">
+                                    <div class="box-body">
+                                        <div class="form-group">
+                                            <label class="control-label " for="City">City</label>
+                                            <input type="text" id="txtCity" class="form-control" placeholder="City" />
+                                        </div><!--7-->
+                                        <div class="form-group">
+                                            <label class="control-label" for="Status">Status</label>
+                                            <select class="form-control" id="ddlStatus"></select>
+                                        </div><!--8-->
+                                        <div class="form-group">
+                                            <label class="control-label" for="exampleInputEmail1">State</label>
+                                            <select class="form-control" id="ddlState"></select>
+                                        </div><!--9-->
+                                        <div class="form-group">
+                                            <label class="control-label" for="txtZipCode">Zip Code</label>
+                                            <input type="text" id="txtZipCode" class="form-control" placeholder="Zip Code" />
+                                        </div><!--10-->
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail1">Country</label>
+                                            <select class="form-control" id="ddlCountry">
+                                                <option value="US">US - United States</option>
+                                                <option value="CA">CA - Canada</option>
+                                            </select>
+                                        </div><!--11-->
+                                        <div class="form-group">
+                                            <label class="control-label " for="Phone">Phone/Mobile</label>
+                                            <input type="tel" id="txtPhone" class="form-control" placeholder="Phone" />
+                                        </div><!--12-->
+                                    </div>
+                                </div>
+                            </div><!--col-4-->
+                            <div class="col-md-4">
+                                <div class="box box-primary">
+                                    <div class="box-body">
+                                        <div class="form-group">
+                                            <label class="control-label " for="Fax">Fax</label>
+                                            <input type="text" id="txtFax" class="form-control" placeholder="Fax" />
+                                        </div><!--13-->
+                                        <div class="form-group">
+                                            <label class="control-label " for="email">EMail</label>
+                                            <input type="email" id="txtEMail" class="form-control" placeholder="EMail" />
+                                        </div><!--14-->
+                                        <div class="form-group">
+                                            <label class="control-label " for="email">Web</label>
+                                            <input type="text" id="txtWeb" class="form-control" placeholder="Web" />
+                                        </div><!--15-->
+                                        <div class="form-group">
+                                            <label class="control-label">Working hours</label>
+                                            <input type="text" class="form-control" placeholder="Working hours" />
+                                        </div><!--16-->
+                                        <div class="form-group form-check">
+                                            <input type="checkbox" id="chkVendorStatus" name="VendorStatus" value="Tax Included in price"> <label for="Active">Active</label>
+                                        </div><!--17-->
+                                    </div>
+                                </div>
+                            </div><!--col-4-->
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="tab_2">
+                    <div id="aditional-info">
+                        <div class="box-header">
+                            <h2 class="box-title">Additional Info</h2>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="box box-primary">
+                                    <div class="box-body">
+                                        <div class="form-group">
+                                            <label class="control-label ">Cor Address1</label>
+                                            <input type="text" class="form-control" />
                                         </div>
-
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label class="control-label" for="exampleInputEmail1">State</label>
-                                                <div class="">
-                                                    <select class="form-control" id="ddlState"></select>
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="control-label " for="Zip Code">Zip Code</label>
-                                                <div class="">
-                                                    <input type="text" id="txtZipCode" class="form-control" placeholder="Zip Code" />
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="exampleInputEmail1">Country</label>
-                                                <select class="form-control" id="ddlCountry">
-                                                    <option value="US">US - United States</option>
-                                                    <option value="CA">CA - Canada</option>
-                                                </select>
-                                            </div>
-
-                                            <div class="form-group">
-                                                <label class="control-label " for="Phone">Phone</label>
-                                                <div class="">
-                                                    <input type="tel" id="txtPhone" class="form-control" placeholder="Phone" />
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="control-label " for="Fax">Fax</label>
-                                                <div class="">
-                                                    <input type="text" id="txtFax" class="form-control" placeholder="Fax" />
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="control-label " for="email">EMail</label>
-                                                <div class="">
-                                                    <input type="email" id="txtEMail" class="form-control" placeholder="EMail" />
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="control-label " for="email">Web</label>
-                                                <div class="">
-                                                    <input type="text" id="txtWeb" class="form-control" placeholder="Web" />
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="control-label " for="Salestaxused">Sales tax used</label>
-                                                <div class="">
-                                                    <select class="form-control" id="ddlSalestaxused"></select>
-                                                </div>
-                                            </div>
-
+                                        <div class="form-group">
+                                            <label class="control-label ">Cor Address2</label>
+                                            <input type="text" class="form-control" />
                                         </div>
-                                        <div class="col-md-4">
-                                            
-
-                                            <div class="form-group">
-                                                <label class="control-label " for="Third-party type">Third-party type</label>
-                                                <div class="">
-                                                    <select class="form-control" id="ddlThirdPartyType"></select>
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="control-label " for="Workforce">Workforce</label>
-                                                <div class="">
-                                                    <select class="form-control" id="ddlWorkforce"></select>
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="control-label " for="Business entity type">Business entity type</label>
-                                                <div class="">
-                                                    <input type="text" id="txtBusinessEntityType" class="form-control" placeholder="Business entity type" />
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="control-label " for="Capital">Capital</label>
-                                                <div class="">
-                                                    <input type="text" id="txtCapital" class="form-control" placeholder="Capital" />
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="control-label " for="IncoTerm">IncoTerm</label>
-                                                <div class="">
-                                                    <select class="form-control" id="ddlIncoTerm"></select>
-                                                    <input type="text" id="txtIncoTerm" class="form-control" placeholder="IncoTerm" />
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="control-label " for="Prof Id (FEIN)">Assigned to sales representative</label>
-                                                <div class="">
-                                                    <select class="form-control col-md-3" id="ddlSalesRepresentative"></select>
-                                                </div>
-                                            </div>
-
+                                        <div class="form-group">
+                                            <label class="control-label ">Cor City</label>
+                                            <input type="text" class="form-control" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label ">Cor State</label>
+                                            <input type="text" class="form-control" />
                                         </div>
                                     </div>
-
-                                    <hr />
-
-                                    <div class="row">
-                                        <div class="col-md-4">
-
-                                            <div class="form-group">
-                                                <label for="Payment Terms">Payment Terms</label>
-                                                <select class="form-control" id="ddlPaymentTerms"></select>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="Balance">Balance</label>
-                                                <select class="form-control" id="ddlBalancedays"></select>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="Balance">Payment Type</label>
-                                                <select class="form-control" id="ddlpaymenttype">
-                                                    <option value="banktranser">Bank Transfer</option>
-                                                    <option value="cheque">Cheque</option>
-                                                    <option value="creditcard">Credit Card</option>
-                                                </select>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="control-label " for="Payment Date">Payment Date</label>
-                                                <div class="">
-                                                    <div class="input-group">
-                                                        <input type="text" id="txtPaymentDate" class="form-control" placeholder=" Select Payment Date" />
-                                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="control-label " for="Currency">Currency</label>
-                                                <div class="">
-                                                    <select class="form-control" id="ddlCurrency">
-                                                        <option value="USD">USD - US Dollars</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                        @*<div class="col-md-4">
-            <div class="form-group">
-                <label for="Vendor">Units of measurment</label><br />
-                <input type="checkbox" id="chkEnableVendorUOMrounding" name="EnableVendorUOMrounding" value="Enable Vendor UOM rounding"> <label for="Enable Vendor UOM rounding">Enable Vendor UOM rounding</label><br>
-                <input type="radio" id="roundquantityup" name="Unitsofmeasurment" value="round quantity up"> <label for="disabled">round quantity up</label><br>
-                <input type="radio" id="roundquantitydown" name="Unitsofmeasurment" value="round quantity down"> <label for="round quantity down">round quantity down</label><br>
-            </div>
-            <div class="form-group">
-                <label for="Minimum order quanity">Minimum order quanity</label><br />
-                <input type="radio" id="disabled" name="Minimumorderquanity" value="disabled"> <label for="disabled">disabled</label><br>
-                <input type="radio" id="forVariants" name="Minimumorderquanity" value="for Variants"> <label for="html">for Variants</label><br>
-                <input type="radio" id="forProducts" name="Minimumorderquanity" value="for Products"> <label for="css">for Products</label><br>
-                <input type="radio" id="forPurchaseOrder" name="Minimumorderquanity" value="for purchase order"> <label for="forPurchaseOrder">for Purchase Order</label>
-            </div>
-        </div>*@
-                                    <div class="col-md-4">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="box box-primary">
+                                    <div class="box-body">
                                         <div class="form-group">
-                                            <label for="Balance">Default Tax %</label>
-                                            <input type="text" id="txtDefaultTax" class="form-control" placeholder="Default Tax" />
-                                        </div>
-                                        <input type="checkbox" id="chkTaxIncludedinprice" name="TaxIncludedinprice" value="Tax Included in price"> <label for="Tax Included in price">Tax Included in price</label><br>
-                                        <div class="form-group">
-                                            <label class="control-label " for="Default Discount">Default Discount %</label>
-                                            <div class="">
-                                                <input type="text" id="txtDefaultDiscount" class="form-control" placeholder="Default Discount" />
-                                            </div>
+                                            <label class="control-label ">Cor Zip Code</label>
+                                            <input type="text" class="form-control" />
                                         </div>
                                         <div class="form-group">
-                                            <label class="control-label " for="Credit Limit">Credit Limit</label>
-                                            <div class="">
-                                                <input type="text" id="txtCreditLimit" class="form-control" placeholder="Credit Limit" />
-                                            </div>
+                                            <label class="control-label ">Cor Country</label>
+                                            <input type="text" class="form-control" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label ">Cor Phone/Mobile</label>
+                                            <input type="text" class="form-control" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label ">Work force</label>
+                                            <input type="text" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="box box-primary">
+                                    <div class="box-body">
+                                        <div class="form-group">
+                                            <label class="control-label ">Business Entity Type</label>
+                                            <input type="text" class="form-control" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label ">Notes (Public)</label>
+                                            <textarea class="form-control"></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label ">Notes (Private)</label>
+                                            <textarea class="form-control"></textarea>
                                         </div>
 
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="tab_3">
+                    <div id="payment-terms">
+                        <div class="box-header">
+                            <h2 class="box-title">Payment Terms</h2>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="box box-primary">
+                                    <div class="box-body">
                                         <div class="form-group">
-                                            <label class="control-label " for="Min Order Qty">Minimum Order Quantity</label>
-                                            <div class="">
-                                                <input type="text" id="txtminorderqty" class="form-control" placeholder="Minimum Order Quantity" />
+                                            <label class="control-label " for="Capital">Capital</label>
+                                            <input type="text" id="txtCapital" class="form-control" placeholder="Capital" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="ddlPaymentTerms">Payment Terms</label>
+                                            <select class="form-control" id="ddlPaymentTerms"></select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="Balance">Balance Net</label>
+                                            <select class="form-control" id="ddlBalancedays"></select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label " for="IncoTerm">IncoTerm</label>
+                                            <div class="d-flex">
+                                                <select class="px-0 col-md-6 form-control" id="ddlIncoTerm"></select>
+                                                <input type="text" id="txtIncoTerm" class="px-0 col-md-6 form-control" placeholder="IncoTerm" />
                                             </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="box box-primary">
+                                    <div class="box-body">
+                                        <div class="form-group">
+                                            <label for="Balance">Payment Type</label>
+                                            <select class="form-control" id="ddlpaymenttype">
+                                                <option value="banktranser">Bank Transfer</option>
+                                                <option value="cheque">Cheque</option>
+                                                <option value="creditcard">Credit Card</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label " for="Currency">Currency</label>
+                                            <select class="form-control" id="ddlCurrency">
+                                                <option value="USD">USD - US Dollars</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label " for="txtCreditLimit">Credit Limit</label>
+                                            <input type="text" id="txtCreditLimit" class="form-control" placeholder="Credit Limit" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="box box-primary">
+                                    <div class="box-body">
+                                        <div class="form-group">
+                                            <label class="control-label " for="txtoutstandinglimit">OutStanding Limit</label>
+                                            <input type="text" id="txtoutstandinglimit" class="form-control" placeholder="Out Standing Limit" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label " for="txtminorderqty">Minimum Order Quantity</label>
+                                            <input type="text" id="txtminorderqty" class="form-control" placeholder="Minimum Order Quantity" />
                                         </div>
                                         <div class="form-group">
                                             <label for="orderminamt">Order Min Amount</label>
                                             <input type="text" id="txtorderminamt" class="form-control" placeholder="Order Minimum amount" />
                                         </div>
                                     </div>
-
-                                        <div class="col-md-4">
-                                            
-
-                                            <div class="form-group">
-                                                <label class="control-label " for="ShippingMethod">Shipping Method</label>
-                                                <div class="">
-                                                    <select class="form-control" id="ddlshippingmethod">
-                                                        @*<option value="fedex">FedEx</option>
-                                                        <option value="shipstation">Ship Station</option>
-                                                        <option value="ups">UPS</option>
-                                                        <option value="gentransportservice">Generic Transport Service</option>
-                                                        <option value="instorecollection">In-Store Collection</option>*@
-                                                    </select>
-                                                </div>
-                                            </div>
-
-                                            <div class="form-group">
-                                                <label class="control-label " for="outstanding limit">OutStanding Limit</label>
-                                                <div class="">
-                                                    <input type="text" id="txtoutstandinglimit" class="form-control" placeholder="Out Standing Limit" />
-                                                </div>
-                                            </div>
-
-                                            <input type="checkbox" id="chkVendorStatus" name="VendorStatus" value="Tax Included in price"> <label for="Active">Active</label><br>
-
-                                        </div>
-
-
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="box-footer">
-                                <div class="text-right">
-                                    <button type="button" id="changetabbutton" class="btn btn-danger ">Next tab</button>
-                                    @*<input type="submit" value="Submit" id="btnSave" class="btn btn-danger" />*@
-                                    @*@Html.ActionLink("Back to List", "VendorList", null, new { @class = "btn btn-danger" })*@
                                 </div>
                             </div>
                         </div>
-                        <div class="tab-pane" id="tab_2" >
+                    </div>
+                </div>
+                <div class="tab-pane" id="tab_4">
+                    <div id="shipping">
+                        <div class="box-header">
+                            <h2 class="box-title">Shipping</h2>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="box box-primary">
+                                    <div class="box-body">
+                                        <div class="form-group">
+                                            <label class="control-label " for="ShippingMethod">Shipping Method</label>
+                                            <select class="form-control" id="ddlshippingmethod"></select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="box box-primary">
+                                    <div class="box-body">
+                                        <div class="form-group">
+                                            <label class="control-label">Rate</label>
+                                            <input type="text" class="form-control" placeholder="Rate" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="box box-primary">
+                                    <div class="box-body">
+                                        <div class="form-group">
+                                            <label class="control-label">Location</label>
+                                            <input type="text" class="form-control" placeholder="Location" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="box box-primary">
+                                    <div class="box-body">
+                                        <div class="form-group">
+                                            <label class="control-label">API Key (Test)</label>
+                                            <input type="text" class="form-control" placeholder="API Key (Test)" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label">API Secret (Test)</label>
+                                            <input type="text" class="form-control" placeholder="API Secret (Test)" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="box box-primary">
+                                    <div class="box-body">
+                                        <div class="form-group">
+                                            <label class="control-label">API Key (Production)</label>
+                                            <input type="text" class="form-control" placeholder="API Key (Production)" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label">API Secret (Production)</label>
+                                            <input type="text" class="form-control" placeholder="API Secret (Production)" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="box box-primary">
+                                    <div class="box-body">
+                                        <div class="form-group">
+                                            <label class="control-label">Login</label>
+                                            <input type="text" class="form-control" placeholder="Login" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label">Password</label>
+                                            <input type="text" class="form-control" placeholder="Password" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="tab_5">
+                    <div id="taxes">
+                        <div class="box-header">
+                            <h2 class="box-title">Taxes</h2>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="box box-primary">
+                                    <div class="box-body">
+                                        <label class="control-label">Tax Method</label>
+                                        <div class="form-group">
+                                            <select class="form-control">
+                                                <option>Standard Tax Rate</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="box box-primary">
+                                    <div class="box-body">
+                                        <div class="form-group">
+                                            <label class="control-label">Default Tax (%)</label>
+                                            <input type="text" class="form-control" placeholder="Default Tax (%)" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label">Shipping Tax (%)</label>
+                                            <input type="text" class="form-control" placeholder="Shipping Tax (%)" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="box box-primary">
+                                    <div class="box-body">
+                                        <div class="form-group form-check">
+                                            <input type="checkbox" id="tax_include_in_price1" />
+                                            <label class="control-label" for="tax_include_in_price1">Tax included in price</label>
+                                        </div>
+                                        <div class="form-group form-check">
+                                            <input type="checkbox" id="shipping_tax_include_in_price1" />
+                                            <label class="control-label" for="shipping_tax_include_in_price1">Shipping tax included in price</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="box box-primary">
+                                    <div class="box-body">
+                                        <div class="form-group">
+                                            <label class="control-label">Calculated tax</label>
+                                            <input type="text" class="form-control" placeholder="Calculated tax" />
+                                        </div>
+                                        <div class="form-group form-check">
+                                            <input type="checkbox" id="shipping_tax_include_in_price2" />
+                                            <label class="control-label" for="shipping_tax_include_in_pric2">Tax Included in price</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="tab_6">
+                    <div id="discounts">
+                        <div class="box-header">
+                            <h2 class="box-title">Discounts</h2>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="box box-primary">
+                                    <div class="box-body">
+                                        <label class="control-label">Discount Type1 (, )</label>
+                                        <div class="form-group">
+                                            <select class="form-control">
+                                                <option>Fixed</option>
+                                                <option>Percentage</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="box box-primary">
+                                    <div class="box-body">
+                                        <div class="form-group">
+                                            <label class="control-label">Default Discount (%)</label>
+                                            <input type="text" class="form-control" placeholder="Default Discount (%)" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label">Minimum order amount</label>
+                                            <input type="text" class="form-control" placeholder="Minimum order amount" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="box box-primary">
+                                    <div class="box-body">
+                                        <div class="form-group">
+                                            <label class="control-label">Account Name</label>
+                                            <input type="text" class="form-control" placeholder="Maximum order amount" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label">Email</label>
+                                            <input type="text" class="form-control" placeholder="Email" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="box box-primary">
+                                    <div class="box-body">
+                                        <div class="form-group">
+                                            <label class="control-label">Discount Type2 (Balance Net)</label>
+                                            <select class="form-control">
+                                                <option>Before Balance Net 120</option>
+                                                <option>Before Balance Net 100</option>
+                                                <option>Before Balance Net 90</option>
+                                                <option>Before Balance Net 75</option>
+                                                <option>Before Balance Net 60</option>
+                                                <option>Before Balance Net 45</option>
+                                                <option>Before Balance Net 30</option>
+                                                <option>Before Balance Net 15</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label">Discount (%)</label>
+                                            <input type="text" class="form-control" placeholder="Discount (%)" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="tab_7">
+                    <div id="payments">
+                        <div class="box box-primary">
+                            <div class="box-header">
+                                <h2 class="box-title">Payments</h2>
+                            </div>
+                            <div class="box-body">
+                                <div class="form-group">
+                                    <label class="control-label">Payment method</label>
+                                    <select class="form-control">
+                                        <option>bank details</option>
+                                        <option>cheque</option>
+                                        <option>Paypal Invoice</option>
+                                        <option>Paypal Standard</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="bnk_details" style="display:block;">
+                            <h2 class="box-header">Bank details</h2>
                             <div class="row">
-                                <div class="col-md-12">
+                                <div class="col-md-4">
                                     <div class="box box-primary">
-                                        <div class="box-header new-vendor-header">
-                                            <div class="row">
-                                                <div class="col-sm-12">
-                                                    <table id="dtdata" class="inventory-table table-blue table check-table table-bordered" width="100%">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Warehouse</th>
-                                                                <th>Lead Time</th>
-                                                                <th>Days of Stock</th>
-                                                            </tr>
-                                                        </thead>
-                                                    </table>
-                                                </div>
+                                        <div class="box-body">
+                                            <div class="form-group">
+                                                <label class="control-label">Account Name</label>
+                                                <input type="text" class="form-control" placeholder="Account Name" />
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label">Account Number</label>
+                                                <input type="text" class="form-control" placeholder="Account Number" />
                                             </div>
                                         </div>
-                                        <div class="box-footer">
-                                            <div class="text-right">
-                                                <input type="submit" value="Submit" id="btnSave" class="btn btn-danger" />
-                                                @Html.ActionLink("Back to List", "VendorList", null, new { @class = "btn btn-danger" })
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="box box-primary">
+                                        <div class="box-body">
+                                            <div class="form-group">
+                                                <label class="control-label">Bank name</label>
+                                                <input type="text" class="form-control" placeholder="Bank name" />
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label">Routing number</label>
+                                                <input type="text" class="form-control" placeholder="Routing number" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="box box-primary">
+                                        <div class="box-body">
+                                            <div class="form-group">
+                                                <label class="control-label">IBAN</label>
+                                                <input type="text" class="form-control" placeholder="IBAN" />
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label">BIC/Swift</label>
+                                                <input type="text" class="form-control" placeholder="BIC/Swift" />
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            
+                        </div>
+                        <div id="cheq_payment" style="display:none;">
+                            <h2 class="box-header">Cheque Payment</h2>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="box box-primary">
+                                        <div class="box-body">
+                                            <div class="form-group">
+                                                <label class="control-label">Title</label>
+                                                <input type="text" class="form-control" placeholder="Title" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="box box-primary">
+                                        <div class="box-body">
+                                            <div class="form-group">
+                                                <label class="control-label">Description </label>
+                                                <textarea class="form-control" placeholder="Please send a check to Store Name, Store Street, Store Town, Store State / County, Store Postcode."></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="box box-primary">
+                                        <div class="box-body">
+                                            <div class="form-group">
+                                                <label class="control-label">Instructions</label>
+                                                <input type="text" class="form-control" placeholder="Instructions" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="box box-primary">
+                                        <div class="box-header">
+                                            <label class="control-label">API Credentials</label>
+                                        </div>
+                                        <div class="box-body">
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <input type="text" class="form-control" placeholder="Username" />
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <input type="password" class="form-control" placeholder="password" />
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <input type="text" class="form-control" placeholder="Signature" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="pay_strd" style="display:none;">
+                            <h2 class="box-header">Paypal Standard</h2>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="box box-primary">
+                                        <div class="box-body">
+                                            <div class="form-group">
+                                                <label class="control-label">Title</label>
+                                                <input type="text" class="form-control" placeholder="Title" />
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label">Description</label>
+                                                <textarea class="form-control" placeholder="Please send a check to Store Name, Store Street, Store Town, Store State / County, Store Postcode."></textarea>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label">Paypal email</label>
+                                                <input type="email" class="form-control" placeholder="Paypal email" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="box box-primary">
+                                        <div class="box-body">
+                                            <div class="form-group form-check">
+                                                <input type="checkbox" id="tax_include_in_price" />
+                                                <label class="control-label" for="tax_include_in_price">Paypal Production</label>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label">IPN email notification</label>
+                                                <input type="text" class="form-control" placeholder="IPN email notification" />
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label">Receiver email</label>
+                                                <input type="text" class="form-control" placeholder="Receiver email" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="box box-primary">
+                                        <div class="box-body">
+                                            <div class="form-group">
+                                                <label class="control-label">Paypal Identity token</label>
+                                                <input type="text" class="form-control" placeholder="Paypal Identity token" />
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label">Payment Action</label>
+                                                <select class="form-control">
+                                                    <option>Capture</option>
+                                                    <option>Authorize</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="box box-primary">
+                                        <div class="box-header">
+                                            <label class="control-label">API Credentials</label>
+                                        </div>
+                                        <div class="box-body">
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <input type="text" class="form-control" placeholder="Username" />
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <input type="password" class="form-control" placeholder="password" />
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <input type="text" class="form-control" placeholder="Signature" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="tab-pane" id="tab_8">
+                    <div class="box box-primary">
+                        <div class="box-body">
+                            <a href="#" class="btn btn-danger">Vendor link to Warehouse</a>
                         </div>
                     </div>
                 </div>
             </div>
-
         </div>
-      
-
-
-        <!-- /.row -->
     </div>
     <div class="map" id="map" style="display:none;"></div>
 </section>
@@ -410,12 +770,14 @@
                         // $('#hfzipstatus').val(data.status);
                         $('#hfzipstatus').val(data.status);
 
-                    }
-                    else {
+                    } else {
                         if ($('#ddlCountry').val() == "US") {
                             $("#txtZipCode").val("");
                             $('#hfzipstatus').val(data.status);
-                            swal('Alert', 'Zip code is not valid for the State', 'error').then(function () { swal.close(); $('#txtZipCode').focus(); });
+                            swal('Alert', 'Zip code is not valid for the State', 'error').then(function () {
+                                swal.close();
+                                $('#txtZipCode').focus();
+                            });
                         }
                     }
                 },

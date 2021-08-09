@@ -122,7 +122,9 @@
                                 @{
                                     var selectedstatut = "";
                                     var selectedstatut1 = "";
-                                    if (Model.statut == "Open")
+                                    var selectedstatut2 = "";
+                                    var selectedstatut3 = "";
+                                    if (Model.warehouse_type == "Public")
                                     {
                                         selectedstatut = "selected=selected";
                                     }
@@ -130,7 +132,7 @@
                                     {
                                         selectedstatut = "";
                                     }
-                                    if (Model.statut == "Close")
+                                    if (Model.warehouse_type == "Private")
                                     {
                                         selectedstatut1 = "selected=selected";
                                     }
@@ -138,13 +140,47 @@
                                     {
                                         selectedstatut1 = "";
                                     }
+                                    if (Model.warehouse_type == "Climate controlled")
+                                    {
+                                        selectedstatut2 = "selected=selected";
+                                    }
+                                    else
+                                    {
+                                        selectedstatut2 = "";
+                                    }
+                                    if (Model.warehouse_type == "Distribution center")
+                                    {
+                                        selectedstatut3 = "selected=selected";
+                                    }
+                                    else
+                                    {
+                                        selectedstatut3 = "";
+                                    }
+                                    if (string.IsNullOrEmpty(Model.warehouse_type))
+                                    {
+                                        selectedstatut = "selected=selected";
+                                    }
+                                    else
+                                    {
+                                        selectedstatut = "";
+                                    }
                                 }
 
+                                @*<div class="form-group">
+            <label for="exampleInputEmail1">Status</label>
+            <select class="form-control" id="status">
+                <option @selectedstatut1 value="Private">Private</option>
+                <option @selectedstatut value="Public">Public</option>
+            </select>
+        </div>*@
+
                                 <div class="form-group">
-                                    <label for="exampleInputEmail1">Status</label>
-                                    <select class="form-control" id="status" selected="@Model.statut">
-                                        <option @selectedstatut value="1">Open</option>
-                                        <option @selectedstatut1 value="0">Close</option>
+                                    <label for="exampleInputEmail1">Warehouse Type</label>
+                                    <select class="form-control" id="warehousetype">
+                                        <option @selectedstatut value="Public">Public</option>
+                                        <option @selectedstatut1 value="Private">Private</option>
+                                        <option @selectedstatut2 value="Climate controlled">Climate controlled</option>
+                                        <option @selectedstatut3 value="Distribution center">Distribution center</option>
                                     </select>
                                 </div>
 
@@ -161,7 +197,8 @@
                                     {
                                         <input type="checkbox" id="chkwarehousestatus" name="WarehouseStatus" /><label for="Active">Active</label>
                                     }
-                                    </div>
+                                </div>
+
                                 @*<span id='resultConfirm'></span>*@
                             </div>
                         </div>
@@ -185,7 +222,6 @@
     var strength = 1;
     $(document).ready(function () {
         $("#loader").hide();
-
         $(document).on('click', "#btnSave", function () {
             AddWarehouse();
         });
@@ -297,9 +333,10 @@
         country = $("#txtCountry").val();
         phone = $("#txtPhone").val();
         fax = $("#txtFax").val();
-        statut = $("#status").val();
+        //statut = $("#status").val();
         address1 = $("#txtAddress1").val();
         city = $("#txtCity").val();
+        warehousetype = $("#warehousetype").val();
         status = $("#chkwarehousestatus").prop("checked") ? 1 : 0;
 
         if (ref == "") {
@@ -322,10 +359,11 @@
                 country: country,
                 phone: phone,
                 fax: fax,
-                statut: statut,
+                //statut: statut,
                 address1: address1,
                 city: city,
                 status: status,
+                warehouse_type: warehousetype,
             }
             $.ajax({
                 url: '/Warehouse/Updatewarehouses/', dataType: 'json', type: 'Post',
@@ -403,6 +441,7 @@
         }
     }
 </script>
+
 
 
 

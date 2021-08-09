@@ -1,5 +1,4 @@
-﻿
-$(document).ready(function () {
+﻿$(document).ready(function () {
     $(".subsubsub li a").click(function (e) {
         $('.subsubsub li a').removeClass('current');
         $(this).addClass('current');
@@ -27,7 +26,14 @@ $(document).ready(function () {
         }
     });
     GetOrderDetails();
-    setTimeout(function () { dataGridLoad(''); }, 100);
+    var urlParams = new URLSearchParams(window.location.search);
+    let order_type = urlParams.get('type') ? urlParams.get('type') : '';
+    setTimeout(function () {
+        if (order_type.length > 0) {
+            $('.subsubsub li a').removeClass('current'); $('#wc-completed').addClass('current'); $('#hfOrderType').val(order_type); ;
+        }
+        dataGridLoad(order_type)
+    }, 50);
     //$("#loader").hide();
     $('#all').click(function () { var order_type = ""; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
     $('#mine').click(function () { var order_type = "mine"; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });

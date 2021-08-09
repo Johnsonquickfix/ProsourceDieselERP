@@ -68,6 +68,8 @@ namespace LaylaERP.Models
         public string CorZipCode { get; set; }
         public string CorCountry { get; set; }
         public string CorPhone { get; set; }
+        public string NotePublic { get; set; }
+        public string NotePrivate { get; set; }
         public decimal ShippingRate { get; set; }
         public string ShippingLocation { get; set; }
         public string ShippingAPIKeyTest { get; set; }
@@ -78,6 +80,7 @@ namespace LaylaERP.Models
         public string ShippingPassword { get; set; }
         public string TaxMethod { get; set; }
         public string ShippingTax { get; set; }
+        public string CalculatedTax { get; set; }
         public bool ShippingTaxIncludedinprice { get; set; }
         public string DiscountType1 { get; set; }
         public string AccountName { get; set; }

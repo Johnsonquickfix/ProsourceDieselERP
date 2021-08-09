@@ -24,28 +24,22 @@ namespace LaylaERP.Controllers
             return View();
         }
         [HttpPost]
-        public JsonResult AddVendor(ThirdPartyModel model)
+        public JsonResult AddVendorBasicInfo(ThirdPartyModel model)
         {
             if (ModelState.IsValid)
             {
-                string WarehouseID = model.WarehouseID;
-                int VendorID = model.VendorID;
-                string LeadTime = model.LeadTime;
-                string DaysofStock = model.DaysofStock;
                 if (model.rowid > 0)
                 {
                     new ThirdPartyRepository().EditVendor(model, model.rowid);
-                    new ThirdPartyRepository().EditVendorSetting(WarehouseID, model.rowid, LeadTime, DaysofStock);
-                    return Json(new { status = true, message = "Vendor Record has been updated successfully!!", url = "", id = model.rowid }, 0);
+                    return Json(new { status = true, message = "Vendor Basic info has been updated successfully!!", url = "", id = model.rowid }, 0);
                 }
                 else
                 {
-                    int ID = new ThirdPartyRepository().AddNewVendor(model);
+                    int ID = new ThirdPartyRepository().AddNewVendorBasicInfo(model);
                     if (ID > 0)
                     {
-                        new ThirdPartyRepository().VendorSetting(WarehouseID, ID, LeadTime, DaysofStock);
                         ModelState.Clear();
-                        return Json(new { status = true, message = "Vendor Record has been saved successfully!!", url = "", id = ID }, 0);
+                        return Json(new { status = true, message = "Vendor Basic info has been saved successfully!!", url = "", id = ID }, 0);
                     }
                     else
                     {
@@ -55,28 +49,167 @@ namespace LaylaERP.Controllers
             }
             return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
         }
-        public JsonResult AddVendorSetting(ThirdPartyModel model)
+        public JsonResult AddVendorAdditionalInfo(ThirdPartyModel model)
         {
             if (ModelState.IsValid)
             {
-                string WarehouseID = model.WarehouseID;
-                int VendorID = model.VendorID;
-                string LeadTime = model.LeadTime;
-                string DaysofStock = model.DaysofStock;
-
                 if (model.rowid > 0)
                 {
-                    int ID = new ThirdPartyRepository().EditVendorSetting(WarehouseID, model.rowid, LeadTime, DaysofStock);
-                    return Json(new { status = true, message = "Vendor has been updated successfully!!", url = "", id = ID }, 0);
+                    int ID = new ThirdPartyRepository().AddVendorAdditionalInfo(model);
+                    if (ID > 0)
+                    {
+                        return Json(new { status = true, message = "Vendor Additional info has been saved successfully!!", url = "", id = ID }, 0);
+                    }
+                    else
+                    {
+                        return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
+                    }
                 }
                 else
                 {
-                    int ID = new ThirdPartyRepository().VendorSetting(WarehouseID, VendorID, LeadTime, DaysofStock);
-                    return Json(new { status = true, message = "Vendor has been saved successfully!!", url = "", id = ID }, 0);
+                    return Json(new { status = false, message = "Basic info not added", url = "", id = 0 }, 0);
                 }
             }
-            return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
         }
+        public JsonResult AddVendorPaymentTerms(ThirdPartyModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (model.rowid > 0)
+                {
+                    int ID = new ThirdPartyRepository().AddVendorPaymentTerms(model);
+                    if (ID > 0)
+                    {
+                        return Json(new { status = true, message = "Vendor Payment terms has been saved successfully!!", url = "", id = ID }, 0);
+                    }
+                    else
+                    {
+                        return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
+                    }
+                }
+                else
+                {
+                    return Json(new { status = false, message = "Basic info not added", url = "", id = 0 }, 0);
+                }
+            }
+            return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
+        }
+        public JsonResult AddVendorShipping(ThirdPartyModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (model.rowid > 0)
+                {
+                    int ID = new ThirdPartyRepository().AddVendorShipping(model);
+                    if (ID > 0)
+                    {
+                        return Json(new { status = true, message = "Vendor shipping has been saved successfully!!", url = "", id = ID }, 0);
+                    }
+                    else
+                    {
+                        return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
+                    }
+                }
+                else
+                {
+                    return Json(new { status = false, message = "Basic info not added", url = "", id = 0 }, 0);
+                }
+            }
+            return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
+        }
+        public JsonResult AddVendorTaxes(ThirdPartyModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (model.rowid > 0)
+                {
+                    int ID = new ThirdPartyRepository().AddVendorTaxes(model);
+                    if (ID > 0)
+                    {
+                        return Json(new { status = true, message = "Vendor Taxes has been saved successfully!!", url = "", id = ID }, 0);
+                    }
+                    else
+                    {
+                        return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
+                    }
+                }
+                else
+                {
+                    return Json(new { status = false, message = "Basic info not added", url = "", id = 0 }, 0);
+                }
+            }
+            return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
+        }
+        public JsonResult AddVendorDiscount(ThirdPartyModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (model.rowid > 0)
+                {
+                    int ID = new ThirdPartyRepository().AddVendorDiscount(model);
+                    if (ID > 0)
+                    {
+                        return Json(new { status = true, message = "Vendor Discount has been saved successfully!!", url = "", id = ID }, 0);
+                    }
+                    else
+                    {
+                        return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
+                    }
+                }
+                else
+                {
+                    return Json(new { status = false, message = "Basic info not added", url = "", id = 0 }, 0);
+                }
+            }
+            return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
+        }
+        public JsonResult AddPaymentMethods(ThirdPartyModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (model.rowid > 0)
+                {
+                    int ID = new ThirdPartyRepository().AddPaymentMethods(model);
+                    if (ID > 0)
+                    {
+                        return Json(new { status = true, message = "Vendor Discount has been saved successfully!!", url = "", id = ID }, 0);
+                    }
+                    else
+                    {
+                        return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
+                    }
+                }
+                else
+                {
+                    return Json(new { status = false, message = "Basic info not added", url = "", id = 0 }, 0);
+                }
+            }
+            return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
+        }
+
+        //public JsonResult AddVendorSetting(ThirdPartyModel model)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        string WarehouseID = model.WarehouseID;
+        //        int VendorID = model.VendorID;
+        //        string LeadTime = model.LeadTime;
+        //        string DaysofStock = model.DaysofStock;
+
+        //        if (model.rowid > 0)
+        //        {
+        //            int ID = new ThirdPartyRepository().EditVendorSetting(WarehouseID, model.rowid, LeadTime, DaysofStock);
+        //            return Json(new { status = true, message = "Vendor has been updated successfully!!", url = "", id = ID }, 0);
+        //        }
+        //        else
+        //        {
+        //            int ID = new ThirdPartyRepository().VendorSetting(WarehouseID, VendorID, LeadTime, DaysofStock);
+        //            return Json(new { status = true, message = "Vendor has been saved successfully!!", url = "", id = ID }, 0);
+        //        }
+        //    }
+        //    return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+        //}
         public JsonResult GetState(SearchModel model)
         {
             string JSONresult = string.Empty;
@@ -161,6 +294,30 @@ namespace LaylaERP.Controllers
            
             
         }
+        public JsonResult GetDiscountType(SearchModel model)
+        {
+            DataSet ds = BAL.ThirdPartyRepository.GetDiscountType();
+            List<SelectListItem> productlist = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                productlist.Add(new SelectListItem { Text = dr["DiscountType"].ToString(), Value = dr["ID"].ToString() });
+            }
+            return Json(productlist, JsonRequestBehavior.AllowGet);
+
+
+        }
+        public JsonResult GetPaymentMethod(SearchModel model)
+        {
+            DataSet ds = BAL.ThirdPartyRepository.GetPaymentMethod();
+            List<SelectListItem> productlist = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                productlist.Add(new SelectListItem { Text = dr["PaymentType"].ToString(), Value = dr["ID"].ToString() });
+            }
+            return Json(productlist, JsonRequestBehavior.AllowGet);
+
+
+        }
         public JsonResult GetVendorCode(SearchModel model)
         {
             string JSONresult = string.Empty;
@@ -172,6 +329,7 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(JSONresult, 0);
         }
+      
         public ActionResult VendorList()
         {
             return View();

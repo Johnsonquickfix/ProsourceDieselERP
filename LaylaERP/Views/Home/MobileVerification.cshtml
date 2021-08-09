@@ -110,7 +110,6 @@
                                                 </span>
                                             </span>
                                             <h5 style="color:black"> OTP is expired on <span id="lblCounter"></span> Seconds OTP has been sent successfully at your Email.</h5>
-                                            <script type="text/javascript">cf()</script>
                                             <input name="metadata1" type="hidden" value="">
                                         </form>
                                     </div>
@@ -167,9 +166,8 @@
     $(document).ready(function () {
         $('#auth-pv-enter-code').val(@ViewBag.otp);
         $(document).on("click", "#auth-verify-button", function (t) {
-            t.preventDefault(); console.log($('#a-autoid-0-announce').text());
+            t.preventDefault(); 
             $('#btnCheckout').prop("disabled", true); $('#a-autoid-0-announce').text("Waiting...");
-
             let option = { OTP: $('#auth-pv-enter-code').val() };
             $.ajax({
                 type: "POST", url: "/Home/MobileVerification", contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(option),
@@ -178,9 +176,8 @@
                     if (result.status == true) {
                         window.location.href = result.url;
                     }
-                    else {
-                        alert(result.message);
-                        $('#a-autoid-0-announce').text("Verify"); $('#btnCheckout').prop("disabled", false);
+                    else {                        
+                        $('#a-autoid-0-announce').text("Verify"); $('#btnCheckout').prop("disabled", false); alert(result.message);
                     }
                 },
                 complete: function () { },

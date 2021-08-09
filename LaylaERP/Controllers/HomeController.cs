@@ -20,14 +20,14 @@
     {
         public ActionResult Login()
         {
-           
+
             CommanUtilities.Provider.RemoveCurrent();
-             return View();
+            return View();
         }
         [HttpGet]
         public ActionResult ForgotPassword()
         {
-            
+
             return View();
         }
         [HttpPost]
@@ -51,7 +51,7 @@
 
                         mailMessage.Subject = "Request for Reset Password....";
 
-                        mailMessage.Body = "A request for reset password got from UserName : "+UserName+" and Email : "+Email;
+                        mailMessage.Body = "A request for reset password got from UserName : " + UserName + " and Email : " + Email;
 
                         mailMessage.IsBodyHtml = true;
 
@@ -77,7 +77,7 @@
                         smtp.Port = Convert.ToInt32(ds.Tables[0].Rows[0]["SMTPServerPortNo"]); //reading from web.config  
 
                         //smtp.Send(mailMessage);
-                       
+
 
                     }
 
@@ -85,8 +85,8 @@
 
                     Session["UserId"] = u.Tables[0].Rows[0]["user_login"].ToString();
                     ViewBag.Result = "Your password recovery query submitted to the administrator. Will contact you soon!!!";
-                    
-                  
+
+
                 }
                 else
                 {
@@ -98,7 +98,7 @@
         }
 
         [HttpGet]
-       public ActionResult ResetPassword()
+        public ActionResult ResetPassword()
         {
             return View();
         }
@@ -108,20 +108,20 @@
             if (model.PassWord == model.ConfirmPassword)
             {
                 model.UserName = Session["UserId"].ToString();
-                int res = Users.ResetPassword(model.UserName,model.PassWord);
+                int res = Users.ResetPassword(model.UserName, model.PassWord);
                 if (res > 0)
                 {
                     return RedirectToAction("Login", "Home");
                 }
-                    
+
             }
             return View();
         }
 
-        public ActionResult Index(string strValue1,string strValue2)
+        public ActionResult Index(string strValue1, string strValue2)
         {
             clsUserDetails model = new clsUserDetails();
-          
+
             //ViewBag.id = Session["UserId"];
             //-----------Code Start------
             //long id = 0;
@@ -129,7 +129,7 @@
             //if (id > 0)
             //{GetUsers()
             GetUserDetails(model, CommanUtilities.Provider.GetCurrent().UserID);
-           // if (!string.IsNullOrEmpty(modeldetails.strValue2))
+            // if (!string.IsNullOrEmpty(modeldetails.strValue2))
             //GetUsersDetails(strValue1, strValue2);
             ViewBag.Type = strValue1;
             return View();
@@ -139,14 +139,14 @@
             DateTime startDate = DateTime.Now;
             DateTime endDate = DateTime.Now;
             CultureInfo us = new CultureInfo("en-US");
-            ViewBag.totalorders = Convert.ToDecimal(BAL.DashboardRepository.Total_Orders()).ToString("N0",us); //BAL.DashboardRepository.Total_Orders();
-            ViewBag.totalsales = Convert.ToDecimal(BAL.DashboardRepository.Total_Sales()).ToString("N2",us);
-            ViewBag.totalcustomers = Convert.ToDecimal(BAL.DashboardRepository.Total_Customer()).ToString("N0",us);
-            ViewBag.totalordercompleted = Convert.ToDecimal(BAL.DashboardRepository.Total_Order_Completed()).ToString("N0",us);          
+            ViewBag.totalorders = Convert.ToDecimal(BAL.DashboardRepository.Total_Orders()).ToString("N0", us); //BAL.DashboardRepository.Total_Orders();
+            ViewBag.totalsales = Convert.ToDecimal(BAL.DashboardRepository.Total_Sales()).ToString("N2", us);
+            ViewBag.totalcustomers = Convert.ToDecimal(BAL.DashboardRepository.Total_Customer()).ToString("N0", us);
+            ViewBag.totalordercompleted = Convert.ToDecimal(BAL.DashboardRepository.Total_Order_Completed()).ToString("N0", us);
             ViewBag.TotalOrder = Convert.ToInt32(DashboardRepository.TotalOrder(startDate.ToString(), endDate.ToString()).ToString());
             if (ViewBag.TotalOrder > 10)
                 ViewBag.TotalOrder = 10;
-            var sale= Convert.ToInt32(DashboardRepository.TotalSale(startDate.ToString(), endDate.ToString()).ToString());
+            var sale = Convert.ToInt32(DashboardRepository.TotalSale(startDate.ToString(), endDate.ToString()).ToString());
             ViewBag.TotalSale = "$" + sale;
             ViewBag.TotalOrderCounting = Convert.ToInt32(DashboardRepository.TotalOrder(startDate.ToString(), endDate.ToString()).ToString());
             return View();
@@ -193,15 +193,15 @@
         {
             dynamic mymodel = new ExpandoObject();
             DataTable dtusers = DashboardRepository.GetUsers();
-       
+
             DataTable dtcustmer = DashboardRepository.GetCustomer();
             DataTable dtorder = DashboardRepository.Getorder();
             var resultusers = JsonConvert.SerializeObject(dtusers, Formatting.Indented);
             var resulcustmer = JsonConvert.SerializeObject(dtcustmer, Formatting.Indented);
-            var resultorder = JsonConvert.SerializeObject(dtorder, Formatting.Indented); 
+            var resultorder = JsonConvert.SerializeObject(dtorder, Formatting.Indented);
             mymodel.Users = dtusers.AsEnumerable();
             mymodel.Customer = dtcustmer.AsEnumerable();
-            mymodel.order = dtorder.AsEnumerable(); 
+            mymodel.order = dtorder.AsEnumerable();
             return View(mymodel);
         }
         [HttpPost]
@@ -346,39 +346,40 @@
 
         public ActionResult MobileVerification()
         {
-           
             Random _rdm = new Random();
-            int OTP = _rdm.Next(1000, 9999);
-            Session["OTP"] = OTP;
-           // SendEmail.SendEmails(CommanUtilities.Provider.GetCurrent().EmailID, "Your OTP for verifiction....", "Your OTP is <b>" + OTP + "</b>");
-
-            Session["OTPTime"] = DateTime.Now;
-
+            int OTPValue = _rdm.Next(1000, 9999);
+            CommanUtilities.Provider.AddOTP(OTPValue);
+            ViewBag.otp = OTPValue;
+            //SendEmail.SendEmails(CommanUtilities.Provider.GetCurrent().EmailID, "Your OTP for verifiction....", "Your OTP is <b>" + OTP + "</b>");
+            //Session["OTPTime"] = CommonDate.CurrentDate();
             return View();
         }
 
         [HttpPost]
-        public ActionResult MobileVerification(int OTP)
+        public JsonResult MobileVerification(int OTP)
         {
-            DateTime OTPTime = DateTime.Parse(Session["OTPTime"].ToString());
-            if (OTPTime.AddMinutes(10)>DateTime.Now) {
-                if (Convert.ToInt32(Session["OTP"]) == OTP)
+            string JSONresult = string.Empty, strURL = string.Empty; ; bool b_status = false;
+            try
+            {
+                if (!string.IsNullOrEmpty(CommanUtilities.Provider.GetOTP()))
                 {
-
-                    return RedirectToAction("Index", "Home");
+                    if (CommanUtilities.Provider.GetOTP() == OTP.ToString())
+                    {
+                        b_status = true; strURL = "/Home/Index";
+                        //return RedirectToAction("Index", "Home");
+                    }
+                    else
+                    {
+                        JSONresult = "Verification Faild...";
+                    }
                 }
                 else
                 {
-                    ViewBag.Result = "Verification Faild...";
+                    JSONresult = "OTP Expired...";
                 }
             }
-            else
-            {
-                ViewBag.Result = "OTP Expired...";
-            }
-
-
-            return View();
+            catch { JSONresult = "OTP Expired..."; b_status = false; }
+            return Json(new { status = b_status, message = JSONresult, url = strURL }, 0);
         }
 
         private void UpdateUserProfile(clsUserDetails model, long id)
@@ -396,8 +397,8 @@
             {
                 if (model.ID > 0)
                 {
-                  UpdateUserProfile(model, model.ID);
-                  UpdateProfile_MetaData(model, model.ID);
+                    UpdateUserProfile(model, model.ID);
+                    UpdateProfile_MetaData(model, model.ID);
                     return Json(new { status = true, message = "Profile has been saved successfully!!", url = "" }, 0);
                 }
 
@@ -407,33 +408,33 @@
         [HttpPost]
         public JsonResult Update_Password(clsUserDetails model)
         {
-             
-                if (model.ID > 0)
-                {
-                     UserProfileRepository.Update_Password(model, model.ID);
-                    return Json(new { status = true, message = "Password has been update successfully!!", url = "" }, 0);
-                }
-                else             
-                     return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+
+            if (model.ID > 0)
+            {
+                UserProfileRepository.Update_Password(model, model.ID);
+                return Json(new { status = true, message = "Password has been update successfully!!", url = "" }, 0);
+            }
+            else
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
         }
         private void UpdateProfile_MetaData(clsUserDetails model, long id)
         {
             string[] varQueryArr1 = new string[10];
-            string[] varFieldsName = new string[10] { "nickname", "first_name", "last_name", "billing_address_1", "billing_country", "billing_phone",  "billing_address_2", "billing_city", "billing_state", "billing_postcode" };
-            string[] varFieldsValue = new string[10] { model.user_nicename, model.first_name, model.last_name,model.address,model.country,model.phone, model.billing_address_2, model.billing_city, model.billing_state, model.billing_postcode };
+            string[] varFieldsName = new string[10] { "nickname", "first_name", "last_name", "billing_address_1", "billing_country", "billing_phone", "billing_address_2", "billing_city", "billing_state", "billing_postcode" };
+            string[] varFieldsValue = new string[10] { model.user_nicename, model.first_name, model.last_name, model.address, model.country, model.phone, model.billing_address_2, model.billing_city, model.billing_state, model.billing_postcode };
             for (int n = 0; n < 10; n++)
             {
-               UserProfileRepository.UpdateProfileMetaData(model, id, varFieldsName[n], varFieldsValue[n]);
+                UserProfileRepository.UpdateProfileMetaData(model, id, varFieldsName[n], varFieldsValue[n]);
             }
         }
 
-        private void GetUserDetails( clsUserDetails model,long id)
+        private void GetUserDetails(clsUserDetails model, long id)
         {
-            
+
             try
             {
                 DataTable DT = BAL.Users.GetDetailsUser(id);
-               // DataTable DT = UserProfileRepository.DisplayProfileDetails(model,id);
+                // DataTable DT = UserProfileRepository.DisplayProfileDetails(model,id);
                 ViewBag.user_login = DT.Rows[0]["user_login"].ToString();
                 ViewBag.user_email = DT.Rows[0]["user_email"].ToString();
                 ViewBag.use_status = DT.Rows[0]["user_status"].ToString();
@@ -478,8 +479,9 @@
                 ViewBag.address2 = DT.Rows[0]["address2"];
                 ViewBag.postcode = DT.Rows[0]["postcode"];
             }
-            catch  {
-               
+            catch
+            {
+
             }
         }
 
@@ -498,7 +500,7 @@
             return View();
         }
 
-// Sales graph 
+        // Sales graph 
         [HttpPost]
         public JsonResult SalesGraph()
         {

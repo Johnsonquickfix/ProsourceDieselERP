@@ -20,27 +20,6 @@
     <h2 class="page-heading">Orders History</h2>
 </div>
 <section class="content section-content neworder-section table-design">
-    @*<div class="tab">
-            <button class="tablinks" onclick="openCity(event, 'Listing')">Orders Listing</button>
-            <button class="tablinks" onclick="openCity(event, 'Details')">Order Details</button>
-            <button class="tablinks" onclick="openCity(event, 'Address')">Order Address</button>
-        </div>*@
-
-    <!-- Tab content -->
-    @*<div id="Listing" class="tabcontent">
-            <h3>Orders Listing</h3>
-            <p></p>
-        </div>
-
-        <div id="Details" class="tabcontent">
-            <h3>Order Details</h3>
-            <p></p>
-        </div>
-
-        <div id="Address" class="tabcontent">
-            <h3>Order Address</h3>
-            <p></p>
-        </div>*@
     <div class="row">
         <div class="col-md-12">
             <div class="user_subCrumbs">
@@ -76,11 +55,6 @@
                         </select>
                         <button type="button" id="btnChange" onclick="orderStatus();" class="btn btn-primary btn-flat button">Change</button>
                     </div>
-                    @*<div class="alignleft actions">
-            <select name="m" id="filter-by-date" class="form-control select2">
-                <option selected="selected" value="0">All dates</option>
-            </select>
-        </div>*@
                     <div class="alignleft actions">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
@@ -105,16 +79,16 @@
                     <table id="dtdata" class="table-blue table check-table table-bordered table-striped dataTable" width="100%">
                         <thead>
                             <tr>
-                                <th><input type="checkbox" name="checkall" id="checkall" onClick="CheckAll();"><label></label></th>
-                                <th>Order ID</th>
-                                <th>First Name</th>
-                                <th>Last Name</th>
-                                <th>Phone No.</th>
-                                <th>No. of Items</th>
-                                <th>Order Total</th>
-                                <th>Status</th>
-                                <th>Creation Date</th>
-                                <th></th>
+                                <th width="5%"><input type="checkbox" name="checkall" id="checkall" onClick="CheckAll();"><label></label></th>
+                                <th width="8%">Order ID</th>
+                                <th width="12%">First Name</th>
+                                <th width="12%">Last Name</th>
+                                <th width="10%">Phone No.</th>
+                                <th width="10%">No. of Items</th>
+                                <th width="10%">Order Total</th>
+                                <th width="14%">Status</th>
+                                <th width="12%">Creation Date</th>
+                                <th width="5%"></th>
                             </tr>
                         </thead>
                     </table>

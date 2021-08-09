@@ -88,6 +88,21 @@
             }
         }
 
+        /// <summary>
+        /// Validate OTP
+        /// </summary>
+        public void AddOTP(int OTPValue)
+        {
+            WebHelper.WriteCookie("laylaERP_user_validate", Encrypt(OTPValue.ToString()), 10);
+        }
+        public string GetOTP()
+        {
+            string OTPValue = string.Empty;
+            if (!string.IsNullOrEmpty(WebHelper.GetCookie("laylaERP_user_validate").ToString()))
+                OTPValue= Decrypt(WebHelper.GetCookie("laylaERP_user_validate").ToString());
+            return OTPValue;
+        }
+
         #region Security Encryption
         private static string DESKey = "@LaylaERP_desencrypt_2021";
         #region ======== Encryption ========

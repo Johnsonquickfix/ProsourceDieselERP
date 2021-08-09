@@ -10,7 +10,7 @@ function WarehouseGrid() {
             processing: true,
             data: JSON.stringify(obj),
             success: function (data) {
-                $('#dtdata').dataTable({
+                $('#dtdatawarehouse').dataTable({
                     destroy: true,
                     scrollX: true,
                     data: JSON.parse(data),

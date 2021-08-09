@@ -10,15 +10,15 @@ function VendorWarehouseGrid() {
         processing: true,
         data: JSON.stringify(obj),
         success: function (data) {
-            $('#dtdata').dataTable({
+            $('#vendor').dataTable({
                 destroy: true,
-                scrollX: true,
+                //scrollX: true,
                 data: JSON.parse(data),
                 "columns": [
-                    { data: 'vname', title: 'Vendor Name' },
-                    { data: 'wname', title: 'Warehouse Name' },
-                    { data: 'Vaddress', title: 'Vendor Address' },
-                    { data: 'phone', title: 'Vendor Phone' }
+                    { data: 'vname', title: 'Vendor Name', sWidth: "25%"},
+                    { data: 'wname', title: 'Warehouse Name', sWidth: "25%" },
+                    { data: 'Vaddress', title: 'Vendor Address', sWidth: "25%" },
+                    { data: 'phone', title: 'Vendor Phone', sWidth: "25%" }
                 ],
 
 
@@ -98,6 +98,6 @@ function getWarehouse() {
     });
 }
 
-$('#btnSearch').click(function () {
+$('#btnSearchVendor').click(function () {
     VendorWarehouseGrid();
 })

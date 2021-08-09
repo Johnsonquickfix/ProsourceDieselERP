@@ -36,8 +36,8 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "insert into wp_warehouse(ref,datec,lieu,description,address,zip,town,country,phone,fax,statut,address1,city,status,warehouse_type,cor_phone,cor_address,cor_address1,cor_city,cor_state,cor_zip,cor_country,note_public,note_private)" +
-                    " values(@ref,@datec,@lieu,@description,@address,@zip,@town,@country,@phone,@fax,@statut,@address1,@city,@status,@warehouse_type,@cor_phone,@cor_address,@cor_address1,@cor_city,@cor_state,@cor_zip,@cor_country,@note_public,@note_private);SELECT LAST_INSERT_ID();";
+                string strsql = "insert into wp_warehouse(ref,datec,lieu,description,address,zip,town,country,phone,fax,statut,address1,city,status,warehouse_type,cor_phone,cor_address,cor_address1,cor_city,cor_state,cor_zip,cor_country,note_public,note_private,email)" +
+                    " values(@ref,@datec,@lieu,@description,@address,@zip,@town,@country,@phone,@fax,@statut,@address1,@city,@status,@warehouse_type,@cor_phone,@cor_address,@cor_address1,@cor_city,@cor_state,@cor_zip,@cor_country,@note_public,@note_private,@email);SELECT LAST_INSERT_ID();";
                 MySqlParameter[] para =
                 {
                     new MySqlParameter("@ref", model.reff),
@@ -55,6 +55,7 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@city", model.city),
                     new MySqlParameter("@status",model.status),
                     new MySqlParameter("@warehouse_type",model.warehouse_type),
+                    new MySqlParameter("@email",model.email),
 
                     //Additional Info
                     new MySqlParameter("@cor_phone", model.cor_phone),
@@ -85,7 +86,9 @@ namespace LaylaERP.BAL
             try
             {
 
-                string strSql = "SELECT rowid,ref,entity,description,lieu,phone,fax,if(statut=0,'Close','Open')as statut, address, zip, town, country, address1, city, status, warehouse_type FROM wp_warehouse where rowid=" + rowid + "";
+                string strSql = "SELECT rowid,ref,entity,description,lieu,phone,fax,if(statut=0,'Close','Open')as statut, address, zip, " +
+                    "town, country, address1, city, status, warehouse_type, cor_phone, cor_address, cor_address1, cor_city, cor_state, cor_zip," +
+                    "cor_country, note_public, note_private, email FROM wp_warehouse where rowid=" + rowid + "";
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
 
@@ -101,7 +104,9 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "update wp_warehouse set ref=@ref, lieu=@lieu, description=@description, address=@address, zip=@zip, town=@town, country=@country, phone=@phone, fax=@fax, statut=@statut, address1=@address1, city=@city, status=@status, warehouse_type=@warehouse_type where rowid in(" + model.rowid + ")";
+                string strsql = "update wp_warehouse set ref=@ref, lieu=@lieu, description=@description, address=@address, zip=@zip, town=@town, country=@country, phone=@phone, fax=@fax, statut=@statut," +
+                    " address1=@address1, city=@city, status=@status, warehouse_type=@warehouse_type, cor_phone=@cor_phone, cor_address=@cor_address," +
+                    "cor_address1=@cor_address1, cor_city=@cor_city, cor_state=@cor_state, cor_zip=@cor_zip, cor_country=@cor_country, note_public=@note_public, note_private=@note_private, email=@email  where rowid in(" + model.rowid + ")";
                 MySqlParameter[] para =
                 {
                     new MySqlParameter("@ref", model.reff),
@@ -117,7 +122,18 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@address1", model.address1),
                     new MySqlParameter("@city", model.city),
                     new MySqlParameter("@status",model.status),
-                    new MySqlParameter("@warehouse_type",model.warehouse_type)
+                    new MySqlParameter("@warehouse_type",model.warehouse_type),
+                     new MySqlParameter("@email",model.email),
+                    //additional info
+                    new MySqlParameter("@cor_phone", model.cor_phone),
+                    new MySqlParameter("@cor_address", model.cor_address),
+                    new MySqlParameter("@cor_address1", model.cor_address1),
+                    new MySqlParameter("@cor_city", model.cor_city),
+                    new MySqlParameter("@cor_state", model.cor_state),
+                    new MySqlParameter("@cor_zip", model.cor_zip),
+                    new MySqlParameter("@cor_country", model.cor_country),
+                    new MySqlParameter("@note_public", model.note_public),
+                    new MySqlParameter("@note_private", model.note_private),
             };
                 int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
                 return result;

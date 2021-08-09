@@ -71,8 +71,9 @@ namespace LaylaERP.Controllers
 
         public ActionResult UpdateWarehouse(int rowid)
         {
-            
-            dynamic myModel = new ExpandoObject();
+          
+        dynamic myModel = new ExpandoObject();
+    
             myModel.rowid = null;
             myModel.reff = null;
             myModel.description = null;
@@ -88,6 +89,17 @@ namespace LaylaERP.Controllers
             myModel.city = null;
             myModel.status = null;
             myModel.warehouse_type = null;
+            //Additional Info
+            myModel.cor_phone=null;
+            myModel.cor_address=null;
+            myModel.cor_address1=null;
+            myModel.cor_city=null;
+            myModel.cor_state=null;
+            myModel.cor_zip=null;
+            myModel.cor_country=null;
+            myModel.note_public=null;
+            myModel.note_private=null;
+            myModel.email = null;
             DataTable dt = WarehouseRepository.GetWarehouseID(rowid);
             myModel.rowid = rowid;
             myModel.reff = dt.Rows[0]["ref"];
@@ -104,6 +116,16 @@ namespace LaylaERP.Controllers
             myModel.city = dt.Rows[0]["city"];
             myModel.status = dt.Rows[0]["status"];
             myModel.warehouse_type = dt.Rows[0]["warehouse_type"];
+            myModel.cor_phone = dt.Rows[0]["cor_phone"];
+            myModel.cor_address = dt.Rows[0]["cor_address"];
+            myModel.cor_address1 = dt.Rows[0]["cor_address1"];
+            myModel.cor_city = dt.Rows[0]["cor_city"];
+            myModel.cor_state = dt.Rows[0]["cor_state"];
+            myModel.cor_zip = dt.Rows[0]["cor_zip"];
+            myModel.cor_country = dt.Rows[0]["cor_country"];
+            myModel.note_public = dt.Rows[0]["note_public"];
+            myModel.note_private = dt.Rows[0]["note_private"];
+            myModel.email = dt.Rows[0]["email"];
             return PartialView("UpdateWarehouse", myModel);
         }
 

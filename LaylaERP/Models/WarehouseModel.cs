@@ -34,7 +34,7 @@ namespace LaylaERP.Models
         public string user_status { get; set; }
         public string Search { get; set; }
         public string warehouse_type { get; set; }
-
+        public string email { get; set; }
 
         //movement models
 

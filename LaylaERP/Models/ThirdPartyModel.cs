@@ -83,6 +83,7 @@ namespace LaylaERP.Models
         public string CalculatedTax { get; set; }
         public bool ShippingTaxIncludedinprice { get; set; }
         public string DiscountType1 { get; set; }
+        public decimal DiscountMinimumOrderAmount { get; set; }
         public string AccountName { get; set; }
         public string AccountEmail { get; set; }
         public string DiscountType2 { get; set; }
@@ -96,12 +97,14 @@ namespace LaylaERP.Models
         public string BankSwift { get; set; }
         public string ChequeTitle { get; set; }
         public string ChequeDescription { get; set; }
-        public string PaymentAPIUsername { get; set; }
-        public string PaymentAPIPassword { get; set; }
-        public string PaymentAPISignature { get; set; }
+        public string PaypalInvoiceAPIUsername { get; set; }
+        public string PaypalInvoiceAPIPassword { get; set; }
+        public string PaypalInvoiceAPISignature { get; set; }
         public string PaypalTitle { get; set; }
         public string PaypalDescription { get; set; }
+        public string ChequeInstructions { get; set; }
         public string PaypalEmail { get; set; }
+        public bool PaypalProduction { get; set; }
         public string PaypalIPNEmailNotification { get; set; }
         public string PaypalReceiverEmail { get; set; }
         public string PaypalIdentitytoken { get; set; }

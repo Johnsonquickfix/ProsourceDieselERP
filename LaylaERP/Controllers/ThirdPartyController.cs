@@ -30,7 +30,7 @@ namespace LaylaERP.Controllers
             {
                 if (model.rowid > 0)
                 {
-                    new ThirdPartyRepository().EditVendor(model, model.rowid);
+                    new ThirdPartyRepository().EditVendorBasicInfo(model, model.rowid);
                     return Json(new { status = true, message = "Vendor Basic info has been updated successfully!!", url = "", id = model.rowid }, 0);
                 }
                 else
@@ -170,14 +170,23 @@ namespace LaylaERP.Controllers
             {
                 if (model.rowid > 0)
                 {
-                    int ID = new ThirdPartyRepository().AddPaymentMethods(model);
-                    if (ID > 0)
+                    int id = new ThirdPartyRepository().GetVendorID(model.rowid);
+                    if (id != model.rowid)
                     {
-                        return Json(new { status = true, message = "Vendor Discount has been saved successfully!!", url = "", id = ID }, 0);
+                        int ID = new ThirdPartyRepository().AddPaymentMethods(model);
+                        if (ID > 0)
+                        {
+                            return Json(new { status = true, message = "Vendor Payment Details has been saved successfully!!", url = "", id = ID }, 0);
+                        }
+                        else
+                        {
+                            return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
+                        }
                     }
                     else
                     {
-                        return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
+                        int ID = new ThirdPartyRepository().EditPaymentMethods(model);
+                        return Json(new { status = true, message = "Vendor Payment Details has been updated successfully!!", url = "", id = ID }, 0);
                     }
                 }
                 else
@@ -230,7 +239,6 @@ namespace LaylaERP.Controllers
                 productlist.Add(new SelectListItem { Text = dr["IncoTerm"].ToString(), Value = dr["ID"].ToString() });
             }
             return Json(productlist, JsonRequestBehavior.AllowGet);
-
         }
         public JsonResult GetVendorType(SearchModel model)
         {
@@ -241,7 +249,6 @@ namespace LaylaERP.Controllers
                 productlist.Add(new SelectListItem { Text = dr["vendor_type"].ToString(), Value = dr["ID"].ToString() });
             }
             return Json(productlist, JsonRequestBehavior.AllowGet);
-
         }
         public JsonResult GetShippingMethod(SearchModel model)
         {
@@ -264,35 +271,32 @@ namespace LaylaERP.Controllers
                 result = JsonConvert.SerializeObject(dt);
             }
             catch (Exception ex) { throw ex; }
-            return Json(result , 0);
+            return Json(result, 0);
         }
         public JsonResult GetPaymentTerm(SearchModel model)
         {
-                DataSet ds = BAL.ThirdPartyRepository.GetPaymentTerm();
-                List<SelectListItem> productlist = new List<SelectListItem>();
-                foreach (DataRow dr in ds.Tables[0].Rows)
-                {
+            DataSet ds = BAL.ThirdPartyRepository.GetPaymentTerm();
+            List<SelectListItem> productlist = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
 
-                    productlist.Add(new SelectListItem { Text = dr["PaymentTerm"].ToString(), Value = dr["ID"].ToString() });
+                productlist.Add(new SelectListItem { Text = dr["PaymentTerm"].ToString(), Value = dr["ID"].ToString() });
 
-                }
-                return Json(productlist, JsonRequestBehavior.AllowGet);
-           
+            }
+            return Json(productlist, JsonRequestBehavior.AllowGet);
+
         }
-        public JsonResult GetBalanceDays (SearchModel model)
+        public JsonResult GetBalanceDays(SearchModel model)
         {
-          
-                DataSet ds = BAL.ThirdPartyRepository.GetBalanceDays();
-                List<SelectListItem> productlist = new List<SelectListItem>();
-                foreach (DataRow dr in ds.Tables[0].Rows)
-                {
+            DataSet ds = BAL.ThirdPartyRepository.GetBalanceDays();
+            List<SelectListItem> productlist = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
 
-                    productlist.Add(new SelectListItem { Text = dr["Balance"].ToString(), Value = dr["ID"].ToString() });
+                productlist.Add(new SelectListItem { Text = dr["Balance"].ToString(), Value = dr["ID"].ToString() });
 
-                }
-                return Json(productlist, JsonRequestBehavior.AllowGet);
-           
-            
+            }
+            return Json(productlist, JsonRequestBehavior.AllowGet);
         }
         public JsonResult GetDiscountType(SearchModel model)
         {
@@ -303,8 +307,6 @@ namespace LaylaERP.Controllers
                 productlist.Add(new SelectListItem { Text = dr["DiscountType"].ToString(), Value = dr["ID"].ToString() });
             }
             return Json(productlist, JsonRequestBehavior.AllowGet);
-
-
         }
         public JsonResult GetPaymentMethod(SearchModel model)
         {
@@ -315,8 +317,6 @@ namespace LaylaERP.Controllers
                 productlist.Add(new SelectListItem { Text = dr["PaymentType"].ToString(), Value = dr["ID"].ToString() });
             }
             return Json(productlist, JsonRequestBehavior.AllowGet);
-
-
         }
         public JsonResult GetVendorCode(SearchModel model)
         {
@@ -329,7 +329,6 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(JSONresult, 0);
         }
-      
         public ActionResult VendorList()
         {
             return View();
@@ -350,22 +349,19 @@ namespace LaylaERP.Controllers
             catch (Exception ex) { throw ex; }
             return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
         }
-
         public JsonResult GetProductList(ThirdPartyModel model)
         {
             int id = model.VendorID;
             long rowid = model.rowid;
-
             string result = string.Empty;
             try
             {
-                DataTable dt = ThirdPartyRepository.GetProduct(id,rowid);
+                DataTable dt = ThirdPartyRepository.GetProduct(id, rowid);
                 result = JsonConvert.SerializeObject(dt);
             }
             catch (Exception ex) { throw ex; }
             return Json(new { aaData = result }, 0);
         }
-
         public JsonResult GetVendorByID(long id)
         {
             string JSONresult = string.Empty;
@@ -377,6 +373,6 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(JSONresult, 0);
         }
-       
+
     }
 }

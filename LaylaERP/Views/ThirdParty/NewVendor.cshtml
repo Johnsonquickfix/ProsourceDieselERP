@@ -59,12 +59,12 @@ ViewBag.Title = "NewVendor";
                                         </div><!--4-->
                                         <div class="form-group">
                                             <img class="sb-title-icon" src="https://fonts.gstatic.com/s/i/googlematerialicons/location_pin/v5/24px.svg" alt="">
-                                            <label class="control-label " for="Address">Address 1</label>
-                                            <input type="text" id="txtAddress1" class="form-control" placeholder="Address" autocomplete="true" />
+                                            <label class="control-label " for="Address1">Address 1</label>
+                                            <input type="text" id="txtAddress1" class="form-control" placeholder="Address 1" autocomplete="true" />
                                         </div><!--5-->
                                         <div class="form-group">
-                                            <label class="control-label " for="Address1">Address 2</label>
-                                            <input type="tel" id="txtAddress2" class="form-control" placeholder="Address 1" />
+                                            <label class="control-label " for="Address2">Address 2</label>
+                                            <input type="tel" id="txtAddress2" class="form-control" placeholder="Address 2" />
                                         </div><!--6-->
                                     </div>
                                 </div>
@@ -397,7 +397,7 @@ ViewBag.Title = "NewVendor";
                                         <label class="control-label">Tax Method</label>
                                         <div class="form-group">
                                             <select class="form-control" id="ddlTaxMethod">
-                                                <option>Standard Tax Rate</option>
+                                                <option value="Standard Tax Rate">Standard Tax Rate</option>
                                             </select>
                                         </div>
                                     </div>
@@ -465,8 +465,8 @@ ViewBag.Title = "NewVendor";
                                         <label class="control-label">Discount Type1 (, )</label>
                                         <div class="form-group">
                                             <select class="form-control" id="ddlDiscountType1">
-                                                <option>Fixed</option>
-                                                <option>Percentage</option>
+                                                <option value="Fixed">Fixed</option>
+                                                <option value="Percentage">Percentage</option>
                                             </select>
                                         </div>
                                     </div>
@@ -483,7 +483,7 @@ ViewBag.Title = "NewVendor";
                                         </div>
                                         <div class="form-group">
                                             <label class="control-label">Minimum order amount</label>
-                                            <input type="text" id="txtMinimumOrderAmount" class="form-control" placeholder="Minimum order amount" />
+                                            <input type="text" id="txtDiscountMinimumOrderAmount" class="form-control" placeholder="Minimum order amount" />
                                         </div>
                                     </div>
                                 </div>
@@ -671,10 +671,10 @@ ViewBag.Title = "NewVendor";
                                 <div class="col-md-4">
                                     <div class="box box-primary">
                                         <div class="box-body">
-                                            <div class="form-group form-check">
-                                                <input type="checkbox" id="tax_include_in_price" />
-                                                <label class="control-label" for="tax_include_in_price">Paypal Production</label>
-                                            </div>
+                                          
+                                                <input type="checkbox" id="chkPaypalProduction" />
+                                                <label class="control-label" for="Paypal_Production">Paypal Production</label>
+                                            
                                             <div class="form-group">
                                                 <label class="control-label">IPN email notification</label>
                                                 <input type="text" class="form-control" id="txtPaypalIPNEmailNotification" placeholder="IPN email notification" />
@@ -696,8 +696,8 @@ ViewBag.Title = "NewVendor";
                                             <div class="form-group">
                                                 <label class="control-label">Payment Action</label>
                                                 <select class="form-control" id="ddlPaypalPaymentAction">
-                                                    <option>Capture</option>
-                                                    <option>Authorize</option>
+                                                    <option value="Capture">Capture</option>
+                                                    <option value="Authorize">Authorize</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -739,6 +739,7 @@ ViewBag.Title = "NewVendor";
                     <div class="box box-primary">
                         <div class="box-body">
                             <a href="#" class="btn btn-danger">Vendor link to Warehouse</a>
+                            @Html.ActionLink("Back to List", "VendorList", null, new { @class = "btn btn-danger" })
                         </div>
                     </div>
                 </div>

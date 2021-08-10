@@ -537,14 +537,15 @@ namespace LaylaERP.BAL
             {
 
 
-                string strsql = "update wp_users set user_login=@user_login,user_nicename=@user_nicename,user_email=@user_email,display_name=@display_name,user_image=@user_image where ID in(" + model.ID + ")";
+                string strsql = "update wp_users set user_login=@user_login,user_nicename=@user_nicename,user_email=@user_email,display_name=@display_name,user_image=@user_image, user_status=@user_status where ID in(" + model.ID + ")";
                 MySqlParameter[] para =
                 {
                     new MySqlParameter("@user_login", model.user_nicename),
                     new MySqlParameter("@user_nicename", model.user_nicename),
                     new MySqlParameter("@user_email", model.user_email),
                     new MySqlParameter("@display_name", model.user_nicename),
-                    new MySqlParameter("@user_image", model.User_Image)
+                    new MySqlParameter("@user_image", model.User_Image),
+                    new MySqlParameter("@user_status", model.user_status)
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
                 return result;

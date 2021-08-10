@@ -139,7 +139,15 @@
                 <!-- Sidebar user panel -->
                 <div class="user-panel">
                     <div class="pull-left image">
-                        <img src="~/Images/userprofile2.png" class="img-circle" alt="User Image">
+                        @if (ViewBag.User_Image.Length > 0 && ViewBag.User_Image != null)
+                        {
+                            @*<img src="~/Images/userprofile2.png" class="img-circle" alt="User Image">*@
+                            <img runat="server" id="show_Profile_image" class="img-circle" src="data:image;base64,@System.Convert.ToBase64String(ViewBag.User_Image)" alt="User Image">
+                        }
+                        else
+                        {
+                            <img runat="server" src="~/Images/userprofile2.png" class="img-circle" alt="User Image">
+                        }
                     </div>
                     <div class="pull-left info">
                         <p>@(user.UserName)</p>

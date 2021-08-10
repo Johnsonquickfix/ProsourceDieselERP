@@ -14,28 +14,33 @@ getShippingMethod();
 getDiscountType();
 getPaymentMethod();
 
+$("#tab_2").tabs({
+    disabled: [0, 1]
+});
 $("#ddlPaymentMethod").change(function () {
     PaymentMethod = $("#ddlPaymentMethod").val();
+    PaymentMethodBlock(PaymentMethod);
+})
+
+function PaymentMethodBlock(PaymentMethod) {
+   
     if (PaymentMethod == "1") {
         $("#bnk_details").css("display", "block");
         $("#cheq_payment").css("display", "none");
         $("#pay_strd").css("display", "none");
         $("#pay_invoice").css("display", "none");
-        
     }
     if (PaymentMethod == "3") {
         $("#cheq_payment").css("display", "block");
         $("#bnk_details").css("display", "none");
         $("#pay_invoice").css("display", "none");
         $("#pay_strd").css("display", "none");
-
     }
     if (PaymentMethod == "6") {
         $("#pay_invoice").css("display", "block");
         $("#cheq_payment").css("display", "none");
         $("#bnk_details").css("display", "none");
         $("#pay_strd").css("display", "none");
-
     }
     if (PaymentMethod == "7") {
         $("#pay_strd").css("display", "block");
@@ -43,7 +48,7 @@ $("#ddlPaymentMethod").change(function () {
         $("#pay_invoice").css("display", "none");
         $("#bnk_details").css("display", "none");
     }
-})
+}
 $('#btnNextTab1').click(function (e) {
     ID = $("#hfid").val();
     VendorType = $("#ddlvendortype").val();
@@ -55,6 +60,7 @@ $('#btnNextTab1').click(function (e) {
     Address2 = $("#txtAddress2").val();
     City = $("#txtCity").val();
     State = $("#ddlState").val();
+    StateName = $("#ddlState").find('option:selected').text();
     ZipCode = $("#txtZipCode").val();
     Country = $("#ddlCountry").val();
     Phone = $("#txtPhone").val();
@@ -84,7 +90,7 @@ $('#btnNextTab1').click(function (e) {
         var obj = {
             rowid: ID, vendor_type: VendorType, VendorCode: VendorCode,
             Name: VendorName,  AliasName: AliasName, Status: Status, Address: Address1,
-            City: City, State: State, ZipCode: ZipCode, Country: Country, Phone: Phone, Fax: Fax, EMail: EMail, Web: Web,
+            City: City, State: State, StateName: StateName, ZipCode: ZipCode, Country: Country, Phone: Phone, Fax: Fax, EMail: EMail, Web: Web,
             Workinghours: WorkingHours,VendorStatus: VendorStatus
         }
         $.ajax({
@@ -99,9 +105,12 @@ $('#btnNextTab1').click(function (e) {
                 if (data.status == true) {
                     $("#hfid").val(data.id);
                     swal('Alert!', data.message, 'success');
-                    $("#parent").find(":input").each(function () {
-                        switch (this.type) { case "text": case "email": case "tel": $(this).val(''); break; }
+                    $("#tab_1").find(":input").each(function () {
+                        switch (this.type) {
+                            case "text": case "email": case "textarea": case "tel": $(this).val(''); break;
+                        }
                     });
+                    $("#tab_1 option[value='-1']").attr('selected', true)
                     e.preventDefault();
                     var link = $('#mytabs .active').next().children('a').attr('href');
                     $('#mytabs a[href="' + link + '"]').tab('show');
@@ -160,9 +169,12 @@ $('#btnNextTab2').click(function (e) {
             success: function (data) {
                 if (data.status == true) {
                     swal('Alert!', data.message, 'success');
-                    $("#parent").find(":input").each(function () {
-                        switch (this.type) { case "text": case "email": case "tel": $(this).val(''); break; }
+                    $("#tab_2").find(":input").each(function () {
+                        switch (this.type) {
+                            case "text": case "email": case "textarea": case "tel": $(this).val(''); break;
+                        }
                     });
+                    $("#tab_2 option[value='-1']").attr('selected', true)
                     e.preventDefault();
                     var link = $('#mytabs .active').next().children('a').attr('href');
                     $('#mytabs a[href="' + link + '"]').tab('show');
@@ -181,6 +193,7 @@ $('#btnNextTab2').click(function (e) {
     }
 });
 $('#btnNextTab3').click(function (e) {
+    ID = $("#hfid").val();
     Capital = $("#txtCapital").val();
     PaymentTerms = $("#ddlPaymentTerms").val();
     Balancedays = $("#ddlBalancedays").val();
@@ -222,9 +235,12 @@ $('#btnNextTab3').click(function (e) {
             success: function (data) {
                 if (data.status == true) {
                     swal('Alert!', data.message, 'success');
-                    $("#parent").find(":input").each(function () {
-                        switch (this.type) { case "text": case "email": case "tel": $(this).val(''); break; }
+                    $("#tab_3").find(":input").each(function () {
+                        switch (this.type) {
+                            case "text": case "email": case "textarea": case "tel": $(this).val(''); break;
+                        }
                     });
+                    $("#tab_3 option[value='-1']").attr('selected', true)
                     e.preventDefault();
                     var link = $('#mytabs .active').next().children('a').attr('href');
                     $('#mytabs a[href="' + link + '"]').tab('show');
@@ -243,6 +259,7 @@ $('#btnNextTab3').click(function (e) {
     }
 });
 $('#btnNextTab4').click(function (e) {
+    ID = $("#hfid").val();
     ShippingMethod = $("#ddlShippingMethod").val();
     ShippingRate = $("#txtShippingRate").val();
     ShippingLocation = $("#txtShippingLocation").val();
@@ -280,9 +297,12 @@ $('#btnNextTab4').click(function (e) {
             success: function (data) {
                 if (data.status == true) {
                     swal('Alert!', data.message, 'success');
-                    $("#parent").find(":input").each(function () {
-                        switch (this.type) { case "text": case "email": case "tel": $(this).val(''); break; }
+                    $("#tab_4").find(":input").each(function () {
+                        switch (this.type) {
+                            case "text": case "email": case "textarea": case "tel": $(this).val(''); break;
+                        }
                     });
+                    $("#tab_4 option[value='-1']").attr('selected', true)
                     e.preventDefault();
                     var link = $('#mytabs .active').next().children('a').attr('href');
                     $('#mytabs a[href="' + link + '"]').tab('show');
@@ -301,6 +321,7 @@ $('#btnNextTab4').click(function (e) {
     }
 });
 $('#btnNextTab5').click(function (e) {
+    ID = $("#hfid").val();
     TaxMethod = $("#ddlTaxMethod").val();
     DefaultTax = $("#txtDefaultTax").val();
     ShippingTax = $("#txtShippingTax").val();
@@ -328,9 +349,12 @@ $('#btnNextTab5').click(function (e) {
             success: function (data) {
                 if (data.status == true) {
                     swal('Alert!', data.message, 'success');
-                    $("#parent").find(":input").each(function () {
-                        switch (this.type) { case "text": case "email": case "tel": $(this).val(''); break; }
+                    $("#tab_5").find(":input").each(function () {
+                        switch (this.type) {
+                            case "text": case "email": case "textarea": case "tel": $(this).val(''); break;
+                        }
                     });
+                    $("#tab_5 option[value='-1']").attr('selected', true)
                     e.preventDefault();
                     var link = $('#mytabs .active').next().children('a').attr('href');
                     $('#mytabs a[href="' + link + '"]').tab('show');
@@ -349,28 +373,30 @@ $('#btnNextTab5').click(function (e) {
     }
 });
 $('#btnNextTab6').click(function (e) {
+    ID = $("#hfid").val();
     DiscountType1 = $("#ddlDiscountType1").val();
     DefaultDiscount = $("#txtDefaultDiscount").val();
-    MinimumOrderAmount = $("#txtMinimumOrderAmount").val();
+    MinimumOrderAmount = $("#txtDiscountMinimumOrderAmount").val();
     AccountName = $("#txtAccountName").val();
     AccountEmail = $("#txtAccountEmail").val();
     DiscountType2 = $("#ddlDiscountType2").val();
     Discount = $("#txtDiscount").val();
-
+    var pattern = /^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
     if (DiscountType1 == "-1") { swal('alert', 'Please Select Discount Type 1', 'error').then(function () { swal.close(); $('#ddlDiscountType1').focus(); }) }
     else if (DefaultDiscount == "") { swal('alert', 'Please Enter Default Discount (%)', 'error').then(function () { swal.close(); $('#txtDefaultDiscount').focus(); }) }
     else if (MinimumOrderAmount == "") { swal('alert', 'Please Enter Minimum order amount', 'error').then(function () { swal.close(); $('#txtMinimumOrderAmount').focus(); }) }
     else if (AccountName == "") { swal('alert', 'Please Enter Account Name', 'error').then(function () { swal.close(); $('#txtAccountName ').focus(); }) }
     else if (AccountEmail == "") { swal('alert', 'Please Enter Email', 'error').then(function () { swal.close(); $('#txtAccountEmail ').focus(); }) }
+    else if (!pattern.test(AccountEmail)) { swal('alert', 'not a valid e-mail address', 'error').then(function () { swal.close(); $('#txtAccountEmail').focus(); }) }
     else if (DiscountType2 == "-1") { swal('alert', 'Please Select Discount Type2 (Balance Net)', 'error').then(function () { swal.close(); $('#ddlDiscountType2').focus(); }) }
     else if (Discount == "") { swal('alert', 'Please Enter Discount (%)', 'error').then(function () { swal.close(); $('#txtDiscount ').focus(); }) }
     else {
         var obj = {
-            rowid: ID, DiscountType1: DiscountType1, DefaultDiscount: DefaultDiscount, order_min_amount: MinimumOrderAmount, AccountName: AccountName,
+            rowid: ID, DiscountType1: DiscountType1, DefaultDiscount: DefaultDiscount, DiscountMinimumOrderAmount: MinimumOrderAmount, AccountName: AccountName,
             AccountEmail: AccountEmail, DiscountType2: DiscountType2, Discount: Discount,
         }
         $.ajax({
-            url: '/ThirdParty/AddVendorTaxes/', dataType: 'json', type: 'Post',
+            url: '/ThirdParty/AddVendorDiscount/', dataType: 'json', type: 'Post',
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify(obj),
             dataType: "json",
@@ -380,9 +406,12 @@ $('#btnNextTab6').click(function (e) {
             success: function (data) {
                 if (data.status == true) {
                     swal('Alert!', data.message, 'success');
-                    $("#parent").find(":input").each(function () {
-                        switch (this.type) { case "text": case "email": case "tel": $(this).val(''); break; }
+                    $("#tab_6").find(":input").each(function () {
+                        switch (this.type) {
+                            case "text": case "email": case "textarea": case "tel": $(this).val(''); break;
+                        }
                     });
+                    $("#tab_6 option[value='-1']").attr('selected', true)
                     e.preventDefault();
                     var link = $('#mytabs .active').next().children('a').attr('href');
                     $('#mytabs a[href="' + link + '"]').tab('show');
@@ -401,6 +430,7 @@ $('#btnNextTab6').click(function (e) {
     }
 });
 $('#btnNextTab7').click(function (e) {
+    ID = $("#hfid").val();
     PaymentMethod = $("#ddlPaymentMethod").val();
     BankAccountName = $("#txtBankAccountName").val();
     BankAccountNumber = $("#txtBankAccountNumber").val();
@@ -420,6 +450,7 @@ $('#btnNextTab7').click(function (e) {
     PaypalTitle = $("#txtPaypalTitle").val();
     PaypalDescription = $("#txtPaypalDescription").val();
     PaypalEmail = $("#txtPaypalEmail").val();
+    PaypalProduction = $("#chkPaypalProduction").prop("checked") ? 1 : 0;
     PaypalIPNEmailNotification = $("#txtPaypalIPNEmailNotification").val();
     PaypalReceiverEmail = $("#txtPaypalReceiverEmail").val();
     PaypalIdentitytoken = $("#txtPaypalIdentitytoken").val();
@@ -429,7 +460,7 @@ $('#btnNextTab7').click(function (e) {
     PaypalAPISignature = $("#txtPaypalAPISignature").val();
 
 
-
+    var pattern = /^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
     if (PaymentMethod == "-1") { swal('alert', 'Please Select Payment method', 'error').then(function () { swal.close(); $('#ddlPaymentMethod').focus(); }) }
     else if (PaymentMethod == "1" && BankAccountName == "") { swal('alert', 'Please Enter Account Name', 'error').then(function () { swal.close(); $('#txtBankAccountName').focus(); }) }
     else if (PaymentMethod == "1" && BankAccountNumber == "") { swal('alert', 'Please Enter Account Number', 'error').then(function () { swal.close(); $('#txtBankAccountNumber').focus(); }) }
@@ -449,8 +480,11 @@ $('#btnNextTab7').click(function (e) {
     else if (PaymentMethod == "7" && PaypalTitle == "") { swal('alert', 'Please Enter Paypal Title', 'error').then(function () { swal.close(); $('#txtPaypalTitle').focus(); }) }
     else if (PaymentMethod == "7" && PaypalDescription == "") { swal('alert', 'Please Enter Description', 'error').then(function () { swal.close(); $('#txtPaypalDescription').focus(); }) }
     else if (PaymentMethod == "7" && PaypalEmail == "") { swal('alert', 'Please Enter Paypal email', 'error').then(function () { swal.close(); $('#txtPaypalEmail').focus(); }) }
+    else if (!pattern.test(PaypalEmail)) { swal('alert', 'not a valid e-mail address', 'error').then(function () { swal.close(); $('#txtPaypalEmail').focus(); }) }
     else if (PaymentMethod == "7" && PaypalIPNEmailNotification == "") { swal('alert', 'Please Enter IPN email notification', 'error').then(function () { swal.close(); $('#txtPaypalIPNEmailNotification').focus(); }) }
+    else if (!pattern.test(PaypalIPNEmailNotification)) { swal('alert', 'not a valid e-mail address', 'error').then(function () { swal.close(); $('#txtPaypalIPNEmailNotification').focus(); }) }
     else if (PaymentMethod == "7" && PaypalReceiverEmail == "") { swal('alert', 'Please Enter Receiver email', 'error').then(function () { swal.close(); $('#txtPaypalReceiverEmail').focus(); }) }
+    else if (!pattern.test(PaypalReceiverEmail)) { swal('alert', 'not a valid e-mail address', 'error').then(function () { swal.close(); $('#txtPaypalReceiverEmail').focus(); }) }
     else if (PaymentMethod == "7" && PaypalIdentitytoken == "") { swal('alert', 'Please Enter Paypal Identity token', 'error').then(function () { swal.close(); $('#txtPaypalIdentitytoken').focus(); }) }
     else if (PaymentMethod == "7" && PaypalPaymentAction == "-1") { swal('alert', 'Please Select Payment Action', 'error').then(function () { swal.close(); $('#ddlPaypalPaymentAction').focus(); }) }
     else if (PaymentMethod == "7" && PaypalAPIUserName == "") { swal('alert', 'Please Enter Paypal User Name', 'error').then(function () { swal.close(); $('#txtPaypalAPIUserName').focus(); }) }
@@ -459,14 +493,13 @@ $('#btnNextTab7').click(function (e) {
 
     else {
         var obj = {
-            rowid: ID, PaymentMethod: PaymentMethod, BankAccountName: BankAccountName, BankAccountNumber: BankAccountNumber,
+            rowid: ID, Paymentmethod: PaymentMethod, BankAccountName: BankAccountName, BankAccountNumber: BankAccountNumber,
             BankName: BankName, BankRoutingNumber: BankRoutingNumber, BankIBAN: BankIBAN, BankSwift: BankSwift,
             ChequeTitle: ChequeTitle, ChequeDescription: ChequeDescription, ChequeInstructions: ChequeInstructions,
-            PPInvoiceAPIUsername: PPInvoiceAPIUsername, PPInvoiceAPIPassword: PPInvoiceAPIPassword, PPInvoiceAPISignature: PPInvoiceAPISignature,
-            PaypalTitle: PaypalTitle, PaypalDescription: PaypalDescription, PaypalEmail: PaypalEmail, PaypalIPNEmailNotification: PaypalIPNEmailNotification,
+            PaypalInvoiceAPIUsername: PPInvoiceAPIUsername, PaypalInvoiceAPIPassword: PPInvoiceAPIPassword, PaypalInvoiceAPISignature: PPInvoiceAPISignature,
+            PaypalTitle: PaypalTitle, PaypalDescription: PaypalDescription, PaypalEmail: PaypalEmail, PaypalProduction: PaypalProduction, PaypalIPNEmailNotification: PaypalIPNEmailNotification,
             PaypalReceiverEmail: PaypalReceiverEmail, PaypalIdentitytoken: PaypalIdentitytoken, PaypalPaymentAction: PaypalPaymentAction, PaypalAPIUserName: PaypalAPIUserName,
             PaypalAPIPassword: PaypalAPIPassword, PaypalAPISignature: PaypalAPISignature,
-
         }
         $.ajax({
             url: '/ThirdParty/AddPaymentMethods/', dataType: 'json', type: 'Post',
@@ -479,9 +512,12 @@ $('#btnNextTab7').click(function (e) {
             success: function (data) {
                 if (data.status == true) {
                     swal('Alert!', data.message, 'success');
-                    $("#parent").find(":input").each(function () {
-                        switch (this.type) { case "text": case "email": case "tel": $(this).val(''); break; }
+                    $("#tab_7").find(":input").each(function () {
+                        switch (this.type) {
+                            case "text": case "email": case "textarea": case "tel": $(this).val(''); break;
+                        }
                     });
+                    $("#tab_7 option[value='-1']").attr('selected', true)
                     e.preventDefault();
                     var link = $('#mytabs .active').next().children('a').attr('href');
                     $('#mytabs a[href="' + link + '"]').tab('show');
@@ -709,134 +745,6 @@ function phoneFormat(input) {
     }
     return input;
 }
-$("#btnSave").click(function () {
-    var id = "";
-    var LeadTime = "";
-    var DaysofStock = "";
-    $('#dtdata').find("input[type='text'][name='txtLeadTime']").each(function () {
-        if (LeadTime != '') LeadTime += ','; LeadTime += $(this).val();
-        if (id != '') id += ','; id += $(this).attr('id');
-    });
-    $('#dtdata').find("input[type='text'][name='txtDaysofStock']").each(function () {
-        if (DaysofStock != '') DaysofStock += ','; DaysofStock += $(this).val();
-    });
-    saveVendor(id, LeadTime, DaysofStock);
-    
-});
-function saveVendor(Settingid, LeadTime, DaysofStock) {
-    ID = $("#hfid").val();
-    VendorName = $("#txVendorName").val();
-    AliasName = $("#txtAliasName").val();
-    VendorType = $("#ddlvendortype").val();
-    VendorCode = $("#txtVendorCode").val();
-    Status = $("#ddlStatus").val();
-    Address = $("#txtAddress").val();
-    Address1 = $("#txtAddress1").val();
-    City = $("#txtCity").val();
-    State = $("#ddlState").val();
-    StateName = $("#ddlState").find('option:selected').text();
-    ZipCode = $("#txtZipCode").val();
-    Country = $("#ddlCountry").val();
-    Phone = $("#txtPhone").val();
-    Fax = $("#txtFax").val();
-    EMail = $("#txtEMail").val();
-    Web = $("#txtWeb").val();
-    Salestaxused = $("#ddlSalestaxused").val();
-    ThirdPartyType = $("#ddlThirdPartyType").val();
-    Workforce = $("#ddlWorkforce").val();
-    BusinessEntityType = $("#txtBusinessEntityType").val();
-    Capital = $("#txtCapital").val();
-    SalesRepresentative = $("#ddlSalesRepresentative").val();
-    PaymentTerms = $("#ddlPaymentTerms").val();
-    Balancedays = $("#ddlBalancedays").val();
-    PaymentDate = $("#txtPaymentDate").val();
-    Currency = $("#ddlCurrency").val();
-    EnableVendorUOM = $('#chkEnableVendorUOMrounding').prop("checked") ? 1 : 0;
-    Unitsofmeasurment = $("input[type='radio'][name='Unitsofmeasurment']:checked").val();
-    Minimumorderquanity = $("#txtminorderqty").val();
-    DefaultTax = $("#txtDefaultTax").val();
-    TaxIncludedinprice = $("#chkTaxIncludedinprice").prop("checked") ? 1 : 0;
-    DefaultDiscount = $("#txtDefaultDiscount").val();
-    CreditLimit = $("#txtCreditLimit").val();
-    IncoTermType = $("#ddlIncoTerm").val();
-    IncoTerm = $("#txtIncoTerm").val();
-    VendorStatus = $("#chkVendorStatus").prop("checked") ? 1 : 0;
-    OrderMinAmount = $("#txtorderminamt").val();
-    ShippingMethod = $("#ddlshippingmethod").val();
-    OutStandingLimit = $("#txtoutstandinglimit").val();
-    console.log(VendorType);
-
-    var pattern = /^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
-    if (VendorType == "-1") { swal('alert', 'Please Select Vendor Type', 'error').then(function () { swal.close(); $('#ddlvendortype').focus(); }) }
-    else if (VendorName == "") { swal('alert', 'Please Enter Vendor Name', 'error').then(function () { swal.close(); $('#txVendorName').focus(); }) }
-    else if (AliasName == "") { swal('alert', 'Please Enter Alias Name', 'error').then(function () { swal.close(); $('#txtAliasName').focus(); }) }
-    else if (Status == "") { swal('alert', 'Please Enter Status', 'error').then(function () { swal.close(); $('#ddlStatus').focus(); }) }
-    else if (Address == "") { swal('alert', 'Please Enter Address', 'error').then(function () { swal.close(); $('#txtAddress').focus(); }) }
-    else if (City == "") { swal('alert', 'Please Enter City', 'error').then(function () { swal.close(); $('#txtCity').focus(); }) }
-    else if (State == "") { swal('alert', 'Please Enter State', 'error').then(function () { swal.close(); $('#ddlState').focus(); }) }
-    else if (ZipCode == "") { swal('alert', 'Please Enter ZipCode', 'error').then(function () { swal.close(); $('#txtZipCode').focus(); }) }
-    else if (Country == "") { swal('alert', 'Please Enter Country', 'error').then(function () { swal.close(); $('#ddlCountry').focus(); }) }
-    else if (Phone == "") { swal('alert', 'Please Enter Phone', 'error').then(function () { swal.close(); $('#txtPhone').focus(); }) }
-    else if (EMail == "") { swal('alert', 'Please Enter EMail', 'error').then(function () { swal.close(); $('#txtEMail').focus(); }) }
-    else if (!pattern.test(EMail)) { swal('alert', 'not a valid e-mail address', 'error').then(function () { swal.close(); $('#txtEMail').focus(); }) }
-    else if (Web == "") { swal('alert', 'Please Enter Web', 'error').then(function () { swal.close(); $('#txtWeb').focus(); }) }
-    else if (Salestaxused == "") { swal('alert', 'Please Select Sales tax used', 'error').then(function () { swal.close(); $('#ddlSalestaxused').focus(); }) }
-    else if (ThirdPartyType == "-1") { swal('alert', 'Please Select Third Party Type', 'error').then(function () { swal.close(); $('#ddlThirdPartyType').focus(); }) }
-    else if (Workforce == "-1") { swal('alert', 'Please Select Workforce', 'error').then(function () { swal.close(); $('#ddlWorkforce').focus(); }) }
-    else if (BusinessEntityType == "") { swal('alert', 'Please Enter Business Entity Type', 'error').then(function () { swal.close(); $('#txtBusinessEntityType').focus(); }) }
-    else if (Capital == "") { swal('alert', 'Please Enter Capital', 'error').then(function () { swal.close(); $('#txtCapital').focus(); }) }
-    else if (IncoTermType == "-1") { swal('alert', 'Please Select IncoTerm', 'error').then(function () { swal.close(); $('#ddlIncoTerm').focus(); }) }
-    else if (IncoTerm == "") { swal('alert', 'Please Enter IncoTerm', 'error').then(function () { swal.close(); $('#txtIncoTerm').focus(); }) }
-    else if (Minimumorderquanity == "") { swal('alert', 'Please Enter Minimum Order Quantity', 'error').then(function () { swal.close(); $('#txtminorderqty').focus(); }) }
-    else if (OrderMinAmount == "") { swal('alert', 'Please Enter Order Min Amount', 'error').then(function () { swal.close(); $('#txtorderminamt').focus(); }) }
-    else if (ShippingMethod == "-1") { swal('alert', 'Please Select Shipping Method', 'error').then(function () { swal.close(); $('#ddlshippingmethod').focus(); }) }
-    else if (OutStandingLimit == "") { swal('alert', 'Please Enter OutStanding Limit', 'error').then(function () { swal.close(); $('#txtoutstandinglimit').focus(); }) }
-
-
-    else {
-        var obj = {
-            rowid: ID,
-            Name: VendorName, vendor_type: VendorType, AliasName: AliasName, VendorCode: VendorCode, Status: Status, Address: Address,
-            City: City, State: State, StateName: StateName, ZipCode: ZipCode, Country: Country, Phone: Phone, Fax: Fax, EMail: EMail, Web: Web,
-            SalesTaxUsed: Salestaxused, ThirdPartyType: ThirdPartyType, Workforce: Workforce, BusinessEntityType: BusinessEntityType,
-            Capital: Capital, SalesRepresentative: SalesRepresentative, Address1: Address1, PaymentTermsID: PaymentTerms, BalanceID: Balancedays ,
-            PaymentDate: PaymentDate, Currency: Currency, EnableVendorUOM: EnableVendorUOM, UnitsofMeasurment:Unitsofmeasurment,
-            MinimumOrderQuanity: Minimumorderquanity, DefaultTax: DefaultTax, TaxIncludedinPrice:TaxIncludedinprice,
-            DefaultDiscount: DefaultDiscount, CreditLimit: CreditLimit, IncotermsType: IncoTermType, Incoterms: IncoTerm,
-            WarehouseID: Settingid, LeadTime: LeadTime, DaysofStock: DaysofStock, VendorID: ID, VendorStatus: VendorStatus,
-            order_min_amount: OrderMinAmount, fk_shipping_method: ShippingMethod, outstanding_limit: OutStandingLimit,
-
-        }
-        $.ajax({
-            url: '/ThirdParty/AddVendor/', dataType: 'json', type: 'Post',
-            contentType: "application/json; charset=utf-8",
-            data: JSON.stringify(obj),
-            dataType: "json",
-            beforeSend: function () {
-                $("#loader").show();
-            },
-            success: function (data) {
-                if (data.status == true) {
-                    swal('Alert!', data.message, 'success');
-                    $("#parent").find(":input").each(function () {
-                        switch (this.type) { case "text": case "email": case "tel": $(this).val(''); break; }
-                    });
-                    window.location = "../../ThirdParty/VendorList";
-                }
-                else {
-                    //swal('Alert!', data.message, 'error')
-                }
-            },
-            complete: function () {
-                $("#loader").hide();
-            },
-            error: function (error) {
-                swal('Error!', 'something went wrong', 'error');
-            },
-        })
-    }
-
-}
 function GetVendorByID(id) {
     var rowid = id;
     if (rowid == "NewVendor") { $('#lbltitle').text("Add New Vendor"); } else { $('#lbltitle').text("Update Vendor"); }
@@ -850,27 +758,15 @@ function GetVendorByID(id) {
             success: function (data) {
                 var d = JSON.parse(data);
                 if (d.length > 0) {
+                    
                     $("#txVendorName").val(d[0].VendorName);
                     $("#txtAliasName").val(d[0].AliasName);
                     $("#ddlvendortype").val(d[0].vendor_type);
                     $("#txtVendorCode").val(d[0].VendorCode);
                     $("#ddlStatus").val(d[0].status);
-                    $("#txtAddress").val(d[0].address);
-                    $("#txtAddress1").val(d[0].address1);
+                    $("#txtAddress1").val(d[0].address);
+                    $("#txtAddress2").val(d[0].address1);
                     $("#txtCity").val(d[0].town);
-                    $("#ddlState").val(d[0].State);
-                    $("#txtZipCode").val(d[0].zip);
-                    $("#ddlCountry").val(d[0].Country);
-                    $("#txtPhone").val(d[0].phone);
-                    $("#txtFax").val(d[0].fax);
-                    $("#txtEMail").val(d[0].email);
-                    $("#txtWeb").val(d[0].url);
-                    $("#ddlSalestaxused").val(d[0].Salestaxused);
-                    $("#ddlThirdPartyType").val(d[0].ThirdPartyType);
-                    $("#ddlWorkforce").val(d[0].Workforce);
-                    $("#txtBusinessEntityType").val(d[0].BusinessEntityType);
-                    $("#txtCapital").val(d[0].capital);
-                    $("#ddlSalesRepresentative").val(d[0].SalesRepresentative);
                     $("#ddlState").empty().append('<option value="' + d[0].State + '" selected>' + d[0].StateName + '</option>');
                     $("#ddlState").select2({
                         allowClear: true, minimumInputLength: 3, placeholder: "Search State",
@@ -881,25 +777,90 @@ function GetVendorByID(id) {
                             error: function (xhr, status, err) { }, cache: true
                         }
                     });
+                    $("#txtZipCode").val(d[0].zip);
+                    $("#ddlCountry").val(d[0].Country);
+                    $("#txtPhone").val(d[0].phone);
+                    $("#txtFax").val(d[0].fax);
+                    $("#txtEMail").val(d[0].email);
+                    $("#txtWeb").val(d[0].url);
+                    $("#txtWorkinghours").val(d[0].Workinghours);
+                    d[0].VendorStatus == true ? $('#chkVendorStatus').attr("checked", "checked") : "";
+                    $("#txtCorAddress1").val(d[0].CorAddress1);
+                    $("#txtCorAddress2").val(d[0].CorAddress2);
+                    $("#txtCorCity").val(d[0].CorCity);
+                    $("#txtCorState").val(d[0].CorState);
+                    $("#txtCorZipCode").val(d[0].CorZipCode);
+                    $("#txtCorCountry").val(d[0].CorCountry);
+                    $("#txtCorPhone").val(d[0].CorPhone);
+                    $("#ddlWorkforce").val(d[0].Workforce);
+                    $("#txtBusinessEntityType").val(d[0].BusinessEntityType);
+                    $("#txtNotesPublic").val(d[0].note_public);
+                    $("#txtNotesPrivate").val(d[0].note_private);
+
+                    $("#txtCapital").val(d[0].capital);
                     $("#ddlPaymentTerms").val(d[0].PaymentTermsID);
                     $("#ddlBalancedays").val(d[0].BalanceID);
-                    $("#txtPaymentDate").val(d[0].PaymentDate);
-                    $("#ddlCurrency").val(d[0].Currency);
-                    d[0].EnableVendorUOM == true ? $('#chkEnableVendorUOMrounding').attr("checked", "checked") : "";
-                    $('input:radio[value="' + d[0].UnitsofMeasurment + '"]').prop('checked', true);
-                    $("#txtminorderqty").val(d[0].MinimumOrderQuanity);
-                    $("#txtDefaultTax").val(d[0].DefaultTax);
-                    d[0].TaxIncludedinPrice == true ? $('#chkTaxIncludedinprice').attr("checked", "checked") : "";
-                    $("#txtDefaultDiscount").val(d[0].DefaultDiscount);
-                    $("#txtCreditLimit").val(d[0].CreditLimit);
                     $("#ddlIncoTerm").val(d[0].IncotermsType);
                     $("#txtIncoTerm").val(d[0].Incoterms);
-                    d[0].VendorStatus == true ? $('#chkVendorStatus').attr("checked", "checked") : "";
-                    $("#txtoutstandinglimit").val(d[0].outstanding_limit);
-                    $("#ddlshippingmethod").val(d[0].fk_shipping_method);
-                    $("#txtorderminamt").val(d[0].order_min_amount);
+                    $("#ddlCurrency").val(d[0].Currency);
+                    $("#txtCreditLimit").val(d[0].CreditLimit);
+                    $("#txtOutStandingLimit").val(d[0].outstanding_limit);
+                    $("#txtMinOrderQty").val(d[0].MinimumOrderQuanity);
+                    $("#txtOrderMinAmt").val(d[0].order_min_amount);
 
-                    
+                    $("#ddlShippingMethod").val(d[0].fk_shipping_method);
+                    $("#txtShippingRate").val(d[0].ShippingRate);
+                    $("#txtShippingLocation").val(d[0].ShippingLocation);
+                    $("#txtShippingAPIKeyTest").val(d[0].ShippingAPIKeyTest);
+                    $("#txtShippingAPISecretTest").val(d[0].ShippingAPISecretTest);
+                    $("#txtShippingAPIKeyProduction").val(d[0].ShippingAPIKeyProduction);
+                    $("#txtShippingAPISecretProduction").val(d[0].ShippingAPISecretProduction);
+                    $("#txtShippingLogin").val(d[0].ShippingLogin);
+                    $("#txtShippingPassword").val(d[0].ShippingPassword);
+
+                    $("#ddlTaxMethod").val(d[0].TaxMethod);
+                    $("#txtDefaultTax").val(d[0].DefaultTax);
+                    $("#txtShippingTax").val(d[0].ShippingTax);
+                    d[0].ShippingTaxIncludedinprice == true ? $('#chkShippingTaxIncludedinprice').attr("checked", "checked") : "";
+                    $("#txtCalculatedtax").val(d[0].CalculatedTax);
+                    d[0].TaxIncludedinPrice == true ? $('#chkTaxIncludedinPrice').attr("checked", "checked") : "";
+
+                    $("#ddlDiscountType1").val(d[0].DiscountType1);
+                    $("#txtDefaultDiscount").val(d[0].DefaultDiscount);
+                    $("#txtDiscountMinimumOrderAmount").val(d[0].DiscountMinimumOrderAmount);
+                    $("#txtAccountName").val(d[0].AccountName);
+                    $("#txtAccountEmail").val(d[0].AccountEmail);
+                    $("#ddlDiscountType2").val(d[0].DiscountType2);
+                    $("#txtDiscount").val(d[0].Discount);
+
+                    $("#ddlPaymentMethod").val(d[0].Paymentmethod);
+                    $("#txtBankAccountName").val(d[0].BankAccountName);
+                    $("#txtBankAccountNumber").val(d[0].BankAccountNumber);
+                    $("#txtBankName").val(d[0].BankName);
+                    $("#txtBankRoutingNumber").val(d[0].BankRoutingNumber);
+                    $("#txtBankIBAN").val(d[0].BankIBAN);
+                    $("#txtBankSwift").val(d[0].BankSwift);
+
+                    $("#txtChequeTitle").val(d[0].ChequeTitle);
+                    $("#txtChequeDescription").val(d[0].ChequeDescription);
+                    $("#txtChequeInstructions").val(d[0].ChequeInstructions);
+
+                    $("#txtPPInvoiceAPIUsername").val(d[0].PaypalInvoiceAPIUsername);
+                    $("#txtPPInvoiceAPIPassword").val(d[0].PaypalInvoiceAPIPassword);
+                    $("#txtPPInvoiceAPISignature").val(d[0].PaypalInvoiceAPISignature);
+
+                    $("#txtPaypalTitle").val(d[0].PaypalTitle);
+                    $("#txtPaypalDescription").val(d[0].PaypalDescription);
+                    $("#txtPaypalEmail").val(d[0].PaypalEmail);
+                    d[0].PaypalProduction == true ? $('#chkPaypalProduction').attr("checked", "checked") : "";
+                    $("#txtPaypalIPNEmailNotification").val(d[0].PaypalIPNEmailNotification);
+                    $("#txtPaypalReceiverEmail").val(d[0].PaypalReceiverEmail);
+                    $("#txtPaypalIdentitytoken").val(d[0].PaypalIdentitytoken);
+                    $("#ddlPaypalPaymentAction").val(d[0].PaypalPaymentAction);
+                    $("#txtPaypalAPIUserName").val(d[0].PaypalAPIUserName);
+                    $("#txtPaypalAPIPassword").val(d[0].PaypalAPIPassword);
+                    $("#txtPaypalAPISignature").val(d[0].PaypalAPISignature);
+                    PaymentMethodBlock(d[0].Paymentmethod);
                 }
             },
             error: function (msg) {
@@ -968,48 +929,3 @@ function ProductList() {
 }
 
 
-//$("#btnSaveWarehouse").click(function () {
-//    var id = "";
-//    var LeadTime = "";
-//    var DaysofStock = "";
-//    $('#dtdata').find("input[type='text'][name='txtLeadTime']").each(function () {
-//        if (LeadTime != '') LeadTime += ','; LeadTime += $(this).val();
-//        if (id != '') id += ','; id += $(this).attr('id');
-//    });
-//    $('#dtdata').find("input[type='text'][name='txtDaysofStock']").each(function () {
-//        if (DaysofStock != '') DaysofStock += ','; DaysofStock += $(this).val();
-//    });
-//    SaveWarehouse(id, LeadTime, DaysofStock);
-//})
-
-//function SaveWarehouse(id, LeadTime, DaysofStock) {
-//    var VendorID = $('#hfid').val();
-//    if (VendorID == 0) { swal('alert', 'Vendor not found', 'error') }
-//    else {
-//        var obj = { WarehouseID: id, LeadTime: LeadTime, DaysofStock: DaysofStock, VendorID: VendorID }
-//        $.ajax({
-//            url: '/ThirdParty/AddVendorSetting', dataType: 'json', type: 'Post',
-//            contentType: "application/json; charset=utf-8",
-//            data: JSON.stringify(obj),
-//            dataType: "json",
-//            beforeSend: function () {
-//                $("#loader").show();
-//            },
-//            success: function (data) {
-//                if (data.status == true) {
-//                    swal('Alert!', data.message, 'success');
-//                    window.location = "../../ThirdParty/VendorList";
-//                }
-//                else {
-//                    swal('Alert!', data.message, 'error')
-//                }
-//            },
-//            complete: function () {
-//                $("#loader").hide();
-//            },
-//            error: function (error) {
-//                swal('Error!', 'something went wrong', 'error');
-//            },
-//        })
-//    }
-//}

@@ -9,7 +9,7 @@ namespace LaylaERP.Controllers
     public class BankController : Controller
     {
         // GET: Bank
-        public ActionResult Index()
+        public ActionResult financialaccount()
         {
             return View();
         }

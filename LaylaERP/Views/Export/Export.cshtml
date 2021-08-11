@@ -58,7 +58,7 @@
                             <span>From</span><input type="text" name="fromdateusers" id="fromdateusers" />
                             <span>To</span><input type="text" name="todateusers" id="todateusers" />
                             <input type="button" id="btnusers" class="button" value="Go" />&nbsp;&nbsp;
-                            <select name="new_role" id="new_role" style="width:initial">
+                            <select name="new_role" id="new_role" class="mydata" style="width:initial">
                                 <option value="%">Choose role</option>
                             </select>
                             <input type="button" name="changeit" id="changeit" class="button" value="Go" />
@@ -304,8 +304,8 @@
                     'data': 'order_created', title: 'Order Date', sWidth: "10%",
                     'render': function (jsonDate) {
                         var date = new Date(parseInt(jsonDate.substr(6)));
-                        var month = ("0" + (date.getMonth() + 1)).slice(-2);
-                        return ("0" + date.getDate()).slice(-2) + '-' + month + '-' + date.getFullYear()+ ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+                        var datevalue = ("0" + (date.getDate())).slice(-2);
+                        return ("0" + (date.getMonth() + 1)).slice(-2) + '-' + datevalue + '-' + date.getFullYear() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
                     }
 
                 },
@@ -381,15 +381,15 @@
                 { 'data': 'UID', title: 'ID', sWidth: "10%" },
                 { 'data': 'first_name', title: 'Name', sWidth: "10%" },
                 { 'data': 'user_email', title: 'Email', sWidth: "15%" },
-                { 'data': 'my', title: 'Role', sWidth: "20%" },
+                { 'data': 'my', title: 'Role', sWidth: "22%"},
                 { 'data': 'user_address', title: 'Address', sWidth: "15%" },
                 { 'data': 'phone', title: 'Phone Number', sWidth: "10%" },
                 {
                     'data': 'created_date', title: 'Date', sWidth: "10%",
                     'render': function (jsonDate) {
                         var date = new Date(parseInt(jsonDate.substr(6)));
-                        var month = ("0" + (date.getMonth() + 1)).slice(-2);
-                        return ("0" + date.getDate()).slice(-2) + '-' + month + '-' + date.getFullYear() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+                        var datevalue = ("0" + (date.getDate())).slice(-2);
+                        return ("0" + (date.getMonth() + 1)).slice(-2) + '-' + datevalue + '-' + date.getFullYear() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
                     }
                 },
 
@@ -467,8 +467,8 @@
                     'data': 'customerdate_created', title: 'Date', sWidth:"15%",
                     'render': function (jsonDate) {
                         var date = new Date(parseInt(jsonDate.substr(6)));
-                        var month = ("0" + (date.getMonth() + 1)).slice(-2);
-                        return ("0" + date.getDate()).slice(-2) + '-' + month + '-' + date.getFullYear() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+                        var datevalue = ("0" + (date.getDate())).slice(-2);
+                        return ("0" + (date.getMonth() + 1)).slice(-2) + '-' + datevalue + '-' + date.getFullYear() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
                     }
                 },
 
@@ -555,4 +555,3 @@
     });
 
 </script>
-

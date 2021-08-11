@@ -11,6 +11,7 @@ namespace LaylaERP.Models
         public List<ProductModelItemModel> ProductPostItemMeta { get; set; }
         public List<ProductModelPostModel> ProductPostPostMeta { get; set; }
         public List<ProductModelPriceModel> ProductPostPriceMeta { get; set; }
+        public List<ProductChildModel> ProductChildMeta { get; set; }
         public long ID { get; set; }
         public string post_title { get; set; }
         public string post_name { get; set; }
@@ -87,5 +88,35 @@ namespace LaylaERP.Models
         public string meta_key { get; set; }
 
         public string meta_value { get; set; }
+    }
+
+    public class ProductsModelDetails
+    {
+        public long ID { get; set; }  
+        public string product_name { get; set; }
+        public string product_label { get; set; }
+        public int Qty { get; set; }
+    }
+    public class ProductChildModel
+    {
+        public int fk_product { get; set; }
+
+        public int fk_product_fils { get; set; }
+
+        public int qty { get; set; }
+
+   
+    }
+
+    public class ProductModelservices
+    {
+        public long ID { get; set; }
+        public string product_name { get; set; }
+        public string product_label { get; set; }
+        public string buyingprice { get; set; }
+        public string sellingpric { get; set; }
+        public string Stock { get; set; }
+        public int qty { get; set; }
+
     }
 }

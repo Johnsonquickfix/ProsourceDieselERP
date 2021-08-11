@@ -139,7 +139,15 @@
                 <!-- Sidebar user panel -->
                 <div class="user-panel">
                     <div class="pull-left image">
-                        <img src="~/Images/userprofile2.png" class="img-circle" alt="User Image">
+                        @if (ViewBag.User_Image.Length > 0 && ViewBag.User_Image != null)
+                        {
+                            @*<img src="~/Images/userprofile2.png" class="img-circle" alt="User Image">*@
+                            <img runat="server" id="show_Profile_image" class="img-circle" src="data:image;base64,@System.Convert.ToBase64String(ViewBag.User_Image)" alt="User Image">
+                        }
+                        else
+                        {
+                            <img runat="server" src="~/Images/userprofile2.png" class="img-circle" alt="User Image">
+                        }
                     </div>
                     <div class="pull-left info">
                         <p>@(user.UserName)</p>
@@ -237,7 +245,8 @@
         var GetUserID = parseInt('@(user.UserID)') || 0;
         $(document).ready(function () {
             setTimeout(function () {
-                addTabs({ id: '10008', title: '', close: false, url: '/home/Dashboard', urlType: "none" });
+                //addTabs({ id: '10008', title: '', close: false, url: '/home/Dashboard', urlType: "none" });
+                addTabs({ id: '1', title: '', close: false, url: '/home/Dashboard', urlType: "none" });
                 App.fixIframeCotent();
             }, 100);
             setTimeout(function () { filluserMenu(); }, 50); // wait 50ms until menu load finishes.
@@ -299,7 +308,6 @@
 
 
         });
-
         function filluserMenu() {
             var obj = { userId: GetUserID };
             jQuery.ajax({
@@ -313,9 +321,6 @@
                 error: function (jqXHR, textStatus, errorThrown) { swal('Error!', errorThrown, "error");}
             });
         }
-
-
-
         ///Add Modal Profile
         function ProfileModal() {
             var myHtml = '';
@@ -473,7 +478,6 @@
             $("#userprofile").modal({ backdrop: 'static' }); $("#txtUserNickName").focus();
 
         }
-
         function SearchbarModal() {
             var myHtml = '';
             //header
@@ -605,9 +609,14 @@
                 error: function (msg) { console.log(msg); }
             });
         }
+        function openOrderPage(order_type) {
+            addTabs({ id: '8', title: 'Orders History', close: true, url: '/Orders/OrdersHistory' + (order_type.length > 0 ? '?type=' + order_type : '?v=1.0.0'), urlType: 'none' });
+            App.fixIframeCotent();
+        }
     </script>
     <script>
     $(document).ready(function () {
+
             $("#loader").hide();
             $(document).on('click', "#btnSave", function () {
                 UpdateProfile();

@@ -33,8 +33,8 @@ namespace LaylaERP.Models
         public int status { get; set; }
         public string user_status { get; set; }
         public string Search { get; set; }
-
-
+        public string warehouse_type { get; set; }
+        public string email { get; set; }
 
         //movement models
 
@@ -54,5 +54,16 @@ namespace LaylaERP.Models
         //new 
         public string mydate { get; set; }
 
+        //Additional info
+        public string cor_phone { get; set; }
+        public string cor_address { get; set; }
+        public string cor_address1 { get; set; }
+        public string cor_city { get; set; }
+        public string cor_state { get; set; }
+        public string cor_zip { get; set; }
+        public string cor_country { get; set; }
+        public string note_public { get; set; }
+        public string note_private { get; set; }
+      
     }
 }

@@ -608,7 +608,8 @@ position:relative;}
     }
 
     [name="strValue1"]:checked + label:after {
-        background: #fff;
+        /* background: #fff;*/
+        background: darkorange;
     }
 
 .table-indy {

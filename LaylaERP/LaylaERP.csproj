@@ -177,6 +177,7 @@
     <Compile Include="Controllers\AccountAPIController.cs" />
     <Compile Include="Controllers\AgentCommissionRateController.cs" />
     <Compile Include="Controllers\AppearanceController.cs" />
+    <Compile Include="Controllers\BankController.cs" />
     <Compile Include="Controllers\CommercialProposalController.cs" />
     <Compile Include="Controllers\CouponsController.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
@@ -812,7 +813,8 @@
     <Content Include="Views\PurchaseOrder\PurchaseOrderDetails.cshtml" />
     <Content Include="Views\Warehouse\GetStockAtDate.cshtml" />
     <Content Include="Views\Warehouse\ListWarehouseByVendor.cshtml" />
-    <Content Include="Views\Product\AddNewPurchase.cshtml" />
+    <Content Include="Views\Bank\financialaccount.cshtml" />
+    <Content Include="Views\Bank\newfinaccount.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

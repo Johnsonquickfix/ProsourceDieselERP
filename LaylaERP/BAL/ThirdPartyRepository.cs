@@ -8,25 +8,20 @@ namespace LaylaERP.BAL
 {
     public class ThirdPartyRepository
     {
-        public int AddNewVendor(ThirdPartyModel model)
+        public int AddNewVendorBasicInfo(ThirdPartyModel model)
         {
             try
             {
                 string strsql = "";
-                strsql = "insert into wp_vendor(name,name_alias,vendor_type,client,fournisseur,code_vendor,status,address,address1,zip,town," +
-                   "fk_country,fk_state,StateName,phone,fax,email,url,salestaxused,fk_typparty,fk_workforce,fk_Business_Entity,capital,fk_incoterms,location_incoterms,SalesRepresentative," +
-                   "PaymentTermsID,BalanceID,PaymentDate,Currency,EnableVendorUOM,UnitsofMeasurment,MinimumOrderQuanity,DefaultTax,TaxIncludedinPrice,DefaultDiscount,CreditLimit,VendorStatus,outstanding_limit,fk_shipping_method,order_min_amount) " +
-                   "values(@name, @name_alias,@vendor_type, @client, @fournisseur, @code_vendor, @status, @address,@address1, @zip, @town, @fk_country, @fk_state,@StateName, @phone, " +
-                   "@fax, @email, @url, @salestaxused, @fk_typparty, @fk_workforce, @fk_Business_Entity, @capital,@fk_incoterms, @location_incoterms,@SalesRepresentative," +
-                   "@PaymentTermsID,@BalanceID,@PaymentDate,@Currency ,@EnableVendorUOM ,@UnitsofMeasurment,@MinimumOrderQuanity,@DefaultTax,@TaxIncludedinPrice,@DefaultDiscount,@CreditLimit,@VendorStatus,@outstanding_limit,@fk_shipping_method,@order_min_amount); SELECT LAST_INSERT_ID();";
+                strsql = "insert into wp_vendor(vendor_type,code_vendor,name,name_alias,fournisseur,status,address,address1,zip,town,fk_country,fk_state,StateName,phone,fax,email,url,Workinghours,VendorStatus) " +
+                    "values(@vendor_type, @code_vendor, @name, @name_alias, @fournisseur, @status, @address, @address1, @zip, @town, @fk_country, @fk_state,StateName, @phone, @fax, @email, @url, @Workinghours, @VendorStatus);  SELECT LAST_INSERT_ID();";
                 MySqlParameter[] para =
                 {
+                    new MySqlParameter("@vendor_type", model.vendor_type),
+                    new MySqlParameter("@code_vendor", model.VendorCode),
                     new MySqlParameter("@name", model.Name),
                     new MySqlParameter("@name_alias", model.AliasName),
-                    new MySqlParameter("@vendor_type", model.vendor_type),
-                    new MySqlParameter("@client", model.Prospect),
                     new MySqlParameter("@fournisseur","1"),
-                    new MySqlParameter("@code_vendor", model.VendorCode),
                     new MySqlParameter("@status", model.Status),
                     new MySqlParameter("@address", model.Address),
                     new MySqlParameter("@address1", model.Address1),
@@ -39,30 +34,8 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@fax", model.Fax),
                     new MySqlParameter("@email", model.EMail),
                     new MySqlParameter("@url", model.Web),
-                    new MySqlParameter("@salestaxused", model.SalesTaxUsed),
-                    new MySqlParameter("@fk_typparty", model.ThirdPartyType),
-                    new MySqlParameter("@fk_workforce", model.Workforce),
-                    new MySqlParameter("@fk_Business_Entity", model.BusinessEntityType),
-                    new MySqlParameter("@capital", model.Capital),
-                    new MySqlParameter("@SalesRepresentative", model.SalesRepresentative),
-                     new MySqlParameter("@PaymentTermsID", model.PaymentTermsID),
-                    new MySqlParameter("@BalanceID", model.BalanceID),
-                    new MySqlParameter("@PaymentDate", model.PaymentDate),
-                    new MySqlParameter("@Currency", model.Currency),
-                    new MySqlParameter("@EnableVendorUOM", model.EnableVendorUOM),
-                    new MySqlParameter("@UnitsofMeasurment", model.UnitsofMeasurment),
-                    new MySqlParameter("@MinimumOrderQuanity", model.MinimumOrderQuanity),
-                    new MySqlParameter("@DefaultTax", model.DefaultTax),
-                    new MySqlParameter("@TaxIncludedinPrice", model.TaxIncludedinPrice),
-                    new MySqlParameter("@DefaultDiscount", model.DefaultDiscount),
-                    new MySqlParameter("@fk_incoterms", model.IncotermsType),
-                    new MySqlParameter("@location_incoterms", model.Incoterms),
-                    new MySqlParameter("@CreditLimit", model.CreditLimit),
+                    new MySqlParameter("@Workinghours", model.Workinghours),
                     new MySqlParameter("@VendorStatus", model.VendorStatus),
-                     new MySqlParameter("@outstanding_limit", model.outstanding_limit),
-                    new MySqlParameter("@fk_shipping_method", model.fk_shipping_method),
-                    new MySqlParameter("@order_min_amount", model.order_min_amount),
-                   
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
                 return result;
@@ -72,22 +45,19 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
-
-        public int EditVendor(ThirdPartyModel model, long VendorID)
+        public int EditVendorBasicInfo(ThirdPartyModel model, long VendorID)
         {
             try
             {
-                string strsql = "update wp_vendor set name=@name,vendor_type=@vendor_type,name_alias=@name_alias,code_vendor=@code_vendor,status=@status,address=@address,address1=@address1,zip = @zip,town = @town,fk_country = @fk_country,fk_state = @fk_state,StateName=@StateName,phone = @phone,fax = @fax,email = @email,url = @url," +
-                    "salestaxused = @salestaxused,fk_typparty = @fk_typparty,fk_workforce = @fk_workforce,fk_Business_Entity = @fk_Business_Entity,capital = @capital,fk_incoterms=@fk_incoterms,location_incoterms=@location_incoterms,SalesRepresentative=@SalesRepresentative,PaymentTermsID=@PaymentTermsID,BalanceID=@BalanceID," +
-                    "PaymentDate=@PaymentDate,Currency=@Currency ,EnableVendorUOM=@EnableVendorUOM ,UnitsofMeasurment=@UnitsofMeasurment,MinimumOrderQuanity=@MinimumOrderQuanity,DefaultTax=@DefaultTax,TaxIncludedinPrice=@TaxIncludedinPrice,DefaultDiscount=@DefaultDiscount,CreditLimit=@CreditLimit,VendorStatus=@VendorStatus," +
-                    "outstanding_limit=@outstanding_limit,fk_shipping_method=@fk_shipping_method,order_min_amount=@order_min_amount where rowid = " + VendorID + "";
+                string strsql = "update wp_vendor set vendor_type=@vendor_type,code_vendor=@code_vendor,name=@name,name_alias=@name_alias,fournisseur=@fournisseur,status=@status,address=@address,address1=@address1,zip=@zip,town=@town,fk_country=@fk_country,fk_state=@fk_state,StateName=@StateName,phone=@phone,fax=@fax,email=@email,url=@url,Workinghours=@Workinghours,VendorStatus = @VendorStatus where rowid = @rowid; ";
                 MySqlParameter[] para =
                 {
+                    new MySqlParameter("@rowid", model.rowid),
+                    new MySqlParameter("@vendor_type", model.vendor_type),
+                    new MySqlParameter("@code_vendor", model.VendorCode),
                     new MySqlParameter("@name", model.Name),
                     new MySqlParameter("@name_alias", model.AliasName),
-                    new MySqlParameter("@vendor_type", model.vendor_type),
-                    //new MySqlParameter("@client", model.Prospect),
-                    new MySqlParameter("@code_vendor", model.VendorCode),
+                    new MySqlParameter("@fournisseur","1"),
                     new MySqlParameter("@status", model.Status),
                     new MySqlParameter("@address", model.Address),
                     new MySqlParameter("@address1", model.Address1),
@@ -100,30 +70,9 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@fax", model.Fax),
                     new MySqlParameter("@email", model.EMail),
                     new MySqlParameter("@url", model.Web),
-                    new MySqlParameter("@salestaxused", model.SalesTaxUsed),
-                    new MySqlParameter("@fk_typparty", model.ThirdPartyType),
-                    new MySqlParameter("@fk_workforce", model.Workforce),
-                    new MySqlParameter("@fk_Business_Entity", model.BusinessEntityType),
-                    new MySqlParameter("@capital", model.Capital),
-                    new MySqlParameter("@SalesRepresentative", model.SalesRepresentative),
-                    new MySqlParameter("@PaymentTermsID", model.PaymentTermsID),
-                    new MySqlParameter("@BalanceID", model.BalanceID),
-                    new MySqlParameter("@PaymentDate", model.PaymentDate),
-                    new MySqlParameter("@Currency", model.Currency),
-                    new MySqlParameter("@EnableVendorUOM", model.EnableVendorUOM),
-                    new MySqlParameter("@UnitsofMeasurment", model.UnitsofMeasurment),
-                    new MySqlParameter("@MinimumOrderQuanity", model.MinimumOrderQuanity),
-                    new MySqlParameter("@DefaultTax", model.DefaultTax),
-                    new MySqlParameter("@TaxIncludedinPrice", model.TaxIncludedinPrice),
-                    new MySqlParameter("@DefaultDiscount", model.DefaultDiscount),
-                    new MySqlParameter("@fk_incoterms", model.IncotermsType),
-                    new MySqlParameter("@location_incoterms", model.Incoterms),
-                    new MySqlParameter("@CreditLimit", model.CreditLimit),
+                    new MySqlParameter("@Workinghours", model.Workinghours),
                     new MySqlParameter("@VendorStatus", model.VendorStatus),
-                    new MySqlParameter("@outstanding_limit", model.outstanding_limit),
-                    new MySqlParameter("@fk_shipping_method", model.fk_shipping_method),
-                    new MySqlParameter("@order_min_amount", model.order_min_amount),
-                    
+
 
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
@@ -134,6 +83,234 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
+
+        public int AddVendorAdditionalInfo(ThirdPartyModel model)
+        {
+            try
+            {
+                string strsql = "";
+                strsql = "update wp_vendor set CorAddress1=@CorAddress1,CorAddress2=@CorAddress2,CorCity=@CorCity,CorState=@CorState,CorZipCode=@CorZipCode,CorCountry=@CorCountry," +
+                    "CorPhone = @CorPhone,fk_workforce = @fk_workforce,fk_business_entity = @fk_business_entity, note_public = @note_public,note_private = @note_private where rowid=@rowid;";
+                MySqlParameter[] para =
+                {
+                     new MySqlParameter("@rowid", model.rowid),
+                    new MySqlParameter("@CorAddress1", model.CorAddress1),
+                    new MySqlParameter("@CorAddress2", model.CorAddress2),
+                    new MySqlParameter("@CorCity", model.CorCity),
+                    new MySqlParameter("@CorState", model.CorState),
+                    new MySqlParameter("@CorZipCode",model.CorZipCode),
+                    new MySqlParameter("@CorCountry", model.CorCountry),
+                    new MySqlParameter("@CorPhone", model.CorPhone),
+                    new MySqlParameter("@fk_workforce", model.Workforce),
+                    new MySqlParameter("@fk_business_entity", model.BusinessEntityType),
+                    new MySqlParameter("@note_public", model.NotePublic),
+                    new MySqlParameter("@note_private", model.NotePrivate),
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+        public int AddVendorPaymentTerms(ThirdPartyModel model)
+        {
+            try
+            {
+                string strsql = "";
+                strsql = "Update wp_vendor set capital=@capital,PaymentTermsID=@PaymentTermsID,BalanceID=@BalanceID,fk_incoterms=@fk_incoterms,location_incoterms=@location_incoterms," +
+                    "Currency = @Currency,CreditLimit = @CreditLimit,outstanding_limit = @outstanding_limit,MinimumOrderQuanity = @MinimumOrderQuanity,order_min_amount = @order_min_amount where rowid=" + model.rowid + "";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@capital", model.Capital),
+                    new MySqlParameter("@PaymentTermsID", model.PaymentTermsID),
+                    new MySqlParameter("@BalanceID", model.BalanceID),
+                    new MySqlParameter("@fk_incoterms", model.IncotermsType),
+                    new MySqlParameter("@location_incoterms",model.Incoterms),
+                    new MySqlParameter("@Currency", model.Currency),
+                    new MySqlParameter("@CreditLimit", model.CreditLimit),
+                    new MySqlParameter("@outstanding_limit", model.outstanding_limit),
+                    new MySqlParameter("@MinimumOrderQuanity", model.MinimumOrderQuanity),
+                    new MySqlParameter("@order_min_amount", model.order_min_amount),
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+        public int AddVendorShipping(ThirdPartyModel model)
+        {
+            try
+            {
+                string strsql = "";
+                strsql = "update wp_vendor set fk_shipping_method=@fk_shipping_method,ShippingRate=@ShippingRate,ShippingLocation=@ShippingLocation,ShippingAPIKeyTest = @ShippingAPIKeyTest,ShippingAPISecretTest = @ShippingAPISecretTest,ShippingAPIKeyProduction = @ShippingAPIKeyProduction," +
+                    "ShippingAPISecretProduction = @ShippingAPISecretProduction,ShippingLogin = @ShippingLogin,ShippingPassword = @ShippingPassword where rowid=" + model.rowid + "";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@fk_shipping_method", model.fk_shipping_method),
+                    new MySqlParameter("@ShippingRate", model.ShippingRate),
+                    new MySqlParameter("@ShippingLocation", model.ShippingLocation),
+                    new MySqlParameter("@ShippingAPIKeyTest", model.ShippingAPIKeyTest),
+                    new MySqlParameter("@ShippingAPISecretTest",model.ShippingAPISecretTest),
+                    new MySqlParameter("@ShippingAPIKeyProduction", model.ShippingAPIKeyProduction),
+                    new MySqlParameter("@ShippingAPISecretProduction", model.ShippingAPISecretProduction),
+                    new MySqlParameter("@ShippingLogin", model.ShippingLogin),
+                    new MySqlParameter("@ShippingPassword", model.ShippingPassword),
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+        public int AddVendorTaxes(ThirdPartyModel model)
+        {
+            try
+            {
+                string strsql = "";
+                strsql = "update wp_vendor set TaxMethod=@TaxMethod,DefaultTax=@DefaultTax,ShippingTax=@ShippingTax,CalculatedTax=@CalculatedTax,ShippingTaxIncludedinprice = @ShippingTaxIncludedinprice,TaxIncludedinPrice = @TaxIncludedinPrice where rowid=" + model.rowid + "";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@TaxMethod", model.TaxMethod),
+                    new MySqlParameter("@DefaultTax", model.DefaultTax),
+                    new MySqlParameter("@ShippingTax", model.ShippingTax),
+                    new MySqlParameter("@ShippingTaxIncludedinprice", model.ShippingTaxIncludedinprice),
+                    new MySqlParameter("@CalculatedTax", model.CalculatedTax),
+                    new MySqlParameter("@TaxIncludedinPrice", model.TaxIncludedinPrice),
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+        public int AddVendorDiscount(ThirdPartyModel model)
+        {
+            try
+            {
+                string strsql = "";
+                strsql = "Update wp_vendor set DiscountType1=@DiscountType1,DefaultDiscount=@DefaultDiscount,DiscountMinimumOrderAmount=@DiscountMinimumOrderAmount,AccountName = @AccountName,AccountEmail = @AccountEmail,DiscountType2 = @DiscountType2,Discount = @Discount where rowid=" + model.rowid + "";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@DiscountType1", model.DiscountType1),
+                    new MySqlParameter("@DefaultDiscount", model.DefaultDiscount),
+                    new MySqlParameter("@DiscountMinimumOrderAmount", model.DiscountMinimumOrderAmount),
+                    new MySqlParameter("@AccountName", model.AccountName),
+                    new MySqlParameter("@AccountEmail", model.AccountEmail),
+                    new MySqlParameter("@DiscountType2",model.DiscountType2),
+                    new MySqlParameter("@Discount",model.Discount),
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+        public int AddPaymentMethods(ThirdPartyModel model)
+        {
+            try
+            {
+                string strsql = "";
+                strsql = "insert into wp_VendorPaymentDetails(VendorID,Paymentmethod,BankAccountName,BankAccountNumber,BankName,BankRoutingNumber," +
+                    "BankIBAN,BankSwift,ChequeTitle,ChequeDescription,ChequeInstructions,PaypalInvoiceAPIUsername,PaypalInvoiceAPIPassword,PaypalInvoiceAPISignature,PaypalTitle,PaypalDescription,PaypalEmail,PaypalProduction," +
+                    "PaypalIPNEmailNotification,PaypalReceiverEmail,PaypalIdentitytoken,PaypalPaymentAction,PaypalAPIUserName,PaypalAPIPassword,PaypalAPISignature) " +
+                    "Values(" + model.rowid + ", @Paymentmethod, @BankAccountName, @BankAccountNumber, @BankName, @BankRoutingNumber, @BankIBAN, @BankSwift, @ChequeTitle, @ChequeDescription, @ChequeInstructions," +
+                    "@PaypalInvoiceAPIUsername, @PaypalInvoiceAPIPassword, @PaypalInvoiceAPISignature, @PaypalTitle, @PaypalDescription, @PaypalEmail, @PaypalProduction," +
+                    "@PaypalIPNEmailNotification, @PaypalReceiverEmail, @PaypalIdentitytoken, @PaypalPaymentAction, @PaypalAPIUserName, @PaypalAPIPassword, @PaypalAPISignature);  SELECT LAST_INSERT_ID();";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@Paymentmethod", model.Paymentmethod),
+                    new MySqlParameter("@BankAccountName", model.BankAccountName),
+                    new MySqlParameter("@BankAccountNumber", model.BankAccountNumber),
+                    new MySqlParameter("@BankName", model.BankName),
+                    new MySqlParameter("@BankRoutingNumber", model.BankRoutingNumber),
+                    new MySqlParameter("@BankIBAN",model.BankIBAN),
+                    new MySqlParameter("@BankSwift",model.BankSwift),
+                    new MySqlParameter("@ChequeTitle",model.ChequeTitle),
+                    new MySqlParameter("@ChequeDescription",model.ChequeDescription),
+                    new MySqlParameter("@ChequeInstructions",model.ChequeInstructions),
+                    new MySqlParameter("@PaypalInvoiceAPIUsername",model.PaypalInvoiceAPIUsername),
+                    new MySqlParameter("@PaypalInvoiceAPIPassword",model.PaypalInvoiceAPIPassword),
+                    new MySqlParameter("@PaypalInvoiceAPISignature",model.PaypalInvoiceAPISignature),
+                    new MySqlParameter("@PaypalTitle",model.PaypalTitle),
+                    new MySqlParameter("@PaypalDescription",model.PaypalDescription),
+                    new MySqlParameter("@PaypalEmail",model.PaypalEmail),
+                    new MySqlParameter("@PaypalProduction",model.PaypalProduction),
+                    new MySqlParameter("@PaypalIPNEmailNotification",model.PaypalIPNEmailNotification),
+                    new MySqlParameter("@PaypalReceiverEmail",model.PaypalReceiverEmail),
+                    new MySqlParameter("@PaypalIdentitytoken",model.PaypalIdentitytoken),
+                    new MySqlParameter("@PaypalPaymentAction",model.PaypalPaymentAction),
+                    new MySqlParameter("@PaypalAPIUserName",model.PaypalAPIUserName),
+                    new MySqlParameter("@PaypalAPIPassword",model.PaypalAPIPassword),
+                    new MySqlParameter("@PaypalAPISignature",model.PaypalAPISignature),
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+        public int EditPaymentMethods(ThirdPartyModel model)
+        {
+            try
+            {
+                string strsql = "";
+                strsql = "update wp_VendorPaymentDetails set Paymentmethod=@Paymentmethod,BankAccountName=@BankAccountName,BankAccountNumber=@BankAccountNumber,BankName=@BankName," +
+                    "BankRoutingNumber = @BankRoutingNumber,BankIBAN = @BankIBAN,BankSwift = @BankSwift,ChequeTitle = @ChequeTitle,ChequeDescription = @ChequeDescription," +
+                    "ChequeInstructions = @ChequeInstructions,PaypalInvoiceAPIUsername = @PaypalInvoiceAPIUsername,PaypalInvoiceAPIPassword = @PaypalInvoiceAPIPassword," +
+                    "PaypalInvoiceAPISignature = @PaypalInvoiceAPISignature,PaypalTitle = @PaypalTitle,PaypalDescription = @PaypalDescription,PaypalEmail = @PaypalEmail," +
+                    "PaypalProduction = @PaypalProduction,PaypalIPNEmailNotification = @PaypalIPNEmailNotification,PaypalReceiverEmail = @PaypalReceiverEmail," +
+                    "PaypalIdentitytoken = @PaypalIdentitytoken,PaypalPaymentAction = @PaypalPaymentAction,PaypalAPIUserName = @PaypalAPIUserName," +
+                    "PaypalAPIPassword = @PaypalAPIPassword,PaypalAPISignature = @PaypalAPISignature where VendorID = @VendorID; ";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@VendorID", model.rowid),
+                    new MySqlParameter("@Paymentmethod", model.Paymentmethod),
+                    new MySqlParameter("@BankAccountName", model.BankAccountName),
+                    new MySqlParameter("@BankAccountNumber", model.BankAccountNumber),
+                    new MySqlParameter("@BankName", model.BankName),
+                    new MySqlParameter("@BankRoutingNumber", model.BankRoutingNumber),
+                    new MySqlParameter("@BankIBAN",model.BankIBAN),
+                    new MySqlParameter("@BankSwift",model.BankSwift),
+                    new MySqlParameter("@ChequeTitle",model.ChequeTitle),
+                    new MySqlParameter("@ChequeDescription",model.ChequeDescription),
+                    new MySqlParameter("@ChequeInstructions",model.ChequeInstructions),
+                    new MySqlParameter("@PaypalInvoiceAPIUsername",model.PaypalInvoiceAPIUsername),
+                    new MySqlParameter("@PaypalInvoiceAPIPassword",model.PaypalInvoiceAPIPassword),
+                    new MySqlParameter("@PaypalInvoiceAPISignature",model.PaypalInvoiceAPISignature),
+                    new MySqlParameter("@PaypalTitle",model.PaypalTitle),
+                    new MySqlParameter("@PaypalDescription",model.PaypalDescription),
+                    new MySqlParameter("@PaypalEmail",model.PaypalEmail),
+                    new MySqlParameter("@PaypalProduction",model.PaypalProduction),
+                    new MySqlParameter("@PaypalIPNEmailNotification",model.PaypalIPNEmailNotification),
+                    new MySqlParameter("@PaypalReceiverEmail",model.PaypalReceiverEmail),
+                    new MySqlParameter("@PaypalIdentitytoken",model.PaypalIdentitytoken),
+                    new MySqlParameter("@PaypalPaymentAction",model.PaypalPaymentAction),
+                    new MySqlParameter("@PaypalAPIUserName",model.PaypalAPIUserName),
+                    new MySqlParameter("@PaypalAPIPassword",model.PaypalAPIPassword),
+                    new MySqlParameter("@PaypalAPISignature",model.PaypalAPISignature),
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+       
         public static DataTable GetState(string strSearch, string country)
         {
             DataTable DT = new DataTable();
@@ -223,6 +400,28 @@ namespace LaylaERP.BAL
             { throw ex; }
             return DS;
         }
+        public static DataSet GetDiscountType()
+        {
+            DataSet DS = new DataSet();
+            try
+            {
+                DS = SQLHelper.ExecuteDataSet("Select ID, DiscountType from wp_discountType;");
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
+        }
+        public static DataSet GetPaymentMethod()
+        {
+            DataSet DS = new DataSet();
+            try
+            {
+                DS = SQLHelper.ExecuteDataSet("Select ID,PaymentType from wp_PaymentType where Flag='V' order by ID;");
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
+        }
         public static DataTable GetVendorCode()
         {
             DataTable DT = new DataTable();
@@ -234,6 +433,7 @@ namespace LaylaERP.BAL
             { throw ex; }
             return DT;
         }
+
         public static DataTable GetVendor(string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
         {
             DataTable dt = new DataTable();
@@ -298,7 +498,16 @@ namespace LaylaERP.BAL
             try
             {
                 string strWhr = string.Empty;
-                string strSql = "Select rowid as ID,vendor_type, name as VendorName, name_alias as AliasName,entity,status,code_vendor as VendorCode, zip,address,address1,town,fk_state as State,StateName, fk_country as Country, phone,fax,url,email,fk_workforce as Workforce,fk_typparty as ThirdPartyType,fk_business_entity as BusinessEntityType,capital, fournisseur as Vendor,fk_incoterms as IncotermsType,location_incoterms as Incoterms, salestaxused as Salestaxused,SalesRepresentative,PaymentTermsID,BalanceID,LEFT(CAST(PaymentDate AS DATE), 10) PaymentDate,Currency ,EnableVendorUOM ,UnitsofMeasurment,MinimumOrderQuanity,DefaultTax,TaxIncludedinPrice,DefaultDiscount,CreditLimit,VendorStatus,outstanding_limit,fk_shipping_method,order_min_amount FROM wp_vendor where rowid='" + id + "'";
+                string strSql = "Select v.rowid as ID,v.vendor_type,v.code_vendor as VendorCode, v.name as VendorName,v.fournisseur as Vendor, v.name_alias as AliasName,v.entity,v.address,v.address1,v.town," +
+                    "v.status,v.fk_state as State,v.StateName,v.zip, v.fk_country as Country, v.phone,v.fax,v.email,v.url,v.Workinghours,v.VendorStatus," +
+                    "v.CorAddress1,v.CorAddress2,v.CorCity,v.CorState,v.CorZipCode,v.CorCountry,v.CorPhone,v.fk_workforce as Workforce,v.fk_business_entity as BusinessEntityType," +
+                    "v.note_public,v.note_private,v.capital,v.PaymentTermsID,v.BalanceID,v.fk_incoterms as IncotermsType,v.location_incoterms as Incoterms, v.Currency ,v.CreditLimit," +
+                    "v.outstanding_limit,v.MinimumOrderQuanity,v.order_min_amount,v.fk_shipping_method,v.ShippingRate,v.ShippingLocation,v.ShippingAPIKeyTest,v.ShippingAPISecretTest," +
+                    "v.ShippingAPIKeyProduction,v.ShippingAPISecretProduction,v.ShippingLogin,v.ShippingPassword,v.TaxMethod,v.DefaultTax,v.ShippingTax,v.ShippingTaxIncludedinprice,v.CalculatedTax,v.TaxIncludedinPrice," +
+                    "v.DiscountType1,v.DefaultDiscount,v.DiscountMinimumOrderAmount,v.AccountName,v.AccountEmail,v.DiscountType2,v.Discount,p.Paymentmethod,p.BankAccountName,p.BankAccountNumber,p.BankName,p.BankRoutingNumber,p.BankIBAN,p.BankSwift,p.ChequeTitle,p.ChequeDescription,p.ChequeInstructions," +
+                    "p.PaypalInvoiceAPIUsername,p.PaypalInvoiceAPIPassword,p.PaypalInvoiceAPISignature,p.PaypalTitle,p.PaypalDescription,p.PaypalEmail,p.PaypalProduction," +
+                    "p.PaypalIPNEmailNotification,p.PaypalReceiverEmail,p.PaypalIdentitytoken,p.PaypalPaymentAction,p.PaypalAPIUserName,p.PaypalAPIPassword,p.PaypalAPISignature " +
+                    "FROM wp_vendor v left join wp_VendorPaymentDetails p on v.rowid = p.VendorID where v.rowid = '" + id + "'";
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
 
@@ -309,68 +518,82 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
-        public int VendorSetting(string WarehouseID, int VendorID, string LeadTime, string DaysofStock)
+        //public int VendorSetting(string WarehouseID, int VendorID, string LeadTime, string DaysofStock)
+        //{
+        //    try
+        //    {
+        //        int result = 0;
+        //        string[] Warehouse_ID = WarehouseID.Split(',');
+        //        string[] Lead_Time = LeadTime.Split(',');
+        //        string[] Days_of_Stock = DaysofStock.Split(',');
+
+        //        for (int i = 0; i <= Warehouse_ID.Length - 1; i++)
+        //        {
+        //            WarehouseID = Warehouse_ID[i].ToString();
+        //            LeadTime = Lead_Time[i].ToString();
+        //            DaysofStock = Days_of_Stock[i].ToString();
+
+        //            string strsql = "Insert into wp_VendorSetting(LeadTime,DaysofStock,VendorID,WarehouseID) Values(@LeadTime,@DaysofStock,@VendorID,@WarehouseID);SELECT LAST_INSERT_ID();";
+        //            MySqlParameter[] para =
+        //            {
+        //            new MySqlParameter("@WarehouseID", WarehouseID),
+        //            new MySqlParameter("@LeadTime", LeadTime),
+        //            new MySqlParameter("@DaysofStock", DaysofStock),
+        //            new MySqlParameter("@VendorID", VendorID)
+        //            };
+        //            result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+        //        }
+        //        return result;
+        //    }
+        //    catch (Exception Ex)
+        //    {
+        //        throw Ex;
+        //    }
+        //}
+        //public int EditVendorSetting(string WarehouseID, long VendorID, string LeadTime, string DaysofStock)
+        //{
+        //    try
+        //    {
+        //        int result = 0;
+        //        string[] Warehouse_ID = WarehouseID.Split(',');
+        //        string[] Lead_Time = LeadTime.Split(',');
+        //        string[] Days_of_Stock = DaysofStock.Split(',');
+
+        //        for (int i = 0; i <= Warehouse_ID.Length - 1; i++)
+        //        {
+        //            WarehouseID = Warehouse_ID[i].ToString();
+        //            LeadTime = Lead_Time[i].ToString();
+        //            DaysofStock = Days_of_Stock[i].ToString();
+
+        //            string strsql = "Update wp_VendorSetting set LeadTime=@LeadTime,DaysofStock=@DaysofStock where ID=" + WarehouseID + " and VendorID=" + VendorID + ";";
+        //            MySqlParameter[] para =
+        //            {
+        //            new MySqlParameter("@WarehouseID", WarehouseID),
+        //            new MySqlParameter("@LeadTime", LeadTime),
+        //            new MySqlParameter("@DaysofStock", DaysofStock),
+        //            new MySqlParameter("@VendorID", VendorID)
+        //            };
+        //            result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+        //        }
+        //        return result;
+        //    }
+        //    catch (Exception Ex)
+        //    {
+        //        throw Ex;
+        //    }
+        //}
+
+        public int GetVendorID(long id)
         {
             try
             {
-                int result = 0;
-                string[] Warehouse_ID = WarehouseID.Split(',');
-                string[] Lead_Time = LeadTime.Split(',');
-                string[] Days_of_Stock = DaysofStock.Split(',');
-
-                for (int i = 0; i <= Warehouse_ID.Length - 1; i++)
-                {
-                    WarehouseID = Warehouse_ID[i].ToString();
-                    LeadTime = Lead_Time[i].ToString();
-                    DaysofStock = Days_of_Stock[i].ToString();
-
-                    string strsql = "Insert into wp_VendorSetting(LeadTime,DaysofStock,VendorID,WarehouseID) Values(@LeadTime,@DaysofStock,@VendorID,@WarehouseID);SELECT LAST_INSERT_ID();";
-                    MySqlParameter[] para =
-                    {
-                    new MySqlParameter("@WarehouseID", WarehouseID),
-                    new MySqlParameter("@LeadTime", LeadTime),
-                    new MySqlParameter("@DaysofStock", DaysofStock),
-                    new MySqlParameter("@VendorID", VendorID)
-                    };
-                    result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
-                }
+                string strSql = "Select VendorId from wp_VendorPaymentDetails where VendorID='" + id + "'";
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strSql));
                 return result;
             }
-            catch (Exception Ex)
+            catch (Exception ex)
             {
-                throw Ex;
-            }
-        }
-        public int EditVendorSetting(string WarehouseID, long VendorID, string LeadTime, string DaysofStock)
-        {
-            try
-            {
-                int result = 0;
-                string[] Warehouse_ID = WarehouseID.Split(',');
-                string[] Lead_Time = LeadTime.Split(',');
-                string[] Days_of_Stock = DaysofStock.Split(',');
-
-                for (int i = 0; i <= Warehouse_ID.Length - 1; i++)
-                {
-                    WarehouseID = Warehouse_ID[i].ToString();
-                    LeadTime = Lead_Time[i].ToString();
-                    DaysofStock = Days_of_Stock[i].ToString();
-
-                    string strsql = "Update wp_VendorSetting set LeadTime=@LeadTime,DaysofStock=@DaysofStock where ID=" + WarehouseID + " and VendorID=" + VendorID + ";";
-                    MySqlParameter[] para =
-                    {
-                    new MySqlParameter("@WarehouseID", WarehouseID),
-                    new MySqlParameter("@LeadTime", LeadTime),
-                    new MySqlParameter("@DaysofStock", DaysofStock),
-                    new MySqlParameter("@VendorID", VendorID)
-                    };
-                    result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
-                }
-                return result;
-            }
-            catch (Exception Ex)
-            {
-                throw Ex;
+                throw ex;
             }
         }
     }

@@ -41,7 +41,7 @@ ViewBag.Title = "NewVendor";
                                 <div class="box box-primary">
                                     <div class="box-body">
                                         <div class="form-group">
-                                            <label class="control-label " for="ddlvendortype">Vendor Type</label>
+                                            <label class="control-label " for="vendortype">Vendor Type</label>
                                             <select class="form-control" id="ddlvendortype">
                                             </select>
                                         </div><!--1-->
@@ -59,12 +59,12 @@ ViewBag.Title = "NewVendor";
                                         </div><!--4-->
                                         <div class="form-group">
                                             <img class="sb-title-icon" src="https://fonts.gstatic.com/s/i/googlematerialicons/location_pin/v5/24px.svg" alt="">
-                                            <label class="control-label " for="Address">Address 1</label>
-                                            <input type="text" id="txtAddress" class="form-control" placeholder="Address" autocomplete="true" />
+                                            <label class="control-label " for="Address1">Address 1</label>
+                                            <input type="text" id="txtAddress1" class="form-control" placeholder="Address 1" autocomplete="true" />
                                         </div><!--5-->
                                         <div class="form-group">
-                                            <label class="control-label " for="Address1">Address 2</label>
-                                            <input type="tel" id="txtAddress1" class="form-control" placeholder="Address 1" />
+                                            <label class="control-label " for="Address2">Address 2</label>
+                                            <input type="tel" id="txtAddress2" class="form-control" placeholder="Address 2" />
                                         </div><!--6-->
                                     </div>
                                 </div>
@@ -119,14 +119,19 @@ ViewBag.Title = "NewVendor";
                                         </div><!--15-->
                                         <div class="form-group">
                                             <label class="control-label">Working hours</label>
-                                            <input type="text" class="form-control" placeholder="Working hours" />
+                                            <input type="text" class="form-control" id="txtWorkinghours" placeholder="Working hours" />
                                         </div><!--16-->
-                                        <div class="form-group form-check">
-                                            <input type="checkbox" id="chkVendorStatus" name="VendorStatus" value="Tax Included in price"> <label for="Active">Active</label>
-                                        </div><!--17-->
+                                       
+                                        <input type="checkbox" id="chkVendorStatus" name="VendorStatus"> <label for="Active">Active</label><!--17-->
                                     </div>
                                 </div>
                             </div><!--col-4-->
+
+                        </div>
+                        <div class="box-footer">
+                            <div class="text-right">
+                                <button type="button" id="btnNextTab1" class="btn btn-danger ">Next tab</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -141,19 +146,19 @@ ViewBag.Title = "NewVendor";
                                     <div class="box-body">
                                         <div class="form-group">
                                             <label class="control-label ">Cor Address1</label>
-                                            <input type="text" class="form-control" />
+                                            <input type="text" id="txtCorAddress1" class="form-control" />
                                         </div>
                                         <div class="form-group">
                                             <label class="control-label ">Cor Address2</label>
-                                            <input type="text" class="form-control" />
+                                            <input type="text" id="txtCorAddress2" class="form-control" />
                                         </div>
                                         <div class="form-group">
                                             <label class="control-label ">Cor City</label>
-                                            <input type="text" class="form-control" />
+                                            <input type="text" id="txtCorCity" class="form-control" />
                                         </div>
                                         <div class="form-group">
                                             <label class="control-label ">Cor State</label>
-                                            <input type="text" class="form-control" />
+                                            <input type="text" id="txtCorState" class="form-control" />
                                         </div>
                                     </div>
                                 </div>
@@ -163,19 +168,20 @@ ViewBag.Title = "NewVendor";
                                     <div class="box-body">
                                         <div class="form-group">
                                             <label class="control-label ">Cor Zip Code</label>
-                                            <input type="text" class="form-control" />
+                                            <input type="text" id="txtCorZipCode" class="form-control" />
                                         </div>
                                         <div class="form-group">
                                             <label class="control-label ">Cor Country</label>
-                                            <input type="text" class="form-control" />
+                                            <input type="text" id="txtCorCountry" class="form-control" />
                                         </div>
                                         <div class="form-group">
                                             <label class="control-label ">Cor Phone/Mobile</label>
-                                            <input type="text" class="form-control" />
+                                            <input type="text" id="txtCorPhone" class="form-control" />
                                         </div>
                                         <div class="form-group">
                                             <label class="control-label ">Work force</label>
-                                            <input type="text" class="form-control" />
+                                            <select class="form-control" id="ddlWorkforce"></select>
+                                            @*<input type="text" id="txtWorkforce" class="form-control" />*@
                                         </div>
                                     </div>
                                 </div>
@@ -185,19 +191,25 @@ ViewBag.Title = "NewVendor";
                                     <div class="box-body">
                                         <div class="form-group">
                                             <label class="control-label ">Business Entity Type</label>
-                                            <input type="text" class="form-control" />
+                                            <input type="text" id="txtBusinessEntityType" class="form-control" />
                                         </div>
                                         <div class="form-group">
                                             <label class="control-label ">Notes (Public)</label>
-                                            <textarea class="form-control"></textarea>
+                                            <textarea id="txtNotesPublic" class="form-control"></textarea>
                                         </div>
                                         <div class="form-group">
                                             <label class="control-label ">Notes (Private)</label>
-                                            <textarea class="form-control"></textarea>
+                                            <textarea id="txtNotesPrivate" class="form-control"></textarea>
                                         </div>
 
                                     </div>
                                 </div>
+                            </div>
+                            
+                        </div>
+                        <div class="box-footer">
+                            <div class="text-right">
+                                <button type="button" id="btnNextTab2" class="btn btn-danger ">Next tab</button>
                             </div>
                         </div>
                     </div>
@@ -236,14 +248,15 @@ ViewBag.Title = "NewVendor";
                             <div class="col-md-4">
                                 <div class="box box-primary">
                                     <div class="box-body">
-                                        <div class="form-group">
+                                        @*<div class="form-group">
                                             <label for="Balance">Payment Type</label>
-                                            <select class="form-control" id="ddlpaymenttype">
+                                            <select class="form-control" id="ddlPaymentType">
+                                                <option value="-1">Please Select Payment Type</option>
                                                 <option value="banktranser">Bank Transfer</option>
                                                 <option value="cheque">Cheque</option>
                                                 <option value="creditcard">Credit Card</option>
                                             </select>
-                                        </div>
+                                        </div>*@
                                         <div class="form-group">
                                             <label class="control-label " for="Currency">Currency</label>
                                             <select class="form-control" id="ddlCurrency">
@@ -262,18 +275,23 @@ ViewBag.Title = "NewVendor";
                                     <div class="box-body">
                                         <div class="form-group">
                                             <label class="control-label " for="txtoutstandinglimit">OutStanding Limit</label>
-                                            <input type="text" id="txtoutstandinglimit" class="form-control" placeholder="Out Standing Limit" />
+                                            <input type="text" id="txtOutStandingLimit" class="form-control" placeholder="Out Standing Limit" />
                                         </div>
                                         <div class="form-group">
                                             <label class="control-label " for="txtminorderqty">Minimum Order Quantity</label>
-                                            <input type="text" id="txtminorderqty" class="form-control" placeholder="Minimum Order Quantity" />
+                                            <input type="text" id="txtMinOrderQty" class="form-control" placeholder="Minimum Order Quantity" />
                                         </div>
                                         <div class="form-group">
                                             <label for="orderminamt">Order Min Amount</label>
-                                            <input type="text" id="txtorderminamt" class="form-control" placeholder="Order Minimum amount" />
+                                            <input type="text" id="txtOrderMinAmt" class="form-control" placeholder="Order Minimum amount" />
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                        <div class="box-footer">
+                            <div class="text-right">
+                                <button type="button" id="btnNextTab3" class="btn btn-danger ">Next tab</button>
                             </div>
                         </div>
                     </div>
@@ -289,7 +307,7 @@ ViewBag.Title = "NewVendor";
                                     <div class="box-body">
                                         <div class="form-group">
                                             <label class="control-label " for="ShippingMethod">Shipping Method</label>
-                                            <select class="form-control" id="ddlshippingmethod"></select>
+                                            <select class="form-control" id="ddlShippingMethod"></select>
                                         </div>
                                     </div>
                                 </div>
@@ -299,7 +317,7 @@ ViewBag.Title = "NewVendor";
                                     <div class="box-body">
                                         <div class="form-group">
                                             <label class="control-label">Rate</label>
-                                            <input type="text" class="form-control" placeholder="Rate" />
+                                            <input type="text" id="txtShippingRate" class="form-control" placeholder="Rate" />
                                         </div>
                                     </div>
                                 </div>
@@ -309,23 +327,24 @@ ViewBag.Title = "NewVendor";
                                     <div class="box-body">
                                         <div class="form-group">
                                             <label class="control-label">Location</label>
-                                            <input type="text" class="form-control" placeholder="Location" />
+                                            <input type="text" id="txtShippingLocation" class="form-control" placeholder="Location" />
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="box box-primary">
                                     <div class="box-body">
                                         <div class="form-group">
                                             <label class="control-label">API Key (Test)</label>
-                                            <input type="text" class="form-control" placeholder="API Key (Test)" />
+                                            <input type="text" id="txtShippingAPIKeyTest" class="form-control" placeholder="API Key (Test)" />
                                         </div>
                                         <div class="form-group">
                                             <label class="control-label">API Secret (Test)</label>
-                                            <input type="text" class="form-control" placeholder="API Secret (Test)" />
+                                            <input type="text" class="form-control" id="txtShippingAPISecretTest" placeholder="API Secret (Test)" />
                                         </div>
                                     </div>
                                 </div>
@@ -335,11 +354,11 @@ ViewBag.Title = "NewVendor";
                                     <div class="box-body">
                                         <div class="form-group">
                                             <label class="control-label">API Key (Production)</label>
-                                            <input type="text" class="form-control" placeholder="API Key (Production)" />
+                                            <input type="text" id="txtShippingAPIKeyProduction" class="form-control" placeholder="API Key (Production)" />
                                         </div>
                                         <div class="form-group">
                                             <label class="control-label">API Secret (Production)</label>
-                                            <input type="text" class="form-control" placeholder="API Secret (Production)" />
+                                            <input type="text" id="txtShippingAPISecretProduction" class="form-control" placeholder="API Secret (Production)" />
                                         </div>
                                     </div>
                                 </div>
@@ -349,14 +368,19 @@ ViewBag.Title = "NewVendor";
                                     <div class="box-body">
                                         <div class="form-group">
                                             <label class="control-label">Login</label>
-                                            <input type="text" class="form-control" placeholder="Login" />
+                                            <input type="text" id="txtShippingLogin" class="form-control" placeholder="Login" />
                                         </div>
                                         <div class="form-group">
                                             <label class="control-label">Password</label>
-                                            <input type="text" class="form-control" placeholder="Password" />
+                                            <input type="text" id="txtShippingPassword" class="form-control" placeholder="Password" />
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                        <div class="box-footer">
+                            <div class="text-right">
+                                <button type="button" id="btnNextTab4" class="btn btn-danger ">Next tab</button>
                             </div>
                         </div>
                     </div>
@@ -372,8 +396,8 @@ ViewBag.Title = "NewVendor";
                                     <div class="box-body">
                                         <label class="control-label">Tax Method</label>
                                         <div class="form-group">
-                                            <select class="form-control">
-                                                <option>Standard Tax Rate</option>
+                                            <select class="form-control" id="ddlTaxMethod">
+                                                <option value="Standard Tax Rate">Standard Tax Rate</option>
                                             </select>
                                         </div>
                                     </div>
@@ -386,11 +410,11 @@ ViewBag.Title = "NewVendor";
                                     <div class="box-body">
                                         <div class="form-group">
                                             <label class="control-label">Default Tax (%)</label>
-                                            <input type="text" class="form-control" placeholder="Default Tax (%)" />
+                                            <input type="text" id="txtDefaultTax" class="form-control" placeholder="Default Tax (%)" />
                                         </div>
                                         <div class="form-group">
                                             <label class="control-label">Shipping Tax (%)</label>
-                                            <input type="text" class="form-control" placeholder="Shipping Tax (%)" />
+                                            <input type="text" id="txtShippingTax" class="form-control" placeholder="Shipping Tax (%)" />
                                         </div>
                                     </div>
                                 </div>
@@ -398,14 +422,13 @@ ViewBag.Title = "NewVendor";
                             <div class="col-md-4">
                                 <div class="box box-primary">
                                     <div class="box-body">
-                                        <div class="form-group form-check">
-                                            <input type="checkbox" id="tax_include_in_price1" />
+                                        @*<div class="form-group form-check">
+                                            <input type="checkbox" id="chkTaxIncludedinprice" />
                                             <label class="control-label" for="tax_include_in_price1">Tax included in price</label>
-                                        </div>
-                                        <div class="form-group form-check">
-                                            <input type="checkbox" id="shipping_tax_include_in_price1" />
+                                        </div>*@
+                                       
+                                            <input type="checkbox" id="chkShippingTaxIncludedinprice" />
                                             <label class="control-label" for="shipping_tax_include_in_price1">Shipping tax included in price</label>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -414,14 +437,18 @@ ViewBag.Title = "NewVendor";
                                     <div class="box-body">
                                         <div class="form-group">
                                             <label class="control-label">Calculated tax</label>
-                                            <input type="text" class="form-control" placeholder="Calculated tax" />
+                                            <input type="text" class="form-control" id="txtCalculatedtax" placeholder="Calculated tax" />
                                         </div>
-                                        <div class="form-group form-check">
-                                            <input type="checkbox" id="shipping_tax_include_in_price2" />
-                                            <label class="control-label" for="shipping_tax_include_in_pric2">Tax Included in price</label>
-                                        </div>
+                                       
+                                            <input type="checkbox" id="chkTaxIncludedinPrice" />
+                                            <label class="control-label" for="shipping_tax_include_in_price2">Tax Included in price</label>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                        <div class="box-footer">
+                            <div class="text-right">
+                                <button type="button" id="btnNextTab5" class="btn btn-danger ">Next tab</button>
                             </div>
                         </div>
                     </div>
@@ -437,9 +464,9 @@ ViewBag.Title = "NewVendor";
                                     <div class="box-body">
                                         <label class="control-label">Discount Type1 (, )</label>
                                         <div class="form-group">
-                                            <select class="form-control">
-                                                <option>Fixed</option>
-                                                <option>Percentage</option>
+                                            <select class="form-control" id="ddlDiscountType1">
+                                                <option value="Fixed">Fixed</option>
+                                                <option value="Percentage">Percentage</option>
                                             </select>
                                         </div>
                                     </div>
@@ -452,11 +479,11 @@ ViewBag.Title = "NewVendor";
                                     <div class="box-body">
                                         <div class="form-group">
                                             <label class="control-label">Default Discount (%)</label>
-                                            <input type="text" class="form-control" placeholder="Default Discount (%)" />
+                                            <input type="text" id="txtDefaultDiscount" class="form-control" placeholder="Default Discount (%)" />
                                         </div>
                                         <div class="form-group">
                                             <label class="control-label">Minimum order amount</label>
-                                            <input type="text" class="form-control" placeholder="Minimum order amount" />
+                                            <input type="text" id="txtDiscountMinimumOrderAmount" class="form-control" placeholder="Minimum order amount" />
                                         </div>
                                     </div>
                                 </div>
@@ -466,11 +493,11 @@ ViewBag.Title = "NewVendor";
                                     <div class="box-body">
                                         <div class="form-group">
                                             <label class="control-label">Account Name</label>
-                                            <input type="text" class="form-control" placeholder="Maximum order amount" />
+                                            <input type="text" class="form-control" id="txtAccountName" placeholder="Maximum order amount" />
                                         </div>
                                         <div class="form-group">
                                             <label class="control-label">Email</label>
-                                            <input type="text" class="form-control" placeholder="Email" />
+                                            <input type="text" class="form-control" id="txtAccountEmail" placeholder="Email" />
                                         </div>
                                     </div>
                                 </div>
@@ -480,23 +507,19 @@ ViewBag.Title = "NewVendor";
                                     <div class="box-body">
                                         <div class="form-group">
                                             <label class="control-label">Discount Type2 (Balance Net)</label>
-                                            <select class="form-control">
-                                                <option>Before Balance Net 120</option>
-                                                <option>Before Balance Net 100</option>
-                                                <option>Before Balance Net 90</option>
-                                                <option>Before Balance Net 75</option>
-                                                <option>Before Balance Net 60</option>
-                                                <option>Before Balance Net 45</option>
-                                                <option>Before Balance Net 30</option>
-                                                <option>Before Balance Net 15</option>
-                                            </select>
+                                            <select class="form-control" id="ddlDiscountType2"></select>
                                         </div>
                                         <div class="form-group">
                                             <label class="control-label">Discount (%)</label>
-                                            <input type="text" class="form-control" placeholder="Discount (%)" />
+                                            <input type="text" class="form-control" id="txtDiscount" placeholder="Discount (%)" />
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                        <div class="box-footer">
+                            <div class="text-right">
+                                <button type="button" id="btnNextTab6" class="btn btn-danger ">Next tab</button>
                             </div>
                         </div>
                     </div>
@@ -510,16 +533,12 @@ ViewBag.Title = "NewVendor";
                             <div class="box-body">
                                 <div class="form-group">
                                     <label class="control-label">Payment method</label>
-                                    <select class="form-control">
-                                        <option>bank details</option>
-                                        <option>cheque</option>
-                                        <option>Paypal Invoice</option>
-                                        <option>Paypal Standard</option>
+                                    <select class="form-control" id="ddlPaymentMethod">
                                     </select>
                                 </div>
                             </div>
                         </div>
-                        <div id="bnk_details" style="display:block;">
+                        <div id="bnk_details" style="display:none;">
                             <h2 class="box-header">Bank details</h2>
                             <div class="row">
                                 <div class="col-md-4">
@@ -527,11 +546,11 @@ ViewBag.Title = "NewVendor";
                                         <div class="box-body">
                                             <div class="form-group">
                                                 <label class="control-label">Account Name</label>
-                                                <input type="text" class="form-control" placeholder="Account Name" />
+                                                <input type="text" class="form-control" id="txtBankAccountName" placeholder="Account Name" />
                                             </div>
                                             <div class="form-group">
                                                 <label class="control-label">Account Number</label>
-                                                <input type="text" class="form-control" placeholder="Account Number" />
+                                                <input type="text" class="form-control" id="txtBankAccountNumber" placeholder="Account Number" />
                                             </div>
                                         </div>
                                     </div>
@@ -541,11 +560,11 @@ ViewBag.Title = "NewVendor";
                                         <div class="box-body">
                                             <div class="form-group">
                                                 <label class="control-label">Bank name</label>
-                                                <input type="text" class="form-control" placeholder="Bank name" />
+                                                <input type="text" class="form-control" id="txtBankName" placeholder="Bank name" />
                                             </div>
                                             <div class="form-group">
                                                 <label class="control-label">Routing number</label>
-                                                <input type="text" class="form-control" placeholder="Routing number" />
+                                                <input type="text" class="form-control" id="txtBankRoutingNumber" placeholder="Routing number" />
                                             </div>
                                         </div>
                                     </div>
@@ -555,11 +574,11 @@ ViewBag.Title = "NewVendor";
                                         <div class="box-body">
                                             <div class="form-group">
                                                 <label class="control-label">IBAN</label>
-                                                <input type="text" class="form-control" placeholder="IBAN" />
+                                                <input type="text" id="txtBankIBAN" class="form-control" placeholder="IBAN" />
                                             </div>
                                             <div class="form-group">
                                                 <label class="control-label">BIC/Swift</label>
-                                                <input type="text" class="form-control" placeholder="BIC/Swift" />
+                                                <input type="text" id="txtBankSwift" class="form-control" placeholder="BIC/Swift" />
                                             </div>
                                         </div>
                                     </div>
@@ -574,7 +593,7 @@ ViewBag.Title = "NewVendor";
                                         <div class="box-body">
                                             <div class="form-group">
                                                 <label class="control-label">Title</label>
-                                                <input type="text" class="form-control" placeholder="Title" />
+                                                <input type="text" id="txtChequeTitle" class="form-control" placeholder="Title" />
                                             </div>
                                         </div>
                                     </div>
@@ -584,7 +603,7 @@ ViewBag.Title = "NewVendor";
                                         <div class="box-body">
                                             <div class="form-group">
                                                 <label class="control-label">Description </label>
-                                                <textarea class="form-control" placeholder="Please send a check to Store Name, Store Street, Store Town, Store State / County, Store Postcode."></textarea>
+                                                <textarea class="form-control" id="txtChequeDescription" placeholder="Please send a check to Store Name, Store Street, Store Town, Store State / County, Store Postcode."></textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -594,12 +613,17 @@ ViewBag.Title = "NewVendor";
                                         <div class="box-body">
                                             <div class="form-group">
                                                 <label class="control-label">Instructions</label>
-                                                <input type="text" class="form-control" placeholder="Instructions" />
+                                                <input type="text" class="form-control" id="txtChequeInstructions" placeholder="Instructions" />
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            
+                        </div>
+                        <div id="pay_invoice" style="display:none;">
+                            <h2 class="box-header">Paypal Invoice</h2>
+                            
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="box box-primary">
@@ -609,13 +633,13 @@ ViewBag.Title = "NewVendor";
                                         <div class="box-body">
                                             <div class="row">
                                                 <div class="col-md-4">
-                                                    <input type="text" class="form-control" placeholder="Username" />
+                                                    <input type="text" class="form-control" id="txtPPInvoiceAPIUsername" placeholder="Username" />
                                                 </div>
                                                 <div class="col-md-4">
-                                                    <input type="password" class="form-control" placeholder="password" />
+                                                    <input type="password" id="txtPPInvoiceAPIPassword" class="form-control" placeholder="password" />
                                                 </div>
                                                 <div class="col-md-4">
-                                                    <input type="text" class="form-control" placeholder="Signature" />
+                                                    <input type="text" id="txtPPInvoiceAPISignature" class="form-control" placeholder="Signature" />
                                                 </div>
                                             </div>
                                         </div>
@@ -631,15 +655,15 @@ ViewBag.Title = "NewVendor";
                                         <div class="box-body">
                                             <div class="form-group">
                                                 <label class="control-label">Title</label>
-                                                <input type="text" class="form-control" placeholder="Title" />
+                                                <input type="text" class="form-control" id="txtPaypalTitle" placeholder="Title" />
                                             </div>
                                             <div class="form-group">
                                                 <label class="control-label">Description</label>
-                                                <textarea class="form-control" placeholder="Please send a check to Store Name, Store Street, Store Town, Store State / County, Store Postcode."></textarea>
+                                                <textarea class="form-control" id="txtPaypalDescription" placeholder="Please send a check to Store Name, Store Street, Store Town, Store State / County, Store Postcode."></textarea>
                                             </div>
                                             <div class="form-group">
                                                 <label class="control-label">Paypal email</label>
-                                                <input type="email" class="form-control" placeholder="Paypal email" />
+                                                <input type="email" id="txtPaypalEmail" class="form-control" placeholder="Paypal email" />
                                             </div>
                                         </div>
                                     </div>
@@ -647,17 +671,17 @@ ViewBag.Title = "NewVendor";
                                 <div class="col-md-4">
                                     <div class="box box-primary">
                                         <div class="box-body">
-                                            <div class="form-group form-check">
-                                                <input type="checkbox" id="tax_include_in_price" />
-                                                <label class="control-label" for="tax_include_in_price">Paypal Production</label>
-                                            </div>
+                                          
+                                                <input type="checkbox" id="chkPaypalProduction" />
+                                                <label class="control-label" for="Paypal_Production">Paypal Production</label>
+                                            
                                             <div class="form-group">
                                                 <label class="control-label">IPN email notification</label>
-                                                <input type="text" class="form-control" placeholder="IPN email notification" />
+                                                <input type="text" class="form-control" id="txtPaypalIPNEmailNotification" placeholder="IPN email notification" />
                                             </div>
                                             <div class="form-group">
                                                 <label class="control-label">Receiver email</label>
-                                                <input type="text" class="form-control" placeholder="Receiver email" />
+                                                <input type="text" class="form-control" id="txtPaypalReceiverEmail" placeholder="Receiver email" />
                                             </div>
                                         </div>
                                     </div>
@@ -667,13 +691,13 @@ ViewBag.Title = "NewVendor";
                                         <div class="box-body">
                                             <div class="form-group">
                                                 <label class="control-label">Paypal Identity token</label>
-                                                <input type="text" class="form-control" placeholder="Paypal Identity token" />
+                                                <input type="text" class="form-control" id="txtPaypalIdentitytoken" placeholder="Paypal Identity token" />
                                             </div>
                                             <div class="form-group">
                                                 <label class="control-label">Payment Action</label>
-                                                <select class="form-control">
-                                                    <option>Capture</option>
-                                                    <option>Authorize</option>
+                                                <select class="form-control" id="ddlPaypalPaymentAction">
+                                                    <option value="Capture">Capture</option>
+                                                    <option value="Authorize">Authorize</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -689,18 +713,23 @@ ViewBag.Title = "NewVendor";
                                         <div class="box-body">
                                             <div class="row">
                                                 <div class="col-md-4">
-                                                    <input type="text" class="form-control" placeholder="Username" />
+                                                    <input type="text" id="txtPaypalAPIUserName" class="form-control" placeholder="Username" />
                                                 </div>
                                                 <div class="col-md-4">
-                                                    <input type="password" class="form-control" placeholder="password" />
+                                                    <input type="password" id="txtPaypalAPIPassword" class="form-control" placeholder="password" />
                                                 </div>
                                                 <div class="col-md-4">
-                                                    <input type="text" class="form-control" placeholder="Signature" />
+                                                    <input type="text" id="txtPaypalAPISignature" class="form-control" placeholder="Signature" />
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                        <div class="box-footer">
+                            <div class="text-right">
+                                <button type="button" id="btnNextTab7" class="btn btn-danger ">Next tab</button>
                             </div>
                         </div>
                     </div>
@@ -710,6 +739,7 @@ ViewBag.Title = "NewVendor";
                     <div class="box box-primary">
                         <div class="box-body">
                             <a href="#" class="btn btn-danger">Vendor link to Warehouse</a>
+                            @Html.ActionLink("Back to List", "VendorList", null, new { @class = "btn btn-danger" })
                         </div>
                     </div>
                 </div>
@@ -794,7 +824,7 @@ ViewBag.Title = "NewVendor";
 </script>
 <script>
     function initMap() {
-        let address1Field = document.querySelector("#txtAddress");
+        let address1Field = document.querySelector("#txtAddress1");
         // Create the autocomplete object, restricting the search predictions to
         // addresses in the US and Canada.
         autocomplete = new google.maps.places.Autocomplete(address1Field, {
@@ -816,7 +846,7 @@ ViewBag.Title = "NewVendor";
             obj = place.address_components.filter(element => element.types[0] == 'route');
             if (obj.length > 0)
                 address = address + ' ' + obj[0].long_name;
-            $("#txtAddress").val(address);
+            $("#txtAddress1").val(address);
             obj = place.address_components.filter(element => element.types[0] == 'locality');
             if (obj.length > 0)
                 $("#txtCity").val(obj[0].long_name);

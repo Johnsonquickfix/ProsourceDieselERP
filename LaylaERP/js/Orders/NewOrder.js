@@ -845,7 +845,7 @@ function ApplyFee(orderitemid, feevalue) {
             let feeHtml = '';
             feeHtml += '<tr id="trfeeid_' + result.order_item_id + '" data-orderitemid="' + result.order_item_id + '" data-pname="' + product_name + '" data-feeamt="' + startingNumber + '" data-feetype="' + feetype + '">';
             feeHtml += '<td class="text-center item-action"><button class="btn menu-icon-gr text-success  billinfo" onclick="AddFeeModal(\'' + result.order_item_id + '\',\'' + product_name + '\');"> <i class="glyphicon glyphicon-edit"></i></button>';
-            feeHtml += '<button class="btn menu-icon-gr text-red billinfo" onclick="RemoveFee(\'' + orderitemid + '\');"> <i class="glyphicon glyphicon-trash"></i></button></td>';
+            feeHtml += '<button class="btn menu-icon-gr text-red billinfo" onclick="RemoveFee(\'' + result.order_item_id + '\');"> <i class="glyphicon glyphicon-trash"></i></button></td>';
             feeHtml += '<td>' + product_name + '</td><td></td><td></td><td class="TotalAmount text-right">' + line_total + '</td><td></td><td></td>';
             feeHtml += '</tr>';
             $('#order_fee_line_items').append(feeHtml);

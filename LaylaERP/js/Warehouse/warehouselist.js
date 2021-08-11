@@ -10,18 +10,19 @@ function WarehouseGrid() {
             processing: true,
             data: JSON.stringify(obj),
             success: function (data) {
-                $('#dtdata').dataTable({
+                $('#dtdatawarehouse').dataTable({
                     destroy: true,
                     scrollX: true,
                     data: JSON.parse(data),
                     "columns": [
                         { data: 'rowid', title: 'ID', sWidth: "5%" },
-                        { data: 'ref', title: 'Ref', sWidth: "20%" },
+                        { data: 'ref', title: 'Ref', sWidth: "15%" },
                         { data: 'description', title: 'Description', sWidth: "15%" },
-                        { data: 'lieu', title: 'Short Name Location', sWidth: "15%" },
+                        { data: 'lieu', title: 'Short Name Location', sWidth: "10%" },
                         { data: 'address', title: 'Address', sWidth: "15%" },
                         { data: 'phone', title: 'Phone', sWidth: "10%" },
                         { data: 'status', title: 'Status', sWidth: "10%" },
+                        { data:'warehouse_type', title:'Type', sWidth:"10%"},
                         {
                             'data': 'rowid', sWidth: "10%",
                             'render': function (rowid, type, full, meta) {

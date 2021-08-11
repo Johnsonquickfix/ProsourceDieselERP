@@ -15,343 +15,501 @@
 <div class="page-title">
     <h2 class="page-heading">Add New Warehouse</h2>
 </div>
-<div class="createuser-section section_wrapper">
-    <div class="create-user-box">
-        <div class="row">
-            <!-- /.col -->
-            <div class="col-md-9">
-                <div class="box box-primary create-user-primary">
-                    <div class="box-header with-border">
-                        <div class="row">
-                            <div class="col-sm-4">
-                                <div class="form-group">
-                                    <input type="hidden" id="hfid" value="@Model.rowid" />
-                                    <input type="hidden" id="hfzipstatus" />
-                                    <input type="hidden" id="hfvpassordshow" />
-                                    <label for="exampleInputEmail1">Ref.</label>
-                                    <input type="text" class="form-control" id="txtref" placeholder="Enter Reference Name ">
-                                </div>
-                                <div class="form-group">
-                                    <label for="exampleInputEmail1">Short Name Location</label>
-                                    <input type="email" class="form-control" id="txtShortNameLocation" placeholder="Enter Short Name Location">
-                                </div>
+<section class="content content-section p-0">
+    <div class="nav-tabs-custom">
+        <ul class="nav nav-tabs" id="mytabs" role="tablist">
+            <li class="active"><a href="#tab_1" data-toggle="tab">Warehouse</a></li>
+            <li><a href="#tab_2" data-toggle="tab">Additional Information</a></li>
+        </ul>
+        
+        <div class="tab-content">
+            <div class="tab-pane active" id="tab_1">
+                <div class="createuser-section section_wrapper">
+                            <!-- /.col -->
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="box box-primary">
+                                <div class="box-body">
+                                    <div class="form-group">
+                                        <input type="hidden" id="hfid" value="@Model.rowid" />
+                                        <input type="hidden" id="hfzipstatus" />
+                                        <input type="hidden" id="hfvpassordshow" />
+                                        <label for="exampleInputEmail1">Ref.</label>
+                                        <input type="text" class="form-control" id="txtref" placeholder="Enter Reference Name ">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Short Name Location</label>
+                                        <input type="email" class="form-control" id="txtShortNameLocation" placeholder="Enter Short Name Location">
+                                    </div>
 
-                                <div class="form-group">
-                                    <label for="exampleInputEmail1">Description</label>
-                                    <input type="text" class="form-control" id="txtDescription" placeholder="Enter Description">
-                                </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Description</label>
+                                        <input type="text" class="form-control" id="txtDescription" placeholder="Enter Description">
+                                    </div>
 
-                                <div class="form-group">
-                                    <label for="exampleInputEmail1">Contact Number</label>
-                                    <input type="text" class="form-control" id="txtPhone" placeholder="Enter Contact Number">
-                                </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">E-mail </label>
+                                        <input type="text" class="form-control" id="txtEmail" placeholder="Enter E-mail">
+                                    </div>
 
-
-                            </div>
-                            <div class="col-sm-4">
-
-                                <div class="form-group">
-                                    <label for="exampleInputEmail1">Fax</label>
-                                    <input type="text" class="form-control" id="txtFax" placeholder="Enter Fax Number">
-                                </div>
-
-                                <div class="form-group">
-                                    <img class="sb-title-icon" src="https://fonts.gstatic.com/s/i/googlematerialicons/location_pin/v5/24px.svg" alt="">
-                                    <label for="exampleInputEmail1">Address </label>
-                                    <input type="text" class="form-control" id="txtAddress" placeholder="Enter Address ">
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="exampleInputEmail1">Address 1</label>
-                                    <input type="text" class="form-control" id="txtAddress1" placeholder="Enter Address ">
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="exampleInputEmail1">City</label>
-                                    <input type="text" id="txtCity" class="form-control" placeholder="Enter City" />
-                                </div>
-
-                            </div>
-                            <div class="col-sm-4">
-
-                                <div class="form-group">
-                                    <label for="exampleInputEmail1">State</label>
-                                    <select class="form-control" id="txtState">
-                                        <option selected value="">Select State</option>
-                                    </select>
-                                </div>
-
-                                <div class="form-group">
-                                    <label class="control-label" for="Zip Code">Zip Code</label>
-                                    <div class="">
-                                        <input type="text" id="txtZipCode" class="form-control" placeholder="Enter Zip Code">
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Contact Number</label>
+                                        <input type="text" class="form-control" id="txtPhone" placeholder="Enter Contact Number">
                                     </div>
                                 </div>
-
-                                <div class="form-group">
-                                    <label for="exampleInputEmail1">Country</label>
-                                    <select class="form-control" id="txtCountry">
-                                        <option value="US">US - United States</option>
-                                        <option value="CA">CA - Canada</option>
-                                    </select>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="exampleInputEmail1">Status</label>
-                                    <select class="form-control" id="status">
-                                        <option value="1">Open</option>
-                                        <option value="0">Close</option>
-                                    </select>
-                                </div>
-                                
-                                <div class="form-group"><br />
-                                    <input type="checkbox" id="chkwarehousestatus" name="WarehouseStatus" /><label for="Active">Active</label>
-                                </div>
-                                @*<span id='resultConfirm'></span>*@
                             </div>
                         </div>
-                    </div>
-                    <div class="box-footer">
-                        <div class="text-right">
-                            <a href="#" class="btn btn-danger" id="btnSave"><b>Submit</b></a>
-                            @Html.ActionLink("Back to List", "Warehouse", null, new { @class = "btn btn-danger" })
+                        <div class="col-sm-4">
+                            <div class="box box-primary">
+                                <div class="box-body">
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Fax</label>
+                                        <input type="text" class="form-control" id="txtFax" placeholder="Enter Fax Number">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <img class="sb-title-icon" src="https://fonts.gstatic.com/s/i/googlematerialicons/location_pin/v5/24px.svg" alt="">
+                                        <label for="exampleInputEmail1">Address </label>
+                                        <input type="text" class="form-control" id="txtAddress" placeholder="Enter Address ">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Address 1</label>
+                                        <input type="text" class="form-control" id="txtAddress1" placeholder="Enter Address ">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">City</label>
+                                        <input type="text" id="txtCity" class="form-control" placeholder="Enter City" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">State</label>
+                                        <select class="form-control" id="txtState">
+                                            <option selected value="">Select State</option>
+                                        </select>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="box box-primary">
+                                <div class="box-body">
+                                   
+
+                                    <div class="form-group">
+                                        <label class="control-label" for="Zip Code">Zip Code</label>
+                                        <div class="">
+                                            <input type="text" id="txtZipCode" class="form-control" placeholder="Enter Zip Code">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Country</label>
+                                        <select class="form-control" id="txtCountry">
+                                            <option value="US">US - United States</option>
+                                            <option value="CA">CA - Canada</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Status</label>
+                                        <select class="form-control" id="warehousetype">
+                                            <option value="Public">Public</option>
+                                            <option value="Private">Private</option>
+                                            <option value="Climate controlled">Climate controlled</option>
+                                            <option value="Distribution center">Distribution center</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <br />
+                                        <input type="checkbox" id="chkwarehousestatus" name="WarehouseStatus" /><label for="Active">Active</label>
+                                    </div>
+                                    @*<span id='resultConfirm'></span>*@
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="box-footer">
+                            <div class="text-right">
+                                <button type="button" id="changetabbutton" class="btn btn-danger ">Next tab</button>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <!-- /.nav-tabs-custom -->
             </div>
-            <!-- /.col -->
+            <div class="tab-pane" id="tab_2">
+                            <div class="box-header new-vendor-header">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <div class="box box-primary">
+                                            <div class="box-body">
+                                                <div class="form-group">
+                                                    <label for="exampleInputEmail1">Contact Number</label>
+                                                    <input type="text" class="form-control" id="txtCorContact" placeholder="Enter Contact Number">
+                                                </div>
+
+                                                <div class="form-group">
+
+                                                    <label for="exampleInputEmail1">Correspondence Address </label>
+                                                    <input type="text" class="form-control" id="txtCorAddress" placeholder="Enter Address ">
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label for="exampleInputEmail1">Correspondence Address1</label>
+                                                    <input type="text" class="form-control" id="txtCorAddress1" placeholder="Enter Address1 ">
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label for="exampleInputEmail1">City</label>
+                                                    <input type="text" id="txtCorCity" class="form-control" placeholder="Enter City" />
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label for="exampleInputEmail1">State</label>
+                                                    <input type="text" id="txtCorState" class="form-control" placeholder="Enter State" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="box box-primary">
+                                            <div class="box-body">
+                                                <div class="form-group">
+                                                    <label class="control-label" for="Zip Code">Zip Code</label>
+                                                    <div class="">
+                                                        <input type="text" id="txtCorZipCode" class="form-control" placeholder="Enter Zip Code">
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label for="exampleInputEmail1">Country</label>
+                                                    <select class="form-control" id="txtCorCountry">
+                                                        <option value="US">US - United States</option>
+                                                        <option value="CA">CA - Canada</option>
+                                                    </select>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <div><label>Note(Public)</label></div>
+                                                    <textarea class="form-control" id="txtpublic"></textarea>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div><label>Note(Private)</label></div>
+                                                    <textarea class="form-control" id="txtprivate"></textarea>
+                                                </div>
+                                                @*<span id='resultConfirm'></span>*@
+
+                                                <div class="box-footer">
+                                                    <div class="text-right">
+                                                        <a href="#" class="btn btn-danger" id="btnSave"><b>Submit</b></a>
+                                                        @Html.ActionLink("Back to List", "Warehouse", null, new { @class = "btn btn-danger" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                </div>
+                </div>
+            </div>
         </div>
-    </div>
-</div>
+</section>
 
-<script>
-    var strength = 1;
-    $(document).ready(function () {
-        $("#loader").hide();
+    <script>
+        var strength = 1;
+        $(document).ready(function () {
+            $("#loader").hide();
 
-        $(document).on('click', "#btnSave", function () {
-            AddWarehouse();
-        });
+            $(document).on('click', "#btnSave", function () {
+                AddWarehouse();
+            });
+
+            //Event for the next page
+            $('#changetabbutton').click(function (e) {
+                ref = $("#txtref").val();
+                lieu = $("#txtShortNameLocation").val();
+                contact = $("#txtPhone").val();
+                address = $("#txtAddress").val();
+                city = $("#txtCity").val();
+                zip = $("#txtZipCode").val();
+                if (ref == "") {
+                    swal('Alert', 'Please Enter Reference Name', 'error').then(function () { swal.close(); $('#txtref').focus(); });
+                }
+                else if (lieu == "") {
+                    swal('Alert', 'Please Enter Short Name Location', 'error').then(function () { swal.close(); $('#txtShortNameLocation').focus(); });
+                }
+                else if (contact == "") {
+                    swal('Alert', 'Please Enter Contact Number', 'error').then(function () { swal.close(); $('#txtPhone').focus(); });
+                }
+                else if (address == "") {
+                    swal('Alert', 'Please Enter Address', 'error').then(function () { swal.close(); $('#txtAddress').focus(); });
+                }
+                else if (city == "") {
+                    swal('Alert', 'Please Enter City', 'error').then(function () { swal.close(); $('#txtCity').focus(); });
+                }
+                else if (zip == "") {
+                    swal('Alert', 'Please Enter Zip Code', 'error').then(function () { swal.close(); $('#txtZipCode').focus(); });
+                }
+                else {
+                    e.preventDefault();
+                    var link = $('#mytabs .active').next().children('a').attr('href');
+                    $('#mytabs a[href="' + link + '"]').tab('show');
+                }
+            });
+            //Sele
+            $("#txtState").select2({
+                allowClear: true, minimumInputLength: 2, placeholder: "Search State",
+                ajax: {
+                    url: '/Users/GetCustState/', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+                    data: function (params) {
+                        var obj = { strValue1: params.term, strValue2: $("#txtCountry").val() };
+                        return JSON.stringify(obj);
+                    },
+                    processResults: function (data) {
+                        var jobj = JSON.parse(data);
+                        return {
+                            results: $.map(jobj, function (item) {
+                                return { text: item.StateFullName, name: item.StateFullName, id: item.StateFullName }
+                            })
+                        };
+                    },
+                    error: function (xhr, status, err) { }, cache: true
+                }
+            });
 
 
-        $("#txtState").select2({
-            allowClear: true, minimumInputLength: 2, placeholder: "Search State",
-            ajax: {
-                url: '/Users/GetCustState/', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
-                data: function (params) {
-                    var obj = { strValue1: params.term, strValue2: $("#txtCountry").val() };
-                    return JSON.stringify(obj);
-                },
-                processResults: function (data) {
-                    var jobj = JSON.parse(data);
-                    return {
-                        results: $.map(jobj, function (item) {
-                            return { text: item.StateFullName, name: item.StateFullName, id: item.StateFullName }
-                        })
-                    };
-                },
-                error: function (xhr, status, err) { }, cache: true
-            }
-        });
+            $('#txtZipCode').change(function () {
+                City = $("#txtCity").val();
+                State = $("#txtState").val();
+                PostalCode = $("#txtZipCode").val();
+                var obj = {
+                    billing_state: State,
+                    billing_city: City,
+                    billing_postcode: PostalCode
+                }
+                $.ajax({
+                    url: '/Users/CityStateZip/', dataType: 'json', type: 'Post',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(obj),
+                    dataType: "json",
+                    success: function (data) {
+                        console.log(data);
+                        if (data.status == true) {
 
-
-        $('#txtZipCode').change(function () {
-            City = $("#txtCity").val();
-            State = $("#txtState").val();
-            PostalCode = $("#txtZipCode").val();
-            var obj = {
-                billing_state: State,
-                billing_city: City,
-                billing_postcode: PostalCode
-            }
-            $.ajax({
-                url: '/Users/CityStateZip/', dataType: 'json', type: 'Post',
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify(obj),
-                dataType: "json",
-                success: function (data) {
-                    console.log(data);
-                    if (data.status == true) {
-                        
-                        $('#hfzipstatus').val(data.status);
-
-                    }
-                    else {
-                        if ($('#txtCountry').val() == "US") {
-                            $("#txtZipCode").val("");
                             $('#hfzipstatus').val(data.status);
-                            swal('Alert', 'Zip code is not valid for the State', 'error').then(function () { swal.close(); $('#txtZipCode').focus(); });
+
                         }
-                    }
-                },
+                        else {
+                            if ($('#txtCountry').val() == "US") {
+                                $("#txtZipCode").val("");
+                                $('#hfzipstatus').val(data.status);
+                                swal('Alert', 'Zip code is not valid for the State', 'error').then(function () { swal.close(); $('#txtZipCode').focus(); });
+                            }
+                        }
+                    },
 
-                error: function (error) {
-                    swal('Error!', 'something went wrong', 'error');
-                },
-            })
+                    error: function (error) {
+                        swal('Error!', 'something went wrong', 'error');
+                    },
+                })
+            });
+
+
+
+
         });
 
 
 
 
-    });
+
+
+        document.getElementById('txtPhone').addEventListener('keyup', function (evt) {
+            var phoneNumber = document.getElementById('txtPhone');
+            var charCode = (evt.which) ? evt.which : evt.keyCode;
+            phoneNumber.value = phoneFormat(phoneNumber.value);
+        });
 
 
 
-
-
-
-    document.getElementById('txtPhone').addEventListener('keyup', function (evt) {
-        var phoneNumber = document.getElementById('txtPhone');
-        var charCode = (evt.which) ? evt.which : evt.keyCode;
-        phoneNumber.value = phoneFormat(phoneNumber.value);
-    });
-
-
-
-    function phoneFormat(input) {
-        input = input.replace(/\D/g, '');
-        input = input.substring(0, 10);
-        var size = input.length;
-        if (size == 0) {
-            input = input;
-        } else if (size < 4) {
-            input = '(' + input;
-        } else if (size < 7) {
-            input = '(' + input.substring(0, 3) + ') ' + input.substring(3, 6);
-        } else {
-            input = '(' + input.substring(0, 3) + ') ' + input.substring(3, 6) + ' - ' + input.substring(6, 10);
-        }
-        return input;
-    }
-
-</script>
-
-<script>
-
-    function AddWarehouse() {
-        debugger
-        rowid = $("#hfid").val();
-        ref = $("#txtref").val();
-        lieu = $("#txtShortNameLocation").val();
-        description = $("#txtDescription").val();
-        address = $("#txtAddress").val();
-        zip = $("#txtZipCode").val();
-        town = $("#txtState").val();
-        country = $("#txtCountry").val();
-        phone = $("#txtPhone").val();
-        fax = $("#txtFax").val();
-        statut = $("#status").val();
-        address1 = $("#txtAddress1").val();
-        city = $("#txtCity").val(); 
-        status = $("#chkwarehousestatus").prop("checked") ? 1 : 0;
-
-        if (ref == "") {
-            swal('Alert', 'Please Enter Reference Name', 'error').then(function () { swal.close(); $('#txtref').focus(); });
-        }
-        else if (lieu == "") {
-            swal('Alert', 'Please Enter Short Name Location', 'error').then(function () { swal.close(); $('#txtShortNameLocation').focus(); });
-        }
-
-        else {
-
-            var obj = {
-                rowid: rowid,
-                reff: ref,
-                lieu: lieu,
-                description: description,
-                address: address,
-                zip: zip,
-                town: town,
-                country: country,
-                phone: phone,
-                fax: fax,
-                statut: statut,
-                address1: address1,
-                city: city,
-                status : status
+        function phoneFormat(input) {
+            input = input.replace(/\D/g, '');
+            input = input.substring(0, 10);
+            var size = input.length;
+            if (size == 0) {
+                input = input;
+            } else if (size < 4) {
+                input = '(' + input;
+            } else if (size < 7) {
+                input = '(' + input.substring(0, 3) + ') ' + input.substring(3, 6);
+            } else {
+                input = '(' + input.substring(0, 3) + ') ' + input.substring(3, 6) + ' - ' + input.substring(6, 10);
             }
-            $.ajax({
-                url: '/Warehouse/AddWarehouse/', dataType: 'json', type: 'Post',
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify(obj),
-                dataType: "json",
-                beforeSend: function () { $("#loader").show(); },
-                success: function (data) {
-                    if (data.status == true) {
-                        //$('#parent > input:text').val('');
-                        swal('Alert!', data.message, 'success').then((result) => { location.href = 'Warehouse'; });
-                    }
-                    else {
-                        swal('Alert!', data.message, 'error');
-                    }
-                },
-                complete: function () { $("#loader").hide(); },
-                error: function (error) { swal('Error!', 'something went wrong', 'error'); },
-            })
-
+            return input;
         }
 
-    }
-</script>
+    </script>
 
-<script>
-    function initMap() {
-        let address1Field = document.querySelector("#txtAddress");
-        // Create the autocomplete object, restricting the search predictions to
-        // addresses in the US and Canada.
-        autocomplete = new google.maps.places.Autocomplete(address1Field, {
-            componentRestrictions: { country: ["us", "ca"] },
-            fields: ["address_components", "geometry"],
-            types: ["address"],
-        });
-        // When the user selects an address from the drop-down, populate the
-        // address fields in the form.
-        autocomplete.addListener("place_changed", fillInAddress);
+    <script>
 
-        function fillInAddress() {
-            const place = autocomplete.getPlace();
-            //console.log(place);
-            let address = '';
-            let obj = place.address_components.filter(element => element.types[0] == 'street_number');
-            if (obj.length > 0)
-                address = obj[0].long_name;
-            obj = place.address_components.filter(element => element.types[0] == 'route');
-            if (obj.length > 0)
-                address = address + ' ' + obj[0].long_name;
-            $("#txtAddress").val(address);
-            obj = place.address_components.filter(element => element.types[0] == 'locality');
-            if (obj.length > 0)
-                $("#txtCity").val(obj[0].long_name);
-            else
-                $("#txtCity").val('');
-            obj = place.address_components.filter(element => element.types[0] == 'postal_code');
-            if (obj.length > 0)
-                $("#txtZipCode").val(obj[0].long_name);
-            else
-                $("#txtZipCode").val('');
-            obj = place.address_components.filter(element => element.types[0] == 'administrative_area_level_1');
-            if (obj.length > 0)
-                $("#txtState").empty().append('<option value="' + obj[0].short_name + '" selected>' + obj[0].long_name + '</option>');
-            else
-                $("#txtState").empty();
-            obj = place.address_components.filter(element => element.types[0] == 'country');
-            if (obj.length > 0)
-                $("#txtCountry").val(obj[0].short_name);
-            else
-                $("#txtCountry").empty();
+        function AddWarehouse() {
+            debugger
+            rowid = $("#hfid").val();
+            ref = $("#txtref").val();
+            lieu = $("#txtShortNameLocation").val();
+            description = $("#txtDescription").val();
+            address = $("#txtAddress").val();
+            zip = $("#txtZipCode").val();
+            town = $("#txtState").val();
+            country = $("#txtCountry").val();
+            phone = $("#txtPhone").val();
+            fax = $("#txtFax").val();
+            statut = $("#status").val();
+            address1 = $("#txtAddress1").val();
+            city = $("#txtCity").val();
+            status = $("#chkwarehousestatus").prop("checked") ? 1 : 0;
+            warehousetype = $("#warehousetype").val();
+            //Additional info
+            corphone = $("#txtCorContact").val();
+            coraddress = $("#txtCorAddress").val();
+            coraddress1 = $("#txtCorAddress1").val();
+            corcity = $("#txtCorCity").val();
+            corstate = $("#txtCorState").val();
+            corzip = $("#txtCorZipCode").val();
+            corcountry = $("#txtCorCountry").val();
+            publicnote = $("#txtpublic").val();
+            privatenote = $("#txtprivate").val();
+            email = $("#txtEmail").val();
+
+            if (ref == "") {
+                swal('Alert', 'Please Enter Reference Name', 'error').then(function () { swal.close(); $('#txtref').focus(); });
+            }
+            else if (lieu == "") {
+                swal('Alert', 'Please Enter Short Name Location', 'error').then(function () { swal.close(); $('#txtShortNameLocation').focus(); });
+            }
+            else if (contact == "") {
+                swal('Alert', 'Please Enter Contact Number', 'error').then(function () { swal.close(); $('#txtPhone').focus(); });
+            }
+            else if (address == "") {
+                swal('Alert', 'Please Enter Address', 'error').then(function () { swal.close(); $('#txtAddress').focus(); });
+            }
+            else if (city == "") {
+                swal('Alert', 'Please Enter City', 'error').then(function () { swal.close(); $('#txtCity').focus(); });
+            }
+            else if (zip == "") {
+                swal('Alert', 'Please Enter Zip Code', 'error').then(function () { swal.close(); $('#txtZipCode').focus(); });
+            }
+            else {
+
+                var obj = {
+                    rowid: rowid,
+                    reff: ref,
+                    lieu: lieu,
+                    description: description,
+                    address: address,
+                    zip: zip,
+                    town: town,
+                    country: country,
+                    phone: phone,
+                    fax: fax,
+                    statut: statut,
+                    address1: address1,
+                    city: city,
+                    status: status,
+                    warehouse_type: warehousetype,
+                    cor_phone: corphone,
+                    cor_address: coraddress,
+                    cor_address1: coraddress1,
+                    cor_city: corcity,
+                    cor_state: corstate,
+                    cor_zip: corzip,
+                    cor_country: corcountry,
+                    note_public: publicnote,
+                    note_private: privatenote,
+                    email: email,
+                }
+                $.ajax({
+                    url: '/Warehouse/AddWarehouse/', dataType: 'json', type: 'Post',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(obj),
+                    dataType: "json",
+                    beforeSend: function () { $("#loader").show(); },
+                    success: function (data) {
+                        if (data.status == true) {
+                            //$('#parent > input:text').val('');
+                            swal('Alert!', data.message, 'success').then((result) => { location.href = 'Warehouse'; });
+                        }
+                        else {
+                            swal('Alert!', data.message, 'error');
+                        }
+                    },
+                    complete: function () { $("#loader").hide(); },
+                    error: function (error) { swal('Error!', 'something went wrong', 'error'); },
+                })
+
+            }
+
         }
+    </script>
 
-        function renderAddress(place) {
-            //map.setCenter(place.geometry.location);
-            //marker.setPosition(place.geometry.location);
-            //marker.setVisible(true);
+    <script>
+        function initMap() {
+            let address1Field = document.querySelector("#txtAddress");
+            // Create the autocomplete object, restricting the search predictions to
+            // addresses in the US and Canada.
+            autocomplete = new google.maps.places.Autocomplete(address1Field, {
+                componentRestrictions: { country: ["us", "ca"] },
+                fields: ["address_components", "geometry"],
+                types: ["address"],
+            });
+            // When the user selects an address from the drop-down, populate the
+            // address fields in the form.
+            autocomplete.addListener("place_changed", fillInAddress);
+
+            function fillInAddress() {
+                const place = autocomplete.getPlace();
+                //console.log(place);
+                let address = '';
+                let obj = place.address_components.filter(element => element.types[0] == 'street_number');
+                if (obj.length > 0)
+                    address = obj[0].long_name;
+                obj = place.address_components.filter(element => element.types[0] == 'route');
+                if (obj.length > 0)
+                    address = address + ' ' + obj[0].long_name;
+                $("#txtAddress").val(address);
+                obj = place.address_components.filter(element => element.types[0] == 'locality');
+                if (obj.length > 0)
+                    $("#txtCity").val(obj[0].long_name);
+                else
+                    $("#txtCity").val('');
+                obj = place.address_components.filter(element => element.types[0] == 'postal_code');
+                if (obj.length > 0)
+                    $("#txtZipCode").val(obj[0].long_name);
+                else
+                    $("#txtZipCode").val('');
+                obj = place.address_components.filter(element => element.types[0] == 'administrative_area_level_1');
+                if (obj.length > 0)
+                    $("#txtState").empty().append('<option value="' + obj[0].short_name + '" selected>' + obj[0].long_name + '</option>');
+                else
+                    $("#txtState").empty();
+                obj = place.address_components.filter(element => element.types[0] == 'country');
+                if (obj.length > 0)
+                    $("#txtCountry").val(obj[0].short_name);
+                else
+                    $("#txtCountry").empty();
+            }
+
+            function renderAddress(place) {
+                //map.setCenter(place.geometry.location);
+                //marker.setPosition(place.geometry.location);
+                //marker.setVisible(true);
+            }
         }
-    }
-</script>
+    </script>
 
 
 
-<!-- Google API -->
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBIgngCCIJ3D8_s3G7aIfvQckhsDtbAe4E&libraries&callback=initMap&libraries=places&v=weekly" async></script>
+    <!-- Google API -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBIgngCCIJ3D8_s3G7aIfvQckhsDtbAe4E&libraries&callback=initMap&libraries=places&v=weekly" async></script>

@@ -55,7 +55,6 @@ namespace LaylaERP.Controllers
                 }
                 else
                 {
-
                     int ID = WarehouseRepository.AddWarehouse(model);
                     if (ID > 0)
                     {
@@ -72,15 +71,16 @@ namespace LaylaERP.Controllers
 
         public ActionResult UpdateWarehouse(int rowid)
         {
-            
-            dynamic myModel = new ExpandoObject();
+          
+        dynamic myModel = new ExpandoObject();
+    
             myModel.rowid = null;
             myModel.reff = null;
             myModel.description = null;
             myModel.lieu = null;
             myModel.phone = null;
             myModel.fax = null;
-            myModel.statut = null;
+            //myModel.statut = null;
             myModel.address = null;
             myModel.zip = null;
             myModel.town = null;
@@ -88,6 +88,18 @@ namespace LaylaERP.Controllers
             myModel.address1 = null;
             myModel.city = null;
             myModel.status = null;
+            myModel.warehouse_type = null;
+            //Additional Info
+            myModel.cor_phone=null;
+            myModel.cor_address=null;
+            myModel.cor_address1=null;
+            myModel.cor_city=null;
+            myModel.cor_state=null;
+            myModel.cor_zip=null;
+            myModel.cor_country=null;
+            myModel.note_public=null;
+            myModel.note_private=null;
+            myModel.email = null;
             DataTable dt = WarehouseRepository.GetWarehouseID(rowid);
             myModel.rowid = rowid;
             myModel.reff = dt.Rows[0]["ref"];
@@ -95,7 +107,7 @@ namespace LaylaERP.Controllers
             myModel.lieu = dt.Rows[0]["lieu"];
             myModel.phone = dt.Rows[0]["phone"];
             myModel.fax = dt.Rows[0]["fax"];
-            myModel.statut = dt.Rows[0]["statut"];
+            //myModel.statut = dt.Rows[0]["statut"];
             myModel.address = dt.Rows[0]["address"];
             myModel.zip = dt.Rows[0]["zip"];
             myModel.town = dt.Rows[0]["town"];
@@ -103,6 +115,17 @@ namespace LaylaERP.Controllers
             myModel.address1 = dt.Rows[0]["address1"];
             myModel.city = dt.Rows[0]["city"];
             myModel.status = dt.Rows[0]["status"];
+            myModel.warehouse_type = dt.Rows[0]["warehouse_type"];
+            myModel.cor_phone = dt.Rows[0]["cor_phone"];
+            myModel.cor_address = dt.Rows[0]["cor_address"];
+            myModel.cor_address1 = dt.Rows[0]["cor_address1"];
+            myModel.cor_city = dt.Rows[0]["cor_city"];
+            myModel.cor_state = dt.Rows[0]["cor_state"];
+            myModel.cor_zip = dt.Rows[0]["cor_zip"];
+            myModel.cor_country = dt.Rows[0]["cor_country"];
+            myModel.note_public = dt.Rows[0]["note_public"];
+            myModel.note_private = dt.Rows[0]["note_private"];
+            myModel.email = dt.Rows[0]["email"];
             return PartialView("UpdateWarehouse", myModel);
         }
 
@@ -247,6 +270,33 @@ namespace LaylaERP.Controllers
             }
             catch (Exception ex) { throw ex; }
             return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+        }
+
+
+        public JsonResult Getvendorwarehouse(SearchModel model)
+        {
+
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = WarehouseRepository.Getvendorwarehouse(model);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+
+        public JsonResult GetWarehousename(SearchModel model)
+        {
+            DataSet ds = WarehouseRepository.GetWarehouse();
+            List<SelectListItem> warehouselist = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+
+                warehouselist.Add(new SelectListItem { Text = dr["ref"].ToString(), Value = dr["rowid"].ToString() });
+
+            }
+            return Json(warehouselist, JsonRequestBehavior.AllowGet);
         }
     }
 }

@@ -24,11 +24,14 @@ function VendorGrid() {
             });
         },
         aoColumns: [
-
-
+            {
+                'data': 'VendorCode', sWidth: "10%",
+                'render': function (id, type, full, meta) {
+                    return '<a href="../ThirdParty/NewVendor/' + id + '">' + id + '</a>';
+                }
+            },
             { data: 'VendorName', title: 'Vendor Name', sWidth: "20%" },
             { data: 'AliasName', title: 'Alias Name', sWidth: "10%" },
-            { data: 'VendorCode', title: 'Vendor Code', sWidth: "10%" },
             { data: 'zip', title: 'Zip Code', sWidth: "10%" },
             { data: 'address', title: 'Address', sWidth: "20%" },
             { data: 'phone', title: 'Phone', sWidth: "10%" },

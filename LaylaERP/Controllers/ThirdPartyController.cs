@@ -67,7 +67,7 @@ namespace LaylaERP.Controllers
                 }
                 else
                 {
-                    return Json(new { status = false, message = "Basic info not added", url = "", id = 0 }, 0);
+                    return Json(new { status = false, message = "Vendor info not Found", url = "", id = 0 }, 0);
                 }
             }
             return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
@@ -90,7 +90,7 @@ namespace LaylaERP.Controllers
                 }
                 else
                 {
-                    return Json(new { status = false, message = "Basic info not added", url = "", id = 0 }, 0);
+                    return Json(new { status = false, message = "Vendor info not Found", url = "", id = 0 }, 0);
                 }
             }
             return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
@@ -113,7 +113,7 @@ namespace LaylaERP.Controllers
                 }
                 else
                 {
-                    return Json(new { status = false, message = "Basic info not added", url = "", id = 0 }, 0);
+                    return Json(new { status = false, message = "Vendor info not Found", url = "", id = 0 }, 0);
                 }
             }
             return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
@@ -136,7 +136,7 @@ namespace LaylaERP.Controllers
                 }
                 else
                 {
-                    return Json(new { status = false, message = "Basic info not added", url = "", id = 0 }, 0);
+                    return Json(new { status = false, message = "Vendor info not Found", url = "", id = 0 }, 0);
                 }
             }
             return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
@@ -159,7 +159,7 @@ namespace LaylaERP.Controllers
                 }
                 else
                 {
-                    return Json(new { status = false, message = "Basic info not added", url = "", id = 0 }, 0);
+                    return Json(new { status = false, message = "Vendor info not Found", url = "", id = 0 }, 0);
                 }
             }
             return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
@@ -191,7 +191,30 @@ namespace LaylaERP.Controllers
                 }
                 else
                 {
-                    return Json(new { status = false, message = "Basic info not added", url = "", id = 0 }, 0);
+                    return Json(new { status = false, message = "Vendor info not Found", url = "", id = 0 }, 0);
+                }
+            }
+            return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
+        }
+        public JsonResult AddContacts(ThirdPartyModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (model.rowid > 0)
+                {
+                        int ID = new ThirdPartyRepository().AddContacts(model);
+                        if (ID > 0)
+                        {
+                            return Json(new { status = true, message = "Contacts has been saved successfully!!", url = "", id = ID }, 0);
+                        }
+                        else
+                        {
+                            return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
+                        }
+                }
+                else
+                {
+                    return Json(new { status = false, message = "Vendor info not Found", url = "", id = 0 }, 0);
                 }
             }
             return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
@@ -374,5 +397,33 @@ namespace LaylaERP.Controllers
             return Json(JSONresult, 0);
         }
 
+        public JsonResult GetVendorContactByID(long id)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = ThirdPartyRepository.VendorContactByID(id);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+        public JsonResult GetVendorContactList(ThirdPartyModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                long id = model.rowid;
+                string urid = "";
+                if (model.user_status != "")
+                    urid = model.user_status;
+                string searchid = model.Search;
+                DataTable dt = ThirdPartyRepository.GetVendorContact(id,urid, searchid, model.PageNo, model.PageSize, out TotalRecord, model.SortCol, model.SortDir);
+                result = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+        }
     }
 }

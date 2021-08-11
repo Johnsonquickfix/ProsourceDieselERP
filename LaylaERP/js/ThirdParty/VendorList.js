@@ -27,7 +27,8 @@ function VendorGrid() {
             {
                 'data': 'VendorCode', sWidth: "10%",
                 'render': function (id, type, full, meta) {
-                    return '<a href="../ThirdParty/NewVendor/' + id + '">' + id + '</a>';
+                    return '<a href="#">' + id + '</a>';
+                    //return '<a href="../ThirdParty/NewVendor/' + id + '">' + id + '</a>';
                 }
             },
             { data: 'VendorName', title: 'Vendor Name', sWidth: "20%" },

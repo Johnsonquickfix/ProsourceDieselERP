@@ -1,7 +1,8 @@
 ﻿
 @{
-ViewBag.Title = "NewVendor";
+    ViewBag.Title = "NewVendor";
 }
+
 <link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap.min.css" rel="stylesheet" />
 <link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
 @*datatables js*@
@@ -13,15 +14,16 @@ ViewBag.Title = "NewVendor";
     <span>&nbsp;&nbsp;Loading......</span>
 </div>
 <div class="page-title">
-    <h2 class="page-heading" id="lbltitle">Vendor</h2>
+    <h2 class="page-heading" id="lbltitle">Vendor</h2>@Html.ActionLink("Back to List", "VendorList", null, new { @class = "btn btn-danger" })
 </div>
+
 <!-- Main content -->
 <section class="content content-section p-0 vender-section1">
     <div class="contennt setting-section">
         <div class="nav-tabs-custom">
             <ul class="nav nav-tabs" id="mytabs" role="tablist">
-                <li class="active"><a href="#tab_1" data-toggle="tab">Basic Info</a></li>
-                <li><a href="#tab_2" data-toggle="tab">Additional Info</a></li>
+                <li class="active"><a href="#tab_1" data-toggle="tab">Vendor Info</a></li>
+                <li><a href="#tab_2" data-toggle="tab">Contacts/Addresses</a></li>
                 <li><a href="#tab_3" data-toggle="tab">Payment Terms</a></li>
                 <li><a href="#tab_4" data-toggle="tab">Shipping</a></li>
                 <li><a href="#tab_5" data-toggle="tab">Taxes</a></li>
@@ -34,7 +36,7 @@ ViewBag.Title = "NewVendor";
                     <div class="create-new-customer" id="parent">
                         <input type="hidden" id="hfid" value="@ViewBag.id" />
                         <div class="box-header">
-                            <h2 class="box-title">Basic Info</h2>
+                            <h2 class="box-title">Vendor Info</h2>
                         </div>
                         <div class="row">
                             <div class="col-md-4">
@@ -121,7 +123,7 @@ ViewBag.Title = "NewVendor";
                                             <label class="control-label">Working hours</label>
                                             <input type="text" class="form-control" id="txtWorkinghours" placeholder="Working hours" />
                                         </div><!--16-->
-                                       
+
                                         <input type="checkbox" id="chkVendorStatus" name="VendorStatus"> <label for="Active">Active</label><!--17-->
                                     </div>
                                 </div>
@@ -130,7 +132,7 @@ ViewBag.Title = "NewVendor";
                         </div>
                         <div class="box-footer">
                             <div class="text-right">
-                                <button type="button" id="btnNextTab1" class="btn btn-danger ">Next tab</button>
+                                <button type="button" id="btnNextTab1" class="btn btn-danger ">Next</button>
                             </div>
                         </div>
                     </div>
@@ -138,78 +140,105 @@ ViewBag.Title = "NewVendor";
                 <div class="tab-pane" id="tab_2">
                     <div id="aditional-info">
                         <div class="box-header">
-                            <h2 class="box-title">Additional Info</h2>
+                            <h2 class="box-title">Contacts/Addresses</h2>
+                            <button type="button" id="btnAddContact" class="btn btn-danger" data-toggle="modal" data-target="#VendorModal" style="float: right;">
+                                <i class="fa fa-plus"></i> Add Contact
+                            </button>
                         </div>
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-12">
                                 <div class="box box-primary">
-                                    <div class="box-body">
-                                        <div class="form-group">
-                                            <label class="control-label ">Cor Address1</label>
-                                            <input type="text" id="txtCorAddress1" class="form-control" />
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="control-label ">Cor Address2</label>
-                                            <input type="text" id="txtCorAddress2" class="form-control" />
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="control-label ">Cor City</label>
-                                            <input type="text" id="txtCorCity" class="form-control" />
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="control-label ">Cor State</label>
-                                            <input type="text" id="txtCorState" class="form-control" />
+                                    <div class="box-header">
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <table id="dtdata" class="inventory-table table-blue table check-table table-bordered table-striped dataTable " width="100%">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Name</th>
+                                                            <th>Vendor Name</th>
+                                                            <th>Title</th>
+                                                            <th>Phone</th>
+                                                            <th>Email</th>
+                                                            <th>Address</th>
+                                                            <th>Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                </table>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-4">
-                                <div class="box box-primary">
-                                    <div class="box-body">
-                                        <div class="form-group">
-                                            <label class="control-label ">Cor Zip Code</label>
-                                            <input type="text" id="txtCorZipCode" class="form-control" />
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="control-label ">Cor Country</label>
-                                            <input type="text" id="txtCorCountry" class="form-control" />
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="control-label ">Cor Phone/Mobile</label>
-                                            <input type="text" id="txtCorPhone" class="form-control" />
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="control-label ">Work force</label>
-                                            <select class="form-control" id="ddlWorkforce"></select>
-                                            @*<input type="text" id="txtWorkforce" class="form-control" />*@
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="box box-primary">
-                                    <div class="box-body">
-                                        <div class="form-group">
-                                            <label class="control-label ">Business Entity Type</label>
-                                            <input type="text" id="txtBusinessEntityType" class="form-control" />
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="control-label ">Notes (Public)</label>
-                                            <textarea id="txtNotesPublic" class="form-control"></textarea>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="control-label ">Notes (Private)</label>
-                                            <textarea id="txtNotesPrivate" class="form-control"></textarea>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-                            
                         </div>
+                        @*<div class="row">
+                                <div class="col-md-4">
+                                    <div class="box box-primary">
+                                        <div class="box-body">
+                                            <div class="form-group">
+                                                <label class="control-label ">Cor Address1</label>
+                                                <input type="text" id="txtCorAddress1" class="form-control" />
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label ">Cor Address2</label>
+                                                <input type="text" id="txtCorAddress2" class="form-control" />
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label ">Cor City</label>
+                                                <input type="text" id="txtCorCity" class="form-control" />
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label ">Cor State</label>
+                                                <input type="text" id="txtCorState" class="form-control" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="box box-primary">
+                                        <div class="box-body">
+                                            <div class="form-group">
+                                                <label class="control-label ">Cor Zip Code</label>
+                                                <input type="text" id="txtCorZipCode" class="form-control" />
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label ">Cor Country</label>
+                                                <input type="text" id="txtCorCountry" class="form-control" />
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label ">Cor Phone/Mobile</label>
+                                                <input type="text" id="txtCorPhone" class="form-control" />
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label ">Work force</label>
+                                                <select class="form-control" id="ddlWorkforce"></select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="box box-primary">
+                                        <div class="box-body">
+                                            <div class="form-group">
+                                                <label class="control-label ">Business Entity Type</label>
+                                                <input type="text" id="txtBusinessEntityType" class="form-control" />
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label ">Notes (Public)</label>
+                                                <textarea id="txtNotesPublic" class="form-control"></textarea>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label ">Notes (Private)</label>
+                                                <textarea id="txtNotesPrivate" class="form-control"></textarea>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>*@
                         <div class="box-footer">
                             <div class="text-right">
-                                <button type="button" id="btnNextTab2" class="btn btn-danger ">Next tab</button>
+                                <button type="button" id="btnNextTab2" class="btn btn-danger ">Next</button>
                             </div>
                         </div>
                     </div>
@@ -249,14 +278,14 @@ ViewBag.Title = "NewVendor";
                                 <div class="box box-primary">
                                     <div class="box-body">
                                         @*<div class="form-group">
-                                            <label for="Balance">Payment Type</label>
-                                            <select class="form-control" id="ddlPaymentType">
-                                                <option value="-1">Please Select Payment Type</option>
-                                                <option value="banktranser">Bank Transfer</option>
-                                                <option value="cheque">Cheque</option>
-                                                <option value="creditcard">Credit Card</option>
-                                            </select>
-                                        </div>*@
+                                                <label for="Balance">Payment Type</label>
+                                                <select class="form-control" id="ddlPaymentType">
+                                                    <option value="-1">Please Select Payment Type</option>
+                                                    <option value="banktranser">Bank Transfer</option>
+                                                    <option value="cheque">Cheque</option>
+                                                    <option value="creditcard">Credit Card</option>
+                                                </select>
+                                            </div>*@
                                         <div class="form-group">
                                             <label class="control-label " for="Currency">Currency</label>
                                             <select class="form-control" id="ddlCurrency">
@@ -291,7 +320,7 @@ ViewBag.Title = "NewVendor";
                         </div>
                         <div class="box-footer">
                             <div class="text-right">
-                                <button type="button" id="btnNextTab3" class="btn btn-danger ">Next tab</button>
+                                <button type="button" id="btnNextTab3" class="btn btn-danger ">Next</button>
                             </div>
                         </div>
                     </div>
@@ -380,7 +409,7 @@ ViewBag.Title = "NewVendor";
                         </div>
                         <div class="box-footer">
                             <div class="text-right">
-                                <button type="button" id="btnNextTab4" class="btn btn-danger ">Next tab</button>
+                                <button type="button" id="btnNextTab4" class="btn btn-danger ">Next</button>
                             </div>
                         </div>
                     </div>
@@ -423,12 +452,12 @@ ViewBag.Title = "NewVendor";
                                 <div class="box box-primary">
                                     <div class="box-body">
                                         @*<div class="form-group form-check">
-                                            <input type="checkbox" id="chkTaxIncludedinprice" />
-                                            <label class="control-label" for="tax_include_in_price1">Tax included in price</label>
-                                        </div>*@
-                                       
-                                            <input type="checkbox" id="chkShippingTaxIncludedinprice" />
-                                            <label class="control-label" for="shipping_tax_include_in_price1">Shipping tax included in price</label>
+                                                <input type="checkbox" id="chkTaxIncludedinprice" />
+                                                <label class="control-label" for="tax_include_in_price1">Tax included in price</label>
+                                            </div>*@
+
+                                        <input type="checkbox" id="chkShippingTaxIncludedinprice" />
+                                        <label class="control-label" for="shipping_tax_include_in_price1">Shipping tax included in price</label>
                                     </div>
                                 </div>
                             </div>
@@ -439,16 +468,16 @@ ViewBag.Title = "NewVendor";
                                             <label class="control-label">Calculated tax</label>
                                             <input type="text" class="form-control" id="txtCalculatedtax" placeholder="Calculated tax" />
                                         </div>
-                                       
-                                            <input type="checkbox" id="chkTaxIncludedinPrice" />
-                                            <label class="control-label" for="shipping_tax_include_in_price2">Tax Included in price</label>
+
+                                        <input type="checkbox" id="chkTaxIncludedinPrice" />
+                                        <label class="control-label" for="shipping_tax_include_in_price2">Tax Included in price</label>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="box-footer">
                             <div class="text-right">
-                                <button type="button" id="btnNextTab5" class="btn btn-danger ">Next tab</button>
+                                <button type="button" id="btnNextTab5" class="btn btn-danger ">Next</button>
                             </div>
                         </div>
                     </div>
@@ -519,7 +548,7 @@ ViewBag.Title = "NewVendor";
                         </div>
                         <div class="box-footer">
                             <div class="text-right">
-                                <button type="button" id="btnNextTab6" class="btn btn-danger ">Next tab</button>
+                                <button type="button" id="btnNextTab6" class="btn btn-danger ">Next</button>
                             </div>
                         </div>
                     </div>
@@ -619,11 +648,11 @@ ViewBag.Title = "NewVendor";
                                     </div>
                                 </div>
                             </div>
-                            
+
                         </div>
                         <div id="pay_invoice" style="display:none;">
                             <h2 class="box-header">Paypal Invoice</h2>
-                            
+
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="box box-primary">
@@ -671,10 +700,10 @@ ViewBag.Title = "NewVendor";
                                 <div class="col-md-4">
                                     <div class="box box-primary">
                                         <div class="box-body">
-                                          
-                                                <input type="checkbox" id="chkPaypalProduction" />
-                                                <label class="control-label" for="Paypal_Production">Paypal Production</label>
-                                            
+
+                                            <input type="checkbox" id="chkPaypalProduction" />
+                                            <label class="control-label" for="Paypal_Production">Paypal Production</label>
+
                                             <div class="form-group">
                                                 <label class="control-label">IPN email notification</label>
                                                 <input type="text" class="form-control" id="txtPaypalIPNEmailNotification" placeholder="IPN email notification" />
@@ -729,7 +758,7 @@ ViewBag.Title = "NewVendor";
                         </div>
                         <div class="box-footer">
                             <div class="text-right">
-                                <button type="button" id="btnNextTab7" class="btn btn-danger ">Next tab</button>
+                                <button type="button" id="btnNextTab7" class="btn btn-danger ">Next</button>
                             </div>
                         </div>
                     </div>
@@ -739,7 +768,7 @@ ViewBag.Title = "NewVendor";
                     <div class="box box-primary">
                         <div class="box-body">
                             <a href="#" class="btn btn-danger">Vendor link to Warehouse</a>
-                            @Html.ActionLink("Back to List", "VendorList", null, new { @class = "btn btn-danger" })
+                            @*@Html.ActionLink("Back to List", "VendorList", null, new { @class = "btn btn-danger" })*@
                         </div>
                     </div>
                 </div>
@@ -748,9 +777,102 @@ ViewBag.Title = "NewVendor";
     </div>
     <div class="map" id="map" style="display:none;"></div>
 </section>
+<div class="modal fade bd-example-modal-lg" id="VendorModal" tabindex="-1" role="dialog" aria-labelledby="roleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="exampleModalLongTitle">Add Contact</h4>
+                @*<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>*@
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="box box-primary">
+                            <div class="box-body">
+
+                                <div class="form-group">
+                                    <label class="control-label " for="Name">Name</label>
+                                    <input type="text" id="txtContactName" class="form-control" placeholder="Name" />
+                                </div><!--3-->
+                                <div class="form-group">
+                                    <label class="control-label " for="Title">Title</label>
+                                    <input type="text" id="txtContactTitle" class="form-control" placeholder="Title" />
+                                </div>
+                                <div class="form-group">
+                                    <img class="sb-title-icon" src="https://fonts.gstatic.com/s/i/googlematerialicons/location_pin/v5/24px.svg" alt="">
+                                    <label class="control-label " for="Address">Address</label>
+                                    <input type="text" id="txtContactAddress" class="form-control" placeholder="Address" autocomplete="true" />
+                                </div><!--5-->
+                                <div class="form-group">
+                                    <label class="control-label " for="City">City</label>
+                                    <input type="text" id="txtContactCity" class="form-control" placeholder="City" />
+                                </div><!--7-->
+
+                            </div>
+                        </div>
+                    </div><!--col-4-->
+                    <div class="col-md-4">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="form-group">
+                                    <label class="control-label" for="State">State</label>
+                                    <select class="form-control" id="ddlContactState"></select>
+                                </div><!--9-->
+                                <div class="form-group">
+                                    <label class="control-label" for="ZipCode">Zip Code</label>
+                                    <input type="text" id="txtContactZipCode" class="form-control" placeholder="Zip Code" />
+                                </div><!--10-->
+                                <div class="form-group">
+                                    <label for="Country">Country</label>
+                                    <select class="form-control" id="ddlContactCountry">
+                                        <option value="US">US - United States</option>
+                                        <option value="CA">CA - Canada</option>
+                                    </select>
+                                </div><!--11-->
+                                <div class="form-group">
+                                    <label class="control-label " for="Office">office Contact</label>
+                                    <input type="tel" id="txtContactOffice" class="form-control" placeholder="Office" />
+                                </div>
+                            </div>
+                        </div>
+                    </div><!--col-4-->
+                    <div class="col-md-4">
+                        <div class="box box-primary">
+                            <div class="box-body">
+
+                                <div class="form-group">
+                                    <label class="control-label " for="Phone">Phone/Mobile</label>
+                                    <input type="tel" id="txtContactPhone" class="form-control" placeholder="Phone" />
+                                </div><!--12-->
+                                <div class="form-group">
+                                    <label class="control-label " for="Fax">Fax</label>
+                                    <input type="text" id="txtContactFax" class="form-control" placeholder="Fax" />
+                                </div><!--13-->
+                                <div class="form-group">
+                                    <label class="control-label " for="email">EMail</label>
+                                    <input type="email" id="txtContactEMail" class="form-control" placeholder="EMail" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label " for="Notes">Notes</label>
+                                    <input type="text" id="txtContactNotes" class="form-control" placeholder="Notes" />
+                                </div>
+                            </div>
+                        </div>
+                    </div><!--col-4-->
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" id="btnSaveContact" class="btn btn-danger"><i class="fa fa-save"></i> Save</button>
+            </div>
+        </div>
+    </div>
+</div>
 <!-- /.content -->
 <script src="@Url.Content("~/js/ThirdParty/Vendor.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
-
 <script>
     $(document).ready(function () {
         var url = window.location.pathname;
@@ -758,27 +880,29 @@ ViewBag.Title = "NewVendor";
         if (id != "NewVendor") {
             GetVendorByID(id);
         }
-
-        $("#ddlState").select2({
-            allowClear: true, minimumInputLength: 2, placeholder: "Search State",
-            ajax: {
-                url: '/ThirdParty/GetState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
-                data: function (params) {
-                    var obj = { strValue1: params.term, strValue2: $("#ddlCountry").val() };
-                    return JSON.stringify(obj);
-                },
-                processResults: function (data) {
-                    var jobj = JSON.parse(data);
-                    return {
-                        results: $.map(jobj, function (item) {
-                            return { text: item.StateFullName, name: item.StateFullName, val: item.State, id: item.State }
-                        })
-                    };
-                },
-                error: function (xhr, status, err) { }, cache: true
-            }
-        });
-
+        SearchSelect("#ddlState");
+        SearchSelect("#ddlContactState");
+        function SearchSelect(ddl) {
+            $(ddl).select2({
+                allowClear: true, minimumInputLength: 2, placeholder: "Search State",
+                ajax: {
+                    url: '/ThirdParty/GetState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+                    data: function (params) {
+                        var obj = { strValue1: params.term, strValue2: $("#ddlCountry").val() };
+                        return JSON.stringify(obj);
+                    },
+                    processResults: function (data) {
+                        var jobj = JSON.parse(data);
+                        return {
+                            results: $.map(jobj, function (item) {
+                                return { text: item.StateFullName, name: item.StateFullName, val: item.State, id: item.State }
+                            })
+                        };
+                    },
+                    error: function (xhr, status, err) { }, cache: true
+                }
+            });
+        }
         $('#txtZipCode').change(function () {
             City = $("#ddlCity").val();
             State = $("#ddlState").val();
@@ -794,10 +918,7 @@ ViewBag.Title = "NewVendor";
                 data: JSON.stringify(obj),
                 dataType: "json",
                 success: function (data) {
-                    console.log(data);
                     if (data.status == true) {
-                        // swal('Alert!', 'Post zip code is valid for City and State', 'success')
-                        // $('#hfzipstatus').val(data.status);
                         $('#hfzipstatus').val(data.status);
 
                     } else {
@@ -817,9 +938,45 @@ ViewBag.Title = "NewVendor";
                 },
             })
         });
+        $('#txtContactZipCode').change(function () {
+            City = $("#ddlContactCity").val();
+            State = $("#ddlContactState").val();
+            PostalCode = $("#txtContactZipCode").val();
+            var obj = {
+                billing_state: State,
+                billing_city: City,
+                billing_postcode: PostalCode
+            }
+            $.ajax({
+                url: '/Users/CityStateZip/', dataType: 'json', type: 'Post',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(obj),
+                dataType: "json",
+                success: function (data) {
+                    if (data.status == true) {
+                        $('#hfzipstatus').val(data.status);
+
+                    } else {
+                        if ($('#ddlContactCountry').val() == "US") {
+                            $("#txtContactZipCode").val("");
+                            $('#hfzipstatus').val(data.status);
+                            swal('Alert', 'Zip code is not valid for the State', 'error').then(function () {
+                                swal.close();
+                                $('#txtContactZipCode').focus();
+                            });
+                        }
+                    }
+                },
+
+                error: function (error) {
+                    swal('Error!', 'something went wrong', 'error');
+                },
+            })
+        });
         $("#txtPaymentDate").datepicker({
             format: 'yyyy-mm-dd',
         });
+
     })
 </script>
 <script>
@@ -828,7 +985,7 @@ ViewBag.Title = "NewVendor";
         // Create the autocomplete object, restricting the search predictions to
         // addresses in the US and Canada.
         autocomplete = new google.maps.places.Autocomplete(address1Field, {
-            componentRestrictions: { country: ["us", "ca"] },
+            componentRestrictions: { country: ["us", "ca", "cn"] },
             fields: ["address_components", "geometry"],
             types: ["address"],
         });
@@ -878,6 +1035,8 @@ ViewBag.Title = "NewVendor";
             //marker.setVisible(true);
         }
     }
+
+
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBIgngCCIJ3D8_s3G7aIfvQckhsDtbAe4E&libraries&callback=initMap&libraries=places&v=weekly" async></script>
 

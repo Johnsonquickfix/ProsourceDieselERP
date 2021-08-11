@@ -8,12 +8,12 @@ getAssignedtoSalesRepresentative();
 getVendorCode();
 getPaymentTerm();
 getBalanceDays();
-ProductList();
+//ProductList();
 getIncoterm();
 getShippingMethod();
 getDiscountType();
 getPaymentMethod();
-
+VendorContactList();
 
 $("#ddlPaymentMethod").change(function () {
     PaymentMethod = $("#ddlPaymentMethod").val();
@@ -102,19 +102,12 @@ $('#btnNextTab1').click(function (e) {
             success: function (data) {
                 if (data.status == true) {
                     $("#hfid").val(data.id);
-                    swal('Alert!', data.message, 'success');
-                    $("#tab_1").find(":input").each(function () {
-                        switch (this.type) {
-                            case "text": case "email": case "textarea": case "tel": $(this).val(''); break;
-                        }
-                    });
-                    $("#tab_1 option[value='-1']").attr('selected', true)
-                    e.preventDefault();
+                    //swal('Alert!', data.message, 'success');
                     var link = $('#mytabs .active').next().children('a').attr('href');
                     $('#mytabs a[href="' + link + '"]').tab('show');
                 }
                 else {
-                    //swal('Alert!', data.message, 'error')
+                    swal('Alert!', data.message, 'error')
                 }
             },
             complete: function () {
@@ -127,69 +120,73 @@ $('#btnNextTab1').click(function (e) {
     }
 });
 $('#btnNextTab2').click(function (e) {
-    ID = $("#hfid").val();
-    corAddress1 = $("#txtCorAddress1").val();
-    corAddress2 = $("#txtCorAddress2").val();
-    corCity = $("#txtCorCity").val();
-    corState = $("#txtCorState").val();
-    corZipCode = $("#txtCorZipCode").val();
-    corCountry = $("#txtCorCountry").val();
-    corMobile = $("#txtCorPhone").val();
-    workforce = $("#ddlWorkforce").val();
-    businessEntityType = $("#txtBusinessEntityType").val();
-    notesPublic = $("#txtNotesPublic").val();
-    notesPrivate = $("#txtNotesPrivate").val();
-  
-    if (corAddress1 == "") { swal('alert', 'Please Enter Cor Address 1', 'error').then(function () { swal.close(); $('#txtCorAddress1').focus(); }) }
-    else if (corCity == "") { swal('alert', 'Please Enter Cor City', 'error').then(function () { swal.close(); $('#txtCorCity').focus(); }) }
-    else if (corState == "") { swal('alert', 'Please Enter Cor State', 'error').then(function () { swal.close(); $('#txtCorState').focus(); }) }
-    else if (corZipCode == "") { swal('alert', 'Please Enter Cor Zip Code', 'error').then(function () { swal.close(); $('#txtCorZipCode').focus(); }) }
-    else if (corCountry == "") { swal('alert', 'Please Enter cor Country', 'error').then(function () { swal.close(); $('#txtCorCountry').focus(); }) }
-    else if (corMobile == "") { swal('alert', 'Please Enter Cor Phone/Mobile', 'error').then(function () { swal.close(); $('#txtCorPhone').focus(); }) }
-    else if (workforce == "-1") { swal('alert', 'Please Select Work force', 'error').then(function () { swal.close(); $('#ddlWorkforce').focus(); }) }
-    else if (businessEntityType == "") { swal('alert', 'Please Enter Business Entity Type', 'error').then(function () { swal.close(); $('#txtBusinessEntityType').focus(); }) }
-    else if (notesPublic == "") { swal('alert', 'Please Enter Notes (Public)', 'error').then(function () { swal.close(); $('#txtNotesPublic').focus(); }) }
-    else if (notesPrivate == "") { swal('alert', 'Please Enter Notes (Private)', 'error').then(function () { swal.close(); $('#txtNotesPrivate').focus(); }) }
-    else {
-        var obj = {
-            rowid: ID, CorAddress1: corAddress1, CorAddress2: corAddress2, CorCity: corCity, CorState: corState, CorZipCode: corZipCode,
-            CorCountry: corCountry, CorPhone: corMobile, Workforce: workforce, BusinessEntityType: businessEntityType,
-            NotePublic: notesPublic,NotePrivate: notesPrivate
-        }
-        $.ajax({
-            url: '/ThirdParty/AddVendorAdditionalInfo/', dataType: 'json', type: 'Post',
-            contentType: "application/json; charset=utf-8",
-            data: JSON.stringify(obj),
-            dataType: "json",
-            beforeSend: function () {
-                $("#loader").show();
-            },
-            success: function (data) {
-                if (data.status == true) {
-                    swal('Alert!', data.message, 'success');
-                    $("#tab_2").find(":input").each(function () {
-                        switch (this.type) {
-                            case "text": case "email": case "textarea": case "tel": $(this).val(''); break;
-                        }
-                    });
-                    $("#tab_2 option[value='-1']").attr('selected', true)
-                    e.preventDefault();
-                    var link = $('#mytabs .active').next().children('a').attr('href');
-                    $('#mytabs a[href="' + link + '"]').tab('show');
-                }
-                else {
-                    //swal('Alert!', data.message, 'error')
-                }
-            },
-            complete: function () {
-                $("#loader").hide();
-            },
-            error: function (error) {
-                swal('Error!', 'something went wrong', 'error');
-            },
-        })
-    }
+    var link = $('#mytabs .active').next().children('a').attr('href');
+    $('#mytabs a[href="' + link + '"]').tab('show');
 });
+//$('#btnNextTab2').click(function (e) {
+//    ID = $("#hfid").val();
+//    corAddress1 = $("#txtCorAddress1").val();
+//    corAddress2 = $("#txtCorAddress2").val();
+//    corCity = $("#txtCorCity").val();
+//    corState = $("#txtCorState").val();
+//    corZipCode = $("#txtCorZipCode").val();
+//    corCountry = $("#txtCorCountry").val();
+//    corMobile = $("#txtCorPhone").val();
+//    workforce = $("#ddlWorkforce").val();
+//    businessEntityType = $("#txtBusinessEntityType").val();
+//    notesPublic = $("#txtNotesPublic").val();
+//    notesPrivate = $("#txtNotesPrivate").val();
+  
+//    if (corAddress1 == "") { swal('alert', 'Please Enter Cor Address 1', 'error').then(function () { swal.close(); $('#txtCorAddress1').focus(); }) }
+//    else if (corCity == "") { swal('alert', 'Please Enter Cor City', 'error').then(function () { swal.close(); $('#txtCorCity').focus(); }) }
+//    else if (corState == "") { swal('alert', 'Please Enter Cor State', 'error').then(function () { swal.close(); $('#txtCorState').focus(); }) }
+//    else if (corZipCode == "") { swal('alert', 'Please Enter Cor Zip Code', 'error').then(function () { swal.close(); $('#txtCorZipCode').focus(); }) }
+//    else if (corCountry == "") { swal('alert', 'Please Enter cor Country', 'error').then(function () { swal.close(); $('#txtCorCountry').focus(); }) }
+//    else if (corMobile == "") { swal('alert', 'Please Enter Cor Phone/Mobile', 'error').then(function () { swal.close(); $('#txtCorPhone').focus(); }) }
+//    else if (workforce == "-1") { swal('alert', 'Please Select Work force', 'error').then(function () { swal.close(); $('#ddlWorkforce').focus(); }) }
+//    else if (businessEntityType == "") { swal('alert', 'Please Enter Business Entity Type', 'error').then(function () { swal.close(); $('#txtBusinessEntityType').focus(); }) }
+//    else if (notesPublic == "") { swal('alert', 'Please Enter Notes (Public)', 'error').then(function () { swal.close(); $('#txtNotesPublic').focus(); }) }
+//    else if (notesPrivate == "") { swal('alert', 'Please Enter Notes (Private)', 'error').then(function () { swal.close(); $('#txtNotesPrivate').focus(); }) }
+//    else {
+//        var obj = {
+//            rowid: ID, CorAddress1: corAddress1, CorAddress2: corAddress2, CorCity: corCity, CorState: corState, CorZipCode: corZipCode,
+//            CorCountry: corCountry, CorPhone: corMobile, Workforce: workforce, BusinessEntityType: businessEntityType,
+//            NotePublic: notesPublic,NotePrivate: notesPrivate
+//        }
+//        $.ajax({
+//            url: '/ThirdParty/AddVendorAdditionalInfo/', dataType: 'json', type: 'Post',
+//            contentType: "application/json; charset=utf-8",
+//            data: JSON.stringify(obj),
+//            dataType: "json",
+//            beforeSend: function () {
+//                $("#loader").show();
+//            },
+//            success: function (data) {
+//                if (data.status == true) {
+//                    //swal('Alert!', data.message, 'success');
+//                    //$("#tab_2").find(":input").each(function () {
+//                    //    switch (this.type) {
+//                    //        case "text": case "email": case "textarea": case "tel": $(this).val(''); break;
+//                    //    }
+//                    //});
+//                    //$("#tab_2 option[value='-1']").attr('selected', true)
+//                    //e.preventDefault();
+//                    var link = $('#mytabs .active').next().children('a').attr('href');
+//                    $('#mytabs a[href="' + link + '"]').tab('show');
+//                }
+//                else {
+//                    swal('Alert!', data.message, 'error')
+//                }
+//            },
+//            complete: function () {
+//                $("#loader").hide();
+//            },
+//            error: function (error) {
+//                swal('Error!', 'something went wrong', 'error');
+//            },
+//        })
+//    }
+//});
 $('#btnNextTab3').click(function (e) {
     ID = $("#hfid").val();
     Capital = $("#txtCapital").val();
@@ -232,19 +229,19 @@ $('#btnNextTab3').click(function (e) {
             },
             success: function (data) {
                 if (data.status == true) {
-                    swal('Alert!', data.message, 'success');
-                    $("#tab_3").find(":input").each(function () {
-                        switch (this.type) {
-                            case "text": case "email": case "textarea": case "tel": $(this).val(''); break;
-                        }
-                    });
-                    $("#tab_3 option[value='-1']").attr('selected', true)
-                    e.preventDefault();
+                    //swal('Alert!', data.message, 'success');
+                    //$("#tab_3").find(":input").each(function () {
+                    //    switch (this.type) {
+                    //        case "text": case "email": case "textarea": case "tel": $(this).val(''); break;
+                    //    }
+                    //});
+                    //$("#tab_3 option[value='-1']").attr('selected', true)
+                    //e.preventDefault();
                     var link = $('#mytabs .active').next().children('a').attr('href');
                     $('#mytabs a[href="' + link + '"]').tab('show');
                 }
                 else {
-                    //swal('Alert!', data.message, 'error')
+                    swal('Alert!', data.message, 'error')
                 }
             },
             complete: function () {
@@ -294,19 +291,19 @@ $('#btnNextTab4').click(function (e) {
             },
             success: function (data) {
                 if (data.status == true) {
-                    swal('Alert!', data.message, 'success');
-                    $("#tab_4").find(":input").each(function () {
-                        switch (this.type) {
-                            case "text": case "email": case "textarea": case "tel": $(this).val(''); break;
-                        }
-                    });
-                    $("#tab_4 option[value='-1']").attr('selected', true)
-                    e.preventDefault();
+                    //swal('Alert!', data.message, 'success');
+                    //$("#tab_4").find(":input").each(function () {
+                    //    switch (this.type) {
+                    //        case "text": case "email": case "textarea": case "tel": $(this).val(''); break;
+                    //    }
+                    //});
+                    //$("#tab_4 option[value='-1']").attr('selected', true)
+                    //e.preventDefault();
                     var link = $('#mytabs .active').next().children('a').attr('href');
                     $('#mytabs a[href="' + link + '"]').tab('show');
                 }
                 else {
-                    //swal('Alert!', data.message, 'error')
+                    swal('Alert!', data.message, 'error')
                 }
             },
             complete: function () {
@@ -346,19 +343,19 @@ $('#btnNextTab5').click(function (e) {
             },
             success: function (data) {
                 if (data.status == true) {
-                    swal('Alert!', data.message, 'success');
-                    $("#tab_5").find(":input").each(function () {
-                        switch (this.type) {
-                            case "text": case "email": case "textarea": case "tel": $(this).val(''); break;
-                        }
-                    });
-                    $("#tab_5 option[value='-1']").attr('selected', true)
-                    e.preventDefault();
+                    //swal('Alert!', data.message, 'success');
+                    //$("#tab_5").find(":input").each(function () {
+                    //    switch (this.type) {
+                    //        case "text": case "email": case "textarea": case "tel": $(this).val(''); break;
+                    //    }
+                    //});
+                    //$("#tab_5 option[value='-1']").attr('selected', true)
+                    //e.preventDefault();
                     var link = $('#mytabs .active').next().children('a').attr('href');
                     $('#mytabs a[href="' + link + '"]').tab('show');
                 }
                 else {
-                    //swal('Alert!', data.message, 'error')
+                    swal('Alert!', data.message, 'error')
                 }
             },
             complete: function () {
@@ -403,19 +400,19 @@ $('#btnNextTab6').click(function (e) {
             },
             success: function (data) {
                 if (data.status == true) {
-                    swal('Alert!', data.message, 'success');
-                    $("#tab_6").find(":input").each(function () {
-                        switch (this.type) {
-                            case "text": case "email": case "textarea": case "tel": $(this).val(''); break;
-                        }
-                    });
-                    $("#tab_6 option[value='-1']").attr('selected', true)
-                    e.preventDefault();
+                    //swal('Alert!', data.message, 'success');
+                    //$("#tab_6").find(":input").each(function () {
+                    //    switch (this.type) {
+                    //        case "text": case "email": case "textarea": case "tel": $(this).val(''); break;
+                    //    }
+                    //});
+                    //$("#tab_6 option[value='-1']").attr('selected', true)
+                    //e.preventDefault();
                     var link = $('#mytabs .active').next().children('a').attr('href');
                     $('#mytabs a[href="' + link + '"]').tab('show');
                 }
                 else {
-                    //swal('Alert!', data.message, 'error')
+                    swal('Alert!', data.message, 'error')
                 }
             },
             complete: function () {
@@ -510,18 +507,85 @@ $('#btnNextTab7').click(function (e) {
             success: function (data) {
                 if (data.status == true) {
                     swal('Alert!', data.message, 'success');
-                    $("#tab_7").find(":input").each(function () {
-                        switch (this.type) {
-                            case "text": case "email": case "textarea": case "tel": $(this).val(''); break;
-                        }
-                    });
-                    $("#tab_7 option[value='-1']").attr('selected', true)
-                    e.preventDefault();
+                    //$("#tab_7").find(":input").each(function () {
+                    //    switch (this.type) {
+                    //        case "text": case "email": case "textarea": case "tel": $(this).val(''); break;
+                    //    }
+                    //});
+                    //$("#tab_7 option[value='-1']").attr('selected', true)
+                    //e.preventDefault();
                     var link = $('#mytabs .active').next().children('a').attr('href');
                     $('#mytabs a[href="' + link + '"]').tab('show');
                 }
                 else {
-                    //swal('Alert!', data.message, 'error')
+                    swal('Alert!', data.message, 'error')
+                }
+            },
+            complete: function () {
+                $("#loader").hide();
+            },
+            error: function (error) {
+                swal('Error!', 'something went wrong', 'error');
+            },
+        })
+    }
+});
+
+$('#btnSaveContact').click(function (e) {
+    ID = $("#hfid").val();
+    ContactName = $("#txtContactName").val();
+    ContactTitle = $("#txtContactTitle").val();
+    ContactEmail = $("#txtContactEMail").val();
+    ContactAddress = $("#txtContactAddress").val();
+    ContactCity = $("#txtContactCity").val();
+    ContactState = $("#ddlContactState").val();
+    ContactZipCode = $("#txtContactZipCode").val();
+    ContactStateName = $("#ddlState").find('option:selected').text();
+    ContactCountry = $("#ddlContactCountry").val();
+    ContactOffice = $("#txtContactOffice").val();
+    //ContactExt = $("#txtContactExt").val();
+    ContactPhone = $("#txtContactPhone").val();
+    ContactFax = $("#txtContactFax").val();
+    ContactNotes = $("#txtContactNotes").val();
+
+    if (ContactName == "") { swal('alert', 'Please Enter Name', 'error').then(function () { swal.close(); $('#txtContactName').focus(); }) }
+    else if (ContactTitle == "") { swal('alert', 'Please Enter Title', 'error').then(function () { swal.close(); $('#txtContactTitle').focus(); }) }
+    else if (ContactAddress == "") { swal('alert', 'Please Enter Address', 'error').then(function () { swal.close(); $('#txtContactAddress').focus(); }) }
+    else if (ContactCity == "") { swal('alert', 'Please Enter City', 'error').then(function () { swal.close(); $('#txtContactCity').focus(); }) }
+    else if (ContactState == "-1") { swal('alert', 'Please Select  State', 'error').then(function () { swal.close(); $('#ddlContactState').focus(); }) }
+    else if (ContactZipCode == "") { swal('alert', 'Please Enter Zip Code', 'error').then(function () { swal.close(); $('#txtContactZipCode').focus(); }) }
+    else if (ContactCountry == "-1") { swal('alert', 'Please Select Country', 'error').then(function () { swal.close(); $('#ddlContactCountry').focus(); }) }
+    //else if (ContactOffice == "") { swal('alert', 'Please Enter Office', 'error').then(function () { swal.close(); $('#txtContactOffice').focus(); }) }
+    else if (ContactPhone == "") { swal('alert', 'Please Enter Phone', 'error').then(function () { swal.close(); $('#txtContactPhone').focus(); }) }
+    else if (ContactEmail == "") { swal('alert', 'Please Enter Email', 'error').then(function () { swal.close(); $('#txtContactEMail').focus(); }) }
+    else {
+        var obj = {
+            rowid: ID, ContactName: ContactName, ContactTitle: ContactTitle, ContactEmail: ContactEmail, ContactOffice: ContactOffice,
+            ContactMobile: ContactPhone, ContactNotes: ContactNotes, ContactFax: ContactFax, ContactCountry: ContactCountry, ContactStateName: ContactStateName,
+            ContactAddress: ContactAddress, ContactCity: ContactCity, ContactState: ContactState, ContactZipCode: ContactZipCode
+        }
+        $.ajax({
+            url: '/ThirdParty/AddContacts/', dataType: 'json', type: 'Post',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(obj),
+            dataType: "json",
+            beforeSend: function () {
+                $("#loader").show();
+            },
+            success: function (data) {
+                if (data.status == true) {
+                    swal('Alert!', data.message, 'success');
+                    $("#VendorModal").modal('hide');
+                    $("#VendorModal").find(":input").each(function () {
+                        switch (this.type) {
+                            case "text": case "email": case "textarea": case "tel": $(this).val(''); break;
+                        }
+                    });
+                    $("#VendorModal option[value='-1']").attr('selected', true)
+                    e.preventDefault();
+                }
+                else {
+                    swal('Alert!', data.message, 'error')
                 }
             },
             complete: function () {
@@ -756,7 +820,6 @@ function GetVendorByID(id) {
             success: function (data) {
                 var d = JSON.parse(data);
                 if (d.length > 0) {
-                    
                     $("#txVendorName").val(d[0].VendorName);
                     $("#txtAliasName").val(d[0].AliasName);
                     $("#ddlvendortype").val(d[0].vendor_type);
@@ -887,21 +950,63 @@ function getVendorCode() {
         });
 
 }
-function ProductList() {
-    var rowid = $("#hfid").val();
-    var obj = { rowid: rowid };
+//function ProductList() {
+//    var rowid = $("#hfid").val();
+//    var obj = { rowid: rowid };
+//    $('#dtdata').DataTable({
+//        columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "asc"]],
+//        destroy: true, bProcessing: true, bServerSide: true,
+//        sPaginationType: "full_numbers", searching: false, ordering: false, lengthChange: false, "paging": false, "bInfo": false,
+//        bAutoWidth: false, scrollX: false, scrollY: false,
+//        lengthMenu: [[10, 20, 50], [10, 20, 50]],
+//        sAjaxSource: "/ThirdParty/GetProductList",
+//        fnServerData: function (sSource, aoData, fnCallback, oSettings) {
+//            $.ajax({
+//                type: "POST", url: sSource, async: true, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
+//                success: function (data) {
+//                    var dtOption = { aaData: JSON.parse(data.aaData) };
+//                    return fnCallback(dtOption);
+//                },
+//                error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
+//                async: false
+//            });
+//        },
+//        aoColumns: [
+//            { data: 'warehouse', title: 'Warehouse', sWidth: "40%" },
+//            {
+//                'data': 'LeadTime', sWidth: "30%",
+//                'render': function (id, type, full, meta) {
+//                    return '<input type="text" name="txtLeadTime" class="form-control" value="' + full.LeadTime + '" id="' + full.id + '"  />';
+//                }
+//            },
+//            {
+//                'data': 'DaysofStock', sWidth: "30%",
+//                'render': function (id, type, full, meta) {
+//                    return '<input type="text" name="txtDaysofStock" class="form-control" value="' + full.DaysofStock + '" />';
+//                }
+//            },
+//        ]
+//    });
+//}
+function VendorContactList() {
+    var urid = parseInt($("#ddlSearchStatus").val());
+    ID = $("#hfid").val();
+    var sid = "";
+    var obj = { user_status: urid, Search: sid, PageNo: 0, PageSize: 50, sEcho: 1, SortCol: 'id', SortDir: 'desc',rowid: ID};
     $('#dtdata').DataTable({
-        columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "asc"]],
+        columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true,
-        sPaginationType: "full_numbers", searching: false, ordering: false, lengthChange: false, "paging": false, "bInfo": false,
+        sPaginationType: "full_numbers", searching: true, ordering: true, lengthChange: true, "paging": true,
         bAutoWidth: false, scrollX: false, scrollY: false,
         lengthMenu: [[10, 20, 50], [10, 20, 50]],
-        sAjaxSource: "/ThirdParty/GetProductList",
+        sAjaxSource: "/ThirdParty/GetVendorContactList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
+
+            obj.sEcho = aoData[0].value; obj.PageSize = oSettings._iDisplayLength; obj.PageNo = oSettings._iDisplayStart;
             $.ajax({
                 type: "POST", url: sSource, async: true, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
                 success: function (data) {
-                    var dtOption = { aaData: JSON.parse(data.aaData) };
+                    var dtOption = { sEcho: data.sEcho, recordsTotal: data.recordsTotal, recordsFiltered: data.recordsFiltered, iTotalRecords: data.iTotalRecords, iTotalDisplayRecords: data.iTotalDisplayRecords, aaData: JSON.parse(data.aaData) };
                     return fnCallback(dtOption);
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
@@ -909,21 +1014,75 @@ function ProductList() {
             });
         },
         aoColumns: [
-            { data: 'warehouse', title: 'Warehouse', sWidth: "40%" },
+            { data: 'Name', title: 'Name', sWidth: "10%" },
+            { data: 'VendorName', title: 'Vendor Name', sWidth: "10%" },
+            { data: 'Title', title: 'Title', sWidth: "10%" },
+            { data: 'Mobile', title: 'Phone', sWidth: "10%" },
+            { data: 'Email', title: 'Email', sWidth: "10%" },
+            { data: 'Address', title: 'Address', sWidth: "20%" },
             {
-                'data': 'LeadTime', sWidth: "30%",
+                'data': 'ID', sWidth: "8%",
                 'render': function (id, type, full, meta) {
-                    return '<input type="text" name="txtLeadTime" class="form-control" value="' + full.LeadTime + '" id="' + full.id + '"  />';
+                    /*  if ($("#hfEdit").val() == "1") {*/
+                    return '<a href="#" onclick="showModal(' + id + ');"><i class="glyphicon glyphicon-pencil"></i></a>';
+                    //return '<button type="button" id="btnEditContact" data-toggle="modal" data-target="#VendorModal"><i class="glyphicon glyphicon-pencil"></button >';
+                    //}
+                    //else { return "No Permission"; }
                 }
-            },
-            {
-                'data': 'DaysofStock', sWidth: "30%",
-                'render': function (id, type, full, meta) {
-                    return '<input type="text" name="txtDaysofStock" class="form-control" value="' + full.DaysofStock + '" />';
-                }
-            },
+            }
+
+
         ]
     });
 }
+//function showModal(id) {
+//    $('#VendorModal').modal('show');
+//}
+function showModal(id) {
+    var VendorID = id;
+    var obj =
+        $.ajax({
+            url: "/ThirdParty/GetVendorContactByID/" + VendorID,
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            dataType: 'JSON',
+            data: JSON.stringify(obj),
+            success: function (data) {
+               
+                var d = JSON.parse(data);
+                if (d.length > 0) {
+                    console.log(d);
+                    $('#VendorModal').modal('show');
+                    $("#txtContactName").val(d[0].Name);
+                    $("#txtContactTitle").val(d[0].Title);
+                    $("#txtContactAddress").val(d[0].Address);
+                    $("#txtContactCity").val(d[0].City);
+                    $("#ddlContactState").val(d[0].State);
+                    $("#txtContactZipCode").val(d[0].ZipCode);
+                    $("#ddlContactCountry").val(d[0].Country);
+                    $("#txtContactOffice").val(d[0].Office);
+                    $("#txtContactPhone").val(d[0].Mobile);
+                    $("#txtContactFax").val(d[0].Fax);
+                    $("#txtContactEMail").val(d[0].Email);
+                    $("#txtContactNotes").val(d[0].Notes);
+                    $("#ddlContactState").select2({
+                        allowClear: true, minimumInputLength: 3, placeholder: "Search State",
+                        ajax: {
+                            url: '/ThirdParty/GetState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+                            data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
+                            processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.StateFullName, name: item.StateFullName, val: item.State, id: item.State } }) }; },
+                            error: function (xhr, status, err) { }, cache: true
+                        }
+                    });
+                    $("#ddlContactState").empty().append('<option value="' + d[0].State + '" selected>' + d[0].StateName + '</option>');
+                  
+                }
+            },
+            error: function (msg) {
+            }
+        });
+}
+
+
 
 

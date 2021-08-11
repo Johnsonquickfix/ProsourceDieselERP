@@ -86,12 +86,18 @@
                             <ul class="dropdown-menu">
                                 <!-- User image -->
                                 <li class="user-header">
-                                    <img src="~/Images/userprofile2.png" class="img-circle" alt="User Image">
-
-                                    <p>
-                                        @(user.UserName)
-                                        <small>@(user.EmailID)</small>
-                                    </p>
+                                    @if (ViewBag.User_Image.Length > 0 && ViewBag.User_Image != null)
+                                    {
+                                        <img  src = "data:image;base64,@System.Convert.ToBase64String(ViewBag.User_Image)" class="img-circle" alt="User Image">
+                                    }
+                                    else
+                                    {
+                                        <img src = "~/Images/userprofile2.png" class="img-circle" alt="User Image">
+                                    }
+                                <p>
+                                    @(user.UserName)
+                                    <small>@(user.EmailID)</small>
+                                </p>
                                 </li>
                                 <!-- Menu Body -->
                                 <li class="user-body">
@@ -254,7 +260,10 @@
            // GetUsers();
 
             $(document).on('click', '#btnExit', function () {top.window.location.href = top.window.location.origin + '/Home/Login';});
-            $(document).on("click", "#btnuserprofile", function (t) { t.preventDefault(); ProfileModal(); });
+            $(document).on("click", "#btnuserprofile", function (t) {
+                t.preventDefault();
+                ProfileModal();
+            });
             $(document).on("click", "#btnsearch", function (t) {t.preventDefault(); SearchbarModal();});
 
             $('#userprofile').on('shown.bs.modal', function () {
@@ -408,7 +417,7 @@
                                     <div class="col-sm-4">
                                         <div class="form-group">
                                             <label for="exampleInputEmail1">User Type</label>
-                                            <input type="text" class="form-control" value="@ViewBag.user_role" id="txtUserRole" placeholder="User Role" readonly>
+                                            <input type="text" class="form-control" id="txtUserRole" placeholder="User Role" value="" readonly>
 
                                         </div>
                                         <div class="form-group">
@@ -476,7 +485,16 @@
 </div>` ;
             $("#userprofile").empty().html(myHtml);
             $("#userprofile").modal({ backdrop: 'static' }); $("#txtUserNickName").focus();
+            
+                $(document).ready(function () {
+                     var string = '@ViewBag.user_role';
+                var uniqueList = string.split(',').filter(function (item, i, allItems) {
+                return i == allItems.indexOf(item);
+                }).join(',');
+                $("#txtUserRole").val(uniqueList);
 
+                });
+            
         }
         function SearchbarModal() {
             var myHtml = '';
@@ -616,7 +634,6 @@
     </script>
     <script>
     $(document).ready(function () {
-
             $("#loader").hide();
             $(document).on('click', "#btnSave", function () {
                 UpdateProfile();

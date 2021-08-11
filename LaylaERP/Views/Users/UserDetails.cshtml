@@ -108,8 +108,8 @@
                             <div class="form-group">
 
                                 <label for="exampleInputEmail1">User Role</label>
-                                <input type="text" class="form-control" value="@Model.user_role" id="txtUserRole" placeholder="Last Name" readonly>
-
+                                <input type="text" class="form-control" id="txtUserRole" placeholder="Role Name" readonly>
+                                <!--the model has been written in the java script document ready-->
                             </div>
 
 
@@ -190,7 +190,16 @@
     $(document).ready(function () {
         $("#loader").hide();
 
+        //Code to remove repetation of words
+        var string = '@Model.user_role';
+        var uniqueList = string.split(',').filter(function (item, i, allItems) {
+            return i == allItems.indexOf(item);
+        }).join(',');
+        $("#txtUserRole").val(uniqueList);
+        //code end to remove repetation of words
 
+       // $('#txtUserRole').append(uniqueList);
+        //document.getElementById('txtUserRole').value = uniqueList;
         //$.get('GetState', function (data) {
         //    var st = $("#hfState").val();
         //    $.each(data, function (index, value) {

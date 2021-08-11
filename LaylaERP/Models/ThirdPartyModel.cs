@@ -112,9 +112,19 @@ namespace LaylaERP.Models
         public string PaypalAPIUserName { get; set; }
         public string PaypalAPIPassword { get; set; }
         public string PaypalAPISignature { get; set; }
-
-
-
-
+        public string ContactName { get; set; }
+        public string ContactTitle { get; set; }
+        public string ContactEmail { get; set; }
+        public string ContactOffice { get; set; }
+        public string ContactExt { get; set; }
+        public string ContactMobile { get; set; }
+        public string ContactNotes { get; set; }
+        public string ContactFax { get; set; }
+        public string ContactAddress { get; set; }
+        public string ContactCity { get; set; }
+        public string ContactState { get; set; }
+        public string ContactZipCode { get; set; }
+        public string ContactCountry { get; set; }
+        public string ContactStateName { get; set; }
     }
 }

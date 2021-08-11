@@ -1,0 +1,475 @@
+﻿
+@{
+    ViewBag.Title = "Purchase Information";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<div class="page-title">
+    <h2>Product Purchase Price</h2>
+</div>
+<section class="content section-content massstocktransfer commercial_proposal mt-1" id="proposal-table">
+    <div class="nav-tabs-custom">
+        <ul class="nav nav-tabs">
+            
+            <li class="active"><a href="#tab_1" data-toggle="tab">Product</a></li>
+            <li><a href="#tab_2" data-toggle="tab">Selling prices</a></li>
+            <li><a href="#tab_3" data-toggle="tab">Buying prices<span class="badge badge-danger"></span></a></li>
+            <li><a href="#tab_4" data-toggle="tab">Kits<span class="badge badge-danger"></span></a></li>
+            <li><a href="#tab_5" data-toggle="tab">Notes</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <div class="d-flex proposal-top">
+                        <div class="edit-proposal-box">
+                            <div class="proposal-box">
+                                <input type="file" name="file" id="proposal" class="inputfile">
+                                <label for="proposal"><i class="fa fa-edit"></i></label>
+                            </div>
+                            <div class="edit-proposal-texts">
+                                <h3 class="box-title" id="txtprosutname"></h3>
+                            
+                            </div>
+                        </div>
+                        <div class="back-to-list">
+                            <a href="../ListProduct" class="btn no-btn">Back to list</a>
+                            Select Product :
+                            <select name="ddlproductchild" id="ddlproductchild" class="form-control">                                
+                            </select>
+                            @*<p><button class="btn btn-danger">Signed(needs billing)</button></p>*@
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane active" id="tab_1">
+
+                <div class="row rowbox proposal-row">
+                    <div class="col-md-6">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">Stock quantity</label>
+                                    <div class="col-md-8">
+                                        <p id="txtstockquantity"></p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">Allow backorders</label>
+                                    <div class="col-md-8">
+                                        <p id="txtAllowbackorders"></p>
+                                    </div>
+                                </div>
+                                @*<div class="form-group">
+                                    <label class="col-md-4 control-label">Shipping Class</label>
+                                    <div class="col-md-8">
+                                        <p id="txtShippingClass"></p>
+                                    </div>
+                                </div>*@
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">Tax Class</label>
+                                    <div class="col-md-8">
+                                        <p id="txtTaxClass"></p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">Description</label>
+                                    <div class="col-md-8">
+                                        <p id="txtDescription"></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="form-group">
+                                    <label class="col-md-6 control-label">Dimensions (L x W x H) (in)</label>
+                                    <div class="col-md-6">
+                                        <p id="txtDimensions"></p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-6 control-label">Virtual</label>
+                                    <div class="col-md-6">
+                                        <p id="txtVirtual"></p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-6 control-label">Manage Stock</label>
+                                    <div class="col-md-6">
+                                        <p id="txtManage"></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="tab-pane" id="tab_2">
+
+                <div class="row rowbox proposal-row">
+                    <div class="col-md-6">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">SKU</label>
+                                    <div class="col-md-8">
+                                        <p id="txtSku"></p>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">Regular Price($)</label>
+                                    <div class="col-md-8">
+                                        <p id="txtRegularprice"></p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">Sale Price</label>
+                                    <div class="col-md-8">
+                                        <p id="txtsaleprice"></p>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="tab-pane" id="tab_3">
+                <div class="row rowbox proposal-row">
+                    <div class="col-md-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">Cost price</label>
+                                    <div class="col-md-8">
+                                        <p id="txtCostprice"></p>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">Weighted average price</label>
+                                    <div class="col-md-8">
+                                        <p id="txtaverageprice"></p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">Best buying price</label>
+                                    <div class="col-md-8">
+                                        <p id="txtbestbying"></p>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                    <div class="row rowbox proposal-row">
+                        <div class="col-md-12">
+                            <button id="btnbuying" class="btn btn-danger">Add buying price</button>
+                            <div id="dvbuysing">
+                                <div class="box box-primary">
+                                    <div class="box-body">
+                                        <div class="form-group d-flex">
+                                            <label class="col-sm-3 control-label">Vendor</label>
+                                            <div class="col-sm-9">
+                                                <select id="ddlvender" class="form-control">
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group d-flex">
+                                            <label class="col-sm-3 control-label">Vendor SKU</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" id="txtvendersku" class="form-control">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group d-flex">
+                                            <label class="col-sm-3 control-label">Min. purchase quantity</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" id="txtminpurchasequantity" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="form-group d-flex">
+                                            <label class="col-sm-3 control-label">VAT Rate (for this vendor/product)</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" id="txtvatrat" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="form-group d-flex">
+                                            <label class="col-sm-3 control-label">Currency</label>
+                                            <div class="col-sm-3">
+                                                <select id="ddlCurrency" class="form-control">
+                                                    <option value="US Dollars" selected="selected">US Dollars ($)</option>
+                                                </select>
+                                            </div>
+                                            <label class="col-sm-3 control-label">Currency conversion rate</label>
+                                            <div class="col-sm-3">
+                                                <input type="text" id="txtcurrencyconversionrate" class="form-control">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group d-flex">
+                                            <label class="col-sm-3 control-label">Price (currency) for this qty. (no discount)</label>
+                                            <div class="col-sm-3">
+                                                <input type="text" id="txtcurrencyconversionrate" class="form-control">
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <select id="ddltaxrate" class="form-control">
+                                                    <option value="HT" selected="">Excl. tax</option>
+                                                    <option value="TTC">Inc. tax</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group d-flex">
+                                            <label class="col-sm-3 control-label">Price quantity min.</label>
+                                            <div class="col-sm-3">
+                                                <input type="text" id="txtPricequantitymin" class="form-control">
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <select id="ddltaxpricemin" class="form-control">
+                                                    <option value="HT" selected="">Excl. tax</option>
+                                                    <option value="TTC">Inc. tax</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group d-flex">
+                                            <label class="col-sm-3 control-label">Discount for this qty.</label>
+                                            <div class="col-sm-8">
+                                                <input type="text" id="txtDiscountqty" class="form-control">
+                                            </div>
+                                            <div class="col-sm-1">
+                                                %
+                                            </div>
+                                        </div>
+                                        <div class="form-group d-flex">
+                                            <label class="col-sm-3 control-label">Delivery delay (days).</label>
+                                            <div class="col-sm-8">
+                                                <input type="text" id="txtDeliveryqty" class="form-control">
+                                            </div>
+                                            <div class="col-sm-1">
+                                                days
+                                            </div>
+                                        </div>
+                                        <div class="form-group d-flex">
+                                            <label class="col-sm-3 control-label">Reference reputation</label>
+                                            <div class="col-sm-9">
+                                                <select id="ddlReference" class="form-control">
+                                                    <option value="Favorite" selected="">Favorite</option>
+                                                    <option value="Lowquality">Low quality</option>
+                                                    <option value="Dno">Do not order</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                       
+                                        <div class="form-group d-flex">
+                                            <div class="col-sm-8">
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <button id="btnbuyingsave" class="btn btn-danger">Saved</button>
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <button id="btnbuyingcl" class="btn btn-danger">Cancel</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row rowbox proposal-row">
+                        <label class="col-sm-12 control-label">Vendor prices</label>
+                        <div class="col-md-12">
+                            <div class="box-body">
+                                <div class="form-group d-flex">
+                                    <div class="col-sm-12">
+                                        <table id="dtdata" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
+                                            <thead>
+                                                <tr>
+                                                    <th>Applied from</th>
+                                                    <th>Vendors</th>
+                                                    <th>Vendor SKU</th>
+                                                    <th>Min. purchase quantity</th>
+                                                    <th>Price quantity min. (excl. tax)</th>
+                                                    <th>Price quantity min. (excl. tax) (currency)</th>
+                                                    <th>Unit price (excl.)</th>
+                                                    <th>Currency</th>
+                                                    <th>Discount for this qty.</th>
+                                                    <th>Delivery delay (days)</th>
+                                                    <th>Reputation</th>
+                                                    <th>Modification date</th>
+                                                    <th>Action</th>
+                                                    <th>Delete</th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                                </div>
+                            
+            <div class="tab-pane" id="tab_4">
+                <div class="row rowbox proposal-row">
+                    <div class="col-md-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">Nature of product (material/finished)</label>
+                                    <div class="col-md-8">
+                                        <p id="txtNatureofproduct"></p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">Regular Price($)</label>
+                                    <div class="col-md-8">
+                                        <p id="txtRegularpricekit"></p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">Sale Price</label>
+                                    <div class="col-md-8">
+                                        <p id="txtsalepricekit"></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row rowbox proposal-row">
+                    <label class="col-sm-12 control-label">   - List of kits with this product as a component</label>
+                    <div class="col-md-12">
+                        <div class="box-body">
+                            <div class="form-group d-flex">
+                                <div class="col-sm-12">
+                                    <div class="table-responsive" id="divParent">
+                                        <table id="dtdatakits" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-left">Parent products</th>
+                                                    <th>Label</th>
+                                                    <th>Qty</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="Product_Parent"></tbody>
+                                        </table>
+                                    </div>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row rowbox proposal-row">
+                    <label class="col-sm-12 control-label">- List of products/services that are component(s) of this kit</label>
+                    <div class="col-md-12">
+                        <div class="box-body">
+                            <div class="form-group d-flex">
+                                <div class="col-sm-12">
+                                    <div class="table-responsive" id="divAddservices">
+                                        <table id="dtAddservices" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
+                                            <thead>
+                                                <tr>
+
+                                                    <th class="text-left">Child products</th>
+                                                    <th>Label</th>
+                                                    <th>Minimum buying price</th>
+                                                    <th>Minimum selling price</th>
+                                                    <th>Stock</th>
+                                                    <th style="width: 5%">Qty</th>
+                                                    <th>Increase/Decrease stock on parent change</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="Product_services"></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row rowbox proposal-row">
+                    <div class="col-md-12">
+                        <div class="form-group d-flex">
+                            <div class="col-sm-9">
+                            </div>
+                            <div class="col-sm-1">
+                                <button id="btnservicessave" class="btn btn-danger">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row rowbox proposal-row">
+
+                    <div class="user-top-section">
+                        <div class="tablenav top">
+                            <div class="alignleft actions bulkactions">
+                                <label class="col-md-4 control-label">Keyword filter:</label>
+                                <input type="text" id="txtkeewordfilter" class="form-control">
+                                <label class="col-md-4 control-label">Category filter:</label>
+                                @*<input type="text" id="txtCategoryfilter" class="form-control">*@
+                                <select name="ddlCategoryfilter" id="ddlCategoryfilter" class="form-control">
+                                </select>
+                                <input type="button" id="filtersrchexp" value="Search" class="button" />
+                                @*<input type="submit" name="filtersrchexp" value="Export" class="button button-primary" />*@
+                            </div>
+                        </div>
+                    </div>
+
+                    <label class="col-sm-12 control-label">- Search product to add </label>
+                    <div class="col-md-12">
+                        <div class="box-body">
+                            <div class="form-group d-flex">
+                                <div class="col-sm-12">
+                                    <div class="table-responsive" id="divAddItemFinal">
+                                        <table id="dtdatachildkits" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-left">Child products</th>
+                                                    <th>Label</th>
+                                                    <th>Qty</th>
+                                                    <th>Increase/Decrease stock on parent change</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="order_line_items"></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row rowbox proposal-row">
+                    <div class="col-md-12">
+                        <div class="form-group d-flex">
+                            <div class="col-sm-9">
+                            </div>
+                            <div class="col-sm-1">
+                                <button id="btnaddupdatechild" class="btn btn-danger">ADD/UPDATE</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+            </div>
+       
+                            <div class="tab-pane" id="tab_5">
+                                Notes
+                            </div>
+
+                        </div>
+                    </div>
+</section>
+
+<script src="https://cdn.tiny.cloud/1/qagffr3pkuv17a8on1afax661irst1hbr4e6tbv888sz91jc/tinymce/5.8.2-114/tinymce.min.js"></script>
+<script src="@Url.Content("~/js/Product/AddnewPurchase.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+

@@ -1,0 +1,60 @@
+﻿
+@{
+    ViewBag.Title = "New Financial Accounts";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="page-title">
+    <h2>New Financial Account</h2>     
+</div>
+<section class="content section-content massstocktransfer commercial_proposal mt-1" id="new_bank_account_section">
+    <div class="col-md-12">
+        <div class="box box-primary create-user-primary">
+            <div class="box-header with-border">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label for="bankcash">Bank or Cash Label</label>
+                            <input type="text" class="form-control" id="txtbankcashlabel" placeholder="Enter Bank or Cash Label">
+                        </div>
+                        <div class="form-group">
+                            <label for="accounttype">Account Type</label>
+                            <select class="form-control" id="txtaccounttype">
+                                <option selected value="1">Saving Account</option>
+                                <option selected value="2">Current or Credit Card Account</option>
+                                <option selected value="3">Cash Account</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="bankstatus">Status</label>
+                            <select class="form-control" id="txtbankstatus">
+                                <option selected value="1">Open</option>
+                                <option selected value="0">Close</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="accountcountry">Account Country</label>
+                            <select class="form-control" id="txtaccountcountry">
+                                <option selected value="US">United States</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="state">State/Province</label>
+                            <select class="form-control" id="txtstate">
+                                <option selected value=""></option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <div class="form-group">
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>

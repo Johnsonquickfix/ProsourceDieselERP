@@ -1401,7 +1401,7 @@ function removeItemsInTable(id) {
                 //free item should be remove when removed that product on which free item will be given.
                 if ($("#tblAddItemFinal").find("tr[data-gid='" + gid + "']").length == 0) {
                     $('#tritemId_' + gid + '_0').remove();
-                }
+                }   
                 //let zFreeQty = 0.00, gid = parseInt($(this).data("gid")) || 0;
                 //$("#order_line_items > tr").each(function () {
                 //    if ($(this).data('gid') == gid && $(this).data('pid') != gid) {

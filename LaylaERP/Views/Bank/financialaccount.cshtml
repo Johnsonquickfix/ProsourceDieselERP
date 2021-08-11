@@ -1,15 +1,175 @@
-﻿@{ ViewBag.Title = "New Financial Account";
-    Layout = "~/Views/Shared/_Layout.cshtml"; }
+﻿@{
+    ViewBag.Title = "List Financial Accounts";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
 
-<!DOCTYPE html>
-
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>financialaccount</title>
-</head>
-<body>
-    <div>
+<div class="page-title">
+    <h2>Bank Accounts</h2>
+    <a class="btn btn-danger" id="btnAdd" href="newfinaccount">Create New</a>
+</div>
+<section class="content section-content massstocktransfer commercial_proposal mt-1" id="bank_account_section">
+    <div class="nav-tabs-custom">
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#tab_1" data-toggle="tab">Bank account</a></li>
+            <li><a href="#tab_2" data-toggle="tab">Bank entries</a></li>
+            <li><a href="#tab_3" data-toggle="tab">Planned entries</a></li>
+            <li><a href="#tab_4" data-toggle="tab">Monthly reporting</a></li>
+            <li><a href="#tab_5" data-toggle="tab">Graphics</a></li>
+            <li><a href="#tab_6" data-toggle="tab">Account statements</a></li>
+            <li><a href="#tab_7" data-toggle="tab">Linked files</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane active" id="tab_1">
+                <div class="box box-primary">
+                    <div class="box-header">
+                        <div class="d-flex proposal-top">
+                            <div class="edit-proposal-box">
+                                <div class="proposal-box">
+                                    <input type="file" name="file" id="proposal" class="inputfile">
+                                    <label for="proposal"><i class="fas fa-file-invoice"></i></label>
+                                </div>
+                                <div class="edit-proposal-texts">
+                                    <h3 class="box-title">#101</h3>
+                                    <p>Capital One</p>
+                                    <p><i class="fas fa-map-marker-alt" aria-hidden="true"></i>United States</p>
+                                </div>
+                            </div>
+                            <div class="back-to-list">
+                                <p><button class="btn no-btn">Back to list</button></p>
+                                <p><button class="btn btn-danger">Open</button></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row rowbox proposal-row">
+                    <div class="col-md-6">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">Account type</label>
+                                    <div class="col-md-8">
+                                        <p>Current or credit card account</p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">Currency</label>
+                                    <div class="col-md-8">
+                                        <p>Yes</p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">Minimum allowed balance</label>
+                                    <div class="col-md-8">
+                                        <p>-</p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">Minimum desired balance</label>
+                                    <div class="col-md-8">
+                                        <p>-</p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">Accounting account</label>
+                                    <div class="col-md-8">
+                                        <p>1030 - <span class="text-gray">Savings Account</span></p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">Accounting code journal</label>
+                                    <div class="col-md-8">
+                                        <p>BQ - <span class="text-gray">Finance journal</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="form-group">
+                                    <label class="col-md-6 control-label">Tags/categories</label>
+                                    <div class="col-md-6">
+                                        <p>Comment</p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-6 control-label">Bank name</label>
+                                    <div class="col-md-6">
+                                        <p>Capital One Bank</p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-6 control-label">Bank code</label>
+                                    <div class="col-md-6">
+                                        <p>54</p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-6 control-label">IBAN account number</label>
+                                    <div class="col-md-6">
+                                        <p>-</p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-6 control-label">BIC/SWIFT code</label>
+                                    <div class="col-md-6">
+                                        <p>-</p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-6 control-label">ICS</label>
+                                    <div class="col-md-6">
+                                        <p>-</p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-6 control-label">ICSTransfer</label>
+                                    <div class="col-md-6">
+                                        <p>-</p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-6 control-label">Bank address</label>
+                                    <div class="col-md-6">
+                                        <p>Calfornia</p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-6 control-label">Account owner name</label>
+                                    <div class="col-md-6">
+                                        <p>Layla Sleep</p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-6 control-label">Account owner address</label>
+                                    <div class="col-md-6">
+                                        <p>157 Church Street Suite 1956, New Haven CT 06510</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane" id="tab_2">
+                <h2 class="box-title">Bank entries</h2>
+            </div>
+            <div class="tab-pane" id="tab_3">
+                <h2 class="box-title">Planned entries</h2>
+            </div>
+            <div class="tab-pane" id="tab_4">
+                <h2 class="box-title">Monthly reporting</h2>
+            </div>
+            <div class="tab-pane" id="tab_5">
+                <h2 class="box-title">Graphics</h2>
+            </div>
+            <div class="tab-pane" id="tab_6">
+                <h2 class="box-title">Account statements</h2>
+            </div>
+            <div class="tab-pane" id="tab_7">
+                <h2 class="box-title">Linked files</h2>
+            </div>
+        </div>
     </div>
-</body>
-</html>
+</section>

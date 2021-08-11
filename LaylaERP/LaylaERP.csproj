@@ -815,6 +815,7 @@
     <Content Include="Views\Warehouse\ListWarehouseByVendor.cshtml" />
     <Content Include="Views\Bank\financialaccount.cshtml" />
     <Content Include="Views\Bank\newfinaccount.cshtml" />
+    <Content Include="Views\Product\AddNewPurchase.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

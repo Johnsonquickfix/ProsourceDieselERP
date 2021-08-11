@@ -77,11 +77,30 @@
                                 <input type="text" class="form-control" value="@Model.last_name" id="txtLastName" placeholder="Last Name">
                             </div>
                             <div class="form-group">
+                                @{
+                                    var selected = "";
+                                    var selected1 = "";
+                                    if (Model.user_status == 0)
+                                    {
+                                        selected = "selected=selected";
+                                    }
+                                    else
+                                    {
+                                        selected = "";
+                                    }
+                                    if (Model.user_status == 1)
+                                    {
+                                        selected1 = "selected=selected";
+                                    }
+                                    else
+                                    {
+                                        selected1 = "";
+                                    }
+                                }
                                 <label for="exampleInputEmail1">User Status</label>
-                                <select class="form-control" selected="@Model.user_status">
-                                    <option>Select User Status</option>
-                                    <option selected="selected" value="0">Active</option>
-                                    <option value="1">InActive</option>
+                                <select class="form-control" id="ddlstatus">
+                                    <option @selected value="0">Active</option>
+                                    <option @selected1 value="1">InActive</option>
                                 </select>
                             </div>
                         </div>
@@ -129,7 +148,7 @@
                             <div class="form-group">
                                 <label for="exampleInputEmail1">State</label>
                                 <select class="form-control" id="txtState">
-                                    <option selected value="@Model.State">@Model.StateFullName </option>
+                                    <option selected value="@Model.State">@Model.State</option>
                                 </select>
 
                             </div>
@@ -397,6 +416,7 @@
         City = $("#txtCity").val();
         State = $("#txtState").val();
         address2 = $("#txtAddress2").val();
+        user_status = $("#ddlstatus").val();
 
         if (NickName == "") {
             swal('Alert', 'Please Enter User Name', 'error').then(function () { swal.close(); $('#txtUserNickName').focus(); });
@@ -452,7 +472,8 @@
                 billing_postcode: Zipcode,
                 billing_state: State,
                 billing_city: City,
-                billing_address_2: address2
+                billing_address_2: address2,
+                user_status: user_status,
             }
             $.ajax({
                 url: '/Users/UpdateUser/', dataType: 'json', type: 'Post',

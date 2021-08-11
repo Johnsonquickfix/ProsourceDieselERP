@@ -31,9 +31,13 @@ namespace LaylaERP.Controllers
 
             return View();
         }
+        public ActionResult AddNewPurchase()
+        {
+            return View();
+        }
 
-        // Listing Products
-        public ActionResult ListProduct()
+            // Listing Products
+            public ActionResult ListProduct()
         {
             return View();
         }
@@ -101,6 +105,40 @@ namespace LaylaERP.Controllers
             }
             catch { }
             return Json(JSONresult, 0);
+        }
+
+        public JsonResult GetProductVariant(int ID)
+        {
+            DataTable dt = new DataTable();
+            dt = BAL.ProductRepository.GetProductVariant(ID);
+            List<SelectListItem> usertype = new List<SelectListItem>();
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                usertype.Add(new SelectListItem
+                {
+                    Value = dt.Rows[i]["ID"].ToString(),
+                    Text = dt.Rows[i]["Post_title"].ToString()
+
+                });
+            }
+            return Json(usertype, JsonRequestBehavior.AllowGet);
+        }
+        
+        public JsonResult GetProductCategory(int ID)
+        {
+            DataTable dt = new DataTable();
+            dt = BAL.ProductRepository.GetProductcategoriesList();
+            List<SelectListItem> usertype = new List<SelectListItem>();
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                usertype.Add(new SelectListItem
+                {
+                    Value = dt.Rows[i]["term_id"].ToString(),
+                    Text = dt.Rows[i]["name"].ToString()
+
+                });
+            }
+            return Json(usertype, JsonRequestBehavior.AllowGet);
         }
 
         public JsonResult CreateProduct(ProductModel model)
@@ -273,6 +311,54 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(JSONresult, 0);
         }
+
+        public JsonResult GetPurchaseDataByID(OrderPostStatusModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+
+                DataTable dt = ProductRepository.GetPurchaseDataByID(model);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+
+        [HttpPost]
+        public JsonResult GetProductInfo(SearchModel model)
+        {
+            List<ProductsModelDetails> obj = new List<ProductsModelDetails>();
+            try
+            {
+                obj = ProductRepository.GetProductListDetails(model.strValue1, model.strValue2);
+            }
+            catch { }
+            return Json(obj, 0);
+        }
+
+        public JsonResult GetProductservices(SearchModel model)
+        {
+            List<ProductModelservices> obj = new List<ProductModelservices>();
+            try
+            {
+                obj = ProductRepository.GetProductservices(model.strValue1, model.strValue2);
+            }
+            catch { }
+            return Json(obj, 0);
+        }
+
+        public JsonResult GetProductParent(SearchModel model)
+        {
+            List<ProductModelservices> obj = new List<ProductModelservices>();
+            try
+            {
+                obj = ProductRepository.GetProductParent(model.strValue1, model.strValue2);
+            }
+            catch { }
+            return Json(obj, 0);
+        }
+
         public JsonResult GetDataVariationByID(OrderPostStatusModel model)
         {
             string JSONresult = string.Empty;
@@ -789,6 +875,40 @@ namespace LaylaERP.Controllers
             ////    }
             ////    return Json(new { status = true, message = "Product Variations has been saved successfully!!", ID = 1 }, 0);
             ////}
+        }
+
+        public JsonResult SaveChildvariations(ProductModel model)
+        {
+
+            string result = string.Empty;
+            bool status = false;
+            try
+            {
+                int res = ProductRepository.Childvariations(model.ProductChildMeta);
+                if (res > 0)
+                {
+                    status = true;
+                }                
+            }
+            catch { status = false; result = ""; }
+            return Json(new { status = true, message = "update successfully!!", ID = 1 }, 0);            
+        }
+
+        public JsonResult UpdateChildvariations(ProductModel model)
+        {
+
+            string result = string.Empty;
+            bool status = false;
+            try
+            {
+                int res = ProductRepository.UpdateChildvariations(model.ProductChildMeta);
+                if (res > 0)
+                {
+                    status = true;
+                }
+            }
+            catch { status = false; result = ""; }
+            return Json(new { status = true, message = "update successfully!!", ID = 1 }, 0);
         }
     }
 }

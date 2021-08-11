@@ -10,8 +10,10 @@ $(document).ready(function () {
 
 
     if (id != "" && id != "AddNewProduct") {
-
+        $('#lbltitle').text("Update Product");
+        $("#btnPurchase").show();
         $("#hfid").val(id);
+        $("#btnPurchase").prop("href", "../AddNewPurchase/" + id)
         setTimeout(function () { GetDataByID(id); }, 10);
         //// $("#hfprodcid").val("629,632");
         setTimeout(function () { GetProdctByID($("#hfprodcid").val()); }, 3000);
@@ -20,8 +22,11 @@ $(document).ready(function () {
         setTimeout(function () { GetAttributesID($("#hfvproductattributes").val()); }, 6000);
         setTimeout(function () { GetProductvariationID(id); }, 10000);
     }
+    else {
+    $("#btnPurchase").hide();
+    $('#lbltitle').text("Add New Product");
     //  BindControls();
-
+    }
     $("#txtregularprice").keyup(function () {
         var $this = $(this);
         $this.val($this.val().replace(/[^\d.]/g, ''));

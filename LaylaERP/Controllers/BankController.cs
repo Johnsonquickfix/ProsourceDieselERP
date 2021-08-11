@@ -13,5 +13,11 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+
+        // GET: Add Fin A/C
+        public ActionResult newfinaccount()
+        {
+            return View();
+        }
     }
 }

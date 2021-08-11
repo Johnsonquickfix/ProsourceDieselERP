@@ -14,9 +14,7 @@ getShippingMethod();
 getDiscountType();
 getPaymentMethod();
 
-$("#tab_2").tabs({
-    disabled: [0, 1]
-});
+
 $("#ddlPaymentMethod").change(function () {
     PaymentMethod = $("#ddlPaymentMethod").val();
     PaymentMethodBlock(PaymentMethod);

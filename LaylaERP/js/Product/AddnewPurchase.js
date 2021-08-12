@@ -29,6 +29,7 @@
 
     if (id != "" && id != "AddNewPurchase" && id != "AddNewProduct") {        
         setTimeout(function () { GetDataPurchaseByID($("#ddlproductchild").val()); }, 6000);
+        setTimeout(function () { bindbuyingprice(); }, 7000);
         setTimeout(function () { bindChildproductsservices(); }, 9000);
         setTimeout(function () { bindparentproductsservices(); }, 10000);
 
@@ -231,6 +232,7 @@ function GetDataPurchaseByID(order_id) {
 
 $("#ddlproductchild").change(function () {
     GetDataPurchaseByID($("#ddlproductchild").val());
+    bindbuyingprice();
     bindChildproductsservices();
     bindparentproductsservices();
 });
@@ -477,6 +479,7 @@ function AddBuyingt() {
             success: function (data) {
                 if (data.status == true) {
                     if (data.url == "Manage") {
+                        bindbuyingprice();
                         swal('Alert!', data.message, 'success');
                     }
                     else {
@@ -506,4 +509,76 @@ function AddBuyingt() {
 
 
 }
+
+
+function bindbuyingprice() {
+    let PostID = $('#ddlproductchild').val();
+
+    var obj = { strValue1: PostID };
+    $.ajax({
+        type: "POST", url: '/Product/GetBuyingdata', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
+        beforeSend: function () { $("#loader").show(); },
+        success: function (data) {
+            var itemsDetailsxml = [];
+            for (var i = 0; i < data.length; i++) {
+                // let row_key = data[i].ID ;                      
+                itemsDetailsxml.push({
+                    PKey: data[i].ID, product_id: data[i].ID, product_name: data[i].name, salestax: data[i].salestax, purchase_price: data[i].purchase_price, cost_price: data[i].cost_price, date_inc: data[i].date_inc, discount: data[i].discount, minpurchasequantity: data[i].minpurchasequantity
+                });
+
+            }
+            bindbuying(itemsDetailsxml);
+        },
+        complete: function () { $("#loader").hide(); },
+        error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); },
+        async: false
+
+    });
+}
+
+function bindbuying(data) {
+    console.log('g', data);
+    var layoutHtml = '';
+    if (data.length > 0) {
+        for (var i = 0; i < data.length; i++) {
+            if (data[i].PKey > 0) {
+                layoutHtml += '<tr id="tritemId_' + data[i].PKey + '" data-key="' + data[i].PKey + '">';
+                layoutHtml += '<td class="text-left">' + data[i].product_name + '</td>';
+                layoutHtml += '<td>' + data[i].minpurchasequantity + '</td>';
+                layoutHtml += '<td>' + data[i].salestax + '</td>';
+                layoutHtml += '<td>' + data[i].purchase_price + '</td>';
+                layoutHtml += '<td>' + data[i].cost_price + '</td>';
+                layoutHtml += '<td>' + data[i].discount + '</td>';
+                layoutHtml += '<td>' + data[i].date_inc + '</td>';
+                layoutHtml += '<td></td>';
+                layoutHtml += '<td></td>';
+                layoutHtml += '</tr>';
+            }
+        }
+        console.log(layoutHtml);
+        $('#Vendor_services').empty().append(layoutHtml);
+
+    }
+    else {
+        layoutHtml += '<table id="dtdataVendor" class="table-blue table table-bordered table-striped dataTable">';
+        layoutHtml += '<thead>';
+        layoutHtml += '<tr>'; 
+        layoutHtml += '<th>Vendors</th>';
+        layoutHtml += '<th>Purchase quantity</th>';
+        layoutHtml += '<th>Sales Tax</th>';
+        layoutHtml += '<th>Price</th>';
+        layoutHtml += '<th>Cost Price</th>';
+        layoutHtml += '<th>Discount</th>';   
+        layoutHtml += '<th>Date</th>';
+        layoutHtml += '<th>Action</th>';
+        layoutHtml += '<th>Delete</th>';
+        layoutHtml += '</tr>';
+        layoutHtml += '</thead><tbody id="Vendor_services"></tbody>';
+        layoutHtml += '</table>';
+        $('#divVendor').empty().html(layoutHtml);
+    }
+
+}
+
+
 

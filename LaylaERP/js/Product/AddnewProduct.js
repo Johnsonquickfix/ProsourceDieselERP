@@ -752,7 +752,7 @@ function GetDataByID(order_id) {
                 });
             }
         },
-        error: function (msg) { alert(msg); }
+      //  error: function (msg) { alert(msg); }
     });
 
 }
@@ -775,7 +775,7 @@ function GetProdctByID(ProdctID) {
             }
 
         },
-        error: function (msg) { alert(msg); }
+       // error: function (msg) { alert(msg); }
     });
 
 }
@@ -798,7 +798,7 @@ function GetExProdctByID(ProdctID) {
             }
 
         },
-        error: function (msg) { alert(msg); }
+        //error: function (msg) { alert(msg); }
     });
 
 }

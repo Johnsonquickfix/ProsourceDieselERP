@@ -411,6 +411,16 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(obj, 0);
         }
+        public JsonResult GetBuyingdata(SearchModel model)
+        {
+            List<ProductByingPrice> obj = new List<ProductByingPrice>();
+            try
+            {
+                obj = ProductRepository.GetBuyingdata(model.strValue1, model.strValue2);
+            }
+            catch { }
+            return Json(obj, 0);
+        }
 
         public JsonResult GetDataVariationByID(OrderPostStatusModel model)
         {

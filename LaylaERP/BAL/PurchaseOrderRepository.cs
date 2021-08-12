@@ -1,5 +1,6 @@
 ﻿using LaylaERP.DAL;
 using LaylaERP.Models;
+using LaylaERP.UTILITIES;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
@@ -11,18 +12,84 @@ namespace LaylaERP.BAL
 {
     public class PurchaseOrderRepository
     {
-        public static DataSet GetIncoterm()
+        public static DataTable SearchProducts(string strSearch)
+        {
+            DataTable DT = new DataTable();
+            try
+            {
+                string strSQl = "SELECT COALESCE(ps.id,p.id) id,CONCAT(COALESCE(ps.post_title,p.post_title), COALESCE(CONCAT(' (' ,psku.meta_value,')'),'')) as text"
+                                + " FROM wp_posts as p"
+                                + " LEFT OUTER JOIN wp_posts ps ON ps.post_parent = p.id and ps.post_type LIKE 'product_variation'"
+                                + " left outer join wp_postmeta psku on psku.post_id = ps.id and psku.meta_key = '_sku'"
+                                + " WHERE p.post_type = 'product' AND p.post_status = 'publish'"
+                                + " AND CONCAT(COALESCE(ps.post_title, p.post_title), COALESCE(CONCAT(' (' ,psku.meta_value,')'),'')) like '%" + strSearch + "%'"
+                                + " ORDER BY id limit 50; ";
+                DT = SQLHelper.ExecuteDataTable(strSQl);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DT;
+        }
+        public static List<PurchaseOrderProductsModel> GetProductsDetails(long product_id, long vendor_id)
+        {
+            List<PurchaseOrderProductsModel> _list = new List<PurchaseOrderProductsModel>();
+            try
+            {
+                PurchaseOrderProductsModel productsModel = new PurchaseOrderProductsModel();
+                MySqlParameter[] parameters =
+                {
+                    new MySqlParameter("@product_id", product_id),new MySqlParameter("@vendor_id", vendor_id)
+                };
+                string strSQl = "SELECT p.id,p.post_title,psku.meta_value sku,ir.fk_vendor,purchase_price"
+                            + " FROM wp_posts as p"
+                            + " left outer join wp_postmeta psku on psku.post_id = p.id and psku.meta_key = '_sku'"
+                            + " left outer join Product_Purchase_Items ir on ir.fk_product = p.id and(ir.fk_vendor=0 or ir.fk_vendor=@vendor_id)"
+                            + " WHERE p.post_type in('product', 'product_variation') AND p.post_status = 'publish'"
+                            + " AND p.id = @product_id ORDER BY fk_vendor desc limit 1;";                
+                MySqlDataReader sdr = SQLHelper.ExecuteReader(strSQl, parameters);
+                while (sdr.Read())
+                {
+                    productsModel = new PurchaseOrderProductsModel();
+                    if (sdr["id"] != DBNull.Value)
+                        productsModel.fk_product = Convert.ToInt64(sdr["id"]);
+                    else
+                        productsModel.fk_product = 0;                   
+                    if (sdr["post_title"] != DBNull.Value)
+                        productsModel.description = sdr["post_title"].ToString();
+                    else
+                        productsModel.description = string.Empty;
+                    if (sdr["sku"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["sku"].ToString().Trim()))
+                        productsModel.product_sku = sdr["sku"].ToString();
+                    else
+                        productsModel.product_sku = string.Empty;
+                    if (sdr["purchase_price"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["purchase_price"].ToString().Trim()))
+                        productsModel.subprice = decimal.Parse(sdr["purchase_price"].ToString().Trim());
+                    else
+                        productsModel.subprice = 0;
+                    productsModel.qty = 1;
+                    _list.Add(productsModel);
+                }
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return _list;
+        }
+        public static DataSet GetAllMasterList()
         {
             DataSet DS = new DataSet();
             try
             {
-                string strSQl = "Select rowid as ID, IncoTerm, short_description from IncoTerms order by ID";
+                string strSQl = "Select id,PaymentTerm text from PaymentTerms order by id;"
+                            + " Select id, PaymentType text from wp_PaymentType order by id;"
+                            + " Select id, Balance text from BalanceDays order by id;"
+                            + " Select rowid id,IncoTerm text,short_description from IncoTerms order by id;";
                 DS = SQLHelper.ExecuteDataSet(strSQl);
             }
             catch (Exception ex)
             { throw ex; }
             return DS;
         }
+
         public static DataSet GetVendor()
         {
             DataSet DS = new DataSet();
@@ -59,7 +126,7 @@ namespace LaylaERP.BAL
             { throw ex; }
             return dt;
         }
-        public static DataTable GetVendorByID(int VendorID)
+        public static DataTable GetVendorByID(long VendorID)
         {
             DataTable dt = new DataTable();
             try
@@ -71,55 +138,22 @@ namespace LaylaERP.BAL
             { throw ex; }
             return dt;
         }
-        public static DataSet GetPaymentTerm()
-        {
-            DataSet DS = new DataSet();
-            try
-            {
-                string strSQl = "Select ID, PaymentTerm from PaymentTerms order by ID limit 50;";
-                DS = SQLHelper.ExecuteDataSet(strSQl);
-            }
-            catch (Exception ex)
-            { throw ex; }
-            return DS;
-        }
-        public static DataSet GetPaymentType()
-        {
-            DataSet DS = new DataSet();
-            try
-            {
-                string strSQl = "Select ID,PaymentType from wp_PaymentType order by ID limit 50;";
-                DS = SQLHelper.ExecuteDataSet(strSQl);
-            }
-            catch (Exception ex)
-            { throw ex; }
-            return DS;
-        }
-        public static DataSet GetBalanceDays()
-        {
-            DataSet DS = new DataSet();
-            try
-            {
-                DS = SQLHelper.ExecuteDataSet("Select ID, Balance from BalanceDays order by ID limit 50;");
-            }
-            catch (Exception ex)
-            { throw ex; }
-            return DS;
-        }
+
         public int AddNewPurchase(PurchaseOrderModel model)
         {
             try
             {
-                 
-                string refe = GetPurchaseOrderCode();
+                DateTime cDate = CommonDate.CurrentDate(), cUTFDate = CommonDate.UtcDate();
 
                 string strsql = "";
-                strsql = "insert into commerce_purchase_order(ref,ref_ext,ref_supplier,fk_soc,fk_statut,source,fk_cond_reglement,BalanceDaysID,fk_mode_reglement,date_livraison,fk_incoterms,location_incoterms,note_private,note_public) values(@ref,@ref_ext,@ref_supplier,@fk_soc,@fk_statut,@source,@fk_cond_reglement,@BalanceDaysID,@fk_mode_reglement,@date_livraison,@fk_incoterms,@location_incoterms,@note_private,@note_public); SELECT LAST_INSERT_ID();";
+                strsql = "insert into commerce_purchase_order(ref,ref_ext,ref_supplier,fk_soc,fk_statut,source,fk_cond_reglement,BalanceDaysID,fk_mode_reglement,date_livraison,fk_incoterms,location_incoterms,note_private,note_public,fk_user_author,tms,date_creation) "
+                    + " select concat('PO',date_format(@date_creation,'%y%m'),'-',lpad(coalesce(max(right(ref,5)),0) + 1,5,'0')) ref,@ref_ext,@ref_supplier,@fk_soc,@fk_statut,@source,@fk_cond_reglement,@BalanceDaysID,@fk_mode_reglement,@date_livraison,@fk_incoterms,@location_incoterms,@note_private,@note_public"
+                    + " @fk_user_author,@tms,@date_creation from commerce_purchase_order where lpad(ref,6,0) = concat('PO',date_format(@date_creation,'%y%m'));"
+                    + " SELECT LAST_INSERT_ID();";
                 MySqlParameter[] para =
                 {
-                    new MySqlParameter("@ref", refe),
-                    new MySqlParameter("@ref_ext", model.VendorCode),
-                    new MySqlParameter("@ref_supplier", model.Vendor),
+                    new MySqlParameter("@ref_ext", ""),
+                    new MySqlParameter("@ref_supplier", model.VendorBillNo),
                     new MySqlParameter("@fk_soc", model.VendorID),
                     new MySqlParameter("@fk_statut", "1"),
                     new MySqlParameter("@source", "0"),
@@ -129,8 +163,11 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@date_livraison", model.Planneddateofdelivery),
                     new MySqlParameter("@fk_incoterms", model.IncotermType),
                     new MySqlParameter("@location_incoterms", model.Incoterms),
-                    new MySqlParameter("@note_private", model.note_private),
-                    new MySqlParameter("@note_public", model.note_public),
+                    new MySqlParameter("@note_private", model.NotePrivate),
+                    new MySqlParameter("@note_public", model.NotePublic),
+                    new MySqlParameter("@tms", cUTFDate),
+                    new MySqlParameter("@date_creation", cDate),
+                    new MySqlParameter("@fk_user_author", model.LoginID)
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
                 return result;
@@ -147,19 +184,19 @@ namespace LaylaERP.BAL
                 string strsql = "Update commerce_purchase_order set ref=@ref,ref_supplier=@ref_supplier,fk_soc=@fk_soc,fk_statut=@fk_statut,source=@source,fk_cond_reglement = @fk_cond_reglement,BalanceDaysID = @BalanceDaysID,fk_mode_reglement = @fk_mode_reglement,date_livraison = @date_livraison,fk_incoterms = @fk_incoterms,location_incoterms = @location_incoterms,note_private = @note_private,note_public = @note_public where rowid = " + PurchaseID + "";
                 MySqlParameter[] para =
                 {
-                    new MySqlParameter("@ref_ext", model.VendorCode),
-                    new MySqlParameter("@ref_supplier", model.Vendor),
-                    new MySqlParameter("@fk_soc", model.VendorID),
-                    new MySqlParameter("@fk_statut", "1"),
-                    new MySqlParameter("@source", "0"),
-                    new MySqlParameter("@fk_cond_reglement", model.PaymentTerms),
-                    new MySqlParameter("@BalanceDaysID", model.Balancedays),
-                    new MySqlParameter("@fk_mode_reglement", model.PaymentType),
-                    new MySqlParameter("@date_livraison", model.Planneddateofdelivery),
-                    new MySqlParameter("@fk_incoterms", model.IncotermType),
-                    new MySqlParameter("@location_incoterms", model.Incoterms),
-                    new MySqlParameter("@note_private", model.note_private),
-                    new MySqlParameter("@note_public", model.note_public),
+                    //new MySqlParameter("@ref_ext", model.VendorCode),
+                    //new MySqlParameter("@ref_supplier", model.Vendor),
+                    //new MySqlParameter("@fk_soc", model.VendorID),
+                    //new MySqlParameter("@fk_statut", "1"),
+                    //new MySqlParameter("@source", "0"),
+                    //new MySqlParameter("@fk_cond_reglement", model.PaymentTerms),
+                    //new MySqlParameter("@BalanceDaysID", model.Balancedays),
+                    //new MySqlParameter("@fk_mode_reglement", model.PaymentType),
+                    //new MySqlParameter("@date_livraison", model.Planneddateofdelivery),
+                    //new MySqlParameter("@fk_incoterms", model.IncotermType),
+                    //new MySqlParameter("@location_incoterms", model.Incoterms),
+                    //new MySqlParameter("@note_private", model.note_private),
+                    //new MySqlParameter("@note_public", model.note_public),
 
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));

@@ -135,7 +135,7 @@ namespace LaylaERP.BAL
                     //         + "  JOIN wp_terms AS t ON t.term_id = tt.term_id"
                     //         + " WHERE p.post_type in('product','product_variation') and tt.taxonomy IN('product_cat','product_type') " + strWhr;
 
-                    string strSQl = "select distinct case when  pp.post_parent is null then p.ID else pp.ID end ID,t.term_id,case when  pp.post_parent is null then p.post_title else pp.post_title end post_title,case when  pp.post_parent is null then REPLACE(p.post_title, ' ', '_') else REPLACE(pp.post_title, ' ', '_') end title,t.name AS product_category"
+                    string strSQl = "select distinct case when  pp.post_parent is null then p.ID else pp.ID end ID,t.term_id,case when  pp.post_parent is null then p.post_title else pp.post_title end post_title,case when  pp.post_parent is null then p.post_title else pp.post_title end title,t.name AS product_category"
                      + " FROM wp_posts p"
                      + "  LEFT JOIN wp_posts AS pp ON pp.post_parent = p.ID and pp.post_status = 'publish'"
                      + "  LEFT JOIN wp_term_relationships AS tr ON tr.object_id = p.ID"
@@ -192,7 +192,7 @@ namespace LaylaERP.BAL
                 {
                     if (!string.IsNullOrEmpty(strValue1))
                         strWhr += " and fk_product = " + strValue1 ;    
-                    string strSQl = "SELECT distinct fk_product_fils ID,wp.post_title,REPLACE(post_title, ' ', '_') title,'$00.00' buyingprice,'$00' sellingpric, 0 Stock ,qty"
+                    string strSQl = "SELECT distinct fk_product_fils ID,wp.post_title,post_title title,'$00.00' buyingprice,'$00' sellingpric, 0 Stock ,qty"
                                 + " FROM product_association p"
                                 + "  left outer join wp_posts wp on wp.ID = p.fk_product_fils"                                
                                 + " WHERE wp.post_type in('product','product_variation') " + strWhr;
@@ -244,7 +244,7 @@ namespace LaylaERP.BAL
                 {
                     if (!string.IsNullOrEmpty(strValue1))
                         strWhr += " fk_product_fils = " + strValue1;
-                    string strSQl = "SELECT distinct fk_product_fils ID,wp.post_title,REPLACE(post_title, ' ', '_') title,qty"
+                    string strSQl = "SELECT distinct fk_product_fils ID,wp.post_title,post_title title,qty"
                                 + " FROM product_association p"
                                 + "  left outer join wp_posts wp on wp.ID = p.fk_product"
                                 + " WHERE " + strWhr;
@@ -266,6 +266,58 @@ namespace LaylaERP.BAL
                         else
                             productsModel.product_name = string.Empty;
 
+                        _list.Add(productsModel);
+                    }
+                }
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return _list;
+        }
+
+        public static List<ProductByingPrice> GetBuyingdata(string strValue1, string strValue2)
+        {
+            List<ProductByingPrice> _list = new List<ProductByingPrice>();
+            try
+            {
+                string free_products = string.Empty;
+
+                ProductByingPrice productsModel = new ProductByingPrice();
+                string strWhr = string.Empty;
+
+                if (string.IsNullOrEmpty(strValue1) && string.IsNullOrEmpty(strValue2))
+                {
+
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(strValue1))
+                        strWhr += " fk_product = " + strValue1;
+                    string strSQl = "SELECT ppi.rowid,name,minpurchasequantity,FORMAT(salestax,2) salestax,FORMAT(purchase_price, 2) purchase_price,FORMAT(cost_price, 2) cost_price,date_inc,ppi.discount"
+                                + " FROM Product_Purchase_Items ppi"
+                                + " left outer JOIN wp_vendor wpv on wpv.rowid = ppi.fk_vendor"
+                                + " WHERE " + strWhr;
+
+                    strSQl += ";";
+                    MySqlDataReader sdr = SQLHelper.ExecuteReader(strSQl);
+                    while (sdr.Read())
+                    {
+                        productsModel = new ProductByingPrice();
+                        if (sdr["rowid"] != DBNull.Value)
+                            productsModel.ID = Convert.ToInt64(sdr["rowid"]);
+                        else
+                            productsModel.ID = 0;
+                         
+                        productsModel.minpurchasequantity = sdr["minpurchasequantity"].ToString();
+                        if (sdr["name"] != DBNull.Value)
+                            productsModel.name = sdr["name"].ToString();
+                        else
+                            productsModel.name = string.Empty;
+                        productsModel.salestax = sdr["salestax"].ToString();
+                        productsModel.purchase_price = sdr["purchase_price"].ToString();
+                        productsModel.cost_price = sdr["cost_price"].ToString();
+                        productsModel.date_inc = sdr["date_inc"].ToString();
+                        productsModel.discount = sdr["discount"].ToString();
                         _list.Add(productsModel);
                     }
                 }
@@ -605,8 +657,8 @@ namespace LaylaERP.BAL
             int result = 0;
             try
             {
-
-                StringBuilder strSql = new StringBuilder(string.Format("delete from Product_Purchase_Items where fk_product = {0}; ", model.fk_product));
+                StringBuilder strSql = new StringBuilder();
+                //StringBuilder strSql = new StringBuilder(string.Format("delete from Product_Purchase_Items where fk_product = {0}; ", model.fk_product));
                 strSql.Append(string.Format("insert into Product_Purchase_Items ( fk_product,fk_vendor,purchase_price,cost_price,minpurchasequantity,salestax,taxrate,discount,remark) values ({0},{1},{2},{3},{4},{5},{6},{7},'{8}') ", model.fk_product, model.fk_vendor, model.purchase_price, model.cost_price, model.minpurchasequantity, model.salestax,model.taxrate,model.discount,model.remark));
 
                 /// step 6 : wp_posts

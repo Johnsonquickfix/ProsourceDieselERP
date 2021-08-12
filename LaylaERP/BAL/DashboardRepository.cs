@@ -280,7 +280,7 @@ namespace LaylaERP.BAL
         public static void SalesGraph1()
         {
             chartData.Clear();
-            string query = "select date_format(date_created,'%M %d') as Sales_date, sum(coalesce(total_sales,0)) as Total";
+            string query = "select date_format(date_created,'%b %d') as Sales_date, sum(coalesce(total_sales,0)) as Total";
             query += " from wp_wc_order_stats where date(date_created) <= NOW() and date(date_created) >= Date_add(Now(), interval - 20 day) and total_sales >=0 and (status='wc-completed' or status='wc-processing' or status='wc-pending') group by date(date_created)";
             string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString;
             //List<object> chartData = new List<object>();

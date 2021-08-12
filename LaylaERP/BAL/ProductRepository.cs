@@ -26,7 +26,7 @@ namespace LaylaERP.BAL
                             + " sum(case when post_status = 'publish' then 1 else 0 end) Publish,"                           
                             + " sum(case post_status when 'private' then 1 else 0 end) Private,"
                             + " sum(case when post_status = 'trash' then 1 else 0 end) Trash"
-                            + " from wp_posts p where p.post_type = 'product'";
+                            + " from wp_posts p where p.post_type = 'product' and post_status != 'draft'";
 
                 dt = SQLHelper.ExecuteDataTable(strSql);
             }
@@ -440,7 +440,7 @@ namespace LaylaERP.BAL
                 //    strWhr += " and p.post_status != 'auto-draft' ";
                 //if (userstatus != "trash")
                 //{
-                //    strWhr += " and p.post_status != 'trash' ";
+              //    strWhr += " and p.post_status != 'draft' ";
                 //}
                 if (!string.IsNullOrEmpty(searchid))
                 {
@@ -497,7 +497,7 @@ namespace LaylaERP.BAL
                 + " LEFT JOIN wp_term_relationships AS tr ON tr.object_id = p.ID"
                 + " LEFT JOIN wp_term_taxonomy AS tt ON tt.term_taxonomy_id = tr.term_taxonomy_id"
                 + " JOIN wp_terms AS t ON t.term_id = tt.term_id"
-                + " WHERE p.post_type in('product') and tt.taxonomy IN('product_cat','product_type') " + strWhr
+                + " WHERE p.post_type in('product') and p.post_status != 'draft' and tt.taxonomy IN('product_cat','product_type') " + strWhr
                 + " GROUP BY p.ID"
                 + " order by " + SortCol + " " + SortDir + " limit " + (pageno).ToString() + ", " + pagesize + "";
 
@@ -507,7 +507,7 @@ namespace LaylaERP.BAL
                             + " LEFT JOIN wp_term_relationships AS tr ON tr.object_id = p.ID"
                             + " JOIN wp_term_taxonomy AS tt ON tt.term_taxonomy_id = tr.term_taxonomy_id and tt.taxonomy IN('product_cat','product_type')"
                             + " JOIN wp_terms AS t ON t.term_id = tt.term_id"                         
-                            + " WHERE p.post_type in('product') " + strWhr.ToString();
+                            + " WHERE p.post_type in('product') and p.post_status != 'draft' " + strWhr.ToString();
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
                 if (ds.Tables[1].Rows.Count > 0)

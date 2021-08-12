@@ -7,13 +7,14 @@ $(document).ready(function () {
     var id = url.substring(url.lastIndexOf('/') + 1);
     $('li:contains(Variations)').hide();
 
-
+    $("#btnbacklist").prop("href", "ListProduct")
 
     if (id != "" && id != "AddNewProduct") {
         $('#lbltitle').text("Update Product");
         $("#btnPurchase").show();
         $("#hfid").val(id);
         $("#btnPurchase").prop("href", "../AddNewPurchase/" + id)
+        $("#btnbacklist").prop("href", "../ListProduct")
         setTimeout(function () { GetDataByID(id); }, 10);
         //// $("#hfprodcid").val("629,632");
         setTimeout(function () { GetProdctByID($("#hfprodcid").val()); }, 3000);
@@ -629,7 +630,7 @@ function AddProduct() {
             success: function (data) {
                 if (data.status == true) {
                     if (data.url == "Manage") {
-                        swal('Alert!', data.message, 'success').then((result) => { location.href = 'ListProduct'; });
+                        swal('Alert!', data.message, 'success').then((result) => { location.href = '../ListProduct'; });
                     }
                     else {
                         $('#fetch_results > input:text').val('');

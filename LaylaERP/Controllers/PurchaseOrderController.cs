@@ -26,16 +26,45 @@ namespace LaylaERP.Controllers
             return View();
         }
 
-        public JsonResult GetIncoterm(SearchModel model)
+        [HttpPost]
+        public JsonResult SearchProducts(SearchModel model)
         {
-            DataSet ds = BAL.PurchaseOrderRepository.GetIncoterm();
-            List<SelectListItem> productlist = new List<SelectListItem>();
-            foreach (DataRow dr in ds.Tables[0].Rows)
+            string JSONresult = string.Empty;
+            try
             {
-                productlist.Add(new SelectListItem { Text = dr["IncoTerm"].ToString(), Value = dr["ID"].ToString() });
+                DataTable DT = PurchaseOrderRepository.SearchProducts(model.strValue1);
+                JSONresult = JsonConvert.SerializeObject(DT);
             }
-            return Json(productlist, JsonRequestBehavior.AllowGet);
-
+            catch { }
+            return Json(JSONresult, 0);
+        }
+        [HttpGet]
+        public JsonResult SearchProductDetails(SearchModel model)
+        {
+            List<PurchaseOrderProductsModel> obj = new List<PurchaseOrderProductsModel>();
+            try
+            {
+                long pid = 0, vid = 0;
+                if (!string.IsNullOrEmpty(model.strValue1))
+                    pid = Convert.ToInt64(model.strValue1);
+                if (!string.IsNullOrEmpty(model.strValue2))
+                    vid = Convert.ToInt64(model.strValue2);
+                obj = PurchaseOrderRepository.GetProductsDetails(pid, vid);
+            }
+            catch { }
+            return Json(obj, 0);
+        }
+        [HttpGet]
+        public JsonResult GetAllMaster(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataSet DS = PurchaseOrderRepository.GetAllMasterList();
+                JSONresult = JsonConvert.SerializeObject(DS);
+            }
+            catch { }
+            return Json(JSONresult, 0);
         }
         public JsonResult GetVendor(SearchModel model)
         {
@@ -62,7 +91,7 @@ namespace LaylaERP.Controllers
         }
         public JsonResult GetVendorByID(PurchaseOrderModel model)
         {
-            int id = model.VendorID;
+            long id = model.VendorID;
             string result = string.Empty;
             try
             {
@@ -71,47 +100,6 @@ namespace LaylaERP.Controllers
             }
             catch (Exception ex) { throw ex; }
             return Json(result, 0);
-        }
-        public JsonResult GetPaymentTerm(SearchModel model)
-        {
-            DataSet ds = BAL.PurchaseOrderRepository.GetPaymentTerm();
-            List<SelectListItem> productlist = new List<SelectListItem>();
-            foreach (DataRow dr in ds.Tables[0].Rows)
-            {
-
-                productlist.Add(new SelectListItem { Text = dr["PaymentTerm"].ToString(), Value = dr["ID"].ToString() });
-
-            }
-            return Json(productlist, JsonRequestBehavior.AllowGet);
-
-        }
-        public JsonResult GetPaymentType(SearchModel model)
-        {
-            DataSet ds = BAL.PurchaseOrderRepository.GetPaymentType();
-            List<SelectListItem> productlist = new List<SelectListItem>();
-            foreach (DataRow dr in ds.Tables[0].Rows)
-            {
-
-                productlist.Add(new SelectListItem { Text = dr["PaymentType"].ToString(), Value = dr["ID"].ToString() });
-
-            }
-            return Json(productlist, JsonRequestBehavior.AllowGet);
-
-        }
-        public JsonResult GetBalanceDays(SearchModel model)
-        {
-
-            DataSet ds = BAL.PurchaseOrderRepository.GetBalanceDays();
-            List<SelectListItem> productlist = new List<SelectListItem>();
-            foreach (DataRow dr in ds.Tables[0].Rows)
-            {
-
-                productlist.Add(new SelectListItem { Text = dr["Balance"].ToString(), Value = dr["ID"].ToString() });
-
-            }
-            return Json(productlist, JsonRequestBehavior.AllowGet);
-
-
         }
         public JsonResult NewPurchase(PurchaseOrderModel model)
         {

@@ -2214,3 +2214,4 @@ img.varient-pic {max-width: 100px;height: auto;}
 .align-items-end {align-items:flex-end !important;}
 .file-group input {margin-right:10px;}
 .file-group {margin:0px -15px !important;}
+.flex-row_box .col-md-3 .box-primary {max-height:290px; overflow-y:auto;}

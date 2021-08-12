@@ -35,7 +35,9 @@ namespace LaylaERP.Models
         public string Search { get; set; }
         public string warehouse_type { get; set; }
         public string email { get; set; }
-
+        public DateTime eatby { get; set; }
+        public DateTime sellby { get; set; }
+        public string serial { get; set; }
         //movement models
 
         public int fk_product { get; set; }

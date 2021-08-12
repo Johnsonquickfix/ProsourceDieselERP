@@ -4,6 +4,9 @@
     ViewBag.Title = "UpdateWarehouse";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<link href="~/Content/DataTables/bootstrap-datepicker.css" rel="stylesheet" />
+<script src="~/Content/DataTables/bootstrap-datepicker.js"></script>
+
 
 <link href="~/Content/css/Style.css" rel="stylesheet" />
 <div id="loader" class="d-flex align-items-center">
@@ -11,13 +14,14 @@
     <span>&nbsp;&nbsp;Loading......</span>
 </div>
 <div class="page-title">
-    <h2 class="page-heading">Update Warehouse</h2>
+    <h2 class="page-heading">Update Warehouse</h2><div>@Html.ActionLink("Back to List", "Warehouse", null, new { @class = "btn btn-danger" })</div>
 </div>
 <div class="nav-tabs-custom">
     <ul class="nav nav-tabs" id="mytabs" role="tablist">
         <li class="active"><a href="#tab_1" data-toggle="tab">Warehouse</a></li>
-        <li class="active"><a href="#tab_3" data-toggle="tab">Additional Info</a></li>
-        <li><a href="#tab_2" data-toggle="tab">Correct Stock</a></li>
+        <li><a href="#tab_2" data-toggle="tab">Additional Info</a></li>
+        <li><a href="#tab_3" data-toggle="tab">Correct Stock</a></li>
+        <li><a href="#tab_4" data-toggle="tab">Transfer Stock</a></li>
     </ul>
     <div class="tab-content">
         <div class="tab-pane active" id="tab_1">
@@ -55,6 +59,16 @@
                                         <label for="exampleInputEmail1">Contact Number</label>
                                         <input type="text" class="form-control" id="txtPhone" placeholder="Enter Contact Number" value="@Model.phone">
                                     </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="col-sm-4">
+                            <div class="box box-primary">
+                                <div class="box-body">
+
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Fax</label>
                                         <input type="text" class="form-control" id="txtFax" placeholder="Enter Fax Number" value="@Model.fax">
@@ -75,14 +89,6 @@
                                         <input type="text" id="txtCity" class="form-control" placeholder="Enter City" value="@Model.city" />
                                     </div>
 
-                                </div>
-
-                            </div>
-                        </div>
-
-                        <div class="col-sm-4">
-                            <div class="box box-primary">
-                                <div class="box-body">
 
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">State</label>
@@ -91,6 +97,16 @@
                                             <option selected value="@Model.town">@Model.town</option>
                                         </select>
                                     </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-4">
+
+                            <div class="box box-primary">
+                                <div class="box-body">
 
                                     <div class="form-group">
                                         <label class="control-label" for="Zip Code">Zip Code</label>
@@ -127,8 +143,6 @@
                                             <option @selected1 value="CA">CA - Canada</option>
                                         </select>
                                     </div>
-
-
 
                                     @{
                                         var selectedstatut = "";
@@ -187,7 +201,57 @@
                                     </div>
 
 
+                                    <div class="form-group">
+                                        <br />
+                                        @{
+                                            var value = "checked";
+                                        }
+                                        @if (Model.status == 1)
+                                        {
+                                            <input type="checkbox" id="chkwarehousestatus" name="WarehouseStatus" checked="@value" /><label for="Active">Active</label>
+                                        }
+                                        else
+                                        {
+                                            <input type="checkbox" id="chkwarehousestatus" name="WarehouseStatus" /><label for="Active">Active</label>
+                                        }
+                                    </div>
+                                    <div class="box-footer">
+                                        <div class="text-right">
+                                            <a href="#" class="btn btn-danger" id="btnSave"><b>Update</b></a>
+                                            @Html.ActionLink("Back to List", "Warehouse", null, new { @class = "btn btn-danger" })
 
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+
+
+
+                    </div>
+
+
+                    <!-- /.nav-tabs-custom -->
+                    <!-- /.col -->
+
+                </div>
+            </div>
+        </div>
+        <!--Tab end-->
+        <!-- tab3 start-->
+        <div class="tab-pane" id="tab_2">
+
+            <div class="createuser-section section_wrapper">
+                <div class="create-user-box">
+                    <!-- /.col -->
+
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="box box-primary">
+                                <div class="box-body">
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Cor Contact Number</label>
                                         <input type="text" class="form-control" id="txtCorContact" placeholder="Enter Contact Number" value="@Model.cor_phone">
@@ -212,13 +276,11 @@
                                         <label for="exampleInputEmail1">Cor State</label>
                                         <input type="text" id="txtCorState" class="form-control" placeholder="Enter State" value="@Model.cor_state" />
                                     </div>
-
                                 </div>
                             </div>
                         </div>
 
                         <div class="col-sm-4">
-
                             <div class="box box-primary">
                                 <div class="box-body">
 
@@ -271,35 +333,95 @@
                                         <textarea class="form-control" id="txtprivate">@Model.note_private</textarea>
                                     </div>
 
-                                    <div class="form-group">
-                                        <br />
-                                        @{
-                                            var value = "checked";
-                                        }
-                                        @if (Model.status == 1)
-                                        {
-                                            <input type="checkbox" id="chkwarehousestatus" name="WarehouseStatus" checked="@value" /><label for="Active">Active</label>
-                                        }
-                                        else
-                                        {
-                                            <input type="checkbox" id="chkwarehousestatus" name="WarehouseStatus" /><label for="Active">Active</label>
-                                        }
-                                    </div>
                                     <div class="box-footer">
                                         <div class="text-right">
-                                            <a href="#" class="btn btn-danger" id="btnSave"><b>Update</b></a>
-                                            @Html.ActionLink("Back to List", "Warehouse", null, new { @class = "btn btn-danger" })
+                                            <a href="#" class="btn btn-danger" id="btnSaveinfo"><b>Save</b></a>
+                                            
 
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                        </div>
 
+                    </div>
+                </div>
 
+            </div>
+
+        </div>
+        <!-- tab end-->
+        <div class="tab-pane" id="tab_3">
+
+            <div class="createuser-section section_wrapper">
+                <div class="create-user-box">
+                    <!-- /.col -->
+
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="box box-primary">
+                                <div class="box-body">
+
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Product</label>
+                                        <select class="form-control" id="ddlProduct">
+                                            <option value="0">--Select Product--</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Lot/Serial numbe</label>
+                                        <input type="text" id="txtserial" class="form-control">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Eat-by-date </label>
+                                        <input class="form-control" type="text" id="txteatbydate" /><span class="even-space"></span>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Unit purchase price</label>
+                                        <input type="text" id="txtprice" class="form-control">
+                                    </div>
+                                </div>
+
+                            </div>
                         </div>
 
 
+                        <div class="col-sm-4">
+                            <div class="box box-primary">
+                                <div class="box-body">
 
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Label of movement</label>
+                                        <input type="text" id="txtlabel" class="form-control">
+                                    </div>
+
+                                    <div class="form-group">
+
+                                        <label for="exampleInputEmail1">Number of unit</label>
+                                        <input type="text" id="txtunit" class="form-control">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Sale by date</label>
+
+                                        <input class="form-control" type="text" id="txtsalebydate" /><span class="even-space"></span>
+                                    </div>
+
+                                    <div class="box-footer">
+                                        <div class="text-right">
+                                            <a href="#" class="btn btn-danger" id="btnStock"><b>Save</b></a>
+
+
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
 
                     </div>
 
@@ -309,333 +431,487 @@
 
                 </div>
             </div>
-        </div>
-        <!--Tab end-->
-        <!-- tab3 start-->
-        <div class="tab-pane" id="tab_3">
 
         </div>
-            <!-- tab end-->
-            <div class="tab-pane" id="tab_2">
 
-                <div class="createuser-section section_wrapper">
-                    <div class="create-user-box">
-                        <!-- /.col -->
 
-                        <div class="row">
-                            <div class="col-sm-4">
-                                <div class="box box-primary">
-                                    <div class="box-body">
+        <div class="tab-pane" id="tab_4">
 
-                                        <div class="form-group">
-                                            <label for="exampleInputEmail1">Product</label>
-                                            <select class="form-control">
-                                                <option></option>
-                                            </select>
-                                        </div>
+            <div class="createuser-section section_wrapper">
+                <div class="create-user-box">
+                    <!-- /.col -->
 
-                                        <div class="form-group">
-                                            <label for="exampleInputEmail1">Lot/Serial numbe</label>
-                                            <input type="text" class="form-control">
-                                        </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="box box-primary">
+                                <div class="box-body">
 
-                                        <div class="form-group">
-                                            <label for="exampleInputEmail1">Eat-by-date </label>
-                                            <input type="text" class="form-control">
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label for="exampleInputEmail1">Unit purchase price</label>
-                                            <input type="text" class="form-control">
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="exampleInputEmail1">Label of movement</label>
-                                            <input type="text" class="form-control">
-                                        </div>
-
-                                        <div class="form-group">
-
-                                            <label for="exampleInputEmail1">Number of unit</label>
-                                            <input type="text" class="form-control">
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label for="exampleInputEmail1">Sale by date</label>
-                                            <input type="text" class="form-control">
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="exampleInputEmail1">Project</label>
-                                            <input type="text" class="form-control" />
-                                        </div>
-
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Product</label>
+                                        <select class="form-control">
+                                            <option value="0">--Select Product--</option>
+                                        </select>
                                     </div>
 
-                                </div>
-                            </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Target Warehouse</label>
+                                        <input type="text" class="form-control">
+                                    </div>
 
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Number of units </label>
+                                        <input type="text" class="form-control">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Lot/Serial number</label>
+                                        <input type="text" class="form-control">
+                                    </div>
+                                </div>
+
+                            </div>
                         </div>
 
 
-                        <!-- /.nav-tabs-custom -->
-                        <!-- /.col -->
+                        <div class="col-sm-4">
+                            <div class="box box-primary">
+                                <div class="box-body">
+
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Eat-by date</label>
+                                        <input type="text" class="form-control">
+                                    </div>
+
+                                    <div class="form-group">
+
+                                        <label for="exampleInputEmail1">Sale by date</label>
+                                        <input type="text" class="form-control">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Label of movement</label>
+                                        <input type="text" class="form-control">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Label of movement</label>
+                                        <input type="text" class="form-control">
+                                    </div>
+
+                                    <div class="box-footer">
+                                        <div class="text-right">
+                                            <a href="#" class="btn btn-danger"><b>Save</b></a>
+                                            
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
 
                     </div>
+
+
+                    <!-- /.nav-tabs-custom -->
+                    <!-- /.col -->
+
                 </div>
-
             </div>
+
         </div>
+
+
+
+
+
     </div>
-        <script>
-            var strength = 1;
-            $(document).ready(function () {
-                $("#loader").hide();
-                $(document).on('click', "#btnSave", function () {
-                    AddWarehouse();
-                });
+</div>
+<script>
+    var strength = 1;
+    $(document).ready(function () {
+        $("#loader").hide();
+        $(document).on('click', "#btnSave", function () {
+            AddWarehouse();
 
-                //Select 2 javascript start
-                $("#txtState").select2({
-                    allowClear: true, minimumInputLength: 2, placeholder: "Search State",
-                    ajax: {
-                        url: '/Users/GetCustState/', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
-                        data: function (params) {
-                            var obj = { strValue1: params.term, strValue2: $("#txtCountry").val() };
-                            return JSON.stringify(obj);
-                        },
-                        processResults: function (data) {
-                            var jobj = JSON.parse(data);
-                            return {
-                                results: $.map(jobj, function (item) {
-                                    return { text: item.StateFullName, name: item.StateFullName, id: item.StateFullName }
-                                })
-                            };
-                        },
-                        error: function (xhr, status, err) { }, cache: true
-                    }
-                });
+        });
 
-                //Select 2 javascript end
+        $(document).on('click', "#btnSaveinfo", function () {
+            AddWarehouseinfo();
+            Addcurrentstock();
+        }); btnStock
 
-                //For zip code javascript
-                $('#txtZipCode').change(function () {
-                    City = $("#txtCity").val();
-                    State = $("#txtState").val();
-                    PostalCode = $("#txtZipCode").val();
-                    var obj = {
-                        billing_state: State,
-                        billing_city: City,
-                        billing_postcode: PostalCode
-                    }
-                    $.ajax({
-                        url: '/Users/CityStateZip/', dataType: 'json', type: 'Post',
-                        contentType: "application/json; charset=utf-8",
-                        data: JSON.stringify(obj),
-                        dataType: "json",
-                        success: function (data) {
-                            console.log(data);
-                            if (data.status == true) {
+        $(document).on('click', "#btnStock", function () {
+            Addcurrentstock();
+        }); 
 
-                                $('#hfzipstatus').val(data.status);
+        $.get('/Warehouse/GetProduct', function (data) {
+            var items = "";
+            $.each(data, function (index, value) {
+                items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddlProduct");
+            })
+        });
 
-                            }
-                            else {
-                                if ($('#txtCountry').val() == "US") {
-                                    $("#txtZipCode").val("");
-                                    $('#hfzipstatus').val(data.status);
-                                    swal('Alert', 'Zip code is not valid for the State', 'error').then(function () { swal.close(); $('#txtZipCode').focus(); });
-                                }
-                            }
-                        },
-
-                        error: function (error) {
-                            swal('Error!', 'something went wrong', 'error');
-                        },
-                    })
-                });
-
-
-            });
-            //For Zip Code javascript end
-
-
-            //For phone number javascript
-            document.getElementById('txtPhone').addEventListener('keyup', function (evt) {
-                var phoneNumber = document.getElementById('txtPhone');
-                var charCode = (evt.which) ? evt.which : evt.keyCode;
-                phoneNumber.value = phoneFormat(phoneNumber.value);
-            });
-            document.getElementById('txtCorContact').addEventListener('keyup', function (evt) {
-                var phoneNumber = document.getElementById('txtCorContact');
-                var charCode = (evt.which) ? evt.which : evt.keyCode;
-                phoneNumber.value = phoneFormat(phoneNumber.value);
-            });
-
-
-            function phoneFormat(input) {
-                input = input.replace(/\D/g, '');
-                input = input.substring(0, 10);
-                var size = input.length;
-                if (size == 0) {
-                    input = input;
-                } else if (size < 4) {
-                    input = '(' + input;
-                } else if (size < 7) {
-                    input = '(' + input.substring(0, 3) + ') ' + input.substring(3, 6);
-                } else {
-                    input = '(' + input.substring(0, 3) + ') ' + input.substring(3, 6) + ' - ' + input.substring(6, 10);
-                }
-                return input;
+        //Select 2 javascript start
+        $("#txtState").select2({
+            allowClear: true, minimumInputLength: 2, placeholder: "Search State",
+            ajax: {
+                url: '/Users/GetCustState/', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+                data: function (params) {
+                    var obj = { strValue1: params.term, strValue2: $("#txtCountry").val() };
+                    return JSON.stringify(obj);
+                },
+                processResults: function (data) {
+                    var jobj = JSON.parse(data);
+                    return {
+                        results: $.map(jobj, function (item) {
+                            return { text: item.StateFullName, name: item.StateFullName, id: item.StateFullName }
+                        })
+                    };
+                },
+                error: function (xhr, status, err) { }, cache: true
             }
+        });
 
-            //for phone number format javascript end
+        //Select 2 javascript end
 
-        </script>
+        //For zip code javascript
+        $('#txtZipCode').change(function () {
+            City = $("#txtCity").val();
+            State = $("#txtState").val();
+            PostalCode = $("#txtZipCode").val();
+            var obj = {
+                billing_state: State,
+                billing_city: City,
+                billing_postcode: PostalCode
+            }
+            $.ajax({
+                url: '/Users/CityStateZip/', dataType: 'json', type: 'Post',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(obj),
+                dataType: "json",
+                success: function (data) {
+                    console.log(data);
+                    if (data.status == true) {
 
-        <script>
+                        $('#hfzipstatus').val(data.status);
 
-            function AddWarehouse() {
-                debugger
-                rowid = $("#hfid").val();
-                ref = $("#txtref").val();
-                lieu = $("#txtShortNameLocation").val();
-                description = $("#txtDescription").val();
-                address = $("#txtAddress").val();
-                zip = $("#txtZipCode").val();
-                town = $("#txtState").val();
-                country = $("#txtCountry").val();
-                phone = $("#txtPhone").val();
-                fax = $("#txtFax").val();
-                //statut = $("#status").val();
-                address1 = $("#txtAddress1").val();
-                city = $("#txtCity").val();
-                warehousetype = $("#warehousetype").val();
-                status = $("#chkwarehousestatus").prop("checked") ? 1 : 0;
-                //Additional info
-                corphone = $("#txtCorContact").val();
-                coraddress = $("#txtCorAddress").val();
-                coraddress1 = $("#txtCorAddress1").val();
-                corcity = $("#txtCorCity").val();
-                corstate = $("#txtCorState").val();
-                corzip = $("#txtCorZipCode").val();
-                corcountry = $("#txtCorCountry").val();
-                publicnote = $("#txtpublic").val();
-                privatenote = $("#txtprivate").val();
-                email = $("#txtEmail").val();
-                if (ref == "") {
-                    swal('Alert', 'Please Enter Reference Name', 'error').then(function () { swal.close(); $('#txtref').focus(); });
+                    }
+                    else {
+                        if ($('#txtCountry').val() == "US") {
+                            $("#txtZipCode").val("");
+                            $('#hfzipstatus').val(data.status);
+                            swal('Alert', 'Zip code is not valid for the State', 'error').then(function () { swal.close(); $('#txtZipCode').focus(); });
+                        }
+                    }
+                },
+
+                error: function (error) {
+                    swal('Error!', 'something went wrong', 'error');
+                },
+            })
+        });
+
+
+    });
+    //For Zip Code javascript end
+
+
+    //For phone number javascript
+    document.getElementById('txtPhone').addEventListener('keyup', function (evt) {
+        var phoneNumber = document.getElementById('txtPhone');
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        phoneNumber.value = phoneFormat(phoneNumber.value);
+    });
+    document.getElementById('txtCorContact').addEventListener('keyup', function (evt) {
+        var phoneNumber = document.getElementById('txtCorContact');
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        phoneNumber.value = phoneFormat(phoneNumber.value);
+    });
+
+
+    function phoneFormat(input) {
+        input = input.replace(/\D/g, '');
+        input = input.substring(0, 10);
+        var size = input.length;
+        if (size == 0) {
+            input = input;
+        } else if (size < 4) {
+            input = '(' + input;
+        } else if (size < 7) {
+            input = '(' + input.substring(0, 3) + ') ' + input.substring(3, 6);
+        } else {
+            input = '(' + input.substring(0, 3) + ') ' + input.substring(3, 6) + ' - ' + input.substring(6, 10);
+        }
+        return input;
+    }
+
+    //for phone number format javascript end
+
+</script>
+
+<script>
+    function AddWarehouse() {
+        debugger
+        rowid = $("#hfid").val();
+        ref = $("#txtref").val();
+        lieu = $("#txtShortNameLocation").val();
+        description = $("#txtDescription").val();
+        address = $("#txtAddress").val();
+        zip = $("#txtZipCode").val();
+        town = $("#txtState").val();
+        country = $("#txtCountry").val();
+        phone = $("#txtPhone").val();
+        fax = $("#txtFax").val();
+        //statut = $("#status").val();
+        address1 = $("#txtAddress1").val();
+        city = $("#txtCity").val();
+        warehousetype = $("#warehousetype").val();
+        status = $("#chkwarehousestatus").prop("checked") ? 1 : 0;
+        //Additional info
+        //corphone = $("#txtCorContact").val();
+        //coraddress = $("#txtCorAddress").val();
+        //coraddress1 = $("#txtCorAddress1").val();
+        //corcity = $("#txtCorCity").val();
+        //corstate = $("#txtCorState").val();
+        //corzip = $("#txtCorZipCode").val();
+        //corcountry = $("#txtCorCountry").val();
+        //publicnote = $("#txtpublic").val();
+        //privatenote = $("#txtprivate").val();
+
+        email = $("#txtEmail").val();
+        if (ref == "") {
+            swal('Alert', 'Please Enter Reference Name', 'error').then(function () { swal.close(); $('#txtref').focus(); });
+        }
+        else if (lieu == "") {
+            swal('Alert', 'Please Enter Short Name Location', 'error').then(function () { swal.close(); $('#txtShortNameLocation').focus(); });
+        }
+
+        else {
+
+            var obj = {
+                rowid: rowid,
+                reff: ref,
+                lieu: lieu,
+                description: description,
+                address: address,
+                zip: zip,
+                town: town,
+                country: country,
+                phone: phone,
+                fax: fax,
+                //statut: statut,
+                address1: address1,
+                city: city,
+                status: status,
+                warehouse_type: warehousetype,
+                //cor_phone: corphone,
+                //cor_address: coraddress,
+                //cor_address1: coraddress1,
+                //cor_city: corcity,
+                //cor_state: corstate,
+                //cor_zip: corzip,
+                //cor_country: corcountry,
+                //note_public: publicnote,
+                //note_private: privatenote,
+                email: email,
+            }
+            $.ajax({
+                url: '/Warehouse/Updatewarehouses/', dataType: 'json', type: 'Post',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(obj),
+                dataType: "json",
+                beforeSend: function () { $("#loader").show(); },
+                success: function (data) {
+                    if (data.status == true) {
+                        //$('#parent > input:text').val('');
+                        swal('Alert!', data.message, 'success').then((result) => { location.href = 'Warehouse'; });
+                    }
+                    else {
+                        swal('Alert!', data.message, 'error');
+                    }
+                },
+                complete: function () { $("#loader").hide(); },
+                error: function (error) { swal('Error!', 'something went wrong', 'error'); },
+            })
+
+        }
+
+    }
+</script>
+
+<script>
+    function initMap() {
+        let address1Field = document.querySelector("#txtAddress");
+        // Create the autocomplete object, restricting the search predictions to
+        // addresses in the US and Canada.
+        autocomplete = new google.maps.places.Autocomplete(address1Field, {
+            componentRestrictions: { country: ["us", "ca"] },
+            fields: ["address_components", "geometry"],
+            types: ["address"],
+        });
+        // When the user selects an address from the drop-down, populate the
+        // address fields in the form.
+        autocomplete.addListener("place_changed", fillInAddress);
+
+        function fillInAddress() {
+            const place = autocomplete.getPlace();
+            //console.log(place);
+            let address = '';
+            let obj = place.address_components.filter(element => element.types[0] == 'street_number');
+            if (obj.length > 0)
+                address = obj[0].long_name;
+            obj = place.address_components.filter(element => element.types[0] == 'route');
+            if (obj.length > 0)
+                address = address + ' ' + obj[0].long_name;
+            $("#txtAddress").val(address);
+            obj = place.address_components.filter(element => element.types[0] == 'locality');
+            if (obj.length > 0)
+                $("#txtCity").val(obj[0].long_name);
+            else
+                $("#txtCity").val('');
+            obj = place.address_components.filter(element => element.types[0] == 'postal_code');
+            if (obj.length > 0)
+                $("#txtZipCode").val(obj[0].long_name);
+            else
+                $("#txtZipCode").val('');
+            obj = place.address_components.filter(element => element.types[0] == 'administrative_area_level_1');
+            if (obj.length > 0)
+                $("#txtState").empty().append('<option value="' + obj[0].short_name + '" selected>' + obj[0].long_name + '</option>');
+            else
+                $("#txtState").empty();
+            obj = place.address_components.filter(element => element.types[0] == 'country');
+            if (obj.length > 0)
+                $("#txtCountry").val(obj[0].short_name);
+            else
+                $("#txtCountry").empty();
+        }
+
+        function renderAddress(place) {
+
+        }
+    }
+</script>
+
+<script>
+    function AddWarehouseinfo() {
+        debugger
+        //Additional info
+        rowid = $("#hfid").val();
+        corphone = $("#txtCorContact").val();
+        coraddress = $("#txtCorAddress").val();
+        coraddress1 = $("#txtCorAddress1").val();
+        corcity = $("#txtCorCity").val();
+        corstate = $("#txtCorState").val();
+        corzip = $("#txtCorZipCode").val();
+        corcountry = $("#txtCorCountry").val();
+        publicnote = $("#txtpublic").val();
+        privatenote = $("#txtprivate").val();
+
+        var obj = {
+            rowid: rowid,
+            cor_phone: corphone,
+            cor_address: coraddress,
+            cor_address1: coraddress1,
+            cor_city: corcity,
+            cor_state: corstate,
+            cor_zip: corzip,
+            cor_country: corcountry,
+            note_public: publicnote,
+            note_private: privatenote,
+
+        }
+        $.ajax({
+            url: '/Warehouse/Updatewarehousesinfo/', dataType: 'json', type: 'Post',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(obj),
+            dataType: "json",
+            beforeSend: function () { $("#loader").show(); },
+            success: function (data) {
+                if (data.status == true) {
+                    //$('#parent > input:text').val('');
+                    swal('Alert!', data.message, 'success');
                 }
-                else if (lieu == "") {
-                    swal('Alert', 'Please Enter Short Name Location', 'error').then(function () { swal.close(); $('#txtShortNameLocation').focus(); });
-                }
-
                 else {
+                    swal('Alert!', data.message, 'error');
+                }
+            },
+            complete: function () { $("#loader").hide(); },
+            error: function (error) { swal('Error!', 'something went wrong', 'error'); },
+        })
 
-                    var obj = {
-                        rowid: rowid,
-                        reff: ref,
-                        lieu: lieu,
-                        description: description,
-                        address: address,
-                        zip: zip,
-                        town: town,
-                        country: country,
-                        phone: phone,
-                        fax: fax,
-                        //statut: statut,
-                        address1: address1,
-                        city: city,
-                        status: status,
-                        warehouse_type: warehousetype,
-                        cor_phone: corphone,
-                        cor_address: coraddress,
-                        cor_address1: coraddress1,
-                        cor_city: corcity,
-                        cor_state: corstate,
-                        cor_zip: corzip,
-                        cor_country: corcountry,
-                        note_public: publicnote,
-                        note_private: privatenote,
-                        email: email,
+    }
+</script>
+
+<script>
+
+    function Addcurrentstock() {
+        debugger
+        var fk_entrepot = $("#hfid").val();
+        var fk_product = $("#ddlProduct").val();
+        var serial = $("#txtserial").val();
+        var eatby = $("#txteatbydate").val();
+        var price = $("#txtprice").val();
+        var unit = $("#txtunit").val();
+        var label = $("#txtlabel").val();
+        var sellby = $("#txtsalebydate").val();
+
+        if (fk_product == 0) {
+            swal('Alert', 'Please select product', 'error').then(function () { swal.close(); $('#ddlProduct').focus(); });
+        }
+        else {
+
+            var obj = {
+
+                fk_entrepot: fk_entrepot,
+                fk_product: fk_product,
+                serial: serial,
+                eatby: eatby,
+                value: unit,
+                label: label,
+                price: price,
+                sellby: sellby,
+            }
+            $.ajax({
+                url: '/Warehouse/AddCurrentstock/', dataType: 'json', type: 'Post',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(obj),
+                dataType: "json",
+                beforeSend: function () { $("#loader").show(); },
+                success: function (data) {
+                    if (data.status == true) {
+                        //$('#parent > input:text').val('');
+                        swal('Alert!', data.message, 'success').then((result) => { location.href = 'StockMouvementList'; });
                     }
-                    $.ajax({
-                        url: '/Warehouse/Updatewarehouses/', dataType: 'json', type: 'Post',
-                        contentType: "application/json; charset=utf-8",
-                        data: JSON.stringify(obj),
-                        dataType: "json",
-                        beforeSend: function () { $("#loader").show(); },
-                        success: function (data) {
-                            if (data.status == true) {
-                                //$('#parent > input:text').val('');
-                                swal('Alert!', data.message, 'success').then((result) => { location.href = 'Warehouse'; });
-                            }
-                            else {
-                                swal('Alert!', data.message, 'error');
-                            }
-                        },
-                        complete: function () { $("#loader").hide(); },
-                        error: function (error) { swal('Error!', 'something went wrong', 'error'); },
-                    })
+                    else {
+                        swal('Alert!', data.message, 'error');
+                    }
+                },
+                complete: function () { $("#loader").hide(); },
+                error: function (error) { swal('Error!', 'something went wrong', 'error'); },
+            })
 
-                }
+        }
+    }
+</script>
 
-            }
-        </script>
+<script>
+    $(function () {
+        $("#txteatbydate").datepicker({
+            format: 'yyyy-mm-dd',
+        });
 
-        <script>
-            function initMap() {
-                let address1Field = document.querySelector("#txtAddress");
-                // Create the autocomplete object, restricting the search predictions to
-                // addresses in the US and Canada.
-                autocomplete = new google.maps.places.Autocomplete(address1Field, {
-                    componentRestrictions: { country: ["us", "ca"] },
-                    fields: ["address_components", "geometry"],
-                    types: ["address"],
-                });
-                // When the user selects an address from the drop-down, populate the
-                // address fields in the form.
-                autocomplete.addListener("place_changed", fillInAddress);
+        $("#txtsalebydate").datepicker({
+            format: 'yyyy-mm-dd',
+        });
+    });
 
-                function fillInAddress() {
-                    const place = autocomplete.getPlace();
-                    //console.log(place);
-                    let address = '';
-                    let obj = place.address_components.filter(element => element.types[0] == 'street_number');
-                    if (obj.length > 0)
-                        address = obj[0].long_name;
-                    obj = place.address_components.filter(element => element.types[0] == 'route');
-                    if (obj.length > 0)
-                        address = address + ' ' + obj[0].long_name;
-                    $("#txtAddress").val(address);
-                    obj = place.address_components.filter(element => element.types[0] == 'locality');
-                    if (obj.length > 0)
-                        $("#txtCity").val(obj[0].long_name);
-                    else
-                        $("#txtCity").val('');
-                    obj = place.address_components.filter(element => element.types[0] == 'postal_code');
-                    if (obj.length > 0)
-                        $("#txtZipCode").val(obj[0].long_name);
-                    else
-                        $("#txtZipCode").val('');
-                    obj = place.address_components.filter(element => element.types[0] == 'administrative_area_level_1');
-                    if (obj.length > 0)
-                        $("#txtState").empty().append('<option value="' + obj[0].short_name + '" selected>' + obj[0].long_name + '</option>');
-                    else
-                        $("#txtState").empty();
-                    obj = place.address_components.filter(element => element.types[0] == 'country');
-                    if (obj.length > 0)
-                        $("#txtCountry").val(obj[0].short_name);
-                    else
-                        $("#txtCountry").empty();
-                }
-
-                function renderAddress(place) {
-
-                }
-            }
-        </script>
+</script>
 
 
 
 
-        <!-- Google API -->
-        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBIgngCCIJ3D8_s3G7aIfvQckhsDtbAe4E&libraries&callback=initMap&libraries=places&v=weekly" async></script>
+
+
+<!-- Google API -->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBIgngCCIJ3D8_s3G7aIfvQckhsDtbAe4E&libraries&callback=initMap&libraries=places&v=weekly" async></script>

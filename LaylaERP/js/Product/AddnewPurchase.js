@@ -3,42 +3,77 @@
     var id = url.substring(url.lastIndexOf('/') + 1);
     $('li:contains(Variations)').hide();
 
-    if (id != "" && id != "AddNewPurchase") {
+
+    $("#txtminpurchasequantity").keyup(function () {
+        var $this = $(this);
+        $this.val($this.val().replace(/[^\d.]/g, ''));
+        $this.val($this.val().substring(0, 10));
+    });
+    $("#txtSaletax").keyup(function () {
+        var $this = $(this);
+        $this.val($this.val().replace(/[^\d.]/g, ''));
+        $this.val($this.val().substring(0, 10));
+    }); $("#txtcurrencyconversionrate").keyup(function () {
+        var $this = $(this);
+        $this.val($this.val().replace(/[^\d.]/g, ''));
+        $this.val($this.val().substring(0, 10));
+    }); $("#txtcostprice").keyup(function () {
+        var $this = $(this);
+        $this.val($this.val().replace(/[^\d.]/g, ''));
+        $this.val($this.val().substring(0, 10));
+    }); $("#txtDiscountqty").keyup(function () {
+        var $this = $(this);
+        $this.val($this.val().replace(/[^\d.]/g, ''));
+        $this.val($this.val().substring(0, 10));
+    });
+
+    if (id != "" && id != "AddNewPurchase" && id != "AddNewProduct") {        
+        setTimeout(function () { GetDataPurchaseByID($("#ddlproductchild").val()); }, 6000);
+        setTimeout(function () { bindChildproductsservices(); }, 9000);
+        setTimeout(function () { bindparentproductsservices(); }, 10000);
+
+        $('#dvbuysing').hide();
+        $(document).on('click', "#btnbuying", function () {
+            $('#dvbuysing').show();
+        })
+
+        $(document).on('click', "#btnbuyingcl", function () {
+            $('#dvbuysing').hide();
+        })
+
+        $.get('/Product/GetProductVariant/' + id, function (data) {
+            var items = "";
+            $.each(data, function (index, value) {
+                items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddlproductchild");
+            })
+        });
+
+        $.get('/Product/GetProductCategory/' + id, function (data) {
+            var items = "";
+            $('#ddlCategoryfilter').empty();
+            items += "<option value=''>Please select</option>";
+            $.each(data, function (index, value) {
+                items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddlCategoryfilter");
+            })
+            $('#ddlCategoryfilter').bind(items);
+        });
+
+
+        $.get('/Product/GetVender/' + id, function (data) {
+            var items = "";
+            $('#ddlvender').empty();
+            items += "<option value=''>Please select</option>";
+            $.each(data, function (index, value) {
+                items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddlvender");
+            })
+            $('#ddlvender').bind(items);
+        });
+
+        $("#filtersrchexp").click(function (e) {
+            dataGridLoad($("#ddlproductchild").val());
+        });
 
     }
-    $('#dvbuysing').hide();
-    $(document).on('click', "#btnbuying", function () {
-        $('#dvbuysing').show();
-    })
-
-    $(document).on('click', "#btnbuyingcl", function () {
-        $('#dvbuysing').hide();
-    })
-
-    $.get('/Product/GetProductVariant/' + id, function (data) {
-        var items = "";
-        $.each(data, function (index, value) {
-            items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddlproductchild");
-        })
-    });
-
-    $.get('/Product/GetProductCategory/' + id, function (data) {
-        var items = "";
-        $('#ddlCategoryfilter').empty();
-        items += "<option value=''>Please select</option>";
-        $.each(data, function (index, value) {
-            items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddlCategoryfilter");
-        })
-        $('#ddlCategoryfilter').bind(items);
-    });
-
-    $("#filtersrchexp").click(function (e) {
-        dataGridLoad($("#ddlproductchild").val());
-    });
-    setTimeout(function () { GetDataByID($("#ddlproductchild").val()); }, 2000);
-    setTimeout(function () { bindChildproductsservices(); }, 3000);
-    setTimeout(function () { bindparentproductsservices(); }, 4000);
-     
 });
 
 $("#btnaddupdatechild").click(function (e) {
@@ -135,7 +170,8 @@ $("#btnservicessave").click(function (e) {
 });
 
 
-function GetDataByID(order_id) {
+function GetDataPurchaseByID(order_id) {
+  
     order_id = $("#ddlproductchild").val();
     var ID = order_id;
 
@@ -175,6 +211,7 @@ function GetDataByID(order_id) {
                 $('#txtVirtual').text("Yes");
 
             $("#txtSku").text(i[0].sku);
+            $("#txtvendersku").val(i[0].sku);            
             $("#txtRegularprice").text(i[0].regularamount);
             $("#txtsaleprice").text(i[0].saleprice);
 
@@ -193,7 +230,7 @@ function GetDataByID(order_id) {
 }
 
 $("#ddlproductchild").change(function () {
-    GetDataByID($("#ddlproductchild").val());
+    GetDataPurchaseByID($("#ddlproductchild").val());
     bindChildproductsservices();
     bindparentproductsservices();
 });
@@ -390,6 +427,83 @@ function bindParentdata(data) {
         layoutHtml += '</table>';
         $('#divParent').empty().html(layoutHtml);
     }
+
+}
+
+$(document).on('click', "#btnbuyingsave", function () {
+    AddBuyingt();
+})
+
+function AddBuyingt() {
+    debugger
+    fk_productval = $('#ddlproductchild').val();
+    vender = $("#ddlvender").val();
+    minpurchasequantity = $("#txtminpurchasequantity").val();
+    costprice = $("#txtcostprice").val();
+    Saletax = $("#txtSaletax").val();
+    currency = $("#txtcurrencyconversionrate").val();
+    taxrate = $("#ddltaxrate").val();
+    Discountqty = $("#txtDiscountqty").val();
+    Remark = $("#txtRemarks").val();   
+
+    if (vender == "") {
+        swal('Alert', 'Please Enter Product', 'error').then(function () { swal.close(); $('#ddlvender').focus(); });
+    }
+    else if (currency == "") {
+        swal('Alert', 'Please Enter Regular price', 'error').then(function () { swal.close(); $('#txtcurrencyconversionrate').focus(); });
+    }
+    else {
+        var obj = {
+
+            fk_product: fk_productval,
+            fk_vendor: vender,
+            minpurchasequantity: minpurchasequantity,
+            cost_price: costprice,
+            salestax: Saletax,
+            purchase_price: currency,
+            taxrate: taxrate,
+            discount: Discountqty,
+            remark: Remark,
+            
+        }
+        $.ajax({
+            url: '/Product/BuyingPrice/', dataType: 'json', type: 'Post',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(obj),
+            dataType: "json",
+            beforeSend: function () {
+                $("#loader").show();
+            },
+            success: function (data) {
+                if (data.status == true) {
+                    if (data.url == "Manage") {
+                        swal('Alert!', data.message, 'success');
+                    }
+                    else {
+                       // $('#fetch_results > input:text').val('');
+                        swal('Alert!', data.message, 'success');
+                    }
+                    //$('#ddlProduct').val(null).trigger('change');
+                    //clear_fetch();
+
+                }
+                else {
+                    swal('Alert!', data.message, 'error')
+                }
+            },
+            complete: function () {
+                $("#loader").hide();
+                //location.href = '/Users/Users/';
+                //window.location.href = '/Users/Users/';
+
+            },
+            error: function (error) {
+                swal('Error!', 'something went wrong', 'error');
+            },
+        })
+    }
+
+
 
 }
 

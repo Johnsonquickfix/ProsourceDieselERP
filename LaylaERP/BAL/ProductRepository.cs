@@ -406,6 +406,19 @@ namespace LaylaERP.BAL
             { throw ex; }
             return DT;
         }
+
+        public static DataTable GetVender()
+        {
+            DataTable DT = new DataTable();
+            try
+            {
+                string strSQl = "Select rowid,name from wp_vendor";                
+                DT = SQLHelper.ExecuteDataTable(strSQl);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DT;
+        }
         public static DataTable GetProductVariant(int ProductID)
         {
             DataTable dtr = new DataTable();
@@ -587,6 +600,24 @@ namespace LaylaERP.BAL
             }
         }
 
+        public static int AddBuyingtProduct(ProductModel model,DateTime dateinc)
+        {
+            int result = 0;
+            try
+            {
+
+                StringBuilder strSql = new StringBuilder(string.Format("delete from Product_Purchase_Items where fk_product = {0}; ", model.fk_product));
+                strSql.Append(string.Format("insert into Product_Purchase_Items ( fk_product,fk_vendor,purchase_price,cost_price,minpurchasequantity,salestax,taxrate,discount,remark) values ({0},{1},{2},{3},{4},{5},{6},{7},'{8}') ", model.fk_product, model.fk_vendor, model.purchase_price, model.cost_price, model.minpurchasequantity, model.salestax,model.taxrate,model.discount,model.remark));
+
+                /// step 6 : wp_posts
+                //strSql.Append(string.Format(" update wp_posts set post_status = '{0}' ,comment_status = 'closed' where id = {1} ", model.OrderPostStatus.status, model.OrderPostStatus.order_id));
+
+                result = SQLHelper.ExecuteNonQuery(strSql.ToString());
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return result;
+        }
         public static int UpdateProductsVariation(string post_title,string post_excerpt, long ID)
         {
             try

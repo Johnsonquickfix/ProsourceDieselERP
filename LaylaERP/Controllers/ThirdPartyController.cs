@@ -176,7 +176,7 @@ namespace LaylaERP.Controllers
                         int ID = new ThirdPartyRepository().AddPaymentMethods(model);
                         if (ID > 0)
                         {
-                            return Json(new { status = true, message = "Vendor Payment Details has been saved successfully!!", url = "", id = ID }, 0);
+                            return Json(new { status = true, message = "Vendor Details has been saved successfully!!", url = "", id = ID }, 0);
                         }
                         else
                         {
@@ -186,7 +186,7 @@ namespace LaylaERP.Controllers
                     else
                     {
                         int ID = new ThirdPartyRepository().EditPaymentMethods(model);
-                        return Json(new { status = true, message = "Vendor Payment Details has been updated successfully!!", url = "", id = ID }, 0);
+                        return Json(new { status = true, message = "Vendor Details has been updated successfully!!", url = "", id = ID }, 0);
                     }
                 }
                 else
@@ -202,15 +202,20 @@ namespace LaylaERP.Controllers
             {
                 if (model.rowid > 0)
                 {
+                    if (model.ContactID > 0)
+                    {
+                        new ThirdPartyRepository().EditVendorContacts(model);
+                        return Json(new { status = true, message = "Contact has been updated successfully!!", url = "", id = model.ContactID }, 0);
+                        
+                    }
+                    else
+                    {
                         int ID = new ThirdPartyRepository().AddContacts(model);
                         if (ID > 0)
-                        {
                             return Json(new { status = true, message = "Contacts has been saved successfully!!", url = "", id = ID }, 0);
-                        }
                         else
-                        {
                             return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
-                        }
+                    }
                 }
                 else
                 {

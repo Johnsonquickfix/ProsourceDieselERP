@@ -14,7 +14,8 @@ getShippingMethod();
 getDiscountType();
 getPaymentMethod();
 VendorContactList();
-//$('#chkVendorStatus').attr("checked", "checked");
+
+$("#chkVendorStatus").prop("checked", true);
 
 $("#ddlPaymentMethod").change(function () {
     PaymentMethod = $("#ddlPaymentMethod").val();
@@ -851,7 +852,7 @@ function GetVendorByID(id) {
                     $("#txtEMail").val(d[0].email);
                     $("#txtWeb").val(d[0].url);
                     $("#txtWorkinghours").val(d[0].Workinghours);
-                    d[0].VendorStatus == true ? $('#chkVendorStatus').attr("checked", "checked") : "";
+                    d[0].VendorStatus == true ? $("#chkVendorStatus").prop("checked", true) : $("#chkVendorStatus").prop("checked", false);;
                     $("#txtCorAddress1").val(d[0].CorAddress1);
                     $("#txtCorAddress2").val(d[0].CorAddress2);
                     $("#txtCorCity").val(d[0].CorCity);

@@ -54,7 +54,17 @@ namespace LaylaERP.Models
         public int post_parent { get; set; }
         public string comment_status { get; set; }
 
-       
+        public int fk_product { get; set; }
+        public int fk_vendor { get; set; }
+        public float purchase_price { get; set; }
+        public float cost_price { get; set; }
+        public float salestax { get; set; }
+        public float discount { get; set; }
+        public int minpurchasequantity { get; set; }
+        public string remark { get; set; }
+        public int taxrate { get; set; }
+
+
     }
     public class ProductModelMetaModel
     {

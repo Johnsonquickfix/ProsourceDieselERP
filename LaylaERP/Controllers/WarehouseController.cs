@@ -298,5 +298,39 @@ namespace LaylaERP.Controllers
             }
             return Json(warehouselist, JsonRequestBehavior.AllowGet);
         }
+
+        [HttpPost]
+        public JsonResult Updatewarehousesinfo(WarehouseModel model)
+        {
+            //int menu_id = 0;
+            //AppearanceRepository.UpdateUsers(model);
+            if (model.rowid > 0)
+            {
+                WarehouseRepository.Updatewarehousesinfo(model);
+                ModelState.Clear();
+                return Json(new { status = true, message = "Data has been saved successfully!!", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+
+        }
+
+        [HttpPost]
+        public JsonResult AddCurrentstock(WarehouseModel model)
+        {
+           
+            int ID = WarehouseRepository.AddCurrentstock(model);
+            if (ID > 0)
+            {
+                return Json(new { status = true, message = "Data has been saved successfully!!", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+
+        }
     }
 }

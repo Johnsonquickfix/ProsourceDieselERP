@@ -19,9 +19,9 @@
             
             <li class="active"><a href="#tab_1" data-toggle="tab">Product</a></li>
             <li><a href="#tab_2" data-toggle="tab">Selling prices</a></li>
-            <li><a href="#tab_3" data-toggle="tab">Buying prices<span class="badge badge-danger"></span></a></li>
-            <li><a href="#tab_4" data-toggle="tab">Kits<span class="badge badge-danger"></span></a></li>
-            <li><a href="#tab_5" data-toggle="tab">Notes</a></li>
+            <li><a href="#tab_31" data-toggle="tab">Buying prices<span class="badge badge-danger"></span></a></li>
+            <li><a href="#tab_41" data-toggle="tab">Kits<span class="badge badge-danger"></span></a></li>
+            <li><a href="#tab_51" data-toggle="tab">Notes</a></li>
         </ul>
         <div class="tab-content">
             <div class="box box-primary">
@@ -144,7 +144,7 @@
 
                 </div>
             </div>
-            <div class="tab-pane" id="tab_3">
+            <div class="tab-pane" id="tab_31">
                 <div class="row rowbox proposal-row">
                     <div class="col-md-12">
                         <div class="box box-primary">
@@ -180,16 +180,17 @@
                                 <div class="box box-primary">
                                     <div class="box-body">
                                         <div class="form-group d-flex">
+                                            <label class="col-sm-3 control-label">SKU</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" id="txtvendersku" readonly class="form-control">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group d-flex">
                                             <label class="col-sm-3 control-label">Vendor</label>
                                             <div class="col-sm-9">
                                                 <select id="ddlvender" class="form-control">
                                                 </select>
-                                            </div>
-                                        </div>
-                                        <div class="form-group d-flex">
-                                            <label class="col-sm-3 control-label">Vendor SKU</label>
-                                            <div class="col-sm-9">
-                                                <input type="text" id="txtvendersku" class="form-control">
                                             </div>
                                         </div>
 
@@ -202,10 +203,10 @@
                                         <div class="form-group d-flex">
                                             <label class="col-sm-3 control-label">Sales Tax </label>
                                             <div class="col-sm-9">
-                                                <input type="text" id="txtvatrat" class="form-control">
+                                                <input type="text" id="txtSaletax" class="form-control">
                                             </div>
                                         </div>
-                                       
+
 
                                         <div class="form-group d-flex">
                                             <label class="col-sm-3 control-label">Price (with no discount)</label>
@@ -214,14 +215,22 @@
                                             </div>
                                             <div class="col-sm-6">
                                                 <select id="ddltaxrate" class="form-control">
-                                                    <option value="HT" selected="">Excl. tax</option>
-                                                    <option value="TTC">Inc. tax</option>
+                                                    <option value="0" selected="">Excl. tax</option>
+                                                    <option value="1">Inc. tax</option>
                                                 </select>
                                             </div>
                                         </div>
-                                       
+
                                         <div class="form-group d-flex">
-                                            <label class="col-sm-3 control-label">Discount for this qty.</label>
+                                            <label class="col-sm-3 control-label">Cost Price</label>
+                                            <div class="col-sm-3">
+                                                <input type="text" id="txtcostprice" class="form-control">
+                                            </div>                                           
+                                        </div>
+
+
+                                        <div class="form-group d-flex">
+                                            <label class="col-sm-3 control-label">Discount</label>
                                             <div class="col-sm-8">
                                                 <input type="text" id="txtDiscountqty" class="form-control">
                                             </div>
@@ -229,14 +238,14 @@
                                                 %
                                             </div>
                                         </div>
-                                     
+
                                         <div class="form-group d-flex">
                                             <label class="col-sm-3 control-label">Remarks</label>
                                             <div class="col-sm-9">
                                                 <input type="text" id="txtRemarks" class="form-control">
                                             </div>
                                         </div>
-                                       
+
                                         <div class="form-group d-flex">
                                             <div class="col-sm-8">
                                             </div>
@@ -285,7 +294,7 @@
                     </div>
                                 </div>
                             
-            <div class="tab-pane" id="tab_4">
+            <div class="tab-pane" id="tab_41">
                 <div class="row rowbox proposal-row">
                     <div class="col-md-12">
                         <div class="box box-primary">
@@ -431,7 +440,7 @@
 
             </div>
        
-                            <div class="tab-pane" id="tab_5">
+                            <div class="tab-pane" id="tab_51">
                                 Notes
                             </div>
 

@@ -13,7 +13,10 @@ getIncoterm();
 getShippingMethod();
 getDiscountType();
 getPaymentMethod();
+getRelatedProducts();
 VendorContactList();
+VendorRelatedProduct();
+
 
 $("#chkVendorStatus").prop("checked", true);
 
@@ -704,6 +707,21 @@ function getPaymentMethod() {
 
     });
 }
+function getRelatedProducts() {
+
+    $.ajax({
+        url: "/ThirdParty/GetRelatedProducts",
+        type: "Get",
+        success: function (data) {
+            var opt = '<option value="-1">Please Select Product</option>';
+            for (var i = 0; i < data.length; i++) {
+                opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
+            }
+            $('#ddlRelatedProduct').html(opt);
+        }
+
+    });
+}
 function getStatus() {
     var data = [
         { "ID": "1", "Text": "Open" },
@@ -788,6 +806,8 @@ function getShippingMethod() {
 
     });
 }
+
+
 
 document.getElementById('txtPhone').addEventListener('keyup', function (evt) {
     var phoneNumber = document.getElementById('txtPhone');
@@ -957,44 +977,7 @@ function getVendorCode() {
         });
 
 }
-//function ProductList() {
-//    var rowid = $("#hfid").val();
-//    var obj = { rowid: rowid };
-//    $('#dtdata').DataTable({
-//        columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "asc"]],
-//        destroy: true, bProcessing: true, bServerSide: true,
-//        sPaginationType: "full_numbers", searching: false, ordering: false, lengthChange: false, "paging": false, "bInfo": false,
-//        bAutoWidth: false, scrollX: false, scrollY: false,
-//        lengthMenu: [[10, 20, 50], [10, 20, 50]],
-//        sAjaxSource: "/ThirdParty/GetProductList",
-//        fnServerData: function (sSource, aoData, fnCallback, oSettings) {
-//            $.ajax({
-//                type: "POST", url: sSource, async: true, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
-//                success: function (data) {
-//                    var dtOption = { aaData: JSON.parse(data.aaData) };
-//                    return fnCallback(dtOption);
-//                },
-//                error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
-//                async: false
-//            });
-//        },
-//        aoColumns: [
-//            { data: 'warehouse', title: 'Warehouse', sWidth: "40%" },
-//            {
-//                'data': 'LeadTime', sWidth: "30%",
-//                'render': function (id, type, full, meta) {
-//                    return '<input type="text" name="txtLeadTime" class="form-control" value="' + full.LeadTime + '" id="' + full.id + '"  />';
-//                }
-//            },
-//            {
-//                'data': 'DaysofStock', sWidth: "30%",
-//                'render': function (id, type, full, meta) {
-//                    return '<input type="text" name="txtDaysofStock" class="form-control" value="' + full.DaysofStock + '" />';
-//                }
-//            },
-//        ]
-//    });
-//}
+
 function VendorContactList() {
     var urid = parseInt($("#ddlSearchStatus").val());
     ID = $("#hfid").val();
@@ -1042,6 +1025,40 @@ function VendorContactList() {
         ]
     });
 }
+
+function VendorRelatedProduct() {
+    var urid = parseInt($("#ddlSearchStatus").val());
+    ID = $("#hfid").val();
+    var sid = "";
+    var obj = { user_status: urid, Search: sid, PageNo: 0, PageSize: 50, sEcho: 1, SortCol: 'id', SortDir: 'desc', rowid: ID };
+    $('#RelatedItemdata').DataTable({
+        columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
+        destroy: true, bProcessing: true, bServerSide: true,
+        sPaginationType: "full_numbers", searching: false, ordering: false, lengthChange: false, "paging": false, "bInfo": false,
+        bAutoWidth: false, scrollX: false, scrollY: false,
+        lengthMenu: [[10, 20, 50], [10, 20, 50]],
+        sAjaxSource: "/ThirdParty/GetVendorRelatedProductList",
+        fnServerData: function (sSource, aoData, fnCallback, oSettings) {
+
+            obj.sEcho = aoData[0].value; obj.PageSize = oSettings._iDisplayLength; obj.PageNo = oSettings._iDisplayStart;
+            $.ajax({
+                type: "POST", url: sSource, async: true, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
+                success: function (data) {
+                    var dtOption = { sEcho: data.sEcho, recordsTotal: data.recordsTotal, recordsFiltered: data.recordsFiltered, iTotalRecords: data.iTotalRecords, iTotalDisplayRecords: data.iTotalDisplayRecords, aaData: JSON.parse(data.aaData) };
+                    return fnCallback(dtOption);
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
+                async: false
+            });
+        },
+        aoColumns: [
+            { data: 'ProductName', title: 'Product Name', sWidth: "10%" },
+            { data: 'VendorName', title: 'Vendor Name', sWidth: "10%" },
+            { data: 'purchase_price', title: 'Purchase Price', sWidth: "10%" },
+            { data: 'cost_price', title: 'Cost Price', sWidth: "10%" },
+        ]
+    });
+}
 $('#btnAddContact').click(function () {
     $("#VendorModal").find(":input").each(function () {
         switch (this.type) {
@@ -1054,9 +1071,17 @@ $('#btnAddContact').click(function () {
    
 })
 
-//function showModal(id) {
-//    $('#VendorModal').modal('show');
-//}
+$('#btnAddRelatedProduct').click(function () {
+    $("#RelatedProductModal").find(":input").each(function () {
+        switch (this.type) {
+            case "text": case "email": case "textarea": case "tel": $(this).val(''); break;
+        }
+    });
+    $("#RelatedProductModal option[value='-1']").attr('selected', true)
+    $("#ddlContactState").empty().append('<option value="" selected></option>');
+    $('#RelatedProductModal').modal('show');
+
+})
 function showModal(id) {
     var VendorID = id;
   

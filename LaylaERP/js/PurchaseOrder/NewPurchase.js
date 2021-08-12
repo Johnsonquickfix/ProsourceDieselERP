@@ -164,6 +164,7 @@ function getItemList(product_id, vender_id) {
 }
 function bindItems(data) {
     let itemHtml = '';
+    var layoutHtml = '';
     if (data.length > 0) {
         for (var i = 0; i < data.length; i++) {
             if (data[i].fk_product > 0) {
@@ -202,7 +203,7 @@ function bindItems(data) {
         itemHtml += '</thead>';
         itemHtml += '<tbody id="line_items"></tbody><tbody id="fee_line_items"></tbody>';
         itemHtml += '</table>';
-        $('#divAddItemFinal').empty().html(layoutHtml);
+        $('#divAddItemFinal').empty().html(itemHtml);
     }
     calculateFinal();
 }

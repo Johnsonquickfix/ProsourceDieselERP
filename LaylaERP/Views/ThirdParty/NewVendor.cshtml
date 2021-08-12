@@ -33,7 +33,8 @@
                 <li><a href="#tab_5" data-toggle="tab">Taxes</a></li>
                 <li><a href="#tab_6" data-toggle="tab">Discounts</a></li>
                 <li><a href="#tab_7" data-toggle="tab">Payments</a></li>
-                <li><a href="#tab_8" data-toggle="tab">Link Warehouses</a></li>
+                <li><a href="#tab_8" data-toggle="tab">Related Items</a></li>
+                <li><a href="#tab_9" data-toggle="tab">Link Warehouses</a></li>
             </ul>
             <div class="tab-content">
                 <div class="tab-pane active" id="tab_1">
@@ -83,10 +84,7 @@
                                             <label class="control-label " for="City">City</label>
                                             <input type="text" id="txtCity" class="form-control" placeholder="City" />
                                         </div><!--7-->
-                                        <div class="form-group">
-                                            <label class="control-label" for="Status">Status</label>
-                                            <select class="form-control" id="ddlStatus"></select>
-                                        </div><!--8-->
+
                                         <div class="form-group">
                                             <label class="control-label" for="exampleInputEmail1">State</label>
                                             <select class="form-control" id="ddlState"></select>
@@ -106,16 +104,17 @@
                                             <label class="control-label " for="Phone">Phone/Mobile</label>
                                             <input type="tel" id="txtPhone" class="form-control" placeholder="Phone" />
                                         </div><!--12-->
+                                        <div class="form-group">
+                                            <label class="control-label " for="Fax">Fax</label>
+                                            <input type="text" id="txtFax" class="form-control" placeholder="Fax" />
+                                        </div><!--13-->
                                     </div>
                                 </div>
                             </div><!--col-4-->
                             <div class="col-md-4">
                                 <div class="box box-primary">
                                     <div class="box-body">
-                                        <div class="form-group">
-                                            <label class="control-label " for="Fax">Fax</label>
-                                            <input type="text" id="txtFax" class="form-control" placeholder="Fax" />
-                                        </div><!--13-->
+                                        
                                         <div class="form-group">
                                             <label class="control-label " for="email">EMail</label>
                                             <input type="email" id="txtEMail" class="form-control" placeholder="EMail" />
@@ -128,8 +127,11 @@
                                             <label class="control-label">Working hours</label>
                                             <input type="text" class="form-control" id="txtWorkinghours" placeholder="Working hours" />
                                         </div><!--16-->
-
-                                        <input type="checkbox" id="chkVendorStatus" name="VendorStatus"> <label for="Active">Active</label><!--17-->
+                                        <div class="form-group">
+                                            <label class="control-label" for="Status">Status</label>
+                                            <select class="form-control" id="ddlStatus"></select>
+                                        </div><!--8-->
+                                        <input type="checkbox" id="chkVendorStatus" name="VendorStatus"> <label for="Active" >Active</label><!--17-->
                                     </div>
                                 </div>
                             </div><!--col-4-->
@@ -176,71 +178,71 @@
                             </div>
                         </div>
                         @*<div class="row">
-                                <div class="col-md-4">
-                                    <div class="box box-primary">
-                                        <div class="box-body">
-                                            <div class="form-group">
-                                                <label class="control-label ">Cor Address1</label>
-                                                <input type="text" id="txtCorAddress1" class="form-control" />
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="control-label ">Cor Address2</label>
-                                                <input type="text" id="txtCorAddress2" class="form-control" />
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="control-label ">Cor City</label>
-                                                <input type="text" id="txtCorCity" class="form-control" />
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="control-label ">Cor State</label>
-                                                <input type="text" id="txtCorState" class="form-control" />
-                                            </div>
-                                        </div>
-                                    </div>
+                    <div class="col-md-4">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="form-group">
+                                    <label class="control-label ">Cor Address1</label>
+                                    <input type="text" id="txtCorAddress1" class="form-control" />
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="box box-primary">
-                                        <div class="box-body">
-                                            <div class="form-group">
-                                                <label class="control-label ">Cor Zip Code</label>
-                                                <input type="text" id="txtCorZipCode" class="form-control" />
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="control-label ">Cor Country</label>
-                                                <input type="text" id="txtCorCountry" class="form-control" />
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="control-label ">Cor Phone/Mobile</label>
-                                                <input type="text" id="txtCorPhone" class="form-control" />
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="control-label ">Work force</label>
-                                                <select class="form-control" id="ddlWorkforce"></select>
-                                            </div>
-                                        </div>
-                                    </div>
+                                <div class="form-group">
+                                    <label class="control-label ">Cor Address2</label>
+                                    <input type="text" id="txtCorAddress2" class="form-control" />
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="box box-primary">
-                                        <div class="box-body">
-                                            <div class="form-group">
-                                                <label class="control-label ">Business Entity Type</label>
-                                                <input type="text" id="txtBusinessEntityType" class="form-control" />
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="control-label ">Notes (Public)</label>
-                                                <textarea id="txtNotesPublic" class="form-control"></textarea>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="control-label ">Notes (Private)</label>
-                                                <textarea id="txtNotesPrivate" class="form-control"></textarea>
-                                            </div>
-
-                                        </div>
-                                    </div>
+                                <div class="form-group">
+                                    <label class="control-label ">Cor City</label>
+                                    <input type="text" id="txtCorCity" class="form-control" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label ">Cor State</label>
+                                    <input type="text" id="txtCorState" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="form-group">
+                                    <label class="control-label ">Cor Zip Code</label>
+                                    <input type="text" id="txtCorZipCode" class="form-control" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label ">Cor Country</label>
+                                    <input type="text" id="txtCorCountry" class="form-control" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label ">Cor Phone/Mobile</label>
+                                    <input type="text" id="txtCorPhone" class="form-control" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label ">Work force</label>
+                                    <select class="form-control" id="ddlWorkforce"></select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="form-group">
+                                    <label class="control-label ">Business Entity Type</label>
+                                    <input type="text" id="txtBusinessEntityType" class="form-control" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label ">Notes (Public)</label>
+                                    <textarea id="txtNotesPublic" class="form-control"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label ">Notes (Private)</label>
+                                    <textarea id="txtNotesPrivate" class="form-control"></textarea>
                                 </div>
 
-                            </div>*@
+                            </div>
+                        </div>
+                    </div>
+
+                </div>*@
                         <div class="box-footer">
                             <div class="text-right">
                                 <button type="button" id="btnNextTab2" class="btn btn-danger ">Next</button>
@@ -269,13 +271,7 @@
                                             <label for="Balance">Balance Net</label>
                                             <select class="form-control" id="ddlBalancedays"></select>
                                         </div>
-                                        <div class="form-group">
-                                            <label class="control-label " for="IncoTerm">IncoTerm</label>
-                                            <div class="d-flex">
-                                                <select class="px-0 col-md-6 form-control" id="ddlIncoTerm"></select>
-                                                <input type="text" id="txtIncoTerm" class="px-0 col-md-6 form-control" placeholder="IncoTerm" />
-                                            </div>
-                                        </div>
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -283,15 +279,22 @@
                                 <div class="box box-primary">
                                     <div class="box-body">
                                         @*<div class="form-group">
-                                                <label for="Balance">Payment Type</label>
-                                                <select class="form-control" id="ddlPaymentType">
-                                                    <option value="-1">Please Select Payment Type</option>
-                                                    <option value="banktranser">Bank Transfer</option>
-                                                    <option value="cheque">Cheque</option>
-                                                    <option value="creditcard">Credit Card</option>
-                                                </select>
-                                            </div>*@
+            <label for="Balance">Payment Type</label>
+            <select class="form-control" id="ddlPaymentType">
+                <option value="-1">Please Select Payment Type</option>
+                <option value="banktranser">Bank Transfer</option>
+                <option value="cheque">Cheque</option>
+                <option value="creditcard">Credit Card</option>
+            </select>
+        </div>*@
                                         <div class="form-group">
+                                            <label class="control-label " for="IncoTerm">IncoTerm</label>
+                                            <div class="d-flex">
+                                                <select class="px-0 col-md-6 form-control" id="ddlIncoTerm"></select>
+                                                <input type="text" id="txtIncoTerm" class="px-0 col-md-6 form-control" placeholder="IncoTerm" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group" style="display:none">
                                             <label class="control-label " for="Currency">Currency</label>
                                             <select class="form-control" id="ddlCurrency">
                                                 <option value="USD">USD - US Dollars</option>
@@ -301,16 +304,17 @@
                                             <label class="control-label " for="txtCreditLimit">Credit Limit</label>
                                             <input type="text" id="txtCreditLimit" class="form-control" placeholder="Credit Limit" />
                                         </div>
+                                        <div class="form-group">
+                                            <label class="control-label " for="txtoutstandinglimit">OutStanding Limit</label>
+                                            <input type="text" id="txtOutStandingLimit" class="form-control" placeholder="Out Standing Limit" />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="box box-primary">
                                     <div class="box-body">
-                                        <div class="form-group">
-                                            <label class="control-label " for="txtoutstandinglimit">OutStanding Limit</label>
-                                            <input type="text" id="txtOutStandingLimit" class="form-control" placeholder="Out Standing Limit" />
-                                        </div>
+                                        
                                         <div class="form-group">
                                             <label class="control-label " for="txtminorderqty">Minimum Order Quantity</label>
                                             <input type="text" id="txtMinOrderQty" class="form-control" placeholder="Minimum Order Quantity" />
@@ -368,7 +372,7 @@
                             </div>
                         </div>
 
-                        <div class="row">
+                        <div class="row" style="display:none">
                             <div class="col-md-4">
                                 <div class="box box-primary">
                                     <div class="box-body">
@@ -456,13 +460,19 @@
                             <div class="col-md-4">
                                 <div class="box box-primary">
                                     <div class="box-body">
+                                        <div class="form-group">
+                                            <input type="checkbox" id="chkTaxIncludedinPrice" />
+                                            <label class="control-label" for="shipping_tax_include_in_price2">Tax Included in price</label><br />
+                                        </div>
                                         @*<div class="form-group form-check">
-                                                <input type="checkbox" id="chkTaxIncludedinprice" />
-                                                <label class="control-label" for="tax_include_in_price1">Tax included in price</label>
-                                            </div>*@
+            <input type="checkbox" id="chkTaxIncludedinprice" />
+            <label class="control-label" for="tax_include_in_price1">Tax included in price</label>
+        </div>*@
 
-                                        <input type="checkbox" id="chkShippingTaxIncludedinprice" />
-                                        <label class="control-label" for="shipping_tax_include_in_price1">Shipping tax included in price</label>
+                                        <div class="form-group">
+                                            <input type="checkbox" id="chkShippingTaxIncludedinprice" />
+                                            <label class="control-label" for="shipping_tax_include_in_price1">Shipping tax included in price</label>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -474,8 +484,7 @@
                                             <input type="text" class="form-control" id="txtCalculatedtax" placeholder="Calculated tax" />
                                         </div>
 
-                                        <input type="checkbox" id="chkTaxIncludedinPrice" />
-                                        <label class="control-label" for="shipping_tax_include_in_price2">Tax Included in price</label>
+                                       
                                     </div>
                                 </div>
                             </div>
@@ -494,9 +503,9 @@
                         </div>
                         <div class="row">
                             <div class="col-md-12">
-                                <div class="box box-primary">
+                              
                                     <div class="box-body">
-                                        <label class="control-label">Discount Type1 (, )</label>
+                                        <label class="control-label">Discount Type1</label>
                                         <div class="form-group">
                                             <select class="form-control" id="ddlDiscountType1">
                                                 <option value="Fixed">Fixed</option>
@@ -504,25 +513,25 @@
                                             </select>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="box box-primary">
-                                    <div class="box-body">
-                                        <div class="form-group">
-                                            <label class="control-label">Default Discount (%)</label>
-                                            <input type="text" id="txtDefaultDiscount" class="form-control" placeholder="Default Discount (%)" />
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="control-label">Minimum order amount</label>
-                                            <input type="text" id="txtDiscountMinimumOrderAmount" class="form-control" placeholder="Minimum order amount" />
-                                        </div>
+                               
+                           
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label">Default Discount (%)</label>
+                                        <input type="text" id="txtDefaultDiscount" class="form-control" placeholder="Default Discount (%)" />
                                     </div>
                                 </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label">Minimum order amount</label>
+                                        <input type="text" id="txtDiscountMinimumOrderAmount" class="form-control" placeholder="Minimum order amount" />
+                                    </div>
+                                </div>
+                                </div>
                             </div>
-                            <div class="col-md-4">
+                        <div class="row">
+                            
+                            <div class="col-md-4" style="display:none;">
                                 <div class="box box-primary">
                                     <div class="box-body">
                                         <div class="form-group">
@@ -540,7 +549,8 @@
                                 <div class="box box-primary">
                                     <div class="box-body">
                                         <div class="form-group">
-                                            <label class="control-label">Discount Type2 (Balance Net)</label>
+                                            <label class="control-label"><strong>Discount Type2 (Balance Net)</strong></label>
+                                            @*<label class="control-label">Discount Type2 (Balance Net)</label>*@
                                             <select class="form-control" id="ddlDiscountType2"></select>
                                         </div>
                                         <div class="form-group">
@@ -770,6 +780,43 @@
 
                 </div>
                 <div class="tab-pane" id="tab_8">
+                    <div id="aditional-info">
+                        <div class="box-header">
+                            <h2 class="box-title">Related Items</h2>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="box box-primary">
+                                    <div class="box-header">
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <table id="RelatedProductsdata" class="inventory-table table-blue table check-table table-bordered table-striped dataTable " width="100%">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Name</th>
+                                                            <th>Vendor Name</th>
+                                                            <th>Title</th>
+                                                            <th>Phone</th>
+                                                            <th>Email</th>
+                                                            <th>Address</th>
+                                                            <th>Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box-footer">
+                            <div class="text-right">
+                                <button type="button" id="btnNextTab2" class="btn btn-danger ">Next</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="tab_9">
                     <div class="box box-primary">
                         <div class="box-body">
                             <a href="#" class="btn btn-danger">Vendor link to Warehouse</a>
@@ -806,7 +853,7 @@
                                     <input type="text" id="txtContactTitle" class="form-control" placeholder="Title" />
                                 </div>
                                 <div class="form-group">
-                                    @*<img class="sb-title-icon" src="https://fonts.gstatic.com/s/i/googlematerialicons/location_pin/v5/24px.svg" alt="">*@
+                                    <img class="sb-title-icon" src="https://fonts.gstatic.com/s/i/googlematerialicons/location_pin/v5/24px.svg" alt="">
                                     <label class="control-label " for="Address">Address</label>
                                     <input type="text" id="txtContactAddress" class="form-control" placeholder="Address" autocomplete="true" />
                                 </div><!--5-->
@@ -913,9 +960,7 @@
             State = $("#ddlState").val();
             PostalCode = $("#txtZipCode").val();
             var obj = {
-                billing_state: State,
-                billing_city: City,
-                billing_postcode: PostalCode
+                billing_state: State,billing_city: City,billing_postcode: PostalCode
             }
             $.ajax({
                 url: '/Users/CityStateZip/', dataType: 'json', type: 'Post',
@@ -925,7 +970,6 @@
                 success: function (data) {
                     if (data.status == true) {
                         $('#hfzipstatus').val(data.status);
-
                     } else {
                         if ($('#ddlCountry').val() == "US") {
                             $("#txtZipCode").val("");
@@ -1043,6 +1087,65 @@
 
 
 </script>
+@*<script>
+    function initMap() {
+        let contactAddressField = document.querySelector("#txtContactAddress");
+        // Create the autocomplete object, restricting the search predictions to
+        // addresses in the US and Canada.
+        autocomplete = new google.maps.places.Autocomplete(contactAddressField, {
+            componentRestrictions: { country: ["us", "ca", "cn"] },
+            fields: ["address_components", "geometry"],
+            types: ["address"],
+        });
+        // When the user selects an address from the drop-down, populate the
+        // address fields in the form.
+        autocomplete.addListener("place_changed", fillInAddress);
+
+        function fillInAddress() {
+            const place = autocomplete.getPlace();
+            //console.log(place);
+            let address = '';
+            let obj = place.address_components.filter(element => element.types[0] == 'street_number');
+            if (obj.length > 0)
+                address = obj[0].long_name;
+            obj = place.address_components.filter(element => element.types[0] == 'route');
+            if (obj.length > 0)
+                address = address + ' ' + obj[0].long_name;
+            $("#txtContactAddress").val(address);
+            obj = place.address_components.filter(element => element.types[0] == 'locality');
+            if (obj.length > 0)
+                $("#txtContactCity").val(obj[0].long_name);
+            else
+                $("#txtContactCity").val('');
+            obj = place.address_components.filter(element => element.types[0] == 'postal_code');
+            if (obj.length > 0)
+                //console.log(obj[0].long_name);
+                $("#txtContactZipCode").val(obj[0].long_name);
+            else
+                $("#txtContactZipCode").val('');
+            obj = place.address_components.filter(element => element.types[0] == 'administrative_area_level_1');
+            if (obj.length > 0)
+                $("#ddlContactState").empty().append('<option value="' + obj[0].short_name + '" selected>' + obj[0].long_name + '</option>');
+            else
+                $("#ddlContactState").empty();
+            obj = place.address_components.filter(element => element.types[0] == 'country');
+            if (obj.length > 0)
+                //console.log(obj[0].short_name);
+                $("#ddlContactCountry").empty().append('<option value="' + obj[0].short_name + '" selected>' + obj[0].long_name + '</option>');
+            //$("#ddlCountry").val(obj[0].short_name + ' - ' + obj[0].long_name);
+            else
+                $("#ddlContactCountry").empty();
+        }
+
+        function renderAddress(place) {
+            //map.setCenter(place.geometry.location);
+            //marker.setPosition(place.geometry.location);
+            //marker.setVisible(true);
+        }
+    }
+
+
+</script>*@
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBIgngCCIJ3D8_s3G7aIfvQckhsDtbAe4E&libraries&callback=initMap&libraries=places&v=weekly" async></script>
 
 

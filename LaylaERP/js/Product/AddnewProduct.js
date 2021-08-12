@@ -8,13 +8,16 @@ $(document).ready(function () {
     $('li:contains(Variations)').hide();
 
     $("#btnbacklist").prop("href", "ListProduct")
-
+ 
+    $('#divPurchase').hide();
     if (id != "" && id != "AddNewProduct") {
         $('#lbltitle').text("Update Product");
         $("#btnPurchase").show();
+        $('#divPurchase').show();
         $("#hfid").val(id);
         $("#btnPurchase").prop("href", "../AddNewPurchase/" + id)
         $("#btnbacklist").prop("href", "../ListProduct")
+    
         setTimeout(function () { GetDataByID(id); }, 10);
         //// $("#hfprodcid").val("629,632");
         setTimeout(function () { GetProdctByID($("#hfprodcid").val()); }, 3000);
@@ -749,7 +752,7 @@ function GetDataByID(order_id) {
                 });
             }
         },
-        error: function (msg) { alert(msg); }
+        //error: function (msg) { alert(msg); }
     });
 
 }
@@ -772,7 +775,7 @@ function GetProdctByID(ProdctID) {
             }
 
         },
-        error: function (msg) { alert(msg); }
+        //error: function (msg) { alert(msg); }
     });
 
 }
@@ -795,7 +798,7 @@ function GetExProdctByID(ProdctID) {
             }
 
         },
-        error: function (msg) { alert(msg); }
+        //error: function (msg) { alert(msg); }
     });
 
 }

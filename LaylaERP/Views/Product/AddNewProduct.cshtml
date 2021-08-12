@@ -29,7 +29,7 @@
                 <input type="hidden" id="hfproductvariationID" />
                 <input type="hidden" id="hfvariantprotuctID" />
                 <a class="btn btn-danger" id="btnPurchase">Purchase Prices </a>
-                <a id="btnbacklist"  class="btn btn-danger ml-auto">Back to list</a>
+                <a id="btnbacklist" class="btn btn-danger ml-auto">Back to list</a>
             </div>
             <div class="box box-primary">
                 <div class="box-header">
@@ -118,7 +118,7 @@
                                 <div class="form-check d-flex">
                                     <label class="col-sm-3 control-label">Manage stock?</label>
                                     <div class="col-sm-9">
-                                        <input type="checkbox"  class="form-check-input" id="enableStock"><label for="enableStock">Enable stock management at product level</label>
+                                        <input type="checkbox" class="form-check-input" id="enableStock"><label for="enableStock">Enable stock management at product level</label>
                                     </div>
                                 </div>
                                 <div id="dvsock">
@@ -314,8 +314,9 @@
                     </div>
                 </div>
             </div>
-            <button id="btnSave" class="btn btn-danger">Save</button>
-           @*@Html.Partial("AddNewPurchase")*@
+            <button id="btnSave" style ="float: right;"  class="btn btn-danger">Save</button>
+          
+            @*@Html.Partial("AddNewPurchase", new ViewDataDictionary { { "id", 796210 } });*@
         </div>
 
         <div class="col-md-3">
@@ -341,6 +342,11 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+    <div class="row">
+        <div id="divPurchase" class="col-md-12">
+            @Html.Partial("AddNewPurchase")
         </div>
     </div>
 </section>

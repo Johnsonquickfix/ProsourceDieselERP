@@ -139,57 +139,21 @@ namespace LaylaERP.BAL
             return dt;
         }
 
-        public static long AddPurchaseOrder(PurchaseOrderModel model)
-        {
-            long result = 0;
-            try
-            {
-                DateTime cDate = CommonDate.CurrentDate(), cUTFDate = CommonDate.UtcDate();
-               
-
-                string strSQL = "insert into commerce_purchase_order(ref,fk_soc,tms,date_creation,fk_user_author,source)"
-                            + " select concat('PO',date_format(@date_creation,'%y%m'),'-',LPAD(coalesce(max(right(ref,5)),0) + 1,5,'0')) ref,@fk_soc,@tms,@date_creation,@fk_user_author,@source"
-                            + " from commerce_purchase_order where LPAD(ref,6,0) = concat('PO',date_format(@date_creation,'%y%m'));";
-
-                strSQL += "select LAST_INSERT_ID();";
-
-                MySqlParameter[] parameters =
-                {
-                    new MySqlParameter("@tms", cUTFDate),
-                    new MySqlParameter("@date_creation", cDate),
-                    new MySqlParameter("@source", "0"),
-                    new MySqlParameter("fk_soc", model.VendorID),
-                    new MySqlParameter("@fk_user_author", model.user_author)
-                };
-                result = Convert.ToInt64(SQLHelper.ExecuteScalar(strSQL, parameters));
-            }
-            catch (MySql.Data.MySqlClient.MySqlException ex)
-            {
-                throw new Exception(ex.Message);
-
-            }
-            return result;
-        }
-
-
-
-
-
-
         public int AddNewPurchase(PurchaseOrderModel model)
         {
             try
             {
-                 
-                string refe = GetPurchaseOrderCode();
+                DateTime cDate = CommonDate.CurrentDate(), cUTFDate = CommonDate.UtcDate();
 
                 string strsql = "";
-                strsql = "insert into commerce_purchase_order(ref,ref_ext,ref_supplier,fk_soc,fk_statut,source,fk_cond_reglement,BalanceDaysID,fk_mode_reglement,date_livraison,fk_incoterms,location_incoterms,note_private,note_public) values(@ref,@ref_ext,@ref_supplier,@fk_soc,@fk_statut,@source,@fk_cond_reglement,@BalanceDaysID,@fk_mode_reglement,@date_livraison,@fk_incoterms,@location_incoterms,@note_private,@note_public); SELECT LAST_INSERT_ID();";
+                strsql = "insert into commerce_purchase_order(ref,ref_ext,ref_supplier,fk_soc,fk_statut,source,fk_cond_reglement,BalanceDaysID,fk_mode_reglement,date_livraison,fk_incoterms,location_incoterms,note_private,note_public,fk_user_author,tms,date_creation) "
+                    + " select concat('PO',date_format(@date_creation,'%y%m'),'-',lpad(coalesce(max(right(ref,5)),0) + 1,5,'0')) ref,@ref_ext,@ref_supplier,@fk_soc,@fk_statut,@source,@fk_cond_reglement,@BalanceDaysID,@fk_mode_reglement,@date_livraison,@fk_incoterms,@location_incoterms,@note_private,@note_public"
+                    + " @fk_user_author,@tms,@date_creation from commerce_purchase_order where lpad(ref,6,0) = concat('PO',date_format(@date_creation,'%y%m'));"
+                    + " SELECT LAST_INSERT_ID();";
                 MySqlParameter[] para =
                 {
-                    new MySqlParameter("@ref", refe),
-                    new MySqlParameter("@ref_ext", model.VendorCode),
-                    new MySqlParameter("@ref_supplier", model.Vendor),
+                    new MySqlParameter("@ref_ext", ""),
+                    new MySqlParameter("@ref_supplier", model.VendorBillNo),
                     new MySqlParameter("@fk_soc", model.VendorID),
                     new MySqlParameter("@fk_statut", "1"),
                     new MySqlParameter("@source", "0"),
@@ -199,8 +163,11 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@date_livraison", model.Planneddateofdelivery),
                     new MySqlParameter("@fk_incoterms", model.IncotermType),
                     new MySqlParameter("@location_incoterms", model.Incoterms),
-                    new MySqlParameter("@note_private", model.note_private),
-                    new MySqlParameter("@note_public", model.note_public),
+                    new MySqlParameter("@note_private", model.NotePrivate),
+                    new MySqlParameter("@note_public", model.NotePublic),
+                    new MySqlParameter("@tms", cUTFDate),
+                    new MySqlParameter("@date_creation", cDate),
+                    new MySqlParameter("@fk_user_author", model.LoginID)
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
                 return result;
@@ -217,19 +184,19 @@ namespace LaylaERP.BAL
                 string strsql = "Update commerce_purchase_order set ref=@ref,ref_supplier=@ref_supplier,fk_soc=@fk_soc,fk_statut=@fk_statut,source=@source,fk_cond_reglement = @fk_cond_reglement,BalanceDaysID = @BalanceDaysID,fk_mode_reglement = @fk_mode_reglement,date_livraison = @date_livraison,fk_incoterms = @fk_incoterms,location_incoterms = @location_incoterms,note_private = @note_private,note_public = @note_public where rowid = " + PurchaseID + "";
                 MySqlParameter[] para =
                 {
-                    new MySqlParameter("@ref_ext", model.VendorCode),
-                    new MySqlParameter("@ref_supplier", model.Vendor),
-                    new MySqlParameter("@fk_soc", model.VendorID),
-                    new MySqlParameter("@fk_statut", "1"),
-                    new MySqlParameter("@source", "0"),
-                    new MySqlParameter("@fk_cond_reglement", model.PaymentTerms),
-                    new MySqlParameter("@BalanceDaysID", model.Balancedays),
-                    new MySqlParameter("@fk_mode_reglement", model.PaymentType),
-                    new MySqlParameter("@date_livraison", model.Planneddateofdelivery),
-                    new MySqlParameter("@fk_incoterms", model.IncotermType),
-                    new MySqlParameter("@location_incoterms", model.Incoterms),
-                    new MySqlParameter("@note_private", model.note_private),
-                    new MySqlParameter("@note_public", model.note_public),
+                    //new MySqlParameter("@ref_ext", model.VendorCode),
+                    //new MySqlParameter("@ref_supplier", model.Vendor),
+                    //new MySqlParameter("@fk_soc", model.VendorID),
+                    //new MySqlParameter("@fk_statut", "1"),
+                    //new MySqlParameter("@source", "0"),
+                    //new MySqlParameter("@fk_cond_reglement", model.PaymentTerms),
+                    //new MySqlParameter("@BalanceDaysID", model.Balancedays),
+                    //new MySqlParameter("@fk_mode_reglement", model.PaymentType),
+                    //new MySqlParameter("@date_livraison", model.Planneddateofdelivery),
+                    //new MySqlParameter("@fk_incoterms", model.IncotermType),
+                    //new MySqlParameter("@location_incoterms", model.Incoterms),
+                    //new MySqlParameter("@note_private", model.note_private),
+                    //new MySqlParameter("@note_public", model.note_public),
 
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));

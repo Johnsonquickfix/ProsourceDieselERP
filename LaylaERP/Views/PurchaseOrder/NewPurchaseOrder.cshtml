@@ -21,7 +21,7 @@
                 <div class="row">
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label>Date</label>
+                            <label>Date<span class="text-red">*</span></label>
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                                 <input id="txtPODate" readonly="readonly" disabled class="form-control">
@@ -34,7 +34,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label " for="Vendor">Vendor</label>
+                            <label class="control-label " for="Vendor">Vendor<span class="text-red">*</span></label>
                             <div class="">
                                 <select class="form-control select2" id="ddlVendor"></select>
                             </div>
@@ -63,12 +63,12 @@
                             <div class="input-group">
                                 <select class="form-control select2 billinfo" id="ddlIncoTerms" placeholder="Incoterms" style="width: 100%;"></select>
                                 <div class="input-group-btn" style="width:45%">
-                                    <input type="text" id="txtIncoTerms billinfo" class="form-control input-group-text billinfo" placeholder="IncoTerms" />
+                                    <input type="text" id="txtIncoTerms" class="form-control input-group-text billinfo" placeholder="IncoTerms" />
                                 </div>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label " for="Contact No.">Payment Type</label>
+                            <label class="control-label " for="Contact No.">Payment Type<span class="text-red">*</span></label>
                             <div class="">
                                 <select class="form-control select2 billinfo" id="ddlPaymentType"></select>
                             </div>
@@ -76,7 +76,7 @@
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label class="control-label " for="Planned date of delivery">Planned date of delivery</label>
+                            <label class="control-label " for="Planned date of delivery">Planned date of delivery<span class="text-red">*</span></label>
                             <div class="">
                                 <div class="input-group">
                                     <input type="text" id="txtPlanneddateofdelivery" class="form-control billinfo" placeholder="Planned date of delivery (MM/DD/YYYY)" autocomplete="off" />

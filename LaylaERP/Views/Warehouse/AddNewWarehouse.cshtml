@@ -34,11 +34,11 @@
                                         <input type="hidden" id="hfid" value="@Model.rowid" />
                                         <input type="hidden" id="hfzipstatus" />
                                         <input type="hidden" id="hfvpassordshow" />
-                                        <label for="exampleInputEmail1">Ref.</label>
+                                        <label for="exampleInputEmail1">Ref.<span style="color:red">*</span></label>
                                         <input type="text" class="form-control" id="txtref" placeholder="Enter Reference Name ">
                                     </div>
                                     <div class="form-group">
-                                        <label for="exampleInputEmail1">Short Name Location</label>
+                                        <label for="exampleInputEmail1">Short Name Location<span style="color:red">*</span></label>
                                         <input type="email" class="form-control" id="txtShortNameLocation" placeholder="Enter Short Name Location">
                                     </div>
 
@@ -48,12 +48,12 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="exampleInputEmail1">E-mail </label>
+                                        <label for="exampleInputEmail1">E-mail</label>
                                         <input type="text" class="form-control" id="txtEmail" placeholder="Enter E-mail">
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="exampleInputEmail1">Contact Number</label>
+                                        <label for="exampleInputEmail1">Contact Number<span style="color:red">*</span></label>
                                         <input type="text" class="form-control" id="txtPhone" placeholder="Enter Contact Number">
                                     </div>
                                 </div>
@@ -69,7 +69,7 @@
 
                                     <div class="form-group">
                                         <img class="sb-title-icon" src="https://fonts.gstatic.com/s/i/googlematerialicons/location_pin/v5/24px.svg" alt="">
-                                        <label for="exampleInputEmail1">Address </label>
+                                        <label for="exampleInputEmail1">Address<span style="color:red">*</span></label>
                                         <input type="text" class="form-control" id="txtAddress" placeholder="Enter Address ">
                                     </div>
 
@@ -79,7 +79,7 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="exampleInputEmail1">City</label>
+                                        <label for="exampleInputEmail1">City<span style="color:red">*</span></label>
                                         <input type="text" id="txtCity" class="form-control" placeholder="Enter City" />
                                     </div>
                                     <div class="form-group">
@@ -98,14 +98,14 @@
                                    
 
                                     <div class="form-group">
-                                        <label class="control-label" for="Zip Code">Zip Code</label>
+                                        <label class="control-label" for="Zip Code">Zip Code<span style="color:red">*</span></label>
                                         <div class="">
                                             <input type="text" id="txtZipCode" class="form-control" placeholder="Enter Zip Code">
                                         </div>
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="exampleInputEmail1">Country</label>
+                                        <label for="exampleInputEmail1">Country<span style="color:red">*</span></label>
                                         <select class="form-control" id="txtCountry">
                                             <option value="US">US - United States</option>
                                             <option value="CA">CA - Canada</option>
@@ -113,7 +113,7 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="exampleInputEmail1">Status</label>
+                                        <label for="exampleInputEmail1">Status<span style="color:red">*</span></label>
                                         <select class="form-control" id="warehousetype">
                                             <option value="Public">Public</option>
                                             <option value="Private">Private</option>
@@ -400,9 +400,9 @@
             else if (address == "") {
                 swal('Alert', 'Please Enter Address', 'error').then(function () { swal.close(); $('#txtAddress').focus(); });
             }
-            //else if (city == "") {
-            //    swal('Alert', 'Please Enter City', 'error').then(function () { swal.close(); $('#txtCity').focus(); });
-            //}
+            else if (city == "") {
+                swal('Alert', 'Please Enter City', 'error').then(function () { swal.close(); $('#txtCity').focus(); });
+            }
             else if (zip == "") {
                 swal('Alert', 'Please Enter Zip Code', 'error').then(function () { swal.close(); $('#txtZipCode').focus(); });
             }

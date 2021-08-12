@@ -332,6 +332,17 @@ namespace LaylaERP.Controllers
             }
             return Json(productlist, JsonRequestBehavior.AllowGet);
         }
+        public JsonResult GetRelatedProducts(SearchModel model)
+        {
+            DataSet ds = BAL.ThirdPartyRepository.GetRelatedProducts();
+            List<SelectListItem> productlist = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                productlist.Add(new SelectListItem { Text = dr["PaymentType"].ToString(), Value = dr["ID"].ToString() });
+            }
+            return Json(productlist, JsonRequestBehavior.AllowGet);
+        }
+
         public JsonResult GetVendorCode(SearchModel model)
         {
             string JSONresult = string.Empty;
@@ -411,6 +422,23 @@ namespace LaylaERP.Controllers
                     urid = model.user_status;
                 string searchid = model.Search;
                 DataTable dt = ThirdPartyRepository.GetVendorContact(id,urid, searchid, model.PageNo, model.PageSize, out TotalRecord, model.SortCol, model.SortDir);
+                result = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+        }
+        public JsonResult GetVendorRelatedProductList(ThirdPartyModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                long id = model.rowid;
+                string urid = "";
+                if (model.user_status != "")
+                    urid = model.user_status;
+                string searchid = model.Search;
+                DataTable dt = ThirdPartyRepository.GetVendorRelatedProduct(id, urid, searchid, model.PageNo, model.PageSize, out TotalRecord, model.SortCol, model.SortDir);
                 result = JsonConvert.SerializeObject(dt);
             }
             catch (Exception ex) { throw ex; }

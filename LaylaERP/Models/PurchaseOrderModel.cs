@@ -7,22 +7,22 @@ namespace LaylaERP.Models
 {
     public class PurchaseOrderModel : PaggingModel
     {
-        public long rowid { get; set; }
+        public long RowID { get; set; }
+        public string PONo { get; set; }
         public long VendorID { get; set; }
-        public string Vendor { get; set; }
-        public string VendorCode { get; set; }
+        public string VendorBillNo { get; set; }
         public int PaymentTerms { get; set; }
         public int Balancedays { get; set; }
         public int PaymentType { get; set; }
         public string Planneddateofdelivery { get; set; }
         public int IncotermsTypeID { get; set; }
-        public int fk_statut { get; set; }
-        public string note_private { get; set; }
-        public string note_public { get; set; }
+        public int Status { get; set; }
+        public string NotePrivate { get; set; }
+        public string NotePublic { get; set; }
         public int IncotermType { get; set; }
         public string Incoterms { get; set; }
         public string user_status { get; set; }
-        public long user_author { get; set; }
+        public long LoginID { get; set; }
         public string Search { get; set; }
         public List<PurchaseOrderProductsModel> PurchaseOrderProducts { get; set; }
     }

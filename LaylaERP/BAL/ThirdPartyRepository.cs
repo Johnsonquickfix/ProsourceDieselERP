@@ -284,9 +284,44 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@Address",model.ContactAddress),
                     new MySqlParameter("@City",model.ContactCity),
                     new MySqlParameter("@State",model.ContactState),
+                    new MySqlParameter("@StateName",model.ContactStateName),
                     new MySqlParameter("@ZipCode",model.ContactZipCode),
                     new MySqlParameter("@Country",model.ContactCountry),
                 }; 
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+        public int EditVendorContacts(ThirdPartyModel model)
+        {
+            try
+            {
+                string strsql = "Update erp_VendorContacts set Name=@Name,Title=@Title,Email=@Email,Office=@Office,Ext=@Ext,Mobile=@Mobile,Notes=@Notes,Fax = @Fax,Address = @Address,City = @City,State = @State,StateName=@StateName,ZipCode = @ZipCode,Country = @Country where ID = @ID; ";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@ID", model.ContactID),
+                    new MySqlParameter("@VendorID", model.rowid),
+                    new MySqlParameter("@Name", model.ContactName),
+                    new MySqlParameter("@Title", model.ContactTitle),
+                    new MySqlParameter("@Email", model.ContactEmail),
+                    new MySqlParameter("@Office", model.ContactOffice),
+                    new MySqlParameter("@Ext","0"),
+                    new MySqlParameter("@Mobile",model.ContactMobile),
+                    new MySqlParameter("@Notes",model.ContactNotes),
+                    new MySqlParameter("@Fax",model.ContactFax),
+                    new MySqlParameter("@Address",model.ContactAddress),
+                    new MySqlParameter("@City",model.ContactCity),
+                    new MySqlParameter("@State",model.ContactState),
+                    new MySqlParameter("@StateName",model.ContactStateName),
+                    new MySqlParameter("@ZipCode",model.ContactZipCode),
+                    new MySqlParameter("@Country",model.ContactCountry),
+
+
+                };
                 int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
                 return result;
             }

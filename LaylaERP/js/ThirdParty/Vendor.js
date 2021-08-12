@@ -475,11 +475,11 @@ $('#btnNextTab7').click(function (e) {
     else if (PaymentMethod == "7" && PaypalTitle == "") { swal('alert', 'Please Enter Paypal Title', 'error').then(function () { swal.close(); $('#txtPaypalTitle').focus(); }) }
     else if (PaymentMethod == "7" && PaypalDescription == "") { swal('alert', 'Please Enter Description', 'error').then(function () { swal.close(); $('#txtPaypalDescription').focus(); }) }
     else if (PaymentMethod == "7" && PaypalEmail == "") { swal('alert', 'Please Enter Paypal email', 'error').then(function () { swal.close(); $('#txtPaypalEmail').focus(); }) }
-    else if (!pattern.test(PaypalEmail)) { swal('alert', 'not a valid e-mail address', 'error').then(function () { swal.close(); $('#txtPaypalEmail').focus(); }) }
+    else if (PaymentMethod == "7" && !pattern.test(PaypalEmail)) { swal('alert', 'not a valid e-mail address', 'error').then(function () { swal.close(); $('#txtPaypalEmail').focus(); }) }
     else if (PaymentMethod == "7" && PaypalIPNEmailNotification == "") { swal('alert', 'Please Enter IPN email notification', 'error').then(function () { swal.close(); $('#txtPaypalIPNEmailNotification').focus(); }) }
-    else if (!pattern.test(PaypalIPNEmailNotification)) { swal('alert', 'not a valid e-mail address', 'error').then(function () { swal.close(); $('#txtPaypalIPNEmailNotification').focus(); }) }
+    else if (PaymentMethod == "7" && !pattern.test(PaypalIPNEmailNotification)) { swal('alert', 'not a valid e-mail address', 'error').then(function () { swal.close(); $('#txtPaypalIPNEmailNotification').focus(); }) }
     else if (PaymentMethod == "7" && PaypalReceiverEmail == "") { swal('alert', 'Please Enter Receiver email', 'error').then(function () { swal.close(); $('#txtPaypalReceiverEmail').focus(); }) }
-    else if (!pattern.test(PaypalReceiverEmail)) { swal('alert', 'not a valid e-mail address', 'error').then(function () { swal.close(); $('#txtPaypalReceiverEmail').focus(); }) }
+    else if (PaymentMethod == "7" && !pattern.test(PaypalReceiverEmail)) { swal('alert', 'not a valid e-mail address', 'error').then(function () { swal.close(); $('#txtPaypalReceiverEmail').focus(); }) }
     else if (PaymentMethod == "7" && PaypalIdentitytoken == "") { swal('alert', 'Please Enter Paypal Identity token', 'error').then(function () { swal.close(); $('#txtPaypalIdentitytoken').focus(); }) }
     else if (PaymentMethod == "7" && PaypalPaymentAction == "-1") { swal('alert', 'Please Select Payment Action', 'error').then(function () { swal.close(); $('#ddlPaypalPaymentAction').focus(); }) }
     else if (PaymentMethod == "7" && PaypalAPIUserName == "") { swal('alert', 'Please Enter Paypal User Name', 'error').then(function () { swal.close(); $('#txtPaypalAPIUserName').focus(); }) }
@@ -533,6 +533,7 @@ $('#btnNextTab7').click(function (e) {
 
 $('#btnSaveContact').click(function (e) {
     ID = $("#hfid").val();
+    ContactID = $("#hfContactid").val();
     ContactName = $("#txtContactName").val();
     ContactTitle = $("#txtContactTitle").val();
     ContactEmail = $("#txtContactEMail").val();
@@ -540,7 +541,7 @@ $('#btnSaveContact').click(function (e) {
     ContactCity = $("#txtContactCity").val();
     ContactState = $("#ddlContactState").val();
     ContactZipCode = $("#txtContactZipCode").val();
-    ContactStateName = $("#ddlState").find('option:selected').text();
+    ContactStateName = $("#ddlContactState").find('option:selected').text();
     ContactCountry = $("#ddlContactCountry").val();
     ContactOffice = $("#txtContactOffice").val();
     //ContactExt = $("#txtContactExt").val();
@@ -560,7 +561,7 @@ $('#btnSaveContact').click(function (e) {
     else if (ContactEmail == "") { swal('alert', 'Please Enter Email', 'error').then(function () { swal.close(); $('#txtContactEMail').focus(); }) }
     else {
         var obj = {
-            rowid: ID, ContactName: ContactName, ContactTitle: ContactTitle, ContactEmail: ContactEmail, ContactOffice: ContactOffice,
+            rowid: ID, ContactID: ContactID, ContactName: ContactName, ContactTitle: ContactTitle, ContactEmail: ContactEmail, ContactOffice: ContactOffice,
             ContactMobile: ContactPhone, ContactNotes: ContactNotes, ContactFax: ContactFax, ContactCountry: ContactCountry, ContactStateName: ContactStateName,
             ContactAddress: ContactAddress, ContactCity: ContactCity, ContactState: ContactState, ContactZipCode: ContactZipCode
         }
@@ -576,6 +577,7 @@ $('#btnSaveContact').click(function (e) {
                 if (data.status == true) {
                     swal('Alert!', data.message, 'success');
                     $("#VendorModal").modal('hide');
+                    VendorContactList();
                     $("#VendorModal").find(":input").each(function () {
                         switch (this.type) {
                             case "text": case "email": case "textarea": case "tel": $(this).val(''); break;
@@ -996,7 +998,7 @@ function VendorContactList() {
     $('#dtdata').DataTable({
         columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true,
-        sPaginationType: "full_numbers", searching: true, ordering: true, lengthChange: true, "paging": true,
+        sPaginationType: "full_numbers", searching: false, ordering: false, lengthChange: false, "paging": false, "bInfo": false,
         bAutoWidth: false, scrollX: false, scrollY: false,
         lengthMenu: [[10, 20, 50], [10, 20, 50]],
         sAjaxSource: "/ThirdParty/GetVendorContactList",
@@ -1040,6 +1042,7 @@ function VendorContactList() {
 //}
 function showModal(id) {
     var VendorID = id;
+    $("#hfContactid").val(VendorID);
     var obj =
         $.ajax({
             url: "/ThirdParty/GetVendorContactByID/" + VendorID,
@@ -1048,7 +1051,6 @@ function showModal(id) {
             dataType: 'JSON',
             data: JSON.stringify(obj),
             success: function (data) {
-               
                 var d = JSON.parse(data);
                 if (d.length > 0) {
                     console.log(d);
@@ -1065,16 +1067,17 @@ function showModal(id) {
                     $("#txtContactFax").val(d[0].Fax);
                     $("#txtContactEMail").val(d[0].Email);
                     $("#txtContactNotes").val(d[0].Notes);
+                     $("#ddlContactState").empty().append('<option value="' + d[0].State + '" selected>' + d[0].StateName + '</option>');
+
                     $("#ddlContactState").select2({
-                        allowClear: true, minimumInputLength: 3, placeholder: "Search State",
+                        allowClear: true, minimumInputLength: 2, placeholder: "Search State",
                         ajax: {
                             url: '/ThirdParty/GetState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
-                            data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
+                            data: function (params) { var obj = { strValue1: params.term, strValue2: $("#ddlContactCountry").val() }; return JSON.stringify(obj); },
                             processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.StateFullName, name: item.StateFullName, val: item.State, id: item.State } }) }; },
                             error: function (xhr, status, err) { }, cache: true
                         }
                     });
-                    $("#ddlContactState").empty().append('<option value="' + d[0].State + '" selected>' + d[0].StateName + '</option>');
                   
                 }
             },

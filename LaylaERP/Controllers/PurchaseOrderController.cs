@@ -105,10 +105,10 @@ namespace LaylaERP.Controllers
         {
 
             
-                if (model.rowid > 0)
+                if (model.RowID > 0)
                 {
-                    new PurchaseOrderRepository().EditPurchase(model, model.rowid);
-                    return Json(new { status = true, message = "Purchase Record has been updated successfully!!", url = "", id = model.rowid }, 0);
+                    new PurchaseOrderRepository().EditPurchase(model, model.RowID);
+                    return Json(new { status = true, message = "Purchase Record has been updated successfully!!", url = "", id = model.RowID }, 0);
                 }
                 else
                 {

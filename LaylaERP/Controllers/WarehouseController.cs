@@ -320,7 +320,7 @@ namespace LaylaERP.Controllers
         [HttpPost]
         public JsonResult AddCurrentstock(WarehouseModel model)
         {
-           
+            
             int ID = WarehouseRepository.AddCurrentstock(model);
             if (ID > 0)
             {
@@ -331,6 +331,19 @@ namespace LaylaERP.Controllers
                 return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
             }
 
+        }
+
+        public JsonResult GetCurrentStock(WarehouseModel model)
+        {
+            //int id = model.fk_product;
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = WarehouseRepository.GetCurrentStock(model);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
         }
     }
 }

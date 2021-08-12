@@ -43,7 +43,7 @@ namespace LaylaERP.Models
         public int fk_product { get; set; }
         public int fk_entrepot { get; set; }
         public double value { get; set; }
-        public int price { get; set; }
+        public decimal price { get; set; }
         public int type_mouvement { get; set; }
         public string label { get; set; }
         public string inventorycode { get; set; }

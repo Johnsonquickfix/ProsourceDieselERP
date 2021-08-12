@@ -129,4 +129,16 @@ namespace LaylaERP.Models
         public int qty { get; set; }
 
     }
+
+    public class ProductByingPrice
+    {
+        public long ID { get; set; }
+        public string name { get; set; }
+        public string minpurchasequantity { get; set; }
+        public string salestax { get; set; }
+        public string purchase_price { get; set; }
+        public string cost_price { get; set; }
+        public string discount { get; set; }
+        public string date_inc { get; set; }
+    }
 }

@@ -389,5 +389,21 @@ namespace LaylaERP.BAL
             }
         }
 
+        public static DataTable GetCurrentStock(WarehouseModel model)
+        {
+            DataTable dtr = new DataTable();
+            try
+            {
+                string strquery = "SELECT wsm.rowid as ref, post.post_title as product, wsm.datem as date,ww.ref as warehouse, wsm.inventorycode as invcode," +
+                                   " wsm.label as label,wsm.value,concat('$', format(wsm.price, 2)) as price FROM wp_stock_mouvement wsm, wp_warehouse ww, wp_posts post where ww.rowid = wsm.fk_entrepot and post.id = wsm.fk_product and wsm.fk_entrepot = '"+model.fk_entrepot+"'";
+
+
+                dtr = SQLHelper.ExecuteDataTable(strquery);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dtr;
+        }
+
     }
 }

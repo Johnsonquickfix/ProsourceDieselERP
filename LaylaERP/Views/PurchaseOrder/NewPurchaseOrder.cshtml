@@ -1,6 +1,7 @@
 ﻿
 @{
-    ViewBag.Title = "NewPurchaseOrder";
+    ViewBag.Title = "New Purchase Order";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <!-- Content Header (Page header) -->
 
@@ -20,71 +21,79 @@
                 <div class="row">
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label class="control-label " for="Ref">Ref.</label>
+                            <label>Date</label>
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                <input id="txtPODate" readonly="readonly" disabled class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="Ref">PO No.</label>
                             <div class="">
-                                <label class="control-label " for="Ref">Draft</label>
+                                <label class="control-label" for="Ref">Draft</label>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label " for="Vendor">Vendor</label>
                             <div class="">
-                                <select class="form-control" id="ddlVendor"></select>
+                                <select class="form-control select2" id="ddlVendor"></select>
                             </div>
                         </div>
-
                         <div class="form-group">
                             <label class="control-label " for="Ref. vendor">Ref. vendor</label>
                             <div class="">
-                                <input type="text" id="txtRefvendor" class="form-control" placeholder="Ref. vendor" disabled />
+                                <input type="text" id="txtRefvendor" class="form-control billinfo" placeholder="Ref. vendor" />
                             </div>
                         </div>
+
+                    </div>
+                    <div class="col-md-4">
                         <div class="form-group">
                             <label class="control-label " for="Payment Terms">Payment Terms</label>
                             <div class="">
-                                <select class="form-control" id="ddlPaymentTerms"></select>
-
+                                <select class="form-control select2 billinfo" id="ddlPaymentTerms"></select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="Balance">Balance days</label>
+                            <select class="form-control select2 billinfo" id="ddlBalancedays"></select>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="Incoterms">Incoterms</label>
+                            <div class="input-group">
+                                <select class="form-control select2 billinfo" id="ddlIncoTerms" placeholder="Incoterms" style="width: 100%;"></select>
+                                <div class="input-group-btn" style="width:45%">
+                                    <input type="text" id="txtIncoTerms billinfo" class="form-control input-group-text billinfo" placeholder="IncoTerms" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label " for="Contact No.">Payment Type</label>
+                            <div class="">
+                                <select class="form-control select2 billinfo" id="ddlPaymentType"></select>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label for="Balance">Balance</label>
-                            <select class="form-control" id="ddlBalancedays"></select>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label " for="Contact No.">Payment Type</label>
-                            <div class="">
-                                <select class="form-control" id="ddlPaymentType"></select>
-                            </div>
-                        </div>
-                        <div class="form-group">
                             <label class="control-label " for="Planned date of delivery">Planned date of delivery</label>
                             <div class="">
                                 <div class="input-group">
-                                    <input type="text" id="txtPlanneddateofdelivery" class="form-control" placeholder="Planned date of delivery" autocomplete="off" />
+                                    <input type="text" id="txtPlanneddateofdelivery" class="form-control billinfo" placeholder="Planned date of delivery (MM/DD/YYYY)" autocomplete="off" />
                                     <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                                 </div>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label " for="Incoterms">Incoterms</label>
-                            <div class="">
-                                    <select class="form-control" id="ddlIncoTerms"></select>
-                                    <input type="text" id="txtIncoTerms" class="form-control" placeholder="IncoTerms" />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
                             <label class="control-label " for="Note (public)">Note (public)</label>
                             <div class="">
-                                <textarea id="txtNotePublic" class="form-control" placeholder="Note (public)" ></textarea>
+                                <textarea id="txtNotePublic" class="form-control billinfo" placeholder="Note (public)"></textarea>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label " for="Post/Zip Code">Note (private)</label>
+                            <label class="control-label " for="Note (private)">Note (private)</label>
                             <div class="">
-                                <textarea id="txtNotePrivate" class="form-control" placeholder="Note (private)"></textarea>
+                                <textarea id="txtNotePrivate" class="form-control billinfo" placeholder="Note (private)"></textarea>
                             </div>
                         </div>
 
@@ -92,22 +101,89 @@
                 </div>
             </div>
         </div>
-        <div class="box-footer">
-            <div class="text-right">
-                <input type="submit" value="Create Draft" id="btnSave" class="btn btn-danger" />
-                @Html.ActionLink("Back to List", "PurchaseOrderList", null, new { @class = "btn btn-danger" })
+    </div>
+    <!--table start-->
+    <div class="row mb-35">
+        <div class="col-sm-12">
+            <div class="box box-primary mb-0">
+                <div class="box-header">
+                    <div class="table-responsive" id="divAddItemFinal">
+                        <table id="tblAddItemFinal" class="table-blue table table-bordered table-striped dataTable">
+                            <thead>
+                                <tr>
+                                    <th class="text-center" style="width: 8%">Actions</th>
+                                    <th style="width: 32%">Description</th>
+                                    <th style="width: 10%">Vendor SKU</th>
+                                    <th class="text-right" style="width: 10%">Price</th>
+                                    <th class="text-right" style="width: 10%">Quantity</th>
+                                    <th class="text-right" style="width: 10%">Discount(%)</th>
+                                    <th class="text-right" style="width: 10%">Tax</th>
+                                    <th class="text-right" style="width: 10%">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody id="line_items"></tbody>
+                            <tbody id="product_line_items"></tbody>
+                            <tbody id="service_line_items"></tbody>
+                            <tfoot class="thead-dark">
+                                <tr>
+                                    <th colspan="3" class="text-left" style="width: 58%">
+                                        <select class="form-control select2 billinfo" id="ddlProduct" placeholder="Select Products" style="width: 100%;"></select>
+                                    </th>
+                                    <th class="text-right" style="width: 8%"></th>
+                                    <th class="text-right entry-mode-action" style="width: 37%" colspan="4">
+                                    </th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
-        <!-- /.row -->
     </div>
-    <div class="map" id="map" style="display:none;"></div>
+    <div class="row">
+        <div class="col-sm-6">
+        </div>
+        <div class="col-sm-6 order-box-total">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Total(s)</h3>
+                </div>
+                <div class="box-body text-right">
+                    <div id="order_final_total">
+                        <div class="form-group">
+                            <label class="col-sm-10 control-label">Amount (excl. tax)</label>
+                            <div class="col-sm-2 controls text-right">
+                                $<span id="SubTotal">0.00</span>
+                            </div>
+                        </div>
+                        <div class="form-group ">
+                            <label class="col-sm-10 control-label">Discount</label>
+                            <div class="col-sm-2 controls text-right">
+                                $<span id="discountTotal">0.00</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-10 control-label">Amount tax</label>
+                            <div class="col-sm-2 controls text-right">
+                                $<span id="salesTaxTotal" data-orderitemid="0">0.00</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-10 control-label">Amount (inc. tax)</label>
+                            <div class="col-sm-2 controls text-right">
+                                <strong>$<span id="orderTotal">0.00</span></strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.box-body -->
+                <div class="box-footer text-right footer-finalbutton">
+                    <a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList">Back to List</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
+<div class="modal in printable autoprint table-design not-fixed popuptable" id="POModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div>
 
 <script src="@Url.Content("~/js/PurchaseOrder/NewPurchase.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
-<script>
-    $(document).ready(function () {
-        $("#txtPlanneddateofdelivery").datepicker({
-            format: 'yyyy-mm-dd',
-        });
-    });
-</script>

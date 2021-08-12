@@ -19,7 +19,7 @@
     <div class="nav-tabs-custom">
         <ul class="nav nav-tabs" id="mytabs" role="tablist">
             <li class="active"><a href="#tab_1" data-toggle="tab">Warehouse</a></li>
-            <li><a href="#tab_2" data-toggle="tab">Additional Information</a></li>
+            
         </ul>
         
         <div class="tab-content">
@@ -133,12 +133,15 @@
                         </div>
                         <div class="box-footer">
                             <div class="text-right">
-                                <button type="button" id="changetabbutton" class="btn btn-danger ">Next tab</button>
+                                <a href="#" class="btn btn-danger" id="btnSave"><b>Submit</b></a>
+                                @Html.ActionLink("Back to List", "Warehouse", null, new { @class = "btn btn-danger" })
+                                
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <!--
             <div class="tab-pane" id="tab_2">
                             <div class="box-header new-vendor-header">
                                 <div class="row">
@@ -203,8 +206,9 @@
 
                                                 <div class="box-footer">
                                                     <div class="text-right">
+                                                        <button type="button" id="changetabbutton" class="btn btn-danger ">Next tab</button>
                                                         <a href="#" class="btn btn-danger" id="btnSave"><b>Submit</b></a>
-                                                        @Html.ActionLink("Back to List", "Warehouse", null, new { @class = "btn btn-danger" })
+                                                       
                                                     </div>
                                                 </div>
                                             </div>
@@ -212,7 +216,8 @@
                                     </div>
                                 </div>
                                 </div>
-                </div>
+                </div> -->
+
             </div>
         </div>
 </section>
@@ -372,15 +377,15 @@
             status = $("#chkwarehousestatus").prop("checked") ? 1 : 0;
             warehousetype = $("#warehousetype").val();
             //Additional info
-            corphone = $("#txtCorContact").val();
-            coraddress = $("#txtCorAddress").val();
-            coraddress1 = $("#txtCorAddress1").val();
-            corcity = $("#txtCorCity").val();
-            corstate = $("#txtCorState").val();
-            corzip = $("#txtCorZipCode").val();
-            corcountry = $("#txtCorCountry").val();
-            publicnote = $("#txtpublic").val();
-            privatenote = $("#txtprivate").val();
+            //corphone = $("#txtCorContact").val();
+            //coraddress = $("#txtCorAddress").val();
+            //coraddress1 = $("#txtCorAddress1").val();
+            //corcity = $("#txtCorCity").val();
+            //corstate = $("#txtCorState").val();
+            //corzip = $("#txtCorZipCode").val();
+            //corcountry = $("#txtCorCountry").val();
+            //publicnote = $("#txtpublic").val();
+            //privatenote = $("#txtprivate").val();
             email = $("#txtEmail").val();
 
             if (ref == "") {
@@ -389,15 +394,15 @@
             else if (lieu == "") {
                 swal('Alert', 'Please Enter Short Name Location', 'error').then(function () { swal.close(); $('#txtShortNameLocation').focus(); });
             }
-            else if (contact == "") {
+            else if (phone == "") {
                 swal('Alert', 'Please Enter Contact Number', 'error').then(function () { swal.close(); $('#txtPhone').focus(); });
             }
             else if (address == "") {
                 swal('Alert', 'Please Enter Address', 'error').then(function () { swal.close(); $('#txtAddress').focus(); });
             }
-            else if (city == "") {
-                swal('Alert', 'Please Enter City', 'error').then(function () { swal.close(); $('#txtCity').focus(); });
-            }
+            //else if (city == "") {
+            //    swal('Alert', 'Please Enter City', 'error').then(function () { swal.close(); $('#txtCity').focus(); });
+            //}
             else if (zip == "") {
                 swal('Alert', 'Please Enter Zip Code', 'error').then(function () { swal.close(); $('#txtZipCode').focus(); });
             }
@@ -419,15 +424,15 @@
                     city: city,
                     status: status,
                     warehouse_type: warehousetype,
-                    cor_phone: corphone,
-                    cor_address: coraddress,
-                    cor_address1: coraddress1,
-                    cor_city: corcity,
-                    cor_state: corstate,
-                    cor_zip: corzip,
-                    cor_country: corcountry,
-                    note_public: publicnote,
-                    note_private: privatenote,
+                    //cor_phone: corphone,
+                    //cor_address: coraddress,
+                    //cor_address1: coraddress1,
+                    //cor_city: corcity,
+                    //cor_state: corstate,
+                    //cor_zip: corzip,
+                    //cor_country: corcountry,
+                    //note_public: publicnote,
+                    //note_private: privatenote,
                     email: email,
                 }
                 $.ajax({

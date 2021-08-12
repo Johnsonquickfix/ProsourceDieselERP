@@ -556,8 +556,8 @@ $('#btnSaveContact').click(function (e) {
     else if (ContactZipCode == "") { swal('alert', 'Please Enter Zip Code', 'error').then(function () { swal.close(); $('#txtContactZipCode').focus(); }) }
     else if (ContactCountry == "-1") { swal('alert', 'Please Select Country', 'error').then(function () { swal.close(); $('#ddlContactCountry').focus(); }) }
     //else if (ContactOffice == "") { swal('alert', 'Please Enter Office', 'error').then(function () { swal.close(); $('#txtContactOffice').focus(); }) }
-    else if (ContactPhone == "") { swal('alert', 'Please Enter Phone', 'error').then(function () { swal.close(); $('#txtContactPhone').focus(); }) }
-    else if (ContactEmail == "") { swal('alert', 'Please Enter Email', 'error').then(function () { swal.close(); $('#txtContactEMail').focus(); }) }
+    //else if (ContactPhone == "") { swal('alert', 'Please Enter Phone', 'error').then(function () { swal.close(); $('#txtContactPhone').focus(); }) }
+    //else if (ContactEmail == "") { swal('alert', 'Please Enter Email', 'error').then(function () { swal.close(); $('#txtContactEMail').focus(); }) }
     else {
         var obj = {
             rowid: ID, ContactID: ContactID, ContactName: ContactName, ContactTitle: ContactTitle, ContactEmail: ContactEmail, ContactOffice: ContactOffice,
@@ -1041,53 +1041,67 @@ function VendorContactList() {
         ]
     });
 }
+$('#btnAddContact').click(function () {
+    $("#VendorModal").find(":input").each(function () {
+        switch (this.type) {
+            case "text": case "email": case "textarea": case "tel": $(this).val(''); break;
+        }
+    });
+    $("#VendorModal option[value='-1']").attr('selected', true)
+    $("#ddlContactState").empty().append('<option value="" selected></option>');
+    $('#VendorModal').modal('show');
+   
+})
+
 //function showModal(id) {
 //    $('#VendorModal').modal('show');
 //}
 function showModal(id) {
     var VendorID = id;
-    $("#hfContactid").val(VendorID);
-    var obj =
-        $.ajax({
-            url: "/ThirdParty/GetVendorContactByID/" + VendorID,
-            type: "GET",
-            contentType: "application/json; charset=utf-8",
-            dataType: 'JSON',
-            data: JSON.stringify(obj),
-            success: function (data) {
-                var d = JSON.parse(data);
-                if (d.length > 0) {
-                    console.log(d);
-                    $('#VendorModal').modal('show');
-                    $("#txtContactName").val(d[0].Name);
-                    $("#txtContactTitle").val(d[0].Title);
-                    $("#txtContactAddress").val(d[0].Address);
-                    $("#txtContactCity").val(d[0].City);
-                    $("#ddlContactState").val(d[0].State);
-                    $("#txtContactZipCode").val(d[0].ZipCode);
-                    $("#ddlContactCountry").val(d[0].Country);
-                    $("#txtContactOffice").val(d[0].Office);
-                    $("#txtContactPhone").val(d[0].Mobile);
-                    $("#txtContactFax").val(d[0].Fax);
-                    $("#txtContactEMail").val(d[0].Email);
-                    $("#txtContactNotes").val(d[0].Notes);
-                     $("#ddlContactState").empty().append('<option value="' + d[0].State + '" selected>' + d[0].StateName + '</option>');
+  
+        $("#hfContactid").val(VendorID);
+        var obj =
+            $.ajax({
+                url: "/ThirdParty/GetVendorContactByID/" + VendorID,
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                dataType: 'JSON',
+                data: JSON.stringify(obj),
+                success: function (data) {
+                    var d = JSON.parse(data);
+                    if (d.length > 0) {
+                        console.log(d);
+                        $('#VendorModal').modal('show');
+                        $("#txtContactName").val(d[0].Name);
+                        $("#txtContactTitle").val(d[0].Title);
+                        $("#txtContactAddress").val(d[0].Address);
+                        $("#txtContactCity").val(d[0].City);
+                        $("#ddlContactState").val(d[0].State);
+                        $("#txtContactZipCode").val(d[0].ZipCode);
+                        $("#ddlContactCountry").val(d[0].Country);
+                        $("#txtContactOffice").val(d[0].Office);
+                        $("#txtContactPhone").val(d[0].Mobile);
+                        $("#txtContactFax").val(d[0].Fax);
+                        $("#txtContactEMail").val(d[0].Email);
+                        $("#txtContactNotes").val(d[0].Notes);
+                        $("#ddlContactState").empty().append('<option value="' + d[0].State + '" selected>' + d[0].StateName + '</option>');
 
-                    $("#ddlContactState").select2({
-                        allowClear: true, minimumInputLength: 2, placeholder: "Search State",
-                        ajax: {
-                            url: '/ThirdParty/GetState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
-                            data: function (params) { var obj = { strValue1: params.term, strValue2: $("#ddlContactCountry").val() }; return JSON.stringify(obj); },
-                            processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.StateFullName, name: item.StateFullName, val: item.State, id: item.State } }) }; },
-                            error: function (xhr, status, err) { }, cache: true
-                        }
-                    });
-                  
+                        $("#ddlContactState").select2({
+                            allowClear: true, minimumInputLength: 2, placeholder: "Search State",
+                            ajax: {
+                                url: '/ThirdParty/GetState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+                                data: function (params) { var obj = { strValue1: params.term, strValue2: $("#ddlContactCountry").val() }; return JSON.stringify(obj); },
+                                processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.StateFullName, name: item.StateFullName, val: item.State, id: item.State } }) }; },
+                                error: function (xhr, status, err) { }, cache: true
+                            }
+                        });
+
+                    }
+                },
+                error: function (msg) {
                 }
-            },
-            error: function (msg) {
-            }
-        });
+            });
+   
 }
 
 

@@ -14,6 +14,7 @@ getShippingMethod();
 getDiscountType();
 getPaymentMethod();
 VendorContactList();
+//$('#chkVendorStatus').attr("checked", "checked");
 
 $("#ddlPaymentMethod").change(function () {
     PaymentMethod = $("#ddlPaymentMethod").val();
@@ -79,10 +80,10 @@ $('#btnNextTab1').click(function (e) {
     else if (ZipCode == "") { swal('alert', 'Please Enter ZipCode', 'error').then(function () { swal.close(); $('#txtZipCode').focus(); }) }
     else if (Country == "-1") { swal('alert', 'Please Select Country', 'error').then(function () { swal.close(); $('#ddlCountry').focus(); }) }
     else if (Phone == "") { swal('alert', 'Please Enter Phone', 'error').then(function () { swal.close(); $('#txtPhone').focus(); }) }
-    else if (EMail == "") { swal('alert', 'Please Enter EMail', 'error').then(function () { swal.close(); $('#txtEMail').focus(); }) }
-    else if (!pattern.test(EMail)) { swal('alert', 'not a valid e-mail address', 'error').then(function () { swal.close(); $('#txtEMail').focus(); }) }
-    else if (Web == "") { swal('alert', 'Please Enter Web', 'error').then(function () { swal.close(); $('#txtWeb').focus(); }) }
-    else if (WorkingHours == "") { swal('alert', 'Please Enter working hours', 'error').then(function () { swal.close(); $('#txtWorkinghours').focus(); }) }
+    //else if (EMail == "") { swal('alert', 'Please Enter EMail', 'error').then(function () { swal.close(); $('#txtEMail').focus(); }) }
+    //else if (!pattern.test(EMail)) { swal('alert', 'not a valid e-mail address', 'error').then(function () { swal.close(); $('#txtEMail').focus(); }) }
+    //else if (Web == "") { swal('alert', 'Please Enter Web', 'error').then(function () { swal.close(); $('#txtWeb').focus(); }) }
+    //else if (WorkingHours == "") { swal('alert', 'Please Enter working hours', 'error').then(function () { swal.close(); $('#txtWorkinghours').focus(); }) }
 
     else {
         var obj = {
@@ -201,17 +202,16 @@ $('#btnNextTab3').click(function (e) {
     MinOrderQty = $("#txtMinOrderQty").val();
     OrderMinAmt = $("#txtOrderMinAmt").val();
 
-    if (Capital == "") { swal('alert', 'Please Enter Capital', 'error').then(function () { swal.close(); $('#txtCapital').focus(); }) }
-    else if (PaymentTerms == "-1") { swal('alert', 'Please Select Payment Terms', 'error').then(function () { swal.close(); $('#ddlPaymentTerms').focus(); }) }
+     if (PaymentTerms == "-1") { swal('alert', 'Please Select Payment Terms', 'error').then(function () { swal.close(); $('#ddlPaymentTerms').focus(); }) }
     else if (Balancedays == "-1") { swal('alert', 'Please Select Balance Net', 'error').then(function () { swal.close(); $('#ddlBalancedays').focus(); }) }
-    else if (IncoTermType == "-1") { swal('alert', 'Please Select IncoTerm', 'error').then(function () { swal.close(); $('#ddlIncoTerm').focus(); }) }
-    else if (IncoTerm == "") { swal('alert', 'Please Enter IncoTerm', 'error').then(function () { swal.close(); $('#txtIncoTerm').focus(); }) }
-    //else if (PaymentType == "-1") { swal('alert', 'Please Select Payment Type', 'error').then(function () { swal.close(); $('#ddlPaymentType').focus(); }) }
-    else if (Currency == "-1") { swal('alert', 'Please Select Currency', 'error').then(function () { swal.close(); $('#ddlCurrency').focus(); }) }
-    else if (CreditLimit == "") { swal('alert', 'Please Enter Credit Limit', 'error').then(function () { swal.close(); $('#txtCreditLimit').focus(); }) }
-    else if (OutStandingLimit == "") { swal('alert', 'Please Enter OutStanding Limit', 'error').then(function () { swal.close(); $('#txtOutStandingLimit').focus(); }) }
-    else if (MinOrderQty == "") { swal('alert', 'Please Enter Minimum Order Quantity', 'error').then(function () { swal.close(); $('#txtMinOrderQty').focus(); }) }
-    else if (OrderMinAmt == "") { swal('alert', 'Please Enter Order Min Amount', 'error').then(function () { swal.close(); $('#txtOrderMinAmt').focus(); }) }
+    //else if (Capital == "") { swal('alert', 'Please Enter Capital', 'error').then(function () { swal.close(); $('#txtCapital').focus(); }) }
+    //else if (IncoTermType == "-1") { swal('alert', 'Please Select IncoTerm', 'error').then(function () { swal.close(); $('#ddlIncoTerm').focus(); }) }
+    //else if (IncoTerm == "") { swal('alert', 'Please Enter IncoTerm', 'error').then(function () { swal.close(); $('#txtIncoTerm').focus(); }) }
+    //else if (Currency == "-1") { swal('alert', 'Please Select Currency', 'error').then(function () { swal.close(); $('#ddlCurrency').focus(); }) }
+    //else if (CreditLimit == "") { swal('alert', 'Please Enter Credit Limit', 'error').then(function () { swal.close(); $('#txtCreditLimit').focus(); }) }
+    //else if (OutStandingLimit == "") { swal('alert', 'Please Enter OutStanding Limit', 'error').then(function () { swal.close(); $('#txtOutStandingLimit').focus(); }) }
+    //else if (MinOrderQty == "") { swal('alert', 'Please Enter Minimum Order Quantity', 'error').then(function () { swal.close(); $('#txtMinOrderQty').focus(); }) }
+    //else if (OrderMinAmt == "") { swal('alert', 'Please Enter Order Min Amount', 'error').then(function () { swal.close(); $('#txtOrderMinAmt').focus(); }) }
 
     else {
         var obj = {
@@ -265,16 +265,16 @@ $('#btnNextTab4').click(function (e) {
     ShippingLogin = $("#txtShippingLogin").val();
     ShippingPassword = $("#txtShippingPassword").val();
 
-    if (ShippingMethod == "-1") { swal('alert', 'Please Select Shipping Method', 'error').then(function () { swal.close(); $('#ddlShippingMethod').focus(); }) }
-    else if (ShippingRate == "") { swal('alert', 'Please Enter Rate', 'error').then(function () { swal.close(); $('#txtShippingRate').focus(); }) }
-    else if (ShippingLocation == "") { swal('alert', 'Please Enter Location', 'error').then(function () { swal.close(); $('#txtShippingLocation').focus(); }) }
-    else if (ShippingAPIKeyTest == "") { swal('alert', 'Please Enter API Key (Test)', 'error').then(function () { swal.close(); $('#txtShippingAPIKeyTest').focus(); }) }
-    else if (ShippingAPISecretTest == "") { swal('alert', 'Please Enter API Secret (Test)', 'error').then(function () { swal.close(); $('#txtShippingAPISecretTest').focus(); }) }
-    else if (ShippingAPIKeyProduction == "") { swal('alert', 'Please Enter API Key (Production)', 'error').then(function () { swal.close(); $('#txtShippingAPIKeyProduction').focus(); }) }
-    else if (ShippingAPISecretProduction == "") { swal('alert', 'Please Enter API Secret (Production)', 'error').then(function () { swal.close(); $('#txtShippingAPISecretProduction').focus(); }) }
-    else if (ShippingLogin == "") { swal('alert', 'Please Enter Login', 'error').then(function () { swal.close(); $('#txtShippingLogin').focus(); }) }
-    else if (ShippingPassword == "") { swal('alert', 'Please Enter Password', 'error').then(function () { swal.close(); $('#txtShippingPassword').focus(); }) }
-    else {
+    //if (ShippingMethod == "-1") { swal('alert', 'Please Select Shipping Method', 'error').then(function () { swal.close(); $('#ddlShippingMethod').focus(); }) }
+    //else if (ShippingRate == "") { swal('alert', 'Please Enter Rate', 'error').then(function () { swal.close(); $('#txtShippingRate').focus(); }) }
+    //else if (ShippingLocation == "") { swal('alert', 'Please Enter Location', 'error').then(function () { swal.close(); $('#txtShippingLocation').focus(); }) }
+    //else if (ShippingAPIKeyTest == "") { swal('alert', 'Please Enter API Key (Test)', 'error').then(function () { swal.close(); $('#txtShippingAPIKeyTest').focus(); }) }
+    //else if (ShippingAPISecretTest == "") { swal('alert', 'Please Enter API Secret (Test)', 'error').then(function () { swal.close(); $('#txtShippingAPISecretTest').focus(); }) }
+    //else if (ShippingAPIKeyProduction == "") { swal('alert', 'Please Enter API Key (Production)', 'error').then(function () { swal.close(); $('#txtShippingAPIKeyProduction').focus(); }) }
+    //else if (ShippingAPISecretProduction == "") { swal('alert', 'Please Enter API Secret (Production)', 'error').then(function () { swal.close(); $('#txtShippingAPISecretProduction').focus(); }) }
+    //else if (ShippingLogin == "") { swal('alert', 'Please Enter Login', 'error').then(function () { swal.close(); $('#txtShippingLogin').focus(); }) }
+    //else if (ShippingPassword == "") { swal('alert', 'Please Enter Password', 'error').then(function () { swal.close(); $('#txtShippingPassword').focus(); }) }
+    //else { }
         var obj = {
             rowid: ID, fk_shipping_method: ShippingMethod, ShippingRate: ShippingRate, ShippingLocation: ShippingLocation,
             ShippingAPIKeyTest: ShippingAPIKeyTest, ShippingAPISecretTest: ShippingAPISecretTest, ShippingAPIKeyProduction: ShippingAPIKeyProduction,
@@ -313,7 +313,7 @@ $('#btnNextTab4').click(function (e) {
                 swal('Error!', 'something went wrong', 'error');
             },
         })
-    }
+    
 });
 $('#btnNextTab5').click(function (e) {
     ID = $("#hfid").val();
@@ -324,11 +324,11 @@ $('#btnNextTab5').click(function (e) {
     ShippingTaxIncludedinprice = $("#chkShippingTaxIncludedinprice").prop("checked") ? 1 : 0;
     TaxIncludedinPrice = $("#chkTaxIncludedinPrice").prop("checked") ? 1 : 0;
 
-    if (TaxMethod == "-1") { swal('alert', 'Please Select Tax Method', 'error').then(function () { swal.close(); $('#ddlTaxMethod').focus(); }) }
-    else if (DefaultTax == "") { swal('alert', 'Please Enter Default Tax (%)', 'error').then(function () { swal.close(); $('#txtDefaultTax').focus(); }) }
-    else if (ShippingTax == "") { swal('alert', 'Please Enter Shipping Tax (%)', 'error').then(function () { swal.close(); $('#txtShippingTax').focus(); }) }
-    else if (Calculatedtax == "") { swal('alert', 'Please Enter Calculated tax', 'error').then(function () { swal.close(); $('#txtCalculatedtax ').focus(); }) }
-    else {
+    //if (TaxMethod == "-1") { swal('alert', 'Please Select Tax Method', 'error').then(function () { swal.close(); $('#ddlTaxMethod').focus(); }) }
+    //else if (DefaultTax == "") { swal('alert', 'Please Enter Default Tax (%)', 'error').then(function () { swal.close(); $('#txtDefaultTax').focus(); }) }
+    //else if (ShippingTax == "") { swal('alert', 'Please Enter Shipping Tax (%)', 'error').then(function () { swal.close(); $('#txtShippingTax').focus(); }) }
+    //else if (Calculatedtax == "") { swal('alert', 'Please Enter Calculated tax', 'error').then(function () { swal.close(); $('#txtCalculatedtax ').focus(); }) }
+    //else { }
         var obj = {
             rowid: ID, TaxMethod: TaxMethod, DefaultTax: DefaultTax, ShippingTax: ShippingTax, Calculatedtax: Calculatedtax,
             ShippingTaxIncludedinprice: ShippingTaxIncludedinprice,TaxIncludedinPrice: TaxIncludedinPrice,
@@ -365,7 +365,6 @@ $('#btnNextTab5').click(function (e) {
                 swal('Error!', 'something went wrong', 'error');
             },
         })
-    }
 });
 $('#btnNextTab6').click(function (e) {
     ID = $("#hfid").val();
@@ -376,16 +375,16 @@ $('#btnNextTab6').click(function (e) {
     AccountEmail = $("#txtAccountEmail").val();
     DiscountType2 = $("#ddlDiscountType2").val();
     Discount = $("#txtDiscount").val();
-    var pattern = /^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
-    if (DiscountType1 == "-1") { swal('alert', 'Please Select Discount Type 1', 'error').then(function () { swal.close(); $('#ddlDiscountType1').focus(); }) }
-    else if (DefaultDiscount == "") { swal('alert', 'Please Enter Default Discount (%)', 'error').then(function () { swal.close(); $('#txtDefaultDiscount').focus(); }) }
-    else if (MinimumOrderAmount == "") { swal('alert', 'Please Enter Minimum order amount', 'error').then(function () { swal.close(); $('#txtMinimumOrderAmount').focus(); }) }
-    else if (AccountName == "") { swal('alert', 'Please Enter Account Name', 'error').then(function () { swal.close(); $('#txtAccountName ').focus(); }) }
-    else if (AccountEmail == "") { swal('alert', 'Please Enter Email', 'error').then(function () { swal.close(); $('#txtAccountEmail ').focus(); }) }
-    else if (!pattern.test(AccountEmail)) { swal('alert', 'not a valid e-mail address', 'error').then(function () { swal.close(); $('#txtAccountEmail').focus(); }) }
-    else if (DiscountType2 == "-1") { swal('alert', 'Please Select Discount Type2 (Balance Net)', 'error').then(function () { swal.close(); $('#ddlDiscountType2').focus(); }) }
-    else if (Discount == "") { swal('alert', 'Please Enter Discount (%)', 'error').then(function () { swal.close(); $('#txtDiscount ').focus(); }) }
-    else {
+    //var pattern = /^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
+    //if (DiscountType1 == "-1") { swal('alert', 'Please Select Discount Type 1', 'error').then(function () { swal.close(); $('#ddlDiscountType1').focus(); }) }
+    //else if (DefaultDiscount == "") { swal('alert', 'Please Enter Default Discount (%)', 'error').then(function () { swal.close(); $('#txtDefaultDiscount').focus(); }) }
+    //else if (MinimumOrderAmount == "") { swal('alert', 'Please Enter Minimum order amount', 'error').then(function () { swal.close(); $('#txtMinimumOrderAmount').focus(); }) }
+    //else if (AccountName == "") { swal('alert', 'Please Enter Account Name', 'error').then(function () { swal.close(); $('#txtAccountName ').focus(); }) }
+    //else if (AccountEmail == "") { swal('alert', 'Please Enter Email', 'error').then(function () { swal.close(); $('#txtAccountEmail ').focus(); }) }
+    //else if (!pattern.test(AccountEmail)) { swal('alert', 'not a valid e-mail address', 'error').then(function () { swal.close(); $('#txtAccountEmail').focus(); }) }
+    //else if (DiscountType2 == "-1") { swal('alert', 'Please Select Discount Type2 (Balance Net)', 'error').then(function () { swal.close(); $('#ddlDiscountType2').focus(); }) }
+    //else if (Discount == "") { swal('alert', 'Please Enter Discount (%)', 'error').then(function () { swal.close(); $('#txtDiscount ').focus(); }) }
+    //else { }
         var obj = {
             rowid: ID, DiscountType1: DiscountType1, DefaultDiscount: DefaultDiscount, DiscountMinimumOrderAmount: MinimumOrderAmount, AccountName: AccountName,
             AccountEmail: AccountEmail, DiscountType2: DiscountType2, Discount: Discount,
@@ -422,7 +421,7 @@ $('#btnNextTab6').click(function (e) {
                 swal('Error!', 'something went wrong', 'error');
             },
         })
-    }
+   
 });
 $('#btnNextTab7').click(function (e) {
     ID = $("#hfid").val();
@@ -455,38 +454,39 @@ $('#btnNextTab7').click(function (e) {
     PaypalAPISignature = $("#txtPaypalAPISignature").val();
 
 
-    var pattern = /^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
-    if (PaymentMethod == "-1") { swal('alert', 'Please Select Payment method', 'error').then(function () { swal.close(); $('#ddlPaymentMethod').focus(); }) }
-    else if (PaymentMethod == "1" && BankAccountName == "") { swal('alert', 'Please Enter Account Name', 'error').then(function () { swal.close(); $('#txtBankAccountName').focus(); }) }
-    else if (PaymentMethod == "1" && BankAccountNumber == "") { swal('alert', 'Please Enter Account Number', 'error').then(function () { swal.close(); $('#txtBankAccountNumber').focus(); }) }
-    else if (PaymentMethod == "1" && BankName == "") { swal('alert', 'Please Enter Bank name', 'error').then(function () { swal.close(); $('#txtBankName').focus(); }) }
-    else if (PaymentMethod == "1" && BankRoutingNumber == "") { swal('alert', 'Please Enter Account Name', 'error').then(function () { swal.close(); $('#txtBankRoutingNumber').focus(); }) }
-    else if (PaymentMethod == "1" && BankIBAN == "") { swal('alert', 'Please Enter IBAN', 'error').then(function () { swal.close(); $('#txtBankIBAN').focus(); }) }
-    else if (PaymentMethod == "1" && BankSwift == "") { swal('alert', 'Please Enter BIC/Swift', 'error').then(function () { swal.close(); $('#txtBankSwift').focus(); }) }
+    //var pattern = /^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
+    //if (PaymentMethod == "-1") { swal('alert', 'Please Select Payment method', 'error').then(function () { swal.close(); $('#ddlPaymentMethod').focus(); }) }
+    //else if (PaymentMethod == "1" && BankAccountName == "") { swal('alert', 'Please Enter Account Name', 'error').then(function () { swal.close(); $('#txtBankAccountName').focus(); }) }
+    //else if (PaymentMethod == "1" && BankAccountNumber == "") { swal('alert', 'Please Enter Account Number', 'error').then(function () { swal.close(); $('#txtBankAccountNumber').focus(); }) }
+    //else if (PaymentMethod == "1" && BankName == "") { swal('alert', 'Please Enter Bank name', 'error').then(function () { swal.close(); $('#txtBankName').focus(); }) }
+    //else if (PaymentMethod == "1" && BankRoutingNumber == "") { swal('alert', 'Please Enter Account Name', 'error').then(function () { swal.close(); $('#txtBankRoutingNumber').focus(); }) }
+    //else if (PaymentMethod == "1" && BankIBAN == "") { swal('alert', 'Please Enter IBAN', 'error').then(function () { swal.close(); $('#txtBankIBAN').focus(); }) }
+    //else if (PaymentMethod == "1" && BankSwift == "") { swal('alert', 'Please Enter BIC/Swift', 'error').then(function () { swal.close(); $('#txtBankSwift').focus(); }) }
 
-    else if (PaymentMethod == "3" && ChequeTitle == "") { swal('alert', 'Please Enter Title', 'error').then(function () { swal.close(); $('#txtChequeTitle').focus(); }) }
-    else if (PaymentMethod == "3" && ChequeDescription == "") { swal('alert', 'Please Enter Description', 'error').then(function () { swal.close(); $('#txtChequeDescription').focus(); }) }
-    else if (PaymentMethod == "3" && ChequeInstructions == "") { swal('alert', 'Please Enter Instructions', 'error').then(function () { swal.close(); $('#txtChequeInstructions').focus(); }) }
+    //else if (PaymentMethod == "3" && ChequeTitle == "") { swal('alert', 'Please Enter Title', 'error').then(function () { swal.close(); $('#txtChequeTitle').focus(); }) }
+    //else if (PaymentMethod == "3" && ChequeDescription == "") { swal('alert', 'Please Enter Description', 'error').then(function () { swal.close(); $('#txtChequeDescription').focus(); }) }
+    //else if (PaymentMethod == "3" && ChequeInstructions == "") { swal('alert', 'Please Enter Instructions', 'error').then(function () { swal.close(); $('#txtChequeInstructions').focus(); }) }
 
-    else if (PaymentMethod == "6" && PPInvoiceAPIUsername == "") { swal('alert', 'Please Enter Paypal Invoice User Name', 'error').then(function () { swal.close(); $('#txtPPInvoiceAPIUsername').focus(); }) }
-    else if (PaymentMethod == "6" && PPInvoiceAPIPassword == "") { swal('alert', 'Please Enter Paypal Invoice Password', 'error').then(function () { swal.close(); $('#txtPPInvoiceAPIPassword').focus(); }) }
-    else if (PaymentMethod == "6" && PPInvoiceAPISignature == "") { swal('alert', 'Please Enter Paypal Invoice Signature', 'error').then(function () { swal.close(); $('#txtPPInvoiceAPISignature').focus(); }) }
+    //else if (PaymentMethod == "6" && PPInvoiceAPIUsername == "") { swal('alert', 'Please Enter Paypal Invoice User Name', 'error').then(function () { swal.close(); $('#txtPPInvoiceAPIUsername').focus(); }) }
+    //else if (PaymentMethod == "6" && PPInvoiceAPIPassword == "") { swal('alert', 'Please Enter Paypal Invoice Password', 'error').then(function () { swal.close(); $('#txtPPInvoiceAPIPassword').focus(); }) }
+    //else if (PaymentMethod == "6" && PPInvoiceAPISignature == "") { swal('alert', 'Please Enter Paypal Invoice Signature', 'error').then(function () { swal.close(); $('#txtPPInvoiceAPISignature').focus(); }) }
 
-    else if (PaymentMethod == "7" && PaypalTitle == "") { swal('alert', 'Please Enter Paypal Title', 'error').then(function () { swal.close(); $('#txtPaypalTitle').focus(); }) }
-    else if (PaymentMethod == "7" && PaypalDescription == "") { swal('alert', 'Please Enter Description', 'error').then(function () { swal.close(); $('#txtPaypalDescription').focus(); }) }
-    else if (PaymentMethod == "7" && PaypalEmail == "") { swal('alert', 'Please Enter Paypal email', 'error').then(function () { swal.close(); $('#txtPaypalEmail').focus(); }) }
-    else if (PaymentMethod == "7" && !pattern.test(PaypalEmail)) { swal('alert', 'not a valid e-mail address', 'error').then(function () { swal.close(); $('#txtPaypalEmail').focus(); }) }
-    else if (PaymentMethod == "7" && PaypalIPNEmailNotification == "") { swal('alert', 'Please Enter IPN email notification', 'error').then(function () { swal.close(); $('#txtPaypalIPNEmailNotification').focus(); }) }
-    else if (PaymentMethod == "7" && !pattern.test(PaypalIPNEmailNotification)) { swal('alert', 'not a valid e-mail address', 'error').then(function () { swal.close(); $('#txtPaypalIPNEmailNotification').focus(); }) }
-    else if (PaymentMethod == "7" && PaypalReceiverEmail == "") { swal('alert', 'Please Enter Receiver email', 'error').then(function () { swal.close(); $('#txtPaypalReceiverEmail').focus(); }) }
-    else if (PaymentMethod == "7" && !pattern.test(PaypalReceiverEmail)) { swal('alert', 'not a valid e-mail address', 'error').then(function () { swal.close(); $('#txtPaypalReceiverEmail').focus(); }) }
-    else if (PaymentMethod == "7" && PaypalIdentitytoken == "") { swal('alert', 'Please Enter Paypal Identity token', 'error').then(function () { swal.close(); $('#txtPaypalIdentitytoken').focus(); }) }
-    else if (PaymentMethod == "7" && PaypalPaymentAction == "-1") { swal('alert', 'Please Select Payment Action', 'error').then(function () { swal.close(); $('#ddlPaypalPaymentAction').focus(); }) }
-    else if (PaymentMethod == "7" && PaypalAPIUserName == "") { swal('alert', 'Please Enter Paypal User Name', 'error').then(function () { swal.close(); $('#txtPaypalAPIUserName').focus(); }) }
-    else if (PaymentMethod == "7" && PaypalAPIPassword == "") { swal('alert', 'Please Enter Paypal Password', 'error').then(function () { swal.close(); $('#txtPaypalAPIPassword').focus(); }) }
-    else if (PaymentMethod == "7" && PaypalAPISignature == "") { swal('alert', 'Please Enter Paypal Signature', 'error').then(function () { swal.close(); $('#txtPaypalAPISignature').focus(); }) }
+    //else if (PaymentMethod == "7" && PaypalTitle == "") { swal('alert', 'Please Enter Paypal Title', 'error').then(function () { swal.close(); $('#txtPaypalTitle').focus(); }) }
+    //else if (PaymentMethod == "7" && PaypalDescription == "") { swal('alert', 'Please Enter Description', 'error').then(function () { swal.close(); $('#txtPaypalDescription').focus(); }) }
+    //else if (PaymentMethod == "7" && PaypalEmail == "") { swal('alert', 'Please Enter Paypal email', 'error').then(function () { swal.close(); $('#txtPaypalEmail').focus(); }) }
+    //else if (PaymentMethod == "7" && !pattern.test(PaypalEmail)) { swal('alert', 'not a valid e-mail address', 'error').then(function () { swal.close(); $('#txtPaypalEmail').focus(); }) }
+    //else if (PaymentMethod == "7" && PaypalIPNEmailNotification == "") { swal('alert', 'Please Enter IPN email notification', 'error').then(function () { swal.close(); $('#txtPaypalIPNEmailNotification').focus(); }) }
+    //else if (PaymentMethod == "7" && !pattern.test(PaypalIPNEmailNotification)) { swal('alert', 'not a valid e-mail address', 'error').then(function () { swal.close(); $('#txtPaypalIPNEmailNotification').focus(); }) }
+    //else if (PaymentMethod == "7" && PaypalReceiverEmail == "") { swal('alert', 'Please Enter Receiver email', 'error').then(function () { swal.close(); $('#txtPaypalReceiverEmail').focus(); }) }
+    //else if (PaymentMethod == "7" && !pattern.test(PaypalReceiverEmail)) { swal('alert', 'not a valid e-mail address', 'error').then(function () { swal.close(); $('#txtPaypalReceiverEmail').focus(); }) }
+    //else if (PaymentMethod == "7" && PaypalIdentitytoken == "") { swal('alert', 'Please Enter Paypal Identity token', 'error').then(function () { swal.close(); $('#txtPaypalIdentitytoken').focus(); }) }
+    //else if (PaymentMethod == "7" && PaypalPaymentAction == "-1") { swal('alert', 'Please Select Payment Action', 'error').then(function () { swal.close(); $('#ddlPaypalPaymentAction').focus(); }) }
+    //else if (PaymentMethod == "7" && PaypalAPIUserName == "") { swal('alert', 'Please Enter Paypal User Name', 'error').then(function () { swal.close(); $('#txtPaypalAPIUserName').focus(); }) }
+    //else if (PaymentMethod == "7" && PaypalAPIPassword == "") { swal('alert', 'Please Enter Paypal Password', 'error').then(function () { swal.close(); $('#txtPaypalAPIPassword').focus(); }) }
+    //else if (PaymentMethod == "7" && PaypalAPISignature == "") { swal('alert', 'Please Enter Paypal Signature', 'error').then(function () { swal.close(); $('#txtPaypalAPISignature').focus(); }) }
 
-    else {
+    //else { }
+
         var obj = {
             rowid: ID, Paymentmethod: PaymentMethod, BankAccountName: BankAccountName, BankAccountNumber: BankAccountNumber,
             BankName: BankName, BankRoutingNumber: BankRoutingNumber, BankIBAN: BankIBAN, BankSwift: BankSwift,
@@ -528,7 +528,6 @@ $('#btnNextTab7').click(function (e) {
                 swal('Error!', 'something went wrong', 'error');
             },
         })
-    }
 });
 
 $('#btnSaveContact').click(function (e) {
@@ -791,6 +790,11 @@ function getShippingMethod() {
 
 document.getElementById('txtPhone').addEventListener('keyup', function (evt) {
     var phoneNumber = document.getElementById('txtPhone');
+    var charCode = (evt.which) ? evt.which : evt.keyCode;
+    phoneNumber.value = phoneFormat(phoneNumber.value);
+});
+document.getElementById('txtContactPhone').addEventListener('keyup', function (evt) {
+    var phoneNumber = document.getElementById('txtContactPhone');
     var charCode = (evt.which) ? evt.which : evt.keyCode;
     phoneNumber.value = phoneFormat(phoneNumber.value);
 });

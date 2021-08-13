@@ -76,6 +76,7 @@ function reset() {
     $("#txtunit").val("");
     $("#txtlabel").val("");
     $("#txtsalebydate").val("");
+    $("#ddlproduct").val("0");
 }
 
 
@@ -280,13 +281,13 @@ function AddTransferStock() {
     if (fk_product == 0) {
         swal('Alert', 'Please select product', 'error').then(function () { swal.close(); $('#ddlProduct').focus(); });
     }
-    else if (fk_entrepot == fk_entrepottarget) { swal('Alert', 'Please select other warehouse', 'error');}
     else if (fk_entrepottarget == 0) {
         swal('Alert', 'Please select target warehouse', 'error').then(function () { swal.close(); $('#ddltargetwarehouse').focus(); });
     }
-    
-    else {
+    else if (fk_entrepot == fk_entrepottarget) { swal('Alert', 'Please select other warehouse', 'error'); }
 
+
+    else {
         var obj = {
             fk_entrepot: fk_entrepot,
             fk_entrepottarget: fk_entrepottarget,
@@ -320,4 +321,118 @@ function AddTransferStock() {
         })
 
     }
+}
+
+
+function StockTransferGrid() {
+    var fk_entrepot = $("#hfid").val();
+    var obj = { fk_entrepot: fk_entrepot };
+    $.ajax({
+        url: '/Warehouse/GetCurrentStock',
+        method: 'post',
+        datatype: 'json',
+        contentType: "application/json; charset=utf-8",
+        processing: true,
+        data: JSON.stringify(obj),
+        success: function (data) {
+            $('#dtdata').dataTable({
+                sDom: 'rtip',
+                destroy: true,
+                data: JSON.parse(data),
+                "columns": [
+                    { data: 'ref', title: 'Ref', sWidth: "5%" },
+                    { data: 'date', title: 'Date', sWidth: "15%", },
+                    { data: 'product', title: 'Product', sWidth: "20%" },
+                    { data: 'warehouse', title: 'Warehouse', sWidth: "15%" },
+
+                    { data: 'label', title: 'Label of movement', sWidth: "15%" },
+                    { data: 'value', title: 'Qty', sWidth: "10%" },
+                    { data: 'price', title: 'Unit Price', sWidth: "10%", },
+                    {
+                        'data': 'ref',
+                        'sortable': false,
+                        'searchable': false,
+                        'render': function (ref) {
+                            //return '<input type="button" onclick="chk_status(this)" data-id="' + ref + '"  id="chk_sts_str" />'
+                            //return '< a href = "#" onclick = "chk_status(this)" data-id="' + ref + '" id="chk_sts_str"> <i class="glyphicon glyphicon-pencil"></i></a >'
+                            return '<a href="#" onclick = "chk_status(this)" data-id="' + ref + '" ;"><i class="glyphicon glyphicon-pencil"></i></a>';
+                        }
+                    },
+                ],
+                "order": [[0, 'desc']],
+            });
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            alert(xhr.responseText);
+        }
+    });
+
+}
+
+function chk_status(ele) {
+    
+    var row = $(ele).data('id');
+    var obj = { strValue1: row }
+    $.ajax({
+        url: '/Warehouse/GetCurrentStock1/', dataType: 'json', type: 'Post',
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(obj),
+        dataType: "json",
+        //beforeSend: function () { $("#loader").show(); },
+        success: function (data) {
+            var jobj = JSON.parse(data);
+            console.log(jobj[0].label);
+            $('#txtlabel').val(jobj[0].label);
+            $('#ddlProduct').val(jobj[0].fk_product);
+            //$("#hfid").val();
+            $("#txtserial").val(jobj[0].serial);
+            $("#txteatbydate").val(jobj[0].eatby);
+            $("#txtprice").val(jobj[0].price);
+            $("#txtunit").val(jobj[0].value);
+            $("#txtsalebydate").val(jobj[0].sellby);
+            $("#btnStock").hide();
+            $("#btnStockUpdate").show();
+            $("#btnStockCancel").show();
+        },
+        complete: function () { $("#loader").hide(); },
+        error: function (error) { swal('Error!', 'something went wrong', 'error'); },
+    })
+}
+
+
+
+function StockTransferGrid1() {
+    var fk_entrepot = $("#hfid").val();
+    var obj = { fk_entrepot: fk_entrepot };
+    $.ajax({
+        url: '/Warehouse/GetCurrentStock',
+        method: 'post',
+        datatype: 'json',
+        contentType: "application/json; charset=utf-8",
+        processing: true,
+        data: JSON.stringify(obj),
+        success: function (data) {
+            $('#dttransferstock').dataTable({
+                sDom: 'rtip',
+                destroy: true,
+                data: JSON.parse(data),
+                "columns": [
+                    { data: 'ref', title: 'Ref', sWidth: "5%" },
+                    { data: 'date', title: 'Date', sWidth: "15%", },
+                    { data: 'product', title: 'Product', sWidth: "20%" },
+                    { data: 'warehouse', title: 'Warehouse', sWidth: "15%" },
+
+                    { data: 'label', title: 'Label of movement', sWidth: "15%" },
+                    { data: 'value', title: 'Qty', sWidth: "10%" },
+                    { data: 'price', title: 'Unit Price', sWidth: "10%", },
+                   
+                ],
+                "order": [[0, 'desc']],
+            });
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            alert(xhr.responseText);
+        }
+    });
+
 }

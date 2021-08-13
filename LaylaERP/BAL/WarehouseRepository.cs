@@ -394,16 +394,65 @@ namespace LaylaERP.BAL
             DataTable dtr = new DataTable();
             try
             {
-                string strquery = "SELECT wsm.rowid as ref, post.post_title as product, wsm.datem as date,ww.ref as warehouse, wsm.inventorycode as invcode," +
+                string strquery = "SELECT wsm.rowid as ref, post.post_title as product, LEFT(CAST(wsm.datem AS DATE), 10) as date,ww.ref as warehouse, wsm.inventorycode as invcode," +
                                    " wsm.label as label,wsm.value,concat('$', format(wsm.price, 2)) as price FROM wp_stock_mouvement wsm, wp_warehouse ww, wp_posts post where ww.rowid = wsm.fk_entrepot and post.id = wsm.fk_product and wsm.fk_entrepot = '"+model.fk_entrepot+"'";
 
 
-                dtr = SQLHelper.ExecuteDataTable(strquery);
+                DataSet ds = SQLHelper.ExecuteDataSet(strquery);
+                dtr = ds.Tables[0];
             }
             catch (Exception ex)
             { throw ex; }
             return dtr;
         }
 
+        public static int AddTransferStock(WarehouseModel model)
+        {
+           
+            try
+            {
+                string strsql = "insert into wp_stock_mouvement(datem,fk_product,fk_entrepot,value,type_mouvement,label,inventorycode,price,fk_origin,eatby,sellby,serial) values(@datem,@fk_product,@fk_entrepot,-1*@value,1,@label,@inventorycode,@price,0,@eatby,@sellby,@serial);SELECT LAST_INSERT_ID();";
+                string strsql1 = " insert into wp_stock_mouvement(datem,fk_product,fk_entrepot,value,type_mouvement,label,inventorycode,price,fk_origin,eatby,sellby,serial) values(@datem,@fk_product,@fk_entrepottarget,@value,0,@label,@inventorycode,@price,0,@eatby,@sellby,@serial);SELECT LAST_INSERT_ID();";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@datem", Convert.ToDateTime(DateTime.UtcNow.ToString())),
+                    new MySqlParameter("@fk_product", model.fk_product),
+                    new MySqlParameter("@fk_entrepot", model.fk_entrepot),
+                     new MySqlParameter("@fk_entrepottarget", model.fk_entrepottarget),
+                    new MySqlParameter("@value", model.value),
+                    new MySqlParameter("@price", model.price),
+                    //new MySqlParameter("@type_mouvement", model.type_mouvement),
+                    new MySqlParameter("@label", model.label),
+                    new MySqlParameter("@inventorycode", model.inventorycode),
+                    new MySqlParameter("@eatby", model.eatby),
+                    new MySqlParameter("@sellby",model.sellby),
+                    new MySqlParameter("@serial",model.serial),
+
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql + strsql1, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+
+        public static DataTable GetCurrentStock1(SearchModel model)
+        {
+            DataTable dtr = new DataTable();
+            try
+            {
+                string strquery = "SELECT label,fk_product,LEFT(CAST(eatby AS DATE), 10) as eatby,LEFT(CAST(sellby AS DATE), 10) as sellby,serial,value,price from wp_stock_mouvement where rowid='" + model.strValue1 + "'";
+
+
+                DataSet ds = SQLHelper.ExecuteDataSet(strquery);
+                dtr = ds.Tables[0];
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dtr;
+        }
     }
 }

@@ -363,6 +363,11 @@
 <script>
 
     jQuery(function ($) {
+        function func_height() {
+            var hei = $('.flex-row_box .col-md-9').outerHeight();
+            $('.flex-row_box .col-md-3').css('height', hei);
+        }
+        setInterval(func_height, 500);
         $('#angle-box').click(function () {
             $(this).toggleClass('angle-change');
             $('.varient-box').slideToggle(100);

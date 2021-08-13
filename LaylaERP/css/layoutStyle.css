@@ -9,7 +9,7 @@ body {
 button, input, select, textarea, h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     font-family: 'Open Sans', sans-serif;
 }
-
+.nav > li > a{padding-top:8px; padding-bottom:8px;}
 .p-0 {
     padding: 0px !important;
 }
@@ -409,7 +409,7 @@ table.dataTable tbody td.select-checkbox:before, table.dataTable tbody td.select
 }
 
     .user-top-section select {
-        font-size: 14px;
+        font-size: 12px;
         line-height: 2;
         color: #32373c;
         border-color: #7e8993;
@@ -745,7 +745,7 @@ body table.dataTable tr.selected td.select-checkbox:before, body table.dataTable
 #userslist th {
 }
 #saveForm .box-body.with-border {
-    border-bottom: 1px solid #f4f4f4;
+    border-bottom: 1px solid #dedede;
 }
 #saveForm .box-body.with-border .lbl-space {
     margin: 0px 3px;
@@ -1692,7 +1692,7 @@ display:flex;}
     margin: 0px auto 0px 0px !important;
 }
 .radtype_span {
-    margin: -5px 73px 0px 0px;
+    margin: -5px 62px 0px 0px;
 }
 .dashboard-order-list .box-header {display:flex;}
 [name="strValue1"] + label {
@@ -1701,7 +1701,7 @@ cursor: pointer;
 margin-left: 1px;
 margin-right: 0px !important;
 display: inline-flex;
-padding: 4px 35px 3px 20px;
+padding: 4px 35px 3px 14px;
 align-items: center;
 color: #fff;
 background: #3c8dbc;
@@ -2214,11 +2214,34 @@ img.varient-pic {max-width: 100px;height: auto;}
 .align-items-end {align-items:flex-end !important;}
 .file-group input {margin-right:10px;}
 .file-group {margin:0px -15px !important;}
-.flex-row_box .col-md-3 .box-primary {max-height:290px; overflow-y:auto;} 
+.flex-row_box .col-md-3 .box-primary {overflow-y:auto;height: 100%; margin-bottom: 0px;} 
 .price_threw_table td:nth-child(6){white-space:nowrap;} 
 .price_threw_table td:nth-child(6) span {display:inline-block;}
 .price_threw_table td {vertical-align:middle !important;}
 .simple-table {width:100%;border: 1px solid #dedede;}
 .simple-table td {vertical-align:top; padding: 10px; border-top:1px solid #dedede;}
 .simple-table td .form-group{margin-bottom:0px;}
-body .btn{border-radius:0px;}
+/*body .btn{border-radius:0px;}*/
+.form-group label, label {font-weight: 600;}
+.box-tools  .btn {padding:0px; width:26px; height:26px;}
+.box-header.with-border {border-color:#dedede;}
+.form-control, [type="text"], [type="email"], [type="number"], select,
+textarea{border-radius:3px !important;}
+body .form-control {font-size:12px;}
+.flex-row_box .control-label {display:flex; align-items:center; margin:0px;}
+.new-product-section .no-btn {position:relative;}
+.new-product-section .no-btn:active, .new-product-section .no-btn:focus{background:transparent !important; box-shadow:none !important;}
+.new-product-section a.no-btn:before {content:""; transform:rotate(45deg); width:10px; height:10px; border-width:0px 0px 1px 1px;border-color:#4f4f4f; border-style:solid;display:inline-block;}
+.flex-row_box .col-md-3 {padding-top:5px;    display: flex;  flex-direction: column;}
+.flex-row_box .col-md-3 .page-title{margin-bottom:14px;}
+.attribute-btn {margin-top:10px; text-align:right;}
+#btnSavevariations {float:right; margin-top:10px;}
+#product_variations .col-sm-12 {padding:0px;}
+#product_variations .form-group {margin:0px;}
+.new-product-section  #tab_6 .col-sm-12{padding:0px;}
+body .btn {font-size:12px;}
+#product_variations.simple-table {width:auto;}
+.row_on .fa-toggle-on {color: #25a580 !important; font-size: 24px;}
+.fas.fa-toggle-off { font-size: 24px; color:#4f4f4f;}
+.inventory-table td.text-left:first-child {text-align:left;}
+.journal-section table a {color:#4f4f4f;}

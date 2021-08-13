@@ -2,7 +2,7 @@
 body {
     font-family: 'Open Sans', sans-serif !important;
     color: #4f4f4f !important;
-    font-size: 15px !important;
+    font-size: 12px !important;
 }
 button, input, select, textarea, h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     font-family: 'Open Sans', sans-serif;
@@ -88,9 +88,10 @@ margin-left:auto;
         color: #fff;
         
     }
-    .main-sidebar section.sidebar {
-        border-top: 1px solid #c5c5c5;
-    }
+.main-sidebar section.sidebar {
+    font-size: 14px;
+    border-top: 1px solid #c5c5c5;
+}
 .main-header .logo .logo-lg {
     height: 100%;
 }
@@ -128,8 +129,7 @@ margin:0px;
 .content-tabs {
     line-height: 40px;
 }
-.slimScrollBar {
-max-height:120px;}
+.slimScrollBar {background: #ADADAD !important;opacity: .8 !important;max-height:120px;}
 .treeview.activeLink .nav-link {
 background:#000 !important; color:#fff !important;}
 .activeLink a {
@@ -142,7 +142,10 @@ background:#000 !important; color:#fff !important;}
     -o-transform: rotate(-90deg);
     transform: rotate( -90deg );
 }
-.sidebar-menu a {
+.sidebar-menu > li > a {
+    padding: 8px 5px 8px 15px;
+}
+    .sidebar-menu a {
 cursor:pointer;}
 .skin-blue .sidebar-menu > li.active > a {
 }
@@ -647,7 +650,5 @@ width:50px; height:50px; border-radius:100%; padding:3px; border:1px solid #d2d6
     right: 10px;
     top: 10px;
 }
-
-
-
-
+.treeview-menu .treeview-menu a {padding-left:40px !important;}
+.treeview-menu .treeview-menu {padding-left:0px;}

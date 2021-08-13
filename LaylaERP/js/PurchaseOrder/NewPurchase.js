@@ -36,7 +36,7 @@
     });
     $("#ddlProduct").change(function () {
         let product_id = parseInt($('#ddlProduct').val()) || 0, vender_id = parseInt($('#ddlVendor').val()) || 0;
-        getItemList(product_id, vender_id); $('#ddlProduct').val('').trigger('change');
+        getItemList(product_id, vender_id); //$('#ddlProduct').val('').trigger('change');
     });
     $('#ddlIncoTerms').change(function () {
         var IncotermsTypeID = $('#ddlIncoTerms').val();
@@ -148,7 +148,7 @@ function getItemList(product_id, vender_id) {
         type: "get", url: '/PurchaseOrder/SearchProductDetails', contentType: "application/json; charset=utf-8", dataType: "json", data: option,
         beforeSend: function () { $("#loader").show(); },
         success: function (data) {
-            let _items = [];
+            let _items = []; console.log(data);
             for (var i = 0; i < data.length; i++) {
                 _items.push({
                     rowid: 0, rang: 0, fk_product: data[i].fk_product, description: data[i].description, product_sku: data[i].product_sku, qty: data[i].qty, subprice: data[i].subprice, discount_percent: 0, total_ht: (data[i].subprice * data[i].qty), tax_amount: 0, total_ttc: (data[i].subprice * data[i].qty)
@@ -164,7 +164,6 @@ function getItemList(product_id, vender_id) {
 }
 function bindItems(data) {
     let itemHtml = '';
-    var layoutHtml = '';
     if (data.length > 0) {
         for (var i = 0; i < data.length; i++) {
             if (data[i].fk_product > 0) {
@@ -187,24 +186,24 @@ function bindItems(data) {
         $('#line_items').append(itemHtml);
         $("#divAddItemFinal").find(".rowCalulate").change(function () { calculateFinal(); });
     }
-    else {
-        itemHtml += '<table id="tblAddItemFinal" class="table-blue table table-bordered table-striped dataTable">';
-        itemHtml += '<thead>';
-        itemHtml += '<tr>';
-        itemHtml += '<th class="text-center" style="width: 8%">Actions</th>';
-        itemHtml += '<th style = "width: 32%" > Description</th >';
-        itemHtml += '<th style="width: 10%">Vendor SKU</th>';
-        itemHtml += '<th class="text-right" style="width: 10%">Price</th>';
-        itemHtml += '<th class="text-right" style="width: 10%">Quantity</th>';
-        itemHtml += '<th class="text-right" style="width: 10%">Discount(%)</th>';
-        itemHtml += '<th class="text-right" style="width: 10%">Tax</th>';
-        itemHtml += '<th class="text-right" style="width: 10%">Total</th>';
-        itemHtml += '</tr>';
-        itemHtml += '</thead>';
-        itemHtml += '<tbody id="line_items"></tbody><tbody id="fee_line_items"></tbody>';
-        itemHtml += '</table>';
-        $('#divAddItemFinal').empty().html(itemHtml);
-    }
+    //else {
+    //    itemHtml += '<table id="tblAddItemFinal" class="table-blue table table-bordered table-striped dataTable">';
+    //    itemHtml += '<thead>';
+    //    itemHtml += '<tr>';
+    //    itemHtml += '<th class="text-center" style="width: 8%">Actions</th>';
+    //    itemHtml += '<th style = "width: 32%" > Description</th >';
+    //    itemHtml += '<th style="width: 10%">Vendor SKU</th>';
+    //    itemHtml += '<th class="text-right" style="width: 10%">Price</th>';
+    //    itemHtml += '<th class="text-right" style="width: 10%">Quantity</th>';
+    //    itemHtml += '<th class="text-right" style="width: 10%">Discount(%)</th>';
+    //    itemHtml += '<th class="text-right" style="width: 10%">Tax</th>';
+    //    itemHtml += '<th class="text-right" style="width: 10%">Total</th>';
+    //    itemHtml += '</tr>';
+    //    itemHtml += '</thead>';
+    //    itemHtml += '<tbody id="line_items"></tbody><tbody id="fee_line_items"></tbody>';
+    //    itemHtml += '</table>';
+    //    $('#divAddItemFinal').empty().html(itemHtml);
+    //}
     calculateFinal();
 }
 function removeItems(id) {

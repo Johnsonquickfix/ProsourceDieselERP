@@ -28,10 +28,10 @@
     });
 
     if (id != "" && id != "AddNewPurchase" && id != "AddNewProduct") {        
-        setTimeout(function () { GetDataPurchaseByID($("#ddlproductchild").val()); }, 6000);
-        setTimeout(function () { bindbuyingprice(); }, 7000);
-        setTimeout(function () { bindChildproductsservices(); }, 9000);
-        setTimeout(function () { bindparentproductsservices(); }, 10000);
+        setTimeout(function () { GetDataPurchaseByID($("#ddlproductchild").val()); }, 11000);
+        setTimeout(function () { bindbuyingprice(); }, 12000);
+        setTimeout(function () { bindChildproductsservices(); }, 13000);
+        setTimeout(function () { bindparentproductsservices(); }, 14000);
 
         $('#dvbuysing').hide();
         $(document).on('click', "#btnbuying", function () {
@@ -216,13 +216,10 @@ function GetDataPurchaseByID(order_id) {
             $("#txtRegularprice").text(i[0].regularamount);
             $("#txtsaleprice").text(i[0].saleprice);
 
-            $("#txtRegularpricekit").text(i[0].regularamount);
-            $("#txtsalepricekit").text(i[0].saleprice);
+            $("#txtRegularpricekit").text('$'+i[0].regularamount);
+            $("#txtsalepricekit").text('$'+i[0].saleprice);
 
-            if (i[0].axstatus == "" || i[0].taxclass == null)
-                $('#ddltaxstatus').text("taxable").trigger('change');
-            else
-                $('#ddltaxstatus').text(i[0].axstatus).trigger('change');
+         
 
         },
         error: function (msg) { alert(msg); }
@@ -438,6 +435,7 @@ $(document).on('click', "#btnbuyingsave", function () {
 
 function AddBuyingt() {
     debugger
+    ID = $("#hfbuyingid").val();
     fk_productval = $('#ddlproductchild').val();
     vender = $("#ddlvender").val();
     minpurchasequantity = $("#txtminpurchasequantity").val();
@@ -456,7 +454,7 @@ function AddBuyingt() {
     }
     else {
         var obj = {
-
+            ID: ID,
             fk_product: fk_productval,
             fk_vendor: vender,
             minpurchasequantity: minpurchasequantity,
@@ -545,13 +543,13 @@ function bindbuying(data) {
                 layoutHtml += '<tr id="tritemId_' + data[i].PKey + '" data-key="' + data[i].PKey + '">';
                 layoutHtml += '<td class="text-left">' + data[i].product_name + '</td>';
                 layoutHtml += '<td>' + data[i].minpurchasequantity + '</td>';
-                layoutHtml += '<td>' + data[i].salestax + '</td>';
-                layoutHtml += '<td>' + data[i].purchase_price + '</td>';
-                layoutHtml += '<td>' + data[i].cost_price + '</td>';
-                layoutHtml += '<td>' + data[i].discount + '</td>';
+                layoutHtml += '<td>' + '$'+ data[i].salestax + '</td>';
+                layoutHtml += '<td>' + '$' + data[i].purchase_price + '</td>';
+                layoutHtml += '<td>' + '$' + data[i].cost_price + '</td>';
+                layoutHtml += '<td>' + data[i].discount + '%' + '</td>';
                 layoutHtml += '<td>' + data[i].date_inc + '</td>';
-                layoutHtml += '<td></td>';
-                layoutHtml += '<td></td>';
+                layoutHtml += '<td><a href="javascript:void(0);" class="editbutton" onClick="EditUser(' + data[i].PKey + ')"><i class="glyphicon glyphicon-pencil"></i></a></td>';
+                layoutHtml += '<td><a href="javascript:void(0);" class="editbutton" onClick="DeleteUser(' + data[i].PKey + ')"><i class="glyphicon glyphicon-trash"></i></a></td>';
                 layoutHtml += '</tr>';
             }
         }
@@ -579,6 +577,73 @@ function bindbuying(data) {
     }
 
 }
+
+function EditUser(id) {   
+    $("#hfbuyingid").val(id);
+    var ID = id;
+    var obj = { strVal: id }
+    $.ajax({
+
+        url: '/Product/GetDataBuyingByID/' + ID,
+        type: 'post',
+        contentType: "application/json; charset=utf-8",
+        dataType: 'JSON',
+        data: JSON.stringify(obj),
+        success: function (data) {
+            var i = JSON.parse(data);
+            console.log(i);
+            $("#txtminpurchasequantity").val(i[0].minpurchasequantity);
+            $("#txtSaletax").val(i[0].salestax);
+            $('#txtcurrencyconversionrate').val(i[0].purchase_price).trigger('change');
+            $("#txtcostprice").val(i[0].cost_price);
+            $("#txtDiscountqty").val(i[0].discount);
+            $("#txtRemarks").val(i[0].remark);
+            $('#ddlvender').val(i[0].fk_vendor).trigger('change');
+            $('#ddltaxrate').val(i[0].taxrate).trigger('change');
+      
+        },
+        error: function (msg) { alert(msg); }
+    });
+}
+
+function DeleteUser(id) {
+    var ids = id;
+    var obj = { ID: ids }
+
+    $.ajax({
+        url: '/Product/DeleteBuyingPrice/', dataType: 'json', type: 'Post',
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(obj),
+        dataType: "json",
+        beforeSend: function () {
+            $("#loader").show();
+        },
+        success: function (data) {
+            if (data.status == true) {
+                if (data.url == "Manage") {
+                    bindbuyingprice();
+                    swal('Alert!', data.message, 'success');
+                }
+                else {
+                    swal('Alert!', data.message, 'success');
+                }
+
+            }
+            else {
+                swal('Alert!', data.message, 'error')
+            }
+        },
+        complete: function () {
+            $("#loader").hide();
+        },
+        error: function (error) {
+            swal('Error!', 'something went wrong', 'error');
+        },
+    })
+  
+}
+
+
 
 
 

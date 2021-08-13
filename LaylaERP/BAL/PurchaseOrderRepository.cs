@@ -45,7 +45,7 @@ namespace LaylaERP.BAL
                             + " left outer join wp_postmeta psku on psku.post_id = p.id and psku.meta_key = '_sku'"
                             + " left outer join Product_Purchase_Items ir on ir.fk_product = p.id and(ir.fk_vendor=0 or ir.fk_vendor=@vendor_id)"
                             + " WHERE p.post_type in('product', 'product_variation') AND p.post_status = 'publish'"
-                            + " AND p.id = @product_id ORDER BY fk_vendor desc limit 1;";                
+                            + " AND p.id = @product_id ORDER BY fk_vendor desc limit 1;";
                 MySqlDataReader sdr = SQLHelper.ExecuteReader(strSQl, parameters);
                 while (sdr.Read())
                 {
@@ -53,7 +53,7 @@ namespace LaylaERP.BAL
                     if (sdr["id"] != DBNull.Value)
                         productsModel.fk_product = Convert.ToInt64(sdr["id"]);
                     else
-                        productsModel.fk_product = 0;                   
+                        productsModel.fk_product = 0;
                     if (sdr["post_title"] != DBNull.Value)
                         productsModel.description = sdr["post_title"].ToString();
                     else
@@ -139,43 +139,67 @@ namespace LaylaERP.BAL
             return dt;
         }
 
-        public int AddNewPurchase(PurchaseOrderModel model)
+        public long AddNewPurchase(PurchaseOrderModel model)
         {
+            long result = 0;
             try
             {
-                DateTime cDate = CommonDate.CurrentDate(), cUTFDate = CommonDate.UtcDate();
-
                 string strsql = "";
-                strsql = "insert into commerce_purchase_order(ref,ref_ext,ref_supplier,fk_soc,fk_statut,source,fk_cond_reglement,BalanceDaysID,fk_mode_reglement,date_livraison,fk_incoterms,location_incoterms,note_private,note_public,fk_user_author,tms,date_creation) "
-                    + " select concat('PO',date_format(@date_creation,'%y%m'),'-',lpad(coalesce(max(right(ref,5)),0) + 1,5,'0')) ref,@ref_ext,@ref_supplier,@fk_soc,@fk_statut,@source,@fk_cond_reglement,@BalanceDaysID,@fk_mode_reglement,@date_livraison,@fk_incoterms,@location_incoterms,@note_private,@note_public"
-                    + " @fk_user_author,@tms,@date_creation from commerce_purchase_order where lpad(ref,6,0) = concat('PO',date_format(@date_creation,'%y%m'));"
-                    + " SELECT LAST_INSERT_ID();";
+                DateTime cDate = CommonDate.CurrentDate(), cUTFDate = CommonDate.UtcDate();
                 MySqlParameter[] para =
+                    {
+                        new MySqlParameter("@ref_ext", ""),
+                        new MySqlParameter("@ref_supplier", model.VendorBillNo),
+                        new MySqlParameter("@fk_soc", model.VendorID),
+                        new MySqlParameter("@fk_status", "1"),
+                        new MySqlParameter("@source", "0"),
+                        new MySqlParameter("@fk_payment_term", model.PaymentTerms),
+                        new MySqlParameter("@fk_balance_days", model.Balancedays),
+                        new MySqlParameter("@fk_payment_type", model.PaymentType),
+                        new MySqlParameter("@date_livraison", model.Planneddateofdelivery),
+                        new MySqlParameter("@fk_incoterms", model.IncotermType),
+                        new MySqlParameter("@location_incoterms", model.Incoterms),
+                        new MySqlParameter("@note_private", model.NotePrivate),
+                        new MySqlParameter("@note_public", model.NotePublic),
+                        new MySqlParameter("@tms", cUTFDate.ToString("yyyy-MM-dd HH:mm:ss")),
+                        new MySqlParameter("@date_creation", cDate.ToString("yyyy-MM-dd HH:mm:ss")),
+                        new MySqlParameter("@fk_user_author", model.LoginID)
+                    };
+                if (model.RowID > 0)
                 {
-                    new MySqlParameter("@ref_ext", ""),
-                    new MySqlParameter("@ref_supplier", model.VendorBillNo),
-                    new MySqlParameter("@fk_soc", model.VendorID),
-                    new MySqlParameter("@fk_statut", "1"),
-                    new MySqlParameter("@source", "0"),
-                    new MySqlParameter("@fk_cond_reglement", model.PaymentTerms),
-                    new MySqlParameter("@BalanceDaysID", model.Balancedays),
-                    new MySqlParameter("@fk_mode_reglement", model.PaymentType),
-                    new MySqlParameter("@date_livraison", model.Planneddateofdelivery),
-                    new MySqlParameter("@fk_incoterms", model.IncotermType),
-                    new MySqlParameter("@location_incoterms", model.Incoterms),
-                    new MySqlParameter("@note_private", model.NotePrivate),
-                    new MySqlParameter("@note_public", model.NotePublic),
-                    new MySqlParameter("@tms", cUTFDate),
-                    new MySqlParameter("@date_creation", cDate),
-                    new MySqlParameter("@fk_user_author", model.LoginID)
-                };
-                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
-                return result;
+                    strsql = "update commerce_purchase_order set ref_supplier=@ref_supplier,fk_soc=@fk_soc,fk_payment_term=@fk_payment_term,fk_balance_days=@fk_balance_days,fk_incoterms=@fk_incoterms,location_incoterms=@location_incoterms,"
+                        + "fk_payment_type=@fk_payment_type,date_livraison=@date_livraison,note_private=@note_private,note_public=@note_public where rowid=" + model.RowID.ToString()
+                        + ";select " + model.RowID.ToString() + ";";
+                }
+                else
+                {
+                    strsql = "insert into commerce_purchase_order(ref,ref_ext,ref_supplier,fk_soc,fk_status,source,fk_payment_term,fk_balance_days,fk_payment_type,date_livraison,fk_incoterms,location_incoterms,note_private,note_public,fk_user_author,tms,date_creation) "
+                        + " select concat('PO',date_format(@date_creation,'%y%m'),'-',lpad(coalesce(max(right(ref,5)),0) + 1,5,'0')) ref,@ref_ext,@ref_supplier,@fk_soc,@fk_status,@source,@fk_payment_term,@fk_balance_days,@fk_payment_type,@date_livraison,@fk_incoterms,@location_incoterms,@note_private,@note_public"
+                        + " @fk_user_author,@tms,@date_creation from commerce_purchase_order where lpad(ref,6,0) = concat('PO',date_format(@date_creation,'%y%m'));"
+                        + " select LAST_INSERT_ID();";
+                }
+                /// step 2 : commerce_purchase_order_detail
+                foreach (PurchaseOrderProductsModel obj in model.PurchaseOrderProducts)
+                {
+                    if (obj.rowid > 0)
+                    {
+                        strsql += string.Format("update commerce_purchase_order_detail set ref='{0}',description='{1}',qty='{2}',discount_percent='{3}',discount='{4}',subprice='{5}',total_ht='{6}',total_ttc='{7}',date_start='{8}',date_end='{9}',rang='{10}' where rowid='{11}'",
+                            obj.product_sku, obj.description, obj.qty, obj.discount_percent, obj.discount, obj.subprice, obj.total_ht, obj.total_ttc, "", "", obj.rang, obj.rowid);
+                    }
+                    else
+                    {
+                        strsql += "insert into commerce_purchase_order_detail (fk_purchase,fk_product,ref,description,qty,discount_percent,discount,subprice,total_ht,total_ttc,product_type,date_start,date_end,rang)";
+                        strsql += string.Format(" select last_insert_id(),'{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}';", obj.fk_product, obj.product_sku, obj.description, obj.qty, obj.discount_percent, obj.discount,
+                            obj.subprice, obj.total_ht, obj.total_ttc, obj.product_type, "", "", obj.rang);
+                    }
+                }
+                result = Convert.ToInt64(SQLHelper.ExecuteScalar(strsql, para));                
             }
             catch (Exception Ex)
             {
                 throw Ex;
             }
+            return result;
         }
         public int EditPurchase(PurchaseOrderModel model, long PurchaseID)
         {

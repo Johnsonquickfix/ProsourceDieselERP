@@ -3,7 +3,7 @@ body {
     background: #f9f9f9;
     font-family: 'Open Sans', sans-serif !important;
     color: #4f4f4f !important;
-    font-size: 15px !important;
+    font-size: 14px !important;
 }
 
 button, input, select, textarea, h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
@@ -107,7 +107,7 @@ dashboard
 }
 
     .page-title h2 {
-        font-size: 25px;
+        font-size: 20px;
         margin: 0px 10px 0px 0px;
     }
 
@@ -2124,10 +2124,10 @@ border-top:1px solid #eee; margin-top:8px; margin-bottom:8px;}
 .top-with-select {margin-bottom:0px;}
 .top-with-select .tablenav.top {margin:0px;}
 .add-new-box .form-check label.control-label:before,
-.add-new-box .form-check label.control-label:after {content: none !important;}
+.add-new-box .form-check label.control-label:after {content: none !important;} 
 .add-new-box .form-check label.control-label {padding-left:15px;}
 .new-product-section .nav-tabs-custom {border:0px; margin:0px; box-shadow:none;}
-.new-product-section #tab_5 {margin-top:-20px;}
+.new-product-section #tab_5 {}
 .tablenav .a-float-right {float:right;margin-top:5px;cursor:pointer;width:20px; text-align:center;}
 .custom-flex-space .col-auto {margin-right: 15px;}
 .varient-box {display:none;}
@@ -2167,7 +2167,7 @@ img.varient-pic {max-width: 100px;height: auto;}
 .category-section .rowbox{align-items:flex-start;}
 .category-section .alignright.actions [type="text"] {margin-right:5px;}
 .proposal-top{justify-content: space-between;}
-.no-btn {padding:0px;background:transparent;}
+.no-btn, .no-btn:hover, .no-btn:focus, .no-btn:active {padding:0px;background:transparent; color:#4f4f4f;}
 .edit-proposal-box {display:flex;}
 .edit-proposal-texts h3 {margin-top:0px;}
 .edit-proposal-texts button {border:0px; background:transparent; padding:0px; margin:0px;}
@@ -2214,4 +2214,10 @@ img.varient-pic {max-width: 100px;height: auto;}
 .align-items-end {align-items:flex-end !important;}
 .file-group input {margin-right:10px;}
 .file-group {margin:0px -15px !important;}
-.flex-row_box .col-md-3 .box-primary {max-height:290px; overflow-y:auto;}
+.flex-row_box .col-md-3 .box-primary {max-height:290px; overflow-y:auto;} 
+.price_threw_table td:nth-child(6){white-space:nowrap;} 
+.price_threw_table td:nth-child(6) span {display:inline-block;}
+.price_threw_table td {vertical-align:middle !important;}
+.simple-table {width:100%;}
+.simple-table td {vertical-align:top; padding: 10px; border-top:1px solid #dedede;}
+.simple-table td .form-group{margin-bottom:0px;}

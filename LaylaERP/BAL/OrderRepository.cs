@@ -333,11 +333,8 @@
             try
             {
                 DataTable DT = new DataTable();
-                MySqlParameter[] parameters =
-                {
-                    new MySqlParameter("@product_id", variation_ids)
-                };
-                string strSQl = "select * from wp_ship_value where productid in (@product_id) ";
+                MySqlParameter[] parameters = { };
+                string strSQl = "select * from wp_ship_value where productid in (" + variation_ids + ") ";
                 MySqlDataReader sdr = SQLHelper.ExecuteReader(strSQl, parameters);
                 while (sdr.Read())
                 {
@@ -728,7 +725,7 @@
             }
             catch (Exception Ex) { }
             return result;
-        }       
+        }
 
         public static long AddShopOrderEdit(long parent_id)
         {
@@ -1025,7 +1022,7 @@
                 strSql_insert = "insert into wp_postmeta (post_id,meta_key,meta_value) select * from (" + strSql_insert + ") as tmp where tmp.meta_key not in (select meta_key from wp_postmeta where post_id = " + model[0].post_id.ToString() + ");";
                 strSql.Append(strSql_insert);
                 strSql.Append(string.Format("update wp_posts set post_status = '{0}' where id = {1};", "wc-processing", model[0].post_id));
-                
+
                 result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
             }
             catch { }

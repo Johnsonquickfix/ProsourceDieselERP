@@ -175,6 +175,7 @@
     <Compile Include="BAL\UsersRepositry.cs" />
     <Compile Include="BAL\WarehouseRepository.cs" />
     <Compile Include="Controllers\AccountAPIController.cs" />
+    <Compile Include="Controllers\AccountingController.cs" />
     <Compile Include="Controllers\AgentCommissionRateController.cs" />
     <Compile Include="Controllers\AppearanceController.cs" />
     <Compile Include="Controllers\BankController.cs" />
@@ -816,6 +817,7 @@
     <Content Include="Views\Bank\financialaccount.cshtml" />
     <Content Include="Views\Bank\newfinaccount.cshtml" />
     <Content Include="Views\Product\AddNewPurchase.cshtml" />
+    <Content Include="Views\Accounting\AccountingJournal.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -8,8 +8,8 @@ namespace LaylaERP.Controllers
 {
     public class AccountingController : Controller
     {
-        // GET: Accounting
-        public ActionResult Index()
+        // GET: Accounting Journal
+        public ActionResult AccountingJournal()
         {
             return View();
         }

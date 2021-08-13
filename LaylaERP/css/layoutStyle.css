@@ -2218,6 +2218,7 @@ img.varient-pic {max-width: 100px;height: auto;}
 .price_threw_table td:nth-child(6){white-space:nowrap;} 
 .price_threw_table td:nth-child(6) span {display:inline-block;}
 .price_threw_table td {vertical-align:middle !important;}
-.simple-table {width:100%;}
+.simple-table {width:100%;border: 1px solid #dedede;}
 .simple-table td {vertical-align:top; padding: 10px; border-top:1px solid #dedede;}
 .simple-table td .form-group{margin-bottom:0px;}
+body .btn{border-radius:0px;}

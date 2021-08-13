@@ -772,10 +772,11 @@ function getOrderItemList(oid) {
 function getOrderNotesList(oid) {
     var option = { strValue1: oid };
     ajaxFunc('/Orders/GetOrderNotesList', option, beforeSendFun, function (result) {
-        var data = JSON.parse(result);
+        let data = JSON.parse(result); console.log(data);
         let noteHtml = '';
         for (var i = 0; i < data.length; i++) {
-            noteHtml += '<li id="linoteid_' + data[i].comment_ID + '" class="note system-note ' + (data[i].is_customer_note == '1' ? 'customer-note' : '') + '">';
+            let is_customer_note = parseInt(data[i].is_customer_note) || 0;
+            noteHtml += '<li id="linoteid_' + data[i].comment_ID + '" class="note system-note ' + (is_customer_note == 0 ? '' : 'customer-note') + '">';
             noteHtml += '<div class="note_content"><p>' + data[i].comment_content + '</p></div>';
             noteHtml += '<p class="meta"><abbr class="exact-date" title="' + data[i].comment_date + '">' + data[i].comment_date + '</abbr> ';
             noteHtml += '<a href="javascript:void(0)" onclick="DeleteNotes(' + data[i].comment_ID + ');" class="delete_note billinfo" role="button">Delete note</a>';
@@ -1182,6 +1183,7 @@ function calculateDiscountAcount() {
         $(row).find(".TotalAmount").data("amount", zGrossAmount.toFixed(2)); $(row).find(".TotalAmount").text(zGrossAmount.toFixed(2));
         $(row).find(".RowDiscount").data("disctype", 'fixed'); $(row).find(".RowDiscount").data("couponamt", perqty_discamt);
         $(row).find(".RowDiscount").text(zDisAmt); $(row).find(".TotalAmount").data("discount", zDisAmt);
+        $(row).find(".RowDiscount").data("lastdiscount", 0.00);
         zTotalTax = (zGrossAmount - zDisAmt) * tax_rate;
         $(row).find(".RowTax").text(zTotalTax.toFixed(2)); $(row).find(".TotalAmount").data("taxamount", zTotalTax.toFixed(2));
     });
@@ -1198,9 +1200,10 @@ function calculateDiscountAcount() {
             rq_prd_ids = $(li).data('rqprdids').split(",").map((el) => parseInt(el));
         }
         $("#order_line_items > tr.paid_item").each(function (index, row) {
-            let pid = $(row).data('pid'), vid = $(row).data('vid'), row_disc = 0.00;
+            let pid = $(row).data('pid'), vid = $(row).data('vid'), row_perqty_discamt = 0.00, row_disc = 0.00;
             if (!exclude_ids.includes(pid) && !exclude_ids.includes(vid) && ((rq_prd_ids.includes(pid) || rq_prd_ids.includes(vid)) || rq_prd_ids == 0)) {
-                row_disc = parseFloat($(row).find(".RowDiscount").data("couponamt")) || 0.00;
+                row_perqty_discamt = parseFloat($(row).find(".RowDiscount").data("couponamt")) || 0.00;
+                row_disc = parseFloat($(row).find(".RowDiscount").data("lastdiscount")) || 0.00;
                 zQty = parseFloat($(row).find("[name=txt_ItemQty]").val()) || 0.00;
                 zRegPrice = parseFloat($(row).find(".TotalAmount").data("regprice")) || 0.00;
                 zSalePrice = parseFloat($(row).find(".TotalAmount").data("salerate")) || 0.00;
@@ -1220,9 +1223,11 @@ function calculateDiscountAcount() {
 
                 //Coupon Amount Total                        
                 cou_amt += zDisAmt;
-                zDisAmt = zDisAmt + (row_disc * zQty);
+                $(row).find(".RowDiscount").data("lastdiscount", (row_disc + zDisAmt));
                 $(row).find(".TotalAmount").data("discount", zDisAmt.toFixed(2)); $(row).find(".RowDiscount").data("disctype", 'fixed');
-                $(row).find(".RowDiscount").data("couponamt", zDisAmt); $(row).find(".RowDiscount").text(zDisAmt.toFixed(2));
+                zDisAmt = row_disc + zDisAmt + (row_perqty_discamt * zQty);
+                //$(row).find(".RowDiscount").data("couponamt", zDisAmt);
+                $(row).find(".RowDiscount").text(zDisAmt.toFixed(2));
                 //Taxation                     
                 zTotalTax = (zGrossAmount - zDisAmt) * tax_rate;
                 $(row).find(".RowTax").text(zTotalTax.toFixed(2)); $(row).find(".TotalAmount").data("taxamount", zTotalTax.toFixed(2));
@@ -1401,7 +1406,7 @@ function removeItemsInTable(id) {
                 //free item should be remove when removed that product on which free item will be given.
                 if ($("#tblAddItemFinal").find("tr[data-gid='" + gid + "']").length == 0) {
                     $('#tritemId_' + gid + '_0').remove();
-                }   
+                }
                 //let zFreeQty = 0.00, gid = parseInt($(this).data("gid")) || 0;
                 //$("#order_line_items > tr").each(function () {
                 //    if ($(this).data('gid') == gid && $(this).data('pid') != gid) {
@@ -1432,7 +1437,7 @@ function calcFinalTotals() {
         zGAmt = zGAmt + parseFloat($(tr).find(".TotalAmount").data("amount"));
         if (parseFloat($(tr).find(".TotalAmount").data("amount")) > 0)
             zDiscQty = zDiscQty + (parseFloat($(tr).find("[name=txt_ItemQty]").val()) || 0.00);
-        zTDiscount = zTDiscount + parseFloat($(tr).find(".TotalAmount").data("discount"));
+        zTDiscount = zTDiscount + parseFloat($(tr).find(".RowDiscount").text());
         //zTotalTax = zTotalTax + parseFloat($(tr).find(".TotalAmount").data("taxamount"));
         zShippingAmt = zShippingAmt + (parseFloat($(tr).find(".TotalAmount").data("shippingamt")) * zQty);
     });
@@ -1519,7 +1524,7 @@ function createItemsList() {
         var qty = parseFloat($(this).find("[name=txt_ItemQty]").val()) || 0.00;
         var rate = parseFloat($(this).find(".TotalAmount").data('regprice')) || 0.00;
         var grossAmount = parseFloat($(this).find(".TotalAmount").data('amount')) || 0.00;
-        var discountAmount = parseFloat($(this).find(".TotalAmount").data('discount')) || 0.00;
+        var discountAmount = parseFloat($(this).find(".RowDiscount").text()) || 0.00;
         var taxAmount = parseFloat($(this).find(".TotalAmount").data('taxamount')) || 0.00;
         var shippinAmount = parseFloat($(this).find(".TotalAmount").data('shippingamt')) || 0.00;
         itemsDetails.push({

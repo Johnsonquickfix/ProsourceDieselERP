@@ -185,7 +185,6 @@ namespace LaylaERP.Controllers
         }
         public JsonResult AddContacts(ThirdPartyModel model)
         {
-           
                 if (model.rowid > 0)
                 {
                     if (model.ContactID > 0)
@@ -207,8 +206,46 @@ namespace LaylaERP.Controllers
                 {
                     return Json(new { status = false, message = "Vendor info not Found", url = "", id = 0 }, 0);
                 }
-            
-            //return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
+        }
+
+        public JsonResult LinkWarehouse(ThirdPartyModel model)
+        {
+            if (model.rowid > 0)
+            {
+                //if (model.ContactID > 0)
+                //{
+                //    new ThirdPartyRepository().EditVendorContacts(model);
+                //    return Json(new { status = true, message = "Warehouse has been updated successfully!!", url = "", id = model.ContactID }, 0);
+
+                //}
+                //else
+                //{
+                    int ID = new ThirdPartyRepository().LinkWarehouse(model);
+                    if (ID > 0)
+                        return Json(new { status = true, message = "Warehouse has been Linked successfully!!", url = "", id = ID }, 0);
+                    else
+                        return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
+                //}
+            }
+            else
+            {
+                return Json(new { status = false, message = "Vendor info not Found", url = "", id = 0 }, 0);
+            }
+        }
+        public JsonResult DeleteWarehouse(ThirdPartyModel model)
+        {
+            if (model.rowid > 0)
+            {
+                int ID = new ThirdPartyRepository().DeleteWarehouse(model);
+                if (ID > 0)
+                    return Json(new { status = true, message = "Warehouse has been deleted successfully!!", url = "", id = ID }, 0);
+                else
+                    return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Vendor info not Found", url = "", id = 0 }, 0);
+            }
         }
 
         //public JsonResult AddVendorSetting(ThirdPartyModel model)
@@ -251,6 +288,16 @@ namespace LaylaERP.Controllers
             foreach (DataRow dr in ds.Tables[0].Rows)
             {
                 productlist.Add(new SelectListItem { Text = dr["IncoTerm"].ToString(), Value = dr["ID"].ToString() });
+            }
+            return Json(productlist, JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult GetWarehouse(SearchModel model)
+        {
+            DataSet ds = BAL.ThirdPartyRepository.GetWarehouse();
+            List<SelectListItem> productlist = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                productlist.Add(new SelectListItem { Text = dr["Warehouse"].ToString(), Value = dr["ID"].ToString() });
             }
             return Json(productlist, JsonRequestBehavior.AllowGet);
         }
@@ -332,6 +379,17 @@ namespace LaylaERP.Controllers
             }
             return Json(productlist, JsonRequestBehavior.AllowGet);
         }
+        public JsonResult GetRelatedProducts(SearchModel model)
+        {
+            DataSet ds = BAL.ThirdPartyRepository.GetRelatedProducts();
+            List<SelectListItem> productlist = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                productlist.Add(new SelectListItem { Text = dr["PaymentType"].ToString(), Value = dr["ID"].ToString() });
+            }
+            return Json(productlist, JsonRequestBehavior.AllowGet);
+        }
+
         public JsonResult GetVendorCode(SearchModel model)
         {
             string JSONresult = string.Empty;
@@ -411,6 +469,40 @@ namespace LaylaERP.Controllers
                     urid = model.user_status;
                 string searchid = model.Search;
                 DataTable dt = ThirdPartyRepository.GetVendorContact(id,urid, searchid, model.PageNo, model.PageSize, out TotalRecord, model.SortCol, model.SortDir);
+                result = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+        }
+        public JsonResult GetVendorWarehouseList(ThirdPartyModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                long id = model.rowid;
+                string urid = "";
+                if (model.user_status != "")
+                    urid = model.user_status;
+                string searchid = model.Search;
+                DataTable dt = ThirdPartyRepository.GetVendorWarehouseList(id, urid, searchid, model.PageNo, model.PageSize, out TotalRecord, model.SortCol, model.SortDir);
+                result = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+        }
+        public JsonResult GetVendorRelatedProductList(ThirdPartyModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                long id = model.rowid;
+                string urid = "";
+                if (model.user_status != "")
+                    urid = model.user_status;
+                string searchid = model.Search;
+                DataTable dt = ThirdPartyRepository.GetVendorRelatedProduct(id, urid, searchid, model.PageNo, model.PageSize, out TotalRecord, model.SortCol, model.SortDir);
                 result = JsonConvert.SerializeObject(dt);
             }
             catch (Exception ex) { throw ex; }

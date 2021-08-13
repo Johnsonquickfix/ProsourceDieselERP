@@ -36,7 +36,7 @@
     });
     $("#ddlProduct").change(function () {
         let product_id = parseInt($('#ddlProduct').val()) || 0, vender_id = parseInt($('#ddlVendor').val()) || 0;
-        getItemList(product_id, vender_id); $('#ddlProduct').val('').trigger('change');
+        getItemList(product_id, vender_id); //$('#ddlProduct').val('').trigger('change');
     });
     $('#ddlIncoTerms').change(function () {
         var IncotermsTypeID = $('#ddlIncoTerms').val();
@@ -148,7 +148,7 @@ function getItemList(product_id, vender_id) {
         type: "get", url: '/PurchaseOrder/SearchProductDetails', contentType: "application/json; charset=utf-8", dataType: "json", data: option,
         beforeSend: function () { $("#loader").show(); },
         success: function (data) {
-            let _items = [];
+            let _items = []; console.log(data);
             for (var i = 0; i < data.length; i++) {
                 _items.push({
                     rowid: 0, rang: 0, fk_product: data[i].fk_product, description: data[i].description, product_sku: data[i].product_sku, qty: data[i].qty, subprice: data[i].subprice, discount_percent: 0, total_ht: (data[i].subprice * data[i].qty), tax_amount: 0, total_ttc: (data[i].subprice * data[i].qty)
@@ -186,24 +186,24 @@ function bindItems(data) {
         $('#line_items').append(itemHtml);
         $("#divAddItemFinal").find(".rowCalulate").change(function () { calculateFinal(); });
     }
-    else {
-        itemHtml += '<table id="tblAddItemFinal" class="table-blue table table-bordered table-striped dataTable">';
-        itemHtml += '<thead>';
-        itemHtml += '<tr>';
-        itemHtml += '<th class="text-center" style="width: 8%">Actions</th>';
-        itemHtml += '<th style = "width: 32%" > Description</th >';
-        itemHtml += '<th style="width: 10%">Vendor SKU</th>';
-        itemHtml += '<th class="text-right" style="width: 10%">Price</th>';
-        itemHtml += '<th class="text-right" style="width: 10%">Quantity</th>';
-        itemHtml += '<th class="text-right" style="width: 10%">Discount(%)</th>';
-        itemHtml += '<th class="text-right" style="width: 10%">Tax</th>';
-        itemHtml += '<th class="text-right" style="width: 10%">Total</th>';
-        itemHtml += '</tr>';
-        itemHtml += '</thead>';
-        itemHtml += '<tbody id="line_items"></tbody><tbody id="fee_line_items"></tbody>';
-        itemHtml += '</table>';
-        $('#divAddItemFinal').empty().html(layoutHtml);
-    }
+    //else {
+    //    itemHtml += '<table id="tblAddItemFinal" class="table-blue table table-bordered table-striped dataTable">';
+    //    itemHtml += '<thead>';
+    //    itemHtml += '<tr>';
+    //    itemHtml += '<th class="text-center" style="width: 8%">Actions</th>';
+    //    itemHtml += '<th style = "width: 32%" > Description</th >';
+    //    itemHtml += '<th style="width: 10%">Vendor SKU</th>';
+    //    itemHtml += '<th class="text-right" style="width: 10%">Price</th>';
+    //    itemHtml += '<th class="text-right" style="width: 10%">Quantity</th>';
+    //    itemHtml += '<th class="text-right" style="width: 10%">Discount(%)</th>';
+    //    itemHtml += '<th class="text-right" style="width: 10%">Tax</th>';
+    //    itemHtml += '<th class="text-right" style="width: 10%">Total</th>';
+    //    itemHtml += '</tr>';
+    //    itemHtml += '</thead>';
+    //    itemHtml += '<tbody id="line_items"></tbody><tbody id="fee_line_items"></tbody>';
+    //    itemHtml += '</table>';
+    //    $('#divAddItemFinal').empty().html(itemHtml);
+    //}
     calculateFinal();
 }
 function removeItems(id) {
@@ -352,7 +352,7 @@ function bindOtherItems(proc_type, row_num) {
 }
 
 function createItemsList() {
-    let itemsDetails = [];
+    let itemsDetails = []; let _rang = 0;
     $('#line_items > tr').each(function (index, row) {
         let rPrice = 0.00, rQty = 0.00, rDisPer = 0.00, rDisAmt = 0.00, rTaxAmt = 0.00, rGrossAmount = 0.00, rTotalAmount = 0.00;
         rPrice = parseFloat($(row).find("[name=txt_itemprice]").val()) || 0.00;
@@ -361,8 +361,9 @@ function createItemsList() {
         rGrossAmount = rPrice * rQty; rDisAmt = rGrossAmount * (rDisPer / 100);
         rTaxAmt = (rGrossAmount - rDisAmt) * 0;
         rTotalAmount = (rGrossAmount - rDisAmt) + rTaxAmt;
+        _rang += 1;
         itemsDetails.push({
-            rowid: $(row).data('rowid'), rang: index, product_type: 0, fk_product: $(row).data('pid'), description: $(row).data('pname'), product_sku: $(row).data('psku'), qty: rQty, subprice: rPrice, discount_percent: rDisPer, total_ht: rGrossAmount, tax_amount: rTaxAmt, total_ttc: rTotalAmount
+            rowid: $(row).data('rowid'), rang: _rang, product_type: 0, fk_product: $(row).data('pid'), description: $(row).data('pname'), product_sku: $(row).data('psku'), qty: rQty, subprice: rPrice, discount_percent: rDisPer, total_ht: rGrossAmount, tax_amount: rTaxAmt, total_ttc: rTotalAmount
         });
     });
     //other item
@@ -375,8 +376,9 @@ function createItemsList() {
         rTaxAmt = (rGrossAmount - rDisAmt) * 0;
         rTotalAmount = (rGrossAmount - rDisAmt) + rTaxAmt;
         $(row).find(".tax-amount").text(rTaxAmt.toFixed(2)); $(row).find(".row-total").text(rTotalAmount.toFixed(2));
+        _rang += 1;
         itemsDetails.push({
-            rowid: $(row).data('rowid'), rang: index, product_type: $(row).data('proc_type'), fk_product: 0, description: $(row).find('.item-desc').text(), product_sku: $(row).find('.item-sku').text(), qty: rQty, subprice: rPrice, discount_percent: rDisPer, total_ht: rGrossAmount, tax_amount: rTaxAmt, total_ttc: rTotalAmount
+            rowid: $(row).data('rowid'), rang: _rang, product_type: $(row).data('proc_type'), fk_product: 0, description: $(row).find('.item-desc').text(), product_sku: $(row).find('.item-sku').text(), qty: rQty, subprice: rPrice, discount_percent: rDisPer, total_ht: rGrossAmount, tax_amount: rTaxAmt, total_ttc: rTotalAmount
         });
     });
     return itemsDetails;
@@ -404,27 +406,25 @@ function saveVendorPO() {
             PurchaseOrderProducts: _list
         }
         console.log(option);
-        //$.ajax({
-        //    url: '/PurchaseOrder/NewPurchase/', dataType: 'json', type: 'Post', contentType: "application/json; charset=utf-8",
-        //    data: JSON.stringify(obj),
-        //    beforeSend: function () { $("#loader").show(); },
-        //    success: function (data) {
-        //        if (data.status == true) {
-        //            swal('Alert!', data.message, 'success');
-        //            $("#parent").find(":input").each(function () {
-        //                switch (this.type) { case "text": case "email": case "tel": $(this).val(''); break; }
-        //            });
-        //            //window.location = "../../PurchaseOrder/PurchaseList";
-        //        }
-        //        else {
-        //            //swal('Alert!', data.message, 'error')
-        //        }
-        //    },
-        //    complete: function () { $("#loader").hide(); },
-        //    error: function (error) { swal('Error!', 'something went wrong', 'error'); },
-        //});
+        $.ajax({
+            url: '/PurchaseOrder/NewPurchase', dataType: 'json', type: 'post', contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(option),
+            beforeSend: function () { $("#loader").show(); },
+            success: function (data) {
+                if (data.status == true) {
+                    swal('Alert!', data.message, 'success');
+                    //$("#parent").find(":input").each(function () {
+                    //    switch (this.type) { case "text": case "email": case "tel": $(this).val(''); break; }
+                    //});
+                }
+                else {
+                    //swal('Alert!', data.message, 'error')
+                }
+            },
+            complete: function () { $("#loader").hide(); },
+            error: function (error) { swal('Error!', 'something went wrong', 'error'); },
+        });
     }
-
 }
 
 //function getItemList() {

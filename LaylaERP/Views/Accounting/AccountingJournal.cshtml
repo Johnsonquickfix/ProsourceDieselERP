@@ -1,0 +1,109 @@
+﻿@{
+    ViewBag.Title = "Accounting Journal";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="page-title">
+    <h2>Accounting Journal</h2>
+</div>
+<section class="content section-content journal-section table-design">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-primary table-design not-fixed">
+                <div class="box-header">
+                    <table class="inventory-table table-blue table check-table table-bordered table-striped dataTable">
+                        <thead>
+                            <tr>
+                                <th class="text-left">Code</th>
+                                <th class="text-left">Label</th>
+                                <th class="text-left">Nature of Journal</th>
+                                <th colspan="3"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="text-left"><input type="text" class="form-control" value="" name="code" /></td>
+                                <td><input type="text" class="form-control" value="" name="label" /></td>
+                                <td>
+                                    <select class="form-control">
+                                        <option value="1" data-select2-id="2">Miscellaneous operations</option>
+                                        <option value="2">Sales</option>
+                                        <option value="3">Purchases</option>
+                                        <option value="4">Bank</option>
+                                        <option value="5">Expenses report</option>
+                                        <option value="8">Inventory</option>
+                                        <option value="9">Has-new</option>
+                                    </select>
+                                </td>
+                                <td colspan="3" class="text-right"><input type="submit" class="btn btn-danger" /></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="box-body">
+                    <table class="inventory-table table-blue table check-table table-bordered table-striped dataTable">
+                        <thead>
+                            <tr>
+                                <th class="text-left">Code</th>
+                                <th class="text-left">Label</th>
+                                <th class="text-left">Nature of Journal</th>
+                                <th class="text-center">Status</th>
+                                <th colspan="2"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="row_on">
+                                <td class="text-left">SU2108-00002</td>
+                                <td class="text-left">FXI</td>
+                                <td class="text-left">Purchases</td>
+                                <td class="ws_nowrap text-center">
+                                    <a href="#"><i class="fas fa-toggle-on"></i></a>
+                                </td>
+                                <td class="center">
+                                    <a href="#">
+                                        <i class="fas fa-pencil-alt"></i>
+                                    </a>
+                                </td>
+                                <td class="text-center">
+                                    <a href="#"><i class="fas fa-trash pictodelete"></i></a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-left">SU2108-00002</td>
+                                <td class="text-left">FXI</td>
+                                <td class="text-left">Purchases</td>
+                                <td class="ws_nowrap text-center">
+                                    <a href="#"><i class="fas fa-toggle-off"></i></a>
+                                </td>
+                                <td class="center">
+                                    <a href="#">
+                                        <i class="fas fa-pencil-alt"></i>
+                                    </a>
+                                </td>
+                                <td class="text-center">
+                                    <a href="#"><i class="fas fa-trash pictodelete"></i></a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-left">SU2108-00002</td>
+                                <td class="text-left">FXI</td>
+                                <td class="text-left">Purchases</td>
+                                <td class="ws_nowrap text-center">
+                                    <a href="#"><i class="fas fa-toggle-off"></i></a>
+                                </td>
+                                <td class="center">
+                                    <a href="#">
+                                        <i class="fas fa-pencil-alt"></i>
+                                    </a>
+                                </td>
+                                <td class="text-center">
+                                    <a href="#"><i class="fas fa-trash pictodelete"></i></a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+

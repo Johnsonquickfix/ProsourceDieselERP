@@ -352,7 +352,7 @@ function bindOtherItems(proc_type, row_num) {
 }
 
 function createItemsList() {
-    let itemsDetails = [];
+    let itemsDetails = []; let _rang = 0;
     $('#line_items > tr').each(function (index, row) {
         let rPrice = 0.00, rQty = 0.00, rDisPer = 0.00, rDisAmt = 0.00, rTaxAmt = 0.00, rGrossAmount = 0.00, rTotalAmount = 0.00;
         rPrice = parseFloat($(row).find("[name=txt_itemprice]").val()) || 0.00;
@@ -361,8 +361,9 @@ function createItemsList() {
         rGrossAmount = rPrice * rQty; rDisAmt = rGrossAmount * (rDisPer / 100);
         rTaxAmt = (rGrossAmount - rDisAmt) * 0;
         rTotalAmount = (rGrossAmount - rDisAmt) + rTaxAmt;
+        _rang += 1;
         itemsDetails.push({
-            rowid: $(row).data('rowid'), rang: index, product_type: 0, fk_product: $(row).data('pid'), description: $(row).data('pname'), product_sku: $(row).data('psku'), qty: rQty, subprice: rPrice, discount_percent: rDisPer, total_ht: rGrossAmount, tax_amount: rTaxAmt, total_ttc: rTotalAmount
+            rowid: $(row).data('rowid'), rang: _rang, product_type: 0, fk_product: $(row).data('pid'), description: $(row).data('pname'), product_sku: $(row).data('psku'), qty: rQty, subprice: rPrice, discount_percent: rDisPer, total_ht: rGrossAmount, tax_amount: rTaxAmt, total_ttc: rTotalAmount
         });
     });
     //other item
@@ -375,8 +376,9 @@ function createItemsList() {
         rTaxAmt = (rGrossAmount - rDisAmt) * 0;
         rTotalAmount = (rGrossAmount - rDisAmt) + rTaxAmt;
         $(row).find(".tax-amount").text(rTaxAmt.toFixed(2)); $(row).find(".row-total").text(rTotalAmount.toFixed(2));
+        _rang += 1;
         itemsDetails.push({
-            rowid: $(row).data('rowid'), rang: index, product_type: $(row).data('proc_type'), fk_product: 0, description: $(row).find('.item-desc').text(), product_sku: $(row).find('.item-sku').text(), qty: rQty, subprice: rPrice, discount_percent: rDisPer, total_ht: rGrossAmount, tax_amount: rTaxAmt, total_ttc: rTotalAmount
+            rowid: $(row).data('rowid'), rang: _rang, product_type: $(row).data('proc_type'), fk_product: 0, description: $(row).find('.item-desc').text(), product_sku: $(row).find('.item-sku').text(), qty: rQty, subprice: rPrice, discount_percent: rDisPer, total_ht: rGrossAmount, tax_amount: rTaxAmt, total_ttc: rTotalAmount
         });
     });
     return itemsDetails;
@@ -404,27 +406,25 @@ function saveVendorPO() {
             PurchaseOrderProducts: _list
         }
         console.log(option);
-        //$.ajax({
-        //    url: '/PurchaseOrder/NewPurchase/', dataType: 'json', type: 'Post', contentType: "application/json; charset=utf-8",
-        //    data: JSON.stringify(obj),
-        //    beforeSend: function () { $("#loader").show(); },
-        //    success: function (data) {
-        //        if (data.status == true) {
-        //            swal('Alert!', data.message, 'success');
-        //            $("#parent").find(":input").each(function () {
-        //                switch (this.type) { case "text": case "email": case "tel": $(this).val(''); break; }
-        //            });
-        //            //window.location = "../../PurchaseOrder/PurchaseList";
-        //        }
-        //        else {
-        //            //swal('Alert!', data.message, 'error')
-        //        }
-        //    },
-        //    complete: function () { $("#loader").hide(); },
-        //    error: function (error) { swal('Error!', 'something went wrong', 'error'); },
-        //});
+        $.ajax({
+            url: '/PurchaseOrder/NewPurchase', dataType: 'json', type: 'post', contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(option),
+            beforeSend: function () { $("#loader").show(); },
+            success: function (data) {
+                if (data.status == true) {
+                    swal('Alert!', data.message, 'success');
+                    //$("#parent").find(":input").each(function () {
+                    //    switch (this.type) { case "text": case "email": case "tel": $(this).val(''); break; }
+                    //});
+                }
+                else {
+                    //swal('Alert!', data.message, 'error')
+                }
+            },
+            complete: function () { $("#loader").hide(); },
+            error: function (error) { swal('Error!', 'something went wrong', 'error'); },
+        });
     }
-
 }
 
 //function getItemList() {

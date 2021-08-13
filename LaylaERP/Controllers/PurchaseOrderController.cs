@@ -101,30 +101,28 @@ namespace LaylaERP.Controllers
             catch (Exception ex) { throw ex; }
             return Json(result, 0);
         }
+        [HttpPost]
         public JsonResult NewPurchase(PurchaseOrderModel model)
         {
+            string JSONstring = string.Empty; bool b_status = false; long ID = 0;
+            try
+            {
+                ID = new PurchaseOrderRepository().AddNewPurchase(model);
 
-            
-                if (model.RowID > 0)
+                if (ID > 0)
                 {
-                    new PurchaseOrderRepository().EditPurchase(model, model.RowID);
-                    return Json(new { status = true, message = "Purchase Record has been updated successfully!!", url = "", id = model.RowID }, 0);
+                    b_status = true; JSONstring = "Purchase Record has been updated successfully!!";
                 }
                 else
                 {
-                    int ID = new PurchaseOrderRepository().AddNewPurchase(model);
-                    if (ID > 0)
-                    {
-                        ModelState.Clear();
-                        return Json(new { status = true, message = "Purchase Record has been saved successfully!!", url = "", id = ID }, 0);
-                    }
-                    else
-                    {
-                        return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
-                    }
+                    b_status = false; JSONstring = "Invalid Details.";
                 }
-            
-            //return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
+            }
+            catch (Exception Ex)
+            {
+                b_status = false; JSONstring = Ex.Message;
+            }
+            return Json(new { status = b_status, message = JSONstring, id = ID }, 0);
         }
         public JsonResult GetPurchaseOrderList(PurchaseOrderModel model)
         {

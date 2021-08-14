@@ -19,5 +19,11 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+
+        // GET: product accounts
+        public ActionResult productsaccount()
+        {
+            return View();
+        }
     }
 }

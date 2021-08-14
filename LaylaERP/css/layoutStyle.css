@@ -2223,7 +2223,7 @@ img.varient-pic {max-width: 100px;height: auto;}
 .simple-table td .form-group{margin-bottom:0px;}
 /*body .btn{border-radius:0px;}*/
 .form-group label, label {font-weight: 600;}
-.box-tools  .btn {padding:0px; width:26px; height:26px;}
+.box-tools  .btn {padding:0px 6px; min-width:26px; height:26px;}
 .box-header.with-border {border-color:#dedede;}
 .form-control, [type="text"], [type="email"], [type="number"], select,
 textarea{border-radius:3px !important;}
@@ -2241,7 +2241,9 @@ body .form-control {font-size:12px;}
 .new-product-section  #tab_6 .col-sm-12{padding:0px;}
 body .btn {font-size:12px;}
 #product_variations.simple-table {width:auto;}
-.row_on .fa-toggle-on {color: #25a580 !important; font-size: 24px;}
-.fas.fa-toggle-off { font-size: 24px; color:#4f4f4f;}
+.row_on .fa-toggle-on {color: #25a580 !important; font-size: 30px;}
+.fas.fa-toggle-off {font-size: 30px; color:#4f4f4f;}
 .inventory-table td.text-left:first-child {text-align:left;}
-.journal-section table a {color:#4f4f4f;}
+
+.journal-section table a i {font-size:16px;margin:0px 5px;}
+.journal-section table th a i {color:#fff;}

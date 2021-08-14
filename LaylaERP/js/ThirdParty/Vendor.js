@@ -1110,13 +1110,13 @@ $('#btnAddContact').click(function () {
 
     var inputs = document.getElementById("txtContactAddress");
     setupAutocomplete(inputs);
-    //$("#VendorModal").find(":input").each(function () {
-    //    switch (this.type) {
-    //        case "text": case "email": case "textarea": case "tel": $(this).val(''); break;
-    //    }
-    //});
-    //$("#VendorModal option[value='-1']").attr('selected', true)
-    //$("#ddlContactState").empty().append('<option value="" selected></option>');
+    $("#VendorModal").find(":input").each(function () {
+        switch (this.type) {
+            case "text": case "email": case "textarea": case "tel": $(this).val(''); break;
+        }
+    });
+    $("#VendorModal option[value='-1']").attr('selected', true)
+    $("#ddlContactState").empty().append('<option value="" selected></option>');
     $('#VendorModal').modal('show');
    
   
@@ -1202,16 +1202,21 @@ function Deletewarehouse(id) {
     }
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Search Google Place API ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-var autocompleteOptions = { componentRestrictions: { country: ["us", "ca"] }, fields: ["address_components", "geometry"], types: ["address"] };
+var autocompleteOptions = { componentRestrictions: { country: ["us", "ca","cn"] }, fields: ["address_components", "geometry"], types: ["address"] };
 function setupAutocomplete(inputs) {
+    console.log(inputs);
     //console.log('setupAutocomplete...', $(inputs));
     autocomplete = new google.maps.places.Autocomplete(inputs, autocompleteOptions);
     autocomplete.addListener("place_changed", fillInAddress);
     function fillInAddress() {
         let place = autocomplete.getPlace();
         let address = '';
-        let cAdd1 = 'txtAddress1', cZipCode = 'txtZipCode', cCity = 'txtCity', cCountry = 'ddlCountry', cState = 'ddlState';
-       
+            let cAdd1 = '', cZipCode = '', cCity = '', cCountry = '', cState = '';
+
+        if ($(inputs).data('addresstype') == 'VendorAddress')
+             cAdd1 = 'txtAddress1', cZipCode = 'txtZipCode', cCity = 'txtCity', cCountry = 'ddlCountry', cState = 'ddlState';
+        else
+             cAdd1 = 'txtContactAddress', cZipCode = 'txtContactZipCode', cCity = 'txtContactCity', cCountry = 'ddlContactCountry', cState = 'ddlContactState';
         let obj = place.address_components.filter(element => element.types[0] == 'street_number');
         if (obj.length > 0)
             address = obj[0].long_name;

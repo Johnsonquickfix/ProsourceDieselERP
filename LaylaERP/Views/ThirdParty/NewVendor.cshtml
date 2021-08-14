@@ -14,7 +14,11 @@
     }
 
     .inventory-table table-blue table check-table table-bordered table-striped dataTable no-footer {
-        width: 100%;
+        width: 100% !important;
+        width: 100% !important;
+    }
+    .pac-container {
+        z-index: 100000;
     }
 </style>
 <div id="loader" class="d-flex align-items-center">
@@ -75,7 +79,7 @@
                                         <div class="form-group">
                                             <img class="sb-title-icon" src="https://fonts.gstatic.com/s/i/googlematerialicons/location_pin/v5/24px.svg" alt="">
                                             <label class="control-label " for="Address1">Address 1<span style="color:red;"> *</span></label>
-                                            <input type="text" id="txtAddress1" class="form-control" placeholder="Address 1"  />
+                                            <input type="text" id="txtAddress1" class="form-control" data-addresstype="VendorAddress" placeholder="Address 1"  />
                                         </div><!--5-->
                                         <div class="form-group">
                                             <label class="control-label " for="Address2">Address 2</label>
@@ -165,7 +169,7 @@
                                     <div class="box-header">
                                         <div class="row">
                                             <div class="col-sm-12">
-                                                <table id="dtdata" class="inventory-table table-blue table check-table table-bordered table-striped dataTable" style="width:100%;">
+                                                <table id="dtdata" class="inventory-table table-blue table check-table table-bordered table-striped dataTable" style="width:100% !important;">
                                                     <thead>
                                                         <tr>
                                                             <th>Name</th>
@@ -794,7 +798,7 @@
                                     <div class="box-header">
                                         <div class="row">
                                             <div class="col-sm-12">
-                                                <table id="RelatedItemdata" class="inventory-table table-blue table check-table table-bordered table-striped dataTable " width="100%">
+                                                <table id="RelatedItemdata" class="inventory-table table-blue table check-table table-bordered table-striped dataTable " style="width:100%;">
                                                     <thead>
                                                         <tr>
                                                             <th>Product Name</th>
@@ -933,7 +937,7 @@
                                     <div class="form-group">
                                         <img class="sb-title-icon" src="https://fonts.gstatic.com/s/i/googlematerialicons/location_pin/v5/24px.svg" alt="">
                                         <label class="control-label autocomplete" for="Address">Address<span style="color:red;"> *</span></label>
-                                        <input type="text" id="txtContactAddress" class="form-control" placeholder="Address" autocomplete="true" />
+                                        <input type="text" id="txtContactAddress" class="form-control" data-addresstype="ContactAddress" placeholder="Address" autocomplete="true" />
                                     </div><!--5-->
                                     <div class="form-group">
                                         <label class="control-label " for="City">City<span style="color:red;"> *</span></label>
@@ -1111,62 +1115,6 @@
     })
    
 </script>
-@*<script>
-    function initMap() {
-        let address1Field = document.querySelector("#txtAddress1");
-        // Create the autocomplete object, restricting the search predictions to
-        // addresses in the US and Canada.
-        autocomplete = new google.maps.places.Autocomplete(address1Field, {
-            componentRestrictions: { country: ["us", "ca", "cn"] },
-            fields: ["address_components", "geometry"],
-            types: ["address"],
-        });
-        // When the user selects an address from the drop-down, populate the
-        // address fields in the form.
-        autocomplete.addListener("place_changed", fillInAddress);
 
-        function fillInAddress() {
-            const place = autocomplete.getPlace();
-            //console.log(place);
-            let address = '';
-            let obj = place.address_components.filter(element => element.types[0] == 'street_number');
-            if (obj.length > 0)
-                address = obj[0].long_name;
-            obj = place.address_components.filter(element => element.types[0] == 'route');
-            if (obj.length > 0)
-                address = address + ' ' + obj[0].long_name;
-            $("#txtAddress1").val(address);
-            obj = place.address_components.filter(element => element.types[0] == 'locality');
-            if (obj.length > 0)
-                $("#txtCity").val(obj[0].long_name);
-            else
-                $("#txtCity").val('');
-            obj = place.address_components.filter(element => element.types[0] == 'postal_code');
-            if (obj.length > 0)
-                //console.log(obj[0].long_name);
-                $("#txtZipCode").val(obj[0].long_name);
-            else
-                $("#txtZipCode").val('');
-            obj = place.address_components.filter(element => element.types[0] == 'administrative_area_level_1');
-            if (obj.length > 0)
-                $("#ddlState").empty().append('<option value="' + obj[0].short_name + '" selected>' + obj[0].long_name + '</option>');
-            else
-                $("#ddlState").empty();
-            obj = place.address_components.filter(element => element.types[0] == 'country');
-            if (obj.length > 0)
-                //console.log(obj[0].short_name);
-                $("#ddlCountry").empty().append('<option value="' + obj[0].short_name + '" selected>' + obj[0].long_name + '</option>');
-            //$("#ddlCountry").val(obj[0].short_name + ' - ' + obj[0].long_name);
-            else
-                $("#ddlCountry").empty();
-        }
-
-        function renderAddress(place) {
-            //map.setCenter(place.geometry.location);
-            //marker.setPosition(place.geometry.location);
-            //marker.setVisible(true);
-        }
-    }
-</script>*@
 
 

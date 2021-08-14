@@ -933,7 +933,7 @@ body .dx-theme-generic-typography {
 }
 
 .table-blue td, table td {
-    font-size: 14px;
+    font-size: 12px;
 }
 
 .setting-section .nav-tabs-custom {
@@ -1727,7 +1727,7 @@ border: 2px solid #fff;
 border-radius: 100%;
 }
 [name="strValue1"]:checked + label:after {
-background: #fff;
+background: orangered; /*#fff;*/
 }
 .table-blue.table.check-table {
     table-layout: initial;

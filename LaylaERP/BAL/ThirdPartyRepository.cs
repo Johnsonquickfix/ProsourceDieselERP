@@ -296,6 +296,44 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
+        public int LinkWarehouse(ThirdPartyModel model)
+        {
+            try
+            {
+                string strsql = "";
+                strsql = "insert into wp_VendorWarehouse(VendorID,WarehouseID) Values (@VendorID,@WarehouseID); SELECT LAST_INSERT_ID();";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@VendorID", model.rowid),
+                    new MySqlParameter("@WarehouseID", model.WarehouseID),
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+        public int DeleteWarehouse(ThirdPartyModel model)
+        {
+            try
+            {
+                string strsql = "";
+                strsql = "delete from wp_VendorWarehouse where ID=@WarehouseID and VendorID=@VendorID;";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@VendorID", model.rowid),
+                    new MySqlParameter("@WarehouseID", model.VendorWarehouseID),
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
         public int EditVendorContacts(ThirdPartyModel model)
         {
             try
@@ -409,6 +447,19 @@ namespace LaylaERP.BAL
             { throw ex; }
             return DS;
         }
+
+        public static DataSet GetWarehouse()
+        {
+            DataSet DS = new DataSet();
+            try
+            {
+                string strSQl = "Select rowid ID, ref Warehouse from wp_warehouse where status=1 order by rowid ;";
+                DS = SQLHelper.ExecuteDataSet(strSQl);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
+        }
         public static DataSet GetVendorType()
         {
             DataSet DS = new DataSet();
@@ -495,6 +546,7 @@ namespace LaylaERP.BAL
             DataSet DS = new DataSet();
             try
             {
+
                 DS = SQLHelper.ExecuteDataSet("Select ID,PaymentType from wp_PaymentType where Flag='V' order by ID;");
             }
             catch (Exception ex)
@@ -597,71 +649,6 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
-        //public int VendorSetting(string WarehouseID, int VendorID, string LeadTime, string DaysofStock)
-        //{
-        //    try
-        //    {
-        //        int result = 0;
-        //        string[] Warehouse_ID = WarehouseID.Split(',');
-        //        string[] Lead_Time = LeadTime.Split(',');
-        //        string[] Days_of_Stock = DaysofStock.Split(',');
-
-        //        for (int i = 0; i <= Warehouse_ID.Length - 1; i++)
-        //        {
-        //            WarehouseID = Warehouse_ID[i].ToString();
-        //            LeadTime = Lead_Time[i].ToString();
-        //            DaysofStock = Days_of_Stock[i].ToString();
-
-        //            string strsql = "Insert into wp_VendorSetting(LeadTime,DaysofStock,VendorID,WarehouseID) Values(@LeadTime,@DaysofStock,@VendorID,@WarehouseID);SELECT LAST_INSERT_ID();";
-        //            MySqlParameter[] para =
-        //            {
-        //            new MySqlParameter("@WarehouseID", WarehouseID),
-        //            new MySqlParameter("@LeadTime", LeadTime),
-        //            new MySqlParameter("@DaysofStock", DaysofStock),
-        //            new MySqlParameter("@VendorID", VendorID)
-        //            };
-        //            result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
-        //        }
-        //        return result;
-        //    }
-        //    catch (Exception Ex)
-        //    {
-        //        throw Ex;
-        //    }
-        //}
-        //public int EditVendorSetting(string WarehouseID, long VendorID, string LeadTime, string DaysofStock)
-        //{
-        //    try
-        //    {
-        //        int result = 0;
-        //        string[] Warehouse_ID = WarehouseID.Split(',');
-        //        string[] Lead_Time = LeadTime.Split(',');
-        //        string[] Days_of_Stock = DaysofStock.Split(',');
-
-        //        for (int i = 0; i <= Warehouse_ID.Length - 1; i++)
-        //        {
-        //            WarehouseID = Warehouse_ID[i].ToString();
-        //            LeadTime = Lead_Time[i].ToString();
-        //            DaysofStock = Days_of_Stock[i].ToString();
-
-        //            string strsql = "Update wp_VendorSetting set LeadTime=@LeadTime,DaysofStock=@DaysofStock where ID=" + WarehouseID + " and VendorID=" + VendorID + ";";
-        //            MySqlParameter[] para =
-        //            {
-        //            new MySqlParameter("@WarehouseID", WarehouseID),
-        //            new MySqlParameter("@LeadTime", LeadTime),
-        //            new MySqlParameter("@DaysofStock", DaysofStock),
-        //            new MySqlParameter("@VendorID", VendorID)
-        //            };
-        //            result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
-        //        }
-        //        return result;
-        //    }
-        //    catch (Exception Ex)
-        //    {
-        //        throw Ex;
-        //    }
-        //}
-
         public int GetVendorID(long id)
         {
             try
@@ -695,6 +682,38 @@ namespace LaylaERP.BAL
                 strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
 
                 strSql += "; SELECT ceil(Count(c.id)/" + pagesize.ToString() + ") TotalPage,Count(c.ID) TotalRecord from erp_VendorContacts c left join wp_vendor v on c.VendorID = v.rowid  WHERE 1 = 1 " + strWhr.ToString();
+
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dt = ds.Tables[0];
+                if (ds.Tables[1].Rows.Count > 0)
+                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+        public static DataTable GetVendorWarehouseList(long id, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                string strWhr = string.Empty;
+
+                string strSql = "Select vw.ID, v.name VendorName, ref Warehouse from wp_VendorWarehouse vw left join wp_vendor v on vw.VendorID = v.rowid left join wp_warehouse w on vw.WarehouseID = w.rowid where vw.VendorID='" + id + "' and 1=1 ";
+                if (!string.IsNullOrEmpty(searchid))
+                {
+                    strWhr += " and (Email like '%" + searchid + "%' OR user_nicename='%" + searchid + "%' OR ID='%" + searchid + "%' OR nom like '%" + searchid + "%')";
+                }
+                if (userstatus != null)
+                {
+                    strWhr += " and (v.VendorStatus='" + userstatus + "') ";
+                }
+                strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
+
+                strSql += "; SELECT ceil(Count(vw.ID)/" + pagesize.ToString() + ") TotalPage,Count(vw.ID) TotalRecord from wp_VendorWarehouse vw left join wp_vendor v on vw.VendorID = v.rowid left join wp_warehouse w on vw.WarehouseID = w.rowid  WHERE 1 = 1 " + strWhr.ToString();
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];

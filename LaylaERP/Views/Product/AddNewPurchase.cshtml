@@ -11,7 +11,8 @@
     }
 </style>
 <div class="page-title mb-35">
-    <h2>Kits & Buying Prices </h2>&nbsp;&nbsp;&nbsp;&nbsp;<a href="../ListProduct" class="btn no-btn">Back to list</a>
+    <h2>Kits & Buying Prices </h2>&nbsp;&nbsp;&nbsp;&nbsp;
+    
 </div>
 <section class="content section-content massstocktransfer commercial_proposal mt-1" id="proposal-table">
     <div class="nav-tabs-custom">
@@ -31,6 +32,7 @@
                         <div class="d-flex proposal-top">
                             <div class="back-to-list">
                                 <div class="d-flex align-items-center">
+                                    <input type="hidden" id="hfbuyingid" />
                                     <label class="control-label ws_nowrap">Select Variation:&nbsp;&nbsp;&nbsp;&nbsp;</label>
                                     <select name="ddlproductchild" id="ddlproductchild" class="form-control">
                                     </select>
@@ -373,11 +375,11 @@
 
                                                         <th class="text-left">Child products</th>
                                                         <th>Label</th>
-                                                        <th>Minimum buying price</th>
-                                                        <th>Minimum selling price</th>
+                                                        <th>Min. buying price</th>
+                                                        <th>Min. selling price</th>
                                                         <th>Stock</th>
                                                         <th style="width: 5%">Qty</th>
-                                                        <th>Increase/Decrease stock on parent change</th>
+                                                        <th>Increase/Decrease stock</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody id="Product_services"></tbody>
@@ -426,7 +428,7 @@
                                                         <th class="text-left">Child products</th>
                                                         <th>Label</th>
                                                         <th>Qty</th>
-                                                        <th>Increase/Decrease stock on parent change</th>
+                                                        <th>Increase/Decrease stock</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody id="order_line_items"></tbody>

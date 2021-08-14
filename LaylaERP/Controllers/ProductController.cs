@@ -163,7 +163,11 @@ namespace LaylaERP.Controllers
             JsonResult result = new JsonResult();
             DateTime dateinc = DateTime.Now;
             //DateTime dateinc = UTILITIES.CommonDate.CurrentDate();
-               var resultOne = ProductRepository.AddBuyingtProduct(model, dateinc);
+            var resultOne = 0;
+            if (model.ID > 0) 
+                resultOne = ProductRepository.updateBuyingtProduct(model, dateinc);
+            else
+                resultOne = ProductRepository.AddBuyingtProduct(model, dateinc);
             if (resultOne > 0)
             {
                 return Json(new { status = true, message = "updated successfully!!", url = "Manage" }, 0);
@@ -171,27 +175,25 @@ namespace LaylaERP.Controllers
             else
             {
                 return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }            
+        }
+        public JsonResult DeleteBuyingPrice(ProductModel model)
+        {
+            JsonResult result = new JsonResult();
+            //DateTime dateinc = DateTime.Now;
+            //DateTime dateinc = UTILITIES.CommonDate.CurrentDate();
+            var resultOne = 0;
+           // model.ID = model.strVal;
+            if (model.ID > 0)
+                resultOne = ProductRepository.DeleteBuyingtProduct(model);             
+            if (resultOne > 0)
+            {
+                return Json(new { status = true, message = "deleted successfully!!", url = "Manage" }, 0);
             }
-            //return Json(new { status = true, message = "Product Record has been updated successfully!!", url = "Manage" }, 0);
-
-            //if (model.ID > 0 || model.updatedID > 0)
-            //{
-
-            //    if (model.ID == 0)
-            //        model.ID = model.updatedID;
-            //    if (!string.IsNullOrEmpty(model.post_content))
-            //        model.post_content = model.post_content;
-            //    else
-            //        model.post_content = "";
-            //    ProductRepository.EditProducts(model, model.ID);
-            //    UpdateVariation_MetaData(model, model.ID);
-            //    update_term(model, model.ID);
-            //    return Json(new { status = true, message = "Product Record has been updated successfully!!", url = "Manage" }, 0);
-            //}
-            //else
-            //{
-            //    return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
-            //}
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
         }
 
         public JsonResult CreateProduct(ProductModel model)
@@ -359,6 +361,18 @@ namespace LaylaERP.Controllers
             {
 
                 DataTable dt = ProductRepository.GetDataByID(model);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+        public JsonResult GetDataBuyingByID(OrderPostStatusModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+
+                DataTable dt = ProductRepository.GetDataBuyingByID(model);
                 JSONresult = JsonConvert.SerializeObject(dt);
             }
             catch { }

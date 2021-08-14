@@ -97,6 +97,29 @@ namespace LaylaERP.BAL
             return dt;
         }
 
+        public static DataTable GetDataBuyingByID(OrderPostStatusModel model)
+        {
+            DataTable dt = new DataTable();
+
+            try
+            {
+                string strWhr = string.Empty;
+
+                string strSql = "SELECT rowid ID,fk_vendor,purchase_price,cost_price,minpurchasequantity,salestax,taxrate,discount,remark from Product_Purchase_Items"
+                             + " WHERE rowid = " + model.strVal + " ";
+
+
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dt = ds.Tables[0];
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
         public static List<ProductsModelDetails> GetProductListDetails(string strValue1,string strValue2)
         {
             List<ProductsModelDetails> _list = new List<ProductsModelDetails>();
@@ -335,7 +358,7 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "SELECT P.ID ID,post_title, pmregularamount.meta_value regularamount,pmsaleprice.meta_value"
+                string strSql = "SELECT P.ID ID,post_title,FORMAT(pmregularamount.meta_value,2)  regularamount,FORMAT(pmsaleprice.meta_value,2)"
                              + "  saleprice,pmmvirchual.meta_value  virchualValue,pmtotalsales.meta_value totalsales,pmtaxstatus.meta_value axstatus,pmtaxclass.meta_value taxclass,pmmanagestock.meta_value managestock,"
                              + "  pmbackorders.meta_value backorders,IFNULL(pmweight.meta_value,'0') weight,IFNULL(pmlength.meta_value,'0') length,IFNULL(pmeheight.meta_value,'0') height,IFNULL(pmwidth.meta_value,'0') width, pmstock.meta_value stock,pmstockstatus.meta_value stockstatus,pmsku.meta_value sku, (select term_id from wp_terms"
                              + "  where term_id in ( select term_id from wp_term_taxonomy where taxonomy = 'product_shipping_class' and term_taxonomy_id in (SELECT term_taxonomy_id FROM `wp_term_relationships` where object_id = P.ID))) shippingclass"
@@ -664,6 +687,38 @@ namespace LaylaERP.BAL
                 /// step 6 : wp_posts
                 //strSql.Append(string.Format(" update wp_posts set post_status = '{0}' ,comment_status = 'closed' where id = {1} ", model.OrderPostStatus.status, model.OrderPostStatus.order_id));
 
+                result = SQLHelper.ExecuteNonQuery(strSql.ToString());
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return result;
+        }
+        public static int updateBuyingtProduct(ProductModel model, DateTime dateinc)
+        {
+            int result = 0;
+            try
+            {
+                StringBuilder strSql = new StringBuilder();
+                //StringBuilder strSql = new StringBuilder(string.Format("delete from Product_Purchase_Items where fk_product = {0}; ", model.fk_product));
+               // strSql.Append(string.Format("insert into Product_Purchase_Items ( fk_vendor,purchase_price,cost_price,minpurchasequantity,salestax,taxrate,discount,remark) values ({0},{1},{2},{3},{4},{5},{6},{7},'{8}') ", model.fk_product, model.fk_vendor, model.purchase_price, model.cost_price, model.minpurchasequantity, model.salestax, model.taxrate, model.discount, model.remark));
+
+                /// step 6 : wp_posts
+                strSql.Append(string.Format("update Product_Purchase_Items set fk_vendor = {0} ,purchase_price = {1},cost_price = {2},minpurchasequantity = {3},salestax = {4},taxrate = {5},discount = {6},remark = '{7}' where rowid = {8} ", model.fk_vendor, model.purchase_price, model.cost_price, model.minpurchasequantity, model.salestax, model.taxrate, model.discount, model.remark,  model.ID));
+
+                result = SQLHelper.ExecuteNonQuery(strSql.ToString());
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return result;
+        }
+        public static int DeleteBuyingtProduct(ProductModel model)
+        {
+            int result = 0;
+            try
+            {
+                //StringBuilder strSql = new StringBuilder();
+                StringBuilder strSql = new StringBuilder(string.Format("delete from Product_Purchase_Items where rowid = {0}; ", model.ID));
+            
                 result = SQLHelper.ExecuteNonQuery(strSql.ToString());
             }
             catch (Exception ex)

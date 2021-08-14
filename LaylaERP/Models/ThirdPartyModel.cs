@@ -53,6 +53,7 @@ namespace LaylaERP.Models
         public decimal DefaultDiscount { get; set; }
         public string CreditLimit { get; set; }
         public string WarehouseID { get; set; }
+        public string VendorWarehouseID { get; set; }
         public int VendorID { get; set; }
         public string LeadTime { get; set; }
         public string DaysofStock { get; set; }

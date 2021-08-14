@@ -1731,6 +1731,7 @@ background: orangered; /*#fff;*/
 }
 .table-blue.table.check-table {
     table-layout: initial;
+    width: 100% !important;
 }
 .dashboard-order-list .box.box-primary {
     width: auto;

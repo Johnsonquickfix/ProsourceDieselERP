@@ -638,7 +638,7 @@ function getOrderInfo() {
                 }
             }
             catch (error) {
-                $("#loader").hide(); swal('Alert!', "something went wrong. : " + error, "error");
+                $("#loader").hide(); swal('Alert!', "something went wrong.", "error");
             }
         }, function () { $("#loader").hide(); $('.billinfo').prop("disabled", true); }, function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); });
         setTimeout(function () { getItemShippingCharge(); }, 100);
@@ -685,7 +685,7 @@ function getOrderItemList(oid) {
                 let cou_amt = parseFloat(data[i].discount) || 0.00;
                 let coupon_list = auto_coupon.filter(element => element.post_title == data[i].product_name);
                 for (var j = 0; j < coupon_list.length; j++) {
-                    couponHtml += '<li id="li_' + coupon_list[j].post_title + '" class="' + (coupon_list[j].discount_type == 'fixed_cart' ? 'cart' : 'items') + '" data-coupon= "' + coupon_list[j].post_title + '" data-couponamt= "' + coupon_list[j].coupon_amount + '" data-disctype= "' + coupon_list[j].discount_type + '" data-rqprdids= "' + coupon_list[j].product_ids + '" data-excludeids= "' + coupon_list[j].exclude_product_ids + '" data-type= "' + coupon_list[j].type + '" data-orderitemid="' + orderitemid + '">';
+                    couponHtml += '<li id="li_' + coupon_list[j].post_title.toString().toLowerCase() + '" class="' + (coupon_list[j].discount_type == 'fixed_cart' ? 'cart' : 'items') + '" data-coupon= "' + coupon_list[j].post_title.toString().toLowerCase() + '" data-couponamt= "' + coupon_list[j].coupon_amount + '" data-disctype= "' + coupon_list[j].discount_type + '" data-rqprdids= "' + coupon_list[j].product_ids + '" data-excludeids= "' + coupon_list[j].exclude_product_ids + '" data-type= "' + coupon_list[j].type + '" data-orderitemid="' + orderitemid + '">';
                     couponHtml += '<a href="javascript:void(0);">';
                     couponHtml += '<i class="fa fa-gift"></i>';
                     couponHtml += '<span>' + coupon_list[j].title + '</span>';
@@ -693,7 +693,7 @@ function getOrderItemList(oid) {
 
                     if (coupon_list[j].type == 'add_coupon') {
                         couponHtml += '$<span id="cou_discamt">' + cou_amt.toFixed(2) + '</span>';
-                        couponHtml += '<button type="button" class="btn btn-box-tool pull-right billinfo" onclick="removeCouponInList(\'' + coupon_list[j].post_title + '\');"> <i class="fa fa-times"></i>';
+                        couponHtml += '<button type="button" class="btn btn-box-tool pull-right billinfo" onclick="removeCouponInList(\'' + coupon_list[j].post_title.toString().toLowerCase() + '\');"> <i class="fa fa-times"></i>';
                         couponHtml += '</button>';
                     }
                     else {
@@ -706,7 +706,7 @@ function getOrderItemList(oid) {
                 if (coupon_list.length == 0) {
                     let cpn_info = JSON.parse(data[i].meta_data);
                     let cpn_name = data[i].product_name;
-                    couponHtml += '<li id="li_' + data[i].product_name + '" class="' + (cpn_info.discount_type == 'fixed_cart' ? 'cart' : 'items') + '" data-coupon= "' + data[i].product_name + '" data-couponamt= "' + (cpn_info.coupon_amount != '' && cpn_info.coupon_amount != undefined ? cpn_info.coupon_amount : cou_amt) + '" data-disctype= "' + (cpn_info.discount_type != '' && cpn_info.discount_type != undefined ? cpn_info.discount_type : '') + '" data-rqprdids="' + (cpn_info.product_ids != '' && cpn_info.product_ids != undefined ? cpn_info.product_ids : '') + '" data-excludeids="' + (cpn_info.exclude_product_ids != '' && cpn_info.exclude_product_ids != undefined ? cpn_info.exclude_product_ids : '') + '" data-type= "add_coupon" data-orderitemid="' + orderitemid + '">';
+                    couponHtml += '<li id="li_' + data[i].product_name.toString().toLowerCase() + '" class="' + (cpn_info.discount_type == 'fixed_cart' ? 'cart' : 'items') + '" data-coupon= "' + data[i].product_name + '" data-couponamt= "' + (cpn_info.coupon_amount != '' && cpn_info.coupon_amount != undefined ? cpn_info.coupon_amount : cou_amt) + '" data-disctype= "' + (cpn_info.discount_type != '' && cpn_info.discount_type != undefined ? cpn_info.discount_type : '') + '" data-rqprdids="' + (cpn_info.product_ids != '' && cpn_info.product_ids != undefined ? cpn_info.product_ids : '') + '" data-excludeids="' + (cpn_info.exclude_product_ids != '' && cpn_info.exclude_product_ids != undefined ? cpn_info.exclude_product_ids : '') + '" data-type= "add_coupon" data-orderitemid="' + orderitemid + '">';
                     couponHtml += '<a href="javascript:void(0);">';
                     couponHtml += '<i class="fa fa-gift"></i>';
                     couponHtml += '<span>' + cpn_name + '</span>';
@@ -897,7 +897,8 @@ function CouponModal() {
     myHtml += '</div>';
     myHtml += '<div class="modal-body">Enter a coupon code to apply. Discounts are applied to line totals, before taxes.';
     myHtml += '<input class="form-control" type="text" id="txt_Coupon" name="txt_Coupon" placeholder="Coupon Code" maxlength="25">';
-    myHtml += '</div > ';
+    myHtml += '<div class="font-weight-bold text-danger alert-coupon"></div>';
+    myHtml += '</div>';
     myHtml += '<div class="modal-footer"><button type="button" class="btn btn-danger" id="btnCouponAdd">Add</button></div>';
     myHtml += '</div>';
     myHtml += '</div>';
@@ -911,7 +912,6 @@ function Coupon_get_discount_amount(id, parent_id, coupon_code, coupon_amt) {
     if (coupon_isedu.includes(coupon_isedu)) { isedu = 1; }
     let isgrin = 0;
     if (coupon_isgrin.includes(coupon_isedu)) { isgrin = 1; }
-    console.log(id, parent_id, coupon_code, coupon_amt);
     if (coupon_code.includes("friend") && coupon_code.substr(6) > 8500) {
         if (id != 632713 && id != 78676) {
             if (parent_id == 118) {
@@ -949,9 +949,7 @@ function Coupon_get_discount_amount(id, parent_id, coupon_code, coupon_amt) {
         return coupon_amt;
     }
     else if (coupon_code == "sleepopolis") {
-        if (id != 632713 && id != 78676) {
-            coupon_amt = 10;
-        }
+        if (id != 632713 && id != 78676) { coupon_amt = 10; }
         return coupon_amt;
     }
     else if (coupon_code == "sleepfoundation") {
@@ -989,7 +987,14 @@ function Coupon_get_discount_amount(id, parent_id, coupon_code, coupon_amt) {
         let var_arr = [31735, 723, 733504, 613011];
         if (var_arr.includes(parent_id)) coupon_amt = 1.00;
         return coupon_amt;
-    }    
+    }
+    else if (coupon_code == "idmecoupon" || coupon_code == "mil20off072021") {
+        return 0.20;
+    }
+    else if (coupon_code == "5wprkapok40") {
+        if (parent_id == 14023) coupon_amt = 0.40;
+        return coupon_amt;
+    }
     else {
         return coupon_amt;
     }
@@ -1049,7 +1054,9 @@ function ApplyAutoCoupon() {
     if (auto_code.length > 0) { bindCouponList(auto_code); }
 }
 function ApplyCoupon() {
-    let coupon_code = jQuery("#txt_Coupon").val().toLowerCase();
+    let coupon_code = $("#txt_Coupon").val().toLowerCase();
+    if ($('#li_' + coupon_code).length > 0) { swal('Alert!', 'Coupon code already applied!', "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false; };
+
     let autocode = ["cbdistillery", "thesleepadvisor", "tuck", "rv10", "rizslumber", "bestsleep10", "get140", "calm", "relax", "cupid110", "sleepopolis", "tv140", "pennymac", "pnmac", "sleepfoundation", "matt-topper", "matt-sheet", "matt-blanket", "matt-pillow", "matt-bedframe", "matt-found", "found-frame", "sleepy10", "sleepy20"];
     let monthlySaleCoupon = ["sales10off", "sales25off", "sales50off", "sales75off", "sales100off", "sales125off", "sales150off", "sales175off", "sales200off", "cxstaff20off", "mgr20off", "mgr50off"];
     let is_monthly_sale_cpn = monthlySaleCoupon.some(el => coupon_code.includes(el));
@@ -1061,7 +1068,13 @@ function ApplyCoupon() {
         if (coupon_code == 'forbes') { swal('Alert!', 'Can not add ' + coupon_code, "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false; }
         else if (coupon_code == 'slumber') { swal('Alert!', 'Can not add ' + coupon_code, "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false; }
     }
-    let billing_email = $("#txtbillemail").val().toLowerCase()
+    let billing_email = $("#txtbillemail").val().toLowerCase();
+    let add_coupon_count = 0;
+    $('#billCoupon li').each(function (index, li) {
+        if ($(li).data('type') == 'add_coupon') { add_coupon_count += 1; }
+    });
+    if (add_coupon_count > 0) { swal('Alert!', 'Cannot add any other Coupon.', "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false; };
+
     let obj = { strValue1: coupon_code };
     $.ajax({
         type: "POST", url: '/Orders/GetCouponAmount', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
@@ -1093,6 +1106,7 @@ function ApplyCoupon() {
 
             if (data[0].individual_use == "yes") { deleteAllCoupons('all'); }
             if (data[0].discount_type != "fixed_cart") { deleteAllCoupons('diff'); }
+            if (coupon_code.includes("friend") && coupon_code.substr(6) > 8500) { deleteAllCoupons('diff'); }
             bindCouponList(data);
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
@@ -1121,8 +1135,7 @@ function bindCouponList(data) {
         for (var i = 0; i < data.length; i++) {
             if ($('#li_' + data[i].post_title).length <= 0) {
                 let cou_amt = parseFloat(data[i].coupon_amount) || 0.00;
-
-                layoutHtml += '<li id="li_' + data[i].post_title + '" class="' + (data[i].discount_type == 'fixed_cart' ? 'cart' : 'items') + '" data-coupon= "' + data[i].post_title + '" data-couponamt= "' + data[i].coupon_amount + '" data-disctype= "' + data[i].discount_type + '" data-rqprdids= "' + data[i].product_ids + '" data-excludeids= "' + data[i].exclude_product_ids + '" data-type= "' + data[i].type + '" data-orderitemid="0">';
+                layoutHtml = '<li id="li_' + data[i].post_title + '" class="' + (data[i].discount_type == 'fixed_cart' ? 'cart' : 'items') + '" data-coupon= "' + data[i].post_title + '" data-couponamt= "' + data[i].coupon_amount + '" data-disctype= "' + data[i].discount_type + '" data-rqprdids= "' + data[i].product_ids + '" data-excludeids= "' + data[i].exclude_product_ids + '" data-type= "' + data[i].type + '" data-orderitemid="0">';
                 layoutHtml += '<a href="javascript:void(0);">';
                 layoutHtml += '<i class="fa fa-gift"></i>';
                 layoutHtml += '<span>' + data[i].title + '</span>';
@@ -1140,6 +1153,8 @@ function bindCouponList(data) {
                 layoutHtml += '</div>';
                 layoutHtml += '</a>';
                 layoutHtml += '</li>';
+                //console.log(data[i].post_title, data[i].coupon_amount);
+                $('#billCoupon').append(layoutHtml);
             }
             else {
                 if (data[0].type == 'add_coupon') {
@@ -1156,7 +1171,6 @@ function bindCouponList(data) {
                 }
             }
         }
-        $('#billCoupon').append(layoutHtml);
         calculateDiscountAcount();
         $("#billModal").modal('hide');
     }
@@ -1290,10 +1304,10 @@ function calculateDiscountAcount() {
 
         let rq_prd_ids = [], exclude_ids = [];
         if ($(li).data('excludeids') != "" && $(li).data('excludeids') != null) {
-            exclude_ids = $(li).data('excludeids').split(",").map((el) => parseInt(el));
+            exclude_ids = $(li).data('excludeids').toString().split(",").map((el) => parseInt(el));
         }
         if ($(li).data('rqprdids') != "" && $(li).data('rqprdids') != null) {
-            rq_prd_ids = $(li).data('rqprdids').split(",").map((el) => parseInt(el));
+            rq_prd_ids = $(li).data('rqprdids').toString().split(",").map((el) => parseInt(el));
         }
         $("#order_line_items > tr.paid_item").each(function (index, row) {
             let pid = $(row).data('pid'), vid = $(row).data('vid'), row_perqty_discamt = 0.00, row_disc = 0.00;
@@ -1312,7 +1326,6 @@ function calculateDiscountAcount() {
                 }
                 //else { zCouponAmt = 0.00; }
                 zCouponAmt = Coupon_get_discount_amount((vid > 0 ? vid : pid), pid, cou, zCouponAmt);
-                console.log(cou, zCouponAmt);
 
                 if (zDiscType == 'fixed_product') { zDisAmt = zCouponAmt * zQty; }
                 else if (zDiscType == 'fixed_cart') { zDisAmt = zCouponAmt * zQty; }

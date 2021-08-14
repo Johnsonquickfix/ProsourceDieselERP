@@ -367,7 +367,7 @@
                         <div class="col-sm-4">
                             <div class="box box-primary">
                                 <div class="box-body">
-
+                                    <input type="hidden" id="hfstockid" class="form-control" />
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Product<span style="color:red">*</span></label>
                                         <select class="form-control" id="ddlProduct">
@@ -376,19 +376,23 @@
                                     </div>
 
                                     <div class="form-group">
+                                        <label for="exampleInputEmail1">Unit purchase price<span style="color:red">*</span></label>
+                                        <input type="text" id="txtprice" class="form-control" placeholder="Enter Unit purchase price">
+                                    </div>
+
+                                    <div class="form-group">
+
+                                        <label for="exampleInputEmail1">Number of unit<span style="color:red">*</span></label>
+                                        <input type="text" id="txtunit" class="form-control" placeholder="Enter Number of unit">
+                                    </div>
+
+                                    <div class="form-group">
                                         <label for="exampleInputEmail1">Lot/Serial number<span style="color:red">*</span></label>
                                         <input type="text" id="txtserial" placeholder="Enter Lot/Serial number" class="form-control">
                                     </div>
 
-                                    <div class="form-group">
-                                        <label for="exampleInputEmail1">Eat by date<span style="color:red">*</span></label>
-                                        <input class="form-control" type="text" id="txteatbydate" placeholder="Enter Eat by date" /><span class="even-space"></span>
-                                    </div>
+                                   
 
-                                    <div class="form-group">
-                                        <label for="exampleInputEmail1">Unit purchase price<span style="color:red">*</span></label>
-                                        <input type="text" id="txtprice" class="form-control" placeholder="Enter Unit purchase price">
-                                    </div>
                                 </div>
 
                             </div>
@@ -400,20 +404,19 @@
                                 <div class="box-body">
 
                                     <div class="form-group">
-                                        <label for="exampleInputEmail1">Label of movement<span style="color:red">*</span></label>
-                                        <input type="text" id="txtlabel" class="form-control" placeholder="Enter Label of movement">
-                                    </div>
-
-                                    <div class="form-group">
-
-                                        <label for="exampleInputEmail1">Number of unit<span style="color:red">*</span></label>
-                                        <input type="text" id="txtunit" class="form-control" placeholder="Enter Number of unit">
+                                        <label for="exampleInputEmail1">Eat by date<span style="color:red">*</span></label>
+                                        <input class="form-control" type="text" id="txteatbydate" placeholder="Enter Eat by date" /><span class="even-space"></span>
                                     </div>
 
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Sale by date<span style="color:red">*</span></label>
 
                                         <input class="form-control" type="text" id="txtsalebydate" placeholder="Enter Sale by date" /><span class="even-space"></span>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Label of movement<span style="color:red">*</span></label>
+                                        <input type="text" id="txtlabel" class="form-control" placeholder="Enter Label of movement">
                                     </div>
 
                                     <div class="box-footer">
@@ -476,30 +479,31 @@
                                 <div class="box-body">
                                     <div class="form-group">
                                         <input type="hidden" class="form-control" id="hfprice">
+                                        <input type="hidden" class="form-control" id="hftransferstockid">
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="exampleInputEmail1">Product</label>
+                                        <label for="exampleInputEmail1">Product<span style="color:red">*</span></label>
                                         <select id="ddltransferProduct" class="form-control">
                                             <option value="0">--Select Product--</option>
                                         </select>
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="exampleInputEmail1">Target Warehouse</label>
+                                        <label for="exampleInputEmail1">Target Warehouse<span style="color:red">*</span></label>
                                         <select id="ddltargetwarehouse" class="form-control">
                                             <option value="0">--Select Warehouse--</option>
                                         </select>
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="exampleInputEmail1">Number of units </label>
-                                        <input type="text" class="form-control" id="txttransferunit">
+                                        <label for="exampleInputEmail1">Number of units<span style="color:red">*</span></label>
+                                        <input type="text" class="form-control" placeholder="Enter number of units" id="txttransferunit">
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="exampleInputEmail1">Lot/Serial number</label>
-                                        <input type="text" id="txttransferserial" class="form-control">
+                                        <label for="exampleInputEmail1">Lot/Serial number<span style="color:red">*</span></label>
+                                        <input type="text" id="txttransferserial" placeholder="Enter Lot/Serial number" class="form-control">
                                     </div>
                                 </div>
 
@@ -512,32 +516,33 @@
                                 <div class="box-body">
 
                                     <div class="form-group">
-                                        <label for="exampleInputEmail1">Eat-by date</label>
+                                        <label for="exampleInputEmail1">Eat-by date<span style="color:red">*</span></label>
 
                                         <input class="form-control" type="text" id="txttransfereatbydate" placeholder="Enter Eat by date" /><span class="even-space"></span>
                                     </div>
 
                                     <div class="form-group">
 
-                                        <label for="exampleInputEmail1">Sale by date</label>
+                                        <label for="exampleInputEmail1">Sale by date<span style="color:red">*</span></label>
 
                                         <input class="form-control" type="text" id="txttransfersalebydate" placeholder="Enter Sale by date" /><span class="even-space"></span>
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="exampleInputEmail1">Label of movement</label>
-                                        <input type="text" id="txttransferlabel" class="form-control">
+                                        <label for="exampleInputEmail1">Label of movement<span style="color:red">*</span></label>
+                                        <input type="text" id="txttransferlabel" placeholder="Enter label of movement" class="form-control">
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="exampleInputEmail1">Movement or inventory code</label>
-                                        <input type="text" id="txttransferinvtcode" class="form-control">
+                                        <label for="exampleInputEmail1">Movement or inventory code<span style="color:red">*</span></label>
+                                        <input type="text" id="txttransferinvtcode" placeholder="Enter movement or inventory code" class="form-control">
                                     </div>
 
                                     <div class="box-footer">
                                         <div class="text-right">
                                             <a href="#" class="btn btn-danger" id="btnTranferStock"><b>Save</b></a>
-
+                                            <a href="#" class="btn btn-danger" id="btnTransferStockUpdate"><b>Update</b></a>
+                                            <a href="#" class="btn btn-danger" id="btnTransferStockCancel"><b>Cancel</b></a>
                                         </div>
                                     </div>
 
@@ -558,7 +563,7 @@
                                                 <th>Label of movement</th>
                                                 <th>Qty</th>
                                                 <th>Unit Price</th>
-                                                
+                                                <th>Action</th>
                                             </tr>
                                         </thead>
                                     </table>
@@ -584,15 +589,23 @@
     var strength = 1;
     $(document).ready(function () {
         $("#loader").hide();
+        CorrectStockGrid();
         StockTransferGrid();
-        StockTransferGrid1();
         $("#btnStockUpdate").hide();
-        $("#btnStockCancel").hide();
+        $("#btnTransferStockUpdate").hide();
+
         $("#btnStockCancel").click(function () {
             $("#btnStock").show();
             $("#btnStockUpdate").hide();
-            $("#btnStockCancel").hide();
+            //$("#btnStockCancel").hide();
             reset();
+        });
+
+        $("#btnTransferStockCancel").click(function () {
+            $("#btnTranferStock").show();
+            $("#btnTransferStockUpdate").hide();
+            //$("#btnStockCancel").hide();
+            resettransferstock();
         });
 
 
@@ -615,6 +628,17 @@
 
             AddTransferStock();
         });
+
+        $(document).on('click', "#btnStockUpdate", function () {
+
+            Updatecorrectstock();
+        });
+
+        $(document).on('click', "#btnTransferStockUpdate", function () {
+
+            UpdateTransferStock();
+        });
+
 
         $.get('/Warehouse/GetProduct', function (data) {
             var items = "";
@@ -795,7 +819,9 @@
     });
 
 </script>
-
+<script>
+  
+</script>
 <script src="@Url.Content("~/js/Warehouse/updatewarehouse.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 <!-- Google API -->
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBIgngCCIJ3D8_s3G7aIfvQckhsDtbAe4E&libraries&callback=initMap&libraries=places&v=weekly" async></script>

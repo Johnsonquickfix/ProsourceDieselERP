@@ -16,11 +16,11 @@ function WarehouseGrid() {
                     data: JSON.parse(data),
                     "columns": [
                         { data: 'rowid', title: 'ID', sWidth: "5%" },
-                        { data: 'ref', title: 'Ref', sWidth: "15%" },
+                        { data: 'ref', title: 'Ref', sWidth: "10%" },
                         //{ data: 'description', title: 'Description', sWidth: "15%" },
                         { data: 'lieu', title: 'Short Name Location', sWidth: "20%" },
                         { data: 'address', title: 'Address', sWidth: "15%" },
-                        { data: 'phone', title: 'Phone', sWidth: "10%" },
+                        { data: 'phone', title: 'Phone', sWidth: "15%" },
                         { data: 'status', title: 'Status', sWidth: "10%" },
                         { data:'warehouse_type', title:'Type', sWidth:"10%"},
                         {

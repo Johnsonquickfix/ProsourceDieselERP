@@ -905,7 +905,7 @@ function CouponModal() {
     $("#billModal").empty().html(myHtml);
     $("#billModal").modal({ backdrop: 'static', keyboard: false }); $("#txt_Coupon").focus();
 }
-function Coupon_get_discount_amount(id, parent_id, coupon_code, coupon_amt) {
+function Coupon_get_discount_amount(id, parent_id, coupon_code, coupon_amt, sale_price) {
     let coupon_isedu = ["mhsu15", "pu15", "utep74", "msu15", "cabarrus15", "crusader15", "ucsd15", "vt15", "kent15", "fcs15", "sisd15", "isu15", "uh15", "teacher15", "csusm15", "abbey15"];
     let coupon_isgrin = ["erin10off", "venezia10off", "jasmine10off", "liz10off", "jamie10off", "nicole10off", "faye10off", "vinny10off", "ava10off", "kelsey10off", "aimy10off", "grace10off", "ramya10off", "georgia10off", "slayer10off", "victoria10off", "nickayla10off", "saraida10off", "garnerfamily5", "gina10off", "brooke10off", "lolo10off", "melissa10off", "claudia10off"];
     let isedu = 0;
@@ -995,6 +995,32 @@ function Coupon_get_discount_amount(id, parent_id, coupon_code, coupon_amt) {
         if (parent_id == 14023) coupon_amt = 0.40;
         return coupon_amt;
     }
+    else if (coupon_code == "freeprotector") {
+        let matt_qnty = 0,prot_qnty = 0, is_prot = 0, prot_price = 0;
+        if (id != 632713 && id != 78676) {
+            if (parent_id == 118) {
+                matt_qnty += 0;
+                // d_amt = d_amt + (10 * cartItem.quantity);
+            } else if (parent_id == 611172) {
+                matt_qnty += 0;
+                // d_amt = d_amt + (20 * cartItem.quantity);
+            } else if (parent_id == 611268) {
+                is_prot = 1;
+                prot_qnty = 0;
+                prot_price = sale_price;
+            }
+        }
+        if (is_prot == 1 && matt_qnty > 0) {
+            if (prot_qnty > matt_qnty) {
+                coupon_amt = sale_price;
+            } else if (prot_qnty == matt_qnty) {
+                coupon_amt = sale_price;
+            } else if (prot_qnty < matt_qnty) {
+                coupon_amt = sale_price;
+            }
+        }
+        return coupon_amt;
+    }
     else {
         return coupon_amt;
     }
@@ -1079,7 +1105,7 @@ function ApplyCoupon() {
     $.ajax({
         type: "POST", url: '/Orders/GetCouponAmount', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
         success: function (result) {
-            var data = JSON.parse(result);
+            var data = JSON.parse(result); console.log(data);
             if (data.length == 0) { swal('Alert!', 'Invalid code entered. Please try again.', "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false; }
             //Check valid for email
             if (data[0].cus_email.length && data[0].cus_email != '') {
@@ -1095,8 +1121,9 @@ function ApplyCoupon() {
             }
             //check expires date
             if (data[0].date_expires != "" && data[0].date_expires != null) {
-                let exp_date = new Date(parseInt(data[0].date_expires) * 1000);
+                let exp_date = new Date(data[0].date_expires);
                 let today = new Date();
+                console.log(data[0].date_expires,exp_date, today);
                 if (exp_date < today) {
                     swal('Alert!', 'Coupon code has been expired.', "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false;
                 }
@@ -1104,9 +1131,12 @@ function ApplyCoupon() {
             data[0].coupon_amount = parseFloat(data[0].coupon_amount) || 0.00;
             data[0].limit_x_items = parseInt(data[0].limit_x_items) || 0;
 
-            if (data[0].individual_use == "yes") { deleteAllCoupons('all'); }
-            if (data[0].discount_type != "fixed_cart") { deleteAllCoupons('diff'); }
             if (coupon_code.includes("friend") && coupon_code.substr(6) > 8500) { deleteAllCoupons('diff'); }
+            else if (coupon_code.includes("freeprotector")) { }
+            else {
+                if (data[0].individual_use == "yes") { deleteAllCoupons('all'); }
+                if (data[0].discount_type != "fixed_cart") { deleteAllCoupons('diff'); }
+            }
             bindCouponList(data);
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
@@ -1325,7 +1355,7 @@ function calculateDiscountAcount() {
                     if (zDiscType != '2x_percent') zCouponAmt = (zRegPrice - zSalePrice) > 0 ? (zRegPrice - zSalePrice) : 0.00;
                 }
                 //else { zCouponAmt = 0.00; }
-                zCouponAmt = Coupon_get_discount_amount((vid > 0 ? vid : pid), pid, cou, zCouponAmt);
+                zCouponAmt = Coupon_get_discount_amount((vid > 0 ? vid : pid), pid, cou, zCouponAmt, zSalePrice);
 
                 if (zDiscType == 'fixed_product') { zDisAmt = zCouponAmt * zQty; }
                 else if (zDiscType == 'fixed_cart') { zDisAmt = zCouponAmt * zQty; }

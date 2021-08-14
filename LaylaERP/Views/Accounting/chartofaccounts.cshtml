@@ -1,0 +1,130 @@
+﻿@{
+    ViewBag.Title = "Accounting Journal";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="page-title">
+    <h2>List of the accounting accounts<span class="text-gray">(137)</span></h2>
+    <div class="ml-auto">
+        <a class="btn no-btn">Back to List</a>&nbsp;&nbsp;<button class="btn btn-danger">Add an Account</button>
+    </div>
+</div>
+<section class="content section-content journal-section table-design">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <form class="form-inline">
+                        <div class="form-group mb-2">
+                            <label class="control-label">Select active chart of accounts: </label>
+                        </div>
+                        <div class="form-group mx-sm-3 mb-2">
+                            <select class="form-control">
+                                <option>US-BASE - USA basic chart of accounts - (US)</option>                                                              
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-danger">Change and Load</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-primary table-design not-fixed">
+                <div class="box-body">
+                    <table class="inventory-table table-blue table check-table table-bordered table-striped dataTable">
+                        <thead>
+                            <tr>
+                                <th><input type="text" class="form-control" /></th>
+                                <th><input type="text" class="form-control" /></th>
+                                <th><input type="text" class="form-control" /></th>
+                                <th>
+                                    <select class="form-control">
+                                        <option>--- None ---</option>
+                                        <option>1 - Assets</option>
+                                        <option>1010 - Cash on Hand</option>
+                                        <option>1020 - Checking Account</option>
+                                        <option>1030 - Savings Account</option>
+                                        <option>1040 - Investments and Securities</option>
+                                    </select>
+                                </th>
+                                <th><input type="text" class="form-control" /></th>
+                                <th>&nbsp;</th>
+                                <th>
+                                    <div class="ws_nowrap">
+                                        <a href="#">
+                                            <i class="fa fa-search"></i>
+                                        </a>
+                                        <a href="#">
+                                            <i class="fa fa-remove"></i>
+                                        </a>
+                                    </div>
+                                </th>
+                            </tr>
+                            <tr>
+                                <th class="text-left">Account number</th>
+                                <th class="text-left">Label</th>
+                                <th class="text-left">Short label</th>
+                                <th class="text-left">Parent account</th>
+                                <th>Group of account</th>
+                                <th>Activated</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="row_on">
+                                <td class="text-left">1</td>
+                                <td class="text-left">Assets</td>
+                                <td class="text-left">&nbsp;</td>
+                                <td class="text-left">1</td>
+                                <td class="text-left">Assets</td>
+                                <td class="ws_nowrap text-center">
+                                    <a href="#"><i class="fas fa-toggle-on"></i></a>
+                                </td>
+                                <td>
+                                    <div class="ws_nowrap">
+                                        <a href="#"><i class="fas fa-pencil-alt"></i></a>
+                                        <a href="#"><i class="fas fa-trash pictodelete"></i></a>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-left">1</td>
+                                <td class="text-left">Assets</td>
+                                <td class="text-left">&nbsp;</td>
+                                <td class="text-left">1</td>
+                                <td class="text-left">Assets</td>
+                                <td class="ws_nowrap text-center">
+                                    <a href="#"><i class="fas fa-toggle-off"></i></a>
+                                </td>
+                                <td>
+                                    <div class="ws_nowrap">
+                                        <a href="#"><i class="fas fa-pencil-alt"></i></a>
+                                        <a href="#"><i class="fas fa-trash pictodelete"></i></a>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-left">1</td>
+                                <td class="text-left">Assets</td>
+                                <td class="text-left">&nbsp;</td>
+                                <td class="text-left">1</td>
+                                <td class="text-left">Assets</td>
+                                <td class="ws_nowrap text-center">
+                                    <a href="#"><i class="fas fa-toggle-off"></i></a>
+                                </td>
+                                <td>
+                                    <div class="ws_nowrap">
+                                        <a href="#"><i class="fas fa-pencil-alt"></i></a>
+                                        <a href="#"><i class="fas fa-trash pictodelete"></i></a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+

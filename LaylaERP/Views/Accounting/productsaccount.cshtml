@@ -1,0 +1,195 @@
+﻿@{
+    ViewBag.Title = "Products accounts";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="page-title">
+    <h2>Products accounts</h2>
+</div>
+<section class="content section-content product-acctount-section table-design">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <label class="control-label">This page can be used to initialize an accounting account on products and services that does not have accounting account defined for sales and purchases.</label>
+                </div>
+                <div class="box-body">
+                    <table class="inventory-table table-blue table check-table table-bordered table-striped dataTable">
+                        <thead>
+                            <tr>
+                                <th class="text-left">Options</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="text-left"><input type="radio" name="accounting_product_mode" value="ACCOUNTANCY_SELL" checked /> Mode sales</td>
+                                <td>Show all products with accounting account for sales.</td>
+                            </tr>
+                            <tr>
+                                <td class="text-left"><input type="radio" name="accounting_product_mode" value="ACCOUNTANCY_SELL_EXPORT" /> Mode sales exported in other countries</td>
+                                <td>Show all products with accounting account for other foreign sales.</td>
+                            </tr>
+                            <tr>
+                                <td class="text-left"><input type="radio" name="accounting_product_mode" value="ACCOUNTANCY_BUY" /> Mode purchases</td>
+                                <td>Show all products with accounting account for purchases.</td>
+                            </tr>
+                            <tr>
+                                <td class="text-left"><input type="radio" name="accounting_product_mode" value="ACCOUNTANCY_BUY_EXPORT" /> Mode purchased imported from other countries</td>
+                                <td>Show all products with accounting account for purchases.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="box-footer text-right">
+                    <button class="btn btn-danger">Refresh</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="page-title">
+                <h2>List of products/services<span class="text-gray">(57)</span></h2>
+                <div class="ml-auto">
+                    <button class="btn btn-danger">Save</button>
+                </div>
+            </div>
+            <div class="box box-primary table-design not-fixed">
+                <div class="box-body">
+                    <table class="inventory-table table-blue table check-table table-bordered table-striped dataTable">
+                        <thead>
+                            <tr>
+                                <th><input type="text" class="form-control" /></th>
+                                <th><input type="text" class="form-control" /></th>
+                                <th><input type="text" class="form-control" placeholder="%" /></th>
+                                <th>
+                                    <select class="form-control">
+                                        <option>&nbsp;</option>
+                                        <option>Yes</option>
+                                        <option>No</option>
+                                    </select>
+                                </th>
+                                <th>
+                                    <input type="text" class="form-control" />
+                                    <span>Or</span>
+                                    <select class="form-control">
+                                        <option>&nbsp;</option>
+                                        <option>Without valid dedicated account</option>
+                                        <option>With valid dedicated account</option>
+                                    </select>
+                                </th>
+                                <th>&nbsp;</th>
+                                <th>
+                                    <div class="ws_nowrap">
+                                        <a href="#">
+                                            <i class="fa fa-search"></i>
+                                        </a>
+                                        <a href="#">
+                                            <i class="fa fa-times"></i>
+                                        </a>
+                                    </div>
+                                </th>
+                            </tr>
+                            <tr>
+                                <th class="text-left">Ref</th>
+                                <th class="text-left">Label</th>
+                                <th class="text-left">Tax Rate</th>
+                                <th class="text-left">For Sale</th>
+                                <th>Current dedicated account</th>
+                                <th>New account to assign</th>
+                                <th><div class="a-relative"><input type="checkbox"><label></label></div></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="text-left">Layla_Adjustable_Base</td>
+                                <td class="text-left">Layla Adjustable Base</td>
+                                <td class="text-left">0</td>
+                                <td class="text-left sale-active"><i class="fas fa-circle"></i></td>
+                                <td class="text-left">&nbsp;</td>
+                                <td class="text-left">
+                                    <select class="form-control">
+                                        <option class="optiongrey">&nbsp;</option>
+                                        <option>1 - Assets</option>
+                                        <option>1010 - Cash on Hand</option>
+                                        <option>1020 - Checking Account</option>
+                                        <option>1030 - Savings Account</option>
+                                        <option>1040 - Investments and Securities</option>
+                                        <option>1100 - Accounts Receivable</option>
+                                        <option>1140 - Other Receivables</option>
+                                        <option>1150 - Allowance for Doubtful Accounts</option>
+                                    </select>
+                                </td>
+                                <td><div class="a-relative"><input type="checkbox"><label></label></div></td>
+                            </tr>
+                            <tr>
+                                <td class="text-left">Layla_Adjustable_Base</td>
+                                <td class="text-left">Layla Adjustable Base</td>
+                                <td class="text-left">0</td>
+                                <td class="text-left sale-active"><i class="fas fa-circle"></i></td>
+                                <td class="text-left">&nbsp;</td>
+                                <td class="text-left">
+                                    <select class="form-control">
+                                        <option class="optiongrey">&nbsp;</option>
+                                        <option>1 - Assets</option>
+                                        <option>1010 - Cash on Hand</option>
+                                        <option>1020 - Checking Account</option>
+                                        <option>1030 - Savings Account</option>
+                                        <option>1040 - Investments and Securities</option>
+                                        <option>1100 - Accounts Receivable</option>
+                                        <option>1140 - Other Receivables</option>
+                                        <option>1150 - Allowance for Doubtful Accounts</option>
+                                    </select>
+                                </td>
+                                <td><div class="a-relative"><input type="checkbox"><label></label></div></td>
+                            </tr>
+                            <tr>
+                                <td class="text-left">Layla_Adjustable_Base</td>
+                                <td class="text-left">Layla Adjustable Base</td>
+                                <td class="text-left">0</td>
+                                <td class="text-left sale-active"><i class="fas fa-circle"></i></td>
+                                <td class="text-left">&nbsp;</td>
+                                <td class="text-left">
+                                    <select class="form-control">
+                                        <option class="optiongrey">&nbsp;</option>
+                                        <option>1 - Assets</option>
+                                        <option>1010 - Cash on Hand</option>
+                                        <option>1020 - Checking Account</option>
+                                        <option>1030 - Savings Account</option>
+                                        <option>1040 - Investments and Securities</option>
+                                        <option>1100 - Accounts Receivable</option>
+                                        <option>1140 - Other Receivables</option>
+                                        <option>1150 - Allowance for Doubtful Accounts</option>
+                                    </select>
+                                </td>
+                                <td><div class="a-relative"><input type="checkbox"><label></label></div></td>
+                            </tr>
+                            <tr>
+                                <td class="text-left">Layla_Adjustable_Base</td>
+                                <td class="text-left">Layla Adjustable Base</td>
+                                <td class="text-left">0</td>
+                                <td class="text-left sale-active"><i class="fas fa-circle"></i></td>
+                                <td class="text-left">&nbsp;</td>
+                                <td class="text-left">
+                                    <select class="form-control">
+                                        <option class="optiongrey">&nbsp;</option>
+                                        <option>1 - Assets</option>
+                                        <option>1010 - Cash on Hand</option>
+                                        <option>1020 - Checking Account</option>
+                                        <option>1030 - Savings Account</option>
+                                        <option>1040 - Investments and Securities</option>
+                                        <option>1100 - Accounts Receivable</option>
+                                        <option>1140 - Other Receivables</option>
+                                        <option>1150 - Allowance for Doubtful Accounts</option>
+                                    </select>
+                                </td>
+                                <td><div class="a-relative"><input type="checkbox"><label></label></div></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+

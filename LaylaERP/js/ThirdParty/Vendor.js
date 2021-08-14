@@ -1,61 +1,4 @@
 ﻿$("#loader").hide();
-//let newEl = document.getElementById('txtAddress1');
-//setupAutocomplete(newEl);
-//function initMap() {
-//    let address1Field = document.querySelector("#txtContactAddress");
-//    // Create the autocomplete object, restricting the search predictions to
-//    // addresses in the US and Canada.
-//    autocomplete = new google.maps.places.Autocomplete(address1Field, {
-//        componentRestrictions: { country: ["us", "ca", "cn"] },
-//        fields: ["address_components", "geometry"],
-//        types: ["address"],
-//    });
-//    // When the user selects an address from the drop-down, populate the
-//    // address fields in the form.
-//    autocomplete.addListener("place_changed", fillInAddress);
-
-//    function fillInAddress() {
-//        const place = autocomplete.getPlace();
-//        //console.log(place);
-//        let address = '';
-//        let obj = place.address_components.filter(element => element.types[0] == 'street_number');
-//        if (obj.length > 0)
-//            address = obj[0].long_name;
-//        obj = place.address_components.filter(element => element.types[0] == 'route');
-//        if (obj.length > 0)
-//            address = address + ' ' + obj[0].long_name;
-//        $("#txtContactAddress").val(address);
-//        obj = place.address_components.filter(element => element.types[0] == 'locality');
-//        if (obj.length > 0)
-//            $("#txtCity").val(obj[0].long_name);
-//        else
-//            $("#txtCity").val('');
-//        obj = place.address_components.filter(element => element.types[0] == 'postal_code');
-//        if (obj.length > 0)
-//            //console.log(obj[0].long_name);
-//            $("#txtZipCode").val(obj[0].long_name);
-//        else
-//            $("#txtZipCode").val('');
-//        obj = place.address_components.filter(element => element.types[0] == 'administrative_area_level_1');
-//        if (obj.length > 0)
-//            $("#ddlState").empty().append('<option value="' + obj[0].short_name + '" selected>' + obj[0].long_name + '</option>');
-//        else
-//            $("#ddlState").empty();
-//        obj = place.address_components.filter(element => element.types[0] == 'country');
-//        if (obj.length > 0)
-//            //console.log(obj[0].short_name);
-//            $("#ddlCountry").empty().append('<option value="' + obj[0].short_name + '" selected>' + obj[0].long_name + '</option>');
-//        //$("#ddlCountry").val(obj[0].short_name + ' - ' + obj[0].long_name);
-//        else
-//            $("#ddlCountry").empty();
-//    }
-
-//    function renderAddress(place) {
-//        //map.setCenter(place.geometry.location);
-//        //marker.setPosition(place.geometry.location);
-//        //marker.setVisible(true);
-//    }
-//}
 getVendorType();
 getStatus();
 getSalesTaxUsed();
@@ -500,14 +443,7 @@ $('#btnNextTab7').click(function (e) {
         },
         success: function (data) {
             if (data.status == true) {
-                swal('Alert!', data.message, 'success');
-                //$("#tab_7").find(":input").each(function () {
-                //    switch (this.type) {
-                //        case "text": case "email": case "textarea": case "tel": $(this).val(''); break;
-                //    }
-                //});
-                //$("#tab_7 option[value='-1']").attr('selected', true)
-                //e.preventDefault();
+                //swal('Alert!', data.message, 'success');
                 var link = $('#mytabs .active').next().children('a').attr('href');
                 $('#mytabs a[href="' + link + '"]').tab('show');
             }
@@ -522,6 +458,14 @@ $('#btnNextTab7').click(function (e) {
             swal('Error!', 'something went wrong', 'error');
         },
     })
+});
+$('#btnNextTab8').click(function (e) {
+    var link = $('#mytabs .active').next().children('a').attr('href');
+    $('#mytabs a[href="' + link + '"]').tab('show');
+});
+$('#btnNextTab9').click(function (e) {
+    var link = $('#mytabs .active').next().children('a').attr('href');
+    $('#mytabs a[href="' + link + '"]').tab('show');
 });
 $('#btnSaveContact').click(function (e) {
     ID = $("#hfid").val();
@@ -1011,6 +955,7 @@ function VendorContactList() {
             { data: 'Name', title: 'Name', sWidth: "10%" },
             { data: 'VendorName', title: 'Vendor Name', sWidth: "10%" },
             { data: 'Title', title: 'Title', sWidth: "10%" },
+            { data: 'Office', title: 'Office Contact', sWidth: "10%" },
             { data: 'Mobile', title: 'Phone', sWidth: "10%" },
             { data: 'Email', title: 'Email', sWidth: "10%" },
             { data: 'Address', title: 'Address', sWidth: "20%" },
@@ -1110,13 +1055,13 @@ $('#btnAddContact').click(function () {
 
     var inputs = document.getElementById("txtContactAddress");
     setupAutocomplete(inputs);
-    //$("#VendorModal").find(":input").each(function () {
-    //    switch (this.type) {
-    //        case "text": case "email": case "textarea": case "tel": $(this).val(''); break;
-    //    }
-    //});
-    //$("#VendorModal option[value='-1']").attr('selected', true)
-    //$("#ddlContactState").empty().append('<option value="" selected></option>');
+    $("#VendorModal").find(":input").each(function () {
+        switch (this.type) {
+            case "text": case "email": case "textarea": case "tel": $(this).val(''); break;
+        }
+    });
+    $("#VendorModal option[value='-1']").attr('selected', true)
+    $("#ddlContactState").empty().append('<option value="" selected></option>');
     $('#VendorModal').modal('show');
    
   
@@ -1202,16 +1147,21 @@ function Deletewarehouse(id) {
     }
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Search Google Place API ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-var autocompleteOptions = { componentRestrictions: { country: ["us", "ca"] }, fields: ["address_components", "geometry"], types: ["address"] };
+var autocompleteOptions = { componentRestrictions: { country: ["us", "ca","cn"] }, fields: ["address_components", "geometry"], types: ["address"] };
 function setupAutocomplete(inputs) {
+    console.log(inputs);
     //console.log('setupAutocomplete...', $(inputs));
     autocomplete = new google.maps.places.Autocomplete(inputs, autocompleteOptions);
     autocomplete.addListener("place_changed", fillInAddress);
     function fillInAddress() {
         let place = autocomplete.getPlace();
         let address = '';
-        let cAdd1 = 'txtAddress1', cZipCode = 'txtZipCode', cCity = 'txtCity', cCountry = 'ddlCountry', cState = 'ddlState';
-       
+            let cAdd1 = '', cZipCode = '', cCity = '', cCountry = '', cState = '';
+
+        if ($(inputs).data('addresstype') == 'VendorAddress')
+             cAdd1 = 'txtAddress1', cZipCode = 'txtZipCode', cCity = 'txtCity', cCountry = 'ddlCountry', cState = 'ddlState';
+        else
+             cAdd1 = 'txtContactAddress', cZipCode = 'txtContactZipCode', cCity = 'txtContactCity', cCountry = 'ddlContactCountry', cState = 'ddlContactState';
         let obj = place.address_components.filter(element => element.types[0] == 'street_number');
         if (obj.length > 0)
             address = obj[0].long_name;

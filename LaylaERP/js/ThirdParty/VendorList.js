@@ -31,15 +31,16 @@ function VendorGrid() {
                     //return '<a href="../ThirdParty/NewVendor/' + id + '">' + id + '</a>';
                 }
             },
-            { data: 'VendorName', title: 'Vendor Name', sWidth: "20%" },
-            { data: 'AliasName', title: 'Alias Name', sWidth: "10%" },
-            { data: 'zip', title: 'Zip Code', sWidth: "10%" },
-            { data: 'address', title: 'Address', sWidth: "20%" },
-            { data: 'phone', title: 'Phone', sWidth: "10%" },
+            { data: 'VendorName', title: 'Vendor Name'}, 
+            { data: 'vendor_type', title: 'Vendor Type' },
+            { data: 'AliasName', title: 'Alias Name'},
+            { data: 'zip', title: 'Zip Code' },
+            { data: 'address', title: 'Address'},
+            { data: 'phone', title: 'Phone'},
 
 
             {
-                'data': 'ID', sWidth: "8%",
+                'data': 'ID',
                 'render': function (id, type, full, meta) {
                     /*  if ($("#hfEdit").val() == "1") {*/
                     return '<a href="../ThirdParty/NewVendor/' + id + '"><i class="glyphicon glyphicon-pencil"></i></a>';

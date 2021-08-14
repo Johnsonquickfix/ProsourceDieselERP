@@ -18,8 +18,8 @@
     <div class="nav-tabs-custom">
         <ul class="nav nav-tabs">
             <li class="active"><a class="active" href="#tab_21" data-toggle="tab">Buying prices<span class="badge badge-danger"></span></a></li>
-            <li><a href="#tab_22" style="display:none" data-toggle="tab">Product</a></li>
-            <li><a href="#tab_23" style="display:none" data-toggle="tab">Selling prices</a></li>
+            @*<li><a href="#tab_22" style="display:none" data-toggle="tab">Product</a></li>
+            <li><a href="#tab_23" style="display:none" data-toggle="tab">Selling prices</a></li>*@
             <li><a href="#tab_24" data-toggle="tab">Kits<span class="badge badge-danger"></span></a></li>
             <li><a href="#tab_25" data-toggle="tab">Notes</a></li>
             <li><a href="#tab_26" data-toggle="tab">Linked files</a></li>
@@ -40,14 +40,14 @@
                                 @*<p><button class="btn btn-danger">Signed(needs billing)</button></p>*@
                             </div>
                             <div class="edit-proposal-box">
-                                <div class="proposal-box" style="display:none">
+                                @*<div class="proposal-box" style="display:none">
                                     <input type="file" name="file" id="proposal" class="inputfile">
                                     <label for="proposal"><i class="fa fa-edit"></i></label>
                                 </div>
                                 <div class="edit-proposal-texts" style="display:none">
                                     <h3 class="box-title" id="txtprosutname"></h3>
 
-                                </div>
+                                </div>*@
                             </div>
 
                         </div>
@@ -58,6 +58,12 @@
                         <div class="box box-primary">
                             <div class="box-body">
                                 <div class="form-group">
+                                    <label class="col-md-4 control-label">Vendor</label>
+                                    <div class="col-md-8">
+                                        <p id="txtVendor"></p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
                                     <label class="col-md-4 control-label">Cost price</label>
                                     <div class="col-md-8">
                                         <p id="txtCostprice"></p>
@@ -65,17 +71,19 @@
                                 </div>
 
                                 @*<div class="form-group">
-                                        <label class="col-md-4 control-label">Weighted average price</label>
-                                        <div class="col-md-8">
-                                            <p id="txtaverageprice"></p>
-                                        </div>
-                                    </div>*@
+            <label class="col-md-4 control-label">Weighted average price</label>
+            <div class="col-md-8">
+                <p id="txtaverageprice"></p>
+            </div>
+        </div>*@
                                 <div class="form-group">
                                     <label class="col-md-4 control-label">Best buying price</label>
                                     <div class="col-md-8">
                                         <p id="txtbestbying"></p>
                                     </div>
                                 </div>
+
+
 
                             </div>
                         </div>
@@ -99,6 +107,13 @@
                                         <div class="col-sm-9">
                                             <select id="ddlvender" class="form-control">
                                             </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group d-flex">
+                                        <label class="col-sm-3 control-label">Tag/Lot/Serial No.</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" id="txttaglotno" class="form-control">
                                         </div>
                                     </div>
 
@@ -182,7 +197,8 @@
                                             <table id="dtdataVendor" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
                                                 <thead>
                                                     <tr>
-                                                        <th>Vendor</th>
+                                                        <th class="text-left">Vendor</th>
+                                                        <th>Tag/Lot/Serial No.</th>
                                                         <th>Purchase quantity</th>
                                                         <th>Sales Tax</th>
                                                         <th>Price</th>
@@ -203,7 +219,7 @@
                     </div>
                 </div>
             </div>
-            <div class="tab-pane active" style="display:none" id="tab_22">
+            <!--<div class="tab-pane active" style="display:none" id="tab_22">
 
                 <div class="row rowbox proposal-row">
                     <div class="col-md-6">
@@ -220,14 +236,14 @@
                                     <div class="col-md-8">
                                         <p id="txtAllowbackorders"></p>
                                     </div>
-                                </div>
+                                </div>-->
                                 @*<div class="form-group">
                                         <label class="col-md-4 control-label">Shipping Class</label>
                                         <div class="col-md-8">
                                             <p id="txtShippingClass"></p>
                                         </div>
                                     </div>*@
-                                <div class="form-group">
+                                <!--<div class="form-group">
                                     <label class="col-md-4 control-label">Tax Class</label>
                                     <div class="col-md-8">
                                         <p id="txtTaxClass"></p>
@@ -300,7 +316,7 @@
                     </div>
 
                 </div>
-            </div>
+            </div>-->
 
 
             <div class="tab-pane" id="tab_24">
@@ -308,12 +324,12 @@
                     <div class="col-md-12">
                         <div class="box box-primary">
                             <div class="box-body">
-                                <div class="form-group">
+                                @*<div class="form-group">
                                     <label class="col-md-4 control-label">Nature of product (material/finished)</label>
                                     <div class="col-md-8">
                                         <p id="txtNatureofproduct"></p>
                                     </div>
-                                </div>
+                                </div>*@
                                 <div class="form-group">
                                     <label class="col-md-4 control-label">Regular Price($)</label>
                                     <div class="col-md-8">

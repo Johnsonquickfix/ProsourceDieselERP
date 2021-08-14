@@ -121,6 +121,15 @@ namespace LaylaERP.Controllers
 
                 });
             }
+            if(usertype.Count == 0)
+            {
+                usertype.Add(new SelectListItem
+                {
+                    Value = ID.ToString(),
+                    Text = "No Variation".ToString()
+
+                });
+            }
             return Json(usertype, JsonRequestBehavior.AllowGet);
         }
         
@@ -391,6 +400,19 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(JSONresult, 0);
         }
+        public JsonResult GetPurchaseDetailsDataByID(OrderPostStatusModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+
+                DataTable dt = ProductRepository.GetPurchaseDetailsDataByID(model);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+
 
         [HttpPost]
         public JsonResult GetProductInfo(SearchModel model)
@@ -521,7 +543,7 @@ namespace LaylaERP.Controllers
         public JsonResult saveAttributes(string fields, string IDs, string post_title, string table, string visible, string variation, string producttypeID, ProductModel model)
         {
             model.product_attributes = fields;
-            if (!string.IsNullOrEmpty(IDs))
+            if ((IDs != "NaN"))
             {
 
                 // ProductRepository.EditProducts(model, model.ID);

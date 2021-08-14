@@ -105,7 +105,7 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "SELECT rowid ID,fk_vendor,purchase_price,cost_price,minpurchasequantity,salestax,taxrate,discount,remark from Product_Purchase_Items"
+                string strSql = "SELECT rowid ID,fk_vendor,purchase_price,cost_price,minpurchasequantity,salestax,taxrate,discount,remark,taglotserialno from Product_Purchase_Items"
                              + " WHERE rowid = " + model.strVal + " ";
 
 
@@ -209,16 +209,23 @@ namespace LaylaERP.BAL
 
                 if (string.IsNullOrEmpty(strValue1) && string.IsNullOrEmpty(strValue2))
                 {
-
+                    
                 }
                 else
                 {
                     if (!string.IsNullOrEmpty(strValue1))
-                        strWhr += " and fk_product = " + strValue1 ;    
-                    string strSQl = "SELECT distinct fk_product_fils ID,wp.post_title,post_title title,'$00.00' buyingprice,'$00' sellingpric, 0 Stock ,qty"
+                        //    strWhr += " and fk_product = " + strValue1 ;    
+                        //string strSQl = "SELECT distinct fk_product_fils ID,wp.post_title,post_title title,'$00.00' buyingprice,'$00' sellingpric, 0 Stock ,qty"
+                        //            + " FROM product_association p"
+                        //            + "  left outer join wp_posts wp on wp.ID = p.fk_product_fils"                                
+                        //            + " WHERE wp.post_type in('product','product_variation') " + strWhr;
+
+                        strWhr += " and p.fk_product = " + strValue1;
+                    string strSQl = "SELECT distinct fk_product_fils ID,wp.post_title,post_title title,ifnull((SELECT min(FORMAT(purchase_price,2)) purchase_price from Product_Purchase_Items where fk_product = p.fk_product_fils),'0.00') buyingprice,FORMAT(pmsaleprice.meta_value,2) sellingpric,0 Stock ,qty"
                                 + " FROM product_association p"
-                                + "  left outer join wp_posts wp on wp.ID = p.fk_product_fils"                                
-                                + " WHERE wp.post_type in('product','product_variation') " + strWhr;
+                                + "  left outer join wp_posts wp on wp.ID = p.fk_product_fils"
+                                + "  left join wp_postmeta pmsaleprice on wp.ID = pmsaleprice.post_id and pmsaleprice.meta_key = '_sale_price'"
+                                + "  WHERE wp.post_type in('product','product_variation') " + strWhr;
 
                     strSQl += ";";
                     MySqlDataReader sdr = SQLHelper.ExecuteReader(strSQl);
@@ -316,7 +323,7 @@ namespace LaylaERP.BAL
                 {
                     if (!string.IsNullOrEmpty(strValue1))
                         strWhr += " fk_product = " + strValue1;
-                    string strSQl = "SELECT ppi.rowid,name,minpurchasequantity,FORMAT(salestax,2) salestax,FORMAT(purchase_price, 2) purchase_price,FORMAT(cost_price, 2) cost_price,date_inc,ppi.discount"
+                    string strSQl = "SELECT ppi.rowid,name,minpurchasequantity,FORMAT(salestax,2) salestax,FORMAT(purchase_price, 2) purchase_price,FORMAT(cost_price, 2) cost_price,date_inc,ppi.discount,taglotserialno"
                                 + " FROM Product_Purchase_Items ppi"
                                 + " left outer JOIN wp_vendor wpv on wpv.rowid = ppi.fk_vendor"
                                 + " WHERE " + strWhr;
@@ -337,6 +344,7 @@ namespace LaylaERP.BAL
                         else
                             productsModel.name = string.Empty;
                         productsModel.salestax = sdr["salestax"].ToString();
+                        productsModel.taglotserialno = sdr["taglotserialno"].ToString();
                         productsModel.purchase_price = sdr["purchase_price"].ToString();
                         productsModel.cost_price = sdr["cost_price"].ToString();
                         productsModel.date_inc = sdr["date_inc"].ToString();
@@ -378,6 +386,34 @@ namespace LaylaERP.BAL
                              + " left join wp_postmeta pmstock on P.ID = pmstock.post_id and pmstock.meta_key = '_stock'"
                              + " left join wp_postmeta pmstockstatus on P.ID = pmstockstatus.post_id and pmstockstatus.meta_key = '_stock_status'"                            
                              + " left join wp_postmeta pmsku on P.ID = pmsku.post_id and pmsku.meta_key = '_sku'"                     
+                             + " WHERE P.ID = " + model.strVal + " ";
+
+
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dt = ds.Tables[0];
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static DataTable GetPurchaseDetailsDataByID(OrderPostStatusModel model)
+        {
+            DataTable dt = new DataTable();
+
+            try
+            {
+                string strWhr = string.Empty;
+
+                string strSql = "SELECT  P.ID ID,post_title,FORMAT(pmregularamount.meta_value,2) regularamount,FORMAT(pmsaleprice.meta_value,2) saleprice,min( FORMAT(purchase_price,2)) purchase_price,min(FORMAT(cost_price,2)) cost_price,(select name from wp_vendor where rowid = Product_Purchase_Items.fk_vendor and cost_price = min(cost_price) )vname,pmsku.meta_value sku"
+                             + " FROM wp_posts P"
+                             + " left join wp_postmeta pmregularamount on P.ID = pmregularamount.post_id and pmregularamount.meta_key = '_regular_price'"
+                             + " left join wp_postmeta pmsaleprice on P.ID = pmsaleprice.post_id and pmsaleprice.meta_key = '_sale_price'"
+                             + " left join Product_Purchase_Items on Product_Purchase_Items.fk_product = P.ID"
+                             + " left join wp_postmeta pmsku on P.ID = pmsku.post_id and pmsku.meta_key = '_sku'"
                              + " WHERE P.ID = " + model.strVal + " ";
 
 
@@ -682,7 +718,7 @@ namespace LaylaERP.BAL
             {
                 StringBuilder strSql = new StringBuilder();
                 //StringBuilder strSql = new StringBuilder(string.Format("delete from Product_Purchase_Items where fk_product = {0}; ", model.fk_product));
-                strSql.Append(string.Format("insert into Product_Purchase_Items ( fk_product,fk_vendor,purchase_price,cost_price,minpurchasequantity,salestax,taxrate,discount,remark) values ({0},{1},{2},{3},{4},{5},{6},{7},'{8}') ", model.fk_product, model.fk_vendor, model.purchase_price, model.cost_price, model.minpurchasequantity, model.salestax,model.taxrate,model.discount,model.remark));
+                strSql.Append(string.Format("insert into Product_Purchase_Items ( fk_product,fk_vendor,purchase_price,cost_price,minpurchasequantity,salestax,taxrate,discount,remark,taglotserialno) values ({0},{1},{2},{3},{4},{5},{6},{7},'{8}','{9}') ", model.fk_product, model.fk_vendor, model.purchase_price, model.cost_price, model.minpurchasequantity, model.salestax,model.taxrate,model.discount,model.remark,model.taglotserialno));
 
                 /// step 6 : wp_posts
                 //strSql.Append(string.Format(" update wp_posts set post_status = '{0}' ,comment_status = 'closed' where id = {1} ", model.OrderPostStatus.status, model.OrderPostStatus.order_id));
@@ -703,7 +739,7 @@ namespace LaylaERP.BAL
                // strSql.Append(string.Format("insert into Product_Purchase_Items ( fk_vendor,purchase_price,cost_price,minpurchasequantity,salestax,taxrate,discount,remark) values ({0},{1},{2},{3},{4},{5},{6},{7},'{8}') ", model.fk_product, model.fk_vendor, model.purchase_price, model.cost_price, model.minpurchasequantity, model.salestax, model.taxrate, model.discount, model.remark));
 
                 /// step 6 : wp_posts
-                strSql.Append(string.Format("update Product_Purchase_Items set fk_vendor = {0} ,purchase_price = {1},cost_price = {2},minpurchasequantity = {3},salestax = {4},taxrate = {5},discount = {6},remark = '{7}' where rowid = {8} ", model.fk_vendor, model.purchase_price, model.cost_price, model.minpurchasequantity, model.salestax, model.taxrate, model.discount, model.remark,  model.ID));
+                strSql.Append(string.Format("update Product_Purchase_Items set fk_vendor = {0} ,purchase_price = {1},cost_price = {2},minpurchasequantity = {3},salestax = {4},taxrate = {5},discount = {6},remark = '{7}',taglotserialno = '{8}' where rowid = {9} ", model.fk_vendor, model.purchase_price, model.cost_price, model.minpurchasequantity, model.salestax, model.taxrate, model.discount, model.remark, model.taglotserialno, model.ID));
 
                 result = SQLHelper.ExecuteNonQuery(strSql.ToString());
             }
@@ -789,9 +825,11 @@ namespace LaylaERP.BAL
                 StringBuilder strSql = new StringBuilder();
                 foreach (ProductModelMetaModel obj in model)
                 {
-                    // strSql_insert += (strSql_insert.Length > 0 ? " union all " : "") + string.Format("select '{0}' post_id,'{1}' meta_key,'{2}' meta_value", obj.post_id, obj.meta_key, obj.meta_value);
+                    strSql_insert += (strSql_insert.Length > 0 ? " union all " : "") + string.Format("select '{0}' post_id,'{1}' meta_key,'{2}' meta_value", obj.post_id, obj.meta_key, obj.meta_value);
                     strSql.Append(string.Format("update wp_postmeta set meta_value = '{0}' where post_id = '{1}' and meta_key = '{2}' ; ", obj.meta_value, obj.post_id, obj.meta_key));
                 }
+                strSql_insert = "insert into wp_postmeta (post_id,meta_key,meta_value) select * from (" + strSql_insert + ") as tmp where tmp.meta_key not in (select meta_key from wp_postmeta where post_id = " + model[0].post_id.ToString() + ");";
+                strSql.Append(strSql_insert);
                 result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
             }
             catch { }
@@ -833,7 +871,7 @@ namespace LaylaERP.BAL
                 {
                    
                     // strSql_insert += (strSql_insert.Length > 0 ? " union all " : "") + string.Format("select '{0}' post_id,'{1}' meta_key,'{2}' meta_value", obj.post_id, obj.meta_key, obj.meta_value);
-                    strSql.Append(string.Format("update wp_posts set post_title = '{0}',post_excerpt = '{1}' where ID = '{2}' ; ", obj.post_title, obj.post_excerpt, obj.ID));
+                    strSql.Append(string.Format("update wp_posts set post_title = '{0}',post_excerpt = '{1}' where ID = '{2}' ; ", obj.post_title, obj.post_excerpt.Trim(), obj.ID));
                 }
                 result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
             }

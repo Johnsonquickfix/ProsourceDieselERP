@@ -62,6 +62,8 @@ namespace LaylaERP.Models
         public float discount { get; set; }
         public int minpurchasequantity { get; set; }
         public string remark { get; set; }
+
+        public string taglotserialno { get; set; }
         public int taxrate { get; set; }
 
 
@@ -140,5 +142,7 @@ namespace LaylaERP.Models
         public string cost_price { get; set; }
         public string discount { get; set; }
         public string date_inc { get; set; }
+        public string taglotserialno { get; set; }
+
     }
 }

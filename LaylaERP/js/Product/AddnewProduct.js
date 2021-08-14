@@ -19,6 +19,7 @@ $(document).ready(function () {
         $("#btnbacklist").prop("href", "../ListProduct")
     
         setTimeout(function () { GetDataByID(id); }, 10);
+
         //// $("#hfprodcid").val("629,632");
         setTimeout(function () { GetProdctByID($("#hfprodcid").val()); }, 4000);
         setTimeout(function () { GetExProdctByID($("#hfcategid").val()); }, 5000);
@@ -149,7 +150,7 @@ $(document).ready(function () {
 
         $("#hfattributeheaderval").val(values.join(','));
 
-        console.log('Addvart'+_Attlist);
+       // console.log('Addvart'+_Attlist);
         var Edit = $("#hfid").val();
         let IDPost = "";
         i++;
@@ -183,7 +184,7 @@ $(document).ready(function () {
                         varHTML += '<div class="box-header with-border user-top-section top-with-select">';
                         varHTML += '<div class="tablenav top tablenav-top2">';
                         varHTML += '<input type="text" class="nmvariationid" id="hfvariationid" readonly value="' + data.ID + '">';
-                        varHTML += '&nbsp;&nbsp;<label class="control-label">SKU</label><input id="varsku" type="text" class="skucval" value="">'
+             
                         varHTML += '<div class="alignleft actions bulkactions">';
                         varHTML += '<table class="data-contacts1-js table table-striped"><tbody class="variation_att">';
                         $.each(_Attlist, function (key, value) {
@@ -192,6 +193,7 @@ $(document).ready(function () {
                             for (let j = 0; j < _values.length; j++) { varHTML += '<option value="' + _values[j].trim() + '"> ' + _values[j].trim() + '</option>'; }
                             varHTML += '</select></tr>';
                         });
+                        varHTML += '&nbsp;&nbsp;<label class="control-label">SKU</label><input id="varsku" type="text" class="skucval" value="">'
                         varHTML += '</tbody></table>';
                         varHTML += '</div>';
                         varHTML += '<div class="a-float-right" id="angle-box"> <span><i class="fa fa-angle-down" aria-hidden="true"></i></span></div>';
@@ -267,11 +269,11 @@ $(document).ready(function () {
     $("#btnSavevariations").click(function (e) {
         let _attxml = [];
         let parentID = parseInt($("#hfUpdatedID").val()) || parseInt($("#hfid").val());
-        console.log(parentID);
+       // console.log(parentID);
 
 
-        console.log($("#hfid").val());
-        console.log($("#hfUpdatedID").val());
+        //console.log($("#hfid").val());
+       // console.log($("#hfUpdatedID").val());
         $("#product_variations > div.d-flex").each(function (index, div) {
             /*console.log('att', index);*/
             $(div).find(".inputddl").each(function () {
@@ -381,11 +383,17 @@ $(document).ready(function () {
 
         let _PostTitleProduct = []
         $("#product_variations > div.d-flex").each(function (index, div) {
+            let post_titel = '';
+            let post_excerptdata = '';
             $(div).find(".inputddl").each(function () {
+                post_titel += ' '+ $(this).val();
+                post_excerptdata += ' ' + $(this).data('key') + ':' + $(this).val();
                 _PostTitleProduct.push(
-                    { ID: $(div).find('.nmvariationid').val(), post_title: $("#txtProductName").val() + '-' + $(this).val(), post_excerpt: $(this).data('key') + ':' + $(this).val() }
+                    { ID: $(div).find('.nmvariationid').val(), post_title: $("#txtProductName").val() + '-' + post_titel, post_excerpt: post_excerptdata }
                 );
+
             });
+            
         });
 
         let _PriceProduct = []
@@ -411,46 +419,41 @@ $(document).ready(function () {
         //        );
         //    }); _ItemProduct
 
-        console.log('skv', _attxml);
-        console.log('item', _ItemProduct);
-        console.log('Title', _PostTitleProduct);
-        console.log('price', _PriceProduct);
+      
         var obj = {
             ProductPostMeta: _attxml, ProductPostItemMeta: _ItemProduct, ProductPostPostMeta: _PostTitleProduct, ProductPostPriceMeta: _PriceProduct
         }
 
-        //if (_attxml != '') {
-        //    //  NOW CALL THE WEB METHOD WITH THE PARAMETERS USING AJAX.
-        //    $.ajax({
-        //        type: 'POST',
-        //        url: '/Product/Savevariations',
-        //        data: JSON.stringify(obj), //"{'fields':'" + _list + "', 'UpdateList': '" + _listkey  + "', 'UpdateID': '" + variationIDUpdate + "', 'PID': '" + $("#hfid").val() + "', 'post_title': '" + $("#txtProductName").val() + "', 'regularprice': '" + regularvar + "', 'Salepricevariationval': '" + Salepricevariation + "', 'Stockquantityvariationval': '" + Stockquantityvariation + "', 'allowbackordersvariationval': '" + allowbackordersvariation + "', 'weightvariationval': '" + weightvariation + "', 'Lvariationval': '" + Lvariation + "', 'Wvariationval': '" + Wvariation + "','Hvariationval': '" + Hvariation + "','shipvariationval': '" + shipvariation + "', 'cassvariationval': '" + cassvariation + "', 'descriptionvariationval': '" + descriptionvariation + "', 'stockchec': '" + stockcheckval + "', 'chkvirtual': '" + virtualval + "','sku': '" + skucval + "', 'parentid': '" + $("#hfUpdatedID").val() + "', 'attributeheaderval': '" + $("#hfattributeheaderval").val() + "'}",
-        //        dataType: 'json',
-        //        headers: { "Content-Type": "application/json" },
-        //        beforeSend: function () {
-        //            $("#loader").show();
-        //        },
-        //        success: function (data) {
-        //            if (data.status == true) {
-        //                // $("#hfUpdatedID").val(data.ID);
-        //                //  alert(data.ID);
-        //                swal('Alert!', data.message, 'success');
-        //            }
-        //            // EMPTY THE ARRAY.
-        //            // alert(response.d);
-        //        },
-        //        complete: function () {
-        //            $("#loader").hide();
-        //            //location.href = '/Users/Users/';
-        //            //window.location.href = '/Users/Users/';
+        if (_attxml != '') {
+            //  NOW CALL THE WEB METHOD WITH THE PARAMETERS USING AJAX.
+            $.ajax({
+                type: 'POST',
+                url: '/Product/Savevariations',
+                data: JSON.stringify(obj), //"{'fields':'" + _list + "', 'UpdateList': '" + _listkey  + "', 'UpdateID': '" + variationIDUpdate + "', 'PID': '" + $("#hfid").val() + "', 'post_title': '" + $("#txtProductName").val() + "', 'regularprice': '" + regularvar + "', 'Salepricevariationval': '" + Salepricevariation + "', 'Stockquantityvariationval': '" + Stockquantityvariation + "', 'allowbackordersvariationval': '" + allowbackordersvariation + "', 'weightvariationval': '" + weightvariation + "', 'Lvariationval': '" + Lvariation + "', 'Wvariationval': '" + Wvariation + "','Hvariationval': '" + Hvariation + "','shipvariationval': '" + shipvariation + "', 'cassvariationval': '" + cassvariation + "', 'descriptionvariationval': '" + descriptionvariation + "', 'stockchec': '" + stockcheckval + "', 'chkvirtual': '" + virtualval + "','sku': '" + skucval + "', 'parentid': '" + $("#hfUpdatedID").val() + "', 'attributeheaderval': '" + $("#hfattributeheaderval").val() + "'}",
+                dataType: 'json',
+                headers: { "Content-Type": "application/json" },
+                beforeSend: function () {
+                    $("#loader").show();
+                },
+                success: function (data) {
+                    if (data.status == true) {
+                        GetProductvariationID(id);
+                    }
+                    // EMPTY THE ARRAY.
+                    // alert(response.d);
+                },
+                complete: function () {
+                    $("#loader").hide();
+                    //location.href = '/Users/Users/';
+                    //window.location.href = '/Users/Users/';
 
-        //        },
-        //        error: function (XMLHttpRequest, textStatus, errorThrown) {
-        //            // alert(errorThrown);
-        //        }
-        //    });
-        //}
-        //else { alert("Fields cannot be empty.") }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    // alert(errorThrown);
+                }
+            });
+        }
+        else { alert("Fields cannot be empty.") }
 
     });
 
@@ -460,13 +463,14 @@ $(document).ready(function () {
             _list.push({ key: $(tr).find('.input').val(), value: $(tr).find('.inputdes').val() });
         });
 
-        console.log(_list);
+       // console.log(_list);
 
         $('.input').each(function () {
             if (this.value != '')
                 values.push(this.value);
         });
-
+        let parentID = parseInt($("#hfid").val());
+        console.log(parentID);
         $("#hfattributeheaderval").val(values.join(','));
         //$('.inputdes').each(function () {
         //    if (this.value != '')
@@ -490,7 +494,7 @@ $(document).ready(function () {
             $.ajax({
                 type: 'POST',
                 url: '/Product/saveAttributes',
-                data: "{'fields':'" + JSON.stringify(_list) + "','ID': '" + $("#hfid").val() + "','post_title': '" + $("#txtProductName").val() + "', 'table': '" + _list + "', 'visible': '" + inputchkvisible + "', 'variation': '" + inputchkvariation + "', 'producttypeID': '" + $("#ddlProductType").val() + "'}",
+                data: "{'fields':'" + JSON.stringify(_list) + "','IDs': '" + parentID.toString() + "','post_title': '" + $("#txtProductName").val() + "', 'table': '" + _list + "', 'visible': '" + inputchkvisible + "', 'variation': '" + inputchkvariation + "', 'producttypeID': '" + $("#ddlProductType").val() + "'}",
                 dataType: 'json',
                 headers: { "Content-Type": "application/json" },
                 beforeSend: function () {
@@ -498,9 +502,14 @@ $(document).ready(function () {
                 },
                 success: function (data) {
                     if (data.status == true) {
-                        $("#hfUpdatedID").val(data.ID);
-                        //alert(data.ID);
-                        swal('Alert!', data.message, 'success');
+                        if (data.url == "Manage") {
+                            //alert('d');
+                            GetProductvariationID(id);
+                        }
+                        else {
+                            $("#hfUpdatedID").val(data.ID);
+                            swal('Alert!', data.message, 'success');
+                        }
                     }
                     // EMPTY THE ARRAY.
                     // alert(response.d);
@@ -707,8 +716,9 @@ function GetDataByID(order_id) {
         data: JSON.stringify(obj),
         success: function (data) {
             var i = JSON.parse(data);
-            console.log(i);
+           // console.log(i);
             $("#txtProductName").val(i[0].post_title);
+            $("#hftitle").val(i[0].post_title);
             $("#formatcustom").val(i[0].post_content);
             $('#ddlProductType').val(i[0].ProductsID).trigger('change');
             $("#txtregularprice").val(i[0].regularamount);
@@ -810,6 +820,7 @@ function GetExProdctByID(ProdctID) {
 
 
 function GetAttributesID(Attributes) {
+   // alert('g');
     var itxtCnt = 0;
     var ID = Attributes;
     //i++;
@@ -826,6 +837,7 @@ function GetAttributesID(Attributes) {
     $('.inputchkvar').prop("checked", true);
 }
 function GetProductvariationID(ProductID) {
+   // alert(ProductID);
     $("#product_variations").empty();
     var obj = { strVal: ProductID }
     $.ajax({
@@ -833,18 +845,18 @@ function GetProductvariationID(ProductID) {
         data: JSON.stringify(obj),
         success: function (data) {
             data = JSON.parse(data);
-            console.log(data);
+            //console.log(data);
             let varHTML = '', attHTML = '';
             for (let i = 0; i < data.length; i++) {
                 let v_data = JSON.parse(data[i].meta_data);
-                console.log(i, data[i], v_data);
+              //  console.log(i, data[i], v_data);
                 varHTML = '<div class="form-group d-flex" id="tr_' + i + '" data-vid="' + data[i].id + '">';
                 varHTML += '<div class="col-sm-12">';
                 //header
                 varHTML += '<div class="box-header with-border user-top-section top-with-select">';
                 varHTML += '<div class="tablenav top tablenav-top2">';
                 varHTML += '<input type="text" readonly class="nmvariationid" id="hfvariationid" value="' + data[i].id + '">';
-                varHTML += '&nbsp;&nbsp;<label class="control-label">SKU</label><input id="varsku" type="text" class="skucval" value="' + v_data['_sku'] + '">'
+               
                 varHTML += '<div class="alignleft actions bulkactions">';
                 varHTML += '<table class="data-contacts1-js table table-striped"><tbody class="variation_att">';
                 $.each(JSON.parse($("#hfvproductattributes").val()), function (key, value) {
@@ -855,6 +867,7 @@ function GetProductvariationID(ProductID) {
                     }
                     varHTML += '</select></tr>';
                 });
+                varHTML += '&nbsp;&nbsp;<label class="control-label">SKU</label><input id="varsku" type="text" class="skucval" value="' + v_data['_sku'] + '">'
                 varHTML += '</tbody></table>';
                 varHTML += '</div>';
                 varHTML += '<div class="a-float-right" id="angle-box"> <span><i class="fa fa-angle-down" aria-hidden="true"></i></span></div>';

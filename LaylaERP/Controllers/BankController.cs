@@ -19,5 +19,6 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+
     }
 }

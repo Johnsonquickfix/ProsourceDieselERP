@@ -609,6 +609,7 @@
     <Content Include="js\Users\UserLogin.js" />
     <Content Include="js\Users\UserRole.js" />
     <Content Include="js\Users\Users.js" />
+    <Content Include="js\Warehouse\updatewarehouse.js" />
     <Content Include="js\Warehouse\vendorwarehouselist.js" />
     <Content Include="js\Warehouse\warehouselist.js" />
     <Content Include="Scripts\bootstrap.js" />
@@ -818,6 +819,7 @@
     <Content Include="Views\Bank\newfinaccount.cshtml" />
     <Content Include="Views\Product\AddNewPurchase.cshtml" />
     <Content Include="Views\Accounting\AccountingJournal.cshtml" />
+    <Content Include="Views\Accounting\chartofaccounts.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

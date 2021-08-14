@@ -14,8 +14,6 @@
 <script src="~/Content/AdminLTE-3.1.0/datatables/datatables.min.js" type="text/javascript"></script>
 <script src="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/js/dataTables.bootstrap.min.js" type="text/javascript"></script>
 
-
-
 <link href="~/Content/css/Style.css" rel="stylesheet" />
 <div id="loader" class="d-flex align-items-center">
     <img src="data:image/gif;base64,R0lGODlhHgAeAIQAAAQCBISChMTCxOTi5GxqbCQmJPTy9NTS1BQSFKyqrMzKzOzq7Pz6/DQ2NNza3BwaHLy+vAwKDJyanMTGxOTm5Hx+fCwqLPT29BQWFLSytMzOzOzu7Pz+/Nze3P///wAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQJCQAeACwAAAAAHgAeAAAF/qAnjiOzOJrCHUhDZAYpzx7TCRAkCIwG/ABMZUOTcSgTnVLA8QF/mASn6OE4lFie8/mrUD0LXG7Z5EIPVWPnAsaJBRprIfLEoBcd2QIyie0hCgtsIkcSBUF3OgslSQJ9YAMMRRcViTgTkh4dSwKDXyJ/SgM1YmOjnyKbpZgbWSqohAo5OxAGV1iLsCIDWBAOsm48uiIXbxAHSWMKw4QTpQoM0dLMItLW0heZzAzZ3AylgNQcssoaSxDasMVYGrdKFMy8sxAdG246E1OwDM5LG99jdOSBdevNlBtjBMSAFSbgKYA7/HTQN8MGmz04oI3AeDHjgAv6OFwY4ExhGwi5REYM8ANOgAoG5MZMuHhqxp97OhgYmHXvUREOCBPq4LCzJYSaRRYA46lzng4BRFAxIElmp7JIzDicOADtgoIDDgykkxECACH5BAkJACgALAAAAAAeAB4AhQQCBISChMTCxERCROTi5BweHKyqrPTy9NTS1BQSFGxqbDQ2NLy6vJSSlMzKzOzq7CQmJPz6/HR2dAwKDLSytNza3BwaHHx+fAQGBISGhMTGxOTm5CQiJKyurPT29BQWFLy+vJyanMzOzOzu7CwqLPz+/Hx6fNze3P///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAb+QJRwOIw8KiJHCZFYKCgHonSKipwEIJBAEBEBvoDPZUSVljYarVpQ8oK/H0OpjCpV1FqGtv1+X+goD1hZa3x9YQh1ZicegVgCegIidhAYbx+JBhJSDyAaUZ0gDg+NQiUPDRCIKAaWHUVpAp+BBBFlHheZlgAWZCgnebJRgEOtbxlVg4QExEMSfQUeI2uic80oHhx9DHd5IA/XQw19Eg7BXOFCJ30DaYQO6aaqYAUR9vfxQiP7/PYe+PlK3LPnLgu8eCUKejL3CIStdB4agkBwZ5CADfEIZBlUYRoeJeEiaLAI4kAJi3qYXesGSZStK5EElGoWKo9KkVpkBjphbYpbFVCDHDwMpKVRJ1kEPFgr4YHASJ2CQPgaQgAUoUdKIpgj5AmUyilHSXI5sBESFg0zp5QAtlHPHrIt13wt82Dro7Eb84y6FsFpsBJk39VCOALJpAMORBAYMXRKEAAh+QQJCQAqACwAAAAAHgAeAIUEAgSEgoTEwsREQkTk4uQcHhysqqz08vTU0tQUEhS0trSUkpRsamw0NjTMyszs6uwkJiT8+vx0dnQMCgyMjoy0srTc2twcGhy8vrx8fnwEBgSEhoTExsTk5uQkIiSsrqz09vQUFhS8urycmpzMzszs7uwsKiz8/vx8enzc3tz///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAG/kCVcDiMPCwkxwmRaDAqB6J0qoqkBBiMQBAhAb6AUKZElZ46HK1acPKCvyHDqaw6WdRakbb9fmfoKg9YWWt8fWEIdWYpIIFYAnoCJHYQGm8hiQYSUg8YHFGdGA4PjUInDwsQiCoGlh9FaQKfgQQRZSAZmZYAF2QqKXmyUYBDrW8bVYOEBMRDEn0FICVronPNKiAefSJ3eRgP10MLfRIOwVzhQil9A2mEDummqmAFEfb38UIl+/z2IPj5DvAT6C4LvHgntNEz9wiDrXTr3gy4M0hAh3gUyE3DoyTcgQt9MJyoqIfZNQbQbF2JJKBUMwN9KAiJEKtloBTWpliJYgyAXodhgbQ06iSLAAhrJ0AQ4LClkTEFUgiAIvRISQRzhDzx/EOFaEUtEQ5k2SICC4dGOYmcADZWzx6xkMZqMUnnAdZHXMSuETHqWoSlwU7oNVgLYQkkkw44IEGgxEMqQQAAIfkECQkALAAsAAAAAB4AHgCFBAIEhIKExMLEREJE5OLkrKqsHB4c9PL01NLUFBIUlJKUbGpstLa0NDY0jIqMzMrM7OrsJCYk/Pr8dHZ0DAoMtLK03NrcHBocvL68fH58BAYEhIaExMbEREZE5ObkrK6sJCIk9Pb0FBYUnJqcvLq8jI6MzM7M7O7sLCos/P78fHp83N7c////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABv5AlnA4lEAspkcKkWgsKgeidMqSrAQYjEAgMQG+AFHmRJWmPBytWpDygr+iQqrMSlnUWpK2/X5n6CwQWFlrfH1hCHVmKyGBWAJ6AiZ2ERpvIokFE1IQGBxRnRgPEI1CKRAKEYgsBZYfRWkCn4EEEmUhGZmWABdkLCt5slGAQ61vG1WDhATEQxN9BiEna6JzzSwhIH0kd3kYENdDCn0TD8Fc4UIrfQNphA/ppqpgBhL29/FCJ/v89iH4+Q7wE+guC7x4KbTRM/cIg610694MuDNIgId4JchNw6Mk3IELfTCkqKiH2bUF0GxdiSSgVLMCfUoIkRCrZaAV1qYcmKDrC1iIYYG0NOoki0AIa3YcgMTEyhIDKQRAEXqkxIJCMEwL/KFCtKKWLodW5SSSAlgWSGcNHXJADIK5NVzcvDHwtJkEArFIsJELwEAJl9dSnEAyCYGBDioc0gkCACH5BAkJAC0ALAAAAAAeAB4AhQQCBISChMTCxERCROTi5BweHKyqrPTy9NTS1BQSFJSSlGxqbDQyNLS2tIyKjMzKzOzq7CQmJPz6/HR2dAwKDLSytNza3BwaHLy+vHx+fAQGBISGhMTGxERGROTm5CQiJKyurPT29BQWFJyanDQ2NLy6vIyOjMzOzOzu7CwqLPz+/Hx6fNze3P///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAb+wJZwOJRALKeHCpEgLSoHonTakrAEGIxAIDkBvgBRBkWVqjwcrVqg8oK/IoOq3FJZ1NqStv1+Z+gtEFhZa3x9YQh1ZiwhgVgCegIndhEabyKJBhNSEBgcUZ0YDxCNQioQChGILQaWIEVpAp+BBBJlIRmZlgAXZC0sebJRgEOtbxtVg4QExEMTfQUhKGuic80tIR99JXd5GBDXQwp9Ew/BXOFCLH0DaYQP6aaqYAUS9vfxQij7/PYh+PkO8BPoLgu8eCq00TP3CIOtdOveDLgzSICHeCbITcOjJNyBC30wqKioh9m1BdBsXYkkoFQzA31MCJEQqyWrCS6lHJig68tah2GBtDSCCaCAAhbW7DgAiYmVpQZSCEQx9oZBCAsKwTQ18IcK1TcJDrjp09SamWeHEoQY28cBMRAg31BYe6gA1GYoNhQAo5ZtARM5m4UoMWGAVQQFOqxwSCcIACH5BAkJADAALAAAAAAeAB4AhQQCBISChMTCxERCROTi5KSmpBweHPTy9JSSlNTS1LS2tCwuLBQSFGxqbIyKjMzKzOzq7KyurCQmJPz6/HR2dAwKDJyanNza3Ly+vDQ2NBwaHHx+fAQGBISGhMTGxERGROTm5KyqrCQiJPT29Ly6vDQyNBQWFIyOjMzOzOzu7LSytCwqLPz+/Hx6fJyenNze3P///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAb+QJhwOJxALqgHK8HINFQHonQKm7wEGIxAMEEBvgDTJkWVskAerVrA8oK/phCrDGNd1FqStv1+b+gwEFhZa3x9YQl1Zi8jgVgCegIodhIcbyaJIRRSEBgeUZ0YDxCNQiwQCBKIMAUcHBFFaQKfgQQTZSMbmZYAGmQwL3mzUYBDIbxfHVWDhATFQxR9BiMpa6JzzzAjIn0kd3kYENlDCH0UD8Jc40IvfQNphA/rpqpgBhP4+fNCKf3+/ymIzTvgjyCDNwuwjZvAzV6GNxXErXuBDMCABn0szDthTkUfCaWeHTDQB8MIE33+ZMP45h6MDZcSZWv15gQ/lKs0hZRygEJbIpoARAgssIqmAQQvsNlxoCGnJQVEWOiCcazPggkJ6oHBxCpAmap9GIxw04erwqjRDlUYkeDQFwfFIjR9I5asPajPUnQg+aVuyxM7n40gQWHAArYGPrTAcKtMEAAh+QQJCQAyACwAAAAAHgAeAIUEAgSEgoTEwsREQkSkoqTk4uQcHhy0srT08vSUkpTU0tRkZmQsLiwUEhR0dnSMiozMysysqqzs6uwkJiS8urz8+vwMCgycmpzc2tw0NjQcGhx8fnwEBgSEhoTExsRERkSkpqTk5uQkIiS0trT09vRsamw0MjQUFhR8enyMjozMzsysrqzs7uwsKiy8vrz8/vycnpzc3tz///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAG/kCZcDisSDAqyEvRyJQOCKJ0KqvEBC6XQFBRAb6A04ZFlb5CHq1a8PKCv6fIqyx7YdRairb9fm/oMhJYWWt8fWEKdWYOiYJ5Wip2ExxvJ4kRDlIEiIFZEBIkQy8SCROcIBwcK0MhJ3CNBRVlJBuXlAAaZDIOlYmAQxG3Xx0yCA19Kb9DvG8GJCt9DLLKMiQGfRQLfTDUQwl9DiZvHLrdBX0DFm8M3aIizSzx8VHtQvLyCPMS9PX58yzqwDCY0+7FOzAGMryxIKFeDHQl+lyolwLcgT4TQlFDcO2NCxKu/HSL2EzWhl7dUL1JJoNFSEsyMGmcgoCRDJUARPADcYqSUYEEMQjaeaCBUzAAI4i8qBVT2BdpCkyhBBGgzNE+DUi46QOT4KJDACyQUAAWwINfK4q+yboVYVJlLDp0BMC2WYqZ1EhQcDCAwVgDH1C4mEYlCAAh+QQJCQAwACwAAAAAHgAeAIUEAgSEgoTEwsREQkQkIiSkoqTk4uT08vQUEhSUkpRkZmQ0MjS0srTU0tR0dnSMiowsKiysqqzs6uz8+vwcGhwMCgycmpw8Ojy8urzc2tx8fnwEBgSEhoTMzsxERkQkJiSkpqTk5uT09vQUFhRsamw0NjS0trR8enyMjowsLiysrqzs7uz8/vwcHhycnpzc3tz///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAG/kCYcDg8qEgLgqiBKJEYB6J0CpM4RoAsQtTJZkeaFVXKKiC82QoX/Y2wxjAWia1d0wEaOAy0oW+7dCMNcWQOgxF9XhsXIhkfiV+HDlIFAIIwiAAQLhJvcRIJH5aDfBsqQyFYo3saE2MiGqQVWRRiMA5ol3pDKpAAHDAHZ2gou0O4aC0iKmwprsYwIgRsGApsLtBDCWwOC2gbttkGbAOzXinZQyzTXi0r7+9R6ULw8AfxEvLz9/Er5lkpPGVbl6wEmgoS5r0gNweNhXkouDFg80FEtgMtqIlQ5SUPtIbtXGnINQgaH2L0VF2K4MAilQOG9iQioA/EqpMtErzwxCLDSAMKqzKZIMIiFiZfAJw1EEVyT4Axmdj8uXNJIFFkbNQ0uAPgwS4VQNFMZdNiqLEVHDLWAZSlBQqX2URgcDAgxZIWHk4IgDslCAAh+QQJCQAyACwAAAAAHgAeAIUEAgSEgoTEwsREQkTk4uQkIiSkoqT08vS0srQUEhTU0tRkZmQ0MjSUkpR0dnSMiozMyszs6uwsKiysqqz8+vy8urwcGhwMCgzc2tw8Ojx8fnwEBgSEhoTExsRERkTk5uQkJiSkpqT09vS0trQUFhRsamw0NjScnpx8enyMjozMzszs7uwsLiysrqz8/vy8vrwcHhzc3tz///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAG/kCZcDg8tEqMgkgkUGFWFKJ0Kos4SIBsQnR4CV6vTixKJboMiaz6wgV/v51IWegqqe9bprvifcXmMiEbd1ptXnxwBzIuUi4OCjITg2obGUsQAnxgHYoTDlIGACSQkgASJxGMQiIfEF6dgy1DH1iikCEaZFMUMSKRkxYrQg53o4BEE4QcMgdpdynHQ8R3MCIthCy6xyIwhBULhCfRRA2EDgx3G8LjQgSEAxd3LOxDLgXUK/n5ivRC+voH9kXg1y/gvhXx1LBQxc4eNRN3LsihF+OdnTvi6KUwh4AQCF/jDlgg9EJELTUa2F1UAyOKhmKQxgl65q+WMU8gpxx4FGhSWgGCIWz1BACjQQxVLjA8GHlz0AgzGkhNUkhBAQhCxkIEKFOK0BYVhLIYY2hmGiE2CsJmeXCsxUg8IsASgvE02goO3QrJzQIjRc5xIio4GMBChAIYHlC80CYlCAAh+QQJCQAxACwAAAAAHgAeAIUEAgSEgoTEwsREQkTk4uSkoqQkIiT08vS0srQUEhTU0tRkZmSUkpQ0MjR0dnSMiozMyszs6uysqqz8+vy8urwcGhwMCgwsKizc2tw8Ojx8fnwEBgSEhoTExsRERkTk5uSkpqT09vS0trQUFhRsamycnpw0NjR8enyMjozMzszs7uysrqz8/vy8vrwcHhwsLizc3tz///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAG/sCYcDg8rEgNQygkSGFUE6J0Gos4RoBsInRoCVqtDixKJbIKiazawgV/v51IWcgiqe9bppvibcHmMSAbd1ptXnxwBzEsUiwOCjESg2obGUsQAnxgHYoRf0QFACOQkgAXJRGMQiEfEF6dX3JCH1iikCAaZFMTMCFVXy0QZA53o4BEEW5gBDEHaXcox0MwwJkdEyuEL7rHEx2ZfSoLhCXSRB9gfTANdxsq5kMTb14pFncv8EMsEJoUECoAASrKJ2SCwYMHBEYYSDBgQHtqXqiCx8LAHRcm7liQBQ/GpCwD7Nwplw8FIQcICCmBd6ACoRYhaqnRAE+kGhdRNBSDZE4QaDQhKmoZk+DAF5UDjwJNMsAQhC2lAFwwgKGKBYYHLocOEmFGA6mPWbYpMADWGIgAZUoR2pKCUBZjE80Qc8tGgdssD46tcIknRFtCLrhKU8HBhRq2F1EYhReCgoMBL0IocOHhRAtuUoIAACH5BAkJADAALAAAAAAeAB4AhQQCBISChMTCxERGROTi5KSipCQiJPTy9LSytBQSFNTS1JSSlGRmZDQyNHR2dIyKjMzKzOzq7KyqrPz6/Ly6vBwaHAwKDCwqLNza3Dw6PHx+fAQGBISGhMTGxOTm5KSmpPT29LS2tBQWFJyenGxqbDQ2NHx6fIyOjMzOzOzu7KyurPz+/Ly+vBweHCwuLNze3P///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAb+QJhwODyoSA0DCCRAYVITonQKizhEgGwCdGAJWKzOK0olrgqJrNrCBX+/nUhZuCKp71umm+JlveYwHxt3Wm1efHAHMCtSKw4KMBKDAJQbGUsQAnxgHYoRf0QFACKQkgAXIxGMQiAeEF6eX3JCHlijkB8aZFMTLyBVXywQZA6UlKSARBFuYAQwB2nGACfJQy/Bmh0TKtIALrvJEx2afSkM3SPVRB5gfS8N0hsp6kMTb14oFtIu9EMrEJsoQEhBkKCifkImKFx4wGCEgwgngFAIYoU+Yy5W0fvXTlgJaRZm0dMTDIUdaen6EWj35QWCbkroievz5QAIW8Y00HtxCMxuMBgapCFTt2yPMxgpbCGT4OAXlQOPgPnc9eFWoEEtFrxYtQLDgwpWI3yZ509DqUkYJygwgDYsqCmmum1B0e0YpDKO6gJgo0AvgAfJVICVNrduixDqUnBoYaywsRYnnI6k4GCACxAKWgwwwQKclCAAIfkECQkALgAsAAAAAB4AHgCFBAIEhIKExMLEREZE5OLkJCIkpKKk9PL0FBIU1NLUtLK0ZGZkNDI0lJKUdHZ0zMrM7OrsrKqs/Pr8HBocDAoMjI6MLCos3NrcvLq8PDo8fH58BAYEhIaExMbE5ObkpKak9Pb0FBYUbGpsNDY0nJ6cfHp8zM7M7O7srK6s/P78HB4cLC4s3N7cvL68////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABv5Al3A4PKBEjAIIJDBdThKidOqCOEKALAJ0aAlarQ4rSiWmDIismsIFf78dSFmYEqnvW6Yb422x5i4fG3dabV58cAcuKVIpDgkuEYMAlBsZSw8CfGAdihB/RAYAIZCSABYkEIxCIB4PXp5fckIeWKOQHxpkUxIsIFVfLQ9kDpSUpIBEEG5gBC4HacYAFclDLMGaHRIo0gAru8kSHZp9JwvdJNVEHmB9LAzSGyfqQxJvXiYU0iv0QykPmzA8OEGQoKJ+QiQoXHjAIISDCCWAUAgihT5jK1bR+9dO2AhpFGbR0xPMhB1p6foRaPeFhYJuSuiJ6/PlAAhbxjTQY3EIzHIwFxqkIVO3bI8zFydsIYvg4BeVXr8gBPsp5MOtQINUNGCxKgUIAuMERP0yz5+GUpMwSnwVLIyno1NMdUNwoAszOE6pOOpGaUuXYBjewC2DYkI3NiDuChMJ6AQHFcb8suxAAFw1EBgcDFiBKcGFA5aJBAEAIfkECQkAKQAsAAAAAB4AHgCFBAIEhIKExMLEZGZk5OLkJCIkpKKk9PL01NLUFBIUNDI0tLK0dHZ0zMrM7OrsrKqs/Pr8DAoMnJ6cLCos3NrcHBocPDo8fH58BAYEjI6MxMbEbGps5ObkpKak9Pb0FBYUNDY0vL68fHp8zM7M7O7srK6s/P78LC4s3N7c////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABv7AlHA4PJQ2ioLHIxhRSBCidJpyMD6AbMJzCAlCIQ0qSiWaDImsOsIFf78aR1lo2qjvW6Z7j5qnOhh3Wm1eYF4CHikmUiYMCCkPgWoYFksNX4YCB1V9RAYAH4+RABMSDotCHhwNXpsOX3JCHFigjx0XZFMQBK6FGmQMd6F+RA6FXwQpB2l3GcRDKIZgvyWCJ7nEEKxvIQcDghLPRByZIRQKdxgk4kMQhV4jEXcn7EMmrIYNJPv7m/VCEAIKPNDPgb9/AgXKU3MCFTsTGqRpAHEnQix2ejAhsHMnXD0C5SgsEKSEHQQN3Lp5oKXmArto0hpEuSDskbhX75KlIEFrmGcDFA6lQECRyNgXmUM61KriRQMBD6hMeCCAUhNTARcVXXhkbI+ABia0SQtTtNMUo5jeQOhyyNfBKSZgvvNiogumPTrnkMD3RsDaPYfWPdsV8U3dmASwPTPhgMKIERA8NBhBwIFiIkEAACH5BAkJACUALAAAAAAeAB4AhQQCBISChMTCxGRmZOTi5CQiJPTy9KSipNTS1BQSFDQyNMzKzHR2dOzq7Pz6/Ly+vAwKDJyenKyqrNza3BwaHDw6PAQGBIyOjMTGxGxqbOTm5CwuLPT29BQWFDQ2NMzOzHx6fOzu7Pz+/KyurNze3P///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAb+wJJwODSMMooChyP4TEIOonRaajA6gGyCY3gIHg8MKUolig6JrBrCBX+/mEZZKMqo71ume0+alyQWd1ptXmBeAhwlIlIiDAh/gWoWFUsLX4YCBlV9RAcAHY+AABsRDYtCHBoLXpoNX3JCGlifoSCJVA4ErYUYZAx3oH5EDYVfBCUGaXcXwkMkhmC9I4IbZM0Oq28PBgOCEc1EGpgPEwp3FiHgQw6FXh8QdxvqQyKrhgsh+fma80IO/wAD/uvnTyAGaAsIijhoCMOHdgKsgdNzCcGEYg809CMw7smeBwtOXcOgbZsDhoU4NbvYbkEUEpe83Grmas+xEg7eZNokUopbAxK73ogkhqjKlwUEOJwSwYEAyaJEYQ3RZRSagJDYoIVppVIKMYxeHHQ5xGvmFBEwrXoR0SVmoZtzGjx1E3HsJQEC0l0jcVDoWDBIJTYT0WACApccFlg0IJhIEAAh+QQJCQAhACwAAAAAHgAeAIUEAgSEgoTEwsTk4uRkZmQkIiT08vTU0tSkoqQUEhTMyszs6uw0NjT8+vy8vrwMCgx8enzc2tysqqwEBgScnpzExsTk5uRsamwsLiz09vQUFhTMzszs7uw8Ojz8/vzc3tysrqz///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAG/sCQcDg0gC6MQiYj2EQ4DaJ0GlpAEoBswmBwCByOyidKJXoQ2Kw20/W6K4uy0HNR2x9LsNv9kYckE3ZrXV9fXgIZIR5SHh8Gf4FqEx1LCoZgAo8LfUQLYYkSWRgUC4tCGRYKXppfcUINFV4VjxIQiVQNA5pvZB97s36dbl8DIQ2XxMFDvnphDRx7Dgqmyg2qhQ4GEZhgrspCA3pfEdeHZN8hTHsHsXoK6EMequ4N9fbwQ/b6+/iv+5fS+nloB6bChj0Czn1TZ+jAtj3evoXj9sTQFwUK/cBCCAUbmGLfHg5bxAzTLWWeLoGEVSjKpoz5HFVxg3FIyl3SBmQw5SHDSYAKAoAtaCVFVxWAAqZZa/apCsgpnoZhatBGADZgZRp5LOSBkDgvT8ssiGUxYVWaEeXkIuulazMBA2D68bAgwgGMGRQ4NEBtShAAIfkECQkAEAAsAAAAAB4AHgCEvL685OLk1NLU9PL0zMrM7Ors/Pr8xMbE3NrcxMLE5Obk9Pb0zM7M7O7s/P783N7c////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABf4gJI6jUSAM4QwHgTQGKc+Q8SQAkCTGoOeHR4xGcigOP1xilVMCDgWiyIH4WZe+pvYhhRRwuSTTqVxAHDLHw/y9MhwLArjJ5pIKz4E3RyiYSwoEOnptUSIGSAkHhAFDMzaEYARDD0kJf10ieFYBNXM5nZkiN1oHBg1XKqKHB2A4DVVWhqsQAWE6CIJKPLQiC04AAkhhBL1TgsQGysvGh8vPyguOvQbSy5/Fxg7IQAxJANOiv0kMsT8KxrZaL2QHaKuIwAMGnwl2orGuaKRNeqttYULR05GA0IN3j9bswTFpBJ5LXhgGWPAOToBWBSMCmCUiQKRbCVQY4AaETagZmyuA8ciy48ciKWrq6RgDEsBJIgV0NVmphWADeBfFZOHTSNsJAZPiCEAwT0oIADs=" align="">
@@ -226,7 +224,7 @@
                                     <div class="box-footer">
                                         <div class="text-right">
                                             <a href="#" class="btn btn-danger" id="btnSave"><b>Update</b></a>
-                                            
+
 
                                         </div>
                                     </div>
@@ -384,12 +382,12 @@
 
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Eat by date<span style="color:red">*</span></label>
-                                        <input class="form-control" type="text" id="txteatbydate"  placeholder="Enter Eat by date" /><span class="even-space"></span>
+                                        <input class="form-control" type="text" id="txteatbydate" placeholder="Enter Eat by date" /><span class="even-space"></span>
                                     </div>
 
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Unit purchase price<span style="color:red">*</span></label>
-                                        <input type="text" id="txtprice" class="form-control" placeholder="Enter Unit purchase price" >
+                                        <input type="text" id="txtprice" class="form-control" placeholder="Enter Unit purchase price">
                                     </div>
                                 </div>
 
@@ -421,6 +419,8 @@
                                     <div class="box-footer">
                                         <div class="text-right">
                                             <a href="#" class="btn btn-danger" id="btnStock"><b>Save</b></a>
+                                            <a href="#" class="btn btn-danger" id="btnStockUpdate"><b>Update</b></a>
+                                            <a href="#" class="btn btn-danger" id="btnStockCancel"><b>Cancel</b></a>
                                             @*<input type="button" class="btn btn-danger" name="action" id="btnRefresh" value="Refresh" />*@
 
                                         </div>
@@ -430,112 +430,23 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-sm-9">
+                        <div class="col-sm-12">
                             <div class="box box-primary">
                                 <div class="box-body">
                                     <table id="dtdata" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
                                         <thead>
                                             <tr>
-                                                @*<th>Ref</th>
-                            <th>Date</th>*@
+                                                <th>Ref</th>
+                                                <th>Date</th>
                                                 <th>Product</th>
                                                 <th>Warehouse</th>
                                                 <th>Label of movement</th>
                                                 <th>Qty</th>
                                                 <th>Unit Price</th>
+                                                <th>Action</th>
                                             </tr>
                                         </thead>
                                     </table>
-
-                                </div>
-                                </div>
-                            </div>
-
-
-
-
-                            </div>
-
-
-                            <!-- /.nav-tabs-custom -->
-                            <!-- /.col -->
-
-                        </div>
-            </div>
-
-        </div>
-
-
-        <div class="tab-pane" id="tab_4">
-
-            <div class="createuser-section section_wrapper">
-                <div class="create-user-box">
-                    <!-- /.col -->
-
-                    <div class="row">
-                        <div class="col-sm-4">
-                            <div class="box box-primary">
-                                <div class="box-body">
-
-                                    <div class="form-group">
-                                        <label for="exampleInputEmail1">Product</label>
-                                        <select class="form-control">
-                                            <option value="0">--Select Product--</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="exampleInputEmail1">Target Warehouse</label>
-                                        <input type="text" class="form-control">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="exampleInputEmail1">Number of units </label>
-                                        <input type="text" class="form-control">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="exampleInputEmail1">Lot/Serial number</label>
-                                        <input type="text" class="form-control">
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-
-
-                        <div class="col-sm-4">
-                            <div class="box box-primary">
-                                <div class="box-body">
-
-                                    <div class="form-group">
-                                        <label for="exampleInputEmail1">Eat-by date</label>
-                                        <input type="text" class="form-control">
-                                    </div>
-
-                                    <div class="form-group">
-
-                                        <label for="exampleInputEmail1">Sale by date</label>
-                                        <input type="text" class="form-control">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="exampleInputEmail1">Label of movement</label>
-                                        <input type="text" class="form-control">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="exampleInputEmail1">Label of movement</label>
-                                        <input type="text" class="form-control">
-                                    </div>
-
-                                    <div class="box-footer">
-                                        <div class="text-right">
-                                            <a href="#" class="btn btn-danger"><b>Save</b></a>
-
-                                        </div>
-                                    </div>
-
 
                                 </div>
                             </div>
@@ -553,9 +464,120 @@
         </div>
 
 
+        <div class="tab-pane" id="tab_4">
+
+            <div class="createuser-section section_wrapper">
+                <div class="create-user-box">
+                    <!-- /.col -->
+
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="box box-primary">
+                                <div class="box-body">
+                                    <div class="form-group">
+                                        <input type="hidden" class="form-control" id="hfprice">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Product</label>
+                                        <select id="ddltransferProduct" class="form-control">
+                                            <option value="0">--Select Product--</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Target Warehouse</label>
+                                        <select id="ddltargetwarehouse" class="form-control">
+                                            <option value="0">--Select Warehouse--</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Number of units </label>
+                                        <input type="text" class="form-control" id="txttransferunit">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Lot/Serial number</label>
+                                        <input type="text" id="txttransferserial" class="form-control">
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
 
 
+                        <div class="col-sm-4">
+                            <div class="box box-primary">
+                                <div class="box-body">
 
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Eat-by date</label>
+
+                                        <input class="form-control" type="text" id="txttransfereatbydate" placeholder="Enter Eat by date" /><span class="even-space"></span>
+                                    </div>
+
+                                    <div class="form-group">
+
+                                        <label for="exampleInputEmail1">Sale by date</label>
+
+                                        <input class="form-control" type="text" id="txttransfersalebydate" placeholder="Enter Sale by date" /><span class="even-space"></span>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Label of movement</label>
+                                        <input type="text" id="txttransferlabel" class="form-control">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Movement or inventory code</label>
+                                        <input type="text" id="txttransferinvtcode" class="form-control">
+                                    </div>
+
+                                    <div class="box-footer">
+                                        <div class="text-right">
+                                            <a href="#" class="btn btn-danger" id="btnTranferStock"><b>Save</b></a>
+
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="box box-primary">
+                                <div class="box-body">
+                                    <table id="dttransferstock" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
+                                        <thead>
+                                            <tr>
+                                                <th>Ref</th>
+                                                <th>Date</th>
+                                                <th>Product</th>
+                                                <th>Warehouse</th>
+                                                <th>Label of movement</th>
+                                                <th>Qty</th>
+                                                <th>Unit Price</th>
+                                                
+                                            </tr>
+                                        </thead>
+                                    </table>
+
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+
+                    <!-- /.nav-tabs-custom -->
+                    <!-- /.col -->
+
+                </div>
+            </div>
+
+        </div>
     </div>
 </div>
 <script>
@@ -563,6 +585,17 @@
     $(document).ready(function () {
         $("#loader").hide();
         StockTransferGrid();
+        StockTransferGrid1();
+        $("#btnStockUpdate").hide();
+        $("#btnStockCancel").hide();
+        $("#btnStockCancel").click(function () {
+            $("#btnStock").show();
+            $("#btnStockUpdate").hide();
+            $("#btnStockCancel").hide();
+            reset();
+        });
+
+
         $(document).on('click', "#btnSave", function () {
             AddWarehouse();
         });
@@ -573,14 +606,14 @@
         });
 
         $(document).on('click', "#btnStock", function () {
-           
+
             Addcurrentstock();
-            
+
         });
 
-        $(document).on('click', "#btnRefresh", function () {
-            
-            StockTransferGrid();
+        $(document).on('click', "#btnTranferStock", function () {
+
+            AddTransferStock();
         });
 
         $.get('/Warehouse/GetProduct', function (data) {
@@ -688,108 +721,6 @@
 
 </script>
 
-<script>
-    function AddWarehouse() {
-        debugger
-        rowid = $("#hfid").val();
-        ref = $("#txtref").val();
-        lieu = $("#txtShortNameLocation").val();
-        description = $("#txtDescription").val();
-        address = $("#txtAddress").val();
-        zip = $("#txtZipCode").val();
-        town = $("#txtState").val();
-        country = $("#txtCountry").val();
-        phone = $("#txtPhone").val();
-        fax = $("#txtFax").val();
-        //statut = $("#status").val();
-        address1 = $("#txtAddress1").val();
-        city = $("#txtCity").val();
-        warehousetype = $("#warehousetype").val();
-        status = $("#chkwarehousestatus").prop("checked") ? 1 : 0;
-        //Additional info
-        //corphone = $("#txtCorContact").val();
-        //coraddress = $("#txtCorAddress").val();
-        //coraddress1 = $("#txtCorAddress1").val();
-        //corcity = $("#txtCorCity").val();
-        //corstate = $("#txtCorState").val();
-        //corzip = $("#txtCorZipCode").val();
-        //corcountry = $("#txtCorCountry").val();
-        //publicnote = $("#txtpublic").val();
-        //privatenote = $("#txtprivate").val();
-
-        email = $("#txtEmail").val();
-
-        if (ref == "") {
-            swal('Alert', 'Please Enter Reference Name', 'error').then(function () { swal.close(); $('#txtref').focus(); });
-        }
-        else if (lieu == "") {
-            swal('Alert', 'Please Enter Short Name Location', 'error').then(function () { swal.close(); $('#txtShortNameLocation').focus(); });
-        }
-        else if (phone == "") {
-            swal('Alert', 'Please Enter Contact Number', 'error').then(function () { swal.close(); $('#txtPhone').focus(); });
-        }
-        else if (address == "") {
-            swal('Alert', 'Please Enter Address', 'error').then(function () { swal.close(); $('#txtAddress').focus(); });
-        }
-        else if (city == "") {
-            swal('Alert', 'Please Enter City', 'error').then(function () { swal.close(); $('#txtCity').focus(); });
-        }
-        else if (zip == "") {
-            swal('Alert', 'Please Enter Zip Code', 'error').then(function () { swal.close(); $('#txtZipCode').focus(); });
-        }
-
-        else {
-
-            var obj = {
-                rowid: rowid,
-                reff: ref,
-                lieu: lieu,
-                description: description,
-                address: address,
-                zip: zip,
-                town: town,
-                country: country,
-                phone: phone,
-                fax: fax,
-                //statut: statut,
-                address1: address1,
-                city: city,
-                status: status,
-                warehouse_type: warehousetype,
-                //cor_phone: corphone,
-                //cor_address: coraddress,
-                //cor_address1: coraddress1,
-                //cor_city: corcity,
-                //cor_state: corstate,
-                //cor_zip: corzip,
-                //cor_country: corcountry,
-                //note_public: publicnote,
-                //note_private: privatenote,
-                email: email,
-            }
-            $.ajax({
-                url: '/Warehouse/Updatewarehouses/', dataType: 'json', type: 'Post',
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify(obj),
-                dataType: "json",
-                beforeSend: function () { $("#loader").show(); },
-                success: function (data) {
-                    if (data.status == true) {
-                        //$('#parent > input:text').val('');
-                        swal('Alert!', data.message, 'success').then((result) => { location.href = 'Warehouse'; });
-                    }
-                    else {
-                        swal('Alert!', data.message, 'error');
-                    }
-                },
-                complete: function () { $("#loader").hide(); },
-                error: function (error) { swal('Error!', 'something went wrong', 'error'); },
-            })
-
-        }
-
-    }
-</script>
 
 <script>
     function initMap() {
@@ -845,190 +776,26 @@
 </script>
 
 <script>
-    function AddWarehouseinfo() {
-        debugger
-        //Additional info
-        rowid = $("#hfid").val();
-        corphone = $("#txtCorContact").val();
-        coraddress = $("#txtCorAddress").val();
-        coraddress1 = $("#txtCorAddress1").val();
-        corcity = $("#txtCorCity").val();
-        corstate = $("#txtCorState").val();
-        corzip = $("#txtCorZipCode").val();
-        corcountry = $("#txtCorCountry").val();
-        publicnote = $("#txtpublic").val();
-        privatenote = $("#txtprivate").val();
-
-        var obj = {
-            rowid: rowid,
-            cor_phone: corphone,
-            cor_address: coraddress,
-            cor_address1: coraddress1,
-            cor_city: corcity,
-            cor_state: corstate,
-            cor_zip: corzip,
-            cor_country: corcountry,
-            note_public: publicnote,
-            note_private: privatenote,
-
-        }
-        $.ajax({
-            url: '/Warehouse/Updatewarehousesinfo/', dataType: 'json', type: 'Post',
-            contentType: "application/json; charset=utf-8",
-            data: JSON.stringify(obj),
-            dataType: "json",
-            beforeSend: function () { $("#loader").show(); },
-            success: function (data) {
-                if (data.status == true) {
-                    //$('#parent > input:text').val('');
-                    swal('Alert!', data.message, 'success');
-                }
-                else {
-                    swal('Alert!', data.message, 'error');
-                }
-            },
-            complete: function () { $("#loader").hide(); },
-            error: function (error) { swal('Error!', 'something went wrong', 'error'); },
-        })
-
-    }
-</script>
-
-<script>
-
-    function Addcurrentstock() {
-        debugger
-        var fk_entrepot = $("#hfid").val();
-        var fk_product = $("#ddlProduct").val();
-        var serial = $("#txtserial").val();
-        var eatby = $("#txteatbydate").val();
-        var price = $("#txtprice").val();
-        var unit = $("#txtunit").val();
-        var label = $("#txtlabel").val();
-        var sellby = $("#txtsalebydate").val();
-
-        if (fk_product == 0) {
-            swal('Alert', 'Please select product', 'error').then(function () { swal.close(); $('#ddlProduct').focus(); });
-        }
-        else if (serial == "") {
-            swal('Alert', 'Please Enter Lot/Serial Number', 'error').then(function () { swal.close(); $('#txtserial').focus(); });
-        }
-        else if (eatby == "") {
-            swal('Alert', 'Please Enter Eat By date', 'error').then(function () { swal.close(); $('#txteatbydate').focus(); });
-        }
-        else if (price == "") {
-            swal('Alert', 'Please Enter Price', 'error').then(function () { swal.close(); $('#txtprice').focus(); });
-        }
-        else if (label == "") {
-            swal('Alert', 'Please Enter Label of Movement', 'error').then(function () { swal.close(); $('#txtlabel').focus(); });
-        }
-        else if (unit == "") {
-            swal('Alert', 'Please Enter Number of Unit', 'error').then(function () { swal.close(); $('#txtunit').focus(); });
-        }
-        else if (sellby == "") {
-            swal('Alert', 'Please Enter Sale By Date', 'error').then(function () { swal.close(); $('#txtsalebydate').focus(); });
-        }
-        else {
-
-            var obj = {
-
-                fk_entrepot: fk_entrepot,
-                fk_product: fk_product,
-                serial: serial,
-                eatby: eatby,
-                value: unit,
-                label: label,
-                price: price,
-                sellby: sellby,
-            }
-            $.ajax({
-                url: '/Warehouse/AddCurrentstock/', dataType: 'json', type: 'Post',
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify(obj),
-                dataType: "json",
-                searching: false,
-                beforeSend: function () { $("#loader").show(); },
-                success: function (data) {
-                    if (data.status == true) {
-                        //$('#parent > input:text').val('');
-                        swal('Alert!', data.message, 'success');
-                        reset();
-                        StockTransferGrid();
-                    }
-                    else {
-                        swal('Alert!', data.message, 'error');
-                    }
-                },
-                complete: function () { $("#loader").hide(); },
-                error: function (error) { swal('Error!', 'something went wrong', 'error'); },
-            })
-
-        }
-    }
-
-    function reset() {
-        $("#txtserial").val("");
-        $("#txteatbydate").val("");
-        $("#txtprice").val("");
-        $("#txtunit").val("");
-        $("#txtlabel").val("");
-        $("#txtsalebydate").val("");
-    }
-</script>
-
-<script>
     $(function () {
         $("#txteatbydate").datepicker({
+            format: 'yyyy-mm-dd',
+        });
+
+        $("#txttransfereatbydate").datepicker({
             format: 'yyyy-mm-dd',
         });
 
         $("#txtsalebydate").datepicker({
             format: 'yyyy-mm-dd',
         });
+
+        $("#txttransfersalebydate").datepicker({
+            format: 'yyyy-mm-dd',
+        });
     });
 
 </script>
 
-<script>
-    function StockTransferGrid() {
-        var fk_entrepot = $("#hfid").val();
-        var obj = { fk_entrepot: fk_entrepot };
-        $.ajax({
-            url: '/Warehouse/GetCurrentStock',
-            method: 'post',
-            datatype: 'json',
-            contentType: "application/json; charset=utf-8",
-            processing: true,
-            data: JSON.stringify(obj),
-            success: function (data) {
-                $('#dtdata').dataTable({ sDom: 'rtip' ,
-                    destroy: true,
-                    data: JSON.parse(data),
-                    "columns": [
-                        //{ data: 'ref', title: 'Ref', sWidth: "5%" },
-                        //{ data: 'date', title: 'Date', sWidth: "15%", },
-                        { data: 'product', title: 'Product', sWidth: "20%" },
-                        { data: 'warehouse', title: 'Warehouse', sWidth: "15%" },
-
-                        { data: 'label', title: 'Label of movement', sWidth: "15%" },
-                        { data: 'value', title: 'Qty', sWidth: "10%" },
-                        { data: 'price', title: 'Unit Price', sWidth: "10%", },
-                    ],
-                    "order": [[0, 'desc']],
-                });
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                alert(xhr.responseText);
-            }
-        });
-
-    }
-</script>
-
-
-
-
-
-
+<script src="@Url.Content("~/js/Warehouse/updatewarehouse.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 <!-- Google API -->
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBIgngCCIJ3D8_s3G7aIfvQckhsDtbAe4E&libraries&callback=initMap&libraries=places&v=weekly" async></script>

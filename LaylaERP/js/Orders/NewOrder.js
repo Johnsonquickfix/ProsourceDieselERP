@@ -1089,7 +1089,7 @@ function ApplyCoupon() {
     $.ajax({
         type: "POST", url: '/Orders/GetCouponAmount', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
         success: function (result) {
-            var data = JSON.parse(result); console.log(data);
+            var data = JSON.parse(result); //console.log(data);
             if (data.length == 0) { swal('Alert!', 'Invalid code entered. Please try again.', "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false; }
             //Check valid for email
             if (data[0].cus_email.length && data[0].cus_email != '') {
@@ -1115,7 +1115,7 @@ function ApplyCoupon() {
             data[0].coupon_amount = parseFloat(data[0].coupon_amount) || 0.00;
             data[0].limit_x_items = parseInt(data[0].limit_x_items) || 0;
 
-            if (coupon_code.includes("friend") && coupon_code.substr(6) > 8500) { deleteAllCoupons('diff'); }
+            if (coupon_code.includes("friend") && coupon_code.substr(6) > 8500) { deleteAllCoupons('friend_diff'); }
             else if (coupon_code.includes("freeprotector")) { }
             else {
                 if (data[0].individual_use == "yes") { deleteAllCoupons('all'); }
@@ -1199,6 +1199,35 @@ function deleteAllCoupons(coupon_type) {
         calculateDiscountAcount();
     }
     else if (coupon_type == 'diff') {
+        let tax_rate = parseFloat($('#hfTaxRate').val()) || 0.00;
+        $('#billCoupon li').each(function (index) {
+            if ($(this).data('type') == 'diff') {
+                let id = $(this).data('coupon');
+                let rq_prd_ids = [];
+                if ($(this).data('rqprdids') != "" && $(this).data('rqprdids') != null) {
+                    rq_prd_ids = $(this).data('rqprdids').split(",").map((el) => parseInt(el));
+                }
+                $('#li_' + id).remove();
+                for (var i = 0; i < rq_prd_ids.length; i++) {
+                    let row_id = '#tritemId_' + id + '_' + rq_prd_ids[i];
+                    //Remove Discount to Items
+                    let zQty = parseFloat($(row_id).find("[name=txt_ItemQty]").val()) || 0.00;
+                    let zGrossAmount = parseFloat($(row_id).find(".TotalAmount").data("regprice")) || 0.00;
+                    zGrossAmount = zGrossAmount * zQty;
+                    $(row_id).find(".TotalAmount").data("amount", zGrossAmount.toFixed(2)); $(row_id).find(".TotalAmount").text(zGrossAmount.toFixed(2));
+
+                    $(row_id).find(".RowDiscount").data("disctype", 'fixed');
+                    $(row_id).find(".RowDiscount").data("couponamt", 0.00);
+                    $(row_id).find(".RowDiscount").text(0.00); $(row_id).find(".TotalAmount").data("discount", 0.00);
+
+                    //Taxation                     
+                    zTotalTax = ((zGrossAmount * tax_rate) / 100);
+                    $(row_id).find(".RowTax").text(zTotalTax.toFixed(2)); $(row_id).find(".TotalAmount").data("taxamount", zTotalTax.toFixed(2));
+                }
+            }
+        });
+    }
+    else if (coupon_type == 'friend_diff') {
         let tax_rate = parseFloat($('#hfTaxRate').val()) || 0.00;
         $('#billCoupon li').each(function (index) {
             if ($(this).data('type') == 'diff') {
@@ -1345,7 +1374,7 @@ function calculateDiscountAcount() {
                 else if (zDiscType == 'fixed_cart') { zDisAmt = cou_details.disc_amt * cou_details.qty; }
                 else if (zDiscType == 'percent') { zDisAmt = ((cou_details.price * cou_details.qty) * zCouponAmt) / 100; }
                 else if (zDiscType == '2x_percent') { zDisAmt = ((zRegPrice * zCouponAmt) / 100) * Math.floor(zQty / 2); }
-
+                console.log(cou, cou_details, zDisAmt);
                 //if (zDiscType == 'fixed_product') { zDisAmt = zCouponAmt * zQty; }
                 //else if (zDiscType == 'fixed_cart') { zDisAmt = zCouponAmt * zQty; }
                 //else if (zDiscType == 'percent') { zDisAmt = (zGrossAmount * zCouponAmt) / 100; }

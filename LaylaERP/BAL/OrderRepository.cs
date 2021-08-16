@@ -260,19 +260,22 @@
                     new MySqlParameter("@product_id", product_id),
                     new MySqlParameter("@variation_id", variation_id)
                 };
-                string strSQl = "SELECT DISTINCT post.id,ps.ID pr_id,CONCAT(post.post_title, ' (' , COALESCE(psku.meta_value,'') , ') - ' ,LTRIM(REPLACE(REPLACE(COALESCE(ps.post_excerpt,''),'Size:', ''),'Color:', ''))) as post_title"
-                            + " , COALESCE(pr.meta_value, 0) reg_price,COALESCE(psr.meta_value, 0) sale_price FROM wp_posts as post"
+                string strSQl = "SELECT post.id,ps.ID pr_id,CONCAT(COALESCE(ps.post_title,post.post_title), COALESCE(CONCAT(' (' ,psku.meta_value,')'),''))  as post_title,"
+                            + " COALESCE(pr.meta_value, 0) reg_price,COALESCE(psr.meta_value, 0) sale_price,1 quantity,'false' is_free,"
+                            + " concat('{', group_concat(concat('\"', free_product_id, '\": \"', free_quantity, '\"') separator ','), '}') free_itmes FROM wp_posts as post"
                             + " LEFT OUTER JOIN wp_posts ps ON ps.post_parent = post.id and ps.post_type LIKE 'product_variation'"
-                            + " left outer join wp_postmeta psku on psku.post_id = ps.id and psku.meta_key = '_sku'"
-                            + " left outer join wp_postmeta pr on pr.post_id = ps.id and pr.meta_key = '_regular_price'"
+                            + " left outer join wp_postmeta psku on psku.post_id = COALESCE(ps.id, post.id)and psku.meta_key = '_sku'"
+                            + " left outer join wp_postmeta pr on pr.post_id = COALESCE(ps.id, post.id) and pr.meta_key = '_regular_price'"
                             + " left outer join wp_postmeta psr on psr.post_id = COALESCE(ps.id, post.id) and psr.meta_key = '_price'"
-                            + " WHERE post.post_type = 'product' and post.id = @product_id and ps.id = @variation_id ";
-                if (product_id == 611172 && !string.IsNullOrEmpty(free_products))
-                    strSQl += " OR (post.id in (" + free_products + ") and COALESCE(ps.id,0) = 0);";
-                else if (product_id == 118 && !string.IsNullOrEmpty(free_products))
-                    strSQl += " OR (post.id in (" + free_products + ") and COALESCE(ps.id,0) = 0);";
-                else
-                    strSQl += ";";
+                            + " left outer join wp_product_free free_it on free_it.product_id = post.id or free_it.product_id = ps.id"
+                            + " WHERE post.post_type = 'product' and post.id = @product_id and ps.id = @variation_id group by post.id,ps.ID"
+                            + " union all"
+                            + " SELECT(case when isnull(p.post_parent) = 0 then p.id else p.post_parent end) id,(case when isnull(p.post_parent)= 0 then 0 else p.id end) pr_id,"
+                            + " CONCAT(p.post_title, COALESCE(CONCAT(' (', psku.meta_value, ')'), '')) as post_title,0 reg_price,0 sale_price,free_quantity quantity,'true' is_free,'{}' free_itmes FROM wp_product_free free_it"
+                            + " inner join wp_posts as p on p.id = free_it.free_product_id"
+                            + " left outer join wp_postmeta psku on psku.post_id = p.id and psku.meta_key = '_sku'"
+                            + " WHERE p.post_type in ('product', 'product_variation') and free_it.product_id = @product_id or free_it.product_id = @variation_id;";
+
                 MySqlDataReader sdr = SQLHelper.ExecuteReader(strSQl, parameters);
                 while (sdr.Read())
                 {
@@ -298,28 +301,41 @@
                     else
                         productsModel.sale_price = productsModel.reg_price;
                     productsModel.price = productsModel.sale_price;
-                    productsModel.quantity = 1;
+                    if (sdr["quantity"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["quantity"].ToString().Trim()))
+                        productsModel.quantity = decimal.Parse(sdr["quantity"].ToString().Trim());
+                    else
+                        productsModel.quantity = 1;
+                    if (sdr["is_free"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["is_free"].ToString().Trim()))
+                        productsModel.is_free = Convert.ToBoolean(sdr["is_free"].ToString().Trim());
+                    else
+                        productsModel.is_free = false;
+                    if (sdr["free_itmes"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["free_itmes"].ToString().Trim()))
+                        productsModel.free_itmes = sdr["free_itmes"].ToString().Trim();
+                    else
+                        productsModel.free_itmes = string.Empty;
+                    productsModel.group_id = 0;
+
                     /// free item
-                    if (productsModel.product_id == 78676) { productsModel.is_free = true; productsModel.quantity = 2; }
-                    else if (productsModel.product_id == 632713) { productsModel.is_free = true; productsModel.quantity = 2; }
-                    else productsModel.is_free = false;
+                    //if (productsModel.product_id == 78676) { productsModel.is_free = true; productsModel.quantity = 2; }
+                    //else if (productsModel.product_id == 632713) { productsModel.is_free = true; productsModel.quantity = 2; }
+                    //else productsModel.is_free = false;
 
                     /// 
-                    if (productsModel.product_id == 611172)
-                    {
-                        productsModel.group_id = 78676;
-                        productsModel.free_itmes = "{\"78676\":2}";
-                    }
-                    else if (productsModel.product_id == 118)
-                    {
-                        productsModel.group_id = 632713;
-                        productsModel.free_itmes = "{\"632713\":2}";
-                    }
-                    else
-                    {
-                        productsModel.group_id = 0;
-                        productsModel.free_itmes = string.Empty;
-                    }
+                    //if (productsModel.product_id == 611172)
+                    //{
+                    //    productsModel.group_id = 78676;
+                    //    productsModel.free_itmes = "{\"78676\":2}";
+                    //}
+                    //else if (productsModel.product_id == 118)
+                    //{
+                    //    productsModel.group_id = 632713;
+                    //    productsModel.free_itmes = "{\"632713\":2}";
+                    //}
+                    //else
+                    //{
+                    //    productsModel.group_id = 0;
+                    //    productsModel.free_itmes = string.Empty;
+                    //}
                     _list.Add(productsModel);
                 }
             }

@@ -653,7 +653,7 @@ function getOrderItemList(oid) {
     var option = { strValue1: oid };
     //let coupon_list = [];
     ajaxFunc('/Orders/GetOrderProductList', option, beforeSendFun, function (data) {
-        let itemHtml = '', recyclingfeeHtml = '', feeHtml = '', shippingHtml = '', refundHtml = '', couponHtml = ''; console.log(data);
+        let itemHtml = '', recyclingfeeHtml = '', feeHtml = '', shippingHtml = '', refundHtml = '', couponHtml = ''; 
         let zQty = 0.00, zGAmt = 0.00, zTDiscount = 0.00, zTotalTax = 0.00, zShippingAmt = 0.00, zStateRecyclingAmt = 0.00, zFeeAmt = 0.00, zRefundAmt = 0.00;
         for (var i = 0; i < data.length; i++) {
             let orderitemid = parseInt(data[i].order_item_id) || 0;
@@ -974,12 +974,12 @@ function Coupon_get_discount_amount(id, parent_id, coupon_code, coupon_amt, item
         }
         return { price: reg_price, disc_amt: coupon_amt, qty: item_qty };
     }
-    else if (coupon_code.toLowerCase() == 'yuliya100') {
+    else if (coupon_code == 'yuliya100') {
         let var_arr = [1399, 611239, 128250];
         if (var_arr.includes(parent_id)) coupon_amt = 1.00;
         return { price: sale_price, disc_amt: coupon_amt, qty: item_qty };
     }
-    else if (coupon_code.toLowerCase() == 'ascend100') {
+    else if (coupon_code == 'ascend100') {
         let var_arr = [31735, 723, 733504, 613011];
         if (var_arr.includes(parent_id)) coupon_amt = 1.00;
         return { price: sale_price, disc_amt: coupon_amt, qty: item_qty };;
@@ -999,7 +999,7 @@ function Coupon_get_discount_amount(id, parent_id, coupon_code, coupon_amt, item
             }
         });
         if (item_qty > matt_qnty) { prot_qnty = matt_qnty; }
-        else if (item_qty == matt_qnty) { prot_qnty = prot_qnty; }
+        else if (item_qty == matt_qnty) { prot_qnty = item_qty; }
         else if (item_qty < matt_qnty) { prot_qnty = item_qty; }
         else { prot_qnty = 0.00;}
         return { price: sale_price, disc_amt: 1.00, qty: prot_qnty };

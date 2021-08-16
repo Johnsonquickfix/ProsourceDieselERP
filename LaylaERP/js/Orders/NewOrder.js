@@ -653,7 +653,7 @@ function getOrderItemList(oid) {
     var option = { strValue1: oid };
     //let coupon_list = [];
     ajaxFunc('/Orders/GetOrderProductList', option, beforeSendFun, function (data) {
-        let itemHtml = '', recyclingfeeHtml = '', feeHtml = '', shippingHtml = '', refundHtml = '', couponHtml = '';
+        let itemHtml = '', recyclingfeeHtml = '', feeHtml = '', shippingHtml = '', refundHtml = '', couponHtml = ''; console.log(data);
         let zQty = 0.00, zGAmt = 0.00, zTDiscount = 0.00, zTotalTax = 0.00, zShippingAmt = 0.00, zStateRecyclingAmt = 0.00, zFeeAmt = 0.00, zRefundAmt = 0.00;
         for (var i = 0; i < data.length; i++) {
             let orderitemid = parseInt(data[i].order_item_id) || 0;
@@ -717,7 +717,7 @@ function getOrderItemList(oid) {
                     couponHtml += '</a>';
                     couponHtml += '</li>';
                 }
-                zTDiscount = zTDiscount + cou_amt;
+                zTDiscount = zTDiscount + cou_amt; 
             }
             else if (data[i].product_type == 'fee' && data[i].product_name == 'State Recycling Fee') {
                 recyclingfeeHtml += '<tr id="trfeeid_' + orderitemid + '" data-orderitemid="' + orderitemid + '" data-pname="' + data[i].product_name + '">';
@@ -759,7 +759,7 @@ function getOrderItemList(oid) {
         }
         $('#order_line_items').append(itemHtml); $('#order_state_recycling_fee_line_items').append(recyclingfeeHtml); $('#order_fee_line_items').append(feeHtml); $('#order_shipping_line_items').append(shippingHtml); $('#order_refunds').append(refundHtml);
         $('.refund-action').append('<button type="button" id="btnAddFee" class="btn btn-danger billinfo">Add Fee</button> ');
-        $('#billCoupon').append(couponHtml);
+        $('#billCoupon').append(couponHtml); 
         //Calculate Final
         $("#totalQty").text(zQty.toFixed(0)); $("#totalQty").data('qty', zQty.toFixed(0));
         $("#SubTotal").text(zGAmt.toFixed(2));
@@ -905,7 +905,7 @@ function CouponModal() {
     $("#billModal").empty().html(myHtml);
     $("#billModal").modal({ backdrop: 'static', keyboard: false }); $("#txt_Coupon").focus();
 }
-function Coupon_get_discount_amount(id, parent_id, coupon_code, coupon_amt, sale_price) {
+function Coupon_get_discount_amount(id, parent_id, coupon_code, coupon_amt, item_qty, reg_price, sale_price) {
     let coupon_isedu = ["mhsu15", "pu15", "utep74", "msu15", "cabarrus15", "crusader15", "ucsd15", "vt15", "kent15", "fcs15", "sisd15", "isu15", "uh15", "teacher15", "csusm15", "abbey15"];
     let coupon_isgrin = ["erin10off", "venezia10off", "jasmine10off", "liz10off", "jamie10off", "nicole10off", "faye10off", "vinny10off", "ava10off", "kelsey10off", "aimy10off", "grace10off", "ramya10off", "georgia10off", "slayer10off", "victoria10off", "nickayla10off", "saraida10off", "garnerfamily5", "gina10off", "brooke10off", "lolo10off", "melissa10off", "claudia10off"];
     let isedu = 0;
@@ -935,94 +935,77 @@ function Coupon_get_discount_amount(id, parent_id, coupon_code, coupon_amt, sale
             if (matt_arr.includes(parent_id)) coupon_amt = 0.1;
             else coupon_amt = 0.15;
         }
-        return coupon_amt;
+        return { price: reg_price, disc_amt: coupon_amt, qty: item_qty };
     }
     else if (isgrin == 1) {
         if (id != 632713 && id != 78676) { coupon_amt = 10; }
-        return coupon_amt;
+        return { price: reg_price, disc_amt: coupon_amt, qty: item_qty };
     }
     else if (coupon_code == "pmac" || coupon_code == "pennymac") {
         if (id != 632713 && id != 78676) {
             if (parent_id == 118) coupon_amt = 150;
             else coupon_amt = 10;
         }
-        return coupon_amt;
+        return { price: reg_price, disc_amt: coupon_amt, qty: item_qty };
     }
     else if (coupon_code == "sleepopolis") {
         if (id != 632713 && id != 78676) { coupon_amt = 10; }
-        return coupon_amt;
+        return { price: reg_price, disc_amt: coupon_amt, qty: item_qty };
     }
     else if (coupon_code == "sleepfoundation") {
         if (id != 632713 && id != 78676) {
             if (parent_id == 118) coupon_amt = 10;
             else if (parent_id == 611172) coupon_amt = 20;
         }
-        return coupon_amt;
+        return { price: reg_price, disc_amt: coupon_amt, qty: item_qty };
     }
     else if (coupon_code == "sleepy10") {
         if (parent_id != 611172) { coupon_amt = 10; }
-        return coupon_amt;
+        return { price: reg_price, disc_amt: coupon_amt, qty: item_qty };
     }
     else if (coupon_code == "sleepy20") {
         if (parent_id == 611172) { coupon_amt = 20; }
-        return coupon_amt;
+        return { price: reg_price, disc_amt: coupon_amt, qty: item_qty };
     }
     else if (coupon_code == "redd" || coupon_code == "sleepstandards") {
         if (id != 632713 && id != 78676) {
             if (parent_id == 118) coupon_amt = 10;
             else if (parent_id == 611172) coupon_amt = 10;
         }
-        return coupon_amt;
-    }
-    else if (coupon_code == "idmecoupon") {
-        coupon_amt = 0.20;
-        return coupon_amt;
+        return { price: reg_price, disc_amt: coupon_amt, qty: item_qty };
     }
     else if (coupon_code.toLowerCase() == 'yuliya100') {
         let var_arr = [1399, 611239, 128250];
         if (var_arr.includes(parent_id)) coupon_amt = 1.00;
-        return coupon_amt;
+        return { price: sale_price, disc_amt: coupon_amt, qty: item_qty };
     }
     else if (coupon_code.toLowerCase() == 'ascend100') {
         let var_arr = [31735, 723, 733504, 613011];
         if (var_arr.includes(parent_id)) coupon_amt = 1.00;
-        return coupon_amt;
+        return { price: sale_price, disc_amt: coupon_amt, qty: item_qty };;
     }
     else if (coupon_code == "idmecoupon" || coupon_code == "mil20off072021") {
-        return 0.20;
+        return { price: reg_price, disc_amt: 0.20, qty: item_qty };
     }
     else if (coupon_code == "5wprkapok40") {
         if (parent_id == 14023) coupon_amt = 0.40;
-        return coupon_amt;
+        return { price: reg_price, disc_amt: coupon_amt, qty: item_qty };
     }
-    else if (coupon_code == "freeprotector") {
-        let matt_qnty = 0,prot_qnty = 0, is_prot = 0, prot_price = 0;
-        if (id != 632713 && id != 78676) {
-            if (parent_id == 118) {
-                matt_qnty += 0;
-                // d_amt = d_amt + (10 * cartItem.quantity);
-            } else if (parent_id == 611172) {
-                matt_qnty += 0;
-                // d_amt = d_amt + (20 * cartItem.quantity);
-            } else if (parent_id == 611268) {
-                is_prot = 1;
-                prot_qnty = 0;
-                prot_price = sale_price;
+    else if (coupon_code == "freeprotector" && parent_id == 611268) {
+        let matt_qnty = 0, prot_qnty = 0;
+        $("#order_line_items > tr.paid_item").each(function (tr_index, tr_row) {
+            if ($(tr_row).data("pid") == 118 || $(tr_row).data("pid") == 611172) {
+                matt_qnty += parseFloat($(tr_row).find("[name=txt_ItemQty]").val());
             }
-        }
-        if (is_prot == 1 && matt_qnty > 0) {
-            if (prot_qnty > matt_qnty) {
-                coupon_amt = sale_price;
-            } else if (prot_qnty == matt_qnty) {
-                coupon_amt = sale_price;
-            } else if (prot_qnty < matt_qnty) {
-                coupon_amt = sale_price;
-            }
-        }
-        return coupon_amt;
+        });
+        if (item_qty > matt_qnty) { prot_qnty = matt_qnty; }
+        else if (item_qty == matt_qnty) { prot_qnty = prot_qnty; }
+        else if (item_qty < matt_qnty) { prot_qnty = item_qty; }
+        else { prot_qnty = 0.00;}
+        return { price: sale_price, disc_amt: 1.00, qty: prot_qnty };
     }
     else {
-        return coupon_amt;
+        return { price: reg_price, disc_amt: coupon_amt, qty: item_qty };
     }
 }
 function getAllCoupons() {
@@ -1123,7 +1106,7 @@ function ApplyCoupon() {
             if (data[0].date_expires != "" && data[0].date_expires != null) {
                 let exp_date = new Date(data[0].date_expires);
                 let today = new Date();
-                console.log(data[0].date_expires,exp_date, today);
+                console.log(data[0].date_expires, exp_date, today);
                 if (exp_date < today) {
                     swal('Alert!', 'Coupon code has been expired.', "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false;
                 }
@@ -1355,12 +1338,17 @@ function calculateDiscountAcount() {
                     if (zDiscType != '2x_percent') zCouponAmt = (zRegPrice - zSalePrice) > 0 ? (zRegPrice - zSalePrice) : 0.00;
                 }
                 //else { zCouponAmt = 0.00; }
-                zCouponAmt = Coupon_get_discount_amount((vid > 0 ? vid : pid), pid, cou, zCouponAmt, zSalePrice);
-
-                if (zDiscType == 'fixed_product') { zDisAmt = zCouponAmt * zQty; }
-                else if (zDiscType == 'fixed_cart') { zDisAmt = zCouponAmt * zQty; }
-                else if (zDiscType == 'percent') { zDisAmt = (zGrossAmount * zCouponAmt) / 100; }
+                let cou_details = Coupon_get_discount_amount((vid > 0 ? vid : pid), pid, cou, zCouponAmt, zQty, zRegPrice, zSalePrice);
+               
+                if (zDiscType == 'fixed_product') { zDisAmt = cou_details.disc_amt * cou_details.qty; }
+                else if (zDiscType == 'fixed_cart') { zDisAmt = cou_details.disc_amt * cou_details.qty; }
+                else if (zDiscType == 'percent') { zDisAmt = ((cou_details.price * cou_details.qty) * zCouponAmt) / 100; }
                 else if (zDiscType == '2x_percent') { zDisAmt = ((zRegPrice * zCouponAmt) / 100) * Math.floor(zQty / 2); }
+
+                //if (zDiscType == 'fixed_product') { zDisAmt = zCouponAmt * zQty; }
+                //else if (zDiscType == 'fixed_cart') { zDisAmt = zCouponAmt * zQty; }
+                //else if (zDiscType == 'percent') { zDisAmt = (zGrossAmount * zCouponAmt) / 100; }
+                //else if (zDiscType == '2x_percent') { zDisAmt = ((zRegPrice * zCouponAmt) / 100) * Math.floor(zQty / 2); }
 
                 //Coupon Amount Total                        
                 cou_amt += zDisAmt;

@@ -166,6 +166,22 @@ namespace LaylaERP.Controllers
             }
             return Json(usertype, JsonRequestBehavior.AllowGet);
         }
+        public JsonResult Getwarehouse()
+        {
+            DataTable dt = new DataTable();
+            dt = BAL.ProductRepository.Getwarehouse();
+            List<SelectListItem> usertype = new List<SelectListItem>();
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                usertype.Add(new SelectListItem
+                {
+                    Value = dt.Rows[i]["rowid"].ToString(),
+                    Text = dt.Rows[i]["ref"].ToString()
+
+                });
+            }
+            return Json(usertype, JsonRequestBehavior.AllowGet);
+        }
 
         public JsonResult BuyingPrice(ProductModel model)
         {
@@ -185,6 +201,43 @@ namespace LaylaERP.Controllers
             {
                 return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
             }            
+        }
+        public JsonResult Createwarehouse(ProductModel model)
+        {
+            JsonResult result = new JsonResult();
+            DateTime dateinc = DateTime.Now;
+            //DateTime dateinc = UTILITIES.CommonDate.CurrentDate();
+            var resultOne = 0;
+            if (model.ID > 0)
+                resultOne = ProductRepository.updateProductwarehouse(model, dateinc);
+            else
+                resultOne = ProductRepository.AddProductwarehouse(model, dateinc);
+            if (resultOne > 0)
+            {
+                return Json(new { status = true, message = "updated successfully!!", url = "Manage" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+        }
+        public JsonResult DeleteProductwarehouse(ProductModel model)
+        {
+            JsonResult result = new JsonResult();
+            //DateTime dateinc = DateTime.Now;
+            //DateTime dateinc = UTILITIES.CommonDate.CurrentDate();
+            var resultOne = 0;
+            // model.ID = model.strVal;
+            if (model.ID > 0)
+                resultOne = ProductRepository.DeleteProductwarehouse(model);
+            if (resultOne > 0)
+            {
+                return Json(new { status = true, message = "deleted successfully!!", url = "Manage" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
         }
         public JsonResult DeleteBuyingPrice(ProductModel model)
         {
@@ -387,6 +440,18 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(JSONresult, 0);
         }
+        public JsonResult GetDataProductwarehouseByID(OrderPostStatusModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+
+                DataTable dt = ProductRepository.GetDataProductwarehouseByID(model);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
 
         public JsonResult GetPurchaseDataByID(OrderPostStatusModel model)
         {
@@ -443,6 +508,16 @@ namespace LaylaERP.Controllers
             try
             {
                 obj = ProductRepository.GetProductParent(model.strValue1, model.strValue2);
+            }
+            catch { }
+            return Json(obj, 0);
+        }
+        public JsonResult GetwarehouseData(SearchModel model)
+        {
+            List<ProductModelservices> obj = new List<ProductModelservices>();
+            try
+            {
+                obj = ProductRepository.GetwarehouseData(model.strValue1, model.strValue2);
             }
             catch { }
             return Json(obj, 0);

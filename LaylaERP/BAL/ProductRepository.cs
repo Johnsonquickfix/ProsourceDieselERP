@@ -119,6 +119,28 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
+        public static DataTable GetDataProductwarehouseByID(OrderPostStatusModel model)
+        {
+            DataTable dt = new DataTable();
+
+            try
+            {
+                string strWhr = string.Empty;
+
+                string strSql = "SELECT rowid ID,fk_product,fk_warehouse from product_warehouse"
+                             + " WHERE rowid = " + model.strVal + " ";
+
+
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dt = ds.Tables[0];
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
 
         public static List<ProductsModelDetails> GetProductListDetails(string strValue1,string strValue2)
         {
@@ -530,6 +552,63 @@ namespace LaylaERP.BAL
             { throw ex; }
             return DT;
         }
+        public static DataTable Getwarehouse()
+        {
+            DataTable DT = new DataTable();
+            try
+            {
+                string strSQl = "Select rowid,ref from wp_warehouse";
+                DT = SQLHelper.ExecuteDataTable(strSQl);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DT;
+        }
+        public static List<ProductModelservices> GetwarehouseData(string strValue1, string strValue2)
+        {
+            List<ProductModelservices> _list = new List<ProductModelservices>();
+            try
+            {
+                string free_products = string.Empty;
+
+                ProductModelservices productsModel = new ProductModelservices();
+                string strWhr = string.Empty;
+
+                if (string.IsNullOrEmpty(strValue1) && string.IsNullOrEmpty(strValue2))
+                {
+
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(strValue1))
+                        strWhr += " fk_product = " + strValue1;
+                    string strSQl = "SELECT pw.rowid as ID,fk_product,fk_warehouse ,ref warehouse"
+                                + " from product_warehouse pw"
+                                + " Left outer join wp_warehouse on wp_warehouse.rowid = pw.fk_warehouse"
+                                + " WHERE " + strWhr;
+
+                    strSQl += ";";
+                    MySqlDataReader sdr = SQLHelper.ExecuteReader(strSQl);
+                    while (sdr.Read())
+                    {
+                        productsModel = new ProductModelservices();
+                        if (sdr["ID"] != DBNull.Value)
+                            productsModel.ID = Convert.ToInt64(sdr["ID"]);
+                        else
+                            productsModel.ID = 0;
+                        if (sdr["warehouse"] != DBNull.Value)
+                            productsModel.product_name = sdr["warehouse"].ToString();
+                        else
+                            productsModel.product_name = string.Empty;
+
+                        _list.Add(productsModel);
+                    }
+                }
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return _list;
+        }
         public static DataTable GetProductVariant(int ProductID)
         {
             DataTable dtr = new DataTable();
@@ -761,6 +840,58 @@ namespace LaylaERP.BAL
             { throw ex; }
             return result;
         }
+
+        public static int AddProductwarehouse(ProductModel model, DateTime dateinc)
+        {
+            int result = 0;
+            try
+            {
+                StringBuilder strSql = new StringBuilder();
+                //StringBuilder strSql = new StringBuilder(string.Format("delete from Product_Purchase_Items where fk_product = {0}; ", model.fk_product));
+                strSql.Append(string.Format("insert into product_warehouse(fk_product,fk_warehouse) values ({0},{1}) ", model.fk_product, model.fk_vendor));
+
+                /// step 6 : wp_posts
+                //strSql.Append(string.Format(" update wp_posts set post_status = '{0}' ,comment_status = 'closed' where id = {1} ", model.OrderPostStatus.status, model.OrderPostStatus.order_id));
+
+                result = SQLHelper.ExecuteNonQuery(strSql.ToString());
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return result;
+        }
+        public static int updateProductwarehouse(ProductModel model, DateTime dateinc)
+        {
+            int result = 0;
+            try
+            {
+                StringBuilder strSql = new StringBuilder();
+                //StringBuilder strSql = new StringBuilder(string.Format("delete from Product_Purchase_Items where fk_product = {0}; ", model.fk_product));
+                // strSql.Append(string.Format("insert into Product_Purchase_Items ( fk_vendor,purchase_price,cost_price,minpurchasequantity,salestax,taxrate,discount,remark) values ({0},{1},{2},{3},{4},{5},{6},{7},'{8}') ", model.fk_product, model.fk_vendor, model.purchase_price, model.cost_price, model.minpurchasequantity, model.salestax, model.taxrate, model.discount, model.remark));
+
+                /// step 6 : wp_posts
+                strSql.Append(string.Format("update product_warehouse set fk_warehouse = {0} where rowid = {1} ", model.fk_vendor, model.ID));
+
+                result = SQLHelper.ExecuteNonQuery(strSql.ToString());
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return result;
+        }
+        public static int DeleteProductwarehouse(ProductModel model)
+        {
+            int result = 0;
+            try
+            {
+                //StringBuilder strSql = new StringBuilder();
+                StringBuilder strSql = new StringBuilder(string.Format("delete from product_warehouse where rowid = {0}; ", model.ID));
+
+                result = SQLHelper.ExecuteNonQuery(strSql.ToString());
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return result;
+        }
+
         public static int UpdateProductsVariation(string post_title,string post_excerpt, long ID)
         {
             try

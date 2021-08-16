@@ -94,5 +94,61 @@ namespace LaylaERP.Controllers
                 return Json(new { status = false, message = "Something went wrong!!", url = "", id = 0 }, 0);
             }
         }
+
+        public JsonResult GetChartOfAccounts(AccountingJournalModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                string urid = "";
+                if (model.user_status != "")
+                    urid = model.user_status;
+                string searchid = model.Search;
+                DataTable dt = AccountingRepository.GetChartOfAccounts(urid, searchid, model.PageNo, model.PageSize, out TotalRecord, model.SortCol, model.SortDir);
+                result = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+        }
+
+        public JsonResult UpdateChartOfAccountStatus(AccountingJournalModel model)
+        {
+            if (model.rowid > 0)
+            {
+                new AccountingRepository().UpdateChartOfAccountStatus(model);
+                return Json(new { status = true, message = "Status has been changed successfully!!", url = "", id = model.rowid }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Something went wrong!!", url = "", id = 0 }, 0);
+            }
+        }
+
+        public JsonResult GetAccountSystem()
+        {
+            DataSet ds = AccountingRepository.GetAccountSystem();
+            List<SelectListItem> accountsettinglist = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+
+                accountsettinglist.Add(new SelectListItem { Text = dr["pcg_version"].ToString(), Value = dr["version"].ToString() });
+
+            }
+            return Json(accountsettinglist, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetChartOfAccounts1(SearchModel model)
+        {
+
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = AccountingRepository.GetChartOfAccounts1(model);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
     }
 }

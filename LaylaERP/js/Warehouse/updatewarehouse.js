@@ -468,16 +468,16 @@ function StockTransferGrid() {
                     { data: 'label', title: 'Label of movement', sWidth: "15%" },
                     { data: 'value', title: 'Qty', sWidth: "10%" },
                     { data: 'price', title: 'Unit Price', sWidth: "10%", },
-                    {
-                        'data': 'ref',
-                        'sortable': false,
-                        'searchable': false,
-                        'render': function (ref) {
-                            //return '<input type="button" onclick="chk_status(this)" data-id="' + ref + '"  id="chk_sts_str" />'
-                            //return '< a href = "#" onclick = "chk_status(this)" data-id="' + ref + '" id="chk_sts_str"> <i class="glyphicon glyphicon-pencil"></i></a >'
-                            return '<a href="#" onclick = "transferstockstatus(this)" data-id="' + ref + '" ;"><i class="glyphicon glyphicon-pencil"></i></a>';
-                        }
-                    },
+                    //{
+                    //    'data': 'ref',
+                    //    'sortable': false,
+                    //    'searchable': false,
+                    //    'render': function (ref) {
+                    //        //return '<input type="button" onclick="chk_status(this)" data-id="' + ref + '"  id="chk_sts_str" />'
+                    //        //return '< a href = "#" onclick = "chk_status(this)" data-id="' + ref + '" id="chk_sts_str"> <i class="glyphicon glyphicon-pencil"></i></a >'
+                    //        return '<a href="#" onclick = "transferstockstatus(this)" data-id="' + ref + '" ;"><i class="glyphicon glyphicon-pencil"></i></a>';
+                    //    }
+                    //},
                 ],
                 "order": [[0, 'desc']],
             });

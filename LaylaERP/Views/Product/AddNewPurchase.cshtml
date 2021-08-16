@@ -18,45 +18,54 @@
     <div class="nav-tabs-custom">
         <ul class="nav nav-tabs">
             <li class="active"><a class="active" href="#tab_21" data-toggle="tab">Buying prices<span class="badge badge-danger"></span></a></li>
-            <li><a href="#tab_22" style="display:none" data-toggle="tab">Product</a></li>
-            <li><a href="#tab_23" style="display:none" data-toggle="tab">Selling prices</a></li>
+            @*<li><a href="#tab_22" style="display:none" data-toggle="tab">Product</a></li>
+        <li><a href="#tab_23" style="display:none" data-toggle="tab">Selling prices</a></li>*@
+
             <li><a href="#tab_24" data-toggle="tab">Kits<span class="badge badge-danger"></span></a></li>
+            <li><a href="#tab_23" data-toggle="tab">Linked Warehouse</a></li>
             <li><a href="#tab_25" data-toggle="tab">Notes</a></li>
             <li><a href="#tab_26" data-toggle="tab">Linked files</a></li>
         </ul>
         <div class="tab-content">
-
-            <div class="tab-pane active" id="tab_21">
-                <div class="box box-primary">
-                    <div class="box-header">
-                        <div class="d-flex proposal-top">
-                            <div class="back-to-list">
-                                <div class="d-flex align-items-center">
-                                    <input type="hidden" id="hfbuyingid" />
-                                    <label class="control-label ws_nowrap">Select Variation:&nbsp;&nbsp;&nbsp;&nbsp;</label>
-                                    <select name="ddlproductchild" id="ddlproductchild" class="form-control">
-                                    </select>
-                                </div>
-                                @*<p><button class="btn btn-danger">Signed(needs billing)</button></p>*@
+            <div class="box box-primary">
+                <div class="box-header">
+                    <div class="d-flex proposal-top">
+                        <div class="back-to-list">
+                            <div class="d-flex align-items-center">
+                                <input type="hidden" id="hfbuyingid" />
+                                <input type="hidden" id="hfwarehouseid" />
+                                <label class="control-label ws_nowrap">Select Variation:&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                                <select name="ddlproductchild" id="ddlproductchild" class="form-control">
+                                </select>
                             </div>
-                            <div class="edit-proposal-box">
-                                <div class="proposal-box" style="display:none">
-                                    <input type="file" name="file" id="proposal" class="inputfile">
-                                    <label for="proposal"><i class="fa fa-edit"></i></label>
-                                </div>
-                                <div class="edit-proposal-texts" style="display:none">
-                                    <h3 class="box-title" id="txtprosutname"></h3>
-
-                                </div>
-                            </div>
-
+                            @*<p><button class="btn btn-danger">Signed(needs billing)</button></p>*@
                         </div>
+                        <div class="edit-proposal-box">
+                            @*<div class="proposal-box" style="display:none">
+                            <input type="file" name="file" id="proposal" class="inputfile">
+                            <label for="proposal"><i class="fa fa-edit"></i></label>
+                        </div>
+                        <div class="edit-proposal-texts" style="display:none">
+                            <h3 class="box-title" id="txtprosutname"></h3>
+
+                        </div>*@
+                        </div>
+
                     </div>
                 </div>
+            </div>
+            <div class="tab-pane active" id="tab_21">
+
                 <div class="row rowbox proposal-row">
                     <div class="col-md-12">
                         <div class="box box-primary">
                             <div class="box-body">
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">Vendor</label>
+                                    <div class="col-md-8">
+                                        <p id="txtVendor"></p>
+                                    </div>
+                                </div>
                                 <div class="form-group">
                                     <label class="col-md-4 control-label">Cost price</label>
                                     <div class="col-md-8">
@@ -65,17 +74,19 @@
                                 </div>
 
                                 @*<div class="form-group">
-                                        <label class="col-md-4 control-label">Weighted average price</label>
-                                        <div class="col-md-8">
-                                            <p id="txtaverageprice"></p>
-                                        </div>
-                                    </div>*@
+                                <label class="col-md-4 control-label">Weighted average price</label>
+                                <div class="col-md-8">
+                                    <p id="txtaverageprice"></p>
+                                </div>
+                            </div>*@
                                 <div class="form-group">
                                     <label class="col-md-4 control-label">Best buying price</label>
                                     <div class="col-md-8">
                                         <p id="txtbestbying"></p>
                                     </div>
                                 </div>
+
+
 
                             </div>
                         </div>
@@ -98,7 +109,15 @@
                                         <label class="col-sm-3 control-label">Vendor</label>
                                         <div class="col-sm-9">
                                             <select id="ddlvender" class="form-control">
+                                                <option value="">Select Vendor</option>
                                             </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group d-flex">
+                                        <label class="col-sm-3 control-label">Tag/Lot/Serial No.</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" id="txttaglotno" class="form-control">
                                         </div>
                                     </div>
 
@@ -158,7 +177,7 @@
                                         <div class="col-sm-8">
                                         </div>
                                         <div class="col-sm-2">
-                                            <button id="btnbuyingsave" class="btn btn-danger">Saved</button>
+                                            <button id="btnbuyingsave" class="btn btn-danger">Add</button>
                                         </div>
                                         <div class="col-sm-2">
                                             <button id="btnbuyingcl" class="btn btn-danger">Cancel</button>
@@ -182,7 +201,8 @@
                                             <table id="dtdataVendor" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
                                                 <thead>
                                                     <tr>
-                                                        <th>Vendor</th>
+                                                        <th class="text-left">Vendor</th>
+                                                        <th>Tag/Lot/Serial No.</th>
                                                         <th>Purchase quantity</th>
                                                         <th>Sales Tax</th>
                                                         <th>Price</th>
@@ -203,104 +223,105 @@
                     </div>
                 </div>
             </div>
-            <div class="tab-pane active" style="display:none" id="tab_22">
+            <!--<div class="tab-pane active" style="display:none" id="tab_22">
 
-                <div class="row rowbox proposal-row">
-                    <div class="col-md-6">
-                        <div class="box box-primary">
-                            <div class="box-body">
-                                <div class="form-group">
-                                    <label class="col-md-4 control-label">Stock quantity</label>
-                                    <div class="col-md-8">
-                                        <p id="txtstockquantity"></p>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-md-4 control-label">Allow backorders</label>
-                                    <div class="col-md-8">
-                                        <p id="txtAllowbackorders"></p>
-                                    </div>
-                                </div>
-                                @*<div class="form-group">
-                                        <label class="col-md-4 control-label">Shipping Class</label>
-                                        <div class="col-md-8">
-                                            <p id="txtShippingClass"></p>
-                                        </div>
-                                    </div>*@
-                                <div class="form-group">
-                                    <label class="col-md-4 control-label">Tax Class</label>
-                                    <div class="col-md-8">
-                                        <p id="txtTaxClass"></p>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-md-4 control-label">Description</label>
-                                    <div class="col-md-8">
-                                        <p id="txtDescription"></p>
-                                    </div>
-                                </div>
-                            </div>
+    <div class="row rowbox proposal-row">
+        <div class="col-md-6">
+            <div class="box box-primary">
+                <div class="box-body">
+                    <div class="form-group">
+                        <label class="col-md-4 control-label">Stock quantity</label>
+                        <div class="col-md-8">
+                            <p id="txtstockquantity"></p>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="box box-primary">
-                            <div class="box-body">
-                                <div class="form-group">
-                                    <label class="col-md-6 control-label">Dimensions (L x W x H) (in)</label>
-                                    <div class="col-md-6">
-                                        <p id="txtDimensions"></p>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-md-6 control-label">Virtual</label>
-                                    <div class="col-md-6">
-                                        <p id="txtVirtual"></p>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-md-6 control-label">Manage Stock</label>
-                                    <div class="col-md-6">
-                                        <p id="txtManage"></p>
-                                    </div>
-                                </div>
+                    <div class="form-group">
+                        <label class="col-md-4 control-label">Allow backorders</label>
+                        <div class="col-md-8">
+                            <p id="txtAllowbackorders"></p>
+                        </div>
+                    </div>-->
+            @*<div class="form-group">
+            <label class="col-md-4 control-label">Shipping Class</label>
+            <div class="col-md-8">
+                <p id="txtShippingClass"></p>
+            </div>
+        </div>*@
+            <!--<div class="form-group">
+                            <label class="col-md-4 control-label">Tax Class</label>
+                            <div class="col-md-8">
+                                <p id="txtTaxClass"></p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">Description</label>
+                            <div class="col-md-8">
+                                <p id="txtDescription"></p>
                             </div>
                         </div>
                     </div>
                 </div>
-
             </div>
-            <div class="tab-pane" style="display:none" id="tab_23">
-
-                <div class="row rowbox proposal-row">
-                    <div class="col-md-6">
-                        <div class="box box-primary">
-                            <div class="box-body">
-                                <div class="form-group">
-                                    <label class="col-md-4 control-label">SKU</label>
-                                    <div class="col-md-8">
-                                        <p id="txtSku"></p>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label class="col-md-4 control-label">Regular Price($)</label>
-                                    <div class="col-md-8">
-                                        <p id="txtRegularprice"></p>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-md-4 control-label">Sale Price</label>
-                                    <div class="col-md-8">
-                                        <p id="txtsaleprice"></p>
-                                    </div>
-                                </div>
-
+            <div class="col-md-6">
+                <div class="box box-primary">
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label class="col-md-6 control-label">Dimensions (L x W x H) (in)</label>
+                            <div class="col-md-6">
+                                <p id="txtDimensions"></p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-6 control-label">Virtual</label>
+                            <div class="col-md-6">
+                                <p id="txtVirtual"></p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-6 control-label">Manage Stock</label>
+                            <div class="col-md-6">
+                                <p id="txtManage"></p>
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
+        </div>
+
+    </div>
+    <div class="tab-pane" style="display:none" id="tab_23">
+
+        <div class="row rowbox proposal-row">
+            <div class="col-md-6">
+                <div class="box box-primary">
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">SKU</label>
+                            <div class="col-md-8">
+                                <p id="txtSku"></p>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">Regular Price($)</label>
+                            <div class="col-md-8">
+                                <p id="txtRegularprice"></p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">Sale Price</label>
+                            <div class="col-md-8">
+                                <p id="txtsaleprice"></p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>-->
+
 
 
             <div class="tab-pane" id="tab_24">
@@ -308,12 +329,12 @@
                     <div class="col-md-12">
                         <div class="box box-primary">
                             <div class="box-body">
-                                <div class="form-group">
-                                    <label class="col-md-4 control-label">Nature of product (material/finished)</label>
-                                    <div class="col-md-8">
-                                        <p id="txtNatureofproduct"></p>
-                                    </div>
+                                @*<div class="form-group">
+                                <label class="col-md-4 control-label">Nature of product (material/finished)</label>
+                                <div class="col-md-8">
+                                    <p id="txtNatureofproduct"></p>
                                 </div>
+                            </div>*@
                                 <div class="form-group">
                                     <label class="col-md-4 control-label">Regular Price($)</label>
                                     <div class="col-md-8">
@@ -389,7 +410,7 @@
                                 </div>
                             </div>
                             <div class="box-footer text-right">
-                                <button id="btnservicessave" class="btn btn-danger">Save</button>
+                                <button id="btnservicessave" class="btn btn-danger">Add</button>
                             </div>
                         </div>
                     </div>
@@ -446,7 +467,7 @@
                             <div class="col-sm-9">
                             </div>
                             <div class="col-sm-1">
-                                <button id="btnaddupdatechild" class="btn btn-danger">ADD/UPDATE</button>
+                                <button id="btnaddupdatechild" class="btn btn-danger">Add/Update</button>
                             </div>
                         </div>
                     </div>
@@ -455,6 +476,60 @@
 
 
             </div>
+            <div class="tab-pane" id="tab_23">
+
+                <div class="row rowbox proposal-row">
+                    <div class="col-md-6">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="form-group">
+                                    <label class="control-label ws_nowrap">Warehouse:&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                                    <select name="ddlwarehouse" id="ddlwarehouse" class="form-control">
+                                        <option value="">Select Warehouse</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <button id="btnWarehouse" class="btn btn-danger">Add</button>
+                                </div>
+                                <div class="form-group">
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row rowbox proposal-row">
+                    <div class="col-md-12">
+                        <div class="box box-primary">
+                            <div class="box-header">
+                                <h2 class="box-title">Warehouse</h2>
+                            </div>
+                            <div class="box-body">
+                                <div class="form-group d-flex">
+                                    <div class="col-sm-12">
+                                        <div class="table-responsive" id="divwarehouse">
+                                            <table id="dtdatawarehouser" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="text-left">Warehouse</th>
+                                                        <th class="text-right">Action</th>
+                                                        <th class="text-right">Delete</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="warehouse_services"></tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
 
             <div class="tab-pane" id="tab_25">
                 <div class="box box-primary">
@@ -473,24 +548,24 @@
             <div class="tab-pane" id="tab_26">
                 <div class="box box-primary">
                     @*<div class="box-header">
-                        <div class="d-flex proposal-top">
-                            <div class="edit-proposal-box">
-                                <div class="proposal-box">
-                                    <input type="file" name="file" id="proposal" class="inputfile">
-                                    <label for="proposal"><i class="fas fa-landmark"></i></label>
-                                </div>
-                                <div class="edit-proposal-texts">
-                                    <h3 class="box-title">#101</h3>
-                                    <p>Capital One</p>
-                                    <p><i class="fas fa-map-marker-alt" aria-hidden="true"></i>United States</p>
-                                </div>
+                    <div class="d-flex proposal-top">
+                        <div class="edit-proposal-box">
+                            <div class="proposal-box">
+                                <input type="file" name="file" id="proposal" class="inputfile">
+                                <label for="proposal"><i class="fas fa-landmark"></i></label>
                             </div>
-                            <div class="back-to-list">
-                                <p><button class="btn btn-danger">Back to list</button></p>
-                                <p><button class="btn btn-danger">Open</button></p>
+                            <div class="edit-proposal-texts">
+                                <h3 class="box-title">#101</h3>
+                                <p>Capital One</p>
+                                <p><i class="fas fa-map-marker-alt" aria-hidden="true"></i>United States</p>
                             </div>
                         </div>
-                    </div>*@
+                        <div class="back-to-list">
+                            <p><button class="btn btn-danger">Back to list</button></p>
+                            <p><button class="btn btn-danger">Open</button></p>
+                        </div>
+                    </div>
+                </div>*@
                     <div class="box-body">
                         <table class="table-blue table check-table table-bordered inventory-table fixed-table">
                             <tbody>

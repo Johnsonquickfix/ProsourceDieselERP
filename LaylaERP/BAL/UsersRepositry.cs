@@ -501,7 +501,7 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strquery = "select count(ID) from wp_users where user_login = '" + model.user_nicename + "' ";
+                string strquery = "select count(ID) from wp_users where user_login = '" + model.user_nicename + "'";
                 MySqlParameter[] para =
                 {
 

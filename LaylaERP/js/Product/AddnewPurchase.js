@@ -32,6 +32,7 @@
         setTimeout(function () { bindbuyingprice(); }, 12000);
         setTimeout(function () { bindChildproductsservices(); }, 13000);
         setTimeout(function () { bindparentproductsservices(); }, 14000);
+        setTimeout(function () { bindwarehouse(); }, 15000);
 
         $('#dvbuysing').hide();
         $(document).on('click', "#btnbuying", function () {
@@ -41,14 +42,23 @@
         $(document).on('click', "#btnbuyingcl", function () {
             $('#dvbuysing').hide();
         })
-
+    
         $.get('/Product/GetProductVariant/' + id, function (data) {
             var items = "";
-            $.each(data, function (index, value) {
-                items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddlproductchild");
-            })
+            //if (data == undefined || data == null || data.length == 0) {
+            //    let dt = $("#hftitle").val();              
+            //    items = $('<option>').val(id).text(dt).appendTo("#ddlproductchild");
+            //    //console.log('FsF', id); console.log('aFF', $("#txtProductName").val()); 
+            //}
+            /*else {*/
+                $.each(data, function (index, value) {
+                    items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddlproductchild");
+                    //if (items.length == 0)                    
+                })
+            //}
+          //  console.log('FF',items);
         });
-
+   
         $.get('/Product/GetProductCategory/' + id, function (data) {
             var items = "";
             $('#ddlCategoryfilter').empty();
@@ -62,12 +72,22 @@
 
         $.get('/Product/GetVender/' + id, function (data) {
             var items = "";
-            $('#ddlvender').empty();
-            items += "<option value=''>Please select</option>";
+           // $('#ddlvender').empty();
+           // items += "<option value=''>Please select</option>";
             $.each(data, function (index, value) {
                 items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddlvender");
             })
-            $('#ddlvender').bind(items);
+            //$('#ddlvender').bind(items);
+        });
+
+        $.get('/Product/Getwarehouse/', function (data) {
+            var items = "";
+          //  $('#ddlwarehouse').empty();
+           // items = "<option value=''>Please select</option>";
+            $.each(data, function (index, value) {
+                items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddlwarehouse");
+            })
+           // $('#ddlwarehouse').bind(items);
         });
 
         $("#filtersrchexp").click(function (e) {
@@ -80,14 +100,14 @@
 $("#btnaddupdatechild").click(function (e) {
     let _ItemProduct = [];
     $("#order_line_items > tr").each(function (index, tr) {
-        console.log(tr);
+       // console.log(tr);
         if (parseInt($(tr).find("input[name = txt_ItemQty]").val()) > 0) {
             _ItemProduct.push(
                 { fk_product: $("#ddlproductchild").val(), fk_product_fils: $(this).data('key'), qty: $(tr).find("input[name = txt_ItemQty]").val() }
             );
         }
     });
-    console.log(_ItemProduct);
+   // console.log(_ItemProduct);
     var obj = {
         ProductChildMeta: _ItemProduct
     }
@@ -125,7 +145,7 @@ $("#btnaddupdatechild").click(function (e) {
 $("#btnservicessave").click(function (e) {
     let _ItemProductServices = [];
     $("#Product_services > tr").each(function (index, tr) {
-        console.log(tr);
+      //  console.log(tr);
         //if (parseInt($(tr).find("input[name = txt_service]").val()) > 0) {
             
             _ItemProductServices.push(
@@ -133,7 +153,7 @@ $("#btnservicessave").click(function (e) {
             );
         //}
     });
-    console.log(_ItemProductServices);
+   // console.log(_ItemProductServices);
     var obj = {
         ProductChildMeta: _ItemProductServices
     }
@@ -179,45 +199,49 @@ function GetDataPurchaseByID(order_id) {
     var obj = { strVal: order_id }
     $.ajax({
 
-        url: '/Product/GetPurchaseDataByID/' + ID,
+        url: '/Product/GetPurchaseDetailsDataByID/' + ID,
         type: 'post',
         contentType: "application/json; charset=utf-8",
         dataType: 'JSON',
         data: JSON.stringify(obj),
         success: function (data) {
             var i = JSON.parse(data);
-            console.log(i);
-            $("#txtprosutname").text(i[0].post_title);
-            $("#txtstockquantity").text(i[0].stock);
+           // console.log(i);
+           /* $("#txtprosutname").text(i[0].post_title);*/
+           // $("#txtstockquantity").text(i[0].stock);
 
-            $('#txtAllowbackorders').text(i[0].backorders);
+           // $('#txtAllowbackorders').text(i[0].backorders);
             //  $('#txtShippingClass').text(i[0].shippingclass);
-            if (i[0].taxclass == "" || i[0].taxclass == null)
-                $('#txtTaxClass').text("standard");
-            else
-                $('#txtTaxClass').text(i[0].taxclass);
+            //if (i[0].taxclass == "" || i[0].taxclass == null)
+            //    $('#txtTaxClass').text("standard");
+            //else
+            //    $('#txtTaxClass').text(i[0].taxclass);
 
 
-            $("#txtDimensions").text(i[0].length + '*' + i[0].width + '*' + i[0].height);
+            //$("#txtDimensions").text(i[0].length + '*' + i[0].width + '*' + i[0].height);
 
             //$('#txtVirtual').val(i[0].shippingclass); virchualValue
-            if (i[0].managestock == "False")
-                $('#txtManage').text("No");
-            else
-                $('#txtManage').text("Yes");
+            //if (i[0].managestock == "False")
+            //    $('#txtManage').text("No");
+            //else
+            //    $('#txtManage').text("Yes");
 
-            if (i[0].virchualValue == "False")
-                $('#txtVirtual').text("No");
-            else
-                $('#txtVirtual').text("Yes");
+            //if (i[0].virchualValue == "False")
+            //    $('#txtVirtual').text("No");
+            //else
+            //    $('#txtVirtual').text("Yes");
 
-            $("#txtSku").text(i[0].sku);
+            //$("#txtSku").text(i[0].sku);
             $("#txtvendersku").val(i[0].sku);            
-            $("#txtRegularprice").text(i[0].regularamount);
-            $("#txtsaleprice").text(i[0].saleprice);
+            //$("#txtRegularprice").text(i[0].regularamount);
+            //$("#txtsaleprice").text(i[0].saleprice);
 
             $("#txtRegularpricekit").text('$'+i[0].regularamount);
-            $("#txtsalepricekit").text('$'+i[0].saleprice);
+            $("#txtsalepricekit").text('$' + i[0].saleprice);
+
+            $("#txtCostprice").text('$' + i[0].cost_price);
+            $("#txtbestbying").text('$' + i[0].purchase_price);
+            $("#txtVendor").text(i[0].vname);
 
          
 
@@ -232,6 +256,7 @@ $("#ddlproductchild").change(function () {
     bindbuyingprice();
     bindChildproductsservices();
     bindparentproductsservices();
+    bindwarehouse();
 });
 
 
@@ -269,7 +294,7 @@ function dataGridLoad(order_type) {
     });
 }
 function bindItemListDataTable(data) {
-    console.log('g', data);
+   // console.log('g', data);
     var layoutHtml = '';
     if (data.length > 0) {
         for (var i = 0; i < data.length; i++) {
@@ -339,8 +364,8 @@ function binddata(data) {
                 layoutHtml += '<tr id="tritemId_' + data[i].PKey + '" data-key="' + data[i].PKey + '">';
                 layoutHtml += '<td class="text-left">' + data[i].product_label + '</td>';
                 layoutHtml += '<td>' + data[i].product_name + '</td>';
-                layoutHtml += '<td>' + data[i].buyingprice + '</td>';
-                layoutHtml += '<td>' + data[i].sellingpric + '</td>';
+                layoutHtml += '<td>' + '$' + data[i].buyingprice + '</td>';
+                layoutHtml += '<td>' + '$'+ data[i].sellingpric + '</td>';
                 layoutHtml += '<td>' + data[i].Stock + '</td>';
                 layoutHtml += '<td><input min="1"  autocomplete="off" type="number" id="txt_service' + data[i].PKey + '" value="' + data[i].quantity + '" name="txt_service" placeholder="Qty"></td>';
                 layoutHtml += '<td><input type="checkbox" style="opacity: 1; position: relative; visibility: visible; display: block" name="chkproductservices" id="chkservices_' + data[i].PKey + '" value="' + data[i].PKey + '"></td>';
@@ -398,7 +423,7 @@ function bindparentproductsservices() {
 }
 
 function bindParentdata(data) {
-    console.log('g', data);
+   // console.log('g', data);
     var layoutHtml = '';
     if (data.length > 0) {
         for (var i = 0; i < data.length; i++) {
@@ -410,7 +435,7 @@ function bindParentdata(data) {
                 layoutHtml += '</tr>';
             }
         }
-        console.log(layoutHtml);
+       // console.log(layoutHtml);
         $('#Product_Parent').empty().append(layoutHtml);
 
     }
@@ -439,6 +464,7 @@ function AddBuyingt() {
     fk_productval = $('#ddlproductchild').val();
     vender = $("#ddlvender").val();
     minpurchasequantity = $("#txtminpurchasequantity").val();
+    tagno = $("#txttaglotno").val();
     costprice = $("#txtcostprice").val();
     Saletax = $("#txtSaletax").val();
     currency = $("#txtcurrencyconversionrate").val();
@@ -447,10 +473,10 @@ function AddBuyingt() {
     Remark = $("#txtRemarks").val();   
 
     if (vender == "") {
-        swal('Alert', 'Please Enter Product', 'error').then(function () { swal.close(); $('#ddlvender').focus(); });
+        swal('Alert', 'Please Enter vender', 'error').then(function () { swal.close(); $('#ddlvender').focus(); });
     }
     else if (currency == "") {
-        swal('Alert', 'Please Enter Regular price', 'error').then(function () { swal.close(); $('#txtcurrencyconversionrate').focus(); });
+        swal('Alert', 'Please Enter price', 'error').then(function () { swal.close(); $('#txtcurrencyconversionrate').focus(); });
     }
     else {
         var obj = {
@@ -458,6 +484,7 @@ function AddBuyingt() {
             fk_product: fk_productval,
             fk_vendor: vender,
             minpurchasequantity: minpurchasequantity,
+            taglotserialno: tagno,
             cost_price: costprice,
             salestax: Saletax,
             purchase_price: currency,
@@ -521,7 +548,7 @@ function bindbuyingprice() {
             for (var i = 0; i < data.length; i++) {
                 // let row_key = data[i].ID ;                      
                 itemsDetailsxml.push({
-                    PKey: data[i].ID, product_id: data[i].ID, product_name: data[i].name, salestax: data[i].salestax, purchase_price: data[i].purchase_price, cost_price: data[i].cost_price, date_inc: data[i].date_inc, discount: data[i].discount, minpurchasequantity: data[i].minpurchasequantity
+                    PKey: data[i].ID, product_id: data[i].ID, product_name: data[i].name, salestax: data[i].salestax, purchase_price: data[i].purchase_price, cost_price: data[i].cost_price, date_inc: data[i].date_inc, discount: data[i].discount, minpurchasequantity: data[i].minpurchasequantity, taglotserialno: data[i].taglotserialno
                 });
 
             }
@@ -535,14 +562,15 @@ function bindbuyingprice() {
 }
 
 function bindbuying(data) {
-    console.log('g', data);
+   // console.log('g', data);
     var layoutHtml = '';
     if (data.length > 0) {
         for (var i = 0; i < data.length; i++) {
             if (data[i].PKey > 0) {
                 layoutHtml += '<tr id="tritemId_' + data[i].PKey + '" data-key="' + data[i].PKey + '">';
                 layoutHtml += '<td class="text-left">' + data[i].product_name + '</td>';
-                layoutHtml += '<td>' + data[i].minpurchasequantity + '</td>';
+                layoutHtml += '<td>' + data[i].taglotserialno + '</td>';
+                layoutHtml += '<td>' + data[i].minpurchasequantity + '</td>';               
                 layoutHtml += '<td>' + '$'+ data[i].salestax + '</td>';
                 layoutHtml += '<td>' + '$' + data[i].purchase_price + '</td>';
                 layoutHtml += '<td>' + '$' + data[i].cost_price + '</td>';
@@ -553,7 +581,7 @@ function bindbuying(data) {
                 layoutHtml += '</tr>';
             }
         }
-        console.log(layoutHtml);
+        //console.log(layoutHtml);
         $('#Vendor_services').empty().append(layoutHtml);
 
     }
@@ -562,6 +590,7 @@ function bindbuying(data) {
         layoutHtml += '<thead>';
         layoutHtml += '<tr>'; 
         layoutHtml += '<th>Vendors</th>';
+        layoutHtml += '<th>Tag/Lot/Serial No.</th>';
         layoutHtml += '<th>Purchase quantity</th>';
         layoutHtml += '<th>Sales Tax</th>';
         layoutHtml += '<th>Price</th>';
@@ -591,8 +620,9 @@ function EditUser(id) {
         data: JSON.stringify(obj),
         success: function (data) {
             var i = JSON.parse(data);
-            console.log(i);
+          //  console.log(i);
             $("#txtminpurchasequantity").val(i[0].minpurchasequantity);
+            $("#txttaglotno").val(i[0].taglotserialno);
             $("#txtSaletax").val(i[0].salestax);
             $('#txtcurrencyconversionrate').val(i[0].purchase_price).trigger('change');
             $("#txtcostprice").val(i[0].cost_price);
@@ -644,6 +674,186 @@ function DeleteUser(id) {
 }
 
 
+$(document).on('click', "#btnWarehouse", function () {
+    AddWarehouse();
+})
+
+function AddWarehouse() {
+    debugger
+    ID = $("#hfwarehouseid").val();
+    fk_productval = $('#ddlproductchild').val();
+    warehouse = $("#ddlwarehouse").val();
+
+    if (fk_productval == "") {
+        swal('Alert', 'Please Enter Product', 'error').then(function () { swal.close(); $('#ddlproductchild').focus(); });
+    }
+    else if (warehouse == "") {
+        swal('Alert', 'Please select warehouse', 'error').then(function () { swal.close(); $('#ddlwarehouse').focus(); });
+    }
+    else {
+        var obj = {
+            ID: ID,
+            fk_product: fk_productval,
+            fk_vendor: warehouse
+
+        }
+        $.ajax({
+            url: '/Product/Createwarehouse/', dataType: 'json', type: 'Post',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(obj),
+            dataType: "json",
+            beforeSend: function () {
+                $("#loader").show();
+            },
+            success: function (data) {
+                if (data.status == true) {
+                    if (data.url == "Manage") {
+                        bindwarehouse();
+                        swal('Alert!', data.message, 'success');
+                    }
+                    else {
+                        // $('#fetch_results > input:text').val('');
+                        swal('Alert!', data.message, 'success');
+                    }
+                    //$('#ddlProduct').val(null).trigger('change');
+                    //clear_fetch();
+
+                }
+                else {
+                    swal('Alert!', data.message, 'error')
+                }
+            },
+            complete: function () {
+                $("#loader").hide();
+                //location.href = '/Users/Users/';
+                //window.location.href = '/Users/Users/';
+
+            },
+            error: function (error) {
+                swal('Error!', 'something went wrong', 'error');
+            },
+        })
+    }
+
+
+
+}
+
+
+function bindwarehouse() {
+    let PostID = $('#ddlproductchild').val();
+
+    var obj = { strValue1: PostID };
+    $.ajax({
+        type: "POST", url: '/Product/GetwarehouseData', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
+        beforeSend: function () { $("#loader").show(); },
+        success: function (data) {
+            var itemsDetailsxml = [];
+            for (var i = 0; i < data.length; i++) {
+                // let row_key = data[i].ID ;                      
+                itemsDetailsxml.push({
+                    PKey: data[i].ID, product_id: data[i].ID, product_name: data[i].product_name
+                });
+
+            }
+            bindwarehouseDetails(itemsDetailsxml);
+        },
+        complete: function () { $("#loader").hide(); },
+        error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); },
+        async: false
+
+    });
+}
+
+function bindwarehouseDetails(data) {
+    // console.log('g', data);
+    var layoutHtml = '';
+    if (data.length > 0) {
+        for (var i = 0; i < data.length; i++) {
+            if (data[i].PKey > 0) {
+                layoutHtml += '<tr id="tritemId_' + data[i].PKey + '" data-key="' + data[i].PKey + '">';          
+                layoutHtml += '<td class="text-left">' + data[i].product_name + '</td>';
+                layoutHtml += '<td class="text-right"><a href="javascript:void(0);" class="editbutton" onClick="Editwarehouse(' + data[i].PKey + ')"><i class="glyphicon glyphicon-pencil"></i></a></td>';
+                layoutHtml += '<td class="text-right"><a href="javascript:void(0);" class="editbutton" onClick="Deletewarehouser(' + data[i].PKey + ')"><i class="glyphicon glyphicon-trash"></i></a></td>';
+                layoutHtml += '</tr>';
+            }
+        }
+        // console.log(layoutHtml);
+        $('#warehouse_services').empty().append(layoutHtml);
+
+    }
+    else {
+        layoutHtml += '<table id="dtdatakits" class="table-blue table table-bordered table-striped dataTable">';
+        layoutHtml += '<thead>';
+        layoutHtml += '<tr>';
+        layoutHtml += '<th class="text-left">Warehouse</th>';
+        layoutHtml += '<th class="text-right">Action</th>';
+        layoutHtml += '<th class="text-right">Delete</th>';
+        layoutHtml += '</tr>';
+        layoutHtml += '</thead><tbody id="warehouse_services"></tbody>';
+        layoutHtml += '</table>';
+        $('#divwarehouse').empty().html(layoutHtml);
+    }
+
+}
+
+function Editwarehouse(id) {
+    $("#hfwarehouseid").val(id);
+    var ID = id;
+    var obj = { strVal: id }
+    $.ajax({
+
+        url: '/Product/GetDataProductwarehouseByID/' + ID,
+        type: 'post',
+        contentType: "application/json; charset=utf-8",
+        dataType: 'JSON',
+        data: JSON.stringify(obj),
+        success: function (data) {
+            var i = JSON.parse(data);
+            //  console.log(i);
+            $('#ddlwarehouse').val(i[0].fk_warehouse).trigger('change');
+
+        },
+        error: function (msg) { alert(msg); }
+    });
+}
+
+function Deletewarehouser(id) {
+    var ids = id;
+    var obj = { ID: ids }
+
+    $.ajax({
+        url: '/Product/DeleteProductwarehouse/', dataType: 'json', type: 'Post',
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(obj),
+        dataType: "json",
+        beforeSend: function () {
+            $("#loader").show();
+        },
+        success: function (data) {
+            if (data.status == true) {
+                if (data.url == "Manage") {           
+                    bindwarehouse();
+                    swal('Alert!', data.message, 'success');
+                }
+                else {
+                    swal('Alert!', data.message, 'success');
+                }
+
+            }
+            else {
+                swal('Alert!', data.message, 'error')
+            }
+        },
+        complete: function () {
+            $("#loader").hide();
+        },
+        error: function (error) {
+            swal('Error!', 'something went wrong', 'error');
+        },
+    })
+
+}
 
 
 

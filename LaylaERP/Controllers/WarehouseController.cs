@@ -372,5 +372,33 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(JSONresult, 0);
         }
+
+        public JsonResult UpdateCorrectstock(WarehouseModel model)
+        {
+            if (model.searchid > 0)
+            {
+                WarehouseRepository.UpdateCorrectstock(model);
+                ModelState.Clear();
+                return Json(new { status = true, message = "Data has been saved successfully!!", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+        }
+
+        public JsonResult UpdateTranferstock(WarehouseModel model)
+        {
+            if (model.searchtransferid > 0)
+            {
+                WarehouseRepository.UpdateTranferstock(model);
+                ModelState.Clear();
+                return Json(new { status = true, message = "Data has been saved successfully!!", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+        }
     }
 }

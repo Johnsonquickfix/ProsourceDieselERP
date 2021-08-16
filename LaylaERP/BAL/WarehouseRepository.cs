@@ -165,12 +165,13 @@ namespace LaylaERP.BAL
             {
                 string strquery = "SELECT DISTINCT post.id,ps.ID pr_id, CONCAT(post.post_title, ' (', COALESCE(psku.meta_value, ''), ') - ', LTRIM(REPLACE(REPLACE(COALESCE(ps.post_excerpt, ''), 'Size:', ''), 'Color:', ''))) as post_title, psr.meta_value as sale_price, pr.meta_value reg_price,"
                               + "  CONCAT(post.id, '$', COALESCE(ps.id, 0)) r_id FROM wp_posts as post"
+                              + "  INNER join wp_postmeta psr1 on psr1.post_id = post.ID"
                               + "  LEFT OUTER JOIN wp_posts ps ON ps.post_parent = post.id and ps.post_type LIKE 'product_variation'"
                               + "  left outer join wp_postmeta psku on psku.post_id = ps.id and psku.meta_key = '_sku'"
                               + " left outer join wp_postmeta pr on pr.post_id = ps.id and pr.meta_key = '_regular_price'"
                               + " left outer join wp_postmeta psr on psr.post_id = COALESCE(ps.id, post.id) and psr.meta_key = '_sale_price'"
                               + "  WHERE post.post_type = 'product' AND post.post_status = 'publish' AND CONCAT(post.post_title, ' (' , COALESCE(psku.meta_value, '') , ') - ' ,LTRIM(REPLACE(REPLACE(COALESCE(ps.post_excerpt, ''), 'Size:', ''), 'Color:', ''))) like '%%%'"
-                              + " ORDER BY post.ID  limit 20";
+                              + " ORDER BY post.ID";
                 dtr = SQLHelper.ExecuteDataTable(strquery);
 
             }
@@ -301,7 +302,7 @@ namespace LaylaERP.BAL
             try
             {
                 
-                string strSql = "SELECT v.rowid as rowid, v.name as vname, w.ref as wname, concat(v.address,' ',v.town,' ',v.fk_state,' ',v.zip,' ',v.fk_country) as Vaddress, v.phone as phone FROM wp_VendorSetting vs"
+                string strSql = "SELECT v.rowid as rowid, v.name as vname, w.ref as wname, concat(v.address,' ',v.town,' ',v.fk_state,' ',v.zip,' ',v.fk_country) as Vaddress, v.phone as phone FROM wp_VendorWarehouse vs"
                                + " inner JOIN wp_warehouse w on vs.WarehouseID = w.rowid"
                               + " inner join wp_vendor v on v.rowid = vs.VendorID";
                  if(!string.IsNullOrEmpty(model.strValue1))
@@ -444,7 +445,7 @@ namespace LaylaERP.BAL
             DataTable dtr = new DataTable();
             try
             {
-                string strquery = "SELECT label,fk_product,LEFT(CAST(eatby AS DATE), 10) as eatby,LEFT(CAST(sellby AS DATE), 10) as sellby,serial,value,price from wp_stock_mouvement where rowid='" + model.strValue1 + "'";
+                string strquery = "SELECT rowid,label,fk_product,LEFT(CAST(eatby AS DATE), 10) as eatby,LEFT(CAST(sellby AS DATE), 10) as sellby,serial,value,price,fk_entrepot,inventorycode from wp_stock_mouvement where rowid='" + model.strValue1 + "'";
 
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strquery);
@@ -454,5 +455,64 @@ namespace LaylaERP.BAL
             { throw ex; }
             return dtr;
         }
+
+        public static int UpdateCorrectstock(WarehouseModel model)
+        {
+            try
+            {
+                string strsql = "update wp_stock_mouvement set " +
+                    "fk_product=@fk_product, value=@value, label=@label, eatby=@eatby, sellby=@sellby, serial=@serial, price=@price" +
+                     " where rowid in(" + model.searchid + ")";
+                MySqlParameter[] para =
+               {
+                    //additional info
+                   new MySqlParameter("@fk_product", model.fk_product),
+                    new MySqlParameter("@fk_entrepot", model.fk_entrepot),
+                    new MySqlParameter("@value", model.value),
+                    new MySqlParameter("@price", model.price),
+                    new MySqlParameter("@label", model.label),
+                    new MySqlParameter("@eatby", model.eatby),
+                    new MySqlParameter("@sellby", model.sellby),
+                    new MySqlParameter("@serial", model.serial),
+            };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+        public static int UpdateTranferstock(WarehouseModel model)
+        {
+           
+            try
+            {
+                string strsql = "update wp_stock_mouvement set " +
+                    "fk_product=@fk_product, value=@value, label=@label, eatby=@eatby, sellby=@sellby, serial=@serial, price=@price, inventorycode=@inventorycode" +
+                     " where rowid in(" + model.searchtransferid + ")";
+                MySqlParameter[] para =
+               {
+                    //additional info
+                   new MySqlParameter("@fk_product", model.fk_product),
+                    new MySqlParameter("@fk_entrepot", model.fk_entrepot),
+                    new MySqlParameter("@value", model.value),
+                    new MySqlParameter("@price", model.price),
+                    new MySqlParameter("@label", model.label),
+                    new MySqlParameter("@eatby", model.eatby),
+                    new MySqlParameter("@sellby", model.sellby),
+                    new MySqlParameter("@serial", model.serial),
+                    new MySqlParameter("@inventorycode",model.inventorycode),
+            };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
     }
 }

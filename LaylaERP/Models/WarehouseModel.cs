@@ -66,6 +66,10 @@ namespace LaylaERP.Models
         public string cor_country { get; set; }
         public string note_public { get; set; }
         public string note_private { get; set; }
-      
+
+        //value
+        public int searchid { get; set; }
+        public int searchtransferid { get; set; }
+
     }
 }

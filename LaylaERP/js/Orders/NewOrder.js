@@ -653,7 +653,7 @@ function getOrderItemList(oid) {
     var option = { strValue1: oid };
     //let coupon_list = [];
     ajaxFunc('/Orders/GetOrderProductList', option, beforeSendFun, function (data) {
-        let itemHtml = '', recyclingfeeHtml = '', feeHtml = '', shippingHtml = '', refundHtml = '', couponHtml = ''; 
+        let itemHtml = '', recyclingfeeHtml = '', feeHtml = '', shippingHtml = '', refundHtml = '', couponHtml = '';
         let zQty = 0.00, zGAmt = 0.00, zTDiscount = 0.00, zTotalTax = 0.00, zShippingAmt = 0.00, zStateRecyclingAmt = 0.00, zFeeAmt = 0.00, zRefundAmt = 0.00;
         for (var i = 0; i < data.length; i++) {
             let orderitemid = parseInt(data[i].order_item_id) || 0;
@@ -717,7 +717,7 @@ function getOrderItemList(oid) {
                     couponHtml += '</a>';
                     couponHtml += '</li>';
                 }
-                zTDiscount = zTDiscount + cou_amt; 
+                zTDiscount = zTDiscount + cou_amt;
             }
             else if (data[i].product_type == 'fee' && data[i].product_name == 'State Recycling Fee') {
                 recyclingfeeHtml += '<tr id="trfeeid_' + orderitemid + '" data-orderitemid="' + orderitemid + '" data-pname="' + data[i].product_name + '">';
@@ -759,7 +759,7 @@ function getOrderItemList(oid) {
         }
         $('#order_line_items').append(itemHtml); $('#order_state_recycling_fee_line_items').append(recyclingfeeHtml); $('#order_fee_line_items').append(feeHtml); $('#order_shipping_line_items').append(shippingHtml); $('#order_refunds').append(refundHtml);
         $('.refund-action').append('<button type="button" id="btnAddFee" class="btn btn-danger billinfo">Add Fee</button> ');
-        $('#billCoupon').append(couponHtml); 
+        $('#billCoupon').append(couponHtml);
         //Calculate Final
         $("#totalQty").text(zQty.toFixed(0)); $("#totalQty").data('qty', zQty.toFixed(0));
         $("#SubTotal").text(zGAmt.toFixed(2));
@@ -932,8 +932,8 @@ function Coupon_get_discount_amount(id, parent_id, coupon_code, coupon_amt, item
     else if (isedu == 1) {
         let matt_arr = [118, 611172, 611252, 612995, 611286, 31729, 20861];
         if (id != 632713 && id != 78676) {
-            if (matt_arr.includes(parent_id)) coupon_amt = 0.1;
-            else coupon_amt = 0.15;
+            if (matt_arr.includes(parent_id)) coupon_amt = (reg_price * item_qty * 0.10);
+            else coupon_amt = (reg_price * item_qty * 0.15);
         }
         return { price: reg_price, disc_amt: coupon_amt, qty: item_qty };
     }
@@ -976,19 +976,20 @@ function Coupon_get_discount_amount(id, parent_id, coupon_code, coupon_amt, item
     }
     else if (coupon_code == 'yuliya100') {
         let var_arr = [1399, 611239, 128250];
-        if (var_arr.includes(parent_id)) coupon_amt = 1.00;
+        if (var_arr.includes(parent_id)) coupon_amt = sale_price;
         return { price: sale_price, disc_amt: coupon_amt, qty: item_qty };
     }
     else if (coupon_code == 'ascend100') {
         let var_arr = [31735, 723, 733504, 613011];
-        if (var_arr.includes(parent_id)) coupon_amt = 1.00;
+        if (var_arr.includes(parent_id)) coupon_amt = sale_price;
         return { price: sale_price, disc_amt: coupon_amt, qty: item_qty };;
     }
     else if (coupon_code == "idmecoupon" || coupon_code == "mil20off072021") {
-        return { price: reg_price, disc_amt: 0.20, qty: item_qty };
+        coupon_amt = (reg_price * item_qty * 0.20);
+        return { price: reg_price, disc_amt: coupon_amt, qty: item_qty };
     }
     else if (coupon_code == "5wprkapok40") {
-        if (parent_id == 14023) coupon_amt = 0.40;
+        if (parent_id == 14023) coupon_amt = (reg_price * item_qty * 0.40);
         return { price: reg_price, disc_amt: coupon_amt, qty: item_qty };
     }
     else if (coupon_code == "freeprotector" && parent_id == 611268) {
@@ -1001,7 +1002,7 @@ function Coupon_get_discount_amount(id, parent_id, coupon_code, coupon_amt, item
         if (item_qty > matt_qnty) { prot_qnty = matt_qnty; }
         else if (item_qty == matt_qnty) { prot_qnty = item_qty; }
         else if (item_qty < matt_qnty) { prot_qnty = item_qty; }
-        else { prot_qnty = 0.00;}
+        else { prot_qnty = 0.00; }
         return { price: sale_price, disc_amt: 1.00, qty: prot_qnty };
     }
     else {
@@ -1339,7 +1340,7 @@ function calculateDiscountAcount() {
                 }
                 //else { zCouponAmt = 0.00; }
                 let cou_details = Coupon_get_discount_amount((vid > 0 ? vid : pid), pid, cou, zCouponAmt, zQty, zRegPrice, zSalePrice);
-               
+
                 if (zDiscType == 'fixed_product') { zDisAmt = cou_details.disc_amt * cou_details.qty; }
                 else if (zDiscType == 'fixed_cart') { zDisAmt = cou_details.disc_amt * cou_details.qty; }
                 else if (zDiscType == 'percent') { zDisAmt = ((cou_details.price * cou_details.qty) * zCouponAmt) / 100; }

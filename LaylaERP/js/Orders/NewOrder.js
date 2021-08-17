@@ -1395,7 +1395,7 @@ function calculateDiscountAcount() {
                 else if (zDiscType == 'fixed_cart') { zDisAmt = cou_details.disc_amt * cou_details.qty; }
                 else if (zDiscType == 'percent') { zDisAmt = ((cou_details.price * cou_details.qty) * zCouponAmt) / 100; }
                 else if (zDiscType == '2x_percent') { zDisAmt = ((zRegPrice * zCouponAmt) / 100) * Math.floor(zQty / 2); }
-                console.log(cou, cou_details, zDisAmt);
+                //console.log(cou, cou_details, zDisAmt);
                 //if (zDiscType == 'fixed_product') { zDisAmt = zCouponAmt * zQty; }
                 //else if (zDiscType == 'fixed_cart') { zDisAmt = zCouponAmt * zQty; }
                 //else if (zDiscType == 'percent') { zDisAmt = (zGrossAmount * zCouponAmt) / 100; }
@@ -1774,7 +1774,7 @@ function updateCO() {
 
     if (itemsDetails.length <= 0) { swal('Alert!', 'Please add product.', "error").then((result) => { $('#ddlProduct').select2('open'); return false; }); return false; }
     var obj = { OrderPostMeta: postMeta, OrderProducts: itemsDetails, OrderPostStatus: postStatus, OrderOtherItems: otherItems, OrderTaxItems: taxItems };
-    console.log(obj);
+    //console.log(obj);
     $.ajax({
         type: "POST", contentType: "application/json; charset=utf-8", url: "/Orders/SaveCustomerOrder", data: JSON.stringify(obj), dataType: "json", beforeSend: function () { $("#loader").show(); },
         success: function (data) {
@@ -1888,7 +1888,7 @@ function PaymentModal() {
     $('#tblmodalTotal').append($('#order_final_total').html());
     $("#billModal").modal({ backdrop: 'static', keyboard: false }); $("#txt_Coupon").focus();
     pay_by = pay_by.length > 0 ? pay_by : 'podium';
-    $('#ddlPaymentMethod').val(pay_by).trigger('change'); console.log(pay_by);
+    $('#ddlPaymentMethod').val(pay_by).trigger('change'); //console.log(pay_by);
 }
 function AcceptPayment() {
     if ($("#ddlPaymentMethod").val() == "ppec_paypal") {

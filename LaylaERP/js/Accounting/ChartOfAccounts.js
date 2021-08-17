@@ -1,9 +1,12 @@
-﻿ChartOfAccountGrid();
+﻿
+ChartOfAccountGrid();
+
 function ChartOfAccountGrid() {
     var urid = parseInt($("#ddlSearchStatus").val());
     var sid = "";
     var obj = { user_status: urid, Search: sid, PageNo: 0, PageSize: 50, sEcho: 1, SortCol: 'ID', SortDir: 'DESC' };
     $('#dtdata').DataTable({
+        //oSearch: { "sSearch": searchText },
         //columnDefs: [{ "orderable": true, "targets": 0 }],
         //order: [[0, "desc"]],
         destroy: true,
@@ -20,10 +23,11 @@ function ChartOfAccountGrid() {
         lengthMenu: [[10, 20, 50], [10, 20, 50]],
         sAjaxSource: "/Accounting/GetChartOfAccounts",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
+            
             var col = 'ID';
             if (oSettings.aaSorting.length > 0) {
                 var col = oSettings.aaSorting[0][0] == 2 ? "ID" : oSettings.aaSorting[0][0] == 3 ? "account_number" : oSettings.aaSorting[0][0] == 4 ? "label" : "ID";
-                aoData.push({ name: "sSortColName", value: col });
+                obj.SortCol = col; obj.SortDir = oSettings.aaSorting.length > 0 ? oSettings.aaSorting[0][1] : "desc";
             }
             obj.sEcho = aoData[0].value; obj.PageSize = oSettings._iDisplayLength; obj.PageNo = oSettings._iDisplayStart;
             $.ajax({
@@ -39,9 +43,10 @@ function ChartOfAccountGrid() {
         aoColumns: [
             {data: 'ID', title:'ID', sWidth:"10%"},
             { data: 'account_number', title: 'Account Number', sWidth: "10%" },
+            { data: 'labelshort', title: 'Short label', sWidth: "10%" },
             { data: 'label', title: 'Label', sWidth: "10%" },
             { data: 'account_parent', title: 'Parent Account', sWidth: "10%" },
-            { data: 'fk_pcg_version', title: 'Group of account', sWidth: "10%" },
+            { data: 'pcg_type', title: 'Group of account', sWidth: "10%" },
             {
                 'data': 'active', sWidth:"10%", 'sClass': 'ws_nowrap text-center',
                 'render': function (id, type, full, meta) {
@@ -96,3 +101,5 @@ $.get('/Accounting/GetAccountSystem', function (data) {
         items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddlaccountsetting");
     })
 });
+
+

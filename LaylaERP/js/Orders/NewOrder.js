@@ -712,10 +712,10 @@ function getOrderItemList(oid) {
                     couponHtml += '<li id="li_' + data[i].product_name.toString().toLowerCase() + '" class="' + (cpn_info.discount_type == 'fixed_cart' ? 'cart' : 'items') + '" data-coupon= "' + data[i].product_name + '" data-couponamt= "' + (cpn_info.coupon_amount != '' && cpn_info.coupon_amount != undefined ? cpn_info.coupon_amount : cou_amt) + '" data-disctype= "' + (cpn_info.discount_type != '' && cpn_info.discount_type != undefined ? cpn_info.discount_type : '') + '" data-rqprdids="' + (cpn_info.product_ids != '' && cpn_info.product_ids != undefined ? cpn_info.product_ids : '') + '" data-excludeids="' + (cpn_info.exclude_product_ids != '' && cpn_info.exclude_product_ids != undefined ? cpn_info.exclude_product_ids : '') + '" data-type= "add_coupon" data-orderitemid="' + orderitemid + '">';
                     couponHtml += '<a href="javascript:void(0);">';
                     couponHtml += '<i class="fa fa-gift"></i>';
-                    couponHtml += '<span>' + cpn_name + '</span>';
+                    couponHtml += '<span>' + cpn_name.toString().toLowerCase() + '</span>';
                     couponHtml += '<div class="pull-right">';
                     couponHtml += '$<span id="cou_discamt">' + cou_amt.toFixed(2) + '</span>';
-                    couponHtml += '<button type="button" class="btn btn-box-tool pull-right billinfo" onclick="deleteAllCoupons(\'' + data[i].product_name + '\');"><i class="fa fa-times"></i></button>'
+                    couponHtml += '<button type="button" class="btn btn-box-tool pull-right billinfo" onclick="deleteAllCoupons(\'' + data[i].product_name.toString().toLowerCase() + '\');"><i class="fa fa-times"></i></button>'
                     couponHtml += '</div>';
                     couponHtml += '</a>';
                     couponHtml += '</li>';
@@ -751,7 +751,7 @@ function getOrderItemList(oid) {
             }
             else if (data[i].product_type == 'refund') {
                 refundHtml += '<tr id="tritemId_' + orderitemid + '" data-orderitemid="' + orderitemid + '" data-pname="' + data[i].product_name + '">';
-                refundHtml += '<td class="text-center item-action"><button class="btn menu-icon-gr text-red btnDeleteItem billinfo" tabitem_itemid="' + orderitemid + '" onclick="removeItemsInTable(\'' + orderitemid + '\');"> <i class="glyphicon glyphicon-trash"></i></button></td>';
+                //refundHtml += '<td class="text-center item-action"><button class="btn menu-icon-gr text-red btnDeleteItem billinfo" tabitem_itemid="' + orderitemid + '" onclick="removeItemsInTable(\'' + orderitemid + '\');"> <i class="glyphicon glyphicon-trash"></i></button></td>';
                 refundHtml += '<td>' + data[i].product_name + '</td><td></td><td></td><td class="TotalAmount text-right">' + data[i].total.toFixed(2) + '</td><td></td><td></td>';
                 refundHtml += '</tr>';
                 zRefundAmt = zRefundAmt + (parseFloat(data[i].total) || 0.00);

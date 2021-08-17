@@ -9,10 +9,6 @@
 <script src="~/Content/AdminLTE-3.1.0/datatables/datatables.min.js" type="text/javascript"></script>
 <script src="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/js/dataTables.bootstrap.min.js" type="text/javascript"></script>
 <style>
-    .dataTables_scrollHeadInner {
-        width: 100% !important;
-    }
-    
     .pac-container {
         z-index: 100000;
     }
@@ -1031,14 +1027,13 @@
                                     <div class="box-header">
                                         <div class="row">
                                             <div class="col-sm-12">
-                                                <table id="RelatedItemdata" class="inventory-table table-blue table check-table table-bordered table-striped dataTable " style="width:100%;">
+                                                <table id="RelatedItemdata" class="inventory-table table-blue table check-table table-bordered table-striped dataTable">
                                                     <thead>
                                                         <tr>
                                                             <th>Product Name</th>
                                                             <th>Vendor Name</th>
                                                             <th>Purchase Price</th>
                                                             <th>Cost Price</th>
-
                                                         </tr>
                                                     </thead>
                                                 </table>
@@ -1258,6 +1253,7 @@
 <script src="@Url.Content("~/js/ThirdParty/Vendor.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 <script>
     $(document).ready(function () {
+
         var url = window.location.pathname;
         var id = url.substring(url.lastIndexOf('/') + 1);
         if (id != "NewVendor") {

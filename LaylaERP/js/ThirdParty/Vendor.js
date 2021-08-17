@@ -1047,7 +1047,7 @@ function VendorContactList() {
         columnDefs: [{ "orderable": true, "targets": 0 }], order: [[0, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true,
         sPaginationType: "full_numbers", searching: false, ordering: true, lengthChange: false, "paging": false, "bInfo": false,
-        bAutoWidth: false, scrollX: false, scrollY: false,
+        bAutoWidth: false, scrollX: false, 
         lengthMenu: [[10, 20, 50], [10, 20, 50]],
         sAjaxSource: "/ThirdParty/GetVendorContactList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
@@ -1100,7 +1100,7 @@ function VendorRelatedProduct() {
         columnDefs: [{ "orderable": true, "targets": 0 }], order: [[0, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true,
         sPaginationType: "full_numbers", searching: false, ordering: true, lengthChange: false, "paging": false, "bInfo": false,
-        bAutoWidth: false, scrollX: false, scrollY: false,
+        bAutoWidth: false, scrollX: false, 
         lengthMenu: [[10, 20, 50], [10, 20, 50]],
         sAjaxSource: "/ThirdParty/GetVendorRelatedProductList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
@@ -1121,12 +1121,13 @@ function VendorRelatedProduct() {
             });
         },
         aoColumns: [
-            { data: 'ProductName', title: 'Product Name', sWidth: "10%" },
-            { data: 'VendorName', title: 'Vendor Name', sWidth: "10%" },
-            { data: 'purchase_price', title: 'Purchase Price', sWidth: "10%" },
-            { data: 'cost_price', title: 'Cost Price', sWidth: "10%" },
+            { data: 'ProductName', title: 'Product Name', sWidth: "25%" },
+            { data: 'VendorName', title: 'Vendor Name', sWidth: "25%" },
+            { data: 'purchase_price', title: 'Purchase Price', sWidth: "25%" },
+            { data: 'cost_price', title: 'Cost Price', sWidth: "25%" },
         ]
     });
+    
 }
 function VendorWarehouseList() {
     var urid = parseInt($("#ddlSearchStatus").val());
@@ -1137,7 +1138,7 @@ function VendorWarehouseList() {
         columnDefs: [{ "orderable": true, "targets": 0 }], order: [[0, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true,
         sPaginationType: "full_numbers", searching: false, ordering: true, lengthChange: false, "paging": false, "bInfo": false,
-        bAutoWidth: false, scrollX: false, scrollY: false,
+        bAutoWidth: false, scrollX: false, 
         lengthMenu: [[10, 20, 50], [10, 20, 50]],
         sAjaxSource: "/ThirdParty/GetVendorWarehouseList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {

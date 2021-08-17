@@ -514,5 +514,20 @@ namespace LaylaERP.BAL
             }
         }
 
+        public static DataTable GetProductWarehouse()
+        {
+            DataTable dtr = new DataTable();
+            try
+            {
+                string strquery = "SELECT ww.ref as warehouse, post.post_title as product,concat(ww.address,' ',ww.city,' ',ww.town,' ',ww.zip,' ',ww.country) as address FROM wp_warehouse ww, wp_posts post, product_warehouse p WHERE"
+                                   + " ww.rowid = p.fk_warehouse and post.ID = p.fk_product";
+                DataSet ds = SQLHelper.ExecuteDataSet(strquery);
+                dtr = ds.Tables[0];
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dtr;
+        }
+
     }
 }

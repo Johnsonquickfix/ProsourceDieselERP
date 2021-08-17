@@ -20,6 +20,7 @@
         <ul class="nav nav-tabs" id="mytabs" role="tablist">
             <li class="active"><a href="#tab_1" data-toggle="tab">Warehouse</a></li>
             <li><a href="#tab_2" data-toggle="tab">Warehouse List to Vendors</a></li>
+            <li><a href="#tab_3" data-toggle="tab">Warehouse List to Product</a></li>
         </ul>
 
         <div class="tab-content">
@@ -62,37 +63,63 @@
             <!-- Tab warehouse end-->
 
             <div class="tab-pane" id="tab_2">
-               
-                    <div class="user-top-section">
-                        <div class="tablenav top tablenav-top2">
-                            <div class="alignleft actions bulkactions">
-                                <select class="form-control" id="ddlWarehouse"></select>
-                            </div>
-                            <button type="button" id="btnSearchVendor" class="btn btn-primary btn-flat button">Search</button>
-                        </div>
-                    </div>
 
-                    <div class="userrole_section section_wrapper appearance-menu-section">
-                      
-                        <div class="box box-primary">
-                            <div class="box-header">
-                                <table id="vendor" class="inventory-table table-blue table check-table table-bordered table-striped dataTable " width="100%">
-                                    <thead>
-                                        <tr>
-                                            <th style="width:25%">Warehouse Name</th>
-                                            <th style="width:25%">Vendor Name</th>
-                                            <th style="width:25%">Vendor Address</th>
-                                            <th style="width:25%">Vendor Phone</th>
-                                        </tr>
-                                    </thead>
-                                </table>
-                            </div>
+                <div class="user-top-section">
+                    <div class="tablenav top tablenav-top2">
+                        <div class="alignleft actions bulkactions">
+                            <select class="form-control" id="ddlWarehouse"></select>
+                        </div>
+                        <button type="button" id="btnSearchVendor" class="btn btn-primary btn-flat button">Search</button>
+                    </div>
+                </div>
+
+                <div class="userrole_section section_wrapper appearance-menu-section">
+
+                    <div class="box box-primary">
+                        <div class="box-header">
+                            <table id="vendor" class="inventory-table table-blue table check-table table-bordered table-striped dataTable " width="100%">
+                                <thead>
+                                    <tr>
+                                        <th style="width:25%">Warehouse Name</th>
+                                        <th style="width:25%">Vendor Name</th>
+                                        <th style="width:25%">Vendor Address</th>
+                                        <th style="width:25%">Vendor Phone</th>
+                                    </tr>
+                                </thead>
+                            </table>
                         </div>
                     </div>
-               
+                </div>
+
+            </div>
+
+            <div class="tab-pane" id="tab_3">
+
+                <div class="user-top-section">
+                    <div class="tablenav top tablenav-top2">
+                        @*<button type="button" id="btnSearchVendor" class="btn btn-primary btn-flat button">Search</button>*@
+                    </div>
+                </div>
+
+                <div class="userrole_section section_wrapper appearance-menu-section">
+
+                    <div class="box box-primary">
+                        <div class="box-header">
+                            <table id="product" class="inventory-table table-blue table check-table table-bordered table-striped dataTable " width="100%">
+                                <thead>
+                                    <tr>
+                                        <th class="text-left" style="width:25%">Warehouse Name</th>
+                                        <th class="text-left" style="width:25%">Product Name</th>
+                                        <th class="text-left" style="width:25%">Warehouse Address</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
             <!--Tab vendor end here-->
-            </div>
+        </div>
         </div>
 </section>
 

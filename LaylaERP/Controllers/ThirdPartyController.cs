@@ -30,7 +30,8 @@ namespace LaylaERP.Controllers
             {
                 if (model.rowid > 0)
                 {
-                    new ThirdPartyRepository().EditVendorBasicInfo(model, model.rowid);
+                    new ThirdPartyRepository().EditVendorBasicInfo(model);
+                    new ThirdPartyRepository().EditJournal(model);
                     return Json(new { status = true, message = "Vendor Basic info has been updated successfully!!", url = "", id = model.rowid }, 0);
                 }
                 else
@@ -38,7 +39,7 @@ namespace LaylaERP.Controllers
                     int ID = new ThirdPartyRepository().AddNewVendorBasicInfo(model);
                     if (ID > 0)
                     {
-                        ModelState.Clear();
+                        new ThirdPartyRepository().AddJournal(model,ID);
                         return Json(new { status = true, message = "Vendor Basic info has been saved successfully!!", url = "", id = ID }, 0);
                     }
                     else

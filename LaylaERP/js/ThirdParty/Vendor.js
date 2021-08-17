@@ -17,6 +17,21 @@ getPaymentMethod();
 VendorContactList();
 VendorWarehouseList();
 VendorRelatedProduct();
+getNatureofJournal();
+function getNatureofJournal() {
+    $.ajax({
+        url: "/Accounting/GetNatureofJournal",
+        type: "Get",
+        success: function (data) {
+            var opt = '<option value="-1">Please Select Nature of Journal</option>';
+            for (var i = 0; i < data.length; i++) {
+                opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
+            }
+            $('#ddlNatureofJournal').html(opt);
+        }
+
+    });
+}
 $('input:checkbox').prop('checked', true);
 $("#ddlPaymentMethod").change(function () {
     ShippingMethod = $("#ddlPaymentMethod").val();
@@ -98,6 +113,7 @@ $('#btnNextTab1').click(function (e) {
     Web = $("#txtWeb").val();
     WorkingHours = $("#txtWorkinghours").val();
     VendorStatus = $("#chkVendorStatus").prop("checked") ? 1 : 0;
+    NatureofJournal = $("#ddlNatureofJournal").val();
 
     var pattern = /^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
     if (VendorType == "-1") { swal('alert', 'Please Select Vendor Type', 'error').then(function () { swal.close(); $('#ddlvendortype').focus(); }) }
@@ -110,17 +126,13 @@ $('#btnNextTab1').click(function (e) {
     else if (ZipCode == "") { swal('alert', 'Please Enter ZipCode', 'error').then(function () { swal.close(); $('#txtZipCode').focus(); }) }
     else if (Country == "-1") { swal('alert', 'Please Select Country', 'error').then(function () { swal.close(); $('#ddlCountry').focus(); }) }
     else if (Phone == "") { swal('alert', 'Please Enter Phone', 'error').then(function () { swal.close(); $('#txtPhone').focus(); }) }
-    //else if (EMail == "") { swal('alert', 'Please Enter EMail', 'error').then(function () { swal.close(); $('#txtEMail').focus(); }) }
-    //else if (!pattern.test(EMail)) { swal('alert', 'not a valid e-mail address', 'error').then(function () { swal.close(); $('#txtEMail').focus(); }) }
-    //else if (Web == "") { swal('alert', 'Please Enter Web', 'error').then(function () { swal.close(); $('#txtWeb').focus(); }) }
-    //else if (WorkingHours == "") { swal('alert', 'Please Enter working hours', 'error').then(function () { swal.close(); $('#txtWorkinghours').focus(); }) }
-
+    else if (NatureofJournal == "-1") { swal('alert', 'Please Select Nature of Journal', 'error').then(function () { swal.close(); $('#ddlNatureofJournal').focus(); }) }
     else {
         var obj = {
             rowid: ID, vendor_type: VendorType, VendorCode: VendorCode,
             Name: VendorName, AliasName: AliasName, Status: Status, Address: Address1,
             City: City, State: State, StateName: StateName, ZipCode: ZipCode, Country: Country, Phone: Phone, Fax: Fax, EMail: EMail, Web: Web,
-            Workinghours: WorkingHours, VendorStatus: VendorStatus
+            Workinghours: WorkingHours, VendorStatus: VendorStatus, NatureofJournal: NatureofJournal
         }
         $.ajax({
             url: '/ThirdParty/AddVendorBasicInfo/', dataType: 'json', type: 'Post',
@@ -902,19 +914,20 @@ function GetVendorByID(id) {
                     $("#txtBusinessEntityType").val(d[0].BusinessEntityType);
                     $("#txtNotesPublic").val(d[0].note_public);
                     $("#txtNotesPrivate").val(d[0].note_private);
+                    $("#ddlNatureofJournal").val(d[0].NatureofJournal);
 
                     $("#txtCapital").val(d[0].capital);
-                    $("#ddlPaymentTerms").val(d[0].PaymentTermsID);
-                    $("#ddlBalancedays").val(d[0].BalanceID);
-                    $("#ddlIncoTerm").val(d[0].IncotermsType);
+                    $("#ddlPaymentTerms").val(d[0].PaymentTermsID == null ? "-1" : d[0].PaymentTermsID);
+                    $("#ddlBalancedays").val(d[0].BalanceID == null ? "-1" : d[0].BalanceID);
+                    $("#ddlIncoTerm").val(d[0].IncotermsType == null ? "-1" : d[0].IncotermsType);
                     $("#txtIncoTerm").val(d[0].Incoterms);
-                    $("#ddlCurrency").val(d[0].Currency);
+                    $("#ddlCurrency").val(d[0].Currency == null ? "-1" : d[0].Currency);
                     $("#txtCreditLimit").val(d[0].CreditLimit);
                     $("#txtOutStandingLimit").val(d[0].outstanding_limit);
                     $("#txtMinOrderQty").val(d[0].MinimumOrderQuanity);
                     $("#txtOrderMinAmt").val(d[0].order_min_amount);
 
-                    $("#ddlShippingMethod").val(d[0].ShippingMethodID);
+                    $("#ddlShippingMethod").val(d[0].ShippingMethodID == null ? "-1" : d[0].ShippingMethodID);
                     $("#txtShippingRate").val(d[0].ShippingRate);
                     $("#txtShippingLocation").val(d[0].ShippingLocation);
 
@@ -927,7 +940,7 @@ function GetVendorByID(id) {
                     $("#txtUPSAPILicenceKey").val(d[0].UPSAPILicenceKey);
                     $("#txtUPSLicenceEmail").val(d[0].UPSLicenceEmail);
                     d[0].UPSEnable == true ? $("#chkUPSEnable").prop("checked", true) : $("#chkUPSEnable").prop("checked", false);
-                    $("#ddlUPSMeasurementUnits").val(d[0].UPSMeasurementUnits);
+                    $("#ddlUPSMeasurementUnits").val(d[0].UPSMeasurementUnits == null ? "LBS/IN" : d[0].UPSMeasurementUnits);
                     d[0].UPSEnableDebugMode == true ? $("#chkUPSEnableDebugMode").prop("checked", true) : $("#chkUPSEnableDebugMode").prop("checked", false);
                     d[0].USPSEnable == true ? $("#chkUSPSEnableDisable").prop("checked", true) : $("#chkUSPSEnableDisable").prop("checked", false);
                     $("#txtUSPSPostcode").val(d[0].USPSPostcode);
@@ -960,27 +973,27 @@ function GetVendorByID(id) {
                     $("#txtFedexMeterNumber").val(d[0].FedexMeterNumber);
                     $("#txtFedexWebServicesKey").val(d[0].FedexWebServicesKey);
                     $("#txtFedexWebServicesPassword").val(d[0].FedexWebServicesPassword);
-                    $("#ddlFedexMethodType").val(d[0].FedexMethodType);
+                    $("#ddlFedexMethodType").val(d[0].FedexMethodType == null ? "Global" : d[0].FedexMethodType);
                     d[0].FedexMethodEnable == true ? $("#chkFadexMethodEnable").prop("checked", true) : $('#chkFadexMethodEnable').prop("checked", false);
                     d[0].FedexCustomServices == true ? $("#chkFadexCustomServices").prop("checked", true) : $('#chkFadexCustomServices').prop("checked", false);
                     d[0].FedexDebugMode == true ? $("#chkFadexDebugMode").prop("checked", true) : $('#chkFadexDebugMode').prop("checked", false);
 
-                    $("#ddlTaxMethod").val(d[0].TaxMethod);
+                    $("#ddlTaxMethod").val(d[0].TaxMethod == null ? "Standard Tax Rate" : d[0].TaxMethod);
                     $("#txtDefaultTax").val(d[0].DefaultTax);
                     $("#txtShippingTax").val(d[0].ShippingTax);
                     d[0].ShippingTaxIncludedinprice == true ? $("#chkShippingTaxIncludedinprice").prop("checked", true) : $('#chkShippingTaxIncludedinprice').prop("checked", false);
                     $("#txtCalculatedtax").val(d[0].CalculatedTax);
                     d[0].TaxIncludedinPrice == true ? $("#chkTaxIncludedinPrice").prop("checked", true) : $('#chkTaxIncludedinPrice').prop("checked", false);
 
-                    $("#ddlDiscountType1").val(d[0].DiscountType1);
+                    $("#ddlDiscountType1").val(d[0].DiscountType1 == null ? "Fixed" : d[0].DiscountType1);
                     $("#txtDefaultDiscount").val(d[0].DefaultDiscount);
                     $("#txtDiscountMinimumOrderAmount").val(d[0].DiscountMinimumOrderAmount);
                     $("#txtAccountName").val(d[0].AccountName);
                     $("#txtAccountEmail").val(d[0].AccountEmail);
-                    $("#ddlDiscountType2").val(d[0].DiscountType2);
+                    $("#ddlDiscountType2").val(d[0].DiscountType2 == null ? "-1" : d[0].DiscountType2);
                     $("#txtDiscount").val(d[0].Discount);
 
-                    $("#ddlPaymentMethod").val(d[0].Paymentmethod);
+                    $("#ddlPaymentMethod").val(d[0].Paymentmethod == null ? "-1" : d[0].Paymentmethod);
                     $("#txtBankAccountName").val(d[0].BankAccountName);
                     $("#txtBankAccountNumber").val(d[0].BankAccountNumber);
                     $("#txtBankName").val(d[0].BankName);
@@ -1003,7 +1016,7 @@ function GetVendorByID(id) {
                     $("#txtPaypalIPNEmailNotification").val(d[0].PaypalIPNEmailNotification);
                     $("#txtPaypalReceiverEmail").val(d[0].PaypalReceiverEmail);
                     $("#txtPaypalIdentitytoken").val(d[0].PaypalIdentitytoken);
-                    $("#ddlPaypalPaymentAction").val(d[0].PaypalPaymentAction);
+                    $("#ddlPaypalPaymentAction").val(d[0].PaypalPaymentAction == null ? "-1" : d[0].PaypalPaymentAction);
                     $("#txtPaypalAPIUserName").val(d[0].PaypalAPIUserName);
                     $("#txtPaypalAPIPassword").val(d[0].PaypalAPIPassword);
                     $("#txtPaypalAPISignature").val(d[0].PaypalAPISignature);

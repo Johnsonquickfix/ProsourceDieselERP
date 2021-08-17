@@ -13,8 +13,8 @@ namespace LaylaERP.BAL
             try
             {
                 string strsql = "";
-                strsql = "insert into wp_vendor(vendor_type,code_vendor,name,name_alias,fournisseur,status,address,address1,zip,town,fk_country,fk_state,StateName,phone,fax,email,url,Workinghours,VendorStatus) " +
-                    "values(@vendor_type, @code_vendor, @name, @name_alias, @fournisseur, @status, @address, @address1, @zip, @town, @fk_country, @fk_state,@StateName, @phone, @fax, @email, @url, @Workinghours, @VendorStatus);  SELECT LAST_INSERT_ID();";
+                strsql = "insert into wp_vendor(vendor_type,code_vendor,name,name_alias,fournisseur,status,address,address1,zip,town,fk_country,fk_state,StateName,phone,fax,email,url,Workinghours,VendorStatus,NatureofJournal) " +
+                    "values(@vendor_type, @code_vendor, @name, @name_alias, @fournisseur, @status, @address, @address1, @zip, @town, @fk_country, @fk_state,@StateName, @phone, @fax, @email, @url, @Workinghours, @VendorStatus,@NatureofJournal);  SELECT LAST_INSERT_ID();";
                 MySqlParameter[] para =
                 {
                     new MySqlParameter("@vendor_type", model.vendor_type),
@@ -36,6 +36,7 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@url", model.Web),
                     new MySqlParameter("@Workinghours", model.Workinghours),
                     new MySqlParameter("@VendorStatus", model.VendorStatus),
+                    new MySqlParameter("@NatureofJournal", model.NatureofJournal),
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
                 return result;
@@ -45,11 +46,55 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
-        public int EditVendorBasicInfo(ThirdPartyModel model, long VendorID)
+        public int AddJournal(ThirdPartyModel model, int id)
         {
             try
             {
-                string strsql = "update wp_vendor set vendor_type=@vendor_type,code_vendor=@code_vendor,name=@name,name_alias=@name_alias,fournisseur=@fournisseur,status=@status,address=@address,address1=@address1,zip=@zip,town=@town,fk_country=@fk_country,fk_state=@fk_state,StateName=@StateName,phone=@phone,fax=@fax,email=@email,url=@url,Workinghours=@Workinghours,VendorStatus = @VendorStatus where rowid = @rowid; ";
+                string strsql = "";
+                strsql = "Insert into erp_accounting_journal(code,label,nature,active,VendorID) values(@code,@label,@nature,@active,@VendorID); SELECT LAST_INSERT_ID();";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@code", model.VendorCode),
+                    new MySqlParameter("@label", model.Name),
+                    new MySqlParameter("@nature", model.NatureofJournal),
+                    new MySqlParameter("@active", model.VendorStatus),
+                    new MySqlParameter("@VendorID", id),
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+        public int EditJournal(ThirdPartyModel model)
+        {
+            try
+            {
+                string strsql = "";
+                strsql = "Update erp_accounting_journal set code=@code,label=@label,nature=@nature,active=@active where VendorID=@ID;";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@ID", model.rowid),
+                    new MySqlParameter("@code", model.VendorCode),
+                    new MySqlParameter("@label", model.Name),
+                    new MySqlParameter("@nature", model.NatureofJournal),
+                    new MySqlParameter("@active", model.VendorStatus),
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+        public int EditVendorBasicInfo(ThirdPartyModel model)
+        {
+            try
+            {
+                string strsql = "update wp_vendor set vendor_type=@vendor_type,code_vendor=@code_vendor,name=@name,name_alias=@name_alias,fournisseur=@fournisseur,status=@status,address=@address,address1=@address1,zip=@zip,town=@town,fk_country=@fk_country,fk_state=@fk_state,StateName=@StateName,phone=@phone,fax=@fax,email=@email,url=@url,Workinghours=@Workinghours,VendorStatus = @VendorStatus,NatureofJournal=@NatureofJournal where rowid = @rowid; ";
                 MySqlParameter[] para =
                 {
                     new MySqlParameter("@rowid", model.rowid),
@@ -72,7 +117,7 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@url", model.Web),
                     new MySqlParameter("@Workinghours", model.Workinghours),
                     new MySqlParameter("@VendorStatus", model.VendorStatus),
-
+                    new MySqlParameter("@NatureofJournal", model.NatureofJournal),
 
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
@@ -770,7 +815,7 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
                 string strSql = "Select v.rowid as ID,v.vendor_type,v.code_vendor as VendorCode, v.name as VendorName,v.fournisseur as Vendor, v.name_alias as AliasName,v.entity,v.address,v.address1,v.town," +
-                    "v.status,v.fk_state as State,v.StateName,v.zip, v.fk_country as Country, v.phone,v.fax,v.email,v.url,v.Workinghours,v.VendorStatus," +
+                    "v.status,v.fk_state as State,v.StateName,v.zip, v.fk_country as Country, v.phone,v.fax,v.email,v.url,v.Workinghours,v.VendorStatus,v.NatureofJournal," +
                     "v.CorAddress1,v.CorAddress2,v.CorCity,v.CorState,v.CorZipCode,v.CorCountry,v.CorPhone,v.fk_workforce as Workforce,v.fk_business_entity as BusinessEntityType," +
                     "v.note_public,v.note_private,v.capital,v.PaymentTermsID,v.BalanceID,v.fk_incoterms as IncotermsType,v.location_incoterms as Incoterms, v.Currency ,v.CreditLimit," +
                     "v.outstanding_limit,v.MinimumOrderQuanity,v.order_min_amount,v.fk_shipping_method,v.ShippingRate,v.ShippingLocation," +

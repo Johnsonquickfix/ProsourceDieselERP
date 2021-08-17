@@ -430,10 +430,12 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "SELECT  P.ID ID,post_title,FORMAT(pmregularamount.meta_value,2) regularamount,FORMAT(pmsaleprice.meta_value,2) saleprice,min( FORMAT(purchase_price,2)) purchase_price,min(FORMAT(cost_price,2)) cost_price,(select name from wp_vendor where rowid = Product_Purchase_Items.fk_vendor and cost_price = min(cost_price) )vname,pmsku.meta_value sku"
+                string strSql = "SELECT  P.ID ID,post_title,FORMAT(pmregularamount.meta_value,2) regularamount,FORMAT(pmsaleprice.meta_value,2) saleprice,min( FORMAT(purchase_price,2)) purchase_price,min(FORMAT(cost_price,2)) cost_price,(select name from wp_vendor where rowid = Product_Purchase_Items.fk_vendor and cost_price = min(cost_price) )vname,pmsku.meta_value sku,pmpublic.meta_value Public_Notes,pmprivate.meta_value Private_Notes"
                              + " FROM wp_posts P"
                              + " left join wp_postmeta pmregularamount on P.ID = pmregularamount.post_id and pmregularamount.meta_key = '_regular_price'"
                              + " left join wp_postmeta pmsaleprice on P.ID = pmsaleprice.post_id and pmsaleprice.meta_key = '_sale_price'"
+                             + " left join wp_postmeta pmprivate on P.ID = pmprivate.post_id and pmprivate.meta_key = 'Private_Notes'"
+                             + " left join wp_postmeta pmpublic on P.ID = pmpublic.post_id and pmpublic.meta_key = 'Public_Notes'"
                              + " left join Product_Purchase_Items on Product_Purchase_Items.fk_product = P.ID"
                              + " left join wp_postmeta pmsku on P.ID = pmsku.post_id and pmsku.meta_key = '_sku'"
                              + " WHERE P.ID = " + model.strVal + " ";
@@ -557,7 +559,7 @@ namespace LaylaERP.BAL
             DataTable DT = new DataTable();
             try
             {
-                string strSQl = "Select rowid,ref from wp_warehouse";
+                string strSQl = "Select rowid,ref from wp_warehouse where status = 1";
                 DT = SQLHelper.ExecuteDataTable(strSQl);
             }
             catch (Exception ex)
@@ -770,6 +772,22 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
+
+        public static int FileUploade(int fk_product,string FileName,string FilePath,string FileType)
+        {
+            int result = 0;
+            try
+            {
+                StringBuilder strSql = new StringBuilder();
+                strSql.Append(string.Format("Insert into product_linkedfiles(fk_product,FileName,FilePath,FileType) values(" + fk_product + ",'" + FileName + "','" + FilePath + "','" + FileType + "');SELECT LAST_INSERT_ID();"));
+                result = SQLHelper.ExecuteNonQuery(strSql.ToString());
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
         public static int EditProducts(ProductModel model, long ID)
         {
             try
@@ -826,6 +844,28 @@ namespace LaylaERP.BAL
             { throw ex; }
             return result;
         }
+
+        public static int updateNotesProduct(ProductModel model)
+        {
+            int result = 0;
+            try
+            {
+                string strSql_insert = string.Empty;
+                StringBuilder strSql = new StringBuilder();
+                //foreach (ProductModelMetaModel obj in model)
+                //{
+                strSql_insert += (strSql_insert.Length > 0 ? " union all " : "") + string.Format("select '{0}' post_id,'{1}' meta_key,'{2}' meta_value", model.ID, "Private_Notes", model.Private_Notes);
+                strSql_insert += (strSql_insert.Length > 0 ? " union all " : "") + string.Format("select '{0}' post_id,'{1}' meta_key,'{2}' meta_value", model.ID, "Public_Notes", model.Public_Notes);
+                strSql.Append(string.Format("update wp_postmeta set meta_value = '{0}' where post_id = '{1}' and meta_key = '{2}' ; ", model.Private_Notes, model.ID, "Private_Notes"));
+                strSql.Append(string.Format("update wp_postmeta set meta_value = '{0}' where post_id = '{1}' and meta_key = '{2}' ; ", model.Public_Notes, model.ID, "Public_Notes"));
+                //}
+                strSql_insert = "insert into wp_postmeta (post_id,meta_key,meta_value) select * from (" + strSql_insert + ") as tmp where tmp.meta_key not in (select meta_key from wp_postmeta where post_id = " + model.ID.ToString() + ");";
+                strSql.Append(strSql_insert);
+                result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
+            }
+            catch { }
+            return result;
+        }
         public static int DeleteBuyingtProduct(ProductModel model)
         {
             int result = 0;
@@ -841,7 +881,7 @@ namespace LaylaERP.BAL
             return result;
         }
 
-        public static int AddProductwarehouse(ProductModel model, DateTime dateinc)
+        public static int AddProductwarehouse(ProductModel model)
         {
             int result = 0;
             try
@@ -858,6 +898,38 @@ namespace LaylaERP.BAL
             catch (Exception ex)
             { throw ex; }
             return result;
+        }
+        public static DataTable Getproductwarehouse(ProductModel model)
+        {
+            DataTable dt = new DataTable();
+            try
+            {                
+                    string strSQl = "select fk_warehouse from product_warehouse"
+                                    + " WHERE fk_warehouse in (" + model.fk_vendor + ") "
+                                    + " limit 10;";
+                    dt = SQLHelper.ExecuteDataTable(strSQl);             
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+        public static DataTable GetfileCountdata(int fk_product,string FileName)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                string strSQl = "select FileName from product_linkedfiles"
+                                + " WHERE fk_product in (" + fk_product + ") and FileName = '"+ FileName + "' "
+                                + " limit 10;";
+                dt = SQLHelper.ExecuteDataTable(strSQl);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
         }
         public static int updateProductwarehouse(ProductModel model, DateTime dateinc)
         {

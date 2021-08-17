@@ -57,7 +57,7 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@code", model.code),
                     new MySqlParameter("@label", model.label),
                     new MySqlParameter("@nature", model.nature),
-                    new MySqlParameter("@active", 1),
+               new MySqlParameter("@active", model.active),
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
                 return result;

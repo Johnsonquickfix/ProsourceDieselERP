@@ -1127,7 +1127,9 @@
                             + " max(case meta_key when 'discount_amount' then meta_value else '' end) discount_amount,max(case meta_key when 'cost' then meta_value else '' end) shipping_amount,"
                             + " (select COALESCE(psr.meta_value, 0) sale_price from wp_postmeta psr where psr.meta_key = '_price' "
                             + "         and psr.post_id = (case when max(case oim.meta_key when '_variation_id' then oim.meta_value else '' end) != '0' then max(case oim.meta_key when '_variation_id' then oim.meta_value else '' end)"
-                            + "             else max(case oim.meta_key when '_product_id' then oim.meta_value else '' end) end)) sale_price,'{}' as meta_data"
+                            + "             else max(case oim.meta_key when '_product_id' then oim.meta_value else '' end) end)) sale_price,"
+                            + " (select concat('{',group_concat(concat('\"',free_product_id,'\": \"',free_quantity,'\"') separator ','),'}') from wp_product_free free_it"
+                            + " where free_it.product_id = max(case oim.meta_key when '_product_id' then oim.meta_value else '0' end) or free_it.product_id = max(case oim.meta_key when '_variation_id' then oim.meta_value else '0' end)) as meta_data"
                             + " from wp_woocommerce_order_items oi inner join wp_woocommerce_order_itemmeta oim on oim.order_item_id = oi.order_item_id"
                             + " where oi.order_id = @order_id and oi.order_item_type!='coupon' group by oi.order_id,oi.order_item_id,oi.order_item_name,oi.order_item_type "
                             + " union all "
@@ -1206,28 +1208,33 @@
                         else
                             productsModel.tax_amount = productsModel.price;
 
+                        productsModel.is_free = productsModel.total > 0 ? false : true; productsModel.group_id = 0;
+                        if (sdr["meta_data"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["meta_data"].ToString().Trim()))
+                            productsModel.free_itmes = sdr["meta_data"].ToString().Trim();
+                        else
+                            productsModel.free_itmes = "{}";
 
                         ///// free item
-                        if (productsModel.product_id == 78676) { productsModel.is_free = true; }
-                        else if (productsModel.product_id == 632713) { productsModel.is_free = true; }
-                        else productsModel.is_free = false;
+                        //if (productsModel.product_id == 78676) { productsModel.is_free = true; }
+                        //else if (productsModel.product_id == 632713) { productsModel.is_free = true; }
+                        //else productsModel.is_free = false;
 
                         /// 
-                        if (productsModel.product_id == 611172)
-                        {
-                            productsModel.group_id = 78676;
-                            productsModel.free_itmes = "{\"78676\":2}";
-                        }
-                        else if (productsModel.product_id == 118)
-                        {
-                            productsModel.group_id = 632713;
-                            productsModel.free_itmes = "{\"632713\":2}";
-                        }
-                        else
-                        {
-                            productsModel.group_id = 0;
-                            productsModel.free_itmes = string.Empty;
-                        }
+                        //if (productsModel.product_id == 611172)
+                        //{
+                        //    productsModel.group_id = 78676;
+                        //    productsModel.free_itmes = "{\"78676\":2}";
+                        //}
+                        //else if (productsModel.product_id == 118)
+                        //{
+                        //    productsModel.group_id = 632713;
+                        //    productsModel.free_itmes = "{\"632713\":2}";
+                        //}
+                        //else
+                        //{
+                        //    productsModel.group_id = 0;
+                        //    productsModel.free_itmes = string.Empty;
+                        //}
                     }
                     else if (productsModel.product_type == "coupon")
                     {
@@ -1424,7 +1431,7 @@
                     strWhr += " and os.customer_id= '" + CustomerID + "' ";
                 }
 
-                string strSql = "SELECT p.id order_id, p.id as chkorder,os.num_items_sold,Cast(os.total_sales As DECIMAL(10, 2)) as total_sales, os.customer_id as customer_id,"
+                string strSql = "SELECT p.id,os.num_items_sold,Cast(os.total_sales As DECIMAL(10, 2)) as total_sales, os.customer_id as customer_id,"
                             + " p.post_status status, DATE_FORMAT(p.post_date, '%M %d %Y') date_created,COALESCE(pmf.meta_value, '') FirstName,COALESCE(pml.meta_value, '') LastName,"
                             + " replace(replace(replace(replace(pmp.meta_value,'-', ''),' ',''),'(',''),')','') billing_phone,"
                             + " (SELECT sum(rpm.meta_value) FROM wp_posts rp JOIN wp_postmeta rpm ON rp.ID = rpm.post_id AND meta_key = '_order_total' WHERE rp.post_parent = p.ID AND rp.post_type = 'shop_order_refund') AS refund_total"

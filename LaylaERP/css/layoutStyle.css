@@ -677,11 +677,11 @@ body table.dataTable tr.selected td.select-checkbox:before, body table.dataTable
     }
 
 .box-header > .fa, .box-header > .glyphicon, .box-header > .ion, .box-header .box-title {
-    font-size: 18px;
+    font-size: 14px;
 }
 
 .nav-tabs-custom > .nav-tabs > li.header {
-    font-size: 18px;
+    font-size: 14px;
     color: #4f4f4f;
 }
 

@@ -40,6 +40,7 @@ namespace LaylaERP.Models
         public string SalesRepresentative { get; set; }
         public string Logo { get; set; }
         public string user_status { get; set; }
+        public int NatureofJournal { get; set; }
         public string Search { get; set; }
         public int PaymentTermsID { get; set; }
         public int BalanceID { get; set; }

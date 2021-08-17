@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -207,11 +208,39 @@ namespace LaylaERP.Controllers
             JsonResult result = new JsonResult();
             DateTime dateinc = DateTime.Now;
             //DateTime dateinc = UTILITIES.CommonDate.CurrentDate();
-            var resultOne = 0;
-            if (model.ID > 0)
-                resultOne = ProductRepository.updateProductwarehouse(model, dateinc);
+           var resultOne = 0;
+            DataTable dt = ProductRepository.Getproductwarehouse(model);
+
+            //    resultOne = ProductRepository.updateProductwarehouse(model, dateinc);
+            //else
+            if (dt.Rows.Count > 0)
+            {
+                return Json(new { status = false, message = "Warehouse already allocated for this product", url = "" }, 0);
+            }
             else
-                resultOne = ProductRepository.AddProductwarehouse(model, dateinc);
+            {
+                resultOne = ProductRepository.AddProductwarehouse(model);
+               if (resultOne > 0)         
+                    return Json(new { status = true, message = "Save successfully!!", url = "Manage" }, 0);
+               else
+                    return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+
+            }
+            //else
+            //{
+            //    return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            //}
+        }
+        public JsonResult CreateNotes(ProductModel model)
+        {
+            JsonResult result = new JsonResult();
+            DateTime dateinc = DateTime.Now;
+            //DateTime dateinc = UTILITIES.CommonDate.CurrentDate();
+            var resultOne = 0;
+            //if (model.ID > 0)
+            //    resultOne = ProductRepository.updateNotesProduct(model, dateinc);
+            //else
+                resultOne = ProductRepository.updateNotesProduct(model);            
             if (resultOne > 0)
             {
                 return Json(new { status = true, message = "updated successfully!!", url = "Manage" }, 0);
@@ -478,8 +507,63 @@ namespace LaylaERP.Controllers
             return Json(JSONresult, 0);
         }
 
-
         [HttpPost]
+        //public ActionResult FileUploade(ProductModel model)
+        //{
+        public ActionResult FileUploade(string Name, HttpPostedFileBase ImageFile)
+        {
+            try
+            {
+
+                
+
+                ProductModel model = new ProductModel();
+                //Use Namespace called :  System.IO  
+                string FileName = Path.GetFileNameWithoutExtension(ImageFile.FileName);
+                //To Get File Extension  
+                string FileExtension = Path.GetExtension(ImageFile.FileName);
+                //Add Current Date To Attached File Name  
+                //FileName = DateTime.Now.ToString("yyyyMMdd") + "-" + FileName.Trim() + FileExtension;
+
+                FileName = FileName.Trim() + FileExtension;
+                string FileNameForsave = FileName;
+                DataTable dt = ProductRepository.GetfileCountdata(Convert.ToInt32(Name), FileName);
+                if (dt.Rows.Count > 0)
+                {
+                    return Json(new { status = false, message = "File has been already uploaded", url = "" }, 0);
+                }
+                else
+                {
+                    
+                    string UploadPath = Path.Combine(Server.MapPath("~/Files"));
+                    UploadPath = UploadPath + "\\";
+                    //Its Create complete path to store in server.  
+                    model.ImagePath = UploadPath + FileName;
+                    //To copy and save file into server.  
+                    ImageFile.SaveAs(model.ImagePath);
+
+                    int resultOne = ProductRepository.FileUploade(Convert.ToInt32(Name), FileName, model.ImagePath, FileExtension);
+
+                    if (resultOne > 0)
+                    {
+                        return Json(new { status = true, message = "File Upload successfully!!", url = "Manage" }, 0);
+                    }
+                    else
+                    {
+                        return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+
+        }
+
+    
+
+    [HttpPost]
         public JsonResult GetProductInfo(SearchModel model)
         {
             List<ProductsModelDetails> obj = new List<ProductsModelDetails>();

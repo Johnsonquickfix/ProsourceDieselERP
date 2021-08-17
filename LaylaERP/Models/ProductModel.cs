@@ -66,6 +66,18 @@ namespace LaylaERP.Models
         public string taglotserialno { get; set; }
         public int taxrate { get; set; }
 
+        public string Private_Notes { get; set; }
+        public string Public_Notes { get; set; }
+
+
+        public string Name { get; set; }
+
+        //public string PhoneNumber { get; set; }
+        public byte[] ImageFiledata { get; set; }
+        public string ImagePath { get; set; }
+
+        public HttpPostedFileBase ImageFile { get; set; }
+
 
     }
     public class ProductModelMetaModel

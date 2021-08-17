@@ -242,7 +242,8 @@ function GetDataPurchaseByID(order_id) {
             $("#txtCostprice").text('$' + i[0].cost_price);
             $("#txtbestbying").text('$' + i[0].purchase_price);
             $("#txtVendor").text(i[0].vname);
-
+            $("#txtPrivate").val(i[0].Private_Notes);
+            $("#txtPublic").val(i[0].Public_Notes);
          
 
         },
@@ -773,7 +774,6 @@ function bindwarehouseDetails(data) {
             if (data[i].PKey > 0) {
                 layoutHtml += '<tr id="tritemId_' + data[i].PKey + '" data-key="' + data[i].PKey + '">';          
                 layoutHtml += '<td class="text-left">' + data[i].product_name + '</td>';
-                layoutHtml += '<td class="text-right"><a href="javascript:void(0);" class="editbutton" onClick="Editwarehouse(' + data[i].PKey + ')"><i class="glyphicon glyphicon-pencil"></i></a></td>';
                 layoutHtml += '<td class="text-right"><a href="javascript:void(0);" class="editbutton" onClick="Deletewarehouser(' + data[i].PKey + ')"><i class="glyphicon glyphicon-trash"></i></a></td>';
                 layoutHtml += '</tr>';
             }
@@ -787,7 +787,6 @@ function bindwarehouseDetails(data) {
         layoutHtml += '<thead>';
         layoutHtml += '<tr>';
         layoutHtml += '<th class="text-left">Warehouse</th>';
-        layoutHtml += '<th class="text-right">Action</th>';
         layoutHtml += '<th class="text-right">Delete</th>';
         layoutHtml += '</tr>';
         layoutHtml += '</thead><tbody id="warehouse_services"></tbody>';
@@ -797,26 +796,26 @@ function bindwarehouseDetails(data) {
 
 }
 
-function Editwarehouse(id) {
-    $("#hfwarehouseid").val(id);
-    var ID = id;
-    var obj = { strVal: id }
-    $.ajax({
+//function Editwarehouse(id) {
+//    $("#hfwarehouseid").val(id);
+//    var ID = id;
+//    var obj = { strVal: id }
+//    $.ajax({
 
-        url: '/Product/GetDataProductwarehouseByID/' + ID,
-        type: 'post',
-        contentType: "application/json; charset=utf-8",
-        dataType: 'JSON',
-        data: JSON.stringify(obj),
-        success: function (data) {
-            var i = JSON.parse(data);
-            //  console.log(i);
-            $('#ddlwarehouse').val(i[0].fk_warehouse).trigger('change');
+//        url: '/Product/GetDataProductwarehouseByID/' + ID,
+//        type: 'post',
+//        contentType: "application/json; charset=utf-8",
+//        dataType: 'JSON',
+//        data: JSON.stringify(obj),
+//        success: function (data) {
+//            var i = JSON.parse(data);
+//            //  console.log(i);
+//            $('#ddlwarehouse').val(i[0].fk_warehouse).trigger('change');
 
-        },
-        error: function (msg) { alert(msg); }
-    });
-}
+//        },
+//        error: function (msg) { alert(msg); }
+//    });
+//}
 
 function Deletewarehouser(id) {
     var ids = id;
@@ -855,5 +854,129 @@ function Deletewarehouser(id) {
 
 }
 
+$(document).on('click', "#btnNotes", function () {
+    AddNotes();
+})
+function AddNotes() {
+    debugger
+    Private = $("#txtPrivate").val();
+    fk_productval = $('#ddlproductchild').val();
+    Public = $("#txtPublic").val();
+
+    if (fk_productval == "") {
+        swal('Alert', 'Please Enter Product', 'error').then(function () { swal.close(); $('#ddlproductchild').focus(); });
+    }
+    else if (Private == "") {
+        swal('Alert', 'Please select Private', 'error').then(function () { swal.close(); $('#txtPrivate').focus(); });
+    }
+    else {
+        var obj = {
+            ID: fk_productval,
+            Private_Notes: Private,
+            Public_Notes: Public
+
+        }
+        $.ajax({
+            url: '/Product/CreateNotes/', dataType: 'json', type: 'Post',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(obj),
+            dataType: "json",
+            beforeSend: function () {
+                $("#loader").show();
+            },
+            success: function (data) {
+                if (data.status == true) {
+                    if (data.url == "Manage") {                       
+                        swal('Alert!', data.message, 'success');
+                    }
+                    else {
+                        // $('#fetch_results > input:text').val('');
+                        swal('Alert!', data.message, 'success');
+                    }
+                    //$('#ddlProduct').val(null).trigger('change');
+                    //clear_fetch();
+
+                }
+                else {
+                    swal('Alert!', data.message, 'error')
+                }
+            },
+            complete: function () {
+                $("#loader").hide();
+                //location.href = '/Users/Users/';
+                //window.location.href = '/Users/Users/';
+
+            },
+            error: function (error) {
+                swal('Error!', 'something went wrong', 'error');
+            },
+        })
+    }
+
+
+
+}
+
+
+$(document).on('click', "#btnuploade", function () {
+    Adduploade();
+})
+
+function Adduploade() {
+    debugger
+     
+    var formData = new FormData();
+    var file = document.getElementById("ImageFile").files[0];
+    formData.append("ImageFile", file);
+
+    var Name = $('#ddlproductchild').val().trim()
+    formData.append("Name", Name);
+
+    if (Name == "") {
+        swal('Alert', 'Please Enter Product', 'error').then(function () { swal.close(); $('#ddlproductchild').focus(); });
+    }
+    else if (file == "") {
+        swal('Alert', 'Please upload files', 'error').then(function () { swal.close(); $('#txtPrivate').focus(); });
+    }
+    else {
+
+        $.ajax({
+            type: "POST",
+            url: '/Product/FileUploade/',
+            data: formData,
+            processData: false,
+            contentType: false,
+            beforeSend: function () {
+                $("#loader").show();
+            },
+            success: function (data) {
+                if (data.status == true) {
+                    if (data.url == "Manage") {
+                        swal('Alert!', data.message, 'success');
+                    }
+                    else {
+                        // $('#fetch_results > input:text').val('');
+                        swal('Alert!', data.message, 'success');
+                    }
+                    //$('#ddlProduct').val(null).trigger('change');
+                    //clear_fetch();
+
+                }
+                else {
+                    swal('Alert!', data.message, 'error')
+                }
+            },
+            complete: function () {
+                $("#loader").hide();
+                //location.href = '/Users/Users/';
+                //window.location.href = '/Users/Users/';
+
+            },
+            error: function (error) {
+                swal('Error!', 'something went wrong', 'error');
+            },
+        })
+    }
+}
 
 

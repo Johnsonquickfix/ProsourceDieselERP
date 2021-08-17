@@ -716,7 +716,7 @@ function GetDataByID(order_id) {
         data: JSON.stringify(obj),
         success: function (data) {
             var i = JSON.parse(data);
-           // console.log(i);
+           // console.log(i); 
             $("#txtProductName").val(i[0].post_title);
             $("#hftitle").val(i[0].post_title);
             $("#formatcustom").val(i[0].post_content);
@@ -873,7 +873,7 @@ function GetProductvariationID(ProductID) {
                 varHTML += '<div class="alignleft actions bulkactions">';
                 varHTML += '<table class="data-contacts1-js table table-striped"><tbody class="variation_att">';
                 $.each(JSON.parse($("#hfvproductattributes").val()), function (key, value) {
-                    let _values = value.value.split('|'); let sel_val = v_data['attribute_' + value.key.trim()];
+                    let _values = value.value.split('|'); let sel_val = v_data['attribute_' + value.key.trim().toLowerCase()];
                     varHTML += '<tr><select class="inputddl" id="ddl_attribute_' + value.key.trim() + '" data-key="' + value.key.trim() + '"><option value="' + value.key.trim() + '">Any ' + value.key.trim() + '</option>';
                     for (let j = 0; j < _values.length; j++) {
                         varHTML += '<option value="' + _values[j].trim() + '" ' + (sel_val == _values[j].trim() ? 'selected' : '') + '> ' + _values[j].trim() + '</option>';

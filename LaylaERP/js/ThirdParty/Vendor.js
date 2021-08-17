@@ -17,13 +17,16 @@ getPaymentMethod();
 VendorContactList();
 VendorVendorWarehouseList();
 VendorRelatedProduct();
-$("#chkVendorStatus").prop("checked", true);
+$('input:checkbox').prop('checked', true);
 $("#ddlPaymentMethod").change(function () {
-    PaymentMethod = $("#ddlPaymentMethod").val();
-    PaymentMethodBlock(PaymentMethod);
+    ShippingMethod = $("#ddlPaymentMethod").val();
+    PaymentMethodBlock(ShippingMethod);
+})
+$("#ddlShippingMethod").change(function () {
+    ShippingMethod = $("#ddlShippingMethod").val();
+    ShippingMethodBlock(ShippingMethod);
 })
 function PaymentMethodBlock(PaymentMethod) {
-
     if (PaymentMethod == "1") {
         $("#bnk_details").css("display", "block");
         $("#cheq_payment").css("display", "none");
@@ -49,6 +52,32 @@ function PaymentMethodBlock(PaymentMethod) {
         $("#bnk_details").css("display", "none");
     }
 }
+function ShippingMethodBlock(ShippingMethod) {
+    if (ShippingMethod == "3") {
+        $("#UPS").css("display", "block");
+        $("#USPS").css("display", "none");
+        $("#Fadex").css("display", "none");
+    }
+    else if (ShippingMethod == "2") {
+        //if (!$('input:checkbox').is('checked')) {
+        //    $('input:checkbox').prop('checked', true);
+        //} else {
+        //    $('input:checkbox').prop('checked', false);
+        //}
+        $("#USPS").css("display", "block");
+        $("#UPS").css("display", "none");
+        $("#Fadex").css("display", "none");
+    }
+    else if (ShippingMethod == "1") {
+        $("#Fadex").css("display", "block");
+        $("#USPS").css("display", "none");
+        $("#UPS").css("display", "none");
+    }
+}
+$('#btnReset').click(function () {
+    $('#USPS input:checkbox').prop('checked', true);
+    $('#USPS input:text').val('');
+})
 $('#btnNextTab1').click(function (e) {
     ID = $("#hfid").val();
     VendorType = $("#ddlvendortype").val();
@@ -195,28 +224,68 @@ $('#btnNextTab4').click(function (e) {
     ShippingMethod = $("#ddlShippingMethod").val();
     ShippingRate = $("#txtShippingRate").val();
     ShippingLocation = $("#txtShippingLocation").val();
-    ShippingAPIKeyTest = $("#txtShippingAPIKeyTest").val();
-    ShippingAPISecretTest = $("#txtShippingAPISecretTest").val();
-    ShippingAPIKeyProduction = $("#txtShippingAPIKeyProduction").val();
-    ShippingAPISecretProduction = $("#txtShippingAPISecretProduction").val();
-    ShippingLogin = $("#txtShippingLogin").val();
-    ShippingPassword = $("#txtShippingPassword").val();
+    FedexAccountNumber = $("#txtFedexAccountNumber").val();
+    FedexMeterNumber = $("#txtFedexMeterNumber").val();
+    FedexWebServicesKey = $("#txtFedexWebServicesKey").val();
+    FedexWebServicesPassword = $("#txtFedexWebServicesPassword").val();
+    FedexMethodType = $("#ddlFedexMethodType").val();
+    FedexMethodEnable = $("#chkFadexMethodEnable").prop("checked") ? 1 : 0;
+    FedexCustomServices = $("#chkFadexCustomServices").prop("checked") ? 1 : 0;
+    FedexDebugMode = $("#chkFadexDebugMode").prop("checked") ? 1 : 0;
+    UPSUserID = $("#txtUPSUserID").val();
+    UPSPassword = $("#txtUPSPassword").val();
+    UPSAccessKey = $("#txtUPSAccessKey").val();
+    UPSAccountNumber = $("#txtUPSAccountNumber").val();
+    UPSOriginPostcode = $("#txtUPSOriginPostcode").val();
+    UPSOriginCountry = $("#txtUPSOriginCountry").val();
+    UPSAPILicenceKey = $("#txtUPSAPILicenceKey").val();
+    UPSLicenceEmail = $("#txtUPSLicenceEmail").val();
+    UPSEnable = $("#chkUPSEnable").prop("checked") ? 1 : 0;
+    UPSMeasurementUnits = $("#ddlUPSMeasurementUnits").val();
+    UPSEnableDebugMode = $("#chkUPSEnableDebugMode").prop("checked") ? 1 : 0;
+    USPSEnable = $("#chkUSPSEnableDisable").prop("checked") ? 1 : 0;
+    USPSPostcode = $("#txtUSPSPostcode").val();
+    USPSUserID = $("#txtUSPSUserID").val();
+    USPSCommercialrates = $("#chkUSPSCommercialrates").prop("checked") ? 1 : 0;
+    USPSPacking = $("#chkUSPSPacking").prop("checked") ? 1 : 0;
+    USPSPriorityMailExpressTitle = $("#txtUSPSPriorityMailExpressTitle").val();
+    USPSPriorityMailExpress = $("#chkPriorityMailExpress").prop("checked") ? 1 : 0;
+    USPSPriorityMailExpressHoldforPickup = $("#chkPriorityMailExpressHoldforPickup").prop("checked") ? 1 : 0;
+    USPSPriorityMailExpressSundayHoliday = $("#chkPriorityMailExpressSundayHoliday").prop("checked") ? 1 : 0;
+    USPSPriorityMailTitle = $("#txtUSPSPriorityMailTitle").val();
+    USPSPriorityMail = $("#chkPriorityMail").prop("checked") ? 1 : 0;
+    USPSPriorityMailHoldForPickup = $("#chkPriorityMailHoldforPickup").prop("checked") ? 1 : 0;
+    USPSPriorityMailKeysandIDs = $("#chkPriorityMailKeysandIDs").prop("checked") ? 1 : 0;
+    USPSPriorityMailRegionalRateBoxA = $("#chkPriorityMailRegionalRateBoxA").prop("checked") ? 1 : 0;
+    USPSPriorityMailRegionalRateBoxAHoldForPickup = $("#chkPriorityMailRegionalRateBoxAHoldForPickup").prop("checked") ? 1 : 0;
+    USPSPriorityMailRegionalRateBoxB = $("#chkPriorityMailRegionalRateBoxB").prop("checked") ? 1 : 0;
+    USPSPriorityMailRegionalRateBoxBHoldForPickup = $("#chkPriorityMailRegionalRateBoxBHoldForPickup").prop("checked") ? 1 : 0;
+    FirstClassMailTitle = $("#txtUSPSFirstClassMailTitle").val();
+    FirstClassMailPostcards = $("#chkUSPSFirstClassMailPostcards").prop("checked") ? 1 : 0;
+    FirstClassMailLetter = $("#chkUSPSFirstClassMailLetter").prop("checked") ? 1 : 0;
+    FirstClassMailLargeEnvelope = $("#chkUSPSFirstClassMailLargeEnvelope").prop("checked") ? 1 : 0;
+    FirstClassMailParcel = $("#chkUSPSFirstClassMailParcel").prop("checked") ? 1 : 0;
+    FirstClassMailLargePostcards = $("#chkUSPSFirstClassMailLargePostcards").prop("checked") ? 1 : 0;
+    FirstClassMailKeysandIDs = $("#chkUSPSFirstClassMailKeysandIDs").prop("checked") ? 1 : 0;
+    FirstClassMailPackageService = $("#chkUSPSFirstClassMailPackageService").prop("checked") ? 1 : 0;
+    FirstClassMailPackageServiceHoldForPickup = $("#chkUSPSFirstClassMailPackageServiceHoldForPickup").prop("checked") ? 1 : 0;
+    FirstClassMailMeteredLetter = $("#chkUSPSFirstClassMailMeteredLetter").prop("checked") ? 1 : 0;
 
-    //if (ShippingMethod == "-1") { swal('alert', 'Please Select Shipping Method', 'error').then(function () { swal.close(); $('#ddlShippingMethod').focus(); }) }
-    //else if (ShippingRate == "") { swal('alert', 'Please Enter Rate', 'error').then(function () { swal.close(); $('#txtShippingRate').focus(); }) }
-    //else if (ShippingLocation == "") { swal('alert', 'Please Enter Location', 'error').then(function () { swal.close(); $('#txtShippingLocation').focus(); }) }
-    //else if (ShippingAPIKeyTest == "") { swal('alert', 'Please Enter API Key (Test)', 'error').then(function () { swal.close(); $('#txtShippingAPIKeyTest').focus(); }) }
-    //else if (ShippingAPISecretTest == "") { swal('alert', 'Please Enter API Secret (Test)', 'error').then(function () { swal.close(); $('#txtShippingAPISecretTest').focus(); }) }
-    //else if (ShippingAPIKeyProduction == "") { swal('alert', 'Please Enter API Key (Production)', 'error').then(function () { swal.close(); $('#txtShippingAPIKeyProduction').focus(); }) }
-    //else if (ShippingAPISecretProduction == "") { swal('alert', 'Please Enter API Secret (Production)', 'error').then(function () { swal.close(); $('#txtShippingAPISecretProduction').focus(); }) }
-    //else if (ShippingLogin == "") { swal('alert', 'Please Enter Login', 'error').then(function () { swal.close(); $('#txtShippingLogin').focus(); }) }
-    //else if (ShippingPassword == "") { swal('alert', 'Please Enter Password', 'error').then(function () { swal.close(); $('#txtShippingPassword').focus(); }) }
-    //else { }
+   
     var obj = {
-        rowid: ID, fk_shipping_method: ShippingMethod, ShippingRate: ShippingRate, ShippingLocation: ShippingLocation,
-        ShippingAPIKeyTest: ShippingAPIKeyTest, ShippingAPISecretTest: ShippingAPISecretTest, ShippingAPIKeyProduction: ShippingAPIKeyProduction,
-        ShippingAPISecretProduction: ShippingAPISecretProduction,
-        ShippingLogin: ShippingLogin, ShippingPassword: ShippingPassword,
+        rowid: ID, ShippingMethodID: ShippingMethod, ShippingRate: ShippingRate, ShippingLocation: ShippingLocation,FedexAccountNumber: FedexAccountNumber, FedexMeterNumber: FedexMeterNumber, FedexWebServicesKey: FedexWebServicesKey,
+        FedexWebServicesPassword: FedexWebServicesPassword,FedexMethodType: FedexMethodType, FedexMethodEnable: FedexMethodEnable,
+        FedexCustomServices: FedexCustomServices, FedexDebugMode: FedexDebugMode, UPSUserID: UPSUserID,UPSPassword: UPSPassword, UPSAccessKey: UPSAccessKey, UPSAccountNumber: UPSAccountNumber,
+        UPSOriginPostcode: UPSOriginPostcode, UPSOriginCountry: UPSOriginCountry, UPSAPILicenceKey: UPSAPILicenceKey,UPSEnableDebugMode: UPSEnableDebugMode, UPSEnable: UPSEnable, UPSMeasurementUnits: UPSMeasurementUnits,
+        UPSOriginPostcode: UPSOriginPostcode, USPSEnable: USPSEnable, USPSPostcode: USPSPostcode,USPSUserID: USPSUserID, USPSCommercialrates: USPSCommercialrates, USPSPacking: USPSPacking,
+        USPSPriorityMailExpressTitle: USPSPriorityMailExpressTitle, USPSPriorityMailExpress: USPSPriorityMailExpress, USPSPriorityMailExpressHoldforPickup: USPSPriorityMailExpressHoldforPickup,
+        USPSPriorityMailExpressSundayHoliday: USPSPriorityMailExpressSundayHoliday, USPSPriorityMailTitle: USPSPriorityMailTitle, USPSPriorityMail: USPSPriorityMail,
+        USPSPriorityMailHoldForPickup: USPSPriorityMailHoldForPickup, USPSPriorityMailKeysandIDs: USPSPriorityMailKeysandIDs, USPSPriorityMailRegionalRateBoxA: USPSPriorityMailRegionalRateBoxA,
+        USPSPriorityMailRegionalRateBoxAHoldForPickup: USPSPriorityMailRegionalRateBoxAHoldForPickup, USPSPriorityMailRegionalRateBoxB: USPSPriorityMailRegionalRateBoxB, USPSPriorityMailRegionalRateBoxBHoldForPickup: USPSPriorityMailRegionalRateBoxBHoldForPickup,
+        FirstClassMailTitle: FirstClassMailTitle, FirstClassMailPostcards: FirstClassMailPostcards,
+        FirstClassMailLetter: FirstClassMailLetter, FirstClassMailLargeEnvelope: FirstClassMailLargeEnvelope, FirstClassMailParcel: FirstClassMailParcel,
+        FirstClassMailLargePostcards: FirstClassMailLargePostcards, FirstClassMailKeysandIDs: FirstClassMailKeysandIDs, FirstClassMailPackageService: FirstClassMailPackageService,
+        FirstClassMailPackageServiceHoldForPickup: FirstClassMailPackageServiceHoldForPickup, FirstClassMailMeteredLetter: FirstClassMailMeteredLetter, 
     }
     $.ajax({
         url: '/ThirdParty/AddVendorShipping/', dataType: 'json', type: 'Post',
@@ -821,7 +890,7 @@ function GetVendorByID(id) {
                     $("#txtEMail").val(d[0].email);
                     $("#txtWeb").val(d[0].url);
                     $("#txtWorkinghours").val(d[0].Workinghours);
-                    d[0].VendorStatus == true ? $("#chkVendorStatus").prop("checked", true) : $("#chkVendorStatus").prop("checked", false);;
+                    d[0].VendorStatus == true ? $("#chkVendorStatus").prop("checked", true) : $("#chkVendorStatus").prop("checked", false);
                     $("#txtCorAddress1").val(d[0].CorAddress1);
                     $("#txtCorAddress2").val(d[0].CorAddress2);
                     $("#txtCorCity").val(d[0].CorCity);
@@ -845,22 +914,63 @@ function GetVendorByID(id) {
                     $("#txtMinOrderQty").val(d[0].MinimumOrderQuanity);
                     $("#txtOrderMinAmt").val(d[0].order_min_amount);
 
-                    $("#ddlShippingMethod").val(d[0].fk_shipping_method);
+                    $("#ddlShippingMethod").val(d[0].ShippingMethodID);
                     $("#txtShippingRate").val(d[0].ShippingRate);
                     $("#txtShippingLocation").val(d[0].ShippingLocation);
-                    $("#txtShippingAPIKeyTest").val(d[0].ShippingAPIKeyTest);
-                    $("#txtShippingAPISecretTest").val(d[0].ShippingAPISecretTest);
-                    $("#txtShippingAPIKeyProduction").val(d[0].ShippingAPIKeyProduction);
-                    $("#txtShippingAPISecretProduction").val(d[0].ShippingAPISecretProduction);
-                    $("#txtShippingLogin").val(d[0].ShippingLogin);
-                    $("#txtShippingPassword").val(d[0].ShippingPassword);
+
+                    $("#txtUPSUserID").val(d[0].UPSUserID);
+                    $("#txtUPSPassword").val(d[0].UPSPassword);
+                    $("#txtUPSAccessKey").val(d[0].UPSAccessKey);
+                    $("#txtUPSAccountNumber").val(d[0].UPSAccountNumber);
+                    $("#txtUPSOriginPostcode").val(d[0].UPSOriginPostcode);
+                    $("#txtUPSOriginCountry").val(d[0].UPSOriginCountry);
+                    $("#txtUPSAPILicenceKey").val(d[0].UPSAPILicenceKey);
+                    $("#txtUPSLicenceEmail").val(d[0].UPSLicenceEmail);
+                    d[0].UPSEnable == true ? $("#chkUPSEnable").prop("checked", true) : $("#chkUPSEnable").prop("checked", false);
+                    $("#ddlUPSMeasurementUnits").val(d[0].UPSMeasurementUnits);
+                    d[0].UPSEnableDebugMode == true ? $("#chkUPSEnableDebugMode").prop("checked", true) : $("#chkUPSEnableDebugMode").prop("checked", false);
+                    d[0].USPSEnable == true ? $("#chkUSPSEnableDisable").prop("checked", true) : $("#chkUSPSEnableDisable").prop("checked", false);
+                    $("#txtUSPSPostcode").val(d[0].USPSPostcode);
+                    $("#txtUSPSUserID").val(d[0].USPSUserID);
+                    d[0].USPSCommercialrates == true ? $("#chkUSPSCommercialrates").prop("checked", true) : $("#chkUSPSCommercialrates").prop("checked", false);
+                    d[0].USPSPacking == true ? $("#chkUSPSPacking").prop("checked", true) : $("#chkUSPSPacking").prop("checked", false);
+                    $("#txtUSPSPriorityMailExpressTitle").val(d[0].USPSPriorityMailExpressTitle);
+                    d[0].USPSPriorityMailExpress == true ? $("#chkPriorityMailExpress").prop("checked", true) : $("#chkPriorityMailExpress").prop("checked", false);
+                    d[0].USPSPriorityMailExpressHoldforPickup == true ? $("#chkPriorityMailExpressHoldforPickup").prop("checked", true) : $("#chkPriorityMailExpressHoldforPickup").prop("checked", false);
+                    d[0].USPSPriorityMailExpressSundayHoliday == true ? $("#chkPriorityMailExpressSundayHoliday").prop("checked", true) : $("#chkPriorityMailExpressSundayHoliday").prop("checked", false);
+                    $("#txtUSPSPriorityMailTitle").val(d[0].USPSPriorityMailTitle);
+                    d[0].USPSPriorityMail == true ? $("#chkPriorityMail").prop("checked", true) : $('#chkPriorityMail').prop("checked", false);
+                    d[0].USPSPriorityMailHoldForPickup == true ?  $("#chkPriorityMailHoldforPickup").prop("checked", true) : $('#chkPriorityMailHoldforPickup').prop("checked", false);
+                    d[0].USPSPriorityMailKeysandIDs == true ? $("#chkPriorityMailKeysandIDs").prop("checked", true) : $('#chkPriorityMailKeysandIDs').prop("checked", false) ;
+                    d[0].USPSPriorityMailRegionalRateBoxA == true ? $("#chkPriorityMailRegionalRateBoxA").prop("checked", true) : $('#chkPriorityMailRegionalRateBoxA').prop("checked", false) ;
+                    d[0].USPSPriorityMailRegionalRateBoxAHoldForPickup == true ? $("#chkPriorityMailRegionalRateBoxAHoldForPickup").prop("checked", true) : $('#chkPriorityMailRegionalRateBoxAHoldForPickup').prop("checked", false) ;
+                    d[0].USPSPriorityMailRegionalRateBoxB == true ? $("#chkPriorityMailRegionalRateBoxB").prop("checked", true) : $('#chkPriorityMailRegionalRateBoxB').prop("checked", false);
+                    d[0].USPSPriorityMailRegionalRateBoxBHoldForPickup == true ? $("#chkPriorityMailRegionalRateBoxBHoldForPickup").prop("checked", true) : $('#chkPriorityMailRegionalRateBoxBHoldForPickup').prop("checked", false);
+                    $("#txtUSPSFirstClassMailTitle").val(d[0].FirstClassMailTitle);
+                    d[0].FirstClassMailPostcards == true ? $("#chkUSPSFirstClassMailPostcards").prop("checked", true) : $('#chkUSPSFirstClassMailPostcards').prop("checked", false);
+                    d[0].FirstClassMailLetter == true ? $("#chkUSPSFirstClassMailLetter").prop("checked", true) : $('#chkUSPSFirstClassMailLetter').prop("checked", false);
+                    d[0].FirstClassMailLargeEnvelope == true ? $("#chkUSPSFirstClassMailLargeEnvelope").prop("checked", true) : $('#chkUSPSFirstClassMailLargeEnvelope').prop("checked", false);
+                    d[0].FirstClassMailParcel == true ? $("#chkUSPSFirstClassMailParcel").prop("checked", true) : $('#chkUSPSFirstClassMailParcel').prop("checked", false);
+                    d[0].FirstClassMailLargePostcards == true ? $("#chkUSPSFirstClassMailLargePostcards").prop("checked", true) : $('#chkUSPSFirstClassMailLargePostcards').prop("checked", false);
+                    d[0].FirstClassMailKeysandIDs == true ? $("#chkUSPSFirstClassMailKeysandIDs").prop("checked", true) : $('#chkUSPSFirstClassMailKeysandIDs').prop("checked", false);
+                    d[0].FirstClassMailPackageService == true ? $("#chkUSPSFirstClassMailPackageService").prop("checked", true) : $('#chkUSPSFirstClassMailPackageService').prop("checked", false);
+                    d[0].FirstClassMailPackageServiceHoldForPickup == true ? $("#chkUSPSFirstClassMailPackageServiceHoldForPickup").prop("checked", true) : $('#chkUSPSFirstClassMailPackageServiceHoldForPickup').prop("checked", false);
+                    d[0].FirstClassMailMeteredLetter == true ? $("#chkUSPSFirstClassMailMeteredLetter").prop("checked", true) : $('#chkUSPSFirstClassMailMeteredLetter').prop("checked", false);
+                    $("#txtFedexAccountNumber").val(d[0].FedexAccountNumber);
+                    $("#txtFedexMeterNumber").val(d[0].FedexMeterNumber);
+                    $("#txtFedexWebServicesKey").val(d[0].FedexWebServicesKey);
+                    $("#txtFedexWebServicesPassword").val(d[0].FedexWebServicesPassword);
+                    $("#ddlFedexMethodType").val(d[0].FedexMethodType);
+                    d[0].FedexMethodEnable == true ? $("#chkFadexMethodEnable").prop("checked", true) : $('#chkFadexMethodEnable').prop("checked", false);
+                    d[0].FedexCustomServices == true ? $("#chkFadexCustomServices").prop("checked", true) : $('#chkFadexCustomServices').prop("checked", false);
+                    d[0].FedexDebugMode == true ? $("#chkFadexDebugMode").prop("checked", true) : $('#chkFadexDebugMode').prop("checked", false);
 
                     $("#ddlTaxMethod").val(d[0].TaxMethod);
                     $("#txtDefaultTax").val(d[0].DefaultTax);
                     $("#txtShippingTax").val(d[0].ShippingTax);
-                    d[0].ShippingTaxIncludedinprice == true ? $('#chkShippingTaxIncludedinprice').attr("checked", "checked") : "";
+                    d[0].ShippingTaxIncludedinprice == true ? $("#chkShippingTaxIncludedinprice").prop("checked", true) : $('#chkShippingTaxIncludedinprice').prop("checked", false);
                     $("#txtCalculatedtax").val(d[0].CalculatedTax);
-                    d[0].TaxIncludedinPrice == true ? $('#chkTaxIncludedinPrice').attr("checked", "checked") : "";
+                    d[0].TaxIncludedinPrice == true ? $("#chkTaxIncludedinPrice").prop("checked", true) : $('#chkTaxIncludedinPrice').prop("checked", false);
 
                     $("#ddlDiscountType1").val(d[0].DiscountType1);
                     $("#txtDefaultDiscount").val(d[0].DefaultDiscount);
@@ -889,7 +999,7 @@ function GetVendorByID(id) {
                     $("#txtPaypalTitle").val(d[0].PaypalTitle);
                     $("#txtPaypalDescription").val(d[0].PaypalDescription);
                     $("#txtPaypalEmail").val(d[0].PaypalEmail);
-                    d[0].PaypalProduction == true ? $('#chkPaypalProduction').attr("checked", "checked") : "";
+                    d[0].PaypalProduction == true ? $("#chkPaypalProduction").prop("checked", true) : $('#chkPaypalProduction').prop("checked", false);
                     $("#txtPaypalIPNEmailNotification").val(d[0].PaypalIPNEmailNotification);
                     $("#txtPaypalReceiverEmail").val(d[0].PaypalReceiverEmail);
                     $("#txtPaypalIdentitytoken").val(d[0].PaypalIdentitytoken);
@@ -898,6 +1008,8 @@ function GetVendorByID(id) {
                     $("#txtPaypalAPIPassword").val(d[0].PaypalAPIPassword);
                     $("#txtPaypalAPISignature").val(d[0].PaypalAPISignature);
                     PaymentMethodBlock(d[0].Paymentmethod);
+                    ShippingMethodBlock(d[0].ShippingMethodID)
+
                 }
             },
             error: function (msg) {

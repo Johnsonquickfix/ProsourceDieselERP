@@ -380,17 +380,26 @@
                             </div>
                         </div>
 
-                        <div class="row" style="display:none">
+                        <div class="row" id="UPS" style="display:none">
+                            <h2 class="box-header" style="margin-left: 20px;">UPS</h2>
                             <div class="col-md-4">
                                 <div class="box box-primary">
                                     <div class="box-body">
                                         <div class="form-group">
-                                            <label class="control-label">API Key (Test)</label>
-                                            <input type="text" id="txtShippingAPIKeyTest" class="form-control" placeholder="API Key (Test)" />
+                                            <label class="control-label">UPS User ID</label>
+                                            <input type="text" id="txtUPSUserID" class="form-control" placeholder="UPS User ID" />
                                         </div>
                                         <div class="form-group">
-                                            <label class="control-label">API Secret (Test)</label>
-                                            <input type="text" class="form-control" id="txtShippingAPISecretTest" placeholder="API Secret (Test)" />
+                                            <label class="control-label">UPS Password</label>
+                                            <input type="password" id="txtUPSPassword" class="form-control" placeholder="UPS Password" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label">UPS Access Key</label>
+                                            <input type="text" class="form-control" id="txtUPSAccessKey" placeholder="UPS Access Key" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label">UPS Account  Number</label>
+                                            <input type="text" id="txtUPSAccountNumber" class="form-control" placeholder="UPS Account Number" />
                                         </div>
                                     </div>
                                 </div>
@@ -399,12 +408,214 @@
                                 <div class="box box-primary">
                                     <div class="box-body">
                                         <div class="form-group">
-                                            <label class="control-label">API Key (Production)</label>
-                                            <input type="text" id="txtShippingAPIKeyProduction" class="form-control" placeholder="API Key (Production)" />
+                                            <label class="control-label">Origin Postcode</label>
+                                            <input type="text" id="txtUPSOriginPostcode" class="form-control" placeholder="Origin Postcode" />
                                         </div>
                                         <div class="form-group">
-                                            <label class="control-label">API Secret (Production)</label>
-                                            <input type="text" id="txtShippingAPISecretProduction" class="form-control" placeholder="API Secret (Production)" />
+                                            <label class="control-label">Origin Country</label>
+                                            <input type="text" id="txtUPSOriginCountry" class="form-control" placeholder="Origin Country" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label">UPS API Licence Key</label>
+                                            <input type="text" id="txtUPSAPILicenceKey" class="form-control" placeholder="UPS API Licence Key" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label">UPS Licence E-mail</label>
+                                            <input type="text" id="txtUPSLicenceEmail" class="form-control" placeholder="UPS Licence E-mail" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="box box-primary">
+
+                                    <div class="box-body">
+                                        <label class="control-label">Enable/Disable</label>
+                                        <div class="form-group">
+                                            <input type="checkbox" id="chkUPSEnable" />
+                                            <label class="control-label" for="UPSEnable">Enable this shipping method</label><br />
+                                        </div>
+                                        <label class="control-label"><strong>Advance option</strong></label><br />
+                                        <hr />
+                                        <div class="form-group">
+                                            <label class="control-label">Measurement Units</label>
+                                            <select id="ddlUPSMeasurementUnits" class="form-control">
+                                                <option value="LBS/IN">LBS/IN</option>
+                                                <option value="KG/CM">KG/CM</option>
+                                            </select>
+                                        </div>
+                                        <label class="control-label">Debug Mode</label>
+                                        <div class="form-group">
+                                            <input type="checkbox" id="chkUPSEnableDebugMode" />
+                                            <label class="control-label" for="UPSEnableDebugMode">Enable Debug Mode</label><br />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="USPS" class="row" style="display:none">
+                            <h2 class="box-header" style="margin-left: 20px;">USPS Simple</h2>
+                            <div class="col-md-4">
+                                <div class="box box-primary">
+                                    <div class="box-body">
+                                        <label class="control-label">Enable/Disable</label>
+                                        <div class="form-group">
+                                            <input type="checkbox" id="chkUSPSEnableDisable" />
+                                            <label class="control-label" for="USPSEnableDisable">Enable this shipping method</label><br />
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label">Postcode</label>
+                                            <input type="text" id="txtUSPSPostcode" class="form-control" placeholder="Postcode" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label">User ID</label>
+                                            <input type="text" id="txtUSPSUserID" class="form-control" placeholder="User ID" />
+                                        </div>
+                                        <label class="control-label">Commercial rates</label>
+                                        <div class="form-group">
+                                            <input type="checkbox" id="chkUSPSCommercialrates" />
+                                            <label class="control-label" for="USPSCommercialrates">Use USPS Commercial Pricing if available</label><br />
+                                        </div>
+                                        <label class="control-label">Packing</label>
+                                        <div class="form-group">
+                                            <input type="checkbox" id="chkUSPSPacking" />
+                                            <label class="control-label" for="USPSPacking">Quote regular items by weight</label><br />
+                                        </div>
+                                        <hr />
+                                        <label class="control-label"><strong>Priority Mail Express™</strong></label><br />
+                                        <hr />
+                                        <div class="form-group">
+                                            <label class="control-label">Title</label>
+                                            <input type="text" id="txtUSPSPriorityMailExpressTitle" class="form-control" placeholder="Title" />
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="checkbox" id="chkPriorityMailExpress" />
+                                            <label class="control-label" for="PriorityMailExpress">Priority Mail Express™ [3]</label><br />
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="checkbox" id="chkPriorityMailExpressHoldforPickup" />
+                                            <label class="control-label" for="PriorityMailExpressHoldforPickup">Priority Mail Express™, Hold for Pickup [2]</label><br />
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="checkbox" id="chkPriorityMailExpressSundayHoliday" />
+                                            <label class="control-label" for="PriorityMailExpressSundayHoliday">Priority Mail Express™, Sunday/Holiday [23]</label><br />
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="box box-primary">
+                                    <div class="box-body">
+                                        <label class="control-label"><strong>Priority Mail®</strong></label><br />
+                                        <hr />
+                                        <div class="box-body">
+                                            <div class="form-group">
+                                                <label class="control-label">Title</label>
+                                                <input type="text" id="txtUSPSPriorityMailTitle" class="form-control" placeholder="Priority Mail® (USPS Simple)" />
+                                            </div>
+                                            <div class="form-group">
+                                                <input type="checkbox" id="chkPriorityMail" />
+                                                <label class="control-label" for="PriorityMail">Priority Mail® [1]</label><br />
+                                            </div>
+                                            <div class="form-group">
+                                                <input type="checkbox" id="chkPriorityMailHoldforPickup" />
+                                                <label class="control-label" for="PriorityMailHoldforPickup">Priority Mail®, Hold For Pickup</label><br />
+                                            </div>
+                                            <div class="form-group">
+                                                <input type="checkbox" id="chkPriorityMailKeysandIDs" />
+                                                <label class="control-label" for="PriorityMailKeysandIDs">Priority Mail® Keys and IDs [18]</label><br />
+                                            </div>
+                                            <div class="form-group">
+                                                <input type="checkbox" id="chkPriorityMailRegionalRateBoxA" />
+                                                <label class="control-label" for="PriorityMailRegionalRateBoxA">Priority Mail® Regional Rate Box A [47]</label><br />
+                                            </div>
+                                            <div class="form-group">
+                                                <input type="checkbox" id="chkPriorityMailRegionalRateBoxAHoldForPickup" />
+                                                <label class="control-label" for="PriorityMailRegionalRateBoxAHoldForPickup">Priority Mail® Regional Rate Box A, Hold For Pickup [48]</label><br />
+                                            </div>
+                                            <div class="form-group">
+                                                <input type="checkbox" id="chkPriorityMailRegionalRateBoxB" />
+                                                <label class="control-label" for="PriorityMailRegionalRateBoxB">Priority Mail® Regional Rate Box B [49]</label><br />
+                                            </div>
+                                            <div class="form-group">
+                                                <input type="checkbox" id="chkPriorityMailRegionalRateBoxBHoldForPickup" />
+                                                <label class="control-label" for="PriorityMailRegionalRateBoxBHoldForPickup">Priority Mail® Regional Rate Box B, Hold For Pickup [50]</label><br />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="box box-primary">
+                                    <div class="box-body">
+                                        <label class="control-label"><strong>First-Class Mail®</strong></label><br />
+                                        <hr />
+                                        <div class="form-group">
+                                            <label class="control-label">Title</label>
+                                            <input type="text" id="txtUSPSFirstClassMailTitle" class="form-control" placeholder="First-Class Mail® (USPS Simple)" />
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="checkbox" id="chkUSPSFirstClassMailPostcards" />
+                                            <label class="control-label" for="USPSFirstClassMailPostcards">First-Class Mail® Postcards [0A]</label><br />
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="checkbox" id="chkUSPSFirstClassMailLetter" />
+                                            <label class="control-label" for="USPSFirstClassMailLetter">First-Class Mail® Letter [0B]</label><br />
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="checkbox" id="chkUSPSFirstClassMailLargeEnvelope" />
+                                            <label class="control-label" for="USPSFirstClassMailLargeEnvelope">First-Class Mail® Large Envelope [0C]</label><br />
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="checkbox" id="chkUSPSFirstClassMailParcel" />
+                                            <label class="control-label" for="USPSFirstClassMailParcel">First-Class Mail® Parcel [0D]</label><br />
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="checkbox" id="chkUSPSFirstClassMailLargePostcards" />
+                                            <label class="control-label" for="USPSFirstClassMailLargePostcards">First-Class™ Large Postcards [15]</label><br />
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="checkbox" id="chkUSPSFirstClassMailKeysandIDs" />
+                                            <label class="control-label" for="USPSFirstClassMailKeysandIDs">First-Class™ Keys and IDs [19]</label><br />
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="checkbox" id="chkUSPSFirstClassMailPackageService" />
+                                            <label class="control-label" for="USPSFirstClassMailPackageService">First-Class™ Package Service [61]</label><br />
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="checkbox" id="chkUSPSFirstClassMailPackageServiceHoldForPickup" />
+                                            <label class="control-label" for="USPSFirstClassMailPackageServiceHoldForPickup">First-Class™ Package Service, Hold For Pickup [53]</label><br />
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="checkbox" id="chkUSPSFirstClassMailMeteredLetter" />
+                                            <label class="control-label" for="USPSFirstClassMailMeteredLetter">First-Class Mail® Metered Letter [78]</label><br />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="box-footer" style="padding-bottom:0px;">
+                                <div class="text-right">
+                                    <button type="button" id="btnReset" class="btn btn-danger ">Reset</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="Fadex" class="row" style="display:none">
+                            <h2 class="box-header" style="margin-left: 20px;">Fadex</h2>
+                            <div class="col-md-4">
+                                <div class="box box-primary">
+                                    <div class="box-body">
+                                        <div class="form-group">
+                                            <label class="control-label">Fedex Account Number</label>
+                                            <input type="text" id="txtFedexAccountNumber" class="form-control" placeholder="Fedex Account Number" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label">Fedex Meter Number</label>
+                                            <input type="text" id="txtFedexMeterNumber" class="form-control" placeholder="Fedex Meter Number" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label">Fedex Web Services Key</label>
+                                            <input type="text" class="form-control" id="txtFedexWebServicesKey" placeholder="Fedex Web Services Key" />
                                         </div>
                                     </div>
                                 </div>
@@ -413,12 +624,37 @@
                                 <div class="box box-primary">
                                     <div class="box-body">
                                         <div class="form-group">
-                                            <label class="control-label">Login</label>
-                                            <input type="text" id="txtShippingLogin" class="form-control" placeholder="Login" />
+                                            <label class="control-label">Fedex Web Services Password</label>
+                                            <input type="text" id="txtFedexWebServicesPassword" class="form-control" placeholder="Fedex Web Services Password" />
                                         </div>
                                         <div class="form-group">
-                                            <label class="control-label">Password</label>
-                                            <input type="text" id="txtShippingPassword" class="form-control" placeholder="Password" />
+                                            <label class="control-label">Method Type</label>
+                                            <select class="form-control" id="ddlFedexMethodType">
+                                                <option value="Global">Global</option>
+                                            </select>
+                                        </div>
+                                        <label class="control-label">Method Enable</label>
+                                        <div class="form-group">
+                                            <input type="checkbox" id="chkFadexMethodEnable" />
+                                            <label class="control-label" for="FadexMethodEnable">Enable FadEx global shipping method</label><br />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="box box-primary">
+                                    <div class="box-body">
+                                        <label class="control-label">Custom Services</label>
+                                        <div class="form-group">
+                                            <input type="checkbox" id="chkFadexCustomServices" />
+                                            <label class="control-label" for="FadexCustomServices">Enable custom services</label><br />
+                                        </div>
+                                        <label class="control-label"><strong>Advance option</strong></label><br />
+                                        <hr />
+                                        <label class="control-label">Debug Mode</label>
+                                        <div class="form-group">
+                                            <input type="checkbox" id="chkFadexDebugMode" />
+                                            <label class="control-label" for="FadexDebugMode">Enable Debug Mode</label><br />
                                         </div>
                                     </div>
                                 </div>

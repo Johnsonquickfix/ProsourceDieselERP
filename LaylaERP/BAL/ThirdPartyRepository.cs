@@ -83,7 +83,6 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
-
         public int AddVendorAdditionalInfo(ThirdPartyModel model)
         {
             try
@@ -147,19 +146,163 @@ namespace LaylaERP.BAL
             try
             {
                 string strsql = "";
-                strsql = "update wp_vendor set fk_shipping_method=@fk_shipping_method,ShippingRate=@ShippingRate,ShippingLocation=@ShippingLocation,ShippingAPIKeyTest = @ShippingAPIKeyTest,ShippingAPISecretTest = @ShippingAPISecretTest,ShippingAPIKeyProduction = @ShippingAPIKeyProduction," +
-                    "ShippingAPISecretProduction = @ShippingAPISecretProduction,ShippingLogin = @ShippingLogin,ShippingPassword = @ShippingPassword where rowid=" + model.rowid + "";
+                strsql = "Insert into erp_VendorShippingMethod(VendorID,ShippingMethodID,FedexAccountNumber,FedexMeterNumber,FedexWebServicesKey,FedexWebServicesPassword,FedexMethodType,FedexMethodEnable," +
+                    "FedexCustomServices,FedexDebugMode,UPSUserID,UPSPassword,UPSAccessKey,UPSAccountNumber,UPSOriginPostcode,UPSOriginCountry,UPSAPILicenceKey," +
+                    "UPSLicenceEmail,UPSEnable,UPSMeasurementUnits,UPSEnableDebugMode,USPSEnable,USPSPostcode,USPSUserID,USPSCommercialrates,USPSPacking,USPSPriorityMailExpressTitle," +
+                    "USPSPriorityMailExpress,USPSPriorityMailExpressHoldforPickup,USPSPriorityMailExpressSundayHoliday,USPSPriorityMailTitle,USPSPriorityMail,USPSPriorityMailHoldForPickup," +
+                    "USPSPriorityMailKeysandIDs,USPSPriorityMailRegionalRateBoxA,USPSPriorityMailRegionalRateBoxAHoldForPickup,USPSPriorityMailRegionalRateBoxB," +
+                    "USPSPriorityMailRegionalRateBoxBHoldForPickup,FirstClassMailTitle,FirstClassMailPostcards,FirstClassMailLetter,FirstClassMailLargeEnvelope," +
+                    "FirstClassMailParcel,FirstClassMailLargePostcards,FirstClassMailKeysandIDs,FirstClassMailPackageService,FirstClassMailPackageServiceHoldForPickup,FirstClassMailMeteredLetter) " +
+                    "values(@VendorID, @ShippingMethodID, @FedexAccountNumber, @FedexMeterNumber, @FedexWebServicesKey, @FedexWebServicesPassword, @FedexMethodType, @FedexMethodEnable," +
+                    "@FedexCustomServices, @FedexDebugMode, @UPSUserID, @UPSPassword, @UPSAccessKey, @UPSAccountNumber, @UPSOriginPostcode, @UPSOriginCountry, @UPSAPILicenceKey," +
+                    "@UPSLicenceEmail, @UPSEnable, @UPSMeasurementUnits, @UPSEnableDebugMode, @USPSEnable, @USPSPostcode, @USPSUserID, @USPSCommercialrates, @USPSPacking, @USPSPriorityMailExpressTitle," +
+                    "@USPSPriorityMailExpress, @USPSPriorityMailExpressHoldforPickup, @USPSPriorityMailExpressSundayHoliday, @USPSPriorityMailTitle, @USPSPriorityMail, @USPSPriorityMailHoldForPickup," +
+                    "@USPSPriorityMailKeysandIDs, @USPSPriorityMailRegionalRateBoxA, @USPSPriorityMailRegionalRateBoxAHoldForPickup, @USPSPriorityMailRegionalRateBoxB," +
+                    "@USPSPriorityMailRegionalRateBoxBHoldForPickup, @FirstClassMailTitle, @FirstClassMailPostcards, @FirstClassMailLetter, @FirstClassMailLargeEnvelope," +
+                    "@FirstClassMailParcel, @FirstClassMailLargePostcards, @FirstClassMailKeysandIDs, @FirstClassMailPackageService, @FirstClassMailPackageServiceHoldForPickup,@FirstClassMailMeteredLetter); SELECT LAST_INSERT_ID();";
                 MySqlParameter[] para =
                 {
-                    new MySqlParameter("@fk_shipping_method", model.fk_shipping_method),
+                    new MySqlParameter("@VendorID", model.rowid),
+                    new MySqlParameter("@ShippingMethodID", model.ShippingMethodID),
+                    new MySqlParameter("@FedexAccountNumber", model.FedexAccountNumber),
+                    new MySqlParameter("@FedexMeterNumber",model.FedexMeterNumber),
+                    new MySqlParameter("@FedexWebServicesKey", model.FedexWebServicesKey),
+                    new MySqlParameter("@FedexWebServicesPassword", model.FedexWebServicesPassword),
+                    new MySqlParameter("@FedexMethodType", model.FedexMethodType),
+                    new MySqlParameter("@FedexMethodEnable", model.FedexMethodEnable),
+                    new MySqlParameter("@FedexCustomServices", model.FedexCustomServices),
+                    new MySqlParameter("@FedexDebugMode", model.FedexDebugMode),
+                    new MySqlParameter("@UPSUserID", model.UPSUserID),
+                    new MySqlParameter("@UPSPassword", model.UPSPassword),
+                    new MySqlParameter("@UPSAccessKey", model.UPSAccessKey),
+                    new MySqlParameter("@UPSAccountNumber", model.UPSAccountNumber),
+                    new MySqlParameter("@UPSOriginPostcode", model.UPSOriginPostcode),
+                    new MySqlParameter("@UPSOriginCountry", model.UPSOriginCountry),
+                    new MySqlParameter("@UPSAPILicenceKey", model.UPSAPILicenceKey),
+                    new MySqlParameter("@UPSLicenceEmail", model.UPSLicenceEmail),
+                    new MySqlParameter("@UPSEnable", model.UPSEnable),
+                    new MySqlParameter("@UPSMeasurementUnits", model.UPSMeasurementUnits),
+                    new MySqlParameter("@UPSEnableDebugMode", model.UPSEnableDebugMode),
+                    new MySqlParameter("@USPSEnable", model.USPSEnable),
+                    new MySqlParameter("@USPSPostcode", model.USPSPostcode),
+                    new MySqlParameter("@USPSUserID", model.USPSUserID),
+                    new MySqlParameter("@USPSCommercialrates", model.USPSCommercialrates),
+                    new MySqlParameter("@USPSPacking", model.USPSPacking),
+                    new MySqlParameter("@USPSPriorityMailExpressTitle", model.USPSPriorityMailExpressTitle),
+                    new MySqlParameter("@USPSPriorityMailExpress", model.USPSPriorityMailExpress),
+                    new MySqlParameter("@USPSPriorityMailExpressHoldforPickup", model.USPSPriorityMailExpressHoldforPickup),
+                    new MySqlParameter("@USPSPriorityMailExpressSundayHoliday", model.USPSPriorityMailExpressSundayHoliday),
+                    new MySqlParameter("@USPSPriorityMailTitle", model.USPSPriorityMailTitle),
+                    new MySqlParameter("@USPSPriorityMail", model.USPSPriorityMail),
+                    new MySqlParameter("@USPSPriorityMailHoldForPickup", model.USPSPriorityMailHoldForPickup),
+                    new MySqlParameter("@USPSPriorityMailKeysandIDs", model.USPSPriorityMailKeysandIDs),
+                    new MySqlParameter("@USPSPriorityMailRegionalRateBoxA", model.USPSPriorityMailRegionalRateBoxA),
+                    new MySqlParameter("@USPSPriorityMailRegionalRateBoxAHoldForPickup", model.USPSPriorityMailRegionalRateBoxAHoldForPickup),
+                    new MySqlParameter("@USPSPriorityMailRegionalRateBoxB", model.USPSPriorityMailRegionalRateBoxB),
+                    new MySqlParameter("@USPSPriorityMailRegionalRateBoxBHoldForPickup", model.USPSPriorityMailRegionalRateBoxBHoldForPickup),
+                    new MySqlParameter("@FirstClassMailTitle", model.FirstClassMailTitle),
+                    new MySqlParameter("@FirstClassMailPostcards", model.FirstClassMailPostcards),
+                    new MySqlParameter("@FirstClassMailLetter", model.FirstClassMailLetter),
+                    new MySqlParameter("@FirstClassMailLargeEnvelope", model.FirstClassMailLargeEnvelope),
+                    new MySqlParameter("@FirstClassMailParcel", model.FirstClassMailParcel),
+                    new MySqlParameter("@FirstClassMailLargePostcards", model.FirstClassMailLargePostcards),
+                    new MySqlParameter("@FirstClassMailKeysandIDs", model.FirstClassMailKeysandIDs),
+                    new MySqlParameter("@FirstClassMailPackageService", model.FirstClassMailPackageService),
+                    new MySqlParameter("@FirstClassMailPackageServiceHoldForPickup", model.FirstClassMailPackageServiceHoldForPickup),
+                    new MySqlParameter("@FirstClassMailMeteredLetter", model.FirstClassMailMeteredLetter),
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+        public int EditVendorShipping(ThirdPartyModel model)
+        {
+            try
+            {
+                string strsql = "";
+                strsql = "Update erp_VendorShippingMethod set VendorID=@VendorID,ShippingMethodID=@ShippingMethodID,FedexAccountNumber=@FedexAccountNumber,FedexMeterNumber=@FedexMeterNumber,FedexWebServicesKey=@FedexWebServicesKey,FedexWebServicesPassword=@FedexWebServicesPassword,FedexMethodType=@FedexMethodType,FedexMethodEnable=@FedexMethodEnable," +
+                    "FedexCustomServices = @FedexCustomServices,FedexDebugMode = @FedexDebugMode,UPSUserID = @UPSUserID,UPSPassword = @UPSPassword,UPSAccessKey = @UPSAccessKey,UPSAccountNumber = @UPSAccountNumber,UPSOriginPostcode = @UPSOriginPostcode,UPSOriginCountry = @UPSOriginCountry,UPSAPILicenceKey = @UPSAPILicenceKey," +
+                    "UPSLicenceEmail = @UPSLicenceEmail,UPSEnable = @UPSEnable,UPSMeasurementUnits = @UPSMeasurementUnits,UPSEnableDebugMode = @UPSEnableDebugMode,USPSEnable = @USPSEnable,USPSPostcode = @USPSPostcode,USPSUserID = @USPSUserID,USPSCommercialrates = @USPSCommercialrates,USPSPacking = @USPSPacking,USPSPriorityMailExpressTitle = @USPSPriorityMailExpressTitle," +
+                    "USPSPriorityMailExpress = @USPSPriorityMailExpress,USPSPriorityMailExpressHoldforPickup = @USPSPriorityMailExpressHoldforPickup,USPSPriorityMailExpressSundayHoliday = @USPSPriorityMailExpressSundayHoliday,USPSPriorityMailTitle = @USPSPriorityMailTitle,USPSPriorityMail = @USPSPriorityMail,USPSPriorityMailHoldForPickup = @USPSPriorityMailHoldForPickup," +
+                    "USPSPriorityMailKeysandIDs = @USPSPriorityMailKeysandIDs,USPSPriorityMailRegionalRateBoxA = @USPSPriorityMailRegionalRateBoxA,USPSPriorityMailRegionalRateBoxAHoldForPickup = @USPSPriorityMailRegionalRateBoxAHoldForPickup,USPSPriorityMailRegionalRateBoxB = @USPSPriorityMailRegionalRateBoxB," +
+                    "USPSPriorityMailRegionalRateBoxBHoldForPickup = @USPSPriorityMailRegionalRateBoxBHoldForPickup,FirstClassMailTitle = @FirstClassMailTitle,FirstClassMailPostcards = @FirstClassMailPostcards,FirstClassMailLetter = @FirstClassMailLetter,FirstClassMailLargeEnvelope = @FirstClassMailLargeEnvelope," +
+                    "FirstClassMailParcel = @FirstClassMailParcel,FirstClassMailLargePostcards = @FirstClassMailLargePostcards,FirstClassMailKeysandIDs = @FirstClassMailKeysandIDs,FirstClassMailPackageService = @FirstClassMailPackageService,FirstClassMailPackageServiceHoldForPickup = @FirstClassMailPackageServiceHoldForPickup,FirstClassMailMeteredLetter = @FirstClassMailMeteredLetter " +
+                    "where VendorId = @VendorId; ";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@VendorID", model.rowid),
+                    new MySqlParameter("@ShippingMethodID", model.ShippingMethodID),
+                    new MySqlParameter("@FedexAccountNumber", model.FedexAccountNumber),
+                    new MySqlParameter("@FedexMeterNumber",model.FedexMeterNumber),
+                    new MySqlParameter("@FedexWebServicesKey", model.FedexWebServicesKey),
+                    new MySqlParameter("@FedexWebServicesPassword", model.FedexWebServicesPassword),
+                    new MySqlParameter("@FedexMethodType", model.FedexMethodType),
+                    new MySqlParameter("@FedexMethodEnable", model.FedexMethodEnable),
+                    new MySqlParameter("@FedexCustomServices", model.FedexCustomServices),
+                    new MySqlParameter("@FedexDebugMode", model.FedexDebugMode),
+                    new MySqlParameter("@UPSUserID", model.UPSUserID),
+                    new MySqlParameter("@UPSPassword", model.UPSPassword),
+                    new MySqlParameter("@UPSAccessKey", model.UPSAccessKey),
+                    new MySqlParameter("@UPSAccountNumber", model.UPSAccountNumber),
+                    new MySqlParameter("@UPSOriginPostcode", model.UPSOriginPostcode),
+                    new MySqlParameter("@UPSOriginCountry", model.UPSOriginCountry),
+                    new MySqlParameter("@UPSAPILicenceKey", model.UPSAPILicenceKey),
+                    new MySqlParameter("@UPSLicenceEmail", model.UPSLicenceEmail),
+                    new MySqlParameter("@UPSEnable", model.UPSEnable),
+                    new MySqlParameter("@UPSMeasurementUnits", model.UPSMeasurementUnits),
+                    new MySqlParameter("@UPSEnableDebugMode", model.UPSEnableDebugMode),
+                    new MySqlParameter("@USPSEnable", model.USPSEnable),
+                    new MySqlParameter("@USPSPostcode", model.USPSPostcode),
+                    new MySqlParameter("@USPSUserID", model.USPSUserID),
+                    new MySqlParameter("@USPSCommercialrates", model.USPSCommercialrates),
+                    new MySqlParameter("@USPSPacking", model.USPSPacking),
+                    new MySqlParameter("@USPSPriorityMailExpressTitle", model.USPSPriorityMailExpressTitle),
+                    new MySqlParameter("@USPSPriorityMailExpress", model.USPSPriorityMailExpress),
+                    new MySqlParameter("@USPSPriorityMailExpressHoldforPickup", model.USPSPriorityMailExpressHoldforPickup),
+                    new MySqlParameter("@USPSPriorityMailExpressSundayHoliday", model.USPSPriorityMailExpressSundayHoliday),
+                    new MySqlParameter("@USPSPriorityMailTitle", model.USPSPriorityMailTitle),
+                    new MySqlParameter("@USPSPriorityMail", model.USPSPriorityMail),
+                    new MySqlParameter("@USPSPriorityMailHoldForPickup", model.USPSPriorityMailHoldForPickup),
+                    new MySqlParameter("@USPSPriorityMailKeysandIDs", model.USPSPriorityMailKeysandIDs),
+                    new MySqlParameter("@USPSPriorityMailRegionalRateBoxA", model.USPSPriorityMailRegionalRateBoxA),
+                    new MySqlParameter("@USPSPriorityMailRegionalRateBoxAHoldForPickup", model.USPSPriorityMailRegionalRateBoxAHoldForPickup),
+                    new MySqlParameter("@USPSPriorityMailRegionalRateBoxB", model.USPSPriorityMailRegionalRateBoxB),
+                    new MySqlParameter("@USPSPriorityMailRegionalRateBoxBHoldForPickup", model.USPSPriorityMailRegionalRateBoxBHoldForPickup),
+                    new MySqlParameter("@FirstClassMailTitle", model.FirstClassMailTitle),
+                    new MySqlParameter("@FirstClassMailPostcards", model.FirstClassMailPostcards),
+                    new MySqlParameter("@FirstClassMailLetter", model.FirstClassMailLetter),
+                    new MySqlParameter("@FirstClassMailLargeEnvelope", model.FirstClassMailLargeEnvelope),
+                    new MySqlParameter("@FirstClassMailParcel", model.FirstClassMailParcel),
+                    new MySqlParameter("@FirstClassMailLargePostcards", model.FirstClassMailLargePostcards),
+                    new MySqlParameter("@FirstClassMailKeysandIDs", model.FirstClassMailKeysandIDs),
+                    new MySqlParameter("@FirstClassMailPackageService", model.FirstClassMailPackageService),
+                    new MySqlParameter("@FirstClassMailPackageServiceHoldForPickup", model.FirstClassMailPackageServiceHoldForPickup),
+                    new MySqlParameter("@FirstClassMailMeteredLetter", model.FirstClassMailMeteredLetter),
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+        public int UpdateVendorShipping(ThirdPartyModel model)
+        {
+            try
+            {
+                string strsql = "";
+                strsql = "update wp_vendor set fk_shipping_method=@fk_shipping_method,ShippingRate=@ShippingRate,ShippingLocation=@ShippingLocation where rowid=@rowid";
+                MySqlParameter[] para =
+                {
+                     new MySqlParameter("@rowid", model.rowid),
+                    new MySqlParameter("@fk_shipping_method", model.ShippingMethodID),
                     new MySqlParameter("@ShippingRate", model.ShippingRate),
                     new MySqlParameter("@ShippingLocation", model.ShippingLocation),
-                    new MySqlParameter("@ShippingAPIKeyTest", model.ShippingAPIKeyTest),
-                    new MySqlParameter("@ShippingAPISecretTest",model.ShippingAPISecretTest),
-                    new MySqlParameter("@ShippingAPIKeyProduction", model.ShippingAPIKeyProduction),
-                    new MySqlParameter("@ShippingAPISecretProduction", model.ShippingAPISecretProduction),
-                    new MySqlParameter("@ShippingLogin", model.ShippingLogin),
-                    new MySqlParameter("@ShippingPassword", model.ShippingPassword),
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
                 return result;
@@ -262,7 +405,6 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
-
         public int AddContacts(ThirdPartyModel model)
         {
             try
@@ -416,7 +558,6 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
-       
         public static DataTable GetState(string strSearch, string country)
         {
             DataTable DT = new DataTable();
@@ -447,7 +588,6 @@ namespace LaylaERP.BAL
             { throw ex; }
             return DS;
         }
-
         public static DataSet GetWarehouse()
         {
             DataSet DS = new DataSet();
@@ -564,7 +704,6 @@ namespace LaylaERP.BAL
             { throw ex; }
             return DT;
         }
-
         public static DataTable GetVendor(string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
         {
             DataTable dt = new DataTable();
@@ -634,12 +773,18 @@ namespace LaylaERP.BAL
                     "v.status,v.fk_state as State,v.StateName,v.zip, v.fk_country as Country, v.phone,v.fax,v.email,v.url,v.Workinghours,v.VendorStatus," +
                     "v.CorAddress1,v.CorAddress2,v.CorCity,v.CorState,v.CorZipCode,v.CorCountry,v.CorPhone,v.fk_workforce as Workforce,v.fk_business_entity as BusinessEntityType," +
                     "v.note_public,v.note_private,v.capital,v.PaymentTermsID,v.BalanceID,v.fk_incoterms as IncotermsType,v.location_incoterms as Incoterms, v.Currency ,v.CreditLimit," +
-                    "v.outstanding_limit,v.MinimumOrderQuanity,v.order_min_amount,v.fk_shipping_method,v.ShippingRate,v.ShippingLocation,v.ShippingAPIKeyTest,v.ShippingAPISecretTest," +
-                    "v.ShippingAPIKeyProduction,v.ShippingAPISecretProduction,v.ShippingLogin,v.ShippingPassword,v.TaxMethod,v.DefaultTax,v.ShippingTax,v.ShippingTaxIncludedinprice,v.CalculatedTax,v.TaxIncludedinPrice," +
+                    "v.outstanding_limit,v.MinimumOrderQuanity,v.order_min_amount,v.fk_shipping_method,v.ShippingRate,v.ShippingLocation," +
+                    "s.ShippingMethodID,s.FedexAccountNumber,s.FedexMeterNumber,s.FedexWebServicesKey,s.FedexWebServicesPassword,s.FedexMethodType,s.FedexMethodEnable," +
+                    "s.FedexCustomServices,s.FedexDebugMode,s.UPSUserID,s.UPSPassword,s.UPSAccessKey,s.UPSAccountNumber,s.UPSOriginPostcode,s.UPSOriginCountry,s.UPSAPILicenceKey," +
+                    "s.UPSLicenceEmail,s.UPSEnable,s.UPSMeasurementUnits,s.UPSEnableDebugMode,s.USPSEnable,s.USPSPostcode,s.USPSUserID,s.USPSCommercialrates,s.USPSPacking,s.USPSPriorityMailExpressTitle," +
+                    "s.USPSPriorityMailExpress,s.USPSPriorityMailExpressHoldforPickup,s.USPSPriorityMailExpressSundayHoliday,s.USPSPriorityMailTitle,s.USPSPriorityMail,s.USPSPriorityMailHoldForPickup," +
+                    "s.USPSPriorityMailKeysandIDs,s.USPSPriorityMailRegionalRateBoxA,s.USPSPriorityMailRegionalRateBoxAHoldForPickup,s.USPSPriorityMailRegionalRateBoxB," +
+                    "s.USPSPriorityMailRegionalRateBoxBHoldForPickup,s.FirstClassMailTitle,s.FirstClassMailPostcards,s.FirstClassMailLetter,s.FirstClassMailLargeEnvelope," +
+                    "s.FirstClassMailParcel,s.FirstClassMailLargePostcards,s.FirstClassMailKeysandIDs,s.FirstClassMailPackageService,s.FirstClassMailPackageServiceHoldForPickup,s.FirstClassMailMeteredLetter,v.TaxMethod,v.DefaultTax,v.ShippingTax,v.ShippingTaxIncludedinprice,v.CalculatedTax,v.TaxIncludedinPrice," +
                     "v.DiscountType1,v.DefaultDiscount,v.DiscountMinimumOrderAmount,v.AccountName,v.AccountEmail,v.DiscountType2,v.Discount,p.Paymentmethod,p.BankAccountName,p.BankAccountNumber,p.BankName,p.BankRoutingNumber,p.BankIBAN,p.BankSwift,p.ChequeTitle,p.ChequeDescription,p.ChequeInstructions," +
                     "p.PaypalInvoiceAPIUsername,p.PaypalInvoiceAPIPassword,p.PaypalInvoiceAPISignature,p.PaypalTitle,p.PaypalDescription,p.PaypalEmail,p.PaypalProduction," +
                     "p.PaypalIPNEmailNotification,p.PaypalReceiverEmail,p.PaypalIdentitytoken,p.PaypalPaymentAction,p.PaypalAPIUserName,p.PaypalAPIPassword,p.PaypalAPISignature " +
-                    "FROM wp_vendor v left join wp_VendorPaymentDetails p on v.rowid = p.VendorID where v.rowid = '" + id + "'";
+                    "FROM wp_vendor v left join wp_VendorPaymentDetails p on v.rowid = p.VendorID left join erp_VendorShippingMethod s on s.VendorID = v.rowid where v.rowid = '" + id + "'";
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
 
@@ -650,11 +795,24 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
-        public int GetVendorID(long id)
+        public int GetPaymentVendorID(long id)
         {
             try
             {
                 string strSql = "Select VendorId from wp_VendorPaymentDetails where VendorID='" + id + "'";
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strSql));
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public int GetShippingVendorID(long id)
+        {
+            try
+            {
+                string strSql = "Select VendorId from erp_VendorShippingMethod where VendorID='" + id + "'";
                 int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strSql));
                 return result;
             }
@@ -727,7 +885,6 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
-
         public static DataTable GetVendorRelatedProduct(long id, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
         {
             DataTable dt = new DataTable();
@@ -760,7 +917,6 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
-
         public static DataTable VendorContactByID(long id)
         {
             DataTable dt = new DataTable();

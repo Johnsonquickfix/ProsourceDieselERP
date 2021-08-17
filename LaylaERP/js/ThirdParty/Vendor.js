@@ -283,13 +283,13 @@ $('#btnNextTab4').click(function (e) {
     FirstClassMailPackageServiceHoldForPickup = $("#chkUSPSFirstClassMailPackageServiceHoldForPickup").prop("checked") ? 1 : 0;
     FirstClassMailMeteredLetter = $("#chkUSPSFirstClassMailMeteredLetter").prop("checked") ? 1 : 0;
 
-   
+
     var obj = {
-        rowid: ID, ShippingMethodID: ShippingMethod, ShippingRate: ShippingRate, ShippingLocation: ShippingLocation,FedexAccountNumber: FedexAccountNumber, FedexMeterNumber: FedexMeterNumber, FedexWebServicesKey: FedexWebServicesKey,
-        FedexWebServicesPassword: FedexWebServicesPassword,FedexMethodType: FedexMethodType, FedexMethodEnable: FedexMethodEnable,
-        FedexCustomServices: FedexCustomServices, FedexDebugMode: FedexDebugMode, UPSUserID: UPSUserID,UPSPassword: UPSPassword, UPSAccessKey: UPSAccessKey, UPSAccountNumber: UPSAccountNumber,
-        UPSOriginPostcode: UPSOriginPostcode, UPSOriginCountry: UPSOriginCountry, UPSAPILicenceKey: UPSAPILicenceKey,UPSEnableDebugMode: UPSEnableDebugMode, UPSEnable: UPSEnable, UPSMeasurementUnits: UPSMeasurementUnits,
-        UPSOriginPostcode: UPSOriginPostcode, USPSEnable: USPSEnable, USPSPostcode: USPSPostcode,USPSUserID: USPSUserID, USPSCommercialrates: USPSCommercialrates, USPSPacking: USPSPacking,
+        rowid: ID, ShippingMethodID: ShippingMethod, ShippingRate: ShippingRate, ShippingLocation: ShippingLocation, FedexAccountNumber: FedexAccountNumber, FedexMeterNumber: FedexMeterNumber, FedexWebServicesKey: FedexWebServicesKey,
+        FedexWebServicesPassword: FedexWebServicesPassword, FedexMethodType: FedexMethodType, FedexMethodEnable: FedexMethodEnable,
+        FedexCustomServices: FedexCustomServices, FedexDebugMode: FedexDebugMode, UPSUserID: UPSUserID, UPSPassword: UPSPassword, UPSAccessKey: UPSAccessKey, UPSAccountNumber: UPSAccountNumber,
+        UPSOriginPostcode: UPSOriginPostcode, UPSOriginCountry: UPSOriginCountry, UPSAPILicenceKey: UPSAPILicenceKey, UPSEnableDebugMode: UPSEnableDebugMode, UPSEnable: UPSEnable, UPSMeasurementUnits: UPSMeasurementUnits,
+        UPSOriginPostcode: UPSOriginPostcode, USPSEnable: USPSEnable, USPSPostcode: USPSPostcode, USPSUserID: USPSUserID, USPSCommercialrates: USPSCommercialrates, USPSPacking: USPSPacking,
         USPSPriorityMailExpressTitle: USPSPriorityMailExpressTitle, USPSPriorityMailExpress: USPSPriorityMailExpress, USPSPriorityMailExpressHoldforPickup: USPSPriorityMailExpressHoldforPickup,
         USPSPriorityMailExpressSundayHoliday: USPSPriorityMailExpressSundayHoliday, USPSPriorityMailTitle: USPSPriorityMailTitle, USPSPriorityMail: USPSPriorityMail,
         USPSPriorityMailHoldForPickup: USPSPriorityMailHoldForPickup, USPSPriorityMailKeysandIDs: USPSPriorityMailKeysandIDs, USPSPriorityMailRegionalRateBoxA: USPSPriorityMailRegionalRateBoxA,
@@ -297,7 +297,7 @@ $('#btnNextTab4').click(function (e) {
         FirstClassMailTitle: FirstClassMailTitle, FirstClassMailPostcards: FirstClassMailPostcards,
         FirstClassMailLetter: FirstClassMailLetter, FirstClassMailLargeEnvelope: FirstClassMailLargeEnvelope, FirstClassMailParcel: FirstClassMailParcel,
         FirstClassMailLargePostcards: FirstClassMailLargePostcards, FirstClassMailKeysandIDs: FirstClassMailKeysandIDs, FirstClassMailPackageService: FirstClassMailPackageService,
-        FirstClassMailPackageServiceHoldForPickup: FirstClassMailPackageServiceHoldForPickup, FirstClassMailMeteredLetter: FirstClassMailMeteredLetter, 
+        FirstClassMailPackageServiceHoldForPickup: FirstClassMailPackageServiceHoldForPickup, FirstClassMailMeteredLetter: FirstClassMailMeteredLetter,
     }
     $.ajax({
         url: '/ThirdParty/AddVendorShipping/', dataType: 'json', type: 'Post',
@@ -953,10 +953,10 @@ function GetVendorByID(id) {
                     d[0].USPSPriorityMailExpressSundayHoliday == true ? $("#chkPriorityMailExpressSundayHoliday").prop("checked", true) : $("#chkPriorityMailExpressSundayHoliday").prop("checked", false);
                     $("#txtUSPSPriorityMailTitle").val(d[0].USPSPriorityMailTitle);
                     d[0].USPSPriorityMail == true ? $("#chkPriorityMail").prop("checked", true) : $('#chkPriorityMail').prop("checked", false);
-                    d[0].USPSPriorityMailHoldForPickup == true ?  $("#chkPriorityMailHoldforPickup").prop("checked", true) : $('#chkPriorityMailHoldforPickup').prop("checked", false);
-                    d[0].USPSPriorityMailKeysandIDs == true ? $("#chkPriorityMailKeysandIDs").prop("checked", true) : $('#chkPriorityMailKeysandIDs').prop("checked", false) ;
-                    d[0].USPSPriorityMailRegionalRateBoxA == true ? $("#chkPriorityMailRegionalRateBoxA").prop("checked", true) : $('#chkPriorityMailRegionalRateBoxA').prop("checked", false) ;
-                    d[0].USPSPriorityMailRegionalRateBoxAHoldForPickup == true ? $("#chkPriorityMailRegionalRateBoxAHoldForPickup").prop("checked", true) : $('#chkPriorityMailRegionalRateBoxAHoldForPickup').prop("checked", false) ;
+                    d[0].USPSPriorityMailHoldForPickup == true ? $("#chkPriorityMailHoldforPickup").prop("checked", true) : $('#chkPriorityMailHoldforPickup').prop("checked", false);
+                    d[0].USPSPriorityMailKeysandIDs == true ? $("#chkPriorityMailKeysandIDs").prop("checked", true) : $('#chkPriorityMailKeysandIDs').prop("checked", false);
+                    d[0].USPSPriorityMailRegionalRateBoxA == true ? $("#chkPriorityMailRegionalRateBoxA").prop("checked", true) : $('#chkPriorityMailRegionalRateBoxA').prop("checked", false);
+                    d[0].USPSPriorityMailRegionalRateBoxAHoldForPickup == true ? $("#chkPriorityMailRegionalRateBoxAHoldForPickup").prop("checked", true) : $('#chkPriorityMailRegionalRateBoxAHoldForPickup').prop("checked", false);
                     d[0].USPSPriorityMailRegionalRateBoxB == true ? $("#chkPriorityMailRegionalRateBoxB").prop("checked", true) : $('#chkPriorityMailRegionalRateBoxB').prop("checked", false);
                     d[0].USPSPriorityMailRegionalRateBoxBHoldForPickup == true ? $("#chkPriorityMailRegionalRateBoxBHoldForPickup").prop("checked", true) : $('#chkPriorityMailRegionalRateBoxBHoldForPickup').prop("checked", false);
                     $("#txtUSPSFirstClassMailTitle").val(d[0].FirstClassMailTitle);
@@ -1029,7 +1029,6 @@ function GetVendorByID(id) {
 
             }
         });
-
 }
 function getVendorCode() {
     var obj =
@@ -1060,14 +1059,14 @@ function VendorContactList() {
         columnDefs: [{ "orderable": true, "targets": 0 }], order: [[0, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true,
         sPaginationType: "full_numbers", searching: false, ordering: true, lengthChange: false, "paging": false, "bInfo": false,
-        bAutoWidth: false, scrollX: false, 
+        bAutoWidth: false, scrollX: false,
         lengthMenu: [[10, 20, 50], [10, 20, 50]],
         sAjaxSource: "/ThirdParty/GetVendorContactList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
             //obj.Search = aoData[45].value;
             var col = 'id';
             if (oSettings.aaSorting.length >= 0) {
-                var col = oSettings.aaSorting[0][0] == 0 ? "name" : oSettings.aaSorting[0][0] == 1 ? "Name" : oSettings.aaSorting[0][0] == 2 ? "Title" : oSettings.aaSorting[0][0] == 3 ? "Office" : oSettings.aaSorting[0][0] == 4 ? "Mobile" :oSettings.aaSorting[0][0] == 5 ? "Email" : oSettings.aaSorting[0][0] == 6 ? "Address" : "id";
+                var col = oSettings.aaSorting[0][0] == 0 ? "name" : oSettings.aaSorting[0][0] == 1 ? "Name" : oSettings.aaSorting[0][0] == 2 ? "Title" : oSettings.aaSorting[0][0] == 3 ? "Office" : oSettings.aaSorting[0][0] == 4 ? "Mobile" : oSettings.aaSorting[0][0] == 5 ? "Email" : oSettings.aaSorting[0][0] == 6 ? "Address" : "id";
                 obj.SortCol = col; obj.SortDir = oSettings.aaSorting.length >= 0 ? oSettings.aaSorting[0][1] : "desc";
             }
             obj.sEcho = aoData[0].value; obj.PageSize = oSettings._iDisplayLength; obj.PageNo = oSettings._iDisplayStart;
@@ -1113,7 +1112,7 @@ function VendorRelatedProduct() {
         columnDefs: [{ "orderable": true, "targets": 0 }], order: [[0, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true,
         sPaginationType: "full_numbers", searching: false, ordering: true, lengthChange: false, "paging": false, "bInfo": false,
-        bAutoWidth: false, scrollX: false, 
+        bAutoWidth: false, scrollX: false,
         lengthMenu: [[10, 20, 50], [10, 20, 50]],
         sAjaxSource: "/ThirdParty/GetVendorRelatedProductList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
@@ -1140,7 +1139,7 @@ function VendorRelatedProduct() {
             { data: 'cost_price', title: 'Cost Price', sWidth: "25%" },
         ]
     });
-    
+
 }
 function VendorWarehouseList() {
     var urid = parseInt($("#ddlSearchStatus").val());
@@ -1151,7 +1150,7 @@ function VendorWarehouseList() {
         columnDefs: [{ "orderable": true, "targets": 0 }], order: [[0, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true,
         sPaginationType: "full_numbers", searching: false, ordering: true, lengthChange: false, "paging": false, "bInfo": false,
-        bAutoWidth: false, scrollX: false, 
+        bAutoWidth: false, scrollX: false,
         lengthMenu: [[10, 20, 50], [10, 20, 50]],
         sAjaxSource: "/ThirdParty/GetVendorWarehouseList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
@@ -1188,7 +1187,7 @@ function VendorWarehouseList() {
     });
 }
 $('#btnAddContact').click(function () {
- 
+
 
     var inputs = document.getElementById("txtContactAddress");
     setupAutocomplete(inputs);
@@ -1200,8 +1199,8 @@ $('#btnAddContact').click(function () {
     $("#VendorModal option[value='-1']").attr('selected', true)
     $("#ddlContactState").empty().append('<option value="" selected></option>');
     $('#VendorModal').modal('show');
-   
-  
+
+
 
 })
 $('#btnAddRelatedProduct').click(function () {
@@ -1217,7 +1216,7 @@ $('#btnAddRelatedProduct').click(function () {
 })
 function showModal(id) {
     var VendorID = id;
-  
+
     $("#hfContactid").val(VendorID);
     var obj =
         $.ajax({
@@ -1284,7 +1283,7 @@ function Deletewarehouse(id) {
     }
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Search Google Place API ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-var autocompleteOptions = { componentRestrictions: { country: ["us", "ca","cn"] }, fields: ["address_components", "geometry"], types: ["address"] };
+var autocompleteOptions = { componentRestrictions: { country: ["us", "ca", "cn"] }, fields: ["address_components", "geometry"], types: ["address"] };
 function setupAutocomplete(inputs) {
     //console.log('setupAutocomplete...', $(inputs));
     autocomplete = new google.maps.places.Autocomplete(inputs, autocompleteOptions);
@@ -1292,12 +1291,12 @@ function setupAutocomplete(inputs) {
     function fillInAddress() {
         let place = autocomplete.getPlace();
         let address = '';
-            let cAdd1 = '', cZipCode = '', cCity = '', cCountry = '', cState = '';
+        let cAdd1 = '', cZipCode = '', cCity = '', cCountry = '', cState = '';
 
         if ($(inputs).data('addresstype') == 'VendorAddress')
-             cAdd1 = 'txtAddress1', cZipCode = 'txtZipCode', cCity = 'txtCity', cCountry = 'ddlCountry', cState = 'ddlState';
+            cAdd1 = 'txtAddress1', cZipCode = 'txtZipCode', cCity = 'txtCity', cCountry = 'ddlCountry', cState = 'ddlState';
         else
-             cAdd1 = 'txtContactAddress', cZipCode = 'txtContactZipCode', cCity = 'txtContactCity', cCountry = 'ddlContactCountry', cState = 'ddlContactState';
+            cAdd1 = 'txtContactAddress', cZipCode = 'txtContactZipCode', cCity = 'txtContactCity', cCountry = 'ddlContactCountry', cState = 'ddlContactState';
         let obj = place.address_components.filter(element => element.types[0] == 'street_number');
         if (obj.length > 0)
             address = obj[0].long_name;
@@ -1323,7 +1322,7 @@ function setupAutocomplete(inputs) {
         obj = place.address_components.filter(element => element.types[0] == 'administrative_area_level_1');
         if (obj.length > 0)
             $("#" + cState).empty().append('<option value="' + obj[0].short_name + '" selected>' + obj[0].long_name + '</option>');
-            //$("#" + cState).val(obj[0].short_name).trigger('change');//.append('<option value="' + obj[0].short_name + '" selected>' + obj[0].long_name + '</option>');
+        //$("#" + cState).val(obj[0].short_name).trigger('change');//.append('<option value="' + obj[0].short_name + '" selected>' + obj[0].long_name + '</option>');
         else
             $("#" + cState).val('').trigger('change');;
     }

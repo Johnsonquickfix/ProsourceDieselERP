@@ -2,9 +2,9 @@
 function VendorGrid() {
     var urid = parseInt($("#ddlSearchStatus").val());
     var sid = "";
-    var obj = { user_status: urid, Search: sid, PageNo: 0, PageSize: 50, sEcho: 1, SortCol: 'id', SortDir: 'desc' };
+    var obj = { user_status: urid, Search: sid, PageNo: 0, PageSize: 50, sEcho: 1, SortCol: 'ID', SortDir: 'desc' };
     $('#dtdata').DataTable({
-        columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
+        columnDefs: [{ "orderable": true, "targets": 0 }], order: [[0, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true,
         sPaginationType: "full_numbers", searching: true, ordering: true, lengthChange: true, "paging": true,
         bAutoWidth: false, scrollX: false, scrollY: false,
@@ -12,9 +12,9 @@ function VendorGrid() {
         sAjaxSource: "/ThirdParty/GetVendorList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
             obj.Search = aoData[45].value;
-            var col = 'id';
+            var col = 'ID';
             if (oSettings.aaSorting.length > 0) {
-                var col = oSettings.aaSorting[0][0] == 1 ? "name" : oSettings.aaSorting[0][0] == 2 ? "vendor_type" : oSettings.aaSorting[0][0] == 3 ? "name_alias" : oSettings.aaSorting[0][0] == 4 ? "zip" : oSettings.aaSorting[0][0] == 5 ? "address" : oSettings.aaSorting[0][0] == 6 ? "phone" : "id";
+                var col = oSettings.aaSorting[0][0] == 0 ? "ID" : oSettings.aaSorting[0][0] == 1 ? "name" : oSettings.aaSorting[0][0] == 2 ? "vendor_type" : oSettings.aaSorting[0][0] == 3 ? "name_alias" : oSettings.aaSorting[0][0] == 4 ? "zip" : oSettings.aaSorting[0][0] == 5 ? "address" : oSettings.aaSorting[0][0] == 6 ? "phone" : "id";
                 obj.SortCol = col; obj.SortDir = oSettings.aaSorting.length > 0 ? oSettings.aaSorting[0][1] : "desc";
             }
             obj.sEcho = aoData[0].value; obj.PageSize = oSettings._iDisplayLength; obj.PageNo = oSettings._iDisplayStart;

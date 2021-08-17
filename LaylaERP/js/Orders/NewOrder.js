@@ -45,7 +45,7 @@ $(document).ready(function () {
             error: function (xhr, status, err) { }, cache: true
         }
     });
-    $("#ddlUser").change(function () { setTimeout(function () { NewOrderNo(); }, 50); CustomerAddress($("#ddlUser").val()); return false; });
+    $("#ddlUser").change(function () { setTimeout(function () { NewOrderNo(); CustomerAddress($("#ddlUser").val()); }, 50); return false; });
     $("#ddlbillcountry").change(function () { var obj = { id: $("#ddlbillcountry").val() }; BindStateCounty("ddlbillstate", obj); });
     $("#ddlshipcountry").change(function () { var obj = { id: $("#ddlshipcountry").val() }; BindStateCounty("ddlshipstate", obj); });
     $("#ddlshipstate").change(function () { GetTaxRate(); getItemShippingCharge(); });
@@ -169,9 +169,10 @@ function errorFun(XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide()
 
 ///Get New Order No
 function NewOrderNo() {
+    let cus_id = parseInt($("#ddlUser").val()) || 0;
     let oid = 0, postMetaxml = [];
     postMetaxml.push(
-        { post_id: oid, meta_key: '_order_key', meta_value: 'wc_order_' }, { post_id: oid, meta_key: '_customer_user', meta_value: 0 },
+        { post_id: oid, meta_key: '_order_key', meta_value: 'wc_order_' }, { post_id: oid, meta_key: '_customer_user', meta_value: cus_id },
         { post_id: oid, meta_key: '_payment_method', meta_value: '' }, { post_id: oid, meta_key: '_payment_method_title', meta_value: '' },
         { post_id: oid, meta_key: '_customer_ip_address', meta_value: '::1' }, { post_id: oid, meta_key: '_customer_user_agent', meta_value: '0' },
         { post_id: oid, meta_key: '_created_via', meta_value: 'checkout' }, { post_id: oid, meta_key: '_cart_hash', meta_value: '0' },
@@ -197,7 +198,9 @@ function NewOrderNo() {
         { post_id: oid, meta_key: 'employee_id', meta_value: '0' }, { post_id: oid, meta_key: 'employee_name', meta_value: '' }
     );
     let option = { OrderPostMeta: postMetaxml };
-    ajaxFunc('/Orders/GetNewOrderNo', option, beforeSendFun, function (result) { $('#hfOrderNo').val(result.message); $('#lblOrderNo').text('Order #' + result.message + ' detail '); }, completeFun, errorFun);
+    if (cus_id > 0) {
+        ajaxFunc('/Orders/GetNewOrderNo', option, beforeSendFun, function (result) { $('#hfOrderNo').val(result.message); $('#lblOrderNo').text('Order #' + result.message + ' detail '); }, completeFun, errorFun);
+    }
 }
 ///Find Address of Customer
 function CustomerAddress(id) {

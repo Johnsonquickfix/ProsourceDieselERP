@@ -11,6 +11,8 @@ function VendorGrid() {
         lengthMenu: [[10, 20, 50], [10, 20, 50]],
         sAjaxSource: "/ThirdParty/GetVendorList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
+            obj.Search = aoData[45].value;
+            var col = 'id';
             if (oSettings.aaSorting.length > 0) {
                 var col = oSettings.aaSorting[0][0] == 1 ? "name" : oSettings.aaSorting[0][0] == 2 ? "vendor_type" : oSettings.aaSorting[0][0] == 3 ? "name_alias" : oSettings.aaSorting[0][0] == 4 ? "zip" : oSettings.aaSorting[0][0] == 5 ? "address" : oSettings.aaSorting[0][0] == 6 ? "phone" : "id";
                 obj.SortCol = col; obj.SortDir = oSettings.aaSorting.length > 0 ? oSettings.aaSorting[0][1] : "desc";

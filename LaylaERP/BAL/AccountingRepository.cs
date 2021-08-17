@@ -148,7 +148,7 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "SELECT rowid as ID, account_number, label, account_parent, fk_pcg_version,active from erp_accounting_account where 1=1 ";
+                string strSql = "SELECT rowid as ID, account_number, label, labelshort, account_parent, pcg_type,active from erp_accounting_account where 1=1 ";
                 if (!string.IsNullOrEmpty(searchid))
                 {
                     strWhr += " and (fk_pcg_version='"+searchid+"' )";
@@ -213,7 +213,7 @@ namespace LaylaERP.BAL
             try
             {
 
-                string strSql = "SELECT rowid as ID, account_number, label, account_parent, fk_pcg_version,active from erp_accounting_account ";
+                string strSql = "SELECT rowid as ID, account_number, label, account_parent, pcg_type,active from erp_accounting_account ";
                 if (!string.IsNullOrEmpty(model.strValue1))
                 {
                     strSql += strWhr;

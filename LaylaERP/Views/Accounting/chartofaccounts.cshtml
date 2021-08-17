@@ -12,7 +12,7 @@
 <div class="page-title">
     <h2>List of the accounting accounts<span class="text-gray"></span></h2>
     <div class="ml-auto">
-        <a class="btn no-btn">Back to List</a>&nbsp;&nbsp;<button class="btn btn-danger">Add an Account</button>
+        @*<a class="btn no-btn">Back to List</a>*@&nbsp;&nbsp;<button class="btn btn-danger">Add an Account</button>
     </div>
 </div>
 <section class="content section-content journal-section table-design">
@@ -39,6 +39,7 @@
         <div class="col-md-12">
             <div class="box box-primary table-design not-fixed">
                 <div class="box-body">
+                    
                     <table id="dtdata" class="inventory-table table-blue table check-table table-bordered table-striped dataTable">
                         <thead>
                             @*<tr>
@@ -73,6 +74,7 @@
                                 <th class="text-left">ID</th>
                                 <th class="text-left">Account number</th>
                                 <th class="text-left">Label</th>
+                                <th class="text-left">Short label</th>
                                 <th class="text-left">Parent account</th>
                                 <th class="text-left">Group of account</th>
                                 <th>Activated</th>
@@ -135,5 +137,11 @@
         </div>
     </div>
 </section>
+<script>
+    $(document).ready(function () {
+        
+    })
+</script>
+
 
 <script src="@Url.Content("~/js/Accounting/ChartOfAccounts.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>

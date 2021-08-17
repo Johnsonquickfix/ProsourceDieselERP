@@ -136,12 +136,12 @@ function dataGridLoad(order_type) {
         },
         columns: [
             {
-                'data': 'order_id', sWidth: "5%   ",
+                'data': 'id', sWidth: "5%   ",
                 'render': function (data, type, full, meta) {
                     return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck(this);" value="' + $('<div/>').text(data).html() + '"><label></label>';
                 }
             },
-            { data: 'order_id', title: 'OrderID', sWidth: "8%", render: $.fn.dataTable.render.number('', '.', 0, '#') },
+            { data: 'id', title: 'OrderID', sWidth: "8%", render: $.fn.dataTable.render.number('', '.', 0, '#') },
             { data: 'FirstName', title: 'First Name', sWidth: "12%" },
             { data: 'LastName', title: 'Last Name', sWidth: "12%" },
             {
@@ -178,7 +178,7 @@ function dataGridLoad(order_type) {
             },
             { data: 'date_created', title: 'Creation Date', sWidth: "12%" },
             {
-                'data': 'order_id', title: 'Action', sWidth: "5%",
+                'data': 'id', title: 'Action', sWidth: "5%",
                 'render': function (id, type, full, meta) {
                     return '<a href="NewOrders/' + id + '"><i class="glyphicon glyphicon-eye-open"></i></a> <a href="OrderRefund/' + id + '"><i class="fa fa-undo"></i></a>'
                 }

@@ -40,6 +40,7 @@ namespace LaylaERP.Models
         public string SalesRepresentative { get; set; }
         public string Logo { get; set; }
         public string user_status { get; set; }
+        public int NatureofJournal { get; set; }
         public string Search { get; set; }
         public int PaymentTermsID { get; set; }
         public int BalanceID { get; set; }
@@ -59,7 +60,7 @@ namespace LaylaERP.Models
         public string DaysofStock { get; set; }
         public bool VendorStatus { get; set; }
         public string outstanding_limit { get; set; }
-        public int fk_shipping_method { get; set; }
+       
         public string order_min_amount { get; set; }
         public string Workinghours { get; set; }
         public string CorAddress1 { get; set; }
@@ -71,14 +72,60 @@ namespace LaylaERP.Models
         public string CorPhone { get; set; }
         public string NotePublic { get; set; }
         public string NotePrivate { get; set; }
+        public int fk_shipping_method { get; set; }
         public decimal ShippingRate { get; set; }
         public string ShippingLocation { get; set; }
-        public string ShippingAPIKeyTest { get; set; }
-        public string ShippingAPISecretTest { get; set; }
-        public string ShippingAPIKeyProduction { get; set; }
-        public string ShippingAPISecretProduction { get; set; }
-        public string ShippingLogin { get; set; }
-        public string ShippingPassword { get; set; }
+        ////Start Vendor Shipping Method
+
+        public int ShippingMethodID { get; set; }
+        public string FedexAccountNumber { get; set; }
+        public string FedexMeterNumber { get; set; }
+        public string FedexWebServicesKey { get; set; }
+        public string FedexWebServicesPassword { get; set; }
+        public string FedexMethodType { get; set; }
+        public bool FedexMethodEnable { get; set; }
+        public bool FedexCustomServices { get; set; }
+        public bool FedexDebugMode { get; set; }
+        public string UPSUserID { get; set; }
+        public string UPSPassword { get; set; }
+        public string UPSAccessKey { get; set; }
+        public string UPSAccountNumber { get; set; }
+        public string UPSOriginPostcode { get; set; }
+        public string UPSOriginCountry { get; set; }
+        public string UPSAPILicenceKey { get; set; }
+        public string UPSLicenceEmail { get; set; }
+        public bool UPSEnable { get; set; }
+        public string UPSMeasurementUnits { get; set; }
+        public bool UPSEnableDebugMode { get; set; }
+        public bool USPSEnable { get; set; }
+        public string USPSPostcode { get; set; }
+        public string USPSUserID { get; set; }
+        public bool USPSCommercialrates { get; set; }
+        public bool USPSPacking { get; set; }
+        public string USPSPriorityMailExpressTitle { get; set; }
+        public bool USPSPriorityMailExpress { get; set; }
+        public bool USPSPriorityMailExpressHoldforPickup { get; set; }
+        public bool USPSPriorityMailExpressSundayHoliday { get; set; }
+        public string USPSPriorityMailTitle { get; set; }
+        public bool USPSPriorityMail { get; set; }
+        public bool USPSPriorityMailHoldForPickup { get; set; }
+        public bool USPSPriorityMailKeysandIDs { get; set; }
+        public bool USPSPriorityMailRegionalRateBoxA { get; set; }
+        public bool USPSPriorityMailRegionalRateBoxAHoldForPickup { get; set; }
+        public bool USPSPriorityMailRegionalRateBoxB { get; set; }
+        public bool USPSPriorityMailRegionalRateBoxBHoldForPickup { get; set; }
+        public string FirstClassMailTitle { get; set; }
+        public bool FirstClassMailPostcards { get; set; }
+        public bool FirstClassMailLetter { get; set; }
+        public bool FirstClassMailLargeEnvelope { get; set; }
+        public bool FirstClassMailParcel { get; set; }
+        public bool FirstClassMailLargePostcards { get; set; }
+        public bool FirstClassMailKeysandIDs { get; set; }
+        public bool FirstClassMailPackageService { get; set; }
+        public bool FirstClassMailPackageServiceHoldForPickup { get; set; }
+        public bool FirstClassMailMeteredLetter { get; set; }
+
+       ////End Vendor Shipping Method
         public string TaxMethod { get; set; }
         public string ShippingTax { get; set; }
         public string CalculatedTax { get; set; }

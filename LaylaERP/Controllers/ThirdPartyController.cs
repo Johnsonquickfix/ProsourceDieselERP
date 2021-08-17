@@ -30,7 +30,8 @@ namespace LaylaERP.Controllers
             {
                 if (model.rowid > 0)
                 {
-                    new ThirdPartyRepository().EditVendorBasicInfo(model, model.rowid);
+                    new ThirdPartyRepository().EditVendorBasicInfo(model);
+                    new ThirdPartyRepository().EditJournal(model);
                     return Json(new { status = true, message = "Vendor Basic info has been updated successfully!!", url = "", id = model.rowid }, 0);
                 }
                 else
@@ -38,7 +39,7 @@ namespace LaylaERP.Controllers
                     int ID = new ThirdPartyRepository().AddNewVendorBasicInfo(model);
                     if (ID > 0)
                     {
-                        ModelState.Clear();
+                        new ThirdPartyRepository().AddJournal(model,ID);
                         return Json(new { status = true, message = "Vendor Basic info has been saved successfully!!", url = "", id = ID }, 0);
                     }
                     else
@@ -97,8 +98,12 @@ namespace LaylaERP.Controllers
         }
         public JsonResult AddVendorShipping(ThirdPartyModel model)
         {
-                if (model.rowid > 0)
+            if (model.rowid > 0)
+            {
+                int id = new ThirdPartyRepository().GetShippingVendorID(model.rowid);
+                if (id != model.rowid)
                 {
+                    new ThirdPartyRepository().UpdateVendorShipping(model);
                     int ID = new ThirdPartyRepository().AddVendorShipping(model);
                     if (ID > 0)
                     {
@@ -111,8 +116,15 @@ namespace LaylaERP.Controllers
                 }
                 else
                 {
-                    return Json(new { status = false, message = "Vendor info not Found", url = "", id = 0 }, 0);
+                    new ThirdPartyRepository().UpdateVendorShipping(model);
+                    int ID = new ThirdPartyRepository().EditVendorShipping(model);
+                    return Json(new { status = true, message = "Vendor shipping has been updated successfully!!", url = "", id = ID }, 0);
                 }
+            }
+            else
+            {
+                return Json(new { status = false, message = "Vendor info not Found", url = "", id = 0 }, 0);
+            }
         }
         public JsonResult AddVendorTaxes(ThirdPartyModel model)
         {
@@ -157,7 +169,7 @@ namespace LaylaERP.Controllers
             
                 if (model.rowid > 0)
                 {
-                    int id = new ThirdPartyRepository().GetVendorID(model.rowid);
+                    int id = new ThirdPartyRepository().GetPaymentVendorID(model.rowid);
                     if (id != model.rowid)
                     {
                         int ID = new ThirdPartyRepository().AddPaymentMethods(model);
@@ -247,29 +259,6 @@ namespace LaylaERP.Controllers
                 return Json(new { status = false, message = "Vendor info not Found", url = "", id = 0 }, 0);
             }
         }
-
-        //public JsonResult AddVendorSetting(ThirdPartyModel model)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        string WarehouseID = model.WarehouseID;
-        //        int VendorID = model.VendorID;
-        //        string LeadTime = model.LeadTime;
-        //        string DaysofStock = model.DaysofStock;
-
-        //        if (model.rowid > 0)
-        //        {
-        //            int ID = new ThirdPartyRepository().EditVendorSetting(WarehouseID, model.rowid, LeadTime, DaysofStock);
-        //            return Json(new { status = true, message = "Vendor has been updated successfully!!", url = "", id = ID }, 0);
-        //        }
-        //        else
-        //        {
-        //            int ID = new ThirdPartyRepository().VendorSetting(WarehouseID, VendorID, LeadTime, DaysofStock);
-        //            return Json(new { status = true, message = "Vendor has been saved successfully!!", url = "", id = ID }, 0);
-        //        }
-        //    }
-        //    return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
-        //}
         public JsonResult GetState(SearchModel model)
         {
             string JSONresult = string.Empty;

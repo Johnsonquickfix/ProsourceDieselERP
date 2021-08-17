@@ -57,7 +57,7 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@code", model.code),
                     new MySqlParameter("@label", model.label),
                     new MySqlParameter("@nature", model.nature),
-                    new MySqlParameter("@active", 1),
+               new MySqlParameter("@active", model.active),
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
                 return result;
@@ -137,6 +137,95 @@ namespace LaylaERP.BAL
                 throw ex;
             }
             return dt;
+        }
+
+
+        public static DataTable GetChartOfAccounts(string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "rowid", string SortDir = "asc")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                string strWhr = string.Empty;
+
+                string strSql = "SELECT rowid as ID, account_number, label, labelshort, account_parent, pcg_type,active from erp_accounting_account where 1=1 ";
+                if (!string.IsNullOrEmpty(searchid))
+                {
+                    strWhr += " and (fk_pcg_version='"+searchid+"' )";
+                }
+                if (userstatus != null)
+                {
+                    strWhr += " and (active='" + userstatus + "') ";
+                }
+                strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
+
+                strSql += "; SELECT ceil(Count(rowid)/" + pagesize.ToString() + ") TotalPage,Count(rowid) TotalRecord from erp_accounting_account WHERE 1 = 1 " + strWhr.ToString();
+
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dt = ds.Tables[0];
+                if (ds.Tables[1].Rows.Count > 0)
+                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public int UpdateChartOfAccountStatus(AccountingJournalModel model)
+        {
+            try
+            {
+                string strsql = "";
+                strsql = "Update erp_accounting_account set active=@active where rowid=@ID;";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@ID", model.rowid),
+                    new MySqlParameter("@active", model.active),
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+        public static DataSet GetAccountSystem()
+        {
+            DataSet DS = new DataSet();
+            try
+            {
+                DS = SQLHelper.ExecuteDataSet("SELECT pcg_version,concat(pcg_version,' ',label) as version FROM erp_accounting_system order by pcg_version desc");
+                //DS = SQLHelper.ExecuteDataSet("SELECT active FROM erp_accounting_account");
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
+        }
+
+        public static DataTable GetChartOfAccounts1(SearchModel model)
+        {
+            string strWhr = " where fk_pcg_version='" + model.strValue1 + "'";
+            DataTable dtr = new DataTable();
+            try
+            {
+
+                string strSql = "SELECT rowid as ID, account_number, label, account_parent, pcg_type,active from erp_accounting_account ";
+                if (!string.IsNullOrEmpty(model.strValue1))
+                {
+                    strSql += strWhr;
+                }
+
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dtr = ds.Tables[0];
+
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dtr;
         }
     }
 }

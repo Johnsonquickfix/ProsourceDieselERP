@@ -180,7 +180,7 @@ namespace LaylaERP.Models
                 {
                     strWhr += " and (ur.user_status='" + userstatus + "') ";
                 }
-                strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}" , SortCol, SortDir, (pageno * pagesize).ToString() , pagesize.ToString());
+                strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}" , SortCol, SortDir, pageno.ToString() , pagesize.ToString());
 
                 strSql += "; SELECT ceil(Count(ur.id)/" + pagesize.ToString() + ") TotalPage,Count(ur.id) TotalRecord from wp_users ur INNER JOIN wp_usermeta um on um.meta_key='wp_capabilities' And um.user_id = ur.ID And um.meta_value LIKE '%customer%' WHERE 1 = 1 " + strWhr.ToString();
 

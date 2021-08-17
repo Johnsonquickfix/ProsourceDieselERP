@@ -17,7 +17,7 @@ getPaymentMethod();
 VendorContactList();
 VendorVendorWarehouseList();
 VendorRelatedProduct();
-$("#chkVendorStatus").prop("checked", true);
+$('input:checkbox').prop('checked', true);
 $("#ddlPaymentMethod").change(function () {
     ShippingMethod = $("#ddlPaymentMethod").val();
     PaymentMethodBlock(ShippingMethod);
@@ -74,6 +74,10 @@ function ShippingMethodBlock(ShippingMethod) {
         $("#UPS").css("display", "none");
     }
 }
+$('#btnReset').click(function () {
+    $('#USPS input:checkbox').prop('checked', true);
+    $('#USPS input:text').val('');
+})
 $('#btnNextTab1').click(function (e) {
     ID = $("#hfid").val();
     VendorType = $("#ddlvendortype").val();
@@ -931,7 +935,7 @@ function GetVendorByID(id) {
                     d[0].USPSCommercialrates == true ? $("#chkUSPSCommercialrates").prop("checked", true) : $("#chkUSPSCommercialrates").prop("checked", false);
                     d[0].USPSPacking == true ? $("#chkUSPSPacking").prop("checked", true) : $("#chkUSPSPacking").prop("checked", false);
                     $("#txtUSPSPriorityMailExpressTitle").val(d[0].USPSPriorityMailExpressTitle);
-                    d[0].USPSPriorityMailExpress == true ? $("#chkPriorityMailExpressHoldforPickup").prop("checked", true) : $("#chkPriorityMailExpressHoldforPickup").prop("checked", false);
+                    d[0].USPSPriorityMailExpress == true ? $("#chkPriorityMailExpress").prop("checked", true) : $("#chkPriorityMailExpress").prop("checked", false);
                     d[0].USPSPriorityMailExpressHoldforPickup == true ? $("#chkPriorityMailExpressHoldforPickup").prop("checked", true) : $("#chkPriorityMailExpressHoldforPickup").prop("checked", false);
                     d[0].USPSPriorityMailExpressSundayHoliday == true ? $("#chkPriorityMailExpressSundayHoliday").prop("checked", true) : $("#chkPriorityMailExpressSundayHoliday").prop("checked", false);
                     $("#txtUSPSPriorityMailTitle").val(d[0].USPSPriorityMailTitle);
@@ -950,7 +954,7 @@ function GetVendorByID(id) {
                     d[0].FirstClassMailLargePostcards == true ? $("#chkUSPSFirstClassMailLargePostcards").prop("checked", true) : $('#chkUSPSFirstClassMailLargePostcards').prop("checked", false);
                     d[0].FirstClassMailKeysandIDs == true ? $("#chkUSPSFirstClassMailKeysandIDs").prop("checked", true) : $('#chkUSPSFirstClassMailKeysandIDs').prop("checked", false);
                     d[0].FirstClassMailPackageService == true ? $("#chkUSPSFirstClassMailPackageService").prop("checked", true) : $('#chkUSPSFirstClassMailPackageService').prop("checked", false);
-                    d[0].FirstClassMailPackageServiceHoldForPickup == true ? $("#chkUSPSFirstClassMailPackageServiceHoldForPickup").prop("checked", true) : $('#chkUSPSFirstClassMailPackageServiceHoldForPickup').attr("checked", false);
+                    d[0].FirstClassMailPackageServiceHoldForPickup == true ? $("#chkUSPSFirstClassMailPackageServiceHoldForPickup").prop("checked", true) : $('#chkUSPSFirstClassMailPackageServiceHoldForPickup').prop("checked", false);
                     d[0].FirstClassMailMeteredLetter == true ? $("#chkUSPSFirstClassMailMeteredLetter").prop("checked", true) : $('#chkUSPSFirstClassMailMeteredLetter').prop("checked", false);
                     $("#txtFedexAccountNumber").val(d[0].FedexAccountNumber);
                     $("#txtFedexMeterNumber").val(d[0].FedexMeterNumber);

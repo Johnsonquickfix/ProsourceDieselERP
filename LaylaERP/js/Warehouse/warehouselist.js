@@ -1,4 +1,4 @@
-﻿
+﻿ProductWarehouseGrid();
 WarehouseGrid();
 function WarehouseGrid() {
     var obj = { strValue1: $("#ddlSearchStatus").val() }
@@ -50,3 +50,34 @@ function WarehouseGrid() {
 $('#btnSearch').click(function () {
     WarehouseGrid();
 })
+
+
+function ProductWarehouseGrid() {
+    $.ajax({
+        url: '/Warehouse/GetProductWarehouse',
+        method: 'post',
+        datatype: 'json',
+        contentType: "application/json; charset=utf-8",
+        processing: true,
+        
+        success: function (data) {
+            $('#product').dataTable({
+                destroy: true,
+                //scrollX: true,
+                data: JSON.parse(data),
+                "columns": [
+                    { data: 'warehouse', title: 'Warehouse Name', sWidth: "25%" },
+                    { data: 'product', title: 'Product Name', sWidth: "25%" },
+                    { data: 'address', title: 'Warehouse Address', sWidth: "25%" },
+                    //{ data: 'phone', title: 'Vendor Phone', sWidth: "25%" }
+                ],
+
+
+                "order": [[0, 'desc']],
+            });
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            alert(xhr.responseText);
+        }
+    });
+}

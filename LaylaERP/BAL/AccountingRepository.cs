@@ -139,40 +139,6 @@ namespace LaylaERP.BAL
             return dt;
         }
 
-
-        public static DataTable GetChartOfAccounts(string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "rowid", string SortDir = "asc")
-        {
-            DataTable dt = new DataTable();
-            totalrows = 0;
-            try
-            {
-                string strWhr = string.Empty;
-
-                string strSql = "SELECT rowid as ID, account_number, label, labelshort, account_parent, pcg_type,active from erp_accounting_account where 1=1 ";
-                if (!string.IsNullOrEmpty(searchid))
-                {
-                    strWhr += " and (fk_pcg_version='"+searchid+"' )";
-                }
-                if (userstatus != null)
-                {
-                    strWhr += " and (active='" + userstatus + "') ";
-                }
-                strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
-
-                strSql += "; SELECT ceil(Count(rowid)/" + pagesize.ToString() + ") TotalPage,Count(rowid) TotalRecord from erp_accounting_account WHERE 1 = 1 " + strWhr.ToString();
-
-                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
-                dt = ds.Tables[0];
-                if (ds.Tables[1].Rows.Count > 0)
-                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            return dt;
-        }
-
         public int UpdateChartOfAccountStatus(AccountingJournalModel model)
         {
             try
@@ -206,14 +172,14 @@ namespace LaylaERP.BAL
             return DS;
         }
 
-        public static DataTable GetChartOfAccounts1(SearchModel model)
+        public static DataTable GetChartOfAccounts(SearchModel model)
         {
             string strWhr = " where fk_pcg_version='" + model.strValue1 + "'";
             DataTable dtr = new DataTable();
             try
             {
 
-                string strSql = "SELECT rowid as ID, account_number, label, account_parent, pcg_type,active from erp_accounting_account ";
+                string strSql = "SELECT rowid as ID, account_number, label, labelshort, account_parent, pcg_type,active from erp_accounting_account ";
                 if (!string.IsNullOrEmpty(model.strValue1))
                 {
                     strSql += strWhr;

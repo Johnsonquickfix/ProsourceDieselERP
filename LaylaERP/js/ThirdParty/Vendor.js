@@ -15,7 +15,7 @@ getShippingMethod();
 getDiscountType();
 getPaymentMethod();
 VendorContactList();
-VendorVendorWarehouseList();
+VendorWarehouseList();
 VendorRelatedProduct();
 $('input:checkbox').prop('checked', true);
 $("#ddlPaymentMethod").change(function () {
@@ -617,7 +617,7 @@ $('#btnLinkWarehouse').click(function (e) {
             success: function (data) {
                 if (data.status == true) {
                     swal('Alert!', data.message, 'success');
-                    VendorVendorWarehouseList();
+                    VendorWarehouseList();
                     $("#tab_10 option[value='-1']").attr('selected', true);
                     e.preventDefault();
                 }
@@ -1044,14 +1044,19 @@ function VendorContactList() {
     var sid = "";
     var obj = { user_status: urid, Search: sid, PageNo: 0, PageSize: 50, sEcho: 1, SortCol: 'id', SortDir: 'desc', rowid: ID };
     $('#dtdata').DataTable({
-        columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
+        columnDefs: [{ "orderable": true, "targets": 0 }], order: [[0, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true,
-        sPaginationType: "full_numbers", searching: false, ordering: false, lengthChange: false, "paging": false, "bInfo": false,
+        sPaginationType: "full_numbers", searching: false, ordering: true, lengthChange: false, "paging": false, "bInfo": false,
         bAutoWidth: false, scrollX: false, scrollY: false,
         lengthMenu: [[10, 20, 50], [10, 20, 50]],
         sAjaxSource: "/ThirdParty/GetVendorContactList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
-
+            //obj.Search = aoData[45].value;
+            var col = 'id';
+            if (oSettings.aaSorting.length >= 0) {
+                var col = oSettings.aaSorting[0][0] == 0 ? "name" : oSettings.aaSorting[0][0] == 1 ? "Name" : oSettings.aaSorting[0][0] == 2 ? "Title" : oSettings.aaSorting[0][0] == 3 ? "Office" : oSettings.aaSorting[0][0] == 4 ? "Mobile" :oSettings.aaSorting[0][0] == 5 ? "Email" : oSettings.aaSorting[0][0] == 6 ? "Address" : "id";
+                obj.SortCol = col; obj.SortDir = oSettings.aaSorting.length >= 0 ? oSettings.aaSorting[0][1] : "desc";
+            }
             obj.sEcho = aoData[0].value; obj.PageSize = oSettings._iDisplayLength; obj.PageNo = oSettings._iDisplayStart;
             $.ajax({
                 type: "POST", url: sSource, async: true, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
@@ -1092,14 +1097,18 @@ function VendorRelatedProduct() {
     var sid = "";
     var obj = { user_status: urid, Search: sid, PageNo: 0, PageSize: 50, sEcho: 1, SortCol: 'id', SortDir: 'desc', rowid: ID };
     $('#RelatedItemdata').DataTable({
-        columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
+        columnDefs: [{ "orderable": true, "targets": 0 }], order: [[0, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true,
-        sPaginationType: "full_numbers", searching: false, ordering: false, lengthChange: false, "paging": false, "bInfo": false,
+        sPaginationType: "full_numbers", searching: false, ordering: true, lengthChange: false, "paging": false, "bInfo": false,
         bAutoWidth: false, scrollX: false, scrollY: false,
         lengthMenu: [[10, 20, 50], [10, 20, 50]],
         sAjaxSource: "/ThirdParty/GetVendorRelatedProductList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
-
+            var col = 'id';
+            if (oSettings.aaSorting.length >= 0) {
+                var col = oSettings.aaSorting[0][0] == 0 ? "ProductName" : oSettings.aaSorting[0][0] == 1 ? "VendorName" : oSettings.aaSorting[0][0] == 2 ? "purchase_price" : oSettings.aaSorting[0][0] == 3 ? "cost_price" : "id";
+                obj.SortCol = col; obj.SortDir = oSettings.aaSorting.length >= 0 ? oSettings.aaSorting[0][1] : "desc";
+            }
             obj.sEcho = aoData[0].value; obj.PageSize = oSettings._iDisplayLength; obj.PageNo = oSettings._iDisplayStart;
             $.ajax({
                 type: "POST", url: sSource, async: true, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
@@ -1119,20 +1128,24 @@ function VendorRelatedProduct() {
         ]
     });
 }
-function VendorVendorWarehouseList() {
+function VendorWarehouseList() {
     var urid = parseInt($("#ddlSearchStatus").val());
     ID = $("#hfid").val();
     var sid = "";
     var obj = { user_status: urid, Search: sid, PageNo: 0, PageSize: 50, sEcho: 1, SortCol: 'id', SortDir: 'desc', rowid: ID };
     $('#Warehousedata').DataTable({
-        columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
+        columnDefs: [{ "orderable": true, "targets": 0 }], order: [[0, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true,
-        sPaginationType: "full_numbers", searching: false, ordering: false, lengthChange: false, "paging": false, "bInfo": false,
+        sPaginationType: "full_numbers", searching: false, ordering: true, lengthChange: false, "paging": false, "bInfo": false,
         bAutoWidth: false, scrollX: false, scrollY: false,
         lengthMenu: [[10, 20, 50], [10, 20, 50]],
         sAjaxSource: "/ThirdParty/GetVendorWarehouseList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
-
+            var col = 'id';
+            if (oSettings.aaSorting.length >= 0) {
+                var col = oSettings.aaSorting[0][0] == 0 ? "VendorName" : oSettings.aaSorting[0][0] == 1 ? "Warehouse" : "id";
+                obj.SortCol = col; obj.SortDir = oSettings.aaSorting.length >= 0 ? oSettings.aaSorting[0][1] : "desc";
+            }
             obj.sEcho = aoData[0].value; obj.PageSize = oSettings._iDisplayLength; obj.PageNo = oSettings._iDisplayStart;
             $.ajax({
                 type: "POST", url: sSource, async: true, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
@@ -1157,8 +1170,6 @@ function VendorVendorWarehouseList() {
                     //else { return "No Permission"; }
                 }
             }
-
-
         ]
     });
 }
@@ -1249,7 +1260,7 @@ function Deletewarehouse(id) {
             success: function (data) {
                 if (data.status == true) {
                     swal('Alert!', data.message, 'success');
-                    VendorVendorWarehouseList();
+                    VendorWarehouseList();
                 }
                 else { swal('Alert!', data.message, 'error') }
             },
@@ -1261,7 +1272,6 @@ function Deletewarehouse(id) {
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Search Google Place API ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 var autocompleteOptions = { componentRestrictions: { country: ["us", "ca","cn"] }, fields: ["address_components", "geometry"], types: ["address"] };
 function setupAutocomplete(inputs) {
-    console.log(inputs);
     //console.log('setupAutocomplete...', $(inputs));
     autocomplete = new google.maps.places.Autocomplete(inputs, autocompleteOptions);
     autocomplete.addListener("place_changed", fillInAddress);

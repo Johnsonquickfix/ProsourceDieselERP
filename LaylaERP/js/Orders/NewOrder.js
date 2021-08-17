@@ -906,12 +906,14 @@ function CouponModal() {
     $("#billModal").modal({ backdrop: 'static', keyboard: false }); $("#txt_Coupon").focus();
 }
 function Coupon_get_discount_amount(id, parent_id, coupon_code, coupon_amt, item_qty, reg_price, sale_price) {
+    coupon_code = coupon_code.toString().toLowerCase();
     let coupon_isedu = ["mhsu15", "pu15", "utep74", "msu15", "cabarrus15", "crusader15", "ucsd15", "vt15", "kent15", "fcs15", "sisd15", "isu15", "uh15", "teacher15", "csusm15", "abbey15"];
     let coupon_isgrin = ["erin10off", "venezia10off", "jasmine10off", "liz10off", "jamie10off", "nicole10off", "faye10off", "vinny10off", "ava10off", "kelsey10off", "aimy10off", "grace10off", "ramya10off", "georgia10off", "slayer10off", "victoria10off", "nickayla10off", "saraida10off", "garnerfamily5", "gina10off", "brooke10off", "lolo10off", "melissa10off", "claudia10off"];
     let isedu = 0;
     if (coupon_isedu.includes(coupon_isedu)) { isedu = 1; }
     let isgrin = 0;
     if (coupon_isgrin.includes(coupon_isedu)) { isgrin = 1; }
+    
     if (coupon_code.includes("friend") && coupon_code.substr(6) > 8500) {
         if (id != 632713 && id != 78676) {
             if (parent_id == 118) {
@@ -927,7 +929,7 @@ function Coupon_get_discount_amount(id, parent_id, coupon_code, coupon_amt, item
         }
         else
             return 0.00;
-        return coupon_amt;
+        return { price: reg_price, disc_amt: coupon_amt, qty: item_qty };
     }
     else if (isedu == 1) {
         let matt_arr = [118, 611172, 611252, 612995, 611286, 31729, 20861];
@@ -1149,15 +1151,15 @@ function bindCouponList(data) {
         for (var i = 0; i < data.length; i++) {
             if ($('#li_' + data[i].post_title).length <= 0) {
                 let cou_amt = parseFloat(data[i].coupon_amount) || 0.00;
-                layoutHtml = '<li id="li_' + data[i].post_title + '" class="' + (data[i].discount_type == 'fixed_cart' ? 'cart' : 'items') + '" data-coupon= "' + data[i].post_title + '" data-couponamt= "' + data[i].coupon_amount + '" data-disctype= "' + data[i].discount_type + '" data-rqprdids= "' + data[i].product_ids + '" data-excludeids= "' + data[i].exclude_product_ids + '" data-type= "' + data[i].type + '" data-orderitemid="0">';
+                layoutHtml = '<li id="li_' + data[i].post_title.toString().toLowerCase() + '" class="' + (data[i].discount_type == 'fixed_cart' ? 'cart' : 'items') + '" data-coupon= "' + data[i].post_title + '" data-couponamt= "' + data[i].coupon_amount + '" data-disctype= "' + data[i].discount_type + '" data-rqprdids= "' + data[i].product_ids + '" data-excludeids= "' + data[i].exclude_product_ids + '" data-type= "' + data[i].type + '" data-orderitemid="0">';
                 layoutHtml += '<a href="javascript:void(0);">';
                 layoutHtml += '<i class="fa fa-gift"></i>';
-                layoutHtml += '<span>' + data[i].title + '</span>';
+                layoutHtml += '<span>' + data[i].title.toString().toLowerCase() + '</span>';
                 layoutHtml += '<div class="pull-right">';
 
                 if (data[0].type == 'add_coupon') {
                     layoutHtml += '$<span id="cou_discamt">' + cou_amt.toFixed(2) + '</span>';
-                    layoutHtml += '<button type="button" class="btn btn-box-tool pull-right" onclick="removeCouponInList(\'' + data[i].post_title + '\');">';
+                    layoutHtml += '<button type="button" class="btn btn-box-tool pull-right" onclick="removeCouponInList(\'' + data[i].post_title.toString().toLowerCase() + '\');">';
                     layoutHtml += '<i class="fa fa-times"></i>';
                     layoutHtml += '</button>';
                 }
@@ -1230,7 +1232,7 @@ function deleteAllCoupons(coupon_type) {
     else if (coupon_type == 'friend_diff') {
         let tax_rate = parseFloat($('#hfTaxRate').val()) || 0.00;
         $('#billCoupon li').each(function (index) {
-            if ($(this).data('type') == 'diff') {
+            if ($(this).data('type') == 'diff' && ($(this).data('coupon') == '118' || $(this).data('coupon') == '611172')) {
                 let id = $(this).data('coupon');
                 let rq_prd_ids = [];
                 if ($(this).data('rqprdids') != "" && $(this).data('rqprdids') != null) {
@@ -2007,7 +2009,7 @@ function SendPaypalInvoice(oid, access_token, sendURL) {
     let _postMeta = [{ post_id: oid, meta_key: '_paypal_id', meta_value: id[id.length - 2] }];
 
     $.ajax({
-        type: "POST", url: sendURL, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify({ send_to_recipient: true, send_to_invoicer }),
+        type: "POST", url: sendURL, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify({ send_to_recipient: true, send_to_invoicer: true }),
         beforeSend: function (xhr) {
             xhr.setRequestHeader("Accept", "application/json");
             xhr.setRequestHeader("Authorization", "Bearer " + access_token);

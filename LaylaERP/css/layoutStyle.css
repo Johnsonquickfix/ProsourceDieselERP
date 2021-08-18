@@ -2261,8 +2261,11 @@ body .btn {font-size:12px;}
     padding-right: 15px;min-width:80px;
 }
 
-.tooltip .tooltip-arrow {
+.tooltip.bottom .tooltip-arrow {
     border-bottom-color: orange !important;
+}
+.tooltip.top .tooltip-arrow {
+    border-top-color: orange !important;
 }
 
 

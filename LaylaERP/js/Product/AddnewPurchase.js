@@ -1096,3 +1096,7 @@ function Deletefileupload(id) {
 
 }
 
+function viewfileupload(id) {
+     
+
+}

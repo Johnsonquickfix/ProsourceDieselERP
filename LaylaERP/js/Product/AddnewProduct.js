@@ -853,13 +853,19 @@ function GetProductvariationID(ProductID) {
             let varHTML = '', attHTML = '';
             for (let i = 0; i < data.length; i++) {
                 let v_data = JSON.parse(data[i].meta_data);
-               // let stock = v_data['_stock'].replace('undefined', ''); _sale_price 
-
-                let regular_price = '';
-                if (v_data['_regular_price'] != undefined)
-                    regular_price = v_data['_regular_price'];
-                else
-                    regular_price = 0;
+                // let stock = v_data['_stock'].replace('undefined', ''); _sale_price 
+            //    console.log(v_data['_regular_price']);
+            //    let regular_price = '';
+            //    if (v_data['_regular_price'] != "") {
+                                   
+            //    if (v_data['_regular_price'] != undefined)
+            //            regular_price = v_data['_regular_price'];
+            //    else {
+            //        regular_price = 0;
+            //    }
+            //}
+            //    else
+             //   regular_price = v_data['_regular_price'];
                 let sku = '';
                 if (v_data['_sku'] != undefined)
                     sku = v_data['_sku'];
@@ -870,9 +876,7 @@ function GetProductvariationID(ProductID) {
                     stock = v_data['_stock'];
                 else
                     stock = 0;
-                console.log(stock);
-                console.log(sku);
-                console.log(regular_price);
+           
                 let weight = '';
                 if (v_data['_weight'] != undefined)
                     weight = v_data['_weight'];
@@ -937,7 +941,7 @@ function GetProductvariationID(ProductID) {
                 //varHTML += '    </div>';
                 //varHTML += '</div>';
                 varHTML += '<div class="form-group d-flex mt-25">';
-                varHTML += '    <div class="col-md-6"><label class="control-label">Regular Price($)</label><input type="text" name="txtregularvar" class="form-control" placeholder="Variation price *" value="' + regular_price + '"></div>';
+                varHTML += '    <div class="col-md-6"><label class="control-label">Regular Price($)</label><input type="text" name="txtregularvar" class="form-control" placeholder="Variation price *" value="' + v_data['_regular_price'] + '"></div>';
                 varHTML += '<div class="col-md-6"><label class="control-label">Sale Price($)</label><input type="text" name="txtSalepricevariation" class="form-control" value="' + sale_price + '"></div>';
                 varHTML += '</div>';
                 varHTML += '<div id="divstock">';

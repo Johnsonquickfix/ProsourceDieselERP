@@ -2255,7 +2255,7 @@ body .btn {font-size:12px;}
 .sale-active i {font-size:24px;}
 .tooltip .tooltip-inner {
     background: orange;
-    border-radius: 2px;
+    border-radius: 3px;
     padding-top: 5px;
     padding-left: 15px;
     padding-right: 15px;

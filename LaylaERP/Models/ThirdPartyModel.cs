@@ -55,6 +55,7 @@ namespace LaylaERP.Models
         public string CreditLimit { get; set; }
         public string WarehouseID { get; set; }
         public string VendorWarehouseID { get; set; }
+        public string VendorLinkedFilesID { get; set; }
         public int VendorID { get; set; }
         public string LeadTime { get; set; }
         public string DaysofStock { get; set; }
@@ -175,5 +176,9 @@ namespace LaylaERP.Models
         public string ContactZipCode { get; set; }
         public string ContactCountry { get; set; }
         public string ContactStateName { get; set; }
+        //Vendor Linked Files
+        public byte[] ImageFiledata { get; set; }
+        public string ImagePath { get; set; }
+        public HttpPostedFileBase ImageFile { get; set; }
     }
 }

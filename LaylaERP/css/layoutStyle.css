@@ -2131,12 +2131,15 @@ border-top:1px solid #eee; margin-top:8px; margin-bottom:8px;}
 .new-product-section #tab_5 {}
 .tablenav .a-float-right {float:right;margin-top:5px;cursor:pointer;width:20px; text-align:center;}
 .custom-flex-space .col-auto {margin-right: 15px;}
-.varient-box {display:none;}
-##angle-box i {transform:rotate(0deg); transition:.5s transform;}
+.varient-box {display:none; border-bottom:1px solid #dedede;}
+#angle-box i {transform:rotate(0deg); transition:.5s transform;}
+.varient-box .box-footer {border:0px;}
 img.varient-pic {max-width: 100px;height: auto;}
 .virtual-checks .form-check {padding-right:50px;}
 .virtual-checks > .col-md-12 {display:flex; align-items:center; border-top:1px solid #dedede; border-bottom:1px solid #dedede;padding-top:12px;}
-.angle-change i{transform:rotate(180deg);}
+#angle-box.angle-change i{transform:rotate(180deg);}
+.skucval{margin-left:5px;}
+[data-key="Size"]{min-width:80px;}
 .categorychecklist {width:100%; padding:0px; margin:0px;list-style:none;}
 .categorychecklist li {margin-bottom:10px;}
 .mt-25 {margin-top:25px !important;}
@@ -2241,7 +2244,7 @@ body .form-control {font-size:12px;}
 #product_variations .form-group {margin:0px;}
 .new-product-section  #tab_6 .col-sm-12{padding:0px;}
 body .btn {font-size:12px;}
-#product_variations.simple-table {width:auto;}
+/*#product_variations.simple-table {width:auto;}*/
 .row_on .fa-toggle-on, .sale-active i {color: #25a580 !important; font-size: 30px;}
 .fas.fa-toggle-off {font-size: 30px; color:#4f4f4f;}
 .inventory-table td.text-left:first-child {text-align:left;}
@@ -2250,3 +2253,19 @@ body .btn {font-size:12px;}
 .product-acctount-section .a-relative {position:relative; width:18px; height:18px;}
 .product-acctount-section th, .product-acctount-section td {vertical-align:middle !important;}
 .sale-active i {font-size:24px;}
+.tooltip .tooltip-inner {
+    background: orange;
+    border-radius: 3px;
+    padding-top: 5px;
+    padding-left: 5px;
+    padding-right: 5px;
+    border: 0px solid orange;
+    width: auto;
+    min-width: 200px;
+}
+
+.tooltip .tooltip-arrow {
+    border-top-color: orange !important;
+    border-bottom-color: orange !important;
+}
+

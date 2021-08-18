@@ -1144,14 +1144,10 @@ function ApplyCoupon() {
             }
             console.log(data[0]);
             if (coupon_code.includes("friend") && coupon_code.substr(6) > 8500) { deleteAllCoupons('friend_diff'); }
-            //else if (coupon_code.includes("freeprotector")) { }
+            else if (coupon_code.includes("freeprotector") || (coupon_code.includes("vip") && data[0].individual_use == "no")) { }
             else {
-                if (data[0].individual_use == "yes") {
-                    deleteAllCoupons('all');
-                }
-                else {
-                    //if (data[0].discount_type != "fixed_cart") { deleteAllCoupons('diff'); }
-                }
+                if (data[0].individual_use == "yes") { deleteAllCoupons('all'); }
+                if (data[0].discount_type != "fixed_cart") { deleteAllCoupons('diff'); }
             }
             bindCouponList(data);
         },

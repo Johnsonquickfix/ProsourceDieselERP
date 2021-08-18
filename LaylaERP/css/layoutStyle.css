@@ -2253,7 +2253,16 @@ body .btn {font-size:12px;}
 .product-acctount-section .a-relative {position:relative; width:18px; height:18px;}
 .product-acctount-section th, .product-acctount-section td {vertical-align:middle !important;}
 .sale-active i {font-size:24px;}
-.tooltip .tooltip-inner {background:#FF4100; border-radius:15px; padding-top:5px; padding-left:15px; padding-right:15px;border:1px solid #fff;}
-.tooltip.top .tooltip-arrow{border-top-color:#FF4100;display:none;}
-.tooltip.top{margin-top:0px;}
+.tooltip .tooltip-inner {
+    background: orange;
+    border-radius: 2px;
+    padding-top: 5px;
+    padding-left: 15px;
+    padding-right: 15px;
+    border: 0px solid orange;
+}
+
+.tooltip.bottom .tooltip-arrow {
+    border-bottom-color: orange;
+}
 

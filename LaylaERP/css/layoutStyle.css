@@ -2258,11 +2258,21 @@ body .btn {font-size:12px;}
     border-radius: 2px;
     padding-top: 5px;
     padding-left: 15px;
-    padding-right: 15px;
-    border: 0px solid orange;
+    padding-right: 15px;min-width:80px;
 }
 
-.tooltip .tooltip-arrow {
-    border-bottom-color: orange !important;
+.tooltip.bottom .tooltip-arrow {
+    border-bottom-color: orange;
 }
+.tooltip.top .tooltip-arrow {
+    border-top-color: orange;
+}
+.tooltip.left .tooltip-arrow {
+    border-left-color: orange;
+}
+.tooltip.right .tooltip-arrow {
+    border-right-color: orange;
+}
+
+
 

@@ -935,6 +935,9 @@ function Coupon_get_discount_amount(id, parent_id, coupon_code, coupon_amt, item
             return 0.00;
         return { price: reg_price, disc_amt: coupon_amt, qty: item_qty };
     }
+    else if (coupon_code.includes("vip")) {
+        return { price: sale_price, disc_amt: coupon_amt, qty: item_qty };
+    }
     else if (isedu == 1) {
         let matt_arr = [118, 611172, 611252, 612995, 611286, 31729, 20861];
         if (id != 632713 && id != 78676) {
@@ -1139,9 +1142,9 @@ function ApplyCoupon() {
             if (!check_applied_coupon(coupon_code, data[0].product_ids, data[0].exclude_product_ids)) {
                 swal('Alert!', 'Can not add ' + coupon_code, "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false;
             }
-
+            console.log(data[0]);
             if (coupon_code.includes("friend") && coupon_code.substr(6) > 8500) { deleteAllCoupons('friend_diff'); }
-            else if (coupon_code.includes("freeprotector")) { }
+            else if (coupon_code.includes("freeprotector") || (coupon_code.includes("vip") && data[0].individual_use == "no")) { }
             else {
                 if (data[0].individual_use == "yes") { deleteAllCoupons('all'); }
                 if (data[0].discount_type != "fixed_cart") { deleteAllCoupons('diff'); }
@@ -1493,12 +1496,11 @@ function getItemList() {
                 itemsDetailsxml.push({
                     PKey: row_key, product_id: data[i].product_id, variation_id: data[i].variation_id, product_name: data[i].product_name, quantity: data[i].quantity, reg_price: data[i].reg_price, sale_rate: data[i].sale_price, total: (data[i].reg_price * data[i].quantity), discount_type: coupon_type, discount: coupon_amt, tax_amount: ((data[i].reg_price * data[i].quantity) * tax_rate).toFixed(2), shipping_amount: 0, is_free: data[i].is_free, free_itmes: data[i].free_itmes, group_id: data[i].group_id, order_item_id: 0
                 });
-
+                console.log(itemsDetailsxml);
             }
             //Bind diff Coupon
-            bindCouponList(auto_code);
-            //Bind Items
-            bindItemListDataTable(itemsDetailsxml);
+            if (auto_code.length > 0) bindCouponList(auto_code);
+            if (itemsDetailsxml.length > 0) bindItemListDataTable(itemsDetailsxml);
         },
         complete: function () { $("#loader").hide(); },
         error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); },

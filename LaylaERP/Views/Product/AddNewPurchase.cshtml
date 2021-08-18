@@ -573,7 +573,7 @@
                             <tbody>
                                 <tr>
                                     <td class="titlefield">Number of attached files/documents</td>
-                                    <td class="text-left" colspan="3">0</td>
+                                    <td class="text-left" colspan="3"><p id="txtnumattached"></p></td>
                                 </tr>
                                 @*<tr>
                                         <td class="titlefield">Total size of attached files/documents</td>
@@ -619,17 +619,22 @@
                                 <div class="mb-35">
                                     <label class="control-label">Attached files and documents</label>
                                     <div class="table-responsive bank-table-wrapper">
-                                        <table class="inventory-table table-blue table check-table table-bordered table-striped">
-                                            <thead>
-                                                <tr>
-                                                    <th>Documents</th>
-                                                    <th>Size</th>
-                                                    <th>Date</th>
-                                                </tr>
-                                            </thead>
-                                        </table>
+                                        <div class="table-responsive" id="divfileupload">
+                                            <table id="dtfileupload" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="text-left">Documents</th>
+                                                        <th>Size</th>
+                                                        <th>Date</th>
+                                                        <th>View</th>
+                                                        <th class="text-right">Delete</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="divfileupload_services"></tbody>
+                                            </table>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
                                 @*<div class="mb-35">
                                         <label class="control-label">Linked files and documents</label>
                                         <div class="table-responsive bank-table-wrapper">

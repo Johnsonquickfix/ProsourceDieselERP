@@ -268,6 +268,25 @@ namespace LaylaERP.Controllers
                 return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
             }
         }
+
+        public JsonResult Deletefileuploade(ProductModel model)
+        {
+            JsonResult result = new JsonResult();
+            //DateTime dateinc = DateTime.Now;
+            //DateTime dateinc = UTILITIES.CommonDate.CurrentDate();
+            var resultOne = 0;
+            // model.ID = model.strVal;
+            if (model.ID > 0)
+                resultOne = ProductRepository.Deletefileuploade(model);
+            if (resultOne > 0)
+            {
+                return Json(new { status = true, message = "deleted successfully!!", url = "Manage" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+        }
         public JsonResult DeleteBuyingPrice(ProductModel model)
         {
             JsonResult result = new JsonResult();
@@ -521,12 +540,15 @@ namespace LaylaERP.Controllers
                 //Use Namespace called :  System.IO  
                 string FileName = Path.GetFileNameWithoutExtension(ImageFile.FileName);
                 //To Get File Extension  
+                long filesize = ImageFile.ContentLength / 1024;
                 string FileExtension = Path.GetExtension(ImageFile.FileName);
                 //Add Current Date To Attached File Name  
                 //FileName = DateTime.Now.ToString("yyyyMMdd") + "-" + FileName.Trim() + FileExtension;
 
                 FileName = FileName.Trim() + FileExtension;
                 string FileNameForsave = FileName;
+
+               
                 DataTable dt = ProductRepository.GetfileCountdata(Convert.ToInt32(Name), FileName);
                 if (dt.Rows.Count > 0)
                 {
@@ -542,7 +564,7 @@ namespace LaylaERP.Controllers
                     //To copy and save file into server.  
                     ImageFile.SaveAs(model.ImagePath);
 
-                    int resultOne = ProductRepository.FileUploade(Convert.ToInt32(Name), FileName, model.ImagePath, FileExtension);
+                    int resultOne = ProductRepository.FileUploade(Convert.ToInt32(Name), FileName, filesize.ToString(), FileExtension);
 
                     if (resultOne > 0)
                     {
@@ -602,6 +624,17 @@ namespace LaylaERP.Controllers
             try
             {
                 obj = ProductRepository.GetwarehouseData(model.strValue1, model.strValue2);
+            }
+            catch { }
+            return Json(obj, 0);
+        }
+
+        public JsonResult GetfileuploadData(SearchModel model)
+        {
+            List<ProductModelservices> obj = new List<ProductModelservices>();
+            try
+            {
+                obj = ProductRepository.GetfileuploadData(model.strValue1, model.strValue2);
             }
             catch { }
             return Json(obj, 0);

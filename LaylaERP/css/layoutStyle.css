@@ -2257,8 +2257,9 @@ body .btn {font-size:12px;}
     background: orange;
     border-radius: 3px;
     padding-top: 5px;
-    padding-left: 15px;
-    padding-right: 15px;min-width:80px;
+    padding-left: 5px;
+    padding-right: 5px;min-width:150px;
+    width:auto;
 }
 
 .tooltip.bottom .tooltip-arrow {

@@ -958,7 +958,7 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "select ID,VendorID,FileName,concat(FileSize,' KB') FileSize,FileType,FilePath,LEFT(CAST(CreatedDate AS DATE), 10) Date from erp_VendorLinkedFiles where VendorID='" + id + "' and 1=1 ";
+                string strSql = "select ID,VendorID,FileName,concat(FileSize,' KB') FileSize,FileType,FilePath,DATE_FORMAT(CreatedDate, '%m-%d-%Y') Date from erp_VendorLinkedFiles where VendorID='" + id + "' and 1=1 ";
                 if (!string.IsNullOrEmpty(searchid))
                 {
                     strWhr += " and (Email like '%" + searchid + "%' OR user_nicename='%" + searchid + "%' OR ID='%" + searchid + "%' OR nom like '%" + searchid + "%')";
@@ -969,7 +969,7 @@ namespace LaylaERP.BAL
                 }
                 strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
 
-                strSql += "; SELECT ceil(Count(ID)/" + pagesize.ToString() + ") TotalPage,Count(ID) TotalRecord from erp_VendorLinkedFiles  WHERE 1 = 1 " + strWhr.ToString();
+                strSql += "; SELECT ceil(Count(ID)/" + pagesize.ToString() + ") TotalPage,Count(ID) TotalRecord from erp_VendorLinkedFiles  WHERE VendorID='" + id + "' and 1 = 1 " + strWhr.ToString();
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];

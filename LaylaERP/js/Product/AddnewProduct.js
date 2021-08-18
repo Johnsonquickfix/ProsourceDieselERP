@@ -437,7 +437,8 @@ $(document).ready(function () {
                 },
                 success: function (data) {
                     if (data.status == true) {
-                        GetProductvariationID(id);
+                        swal('Alert!', data.message, 'success');
+                        //GetProductvariationID(id);
                     }
                     // EMPTY THE ARRAY.
                     // alert(response.d);
@@ -505,6 +506,7 @@ $(document).ready(function () {
                         if (data.url == "Manage") {
                             //alert('d');
                             GetProductvariationID(id);
+                            swal('Alert!', data.message, 'success');
                         }
                         else {
                             $("#hfUpdatedID").val(data.ID);
@@ -847,22 +849,58 @@ function GetProductvariationID(ProductID) {
         data: JSON.stringify(obj),
         success: function (data) {
             data = JSON.parse(data);
-            //console.log(data);
+            
             let varHTML = '', attHTML = '';
             for (let i = 0; i < data.length; i++) {
                 let v_data = JSON.parse(data[i].meta_data);
-                let stock = v_data['_stock'];
-                let weight = v_data['_weight'];
+               // let stock = v_data['_stock'].replace('undefined', ''); _sale_price 
+
+                let regular_price = '';
+                if (v_data['_regular_price'] != undefined)
+                    regular_price = v_data['_regular_price'];
+                else
+                    regular_price = 0;
+                let sku = '';
+                if (v_data['_sku'] != undefined)
+                    sku = v_data['_sku'];
+                else
+                    sku = 0;
+                let stock = '';
+                if (v_data['_stock'] != undefined)
+                    stock = v_data['_stock'];
+                else
+                    stock = 0;
                 console.log(stock);
-                if (stock == 'undefined') {
-                 
-                    stock = '';
-                }
-                if (weight == 'undefined') {
-                    weight = '';
-                }
-                
-              //  console.log(i, data[i], v_data);
+                console.log(sku);
+                console.log(regular_price);
+                let weight = '';
+                if (v_data['_weight'] != undefined)
+                    weight = v_data['_weight'];
+                else
+                    weight = 0;
+                let sale_price = '';
+                if (v_data['_sale_price'] != undefined)
+                    sale_price = v_data['_sale_price'];
+                else
+                    sale_price = 0;
+
+                let length = '';
+                if (v_data['_length'] != undefined)
+                    length = v_data['_length'];
+                else
+                    length = 0;
+                let width = '';
+                if (v_data['_width'] != undefined)
+                    width = v_data['_width'];
+                else
+                    width = 0;
+
+                let height = '';
+                if (v_data['_height'] != undefined)
+                    height = v_data['_height'];
+                else
+                    height = 0;
+  
                 varHTML = '<div class="form-group d-flex" id="tr_' + i + '" data-vid="' + data[i].id + '">';
                 varHTML += '<div class="col-sm-12">';
                 //header
@@ -880,7 +918,7 @@ function GetProductvariationID(ProductID) {
                     }
                     varHTML += '</select></tr>';
                 });
-                varHTML += '&nbsp;&nbsp;<label class="control-label">SKU</label><input id="varsku" type="text" class="skucval" value="' + v_data['_sku'] + '">'
+                varHTML += '&nbsp;&nbsp;<label class="control-label">SKU</label><input id="varsku" type="text" class="skucval" value="' + sku + '">'
                 varHTML += '</tbody></table>';
                 varHTML += '</div>';
                 varHTML += '<div class="a-float-right" id="angle-box"> <span><i class="fa fa-angle-down" aria-hidden="true"></i></span></div>';
@@ -899,13 +937,13 @@ function GetProductvariationID(ProductID) {
                 //varHTML += '    </div>';
                 //varHTML += '</div>';
                 varHTML += '<div class="form-group d-flex mt-25">';
-                varHTML += '    <div class="col-md-6"><label class="control-label">Regular Price($)</label><input type="text" name="txtregularvar" class="form-control" placeholder="Variation price *" value="' + v_data['_regular_price'] + '"></div>';
-                varHTML += '<div class="col-md-6"><label class="control-label">Sale Price($)</label><input type="text" name="txtSalepricevariation" class="form-control" value="' + v_data['_sale_price'] + '"></div>';
+                varHTML += '    <div class="col-md-6"><label class="control-label">Regular Price($)</label><input type="text" name="txtregularvar" class="form-control" placeholder="Variation price *" value="' + regular_price + '"></div>';
+                varHTML += '<div class="col-md-6"><label class="control-label">Sale Price($)</label><input type="text" name="txtSalepricevariation" class="form-control" value="' + sale_price + '"></div>';
                 varHTML += '</div>';
                 varHTML += '<div id="divstock">';
                 varHTML += '<div class="form-group d-flex mt-25"><div class="col-md-6"><label class="control-label">Stock quantity</label><input type="text" name="txtStockquantityvariation" class="form-control" value="' + stock + '"></div><div class="form-group d-flex mt-25"> <label class="col-sm-6 control-label">Allow backorders?</label> <select class="txtallowbackordersvariation form-control" id="ddlallow_' + data[i].id + '"> <option value="no">Do not allow</option> <option value="notify">Allow, but notify customer</option><option value="yes">Allow</option></select> </div> </div>';
                 varHTML += '</div> <div id="divaria">';
-                varHTML += '<div class="form-group d-flex"><div class="col-md-6"><label class="control-label">Weight (lbs)</label><input type="text" name="txtweightvariation" class="form-control" placeholder="50" value="' + weight + '"></div><div class="col-md-6"><label class="control-label">Dimensions (L x W x H) (in)</label><div class="weight-box"><div class="col-md-4"><input type="text" name="txtLvariation" class="form-control" placeholder="60" value="' + v_data['_length'] + '"></div><div class="col-md-4"><input type="text" name="txtWvariation" class="form-control" placeholder="60" value="' + v_data['_width'] + '"></div><div class="col-md-4"> <input type="text" name="txtHvariation" class="form-control" placeholder="60" value="' + v_data['_height'] + '"></div></div></div></div>';
+                varHTML += '<div class="form-group d-flex"><div class="col-md-6"><label class="control-label">Weight (lbs)</label><input type="text" name="txtweightvariation" class="form-control" placeholder="50" value="' + weight + '"></div><div class="col-md-6"><label class="control-label">Dimensions (L x W x H) (in)</label><div class="weight-box"><div class="col-md-4"><input type="text" name="txtLvariation" class="form-control" placeholder="60" value="' + length + '"></div><div class="col-md-4"><input type="text" name="txtWvariation" class="form-control" placeholder="60" value="' + width + '"></div><div class="col-md-4"> <input type="text" name="txtHvariation" class="form-control" placeholder="60" value="' + height + '"></div></div></div></div>';
                 varHTML += '</div>';
                 varHTML += '    <div class="form-group d-flex">';
                 varHTML += '        <div class="col-md-12"><label class="control-label">Shipping Class</label><select class="txtshipvariation form-control" id="ddlsv_' + data[i].id + '"><option value="-1">shipping class</option><option class="level-0" value="200">Adjustabe Base (Split King)</option> <option class="level-0" value="246">Adjustable Base (Full)</option> <option class="level-0" value="201">Adjustable Base (King)</option><option class="level-0" value="199">Adjustable Base (Queen)</option>  <option class="level-0" value="198">Adjustable Base (Twin XL)</option><option class="level-0" value="71">Bed Frame</option><option class="level-0" value="114">Blanket</option><option class="level-0" value="30">Foundation</option> <option class="level-0" value="50">Free Shipping</option> <option class="level-0" value="263">Hybrid Cal King</option> <option class="level-0" value="260">Hybrid Full</option> <option class="level-0" value="262">Hybrid King</option> <option class="level-0" value="261">Hybrid Queen</option> <option class="level-0" value="258">Hybrid Twin</option> <option class="level-0" value="259">Hybrid Twin XL</option> <option class="level-0" value="257">Mattress Cal King</option>  <option class="level-0" value="254">Mattress Full</option><option class="level-0" value="256">Mattress King</option> <option class="level-0" value="196">Mattress Protector</option> <option class="level-0" value="255">Mattress Queen</option> <option class="level-0" value="252">Mattress Twin</option>    <option class="level-0" value="253">Mattress Twin XL</option>  <option class="level-0" value="195">Memory Foam Pillow</option><option class="level-0" value="52">Pillow</option>  <option class="level-0" value="202">Platform Bed</option> <option class="level-0" value="107">Sheets</option> <option class="level-0" value="87">Topper</option> </select></div>';

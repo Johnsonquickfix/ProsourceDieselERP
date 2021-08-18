@@ -822,13 +822,13 @@ namespace LaylaERP.BAL
             }
         }
 
-        public static int FileUploade(int fk_product,string FileName,string Length, string FileType)
+        public static int FileUploade(int fk_product,string FileName,string Length, string FileType,string FilePath)
         {
             int result = 0;
             try
             {
                 StringBuilder strSql = new StringBuilder();
-                strSql.Append(string.Format("Insert into product_linkedfiles(fk_product,FileName,Length,FileType) values(" + fk_product + ",'" + FileName + "','" + Length + "','" + FileType + "');SELECT LAST_INSERT_ID();"));
+                strSql.Append(string.Format("Insert into product_linkedfiles(fk_product,FileName,Length,FileType,FilePath) values(" + fk_product + ",'" + FileName + "','" + Length + "','" + FileType + "','" + FilePath + "');SELECT LAST_INSERT_ID();"));
                 result = SQLHelper.ExecuteNonQuery(strSql.ToString());
                 return result;
             }

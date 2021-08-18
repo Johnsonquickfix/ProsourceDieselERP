@@ -2257,15 +2257,16 @@ body .btn {font-size:12px;}
     background: orange;
     border-radius: 3px;
     padding-top: 5px;
-    padding-left: 5px;
-    padding-right: 5px;
-    border: 0px solid orange;
-    width: auto;
-    min-width: 200px;
+    padding-left: 15px;
+    padding-right: 15px;min-width:80px;
 }
 
-.tooltip .tooltip-arrow {
-    border-top-color: orange !important;
+.tooltip.bottom .tooltip-arrow {
     border-bottom-color: orange !important;
 }
+.tooltip.top .tooltip-arrow {
+    border-top-color: orange !important;
+}
+
+
 

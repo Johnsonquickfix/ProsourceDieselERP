@@ -2263,6 +2263,7 @@ body .btn {font-size:12px;}
 }
 
 .tooltip .tooltip-arrow {
+    border-top-color: orange !important;
     border-bottom-color: orange !important;
 }
 

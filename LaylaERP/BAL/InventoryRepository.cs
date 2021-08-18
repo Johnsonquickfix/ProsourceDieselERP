@@ -16,7 +16,8 @@ namespace LaylaERP.BAL
             DataSet DS = new DataSet();
             try
             {
-                string strSQl = "SELECT p.id, p.post_title FROM wp_posts AS p, wp_postmeta AS s WHERE p.post_parent = 0 AND p.post_type = 'product' AND p.post_status = 'publish' AND p.id = s.post_id group by p.post_title";
+                string strSQl = "SELECT p.id,CONCAT(p.post_title, COALESCE(CONCAT(' (',s.meta_value,')'),'')) text FROM wp_posts AS p left join wp_postmeta as s on p.id = s.post_id and s.meta_key = '_sku' WHERE p.post_parent = 0 AND p.post_type = 'product' AND p.post_status != 'draft' group by p.post_title;"
+                            + " Select t.term_id id,name text From wp_terms t Left Join wp_term_taxonomy tt On t.term_id = tt.term_id WHERE tt.taxonomy = 'product_cat'";
 
                 DS = SQLHelper.ExecuteDataSet(strSQl);
             }
@@ -82,6 +83,45 @@ namespace LaylaERP.BAL
                 dt = ds.Tables[0];
                 if (ds.Tables[1].Rows.Count > 0)
                     totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+        public static DataTable GetProductStock(string strSKU, string categoryid, string productid)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                string strWhr = string.Empty, strHav = string.Empty;
+                if (!string.IsNullOrEmpty(strSKU))
+                {
+                    strHav += " having max(case when p.id = s.post_id and s.meta_key = '_sku' then s.meta_value else '' end) = '" + strSKU + "'";
+                }
+                if (!string.IsNullOrEmpty(categoryid))
+                {
+                    strWhr += " and (case when p.post_parent = 0 then p.id else p.post_parent end) in (select object_id from wp_term_relationships ttr where ttr.term_taxonomy_id='" + categoryid + "')";
+                }
+                if (!string.IsNullOrEmpty(productid))
+                {
+                    strWhr += " and (case when p.post_parent = 0 then p.id else p.post_parent end) = '" + productid + "'";
+                }
+
+                string strSql = "select p.id,p.post_type,p.post_title,max(case when p.id = s.post_id and s.meta_key = '_sku' then s.meta_value else '' end) sku,"
+                            + " max(case when p.id = s.post_id and s.meta_key = '_regular_price' then s.meta_value else '' end) regular_price,"
+                            + " max(case when p.id = s.post_id and s.meta_key = '_price' then s.meta_value else '' end) sale_price,"
+                            + " max(case when p.id = s.post_id and s.meta_key = '_stock' then s.meta_value else '' end) stock,"
+                            + " (case when p.post_parent = 0 then p.id else p.post_parent end) p_id,p.post_parent,p.post_status"
+                            + " FROM wp_posts as p left join wp_postmeta as s on p.id = s.post_id"
+                            + " where p.post_type in ('product', 'product_variation') and p.post_status != 'draft' " + strWhr
+                            + " group by p.id "+ strHav + " order by p_id";
+                dt = SQLHelper.ExecuteDataTable(strSql);
+                //strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, (pageno * pagesize).ToString(), pagesize.ToString());
+
+                //DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                //dt = ds.Tables[0];
             }
             catch (Exception ex)
             {

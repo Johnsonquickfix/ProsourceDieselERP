@@ -581,6 +581,7 @@ namespace LaylaERP.Controllers
                 if (model.user_status != "")
                     urid = model.user_status;
                 string searchid = model.Search;
+                ViewBag.AttachedFiles = "0";
                 DataTable dt = ThirdPartyRepository.GetVendorLinkedFiles(id, urid, searchid, model.PageNo, model.PageSize, out TotalRecord, model.SortCol, model.SortDir);
                 result = JsonConvert.SerializeObject(dt);
             }

@@ -1391,15 +1391,22 @@ function VendorLinkedFiles() {
                 type: "POST", url: sSource, async: true, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
                 success: function (data) {
                     var dtOption = { sEcho: data.sEcho, recordsTotal: data.recordsTotal, recordsFiltered: data.recordsFiltered, iTotalRecords: data.iTotalRecords, iTotalDisplayRecords: data.iTotalDisplayRecords, aaData: JSON.parse(data.aaData) };
+                    $('#lblAttachedFiles').text(data.iTotalRecords);
                     return fnCallback(dtOption);
+                    
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
                 async: false
             });
         },
         aoColumns: [
-            { data: 'FileName', title: 'Document Name', sWidth: "25%" },
-            { data: 'FileSize', title: 'FileSize', sWidth: "25%" }, 
+            {
+                'data': 'FileName', sWidth: "25%",
+                'render': function (FileName, type, full, meta) {
+                    return '<a href="../../Content/VendorLinkedFiles/' + FileName+'">' + FileName + '</i></a>';
+                }
+            },
+          { data: 'FileSize', title: 'FileSize', sWidth: "25%" }, 
             { data: 'Date', title: 'Date', sWidth: "25%" },
             {
                 'data': 'ID', sWidth: "25%",

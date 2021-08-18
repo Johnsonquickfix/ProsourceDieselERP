@@ -34,6 +34,7 @@
             </div>
             <div class="box box-primary">
                 <div class="box-header">
+                    <label class="control-label " for="City">Product name<span style="color:red;"> *</span></label>
                     <input type="text" id="txtProductName" class="form-control" placeholder="Product name">
                 </div>
             </div>
@@ -67,12 +68,12 @@
                 <div class="box-body add-new-box">
                     <div class="nav-tabs-custom">
                         <ul class="nav nav-tabs">
-                            <li class="active"><a href="#tab_1" data-toggle="tab">General</a></li>
-                            <li><a href="#tab_2" data-toggle="tab">Inventory</a></li>
-                            <li><a href="#tab_3" data-toggle="tab">Shipping</a></li>
-                            <li><a href="#tab_4" data-toggle="tab">Linked Products</a></li>
-                            <li><a href="#tab_5" data-toggle="tab">Attributes</a></li>
-                            <li><a href="#tab_6" id="ahrfVariation" data-toggle="tab">Variations</a></li>
+                            <li class="active"><a href="#tab_1" title="Click here to see General" data-toggle="tab">General</a></li>
+                            <li><a href="#tab_2" title="Click here to see Inventory"   data-toggle="tab">Inventory</a></li>
+                            <li><a href="#tab_3" title="Click here to see Shipping"  data-toggle="tab">Shipping</a></li>
+                            <li><a href="#tab_4" title="Click here to see Linked Products"  data-toggle="tab">Linked Products</a></li>
+                            <li><a href="#tab_5" title="Click here to see Attributes"  data-toggle="tab">Attributes</a></li>
+                            <li><a href="#tab_6" title="Click here to see Variations"  id="ahrfVariation" data-toggle="tab">Variations</a></li>
                         </ul>
                         <div class="tab-content">
                             <div class="tab-pane active" id="tab_1">
@@ -251,7 +252,7 @@
                                 </div>
                                 <div id="main"></div>*@
                                     <div class="col-auto ps-1">
-                                        <button id="add" type="submit" class="btn btn-danger">Add</button>
+                                        <button title="Click here to Add product attribute" data-toggle="tooltip" id="add" type="submit" class="btn btn-danger">Add</button>
                                     </div>
                                 </div>
                                 @*<form name="addrma" id="addrma" method="post">*@
@@ -284,7 +285,7 @@
 
 
                                 <div class="attribute-btn">
-                                    <button id="btnsaveAttributes" class="btn btn-danger">Save Attributes</button>
+                                    <button id="btnsaveAttributes" title="Click here to Add Attributes" data-toggle="tooltip" class="btn btn-danger">Save Attributes</button>
                                 </div>
                             </div>
                             <div class="tab-pane" id="tab_6">
@@ -296,7 +297,7 @@
                                         </select>
                                     </div>
                                     <div class="col-auto ps-1">
-                                        <button id="addvariation" type="submit" class="btn btn-danger">Add</button>
+                                        <button id="addvariation" title="Click here to Add product variation" data-toggle="tooltip" type="submit" class="btn btn-danger">Add</button>
                                     </div>
                                 </div>
 
@@ -309,13 +310,13 @@
                                     </table>
                                 </div>
 
-                                <button id="btnSavevariations" class="btn btn-danger">Save variation</button>
+                                <button id="btnSavevariations" title="Click here to Add variation" data-toggle="tooltip"  class="btn btn-danger">Save variation</button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <button id="btnSave" style ="float: right;"  class="btn btn-danger">Save</button>
+            <button id="btnSave"  title="Click here to Add product" data-toggle="tooltip" style ="float: right;"  class="btn btn-danger">Save</button>
           
             @*@Html.Partial("AddNewPurchase", new ViewDataDictionary { { "id", 796210 } });*@
         </div>

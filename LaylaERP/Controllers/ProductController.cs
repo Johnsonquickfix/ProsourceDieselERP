@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 
@@ -534,46 +535,62 @@ namespace LaylaERP.Controllers
             try
             {
 
-                
-
-                ProductModel model = new ProductModel();
-                //Use Namespace called :  System.IO  
-                string FileName = Path.GetFileNameWithoutExtension(ImageFile.FileName);
-                //To Get File Extension  
-                long filesize = ImageFile.ContentLength / 1024;
-                string FileExtension = Path.GetExtension(ImageFile.FileName);
-                //Add Current Date To Attached File Name  
-                //FileName = DateTime.Now.ToString("yyyyMMdd") + "-" + FileName.Trim() + FileExtension;
-
-                FileName = FileName.Trim() + FileExtension;
-                string FileNameForsave = FileName;
-
-               
-                DataTable dt = ProductRepository.GetfileCountdata(Convert.ToInt32(Name), FileName);
-                if (dt.Rows.Count > 0)
+                if (ImageFile != null)
                 {
-                    return Json(new { status = false, message = "File has been already uploaded", url = "" }, 0);
+
+                    ProductModel model = new ProductModel();
+                    //Use Namespace called :  System.IO  
+                    string FileName = Path.GetFileNameWithoutExtension(ImageFile.FileName);
+                    FileName = Regex.Replace(FileName, @"\s+", "");
+                    //To Get File Extension  
+                    long filesize = ImageFile.ContentLength / 1024;
+                    string FileExtension = Path.GetExtension(ImageFile.FileName);
+
+                    if (FileExtension == ".xlsx" || FileExtension == ".xls" || FileExtension == ".pdf" || FileExtension == ".doc" || FileExtension == ".docx" || FileExtension == ".png" || FileExtension == ".jpg" || FileExtension == ".jpeg")
+                    {
+                        //Add Current Date To Attached File Name  
+                        //FileName = DateTime.Now.ToString("yyyyMMdd") + "-" + FileName.Trim() + FileExtension;
+
+                        FileName = FileName.Trim() + FileExtension;
+                        string FileNameForsave = FileName;
+
+
+                        DataTable dt = ProductRepository.GetfileCountdata(Convert.ToInt32(Name), FileName);
+                        if (dt.Rows.Count > 0)
+                        {
+                            return Json(new { status = false, message = "File has been already uploaded", url = "" }, 0);
+                        }
+                        else
+                        {
+
+                            string UploadPath = Path.Combine(Server.MapPath("~/Files"));
+                            UploadPath = UploadPath + "\\";
+                            //Its Create complete path to store in server.  
+                            model.ImagePath = UploadPath + FileName;
+                            //To copy and save file into server.  
+                            ImageFile.SaveAs(model.ImagePath);
+                            var ImagePath = "~/Files/" + FileName;
+                            int resultOne = ProductRepository.FileUploade(Convert.ToInt32(Name), FileName, filesize.ToString(), FileExtension, ImagePath);
+
+                            if (resultOne > 0)
+                            {
+                                return Json(new { status = true, message = "File Upload successfully!!", url = "Manage" }, 0);
+                            }
+                            else
+                            {
+                                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                            }
+                        }
+                    }
+
+                    else
+                    {
+                        return Json(new { status = false, message = "File Type " + FileExtension + " Not allowed", url = "" }, 0);
+                    }
                 }
                 else
                 {
-                    
-                    string UploadPath = Path.Combine(Server.MapPath("~/Files"));
-                    UploadPath = UploadPath + "\\";
-                    //Its Create complete path to store in server.  
-                    model.ImagePath = UploadPath + FileName;
-                    //To copy and save file into server.  
-                    ImageFile.SaveAs(model.ImagePath);
-
-                    int resultOne = ProductRepository.FileUploade(Convert.ToInt32(Name), FileName, filesize.ToString(), FileExtension);
-
-                    if (resultOne > 0)
-                    {
-                        return Json(new { status = true, message = "File Upload successfully!!", url = "Manage" }, 0);
-                    }
-                    else
-                    {
-                        return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
-                    }
+                    return Json(new { status = false, message = "Please attach a document", url = "" }, 0);
                 }
             }
             catch (Exception ex)

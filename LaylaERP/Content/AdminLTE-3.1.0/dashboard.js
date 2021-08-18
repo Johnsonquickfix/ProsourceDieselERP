@@ -199,4 +199,11 @@ $(function () {
   
 
 });
-jQuery(function ($) { $('[data-toggle="tooltip"]').tooltip(); });
+jQuery(function ($) {
+    $('[data-toggle="tooltip"]').tooltip({
+        trigger: "hover"
+    });
+    $(document).on('mouseleave', '[data-toggle="tooltip"]', function () {
+        $(this).tooltip('hide');
+    });
+});

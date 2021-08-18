@@ -430,13 +430,14 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "SELECT  P.ID ID,post_title,FORMAT(pmregularamount.meta_value,2) regularamount,FORMAT(pmsaleprice.meta_value,2) saleprice,min( FORMAT(purchase_price,2)) purchase_price,min(FORMAT(cost_price,2)) cost_price,(select name from wp_vendor where rowid = Product_Purchase_Items.fk_vendor and cost_price = min(cost_price) )vname,pmsku.meta_value sku,pmpublic.meta_value Public_Notes,pmprivate.meta_value Private_Notes"
+                string strSql = "SELECT count(plf.fk_product) filecount, P.ID ID,post_title,FORMAT(pmregularamount.meta_value,2) regularamount,FORMAT(pmsaleprice.meta_value,2) saleprice,min( FORMAT(purchase_price,2)) purchase_price,min(FORMAT(cost_price,2)) cost_price,(select name from wp_vendor where rowid = Product_Purchase_Items.fk_vendor and cost_price = min(cost_price) )vname,pmsku.meta_value sku,pmpublic.meta_value Public_Notes,pmprivate.meta_value Private_Notes"
                              + " FROM wp_posts P"
                              + " left join wp_postmeta pmregularamount on P.ID = pmregularamount.post_id and pmregularamount.meta_key = '_regular_price'"
                              + " left join wp_postmeta pmsaleprice on P.ID = pmsaleprice.post_id and pmsaleprice.meta_key = '_sale_price'"
                              + " left join wp_postmeta pmprivate on P.ID = pmprivate.post_id and pmprivate.meta_key = 'Private_Notes'"
                              + " left join wp_postmeta pmpublic on P.ID = pmpublic.post_id and pmpublic.meta_key = 'Public_Notes'"
                              + " left join Product_Purchase_Items on Product_Purchase_Items.fk_product = P.ID"
+                             + " left join product_linkedfiles plf on plf.fk_product = P.ID"
                              + " left join wp_postmeta pmsku on P.ID = pmsku.post_id and pmsku.meta_key = '_sku'"
                              + " WHERE P.ID = " + model.strVal + " ";
 
@@ -611,6 +612,54 @@ namespace LaylaERP.BAL
             { throw ex; }
             return _list;
         }
+
+        public static List<ProductModelservices> GetfileuploadData(string strValue1, string strValue2)
+        {
+            List<ProductModelservices> _list = new List<ProductModelservices>();
+            try
+            {
+                string free_products = string.Empty;
+
+                ProductModelservices productsModel = new ProductModelservices();
+                string strWhr = string.Empty;
+
+                if (string.IsNullOrEmpty(strValue1) && string.IsNullOrEmpty(strValue2))
+                {
+
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(strValue1))
+                        strWhr += " fk_product = " + strValue1;
+                    string strSQl = "SELECT pw.rowid as ID,fk_product,Length,FileType,CreateDate,FileName"
+                                + " from product_linkedfiles pw" 
+                                + " WHERE " + strWhr;
+
+                    strSQl += ";";
+                    MySqlDataReader sdr = SQLHelper.ExecuteReader(strSQl);
+                    while (sdr.Read())
+                    {
+                        productsModel = new ProductModelservices();
+                        if (sdr["ID"] != DBNull.Value)
+                            productsModel.ID = Convert.ToInt64(sdr["ID"]);
+                        else
+                            productsModel.ID = 0;
+                        if (sdr["FileName"] != DBNull.Value)
+                            productsModel.product_name = sdr["FileName"].ToString();
+                        else
+                            productsModel.product_name = string.Empty;
+
+                        productsModel.product_label = sdr["Length"].ToString();
+                        productsModel.sellingpric = sdr["CreateDate"].ToString();
+
+                        _list.Add(productsModel);
+                    }
+                }
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return _list;
+        }
         public static DataTable GetProductVariant(int ProductID)
         {
             DataTable dtr = new DataTable();
@@ -773,13 +822,13 @@ namespace LaylaERP.BAL
             }
         }
 
-        public static int FileUploade(int fk_product,string FileName,string FilePath,string FileType)
+        public static int FileUploade(int fk_product,string FileName,string Length, string FileType,string FilePath)
         {
             int result = 0;
             try
             {
                 StringBuilder strSql = new StringBuilder();
-                strSql.Append(string.Format("Insert into product_linkedfiles(fk_product,FileName,FilePath,FileType) values(" + fk_product + ",'" + FileName + "','" + FilePath + "','" + FileType + "');SELECT LAST_INSERT_ID();"));
+                strSql.Append(string.Format("Insert into product_linkedfiles(fk_product,FileName,Length,FileType,FilePath) values(" + fk_product + ",'" + FileName + "','" + Length + "','" + FileType + "','" + FilePath + "');SELECT LAST_INSERT_ID();"));
                 result = SQLHelper.ExecuteNonQuery(strSql.ToString());
                 return result;
             }
@@ -905,7 +954,7 @@ namespace LaylaERP.BAL
             try
             {                
                     string strSQl = "select fk_warehouse from product_warehouse"
-                                    + " WHERE fk_warehouse in (" + model.fk_vendor + ") "
+                                    + " WHERE fk_product = "+ model.fk_product + " and fk_warehouse in (" + model.fk_vendor + ") "
                                     + " limit 10;";
                     dt = SQLHelper.ExecuteDataTable(strSQl);             
             }
@@ -963,7 +1012,20 @@ namespace LaylaERP.BAL
             { throw ex; }
             return result;
         }
+        public static int Deletefileuploade(ProductModel model)
+        {
+            int result = 0;
+            try
+            {
+                //StringBuilder strSql = new StringBuilder();
+                StringBuilder strSql = new StringBuilder(string.Format("delete from product_linkedfiles where rowid = {0}; ", model.ID));
 
+                result = SQLHelper.ExecuteNonQuery(strSql.ToString());
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return result;
+        }
         public static int UpdateProductsVariation(string post_title,string post_excerpt, long ID)
         {
             try

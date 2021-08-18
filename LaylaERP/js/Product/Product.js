@@ -132,7 +132,7 @@ function dataGridLoad(order_type) {
             {
                 'data': 'ID', title: 'Action', sWidth: "5%",
                 'render': function (id, type, full, meta) {
-                    return '<a href="AddNewProduct/' + id + '"><i class="glyphicon glyphicon-eye-open"></i></a>'
+                    return '<a title="Click here to view product details" data-toggle="tooltip" href="AddNewProduct/' + id + '"><i class="glyphicon glyphicon-eye-open"></i></a>'
                 }
             }
         ]

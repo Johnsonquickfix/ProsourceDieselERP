@@ -26,16 +26,17 @@
     <div class="contennt setting-section">
         <div class="nav-tabs-custom">
             <ul class="nav nav-tabs" id="mytabs" role="tablist">
-                <li class="active"><a href="#tab_1" data-toggle="tab">Vendor Info</a></li>
-                <li><a href="#tab_2" data-toggle="tab">Contacts/Addresses</a></li>
-                <li><a href="#tab_3" data-toggle="tab">Payment Terms</a></li>
-                <li><a href="#tab_4" data-toggle="tab">Shipping</a></li>
-                <li><a href="#tab_5" data-toggle="tab">Taxes</a></li>
-                <li><a href="#tab_6" data-toggle="tab">Discounts</a></li>
-                <li><a href="#tab_7" data-toggle="tab">Payments</a></li>
-                <li><a href="#tab_8" data-toggle="tab">Products & Services</a></li>
-                <li><a href="#tab_9" data-toggle="tab">Purchase/Invoices</a></li>
-                <li><a href="#tab_10" data-toggle="tab">Link Warehouses</a></li>
+                <li class="active"><a href="#tab_1" data-toggle="tab"><span title="Vendor Basic Info" data-toggle="tooltip">Vendor Info</span></a></li>
+                <li><a href="#tab_2" data-toggle="tab"><span title="Vendor Contacts/Addresses" data-placement="bottom" data-toggle="tooltip">Contacts</span></a></li>
+                <li><a href="#tab_3" data-toggle="tab"><span title="Vendor Payment Terms" data-toggle="tooltip">Payment Terms</span></a></li>
+                <li><a href="#tab_4" data-toggle="tab"><span title="Vendor Shipping Method" data-placement="bottom" data-toggle="tooltip">Shipping</span></a></li>
+                <li><a href="#tab_5" data-toggle="tab"><span title="Vendor Taxes" data-toggle="tooltip">Taxes</span></a></li>
+                <li><a href="#tab_6" data-toggle="tab"><span title="Vendor Discounts" data-placement="bottom" data-toggle="tooltip">Discounts</span></a></li>
+                <li><a href="#tab_7" data-toggle="tab"><span title="Vendor Payment method" data-toggle="tooltip">Payments</span></a></li>
+                <li><a href="#tab_8" data-toggle="tab"><span title="Vendor Products & Services" data-placement="bottom" data-toggle="tooltip">Products & Services</span></a></li>
+                <li><a href="#tab_9" data-toggle="tab"><span title="Vendor Purchase/Invoices" data-toggle="tooltip">Invoices</span></a></li>
+                <li><a href="#tab_10" data-toggle="tab"><span title="Vendor Linked Warehouses" data-placement="bottom" data-toggle="tooltip">Warehouses</span></a></li>
+                <li><a href="#tab_11" data-toggle="tab"><span title="Vendor Linked Files" data-toggle="tooltip">Linked Files</span></a></li>
             </ul>
             <div class="tab-content">
                 <div class="tab-pane active" id="tab_1">
@@ -52,7 +53,7 @@
                                 <div class="box box-primary">
                                     <div class="box-body">
                                         <div class="form-group">
-                                            <label class="control-label " for="vendortype">Vendor Type<span style="color:red;">*</span></label>
+                                            <label class="control-label " for="vendortype">Vendor Type<span><a href="#" class="navbar-btn sidebar-toggle" data-toggle="offcanvas" role="button" data-tooltip="tooltip" title="this field is mendatory" style="color:red;">*</a></span></label>
                                             <select class="form-control" id="ddlvendortype">
                                             </select>
                                         </div><!--1-->
@@ -62,7 +63,7 @@
                                         </div><!--2-->
                                         <div class="form-group">
                                             <label class="control-label " for="txVendorName">Vendor Name<span style="color:red;"> *</span></label>
-                                            <input type="text" id="txVendorName" class="form-control" placeholder="Vendor Name" />
+                                            <input type="text" id="txVendorName" class="form-control" placeholder="Vendor Name"/>
                                         </div><!--3-->
                                         <div class="form-group">
                                             <label class="control-label " for="txtAliasName">Alias Name of Vendor<span style="color:red;"> *</span></label>
@@ -71,7 +72,7 @@
                                         <div class="form-group">
                                             <img class="sb-title-icon" src="https://fonts.gstatic.com/s/i/googlematerialicons/location_pin/v5/24px.svg" alt="">
                                             <label class="control-label " for="Address1">Address 1<span style="color:red;"> *</span></label>
-                                            <input type="text" id="txtAddress1" class="form-control" data-addresstype="VendorAddress" placeholder="Address 1"  />
+                                            <input type="text" id="txtAddress1" class="form-control" data-addresstype="VendorAddress" placeholder="Address 1" />
                                         </div><!--5-->
                                         <div class="form-group">
                                             <label class="control-label " for="Address2">Address 2</label>
@@ -139,8 +140,8 @@
                                             <select class="form-control" id="ddlNatureofJournal">
                                             </select>
                                         </div>
-                                            <input type="checkbox" id="chkVendorStatus" name="VendorStatus"> <label for="Active">Active</label><!--17-->
-                                        </div>
+                                        <input type="checkbox" id="chkVendorStatus" name="VendorStatus"> <label for="Active">Active</label><!--17-->
+                                    </div>
                                 </div>
                             </div><!--col-4-->
 
@@ -1145,16 +1146,111 @@
                         </div>
                         <div class="box-footer">
                             <div class="text-right">
-                                @Html.ActionLink("Back to List", "VendorList", null, new { @class = "btn btn-danger" })
+                                <button type="button" id="btnNextTab10" class="btn btn-danger ">Next</button>
                             </div>
                         </div>
                     </div>
+                </div>
+                <div class="tab-pane" id="tab_11">
+                    <div class="box box-primary">
+                        <div class="box-body">
+                            <table class="table-blue table check-table table-bordered inventory-table fixed-table">
+                                <tbody>
+                                    <tr>
+                                        <td class="titlefield">Number of attached files/documents</td>
+                                        <td class="text-left" colspan="3" id="lblAttachedFiles"> <label id="lblAttachedFiles" for="javascript"></label></td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row rowbox proposal-row">
+                        <div class="col-md-12">
+                            <div class="box box-primary">
+                                <div class="box-header with-border">
+                                    <label class="control-label">Attach a new file/document</label>
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <div class="col-md-6">
+                                                <input type="file" name="ImageFile" class="form-control" id="ImageFile" />
+                                            </div>
+                                            <div class="col-md-6 left">
+                                                <input type="button" id="btnupload" class="btn btn-danger" value="Upload" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="box-body">
+                                    <div class="mb-35">
+                                        <label class="control-label">Attached files and documents</label>
+                                        <div class="table-responsive bank-table-wrapper">
+                                            <table id="VendorLinkedFiles" class="inventory-table table-blue table check-table table-bordered table-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Document Name</th>
+                                                        <th>Size</th>
+                                                        <th>Date</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @*<div id="linkWarehouse">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="box-body">
+                                        <label class="control-label col-sm-1">Warehouse</label>
+                                        <div class="form-group col-sm-6">
+
+                                            <select class="form-control" id="ddlWarehouseList"></select>
+                                        </div>
+
+                                        <button type="button" id="btnLinkWarehouse" class="btn btn-danger ">Add</button>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="box box-primary">
+                                        <div class="box-header">
+                                            <div class="row">
+                                                <div class="col-sm-12">
+                                                    <table id="Warehousedata" class="inventory-table table-blue table check-table table-bordered table-striped dataTable" style="width:100%;">
+                                                        <thead>
+                                                            <tr style="text-align:center;">
+                                                                <th>Vendor Name</th>
+                                                                <th>Warehouse</th>
+                                                                <th>Action</th>
+                                                            </tr>
+                                                        </thead>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="box-footer">
+                                <div class="text-right">
+                                    @Html.ActionLink("Back to List", "VendorList", null, new { @class = "btn btn-danger" })
+                                </div>
+                            </div>
+                        </div>*@
                 </div>
             </div>
         </div>
     </div>
     <div class="map" id="map" style="display:none;"></div>
-    
+
 </section>
 <section>
     <div class="modal fade bd-example-modal-lg" id="VendorModal" tabindex="-1" role="dialog" aria-labelledby="roleModalCenterTitle" aria-hidden="true">
@@ -1250,7 +1346,7 @@
 
         </div>
     </div>
-    
+
 </section>
 
 <!-- /.content -->
@@ -1357,7 +1453,7 @@
             format: 'yyyy-mm-dd',
         });
     })
-   
+
 </script>
 
 

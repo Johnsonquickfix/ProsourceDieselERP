@@ -23,6 +23,13 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+
+        // GET: chart of productsaccount
+        public ActionResult productsaccount()
+        {
+            return View();
+        }
+
         public JsonResult GetNatureofJournal(SearchModel model)
         {
             DataSet ds = BAL.AccountingRepository.GetNatureofJournal();

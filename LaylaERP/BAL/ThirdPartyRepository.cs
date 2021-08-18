@@ -3,6 +3,7 @@ using LaylaERP.Models;
 using MySql.Data.MySqlClient;
 using System;
 using System.Data;
+using System.Text;
 
 namespace LaylaERP.BAL
 {
@@ -521,6 +522,25 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
+        public int DeleteVendorLinkedFiles(ThirdPartyModel model)
+        {
+            try
+            {
+                string strsql = "";
+                strsql = "delete from erp_VendorLinkedFiles where ID=@VendorLinkedFilesID and VendorID=@VendorID;";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@VendorID", model.rowid),
+                    new MySqlParameter("@VendorLinkedFilesID", model.VendorLinkedFilesID),
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
         public int EditVendorContacts(ThirdPartyModel model)
         {
             try
@@ -930,6 +950,38 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
+        public static DataTable GetVendorLinkedFiles(long id, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                string strWhr = string.Empty;
+
+                string strSql = "select ID,VendorID,FileName,concat(FileSize,' KB') FileSize,FileType,FilePath,DATE_FORMAT(CreatedDate, '%m-%d-%Y') Date from erp_VendorLinkedFiles where VendorID='" + id + "' and 1=1 ";
+                if (!string.IsNullOrEmpty(searchid))
+                {
+                    strWhr += " and (Email like '%" + searchid + "%' OR user_nicename='%" + searchid + "%' OR ID='%" + searchid + "%' OR nom like '%" + searchid + "%')";
+                }
+                if (userstatus != null)
+                {
+                    strWhr += " and (v.VendorStatus='" + userstatus + "') ";
+                }
+                strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
+
+                strSql += "; SELECT ceil(Count(ID)/" + pagesize.ToString() + ") TotalPage,Count(ID) TotalRecord from erp_VendorLinkedFiles  WHERE VendorID='" + id + "' and 1 = 1 " + strWhr.ToString();
+
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dt = ds.Tables[0];
+                if (ds.Tables[1].Rows.Count > 0)
+                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
         public static DataTable GetVendorRelatedProduct(long id, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
         {
             DataTable dt = new DataTable();
@@ -977,6 +1029,46 @@ namespace LaylaERP.BAL
                 throw ex;
             }
             return dt;
+        }
+        public static DataTable GetfileCountdata(int VendorID, string FileName)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                string strSQl = "select FileName from erp_VendorLinkedFiles"
+                                + " WHERE VendorID in (" + VendorID + ") and FileName = '" + FileName + "' ";
+                dt = SQLHelper.ExecuteDataTable(strSQl);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+        public static int FileUpload(int VendorID, string FileName, string FilePath, string FileType, string size)
+        {
+            try
+            {
+                string strsql = "";
+                strsql = "insert into erp_VendorLinkedFiles(VendorID, FileName, FileSize, FileType, FilePath) values(@VendorID, @FileName, @FileSize, @FileType, @FilePath); SELECT LAST_INSERT_ID();";
+                //strSql.Append(string.Format("insert into erp_VendorLinkedFiles(VendorID,FileName,FileSize,FileType,FilePath) values(@VendorID,@FileName,@FileSize,@FileType,@FilePath);SELECT LAST_INSERT_ID();"));
+                 MySqlParameter[] para =
+                {
+                    new MySqlParameter("@VendorID", VendorID),
+                    new MySqlParameter("@FileName", FileName),
+                    new MySqlParameter("@FileSize", size),
+                    new MySqlParameter("@FileType", FileType),
+                    new MySqlParameter("@FilePath", FilePath),
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+
+             
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
         }
     }
 }

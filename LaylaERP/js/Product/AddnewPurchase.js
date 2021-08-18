@@ -33,6 +33,7 @@
         setTimeout(function () { bindChildproductsservices(); }, 13000);
         setTimeout(function () { bindparentproductsservices(); }, 14000);
         setTimeout(function () { bindwarehouse(); }, 15000);
+        setTimeout(function () { bindfileuploade(); }, 16000);
 
         $('#dvbuysing').hide();
         $(document).on('click', "#btnbuying", function () {
@@ -234,13 +235,28 @@ function GetDataPurchaseByID(order_id) {
             //$("#txtSku").text(i[0].sku);
             $("#txtvendersku").val(i[0].sku);            
             //$("#txtRegularprice").text(i[0].regularamount);
-            //$("#txtsaleprice").text(i[0].saleprice);
+            //$("#txtsaleprice").text(i[0].saleprice); null
 
-            $("#txtRegularpricekit").text('$'+i[0].regularamount);
-            $("#txtsalepricekit").text('$' + i[0].saleprice);
+            if (i[0].regularamount == null)
+                $("#txtRegularpricekit").text('$0.00');
+            else
+                $("#txtRegularpricekit").text('$' + i[0].regularamount);
 
-            $("#txtCostprice").text('$' + i[0].cost_price);
-            $("#txtbestbying").text('$' + i[0].purchase_price);
+            if (i[0].saleprice == null)
+                $("#txtsalepricekit").text('$0.00');
+            else
+                $("#txtsalepricekit").text('$' + i[0].saleprice);
+
+            if (i[0].cost_price == null)
+                $("#txtCostprice").text('$0.00');
+            else
+                $("#txtCostprice").text('$' + i[0].cost_price);
+
+            if (i[0].purchase_price == null)
+                $("#txtbestbying").text('$0.00');
+            else
+                $("#txtbestbying").text('$' + i[0].purchase_price);
+            $("#txtnumattached").text(i[0].filecount);            
             $("#txtVendor").text(i[0].vname);
             $("#txtPrivate").val(i[0].Private_Notes);
             $("#txtPublic").val(i[0].Public_Notes);
@@ -258,6 +274,7 @@ $("#ddlproductchild").change(function () {
     bindChildproductsservices();
     bindparentproductsservices();
     bindwarehouse();
+    bindfileuploade();
 });
 
 
@@ -953,6 +970,7 @@ function Adduploade() {
                 if (data.status == true) {
                     if (data.url == "Manage") {
                         swal('Alert!', data.message, 'success');
+                        bindfileuploade();
                     }
                     else {
                         // $('#fetch_results > input:text').val('');
@@ -980,3 +998,105 @@ function Adduploade() {
 }
 
 
+function bindfileuploade() {
+    let PostID = $('#ddlproductchild').val();
+
+    var obj = { strValue1: PostID };
+    $.ajax({
+        type: "POST", url: '/Product/GetfileuploadData', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
+        beforeSend: function () { $("#loader").show(); },
+        success: function (data) {
+            var itemsDetailsxml = [];
+            for (var i = 0; i < data.length; i++) {
+                // let row_key = data[i].ID ;                      
+                itemsDetailsxml.push({
+                    PKey: data[i].ID, product_id: data[i].ID, product_name: data[i].product_name, Length: data[i].product_label, CreateDate: data[i].sellingpric
+                });
+
+            }
+            bindbindfileuploadeDetails(itemsDetailsxml);
+        },
+        complete: function () { $("#loader").hide(); },
+        error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); },
+        async: false
+
+    });
+}
+
+function bindbindfileuploadeDetails(data) {
+    // console.log('g', data);
+    var layoutHtml = '';
+    if (data.length > 0) {
+        for (var i = 0; i < data.length; i++) {
+            if (data[i].PKey > 0) {
+                layoutHtml += '<tr id="tritemId_' + data[i].PKey + '" data-key="' + data[i].PKey + '">';
+                layoutHtml += '<td class="text-left">' + data[i].product_name + '</td>';
+                layoutHtml += '<td>' + data[i].Length + 'KB' + '</td>';
+                layoutHtml += '<td>' + data[i].CreateDate + '</td>';
+                layoutHtml += '<td><a href="javascript:void(0);" class="editbutton" onClick="viewfileupload(' + data[i].PKey + ')"><i class="glyphicon glyphicon-eye-open"></i></a></td>';
+                layoutHtml += '<td class="text-right"><a href="javascript:void(0);" class="editbutton" onClick="Deletefileupload(' + data[i].PKey + ')"><i class="glyphicon glyphicon-trash"></i></a></td>';
+                layoutHtml += '</tr>';
+            }
+        }
+        // console.log(layoutHtml);
+        $('#divfileupload_services').empty().append(layoutHtml);
+
+    }
+    else {
+        layoutHtml += '<table id="dtfileupload" class="table-blue table table-bordered table-striped dataTable">';
+        layoutHtml += '<thead>';
+        layoutHtml += '<tr>';
+        layoutHtml += '<th class="text-left">Documents</th>';
+        layoutHtml += '<th>Size</th>';
+        layoutHtml += '<th>Date</th>';
+        layoutHtml += '<th>View</th>';
+        layoutHtml += '<th class="text-right">Delete</th>';
+        layoutHtml += '</tr>';
+        layoutHtml += '</thead><tbody id="divfileupload_services"></tbody>';
+        layoutHtml += '</table>';
+        $('#divfileupload').empty().html(layoutHtml);
+    }
+
+}
+
+function Deletefileupload(id) {
+    var ids = id;
+    var obj = { ID: ids }
+
+    $.ajax({
+        url: '/Product/Deletefileuploade/', dataType: 'json', type: 'Post',
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(obj),
+        dataType: "json",
+        beforeSend: function () {
+            $("#loader").show();
+        },
+        success: function (data) {
+            if (data.status == true) {
+                if (data.url == "Manage") {
+                    bindfileuploade();
+                    swal('Alert!', data.message, 'success');
+                }
+                else {
+                    swal('Alert!', data.message, 'success');
+                }
+
+            }
+            else {
+                swal('Alert!', data.message, 'error')
+            }
+        },
+        complete: function () {
+            $("#loader").hide();
+        },
+        error: function (error) {
+            swal('Error!', 'something went wrong', 'error');
+        },
+    })
+
+}
+
+function viewfileupload(id) {
+     
+
+}

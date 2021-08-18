@@ -53,17 +53,17 @@ namespace LaylaERP.Controllers
             catch (Exception ex) { throw ex; }
             return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
         }
+        [HttpGet]
         public JsonResult GetProductList()
         {
-            DataSet ds = InventoryRepository.GetProducts(); ;
-            List<SelectListItem> productlist = new List<SelectListItem>();
-            foreach (DataRow dr in ds.Tables[0].Rows)
+            string result = string.Empty;
+            try
             {
-
-                productlist.Add(new SelectListItem { Text = dr["post_title"].ToString(), Value = dr["id"].ToString() });
-
+                DataSet DS = InventoryRepository.GetProducts();
+                result = JsonConvert.SerializeObject(DS, Formatting.Indented);
             }
-            return Json(productlist, JsonRequestBehavior.AllowGet);
+            catch { }
+            return Json(result, 0);
         }
         public JsonResult UpdateInventoryStock(InventoryModel model)
         {
@@ -83,6 +83,18 @@ namespace LaylaERP.Controllers
                 }
             }
             return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+        }
+        [HttpGet]
+        public JsonResult GetProductStock(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            try
+            {
+                DataTable dt = InventoryRepository.GetProductStock(model.strValue1, model.strValue2, model.strValue3);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
         }
     }
 }

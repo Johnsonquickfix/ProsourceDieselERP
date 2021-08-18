@@ -268,7 +268,7 @@
                             + " left outer join wp_postmeta pr on pr.post_id = COALESCE(ps.id, post.id) and pr.meta_key = '_regular_price'"
                             + " left outer join wp_postmeta psr on psr.post_id = COALESCE(ps.id, post.id) and psr.meta_key = '_price'"
                             + " left outer join wp_product_free free_it on free_it.product_id = post.id or free_it.product_id = ps.id"
-                            + " WHERE post.post_type = 'product' and post.id = @product_id and ps.id = @variation_id group by post.id,ps.ID"
+                            + " WHERE post.post_type = 'product' and post.id = @product_id and COALESCE(ps.id,0) = @variation_id group by post.id,ps.ID"
                             + " union all"
                             + " SELECT(case when isnull(p.post_parent) = 0 then p.id else p.post_parent end) id,(case when isnull(p.post_parent)= 0 then 0 else p.id end) pr_id,"
                             + " CONCAT(p.post_title, COALESCE(CONCAT(' (', psku.meta_value, ')'), '')) as post_title,0 reg_price,0 sale_price,free_quantity quantity,'true' is_free,'{}' free_itmes FROM wp_product_free free_it"

@@ -134,7 +134,7 @@ $(document).ready(function () {
     });
     $(document).on('click', '.a-float-right', function () {
         $(this).toggleClass('angle-change');
-        $('.varient-box').slideToggle(100);
+        $(this).parents('.box-header').next('.varient-box').slideToggle(100).parents('.form-group.d-flex').siblings().find('.varient-box').slideUp(100).siblings('.box-header').find('#angle-box').removeClass('angle-change');
     });
 
     $("#addvariation").click(function (e) {

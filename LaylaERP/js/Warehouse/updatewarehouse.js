@@ -1,4 +1,6 @@
-﻿
+﻿productbywarehouse();
+ProductWarehouseGrid();
+
 function Addcurrentstock() {
     debugger
     var fk_entrepot = $("#hfid").val();
@@ -242,12 +244,13 @@ $.get('/Warehouse/Gettargetwarehouse', function (data) {
     })
 });
 
-$.get('/Warehouse/GetProduct', function (data) {
-    var items = "";
-    $.each(data, function (index, value) {
-        items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddltransferProduct");
-    })
-});
+//    $.get('/Warehouse/GetProductForWarehouse', function (data) {
+//        var items = "";
+//        alert('hello');
+//        $.each(data, function (index, value) {
+//            items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddltransferProduct");
+//      })
+//});
 
 $('#ddltransferProduct').change(function () {
     var fk_product = $("#ddltransferProduct").val();
@@ -285,7 +288,45 @@ $('#ddlProduct').change(function () {
     });
 });
 
+//function productbywarehouse() {
+//    var fk_product = $("#hfid").val();
+//    var obj = {
+//        warehouseid: fk_product
+//    }
+//    $.ajax({
+//        url: '/Warehouse/GetProduct/', dataType: 'json', type: 'Post',
+//        contentType: "application/json; charset=utf-8",
+//        data: JSON.stringify(obj),
+//        dataType: "json",
+//        beforeSend: function () { $("#loader").show(); },
+//        success: function (data) {
+//            var jobj = JSON.parse(data);
+//            console.log(jobj[0].sale_price);
+//            $('#hfprice').val(jobj[0].sale_price);
+//        },
+//        complete: function () { $("#loader").hide(); },
+//        error: function (error) { swal('Error!', 'something went wrong', 'error'); },
+//    })
 
+//}
+
+/*
+function productbywarehouse() {
+    var warehouseid = $("#hfid").val();
+    var obj = { warehouseid: warehouseid }
+    jQuery.ajax({
+        url: "/Warehouse/GetProductForWarehouse/", dataType: 'json', type: "Post",
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(obj),
+        success: function (data) {
+            data = JSON.parse(data);
+            console.log(data);
+            $('#txtprice').val(data[0].sale_price);
+        },
+        error: function (jqXHR, textStatus, errorThrown) { swal('Error!', errorThrown, "error"); }
+    });
+}
+*/
 function AddTransferStock() {
     debugger
     var fk_entrepot = $("#hfid").val();
@@ -738,6 +779,59 @@ function resettransferstock() {
     }) */
 
 
+function productbywarehouse() {
+    var warehouseid = $("#hfid").val();
+    var obj = {
+        warehouseid: warehouseid,
+    }
+    $.ajax({
+        url: '/Warehouse/GetProductForWarehouse/', dataType: 'json', type: 'Post',
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(obj),
+        dataType: "json",
+        beforeSend: function () { $("#loader").show(); },
+        success: function (data) {
+            var items = "";
+            $.each(data, function (index, value) {
+                items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddltransferProduct");
+                items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddlProduct");
+            })
+           
+        },
+        complete: function () { $("#loader").hide(); },
+        error: function (error) { swal('Error!', 'something went wrong', 'error'); },
+    })
+
+}
+
+function ProductWarehouseGrid() {
+    var id = $("#hfid").val();
+    var obj = { getwarehouseid:id}
+    $.ajax({
+        url: '/Warehouse/GetProductWarehouse',
+        method: 'post',
+        datatype: 'json',
+        contentType: "application/json; charset=utf-8",
+        processing: true,
+        data: JSON.stringify(obj),
+        success: function (data) {
+            $('#product').dataTable({
+                destroy: true,
+                //scrollX: true,
+                data: JSON.parse(data),
+                "columns": [
+                    { data: 'warehouse', title: 'Warehouse Name', sWidth: "25%" },
+                    { data: 'product', title: 'Product Name', sWidth: "25%" },
+                    { data: 'address', title: 'Warehouse Address', sWidth: "25%" },
+                    
+                ],
 
 
-
+                "order": [[0, 'desc']],
+            });
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            alert(xhr.responseText);
+        }
+    });
+}

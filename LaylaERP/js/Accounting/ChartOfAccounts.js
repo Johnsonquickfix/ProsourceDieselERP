@@ -16,7 +16,7 @@ function ChartOfAccountGrid() {
                 "columns": [
                     { data: 'ID', title: 'ID', sWidth: "10%" },
                     { data: 'account_number', title: 'Account Number', sWidth: "10%", sType: 'numeric' },
-                    { data: 'labelshort', title: 'Short label', sWidth: "10%" },
+                    //{ data: 'labelshort', title: 'Short label', sWidth: "10%" },
                     { data: 'label', title: 'Label', sWidth: "10%" },
                     { data: 'account_parent', title: 'Parent Account', sWidth: "10%" },
                     { data: 'pcg_type', title: 'Group of account', sWidth: "10%" },
@@ -40,7 +40,7 @@ function ChartOfAccountGrid() {
                 ],
 
 
-                //"order": [[0, 'desc']],
+                "order": [[1, 'asc']],
             });
         },
         error: function (xhr, ajaxOptions, thrownError) {

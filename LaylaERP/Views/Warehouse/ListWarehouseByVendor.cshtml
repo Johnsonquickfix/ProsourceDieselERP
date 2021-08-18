@@ -16,7 +16,9 @@
     <div class="user-top-section">
         <div class="tablenav top tablenav-top2">
             <div class="alignleft actions bulkactions">
+                <div title="Select warehouse">
                     <select class="form-control" id="ddlWarehouse"></select>
+                    </div>
                 </div>
                 <button type="button" id="btnSearch" class="btn btn-primary btn-flat button">Search</button>
             </div>
@@ -41,3 +43,8 @@
     </div>
     </section>
     <script src="@Url.Content("~/js/Warehouse/vendorwarehouselist.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+<script>
+    $document.ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    })
+</script>

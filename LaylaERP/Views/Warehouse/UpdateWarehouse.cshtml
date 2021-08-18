@@ -28,6 +28,7 @@
         <li><a href="#tab_2" data-toggle="tab">Additional Info</a></li>
         <li><a href="#tab_3" data-toggle="tab">Correct Stock</a></li>
         <li><a href="#tab_4" data-toggle="tab">Transfer Stock</a></li>
+        <li><a href="#tab_5" data-toggle="tab">Warehouse Link To Product</a></li>
     </ul>
     <div class="tab-content">
         <div class="tab-pane active" id="tab_1">
@@ -391,7 +392,7 @@
                                         <input type="text" id="txtserial" placeholder="Enter Lot/Serial number" class="form-control">
                                     </div>
 
-                                   
+
 
                                 </div>
 
@@ -581,8 +582,26 @@
 
                 </div>
             </div>
-
         </div>
+
+        <div class="tab-pane" id="tab_5">
+            <div class="userrole_section section_wrapper appearance-menu-section">
+                <div class="box box-primary">
+                    <div class="box-header">
+                        <table id="product" class="inventory-table table-blue table check-table table-bordered table-striped dataTable " width="100%">
+                            <thead>
+                                <tr>
+                                    <th class="text-left" style="width:25%">Warehouse Name</th>
+                                    <th class="text-left" style="width:25%">Product Name</th>
+                                    <th class="text-left" style="width:25%">Warehouse Address</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 <script>
@@ -598,6 +617,7 @@
             $("#btnStock").show();
             $("#btnStockUpdate").hide();
             //$("#btnStockCancel").hide();
+            
             reset();
         });
 
@@ -640,12 +660,12 @@
         });
 
 
-        $.get('/Warehouse/GetProduct', function (data) {
-            var items = "";
-            $.each(data, function (index, value) {
-                items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddlProduct");
-            })
-        });
+        //$.get('/Warehouse/GetProduct', function (data) {
+        //    var items = "";
+        //    $.each(data, function (index, value) {
+        //        items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddlProduct");
+        //    })
+        //});
 
         //Select 2 javascript start
         $("#txtState").select2({
@@ -819,9 +839,7 @@
     });
 
 </script>
-<script>
-  
-</script>
+
 <script src="@Url.Content("~/js/Warehouse/updatewarehouse.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 <!-- Google API -->
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBIgngCCIJ3D8_s3G7aIfvQckhsDtbAe4E&libraries&callback=initMap&libraries=places&v=weekly" async></script>

@@ -401,17 +401,35 @@ namespace LaylaERP.Controllers
             }
         }
 
-        public JsonResult GetProductWarehouse()
+        public JsonResult GetProductWarehouse(int getwarehouseid)
         {
 
             string JSONresult = string.Empty;
             try
             {
-                DataTable dt = WarehouseRepository.GetProductWarehouse();
+                DataTable dt = WarehouseRepository.GetProductWarehouse(getwarehouseid);
                 JSONresult = JsonConvert.SerializeObject(dt);
             }
             catch { }
             return Json(JSONresult, 0);
         }
+        [HttpPost]
+        public JsonResult GetProductForWarehouse(int warehouseid)
+        {
+            DataTable dt = new DataTable();
+            dt = WarehouseRepository.GetProductForWarehouse(warehouseid);
+            List<SelectListItem> warehouselist = new List<SelectListItem>();
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                warehouselist.Add(new SelectListItem
+                {
+                    Value = dt.Rows[i]["pr_id"].ToString(),
+                    Text = dt.Rows[i]["post_title"].ToString()
+
+                });
+            }
+            return Json(warehouselist, JsonRequestBehavior.AllowGet);
+        }
+
     }
 }

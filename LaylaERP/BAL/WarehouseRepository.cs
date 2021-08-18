@@ -514,15 +514,38 @@ namespace LaylaERP.BAL
             }
         }
 
-        public static DataTable GetProductWarehouse()
+        public static DataTable GetProductWarehouse(int getwarehouseid)
         {
             DataTable dtr = new DataTable();
             try
             {
                 string strquery = "SELECT ww.ref as warehouse, post.post_title as product,concat(ww.address,' ',ww.city,' ',ww.town,' ',ww.zip,' ',ww.country) as address FROM wp_warehouse ww, wp_posts post, product_warehouse p WHERE"
-                                   + " ww.rowid = p.fk_warehouse and post.ID = p.fk_product";
+                                   + " ww.rowid = p.fk_warehouse and post.ID = p.fk_product and p.fk_warehouse="+ getwarehouseid + "";
                 DataSet ds = SQLHelper.ExecuteDataSet(strquery);
                 dtr = ds.Tables[0];
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dtr;
+        }
+
+        public static DataTable GetProductForWarehouse(int warehouseid)
+        {
+            DataTable dtr = new DataTable();
+            try
+            {
+                string strquery = "SELECT DISTINCT post.id,ps.ID pr_id, CONCAT(post.post_title, ' (', COALESCE(psku.meta_value, ''), ') - ', LTRIM(REPLACE(REPLACE(COALESCE(ps.post_excerpt, ''), 'Size:', ''), 'Color:', ''))) as post_title, psr.meta_value as sale_price, pr.meta_value reg_price,"
+                                    + " CONCAT(post.id, '$', COALESCE(ps.id, 0)) r_id FROM wp_posts as post"
+                                    + " INNER join wp_postmeta psr1 on psr1.post_id = post.ID"
+                                    + " inner JOIN wp_posts ps ON ps.post_parent = post.id and ps.post_type LIKE 'product_variation'"
+                                    + " inner join wp_postmeta psku on psku.post_id = ps.id and psku.meta_key = '_sku'"
+                                    + " inner join wp_postmeta pr on pr.post_id = ps.id and pr.meta_key = '_regular_price'"
+                                    + " inner join wp_postmeta psr on psr.post_id = COALESCE(ps.id, post.id) and psr.meta_key = '_sale_price'"
+                                    + " inner join product_warehouse pw on pw.fk_product = ps.id and pw.fk_warehouse = '"+warehouseid+"'"
+                                    + " WHERE post.post_type = 'product' AND post.post_status = 'publish' AND CONCAT(post.post_title, ' (' , COALESCE(psku.meta_value, '') , ') - ' ,LTRIM(REPLACE(REPLACE(COALESCE(ps.post_excerpt, ''), 'Size:', ''), 'Color:', ''))) like '%%%'"
+                                    + " ORDER BY post.ID";
+                dtr = SQLHelper.ExecuteDataTable(strquery);
+
             }
             catch (Exception ex)
             { throw ex; }

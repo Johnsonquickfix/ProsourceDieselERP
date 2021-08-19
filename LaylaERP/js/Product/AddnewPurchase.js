@@ -400,11 +400,11 @@ function binddata(data) {
         layoutHtml += '<tr>';
         layoutHtml += '<th class="text-left">Child products</th>';
         layoutHtml += '<th>Label</th>';
-        layoutHtml += '<th>Minimum buying price</th>';
-        layoutHtml += '<th>Minimum selling price</th>';
+        layoutHtml += '<th>Buying price</th>';
+        layoutHtml += '<th>Selling price</th>';
         layoutHtml += '<th>Stock</th>';
-        layoutHtml += '<th style="width: 5%">Qty</th>';
-        layoutHtml += '<th>Increase/Decrease stock on parent change</th>';
+        layoutHtml += '<th>Qty</th>';
+        layoutHtml += '<th>Increase/Decrease stock</th>';
 
         layoutHtml += '</tr>';
         layoutHtml += '</thead><tbody id="Product_services"></tbody>';

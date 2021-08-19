@@ -216,7 +216,7 @@ $(document).ready(function () {
                         varHTML += '<div class="col-md-6"><label class="control-label">Sale Price($)</label><input type="text" name="txtSalepricevariation" class="form-control"></div>';
                         varHTML += '</div>';
                         varHTML += '<div id="divstock">';
-                        varHTML += '<div class="form-group d-flex mt-25"><div class="col-md-6"><label class="control-label">Stock quantity</label><input type="text" name="txtStockquantityvariation" class="form-control"></div><div class="form-group d-flex mt-25"> <label class="col-sm-6 control-label">Allow backorders?</label> <select class="txtallowbackordersvariation form-control"> <option value="no" selected="selected">Do not allow</option> <option value="notify">Allow, but notify customer</option><option value="yes">Allow</option></select> </div> </div>';
+                        varHTML += '<div class="form-group d-flex mt-25"><div class="col-md-6"><label class="control-label">Stock quantity</label><input type="text" name="txtStockquantityvariation" class="form-control"></div><div class="col-md-6"><label class="control-label">Allow backorders?</label> <select class="txtallowbackordersvariation form-control"> <option value="no" selected="selected">Do not allow</option> <option value="notify">Allow, but notify customer</option><option value="yes">Allow</option></select> </div>';
                         varHTML += '</div> <div id="divaria">';
                         varHTML += '<div class="form-group d-flex"><div class="col-md-6"><label class="control-label">Weight (lbs)</label><input type="text" name="txtweightvariation" class="form-control" placeholder="50" ></div><div class="col-md-6"><label class="control-label">Dimensions (L x W x H) (in)</label><div class="weight-box"><div class="col-md-4"><input type="text" name="txtLvariation" class="form-control" placeholder="60"></div><div class="col-md-4"><input type="text" name="txtWvariation" class="form-control" placeholder="60"></div><div class="col-md-4"> <input type="text" name="txtHvariation" class="form-control" placeholder="60"></div></div></div></div>';
                         varHTML += '</div>';
@@ -853,24 +853,33 @@ function GetProductvariationID(ProductID) {
             let varHTML = '', attHTML = '';
             for (let i = 0; i < data.length; i++) {
                 let v_data = JSON.parse(data[i].meta_data);
+                console.log(v_data);
                 // let stock = v_data['_stock'].replace('undefined', ''); _sale_price 
-            //    console.log(v_data['_regular_price']);
-            //    let regular_price = '';
-            //    if (v_data['_regular_price'] != "") {
-                                   
-            //    if (v_data['_regular_price'] != undefined)
-            //            regular_price = v_data['_regular_price'];
-            //    else {
-            //        regular_price = 0;
-            //    }
-            //}
-            //    else
-             //   regular_price = v_data['_regular_price'];
+                //    console.log(v_data['_regular_price']);
+                //    let regular_price = '';
+                //    if (v_data['_regular_price'] != "") {
+
+                //    if (v_data['_regular_price'] != undefined)
+                //            regular_price = v_data['_regular_price'];
+                //    else {
+                //        regular_price = 0;
+                //    }
+                //}
+                //    else
+                //   regular_price = v_data['_regular_price'];
+
                 let sku = '';
-                if (v_data['_sku'] != undefined)
-                    sku = v_data['_sku'];
-                else
-                    sku = 0;
+                sku = v_data['_sku'];
+                if (sku != '' || sku != null) {
+
+                    sku = sku;
+                }
+                else {
+                    if (v_data['_sku'] != undefined)
+                        sku = sku;
+                    else
+                        sku = 0;
+                }
                 let stock = '';
                 if (v_data['_stock'] != undefined)
                     stock = v_data['_stock'];
@@ -945,7 +954,7 @@ function GetProductvariationID(ProductID) {
                 varHTML += '<div class="col-md-6"><label class="control-label">Sale Price($)</label><input type="text" name="txtSalepricevariation" class="form-control" value="' + sale_price + '"></div>';
                 varHTML += '</div>';
                 varHTML += '<div id="divstock">';
-                varHTML += '<div class="form-group d-flex mt-25"><div class="col-md-6"><label class="control-label">Stock quantity</label><input type="text" name="txtStockquantityvariation" class="form-control" value="' + stock + '"></div><div class="form-group d-flex mt-25"> <label class="col-sm-6 control-label">Allow backorders?</label> <select class="txtallowbackordersvariation form-control" id="ddlallow_' + data[i].id + '"> <option value="no">Do not allow</option> <option value="notify">Allow, but notify customer</option><option value="yes">Allow</option></select> </div> </div>';
+                varHTML += '<div class="form-group d-flex mt-25"><div class="col-md-6"><label class="control-label">Stock quantity</label><input type="text" name="txtStockquantityvariation" class="form-control" value="' + stock + '"></div><div div class="col-md-6"> <label class="control-label">Allow backorders?</label> <select class="txtallowbackordersvariation form-control" id="ddlallow_' + data[i].id + '"> <option value="no">Do not allow</option> <option value="notify">Allow, but notify customer</option><option value="yes">Allow</option></select> </div>';
                 varHTML += '</div> <div id="divaria">';
                 varHTML += '<div class="form-group d-flex"><div class="col-md-6"><label class="control-label">Weight (lbs)</label><input type="text" name="txtweightvariation" class="form-control" placeholder="50" value="' + weight + '"></div><div class="col-md-6"><label class="control-label">Dimensions (L x W x H) (in)</label><div class="weight-box"><div class="col-md-4"><input type="text" name="txtLvariation" class="form-control" placeholder="60" value="' + length + '"></div><div class="col-md-4"><input type="text" name="txtWvariation" class="form-control" placeholder="60" value="' + width + '"></div><div class="col-md-4"> <input type="text" name="txtHvariation" class="form-control" placeholder="60" value="' + height + '"></div></div></div></div>';
                 varHTML += '</div>';

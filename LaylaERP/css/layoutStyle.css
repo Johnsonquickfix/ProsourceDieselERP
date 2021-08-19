@@ -2268,6 +2268,24 @@ body .btn {font-size:12px;}
 .tooltip.top .tooltip-arrow {
     border-top-color: orange !important;
 }
-
-
-
+#txtkeewordfilter {margin-right:10px;}
+#dtAddservices [type="number"], #dtdatachildkits [type="number"] {
+    width: 80px;
+    display: block;
+    height: 32px;
+    padding: 0px 12px;
+    line-height: 1.42857143;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    box-shadow: inset 0 1px 1px rgb(0 0 0 / 8%);
+    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    display: inline-block;
+}
+#dtAddservices [type="checkbox"], #dtdatachildkits [type="checkbox"] {display:inline-block !important; position:static !important; transform:none !important;}
+#dtAddservices td, #dtdatachildkits td{vertical-align:middle !important;}
+#dtAddservices td:last-child, #dtdatachildkits td:last-child,
+#dtAddservices td:nth-last-child(2), #dtdatachildkits td:nth-last-child(2) {text-align:center;}
+#dtAddservices th:last-child, #dtdatachildkits th:last-child,
+#dtAddservices th:nth-last-child(2), #dtdatachildkits th:nth-last-child(2) {text-align:center;}

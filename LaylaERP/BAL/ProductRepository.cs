@@ -431,7 +431,7 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "SELECT count(plf.fk_product) filecount, P.ID ID,post_title,FORMAT(pmregularamount.meta_value,2) regularamount,FORMAT(pmsaleprice.meta_value,2) saleprice,min( FORMAT(purchase_price,2)) purchase_price,min(FORMAT(cost_price,2)) cost_price,(select name from wp_vendor where rowid = Product_Purchase_Items.fk_vendor and cost_price = min(cost_price) )vname,pmsku.meta_value sku,pmpublic.meta_value Public_Notes,pmprivate.meta_value Private_Notes"
+                string strSql = "SELECT count(distinct Filename) filecount, P.ID ID,post_title,FORMAT(pmregularamount.meta_value,2) regularamount,FORMAT(pmsaleprice.meta_value,2) saleprice,min( FORMAT(purchase_price,2)) purchase_price,min(FORMAT(cost_price,2)) cost_price,(select name from wp_vendor where rowid = Product_Purchase_Items.fk_vendor and cost_price = min(cost_price) )vname,pmsku.meta_value sku,pmpublic.meta_value Public_Notes,pmprivate.meta_value Private_Notes"
                              + " FROM wp_posts P"
                              + " left join wp_postmeta pmregularamount on P.ID = pmregularamount.post_id and pmregularamount.meta_key = '_regular_price'"
                              + " left join wp_postmeta pmsaleprice on P.ID = pmsaleprice.post_id and pmsaleprice.meta_key = '_sale_price'"
@@ -632,7 +632,7 @@ namespace LaylaERP.BAL
                 {
                     if (!string.IsNullOrEmpty(strValue1))
                         strWhr += " fk_product = " + strValue1;
-                    string strSQl = "SELECT pw.rowid as ID,fk_product,Length,FileType,CreateDate,FileName"
+                    string strSQl = "SELECT pw.rowid as ID,fk_product,Length,FileType,DATE_FORMAT(CreateDate, '%m-%d-%Y') CreateDate,FileName"
                                 + " from product_linkedfiles pw" 
                                 + " WHERE " + strWhr;
 

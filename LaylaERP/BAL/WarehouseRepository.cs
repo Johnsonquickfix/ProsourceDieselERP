@@ -462,11 +462,12 @@ namespace LaylaERP.BAL
             {
                 string strsql = "update wp_stock_mouvement set " +
                     "fk_product=@fk_product, value=@value, label=@label, eatby=@eatby, sellby=@sellby, serial=@serial, price=@price" +
-                     " where rowid in(" + model.searchid + ")";
+                     " where rowid in(" + model.searchid + ");";
+                 
                 MySqlParameter[] para =
                {
                     //additional info
-                   new MySqlParameter("@fk_product", model.fk_product),
+                    new MySqlParameter("@fk_product", model.fk_product),
                     new MySqlParameter("@fk_entrepot", model.fk_entrepot),
                     new MySqlParameter("@value", model.value),
                     new MySqlParameter("@price", model.price),
@@ -474,6 +475,8 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@eatby", model.eatby),
                     new MySqlParameter("@sellby", model.sellby),
                     new MySqlParameter("@serial", model.serial),
+                    //new MySqlParameter("@stock", model.stock),
+
             };
                 int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
                 return result;
@@ -519,8 +522,20 @@ namespace LaylaERP.BAL
             DataTable dtr = new DataTable();
             try
             {
-                string strquery = "SELECT ww.ref as warehouse, post.post_title as product,concat(ww.address,' ',ww.city,' ',ww.town,' ',ww.zip,' ',ww.country) as address FROM wp_warehouse ww, wp_posts post, product_warehouse p WHERE"
-                                   + " ww.rowid = p.fk_warehouse and post.ID = p.fk_product and p.fk_warehouse="+ getwarehouseid + "";
+                //string strquery = "SELECT ww.ref as warehouse, post.post_title as product,concat(ww.address,' ',ww.city,' ',ww.town,' ',ww.zip,' ',ww.country) as address FROM wp_warehouse ww, wp_posts post, product_warehouse p WHERE"
+                // + " ww.rowid = p.fk_warehouse and post.ID = p.fk_product and p.fk_warehouse="+ getwarehouseid + "";
+                string strquery = "SELECT DISTINCT post.id, ws.ref warehouse,ppp.purchase_price buy_price,ps.ID pr_id, CONCAT(post.post_title, ' (', COALESCE(psku.meta_value, ''), ') - ', LTRIM(REPLACE(REPLACE(COALESCE(ps.post_excerpt, ''), 'Size:', ''), 'Color:', ''))) as post_title, psr.meta_value as sale_price, pr.meta_value reg_price,"
+                + "CONCAT(post.id, '$', COALESCE(ps.id, 0)) r_id FROM wp_posts as post"
+                + " INNER join wp_postmeta psr1 on psr1.post_id = post.ID"
+                + " inner JOIN wp_posts ps ON ps.post_parent = post.id and ps.post_type LIKE 'product_variation'"
+                + " inner join Product_Purchase_Items ppp on ppp.fk_product=ps.ID"
+                + " inner join wp_postmeta psku on psku.post_id = ps.id and psku.meta_key = '_sku'"
+                + " inner join wp_postmeta pr on pr.post_id = ps.id and pr.meta_key = '_regular_price'"
+                + " inner join wp_postmeta psr on psr.post_id = COALESCE(ps.id, post.id) and psr.meta_key = '_sale_price'"
+                + " inner join product_warehouse pw on pw.fk_product = ps.id and pw.fk_warehouse = '" + getwarehouseid + "'"
+                + " inner join wp_warehouse ws on ws.rowid = pw.fk_warehouse"
+                + " WHERE post.post_type = 'product' AND post.post_status = 'publish' AND CONCAT(post.post_title, ' (' , COALESCE(psku.meta_value, '') , ') - ' ,LTRIM(REPLACE(REPLACE(COALESCE(ps.post_excerpt, ''), 'Size:', ''), 'Color:', ''))) like '%%%'"
+                + " ORDER BY post.ID";
                 DataSet ds = SQLHelper.ExecuteDataSet(strquery);
                 dtr = ds.Tables[0];
             }
@@ -534,7 +549,7 @@ namespace LaylaERP.BAL
             DataTable dtr = new DataTable();
             try
             {
-                string strquery = "SELECT DISTINCT post.id,ps.ID pr_id, CONCAT(post.post_title, ' (', COALESCE(psku.meta_value, ''), ') - ', LTRIM(REPLACE(REPLACE(COALESCE(ps.post_excerpt, ''), 'Size:', ''), 'Color:', ''))) as post_title, psr.meta_value as sale_price, pr.meta_value reg_price,"
+                string strquery = "SELECT DISTINCT post.id,ps.ID pr_id, CONCAT(post.post_title, ' (', COALESCE(psku.meta_value, ''), ') - ', LTRIM(REPLACE(REPLACE(COALESCE(ps.post_excerpt, ''), 'Size:', ''), 'Color:', ''))) as post_title, format(psr.meta_value,2) as sale_price, format(pr.meta_value,2) reg_price,"
                                     + " CONCAT(post.id, '$', COALESCE(ps.id, 0)) r_id FROM wp_posts as post"
                                     + " INNER join wp_postmeta psr1 on psr1.post_id = post.ID"
                                     + " inner JOIN wp_posts ps ON ps.post_parent = post.id and ps.post_type LIKE 'product_variation'"

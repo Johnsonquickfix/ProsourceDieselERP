@@ -721,11 +721,11 @@ namespace LaylaERP.Controllers
                 model.post_parent = Convert.ToInt32(parentid);
             else
                 model.post_parent = 0;
-            model.post_status = "draft";
+            model.post_status = "publish";
             model.post_title = "";
-            model.post_name = "";
-           
-          
+            model.post_name = "";    
+
+
             int ID = ProductRepository.AddProducts(model);
             ViewBag.UpdatedID = ID;
             if (ID > 0)

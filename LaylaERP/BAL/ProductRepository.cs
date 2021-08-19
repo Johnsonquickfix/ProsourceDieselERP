@@ -345,7 +345,7 @@ namespace LaylaERP.BAL
                 {
                     if (!string.IsNullOrEmpty(strValue1))
                         strWhr += " fk_product = " + strValue1;
-                    string strSQl = "SELECT ppi.rowid,name,minpurchasequantity,FORMAT(salestax,2) salestax,FORMAT(purchase_price, 2) purchase_price,FORMAT(cost_price, 2) cost_price,FORMAT(shipping_price, 2) shipping_price,date_inc,ppi.discount,taglotserialno"
+                    string strSQl = "SELECT ppi.rowid,name,minpurchasequantity,FORMAT(salestax,2) salestax,FORMAT(purchase_price, 2) purchase_price,FORMAT(cost_price, 2) cost_price,FORMAT(shipping_price, 2) shipping_price,DATE_FORMAT(date_inc, '%m-%d-%Y') date_inc,ppi.discount,taglotserialno"
                                 + " FROM Product_Purchase_Items ppi"
                                 + " left outer JOIN wp_vendor wpv on wpv.rowid = ppi.fk_vendor"
                                 + " WHERE " + strWhr;
@@ -489,7 +489,7 @@ namespace LaylaERP.BAL
                 //             + " left join wp_postmeta pmsku on P.ID = pmsku.post_id and pmsku.meta_key = '_sku'"
                 //             + " left join wp_postmeta pmsatt on P.ID = pmsatt.post_id and pmsatt.meta_key = '_product_attributes'"
                 //             + " WHERE P.post_type = 'product_variation' and P.ID = " + model.strVal + " ";
-                string strSql = "SELECT p.id,p.post_title,p.post_content,p.post_name,concat('{', group_concat(concat('\"',pm.meta_key, '\": \"', pm.meta_value,'\"')), '}') meta_data,"
+                string strSql = "SELECT p.id,p.post_title,p.post_content,p.post_name,concat('{', group_concat(concat('\"',LOWER(pm.meta_key), '\": \"', pm.meta_value,'\"')), '}') meta_data,"
                         + " (SELECT term_taxonomy_id FROM wp_term_relationships where object_id = p.ID) shippingclass"
                         + " FROM wp_posts p left outer join wp_postmeta pm on pm.post_id = p.id"
                         + " and(pm.meta_key in ('_regular_price', '_sale_price', 'total_sales', '_tax_status', '_tax_class', '_manage_stock', '_backorders', '_sold_individually',"
@@ -842,7 +842,7 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "update wp_posts set post_title=@post_title,post_name=@post_name, post_content=@post_content,post_type='product'  where ID =" + ID + "";
+                string strsql = "update wp_posts set post_title=@post_title,post_name=@post_name, post_content=@post_content,post_type='product',post_status='publish'  where ID =" + ID + "";
                 MySqlParameter[] para =
                 {
                     new MySqlParameter("@post_content", model.post_content),

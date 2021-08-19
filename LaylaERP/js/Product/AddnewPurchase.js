@@ -646,7 +646,8 @@ function bindbuying(data) {
 
 }
 
-function EditUser(id) {   
+function EditUser(id) {
+    $('#dvbuysing').show();
     $("#hfbuyingid").val(id);
     var ID = id;
     var obj = { strVal: id }

@@ -3,11 +3,28 @@
     ProductStockGrid();
     $(".select2").select2();
     $("#ddlProduct,#ddlCategory").change(function () {
-        $("#btnSave").css("display", "block");
         ProductStockGrid();
     });
     $("#txtsku").change(function () {
         ProductStockGrid();
+    });
+
+    // Add event listener for opening and closing details
+    $('#dtdata tbody').on('click', '.details-control', function () {
+        var tr = $(this).closest('tr');
+        var row = $('#dtdata').DataTable().row(tr);
+
+        if (row.child.isShown()) {
+            // This row is already open - close it
+            tr.find('.details-control').empty().append('<i class="glyphicon glyphicon-plus-sign"></i>');
+            row.child.hide();
+            tr.removeClass('shown');
+        } else {
+            // Open this row
+            tr.find('.details-control').empty().append('<i class="glyphicon glyphicon-minus-sign"></i>');
+            row.child(format(row.data())).show();
+            tr.addClass('shown');
+        }
     });
 })
 
@@ -30,8 +47,8 @@ function getProducts() {
     });
 }
 
-
 function ProductStockGrid() {
+    let _items = [];
     let pid = parseInt($("#ddlProduct").val()) || 0, ctid = parseInt($("#ddlCategory").val()) || 0;
     let obj = { strValue1: $("#txtsku").val().trim(), strValue2: (ctid > 0 ? ctid : ''), strValue3: (pid > 0 ? pid : '') }; console.log(obj);
     $('#dtdata').DataTable({
@@ -54,7 +71,7 @@ function ProductStockGrid() {
             { data: 'p_id', title: 'Parent ID', sWidth: "10%" },
             {
                 data: 'id', title: 'ID', sWidth: "10%", render: function (data, type, row) {
-                    if (row.post_parent > 0) return '↳  #' + row.id; else return '<b>#' + row.id + '</b>';
+                    if (row.post_parent > 0) return '<a href="javascript:void(0);" class="details-control"><i class="glyphicon glyphicon-plus-sign"></i></a> ↳  #' + row.id; else return '<a href="javascript:void(0);" class="details-control"><i class="glyphicon glyphicon-plus-sign"></i></a> <b>#' + row.id + '</b>';
                 }
             },
             {
@@ -73,83 +90,21 @@ function ProductStockGrid() {
         columnDefs: [{ targets: [0], visible: false, searchable: false }]
     });
 }
-
-function ProductGrid() {
-    var urid = parseInt($("#ddlSearchStatus").val()) || "";
-    var sid = "";
-    var parent = $("#ddlProduct").val();
-    var obj = { user_status: urid, Search: sid, PageNo: 0, PageSize: 50, sEcho: 1, SortCol: 'id', SortDir: 'desc', strValue1: parent };
-    $('#dtdata').DataTable({
-
-        columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
-        destroy: true, bProcessing: true, bServerSide: true,
-        sPaginationType: "full_numbers", searching: false, ordering: false, lengthChange: false, "paging": false, "bInfo": false,
-        bAutoWidth: false, scrollX: false, scrollY: false,
-        lengthMenu: [[10, 20, 50], [10, 20, 50]],
-        sAjaxSource: "/Inventory/GetConsignmentInventory",
-        fnServerData: function (sSource, aoData, fnCallback, oSettings) {
-
-            obj.sEcho = aoData[0].value; obj.PageSize = oSettings._iDisplayLength; obj.PageNo = oSettings._iDisplayStart;
-            $.ajax({
-                type: "POST", url: sSource, async: true, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
-                success: function (data) {
-                    var dtOption = { sEcho: data.sEcho, recordsTotal: data.recordsTotal, recordsFiltered: data.recordsFiltered, iTotalRecords: data.iTotalRecords, iTotalDisplayRecords: data.iTotalDisplayRecords, aaData: JSON.parse(data.aaData) };
-                    return fnCallback(dtOption);
-                },
-                error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
-                async: false
-            });
-        },
-        aoColumns: [
-
-
-            { data: 'post', title: 'Type (Variant)', sWidth: "14%" },
-            {
-                'data': 'Count', sWidth: "8%",
-                'render': function (id, type, full, meta) {
-                    return '<input type="text" name="txtCount" class="form-control" value="' + full.Count + '" id="' + full.meta_id + '" />';
-                }
-            }
-
-
-        ]
-    });
-}
-
-$("#btnSave").click(function () {
-
-    var id = "";
-    var value = "";
-    $('#dtdata').find('input[type=text]').each(function () {
-
-        if (value != '') value += ','; value += $(this).val();
-
-        if (id != '') id += ','; id += $(this).attr('id');
-
-
-
-    });
-    //SaveChanges(id, value);
-
-})
-
-function SaveChanges(id, value) {
-    var obj = { meta_id: id, meta_value: value }
+/* Formatting function for row details - modify as you need */
+function format(d) {
+    console.log(d);
+    let option = { strValue1: d.id }, wrHTML = '<table class="inventory-table table-blue table check-table table-bordered table-striped dataTable no-footer"><tr><th>Warehouse</th><th>Stock</th></tr>';
     $.ajax({
-        url: '/Inventory/UpdateInventoryStock', dataType: 'json', type: 'Post',
-        contentType: "application/json; charset=utf-8",
-        data: JSON.stringify(obj),
-        dataType: "json",
-        success: function (data) {
-            if (data.status == true) {
-                swal('Alert!', data.message, 'success');
-            }
-            else {
-                swal('Alert!', data.message, 'error')
+        url: '/Inventory/GetStockByWarehouse', type: 'post', dataType: 'json', contentType: "application/json; charset=utf-8", data: JSON.stringify(option),
+        success: function (result) {
+            result = JSON.parse(result); console.log(result);
+            for (var i = 0; i < result.length; i++) {
+                wrHTML += '<tr><td>' + result[i].ref + '</td><td>' + result[i].stock + '</td></tr>';
             }
         },
-        error: function (error) {
-            swal('Error!', 'something went wrong', 'error');
-        },
-    })
+        error: function (xhr, status, err) { alert(err); },
+        complete: function () { }, async: false
+    });
+    wrHTML += '</table>';
+    return wrHTML;
 }

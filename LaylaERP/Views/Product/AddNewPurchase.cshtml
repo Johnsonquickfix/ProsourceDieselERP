@@ -138,13 +138,19 @@
                                     <div class="form-group d-flex">
                                         <label class="col-sm-3 control-label">Price (with no discount)</label>
                                         <div class="col-sm-3">
-                                            <input type="text" id="txtcurrencyconversionrate" class="form-control">
+                                            <input type="text" id="txtcurrencyconversionrate" value="0" class="form-control">
                                         </div>
                                         <div class="col-sm-6">
                                             <select id="ddltaxrate" class="form-control">
                                                 <option value="0" selected="">Excl. tax</option>
                                                 <option value="1">Inc. tax</option>
                                             </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group d-flex">
+                                        <label class="col-sm-3 control-label">Shipping Price</label>
+                                        <div class="col-sm-3">
+                                            <input type="text" id="txtshippingprice" value="0" class="form-control">
                                         </div>
                                     </div>
 
@@ -173,13 +179,11 @@
                                         </div>
                                     </div>
 
-                                    <div class="form-group d-flex">
-                                        <div class="col-sm-8">
+                                    <div class="form-group d-flex">                                        
+                                        <div class="col-sm-11 text-right">
+                                            <button id="btnbuyingsave" title="Click here to add buying price" data-toggle="tooltip" class="btn btn-danger">Add/Update</button>
                                         </div>
-                                        <div class="col-sm-2">
-                                            <button id="btnbuyingsave" title="Click here to add buying price" data-toggle="tooltip" class="btn btn-danger">Add</button>
-                                        </div>
-                                        <div class="col-sm-2">
+                                        <div class="col-sm-1 text-right">
                                             <button id="btnbuyingcl" title="Click here to Cancel" data-toggle="tooltip" class="btn btn-danger">Cancel</button>
                                         </div>
                                     </div>
@@ -206,6 +210,7 @@
                                                         <th>Purchase quantity</th>
                                                         <th>Sales Tax</th>
                                                         <th>Price</th>
+                                                        <th>Shipping Price</th>
                                                         <th>Cost Price</th>
                                                         <th>Discount</th>
                                                         <th>Date</th>
@@ -396,10 +401,10 @@
 
                                                         <th class="text-left">Child products</th>
                                                         <th>Label</th>
-                                                        <th>Min. buying price</th>
-                                                        <th>Min. selling price</th>
+                                                        <th>Buying price</th>
+                                                        <th>Sell price</th>
                                                         <th>Stock</th>
-                                                        <th style="width: 5%">Qty</th>
+                                                        <th>Qty</th>
                                                         <th>Increase/Decrease stock</th>
                                                     </tr>
                                                 </thead>
@@ -410,7 +415,7 @@
                                 </div>
                             </div>
                             <div class="box-footer text-right">
-                                <button id="btnservicessave" title="Click here to update quantity " data-toggle="tooltip" class="btn btn-danger">Add</button>
+                                <button id="btnservicessave" title="Click here to update quantity " data-toggle="tooltip" class="btn btn-danger">Update</button>
                             </div>
                         </div>
                     </div>
@@ -464,9 +469,9 @@
                 <div class="row rowbox proposal-row">
                     <div class="col-md-12">
                         <div class="form-group d-flex">
-                            <div class="col-sm-9">
-                            </div>
-                            <div class="col-sm-1">
+                            <div class="col-sm-12 text-right">
+                            
+                            
                                 <button id="btnaddupdatechild" title="Click here to Add/Update Child products" data-toggle="tooltip" class="btn btn-danger">Add/Update</button>
                             </div>
                         </div>

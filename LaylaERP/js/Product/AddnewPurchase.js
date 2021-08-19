@@ -17,11 +17,18 @@
         var $this = $(this);
         $this.val($this.val().replace(/[^\d.]/g, ''));
         $this.val($this.val().substring(0, 10));
-    }); $("#txtcostprice").keyup(function () {
+    });
+    $("#txtcostprice").keyup(function () {
         var $this = $(this);
         $this.val($this.val().replace(/[^\d.]/g, ''));
         $this.val($this.val().substring(0, 10));
-    }); $("#txtDiscountqty").keyup(function () {
+    });
+        $("#txtshippingprice").keyup(function () {
+            var $this = $(this);
+            $this.val($this.val().replace(/[^\d.]/g, ''));
+            $this.val($this.val().substring(0, 10));
+        });
+        $("#txtDiscountqty").keyup(function () {
         var $this = $(this);
         $this.val($this.val().replace(/[^\d.]/g, ''));
         $this.val($this.val().substring(0, 10));
@@ -96,6 +103,13 @@
         });
 
     }
+
+    $("#txtcurrencyconversionrate").change(function () {
+        addshippingprice();
+    });
+    $("#txtshippingprice").change(function () {
+        addshippingprice();
+    });
 });
 
 $("#btnaddupdatechild").click(function (e) {
@@ -252,6 +266,8 @@ function GetDataPurchaseByID(order_id) {
             else
                 $("#txtCostprice").text('$' + i[0].cost_price);
 
+           
+
             if (i[0].purchase_price == null)
                 $("#txtbestbying").text('$0.00');
             else
@@ -275,6 +291,8 @@ $("#ddlproductchild").change(function () {
     bindparentproductsservices();
     bindwarehouse();
     bindfileuploade();
+    ClearControl();
+    $('#dvbuysing').hide();
 });
 
 
@@ -385,7 +403,7 @@ function binddata(data) {
                 layoutHtml += '<td>' + '$' + data[i].buyingprice + '</td>';
                 layoutHtml += '<td>' + '$'+ data[i].sellingpric + '</td>';
                 layoutHtml += '<td>' + data[i].Stock + '</td>';
-                layoutHtml += '<td><input min="1"  autocomplete="off" type="number" id="txt_service' + data[i].PKey + '" value="' + data[i].quantity + '" name="txt_service" placeholder="Qty"></td>';
+                layoutHtml += '<td><input min="0"  autocomplete="off" type="number" id="txt_service' + data[i].PKey + '" value="' + data[i].quantity + '" name="txt_service" placeholder="Qty"></td>';
                 layoutHtml += '<td><input type="checkbox" style="opacity: 1; position: relative; visibility: visible; display: block" name="chkproductservices" id="chkservices_' + data[i].PKey + '" value="' + data[i].PKey + '"></td>';
                 layoutHtml += '</tr>';
             }
@@ -400,11 +418,11 @@ function binddata(data) {
         layoutHtml += '<tr>';
         layoutHtml += '<th class="text-left">Child products</th>';
         layoutHtml += '<th>Label</th>';
-        layoutHtml += '<th>Minimum buying price</th>';
-        layoutHtml += '<th>Minimum selling price</th>';
+        layoutHtml += '<th>Buying price</th>';
+        layoutHtml += '<th>Selling price</th>';
         layoutHtml += '<th>Stock</th>';
-        layoutHtml += '<th style="width: 5%">Qty</th>';
-        layoutHtml += '<th>Increase/Decrease stock on parent change</th>';
+        layoutHtml += '<th>Qty</th>';
+        layoutHtml += '<th>Increase/Decrease stock</th>';
 
         layoutHtml += '</tr>';
         layoutHtml += '</thead><tbody id="Product_services"></tbody>';
@@ -484,6 +502,7 @@ function AddBuyingt() {
     minpurchasequantity = $("#txtminpurchasequantity").val();
     tagno = $("#txttaglotno").val();
     costprice = $("#txtcostprice").val();
+    shippingprice = $("#txtshippingprice").val();
     Saletax = $("#txtSaletax").val();
     currency = $("#txtcurrencyconversionrate").val();
     taxrate = $("#ddltaxrate").val();
@@ -504,6 +523,7 @@ function AddBuyingt() {
             minpurchasequantity: minpurchasequantity,
             taglotserialno: tagno,
             cost_price: costprice,
+            shipping_price: shippingprice,
             salestax: Saletax,
             purchase_price: currency,
             taxrate: taxrate,
@@ -566,7 +586,7 @@ function bindbuyingprice() {
             for (var i = 0; i < data.length; i++) {
                 // let row_key = data[i].ID ;                      
                 itemsDetailsxml.push({
-                    PKey: data[i].ID, product_id: data[i].ID, product_name: data[i].name, salestax: data[i].salestax, purchase_price: data[i].purchase_price, cost_price: data[i].cost_price, date_inc: data[i].date_inc, discount: data[i].discount, minpurchasequantity: data[i].minpurchasequantity, taglotserialno: data[i].taglotserialno
+                    PKey: data[i].ID, product_id: data[i].ID, product_name: data[i].name, salestax: data[i].salestax, purchase_price: data[i].purchase_price, cost_price: data[i].cost_price, date_inc: data[i].date_inc, discount: data[i].discount, minpurchasequantity: data[i].minpurchasequantity, taglotserialno: data[i].taglotserialno, shipping_price: data[i].shipping_price
                 });
 
             }
@@ -591,6 +611,7 @@ function bindbuying(data) {
                 layoutHtml += '<td>' + data[i].minpurchasequantity + '</td>';               
                 layoutHtml += '<td>' + '$'+ data[i].salestax + '</td>';
                 layoutHtml += '<td>' + '$' + data[i].purchase_price + '</td>';
+                layoutHtml += '<td>' + '$' + data[i].shipping_price + '</td>';
                 layoutHtml += '<td>' + '$' + data[i].cost_price + '</td>';
                 layoutHtml += '<td>' + data[i].discount + '%' + '</td>';
                 layoutHtml += '<td>' + data[i].date_inc + '</td>';
@@ -612,6 +633,7 @@ function bindbuying(data) {
         layoutHtml += '<th>Purchase quantity</th>';
         layoutHtml += '<th>Sales Tax</th>';
         layoutHtml += '<th>Price</th>';
+        layoutHtml += '<th>Shipping Price</th>';
         layoutHtml += '<th>Cost Price</th>';
         layoutHtml += '<th>Discount</th>';   
         layoutHtml += '<th>Date</th>';
@@ -625,7 +647,8 @@ function bindbuying(data) {
 
 }
 
-function EditUser(id) {   
+function EditUser(id) {
+    $('#dvbuysing').show();
     $("#hfbuyingid").val(id);
     var ID = id;
     var obj = { strVal: id }
@@ -644,6 +667,7 @@ function EditUser(id) {
             $("#txtSaletax").val(i[0].salestax);
             $('#txtcurrencyconversionrate').val(i[0].purchase_price).trigger('change');
             $("#txtcostprice").val(i[0].cost_price);
+            $("#txtshippingprice").val(i[0].shipping_price);
             $("#txtDiscountqty").val(i[0].discount);
             $("#txtRemarks").val(i[0].remark);
             $('#ddlvender').val(i[0].fk_vendor).trigger('change');
@@ -1030,7 +1054,7 @@ function bindbindfileuploadeDetails(data) {
         for (var i = 0; i < data.length; i++) {
             if (data[i].PKey > 0) {
                 layoutHtml += '<tr id="tritemId_' + data[i].PKey + '" data-key="' + data[i].PKey + '">';
-                layoutHtml += '<td class="text-left">' + data[i].product_name + '</td>';
+                layoutHtml += '<td class="text-left"><a target="popup" href="../../Files/' + data[i].product_name + '">' + data[i].product_name + '</i></a ></td>';                
                 layoutHtml += '<td>' + data[i].Length + 'KB' + '</td>';
                 layoutHtml += '<td>' + data[i].CreateDate + '</td>';
                 layoutHtml += '<td><a href="javascript:void(0);" class="editbutton" onClick="viewfileupload(' + data[i].PKey + ')"><i class="glyphicon glyphicon-eye-open"></i></a></td>';
@@ -1099,4 +1123,21 @@ function Deletefileupload(id) {
 function viewfileupload(id) {
      
 
+}
+function addshippingprice() {
+
+    let castprice = parseFloat($("#txtcurrencyconversionrate").val()) + parseFloat($("#txtshippingprice").val());
+    $("#txtcostprice").val(castprice);
+}
+function ClearControl() {
+    $("#txtminpurchasequantity").val('');
+    $("#txttaglotno").val('');
+    $("#txtSaletax").val('');
+    $('#txtcurrencyconversionrate').val('0');
+    $("#txtcostprice").val('0');
+    $("#txtshippingprice").val('0');
+    $("#txtDiscountqty").val('');
+    $("#txtRemarks").val('');
+    $('#ddlvender').val('').trigger('change');
+    $('#ddltaxrate').val('0').trigger('change');
 }

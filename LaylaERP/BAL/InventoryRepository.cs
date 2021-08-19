@@ -112,16 +112,40 @@ namespace LaylaERP.BAL
                 string strSql = "select p.id,p.post_type,p.post_title,max(case when p.id = s.post_id and s.meta_key = '_sku' then s.meta_value else '' end) sku,"
                             + " max(case when p.id = s.post_id and s.meta_key = '_regular_price' then s.meta_value else '' end) regular_price,"
                             + " max(case when p.id = s.post_id and s.meta_key = '_price' then s.meta_value else '' end) sale_price,"
-                            + " max(case when p.id = s.post_id and s.meta_key = '_stock' then s.meta_value else '' end) stock,"
+                            + " (select coalesce(sum(case when pwr.flag = 'R' then quantity else -quantity end),0) from product_stock_register pwr where pwr.product_id = p.id) stock,"
                             + " (case when p.post_parent = 0 then p.id else p.post_parent end) p_id,p.post_parent,p.post_status"
                             + " FROM wp_posts as p left join wp_postmeta as s on p.id = s.post_id"
                             + " where p.post_type in ('product', 'product_variation') and p.post_status != 'draft' " + strWhr
-                            + " group by p.id "+ strHav + " order by p_id";
+                            + " group by p.id " + strHav + " order by p_id";
+                //string strSql = "select json_object('id',p.id,'post_title',p.post_title,'children',concat('[',group_concat(json_object('id', sp.id, 'post_title', sp.post_title)),']')) as json"
+                //            + " from wp_posts p"
+                //            + " left outer join wp_posts sp on sp.post_parent = p.id and sp.post_type = 'product_variation' and sp.post_status != 'draft'"
+                //            + " where p.post_type = 'product' and p.post_status != 'draft'"
+                //            + " group by p.id";
                 dt = SQLHelper.ExecuteDataTable(strSql);
                 //strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, (pageno * pagesize).ToString(), pagesize.ToString());
 
                 //DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 //dt = ds.Tables[0];
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+        public static DataTable GetWarehouseStock(string product_id)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                MySqlParameter[] parameters =
+                {
+                    new MySqlParameter("@product_id", product_id)
+                };
+                string strSql = "select ref,coalesce(sum(case when pwr.flag = 'R' then quantity else -quantity end),0) stock from product_stock_register pwr inner join wp_warehouse wr on wr.rowid = pwr.warehouse_id where product_id = @product_id group by pwr.warehouse_id";
+                
+                dt = SQLHelper.ExecuteDataTable(strSql, parameters);
             }
             catch (Exception ex)
             {

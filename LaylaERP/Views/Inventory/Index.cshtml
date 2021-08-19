@@ -13,49 +13,42 @@
     <h2 class="page-heading">Product Inventory Edit</h2>
 </div>
 <section class="content section-content table-design customer-section">
-    <div class="user-top-section inventory-actions">
-        <div class="tablenav top tablenav-top2">
-            <div class="alignleft actions bulkactions ">
-                <label><b class="sm-heading">Products: </b></label>
-                <select class="form-control select2 billinfo" id="ddlProduct" placeholder="Select Products" style="width: 100%;"></select>
-                @*<button type="button" id="btnSearch" class="btn btn-primary btn-flat button">Search</button>*@
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label>Products</label>
+                <select class="form-control select2" id="ddlProduct" placeholder="Select Products" style="width: 100%;"></select>
             </div>
         </div>
     </div>
-    <!-- end top-->
     <div class="row">
         <div class="col-md-12">
             <div class="box box-primary">
                 <div class="box-header">
                     <div class="row">
                         <div class="col-sm-8">
-                    <table id="dtdata" class="inventory-table table-blue table check-table table-bordered table-striped dataTable " width="100%">
-                        <thead>
-                            <tr>
-                                <th>Type (Variant)</th>
-                                <th>Stock</th>
-                            </tr>
-                        </thead>
-                    </table>
-                    </div>
+                            <table id="dtdata" class="inventory-table table-blue table check-table table-bordered table-striped dataTable " width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>Type (Variant)</th>
+                                        <th>Stock</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
                     </div>
                 </div>
                 <div class="box-footer">
                     <div class="row">
                         <div class="col-sm-8 inventory-btn">
-                        <button type="button" id="btnSave" class="btn btn-danger" style="display:none">Save Changes</button>
+                            <button type="button" id="btnSave" class="btn btn-danger" style="display:none">Save Changes</button>
+                        </div>
                     </div>
-                </div>
                 </div>
             </div>
         </div>
     </div>
-   
+
 
 </section>
 <script src="@Url.Content("~/js/Inventory/Inventory.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
-<script>
-    $(document).ready(function () {
-        getProducts();
-    })
-</script>

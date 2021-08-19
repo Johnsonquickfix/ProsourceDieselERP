@@ -96,5 +96,17 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(result, 0);
         }
+        [HttpPost]
+        public JsonResult GetStockByWarehouse(SearchModel model)
+        {
+            string result = string.Empty;
+            try
+            {
+                DataTable dt = InventoryRepository.GetWarehouseStock(model.strValue1);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
     }
 }

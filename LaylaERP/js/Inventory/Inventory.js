@@ -1,25 +1,40 @@
-﻿function getProducts() {
-    debugger
-    $.get('GetProductList', function (data) {
-        $('#ddlProduct').empty();
-        var items = "";
-        items += "<option value=''>--Please select Product--</option>";
-        $.each(data, function (index, value) {
-            items += "<option value=" + this['Value'] + ">" + this['Text'] + "</option>";
-        })
-        $("#ddlProduct").html(items);
-    })
+﻿$(document).ready(function () {
+    getProducts();
+    $(".select2").select2();
+    $("#ddlProduct").change(function () {
+        $("#btnSave").css("display", "block");
+        ProductGrid();
+    });
+    $("#btnSave").click(function () {
+        var id = "";
+        var value = "";
+        $('#dtdata').find('input[type=text]').each(function () {
+            if (value != '') value += ','; value += $(this).val();
+            if (id != '') id += ','; id += $(this).attr('id');
+        });
+        //console.log(id, value);
+        SaveChanges(id, value);
+    });
+})
+
+function getProducts() {
+    $.ajax({
+        url: "/Inventory/GetProductList",
+        type: "Get", beforeSend: function () { $("#loader").show(); },
+        success: function (data) {
+            let dt = JSON.parse(data);
+            //Product
+            $("#ddlProduct").html('<option value="0">Select Product</option>');
+            for (i = 0; i < dt['Table'].length; i++) { $("#ddlProduct").append('<option value="' + dt['Table'][i].id + '">' + dt['Table'][i].text + '</option>'); }
+        },
+        complete: function () { $("#loader").hide(); },
+        error: function (xhr, status, err) { $("#loader").hide(); }
+    });
 }
 //$("#btnSearch").click(function () {
 //    $("#btnSave").css("display", "block");
 //    ProductGrid();
 //})
-
-$("#ddlProduct").change(function () {
-    $("#btnSave").css("display", "block");
-    ProductGrid();
-})
-
 function ProductGrid() {
     var urid = parseInt($("#ddlSearchStatus").val()) || "";
     var sid = "";
@@ -62,25 +77,6 @@ function ProductGrid() {
         ]
     });
 }
-
-$("#btnSave").click(function () {
-
-    var id = "";
-    var value = "";
-    $('#dtdata').find('input[type=text]').each(function () {
-       
-        if (value != '') value += ','; value += $(this).val();
-
-        if (id != '') id += ','; id += $(this).attr('id');
-       
-
-       
-    });
-    console.log(id, value);
-    SaveChanges(id, value);
-    
-})
-
 function SaveChanges(id, value) {
     var obj = { meta_id: id, meta_value: value }
     $.ajax({

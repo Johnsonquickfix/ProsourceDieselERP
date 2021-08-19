@@ -292,6 +292,7 @@ $("#ddlproductchild").change(function () {
     bindwarehouse();
     bindfileuploade();
     ClearControl();
+    $('#dvbuysing').hide();
 });
 
 

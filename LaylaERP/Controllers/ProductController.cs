@@ -1296,5 +1296,4 @@ namespace LaylaERP.Controllers
         }
     }
 }
-    }
-}
+    

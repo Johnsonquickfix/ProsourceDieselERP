@@ -25,6 +25,7 @@
                         <th>Menu URL</th>
                         <th>Menu Icon</th>
                         <th>Parent ID</th>
+                        <th>Status</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -64,6 +65,7 @@
                         { data: 'menu_url', title: 'Menu URL', sWidth: "20%" },
                         { data: 'menu_icon', title: 'Menu Icon', sWidth: "20%" },
                         { data: 'parent_id', title: 'Parent Id', sWidth: "10%" },
+                        { data: 'status', title: 'Status', sWidth: "10%" },
                         {
                             'data': 'menu_id', sWidth: "15%",
                             'render': function (menu_id, type, full, meta) {
@@ -78,7 +80,7 @@
             }
         });
 
-    }
+    } 
 
     function EditUser(menu_id) {
         window.location.href = 'AddMenu?menu_id=' + menu_id;

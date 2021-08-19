@@ -18,7 +18,7 @@ namespace LaylaERP.BAL
             DataTable dtr = new DataTable();
             try
             {
-                string strquery = "Select * from wp_erpmenus order by menu_code;";
+                string strquery = "Select menu_id, menu_code, menu_name, menu_url, menu_icon, parent_id, if(status= 1, 'Active', 'Inactive') as status from wp_erpmenus order by menu_code;";
                 dtr = SQLHelper.ExecuteDataTable(strquery);
             }
             catch (Exception ex)

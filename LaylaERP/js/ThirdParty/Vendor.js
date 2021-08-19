@@ -1403,7 +1403,7 @@ function VendorLinkedFiles() {
             {
                 'data': 'FileName', sWidth: "25%",
                 'render': function (FileName, type, full, meta) {
-                    return '<a href="../../Content/VendorLinkedFiles/' + FileName+'">' + FileName + '</i></a>';
+                    return '<a target="popup" href="../../Content/VendorLinkedFiles/' + FileName+'">' + FileName + '</i></a>';
                 }
             },
           { data: 'FileSize', title: 'FileSize', sWidth: "25%" }, 

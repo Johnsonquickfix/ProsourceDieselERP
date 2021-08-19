@@ -1218,5 +1218,83 @@ namespace LaylaERP.Controllers
             catch { status = false; result = ""; }
             return Json(new { status = true, message = "update successfully!!", ID = 1 }, 0);
         }
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Product Categories~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        public JsonResult GetParentCategory(SearchModel model)
+        {
+            DataSet ds = BAL.ProductRepository.GetParentCategory();
+            List<SelectListItem> productlist = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                productlist.Add(new SelectListItem { Text = dr["name"].ToString(), Value = dr["ID"].ToString() });
+            }
+            return Json(productlist, JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult AddProductCategory(ProductCategoryModel model)
+        {
+            if (model.term_id > 0)
+            {
+                new ProductRepository().EditProductCategory(model);
+                return Json(new { status = true, message = "Product category has been updated successfully!!", url = "", id = model.term_id }, 0);
+            }
+            else
+            {
+                int ID = new ProductRepository().AddProductCategory(model);
+                if (ID > 0)
+                {
+                    new ProductRepository().AddProductCategoryDesc(model, ID);
+                    return Json(new { status = true, message = "Product category has been saved successfully!!", url = "" }, 0);
+                }
+                else
+                {
+                    return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
+                }
+            }
+        }
+        public JsonResult ProductCategoryList(ProductCategoryModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                long id = model.term_id;
+                string urid = "";
+                if (model.user_status != "")
+                    urid = model.user_status;
+                string searchid = model.Search;
+                DataTable dt = ProductRepository.ProductCategoryList(id, urid, searchid, model.PageNo, model.PageSize, out TotalRecord, model.SortCol, model.SortDir);
+                result = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+        }
+        public JsonResult DeleteProductCategory(ProductCategoryModel model)
+        {
+            if (model.strVal != "")
+            {
+                int ID = new ProductRepository().DeleteProductCategory(model);
+                if (ID > 0)
+                    return Json(new { status = true, message = "Product category has been deleted successfully!!", url = "", id = ID }, 0);
+                else
+                    return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Product category not Found", url = "", id = 0 }, 0);
+            }
+        }
+
+        public JsonResult GetCategoryByID(long id)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = ProductRepository.GetCategoryByID(id);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+    }
+}
     }
 }

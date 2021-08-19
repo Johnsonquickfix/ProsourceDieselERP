@@ -142,7 +142,7 @@ namespace LaylaERP.BAL
                 {
                     new MySqlParameter("@product_id", product_id)
                 };
-                string strSql = "select ref,coalesce(sum(case when pwr.flag = 'R' then quantity else -quantity end),0) stock from product_stock_register pwr inner join wp_warehouse wr on wr.rowid = pwr.warehouse_id where product_id = = @product_id";
+                string strSql = "select ref,coalesce(sum(case when pwr.flag = 'R' then quantity else -quantity end),0) stock from product_stock_register pwr inner join wp_warehouse wr on wr.rowid = pwr.warehouse_id where product_id = @product_id group by pwr.warehouse_id";
                 
                 dt = SQLHelper.ExecuteDataTable(strSql, parameters);
             }

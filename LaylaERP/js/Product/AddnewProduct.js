@@ -896,17 +896,17 @@ function GetProductvariationID(ProductID) {
                 //   regular_price = v_data['_regular_price'];
 
                 let sku = '';
-                sku = v_data['_sku'];
-                if (sku != '' || sku != null) {
+                //sku = v_data['_sku'];
+                //if (sku != '' || sku != null) {
 
-                    sku = sku;
-                }
-                else {
+                //    sku = sku;
+                //}
+                //else {
                     if (v_data['_sku'] != undefined)
-                        sku = sku;
+                        sku = v_data['_sku'];
                     else
                         sku = 0;
-                }
+                //}
                 let stock = '';
                 if (v_data['_stock'] != undefined)
                     stock = v_data['_stock'];

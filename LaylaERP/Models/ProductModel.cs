@@ -58,6 +58,7 @@ namespace LaylaERP.Models
         public int fk_vendor { get; set; }
         public float purchase_price { get; set; }
         public float cost_price { get; set; }
+        public float shipping_price { get; set; }
         public float salestax { get; set; }
         public float discount { get; set; }
         public int minpurchasequantity { get; set; }
@@ -151,10 +152,27 @@ namespace LaylaERP.Models
         public string minpurchasequantity { get; set; }
         public string salestax { get; set; }
         public string purchase_price { get; set; }
+        public string shipping_price { get; set; }
         public string cost_price { get; set; }
         public string discount { get; set; }
         public string date_inc { get; set; }
         public string taglotserialno { get; set; }
 
+    }
+    public class ProductCategoryModel : PaggingModel
+    {
+        public long term_id { get; set; }
+        public string name { get; set; }
+        public string slug { get; set; }
+        public long term_group { get; set; }
+        public int term_order { get; set; }
+        public long term_taxonomy_id { get; set; }
+        public string taxonomy { get; set; }
+        public string description { get; set; }
+        public long parent { get; set; }
+        public long count { get; set; }
+        public string user_status { get; set; }
+        public string Search { get; set; }
+        public string strVal { get; set; }
     }
 }

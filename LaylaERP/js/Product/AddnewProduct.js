@@ -1,6 +1,4 @@
-﻿
-
-$(document).ready(function () {
+﻿$(document).ready(function () {
     $("#loader").hide();
 
     var url = window.location.pathname;
@@ -17,18 +15,28 @@ $(document).ready(function () {
         $("#hfid").val(id);
        // $("#btnPurchase").prop("href", "../AddNewPurchase/" + id)
         $("#btnbacklist").prop("href", "../ListProduct")
-    
-        setTimeout(function () { GetDataByID(id); }, 10);
 
-        //// $("#hfprodcid").val("629,632");
-        setTimeout(function () { GetProdctByID($("#hfprodcid").val()); }, 4000);
-        setTimeout(function () { GetExProdctByID($("#hfcategid").val()); }, 5000);
+         GetDataByID(id); 
+      //  console.log($("#hfprodcid").val());
+
+       GetProdctByID($("#hfprodcid").val()); 
+       GetExProdctByID($("#hfcategid").val()); 
+        if ($("#hfvproductattributes").val() != null || $("#hfvproductattributes").val() != '') {
+            GetAttributesID($("#hfvproductattributes").val());
+        }
+         GetProductvariationID(id); 
+    
+        //setTimeout(function () { GetDataByID(id); }, 3000);
+        //console.log($("#hfprodcid").val());
+       
+        //setTimeout(function () { GetProdctByID($("#hfprodcid").val()); }, 5000);
+        //setTimeout(function () { GetExProdctByID($("#hfcategid").val()); }, 5000);
         
-        setTimeout(function () { GetAttributesID($("#hfvproductattributes").val()); }, 7500);
-        setTimeout(function () { GetProductvariationID(id); }, 9000);
+        //setTimeout(function () { GetAttributesID($("#hfvproductattributes").val()); }, 7500);
+        //setTimeout(function () { GetProductvariationID(id); }, 9000);
     }
     else {
-   // $("#btnPurchase").hide();
+    $("#btnAdd").hide();
     $('#lbltitle').text("Add New Product");
     //  BindControls();
     }
@@ -471,7 +479,7 @@ $(document).ready(function () {
                 values.push(this.value);
         });
         let parentID = parseInt($("#hfid").val());
-        console.log(parentID);
+       // console.log(parentID);
         $("#hfattributeheaderval").val(values.join(','));
         //$('.inputdes').each(function () {
         //    if (this.value != '')
@@ -711,7 +719,7 @@ function GetDataByID(order_id) {
     var obj = { strVal: order_id }
     $.ajax({
 
-        url: '/Product/GetDataByID/' + ID,
+        url: '/Product/GetDataByID/' + ID,        
         type: 'post',
         contentType: "application/json; charset=utf-8",
         dataType: 'JSON',
@@ -760,6 +768,7 @@ function GetDataByID(order_id) {
             $("#hfproductvariationID").val(i[0].VariantID);
           
             $("#hfcategid").val(i[0].crosssellids);
+            
             $("#hfprodectcategoryid").val(i[0].CategoryID);
             var category = i[0].CategoryID;
             if (category != null) {
@@ -770,8 +779,20 @@ function GetDataByID(order_id) {
                         $(item).prop('checked', true);
                 });
             }
+
+            if ($("#ddlProductType").val() == "4") {
+                $('#divregular').hide();
+                $('#divsale').hide();
+                $('li:contains(Variations)').show();
+
+            } else {
+                $('#divregular').show();
+                $('#divsale').show();
+                $('li:contains(Variations)').hide();
+            }
         },
-        error: function (msg) { alert(msg); }
+        error: function (msg) { alert(msg); },
+        async: false
     });
 
 }
@@ -783,6 +804,7 @@ function GetProdctByID(ProdctID) {
     $.ajax({
 
         url: '/Product/GetProdctByID/' + ID,
+        
         type: 'post',
         contentType: "application/json; charset=utf-8",
         dataType: 'JSON',
@@ -794,7 +816,8 @@ function GetProdctByID(ProdctID) {
             }
 
         },
-        error: function (msg) { alert(msg); }
+        error: function (msg) { alert(msg); },
+        async: false
     });
 
 }
@@ -806,6 +829,7 @@ function GetExProdctByID(ProdctID) {
     $.ajax({
 
         url: '/Product/GetProdctByID/' + ID,
+        
         type: 'post',
         contentType: "application/json; charset=utf-8",
         dataType: 'JSON',
@@ -817,28 +841,31 @@ function GetExProdctByID(ProdctID) {
             }
 
         },
-        //error: function (msg) { alert(msg); }
+        error: function (msg) { alert(msg); },
+        async: false
     });
 
 }
 
 
 function GetAttributesID(Attributes) {
-    //alert(Attributes);
-    var itxtCnt = 0;
-    var ID = Attributes;
-    //i++;
-    var i = 1;
-    itxtCnt = itxtCnt + 1;
-    //  var trainindIdArray = Attributes.split(',{'); 
-    $.each(JSON.parse(Attributes), function (index1, value) {
-        var datalog = JSON.parse(Attributes);
-        // $("#tbhold").append('<tr id="row' + i + '"><td><div class="col-md-12"> <label>Name:</label><br /><input type="text"  class="input" id=tb' + itxtCnt + ' value="' + datalog[index1].key + '" /><br /><input type="checkbox" class="inputchk" id=tb' + itxtCnt + ' value=""/><label>Visible on the product page</label><br /> <input type="checkbox" class="inputchkvar" id=tb' + itxtCnt + '  value=""/><label>Used for variations</label></div></td><td><br /><br /><div class="col-md-12"><label>Value(s):</label><input type="text" placeholder="Enter some text, or some attributes by "|" separating values." style="width: 100%; height: 110px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;" class="inputdes" id=tb' + itxtCnt + ' value="' + datalog[index1].value + '" /></div></td><td><button type="button" class="btn btn-danger btn_remove" id="' + i + '" name="remove">X</button></td></tr>');
-        //$("#tbhold").append('<tr id="row' + i + '"><td><div class="col-md-12"> <label>Name:</label><br /><input type="text"  class="input" id=tb' + itxtCnt + ' value="' + datalog[index1].key + '" /><br /><input type="checkbox" class="inputchkvar" id=tb' + itxtCnt + '  value=""/><label>Used for variations</label></div></td><td><br /><br /><div class="col-md-12"><label>Value(s):</label><input type="text" placeholder="Enter some text, or some attributes by "|" separating values." style="width: 100%; height: 110px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;" class="inputdes" id=tb' + itxtCnt + ' value="' + datalog[index1].value + '" /></div></td><td><button type="button" class="btn btn-danger btn_remove" id="' + i + '" name="remove">X</button></td></tr>');
-        $("#tbhold").append('<tr id="row' + i + '"><td><div class="form-group"><label class="control-label">Name:</label><input type="text" class="input form-control" id=tb' + itxtCnt + ' value="' + datalog[index1].key + '" /><span><input type="checkbox" class="inputchkvar" id=tb' + itxtCnt + ' value=""/><label for=tb' + itxtCnt + '>Used for variations</label></div></td><td><div class="form-group"><label class="control-balel">Value(s):</label><textarea placeholder="Enter some text, or some attributes by | separating values." class="inputdes form-control" id=tb' + itxtCnt + ' >'+ datalog[index1].value+'</textarea></div></td><td><button type="button" class="btn no-btn btn_remove" id="' + i + '" name="remove">X</button></td></tr>');
-    });
-    // $('.inputchk').prop("checked", true);
-    $('.inputchkvar').prop("checked", true);
+   // console.log(Attributes);
+    if (Attributes != '') {
+        var itxtCnt = 0;
+        var ID = Attributes;
+        //i++;
+        var i = 1;
+        itxtCnt = itxtCnt + 1;
+        //  var trainindIdArray = Attributes.split(',{'); 
+        $.each(JSON.parse(Attributes), function (index1, value) {
+            var datalog = JSON.parse(Attributes);
+            // $("#tbhold").append('<tr id="row' + i + '"><td><div class="col-md-12"> <label>Name:</label><br /><input type="text"  class="input" id=tb' + itxtCnt + ' value="' + datalog[index1].key + '" /><br /><input type="checkbox" class="inputchk" id=tb' + itxtCnt + ' value=""/><label>Visible on the product page</label><br /> <input type="checkbox" class="inputchkvar" id=tb' + itxtCnt + '  value=""/><label>Used for variations</label></div></td><td><br /><br /><div class="col-md-12"><label>Value(s):</label><input type="text" placeholder="Enter some text, or some attributes by "|" separating values." style="width: 100%; height: 110px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;" class="inputdes" id=tb' + itxtCnt + ' value="' + datalog[index1].value + '" /></div></td><td><button type="button" class="btn btn-danger btn_remove" id="' + i + '" name="remove">X</button></td></tr>');
+            //$("#tbhold").append('<tr id="row' + i + '"><td><div class="col-md-12"> <label>Name:</label><br /><input type="text"  class="input" id=tb' + itxtCnt + ' value="' + datalog[index1].key + '" /><br /><input type="checkbox" class="inputchkvar" id=tb' + itxtCnt + '  value=""/><label>Used for variations</label></div></td><td><br /><br /><div class="col-md-12"><label>Value(s):</label><input type="text" placeholder="Enter some text, or some attributes by "|" separating values." style="width: 100%; height: 110px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;" class="inputdes" id=tb' + itxtCnt + ' value="' + datalog[index1].value + '" /></div></td><td><button type="button" class="btn btn-danger btn_remove" id="' + i + '" name="remove">X</button></td></tr>');
+            $("#tbhold").append('<tr id="row' + i + '"><td><div class="form-group"><label class="control-label">Name:</label><input type="text" class="input form-control" id=tb' + itxtCnt + ' value="' + datalog[index1].key + '" /><span><input type="checkbox" class="inputchkvar" id=tb' + itxtCnt + ' value=""/><label for=tb' + itxtCnt + '>Used for variations</label></div></td><td><div class="form-group"><label class="control-balel">Value(s):</label><textarea placeholder="Enter some text, or some attributes by | separating values." class="inputdes form-control" id=tb' + itxtCnt + ' >' + datalog[index1].value + '</textarea></div></td><td><button type="button" class="btn no-btn btn_remove" id="' + i + '" name="remove">X</button></td></tr>');
+        });
+        // $('.inputchk').prop("checked", true);
+        $('.inputchkvar').prop("checked", true);
+    }
 }
 function GetProductvariationID(ProductID) {
    // alert(ProductID);
@@ -853,7 +880,7 @@ function GetProductvariationID(ProductID) {
             let varHTML = '', attHTML = '';
             for (let i = 0; i < data.length; i++) {
                 let v_data = JSON.parse(data[i].meta_data);
-                console.log(v_data);
+              
                 // let stock = v_data['_stock'].replace('undefined', ''); _sale_price 
                 //    console.log(v_data['_regular_price']);
                 //    let regular_price = '';
@@ -869,17 +896,17 @@ function GetProductvariationID(ProductID) {
                 //   regular_price = v_data['_regular_price'];
 
                 let sku = '';
-                sku = v_data['_sku'];
-                if (sku != '' || sku != null) {
+                //sku = v_data['_sku'];
+                //if (sku != '' || sku != null) {
 
-                    sku = sku;
-                }
-                else {
+                //    sku = sku;
+                //}
+                //else {
                     if (v_data['_sku'] != undefined)
-                        sku = sku;
+                        sku = v_data['_sku'];
                     else
                         sku = 0;
-                }
+                //}
                 let stock = '';
                 if (v_data['_stock'] != undefined)
                     stock = v_data['_stock'];
@@ -923,6 +950,7 @@ function GetProductvariationID(ProductID) {
                
                 varHTML += '<div class="alignleft actions bulkactions">';
                 varHTML += '<table class="data-contacts1-js table table-striped"><tbody class="variation_att">';
+                //console.log(v_data);
                 $.each(JSON.parse($("#hfvproductattributes").val()), function (key, value) {
                     let _values = value.value.split('|'); let sel_val = v_data['attribute_' + value.key.trim().toLowerCase()];
                     varHTML += '<tr><select class="inputddl" id="ddl_attribute_' + value.key.trim() + '" data-key="' + value.key.trim() + '"><option value="' + value.key.trim() + '">Any ' + value.key.trim() + '</option>';
@@ -984,7 +1012,8 @@ function GetProductvariationID(ProductID) {
             }
 
         },
-        error: function (msg) { alert(msg); }
+        error: function (msg) { alert(msg); },
+        async: false
 
     });
 

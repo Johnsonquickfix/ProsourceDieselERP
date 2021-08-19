@@ -1366,8 +1366,6 @@ $("#btnupload").click(function () {
         })
     }
 })
-
-
 function VendorLinkedFiles() {
     var urid = "";
     ID = $("#hfid").val();
@@ -1383,7 +1381,7 @@ function VendorLinkedFiles() {
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
             var col = 'id';
             if (oSettings.aaSorting.length >= 0) {
-                var col = oSettings.aaSorting[0][0] == 0 ? "FileName" : oSettings.aaSorting[0][0] == 1 ? "FileSize" : oSettings.aaSorting[0][0] == 1 ? "Date" : "id";
+                var col = oSettings.aaSorting[0][0] == 0 ? "FileName" : oSettings.aaSorting[0][0] == 1 ? "FileSize" : oSettings.aaSorting[0][0] == 2 ? "Date" : "id";
                 obj.SortCol = col; obj.SortDir = oSettings.aaSorting.length >= 0 ? oSettings.aaSorting[0][1] : "desc";
             }
             obj.sEcho = aoData[0].value; obj.PageSize = oSettings._iDisplayLength; obj.PageNo = oSettings._iDisplayStart;

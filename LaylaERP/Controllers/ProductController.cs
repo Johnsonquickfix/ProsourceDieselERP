@@ -38,8 +38,8 @@ namespace LaylaERP.Controllers
             return View();
         }
 
-            // Listing Products
-            public ActionResult ListProduct()
+        // Listing Products
+        public ActionResult ListProduct()
         {
             return View();
         }
@@ -90,8 +90,8 @@ namespace LaylaERP.Controllers
             int TotalRecord = 0;
             try
             {
-                
-                   DataTable dt = ProductRepository.GetList(model.strValue1, model.strValue2, model.strValue3,model.strValue4, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+
+                DataTable dt = ProductRepository.GetList(model.strValue1, model.strValue2, model.strValue3, model.strValue4, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
                 result = JsonConvert.SerializeObject(dt, Formatting.Indented);
             }
             catch { }
@@ -123,7 +123,7 @@ namespace LaylaERP.Controllers
 
                 });
             }
-            if(usertype.Count == 0)
+            if (usertype.Count == 0)
             {
                 usertype.Add(new SelectListItem
                 {
@@ -134,7 +134,7 @@ namespace LaylaERP.Controllers
             }
             return Json(usertype, JsonRequestBehavior.AllowGet);
         }
-        
+
         public JsonResult GetProductCategory(int ID)
         {
             DataTable dt = new DataTable();
@@ -191,7 +191,7 @@ namespace LaylaERP.Controllers
             DateTime dateinc = DateTime.Now;
             //DateTime dateinc = UTILITIES.CommonDate.CurrentDate();
             var resultOne = 0;
-            if (model.ID > 0) 
+            if (model.ID > 0)
                 resultOne = ProductRepository.updateBuyingtProduct(model, dateinc);
             else
                 resultOne = ProductRepository.AddBuyingtProduct(model, dateinc);
@@ -202,14 +202,14 @@ namespace LaylaERP.Controllers
             else
             {
                 return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
-            }            
+            }
         }
         public JsonResult Createwarehouse(ProductModel model)
         {
             JsonResult result = new JsonResult();
             DateTime dateinc = DateTime.Now;
             //DateTime dateinc = UTILITIES.CommonDate.CurrentDate();
-           var resultOne = 0;
+            var resultOne = 0;
             DataTable dt = ProductRepository.Getproductwarehouse(model);
 
             //    resultOne = ProductRepository.updateProductwarehouse(model, dateinc);
@@ -221,9 +221,9 @@ namespace LaylaERP.Controllers
             else
             {
                 resultOne = ProductRepository.AddProductwarehouse(model);
-               if (resultOne > 0)         
+                if (resultOne > 0)
                     return Json(new { status = true, message = "Save successfully!!", url = "Manage" }, 0);
-               else
+                else
                     return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
 
             }
@@ -241,7 +241,7 @@ namespace LaylaERP.Controllers
             //if (model.ID > 0)
             //    resultOne = ProductRepository.updateNotesProduct(model, dateinc);
             //else
-                resultOne = ProductRepository.updateNotesProduct(model);            
+            resultOne = ProductRepository.updateNotesProduct(model);
             if (resultOne > 0)
             {
                 return Json(new { status = true, message = "updated successfully!!", url = "Manage" }, 0);
@@ -294,9 +294,9 @@ namespace LaylaERP.Controllers
             //DateTime dateinc = DateTime.Now;
             //DateTime dateinc = UTILITIES.CommonDate.CurrentDate();
             var resultOne = 0;
-           // model.ID = model.strVal;
+            // model.ID = model.strVal;
             if (model.ID > 0)
-                resultOne = ProductRepository.DeleteBuyingtProduct(model);             
+                resultOne = ProductRepository.DeleteBuyingtProduct(model);
             if (resultOne > 0)
             {
                 return Json(new { status = true, message = "deleted successfully!!", url = "Manage" }, 0);
@@ -352,7 +352,7 @@ namespace LaylaERP.Controllers
         {
             string[] varQueryArr1 = new string[26];
             string[] varFieldsName = new string[26] { "_sku", "_regular_price", "_sale_price", "total_sales", "_tax_status", "_tax_class", "_manage_stock", "_backorders", "_sold_individually", "_weight", "_length", "_width", "_height", "_upsell_ids", "_crosssell_ids", "_virtual", "_downloadable", "_download_limit", "_download_expiry", "_stock", "_stock_status", "_wc_average_rating", "_wc_review_count", "_price", "_low_stock_amount", "_product_attributes" };
-            string[] varFieldsValue = new string[26] { model.sku, model.regular_price, model.sale_price, "0", model.tax_status, model.tax_class, model.manage_stock, model.backorders, model.sold_individually, model.weight, model.length, model.width, model.height, model.upsell_ids, model.crosssell_ids, "no", "no", "-1", "-1", model.stock, model.stock_status, "0", "0", model.sale_price, model.low_stock_amount,model.product_attributes };
+            string[] varFieldsValue = new string[26] { model.sku, model.regular_price, model.sale_price, "0", model.tax_status, model.tax_class, model.manage_stock, model.backorders, model.sold_individually, model.weight, model.length, model.width, model.height, model.upsell_ids, model.crosssell_ids, "no", "no", "-1", "-1", model.stock, model.stock_status, "0", "0", model.sale_price, model.low_stock_amount, model.product_attributes };
             for (int n = 0; n < 26; n++)
             {
                 ProductRepository.AddProductsMeta(model, id, varFieldsName[n], varFieldsValue[n]);
@@ -378,12 +378,12 @@ namespace LaylaERP.Controllers
                 ProductRepository.AddProductsMeta(model, id, varFieldsName[n], varFieldsValue[n]);
             }
         }
-        private void Add_term(ProductModel model,int ID)
+        private void Add_term(ProductModel model, int ID)
         {
-            if(model.ProductTypeID > 0 )
-            ProductRepository.Add_term(model.ProductTypeID,ID);
+            if (model.ProductTypeID > 0)
+                ProductRepository.Add_term(model.ProductTypeID, ID);
             if (model.ShippingclassID > 0)
-                ProductRepository.Add_term(model.ShippingclassID,ID);
+                ProductRepository.Add_term(model.ShippingclassID, ID);
             string CommaStr = model.CategoryID;
             if (!string.IsNullOrEmpty(CommaStr))
             {
@@ -398,7 +398,7 @@ namespace LaylaERP.Controllers
         private void update_term(ProductModel model, long ID)
         {
             delete_term(model, ID);
-            ProductRepository.Add_term(model.ProductTypeID,Convert.ToInt32(ID));
+            ProductRepository.Add_term(model.ProductTypeID, Convert.ToInt32(ID));
             ProductRepository.Add_term(model.ShippingclassID, Convert.ToInt32(ID));
             string CommaStr = model.CategoryID;
 
@@ -600,9 +600,9 @@ namespace LaylaERP.Controllers
 
         }
 
-    
 
-    [HttpPost]
+
+        [HttpPost]
         public JsonResult GetProductInfo(SearchModel model)
         {
             List<ProductsModelDetails> obj = new List<ProductsModelDetails>();
@@ -711,9 +711,9 @@ namespace LaylaERP.Controllers
             string varFieldsValue = string.Empty;
 
 
-         
-     
-            model.post_content = "";       
+
+
+            model.post_content = "";
             model.post_type = "product_variation";
             model.comment_status = "closed";
 
@@ -724,13 +724,13 @@ namespace LaylaERP.Controllers
             model.post_status = "draft";
             model.post_title = "";
             model.post_name = "";
-           
-          
+
+
             int ID = ProductRepository.AddProducts(model);
             ViewBag.UpdatedID = ID;
             if (ID > 0)
             {
-                AddVariant_MetaData(model, ID);               
+                AddVariant_MetaData(model, ID);
                 ModelState.Clear();
                 for (int y = 0; y < attributeheader.Length; y++)
                 {
@@ -744,7 +744,7 @@ namespace LaylaERP.Controllers
                 return Json(new { status = false, message = "Invalid Details", id = ID }, 0);
             }
 
-           
+
 
             //return Json(new { status = true, message = "Product Attributes has been saved successfully!!", ID = ID }, 0);
 
@@ -802,7 +802,7 @@ namespace LaylaERP.Controllers
             {
                 int res = ProductRepository.UpdateVariantStatus(model.ProductPostMeta);
                 if (res > 0)
-                {                 
+                {
                     status = true;
                 }
 
@@ -1196,10 +1196,10 @@ namespace LaylaERP.Controllers
                 if (res > 0)
                 {
                     status = true;
-                }                
+                }
             }
             catch { status = false; result = ""; }
-            return Json(new { status = true, message = "update successfully!!", ID = 1 }, 0);            
+            return Json(new { status = true, message = "update successfully!!", ID = 1 }, 0);
         }
 
         public JsonResult UpdateChildvariations(ProductModel model)
@@ -1217,6 +1217,83 @@ namespace LaylaERP.Controllers
             }
             catch { status = false; result = ""; }
             return Json(new { status = true, message = "update successfully!!", ID = 1 }, 0);
+        }
+
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Product Categories~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        public JsonResult GetParentCategory(SearchModel model)
+        {
+            DataSet ds = BAL.ProductRepository.GetParentCategory();
+            List<SelectListItem> productlist = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                productlist.Add(new SelectListItem { Text = dr["name"].ToString(), Value = dr["ID"].ToString() });
+            }
+            return Json(productlist, JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult AddProductCategory(ProductCategoryModel model)
+        {
+            if (model.term_id > 0)
+            {
+                new ProductRepository().EditProductCategory(model);
+                return Json(new { status = true, message = "Product category has been updated successfully!!", url = "", id = model.term_id }, 0);
+            }
+            else
+            {
+                int ID = new ProductRepository().AddProductCategory(model);
+                if (ID > 0)
+                {
+                    new ProductRepository().AddProductCategoryDesc(model,ID);
+                    return Json(new { status = true, message = "Product category has been saved successfully!!", url = ""}, 0);
+                }
+                else
+                {
+                    return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
+                }
+            }
+        }
+        public JsonResult ProductCategoryList(ProductCategoryModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                long id = model.term_id;
+                string urid = "";
+                if (model.user_status != "")
+                    urid = model.user_status;
+                string searchid = model.Search;
+                DataTable dt = ProductRepository.ProductCategoryList(id, urid, searchid, model.PageNo, model.PageSize, out TotalRecord, model.SortCol, model.SortDir);
+                result = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+        }
+        public JsonResult DeleteProductCategory(ProductCategoryModel model)
+        {
+            if (model.strVal !="")
+            {
+                int ID = new ProductRepository().DeleteProductCategory(model);
+                if (ID > 0)
+                    return Json(new { status = true, message = "Product category has been deleted successfully!!", url = "", id = ID }, 0);
+                else
+                    return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Product category not Found", url = "", id = 0 }, 0);
+            }
+        }
+
+        public JsonResult GetCategoryByID(long id)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = ProductRepository.GetCategoryByID(id);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
         }
     }
 }

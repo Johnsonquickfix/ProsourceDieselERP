@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Http.Results;
 using System.Web.Mvc;
@@ -1317,6 +1318,145 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
+        
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Product Categories~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        public static DataSet GetParentCategory()
+        {
+            DataSet DS = new DataSet();
+            try
+            {
+                string strSQl = "Select tx.term_taxonomy_id ID,t.name from wp_term_taxonomy tx left join wp_terms t on tx.term_id=t.term_id where tx.taxonomy='product_cat' order by tx.term_taxonomy_id desc;";
+                DS = SQLHelper.ExecuteDataSet(strSQl);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
+        }
+        public int EditProductCategory(ProductCategoryModel model)
+        {
+            try
+            {
+                string strsql = "";
+                strsql = "update wp_terms set name=@name,slug=@slug where term_id="+model.term_id+ "; update wp_term_taxonomy set description=@description,parent=@parent where term_id=" + model.term_id + ";";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@name", model.name),
+                    new MySqlParameter("@slug",  Regex.Replace(model.slug, @"\s+", "")),
+                    new MySqlParameter("@parent", model.parent),
+                    new MySqlParameter("@description", model.description == null ? "" : model.description),
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+        public int AddProductCategory(ProductCategoryModel model)
+        {
+            try
+            {
+                string strsql = "";
+                strsql = "insert into wp_terms(name,slug) values(@name,@slug); SELECT LAST_INSERT_ID();";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@name", model.name),
+                    new MySqlParameter("@slug",  Regex.Replace(model.slug, @"\s+", "")),
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
 
+        public int AddProductCategoryDesc(ProductCategoryModel model, long term_id)
+        {
+            try
+            {
+                string strsql = "";
+                strsql = "Insert into wp_term_taxonomy(term_id,taxonomy,description,parent) values(@term_id,@taxonomy,@description,@parent); SELECT LAST_INSERT_ID();";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@term_id", term_id),
+                    new MySqlParameter("@taxonomy", "product_cat"),
+                    new MySqlParameter("@parent", model.parent),
+                    new MySqlParameter("@description", model.description == null ? "" : model.description),
+
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+        public static DataTable ProductCategoryList(long id, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                string strWhr = string.Empty;
+
+                string strSql = "Select tx.term_id ID, t.name,t.slug,tx.taxonomy,tx.description,tx.parent,tx.count from wp_term_taxonomy tx left join wp_terms t on tx.term_id = t.term_id where taxonomy='product_cat' and 1=1 ";
+                if (!string.IsNullOrEmpty(searchid))
+                {
+                    strWhr += " and (t.name like '%" + searchid + "%')";
+                }
+                if (userstatus != null)
+                {
+                    strWhr += " and (v.VendorStatus='" + userstatus + "') ";
+                }
+                strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
+
+                strSql += "; SELECT ceil(Count(tx.term_id)/" + pagesize.ToString() + ") TotalPage,Count(tx.term_id) TotalRecord from wp_term_taxonomy tx left join wp_terms t on tx.term_id = t.term_id where taxonomy='product_cat' and 1=1  " + strWhr.ToString();
+
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dt = ds.Tables[0];
+                if (ds.Tables[1].Rows.Count > 0)
+                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+        public int DeleteProductCategory(ProductCategoryModel model)
+        {
+            try
+            {
+                string strsql = "";
+                strsql = "delete from wp_terms where term_id in ("+model.strVal+ "); delete from wp_term_taxonomy where term_id in (" + model.strVal + ")";
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+        public static DataTable GetCategoryByID(long id)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                string strWhr = string.Empty;
+                string strSql = "Select tx.term_id ID, t.name,t.slug,tx.taxonomy,tx.description,tx.parent,tx.count from wp_term_taxonomy tx left join wp_terms t on tx.term_id = t.term_id where tx.taxonomy='product_cat' and tx.term_id= '" + id + "'";
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dt = ds.Tables[0];
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
     }
 }

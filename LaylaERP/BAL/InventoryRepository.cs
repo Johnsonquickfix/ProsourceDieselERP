@@ -112,8 +112,9 @@ namespace LaylaERP.BAL
                 string strSql = "select p.id,p.post_type,p.post_title,max(case when p.id = s.post_id and s.meta_key = '_sku' then s.meta_value else '' end) sku,"
                             + " max(case when p.id = s.post_id and s.meta_key = '_regular_price' then s.meta_value else '' end) regular_price,"
                             + " max(case when p.id = s.post_id and s.meta_key = '_price' then s.meta_value else '' end) sale_price,"
-                            + " coalesce(sum(case when pwr.flag = 'R' then quantity else -quantity end),0) stock,(case when p.post_parent = 0 then p.id else p.post_parent end) p_id,p.post_parent,p.post_status"
-                            + " FROM wp_posts as p left join wp_postmeta as s on p.id = s.post_id left outer join product_stock_register pwr on pwr.product_id=p.id"
+                            + " (select coalesce(sum(case when pwr.flag = 'R' then quantity else -quantity end),0) from product_stock_register pwr where pwr.product_id = p.id) stock,"
+                            + " (case when p.post_parent = 0 then p.id else p.post_parent end) p_id,p.post_parent,p.post_status"
+                            + " FROM wp_posts as p left join wp_postmeta as s on p.id = s.post_id"
                             + " where p.post_type in ('product', 'product_variation') and p.post_status != 'draft' " + strWhr
                             + " group by p.id " + strHav + " order by p_id";
                 //string strSql = "select json_object('id',p.id,'post_title',p.post_title,'children',concat('[',group_concat(json_object('id', sp.id, 'post_title', sp.post_title)),']')) as json"

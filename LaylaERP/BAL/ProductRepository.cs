@@ -83,7 +83,7 @@ namespace LaylaERP.BAL
                              + " left join wp_postmeta pmlowstockamount on P.ID = pmlowstockamount.post_id and pmlowstockamount.meta_key = '_low_stock_amount'"
                              + " left join wp_postmeta pmsku on P.ID = pmsku.post_id and pmsku.meta_key = '_sku'"
                              + " left join wp_postmeta pmsatt on P.ID = pmsatt.post_id and pmsatt.meta_key = '_product_attributes'"
-                             + " WHERE P.post_type = 'product' and P.ID = " + model.strVal + " ";
+                             + " WHERE P.post_type in ('product','product_variation') and P.ID = " + model.strVal + " ";
 
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
@@ -296,7 +296,7 @@ namespace LaylaERP.BAL
                 {
                     if (!string.IsNullOrEmpty(strValue1))
                         strWhr += " fk_product_fils = " + strValue1;
-                    string strSQl = "SELECT distinct fk_product_fils ID,wp.post_title,post_title title,qty"
+                    string strSQl = "SELECT distinct wp.post_parent ID,wp.post_title,post_title title,qty"
                                 + " FROM product_association p"
                                 + "  left outer join wp_posts wp on wp.ID = p.fk_product"
                                 + " WHERE " + strWhr;

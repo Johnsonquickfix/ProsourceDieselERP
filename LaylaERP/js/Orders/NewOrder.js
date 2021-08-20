@@ -30,7 +30,7 @@ var recycling_item = [118, 20861, 611172];
 
 $(document).ready(function () {
     //$("#loader").hide();
-    $('.billinfo').prop("disabled", true);
+    $('.billinfo,.billnote').prop("disabled", true);
     $("#txtbillphone").mask("(999) 999-9999");
     //getOrderInfo();
     setTimeout(function () { $("#loader").show(); getOrderInfo(); }, 20);
@@ -603,6 +603,7 @@ function initMap() {
 function getOrderInfo() {
     let oid = parseInt($('#hfOrderNo').val()) || 0;
     if (oid > 0) {
+        $('.billnote').prop("disabled", false);
         $('#ddlStatus,#btnSearch').prop("disabled", true);
         $('.page-heading').text('Edit order ').append('<a class="btn btn-danger" href="/Orders/OrdersHistory">Back to List</a>');
         $('#lblOrderNo').text('Order #' + oid + ' detail '); $('#hfOrderNo').val(oid);
@@ -647,6 +648,7 @@ function getOrderInfo() {
         setTimeout(function () { getItemShippingCharge(); }, 100);
     }
     else {
+        $('.billnote').prop("disabled", true);
         $("#loader").hide(); $('#lblOrderNo').data('pay_by', ''); $('#lblOrderNo').data('pay_id', '');
         $('.refund-action').append('<button type="button" id="btnAddFee" class="btn btn-danger billinfo" disabled>Add Fee</button> ');
         $('.page-heading').text('Add New Order'); $('#btnSearch').prop("disabled", false); searchOrderModal();

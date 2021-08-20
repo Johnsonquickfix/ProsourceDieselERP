@@ -514,7 +514,6 @@ namespace LaylaERP.Controllers
             catch (Exception ex) { throw ex; }
             return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
         }
-
         [HttpPost]
         public ActionResult FileUpload(int VendorID, HttpPostedFileBase ImageFile)
         {

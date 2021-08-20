@@ -136,19 +136,23 @@
         }
         public ActionResult Dashboard()
         {
-            DateTime startDate = DateTime.Now;
-            DateTime endDate = DateTime.Now;
-            CultureInfo us = new CultureInfo("en-US");
-            ViewBag.totalorders = Convert.ToDecimal(BAL.DashboardRepository.Total_Orders()).ToString("N0", us); //BAL.DashboardRepository.Total_Orders();
-            ViewBag.totalsales = Convert.ToDecimal(BAL.DashboardRepository.Total_Sales()).ToString("N2", us);
-            ViewBag.totalcustomers = Convert.ToDecimal(BAL.DashboardRepository.Total_Customer()).ToString("N0", us);
-            ViewBag.totalordercompleted = Convert.ToDecimal(BAL.DashboardRepository.Total_Order_Completed()).ToString("N0", us);
-            ViewBag.TotalOrder = Convert.ToInt32(DashboardRepository.TotalOrder(startDate.ToString(), endDate.ToString()).ToString());
-            if (ViewBag.TotalOrder > 10)
-                ViewBag.TotalOrder = 10;
-            var sale = Convert.ToInt32(DashboardRepository.TotalSale(startDate.ToString(), endDate.ToString()).ToString());
-            ViewBag.TotalSale = "$" + sale;
-            ViewBag.TotalOrderCounting = Convert.ToInt32(DashboardRepository.TotalOrder(startDate.ToString(), endDate.ToString()).ToString());
+            try
+            {
+                DateTime startDate = DateTime.Now;
+                DateTime endDate = DateTime.Now;
+                CultureInfo us = new CultureInfo("en-US");
+                ViewBag.totalorders = Convert.ToDecimal(BAL.DashboardRepository.Total_Orders()).ToString("N0", us); //BAL.DashboardRepository.Total_Orders();
+                ViewBag.totalsales = Convert.ToDecimal(BAL.DashboardRepository.Total_Sales()).ToString("N2", us);
+                ViewBag.totalcustomers = Convert.ToDecimal(BAL.DashboardRepository.Total_Customer()).ToString("N0", us);
+                ViewBag.totalordercompleted = Convert.ToDecimal(BAL.DashboardRepository.Total_Order_Completed()).ToString("N0", us);
+                ViewBag.TotalOrder = Convert.ToInt32(DashboardRepository.TotalOrder(startDate.ToString(), endDate.ToString()).ToString());
+                if (ViewBag.TotalOrder > 10)
+                    ViewBag.TotalOrder = 10;
+                var sale = Convert.ToInt32(DashboardRepository.TotalSale(startDate.ToString(), endDate.ToString()).ToString());
+                ViewBag.TotalSale = "$" + sale;
+                ViewBag.TotalOrderCounting = Convert.ToInt32(DashboardRepository.TotalOrder(startDate.ToString(), endDate.ToString()).ToString());
+            }
+            catch { }
             return View();
         }
 

@@ -472,14 +472,14 @@
             _list.push({ key: $(tr).find('.input').val(), value: $(tr).find('.inputdes').val() });
         });
 
-       // console.log(_list);
+      // console.log(_list);
 
         $('.input').each(function () {
             if (this.value != '')
                 values.push(this.value);
         });
         let parentID = parseInt($("#hfid").val());
-       // console.log(parentID);
+      //  console.log(values.join(','));
         $("#hfattributeheaderval").val(values.join(','));
         //$('.inputdes').each(function () {
         //    if (this.value != '')

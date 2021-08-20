@@ -162,6 +162,7 @@ namespace LaylaERP.Models
     public class ProductCategoryModel : PaggingModel
     {
         public long term_id { get; set; }
+        public long Meta_id { get; set; }
         public string name { get; set; }
         public string slug { get; set; }
         public long term_group { get; set; }
@@ -174,5 +175,11 @@ namespace LaylaERP.Models
         public string user_status { get; set; }
         public string Search { get; set; }
         public string strVal { get; set; }
+        public string display_type { get; set; }
+        public string thumbnail_id { get; set; }
+        public HttpPostedFileBase ImageFile { get; set; }
+        public byte[] ImageFiledata { get; set; }
+        public string ImagePath { get; set; }
+
     }
 }

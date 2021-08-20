@@ -6,7 +6,7 @@ function getParentCategory() {
         url: "/Product/GetParentCategory",
         type: "Get",
         success: function (data) {
-            var opt = '<option value="-1">Please Select Vendor Type</option>';
+            var opt = '<option value="-1">Please Select Parent category</option>';
             for (var i = 0; i < data.length; i++) {
                 opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
             }

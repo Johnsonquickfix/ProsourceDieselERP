@@ -6,7 +6,7 @@ function getParentCategory() {
         url: "/Product/GetParentCategory",
         type: "Get",
         success: function (data) {
-            var opt = '<option value="-1">Please Select Vendor Type</option>';
+            var opt = '<option value="-1">Please Select Parent category</option>';
             for (var i = 0; i < data.length; i++) {
                 opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
             }
@@ -17,28 +17,37 @@ function getParentCategory() {
 }
 $('#btnAddNewCategory').click(function () {
     ID = $("#hfid").val();
+    Meta_id = $("#hfMetaid").val();
     CategoryName = $("#txtCategoryName").val();
     CategorySlug = $("#txtCategorySlug").val();
     ParentCategory = $("#ddlParentCategory").val();
     Description = $("#txtDescription").val();
     DisplayType = $("#ddlDisplayType").val();
-   /* AddImage = $("#fuAddImage").val();*/
-
+    var file = document.getElementById("ImageFile").files[0];
     if (CategoryName == "") { swal('alert', 'Please Enter Category Name', 'error').then(function () { swal.close(); $('#txtCategoryName').focus(); }) }
     else if (CategorySlug == "") { swal('alert', 'Please Enter Category Slug', 'error').then(function () { swal.close(); $('#txtCategorySlug').focus(); }) }
     //else if (ParentCategory == "-1") { swal('alert', 'Please Select Parent Category', 'error').then(function () { swal.close(); $('#ddlParentCategory').focus(); }) }
     //else if (Description == "") { swal('alert', 'Please Enter Description', 'error').then(function () { swal.close(); $('#txtDescription').focus(); }) }
     //else if (DisplayType == "-1") { swal('alert', 'Please Select DisplayType', 'error').then(function () { swal.close(); $('#ddlDisplayType').focus(); }) }
+
     else {
-        var obj = {
-            term_id: ID, name: CategoryName, slug: CategorySlug, parent: ParentCategory, description: Description,
-        }
+        var obj = new FormData();
+        obj.append("ImageFile", file);
+        obj.append("term_id", ID);
+        obj.append("name", CategoryName);
+        obj.append("slug", CategorySlug);
+        obj.append("parent", ParentCategory);
+        obj.append("description", Description);
+        obj.append("display_type", DisplayType);
+        obj.append("Meta_id", Meta_id);
+
         $.ajax({
             url: '/Product/AddProductCategory/', dataType: 'json', type: 'Post',
             contentType: "application/json; charset=utf-8",
-            data: JSON.stringify(obj),
-            dataType: "json",
-            beforeSend: function () {$("#loader").show();},
+            data: obj,
+            processData: false,
+            contentType: false,
+            beforeSend: function () { $("#loader").show(); },
             success: function (data) {
                 if (data.status == true) {
                     CategoryList();
@@ -51,12 +60,11 @@ $('#btnAddNewCategory').click(function () {
                     });
                     $("#ProdCat option[value='-1']").attr('selected', true)
                     swal('Alert!', data.message, 'success');
-
                 }
-                else {swal('Alert!', data.message, 'error')}
+                else { swal('Alert!', data.message, 'error') }
             },
-            complete: function () {$("#loader").hide();},
-            error: function (error) {swal('Error!', 'something went wrong', 'error');},
+            complete: function () { $("#loader").hide(); },
+            error: function (error) { swal('Error!', error.message, 'error'); },
         })
     }
 });
@@ -94,10 +102,17 @@ function CategoryList() {
             });
         },
         aoColumns: [
+            
             {
                 'data': 'ID', sWidth: "5%   ",
                 'render': function (data, type, full, meta) {
                     return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + $('<div/>').text(data).html() + '"><label></label>';
+                }
+            },
+            {
+                "data": "ImagePath",
+                "render": function (data) {
+                    return '<img src="../../Content/ProductCategory/' + data + '" class="avatar" width="50" height="50"/>';
                 }
             },
             { data: 'name', title: 'Name', sWidth: "25%" },
@@ -113,7 +128,6 @@ function CategoryList() {
         ]
     });
 }
-
 $('#checkAll').click(function () {
     var isChecked = $(this).prop("checked");
     $('#ProductCategory tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
@@ -131,7 +145,6 @@ function Singlecheck() {
         $("#checkAll").prop('checked', isChecked);
     }
 }
-
 $('#btnApply').click(function () {
     var id = "";
     var status = $('#ddlStatus').val();
@@ -139,10 +152,9 @@ $('#btnApply').click(function () {
         id += $(this).val() + ",";
     });
     id = id.replace(/,(?=\s*$)/, '');
-     if (status == "2") {
+    if (status == "2") {
         DeleteCategory(id);
     }
-    
 })
 function DeleteCategory(id) {
     console.log(id);
@@ -169,7 +181,6 @@ function DeleteCategory(id) {
         },
     })
 }
-
 function GetCategoryByID(id) {
     debugger
     var obj =
@@ -188,8 +199,9 @@ function GetCategoryByID(id) {
                     $("#txtCategorySlug").val(d[0].slug);
                     $("#ddlParentCategory").val(d[0].parent == "" ? "-1" : d[0].parent);
                     $("#hfid").val(d[0].ID);
+                    $("#hfMetaid").val(d[0].MetaID);
+                    
                     $("#txtDescription").val(d[0].description);
-                  
                 }
             },
             complete: function () { $("#loader").hide(); },

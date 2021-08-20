@@ -363,10 +363,13 @@ namespace LaylaERP.BAL
 
         public static int AddCurrentstock(WarehouseModel model)
         {
+             int Timestamp = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
             try
             {
                 string strsql = "insert into wp_stock_mouvement(datem,fk_product,fk_entrepot,value,type_mouvement,label,price,fk_origin,eatby,sellby,serial) " +
                     "values(@datem,@fk_product,@fk_entrepot,@value,0,@label,@price,0,@eatby,@sellby,@serial);SELECT LAST_INSERT_ID();";
+                string strsql1=" insert into product_stock_register(tran_type,tran_id,product_id,warehouse_id,tran_date,quantity,flag) " +
+                    "values(@tran_type,@tran_id,@fk_product,@fk_entrepot,@eatby,@value,@flag);SELECT LAST_INSERT_ID();";
                 
                 MySqlParameter[] para =
                 {
@@ -378,10 +381,12 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@label", model.label),
                     new MySqlParameter("@eatby", model.eatby),
                     new MySqlParameter("@sellby", model.sellby),
-                     new MySqlParameter("@serial", model.serial),
-
+                    new MySqlParameter("@serial", model.serial),
+                    new MySqlParameter("@tran_id",Timestamp),
+                    new MySqlParameter("@tran_type","PO"),
+                    new MySqlParameter("@flag","R"),
                 };
-                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql+strsql1, para));
                 return result;
             }
             catch (Exception Ex)

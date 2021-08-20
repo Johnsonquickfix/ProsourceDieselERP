@@ -1410,14 +1410,14 @@
 
                 if (!string.IsNullOrEmpty(searchid))
                 {
-                    strWhr += " and (p.id like '%" + searchid + "%' "
-                            + " OR os.num_items_sold='%" + searchid + "%' "
-                            + " OR os.total_sales='%" + searchid + "%' "
-                            + " OR os.customer_id='%" + searchid + "%' "
-                            + " OR p.post_status like '%" + searchid + "%' "
-                            + " OR p.post_date like '%" + searchid + "%' "
-                            + " OR COALESCE(pmf.meta_value, '') like '%" + searchid + "%' "
-                            + " OR COALESCE(pml.meta_value, '') like '%" + searchid + "%' "
+                    strWhr += " and (p.id like '" + searchid + "%' "
+                            //+ " OR os.num_items_sold='%" + searchid + "%' "
+                            //+ " OR os.total_sales='%" + searchid + "%' "
+                            //+ " OR os.customer_id='%" + searchid + "%' "
+                            + " OR p.post_status like '" + searchid + "%' "
+                            //+ " OR p.post_date like '%" + searchid + "%' "
+                            + " OR COALESCE(pmf.meta_value, '') like '" + searchid + "%' "
+                            + " OR COALESCE(pml.meta_value, '') like '" + searchid + "%' "
                             + " OR replace(replace(replace(replace(pmp.meta_value, '-', ''), ' ', ''), '(', ''), ')', '') like '%" + searchid + "%'"
                             + " )";
                 }
@@ -1436,16 +1436,16 @@
                             + " replace(replace(replace(replace(pmp.meta_value,'-', ''),' ',''),'(',''),')','') billing_phone,"
                             + " (SELECT sum(rpm.meta_value) FROM wp_posts rp JOIN wp_postmeta rpm ON rp.ID = rpm.post_id AND meta_key = '_order_total' WHERE rp.post_parent = p.ID AND rp.post_type = 'shop_order_refund') AS refund_total"
                             + " FROM wp_posts p inner join wp_wc_order_stats os on p.id = os.order_id"
-                            + " left join wp_postmeta pmf on os.order_id = pmf.post_id and pmf.meta_key = '_billing_first_name'"
-                            + " left join wp_postmeta pml on os.order_id = pml.post_id and pml.meta_key = '_billing_last_name'"
-                            + " left join wp_postmeta pmp on os.order_id = pmp.post_id and pmp.meta_key = '_billing_phone'"
+                            + " left join wp_postmeta pmf on p.id = pmf.post_id and pmf.meta_key = '_billing_first_name'"
+                            + " left join wp_postmeta pml on p.id = pml.post_id and pml.meta_key = '_billing_last_name'"
+                            + " left join wp_postmeta pmp on p.id = pmp.post_id and pmp.meta_key = '_billing_phone'"
                             + " WHERE p.post_type = 'shop_order' " + strWhr
                             + " order by " + SortCol + " " + SortDir + " limit " + (pageno).ToString() + ", " + pagesize + "";
 
-                strSql += "; SELECT sum(1) TotalRecord from wp_wc_order_stats os inner join wp_posts p on p.id = os.order_id "
-                        + " left join wp_postmeta pmf on os.order_id = pmf.post_id and pmf.meta_key = '_billing_first_name'"
-                        + " left join wp_postmeta pml on os.order_id = pml.post_id and pml.meta_key = '_billing_last_name'"
-                        + " left join wp_postmeta pmp on os.order_id = pmp.post_id and pmp.meta_key = '_billing_phone'"
+                strSql += "; SELECT sum(1) TotalRecord from wp_posts p"
+                        + " left join wp_postmeta pmf on p.id = pmf.post_id and pmf.meta_key = '_billing_first_name'"
+                        + " left join wp_postmeta pml on p.id = pml.post_id and pml.meta_key = '_billing_last_name'"
+                        + " left join wp_postmeta pmp on p.id = pmp.post_id and pmp.meta_key = '_billing_phone'"
                         + " WHERE p.post_type = 'shop_order' " + strWhr.ToString();
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];

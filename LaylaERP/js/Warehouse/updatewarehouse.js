@@ -340,10 +340,10 @@ function AddTransferStock() {
     var inventorycode = $("#txttransferinvtcode").val();
     var label = $("#txttransferlabel").val();
 
-    if (fk_product == 0) {
-        swal('Alert', 'Please select product', 'error').then(function () { swal.close(); $('#ddltransferProduct').focus(); });
-    }
-    else if (fk_entrepottarget == 0) {
+    //if (fk_product == 0) {
+    //    swal('Alert', 'Please select product', 'error').then(function () { swal.close(); $('#ddltransferProduct').focus(); });
+    //}
+    if (fk_entrepottarget == 0) {
         swal('Alert', 'Please select target warehouse', 'error').then(function () { swal.close(); $('#ddltargetwarehouse').focus(); });
     }
     else if (fk_entrepot == fk_entrepottarget) { swal('Alert', 'Please select other warehouse', 'error'); }
@@ -473,10 +473,12 @@ function chk_status(ele) {
             $("#txtprice").val(jobj[0].price);
             $("#txtunit").val(jobj[0].value);
             $("#txtsalebydate").val(jobj[0].sellby);
+            $("#txtTransid").val(jobj[0].tran_id);
 
             $("#btnStock").hide();
             $("#btnStockUpdate").show();
             $("#btnStockCancel").show();
+
 
         },
         complete: function () { $("#loader").hide(); },
@@ -490,7 +492,7 @@ function StockTransferGrid() {
     var fk_entrepot = $("#hfid").val();
     var obj = { fk_entrepot: fk_entrepot };
     $.ajax({
-        url: '/Warehouse/GetCurrentStock',
+        url: '/Warehouse/GetTransferStock',
         method: 'post',
         datatype: 'json',
         contentType: "application/json; charset=utf-8",
@@ -504,8 +506,9 @@ function StockTransferGrid() {
                 "columns": [
                     { data: 'ref', title: 'Ref', sWidth: "5%" },
                     { data: 'date', title: 'Date', sWidth: "15%", },
+                    { data: 'warehouse', title: 'Warehouse', sWidth: "15%" },
                     { data: 'product', title: 'Product', sWidth: "20%" },
-                    //{ data: 'warehouse', title: 'Warehouse', sWidth: "15%" },
+                    
                     { data: 'label', title: 'Label of movement', sWidth: "15%" },
                     { data: 'value', title: 'Qty', sWidth: "10%" },
                     //{ data: 'price', title: 'Unit Price', sWidth: "10%", },
@@ -569,7 +572,7 @@ function transferstockstatus(ele) {
 
 function Updatecorrectstock() {
     debugger
-    //var fk_entrepot = $("#hfid").val();
+    var tranid = $("#txtTransid").val();
     var rowid = $("#hfstockid").val();
     var fk_product = $("#ddlProduct").val();
     var serial = $("#txtserial").val();
@@ -604,7 +607,7 @@ function Updatecorrectstock() {
     else {
 
         var obj = {
-            //fk_entrepot: fk_entrepot,
+            searchtransid: tranid,
             searchid: rowid,
             fk_product: fk_product,
             serial: serial,

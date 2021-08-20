@@ -16,7 +16,7 @@ namespace LaylaERP.BAL
         public static int Total_Orders()
         {
             int totalorders = 0;
-            string strQuery = "SELECT Count(distinct p.id)  from wp_wc_order_stats os inner join wp_posts p on p.id = os.order_id WHERE p.post_type = 'shop_order'  and p.post_status != 'auto-draft'";
+            string strQuery = "SELECT Count(distinct p.id) from wp_posts p WHERE p.post_type = 'shop_order' and p.post_status != 'auto-draft'";
             totalorders = Convert.ToInt32(SQLHelper.ExecuteScalar(strQuery).ToString());
             return totalorders;
         }
@@ -24,7 +24,7 @@ namespace LaylaERP.BAL
         public static decimal Total_Sales()
         {
             decimal totalsales = 0;
-            string strQuery = "SELECT round(sum(total_sales),0) from wp_wc_order_stats os inner join wp_posts p on p.id = os.order_id WHERE p.post_type = 'shop_order' and p.post_status in ('wc-completed','wc-pending','wc-processing','wc-on-hold','wc-refunded')";
+            string strQuery = "SELECT IFNULL(round(sum(rpm.meta_value),0),0) from wp_posts p inner join wp_postmeta rpm ON p.id = rpm.post_id AND meta_key = '_order_total' WHERE p.post_type = 'shop_order' and p.post_status in ('wc-completed','wc-pending','wc-processing','wc-on-hold','wc-refunded')";
             totalsales = Convert.ToInt32(SQLHelper.ExecuteScalar(strQuery).ToString());
             return totalsales;
         }
@@ -40,7 +40,7 @@ namespace LaylaERP.BAL
         public static decimal Total_Order_Completed()
         {
             decimal totalsales = 0;
-            string strQuery = "SELECT IFNULL(Count(distinct p.id),0)  from wp_wc_order_stats os inner join wp_posts p on p.id = os.order_id WHERE p.post_type = 'shop_order'  and p.post_status != 'auto-draft' and status='wc-completed'";
+            string strQuery = "SELECT IFNULL(Count(distinct p.id),0) from wp_posts p WHERE p.post_type = 'shop_order' and p.post_status != 'auto-draft' and p.post_status='wc-completed'";
             totalsales = Convert.ToInt32(SQLHelper.ExecuteScalar(strQuery).ToString());
             return totalsales;
         }
@@ -52,7 +52,7 @@ namespace LaylaERP.BAL
             todate = DateTime.Parse(to_date);
 
             int totalorders = 0;
-            string strQuery = "SELECT IFNULL(Count(distinct p.id),0)  from wp_wc_order_stats os inner join wp_posts p on p.id = os.order_id WHERE p.post_type = 'shop_order' and DATE(p.post_date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and DATE(post_date)<= '" + todate.ToString("yyyy-MM-dd") + "' and p.post_status != 'auto-draft'";
+            string strQuery = "SELECT IFNULL(Count(distinct p.id),0)  from wp_posts p WHERE p.post_type = 'shop_order' and DATE(p.post_date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and DATE(post_date)<= '" + todate.ToString("yyyy-MM-dd") + "' and p.post_status != 'auto-draft'";
             totalorders = Convert.ToInt32(SQLHelper.ExecuteScalar(strQuery).ToString());
             return totalorders;
         }
@@ -64,7 +64,7 @@ namespace LaylaERP.BAL
             todate = DateTime.Parse(to_date);
 
             int totalorders = 0;
-            string strQuery = "SELECT IFNULL(round(sum(total_sales),0),0) from wp_wc_order_stats os inner join wp_posts p on p.id = os.order_id WHERE p.post_type = 'shop_order' and DATE(p.post_date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and DATE(post_date)<= '" + todate.ToString("yyyy-MM-dd") + "' and p.post_status in ('wc-completed','wc-pending','wc-processing','wc-on-hold','wc-refunded')";
+            string strQuery = "SELECT IFNULL(round(sum(rpm.meta_value),0),0) from wp_posts p inner join wp_postmeta rpm ON p.id = rpm.post_id AND meta_key = '_order_total' WHERE p.post_type = 'shop_order' and DATE(p.post_date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and DATE(post_date)<= '" + todate.ToString("yyyy-MM-dd") + "' and p.post_status in ('wc-completed','wc-pending','wc-processing','wc-on-hold','wc-refunded')";
             totalorders = Convert.ToInt32(SQLHelper.ExecuteScalar(strQuery).ToString());
             return totalorders;
         }
@@ -78,7 +78,7 @@ namespace LaylaERP.BAL
                 DateTime fromdate = DateTime.Now, todate = DateTime.Now;
                 fromdate = DateTime.Parse(from_date);
                 todate = DateTime.Parse(to_date);
-                string strSql = "Select (SELECT IFNULL(Count(distinct p.id),0)  from wp_wc_order_stats os inner join wp_posts p on p.id = os.order_id WHERE p.post_type = 'shop_order' and DATE(p.post_date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and DATE(post_date)<= '" + todate.ToString("yyyy-MM-dd") + "' and p.post_status != 'auto-draft') TotalOrder , (SELECT IFNULL(format(sum(total_sales),2),0) from wp_wc_order_stats os inner join wp_posts p on p.id = os.order_id WHERE p.post_type = 'shop_order' and DATE(p.post_date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and DATE(post_date)<= '" + todate.ToString("yyyy-MM-dd") + "' and p.post_status in ('wc-completed','wc-pending','wc-processing','wc-on-hold','wc-refunded')) TotalSale ";
+                string strSql = "Select (SELECT IFNULL(Count(distinct p.id),0) from wp_posts p WHERE p.post_type = 'shop_order' and DATE(p.post_date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and DATE(post_date)<= '" + todate.ToString("yyyy-MM-dd") + "' and p.post_status != 'auto-draft') TotalOrder , (SELECT IFNULL(round(sum(rpm.meta_value),0),0) from wp_posts p inner join wp_postmeta rpm ON p.id = rpm.post_id AND meta_key = '_order_total' WHERE p.post_type = 'shop_order' and DATE(p.post_date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and DATE(post_date)<= '" + todate.ToString("yyyy-MM-dd") + "' and p.post_status in ('wc-completed','wc-pending','wc-processing','wc-on-hold','wc-refunded')) TotalSale ";
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
             }
@@ -231,14 +231,14 @@ namespace LaylaERP.BAL
                 todate = DateTime.Parse(to_date);
                 if (!string.IsNullOrEmpty(searchid))
                 {
-                    strWhr += " and (p.id like '%" + searchid + "%' "
-                            + " OR os.num_items_sold='%" + searchid + "%' "
-                            + " OR os.total_sales='%" + searchid + "%' "
-                            + " OR os.customer_id='%" + searchid + "%' "
-                            + " OR p.post_status like '%" + searchid + "%' "
-                            + " OR p.post_date like '%" + searchid + "%' "
-                            + " OR COALESCE(pmf.meta_value, '') like '%" + searchid + "%' "
-                            + " OR COALESCE(pml.meta_value, '') like '%" + searchid + "%' "
+                    strWhr += " and (p.id like '" + searchid + "%' "
+                            //+ " OR os.num_items_sold='%" + searchid + "%' "
+                            //+ " OR os.total_sales='%" + searchid + "%' "
+                            //+ " OR os.customer_id='%" + searchid + "%' "
+                            + " OR p.post_status like '" + searchid + "%' "
+                            //+ " OR p.post_date like '%" + searchid + "%' "
+                            + " OR COALESCE(pmf.meta_value, '') like '" + searchid + "%' "
+                            + " OR COALESCE(pml.meta_value, '') like '" + searchid + "%' "
                             + " OR replace(replace(replace(replace(pmp.meta_value, '-', ''), ' ', ''), '(', ''), ')', '') like '%" + searchid + "%'"
                             + " )";
                 }
@@ -253,16 +253,16 @@ namespace LaylaERP.BAL
                             + " REPLACE(p.post_status, 'wc-', '') status, DATE_FORMAT(p.post_date, '%M %d %Y') date_created,CONCAT(pmf.meta_value, ' ', COALESCE(pml.meta_value, '')) FirstName,COALESCE(pml.meta_value, '') LastName,"
                             + " replace(replace(replace(replace(pmp.meta_value,'-', ''),' ',''),'(',''),')','') billing_phone"
                             + " FROM wp_posts p inner join wp_wc_order_stats os on p.id = os.order_id"
-                            + " left join wp_postmeta pmf on os.order_id = pmf.post_id and pmf.meta_key = '_billing_first_name'"
-                            + " left join wp_postmeta pml on os.order_id = pml.post_id and pml.meta_key = '_billing_last_name'"
-                            + " left join wp_postmeta pmp on os.order_id = pmp.post_id and pmp.meta_key = '_billing_phone'"
+                            + " left join wp_postmeta pmf on p.id = pmf.post_id and pmf.meta_key = '_billing_first_name'"
+                            + " left join wp_postmeta pml on p.id = pml.post_id and pml.meta_key = '_billing_last_name'"
+                            + " left join wp_postmeta pmp on p.id = pmp.post_id and pmp.meta_key = '_billing_phone'"
                             + " WHERE p.post_type = 'shop_order' and p.post_status != 'auto-draft' " + strWhr.ToString()
                             + " limit 10 ";
 
-                strSql += "; SELECT Count(distinct p.id) TotalRecord from wp_wc_order_stats os inner join wp_posts p on p.id = os.order_id "
-                        + " left join wp_postmeta pmf on os.order_id = pmf.post_id and pmf.meta_key = '_billing_first_name'"
-                        + " left join wp_postmeta pml on os.order_id = pml.post_id and pml.meta_key = '_billing_last_name'"
-                        + " left join wp_postmeta pmp on os.order_id = pmp.post_id and pmp.meta_key = '_billing_phone'"
+                strSql += "; SELECT Count(distinct p.id) TotalRecord from wp_posts p "
+                        + " left join wp_postmeta pmf on p.id = pmf.post_id and pmf.meta_key = '_billing_first_name'"
+                        + " left join wp_postmeta pml on p.id = pml.post_id and pml.meta_key = '_billing_last_name'"
+                        + " left join wp_postmeta pmp on p.id = pmp.post_id and pmp.meta_key = '_billing_phone'"
                         + " WHERE p.post_type = 'shop_order' and p.post_status != 'auto-draft' " + strWhr.ToString();
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];

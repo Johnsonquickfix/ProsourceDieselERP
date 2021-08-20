@@ -146,37 +146,19 @@ namespace LaylaERP.BAL
             {
                 string strsql = "";
                 DateTime cDate = CommonDate.CurrentDate(), cUTFDate = CommonDate.UtcDate();
-                MySqlParameter[] para =
-                    {
-                        new MySqlParameter("@ref_ext", ""),
-                        new MySqlParameter("@ref_supplier", model.VendorBillNo),
-                        new MySqlParameter("@fk_soc", model.VendorID),
-                        new MySqlParameter("@fk_status", "1"),
-                        new MySqlParameter("@source", "0"),
-                        new MySqlParameter("@fk_payment_term", model.PaymentTerms),
-                        new MySqlParameter("@fk_balance_days", model.Balancedays),
-                        new MySqlParameter("@fk_payment_type", model.PaymentType),
-                        new MySqlParameter("@date_livraison", model.Planneddateofdelivery),
-                        new MySqlParameter("@fk_incoterms", model.IncotermType),
-                        new MySqlParameter("@location_incoterms", model.Incoterms),
-                        new MySqlParameter("@note_private", model.NotePrivate),
-                        new MySqlParameter("@note_public", model.NotePublic),
-                        new MySqlParameter("@tms", cUTFDate.ToString("yyyy-MM-dd HH:mm:ss")),
-                        new MySqlParameter("@date_creation", cDate.ToString("yyyy-MM-dd HH:mm:ss")),
-                        new MySqlParameter("@fk_user_author", model.LoginID)
-                    };
+                string strPOYearMonth = cDate.ToString("yyMM").PadRight(4);
+                MySqlParameter[] para = { };
                 if (model.RowID > 0)
                 {
-                    strsql = "update commerce_purchase_order set ref_supplier=@ref_supplier,fk_soc=@fk_soc,fk_payment_term=@fk_payment_term,fk_balance_days=@fk_balance_days,fk_incoterms=@fk_incoterms,location_incoterms=@location_incoterms,"
-                        + "fk_payment_type=@fk_payment_type,date_livraison=@date_livraison,note_private=@note_private,note_public=@note_public where rowid=" + model.RowID.ToString()
-                        + ";select " + model.RowID.ToString() + ";";
+                    strsql = string.Format("update commerce_purchase_order set ref_supplier='{0}',fk_supplier='{1}',fk_payment_term='{2}',fk_balance_days='{3}',fk_incoterms='{4}',location_incoterms='{5}',"
+                            + "fk_payment_type='{6}',date_livraison='{7}',note_private='{8}',note_public='{9}' where rowid='{10}';", model.VendorBillNo, model.VendorID, model.PaymentTerms, model.Balancedays,
+                            model.IncotermType, model.Incoterms, model.PaymentType, model.Planneddateofdelivery, model.NotePrivate, model.NotePublic, model.RowID);
                 }
                 else
                 {
-                    strsql = "insert into commerce_purchase_order(ref,ref_ext,ref_supplier,fk_soc,fk_status,source,fk_payment_term,fk_balance_days,fk_payment_type,date_livraison,fk_incoterms,location_incoterms,note_private,note_public,fk_user_author,tms,date_creation) "
-                        + " select concat('PO',date_format(@date_creation,'%y%m'),'-',lpad(coalesce(max(right(ref,5)),0) + 1,5,'0')) ref,@ref_ext,@ref_supplier,@fk_soc,@fk_status,@source,@fk_payment_term,@fk_balance_days,@fk_payment_type,@date_livraison,@fk_incoterms,@location_incoterms,@note_private,@note_public"
-                        + " @fk_user_author,@tms,@date_creation from commerce_purchase_order where lpad(ref,6,0) = concat('PO',date_format(@date_creation,'%y%m'));"
-                        + " select LAST_INSERT_ID();";
+                    strsql = "insert into commerce_purchase_order(ref,ref_ext,ref_supplier,fk_supplier,fk_status,source,fk_payment_term,fk_balance_days,fk_payment_type,date_livraison,fk_incoterms,location_incoterms,note_private,note_public,fk_user_author,date_creation) "
+                        + string.Format("select concat('PO',"+ strPOYearMonth + ",'-',lpad(coalesce(max(right(ref,5)),0) + 1,5,'0')) ref,'','{0}','{1}','1','0','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}' from commerce_purchase_order where lpad(ref,6,0) = concat('PO'," + strPOYearMonth + ");select LAST_INSERT_ID();",
+                                model.VendorBillNo, model.VendorID, model.PaymentTerms, model.Balancedays, model.PaymentType, model.Planneddateofdelivery, model.IncotermType, model.Incoterms, model.NotePrivate, model.NotePublic, model.LoginID, cDate.ToString("yyyy-MM-dd HH:mm:ss"));
                 }
                 /// step 2 : commerce_purchase_order_detail
                 foreach (PurchaseOrderProductsModel obj in model.PurchaseOrderProducts)
@@ -193,7 +175,7 @@ namespace LaylaERP.BAL
                             obj.subprice, obj.total_ht, obj.total_ttc, obj.product_type, "", "", obj.rang);
                     }
                 }
-                result = Convert.ToInt64(SQLHelper.ExecuteScalar(strsql, para));                
+                result = Convert.ToInt64(SQLHelper.ExecuteScalar(strsql, para));
             }
             catch (Exception Ex)
             {

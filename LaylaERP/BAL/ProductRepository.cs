@@ -1321,12 +1321,12 @@ namespace LaylaERP.BAL
         }
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Product Categories~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        public static DataSet GetParentCategory()
+        public static DataSet GetParentCategory(string term_taxonomy_id)
         {
             DataSet DS = new DataSet();
             try
             {
-                string strSQl = "Select tx.term_taxonomy_id ID,t.name from wp_term_taxonomy tx left join wp_terms t on tx.term_id=t.term_id where tx.taxonomy='product_cat' order by tx.term_taxonomy_id desc;";
+                string strSQl = "Select tx.term_taxonomy_id ID,t.name from wp_term_taxonomy tx left join wp_terms t on tx.term_id=t.term_id where tx.taxonomy='product_cat' and tx.term_taxonomy_id !='"+ term_taxonomy_id +"' order by tx.term_taxonomy_id desc;";
                 DS = SQLHelper.ExecuteDataSet(strSQl);
             }
             catch (Exception ex)

@@ -1219,9 +1219,9 @@ namespace LaylaERP.Controllers
             return Json(new { status = true, message = "update successfully!!", ID = 1 }, 0);
         }
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Product Categories~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        public JsonResult GetParentCategory(SearchModel model)
+        public JsonResult GetParentCategory(string id)
         {
-            DataSet ds = BAL.ProductRepository.GetParentCategory();
+            DataSet ds = BAL.ProductRepository.GetParentCategory(id);
             List<SelectListItem> productlist = new List<SelectListItem>();
             foreach (DataRow dr in ds.Tables[0].Rows)
             {

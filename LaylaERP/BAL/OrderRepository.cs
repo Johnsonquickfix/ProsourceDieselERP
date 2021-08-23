@@ -589,7 +589,7 @@
                 strSql.Append(string.Format("update wp_posts set post_status = '{0}' where id = {1};", "wc-processing", model.post_id));
                 result = SQLHelper.ExecuteNonQuery(strSql.ToString());
             }
-            catch (Exception Ex) { }
+            catch { }
             return result;
         }
         //Refund Order
@@ -739,7 +739,7 @@
                     result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
                 }
             }
-            catch (Exception Ex) { }
+            catch { }
             return result;
         }
 

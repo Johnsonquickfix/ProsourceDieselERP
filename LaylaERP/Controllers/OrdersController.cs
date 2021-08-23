@@ -246,7 +246,7 @@
                 DataTable DT = OrderRepository.GetCouponDiscount(model.strValue1);
                 JSONresult = JsonConvert.SerializeObject(DT);
             }
-            catch (Exception ex) { }
+            catch { }
             return Json(JSONresult, 0);
         }
         [HttpPost]
@@ -294,7 +294,7 @@
                 { status = true; JSONresult = "Order placed successfully."; }
                 //JSONresult = JsonConvert.SerializeObject(DT);
             }
-            catch (Exception ex) { }
+            catch  { }
             return Json(new { status = status, message = JSONresult }, 0);
         }
         [HttpPost]

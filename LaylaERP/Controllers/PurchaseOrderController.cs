@@ -13,8 +13,9 @@ namespace LaylaERP.Controllers
     public class PurchaseOrderController : Controller
     {
         // GET: PurchaseOrder
-        public ActionResult NewPurchaseOrder()
+        public ActionResult NewPurchaseOrder(long id = 0)
         {
+            ViewBag.id = id;
             return View();
         }
         public ActionResult PurchaseOrderDetails()
@@ -124,49 +125,32 @@ namespace LaylaERP.Controllers
             }
             return Json(new { status = b_status, message = JSONstring, id = ID }, 0);
         }
-        public JsonResult GetPurchaseOrderList(PurchaseOrderModel model)
+        public JsonResult GetPurchaseOrderList(JqDataTableModel model)
         {
             string result = string.Empty;
             int TotalRecord = 0;
             try
             {
-                string urid = "";
-                if (model.user_status != "")
-                    urid = model.user_status;
-                string searchid = model.Search;
-                DataTable dt = PurchaseOrderRepository.GetPurchaseOrder(urid, searchid, model.PageNo, model.PageSize, out TotalRecord, model.SortCol, model.SortDir);
+                DataTable dt = PurchaseOrderRepository.GetPurchaseOrder(model.strValue1, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
                 result = JsonConvert.SerializeObject(dt);
             }
             catch (Exception ex) { throw ex; }
             return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
         }
-        public JsonResult GetPurchaseOrderByID(string id)
+        [HttpGet]
+        public JsonResult GetPurchaseOrderByID(SearchModel model)
         {
             string JSONresult = string.Empty;
             try
             {
-                DataTable dt = PurchaseOrderRepository.GetPurchaseOrderByID(id);
-                JSONresult = JsonConvert.SerializeObject(dt);
+                long id = 0;
+                if (!string.IsNullOrEmpty(model.strValue1))
+                    id = Convert.ToInt64(model.strValue1);
+                DataSet ds = PurchaseOrderRepository.GetPurchaseOrderByID(id);
+                JSONresult = JsonConvert.SerializeObject(ds);
             }
             catch { }
             return Json(JSONresult, 0);
-        }
-
-        [HttpPost]
-        public JsonResult GetProductInfo(SearchModel model)
-        {
-            List<OrderProductsModel> obj = new List<OrderProductsModel>();
-            try
-            {
-                long pid = 0, vid = 0;
-                if (!string.IsNullOrEmpty(model.strValue1))
-                    pid = Convert.ToInt64(model.strValue1);
-                if (!string.IsNullOrEmpty(model.strValue2))
-                    vid = Convert.ToInt64(model.strValue2);
-                obj = PurchaseOrderRepository.GetProductListDetails(pid, vid);
-            }
-            catch { }
-            return Json(obj, 0);
         }
     }
 }

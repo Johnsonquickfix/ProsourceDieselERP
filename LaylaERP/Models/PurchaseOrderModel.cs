@@ -55,5 +55,7 @@ namespace LaylaERP.Models
         public int info_bits { get; set; }
         public int special_code { get; set; }
         public int rang { get; set; }
+        public string date_start { get; set; }
+        public string date_end { get; set; }
     }
 }

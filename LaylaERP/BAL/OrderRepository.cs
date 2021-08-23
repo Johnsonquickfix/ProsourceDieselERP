@@ -530,7 +530,7 @@
 
                 result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
             }
-            catch (Exception Ex) { }
+            catch (Exception Ex) { throw Ex; }
             return result;
         }
         public static long AddOrderFee(OrderOtherItemsModel obj)

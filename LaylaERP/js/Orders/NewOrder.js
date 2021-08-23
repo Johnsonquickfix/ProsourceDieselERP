@@ -690,7 +690,7 @@ function getOrderItemList(oid) {
                 let cou_amt = parseFloat(data[i].discount) || 0.00;
                 let coupon_list = auto_coupon.filter(element => element.post_title == data[i].product_name);
                 for (var j = 0; j < coupon_list.length; j++) {
-                    couponHtml += '<li id="li_' + coupon_list[j].post_title.toString().toLowerCase() + '" class="' + (coupon_list[j].discount_type == 'fixed_cart' ? 'cart' : 'items') + '" data-coupon= "' + coupon_list[j].post_title.toString().toLowerCase() + '" data-couponamt= "' + coupon_list[j].coupon_amount + '" data-disctype= "' + coupon_list[j].discount_type + '" data-rqprdids= "' + coupon_list[j].product_ids + '" data-excludeids= "' + coupon_list[j].exclude_product_ids + '" data-type= "' + coupon_list[j].type + '" data-orderitemid="' + orderitemid + '">';
+                    couponHtml += '<li id="li_' + coupon_list[j].post_title.toString().toLowerCase().replaceAll(' ', '_') + '" class="' + (coupon_list[j].discount_type == 'fixed_cart' ? 'cart' : 'items') + '" data-coupon= "' + coupon_list[j].post_title.toString().toLowerCase() + '" data-couponamt= "' + coupon_list[j].coupon_amount + '" data-disctype= "' + coupon_list[j].discount_type + '" data-rqprdids= "' + coupon_list[j].product_ids + '" data-excludeids= "' + coupon_list[j].exclude_product_ids + '" data-type= "' + coupon_list[j].type + '" data-orderitemid="' + orderitemid + '">';
                     couponHtml += '<a href="javascript:void(0);">';
                     couponHtml += '<i class="fa fa-gift"></i>';
                     couponHtml += '<span>' + coupon_list[j].title + '</span>';
@@ -711,7 +711,7 @@ function getOrderItemList(oid) {
                 if (coupon_list.length == 0) {
                     let cpn_info = JSON.parse(data[i].meta_data);
                     let cpn_name = data[i].product_name;
-                    couponHtml += '<li id="li_' + data[i].product_name.toString().toLowerCase() + '" class="' + (cpn_info.discount_type == 'fixed_cart' ? 'cart' : 'items') + '" data-coupon= "' + data[i].product_name + '" data-couponamt= "' + (cpn_info.coupon_amount != '' && cpn_info.coupon_amount != undefined ? cpn_info.coupon_amount : cou_amt) + '" data-disctype= "' + (cpn_info.discount_type != '' && cpn_info.discount_type != undefined ? cpn_info.discount_type : '') + '" data-rqprdids="' + (cpn_info.product_ids != '' && cpn_info.product_ids != undefined ? cpn_info.product_ids : '') + '" data-excludeids="' + (cpn_info.exclude_product_ids != '' && cpn_info.exclude_product_ids != undefined ? cpn_info.exclude_product_ids : '') + '" data-type= "add_coupon" data-orderitemid="' + orderitemid + '">';
+                    couponHtml += '<li id="li_' + data[i].product_name.toString().toLowerCase().replaceAll(' ', '_') + '" class="' + (cpn_info.discount_type == 'fixed_cart' ? 'cart' : 'items') + '" data-coupon= "' + data[i].product_name + '" data-couponamt= "' + (cpn_info.coupon_amount != '' && cpn_info.coupon_amount != undefined ? cpn_info.coupon_amount : cou_amt) + '" data-disctype= "' + (cpn_info.discount_type != '' && cpn_info.discount_type != undefined ? cpn_info.discount_type : '') + '" data-rqprdids="' + (cpn_info.product_ids != '' && cpn_info.product_ids != undefined ? cpn_info.product_ids : '') + '" data-excludeids="' + (cpn_info.exclude_product_ids != '' && cpn_info.exclude_product_ids != undefined ? cpn_info.exclude_product_ids : '') + '" data-type= "add_coupon" data-orderitemid="' + orderitemid + '">';
                     couponHtml += '<a href="javascript:void(0);">';
                     couponHtml += '<i class="fa fa-gift"></i>';
                     couponHtml += '<span>' + cpn_name.toString().toLowerCase() + '</span>';
@@ -1016,6 +1016,22 @@ function Coupon_get_discount_amount(id, parent_id, coupon_code, coupon_amt, item
         else { prot_qnty = 0.00; }
         return { price: sale_price, disc_amt: 1.00, qty: prot_qnty };
     }
+    else if (coupon_code == "kapok second pillow") {
+        let kap_qnty = 0;
+        $("#order_line_items > tr.paid_item").each(function (tr_index, tr_row) {
+            if ($(tr_row).data("pid") == 14023) { kap_qnty += parseFloat($(tr_row).find("[name=txt_ItemQty]").val()); }
+        });
+        coupon_amt = (kap_qnty == 1) ? coupon_amt : 0;
+        return { price: reg_price, disc_amt: coupon_amt, qty: 1 };
+    }
+    else if (coupon_code == "tsjpillow") {
+        let kap_qnty = 0;
+        $("#order_line_items > tr.paid_item").each(function (tr_index, tr_row) {
+            if ($(tr_row).data("pid") == 14023) { kap_qnty += parseFloat($(tr_row).find("[name=txt_ItemQty]").val()); }
+        });
+        if (kap_qnty % 2 == 0) { $('#li_' + coupon_code).remove(); coupon_amt = 0; }
+        return { price: reg_price, disc_amt: coupon_amt, qty: item_qty };
+    }
     else {
         return { price: reg_price, disc_amt: coupon_amt, qty: item_qty };
     }
@@ -1111,6 +1127,10 @@ function ApplyCoupon() {
         if ($(li).data('type') == 'add_coupon') { add_coupon_count += 1; }
     });
     if (add_coupon_count > 0) { swal('Alert!', 'Cannot add any other Coupon.', "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false; };
+    if (coupon_code.includes("tsjpillow")) {
+        let cou_details = Coupon_get_discount_amount(0, 0, coupon_code, 25, 0, 0, 0); console.log(cou_details);
+        if (cou_details.disc_amt == 0) { swal('Alert!', 'Cannot add ' + coupon_code, "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false; };
+    }
 
     let obj = { strValue1: coupon_code };
     $.ajax({
@@ -1144,9 +1164,10 @@ function ApplyCoupon() {
             if (!check_applied_coupon(coupon_code, data[0].product_ids, data[0].exclude_product_ids)) {
                 swal('Alert!', 'Can not add ' + coupon_code, "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false;
             }
-            console.log(data[0]);
+            //console.log(data[0]);
+            let cpns_with_other_cpns = ["freeprotector", "founder50", "kapok second pillow", "tsjpillow"];//not remove other coupon
             if (coupon_code.includes("friend") && coupon_code.substr(6) > 8500) { deleteAllCoupons('friend_diff'); }
-            else if (coupon_code.includes("freeprotector") || (coupon_code.includes("vip") && data[0].individual_use == "no")) { }
+            else if (cpns_with_other_cpns.includes(coupon_code) || (coupon_code.includes("vip") && data[0].individual_use == "no")) { }
             else {
                 if (data[0].individual_use == "yes") { deleteAllCoupons('all'); }
                 if (data[0].discount_type != "fixed_cart") { deleteAllCoupons('diff'); }
@@ -1179,7 +1200,7 @@ function bindCouponList(data) {
         for (var i = 0; i < data.length; i++) {
             if ($('#li_' + data[i].post_title).length <= 0) {
                 let cou_amt = parseFloat(data[i].coupon_amount) || 0.00;
-                layoutHtml = '<li id="li_' + data[i].post_title.toString().toLowerCase() + '" class="' + (data[i].discount_type == 'fixed_cart' ? 'cart' : 'items') + '" data-coupon= "' + data[i].post_title + '" data-couponamt= "' + data[i].coupon_amount + '" data-disctype= "' + data[i].discount_type + '" data-rqprdids= "' + data[i].product_ids + '" data-excludeids= "' + data[i].exclude_product_ids + '" data-type= "' + data[i].type + '" data-orderitemid="0">';
+                layoutHtml = '<li id="li_' + data[i].post_title.toString().toLowerCase().replaceAll(' ', '_') + '" class="' + (data[i].discount_type == 'fixed_cart' ? 'cart' : 'items') + '" data-coupon= "' + data[i].post_title + '" data-couponamt= "' + data[i].coupon_amount + '" data-disctype= "' + data[i].discount_type + '" data-rqprdids= "' + data[i].product_ids + '" data-excludeids= "' + data[i].exclude_product_ids + '" data-type= "' + data[i].type + '" data-orderitemid="0">';
                 layoutHtml += '<a href="javascript:void(0);">';
                 layoutHtml += '<i class="fa fa-gift"></i>';
                 layoutHtml += '<span>' + data[i].title.toString().toLowerCase() + '</span>';
@@ -1291,7 +1312,7 @@ function deleteAllCoupons(coupon_type) {
             .then((result) => {
                 if (result.value) {
                     //Remove Coupon
-                    $('#li_' + coupon_type).remove();
+                    $('#li_' + coupon_type.replaceAll(' ', '_')).remove();
                     let auto_code = [];
                     let tax_rate = parseFloat($('#hfTaxRate').val()) || 0.00;
                     $("#order_line_items > tr.paid_item").each(function (index, tr) {
@@ -1349,6 +1370,10 @@ function calculateDiscountAcount() {
     let zCartDisAmt = 0.00, perqty_discamt = 0.00, paid_qty = 0.00;
     $('#billCoupon li.cart').each(function (index, li) {
         let zCouponAmt = parseFloat($(li).data('couponamt')) || 0.00;
+        if ($(li).data('coupon').toString().toLowerCase().includes("tsjpillow")) {
+            let cou_details = Coupon_get_discount_amount(0, 0, $(li).data('coupon').toString().toLowerCase(), zCouponAmt, 0, 0, 0);
+            zCouponAmt = cou_details.disc_amt;
+        }
         zCartDisAmt = zCartDisAmt + zCouponAmt;
         $(li).find("#cou_discamt").text(zCouponAmt.toFixed(2));
     });
@@ -1399,7 +1424,7 @@ function calculateDiscountAcount() {
 
                 if (zDiscType == 'fixed_product') { zDisAmt = cou_details.disc_amt * cou_details.qty; }
                 else if (zDiscType == 'fixed_cart') { zDisAmt = cou_details.disc_amt * cou_details.qty; }
-                else if (zDiscType == 'percent') { zDisAmt = ((cou_details.price * cou_details.qty) * zCouponAmt) / 100; }
+                else if (zDiscType == 'percent') { zDisAmt = (cou_details.price * cou_details.qty) * (cou_details.disc_amt / 100); }
                 else if (zDiscType == '2x_percent') { zDisAmt = ((zRegPrice * zCouponAmt) / 100) * Math.floor(zQty / 2); }
                 //console.log(cou, cou_details, zDisAmt);
                 //if (zDiscType == 'fixed_product') { zDisAmt = zCouponAmt * zQty; }

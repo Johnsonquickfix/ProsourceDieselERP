@@ -320,10 +320,11 @@ namespace LaylaERP.Controllers
         [HttpPost]
         public JsonResult AddCurrentstock(WarehouseModel model)
         {
-            
-            int ID = WarehouseRepository.AddCurrentstock(model);
+            int ID = 1;
+            //int ID = WarehouseRepository.AddCurrentstock(model);
             if (ID > 0)
             {
+                WarehouseRepository.AddCurrentstock(model);
                 return Json(new { status = true, message = "Data has been saved successfully!!", url = "" }, 0);
             }
             else
@@ -346,11 +347,26 @@ namespace LaylaERP.Controllers
             return Json(JSONresult, 0);
         }
 
+        public JsonResult GetTransferStock(WarehouseModel model)
+        {
+            //int id = model.fk_product;
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = WarehouseRepository.GetTransferStock(model);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+
         public JsonResult AddTransferStock(WarehouseModel model)
         {
-            int ID = WarehouseRepository.AddTransferStock(model);
+            int ID = 1;
+            //int ID = WarehouseRepository.AddTransferStock(model);
             if (ID > 0)
             {
+                WarehouseRepository.AddTransferStock(model);
                 return Json(new { status = true, message = "Data has been saved successfully!!", url = "" }, 0);
             }
             else

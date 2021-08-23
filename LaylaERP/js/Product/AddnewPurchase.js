@@ -465,7 +465,7 @@ function bindParentdata(data) {
         for (var i = 0; i < data.length; i++) {
             if (data[i].PKey > 0) {
                 layoutHtml += '<tr id="tritemId_' + data[i].PKey + '" data-key="' + data[i].PKey + '">';
-                layoutHtml += '<td class="text-left">' + data[i].product_label + '</td>';
+                layoutHtml += '<td class="text-left"><a href="../../Product/AddNewProduct/' + data[i].PKey + '">' + data[i].product_label + '</i></a ></td>';
                 layoutHtml += '<td>' + data[i].product_name + '</td>';
                 layoutHtml += '<td>' + data[i].quantity + '</td>';
                 layoutHtml += '</tr>';

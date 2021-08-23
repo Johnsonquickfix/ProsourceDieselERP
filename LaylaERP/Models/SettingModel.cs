@@ -11,6 +11,7 @@ namespace LaylaERP.Models
         bool _Paypal;
         bool _AmazonPay;
         bool _CreditCustomer;
+        bool _Podium;
         string _SenderEmailID = string.Empty;
         string _SenderEmailPwd = string.Empty;
         string _SMTPServerName = string.Empty;
@@ -53,6 +54,13 @@ namespace LaylaERP.Models
             get { return _CreditCustomer; }
             set { _CreditCustomer = value; }
         }
+
+        public bool Podium
+        {
+            get { return _Podium; }
+            set { _Podium = value; }
+        }
+
         public string SenderEmailID
         {
             get { return _SenderEmailID; }

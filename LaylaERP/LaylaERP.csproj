@@ -737,6 +737,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\passwordStrengthMeter.js" />
+    <Content Include="Scripts\wow.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -827,6 +828,7 @@
     <Content Include="Views\Accounting\AccountingJournal.cshtml" />
     <Content Include="Views\Accounting\chartofaccounts.cshtml" />
     <Content Include="Views\Accounting\productsaccount.cshtml" />
+    <Content Include="Views\Orders\minesofmoria.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

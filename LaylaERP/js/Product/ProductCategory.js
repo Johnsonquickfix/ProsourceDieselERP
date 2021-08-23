@@ -40,6 +40,7 @@ $('#btnAddNewCategory').click(function () {
         obj.append("description", Description);
         obj.append("display_type", DisplayType);
         obj.append("Meta_id", Meta_id);
+      
 
         $.ajax({
             url: '/Product/AddProductCategory/', dataType: 'json', type: 'Post',
@@ -55,7 +56,7 @@ $('#btnAddNewCategory').click(function () {
                     $("#btnAddNewCategory").text('Add new category');
                     $("#ProdCat").find(":input").each(function () {
                         switch (this.type) {
-                            case "text": case "email": case "textarea": case "tel": $(this).val(''); break;
+                            case "text": case "email": case "textarea": case "tel": $(this).val(''); case "file": $(this).val(''); break;
                         }
                     });
                     $("#ProdCat option[value='-1']").attr('selected', true)
@@ -199,8 +200,10 @@ function GetCategoryByID(id) {
                     $("#txtCategorySlug").val(d[0].slug);
                     $("#ddlParentCategory").val(d[0].parent == "" ? "-1" : d[0].parent);
                     $("#hfid").val(d[0].ID);
-                    $("#hfMetaid").val(d[0].MetaID);
+                    $("#hfMetaid").val(d[0].ThumbnailID);
+            
                     
+                    $("#ddlDisplayType").val(d[0].DisplayType);
                     $("#txtDescription").val(d[0].description);
                 }
             },

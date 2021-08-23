@@ -1234,6 +1234,7 @@ namespace LaylaERP.Controllers
             var ImagePath = "";
             string FileName = "";
             string FileExtension = "";
+           
             if (ImageFile != null)
             {
                 FileName = Path.GetFileNameWithoutExtension(ImageFile.FileName);
@@ -1255,10 +1256,28 @@ namespace LaylaERP.Controllers
 
                 }
             }
+            
             if (model.term_id > 0)
             {
-                ProductRepository.EditPostMeta(model.Meta_id, ImagePath, FileName);
-                new ProductRepository().EditProductCategory(model, name, slug, parent, description);
+                long thumbnailID = 0;
+                if(model.Meta_id > 0 && ImagePath == "")
+                {
+                    FileName = new ProductRepository().GetFileName(model.Meta_id);
+                   
+                    ImagePath = "~/Content/ProductCategory/" + FileName;
+                }
+                if (model.Meta_id > 0 )
+                {
+                    thumbnailID = model.Meta_id;
+                    ProductRepository.EditImage(FileName, ImagePath, FileExtension, thumbnailID);
+                }
+                else
+                {
+                    thumbnailID = ProductRepository.AddImage(FileName, ImagePath, FileExtension);
+                }
+                
+                ProductRepository.EditPostMeta(thumbnailID, ImagePath, FileName);
+                new ProductRepository().EditProductCategory(model, name, slug, parent, description, thumbnailID);
                 return Json(new { status = true, message = "Product category has been updated successfully!!", url = "", id = model.term_id }, 0);
             }
             else
@@ -1267,7 +1286,7 @@ namespace LaylaERP.Controllers
                 if (ID > 0)
                 {
 
-                    int thumbnailID = ProductRepository.FileUpload(FileName, ImagePath, FileExtension);
+                    int thumbnailID = ProductRepository.AddImage(FileName, ImagePath, FileExtension);
                     ProductRepository.postmeta(thumbnailID, ImagePath);
                     new ProductRepository().AddProductCategoryDesc(model, ID, thumbnailID);
                     return Json(new { status = true, message = "Product category has been saved successfully!!", url = "" }, 0);

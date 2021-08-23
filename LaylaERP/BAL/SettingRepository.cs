@@ -31,7 +31,7 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "Update wp_system_settings set AuthorizeNet=@AuthorizeNet,Paypal=@Paypal,AmazonPay=@AmazonPay,CreditCustomer=@CreditCustomer, SenderEmailID=@SenderEmailID, SenderEmailPwd=@SenderEmailPwd, SMTPServerName=@SMTPServerName," +
+                string strsql = "Update wp_system_settings set AuthorizeNet=@AuthorizeNet,Paypal=@Paypal,AmazonPay=@AmazonPay,CreditCustomer=@CreditCustomer,Podium=@Podium, SenderEmailID=@SenderEmailID, SenderEmailPwd=@SenderEmailPwd, SMTPServerName=@SMTPServerName," +
                     "SMTPServerPortNo=@SMTPServerPortNo, PaypalClientId=@PaypalClientId, PaypalSecret=@PaypalSecret, AuthorizeAPILogin=@AuthorizeAPILogin, " +
                     " AuthorizeTransKey=@AuthorizeTransKey,AmazonAPIId=@AmazonAPIId,AmazonUser=@AmazonUser,AmazonPwd=@AmazonPwd,TaxjarAPIId=@TaxjarAPIId, " +
                     "TaxjarAPIId=@TaxjarAPIId,TaxjarUser=@TaxjarUser,TaxjarPwd=@TaxjarPwd,podiumAPIKey=@podiumAPIKey,podiumSecretKey=@podiumSecretKey where ID=@user_id";
@@ -42,6 +42,7 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@Paypal", model.Paypal),
                     new MySqlParameter("@AmazonPay",model.AmazonPay),
                     new MySqlParameter("@CreditCustomer",model.CreditCustomer),
+                    new MySqlParameter("@Podium",model.Podium),
                     new MySqlParameter("@SenderEmailID", SenderEmailID),
                     new MySqlParameter("@SenderEmailPwd", model.SenderEmailPwd),
                     new MySqlParameter("@SMTPServerName", model.SMTPServerName),

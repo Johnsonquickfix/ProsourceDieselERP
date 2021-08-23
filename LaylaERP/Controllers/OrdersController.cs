@@ -457,5 +457,11 @@
             catch (Exception ex) { JSONresult = ex.Message; }
             return Json(new { status = status, message = JSONresult }, 0);
         }
+
+        // GET: Mines of Moria (Quick Orders)
+        public ActionResult minesofmoria(long id = 0)
+        {            
+            return View();
+        }
     }
 }

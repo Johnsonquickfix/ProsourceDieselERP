@@ -541,6 +541,7 @@
     <Content Include="Content\fontawesome-all.min.css" />
     <Content Include="Content\img\flags%402x.png" />
     <Content Include="Content\img\flags.png" />
+    <Content Include="Content\ProductCategory\default.png" />
     <Content Include="Content\Style11.css" />
     <Content Include="Content\Style12.css" />
     <Content Include="css\indexStyle.css" />
@@ -832,7 +833,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Content\ProductCategory\" />
     <Folder Include="Content\VendorLinkedFiles\" />
     <Folder Include="js\Appearance\" />
     <Folder Include="Properties\PublishProfiles\" />

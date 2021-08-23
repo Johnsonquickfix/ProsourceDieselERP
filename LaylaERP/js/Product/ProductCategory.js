@@ -121,6 +121,13 @@ function CategoryList() {
             {
                 "data": "ImagePath",
                 "render": function (data) {
+                    if (data == null || data == "") {
+                        data = "default.png";
+                    }
+                    else {
+                        data = data;
+                    }
+                    console.log(data);
                     return '<img src="../../Content/ProductCategory/' + data + '"  width="50" height="50"/>';
                 }
             },

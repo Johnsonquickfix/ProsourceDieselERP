@@ -1130,7 +1130,7 @@ function addshippingprice() {
     $("#txtcostprice").val(castprice);
 }
 function ClearControl() {
-    $("#txtminpurchasequantity").val('');
+    $("#txtminpurchasequantity").val('1');
     $("#txttaglotno").val('');
     $("#txtSaletax").val('');
     $('#txtcurrencyconversionrate').val('0');

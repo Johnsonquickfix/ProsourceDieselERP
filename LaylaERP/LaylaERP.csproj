@@ -605,6 +605,7 @@
     <Content Include="js\Product\AddnewPurchase.js" />
     <Content Include="js\Product\Product.js" />
     <Content Include="js\Product\ProductCategory.js" />
+    <Content Include="js\Product\ShippingClass.js" />
     <Content Include="js\PurchaseOrder\NewPurchase.js" />
     <Content Include="js\PurchaseOrder\PurchaseOrderList.js" />
     <Content Include="js\Ship\ShipStation.js" />
@@ -827,6 +828,7 @@
     <Content Include="Views\Accounting\AccountingJournal.cshtml" />
     <Content Include="Views\Accounting\chartofaccounts.cshtml" />
     <Content Include="Views\Accounting\productsaccount.cshtml" />
+    <Content Include="Views\Product\ShippingClass.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

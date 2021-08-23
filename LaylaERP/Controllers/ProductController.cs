@@ -55,6 +55,13 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+
+        // Shipping Class
+        public ActionResult ShippingClass()
+        {
+            return View();
+        }
+
         [HttpPost]
         public JsonResult GetCount(SearchModel model)
         {
@@ -92,6 +99,21 @@ namespace LaylaERP.Controllers
             {
 
                 DataTable dt = ProductRepository.GetList(model.strValue1, model.strValue2, model.strValue3, model.strValue4, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, aaData = result }, 0);
+        }
+
+        [HttpGet]
+        public JsonResult GetShippinfclassList(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+
+                DataTable dt = ProductRepository.GetShippinfclassList(model.strValue1, model.strValue2, model.strValue3, model.strValue4, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
                 result = JsonConvert.SerializeObject(dt, Formatting.Indented);
             }
             catch { }
@@ -232,6 +254,29 @@ namespace LaylaERP.Controllers
             //    return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
             //}
         }
+
+     
+        public JsonResult Getsate(int ID)
+        {
+            string tcode = "";
+            if (ID == 1)
+                tcode = "US";
+            else
+                tcode = "CA";
+            DataTable dt = new DataTable();
+            dt = BAL.ProductRepository.Getsate(tcode);
+            List<SelectListItem> usertype = new List<SelectListItem>();
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                usertype.Add(new SelectListItem
+                {
+                    Value = dt.Rows[i]["State"].ToString(),
+                    Text = dt.Rows[i]["StateFullName"].ToString()
+
+                });
+            }
+            return Json(usertype, JsonRequestBehavior.AllowGet);
+        }
         public JsonResult CreateNotes(ProductModel model)
         {
             JsonResult result = new JsonResult();
@@ -269,7 +314,32 @@ namespace LaylaERP.Controllers
                 return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
             }
         }
+       [HttpPost]
+        public JsonResult CreateShipname(ProductModel model)
+        {
+            JsonResult result = new JsonResult();
+            if (model.ID > 0)
+            {
+                return Json(new { status = true, message = "Details has been updated successfully!!", url = "Manage" }, 0);
+            }
+            else
+            {
+                int ID = ProductRepository.Addshippingdetails(model);
+                if (ID > 0)
+                {
 
+                    model.fk_ShippingID = ID;
+                    ProductRepository.AddshippingPricedetails(model);
+                    return Json(new { status = true, message = "Details has been saved successfully!!", url = "" }, 0);
+                }
+                else
+                {
+                    return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                }
+            }
+            //return Json(new { status = true, message = "Details has been updated successfully!!", url = "Manage" }, 0);
+
+        }
         public JsonResult Deletefileuploade(ProductModel model)
         {
             JsonResult result = new JsonResult();

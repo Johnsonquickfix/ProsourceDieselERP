@@ -122,7 +122,7 @@ function CategoryList() {
                 "data": "ImagePath",
                 "render": function (data) {
                     if (data == null || data == "") {
-                        data = "default.png";
+                        data = "default1.jpg";
                     }
                     else {
                         data = data;

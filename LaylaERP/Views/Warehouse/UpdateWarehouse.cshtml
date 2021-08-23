@@ -374,6 +374,7 @@
                             <div class="box box-primary">
                                 <div class="box-body">
                                     <input type="hidden" id="hfstockid" class="form-control" />
+                                    <input type="hidden" id="txtTransid" class="form-control" placeholder="Enter Unit purchase price">
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Product<span style="color:red">*</span></label>
                                         <select class="form-control" id="ddlProduct">
@@ -522,7 +523,7 @@
                                 <div class="box-body">
 
                                     <div class="form-group">
-                                        <label for="exampleInputEmail1">Eat-by date<span style="color:red">*</span></label>
+                                        <label for="exampleInputEmail1">Stock date<span style="color:red">*</span></label>
 
                                         <input class="form-control" type="text" id="txttransfereatbydate" placeholder="Enter Eat by date" /><span class="even-space"></span>
                                     </div>
@@ -564,8 +565,8 @@
                                             <tr>
                                                 <th>Ref</th>
                                                 <th>Date</th>
+                                                <th>Warehouse</th>
                                                 <th>Product</th>
-                                                @*<th>Warehouse</th>*@
                                                 <th>Label of movement</th>
                                                 <th>Qty</th>
                                                 @*<th>Unit Price</th>*@

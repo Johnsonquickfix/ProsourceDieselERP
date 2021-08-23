@@ -18,7 +18,7 @@
                     <li class="active"><a href="#tab_1" data-toggle="tab">Payment Method</a></li>
                     <li><a href="#tab_2" data-toggle="tab">Email Setting</a></li>
                     <li><a href="#tab_3" data-toggle="tab">Paypal Setting</a></li>
-                    <li><a href="#tab_4" data-toggle="tab">Authorize.Net Setting</a></li>
+                    <!--<li><a href="#tab_4" data-toggle="tab">Authorize.Net Setting</a></li>-->
                     <li><a href="#tab_5" data-toggle="tab">Amazon Pay Setting</a></li>
                     <li><a href="#tab_6" data-toggle="tab">TaxJar Setting</a></li>
                     <li><a href="#tab_7" data-toggle="tab">Podium Setting</a></li>
@@ -27,6 +27,7 @@
                     <input type="hidden" id="hfid" value="@ViewBag.id" />
                     <div class="tab-pane active" id="tab_1">
                         <h2>Select Payment Method</h2>
+
                         <div class="form-check">
 
                             @{
@@ -86,6 +87,21 @@
                                 Credit Customer
                             </label>
                         </div>
+
+                        <div class="form-check">
+                            @if (Convert.ToInt32(ViewBag.Podium) == 1)
+                            {
+                                <input class="form-check-input" type="checkbox" value="" id="Podium" checked="@value">}
+                            else
+                            {
+                                <input class="form-check-input" type="checkbox" value="" id="Podium">
+                            }
+
+                            <label class="form-check-label" for="Podium">
+                                Podium
+                            </label>
+                        </div>
+
                     </div>
                     <!-- /.tab-pane -->
                     <div class="tab-pane" id="tab_2">
@@ -275,11 +291,17 @@
         }
 
         if ($(CreditCustomer).prop("checked")) {
-            CreditCustomer = 1;
-            alert(1);
+            CreditCustomer = 1;            
         }
         else {
             CreditCustomer = 0;
+        }
+
+        if ($(Podium).prop("checked")) {
+            Podium = 1;            
+        }
+        else {
+            Podium = 0;
         }
 
             var obj = {
@@ -288,6 +310,7 @@
                 paypal: paypal,
                 amazonpay: amazonpay,
                 CreditCustomer: CreditCustomer,
+                Podium: Podium,
                 SenderEmailID: Email,
                 SenderEmailPwd: SenderEmailPwd,
                 SMTPServerName: SMTPServerName,

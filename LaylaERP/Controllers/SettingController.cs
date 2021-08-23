@@ -26,6 +26,7 @@ namespace LaylaERP.Controllers
                 ViewBag.Paypal = DT.Rows[0]["Paypal"].ToString();
                 ViewBag.AmazonPay = DT.Rows[0]["AmazonPay"].ToString();
                 ViewBag.CreditCustomer = DT.Rows[0]["CreditCustomer"].ToString();
+                ViewBag.Podium = DT.Rows[0]["Podium"].ToString();
                 ViewBag.SenderEmailID = DT.Rows[0]["SenderEmailID"].ToString();
                 ViewBag.SenderEmailPwd = DT.Rows[0]["SenderEmailPwd"].ToString();
                 ViewBag.SMTPServerName = DT.Rows[0]["SMTPServerName"].ToString();
@@ -96,6 +97,7 @@ namespace LaylaERP.Controllers
             bool Paypal = model.Paypal;
             bool AmazonPay = model.AmazonPay;
             bool CreditCustomer = model.CreditCustomer;
+            bool Podium = model.Podium;
             string email = model.SenderEmailID;
             string SenderEmailPwd = model.SenderEmailPwd;
             string SMTPServerName = model.SMTPServerName;

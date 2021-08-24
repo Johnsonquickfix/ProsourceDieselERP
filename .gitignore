@@ -366,3 +366,4 @@ FodyWeavers.xsd
 /LaylaERP/Views/Appearance
 /LaylaERP/Views/Reports
 *.cshtml
+/LaylaERP/Content/ProductCategory/082421020019-report.png

@@ -34,6 +34,19 @@
         public string LoginIPAddress { get; set; }
         public string LoginMacAddress { get; set; }
         public string LoginToken { get; set; }
+        public string PaypalClientId { get; set; }
+        public string PaypalSecret { get; set; }
+        public string AuthorizeAPILogin { get; set; }
+        public string AuthorizeTransKey { get; set; }
+        public string AuthorizeKey { get; set; }
+        public string AmazonAPIId { get; set; }
+        public string AmazonUser { get; set; }
+        public string AmazonPwd { get; set; }
+        public string TaxjarAPIId { get; set; }
+        public string TaxjarUser { get; set; }
+        public string TaxjarPwd { get; set; }
+        public string podiumAPIKey { get; set; }
+        public string podiumSecretKey { get; set; }       
     }
     [Serializable]
     public class CommanUtilities

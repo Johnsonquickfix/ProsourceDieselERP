@@ -88,6 +88,60 @@
                                 op.SMTPServerPortNo = ds.Tables[1].Rows[0]["SMTPServerPortNo"].ToString();
                             else
                                 op.SMTPServerPortNo = string.Empty;
+
+                            if (ds.Tables[1].Rows[0]["PaypalClientId"] != DBNull.Value)
+                                op.PaypalClientId = ds.Tables[1].Rows[0]["PaypalClientId"].ToString();
+                            else
+                                op.PaypalClientId = string.Empty;
+                            if (ds.Tables[1].Rows[0]["PaypalSecret"] != DBNull.Value)
+                                op.PaypalSecret = ds.Tables[1].Rows[0]["PaypalSecret"].ToString();
+                            else
+                                op.PaypalSecret = string.Empty;
+                            if (ds.Tables[1].Rows[0]["AuthorizeAPILogin"] != DBNull.Value)
+                                op.AuthorizeAPILogin = ds.Tables[1].Rows[0]["AuthorizeAPILogin"].ToString();
+                            else
+                                op.AuthorizeAPILogin = string.Empty;
+                            if (ds.Tables[1].Rows[0]["AuthorizeTransKey"] != DBNull.Value)
+                                op.AuthorizeTransKey = ds.Tables[1].Rows[0]["AuthorizeTransKey"].ToString();
+                            else
+                                op.AuthorizeTransKey = string.Empty;
+                            if (ds.Tables[1].Rows[0]["AuthorizeKey"] != DBNull.Value)
+                                op.AuthorizeKey = ds.Tables[1].Rows[0]["AuthorizeKey"].ToString();
+                            else
+                                op.AuthorizeKey = string.Empty;
+                            if (ds.Tables[1].Rows[0]["AmazonAPIId"] != DBNull.Value)
+                                op.AmazonAPIId = ds.Tables[1].Rows[0]["AmazonAPIId"].ToString();
+                            else
+                                op.AmazonAPIId = string.Empty;
+                            if (ds.Tables[1].Rows[0]["AmazonUser"] != DBNull.Value)
+                                op.AmazonUser = ds.Tables[1].Rows[0]["AmazonUser"].ToString();
+                            else
+                                op.AmazonUser = string.Empty;
+                            if (ds.Tables[1].Rows[0]["AmazonPwd"] != DBNull.Value)
+                                op.AmazonPwd = ds.Tables[1].Rows[0]["AmazonPwd"].ToString();
+                            else
+                                op.AmazonPwd = string.Empty;
+                            if (ds.Tables[1].Rows[0]["TaxjarAPIId"] != DBNull.Value)
+                                op.TaxjarAPIId = ds.Tables[1].Rows[0]["TaxjarAPIId"].ToString();
+                            else
+                                op.TaxjarAPIId = string.Empty;
+                            if (ds.Tables[1].Rows[0]["TaxjarUser"] != DBNull.Value)
+                                op.TaxjarUser = ds.Tables[1].Rows[0]["TaxjarUser"].ToString();
+                            else
+                                op.TaxjarUser = string.Empty;
+                            if (ds.Tables[1].Rows[0]["TaxjarPwd"] != DBNull.Value)
+                                op.TaxjarPwd = ds.Tables[1].Rows[0]["TaxjarPwd"].ToString();
+                            else
+                                op.TaxjarPwd = string.Empty;
+                            if (ds.Tables[1].Rows[0]["podiumAPIKey"] != DBNull.Value)
+                                op.podiumAPIKey = ds.Tables[1].Rows[0]["podiumAPIKey"].ToString();
+                            else
+                                op.podiumAPIKey = string.Empty;
+                            if (ds.Tables[1].Rows[0]["podiumSecretKey"] != DBNull.Value)
+                                op.podiumSecretKey = ds.Tables[1].Rows[0]["podiumSecretKey"].ToString();
+                            else
+                                op.podiumSecretKey = string.Empty;
+                            
                         }
                         op.LoginIPAddress = Net.Ip;
                         op.LoginMacAddress = string.Empty;

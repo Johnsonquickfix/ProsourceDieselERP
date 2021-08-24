@@ -320,6 +320,9 @@ namespace LaylaERP.Controllers
             JsonResult result = new JsonResult();
             if (model.ID > 0)
             {
+                model.statecode = model.statecode.Trim();
+               ProductRepository.updateshippingclass(model);
+
                 return Json(new { status = true, message = "Details has been updated successfully!!", url = "Manage" }, 0);
             }
             else
@@ -554,6 +557,18 @@ namespace LaylaERP.Controllers
             {
 
                 DataTable dt = ProductRepository.GetDataBuyingByID(model);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+        public JsonResult GetShipEditDataID(OrderPostStatusModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+
+                DataTable dt = ProductRepository.GetShipEditDataID(model);
                 JSONresult = JsonConvert.SerializeObject(dt);
             }
             catch { }

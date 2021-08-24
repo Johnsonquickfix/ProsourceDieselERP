@@ -164,6 +164,7 @@
 <script>
     var Counter =600;
     $(document).ready(function () {
+        $('#auth-pv-enter-code').focus();
         $('#auth-pv-enter-code').val(@ViewBag.otp);
         $(document).on("click", "#auth-verify-button", function (t) {
             t.preventDefault(); 

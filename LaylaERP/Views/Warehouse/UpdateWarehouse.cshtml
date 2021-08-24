@@ -382,10 +382,10 @@
                                             @*<option value="0">--Select Product--</option>*@
                                         </select>
                                     </div>
-                                    <div class="form-group">
+                                    @*<div class="form-group">
                                         <label for="exampleInputEmail1">Stock</label>
-                                        <input type="text" id="txtstock" class="form-control" readonly />
-                                    </div>
+                                        <input type="text" id="txtstock" class="form-control" />
+                                    </div>*@
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Unit purchase price<span style="color:red">*</span></label>
                                         <input type="text" id="txtprice" class="form-control" placeholder="Enter Unit purchase price" readonly>
@@ -675,7 +675,6 @@
             //$("#btnStockCancel").hide();
             resettransferstock();
         });
-
 
         $(document).on('click', "#btnSave", function () {
             AddWarehouse();

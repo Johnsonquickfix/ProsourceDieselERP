@@ -11,7 +11,7 @@ function Addcurrentstock() {
     var unit = $("#txtunit").val();
     var label = $("#txtlabel").val();
     var sellby = $("#txtsalebydate").val();
-    var stock = $("#txtstock").val();
+   
     if (fk_product == null) {
         swal('Alert', 'Please select product', 'error').then(function () { swal.close(); $('#ddlProduct').focus(); });
     }
@@ -21,9 +21,7 @@ function Addcurrentstock() {
     else if (unit == "") {
         swal('Alert', 'Please Enter Number of Unit', 'error').then(function () { swal.close(); $('#txtunit').focus(); });
     }
-    else if (parseInt(unit) > parseInt(stock)) {
-        swal('Alert', 'Not sufficent stock ', 'error').then(function () { swal.close(); $('#txtunit').focus(); });
-    }
+    
     else if (serial == "") {
         swal('Alert', 'Please Enter Lot/Serial Number', 'error').then(function () { swal.close(); $('#txtserial').focus(); });
     }
@@ -84,7 +82,8 @@ function reset() {
     $("#txtunit").val("");
     $("#txtlabel").val("");
     $("#txtsalebydate").val("");
-    $("#ddlProduct").val("0");
+    //$("#ddlProduct").val("");
+    $('#ddlProduct').val(null).trigger('change');
 }
 
 
@@ -260,7 +259,7 @@ $('#ddltransferProduct').change(function () {
     var fk_product = $("#ddltransferProduct").val();
     var fk_entrepot = $("#hfid").val();
     //var fk_entrepot = $("#hfid").val();
-    alert(fk_product);
+    //alert(fk_product);
     var obj = {
         id: fk_product,
         warehouseid: fk_entrepot,
@@ -291,17 +290,13 @@ $('#ddltransferProduct').change(function () {
     });
 
 });
-//$("#ddlProduct").change(function () {
-//    if ($('#ddlProduct').val() == null)
-//        return false; getItemList();
-//    $('#ddlProduct').val('').trigger('change');
-//});
+
 $('#ddlProduct').change(function () {
     debugger
     if ($('#ddlProduct').val() == null) return false;
     var fk_product = $('#ddlProduct').val();
     var fk_entrepot = $("#hfid").val();
-    alert(fk_product);
+    //alert(fk_product);
     var obj = {
         id: fk_product,
         warehouseid: fk_entrepot,
@@ -383,6 +378,7 @@ function AddTransferStock() {
     var salebydate = $("#txttransfersalebydate").val();
     var inventorycode = $("#txttransferinvtcode").val();
     var label = $("#txttransferlabel").val();
+    var stock1 = $("#txtstock1").val();
 
     if (fk_product == null) {
         swal('Alert', 'Please select product', 'error').then(function () { swal.close(); $('#ddltransferProduct').focus(); });
@@ -395,7 +391,9 @@ function AddTransferStock() {
     else if (value == "") {
         swal('Alert', 'Please enter number of units', 'error').then(function () { swal.close(); $('#txttransferunit').focus(); });
     }
-
+    else if (parseInt(value) > parseInt(stock1)) {
+        swal('Alert', 'Not sufficent stock to transfer ', 'error').then(function () { swal.close(); $('#txttransferunit').focus(); });
+    }
     else if (lotserial == "") {
         swal('Alert', 'Please enter Lot/serial number ', 'error').then(function () { swal.close(); $('#txttransferserial').focus(); });
     }
@@ -660,6 +658,8 @@ function getstock1() {
             data = JSON.parse(data);
             console.log(data);
             $('#txtstock1').val(data[0].quantity);
+            
+            
         },
         error: function (jqXHR, textStatus, errorThrown) { swal('Error!', errorThrown, "error"); }
     });
@@ -713,9 +713,9 @@ function Updatecorrectstock() {
         swal('Alert', 'Please Enter Number of Unit', 'error').then(function () { swal.close(); $('#txtunit').focus(); });
     }
 
-    else if (parseInt(unit) > parseInt(stock)) {
-        swal('Alert', 'Not sufficent stock ', 'error').then(function () { swal.close(); $('#txtunit').focus(); });
-    }
+    //else if (parseInt(unit) > parseInt(stock)) {
+    //    swal('Alert', 'Not sufficent stock ', 'error').then(function () { swal.close(); $('#txtunit').focus(); });
+    //}
 
     else if (serial == "") {
         swal('Alert', 'Please Enter Lot/Serial Number', 'error').then(function () { swal.close(); $('#txtserial').focus(); });
@@ -756,8 +756,10 @@ function Updatecorrectstock() {
                 if (data.status == true) {
                     //$('#parent > input:text').val('');
                     swal('Alert!', data.message, 'success');
-                    //reset();
+                    reset();
                     CorrectStockGrid();
+                    $("#btnStock").show();
+                    $("#btnStockUpdate").hide();
                 }
                 else {
                     swal('Alert!', data.message, 'error');
@@ -786,7 +788,7 @@ function UpdateTransferStock() {
     var inventorycode = $("#txttransferinvtcode").val();
     var label = $("#txttransferlabel").val();
     var tn = $("#txtTransid1").val();
-    var stock1 = $("txtstock1").val();
+    var stock1 = $("#txtstock1").val();
 
     if (fk_product == null) {
         swal('Alert', 'Please select product', 'error').then(function () { swal.close(); $('#ddltransferProduct').focus(); });
@@ -801,7 +803,7 @@ function UpdateTransferStock() {
     }
 
     else if (parseInt(value) > parseInt(stock1)) {
-        swal('Alert', 'Not sufficent stock ', 'error').then(function () { swal.close(); $('#txttransferunit').focus(); });
+        swal('Alert', 'Not sufficent stock to transfer ', 'error').then(function () { swal.close(); $('#txttransferunit').focus(); });
     }
 
     else if (lotserial == "") {
@@ -847,7 +849,11 @@ function UpdateTransferStock() {
                     //swal('Alert!', data.message, 'success').then((result) => { location.href = 'StockMouvementList'; });
                     swal('Alert!', data.message, 'success');
                     StockTransferGrid();
-                    //resettransferstock();
+                    resettransferstock();
+                    $("#btnTranferStock").show();
+                    $("#btnTransferStockUpdate").hide();
+
+                    
                 }
                 else {
                     swal('Alert!', data.message, 'error');
@@ -863,13 +869,15 @@ function UpdateTransferStock() {
 
 function resettransferstock() {
     $("#ddltargetwarehouse").val("0");
-    $("#ddltransferProduct").val("0");
+    //$("#ddltransferProduct").val("0");
     $("#txttransferunit").val("");
     $("#txttransferserial").val("");
     $("#txttransfereatbydate").val("");
     $("#txttransfersalebydate").val("");
     $("#txttransferinvtcode").val("");
     $("#txttransferlabel").val("");
+    $("#txtstock1").val("");
+    $('#ddltransferProduct').val(null).trigger('change');
 }
 
 
@@ -964,9 +972,24 @@ function ProductWarehouseGrid() {
                 "columns": [
                     //{ data: 'warehouse', title: 'Warehouse Name', sWidth: "25%" },
                     { data: 'post_title', title: 'Product Name', sWidth: "25%" },
-                    { data: 'reg_price', title: 'Regular Price', sWidth: "25%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
-                    { data: 'sale_price', title: 'Sale Price', sWidth: "25%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
-                    { data: 'buy_price', title: 'Buying price', sWidth: "25%", render: $.fn.dataTable.render.number('', '.', 2, '$')},
+                    {
+                        data: 'reg_price', title: 'Regular Price', sWidth: "25%",
+                        'render': function (reg_price) {
+                            return '$' + reg_price;
+                        } 
+                    },
+                    {
+                        data: 'sale_price', title: 'Sale Price', sWidth: "25%",
+                        'render': function (sale_price) {
+                            return '$' + sale_price;
+                        } 
+                    },
+                    {
+                        data: 'buy_price', title: 'Buying price', sWidth: "25%",
+                        'render': function (buy_price) {
+                            return '$' + buy_price;
+                        } 
+                    },
                     
                 ],
 

@@ -500,6 +500,10 @@
                                             @*<option value="0">--Select Product--</option>*@
                                         </select>
                                     </div>
+                                    <div class="form-group">
+                                    <label for="exampleInputEmail1">Stock</label>
+                                    <input type="text" id="txtstock1" class="form-control" readonly />
+                                    </div>
 
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Target Warehouse<span style="color:red">*</span></label>
@@ -706,6 +710,11 @@
         $('#ddlProduct').change(function () {
             $("#txtstock").val("");
             $("#txtprice").val("");
+        });
+
+        $('#ddltransferProduct').change(function () {
+            $("#txtstock1").val("");
+            
         });
         //$.get('/Warehouse/GetProduct', function (data) {
         //    var items = "";

@@ -11,7 +11,7 @@ function Addcurrentstock() {
     var unit = $("#txtunit").val();
     var label = $("#txtlabel").val();
     var sellby = $("#txtsalebydate").val();
-
+    var stock = $("#txtstock").val();
     if (fk_product == null) {
         swal('Alert', 'Please select product', 'error').then(function () { swal.close(); $('#ddlProduct').focus(); });
     }
@@ -20,6 +20,9 @@ function Addcurrentstock() {
     }
     else if (unit == "") {
         swal('Alert', 'Please Enter Number of Unit', 'error').then(function () { swal.close(); $('#txtunit').focus(); });
+    }
+    else if (parseInt(unit) > parseInt(stock)) {
+        swal('Alert', 'Not sufficent stock ', 'error').then(function () { swal.close(); $('#txtunit').focus(); });
     }
     else if (serial == "") {
         swal('Alert', 'Please Enter Lot/Serial Number', 'error').then(function () { swal.close(); $('#txtserial').focus(); });
@@ -255,9 +258,13 @@ $.get('/Warehouse/Gettargetwarehouse', function (data) {
 $('#ddltransferProduct').change(function () {
     if ($('#ddltransferProduct').val() == null) return false;
     var fk_product = $("#ddltransferProduct").val();
+    var fk_entrepot = $("#hfid").val();
+    //var fk_entrepot = $("#hfid").val();
     alert(fk_product);
     var obj = {
         id: fk_product,
+        warehouseid: fk_entrepot,
+        productid: fk_product,
     }
     jQuery.ajax({
         url: "/Warehouse/GetProductInfo/", dataType: 'json', type: "Post",
@@ -270,6 +277,19 @@ $('#ddltransferProduct').change(function () {
         },
         error: function (jqXHR, textStatus, errorThrown) { swal('Error!', errorThrown, "error"); }
     });
+
+    jQuery.ajax({
+        url: "/Warehouse/GetProductStock/", dataType: 'json', type: "Post",
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(obj),
+        success: function (data) {
+            data = JSON.parse(data);
+            console.log(data);
+            $('#txtstock1').val(data[0].quantity);
+        },
+        error: function (jqXHR, textStatus, errorThrown) { swal('Error!', errorThrown, "error"); }
+    });
+
 });
 //$("#ddlProduct").change(function () {
 //    if ($('#ddlProduct').val() == null)
@@ -517,7 +537,7 @@ function getstock() {
     if ($('#ddlProduct').val() == null) return false;
     var fk_product = $('#ddlProduct').val();
     var fk_entrepot = $("#hfid").val();
-    alert(fk_product);
+    //alert(fk_product);
     var obj = {
         id: fk_product,
         warehouseid: fk_entrepot,
@@ -536,6 +556,7 @@ function getstock() {
     });
 
 }
+
 
 
 
@@ -612,12 +633,37 @@ function transferstockstatus(ele) {
             $("#txtTransid1").val(jobj[0].tran_id);
             $("#btnTranferStock").hide();
             $("#btnTransferStockUpdate").show();
-            //$("#btnStockCancel").show();
+            getstock1();
             getsecondwarehouse();
         },
         complete: function () { $("#loader").hide(); },
         error: function (error) { swal('Error!', 'something went wrong', 'error'); },
     })
+}
+
+
+function getstock1() {
+    if ($('#ddltransferProduct').val() == null) return false;
+    var fk_product = $('#ddltransferProduct').val();
+    var fk_entrepot = $("#hfid").val();
+    //alert(fk_product);
+    var obj = {
+        id: fk_product,
+        warehouseid: fk_entrepot,
+        productid: fk_product,
+    }
+    jQuery.ajax({
+        url: "/Warehouse/GetProductStock/", dataType: 'json', type: "Post",
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(obj),
+        success: function (data) {
+            data = JSON.parse(data);
+            console.log(data);
+            $('#txtstock1').val(data[0].quantity);
+        },
+        error: function (jqXHR, textStatus, errorThrown) { swal('Error!', errorThrown, "error"); }
+    });
+
 }
 
 function getsecondwarehouse() {
@@ -655,7 +701,8 @@ function Updatecorrectstock() {
     var unit = $("#txtunit").val();
     var label = $("#txtlabel").val();
     var sellby = $("#txtsalebydate").val();
-    if (fk_product == 0) {
+
+    if (fk_product == null) {
         swal('Alert', 'Please select product', 'error').then(function () { swal.close(); $('#ddlProduct').focus(); });
     }
     else if (price == "") {
@@ -739,8 +786,9 @@ function UpdateTransferStock() {
     var inventorycode = $("#txttransferinvtcode").val();
     var label = $("#txttransferlabel").val();
     var tn = $("#txtTransid1").val();
+    var stock1 = $("txtstock1").val();
 
-    if (fk_product == 0) {
+    if (fk_product == null) {
         swal('Alert', 'Please select product', 'error').then(function () { swal.close(); $('#ddltransferProduct').focus(); });
     }
     else if (fk_entrepottarget == 0) {
@@ -750,6 +798,10 @@ function UpdateTransferStock() {
 
     else if (value == "") {
         swal('Alert', 'Please enter number of units', 'error').then(function () { swal.close(); $('#txttransferunit').focus(); });
+    }
+
+    else if (parseInt(value) > parseInt(stock1)) {
+        swal('Alert', 'Not sufficent stock ', 'error').then(function () { swal.close(); $('#txttransferunit').focus(); });
     }
 
     else if (lotserial == "") {

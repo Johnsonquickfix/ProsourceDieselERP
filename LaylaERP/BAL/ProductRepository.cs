@@ -557,6 +557,18 @@ namespace LaylaERP.BAL
             { throw ex; }
             return DT;
         }
+        public static DataTable Getsate(string Country)
+        {
+            DataTable DT = new DataTable();
+            try
+            {
+                string strSQl = "Select StateFullName,State from erp_StateList where Country = '"+ Country + "' ";
+                DT = SQLHelper.ExecuteDataTable(strSQl);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DT;
+        }
         public static DataTable Getwarehouse()
         {
             DataTable DT = new DataTable();
@@ -776,6 +788,34 @@ namespace LaylaERP.BAL
             return dt;
         }
 
+        public static DataTable GetShippinfclassList(string strValue1, string userstatus, string strValue3, string strValue4, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "order_id", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                string strWhr = string.Empty;
+                
+                string strSql = "select DISTINCT rowid, Shippingclass_Name ShipName,eslcun.CountryFullName Country,esl.StateFullName"
+                + " State,Method,format(Shipping_price,2) Shipping_price ,Type,taxable,format(Shipping_taxrate,2) Shipping_taxrate"
+                + " from ShippingClass_Details ScD"
+                + " left OUTER join Shipping_class sc on sc.id = ScD.fk_ShippingID"
+                + " left OUTER join erp_StateList esl on esl.State = ScD.statecode"
+                + " left OUTER join erp_StateList eslcun on eslcun.Country = ScD.countrycode"
+                + " order by " + SortCol + " " + SortDir + " limit " + (pageno).ToString() + ", " + pagesize + "";
+
+                strSql += "; SELECT 1 TotalRecord from ShippingClass_Details " + strWhr.ToString();
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dt = ds.Tables[0];
+                if (ds.Tables[1].Rows.Count > 0)
+                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
         public static DataTable GetProducts(string strSearch)
         {
             DataTable DT = new DataTable();
@@ -814,6 +854,24 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@post_mime_type", string.Empty),
                     new MySqlParameter("@post_parent", model.post_parent),
                     new MySqlParameter("@comment_status", model.comment_status),
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+        public static int Addshippingdetails(ProductModel model)
+        {
+            try
+            {
+                string strsql = "Insert into Shipping_class(Shippingclass_Name) values(@Shippingclass_Name);SELECT LAST_INSERT_ID();";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@Shippingclass_Name", model.Shippingclass_Name),   
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
                 return result;
@@ -877,6 +935,26 @@ namespace LaylaERP.BAL
             { throw ex; }
             return result;
         }
+
+        public static int AddshippingPricedetails(ProductModel model)
+        {
+            int result = 0;
+            try
+            {
+                StringBuilder strSql = new StringBuilder();
+                //StringBuilder strSql = new StringBuilder(string.Format("delete from Product_Purchase_Items where fk_product = {0}; ", model.fk_product));
+                strSql.Append(string.Format("insert into ShippingClass_Details (fk_ShippingID,countrycode,statecode,Method,Shipping_price,Type,taxable,Shipping_taxrate) values ({0},'{1}','{2}','{3}',{4},'{5}','{6}',{7}) ", model.fk_ShippingID, model.countrycode, model.statecode, model.Shipping_Method, model.Ship_price, model.Shipping_type, model.taxable, model.Shipping_taxrate));
+
+                /// step 6 : wp_posts
+                //strSql.Append(string.Format(" update wp_posts set post_status = '{0}' ,comment_status = 'closed' where id = {1} ", model.OrderPostStatus.status, model.OrderPostStatus.order_id));
+
+                result = SQLHelper.ExecuteNonQuery(strSql.ToString());
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return result;
+        }
+
         public static int updateBuyingtProduct(ProductModel model, DateTime dateinc)
         {
             int result = 0;
@@ -1321,24 +1399,26 @@ namespace LaylaERP.BAL
         }
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Product Categories~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        public static DataSet GetParentCategory()
+        public static DataSet GetParentCategory(string term_taxonomy_id)
         {
             DataSet DS = new DataSet();
             try
             {
-                string strSQl = "Select tx.term_taxonomy_id ID,t.name from wp_term_taxonomy tx left join wp_terms t on tx.term_id=t.term_id where tx.taxonomy='product_cat' order by tx.term_taxonomy_id desc;";
+                string strSQl = "Select tx.term_taxonomy_id ID,t.name from wp_term_taxonomy tx left join wp_terms t on tx.term_id=t.term_id where tx.taxonomy='product_cat' and tx.term_taxonomy_id !='"+ term_taxonomy_id +"' order by tx.term_taxonomy_id desc;";
                 DS = SQLHelper.ExecuteDataSet(strSQl);
             }
             catch (Exception ex)
             { throw ex; }
             return DS;
         }
-        public int EditProductCategory(ProductCategoryModel model, string name, string slug, string parent, string description)
+        public int EditProductCategory(ProductCategoryModel model, string name, string slug, string parent, string description, long thumbnailID)
         {
             try
             {
                 string strsql = "";
-                strsql = "update wp_terms set name=@name,slug=@slug where term_id=" + model.term_id + "; update wp_term_taxonomy set description=@description,parent=@parent where term_id=" + model.term_id + ";";
+                strsql = "update wp_terms set name=@name,slug=@slug where term_id=" + model.term_id + "; update wp_term_taxonomy set description=@description,parent=@parent where term_id=" + model.term_id + ";" +
+                    " Update wp_termmeta set meta_value='" + model.display_type + "' where term_id=" + model.term_id + " and meta_key='display_type';" +
+                    " Update wp_termmeta set meta_value='" + thumbnailID + "' where term_id=" + model.term_id + " and meta_key='thumbnail_id';";
                 MySqlParameter[] para =
                 {
                     new MySqlParameter("@name", model.name),
@@ -1379,7 +1459,7 @@ namespace LaylaERP.BAL
             try
             {
                 string strsql = "";
-                strsql = "Insert into wp_term_taxonomy(term_id,taxonomy,description,parent) values(@term_id,@taxonomy,@description,@parent);INSERT INTO wp_termmeta(term_id,meta_key,meta_value) VALUES(@term_id, 'order', 0),(@term_id, 'display_type', @display_type),(@term_id, 'thumbnail_id', @thumbnail_id); SELECT LAST_INSERT_ID();";
+                strsql = "Insert into wp_term_taxonomy(term_id,taxonomy,description,parent) values(@term_id,@taxonomy,@description,@parent); INSERT INTO wp_termmeta(term_id,meta_key,meta_value) VALUES(@term_id, 'order', 0),(@term_id, 'display_type', @display_type),(@term_id, 'thumbnail_id', @thumbnail_id); SELECT LAST_INSERT_ID();";
                 MySqlParameter[] para =
                 {
                     new MySqlParameter("@term_id", term_id),
@@ -1387,7 +1467,7 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@parent", model.parent),
                     new MySqlParameter("@description", model.description == null ? "" : model.description),
                     new MySqlParameter("@display_type", model.display_type),
-                    new MySqlParameter("@thumbnail_id",thumbnail_id == null ? 0 : thumbnail_id),
+                    new MySqlParameter("@thumbnail_id",thumbnail_id),
 
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
@@ -1454,7 +1534,10 @@ namespace LaylaERP.BAL
             try
             {
                 string strWhr = string.Empty;
-                string strSql = "Select p.post_title ImagePath,tm.meta_value MetaID, tx.term_id ID, t.name,t.slug,tx.taxonomy,tx.description,tx.parent,tx.count from wp_terms t left join wp_term_taxonomy tx on tx.term_id = t.term_id left join wp_termmeta tm on t.term_id = tm.term_id left join wp_posts p on tm.meta_value = p.ID where taxonomy = 'product_cat' and tm.meta_key = 'thumbnail_id' and t.term_id = '" + id + "'";
+                string strSql = "Select tx.term_id ID, t.name,t.slug,tx.taxonomy,tx.description,tx.parent,tx.count," +
+                    "max(case when tm.meta_key = 'thumbnail_id' then meta_value end) ThumbnailID, max(case when tm.meta_key = 'display_type' then meta_value end) DisplayType," +
+                    "(Select p.post_title from wp_posts p where p.id = max(case when tm.meta_key = 'thumbnail_id' then meta_value end)) ImagePath from wp_terms t " +
+                    "left join wp_term_taxonomy tx on tx.term_id = t.term_id left join wp_termmeta tm on t.term_id = tm.term_id  where taxonomy = 'product_cat' and t.term_id = '" + id + "' and 1=1 group by t.name,t.slug,tx.taxonomy,tx.description,tx.parent,tx.count;";
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
 
@@ -1465,13 +1548,13 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
-        public static int FileUpload(string FileName, string FilePath, string FileType)
+        public static int AddImage(string FileName, string FilePath, string FileType)
         {
             try
             {
                 string strsql = "";
-                strsql = "Insert into wp_posts(post_author,post_title,post_status,comment_status,ping_status,post_name,guid,post_type,post_mime_type) values(@post_author, @post_title, @post_status, @comment_status, @ping_status, @post_name, @guid, @post_type, @post_mime_type); SELECT LAST_INSERT_ID();";
-                //strSql.Append(string.Format("insert into erp_VendorLinkedFiles(VendorID,FileName,FileSize,FileType,FilePath) values(@VendorID,@FileName,@FileSize,@FileType,@FilePath);SELECT LAST_INSERT_ID();"));
+                strsql = "Insert into wp_posts(post_author,post_title,post_status,comment_status,ping_status,post_name,guid,post_type,post_mime_type,post_date,post_date_gmt,post_modified,post_modified_gmt) " +
+                    "values(@post_author, @post_title, @post_status, @comment_status, @ping_status, @post_name, @guid, @post_type, @post_mime_type,current_timestamp(),current_timestamp(),current_timestamp(),current_timestamp()); SELECT LAST_INSERT_ID();";
                 MySqlParameter[] para =
                {
                     new MySqlParameter("@post_author", "8"),
@@ -1485,6 +1568,34 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@guid", FilePath),
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+        public static int EditImage(string FileName, string FilePath, string FileType, long metaid)
+        {
+            try
+            {
+                string strsql = "";
+                strsql = "update wp_posts set post_author=@post_author,post_title=@post_title,post_status=@post_status,comment_status=@comment_status," +
+                    "ping_status = @ping_status,post_name = @post_name,guid = @guid,post_type = @post_type,post_mime_type = @post_mime_type," +
+                    "post_modified = current_timestamp(),post_modified_gmt = current_timestamp()  where ID=" + metaid + " ;";
+                MySqlParameter[] para =
+               {
+                    new MySqlParameter("@post_author", "8"),
+                    new MySqlParameter("@post_title", FileName),
+                    new MySqlParameter("@post_status", "inherit"),
+                    new MySqlParameter("@comment_status", "closed"),
+                    new MySqlParameter("@ping_status", "closed"),
+                    new MySqlParameter("@post_name", FileName),
+                    new MySqlParameter("@post_type", "shop_order"),
+                    new MySqlParameter("@post_mime_type", FileType),
+                    new MySqlParameter("@guid", FilePath),
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
                 return result;
             }
             catch (Exception Ex)
@@ -1519,7 +1630,9 @@ namespace LaylaERP.BAL
             try
             {
                 string strsql = "";
-                strsql = "Update wp_posts set guid=@guid,post_title=@post_title,post_name=@post_name where ID=@post_id;";
+                strsql = "Update wp_posts set guid=@guid,post_title=@post_title,post_name=@post_name where ID=@post_id;" +
+                    "Update wp_postmeta set meta_value =@guid where post_id=@post_id and  meta_key='_wp_attached_file'; " +
+                    "Update wp_postmeta set meta_value = @guid where post_id = @post_id and meta_key = '_wp_attachment_metadata'; ";
                 MySqlParameter[] para =
                {
                     new MySqlParameter("@post_id", post_id),
@@ -1537,7 +1650,21 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
-
-
+        public string  GetFileName(long PostID)
+        {
+            string result = "";
+            DataTable dt = new DataTable();
+            try
+            {
+                string strSQl = "Select post_title from wp_posts WHERE ID =" + PostID + "; ";
+                 result = SQLHelper.ExecuteScalar(strSQl).ToString();
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return result;
+        }
     }
 }

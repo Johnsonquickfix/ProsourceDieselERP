@@ -541,6 +541,7 @@
     <Content Include="Content\fontawesome-all.min.css" />
     <Content Include="Content\img\flags%402x.png" />
     <Content Include="Content\img\flags.png" />
+    <Content Include="Content\ProductCategory\default.png" />
     <Content Include="Content\Style11.css" />
     <Content Include="Content\Style12.css" />
     <Content Include="css\indexStyle.css" />
@@ -605,6 +606,7 @@
     <Content Include="js\Product\AddnewPurchase.js" />
     <Content Include="js\Product\Product.js" />
     <Content Include="js\Product\ProductCategory.js" />
+    <Content Include="js\Product\ShippingClass.js" />
     <Content Include="js\PurchaseOrder\NewPurchase.js" />
     <Content Include="js\PurchaseOrder\PurchaseOrderList.js" />
     <Content Include="js\Ship\ShipStation.js" />
@@ -737,6 +739,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\passwordStrengthMeter.js" />
+    <Content Include="Scripts\wow.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -830,7 +833,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Content\ProductCategory\" />
     <Folder Include="Content\VendorLinkedFiles\" />
     <Folder Include="js\Appearance\" />
     <Folder Include="Properties\PublishProfiles\" />

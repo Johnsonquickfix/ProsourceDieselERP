@@ -30,7 +30,7 @@
     let order_type = urlParams.get('type') ? urlParams.get('type') : '';
     setTimeout(function () {
         if (order_type.length > 0) {
-            $('.subsubsub li a').removeClass('current'); $('#wc-completed').addClass('current'); $('#hfOrderType').val(order_type); ;
+            $('.subsubsub li a').removeClass('current'); $('#wc-completed').addClass('current'); $('#hfOrderType').val(order_type);;
         }
         dataGridLoad(order_type)
     }, 50);
@@ -98,14 +98,12 @@ function dataGridLoad(order_type) {
     if ($('#filter-by-date').val() != "0") monthYear = $('#filter-by-date').val();
     let dfa = "'" + $('#txtOrderDate').val().replace(' - ', '\' AND \'') + "'";
     dfa = dfa.replaceAll('-', '');
-    $('#dtdata').DataTable({
+    let table = $('#dtdata').DataTable({
         oSearch: { "sSearch": searchText },
         columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true,
-        //sPaginationType: "full_numbers", searching: true, ordering: true, lengthChange: true,
         bAutoWidth: false, scrollX: true, scrollY: ($(window).height() - 215),
-        responsive: true,
-        lengthMenu: [[10, 20, 50], [10, 20, 50]],
+        responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
         language: {
             lengthMenu: "_MENU_ per page",
             zeroRecords: "Sorry no records found",
@@ -113,6 +111,13 @@ function dataGridLoad(order_type) {
             infoFiltered: "",
             infoEmpty: "No records found",
             processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
+        },
+        initComplete: function () {
+            $('.dataTables_filter input').unbind();
+            $('.dataTables_filter input').bind('keyup', function (e) {
+                var code = e.keyCode || e.which;
+                if (code == 13) { table.search(this.value).draw(); }
+            });
         },
         sAjaxSource: "/Orders/GetOrderList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {

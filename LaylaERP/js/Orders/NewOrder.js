@@ -1935,12 +1935,15 @@ function PodiumPayment() {
     var order_total = parseFloat($('#orderTotal').text()) || 0.00;
     var order_phone = $('#txtbillphone').val();
     $("#loader").show();
-    var opt = { clientId: '51eed2ee1dbdced0d6e17548dde7e8a8', clientSecret: '80b1f585430df45f5a71e7a1a866c54dd2329856ced8503f55deee5313a20caf' };
+    //var opt = { clientId: '51eed2ee1dbdced0d6e17548dde7e8a8', clientSecret: '80b1f585430df45f5a71e7a1a866c54dd2329856ced8503f55deee5313a20caf' };
+    var opt = { clientId: '2f936404-dabc-4cf7-a61b-80e6bef42f66', clientSecret: 'e55ba4b7817f146c2fbb9de507052411c25761a9fbc03ff48b4fef324824a9fa', "grant_type": "authorization_code", "code": "de37f1997d3503d3fe23ac07687e34f0f", "redirect_uri": "https://localhost:44371/Orders/NewOrders",};
     $.ajax({
-        type: "POST", url: 'https://api.podium.com/api/session', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
+        
+        //type: "POST", url: 'https://api.podium.com/api/session', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
+        type: "POST", url: 'https://accounts.podium.com/oauth/authorize', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
         success: function (result) {
             var optinv = { employeeName: 'Layla', firstName: $('#txtbillfirstname').val(), lastName: $('#txtbilllastname').val(), invoiceAmount: order_total, invoiceDescription: 'Layla #' + oid, invoiceId: oid, locationId: '155425', customer_email: 'noreply@podium.com', phone: order_phone };
-            //console.log(optinv);
+            console.log(result,optinv);
             $.ajax({
                 type: "POST", url: 'https://api.podium.com/api/v1/webhook/3e23125f-cf42-4348-ace4-f38f759de0c2', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(optinv),
                 beforeSend: function (xhr) { xhr.setRequestHeader("Authorization", result.token); },

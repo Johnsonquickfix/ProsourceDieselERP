@@ -188,6 +188,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\InventoryController.cs" />
     <Compile Include="Controllers\OrdersController.cs" />
+    <Compile Include="Controllers\PodiumController.cs" />
     <Compile Include="Controllers\ProductController.cs" />
     <Compile Include="Controllers\PurchaseOrderController.cs" />
     <Compile Include="Controllers\ReportsController.cs" />
@@ -831,6 +832,7 @@
     <Content Include="Views\Accounting\chartofaccounts.cshtml" />
     <Content Include="Views\Accounting\productsaccount.cshtml" />
     <Content Include="Views\Product\ShippingClass.cshtml" />
+    <Content Include="Views\Podium\paymentrec.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

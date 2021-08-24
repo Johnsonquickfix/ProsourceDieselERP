@@ -374,17 +374,21 @@
                             <div class="box box-primary">
                                 <div class="box-body">
                                     <input type="hidden" id="hfstockid" class="form-control" />
-                                    <input type="hidden" id="txtTransid" class="form-control" placeholder="Enter Unit purchase price">
+                                    <input type="hidden" id="txtTransid" class="form-control" />
+                                    @*<input type="text" id="txtdoc" class="form-control" />*@
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Product<span style="color:red">*</span></label>
                                         <select class="form-control" id="ddlProduct">
-                                            <option value="0">--Select Product--</option>
+                                            @*<option value="0">--Select Product--</option>*@
                                         </select>
                                     </div>
-
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Stock</label>
+                                        <input type="text" id="txtstock" class="form-control" readonly />
+                                    </div>
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Unit purchase price<span style="color:red">*</span></label>
-                                        <input type="text" id="txtprice" class="form-control" placeholder="Enter Unit purchase price">
+                                        <input type="text" id="txtprice" class="form-control" placeholder="Enter Unit purchase price" readonly>
                                     </div>
 
                                     <div class="form-group">
@@ -402,7 +406,7 @@
 
                                 </div>
 
-                            </div>
+                                </div>
                         </div>
 
 
@@ -485,6 +489,7 @@
                             <div class="box box-primary">
                                 <div class="box-body">
                                     <div class="form-group">
+                                        <input type="hidden" id="txtTransid1" class="form-control" />
                                         <input type="hidden" class="form-control" id="hfprice">
                                         <input type="hidden" class="form-control" id="hftransferstockid">
                                     </div>
@@ -492,7 +497,7 @@
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Product<span style="color:red">*</span></label>
                                         <select id="ddltransferProduct" class="form-control">
-                                            <option value="0">--Select Product--</option>
+                                            @*<option value="0">--Select Product--</option>*@
                                         </select>
                                     </div>
 
@@ -570,7 +575,7 @@
                                                 <th>Label of movement</th>
                                                 <th>Qty</th>
                                                 @*<th>Unit Price</th>*@
-                                                @*<th>Action</th>*@
+                                                <th>Action</th>
                                             </tr>
                                         </thead>
                                     </table>
@@ -698,7 +703,10 @@
             UpdateTransferStock();
         });
 
-
+        $('#ddlProduct').change(function () {
+            $("#txtstock").val("");
+            $("#txtprice").val("");
+        });
         //$.get('/Warehouse/GetProduct', function (data) {
         //    var items = "";
         //    $.each(data, function (index, value) {
@@ -727,6 +735,31 @@
             }
         });
 
+
+        var warehouseid = $("#hfid").val();
+        $('#ddlProduct').select2({
+            allowClear: true, minimumInputLength: 3, placeholder: "Search Product",
+            ajax: {
+                url: '/Warehouse/GetProductForWarehouse/', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+                data: function (params) { var obj = { strValue5: params.term, warehouseid: warehouseid }; return JSON.stringify(obj); },
+                processResults: function (data) { var jobj = JSON.parse(data); console.log(data); return { results: $.map(jobj, function (item) { return { text: item.post_title, name: item.post_title, id: item.pr_id } }) }; },
+                error: function (xhr, status, err) { }, cache: true
+               
+            }
+        });
+
+        var transferwarehouseid = $("#hfid").val();
+        $('#ddltransferProduct').select2({
+            allowClear: true, minimumInputLength: 3, placeholder: "Search Product",
+            ajax: {
+                url: '/Warehouse/GetProductForWarehouse/', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+                data: function (params) { var obj = { strValue5: params.term, warehouseid: transferwarehouseid }; return JSON.stringify(obj); },
+                processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.post_title, name: item.post_title, id: item.pr_id } }) }; },
+                error: function (xhr, status, err) { }, cache: true
+
+            }
+        });
+        
         //Select 2 javascript end
 
         //For zip code javascript

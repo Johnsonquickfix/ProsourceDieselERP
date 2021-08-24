@@ -12,7 +12,7 @@ function Addcurrentstock() {
     var label = $("#txtlabel").val();
     var sellby = $("#txtsalebydate").val();
 
-    if (fk_product == 0) {
+    if (fk_product == null) {
         swal('Alert', 'Please select product', 'error').then(function () { swal.close(); $('#ddlProduct').focus(); });
     }
     else if (price == "") {
@@ -253,7 +253,9 @@ $.get('/Warehouse/Gettargetwarehouse', function (data) {
 //});
 
 $('#ddltransferProduct').change(function () {
+    if ($('#ddltransferProduct').val() == null) return false;
     var fk_product = $("#ddltransferProduct").val();
+    alert(fk_product);
     var obj = {
         id: fk_product,
     }
@@ -264,16 +266,26 @@ $('#ddltransferProduct').change(function () {
         success: function (data) {
             data = JSON.parse(data);
             console.log(data);
-            $('#hfprice').val(data[0].sale_price);
+            $('#hfprice').val(data[0].buy_price);
         },
         error: function (jqXHR, textStatus, errorThrown) { swal('Error!', errorThrown, "error"); }
     });
 });
-
+//$("#ddlProduct").change(function () {
+//    if ($('#ddlProduct').val() == null)
+//        return false; getItemList();
+//    $('#ddlProduct').val('').trigger('change');
+//});
 $('#ddlProduct').change(function () {
-    var fk_product = $("#ddlProduct").val();
+    debugger
+    if ($('#ddlProduct').val() == null) return false;
+    var fk_product = $('#ddlProduct').val();
+    var fk_entrepot = $("#hfid").val();
+    alert(fk_product);
     var obj = {
         id: fk_product,
+        warehouseid: fk_entrepot,
+        productid: fk_product,
     }
     jQuery.ajax({
         url: "/Warehouse/GetProductInfo/", dataType: 'json', type: "Post",
@@ -282,7 +294,19 @@ $('#ddlProduct').change(function () {
         success: function (data) {
             data = JSON.parse(data);
             console.log(data);
-            $('#txtprice').val(data[0].sale_price);
+            $('#txtprice').val(data[0].buy_price);
+        },
+        error: function (jqXHR, textStatus, errorThrown) { swal('Error!', errorThrown, "error"); }
+    });
+
+    jQuery.ajax({
+        url: "/Warehouse/GetProductStock/", dataType: 'json', type: "Post",
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(obj),
+        success: function (data) {
+            data = JSON.parse(data);
+            console.log(data);
+            $('#txtstock').val(data[0].quantity);
         },
         error: function (jqXHR, textStatus, errorThrown) { swal('Error!', errorThrown, "error"); }
     });
@@ -340,10 +364,10 @@ function AddTransferStock() {
     var inventorycode = $("#txttransferinvtcode").val();
     var label = $("#txttransferlabel").val();
 
-    //if (fk_product == 0) {
-    //    swal('Alert', 'Please select product', 'error').then(function () { swal.close(); $('#ddltransferProduct').focus(); });
-    //}
-    if (fk_entrepottarget == 0) {
+    if (fk_product == null) {
+        swal('Alert', 'Please select product', 'error').then(function () { swal.close(); $('#ddltransferProduct').focus(); });
+    }
+    else if (fk_entrepottarget == 0) {
         swal('Alert', 'Please select target warehouse', 'error').then(function () { swal.close(); $('#ddltargetwarehouse').focus(); });
     }
     else if (fk_entrepot == fk_entrepottarget) { swal('Alert', 'Please select other warehouse', 'error'); }
@@ -418,7 +442,7 @@ function CorrectStockGrid() {
         data: JSON.stringify(obj),
         success: function (data) {
             $('#dtdata').dataTable({
-                sDom: 'rtip',
+                //sDom: 'rtip',
                 destroy: true,
                 data: JSON.parse(data),
                 "columns": [
@@ -432,6 +456,7 @@ function CorrectStockGrid() {
                     //{ data: 'price', title: 'Unit Price', sWidth: "10%", },
                     {
                         'data': 'ref',
+                        sWidth:"10%",
                         'sortable': false,
                         'searchable': false,
                         'render': function (ref) {
@@ -466,7 +491,8 @@ function chk_status(ele) {
             console.log(jobj[0].label);
             $("#hfstockid").val(jobj[0].rowid);
             $('#txtlabel').val(jobj[0].label);
-            $('#ddlProduct').val(jobj[0].fk_product);
+            //$('#ddlProduct').val(jobj[0].fk_product);
+            $("#ddlProduct").empty().append('<option value="' + jobj[0].fk_product + '" selected>' + jobj[0].post_title + '</option>');
             //$("#hfid").val();
             $("#txtserial").val(jobj[0].serial);
             $("#txteatbydate").val(jobj[0].eatby);
@@ -479,11 +505,36 @@ function chk_status(ele) {
             $("#btnStockUpdate").show();
             $("#btnStockCancel").show();
 
-
+            getstock();
+            
         },
         complete: function () { $("#loader").hide(); },
         error: function (error) { swal('Error!', 'something went wrong', 'error'); },
-    })
+    });
+}
+
+function getstock() {
+    if ($('#ddlProduct').val() == null) return false;
+    var fk_product = $('#ddlProduct').val();
+    var fk_entrepot = $("#hfid").val();
+    alert(fk_product);
+    var obj = {
+        id: fk_product,
+        warehouseid: fk_entrepot,
+        productid: fk_product,
+    }
+    jQuery.ajax({
+        url: "/Warehouse/GetProductStock/", dataType: 'json', type: "Post",
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(obj),
+        success: function (data) {
+            data = JSON.parse(data);
+            console.log(data);
+            $('#txtstock').val(data[0].quantity);
+        },
+        error: function (jqXHR, textStatus, errorThrown) { swal('Error!', errorThrown, "error"); }
+    });
+
 }
 
 
@@ -500,29 +551,29 @@ function StockTransferGrid() {
         data: JSON.stringify(obj),
         success: function (data) {
             $('#dttransferstock').dataTable({
-                sDom: 'rtip',
+                //sDom: 'rtip',
                 destroy: true,
                 data: JSON.parse(data),
                 "columns": [
                     { data: 'ref', title: 'Ref', sWidth: "5%" },
                     { data: 'date', title: 'Date', sWidth: "15%", },
-                    { data: 'warehouse', title: 'Warehouse', sWidth: "15%" },
-                    { data: 'product', title: 'Product', sWidth: "20%" },
-                    
                     { data: 'label', title: 'Label of movement', sWidth: "15%" },
+                    { data: 'product', title: 'Product', sWidth: "20%" },                   
+                    { data: 'warehouse', title: 'Warehouse', sWidth: "15%" },
                     { data: 'value', title: 'Qty', sWidth: "10%" },
                     //{ data: 'price', title: 'Unit Price', sWidth: "10%", },
 
-                    //{
-                    //    'data': 'ref',
-                    //    'sortable': false,
-                    //    'searchable': false,
-                    //    'render': function (ref) {
-                    //        //return '<input type="button" onclick="chk_status(this)" data-id="' + ref + '"  id="chk_sts_str" />'
-                    //        //return '< a href = "#" onclick = "chk_status(this)" data-id="' + ref + '" id="chk_sts_str"> <i class="glyphicon glyphicon-pencil"></i></a >'
-                    //        return '<a href="#" onclick = "transferstockstatus(this)" data-id="' + ref + '" ;"><i class="glyphicon glyphicon-pencil"></i></a>';
-                    //    }
-                    //},
+                    {
+                        'data': 'ref',
+                        sWidth:'10%',
+                        'sortable': false,
+                        'searchable': false,
+                        'render': function (ref) {
+                            //return '<input type="button" onclick="chk_status(this)" data-id="' + ref + '"  id="chk_sts_str" />'
+                            //return '< a href = "#" onclick = "chk_status(this)" data-id="' + ref + '" id="chk_sts_str"> <i class="glyphicon glyphicon-pencil"></i></a >'
+                            return '<a href="#" onclick = "transferstockstatus(this)" data-id="' + ref + '" ;"><i class="glyphicon glyphicon-pencil"></i></a>';
+                        }
+                    },
                 ],
                 "order": [[0, 'desc']],
             });
@@ -537,9 +588,9 @@ function StockTransferGrid() {
 function transferstockstatus(ele) {
 
     var row = $(ele).data('id');
-    var obj = { strValue1: row }
+    var obj = { strValue2: row }
     $.ajax({
-        url: '/Warehouse/GetCurrentStock1/', dataType: 'json', type: 'Post',
+        url: '/Warehouse/GetTransferStockDetails/', dataType: 'json', type: 'Post',
         contentType: "application/json; charset=utf-8",
         data: JSON.stringify(obj),
         dataType: "json",
@@ -548,7 +599,8 @@ function transferstockstatus(ele) {
             var jobj = JSON.parse(data);
             console.log(jobj[0].label);
             $("#ddltargetwarehouse").val(jobj[0].fk_entrepot);
-            $("#ddltransferProduct").val(jobj[0].fk_product);
+            //$("#ddltransferProduct").val(jobj[0].fk_product);
+            $("#ddltransferProduct").empty().append('<option value="' + jobj[0].fk_product + '" selected>' + jobj[0].post_title + '</option>');
             $("#hfprice").val(jobj[0].price);
             $("#txttransferunit").val(jobj[0].value);
             $("#txttransferserial").val(jobj[0].serial);
@@ -557,21 +609,43 @@ function transferstockstatus(ele) {
             $("#txttransferinvtcode").val(jobj[0].inventorycode);
             $("#txttransferlabel").val(jobj[0].label);
             $("#hftransferstockid").val(jobj[0].rowid);
-
+            $("#txtTransid1").val(jobj[0].tran_id);
             $("#btnTranferStock").hide();
             $("#btnTransferStockUpdate").show();
             //$("#btnStockCancel").show();
-
+            getsecondwarehouse();
         },
         complete: function () { $("#loader").hide(); },
         error: function (error) { swal('Error!', 'something went wrong', 'error'); },
     })
 }
 
+function getsecondwarehouse() {
+    var tn = $("#txtTransid1").val();
+    var objj = { strValue5: tn }
+    $.ajax({
+        url: '/Warehouse/Getwarehousesbytrans/', dataType: 'json', type: 'Post',
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(objj),
+        dataType: "json",
+        //beforeSend: function () { $("#loader").show(); },
+        success: function (data) {
+            console.log(data);
+            var jobjj = JSON.parse(data); 
+            $('#txtdoc').val(jobjj[0].warehouse_id);
+
+        },
+        complete: function () { $("#loader").hide(); },
+        error: function (error) { swal('Error!', 'something went wrong', 'error'); },
+    });
+}
 
 
 function Updatecorrectstock() {
     debugger
+   
+    var fk_entrepot = $("#hfid").val();
+    var stock = $("#txtstock").val();
     var tranid = $("#txtTransid").val();
     var rowid = $("#hfstockid").val();
     var fk_product = $("#ddlProduct").val();
@@ -581,16 +655,21 @@ function Updatecorrectstock() {
     var unit = $("#txtunit").val();
     var label = $("#txtlabel").val();
     var sellby = $("#txtsalebydate").val();
-
     if (fk_product == 0) {
         swal('Alert', 'Please select product', 'error').then(function () { swal.close(); $('#ddlProduct').focus(); });
     }
     else if (price == "") {
         swal('Alert', 'Please Enter Price', 'error').then(function () { swal.close(); $('#txtprice').focus(); });
     }
+   
     else if (unit == "") {
         swal('Alert', 'Please Enter Number of Unit', 'error').then(function () { swal.close(); $('#txtunit').focus(); });
     }
+
+    else if (parseInt(unit) > parseInt(stock)) {
+        swal('Alert', 'Not sufficent stock ', 'error').then(function () { swal.close(); $('#txtunit').focus(); });
+    }
+
     else if (serial == "") {
         swal('Alert', 'Please Enter Lot/Serial Number', 'error').then(function () { swal.close(); $('#txtserial').focus(); });
     }
@@ -607,6 +686,8 @@ function Updatecorrectstock() {
     else {
 
         var obj = {
+           
+            fk_entrepot: fk_entrepot,
             searchtransid: tranid,
             searchid: rowid,
             fk_product: fk_product,
@@ -645,7 +726,8 @@ function Updatecorrectstock() {
 
 function UpdateTransferStock() {
     debugger
-    //var fk_entrepot = $("#hfid").val();
+    var secondwarehouse = $('#txtsecondwarehouse').val();
+    var fk_entrepot = $("#hfid").val();
     var rowid = $("#hftransferstockid").val();
     var fk_entrepottarget = $("#ddltargetwarehouse").val();
     var fk_product = $("#ddltransferProduct").val();
@@ -656,6 +738,7 @@ function UpdateTransferStock() {
     var salebydate = $("#txttransfersalebydate").val();
     var inventorycode = $("#txttransferinvtcode").val();
     var label = $("#txttransferlabel").val();
+    var tn = $("#txtTransid1").val();
 
     if (fk_product == 0) {
         swal('Alert', 'Please select product', 'error').then(function () { swal.close(); $('#ddltransferProduct').focus(); });
@@ -686,6 +769,8 @@ function UpdateTransferStock() {
     }
     else {
         var obj = {
+            fk_entrepot: fk_entrepot,
+            secondwarehouse: secondwarehouse,
             searchtransferid: rowid,
             fk_entrepottarget: fk_entrepottarget,
             fk_product: fk_product,
@@ -696,6 +781,7 @@ function UpdateTransferStock() {
             eatby: eatbydate,
             sellby: salebydate,
             serial: lotserial,
+            transfertranscationid: tn,
         }
         $.ajax({
             url: '/Warehouse/UpdateTranferstock/', dataType: 'json', type: 'Post',
@@ -784,27 +870,27 @@ function resettransferstock() {
 
 
 function productbywarehouse() {
-    var warehouseid = $("#hfid").val();
-    var obj = {
-        warehouseid: warehouseid,
-    }
-    $.ajax({
-        url: '/Warehouse/GetProductForWarehouse/', dataType: 'json', type: 'Post',
-        contentType: "application/json; charset=utf-8",
-        data: JSON.stringify(obj),
-        dataType: "json",
-        beforeSend: function () { $("#loader").show(); },
-        success: function (data) {
-            var items = "";
-            $.each(data, function (index, value) {
-                items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddltransferProduct");
-                items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddlProduct");
-            })
+    //var warehouseid = $("#hfid").val();
+    //var obj = {
+    //    warehouseid: warehouseid,
+    //}
+    //$.ajax({
+    //    url: '/Warehouse/GetProductForWarehouse/', dataType: 'json', type: 'Post',
+    //    contentType: "application/json; charset=utf-8",
+    //    data: JSON.stringify(obj),
+    //    dataType: "json",
+    //    beforeSend: function () { $("#loader").show(); },
+    //    success: function (data) {
+    //        var items = "";
+    //        $.each(data, function (index, value) {
+    //            items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddltransferProduct");
+    //            items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddlProduct");
+    //        })
            
-        },
-        complete: function () { $("#loader").hide(); },
-        error: function (error) { swal('Error!', 'something went wrong', 'error'); },
-    })
+    //    },
+    //    complete: function () { $("#loader").hide(); },
+    //    error: function (error) { swal('Error!', 'something went wrong', 'error'); },
+    //})
 
 }
 

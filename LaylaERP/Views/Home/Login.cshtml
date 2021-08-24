@@ -92,14 +92,23 @@
                                     </div>
                                     <input type="hidden" name="create" value="0">
                                     <div class="login-btn-group">
-                                        <span class="btn btn-block login-continue">
+                                        @*<span class="btn btn-block login-continue">
                                             <span class="login-inner">
                                                 <input id="btnLogin" tabindex="5" class="a-button-input" type="button" aria-labelledby="continue-announce">
                                                 <span id="btnLogin" class="a-button-text" aria-hidden="true">
                                                     Login
                                                 </span>
                                             </span>
+                                        </span>*@
+                                        <span class="a-button a-spacing-medium a-button-span12 a-button-primary otp-varification-btn" id="a-autoid-0">
+                                            <span class="a-button-inner">
+                                                <input id="btnLogin" tabindex="5" class="a-button-input" type="button" aria-labelledby="a-autoid-0-announce">
+                                                <span class="a-button-text" aria-hidden="true" id="a-autoid-0-announce">
+                                                    Login
+                                                </span>
+                                            </span>
                                         </span>
+
                                         <div class="forgot-section">
                                             <div aria-live="polite" class="a-row a-expander-container a-expander-inline-container">
                                                 <div aria-expanded="false" class="a-expander-content a-expander-inline-content">
@@ -383,8 +392,14 @@
                         <script src="@Url.Content("~/js/Users/UserLogin.js?v=" + DateTime.Now.ToString("ddMMyyyymmss"))" asp-append-version="true"></script>
                         <script>
                             $(document).ready(function () {
-                                $(document).on('click', '#btnLogin', function () {
+                                $(document).on('click', '#btnLogin', function () {                                   
                                     userAuthenticateLogin();
+                                });
+
+                                $("#txturPassword").keyup(function (event) {
+                                    if (event.keyCode === 13) {
+                                        $("#btnLogin").click();
+                                    }
                                 });
 
                                 $('#sendquery').click(function () {

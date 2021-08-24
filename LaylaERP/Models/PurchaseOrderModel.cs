@@ -24,6 +24,12 @@ namespace LaylaERP.Models
         public string user_status { get; set; }
         public long LoginID { get; set; }
         public string Search { get; set; }
+        public double total_tva { get; set; }
+        public double discount { get; set; }
+        public double localtax1 { get; set; }
+        public double localtax2 { get; set; }
+        public double total_ht { get; set; }
+        public double total_ttc { get; set; }
         public List<PurchaseOrderProductsModel> PurchaseOrderProducts { get; set; }
     }
 

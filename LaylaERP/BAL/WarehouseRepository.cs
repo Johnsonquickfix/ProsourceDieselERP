@@ -185,7 +185,7 @@ namespace LaylaERP.BAL
             try
             {
                 string strsql = "insert into wp_stock_mouvement(datem,fk_product,fk_entrepot,value,type_mouvement,label,inventorycode,price,fk_origin) values(@datem,@fk_product,@fk_entrepot,-1*@value,1,@label,@inventorycode,@price,0);SELECT LAST_INSERT_ID();";
-                string strsql1 = " insert into wp_stock_mouvement(datem,fk_product,fk_entrepot,value,type_mouvement,label,inventorycode,price,fk_origin) values(@datem,@fk_product,@fk_entrepottarget,@value,0,@label,@inventorycode,@price,0);SELECT LAST_INSERT_ID();";
+                string strsql1 = "insert into wp_stock_mouvement(datem,fk_product,fk_entrepot,value,type_mouvement,label,inventorycode,price,fk_origin) values(@datem,@fk_product,@fk_entrepottarget,@value,0,@label,@inventorycode,@price,0);SELECT LAST_INSERT_ID();";
                 MySqlParameter[] para =
                 {
                     new MySqlParameter("@datem", Convert.ToDateTime(DateTime.UtcNow.ToString())),
@@ -215,11 +215,12 @@ namespace LaylaERP.BAL
             try
             {
                 string strquery = "SELECT DISTINCT post.id,ps.ID pr_id,CONCAT(post.post_title, ' (' , COALESCE(psku.meta_value,'') , ') - ' ,LTRIM(REPLACE(REPLACE(COALESCE(ps.post_excerpt,''),'Size:', ''),'Color:', ''))) as post_title"
-                            + " , COALESCE(pr.meta_value, 0) reg_price,COALESCE(psr.meta_value, 0) sale_price FROM wp_posts as post"
+                            + " , COALESCE(pr.meta_value, 0) reg_price,COALESCE(psr.meta_value, 0) sale_price, ppp.purchase_price buy_price FROM wp_posts as post"
                             + " LEFT OUTER JOIN wp_posts ps ON ps.post_parent = post.id and ps.post_type LIKE 'product_variation'"
                             + " left outer join wp_postmeta psku on psku.post_id = ps.id and psku.meta_key = '_sku'"
                             + " left outer join wp_postmeta pr on pr.post_id = ps.id and pr.meta_key = '_regular_price'"
                             + " left outer join wp_postmeta psr on psr.post_id = COALESCE(ps.id, post.id) and psr.meta_key = '_sale_price'"
+                            + " inner join Product_Purchase_Items ppp on ppp.fk_product=ps.ID "
                             + " WHERE post.post_type = 'product' and ps.ID = " + product_id + "";
                 dtr = SQLHelper.ExecuteDataTable(strquery);
 
@@ -449,7 +450,7 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@datem", Convert.ToDateTime(DateTime.UtcNow.ToString())),
                     new MySqlParameter("@fk_product", model.fk_product),
                     new MySqlParameter("@fk_entrepot", model.fk_entrepot),
-                     new MySqlParameter("@fk_entrepottarget", model.fk_entrepottarget),
+                    new MySqlParameter("@fk_entrepottarget", model.fk_entrepottarget),
                     new MySqlParameter("@value", model.value),
                     new MySqlParameter("@price", model.price),
                     //new MySqlParameter("@type_mouvement", model.type_mouvement),
@@ -480,7 +481,7 @@ namespace LaylaERP.BAL
             DataTable dtr = new DataTable();
             try
             {
-                string strquery = "SELECT tran_id,rowid,label,fk_product,LEFT(CAST(eatby AS DATE), 10) as eatby,LEFT(CAST(sellby AS DATE), 10) as sellby,serial,value,price,fk_entrepot,inventorycode from wp_stock_mouvement where rowid='" + model.strValue1 + "'";
+                string strquery = "SELECT tran_id,rowid,label,fk_product,LEFT(CAST(eatby AS DATE), 10) as eatby,LEFT(CAST(sellby AS DATE), 10) as sellby,serial,value,price,fk_entrepot,inventorycode,post.post_title from wp_stock_mouvement wsm inner join wp_posts post ON post.ID = wsm.fk_product where rowid='" + model.strValue1 + "'";
 
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strquery);
@@ -505,8 +506,9 @@ namespace LaylaERP.BAL
                     "fk_product=@fk_product, value=@value, label=@label, eatby=@eatby, sellby=@sellby, serial=@serial, price=@price" +
                      " where rowid in(" + model.searchid + ");";
                 string strsql1 = "update product_stock_register set " +
-                                    "quantity=@value, product_id=@fk_product" +
-                                    " where tran_id in(" + model.searchtransid + ");";
+                                    "quantity=@value, product_id=@fk_product, tran_date=@eatby " +
+                                    " where tran_id = " + model.searchtransid + " and warehouse_id="+model.fk_entrepot+";";
+                
 
                 MySqlParameter[] para =
                {
@@ -551,13 +553,23 @@ namespace LaylaERP.BAL
             try
             {
                 string strsql = "update wp_stock_mouvement set " +
-                    "fk_product=@fk_product, value=@value, label=@label, eatby=@eatby, sellby=@sellby, serial=@serial, price=@price, inventorycode=@inventorycode" +
-                     " where rowid in(" + model.searchtransferid + ")";
+                    "fk_product=@fk_product,fk_entrepot=@fk_entrepottarget, value=@value, label=@label, eatby=@eatby, sellby=@sellby, serial=@serial, price=@price, inventorycode=@inventorycode" +
+                     " where rowid in(" + model.searchtransferid + ");";
+                string strsql1 = "update wp_stock_mouvement set " +
+                    "fk_product=@fk_product, value=-1*@value,fk_entrepot=@fk_entrepot, label=@label, eatby=@eatby, sellby=@sellby, serial=@serial, price=@price, inventorycode=@inventorycode" +
+                     " where fk_entrepot='"+model.fk_entrepot+ "' and tran_id='"+model.transfertranscationid+"';";
+                string strsql2 = "update product_stock_register set " +
+                                   "quantity=-1*@value, product_id=@fk_product, tran_date=@eatby " +
+                                   " where tran_id = " + model.transfertranscationid + " and warehouse_id=" + model.fk_entrepot + ";";
+                string strsql3 = "update product_stock_register set " +
+                                   "quantity=@value, product_id=@fk_product, tran_date=@eatby " +
+                                   " where tran_id = " + model.transfertranscationid + " and warehouse_id=" + model.fk_entrepottarget + ";";
                 MySqlParameter[] para =
                {
                     //additional info
-                   new MySqlParameter("@fk_product", model.fk_product),
+                    new MySqlParameter("@fk_product", model.fk_product),
                     new MySqlParameter("@fk_entrepot", model.fk_entrepot),
+                    new MySqlParameter("@fk_entrepottarget", model.fk_entrepottarget),
                     new MySqlParameter("@value", model.value),
                     new MySqlParameter("@price", model.price),
                     new MySqlParameter("@label", model.label),
@@ -566,7 +578,7 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@serial", model.serial),
                     new MySqlParameter("@inventorycode",model.inventorycode),
             };
-                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql+ strsql1 + strsql2 + strsql3, para));
                 return result;
             }
             catch (Exception Ex)
@@ -582,7 +594,7 @@ namespace LaylaERP.BAL
             {
                 //string strquery = "SELECT ww.ref as warehouse, post.post_title as product,concat(ww.address,' ',ww.city,' ',ww.town,' ',ww.zip,' ',ww.country) as address FROM wp_warehouse ww, wp_posts post, product_warehouse p WHERE"
                 // + " ww.rowid = p.fk_warehouse and post.ID = p.fk_product and p.fk_warehouse="+ getwarehouseid + "";
-                string strquery = "SELECT DISTINCT post.id, ws.ref warehouse,ppp.purchase_price buy_price,ps.ID pr_id, CONCAT(post.post_title, ' (', COALESCE(psku.meta_value, ''), ') - ', LTRIM(REPLACE(REPLACE(COALESCE(ps.post_excerpt, ''), 'Size:', ''), 'Color:', ''))) as post_title, psr.meta_value as sale_price, pr.meta_value reg_price,"
+                string strquery = "SELECT DISTINCT post.id, ws.ref warehouse,ppp.purchase_price buy_price,ps.ID pr_id, CONCAT(post.post_title, ' (', COALESCE(psku.meta_value, ''), ') - ', LTRIM(REPLACE(REPLACE(COALESCE(ps.post_excerpt, ''), 'Size:', ''), 'Color:', ''))) as post_title, format(psr.meta_value,2) as sale_price, format(pr.meta_value,2) reg_price,"
                 + "CONCAT(post.id, '$', COALESCE(ps.id, 0)) r_id FROM wp_posts as post"
                 + " INNER join wp_postmeta psr1 on psr1.post_id = post.ID"
                 + " inner JOIN wp_posts ps ON ps.post_parent = post.id and ps.post_type LIKE 'product_variation'"
@@ -602,7 +614,7 @@ namespace LaylaERP.BAL
             return dtr;
         }
 
-        public static DataTable GetProductForWarehouse(int warehouseid)
+        public static DataTable GetProductForWarehouse(int warehouseid, string strSearch)
         {
             DataTable dtr = new DataTable();
             try
@@ -615,10 +627,55 @@ namespace LaylaERP.BAL
                                     + " inner join wp_postmeta pr on pr.post_id = ps.id and pr.meta_key = '_regular_price'"
                                     + " inner join wp_postmeta psr on psr.post_id = COALESCE(ps.id, post.id) and psr.meta_key = '_sale_price'"
                                     + " inner join product_warehouse pw on pw.fk_product = ps.id and pw.fk_warehouse = '" + warehouseid + "'"
-                                    + " WHERE post.post_type = 'product' AND post.post_status = 'publish' AND CONCAT(post.post_title, ' (' , COALESCE(psku.meta_value, '') , ') - ' ,LTRIM(REPLACE(REPLACE(COALESCE(ps.post_excerpt, ''), 'Size:', ''), 'Color:', ''))) like '%%%'"
+                                    + " WHERE post.post_type = 'product' AND post.post_status = 'publish' AND CONCAT(post.post_title, ' (' , COALESCE(psku.meta_value, '') , ') - ' ,LTRIM(REPLACE(REPLACE(COALESCE(ps.post_excerpt, ''), 'Size:', ''), 'Color:', ''))) like '%"+ strSearch + "%'"
                                     + " ORDER BY post.ID";
                 dtr = SQLHelper.ExecuteDataTable(strquery);
 
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dtr;
+        }
+
+        public static DataTable GetProductStock(int warehouseid, int productid)
+        {
+            DataTable dtr = new DataTable();
+            try
+            {
+                string strquery = "SELECT sum(quantity) quantity from product_stock_register where product_id = '" + productid + "' and warehouse_id = '"+warehouseid+"'";
+                dtr = SQLHelper.ExecuteDataTable(strquery);
+
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dtr;
+        }
+
+
+        public static DataTable Getwarehousesbytrans(string strvalue)
+        {
+            DataTable dtr = new DataTable();
+            try
+            {
+                string strquery = "SELECT * from product_stock_register WHERE tran_id ='" + strvalue + "' order by quantity";
+
+
+                DataSet ds = SQLHelper.ExecuteDataSet(strquery);
+                dtr = ds.Tables[0];
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dtr;
+        }
+
+        public static DataTable GetTransferStockDetails(SearchModel model)
+        {
+            DataTable dtr = new DataTable();
+            try
+            {
+                string strquery = "SELECT tran_id,rowid,label,fk_product,LEFT(CAST(eatby AS DATE), 10) as eatby,LEFT(CAST(sellby AS DATE), 10) as sellby,serial,value,price,fk_entrepot,inventorycode,post.post_title from wp_stock_mouvement wsm inner join wp_posts post ON post.ID = wsm.fk_product where rowid='" + model.strValue2 + "'";
+                DataSet ds = SQLHelper.ExecuteDataSet(strquery);
+                dtr = ds.Tables[0];
             }
             catch (Exception ex)
             { throw ex; }

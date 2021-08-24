@@ -430,21 +430,84 @@ namespace LaylaERP.Controllers
             return Json(JSONresult, 0);
         }
         [HttpPost]
-        public JsonResult GetProductForWarehouse(int warehouseid)
+        public JsonResult GetProductForWarehouse(int warehouseid, SearchModel model)
         {
-            DataTable dt = new DataTable();
-            dt = WarehouseRepository.GetProductForWarehouse(warehouseid);
-            List<SelectListItem> warehouselist = new List<SelectListItem>();
-            for (int i = 0; i < dt.Rows.Count; i++)
-            {
-                warehouselist.Add(new SelectListItem
-                {
-                    Value = dt.Rows[i]["pr_id"].ToString(),
-                    Text = dt.Rows[i]["post_title"].ToString()
+            //DataTable dt = new DataTable();
+            //dt = WarehouseRepository.GetProductForWarehouse(warehouseid);
+            //List<SelectListItem> warehouselist = new List<SelectListItem>();
+            //for (int i = 0; i < dt.Rows.Count; i++)
+            //{
+            //    warehouselist.Add(new SelectListItem
+            //    {
+            //        Value = dt.Rows[i]["pr_id"].ToString(),
+            //        Text = dt.Rows[i]["post_title"].ToString()
 
-                });
+            //    });
+            //}
+            //return Json(warehouselist, JsonRequestBehavior.AllowGet);
+
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable DT = WarehouseRepository.GetProductForWarehouse(warehouseid, model.strValue5);
+                JSONresult = JsonConvert.SerializeObject(DT);
             }
-            return Json(warehouselist, JsonRequestBehavior.AllowGet);
+            catch { }
+            return Json(JSONresult, 0);
+            
+        }
+
+        public JsonResult GetProductStock(int warehouseid, int productid)
+        {
+            //DataTable dt = new DataTable();
+            //dt = WarehouseRepository.GetProductForWarehouse(warehouseid);
+            //List<SelectListItem> warehouselist = new List<SelectListItem>();
+            //for (int i = 0; i < dt.Rows.Count; i++)
+            //{
+            //    warehouselist.Add(new SelectListItem
+            //    {
+            //        Value = dt.Rows[i]["pr_id"].ToString(),
+            //        Text = dt.Rows[i]["post_title"].ToString()
+
+            //    });
+            //}
+            //return Json(warehouselist, JsonRequestBehavior.AllowGet);
+
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable DT = WarehouseRepository.GetProductStock(warehouseid, productid);
+                JSONresult = JsonConvert.SerializeObject(DT);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+
+        }
+
+        public JsonResult Getwarehousesbytrans(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable DT = WarehouseRepository.Getwarehousesbytrans(model.strValue5);
+                JSONresult = JsonConvert.SerializeObject(DT);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+
+        }
+
+        public JsonResult GetTransferStockDetails(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable DT = WarehouseRepository.GetTransferStockDetails(model);
+                JSONresult = JsonConvert.SerializeObject(DT);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+
         }
 
     }

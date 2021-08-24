@@ -70,7 +70,9 @@ namespace LaylaERP.Models
         //value
         public int searchid { get; set; }
         public int searchtransferid { get; set; }
-       public string searchtransid { get; set; }
+        public string searchtransid { get; set; }
+        public int secondwarehouse { get; set; }
+        public string transfertranscationid { get; set; }
 
     }
 }

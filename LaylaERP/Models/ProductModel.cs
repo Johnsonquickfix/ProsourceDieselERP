@@ -76,10 +76,16 @@ namespace LaylaERP.Models
         //public string PhoneNumber { get; set; }
         public byte[] ImageFiledata { get; set; }
         public string ImagePath { get; set; }
-
         public HttpPostedFileBase ImageFile { get; set; }
-
-
+        public string Shippingclass_Name { get; set; }
+        public string countrycode { get; set; }
+        public string statecode { get; set; }
+        public string Shipping_Method { get; set; }
+        public string Shipping_type { get; set; }
+        public string taxable { get; set; }
+        public int fk_ShippingID { get; set; }
+        public float Ship_price { get; set; }
+        public float Shipping_taxrate { get; set; }
     }
     public class ProductModelMetaModel
     {

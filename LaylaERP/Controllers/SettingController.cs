@@ -127,7 +127,7 @@ namespace LaylaERP.Controllers
                 if (model.ID > 0)
                 {
                     Update_Setting(model, model.ID);
-                    return Json(new { status = true, message = "Setting has been saved successfully!!", url = "" }, 0);
+                    return Json(new { status = true, message = "Setting has been saved successfully please login again!!", url = "" }, 0);
                 }
                 
             }

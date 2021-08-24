@@ -40,7 +40,7 @@ namespace LaylaERP.BAL
                 {
                     new MySqlParameter("@product_id", product_id),new MySqlParameter("@vendor_id", vendor_id)
                 };
-                string strSQl = "SELECT p.id,p.post_title,psku.meta_value sku,ir.fk_vendor,purchase_price"
+                string strSQl = "SELECT p.id,p.post_title,psku.meta_value sku,ir.fk_vendor,purchase_price,salestax,shipping_price,discount"
                             + " FROM wp_posts as p"
                             + " left outer join wp_postmeta psku on psku.post_id = p.id and psku.meta_key = '_sku'"
                             + " left outer join Product_Purchase_Items ir on ir.fk_product = p.id and(ir.fk_vendor=0 or ir.fk_vendor=@vendor_id)"
@@ -66,7 +66,26 @@ namespace LaylaERP.BAL
                         productsModel.subprice = decimal.Parse(sdr["purchase_price"].ToString().Trim());
                     else
                         productsModel.subprice = 0;
+                    if (sdr["salestax"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["salestax"].ToString().Trim()))
+                        productsModel.localtax1_tx = decimal.Parse(sdr["salestax"].ToString().Trim());
+                    else
+                        productsModel.localtax1_tx = 0;
+                    productsModel.localtax1_type = "F";
+                    if (sdr["shipping_price"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["shipping_price"].ToString().Trim()))
+                        productsModel.localtax2_tx = decimal.Parse(sdr["shipping_price"].ToString().Trim());
+                    else
+                        productsModel.localtax2_tx = 0;
+                    productsModel.localtax2_type = "F";
+                    if (sdr["discount"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["discount"].ToString().Trim()))
+                        productsModel.discount_percent = decimal.Parse(sdr["discount"].ToString().Trim());
+                    else
+                        productsModel.discount_percent = 0;
                     productsModel.qty = 1;
+                    productsModel.total_ht = productsModel.localtax1_tx * productsModel.qty;
+                    productsModel.discount = productsModel.total_ht * (productsModel.discount_percent / 100);
+                    productsModel.total_localtax1 = productsModel.localtax1_tx * productsModel.qty;
+                    productsModel.total_localtax2 = productsModel.localtax2_tx * productsModel.qty;
+                    productsModel.total_ttc = productsModel.total_ht - productsModel.discount + productsModel.total_localtax1 + productsModel.total_localtax2;
                     _list.Add(productsModel);
                 }
             }
@@ -138,7 +157,7 @@ namespace LaylaERP.BAL
             { throw ex; }
             return dt;
         }
-
+        //Save and update Purchase order
         public long AddNewPurchase(PurchaseOrderModel model)
         {
             long result = 0;
@@ -153,14 +172,15 @@ namespace LaylaERP.BAL
                 {
                     strsql = string.Format("delete from commerce_purchase_order_detail where fk_purchase = '{0}' and rowid not in ({1});", model.RowID, str_oiid);
                     strsql += string.Format("update commerce_purchase_order set ref_supplier='{0}',fk_supplier='{1}',fk_payment_term='{2}',fk_balance_days='{3}',fk_incoterms='{4}',location_incoterms='{5}',"
-                            + "fk_payment_type='{6}',date_livraison='{7}',note_private='{8}',note_public='{9}' where rowid='{10}';", model.VendorBillNo, model.VendorID, model.PaymentTerms, model.Balancedays,
-                            model.IncotermType, model.Incoterms, model.PaymentType, model.Planneddateofdelivery, model.NotePrivate, model.NotePublic, model.RowID);
+                            + "fk_payment_type='{6}',date_livraison='{7}',note_private='{8}',note_public='{9}',discount='{10}',total_tva='{11}',localtax1='{12}',localtax2='{13}',total_ht='{14}',total_ttc='{15}' where rowid='{16}';",
+                            model.VendorBillNo, model.VendorID, model.PaymentTerms, model.Balancedays, model.IncotermType, model.Incoterms, model.PaymentType, model.Planneddateofdelivery, model.NotePrivate, model.NotePublic,
+                            model.discount, model.total_tva, model.localtax1, model.localtax2, model.total_ht, model.total_ttc, model.RowID);
                 }
                 else
                 {
-                    strsql = "insert into commerce_purchase_order(ref,ref_ext,ref_supplier,fk_supplier,fk_status,source,fk_payment_term,fk_balance_days,fk_payment_type,date_livraison,fk_incoterms,location_incoterms,note_private,note_public,fk_user_author,date_creation) "
-                        + string.Format("select concat('PO" + strPOYearMonth + "-',lpad(coalesce(max(right(ref,5)),0) + 1,5,'0')) ref,'','{0}','{1}','1','0','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}' from commerce_purchase_order where lpad(ref,6,0) = 'PO" + strPOYearMonth + "';select LAST_INSERT_ID();",
-                                model.VendorBillNo, model.VendorID, model.PaymentTerms, model.Balancedays, model.PaymentType, model.Planneddateofdelivery, model.IncotermType, model.Incoterms, model.NotePrivate, model.NotePublic, model.LoginID, cDate.ToString("yyyy-MM-dd HH:mm:ss"));
+                    strsql = "insert into commerce_purchase_order(ref,ref_ext,ref_supplier,fk_supplier,fk_status,source,fk_payment_term,fk_balance_days,fk_payment_type,date_livraison,fk_incoterms,location_incoterms,note_private,note_public,fk_user_author,date_creation,discount,total_tva,localtax1,localtax2,total_ht,total_ttc) "
+                        + string.Format("select concat('PO" + strPOYearMonth + "-',lpad(coalesce(max(right(ref,5)),0) + 1,5,'0')) ref,'','{0}','{1}','1','0','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}','{16}','{17}' from commerce_purchase_order where lpad(ref,6,0) = 'PO" + strPOYearMonth + "';select LAST_INSERT_ID();",
+                                model.VendorBillNo, model.VendorID, model.PaymentTerms, model.Balancedays, model.PaymentType, model.Planneddateofdelivery, model.IncotermType, model.Incoterms, model.NotePrivate, model.NotePublic, model.LoginID, cDate.ToString("yyyy-MM-dd HH:mm:ss"), model.discount, model.total_tva, model.localtax1, model.localtax2, model.total_ht, model.total_ttc);
 
                     model.RowID = Convert.ToInt64(SQLHelper.ExecuteScalar(strsql, para));
                 }
@@ -169,14 +189,17 @@ namespace LaylaERP.BAL
                 {
                     if (obj.rowid > 0)
                     {
-                        strsql += string.Format("update commerce_purchase_order_detail set ref='{0}',description='{1}',qty='{2}',discount_percent='{3}',discount='{4}',subprice='{5}',total_ht='{6}',total_ttc='{7}',date_start='{8}',date_end='{9}',rang='{10}' where rowid='{11}';",
-                            obj.product_sku, obj.description, obj.qty, obj.discount_percent, obj.discount, obj.subprice, obj.total_ht, obj.total_ttc, obj.date_start, obj.date_end, obj.rang, obj.rowid);
+                        strsql += string.Format("update commerce_purchase_order_detail set ref='{0}',description='{1}',qty='{2}',discount_percent='{3}',discount='{4}',subprice='{5}',total_ht='{6}',total_ttc='{7}',date_start='{8}',date_end='{9}',rang='{10}',"
+                            + " tva_tx='{11}',localtax1_tx='{12}',localtax1_type='{13}',localtax2_tx='{14}',localtax2_type='{15}',total_tva='{16}',total_localtax1='{17}',total_localtax2='{18}' where rowid='{19}';",
+                            obj.product_sku, obj.description, obj.qty, obj.discount_percent, obj.discount, obj.subprice, obj.total_ht, obj.total_ttc, obj.date_start, obj.date_end, obj.rang,
+                            obj.tva_tx, obj.localtax1_tx, obj.localtax1_type, obj.localtax2_tx, obj.localtax2_type, obj.total_tva, obj.total_localtax1, obj.total_localtax2, obj.rowid);
                     }
                     else
                     {
-                        strsql += "insert into commerce_purchase_order_detail (fk_purchase,fk_product,ref,description,qty,discount_percent,discount,subprice,total_ht,total_ttc,product_type,date_start,date_end,rang) ";
-                        strsql += string.Format(" select '{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}';", model.RowID, obj.fk_product, obj.product_sku, obj.description, obj.qty, obj.discount_percent, obj.discount,
-                            obj.subprice, obj.total_ht, obj.total_ttc, obj.product_type, obj.date_start, obj.date_end, obj.rang);
+                        strsql += "insert into commerce_purchase_order_detail (fk_purchase,fk_product,ref,description,qty,discount_percent,discount,subprice,total_ht,total_ttc,product_type,date_start,date_end,rang,tva_tx,localtax1_tx,localtax1_type,localtax2_tx,localtax2_type,total_tva,total_localtax1,total_localtax2) ";
+                        strsql += string.Format(" select '{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}','{16}','{17}','{18}','{19}','{20}','{21}';",
+                            model.RowID, obj.fk_product, obj.product_sku, obj.description, obj.qty, obj.discount_percent, obj.discount, obj.subprice, obj.total_ht, obj.total_ttc, obj.product_type, obj.date_start, obj.date_end, obj.rang,
+                            obj.tva_tx, obj.localtax1_tx, obj.localtax1_type, obj.localtax2_tx, obj.localtax2_type, obj.total_tva, obj.total_localtax1, obj.total_localtax2);
                     }
                 }
                 if (SQLHelper.ExecuteNonQueryWithTrans(strsql) > 0)
@@ -187,6 +210,27 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
             return result;
+        }
+        //Get Purchase order
+        public static DataSet GetPurchaseOrderByID(long id)
+        {
+            DataSet ds = new DataSet();
+            try
+            {
+                MySqlParameter[] para = { new MySqlParameter("@po_id", id), };
+                string strSql = "select rowid,ref,ref_ext,ref_supplier,fk_supplier,fk_status,source,fk_payment_term,fk_balance_days,fk_payment_type,DATE_FORMAT(date_livraison,'%m/%d/%Y') date_livraison,"
+                                + " fk_incoterms,location_incoterms,note_private,note_public,fk_user_author,DATE_FORMAT(date_creation,'%m/%d/%Y') date_creation from commerce_purchase_order where rowid = @po_id;"
+                                + " select rowid,fk_purchase,fk_product,ref product_sku,description,qty,discount_percent,discount,subprice,total_ht,tva_tx,localtax1_tx,localtax1_type,"
+                                + " localtax2_tx,localtax2_type,total_tva,total_localtax1,total_localtax2,total_ttc,product_type,date_start,date_end,rang"
+                                + " from commerce_purchase_order_detail where fk_purchase = @po_id;";
+                ds = SQLHelper.ExecuteDataSet(strSql, para);
+                ds.Tables[0].TableName = "po"; ds.Tables[1].TableName = "pod";
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return ds;
         }
         public static DataTable GetPurchaseOrder(string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
         {
@@ -219,25 +263,6 @@ namespace LaylaERP.BAL
                 throw ex;
             }
             return dt;
-        }
-
-        public static DataSet GetPurchaseOrderByID(long id)
-        {
-            DataSet ds = new DataSet();
-            try
-            {
-                MySqlParameter[] para = { new MySqlParameter("@po_id", id), };
-                string strSql = "select rowid,ref,ref_ext,ref_supplier,fk_supplier,fk_status,source,fk_payment_term,fk_balance_days,fk_payment_type,DATE_FORMAT(date_livraison,'%m/%d/%Y') date_livraison,"
-                                + " fk_incoterms,location_incoterms,note_private,note_public,fk_user_author,DATE_FORMAT(date_creation,'%m/%d/%Y') date_creation from commerce_purchase_order where rowid = @po_id;"
-                                + " select rowid, fk_purchase, fk_product,ref product_sku, description, qty, discount_percent, discount, subprice, total_ht,tva_tx tax_amount, total_ttc, product_type, date_start, date_end, rang"
-                                + " from commerce_purchase_order_detail where fk_purchase = @po_id;";
-                ds = SQLHelper.ExecuteDataSet(strSql, para);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            return ds;
         }
     }
 }

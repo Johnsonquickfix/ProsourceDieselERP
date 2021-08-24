@@ -16,7 +16,7 @@
         public static decimal GetTaxCombinedRate(string varpostcode, string varcity, string varcountry)
         {
             //var client = new TaxjarApi("7e8b90a535209d00f4a6f78b43f4119f");
-            var client = new TaxjarApi("16586498a18266a962bcd19ff2d7910b");
+            var client = new TaxjarApi(CommanUtilities.Provider.GetCurrent().TaxjarAPIId);
 
             ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
             var rates = client.RatesForLocation(varpostcode, new
@@ -30,7 +30,8 @@
         public static decimal GetTaxCombinedRate(string varpostcode, string varstreet, string varcity, string varstate, string varcountry)
         {
             //var client = new TaxjarApi("7e8b90a535209d00f4a6f78b43f4119f");
-            var client = new TaxjarApi("16586498a18266a962bcd19ff2d7910b");
+            // var client = new TaxjarApi("16586498a18266a962bcd19ff2d7910b");
+            var client = new TaxjarApi(CommanUtilities.Provider.GetCurrent().TaxjarAPIId);
             ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
             var rates = client.RatesForLocation(varpostcode, new
             {
@@ -44,7 +45,8 @@
         }
         public static TaxJarModel GetTaxes(TaxJarModel taxJarModel)
         {
-            var client = new TaxjarApi("16586498a18266a962bcd19ff2d7910b");
+            //var client = new TaxjarApi("16586498a18266a962bcd19ff2d7910b");
+            var client = new TaxjarApi(CommanUtilities.Provider.GetCurrent().TaxjarAPIId);
             ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
             var Taxes = client.TaxForOrder(new
             {

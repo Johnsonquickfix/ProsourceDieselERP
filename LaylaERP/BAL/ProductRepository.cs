@@ -120,6 +120,28 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
+        public static DataTable GetShipEditDataID(OrderPostStatusModel model)
+        {
+            DataTable dt = new DataTable();
+
+            try
+            {
+                string strWhr = string.Empty;
+
+                string strSql = "SELECT rowid ID,Shippingclass_Name ShipName,fk_ShippingID,case WHEN countrycode = 'US' then 1 ELSE 2 end  countrycode ,statecode,Method,Shipping_price,Type,taxable,Shipping_taxrate  from ShippingClass_Details ScD left OUTER join Shipping_class sc on sc.id = ScD.fk_ShippingID"
+                             + " WHERE rowid = " + model.strVal + " ";
+
+
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dt = ds.Tables[0];
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
         public static DataTable GetDataProductwarehouseByID(OrderPostStatusModel model)
         {
             DataTable dt = new DataTable();
@@ -557,6 +579,18 @@ namespace LaylaERP.BAL
             { throw ex; }
             return DT;
         }
+        public static DataTable Getsate(string Country)
+        {
+            DataTable DT = new DataTable();
+            try
+            {
+                string strSQl = "Select StateFullName,State from erp_StateList where Country = '"+ Country + "' ";
+                DT = SQLHelper.ExecuteDataTable(strSQl);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DT;
+        }
         public static DataTable Getwarehouse()
         {
             DataTable DT = new DataTable();
@@ -776,6 +810,49 @@ namespace LaylaERP.BAL
             return dt;
         }
 
+        public static DataTable GetShippinfclassList(string strValue1, string userstatus, string strValue3, string strValue4, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "order_id", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                string strWhr = string.Empty;
+
+                if (!string.IsNullOrEmpty(searchid))
+                {
+                    strWhr += " and (rowid like '%" + searchid + "%' "
+                            + " OR Shippingclass_Name like '%" + searchid + "%' "
+                            + " OR CountryFullName like '%" + searchid + "%' "
+                            + " OR StateFullName like '%" + searchid + "%' "
+                            + " OR Shipping_price like '%" + searchid + "%' "
+                            + " OR taxable like '%" + searchid + "%' "  
+                            + " )";
+                }
+
+                string strSql = "select DISTINCT rowid, Shippingclass_Name ShipName,CountryFullName Country,esl.StateFullName"
+                + " State,Method,format(Shipping_price,2) Shipping_price ,Type,case when taxable = 1 then 'Excl.tax' else 'Inc.tax' end taxable,format(Shipping_taxrate,2) Shipping_taxrate"
+                + " from ShippingClass_Details ScD"
+                + " left OUTER join Shipping_class sc on sc.id = ScD.fk_ShippingID"
+                + " left OUTER join erp_StateList esl on esl.State = ScD.statecode"
+                + " WHERE rowid > 0" + strWhr
+                // + " left OUTER join erp_StateList eslcun on eslcun.Country = ScD.countrycode"
+                + " order by " + SortCol + " " + SortDir + " limit " + (pageno).ToString() + ", " + pagesize + "";
+
+                strSql += "; SELECT count(distinct rowid) TotalRecord from ShippingClass_Details ScD"                              
+                + " left OUTER join Shipping_class sc on sc.id = ScD.fk_ShippingID"
+                + " left OUTER join erp_StateList esl on esl.State = ScD.statecode"
+                + " WHERE rowid > 0" + strWhr.ToString();
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dt = ds.Tables[0];
+                if (ds.Tables[1].Rows.Count > 0)
+                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
         public static DataTable GetProducts(string strSearch)
         {
             DataTable DT = new DataTable();
@@ -814,6 +891,24 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@post_mime_type", string.Empty),
                     new MySqlParameter("@post_parent", model.post_parent),
                     new MySqlParameter("@comment_status", model.comment_status),
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+        public static int Addshippingdetails(ProductModel model)
+        {
+            try
+            {
+                string strsql = "Insert into Shipping_class(Shippingclass_Name) values(@Shippingclass_Name);SELECT LAST_INSERT_ID();";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@Shippingclass_Name", model.Shippingclass_Name),   
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
                 return result;
@@ -877,6 +972,26 @@ namespace LaylaERP.BAL
             { throw ex; }
             return result;
         }
+
+        public static int AddshippingPricedetails(ProductModel model)
+        {
+            int result = 0;
+            try
+            {
+                StringBuilder strSql = new StringBuilder();
+                //StringBuilder strSql = new StringBuilder(string.Format("delete from Product_Purchase_Items where fk_product = {0}; ", model.fk_product));
+                strSql.Append(string.Format("insert into ShippingClass_Details (fk_ShippingID,countrycode,statecode,Method,Shipping_price,Type,taxable,Shipping_taxrate) values ({0},'{1}','{2}','{3}',{4},'{5}','{6}',{7}) ", model.fk_ShippingID, model.countrycode, model.statecode, model.Shipping_Method, model.Ship_price, model.Shipping_type, model.taxable, model.Shipping_taxrate));
+
+                /// step 6 : wp_posts
+                //strSql.Append(string.Format(" update wp_posts set post_status = '{0}' ,comment_status = 'closed' where id = {1} ", model.OrderPostStatus.status, model.OrderPostStatus.order_id));
+
+                result = SQLHelper.ExecuteNonQuery(strSql.ToString());
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return result;
+        }
+
         public static int updateBuyingtProduct(ProductModel model, DateTime dateinc)
         {
             int result = 0;
@@ -895,7 +1010,24 @@ namespace LaylaERP.BAL
             { throw ex; }
             return result;
         }
+        public static int updateshippingclass(ProductModel model)
+        {
+            int result = 0;
+            try
+            {
+                StringBuilder strSql = new StringBuilder();
+                //StringBuilder strSql = new StringBuilder(string.Format("delete from Product_Purchase_Items where fk_product = {0}; ", model.fk_product));
+                // strSql.Append(string.Format("insert into Product_Purchase_Items ( fk_vendor,purchase_price,cost_price,minpurchasequantity,salestax,taxrate,discount,remark) values ({0},{1},{2},{3},{4},{5},{6},{7},'{8}') ", model.fk_product, model.fk_vendor, model.purchase_price, model.cost_price, model.minpurchasequantity, model.salestax, model.taxrate, model.discount, model.remark));
 
+                /// step 6 : wp_posts
+                strSql.Append(string.Format("update ShippingClass_Details set countrycode = '{0}' ,statecode = '{1}',Method = '{2}',Shipping_price = {3},Type = '{4}',taxable = '{5}',Shipping_taxrate = {6} where rowid = {7} ", model.countrycode, model.statecode, model.Shipping_Method, model.Ship_price, model.Shipping_type, model.taxable, model.Shipping_taxrate, model.ID));
+
+                result = SQLHelper.ExecuteNonQuery(strSql.ToString());
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return result;
+        }
         public static int updateNotesProduct(ProductModel model)
         {
             int result = 0;

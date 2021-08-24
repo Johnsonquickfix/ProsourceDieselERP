@@ -338,9 +338,9 @@
                 data: JSON.stringify(obj),
                 dataType: "json",
                 success: function (data) {
-                    if (data.status == true) {
-                        
-                        swal('Alert!', data.message, 'success');
+                    if (data.status == true) {                        
+                      
+                        swal('Alert!', data.message, 'success').then((result) => { top.window.location.href = top.window.location.origin + '/Home/Login'; });
                     }
                     else {
                         swal('Alert!', data.message, 'error')

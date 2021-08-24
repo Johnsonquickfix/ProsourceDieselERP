@@ -11,11 +11,20 @@
     })
 
     $("#ddlCountry").change(function () {
-        var obj = $("#ddlCountry").val();
-        BindStateCounty(obj);
+        var obj = $("#ddlCountry").val();        
+        BindStateCounty(obj);       
     });
 
-  
+    $("#txttaxprice").keyup(function () {
+        var $this = $(this);
+        $this.val($this.val().replace(/[^\d.]/g, ''));
+        $this.val($this.val().substring(0, 10));
+    });
+    $("#txtPrice").keyup(function () {
+        var $this = $(this);
+        $this.val($this.val().replace(/[^\d.]/g, ''));
+        $this.val($this.val().substring(0, 10));
+    });
 
 });
 
@@ -75,6 +84,7 @@ function Adddetails() {
                        swal('Alert!', data.message, 'success');
                     }
                     else {
+                        dataGridLoad('');
                         // $('#fetch_results > input:text').val('');
                         swal('Alert!', data.message, 'success');
                     }
@@ -105,7 +115,7 @@ function Adddetails() {
 ///Bind States of Country
 function BindStateCounty(obj) {
     
-    $.get('/Product/Getsate/' + parseInt($("#ddlCountry").val()), function (data) {
+    $.get('/Product/Getsate/' + parseInt($("#ddlCountry").val()), { async: false }, function (data) {
         var items = "";
         $('#ddlState').empty();
         // items += "<option value=''>Please select</option>";
@@ -145,7 +155,7 @@ function dataGridLoad(order_type) {
             aoData.push({ name: "strValue4", value: '' });
             var col = 'rowid';
             if (oSettings.aaSorting.length > 0) {
-                var col = oSettings.aaSorting[0][0] == 2 ? "rowid" : oSettings.aaSorting[0][0] == 3 ? "ShipName" : oSettings.aaSorting[0][0] == 4 ? "CountryFullName" : "rowid";
+                var col = oSettings.aaSorting[0][0] == 0 ? "rowid" : oSettings.aaSorting[0][0] == 1 ? "ShipName" : oSettings.aaSorting[0][0] == 2 ? "CountryFullName" : "rowid";
                 aoData.push({ name: "sSortColName", value: col });
             }
             //console.log(aoData);
@@ -158,29 +168,83 @@ function dataGridLoad(order_type) {
             });
         },
         columns: [
-            {
-                'data': 'rowid', sWidth: "5%   ",
-                'render': function (data, type, full, meta) {
-                    return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck(this);" value="' + $('<div/>').text(data).html() + '"><label></label>';
-                }
-            },
+            //{
+            //    'data': 'rowid', sWidth: "5%   ",
+            //    'render': function (data, type, full, meta) {
+            //        return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck(this);" value="' + $('<div/>').text(data).html() + '"><label></label>';
+            //    }
+            //},
             
             { data: 'ShipName', title: 'Shipping Class', sWidth: "12%" },
             { data: 'Country', title: 'Country', sWidth: "12%" },
             { data: 'State', title: 'State', sWidth: "12%" },
             { data: 'Method', title: 'Method', sWidth: "12%" },
-            { data: 'Shipping_price', title: 'Price', sWidth: "12%" },
+            /*{ data: 'Shipping_price', title: 'Price', sWidth: "12%" },*/
+            {
+                data: 'Shipping_price', title: 'Price', sWidth: "12%", render: function (data, type, row) {
+                    var tprice = 'toFormat';
+                    tprice = '$' + row.Shipping_price;
+                    return tprice
+                }
+            },
             { data: 'Type', title: 'Type', sWidth: "12%" },
             { data: 'taxable', title: 'Taxable', sWidth: "12%" },
-            { data: 'Shipping_taxrate', title: 'TaxCost', sWidth: "12%" },
+           // { data: 'Shipping_taxrate', title: 'TaxCost', sWidth: "12%" },
+            {
+                data: 'Shipping_taxrate', title: 'TaxCost', sWidth: "12%", render: function (data, type, row) {
+                    var tprice = 'toFormat';
+                    tprice = '$' + row.Shipping_taxrate;
+                    return tprice
+                }
+            },
+
             {
                 'data': 'rowid', title: 'Action', sWidth: "5%",
                 'render': function (id, type, full, meta) {
-                    return '<a title="Click here to Edit" data-toggle="tooltip"><i class="glyphicon glyphicon-eye-open"></i></a>'
+                    return '<a title="Click here to Edit" onClick="EditData(' + id + ');" data-toggle="tooltip"><i class="glyphicon glyphicon-eye-open"></i></a>'
                 }
             }
         ]
     });
+}
+
+function EditData(id) {
+    $('#dvdetails').show();
+    $("#hfshipingid").val(id);
+    var ID = id;
+    var obj = { strVal: id }
+    $.ajax({
+
+        url: '/Product/GetShipEditDataID/' + ID,
+        type: 'post',
+        contentType: "application/json; charset=utf-8",
+        dataType: 'JSON',
+        data: JSON.stringify(obj),
+        success: function (data) {
+            var i = JSON.parse(data);
+            //  console.log(i);
+            $("#txtShippingClass").val(i[0].ShipName);
+            $("#txttaxprice").val(i[0].Shipping_taxrate);
+            $("#txtPrice").val(i[0].Shipping_price);
+            $('#ddlCountry').val(i[0].countrycode).trigger('change');            
+           // $('#ddlState').val(i[0].statecode).trigger('change');
+            $('#ddlCountry').trigger('change');
+            $('#ddlMethod').val(i[0].Method).trigger('change');
+            $('#ddlType').val(i[0].Type).trigger('change');
+            $('#ddlTaxable').val(i[0].taxable).trigger('change');
+            $('#ddlMethod').val(i[0].Method).trigger('change');
+           // $('#ddlState').val(i[0].statecode).trigger('change');
+            $("#txtShippingClass").prop("readonly", true);
+            //$('#ddlState').val(id).trigger('change');
+            setTimeout(function () { statedata(i[0].statecode); }, 2000);
+        },
+        error: function (msg) { alert(msg); }
+      
+    });
+}
+function statedata(id) {
+    console.log(id);
+    $('#ddlState').val(id).trigger('change');
 }
 
 

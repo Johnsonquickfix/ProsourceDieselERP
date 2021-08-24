@@ -102,8 +102,6 @@ namespace LaylaERP.Controllers
             }
         }
 
-        
-
         public JsonResult UpdateChartOfAccountStatus(AccountingJournalModel model)
         {
             if (model.rowid > 0)
@@ -141,6 +139,28 @@ namespace LaylaERP.Controllers
             }
             catch { }
             return Json(JSONresult, 0);
+        }
+        [HttpGet]
+        public JsonResult GetProductStock(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            try
+            {
+                DataTable dt = AccountingRepository.GetProductStock(model.strValue1, model.strValue2, model.strValue3);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
+        public JsonResult GetNewAccounttoAssign(SearchModel model)
+        {
+            DataSet ds = BAL.AccountingRepository.GetNewAccounttoAssign();
+            List<SelectListItem> productlist = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                productlist.Add(new SelectListItem { Text = dr["label"].ToString(), Value = dr["ID"].ToString() });
+            }
+            return Json(productlist, JsonRequestBehavior.AllowGet);
         }
     }
 }

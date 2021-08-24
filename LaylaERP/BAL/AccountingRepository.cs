@@ -193,5 +193,54 @@ namespace LaylaERP.BAL
             { throw ex; }
             return dtr;
         }
+        public static DataTable GetProductStock(string strSKU, string categoryid, string productid)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                string strWhr = string.Empty, strHav = string.Empty;
+                if (!string.IsNullOrEmpty(strSKU))
+                {
+                    strHav += " having max(case when p.id = s.post_id and s.meta_key = '_sku' then s.meta_value else '' end) = '" + strSKU + "'";
+                }
+                if (!string.IsNullOrEmpty(categoryid))
+                {
+                    strWhr += " and (case when p.post_parent = 0 then p.id else p.post_parent end) in (select object_id from wp_term_relationships ttr where ttr.term_taxonomy_id='" + categoryid + "')";
+                }
+                if (!string.IsNullOrEmpty(productid))
+                {
+                    strWhr += " and (case when p.post_parent = 0 then p.id else p.post_parent end) = '" + productid + "'";
+                }
+
+                string strSql = "select p.id,p.post_type,p.post_title,max(case when p.id = s.post_id and s.meta_key = '_sku' then s.meta_value else '' end) sku,"
+                            + " max(case when p.id = s.post_id and s.meta_key = '_regular_price' then s.meta_value else '' end) regular_price,"
+                            + " max(case when p.id = s.post_id and s.meta_key = '_price' then s.meta_value else '' end) sale_price,"
+                            + " (select coalesce(sum(case when pwr.flag = 'R' then quantity else -quantity end),0) from product_stock_register pwr where pwr.product_id = p.id) stock,"
+                            + " (case when p.post_parent = 0 then p.id else p.post_parent end) p_id,p.post_parent,p.post_status"
+                            + " FROM wp_posts as p left join wp_postmeta as s on p.id = s.post_id"
+                            + " where p.post_type in ('product', 'product_variation') and p.post_status != 'draft' " + strWhr
+                            + " group by p.id " + strHav + " order by p_id";
+             
+                dt = SQLHelper.ExecuteDataTable(strSql);
+              
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+        public static DataSet GetNewAccounttoAssign()
+        {
+            DataSet DS = new DataSet();
+            try
+            {
+                string strSQl = "Select account_number ID, label from erp_accounting_account order by rowid";
+                DS = SQLHelper.ExecuteDataSet(strSQl);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
+        }
     }
 }

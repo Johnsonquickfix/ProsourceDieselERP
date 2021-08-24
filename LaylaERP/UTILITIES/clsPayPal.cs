@@ -17,7 +17,8 @@ namespace LaylaERP.UTILITIES
         private static string base_url = "https://api.sandbox.paypal.com";
         public static string GetToken()
         {
-            string clientId = "AcuqRFTJWTspIMomXNjD8qqaY3FYB3POMIKoJOI3P79e85Nluk0b8OME0k-zBnEllg2e03LoBLXbJ0l0", clientSecret = "EA_mO1Ia607bvwcFf5wHMYW-XLx4QST-S41Sr7iG8gCfWkDDzM794mvBjbysx1Nb_5P-MrruKBLWng-u";
+            // string clientId = "AcuqRFTJWTspIMomXNjD8qqaY3FYB3POMIKoJOI3P79e85Nluk0b8OME0k-zBnEllg2e03LoBLXbJ0l0", clientSecret = "EA_mO1Ia607bvwcFf5wHMYW-XLx4QST-S41Sr7iG8gCfWkDDzM794mvBjbysx1Nb_5P-MrruKBLWng-u";
+            string clientId = CommanUtilities.Provider.GetCurrent().PaypalClientId, clientSecret = CommanUtilities.Provider.GetCurrent().PaypalSecret;
             List<KeyValuePair<string, string>> tokenServerPairs = new List<KeyValuePair<string, string>>();
             tokenServerPairs.Add(new KeyValuePair<string, string>("grant_type", "client_credentials"));
             var content = new FormUrlEncodedContent(tokenServerPairs);

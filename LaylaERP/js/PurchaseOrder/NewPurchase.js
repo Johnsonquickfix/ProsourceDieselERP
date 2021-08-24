@@ -116,55 +116,13 @@ function getVendor() {
     });
 }
 
-function GetPurchaseOrderByID(id) {
-    var rowid = id;
-    /* if (rowid == "NewVendor") { $('#lbltitle').text("Add New Vendor"); } else { $('#lbltitle').text("Update Vendor"); }*/
-    var obj =
-        $.ajax({
-            url: "/PurchaseOrder/GetPurchaseOrderByID/" + rowid,
-            type: "GET",
-            contentType: "application/json; charset=utf-8",
-            dataType: 'JSON',
-            data: JSON.stringify(obj),
-            success: function (data) {
-                var d = JSON.parse(data);
-                if (d.length > 0) {
-                    $('#lblRequestAuthor').text(d[0].RequestAuthor);
-                    $('#lblVendor').text(d[0].VendorName);
-                    $('#lblRefvendor').text(d[0].RefOrderVendor);
-                    $('#lblPaymentTerms').text(d[0].PaymentTerm);
-                    $('#lblBalance').text(d[0].Balance);
-                    $('#lblPaymentType').text(d[0].PaymentType);
-                    $('#lblPlanneddateofdelivery').text(d[0].PlannedDateofDelivery);
-                    $('#lblIncoterms').text(d[0].incoterms);
-                    $('#lblNotePublic').text(d[0].note_public);
-                    $('#lblNotePrivate').text(d[0].note_private);
-
-                }
-            },
-            error: function (msg) {
-
-            }
-        });
-
-}
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Item Tab Section ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function getItemList(product_id, vender_id) {
     let option = { strValue1: product_id, strValue2: vender_id };
-    let tax_rate = 0.00;
     $.ajax({
         type: "get", url: '/PurchaseOrder/SearchProductDetails', contentType: "application/json; charset=utf-8", dataType: "json", data: option,
         beforeSend: function () { $("#loader").show(); },
-        success: function (data) {
-            let _items = []; console.log(data);
-            for (var i = 0; i < data.length; i++) {
-                _items.push({
-                    rowid: 0, rang: 0, fk_product: data[i].fk_product, description: data[i].description, product_sku: data[i].product_sku, qty: data[i].qty, subprice: data[i].subprice, discount_percent: 0, total_ht: (data[i].subprice * data[i].qty), tax_amount: 0, total_ttc: (data[i].subprice * data[i].qty)
-                });
-            }
-            //Bind Items
-            bindItems(_items);
-        },
+        success: function (data) { bindItems(data); },
         complete: function () { $("#loader").hide(); },
         error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); },
         async: false
@@ -182,7 +140,7 @@ function bindItems(data) {
                     itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemprice_' + data[i].fk_product + '" value="' + data[i].subprice + '" name="txt_itemprice" placeholder="Price"></td>';
                     itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemqty_' + data[i].fk_product + '" value="' + data[i].qty + '" name="txt_itemqty" placeholder="Qty."></td>';
                     itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemdisc_' + data[i].fk_product + '" value="' + data[i].discount_percent + '" name="txt_itemdisc" placeholder="Discount"></td>';
-                    itemHtml += '<td class="text-right tax-amount">' + data[i].tax_amount + '</td>';
+                    itemHtml += '<td class="text-right tax-amount" data-tax1="' + data[i].total_localtax1 + '" data-tax2="' + data[i].total_localtax2 + '">' + data[i].total_localtax1 + '</td>';
                     itemHtml += '<td class="text-right row-total">' + data[i].total_ttc.toFixed(2) + '</td>';
                     itemHtml += '</tr>';
                 }
@@ -204,35 +162,36 @@ function removeItems(id) {
         });
 }
 function calculateFinal() {
-    let tGrossAmount = 0.00, tDisAmt = 0.00, tTotalTax = 0.00, tTotal = 0.00;
+    let tGrossAmt = 0.00, tDisAmt = 0.00, tTax_Amt1 = 0.00, tTax_Amt2 = 0.00, tNetAmt = 0.00;
     //main item
     $("#line_items > tr.paid_item").each(function (index, row) {
-        let rPrice = 0.00, rQty = 0.00, rDisPer = 0.00, rDisAmt = 0.00, rTaxAmt = 0.00, rGrossAmount = 0.00, rTotalAmount = 0.00;
+        let rPrice = 0.00, rQty = 0.00, rDisPer = 0.00, rGrossAmt = 0.00, rDisAmt = 0.00, rTax1 = 0.00, rTax_Amt1 = 0.00, rTax2 = 0.00, rTax_Amt2 = 0.00, rNetAmt = 0.00;
         rPrice = parseFloat($(row).find("[name=txt_itemprice]").val()) || 0.00;
         rQty = parseFloat($(row).find("[name=txt_itemqty]").val()) || 0.00;
         rDisPer = parseFloat($(row).find("[name=txt_itemdisc]").val()) || 0.00;
-        rGrossAmount = rPrice * rQty; rDisAmt = rGrossAmount * (rDisPer / 100);
-        rTaxAmt = (rGrossAmount - rDisAmt) * 0;
-        rTotalAmount = (rGrossAmount - rDisAmt) + rTaxAmt;
-        $(row).find(".tax-amount").text(rTaxAmt.toFixed(2)); $(row).find(".row-total").text(rTotalAmount.toFixed(2));
-        tGrossAmount += rGrossAmount, tDisAmt += rDisAmt, tTotalTax += rTaxAmt, tTotal += rTotalAmount;
+        rTax1 = parseFloat($(row).find(".tax-amount").data('tax1')) || 0.00; rTax2 = parseFloat($(row).find(".tax-amount").data('tax2')) || 0.00;
+        rGrossAmt = rPrice * rQty; rDisAmt = rGrossAmt * (rDisPer / 100);
+        rTax_Amt1 = rTax1 * rQty; rTax_Amt2 = rTax2 * rQty;
+        rNetAmt = (rGrossAmt - rDisAmt) + rTax_Amt1 + rTax_Amt2;
+        $(row).find(".tax-amount").text(rTax_Amt1.toFixed(2)); $(row).find(".row-total").text(rNetAmt.toFixed(2));
+        tGrossAmt += rGrossAmt, tDisAmt += rDisAmt, tTax_Amt1 += rTax_Amt1, tTax_Amt2 += rTax_Amt2, tNetAmt += rNetAmt;
     });
     //other item
     $("#product_line_items > tr.other_item").each(function (index, row) {
-        let rPrice = 0.00, rQty = 0.00, rDisPer = 0.00, rDisAmt = 0.00, rTaxAmt = 0.00, rGrossAmount = 0.00, rTotalAmount = 0.00;
+        let rPrice = 0.00, rQty = 0.00, rDisPer = 0.00, rDisAmt = 0.00, rTax_Amt1 = 0.00, rGrossAmt = 0.00, rNetAmt = 0.00;
         rPrice = parseFloat($(row).find("[name=txt_itemprice]").val()) || 0.00;
         rQty = parseFloat($(row).find("[name=txt_itemqty]").val()) || 0.00;
         rDisPer = parseFloat($(row).find("[name=txt_itemdisc]").val()) || 0.00;
-        rGrossAmount = rPrice * rQty; rDisAmt = rGrossAmount * (rDisPer / 100);
-        rTaxAmt = (rGrossAmount - rDisAmt) * 0;
-        rTotalAmount = (rGrossAmount - rDisAmt) + rTaxAmt;
-        $(row).find(".tax-amount").text(rTaxAmt.toFixed(2)); $(row).find(".row-total").text(rTotalAmount.toFixed(2));
-        tGrossAmount += rGrossAmount, tDisAmt += rDisAmt, tTotalTax += rTaxAmt, tTotal += rTotalAmount;
+        rGrossAmt = rPrice * rQty; rDisAmt = rGrossAmt * (rDisPer / 100);
+        rNetAmt = (rGrossAmt - rDisAmt) + rTax_Amt1;
+        $(row).find(".tax-amount").text(rTax_Amt1.toFixed(2)); $(row).find(".row-total").text(rNetAmt.toFixed(2));
+        tGrossAmt += rGrossAmt, tDisAmt += rDisAmt, tTax_Amt1 += rTax_Amt1, tNetAmt += rNetAmt;
     });
-    $("#SubTotal").text(tGrossAmount.toFixed(2));
+    $("#SubTotal").text(tGrossAmt.toFixed(2));
     $("#discountTotal").text(tDisAmt.toFixed(2));
-    $("#salesTaxTotal").text(tTotalTax.toFixed(2));
-    $("#orderTotal").html(tTotal.toFixed(2));
+    $("#salesTaxTotal").text(tTax_Amt1.toFixed(2));
+    $("#shippingTotal").text(tTax_Amt2.toFixed(2));
+    $("#orderTotal").html(tNetAmt.toFixed(2));
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Add Other Product and Services ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function AddProductModal(proc_type, row_num) {
@@ -351,44 +310,44 @@ function getPurchaseOrderInfo() {
             success: function (result) {
                 try {
                     let data = JSON.parse(result); console.log(data);
-                    for (let i = 0; i < data['Table'].length; i++) {
-                        $('#lblPoNo').text(data['Table'][i].ref); $('#txtRefvendor').val(data['Table'][i].ref_supplier); $('#txtPODate').val(data['Table'][i].date_creation);
-                        $('#ddlVendor').val(data['Table'][i].fk_supplier).trigger('change');
-                        $('#ddlPaymentTerms').val(data['Table'][i].fk_payment_term).trigger('change');
-                        $('#ddlBalancedays').val(data['Table'][i].fk_balance_days).trigger('change');
-                        $('#ddlIncoTerms').val(data['Table'][i].fk_incoterms).trigger('change');
-                        $('#ddlPaymentType').val(data['Table'][i].fk_payment_type).trigger('change');
-                        $('#txtNotePublic').val(data['Table'][i].note_public); $('#txtNotePrivate').val(data['Table'][i].note_private);
-                        $('#txtIncoTerms').val(data['Table'][i].location_incoterms);
-                        if (!data['Table'][i].date_livraison.includes('00/00/0000')) $('#txtPlanneddateofdelivery').val(data['Table'][i].date_livraison);
+                    for (let i = 0; i < data['po'].length; i++) {
+                        $('#lblPoNo').text(data['po'][i].ref); $('#txtRefvendor').val(data['po'][i].ref_supplier); $('#txtPODate').val(data['po'][i].date_creation);
+                        $('#ddlVendor').val(data['po'][i].fk_supplier).trigger('change');
+                        $('#ddlPaymentTerms').val(data['po'][i].fk_payment_term).trigger('change');
+                        $('#ddlBalancedays').val(data['po'][i].fk_balance_days).trigger('change');
+                        $('#ddlIncoTerms').val(data['po'][i].fk_incoterms).trigger('change');
+                        $('#ddlPaymentType').val(data['po'][i].fk_payment_type).trigger('change');
+                        $('#txtNotePublic').val(data['po'][i].note_public); $('#txtNotePrivate').val(data['po'][i].note_private);
+                        $('#txtIncoTerms').val(data['po'][i].location_incoterms);
+                        if (!data['po'][i].date_livraison.includes('00/00/0000')) $('#txtPlanneddateofdelivery').val(data['po'][i].date_livraison);
 
                     }
-                    for (let i = 0; i < data['Table1'].length; i++) {
+                    for (let i = 0; i < data['pod'].length; i++) {
                         let itemHtml = '';
-                        if (data['Table1'][i].fk_product > 0) {
-                            itemHtml = '<tr id="tritemid_' + data['Table1'][i].fk_product + '" class="paid_item" data-pid="' + data['Table1'][i].fk_product + '" data-pname="' + data['Table1'][i].description + '" data-psku="' + data['Table1'][i].product_sku + '" data-rowid="' + data['Table1'][i].rowid + '">';
-                            itemHtml += '<td class="text-center"><button class="btn p-0 text-red btnDeleteItem billinfo" onclick="removeItems(\'' + data['Table1'][i].fk_product + '\');"> <i class="glyphicon glyphicon-trash"></i> </button></td>';
-                            itemHtml += '<td>' + data['Table1'][i].description + '</td><td>' + data['Table1'][i].product_sku + '</td>';
-                            itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemprice_' + data['Table1'][i].fk_product + '" value="' + data['Table1'][i].subprice.toFixed(2) + '" name="txt_itemprice" placeholder="Price"></td>';
-                            itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemqty_' + data['Table1'][i].fk_product + '" value="' + data['Table1'][i].qty.toFixed(0)  + '" name="txt_itemqty" placeholder="Qty."></td>';
-                            itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemdisc_' + data['Table1'][i].fk_product + '" value="' + data['Table1'][i].discount_percent.toFixed(2) + '" name="txt_itemdisc" placeholder="Discount"></td>';
-                            itemHtml += '<td class="text-right tax-amount">' + data['Table1'][i].tax_amount.toFixed(2) + '</td>';
-                            itemHtml += '<td class="text-right row-total">' + data['Table1'][i].total_ttc.toFixed(2) + '</td>';
+                        if (data['pod'][i].fk_product > 0) {
+                            itemHtml = '<tr id="tritemid_' + data['pod'][i].fk_product + '" class="paid_item" data-pid="' + data['pod'][i].fk_product + '" data-pname="' + data['pod'][i].description + '" data-psku="' + data['pod'][i].product_sku + '" data-rowid="' + data['pod'][i].rowid + '">';
+                            itemHtml += '<td class="text-center"><button class="btn p-0 text-red btnDeleteItem billinfo" onclick="removeItems(\'' + data['pod'][i].fk_product + '\');"> <i class="glyphicon glyphicon-trash"></i> </button></td>';
+                            itemHtml += '<td>' + data['pod'][i].description + '</td><td>' + data['pod'][i].product_sku + '</td>';
+                            itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemprice_' + data['pod'][i].fk_product + '" value="' + data['pod'][i].subprice.toFixed(2) + '" name="txt_itemprice" placeholder="Price"></td>';
+                            itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemqty_' + data['pod'][i].fk_product + '" value="' + data['pod'][i].qty.toFixed(0) + '" name="txt_itemqty" placeholder="Qty."></td>';
+                            itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemdisc_' + data['pod'][i].fk_product + '" value="' + data['pod'][i].discount_percent.toFixed(2) + '" name="txt_itemdisc" placeholder="Discount"></td>';
+                            itemHtml += '<td class="text-right tax-amount" data-tax1="' + data['pod'][i].total_localtax1 + '" data-tax2="' + data['pod'][i].total_localtax2 + '">' + data['pod'][i].total_localtax1.toFixed(2) + '</td>';
+                            itemHtml += '<td class="text-right row-total">' + data['pod'][i].total_ttc.toFixed(2) + '</td>';
                             itemHtml += '</tr>';
                             $('#line_items').append(itemHtml);
                         }
                         else {
-                            itemHtml = '<tr id="tritemid_' + data['Table1'][i].rowid + '" class="other_item" data-rowid="' + data['Table1'][i].rowid + '" data-rang="' + data['Table1'][i].rowid + '" data-proc_type="' + data['Table1'][i].product_type + '">';
+                            itemHtml = '<tr id="tritemid_' + data['pod'][i].rowid + '" class="other_item" data-rowid="' + data['pod'][i].rowid + '" data-rang="' + data['pod'][i].rowid + '" data-proc_type="' + data['pod'][i].product_type + '">';
                             itemHtml += '<td class="text-center">';
-                            itemHtml += '<button class="btn p-0 billinfo" onclick="AddProductModal(\'' + data['Table1'][i].product_type + '\',\'' + data['Table1'][i].rowid + '\');"><i class="glyphicon glyphicon-edit"></i></button>';
-                            itemHtml += '<button class="btn p-0 text-red billinfo" onclick="removeItems(\'' + data['Table1'][i].rowid + '\');"><i class="glyphicon glyphicon-trash"></i></button>';
+                            itemHtml += '<button class="btn p-0 billinfo" onclick="AddProductModal(\'' + data['pod'][i].product_type + '\',\'' + data['pod'][i].rowid + '\');"><i class="glyphicon glyphicon-edit"></i></button>';
+                            itemHtml += '<button class="btn p-0 text-red billinfo" onclick="removeItems(\'' + data['pod'][i].rowid + '\');"><i class="glyphicon glyphicon-trash"></i></button>';
                             itemHtml += '</td > ';
-                            itemHtml += '<td class="item-desc">' + data['Table1'][i].description + '</td><td class="item-sku">' + data['Table1'][i].product_sku + '</td>';
-                            itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemprice_' + data['Table1'][i].rowid + '" value="' + data['Table1'][i].subprice.toFixed(2) + '" name="txt_itemprice" placeholder="Price"></td>';
-                            itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemqty_' + data['Table1'][i].rowid + '" value="' + data['Table1'][i].qty.toFixed(0) + '" name="txt_itemqty" placeholder="Qty."></td>';
-                            itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemdisc_' + data['Table1'][i].rowid + '" value="' + data['Table1'][i].discount_percent.toFixed(2) + '" name="txt_itemdisc" placeholder="Discount"></td>';
-                            itemHtml += '<td class="text-right tax-amount">' + data['Table1'][i].tax_amount.toFixed(2) + '</td>';
-                            itemHtml += '<td class="text-right row-total">' + data['Table1'][i].total_ttc.toFixed(2) + '</td>';
+                            itemHtml += '<td class="item-desc">' + data['pod'][i].description + '</td><td class="item-sku">' + data['pod'][i].product_sku + '</td>';
+                            itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemprice_' + data['pod'][i].rowid + '" value="' + data['pod'][i].subprice.toFixed(2) + '" name="txt_itemprice" placeholder="Price"></td>';
+                            itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemqty_' + data['pod'][i].rowid + '" value="' + data['pod'][i].qty.toFixed(0) + '" name="txt_itemqty" placeholder="Qty."></td>';
+                            itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemdisc_' + data['pod'][i].rowid + '" value="' + data['pod'][i].discount_percent.toFixed(2) + '" name="txt_itemdisc" placeholder="Discount"></td>';
+                            itemHtml += '<td class="text-right tax-amount">' + data['pod'][i].total_localtax1.toFixed(2) + '</td>';
+                            itemHtml += '<td class="text-right row-total">' + data['pod'][i].total_ttc.toFixed(2) + '</td>';
                             itemHtml += '</tr>';
                             $('#product_line_items').append(itemHtml);
                         }
@@ -414,34 +373,36 @@ function getPurchaseOrderInfo() {
 function createItemsList() {
     let _list = []; let _rang = 0;
     $('#line_items > tr').each(function (index, row) {
-        let rPrice = 0.00, rQty = 0.00, rDisPer = 0.00, rDisAmt = 0.00, rTaxAmt = 0.00, rGrossAmount = 0.00, rTotalAmount = 0.00;
+        let rPrice = 0.00, rQty = 0.00, rDisPer = 0.00, rGrossAmt = 0.00, rDisAmt = 0.00, rTax1 = 0.00, rTax_Amt1 = 0.00, rTax2 = 0.00, rTax_Amt2 = 0.00, rNetAmt = 0.00;
         rPrice = parseFloat($(row).find("[name=txt_itemprice]").val()) || 0.00;
         rQty = parseFloat($(row).find("[name=txt_itemqty]").val()) || 0.00;
         rDisPer = parseFloat($(row).find("[name=txt_itemdisc]").val()) || 0.00;
-        rGrossAmount = rPrice * rQty; rDisAmt = rGrossAmount * (rDisPer / 100);
-        rTaxAmt = (rGrossAmount - rDisAmt) * 0;
-        rTotalAmount = (rGrossAmount - rDisAmt) + rTaxAmt;
+        rTax1 = parseFloat($(row).find(".tax-amount").data('tax1')) || 0.00; rTax2 = parseFloat($(row).find(".tax-amount").data('tax2')) || 0.00;
+        rGrossAmt = rPrice * rQty; rDisAmt = rGrossAmt * (rDisPer / 100);
+        rTax_Amt1 = rTax1 * rQty; rTax_Amt2 = rTax2 * rQty;
+        rNetAmt = (rGrossAmt - rDisAmt) + rTax_Amt1 + rTax_Amt2;
         _rang += 1;
         _list.push({
-            rowid: $(row).data('rowid'), rang: _rang, product_type: 0, fk_product: $(row).data('pid'), description: $(row).data('pname'), product_sku: $(row).data('psku'), qty: rQty, subprice: rPrice, discount_percent: rDisPer, total_ht: rGrossAmount, tax_amount: rTaxAmt, total_ttc: rTotalAmount, date_start: '0000/00/00', date_end: '0000/00/00'
+            rowid: $(row).data('rowid'), rang: _rang, product_type: 0, fk_product: $(row).data('pid'), description: $(row).data('pname'), product_sku: $(row).data('psku'),
+            qty: rQty, subprice: rPrice, discount_percent: rDisPer, discount: rDisAmt, tva_tx: 0, localtax1_tx: rTax1, localtax1_type: 'F', localtax2_tx: rTax2, localtax2_type: 'F',
+            total_ht: rGrossAmt, total_tva: 0, total_localtax1: rTax_Amt1, total_localtax2: rTax_Amt2, total_ttc: rNetAmt, date_start: '0000/00/00', date_end: '0000/00/00'
         });
     });
     //other item
     $("#product_line_items > tr.other_item").each(function (index, row) {
-        let rPrice = 0.00, rQty = 0.00, rDisPer = 0.00, rDisAmt = 0.00, rTaxAmt = 0.00, rGrossAmount = 0.00, rTotalAmount = 0.00;
+        let rPrice = 0.00, rQty = 0.00, rDisPer = 0.00, rGrossAmt = 0.00, rDisAmt = 0.00, rTax1 = 0.00, rTax_Amt1 = 0.00, rTax2 = 0.00, rTax_Amt2 = 0.00, rNetAmt = 0.00;
         rPrice = parseFloat($(row).find("[name=txt_itemprice]").val()) || 0.00;
         rQty = parseFloat($(row).find("[name=txt_itemqty]").val()) || 0.00;
         rDisPer = parseFloat($(row).find("[name=txt_itemdisc]").val()) || 0.00;
-        rGrossAmount = rPrice * rQty; rDisAmt = rGrossAmount * (rDisPer / 100);
-        rTaxAmt = (rGrossAmount - rDisAmt) * 0;
-        rTotalAmount = (rGrossAmount - rDisAmt) + rTaxAmt;
-        $(row).find(".tax-amount").text(rTaxAmt.toFixed(2)); $(row).find(".row-total").text(rTotalAmount.toFixed(2));
+        rGrossAmt = rPrice * rQty; rDisAmt = rGrossAmt * (rDisPer / 100);
+        rNetAmt = (rGrossAmt - rDisAmt) + rTax1;
         _rang += 1;
         _list.push({
-            rowid: $(row).data('rowid'), rang: _rang, product_type: $(row).data('proc_type'), fk_product: 0, description: $(row).find('.item-desc').text(), product_sku: $(row).find('.item-sku').text(), qty: rQty, subprice: rPrice, discount_percent: rDisPer, total_ht: rGrossAmount, tax_amount: rTaxAmt, total_ttc: rTotalAmount, date_start: '0000/00/00', date_end: '0000/00/00'
+            rowid: $(row).data('rowid'), rang: _rang, product_type: $(row).data('proc_type'), fk_product: 0, description: $(row).find('.item-desc').text(), product_sku: $(row).find('.item-sku').text(),
+            qty: rQty, subprice: rPrice, discount_percent: rDisPer, discount: rDisAmt, tva_tx: 0, localtax1_tx: rTax1, localtax1_type: 'F', localtax2_tx: rTax2, localtax2_type: 'F',
+            total_ht: rGrossAmt, total_tva: 0, total_localtax1: rTax_Amt1, total_localtax2: rTax_Amt2, total_ttc: rNetAmt, date_start: '0000/00/00', date_end: '0000/00/00'
         });
     });
-    console.log(_list);
     return _list;
 }
 function saveVendorPO() {
@@ -466,7 +427,8 @@ function saveVendorPO() {
         let option = {
             RowID: id, VendorID: vendorid, PONo: '', VendorBillNo: ref_vendor, PaymentTerms: payment_term, Balancedays: balance_days, PaymentType: payment_type,
             Planneddateofdelivery: date_livraison, IncotermType: incoterms, Incoterms: location_incoterms, NotePublic: note_public, NotePrivate: note_private,
-            PurchaseOrderProducts: _list
+            total_tva: 0, localtax1: parseFloat($("#salesTaxTotal").text()), localtax2: parseFloat($("#shippingTotal").text()), total_ht: parseFloat($("#SubTotal").text()),
+            discount: parseFloat($("#discountTotal").text()), total_ttc: parseFloat($("#orderTotal").text()), PurchaseOrderProducts: _list
         }
         console.log(option);
         $.ajax({

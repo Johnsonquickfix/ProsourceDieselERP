@@ -15,11 +15,11 @@
         BindStateCounty(obj);       
     });
 
-    $("#txttaxprice").keyup(function () {
-        var $this = $(this);
-        $this.val($this.val().replace(/[^\d.]/g, ''));
-        $this.val($this.val().substring(0, 10));
-    });
+    //$("#txttaxprice").keyup(function () {
+    //    var $this = $(this);
+    //    $this.val($this.val().replace(/[^\d.]/g, ''));
+    //    $this.val($this.val().substring(0, 10));
+    //});
     $("#txtPrice").keyup(function () {
         var $this = $(this);
         $this.val($this.val().replace(/[^\d.]/g, ''));
@@ -45,7 +45,7 @@ function Adddetails() {
     ship_price = $("#txtPrice").val();
     typeval = $("#ddlType").val();
     taxval = $("#ddlTaxable").val();
-    taxprise = $("#txttaxprice").val();
+    //taxprise = $("#txttaxprice").val();
 
     if (shippingname == "") {
         swal('Alert', 'Please Enter Shipping Class', 'error').then(function () { swal.close(); $('#txtShippingClass').focus(); });
@@ -65,8 +65,8 @@ function Adddetails() {
             Shipping_Method: Methodval,
             Ship_price: ship_price,
             Shipping_type: typeval,
-            taxable: taxval,
-            Shipping_taxrate: taxprise
+            taxable: taxval
+            //Shipping_taxrate: taxprise
         }
         console.log(obj);
         $.ajax({
@@ -115,14 +115,26 @@ function Adddetails() {
 ///Bind States of Country
 function BindStateCounty(obj) {
     
-    $.get('/Product/Getsate/' + parseInt($("#ddlCountry").val()), { async: false }, function (data) {
-        var items = "";
-        $('#ddlState').empty();
-        // items += "<option value=''>Please select</option>";
-        $.each(data, function (index, value) {
-            items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddlState");
-        })
+    //$.get('/Product/Getsate/' + parseInt($("#ddlCountry").val()), { async: false }, function (data) {
+    //    var items = "";
+    //    $('#ddlState').empty();
+    //    items += "<option value=''>Please select</option>";
+    //    $.each(data, function (index, value) {
+    //        items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddlState");
+    //    })
+    //});
+
+    $("#ddlState").select2({
+        allowClear: true, minimumInputLength: 2, placeholder: "Search State",
+        ajax: {
+            url: '/Product/GetStateData', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+            data: function (params) { var obj = { strValue1: params.term, strValue2: $("#ddlCountry").val() }; return JSON.stringify(obj); },
+            processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.StateFullName, name: item.StateFullName, val: item.State, id: item.State } }) }; },
+            error: function (xhr, status, err) { }, cache: true
+        }
     });
+
+
 }
 
 function dataGridLoad(order_type) {
@@ -224,7 +236,7 @@ function EditData(id) {
             var i = JSON.parse(data);
             //  console.log(i);
             $("#txtShippingClass").val(i[0].ShipName);
-            $("#txttaxprice").val(i[0].Shipping_taxrate);
+        //    $("#txttaxprice").val(i[0].Shipping_taxrate);
             $("#txtPrice").val(i[0].Shipping_price);
             $('#ddlCountry').val(i[0].countrycode).trigger('change');            
            // $('#ddlState').val(i[0].statecode).trigger('change');

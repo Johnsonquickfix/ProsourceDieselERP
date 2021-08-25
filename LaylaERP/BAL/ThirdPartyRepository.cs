@@ -1080,8 +1080,7 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "Select p.rowid id, p.ref, p.ref_ext refordervendor,v.SalesRepresentative request_author,v.name vendor_name,v.address" +
-                    ",v.fk_state city, v.zip,DATE_FORMAT(p.date_livraison,'%m/%d/%Y') date_livraison, s.Status from commerce_purchase_order p inner join wp_vendor v on p.fk_supplier = v.rowid inner join wp_StatusMaster s on p.fk_status = s.ID where v.rowid=" + VendorID+" and  1 = 1";
+                string strSql = "Select p.rowid id, p.ref, p.ref_ext refordervendor,v.SalesRepresentative request_author,v.name vendor_name,Concat(v.address,' ',v.town,' ',v.fk_state,' ', v.zip) address,DATE_FORMAT(p.date_livraison,'%m/%d/%Y') date_livraison, s.Status from commerce_purchase_order p inner join wp_vendor v on p.fk_supplier = v.rowid inner join wp_StatusMaster s on p.fk_status = s.ID where v.rowid=" + VendorID+" and  1 = 1";
                 if (!string.IsNullOrEmpty(searchid))
                 {
                     strWhr += " and (v.address like '%" + searchid + "%' OR v.SalesRepresentative='%" + searchid + "%' OR v.fk_state like '%" + searchid + "%' OR v.zip like '%" + searchid + "%')";

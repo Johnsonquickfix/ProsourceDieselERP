@@ -1183,15 +1183,12 @@ function VendorWarehouseList() {
         },
         aoColumns: [
            /* { data: 'VendorName', title: 'Vendor Name', sWidth: "40%" },*/
-            { data: 'Warehouse', title: 'Ware house', sWidth: "40%" },
+            { data: 'Warehouse', title: 'Ware house', sWidth: "40%" }, 
+            { data: 'address', title: 'Address', sWidth: "40%" },
             {
                 'data': 'ID', sWidth: "20%",
                 'render': function (id, type, full, meta) {
-                    /*  if ($("#hfEdit").val() == "1") {*/
                     return '<a href="#" onclick="Deletewarehouse(' + id + ');"><i class="fas fa-trash-alt"></i></a>';
-                    //return '<button type="button" id="btnEditContact" data-toggle="modal" data-target="#VendorModal"><i class="glyphicon glyphicon-pencil"></button >';
-                    //}
-                    //else { return "No Permission"; }
                 }
             }
         ]
@@ -1473,7 +1470,7 @@ function PurchaseOrderGrid() {
             aoData.push({ name: "strValue2", value: VendorID });
             var col = 'order_id';
             if (oSettings.aaSorting.length > 0) {
-                var col = oSettings.aaSorting[0][0] == 1 ? "refordervendor" : oSettings.aaSorting[0][0] == 2 ? "request_author" :  oSettings.aaSorting[0][0] == 3 ? "city" : oSettings.aaSorting[0][0] == 4 ? "zip" : oSettings.aaSorting[0][0] == 5 ? "date_livraison" : oSettings.aaSorting[0][0] == 6 ? "Status" : "ref";
+                var col = oSettings.aaSorting[0][0] == 1 ? "address" :   oSettings.aaSorting[0][0] == 2 ? "city" : oSettings.aaSorting[0][0] == 3 ? "zip" : oSettings.aaSorting[0][0] == 4 ? "date_livraison" : oSettings.aaSorting[0][0] == 5 ? "Status" : "ref";
                 aoData.push({ name: "sSortColName", value: col });
             }
             //console.log(aoData);
@@ -1490,11 +1487,11 @@ function PurchaseOrderGrid() {
             {
                 'data': 'ref', sWidth: "10%", title: 'PO No.',
                 'render': function (id, type, full, meta) {
-                    return '<a href="#' + full.id + '">' + id + '</a>';
+                    return '<a href="../../PurchaseOrder/NewPurchaseOrder/' + full.id + '">' + id + '</a>';
                 }
             },
-            { data: 'refordervendor', title: 'Ref Order Vendor', sWidth: "15%" },
-            { data: 'request_author', title: 'Request Author', sWidth: "15%" },
+            //{ data: 'refordervendor', title: 'Ref Order Vendor', sWidth: "15%" },
+            { data: 'address', title: 'Address', sWidth: "15%" },
            /* { data: 'vendor_name', title: 'Vendor Name', sWidth: "15%" },*/
             { data: 'city', title: 'City', sWidth: "8%" },
             { data: 'zip', title: 'Zip Code', sWidth: "8%" },

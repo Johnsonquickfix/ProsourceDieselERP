@@ -925,7 +925,7 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "Select vw.ID, v.name VendorName, ref Warehouse from wp_VendorWarehouse vw left join wp_vendor v on vw.VendorID = v.rowid left join wp_warehouse w on vw.WarehouseID = w.rowid where vw.VendorID='" + id + "' and 1=1 ";
+                string strSql = "Select vw.ID, v.name VendorName,CONCAT(IFNULL(w.address,''),' ',IFNULL(w.city,'') ,' ',IFNULL(w.town,''),' ',IFNULL(w.country,''),' ',IFNULL(w.zip,'')) address, ref Warehouse from wp_VendorWarehouse vw left join wp_vendor v on vw.VendorID = v.rowid left join wp_warehouse w on vw.WarehouseID = w.rowid where vw.VendorID='" + id + "' and 1=1 ";
                 if (!string.IsNullOrEmpty(searchid))
                 {
                     strWhr += " and (Email like '%" + searchid + "%' OR user_nicename='%" + searchid + "%' OR ID='%" + searchid + "%' OR nom like '%" + searchid + "%')";
@@ -1080,10 +1080,11 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "Select p.rowid id, p.ref, p.ref_ext refordervendor,v.SalesRepresentative request_author,v.name vendor_name,v.fk_state city, v.zip,DATE_FORMAT(p.date_livraison,'%m/%d/%Y') date_livraison, s.Status from commerce_purchase_order p inner join wp_vendor v on p.fk_supplier = v.rowid inner join wp_StatusMaster s on p.fk_status = s.ID where v.rowid="+VendorID+" and  1 = 1";
+                string strSql = "Select p.rowid id, p.ref, p.ref_ext refordervendor,v.SalesRepresentative request_author,v.name vendor_name,v.address" +
+                    ",v.fk_state city, v.zip,DATE_FORMAT(p.date_livraison,'%m/%d/%Y') date_livraison, s.Status from commerce_purchase_order p inner join wp_vendor v on p.fk_supplier = v.rowid inner join wp_StatusMaster s on p.fk_status = s.ID where v.rowid=" + VendorID+" and  1 = 1";
                 if (!string.IsNullOrEmpty(searchid))
                 {
-                    strWhr += " and (p.ref like '%" + searchid + "%' OR p.ref_ext='%" + searchid + "%' OR v.SalesRepresentative='%" + searchid + "%' OR v.fk_state like '%" + searchid + "%' OR v.zip like '%" + searchid + "%')";
+                    strWhr += " and (v.address like '%" + searchid + "%' OR v.SalesRepresentative='%" + searchid + "%' OR v.fk_state like '%" + searchid + "%' OR v.zip like '%" + searchid + "%')";
                 }
                 if (userstatus != null)
                 {

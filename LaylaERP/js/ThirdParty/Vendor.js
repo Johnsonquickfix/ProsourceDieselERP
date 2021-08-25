@@ -1470,7 +1470,7 @@ function PurchaseOrderGrid() {
             aoData.push({ name: "strValue2", value: VendorID });
             var col = 'order_id';
             if (oSettings.aaSorting.length > 0) {
-                var col = oSettings.aaSorting[0][0] == 1 ? "address" : oSettings.aaSorting[0][0] == 2 ? "date_livraison" : oSettings.aaSorting[0][0] == 3 ? "Status" : "ref";
+                var col =  oSettings.aaSorting[0][0] == 1 ? "date_livraison" : oSettings.aaSorting[0][0] == 2 ? "Status" : "ref";
                 aoData.push({ name: "sSortColName", value: col });
             }
             //console.log(aoData);
@@ -1487,14 +1487,9 @@ function PurchaseOrderGrid() {
             {
                 'data': 'ref', sWidth: "10%", title: 'PO No.',
                 'render': function (id, type, full, meta) {
-                    return '<a href="../../PurchaseOrder/NewPurchaseOrder/' + full.id + '">' + id + '</a>';
+                    return '<a href="../../PurchaseOrder/NewPurchaseOrder/' + full.id + '">' + id + '</a> <a target="popup" href="../../Content/VendorLinkedFiles/' + full.id + '"><i class="far fa-file"></i></a>';
                 }
             },
-            //{ data: 'refordervendor', title: 'Ref Order Vendor', sWidth: "15%" },
-            { data: 'address', title: 'Address', sWidth: "15%" },
-           /* { data: 'vendor_name', title: 'Vendor Name', sWidth: "15%" },*/
-            //{ data: 'city', title: 'City', sWidth: "8%" },
-            //{ data: 'zip', title: 'Zip Code', sWidth: "8%" },
             { data: 'date_livraison', title: 'Planned date of delivery', sWidth: "14%" },
             { data: 'Status', title: 'Status', sWidth: "10%" }
         ]

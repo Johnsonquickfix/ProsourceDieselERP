@@ -1838,7 +1838,7 @@ function PaymentModal() {
     let shipping_country = "";
     let shipping_address_1 = $('#txtshipaddress1').val(), shipping_address_2 = $('#txtshipaddress2').val();
     let shipping_city = $('#txtshipcity').val(), shipping_state = $('#ddlshipstate').val(), shipping_postcode = $('#txtshipzipcode').val();
-
+    let pay_mathod = $('#lblOrderNo').data('pay_option');
     var myHtml = '';
     //header
     myHtml += '<div class="modal-dialog modal-lg">';
@@ -1885,8 +1885,9 @@ function PaymentModal() {
     myHtml += '<div class="input-group">';
     myHtml += '<span class="input-group-btn"  >';
     myHtml += '<select class="form-control select2" id="ddlPaymentMethod" style="width: auto;">';
-    myHtml += '<option value="podium">Podium</option>';
-    myHtml += '<option value="ppec_paypal">PayPal</option>';
+    for (let i = 0; i < pay_mathod.length; i++) {
+        myHtml += '<option value="' + pay_mathod[i].id + '">' + pay_mathod[i].text + '</option>';
+    }
     myHtml += '</select>';
     myHtml += '</span>';
     myHtml += '<input class="form-control hidden" type="text" id="txtPPEmail" name="txtPPEmail" placeholder="PayPal Email" maxlength="60">';
@@ -1935,15 +1936,15 @@ function PodiumPayment() {
     var order_total = parseFloat($('#orderTotal').text()) || 0.00;
     var order_phone = $('#txtbillphone').val();
     $("#loader").show();
-    //var opt = { clientId: '51eed2ee1dbdced0d6e17548dde7e8a8', clientSecret: '80b1f585430df45f5a71e7a1a866c54dd2329856ced8503f55deee5313a20caf' };
-    var opt = { clientId: '2f936404-dabc-4cf7-a61b-80e6bef42f66', clientSecret: 'e55ba4b7817f146c2fbb9de507052411c25761a9fbc03ff48b4fef324824a9fa', "grant_type": "authorization_code", "code": "de37f1997d3503d3fe23ac07687e34f0f", "redirect_uri": "https://localhost:44371/Orders/NewOrders",};
+    var opt = { clientId: '51eed2ee1dbdced0d6e17548dde7e8a8', clientSecret: '80b1f585430df45f5a71e7a1a866c54dd2329856ced8503f55deee5313a20caf' };
+    //var opt = { clientId: '2f936404-dabc-4cf7-a61b-80e6bef42f66', clientSecret: 'e55ba4b7817f146c2fbb9de507052411c25761a9fbc03ff48b4fef324824a9fa', "grant_type": "authorization_code", "code": "de37f1997d3503d3fe23ac07687e34f0f", "redirect_uri": "https://localhost:44371/Orders/NewOrders",};
     $.ajax({
-        
-        //type: "POST", url: 'https://api.podium.com/api/session', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
-        type: "POST", url: 'https://accounts.podium.com/oauth/authorize', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
+
+        type: "POST", url: 'https://api.podium.com/api/session', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
+        //type: "POST", url: 'https://accounts.podium.com/oauth/authorize', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
         success: function (result) {
             var optinv = { employeeName: 'Layla', firstName: $('#txtbillfirstname').val(), lastName: $('#txtbilllastname').val(), invoiceAmount: order_total, invoiceDescription: 'Layla #' + oid, invoiceId: oid, locationId: '155425', customer_email: 'noreply@podium.com', phone: order_phone };
-            console.log(result,optinv);
+            console.log(result, optinv);
             $.ajax({
                 type: "POST", url: 'https://api.podium.com/api/v1/webhook/3e23125f-cf42-4348-ace4-f38f759de0c2', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(optinv),
                 beforeSend: function (xhr) { xhr.setRequestHeader("Authorization", result.token); },
@@ -1990,6 +1991,7 @@ function CreatePaypalInvoice(oid, pp_no, pp_email, access_token) {
     let taxPer = parseFloat($('#hfTaxRate').val()) || 0.00;
     let shipping_total = parseFloat($('#shippingTotal').text()) || 0.00, srf_total = parseFloat($('#stateRecyclingFeeTotal').text()) || 0.00, fee_total = parseFloat($('#feeTotal').text()) || 0.00;
     let custom_label = (srf_total > 0 ? 'State Recycling Fee' : '') + (srf_total > 0 && fee_total > 0 ? ' & ' : '') + (fee_total > 0 ? 'Fee' : ''); fee_total = fee_total + srf_total;
+    custom_label = custom_label.length > 0 ? custom_label : 'Other Fee';
     let itemsList = [];
     //get items
     $('#order_line_items > tr').each(function (index, tr) {
@@ -2004,11 +2006,12 @@ function CreatePaypalInvoice(oid, pp_no, pp_email, access_token) {
     });
     let inv_id = $('#lblOrderNo').data('pay_id').trim();
     var option = {
-        id: inv_id, status: "DRAFT",
+        //id: inv_id, status: "DRAFT",
         detail: { invoice_number: pp_no, reference: oid, invoice_date: df, currency_code: "USD", note: "Layla Invoice.", payment_term: { term_type: "NET_10" } },
         invoicer: {
             name: { given_name: "", surname: "" },
             address: { address_line_1: "157 Church Street Suite 1956", address_line_2: "", admin_area_2: "New Haven", admin_area_1: "CT", postal_code: "06510", country_code: "US" },
+            //email_address: "sb-ywzys7367265@business.example.com",
             email_address: "david.quick.fix1-facilitator@gmail.com",
             phones: [{ country_code: "001", national_number: "8553581676", phone_type: "MOBILE" }],
             website: "www.laylasleep.com",
@@ -2031,7 +2034,13 @@ function CreatePaypalInvoice(oid, pp_no, pp_email, access_token) {
         ],
         items: itemsList,
         configuration: { partial_payment: { allow_partial_payment: false }, allow_tip: false, tax_calculated_after_discount: true, tax_inclusive: false },
-        amount: { breakdown: { discount: { invoice_discount: { percent: 0 } }, shipping: { amount: { currency_code: "USD", value: shipping_total } }, custom: { label: custom_label, amount: { currency_code: "USD", value: fee_total } } } }
+        amount: {
+            breakdown: {
+                discount: { invoice_discount: { percent: 0 } }, shipping: {
+                    amount: { currency_code: "USD", value: shipping_total }
+                }, custom: { label: custom_label, amount: { currency_code: "USD", value: fee_total } }
+            }
+        }
     }
     let create_url = 'https://api-m.sandbox.paypal.com/v2/invoicing/invoices' + (inv_id.length > 0 ? '/' + inv_id : ''), action_method = (inv_id.length > 0 ? 'PUT' : 'POST');
     console.log(create_url, option);
@@ -2043,7 +2052,7 @@ function CreatePaypalInvoice(oid, pp_no, pp_email, access_token) {
         },
         success: function (data) {
             console.log(data);
-            var sendURL = data.href + '/send';
+            let sendURL = data.href + '/send';
             $("txtPPEmail").data('surl', sendURL);
             if (action_method == 'POST') {
                 SendPaypalInvoice(oid, access_token, sendURL);
@@ -2060,7 +2069,7 @@ function CreatePaypalInvoice(oid, pp_no, pp_email, access_token) {
 function SendPaypalInvoice(oid, access_token, sendURL) {
     let id = sendURL.split('/');
     let _postMeta = [{ post_id: oid, meta_key: '_paypal_id', meta_value: id[id.length - 2] }];
-
+    console.log(oid, access_token, sendURL);
     $.ajax({
         type: "POST", url: sendURL, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify({ send_to_recipient: true, send_to_invoicer: true }),
         beforeSend: function (xhr) {

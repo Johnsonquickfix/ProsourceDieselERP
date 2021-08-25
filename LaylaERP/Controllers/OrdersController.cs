@@ -21,7 +21,11 @@
         public ActionResult NewOrders(long id = 0)
         {
             ViewBag.id = id;
-            ViewBag.mode = id > 0 ? "E" : "I";
+            string pay_method = CommanUtilities.Provider.GetCurrent().AuthorizeNet ? "{\"id\":\"amazon_payments_advanced\" ,\"text\":\"Amazon Pay\"}" : "";
+            pay_method += CommanUtilities.Provider.GetCurrent().AmazonPay ? (pay_method.Length > 1 ? "," : "") + "{\"id\":\"authorize_net_cim_credit_card\" ,\"text\":\"Authorize Net\"}" : "";
+            pay_method += CommanUtilities.Provider.GetCurrent().Podium ? (pay_method.Length > 1 ? "," : "") + "{\"id\":\"podium\" ,\"text\":\"Podium\"}" : "";
+            pay_method += CommanUtilities.Provider.GetCurrent().Paypal ? (pay_method.Length > 1 ? "," : "") + "{\"id\":\"ppec_paypal\" ,\"text\":\"PayPal\"}" : "";
+            ViewBag.pay_option = "[" + pay_method + "]";
             return View();
         }
         // GET: Order Refund
@@ -294,7 +298,7 @@
                 { status = true; JSONresult = "Order placed successfully."; }
                 //JSONresult = JsonConvert.SerializeObject(DT);
             }
-            catch  { }
+            catch { }
             return Json(new { status = status, message = JSONresult }, 0);
         }
         [HttpPost]
@@ -460,7 +464,7 @@
 
         // GET: Mines of Moria (Quick Orders)
         public ActionResult minesofmoria(long id = 0)
-        {            
+        {
             return View();
         }
     }

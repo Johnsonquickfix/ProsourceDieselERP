@@ -190,6 +190,22 @@ namespace LaylaERP.Controllers
             }
             return Json(usertype, JsonRequestBehavior.AllowGet);
         }
+        public JsonResult GetShipping(int ID)
+        {
+            DataTable dt = new DataTable();
+            dt = BAL.ProductRepository.GetShipping();
+            List<SelectListItem> usertype = new List<SelectListItem>();
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                usertype.Add(new SelectListItem
+                {
+                    Value = dt.Rows[i]["rowid"].ToString(),
+                    Text = dt.Rows[i]["name"].ToString()
+
+                });
+            }
+            return Json(usertype, JsonRequestBehavior.AllowGet);
+        }
         public JsonResult Getwarehouse()
         {
             DataTable dt = new DataTable();
@@ -253,36 +269,7 @@ namespace LaylaERP.Controllers
             //{
             //    return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
             //}
-        }
-
-     
-        public JsonResult Getsate(int ID)
-        {
-            string tcode = "";
-            if (ID == 1)
-                tcode = "US";
-            else
-                tcode = "CA";
-            DataTable dt = new DataTable();
-            dt = BAL.ProductRepository.Getsate(tcode);
-            List<SelectListItem> usertype = new List<SelectListItem>();
-            usertype.Add(new SelectListItem
-            {
-                Value = "All".ToString(),
-                Text = "All".ToString()
-
-            });
-            for (int i = 0; i < dt.Rows.Count; i++)
-            {
-                usertype.Add(new SelectListItem
-                {
-                    Value = dt.Rows[i]["State"].ToString().Trim(),
-                    Text = dt.Rows[i]["StateFullName"].ToString()
-
-                });
-            }
-            return Json(usertype, JsonRequestBehavior.AllowGet);
-        }
+        }      
         public JsonResult GetStateData(SearchModel model)
         {
             string JSONresult = string.Empty;
@@ -334,30 +321,81 @@ namespace LaylaERP.Controllers
        [HttpPost]
         public JsonResult CreateShipname(ProductModel model)
         {
-            JsonResult result = new JsonResult();
-            if (model.ID > 0)
+            DataTable dt = ProductRepository.Getcountrystate(model.Shippingclass_Name);
+            if (dt.Rows.Count > 0 && model.ID == 0)
             {
-                model.statecode = model.statecode.Trim();
-               ProductRepository.updateshippingclass(model);
-
-                return Json(new { status = true, message = "Details has been updated successfully!!", url = "Manage" }, 0);
+                return Json(new { status = false, message = "Shipping Class	has been already existed", url = "" }, 0);
             }
             else
             {
-                int ID = ProductRepository.Addshippingdetails(model);
-                if (ID > 0)
+                JsonResult result = new JsonResult();
+                string msg = "";
+                int ID = 0;
+                if (!string.IsNullOrEmpty(model.statecode))
                 {
+                    string[] state = model.statecode.Split(',');
+                    if (model.ID == 0)
 
-                    model.fk_ShippingID = ID;
-                    ProductRepository.AddshippingPricedetails(model);
-                    return Json(new { status = true, message = "Details has been saved successfully!!", url = "" }, 0);
+                        ID = ProductRepository.Addshippingdetails(model);
+
+                    for (int x = 0; x < state.Length; x++)
+                    {
+                        if (model.ID > 0)
+                        {
+                            model.statecode = state[x].Trim();
+                            ProductRepository.updateshippingclass(model);
+                            msg = "Details has been updated successfully!!";
+                            //return Json(new { status = true, message = "", url = "Manage" }, 0);
+                        }
+                        else
+                        {
+
+                            if (ID > 0)
+                            {
+                                model.statecode = state[x].Trim();
+                                model.fk_ShippingID = ID;
+                                ProductRepository.AddshippingPricedetails(model);
+                                //return Json(new { status = true, message = "Details has been saved successfully!!", url = "" }, 0);
+                                msg = "Details has been save successfully!!";
+                            }
+                            else
+                            {
+                                //return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                                msg = "Invalid Details";
+                            }
+                        }
+                    }
                 }
                 else
                 {
-                    return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                    if (model.ID > 0)
+                    {
+                        model.statecode = null;
+                        ProductRepository.updateshippingclass(model);
+                        msg = "Details has been updated successfully!!";
+                        //return Json(new { status = true, message = "", url = "Manage" }, 0);
+                    }
+                    else
+                    {
+                        ID = ProductRepository.Addshippingdetails(model);
+                        if (ID > 0)
+                        {
+
+                            model.statecode = null;
+                            model.fk_ShippingID = ID;
+                            ProductRepository.AddshippingPricedetails(model);
+                            //return Json(new { status = true, message = "Details has been saved successfully!!", url = "" }, 0);
+                            msg = "Details has been save successfully!!";
+                        }
+                        else
+                        {
+                            //return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                            msg = "Invalid Details";
+                        }
+                    }
                 }
+                return Json(new { status = true, message = msg, url = "Manage" }, 0);
             }
-            //return Json(new { status = true, message = "Details has been updated successfully!!", url = "Manage" }, 0);
 
         }
         public JsonResult Deletefileuploade(ProductModel model)
@@ -473,7 +511,7 @@ namespace LaylaERP.Controllers
             if (model.ProductTypeID > 0)
                 ProductRepository.Add_term(model.ProductTypeID, ID);
             if (model.ShippingclassID > 0)
-                ProductRepository.Add_term(model.ShippingclassID, ID);
+                ProductRepository.Add_Shipping(model.ShippingclassID, ID);
             string CommaStr = model.CategoryID;
             if (!string.IsNullOrEmpty(CommaStr))
             {
@@ -489,7 +527,7 @@ namespace LaylaERP.Controllers
         {
             delete_term(model, ID);
             ProductRepository.Add_term(model.ProductTypeID, Convert.ToInt32(ID));
-            ProductRepository.Add_term(model.ShippingclassID, Convert.ToInt32(ID));
+            ProductRepository.Add_Shipping(model.ShippingclassID, Convert.ToInt32(ID));
             string CommaStr = model.CategoryID;
 
             var myarray = CommaStr.Split(',');
@@ -908,7 +946,9 @@ namespace LaylaERP.Controllers
                     status = true;
                 }
 
-                int resl = ProductRepository.UpdateItemVariantStatus(model.ProductPostItemMeta);
+                //  int resl = ProductRepository.UpdateItemVariantStatus(model.ProductPostItemMeta);
+
+                int resl = ProductRepository.UpdateshippingVariantStatus(model.ProductPostItemMeta);
 
                 int respost = ProductRepository.UpdatePostStatus(model.ProductPostPostMeta);
 

@@ -59,7 +59,7 @@
                                 @*<select id="ddlState" class="form-control">
                                     <option value="">Select State</option>
                                 </select>*@
-                                <select class="form-control select2 billinfo" id="ddlState" placeholder="Select State" multiple style="width: 100%;"></select>
+                                <select class="form-control select2"  id="ddlState" placeholder="Select State" multiple style="width: 100%;"></select>
                             </div>
                         </div>
 
@@ -83,14 +83,14 @@
                             <div class="col-sm-3">
                                 <select id="ddlType" class="form-control">
                                     <option value="">Select Type</option>
-                                    <option value="qty">Qty</option>
-                                    <option value="free">Free</option>
+                                    <option value="qty">Qty</option>                                    
                                 </select>
                             </div>
 
                             <div class="col-sm-3">
                                 <select id="ddlTaxable" class="form-control">
-                                    <option value="yes" selected="">Yes</option>
+                                    <option value="" selected="">Select Taxable</option>
+                                    <option value="yes" >Yes</option>
                                     <option value="no">No</option>
                                 </select>
                             </div>
@@ -127,8 +127,7 @@
                                 <th>Method</th>
                                 <th>Price</th>
                                 <th>Type</th>
-                                <th>Taxable</th>
-                                <th>TaxCost</th>
+                                <th>Taxable</th>                             
                                 <th></th>
                             </tr>
                         </thead>

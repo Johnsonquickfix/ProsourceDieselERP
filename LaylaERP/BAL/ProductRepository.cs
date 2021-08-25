@@ -128,7 +128,7 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "SELECT rowid ID,Shippingclass_Name ShipName,fk_ShippingID,case WHEN countrycode = 'US' then 1 ELSE 2 end  countrycode ,statecode,Method,Shipping_price,Type,taxable  from ShippingClass_Details ScD left OUTER join Shipping_class sc on sc.id = ScD.fk_ShippingID"
+                string strSql = "SELECT rowid ID,Shippingclass_Name ShipName,fk_ShippingID,countrycode ,statecode,Statefullname,Method,Shipping_price,Type,taxable  from ShippingClass_Details ScD left OUTER join Shipping_class sc on sc.id = ScD.fk_ShippingID left outer join erp_StateList esl on esl.State = ScD.statecode"
                              + " WHERE rowid = " + model.strVal + " ";
 
 
@@ -513,7 +513,7 @@ namespace LaylaERP.BAL
                 //             + " left join wp_postmeta pmsatt on P.ID = pmsatt.post_id and pmsatt.meta_key = '_product_attributes'"
                 //             + " WHERE P.post_type = 'product_variation' and P.ID = " + model.strVal + " ";
                 string strSql = "SELECT p.id,p.post_title,p.post_content,p.post_name,concat('{', group_concat(concat('\"',LOWER(pm.meta_key), '\": \"', pm.meta_value,'\"')), '}') meta_data,"
-                        + " (SELECT term_taxonomy_id FROM wp_term_relationships where object_id = p.ID) shippingclass"
+                        + " (SELECT fk_shippingID FROM Shipping_Product where fk_productid = p.ID) shippingclass"
                         + " FROM wp_posts p left outer join wp_postmeta pm on pm.post_id = p.id"
                         + " and(pm.meta_key in ('_regular_price', '_sale_price', 'total_sales', '_tax_status', '_tax_class', '_manage_stock', '_backorders', '_sold_individually',"
                         + " '_weight', '_length', '_width', '_height', '_upsell_ids', '_crosssell_ids', '_stock', '_low_stock_amount', '_sku', '_product_attributes','_variation_description')"
@@ -573,6 +573,18 @@ namespace LaylaERP.BAL
             try
             {
                 string strSQl = "Select rowid,name from wp_vendor";
+                DT = SQLHelper.ExecuteDataTable(strSQl);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DT;
+        }
+        public static DataTable GetShipping()
+        {
+            DataTable DT = new DataTable();
+            try
+            {
+                string strSQl = "Select id rowid,Shippingclass_Name name from Shipping_class";
                 DT = SQLHelper.ExecuteDataTable(strSQl);
             }
             catch (Exception ex)
@@ -842,13 +854,14 @@ namespace LaylaERP.BAL
                             + " )";
                 }
 
-                string strSql = "select DISTINCT rowid, Shippingclass_Name ShipName,CountryFullName Country,esl.StateFullName"
-                + " State,Method,format(Shipping_price,2) Shipping_price ,Type,case when taxable = 1 then 'Excl.tax' else 'Inc.tax' end taxable"
+                string strSql = "select DISTINCT rowid, Shippingclass_Name ShipName,eslcun.CountryFullName Country,esl.StateFullName"
+                + " State,Method,format(Shipping_price,2) Shipping_price ,Type,taxable"
                 + " from ShippingClass_Details ScD"
                 + " left OUTER join Shipping_class sc on sc.id = ScD.fk_ShippingID"
                 + " left OUTER join erp_StateList esl on esl.State = ScD.statecode"
+                + " left OUTER join erp_StateList eslcun on eslcun.Country = ScD.countrycode"
                 + " WHERE rowid > 0" + strWhr
-                // + " left OUTER join erp_StateList eslcun on eslcun.Country = ScD.countrycode"
+             
                 + " order by " + SortCol + " " + SortDir + " limit " + (pageno).ToString() + ", " + pagesize + "";
 
                 strSql += "; SELECT count(distinct rowid) TotalRecord from ShippingClass_Details ScD"                              
@@ -1127,6 +1140,22 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
+        public static DataTable Getcountrystate(string name)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                string strSQl = "select id from Shipping_class"
+                                + " WHERE Shippingclass_Name ='" + name + "' "
+                                + " limit 10;";
+                dt = SQLHelper.ExecuteDataTable(strSQl);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
         public static int updateProductwarehouse(ProductModel model, DateTime dateinc)
         {
             int result = 0;
@@ -1272,6 +1301,31 @@ namespace LaylaERP.BAL
             return result;
         }
 
+        public static int UpdateshippingVariantStatus(List<ProductModelItemModel> model)
+        {
+            int result = 0;
+            try
+            {
+                string strSql_insert = string.Empty;
+                StringBuilder strSql = new StringBuilder();
+                foreach (ProductModelItemModel obj in model)
+                {                     
+                    strSql.Append("delete from Shipping_Product where fk_productid=" + obj.object_id + ";");
+                    strSql.Append("Insert into Shipping_Product(fk_productid,fk_shippingID) values(" + obj.object_id + "," + obj.term_taxonomy_id + ");SELECT LAST_INSERT_ID();");
+                      
+                    // strSql_insert += (strSql_insert.Length > 0 ? " union all " : "") + string.Format("select '{0}' post_id,'{1}' meta_key,'{2}' meta_value", obj.post_id, obj.meta_key, obj.meta_value);
+                    //strSql.Append(string.Format("update wp_postmeta set meta_value = '{0}' where post_id = '{1}' and meta_key = '{2}' ; ", obj.meta_value, obj.post_id, obj.meta_key));
+                }
+                //  strSql_insert = "insert into wp_postmeta (post_id,meta_key,meta_value) select * from (" + strSql_insert + ") as tmp where tmp.meta_key not in (select meta_key from wp_postmeta where post_id = " + model[0].post_id.ToString() + ");";
+                // strSql.Append(strSql_insert);
+                //strSql.Append(string.Format("update wp_posts set post_status = '{0}' where id = {1};", "wc-processing", model[0].post_id));
+
+                result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
+            }
+            catch { }
+            return result;
+        }
+
         public static int UpdatePostStatus(List<ProductModelPostModel> model)
         {
             int result = 0;
@@ -1398,6 +1452,34 @@ namespace LaylaERP.BAL
 
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
+
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+        public static void Add_Shipping(int TermID, int ID)
+        {
+            try
+            {
+                //string strsql = "Insert into wp_term_relationships(object_id,term_taxonomy_id,term_order) values(@object_id,@term_taxonomy_id,@term_order);SELECT LAST_INSERT_ID();";
+                //MySqlParameter[] para =
+                //{
+                //    new MySqlParameter("@object_id", ID),
+                //    new MySqlParameter("@term_taxonomy_id", TermID),
+                //    new MySqlParameter("@term_order", "0")
+
+                //};
+                //int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
+
+                StringBuilder strSql = new StringBuilder();
+                strSql.Append("delete from Shipping_Product where fk_productid=" + ID + ";");
+                strSql.Append("Insert into Shipping_Product(fk_productid,fk_shippingID) values(" + ID + "," + TermID + ");SELECT LAST_INSERT_ID();");
+
+
+              int result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
 
             }
             catch (Exception Ex)

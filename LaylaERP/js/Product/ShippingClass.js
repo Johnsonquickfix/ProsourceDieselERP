@@ -7,12 +7,32 @@
     })
 
     $(document).on('click', "#btncl", function () {
-        $('#dvdetails').hide();
+        //$('#dvdetails').hide();
+        location.reload();
     })
 
     $("#ddlCountry").change(function () {
         var obj = $("#ddlCountry").val();        
         BindStateCounty(obj);       
+    });
+
+    $("#ddlMethod").change(function () {
+        if ($("#ddlMethod").val() != 'fltrate') {
+            $("#txtPrice").val('0');
+            $("#ddlType").val('');
+            $("#ddlTaxable").val('');
+            $("#txtPrice").prop("readonly", true);
+            $('#ddlType').attr("disabled", true);
+            $('#ddlTaxable').attr("disabled", true);           
+        }
+        else {
+            $("#txtPrice").val('0');
+            $("#ddlType").val('');
+            $("#ddlTaxable").val('');
+            $("#txtPrice").prop("readonly", false);           
+            $('#ddlType').attr("disabled", false);
+            $('#ddlTaxable').attr("disabled", false);
+        }
     });
 
     //$("#txttaxprice").keyup(function () {
@@ -34,13 +54,13 @@ $(document).on('click', "#btnsavedetails", function () {
 function Adddetails() {
     debugger
     ID = $("#hfshipingid").val();
+
+    var statearray = $('#ddlState option:selected')
+        .toArray().map(item => item.value).join();
+    stateval = statearray;
     shippingname = $('#txtShippingClass').val();
-    Countryval = $('#ddlCountry').val();
-    if (Countryval == "1")
-        Countryval = "US";
-    else
-        Countryval = "CA";
-    stateval = $("#ddlState").val();
+    Countryval = $('#ddlCountry').val();   
+   // stateval = $("#ddlState").val();
     Methodval = $("#ddlMethod").val();
     ship_price = $("#txtPrice").val();
     typeval = $("#ddlType").val();
@@ -52,10 +72,7 @@ function Adddetails() {
     }
     else if (Countryval == "") {
         swal('Alert', 'Please Select Country', 'error').then(function () { swal.close(); $('#ddlCountry').focus(); });
-    }
-    else if (stateval == "") {
-        swal('Alert', 'Please Select State', 'error').then(function () { swal.close(); $('#ddlState').focus(); });
-    }
+    } 
     else {
         var obj = {
             ID: ID,
@@ -202,13 +219,7 @@ function dataGridLoad(order_type) {
             { data: 'Type', title: 'Type', sWidth: "12%" },
             { data: 'taxable', title: 'Taxable', sWidth: "12%" },
            // { data: 'Shipping_taxrate', title: 'TaxCost', sWidth: "12%" },
-            {
-                data: 'Shipping_taxrate', title: 'TaxCost', sWidth: "12%", render: function (data, type, row) {
-                    var tprice = 'toFormat';
-                    tprice = '$' + row.Shipping_taxrate;
-                    return tprice
-                }
-            },
+       
 
             {
                 'data': 'rowid', title: 'Action', sWidth: "5%",
@@ -234,29 +245,29 @@ function EditData(id) {
         data: JSON.stringify(obj),
         success: function (data) {
             var i = JSON.parse(data);
-            //  console.log(i);
+            console.log(i);
             $("#txtShippingClass").val(i[0].ShipName);
         //    $("#txttaxprice").val(i[0].Shipping_taxrate);
-            $("#txtPrice").val(i[0].Shipping_price);
+        
             $('#ddlCountry').val(i[0].countrycode).trigger('change');            
            // $('#ddlState').val(i[0].statecode).trigger('change');
-            $('#ddlCountry').trigger('change');
+           // $('#ddlCountry').trigger('change');
             $('#ddlMethod').val(i[0].Method).trigger('change');
+    
             $('#ddlType').val(i[0].Type).trigger('change');
             $('#ddlTaxable').val(i[0].taxable).trigger('change');
-            $('#ddlMethod').val(i[0].Method).trigger('change');
+            $("#txtPrice").val(i[0].Shipping_price);
            // $('#ddlState').val(i[0].statecode).trigger('change');
             $("#txtShippingClass").prop("readonly", true);
             //$('#ddlState').val(id).trigger('change');
-            setTimeout(function () { statedata(i[0].statecode); }, 2000);
+            setTimeout(function () { statedata(i[0].statecode, i[0].Statefullname); }, 2000);
         },
         error: function (msg) { alert(msg); }
       
     });
 }
-function statedata(id) {
-    console.log(id);
-    $('#ddlState').val(id).trigger('change');
+function statedata(id,name) { 
+    $("#ddlState").empty().append('<option value="' + id + '" selected>' + name + '</option>'); 
 }
 
 

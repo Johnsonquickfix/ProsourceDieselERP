@@ -883,7 +883,7 @@ function GetVendorByID(id) {
             success: function (data) {
                 var d = JSON.parse(data);
                 if (d.length > 0) {
-                    if (rowid == "NewVendor") { $('#lbltitle').text("Add New Vendor"); } else { $('#lbltitle').text("Update Vendor " + d[0].VendorName); }
+                    if (rowid == "NewVendor") { $('#lbltitle').text("Add New Vendor"); } else { $('#lbltitle').text("Update Vendor " + "(" + d[0].VendorName+")" ); }
                     $("#txVendorName").val(d[0].VendorName);
                     $("#txtAliasName").val(d[0].AliasName);
                     $("#ddlvendortype").val(d[0].vendor_type);
@@ -1065,7 +1065,7 @@ function VendorContactList() {
     $('#dtdata').DataTable({
         columnDefs: [{ "orderable": true, "targets": 0 }], order: [[0, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true,
-        sPaginationType: "full_numbers", searching: false, ordering: true, lengthChange: false, "paging": false, "bInfo": false,
+        sPaginationType: "full_numbers", searching: false, ordering: true, lengthChange: true, "paging": true, 
         bAutoWidth: false, scrollX: false,
         lengthMenu: [[10, 20, 50], [10, 20, 50]],
         sAjaxSource: "/ThirdParty/GetVendorContactList",
@@ -1118,11 +1118,12 @@ function VendorRelatedProduct() {
     $('#RelatedItemdata').DataTable({
         columnDefs: [{ "orderable": true, "targets": 0 }], order: [[0, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true,
-        sPaginationType: "full_numbers", searching: false, ordering: true, lengthChange: false, "paging": false, "bInfo": false,
+        sPaginationType: "full_numbers", searching: false, ordering: true, lengthChange: true, "paging": true,
         bAutoWidth: false, scrollX: false,
         lengthMenu: [[10, 20, 50], [10, 20, 50]],
         sAjaxSource: "/ThirdParty/GetVendorRelatedProductList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
+           
             var col = 'id';
             if (oSettings.aaSorting.length >= 0) {
                 var col = oSettings.aaSorting[0][0] == 0 ? "ProductName" : oSettings.aaSorting[0][0] == 1 ? "VendorName" : oSettings.aaSorting[0][0] == 2 ? "purchase_price" : oSettings.aaSorting[0][0] == 3 ? "cost_price" : "id";
@@ -1142,8 +1143,11 @@ function VendorRelatedProduct() {
         aoColumns: [
             { data: 'ProductName', title: 'Product Name', sWidth: "25%" },
             /*{ data: 'VendorName', title: 'Vendor Name', sWidth: "25%" },*/
-            { data: 'purchase_price', title: 'Purchase Price', sWidth: "25%" },
-            { data: 'cost_price', title: 'Cost Price', sWidth: "25%" },
+            { data: 'purchase_price', title: 'Purchase Price', sWidth: "15%" },
+            { data: 'shipping_price', title: 'Shipping Price', sWidth: "15%" },
+            { data: 'cost_price', title: 'Cost Price', sWidth: "15%" },
+            { data: 'taxrate', title: 'Tax', sWidth: "15%" },
+            { data: 'discount', title: 'Discount', sWidth: "15%" },
         ]
     });
 
@@ -1156,7 +1160,7 @@ function VendorWarehouseList() {
     $('#Warehousedata').DataTable({
         columnDefs: [{ "orderable": true, "targets": 0 }], order: [[0, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true,
-        sPaginationType: "full_numbers", searching: false, ordering: true, lengthChange: false, "paging": false, "bInfo": false,
+        sPaginationType: "full_numbers", searching: false, ordering: true, lengthChange: true, "paging": true,
         bAutoWidth: false, scrollX: false,
         lengthMenu: [[10, 20, 50], [10, 20, 50]],
         sAjaxSource: "/ThirdParty/GetVendorWarehouseList",
@@ -1376,7 +1380,7 @@ function VendorLinkedFiles() {
     $('#VendorLinkedFiles').DataTable({
         columnDefs: [{ "orderable": true, "targets": 0 }], order: [[0, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true,
-        sPaginationType: "full_numbers", searching: false, ordering: true, lengthChange: false, "paging": false, "bInfo": false,
+        sPaginationType: "full_numbers", searching: false, ordering: true, lengthChange: true, "paging": true, 
         bAutoWidth: false, scrollX: false,
         lengthMenu: [[10, 20, 50], [10, 20, 50]],
         sAjaxSource: "/ThirdParty/GetVendorLinkedFiles",
@@ -1438,17 +1442,20 @@ function DeleteVendorLinkedFiles(id) {
         })
     }
 }
+
+///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Invoices ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 function PurchaseOrderGrid() {
     let VendorID = $("#hfid").val();
     let urid = parseInt($("#ddlInvoiceServices").val());
     let table = $('#PurchaseInvoicedata').DataTable({
         columnDefs: [{ "orderable": true, "targets": 0 }], order: [[1, "desc"]],
-        destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: false, 
+        destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: false, searching: false,
         responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
         language: {
             lengthMenu: "_MENU_ per page",
             zeroRecords: "Sorry no records found",
-            info: "Showing <b>_START_ to _END_</b> (of _TOTAL_)",
+            info: "Showing _START_ to _END_ of _TOTAL_ entries",
             infoFiltered: "",
             infoEmpty: "No records found",
             processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'

@@ -1487,7 +1487,7 @@ function PurchaseOrderGrid() {
             {
                 'data': 'ref', sWidth: "10%", title: 'PO No.',
                 'render': function (id, type, full, meta) {
-                    return '<a href="../../PurchaseOrder/NewPurchaseOrder/' + full.id + '">' + id + '</a> <a target="popup" href="../../Content/VendorLinkedFiles/' + full.id + '"><i class="far fa-file"></i></a>';
+                    return '<a href="../../PurchaseOrder/NewPurchaseOrder/' + full.id + '">' + id + '</a> <a target="popup" href="#"><i class="far fa-file"></i></a>';
                 }
             },
             { data: 'date_livraison', title: 'Planned date of delivery', sWidth: "14%" },

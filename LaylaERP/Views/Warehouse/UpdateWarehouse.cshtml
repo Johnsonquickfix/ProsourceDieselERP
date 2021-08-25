@@ -378,7 +378,7 @@
                                     @*<input type="text" id="txtdoc" class="form-control" />*@
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Product<span style="color:red">*</span></label>
-                                        <select class="form-control" id="ddlProduct">
+                                        <select class="form-control" id="ddlProduct" style="width:100%;">
                                             @*<option value="0">--Select Product--</option>*@
                                         </select>
                                     </div>
@@ -415,15 +415,15 @@
                                 <div class="box-body">
 
                                     <div class="form-group">
-                                        <label for="exampleInputEmail1">Stock date<span style="color:red">*</span></label>
-                                        <input class="form-control" type="text" id="txteatbydate" placeholder="Enter Eat by date" /><span class="even-space"></span>
+                                        <label for="exampleInputEmail1">Stock Correction date<span style="color:red">*</span></label>
+                                        <input class="form-control" type="text" id="txteatbydate" placeholder="Stock Correction date" /><span class="even-space"></span>
                                     </div>
 
-                                    <div class="form-group">
+                                    <!--<div class="form-group">
                                         <label for="exampleInputEmail1">Sale by date<span style="color:red">*</span></label>
 
                                         <input class="form-control" type="text" id="txtsalebydate" placeholder="Enter Sale by date" /><span class="even-space"></span>
-                                    </div>
+                                    </div>-->
 
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Label of movement<span style="color:red">*</span></label>
@@ -496,7 +496,7 @@
 
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Product<span style="color:red">*</span></label>
-                                        <select id="ddltransferProduct" class="form-control">
+                                        <select id="ddltransferProduct" class="form-control" style="width:100%;">
                                             @*<option value="0">--Select Product--</option>*@
                                         </select>
                                     </div>
@@ -532,17 +532,17 @@
                                 <div class="box-body">
 
                                     <div class="form-group">
-                                        <label for="exampleInputEmail1">Stock date<span style="color:red">*</span></label>
+                                        <label for="exampleInputEmail1">Stock Transfer date<span style="color:red">*</span></label>
 
                                         <input class="form-control" type="text" id="txttransfereatbydate" placeholder="Enter Eat by date" /><span class="even-space"></span>
                                     </div>
 
-                                    <div class="form-group">
+                                   <!-- <div class="form-group">
 
                                         <label for="exampleInputEmail1">Sale by date<span style="color:red">*</span></label>
 
                                         <input class="form-control" type="text" id="txttransfersalebydate" placeholder="Enter Sale by date" /><span class="even-space"></span>
-                                    </div>
+                                    </div>-->
 
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Label of movement<span style="color:red">*</span></label>
@@ -902,19 +902,19 @@
 <script>
     $(function () {
         $("#txteatbydate").datepicker({
-            format: 'yyyy-mm-dd',
+            format: 'mm-dd-yyyy',
         });
 
         $("#txttransfereatbydate").datepicker({
-            format: 'yyyy-mm-dd',
+            format: 'mm-dd-yyyy',
         });
 
         $("#txtsalebydate").datepicker({
-            format: 'yyyy-mm-dd',
+            format: 'mm-dd-yyyy',
         });
 
         $("#txttransfersalebydate").datepicker({
-            format: 'yyyy-mm-dd',
+            format: 'mm-dd-yyyy',
         });
     });
 

@@ -19,6 +19,7 @@ VendorWarehouseList();
 VendorRelatedProduct();
 VendorLinkedFiles();
 getNatureofJournal();
+PurchaseOrderGrid();
 function getNatureofJournal() {
     $.ajax({
         url: "/Accounting/GetNatureofJournal",
@@ -871,7 +872,7 @@ function phoneFormat(input) {
 }
 function GetVendorByID(id) {
     var rowid = id;
-    if (rowid == "NewVendor") { $('#lbltitle').text("Add New Vendor"); } else { $('#lbltitle').text("Update Vendor"); }
+   
     var obj =
         $.ajax({
             url: "/ThirdParty/GetVendorByID/" + rowid,
@@ -882,6 +883,7 @@ function GetVendorByID(id) {
             success: function (data) {
                 var d = JSON.parse(data);
                 if (d.length > 0) {
+                    if (rowid == "NewVendor") { $('#lbltitle').text("Add New Vendor"); } else { $('#lbltitle').text("Update Vendor " + "(" + d[0].VendorName+")" ); }
                     $("#txVendorName").val(d[0].VendorName);
                     $("#txtAliasName").val(d[0].AliasName);
                     $("#ddlvendortype").val(d[0].vendor_type);
@@ -1063,7 +1065,7 @@ function VendorContactList() {
     $('#dtdata').DataTable({
         columnDefs: [{ "orderable": true, "targets": 0 }], order: [[0, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true,
-        sPaginationType: "full_numbers", searching: false, ordering: true, lengthChange: false, "paging": false, "bInfo": false,
+        sPaginationType: "full_numbers", searching: false, ordering: true, lengthChange: true, "paging": true, 
         bAutoWidth: false, scrollX: false,
         lengthMenu: [[10, 20, 50], [10, 20, 50]],
         sAjaxSource: "/ThirdParty/GetVendorContactList",
@@ -1087,7 +1089,7 @@ function VendorContactList() {
         },
         aoColumns: [
             { data: 'Name', title: 'Name', sWidth: "10%" },
-            { data: 'VendorName', title: 'Vendor Name', sWidth: "10%" },
+           /* { data: 'VendorName', title: 'Vendor Name', sWidth: "10%" },*/
             { data: 'Title', title: 'Title', sWidth: "10%" },
             { data: 'Office', title: 'Office Contact', sWidth: "10%" },
             { data: 'Mobile', title: 'Phone', sWidth: "10%" },
@@ -1116,11 +1118,12 @@ function VendorRelatedProduct() {
     $('#RelatedItemdata').DataTable({
         columnDefs: [{ "orderable": true, "targets": 0 }], order: [[0, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true,
-        sPaginationType: "full_numbers", searching: false, ordering: true, lengthChange: false, "paging": false, "bInfo": false,
+        sPaginationType: "full_numbers", searching: false, ordering: true, lengthChange: true, "paging": true,
         bAutoWidth: false, scrollX: false,
         lengthMenu: [[10, 20, 50], [10, 20, 50]],
         sAjaxSource: "/ThirdParty/GetVendorRelatedProductList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
+           
             var col = 'id';
             if (oSettings.aaSorting.length >= 0) {
                 var col = oSettings.aaSorting[0][0] == 0 ? "ProductName" : oSettings.aaSorting[0][0] == 1 ? "VendorName" : oSettings.aaSorting[0][0] == 2 ? "purchase_price" : oSettings.aaSorting[0][0] == 3 ? "cost_price" : "id";
@@ -1139,9 +1142,12 @@ function VendorRelatedProduct() {
         },
         aoColumns: [
             { data: 'ProductName', title: 'Product Name', sWidth: "25%" },
-            { data: 'VendorName', title: 'Vendor Name', sWidth: "25%" },
-            { data: 'purchase_price', title: 'Purchase Price', sWidth: "25%" },
-            { data: 'cost_price', title: 'Cost Price', sWidth: "25%" },
+            /*{ data: 'VendorName', title: 'Vendor Name', sWidth: "25%" },*/
+            { data: 'purchase_price', title: 'Purchase Price', sWidth: "15%" },
+            { data: 'shipping_price', title: 'Shipping Price', sWidth: "15%" },
+            { data: 'cost_price', title: 'Cost Price', sWidth: "15%" },
+            { data: 'taxrate', title: 'Tax', sWidth: "15%" },
+            { data: 'discount', title: 'Discount', sWidth: "15%" },
         ]
     });
 
@@ -1154,7 +1160,7 @@ function VendorWarehouseList() {
     $('#Warehousedata').DataTable({
         columnDefs: [{ "orderable": true, "targets": 0 }], order: [[0, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true,
-        sPaginationType: "full_numbers", searching: false, ordering: true, lengthChange: false, "paging": false, "bInfo": false,
+        sPaginationType: "full_numbers", searching: false, ordering: true, lengthChange: true, "paging": true,
         bAutoWidth: false, scrollX: false,
         lengthMenu: [[10, 20, 50], [10, 20, 50]],
         sAjaxSource: "/ThirdParty/GetVendorWarehouseList",
@@ -1176,16 +1182,13 @@ function VendorWarehouseList() {
             });
         },
         aoColumns: [
-            { data: 'VendorName', title: 'Vendor Name', sWidth: "40%" },
-            { data: 'Warehouse', title: 'Ware house', sWidth: "40%" },
+           /* { data: 'VendorName', title: 'Vendor Name', sWidth: "40%" },*/
+            { data: 'Warehouse', title: 'Ware house', sWidth: "40%" }, 
+            { data: 'address', title: 'Address', sWidth: "40%" },
             {
                 'data': 'ID', sWidth: "20%",
                 'render': function (id, type, full, meta) {
-                    /*  if ($("#hfEdit").val() == "1") {*/
                     return '<a href="#" onclick="Deletewarehouse(' + id + ');"><i class="fas fa-trash-alt"></i></a>';
-                    //return '<button type="button" id="btnEditContact" data-toggle="modal" data-target="#VendorModal"><i class="glyphicon glyphicon-pencil"></button >';
-                    //}
-                    //else { return "No Permission"; }
                 }
             }
         ]
@@ -1374,7 +1377,7 @@ function VendorLinkedFiles() {
     $('#VendorLinkedFiles').DataTable({
         columnDefs: [{ "orderable": true, "targets": 0 }], order: [[0, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true,
-        sPaginationType: "full_numbers", searching: false, ordering: true, lengthChange: false, "paging": false, "bInfo": false,
+        sPaginationType: "full_numbers", searching: false, ordering: true, lengthChange: true, "paging": true, 
         bAutoWidth: false, scrollX: false,
         lengthMenu: [[10, 20, 50], [10, 20, 50]],
         sAjaxSource: "/ThirdParty/GetVendorLinkedFiles",
@@ -1436,6 +1439,70 @@ function DeleteVendorLinkedFiles(id) {
         })
     }
 }
+
+///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Invoices ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+function PurchaseOrderGrid() {
+    let VendorID = $("#hfid").val();
+    let urid = parseInt($("#ddlInvoiceServices").val());
+    let table = $('#PurchaseInvoicedata').DataTable({
+        columnDefs: [{ "orderable": true, "targets": 0 }], order: [[1, "desc"]],
+        destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: false, searching: false,
+        responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
+        language: {
+            lengthMenu: "_MENU_ per page",
+            zeroRecords: "Sorry no records found",
+            info: "Showing _START_ to _END_ of _TOTAL_ entries",
+            infoFiltered: "",
+            infoEmpty: "No records found",
+            processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
+        },
+        initComplete: function () {
+            $('.dataTables_filter input').unbind();
+            $('.dataTables_filter input').bind('keyup', function (e) {
+                var code = e.keyCode || e.which;
+                if (code == 13) { table.search(this.value).draw(); }
+            });
+        },
+        sAjaxSource: "/ThirdParty/GetPurchaseOrderList",
+        fnServerData: function (sSource, aoData, fnCallback, oSettings) {
+            aoData.push({ name: "strValue1", value: urid });
+            aoData.push({ name: "strValue2", value: VendorID });
+            var col = 'order_id';
+            if (oSettings.aaSorting.length > 0) {
+                var col = oSettings.aaSorting[0][0] == 1 ? "address" :   oSettings.aaSorting[0][0] == 2 ? "city" : oSettings.aaSorting[0][0] == 3 ? "zip" : oSettings.aaSorting[0][0] == 4 ? "date_livraison" : oSettings.aaSorting[0][0] == 5 ? "Status" : "ref";
+                aoData.push({ name: "sSortColName", value: col });
+            }
+            //console.log(aoData);
+            oSettings.jqXHR = $.ajax({
+                dataType: 'json', type: "GET", url: sSource, data: aoData,
+                "success": function (data) {
+                    var dtOption = { sEcho: data.sEcho, recordsTotal: data.recordsTotal, recordsFiltered: data.recordsFiltered, aaData: JSON.parse(data.aaData) };
+                    return fnCallback(dtOption);
+                }
+            });
+        },
+        aoColumns: [
+           
+            {
+                'data': 'ref', sWidth: "10%", title: 'PO No.',
+                'render': function (id, type, full, meta) {
+                    return '<a href="../../PurchaseOrder/NewPurchaseOrder/' + full.id + '">' + id + '</a>';
+                }
+            },
+            //{ data: 'refordervendor', title: 'Ref Order Vendor', sWidth: "15%" },
+            { data: 'address', title: 'Address', sWidth: "15%" },
+           /* { data: 'vendor_name', title: 'Vendor Name', sWidth: "15%" },*/
+            { data: 'city', title: 'City', sWidth: "8%" },
+            { data: 'zip', title: 'Zip Code', sWidth: "8%" },
+            { data: 'date_livraison', title: 'Planned date of delivery', sWidth: "14%" },
+            { data: 'Status', title: 'Status', sWidth: "10%" }
+        ]
+    });
+}
+$("#btnSearchInvoices").click(function () {
+    PurchaseOrderGrid();
+})
 
 
 

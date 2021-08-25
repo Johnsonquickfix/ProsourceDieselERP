@@ -47,18 +47,19 @@
                             <div class="col-sm-9">
                                 <select id="ddlCountry" class="form-control">
                                     <option value="">Select Country</option>
-                                    <option value="1">United States</option>
-                                    <option value="2">CANADA</option>
+                                    <option value="US">United States</option>
+                                    <option value="CA">CANADA</option>
                                 </select>
                             </div>
                         </div>
-
+                            
                         <div class="form-group d-flex">
                             <label class="col-sm-3 control-label">State</label>
                             <div class="col-sm-9">
-                                <select id="ddlState" class="form-control">
+                                @*<select id="ddlState" class="form-control">
                                     <option value="">Select State</option>
-                                </select>
+                                </select>*@
+                                <select class="form-control select2 billinfo" id="ddlState" placeholder="Select State" multiple style="width: 100%;"></select>
                             </div>
                         </div>
 
@@ -69,8 +70,7 @@
                                     <option value="">Select Method</option>
                                     <option value="fltrate">Flat rate</option>
                                     <option value="freeshipping">Free Shipping</option>
-                                    <option value="localpickup">Local Pickup</option>
-                                    <option value="ups">UPS</option>
+                                    <option value="localpickup">Local Pickup</option>                              
                                 </select>
                             </div>
                         </div>
@@ -90,13 +90,13 @@
 
                             <div class="col-sm-3">
                                 <select id="ddlTaxable" class="form-control">
-                                    <option value="1" selected="">Excl. tax</option>
-                                    <option value="2">Inc. tax</option>
+                                    <option value="yes" selected="">Yes</option>
+                                    <option value="no">No</option>
                                 </select>
                             </div>
-                            <div class="col-sm-3">
+                            @*<div class="col-sm-3">
                                 <input type="text" id="txttaxprice" placeholder="Tax Price" value="0" class="form-control">
-                            </div>
+                            </div>*@
                         </div>
                         <div class="form-group d-flex">
                             <div class="col-sm-11 text-right">

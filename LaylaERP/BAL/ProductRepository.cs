@@ -128,7 +128,7 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "SELECT rowid ID,Shippingclass_Name ShipName,fk_ShippingID,case WHEN countrycode = 'US' then 1 ELSE 2 end  countrycode ,statecode,Method,Shipping_price,Type,taxable,Shipping_taxrate  from ShippingClass_Details ScD left OUTER join Shipping_class sc on sc.id = ScD.fk_ShippingID"
+                string strSql = "SELECT rowid ID,Shippingclass_Name ShipName,fk_ShippingID,case WHEN countrycode = 'US' then 1 ELSE 2 end  countrycode ,statecode,Method,Shipping_price,Type,taxable  from ShippingClass_Details ScD left OUTER join Shipping_class sc on sc.id = ScD.fk_ShippingID"
                              + " WHERE rowid = " + model.strVal + " ";
 
 
@@ -591,6 +591,19 @@ namespace LaylaERP.BAL
             { throw ex; }
             return DT;
         }
+        public static DataTable GetStateData(string strSearch, string country)
+        {
+            DataTable DT = new DataTable();
+            try
+            {
+                
+             DT = SQLHelper.ExecuteDataTable("select distinct StateFullName,State from erp_StateList where Country = '" + country + "' and  (StateFullName like '" + strSearch + "%' or State like '" + strSearch + "%') order by StateFullName limit 50;");
+               
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DT;
+        }
         public static DataTable Getwarehouse()
         {
             DataTable DT = new DataTable();
@@ -830,7 +843,7 @@ namespace LaylaERP.BAL
                 }
 
                 string strSql = "select DISTINCT rowid, Shippingclass_Name ShipName,CountryFullName Country,esl.StateFullName"
-                + " State,Method,format(Shipping_price,2) Shipping_price ,Type,case when taxable = 1 then 'Excl.tax' else 'Inc.tax' end taxable,format(Shipping_taxrate,2) Shipping_taxrate"
+                + " State,Method,format(Shipping_price,2) Shipping_price ,Type,case when taxable = 1 then 'Excl.tax' else 'Inc.tax' end taxable"
                 + " from ShippingClass_Details ScD"
                 + " left OUTER join Shipping_class sc on sc.id = ScD.fk_ShippingID"
                 + " left OUTER join erp_StateList esl on esl.State = ScD.statecode"
@@ -980,7 +993,7 @@ namespace LaylaERP.BAL
             {
                 StringBuilder strSql = new StringBuilder();
                 //StringBuilder strSql = new StringBuilder(string.Format("delete from Product_Purchase_Items where fk_product = {0}; ", model.fk_product));
-                strSql.Append(string.Format("insert into ShippingClass_Details (fk_ShippingID,countrycode,statecode,Method,Shipping_price,Type,taxable,Shipping_taxrate) values ({0},'{1}','{2}','{3}',{4},'{5}','{6}',{7}) ", model.fk_ShippingID, model.countrycode, model.statecode, model.Shipping_Method, model.Ship_price, model.Shipping_type, model.taxable, model.Shipping_taxrate));
+                strSql.Append(string.Format("insert into ShippingClass_Details (fk_ShippingID,countrycode,statecode,Method,Shipping_price,Type,taxable) values ({0},'{1}','{2}','{3}',{4},'{5}','{6}') ", model.fk_ShippingID, model.countrycode, model.statecode, model.Shipping_Method, model.Ship_price, model.Shipping_type, model.taxable));
 
                 /// step 6 : wp_posts
                 //strSql.Append(string.Format(" update wp_posts set post_status = '{0}' ,comment_status = 'closed' where id = {1} ", model.OrderPostStatus.status, model.OrderPostStatus.order_id));
@@ -1020,7 +1033,7 @@ namespace LaylaERP.BAL
                 // strSql.Append(string.Format("insert into Product_Purchase_Items ( fk_vendor,purchase_price,cost_price,minpurchasequantity,salestax,taxrate,discount,remark) values ({0},{1},{2},{3},{4},{5},{6},{7},'{8}') ", model.fk_product, model.fk_vendor, model.purchase_price, model.cost_price, model.minpurchasequantity, model.salestax, model.taxrate, model.discount, model.remark));
 
                 /// step 6 : wp_posts
-                strSql.Append(string.Format("update ShippingClass_Details set countrycode = '{0}' ,statecode = '{1}',Method = '{2}',Shipping_price = {3},Type = '{4}',taxable = '{5}',Shipping_taxrate = {6} where rowid = {7} ", model.countrycode, model.statecode, model.Shipping_Method, model.Ship_price, model.Shipping_type, model.taxable, model.Shipping_taxrate, model.ID));
+                strSql.Append(string.Format("update ShippingClass_Details set countrycode = '{0}' ,statecode = '{1}',Method = '{2}',Shipping_price = {3},Type = '{4}',taxable = '{5}' where rowid = {6} ", model.countrycode, model.statecode, model.Shipping_Method, model.Ship_price, model.Shipping_type, model.taxable, model.ID));
 
                 result = SQLHelper.ExecuteNonQuery(strSql.ToString());
             }

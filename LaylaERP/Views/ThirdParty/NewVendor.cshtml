@@ -171,7 +171,7 @@
                                                     <thead>
                                                         <tr>
                                                             <th>Name</th>
-                                                            <th>Vendor Name</th>
+                                                            @*<th>Vendor Name</th>*@
                                                             <th>Title</th>
                                                             <th>office Contact</th>
                                                             <th>Phone</th>
@@ -1037,8 +1037,11 @@
                                                     <thead>
                                                         <tr>
                                                             <th>Product Name</th>
-                                                            <th>Vendor Name</th>
+                                                            @*<th>Vendor Name</th>*@
+                                                            <th>Shipping Price</th>
                                                             <th>Purchase Price</th>
+                                                            <th>Tax</th>
+                                                            <th>Discount</th>
                                                             <th>Cost Price</th>
                                                         </tr>
                                                     </thead>
@@ -1057,21 +1060,21 @@
                     </div>
                 </div>
                 <div class="tab-pane" id="tab_9">
-                    <div id="linkWarehouse">
+                    <div id="linkInvoice">
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="box-body">
                                     <label class="control-label col-sm-2">
-                                        List of products/services into
+                                        List of purchase order/invoices
                                     </label>
                                     <div class="form-group col-sm-6">
                                         <select class="form-control" id="ddlInvoiceServices">
-                                            <option value="-1">Please Select Services</option>
-                                            <option value="VendorsInvoices">Vendors invoices</option>
-                                            <option value="PurchaseOrders">Purchase orders</option>
+                                            @*<option value="-1">Please Select Services</option>*@
+                                            <option value="1">Purchase orders</option>
+                                            <option value="2">Vendors invoices</option>
                                         </select>
                                     </div>
-                                    <button type="button" id="btnSearchInvoice" class="btn btn-danger ">Search</button>
+                                    <button type="button" id="btnSearchInvoices" class="btn btn-danger ">Search</button>
                                 </div>
                             </div>
                         </div>
@@ -1083,13 +1086,14 @@
                                             <div class="col-sm-12">
                                                 <table id="PurchaseInvoicedata" class="inventory-table table-blue table check-table table-bordered table-striped dataTable" style="width:100%;">
                                                     <thead>
-                                                        <tr style="text-align:center;">
-                                                            <th>Ref</th>
-                                                            <th>Date</th>
+                                                        <tr>
+                                                            <th>ref</th>
+                                                            <th>Address</th>
+                                                            @*<th>Vendor Name</th>*@
+                                                            <th>City</th>
+                                                            <th>Zip Code</th>
+                                                            <th>Planned date of delivery</th>
                                                             <th>Status</th>
-                                                            <th>Quantity</th>
-                                                            <th>Total(excl. tax)</th>
-                                                            <th>Unit Price</th>
                                                         </tr>
                                                     </thead>
                                                 </table>
@@ -1132,8 +1136,8 @@
                                                 <table id="Warehousedata" class="inventory-table table-blue table check-table table-bordered table-striped dataTable" style="width:100%;">
                                                     <thead>
                                                         <tr style="text-align:center;">
-                                                            <th>Vendor Name</th>
                                                             <th>Warehouse</th>
+                                                            <th>Address</th>
                                                             <th>Action</th>
                                                         </tr>
                                                     </thead>

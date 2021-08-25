@@ -68,6 +68,11 @@
                             else
                                 op.AmazonPay = false;
 
+                            if (ds.Tables[1].Rows[0]["Podium"].ToString() == "1")
+                                op.Podium = true;
+                            else
+                                op.Podium = false;
+
                             if (ds.Tables[1].Rows[0]["CreditCustomer"].ToString() == "1")
                                 op.CreditCustomer = true;
                             else

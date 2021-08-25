@@ -106,6 +106,7 @@ namespace LaylaERP.Controllers
             string PaypalClientId = model.PaypalClientId;
             string PaypalSecret = model.PaypalSecret;
             string PaypalSellerAccount = model.PaypalSellerAccount;
+            string PaypalAccountDetails = model.PaypalAccountDetails;
             string AuthorizeAPILogin = model.AuthorizeAPILogin;
             string AuthorizeTransKey = model.AuthorizeTransKey;
             string AuthorizeKey = model.AuthorizeKey;

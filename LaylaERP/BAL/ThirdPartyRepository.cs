@@ -95,12 +95,11 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "update wp_vendor set vendor_type=@vendor_type,code_vendor=@code_vendor,name=@name,name_alias=@name_alias,fournisseur=@fournisseur,status=@status,address=@address,address1=@address1,zip=@zip,town=@town,fk_country=@fk_country,fk_state=@fk_state,StateName=@StateName,phone=@phone,fax=@fax,email=@email,url=@url,Workinghours=@Workinghours,VendorStatus = @VendorStatus,NatureofJournal=@NatureofJournal where rowid = @rowid; ";
+                string strsql = "update wp_vendor set vendor_type=@vendor_type,name=@name,name_alias=@name_alias,fournisseur=@fournisseur,status=@status,address=@address,address1=@address1,zip=@zip,town=@town,fk_country=@fk_country,fk_state=@fk_state,StateName=@StateName,phone=@phone,fax=@fax,email=@email,url=@url,Workinghours=@Workinghours,VendorStatus = @VendorStatus,NatureofJournal=@NatureofJournal where rowid = @rowid; ";
                 MySqlParameter[] para =
                 {
                     new MySqlParameter("@rowid", model.rowid),
                     new MySqlParameter("@vendor_type", model.vendor_type),
-                    new MySqlParameter("@code_vendor", model.VendorCode),
                     new MySqlParameter("@name", model.Name),
                     new MySqlParameter("@name_alias", model.AliasName),
                     new MySqlParameter("@fournisseur","1"),
@@ -905,7 +904,7 @@ namespace LaylaERP.BAL
                 }
                 strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
 
-                strSql += "; SELECT ceil(Count(c.id)/" + pagesize.ToString() + ") TotalPage,Count(c.ID) TotalRecord from erp_VendorContacts c left join wp_vendor v on c.VendorID = v.rowid  WHERE 1 = 1 " + strWhr.ToString();
+                strSql += "; SELECT ceil(Count(c.id)/" + pagesize.ToString() + ") TotalPage,Count(c.ID) TotalRecord from erp_VendorContacts c left join wp_vendor v on c.VendorID = v.rowid  WHERE c.VendorID='" + id + "' and 1 = 1 " + strWhr.ToString();
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
@@ -937,7 +936,7 @@ namespace LaylaERP.BAL
                 }
                 strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
 
-                strSql += "; SELECT ceil(Count(vw.ID)/" + pagesize.ToString() + ") TotalPage,Count(vw.ID) TotalRecord from wp_VendorWarehouse vw left join wp_vendor v on vw.VendorID = v.rowid left join wp_warehouse w on vw.WarehouseID = w.rowid  WHERE 1 = 1 " + strWhr.ToString();
+                strSql += "; SELECT ceil(Count(vw.ID)/" + pagesize.ToString() + ") TotalPage,Count(vw.ID) TotalRecord from wp_VendorWarehouse vw left join wp_vendor v on vw.VendorID = v.rowid left join wp_warehouse w on vw.WarehouseID = w.rowid  WHERE vw.VendorID='" + id + "' and 1 = 1 " + strWhr.ToString();
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
@@ -989,10 +988,13 @@ namespace LaylaERP.BAL
             try
             {
                 string strWhr = string.Empty;
-                string strSql = "Select p.rowid,p.fk_vendor,post.post_title ProductName,v.name VendorName,Concat('$',cast(p.purchase_price as decimal(18,2))) purchase_price,Concat('$',cast(((p.purchase_price + p.shipping_price + p.taxrate) - p.discount) as decimal(18,2))) cost_price,p.date_inc,p.date_modified,p.effective_date,p.minpurchasequantity,p.salestax,p.taxrate,p.discount,p.remark from Product_Purchase_Items p left join wp_vendor v on p.fk_vendor = v.rowid left join wp_posts post on p.fk_product = post.id where p.fk_vendor='" + id + "' and 1=1 ";
+                string strSql = "Select p.rowid,p.fk_vendor,post.post_title ProductName,v.name VendorName,Concat('$',cast(p.purchase_price as decimal(18,2))) purchase_price," +
+                    "Concat('$',cast(((p.purchase_price + p.shipping_price + p.taxrate) - p.discount) as decimal(18,2))) cost_price,Concat('$',cast(p.shipping_price as decimal(18,2))) shipping_price," +
+                    "p.discount,p.taxrate,p.date_inc,p.date_modified,p.effective_date,p.minpurchasequantity,p.salestax,p.taxrate,p.discount,p.remark from Product_Purchase_Items p " +
+                    "left join wp_vendor v on p.fk_vendor = v.rowid left join wp_posts post on p.fk_product = post.id where p.fk_vendor='" + id + "' and 1=1 ";
                 if (!string.IsNullOrEmpty(searchid))
                 {
-                    strWhr += " and (v.name like '%" + searchid + "%' OR user_nicename='%" + searchid + "%' OR ID='%" + searchid + "%' OR nom like '%" + searchid + "%')";
+                    strWhr += " and (p.fk_vendor like '%" + searchid + "%' OR p.purchase_price='%" + searchid + "%' OR p.shipping_price='%" + searchid + "%' OR cost_price like '%" + searchid + "%')";
                 }
                 if (userstatus != null)
                 {
@@ -1000,7 +1002,7 @@ namespace LaylaERP.BAL
                 }
                 strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
 
-                strSql += "; SELECT ceil(Count(p.rowid)/" + pagesize.ToString() + ") TotalPage,Count(p.rowid) TotalRecord from Product_Purchase_Items p left join wp_vendor v on p.fk_vendor = v.rowid left join wp_posts post on p.fk_product = post.id  WHERE 1 = 1 " + strWhr.ToString();
+                strSql += "; SELECT ceil(Count(p.rowid)/" + pagesize.ToString() + ") TotalPage,Count(p.rowid) TotalRecord from Product_Purchase_Items p left join wp_vendor v on p.fk_vendor = v.rowid left join wp_posts post on p.fk_product = post.id  WHERE p.fk_vendor='" + id + "' and 1 = 1 " + strWhr.ToString();
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];

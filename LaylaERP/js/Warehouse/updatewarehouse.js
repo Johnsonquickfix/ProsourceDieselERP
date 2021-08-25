@@ -10,7 +10,15 @@ function Addcurrentstock() {
     var price = $("#txtprice").val();
     var unit = $("#txtunit").val();
     var label = $("#txtlabel").val();
-    var sellby = $("#txtsalebydate").val();
+    //var sellby = $("#txtsalebydate").val();
+
+    var formattedDate = new Date(eatby);
+    var d = formattedDate.getDate();
+    //var m = formattedDate.getMonth();
+    var m = ("0" + (formattedDate.getMonth() + 1)).slice(-2)
+    //m += 1;  // JavaScript months are 0-11
+    var y = formattedDate.getFullYear();
+    var stockdate = y + "-" + m + "-" + d;
    
     if (fk_product == null) {
         swal('Alert', 'Please select product', 'error').then(function () { swal.close(); $('#ddlProduct').focus(); });
@@ -26,11 +34,11 @@ function Addcurrentstock() {
         swal('Alert', 'Please Enter Lot/Serial Number', 'error').then(function () { swal.close(); $('#txtserial').focus(); });
     }
     else if (eatby == "") {
-        swal('Alert', 'Please Enter Eat By date', 'error').then(function () { swal.close(); $('#txteatbydate').focus(); });
+        swal('Alert', 'Please Enter Stock Correction date', 'error').then(function () { swal.close(); $('#txteatbydate').focus(); });
     }
-    else if (sellby == "") {
-        swal('Alert', 'Please Enter Sale By Date', 'error').then(function () { swal.close(); $('#txtsalebydate').focus(); });
-    }
+    //else if (sellby == "") {
+    //    swal('Alert', 'Please Enter Sale By Date', 'error').then(function () { swal.close(); $('#txtsalebydate').focus(); });
+    //}
 
     else if (label == "") {
         swal('Alert', 'Please Enter Label of Movement', 'error').then(function () { swal.close(); $('#txtlabel').focus(); });
@@ -44,11 +52,11 @@ function Addcurrentstock() {
             fk_entrepot: fk_entrepot,
             fk_product: fk_product,
             serial: serial,
-            eatby: eatby,
+            eatby: stockdate,
             value: unit,
             label: label,
             price: price,
-            sellby: sellby,
+            //sellby: sellby,
         }
         $.ajax({
             url: '/Warehouse/AddCurrentstock/', dataType: 'json', type: 'Post',
@@ -375,10 +383,18 @@ function AddTransferStock() {
     var value = $("#txttransferunit").val();
     var lotserial = $("#txttransferserial").val();
     var eatbydate = $("#txttransfereatbydate").val();
-    var salebydate = $("#txttransfersalebydate").val();
+    //var salebydate = $("#txttransfersalebydate").val();
     var inventorycode = $("#txttransferinvtcode").val();
     var label = $("#txttransferlabel").val();
     var stock1 = $("#txtstock1").val();
+
+    var formattedDate = new Date(eatbydate);
+    var d = formattedDate.getDate();
+    //var m = formattedDate.getMonth();
+    var m = ("0" + (formattedDate.getMonth() + 1)).slice(-2)
+    //m += 1;  // JavaScript months are 0-11
+    var y = formattedDate.getFullYear();
+    var stockdate = y + "-" + m + "-" + d;
 
     if (fk_product == null) {
         swal('Alert', 'Please select product', 'error').then(function () { swal.close(); $('#ddltransferProduct').focus(); });
@@ -398,11 +414,11 @@ function AddTransferStock() {
         swal('Alert', 'Please enter Lot/serial number ', 'error').then(function () { swal.close(); $('#txttransferserial').focus(); });
     }
     else if (eatbydate == "") {
-        swal('Alert', 'Please enter eat by date ', 'error').then(function () { swal.close(); $('#txttransfereatbydate').focus(); });
+        swal('Alert', 'Please enter Stock Transfer date ', 'error').then(function () { swal.close(); $('#txttransfereatbydate').focus(); });
     }
-    else if (salebydate == "") {
-        swal('Alert', 'Please enter sale by date ', 'error').then(function () { swal.close(); $('#txttransfersalebydate').focus(); });
-    }
+    //else if (salebydate == "") {
+    //    swal('Alert', 'Please enter sale by date ', 'error').then(function () { swal.close(); $('#txttransfersalebydate').focus(); });
+    //}
     else if (label == "") {
         swal('Alert', 'Please enter label of movement ', 'error').then(function () { swal.close(); $('#txttransferlabel').focus(); });
     }
@@ -418,8 +434,8 @@ function AddTransferStock() {
             inventorycode: inventorycode,
             label: label,
             price: price,
-            eatby: eatbydate,
-            sellby: salebydate,
+            eatby: stockdate,
+            //sellby: salebydate,
             serial: lotserial,
         }
         $.ajax({
@@ -700,7 +716,22 @@ function Updatecorrectstock() {
     var price = $("#txtprice").val();
     var unit = $("#txtunit").val();
     var label = $("#txtlabel").val();
-    var sellby = $("#txtsalebydate").val();
+    //var sellby = $("#txtsalebydate").val();
+    //var z = $("#txteatbydate").val();
+    //var dout = Date.parse(d);
+    //$("#date").text(dout.toString('M-d-yyyy')); 
+    //Addcurrentstock();
+
+    var formattedDate = new Date(eatby);
+    var d = formattedDate.getDate();
+    //var m = formattedDate.getMonth();
+    var m = ("0" + (formattedDate.getMonth() + 1)).slice(-2)
+    //m += 1;  // JavaScript months are 0-11
+    var y = formattedDate.getFullYear();
+    var z = y + "-" + m + "-" + d;
+    //var eat =$("#txtDate").val(d + "." + m + "." + y);
+    //alert(z);
+
 
     if (fk_product == null) {
         swal('Alert', 'Please select product', 'error').then(function () { swal.close(); $('#ddlProduct').focus(); });
@@ -721,11 +752,11 @@ function Updatecorrectstock() {
         swal('Alert', 'Please Enter Lot/Serial Number', 'error').then(function () { swal.close(); $('#txtserial').focus(); });
     }
     else if (eatby == "") {
-        swal('Alert', 'Please Enter Eat By date', 'error').then(function () { swal.close(); $('#txteatbydate').focus(); });
+        swal('Alert', 'Please Enter stock correction date', 'error').then(function () { swal.close(); $('#txteatbydate').focus(); });
     }
-    else if (sellby == "") {
-        swal('Alert', 'Please Enter Sale By Date', 'error').then(function () { swal.close(); $('#txtsalebydate').focus(); });
-    }
+    //else if (sellby == "") {
+    //    swal('Alert', 'Please Enter Sale By Date', 'error').then(function () { swal.close(); $('#txtsalebydate').focus(); });
+    //}
     else if (label == "") {
         swal('Alert', 'Please Enter Label of Movement', 'error').then(function () { swal.close(); $('#txtlabel').focus(); });
     }
@@ -739,11 +770,11 @@ function Updatecorrectstock() {
             searchid: rowid,
             fk_product: fk_product,
             serial: serial,
-            eatby: eatby,
+            eatby: z,
             value: unit,
             label: label,
             price: price,
-            sellby: sellby,
+            //sellby: sellby,
         }
         $.ajax({
             url: '/Warehouse/UpdateCorrectstock/', dataType: 'json', type: 'Post',
@@ -784,11 +815,20 @@ function UpdateTransferStock() {
     var value = $("#txttransferunit").val();
     var lotserial = $("#txttransferserial").val();
     var eatbydate = $("#txttransfereatbydate").val();
-    var salebydate = $("#txttransfersalebydate").val();
+    //var salebydate = $("#txttransfersalebydate").val();
     var inventorycode = $("#txttransferinvtcode").val();
     var label = $("#txttransferlabel").val();
     var tn = $("#txtTransid1").val();
     var stock1 = $("#txtstock1").val();
+
+    var formattedDate = new Date(eatbydate);
+    var d = formattedDate.getDate();
+    //var m = formattedDate.getMonth();
+    var m = ("0" + (formattedDate.getMonth() + 1)).slice(-2)
+    //m += 1;  // JavaScript months are 0-11
+    var y = formattedDate.getFullYear();
+    var stockdate = y + "-" + m + "-" + d;
+
 
     if (fk_product == null) {
         swal('Alert', 'Please select product', 'error').then(function () { swal.close(); $('#ddltransferProduct').focus(); });
@@ -810,11 +850,11 @@ function UpdateTransferStock() {
         swal('Alert', 'Please enter Lot/serial number ', 'error').then(function () { swal.close(); $('#txttransferserial').focus(); });
     }
     else if (eatbydate == "") {
-        swal('Alert', 'Please enter eat by date ', 'error').then(function () { swal.close(); $('#txttransfereatbydate').focus(); });
+        swal('Alert', 'Please enter stock transfer date ', 'error').then(function () { swal.close(); $('#txttransfereatbydate').focus(); });
     }
-    else if (salebydate == "") {
-        swal('Alert', 'Please enter sale by date ', 'error').then(function () { swal.close(); $('#txttransfersalebydate').focus(); });
-    }
+    //else if (salebydate == "") {
+    //    swal('Alert', 'Please enter sale by date ', 'error').then(function () { swal.close(); $('#txttransfersalebydate').focus(); });
+    //}
     else if (label == "") {
         swal('Alert', 'Please enter label of movement ', 'error').then(function () { swal.close(); $('#txttransferlabel').focus(); });
     }
@@ -832,8 +872,8 @@ function UpdateTransferStock() {
             inventorycode: inventorycode,
             label: label,
             price: price,
-            eatby: eatbydate,
-            sellby: salebydate,
+            eatby: stockdate,
+            //sellby: salebydate,
             serial: lotserial,
             transfertranscationid: tn,
         }

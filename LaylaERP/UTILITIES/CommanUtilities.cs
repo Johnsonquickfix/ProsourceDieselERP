@@ -25,6 +25,7 @@
         public bool AuthorizeNet { get; set; }
         public bool Paypal { get; set; }
         public bool AmazonPay { get; set; }
+        public bool Podium { get; set; }
         public bool CreditCustomer { get; set; }
         public string SenderEmailID { get; set; }
         public string GlobalEmail { get; set; }

@@ -266,16 +266,33 @@ namespace LaylaERP.Controllers
             DataTable dt = new DataTable();
             dt = BAL.ProductRepository.Getsate(tcode);
             List<SelectListItem> usertype = new List<SelectListItem>();
+            usertype.Add(new SelectListItem
+            {
+                Value = "All".ToString(),
+                Text = "All".ToString()
+
+            });
             for (int i = 0; i < dt.Rows.Count; i++)
             {
                 usertype.Add(new SelectListItem
                 {
-                    Value = dt.Rows[i]["State"].ToString(),
+                    Value = dt.Rows[i]["State"].ToString().Trim(),
                     Text = dt.Rows[i]["StateFullName"].ToString()
 
                 });
             }
             return Json(usertype, JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult GetStateData(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable DT = BAL.ProductRepository.GetStateData(model.strValue1, model.strValue2);
+                JSONresult = JsonConvert.SerializeObject(DT);
+            }
+            catch { }
+            return Json(JSONresult, 0);
         }
         public JsonResult CreateNotes(ProductModel model)
         {

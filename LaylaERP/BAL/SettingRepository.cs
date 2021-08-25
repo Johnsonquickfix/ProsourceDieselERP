@@ -32,7 +32,7 @@ namespace LaylaERP.BAL
             try
             {
                 string strsql = "Update wp_system_settings set AuthorizeNet=@AuthorizeNet,Paypal=@Paypal,AmazonPay=@AmazonPay,CreditCustomer=@CreditCustomer,Podium=@Podium, SenderEmailID=@SenderEmailID, SenderEmailPwd=@SenderEmailPwd, SMTPServerName=@SMTPServerName," +
-                    "SMTPServerPortNo=@SMTPServerPortNo, PaypalClientId=@PaypalClientId, PaypalSecret=@PaypalSecret, AuthorizeAPILogin=@AuthorizeAPILogin, " +
+                    "SMTPServerPortNo=@SMTPServerPortNo, PaypalClientId=@PaypalClientId, PaypalSecret=@PaypalSecret,PaypalSellerAccount=@PaypalSellerAccount,AuthorizeAPILogin=@AuthorizeAPILogin, " +
                     " AuthorizeTransKey=@AuthorizeTransKey,AmazonAPIId=@AmazonAPIId,AmazonUser=@AmazonUser,AmazonPwd=@AmazonPwd,TaxjarAPIId=@TaxjarAPIId, " +
                     "TaxjarAPIId=@TaxjarAPIId,TaxjarUser=@TaxjarUser,TaxjarPwd=@TaxjarPwd,podiumAPIKey=@podiumAPIKey,podiumSecretKey=@podiumSecretKey where ID=@user_id";
                 MySqlParameter[] para =
@@ -49,6 +49,7 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@SMTPServerPortNo",model.SMTPServerPortNo),
                     new MySqlParameter("@PaypalClientId",model.PaypalClientId),
                     new MySqlParameter("@PaypalSecret", model.PaypalSecret),
+                    new MySqlParameter("@PaypalSellerAccount",model.PaypalSellerAccount),
                     new MySqlParameter("@AuthorizeAPILogin",model.AuthorizeAPILogin),
                     new MySqlParameter("@AuthorizeTransKey", model.AuthorizeTransKey),
                     new MySqlParameter("@AmazonAPIId", model.AmazonAPIId),

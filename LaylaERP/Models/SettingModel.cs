@@ -19,6 +19,7 @@ namespace LaylaERP.Models
         int _ID;
         string _PaypalClientID = string.Empty;
         string _PaypalSecret = string.Empty;
+        string _PaypalSellerAccount = string.Empty;
         string _AuthorizeAPILogin = string.Empty;
         string _AuthorizeTransKey = string.Empty;
         string _AuthorizeKey = string.Empty;
@@ -91,6 +92,11 @@ namespace LaylaERP.Models
         {
             get { return _PaypalSecret; }
             set { _PaypalSecret = value; }
+        }
+        public string PaypalSellerAccount
+        {
+            get { return _PaypalSellerAccount; }
+            set { _PaypalSellerAccount = value; }
         }
         public string AuthorizeAPILogin
         {

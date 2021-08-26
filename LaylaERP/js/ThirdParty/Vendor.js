@@ -1,25 +1,31 @@
-﻿$("#loader").hide();
-getVendorType();
-getStatus();
-getSalesTaxUsed();
-getThirdPartyType();
-getWorkforce();
-getAssignedtoSalesRepresentative();
-getVendorCode();
-getPaymentTerm();
-getBalanceDays();
-//ProductList();
-getIncoterm();
-getWarehouse();
-getShippingMethod();
-getDiscountType();
-getPaymentMethod();
-VendorContactList();
-VendorWarehouseList();
-VendorRelatedProduct();
-VendorLinkedFiles();
-getNatureofJournal();
-PurchaseOrderGrid();
+﻿$(document).ready(function () {
+    $("#loader").hide();
+    $("#txtContactPhone").mask("(999) 999-9999");
+    $("#txtPhone").mask("(999) 999-9999");
+    getVendorType();
+    getStatus();
+    getSalesTaxUsed();
+    getThirdPartyType();
+    getWorkforce();
+    getAssignedtoSalesRepresentative();
+    getVendorCode();
+    getPaymentTerm();
+    getBalanceDays();
+    //ProductList();
+    getIncoterm();
+    getWarehouse();
+    getShippingMethod();
+    getDiscountType();
+    getPaymentMethod();
+    VendorContactList();
+    VendorWarehouseList();
+    VendorRelatedProduct();
+    VendorLinkedFiles();
+    getNatureofJournal();
+    PurchaseOrderGrid();
+})
+
+
 function getNatureofJournal() {
     $.ajax({
         url: "/Accounting/GetNatureofJournal",
@@ -109,7 +115,8 @@ $('#btnNextTab1').click(function (e) {
     StateName = $("#ddlState").find('option:selected').text();
     ZipCode = $("#txtZipCode").val();
     Country = $("#ddlCountry").val();
-    Phone = $("#txtPhone").val();
+    Phone = $("#txtPhone").unmask().val();
+  
     Fax = $("#txtFax").val();
     EMail = $("#txtEMail").val();
     Web = $("#txtWeb").val();
@@ -147,6 +154,8 @@ $('#btnNextTab1').click(function (e) {
             success: function (data) {
                 if (data.status == true) {
                     $("#hfid").val(data.id);
+                    $("#txtContactPhone").mask("(999) 999-9999");
+                    $("#txtPhone").mask("(999) 999-9999");
                     //swal('Alert!', data.message, 'success');
                     var link = $('#mytabs .active').next().children('a').attr('href');
                     $('#mytabs a[href="' + link + '"]').tab('show');
@@ -568,7 +577,7 @@ $('#btnSaveContact').click(function (e) {
     ContactCountry = $("#ddlContactCountry").val();
     ContactOffice = $("#txtContactOffice").val();
     //ContactExt = $("#txtContactExt").val();
-    ContactPhone = $("#txtContactPhone").val();
+    ContactPhone = $("#txtContactPhone").unmask().val();
     ContactFax = $("#txtContactFax").val();
     ContactNotes = $("#txtContactNotes").val();
 
@@ -599,6 +608,7 @@ $('#btnSaveContact').click(function (e) {
             success: function (data) {
                 if (data.status == true) {
                     swal('Alert!', data.message, 'success');
+                    $("#txtContactPhone").mask("(999) 999-9999");
                     $("#VendorModal").modal('hide');
                     VendorContactList();
                     $("#VendorModal").find(":input").each(function () {
@@ -845,34 +855,34 @@ function getShippingMethod() {
 
     });
 }
-document.getElementById('txtPhone').addEventListener('keyup', function (evt) {
-    var phoneNumber = document.getElementById('txtPhone');
-    var charCode = (evt.which) ? evt.which : evt.keyCode;
-    phoneNumber.value = phoneFormat(phoneNumber.value);
-});
-document.getElementById('txtContactPhone').addEventListener('keyup', function (evt) {
-    var phoneNumber = document.getElementById('txtContactPhone');
-    var charCode = (evt.which) ? evt.which : evt.keyCode;
-    phoneNumber.value = phoneFormat(phoneNumber.value);
-});
-function phoneFormat(input) {
-    input = input.replace(/\D/g, '');
-    input = input.substring(0, 10);
-    var size = input.length;
-    if (size == 0) {
-        input = input;
-    } else if (size < 4) {
-        input = '(' + input;
-    } else if (size < 7) {
-        input = '(' + input.substring(0, 3) + ') ' + input.substring(3, 6);
-    } else {
-        input = '(' + input.substring(0, 3) + ') ' + input.substring(3, 6) + ' - ' + input.substring(6, 10);
-    }
-    return input;
-}
+
+//document.getElementById('txtPhone').addEventListener('keyup', function (evt) {
+//    var phoneNumber = document.getElementById('txtPhone');
+//    var charCode = (evt.which) ? evt.which : evt.keyCode;
+//    phoneNumber.value = phoneFormat(phoneNumber.value);
+//});
+//document.getElementById('txtContactPhone').addEventListener('keyup', function (evt) {
+//    var phoneNumber = document.getElementById('txtContactPhone');
+//    var charCode = (evt.which) ? evt.which : evt.keyCode;
+//    phoneNumber.value = phoneFormat(phoneNumber.value);
+//});
+//function phoneFormat(input) {
+//    input = input.replace(/\D/g, '');
+//    input = input.substring(0, 10);
+//    var size = input.length;
+//    if (size == 0) {
+//        input = input;
+//    } else if (size < 4) {
+//        input = '(' + input;
+//    } else if (size < 7) {
+//        input = '(' + input.substring(0, 3) + ') ' + input.substring(3, 6);
+//    } else {
+//        input = '(' + input.substring(0, 3) + ') ' + input.substring(3, 6) + ' - ' + input.substring(6, 10);
+//    }
+//    return input;
+//}
 function GetVendorByID(id) {
     var rowid = id;
-   
     var obj =
         $.ajax({
             url: "/ThirdParty/GetVendorByID/" + rowid,
@@ -883,7 +893,8 @@ function GetVendorByID(id) {
             success: function (data) {
                 var d = JSON.parse(data);
                 if (d.length > 0) {
-                    if (rowid == "NewVendor") { $('#lbltitle').text("Add New Vendor"); } else { $('#lbltitle').text("Update Vendor " + "(" + d[0].VendorName+")" ); }
+                    if (rowid == "NewVendor") { $('#lbltitle').text("Add New Vendor"); } else { $('#lbltitle').text("Update Vendor " + "(" + d[0].VendorName + ")"); }
+                    
                     $("#txVendorName").val(d[0].VendorName);
                     $("#txtAliasName").val(d[0].AliasName);
                     $("#ddlvendortype").val(d[0].vendor_type);
@@ -904,7 +915,8 @@ function GetVendorByID(id) {
                     });
                     $("#txtZipCode").val(d[0].zip);
                     $("#ddlCountry").val(d[0].Country);
-                    $("#txtPhone").val(d[0].phone);
+                    var t = d[0].phone.toString().replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3");
+                    $("#txtPhone").val(t);
                     $("#txtFax").val(d[0].fax);
                     $("#txtEMail").val(d[0].email);
                     $("#txtWeb").val(d[0].url);
@@ -921,7 +933,7 @@ function GetVendorByID(id) {
                     $("#txtBusinessEntityType").val(d[0].BusinessEntityType);
                     $("#txtNotesPublic").val(d[0].note_public);
                     $("#txtNotesPrivate").val(d[0].note_private);
-                    $("#ddlNatureofJournal").val(d[0].NatureofJournal);
+                    $("#ddlNatureofJournal").val(d[0].NatureofJournal == null ? "-1" : d[0].NatureofJournal);
 
                     $("#txtCapital").val(d[0].capital);
                     $("#ddlPaymentTerms").val(d[0].PaymentTermsID == null ? "-1" : d[0].PaymentTermsID);
@@ -1058,14 +1070,14 @@ function getVendorCode() {
 
 }
 function VendorContactList() {
-    var urid ="";
+    var urid = "";
     ID = $("#hfid").val();
     var sid = "";
     var obj = { user_status: urid, Search: sid, PageNo: 0, PageSize: 50, sEcho: 1, SortCol: 'id', SortDir: 'desc', rowid: ID };
     $('#dtdata').DataTable({
         columnDefs: [{ "orderable": true, "targets": 0 }], order: [[0, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true,
-        sPaginationType: "full_numbers", searching: false, ordering: true, lengthChange: true, "paging": true, 
+        sPaginationType: "full_numbers", searching: false, ordering: true, lengthChange: true, "paging": true,
         bAutoWidth: false, scrollX: false,
         lengthMenu: [[10, 20, 50], [10, 20, 50]],
         sAjaxSource: "/ThirdParty/GetVendorContactList",
@@ -1089,10 +1101,19 @@ function VendorContactList() {
         },
         aoColumns: [
             { data: 'Name', title: 'Name', sWidth: "10%" },
-           /* { data: 'VendorName', title: 'Vendor Name', sWidth: "10%" },*/
+            /* { data: 'VendorName', title: 'Vendor Name', sWidth: "10%" },*/
             { data: 'Title', title: 'Title', sWidth: "10%" },
             { data: 'Office', title: 'Office Contact', sWidth: "10%" },
-            { data: 'Mobile', title: 'Phone', sWidth: "10%" },
+            {
+                data: 'Mobile', title: 'Phone', sWidth: "10%", render: function (toFormat) {
+                    var tPhone = '';
+                    if (toFormat != null) {
+                        tPhone = toFormat.toString();
+                        tPhone = '(' + tPhone.substring(0, 3) + ') ' + tPhone.substring(3, 6) + ' ' + tPhone.substring(6, 10);
+                    }
+                    return tPhone
+                }
+            },
             { data: 'Email', title: 'Email', sWidth: "10%" },
             { data: 'Address', title: 'Address', sWidth: "20%" },
             {
@@ -1123,7 +1144,7 @@ function VendorRelatedProduct() {
         lengthMenu: [[10, 20, 50], [10, 20, 50]],
         sAjaxSource: "/ThirdParty/GetVendorRelatedProductList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
-           
+
             var col = 'id';
             if (oSettings.aaSorting.length >= 0) {
                 var col = oSettings.aaSorting[0][0] == 0 ? "ProductName" : oSettings.aaSorting[0][0] == 1 ? "VendorName" : oSettings.aaSorting[0][0] == 2 ? "purchase_price" : oSettings.aaSorting[0][0] == 3 ? "cost_price" : "id";
@@ -1182,8 +1203,8 @@ function VendorWarehouseList() {
             });
         },
         aoColumns: [
-           /* { data: 'VendorName', title: 'Vendor Name', sWidth: "40%" },*/
-            { data: 'Warehouse', title: 'Ware house', sWidth: "40%" }, 
+            /* { data: 'VendorName', title: 'Vendor Name', sWidth: "40%" },*/
+            { data: 'Warehouse', title: 'Ware house', sWidth: "40%" },
             { data: 'address', title: 'Address', sWidth: "40%" },
             {
                 'data': 'ID', sWidth: "20%",
@@ -1219,7 +1240,7 @@ $('#btnAddRelatedProduct').click(function () {
 })
 function showModal(id) {
     var VendorID = id;
-
+   
     $("#hfContactid").val(VendorID);
     var obj =
         $.ajax({
@@ -1241,7 +1262,8 @@ function showModal(id) {
                     $("#txtContactZipCode").val(d[0].ZipCode);
                     $("#ddlContactCountry").val(d[0].Country);
                     $("#txtContactOffice").val(d[0].Office);
-                    $("#txtContactPhone").val(d[0].Mobile);
+                    Cphone = d[0].Mobile.toString().replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3");
+                    $("#txtContactPhone").val(Cphone);
                     $("#txtContactFax").val(d[0].Fax);
                     $("#txtContactEMail").val(d[0].Email);
                     $("#txtContactNotes").val(d[0].Notes);
@@ -1377,7 +1399,7 @@ function VendorLinkedFiles() {
     $('#VendorLinkedFiles').DataTable({
         columnDefs: [{ "orderable": true, "targets": 0 }], order: [[0, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true,
-        sPaginationType: "full_numbers", searching: false, ordering: true, lengthChange: true, "paging": true, 
+        sPaginationType: "full_numbers", searching: false, ordering: true, lengthChange: true, "paging": true,
         bAutoWidth: false, scrollX: false,
         lengthMenu: [[10, 20, 50], [10, 20, 50]],
         sAjaxSource: "/ThirdParty/GetVendorLinkedFiles",
@@ -1394,7 +1416,7 @@ function VendorLinkedFiles() {
                     var dtOption = { sEcho: data.sEcho, recordsTotal: data.recordsTotal, recordsFiltered: data.recordsFiltered, iTotalRecords: data.iTotalRecords, iTotalDisplayRecords: data.iTotalDisplayRecords, aaData: JSON.parse(data.aaData) };
                     $('#lblAttachedFiles').text(data.iTotalRecords);
                     return fnCallback(dtOption);
-                    
+
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
                 async: false
@@ -1404,13 +1426,13 @@ function VendorLinkedFiles() {
             {
                 'data': 'FileName', sWidth: "25%",
                 'render': function (FileName, type, full, meta) {
-                    return '<a target="popup" href="../../Content/VendorLinkedFiles/' + FileName+'">' + FileName + '</i></a>';
+                    return '<a target="popup" href="../../Content/VendorLinkedFiles/' + FileName + '">' + FileName + ' <i class="fas fa-search-plus"></i></a>';
                 }
             },
-          { data: 'FileSize', title: 'FileSize', sWidth: "25%" }, 
+            { data: 'FileSize', title: 'FileSize', sWidth: "25%" },
             { data: 'Date', title: 'Date', sWidth: "25%" },
             {
-                'data': 'ID', sWidth: "25%",
+                'data': 'ID',
                 'render': function (id, type, full, meta) {
                     return '<a href="#" onclick="DeleteVendorLinkedFiles(' + id + ');"><i class="fas fa-trash-alt"></i></a>';
                 }
@@ -1470,7 +1492,7 @@ function PurchaseOrderGrid() {
             aoData.push({ name: "strValue2", value: VendorID });
             var col = 'order_id';
             if (oSettings.aaSorting.length > 0) {
-                var col =  oSettings.aaSorting[0][0] == 1 ? "date_livraison" : oSettings.aaSorting[0][0] == 2 ? "Status" : "ref";
+                var col = oSettings.aaSorting[0][0] == 1 ? "date_livraison" : oSettings.aaSorting[0][0] == 2 ? "Status" : "ref";
                 aoData.push({ name: "sSortColName", value: col });
             }
             //console.log(aoData);
@@ -1483,7 +1505,7 @@ function PurchaseOrderGrid() {
             });
         },
         aoColumns: [
-           
+
             {
                 'data': 'ref', sWidth: "10%", title: 'PO No.',
                 'render': function (id, type, full, meta) {

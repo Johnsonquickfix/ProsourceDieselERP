@@ -242,5 +242,25 @@ namespace LaylaERP.BAL
             { throw ex; }
             return DS;
         }
+        public int AddProductAccount(ProductAccountingModel model)
+        {
+            try
+            {
+                string strsql = "";
+                strsql = "insert into product_accounting(fk_product_id,Productfor,fk_account_number) values(@fk_product_id,@Productfor,@fk_account_number); SELECT LAST_INSERT_ID();";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@fk_product_id", model.fk_product_id),
+                    new MySqlParameter("@Productfor", model.Productfor),
+                    new MySqlParameter("@fk_account_number", model.fk_account_number),
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
     }
 }

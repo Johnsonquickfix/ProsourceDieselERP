@@ -203,6 +203,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountingJournalModel.cs" />
+    <Compile Include="Models\AccountingModel.cs" />
     <Compile Include="Models\AgentCommissionRate.cs" />
     <Compile Include="Models\Appearance.cs" />
     <Compile Include="Models\Attributes.cs" />

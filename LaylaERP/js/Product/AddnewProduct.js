@@ -8,6 +8,16 @@
     $("#btnbacklist").prop("href", "ListProduct")
  
     $('#divPurchase').hide();
+
+    //$.get('/Product/GetShipping/' + id, { async: false }, function (data) {
+    //    var items = "";
+    //    // $('#ddlShipping').empty();
+    //    // items += "<option value=''>Please select</option>";
+    //    $.each(data, function (index, value) {
+    //        items += $('<option>').val(this['Value']).text(this['Text']).appendTo(".txtshipvariation");
+    //    })
+    //});
+
     if (id != "" && id != "AddNewProduct") {
         $('#lbltitle').text("Update Product");
       //  $("#btnPurchase").show();
@@ -116,14 +126,7 @@
     });
 
 
-    $.get('/Product/GetShipping/' + id, function (data) {
-        var items = "";
-        // $('#ddlShipping').empty();
-        // items += "<option value=''>Please select</option>";
-        $.each(data, function (index, value) {
-            items += $('<option>').val(this['Value']).text(this['Text']).appendTo(".txtshipvariation");
-        })
-    });
+ 
 
     $('#ddlUpsells').select2({
         allowClear: true, minimumInputLength: 3, placeholder: "Search Product",
@@ -1009,6 +1012,30 @@ function GetProductvariationID(ProductID) {
              /*   varHTML += '        <div class="col-md-12"><label class="control-label">Shipping Class</label><select class="txtshipvariation form-control" id="ddlsv_' + data[i].id + '"><option value="-1">shipping class</option><option class="level-0" value="200">Adjustabe Base (Split King)</option> <option class="level-0" value="246">Adjustable Base (Full)</option> <option class="level-0" value="201">Adjustable Base (King)</option><option class="level-0" value="199">Adjustable Base (Queen)</option>  <option class="level-0" value="198">Adjustable Base (Twin XL)</option><option class="level-0" value="71">Bed Frame</option><option class="level-0" value="114">Blanket</option><option class="level-0" value="30">Foundation</option> <option class="level-0" value="50">Free Shipping</option> <option class="level-0" value="263">Hybrid Cal King</option> <option class="level-0" value="260">Hybrid Full</option> <option class="level-0" value="262">Hybrid King</option> <option class="level-0" value="261">Hybrid Queen</option> <option class="level-0" value="258">Hybrid Twin</option> <option class="level-0" value="259">Hybrid Twin XL</option> <option class="level-0" value="257">Mattress Cal King</option>  <option class="level-0" value="254">Mattress Full</option><option class="level-0" value="256">Mattress King</option> <option class="level-0" value="196">Mattress Protector</option> <option class="level-0" value="255">Mattress Queen</option> <option class="level-0" value="252">Mattress Twin</option>    <option class="level-0" value="253">Mattress Twin XL</option>  <option class="level-0" value="195">Memory Foam Pillow</option><option class="level-0" value="52">Pillow</option>  <option class="level-0" value="202">Platform Bed</option> <option class="level-0" value="107">Sheets</option> <option class="level-0" value="87">Topper</option> </select></div>';*/
                 varHTML += '        <div class="col-md-12"><label class="control-label">Shipping Class</label><select class="txtshipvariation form-control" id="ddlsv_' + data[i].id + '"><option value="-1">shipping class</option></select></div>';
                 varHTML += '    </div>';
+                varHTML += '<div class="alignleft actions bulkactions">';
+                varHTML += '<table class="data-contacts1-js table table-striped"><tbody class="variation_ship">';
+                varHTML += '<tr><select class="txtshipvariation1" id="ddlsv1_' + data[i].id + '"><option value="-1">shipping class</option>';
+                $.get('/Product/GetShippingddl/', function (data) {
+                    var items = "";
+                   // console.log(data);
+                    $.each(data, function (index, value) {
+                        console.log(index);
+                        console.log(value);
+                        console.log(data[i].shippingclass);
+                        let _values = value; let sel_val = data[i].shippingclass;
+                        ('.txtshipvariation1').empty();
+                        //for (let j = 0; j < _values.length; j++) {
+                        console.log('hh', this['Value']);
+                        console.log('hdh', this['Text']);
+                        varHTML += '<option value="' + this['Value'] + '"> ' + this['Text'] + '</option>';
+                        //}
+                        console.log(varHTML);
+                    });
+                });
+                varHTML += '</select></tr>';
+      
+                varHTML += '</tbody></table>';
+                varHTML += '</div>';
                 varHTML += '    <div class="form-group d-flex">';
                 varHTML += '        <div class="col-md-12"><label class="control-label">Tax Class</label><select class="txttaxcassvariation form-control" id="ddlcsv_' + data[i].id + '"><option value="standard">Standard</option> <option value="reduced-rate">Reduced rate</option> <option value="zero-rate">Zero rate</option> </select></div>';
                 varHTML += '    </div>';

@@ -21,5 +21,12 @@ namespace LaylaERP.Models
         public int active { get; set; }
         public int reconcilable { get; set; }
     }
-    
+    public class ProductAccountingModel
+    {
+        public int ID { get; set; }
+        public long fk_product_id { get; set; }
+        public string Productfor { get; set; }
+        public int fk_account_number { get; set; }
+    }
+
 }

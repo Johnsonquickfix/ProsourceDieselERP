@@ -213,5 +213,30 @@ namespace LaylaERP.Controllers
             return Json(JSONresult, 0);
         }
 
+        [HttpPost]
+        public JsonResult AddProductAccount(ProductAccountingModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (model.ID > 0)
+                {
+                    //new ThirdPartyRepository().EditVendorBasicInfo(model);
+                    //return Json(new { status = true, message = "Product account has been updated successfully!!", url = "", id = model.rowid }, 0);
+                }
+                else
+                {
+                    int ID = new AccountingRepository().AddProductAccount(model);
+                    if (ID > 0)
+                    {
+                        return Json(new { status = true, message = "Product account has been saved successfully!!", url = "", id = ID }, 0);
+                    }
+                    else
+                    {
+                        return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
+                    }
+                }
+            }
+            return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
+        }
     }
 }

@@ -24,7 +24,6 @@ function ProductStockGrid() {
     let obj = { strValue1: '', strValue2: (ctid > 0 ? ctid : ''), strValue3: (pid > 0 ? pid : '') };
     $('#dtProductsAccount').DataTable({
         oSearch: { "sSearch": '' }, order: [[0, "asc"]],
-        dom: 'lBftip', buttons: [{ extend: 'excelHtml5', title: 'Product Stock Report' }, { extend: 'csvHtml5', title: 'Product Stock Report' }],
         language: {
             lengthMenu: "_MENU_ per page",
             zeroRecords: "Sorry no records found",
@@ -52,8 +51,7 @@ function ProductStockGrid() {
             {
                 'data': 'id', sWidth: "5%   ",
                 'render': function (data, type, full, meta) {
-                    return '<input type="checkbox" style="opacity: 1; position: relative; visibility: visible; display: block"  name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + $('<div/>').text(data).html() + '"><label></label>';
-                    /*return '<input type="checkbox" style="opacity: 1; position: relative; visibility: visible; display: block" name="chkservices" id="chk_' + data + '">'*/
+                    return '<div style="opacity: 1; position: relative; visibility: visible; display: block"><input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + data + '" ><label></label></div>';
                 }
             },
             
@@ -64,17 +62,53 @@ function ProductStockGrid() {
 $('#checkAll').click(function () {
     var isChecked = $(this).prop("checked");
     $('#dtProductsAccount tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
+    $("#btnSaveProductAccount").prop("disabled", isChecked == true ? false : true);
 });
 function Singlecheck() {
     var isChecked = $('#CheckSingle').prop("checked");
     var isHeaderChecked = $("#checkAll").prop("checked");
-    if (isChecked == false && isHeaderChecked)
+    if (isChecked == false && isHeaderChecked) {
         $("#checkAll").prop('checked', isChecked);
+        
+    }
     else {
-        $('#ProductCategory tr:has(td)').find('input[type="checkbox"]').each(function () {
+       
+        $('#dtProductsAccount tr:has(td)').find('input[type="checkbox"]').each(function () {
             if ($(this).prop("checked") == false)
                 isChecked = false;
+            $("#btnSaveProductAccount").prop("disabled", isChecked == true ? false : true);
         });
         $("#checkAll").prop('checked', isChecked);
     }
+}
+
+$('#btnNextTab1').click(function () {
+
+
+
+});
+
+function saveProductAccount(ProductID, ProductFor,ProductAccountNumberID) {
+    var obj = {
+        ID: ID, fk_product_id: ProductID, Productfor: ProductFor, fk_account_number: ProductAccountNumberID,
+    }
+    $.ajax({
+        url: '/Accounting/AddProductAccount/', dataType: 'json', type: 'Post',
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(obj),
+        dataType: "json",
+        beforeSend: function () {$("#loader").show();},
+        success: function (data) {
+            if (data.status == true) {
+                swal('Alert!', data.message, 'success');
+            }
+            else {
+                swal('Alert!', data.message, 'error')
+            }
+        },
+        complete: function () {$("#loader").hide();},
+        error: function (error) {
+            swal('Error!', 'something went wrong', 'error');
+        },
+    })
 }

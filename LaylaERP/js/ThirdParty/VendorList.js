@@ -41,7 +41,18 @@ function VendorGrid() {
             { data: 'AliasName', title: 'Alias Name'},
             { data: 'zip', title: 'Zip Code' },
             { data: 'address', title: 'Address'},
-            { data: 'phone', title: 'Phone'},
+            {
+                
+                data: 'phone', title: 'Phone',
+                render: function (toFormat) {
+                    var tPhone = '';
+                    if (toFormat != null) {
+                        tPhone = toFormat.toString();
+                        tPhone = '(' + tPhone.substring(0, 3) + ') ' + tPhone.substring(3, 6) + ' ' + tPhone.substring(6, 10);
+                    }
+                    return tPhone
+                }
+            },
 
 
             {

@@ -159,7 +159,7 @@ namespace LaylaERP.BAL
             }
         }
 
-       
+
 
         public static DataTable GetChartOfAccounts(SearchModel model)
         {
@@ -209,9 +209,9 @@ namespace LaylaERP.BAL
                             + " FROM wp_posts as p left join wp_postmeta as s on p.id = s.post_id"
                             + " where p.post_type in ('product', 'product_variation') and p.post_status != 'draft' " + strWhr
                             + " group by p.id " + strHav + " order by p_id";
-             
+
                 dt = SQLHelper.ExecuteDataTable(strSql);
-              
+
             }
             catch (Exception ex)
             {
@@ -267,7 +267,7 @@ namespace LaylaERP.BAL
             try
             {
                 DS = SQLHelper.ExecuteDataSet("SELECT * from pcg_type");
-                
+
             }
             catch (Exception ex)
             { throw ex; }
@@ -280,7 +280,7 @@ namespace LaylaERP.BAL
 
             try
             {
-                
+
                 string strSql = "SELECT rowid as rowid, account_number, fk_pcg_version, label, labelshort, account_parent, pcg_type,active from erp_accounting_account "
                 + "where rowid=" + id + "";
 
@@ -294,6 +294,27 @@ namespace LaylaERP.BAL
                 throw ex;
             }
             return dt;
+        }
+
+        public int AddProductAccount(ProductAccountingModel model)
+        {
+            try
+            {
+                string strsql = "";
+                strsql = "insert into product_accounting(fk_product_id,Productfor,fk_account_number) values(@fk_product_id,@Productfor,@fk_account_number); SELECT LAST_INSERT_ID();";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@fk_product_id", model.fk_product_id),
+                    new MySqlParameter("@Productfor", model.Productfor),
+                    new MySqlParameter("@fk_account_number", model.fk_account_number),
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
         }
     }
 }

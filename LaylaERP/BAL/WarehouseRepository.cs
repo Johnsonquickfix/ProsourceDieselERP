@@ -646,7 +646,8 @@ namespace LaylaERP.BAL
             DataTable dtr = new DataTable();
             try
             {
-                string strquery = "SELECT sum(quantity) quantity from product_stock_register where product_id = '" + productid + "' and warehouse_id = '"+warehouseid+"'";
+                //string strquery = "SELECT sum(quantity) quantity from product_stock_register where product_id = '" + productid + "' and warehouse_id = '"+warehouseid+"'";
+                string strquery = "select coalesce(sum(case when pwr.flag = 'R' then quantity else -quantity end),0) quantity from product_stock_register pwr inner join wp_warehouse wr on wr.rowid = pwr.warehouse_id where product_id = '" + productid + "' and pwr.warehouse_id='" + warehouseid + "'";
                 dtr = SQLHelper.ExecuteDataTable(strquery);
 
             }

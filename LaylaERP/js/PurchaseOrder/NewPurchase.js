@@ -372,7 +372,7 @@ function getPurchaseOrderInfo() {
     else {
         $('.billinfo').prop("disabled", true); $('#lblPoNo').text('Draft');
         $("#loader").hide(); $('.page-heading').text('Add New Order');
-        $("#btnPrintPdf").address('hidden');
+        $("#btnPrintPdf").addClass('hidden');
     }
 }
 

@@ -224,7 +224,7 @@ namespace LaylaERP.BAL
             DataSet DS = new DataSet();
             try
             {
-                string strSQl = "Select account_number ID, label from erp_accounting_account order by rowid";
+                string strSQl = "Select account_number ID, concat(account_number,' - ',label) label from erp_accounting_account order by rowid;";
                 DS = SQLHelper.ExecuteDataSet(strSQl);
             }
             catch (Exception ex)
@@ -294,27 +294,6 @@ namespace LaylaERP.BAL
                 throw ex;
             }
             return dt;
-        }
-
-        public int AddProductAccount(ProductAccountingModel model)
-        {
-            try
-            {
-                string strsql = "";
-                strsql = "insert into product_accounting(fk_product_id,Productfor,fk_account_number) values(@fk_product_id,@Productfor,@fk_account_number); SELECT LAST_INSERT_ID();";
-                MySqlParameter[] para =
-                {
-                    new MySqlParameter("@fk_product_id", model.fk_product_id),
-                    new MySqlParameter("@Productfor", model.Productfor),
-                    new MySqlParameter("@fk_account_number", model.fk_account_number),
-                };
-                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
-                return result;
-            }
-            catch (Exception Ex)
-            {
-                throw Ex;
-            }
         }
     }
 }

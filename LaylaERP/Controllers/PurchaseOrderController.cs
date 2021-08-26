@@ -90,12 +90,15 @@ namespace LaylaERP.Controllers
             catch (Exception ex) { throw ex; }
             return Json(result, 0);
         }
-        public JsonResult GetVendorByID(PurchaseOrderModel model)
+        [HttpGet]
+        public JsonResult GetVendorByID(SearchModel model)
         {
-            long id = model.VendorID;
+            long id =0;
             string result = string.Empty;
             try
             {
+                if (!string.IsNullOrEmpty(model.strValue1))
+                    id = Convert.ToInt64(model.strValue1);
                 DataTable dt = PurchaseOrderRepository.GetVendorByID(id);
                 result = JsonConvert.SerializeObject(dt);
             }

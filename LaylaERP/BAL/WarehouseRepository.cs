@@ -368,7 +368,7 @@ namespace LaylaERP.BAL
             try
             {
                 string strsql = "INSERT into wp_stock_mouvement(datem,fk_product,fk_entrepot,value,type_mouvement,label,price,fk_origin,eatby,sellby,serial,tran_id) " +
-                    "values(@datem,@fk_product,@fk_entrepot,@value,0,@label,@price,0,@eatby,@sellby,@serial,@tran_id);";
+                    "values(@datem,@fk_product,@fk_entrepot,@value,2,@label,@price,0,@eatby,@sellby,@serial,@tran_id);";
                 string strsql1 = "INSERT into product_stock_register(tran_type,tran_id,product_id,warehouse_id,tran_date,quantity,flag) " +
                     " values(@tran_type,@tran_id,@fk_product,@fk_entrepot,@eatby,@value,@flag)";
 
@@ -381,7 +381,7 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@price", model.price),
                     new MySqlParameter("@label", model.label),
                     new MySqlParameter("@eatby", model.eatby),
-                    new MySqlParameter("@sellby", model.sellby),
+                    new MySqlParameter("@sellby", DateTime.UtcNow),
                     new MySqlParameter("@serial", model.serial),
 
                     new MySqlParameter("@tran_id",Timestamp),
@@ -404,7 +404,7 @@ namespace LaylaERP.BAL
             try
             {
                 string strquery = "SELECT wsm.rowid as ref, post.post_title as product, DATE_FORMAT(wsm.datem, '%m-%d-%Y') as date,ww.ref as warehouse, wsm.inventorycode as invcode," +
-                                   " wsm.label as label,wsm.value,concat('$', format(wsm.price, 2)) as price FROM wp_stock_mouvement wsm, wp_warehouse ww, wp_posts post where wsm.type_mouvement=0 and ww.rowid = wsm.fk_entrepot and post.id = wsm.fk_product and wsm.fk_entrepot = '" + model.fk_entrepot + "'";
+                                   " wsm.label as label,wsm.value,concat('$', format(wsm.price, 2)) as price FROM wp_stock_mouvement wsm, wp_warehouse ww, wp_posts post where wsm.type_mouvement=2 and ww.rowid = wsm.fk_entrepot and post.id = wsm.fk_product and wsm.fk_entrepot = '" + model.fk_entrepot + "'";
 
                 
                 DataSet ds = SQLHelper.ExecuteDataSet(strquery);
@@ -436,15 +436,17 @@ namespace LaylaERP.BAL
 
         public static void AddTransferStock(WarehouseModel model)
         {
+            
+
             int Timestamp1 = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
             try
             {
                 string strsql1 = "Insert into wp_stock_mouvement(datem,fk_product,fk_entrepot,value,type_mouvement,label,inventorycode,price,fk_origin,eatby,sellby,serial,tran_id) values(@datem,@fk_product,@fk_entrepot,-1*@value,1,@label,@inventorycode,@price,0,@eatby,@sellby,@serial,@tran_id);";
                 string strsql2 = "Insert into wp_stock_mouvement(datem,fk_product,fk_entrepot,value,type_mouvement,label,inventorycode,price,fk_origin,eatby,sellby,serial,tran_id,trans_from) values(@datem,@fk_product,@fk_entrepottarget,@value,0,@label,@inventorycode,@price,0,@eatby,@sellby,@serial,@tran_id,@fk_entrepot);";
                 string strsql3 = "Insert into product_stock_register(tran_type,tran_id,product_id,warehouse_id,tran_date,quantity,flag) " +
-                    " values(@tran_type,@tran_id,@fk_product,@fk_entrepot,@eatby,-1*@value,@flag);";
+                    " values(@tran_type,@tran_id,@fk_product,@fk_entrepot,@eatby,@value,@flag);";
                 string strsql4 = "Insert into product_stock_register(tran_type,tran_id,product_id,warehouse_id,tran_date,quantity,flag) " +
-                    " values(@tran_type,@tran_id,@fk_product,@fk_entrepottarget,@eatby,@value,@flag);";
+                    " values(@tran_type,@tran_id,@fk_product,@fk_entrepottarget,@eatby,@value,@flag1);";
                 MySqlParameter[] para =
                 {
                     new MySqlParameter("@datem", Convert.ToDateTime(DateTime.UtcNow.ToString())),
@@ -457,12 +459,13 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@label", model.label),
                     new MySqlParameter("@inventorycode", model.inventorycode),
                     new MySqlParameter("@eatby", model.eatby),
-                    new MySqlParameter("@sellby",model.sellby),
+                    new MySqlParameter("@sellby",DateTime.UtcNow),
                     new MySqlParameter("@serial",model.serial),
 
                     new MySqlParameter("@tran_id",Timestamp1),
                     new MySqlParameter("@tran_type","ST"),
                     new MySqlParameter("@flag","I"),
+                    new MySqlParameter("@flag1","R"),
 
                 };
                 SQLHelper.ExecuteScalar(strsql1+ strsql2+ strsql3 + strsql4, para);
@@ -494,6 +497,7 @@ namespace LaylaERP.BAL
 
         public static int UpdateCorrectstock(WarehouseModel model)
         {
+            //string eatbydate = model.eatby.ToString("yyyy-MM-dd");
             try
             {
                 //string strsql = "update wp_stock_mouvement set " +
@@ -519,7 +523,7 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@price", model.price),
                     new MySqlParameter("@label", model.label),
                     new MySqlParameter("@eatby", model.eatby),
-                    new MySqlParameter("@sellby", model.sellby),
+                    new MySqlParameter("@sellby", DateTime.UtcNow),
                     new MySqlParameter("@serial", model.serial),
                     //new MySqlParameter("@stock", model.stock),
 
@@ -559,7 +563,7 @@ namespace LaylaERP.BAL
                     "fk_product=@fk_product, value=-1*@value,fk_entrepot=@fk_entrepot, label=@label, eatby=@eatby, sellby=@sellby, serial=@serial, price=@price, inventorycode=@inventorycode" +
                      " where fk_entrepot='"+model.fk_entrepot+ "' and tran_id='"+model.transfertranscationid+"';";
                 string strsql2 = "update product_stock_register set " +
-                                   "quantity=-1*@value, product_id=@fk_product, tran_date=@eatby " +
+                                   "quantity=@value, product_id=@fk_product, tran_date=@eatby " +
                                    " where tran_id = " + model.transfertranscationid + " and warehouse_id=" + model.fk_entrepot + ";";
                 string strsql3 = "update product_stock_register set " +
                                    "quantity=@value, product_id=@fk_product, tran_date=@eatby " +
@@ -574,7 +578,7 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@price", model.price),
                     new MySqlParameter("@label", model.label),
                     new MySqlParameter("@eatby", model.eatby),
-                    new MySqlParameter("@sellby", model.sellby),
+                    new MySqlParameter("@sellby", DateTime.UtcNow),
                     new MySqlParameter("@serial", model.serial),
                     new MySqlParameter("@inventorycode",model.inventorycode),
             };
@@ -642,7 +646,8 @@ namespace LaylaERP.BAL
             DataTable dtr = new DataTable();
             try
             {
-                string strquery = "SELECT sum(quantity) quantity from product_stock_register where product_id = '" + productid + "' and warehouse_id = '"+warehouseid+"'";
+                //string strquery = "SELECT sum(quantity) quantity from product_stock_register where product_id = '" + productid + "' and warehouse_id = '"+warehouseid+"'";
+                string strquery = "select coalesce(sum(case when pwr.flag = 'R' then quantity else -quantity end),0) quantity from product_stock_register pwr inner join wp_warehouse wr on wr.rowid = pwr.warehouse_id where product_id = '" + productid + "' and pwr.warehouse_id='" + warehouseid + "'";
                 dtr = SQLHelper.ExecuteDataTable(strquery);
 
             }

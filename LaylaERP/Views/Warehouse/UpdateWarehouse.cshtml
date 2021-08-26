@@ -534,7 +534,7 @@
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Stock Transfer date<span style="color:red">*</span></label>
 
-                                        <input class="form-control" type="text" id="txttransfereatbydate" placeholder="Enter Eat by date" /><span class="even-space"></span>
+                                        <input class="form-control" type="text" id="txttransfereatbydate" placeholder="Enter Stock Transfer Date" /><span class="even-space"></span>
                                     </div>
 
                                    <!-- <div class="form-group">
@@ -652,9 +652,13 @@
 
     </div>
 </div>
+
 <script>
     var strength = 1;
     $(document).ready(function () {
+        //var d = $("#txttransfereatbydate").text(dout.toString('yyyy-M-d')); 
+        //alert(d);
+
         $("#loader").hide();
         CorrectStockGrid();
         StockTransferGrid();
@@ -688,7 +692,6 @@
         $(document).on('click', "#btnStock", function () {
 
             Addcurrentstock();
-
         });
 
         $(document).on('click', "#btnTranferStock", function () {
@@ -715,6 +718,9 @@
             $("#txtstock1").val("");
             
         });
+
+        datecode();
+
         //$.get('/Warehouse/GetProduct', function (data) {
         //    var items = "";
         //    $.each(data, function (index, value) {
@@ -917,6 +923,15 @@
             format: 'mm-dd-yyyy',
         });
     });
+
+    function datecode() {
+        var dt2 = new Date();
+        var dt3 = ("0" + (dt2.getMonth() + 1)).slice(-2)+ '-' + dt2.getDate() + '-' + dt2.getFullYear();
+        
+        document.getElementById("txteatbydate").value = dt3;
+        document.getElementById("txttransfereatbydate").value = dt3;
+        
+    }
 
 </script>
 

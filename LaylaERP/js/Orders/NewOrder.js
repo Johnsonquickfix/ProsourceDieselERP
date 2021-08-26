@@ -2011,8 +2011,8 @@ function CreatePaypalInvoice(oid, pp_no, pp_email, access_token) {
         invoicer: {
             name: { given_name: "", surname: "" },
             address: { address_line_1: "157 Church Street Suite 1956", address_line_2: "", admin_area_2: "New Haven", admin_area_1: "CT", postal_code: "06510", country_code: "US" },
-            //email_address: "sb-ywzys7367265@business.example.com",
-            email_address: "david.quick.fix1-facilitator@gmail.com",
+            email_address: "sb-ywzys7367265@business.example.com",
+            //email_address: "david.quick.fix1-facilitator@gmail.com",
             phones: [{ country_code: "001", national_number: "8553581676", phone_type: "MOBILE" }],
             website: "www.laylasleep.com",
             logo_url: "https://laylasleep-quickfix1.netdna-ssl.com/wp-content/themes/layla-white/images/logo.png",

@@ -30,6 +30,11 @@ namespace LaylaERP.Controllers
             return View();
         }
 
+        public ActionResult AddAccount()
+        {
+            return View();
+        }
+
         public JsonResult GetNatureofJournal(SearchModel model)
         {
             DataSet ds = BAL.AccountingRepository.GetNatureofJournal();
@@ -115,14 +120,14 @@ namespace LaylaERP.Controllers
             }
         }
 
-        public JsonResult GetAccountSystem()
+        public JsonResult GetParentAccount()
         {
-            DataSet ds = AccountingRepository.GetAccountSystem();
+            DataSet ds = AccountingRepository.GetPcgType();
             List<SelectListItem> accountsettinglist = new List<SelectListItem>();
             foreach (DataRow dr in ds.Tables[0].Rows)
             {
 
-                accountsettinglist.Add(new SelectListItem { Text = dr["pcg_version"].ToString(), Value = dr["version"].ToString() });
+                accountsettinglist.Add(new SelectListItem { Text = dr["pcg_type"].ToString(), Value = dr["account_parent"].ToString() });
 
             }
             return Json(accountsettinglist, JsonRequestBehavior.AllowGet);
@@ -164,29 +169,49 @@ namespace LaylaERP.Controllers
         }
 
         [HttpPost]
-        public JsonResult AddVendorBasicInfo(ProductAccountingModel model)
+        public JsonResult AddAccount(AccountingModel model)
         {
             if (ModelState.IsValid)
             {
-                if (model.ID > 0)
+                if (model.rowid > 0)
                 {
-                    //new ThirdPartyRepository().EditVendorBasicInfo(model);
-                    //return Json(new { status = true, message = "Product account has been updated successfully!!", url = "", id = model.rowid }, 0);
+
                 }
                 else
                 {
-                    int ID = new AccountingRepository().AddProductAccount(model);
+                    //int ID = 1;
+                    int ID = AccountingRepository.AddAccount(model);
                     if (ID > 0)
                     {
-                        return Json(new { status = true, message = "Product account has been saved successfully!!", url = "", id = ID }, 0);
+                        return Json(new { status = true, message = "Data has been saved successfully!!", url = "" }, 0);
                     }
                     else
                     {
-                        return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
+                        return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
                     }
                 }
             }
-            return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
+            return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
         }
+
+        public ActionResult EditAccount()
+        {
+            return View();
+        }
+
+        public JsonResult GetAccountByID(long id)
+        {
+            //CommercialProposalModel model = new CommercialProposalModel();
+            //ViewBag.id = model.rowid;
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = AccountingRepository.GetAccountByID(id);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+
     }
 }

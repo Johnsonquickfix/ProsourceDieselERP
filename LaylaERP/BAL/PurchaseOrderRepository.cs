@@ -150,8 +150,9 @@ namespace LaylaERP.BAL
             DataTable dt = new DataTable();
             try
             {
-                string strSQl = "select rowid as ID, concat(name,' (',name_alias,')') as Name, code_vendor as vendor from wp_vendor where rowid=" + VendorID + " and VendorStatus=1 order by ID;";
-                dt = SQLHelper.ExecuteDataTable(strSQl);
+                MySqlParameter[] parameters = { new MySqlParameter("@rowid", VendorID) };
+                string strSQl = "select rowid,vendor_type,name,name_alias,code_vendor,address,town,fk_country,fk_state,zip,phone,fax,email,url from wp_vendor where rowid=@rowid;";
+                dt = SQLHelper.ExecuteDataTable(strSQl, parameters);
             }
             catch (Exception ex)
             { throw ex; }

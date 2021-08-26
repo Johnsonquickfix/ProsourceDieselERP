@@ -82,55 +82,22 @@ function Singlecheck() {
     }
 }
 
-$('#btnNextTab1').click(function (e) {
-    var obj = {
-            rowid: ID, vendor_type: VendorType, VendorCode: VendorCode,
-            Name: VendorName, AliasName: AliasName, Status: Status, Address: Address1,
-            City: City, State: State, StateName: StateName, ZipCode: ZipCode, Country: Country, Phone: Phone, Fax: Fax, EMail: EMail, Web: Web,
-            Workinghours: WorkingHours, VendorStatus: VendorStatus, NatureofJournal: NatureofJournal
-        }
-        $.ajax({
-            url: '/ThirdParty/AddVendorBasicInfo/', dataType: 'json', type: 'Post',
-            contentType: "application/json; charset=utf-8",
-            data: JSON.stringify(obj),
-            dataType: "json",
-            beforeSend: function () {
-                $("#loader").show();
-            },
-            success: function (data) {
-                if (data.status == true) {
-                    $("#hfid").val(data.id);
-                    //swal('Alert!', data.message, 'success');
-                    var link = $('#mytabs .active').next().children('a').attr('href');
-                    $('#mytabs a[href="' + link + '"]').tab('show');
-                }
-                else {
-                    swal('Alert!', data.message, 'error')
-                }
-            },
-            complete: function () {
-                $("#loader").hide();
-            },
-            error: function (error) {
-                swal('Error!', 'something went wrong', 'error');
-            },
-        })
+$('#btnNextTab1').click(function () {
+
+
+
 });
 
-
 function saveProductAccount(ProductID, ProductFor,ProductAccountNumberID) {
-
     var obj = {
         ID: ID, fk_product_id: ProductID, Productfor: ProductFor, fk_account_number: ProductAccountNumberID,
     }
     $.ajax({
-        url: '/ThirdParty/AddVendorBasicInfo/', dataType: 'json', type: 'Post',
+        url: '/Accounting/AddProductAccount/', dataType: 'json', type: 'Post',
         contentType: "application/json; charset=utf-8",
         data: JSON.stringify(obj),
         dataType: "json",
-        beforeSend: function () {
-            $("#loader").show();
-        },
+        beforeSend: function () {$("#loader").show();},
         success: function (data) {
             if (data.status == true) {
                 swal('Alert!', data.message, 'success');
@@ -139,9 +106,7 @@ function saveProductAccount(ProductID, ProductFor,ProductAccountNumberID) {
                 swal('Alert!', data.message, 'error')
             }
         },
-        complete: function () {
-            $("#loader").hide();
-        },
+        complete: function () {$("#loader").hide();},
         error: function (error) {
             swal('Error!', 'something went wrong', 'error');
         },

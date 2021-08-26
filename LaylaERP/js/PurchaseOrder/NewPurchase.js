@@ -313,7 +313,7 @@ function getPurchaseOrderInfo() {
             url: "/PurchaseOrder/GetPurchaseOrderByID", type: "Get", beforeSend: function () { $("#loader").show(); }, data: option,
             success: function (result) {
                 try {
-                    let data = JSON.parse(result); console.log(data);
+                    let data = JSON.parse(result); 
                     for (let i = 0; i < data['po'].length; i++) {
                         $('#lblPoNo').text(data['po'][i].ref); $('#txtRefvendor').val(data['po'][i].ref_supplier); $('#txtPODate').val(data['po'][i].date_creation);
                         $('#ddlVendor').val(data['po'][i].fk_supplier).trigger('change');
@@ -367,10 +367,12 @@ function getPurchaseOrderInfo() {
         $("#divAddItemFinal").find(".rowCalulate").change(function () { calculateFinal(); })
         $('#ddlVendor,.billinfo').prop("disabled", true); calculateFinal(); $('.entry-mode-action').empty();
         $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList">Back to List</a><button type="button" class="btn btn-danger btnEdit"><i class="far fa-edit"></i> Edit</button>');
+        $("#btnPrintPdf").removeClass('hidden');
     }
     else {
         $('.billinfo').prop("disabled", true); $('#lblPoNo').text('Draft');
         $("#loader").hide(); $('.page-heading').text('Add New Order');
+        $("#btnPrintPdf").address('hidden');
     }
 }
 
@@ -533,7 +535,6 @@ function printinvoice() {
     myHtml += '</thead>';
     myHtml += '<tbody>';
     $(_items).each(function (index, tr) {
-        console.log(tr);
         myHtml += '<tr style="background-color: #f2f2f2;">';
         myHtml += '    <td style="padding:12px;color:#4f4f4f;font-family: sans-serif; font-size:12px; line-height:1.4;">' + tr.product_sku + '</td>';
         myHtml += '    <td style="padding:12px;color:#4f4f4f;font-family: sans-serif; font-size:12px; line-height:1.4;">' + tr.description + '</td>';

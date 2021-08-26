@@ -147,6 +147,12 @@ $(document).ready(function () {
     $(document).on("click", "#btnApplyFee", function (t) { t.preventDefault(); $("#loader").show(); ApplyFee($(this).data('orderitemid'), $('#txt_FeeAmt').val()); });
     /*End Return Items*/
     $(document).on("click", "#btnAddnote", function (t) { t.preventDefault(); AddNotes(); });
+    $(document).on("click", "#btnPrintPdf", function (t) {
+        t.preventDefault();
+        let pay_mode = $('#lblOrderNo').data('pay_by'), pay_id = $('#lblOrderNo').data('pay_id');
+        pay_mode = pay_mode.includes("ppec_paypal") ? "PayPal" : pay_mode.includes("podium") ? "Podium" : pay_mode;
+        successModal(pay_mode, pay_id, false);
+    });
 });
 ///Bind States of Country
 function BindStateCounty(ctr, obj) {
@@ -637,7 +643,7 @@ function getOrderInfo() {
                     getOrderItemList(oid);
                     getOrderNotesList(oid);
                     //if (data[0].status.trim() == "wc-pending") {
-                    $('.box-tools').empty().append('<button type="button" class="btn btn-danger btnEditOrder"><i class="far fa-edit"></i> Edit</button>');
+                    $('.box-tools').empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf"><i class="fas fa-print"></i> Print</button> <button type="button" class="btn btn-danger btnEditOrder"><i class="far fa-edit"></i> Edit</button>');
                     //}                
                 }
             }
@@ -1969,7 +1975,7 @@ function updatePayment(taskUid) {
             if (result.status == true) {
                 $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true);
                 //setTimeout(function () { swal('Alert!', result.message, "success"); }, 50);
-                setTimeout(function () { successModal('podium'); }, 50);
+                setTimeout(function () { successModal('podium', taskUid, true); }, 50);
             }
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
@@ -2059,7 +2065,7 @@ function CreatePaypalInvoice(oid, pp_no, pp_email, access_token) {
             }
             else {
                 $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true);
-                successModal('PayPal');
+                successModal('PayPal', inv_id, true);
             }
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); console.log(XMLHttpRequest); swal('Alert!', XMLHttpRequest.responseJSON.message, "error"); },
@@ -2083,7 +2089,7 @@ function SendPaypalInvoice(oid, access_token, sendURL) {
 
             $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true);
             //setTimeout(function () { swal('Order received!', 'Thank you. Your invoice has been send on your email for payment.', "success").then((result) => { window.location.href = window.location.href; }); }, 50);
-            setTimeout(function () { successModal('PayPal'); }, 50);
+            setTimeout(function () { successModal('PayPal', id[id.length - 2], true); }, 50);
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
             $('#ddlPaymentMethod').prop("disabled", true); $('#btnPlaceOrder').addClass('hidden'); $('#btnResendInv').removeClass('hidden');
@@ -2109,7 +2115,9 @@ function CancelPaypalInvoice(access_token, pp_email, invoice_no) {
     });
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Success modal ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-function successModal(paymode) {
+function successModal(paymode, id, is_mail) {
+    //console.log(id, id.toString().substring(4).replace(/\-/g, ''));
+    id = id.toString().substring(4).replace(/\-/g, '');
     var modalHtml = '';
     modalHtml += '<div class="modal-dialog modal-lg">';
     modalHtml += '<div class="modal-content">';
@@ -2147,7 +2155,10 @@ function successModal(paymode) {
     myHtml += '<td style="font-size:10.725px; text-transform:uppercase; vertical-align:top; border-right: 1px solid #c8c8c8; padding-right:30px;"> Order number:<br><strong style="font-size:16px;margin-top:3px;text-transform: none;">' + $('#hfOrderNo').val() + '</strong></td>';
     myHtml += '<td style="font-size:10.725px; text-transform:uppercase; vertical-align:top; border-right: 1px solid #c8c8c8; padding-right:30px; padding-left:30px;"> Date:<br><strong style="font-size:16px;margin-top:3px;text-transform: none;">' + $('#txtLogDate').val() + '</strong></td>';
     myHtml += '<td style="font-size:10.725px; text-transform:uppercase; vertical-align:top; border-right: 1px solid #c8c8c8; padding-right:30px; padding-left:30px;"> Total:<br><strong style="font-size:16px;margin-top:3px;text-transform: none;">$' + $('#orderTotal').text() + '</strong></td>';
-    myHtml += '<td style="font-size:10.725px; text-transform:uppercase; vertical-align:top;  padding-left:30px;"> Payment Method:<br><strong style="font-size:16px;margin-top:3px;text-transform: none;">' + paymode + '</strong></td>';
+    if (paymode == 'PayPal')
+        myHtml += '<td style="font-size:10.725px; text-transform:uppercase; vertical-align:top;  padding-left:30px;"> Payment Method: PayPal<br><a id="payInvoice" class="btn8 btn8-medium payInvoice" href="https://www.sandbox.paypal.com/invoice/p/#' + id + '" target="_blank" style="margin:12px;min-width:110px;background-color:#0070BA;color:#fff;font-size:12px;box-sizing:border-box!important;padding: 8px;border-radius:5px;font-weight:600;">Pay $' + $('#orderTotal').text() + '</a></td>';
+    else
+        myHtml += '<td style="font-size:10.725px; text-transform:uppercase; vertical-align:top;  padding-left:30px;"> Payment Method:<br><strong style="font-size:16px;margin-top:3px;text-transform: none;">' + paymode + '</strong></td>';
     myHtml += '</tr>';
     myHtml += '</table>';
     myHtml += '</td>';
@@ -2195,7 +2206,7 @@ function successModal(paymode) {
 
     $("#billModal").modal({ backdrop: 'static', keyboard: false });
     var opt = { strValue1: $('#txtbillemail').val(), strValue2: 'Your order #' + $('#hfOrderNo').val() + ' has been received', strValue3: $('#billModal .modal-body').html() }
-    if (opt.strValue1.length > 5) {
+    if (opt.strValue1.length > 5 && is_mail == true) {
         $.ajax({
             type: "POST", url: '/Orders/SendMailInvoice', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
             success: function (result) { console.log(result); },

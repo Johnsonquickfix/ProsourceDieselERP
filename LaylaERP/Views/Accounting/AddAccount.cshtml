@@ -12,40 +12,41 @@
 <div class="page-title">
     <h2 class="page-heading">Add Account</h2>
 </div>
-<section class="content content-section p-0">
-                <div class="createuser-section section_wrapper">
+        <section class="content content-section mt-1">
+            <div class="createuser-section section_wrapper">
+                <div class="create-user-box">
                     <!-- /.col -->
-                    <div class="row">
+                    <div class="row" style="background-color:white">
                         <div class="col-sm-6">
                             <div class="box box-primary">
                                 <div class="box-body">
                                     <div class="form-group">
                                         <div title="Enter Ref">
                                             <label for="exampleInputEmail1">Chart Of Accounts<span style="color:red">*</span></label>
-                                            <input type="text" class="form-control" id="txtChartOfAccounts" placeholder="Enter Reference Name " value="US-BASE">
+                                            <input type="text" class="form-control" id="txtChartOfAccounts" placeholder="Chart of Account " value="US-BASE">
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <div title="Enter Short name location">
                                             <label for="exampleInputEmail1">Account Number<span style="color:red">*</span></label>
-                                            <input type="email" class="form-control" id="txtAccountNumber" placeholder="Enter Short Name Location">
+                                            <input type="email" class="form-control" id="txtAccountNumber" placeholder="Enter Account Number">
                                         </div>
                                     </div>
 
                                     <div class="form-group">
                                         <div title="Enter Description">
-                                            <label for="exampleInputEmail1">Label</label>
-                                            <input type="text" class="form-control" id="txtLabel" placeholder="Enter Description">
+                                            <label for="exampleInputEmail1">Label<span style="color:red">*</span></label>
+                                            <input type="text" class="form-control" id="txtLabel" placeholder="Enter Label">
                                         </div>
                                     </div>
 
                                     <div class="form-group">
                                         <div title="Enter E-mail">
-                                            <label for="exampleInputEmail1">Parent Account</label>
+                                            <label for="exampleInputEmail1">Parent Account<span style="color:red">*</span></label>
                                             <select class="form-control" id="ddlParentAccount">
-                                               
+                                                <option value="0">--Select Parent Account--</option>
                                             </select>
-                                            
+
                                         </div>
                                     </div>
 
@@ -59,91 +60,99 @@
                                 </div>
                             </div>
                         </div>
-                        
+
 
                     </div>
                 </div>
-            
-    
+                </div>
+
+
 </section>
 
-<script>
-    $(document).ready(function () {
-        $("#loader").hide();
+        <script>
+            $(document).ready(function () {
+                $("#loader").hide();
 
-        $(document).on('click', "#btnSave", function () {
-            AddAccount();
-            //var groupofaccount = $("#ddlParentAccount option:selected");
-            ////var value = $("#myselection option:selected");
-            //var i = groupofaccount.text();
-            //alert(i);
-        });
+                $(document).on('click', "#btnSave", function () {
+                    AddAccount();
+                    
+                });
 
-        $.get('/Accounting/GetParentAccount', function (data) {
-            var items = "";
-            $.each(data, function (index, value) {
-                items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddlParentAccount");
-            })
-        });
+                $.get('/Accounting/GetParentAccount', function (data) {
+                    var items = "";
+                    $.each(data, function (index, value) {
+                        items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddlParentAccount");
+
+                    })
+                });
 
 
-    });
-function AddAccount() {
-        debugger
-        var groupofaccount1 = $("#ddlParentAccount option:selected");
-        var groupofaccount= groupofaccount1.text();
-        alert(groupofaccount);
-        pcgversion = $("#txtChartOfAccounts").val();
-        accountnumber = $("#txtAccountNumber").val();
-        label = $("#txtLabel").val();
-        parentaccount = $("#ddlParentAccount").val();
-        //groupofaccount = $("#selector option:selected");
-       
-        if (pcgversion == "") {
-            swal('Alert', 'Please Enter Chart Of Account', 'error').then(function () { swal.close(); $('#txtChartOfAccounts').focus(); });
-        }
-        else if (accountnumber == "") {
-            swal('Alert', 'Please Enter Account Number', 'error').then(function () { swal.close(); $('#txtAccountNumber').focus(); });
-        }
-        else if (label == "") {
-            swal('Alert', 'Please Enter Label', 'error').then(function () { swal.close(); $('#txtLabel').focus(); });
-        }
-        else if (parentaccount == 0) {
-            swal('Alert', 'Please Select Parent Account', 'error').then(function () { swal.close(); $('#ddlParentAccount').focus(); });
-        }
-        //else if (groupofaccount == "") {
-        //    swal('Alert', 'Please Enter Group Of Account', 'error').then(function () { swal.close(); $('#txtGroupOfAccount').focus(); });
-        //}
-        
-        else {
+            });
+            function AddAccount() {
+                debugger
+                var groupofaccount1 = $("#ddlParentAccount option:selected");
+                var groupofaccount = groupofaccount1.text();
+                //alert(groupofaccount);
+                pcgversion = $("#txtChartOfAccounts").val();
+                accountnumber = $("#txtAccountNumber").val();
+                label = $("#txtLabel").val();
+                parentaccount = $("#ddlParentAccount").val();
+                //groupofaccount = $("#selector option:selected");
 
-            var obj = {
-                fk_pcg_version: pcgversion,
-                account_number:accountnumber,
-                account_parent: parentaccount,
-                label: label,
-                pcg_type: groupofaccount,
+                if (pcgversion == "") {
+                    swal('Alert', 'Please Enter Chart Of Account', 'error').then(function () { swal.close(); $('#txtChartOfAccounts').focus(); });
+                }
+                else if (accountnumber == "") {
+                    swal('Alert', 'Please Enter Account Number', 'error').then(function () { swal.close(); $('#txtAccountNumber').focus(); });
+                }
+                else if (label == "") {
+                    swal('Alert', 'Please Enter Label', 'error').then(function () { swal.close(); $('#txtLabel').focus(); });
+                }
+                else if (parentaccount == 0) {
+                    swal('Alert', 'Please Select Parent Account', 'error').then(function () { swal.close(); $('#ddlParentAccount').focus(); });
+                }
+                //else if (groupofaccount == "") {
+                //    swal('Alert', 'Please Enter Group Of Account', 'error').then(function () { swal.close(); $('#txtGroupOfAccount').focus(); });
+                //}
+
+                else {
+
+                    var obj = {
+                        fk_pcg_version: pcgversion,
+                        account_number: accountnumber,
+                        account_parent: parentaccount,
+                        label: label,
+                        pcg_type: groupofaccount,
+                    }
+                    $.ajax({
+                        url: '/Accounting/AddAccount/', dataType: 'json', type: 'Post',
+                        contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify(obj),
+                        dataType: "json",
+                        beforeSend: function () { $("#loader").show(); },
+                        success: function (data) {
+                            if (data.status == true) {
+                                //$('#parent > input:text').val('');
+                                swal('Alert!', data.message, 'success').then((result) => { location.href = '../chartofaccounts'; });
+                                reset();
+                            }
+                            else {
+                                swal('Alert!', data.message, 'error');
+                            }
+                        },
+                        complete: function () { $("#loader").hide(); },
+                        error: function (error) { swal('Error!', 'something went wrong', 'error'); },
+                    })
+
+                }
+
             }
-            $.ajax({
-                url: '/Accounting/AddAccount/', dataType: 'json', type: 'Post',
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify(obj),
-                dataType: "json",
-                beforeSend: function () { $("#loader").show(); },
-                success: function (data) {
-                    if (data.status == true) {
-                        //$('#parent > input:text').val('');
-                        swal('Alert!', data.message, 'success').then((result) => { location.href = 'chartofaccounts'; });
-                    }
-                    else {
-                        swal('Alert!', data.message, 'error');
-                    }
-                },
-                complete: function () { $("#loader").hide(); },
-                error: function (error) { swal('Error!', 'something went wrong', 'error'); },
-            })
 
-        }
+            function reset() {
+                $("#txtAccountNumber").val('');
+                $("#txtLabel").val('');
+                $("#ddlParentAccount").val('0');
+            }
+    
 
-    }
 </script>

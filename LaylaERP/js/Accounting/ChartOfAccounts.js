@@ -38,14 +38,14 @@ function ChartOfAccountGrid() {
                         }
                     },
 
-                    //{
-                    //    'data': 'ID', sWidth: "8%",
-                    //    'render': function (id, type, full, meta) {
+                    {
+                        'data': 'ID', sWidth: "8%",
+                        'render': function (id, type, full, meta) {
 
-                    //        return '<a href="../Accounting/EditAccount/' + id + '"><i class="glyphicon glyphicon-pencil"></i></a>';
+                            return '<a href="../Accounting/EditAccount/' + id + '"><i class="glyphicon glyphicon-pencil"></i></a>';
 
-                    //    }
-                    //},
+                        }
+                    },
                 ],
 
 

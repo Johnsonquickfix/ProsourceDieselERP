@@ -295,5 +295,31 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
+
+        public static int UpdateAccount(AccountingModel model)
+        {
+            try
+            {
+                string strsql = "";
+                strsql = "UPDATE erp_accounting_account set fk_pcg_version=@fk_pcg_version, pcg_type=@pcg_type, account_parent=@account_parent, label=@label where rowid='" + model.rowid + "'";
+                
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@fk_pcg_version", model.fk_pcg_version),
+                    new MySqlParameter("@pcg_type", model.pcg_type),
+                    new MySqlParameter("@account_parent",model.account_parent),
+                    new MySqlParameter("@label", model.label),
+                    
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+                //int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
+                //return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
     }
 }

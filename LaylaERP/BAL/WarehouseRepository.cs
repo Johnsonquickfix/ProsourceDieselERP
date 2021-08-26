@@ -598,18 +598,29 @@ namespace LaylaERP.BAL
             {
                 //string strquery = "SELECT ww.ref as warehouse, post.post_title as product,concat(ww.address,' ',ww.city,' ',ww.town,' ',ww.zip,' ',ww.country) as address FROM wp_warehouse ww, wp_posts post, product_warehouse p WHERE"
                 // + " ww.rowid = p.fk_warehouse and post.ID = p.fk_product and p.fk_warehouse="+ getwarehouseid + "";
-                string strquery = "SELECT DISTINCT post.id, ws.ref warehouse,ppp.purchase_price buy_price,ps.ID pr_id, CONCAT(post.post_title, ' (', COALESCE(psku.meta_value, ''), ') - ', LTRIM(REPLACE(REPLACE(COALESCE(ps.post_excerpt, ''), 'Size:', ''), 'Color:', ''))) as post_title, format(psr.meta_value,2) as sale_price, format(pr.meta_value,2) reg_price,"
-                + "CONCAT(post.id, '$', COALESCE(ps.id, 0)) r_id FROM wp_posts as post"
-                + " INNER join wp_postmeta psr1 on psr1.post_id = post.ID"
-                + " inner JOIN wp_posts ps ON ps.post_parent = post.id and ps.post_type LIKE 'product_variation'"
-                + " inner join Product_Purchase_Items ppp on ppp.fk_product=ps.ID"
-                + " inner join wp_postmeta psku on psku.post_id = ps.id and psku.meta_key = '_sku'"
-                + " inner join wp_postmeta pr on pr.post_id = ps.id and pr.meta_key = '_regular_price'"
-                + " inner join wp_postmeta psr on psr.post_id = COALESCE(ps.id, post.id) and psr.meta_key = '_sale_price'"
-                + " inner join product_warehouse pw on pw.fk_product = ps.id and pw.fk_warehouse = '" + getwarehouseid + "'"
-                + " inner join wp_warehouse ws on ws.rowid = pw.fk_warehouse"
-                + " WHERE post.post_type = 'product' AND post.post_status = 'publish' AND CONCAT(post.post_title, ' (' , COALESCE(psku.meta_value, '') , ') - ' ,LTRIM(REPLACE(REPLACE(COALESCE(ps.post_excerpt, ''), 'Size:', ''), 'Color:', ''))) like '%%%'"
-                + " ORDER BY post.ID";
+
+                //string strquery = "SELECT DISTINCT post.id, ws.ref warehouse,ppp.purchase_price buy_price,ps.ID pr_id, CONCAT(post.post_title, ' (', COALESCE(psku.meta_value, ''), ') - ', LTRIM(REPLACE(REPLACE(COALESCE(ps.post_excerpt, ''), 'Size:', ''), 'Color:', ''))) as post_title, format(psr.meta_value,2) as sale_price, format(pr.meta_value,2) reg_price,"
+                //+ "CONCAT(post.id, '$', COALESCE(ps.id, 0)) r_id FROM wp_posts as post"
+                //+ " INNER join wp_postmeta psr1 on psr1.post_id = post.ID"
+                //+ " inner JOIN wp_posts ps ON ps.post_parent = post.id and ps.post_type LIKE 'product_variation'"
+                //+ " inner join Product_Purchase_Items ppp on ppp.fk_product=ps.ID"
+                //+ " inner join wp_postmeta psku on psku.post_id = ps.id and psku.meta_key = '_sku'"
+                //+ " inner join wp_postmeta pr on pr.post_id = ps.id and pr.meta_key = '_regular_price'"
+                //+ " inner join wp_postmeta psr on psr.post_id = COALESCE(ps.id, post.id) and psr.meta_key = '_sale_price'"
+                //+ " inner join product_warehouse pw on pw.fk_product = ps.id and pw.fk_warehouse = '" + getwarehouseid + "'"
+                //+ " inner join wp_warehouse ws on ws.rowid = pw.fk_warehouse"
+                //+ " WHERE post.post_type = 'product' AND post.post_status = 'publish' AND CONCAT(post.post_title, ' (' , COALESCE(psku.meta_value, '') , ') - ' ,LTRIM(REPLACE(REPLACE(COALESCE(ps.post_excerpt, ''), 'Size:', ''), 'Color:', ''))) like '%%%'"
+                //+ " ORDER BY post.ID";
+                string strquery = "select p.id,p.post_type,p.post_title ,max(case when p.id = s.post_id and s.meta_key = '_sku' then s.meta_value else '' end) sku, COALESCE(format(psi.purchase_price,2),0) buy_price,"
+                                 + " COALESCE(format(max(case when p.id = s.post_id and s.meta_key = '_regular_price' then s.meta_value else '' end),2),0) reg_price, "
+                                 + " COALESCE(format(max(case when p.id = s.post_id and s.meta_key = '_sale_price' then s.meta_value else '' end),2),0) sale_price, "
+                                 + " (select coalesce(sum(case when pwr.flag = 'R' then quantity else -quantity end), 0) from product_stock_register pwr where pwr.product_id = p.id and pwr.warehouse_id = psr.warehouse_id) stock,"
+                                 + " (case when p.post_parent = 0 then p.id else p.post_parent end) p_id,p.post_parent,p.post_status FROM wp_posts as p"
+                                 + " left join wp_postmeta as s on p.id = s.post_id"
+                                 + " left join product_stock_register psr on psr.product_id = p.ID"
+                                 + " left join Product_Purchase_Items psi on psi.fk_product = psr.product_id"
+                                 + " where psr.warehouse_id = '" + getwarehouseid + "' and p.post_type in ('product', 'product_variation') and p.post_status != 'draft'  group by p.id order by p_id";
+
                 DataSet ds = SQLHelper.ExecuteDataSet(strquery);
                 dtr = ds.Tables[0];
             }

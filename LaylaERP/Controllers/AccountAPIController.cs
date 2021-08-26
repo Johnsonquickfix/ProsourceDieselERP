@@ -151,6 +151,11 @@
                         // For Entity info
                         if (ds.Tables[2].Rows.Count > 0)
                         {
+                            if (ds.Tables[2].Rows[0]["CompanyName"] != DBNull.Value)
+                                op.CompanyName = ds.Tables[2].Rows[0]["CompanyName"].ToString();
+                            else
+                                op.CompanyName = string.Empty;
+
                             if (ds.Tables[2].Rows[0]["firstname"] != DBNull.Value)
                                 op.firstname = ds.Tables[2].Rows[0]["firstname"].ToString();
                             else
@@ -164,6 +169,11 @@
                                 op.address = ds.Tables[2].Rows[0]["address"].ToString();
                             else
                                 op.address = string.Empty;
+
+                            if (ds.Tables[2].Rows[0]["address1"] != DBNull.Value)
+                                op.address1 = ds.Tables[2].Rows[0]["address1"].ToString();
+                            else
+                                op.address1 = string.Empty;
 
                             if (ds.Tables[2].Rows[0]["town"] != DBNull.Value)
                                 op.City = ds.Tables[2].Rows[0]["town"].ToString();

@@ -22,6 +22,7 @@
                     <li><a href="#tab_5" data-toggle="tab">Amazon Pay Setting</a></li>
                     <li><a href="#tab_6" data-toggle="tab">TaxJar Setting</a></li>
                     <li><a href="#tab_7" data-toggle="tab">Podium Setting</a></li>
+                    <li><a href="#tab_8" data-toggle="tab">Entity info</a></li>
                 </ul>
                 <div class="tab-content">
                     <input type="hidden" id="hfid" value="@ViewBag.id" />
@@ -226,10 +227,87 @@
                             </div>
                         </div>
                     </div>
-                    <!-- /.tab-pane -->
-                </div>
-                <!-- /.tab-content -->
-            </div>
+                    <div class="tab-pane" id="tab_8">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">Company Name</label>
+                                    <input type="text" class="form-control" id="txtcompanyname" placeholder="Enter Company Name">
+                                </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">E-mail</label>
+                                        <input type="email" class="form-control" id="txtUserEmail" placeholder="Enter Your Mail Address">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">First Name</label>
+                                        <input type="text" class="form-control" id="txtFirstName" placeholder="First Name">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Last Name</label>
+                                        <input type="text" class="form-control" id="txtLastName" placeholder="Last Name">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Country Code(Contact Number)</label>
+                                        <input type="text" class="form-control" id="txtPhone" placeholder="Enter Your Phone Number">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Contact Number</label>
+                                        <input type="text" class="form-control" id="txtPhone" placeholder="Enter Your Phone Number">
+                                    </div>
+                                </div>
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <img class="sb-title-icon" src="https://fonts.gstatic.com/s/i/googlematerialicons/location_pin/v5/24px.svg" alt="">
+                                    <label for="exampleInputEmail1">Address </label>
+                                    <input type="text" class="form-control" id="txtAddress" placeholder="Enter Your Address ">
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">Address 1</label>
+                                    <input type="text" class="form-control" id="txtAddress2" placeholder="Enter Your Address 1">
+
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">City</label>
+                                    <input type="text" id="txtCity" class="form-control" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">State</label>
+                                    <select class="form-control" id="txtState">
+                                        <option selected value=""></option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label" for="Zip Code">Zip Code</label>
+                                    <div class="">
+                                        <input type="text" id="txtPostCode" class="form-control" placeholder="Zip Code">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">Country</label>
+                                    <select class="form-control" id="txtCountry">
+                                        <option value="US">US - United States</option>
+                                        <option value="CA">CA - Canada</option>
+                                    </select>
+                                </div>
+                            </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Website</label>
+                                        <input type="text" id="txtwebsite" class="form-control" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Logo Url</label>
+                                        <input type="text" id="txtlogourl" class="form-control" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Additional Notes</label>
+                                        <input type="text" id="txtAdditionalNotes" class="form-control" />
+                                    </div>
+                                </div>
+                                <!-- /.tab-pane -->
+                            </div>
+                        <!-- /.tab-content -->
+                    </div>
         </div>
         <div class="box-footer text-right">
             <div class="col-sm-12">

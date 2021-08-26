@@ -50,9 +50,11 @@
         public string podiumSecretKey { get; set; }
 
         // For Entity info
+        public string CompanyName { get; set; }
         public string firstname { get; set; }
         public string lastname { get; set; }
         public string address { get; set; }
+        public string address1 { get; set; }
         public string City { get; set; }
         public string State { get; set; }
         public string Country { get; set; }

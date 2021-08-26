@@ -206,6 +206,14 @@ namespace LaylaERP.Controllers
             }
             return Json(usertype, JsonRequestBehavior.AllowGet);
         }
+        public JsonResult GetShippingddl()
+        {
+            string JSONString = string.Empty;
+            DataTable dt = new DataTable();
+            dt = BAL.ProductRepository.GetShipping();
+            JSONString = JsonConvert.SerializeObject(dt);
+            return Json(JSONString, JsonRequestBehavior.AllowGet);
+        }
         public JsonResult Getwarehouse()
         {
             DataTable dt = new DataTable();

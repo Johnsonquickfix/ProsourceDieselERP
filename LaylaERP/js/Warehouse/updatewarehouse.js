@@ -1030,6 +1030,11 @@ function ProductWarehouseGrid() {
                             return '$' + buy_price;
                         } 
                     },
+
+                    {
+                        data: 'stock', title: 'Stock', sWidth: "25%",
+                       
+                    },
                     
                 ],
 

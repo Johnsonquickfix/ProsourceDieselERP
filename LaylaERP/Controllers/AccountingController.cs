@@ -175,7 +175,8 @@ namespace LaylaERP.Controllers
             {
                 if (model.rowid > 0)
                 {
-
+                    AccountingRepository.UpdateAccount(model);
+                    return Json(new { status = true, message = "Data has been updated successfully!!", url = "", id = model.rowid }, 0);
                 }
                 else
                 {

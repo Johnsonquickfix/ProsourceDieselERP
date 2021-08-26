@@ -166,6 +166,24 @@ namespace LaylaERP.Models
             set { _ID = value; }
         }
         public bool IsPayment { get; set; }
+
+
+        public string CompanyName { get; set; }
+        public string firstname { get; set; }
+        public string lastname { get; set; }
+        public string address { get; set; }
+        public string address1 { get; set; }
+        public string City { get; set; }
+        public string State { get; set; }
+        public string Country { get; set; }
+        public string postal_code { get; set; }
+        public string country_code_phone { get; set; }
+        public string phone_type { get; set; }
+        public string user_mobile { get; set; }
+        public string email { get; set; }
+        public string website { get; set; }
+        public string logo_url { get; set; }
+        public string additional_notes { get; set; }
     }
 
     public static class GlobalVariables

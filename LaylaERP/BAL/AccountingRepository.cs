@@ -159,7 +159,7 @@ namespace LaylaERP.BAL
             }
         }
 
-       
+
 
         public static DataTable GetChartOfAccounts(SearchModel model)
         {
@@ -209,9 +209,9 @@ namespace LaylaERP.BAL
                             + " FROM wp_posts as p left join wp_postmeta as s on p.id = s.post_id"
                             + " where p.post_type in ('product', 'product_variation') and p.post_status != 'draft' " + strWhr
                             + " group by p.id " + strHav + " order by p_id";
-             
+
                 dt = SQLHelper.ExecuteDataTable(strSql);
-              
+
             }
             catch (Exception ex)
             {
@@ -267,7 +267,7 @@ namespace LaylaERP.BAL
             try
             {
                 DS = SQLHelper.ExecuteDataSet("SELECT * from pcg_type");
-                
+
             }
             catch (Exception ex)
             { throw ex; }
@@ -280,7 +280,7 @@ namespace LaylaERP.BAL
 
             try
             {
-                
+
                 string strSql = "SELECT rowid as rowid, account_number, fk_pcg_version, label, labelshort, account_parent, pcg_type,active from erp_accounting_account "
                 + "where rowid=" + id + "";
 
@@ -294,32 +294,6 @@ namespace LaylaERP.BAL
                 throw ex;
             }
             return dt;
-        }
-
-        public static int UpdateAccount(AccountingModel model)
-        {
-            try
-            {
-                string strsql = "";
-                strsql = "UPDATE erp_accounting_account set fk_pcg_version=@fk_pcg_version, pcg_type=@pcg_type, account_parent=@account_parent, label=@label where rowid='" + model.rowid + "'";
-                
-                MySqlParameter[] para =
-                {
-                    new MySqlParameter("@fk_pcg_version", model.fk_pcg_version),
-                    new MySqlParameter("@pcg_type", model.pcg_type),
-                    new MySqlParameter("@account_parent",model.account_parent),
-                    new MySqlParameter("@label", model.label),
-                    
-                };
-                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
-                return result;
-                //int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
-                //return result;
-            }
-            catch (Exception Ex)
-            {
-                throw Ex;
-            }
         }
     }
 }

@@ -1,7 +1,7 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "New Purchase Order";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var user = LaylaERP.UTILITIES.CommanUtilities.Provider.GetCurrent();
 }
 <!-- Content Header (Page header) -->
 
@@ -11,12 +11,13 @@
 </div>
 <div class="page-title">
     <h2 class="page-heading" id="lbltitle">New Purchase Order</h2>
+    <button type="button" class="btn btn-danger hidden" id="btnPrintPdf"><i class="fas fa-print"></i> Print</button>
 </div>
 <!-- Main content -->
 <section class="content content-section p-0">
     <div class="box box-primary">
         <div class="box-body">
-            <div class="form-horizontal create-new-customer" id="parent">
+            <div class="form-horizontal create-new-customer" id="parent" data-com="@user.CompanyName" data-ad1="@user.address" data-ad2="@user.address1" data-city="@user.City" data-state="@user.State" data-country="@user.Country" data-zip="@user.postal_code" data-email="@user.email" data-website="@user.website">
                 <div class="row">
                     <div class="col-md-4">
                         <div class="form-group">

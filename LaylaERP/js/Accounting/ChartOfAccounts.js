@@ -37,6 +37,15 @@ function ChartOfAccountGrid() {
                             return ' <a href="#" onclick="ChangeStatus(' + full.ID + ',' + toggleStatus + ');"><i class="' + toggleclass + '" style="' + toggleStyle + '"></i></a>';
                         }
                     },
+
+                    //{
+                    //    'data': 'ID', sWidth: "8%",
+                    //    'render': function (id, type, full, meta) {
+
+                    //        return '<a href="../Accounting/EditAccount/' + id + '"><i class="glyphicon glyphicon-pencil"></i></a>';
+
+                    //    }
+                    //},
                 ],
 
 
@@ -78,10 +87,4 @@ function ChangeStatus(id, status) {
 }
 
 
-$.get('/Accounting/GetAccountSystem', function (data) {
-    var items = "";
-    $.each(data, function (index, value) {
-        items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddlaccountsetting");
-    })
-});
 

@@ -203,6 +203,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountingJournalModel.cs" />
+    <Compile Include="Models\AccountingModel.cs" />
     <Compile Include="Models\AgentCommissionRate.cs" />
     <Compile Include="Models\Appearance.cs" />
     <Compile Include="Models\Attributes.cs" />
@@ -742,6 +743,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\passwordStrengthMeter.js" />
     <Content Include="Scripts\wow.js" />
+    <Content Include="Views\Accounting\AddAccount.cshtml" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -835,6 +837,7 @@
     <Content Include="Views\Product\ShippingClass.cshtml" />
     <Content Include="Views\Podium\paymentrec.cshtml" />
     <Content Include="Views\Orders\minesofmoria.cshtml" />
+    <Content Include="Views\Accounting\EditAccount.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

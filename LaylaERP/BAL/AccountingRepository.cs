@@ -159,18 +159,7 @@ namespace LaylaERP.BAL
             }
         }
 
-        public static DataSet GetAccountSystem()
-        {
-            DataSet DS = new DataSet();
-            try
-            {
-                DS = SQLHelper.ExecuteDataSet("SELECT pcg_version,concat(pcg_version,' ',label) as version FROM erp_accounting_system order by pcg_version desc");
-                //DS = SQLHelper.ExecuteDataSet("SELECT active FROM erp_accounting_account");
-            }
-            catch (Exception ex)
-            { throw ex; }
-            return DS;
-        }
+       
 
         public static DataTable GetChartOfAccounts(SearchModel model)
         {
@@ -241,6 +230,70 @@ namespace LaylaERP.BAL
             catch (Exception ex)
             { throw ex; }
             return DS;
+        }
+
+        public static int AddAccount(AccountingModel model)
+        {
+            try
+            {
+                string strsql = "";
+                strsql = "INSERT into erp_accounting_account(entity, date_modified, fk_pcg_version, pcg_type, account_number, account_parent, label, fk_accounting_category, active, reconcilable) "
+                    + " values(@entity, @date_modified, @fk_pcg_version, @pcg_type, @account_number, @account_parent, @label, @fk_accounting_category, @active, @reconcilable); SELECT LAST_INSERT_ID();";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@entity", "1"),
+                    new MySqlParameter("@date_modified", DateTime.UtcNow.ToString()),
+                    new MySqlParameter("@fk_pcg_version", model.fk_pcg_version),
+                    new MySqlParameter("@pcg_type", model.pcg_type),
+                    new MySqlParameter("@account_number",model.account_number),
+                    new MySqlParameter("@account_parent",model.account_parent),
+                    new MySqlParameter("@label", model.label),
+                    new MySqlParameter("@fk_accounting_category","0"),
+                    new MySqlParameter("@active","1"),
+                     new MySqlParameter("@reconcilable","0"),
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+        public static DataSet GetPcgType()
+        {
+            DataSet DS = new DataSet();
+            try
+            {
+                DS = SQLHelper.ExecuteDataSet("SELECT * from pcg_type");
+                
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
+        }
+
+        public static DataTable GetAccountByID(long id)
+        {
+            DataTable dt = new DataTable();
+
+            try
+            {
+                
+                string strSql = "SELECT rowid as rowid, account_number, fk_pcg_version, label, labelshort, account_parent, pcg_type,active from erp_accounting_account "
+                + "where rowid=" + id + "";
+
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dt = ds.Tables[0];
+
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
         }
     }
 }

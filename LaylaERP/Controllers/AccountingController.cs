@@ -232,7 +232,7 @@ namespace LaylaERP.Controllers
                     }
                     else
                     {
-                        return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
+                        return Json(new { status = false, message = "something went wrong!! Product Account not saved ", url = "", id = 0 }, 0);
                     }
                 }
             }

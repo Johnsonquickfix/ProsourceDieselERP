@@ -1,9 +1,8 @@
 ﻿var htmlAcc = '<option value="0">Please Select Account to Assign</option>';
+
 $(document).ready(function () {
     GetNewAccounttoAssign();
     ProductStockGrid();
-    var table = $('#dtProductsAccount').DataTable();
-    console.log(table.rows().count());
 })
 function GetNewAccounttoAssign() {
     $.ajax({
@@ -11,6 +10,7 @@ function GetNewAccounttoAssign() {
         type: "Get",
         success: function (data) {
             for (var i = 0; i < data.length; i++) {
+               
                 htmlAcc += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
             }
         },
@@ -45,7 +45,7 @@ function ProductStockGrid() {
             {
                 'data': 'ID', sWidth: "25%",
                 'render': function (id, type, full, meta) {
-                    return '<select class="form-control ddlNewAccounttoAssign" id="ddlNewAccounttoAssign">' + htmlAcc+'</select>';
+                    return '<select class="form-control ddlNewAccounttoAssign" id="ddlNewAccounttoAssign">' + htmlAcc + '</select>';
                 }
             },
             {
@@ -82,9 +82,17 @@ function Singlecheck() {
     }
 }
 
-$('#btnNextTab1').click(function () {
+$('#btnSaveProductAccount').click(function () {
 
-
+    var id = "";
+    var account = "";
+    $("input:checkbox[name=CheckSingle]:checked").each(function () {
+        id += $(this).val() + ",";
+        account += $("#ddlStatus option:selected").val() + ",";
+    });
+    id = id.replace(/,(?=\s*$)/, '');
+    account = account.replace(/,(?=\s*$)/, '');
+    console.log(id, account);
 
 });
 

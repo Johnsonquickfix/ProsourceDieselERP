@@ -224,7 +224,7 @@ namespace LaylaERP.BAL
             DataSet DS = new DataSet();
             try
             {
-                string strSQl = "Select account_number ID, label from erp_accounting_account order by rowid";
+                string strSQl = "Select account_number ID, concat(account_number,' - ',label) label from erp_accounting_account order by rowid;";
                 DS = SQLHelper.ExecuteDataSet(strSQl);
             }
             catch (Exception ex)

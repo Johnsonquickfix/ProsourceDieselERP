@@ -148,7 +148,76 @@
                                 op.podiumSecretKey = string.Empty;
                             
                         }
-                        op.LoginIPAddress = Net.Ip;
+                        // For Entity info
+                        if (ds.Tables[2].Rows.Count > 0)
+                        {
+                            if (ds.Tables[2].Rows[0]["firstname"] != DBNull.Value)
+                                op.firstname = ds.Tables[2].Rows[0]["firstname"].ToString();
+                            else
+                                op.firstname = string.Empty;
+                            if (ds.Tables[2].Rows[0]["lastname"] != DBNull.Value)
+                                op.lastname = ds.Tables[2].Rows[0]["lastname"].ToString();
+                            else
+                                op.lastname = string.Empty;
+
+                            if (ds.Tables[2].Rows[0]["address"] != DBNull.Value)
+                                op.address = ds.Tables[2].Rows[0]["address"].ToString();
+                            else
+                                op.address = string.Empty;
+
+                            if (ds.Tables[2].Rows[0]["town"] != DBNull.Value)
+                                op.City = ds.Tables[2].Rows[0]["town"].ToString();
+                            else
+                                op.City = string.Empty;
+
+                            if (ds.Tables[2].Rows[0]["fk_state"] != DBNull.Value)
+                                op.State = ds.Tables[2].Rows[0]["fk_state"].ToString();
+                            else
+                                op.State = string.Empty;
+
+                            if (ds.Tables[2].Rows[0]["fk_country"] != DBNull.Value)
+                                op.Country = ds.Tables[2].Rows[0]["fk_country"].ToString();
+                            else
+                                op.Country = string.Empty;
+
+                            if (ds.Tables[2].Rows[0]["zip"] != DBNull.Value)
+                                op.postal_code = ds.Tables[2].Rows[0]["zip"].ToString();
+                            else
+                                op.postal_code = string.Empty;
+
+                            if (ds.Tables[2].Rows[0]["country_code_phone"] != DBNull.Value)
+                                op.country_code_phone = ds.Tables[2].Rows[0]["country_code_phone"].ToString();
+                            else
+                                op.country_code_phone = string.Empty;
+
+                            if (ds.Tables[2].Rows[0]["phone_type"] != DBNull.Value)
+                                op.phone_type = ds.Tables[2].Rows[0]["phone_type"].ToString();
+                            else
+                                op.phone_type = string.Empty;
+
+                            if (ds.Tables[2].Rows[0]["user_mobile"] != DBNull.Value)
+                                op.user_mobile = ds.Tables[2].Rows[0]["user_mobile"].ToString();
+                            else
+                                op.user_mobile = string.Empty;
+
+                            if (ds.Tables[2].Rows[0]["email"] != DBNull.Value)
+                                op.email = ds.Tables[2].Rows[0]["email"].ToString();
+                            else
+                                op.email = string.Empty;
+                            if (ds.Tables[2].Rows[0]["logo_url"] != DBNull.Value)
+                                op.logo_url = ds.Tables[2].Rows[0]["logo_url"].ToString();
+                            else
+                                op.logo_url = string.Empty;
+                            if (ds.Tables[2].Rows[0]["website"] != DBNull.Value)
+                                op.website = ds.Tables[2].Rows[0]["website"].ToString();
+                            else
+                                op.website = string.Empty;
+                            if (ds.Tables[2].Rows[0]["additional_notes"] != DBNull.Value)
+                                op.additional_notes = ds.Tables[2].Rows[0]["additional_notes"].ToString();
+                            else
+                                op.additional_notes = string.Empty;
+                        }
+                            op.LoginIPAddress = Net.Ip;
                         op.LoginMacAddress = string.Empty;
                         CommanUtilities.Provider.AddCurrent(op);
 

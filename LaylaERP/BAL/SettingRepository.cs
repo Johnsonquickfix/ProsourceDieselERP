@@ -12,13 +12,14 @@ namespace LaylaERP.BAL
     public class SettingRepository
     {
         
-        public static DataTable DisplaySettings()
+        public static DataSet DisplaySettings()
         {
-            DataTable DT = new DataTable();
+            DataSet DT = new DataSet();
             try
             {
-                string strquery = "Select * from wp_system_settings";
-                DT = SQLHelper.ExecuteDataTable(strquery);
+                string strquery = "Select * from wp_system_settings;"
+                               + " Select * from erp_entityinfo;";
+                DT = SQLHelper.ExecuteDataSet(strquery);
             }
             catch (Exception ex)
             { throw ex; }
@@ -61,6 +62,41 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@podiumAPIKey",model.podiumAPIKey),
                     new MySqlParameter("@podiumSecretKey",model.podiumSecretKey),
                     
+                };
+                SQLHelper.ExecuteNonQuery(strsql, para);
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+        public static void Update_EntityInfo(SettingModel model, long id)
+        {
+            try
+            {
+                string strsql = "Update erp_entityinfo set CompanyName=@CompanyName,lastname=@lastname,firstname=@firstname,address=@address,address1=@address1, zip=@zip, town=@town, fk_state=@fk_state," +
+                    "fk_country=@fk_country, country_code_phone=@country_code_phone, user_mobile=@user_mobile,email=@email,website=@website, " +
+                    " logo_url=@logo_url,additional_notes=@additional_notes " +
+                    " where entity=@id";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@id", id),
+                    new MySqlParameter("@lastname",model.lastname),
+                    new MySqlParameter("@CompanyName", model.CompanyName),
+                    new MySqlParameter("@firstname",model.firstname),
+                    new MySqlParameter("@address",model.address),
+                    new MySqlParameter("@address1",model.address1),              
+                    new MySqlParameter("@zip", model.postal_code),
+                    new MySqlParameter("@town", model.City),
+                    new MySqlParameter("@fk_state",model.State),
+                    new MySqlParameter("@fk_country",model.Country),
+                    new MySqlParameter("@country_code_phone", model.country_code_phone),
+                    new MySqlParameter("@user_mobile",model.user_mobile),
+                    new MySqlParameter("@email",model.email),
+                    new MySqlParameter("@website", model.website),
+                    new MySqlParameter("@logo_url", model.logo_url),
+                    new MySqlParameter("@additional_notes", model.additional_notes)       
+
                 };
                 SQLHelper.ExecuteNonQuery(strsql, para);
             }

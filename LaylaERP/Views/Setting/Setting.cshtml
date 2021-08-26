@@ -320,6 +320,7 @@
         </div>
     </div>
 </div>
+<script src="~/js/jquery.mask.js" asp-append-version="true"></script>
 <script src="@Url.Content("~/js/Users/RolePermission.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 
 <script>
@@ -377,6 +378,7 @@
                 },
             })
         });
+        $("#txtPhone").mask("(999) 999-9999");
     });
 
     function UpdateSetting() {
@@ -408,7 +410,7 @@
         address = $("#txtAddress").val();
         country = $("#txtCountry").val();
         Countrycode = $("#txtCountrycode").val();
-        Phone = $("#txtPhone").val();
+        Phone = $("#txtPhone").unmask().val();
         Zipcode = $("#txtPostCode").val();
         City = $("#txtCity").val();
         State = $("#txtState").val();
@@ -522,27 +524,7 @@
     $(document).ajaxStop(function () {
         //window.location.reload();
     });
-    document.getElementById('txtPhone').addEventListener('keyup', function (evt) {
-        var phoneNumber = document.getElementById('txtPhone');
-        var charCode = (evt.which) ? evt.which : evt.keyCode;
-        phoneNumber.value = phoneFormat(phoneNumber.value);
-    });
-    function phoneFormat(input) {
-        input = input.replace(/\D/g, '');
-        input = input.substring(0, 10);
-        var size = input.length;
-        if (size == 0) {
-            input = input;
-        } else if (size < 4) {
-            input = '(' + input;
-        } else if (size < 7) {
-            input = '(' + input.substring(0, 3) + ') ' + input.substring(3, 6);
-        } else {
-            input = '(' + input.substring(0, 3) + ') ' + input.substring(3, 6) + ' - ' + input.substring(6, 10);
-        }
-        return input;
-    }
-
+    
 </script>
 
 

@@ -30,6 +30,26 @@ namespace LaylaERP.BAL
             { throw ex; }
             return DT;
         }
+        public static DataTable SearchVenderProducts(long vendor_id)
+        {
+            DataTable DT = new DataTable();
+            try
+            {
+                MySqlParameter[] parameters =
+                {
+                    new MySqlParameter("@vendor_id", vendor_id)
+                };
+                string strSQl = "SELECT p.id id,CONCAT(p.post_title, COALESCE(CONCAT(' (' ,psku.meta_value,')'),'')) as text"
+                                + " FROM wp_posts as p"
+                                + " inner join Product_Purchase_Items ir on ir.fk_product = p.id and ir.fk_vendor=@vendor_id"
+                                + " left outer join wp_postmeta psku on psku.post_id = p.id and psku.meta_key = '_sku'"
+                                + " WHERE p.post_type in ('product', 'product_variation') AND p.post_status = 'publish' ORDER BY id; ";
+                DT = SQLHelper.ExecuteDataTable(strSQl, parameters);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DT;
+        }
         public static List<PurchaseOrderProductsModel> GetProductsDetails(long product_id, long vendor_id)
         {
             List<PurchaseOrderProductsModel> _list = new List<PurchaseOrderProductsModel>();
@@ -151,7 +171,7 @@ namespace LaylaERP.BAL
             try
             {
                 MySqlParameter[] parameters = { new MySqlParameter("@rowid", VendorID) };
-                string strSQl = "select rowid,vendor_type,name,name_alias,code_vendor,address,town,fk_country,fk_state,zip,phone,fax,email,url from wp_vendor where rowid=@rowid;";
+                string strSQl = "select rowid,vendor_type,name,name_alias,code_vendor,address,town,fk_country,fk_state,zip,phone,fax,email,url,fk_incoterms,location_incoterms,PaymentTermsID,BalanceID,Paymentmethod from wp_vendor v left outer join wp_VendorPaymentDetails vpd on vpd.VendorID = v.rowid where rowid=@rowid;";
                 dt = SQLHelper.ExecuteDataTable(strSQl, parameters);
             }
             catch (Exception ex)
@@ -241,7 +261,9 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "Select p.rowid id, p.ref, p.ref_ext refordervendor,v.SalesRepresentative request_author,v.name vendor_name,v.fk_state city, v.zip,DATE_FORMAT(p.date_livraison,'%m/%d/%Y') date_livraison, s.Status from commerce_purchase_order p inner join wp_vendor v on p.fk_supplier = v.rowid inner join wp_StatusMaster s on p.fk_status = s.ID where 1 = 1";
+                string strSql = "Select p.rowid id, p.ref, p.ref_ext refordervendor,v.SalesRepresentative request_author,v.name vendor_name,v.address,v.town,v.fk_country,v.fk_state,v.zip,v.phone,"
+                                + " DATE_FORMAT(p.date_creation,'%m/%d/%Y') date_creation,DATE_FORMAT(p.date_livraison, '%m/%d/%Y') date_livraison, s.Status,total_ttc from commerce_purchase_order p"
+                                + " inner join wp_vendor v on p.fk_supplier = v.rowid inner join wp_StatusMaster s on p.fk_status = s.ID where 1 = 1";
                 if (!string.IsNullOrEmpty(searchid))
                 {
                     strWhr += " and (p.ref like '" + searchid + "%' OR p.ref_ext='" + searchid + "%' OR v.SalesRepresentative='" + searchid + "%' OR v.name like '" + searchid + "%' OR v.fk_state like '" + searchid + "%' OR v.zip like '" + searchid + "%')";

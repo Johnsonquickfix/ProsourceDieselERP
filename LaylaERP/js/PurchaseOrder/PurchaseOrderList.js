@@ -1,4 +1,5 @@
 ﻿$(document).ready(function () {
+    $('.select2').select2();
     PurchaseOrderGrid();
     $('#btnSearch').click(function () {
         PurchaseOrderGrid();
@@ -42,7 +43,8 @@ function PurchaseOrderGrid() {
             oSettings.jqXHR = $.ajax({
                 dataType: 'json', type: "GET", url: sSource, data: aoData,
                 "success": function (data) {
-                    var dtOption = { sEcho: data.sEcho, recordsTotal: data.recordsTotal, recordsFiltered: data.recordsFiltered, aaData: JSON.parse(data.aaData) };
+                    let dtOption = { sEcho: data.sEcho, recordsTotal: data.recordsTotal, recordsFiltered: data.recordsFiltered, aaData: JSON.parse(data.aaData) };
+                    console.log(dtOption);
                     return fnCallback(dtOption);
                 }
             });
@@ -55,19 +57,65 @@ function PurchaseOrderGrid() {
                 }
             },
             {
-                'data': 'ref', sWidth: "10%", title: 'PO No.',
+                'data': 'ref', sWidth: "10%", title: 'PO No',
                 'render': function (id, type, full, meta) {
                     return '<a href="NewPurchaseOrder/' + full.id + '">' + id + '</a>';
                 }
             },
-            { data: 'refordervendor', title: 'Ref Order Vendor', sWidth: "15%" },
-            { data: 'request_author', title: 'Request Author', sWidth: "15%" },
+            { data: 'date_creation', title: 'Order Date', sWidth: "10%" },
+            { data: 'refordervendor', title: 'Invoice No', sWidth: "10%" },
             { data: 'vendor_name', title: 'Vendor Name', sWidth: "15%" },
-            { data: 'city', title: 'City', sWidth: "8%" },
-            { data: 'zip', title: 'Zip Code', sWidth: "8%" },
-            { data: 'date_livraison', title: 'Planned date of delivery', sWidth: "14%" },
+            {
+                data: 'city', title: 'Address', sWidth: "20%", render: function (data, type, dtrow) {
+                    let val = dtrow.address + ', ' + dtrow.town + ' ,' + dtrow.fk_state + ' ' + dtrow.zip;
+                    return val;
+                }
+            },
+            { data: 'total_ttc', title: 'Amount', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
+            { data: 'date_livraison', title: 'Planned date of delivery', sWidth: "10%" },
             { data: 'Status', title: 'Status', sWidth: "10%" }
         ]
     });
 }
+function CheckAll() {
+    var isChecked = $('#checkall').prop("checked");
+    $('#dtdata tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
+}
+function Singlecheck(chk) {
+    var isChecked = $(chk).prop("checked");
+    var isHeaderChecked = $("#checkall").prop("checked");
+    if (isChecked == false && isHeaderChecked)
+        $("#checkall").prop('checked', isChecked);
+    else {
+        $('#dtdata tr:has(td)').find('input[type="checkbox"]').each(function () {
+            if ($(this).prop("checked") == false)
+                isChecked = false;
+        });
+        $("#checkall").prop('checked', isChecked);
+    }
+}
+function orderStatus() {
+    var id = "";
+    $("input:checkbox[name=CheckSingle]:checked").each(function () { id += $(this).val() + ","; });
+    id = id.replace(/,(?=\s*$)/, '');
+    $("#checkAll").prop('checked', false);
+    var status = $('#ddlOrderStatus').val();
 
+    if (id == "") { swal('alert', 'Please select a Purchase order.', 'error'); }
+    else if (status == "") { swal('alert', 'Please select status.', 'error'); }
+    else {
+        var obj = { strVal: id, status: status }
+        $.ajax({
+            url: '/Orders/ChangeOrderStatus', dataType: 'JSON', type: 'POST',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(obj),
+            beforeSend: function () { $("#loader").show(); },
+            success: function (data) {
+                if (data.status == true) { swal('alert', data.message, 'success').then((result) => { PurchaseOrderGrid(); }); }
+                else { swal('alert', 'something went wrong!', 'success'); }
+            },
+            complete: function () { $("#loader").hide(); },
+            error: function (error) { swal('Error!', 'something went wrong', 'error'); }
+        });
+    }
+}

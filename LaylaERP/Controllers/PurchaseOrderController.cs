@@ -41,6 +41,21 @@ namespace LaylaERP.Controllers
             return Json(JSONresult, 0);
         }
         [HttpGet]
+        public JsonResult GetVenderProducts(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                long id = 0;
+                if (!string.IsNullOrEmpty(model.strValue1))
+                    id = Convert.ToInt64(model.strValue1);
+                DataTable DT = PurchaseOrderRepository.SearchVenderProducts(id);
+                JSONresult = JsonConvert.SerializeObject(DT);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+        [HttpGet]
         public JsonResult SearchProductDetails(SearchModel model)
         {
             List<PurchaseOrderProductsModel> obj = new List<PurchaseOrderProductsModel>();

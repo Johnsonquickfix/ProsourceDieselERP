@@ -151,7 +151,7 @@ namespace LaylaERP.Controllers
             string result = string.Empty;
             try
             {
-                DataTable dt = AccountingRepository.GetProductStock(model.strValue1, model.strValue2, model.strValue3);
+                DataTable dt = AccountingRepository.GetProductStock();
                 result = JsonConvert.SerializeObject(dt, Formatting.Indented);
             }
             catch { }
@@ -219,6 +219,10 @@ namespace LaylaERP.Controllers
         {
             if (ModelState.IsValid)
             {
+                string ProductID = model.strValue1;
+                string ProductFor = model.Productfor;
+                string ProductAccountNumberID = model.strValue2;
+
                 if (model.ID > 0)
                 {
                     //new ThirdPartyRepository().EditVendorBasicInfo(model);
@@ -226,7 +230,7 @@ namespace LaylaERP.Controllers
                 }
                 else
                 {
-                    int ID = new AccountingRepository().AddProductAccount(model);
+                    int ID = new AccountingRepository().AddProductAccount(ProductID,ProductFor, ProductAccountNumberID);
                     if (ID > 0)
                     {
                         return Json(new { status = true, message = "Product account has been saved successfully!!", url = "", id = ID }, 0);

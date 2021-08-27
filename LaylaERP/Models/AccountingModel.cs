@@ -25,6 +25,8 @@ namespace LaylaERP.Models
     {
         public int ID { get; set; }
         public long fk_product_id { get; set; }
+        public string strValue1 { get; set; }
+        public string strValue2 { get; set;}
         public string Productfor { get; set; }
         public int fk_account_number { get; set; }
     }

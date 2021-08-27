@@ -182,33 +182,20 @@ namespace LaylaERP.BAL
             { throw ex; }
             return dtr;
         }
-        public static DataTable GetProductStock(string strSKU, string categoryid, string productid)
+        public static DataTable GetProductStock()
         {
             DataTable dt = new DataTable();
             try
             {
-                string strWhr = string.Empty, strHav = string.Empty;
-                if (!string.IsNullOrEmpty(strSKU))
-                {
-                    strHav += " having max(case when p.id = s.post_id and s.meta_key = '_sku' then s.meta_value else '' end) = '" + strSKU + "'";
-                }
-                if (!string.IsNullOrEmpty(categoryid))
-                {
-                    strWhr += " and (case when p.post_parent = 0 then p.id else p.post_parent end) in (select object_id from wp_term_relationships ttr where ttr.term_taxonomy_id='" + categoryid + "')";
-                }
-                if (!string.IsNullOrEmpty(productid))
-                {
-                    strWhr += " and (case when p.post_parent = 0 then p.id else p.post_parent end) = '" + productid + "'";
-                }
-
-                string strSql = "select p.id,p.post_type,p.post_title,max(case when p.id = s.post_id and s.meta_key = '_sku' then s.meta_value else '' end) sku,"
-                            + " max(case when p.id = s.post_id and s.meta_key = '_regular_price' then s.meta_value else '' end) regular_price,"
-                            + " max(case when p.id = s.post_id and s.meta_key = '_price' then s.meta_value else '' end) sale_price,"
-                            + " (select coalesce(sum(case when pwr.flag = 'R' then quantity else -quantity end),0) from product_stock_register pwr where pwr.product_id = p.id) stock,"
-                            + " (case when p.post_parent = 0 then p.id else p.post_parent end) p_id,p.post_parent,p.post_status"
-                            + " FROM wp_posts as p left join wp_postmeta as s on p.id = s.post_id"
-                            + " where p.post_type in ('product', 'product_variation') and p.post_status != 'draft' " + strWhr
-                            + " group by p.id " + strHav + " order by p_id";
+               
+                string strSql = "select  p.id,eaa.label AccountingAccount,pa.fk_account_number AccountingAccountNumber,p.post_type,p.post_title,max(case when p.id = s.post_id and s.meta_key = '_sku' then s.meta_value else '' end) sku, " +
+                    "max(case when p.id = s.post_id and s.meta_key = '_regular_price' then s.meta_value else '' end) regular_price, " +
+                    "max(case when p.id = s.post_id and s.meta_key = '_price' then s.meta_value else '' end) sale_price, " +
+                    "(select coalesce(sum(case when pwr.flag = 'R' then quantity else -quantity end),0) from product_stock_register pwr " +
+                    "where pwr.product_id = p.id) stock, (case when p.post_parent = 0 then p.id else p.post_parent end) p_id,p.post_parent,p.post_status " +
+                    "FROM wp_posts as p left join wp_postmeta as s on p.id = s.post_id left join product_accounting as pa on p.id = pa.fk_product_id " +
+                    "left join erp_accounting_account as eaa on pa.fk_account_number = eaa.account_number " +
+                    "where p.post_type in ('product', 'product_variation') and p.post_status != 'draft'  group by p.id order by p_id;";
 
                 dt = SQLHelper.ExecuteDataTable(strSql);
 
@@ -296,19 +283,39 @@ namespace LaylaERP.BAL
             return dt;
         }
 
-        public int AddProductAccount(ProductAccountingModel model)
+        public int AddProductAccount(string ProductID, string ProductFor, string ProductAccountNumberID)
         {
             try
             {
-                string strsql = "";
-                strsql = "insert into product_accounting(fk_product_id,Productfor,fk_account_number) values(@fk_product_id,@Productfor,@fk_account_number); SELECT LAST_INSERT_ID();";
-                MySqlParameter[] para =
+                int result = 0;
+                string[] ID = ProductID.Split(',');
+                string[] value = ProductAccountNumberID.Split(',');
+
+                for (int i = 0; i <= value.Length - 1; i++)
                 {
-                    new MySqlParameter("@fk_product_id", model.fk_product_id),
-                    new MySqlParameter("@Productfor", model.Productfor),
-                    new MySqlParameter("@fk_account_number", model.fk_account_number),
-                };
-                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
+                    ProductID = ID[i].ToString();
+                    ProductAccountNumberID = value[i].ToString();
+                    if (ProductAccountNumberID != "0")
+                    {
+                        string strsql = "";
+                        string Product = GetAccountNumber(ProductID);
+                        if (Product == ProductID)
+                        {
+                            strsql = "Update product_accounting set fk_product_id=@fk_product_id,Productfor=@Productfor,fk_account_number=@fk_account_number where fk_product_id=@fk_product_id";
+                        }
+                        else
+                        {
+                            strsql = "insert into product_accounting(fk_product_id,Productfor,fk_account_number) values(@fk_product_id,@Productfor,@fk_account_number); SELECT LAST_INSERT_ID();";
+                        }
+                        MySqlParameter[] para =
+                        {
+                            new MySqlParameter("@fk_product_id",ProductID),
+                            new MySqlParameter("@Productfor", ProductFor),
+                            new MySqlParameter("@fk_account_number", ProductAccountNumberID),
+                        };
+                        result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                    }
+                }
                 return result;
             }
             catch (Exception Ex)
@@ -339,6 +346,19 @@ namespace LaylaERP.BAL
             catch (Exception Ex)
             {
                 throw Ex;
+            }
+        }
+        public string GetAccountNumber(string id)
+        {
+            try
+            {
+                string strSql = "Select fk_product_id from product_accounting where fk_product_id='" + id + "'";
+                string result = SQLHelper.ExecuteScalar(strSql).ToString();
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
             }
         }
     }

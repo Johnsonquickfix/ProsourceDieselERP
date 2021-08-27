@@ -1,32 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Web;
 using LaylaERP.Models;
 using MySql.Data.MySqlClient;
+using LaylaERP.DAL;
 
 namespace LaylaERP.BAL
 {
     public static class BankRepository
     {
-
-        // rowid date_created    date_modified NickName    label entity  fk_user_loginID fk_user_modif   bank code_bank
-        //account_number bic iban_prefix country_iban    domiciliation state   fk_pays proprio owner_address working_status
-        //clos rappro  url accounting_number   account_type fk_accountancy_journal  currency_code min_allowed min_desired 
-        //comment note_public model_pdf   import_key bank_address    ics ics_transfer    initial_balance
-
         public static int AddBankAccount(BankModel model)
         {
             try
             {
-                string strsql = "INSERT into wp_warehouse(date_created, date_modified, label, account_type, working_status, country_iban, state, " +
-                    "comment, initial_balance, min_allowed, min_desired, bank, code_bank, account_number, iban_prefix, bic, bank_address, owner_name, accounting_number, fk_accountancy_journal)" +
+                string strsql = "INSERT into erp_bank_account(date_created, date_modified, label, account_type, working_status, country_iban, state, " +
+                    "comment, initial_balance, min_allowed, min_desired, bank, code_bank, account_number, iban_prefix, bic, bank_address, owner_name, " +
+                    "accounting_number, fk_accountancy_journal, url, currency_code, owner_address)" +
                     " values(@date_created, @date_modified, @label, @account_type, @working_status, @country_iban, @state," +
-                    " @comment, @initial_balance, @min_allowed, @min_desired, @bank, @code_bank, @account_number, @iban_prefix, @bic, @bank_address, @owner_name, @accounting_number, @fk_accountancy_journal);SELECT LAST_INSERT_ID();";
+                    " @comment, @initial_balance, @min_allowed, @min_desired, @bank, @code_bank, @account_number, @iban_prefix," +
+                    " @bic, @bank_address, @owner_name, @accounting_number, @fk_accountancy_journal, @url, @currency_code, @owner_address);SELECT LAST_INSERT_ID();";
                 MySqlParameter[] para =
                 {
-                    new MySqlParameter("@date_created", DateTime.UtcNow),
-                    new MySqlParameter("@date_modified",model.date_modified),
+                    new MySqlParameter("@date_created", model.date_created),
+                    new MySqlParameter("@date_modified",DateTime.UtcNow),
+
                     new MySqlParameter("@label", model.label),
                     new MySqlParameter("@account_type", model.account_type),
                     new MySqlParameter("@working_status", model.working_status),
@@ -42,12 +41,12 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@iban_prefix",model.iban_prefix),
                     new MySqlParameter("@bic",model.bic),
                     new MySqlParameter("@bank_address",model.bank_address),
-
-
-                    new MySqlParameter("@owner_name", model.account_number),
-                    new MySqlParameter("@accounting_number",model.iban_prefix),
+                    new MySqlParameter("@owner_name", model.owner_name),
+                    new MySqlParameter("@accounting_number",model.accounting_number),
                     new MySqlParameter("@fk_accountancy_journal",model.bic),
-                   
+                    new MySqlParameter("@url",model.url),
+                    new MySqlParameter("@currency_code",model.currency_code),
+                    new MySqlParameter("@owner_address",model.owner_address),
 
                 };
                 int result = Convert.ToInt32(DAL.SQLHelper.ExecuteScalar(strsql, para));
@@ -59,5 +58,30 @@ namespace LaylaERP.BAL
             }
         }
 
+        public static DataSet GetAccountingAccount()
+        {
+            DataSet DS = new DataSet();
+            try
+            {
+                string strSQl = "Select account_number ID, concat(account_number,' - ',label) label from erp_accounting_account order by rowid;";
+                DS = SQLHelper.ExecuteDataSet(strSQl);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
+        }
+
+        public static DataSet Getjournal()
+        {
+            DataSet DS = new DataSet();
+            try
+            {
+                string strSQl = "Select rowid ID, concat(code,' - ',label) label from erp_accounting_journal order by rowid;";
+                DS = SQLHelper.ExecuteDataSet(strSQl);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
+        }
     }
 }

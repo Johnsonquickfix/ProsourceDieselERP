@@ -68,7 +68,7 @@
         $("#txt_proc_total").val(rTotal.toFixed(2));
     });
     $(document).on("click", "#btnSave", function (t) { t.preventDefault(); saveVendorPO(); });
-    $(document).on("click", "#btnPrintPdf", function (t) { t.preventDefault(); printinvoice(); });
+    $(document).on("click", "#btnPrintPdf", function (t) { t.preventDefault(); printinvoice(false); });
 });
 function getMasters() {
     $.ajax({
@@ -445,7 +445,7 @@ function saveVendorPO() {
                 if (data.status == true) {
                     $('#lblPoNo').data('id', data.id);
                     getPurchaseOrderInfo();
-                    swal('Alert!', data.message, 'success').then(function () { swal.close(); printinvoice(); });
+                    swal('Alert!', data.message, 'success').then(function () { swal.close(); printinvoice(true); });
                 }
                 else {
                     swal('Alert!', data.message, 'error')
@@ -457,15 +457,15 @@ function saveVendorPO() {
     }
 }
 
-function printinvoice() {
-    let _details = getVendorDetails();
+function printinvoice(is_mail) {
+    let _details = getVendorDetails(); console.log(_details);
     let _items = createItemsList();
     let payment_term = (parseInt($("#ddlPaymentTerms").val()) || 0) > 0 ? $("#ddlPaymentTerms option:selected").text() : '';
     let balance_days = (parseInt($("#ddlBalancedays").val()) || 0) > 0 ? $("#ddlBalancedays option:selected").text() : '';
     let location_incoterms = $("#txtIncoTerms").val();
     let total_qty = 0, total_gm = 0.00, total_tax = 0.00, total_shamt = 0.00, total_discamt = 0.00, total_net = 0.00;
     let com_add = $('#parent').data('ad1') + ', ' + $('#parent').data('ad2') + ', ' + $('#parent').data('city') + ', ' + $('#parent').data('state') + ', ' + $('#parent').data('country') + ' ' + $('#parent').data('zip');
-
+    let email = _details[0].email;
     var modalHtml = '';
     modalHtml += '<div class="modal-dialog modal-lg">';
     modalHtml += '<div class="modal-content">';
@@ -606,8 +606,8 @@ function printinvoice() {
     $('#POModal .modal-body').append(myHtml);
 
     $("#POModal").modal({ backdrop: 'static', keyboard: false });
-    var opt = { strValue1: 'johnson.quickfix@gmail.com', strValue2: $('#lblPoNo').text(), strValue3: $('#POModal .modal-body').html() }
-    if (opt.strValue1.length > 5) {
+    var opt = { strValue1: email, strValue2: $('#lblPoNo').text(), strValue3: $('#POModal .modal-body').html() }
+    if (opt.strValue1.length > 5 && is_mail) {
         $.ajax({
             type: "POST", url: '/PurchaseOrder/SendMailInvoice', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
             success: function (result) { console.log(result); },

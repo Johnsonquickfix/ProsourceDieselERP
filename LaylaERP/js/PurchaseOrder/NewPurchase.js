@@ -313,7 +313,7 @@ function getPurchaseOrderInfo() {
             url: "/PurchaseOrder/GetPurchaseOrderByID", type: "Get", beforeSend: function () { $("#loader").show(); }, data: option,
             success: function (result) {
                 try {
-                    let data = JSON.parse(result); 
+                    let data = JSON.parse(result);
                     for (let i = 0; i < data['po'].length; i++) {
                         $('#lblPoNo').text(data['po'][i].ref); $('#txtRefvendor').val(data['po'][i].ref_supplier); $('#txtPODate').val(data['po'][i].date_creation);
                         $('#ddlVendor').val(data['po'][i].fk_supplier).trigger('change');
@@ -444,7 +444,7 @@ function saveVendorPO() {
             success: function (data) {
                 if (data.status == true) {
                     $('#lblPoNo').data('id', data.id);
-                    getPurchaseOrderInfo(); 
+                    getPurchaseOrderInfo();
                     swal('Alert!', data.message, 'success').then(function () { swal.close(); printinvoice(); });
                 }
                 else {
@@ -605,13 +605,14 @@ function printinvoice() {
 
     $('#POModal .modal-body').append(myHtml);
 
-    myHtml = '';
-    //$('#order_line_items > tr').each(function (index, tr) {
-    //    var qty = parseFloat($(this).find("[name=txt_ItemQty]").val()) || 0.00;
-    //    var grossAmount = parseFloat($(this).find(".TotalAmount").data('amount')) || 0.00;
-    //    myHtml += '<tr><td style="border-top: 1px solid rgba(0, 0, 0, 0.1);  padding: 9px 12px; vertical-align: middle;"><span>' + $(this).data('pname') + '</span><strong class="product-quantity">× ' + qty + '</strong></td><td style="border-top: 1px solid rgba(0, 0, 0, 0.1);  padding: 9px 12px; vertical-align: middle;"><span>$' + grossAmount + '</span></td></tr>';
-    //});
-    //$('#tblorder_details tbody').append(myHtml);
-
     $("#POModal").modal({ backdrop: 'static', keyboard: false });
+    var opt = { strValue1: 'johnson.quickfix@gmail.com', strValue2: $('#lblPoNo').text(), strValue3: $('#POModal .modal-body').html() }
+    if (opt.strValue1.length > 5) {
+        $.ajax({
+            type: "POST", url: '/PurchaseOrder/SendMailInvoice', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
+            success: function (result) { console.log(result); },
+            error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
+            complete: function () { }, async: false
+        });
+    }
 }

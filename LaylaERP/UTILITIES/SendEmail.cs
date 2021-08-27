@@ -8,9 +8,47 @@
     using System.Linq;
     using System.Net.Mail;
     using System.Net;
+    using System.Text;
 
     public class SendEmail
     {
+        public static string SendEmails(string varReceipientEmailId, string strSubject, string strBody, string fileHtml)
+        {
+            string result = "Your mail has been sent successfuly !";
+            try
+            {
+                OperatorModel om = CommanUtilities.Provider.GetCurrent();
+                if (om.SenderEmailID.Length != 0 && om.SenderEmailPwd.Length != 0 && om.SMTPServerName.Length != 0 && om.SMTPServerPortNo.Length != 0)
+                {
+                    using (MailMessage mm = new MailMessage(om.SenderEmailID.ToString(), varReceipientEmailId, strSubject, strBody))
+                    {
+                        mm.IsBodyHtml = true;
+                        SmtpClient smtp = new SmtpClient();
+                        smtp.Host = om.SMTPServerName.ToString(); // "smtp.gmail.com";
+                        smtp.EnableSsl = true;
+                        NetworkCredential NetworkCred = new NetworkCredential(om.SenderEmailID.ToString(), om.SenderEmailPwd.ToString());
+                        smtp.UseDefaultCredentials = false;
+                        smtp.Credentials = NetworkCred;
+                        //smtp.Timeout = 5000;
+                        //GlobalVariable.strSMTPServerPortNo = "587";
+                        smtp.Port = Convert.ToInt32(om.SMTPServerPortNo); // 587;
+                        smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
+                        byte[] inputBytes = Encoding.UTF8.GetBytes(fileHtml);
+                        var stream = new System.IO.MemoryStream(inputBytes);
+                        mm.Attachments.Add(new Attachment(stream, "invoice.html"));
+                        smtp.Send(mm);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                result = "Some problems occurred with the OTP email. Please contact your Administrator!!";
+
+                //throw ex;
+            }
+            return result;
+        }
+
         public static string SendEmails(string varReceipientEmailId, string strSubject, string strBody)
         {
             string result = "Your mail has been sent successfuly !";

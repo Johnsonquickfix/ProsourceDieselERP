@@ -2,7 +2,12 @@
 
 $(document).ready(function () {
     GetNewAccounttoAssign();
-    ProductStockGrid();
+    ProductAccountingGrid();
+
+    table = $('#dtProductsAccount').DataTable();
+    setTimeout(function () { $(".select2").select2();}, 2000);
+
+    /*$("#lblTotalProducts").text(table.fnGetData().length);*/
 })
 function GetNewAccounttoAssign() {
     $.ajax({
@@ -10,18 +15,17 @@ function GetNewAccounttoAssign() {
         type: "Get",
         success: function (data) {
             for (var i = 0; i < data.length; i++) {
-               
-                htmlAcc += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
+                htmlAcc += '<option value="' + data[i].Value + '" data-' + data[i].Value+'>' + data[i].Text + '</option>';
             }
         },
         async: false
     });
 };
 
-function ProductStockGrid() {
-    let _items = [];
-    let pid = parseInt($("#ddlProduct").val()) || 0, ctid = parseInt($("#ddlCategory").val()) || 0;
-    let obj = { strValue1: '', strValue2: (ctid > 0 ? ctid : ''), strValue3: (pid > 0 ? pid : '') };
+function ProductAccountingGrid() {
+    //let _items = [];
+    //let pid = parseInt($("#ddlProduct").val()) || 0, ctid = parseInt($("#ddlCategory").val()) || 0;
+    //let obj = { strValue1: '', strValue2: (ctid > 0 ? ctid : ''), strValue3: (pid > 0 ? pid : '') };
     $('#dtProductsAccount').DataTable({
         oSearch: { "sSearch": '' }, order: [[0, "asc"]],
         language: {
@@ -31,21 +35,20 @@ function ProductStockGrid() {
             infoFiltered: "",
             infoEmpty: "No records found",
             processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>',
-           
         },
         destroy: true, bAutoWidth: false, ajax: {
             url: '/Accounting/GetProductStock', type: 'GET', dataType: 'json', contentType: "application/json; charset=utf-8",
-            data: obj,
-            dataSrc: function (data) {  return JSON.parse(data); }
+            /* data: obj,*/
+            dataSrc: function (data) { console.log(data); return JSON.parse(data); }
         },
         lengthMenu: [[10, 20, 50, 100], [10, 20, 50, 100]],
         columns: [
             { data: 'p_id', title: 'Parent ID', sWidth: "10%" },
             { data: 'post_title', title: 'Product Name', sWidth: "40%", },
             {
-                'data': 'ID', sWidth: "25%",
+                'data': 'AccountingAccountNumber', sWidth: "25%",
                 'render': function (id, type, full, meta) {
-                    return '<select class="form-control ddlNewAccounttoAssign" id="ddlNewAccounttoAssign">' + htmlAcc + '</select>';
+                    return '<select class="form-control select2" name="ddlNewAccounttoAssign" id="chk_' + full.id + '" >' + htmlAcc.replace('data-' + id, 'selected') + '</select>';
                 }
             },
             {
@@ -67,38 +70,45 @@ $('#checkAll').click(function () {
 function Singlecheck() {
     var isChecked = $('#CheckSingle').prop("checked");
     var isHeaderChecked = $("#checkAll").prop("checked");
+    
+    var EnableButton = true;
+    $('#dtProductsAccount tr:has(td)').find('input[type="checkbox"]').each(function () {
+        if ($(this).prop("checked") == true)
+            EnableButton = false;
+
+    });
+    $("#btnSaveProductAccount").prop("disabled", EnableButton);
     if (isChecked == false && isHeaderChecked) {
         $("#checkAll").prop('checked', isChecked);
-        
     }
     else {
-       
         $('#dtProductsAccount tr:has(td)').find('input[type="checkbox"]').each(function () {
             if ($(this).prop("checked") == false)
                 isChecked = false;
-            $("#btnSaveProductAccount").prop("disabled", isChecked == true ? false : true);
         });
         $("#checkAll").prop('checked', isChecked);
+       
     }
+
 }
 
 $('#btnSaveProductAccount').click(function () {
-
-    var id = "";
+    var Productid = "";
     var account = "";
     $("input:checkbox[name=CheckSingle]:checked").each(function () {
-        id += $(this).val() + ",";
-        account += $("#ddlStatus option:selected").val() + ",";
+        Productid += $(this).val() + ",";
+        account += $("#chk_" + $(this).val() + " option:selected").val() + ",";
     });
-    id = id.replace(/,(?=\s*$)/, '');
+    Productid = Productid.replace(/,(?=\s*$)/, '');
     account = account.replace(/,(?=\s*$)/, '');
-    console.log(id, account);
+    saveProductAccount(Productid,'', account);
 
 });
 
-function saveProductAccount(ProductID, ProductFor,ProductAccountNumberID) {
+function saveProductAccount(ProductID, ProductFor, ProductAccountNumberID) {
+    var ID = $("#hfid").val();
     var obj = {
-        ID: ID, fk_product_id: ProductID, Productfor: ProductFor, fk_account_number: ProductAccountNumberID,
+        ID: ID, strValue1: ProductID, Productfor: ProductFor, strValue2: ProductAccountNumberID,
     }
     $.ajax({
         url: '/Accounting/AddProductAccount/', dataType: 'json', type: 'Post',
@@ -108,6 +118,7 @@ function saveProductAccount(ProductID, ProductFor,ProductAccountNumberID) {
         beforeSend: function () {$("#loader").show();},
         success: function (data) {
             if (data.status == true) {
+                ProductAccountingGrid();
                 swal('Alert!', data.message, 'success');
             }
             else {

@@ -11,36 +11,46 @@
         $('.entry-mode-action').append('<button type="button" id="btnService" class="btn btn-danger billinfo"><i class="fas fa-concierge-bell"></i> Add Service</button>');
         $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList">Back to List</a><input type="submit" value="Create Order" id="btnSave" class="btn btn-danger billinfo" />');
         $('.billinfo').prop("disabled", false);
-
+        getVendorProducts();
         setTimeout(function () {
-            let _details = getVendorDetails();
-            if (_details.length > 0) $('#txtRefvendor').val(_details[0].code_vendor);
-        }, 50);
+            let _details = getVendorDetails(); 
+            if (_details.length > 0) {
+                $('#txtRefvendor').val(_details[0].code_vendor);
+                $('#ddlPaymentTerms').val((parseInt(_details[0].PaymentTermsID) || 0)).trigger('change');
+                $('#ddlBalancedays').val((parseInt(_details[0].BalanceID) || 0)).trigger('change');
+                $('#ddlIncoTerms').val((parseInt(_details[0].fk_incoterms) || 0)).trigger('change');
+                $('#ddlPaymentType').val((parseInt(_details[0].Paymentmethod) || 0)).trigger('change');
+                $('#txtIncoTerms').val(_details[0].location_incoterms);
+            }
+        }, 50);        
     });
-    $('#ddlProduct').select2({
-        allowClear: true, minimumInputLength: 3, placeholder: "Search Product",
-        ajax: {
-            url: '/PurchaseOrder/SearchProducts', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
-            data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
-            processResults: function (data) { var jobj = JSON.parse(data); return { results: jobj }; },
-            error: function (xhr, status, err) { }, cache: true
-        }
-    });
+    //$('#ddlProduct').select2({
+    //    allowClear: true, minimumInputLength: 3, placeholder: "Search Product",
+    //    ajax: {
+    //        url: '/PurchaseOrder/SearchProducts', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+    //        data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
+    //        processResults: function (data) { var jobj = JSON.parse(data); return { results: jobj }; },
+    //        error: function (xhr, status, err) { }, cache: true
+    //    }
+    //});
     $("#ddlProduct").change(function () {
         let product_id = parseInt($('#ddlProduct').val()) || 0, vender_id = parseInt($('#ddlVendor').val()) || 0;
         getItemList(product_id, vender_id); //$('#ddlProduct').val('').trigger('change');
     });
     $('#ddlIncoTerms').change(function () {
-        var IncotermsTypeID = $('#ddlIncoTerms').val();
-        var obj = { IncotermsTypeID: IncotermsTypeID };
-        $.ajax({
-            url: "/PurchaseOrder/GetIncotermByID", dataType: 'json', type: "Post", contentType: "application/json; charset=utf-8",
-            data: JSON.stringify(obj),
-            success: function (data) {
-                data = JSON.parse(data); $('#txtIncoTerms').val(data[0].short_description);
-            },
-            error: function (jqXHR, textStatus, errorThrown) { swal('Error!', errorThrown, "error"); }
-        });
+        let IncotermsTypeID = parseInt($('#ddlIncoTerms').val()) || 0;
+        let obj = { IncotermsTypeID: IncotermsTypeID };
+        if (IncotermsTypeID > 0) {
+            $.ajax({
+                url: "/PurchaseOrder/GetIncotermByID", dataType: 'json', type: "Post", contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(obj),
+                success: function (data) {
+                    data = JSON.parse(data); $('#txtIncoTerms').val(data[0].short_description);
+                },
+                error: function (jqXHR, textStatus, errorThrown) { swal('Error!', errorThrown, "error"); }
+            });
+        }
+        else { $('#txtIncoTerms').val(''); }
     });
     $(document).on("click", ".btnEdit", function (t) {
         t.preventDefault(); $("#loader").show();
@@ -68,7 +78,7 @@
         $("#txt_proc_total").val(rTotal.toFixed(2));
     });
     $(document).on("click", "#btnSave", function (t) { t.preventDefault(); saveVendorPO(); });
-    $(document).on("click", "#btnPrintPdf", function (t) { t.preventDefault(); printinvoice(); });
+    $(document).on("click", "#btnPrintPdf", function (t) { t.preventDefault(); printinvoice(false); });
 });
 function getMasters() {
     $.ajax({
@@ -118,6 +128,23 @@ function getVendorDetails() {
         error: function (jqXHR, textStatus, errorThrown) { swal('Error!', errorThrown, "error"); }, async: false
     });
     return _details;
+}
+function getVendorProducts() {
+    $('#line_items').empty(); calculateFinal();
+    let VendorID = parseInt($('#ddlVendor').val()) || 0;
+    $.ajax({
+        url: '/PurchaseOrder/GetVenderProducts', dataType: 'json', type: "get", contentType: "application/json; charset=utf-8",
+        data: { strValue1: VendorID },
+        success: function (data) {
+            console.log(data);
+            let dt = JSON.parse(data);
+            //Payment Terms
+            $("#ddlProduct").html('<option value="0">Select Product</option>');
+            for (i = 0; i < dt.length; i++) { $("#ddlProduct").append('<option value="' + dt[i].id + '">' + dt[i].text + '</option>'); }
+
+        },
+        error: function (jqXHR, textStatus, errorThrown) { swal('Error!', errorThrown, "error"); }, async: false
+    });
 }
 
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Item Tab Section ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -313,7 +340,7 @@ function getPurchaseOrderInfo() {
             url: "/PurchaseOrder/GetPurchaseOrderByID", type: "Get", beforeSend: function () { $("#loader").show(); }, data: option,
             success: function (result) {
                 try {
-                    let data = JSON.parse(result); 
+                    let data = JSON.parse(result);
                     for (let i = 0; i < data['po'].length; i++) {
                         $('#lblPoNo').text(data['po'][i].ref); $('#txtRefvendor').val(data['po'][i].ref_supplier); $('#txtPODate').val(data['po'][i].date_creation);
                         $('#ddlVendor').val(data['po'][i].fk_supplier).trigger('change');
@@ -444,8 +471,8 @@ function saveVendorPO() {
             success: function (data) {
                 if (data.status == true) {
                     $('#lblPoNo').data('id', data.id);
-                    getPurchaseOrderInfo(); 
-                    swal('Alert!', data.message, 'success').then(function () { swal.close(); printinvoice(); });
+                    getPurchaseOrderInfo();
+                    swal('Alert!', data.message, 'success').then(function () { swal.close(); printinvoice(true); });
                 }
                 else {
                     swal('Alert!', data.message, 'error')
@@ -457,15 +484,15 @@ function saveVendorPO() {
     }
 }
 
-function printinvoice() {
-    let _details = getVendorDetails();
+function printinvoice(is_mail) {
+    let _details = getVendorDetails(); console.log(_details);
     let _items = createItemsList();
     let payment_term = (parseInt($("#ddlPaymentTerms").val()) || 0) > 0 ? $("#ddlPaymentTerms option:selected").text() : '';
     let balance_days = (parseInt($("#ddlBalancedays").val()) || 0) > 0 ? $("#ddlBalancedays option:selected").text() : '';
     let location_incoterms = $("#txtIncoTerms").val();
     let total_qty = 0, total_gm = 0.00, total_tax = 0.00, total_shamt = 0.00, total_discamt = 0.00, total_net = 0.00;
     let com_add = $('#parent').data('ad1') + ', ' + $('#parent').data('ad2') + ', ' + $('#parent').data('city') + ', ' + $('#parent').data('state') + ', ' + $('#parent').data('country') + ' ' + $('#parent').data('zip');
-
+    let email = _details[0].email;
     var modalHtml = '';
     modalHtml += '<div class="modal-dialog modal-lg">';
     modalHtml += '<div class="modal-content">';
@@ -605,13 +632,14 @@ function printinvoice() {
 
     $('#POModal .modal-body').append(myHtml);
 
-    myHtml = '';
-    //$('#order_line_items > tr').each(function (index, tr) {
-    //    var qty = parseFloat($(this).find("[name=txt_ItemQty]").val()) || 0.00;
-    //    var grossAmount = parseFloat($(this).find(".TotalAmount").data('amount')) || 0.00;
-    //    myHtml += '<tr><td style="border-top: 1px solid rgba(0, 0, 0, 0.1);  padding: 9px 12px; vertical-align: middle;"><span>' + $(this).data('pname') + '</span><strong class="product-quantity">× ' + qty + '</strong></td><td style="border-top: 1px solid rgba(0, 0, 0, 0.1);  padding: 9px 12px; vertical-align: middle;"><span>$' + grossAmount + '</span></td></tr>';
-    //});
-    //$('#tblorder_details tbody').append(myHtml);
-
     $("#POModal").modal({ backdrop: 'static', keyboard: false });
+    var opt = { strValue1: email, strValue2: $('#lblPoNo').text(), strValue3: $('#POModal .modal-body').html() }
+    if (opt.strValue1.length > 5 && is_mail) {
+        $.ajax({
+            type: "POST", url: '/PurchaseOrder/SendMailInvoice', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
+            success: function (result) { console.log(result); },
+            error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
+            complete: function () { }, async: false
+        });
+    }
 }

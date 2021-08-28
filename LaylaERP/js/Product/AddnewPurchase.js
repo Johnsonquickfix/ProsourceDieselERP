@@ -46,11 +46,13 @@
         $(document).on('click', "#btnbuying", function () {
             $('#dvbuysing').show();
             $("#hfbuyingid").val('');
+            ClearControl();
         })
 
         $(document).on('click', "#btnbuyingcl", function () {
             $('#dvbuysing').hide();
             $("#hfbuyingid").val('');
+            ClearControl();
         })
     
         $.get('/Product/GetProductVariant/' + id, function (data) {
@@ -90,6 +92,17 @@
             //$('#ddlvender').bind(items);
         });
 
+
+        $.get('/Product/GetVender/' + id, function (data) {
+            var items = "";
+            // $('#ddlvender').empty();
+            // items += "<option value=''>Please select</option>";
+            $.each(data, function (index, value) {
+                items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddlvendercopy");
+            })
+            //$('#ddlvender').bind(items);
+        });
+
         $.get('/Product/Getwarehouse/', function (data) {
             var items = "";
           //  $('#ddlwarehouse').empty();
@@ -112,6 +125,10 @@
     $("#txtshippingprice").change(function () {
         addshippingprice();
     });
+
+    $('#lblcopyto').hide();
+    $('#ddlvendercopy').hide();
+    $('#btncopybuying').hide();
 });
 
 $("#btnaddupdatechild").click(function (e) {
@@ -295,6 +312,7 @@ $("#ddlproductchild").change(function () {
     bindfileuploade();
     ClearControl();
     $('#dvbuysing').hide();
+    $("#hfbuyingid").val('');
 });
 
 
@@ -495,7 +513,9 @@ function bindParentdata(data) {
 $(document).on('click', "#btnbuyingsave", function () {
     AddBuyingt();
 })
-
+$(document).on('click', "#btncopybuying", function () {
+    btncopybuying();
+})
 function AddBuyingt() {
     debugger
     ID = $("#hfbuyingid").val();
@@ -549,6 +569,89 @@ function AddBuyingt() {
                     }
                     else {
                        // $('#fetch_results > input:text').val('');
+                        swal('Alert!', data.message, 'success');
+                    }
+                    //$('#ddlProduct').val(null).trigger('change');
+                    //clear_fetch();
+
+                }
+                else {
+                    swal('Alert!', data.message, 'error')
+                }
+            },
+            complete: function () {
+                $("#loader").hide();
+                //location.href = '/Users/Users/';
+                //window.location.href = '/Users/Users/';
+
+            },
+            error: function (error) {
+                swal('Error!', 'something went wrong', 'error');
+            },
+        })
+    }
+
+
+
+}
+
+function btncopybuying() {
+    debugger
+    oldvender = $("#ddlvender").val();
+    ID = "0";
+    fk_productval = $('#ddlproductchild').val();
+    vender = $("#ddlvendercopy").val();
+    minpurchasequantity = $("#txtminpurchasequantity").val();
+    tagno = $("#txttaglotno").val();
+    costprice = $("#txtcostprice").val();
+    shippingprice = $("#txtshippingprice").val();
+    Saletax = $("#txtSaletax").val();
+    currency = $("#txtcurrencyconversionrate").val();
+    taxrate = $("#ddltaxrate").val();
+    Discountqty = $("#txtDiscountqty").val();
+    Remark = $("#txtRemarks").val();
+
+    if (vender == "") {
+        swal('Alert', 'Please Enter vender', 'error').then(function () { swal.close(); $('#ddlvender').focus(); });
+    }
+    else if (currency == "") {
+        swal('Alert', 'Please Enter price', 'error').then(function () { swal.close(); $('#txtcurrencyconversionrate').focus(); });
+    }
+    else if (oldvender == vender) {
+        swal('Alert', 'Can not coppy with same vender', 'error').then(function () { swal.close(); $('#ddlvendercopy').focus(); });
+    }
+    else {
+        var obj = {
+            ID: ID,
+            fk_product: fk_productval,
+            fk_vendor: vender,
+            minpurchasequantity: minpurchasequantity,
+            taglotserialno: tagno,
+            cost_price: costprice,
+            shipping_price: shippingprice,
+            salestax: Saletax,
+            purchase_price: currency,
+            taxrate: taxrate,
+            discount: Discountqty,
+            remark: Remark,
+
+        }
+        $.ajax({
+            url: '/Product/BuyingPrice/', dataType: 'json', type: 'Post',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(obj),
+            dataType: "json",
+            beforeSend: function () {
+                $("#loader").show();
+            },
+            success: function (data) {
+                if (data.status == true) {
+                    if (data.url == "Manage") {
+                        bindbuyingprice();
+                        swal('Alert!', 'vender details has been copied', 'success');
+                    }
+                    else {
+                        // $('#fetch_results > input:text').val('');
                         swal('Alert!', data.message, 'success');
                     }
                     //$('#ddlProduct').val(null).trigger('change');
@@ -674,6 +777,9 @@ function EditUser(id) {
             $("#txtRemarks").val(i[0].remark);
             $('#ddlvender').val(i[0].fk_vendor).trigger('change');
             $('#ddltaxrate').val(i[0].taxrate).trigger('change');
+            $('#lblcopyto').show();
+            $('#ddlvendercopy').show();
+            $('#btncopybuying').show();
       
         },
         error: function (msg) { alert(msg); }
@@ -1142,4 +1248,7 @@ function ClearControl() {
     $("#txtRemarks").val('');
     $('#ddlvender').val('').trigger('change');
     $('#ddltaxrate').val('0').trigger('change');
+    $('#lblcopyto').hide();
+    $('#ddlvendercopy').hide();
+    $('#btncopybuying').hide();
 }

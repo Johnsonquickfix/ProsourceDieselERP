@@ -1241,6 +1241,23 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
+
+        public static DataTable Getcountrystatecountry(ProductModel model)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                string strSQl = "select rowid from ShippingClass_Details"
+                                + " WHERE fk_ShippingID =" + model.fk_ShippingID + " and countrycode = '"+ model.countrycode + "' and statecode = '"+ model.statecode + "' "
+                                + " limit 10;";
+                dt = SQLHelper.ExecuteDataTable(strSQl);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
         public static int updateProductwarehouse(ProductModel model, DateTime dateinc)
         {
             int result = 0;

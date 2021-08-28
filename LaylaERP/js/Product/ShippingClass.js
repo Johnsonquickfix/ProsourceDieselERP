@@ -163,6 +163,7 @@ function Adddetails() {
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify(obj),
             dataType: "json",
+            headers: { "Content-Type": "application/json" },
             beforeSend: function () {
                 $("#loader").show();
             },
@@ -170,10 +171,12 @@ function Adddetails() {
                 if (data.status == true) {
                     if (data.url == "Manage") {
                         dataGridLoad('');
+                        $('#ddlState').val(null).trigger('change')
                        swal('Alert!', data.message, 'success');
                     }
                     else {
                         dataGridLoad('');
+                        $('#ddlState').val(null).trigger('change')
                         // $('#fetch_results > input:text').val('');
                         swal('Alert!', data.message, 'success');
                     }
@@ -187,9 +190,6 @@ function Adddetails() {
             },
             complete: function () {
                 $("#loader").hide();
-                //location.href = '/Users/Users/';
-                //window.location.href = '/Users/Users/';
-
             },
             error: function (error) {
                 swal('Error!', 'something went wrong', 'error');
@@ -272,21 +272,27 @@ function fillshiping() {
     $.get('/Product/GetShipping/' + 1, function (data) {
         var items = "";
         $('#txtShippingClass').empty();
-        //items += "<option value=''>Please select</option>";
+        optionText = 'Please select';
+        optionValue = "";
+        $('#txtShippingClass').append(new Option(optionText, optionValue));
+       // items += "<option value=''>Please select</option>";
         $.each(data, function (index, value) {
             items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#txtShippingClass");
         })
+       
         //$('#txtShippingClass').bind(items);
     });
 
     $.get('/Product/GetShipping/' + 1, function (data) {
         var items = "";
-        //$('#ddlShippingClassdel').empty();
-       // items += "<option value=''>Please select</option>";
+        $('#ddlShippingClassdel').empty();
+        optionText = 'Please select';
+        optionValue = "";
+        $('#ddlShippingClassdel').append(new Option(optionText, optionValue));
         $.each(data, function (index, value) {
             items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddlShippingClassdel");
         })
-       // $('#ddlShippingClassdel').bind(items);
+        //$('#ddlShippingClassdel').bind(items);
     });
 }
 

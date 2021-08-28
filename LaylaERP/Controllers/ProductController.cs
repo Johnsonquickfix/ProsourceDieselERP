@@ -408,6 +408,7 @@ namespace LaylaERP.Controllers
                 string[] state = model.statecode.Split(',');
                 for (int x = 0; x < state.Length; x++)
                 {
+                    model.statecode = state[x].Trim();
                     DataTable dt = ProductRepository.Getcountrystatecountry(model);
                     if (dt.Rows.Count > 0 && model.ID == 0)
                     {
@@ -435,6 +436,7 @@ namespace LaylaERP.Controllers
             }
             else
             {
+                model.statecode = null;
                 DataTable dt = ProductRepository.Getcountrystatecountry(model);
                 if (dt.Rows.Count > 0 && model.ID == 0)
                 {

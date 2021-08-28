@@ -57,12 +57,18 @@ function ProductAccountingGrid() {
         },
         lengthMenu: [[10, 20, 50, 100], [10, 20, 50, 100]],
         columns: [
+            
             { data: 'p_id', title: 'Parent ID', sWidth: "10%" },
+            {
+                data: 'id', title: 'ID', sWidth: "10%", render: function (data, type, row) {
+                    if (row.post_parent > 0) return '<a href="javascript:void(0);" class="details-control"></a>' + row.id; else return '<a href="javascript:void(0);" class="details-control"></a> <b>#' + row.id + '</b>';
+                }
+            },
             { data: 'post_title', title: 'Product Name', sWidth: "40%", },
             {
                 'data': 'AccountingAccountNumber', sWidth: "25%",
                 'render': function (id, type, full, meta) {
-                    return '<select class="form-control select2" name="ddlNewAccounttoAssign" id="chk_' + full.id + '" >' + htmlAcc.replace('data-' + id, 'selected') + '</select>';
+                    return '<select class="form-control select2" name="ddlNewAccounttoAssign" id="chk_' + full.id + '" >' + htmlAcc.replace(new RegExp("\\b" + 'data-' + id + "\\b"), "selected") + '</select>';
                 }
             },
             {
@@ -73,7 +79,9 @@ function ProductAccountingGrid() {
             },
             
         ],
-        columnDefs: [{ targets: [0], visible: false, searchable: false }]
+        columnDefs: [{
+            targets: [0], visible: false, searchable: false, bSortable: false,
+            aTargets: [-1] }]
     });
 }
 $('#checkAll').click(function () {

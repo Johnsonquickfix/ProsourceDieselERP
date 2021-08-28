@@ -4,11 +4,7 @@
     $('#btnSearch').click(function () {
         PurchaseOrderGrid();
     });
-    //$(document).on('focus', '.dataTables_filter input', function () {
-    //    $(this).unbind().bind('keyup', function (e) {
-    //        if (e.keyCode === 13) { oTable.search(this.value).draw(); }
-    //    });
-    //});
+    $(document).on('click', '#btnChange', function () { orderStatus(); });
 });
 function PurchaseOrderGrid() {
     let urid = parseInt($("#ddlSearchStatus").val());
@@ -59,7 +55,7 @@ function PurchaseOrderGrid() {
             {
                 'data': 'ref', sWidth: "10%", title: 'PO No',
                 'render': function (id, type, full, meta) {
-                    return '<a href="NewPurchaseOrder/' + full.id + '">' + id + '</a>';
+                    return '<a href="NewPurchaseOrder/' + full.id + '">' + id + '</a> <a href="#" onclick="getPurchaseOrderPrint(' + full.id + ', false);"><i class="fas fa-search-plus"></i></a>';
                 }
             },
             { data: 'date_creation', title: 'Order Date', sWidth: "10%" },
@@ -104,9 +100,9 @@ function orderStatus() {
     if (id == "") { swal('alert', 'Please select a Purchase order.', 'error'); }
     else if (status == "") { swal('alert', 'Please select status.', 'error'); }
     else {
-        var obj = { strVal: id, status: status }
+        var obj = { Search: id, Status: status }
         $.ajax({
-            url: '/Orders/ChangeOrderStatus', dataType: 'JSON', type: 'POST',
+            url: '/PurchaseOrder/UpdatePurchaseOrderStatus', dataType: 'JSON', type: 'POST',
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify(obj),
             beforeSend: function () { $("#loader").show(); },

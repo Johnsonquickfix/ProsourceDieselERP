@@ -157,6 +157,7 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(result, 0);
         }
+
         public JsonResult GetNewAccounttoAssign(SearchModel model)
         {
             DataSet ds = BAL.AccountingRepository.GetNewAccounttoAssign();

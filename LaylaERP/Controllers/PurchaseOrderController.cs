@@ -144,6 +144,24 @@ namespace LaylaERP.Controllers
             }
             return Json(new { status = b_status, message = JSONstring, id = ID }, 0);
         }
+        [HttpGet]
+        public JsonResult UpdatePurchaseOrderStatus(PurchaseOrderModel model)
+        {
+            string JSONstring = string.Empty; bool b_status = false;
+            try
+            {
+                if (new PurchaseOrderRepository().UpdatePurchaseStatus(model) > 0)
+                { b_status = true; JSONstring = "Purchase Record has been updated successfully!!"; }
+                else
+                { b_status = false; JSONstring = "Invalid Details."; }
+            }
+            catch (Exception Ex)
+            {
+                b_status = false; JSONstring = Ex.Message;
+            }
+            return Json(new { status = b_status, message = JSONstring }, 0);
+
+        }
         public JsonResult GetPurchaseOrderList(JqDataTableModel model)
         {
             string result = string.Empty;
@@ -171,6 +189,22 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(JSONresult, 0);
         }
+        [HttpGet]
+        public JsonResult GetPurchaseOrderPrint(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            OperatorModel om = CommanUtilities.Provider.GetCurrent();
+            try
+            {
+                long id = 0;
+                if (!string.IsNullOrEmpty(model.strValue1))
+                    id = Convert.ToInt64(model.strValue1);
+                DataSet ds = PurchaseOrderRepository.GetPurchaseOrder(id);
+                JSONresult = JsonConvert.SerializeObject(ds);
+            }
+            catch { }
+            return Json(new { add = om.address, add1 = om.address1, city = om.City, state = om.State, zip = om.postal_code, country = om.Country, phone = om.user_mobile, email = om.email, website = om.website, data = JSONresult }, 0);
+        }
         [HttpPost]
         public JsonResult SendMailInvoice(SearchModel model)
         {
@@ -191,5 +225,6 @@ namespace LaylaERP.Controllers
             catch { status = false; result = ""; }
             return Json(new { status = status, message = result }, 0);
         }
+
     }
 }

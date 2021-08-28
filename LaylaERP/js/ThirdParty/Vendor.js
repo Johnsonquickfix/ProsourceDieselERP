@@ -1,5 +1,6 @@
 ﻿$(document).ready(function () {
     $("#loader").hide();
+    $(".select2").select2();
     $("#txtContactPhone").mask("(999) 999-9999");
     $("#txtPhone").mask("(999) 999-9999");
     getVendorType();

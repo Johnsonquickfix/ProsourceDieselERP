@@ -22,15 +22,25 @@
 <section class="content section-content neworder-section table-design">
 
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-6">
             <div class="user-top-section">
                 <div class="tablenav top tablenav-top2">
-                    <div class="alignleft actions bulkactions">
-                        @*<label for="exampleInputEmail1">Shipping Class</label>*@
-                        <input type="text" class="form-control" id="txtShippingClass" placeholder="Shipping Class">
-                        <button id="btnAddDetails" class="btn btn-danger" title="Click here to see Add Details" data-toggle="tooltip">Add Details</button>
-                        <br />
 
+                    <div>
+                        <button type="button" id="btnnewshipping" class="btn btn-danger" data-toggle="modal" data-target="#roleModal">
+                            <i class="fa fa-plus"></i> Add New Shipping
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="user-top-section">
+                <div class="tablenav top tablenav-top2">
+                    <div>
+                        <button type="button" id="btndeleteshipping" class="btn btn-danger" data-toggle="modal" data-target="#deletepriceModal">
+                            <i class="fa fa-plus"></i> Delete Shipping Price
+                        </button>
                     </div>
                 </div>
             </div>
@@ -42,26 +52,37 @@
                 <div class="box box-primary">
                     <div class="box-body">
                         <div class="form-group d-flex">
+                            <label class="col-sm-3 control-label">Shipping Class</label>
+                            <div class="col-sm-9">
+                                <select id="txtShippingClass" class="form-control">
+                                    <option  value="">Please select</option>
+                                  
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group d-flex">
                             <input type="hidden" id="hfshipingid" />
                             <label class="col-sm-3 control-label">Country</label>
                             <div class="col-sm-9">
                                 <select id="ddlCountry" class="form-control">
                                     <option value="">Select Country</option>
                                     <option value="US">United States</option>
-                                    <option value="CA">CANADA</option>
+                                    <option value="CA">Canada</option>
                                 </select>
                             </div>
                         </div>
-                            
+
                         <div class="form-group d-flex">
-                            <label class="col-sm-3 control-label">State</label>
+                            <input type="hidden" id="hfshipingid" />
+                            <label class="col-sm-3 control-label">Country/State</label>
                             <div class="col-sm-9">
-                                @*<select id="ddlState" class="form-control">
-                                    <option value="">Select State</option>
-                                </select>*@
-                                <select class="form-control select2"  id="ddlState" placeholder="Select State" multiple style="width: 100%;"></select>
+                                @*<select class="form-control select2" id="ddlState" placeholder="Select State" multiple style="width: 100%;"></select>*@
+                                <select class="form-control select2" id="ddlState" placeholder="Select State" multiple style="width: 100%;"></select>
                             </div>
                         </div>
+
+                        @*<select class="form-control select2" id="ddlStatecity" placeholder="Select City State" multiple style="width: 100%;"></select>*@
 
                         <div class="form-group d-flex">
                             <label class="col-sm-3 control-label">Method</label>
@@ -70,7 +91,7 @@
                                     <option value="">Select Method</option>
                                     <option value="fltrate">Flat rate</option>
                                     <option value="freeshipping">Free Shipping</option>
-                                    <option value="localpickup">Local Pickup</option>                              
+                                    <option value="localpickup">Local Pickup</option>
                                 </select>
                             </div>
                         </div>
@@ -80,23 +101,25 @@
                             <div class="col-sm-3">
                                 <input type="text" id="txtPrice" class="form-control">
                             </div>
-                            <div class="col-sm-3">
+                            <label class="col-sm-1 control-label">Cost Type.</label>
+                            <div class="col-sm-2">
                                 <select id="ddlType" class="form-control">
-                                    <option value="">Select Type</option>
-                                    <option value="qty">Qty</option>                                    
+                                    <option value="">Select Cost Type</option>
+                                    <option value="flat">Flat</option>
+                                    <option selected value="qty">Qty</option>
                                 </select>
                             </div>
-
-                            <div class="col-sm-3">
+                            <label class="col-sm-1 control-label">Taxable.</label>
+                            <div class="col-sm-2">
                                 <select id="ddlTaxable" class="form-control">
-                                    <option value="" selected="">Select Taxable</option>
-                                    <option value="yes" >Yes</option>
+                                    <option value="">Select Taxable</option>
+                                    <option selected value="yes">Yes</option>
                                     <option value="no">No</option>
                                 </select>
                             </div>
                             @*<div class="col-sm-3">
-                                <input type="text" id="txttaxprice" placeholder="Tax Price" value="0" class="form-control">
-                            </div>*@
+            <input type="text" id="txttaxprice" placeholder="Tax Price" value="0" class="form-control">
+        </div>*@
                         </div>
                         <div class="form-group d-flex">
                             <div class="col-sm-11 text-right">
@@ -126,7 +149,7 @@
                                 <th>State</th>
                                 <th>Method</th>
                                 <th>Price</th>
-                                <th>Type</th>
+                                <th>Cost Type</th>
                                 <th>Taxable</th>                             
                                 <th></th>
                             </tr>
@@ -138,6 +161,71 @@
         </div>
     </div>
 </section>
+<div class="modal fade" id="roleModal" tabindex="-1" role="dialog" aria-labelledby="roleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="exampleModalLongTitle">Add New Shipping</h4>
+                @*<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>*@
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="form-group">
+                        <label class="control-label col-md-3 text-right" for="Email">Shipping Name</label>
+                        <div class="col-md-9">
+                            <input type="text" id="txtShippingName" class="form-control" placeholder="Shipping Name" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" id="btnSave" class="btn btn-danger"><i class="fa fa-save"></i> Save </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="deletepriceModal" tabindex="-1" role="dialog" aria-labelledby="roleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="deleteModalLongTitle">Delete Shipping Price</h4>
+                @*<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>*@
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Shipping Class</label>
+                        <div class="col-sm-9">
+                            <select id="ddlShippingClassdel" class="form-control">
+                                <option value="">Please select</option>
+                            </select>
+                        </div>
+                    </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Country</label>
+                                <div class="col-sm-9">
+                                    <select id="ddlCountrydel" class="form-control">
+                                        <option value="">Select Country</option>
+                                        <option value="US">United States</option>
+                                        <option value="CA">Canada</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" id="btndelete" class="btn btn-danger"><i class="fa fa-save"></i> Delete </button>
+            </div>
+        </div>
+    </div>
+</div>
 <script src="~/js/common.js"></script>
 <script src="@Url.Content("~/js/Product/ShippingClass.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
  

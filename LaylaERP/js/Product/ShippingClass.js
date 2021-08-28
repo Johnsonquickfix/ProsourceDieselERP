@@ -1,7 +1,7 @@
-﻿$(document).ready(function () {
+﻿ $(document).ready(function () {
     setTimeout(function () { dataGridLoad(''); }, 100);
   $("#loader").hide();
-    $('#dvdetails').hide();
+   // $('#dvdetails').hide();
     $(document).on('click', "#btnAddDetails", function () {
         $('#dvdetails').show();
     })
@@ -10,11 +10,16 @@
         //$('#dvdetails').hide();
         location.reload();
     })
+   // loadecitystate();
+     fillshiping();
 
-    $("#ddlCountry").change(function () {
-        var obj = $("#ddlCountry").val();        
-        BindStateCounty(obj);       
-    });
+     $("#ddlCountry").change(function () {
+         var obj = $("#ddlCountry").val();             
+         BindStateCounty(obj);
+         ID = $("#hfshipingid").val();
+        // if (parseInt(ID) = 0)
+         SelectedStateCounty();
+     });
 
     $("#ddlMethod").change(function () {
         if ($("#ddlMethod").val() != 'fltrate') {
@@ -46,6 +51,73 @@
         $this.val($this.val().substring(0, 10));
     });
 
+ });
+
+$('#btnSave').click(function () {
+    var Shipping = $('#txtShippingName').val();
+    if (Shipping == "") {
+        swal("alert", "Please enter Shipping Name", "error").then(function () { swal.close(); $('#txtShippingName').focus(); })
+    }
+    else {
+        var obj = { Shippingclass_Name: Shipping }
+        $.ajax({
+            url: '/Product/NewShipping/', dataType: 'json', type: 'Post',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(obj),
+            dataType: "json",
+            success: function (data) {
+                if (data.status == true) {
+                    swal("alert", data.message, "success");
+                    $("#roleModal").modal('hide');
+                    fillshiping();
+                }
+                else {
+                    swal('Alert!', data.message, 'error');
+                }
+            },
+            error: function () {
+                swal("alert", "something went wrong", "error");
+                $("#roleModal").modal('hide');
+            }
+        })
+    }
+});
+
+
+
+
+$('#btndelete').click(function () {
+    var Shipping = $('#ddlShippingClassdel').val();
+    var country = $('#ddlCountrydel').val();
+    if (Shipping == "") {
+        swal("alert", "Please select Shipping Class", "error").then(function () { swal.close(); $('#ddlShippingClassdel').focus(); })
+    }
+    else if (country == "") {
+        swal("alert", "Please select Country", "error").then(function () { swal.close(); $('#ddlCountrydel').focus(); })
+    }
+    else {
+        var obj = { fk_ShippingID: Shipping, countrycode: country }
+        $.ajax({
+            url: '/Product/deleteShippingprice/', dataType: 'json', type: 'Post',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(obj),
+            dataType: "json",
+            success: function (data) {
+                if (data.status == true) {
+                    swal("alert", data.message, "success");
+                    $("#deletepriceModal").modal('hide');
+                    dataGridLoad();
+                }
+                else {
+                    swal('Alert!', data.message, 'error');
+                }
+            },
+            error: function () {
+                swal("alert", "something went wrong", "error");
+                $("#deletepriceModal").modal('hide');
+            }
+        })
+    }
 });
 
 $(document).on('click', "#btnsavedetails", function () {
@@ -58,25 +130,25 @@ function Adddetails() {
     var statearray = $('#ddlState option:selected')
         .toArray().map(item => item.value).join();
     stateval = statearray;
-    shippingname = $('#txtShippingClass').val();
-    Countryval = $('#ddlCountry').val();   
-   // stateval = $("#ddlState").val();
+   // shippingname = $('#txtShippingClass').val();
+    Countryval = $('#ddlCountry').val();
+    fk_ShippingID = $("#txtShippingClass").val();
     Methodval = $("#ddlMethod").val();
     ship_price = $("#txtPrice").val();
     typeval = $("#ddlType").val();
     taxval = $("#ddlTaxable").val();
     //taxprise = $("#txttaxprice").val();
 
-    if (shippingname == "") {
-        swal('Alert', 'Please Enter Shipping Class', 'error').then(function () { swal.close(); $('#txtShippingClass').focus(); });
+    if (fk_ShippingID == "") {
+        swal('Alert', 'Please Select Shipping Class', 'error').then(function () { swal.close(); $('#txtShippingClass').focus(); });
     }
     else if (Countryval == "") {
         swal('Alert', 'Please Select Country', 'error').then(function () { swal.close(); $('#ddlCountry').focus(); });
-    } 
+    }
     else {
         var obj = {
             ID: ID,
-            Shippingclass_Name: shippingname,
+            fk_ShippingID: fk_ShippingID,
             countrycode: Countryval,
             statecode: stateval,
             Shipping_Method: Methodval,
@@ -91,9 +163,9 @@ function Adddetails() {
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify(obj),
             dataType: "json",
-            //beforeSend: function () {
-            //    $("#loader").show();
-            //},
+            beforeSend: function () {
+                $("#loader").show();
+            },
             success: function (data) {
                 if (data.status == true) {
                     if (data.url == "Manage") {
@@ -125,13 +197,101 @@ function Adddetails() {
             async: false
         })
     }
-
-
-
 }
-///Bind States of Country
-function BindStateCounty(obj) {
+function GetCountryState() {
+    let CountryState = [];
+    $.ajax({
+        type: "get", url: '/Product/GetCityStateData', contentType: "application/json; charset=utf-8", dataType: "json", data: {},
+        success: function (data) {
+            //data = JSON.parse(data); _shipping_class = data;
+            console.log(data);
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) { }, async: false
+    });
+    return CountryState;
+}
+
+function loadecitystate() {
+
+    let CountryState = GetCountryState();
+   // console.log(_shipping_class);
+    //$('#ddlState').select2({
+    //    multiple: true,
+    //    placeholder: "Select State...",
+    //    data: _shipping_class,
+    //    query: function (options) {
+    //        var selectedIds = options.element.select2('val');
+    //        var selectableGroups = $.map(this.data, function (group) {
+    //            var areChildrenAllSelected = true;
+    //            $.each(group.children, function (i, child) {
+    //                if (selectedIds.indexOf(child.id) < 0) {
+    //                    areChildrenAllSelected = false;
+    //                    return false; // Short-circuit $.each()
+    //                }
+    //            });
+    //            return !areChildrenAllSelected ? group : null;
+    //        });
+    //        options.callback({ results: selectableGroups });
+    //    }
+    //}).on('select2-selecting', function (e) {
+    //    var $select = $(this);
+    //    if (e.val == '') {
+    //        e.preventDefault();
+    //        $select.select2('data', $select.select2('data').concat(e.choice.children));
+    //        $select.select2('close');
+    //    }
+    //});
+}
     
+
+
+
+    //var strValue1 = "1";
+    //$.ajax({
+    //    type: "POST",
+    //    async: true,
+    //    url: '/Product/GetCityStateData',
+    //    data: {
+    //        'strValue1': strValue1
+    //    },
+    //    dataType: "json",        
+    //    success: function (data) {
+    //        $("#ddlState").empty();
+    //        var $prevGroup, prevGroupName;
+    //        $.each(JSON.parse(data), function () {
+    //            if (prevGroupName != this.Country) {
+    //                $prevGroup = $('<optgroup />').prop('label', this.Country).appendTo('#ddlState');
+    //            }
+    //            $("<option />").val(this.State).text(this.StateFullName).appendTo($prevGroup);
+    //            prevGroupName = this.Country;
+    //        }); $(".select2").select2();
+    //    } 
+    //}) 
+//}
+function fillshiping() {
+    $.get('/Product/GetShipping/' + 1, function (data) {
+        var items = "";
+        $('#txtShippingClass').empty();
+        //items += "<option value=''>Please select</option>";
+        $.each(data, function (index, value) {
+            items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#txtShippingClass");
+        })
+        //$('#txtShippingClass').bind(items);
+    });
+
+    $.get('/Product/GetShipping/' + 1, function (data) {
+        var items = "";
+        //$('#ddlShippingClassdel').empty();
+       // items += "<option value=''>Please select</option>";
+        $.each(data, function (index, value) {
+            items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddlShippingClassdel");
+        })
+       // $('#ddlShippingClassdel').bind(items);
+    });
+}
+
+function BindStateCounty(obj) {
+
     //$.get('/Product/Getsate/' + parseInt($("#ddlCountry").val()), { async: false }, function (data) {
     //    var items = "";
     //    $('#ddlState').empty();
@@ -150,10 +310,32 @@ function BindStateCounty(obj) {
             error: function (xhr, status, err) { }, cache: true
         }
     });
+}
+function SelectedStateCounty() {
+    $("#ddlState").empty();
+    //var strValue2: $("#ddlCountry").val();
+    var obj = { strValue1: $("#ddlCountry").val() }
+    $.ajax({
+
+        url: '/Product/SelectedStateData/' + ID,
+
+        type: 'post',
+        contentType: "application/json; charset=utf-8",
+        dataType: 'JSON',
+        data: JSON.stringify(obj),
+        success: function (data) {
+            var datalog = JSON.parse(data);
+            for (var i = 0; i < datalog.length; i++) {
+                $("#ddlState").append('<option value="' + datalog[i].State + '" selected>' + datalog[i].StateFullName + '</option>');
+            }
+
+        },
+        error: function (msg) { alert(msg); },
+        async: false
+    });
 
 
 }
-
 function dataGridLoad(order_type) {
 
     //var types = $('#ddltype').val();
@@ -232,6 +414,7 @@ function dataGridLoad(order_type) {
 }
 
 function EditData(id) {
+  //  loadecitystate();
     $('#dvdetails').show();
     $("#hfshipingid").val(id);
     var ID = id;
@@ -249,8 +432,8 @@ function EditData(id) {
             $("#txtShippingClass").val(i[0].ShipName);
         //    $("#txttaxprice").val(i[0].Shipping_taxrate);
         
-            $('#ddlCountry').val(i[0].countrycode).trigger('change');            
-           // $('#ddlState').val(i[0].statecode).trigger('change');
+          $('#ddlCountry').val(i[0].countrycode).trigger('change');            
+            $('#txtShippingClass').val(i[0].fk_ShippingID).trigger('change');
            // $('#ddlCountry').trigger('change');
             $('#ddlMethod').val(i[0].Method).trigger('change');
     
@@ -258,7 +441,7 @@ function EditData(id) {
             $('#ddlTaxable').val(i[0].taxable).trigger('change');
             $("#txtPrice").val(i[0].Shipping_price);
            // $('#ddlState').val(i[0].statecode).trigger('change');
-            $("#txtShippingClass").prop("readonly", true);
+           // $("#txtShippingClass").prop("readonly", true);
             //$('#ddlState').val(id).trigger('change');
             setTimeout(function () { statedata(i[0].statecode, i[0].Statefullname); }, 2000);
         },

@@ -591,6 +591,55 @@ namespace LaylaERP.BAL
             { throw ex; }
             return DT;
         }
+        public int CheckDuplicateShipping(ProductModel model)
+        {
+            try
+            {
+                string strquery = "select count(Shippingclass_Name) from Shipping_class where Shippingclass_Name = '" + model.Shippingclass_Name + "' ";
+                MySqlParameter[] para =
+                {
+
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strquery).ToString());
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+        public int AddNewShipping(ProductModel model)
+        {
+            try
+            {
+                string strsql = "insert into Shipping_class(Shippingclass_Name)values(@Shippingclass_Name);SELECT LAST_INSERT_ID();";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@Shippingclass_Name", model.Shippingclass_Name),               
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+        public int deleteShippingprice(ProductModel model)
+        {
+            try
+            {
+                string strsql = "delete from ShippingClass_Details where Type = 'flat' and fk_ShippingID = " + model.fk_ShippingID + " and countrycode = '"+ model.countrycode + "' ";
+               
+                int result = SQLHelper.ExecuteNonQuery(strsql.ToString());
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
         public static DataTable Getsate(string Country)
         {
             DataTable DT = new DataTable();
@@ -616,6 +665,34 @@ namespace LaylaERP.BAL
             { throw ex; }
             return DT;
         }
+        public static DataTable SelectedStateData(string country)
+        {
+            DataTable DT = new DataTable();
+            try
+            {
+
+                DT = SQLHelper.ExecuteDataTable("select distinct StateFullName,State from erp_StateList where Country = '" + country + "'  order by StateFullName limit 70;");
+
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DT;
+        }
+
+        public static DataTable GetCountryStateData(string strSearch, string country)
+        {
+            DataTable DT = new DataTable();
+            try
+            {
+
+                DT = SQLHelper.ExecuteDataTable("select distinct Country,StateFullName,TRIM(State) State from erp_StateList  order by Country limit 50;");
+
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DT;
+        }
+
         public static DataTable Getwarehouse()
         {
             DataTable DT = new DataTable();
@@ -861,8 +938,16 @@ namespace LaylaERP.BAL
                 + " left OUTER join erp_StateList esl on esl.State = ScD.statecode"
                 + " left OUTER join erp_StateList eslcun on eslcun.Country = ScD.countrycode"
                 + " WHERE rowid > 0" + strWhr
-             
-                + " order by " + SortCol + " " + SortDir + " limit " + (pageno).ToString() + ", " + pagesize + "";
+
+              //  string strSql = "select DISTINCT fk_Shippingid, Shippingclass_Name ShipName,eslcun.CountryFullName Country,Method,format(Shipping_price,2) Shipping_price"
+              //+ " ,Type,taxable ,(select group_concat(esl.StateFullName) from erp_StateList esl where esl.State = esl.State group by  Shipping_price) State"
+              //+ " from ShippingClass_Details ScD"
+              //+ " left OUTER join Shipping_class sc on sc.id = ScD.fk_ShippingID"
+              // + " left OUTER join Shipping_class sc on sc.id = ScD.fk_ShippingID"
+              //+ " left OUTER join erp_StateList eslcun on eslcun.Country = ScD.countrycode"
+              //+ " WHERE rowid > 0" + strWhr
+
+              + " order by " + SortCol + " " + SortDir + " limit " + (pageno).ToString() + ", " + pagesize + "";
 
                 strSql += "; SELECT count(distinct rowid) TotalRecord from ShippingClass_Details ScD"                              
                 + " left OUTER join Shipping_class sc on sc.id = ScD.fk_ShippingID"
@@ -1046,7 +1131,7 @@ namespace LaylaERP.BAL
                 // strSql.Append(string.Format("insert into Product_Purchase_Items ( fk_vendor,purchase_price,cost_price,minpurchasequantity,salestax,taxrate,discount,remark) values ({0},{1},{2},{3},{4},{5},{6},{7},'{8}') ", model.fk_product, model.fk_vendor, model.purchase_price, model.cost_price, model.minpurchasequantity, model.salestax, model.taxrate, model.discount, model.remark));
 
                 /// step 6 : wp_posts
-                strSql.Append(string.Format("update ShippingClass_Details set countrycode = '{0}' ,statecode = '{1}',Method = '{2}',Shipping_price = {3},Type = '{4}',taxable = '{5}' where rowid = {6} ", model.countrycode, model.statecode, model.Shipping_Method, model.Ship_price, model.Shipping_type, model.taxable, model.ID));
+                strSql.Append(string.Format("update ShippingClass_Details set countrycode = '{0}' ,statecode = '{1}',Method = '{2}',Shipping_price = {3},Type = '{4}',taxable = '{5}',fk_ShippingID= {6} where rowid = {7} ", model.countrycode, model.statecode, model.Shipping_Method, model.Ship_price, model.Shipping_type, model.taxable, model.fk_ShippingID, model.ID));
 
                 result = SQLHelper.ExecuteNonQuery(strSql.ToString());
             }

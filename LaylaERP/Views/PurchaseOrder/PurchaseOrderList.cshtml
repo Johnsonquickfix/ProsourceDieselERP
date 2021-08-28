@@ -27,7 +27,7 @@
                             <option value="7">Canceled</option>
                             <option value="8">Refused</option>
                         </select>
-                        <button type="button" id="btnChange" onclick="orderStatus();" class="btn btn-primary btn-flat button">Change</button>
+                        <button type="button" id="btnChange" class="btn btn-primary btn-flat button">Change</button>
                     </div>
                     <div class="alignleft actions">
                         <select class="form-control select2" id="ddlSearchStatus" placeholder="Select User">
@@ -79,6 +79,7 @@
 
 
 </section>
+<script src="@Url.Content("~/js/PurchaseOrder/PurchasePrint.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 <script src="@Url.Content("~/js/PurchaseOrder/PurchaseOrderList.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 
 

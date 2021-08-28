@@ -232,6 +232,27 @@ namespace LaylaERP.BAL
             }
             return result;
         }
+        public long UpdatePurchaseStatus(PurchaseOrderModel model)
+        {
+            long result = 0;
+            try
+            {
+                string str_oiid = string.Join(",", model.PurchaseOrderProducts.Select(x => x.rowid.ToString()).ToArray());
+                string strsql = "";
+                DateTime cDate = CommonDate.CurrentDate(), cUTFDate = CommonDate.UtcDate();
+                string strPOYearMonth = cDate.ToString("yyMM").PadRight(4);
+                if (model.Status == 11)
+                    strsql += string.Format("update commerce_purchase_order set fk_status='{0}',ref_ext=REPLACE(ref,'PO','PI') where rowid in ({1});", model.Status, model.Search);
+                else
+                    strsql += string.Format("update commerce_purchase_order set fk_status='{0}' where rowid in ({1});", model.Status, model.Search);
+                result = SQLHelper.ExecuteNonQueryWithTrans(strsql);
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+            return result;
+        }
         //Get Purchase order
         public static DataSet GetPurchaseOrderByID(long id)
         {
@@ -241,6 +262,31 @@ namespace LaylaERP.BAL
                 MySqlParameter[] para = { new MySqlParameter("@po_id", id), };
                 string strSql = "select rowid,ref,ref_ext,ref_supplier,fk_supplier,fk_status,source,fk_payment_term,fk_balance_days,fk_payment_type,DATE_FORMAT(date_livraison,'%m/%d/%Y') date_livraison,"
                                 + " fk_incoterms,location_incoterms,note_private,note_public,fk_user_author,DATE_FORMAT(date_creation,'%m/%d/%Y') date_creation from commerce_purchase_order where rowid = @po_id;"
+                                + " select rowid,fk_purchase,fk_product,ref product_sku,description,qty,discount_percent,discount,subprice,total_ht,tva_tx,localtax1_tx,localtax1_type,"
+                                + " localtax2_tx,localtax2_type,total_tva,total_localtax1,total_localtax2,total_ttc,product_type,date_start,date_end,rang"
+                                + " from commerce_purchase_order_detail where fk_purchase = @po_id;";
+                ds = SQLHelper.ExecuteDataSet(strSql, para);
+                ds.Tables[0].TableName = "po"; ds.Tables[1].TableName = "pod";
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return ds;
+        }
+        //Get Purchase order
+        public static DataSet GetPurchaseOrder(long id)
+        {
+            DataSet ds = new DataSet();
+            try
+            {
+                MySqlParameter[] para = { new MySqlParameter("@po_id", id), };
+                string strSql = "select po.rowid,po.ref,po.ref_ext,po.ref_supplier,po.fk_supplier,po.fk_status,po.fk_payment_term,pt.PaymentTerm,po.fk_balance_days,bd.Balance,po.fk_payment_type,"
+                                + " DATE_FORMAT(po.date_livraison, '%m/%d/%Y') date_livraison,po.fk_incoterms,po.location_incoterms,po.note_private,po.note_public,DATE_FORMAT(po.date_creation, '%m/%d/%Y') date_creation,"
+                                + " v.name vendor_name,v.address,COALESCE(v.town,'') town,v.fk_country,v.fk_state,v.zip,COALESCE(v.phone,''),COALESCE(v.email,'') vendor_email"
+                                + " from commerce_purchase_order po inner join wp_vendor v on po.fk_supplier = v.rowid"
+                                + " left outer join PaymentTerms pt on pt.id = po.fk_payment_term"
+                                + " left outer join BalanceDays bd on bd.id = po.fk_balance_days where po.rowid = @po_id;"
                                 + " select rowid,fk_purchase,fk_product,ref product_sku,description,qty,discount_percent,discount,subprice,total_ht,tva_tx,localtax1_tx,localtax1_type,"
                                 + " localtax2_tx,localtax2_type,total_tva,total_localtax1,total_localtax2,total_ttc,product_type,date_start,date_end,rang"
                                 + " from commerce_purchase_order_detail where fk_purchase = @po_id;";

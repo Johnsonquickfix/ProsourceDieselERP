@@ -1,10 +1,11 @@
 ﻿var htmlAcc = '<option value="0">Please Select Account to Assign</option>';
 
 $(document).ready(function () {
+    $("#loader").hide();
+    $(".select2").select2();
+    getAccounttoAssign();
     GetNewAccounttoAssign();
     ProductAccountingGrid();
-
-    table = $('#dtProductsAccount').DataTable();
     setTimeout(function () { $(".select2").select2();}, 2000);
 
     /*$("#lblTotalProducts").text(table.fnGetData().length);*/
@@ -21,7 +22,20 @@ function GetNewAccounttoAssign() {
         async: false
     });
 };
+function getAccounttoAssign() {
+    $.ajax({
+        url: "/Accounting/GetNewAccounttoAssign",
+        type: "Get",
+        success: function (data) {
+            var opt = '<option value="0">Please Select Account to Assign</option>';
+            for (var i = 0; i < data.length; i++) {
+                opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
+            }
+            $('#ddlAccounttoAssign').html(opt);
+        }
 
+    });
+}
 function ProductAccountingGrid() {
     //let _items = [];
     //let pid = parseInt($("#ddlProduct").val()) || 0, ctid = parseInt($("#ddlCategory").val()) || 0;
@@ -39,7 +53,7 @@ function ProductAccountingGrid() {
         destroy: true, bAutoWidth: false, ajax: {
             url: '/Accounting/GetProductStock', type: 'GET', dataType: 'json', contentType: "application/json; charset=utf-8",
             /* data: obj,*/
-            dataSrc: function (data) { console.log(data); return JSON.parse(data); }
+            dataSrc: function (data) { return JSON.parse(data); }
         },
         lengthMenu: [[10, 20, 50, 100], [10, 20, 50, 100]],
         columns: [
@@ -93,14 +107,22 @@ function Singlecheck() {
 }
 
 $('#btnSaveProductAccount').click(function () {
+    debugger
     var Productid = "";
     var account = "";
-    $("input:checkbox[name=CheckSingle]:checked").each(function () {
-        Productid += $(this).val() + ",";
-        account += $("#chk_" + $(this).val() + " option:selected").val() + ",";
-    });
-    Productid = Productid.replace(/,(?=\s*$)/, '');
-    account = account.replace(/,(?=\s*$)/, '');
+    var acc = $('#ddlAccounttoAssign').val();
+   
+        $("input:checkbox[name=CheckSingle]:checked").each(function () {
+            Productid += $(this).val() + ",";
+            if (acc == 0) {
+                account += $("#chk_" + $(this).val() + " option:selected").val() + ",";
+            }
+            else {
+                account += acc + ",";
+            }
+        });
+        Productid = Productid.replace(/,(?=\s*$)/, '');
+        account = account.replace(/,(?=\s*$)/, '');
     saveProductAccount(Productid,'', account);
 
 });
@@ -118,6 +140,9 @@ function saveProductAccount(ProductID, ProductFor, ProductAccountNumberID) {
         beforeSend: function () {$("#loader").show();},
         success: function (data) {
             if (data.status == true) {
+                $("#checkAll").prop('checked', false);
+                $("#ddlAccounttoAssign").select2("val", "0");
+                $("#btnSaveProductAccount").prop("disabled", true);
                 ProductAccountingGrid();
                 swal('Alert!', data.message, 'success');
             }

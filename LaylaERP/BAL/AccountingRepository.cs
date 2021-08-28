@@ -298,7 +298,7 @@ namespace LaylaERP.BAL
                     if (ProductAccountNumberID != "0")
                     {
                         string strsql = "";
-                        string Product = GetAccountNumber(ProductID);
+                        string Product = GetAccountNumber(ProductID).ToString();
                         if (Product == ProductID)
                         {
                             strsql = "Update product_accounting set fk_product_id=@fk_product_id,Productfor=@Productfor,fk_account_number=@fk_account_number where fk_product_id=@fk_product_id";
@@ -348,12 +348,12 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
-        public string GetAccountNumber(string id)
+        public int GetAccountNumber(string id)
         {
             try
             {
                 string strSql = "Select fk_product_id from product_accounting where fk_product_id='" + id + "'";
-                string result = SQLHelper.ExecuteScalar(strSql).ToString();
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strSql));
                 return result;
             }
             catch (Exception ex)

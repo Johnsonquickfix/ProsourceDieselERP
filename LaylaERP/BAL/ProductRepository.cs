@@ -454,7 +454,7 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "SELECT count(distinct Filename) filecount, P.ID ID,post_title,FORMAT(pmregularamount.meta_value,2) regularamount,FORMAT(pmsaleprice.meta_value,2) saleprice,min( FORMAT(purchase_price,2)) purchase_price,min(FORMAT(cost_price,2)) cost_price,(select name from wp_vendor where rowid = (select fk_vendor from Product_Purchase_Items where fk_product = "+ model.strVal + " and cost_price = (SELECT MIN(cost_price) FROM Product_Purchase_Items WHERE fk_product = "+ model.strVal + "))) vname,,pmsku.meta_value sku,pmpublic.meta_value Public_Notes,pmprivate.meta_value Private_Notes"
+                string strSql = "SELECT count(distinct Filename) filecount, P.ID ID,post_title,FORMAT(pmregularamount.meta_value,2) regularamount,FORMAT(pmsaleprice.meta_value,2) saleprice,min( FORMAT(purchase_price,2)) purchase_price,min(FORMAT(cost_price,2)) cost_price,(select name from wp_vendor where rowid = (select fk_vendor from Product_Purchase_Items where fk_product = "+ model.strVal + " and cost_price = (SELECT MIN(cost_price) FROM Product_Purchase_Items WHERE fk_product = "+ model.strVal + ")LIMIT 1)) vname,pmsku.meta_value sku,pmpublic.meta_value Public_Notes,pmprivate.meta_value Private_Notes"
                              + " FROM wp_posts P"
                              + " left join wp_postmeta pmregularamount on P.ID = pmregularamount.post_id and pmregularamount.meta_key = '_regular_price'"
                              + " left join wp_postmeta pmsaleprice on P.ID = pmsaleprice.post_id and pmsaleprice.meta_key = '_sale_price'"

@@ -206,6 +206,51 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
+
+        //public static DataTable ProductAccountList(string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "p.id", string SortDir = "DESC")
+        //{
+        //    DataTable dt = new DataTable();
+        //    totalrows = 0;
+        //    try
+        //    {
+        //        string strWhr = string.Empty;
+
+        //        string strSql = "select  p.id,eaa.label AccountingAccount,CAST(pa.fk_account_number AS INT) AccountingAccountNumber,p.post_type,p.post_title,max(case when p.id = s.post_id and s.meta_key = '_sku' then s.meta_value else '' end) sku, " +
+        //            "max(case when p.id = s.post_id and s.meta_key = '_regular_price' then s.meta_value else '' end) regular_price, " +
+        //            "max(case when p.id = s.post_id and s.meta_key = '_price' then s.meta_value else '' end) sale_price, " +
+        //            "(select coalesce(sum(case when pwr.flag = 'R' then quantity else -quantity end),0) from product_stock_register pwr " +
+        //            "where pwr.product_id = p.id) stock, (case when p.post_parent = 0 then p.id else p.post_parent end) p_id,p.post_parent,p.post_status " +
+        //            "FROM wp_posts as p left join wp_postmeta as s on p.id = s.post_id left join product_accounting as pa on p.id = pa.fk_product_id " +
+        //            "left join erp_accounting_account as eaa on pa.fk_account_number = eaa.account_number " +
+        //            "where p.post_type in ('product', 'product_variation') and p.post_status != 'draft' ";
+
+        //        if (!string.IsNullOrEmpty(searchid))
+        //        {
+        //            strWhr += " and (t.name like '%" + searchid + "%')";
+        //        }
+        //        if (userstatus != null)
+        //        {
+        //            strWhr += " and (v.VendorStatus='" + userstatus + "') ";
+        //        }
+        //        strSql += strWhr + string.Format(" group by {0} order by {1} {2} LIMIT {3}, {4}", "p.id", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
+
+        //        strSql += "; SELECT ceil(Count(p.id)/" + pagesize.ToString() + ") TotalPage,Count(p.id) TotalRecord " +
+        //             "FROM wp_posts as p left join wp_postmeta as s on p.id = s.post_id left join product_accounting as pa on p.id = pa.fk_product_id " +
+        //            "left join erp_accounting_account as eaa on pa.fk_account_number = eaa.account_number " +
+        //            "where p.post_type in ('product', 'product_variation') and p.post_status != 'draft' and 1 = 1  " + strWhr.ToString();
+
+        //        DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+        //        dt = ds.Tables[0];
+        //        if (ds.Tables[1].Rows.Count > 0)
+        //            totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw ex;
+        //    }
+        //    return dt;
+        //}
+
         public static DataSet GetNewAccounttoAssign()
         {
             DataSet DS = new DataSet();

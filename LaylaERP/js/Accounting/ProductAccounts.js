@@ -37,9 +37,6 @@ function getAccounttoAssign() {
     });
 }
 function ProductAccountingGrid() {
-    //let _items = [];
-    //let pid = parseInt($("#ddlProduct").val()) || 0, ctid = parseInt($("#ddlCategory").val()) || 0;
-    //let obj = { strValue1: '', strValue2: (ctid > 0 ? ctid : ''), strValue3: (pid > 0 ? pid : '') };
     $('#dtProductsAccount').DataTable({
         oSearch: { "sSearch": '' }, order: [[0, "asc"]],
         language: {
@@ -57,11 +54,10 @@ function ProductAccountingGrid() {
         },
         lengthMenu: [[10, 20, 50, 100], [10, 20, 50, 100]],
         columns: [
-            
             { data: 'p_id', title: 'Parent ID', sWidth: "10%" },
             {
                 data: 'id', title: 'ID', sWidth: "10%", render: function (data, type, row) {
-                    if (row.post_parent > 0) return '<a href="javascript:void(0);" class="details-control"></a>' + row.id; else return '<a href="javascript:void(0);" class="details-control"></a> <b>#' + row.id + '</b>';
+                    if (row.post_parent > 0) return '<a href="javascript:void(0);" class="details-control"></a>↳ ' + row.id; else return '<a href="javascript:void(0);" class="details-control"></a> <b>#' + row.id + '</b>';
                 }
             },
             { data: 'post_title', title: 'Product Name', sWidth: "40%", },
@@ -79,11 +75,12 @@ function ProductAccountingGrid() {
             },
             
         ],
-        columnDefs: [{
-            targets: [0], visible: false, searchable: false, bSortable: false,
-            aTargets: [-1] }]
+        columnDefs: [{ targets: [0], visible: false, searchable: false, },{ "orderable": false, "targets": -1 }]
+        
     });
 }
+
+
 $('#checkAll').click(function () {
     var isChecked = $(this).prop("checked");
     $('#dtProductsAccount tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
@@ -164,3 +161,59 @@ function saveProductAccount(ProductID, ProductFor, ProductAccountNumberID) {
         },
     })
 }
+
+
+//function ProductAccountList() {
+//    var urid = "";
+//    ID = $("#hfid").val();
+//    var sid = $("#txtSearchCategory").val();
+//    var obj = { user_status: urid, Search: sid, PageNo: 0, PageSize: 50, sEcho: 1, SortCol: 'id', SortDir: 'desc', rowid: ID };
+//    $('#dtProductsAccount').DataTable({
+//        columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
+//        destroy: true, bProcessing: true, bServerSide: true,
+//        sPaginationType: "full_numbers", searching: false, ordering: true, lengthChange: true, "paging": true,
+//        bAutoWidth: false, scrollX: false,
+//        lengthMenu: [[10, 20, 50], [10, 20, 50]],
+//        sAjaxSource: "/Accounting/ProductAccountList",
+//        fnServerData: function (sSource, aoData, fnCallback, oSettings) {
+//            var col = 'id';
+//            if (oSettings.aaSorting.length >= 0) {
+//                var col = oSettings.aaSorting[0][0] == 1 ? "p.id" : oSettings.aaSorting[0][0] == 2 ? "Description" : oSettings.aaSorting[0][0] == 3 ? "Slug" : oSettings.aaSorting[0][0] == 4 ? "Count" : "id";
+//                obj.SortCol = col; obj.SortDir = oSettings.aaSorting.length >= 0 ? oSettings.aaSorting[0][1] : "desc";
+//            }
+//            obj.sEcho = aoData[0].value; obj.PageSize = oSettings._iDisplayLength; obj.PageNo = oSettings._iDisplayStart;
+//            $.ajax({
+//                type: "POST", url: sSource, async: true, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
+//                success: function (data) {
+//                    var dtOption = { sEcho: data.sEcho, recordsTotal: data.recordsTotal, recordsFiltered: data.recordsFiltered, iTotalRecords: data.iTotalRecords, iTotalDisplayRecords: data.iTotalDisplayRecords, aaData: JSON.parse(data.aaData) };
+//                    return fnCallback(dtOption);
+
+//                },
+//                error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
+//                async: false
+//            });
+//        },
+//        aoColumns: [
+
+//            { data: 'p_id', title: 'Parent ID', sWidth: "10%" },
+//            {
+//                data: 'id', title: 'ID', sWidth: "10%", render: function (data, type, row) {
+//                    if (row.post_parent > 0) return '<a href="javascript:void(0);" class="details-control"></a>' + row.id; else return '<a href="javascript:void(0);" class="details-control"></a> <b>#' + row.id + '</b>';
+//                }
+//            },
+//            { data: 'post_title', title: 'Product Name', sWidth: "40%", },
+//            {
+//                'data': 'AccountingAccountNumber', sWidth: "25%",
+//                'render': function (id, type, full, meta) {
+//                    return '<select class="form-control select2" name="ddlNewAccounttoAssign" id="chk_' + full.id + '" >' + htmlAcc.replace(new RegExp("\\b" + 'data-' + id + "\\b"), "selected") + '</select>';
+//                }
+//            },
+//            {
+//                'data': 'id', sWidth: "5%   ",
+//                'render': function (data, type, full, meta) {
+//                    return '<div style="opacity: 1; position: relative; visibility: visible; display: block"><input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + data + '" ><label></label></div>';
+//                }
+//            },
+//        ]
+//    });
+//}

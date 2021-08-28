@@ -157,6 +157,23 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(result, 0);
         }
+
+        //public JsonResult ProductAccountList(ProductAccountingModel model)
+        //{
+        //    string result = string.Empty;
+        //    int TotalRecord = 0;
+        //    try
+        //    {
+        //        string urid = "";
+        //        if (model.user_status != "")
+        //            urid = model.user_status;
+        //        string searchid = model.Search;
+        //        DataTable dt = AccountingRepository.ProductAccountList(urid, searchid, model.PageNo, model.PageSize, out TotalRecord, model.SortCol, model.SortDir);
+        //        result = JsonConvert.SerializeObject(dt);
+        //    }
+        //    catch (Exception ex) { throw ex; }
+        //    return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+        //}
         public JsonResult GetNewAccounttoAssign(SearchModel model)
         {
             DataSet ds = BAL.AccountingRepository.GetNewAccounttoAssign();

@@ -34,18 +34,18 @@
                                 <td class="text-left"><input type="radio" name="accounting_product_mode" value="ACCOUNTANCY_SELL" checked /> Mode sales</td>
                                 <td>Show all products with accounting account for sales.</td>
                             </tr>
-                            <tr>
+                            @*<tr>
                                 <td class="text-left"><input type="radio" name="accounting_product_mode" value="ACCOUNTANCY_SELL_EXPORT" /> Mode sales exported in other countries</td>
                                 <td>Show all products with accounting account for other foreign sales.</td>
-                            </tr>
+                            </tr>*@
                             <tr>
                                 <td class="text-left"><input type="radio" name="accounting_product_mode" value="ACCOUNTANCY_BUY" /> Mode purchases</td>
                                 <td>Show all products with accounting account for purchases.</td>
                             </tr>
-                            <tr>
+                            @*<tr>
                                 <td class="text-left"><input type="radio" name="accounting_product_mode" value="ACCOUNTANCY_BUY_EXPORT" /> Mode purchased imported from other countries</td>
                                 <td>Show all products with accounting account for purchases.</td>
-                            </tr>
+                            </tr>*@
                         </tbody>
                     </table>
                 </div>
@@ -67,7 +67,7 @@
                 <h2>List of products/services<span class="text-gray" id="lblTotalProducts"></span></h2>
                 <div class="ml-auto">
                     <select class="form-control select2" id="ddlAccounttoAssign"></select>
-                    <button class="btn btn-primary btn-flat button" id="btnSaveProductAccount" disabled>Save</button>
+                    <button class="btn btn-danger btn-flat button" id="btnSaveProductAccount" disabled>Save</button>
                 </div>
             </div>
             <div class="box box-primary table-design not-fixed">
@@ -75,10 +75,12 @@
                     <table id="dtProductsAccount" class="inventory-table table-blue table check-table table-bordered table-striped dataTable">
                         <thead>
                             <tr>
+                                <th class="text-left">ID</th>
                                 <th class="text-left">Parent</th>
                                 <th class="text-left">Ref</th>
                                 <th>New account to assign</th>
                                 <th><div class="a-relative"><input type="checkbox" id="checkAll"><label></label></div></th>
+
                             </tr>
                         </thead>
                     </table>

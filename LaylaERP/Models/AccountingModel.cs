@@ -21,7 +21,7 @@ namespace LaylaERP.Models
         public int active { get; set; }
         public int reconcilable { get; set; }
     }
-    public class ProductAccountingModel
+    public class ProductAccountingModel : PaggingModel
     {
         public int ID { get; set; }
         public long fk_product_id { get; set; }
@@ -29,6 +29,8 @@ namespace LaylaERP.Models
         public string strValue2 { get; set;}
         public string Productfor { get; set; }
         public int fk_account_number { get; set; }
+        public string user_status { get; set; }
+        public string Search { get; set; }
     }
 
 }

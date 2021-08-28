@@ -45,10 +45,12 @@
         $('#dvbuysing').hide();
         $(document).on('click', "#btnbuying", function () {
             $('#dvbuysing').show();
+            $("#hfbuyingid").val('');
         })
 
         $(document).on('click', "#btnbuyingcl", function () {
             $('#dvbuysing').hide();
+            $("#hfbuyingid").val('');
         })
     
         $.get('/Product/GetProductVariant/' + id, function (data) {

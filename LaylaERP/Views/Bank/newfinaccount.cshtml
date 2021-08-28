@@ -4,8 +4,11 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<link href="~/Content/DataTables/bootstrap-datepicker.css" rel="stylesheet" />
+<script src="~/Content/DataTables/bootstrap-datepicker.js"></script>
+
 <div class="page-title">
-    <h2>New Financial Account</h2>     
+    <h2>New Financial Account</h2>
 </div>
 <section class="content section-content massstocktransfer commercial_proposal mt-1" id="new_bank_account_section">
     <div class="col-md-12">
@@ -20,16 +23,16 @@
                         <div class="form-group">
                             <label for="accounttype">Account Type</label>
                             <select class="form-control" id="txtaccounttype">
-                                <option selected value="1">Saving Account</option>
-                                <option selected value="2">Current or Credit Card Account</option>
-                                <option selected value="3">Cash Account</option>
+                                <option value="1">Saving Account</option>
+                                <option value="2">Current or Credit Card Account</option>
+                                <option value="3">Cash Account</option>
                             </select>
                         </div>
                         <div class="form-group">
                             <label for="bankstatus">Status</label>
                             <select class="form-control" id="txtbankstatus">
-                                <option selected value="1">Open</option>
-                                <option selected value="0">Close</option>
+                                <option  value="1">Open</option>
+                                <option  value="0">Close</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -41,20 +44,221 @@
                         <div class="form-group">
                             <label for="state">State/Province</label>
                             <select class="form-control" id="txtstate">
-                                <option selected value=""></option>
+                                <option selected value="NY">New York</option>
                             </select>
                         </div>
-                    </div>
 
-                    <div class="col-sm-4">
                         <div class="form-group">
+                            <label for="tag">Web</label>
+                            <input class="form-control" type="text" id="txtweb"/>
+                        </div>
 
+                        <div class="form-group">
+                            <label for="tag">Comment</label>
+                            <input class="form-control" type="text" id="txtcomment" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tag">Initial balance</label>
+                            <input type="text" class="form-control" id="txtinitial" />
+                        </div>
+
+                    </div>
+                    <div class="col-sm-4">
+
+
+                        <div class="form-group">
+                            <label for="tag">Date</label>
+                            <input type="text" class="form-control" id="txtdate" /><span class="even-space"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tag">Minimum allowed balance</label>
+                            <input type="text" class="form-control" id="txtminallowbalance"/>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tag">Minimum desired balance</label>
+                            <input type="text" class="form-control" id="txtdesiredbalance" />
+                        </div>
+
+                        @*<div class="form-group">
+                                <label for="tag">Minimum desired balance</label>
+                                <input type="text" class="form-control" id="txtdesiredbalance" />
+                            </div>*@
+
+                        <div class="form-group">
+                            <label for="tag">Bank name</label>
+                            <input type="text" class="form-control" id="txtbankname" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tag">Bank Code</label>
+                            <input type="text" class="form-control" id="txtbankcode" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tag">Account Number</label>
+                            <input type="text" class="form-control" id="txtaccountnumber" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tag">IBAN Account Number</label>
+                            <input type="text" class="form-control" id="txtIBAN" />
                         </div>
                     </div>
+                    <div class="col-sm-4">
 
+
+                        <div class="form-group">
+                            <label for="tag">BIC/SWIFT code</label>
+                            <input type="text" class="form-control" id="txtBIC" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tag">Currency</label>
+                            <input type="text" class="form-control" id="txtcurrency" value="USD" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tag">Bank address</label>
+                            <input type="text" class="form-control" id="txtbankaddress"  />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tag">Account owner name</label>
+                            <input type="text" class="form-control" id="txtaccountowner" />
+                        </div>
+
+
+
+                        <div class="form-group">
+                            <label for="tag">Account owner address</label>
+                            <input type="text" class="form-control" id="txtowneraddress" />
+                        </div>
+                        <div class="form-group">
+                            <label for="tag">Accounting Account</label>
+                            <select class="form-control" id="ddlaccounting">
+                                @*<option value="1">Assets</option>*@
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tag">Accounting code journal</label>
+                            <select class="form-control" id="ddljournal">
+                                @*<option value="1">JR</option>*@
+                            </select>
+                        </div>
+
+                        <a href="#" class="btn btn-danger" id="btnSave"><b>Save</b></a>
+
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-
 </section>
+
+<script>
+    $(document).ready(function () {
+
+        $(document).on('click', "#btnSave", function () {
+            AddBankAccount();
+        });
+
+    });
+</script>
+<script>
+    /*
+        function AddBankAccount() {
+            debugger
+            label = $("#txtbankcashlabel").val();
+            accounttype = $("#txtaccounttype").val();
+            status = $("#txtbankstatus").val();
+            country = $("#txtaccountcountry").val();
+            state = $("#txtstate").val();
+            web = $("#txtweb").val();
+            comment = $("#txtcomment").val();
+            inital = $("#txtinitial").val();
+            date = $("#txtdate").val();
+            minallowbalance = $("#txtminallowbalance").val();
+            desiredbalance = $("#txtdesiredbalance").val();
+            bankname = $("#txtbankname").val();
+            bankcode = $("#txtbankcode").val();
+            accountnumber = $("#txtaccountnumber").val();
+            iban = $("#txtIBAN").val();
+            bic = $("#txtBIC").val();
+            bankaddress = $("#txtbankaddress").val();
+            ownername = $("#txtaccountowner").val();
+            owneraddress = $("#txtowneraddress").val();
+            accounting = $("#ddlaccounting").val();
+            journal = $("#ddljournal").val();
+            currency = $("#txtcurrency").val();
+
+
+            if (label == "") {
+                swal('Alert', 'Please Enter Reference Name', 'error').then(function () { swal.close(); $('#txtbankcashlabel').focus(); });
+            }
+
+
+            else {
+
+                var obj = {
+
+                    date_modified: date,
+                    label: label,
+                    account_type: accounttype,
+                    working_status: status,
+                    country_iban: country,
+                    state: state,
+                    comment: comment,
+                    initial_balance: inital,
+                    min_allowed: minallowbalance,
+                    min_desired: desiredbalance,
+                    bank: bankname,
+                    code_bank: bankcode,
+                    account_number: accountnumber,
+                    owner_address: owneraddress,
+                    iban_prefix: iban,
+                    bic: bic,
+                    bank_address: bankaddress,
+                    owner_name: ownername,
+                    owner_address: owneraddress,
+                    accounting_number: accounting,
+                    fk_accountancy_journal: journal,
+                    url: web,
+                    currency_code: currency,
+                }
+                $.ajax({
+                    url: '/Bank/AddBankAccount/', dataType: 'json', type: 'Post',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(obj),
+                    dataType: "json",
+                    beforeSend: function () { $("#loader").show(); },
+                    success: function (data) {
+                        if (data.status == true) {
+                            //$('#parent > input:text').val('');
+                            swal('Alert!', data.message, 'success');
+                        }
+                        else {
+                            swal('Alert!', data.message, 'error');
+                        }
+                    },
+                    complete: function () { $("#loader").hide(); },
+                    error: function (error) { swal('Error!', 'something went wrong', 'error'); },
+                })
+
+            }
+
+        } */
+</script>
+<script>
+    $(function () {
+        $("#txtdate").datepicker({
+            format: 'yyyy-mm-dd',
+        });
+
+    });
+</script>
+
+<script src="@Url.Content("~/js/Bank/Bank.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>

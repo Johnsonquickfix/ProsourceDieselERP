@@ -158,6 +158,7 @@
     <Compile Include="BAL\AccountingRepository.cs" />
     <Compile Include="BAL\AgentCommissionRateRepository.cs" />
     <Compile Include="BAL\AppearanceRepository.cs" />
+    <Compile Include="BAL\BankRepository.cs" />
     <Compile Include="BAL\CommercialProposalRepositiory.cs" />
     <Compile Include="BAL\CouponsRepository.cs" />
     <Compile Include="BAL\CustomerRepository.cs" />
@@ -207,6 +208,7 @@
     <Compile Include="Models\AgentCommissionRate.cs" />
     <Compile Include="Models\Appearance.cs" />
     <Compile Include="Models\Attributes.cs" />
+    <Compile Include="Models\BankModel.cs" />
     <Compile Include="Models\clsSerialization.cs" />
     <Compile Include="Models\clsUserDetails.cs" />
     <Compile Include="Models\CommercialProposalModel.cs" />
@@ -591,6 +593,7 @@
     <Content Include="js\Accounting\ChartOfAccounts.js" />
     <Content Include="js\Accounting\ProductAccounts.js" />
     <Content Include="js\app.js" />
+    <Content Include="js\Bank\Bank.js" />
     <Content Include="js\CommercialPorposal\CommercialProposalList.js" />
     <Content Include="js\CommercialPorposal\NewPorposal.js" />
     <Content Include="js\common.js" />

@@ -21,8 +21,6 @@ $('#btnSaveJournal').click(function (e) {
     Code = $("#txtCode").val();
     Label = $("#txtLabel").val();
     NatureofJournal = $("#ddlNatureofJournal").val();
-
-
     if (Code == "") { swal('alert', 'Please Enter Code', 'error').then(function () { swal.close(); $('#txtCode').focus(); }) }
     else if (Label == "") { swal('alert', 'Please Enter Label', 'error').then(function () { swal.close(); $('#txtLabel').focus(); }) }
     else if (NatureofJournal == "-1") { swal('alert', 'Please Select Nature of Journal', 'error').then(function () { swal.close(); $('#ddlNatureofJournal').focus(); }) }
@@ -70,7 +68,7 @@ function NatureofJournalList() {
     var sid = "";
     var obj = { user_status: urid, Search: sid, PageNo: 0, PageSize: 50, sEcho: 1, SortCol: 'id', SortDir: 'desc' };
     $('#Journaldata').DataTable({
-        columnDefs: [{ "orderable": true, "targets": 0 }], order: [[0, "desc"]],
+        columnDefs: [{ "orderable": true, "targets": 0 }, { targets: [0], visible: false }], order: [[0, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true,
         sPaginationType: "full_numbers", searching: false, ordering: true, lengthChange: true, "paging": true,
         bAutoWidth: false, scrollX: false, scrollY: false,
@@ -80,7 +78,7 @@ function NatureofJournalList() {
               //obj.Search = aoData[45].value;
             var col = 'id';
             if (oSettings.aaSorting.length >= 0) {
-                var col = oSettings.aaSorting[0][0] == 0 ? "code" : oSettings.aaSorting[0][0] == 1 ? "label" : oSettings.aaSorting[0][0] == 2 ? "Nature" : "id";
+                var col = oSettings.aaSorting[0][0] == 0 ? "ID" : oSettings.aaSorting[0][0] == 1 ? "code" : oSettings.aaSorting[0][0] == 2 ? "label" : oSettings.aaSorting[0][0] == 3 ? "Nature" : "id";
                 obj.SortCol = col; obj.SortDir = oSettings.aaSorting.length >= 0 ? oSettings.aaSorting[0][1] : "desc";
             }
             obj.sEcho = aoData[0].value; obj.PageSize = oSettings._iDisplayLength; obj.PageNo = oSettings._iDisplayStart;
@@ -95,6 +93,7 @@ function NatureofJournalList() {
             });
         },
         aoColumns: [
+            { data: 'ID', title: 'ID' },
             { data: 'code', title: 'Code' },
             { data: 'label', title: 'Label' },
             { data: 'Nature', title: 'Nature of Journal' },
@@ -176,3 +175,14 @@ function GetVendorByID(id) {
         });
 
 }
+
+$('#btnReset').click(function () {
+    $("#hfid").val('');
+    $("#btnSaveJournal").attr('value', 'Add');
+    $("#tblAddJournal").find(":input").each(function () {
+        switch (this.type) {
+            case "text": case "email": case "textarea": case "tel": $(this).val(''); break;
+        }
+    });
+    $("#tblAddJournal option[value='-1']").attr('selected', true)
+})

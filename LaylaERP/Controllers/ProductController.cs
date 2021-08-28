@@ -402,12 +402,21 @@ namespace LaylaERP.Controllers
         {           
                 JsonResult result = new JsonResult();
                 string msg = "";
-                //int ID = 0;
-                if (!string.IsNullOrEmpty(model.statecode))
+            //int ID = 0;
+            if (!string.IsNullOrEmpty(model.statecode))
+            {
+                string[] state = model.statecode.Split(',');
+                for (int x = 0; x < state.Length; x++)
                 {
-                    string[] state = model.statecode.Split(',');          
-                    for (int x = 0; x < state.Length; x++)
+                    model.statecode = state[x].Trim();
+                    DataTable dt = ProductRepository.Getcountrystatecountry(model);
+                    if (dt.Rows.Count > 0 && model.ID == 0)
                     {
+                        return Json(new { status = false, message = "Shipping Class with country state has been already existed", url = "" }, 0);
+                    }
+                    else
+                    {
+
                         if (model.ID > 0)
                         {
                             model.statecode = state[x].Trim();
@@ -417,30 +426,41 @@ namespace LaylaERP.Controllers
                         }
                         else
                         {
-                                model.statecode = state[x].Trim();
-                                ProductRepository.AddshippingPricedetails(model);
-                                //return Json(new { status = true, message = "Details has been saved successfully!!", url = "" }, 0);
-                                msg = "Details has been save successfully!!";
-                        }
-                    }
-                }
-                else
-                {
-                    if (model.ID > 0)
-                    {
-                        model.statecode = null;
-                        ProductRepository.updateshippingclass(model);
-                        msg = "Details has been updated successfully!!";
-                        //return Json(new { status = true, message = "", url = "Manage" }, 0);
-                    }
-                    else
-                    {
-                            model.statecode = null;
+                            model.statecode = state[x].Trim();
                             ProductRepository.AddshippingPricedetails(model);
                             //return Json(new { status = true, message = "Details has been saved successfully!!", url = "" }, 0);
                             msg = "Details has been save successfully!!";
+                        }
                     }
                 }
+            }
+            else
+            {
+                msg = "Please Select State!!";
+                //model.statecode = null;
+                //DataTable dt = ProductRepository.Getcountrystatecountry(model);
+                //if (dt.Rows.Count > 0 && model.ID == 0)
+                //{
+                //    return Json(new { status = false, message = "Shipping Class with country state has been already existed", url = "" }, 0);
+                //}
+                //else
+                //{
+                //    if (model.ID > 0)
+                //    {
+                //        model.statecode = null;
+                //        ProductRepository.updateshippingclass(model);
+                //        msg = "Details has been updated successfully!!";
+                //        //return Json(new { status = true, message = "", url = "Manage" }, 0);
+                //    }
+                //    else
+                //    {
+                //        model.statecode = null;
+                //        ProductRepository.AddshippingPricedetails(model);
+                //        //return Json(new { status = true, message = "Details has been saved successfully!!", url = "" }, 0);
+                //        msg = "Details has been save successfully!!";
+                //    }
+                //}
+            }
                 return Json(new { status = true, message = msg, url = "Manage" }, 0);
 
         }

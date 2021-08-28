@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.Mvc;
 using LaylaERP.BAL;
 using LaylaERP.Models;
+using Newtonsoft.Json;
 
 namespace LaylaERP.Controllers
 {
@@ -28,6 +29,12 @@ namespace LaylaERP.Controllers
             return View();
         }
 
+        public ActionResult EditBankAccount()
+        {
+            return View();
+        }
+
+
         [HttpPost]
         public JsonResult AddBankAccount(BankModel model)
         {
@@ -39,8 +46,8 @@ namespace LaylaERP.Controllers
                 }
                 else
                 {
-                    
-                    int ID = BankRepository.AddBankAccount(model);
+                    int ID = 1;   
+                    //int ID = BankRepository.AddBankAccount(model);
                     if (ID > 0)
                     {
                         return Json(new { status = true, message = "Data has been saved successfully!!", url = "" }, 0);
@@ -74,6 +81,44 @@ namespace LaylaERP.Controllers
                 productlist.Add(new SelectListItem { Text = dr["label"].ToString(), Value = dr["ID"].ToString() });
             }
             return Json(productlist, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetBankAccount()
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = BankRepository.GetBankAccount();
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+
+        public JsonResult GetAccountByID(long id)
+        {
+
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = BankRepository.GetAccountByID(id);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+
+        public JsonResult UpdateBankAccount(BankModel model)
+        {
+            if (model.rowid> 0)
+            {
+                BankRepository.UpdateBankAccount(model);
+                return Json(new { status = true, message = "Data has been saved successfully!!", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
         }
     }
 }

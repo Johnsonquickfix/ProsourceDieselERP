@@ -4,7 +4,6 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>BankAccountList</h2>
 
 @*datatables CSS*@
 <link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap.min.css" rel="stylesheet" />
@@ -14,43 +13,33 @@
 <script src="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/js/dataTables.bootstrap.min.js" type="text/javascript"></script>
 
 <div class="page-title">
-    <h2 class="page-heading">Warehouse</h2><a class="btn btn-danger" href="AddNewWarehouse">Add Warehouse</a>
+    <h2 class="page-heading">Bank Account List</h2><a class="btn btn-danger" href="../bank/newfinaccount">Add Account</a>
 </div>
 <section class="content section-content table-design customer-section">
     <div class="nav-tabs-custom">
         <ul class="nav nav-tabs" id="mytabs" role="tablist">
-            <li class="active"><a href="#tab_1" data-toggle="tab">Warehouse</a></li>
+            <li class="active"><a href="#tab_1" data-toggle="tab">Bank Account</a></li>
         </ul>
 
         <div class="tab-content">
             <div class="tab-pane active" id="tab_1">
-                <div class="user-top-section">
-                    <div class="tablenav top tablenav-top2">
-                        <div class="alignleft actions bulkactions">
-                            <select class="form-control select2" id="ddlSearchStatus" placeholder="Select User">
-                                <option value="1">Active</option>
-                                <option value="0">Inactive</option>
-                            </select>
-                            <button type="button" id="btnSearch" class="btn btn-primary btn-flat button">Search</button>
-                        </div>
-                    </div>
-                </div>
+               
                 <div class="userrole_section section_wrapper appearance-menu-section">
                     @*<form id="saveForm" name="saveForm" method="post" autocomplete="off">*@
                     <div class="box box-primary">
                         <div class="box-header">
-                            <table id="dtdatawarehouse" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
+                            <table id="dtdata" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
                                 <thead>
                                     <tr>
-                                        <th>ID</th>
-                                        <th>Ref</th>
-                                        @*<th>Description</th>*@
-                                        <th>Short Name Location</th>
-                                        <th>Address</th>
-                                        <th>Phone</th>
-                                        <th>Status</th>
+
+                                        <th>Account Number</th>
+                                        <th>Label</th>
                                         <th>Type</th>
+                                        <th>Accounting Account</th>
+                                        <th>Accounting code journal</th>
+                                        <th>Status</th>
                                         <th>Action</th>
+                                       
                                     </tr>
                                 </thead>
                             </table>
@@ -64,3 +53,55 @@
         </div>
     </div>
 </section>
+<script>
+    $(document).ready(function () {
+        BankAccountList();
+       
+        });
+
+</script>
+<script>
+    function BankAccountList() {
+        
+        $.ajax({
+            url: '/Bank/GetBankAccount',
+            method: 'post',
+            datatype: 'json',
+            contentType: "application/json; charset=utf-8",
+            processing: true,
+            
+            success: function (data) {
+                $('#dtdata').dataTable({
+                    destroy: true,
+                    scrollX: true,
+                    data: JSON.parse(data),
+                    "columns": [
+                        { data: 'account_number', title: 'Account Number', sWidth: "10%" },
+                        { data: 'label', title: 'Label', sWidth: "10%" },                      
+                        { data: 'type', title: 'Account Type', sWidth: "20%" },
+                        { data: 'accounting', title: 'Accounting Account', sWidth: "15%" },
+                        { data: 'journal', title: 'Accounting code journal', sWidth: "15%" },
+                        { data: 'status', title: 'Status', sWidth: "10%" },
+                        {
+                            'data': 'ID', sWidth: "8%",
+                            'render': function (id, type, full, meta) {
+
+                                return '<a href="../Bank/financialaccount/' + id + '"><i class="glyphicon glyphicon-pencil"></i></a>';
+
+                            }
+                        },
+
+                       
+                    ],
+
+
+                    "order": [[0, 'desc']],
+                });
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(xhr.responseText);
+            }
+        });
+
+    }
+</script>

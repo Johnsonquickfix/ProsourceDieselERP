@@ -841,6 +841,8 @@
     <Content Include="Views\Podium\paymentrec.cshtml" />
     <Content Include="Views\Orders\minesofmoria.cshtml" />
     <Content Include="Views\Accounting\EditAccount.cshtml" />
+    <Content Include="Views\Bank\BankAccountList.cshtml" />
+    <Content Include="Views\Bank\EditBankAccount.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

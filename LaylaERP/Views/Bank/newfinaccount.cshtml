@@ -17,11 +17,11 @@
                 <div class="row">
                     <div class="col-sm-4">
                         <div class="form-group">
-                            <label for="bankcash">Bank or Cash Label</label>
+                            <label for="bankcash">Bank or Cash Label</label><span style="color:red">*</span>
                             <input type="text" class="form-control" id="txtbankcashlabel" placeholder="Enter Bank or Cash Label">
                         </div>
                         <div class="form-group">
-                            <label for="accounttype">Account Type</label>
+                            <label for="accounttype">Account Type</label><span style="color:red">*</span>
                             <select class="form-control" id="txtaccounttype">
                                 <option value="1">Saving Account</option>
                                 <option value="2">Current or Credit Card Account</option>
@@ -29,37 +29,38 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="bankstatus">Status</label>
+                            <label for="bankstatus">Status</label><span style="color:red">*</span>
                             <select class="form-control" id="txtbankstatus">
                                 <option  value="1">Open</option>
                                 <option  value="0">Close</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="accountcountry">Account Country</label>
+                            <label for="accountcountry">Account Country</label><span style="color:red">*</span>
                             <select class="form-control" id="txtaccountcountry">
                                 <option selected value="US">United States</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="state">State/Province</label>
-                            <select class="form-control" id="txtstate">
-                                <option selected value="NY">New York</option>
-                            </select>
+                            <label for="state">State/Province</label><span style="color:red">*</span>
+                            <input class="form-control" type="text" id="txtstate" />
+                            @*<select class="form-control" id="txtstate">
+                <option selected value="NY">New York</option>
+        </select>*@
                         </div>
 
                         <div class="form-group">
-                            <label for="tag">Web</label>
+                            <label for="tag">Web</label><span style="color:red">*</span>
                             <input class="form-control" type="text" id="txtweb"/>
                         </div>
 
                         <div class="form-group">
-                            <label for="tag">Comment</label>
+                            <label for="tag">Comment</label><span style="color:red">*</span>
                             <input class="form-control" type="text" id="txtcomment" />
                         </div>
 
                         <div class="form-group">
-                            <label for="tag">Initial balance</label>
+                            <label for="tag">Initial balance</label><span style="color:red">*</span>
                             <input type="text" class="form-control" id="txtinitial" />
                         </div>
 
@@ -68,90 +69,88 @@
 
 
                         <div class="form-group">
-                            <label for="tag">Date</label>
+                            <label for="tag">Date</label><span style="color:red">*</span>
                             <input type="text" class="form-control" id="txtdate" /><span class="even-space"></span>
                         </div>
 
                         <div class="form-group">
-                            <label for="tag">Minimum allowed balance</label>
-                            <input type="text" class="form-control" id="txtminallowbalance"/>
+                            <label for="tag">Minimum allowed balance</label><span style="color:red">*</span>
+                            <input type="text" class="form-control" id="txtminallowbalance" />
                         </div>
 
                         <div class="form-group">
-                            <label for="tag">Minimum desired balance</label>
+                            <label for="tag">Minimum desired balance</label><span style="color:red">*</span>
                             <input type="text" class="form-control" id="txtdesiredbalance" />
                         </div>
 
                         @*<div class="form-group">
-                                <label for="tag">Minimum desired balance</label>
-                                <input type="text" class="form-control" id="txtdesiredbalance" />
-                            </div>*@
+            <label for="tag">Minimum desired balance</label>
+            <input type="text" class="form-control" id="txtdesiredbalance" />
+        </div>*@
 
                         <div class="form-group">
-                            <label for="tag">Bank name</label>
+                            <label for="tag">Bank name</label><span style="color:red">*</span>
                             <input type="text" class="form-control" id="txtbankname" />
                         </div>
 
                         <div class="form-group">
-                            <label for="tag">Bank Code</label>
+                            <label for="tag">Bank Code</label><span style="color:red">*</span>
                             <input type="text" class="form-control" id="txtbankcode" />
                         </div>
 
                         <div class="form-group">
-                            <label for="tag">Account Number</label>
+                            <label for="tag">Account Number</label><span style="color:red">*</span>
                             <input type="text" class="form-control" id="txtaccountnumber" />
                         </div>
 
                         <div class="form-group">
-                            <label for="tag">IBAN Account Number</label>
+                            <label for="tag">IBAN Account Number</label><span style="color:red">*</span>
                             <input type="text" class="form-control" id="txtIBAN" />
                         </div>
-                    </div>
-                    <div class="col-sm-4">
-
 
                         <div class="form-group">
-                            <label for="tag">BIC/SWIFT code</label>
+                            <label for="tag">BIC/SWIFT code</label><span style="color:red">*</span>
                             <input type="text" class="form-control" id="txtBIC" />
                         </div>
 
+                    </div>
+                    <div class="col-sm-4">
+
                         <div class="form-group">
-                            <label for="tag">Currency</label>
+                            <label for="tag">Currency</label><span style="color:red">*</span>
                             <input type="text" class="form-control" id="txtcurrency" value="USD" />
                         </div>
 
                         <div class="form-group">
-                            <label for="tag">Bank address</label>
-                            <input type="text" class="form-control" id="txtbankaddress"  />
+                            <label for="tag">Bank address</label><span style="color:red">*</span>
+                            <input type="text" class="form-control" id="txtbankaddress" />
                         </div>
 
                         <div class="form-group">
-                            <label for="tag">Account owner name</label>
+                            <label for="tag">Account owner name</label><span style="color:red">*</span>
                             <input type="text" class="form-control" id="txtaccountowner" />
                         </div>
 
-
-
                         <div class="form-group">
-                            <label for="tag">Account owner address</label>
+                            <label for="tag">Account owner address</label><span style="color:red">*</span>
                             <input type="text" class="form-control" id="txtowneraddress" />
                         </div>
                         <div class="form-group">
-                            <label for="tag">Accounting Account</label>
+                            <label for="tag">Accounting Account</label><span style="color:red">*</span>
                             <select class="form-control" id="ddlaccounting">
                                 @*<option value="1">Assets</option>*@
                             </select>
                         </div>
 
                         <div class="form-group">
-                            <label for="tag">Accounting code journal</label>
+                            <label for="tag">Accounting code journal</label><span style="color:red">*</span>
                             <select class="form-control" id="ddljournal">
                                 @*<option value="1">JR</option>*@
                             </select>
                         </div>
 
                         <a href="#" class="btn btn-danger" id="btnSave"><b>Save</b></a>
-
+                        @Html.ActionLink("Back to List", "BankAccountList", null, new { @class = "btn btn-danger" })
                     </div>
                 </div>
             </div>
@@ -255,7 +254,7 @@
 <script>
     $(function () {
         $("#txtdate").datepicker({
-            format: 'yyyy-mm-dd',
+            format: 'mm-dd-yyyy',
         });
 
     });

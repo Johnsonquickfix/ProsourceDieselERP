@@ -108,7 +108,7 @@ namespace LaylaERP.BAL
                     ExportModel uobj = new ExportModel();
 
 
-                    if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["meta_value"].ToString()) && ds1.Tables[0].Rows[i]["meta_value"].ToString().Length > 5 && ds1.Tables[0].Rows[i]["meta_value"].ToString().Substring(0, 2) == "a:")
+                    /*if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["meta_value"].ToString()) && ds1.Tables[0].Rows[i]["meta_value"].ToString().Length > 5 && ds1.Tables[0].Rows[i]["meta_value"].ToString().Substring(0, 2) == "a:")
                     {
 
                         if (ds1.Tables[0].Rows[i]["meta_value"].ToString().Trim() == "a:0:{}")
@@ -197,8 +197,10 @@ namespace LaylaERP.BAL
                     {
                         result = ds1.Tables[0].Rows[i]["meta_value"].ToString().TrimEnd(',');
                         result=System.Threading.Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(result.ToLower());
-                    }
-                    uobj.my = result;
+                    }*/
+                    uobj.UID = Convert.ToInt32(ds1.Tables[0].Rows[i]["ID"].ToString());
+                    uobj.first_name = ds1.Tables[0].Rows[i]["name"].ToString();
+                    uobj.my = ds1.Tables[0].Rows[i]["meta_value"].ToString();
                     uobj.phone = ds1.Tables[0].Rows[i]["Phone"].ToString();
                     uobj.user_email = ds1.Tables[0].Rows[i]["user_email"].ToString();
                     uobj.user_address = ds1.Tables[0].Rows[i]["address"].ToString();
@@ -289,7 +291,7 @@ namespace LaylaERP.BAL
                     todate = DateTime.Parse(to_date);
 
                     //ssql = "select ws.order_id as id, ws.order_id as order_id, DATE_FORMAT(ws.date_created, '%M %d %Y') order_created, substring(ws.status,4) as status,  ws.num_items_sold as qty,format(ws.total_sales, 2) as subtotal,format(ws.net_total, 2) as total, ws.customer_id as customer_id from wp_wc_order_stats ws, wp_users wu where ws.customer_id = wu.ID and DATE(ws.date_created)>='" + fromdate.ToString("yyyy-MM-dd") + "' and DATE(ws.date_created)<='" + todate.ToString("yyyy-MM-dd") + "' order by ws.order_id desc limit 100";
-                    ssql = "SELECT p.id order_id, p.id as chkorder,os.num_items_sold as qty,format(os.total_sales, 2) as subtotal,format(os.net_total, 2) as total,os.tax_total as tax, os.customer_id as customer_id, REPLACE(p.post_status, 'wc-', '') as status, os.date_created as order_created,CONCAT(pmf.meta_value, ' ', COALESCE(pml.meta_value, '')) FirstName"
+                    ssql = "SELECT p.id order_id, p.id as chkorder,os.num_items_sold as qty,format(os.total_sales, 2) as subtotal,format(os.net_total, 2) as total,format(os.tax_total,2) as tax, os.customer_id as customer_id, REPLACE(p.post_status, 'wc-', '') as status, os.date_created as order_created,CONCAT(pmf.meta_value, ' ', COALESCE(pml.meta_value, '')) FirstName"
                          + " FROM wp_posts p inner join wp_wc_order_stats os on p.id = os.order_id"
                          + " left join wp_postmeta pmf on os.order_id = pmf.post_id and pmf.meta_key = '_billing_first_name'"
                          + " left join wp_postmeta pml on os.order_id = pml.post_id and pml.meta_key = '_billing_last_name'"
@@ -300,7 +302,7 @@ namespace LaylaERP.BAL
                 {
                     //ssql = "select ws.order_id as id,ws.order_id as order_id,DATE_FORMAT(ws.date_created, '%M %d %Y') order_created,substring(ws.status,4) as status,ws.num_items_sold as qty,format(ws.total_sales, 2) as subtotal,format(ws.net_total, 2) as total,ws.customer_id as customer_id from wp_wc_order_stats ws, wp_users wu where ws.customer_id = wu.ID order by ws.order_id desc limit 1000";
                     ssql = "SELECT p.id order_id, p.id as chkorder,os.num_items_sold as qty,format(os.total_sales, 2) as subtotal,"
-                            + "format(os.net_total, 2) as total, os.tax_total as tax,os.shipping_total as shipping_total, os.customer_id as customer_id,"
+                            + "format(os.net_total, 2) as total, format(os.tax_total,2) as tax,os.shipping_total as shipping_total, os.customer_id as customer_id,"
                             + " REPLACE(p.post_status, 'wc-', '') as status, os.date_created as order_created,CONCAT(pmf.meta_value, ' ', COALESCE(pml.meta_value, '')) FirstName"
                             + " FROM wp_posts p inner join wp_wc_order_stats os on p.id = os.order_id"
                             + " left join wp_postmeta pmf on os.order_id = pmf.post_id and pmf.meta_key = '_billing_first_name'"

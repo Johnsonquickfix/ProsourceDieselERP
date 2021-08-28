@@ -69,6 +69,8 @@
                 <div id="poststuff" class="woocommerce-reports-wide">
                     <div class="box box-primary">
                         <div class="box-header">
+                            <div><ul class="subsubsub" id="role-ul" style="display:none"></ul></div>
+
                             <table id="exportuserdata" class="table-blue table table-bordered check-table display" style="width:100%;">
                                 <thead>
                                     <tr>
@@ -128,7 +130,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
 
-
+        GetUsersCount();
         //DatagridCustomers();
         //DatagridOrder();
 
@@ -381,7 +383,12 @@
                 { 'data': 'UID', title: 'ID', sWidth: "10%" },
                 { 'data': 'first_name', title: 'Name', sWidth: "10%" },
                 { 'data': 'user_email', title: 'Email', sWidth: "15%" },
-                { 'data': 'my', title: 'Role', sWidth: "22%"},
+                {
+                    data: 'my', title: 'Role', sWidth: "22%", render: function (data, type, row) {
+                        let str = getAllUserType(data);
+                        return str;
+                    }
+                },
                 { 'data': 'user_address', title: 'Address', sWidth: "15%" },
                 { 'data': 'phone', title: 'Phone Number', sWidth: "10%" },
                 {
@@ -553,5 +560,53 @@
         });
 
     });
+
+</script>
+
+<script>
+    function GetUsersCount() {
+        $("#role-ul").empty();
+        $.ajax({
+            type: "POST", url: '/Users/GetRolesTypeTopBar', contentType: "application/json; charset=utf-8", dataType: "json", data: [],
+            beforeSend: function () { $("#loader").show(); },
+            success: function (result) {
+                var data = JSON.parse(result);
+                let alltotal = 0;
+                let items = $('<li class="all" data-uservalue="" data-usertext=""><a class="caction" href="javascript:void(0);" id="all" aria-current="page">All (<span class="count">0</span>)</a> |</li>').appendTo("#role-ul");
+                $.each(data, function (index, value) {
+                    items += $('<li data-uservalue="' + value.User_Value + '" data-usertext="' + value.User_Type + '" class="' + value.User_Value.toLowerCase().replace(/ +/g, "").trim() + '"><a class="caction" href="javascript:void(0);" id="' + value.User_Value + '">' + value.User_Type + ' (' + value.cnt + ')</a > |</li >').appendTo("#role-ul"); //(<span class="count">0</span>)
+                    alltotal = alltotal + parseInt(value.cnt);
+                })
+                items += $('<li class="none" data-uservalue="" data-usertext=""><a class="caction" href="javascript:void(0);" id="norole">No role (<span class="count">0</span>)</a></li>').appendTo("#role-ul");
+                $('#all').find(".count").text(number_format(alltotal));
+                let id = $("#hfStatusType").val();
+                if (id != '')
+                    $('#' + id).addClass('current');
+                else
+                    $('#all').addClass('current');
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
+            complete: function () { $("#loader").hide(); },
+            async: false
+        });
+    }
+
+
+    function getAllUserType(sValue) {
+        if (sValue != null) {
+            var user_type = '';
+            $('.subsubsub li').each(function (index) {
+                let val = $(this).data('uservalue'), txt = $(this).data('usertext');
+                let i = sValue.toLowerCase().trim().indexOf(val);
+                if (i > -1) user_type = (user_type.length > 0 ? user_type + ', ' : '') + txt;
+            });
+            return user_type.substring(0, user_type.length - 2);
+        }
+        else
+            return '';
+    }
+
+
+
 
 </script>

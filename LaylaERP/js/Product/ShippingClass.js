@@ -398,7 +398,7 @@ function dataGridLoad(order_type) {
                     return tprice
                 }
             },
-            { data: 'Type', title: 'Type', sWidth: "12%" },
+            { data: 'Type', title: 'Cost Type', sWidth: "12%" },
             { data: 'taxable', title: 'Taxable', sWidth: "12%" },
            // { data: 'Shipping_taxrate', title: 'TaxCost', sWidth: "12%" },
        

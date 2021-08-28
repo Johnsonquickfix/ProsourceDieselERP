@@ -630,7 +630,7 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "delete from ShippingClass_Details where Type = 'flat' and fk_ShippingID = " + model.fk_ShippingID + " and countrycode = '"+ model.countrycode + "' ";
+                string strsql = "delete from ShippingClass_Details where  fk_ShippingID = " + model.fk_ShippingID + " and countrycode = '"+ model.countrycode + "' ";
                
                 int result = SQLHelper.ExecuteNonQuery(strsql.ToString());
                 return result;

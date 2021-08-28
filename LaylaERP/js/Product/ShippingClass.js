@@ -145,6 +145,9 @@ function Adddetails() {
     else if (Countryval == "") {
         swal('Alert', 'Please Select Country', 'error').then(function () { swal.close(); $('#ddlCountry').focus(); });
     }
+    else if (stateval == "") {
+        swal('Alert', 'Please Select State', 'error').then(function () { swal.close(); $('#ddlState').focus(); });
+    }
     else {
         var obj = {
             ID: ID,
@@ -171,12 +174,14 @@ function Adddetails() {
                 if (data.status == true) {
                     if (data.url == "Manage") {
                         dataGridLoad('');
-                        $('#ddlState').val(null).trigger('change')
+                        $('#ddlState').val(null).trigger('change');
+                        ClearControl();
                        swal('Alert!', data.message, 'success');
                     }
                     else {
                         dataGridLoad('');
-                        $('#ddlState').val(null).trigger('change')
+                        $('#ddlState').val(null).trigger('change');
+                        ClearControl();
                         // $('#fetch_results > input:text').val('');
                         swal('Alert!', data.message, 'success');
                     }
@@ -459,6 +464,10 @@ function statedata(id,name) {
     $("#ddlState").empty().append('<option value="' + id + '" selected>' + name + '</option>'); 
 }
 
+function ClearControl() {
+    $('#ddlCountry').val('').trigger('change');
+    $("#txtPrice").val('0');
+}
 
 
  

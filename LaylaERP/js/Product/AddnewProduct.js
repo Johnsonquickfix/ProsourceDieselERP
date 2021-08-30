@@ -9,6 +9,14 @@
 
     $('#divPurchase').hide();
 
+    $.get('/Product/GetShipping/' + 1, function (data) {
+        var items = "";
+        // $('#ddlShipping').empty();
+        // items += "<option value=''>Please select</option>";
+        $.each(data, function (index, value) {
+            items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddlShipping");
+        })
+    });
 
 
     if (id != "" && id != "AddNewProduct") {
@@ -109,14 +117,7 @@
             $('li:contains(Variations)').hide();
         }
     });
-    $.get('/Product/GetShipping/' + id, function (data) {
-        var items = "";
-        // $('#ddlShipping').empty();
-        // items += "<option value=''>Please select</option>";
-        $.each(data, function (index, value) {
-            items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddlShipping");
-        })
-    });
+
 
 
 

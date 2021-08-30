@@ -169,6 +169,7 @@
     <Compile Include="BAL\OrderRepository.cs" />
     <Compile Include="BAL\ProductRepository.cs" />
     <Compile Include="BAL\PurchaseOrderRepository.cs" />
+    <Compile Include="BAL\ReceptionRepository.cs" />
     <Compile Include="BAL\ReportsRepository.cs" />
     <Compile Include="BAL\SettingRepository.cs" />
     <Compile Include="BAL\ThirdPartyRepository.cs" />
@@ -192,6 +193,7 @@
     <Compile Include="Controllers\PodiumController.cs" />
     <Compile Include="Controllers\ProductController.cs" />
     <Compile Include="Controllers\PurchaseOrderController.cs" />
+    <Compile Include="Controllers\ReceptionController.cs" />
     <Compile Include="Controllers\ReportsController.cs" />
     <Compile Include="Controllers\SaleOrderController.cs" />
     <Compile Include="Controllers\SettingController.cs" />
@@ -616,6 +618,9 @@
     <Content Include="js\PurchaseOrder\NewPurchase.js" />
     <Content Include="js\PurchaseOrder\PurchaseOrderList.js" />
     <Content Include="js\PurchaseOrder\PurchasePrint.js" />
+    <Content Include="js\Reception\NewReceive.js" />
+    <Content Include="js\Reception\ReceiveOrderList.js" />
+    <Content Include="js\Reception\ReceivePrint.js" />
     <Content Include="js\Ship\ShipStation.js" />
     <Content Include="js\ThirdParty\Vendor.js" />
     <Content Include="js\ThirdParty\VendorList.js" />
@@ -844,6 +849,8 @@
     <Content Include="Views\Accounting\EditAccount.cshtml" />
     <Content Include="Views\Bank\BankAccountList.cshtml" />
     <Content Include="Views\Bank\EditBankAccount.cshtml" />
+    <Content Include="Views\Reception\ReceiveOrder.cshtml" />
+    <Content Include="Views\Reception\NewReceiveOrder.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

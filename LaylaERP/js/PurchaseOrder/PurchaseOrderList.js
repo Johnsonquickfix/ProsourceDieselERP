@@ -59,7 +59,12 @@ function PurchaseOrderGrid() {
                 }
             },
             { data: 'date_creation', title: 'Order Date', sWidth: "10%" },
-            { data: 'refordervendor', title: 'Invoice No', sWidth: "10%" },
+            {
+                data: 'refordervendor', title: 'Invoice No', sWidth: "10%", 'render': function (id, type, full, meta) {
+                    let str_inv = (id.substr(7) > 0 ? ' <a href="#" onclick="getInvoicePrint(' + full.id + '); "><i class="fas fa - search - plus"></i>' + id + '</a>' : '');
+                    return str_inv;
+                }
+            },
             { data: 'vendor_name', title: 'Vendor Name', sWidth: "15%" },
             {
                 data: 'city', title: 'Address', sWidth: "20%", render: function (data, type, dtrow) {

@@ -1896,7 +1896,7 @@ function PaymentModal() {
     }
     myHtml += '</select>';
     myHtml += '</span>';
-    myHtml += '<input class="form-control hidden" type="text" id="txtPPEmail" name="txtPPEmail" placeholder="PayPal Email" maxlength="60">';
+    myHtml += '<input class="form-control" type="text" id="txtPPEmail" name="txtPPEmail" placeholder="PayPal Email" maxlength="60" disabled>';
     myHtml += '</div>';
     myHtml += '</div>';
     myHtml += '<button type="button" class="btn btn-primary" id="btnPlaceOrder">Place Order $' + $('#orderTotal').text() + '</button>';
@@ -1930,7 +1930,8 @@ function PaymentModal() {
 function AcceptPayment() {
     if ($("#ddlPaymentMethod").val() == "ppec_paypal") {
         if ($("#txtPPEmail").val().length <= 5) swal('Alert!', 'Please enter PayPal Email.', "info").then((result) => { return false; });
-        else PaypalPayment($("#txtPPEmail").val());
+        else PaypalPayment($("#txtbillemail").val());
+        //else PaypalPayment($("#txtPPEmail").val());        
     }
     else if ($("#ddlPaymentMethod").val() == "podium") { $("#loader").show(); PodiumPayment() }
     else { swal('Alert!', 'Please Select Payment Method.', "error"); }

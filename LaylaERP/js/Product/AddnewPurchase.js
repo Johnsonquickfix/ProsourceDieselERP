@@ -1,4 +1,5 @@
 ﻿$(document).ready(function () {
+    $("#loader1").hide();
     var url = window.location.pathname;
     var id = url.substring(url.lastIndexOf('/') + 1);
     $('li:contains(Variations)').hide();
@@ -131,6 +132,10 @@
     $('#btncopybuying').hide();
 });
 
+$(document).on("click", "#btnRefresh", function (t) {    
+    $('#ddlproductchild').trigger('change'); 
+});
+
 $("#btnaddupdatechild").click(function (e) {
     let _ItemProduct = [];
     $("#order_line_items > tr").each(function (index, tr) {
@@ -155,7 +160,7 @@ $("#btnaddupdatechild").click(function (e) {
             dataType: 'json',
             headers: { "Content-Type": "application/json" },
             beforeSend: function () {
-                $("#loader").show();
+                $("#loader1").show();
             },
             success: function (data) {
                 if (data.status == true) {
@@ -166,7 +171,7 @@ $("#btnaddupdatechild").click(function (e) {
                 }
             },
             complete: function () {
-                $("#loader").hide();
+                $("#loader1").hide();
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
                 // alert(errorThrown);
@@ -202,7 +207,7 @@ $("#btnservicessave").click(function (e) {
             dataType: 'json',
             headers: { "Content-Type": "application/json" },
             beforeSend: function () {
-                $("#loader").show();
+                $("#loader1").show();
             },
             success: function (data) {
                 if (data.status == true) {
@@ -214,7 +219,7 @@ $("#btnservicessave").click(function (e) {
                 }
             },
             complete: function () {
-                $("#loader").hide();
+                $("#loader1").hide();
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
                 // alert(errorThrown);
@@ -303,7 +308,9 @@ function GetDataPurchaseByID(order_id) {
 
 }
 
-$("#ddlproductchild").change(function () {
+$("#ddlproductchild").change(function (t) {
+    t.preventDefault();
+    $("#loader1").show();
     GetDataPurchaseByID($("#ddlproductchild").val());
     bindbuyingprice();
     bindChildproductsservices();
@@ -313,6 +320,7 @@ $("#ddlproductchild").change(function () {
     ClearControl();
     $('#dvbuysing').hide();
     $("#hfbuyingid").val('');
+    $("#loader1").hide();
 });
 
 
@@ -325,7 +333,7 @@ function dataGridLoad(order_type) {
     var obj = { strValue1: keywordfilter, strValue2: categoryfiler };
     $.ajax({
         type: "POST", url: '/Product/GetProductInfo', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
-        beforeSend: function () { $("#loader").show(); },
+        beforeSend: function () { $("#loader1").show(); },
         success: function (data) {
             // datav = JSON.stringify(data);
 
@@ -343,8 +351,8 @@ function dataGridLoad(order_type) {
             bindItemListDataTable(itemsDetailsxml);
 
         },
-        complete: function () { $("#loader").hide(); },
-        error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); },
+        complete: function () { $("#loader1").hide(); },
+        error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader1").hide(); swal('Alert!', errorThrown, "error"); },
         async: false
 
     });
@@ -388,7 +396,7 @@ function bindChildproductsservices() {
     var obj = { strValue1: PostID };
     $.ajax({
         type: "POST", url: '/Product/GetProductservices', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
-        beforeSend: function () { $("#loader").show(); },
+        beforeSend: function () { $("#loader1").show(); },
         success: function (data) {
             // datav = JSON.stringify(data);
 
@@ -404,8 +412,8 @@ function bindChildproductsservices() {
             binddata(itemsDetailsxml);
 
         },
-        complete: function () { $("#loader").hide(); },
-        error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); },
+        complete: function () { $("#loader1").hide(); },
+        error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader1").hide(); swal('Alert!', errorThrown, "error"); },
         async: false
 
     });
@@ -459,7 +467,7 @@ function bindparentproductsservices() {
     var obj = { strValue1: PostID };
     $.ajax({
         type: "POST", url: '/Product/GetProductParent', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
-        beforeSend: function () { $("#loader").show(); },
+        beforeSend: function () { $("#loader1").show(); },
         success: function (data) {
             var itemsDetailsxml = [];
             for (var i = 0; i < data.length; i++) {
@@ -471,8 +479,8 @@ function bindparentproductsservices() {
             }
             bindParentdata(itemsDetailsxml);
         },
-        complete: function () { $("#loader").hide(); },
-        error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); },
+        complete: function () { $("#loader1").hide(); },
+        error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader1").hide(); swal('Alert!', errorThrown, "error"); },
         async: false
 
     });
@@ -559,7 +567,7 @@ function AddBuyingt() {
             data: JSON.stringify(obj),
             dataType: "json",
             beforeSend: function () {
-                $("#loader").show();
+                $("#loader1").show();
             },
             success: function (data) {
                 if (data.status == true) {
@@ -580,7 +588,7 @@ function AddBuyingt() {
                 }
             },
             complete: function () {
-                $("#loader").hide();
+                $("#loader1").hide();
                 //location.href = '/Users/Users/';
                 //window.location.href = '/Users/Users/';
 
@@ -642,7 +650,7 @@ function btncopybuying() {
             data: JSON.stringify(obj),
             dataType: "json",
             beforeSend: function () {
-                $("#loader").show();
+                $("#loader1").show();
             },
             success: function (data) {
                 if (data.status == true) {
@@ -663,7 +671,7 @@ function btncopybuying() {
                 }
             },
             complete: function () {
-                $("#loader").hide();
+                $("#loader1").hide();
                 //location.href = '/Users/Users/';
                 //window.location.href = '/Users/Users/';
 
@@ -685,7 +693,7 @@ function bindbuyingprice() {
     var obj = { strValue1: PostID };
     $.ajax({
         type: "POST", url: '/Product/GetBuyingdata', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
-        beforeSend: function () { $("#loader").show(); },
+        beforeSend: function () { $("#loader1").show(); },
         success: function (data) {
             var itemsDetailsxml = [];
             for (var i = 0; i < data.length; i++) {
@@ -697,8 +705,8 @@ function bindbuyingprice() {
             }
             bindbuying(itemsDetailsxml);
         },
-        complete: function () { $("#loader").hide(); },
-        error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); },
+        complete: function () { $("#loader1").hide(); },
+        error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader1").hide(); swal('Alert!', errorThrown, "error"); },
         async: false
 
     });
@@ -796,7 +804,7 @@ function DeleteUser(id) {
         data: JSON.stringify(obj),
         dataType: "json",
         beforeSend: function () {
-            $("#loader").show();
+            $("#loader1").show();
         },
         success: function (data) {
             if (data.status == true) {
@@ -814,7 +822,7 @@ function DeleteUser(id) {
             }
         },
         complete: function () {
-            $("#loader").hide();
+            $("#loader1").hide();
         },
         error: function (error) {
             swal('Error!', 'something went wrong', 'error');
@@ -853,7 +861,7 @@ function AddWarehouse() {
             data: JSON.stringify(obj),
             dataType: "json",
             beforeSend: function () {
-                $("#loader").show();
+                $("#loader1").show();
             },
             success: function (data) {
                 if (data.status == true) {
@@ -874,7 +882,7 @@ function AddWarehouse() {
                 }
             },
             complete: function () {
-                $("#loader").hide();
+                $("#loader1").hide();
                 //location.href = '/Users/Users/';
                 //window.location.href = '/Users/Users/';
 
@@ -896,7 +904,7 @@ function bindwarehouse() {
     var obj = { strValue1: PostID };
     $.ajax({
         type: "POST", url: '/Product/GetwarehouseData', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
-        beforeSend: function () { $("#loader").show(); },
+        beforeSend: function () { $("#loader1").show(); },
         success: function (data) {
             var itemsDetailsxml = [];
             for (var i = 0; i < data.length; i++) {
@@ -908,8 +916,8 @@ function bindwarehouse() {
             }
             bindwarehouseDetails(itemsDetailsxml);
         },
-        complete: function () { $("#loader").hide(); },
-        error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); },
+        complete: function () { $("#loader1").hide(); },
+        error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader1").hide(); swal('Alert!', errorThrown, "error"); },
         async: false
 
     });
@@ -976,7 +984,7 @@ function Deletewarehouser(id) {
         data: JSON.stringify(obj),
         dataType: "json",
         beforeSend: function () {
-            $("#loader").show();
+            $("#loader1").show();
         },
         success: function (data) {
             if (data.status == true) {
@@ -994,7 +1002,7 @@ function Deletewarehouser(id) {
             }
         },
         complete: function () {
-            $("#loader").hide();
+            $("#loader1").hide();
         },
         error: function (error) {
             swal('Error!', 'something went wrong', 'error');
@@ -1031,7 +1039,7 @@ function AddNotes() {
             data: JSON.stringify(obj),
             dataType: "json",
             beforeSend: function () {
-                $("#loader").show();
+                $("#loader1").show();
             },
             success: function (data) {
                 if (data.status == true) {
@@ -1051,7 +1059,7 @@ function AddNotes() {
                 }
             },
             complete: function () {
-                $("#loader").hide();
+                $("#loader1").hide();
                 //location.href = '/Users/Users/';
                 //window.location.href = '/Users/Users/';
 
@@ -1096,7 +1104,7 @@ function Adduploade() {
             processData: false,
             contentType: false,
             beforeSend: function () {
-                $("#loader").show();
+                $("#loader1").show();
             },
             success: function (data) {
                 if (data.status == true) {
@@ -1117,7 +1125,7 @@ function Adduploade() {
                 }
             },
             complete: function () {
-                $("#loader").hide();
+                $("#loader1").hide();
                 //location.href = '/Users/Users/';
                 //window.location.href = '/Users/Users/';
 
@@ -1136,7 +1144,7 @@ function bindfileuploade() {
     var obj = { strValue1: PostID };
     $.ajax({
         type: "POST", url: '/Product/GetfileuploadData', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
-        beforeSend: function () { $("#loader").show(); },
+        beforeSend: function () { $("#loader1").show(); },
         success: function (data) {
             var itemsDetailsxml = [];
             for (var i = 0; i < data.length; i++) {
@@ -1148,8 +1156,8 @@ function bindfileuploade() {
             }
             bindbindfileuploadeDetails(itemsDetailsxml);
         },
-        complete: function () { $("#loader").hide(); },
-        error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); },
+        complete: function () { $("#loader1").hide(); },
+        error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader1").hide(); swal('Alert!', errorThrown, "error"); },
         async: false
 
     });
@@ -1201,7 +1209,7 @@ function Deletefileupload(id) {
         data: JSON.stringify(obj),
         dataType: "json",
         beforeSend: function () {
-            $("#loader").show();
+            $("#loader1").show();
         },
         success: function (data) {
             if (data.status == true) {
@@ -1219,7 +1227,7 @@ function Deletefileupload(id) {
             }
         },
         complete: function () {
-            $("#loader").hide();
+            $("#loader1").hide();
         },
         error: function (error) {
             swal('Error!', 'something went wrong', 'error');

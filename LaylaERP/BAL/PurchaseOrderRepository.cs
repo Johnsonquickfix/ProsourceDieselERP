@@ -282,7 +282,7 @@ namespace LaylaERP.BAL
             try
             {
                 MySqlParameter[] para = { new MySqlParameter("@po_id", id), };
-                string strSql = "select po.rowid,po.ref,po.ref_ext,po.ref_supplier,po.fk_supplier,po.fk_status,po.fk_payment_term,pt.PaymentTerm,po.fk_balance_days,bd.Balance,po.fk_payment_type,"
+                string strSql = "select po.rowid,po.ref,po.ref_ext,po.ref_supplier,po.fk_supplier,po.fk_status,po.fk_payment_term,coalesce(pt.PaymentTerm,'') PaymentTerm,po.fk_balance_days,bd.Balance,po.fk_payment_type,"
                                 + " DATE_FORMAT(po.date_livraison, '%m/%d/%Y') date_livraison,po.fk_incoterms,po.location_incoterms,po.note_private,po.note_public,DATE_FORMAT(po.date_creation, '%m/%d/%Y') date_creation,"
                                 + " v.name vendor_name,v.address,COALESCE(v.town,'') town,v.fk_country,v.fk_state,v.zip,COALESCE(v.phone,''),COALESCE(v.email,'') vendor_email"
                                 + " from commerce_purchase_order po inner join wp_vendor v on po.fk_supplier = v.rowid"

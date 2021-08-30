@@ -29,7 +29,7 @@ function getPurchaseOrderPrint(id, is_mail) {
     }
 }
 function printinvoice(id, result, is_mail, is_inv) {
-    let data = JSON.parse(result.data);
+    let data = JSON.parse(result.data); //console.log(data);
     var modalHtml = '';
     modalHtml += '<div class="modal-dialog modal-lg">';
     modalHtml += '<div class="modal-content">';
@@ -42,6 +42,7 @@ function printinvoice(id, result, is_mail, is_inv) {
     $('<div class="modal in printable autoprint" id="PrintModal" role="dialog" aria-hidden="true"></div>').html(modalHtml).modal({ backdrop: 'static', keyboard: false });
     let total_qty = 0, total_gm = 0.00, total_tax = 0.00, total_shamt = 0.00, total_discamt = 0.00, total_net = 0.00;
     let inv_title = is_inv ? 'Invoice' : 'Purchase Order';
+    let startingNumber = parseFloat(data['po'][0].PaymentTerm.match(/^-?\d+\.\d+|^-?\d+\b|^\d+(?=\w)/g)) || 0.00;
     var myHtml = '';
     myHtml += '<div class="invoice">';
     myHtml += '<div class="section invoiceDetails">';
@@ -60,7 +61,7 @@ function printinvoice(id, result, is_mail, is_inv) {
     myHtml += '                            </tr>';
     myHtml += '                            <tr>';
     myHtml += '                                <td style="text-align:right;padding-right:10px;width:58.33333333%;font-size:14px;">' + inv_title + ' No. #:</td>';
-    myHtml += '                                <td style="padding-left:3px;font-size:14px;">' + (is_inv ? data['po'][0].ref_ext : data['po'][0].ref)  + '</td>';
+    myHtml += '                                <td style="padding-left:3px;font-size:14px;">' + (is_inv ? data['po'][0].ref_ext : data['po'][0].ref) + '</td>';
     myHtml += '                            </tr>';
     myHtml += '                            <tr>';
     myHtml += '                                <td style="text-align:right;padding-right:10px;width:58.33333333%;font-size:14px;">' + inv_title + ' date:</td>';
@@ -116,7 +117,7 @@ function printinvoice(id, result, is_mail, is_inv) {
     myHtml += '                            <td style="vertical-align: top; width:50%;font-size: 14px;">';
     myHtml += '                                <table style="width: 100%;">';
     myHtml += '                                    <thead style="border: 1px solid #ddd;background-color:#f9f9f9;font-weight:700;"><tr><th style="padding:5px 15px;">Comments or Special Instructions</th></tr></thead>';
-    myHtml += '                                    <tr><td style="padding:5px 15px;">1. Payment term: ' + data['po'][0].PaymentTerm + ', ' + data['po'][0].Balance + '</td></tr>';
+    myHtml += '                                    <tr><td style="padding:5px 15px;">1. Payment terms: ' + data['po'][0].PaymentTerm + ', ' + data['po'][0].Balance + '</td></tr>';
     myHtml += '                                    <tr><td style="padding:5px 15px;">2. ' + data['po'][0].location_incoterms + '</td></tr>';
     myHtml += '                                </table>';
     myHtml += '                            </td>';
@@ -141,6 +142,10 @@ function printinvoice(id, result, is_mail, is_inv) {
     myHtml += '                                    <tr style="border-top: 1px solid #ddd;border-bottom:1px solid #ddd;background-color:#f9f9f9;font-weight:700;">';
     myHtml += '                                        <th style="width: 60%;border-left: 1px solid #ddd;border-right: 1px solid #ddd;text-align:right;padding-right: 15px;">Total</th>';
     myHtml += '                                        <th style="width: 40%;padding-top:5px;padding-bottom:5px;padding-left:15px;padding-right:15px;text-align:right;border-right: 1px solid #ddd;">$' + total_net.toFixed(2) + '</th>';
+    myHtml += '                                    </tr>';
+    myHtml += '                                    <tr style="border-top: 1px solid #ddd;border-bottom:1px solid #ddd;background-color:#f9f9f9;font-weight:700;">';
+    myHtml += '                                        <th style="width: 60%;border-left: 1px solid #ddd;border-right: 1px solid #ddd;text-align:right;padding-right: 15px;">Deposit (' + startingNumber + '%)</th>';
+    myHtml += '                                        <th style="width: 40%;padding-top:5px;padding-bottom:5px;padding-left:15px;padding-right:15px;text-align:right;border-right: 1px solid #ddd;">$' + (total_net * (startingNumber / 100)).toFixed(2) + '</th>';
     myHtml += '                                    </tr>';
     myHtml += '                                </table>';
     myHtml += '                            </td>';

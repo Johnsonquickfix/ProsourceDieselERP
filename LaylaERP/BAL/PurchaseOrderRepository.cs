@@ -192,7 +192,7 @@ namespace LaylaERP.BAL
                 if (model.RowID > 0)
                 {
                     strsql = string.Format("delete from commerce_purchase_order_detail where fk_purchase = '{0}' and rowid not in ({1});", model.RowID, str_oiid);
-                    strsql += string.Format("update commerce_purchase_order set ref_supplier='{0}',fk_supplier='{1}',fk_payment_term='{2}',fk_balance_days='{3}',fk_incoterms='{4}',location_incoterms='{5}',"
+                    strsql += string.Format("update commerce_purchase_order set ref_ext='',fk_status='1',ref_supplier='{0}',fk_supplier='{1}',fk_payment_term='{2}',fk_balance_days='{3}',fk_incoterms='{4}',location_incoterms='{5}',"
                             + "fk_payment_type='{6}',date_livraison='{7}',note_private='{8}',note_public='{9}',discount='{10}',total_tva='{11}',localtax1='{12}',localtax2='{13}',total_ht='{14}',total_ttc='{15}' where rowid='{16}';",
                             model.VendorBillNo, model.VendorID, model.PaymentTerms, model.Balancedays, model.IncotermType, model.Incoterms, model.PaymentType, model.Planneddateofdelivery, model.NotePrivate, model.NotePublic,
                             model.discount, model.total_tva, model.localtax1, model.localtax2, model.total_ht, model.total_ttc, model.RowID);
@@ -240,8 +240,10 @@ namespace LaylaERP.BAL
                 string strsql = "";
                 DateTime cDate = CommonDate.CurrentDate(), cUTFDate = CommonDate.UtcDate();
                 string strPOYearMonth = cDate.ToString("yyMM").PadRight(4);
-                if (model.Status == 3)
-                    strsql += string.Format("update commerce_purchase_order set fk_status='{0}',ref_ext=REPLACE(ref,'PO','PI') where rowid in ({1});", model.Status, model.Search);
+                if (model.Status == 1)
+                    strsql += string.Format("update commerce_purchase_order set fk_status='{0}',ref_ext='',billed='0' where rowid in ({1});", model.Status, model.Search);
+                else if (model.Status == 3)
+                    strsql += string.Format("update commerce_purchase_order set fk_status='{0}',ref_ext=REPLACE(ref,'PO','PI'),billed='1' where rowid in ({1});", model.Status, model.Search);
                 else
                     strsql += string.Format("update commerce_purchase_order set fk_status='{0}' where rowid in ({1});", model.Status, model.Search);
                 result = SQLHelper.ExecuteNonQueryWithTrans(strsql);
@@ -311,7 +313,8 @@ namespace LaylaERP.BAL
                                 + " inner join wp_vendor v on p.fk_supplier = v.rowid inner join wp_StatusMaster s on p.fk_status = s.ID where 1 = 1";
                 if (!string.IsNullOrEmpty(searchid))
                 {
-                    strWhr += " and (p.ref like '" + searchid + "%' OR p.ref_ext='" + searchid + "%' OR v.SalesRepresentative='" + searchid + "%' OR v.name like '" + searchid + "%' OR v.fk_state like '" + searchid + "%' OR v.zip like '" + searchid + "%')";
+                    searchid = searchid.ToLower();
+                    strWhr += " and (lower(p.ref) like '" + searchid + "%' OR lower(p.ref_ext) like '" + searchid + "%' OR lower(v.SalesRepresentative)='" + searchid + "%' OR lower(v.name) like '" + searchid + "%' OR lower(v.fk_state) like '" + searchid + "%' OR lower(v.zip) like '" + searchid + "%')";
                 }
                 if (userstatus != null)
                 {

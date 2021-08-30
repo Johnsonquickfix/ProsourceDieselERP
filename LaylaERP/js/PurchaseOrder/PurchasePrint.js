@@ -19,7 +19,7 @@ function getPurchaseOrderPrint(id, is_mail) {
             url: "/PurchaseOrder/GetPurchaseOrderPrint", type: "Get", beforeSend: function () { }, data: option,
             success: function (result) {
                 try {
-                    printinvoice(id, result, is_mail);
+                    printinvoice(id, result, is_mail, false);
                 }
                 catch (error) { swal('Alert!', "something went wrong.", "error"); }
             },
@@ -28,7 +28,7 @@ function getPurchaseOrderPrint(id, is_mail) {
         });
     }
 }
-function printinvoice(id, result, is_mail) {
+function printinvoice(id, result, is_mail, is_inv) {
     let data = JSON.parse(result.data);
     var modalHtml = '';
     modalHtml += '<div class="modal-dialog modal-lg">';
@@ -41,7 +41,7 @@ function printinvoice(id, result, is_mail) {
     modalHtml += '</div>';
     $('<div class="modal in printable autoprint" id="PrintModal" role="dialog" aria-hidden="true"></div>').html(modalHtml).modal({ backdrop: 'static', keyboard: false });
     let total_qty = 0, total_gm = 0.00, total_tax = 0.00, total_shamt = 0.00, total_discamt = 0.00, total_net = 0.00;
-
+    let inv_title = is_inv ? 'Invoice' : 'Purchase Order';
     var myHtml = '';
     myHtml += '<div class="invoice">';
     myHtml += '<div class="section invoiceDetails">';
@@ -56,20 +56,19 @@ function printinvoice(id, result, is_mail) {
     myHtml += '                    <div style="width:58.33333333%; float:right;">';
     myHtml += '                        <table style="width: 100%;">';
     myHtml += '                            <tr>';
-    myHtml += '                                <td style="text-align: right; padding-right:10px;width:58.33333333%;"></td>';
-    myHtml += '                                <td style="padding-left:3px;"><div style="color:#9da3a6;font-weight:700;font-size:30px;width:41.66666667%;">INVOICE</div></td>';
+    myHtml += '                                <td colspan="2" style="padding-left:3px;text-align:center;"><div style="color:#9da3a6;font-weight:700;font-size:30px;width:100%;">' + inv_title + '</div></td>';
     myHtml += '                            </tr>';
     myHtml += '                            <tr>';
-    myHtml += '                                <td style="text-align:right;padding-right:10px;width:58.33333333%;font-size:14px;">Invoice #:</td>';
-    myHtml += '                                <td style="padding-left:3px;font-size:14px;">' + data['po'][0].ref + '</td>';
+    myHtml += '                                <td style="text-align:right;padding-right:10px;width:58.33333333%;font-size:14px;">' + inv_title + ' No. #:</td>';
+    myHtml += '                                <td style="padding-left:3px;font-size:14px;">' + (is_inv ? data['po'][0].ref_ext : data['po'][0].ref)  + '</td>';
     myHtml += '                            </tr>';
     myHtml += '                            <tr>';
-    myHtml += '                                <td style="text-align:right;padding-right:10px;width:58.33333333%;font-size:14px;">Invoice date:</td>';
+    myHtml += '                                <td style="text-align:right;padding-right:10px;width:58.33333333%;font-size:14px;">' + inv_title + ' date:</td>';
     myHtml += '                                <td style="padding-left:3px;font-size:14px;">' + data['po'][0].date_creation + '</td>';
     myHtml += '                            </tr>';
     myHtml += '                            <tr>';
     myHtml += '                                <td style="text-align:right;padding-right:10px;width:58.33333333%;font-size:14px;">Reference:</td>';
-    myHtml += '                                <td style="padding-left:3px;font-size:14px;">' + data['po'][0].ref_ext + '</td>';
+    myHtml += '                                <td style="padding-left:3px;font-size:14px;">' + data['po'][0].ref_supplier + '</td>';
     myHtml += '                            </tr>';
     myHtml += '                            <tr>';
     myHtml += '                                <td style="text-align:right;padding-right:10px;width:58.33333333%;font-size:14px;">Planned date of delivery:</td>';
@@ -156,13 +155,29 @@ function printinvoice(id, result, is_mail) {
     myHtml += '</div>';
     $('#PrintModal .modal-body').append(myHtml);
     let opt = { strValue1: data['po'][0].vendor_email, strValue2: data['po'][0].ref, strValue3: myHtml }
-    console.log(opt);
     if (opt.strValue1.length > 5 && is_mail) {
         $.ajax({
             type: "POST", url: '/PurchaseOrder/SendMailInvoice', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
             success: function (result) { console.log(result); },
             error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
             complete: function () { }, async: false
+        });
+    }
+}
+
+function getInvoicePrint(id) {
+    if (id > 0) {
+        var option = { strValue1: id };
+        $.ajax({
+            url: "/PurchaseOrder/GetPurchaseOrderPrint", type: "Get", beforeSend: function () { }, data: option,
+            success: function (result) {
+                try {
+                    printinvoice(id, result, false, true);
+                }
+                catch (error) { swal('Alert!', "something went wrong.", "error"); }
+            },
+            complete: function () { },
+            error: function (xhr, status, err) { swal('Alert!', "something went wrong.", "error"); }, async: false
         });
     }
 }

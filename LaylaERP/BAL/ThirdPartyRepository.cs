@@ -885,7 +885,7 @@ namespace LaylaERP.BAL
                 throw ex;
             }
         }
-        public static DataTable GetVendorContact(long id,string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        public static DataTable GetVendorContact(string id,string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
         {
             DataTable dt = new DataTable();
             totalrows = 0;
@@ -896,7 +896,7 @@ namespace LaylaERP.BAL
                 string strSql = "Select c.ID,v.VendorStatus, v.name VendorName,c.Name,c.Title,c.Email,c.Office,c.Ext,c.Mobile,c.Notes,c.Fax,c.City,c.State,c.StateName,c.ZipCode,c.Country,concat( c.Address,' ',c.City,' ',c.State,' ',c.Country,' ',c.ZipCode) Address from erp_VendorContacts c left join wp_vendor v on c.VendorID = v.rowid where c.VendorID='" + id+"' and 1=1 ";
                 if (!string.IsNullOrEmpty(searchid))
                 {
-                    strWhr += " and (Email like '%" + searchid + "%' OR user_nicename='%" + searchid + "%' OR ID='%" + searchid + "%' OR nom like '%" + searchid + "%')";
+                    strWhr += " and (c.Name like '%" + searchid + "%' OR c.Title like '%" + searchid + "%' OR c.Email like '%" + searchid + "%' OR c.Address like '%" + searchid + "%' OR c.Office like '%" + searchid + "%' OR c.Mobile like '%" + searchid + "%' OR c.City like '%" + searchid + "%' OR c.State like '%" + searchid + "%' OR c.Country like '%" + searchid + "%' OR c.ZipCode like '%" + searchid + "%')";
                 }
                 if (userstatus != null)
                 {
@@ -917,7 +917,7 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
-        public static DataTable GetVendorWarehouseList(long id, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        public static DataTable GetVendorWarehouseList(string id, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
         {
             DataTable dt = new DataTable();
             totalrows = 0;
@@ -928,7 +928,7 @@ namespace LaylaERP.BAL
                 string strSql = "Select vw.ID, v.name VendorName,CONCAT(IFNULL(w.address,''),' ',IFNULL(w.city,'') ,' ',IFNULL(w.town,''),' ',IFNULL(w.country,''),' ',IFNULL(w.zip,'')) address, ref Warehouse from wp_VendorWarehouse vw left join wp_vendor v on vw.VendorID = v.rowid left join wp_warehouse w on vw.WarehouseID = w.rowid where vw.VendorID='" + id + "' and 1=1 ";
                 if (!string.IsNullOrEmpty(searchid))
                 {
-                    strWhr += " and (Email like '%" + searchid + "%' OR user_nicename='%" + searchid + "%' OR ID='%" + searchid + "%' OR nom like '%" + searchid + "%')";
+                    strWhr += " and (ref like '%" + searchid + "%' OR w.address like '%" + searchid + "%' OR w.town like '%" + searchid + "%' OR w.country like '%" + searchid + "%' OR w.zip like '%" + searchid + "%' OR w.city like '%" + searchid + "%')";
                 }
                 if (userstatus != null)
                 {
@@ -949,7 +949,7 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
-        public static DataTable GetVendorLinkedFiles(long id, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        public static DataTable GetVendorLinkedFiles(string id, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
         {
             DataTable dt = new DataTable();
             totalrows = 0;
@@ -960,7 +960,7 @@ namespace LaylaERP.BAL
                 string strSql = "select ID,VendorID,FileName,concat(FileSize,' KB') FileSize,FileType,FilePath,DATE_FORMAT(CreatedDate, '%m-%d-%Y') Date from erp_VendorLinkedFiles where VendorID='" + id + "' and 1=1 ";
                 if (!string.IsNullOrEmpty(searchid))
                 {
-                    strWhr += " and (Email like '%" + searchid + "%' OR user_nicename='%" + searchid + "%' OR ID='%" + searchid + "%' OR nom like '%" + searchid + "%')";
+                    strWhr += " and (FileName like '%" + searchid + "%' OR FileSize like '%" + searchid + "%' OR CreatedDate like '%" + searchid + "%')";
                 }
                 if (userstatus != null)
                 {
@@ -981,7 +981,7 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
-        public static DataTable GetVendorRelatedProduct(long id, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        public static DataTable GetVendorRelatedProduct(string id, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
         {
             DataTable dt = new DataTable();
             totalrows = 0;
@@ -994,7 +994,7 @@ namespace LaylaERP.BAL
                     "left join wp_vendor v on p.fk_vendor = v.rowid left join wp_posts post on p.fk_product = post.id where p.fk_vendor='" + id + "' and 1=1 ";
                 if (!string.IsNullOrEmpty(searchid))
                 {
-                    strWhr += " and (p.fk_vendor like '%" + searchid + "%' OR p.purchase_price='%" + searchid + "%' OR p.shipping_price='%" + searchid + "%' OR cost_price like '%" + searchid + "%')";
+                    strWhr += " and (post.post_title like '%" + searchid + "%' OR p.purchase_price='%" + searchid + "%' OR p.shipping_price='%" + searchid + "%' OR cost_price like '%" + searchid + "%')";
                 }
                 if (userstatus != null)
                 {
@@ -1083,7 +1083,7 @@ namespace LaylaERP.BAL
                 string strSql = "Select p.rowid id, p.ref, p.ref_ext refordervendor,v.SalesRepresentative request_author,v.name vendor_name,Concat(v.address,' ',v.town,' ',v.fk_state,' ', v.zip) address,DATE_FORMAT(p.date_livraison,'%m/%d/%Y') date_livraison, s.Status from commerce_purchase_order p inner join wp_vendor v on p.fk_supplier = v.rowid inner join wp_StatusMaster s on p.fk_status = s.ID where v.rowid=" + VendorID+" and  1 = 1";
                 if (!string.IsNullOrEmpty(searchid))
                 {
-                    strWhr += " and (v.address like '%" + searchid + "%' OR v.SalesRepresentative='%" + searchid + "%' OR v.fk_state like '%" + searchid + "%' OR v.zip like '%" + searchid + "%')";
+                    strWhr += " and (p.rowid like '%" + searchid + "%' OR p.date_livraison='%" + searchid + "%')";
                 }
                 if (userstatus != null)
                 {

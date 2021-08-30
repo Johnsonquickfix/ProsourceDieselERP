@@ -23,7 +23,7 @@
     VendorRelatedProduct();
     VendorLinkedFiles();
     getNatureofJournal();
-    PurchaseOrderGrid();
+    InvoiceGrid();
 })
 
 
@@ -117,7 +117,7 @@ $('#btnNextTab1').click(function (e) {
     ZipCode = $("#txtZipCode").val();
     Country = $("#ddlCountry").val();
     Phone = $("#txtPhone").unmask().val();
-  
+
     Fax = $("#txtFax").val();
     EMail = $("#txtEMail").val();
     Web = $("#txtWeb").val();
@@ -895,7 +895,7 @@ function GetVendorByID(id) {
                 var d = JSON.parse(data);
                 if (d.length > 0) {
                     if (rowid == "NewVendor") { $('#lbltitle').text("Add New Vendor"); } else { $('#lbltitle').text("Update Vendor " + "(" + d[0].VendorName + ")"); }
-                    
+
                     $("#txVendorName").val(d[0].VendorName);
                     $("#txtAliasName").val(d[0].AliasName);
                     $("#ddlvendortype").val(d[0].vendor_type);
@@ -1074,35 +1074,45 @@ function VendorContactList() {
     var urid = "";
     ID = $("#hfid").val();
     var sid = "";
-    var obj = { user_status: urid, Search: sid, PageNo: 0, PageSize: 50, sEcho: 1, SortCol: 'id', SortDir: 'desc', rowid: ID };
-    $('#dtdata').DataTable({
-        columnDefs: [{ "orderable": true, "targets": 0 }], order: [[0, "desc"]],
-        destroy: true, bProcessing: true, bServerSide: true,
-        sPaginationType: "full_numbers", searching: false, ordering: true, lengthChange: true, "paging": true,
-        bAutoWidth: false, scrollX: false,
-        lengthMenu: [[10, 20, 50], [10, 20, 50]],
+    //var obj = { user_status: urid, Search: sid, PageNo: 0, PageSize: 50, sEcho: 1, SortCol: 'id', SortDir: 'desc', rowid: ID };
+    var table_cn = $('#dtdata').DataTable({
+        columnDefs: [{ "orderable": true, "targets": 0 }], order: [[1, "desc"]],
+        destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: false, searching: true,
+        responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
+        language: {
+            lengthMenu: "_MENU_ per page",
+            zeroRecords: "Sorry no records found",
+            info: "Showing _START_ to _END_ of _TOTAL_ entries",
+            infoFiltered: "",
+            infoEmpty: "No records found",
+            processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
+        },
+        initComplete: function () {
+            $('#dtdata_filter input').unbind();
+            $('#dtdata_filter input').bind('keyup', function (e) {
+                var code = e.keyCode || e.which;
+                if (code == 13) { table_cn.search(this.value).draw(); }
+            });
+        },
         sAjaxSource: "/ThirdParty/GetVendorContactList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
-            //obj.Search = aoData[45].value;
+            aoData.push({ name: "strValue1", value: ID });
+            aoData.push({ name: "strValue2", value: urid });
             var col = 'id';
             if (oSettings.aaSorting.length >= 0) {
                 var col = oSettings.aaSorting[0][0] == 0 ? "name" : oSettings.aaSorting[0][0] == 1 ? "Name" : oSettings.aaSorting[0][0] == 2 ? "Title" : oSettings.aaSorting[0][0] == 3 ? "Office" : oSettings.aaSorting[0][0] == 4 ? "Mobile" : oSettings.aaSorting[0][0] == 5 ? "Email" : oSettings.aaSorting[0][0] == 6 ? "Address" : "id";
-                obj.SortCol = col; obj.SortDir = oSettings.aaSorting.length >= 0 ? oSettings.aaSorting[0][1] : "desc";
+                aoData.push({ name: "sSortColName", value: col });
             }
-            obj.sEcho = aoData[0].value; obj.PageSize = oSettings._iDisplayLength; obj.PageNo = oSettings._iDisplayStart;
-            $.ajax({
-                type: "POST", url: sSource, async: true, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
-                success: function (data) {
-                    var dtOption = { sEcho: data.sEcho, recordsTotal: data.recordsTotal, recordsFiltered: data.recordsFiltered, iTotalRecords: data.iTotalRecords, iTotalDisplayRecords: data.iTotalDisplayRecords, aaData: JSON.parse(data.aaData) };
+            oSettings.jqXHR = $.ajax({
+                dataType: 'json', type: "GET", url: sSource, data: aoData,
+                "success": function (data) {
+                    var dtOption = { sEcho: data.sEcho, recordsTotal: data.recordsTotal, recordsFiltered: data.recordsFiltered, aaData: JSON.parse(data.aaData) };
                     return fnCallback(dtOption);
-                },
-                error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
-                async: false
+                }
             });
         },
         aoColumns: [
             { data: 'Name', title: 'Name', sWidth: "10%" },
-            /* { data: 'VendorName', title: 'Vendor Name', sWidth: "10%" },*/
             { data: 'Title', title: 'Title', sWidth: "10%" },
             { data: 'Office', title: 'Office Contact', sWidth: "10%" },
             {
@@ -1136,34 +1146,46 @@ function VendorRelatedProduct() {
     var urid = "";
     ID = $("#hfid").val();
     var sid = "";
-    var obj = { user_status: urid, Search: sid, PageNo: 0, PageSize: 50, sEcho: 1, SortCol: 'id', SortDir: 'desc', rowid: ID };
-    $('#RelatedItemdata').DataTable({
-        columnDefs: [{ "orderable": true, "targets": 0 }], order: [[0, "desc"]],
-        destroy: true, bProcessing: true, bServerSide: true,
-        sPaginationType: "full_numbers", searching: false, ordering: true, lengthChange: true, "paging": true,
-        bAutoWidth: false, scrollX: false,
-        lengthMenu: [[10, 20, 50], [10, 20, 50]],
+    //var obj = { user_status: urid, Search: sid, PageNo: 0, PageSize: 50, sEcho: 1, SortCol: 'id', SortDir: 'desc', rowid: ID };
+    var table_RIM = $('#RelatedItemdata').DataTable({
+        columnDefs: [{ "orderable": true, "targets": 0 }], order: [[1, "desc"]],
+        destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: false, searching: true,
+        responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
+        language: {
+            lengthMenu: "_MENU_ per page",
+            zeroRecords: "Sorry no records found",
+            info: "Showing _START_ to _END_ of _TOTAL_ entries",
+            infoFiltered: "",
+            infoEmpty: "No records found",
+            processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
+        },
+        initComplete: function () {
+            $('#RelatedItemdata_filter input').unbind();
+            $('#RelatedItemdata_filter input').bind('keyup', function (e) {
+                var code = e.keyCode || e.which;
+                if (code == 13) { table_RIM.search(this.value).draw(); }
+            });
+        },
         sAjaxSource: "/ThirdParty/GetVendorRelatedProductList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
-
+            aoData.push({ name: "strValue1", value: ID });
+            aoData.push({ name: "strValue2", value: urid });
             var col = 'id';
             if (oSettings.aaSorting.length >= 0) {
                 var col = oSettings.aaSorting[0][0] == 0 ? "ProductName" : oSettings.aaSorting[0][0] == 1 ? "VendorName" : oSettings.aaSorting[0][0] == 2 ? "purchase_price" : oSettings.aaSorting[0][0] == 3 ? "cost_price" : "id";
-                obj.SortCol = col; obj.SortDir = oSettings.aaSorting.length >= 0 ? oSettings.aaSorting[0][1] : "desc";
+                aoData.push({ name: "sSortColName", value: col });
             }
-            obj.sEcho = aoData[0].value; obj.PageSize = oSettings._iDisplayLength; obj.PageNo = oSettings._iDisplayStart;
-            $.ajax({
-                type: "POST", url: sSource, async: true, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
-                success: function (data) {
-                    var dtOption = { sEcho: data.sEcho, recordsTotal: data.recordsTotal, recordsFiltered: data.recordsFiltered, iTotalRecords: data.iTotalRecords, iTotalDisplayRecords: data.iTotalDisplayRecords, aaData: JSON.parse(data.aaData) };
+          /*  obj.sEcho = aoData[0].value; obj.PageSize = oSettings._iDisplayLength; obj.PageNo = oSettings._iDisplayStart;*/
+            oSettings.jqXHR = $.ajax({
+                dataType: 'json', type: "GET", url: sSource, data: aoData,
+                "success": function (data) {
+                    var dtOption = { sEcho: data.sEcho, recordsTotal: data.recordsTotal, recordsFiltered: data.recordsFiltered, aaData: JSON.parse(data.aaData) };
                     return fnCallback(dtOption);
-                },
-                error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
-                async: false
+                }
             });
         },
         aoColumns: [
-            { data: 'ProductName', title: 'Product Name', sWidth: "25%" },
+            { data: 'ProductName', title: 'Product Name', sWidth: "25%", class: 'text-left' },
             /*{ data: 'VendorName', title: 'Vendor Name', sWidth: "25%" },*/
             { data: 'purchase_price', title: 'Purchase Price', sWidth: "15%" },
             { data: 'shipping_price', title: 'Shipping Price', sWidth: "15%" },
@@ -1178,34 +1200,46 @@ function VendorWarehouseList() {
     var urid = "";
     ID = $("#hfid").val();
     var sid = "";
-    var obj = { user_status: urid, Search: sid, PageNo: 0, PageSize: 50, sEcho: 1, SortCol: 'id', SortDir: 'desc', rowid: ID };
-    $('#Warehousedata').DataTable({
-        columnDefs: [{ "orderable": true, "targets": 0 }], order: [[0, "desc"]],
-        destroy: true, bProcessing: true, bServerSide: true,
-        sPaginationType: "full_numbers", searching: false, ordering: true, lengthChange: true, "paging": true,
-        bAutoWidth: false, scrollX: false,
-        lengthMenu: [[10, 20, 50], [10, 20, 50]],
+    //var obj = { user_status: urid, Search: sid, PageNo: 0, PageSize: 50, sEcho: 1, SortCol: 'id', SortDir: 'desc', rowid: ID };
+    var table_WD =  $('#Warehousedata').DataTable({
+        columnDefs: [{ "orderable": true, "targets": 0 }], order: [[1, "desc"]],
+        destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: false, searching: true,
+        responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
+        language: {
+            lengthMenu: "_MENU_ per page",
+            zeroRecords: "Sorry no records found",
+            info: "Showing _START_ to _END_ of _TOTAL_ entries",
+            infoFiltered: "",
+            infoEmpty: "No records found",
+            processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
+        },
+        initComplete: function () {
+            $('#Warehousedata_filter input').unbind();
+            $('#Warehousedata_filter input').bind('keyup', function (e) {
+                var code = e.keyCode || e.which;
+                if (code == 13) { table_WD.search(this.value).draw(); }
+            });
+        },
         sAjaxSource: "/ThirdParty/GetVendorWarehouseList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
+            aoData.push({ name: "strValue1", value: ID });
+            aoData.push({ name: "strValue2", value: urid });
             var col = 'id';
             if (oSettings.aaSorting.length >= 0) {
                 var col = oSettings.aaSorting[0][0] == 0 ? "VendorName" : oSettings.aaSorting[0][0] == 1 ? "Warehouse" : "id";
-                obj.SortCol = col; obj.SortDir = oSettings.aaSorting.length >= 0 ? oSettings.aaSorting[0][1] : "desc";
+                aoData.push({ name: "sSortColName", value: col });
             }
-            obj.sEcho = aoData[0].value; obj.PageSize = oSettings._iDisplayLength; obj.PageNo = oSettings._iDisplayStart;
-            $.ajax({
-                type: "POST", url: sSource, async: true, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
-                success: function (data) {
-                    var dtOption = { sEcho: data.sEcho, recordsTotal: data.recordsTotal, recordsFiltered: data.recordsFiltered, iTotalRecords: data.iTotalRecords, iTotalDisplayRecords: data.iTotalDisplayRecords, aaData: JSON.parse(data.aaData) };
+            oSettings.jqXHR = $.ajax({
+                dataType: 'json', type: "GET", url: sSource, data: aoData,
+                "success": function (data) {
+                    var dtOption = { sEcho: data.sEcho, recordsTotal: data.recordsTotal, recordsFiltered: data.recordsFiltered, aaData: JSON.parse(data.aaData) };
                     return fnCallback(dtOption);
-                },
-                error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
-                async: false
+                }
             });
         },
         aoColumns: [
             /* { data: 'VendorName', title: 'Vendor Name', sWidth: "40%" },*/
-            { data: 'Warehouse', title: 'Ware house', sWidth: "40%" },
+            { data: 'Warehouse', title: 'Ware house', sWidth: "40%", class: 'text-left' },
             { data: 'address', title: 'Address', sWidth: "40%" },
             {
                 'data': 'ID', sWidth: "20%",
@@ -1241,7 +1275,7 @@ $('#btnAddRelatedProduct').click(function () {
 })
 function showModal(id) {
     var VendorID = id;
-   
+
     $("#hfContactid").val(VendorID);
     var obj =
         $.ajax({
@@ -1397,35 +1431,45 @@ function VendorLinkedFiles() {
     ID = $("#hfid").val();
     var sid = "";
     var obj = { user_status: urid, Search: sid, PageNo: 0, PageSize: 50, sEcho: 1, SortCol: 'id', SortDir: 'desc', rowid: ID };
-    $('#VendorLinkedFiles').DataTable({
-        columnDefs: [{ "orderable": true, "targets": 0 }], order: [[0, "desc"]],
-        destroy: true, bProcessing: true, bServerSide: true,
-        sPaginationType: "full_numbers", searching: false, ordering: true, lengthChange: true, "paging": true,
-        bAutoWidth: false, scrollX: false,
-        lengthMenu: [[10, 20, 50], [10, 20, 50]],
+    let table_VL = $('#VendorLinkedFiles').DataTable({
+        columnDefs: [{ "orderable": true, "targets": 0 }], order: [[1, "desc"]],
+        destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: false, searching: true,
+        responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
+        language: {
+            lengthMenu: "_MENU_ per page",
+            zeroRecords: "Sorry no records found",
+            info: "Showing _START_ to _END_ of _TOTAL_ entries",
+            infoFiltered: "",
+            infoEmpty: "No records found",
+            processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
+        },
+        initComplete: function () {
+            $('#VendorLinkedFiles_filter input').unbind();
+            $('#VendorLinkedFiles_filter input').bind('keyup', function (e) {
+                var code = e.keyCode || e.which;
+                if (code == 13) { table_VL.search(this.value).draw(); }
+            });
+        },
         sAjaxSource: "/ThirdParty/GetVendorLinkedFiles",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
+            aoData.push({ name: "strValue1", value: ID });
+            aoData.push({ name: "strValue2", value: urid });
             var col = 'id';
             if (oSettings.aaSorting.length >= 0) {
                 var col = oSettings.aaSorting[0][0] == 0 ? "FileName" : oSettings.aaSorting[0][0] == 1 ? "FileSize" : oSettings.aaSorting[0][0] == 2 ? "Date" : "id";
-                obj.SortCol = col; obj.SortDir = oSettings.aaSorting.length >= 0 ? oSettings.aaSorting[0][1] : "desc";
+                aoData.push({ name: "sSortColName", value: col });
             }
-            obj.sEcho = aoData[0].value; obj.PageSize = oSettings._iDisplayLength; obj.PageNo = oSettings._iDisplayStart;
-            $.ajax({
-                type: "POST", url: sSource, async: true, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
-                success: function (data) {
-                    var dtOption = { sEcho: data.sEcho, recordsTotal: data.recordsTotal, recordsFiltered: data.recordsFiltered, iTotalRecords: data.iTotalRecords, iTotalDisplayRecords: data.iTotalDisplayRecords, aaData: JSON.parse(data.aaData) };
-                    $('#lblAttachedFiles').text(data.iTotalRecords);
+            oSettings.jqXHR = $.ajax({
+                dataType: 'json', type: "GET", url: sSource, data: aoData,
+                "success": function (data) {
+                    var dtOption = { sEcho: data.sEcho, recordsTotal: data.recordsTotal, recordsFiltered: data.recordsFiltered, aaData: JSON.parse(data.aaData) };
                     return fnCallback(dtOption);
-
-                },
-                error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
-                async: false
+                }
             });
         },
         aoColumns: [
             {
-                'data': 'FileName', sWidth: "25%",
+                'data': 'FileName', sWidth: "25%", class: 'text-left',
                 'render': function (FileName, type, full, meta) {
                     return '<a target="popup" href="../../Content/VendorLinkedFiles/' + FileName + '">' + FileName + ' <i class="fas fa-search-plus"></i></a>';
                 }
@@ -1465,12 +1509,12 @@ function DeleteVendorLinkedFiles(id) {
 
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Invoices ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-function PurchaseOrderGrid() {
+function InvoiceGrid() {
     let VendorID = $("#hfid").val();
     let urid = parseInt($("#ddlInvoiceServices").val());
     let table = $('#PurchaseInvoicedata').DataTable({
         columnDefs: [{ "orderable": true, "targets": 0 }], order: [[1, "desc"]],
-        destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: false, searching: false,
+        destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: false, searching: true,
         responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
         language: {
             lengthMenu: "_MENU_ per page",
@@ -1481,8 +1525,8 @@ function PurchaseOrderGrid() {
             processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
         },
         initComplete: function () {
-            $('.dataTables_filter input').unbind();
-            $('.dataTables_filter input').bind('keyup', function (e) {
+            $('#PurchaseInvoicedata_filter input').unbind();
+            $('#PurchaseInvoicedata_filter input').bind('keyup', function (e) {
                 var code = e.keyCode || e.which;
                 if (code == 13) { table.search(this.value).draw(); }
             });
@@ -1496,7 +1540,6 @@ function PurchaseOrderGrid() {
                 var col = oSettings.aaSorting[0][0] == 1 ? "date_livraison" : oSettings.aaSorting[0][0] == 2 ? "Status" : "ref";
                 aoData.push({ name: "sSortColName", value: col });
             }
-            //console.log(aoData);
             oSettings.jqXHR = $.ajax({
                 dataType: 'json', type: "GET", url: sSource, data: aoData,
                 "success": function (data) {
@@ -1506,11 +1549,10 @@ function PurchaseOrderGrid() {
             });
         },
         aoColumns: [
-
             {
-                'data': 'ref', sWidth: "10%", title: 'PO No.',
+                'data': 'ref', sWidth: "10%", title: 'PO No.', class: 'text-left',
                 'render': function (id, type, full, meta) {
-                    return '<a href="../../PurchaseOrder/NewPurchaseOrder/' + full.id + '">' + id + '</a> <a target="popup" href="#"><i class="far fa-file"></i></a>';
+                    return '<a href="../../PurchaseOrder/NewPurchaseOrder/' + full.id + '">' + id + '</a> <a href="#" onclick="getPurchaseOrderPrint(' + full.id + ', false);"><i class="fas fa-search-plus"></i></a>';
                 }
             },
             { data: 'date_livraison', title: 'Planned date of delivery', sWidth: "14%" },
@@ -1519,7 +1561,7 @@ function PurchaseOrderGrid() {
     });
 }
 $("#btnSearchInvoices").click(function () {
-    PurchaseOrderGrid();
+    InvoiceGrid();
 })
 
 

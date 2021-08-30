@@ -4,7 +4,7 @@
     $('#btnSearch').click(function () {
         PurchaseOrderGrid();
     });
-    $(document).on('click', '#btnChange', function () { orderStatus(); });
+   
 });
 function PurchaseOrderGrid() {
     let urid = parseInt($("#ddlSearchStatus").val());
@@ -27,7 +27,7 @@ function PurchaseOrderGrid() {
                 if (code == 13) { table.search(this.value).draw(); }
             });
         },
-        sAjaxSource: "/PurchaseOrder/GetPurchaseOrderList",
+        sAjaxSource: "/Reception/GetPurchaseOrderList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
             aoData.push({ name: "strValue1", value: urid });
             var col = 'order_id';
@@ -92,30 +92,5 @@ function Singlecheck(chk) {
                 isChecked = false;
         });
         $("#checkall").prop('checked', isChecked);
-    }
-}
-function orderStatus() {
-    var id = "";
-    $("input:checkbox[name=CheckSingle]:checked").each(function () { id += $(this).val() + ","; });
-    id = id.replace(/,(?=\s*$)/, '');
-    $("#checkAll").prop('checked', false);
-    var status = $('#ddlOrderStatus').val();
-
-    if (id == "") { swal('alert', 'Please select a Purchase order.', 'error'); }
-    else if (status == "") { swal('alert', 'Please select status.', 'error'); }
-    else {
-        var obj = { Search: id, Status: status }
-        $.ajax({
-            url: '/PurchaseOrder/UpdatePurchaseOrderStatus', dataType: 'JSON', type: 'get',
-            contentType: "application/json; charset=utf-8",
-            data: obj,
-            beforeSend: function () { $("#loader").show(); },
-            success: function (data) {
-                if (data.status == true) { swal('alert', data.message, 'success').then((result) => { PurchaseOrderGrid(); }); }
-                else { swal('alert', 'something went wrong!', 'success'); }
-            },
-            complete: function () { $("#loader").hide(); },
-            error: function (error) { swal('Error!', 'something went wrong', 'error'); }
-        });
     }
 }

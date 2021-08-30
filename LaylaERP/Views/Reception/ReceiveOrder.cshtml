@@ -1,8 +1,7 @@
 ﻿
 @{
-    ViewBag.Title = "PurchaseOrderList";
+    ViewBag.Title = "ReceiveOrder";
 }
-
 
 <link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap.min.css" rel="stylesheet" />
 <link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
@@ -14,28 +13,18 @@
     <span>&nbsp;&nbsp;Loading......</span>
 </div>
 <div class="page-title">
-    <h2 class="page-heading">Purchase Order List</h2><a href="../../PurchaseOrder/NewPurchaseOrder" class="btn btn-danger" id="btnAddVendor">New Purchase Order</a>
-</div>
+    <h2 class="page-heading">Reception Order List</h2> <a href="../../Reception/NewReceiveOrder" class="btn btn-danger" id="btnAddVendor">New Receive Order</a>
+</div> 
 <section class="content section-content table-design customer-section">
-    
     <div class="row">
         <div class="col-md-12">
             <div class="user-top-section">
-                <div class="tablenav top tablenav-top2">
-                    <div class="alignleft actions bulkactions">
-                        <select class="form-control select2" id="ddlOrderStatus" placeholder="Select Status">
-                            <option value="0">Select Status</option>
-                            <option value="1">Draft</option>
-                            <option value="3">Approved</option>
-                            <option value="7">Canceled</option>
-                            <option value="8">Refused</option>
-                        </select>
-                        <button type="button" id="btnChange" class="btn btn-primary btn-flat button">Change</button>
-                    </div>
+                <div class="tablenav top tablenav-top2">                    
                     <div class="alignleft actions">
                         <select class="form-control select2" id="ddlSearchStatus" placeholder="Select User">
-                            <option value="1">Active</option>
-                            <option value="0">InActive</option>
+                            <option value="PN">Pending</option>
+                            <option value="PR">Partially Received</option>
+                           <option value="PC">Po-Closure</option>
                         </select>
                         <button type="button" id="btnSearch" class="btn btn-primary btn-flat button">Search</button>
                     </div>
@@ -62,27 +51,16 @@
                                         <th>Zip Code</th>
                                         <th>Planned date of delivery</th>
                                         <th>Status</th>
-
                                     </tr>
                                 </thead>
                             </table>
                         </div>
                     </div>
                 </div>
-                <div class="box-footer">
-                    <div class="row">
-                        <div class="col-sm-8 inventory-btn">
-                            <button type="button" id="btnSave" class="btn btn-danger" style="display:none">Save Changes</button>
-                        </div>
-                    </div>
-                </div>
+                
             </div>
         </div>
     </div>
-
-
 </section>
-<script src="@Url.Content("~/js/PurchaseOrder/PurchasePrint.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
-<script src="@Url.Content("~/js/PurchaseOrder/PurchaseOrderList.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
-
-
+<script src="@Url.Content("~/js/Reception/ReceivePrint.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+<script src="@Url.Content("~/js/Reception/ReceiveOrderList.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>

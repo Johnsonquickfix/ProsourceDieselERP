@@ -237,11 +237,10 @@ namespace LaylaERP.BAL
             long result = 0;
             try
             {
-                string str_oiid = string.Join(",", model.PurchaseOrderProducts.Select(x => x.rowid.ToString()).ToArray());
                 string strsql = "";
                 DateTime cDate = CommonDate.CurrentDate(), cUTFDate = CommonDate.UtcDate();
                 string strPOYearMonth = cDate.ToString("yyMM").PadRight(4);
-                if (model.Status == 11)
+                if (model.Status == 3)
                     strsql += string.Format("update commerce_purchase_order set fk_status='{0}',ref_ext=REPLACE(ref,'PO','PI') where rowid in ({1});", model.Status, model.Search);
                 else
                     strsql += string.Format("update commerce_purchase_order set fk_status='{0}' where rowid in ({1});", model.Status, model.Search);

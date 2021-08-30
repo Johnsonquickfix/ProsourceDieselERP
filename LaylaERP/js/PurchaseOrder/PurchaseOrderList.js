@@ -1,5 +1,5 @@
 ﻿$(document).ready(function () {
-    $('.select2').select2();
+    $("#loader").hide(); $('.select2').select2();
     PurchaseOrderGrid();
     $('#btnSearch').click(function () {
         PurchaseOrderGrid();
@@ -102,9 +102,9 @@ function orderStatus() {
     else {
         var obj = { Search: id, Status: status }
         $.ajax({
-            url: '/PurchaseOrder/UpdatePurchaseOrderStatus', dataType: 'JSON', type: 'POST',
+            url: '/PurchaseOrder/UpdatePurchaseOrderStatus', dataType: 'JSON', type: 'get',
             contentType: "application/json; charset=utf-8",
-            data: JSON.stringify(obj),
+            data: obj,
             beforeSend: function () { $("#loader").show(); },
             success: function (data) {
                 if (data.status == true) { swal('alert', data.message, 'success').then((result) => { PurchaseOrderGrid(); }); }

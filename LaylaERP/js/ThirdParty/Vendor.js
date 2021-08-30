@@ -1114,7 +1114,6 @@ function VendorContactList() {
         },
         aoColumns: [
             { data: 'Name', title: 'Name', sWidth: "10%" },
-            /* { data: 'VendorName', title: 'Vendor Name', sWidth: "10%" },*/
             { data: 'Title', title: 'Title', sWidth: "10%" },
             { data: 'Office', title: 'Office Contact', sWidth: "10%" },
             {

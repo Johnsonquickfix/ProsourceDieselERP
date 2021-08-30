@@ -135,7 +135,7 @@ function getVendorDetails() {
     return _details;
 }
 function getVendorProducts(VendorID) {
-    $('#line_items').empty(); calculateFinal(); console.log(VendorID); 
+    $('#line_items').empty(); calculateFinal(); 
     $.ajax({
         url: '/PurchaseOrder/GetVenderProducts', dataType: 'json', type: "get", contentType: "application/json; charset=utf-8",
         data: { strValue1: VendorID },

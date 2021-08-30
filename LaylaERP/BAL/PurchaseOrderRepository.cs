@@ -313,7 +313,8 @@ namespace LaylaERP.BAL
                                 + " inner join wp_vendor v on p.fk_supplier = v.rowid inner join wp_StatusMaster s on p.fk_status = s.ID where 1 = 1";
                 if (!string.IsNullOrEmpty(searchid))
                 {
-                    strWhr += " and (p.ref like '" + searchid + "%' OR p.ref_ext='" + searchid + "%' OR v.SalesRepresentative='" + searchid + "%' OR v.name like '" + searchid + "%' OR v.fk_state like '" + searchid + "%' OR v.zip like '" + searchid + "%')";
+                    searchid = searchid.ToLower();
+                    strWhr += " and (lower(p.ref) like '" + searchid + "%' OR lower(p.ref_ext) like '" + searchid + "%' OR lower(v.SalesRepresentative)='" + searchid + "%' OR lower(v.name) like '" + searchid + "%' OR lower(v.fk_state) like '" + searchid + "%' OR lower(v.zip) like '" + searchid + "%')";
                 }
                 if (userstatus != null)
                 {

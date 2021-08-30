@@ -414,7 +414,7 @@
             int result = 0;
             try
             {
-                string str_oiid = string.Join(",", model.OrderProducts.Select(x => x.order_item_id.ToString()).ToArray()) + "," + string.Join(",", model.OrderOtherItems.Select(x => x.order_item_id.ToString()).ToArray()) + "," + string.Join(",", model.OrderTaxItems.Select(x => x.order_item_id.ToString()).ToArray());
+                string str_oiid = string.Join(",", model.OrderProducts.Where(f => f.quantity > 0).Select(x => x.order_item_id.ToString()).ToArray()) + "," + string.Join(",", model.OrderOtherItems.Select(x => x.order_item_id.ToString()).ToArray()) + "," + string.Join(",", model.OrderTaxItems.Select(x => x.order_item_id.ToString()).ToArray());
                 DateTime cDate = CommonDate.CurrentDate(), cUTFDate = CommonDate.UtcDate();
                 /// step 1 : wp_wc_order_stats
                 StringBuilder strSql = new StringBuilder(string.Format("update wp_wc_order_stats set num_items_sold='{0}',total_sales='{1}',tax_total='{2}',shipping_total='{3}',net_total='{4}',status='{5}',customer_id='{6}' where order_id='{7}';", model.OrderPostStatus.num_items_sold, model.OrderPostStatus.total_sales,
@@ -1195,7 +1195,10 @@
                             productsModel.sale_price = decimal.Parse(sdr["sale_price"].ToString().Trim());
                         else
                             productsModel.sale_price = 0;
-                        productsModel.reg_price = productsModel.price / productsModel.quantity;
+                        if (productsModel.quantity > 0)
+                            productsModel.reg_price = productsModel.price / productsModel.quantity;
+                        else
+                            productsModel.reg_price = 0;
                         productsModel.total = productsModel.price;
 
                         if (sdr["line_total"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["line_total"].ToString().Trim()))

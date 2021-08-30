@@ -846,6 +846,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Content\BankLinkedFiles\" />
     <Folder Include="Content\VendorLinkedFiles\" />
     <Folder Include="js\Appearance\" />
     <Folder Include="Properties\PublishProfiles\" />

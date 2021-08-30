@@ -65,36 +65,45 @@ $('#btnSaveJournal').click(function (e) {
 function NatureofJournalList() {
     var urid = parseInt($("#ddlSearchStatus").val());
     ID = $("#hfid").val();
-    var sid = "";
-    var obj = { user_status: urid, Search: sid, PageNo: 0, PageSize: 50, sEcho: 1, SortCol: 'id', SortDir: 'desc' };
-    $('#Journaldata').DataTable({
-        columnDefs: [{ "orderable": true, "targets": 0 }, { targets: [0], visible: false }], order: [[0, "desc"]],
-        destroy: true, bProcessing: true, bServerSide: true,
-        sPaginationType: "full_numbers", searching: false, ordering: true, lengthChange: true, "paging": true,
-        bAutoWidth: false, scrollX: false, scrollY: false,
-        lengthMenu: [[10, 20, 50], [10, 20, 50]],
+    let table_JD = $('#Journaldata').DataTable({
+        columnDefs: [{ "orderable": true, "targets": 0 }, { targets: [0], visible: false }], order: [[1, "desc"]],
+        destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: false, searching: true,
+        responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
+        language: {
+            lengthMenu: "_MENU_ per page",
+            zeroRecords: "Sorry no records found",
+            info: "Showing _START_ to _END_ of _TOTAL_ entries",
+            infoFiltered: "",
+            infoEmpty: "No records found",
+            processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
+        },
+        initComplete: function () {
+            $('#Journaldata_filter input').unbind();
+            $('#Journaldata_filter input').bind('keyup', function (e) {
+                var code = e.keyCode || e.which;
+                if (code == 13) { table_JD.search(this.value).draw(); }
+            });
+        },
         sAjaxSource: "/Accounting/GetJournalData",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
-              //obj.Search = aoData[45].value;
+            aoData.push({ name: "strValue1", value: ID });
+            aoData.push({ name: "strValue2", value: urid });
             var col = 'id';
             if (oSettings.aaSorting.length >= 0) {
                 var col = oSettings.aaSorting[0][0] == 0 ? "ID" : oSettings.aaSorting[0][0] == 1 ? "code" : oSettings.aaSorting[0][0] == 2 ? "label" : oSettings.aaSorting[0][0] == 3 ? "Nature" : "id";
-                obj.SortCol = col; obj.SortDir = oSettings.aaSorting.length >= 0 ? oSettings.aaSorting[0][1] : "desc";
+                aoData.push({ name: "sSortColName", value: col });
             }
-            obj.sEcho = aoData[0].value; obj.PageSize = oSettings._iDisplayLength; obj.PageNo = oSettings._iDisplayStart;
-            $.ajax({
-                type: "POST", url: sSource, async: true, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
-                success: function (data) {
-                    var dtOption = { sEcho: data.sEcho, recordsTotal: data.recordsTotal, recordsFiltered: data.recordsFiltered, iTotalRecords: data.iTotalRecords, iTotalDisplayRecords: data.iTotalDisplayRecords, aaData: JSON.parse(data.aaData) };
+            oSettings.jqXHR = $.ajax({
+                dataType: 'json', type: "GET", url: sSource, data: aoData,
+                "success": function (data) {
+                    var dtOption = { sEcho: data.sEcho, recordsTotal: data.recordsTotal, recordsFiltered: data.recordsFiltered, aaData: JSON.parse(data.aaData) };
                     return fnCallback(dtOption);
-                },
-                error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
-                async: false
+                }
             });
         },
         aoColumns: [
-            { data: 'ID', title: 'ID' },
-            { data: 'code', title: 'Code' },
+            { data: 'ID', title: 'ID', class: 'text-left'  },
+            { data: 'code', title: 'Code', class: 'text-left' },
             { data: 'label', title: 'Label' },
             { data: 'Nature', title: 'Nature of Journal' },
             {

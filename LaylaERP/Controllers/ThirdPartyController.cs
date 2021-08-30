@@ -476,35 +476,25 @@ namespace LaylaERP.Controllers
             catch (Exception ex) { throw ex; }
             return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
         }
-        public JsonResult GetVendorWarehouseList(ThirdPartyModel model)
+        public JsonResult GetVendorWarehouseList(JqDataTableModel model)
         {
             string result = string.Empty;
             int TotalRecord = 0;
             try
             {
-                long id = model.rowid;
-                string urid = "";
-                if (model.user_status != "")
-                    urid = model.user_status;
-                string searchid = model.Search;
-                DataTable dt = ThirdPartyRepository.GetVendorWarehouseList(id, urid, searchid, model.PageNo, model.PageSize, out TotalRecord, model.SortCol, model.SortDir);
+                DataTable dt = ThirdPartyRepository.GetVendorWarehouseList(model.strValue1, model.strValue2, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
                 result = JsonConvert.SerializeObject(dt);
             }
             catch (Exception ex) { throw ex; }
             return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
         }
-        public JsonResult GetVendorRelatedProductList(ThirdPartyModel model)
+        public JsonResult GetVendorRelatedProductList(JqDataTableModel model)
         {
             string result = string.Empty;
             int TotalRecord = 0;
             try
             {
-                long id = model.rowid;
-                string urid = "";
-                if (model.user_status != "")
-                    urid = model.user_status;
-                string searchid = model.Search;
-                DataTable dt = ThirdPartyRepository.GetVendorRelatedProduct(id, urid, searchid, model.PageNo, model.PageSize, out TotalRecord, model.SortCol, model.SortDir);
+                DataTable dt = ThirdPartyRepository.GetVendorRelatedProduct(model.strValue1, model.strValue2, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
                 result = JsonConvert.SerializeObject(dt);
             }
             catch (Exception ex) { throw ex; }
@@ -565,19 +555,13 @@ namespace LaylaERP.Controllers
             }
 
         }
-        public JsonResult GetVendorLinkedFiles(ThirdPartyModel model)
+        public JsonResult GetVendorLinkedFiles(JqDataTableModel model)
         {
             string result = string.Empty;
             int TotalRecord = 0;
             try
             {
-                long id = model.rowid;
-                string urid = "";
-                if (model.user_status != "")
-                    urid = model.user_status;
-                string searchid = model.Search;
-                ViewBag.AttachedFiles = "0";
-                DataTable dt = ThirdPartyRepository.GetVendorLinkedFiles(id, urid, searchid, model.PageNo, model.PageSize, out TotalRecord, model.SortCol, model.SortDir);
+                DataTable dt = ThirdPartyRepository.GetVendorLinkedFiles(model.strValue1,model.strValue2, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
                 result = JsonConvert.SerializeObject(dt);
             }
             catch (Exception ex) { throw ex; }

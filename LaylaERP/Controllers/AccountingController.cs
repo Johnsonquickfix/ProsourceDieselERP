@@ -66,17 +66,13 @@ namespace LaylaERP.Controllers
                 }
             }
         }
-        public JsonResult GetJournalData(AccountingJournalModel model)
+        public JsonResult GetJournalData(JqDataTableModel model)
         {
             string result = string.Empty;
             int TotalRecord = 0;
             try
             {
-                string urid = "";
-                if (model.user_status != "")
-                    urid = model.user_status;
-                string searchid = model.Search;
-                DataTable dt = AccountingRepository.GetJournalData(urid, searchid, model.PageNo, model.PageSize, out TotalRecord, model.SortCol, model.SortDir);
+                DataTable dt = AccountingRepository.GetJournalData(model.strValue1, model.strValue2, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
                 result = JsonConvert.SerializeObject(dt);
             }
             catch (Exception ex) { throw ex; }

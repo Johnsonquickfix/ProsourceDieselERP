@@ -5,19 +5,27 @@
 <link href="~/Content/DataTables/bootstrap-datepicker.css" rel="stylesheet" />
 <script src="~/Content/DataTables/bootstrap-datepicker.js"></script>
 
+<link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+<link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
+@*datatables js*@
+<script src="~/Content/AdminLTE-3.1.0/datatables/datatables.min.js" type="text/javascript"></script>
+<script src="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/js/dataTables.bootstrap.min.js" type="text/javascript"></script>
 
 <div class="page-title">
     <h2>Bank Accounts</h2>
     <a class="btn btn-danger" href="../newfinaccount">Add Account</a>
+    <div class="ml-auto">
+        @Html.ActionLink("Back to List", "BankAccountList", null, new { @class = "btn btn-danger" })
+    </div>
 </div>
 <section class="content section-content massstocktransfer commercial_proposal mt-1" id="bank_account_section">
     <div class="nav-tabs-custom">
         <ul class="nav nav-tabs">
             <li class="active"><a href="#tab_1" data-toggle="tab">Bank account</a></li>
-            <li><a href="#tab_2" data-toggle="tab">Bank entries</a></li>
-            <li><a href="#tab_3" data-toggle="tab">Planned entries</a></li>
-            <li><a href="#tab_4" data-toggle="tab">Monthly reporting</a></li>
-            <li><a href="#tab_6" data-toggle="tab">Account statements</a></li>
+            @*<li><a href="#tab_2" data-toggle="tab">Bank entries</a></li>
+                <li><a href="#tab_3" data-toggle="tab">Planned entries</a></li>
+                <li><a href="#tab_4" data-toggle="tab">Monthly reporting</a></li>
+                <li><a href="#tab_6" data-toggle="tab">Account statements</a></li>*@
             <li><a href="#tab_7" data-toggle="tab">Linked files</a></li>
         </ul>
         <div class="tab-content">
@@ -76,8 +84,8 @@
                             <label for="state">State/Province</label><span style="color:red">*</span>
                             <input class="form-control" type="text" id="txtstate" />
                             @*<select class="form-control" id="txtstate">
-                                <option selected value="NY">New York</option>
-                            </select>*@
+                                    <option selected value="NY">New York</option>
+                                </select>*@
                         </div>
 
                         <div class="form-group">
@@ -153,30 +161,34 @@
                             <input type="text" class="form-control" id="txtcurrency" value="USD" />
                         </div>
 
-                        <div class="form-group"><span style="color:red">*</span>
+                        <div class="form-group">
+                            <span style="color:red">*</span>
                             <label for="tag">Bank address</label>
                             <input type="text" class="form-control" id="txtbankaddress" />
                         </div>
 
-                        <div class="form-group"><span style="color:red">*</span>
+                        <div class="form-group">
+                            <span style="color:red">*</span>
                             <label for="tag">Account owner name</label>
                             <input type="text" class="form-control" id="txtaccountowner" />
                         </div>
 
-                        <div class="form-group"><span style="color:red">*</span>
+                        <div class="form-group">
+                            <span style="color:red">*</span>
                             <label for="tag">Account owner address</label>
                             <input type="text" class="form-control" id="txtowneraddress" />
                         </div>
                         <div class="form-group">
                             <label for="tag">Accounting Account</label><span style="color:red">*</span>
-                            <select class="form-control" id="ddlaccounting">
+                            <select class="form-control select2" id="ddlaccounting">
                                 @*<option value="1">Assets</option>*@
                             </select>
                         </div>
 
-                        <div class="form-group"><span style="color:red">*</span>
+                        <div class="form-group">
+                            <span style="color:red">*</span>
                             <label for="tag">Accounting code journal</label>
-                            <select class="form-control" id="ddljournal">
+                            <select class="form-control select2" id="ddljournal">
                                 @*<option value="1">JR</option>*@
                             </select>
                         </div>
@@ -193,167 +205,167 @@
             <!--Tab 1 End -->
             <div class="tab-pane" id="tab_2">
                 @*<div class="box box-primary">
-                    <div class="box-header">
-                        <div class="d-flex proposal-top">
-                            <div class="edit-proposal-box">
-                                <div class="proposal-box">
-                                    <input type="file" name="file" id="proposal" class="inputfile">
-                                    <label for="proposal"><i class="fas fa-landmark"></i></label>
+                        <div class="box-header">
+                            <div class="d-flex proposal-top">
+                                <div class="edit-proposal-box">
+                                    <div class="proposal-box">
+                                        <input type="file" name="file" id="proposal" class="inputfile">
+                                        <label for="proposal"><i class="fas fa-landmark"></i></label>
+                                    </div>
+                                    <div class="edit-proposal-texts">
+                                        <h3 class="box-title">#101</h3>
+                                        <p>Capital One</p>
+                                        <p><i class="fas fa-map-marker-alt" aria-hidden="true"></i>United States</p>
+                                    </div>
                                 </div>
-                                <div class="edit-proposal-texts">
-                                    <h3 class="box-title">#101</h3>
-                                    <p>Capital One</p>
-                                    <p><i class="fas fa-map-marker-alt" aria-hidden="true"></i>United States</p>
+                                <div class="back-to-list">
+                                    <p><button class="btn btn-danger">Back to list</button></p>
+                                    <p><button class="btn btn-danger">Open</button></p>
                                 </div>
-                            </div>
-                            <div class="back-to-list">
-                                <p><button class="btn btn-danger">Back to list</button></p>
-                                <p><button class="btn btn-danger">Open</button></p>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="row rowbox proposal-row">
-                    <div class="col-md-12">
-                        <div class="box box-primary">
-                            <div class="box-header">
-                                <h3 class="box-title">
-                                    Bank entries <span class="badge">6</span>
-                                </h3>
-                            </div>
-                            <div class="box-body">
-                                <div class="table-responsive bank-table-wrapper">
-                                    <table id="dtdata" class="table-blue table check-table table-bordered table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th>Ref.</th>
-                                                <th>Description</th>
-                                                <th>Oper. Date</th>
-                                                <th>Value date</th>
-                                                <th>Type</th>
-                                                <th>Number</th>
-                                                <th>Third-party/User</th>
-                                                <th>Bank account</th>
-                                                <th>Debit</th>
-                                                <th>Credit</th>
-                                                <th>Balance</th>
-                                                <th>Account statement</th>
-                                                <th>&nbsp;</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td><span class="ws_nowrap"><i class="fas fa-receipt"></i>- 13</span></td>
-                                                <td><span class="ws_nowrap"><i class="fas fa-money-check-alt"></i>Vendor payment</span></td>
-                                                <td>08/09/2021</td>
-                                                <td>08/09/2021</td>
-                                                <td>Credit card</td>
-                                                <td>&nbsp;</td>
-                                                <td>Hangzhou Pinhang Home Textile Co.,Ltd (Home Tex)</td>
-                                                <td>#101</td>
-                                                <td>54,434.14</td>
-                                                <td>&nbsp;</td>
-                                                <td>-6,684.14</td>
-                                                <td>&nbsp;</td>
-                                                <td>
-                                                    <span class="ws_nowrap">
-                                                        <a href="#">
-                                                            <i class="fas fa-pencil-alt"></i>
-                                                        </a>
-                                                        <a href="#">
-                                                            <i class="fas fa-trash marginleftonly"></i>
-                                                        </a>
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                    <div class="row rowbox proposal-row">
+                        <div class="col-md-12">
+                            <div class="box box-primary">
+                                <div class="box-header">
+                                    <h3 class="box-title">
+                                        Bank entries <span class="badge">6</span>
+                                    </h3>
+                                </div>
+                                <div class="box-body">
+                                    <div class="table-responsive bank-table-wrapper">
+                                        <table id="dtdata" class="table-blue table check-table table-bordered table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Ref.</th>
+                                                    <th>Description</th>
+                                                    <th>Oper. Date</th>
+                                                    <th>Value date</th>
+                                                    <th>Type</th>
+                                                    <th>Number</th>
+                                                    <th>Third-party/User</th>
+                                                    <th>Bank account</th>
+                                                    <th>Debit</th>
+                                                    <th>Credit</th>
+                                                    <th>Balance</th>
+                                                    <th>Account statement</th>
+                                                    <th>&nbsp;</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td><span class="ws_nowrap"><i class="fas fa-receipt"></i>- 13</span></td>
+                                                    <td><span class="ws_nowrap"><i class="fas fa-money-check-alt"></i>Vendor payment</span></td>
+                                                    <td>08/09/2021</td>
+                                                    <td>08/09/2021</td>
+                                                    <td>Credit card</td>
+                                                    <td>&nbsp;</td>
+                                                    <td>Hangzhou Pinhang Home Textile Co.,Ltd (Home Tex)</td>
+                                                    <td>#101</td>
+                                                    <td>54,434.14</td>
+                                                    <td>&nbsp;</td>
+                                                    <td>-6,684.14</td>
+                                                    <td>&nbsp;</td>
+                                                    <td>
+                                                        <span class="ws_nowrap">
+                                                            <a href="#">
+                                                                <i class="fas fa-pencil-alt"></i>
+                                                            </a>
+                                                            <a href="#">
+                                                                <i class="fas fa-trash marginleftonly"></i>
+                                                            </a>
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="box-footer text-right">
+                                    <button class="btn btn-danger">Modify</button>
                                 </div>
                             </div>
-                            <div class="box-footer text-right">
-                                <button class="btn btn-danger">Modify</button>
-                            </div>
                         </div>
-                    </div>
-                </div>*@
+                    </div>*@
             </div>
             <div class="tab-pane" id="tab_3">
                 @*<div class="box box-primary">
-                    <div class="box-header">
-                        <div class="d-flex proposal-top">
-                            <div class="edit-proposal-box">
-                                <div class="proposal-box">
-                                    <input type="file" name="file" id="proposal" class="inputfile">
-                                    <label for="proposal"><i class="fas fa-landmark"></i></label>
+                        <div class="box-header">
+                            <div class="d-flex proposal-top">
+                                <div class="edit-proposal-box">
+                                    <div class="proposal-box">
+                                        <input type="file" name="file" id="proposal" class="inputfile">
+                                        <label for="proposal"><i class="fas fa-landmark"></i></label>
+                                    </div>
+                                    <div class="edit-proposal-texts">
+                                        <h3 class="box-title">#101</h3>
+                                        <p>Capital One</p>
+                                        <p><i class="fas fa-map-marker-alt" aria-hidden="true"></i>United States</p>
+                                    </div>
                                 </div>
-                                <div class="edit-proposal-texts">
-                                    <h3 class="box-title">#101</h3>
-                                    <p>Capital One</p>
-                                    <p><i class="fas fa-map-marker-alt" aria-hidden="true"></i>United States</p>
-                                </div>
-                            </div>
-                            <div class="back-to-list">
-                                <p><button class="btn btn-danger">Back to list</button></p>
-                                <p><button class="btn btn-danger">Open</button></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row rowbox proposal-row">
-                    <div class="col-md-12">
-                        <div class="box box-primary">
-                            <div class="box-header">
-                                <h3 class="box-title">
-                                    Bank entries <span class="badge">6</span>
-                                </h3>
-                            </div>
-                            <div class="box-body">
-                                <div class="table-responsive bank-table-wrapper">
-                                    <table id="dtdata" class="inventory-table table-blue table check-table table-bordered table-striped">
-                                        <tbody>
-                                            <tr>
-                                                <td>Due date</td>
-                                                <td>Description</td>
-                                                <td>Third-party</td>
-                                                <td>Debit</td>
-                                                <td>Credit</td>
-                                                <td class="text-right">Balance</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="text-left" colspan="5">Current balance</td>
-                                                <td class="ws_nowrap text-right">-6,684.14</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="text-left" colspan="5">Remaining unpaid</td>
-                                                <td class="ws_nowrap text-right">&nbsp;</td>
-                                            </tr>
-                                            <tr>
-                                                <td>08/09/2021</td>
-                                                <td>SI2108-0002</td>
-                                                <td>FXI</td>
-                                                <td class="ws_nowrap text-right">50,794.00</td>
-                                                <td>&nbsp;</td>
-                                                <td class="ws_nowrap text-right">-57,478.14</td>
-                                            </tr>
-                                            <tr>
-                                                <td>08/09/2021</td>
-                                                <td>SI2108-0002</td>
-                                                <td>FXI</td>
-                                                <td class="ws_nowrap text-right">50,794.00</td>
-                                                <td>&nbsp;</td>
-                                                <td class="ws_nowrap text-right">-57,478.14</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="text-left" colspan="5">Future balance (USD)</td>
-                                                <td class="ws_nowrap text-right">$-57,560.96</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                <div class="back-to-list">
+                                    <p><button class="btn btn-danger">Back to list</button></p>
+                                    <p><button class="btn btn-danger">Open</button></p>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>*@
+                    <div class="row rowbox proposal-row">
+                        <div class="col-md-12">
+                            <div class="box box-primary">
+                                <div class="box-header">
+                                    <h3 class="box-title">
+                                        Bank entries <span class="badge">6</span>
+                                    </h3>
+                                </div>
+                                <div class="box-body">
+                                    <div class="table-responsive bank-table-wrapper">
+                                        <table id="dtdata" class="inventory-table table-blue table check-table table-bordered table-striped">
+                                            <tbody>
+                                                <tr>
+                                                    <td>Due date</td>
+                                                    <td>Description</td>
+                                                    <td>Third-party</td>
+                                                    <td>Debit</td>
+                                                    <td>Credit</td>
+                                                    <td class="text-right">Balance</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-left" colspan="5">Current balance</td>
+                                                    <td class="ws_nowrap text-right">-6,684.14</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-left" colspan="5">Remaining unpaid</td>
+                                                    <td class="ws_nowrap text-right">&nbsp;</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>08/09/2021</td>
+                                                    <td>SI2108-0002</td>
+                                                    <td>FXI</td>
+                                                    <td class="ws_nowrap text-right">50,794.00</td>
+                                                    <td>&nbsp;</td>
+                                                    <td class="ws_nowrap text-right">-57,478.14</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>08/09/2021</td>
+                                                    <td>SI2108-0002</td>
+                                                    <td>FXI</td>
+                                                    <td class="ws_nowrap text-right">50,794.00</td>
+                                                    <td>&nbsp;</td>
+                                                    <td class="ws_nowrap text-right">-57,478.14</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-left" colspan="5">Future balance (USD)</td>
+                                                    <td class="ws_nowrap text-right">$-57,560.96</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>*@
             </div>
             <div class="tab-pane" id="tab_4">
                 @*<h2 class="box-title">Monthly reporting</h2>*@
@@ -362,37 +374,15 @@
                 @*<h2 class="box-title">Account statements</h2>*@
             </div>
             <div class="tab-pane" id="tab_7">
-                @*<div class="box box-primary">
-                    <div class="box-header">
-                        <div class="d-flex proposal-top">
-                            <div class="edit-proposal-box">
-                                <div class="proposal-box">
-                                    <input type="file" name="file" id="proposal" class="inputfile">
-                                    <label for="proposal"><i class="fas fa-landmark"></i></label>
-                                </div>
-                                <div class="edit-proposal-texts">
-                                    <h3 class="box-title">#101</h3>
-                                    <p>Capital One</p>
-                                    <p><i class="fas fa-map-marker-alt" aria-hidden="true"></i>United States</p>
-                                </div>
-                            </div>
-                            <div class="back-to-list">
-                                <p><button class="btn btn-danger">Back to list</button></p>
-                                <p><button class="btn btn-danger">Open</button></p>
-                            </div>
-                        </div>
-                    </div>
+                <div class="box box-primary">
                     <div class="box-body">
                         <table class="table-blue table check-table table-bordered inventory-table fixed-table">
                             <tbody>
                                 <tr>
                                     <td class="titlefield">Number of attached files/documents</td>
-                                    <td class="text-left" colspan="3">0</td>
+                                    <td class="text-left" colspan="3" id="lblAttachedFiles"> <label id="lblAttachedFiles" for="javascript"></label></td>
                                 </tr>
-                                <tr>
-                                    <td class="titlefield">Total size of attached files/documents</td>
-                                    <td class="text-left" colspan="3">0 b.</td>
-                                </tr>
+
                             </tbody>
                         </table>
                     </div>
@@ -403,58 +393,83 @@
                             <div class="box-header with-border">
                                 <label class="control-label">Attach a new file/document</label>
                                 <div class="col-sm-12">
-                                    <form class="form-inline">
-                                        <div class="form-group align-items-end file-group">
-                                            <input class="form-control-file file_input_elem" type="file" multiple="" accept="">
-                                            <input type="submit" class="btn btn-danger" name="sendit" value="Upload">
+                                    <div class="form-group">
+                                        <div class="col-md-6">
+                                            <input type="file" name="ImageFile" class="form-control" id="ImageFile" />
                                         </div>
-                                    </form>
+                                        <div class="col-md-6 left">
+                                            <input type="button" id="btnupload" class="btn btn-danger" value="Upload" />
+                                        </div>
+
+                                    </div>
                                 </div>
                             </div>
-                            <div class="box-header">
-                                <label class="control-label">Link a new file/document</label>
-                                <div class="col-sm-12">
-                                    <form class="form-inline">
-                                        <div class="form-group align-items-center file-group">
-                                            <input type="text" class="form-control" " placeholder="Url to Link">
-                                            <input type="text" class="form-control" placeholder="Label">
-                                            <button type="submit" class="btn btn-danger">Link</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
+
                             <div class="box-body">
                                 <div class="mb-35">
                                     <label class="control-label">Attached files and documents</label>
+                                    
                                     <div class="table-responsive bank-table-wrapper">
-                                        <table class="inventory-table table-blue table check-table table-bordered table-striped">
+                                        <table id="VendorLinkedFiles" class="inventory-table table-blue table check-table table-bordered table-striped">
                                             <thead>
                                                 <tr>
-                                                    <th>Documents</th>
+                                                    <th>Document Name</th>
                                                     <th>Size</th>
                                                     <th>Date</th>
+                                                    <th>Action</th>
                                                 </tr>
                                             </thead>
                                         </table>
                                     </div>
                                 </div>
-                                <div class="mb-35">
-                                    <label class="control-label">Linked files and documents</label>
-                                    <div class="table-responsive bank-table-wrapper">
-                                        <table class="inventory-table table-blue table check-table table-bordered table-striped">
-                                            <thead>
-                                                <tr>
-                                                    <th>Linked</th>
-                                                    <th>Date</th>
-                                                </tr>
-                                            </thead>
-                                        </table>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @*<div id="linkWarehouse">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="box-body">
+                                    <label class="control-label col-sm-1">Warehouse</label>
+                                    <div class="form-group col-sm-6">
+
+                                        <select class="form-control" id="ddlWarehouseList"></select>
+                                    </div>
+
+                                    <button type="button" id="btnLinkWarehouse" class="btn btn-danger ">Add</button>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="box box-primary">
+                                    <div class="box-header">
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <table id="Warehousedata" class="inventory-table table-blue table check-table table-bordered table-striped dataTable" style="width:100%;">
+                                                    <thead>
+                                                        <tr style="text-align:center;">
+                                                            <th>Vendor Name</th>
+                                                            <th>Warehouse</th>
+                                                            <th>Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                </table>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>*@
+                        <div class="box-footer">
+                            <div class="text-right">
+                                @Html.ActionLink("Back to List", "VendorList", null, new { @class = "btn btn-danger" })
+                            </div>
+                        </div>
+                    </div>*@
             </div>
         </div>
     </div>
@@ -466,12 +481,19 @@
         var url = window.location.pathname;
         var id = url.substring(url.lastIndexOf('/') + 1);
         GetAccountByID(id);
-
+        
         $(document).on('click', "#btnSave", function () {
             UpdateBankAccount();
         });
+        
+        $(".select2").select2();
+        //getAccountingAccount();
+        setTimeout(function () { $(".select2").select2(); }, 2000);
+        //$(".select2").select2();
+        
     });
 
+   
 
 </script>
 
@@ -517,8 +539,8 @@
                         $("#ddljournal").val(d[0].fk_accountancy_journal);
                         $("#txtcurrency").val(d[0].currency_code);
 
-
-                        //console.log(d[0].rowid);
+                        BankLinkedFiles();
+                        
                     }
                 },
                 error: function (msg) {

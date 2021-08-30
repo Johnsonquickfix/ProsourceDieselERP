@@ -1317,7 +1317,7 @@
                 };
                 string strSQl = "select wp_c.comment_ID,DATE_FORMAT(wp_c.comment_date, '%M %d, %Y at %H:%i') comment_date,wp_c.comment_content,wp_cm.meta_value is_customer_note from wp_comments wp_c"
                             + " left outer join wp_commentmeta wp_cm on wp_cm.comment_id = wp_c.comment_ID and wp_cm.meta_key = 'is_customer_note'"
-                            + " where comment_type = 'order_note' and comment_post_ID = @order_id order by wp_c.comment_ID desc;";
+                            + " where comment_type = 'order_note' and comment_approved = '1' and comment_post_ID = @order_id order by wp_c.comment_ID desc;";
                 DT = SQLHelper.ExecuteDataTable(strSQl, parameters);
             }
             catch (Exception ex)
@@ -1359,7 +1359,8 @@
             int result = 0;
             try
             {
-                string strSQL = "delete from wp_comments where comment_ID = @comment_ID;";
+                //string strSQL = "delete from wp_comments where comment_ID = @comment_ID;";
+                string strSQL = "update wp_comments set comment_approved = '0' where comment_ID = @comment_ID;";
                 MySqlParameter[] parameters =
                 {
                     new MySqlParameter("@comment_ID", obj.comment_ID)

@@ -117,7 +117,7 @@ $('#btnNextTab1').click(function (e) {
     ZipCode = $("#txtZipCode").val();
     Country = $("#ddlCountry").val();
     Phone = $("#txtPhone").unmask().val();
-  
+
     Fax = $("#txtFax").val();
     EMail = $("#txtEMail").val();
     Web = $("#txtWeb").val();
@@ -895,7 +895,7 @@ function GetVendorByID(id) {
                 var d = JSON.parse(data);
                 if (d.length > 0) {
                     if (rowid == "NewVendor") { $('#lbltitle').text("Add New Vendor"); } else { $('#lbltitle').text("Update Vendor " + "(" + d[0].VendorName + ")"); }
-                    
+
                     $("#txVendorName").val(d[0].VendorName);
                     $("#txtAliasName").val(d[0].AliasName);
                     $("#ddlvendortype").val(d[0].vendor_type);
@@ -1075,7 +1075,7 @@ function VendorContactList() {
     ID = $("#hfid").val();
     var sid = "";
     //var obj = { user_status: urid, Search: sid, PageNo: 0, PageSize: 50, sEcho: 1, SortCol: 'id', SortDir: 'desc', rowid: ID };
-    $('#dtdata').DataTable({
+    var table_cn = $('#dtdata').DataTable({
         columnDefs: [{ "orderable": true, "targets": 0 }], order: [[1, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: false, searching: true,
         responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
@@ -1088,10 +1088,10 @@ function VendorContactList() {
             processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
         },
         initComplete: function () {
-            $('.dataTables_filter input').unbind();
-            $('.dataTables_filter input').bind('keyup', function (e) {
+            $('#dtdata_filter input').unbind();
+            $('#dtdata_filter input').bind('keyup', function (e) {
                 var code = e.keyCode || e.which;
-                if (code == 13) { table.search(this.value).draw(); }
+                if (code == 13) { table_cn.search(this.value).draw(); }
             });
         },
         sAjaxSource: "/ThirdParty/GetVendorContactList",
@@ -1110,7 +1110,7 @@ function VendorContactList() {
                     return fnCallback(dtOption);
                 }
             });
-           
+            console.log(aoData);
         },
         aoColumns: [
             { data: 'Name', title: 'Name', sWidth: "10%" },
@@ -1252,7 +1252,7 @@ $('#btnAddRelatedProduct').click(function () {
 })
 function showModal(id) {
     var VendorID = id;
-   
+
     $("#hfContactid").val(VendorID);
     var obj =
         $.ajax({
@@ -1494,8 +1494,8 @@ function InvoiceGrid() {
             processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
         },
         initComplete: function () {
-            $('.dataTables_filter input').unbind();
-            $('.dataTables_filter input').bind('keyup', function (e) {
+            $('#PurchaseInvoicedata_filter input').unbind();
+            $('#PurchaseInvoicedata_filter input').bind('keyup', function (e) {
                 var code = e.keyCode || e.which;
                 if (code == 13) { table.search(this.value).draw(); }
             });
@@ -1520,7 +1520,7 @@ function InvoiceGrid() {
         },
         aoColumns: [
             {
-                'data': 'ref', sWidth: "10%", title: 'PO No.', class:'text-left',
+                'data': 'ref', sWidth: "10%", title: 'PO No.', class: 'text-left',
                 'render': function (id, type, full, meta) {
                     return '<a href="../../PurchaseOrder/NewPurchaseOrder/' + full.id + '">' + id + '</a> <a href="#" onclick="getPurchaseOrderPrint(' + full.id + ', false);"><i class="fas fa-search-plus"></i></a>';
                 }

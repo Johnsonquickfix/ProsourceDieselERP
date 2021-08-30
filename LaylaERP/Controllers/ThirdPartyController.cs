@@ -463,18 +463,14 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(JSONresult, 0);
         }
-        public JsonResult GetVendorContactList(ThirdPartyModel model)
+        public JsonResult GetVendorContactList(JqDataTableModel model)
         {
             string result = string.Empty;
             int TotalRecord = 0;
             try
             {
-                long id = model.rowid;
-                string urid = "";
-                if (model.user_status != "")
-                    urid = model.user_status;
-                string searchid = model.Search;
-                DataTable dt = ThirdPartyRepository.GetVendorContact(id,urid, searchid, model.PageNo, model.PageSize, out TotalRecord, model.SortCol, model.SortDir);
+              
+                DataTable dt = ThirdPartyRepository.GetVendorContact(model.strValue1, model.strValue2, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
                 result = JsonConvert.SerializeObject(dt);
             }
             catch (Exception ex) { throw ex; }

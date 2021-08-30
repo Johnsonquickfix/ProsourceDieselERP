@@ -615,6 +615,7 @@
     <Content Include="js\Product\ShippingClass.js" />
     <Content Include="js\PurchaseOrder\NewPurchase.js" />
     <Content Include="js\PurchaseOrder\PurchaseOrderList.js" />
+    <Content Include="js\PurchaseOrder\PurchasePrint.js" />
     <Content Include="js\Ship\ShipStation.js" />
     <Content Include="js\ThirdParty\Vendor.js" />
     <Content Include="js\ThirdParty\VendorList.js" />

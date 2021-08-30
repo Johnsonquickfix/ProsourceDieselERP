@@ -894,7 +894,7 @@ function GetShippingClass() {
         type: "get", url: '/Product/GetShippingddl', contentType: "application/json; charset=utf-8", dataType: "json", data: {},
         success: function (data) {
             data = JSON.parse(data); _shipping_class = data;
-            console.log(data, _shipping_class);
+            //console.log(data, _shipping_class);
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) { }, async: false
     });

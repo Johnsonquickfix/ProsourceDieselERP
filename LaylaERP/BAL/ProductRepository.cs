@@ -924,8 +924,8 @@ namespace LaylaERP.BAL
                 {
                     strWhr += " and (rowid like '%" + searchid + "%' "
                             + " OR Shippingclass_Name like '%" + searchid + "%' "
-                            + " OR CountryFullName like '%" + searchid + "%' "
-                            + " OR StateFullName like '%" + searchid + "%' "
+                            + " OR eslcun.CountryFullName like '%" + searchid + "%' "
+                            + " OR esl.StateFullName like '%" + searchid + "%' "
                             + " OR Shipping_price like '%" + searchid + "%' "
                             + " OR taxable like '%" + searchid + "%' "  
                             + " )";
@@ -952,6 +952,7 @@ namespace LaylaERP.BAL
                 strSql += "; SELECT count(distinct rowid) TotalRecord from ShippingClass_Details ScD"                              
                 + " left OUTER join Shipping_class sc on sc.id = ScD.fk_ShippingID"
                 + " left OUTER join erp_StateList esl on esl.State = ScD.statecode"
+                + " left OUTER join erp_StateList eslcun on eslcun.Country = ScD.countrycode"
                 + " WHERE rowid > 0" + strWhr.ToString();
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];

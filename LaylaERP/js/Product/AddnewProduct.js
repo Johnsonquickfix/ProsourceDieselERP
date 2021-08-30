@@ -1,6 +1,7 @@
 ﻿$(document).ready(function () {
     $("#loader").hide();
-
+    //console.log(location);
+    //location.href = 'ListProduct';
     var url = window.location.pathname;
     var id = url.substring(url.lastIndexOf('/') + 1);
     $('li:contains(Variations)').hide();
@@ -632,12 +633,16 @@ function AddProduct() {
     upsellsval = upsells;
     Crosssellsval = Crosssells;
     categorydataval = categorydata;
+   // console.log(categorydataval);
 
     if (productname == "") {
         swal('Alert', 'Please Enter Product', 'error').then(function () { swal.close(); $('#txtProductName').focus(); });
     }
     else if (regularprice == "" && ProductTypeval != "4") {
         swal('Alert', 'Please Enter Regular price', 'error').then(function () { swal.close(); $('#txtregularprice').focus(); });
+    }
+    else if (categorydataval == "" ) {
+        swal('Alert', 'Please Select Category', 'error').then(function () { swal.close(); $('#chkproducttype').focus(); });
     }
     else {
         var obj = {

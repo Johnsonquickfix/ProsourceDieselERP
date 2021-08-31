@@ -1457,7 +1457,7 @@ namespace LaylaERP.Controllers
                 FileName = Regex.Replace(FileName, @"\s+", "");
                 string size = (ImageFile.ContentLength / 1024).ToString();
                 FileExtension = Path.GetExtension(ImageFile.FileName);
-                if (FileExtension == ".png" || FileExtension == ".jpg" || FileExtension == ".jpeg")
+                if (FileExtension == ".png" || FileExtension == ".jpg" || FileExtension == ".jpeg" || FileExtension == ".bmp")
                 {
                     FileName = DateTime.Now.ToString("MMddyyhhmmss") + "-" + FileName.Trim() + FileExtension;
                     string UploadPath = Path.Combine(Server.MapPath("~/Content/ProductCategory"));

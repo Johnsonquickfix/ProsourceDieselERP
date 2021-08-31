@@ -34,6 +34,13 @@ namespace LaylaERP.Models
         public string owner_name { get; set; }
         public int rowid { get; set; }
         public string currency_code { get; set; }
+        public string BankLinkedID { get; set; }
+
+        //Linked file
+        public byte[] ImageFiledata { get; set; }
+        public string ImagePath { get; set; }
+        public HttpPostedFileBase ImageFile { get; set; }
+        
     }
 }
 

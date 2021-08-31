@@ -121,14 +121,24 @@ function CategoryList() {
             {
                 "data": "ImagePath",
                 "render": function (data) {
-                    if (data == null || data == "") {
-                        data = "default.png";
+                    //if (data == null || data == "" ) {
+                    //    data = "default.png";
+                    //}
+                    //else {
+                    //    data = data;
+                    //}
+                    url = "../../Content/ProductCategory/" + data + "";
+                    var result = checkFileExist(url);
+
+                    if (result == true) {
+                        return '<img src=' + url + ' width="50" height="50"/>';
+                    }
+                    else if (data == null || data == "") {
+                        return '<img src="../../Content/ProductCategory/default.png" width="50" height="50"/>';
                     }
                     else {
-                        data = data;
+                        return '<img src="../../Content/ProductCategory/default.png" width="50" height="50"/>';
                     }
-                    console.log(data);
-                    return '<img src="../../Content/ProductCategory/' + data + '"  width="50" height="50"/>';
                 }
             },
             { data: 'name', title: 'Name', sWidth: "25%" },
@@ -244,3 +254,15 @@ $('#btnReset').click(function () {
     $("#ProdCat option[value='-1']").attr('selected', true)
     $("#ddlDisplayType").val("");
 })
+
+function checkFileExist(urlToFile) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('HEAD', urlToFile, false);
+    xhr.send();
+
+    if (xhr.status == "404") {
+        return false;
+    } else {
+        return true;
+    }
+}

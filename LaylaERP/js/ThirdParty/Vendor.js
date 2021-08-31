@@ -857,31 +857,6 @@ function getShippingMethod() {
     });
 }
 
-//document.getElementById('txtPhone').addEventListener('keyup', function (evt) {
-//    var phoneNumber = document.getElementById('txtPhone');
-//    var charCode = (evt.which) ? evt.which : evt.keyCode;
-//    phoneNumber.value = phoneFormat(phoneNumber.value);
-//});
-//document.getElementById('txtContactPhone').addEventListener('keyup', function (evt) {
-//    var phoneNumber = document.getElementById('txtContactPhone');
-//    var charCode = (evt.which) ? evt.which : evt.keyCode;
-//    phoneNumber.value = phoneFormat(phoneNumber.value);
-//});
-//function phoneFormat(input) {
-//    input = input.replace(/\D/g, '');
-//    input = input.substring(0, 10);
-//    var size = input.length;
-//    if (size == 0) {
-//        input = input;
-//    } else if (size < 4) {
-//        input = '(' + input;
-//    } else if (size < 7) {
-//        input = '(' + input.substring(0, 3) + ') ' + input.substring(3, 6);
-//    } else {
-//        input = '(' + input.substring(0, 3) + ') ' + input.substring(3, 6) + ' - ' + input.substring(6, 10);
-//    }
-//    return input;
-//}
 function GetVendorByID(id) {
     var rowid = id;
     var obj =
@@ -1142,11 +1117,11 @@ function VendorContactList() {
         ]
     });
 }
+
 function VendorRelatedProduct() {
     var urid = "";
     ID = $("#hfid").val();
     var sid = "";
-    //var obj = { user_status: urid, Search: sid, PageNo: 0, PageSize: 50, sEcho: 1, SortCol: 'id', SortDir: 'desc', rowid: ID };
     var table_RIM = $('#RelatedItemdata').DataTable({
         columnDefs: [{ "orderable": true, "targets": 0 }], order: [[1, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: false, searching: true,
@@ -1250,6 +1225,7 @@ function VendorWarehouseList() {
         ]
     });
 }
+
 $('#btnAddContact').click(function () {
     var inputs = document.getElementById("txtContactAddress");
     setupAutocomplete(inputs);
@@ -1273,6 +1249,7 @@ $('#btnAddRelatedProduct').click(function () {
     $('#RelatedProductModal').modal('show');
 
 })
+
 function showModal(id) {
     var VendorID = id;
 
@@ -1342,6 +1319,7 @@ function Deletewarehouse(id) {
         })
     }
 }
+
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Search Google Place API ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 var autocompleteOptions = { componentRestrictions: { country: ["us", "ca", "cn"] }, fields: ["address_components", "geometry"], types: ["address"] };
 function setupAutocomplete(inputs) {
@@ -1550,9 +1528,12 @@ function InvoiceGrid() {
         },
         aoColumns: [
             {
-                'data': 'ref', sWidth: "10%", title: 'PO No.', class: 'text-left',
+                'data': 'StatusID', sWidth: "10%", title: 'PO No.', class: 'text-left',
                 'render': function (id, type, full, meta) {
-                    return '<a href="../../PurchaseOrder/NewPurchaseOrder/' + full.id + '">' + id + '</a> <a href="#" onclick="getPurchaseOrderPrint(' + full.id + ', false);"><i class="fas fa-search-plus"></i></a>';
+                    if (id == 1)
+                        return '<a href="../../PurchaseOrder/NewPurchaseOrder/' + full.id + '">' + full.ref + '</a> <a href="#" onclick="getPurchaseOrderPrint(' + full.id + ', false);"><i class="fas fa-search-plus"></i></a>';
+                    else if(id == 3)
+                    return '<a href="../../PurchaseOrder/NewPurchaseOrder/' + full.id + '">' + full.refordervendor + '</a> <a href="#" onclick="getPurchaseOrderPrint(' + full.id + ', false);"><i class="fas fa-search-plus"></i></a>';
                 }
             },
             { data: 'date_livraison', title: 'Planned date of delivery', sWidth: "14%" },
@@ -1560,7 +1541,7 @@ function InvoiceGrid() {
         ]
     });
 }
-$("#btnSearchInvoices").click(function () {
+$("#ddlInvoiceServices").change(function () {
     InvoiceGrid();
 })
 

@@ -284,17 +284,25 @@ namespace LaylaERP.Controllers
             DateTime dateinc = DateTime.Now;
             //DateTime dateinc = UTILITIES.CommonDate.CurrentDate();
             var resultOne = 0;
-            if (model.ID > 0)
-                resultOne = ProductRepository.updateBuyingtProduct(model, dateinc);
-            else
-                resultOne = ProductRepository.AddBuyingtProduct(model, dateinc);
-            if (resultOne > 0)
+            DataTable dt = ProductRepository.GetproductPurchase_Items(model);
+            if (dt.Rows.Count > 0)
             {
-                return Json(new { status = true, message = "updated successfully!!", url = "Manage" }, 0);
+                return Json(new { status = false, message = "Vendor already allocated for this product", url = "" }, 0);
             }
             else
             {
-                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                if (model.ID > 0)
+                    resultOne = ProductRepository.updateBuyingtProduct(model, dateinc);
+                else
+                    resultOne = ProductRepository.AddBuyingtProduct(model, dateinc);
+                if (resultOne > 0)
+                {
+                    return Json(new { status = true, message = "updated successfully!!", url = "Manage" }, 0);
+                }
+                else
+                {
+                    return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                }
             }
         }
         public JsonResult Createwarehouse(ProductModel model)
@@ -1449,7 +1457,7 @@ namespace LaylaERP.Controllers
                 FileName = Regex.Replace(FileName, @"\s+", "");
                 string size = (ImageFile.ContentLength / 1024).ToString();
                 FileExtension = Path.GetExtension(ImageFile.FileName);
-                if (FileExtension == ".png" || FileExtension == ".jpg" || FileExtension == ".jpeg")
+                if (FileExtension == ".png" || FileExtension == ".jpg" || FileExtension == ".jpeg" || FileExtension == ".bmp")
                 {
                     FileName = DateTime.Now.ToString("MMddyyhhmmss") + "-" + FileName.Trim() + FileExtension;
                     string UploadPath = Path.Combine(Server.MapPath("~/Content/ProductCategory"));

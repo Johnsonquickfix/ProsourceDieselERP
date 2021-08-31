@@ -723,9 +723,10 @@ namespace LaylaERP.BAL
                 {
                     if (!string.IsNullOrEmpty(strValue1))
                         strWhr += " fk_product = " + strValue1;
-                    string strSQl = "SELECT pw.rowid as ID,fk_product,fk_warehouse ,ref warehouse"
+                    string strSQl = "SELECT post_title,pw.rowid as ID,fk_product,fk_warehouse ,ref warehouse"
                                 + " from product_warehouse pw"
                                 + " Left outer join wp_warehouse on wp_warehouse.rowid = pw.fk_warehouse"
+                                 + " Left outer join wp_posts on wp_posts.ID = pw.fk_product"
                                 + " WHERE " + strWhr;
 
                     strSQl += ";";
@@ -737,10 +738,15 @@ namespace LaylaERP.BAL
                             productsModel.ID = Convert.ToInt64(sdr["ID"]);
                         else
                             productsModel.ID = 0;
-                        if (sdr["warehouse"] != DBNull.Value)
-                            productsModel.product_name = sdr["warehouse"].ToString();
+                        if (sdr["post_title"] != DBNull.Value)
+                            productsModel.product_name = sdr["post_title"].ToString();
                         else
                             productsModel.product_name = string.Empty;
+
+                        if (sdr["warehouse"] != DBNull.Value)
+                            productsModel.product_label = sdr["warehouse"].ToString();
+                        else
+                            productsModel.product_label = string.Empty;
 
                         _list.Add(productsModel);
                     }
@@ -1073,8 +1079,9 @@ namespace LaylaERP.BAL
             {
                 StringBuilder strSql = new StringBuilder();
                 //StringBuilder strSql = new StringBuilder(string.Format("delete from Product_Purchase_Items where fk_product = {0}; ", model.fk_product));
-                strSql.Append(string.Format("insert into Product_Purchase_Items ( fk_product,fk_vendor,purchase_price,cost_price,minpurchasequantity,salestax,taxrate,discount,remark,taglotserialno,shipping_price) values ({0},{1},{2},{3},{4},{5},{6},{7},'{8}','{9}',{10}) ", model.fk_product, model.fk_vendor, model.purchase_price, model.cost_price, model.minpurchasequantity, model.salestax, model.taxrate, model.discount, model.remark, model.taglotserialno, model.shipping_price));
-
+                strSql.Append(string.Format("insert into Product_Purchase_Items ( fk_product,fk_vendor,purchase_price,cost_price,minpurchasequantity,salestax,taxrate,discount,remark,taglotserialno,shipping_price) values ({0},{1},{2},{3},{4},{5},{6},{7},'{8}','{9}',{10}); ", model.fk_product, model.fk_vendor, model.purchase_price, model.cost_price, model.minpurchasequantity, model.salestax, model.taxrate, model.discount, model.remark, model.taglotserialno, model.shipping_price));
+                strSql.Append(string.Format("delete from product_warehouse where fk_product = {0}; ", model.fk_product));
+                strSql.Append(string.Format("insert into product_warehouse(fk_product,fk_warehouse) (select '"+ model.fk_product + "',warehouseid from wp_VendorWarehouse where VendorID = "+ model.fk_vendor + ") "));
                 /// step 6 : wp_posts
                 //strSql.Append(string.Format(" update wp_posts set post_status = '{0}' ,comment_status = 'closed' where id = {1} ", model.OrderPostStatus.status, model.OrderPostStatus.order_id));
 
@@ -1114,8 +1121,9 @@ namespace LaylaERP.BAL
                 // strSql.Append(string.Format("insert into Product_Purchase_Items ( fk_vendor,purchase_price,cost_price,minpurchasequantity,salestax,taxrate,discount,remark) values ({0},{1},{2},{3},{4},{5},{6},{7},'{8}') ", model.fk_product, model.fk_vendor, model.purchase_price, model.cost_price, model.minpurchasequantity, model.salestax, model.taxrate, model.discount, model.remark));
 
                 /// step 6 : wp_posts
-                strSql.Append(string.Format("update Product_Purchase_Items set fk_vendor = {0} ,purchase_price = {1},cost_price = {2},minpurchasequantity = {3},salestax = {4},taxrate = {5},discount = {6},remark = '{7}',taglotserialno = '{8}',shipping_price = {9} where rowid = {10} ", model.fk_vendor, model.purchase_price, model.cost_price, model.minpurchasequantity, model.salestax, model.taxrate, model.discount, model.remark, model.taglotserialno, model.shipping_price, model.ID));
-
+                strSql.Append(string.Format("update Product_Purchase_Items set fk_vendor = {0} ,purchase_price = {1},cost_price = {2},minpurchasequantity = {3},salestax = {4},taxrate = {5},discount = {6},remark = '{7}',taglotserialno = '{8}',shipping_price = {9} where rowid = {10} ;", model.fk_vendor, model.purchase_price, model.cost_price, model.minpurchasequantity, model.salestax, model.taxrate, model.discount, model.remark, model.taglotserialno, model.shipping_price, model.ID));
+                strSql.Append(string.Format("delete from product_warehouse where fk_product = {0}; ", model.fk_product));
+                strSql.Append(string.Format("insert into product_warehouse(fk_product,fk_warehouse) (select '" + model.fk_product + "',warehouseid from wp_VendorWarehouse where VendorID = " + model.fk_vendor + ") "));
                 result = SQLHelper.ExecuteNonQuery(strSql.ToString());
             }
             catch (Exception ex)
@@ -1201,6 +1209,22 @@ namespace LaylaERP.BAL
             {
                 string strSQl = "select fk_warehouse from product_warehouse"
                                 + " WHERE fk_product = " + model.fk_product + " and fk_warehouse in (" + model.fk_vendor + ") "
+                                + " limit 10;";
+                dt = SQLHelper.ExecuteDataTable(strSQl);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+        public static DataTable GetproductPurchase_Items(ProductModel model)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                string strSQl = "select fk_product from Product_Purchase_Items"
+                                + " WHERE fk_product = " + model.fk_product + " and fk_vendor in (" + model.fk_vendor + ") "
                                 + " limit 10;";
                 dt = SQLHelper.ExecuteDataTable(strSQl);
             }

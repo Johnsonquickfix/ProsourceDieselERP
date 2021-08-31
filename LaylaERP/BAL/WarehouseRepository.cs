@@ -215,12 +215,12 @@ namespace LaylaERP.BAL
             try
             {
                 string strquery = "SELECT DISTINCT post.id,ps.ID pr_id,CONCAT(post.post_title, ' (' , COALESCE(psku.meta_value,'') , ') - ' ,LTRIM(REPLACE(REPLACE(COALESCE(ps.post_excerpt,''),'Size:', ''),'Color:', ''))) as post_title"
-                            + " , COALESCE(pr.meta_value, 0) reg_price,COALESCE(psr.meta_value, 0) sale_price, ppp.purchase_price buy_price FROM wp_posts as post"
+                            + " , COALESCE(pr.meta_value, 0) reg_price,COALESCE(psr.meta_value, 0) sale_price, format(COALESCE(ppp.purchase_price,0),2) buy_price FROM wp_posts as post"
                             + " LEFT OUTER JOIN wp_posts ps ON ps.post_parent = post.id and ps.post_type LIKE 'product_variation'"
                             + " left outer join wp_postmeta psku on psku.post_id = ps.id and psku.meta_key = '_sku'"
                             + " left outer join wp_postmeta pr on pr.post_id = ps.id and pr.meta_key = '_regular_price'"
                             + " left outer join wp_postmeta psr on psr.post_id = COALESCE(ps.id, post.id) and psr.meta_key = '_sale_price'"
-                            + " inner join Product_Purchase_Items ppp on ppp.fk_product=ps.ID "
+                            + " left join Product_Purchase_Items ppp on ppp.fk_product=ps.ID "
                             + " WHERE post.post_type = 'product' and ps.ID = " + product_id + "";
                 dtr = SQLHelper.ExecuteDataTable(strquery);
 

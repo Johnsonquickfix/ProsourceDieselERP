@@ -524,7 +524,10 @@ namespace LaylaERP.Controllers
                 ProductRepository.EditProducts(model, model.ID);
                 UpdateVariation_MetaData(model, model.ID);
                 update_term(model, model.ID);
-                return Json(new { status = true, message = "Product Record has been updated successfully!!", url = "Manage" }, 0);
+                if(model.updatedID > 0)
+                return Json(new { status = true, message = "Product Record has been updated successfully!!", url = "" }, 0);
+                else
+                    return Json(new { status = true, message = "Product Record has been updated successfully!!", url = "Manage" }, 0);
             }
             else
             {

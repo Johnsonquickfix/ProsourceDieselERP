@@ -7,8 +7,8 @@
     $("#ddlVendor").change(function () {
         let today = new Date();
         $('#txtPODate').val(today.toLocaleDateString("en-US"));
-        $('.entry-mode-action').empty().append('<button type="button" id="btnOtherProduct" class="btn btn-danger billinfo"><i class="fas fa-cube"></i> Add Other Product</button> ');
-        $('.entry-mode-action').append('<button type="button" id="btnService" class="btn btn-danger billinfo"><i class="fas fa-concierge-bell"></i> Add Service</button>');
+       // $('.entry-mode-action').empty().append('<button type="button" id="btnOtherProduct" class="btn btn-danger billinfo"><i class="fas fa-cube"></i> Add Other Product</button> ');
+       // $('.entry-mode-action').append('<button type="button" id="btnService" class="btn btn-danger billinfo"><i class="fas fa-concierge-bell"></i> Add Service</button>');
         $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList">Back to List</a><input type="submit" value="Create Order" id="btnSave" class="btn btn-danger billinfo" />');
         $('.billinfo').prop("disabled", false);
         let VendorID = parseInt($('#ddlVendor').val()) || 0;
@@ -34,10 +34,10 @@
     //        error: function (xhr, status, err) { }, cache: true
     //    }
     //});
-    $("#ddlProduct").change(function () {
-        let product_id = parseInt($('#ddlProduct').val()) || 0, vender_id = parseInt($('#ddlVendor').val()) || 0;
-        getItemList(product_id, vender_id); //$('#ddlProduct').val('').trigger('change');
-    });
+    //$("#ddlProduct").change(function () {
+    //    let product_id = parseInt($('#ddlProduct').val()) || 0, vender_id = parseInt($('#ddlVendor').val()) || 0;
+    //    getItemList(product_id, vender_id); //$('#ddlProduct').val('').trigger('change');
+    //});
     $('#ddlIncoTerms').change(function () {
         let IncotermsTypeID = parseInt($('#ddlIncoTerms').val()) || 0;
         let obj = { IncotermsTypeID: IncotermsTypeID };
@@ -135,19 +135,19 @@ function getVendorDetails() {
     return _details;
 }
 function getVendorProducts(VendorID) {
-    $('#line_items').empty(); calculateFinal(); 
-    $.ajax({
-        url: '/PurchaseOrder/GetVenderProducts', dataType: 'json', type: "get", contentType: "application/json; charset=utf-8",
-        data: { strValue1: VendorID },
-        success: function (data) {
-            let dt = JSON.parse(data);
-            //Payment Terms
-            $("#ddlProduct").html('<option value="0">Select Product</option>');
-            for (i = 0; i < dt.length; i++) { $("#ddlProduct").append('<option value="' + dt[i].id + '">' + dt[i].text + '</option>'); }
+    //$('#line_items').empty(); calculateFinal();
+    //$.ajax({
+    //    url: '/PurchaseOrder/GetVenderProducts', dataType: 'json', type: "get", contentType: "application/json; charset=utf-8",
+    //    data: { strValue1: VendorID },
+    //    success: function (data) {
+    //        let dt = JSON.parse(data);
+    //        //Payment Terms
+    //        $("#ddlProduct").html('<option value="0">Select Product</option>');
+    //        for (i = 0; i < dt.length; i++) { $("#ddlProduct").append('<option value="' + dt[i].id + '">' + dt[i].text + '</option>'); }
 
-        },
-        error: function (jqXHR, textStatus, errorThrown) { swal('Error!', errorThrown, "error"); }, async: false
-    });
+    //    },
+    //    error: function (jqXHR, textStatus, errorThrown) { swal('Error!', errorThrown, "error"); }, async: false
+    //});
 }
 
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Item Tab Section ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -463,7 +463,6 @@ function saveVendorPO() {
     if (vendorid <= 0) { swal('alert', 'Please Select Vendor', 'error').then(function () { swal.close(); $('#ddlVendor').focus(); }) }
     else if (payment_type <= 0) { swal('alert', 'Please Select Payment Type', 'error').then(function () { swal.close(); $('#ddlPaymentType').focus(); }) }
     else if (date_livraison == "") { swal('alert', 'Please Select Planned date of delivery', 'error').then(function () { swal.close(); $('#txtPlanneddateofdelivery').focus(); }) }
-    else if (_list.length <= 0) { swal('Alert!', 'Please add product.', "error").then((result) => { $('#ddlProduct').select2('open'); return false; }); return false; }
     else {
         if (date_livraison.length > 0) date_livraison = date_livraison[2] + '/' + date_livraison[0] + '/' + date_livraison[1];
         let option = {

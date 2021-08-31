@@ -137,14 +137,14 @@
                         </div>
                         <div class="form-group">
                             <label for="tag">Accounting Account</label><span style="color:red">*</span>
-                            <select class="form-control" id="ddlaccounting">
+                            <select class="form-control select2" id="ddlaccounting">
                                 @*<option value="1">Assets</option>*@
                             </select>
                         </div>
 
                         <div class="form-group">
                             <label for="tag">Accounting code journal</label><span style="color:red">*</span>
-                            <select class="form-control" id="ddljournal">
+                            <select class="form-control select2" id="ddljournal">
                                 @*<option value="1">JR</option>*@
                             </select>
                         </div>
@@ -164,7 +164,9 @@
         $(document).on('click', "#btnSave", function () {
             AddBankAccount();
         });
-
+        $(".select2").select2();
+        //getAccountingAccount();
+        setTimeout(function () { $(".select2").select2(); }, 2000);
     });
 </script>
 <script>

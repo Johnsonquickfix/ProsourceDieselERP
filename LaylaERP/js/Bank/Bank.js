@@ -330,7 +330,7 @@ $("#btnupload").click(function () {
     formData.append("BankID", BankID);
 
     if (BankID == 0) {
-        swal('Alert', 'Vendor not found', 'error').then(function () { swal.close(); });
+        swal('Alert', 'Bank not found', 'error').then(function () { swal.close(); });
     }
     else {
         $.ajax({

@@ -1,5 +1,6 @@
 ﻿productbywarehouse();
 ProductWarehouseGrid();
+BankLinkedFiles();
 
 function Addcurrentstock() {
     debugger
@@ -20,7 +21,7 @@ function Addcurrentstock() {
     var y = formattedDate.getFullYear();
     var stockdate = y + "-" + m + "-" + d;
    
-    if (fk_product == null) {
+    if (fk_product == null || fk_product == 0) {
         swal('Alert', 'Please select product', 'error').then(function () { swal.close(); $('#ddlProduct').focus(); });
     }
     else if (price == "") {
@@ -396,7 +397,7 @@ function AddTransferStock() {
     var y = formattedDate.getFullYear();
     var stockdate = y + "-" + m + "-" + d;
 
-    if (fk_product == null) {
+    if (fk_product == null || fk_product == 0) {
         swal('Alert', 'Please select product', 'error').then(function () { swal.close(); $('#ddltransferProduct').focus(); });
     }
     else if (fk_entrepottarget == 0) {
@@ -526,7 +527,7 @@ function chk_status(ele) {
             $("#hfstockid").val(jobj[0].rowid);
             $('#txtlabel').val(jobj[0].label);
             //$('#ddlProduct').val(jobj[0].fk_product);
-            $("#ddlProduct").empty().append('<option value="' + jobj[0].fk_product + '" selected>' + jobj[0].post_title + '</option>');
+            $("#ddlProduct").append('<option value="' + jobj[0].fk_product + '" selected>' + jobj[0].post_title + '</option>');
             //$("#hfid").val();
             $("#txtserial").val(jobj[0].serial);
             $("#txteatbydate").val(jobj[0].eatby);
@@ -635,7 +636,7 @@ function transferstockstatus(ele) {
             console.log(jobj[0].label);
             $("#ddltargetwarehouse").val(jobj[0].fk_entrepot);
             //$("#ddltransferProduct").val(jobj[0].fk_product);
-            $("#ddltransferProduct").empty().append('<option value="' + jobj[0].fk_product + '" selected>' + jobj[0].post_title + '</option>');
+            $("#ddltransferProduct").append('<option value="' + jobj[0].fk_product + '" selected>' + jobj[0].post_title + '</option>');
             $("#hfprice").val(jobj[0].price);
             $("#txttransferunit").val(jobj[0].value);
             $("#txttransferserial").val(jobj[0].serial);
@@ -648,7 +649,8 @@ function transferstockstatus(ele) {
             $("#btnTranferStock").hide();
             $("#btnTransferStockUpdate").show();
             getstock1();
-            getsecondwarehouse();
+            //getsecondwarehouse();
+            //alert(jobj[0].fk_product);
         },
         complete: function () { $("#loader").hide(); },
         error: function (error) { swal('Error!', 'something went wrong', 'error'); },
@@ -657,7 +659,7 @@ function transferstockstatus(ele) {
 
 
 function getstock1() {
-    if ($('#ddltransferProduct').val() == null) return false;
+    //if ($('#ddltransferProduct').val() == null) return false;
     var fk_product = $('#ddltransferProduct').val();
     var fk_entrepot = $("#hfid").val();
     //alert(fk_product);
@@ -733,7 +735,7 @@ function Updatecorrectstock() {
     //alert(z);
 
 
-    if (fk_product == null) {
+    if (fk_product == null || fk_product == 0) {
         swal('Alert', 'Please select product', 'error').then(function () { swal.close(); $('#ddlProduct').focus(); });
     }
     else if (price == "") {
@@ -830,7 +832,7 @@ function UpdateTransferStock() {
     var stockdate = y + "-" + m + "-" + d;
 
 
-    if (fk_product == null) {
+    if (fk_product == null || fk_product == 0) {
         swal('Alert', 'Please select product', 'error').then(function () { swal.close(); $('#ddltransferProduct').focus(); });
     }
     else if (fk_entrepottarget == 0) {
@@ -918,6 +920,7 @@ function resettransferstock() {
     $("#txttransferlabel").val("");
     $("#txtstock1").val("");
     $('#ddltransferProduct').val(null).trigger('change');
+    
 }
 
 
@@ -970,27 +973,27 @@ function resettransferstock() {
 
 
 function productbywarehouse() {
-    //var warehouseid = $("#hfid").val();
-    //var obj = {
-    //    warehouseid: warehouseid,
-    //}
-    //$.ajax({
-    //    url: '/Warehouse/GetProductForWarehouse/', dataType: 'json', type: 'Post',
-    //    contentType: "application/json; charset=utf-8",
-    //    data: JSON.stringify(obj),
-    //    dataType: "json",
-    //    beforeSend: function () { $("#loader").show(); },
-    //    success: function (data) {
-    //        var items = "";
-    //        $.each(data, function (index, value) {
-    //            items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddltransferProduct");
-    //            items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddlProduct");
-    //        })
+    var warehouseid = $("#hfid").val();
+    var obj = {
+        warehouseid: warehouseid,
+    }
+    $.ajax({
+        url: '/Warehouse/GetProductForWarehouse/', dataType: 'json', type: 'Post',
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(obj),
+        dataType: "json",
+        beforeSend: function () { $("#loader").show(); },
+        success: function (data) {
+            var items = "";
+            $.each(data, function (index, value) {
+                items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddltransferProduct");
+                items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddlProduct");
+            })
            
-    //    },
-    //    complete: function () { $("#loader").hide(); },
-    //    error: function (error) { swal('Error!', 'something went wrong', 'error'); },
-    //})
+        },
+        complete: function () { $("#loader").hide(); },
+        error: function (error) { swal('Error!', 'something went wrong', 'error'); },
+    })
 
 }
 
@@ -1046,4 +1049,117 @@ function ProductWarehouseGrid() {
             alert(xhr.responseText);
         }
     });
+}
+
+
+
+
+// Linked Files program start
+
+$("#btnupload").click(function () {
+    WarehouseID = $("#hfid").val();
+    var file = document.getElementById("ImageFile").files[0];
+    var formData = new FormData();
+    formData.append("ImageFile", file);
+    formData.append("WarehouseID", WarehouseID);
+
+    if (WarehouseID == 0) {
+        swal('Alert', 'Warehouse not found', 'error').then(function () { swal.close(); });
+    }
+    else {
+        $.ajax({
+            type: "POST",
+            url: '/Warehouse/FileUpload/',
+            data: formData,
+            processData: false,
+            contentType: false,
+            beforeSend: function () { $("#loader").show(); },
+            success: function (data) {
+                if (data.status == true) {
+                    BankLinkedFiles();
+                    swal('Alert!', data.message, 'success');
+                }
+                else { swal('Alert!', data.message, 'error'); }
+            },
+            complete: function () { $("#loader").hide(); },
+            error: function (error) {
+                swal('Error!', 'something went wrong', 'error');
+            },
+        })
+    }
+})
+
+
+
+function BankLinkedFiles() {
+    var urid = "";
+    ID = $("#hfid").val();
+    var sid = "";
+    var obj = { user_status: urid, Search: sid, PageNo: 0, PageSize: 50, sEcho: 1, SortCol: 'id', SortDir: 'desc', rowid: ID };
+    $('#VendorLinkedFiles').DataTable({
+        columnDefs: [{ "orderable": true, "targets": 0 }], order: [[0, "desc"]],
+        destroy: true, bProcessing: true, bServerSide: true,
+        sPaginationType: "full_numbers", searching: false, ordering: true, lengthChange: true, "paging": true,
+        bAutoWidth: false, scrollX: false,
+        lengthMenu: [[10, 20, 50], [10, 20, 50]],
+        sAjaxSource: "/Warehouse/GetBankLinkedFiles",
+        fnServerData: function (sSource, aoData, fnCallback, oSettings) {
+            var col = 'id';
+            if (oSettings.aaSorting.length >= 0) {
+                var col = oSettings.aaSorting[0][0] == 0 ? "FileName" : oSettings.aaSorting[0][0] == 1 ? "FileSize" : oSettings.aaSorting[0][0] == 2 ? "Date" : "id";
+                obj.SortCol = col; obj.SortDir = oSettings.aaSorting.length >= 0 ? oSettings.aaSorting[0][1] : "desc";
+            }
+            obj.sEcho = aoData[0].value; obj.PageSize = oSettings._iDisplayLength; obj.PageNo = oSettings._iDisplayStart;
+            $.ajax({
+                type: "POST", url: sSource, async: true, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
+                success: function (data) {
+                    var dtOption = { sEcho: data.sEcho, recordsTotal: data.recordsTotal, recordsFiltered: data.recordsFiltered, iTotalRecords: data.iTotalRecords, iTotalDisplayRecords: data.iTotalDisplayRecords, aaData: JSON.parse(data.aaData) };
+                    $('#lblAttachedFiles').text(data.iTotalRecords);
+                    return fnCallback(dtOption);
+
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
+                async: false
+            });
+        },
+        aoColumns: [
+            {
+                'data': 'FileName', sWidth: "25%",
+                'render': function (FileName, type, full, meta) {
+                    return '<a target="popup" href="../../Content/WarehouseLinkedFiles/' + FileName + '">' + FileName + ' <i class="fas fa-search-plus"></i></a>';
+                }
+            },
+            { data: 'FileSize', title: 'FileSize', sWidth: "25%" },
+            { data: 'Date', title: 'Date', sWidth: "25%" },
+            {
+                'data': 'ID',
+                'render': function (id, type, full, meta) {
+                    return '<a href="#" onclick="DeleteBankLinkedFiles(' + id + ');"><i class="fas fa-trash-alt"></i></a>';
+                }
+            }
+        ]
+    });
+}
+
+
+function DeleteBankLinkedFiles(id) {
+    RowID = $("#hfid").val();
+    var result = confirm("Are you sure to delete this Linked File?");
+    if (result) {
+        var obj = { rowid: RowID, WarehouseID: id, }
+        $.ajax({
+            url: '/Warehouse/DeleteBankLinkedFiles/', dataType: 'json', type: 'Post',
+            contentType: "application/json; charset=utf-8", data: JSON.stringify(obj), dataType: "json",
+            beforeSend: function () { $("#loader").show(); },
+            success: function (data) {
+                if (data.status == true) {
+                    swal('Alert!', data.message, 'success');
+                    BankLinkedFiles();
+                }
+                else { swal('Alert!', data.message, 'error') }
+            },
+            complete: function () { $("#loader").hide(); },
+            error: function (error) { swal('Error!', 'something went wrong', 'error'); },
+        })
+    }
 }

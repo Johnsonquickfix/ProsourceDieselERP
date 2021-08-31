@@ -21,6 +21,12 @@
                 <div class="row">
                     <div class="col-md-4">
                         <div class="form-group">
+                            <label class="control-label" for="Vendor" data-toggle="tooltip" title="Select Vender for creating Purchase Order.">Vendor<span class="text-red">*</span></label>
+                            <div class="">
+                                <select class="form-control select2" id="ddlVendor"></select>
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label>Date<span class="text-red">*</span></label>
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
@@ -31,12 +37,6 @@
                             <label class="control-label" for="Ref">PO No.</label>
                             <div class="">
                                 <label class="control-label" for="Ref" id="lblPoNo" data-id="@ViewBag.id">Draft</label>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label" for="Vendor" data-toggle="tooltip" title="Select Vender for creating Purchase Order.">Vendor<span class="text-red">*</span></label>
-                            <div class="">
-                                <select class="form-control select2" id="ddlVendor"></select>
                             </div>
                         </div>
                         <div class="form-group">

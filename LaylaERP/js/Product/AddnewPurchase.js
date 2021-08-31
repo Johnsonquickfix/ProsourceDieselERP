@@ -554,7 +554,7 @@ function AddBuyingt() {
         swal('Alert', 'Please Enter price', 'error').then(function () { swal.close(); $('#txtcurrencyconversionrate').focus(); });
     }
     else if (parseInt(currency) == 0) {
-        swal('Alert', 'Please price can not zero', 'error').then(function () { swal.close(); $('#txtcurrencyconversionrate').focus(); });
+        swal('Alert', 'Price can not be zero', 'error').then(function () { swal.close(); $('#txtcurrencyconversionrate').focus(); });
     }
     else {
         var obj = {

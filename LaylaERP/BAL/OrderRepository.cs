@@ -1623,7 +1623,7 @@
                         else
                             strSql += " ; ";
                     }
-                    result = SQLHelper.ExecuteNonQuery(strSql.ToString());
+                    result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
                 }
             }
             catch (Exception Ex) { throw Ex; }

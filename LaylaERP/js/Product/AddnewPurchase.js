@@ -285,6 +285,14 @@ function GetDataPurchaseByID(order_id) {
             else
                 $("#txtsalepricekit").text('$' + i[0].saleprice);
 
+            if ($("#txtsalepricekit").text() == "$0.00") {
+                $("#lblRegularPrice").hide();
+                $('lblRegularPrice').css('display', 'none');
+                $("#txtRegularpricekit").hide();
+                $("#txtsalepricekit").text('$' + i[0].regularamount);
+            }
+
+
             if (i[0].cost_price == null)
                 $("#txtCostprice").text('$0.00');
             else
@@ -545,6 +553,9 @@ function AddBuyingt() {
     else if (currency == "") {
         swal('Alert', 'Please Enter price', 'error').then(function () { swal.close(); $('#txtcurrencyconversionrate').focus(); });
     }
+    else if (parseInt(currency) == 0) {
+        swal('Alert', 'Please price can not zero', 'error').then(function () { swal.close(); $('#txtcurrencyconversionrate').focus(); });
+    }
     else {
         var obj = {
             ID: ID,
@@ -573,6 +584,7 @@ function AddBuyingt() {
                 if (data.status == true) {
                     if (data.url == "Manage") {
                         bindbuyingprice();
+                        bindwarehouse();
                         swal('Alert!', data.message, 'success');
                     }
                     else {
@@ -910,7 +922,7 @@ function bindwarehouse() {
             for (var i = 0; i < data.length; i++) {
                 // let row_key = data[i].ID ;                      
                 itemsDetailsxml.push({
-                    PKey: data[i].ID, product_id: data[i].ID, product_name: data[i].product_name
+                    PKey: data[i].ID, product_id: data[i].ID, product_name: data[i].product_name, product_label: data[i].product_label
                 });
 
             }
@@ -930,6 +942,7 @@ function bindwarehouseDetails(data) {
         for (var i = 0; i < data.length; i++) {
             if (data[i].PKey > 0) {
                 layoutHtml += '<tr id="tritemId_' + data[i].PKey + '" data-key="' + data[i].PKey + '">';          
+                layoutHtml += '<td class="text-left">' + data[i].product_label + '</td>';
                 layoutHtml += '<td class="text-left">' + data[i].product_name + '</td>';
                 layoutHtml += '<td class="text-right"><a href="javascript:void(0);" class="editbutton" onClick="Deletewarehouser(' + data[i].PKey + ')"><i class="glyphicon glyphicon-trash"></i></a></td>';
                 layoutHtml += '</tr>';
@@ -944,6 +957,7 @@ function bindwarehouseDetails(data) {
         layoutHtml += '<thead>';
         layoutHtml += '<tr>';
         layoutHtml += '<th class="text-left">Warehouse</th>';
+        layoutHtml += '<th class="text-left">Product</th>';
         layoutHtml += '<th class="text-right">Delete</th>';
         layoutHtml += '</tr>';
         layoutHtml += '</thead><tbody id="warehouse_services"></tbody>';

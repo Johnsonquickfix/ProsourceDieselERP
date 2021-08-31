@@ -298,6 +298,7 @@
 
 
     $("#btnSavevariations").click(function (e) {
+        debugger
         let _attxml = [];
         let parentID = parseInt($("#hfUpdatedID").val()) || parseInt($("#hfid").val());
         // console.log(parentID);
@@ -450,11 +451,15 @@
         //        );
         //    }); _ItemProduct
 
-        //  console.log(_ItemProduct);
+        console.log(_attxml);
+        console.log(_ItemProduct);
+        console.log(_PostTitleProduct);
+        console.log(_PriceProduct);
+         
         var obj = {
             ProductPostMeta: _attxml, ProductPostItemMeta: _ItemProduct, ProductPostPostMeta: _PostTitleProduct, ProductPostPriceMeta: _PriceProduct
         }
-
+        console.log(obj);
         if (_attxml != '') {
             //  NOW CALL THE WEB METHOD WITH THE PARAMETERS USING AJAX.
             $.ajax({
@@ -875,7 +880,7 @@ function GetExProdctByID(ProdctID) {
 }
 
 function GetAttributesID(Attributes) {
-    // console.log(Attributes);
+    console.log(Attributes);
     if (Attributes != '') {
         var itxtCnt = 0;
         var ID = Attributes;

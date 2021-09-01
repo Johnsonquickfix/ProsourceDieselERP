@@ -52,8 +52,9 @@ $('#btnAddNewCategory').click(function () {
             success: function (data) {
                 if (data.status == true) {
                     $("#hfid").val('');
-                    CategoryList();
                     getParentCategory();
+                    CategoryList();
+                   
                     $("#btnAddNewCategory").text('Add new category');
                     $("#lblNewCategory").text('Add new category');
                     $("#ProdCat").find(":input").each(function () {

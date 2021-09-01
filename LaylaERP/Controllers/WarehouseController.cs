@@ -605,5 +605,18 @@ namespace LaylaERP.Controllers
             }
         }
 
+        public JsonResult GetWarehouseByProduct(int productid)
+        {
+            DataSet ds = WarehouseRepository.GetWarehouseByProduct(productid);
+            List<SelectListItem> warehouselist = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+
+                warehouselist.Add(new SelectListItem { Text = dr["ref"].ToString(), Value = dr["rowid"].ToString() });
+
+            }
+            return Json(warehouselist, JsonRequestBehavior.AllowGet);
+        }
+
     }
 }

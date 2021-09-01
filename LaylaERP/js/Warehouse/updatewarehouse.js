@@ -1,7 +1,7 @@
 ﻿productbywarehouse();
 ProductWarehouseGrid();
 BankLinkedFiles();
-
+//targetwarehouse();
 function Addcurrentstock() {
     debugger
     var fk_entrepot = $("#hfid").val();
@@ -247,14 +247,14 @@ function AddWarehouse() {
 }
 
 
-
-$.get('/Warehouse/Gettargetwarehouse', function (data) {
-    var items = "";
-    $.each(data, function (index, value) {
-        items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddltargetwarehouse");
-    })
-});
-
+function targetwarehouse() {
+    $.get('/Warehouse/Gettargetwarehouse', function (data) {
+        var items = "";
+        $.each(data, function (index, value) {
+            items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddltargetwarehouse");
+        })
+    });
+}
 //    $.get('/Warehouse/GetProductForWarehouse', function (data) {
 //        var items = "";
 //        alert('hello');
@@ -297,6 +297,8 @@ $('#ddltransferProduct').change(function () {
         },
         error: function (jqXHR, textStatus, errorThrown) { swal('Error!', errorThrown, "error"); }
     });
+    
+    warehousebyproduct();
 
 });
 
@@ -527,7 +529,8 @@ function chk_status(ele) {
             $("#hfstockid").val(jobj[0].rowid);
             $('#txtlabel').val(jobj[0].label);
             //$('#ddlProduct').val(jobj[0].fk_product);
-            $("#ddlProduct").append('<option value="' + jobj[0].fk_product + '" selected>' + jobj[0].post_title + '</option>');
+            $('#ddlProduct').val(jobj[0].fk_product).trigger('change');
+            //$("#ddlProduct").append('<option value="' + jobj[0].fk_product + '" selected>' + jobj[0].post_title + '</option>');
             //$("#hfid").val();
             $("#txtserial").val(jobj[0].serial);
             $("#txteatbydate").val(jobj[0].eatby);
@@ -636,7 +639,8 @@ function transferstockstatus(ele) {
             console.log(jobj[0].label);
             $("#ddltargetwarehouse").val(jobj[0].fk_entrepot);
             //$("#ddltransferProduct").val(jobj[0].fk_product);
-            $("#ddltransferProduct").append('<option value="' + jobj[0].fk_product + '" selected>' + jobj[0].post_title + '</option>');
+            $('#ddltransferProduct').val(jobj[0].fk_product).trigger('change');
+            //$("#ddltransferProduct").append('<option value="' + jobj[0].fk_product + '" selected>' + jobj[0].post_title + '</option>');
             $("#hfprice").val(jobj[0].price);
             $("#txttransferunit").val(jobj[0].value);
             $("#txttransferserial").val(jobj[0].serial);
@@ -683,6 +687,36 @@ function getstock1() {
     });
 
 }
+
+function warehousebyproduct() {
+    var fk_product = $('#ddltransferProduct').val();
+    var obj = {
+        productid: fk_product,
+    }
+    $.ajax({
+        url: '/Warehouse/GetWarehouseByProduct/', dataType: 'json', type: 'Post',
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(obj),
+        dataType: "json",
+        beforeSend: function () { $("#loader").show(); },
+        success: function (data) {
+            $("#ddltargetwarehouse").empty();
+            var items = "";
+            $.each(data, function (index, value) {
+                items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddltargetwarehouse");
+                
+            })
+
+        },
+        complete: function () { $("#loader").hide(); },
+        error: function (error) { swal('Error!', 'something went wrong', 'error'); },
+    })
+
+}
+
+
+
+
 
 function getsecondwarehouse() {
     var tn = $("#txtTransid1").val();

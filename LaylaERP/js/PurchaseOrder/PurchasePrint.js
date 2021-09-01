@@ -56,7 +56,7 @@ function printinvoice(id, result, is_mail, is_inv) {
                                     <tr>
                                         <td style="padding:0; vertical-align: top;">
                                             <img src="http://40.114.51.80/Images/layla1-logo.png" alt="" width="95" height="41" class="logo-size"/>
-                                            <p style="font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">
+                                            <p style="margin:15px 0px;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">
                                                 157 Church Street Suite 1956, <br>
                                                 New Haven, CT 06510, <br>
                                                 United States.<br>
@@ -94,8 +94,8 @@ function printinvoice(id, result, is_mail, is_inv) {
                                 <table cellpadding="0" cellspacing="0" border="0">
                                     <tr>
                                         <td style="padding:0;">
-                                            <h3 class="billto" style="font-family: sans-serif;font-size:20px;margin:3px 0px 5px 0px;;color:#2c2e2f;font-weight:200;">Bill To:</h3>
-                                            <p class="recipientInfo" style="width: 225px;margin-top:0px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;">
+                                            <h3 class="billto" style="font-family: sans-serif;font-size:20px;margin:0px 0px 5px 0px;;color:#2c2e2f;font-weight:200;">Bill To:</h3>
+                                            <p class="recipientInfo" style="width: 225px;margin:0px 0px 15px 0px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;">
                                                 Gabriel Aubry
                                                 925 S Chugach St #APT 10 Palmer,
                                                 AK 99645 United States.<br>

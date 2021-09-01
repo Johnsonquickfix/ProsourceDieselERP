@@ -649,7 +649,7 @@ function AddProduct() {
 
     if (date_publish.length > 0)
         date_publish = date_publish[2] + '/' + date_publish[0] + '/' + date_publish[1];
-    console.log(date_publish);
+    //console.log(date_publish);
 
     if (productname == "") {
         swal('Alert', 'Please Enter Product', 'error').then(function () { swal.close(); $('#txtProductName').focus(); });
@@ -788,7 +788,7 @@ function GetDataByID(order_id) {
             else
                 $('#ddlclasstax').val(i[0].taxclass).trigger('change');
             $("#txtsku").val(i[0].sku);
-            console.log(i[0].Publish_Date);
+          //  console.log(i[0].Publish_Date);
             if (i[0].Publish_Date != null)
                 $('#txtPublishDate').val(i[0].Publish_Date);
         
@@ -1088,7 +1088,7 @@ function GetProductvariationID(ProductID) {
                 $(".select2").select2();
                 $("#ddlcsv_" + data[i].id).val(v_data['_tax_class']).trigger('change');
                 $("#ddlallow_" + data[i].id).val(v_data['_backorders']).trigger('change');
-                console.log(allowwebsite);
+               // console.log(allowwebsite);
                 if (allowwebsite == 'True')
                     $("#allowwebsite_" + data[i].id).prop("checked", true);
                 else

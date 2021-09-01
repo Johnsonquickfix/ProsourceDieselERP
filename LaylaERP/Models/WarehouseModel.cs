@@ -73,6 +73,11 @@ namespace LaylaERP.Models
         public string searchtransid { get; set; }
         public int secondwarehouse { get; set; }
         public string transfertranscationid { get; set; }
+        public string WarehouseID { get; set; }
 
+        //Linked files
+        public byte[] ImageFiledata { get; set; }
+        public string ImagePath { get; set; }
+        public HttpPostedFileBase ImageFile { get; set; }
     }
 }

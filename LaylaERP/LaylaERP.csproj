@@ -346,6 +346,7 @@
     <Content Include="Content\AdminLTE-3.1.0\_all-skins.min.css" />
     <Content Include="Content\alert\sweetalert2.all.min.js" />
     <Content Include="Content\alert\sweetalert2.min.css" />
+    <Content Include="Content\BankLinkedFiles\default.png" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
@@ -550,6 +551,7 @@
     <Content Include="Content\ProductCategory\default.png" />
     <Content Include="Content\Style11.css" />
     <Content Include="Content\Style12.css" />
+    <Content Include="Content\VendorLinkedFiles\default.png" />
     <Content Include="css\indexStyle.css" />
     <Content Include="css\jquery.treeview.css" />
     <Content Include="css\layoutStyle.css" />
@@ -608,9 +610,11 @@
     <Content Include="js\Marketing\Coupons.js" />
     <Content Include="js\Marketing\CouponsManage.js" />
     <Content Include="js\Orders\NewOrder.js" />
+    <Content Include="js\Orders\OrderCoupons.js" />
     <Content Include="js\Orders\OrderHistory.js" />
     <Content Include="js\Orders\OrderRefund.js" />
     <Content Include="js\Orders\QuickOrder.js" />
+    <Content Include="js\Orders\SplitOrder.js" />
     <Content Include="js\Product\AddnewProduct.js" />
     <Content Include="js\Product\AddnewPurchase.js" />
     <Content Include="js\Product\Product.js" />
@@ -659,6 +663,7 @@
     <Content Include="Content\AdminLTE-3.1.0\font-awesome\webfonts\fa-solid-900.woff" />
     <Content Include="Content\AdminLTE-3.1.0\font-awesome\webfonts\fa-solid-900.woff2" />
     <Content Include="Files\TEST2.pdf" />
+    <Content Include="Content\WarehouseLinkedFiles\myfile.docx" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\DataTables\autoFill.bootstrap.js" />
     <Content Include="Scripts\DataTables\autoFill.bootstrap.min.js" />
@@ -855,8 +860,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Content\BankLinkedFiles\" />
-    <Folder Include="Content\VendorLinkedFiles\" />
     <Folder Include="js\Appearance\" />
     <Folder Include="Properties\PublishProfiles\" />
     <Folder Include="Views\ShipStation\" />

@@ -284,18 +284,31 @@ namespace LaylaERP.Controllers
             DateTime dateinc = DateTime.Now;
             //DateTime dateinc = UTILITIES.CommonDate.CurrentDate();
             var resultOne = 0;
+            DataTable dt = ProductRepository.GetproductPurchase_Items(model);
+
             if (model.ID > 0)
                 resultOne = ProductRepository.updateBuyingtProduct(model, dateinc);
             else
-                resultOne = ProductRepository.AddBuyingtProduct(model, dateinc);
-            if (resultOne > 0)
             {
-                return Json(new { status = true, message = "updated successfully!!", url = "Manage" }, 0);
+                if (dt.Rows.Count > 0)
+                {
+                    return Json(new { status = false, message = "Vendor already allocated for this product", url = "" }, 0);
+                }
+                else
+                {
+                    resultOne = ProductRepository.AddBuyingtProduct(model, dateinc);
+                }
             }
-            else
-            {
-                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
-            }
+                    if (resultOne > 0)
+                    {
+                        return Json(new { status = true, message = "updated successfully!!", url = "Manage" }, 0);
+                    }
+                    else
+                    {
+                        return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                    }
+                
+            
         }
         public JsonResult Createwarehouse(ProductModel model)
         {
@@ -516,7 +529,10 @@ namespace LaylaERP.Controllers
                 ProductRepository.EditProducts(model, model.ID);
                 UpdateVariation_MetaData(model, model.ID);
                 update_term(model, model.ID);
-                return Json(new { status = true, message = "Product Record has been updated successfully!!", url = "Manage" }, 0);
+                if(model.updatedID > 0)
+                return Json(new { status = true, message = "Product Record has been updated successfully!!", url = "" }, 0);
+                else
+                    return Json(new { status = true, message = "Product Record has been updated successfully!!", url = "Manage" }, 0);
             }
             else
             {

@@ -377,7 +377,7 @@ function dataGridLoad(order_type) {
             aoData.push({ name: "strValue4", value: '' });
             var col = 'rowid';
             if (oSettings.aaSorting.length > 0) {
-                var col = oSettings.aaSorting[0][0] == 0 ? "rowid" : oSettings.aaSorting[0][0] == 1 ? "ShipName" : oSettings.aaSorting[0][0] == 2 ? "CountryFullName" : "rowid";
+                var col = oSettings.aaSorting[0][0] == 0 ? "ShipName" : oSettings.aaSorting[0][0] == 1 ? "Country" : oSettings.aaSorting[0][0] == 2 ? "State" : oSettings.aaSorting[0][0] == 3 ? "Method" : oSettings.aaSorting[0][0] == 4 ? "Shipping_price" : oSettings.aaSorting[0][0] == 5 ? "Type" : "rowid";
                 aoData.push({ name: "sSortColName", value: col });
             }
             //console.log(aoData);
@@ -417,7 +417,9 @@ function dataGridLoad(order_type) {
             {
                 'data': 'rowid', title: 'Action', sWidth: "5%",
                 'render': function (id, type, full, meta) {
-                    return '<a title="Click here to Edit" onClick="EditData(' + id + ');" data-toggle="tooltip"><i class="glyphicon glyphicon-eye-open"></i></a>'
+                    return '<a href="#" title="Click here to Edit" onClick="EditData(' + id + ');" data-toggle="tooltip"><i class="glyphicon glyphicon-eye-open"></i></a>'
+               
+                    
                 }
             }
         ]
@@ -426,6 +428,7 @@ function dataGridLoad(order_type) {
 
 function EditData(id) {
   //  loadecitystate();
+    $('#txtShippingClass').focus();
     $('#dvdetails').show();
     $("#hfshipingid").val(id);
     var ID = id;
@@ -437,9 +440,11 @@ function EditData(id) {
         contentType: "application/json; charset=utf-8",
         dataType: 'JSON',
         data: JSON.stringify(obj),
+        beforeSend: function () { $("#loader").show(); },
         success: function (data) {
             var i = JSON.parse(data);
-            console.log(i);
+            
+            $('#txtShippingClass').focus();
             $("#txtShippingClass").val(i[0].ShipName);
         //    $("#txttaxprice").val(i[0].Shipping_taxrate);
         
@@ -456,6 +461,7 @@ function EditData(id) {
             //$('#ddlState').val(id).trigger('change');
             setTimeout(function () { statedata(i[0].statecode, i[0].Statefullname); }, 2000);
         },
+        complete: function () { $("#loader").hide(); },
         error: function (msg) { alert(msg); }
       
     });

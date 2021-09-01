@@ -700,8 +700,8 @@
 
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="control-label">Default Discount (%)</label>
-                                        <input type="text" id="txtDefaultDiscount" class="form-control" placeholder="Default Discount (%)" />
+                                        <label class="control-label" id="lblDefaultDiscount">Default Discount</label>
+                                        <input type="text" id="txtDefaultDiscount" class="form-control" placeholder="Default Discount" />
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -1000,10 +1000,20 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="box-body">
+                                    <div class="alignleft actions bulkactions">
+                                        <select class="form-control select2" id="ddlOrderStatus" placeholder="Select Status">
+                                            <option value="0">Select Status</option>
+                                            <option value="1">Draft</option>
+                                            <option value="3">Approved</option>
+                                            <option value="7">Canceled</option>
+                                            <option value="8">Refused</option>
+                                        </select>
+                                        <button type="button" id="btnChange" class="btn btn-primary btn-flat button">Change</button>
+                                    </div>
                                     <label class="control-label col-sm-2">
                                         List of purchase order/invoices
                                     </label>
-                                    <div class="form-group col-sm-6">
+                                    <div class="form-group col-sm-4">
                                         <select class="form-control select2" id="ddlInvoiceServices" style="width:100%">
                                             <option value="1">Purchase orders</option>
                                             <option value="3">Vendors invoices</option>
@@ -1021,6 +1031,7 @@
                                                 <table id="PurchaseInvoicedata" class="inventory-table table-blue table check-table table-bordered table-striped dataTable" style="width:100%;">
                                                     <thead>
                                                         <tr>
+                                                            <th width="5%"><input type="checkbox" name="checkall" id="checkall" onClick="CheckAll();"><label></label></th>
                                                             <th>ref</th>
                                                             <th>Planned date of delivery</th>
                                                             <th>Status</th>
@@ -1388,7 +1399,23 @@
             format: 'yyyy-mm-dd',
         });
     })
-
+    function CheckAll() {
+        var isChecked = $('#checkall').prop("checked");
+        $('#PurchaseInvoicedata tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
+    }
+    function Singlecheck(chk) {
+        var isChecked = $(chk).prop("checked");
+        var isHeaderChecked = $("#checkall").prop("checked");
+        if (isChecked == false && isHeaderChecked)
+            $("#checkall").prop('checked', isChecked);
+        else {
+            $('#PurchaseInvoicedata tr:has(td)').find('input[type="checkbox"]').each(function () {
+                if ($(this).prop("checked") == false)
+                    isChecked = false;
+            });
+            $("#checkall").prop('checked', isChecked);
+        }
+    }
 </script>
 
 

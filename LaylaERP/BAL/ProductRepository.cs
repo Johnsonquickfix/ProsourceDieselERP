@@ -1651,12 +1651,28 @@ namespace LaylaERP.BAL
         }
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Product Categories~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+        //public static DataTable GetParentCategory(string term_taxonomy_id)
+        //{
+        //    DataTable DS = new DataTable();
+        //    try
+        //    {
+        //        string strSQl = "Select tx.term_taxonomy_id ID,t.name, tx.parent level from wp_term_taxonomy tx left join wp_terms t on tx.term_id=t.term_id where tx.taxonomy='product_cat' and tx.term_taxonomy_id !='" + term_taxonomy_id + "' order by tx.term_taxonomy_id desc;";
+        //        DS = SQLHelper.ExecuteDataTable(strSQl);
+        //    }
+        //    catch (Exception ex)
+        //    { throw ex; }
+        //    return DS;
+        //}
         public static DataSet GetParentCategory(string term_taxonomy_id)
         {
             DataSet DS = new DataSet();
             try
             {
-                string strSQl = "Select tx.term_taxonomy_id ID,t.name from wp_term_taxonomy tx left join wp_terms t on tx.term_id=t.term_id where tx.taxonomy='product_cat' and tx.term_taxonomy_id !='"+ term_taxonomy_id +"' order by tx.term_taxonomy_id desc;";
+                //string strSQl = "Select tx.term_taxonomy_id ID,t.name, tx.parent from wp_term_taxonomy tx left join wp_terms t on tx.term_id=t.term_id where tx.taxonomy='product_cat' and tx.term_taxonomy_id !='" + term_taxonomy_id + "' order by tx.term_taxonomy_id desc;";
+                string strSQl = "Select tx.term_taxonomy_id ID, if(tx.parent=0,t.name,concat('- ',t.name)) name,tx.parent  from wp_term_taxonomy tx " +
+                    "left join wp_terms t on tx.term_id = t.term_id where tx.taxonomy = 'product_cat' and tx.term_taxonomy_id !='" + term_taxonomy_id + "'" +
+                    "order by CASE WHEN tx.parent = 0 THEN ID ELSE tx.parent END ASC, CASE WHEN tx.parent = tx.term_taxonomy_id THEN tx.parent ELSE tx.parent END ASC; ";
                 DS = SQLHelper.ExecuteDataSet(strSQl);
             }
             catch (Exception ex)
@@ -1738,7 +1754,7 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "Select p.post_title ImagePath, tm.meta_value, tm.meta_key, tx.term_id ID, t.name,t.slug,tx.taxonomy,tx.description,tx.parent,tx.count from wp_terms t " +
+                string strSql = "Select p.post_title ImagePath, tm.meta_value, tm.meta_key, tx.term_id ID,if(tx.parent=0,t.name,concat('# ',t.name)) name,t.slug,tx.taxonomy,tx.description,tx.parent,tx.count from wp_terms t " +
                     "left join wp_term_taxonomy tx on tx.term_id = t.term_id left join wp_termmeta tm on t.term_id = tm.term_id " +
                     "left join wp_posts p on tm.meta_value = p.ID where taxonomy = 'product_cat' and tm.meta_key = 'thumbnail_id' and 1 = 1 ";
                 if (!string.IsNullOrEmpty(searchid))
@@ -1749,11 +1765,12 @@ namespace LaylaERP.BAL
                 {
                     strWhr += " and (v.VendorStatus='" + userstatus + "') ";
                 }
-                strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
+                //strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
+                strSql += strWhr + string.Format(" order by {0} LIMIT {1}, {2}", "CASE WHEN tx.parent = 0 THEN tx.term_taxonomy_id ELSE tx.parent END DESC, CASE WHEN tx.parent = tx.term_taxonomy_id THEN tx.parent ELSE tx.parent END ASC ", pageno.ToString(), pagesize.ToString());
 
                 strSql += "; SELECT ceil(Count(tx.term_id)/" + pagesize.ToString() + ") TotalPage,Count(tx.term_id) TotalRecord  from wp_terms t " +
                     "left join wp_term_taxonomy tx on tx.term_id = t.term_id left join wp_termmeta tm on t.term_id = tm.term_id " +
-                    "left join wp_posts p on tm.meta_value = p.ID where taxonomy = 'product_cat' and tm.meta_key = 'thumbnail_id' and 1 = 1  " + strWhr.ToString();
+                    "left join wp_posts p on tm.meta_value = p.ID where taxonomy = 'product_cat' and tm.meta_key = 'thumbnail_id' and 1 = 1 " + strWhr.ToString();
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
@@ -1810,14 +1827,14 @@ namespace LaylaERP.BAL
                 MySqlParameter[] para =
                {
                     new MySqlParameter("@post_author", "8"),
-                    new MySqlParameter("@post_title", FileName),
+                    new MySqlParameter("@post_title", FileName=="" ? "default.png" : FileName),
                     new MySqlParameter("@post_status", "inherit"),
                     new MySqlParameter("@comment_status", "closed"),
                     new MySqlParameter("@ping_status", "closed"),
-                    new MySqlParameter("@post_name", FileName),
+                    new MySqlParameter("@post_name", FileName=="" ? "default.png" : FileName),
                     new MySqlParameter("@post_type", "shop_order"),
                     new MySqlParameter("@post_mime_type", FileType),
-                    new MySqlParameter("@guid", FilePath),
+                    new MySqlParameter("@guid", FileName=="" ? "default.png" : FileName),
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
                 return result;
@@ -1838,14 +1855,14 @@ namespace LaylaERP.BAL
                 MySqlParameter[] para =
                {
                     new MySqlParameter("@post_author", "8"),
-                    new MySqlParameter("@post_title", FileName),
+                    new MySqlParameter("@post_title", FileName=="" ? "default.png" : FileName),
                     new MySqlParameter("@post_status", "inherit"),
                     new MySqlParameter("@comment_status", "closed"),
                     new MySqlParameter("@ping_status", "closed"),
-                    new MySqlParameter("@post_name", FileName),
+                    new MySqlParameter("@post_name", FileName=="" ? "default.png" : FileName),
                     new MySqlParameter("@post_type", "shop_order"),
                     new MySqlParameter("@post_mime_type", FileType),
-                    new MySqlParameter("@guid", FilePath),
+                    new MySqlParameter("@guid", FileName=="" ? "default.png" : FileName),
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
                 return result;
@@ -1889,8 +1906,8 @@ namespace LaylaERP.BAL
                {
                     new MySqlParameter("@post_id", post_id),
                     new MySqlParameter("@guid", FilePath),
-                    new MySqlParameter("@post_title", FileName),
-                    new MySqlParameter("@post_name", FileName),
+                    new MySqlParameter("@post_title", FileName=="" ? "default.png" : FileName),
+                    new MySqlParameter("@post_name", FileName=="" ? "default.png" : FileName),
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
                 return result;
@@ -1910,7 +1927,7 @@ namespace LaylaERP.BAL
             {
                 string strSQl = "Select post_title from wp_posts WHERE ID =" + PostID + "; ";
                  result = SQLHelper.ExecuteScalar(strSQl).ToString();
-                return result;
+                //return result;
             }
             catch (Exception ex)
             {

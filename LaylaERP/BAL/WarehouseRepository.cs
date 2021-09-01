@@ -215,12 +215,12 @@ namespace LaylaERP.BAL
             try
             {
                 string strquery = "SELECT DISTINCT post.id,ps.ID pr_id,CONCAT(post.post_title, ' (' , COALESCE(psku.meta_value,'') , ') - ' ,LTRIM(REPLACE(REPLACE(COALESCE(ps.post_excerpt,''),'Size:', ''),'Color:', ''))) as post_title"
-                            + " , COALESCE(pr.meta_value, 0) reg_price,COALESCE(psr.meta_value, 0) sale_price, ppp.purchase_price buy_price FROM wp_posts as post"
+                            + " , COALESCE(pr.meta_value, 0) reg_price,COALESCE(psr.meta_value, 0) sale_price, format(COALESCE(ppp.purchase_price,0),2) buy_price FROM wp_posts as post"
                             + " LEFT OUTER JOIN wp_posts ps ON ps.post_parent = post.id and ps.post_type LIKE 'product_variation'"
                             + " left outer join wp_postmeta psku on psku.post_id = ps.id and psku.meta_key = '_sku'"
                             + " left outer join wp_postmeta pr on pr.post_id = ps.id and pr.meta_key = '_regular_price'"
                             + " left outer join wp_postmeta psr on psr.post_id = COALESCE(ps.id, post.id) and psr.meta_key = '_sale_price'"
-                            + " inner join Product_Purchase_Items ppp on ppp.fk_product=ps.ID "
+                            + " left join Product_Purchase_Items ppp on ppp.fk_product=ps.ID "
                             + " WHERE post.post_type = 'product' and ps.ID = " + product_id + "";
                 dtr = SQLHelper.ExecuteDataTable(strquery);
 
@@ -614,12 +614,13 @@ namespace LaylaERP.BAL
                 string strquery = "select p.id,p.post_type,p.post_title ,max(case when p.id = s.post_id and s.meta_key = '_sku' then s.meta_value else '' end) sku, COALESCE(format(psi.purchase_price,2),0) buy_price,"
                                  + " COALESCE(format(max(case when p.id = s.post_id and s.meta_key = '_regular_price' then s.meta_value else '' end),2),0) reg_price, "
                                  + " COALESCE(format(max(case when p.id = s.post_id and s.meta_key = '_sale_price' then s.meta_value else '' end),2),0) sale_price, "
-                                 + " (select coalesce(sum(case when pwr.flag = 'R' then quantity else -quantity end), 0) from product_stock_register pwr where pwr.product_id = p.id and pwr.warehouse_id = psr.warehouse_id) stock,"
+                                 + " (select coalesce(sum(case when pwr.flag = 'R' then quantity else -quantity end), 0) from product_stock_register pwr where pwr.product_id = p.id and pwr.warehouse_id = pw.fk_warehouse) stock,"
                                  + " (case when p.post_parent = 0 then p.id else p.post_parent end) p_id,p.post_parent,p.post_status FROM wp_posts as p"
                                  + " left join wp_postmeta as s on p.id = s.post_id"
-                                 + " left join product_stock_register psr on psr.product_id = p.ID"
-                                 + " left join Product_Purchase_Items psi on psi.fk_product = psr.product_id"
-                                 + " where psr.warehouse_id = '" + getwarehouseid + "' and p.post_type in ('product', 'product_variation') and p.post_status != 'draft'  group by p.id order by p_id";
+                                 + " left join product_warehouse pw on pw.fk_product = p.ID"
+                                 + "  left join Product_Purchase_Items psi on psi.fk_product = pw.fk_product"
+                                 + "  left join product_stock_register psr on psr.product_id = pw.fk_product"
+                                 + " where pw.fk_warehouse = '" + getwarehouseid + "' and p.post_type in ('product', 'product_variation') and p.post_status != 'draft'  group by p.id order by p_id";
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strquery);
                 dtr = ds.Tables[0];
@@ -629,21 +630,32 @@ namespace LaylaERP.BAL
             return dtr;
         }
 
-        public static DataTable GetProductForWarehouse(int warehouseid, string strSearch)
+        public static DataTable GetProductForWarehouse(int warehouseid)
         {
             DataTable dtr = new DataTable();
             try
             {
+                //string strquery = "SELECT DISTINCT post.id,ps.ID pr_id, CONCAT(post.post_title, ' (', COALESCE(psku.meta_value, ''), ') - ', LTRIM(REPLACE(REPLACE(COALESCE(ps.post_excerpt, ''), 'Size:', ''), 'Color:', ''))) as post_title, format(psr.meta_value,2) as sale_price, format(pr.meta_value,2) reg_price,"
+                //                    + " CONCAT(post.id, '$', COALESCE(ps.id, 0)) r_id FROM wp_posts as post"
+                //                    + " INNER join wp_postmeta psr1 on psr1.post_id = post.ID"
+                //                    + " inner JOIN wp_posts ps ON ps.post_parent = post.id and ps.post_type LIKE 'product_variation'"
+                //                    + " inner join wp_postmeta psku on psku.post_id = ps.id and psku.meta_key = '_sku'"
+                //                    + " inner join wp_postmeta pr on pr.post_id = ps.id and pr.meta_key = '_regular_price'"
+                //                    + " inner join wp_postmeta psr on psr.post_id = COALESCE(ps.id, post.id) and psr.meta_key = '_sale_price'"
+                //                    + " inner join product_warehouse pw on pw.fk_product = ps.id and pw.fk_warehouse = '" + warehouseid + "'"
+                //                    + " WHERE post.post_type = 'product' AND post.post_status = 'publish' AND CONCAT(post.post_title, ' (' , COALESCE(psku.meta_value, '') , ') - ' ,LTRIM(REPLACE(REPLACE(COALESCE(ps.post_excerpt, ''), 'Size:', ''), 'Color:', ''))) like '%"+ strSearch + "%'"
+                //                    + " ORDER BY post.ID";
                 string strquery = "SELECT DISTINCT post.id,ps.ID pr_id, CONCAT(post.post_title, ' (', COALESCE(psku.meta_value, ''), ') - ', LTRIM(REPLACE(REPLACE(COALESCE(ps.post_excerpt, ''), 'Size:', ''), 'Color:', ''))) as post_title, format(psr.meta_value,2) as sale_price, format(pr.meta_value,2) reg_price,"
                                     + " CONCAT(post.id, '$', COALESCE(ps.id, 0)) r_id FROM wp_posts as post"
-                                    + " INNER join wp_postmeta psr1 on psr1.post_id = post.ID"
-                                    + " inner JOIN wp_posts ps ON ps.post_parent = post.id and ps.post_type LIKE 'product_variation'"
-                                    + " inner join wp_postmeta psku on psku.post_id = ps.id and psku.meta_key = '_sku'"
-                                    + " inner join wp_postmeta pr on pr.post_id = ps.id and pr.meta_key = '_regular_price'"
-                                    + " inner join wp_postmeta psr on psr.post_id = COALESCE(ps.id, post.id) and psr.meta_key = '_sale_price'"
-                                    + " inner join product_warehouse pw on pw.fk_product = ps.id and pw.fk_warehouse = '" + warehouseid + "'"
-                                    + " WHERE post.post_type = 'product' AND post.post_status = 'publish' AND CONCAT(post.post_title, ' (' , COALESCE(psku.meta_value, '') , ') - ' ,LTRIM(REPLACE(REPLACE(COALESCE(ps.post_excerpt, ''), 'Size:', ''), 'Color:', ''))) like '%"+ strSearch + "%'"
+                                    + " left join wp_postmeta psr1 on psr1.post_id = post.ID"
+                                    + " left join wp_posts ps ON ps.post_parent = post.id and ps.post_type LIKE 'product_variation'"
+                                    + " left join wp_postmeta psku on psku.post_id = ps.id and psku.meta_key = '_sku'"
+                                    + " left join wp_postmeta pr on pr.post_id = ps.id and pr.meta_key = '_regular_price'"
+                                    + " left join wp_postmeta psr on psr.post_id = COALESCE(ps.id, post.id) and psr.meta_key = '_sale_price'"
+                                    + " left join product_warehouse pw on pw.fk_product = ps.ID "
+                                    + " WHERE pw.fk_warehouse = '" + warehouseid + "' and post.post_type = 'product' AND post.post_status = 'publish' AND CONCAT(post.post_title, ' (' , COALESCE(psku.meta_value, '') , ') - ' ,LTRIM(REPLACE(REPLACE(COALESCE(ps.post_excerpt, ''), 'Size:', ''), 'Color:', ''))) like '%%%'"
                                     + " ORDER BY post.ID";
+
                 dtr = SQLHelper.ExecuteDataTable(strquery);
 
             }
@@ -696,6 +708,113 @@ namespace LaylaERP.BAL
             catch (Exception ex)
             { throw ex; }
             return dtr;
+        }
+
+        public static DataTable GetfileCountdata(int WarehouseID, string FileName)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                string strSQl = "SELECT FileName from erp_WarehouseLinkedFiles"
+                                + " WHERE WarehouseID in (" + WarehouseID + ") and FileName = '" + FileName + "' ";
+                dt = SQLHelper.ExecuteDataTable(strSQl);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static int FileUpload(int WarehouseID, string FileName, string FilePath, string FileType, string size)
+        {
+            try
+            {
+                string strsql = "";
+                strsql = "insert into erp_WarehouseLinkedFiles(WarehouseID, FileName, FileSize, FileType, FilePath) values(@BankID, @FileName, @FileSize, @FileType, @FilePath); SELECT LAST_INSERT_ID();";
+
+                MySqlParameter[] para =
+               {
+                    new MySqlParameter("@BankID", WarehouseID),
+                    new MySqlParameter("@FileName", FileName),
+                    new MySqlParameter("@FileSize", size),
+                    new MySqlParameter("@FileType", FileType),
+                    new MySqlParameter("@FilePath", FilePath),
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+
+
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+        public static DataTable GetBankLinkedFiles(long id, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                string strWhr = string.Empty;
+
+                string strSql = "select ID,WarehouseID,FileName,concat(FileSize,' KB') FileSize,FileType,FilePath,DATE_FORMAT(CreatedDate, '%m-%d-%Y') Date from erp_WarehouseLinkedFiles where WarehouseID='" + id + "' and 1=1 ";
+                if (!string.IsNullOrEmpty(searchid))
+                {
+                    strWhr += " and (FileName like '%" + searchid + "%' OR FileSize='%" + searchid + "%' OR Date='%" + searchid + "%' OR Date like '%" + searchid + "%')";
+                }
+                if (userstatus != null)
+                {
+                    strWhr += " and (FileName='" + userstatus + "') ";
+                }
+                strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
+
+                strSql += "; SELECT ceil(Count(ID)/" + pagesize.ToString() + ") TotalPage,Count(ID) TotalRecord from erp_WarehouseLinkedFiles  WHERE WarehouseID='" + id + "' and 1 = 1 " + strWhr.ToString();
+
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dt = ds.Tables[0];
+                if (ds.Tables[1].Rows.Count > 0)
+                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static int DeleteBankLinkedFiles(WarehouseModel model)
+        {
+            try
+            {
+                string strsql = "";
+                strsql = "DELETE from erp_WarehouseLinkedFiles where ID=@WarehouseLinkedFilesID and WarehouseID=@WarehouseID;";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@WarehouseID", model.rowid),
+                    new MySqlParameter("@WarehouseLinkedFilesID", model.WarehouseID),
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+        public static DataSet GetWarehouseByProduct(int productid)
+        {
+            DataSet DS = new DataSet();
+            try
+            {
+                DS = SQLHelper.ExecuteDataSet("select wr.ref,wr.rowid from product_warehouse pw inner join wp_warehouse wr on wr.rowid = pw.fk_warehouse where pw.fk_product='"+productid+"'");
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
         }
 
     }

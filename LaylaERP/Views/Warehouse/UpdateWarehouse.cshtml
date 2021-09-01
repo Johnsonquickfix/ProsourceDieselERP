@@ -34,6 +34,7 @@
         <li><a href="#tab_4" data-toggle="tab">Transfer Stock</a></li>
         <li><a href="#tab_5" data-toggle="tab">Product List</a></li>
         <li><a href="#tab_6" data-toggle="tab">Vendor List</a></li>
+        <li><a href="#tab_7" data-toggle="tab">Linked Files</a></li>
     </ul>
     <div class="tab-content">
         <div class="tab-pane active" id="tab_1">
@@ -265,27 +266,27 @@
                             <div class="box box-primary">
                                 <div class="box-body">
                                     <div class="form-group">
-                                        <label for="exampleInputEmail1">Cor Contact Number</label>
+                                        <label for="exampleInputEmail1">Contact Number</label>
                                         <input type="text" class="form-control" id="txtCorContact" placeholder="Enter Contact Number" value="@Model.cor_phone">
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="exampleInputEmail1">Cor Address </label>
+                                        <label for="exampleInputEmail1">Address </label>
                                         <input type="text" class="form-control" id="txtCorAddress" placeholder="Enter Address " value="@Model.cor_address">
                                     </div>
                                     <div class="form-group">
-                                        <label for="exampleInputEmail1">Cor Address1</label>
+                                        <label for="exampleInputEmail1">Address1</label>
                                         <input type="text" class="form-control" id="txtCorAddress1" placeholder="Enter Address1 " value="@Model.cor_address1">
                                     </div>
 
 
                                     <div class="form-group">
-                                        <label for="exampleInputEmail1">Cor City</label>
+                                        <label for="exampleInputEmail1">City</label>
                                         <input type="text" id="txtCorCity" class="form-control" placeholder="Enter City" value="@Model.cor_city" />
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="exampleInputEmail1">Cor State</label>
+                                        <label for="exampleInputEmail1">State</label>
                                         <input type="text" id="txtCorState" class="form-control" placeholder="Enter State" value="@Model.cor_state" />
                                     </div>
                                 </div>
@@ -297,7 +298,7 @@
                                 <div class="box-body">
 
                                     <div class="form-group">
-                                        <label class="control-label" for="Zip Code">Cor Zip Code</label>
+                                        <label class="control-label" for="Zip Code">Zip Code</label>
                                         <div class="">
                                             <input type="text" id="txtCorZipCode" class="form-control" placeholder="Enter Zip Code" value="@Model.cor_zip">
                                         </div>
@@ -329,7 +330,7 @@
                                             }
                                         }
 
-                                        <label for="exampleInputEmail1">Cor Country</label>
+                                        <label for="exampleInputEmail1">Country</label>
                                         <select class="form-control" id="txtCorCountry">
                                             <option @selectedus value="US">US - United States</option>
                                             <option @selectedca value="CA">CA - Canada</option>
@@ -377,9 +378,9 @@
                                     <input type="hidden" id="txtTransid" class="form-control" />
                                     @*<input type="text" id="txtdoc" class="form-control" />*@
                                     <div class="form-group">
-                                        <label for="exampleInputEmail1">Product<span style="color:red">*</span></label>
-                                        <select class="form-control" id="ddlProduct" style="width:100%;">
-                                            @*<option value="0">--Select Product--</option>*@
+                                        <label for="exampleInputEmail1">Products<span style="color:red">*</span></label>
+                                        <select class="form-control select2" id="ddlProduct" style="width:100%;">
+                                            <option value="0">--Select Product--</option>
                                         </select>
                                     </div>
                                     @*<div class="form-group">
@@ -393,7 +394,7 @@
 
                                     <div class="form-group">
 
-                                        <label for="exampleInputEmail1">Number of unit<span style="color:red">*</span></label>
+                                        <label for="exampleInputEmail1">Transfer number of units<span style="color:red">*</span></label>
                                         <input type="text" id="txtunit" class="form-control" placeholder="Enter Number of unit">
                                     </div>
 
@@ -406,7 +407,7 @@
 
                                 </div>
 
-                                </div>
+                            </div>
                         </div>
 
 
@@ -420,10 +421,10 @@
                                     </div>
 
                                     <!--<div class="form-group">
-                                        <label for="exampleInputEmail1">Sale by date<span style="color:red">*</span></label>
+                                    <label for="exampleInputEmail1">Sale by date<span style="color:red">*</span></label>
 
-                                        <input class="form-control" type="text" id="txtsalebydate" placeholder="Enter Sale by date" /><span class="even-space"></span>
-                                    </div>-->
+                                    <input class="form-control" type="text" id="txtsalebydate" placeholder="Enter Sale by date" /><span class="even-space"></span>
+                                </div>-->
 
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Label of movement<span style="color:red">*</span></label>
@@ -434,7 +435,7 @@
                                         <div class="text-right">
                                             <a href="#" class="btn btn-danger" id="btnStock"><b>Save</b></a>
                                             <a href="#" class="btn btn-danger" id="btnStockUpdate"><b>Update</b></a>
-                                            <a href="#" class="btn btn-danger" id="btnStockCancel"><b>Cancel</b></a>
+                                            <a href="#" class="btn btn-danger" id="btnStockCancel"><b>Reset</b></a>
                                             @*<input type="button" class="btn btn-danger" name="action" id="btnRefresh" value="Refresh" />*@
 
                                         </div>
@@ -495,14 +496,14 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="exampleInputEmail1">Product<span style="color:red">*</span></label>
-                                        <select id="ddltransferProduct" class="form-control" style="width:100%;">
-                                            @*<option value="0">--Select Product--</option>*@
+                                        <label for="exampleInputEmail1">Products<span style="color:red">*</span></label>
+                                        <select id="ddltransferProduct" class="form-control select2" style="width:100%;">
+                                            <option value="0">--Select Product--</option>
                                         </select>
                                     </div>
                                     <div class="form-group">
-                                    <label for="exampleInputEmail1">Stock</label>
-                                    <input type="text" id="txtstock1" class="form-control" readonly />
+                                        <label for="exampleInputEmail1">Current Stock</label>
+                                        <input type="text" id="txtstock1" class="form-control" readonly />
                                     </div>
 
                                     <div class="form-group">
@@ -513,7 +514,7 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="exampleInputEmail1">Number of units<span style="color:red">*</span></label>
+                                        <label for="exampleInputEmail1">Transfer number of units<span style="color:red">*</span></label>
                                         <input type="text" class="form-control" placeholder="Enter number of units" id="txttransferunit">
                                     </div>
 
@@ -537,12 +538,12 @@
                                         <input class="form-control" type="text" id="txttransfereatbydate" placeholder="Enter Stock Transfer Date" /><span class="even-space"></span>
                                     </div>
 
-                                   <!-- <div class="form-group">
+                                    <!-- <div class="form-group">
 
-                                        <label for="exampleInputEmail1">Sale by date<span style="color:red">*</span></label>
+                                     <label for="exampleInputEmail1">Sale by date<span style="color:red">*</span></label>
 
-                                        <input class="form-control" type="text" id="txttransfersalebydate" placeholder="Enter Sale by date" /><span class="even-space"></span>
-                                    </div>-->
+                                     <input class="form-control" type="text" id="txttransfersalebydate" placeholder="Enter Sale by date" /><span class="even-space"></span>
+                                 </div>-->
 
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Label of movement<span style="color:red">*</span></label>
@@ -558,7 +559,7 @@
                                         <div class="text-right">
                                             <a href="#" class="btn btn-danger" id="btnTranferStock"><b>Save</b></a>
                                             <a href="#" class="btn btn-danger" id="btnTransferStockUpdate"><b>Update</b></a>
-                                            <a href="#" class="btn btn-danger" id="btnTransferStockCancel"><b>Cancel</b></a>
+                                            <a href="#" class="btn btn-danger" id="btnTransferStockCancel"><b>Reset</b></a>
                                         </div>
                                     </div>
 
@@ -650,6 +651,106 @@
             </div>
 
         </div>
+
+        <div class="tab-pane" id="tab_7">
+            <div class="box box-primary">
+                <div class="box-body">
+                    <table class="table-blue table check-table table-bordered inventory-table fixed-table">
+                        <tbody>
+                            <tr>
+                                <td class="titlefield">Number of attached files/documents</td>
+                                <td class="text-left" colspan="3" id="lblAttachedFiles"> <label id="lblAttachedFiles" for="javascript"></label></td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row rowbox proposal-row">
+                <div class="col-md-12">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <label class="control-label">Attach a new file/document</label>
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <div class="col-md-6">
+                                        <input type="file" name="ImageFile" class="form-control" id="ImageFile" />
+                                    </div>
+                                    <div class="col-md-6 left">
+                                        <input type="button" id="btnupload" class="btn btn-danger" value="Upload" />
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="box-body">
+                            <div class="mb-35">
+                                <label class="control-label">Attached files and documents</label>
+
+                                <div class="table-responsive bank-table-wrapper">
+                                    <table id="VendorLinkedFiles" class="inventory-table table-blue table check-table table-bordered table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Document Name</th>
+                                                <th>Size</th>
+                                                <th>Date</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @*<div id="linkWarehouse">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="box-body">
+                            <label class="control-label col-sm-1">Warehouse</label>
+                            <div class="form-group col-sm-6">
+
+                                <select class="form-control" id="ddlWarehouseList"></select>
+                            </div>
+
+                            <button type="button" id="btnLinkWarehouse" class="btn btn-danger ">Add</button>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="box box-primary">
+                            <div class="box-header">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <table id="Warehousedata" class="inventory-table table-blue table check-table table-bordered table-striped dataTable" style="width:100%;">
+                                            <thead>
+                                                <tr style="text-align:center;">
+                                                    <th>Vendor Name</th>
+                                                    <th>Warehouse</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="box-footer">
+                    <div class="text-right">
+                        @Html.ActionLink("Back to List", "VendorList", null, new { @class = "btn btn-danger" })
+                    </div>
+                </div>
+            </div>*@
+        </div>
+
 
     </div>
 </div>
@@ -750,7 +851,7 @@
             }
         });
 
-
+/*
         var warehouseid = $("#hfid").val();
         $('#ddlProduct').select2({
             allowClear: true, minimumInputLength: 3, placeholder: "Search Product",
@@ -773,7 +874,7 @@
                 error: function (xhr, status, err) { }, cache: true
 
             }
-        });
+        });  */
         
         //Select 2 javascript end
 
@@ -813,6 +914,12 @@
                 },
             })
         });
+
+
+        $(".select2").select2();
+        ////getAccountingAccount();
+        setTimeout(function () { $(".select2").select2(); }, 2000);
+        ////$(".select2").select2();
 
 
     });

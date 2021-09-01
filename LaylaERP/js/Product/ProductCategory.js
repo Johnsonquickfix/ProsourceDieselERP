@@ -1,9 +1,12 @@
-﻿$("#loader").hide();
+﻿
+$(document).ready(function () {
+    $("#loader").hide();
+    $(".select2").select2();
+    getParentCategory();
+    CategoryList();
+})
 
-getParentCategory();
-CategoryList();
 function getParentCategory(id) {
-   /* var id = null ? 0 : id;*/
     var obj = { strValue1: id };
     $.ajax({
         url: "/Product/GetParentCategory/" + id,
@@ -13,12 +16,9 @@ function getParentCategory(id) {
         data: JSON.stringify(obj),
         success: function (data) {
             var opt = '<option value="-1">Please Select Parent category</option>';
-            for (var i = 0; i < data.length; i++) {
-                opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
-            }
-            $('#ddlParentCategory').html(opt);
+            for (var i = 0; i < data.length; i++) { opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>'; }
+                $('#ddlParentCategory').html(opt);
         }
-
     });
 }
 $('#btnAddNewCategory').click(function () {
@@ -32,10 +32,6 @@ $('#btnAddNewCategory').click(function () {
     var file = document.getElementById("ImageFile").files[0];
     if (CategoryName == "") { swal('alert', 'Please Enter Category Name', 'error').then(function () { swal.close(); $('#txtCategoryName').focus(); }) }
     else if (CategorySlug == "") { swal('alert', 'Please Enter Category Slug', 'error').then(function () { swal.close(); $('#txtCategorySlug').focus(); }) }
-    //else if (ParentCategory == "-1") { swal('alert', 'Please Select Parent Category', 'error').then(function () { swal.close(); $('#ddlParentCategory').focus(); }) }
-    //else if (Description == "") { swal('alert', 'Please Enter Description', 'error').then(function () { swal.close(); $('#txtDescription').focus(); }) }
-    //else if (DisplayType == "-1") { swal('alert', 'Please Select DisplayType', 'error').then(function () { swal.close(); $('#ddlDisplayType').focus(); }) }
-
     else {
         var obj = new FormData();
         obj.append("ImageFile", file);
@@ -46,8 +42,6 @@ $('#btnAddNewCategory').click(function () {
         obj.append("description", Description);
         obj.append("display_type", DisplayType);
         obj.append("Meta_id", Meta_id);
-
-
         $.ajax({
             url: '/Product/AddProductCategory/', dataType: 'json', type: 'Post',
             contentType: "application/json; charset=utf-8",
@@ -88,7 +82,7 @@ function CategoryList() {
     $('#ProductCategory').DataTable({
         columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true,
-        sPaginationType: "full_numbers", searching: false, ordering: true, lengthChange: true, "paging": true,
+        sPaginationType: "full_numbers", searching: false, ordering: false, lengthChange: true, "paging": true,
         bAutoWidth: false, scrollX: false,
         lengthMenu: [[10, 20, 50], [10, 20, 50]],
         sAjaxSource: "/Product/ProductCategoryList",
@@ -121,17 +115,23 @@ function CategoryList() {
             {
                 "data": "ImagePath",
                 "render": function (data) {
-                    if (data == null || data == "") {
-                        data = "default.png";
-                    }
-                    else {
-                        data = data;
-                    }
-                    console.log(data);
-                    return '<img src="../../Content/ProductCategory/' + data + '"  width="50" height="50"/>';
+                  url = "../../Content/ProductCategory/" + data + "";
+                    var result = checkFileExist(url);
+                    if (result == true) {return '<img src=' + url + ' width="50" height="50"/>';}
+                    else if (data == null || data == "") {return '<img src="../../Content/ProductCategory/default.png" width="50" height="50"/>';}
+                    else { return '<img src="../../Content/ProductCategory/default.png" width="50" height="50"/>'; }
                 }
             },
-            { data: 'name', title: 'Name', sWidth: "25%" },
+            {
+                data: 'name', title: 'Name', sWidth: "25%",
+                'render': function (id, type, full, meta) {
+                  /*  return  id;*/
+                    if (full.parent == 0)
+                        return '<b>' + id + '</b>';
+                    else
+                        return ' ' + id + '';
+                }
+            },
             { data: 'description', title: 'Description', sWidth: "25%" },
             { data: 'slug', title: 'Slug', sWidth: "25%" },
             { data: 'count', title: 'Count', sWidth: "25%" },
@@ -244,3 +244,15 @@ $('#btnReset').click(function () {
     $("#ProdCat option[value='-1']").attr('selected', true)
     $("#ddlDisplayType").val("");
 })
+
+function checkFileExist(urlToFile) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('HEAD', urlToFile, false);
+    xhr.send();
+
+    if (xhr.status == "404") {
+        return false;
+    } else {
+        return true;
+    }
+}

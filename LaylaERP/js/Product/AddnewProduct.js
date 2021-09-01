@@ -1,6 +1,7 @@
 ﻿$(document).ready(function () {
     $("#loader").hide();
-
+    //console.log(location);
+    //location.href = 'ListProduct';
     var url = window.location.pathname;
     var id = url.substring(url.lastIndexOf('/') + 1);
     $('li:contains(Variations)').hide();
@@ -236,18 +237,18 @@
                         //varHTML += '    </div>';
                         //varHTML += '</div>';
                         varHTML += '<div class="form-group d-flex mt-25">';
-                        varHTML += '    <div class="col-md-6"><label class="control-label">Regular Price($)</label><input type="text" name="txtregularvar" class="form-control" placeholder="Variation price *"></div>';
-                        varHTML += '<div class="col-md-6"><label class="control-label">Sale Price($)</label><input type="text" name="txtSalepricevariation" class="form-control"></div>';
+                        varHTML += '    <div class="col-md-6"><label class="control-label">Regular Price($)</label><input type="text" name="txtregularvar" value="0"  class="form-control" placeholder="Variation price *"></div>';
+                        varHTML += '<div class="col-md-6"><label class="control-label">Sale Price($)</label><input type="text" value="0"  name="txtSalepricevariation" class="form-control"></div>';
                         varHTML += '</div>';
                         varHTML += '<div id="divstock">';
-                        varHTML += '<div class="form-group d-flex mt-25"><div class="col-md-6"><label class="control-label">Stock quantity</label><input type="text" name="txtStockquantityvariation" class="form-control"></div><div class="col-md-6"><label class="control-label">Allow backorders?</label> <select class="txtallowbackordersvariation form-control"> <option value="no" selected="selected">Do not allow</option> <option value="notify">Allow, but notify customer</option><option value="yes">Allow</option></select> </div>';
+                        varHTML += '<div class="form-group d-flex mt-25"><div class="col-md-6"><label class="control-label">Stock quantity</label><input type="text" name="txtStockquantityvariation" value="0"  class="form-control"></div><div class="col-md-6"><label class="control-label">Allow backorders?</label> <select class="txtallowbackordersvariation form-control"> <option value="no" selected="selected">Do not allow</option> <option value="notify">Allow, but notify customer</option><option value="yes">Allow</option></select> </div>';
                         varHTML += '</div> <div id="divaria">';
-                        varHTML += '<div class="form-group d-flex"><div class="col-md-6"><label class="control-label">Weight (lbs)</label><input type="text" name="txtweightvariation" class="form-control" placeholder="50" ></div><div class="col-md-6"><label class="control-label">Dimensions (L x W x H) (in)</label><div class="weight-box"><div class="col-md-4"><input type="text" name="txtLvariation" class="form-control" placeholder="60"></div><div class="col-md-4"><input type="text" name="txtWvariation" class="form-control" placeholder="60"></div><div class="col-md-4"> <input type="text" name="txtHvariation" class="form-control" placeholder="60"></div></div></div></div>';
+                        varHTML += '<div class="form-group d-flex"><div class="col-md-6"><label class="control-label">Weight (lbs)</label><input type="text" value="0"  name="txtweightvariation" class="form-control" placeholder="50" ></div><div class="col-md-6"><label class="control-label">Dimensions (L x W x H) (in)</label><div class="weight-box"><div class="col-md-4"><input type="text" value="0"  name="txtLvariation" class="form-control" placeholder="60"></div><div class="col-md-4"><input type="text" value="0"  name="txtWvariation" class="form-control" placeholder="60"></div><div class="col-md-4"> <input type="text" value="0"  name="txtHvariation" class="form-control" placeholder="60"></div></div></div></div>';
                         varHTML += '</div>';
-                        varHTML += '    <div class="form-group d-flex">';
+                        varHTML += '    <div class="form-group d-flex mt-25">';
                         /*varHTML += '<div class="col-md-12"><label class="control-label">Shipping Class</label><select class="txtshipvariation form-control"><option value="-1">shipping class</option><option class="level-0" value="200">Adjustabe Base (Split King)</option> <option class="level-0" value="246">Adjustable Base (Full)</option> <option class="level-0" value="201">Adjustable Base (King)</option><option class="level-0" value="199">Adjustable Base (Queen)</option>  <option class="level-0" value="198">Adjustable Base (Twin XL)</option><option class="level-0" value="71">Bed Frame</option><option class="level-0" value="114">Blanket</option><option class="level-0" value="30">Foundation</option> <option class="level-0" value="50">Free Shipping</option> <option class="level-0" value="263">Hybrid Cal King</option> <option class="level-0" value="260">Hybrid Full</option> <option class="level-0" value="262">Hybrid King</option> <option class="level-0" value="261">Hybrid Queen</option> <option class="level-0" value="258">Hybrid Twin</option> <option class="level-0" value="259">Hybrid Twin XL</option> <option class="level-0" value="257">Mattress Cal King</option>  <option class="level-0" value="254">Mattress Full</option><option class="level-0" value="256">Mattress King</option> <option class="level-0" value="196">Mattress Protector</option> <option class="level-0" value="255">Mattress Queen</option> <option class="level-0" value="252">Mattress Twin</option>    <option class="level-0" value="253">Mattress Twin XL</option>  <option class="level-0" value="195">Memory Foam Pillow</option><option class="level-0" value="52">Pillow</option>  <option class="level-0" value="202">Platform Bed</option> <option class="level-0" value="107">Sheets</option> <option class="level-0" value="87">Topper</option> </select></div>';*/
                         varHTML += '<div class="col-md-12"><label class="control-label">Shipping Class</label></div>';
-                        varHTML += '<select class="txtshipvariation form-control select2"><option value="-1">shipping class</option>';
+                        varHTML += '<select class="txtshipvariation form-control select2"><option value="-1">Select shipping class</option>';
                         for (var j = 0; j < _shipping_class.length; j++) {                           
                                 varHTML += '<option value="' + _shipping_class[j].rowid + '"> ' + _shipping_class[j].name + '</option>';
                         };
@@ -270,7 +271,7 @@
                         varHTML += '</div>';
                         varHTML += '</div>';
                         $("#product_variations").append(varHTML);
-
+                        $(".select2").select2();
                         //let varHTML = '<div class="form-group d-flex" id="tr_' + i + '"> <div class="col-sm-12"> <div class="box-header with-border user-top-section top-with-select"><div class="tablenav top tablenav-top2"><input type="text" class="nmvariationid" id="hfvariationid" value="' + IDPost + '" /><div class="alignleft actions bulkactions "><table class="data-contacts1-js table table-striped" > <tbody> </tbody>  </table></div><div class="a-float-right" id="angle-box"> <span><i class="fa fa-angle-down" aria-hidden="true"></i></span>  </div> </div> </div>    <div class="varient-box"> <div class="form-group d-flex"><div class="col-md-6"></div> <div class="col-md-6"><label class="control-label">SKU</label><input id="varsku" type="text" class="skucval" /></div> </div><div class="form-group d-flex virtual-checks"><div class="col-md-12"><div class="form-check-input"><input type="checkbox" class="chkproducttypevir" id="virtualcheck" value=""><label>Virtual:</label></div><div class="form-check-input"><input type="checkbox" class="chkproducttypestc" id="stockcheck"><label>Manage Stock?</label></div></div> </div><div class="form-group d-flex mt-25"><div class="col-md-6"><label class="control-label">Regular Price($)</label><input type="text"  name="txtregularvar" class="form-control" placeholder="Variation price *" /></div><div class="col-md-6"><label class="control-label">Sale Price($)</label><input type="text" name="txtSalepricevariation" class="form-control" /></div></div><div id="divstock"><div class="form-group d-flex mt-25"><div class="col-md-6"><label class="control-label">Stock quantity</label><input type="text" name="txtStockquantityvariation" class="form-control"></div><div class="form-group d-flex mt-25"> <label class="col-sm-6 control-label">Allow backorders?</label> <select class="txtallowbackordersvariation"> <option value="no" selected="selected">Do not allow</option> <option value="notify">Allow, but notify customer</option><option value="yes">Allow</option></select> </div> </div> </div> <div id="divaria"> <div class="form-group d-flex"><div class="col-md-6"><label class="control-label">Weight (lbs)</label><input type="text" name="txtweightvariation" class="form-control" placeholder="50" /></div><div class="col-md-6"><label class="control-label">Dimensions (L x W x H) (in)</label><div class="weight-box"><div class="col-md-4"><input type="text" name="txtLvariation" class="form-control" placeholder="60" /></div><div class="col-md-4"><input type="text" name="txtWvariation" class="form-control" placeholder="60" /></div><div class="col-md-4"> <input type="text" name="txtHvariation" class="form-control" placeholder="60" /></div></div></div></div></div><div class="form-group d-flex"><div class="col-md-12"><label class="control-label">Shipping Class</label><select class="txtshipvariation"> <option value="-1">shipping class</option><option class="level-0" value="200">Adjustabe Base (Split King)</option> <option class="level-0" value="246">Adjustable Base (Full)</option> <option class="level-0" value="201">Adjustable Base (King)</option><option class="level-0" value="199">Adjustable Base (Queen)</option>  <option class="level-0" value="198">Adjustable Base (Twin XL)</option><option class="level-0" value="71">Bed Frame</option><option class="level-0" value="114">Blanket</option><option class="level-0" value="30">Foundation</option> <option class="level-0" value="50">Free Shipping</option> <option class="level-0" value="263">Hybrid Cal King</option> <option class="level-0" value="260">Hybrid Full</option> <option class="level-0" value="262">Hybrid King</option> <option class="level-0" value="261">Hybrid Queen</option> <option class="level-0" value="258">Hybrid Twin</option> <option class="level-0" value="259">Hybrid Twin XL</option> <option class="level-0" value="257">Mattress Cal King</option>  <option class="level-0" value="254">Mattress Full</option><option class="level-0" value="256">Mattress King</option> <option class="level-0" value="196">Mattress Protector</option> <option class="level-0" value="255">Mattress Queen</option> <option class="level-0" value="252">Mattress Twin</option>    <option class="level-0" value="253">Mattress Twin XL</option>  <option class="level-0" value="195">Memory Foam Pillow</option><option class="level-0" value="52">Pillow</option>  <option class="level-0" value="202">Platform Bed</option> <option class="level-0" value="107">Sheets</option> <option class="level-0" value="87">Topper</option> </select></div> </div><div class="form-group d-flex"><div class="col-md-12"><label class="control-label">Tax Class</label><select class="txttaxcassvariation" ><option value="standard" selected="selected">Standard</option> <option value="reduced-rate">Reduced rate</option> <option value="zero-rate">Zero rate</option> </select></div></div><div class="form-group d-flex"><div class="col-md-12"><label class="control-label note-label"><i>Note: Setting a product as note taxable or having the "Zero rate".</i></label></div></div><div class="form-group d-flex"><div class="col-md-12"><label class="control-label">Description</label><textarea class="txtdescriptionvariation"></textarea></div></div><div class="box-footer text-right"></div></div> </div></div>';
                         //$("#product_variations").append(varHTML);
                     }
@@ -297,6 +298,7 @@
 
 
     $("#btnSavevariations").click(function (e) {
+        debugger
         let _attxml = [];
         let parentID = parseInt($("#hfUpdatedID").val()) || parseInt($("#hfid").val());
         // console.log(parentID);
@@ -449,11 +451,15 @@
         //        );
         //    }); _ItemProduct
 
-        //  console.log(_ItemProduct);
+       // console.log(_attxml);
+       // console.log(_ItemProduct);
+       // console.log(_PostTitleProduct);
+      //  console.log(_PriceProduct);
+         
         var obj = {
             ProductPostMeta: _attxml, ProductPostItemMeta: _ItemProduct, ProductPostPostMeta: _PostTitleProduct, ProductPostPriceMeta: _PriceProduct
         }
-
+       // console.log(obj);
         if (_attxml != '') {
             //  NOW CALL THE WEB METHOD WITH THE PARAMETERS USING AJAX.
             $.ajax({
@@ -632,12 +638,16 @@ function AddProduct() {
     upsellsval = upsells;
     Crosssellsval = Crosssells;
     categorydataval = categorydata;
+   // console.log(categorydataval);
 
     if (productname == "") {
         swal('Alert', 'Please Enter Product', 'error').then(function () { swal.close(); $('#txtProductName').focus(); });
     }
     else if (regularprice == "" && ProductTypeval != "4") {
         swal('Alert', 'Please Enter Regular price', 'error').then(function () { swal.close(); $('#txtregularprice').focus(); });
+    }
+    else if (categorydataval == "" ) {
+        swal('Alert', 'Please Select Category', 'error').then(function () { swal.close(); $('#chkproducttype').focus(); });
     }
     else {
         var obj = {
@@ -870,7 +880,7 @@ function GetExProdctByID(ProdctID) {
 }
 
 function GetAttributesID(Attributes) {
-    // console.log(Attributes);
+   // console.log(Attributes);
     if (Attributes != '') {
         var itxtCnt = 0;
         var ID = Attributes;
@@ -1023,14 +1033,14 @@ function GetProductvariationID(ProductID) {
                 varHTML += '    <div class="form-group d-flex">';
                 /*   varHTML += '        <div class="col-md-12"><label class="control-label">Shipping Class</label><select class="txtshipvariation form-control" id="ddlsv_' + data[i].id + '"><option value="-1">shipping class</option><option class="level-0" value="200">Adjustabe Base (Split King)</option> <option class="level-0" value="246">Adjustable Base (Full)</option> <option class="level-0" value="201">Adjustable Base (King)</option><option class="level-0" value="199">Adjustable Base (Queen)</option>  <option class="level-0" value="198">Adjustable Base (Twin XL)</option><option class="level-0" value="71">Bed Frame</option><option class="level-0" value="114">Blanket</option><option class="level-0" value="30">Foundation</option> <option class="level-0" value="50">Free Shipping</option> <option class="level-0" value="263">Hybrid Cal King</option> <option class="level-0" value="260">Hybrid Full</option> <option class="level-0" value="262">Hybrid King</option> <option class="level-0" value="261">Hybrid Queen</option> <option class="level-0" value="258">Hybrid Twin</option> <option class="level-0" value="259">Hybrid Twin XL</option> <option class="level-0" value="257">Mattress Cal King</option>  <option class="level-0" value="254">Mattress Full</option><option class="level-0" value="256">Mattress King</option> <option class="level-0" value="196">Mattress Protector</option> <option class="level-0" value="255">Mattress Queen</option> <option class="level-0" value="252">Mattress Twin</option>    <option class="level-0" value="253">Mattress Twin XL</option>  <option class="level-0" value="195">Memory Foam Pillow</option><option class="level-0" value="52">Pillow</option>  <option class="level-0" value="202">Platform Bed</option> <option class="level-0" value="107">Sheets</option> <option class="level-0" value="87">Topper</option> </select></div>';*/
                 varHTML += '        <div class="col-md-12"><label class="control-label">Shipping Class</label>';
-                varHTML += '<select class="txtshipvariation form-control select2" id="ddlsv_' + data[i].id + '"><option value="-1">shipping class</option>';
+                varHTML += '<select class="txtshipvariation form-control select2" id="ddlsv_' + data[i].id + '"><option value="-1">Select shipping class</option>';
                 for (var j = 0; j < _shipping_class.length; j++) {
                     if (data[i].shippingclass == _shipping_class[j].rowid)
                         varHTML += '<option value="' + _shipping_class[j].rowid + '" selected> ' + _shipping_class[j].name + '</option>';
                     else
                         varHTML += '<option value="' + _shipping_class[j].rowid + '"> ' + _shipping_class[j].name + '</option>';
                 };
-                varHTML += '</select ></div > ';
+                varHTML += '</select></div> ';
                 varHTML += '    </div>';
                 varHTML += '    <div class="form-group d-flex">';
                 varHTML += '        <div class="col-md-12"><label class="control-label">Tax Class</label><select class="txttaxcassvariation form-control" id="ddlcsv_' + data[i].id + '"><option value="standard">Standard</option> <option value="reduced-rate">Reduced rate</option> <option value="zero-rate">Zero rate</option> </select></div>';

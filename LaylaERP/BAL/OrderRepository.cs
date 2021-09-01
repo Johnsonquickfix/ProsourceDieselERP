@@ -414,7 +414,7 @@
             int result = 0;
             try
             {
-                string str_oiid = string.Join(",", model.OrderProducts.Select(x => x.order_item_id.ToString()).ToArray()) + "," + string.Join(",", model.OrderOtherItems.Select(x => x.order_item_id.ToString()).ToArray()) + "," + string.Join(",", model.OrderTaxItems.Select(x => x.order_item_id.ToString()).ToArray());
+                string str_oiid = string.Join(",", model.OrderProducts.Where(f => f.quantity > 0).Select(x => x.order_item_id.ToString()).ToArray()) + "," + string.Join(",", model.OrderOtherItems.Select(x => x.order_item_id.ToString()).ToArray()) + "," + string.Join(",", model.OrderTaxItems.Select(x => x.order_item_id.ToString()).ToArray());
                 DateTime cDate = CommonDate.CurrentDate(), cUTFDate = CommonDate.UtcDate();
                 /// step 1 : wp_wc_order_stats
                 StringBuilder strSql = new StringBuilder(string.Format("update wp_wc_order_stats set num_items_sold='{0}',total_sales='{1}',tax_total='{2}',shipping_total='{3}',net_total='{4}',status='{5}',customer_id='{6}' where order_id='{7}';", model.OrderPostStatus.num_items_sold, model.OrderPostStatus.total_sales,
@@ -1195,7 +1195,10 @@
                             productsModel.sale_price = decimal.Parse(sdr["sale_price"].ToString().Trim());
                         else
                             productsModel.sale_price = 0;
-                        productsModel.reg_price = productsModel.price / productsModel.quantity;
+                        if (productsModel.quantity > 0)
+                            productsModel.reg_price = productsModel.price / productsModel.quantity;
+                        else
+                            productsModel.reg_price = 0;
                         productsModel.total = productsModel.price;
 
                         if (sdr["line_total"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["line_total"].ToString().Trim()))
@@ -1314,7 +1317,7 @@
                 };
                 string strSQl = "select wp_c.comment_ID,DATE_FORMAT(wp_c.comment_date, '%M %d, %Y at %H:%i') comment_date,wp_c.comment_content,wp_cm.meta_value is_customer_note from wp_comments wp_c"
                             + " left outer join wp_commentmeta wp_cm on wp_cm.comment_id = wp_c.comment_ID and wp_cm.meta_key = 'is_customer_note'"
-                            + " where comment_type = 'order_note' and comment_post_ID = @order_id order by wp_c.comment_ID desc;";
+                            + " where comment_type = 'order_note' and comment_approved = '1' and comment_post_ID = @order_id order by wp_c.comment_ID desc;";
                 DT = SQLHelper.ExecuteDataTable(strSQl, parameters);
             }
             catch (Exception ex)
@@ -1356,7 +1359,8 @@
             int result = 0;
             try
             {
-                string strSQL = "delete from wp_comments where comment_ID = @comment_ID;";
+                //string strSQL = "delete from wp_comments where comment_ID = @comment_ID;";
+                string strSQL = "update wp_comments set comment_approved = '0' where comment_ID = @comment_ID;";
                 MySqlParameter[] parameters =
                 {
                     new MySqlParameter("@comment_ID", obj.comment_ID)
@@ -1619,7 +1623,7 @@
                         else
                             strSql += " ; ";
                     }
-                    result = SQLHelper.ExecuteNonQuery(strSql.ToString());
+                    result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
                 }
             }
             catch (Exception Ex) { throw Ex; }

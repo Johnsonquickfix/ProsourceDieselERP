@@ -5,7 +5,9 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Dynamic;
+using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 
@@ -429,32 +431,33 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(JSONresult, 0);
         }
+
         [HttpPost]
         public JsonResult GetProductForWarehouse(int warehouseid, SearchModel model)
         {
-            //DataTable dt = new DataTable();
-            //dt = WarehouseRepository.GetProductForWarehouse(warehouseid);
-            //List<SelectListItem> warehouselist = new List<SelectListItem>();
-            //for (int i = 0; i < dt.Rows.Count; i++)
-            //{
-            //    warehouselist.Add(new SelectListItem
-            //    {
-            //        Value = dt.Rows[i]["pr_id"].ToString(),
-            //        Text = dt.Rows[i]["post_title"].ToString()
-
-            //    });
-            //}
-            //return Json(warehouselist, JsonRequestBehavior.AllowGet);
-
-            string JSONresult = string.Empty;
-            try
+            DataTable dt = new DataTable();
+            dt = WarehouseRepository.GetProductForWarehouse(warehouseid);
+            List<SelectListItem> warehouselist = new List<SelectListItem>();
+            for (int i = 0; i < dt.Rows.Count; i++)
             {
-                DataTable DT = WarehouseRepository.GetProductForWarehouse(warehouseid, model.strValue5);
-                JSONresult = JsonConvert.SerializeObject(DT);
+                warehouselist.Add(new SelectListItem
+                {
+                    Value = dt.Rows[i]["pr_id"].ToString(),
+                    Text = dt.Rows[i]["post_title"].ToString()
+
+                });
             }
-            catch { }
-            return Json(JSONresult, 0);
-            
+            return Json(warehouselist, JsonRequestBehavior.AllowGet);
+
+            //string JSONresult = string.Empty;
+            //try
+            //{
+            //    DataTable DT = WarehouseRepository.GetProductForWarehouse(warehouseid, model.strValue5);
+            //    JSONresult = JsonConvert.SerializeObject(DT);
+            //}
+            //catch { }
+            //return Json(JSONresult, 0);
+
         }
 
         public JsonResult GetProductStock(int warehouseid, int productid)
@@ -508,6 +511,111 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(JSONresult, 0);
 
+        }
+
+
+        [HttpPost]
+        public ActionResult FileUpload(int WarehouseID, HttpPostedFileBase ImageFile)
+        {
+            try
+            {
+                WarehouseModel model = new WarehouseModel();
+                if (ImageFile != null)
+                {
+                    string FileName = Path.GetFileNameWithoutExtension(ImageFile.FileName);
+                    FileName = Regex.Replace(FileName, @"\s+", "");
+                    string size = (ImageFile.ContentLength / 1024).ToString();
+                    string FileExtension = Path.GetExtension(ImageFile.FileName);
+                    if (FileExtension == ".xlsx" || FileExtension == ".xls" || FileExtension == ".pdf" || FileExtension == ".doc" || FileExtension == ".docx" || FileExtension == ".png" || FileExtension == ".jpg" || FileExtension == ".jpeg")
+                    {
+                        FileName = FileName.Trim() + FileExtension;
+                        string FileNameForsave = FileName;
+                        DataTable dt = WarehouseRepository.GetfileCountdata(WarehouseID, FileName);
+                        if (dt.Rows.Count > 0)
+                        {
+                            return Json(new { status = false, message = "File already exist in table", url = "" }, 0);
+                        }
+                        else
+                        {
+                            string UploadPath = Path.Combine(Server.MapPath("~/Content/WarehouseLinkedFiles"));
+                            UploadPath = UploadPath + "\\";
+                            model.ImagePath = UploadPath + FileName;
+                            var ImagePath = "~/Content/WarehouseLinkedFiles/" + FileName;
+                            ImageFile.SaveAs(model.ImagePath);
+                            int resultOne = WarehouseRepository.FileUpload(WarehouseID, FileName, ImagePath, FileExtension, size);
+                            if (resultOne > 0)
+                            {
+                                return Json(new { status = true, message = "File Upload successfully!!", url = "" }, 0);
+                            }
+                            else
+                            {
+                                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        return Json(new { status = false, message = "File Type " + FileExtension + " Not allowed", url = "" }, 0);
+                    }
+                }
+                else
+                {
+                    return Json(new { status = false, message = "Please attach a document", url = "" }, 0);
+                }
+            }
+            catch (Exception)
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+
+        }
+        [HttpPost]
+        public JsonResult GetBankLinkedFiles(ThirdPartyModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                long id = model.rowid;
+                string urid = "";
+                if (model.user_status != "")
+                    urid = model.user_status;
+                string searchid = model.Search;
+                ViewBag.AttachedFiles = "0";
+                DataTable dt = WarehouseRepository.GetBankLinkedFiles(id, urid, searchid, model.PageNo, model.PageSize, out TotalRecord, model.SortCol, model.SortDir);
+                result = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+        }
+
+        public JsonResult DeleteBankLinkedFiles(WarehouseModel model)
+        {
+            if (model.rowid > 0)
+            {
+                int ID = WarehouseRepository.DeleteBankLinkedFiles(model);
+                if (ID > 0)
+                    return Json(new { status = true, message = "Warehouse Linked Files has been deleted successfully!!", url = "", id = ID }, 0);
+                else
+                    return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Warehouse info not Found", url = "", id = 0 }, 0);
+            }
+        }
+
+        public JsonResult GetWarehouseByProduct(int productid)
+        {
+            DataSet ds = WarehouseRepository.GetWarehouseByProduct(productid);
+            List<SelectListItem> warehouselist = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+
+                warehouselist.Add(new SelectListItem { Text = dr["ref"].ToString(), Value = dr["rowid"].ToString() });
+
+            }
+            return Json(warehouselist, JsonRequestBehavior.AllowGet);
         }
 
     }

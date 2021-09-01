@@ -190,5 +190,101 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
+
+        public static DataTable GetfileCountdata(int BankID, string FileName)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                string strSQl = "SELECT FileName from erp_BankLinkedFiles"
+                                + " WHERE BankID in (" + BankID + ") and FileName = '" + FileName + "' ";
+                dt = SQLHelper.ExecuteDataTable(strSQl);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static int FileUpload(int BankID, string FileName, string FilePath, string FileType, string size)
+        {
+            try
+            {
+                string strsql = "";
+                strsql = "insert into erp_BankLinkedFiles(BankID, FileName, FileSize, FileType, FilePath) values(@BankID, @FileName, @FileSize, @FileType, @FilePath); SELECT LAST_INSERT_ID();";
+                
+                MySqlParameter[] para =
+               {
+                    new MySqlParameter("@BankID", BankID),
+                    new MySqlParameter("@FileName", FileName),
+                    new MySqlParameter("@FileSize", size),
+                    new MySqlParameter("@FileType", FileType),
+                    new MySqlParameter("@FilePath", FilePath),
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+
+
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+
+        public static DataTable GetBankLinkedFiles(long id, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                string strWhr = string.Empty;
+
+                string strSql = "select ID,BankID,FileName,concat(FileSize,' KB') FileSize,FileType,FilePath,DATE_FORMAT(CreatedDate, '%m-%d-%Y') Date from erp_BankLinkedFiles where BankID='" + id + "' and 1=1 ";
+                if (!string.IsNullOrEmpty(searchid))
+                {
+                    strWhr += " and (FileName like '%" + searchid + "%' OR FileSize='%" + searchid + "%' OR Date='%" + searchid + "%' OR Date like '%" + searchid + "%')";
+                }
+                if (userstatus != null)
+                {
+                    strWhr += " and (FileName='" + userstatus + "') ";
+                }
+                strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
+
+                strSql += "; SELECT ceil(Count(ID)/" + pagesize.ToString() + ") TotalPage,Count(ID) TotalRecord from erp_BankLinkedFiles  WHERE BankID='" + id + "' and 1 = 1 " + strWhr.ToString();
+
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dt = ds.Tables[0];
+                if (ds.Tables[1].Rows.Count > 0)
+                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static int DeleteBankLinkedFiles(BankModel model)
+        {
+            try
+            {
+                string strsql = "";
+                strsql = "DELETE from erp_BankLinkedFiles where ID=@BankLinkedFilesID and BankID=@BankID;";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@BankID", model.rowid),
+                    new MySqlParameter("@BankLinkedFilesID", model.BankLinkedID),
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
     }
 }

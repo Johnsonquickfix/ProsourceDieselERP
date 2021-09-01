@@ -53,7 +53,7 @@ function ProductStockGrid() {
     let obj = { strValue1: $("#txtsku").val().trim(), strValue2: (ctid > 0 ? ctid : ''), strValue3: (pid > 0 ? pid : '') }; console.log(obj);
     $('#dtdata').DataTable({
         oSearch: { "sSearch": '' }, order: [[0, "asc"]],
-        dom: 'lBftip', buttons: [{ extend: 'excelHtml5', title: 'Product Stock Report' }, { extend: 'csvHtml5', title: 'Product Stock Report' }],
+        dom: 'lBftip', buttons: [{ extend: 'excelHtml5', title: 'Product Inhand Inventory Report' }, { extend: 'csvHtml5', title: 'Product Inhand Inventory Report' }],
         language: {
             lengthMenu: "_MENU_ per page",
             zeroRecords: "Sorry no records found",

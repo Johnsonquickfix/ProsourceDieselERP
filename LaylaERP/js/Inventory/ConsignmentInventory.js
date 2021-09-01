@@ -83,12 +83,12 @@ function ProductStockGrid() {
                 }
             },
             { data: 'sku', title: 'SKU', sWidth: "10%" },
-            { data: 'post_title', title: 'Product Name', sWidth: "30%" },
-            { data: 'stock', title: 'In Stock', sWidth: "10%", className: "text-right", render: $.fn.dataTable.render.number('', '.', 0, '') },
-            { data: 'regular_price', title: 'Units in POs', sWidth: "15%", className: "text-right", render: $.fn.dataTable.render.number('', '.', 2, '$') },
-            { data: 'sale_price', title: 'Sale Units', sWidth: "15%", className: "text-right", render: $.fn.dataTable.render.number('', '.', 2, '$') },
-            { data: 'sale_price', title: 'Available Units', sWidth: "15%", className: "text-right", render: $.fn.dataTable.render.number('', '.', 2, '$') },
-            { data: 'sale_price', title: 'Damage Units', sWidth: "15%", className: "text-right", render: $.fn.dataTable.render.number('', '.', 2, '$') },
+            { data: 'post_title', title: 'Product Name', sWidth: "20%" },
+            { data: 'stock', title: 'Units In Stock', sWidth: "10%", className: "text-right", render: $.fn.dataTable.render.number('', '.', 0, '') },
+            { data: 'UnitsinPO', title: 'Units in POs', sWidth: "10%", className: "text-right", render: $.fn.dataTable.render.number('', '.', 0, '') },
+            { data: 'SaleUnits', title: 'Sale Units', sWidth: "10%", className: "text-right", render: $.fn.dataTable.render.number('', '.', 0, '') },
+            { data: 'Damage', title: 'Damage Units', sWidth: "10%", className: "text-right", render: $.fn.dataTable.render.number('', '.', 0, '') },
+            { data: 'available', title: 'Available Units', sWidth: "10%", className: "text-right", render: $.fn.dataTable.render.number('', '.', 0, '') },
         ],
         columnDefs: [{ targets: [0], visible: false, searchable: false }]
     });

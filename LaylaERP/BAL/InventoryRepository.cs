@@ -109,11 +109,15 @@ namespace LaylaERP.BAL
                     strWhr += " and (case when p.post_parent = 0 then p.id else p.post_parent end) = '" + productid + "'";
                 }
 
-                string strSql = "select p.id,p.post_type,p.post_title,max(case when p.id = s.post_id and s.meta_key = '_sku' then s.meta_value else '' end) sku,"
-                            + " max(case when p.id = s.post_id and s.meta_key = '_regular_price' then s.meta_value else '' end) regular_price,"
-                            + " max(case when p.id = s.post_id and s.meta_key = '_price' then s.meta_value else '' end) sale_price,"
-                            + " (select coalesce(sum(case when pwr.flag = 'R' then quantity else -quantity end),0) from product_stock_register pwr where pwr.product_id = p.id) stock,"
-                            + " (case when p.post_parent = 0 then p.id else p.post_parent end) p_id,p.post_parent,p.post_status"
+                string strSql = "select p.id,p.post_type,p.post_title,max(case when p.id = s.post_id and s.meta_key = '_sku' then s.meta_value else '' end) sku, " +
+                    "max(case when p.id = s.post_id and s.meta_key = '_regular_price' then s.meta_value else '' end) regular_price, " +
+                    "max(case when p.id = s.post_id and s.meta_key = '_price' then s.meta_value else '' end) sale_price, " +
+                    "(select coalesce(sum(case when pwr.flag = 'R' then quantity end), 0) from product_stock_register pwr where pwr.product_id = p.id) stock, " +
+                    "(select (coalesce(sum(case when pwr.flag = 'R' then quantity end),0) + coalesce(sum(case when pwr.flag = 'O' then quantity end),0) - coalesce(sum(case when pwr.flag = 'I' then quantity end),0)) from product_stock_register pwr where pwr.product_id = p.id) available, " +
+                    "(select coalesce(sum(case when pwr.flag = 'O' then quantity end), 0) from product_stock_register pwr where pwr.product_id = p.id) UnitsinPO," +
+                    "(select coalesce(sum(case when pwr.flag = 'I' then quantity end), 0) from product_stock_register pwr where pwr.product_id = p.id) SaleUnits, " +
+                    "(select coalesce(sum(case when pwr.flag = 'D' then quantity end),0) from product_stock_register pwr where pwr.product_id = p.id) Damage, " +
+                    "(case when p.post_parent = 0 then p.id else p.post_parent end) p_id,p.post_parent,p.post_status"
                             + " FROM wp_posts as p left join wp_postmeta as s on p.id = s.post_id"
                             + " where p.post_type in ('product', 'product_variation') and p.post_status != 'draft' " + strWhr
                             + " group by p.id " + strHav + " order by p_id";
@@ -143,7 +147,8 @@ namespace LaylaERP.BAL
                 {
                     new MySqlParameter("@product_id", product_id)
                 };
-                string strSql = "select ref,coalesce(sum(case when pwr.flag = 'R' then quantity else -quantity end),0) stock from product_stock_register pwr inner join wp_warehouse wr on wr.rowid = pwr.warehouse_id where product_id = @product_id group by pwr.warehouse_id";
+                //string strSql = "select ref,coalesce(sum(case when pwr.flag = 'R' then quantity else -quantity end),0) stock from product_stock_register pwr inner join wp_warehouse wr on wr.rowid = pwr.warehouse_id where product_id = @product_id group by pwr.warehouse_id";
+                string strSql = "select ref,(coalesce(sum(case when pwr.flag = 'R' then quantity end),0) - coalesce(sum(case when pwr.flag = 'I' then quantity end),0)) stock from product_stock_register pwr inner join wp_warehouse wr on wr.rowid = pwr.warehouse_id where product_id = @product_id group by pwr.warehouse_id";
                 
                 dt = SQLHelper.ExecuteDataTable(strSql, parameters);
             }

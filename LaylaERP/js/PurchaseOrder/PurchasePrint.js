@@ -45,121 +45,155 @@ function printinvoice(id, result, is_mail, is_inv) {
 
     let startingNumber = parseFloat(data['po'][0].PaymentTerm.match(/^-?\d+\.\d+|^-?\d+\b|^\d+(?=\w)/g)) || 0.00;
     var myHtml = '';
-    myHtml += '<div class="invoice">';
-    myHtml += '<style>div: after,div: before{display:block;clear:both;content:" "}body{color:#4f4f4f}.payerGuestCentered{margin:auto;width:995px}.invoiceDetails.invoiceInfo{width:auto;position:relative}.invoiceDetails.folded - corner{display:none;width:0;height:0;position:absolute;top:-2px;right:-2px;background:#e6e6e6}[class^=col-xs]{position:relative;float:left}.col - xs - 12{width:100 %}.col - xs - 5{width:41.66666667 %}.col - xs - 7{width:58.33333333 %}.col - xs - 6{width:50 %}.invoiceDetails.pageCurl{direction:rtl;color:#9da3a6}.invoiceDetails.invsummary.paySummary{border:1px solid #ddd;padding:15px}.invoice h1,.invoice h2,.invoice h3,.invoice h4,.invoice h5,.invoice h6{color:#2c2e2f}.invoiceDetails #itemDetails{margin:0}.invoiceDetails.itemdetailsheader{margin:0;border:1px solid #ddd}.invoiceDetails.itemdetailsheader.itemquantity{width:10 %}.invoiceDetails.itemdetailsheader.itemprice{width:15 %}.invoiceDetails.itemdetailsheader.itemamount{width:15 %}.invoiceDetails.itemdetailsbody{margin:0}.invoiceDetails.itemdetailsbody.itemquantity{width:10 %}.invoiceDetails.itemdetailsbody.itemprice{width:15 %}.invoiceDetails.itemdetailsbody.itemamount{width:15 %}.invoiceDetails #invoiceTotals{margin:0}.invoiceDetails #invoiceTotals{margin:0}.invoiceDetails.headline{color:#555;width:100 %}.invoice p{margin:12px 0}.items{width:12 %}.table - out td{padding:0}.table - in1 tr: first - child td{background:#f9f9f9}.table - in1 td{padding:5px 15px}</style>';
-    myHtml += '<div class="section invoiceDetails">';
-    myHtml += '        <div class="row invoiceInfo" style="font-size: 14px;">';
-    myHtml += '            <div class="col-xs-12">';
-    myHtml += '                <div class="row" style="padding:0px 15px;margin-bottom:10px;display: flex;">';
-    myHtml += '                    <div id="printPreview" style="width: 41.66666667%;">';
-    myHtml += '                        <div class="businessLogo"><img src="http://40.114.51.80/Images/layla1-logo.png" alt="" id="logoUrl" style="width: 90px;" /></div>';
-    myHtml += '                        <div class="businfobox">' + result.add + '<br>' + result.city + ', ' + result.state + ' ' + result.zip + ', <br>' + (result.country == "CA" ? "Canada" : result.country == "US" ? "United States" : result.country) + '</div>';
-    myHtml += '                        <div class="businfobox">Phone: 001 ' + result.phone.toString().replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + '<br/>' + result.email + '<br />' + result.website + '<br /></div>';
-    myHtml += '                    </div>';
-    myHtml += '                    <div style="width:58.33333333%; float:right;">';
-    myHtml += '                        <table style="width: 100%;">';
-    myHtml += '                            <tr>';
-    myHtml += '                                <td colspan="2" style="padding-left:3px;text-align:center;"><div style="color:#9da3a6;font-weight:700;font-size:30px;width:100%;">' + inv_title.toUpperCase() + '</div></td>';
-    myHtml += '                            </tr>';
-    myHtml += '                            <tr>';
-    myHtml += '                                <td style="text-align:right;padding-right:10px;width:58.33333333%;font-size:14px;">' + inv_title + ' No. #:</td>';
-    myHtml += '                                <td style="padding-left:3px;font-size:14px;">' + (is_inv ? data['po'][0].ref_ext : data['po'][0].ref) + '</td>';
-    myHtml += '                            </tr>';
-    myHtml += '                            <tr>';
-    myHtml += '                                <td style="text-align:right;padding-right:10px;width:58.33333333%;font-size:14px;">' + inv_title + ' date:</td>';
-    myHtml += '                                <td style="padding-left:3px;font-size:14px;">' + data['po'][0].date_creation + '</td>';
-    myHtml += '                            </tr>';
-    myHtml += '                            <tr>';
-    myHtml += '                                <td style="text-align:right;padding-right:10px;width:58.33333333%;font-size:14px;">Reference:</td>';
-    myHtml += '                                <td style="padding-left:3px;font-size:14px;">' + data['po'][0].ref_supplier + '</td>';
-    myHtml += '                            </tr>';
-    myHtml += '                            <tr>';
-    myHtml += '                                <td style="text-align:right;padding-right:10px;width:58.33333333%;font-size:14px;">Planned date of delivery:</td>';
-    myHtml += '                                <td style="padding-left:3px;font-size:14px;">' + data['po'][0].date_livraison + '</td>';
-    myHtml += '                            </tr>';
-    myHtml += '                        </table>';
-    myHtml += '                    </div>';
-    myHtml += '                </div>';
-    myHtml += '                <div style="border-bottom: 1px solid #ddd;"></div>';
-    myHtml += '                <div class="row" style="padding:0px 15px;margin-bottom: 10px;">';
-    myHtml += '                    <div class="headline"><h3>Bill To:</h3></div>';
-    myHtml += '                    <div>' + data['po'][0].vendor_name + '<br/>' + data['po'][0].address + '<br/>' + data['po'][0].town + ', ' + data['po'][0].fk_state + ' ' + data['po'][0].zip + ' ' + (data['po'][0].fk_country == "CA" ? "Canada" : data['po'][0].fk_country == "US" ? "United States" : data['po'][0].fk_country);
-    myHtml += '                    <div>' + data['po'][0].vendor_email + '</div>';
-    myHtml += '                </div>';
-    myHtml += '            </div>';
-    myHtml += '            <div class="row" style="padding-right:15px;padding-left:15px;">';
-    myHtml += '                <table style="width: 100%; table-layout: fixed;font-size: 14px;">';
-    myHtml += '                    <thead style="border: 1px solid #ddd;background-color: #f9f9f9;font-weight: 700;">';
-    myHtml += '                        <tr>';
-    myHtml += '                            <th style="padding:5px 15px;">Item#</th>';
-    myHtml += '                            <th style="padding:5px 15px;"><div class="wrap">Description</div></th>';
-    myHtml += '                            <th style="padding:5px 15px;text-align:right;">Quantity</th>';
-    myHtml += '                            <th style="padding:5px 15px;text-align:right;">Price</th>';
-    myHtml += '                            <th style="padding:5px 15px;text-align:right;">Amount</th>';
-    myHtml += '                        </tr>';
-    myHtml += '                    </thead>';
-    myHtml += '                    <tbody>';
-    $(data['pod']).each(function (index, tr) {
-        myHtml += '<tr style="border-bottom: 1px solid #ddd;">';
-        myHtml += '    <td style="padding:5px 15px;">' + tr.product_sku + '</td>';
-        myHtml += '    <td style="padding:5px 15px;"><div class="wrap">' + tr.description + '</div></td>';
-        myHtml += '    <td style="padding:5px 15px;text-align:right;">' + tr.qty.toFixed(0) + '</td>';
-        myHtml += '    <td style="padding:5px 15px;text-align:right;">' + tr.subprice.toFixed(2) + '</td>';
-        myHtml += '    <td style="padding:5px 15px;text-align:right;">' + tr.total_ht.toFixed(2) + '</td>';
-        myHtml += '</tr>';
-        total_qty += tr.qty, total_gm += tr.total_ht, total_tax += tr.total_localtax1, total_shamt += tr.total_localtax2, total_discamt += tr.discount, total_net += tr.total_ttc;
-    });
-    myHtml += '                    </tbody>';
-    myHtml += '                </table>';
-    myHtml += '            </div>';
-    myHtml += '            <div class="row" style="padding-right:15px;padding-left:15px;">';
-    myHtml += '                <table style="width: 100%;">';
-    myHtml += '                    <tbody>';
-    myHtml += '                        <tr>';
-    myHtml += '                            <td style="vertical-align: top; width:50%;font-size: 14px;">';
-    myHtml += '                                <table style="width: 100%;">';
-    myHtml += '                                    <thead style="border: 1px solid #ddd;background-color:#f9f9f9;font-weight:700;"><tr><th style="padding:5px 15px;">Comments or Special Instructions</th></tr></thead>';
-    myHtml += '                                    <tr><td style="padding:5px 15px;">1. Payment terms: ' + data['po'][0].PaymentTerm + ', ' + data['po'][0].Balance + '</td></tr>';
-    myHtml += '                                    <tr><td style="padding:5px 15px;">2. ' + data['po'][0].location_incoterms + '</td></tr>';
-    myHtml += '                                </table>';
-    myHtml += '                            </td>';
-    myHtml += '                            <td style="vertical-align: top; width:50%;font-size: 14px;">';
-    myHtml += '                                <table style="width: 100%;">';
-    myHtml += '                                    <tr>';
-    myHtml += '                                        <td style="width: 60%;border-left: 1px solid #ddd;border-right: 1px solid #ddd;text-align:right;padding-right: 15px;font-size: 13px;">Subtotal (' + total_qty.toFixed(0) + ')</td>';
-    myHtml += '                                        <td style="width: 40%;padding-top:5px;padding-bottom:5px;padding-left:15px;padding-right:15px;text-align:right;border-right: 1px solid #ddd;font-size: 13px;">$' + total_gm.toFixed(2) + '</td>';
-    myHtml += '                                    </tr>';
-    myHtml += '                                    <tr>';
-    myHtml += '                                        <td style="width: 60%;border-left: 1px solid #ddd;border-right: 1px solid #ddd;text-align:right;padding-right: 15px;font-size: 13px;">Item discounts</td>';
-    myHtml += '                                        <td style="width: 40%;padding-top:5px;padding-bottom:5px;padding-left:15px;padding-right:15px;text-align:right;border-right: 1px solid #ddd;font-size: 13px;">-$' + total_discamt.toFixed(2) + '</td>';
-    myHtml += '                                    </tr>';
-    myHtml += '                                    <tr>';
-    myHtml += '                                        <td style="width: 60%;border-left: 1px solid #ddd;border-right: 1px solid #ddd;text-align:right;padding-right: 15px;font-size: 13px;">Tax</td>';
-    myHtml += '                                        <td style="width: 40%;padding-top:5px;padding-bottom:5px;padding-left:15px;padding-right:15px;text-align:right;border-right: 1px solid #ddd;font-size: 13px;">$' + total_tax.toFixed(2) + '</td>';
-    myHtml += '                                    </tr>';
-    myHtml += '                                    <tr>';
-    myHtml += '                                        <td style="width: 60%;border-left: 1px solid #ddd;border-right: 1px solid #ddd;text-align:right;padding-right: 15px;font-size: 13px;">Shipping</td>';
-    myHtml += '                                        <td style="width: 40%;padding-top:5px;padding-bottom:5px;padding-left:15px;padding-right:15px;text-align:right;border-right: 1px solid #ddd;font-size: 13px;">$' + total_shamt.toFixed(2) + '</td>';
-    myHtml += '                                    </tr>';
-    myHtml += '                                    <tr style="border-top: 1px solid #ddd;border-bottom:1px solid #ddd;background-color:#f9f9f9;font-weight:700;">';
-    myHtml += '                                        <th style="width: 60%;border-left: 1px solid #ddd;border-right: 1px solid #ddd;text-align:right;padding-right: 15px;">Total</th>';
-    myHtml += '                                        <th style="width: 40%;padding-top:5px;padding-bottom:5px;padding-left:15px;padding-right:15px;text-align:right;border-right: 1px solid #ddd;">$' + total_net.toFixed(2) + '</th>';
-    myHtml += '                                    </tr>';
-    myHtml += '                                    <tr style="border-top: 1px solid #ddd;border-bottom:1px solid #ddd;background-color:#f9f9f9;font-weight:700;">';
-    myHtml += '                                        <th style="width: 60%;border-left: 1px solid #ddd;border-right: 1px solid #ddd;text-align:right;padding-right: 15px;">Deposit (' + startingNumber + '%)</th>';
-    myHtml += '                                        <th style="width: 40%;padding-top:5px;padding-bottom:5px;padding-left:15px;padding-right:15px;text-align:right;border-right: 1px solid #ddd;">$' + (total_net * (startingNumber / 100)).toFixed(2) + '</th>';
-    myHtml += '                                    </tr>';
-    myHtml += '                                </table>';
-    myHtml += '                            </td>';
-    myHtml += '                        </tr>';
-    myHtml += '                    </tbody>';
-    myHtml += '                </table>';
-    myHtml += '             </div>';
-    myHtml += '             <div style="margin-top: 15px;"></div>';
-    myHtml += '         </div>';
-    myHtml += '     </div>';
-    myHtml += '</div>';
-    myHtml += '</div>';
+    myHtml += `
+<table cellpadding="0" cellspacing="0" border="0" style="width:100%;">
+            <tr>
+                <td align="center" style="padding:0;">
+                    <table class="container_table" cellpadding="0" cellspacing="0" border="0" style="border:2px solid #e6e6e6; width:995px">
+                        <tr>
+                            <td style="padding:15px;">
+                                <table cellpadding="0" cellspacing="0" border="0" style="width:100%;border-bottom: 1px solid #ddd;">
+                                    <tr>
+                                        <td style="padding:0; vertical-align: top;">
+                                            <img src="http://40.114.51.80/Images/layla1-logo.png" alt="" width="95" height="41" class="logo-size"/>
+                                            <p style="font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">
+                                                157 Church Street Suite 1956, <br>
+                                                New Haven, CT 06510, <br>
+                                                United States.<br>
+                                                Phone: 001 8553581676<br />
+                                                sb-ywzys7367265@business.example.com<br />
+                                                www.laylasleep.com</p>
+                                        </td>
+                                        <td style="padding:0; vertical-align: top;" align="right">
+                                            <table cellpadding="0" cellspacing="0" border="0">
+                                                <tr>
+                                                    <td colspan="2" style="padding:0px 2.5px">
+                                                        <h2 class="pageCurl" style="color:#9da3a6;font-family: sans-serif;font-weight: 700;margin:0px 0px 8px 0px;font-size: 30px;">INVOICE</h2>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4; padding:0px 2.5px;">Invoice #:</td><td style=" padding:0px 2.5px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;">WC-1629963072594</td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4; padding:0px 2.5px;">Invoice date:</td><td style=" padding:0px 2.5px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;">Aug 26, 2021</td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4; padding:0px 2.5px;">Reference:</td><td style=" padding:0px 2.5px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;">851389</td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4; padding:0px 2.5px;">Due date:</td><td style=" padding:0px 2.5px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;">Sep 5, 2021</td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding:0px 15px 0px 15px;">
+                                <table cellpadding="0" cellspacing="0" border="0">
+                                    <tr>
+                                        <td style="padding:0;">
+                                            <h3 class="billto" style="font-family: sans-serif;font-size:20px;margin:3px 0px 5px 0px;;color:#2c2e2f;font-weight:200;">Bill To:</h3>
+                                            <p class="recipientInfo" style="width: 225px;margin-top:0px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;">
+                                                Gabriel Aubry
+                                                925 S Chugach St #APT 10 Palmer,
+                                                AK 99645 United States.<br>
+                                                testing.quickfix@gmail.com
+                                            </p>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding:0px 15px 0px 15px;">
+                                <table class="product-tables" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;width: 100%; table-layout: fixed;">
+                                    <thead class="itemdetailsheader" style="border: 1px solid #ddd;background-color: #f9f9f9;">
+                                        <tr>
+                                            <th style="width:12%;padding:5px 12px;text-align:left;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="items">Item#</th>
+                                            <th style="width:48%;padding:5px 12px;text-align:left;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemdescription">Description</th>
+                                            <th style="width:10%;padding:5px 12px;text-align:center;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemquantity">Quantity</th>
+                                            <th style="width:15%;padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemprice">Price</th>
+                                            <th style="width:15%;padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemamount">Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="itemdetailsbody">
+                                        <tr style="border-bottom: 1px solid #ddd;">
+                                            <td style="padding:5px 12px;text-align:left;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="items">MATT01F</td>
+                                            <td style="padding:5px 12px;text-align:left;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemdescription">Layla Memory Foam Mattress - Full</td>
+                                            <td style="padding:5px 12px;text-align:center;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemquantity">1</td>
+                                            <td style="padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemprice">$999.00</td>
+                                            <td style="padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemamount">$999.00</td>
+                                        </tr>
+                                        <tr style="border-bottom: 1px solid #ddd;">
+                                            <td style="padding:5px 12px;text-align:left;font-family:sans-serif;font-size:15px; color:#4f4f4f;line-height:1.4;" class="items">SMF01Q-FR</td>
+                                            <td style="padding:5px 12px;text-align:left;font-family:sans-serif;font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemdescription">Layla Memory Foam Pillow - Queen</td>
+                                            <td style="padding:5px 12px;text-align:center;font-family:sans-serif;font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemquantity">2</td>
+                                            <td style="padding:5px 12px;text-align:right;font-family:sans-serif;font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemprice">$0.00</td>
+                                            <td style="padding:5px 12px;text-align:right;font-family:sans-serif;font-size:15px; color:#4f4f4f;line-height:1.4;" class="itemamount">$0.00</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding:0px 15px 15px 15px;">
+                                <table cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;width: 100%; table-layout: fixed;">
+                                    <tr>
+                                        <td style="vertical-align: top; width:50%;padding:0px;">
+                                            <table cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;width: 100%; table-layout: fixed;">
+                                                <tr>
+                                                    <td style="color:#4f4f4f;line-height:1.4;text-align:left;font-family:sans-serif;font-size:15px;padding:5px 12px;background:#f9f9f9;font-weight:600; border-bottom:1px solid #ddd;">Comments or Special Instructions</td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding:5px 12px;text-align:left;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">1.Payment term:30% deposit,balance net 60days</td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding:5px 12px;text-align:left;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">2.CIF Chicago</td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="border-top: 1px solid #ddd;padding:5px 12px;text-align:left;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">
+                                                        <h4 class="headline" style="text-align:left;font-family:sans-serif;color: #555;font-size: 16px;line-height: 18px;margin-bottom: 5px;margin-top: 0px;vertical-align: middle;text-align: left;width: 100%;font-weight: 600;">Notes</h4>
+                                                        <p class="notes" style="text-align:left;font-family:sans-serif;color: #4f4f4f;font-size: 16px;line-height: 18px;margin-bottom: 0px;margin-top: 0px;vertical-align: middle;text-align: left;width: 100%;font-weight: 400;">Layla Invoice.</p>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td style="vertical-align: top; width:50%; padding:0px;">
+                                            <table cellpadding="0" cellspacing="0" style="border:1px solid #ddd;border-top:0px;border-collapse: collapse;width: 100%; table-layout: fixed;">
+                                                <tr>
+                                                    <td class="text-right" style="border-right: 1px solid #ddd; width: 70%;padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">Subtotal</td>
+                                                    <td class="text-right" style="width: 30%;padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">$999.00</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-right" style="border-right: 1px solid #ddd; padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">Item discounts</td>
+                                                    <td class="text-right" style="padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">-$150.00</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-right" style="border-right: 1px solid #ddd; padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">Shipping</td>
+                                                    <td class="text-right" style="padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">$250.00</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-right" style="border-right: 1px solid #ddd; padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">Other Fee</td>
+                                                    <td class="text-right" style="padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">$0.00</td>
+                                                </tr>
+                                                <tr class="invoiceTotal" style="background-color: #f9f9f9;font-weight: 700;border-top: 1px solid #ddd;">
+                                                    <td class="text-right" style="border-right: 1px solid #ddd; padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">Total</td>
+                                                    <td class="text-right" style="padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">$1,099.00</td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+`;
+
     $('#PrintModal .modal-body').append(myHtml);
     let opt = { strValue1: data['po'][0].vendor_email, strValue2: data['po'][0].ref, strValue3: myHtml }
     if (opt.strValue1.length > 5 && is_mail) {

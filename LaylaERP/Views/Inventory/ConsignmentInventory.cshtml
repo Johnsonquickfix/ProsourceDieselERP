@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewBag.Title = "Stock Register";
+    ViewBag.Title = "InHand Inventory";
 }
 
 
@@ -14,13 +14,12 @@
         background: url('https://cdn.rawgit.com/DataTables/DataTables/6c7ada53ebc228ea9bc28b1b216e793b1825d188/examples/resources/details_open.png') no-repeat center center;
         cursor: pointer;
     }
-
     tr.shown td.details-control {
         background: url('https://cdn.rawgit.com/DataTables/DataTables/6c7ada53ebc228ea9bc28b1b216e793b1825d188/examples/resources/details_close.png') no-repeat center center;
     }
 </style>
 <div class="page-title">
-    <h2 class="page-heading">Stock Register</h2>
+    <h2 class="page-heading">InHand Inventory</h2>
 </div>
 <section class="content section-content table-design customer-section">
     
@@ -59,9 +58,11 @@
                                         <th style="width:10%">Product Type</th>
                                         <th style="width:10%">SKU</th>
                                         <th style="width:40%">Product Name</th>
-                                        <th style="width:10%" class="text-right">Regular Price</th>
-                                        <th style="width:10%" class="text-right">Sale Price</th>
-                                        <th style="width:10%" class="text-right">Stock</th>
+                                        <th style="width:10%" class="text-right">InHand Stock</th>
+                                        <th style="width:10%" class="text-right">Units in POs</th>
+                                        <th style="width:10%" class="text-right">Sale Units</th>
+                                        <th style="width:10%" class="text-right">Available Units</th>
+                                        <th style="width:10%" class="text-right">Damage Units</th>
                                     </tr>
                                 </thead>
                             </table>

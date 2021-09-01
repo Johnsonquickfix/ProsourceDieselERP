@@ -24,9 +24,18 @@
     VendorLinkedFiles();
     getNatureofJournal();
     InvoiceGrid();
+    $(document).on('click', '#btnChange', function () { orderStatus(); });
 })
 
-
+$('#ddlDiscountType1').change(function () {
+    let discount = $('#ddlDiscountType1').val();
+    if (discount == "Percentage") {
+        $('#lblDefaultDiscount').text('Default Discount (%)')
+    }
+    else {
+        $('#lblDefaultDiscount').text('Default Discount')
+    }
+})
 function getNatureofJournal() {
     $.ajax({
         url: "/Accounting/GetNatureofJournal",
@@ -873,9 +882,9 @@ function GetVendorByID(id) {
 
                     $("#txVendorName").val(d[0].VendorName);
                     $("#txtAliasName").val(d[0].AliasName);
-                    $("#ddlvendortype").val(d[0].vendor_type);
+                    $("#ddlvendortype").val(d[0].vendor_type).trigger("change");
                     $("#txtVendorCode").val(d[0].VendorCode);
-                    $("#ddlStatus").val(d[0].status);
+                    $("#ddlStatus").val(d[0].status).trigger("change");
                     $("#txtAddress1").val(d[0].address);
                     $("#txtAddress2").val(d[0].address1);
                     $("#txtCity").val(d[0].town);
@@ -890,7 +899,7 @@ function GetVendorByID(id) {
                         }
                     });
                     $("#txtZipCode").val(d[0].zip);
-                    $("#ddlCountry").val(d[0].Country);
+                    $("#ddlCountry").val(d[0].Country).trigger("change");
                     var t = d[0].phone.toString().replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3");
                     $("#txtPhone").val(t);
                     $("#txtFax").val(d[0].fax);
@@ -905,24 +914,24 @@ function GetVendorByID(id) {
                     $("#txtCorZipCode").val(d[0].CorZipCode);
                     $("#txtCorCountry").val(d[0].CorCountry);
                     $("#txtCorPhone").val(d[0].CorPhone);
-                    $("#ddlWorkforce").val(d[0].Workforce);
+                    $("#ddlWorkforce").val(d[0].Workforce).trigger("change");
                     $("#txtBusinessEntityType").val(d[0].BusinessEntityType);
                     $("#txtNotesPublic").val(d[0].note_public);
                     $("#txtNotesPrivate").val(d[0].note_private);
-                    $("#ddlNatureofJournal").val(d[0].NatureofJournal == null ? "-1" : d[0].NatureofJournal);
+                    $("#ddlNatureofJournal").val(d[0].NatureofJournal == null ? "-1" : d[0].NatureofJournal).trigger("change");
 
                     $("#txtCapital").val(d[0].capital);
-                    $("#ddlPaymentTerms").val(d[0].PaymentTermsID == null ? "-1" : d[0].PaymentTermsID);
-                    $("#ddlBalancedays").val(d[0].BalanceID == null ? "-1" : d[0].BalanceID);
-                    $("#ddlIncoTerm").val(d[0].IncotermsType == null ? "-1" : d[0].IncotermsType);
+                    $("#ddlPaymentTerms").val(d[0].PaymentTermsID == null ? "-1" : d[0].PaymentTermsID).trigger("change");
+                    $("#ddlBalancedays").val(d[0].BalanceID == null ? "-1" : d[0].BalanceID).trigger("change");
+                    $("#ddlIncoTerm").val(d[0].IncotermsType == null ? "-1" : d[0].IncotermsType).trigger("change");
                     $("#txtIncoTerm").val(d[0].Incoterms);
-                    $("#ddlCurrency").val(d[0].Currency == null ? "-1" : d[0].Currency);
+                    $("#ddlCurrency").val(d[0].Currency == null ? "-1" : d[0].Currency).trigger("change");
                     $("#txtCreditLimit").val(d[0].CreditLimit);
                     $("#txtOutStandingLimit").val(d[0].outstanding_limit);
                     $("#txtMinOrderQty").val(d[0].MinimumOrderQuanity);
                     $("#txtOrderMinAmt").val(d[0].order_min_amount);
 
-                    $("#ddlShippingMethod").val(d[0].ShippingMethodID == null ? "-1" : d[0].ShippingMethodID);
+                    $("#ddlShippingMethod").val(d[0].ShippingMethodID == null ? "-1" : d[0].ShippingMethodID).trigger("change");
                     $("#txtShippingRate").val(d[0].ShippingRate);
                     $("#txtShippingLocation").val(d[0].ShippingLocation);
 
@@ -968,27 +977,27 @@ function GetVendorByID(id) {
                     $("#txtFedexMeterNumber").val(d[0].FedexMeterNumber);
                     $("#txtFedexWebServicesKey").val(d[0].FedexWebServicesKey);
                     $("#txtFedexWebServicesPassword").val(d[0].FedexWebServicesPassword);
-                    $("#ddlFedexMethodType").val(d[0].FedexMethodType == null ? "Global" : d[0].FedexMethodType);
+                    $("#ddlFedexMethodType").val(d[0].FedexMethodType == null ? "Global" : d[0].FedexMethodType).trigger("change");
                     d[0].FedexMethodEnable == true ? $("#chkFadexMethodEnable").prop("checked", true) : $('#chkFadexMethodEnable').prop("checked", false);
                     d[0].FedexCustomServices == true ? $("#chkFadexCustomServices").prop("checked", true) : $('#chkFadexCustomServices').prop("checked", false);
                     d[0].FedexDebugMode == true ? $("#chkFadexDebugMode").prop("checked", true) : $('#chkFadexDebugMode').prop("checked", false);
 
-                    $("#ddlTaxMethod").val(d[0].TaxMethod == null ? "Standard Tax Rate" : d[0].TaxMethod);
+                    $("#ddlTaxMethod").val(d[0].TaxMethod == null ? "Standard Tax Rate" : d[0].TaxMethod).trigger("change");
                     $("#txtDefaultTax").val(d[0].DefaultTax);
                     $("#txtShippingTax").val(d[0].ShippingTax);
                     d[0].ShippingTaxIncludedinprice == true ? $("#chkShippingTaxIncludedinprice").prop("checked", true) : $('#chkShippingTaxIncludedinprice').prop("checked", false);
                     $("#txtCalculatedtax").val(d[0].CalculatedTax);
                     d[0].TaxIncludedinPrice == true ? $("#chkTaxIncludedinPrice").prop("checked", true) : $('#chkTaxIncludedinPrice').prop("checked", false);
 
-                    $("#ddlDiscountType1").val(d[0].DiscountType1 == null ? "Fixed" : d[0].DiscountType1);
+                    $("#ddlDiscountType1").val(d[0].DiscountType1 == null ? "Fixed" : d[0].DiscountType1).trigger("change");
                     $("#txtDefaultDiscount").val(d[0].DefaultDiscount);
                     $("#txtDiscountMinimumOrderAmount").val(d[0].DiscountMinimumOrderAmount);
                     $("#txtAccountName").val(d[0].AccountName);
                     $("#txtAccountEmail").val(d[0].AccountEmail);
-                    $("#ddlDiscountType2").val(d[0].DiscountType2 == null ? "-1" : d[0].DiscountType2);
+                    $("#ddlDiscountType2").val(d[0].DiscountType2 == null ? "-1" : d[0].DiscountType2).trigger("change");
                     $("#txtDiscount").val(d[0].Discount);
 
-                    $("#ddlPaymentMethod").val(d[0].Paymentmethod == null ? "-1" : d[0].Paymentmethod);
+                    $("#ddlPaymentMethod").val(d[0].Paymentmethod == null ? "-1" : d[0].Paymentmethod).trigger("change");
                     $("#txtBankAccountName").val(d[0].BankAccountName);
                     $("#txtBankAccountNumber").val(d[0].BankAccountNumber);
                     $("#txtBankName").val(d[0].BankName);
@@ -1011,7 +1020,7 @@ function GetVendorByID(id) {
                     $("#txtPaypalIPNEmailNotification").val(d[0].PaypalIPNEmailNotification);
                     $("#txtPaypalReceiverEmail").val(d[0].PaypalReceiverEmail);
                     $("#txtPaypalIdentitytoken").val(d[0].PaypalIdentitytoken);
-                    $("#ddlPaypalPaymentAction").val(d[0].PaypalPaymentAction == null ? "-1" : d[0].PaypalPaymentAction);
+                    $("#ddlPaypalPaymentAction").val(d[0].PaypalPaymentAction == null ? "-1" : d[0].PaypalPaymentAction).trigger("change");
                     $("#txtPaypalAPIUserName").val(d[0].PaypalAPIUserName);
                     $("#txtPaypalAPIPassword").val(d[0].PaypalAPIPassword);
                     $("#txtPaypalAPISignature").val(d[0].PaypalAPISignature);
@@ -1491,7 +1500,7 @@ function InvoiceGrid() {
     let VendorID = $("#hfid").val();
     let urid = parseInt($("#ddlInvoiceServices").val());
     let table = $('#PurchaseInvoicedata').DataTable({
-        columnDefs: [{ "orderable": true, "targets": 0 }], order: [[1, "desc"]],
+        columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: false, searching: true,
         responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
         language: {
@@ -1528,7 +1537,13 @@ function InvoiceGrid() {
         },
         aoColumns: [
             {
-                'data': 'StatusID', sWidth: "10%", title: 'PO No.', class: 'text-left',
+                'data': 'id', sWidth: "5%   ",
+                'render': function (data, type, full, meta) {
+                    return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + data + '"><label></label>';
+                }
+            },
+            {
+                'data': 'StatusID', sWidth: "10%", title: 'PO/Invoice No.', class: 'text-left',
                 'render': function (id, type, full, meta) {
                     if (id == 1)
                         return '<a href="../../PurchaseOrder/NewPurchaseOrder/' + full.id + '">' + full.ref + '</a> <a href="#" onclick="getPurchaseOrderPrint(' + full.id + ', false);"><i class="fas fa-search-plus"></i></a>';
@@ -1544,6 +1559,32 @@ function InvoiceGrid() {
 $("#ddlInvoiceServices").change(function () {
     InvoiceGrid();
 })
+function orderStatus() {
+    var id = "";
+    $("input:checkbox[name=CheckSingle]:checked").each(function () { id += $(this).val() + ","; });
+    id = id.replace(/,(?=\s*$)/, '');
+    $("#checkAll").prop('checked', false);
+    var status = $('#ddlOrderStatus').val();
+
+    if (id == "") { swal('alert', 'Please select a Purchase order.', 'error'); }
+    else if (status == "") { swal('alert', 'Please select status.', 'error'); }
+    else {
+        var obj = { Search: id, Status: status }
+        $.ajax({
+            url: '/PurchaseOrder/UpdatePurchaseOrderStatus', dataType: 'JSON', type: 'get',
+            contentType: "application/json; charset=utf-8",
+            data: obj,
+            beforeSend: function () { $("#loader").show(); },
+            success: function (data) {
+                if (data.status == true) { swal('alert', data.message, 'success').then((result) => { InvoiceGrid(); }); }
+                else { swal('alert', 'something went wrong!', 'success'); }
+            },
+            complete: function () { $("#loader").hide(); },
+            error: function (error) { swal('Error!', 'something went wrong', 'error'); }
+        });
+    }
+}
+
 
 
 

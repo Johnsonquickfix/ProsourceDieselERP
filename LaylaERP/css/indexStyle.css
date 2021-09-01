@@ -161,6 +161,10 @@ border:0px;}
     background: #adadad;
     /*color: #000;*/
 }
+.skin-blue .sidebar-menu li:hover > a{
+    background: #adadad;
+    color: #fff !important;
+}
 .skin-blue .sidebar-menu > li > .treeview-menu {
 background:#fff;padding-left:0px;}
     .skin-blue .sidebar-menu .treeview-menu > li.active > a, .skin-blue .sidebar-menu .treeview-menu > li > a:hover, .skin-blue .sidebar-menu .treeview-menu > li > a {

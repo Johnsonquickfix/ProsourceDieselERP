@@ -2406,3 +2406,13 @@ body .btn {font-size:12px;}
     position: absolute;
     right: 15px;
 }
+#billModal .modal-body > div > table > tbody > tr > td {
+padding:0px !important;}
+#billModal .modal-body > div > table > tbody > tr > td > table {
+width:100% !important;}
+#billModal .modal-body > div .thankyou-for-your-order ~ tr td {
+    padding-left: 25px !important;
+    padding-right: 25px !important;
+}
+#billModal #payInvoice {
+margin-left:0px !important;}

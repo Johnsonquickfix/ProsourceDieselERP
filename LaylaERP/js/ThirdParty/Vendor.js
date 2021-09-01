@@ -24,9 +24,18 @@
     VendorLinkedFiles();
     getNatureofJournal();
     InvoiceGrid();
+    $(document).on('click', '#btnChange', function () { orderStatus(); });
 })
 
-
+$('#ddlDiscountType1').change(function () {
+    let discount = $('#ddlDiscountType1').val();
+    if (discount == "Percentage") {
+        $('#lblDefaultDiscount').text('Default Discount (%)')
+    }
+    else {
+        $('#lblDefaultDiscount').text('Default Discount')
+    }
+})
 function getNatureofJournal() {
     $.ajax({
         url: "/Accounting/GetNatureofJournal",
@@ -1491,7 +1500,7 @@ function InvoiceGrid() {
     let VendorID = $("#hfid").val();
     let urid = parseInt($("#ddlInvoiceServices").val());
     let table = $('#PurchaseInvoicedata').DataTable({
-        columnDefs: [{ "orderable": true, "targets": 0 }], order: [[1, "desc"]],
+        columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: false, searching: true,
         responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
         language: {
@@ -1528,6 +1537,12 @@ function InvoiceGrid() {
         },
         aoColumns: [
             {
+                'data': 'id', sWidth: "5%   ",
+                'render': function (data, type, full, meta) {
+                    return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + data + '"><label></label>';
+                }
+            },
+            {
                 'data': 'StatusID', sWidth: "10%", title: 'PO No.', class: 'text-left',
                 'render': function (id, type, full, meta) {
                     if (id == 1)
@@ -1544,6 +1559,32 @@ function InvoiceGrid() {
 $("#ddlInvoiceServices").change(function () {
     InvoiceGrid();
 })
+function orderStatus() {
+    var id = "";
+    $("input:checkbox[name=CheckSingle]:checked").each(function () { id += $(this).val() + ","; });
+    id = id.replace(/,(?=\s*$)/, '');
+    $("#checkAll").prop('checked', false);
+    var status = $('#ddlOrderStatus').val();
+
+    if (id == "") { swal('alert', 'Please select a Purchase order.', 'error'); }
+    else if (status == "") { swal('alert', 'Please select status.', 'error'); }
+    else {
+        var obj = { Search: id, Status: status }
+        $.ajax({
+            url: '/PurchaseOrder/UpdatePurchaseOrderStatus', dataType: 'JSON', type: 'get',
+            contentType: "application/json; charset=utf-8",
+            data: obj,
+            beforeSend: function () { $("#loader").show(); },
+            success: function (data) {
+                if (data.status == true) { swal('alert', data.message, 'success').then((result) => { InvoiceGrid(); }); }
+                else { swal('alert', 'something went wrong!', 'success'); }
+            },
+            complete: function () { $("#loader").hide(); },
+            error: function (error) { swal('Error!', 'something went wrong', 'error'); }
+        });
+    }
+}
+
 
 
 

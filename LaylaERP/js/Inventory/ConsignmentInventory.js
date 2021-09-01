@@ -53,7 +53,7 @@ function ProductStockGrid() {
     let obj = { strValue1: $("#txtsku").val().trim(), strValue2: (ctid > 0 ? ctid : ''), strValue3: (pid > 0 ? pid : '') }; console.log(obj);
     $('#dtdata').DataTable({
         oSearch: { "sSearch": '' }, order: [[0, "asc"]],
-        dom: 'lBftip', buttons: [{ extend: 'excelHtml5', title: 'Product Stock Report' }, { extend: 'csvHtml5', title: 'Product Stock Report' }],
+        dom: 'lBftip', buttons: [{ extend: 'excelHtml5', title: 'Product Inhand Inventory Report' }, { extend: 'csvHtml5', title: 'Product Inhand Inventory Report' }],
         language: {
             lengthMenu: "_MENU_ per page",
             zeroRecords: "Sorry no records found",
@@ -83,10 +83,12 @@ function ProductStockGrid() {
                 }
             },
             { data: 'sku', title: 'SKU', sWidth: "10%" },
-            { data: 'post_title', title: 'Product Name', sWidth: "40%" },
-            { data: 'regular_price', title: 'Regular Price', sWidth: "10%", className: "text-right", render: $.fn.dataTable.render.number('', '.', 2, '$') },
-            { data: 'sale_price', title: 'Sale Price', sWidth: "10%", className: "text-right", render: $.fn.dataTable.render.number('', '.', 2, '$') },
-            { data: 'stock', title: 'Stock', sWidth: "10%", className: "text-right", render: $.fn.dataTable.render.number('', '.', 0, '') }
+            { data: 'post_title', title: 'Product Name', sWidth: "30%" },
+            { data: 'stock', title: 'In Stock', sWidth: "10%", className: "text-right", render: $.fn.dataTable.render.number('', '.', 0, '') },
+            { data: 'regular_price', title: 'Units in POs', sWidth: "15%", className: "text-right", render: $.fn.dataTable.render.number('', '.', 2, '$') },
+            { data: 'sale_price', title: 'Sale Units', sWidth: "15%", className: "text-right", render: $.fn.dataTable.render.number('', '.', 2, '$') },
+            { data: 'sale_price', title: 'Available Units', sWidth: "15%", className: "text-right", render: $.fn.dataTable.render.number('', '.', 2, '$') },
+            { data: 'sale_price', title: 'Damage Units', sWidth: "15%", className: "text-right", render: $.fn.dataTable.render.number('', '.', 2, '$') },
         ],
         columnDefs: [{ targets: [0], visible: false, searchable: false }]
     });

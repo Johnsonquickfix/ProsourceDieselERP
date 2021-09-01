@@ -264,19 +264,19 @@ namespace LaylaERP.Controllers
         {
             if (ModelState.IsValid)
             {
-                
-                    int ID = new ProductRepository().deleteShippingprice(model);
-                    if (ID > 0)
-                    {
-                        ModelState.Clear();
-                        return Json(new { status = true, message = "Shipping Class has been delete successfully!!", url = "" }, 0);
-                    }
-                    else
-                    {
-                        return Json(new { status = false, message = "No data found for delete", url = "" }, 0);
-                    }
+
+                int ID = new ProductRepository().deleteShippingprice(model);
+                if (ID > 0)
+                {
+                    ModelState.Clear();
+                    return Json(new { status = true, message = "Shipping Class has been delete successfully!!", url = "" }, 0);
+                }
+                else
+                {
+                    return Json(new { status = false, message = "No data found for delete", url = "" }, 0);
+                }
             }
-             return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
         }
         public JsonResult BuyingPrice(ProductModel model)
         {
@@ -285,25 +285,30 @@ namespace LaylaERP.Controllers
             //DateTime dateinc = UTILITIES.CommonDate.CurrentDate();
             var resultOne = 0;
             DataTable dt = ProductRepository.GetproductPurchase_Items(model);
-            if (dt.Rows.Count > 0)
-            {
-                return Json(new { status = false, message = "Vendor already allocated for this product", url = "" }, 0);
-            }
+
+            if (model.ID > 0)
+                resultOne = ProductRepository.updateBuyingtProduct(model, dateinc);
             else
             {
-                if (model.ID > 0)
-                    resultOne = ProductRepository.updateBuyingtProduct(model, dateinc);
-                else
-                    resultOne = ProductRepository.AddBuyingtProduct(model, dateinc);
-                if (resultOne > 0)
+                if (dt.Rows.Count > 0)
                 {
-                    return Json(new { status = true, message = "updated successfully!!", url = "Manage" }, 0);
+                    return Json(new { status = false, message = "Vendor already allocated for this product", url = "" }, 0);
                 }
                 else
                 {
-                    return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                    resultOne = ProductRepository.AddBuyingtProduct(model, dateinc);
                 }
             }
+                    if (resultOne > 0)
+                    {
+                        return Json(new { status = true, message = "updated successfully!!", url = "Manage" }, 0);
+                    }
+                    else
+                    {
+                        return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                    }
+                
+            
         }
         public JsonResult Createwarehouse(ProductModel model)
         {
@@ -332,7 +337,7 @@ namespace LaylaERP.Controllers
             //{
             //    return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
             //}
-        }      
+        }
         public JsonResult GetStateData(SearchModel model)
         {
             string JSONresult = string.Empty;
@@ -405,11 +410,11 @@ namespace LaylaERP.Controllers
                 return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
             }
         }
-       [HttpPost]
+        [HttpPost]
         public JsonResult CreateShipname(ProductModel model)
-        {           
-                JsonResult result = new JsonResult();
-                string msg = "";
+        {
+            JsonResult result = new JsonResult();
+            string msg = "";
             //int ID = 0;
             if (!string.IsNullOrEmpty(model.statecode))
             {
@@ -469,7 +474,7 @@ namespace LaylaERP.Controllers
                 //    }
                 //}
             }
-                return Json(new { status = true, message = msg, url = "Manage" }, 0);
+            return Json(new { status = true, message = msg, url = "Manage" }, 0);
 
         }
         public JsonResult Deletefileuploade(ProductModel model)
@@ -1445,6 +1450,7 @@ namespace LaylaERP.Controllers
             foreach (DataRow dr in ds.Tables[0].Rows)
             {
                 productlist.Add(new SelectListItem { Text = dr["name"].ToString(), Value = dr["ID"].ToString() });
+
             }
             return Json(productlist, JsonRequestBehavior.AllowGet);
         }
@@ -1453,7 +1459,7 @@ namespace LaylaERP.Controllers
             var ImagePath = "";
             string FileName = "";
             string FileExtension = "";
-           
+
             if (ImageFile != null)
             {
                 FileName = Path.GetFileNameWithoutExtension(ImageFile.FileName);
@@ -1463,9 +1469,14 @@ namespace LaylaERP.Controllers
                 if (FileExtension == ".png" || FileExtension == ".jpg" || FileExtension == ".jpeg" || FileExtension == ".bmp")
                 {
                     FileName = DateTime.Now.ToString("MMddyyhhmmss") + "-" + FileName.Trim() + FileExtension;
+                   
                     string UploadPath = Path.Combine(Server.MapPath("~/Content/ProductCategory"));
                     UploadPath = UploadPath + "\\";
                     model.ImagePath = UploadPath + FileName;
+                    if (FileName == "")
+                    {
+                        FileName = "default.png";
+                    }
                     ImagePath = "~/Content/ProductCategory/" + FileName;
                     ImageFile.SaveAs(model.ImagePath);
                 }
@@ -1475,17 +1486,17 @@ namespace LaylaERP.Controllers
 
                 }
             }
-            
+
             if (model.term_id > 0)
             {
                 long thumbnailID = 0;
-                if(model.Meta_id > 0 && ImagePath == "")
+                if (model.Meta_id > 0 && ImagePath == "")
                 {
                     FileName = new ProductRepository().GetFileName(model.Meta_id);
-                   
+
                     ImagePath = "~/Content/ProductCategory/" + FileName;
                 }
-                if (model.Meta_id > 0 )
+                if (model.Meta_id > 0)
                 {
                     thumbnailID = model.Meta_id;
                     ProductRepository.EditImage(FileName, ImagePath, FileExtension, thumbnailID);
@@ -1494,7 +1505,7 @@ namespace LaylaERP.Controllers
                 {
                     thumbnailID = ProductRepository.AddImage(FileName, ImagePath, FileExtension);
                 }
-                
+
                 ProductRepository.EditPostMeta(thumbnailID, ImagePath, FileName);
                 new ProductRepository().EditProductCategory(model, name, slug, parent, description, thumbnailID);
                 return Json(new { status = true, message = "Product category has been updated successfully!!", url = "", id = model.term_id }, 0);

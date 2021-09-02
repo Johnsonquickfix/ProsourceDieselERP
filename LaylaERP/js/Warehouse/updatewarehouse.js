@@ -872,7 +872,7 @@ function UpdateTransferStock() {
     else if (fk_entrepottarget == 0) {
         swal('Alert', 'Please select target warehouse', 'error').then(function () { swal.close(); $('#ddltargetwarehouse').focus(); });
     }
-    //else if (fk_entrepot == fk_entrepottarget) { swal('Alert', 'Please select other warehouse', 'error'); }
+    else if (fk_entrepot == fk_entrepottarget) { swal('Alert', 'Please select other warehouse', 'error'); }
 
     else if (value == "") {
         swal('Alert', 'Please enter number of units', 'error').then(function () { swal.close(); $('#txttransferunit').focus(); });
@@ -1022,6 +1022,7 @@ function productbywarehouse() {
             $.each(data, function (index, value) {
                 items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddltransferProduct");
                 items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddlProduct");
+                items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddlDamageProduct");
             })
            
         },
@@ -1196,4 +1197,286 @@ function DeleteBankLinkedFiles(id) {
             error: function (error) { swal('Error!', 'something went wrong', 'error'); },
         })
     }
+}
+
+
+
+//----------------Damage Stock Portion------------------
+function AddDamagestock() {
+    debugger
+    var fk_entrepot = $("#hfid").val();
+    var fk_product = $("#ddlDamageProduct").val();
+    var serial = $("#txtdamageserial").val();
+    var eatby = $("#txtdamageeatbydate").val();
+    var price = $("#txtdamageprice").val();
+    var unit = $("#txtdamageunit").val();
+    var label = $("#txtdamagelabel").val();
+    
+
+    var formattedDate = new Date(eatby);
+    var d = formattedDate.getDate();
+    //var m = formattedDate.getMonth();
+    var m = ("0" + (formattedDate.getMonth() + 1)).slice(-2)
+    //m += 1;  // JavaScript months are 0-11
+    var y = formattedDate.getFullYear();
+    var stockdate = y + "-" + m + "-" + d;
+
+    if (fk_product == null || fk_product == 0) {
+        swal('Alert', 'Please select product', 'error').then(function () { swal.close(); $('#ddlDamageProduct').focus(); });
+    }
+    else if (price == "") {
+        swal('Alert', 'Please Enter Price', 'error').then(function () { swal.close(); $('#txtdamageprice').focus(); });
+    }
+    else if (unit == "") {
+        swal('Alert', 'Please Enter Number of Unit', 'error').then(function () { swal.close(); $('#txtdamageunit').focus(); });
+    }
+
+    else if (serial == "") {
+        swal('Alert', 'Please Enter Lot/Serial Number', 'error').then(function () { swal.close(); $('#txtdamageserial').focus(); });
+    }
+    else if (eatby == "") {
+        swal('Alert', 'Please Enter date', 'error').then(function () { swal.close(); $('#txtdamageeatbydate').focus(); });
+    }
+   
+    else if (label == "") {
+        swal('Alert', 'Please Enter Label of Movement', 'error').then(function () { swal.close(); $('#txtdamagelabel').focus(); });
+    }
+
+
+    else {
+
+        var obj = {
+
+            fk_entrepot: fk_entrepot,
+            fk_product: fk_product,
+            serial: serial,
+            eatby: stockdate,
+            value: unit,
+            label: label,
+            price: price,
+           
+        }
+        $.ajax({
+            url: '/Warehouse/AddDamagestock/', dataType: 'json', type: 'Post',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(obj),
+            dataType: "json",
+            searching: false,
+            beforeSend: function () { $("#loader").show(); },
+            success: function (data) {
+                if (data.status == true) {
+                    //$('#parent > input:text').val('');
+                    swal('Alert!', data.message, 'success');
+                    reset();
+                    StockDamageGrid();
+                }
+                else {
+                    swal('Alert!', data.message, 'error');
+                }
+            },
+            complete: function () { $("#loader").hide(); },
+            error: function (error) { swal('Error!', 'something went wrong', 'error'); },
+        })
+
+    }
+}
+
+
+
+$('#ddlDamageProduct').change(function () {
+    debugger
+    if ($('#ddlDamageProduct').val() == null) return false;
+    var fk_product = $('#ddlDamageProduct').val();
+    var fk_entrepot = $("#hfid").val();
+    //alert(fk_product);
+    var obj = {
+        id: fk_product,
+        warehouseid: fk_entrepot,
+        productid: fk_product,
+    }
+    jQuery.ajax({
+        url: "/Warehouse/GetProductInfo/", dataType: 'json', type: "Post",
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(obj),
+        success: function (data) {
+            data = JSON.parse(data);
+            console.log(data);
+            $('#txtdamageprice').val(data[0].buy_price);
+        },
+        error: function (jqXHR, textStatus, errorThrown) { swal('Error!', errorThrown, "error"); }
+    });
+});
+
+StockDamageGrid();
+function StockDamageGrid() {
+    var fk_entrepot = $("#hfid").val();
+    var obj = { fk_entrepot: fk_entrepot };
+    $.ajax({
+        url: '/Warehouse/GetDamageStock',
+        method: 'post',
+        datatype: 'json',
+        contentType: "application/json; charset=utf-8",
+        processing: true,
+        data: JSON.stringify(obj),
+        success: function (data) {
+            $('#dtdamagestock').dataTable({
+                //sDom: 'rtip',
+                destroy: true,
+                data: JSON.parse(data),
+                "columns": [
+                    { data: 'ref', title: 'Ref', sWidth: "5%" },
+                    { data: 'date', title: 'Date', sWidth: "15%", },
+                    { data: 'label', title: 'Label of movement', sWidth: "15%" },
+                    { data: 'product', title: 'Product', sWidth: "20%" },
+                    { data: 'value', title: 'Qty', sWidth: "10%" },
+                    {
+                        'data': 'ref',
+                        'sortable': false,
+                        'searchable': false,
+                        sWidth:"10%",
+                        'render': function (ref, type, full, meta) {
+                            return '<a href="#" onclick="EditSelect(' + ref + ');"><i class="glyphicon glyphicon-pencil"></i></a>';
+                        }
+                    },
+                ],
+                "order": [[0, 'desc']],
+            });
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            alert(xhr.responseText);
+        }
+    });
+
+}
+
+
+function EditSelect(ref) {
+    var obj = { strValue1: ref }
+    $.ajax({
+        url: '/Warehouse/SelectDamageStock/',
+        datatype: 'json',
+        type: 'Post',
+        contentType: "application/json;charset=utf-8",
+        data: JSON.stringify(obj),
+        success: function (data) {
+            var jobj = JSON.parse(data);
+            console.log(jobj[0].label);
+            $("#hfdamagestockid").val(jobj[0].rowid);
+            $('#txtdamagelabel').val(jobj[0].label);
+            $('#ddlDamageProduct').val(jobj[0].fk_product).trigger('change');
+            $("#txtdamageserial").val(jobj[0].serial);
+            $("#txtdamageeatbydate").val(jobj[0].eatby);
+            $("#txtdamageprice").val(jobj[0].price);
+            $("#txtdamageunit").val(jobj[0].value);
+            $("#hfdamagetransid").val(jobj[0].tran_id);
+            $("#btnDamageStock").hide();
+            $("#btnDamageStockUpdate").show();
+            $("#btnDamageStockCancel").show();
+
+        },
+        complete: function () { $("#loader").hide(); },
+        error: function (error) { swal('Error!', 'something went wrong', 'error'); },
+    })
+}
+
+
+function Updatedamagestock() {
+   
+    var fk_entrepot = $("#hfid").val();
+    var tranid = $("#hfdamagetransid").val();
+    var rowid = $("#hfdamagestockid").val();
+    var fk_product = $("#ddlDamageProduct").val();
+    var serial = $("#txtdamageserial").val();
+    var eatby = $("#txtdamageeatbydate").val();
+    var price = $("#txtdamageprice").val();
+    var unit = $("#txtdamageunit").val();
+    var label = $("#txtdamagelabel").val();
+  
+
+    var formattedDate = new Date(eatby);
+    var d = formattedDate.getDate();
+    //var m = formattedDate.getMonth();
+    var m = ("0" + (formattedDate.getMonth() + 1)).slice(-2)
+    //m += 1;  // JavaScript months are 0-11
+    var y = formattedDate.getFullYear();
+    var z = y + "-" + m + "-" + d;
+    //var eat =$("#txtDate").val(d + "." + m + "." + y);
+    //alert(z);
+
+
+    if (fk_product == null || fk_product == 0) {
+        swal('Alert', 'Please select product', 'error').then(function () { swal.close(); $('#ddlDamageProduct').focus(); });
+    }
+    else if (price == "") {
+        swal('Alert', 'Please Enter Price', 'error').then(function () { swal.close(); $('#txtdamageprice').focus(); });
+    }
+
+    else if (unit == "") {
+        swal('Alert', 'Please Enter Number of Unit', 'error').then(function () { swal.close(); $('#txtdamageunit').focus(); });
+    }
+
+    else if (serial == "") {
+        swal('Alert', 'Please Enter Lot/Serial Number', 'error').then(function () { swal.close(); $('#txtdamageserial').focus(); });
+    }
+    else if (eatby == "") {
+        swal('Alert', 'Please Enter stock correction date', 'error').then(function () { swal.close(); $('#txtdamageeatbydate').focus(); });
+    }
+    
+    else if (label == "") {
+        swal('Alert', 'Please Enter Label of Movement', 'error').then(function () { swal.close(); $('#txtdamagelabel').focus(); });
+    }
+
+    else {
+
+        var obj = {
+
+            fk_entrepot: fk_entrepot,
+            searchtransid: tranid,
+            searchid: rowid,
+            fk_product: fk_product,
+            serial: serial,
+            eatby: z,
+            value: unit,
+            label: label,
+            price: price,
+            
+        }
+        $.ajax({
+            url: '/Warehouse/UpdateDamagestock/', dataType: 'json', type: 'Post',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(obj),
+            dataType: "json",
+            searching: false,
+            beforeSend: function () { $("#loader").show(); },
+            success: function (data) {
+                if (data.status == true) {
+                    //$('#parent > input:text').val('');
+                    swal('Alert!', data.message, 'success');
+                    StockDamageGrid();
+                    resetdamagestock();
+                    $("#btnDamageStock").show();
+                    $("#btnDamageStockUpdate").hide();
+                }
+                else {
+                    swal('Alert!', data.message, 'error');
+                }
+            },
+            complete: function () { $("#loader").hide(); },
+            error: function (error) { swal('Error!', 'something went wrong', 'error'); },
+        })
+
+    }
+}
+
+
+
+function resetdamagestock() {
+    $("#hfdamagestockid").val('');
+    $('#txtdamagelabel').val('');
+    $('#ddlDamageProduct').val(null).trigger('change');
+    $("#txtdamageserial").val('');
+    $("#txtdamageeatbydate").val('');
+    $("#txtdamageprice").val('');
+    $("#txtdamageunit").val('');
+    $("#hfdamagetransid").val('');
 }

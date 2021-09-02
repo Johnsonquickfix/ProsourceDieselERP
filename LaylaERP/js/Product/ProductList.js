@@ -244,7 +244,7 @@ function dataGridLoad(order_type) {
                 }
             },
             {
-                data: 'id', title: 'ID', sWidth: "10%", render: function (data, type, row) {
+                data: 'id', title: 'ID', sWidth: "5%", render: function (data, type, row) {
                     if (row.post_parent > 0)
                         return ' ↳' + row.id + '' ;
                     else

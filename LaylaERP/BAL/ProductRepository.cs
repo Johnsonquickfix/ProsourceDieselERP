@@ -29,17 +29,17 @@ namespace LaylaERP.BAL
                 //            + " sum(case when post_status = 'trash' then 1 else 0 end) Trash"
                 //            + " from wp_posts p where p.post_type = 'product' and post_status != 'draft'";
 
-                //string strSql = "select sum(case when post_status not in('auto-draft') then 1 else 0 end) AllOrder,"
-                //          + " sum(case when post_status = 'publish' then 1 else 0 end) Publish,"
-                //          + " sum(case when post_status = 'publish' then 1 else 0 end)+sum(case post_status when 'private' then 1 else 0 end) Private,"
-                //          + " sum(case when post_status = 'trash' then 1 else 0 end) Trash"
-                //          + " from wp_posts p where p.post_type = 'product' and post_status != 'draft'";
-
                 string strSql = "select sum(case when post_status not in('auto-draft') then 1 else 0 end) AllOrder,"
-                         + " sum(case when post_status = 'publish' then 1 else 0 end) Publish,"
-                         + " sum(case when post_status = 'publish' then 1 else 0 end)+sum(case post_status when 'private' then 1 else 0 end) Private,"
-                         + " sum(case when post_status = 'trash' then 1 else 0 end) Trash"
-                         + " from wp_posts p where p.post_type in ('product', 'product_variation') and post_status != 'draft'";
+                          + " sum(case when post_status = 'publish' then 1 else 0 end) Publish,"
+                          + " sum(case when post_status = 'publish' then 1 else 0 end)+sum(case post_status when 'private' then 1 else 0 end) Private,"
+                          + " sum(case when post_status = 'trash' then 1 else 0 end) Trash"
+                          + " from wp_posts p where p.post_type = 'product' and post_status != 'draft'";
+
+                //string strSql = "select sum(case when post_status not in('auto-draft') then 1 else 0 end) AllOrder,"
+                //         + " sum(case when post_status = 'publish' then 1 else 0 end) Publish,"
+                //         + " sum(case when post_status = 'publish' then 1 else 0 end)+sum(case post_status when 'private' then 1 else 0 end) Private,"
+                //         + " sum(case when post_status = 'trash' then 1 else 0 end) Trash"
+                //         + " from wp_posts p where p.post_type in ('product', 'product_variation') and post_status != 'draft'";
 
                 dt = SQLHelper.ExecuteDataTable(strSql);
             }
@@ -946,13 +946,16 @@ namespace LaylaERP.BAL
                 //////+ " WHERE p.post_type in('product') and p.post_status != 'draft' and tt.taxonomy IN('product_cat','product_type') " + strWhr;
 
 
-                string strSql = "select p.id,p.post_type,p.post_title,post_date_gmt,DATE_FORMAT(p.post_date_gmt, '%m-%d-%Y') Date,DATE_FORMAT(p.post_modified, '%m-%d-%Y') publishDate,"
+                string strSql = "select t.term_id,p.id,p.post_type,p.post_title,post_date_gmt,DATE_FORMAT(p.post_date_gmt, '%m-%d-%Y') Date,DATE_FORMAT(p.post_modified, '%m-%d-%Y') publishDate,"
               + " (select group_concat(ui.name) from wp_terms ui join wp_term_taxonomy uim on uim.term_id = ui.term_id and uim.taxonomy IN('product_cat') JOIN wp_term_relationships AS trp ON trp.object_id = p.ID and trp.term_taxonomy_id = uim.term_taxonomy_id) itemname ,"
               + " case when p.post_status = 'trash' then 'InActive' else 'Active' end Activestatus,max(case when p.id = s.post_id and s.meta_key = '_sku' then s.meta_value else '' end) sku,"
               + " max(case when p.id = s.post_id and s.meta_key = '_regular_price' then s.meta_value else '' end) regular_price, max(case when p.id = s.post_id and s.meta_key = '_sale_price' then s.meta_value else '' end) sale_price, "
               + " (case when p.post_parent = 0 then p.id else p.post_parent end) p_id,p.post_parent,p.post_status"
               + " FROM wp_posts p"
-              + " left join wp_postmeta as s on p.id = s.post_id"              
+              + " left join wp_postmeta as s on p.id = s.post_id"
+              + " LEFT JOIN wp_term_relationships AS tr ON tr.object_id = p.ID"
+              + " LEFT JOIN wp_term_taxonomy AS tt ON tt.term_taxonomy_id = tr.term_taxonomy_id"
+              + " LEFT JOIN wp_terms AS t ON t.term_id = tt.term_id"
               + " WHERE p.post_type in ('product', 'product_variation') and p.post_status != 'draft' " + strWhr
               + " GROUP BY p.ID"
                + " order by p_id";
@@ -960,6 +963,9 @@ namespace LaylaERP.BAL
 
                 strSql += "; SELECT count(distinct p.ID) TotalRecord FROM wp_posts p"
                + " left join wp_postmeta as s on p.id = s.post_id"
+              + " LEFT JOIN wp_term_relationships AS tr ON tr.object_id = p.ID"
+              + " LEFT JOIN wp_term_taxonomy AS tt ON tt.term_taxonomy_id = tr.term_taxonomy_id"
+              + " LEFT JOIN wp_terms AS t ON t.term_id = tt.term_id"
               + " WHERE p.post_type in ('product', 'product_variation') and p.post_status != 'draft' " + strWhr;
 
 

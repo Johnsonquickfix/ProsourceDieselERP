@@ -57,8 +57,8 @@
                                 <select class="form-control select2 billinfo" id="ddlProductType" placeholder="Select Products">
                                     <optgroup label="Product Type">
                                         <option value="2" selected="selected">Simple product</option>
-                                        <option value="3">Grouped product</option>
-                                        <option value="5">External/Affiliate product</option>
+                                        @*<option value="3">Grouped product</option>
+                                        <option value="5">External/Affiliate product</option>*@
                                         <option value="4">Variable product</option>
                                     </optgroup>
                                 </select>
@@ -79,7 +79,7 @@
                         <div class="tab-content">
                             <div class="tab-pane active" id="tab_1">
                                 <div id="divregular" class="form-group d-flex">
-                                    <label class="col-sm-3 control-label">Regular price ($)</label>
+                                    <label class="col-sm-3 control-label">Retail price ($)</label>
                                     <div class="col-sm-9">
                                         <input type="text" id="txtregularprice" class="form-control">
                                     </div>
@@ -108,6 +108,12 @@
                                             <option value="reduced-rate">Reduced rate</option>
                                             <option value="zero-rate">Zero rate</option>
                                         </select>
+                                    </div>
+                                </div>
+                                <div class="form-group d-flex">
+                                    <label class="col-sm-3 control-label">Publish date</label>
+                                    <div class="col-sm-9">                                      
+                                        <input type="text" id="txtPublishDate" class="form-control billinfo" placeholder="Publish Date (MM/DD/YYYY)" autocomplete="off" />
                                     </div>
                                 </div>
                             </div>
@@ -364,6 +370,7 @@
     //    plugins: 'table wordcount'
     //});
 </script>
+
 <script>
 
     jQuery(function ($) {

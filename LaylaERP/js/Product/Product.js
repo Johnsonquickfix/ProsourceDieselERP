@@ -12,7 +12,7 @@
 
     GetDetails();
    setTimeout(function () { dataGridLoad(''); }, 100);
-    //$("#loader").hide();
+    $("#loader").hide();
     $('#all').click(function () { var order_type = ""; $('#hfType').val(order_type); dataGridLoad(order_type); });
     $('#published').click(function () { var order_type = "publish"; $('#hfType').val(order_type); dataGridLoad(order_type); });
     $('#private').click(function () { var order_type = "private"; $('#hfType').val(order_type); dataGridLoad(order_type); });
@@ -65,9 +65,9 @@ function dataGridLoad(order_type) {
             aoData.push({ name: "strValue2", value: order_type });
             aoData.push({ name: "strValue3", value: prodctype });
             aoData.push({ name: "strValue4", value: stockstatus });
-            var col = 'order_id';
+            var col = 'ID';
             if (oSettings.aaSorting.length > 0) {
-                var col = oSettings.aaSorting[0][0] == 2 ? "ID" : oSettings.aaSorting[0][0] == 3 ? "post_title" : oSettings.aaSorting[0][0] == 4 ? "product_category" : "ID";
+                var col = oSettings.aaSorting[0][0] == 2 ? "post_title" : oSettings.aaSorting[0][0] == 2 ? "sku" : oSettings.aaSorting[0][0] == 4 ? "itemname" : oSettings.aaSorting[0][0] == 4 ? "Date" : oSettings.aaSorting[0][0] == 5 ? "publishDate" : "ID";
                 aoData.push({ name: "sSortColName", value: col });
             }
             //console.log(aoData);
@@ -94,41 +94,43 @@ function dataGridLoad(order_type) {
             },
             { data: 'post_title', title: 'Name', sWidth: "12%" },
             { data: 'sku', title: 'SKU', sWidth: "12%" },
-            { data: 'stockstatus', title: 'Stock', sWidth: "12%" },
+            //{ data: 'stockstatus', title: 'Stock', sWidth: "12%" },
             
-            {
-                data: 'price', title: 'Price', sWidth: "12%", render: function (data, type, row) {
-                    var tprice = 'toFormat';
+            //{
+            //    data: 'price', title: 'Price', sWidth: "12%", render: function (data, type, row) {
+            //        var tprice = 'toFormat';
                      
-                    if (row.pricecodition == 'no') {
-                        tprice = '<span style ="text-decoration: line-through;"> ' + '$' + row.Regprice + '<br>' + ' </span>' + '<span style ="text-decoration: underline;"> ' + '$' + row.SalPrice + '<br>' + ' </span>';
-                       // tprice = '$' + row.Regprice + '<br>' + '$' + row.SalPrice;
-                        if (tprice == '$null$null' || tprice == '$0$null' || tprice == '$null$0' || tprice == '$0$')
-                            tprice = '$0.00';
-                        tprice = tprice.replaceAll('$null', '');
-                        if (row.Regprice == '0' && row.SalPrice == '0')
-                            tprice = '$0.00';
-                    }
-                    else {
-                        if (row.price == '$0.00-$0.00' || row.price == '$0-$0' || row.price == '$0-$' || row.price == null) {
-                            tprice = '$0.00';
-                        }
-                        else
-                            tprice = row.price;
-                    }
+            //        if (row.pricecodition == 'no') {
+            //            tprice = '<span style ="text-decoration: line-through;"> ' + '$' + row.Regprice + '<br>' + ' </span>' + '<span style ="text-decoration: underline;"> ' + '$' + row.SalPrice + '<br>' + ' </span>';
+            //           // tprice = '$' + row.Regprice + '<br>' + '$' + row.SalPrice;
+            //            if (tprice == '$null$null' || tprice == '$0$null' || tprice == '$null$0' || tprice == '$0$')
+            //                tprice = '$0.00';
+            //            tprice = tprice.replaceAll('$null', '');
+            //            if (row.Regprice == '0' && row.SalPrice == '0')
+            //                tprice = '$0.00';
+            //        }
+            //        else {
+            //            if (row.price == '$0.00-$0.00' || row.price == '$0-$0' || row.price == '$0-$' || row.price == null) {
+            //                tprice = '$0.00';
+            //            }
+            //            else
+            //                tprice = row.price;
+            //        }
 
-                    return tprice
-                }
-            },
+            //        return tprice
+            //    }
+            //},
             { data: 'itemname', title: 'Categories', sWidth: "12%" },
-            {
-                'data': 'ID', sWidth: "5%   ",
-                'render': function (data, type, full, meta) {
-                    return '<i class="glyphicon glyphicon-star"></i>';
-                }
-            },
+            //{
+            //    'data': 'ID', sWidth: "5%   ",
+            //    'render': function (data, type, full, meta) {
+            //        return '<i class="glyphicon glyphicon-star"></i>';
+            //    }
+            //},
  
-            { data: 'Date', title: 'Date', sWidth: "12%" },
+            { data: 'Date', title: 'Creation Date', sWidth: "12%" },
+            { data: 'publishDate', title: 'Publish Date', sWidth: "12%" },
+            { data: 'Activestatus', title: 'Status', sWidth: "12%" },
             {
                 'data': 'ID', title: 'Action', sWidth: "5%",
                 'render': function (id, type, full, meta) {
@@ -165,12 +167,12 @@ function Status() {
     id = id.replace(/,(?=\s*$)/, '');
     $("#checkAll").prop('checked', false);
     var status = $('#ddlbulkaction').val();
-    if (id == "") { swal('alert', 'Please select a Coupon', 'error'); }
-    else if (status == "0") { swal('alert', 'Please select Action', 'error'); }
+    if (id == "") { swal('alert', 'Please select product from list', 'error'); }
+    else if (status == "0") { swal('alert', 'Please select Bulk Action', 'error'); }
     else {
         var obj = { strVal: id, status: status }
         $.ajax({
-            url: '/Coupons/ChangeTrash', dataType: 'JSON', type: 'POST',
+            url: '/Product/Changestatus', dataType: 'JSON', type: 'POST',
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify(obj),
             beforeSend: function () { $("#loader").show(); },

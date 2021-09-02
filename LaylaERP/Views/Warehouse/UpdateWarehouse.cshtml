@@ -601,6 +601,13 @@
         </div>
 
         <div class="tab-pane" id="tab_5">
+            <div class="user-top-section">
+                <div class="tablenav top tablenav-top2">
+                    <div class="alignleft actions bulkactions">
+                        <button type="button" id="btnRefresh" class="btn btn-primary btn-flat button">Refresh</button>
+                    </div>
+                </div>
+            </div>
             <div class="userrole_section section_wrapper appearance-menu-section">
                 <div class="box box-primary">
                     <div class="box-header">
@@ -809,6 +816,12 @@
         $(document).on('click', "#btnTransferStockUpdate", function () {
 
             UpdateTransferStock();
+        });
+
+        $(document).on('click', "#btnRefresh", function () {
+
+            ProductWarehouseGrid();
+
         });
 
         $('#ddlProduct').change(function () {

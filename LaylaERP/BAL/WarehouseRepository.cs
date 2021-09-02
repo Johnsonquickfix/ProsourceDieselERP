@@ -614,7 +614,7 @@ namespace LaylaERP.BAL
                 string strquery = "select p.id,p.post_type,p.post_title ,max(case when p.id = s.post_id and s.meta_key = '_sku' then s.meta_value else '' end) sku, COALESCE(format(psi.purchase_price,2),0) buy_price,"
                                  + " COALESCE(format(max(case when p.id = s.post_id and s.meta_key = '_regular_price' then s.meta_value else '' end),2),0) reg_price, "
                                  + " COALESCE(format(max(case when p.id = s.post_id and s.meta_key = '_sale_price' then s.meta_value else '' end),2),0) sale_price, "
-                                 + " (select coalesce(sum(case when pwr.flag = 'R' then quantity else -quantity end), 0) from product_stock_register pwr where pwr.product_id = p.id and pwr.warehouse_id = pw.fk_warehouse) stock,"
+                                 + " (select (coalesce(sum(case when pwr.flag = 'R' then quantity end),0) - coalesce(sum(case when pwr.flag = 'I' then quantity end),0)) from product_stock_register pwr where pwr.product_id = p.id and pwr.warehouse_id = pw.fk_warehouse) stock,"
                                  + " (case when p.post_parent = 0 then p.id else p.post_parent end) p_id,p.post_parent,p.post_status FROM wp_posts as p"
                                  + " left join wp_postmeta as s on p.id = s.post_id"
                                  + " left join product_warehouse pw on pw.fk_product = p.ID"
@@ -670,7 +670,7 @@ namespace LaylaERP.BAL
             try
             {
                 //string strquery = "SELECT sum(quantity) quantity from product_stock_register where product_id = '" + productid + "' and warehouse_id = '"+warehouseid+"'";
-                string strquery = "select coalesce(sum(case when pwr.flag = 'R' then quantity else -quantity end),0) quantity from product_stock_register pwr inner join wp_warehouse wr on wr.rowid = pwr.warehouse_id where product_id = '" + productid + "' and pwr.warehouse_id='" + warehouseid + "'";
+                string strquery = "select (coalesce(sum(case when pwr.flag = 'R' then quantity end),0) - coalesce(sum(case when pwr.flag = 'I' then quantity end),0)) quantity from product_stock_register pwr inner join wp_warehouse wr on wr.rowid = pwr.warehouse_id where product_id = '" + productid + "' and pwr.warehouse_id='" + warehouseid + "'";
                 dtr = SQLHelper.ExecuteDataTable(strquery);
 
             }

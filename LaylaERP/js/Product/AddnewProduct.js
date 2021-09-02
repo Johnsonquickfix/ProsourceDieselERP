@@ -9,6 +9,9 @@
     $("#btnbacklist").prop("href", "ListProduct")
 
     $('#divPurchase').hide();
+    $('#txtPublishDate').datepicker({ format: 'mm/dd/yyyy', autoclose: true, todayHighlight: true });
+    //let today = new Date();
+    //$('#txtPublishDate').val(today.toLocaleDateString("en-US"));
 
     $.get('/Product/GetShipping/' + 1, function (data) {
         var items = "";
@@ -237,7 +240,7 @@
                         //varHTML += '    </div>';
                         //varHTML += '</div>';
                         varHTML += '<div class="form-group d-flex mt-25">';
-                        varHTML += '    <div class="col-md-6"><label class="control-label">Regular Price($)</label><input type="text" name="txtregularvar" value="0"  class="form-control" placeholder="Variation price *"></div>';
+                        varHTML += '    <div class="col-md-6"><label class="control-label">Retail Price($)</label><input type="text" name="txtregularvar" value="0"  class="form-control" placeholder="Variation price *"></div>';
                         varHTML += '<div class="col-md-6"><label class="control-label">Sale Price($)</label><input type="text" value="0"  name="txtSalepricevariation" class="form-control"></div>';
                         varHTML += '</div>';
                         varHTML += '<div id="divstock">';
@@ -265,6 +268,11 @@
                         varHTML += '    <div class="form-group d-flex">';
                         varHTML += '        <div class="col-md-12"><label class="control-label">Description</label><textarea class="txtdescriptionvariation form-control"></textarea></div>';
                         varHTML += '    </div>';
+                        varHTML += '<div class="form-group d-flex allow-website">';
+                        varHTML += '    <div class="col-md-12">';
+                        varHTML += '<div class="form-check-input"><input type="checkbox" class="chkallowwebsite" id="allowwebsite"><label>Allow In Website:</label></div>';
+                        varHTML += '    </div>';
+                        varHTML += '</div>';
                         varHTML += '    <div class="box-footer text-right"></div>';
                         varHTML += '</div>';
                         //end-body
@@ -320,11 +328,11 @@
                 );
             });
 
-            //$(div).find(".chkproducttypevir").each(function () {
-            //    _attxml.push(
-            //        { post_id: $(div).find('.nmvariationid').val(), meta_key: '_virtual', meta_value: this.checked }
-            //    );
-            //});
+            $(div).find(".chkallowwebsite").each(function () {
+                _attxml.push(
+                    { post_id: $(div).find('.nmvariationid').val(), meta_key: '_allowwebsite', meta_value: this.checked }
+                );
+            });
 
             //$(div).find(".chkproducttypestc").each(function () {
             //    _attxml.push(
@@ -451,7 +459,7 @@
         //        );
         //    }); _ItemProduct
 
-       // console.log(_attxml);
+        //console.log(_attxml);
        // console.log(_ItemProduct);
        // console.log(_PostTitleProduct);
       //  console.log(_PriceProduct);
@@ -602,7 +610,7 @@ function AddProduct() {
     let dfad = dfa.replace('undefined,', '');
     var n = dfad.lastIndexOf(",");
     var categorydata = dfad.substring(0, n)
-
+    let date_publish = $("#txtPublishDate").val().split('/');
     if ($("#enableStock").prop('checked') == true)
         enableStock = "yes";
     else
@@ -620,7 +628,7 @@ function AddProduct() {
     saleprice = $("#txtsaleprice").val();
     taxstatus = $("#ddltaxstatus").val();
     classtax = $("#ddlclasstax").val();
-    sku = $("#txtsku").val();
+    sku = $("#txtsku").val();    
     enableStockval = enableStock;
     Stockquantity = $("#txtStockquantity").val();
 
@@ -638,7 +646,10 @@ function AddProduct() {
     upsellsval = upsells;
     Crosssellsval = Crosssells;
     categorydataval = categorydata;
-   // console.log(categorydataval);
+
+    if (date_publish.length > 0)
+        date_publish = date_publish[2] + '/' + date_publish[0] + '/' + date_publish[1];
+    //console.log(date_publish);
 
     if (productname == "") {
         swal('Alert', 'Please Enter Product', 'error').then(function () { swal.close(); $('#txtProductName').focus(); });
@@ -650,6 +661,7 @@ function AddProduct() {
         swal('Alert', 'Please Select Category', 'error').then(function () { swal.close(); $('#chkproducttype').focus(); });
     }
     else {
+        
         var obj = {
             ID: ID,
             updatedID: UpdatedIDval,
@@ -676,7 +688,8 @@ function AddProduct() {
             upsell_ids: upsellsval,
             crosssell_ids: Crosssellsval,
             price: saleprice,
-            CategoryID: categorydataval
+            CategoryID: categorydataval,
+            PublishDate: date_publish
         }
         $.ajax({
             url: '/Product/CreateProduct/', dataType: 'json', type: 'Post',
@@ -775,6 +788,10 @@ function GetDataByID(order_id) {
             else
                 $('#ddlclasstax').val(i[0].taxclass).trigger('change');
             $("#txtsku").val(i[0].sku);
+          //  console.log(i[0].Publish_Date);
+            if (i[0].Publish_Date != null)
+                $('#txtPublishDate').val(i[0].Publish_Date);
+        
             if (i[0].managestock == "yes") {
                 $("#enableStock").prop("checked", true);
                 $('#dvsock').show();
@@ -938,6 +955,10 @@ function GetProductvariationID(ProductID) {
                 //}
                 //    else
                 //   regular_price = v_data['_regular_price'];
+              
+                let allowwebsite = '';
+                if (v_data['_allowwebsite'] != "" && v_data['_allowwebsite'] != undefined)
+                     allowwebsite = v_data['_allowwebsite'];              
 
                 let sku = '';
                 //sku = v_data['_sku'];
@@ -1022,7 +1043,7 @@ function GetProductvariationID(ProductID) {
                 //varHTML += '    </div>';
                 //varHTML += '</div>';
                 varHTML += '<div class="form-group d-flex mt-25">';
-                varHTML += '    <div class="col-md-6"><label class="control-label">Regular Price($)</label><input type="text" name="txtregularvar" class="form-control" placeholder="Variation price *" value="' + v_data['_regular_price'] + '"></div>';
+                varHTML += '    <div class="col-md-6"><label class="control-label">Retail Price($)</label><input type="text" name="txtregularvar" class="form-control" placeholder="Variation price *" value="' + v_data['_regular_price'] + '"></div>';
                 varHTML += '<div class="col-md-6"><label class="control-label">Sale Price($)</label><input type="text" name="txtSalepricevariation" class="form-control" value="' + sale_price + '"></div>';
                 varHTML += '</div>';
                 varHTML += '<div id="divstock">';
@@ -1053,6 +1074,11 @@ function GetProductvariationID(ProductID) {
                 varHTML += '    <div class="form-group d-flex">';
                 varHTML += '        <div class="col-md-12"><label class="control-label">Description</label><textarea  class="txtdescriptionvariation form-control">' + v_data['_variation_description'] + '</textarea></div>';
                 varHTML += '    </div>';
+                varHTML += '<div class="form-group d-flex allow-website">';
+                varHTML += '    <div class="col-md-12">';
+                varHTML += '<div class="form-check-input"><input type="checkbox" class="chkallowwebsite form-check-input" id="allowwebsite_' + data[i].id + '"><label>Allow In Website:</label></div>';
+                varHTML += '    </div>';
+                varHTML += '</div>';
                 varHTML += '    <div class="box-footer text-right"></div>';
                 varHTML += '</div>';
                 //end-body
@@ -1062,7 +1088,12 @@ function GetProductvariationID(ProductID) {
                 $(".select2").select2();
                 $("#ddlcsv_" + data[i].id).val(v_data['_tax_class']).trigger('change');
                 $("#ddlallow_" + data[i].id).val(v_data['_backorders']).trigger('change');
-
+               // console.log(allowwebsite);
+                if (allowwebsite == 'True')
+                    $("#allowwebsite_" + data[i].id).prop("checked", true);
+                else
+                    $("#allowwebsite_" + data[i].id).prop("checked", false);
+                
             }
 
         },

@@ -23,11 +23,23 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "select sum(case when post_status not in('auto-draft','trash') then 1 else 0 end) AllOrder,"
-                            + " sum(case when post_status = 'publish' then 1 else 0 end) Publish,"
-                            + " sum(case post_status when 'private' then 1 else 0 end) Private,"
-                            + " sum(case when post_status = 'trash' then 1 else 0 end) Trash"
-                            + " from wp_posts p where p.post_type = 'product' and post_status != 'draft'";
+                //string strSql = "select sum(case when post_status not in('auto-draft','trash') then 1 else 0 end) AllOrder,"
+                //            + " sum(case when post_status = 'publish' then 1 else 0 end) Publish,"
+                //            + " sum(case post_status when 'private' then 1 else 0 end) Private,"
+                //            + " sum(case when post_status = 'trash' then 1 else 0 end) Trash"
+                //            + " from wp_posts p where p.post_type = 'product' and post_status != 'draft'";
+
+                //string strSql = "select sum(case when post_status not in('auto-draft') then 1 else 0 end) AllOrder,"
+                //          + " sum(case when post_status = 'publish' then 1 else 0 end) Publish,"
+                //          + " sum(case when post_status = 'publish' then 1 else 0 end)+sum(case post_status when 'private' then 1 else 0 end) Private,"
+                //          + " sum(case when post_status = 'trash' then 1 else 0 end) Trash"
+                //          + " from wp_posts p where p.post_type = 'product' and post_status != 'draft'";
+
+                string strSql = "select sum(case when post_status not in('auto-draft') then 1 else 0 end) AllOrder,"
+                         + " sum(case when post_status = 'publish' then 1 else 0 end) Publish,"
+                         + " sum(case when post_status = 'publish' then 1 else 0 end)+sum(case post_status when 'private' then 1 else 0 end) Private,"
+                         + " sum(case when post_status = 'trash' then 1 else 0 end) Trash"
+                         + " from wp_posts p where p.post_type in ('product', 'product_variation') and post_status != 'draft'";
 
                 dt = SQLHelper.ExecuteDataTable(strSql);
             }
@@ -58,7 +70,7 @@ namespace LaylaERP.BAL
                 string strWhr = string.Empty;
 
                 string strSql = "SELECT P.ID ID,post_title,post_content,post_name,"
-                             + "  pmregularamount.meta_value regularamount,pmsaleprice.meta_value saleprice,pmtotalsales.meta_value totalsales,pmtaxstatus.meta_value axstatus,pmtaxclass.meta_value taxclass,pmmanagestock.meta_value managestock,pmsoldindividually.meta_value soldindividually,"
+                             + "  DATE_FORMAT(P.post_modified,'%m/%d/%Y') Publish_Date,pmregularamount.meta_value regularamount,pmsaleprice.meta_value saleprice,pmtotalsales.meta_value totalsales,pmtaxstatus.meta_value axstatus,pmtaxclass.meta_value taxclass,pmmanagestock.meta_value managestock,pmsoldindividually.meta_value soldindividually,"
                              + "  pmbackorders.meta_value backorders,pmweight.meta_value weight,pmlength.meta_value length,pmeheight.meta_value height,pmwidth.meta_value width,pmupsellids.meta_value upsellids,pmcrosssellids.meta_value crosssellids,"
                              + "  pmstock.meta_value stock,pmstockstatus.meta_value stockstatus,pmlowstockamount.meta_value lowstockamount, pmsku.meta_value sku,pmsatt.meta_value productattributes,(SELECT group_concat(ID) FROM `wp_posts` where post_parent = P.ID) VariantID,"
                              + " (select term_id  from wp_terms where term_id in ( select term_id from wp_term_taxonomy where taxonomy = 'product_type' and term_taxonomy_id in (SELECT term_taxonomy_id FROM `wp_term_relationships` where object_id = P.ID))) ProductsID,"
@@ -83,7 +95,7 @@ namespace LaylaERP.BAL
                              + " left join wp_postmeta pmstockstatus on P.ID = pmstockstatus.post_id and pmstockstatus.meta_key = '_stock_status'"
                              + " left join wp_postmeta pmlowstockamount on P.ID = pmlowstockamount.post_id and pmlowstockamount.meta_key = '_low_stock_amount'"
                              + " left join wp_postmeta pmsku on P.ID = pmsku.post_id and pmsku.meta_key = '_sku'"
-                             + " left join wp_postmeta pmsatt on P.ID = pmsatt.post_id and pmsatt.meta_key = '_product_attributes'"
+                             + " left join wp_postmeta pmsatt on P.ID = pmsatt.post_id and pmsatt.meta_key = '_product_attributes'"                             
                              + " WHERE P.post_type in ('product','product_variation') and P.ID = " + model.strVal + " ";
 
 
@@ -301,6 +313,27 @@ namespace LaylaERP.BAL
             return _list;
         }
 
+
+        public int Changestatus(OrderPostStatusModel model, string ID)
+        {
+            try
+            {
+                string strsql = string.Format("update wp_posts set post_status=@status,post_modified_gmt=@post_modified_gmt where id  in ({0}); ", ID);
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@status", model.status),
+                   // new MySqlParameter("@post_modified", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")),
+                    new MySqlParameter("@post_modified_gmt", DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"))
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
         public static List<ProductModelservices> GetProductParent(string strValue1, string strValue2)
         {
             List<ProductModelservices> _list = new List<ProductModelservices>();
@@ -516,7 +549,7 @@ namespace LaylaERP.BAL
                         + " (SELECT fk_shippingID FROM Shipping_Product where fk_productid = p.ID) shippingclass"
                         + " FROM wp_posts p left outer join wp_postmeta pm on pm.post_id = p.id"
                         + " and(pm.meta_key in ('_regular_price', '_sale_price', 'total_sales', '_tax_status', '_tax_class', '_manage_stock', '_backorders', '_sold_individually',"
-                        + " '_weight', '_length', '_width', '_height', '_upsell_ids', '_crosssell_ids', '_stock', '_low_stock_amount', '_sku', '_product_attributes','_variation_description')"
+                        + " '_weight', '_length', '_width', '_height', '_upsell_ids', '_crosssell_ids', '_stock', '_low_stock_amount', '_sku', '_product_attributes','_variation_description','_allowwebsite')"
                         + " or meta_key like 'Attribute_%')"
                         + " where p.post_type = 'product_variation' and p.post_parent = " + model.strVal + " group by p.id,p.post_title,p.post_content,p.post_name order by p.id";
 
@@ -832,7 +865,10 @@ namespace LaylaERP.BAL
 
                 if (!string.IsNullOrEmpty(userstatus))
                 {
-                    strWhr += " and p.post_status = '" + userstatus + "'";
+                    if(userstatus == "private")
+                    strWhr += " and p.post_status in ('publish','private')";
+                    else
+                       strWhr += " and p.post_status = '" + userstatus + "'";
                 }
                 //else
                 //    strWhr += " and p.post_status != 'auto-draft' ";
@@ -844,11 +880,11 @@ namespace LaylaERP.BAL
                 {
                     strWhr += " and (p.ID like '%" + searchid + "%' "
                             + " OR post_title like '%" + searchid + "%' "
-                            + " OR t.name like '%" + searchid + "%' "
-                            + " OR t.slug like '%" + searchid + "%' "
+                            //+ " OR itemname like '%" + searchid + "%' "
+                            + " OR s.meta_value like '%" + searchid + "%' "
                             + " OR p.post_status like '%" + searchid + "%' "
-                            + " OR pm1.meta_value like '%" + searchid + "%' "
-                            + " OR pmstc.meta_value like '%" + searchid + "%' "
+                            //+ " OR pm1.meta_value like '%" + searchid + "%' "
+                            //+ " OR pmstc.meta_value like '%" + searchid + "%' "
 
 
                             + " )";
@@ -881,31 +917,53 @@ namespace LaylaERP.BAL
                 //                  + " GROUP BY p.ID"
                 //                  + " order by " + SortCol + " " + SortDir + " limit " + (pageno).ToString() + ", " + pagesize + "";
 
-                string strSql = "SELECT  p.ID,t.term_id, p.post_title, t.name AS product_category,p.post_status,post_date_gmt,CONCAT(p.post_status, ' ', DATE_FORMAT(p.post_date_gmt, '%M %d %Y')) "
-                + " Date,'*' Star, group_concat(distinct t.term_id) namecategoty,case when LOCATE(4, (group_concat(distinct t.term_id))) > 0  then 'yes' else 'no' end pricecodition,"
-                + " case when LOCATE(4, (group_concat(distinct t.term_id))) > 0  then (IFNULL(CONCAT(Min(CASE WHEN pm1.meta_key = '_price' then CONCAT('$', pm1.meta_value) ELSE NULL END), '-', MAX(CASE WHEN pm1.meta_key = '_price' then CONCAT('$', pm1.meta_value) ELSE NULL END)), '$0.00')) else CONCAT('$', pmreg.meta_value, '-', '$', pmsalpr.meta_value) end price,"
-                + " MAX(CASE WHEN pm1.meta_key = '_sku' then pm1.meta_value ELSE NULL END) as sku , pmstc.meta_value stockstatus,"
-                + " (select group_concat(ui.name) from wp_terms ui join wp_term_taxonomy uim on uim.term_id = ui.term_id and uim.taxonomy IN('product_cat') JOIN wp_term_relationships AS trp ON trp.object_id = p.ID and trp.term_taxonomy_id = uim.term_taxonomy_id) itemname"
-                + " ,pmreg.meta_value Regprice,pmsalpr.meta_value SalPrice"
-                + " FROM wp_posts p"
-                + " LEFT JOIN wp_postmeta pm1 ON pm1.post_id = p.ID"
-                + " LEFT JOIN wp_postmeta pmreg ON pmreg.post_id = p.ID  and pmreg.meta_key = '_regular_price'"
-                + " LEFT JOIN wp_postmeta pmsalpr ON pmsalpr.post_id = p.ID  and pmsalpr.meta_key= '_sale_price'"
-                + " LEFT JOIN wp_postmeta pmstc ON pmstc.post_id = p.ID and pmstc.meta_key = '_stock_status'"
-                + " LEFT JOIN wp_term_relationships AS tr ON tr.object_id = p.ID"
-                + " LEFT JOIN wp_term_taxonomy AS tt ON tt.term_taxonomy_id = tr.term_taxonomy_id"
-                + " JOIN wp_terms AS t ON t.term_id = tt.term_id"
-                + " WHERE p.post_type in('product') and p.post_status != 'draft' and tt.taxonomy IN('product_cat','product_type') " + strWhr
-                + " GROUP BY p.ID"
-                + " order by " + SortCol + " " + SortDir + " limit " + (pageno).ToString() + ", " + pagesize + "";
+                //////string strSql = "SELECT  p.ID,t.term_id, p.post_title, t.name AS product_category,p.post_status,post_date_gmt,DATE_FORMAT(p.post_date_gmt, '%M %d %Y') Date,DATE_FORMAT(p.post_modified, '%M %d %Y') publishDate"
+                //////+ " ,'*' Star, case when p.post_status = 'trash' then 'InActive' else 'Active' end Activestatus , group_concat(distinct t.term_id) namecategoty,case when LOCATE(4, (group_concat(distinct t.term_id))) > 0  then 'yes' else 'no' end pricecodition,"
+                //////+ " case when LOCATE(4, (group_concat(distinct t.term_id))) > 0  then (IFNULL(CONCAT(Min(CASE WHEN pm1.meta_key = '_price' then CONCAT('$', pm1.meta_value) ELSE NULL END), '-', MAX(CASE WHEN pm1.meta_key = '_price' then CONCAT('$', pm1.meta_value) ELSE NULL END)), '$0.00')) else CONCAT('$', pmreg.meta_value, '-', '$', pmsalpr.meta_value) end price,"
+                //////+ " MAX(CASE WHEN pm1.meta_key = '_sku' then pm1.meta_value ELSE NULL END) as sku , pmstc.meta_value stockstatus,"
+                //////+ " (select group_concat(ui.name) from wp_terms ui join wp_term_taxonomy uim on uim.term_id = ui.term_id and uim.taxonomy IN('product_cat') JOIN wp_term_relationships AS trp ON trp.object_id = p.ID and trp.term_taxonomy_id = uim.term_taxonomy_id) itemname"
+                //////+ " ,pmreg.meta_value Regprice,pmsalpr.meta_value SalPrice"
+                //////+ " FROM wp_posts p"
+                //////+ " LEFT JOIN wp_postmeta pm1 ON pm1.post_id = p.ID"
+                //////+ " LEFT JOIN wp_postmeta pmreg ON pmreg.post_id = p.ID  and pmreg.meta_key = '_regular_price'"
+                //////+ " LEFT JOIN wp_postmeta pmsalpr ON pmsalpr.post_id = p.ID  and pmsalpr.meta_key= '_sale_price'"
+                //////+ " LEFT JOIN wp_postmeta pmstc ON pmstc.post_id = p.ID and pmstc.meta_key = '_stock_status'"
+                //////+ " LEFT JOIN wp_term_relationships AS tr ON tr.object_id = p.ID"
+                //////+ " LEFT JOIN wp_term_taxonomy AS tt ON tt.term_taxonomy_id = tr.term_taxonomy_id"
+                //////+ " JOIN wp_terms AS t ON t.term_id = tt.term_id"
+                //////+ " WHERE p.post_type in('product') and p.post_status != 'draft' and tt.taxonomy IN('product_cat','product_type') " + strWhr
+                //////+ " GROUP BY p.ID"
+                //////+ " order by " + SortCol + " " + SortDir + " limit " + (pageno).ToString() + ", " + pagesize + "";
+
+                //////strSql += "; SELECT count(distinct p.ID) TotalRecord FROM wp_posts p"
+                //////              + " LEFT JOIN wp_postmeta pm1 ON pm1.post_id = p.ID"
+                //////+ " LEFT JOIN wp_postmeta pmreg ON pmreg.post_id = p.ID  and pmreg.meta_key = '_regular_price'"
+                //////+ " LEFT JOIN wp_postmeta pmsalpr ON pmsalpr.post_id = p.ID  and pmsalpr.meta_key= '_sale_price'"
+                //////+ " LEFT JOIN wp_postmeta pmstc ON pmstc.post_id = p.ID and pmstc.meta_key = '_stock_status'"
+                //////+ " LEFT JOIN wp_term_relationships AS tr ON tr.object_id = p.ID"
+                //////+ " LEFT JOIN wp_term_taxonomy AS tt ON tt.term_taxonomy_id = tr.term_taxonomy_id"
+                //////+ " JOIN wp_terms AS t ON t.term_id = tt.term_id"
+                //////+ " WHERE p.post_type in('product') and p.post_status != 'draft' and tt.taxonomy IN('product_cat','product_type') " + strWhr;
+
+
+                string strSql = "select p.id,p.post_type,p.post_title,post_date_gmt,DATE_FORMAT(p.post_date_gmt, '%m-%d-%Y') Date,DATE_FORMAT(p.post_modified, '%m-%d-%Y') publishDate,"
+              + " (select group_concat(ui.name) from wp_terms ui join wp_term_taxonomy uim on uim.term_id = ui.term_id and uim.taxonomy IN('product_cat') JOIN wp_term_relationships AS trp ON trp.object_id = p.ID and trp.term_taxonomy_id = uim.term_taxonomy_id) itemname ,"
+              + " case when p.post_status = 'trash' then 'InActive' else 'Active' end Activestatus,max(case when p.id = s.post_id and s.meta_key = '_sku' then s.meta_value else '' end) sku,"
+              + " max(case when p.id = s.post_id and s.meta_key = '_regular_price' then s.meta_value else '' end) regular_price, max(case when p.id = s.post_id and s.meta_key = '_sale_price' then s.meta_value else '' end) sale_price, "
+              + " (case when p.post_parent = 0 then p.id else p.post_parent end) p_id,p.post_parent,p.post_status"
+              + " FROM wp_posts p"
+              + " left join wp_postmeta as s on p.id = s.post_id"              
+              + " WHERE p.post_type in ('product', 'product_variation') and p.post_status != 'draft' " + strWhr
+              + " GROUP BY p.ID"
+               + " order by p_id";
+                //+ " order by p_id" + " limit " + (pageno).ToString() + ", " + pagesize + "";
 
                 strSql += "; SELECT count(distinct p.ID) TotalRecord FROM wp_posts p"
-                            + " LEFT JOIN wp_postmeta pm1 ON pm1.post_id = p.ID"
-                            + " LEFT JOIN wp_postmeta pmstc ON pmstc.post_id = p.ID and pmstc.meta_key = '_stock_status'"
-                            + " LEFT JOIN wp_term_relationships AS tr ON tr.object_id = p.ID"
-                            + " JOIN wp_term_taxonomy AS tt ON tt.term_taxonomy_id = tr.term_taxonomy_id and tt.taxonomy IN('product_cat','product_type')"
-                            + " JOIN wp_terms AS t ON t.term_id = tt.term_id"
-                            + " WHERE p.post_type in('product') and p.post_status != 'draft' " + strWhr.ToString();
+               + " left join wp_postmeta as s on p.id = s.post_id"
+              + " WHERE p.post_type in ('product', 'product_variation') and p.post_status != 'draft' " + strWhr;
+
+
+
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
                 if (ds.Tables[1].Rows.Count > 0)
@@ -1018,6 +1076,39 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
+        public static int AddProductDetails(ProductModel model)
+        {
+            try
+            {
+                string strsql = "Insert into wp_posts(post_date,post_date_gmt,post_content,post_excerpt,post_title,post_name,post_status,post_type,to_ping, pinged,post_content_filtered,post_mime_type,post_parent,ping_status,comment_status,post_modified) values(@post_date,@post_date_gmt,@post_content,@post_excerpt,@post_title,@post_name,@post_status,@post_type,@to_ping, @pinged,@post_content_filtered,@post_mime_type,@post_parent,'closed',@comment_status,@post_modified);SELECT LAST_INSERT_ID();";
+
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@post_date", DateTime.Now),
+                    new MySqlParameter("@post_date_gmt", DateTime.UtcNow),
+                    new MySqlParameter("@post_content", model.post_content),
+                    new MySqlParameter("@post_excerpt", string.Empty),
+                    new MySqlParameter("@post_title", model.post_title),
+                    new MySqlParameter("@post_status", model.post_status),
+                    new MySqlParameter("@post_type", model.post_type),
+                    new MySqlParameter("@post_name", model.post_name),
+                    new MySqlParameter("@to_ping", string.Empty),
+                    new MySqlParameter("@pinged", string.Empty),
+                    new MySqlParameter("@post_content_filtered", string.Empty),
+                    new MySqlParameter("@post_mime_type", string.Empty),
+                    new MySqlParameter("@post_parent", model.post_parent),
+                    new MySqlParameter("@comment_status", model.comment_status),
+                    new MySqlParameter("@post_modified",model.PublishDate), 
+                   
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
 
         public static int Addshippingdetails(ProductModel model)
         {
@@ -1056,12 +1147,13 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "update wp_posts set post_title=@post_title,post_name=@post_name, post_content=@post_content,post_type='product',post_status='publish'  where ID =" + ID + "";
+                string strsql = "update wp_posts set post_title=@post_title,post_name=@post_name, post_content=@post_content,post_type='product',post_status='publish',post_modified=@post_modified where ID =" + ID + "";
                 MySqlParameter[] para =
                 {
                     new MySqlParameter("@post_content", model.post_content),
                     new MySqlParameter("@post_title", model.post_title),
                     new MySqlParameter("@post_name", model.post_name),
+                    new MySqlParameter("@post_modified",model.PublishDate),
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
                 return result;

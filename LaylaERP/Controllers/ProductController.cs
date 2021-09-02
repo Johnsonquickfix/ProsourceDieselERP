@@ -102,10 +102,31 @@ namespace LaylaERP.Controllers
 
                 DataTable dt = ProductRepository.GetList(model.strValue1, model.strValue2, model.strValue3, model.strValue4, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
                 result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+                
             }
             catch { }
-            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, aaData = result }, 0);
+            return Json(result, 0);
+            //return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, aaData = result }, 0);
         }
+
+
+        [HttpPost]
+        public JsonResult Changestatus(OrderPostStatusModel model)
+        {
+            string strID = model.strVal;
+            if (strID != "")
+            {
+                ProductRepository or = new ProductRepository();
+                or.Changestatus(model, strID);
+                return Json(new { status = true, message = "Product stats has been update successfully!!", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Something went wrong", url = "" }, 0);
+            }
+
+        }
+
 
         [HttpGet]
         public JsonResult GetShippinfclassList(JqDataTableModel model)
@@ -543,7 +564,7 @@ namespace LaylaERP.Controllers
                     model.post_content = model.post_content;
                 else
                     model.post_content = "";
-                int ID = ProductRepository.AddProducts(model);
+                int ID = ProductRepository.AddProductDetails(model);
                 if (ID > 0)
                 {
                     Adduser_MetaData(model, ID);
@@ -656,7 +677,7 @@ namespace LaylaERP.Controllers
 
         private void UpdateVariation_MetaData(ProductModel model, long id)
         {
-            string[] varQueryArr1 = new string[21];
+            string[] varQueryArr1 = new string[25];
             string[] varFieldsName = new string[24] { "_sku", "_regular_price", "_sale_price", "total_sales", "_tax_status", "_tax_class", "_manage_stock", "_backorders", "_sold_individually", "_weight", "_length", "_width", "_height", "_upsell_ids", "_crosssell_ids", "_virtual", "_downloadable", "_download_limit", "_download_expiry", "_stock", "_stock_status", "_wc_average_rating", "_wc_review_count", "_low_stock_amount" };
             string[] varFieldsValue = new string[24] { model.sku, model.regular_price, model.sale_price, "0", model.tax_status, model.tax_class, model.manage_stock, model.backorders, model.sold_individually, model.weight, model.length, model.width, model.height, model.upsell_ids, model.crosssell_ids, "no", "no", "-1", "-1", model.stock, model.stock_status, "0", "0", model.low_stock_amount };
             for (int n = 0; n < 24; n++)

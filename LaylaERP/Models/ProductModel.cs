@@ -86,6 +86,7 @@ namespace LaylaERP.Models
         public int fk_ShippingID { get; set; }
         public float Ship_price { get; set; }
         public float Shipping_taxrate { get; set; }
+        public string PublishDate { get; set; }
     }
     public class ProductModelMetaModel
     {

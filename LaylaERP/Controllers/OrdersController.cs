@@ -192,6 +192,18 @@
             catch { }
             return Json(JSONresult, 0);
         }
+        [HttpGet]
+        public JsonResult GetCategoryWiseProducts(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable DT = OrderRepository.GetCategoryWiseProducts();
+                JSONresult = JsonConvert.SerializeObject(DT);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
         [HttpPost]
         public JsonResult GetProductInfo(SearchModel model)
         {

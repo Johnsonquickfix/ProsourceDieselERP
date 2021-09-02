@@ -1,6 +1,7 @@
 ﻿$(document).ready(function () {
     $('.billinfo,.billnote').prop("disabled", true);
     $("#txtbillphone").mask("(999) 999-9999");
+    CategoryWiseProducts();
     setTimeout(function () { $("#loader").show(); getOrderInfo(); }, 20);
     $('#txtLogDate').daterangepicker({ singleDatePicker: true, autoUpdateInput: true, locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' } });
     $(".select2").select2(); BindStateCounty("ddlbillstate", { id: 'US' }); BindStateCounty("ddlshipstate", { id: 'US' });
@@ -211,6 +212,55 @@ function GetTaxRate() {
     }
     else { $('#hfTaxRate').val(0.00); $('#hfFreighttaxable').val(false); }
     calculateDiscountAcount();
+}
+function CategoryWiseProducts() {
+    let option = { strValue1: 'category' }, strHTML = '';
+    $.ajax({
+        type: "get", url: '/Orders/GetCategoryWiseProducts', contentType: "application/json; charset=utf-8", dataType: "json", data: option,
+        beforeSend: function () { $("#loader").show(); },
+        success: function (result) {
+            try {
+                result = JSON.parse(result);
+                result = groupArrayOfObjects(result, 'term_id');
+                $.each(result, function (key, pr) {
+                    console.log(pr)
+                    strHTML += '<div class="hub-accord col-sm-12 wow animate__slideInLeft" data-wow-duration="1s" data-wow-delay=".5s">';
+                    strHTML += '<h5><span>' + pr[0].name + '</span><i aria-hidden="true" class="fa fa-plus"></i></h5>';
+                    strHTML += '<div class="hub-box-open">';
+                    $.each(pr, function (index, data) {
+                        console.log('index', data);
+                        strHTML += '<div class="hub-pro-box"><h2>' + data.post_title + '</h2>';
+                        strHTML += '<div data-proid="' + data.pr_id + '" class="hub-pro-shop">';
+                        strHTML += '<select class="form-control addnvar-qty">';
+                        strHTML += '<option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option>';
+                        strHTML += '</select>';
+                        strHTML += '<select class="form-control addnvar">';
+                        strHTML += '    <option value="Queen">Queen</option>';
+                        strHTML += '    <option value="Twin">Twin</option>';
+                        strHTML += '    <option value="Twin XL">Twin XL</option>';
+                        strHTML += '    <option value="Full">Full</option>';
+                        strHTML += '    <option value="King">King</option>';
+                        strHTML += '    <option value="Cal King">Cal King</option>';
+                        strHTML += '    </select>';
+                        strHTML += '<div class="hub-pro-price"><span>$699.00</span></div>';
+                        strHTML += '<a href="javascript://" class="agentaddtocart btn btn-danger">Add to Cart</a>';
+                        strHTML += '</div>';
+                        strHTML += '</div>';
+                    });
+                    strHTML += '</div>';
+                    strHTML += '</div>';
+                });
+                $("#category_items").empty().html(strHTML);
+            }
+            catch (error) {
+                $("#loader").hide(); swal('Alert!', "something went wrong.", "error");
+            }
+
+        },
+        complete: function () { $("#loader").hide(); },
+        error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); }, async: false
+    });
+    ajaxFunction('/Orders/GetNewOrderNo', option, beforeSendFun, function (result) { $('#hfOrderNo').val(result.message); $('#lblOrderNo').text('Order #' + result.message + ' detail '); }, completeFun, errorFun, false);
 }
 
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Search Customer Popup ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

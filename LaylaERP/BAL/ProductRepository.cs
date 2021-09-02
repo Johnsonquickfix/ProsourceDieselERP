@@ -1745,7 +1745,8 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
-
+      
+       
         public int AddProductCategoryDesc(ProductCategoryModel model, long term_id, int thumbnail_id)
         {
             try
@@ -1778,9 +1779,10 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "Select p.post_title ImagePath, tm.meta_value, tm.meta_key, tx.term_id ID,if(tx.parent=0,t.name,concat('# ',t.name)) name,t.slug,tx.taxonomy,tx.description,tx.parent,tx.count from wp_terms t " +
-                    "left join wp_term_taxonomy tx on tx.term_id = t.term_id left join wp_termmeta tm on t.term_id = tm.term_id " +
-                    "left join wp_posts p on tm.meta_value = p.ID where taxonomy = 'product_cat' and tm.meta_key = 'thumbnail_id' and 1 = 1 ";
+                string strSql = "Select ifnull(p.post_title,'default.png') ImagePath,  tm.meta_key, tx.term_id ID,if(tx.parent=0,t.name,concat('# ',t.name)) name, " +
+                    "t.slug,tx.taxonomy,tx.description,tx.parent,tx.count,tm.meta_value thumbnailId, coalesce(tm_a.meta_value, '1') Active " +
+                    "from wp_terms t left join wp_term_taxonomy tx on tx.term_id = t.term_id left join wp_termmeta tm on t.term_id = tm.term_id and tm.meta_key = 'thumbnail_id' left join wp_termmeta tm_a on tm_a.term_id = t.term_id and tm_a.meta_key = 'Is_Active' " +
+                    "left join wp_posts p on tm.meta_value = p.ID where taxonomy = 'product_cat' and coalesce(tm_a.meta_value,'1') = '1' and 1 = 1  ";
                 if (!string.IsNullOrEmpty(searchid))
                 {
                     strWhr += " and (t.name like '%" + searchid + "%')";
@@ -1792,9 +1794,8 @@ namespace LaylaERP.BAL
                 //strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
                 strSql += strWhr + string.Format(" order by {0} LIMIT {1}, {2}", "CASE WHEN tx.parent = 0 THEN tx.term_taxonomy_id ELSE tx.parent END DESC, CASE WHEN tx.parent = tx.term_taxonomy_id THEN tx.parent ELSE tx.parent END ASC ", pageno.ToString(), pagesize.ToString());
 
-                strSql += "; SELECT ceil(Count(tx.term_id)/" + pagesize.ToString() + ") TotalPage,Count(tx.term_id) TotalRecord  from wp_terms t " +
-                    "left join wp_term_taxonomy tx on tx.term_id = t.term_id left join wp_termmeta tm on t.term_id = tm.term_id " +
-                    "left join wp_posts p on tm.meta_value = p.ID where taxonomy = 'product_cat' and tm.meta_key = 'thumbnail_id' and 1 = 1 " + strWhr.ToString();
+                strSql += "; SELECT ceil(Count(tx.term_id)/" + pagesize.ToString() + ") TotalPage,Count(tx.term_id) TotalRecord  from wp_terms t left join wp_term_taxonomy tx on tx.term_id = t.term_id left join wp_termmeta tm on t.term_id = tm.term_id and tm.meta_key = 'thumbnail_id' left join wp_termmeta tm_a on tm_a.term_id = t.term_id and tm_a.meta_key = 'Is_Active' " +
+                    "left join wp_posts p on tm.meta_value = p.ID where taxonomy = 'product_cat' and coalesce(tm_a.meta_value,'1') = '1' and 1 = 1   " + strWhr.ToString();
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
@@ -1807,13 +1808,48 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
-        public int DeleteProductCategory(ProductCategoryModel model)
+        public int DeleteProductCategory(string val)
         {
             try
             {
-                string strsql = "";
-                strsql = "delete from wp_terms where term_id in (" + model.strVal + "); delete from wp_term_taxonomy where term_id in (" + model.strVal + ")";
-                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql));
+                int result = 0;
+               string metaValue = GetTermID(val).ToString();
+                string[] value = metaValue.Split(',');
+                for (int i = 0; i <= value.Length - 1; i++)
+                {
+                    var termID = value[i].ToString();
+                    string IsActiveID = GetIsActiveID(termID).ToString();
+                    string strsql = "";
+                    if (IsActiveID == termID)
+                    {
+                        strsql = "Update wp_termmeta set meta_value='0' where term_id=" + termID + " and meta_key='Is_Active';";
+                    }
+                    else
+                    {
+                        strsql = "insert into wp_termmeta(term_id,meta_key,meta_value) values(" + termID + ",'Is_Active','0');";
+                    }
+                    result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql));
+                }
+                return result;
+                            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+        public int DeleteProductfromCategory(string val)
+        {
+            try
+            {
+                int result = 0;
+                string metaValue = GetProductID(val).ToString();
+                string[] value = metaValue.Split(',');
+                for (int i = 0; i <= value.Length - 1; i++)
+                {
+                    var ProductID = value[i].ToString();
+                    string strsql = "Update wp_posts set post_status='trash' where id=" + ProductID + ";Update wp_term_relationships set term_taxonomy_id=80 where term_taxonomy_id="+val+";";
+                    result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql));
+                }
                 return result;
             }
             catch (Exception Ex)
@@ -1952,6 +1988,74 @@ namespace LaylaERP.BAL
                 string strSQl = "Select post_title from wp_posts WHERE ID =" + PostID + "; ";
                  result = SQLHelper.ExecuteScalar(strSQl).ToString();
                 //return result;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return result;
+        }
+        public string GetName(string name)
+        {
+            string result = "";
+            DataTable dt = new DataTable();
+            try
+            {
+                string strSQl = "Select name from wp_terms where name ='" + name + "'; ";
+                dt = SQLHelper.ExecuteDataTable(strSQl);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return result;
+        }
+        public string GetTermID(string ID)
+        {
+            string result = "";
+            DataSet dt = new DataSet();
+            try
+            {
+                string strSQl = "Select GROUP_CONCAT(term_id) term_id from wp_term_taxonomy where  parent in (" + ID + ") or term_id in (" + ID + "); ";
+               DataSet ds = SQLHelper.ExecuteDataSet(strSQl);
+                result = ds.Tables[0].Rows[0]["term_id"].ToString();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return result;
+        }
+
+        public string GetProductID(string ID)
+        {
+            string result = "";
+            DataSet dt = new DataSet();
+            try
+            {
+                string strSQl = "Select GROUP_CONCAT(object_id) object_id from wp_term_relationships where term_taxonomy_id in (" + ID + "); ";
+                DataSet ds = SQLHelper.ExecuteDataSet(strSQl);
+                result = ds.Tables[0].Rows[0]["object_id"].ToString();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return result;
+        }
+
+        public string GetIsActiveID(string ID)
+        {
+            string result = "";
+            DataSet dt = new DataSet();
+            try
+            {
+                string strSQl = "Select term_id from wp_termmeta where term_id="+ ID +" and meta_key='Is_Active';";
+                DataSet ds = SQLHelper.ExecuteDataSet(strSQl);
+                if (ds.Tables[0].Rows.Count > 0)
+                    result = ds.Tables[0].Rows[0]["term_id"].ToString();
+                else
+                    result = "0";
             }
             catch (Exception ex)
             {

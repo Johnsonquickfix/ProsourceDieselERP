@@ -955,9 +955,10 @@ namespace LaylaERP.BAL
               + " left join wp_postmeta as s on p.id = s.post_id"              
               + " WHERE p.post_type in ('product', 'product_variation') and p.post_status != 'draft' " + strWhr
               + " GROUP BY p.ID"
-              + " order by p_id" + " limit " + (pageno).ToString() + ", " + pagesize + "";
+               + " order by p_id";
+                //+ " order by p_id" + " limit " + (pageno).ToString() + ", " + pagesize + "";
 
-               strSql += "; SELECT count(distinct p.ID) TotalRecord FROM wp_posts p"
+                strSql += "; SELECT count(distinct p.ID) TotalRecord FROM wp_posts p"
                + " left join wp_postmeta as s on p.id = s.post_id"
               + " WHERE p.post_type in ('product', 'product_variation') and p.post_status != 'draft' " + strWhr;
 

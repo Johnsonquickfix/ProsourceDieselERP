@@ -64,13 +64,156 @@ function dataGridLoad(order_type) {
     let prodctype = $('#ddlproducttype').val();
     let stockstatus = $('#ddstockstatus').val();
 
+    //$('#dtdata').DataTable({
+    //    columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
+    //    destroy: true, bProcessing: true, bServerSide: true,
+    //    //sPaginationType: "full_numbers", searching: true, ordering: true, lengthChange: true,
+    //    bAutoWidth: false, scrollX: true, scrollY: ($(window).height() - 215),
+    //    responsive: true,
+    //    lengthMenu: [[10, 20, 50], [10, 20, 50]],
+    //    language: {
+    //        lengthMenu: "_MENU_ per page",
+    //        zeroRecords: "Sorry no records found",
+    //        info: "Showing <b>_START_ to _END_</b> (of _TOTAL_)",
+    //        infoFiltered: "",
+    //        infoEmpty: "No records found",
+    //        processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
+    //    },
+    //    sAjaxSource: "/Product/GetList",
+    //    fnServerData: function (sSource, aoData, fnCallback, oSettings) {
+    //        //aoData.push({ name: "strValue1", value: monthYear });
+    //        aoData.push({ name: "strValue1", value: types });
+    //        aoData.push({ name: "strValue2", value: order_type });
+    //        aoData.push({ name: "strValue3", value: prodctype });
+    //        aoData.push({ name: "strValue4", value: stockstatus });
+    //        var col = 'id';
+    //        if (oSettings.aaSorting.length > 0) {
+    //            var col = oSettings.aaSorting[0][0] == 2 ? "post_title" : oSettings.aaSorting[0][0] == 2 ? "sku" : oSettings.aaSorting[0][0] == 4 ? "itemname" : oSettings.aaSorting[0][0] == 4 ? "Date" : oSettings.aaSorting[0][0] == 5 ? "publishDate" : "id";
+    //            aoData.push({ name: "sSortColName", value: col });
+    //        }
+    //        //console.log(aoData);
+    //        oSettings.jqXHR = $.ajax({
+    //            dataType: 'json', type: "GET", url: sSource, data: aoData,
+    //            "success": function (data) {
+    //                var dtOption = { sEcho: data.sEcho, recordsTotal: data.recordsTotal, recordsFiltered: data.recordsFiltered, aaData: JSON.parse(data.aaData) };
+    //                return fnCallback(dtOption);
+    //            }
+    //        });
+    //    },
+    //    columns: [
+    //        //{
+    //        //    'data': 'ID', sWidth: "5%   ",
+    //        //    'render': function (data, type, full, meta) {
+    //        //        return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck(this);" value="' + $('<div/>').text(data).html() + '"><label></label>';
+    //        //    }
+    //        //},
+    //        {
+    //            'data': 'id', sWidth: "4%   ",
+    //            'render': function (data, type, row) {
+    //                if (row.post_parent > 0)
+    //                    return '<input type = "checkbox" style = "opacity: 1; position: relative; visibility: visible; display: block" onClick="Singlecheck(this);" name="CheckSingle" value="' + $('<div/>').text(data).html() + '">';
+    //                    return ' <b></b>';
+    //            }
+    //        },
+    //        {
+    //            data: 'id', title: 'ID', sWidth: "10%", render: function (data, type, row) {
+    //                if (row.post_parent > 0)
+    //                    return ' #' + row.id + '' ;
+    //                else
+    //                    return '<a href="javascript:void(0);" class="details-control"><i class="glyphicon glyphicon-plus-sign"></i></a>  <b> #' + row.id + '</b>';
+    //                //if (row.post_parent > 0) return '<a href="javascript:void(0);" class="details-control"><i class="glyphicon glyphicon-plus-sign"></i></a> -  #' + row.id; else return ' <b>#' + row.id + '</b>';
+    //            }
+    //        },
+             
+    //        {
+    //            'data': 'id', sWidth: "5%   ",
+    //            'render': function (data, type, full, meta) {
+    //                return '<i class="glyphicon glyphicon-picture"></i>';
+    //            }
+    //        },
+    //        { data: 'post_title', title: 'Name', sWidth: "18%" },
+    //        { data: 'sku', title: 'SKU', sWidth: "10%" },
+    //        //{ data: 'stockstatus', title: 'Stock', sWidth: "12%" },
+
+    //        //{
+    //        //    data: 'price', title: 'Price', sWidth: "12%", render: function (data, type, row) {
+    //        //        var tprice = 'toFormat';
+
+    //        //        if (row.pricecodition == 'no') {
+    //        //            tprice = '<span style ="text-decoration: line-through;"> ' + '$' + row.Regprice + '<br>' + ' </span>' + '<span style ="text-decoration: underline;"> ' + '$' + row.SalPrice + '<br>' + ' </span>';
+    //        //           // tprice = '$' + row.Regprice + '<br>' + '$' + row.SalPrice;
+    //        //            if (tprice == '$null$null' || tprice == '$0$null' || tprice == '$null$0' || tprice == '$0$')
+    //        //                tprice = '$0.00';
+    //        //            tprice = tprice.replaceAll('$null', '');
+    //        //            if (row.Regprice == '0' && row.SalPrice == '0')
+    //        //                tprice = '$0.00';
+    //        //        }
+    //        //        else {
+    //        //            if (row.price == '$0.00-$0.00' || row.price == '$0-$0' || row.price == '$0-$' || row.price == null) {
+    //        //                tprice = '$0.00';
+    //        //            }
+    //        //            else
+    //        //                tprice = row.price;
+    //        //        }
+
+    //        //        return tprice
+    //        //    }
+    //        //},
+
+    //        {
+    //            data: 'regular_price', title: 'Retail Price', sWidth: "8%", render: function (data, type, row) {
+    //                var tprice = 'toFormat';
+    //                if (data.toString() == "")
+    //                    tprice = "";
+    //                else
+    //                    tprice = '$' + parseFloat(data).toFixed(2);
+    //                return tprice
+    //            }
+    //        },
+    //        {
+    //            data: 'sale_price', title: 'Sale Price', sWidth: "8%", render: function (data, type, row) {
+    //                var tprice = 'toFormat';
+    //                if (data.toString() == "")
+    //                    tprice = "";
+    //                else
+    //                    tprice = '$' + parseFloat(data).toFixed(2);
+    //                return tprice
+    //            }
+    //        },
+    //        { data: 'itemname', title: 'Categories', sWidth: "12%" },
+    //        //{
+    //        //    'data': 'ID', sWidth: "5%   ",
+    //        //    'render': function (data, type, full, meta) {
+    //        //        return '<i class="glyphicon glyphicon-star"></i>';
+    //        //    }
+    //        //},
+
+    //        { data: 'Date', title: 'Creation Date', sWidth: "11%" },
+    //        { data: 'publishDate', title: 'Publish Date', sWidth: "15%" },
+    //        { data: 'Activestatus', title: 'Status', sWidth: "8%" },
+    //        {
+    //            'data': 'id', title: 'Action', sWidth: "3%",
+    //            'render': function (id, type, row) {
+    //                if (row.post_parent > 0)
+    //                    return ' <b></b>';
+    //                else
+    //                    return '<a title="Click here to view product details" data-toggle="tooltip" href="AddNewProduct/' + id + '"><i class="glyphicon glyphicon-eye-open"></i></a>'
+
+    //            }
+    //        }
+    //    ]
+    //});
+
+
+    let _items = [];
+    //let pid = parseInt($("#ddlProduct").val()) || 0, ctid = parseInt($("#ddlCategory").val()) || 0;
+    let obj = { strValue1: types, strValue2: order_type, strValue3: prodctype, strValue4: stockstatus}; console.log(obj);
+
+
     $('#dtdata').DataTable({
-        columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
-        destroy: true, bProcessing: true, bServerSide: true,
-        //sPaginationType: "full_numbers", searching: true, ordering: true, lengthChange: true,
-        bAutoWidth: false, scrollX: true, scrollY: ($(window).height() - 215),
-        responsive: true,
-        lengthMenu: [[10, 20, 50], [10, 20, 50]],
+        oSearch: { "sSearch": '' }, order: [[0, "asc"]],
+       //sPaginationType: "full_numbers", searching: true, ordering: true, lengthChange: true,
+       //bAutoWidth: false, scrollX: true, scrollY: ($(window).height() - 215),
         language: {
             lengthMenu: "_MENU_ per page",
             zeroRecords: "Sorry no records found",
@@ -79,28 +222,13 @@ function dataGridLoad(order_type) {
             infoEmpty: "No records found",
             processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
         },
-        sAjaxSource: "/Product/GetList",
-        fnServerData: function (sSource, aoData, fnCallback, oSettings) {
-            //aoData.push({ name: "strValue1", value: monthYear });
-            aoData.push({ name: "strValue1", value: types });
-            aoData.push({ name: "strValue2", value: order_type });
-            aoData.push({ name: "strValue3", value: prodctype });
-            aoData.push({ name: "strValue4", value: stockstatus });
-            var col = 'id';
-            if (oSettings.aaSorting.length > 0) {
-                var col = oSettings.aaSorting[0][0] == 2 ? "post_title" : oSettings.aaSorting[0][0] == 2 ? "sku" : oSettings.aaSorting[0][0] == 4 ? "itemname" : oSettings.aaSorting[0][0] == 4 ? "Date" : oSettings.aaSorting[0][0] == 5 ? "publishDate" : "id";
-                aoData.push({ name: "sSortColName", value: col });
-            }
-            //console.log(aoData);
-            oSettings.jqXHR = $.ajax({
-                dataType: 'json', type: "GET", url: sSource, data: aoData,
-                "success": function (data) {
-                    var dtOption = { sEcho: data.sEcho, recordsTotal: data.recordsTotal, recordsFiltered: data.recordsFiltered, aaData: JSON.parse(data.aaData) };
-                    return fnCallback(dtOption);
-                }
-            });
+        destroy: true, bAutoWidth: false, ajax: {
+            url: '/Product/GetList', type: 'GET', dataType: 'json', contentType: "application/json; charset=utf-8", data: obj,
+            dataSrc: function (data) { return JSON.parse(data); }
         },
+        lengthMenu: [[10, 20, 50, 100], [10, 20, 50, 100]],
         columns: [
+            { data: 'p_id', title: 'Parent ID', sWidth: "10%" },
             //{
             //    'data': 'ID', sWidth: "5%   ",
             //    'render': function (data, type, full, meta) {
@@ -124,7 +252,7 @@ function dataGridLoad(order_type) {
                     //if (row.post_parent > 0) return '<a href="javascript:void(0);" class="details-control"><i class="glyphicon glyphicon-plus-sign"></i></a> -  #' + row.id; else return ' <b>#' + row.id + '</b>';
                 }
             },
-             
+
             {
                 'data': 'id', sWidth: "5%   ",
                 'render': function (data, type, full, meta) {
@@ -201,7 +329,8 @@ function dataGridLoad(order_type) {
 
                 }
             }
-        ]
+        ],
+        columnDefs: [{ targets: [0], visible: false, searchable: false }]
     });
 }
 

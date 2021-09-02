@@ -32,6 +32,7 @@
         <li><a href="#tab_2" data-toggle="tab">Additional Info</a></li>
         <li><a href="#tab_3" data-toggle="tab">Correct Stock</a></li>
         <li><a href="#tab_4" data-toggle="tab">Transfer Stock</a></li>
+        <li><a href="#tab_8" data-toggle="tab">Damage Stock</a></li>
         <li><a href="#tab_5" data-toggle="tab">Product List</a></li>
         <li><a href="#tab_6" data-toggle="tab">Vendor List</a></li>
         <li><a href="#tab_7" data-toggle="tab">Linked Files</a></li>
@@ -365,7 +366,6 @@
         </div>
         <!-- tab end-->
         <div class="tab-pane" id="tab_3">
-
             <div class="createuser-section section_wrapper">
                 <div class="create-user-box">
                     <!-- /.col -->
@@ -540,10 +540,10 @@
 
                                     <!-- <div class="form-group">
 
-                                     <label for="exampleInputEmail1">Sale by date<span style="color:red">*</span></label>
+                                    <label for="exampleInputEmail1">Sale by date<span style="color:red">*</span></label>
 
-                                     <input class="form-control" type="text" id="txttransfersalebydate" placeholder="Enter Sale by date" /><span class="even-space"></span>
-                                 </div>-->
+                                    <input class="form-control" type="text" id="txttransfersalebydate" placeholder="Enter Sale by date" /><span class="even-space"></span>
+                                </div>-->
 
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Label of movement<span style="color:red">*</span></label>
@@ -599,6 +599,119 @@
                 </div>
             </div>
         </div>
+
+
+
+        <div class="tab-pane" id="tab_8">
+            <div class="createuser-section section_wrapper">
+                <div class="create-user-box">
+                    <!-- /.col -->
+
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="box box-primary">
+                                <div class="box-body">
+                                    <input type="hidden" id="hfdamagestockid" class="form-control" />
+                                    <input type="hidden" id="hfdamagetransid" class="form-control" />
+                                    @*<input type="text" id="txtdoc" class="form-control" />*@
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Products<span style="color:red">*</span></label>
+                                        <select class="form-control select2" id="ddlDamageProduct" style="width:100%;">
+                                            <option value="0">--Select Product--</option>
+                                        </select>
+                                    </div>
+                                    @*<div class="form-group">
+                                        <label for="exampleInputEmail1">Stock</label>
+                                        <input type="text" id="txtstock" class="form-control" />
+                                    </div>*@
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Unit purchase price<span style="color:red">*</span></label>
+                                        <input type="text" id="txtdamageprice" class="form-control" placeholder="Enter Unit purchase price" readonly>
+                                    </div>
+
+                                    <div class="form-group">
+
+                                        <label for="exampleInputEmail1">Damage number of units<span style="color:red">*</span></label>
+                                        <input type="text" id="txtdamageunit" class="form-control" placeholder="Enter Number of unit">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Lot/Serial number<span style="color:red">*</span></label>
+                                        <input type="text" id="txtdamageserial" placeholder="Enter Lot/Serial number" class="form-control">
+                                    </div>
+
+
+
+                                </div>
+
+                            </div>
+                        </div>
+
+
+                        <div class="col-sm-4">
+                            <div class="box box-primary">
+                                <div class="box-body">
+
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Stock Damage date<span style="color:red">*</span></label>
+                                        <input class="form-control" type="text" id="txtdamageeatbydate" placeholder="Stock Damage date" /><span class="even-space"></span>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Label of movement<span style="color:red">*</span></label>
+                                        <input type="text" id="txtdamagelabel" class="form-control" placeholder="Enter Label of movement">
+                                    </div>
+
+                                    <div class="box-footer">
+                                        <div class="text-right">
+                                            <a href="#" class="btn btn-danger" id="btnDamageStock"><b>Save</b></a>
+                                            <a href="#" class="btn btn-danger" id="btnDamageStockUpdate"><b>Update</b></a>
+                                            <a href="#" class="btn btn-danger" id="btnDamageStockCancel"><b>Reset</b></a>
+                                            
+
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="box box-primary">
+                                <div class="box-body">
+                                    <table id="dtdamagestock" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
+                                        <thead>
+                                            <tr>
+                                                <th>Ref</th>
+                                                <th>Date</th>
+                                                <th>Product</th>
+                                                @*<th>Warehouse</th>*@
+                                                <th>Label of movement</th>
+                                                <th>Qty</th>
+                                                @*<th>Unit Price</th>*@
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <!-- /.nav-tabs-custom -->
+                    <!-- /.col -->
+
+                </div>
+            </div>
+
+        </div>
+
+
+
+
 
         <div class="tab-pane" id="tab_5">
             <div class="user-top-section">
@@ -773,6 +886,7 @@
         StockTransferGrid();
         $("#btnStockUpdate").hide();
         $("#btnTransferStockUpdate").hide();
+        $("#btnDamageStockUpdate").hide();
 
         $("#btnStockCancel").click(function () {
             $("#btnStock").show();
@@ -788,6 +902,13 @@
             //$("#btnStockCancel").hide();
             resettransferstock();
         });
+        
+        $("#btnDamageStockCancel").click(function () {
+            $("#btnDamageStock").show();
+            $("#btnDamageStockUpdate").hide();
+            resetdamagestock();
+        });
+
 
         $(document).on('click', "#btnSave", function () {
             AddWarehouse();
@@ -822,6 +943,16 @@
 
             ProductWarehouseGrid();
 
+        });
+
+        $(document).on('click', "#btnDamageStock", function () {
+
+            AddDamagestock();
+
+        });
+
+        $(document).on('click', "#btnDamageStockUpdate", function () {
+            Updatedamagestock();
         });
 
         $('#ddlProduct').change(function () {
@@ -1043,15 +1174,18 @@
         $("#txttransfersalebydate").datepicker({
             format: 'mm-dd-yyyy',
         });
+
+        $("#txtdamageeatbydate").datepicker({
+            format: 'mm-dd-yyyy',
+        });
     });
 
     function datecode() {
         var dt2 = new Date();
-        var dt3 = ("0" + (dt2.getMonth() + 1)).slice(-2)+ '-' + dt2.getDate() + '-' + dt2.getFullYear();
+        var dt3 = ("0" + (dt2.getMonth() + 1)).slice(-2) + '-' + ("0" + (dt2.getDate())).slice(-2) + '-' + dt2.getFullYear();
         
         document.getElementById("txteatbydate").value = dt3;
-        document.getElementById("txttransfereatbydate").value = dt3;
-        
+        document.getElementById("txttransfereatbydate").value = dt3; 
     }
 
 </script>

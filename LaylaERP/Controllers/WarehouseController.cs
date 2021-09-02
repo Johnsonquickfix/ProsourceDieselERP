@@ -618,5 +618,64 @@ namespace LaylaERP.Controllers
             return Json(warehouselist, JsonRequestBehavior.AllowGet);
         }
 
+
+        [HttpPost]
+        public JsonResult AddDamagestock(WarehouseModel model)
+        {
+            //int ID = 1;
+            int ID = WarehouseRepository.AddDamagestock(model);
+            if (ID > 0)
+            {
+                
+                return Json(new { status = true, message = "Data has been saved successfully!!", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+
+        }
+
+
+        public JsonResult GetDamageStock(WarehouseModel model)
+        {
+            //int id = model.fk_product;
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = WarehouseRepository.GetDamageStock(model);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+
+        public JsonResult SelectDamageStock(SearchModel model)
+        {
+            
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = WarehouseRepository.SelectDamageStock(model);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+
+        public JsonResult UpdateDamagestock(WarehouseModel model)
+        {
+            if (model.searchid > 0)
+            {
+                WarehouseRepository.UpdateDamagestock(model);
+                ModelState.Clear();
+                return Json(new { status = true, message = "Data has been saved successfully!!", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+        }
+
     }
 }

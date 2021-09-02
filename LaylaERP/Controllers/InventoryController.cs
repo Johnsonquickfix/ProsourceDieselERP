@@ -90,7 +90,12 @@ namespace LaylaERP.Controllers
             string result = string.Empty;
             try
             {
-                DataTable dt = InventoryRepository.GetProductStock(model.strValue1, model.strValue2, model.strValue3);
+                DateTime fromdate = DateTime.Now, todate = DateTime.Now;
+                if (!string.IsNullOrEmpty(model.strValue4))
+                    fromdate = Convert.ToDateTime(model.strValue4);
+                if (!string.IsNullOrEmpty(model.strValue5))
+                    todate = Convert.ToDateTime(model.strValue5);
+                DataTable dt = InventoryRepository.GetProductStock(model.strValue1, model.strValue2, model.strValue3, fromdate, todate);
                 result = JsonConvert.SerializeObject(dt, Formatting.Indented);
             }
             catch { }
@@ -104,6 +109,23 @@ namespace LaylaERP.Controllers
             {
                 DataTable dt = InventoryRepository.GetWarehouseStock(model.strValue1);
                 result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
+        [HttpGet]
+        public JsonResult ExportProductStock(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            try
+            {
+                DateTime fromdate = DateTime.Now, todate = DateTime.Now;
+                if (!string.IsNullOrEmpty(model.strValue4))
+                    fromdate = Convert.ToDateTime(model.strValue4);
+                if (!string.IsNullOrEmpty(model.strValue5))
+                    todate = Convert.ToDateTime(model.strValue5);
+                DataSet ds = InventoryRepository.exportProductStock(model.strValue1, model.strValue2, model.strValue3, fromdate, todate);
+                result = JsonConvert.SerializeObject(ds, Formatting.Indented);
             }
             catch { }
             return Json(result, 0);

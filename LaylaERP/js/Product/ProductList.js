@@ -244,11 +244,11 @@ function dataGridLoad(order_type) {
                 }
             },
             {
-                data: 'id', title: 'ID', sWidth: "10%", render: function (data, type, row) {
+                data: 'id', title: 'ID', sWidth: "5%", render: function (data, type, row) {
                     if (row.post_parent > 0)
-                        return ' #' + row.id + '' ;
+                        return ' ↳' + row.id + '' ;
                     else
-                        return '<a href="javascript:void(0);" class="details-control"><i class="glyphicon glyphicon-plus-sign"></i></a>  <b> #' + row.id + '</b>';
+                        return ' <b style="font-size:14px;"> #' + row.id + '</b>';
                     //if (row.post_parent > 0) return '<a href="javascript:void(0);" class="details-control"><i class="glyphicon glyphicon-plus-sign"></i></a> -  #' + row.id; else return ' <b>#' + row.id + '</b>';
                 }
             },
@@ -330,7 +330,10 @@ function dataGridLoad(order_type) {
                 }
             }
         ],
-        columnDefs: [{ targets: [0], visible: false, searchable: false }]
+        columnDefs: [
+            { targets: [0], visible: false, searchable: false },
+            { targets: [1, 2], orderable: false }
+        ]
     });
 }
 

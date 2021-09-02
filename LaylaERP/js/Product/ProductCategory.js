@@ -7,6 +7,7 @@ $(document).ready(function () {
 })
 $('#txtCategoryName').keyup(function () {
     var cat = $('#txtCategoryName').val();
+    cat = cat.replace(/\s/g, '-');
     $('#txtCategorySlug').val(cat);
 })
 function getParentCategory(id) {
@@ -110,11 +111,16 @@ function CategoryList() {
             });
         },
         aoColumns: [
-
             {
                 'data': 'ID', sWidth: "5%   ",
                 'render': function (data, type, full, meta) {
-                    return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + $('<div/>').text(data).html() + '"><label></label>';
+                    console.log(data);
+                    if (data == 80) {
+                        return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + $('<div/>').text(data).html() + '" disabled><label></label>';
+                    }
+                    else {
+                        return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + $('<div/>').text(data).html() + '"><label></label>';
+                    }
                 }
             },
             {
@@ -149,10 +155,10 @@ function CategoryList() {
         ]
     });
 }
-$('#checkAll').click(function () {
-    var isChecked = $(this).prop("checked");
-    $('#ProductCategory tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
-});
+//$('#checkAll').click(function () {
+//    var isChecked = $(this).prop("checked");
+//    $('#ProductCategory tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
+//});
 function Singlecheck() {
     var isChecked = $('#CheckSingle').prop("checked");
     var isHeaderChecked = $("#checkAll").prop("checked");

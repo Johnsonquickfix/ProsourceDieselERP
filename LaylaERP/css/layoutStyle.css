@@ -1749,7 +1749,7 @@ background: orangered; /*#fff;*/
     overflow: hidden;
 }
 .table-design .table-blue td, .table-design table td {
-    font-size: 13px;
+    font-size: 12px;
 }
 .chat-box-dash.collapsed-box .slimScrollDiv {display:none;}
 .dash-drop-menu {

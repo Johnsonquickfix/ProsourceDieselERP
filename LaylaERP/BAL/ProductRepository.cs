@@ -880,11 +880,11 @@ namespace LaylaERP.BAL
                 {
                     strWhr += " and (p.ID like '%" + searchid + "%' "
                             + " OR post_title like '%" + searchid + "%' "
-                            + " OR t.name like '%" + searchid + "%' "
-                            + " OR t.slug like '%" + searchid + "%' "
+                            //+ " OR itemname like '%" + searchid + "%' "
+                            + " OR s.meta_value like '%" + searchid + "%' "
                             + " OR p.post_status like '%" + searchid + "%' "
-                            + " OR pm1.meta_value like '%" + searchid + "%' "
-                            + " OR pmstc.meta_value like '%" + searchid + "%' "
+                            //+ " OR pm1.meta_value like '%" + searchid + "%' "
+                            //+ " OR pmstc.meta_value like '%" + searchid + "%' "
 
 
                             + " )";

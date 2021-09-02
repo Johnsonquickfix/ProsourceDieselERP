@@ -377,7 +377,7 @@ table.dataTable tbody td.select-checkbox:before, table.dataTable tbody td.select
     top: 50%;
     transform: translate(-50%, -50%);
     z-index: 9;
-    margin: 0px;
+    margin: 8px 0 0;
 }
 
     .check-table [type="checkbox"] + label {

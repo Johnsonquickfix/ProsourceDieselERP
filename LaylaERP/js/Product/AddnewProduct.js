@@ -270,7 +270,7 @@
                         varHTML += '    </div>';
                         varHTML += '<div class="form-group d-flex allow-website">';
                         varHTML += '    <div class="col-md-12">';
-                        varHTML += '<div class="form-check-input"><input type="checkbox" class="chkallowwebsite" id="allowwebsite"><label> Allow on website.</label></div>';
+                        varHTML += '<div class="form-check-input"><input type="checkbox" class="chkallowwebsite" id="allowwebsite"><label> &nbsp; Allow on website.</label></div>';
                         varHTML += '    </div>';
                         varHTML += '</div>';
                         varHTML += '    <div class="box-footer text-right"></div>';
@@ -1076,7 +1076,7 @@ function GetProductvariationID(ProductID) {
                 varHTML += '    </div>';
                 varHTML += '<div class="form-group d-flex allow-website">';
                 varHTML += '    <div class="col-md-12">';
-                varHTML += '<div class="form-check-input"><input type="checkbox" class="chkallowwebsite form-check-input" id="allowwebsite_' + data[i].id + '"><label> Allow on website.</label></div>';
+                varHTML += '<div class="form-check-input"><input type="checkbox" class="chkallowwebsite form-check-input" id="allowwebsite_' + data[i].id + '"><label> &nbsp; Allow on website.</label></div>';
                 varHTML += '    </div>';
                 varHTML += '</div>';
                 varHTML += '    <div class="box-footer text-right"></div>';

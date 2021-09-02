@@ -10,7 +10,7 @@
     });
 
     // Add event listener for opening and closing details
-    $('#dtdata tbody').on('click', '.details-control', function () {
+    $('#dtdata tbody').on('click', '.details-control', function () {     
         var tr = $(this).closest('tr');
         var row = $('#dtdata').DataTable().row(tr);
 

@@ -149,7 +149,12 @@ function CategoryList() {
             {
                 'data': 'ID',
                 'render': function (id, type, full, meta) {
-                    return '<a href="#" onclick="GetCategoryByID(' + id + ');"><i class="glyphicon glyphicon-pencil"></i></a>';
+                    if (id == 80) {
+                        return '<i class="glyphicon glyphicon-pencil"></i>';
+                    }
+                    else {
+                        return '<a href="#" onclick="GetCategoryByID(' + id + ');"><i class="glyphicon glyphicon-pencil"></i></a>';
+                    }
                 }
             }
         ]

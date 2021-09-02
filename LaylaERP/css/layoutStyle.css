@@ -377,7 +377,7 @@ table.dataTable tbody td.select-checkbox:before, table.dataTable tbody td.select
     top: 50%;
     transform: translate(-50%, -50%);
     z-index: 9;
-    margin: 0px;
+    margin: 8px 0 0;
 }
 
     .check-table [type="checkbox"] + label {
@@ -1749,7 +1749,7 @@ background: orangered; /*#fff;*/
     overflow: hidden;
 }
 .table-design .table-blue td, .table-design table td {
-    font-size: 13px;
+    font-size: 12px;
 }
 .chat-box-dash.collapsed-box .slimScrollDiv {display:none;}
 .dash-drop-menu {

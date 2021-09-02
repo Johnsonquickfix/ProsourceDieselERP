@@ -102,9 +102,11 @@ namespace LaylaERP.Controllers
 
                 DataTable dt = ProductRepository.GetList(model.strValue1, model.strValue2, model.strValue3, model.strValue4, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
                 result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+                
             }
             catch { }
-            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, aaData = result }, 0);
+            return Json(result, 0);
+            //return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, aaData = result }, 0);
         }
 
 
@@ -1478,7 +1480,13 @@ namespace LaylaERP.Controllers
             var ImagePath = "";
             string FileName = "";
             string FileExtension = "";
-
+            string checkname = new ProductRepository().GetName(name);
+            if(checkname == name)
+            {
+                return Json(new { status = false, message = "Category already exists", url = "", id = 0 }, 0);
+            }
+            else
+            {
             if (ImageFile != null)
             {
                 FileName = Path.GetFileNameWithoutExtension(ImageFile.FileName);
@@ -1531,10 +1539,10 @@ namespace LaylaERP.Controllers
             }
             else
             {
+              
                 int ID = new ProductRepository().AddProductCategory(model, name, slug);
                 if (ID > 0)
                 {
-
                     int thumbnailID = ProductRepository.AddImage(FileName, ImagePath, FileExtension);
                     ProductRepository.postmeta(thumbnailID, ImagePath);
                     new ProductRepository().AddProductCategoryDesc(model, ID, thumbnailID);
@@ -1545,6 +1553,7 @@ namespace LaylaERP.Controllers
                 {
                     return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
                 }
+            }
             }
         }
         public JsonResult ProductCategoryList(ProductCategoryModel model)
@@ -1564,13 +1573,17 @@ namespace LaylaERP.Controllers
             catch (Exception ex) { throw ex; }
             return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
         }
-        public JsonResult DeleteProductCategory(ProductCategoryModel model)
+        public JsonResult DeleteCategorywithProduct(ProductCategoryModel model)
         {
-            if (model.strVal != "")
+            string termID = model.strVal;
+            if (termID != "")
             {
-                int ID = new ProductRepository().DeleteProductCategory(model);
+                int ID = new ProductRepository().DeleteProductCategory(termID);
                 if (ID > 0)
+                {
+                    int ProductID = new ProductRepository().DeleteProductfromCategory(termID);
                     return Json(new { status = true, message = "Product category has been deleted successfully!!", url = "", id = ID }, 0);
+                }
                 else
                     return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
             }
@@ -1579,6 +1592,26 @@ namespace LaylaERP.Controllers
                 return Json(new { status = false, message = "Product category not Found", url = "", id = 0 }, 0);
             }
         }
+        public JsonResult DeleteProductCategory(ProductCategoryModel model)
+        {
+            string termID = model.strVal;
+            if (termID != "")
+            {
+                int ID = new ProductRepository().DeleteProductCategory(termID);
+                if (ID > 0)
+                {
+                    return Json(new { status = true, message = "Product category has been deleted successfully!!", url = "", id = ID }, 0);
+                }
+                else
+                    return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Product category not Found", url = "", id = 0 }, 0);
+            }
+        }
+
+       
 
         public JsonResult GetCategoryByID(long id)
         {

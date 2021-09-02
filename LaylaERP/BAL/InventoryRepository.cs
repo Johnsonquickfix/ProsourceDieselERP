@@ -9,8 +9,8 @@ using System.Web;
 
 namespace LaylaERP.BAL
 {
-	public class InventoryRepository
-	{
+    public class InventoryRepository
+    {
         public static DataSet GetProducts()
         {
             DataSet DS = new DataSet();
@@ -90,15 +90,15 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
-        public static DataTable GetProductStock(string strSKU, string categoryid, string productid)
+        public static DataTable GetProductStock(string strSKU, string categoryid, string productid, DateTime fromdate, DateTime todate)
         {
             DataTable dt = new DataTable();
             try
             {
-                string strWhr = string.Empty, strHav = string.Empty;
+                string strWhr = string.Empty;
                 if (!string.IsNullOrEmpty(strSKU))
                 {
-                    strHav += " having max(case when p.id = s.post_id and s.meta_key = '_sku' then s.meta_value else '' end) = '" + strSKU + "'";
+                    strWhr += " and s.meta_value = '" + strSKU + "'";
                 }
                 if (!string.IsNullOrEmpty(categoryid))
                 {
@@ -109,18 +109,18 @@ namespace LaylaERP.BAL
                     strWhr += " and (case when p.post_parent = 0 then p.id else p.post_parent end) = '" + productid + "'";
                 }
 
-                string strSql = "select p.id,p.post_type,p.post_title,max(case when p.id = s.post_id and s.meta_key = '_sku' then s.meta_value else '' end) sku, " +
-                    "max(case when p.id = s.post_id and s.meta_key = '_regular_price' then s.meta_value else '' end) regular_price, " +
-                    "max(case when p.id = s.post_id and s.meta_key = '_price' then s.meta_value else '' end) sale_price, " +
-                    "(select coalesce(sum(case when pwr.flag = 'R' then quantity end), 0) from product_stock_register pwr where pwr.product_id = p.id) stock, " +
-                    "(select (coalesce(sum(case when pwr.flag = 'R' then quantity end),0) + coalesce(sum(case when pwr.flag = 'O' then quantity end),0) - coalesce(sum(case when pwr.flag = 'I' then quantity end),0)) from product_stock_register pwr where pwr.product_id = p.id) available, " +
-                    "(select coalesce(sum(case when pwr.flag = 'O' then quantity end), 0) from product_stock_register pwr where pwr.product_id = p.id) UnitsinPO," +
-                    "(select coalesce(sum(case when pwr.flag = 'I' then quantity end), 0) from product_stock_register pwr where pwr.product_id = p.id) SaleUnits, " +
-                    "(select coalesce(sum(case when pwr.flag = 'D' then quantity end),0) from product_stock_register pwr where pwr.product_id = p.id) Damage, " +
-                    "(case when p.post_parent = 0 then p.id else p.post_parent end) p_id,p.post_parent,p.post_status"
-                            + " FROM wp_posts as p left join wp_postmeta as s on p.id = s.post_id"
+
+                string strSql = "select p.id,p.post_type,p.post_title,s.meta_value sku,(case when p.post_parent = 0 then p.id else p.post_parent end) p_id,p.post_parent,"
+                            + " (select coalesce(sum(case when pwr_o.flag = 'R' then pwr_o.quantity else -pwr_o.quantity end),0) from product_stock_register pwr_o where pwr_o.product_id = p.id and pwr_o.flag != 'O' and cast(pwr_o.tran_date as date) <= cast('" + todate.ToString("yyyy-MM-dd") + "' as date)) stock,"
+                            + " coalesce(sum(case when pwr.flag = 'O' then quantity else 0 end),0) UnitsinPO,"
+                            + " coalesce(sum(case when pwr.flag = 'I' and pwr.tran_type != 'DM' then quantity else 0 end),0) SaleUnits,"
+                            + " coalesce(sum(case when pwr.flag = 'I' and pwr.tran_type = 'DM' then quantity else 0 end),0) Damage"
+                            + "     FROM wp_posts as p left join wp_postmeta as s on p.id = s.post_id and s.meta_key = '_sku'"
+                            + " left outer join product_stock_register pwr on pwr.product_id = p.id"
+                            + " and cast(pwr.tran_date as date) >= cast('" + fromdate.ToString("yyyy-MM-dd") + "' as date) "
+                            + " and cast(pwr.tran_date as date) <= cast('" + todate.ToString("yyyy-MM-dd") + "' as date) "
                             + " where p.post_type in ('product', 'product_variation') and p.post_status != 'draft' " + strWhr
-                            + " group by p.id " + strHav + " order by p_id";
+                            + " group by p.id order by p_id,id;";
                 //string strSql = "select json_object('id',p.id,'post_title',p.post_title,'children',concat('[',group_concat(json_object('id', sp.id, 'post_title', sp.post_title)),']')) as json"
                 //            + " from wp_posts p"
                 //            + " left outer join wp_posts sp on sp.post_parent = p.id and sp.post_type = 'product_variation' and sp.post_status != 'draft'"
@@ -138,6 +138,51 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
+        public static DataSet exportProductStock(string strSKU, string categoryid, string productid, DateTime fromdate, DateTime todate)
+        {
+            DataSet ds = new DataSet();
+            try
+            {
+                string strWhr = string.Empty;
+                if (!string.IsNullOrEmpty(strSKU))
+                {
+                    strWhr += " and s.meta_value = '" + strSKU + "'";
+                }
+                if (!string.IsNullOrEmpty(categoryid))
+                {
+                    strWhr += " and (case when p.post_parent = 0 then p.id else p.post_parent end) in (select object_id from wp_term_relationships ttr where ttr.term_taxonomy_id='" + categoryid + "')";
+                }
+                if (!string.IsNullOrEmpty(productid))
+                {
+                    strWhr += " and (case when p.post_parent = 0 then p.id else p.post_parent end) = '" + productid + "'";
+                }
+
+                string strSql = "select p.id,p.post_type,p.post_title,s.meta_value sku,(case when p.post_parent = 0 then p.id else p.post_parent end) p_id,p.post_parent,"
+                            + " (select coalesce(sum(case when pwr_o.flag = 'R' then pwr_o.quantity else -pwr_o.quantity end),0) from product_stock_register pwr_o where pwr_o.product_id = p.id and pwr_o.flag != 'O' and cast(pwr_o.tran_date as date) <= cast('" + todate.ToString("yyyy-MM-dd") + "' as date)) stock,"
+                            + " coalesce(sum(case when pwr.flag = 'O' then quantity else 0 end),0) UnitsinPO,"
+                            + " coalesce(sum(case when pwr.flag = 'I' and pwr.tran_type != 'DM' then quantity else 0 end),0) SaleUnits,"
+                            + " coalesce(sum(case when pwr.flag = 'I' and pwr.tran_type = 'DM' then quantity else 0 end),0) Damage"
+                            + "     FROM wp_posts as p left join wp_postmeta as s on p.id = s.post_id and s.meta_key = '_sku'"
+                            + " left outer join product_stock_register pwr on pwr.product_id = p.id"
+                            + " and cast(pwr.tran_date as date) >= cast('" + fromdate.ToString("yyyy-MM-dd") + "' as date) "
+                            + " and cast(pwr.tran_date as date) <= cast('" + todate.ToString("yyyy-MM-dd") + "' as date) "
+                            + " where p.post_type in ('product', 'product_variation') and p.post_status != 'draft' " + strWhr
+                            + " group by p.id order by p_id,id;";
+                strSql += "select ref,pwr.product_id,coalesce(sum(case pwr.flag when 'R' then quantity when 'I' then -quantity else 0 end),0) stock "
+                            + " from product_stock_register pwr inner"
+                            + " join wp_warehouse wr on wr.rowid = pwr.warehouse_id"
+                            + " where cast(pwr.tran_date as date) <= cast('" + todate.ToString("yyyy-MM-dd") + "' as date)"
+                            + " group by pwr.warehouse_id,pwr.product_id ";
+
+                ds = SQLHelper.ExecuteDataSet(strSql);
+                ds.Tables[0].TableName = "item"; ds.Tables[1].TableName = "details";
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return ds;
+        }
         public static DataTable GetWarehouseStock(string product_id)
         {
             DataTable dt = new DataTable();
@@ -149,7 +194,7 @@ namespace LaylaERP.BAL
                 };
                 //string strSql = "select ref,coalesce(sum(case when pwr.flag = 'R' then quantity else -quantity end),0) stock from product_stock_register pwr inner join wp_warehouse wr on wr.rowid = pwr.warehouse_id where product_id = @product_id group by pwr.warehouse_id";
                 string strSql = "select ref,(coalesce(sum(case when pwr.flag = 'R' then quantity end),0) - coalesce(sum(case when pwr.flag = 'I' then quantity end),0)) stock from product_stock_register pwr inner join wp_warehouse wr on wr.rowid = pwr.warehouse_id where product_id = @product_id group by pwr.warehouse_id";
-                
+
                 dt = SQLHelper.ExecuteDataTable(strSql, parameters);
             }
             catch (Exception ex)

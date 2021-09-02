@@ -193,6 +193,28 @@
             { throw ex; }
             return DT;
         }
+        public static DataTable GetCategoryWiseProducts()
+        {
+            DataTable DT = new DataTable();
+            try
+            {
+                string strSQl = "select wp_t.term_id,wp_t.name,p.id pr_id,p.post_title as post_title,"
+                                + " group_concat(JSON_OBJECT('vr_id', ps.id, 'vr_title', ps.post_title, pm_rp.meta_key, pm_rp.meta_value, pm_sp.meta_key, pm_sp.meta_value)) variation_details"
+                                + "        from wp_posts p"
+                                + " inner join wp_term_relationships wp_tr on wp_tr.object_id = p.id"
+                                + " inner join wp_term_taxonomy wp_ttn on wp_ttn.term_taxonomy_id = wp_tr.term_taxonomy_id and wp_ttn.taxonomy = 'product_cat'"
+                                + " inner join wp_terms wp_t on wp_t.term_id = wp_ttn.term_id"
+                                + " left outer join wp_posts ps ON ps.post_parent = p.id and ps.post_type LIKE 'product_variation'"
+                                + " left outer join wp_postmeta pm_rp on pm_rp.post_id = ps.id and pm_rp.meta_key = '_regular_price'"
+                                + " left outer join wp_postmeta pm_sp on pm_sp.post_id = ps.id and pm_sp.meta_key = '_price'"
+                                + " where p.post_type = 'product' and p.post_status = 'publish'"
+                                + " group by wp_t.term_id,p.id order by wp_t.term_id;";
+                DT = SQLHelper.ExecuteDataTable(strSQl);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DT;
+        }
         public static OrderProductsModel GetProductDetails(long product_id, long variation_id)
         {
             OrderProductsModel productsModel = new OrderProductsModel();

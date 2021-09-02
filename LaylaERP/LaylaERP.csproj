@@ -619,6 +619,7 @@
     <Content Include="js\Product\AddnewPurchase.js" />
     <Content Include="js\Product\Product.js" />
     <Content Include="js\Product\ProductCategory.js" />
+    <Content Include="js\Product\ProductList.js" />
     <Content Include="js\Product\ShippingClass.js" />
     <Content Include="js\PurchaseOrder\NewPurchase.js" />
     <Content Include="js\PurchaseOrder\PurchaseOrderList.js" />
@@ -824,7 +825,7 @@
     <Content Include="Views\ThirdParty\NewVendor.cshtml" />
     <Content Include="Views\ThirdParty\VendorList.cshtml" />
     <Content Include="Views\Product\AddNewProduct.cshtml" />
-    <Content Include="Views\Product\ListProduct.cshtml" />
+    <Content Include="Views\Product\ListProduct_Old.cshtml" />
     <Content Include="Views\Product\ProductAttributes.cshtml" />
     <Content Include="Views\Product\ProductCategories.cshtml" />
     <Content Include="Views\Inventory\ConsignmentInventory.cshtml" />
@@ -857,6 +858,7 @@
     <Content Include="Views\Bank\EditBankAccount.cshtml" />
     <Content Include="Views\Reception\ReceiveOrder.cshtml" />
     <Content Include="Views\Reception\NewReceiveOrder.cshtml" />
+    <Content Include="Views\Product\ListProduct.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

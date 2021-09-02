@@ -240,7 +240,7 @@
                         //varHTML += '    </div>';
                         //varHTML += '</div>';
                         varHTML += '<div class="form-group d-flex mt-25">';
-                        varHTML += '    <div class="col-md-6"><label class="control-label">Regular Price($)</label><input type="text" name="txtregularvar" value="0"  class="form-control" placeholder="Variation price *"></div>';
+                        varHTML += '    <div class="col-md-6"><label class="control-label">Retail Price($)</label><input type="text" name="txtregularvar" value="0"  class="form-control" placeholder="Variation price *"></div>';
                         varHTML += '<div class="col-md-6"><label class="control-label">Sale Price($)</label><input type="text" value="0"  name="txtSalepricevariation" class="form-control"></div>';
                         varHTML += '</div>';
                         varHTML += '<div id="divstock">';
@@ -270,7 +270,7 @@
                         varHTML += '    </div>';
                         varHTML += '<div class="form-group d-flex allow-website">';
                         varHTML += '    <div class="col-md-12">';
-                        varHTML += '<div class="form-check-input"><input type="checkbox" class="chkallowwebsite" id="allowwebsite"><label>Allow In Website:</label></div>';
+                        varHTML += '<div class="form-check-input"><input type="checkbox" class="chkallowwebsite" id="allowwebsite"><label> &nbsp; Allow on website.</label></div>';
                         varHTML += '    </div>';
                         varHTML += '</div>';
                         varHTML += '    <div class="box-footer text-right"></div>';
@@ -1043,7 +1043,7 @@ function GetProductvariationID(ProductID) {
                 //varHTML += '    </div>';
                 //varHTML += '</div>';
                 varHTML += '<div class="form-group d-flex mt-25">';
-                varHTML += '    <div class="col-md-6"><label class="control-label">Regular Price($)</label><input type="text" name="txtregularvar" class="form-control" placeholder="Variation price *" value="' + v_data['_regular_price'] + '"></div>';
+                varHTML += '    <div class="col-md-6"><label class="control-label">Retail Price($)</label><input type="text" name="txtregularvar" class="form-control" placeholder="Variation price *" value="' + v_data['_regular_price'] + '"></div>';
                 varHTML += '<div class="col-md-6"><label class="control-label">Sale Price($)</label><input type="text" name="txtSalepricevariation" class="form-control" value="' + sale_price + '"></div>';
                 varHTML += '</div>';
                 varHTML += '<div id="divstock">';
@@ -1076,7 +1076,7 @@ function GetProductvariationID(ProductID) {
                 varHTML += '    </div>';
                 varHTML += '<div class="form-group d-flex allow-website">';
                 varHTML += '    <div class="col-md-12">';
-                varHTML += '<div class="form-check-input"><input type="checkbox" class="chkallowwebsite form-check-input" id="allowwebsite_' + data[i].id + '"><label>Allow In Website:</label></div>';
+                varHTML += '<div class="form-check-input"><input type="checkbox" class="chkallowwebsite form-check-input" id="allowwebsite_' + data[i].id + '"><label> &nbsp; Allow on website.</label></div>';
                 varHTML += '    </div>';
                 varHTML += '</div>';
                 varHTML += '    <div class="box-footer text-right"></div>';

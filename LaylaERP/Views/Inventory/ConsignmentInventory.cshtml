@@ -1,8 +1,8 @@
-﻿
-@{
-    ViewBag.Title = "InHand Inventory";
+﻿@{
+    ViewBag.Title = "In-Hand Inventory";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.rangePicker = "/Content/AdminLTE-3.1.0/bower_components/bootstrap-daterangepicker/daterangepicker.css";
 }
-
 
 <link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap.min.css" rel="stylesheet" />
 <link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
@@ -14,6 +14,7 @@
         background: url('https://cdn.rawgit.com/DataTables/DataTables/6c7ada53ebc228ea9bc28b1b216e793b1825d188/examples/resources/details_open.png') no-repeat center center;
         cursor: pointer;
     }
+
     tr.shown td.details-control {
         background: url('https://cdn.rawgit.com/DataTables/DataTables/6c7ada53ebc228ea9bc28b1b216e793b1825d188/examples/resources/details_close.png') no-repeat center center;
     }
@@ -22,7 +23,6 @@
     <h2 class="page-heading">InHand Inventory</h2>
 </div>
 <section class="content section-content table-design customer-section">
-    
     <div class="row">
         <div class="col-md-4">
             <div class="form-group">
@@ -43,6 +43,17 @@
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                <input id="txtDate" data-auto-update-input="false" readonly="readonly" class="form-control">
+            </div>
+        </div>
+        <div class="col-md-8 text-right">
+            <button type="button" id="btnSearch" class="btn btn-danger">Search</button>
+        </div>
+    </div>
     <!-- end top-->
     <div class="row">
         <div class="col-md-12">
@@ -58,7 +69,7 @@
                                         <th style="width:10%">Product Type</th>
                                         <th style="width:10%">SKU</th>
                                         <th style="width:40%">Product Name</th>
-                                        <th style="width:10%" class="text-right">InHand Stock</th>
+                                        <th style="width:10%" class="text-right">In-Hand Stock</th>
                                         <th style="width:10%" class="text-right">Units in POs</th>
                                         <th style="width:10%" class="text-right">Sale Units</th>
                                         <th style="width:10%" class="text-right">Available Units</th>
@@ -72,7 +83,7 @@
                 <div class="box-footer">
                     <div class="row">
                         <div class="col-sm-12 inventory-btn">
-                            <button type="button" id="btnSave" class="btn btn-danger" style="display:none">Save Changes</button>
+
                         </div>
                     </div>
                 </div>

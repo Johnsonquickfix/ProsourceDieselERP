@@ -5,7 +5,11 @@ $(document).ready(function () {
     getParentCategory();
     CategoryList();
 })
-
+$('#txtCategoryName').keyup(function () {
+    var cat = $('#txtCategoryName').val();
+    cat = cat.replace(/\s/g, '-');
+    $('#txtCategorySlug').val(cat);
+})
 function getParentCategory(id) {
     var obj = { strValue1: id };
     $.ajax({
@@ -17,7 +21,7 @@ function getParentCategory(id) {
         success: function (data) {
             var opt = '<option value="-1">Please Select Parent category</option>';
             for (var i = 0; i < data.length; i++) { opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>'; }
-                $('#ddlParentCategory').html(opt);
+            $('#ddlParentCategory').html(opt);
         }
     });
 }
@@ -54,7 +58,7 @@ $('#btnAddNewCategory').click(function () {
                     $("#hfid").val('');
                     getParentCategory();
                     CategoryList();
-                   
+
                     $("#btnAddNewCategory").text('Add new category');
                     $("#lblNewCategory").text('Add new category');
                     $("#ProdCat").find(":input").each(function () {
@@ -107,27 +111,32 @@ function CategoryList() {
             });
         },
         aoColumns: [
-
             {
                 'data': 'ID', sWidth: "5%   ",
                 'render': function (data, type, full, meta) {
-                    return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + $('<div/>').text(data).html() + '"><label></label>';
+                    console.log(data);
+                    if (data == 80) {
+                        return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + $('<div/>').text(data).html() + '" disabled><label></label>';
+                    }
+                    else {
+                        return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + $('<div/>').text(data).html() + '"><label></label>';
+                    }
                 }
             },
             {
                 "data": "ImagePath",
                 "render": function (data) {
-                  url = "../../Content/ProductCategory/" + data + "";
+                    url = "../../Content/ProductCategory/" + data + "";
                     var result = checkFileExist(url);
-                    if (result == true) {return '<img src=' + url + ' width="50" height="50"/>';}
-                    else if (data == null || data == "") {return '<img src="../../Content/ProductCategory/default.png" width="50" height="50"/>';}
+                    if (result == true) { return '<img src=' + url + ' width="50" height="50"/>'; }
+                    else if (data == null || data == "") { return '<img src="../../Content/ProductCategory/default.png" width="50" height="50"/>'; }
                     else { return '<img src="../../Content/ProductCategory/default.png" width="50" height="50"/>'; }
                 }
             },
             {
                 data: 'name', title: 'Name', sWidth: "25%",
                 'render': function (id, type, full, meta) {
-                  /*  return  id;*/
+                    /*  return  id;*/
                     if (full.parent == 0)
                         return '<b>' + id + '</b>';
                     else
@@ -146,10 +155,10 @@ function CategoryList() {
         ]
     });
 }
-$('#checkAll').click(function () {
-    var isChecked = $(this).prop("checked");
-    $('#ProductCategory tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
-});
+//$('#checkAll').click(function () {
+//    var isChecked = $(this).prop("checked");
+//    $('#ProductCategory tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
+//});
 function Singlecheck() {
     var isChecked = $('#CheckSingle').prop("checked");
     var isHeaderChecked = $("#checkAll").prop("checked");
@@ -170,34 +179,86 @@ $('#btnApply').click(function () {
         id += $(this).val() + ",";
     });
     id = id.replace(/,(?=\s*$)/, '');
+   
     if (status == "2") {
-        DeleteCategory(id);
+        if (id == "") {
+            swal('Error!', 'Please check product!!', 'error');
+        }
+        else {
+            DeleteCategory(id);
+        }
     }
 })
 function DeleteCategory(id) {
-
     var obj = { strVal: id }
-    $.ajax({
-        url: '/Product/DeleteProductCategory/', dataType: 'json', type: 'Post',
-        contentType: "application/json; charset=utf-8",
-        data: JSON.stringify(obj),
-        dataType: "json",
-        beforeSend: function () { $("#loader").show(); },
-        success: function (data) {
-            if (data.status == true) {
-                CategoryList();
-                getParentCategory();
-                swal('Alert!', data.message, 'success');
+    $.confirm({
+        title: 'Confirm!',
+        content: 'Do you want to delete category with related product?',
+        buttons: {
+            confirm: {
+                text: 'Yes',
+                btnClass: 'btn-default',
+                keys: ['enter', 'shift'],
+                action: function () {
+                    $.ajax({
+                        url: '/Product/DeleteCategorywithProduct/', dataType: 'json', type: 'Post',
+                        contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify(obj),
+                        dataType: "json",
+                        beforeSend: function () { $("#loader").show(); },
+                        success: function (data) {
+                            if (data.status == true) {
+                                CategoryList();
+                                getParentCategory();
+                                swal('Alert!', data.message, 'success');
+                            }
+                            else {
+                                swal('Alert!', data.message, 'error')
+                            }
+                        },
+                        complete: function () { $("#loader").hide(); },
+                        error: function (error) {
+                            swal('Error!', 'something went wrong', 'error');
+                        },
+                    })
+                }
+            },
+            somethingElse: {
+                text: 'No',
+                btnClass: 'btn-blue',
+                action: function () {
+                    $.ajax({
+                        url: '/Product/DeleteProductCategory/', dataType: 'json', type: 'Post',
+                        contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify(obj),
+                        dataType: "json",
+                        beforeSend: function () { $("#loader").show(); },
+                        success: function (data) {
+                            if (data.status == true) {
+                                CategoryList();
+                                getParentCategory();
+                                swal('Alert!', data.message, 'success');
+                            }
+                            else {
+                                swal('Alert!', data.message, 'error')
+                            }
+                        },
+                        complete: function () { $("#loader").hide(); },
+                        error: function (error) {
+                            swal('Error!', 'something went wrong', 'error');
+                        },
+                    })
+                }
+            },
+            cancel: {
+                text: 'Cancel',
+                btnClass: 'btn-danger',
+                action: function () {
+                    //do something here
+                },
             }
-            else {
-                swal('Alert!', data.message, 'error')
-            }
-        },
-        complete: function () { $("#loader").hide(); },
-        error: function (error) {
-            swal('Error!', 'something went wrong', 'error');
-        },
-    })
+        }
+    });
 }
 function GetCategoryByID(id) {
     getParentCategory(id);

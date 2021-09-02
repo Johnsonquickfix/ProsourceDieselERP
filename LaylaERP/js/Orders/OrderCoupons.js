@@ -62,3 +62,6 @@ var ajaxFunction = function (url, data, beforeSendFun, successFun, completeFun, 
 function beforeSendFun() { $("#loader").show(); }
 function completeFun() { $("#loader").hide(); }
 function errorFun(XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); }
+function groupArrayOfObjects(list, key) {
+    return list.reduce(function (rv, x) { (rv[x[key]] = rv[x[key]] || []).push(x); return rv; }, {});
+};

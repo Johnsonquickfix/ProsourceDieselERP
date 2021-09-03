@@ -1,0 +1,312 @@
+﻿@{
+    ViewBag.Title = "Employee";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="page-title">
+    <h2 class="page-heading">Create Employee</h2>
+</div>
+<section class="content section-content employees-section">
+    <article class="box box-primary mb-4">
+        <div class="box-header with-border">
+            <h4 class="box-title">Basic Info</h4>
+        </div>
+        <div class="box-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="FirstName">First Name</label>
+                        <div class="input-group">
+                            <input class="form-control" type="text" id="FirstName" name="FirstName">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="LastName">Last Name</label>
+                        <div class="input-group">
+                            <input class="form-control" type="text" id="LastName" name="LastName">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="Gender">Gender</label>
+                        <div class="input-group">
+                            <select class="form-control" id="Gender" name="Gender">
+                                <option>Male</option>
+                                <option selected="selected" data-select2-id="2">Female</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="DateOfBirth">Date of Birth</label>
+                        <div class="input-group">
+                            <input type="text" id="DateOfBirth" name="DateOfBirth" class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="PlaceOfBirth">Place of Birth</label>
+                        <div class="input-group">
+                            <input class="form-control" type="text" id="PlaceOfBirth" name="PlaceOfBirth">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="MaritalStatus">Marital Status</label>
+                        <div class="input-group">
+                            <select class="form-control" id="MaritalStatus" name="MaritalStatus">
+                                <option selected="selected">Single</option>
+                                <option>Married</option>
+                                <option>Remarried</option>
+                                <option>Separated</option>
+                                <option>Divorced</option>
+                                <option>Widowed</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="Email">Email</label>
+                        <div class="input-group">
+                            <input class="form-control" type="text" id="Email" name="Email">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="Phone">Phone</label>
+                        <div class="input-group">
+                            <input class="form-control" type="text" id="Phone" name="Phone">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="Address1">Address1</label>
+                <div class="input-group">
+                    <input class="form-control" type="text" id="Address1" name="Address1">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="Address2">Address2</label>
+                <div class="input-group">
+                    <input class="form-control" type="text" id="Address2" name="Address2" value="">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="City">City</label>
+                        <div class="input-group">
+                            <input class="form-control" type="text" id="City" name="City">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="StateProvince">State</label>
+                        <div class="input-group">
+                            <input class="form-control" type="text" id="StateProvince" name="StateProvince">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="ZipCode">ZipCode</label>
+                        <div class="input-group">
+                            <input class="form-control" type="text" id="ZipCode" name="ZipCode">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="Country">Country</label>
+                <div class="input-group">
+                    <input class="form-control" type="text" id="Country" name="Country">
+                </div>
+            </div>
+        </div>
+    </article>
+
+    <article class="box box-primary mb-4">
+        <div class="box-header with-border">
+            <h4 class="box-title">Staff Info</h4>
+        </div>
+        <div class="box-body">
+            <div class="form-group">
+                <label for="EmployeeIDNumber">Employee ID Number</label>
+                <div class="input-group">
+                    <input class="form-control" type="text" id="EmployeeIDNumber" name="EmployeeIDNumber">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="DesignationId">Designation</label>
+                        <div class="input-group">
+                            <select class="form-control" id="DesignationId" name="DesignationId">
+                                <option value=""></option>
+                                <option value="">Warehouse Senior Manager</option>
+                                <option value="">VP HR (ExComm)</option>
+                                <option value="">Head of Finance</option>
+                                <option value="">VP Sales / CMO (ExComm)</option>
+                                <option value="">Finance Staff</option>
+                                <option value="">IT Manager</option>
+                                <option value="">Head of IT</option>
+                                <option value="">Head of Warehouse</option>
+                                <option value="">IT Senior Manager</option>
+                                <option value="">VP Finance / CEO (ExComm)</option>
+                                <option value="">Sales Staff</option>
+                                <option value="">Head of Sales</option>
+                                <option value="">VP Warehouse (ExComm)</option>
+                                <option value="">HR Staff</option>
+                                <option value="">Sales Manager</option>
+                                <option value="">VP IT / COO (ExComm)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="DepartmentId">Department</label>
+                        <div class="input-group">
+                            <select class="form-control" id="DepartmentId" name="DepartmentId">
+                                <option value=""></option>
+                                <option selected="selected" value="">Sales Department</option>
+                                <option value="">Warehouse Department</option>
+                                <option value="">HR Department</option>
+                                <option value="">Finance Department</option>
+                                <option value="">IT Department</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="SupervisorId">Supervisor</label>
+                        <div class="input-group">
+                            <select class="form-control" id="SupervisorId" name="SupervisorId">
+                                <option value=""></option>
+                                
+                                </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="JoiningDate">Joining Date</label>
+                <div class="input-group">
+                    <input type="text" id="JoiningDate" name="JoiningDate" class="form-control">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="LeavingDate">Leaving Date</label>
+                <div class="input-group">
+                    <input type="text" id="LeavingDate" name="LeavingDate" class="form-control">
+                </div>
+            </div>
+
+        </div>
+    </article>
+    <article class="box box-primary mb-4">
+        <div class="box-header with-border">
+            <h4 class="box-title">Salary Info</h4>
+        </div>
+        <div class="box-body">
+            <div class="form-group">
+                <label for="BasicSalary">Basic Salary</label>
+                <div class="input-group">
+                    <input class="form-control" type="text" id="BasicSalary" name="BasicSalary">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="UnpaidLeavePerDay">Un Paid Leave Per Day</label>
+                <div class="input-group">
+                    <input class="form-control" type="text" id="UnpaidLeavePerDay" name="UnpaidLeavePerDay">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="BenefitTemplateId">Benefit Package Template</label>
+                <div class="input-group">
+                    <select class="form-control" id="BenefitTemplateId" name="BenefitTemplateId">
+                        <option value=""></option>
+                       
+                    </select>
+                </div>
+            </div>
+        </div>
+    </article>
+
+    <article class="box box-primary mb-4">
+        <div class="box-header with-border">
+            <h4 class="box-title">Bank Account Info</h4>
+        </div>
+        <div class="box-body">
+            <div class="form-group">
+                <label for="AccountTitle">Account Title</label>
+                <div class="input-group">
+                    <input class="form-control" type="text" id="AccountTitle" name="AccountTitle">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="BankName">Bank Name</label>
+                <div class="input-group">
+                    <input class="form-control" type="text" id="BankName" name="BankName">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="AccountNumber">Account Number</label>
+                <div class="input-group">
+                    <input class="form-control" type="text" id="AccountNumber" name="AccountNumber">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="SwiftCode">Swift Code</label>
+                <div class="input-group">
+                    <input class="form-control" type="text" id="SwiftCode" name="SwiftCode" value="">
+
+                </div>
+            </div>
+        </div>
+    </article>
+
+    <article class="box box-primary mb-4">
+        <div class="box-header with-border">
+            <h4 class="box-title">User Account Info</h4>
+        </div>
+        <div class="box-body">
+            <div class="form-group">
+                <label for="SystemUserId">Application User</label>
+                <div class="input-group">
+                    <select class="form-control" id="SystemUserId" name="SystemUserId" >
+                        <option value=""></option>
+                        
+                        </select>
+                </div>
+            </div>
+        </div>
+
+    </article>
+    <article class="box box-primary mb-4">
+        <div class="box-footer text-right">
+            <a href="#" class="btn btn-danger">Back</a>
+            <button type="submit" class="btn btn-danger">Save</button>
+        </div>
+    </article>
+</section>

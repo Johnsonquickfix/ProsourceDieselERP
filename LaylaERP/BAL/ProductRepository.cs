@@ -1799,28 +1799,15 @@ namespace LaylaERP.BAL
         }
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Product Categories~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-        //public static DataTable GetParentCategory(string term_taxonomy_id)
-        //{
-        //    DataTable DS = new DataTable();
-        //    try
-        //    {
-        //        string strSQl = "Select tx.term_taxonomy_id ID,t.name, tx.parent level from wp_term_taxonomy tx left join wp_terms t on tx.term_id=t.term_id where tx.taxonomy='product_cat' and tx.term_taxonomy_id !='" + term_taxonomy_id + "' order by tx.term_taxonomy_id desc;";
-        //        DS = SQLHelper.ExecuteDataTable(strSQl);
-        //    }
-        //    catch (Exception ex)
-        //    { throw ex; }
-        //    return DS;
-        //}
         public static DataSet GetParentCategory(string term_taxonomy_id)
         {
             DataSet DS = new DataSet();
             try
             {
-                //string strSQl = "Select tx.term_taxonomy_id ID,t.name, tx.parent from wp_term_taxonomy tx left join wp_terms t on tx.term_id=t.term_id where tx.taxonomy='product_cat' and tx.term_taxonomy_id !='" + term_taxonomy_id + "' order by tx.term_taxonomy_id desc;";
-                string strSQl = "Select tx.term_taxonomy_id ID, if(tx.parent=0,t.name,concat('- ',t.name)) name,tx.parent  from wp_term_taxonomy tx " +
-                    "left join wp_terms t on tx.term_id = t.term_id where tx.taxonomy = 'product_cat' and tx.term_taxonomy_id !='" + term_taxonomy_id + "'" +
-                    "order by CASE WHEN tx.parent = 0 THEN ID ELSE tx.parent END ASC, CASE WHEN tx.parent = tx.term_taxonomy_id THEN tx.parent ELSE tx.parent END ASC; ";
+                string strSQl = "Select tx.term_taxonomy_id ID, if(tx.parent=0,t.name,concat('- ',t.name)) name,tx.parent  " +
+                    "from wp_terms t left join wp_term_taxonomy tx on tx.term_id = t.term_id left join wp_termmeta tm_a on tm_a.term_id = t.term_id and tm_a.meta_key = 'Is_Active' " +
+                    "where taxonomy = 'product_cat' and coalesce(tm_a.meta_value,'1') = '1' and tx.term_taxonomy_id !='"+term_taxonomy_id+"' and 1 = 1 order by CASE WHEN tx.parent = 0 THEN tx.term_taxonomy_id ELSE tx.parent END DESC, CASE WHEN tx.parent = tx.term_taxonomy_id " +
+                    "THEN tx.parent ELSE tx.parent END ASC; ";
                 DS = SQLHelper.ExecuteDataSet(strSQl);
             }
             catch (Exception ex)
@@ -1869,7 +1856,6 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
-      
        
         public int AddProductCategoryDesc(ProductCategoryModel model, long term_id, int thumbnail_id)
         {
@@ -1904,7 +1890,7 @@ namespace LaylaERP.BAL
                 string strWhr = string.Empty;
 
                 string strSql = "Select ifnull(p.post_title,'default.png') ImagePath,  tm.meta_key, tx.term_id ID,if(tx.parent=0,t.name,concat('# ',t.name)) name, " +
-                    "t.slug,tx.taxonomy,tx.description,tx.parent,tx.count,tm.meta_value thumbnailId, coalesce(tm_a.meta_value, '1') Active " +
+                    "t.slug,tx.taxonomy,tx.description,tx.parent, (Select Count(*) from wp_term_relationships where term_taxonomy_id=t.term_id) count,tm.meta_value thumbnailId, coalesce(tm_a.meta_value, '1') Active " +
                     "from wp_terms t left join wp_term_taxonomy tx on tx.term_id = t.term_id left join wp_termmeta tm on t.term_id = tm.term_id and tm.meta_key = 'thumbnail_id' left join wp_termmeta tm_a on tm_a.term_id = t.term_id and tm_a.meta_key = 'Is_Active' " +
                     "left join wp_posts p on tm.meta_value = p.ID where taxonomy = 'product_cat' and coalesce(tm_a.meta_value,'1') = '1' and 1 = 1  ";
                 if (!string.IsNullOrEmpty(searchid))
@@ -1971,7 +1957,7 @@ namespace LaylaERP.BAL
                 for (int i = 0; i <= value.Length - 1; i++)
                 {
                     var ProductID = value[i].ToString();
-                    string strsql = "Update wp_posts set post_status='trash' where id=" + ProductID + ";Update wp_term_relationships set term_taxonomy_id=80 where term_taxonomy_id="+val+";";
+                    string strsql = "Update wp_posts set post_status='trash' where id=" + ProductID + " or (post_parent=" + ProductID + " and post_type = 'product_variation');Update wp_term_relationships set term_taxonomy_id=80 where term_taxonomy_id=" + val+";";
                     result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql));
                 }
                 return result;
@@ -2122,11 +2108,15 @@ namespace LaylaERP.BAL
         public string GetName(string name)
         {
             string result = "";
-            DataTable dt = new DataTable();
+            DataSet ds = new DataSet();
             try
             {
-                string strSQl = "Select name from wp_terms where name ='" + name + "'; ";
-                dt = SQLHelper.ExecuteDataTable(strSQl);
+                string strSQl = "Select name from wp_terms t left join wp_term_taxonomy tx on t.term_id = tx.term_id left join wp_termmeta tm on t.term_id = tm.term_id and tm.meta_key = 'Is_Active' where name = '" + name + "' and coalesce(tm.meta_value,'1') = '1' and tx.taxonomy='product_cat';";
+                ds = SQLHelper.ExecuteDataSet(strSQl);
+                if (ds.Tables[0].Rows.Count > 0)
+                    result = ds.Tables[0].Rows[0]["name"].ToString();
+                else
+                    result = "0";
             }
             catch (Exception ex)
             {
@@ -2134,15 +2124,39 @@ namespace LaylaERP.BAL
             }
             return result;
         }
+
+        public string GetNameonEdit(string name, long termID)
+        {
+            string result = "";
+            DataSet ds = new DataSet();
+            try
+            {
+                string strSQl = "Select name from wp_terms t left join wp_term_taxonomy tx on t.term_id = tx.term_id left join wp_termmeta tm on t.term_id = tm.term_id and tm.meta_key = 'Is_Active' where name = '" + name + "' and t.term_id not in ('" + termID + "') and coalesce(tm.meta_value,'1') ='1' and tx.taxonomy='product_cat';";
+                ds = SQLHelper.ExecuteDataSet(strSQl);
+                if (ds.Tables[0].Rows.Count > 0)
+                    result = ds.Tables[0].Rows[0]["name"].ToString();
+                else
+                    result = "0";
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return result;
+        }
+
         public string GetTermID(string ID)
         {
             string result = "";
-            DataSet dt = new DataSet();
+            DataSet ds = new DataSet();
             try
             {
                 string strSQl = "Select GROUP_CONCAT(term_id) term_id from wp_term_taxonomy where  parent in (" + ID + ") or term_id in (" + ID + "); ";
-               DataSet ds = SQLHelper.ExecuteDataSet(strSQl);
-                result = ds.Tables[0].Rows[0]["term_id"].ToString();
+                ds = SQLHelper.ExecuteDataSet(strSQl);
+                if (ds.Tables[0].Rows.Count > 0)
+                    result = ds.Tables[0].Rows[0]["term_id"].ToString();
+                else
+                    result = "0";
             }
             catch (Exception ex)
             {
@@ -2159,7 +2173,10 @@ namespace LaylaERP.BAL
             {
                 string strSQl = "Select GROUP_CONCAT(object_id) object_id from wp_term_relationships where term_taxonomy_id in (" + ID + "); ";
                 DataSet ds = SQLHelper.ExecuteDataSet(strSQl);
-                result = ds.Tables[0].Rows[0]["object_id"].ToString();
+                if (ds.Tables[0].Rows.Count > 0)
+                    result = ds.Tables[0].Rows[0]["object_id"].ToString();
+                else
+                    result = "0";
             }
             catch (Exception ex)
             {

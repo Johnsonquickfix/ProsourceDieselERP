@@ -1,4 +1,4 @@
-﻿$(document).ready(function () {
+﻿ $(document).ready(function () {
     $("#loader1").hide();
     var url = window.location.pathname;
     var id = url.substring(url.lastIndexOf('/') + 1);

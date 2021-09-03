@@ -1,5 +1,5 @@
 ﻿$(document).ready(function () {
-    $("#loader").hide();
+    $("#loader").hide(); 
     //console.log(location);
     //location.href = 'ListProduct';
     var url = window.location.pathname;

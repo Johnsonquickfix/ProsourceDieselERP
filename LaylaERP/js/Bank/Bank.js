@@ -1,5 +1,6 @@
 ﻿getNatureofJournal();
 getAccountingAccount();
+BankEntries();
 
 function getAccountingAccount() {
     $.ajax({
@@ -362,7 +363,7 @@ function BankLinkedFiles() {
     ID = $("#hfid").val();
     var sid = "";
     var obj = { user_status: urid, Search: sid, PageNo: 0, PageSize: 50, sEcho: 1, SortCol: 'id', SortDir: 'desc', rowid: ID };
-    $('#VendorLinkedFiles').DataTable({
+    $('#LinkedFiles').DataTable({
         columnDefs: [{ "orderable": true, "targets": 0 }], order: [[0, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true,
         sPaginationType: "full_numbers", searching: false, ordering: true, lengthChange: true, "paging": true,
@@ -370,6 +371,7 @@ function BankLinkedFiles() {
         lengthMenu: [[10, 20, 50], [10, 20, 50]],
         sAjaxSource: "/Bank/GetBankLinkedFiles",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
+            //obj.Search = aoData[9].value;
             var col = 'id';
             if (oSettings.aaSorting.length >= 0) {
                 var col = oSettings.aaSorting[0][0] == 0 ? "FileName" : oSettings.aaSorting[0][0] == 1 ? "FileSize" : oSettings.aaSorting[0][0] == 2 ? "Date" : "id";
@@ -428,4 +430,41 @@ function DeleteBankLinkedFiles(id) {
             error: function (error) { swal('Error!', 'something went wrong', 'error'); },
         })
     }
+}
+
+
+//---------------Entries------------------
+function BankEntries() {
+
+    $.ajax({
+        url: '/Bank/GetEntries',
+        method: 'post',
+        datatype: 'json',
+        contentType: "application/json; charset=utf-8",
+        processing: true,
+
+        success: function (data) {
+            $('#entries').dataTable({
+                destroy: true,
+                scrollX: false,
+                data: JSON.parse(data),
+                "columns": [
+                    { data: 'due_date', title: 'Due Date', sWidth: "10%" },
+                    { data: 'description', title: 'Description', sWidth: "10%" },
+                    { data: 'third_party', title: 'Third Party', sWidth: "20%" },
+                    { data: 'credit', title: 'Credit', sWidth: "15%" },
+                    { data: 'debit', title: 'Debit', sWidth: "15%" },
+                    { data: 'balance', title: 'Balance', sWidth: "10%" },
+                    
+                ],
+
+
+                "order": [[0, 'desc']],
+            });
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            alert(xhr.responseText);
+        }
+    });
+
 }

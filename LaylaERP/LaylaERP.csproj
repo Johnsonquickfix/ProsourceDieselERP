@@ -188,6 +188,7 @@
     <Compile Include="Controllers\ExportController.cs" />
     <Compile Include="Controllers\FeeNTaxController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\HrmsController.cs" />
     <Compile Include="Controllers\InventoryController.cs" />
     <Compile Include="Controllers\OrdersController.cs" />
     <Compile Include="Controllers\PodiumController.cs" />
@@ -859,6 +860,12 @@
     <Content Include="Views\Reception\ReceiveOrder.cshtml" />
     <Content Include="Views\Reception\NewReceiveOrder.cshtml" />
     <Content Include="Views\Product\ListProduct.cshtml" />
+    <Content Include="Views\Hrms\Employee.cshtml" />
+    <Content Include="Views\Hrms\Attendance.cshtml" />
+    <Content Include="Views\Hrms\Leave.cshtml" />
+    <Content Include="Views\Hrms\Payroll.cshtml" />
+    <Content Include="Views\Hrms\Appraisal.cshtml" />
+    <Content Include="Views\Hrms\RoleMembership.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

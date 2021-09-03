@@ -28,6 +28,17 @@
             ViewBag.pay_option = "[" + pay_method + "]";
             return View();
         }
+        // GET: Mines of Moria (Quick Orders)
+        public ActionResult minesofmoria(long id = 0)
+        {
+            ViewBag.id = id;
+            string pay_method = CommanUtilities.Provider.GetCurrent().AuthorizeNet ? "{\"id\":\"amazon_payments_advanced\" ,\"text\":\"Amazon Pay\"}" : "";
+            pay_method += CommanUtilities.Provider.GetCurrent().AmazonPay ? (pay_method.Length > 1 ? "," : "") + "{\"id\":\"authorize_net_cim_credit_card\" ,\"text\":\"Authorize Net\"}" : "";
+            pay_method += CommanUtilities.Provider.GetCurrent().Podium ? (pay_method.Length > 1 ? "," : "") + "{\"id\":\"podium\" ,\"text\":\"Podium\"}" : "";
+            pay_method += CommanUtilities.Provider.GetCurrent().Paypal ? (pay_method.Length > 1 ? "," : "") + "{\"id\":\"ppec_paypal\" ,\"text\":\"PayPal\"}" : "";
+            ViewBag.pay_option = "[" + pay_method + "]";
+            return View();
+        }
         // GET: Order Refund
         public ActionResult OrderRefund(long id = 0)
         {
@@ -215,8 +226,12 @@
                     pid = Convert.ToInt64(model.strValue1);
                 if (!string.IsNullOrEmpty(model.strValue2))
                     vid = Convert.ToInt64(model.strValue2);
+                if (string.IsNullOrEmpty(model.strValue3))
+                    model.strValue3 = "-";
+                if (string.IsNullOrEmpty(model.strValue4))
+                    model.strValue4 = "-";
                 //obj = OrderRepository.GetProductDetails(pid, vid);
-                obj = OrderRepository.GetProductListDetails(pid, vid);
+                obj = OrderRepository.GetProductListDetails(pid, vid, model.strValue3, model.strValue4);
             }
             catch { }
             return Json(obj, 0);
@@ -227,7 +242,7 @@
             List<OrderShippingModel> _list = new List<OrderShippingModel>();
             try
             {
-                _list = OrderRepository.GetProductShippingCharge(model.strValue1, model.strValue2);
+                _list = OrderRepository.GetProductShippingCharge(model.strValue1, model.strValue2, model.strValue2);
             }
             catch { }
             return Json(_list, 0);
@@ -472,12 +487,6 @@
             }
             catch (Exception ex) { JSONresult = ex.Message; }
             return Json(new { status = status, message = JSONresult }, 0);
-        }
-
-        // GET: Mines of Moria (Quick Orders)
-        public ActionResult minesofmoria(long id = 0)
-        {
-            return View();
-        }
+        }        
     }
 }

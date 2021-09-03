@@ -25,16 +25,16 @@
             <div class="user_subCrumbs">
                 <input type="hidden" id="hfOrderType" value="" />
                 <ul class="subsubsub">
-                    <li class="all"><a id="all" href="javascript:void(0);" class="current">All (<span class="count">0</span></a>) |</li>
-                    <li class="mine"><a href="javascript:void(0);" id="mine">Mine (<span class="count">0</span>)</a> |</li>
-                    <li class="draft"><a href="javascript:void(0);" id="draft">Draft (<span class="count">0</span>)</a> |</li>
-                    <li class="wc-pending"><a href="javascript:void(0);" id="wc-pending">Pending payment (<span class="count">0</span>)</a> |</li>
-                    <li class="wc-processing"><a href="javascript:void(0);" id="wc-processing">Processing (<span class="count">0</span>)</a> |</li>
-                    <li class="wc-on-hold"><a href="javascript:void(0);" id="wc-on-hold">On hold (<span class="count">0</span>)</a> |</li>
-                    <li class="wc-completed"><a href="javascript:void(0);" id="wc-completed">Completed (<span class="count">0</span>)</a> |</li>
-                    <li class="wc-cancelled"><a href="javascript:void(0);" id="wc-cancelled">Cancelled (<span class="count">0</span>)</a> |</li>
-                    <li class="wc-refunded"><a href="javascript:void(0);" id="wc-refunded">Refunded (<span class="count">0</span>)</a> |</li>
-                    <li class="wc-failed"><a href="javascript:void(0);" id="wc-failed">Failed (<span class="count">0</span>)</a> </li>
+                    <li class="all" data-toggle="tooltip" title="Click search all order."><a id="all" href="javascript:void(0);" class="current">All (<span class="count">0</span></a>) |</li>
+                    <li class="mine" data-toggle="tooltip" title="Click search mine order."><a href="javascript:void(0);" id="mine">Mine (<span class="count">0</span>)</a> |</li>
+                    <li class="draft" data-toggle="tooltip" title="Click search draft order."><a href="javascript:void(0);" id="draft">Draft (<span class="count">0</span>)</a> |</li>
+                    <li class="wc-pending" data-toggle="tooltip" title="Click search pending order."><a href="javascript:void(0);" id="wc-pending">Pending payment (<span class="count">0</span>)</a> |</li>
+                    <li class="wc-processing" data-toggle="tooltip" title="Click search processing order."><a href="javascript:void(0);" id="wc-processing">Processing (<span class="count">0</span>)</a> |</li>
+                    <li class="wc-on-hold" data-toggle="tooltip" title="Click search on-hold order."><a href="javascript:void(0);" id="wc-on-hold">On hold (<span class="count">0</span>)</a> |</li>
+                    <li class="wc-completed" data-toggle="tooltip" title="Click search completed order."><a href="javascript:void(0);" id="wc-completed">Completed (<span class="count">0</span>)</a> |</li>
+                    <li class="wc-cancelled" data-toggle="tooltip" title="Click search cancelled order."><a href="javascript:void(0);" id="wc-cancelled">Cancelled (<span class="count">0</span>)</a> |</li>
+                    <li class="wc-refunded" data-toggle="tooltip" title="Click search refunded order."><a href="javascript:void(0);" id="wc-refunded">Refunded (<span class="count">0</span>)</a> |</li>
+                    <li class="wc-failed" data-toggle="tooltip" title="Click search failed order."><a href="javascript:void(0);" id="wc-failed">Failed (<span class="count">0</span>)</a> </li>
                 </ul>
             </div>
         </div>
@@ -53,7 +53,7 @@
                             <option value="wc-refunded">Refunded</option>
                             <option value="wc-failed">Failed</option>
                         </select>
-                        <button type="button" id="btnChange" onclick="orderStatus();" class="btn btn-primary btn-flat button">Change</button>
+                        <button type="button" id="btnChange" onclick="orderStatus();" class="btn btn-primary btn-flat button" data-toggle="tooltip" title="Change Order Status">Change</button>
                     </div>
                     <div class="alignleft actions">
                         <div class="input-group">
@@ -65,7 +65,7 @@
                         <select class="form-control select2" id="ddlUser" placeholder="Filter by registered customer" style="width: 100%;">
                             <option>Select any option please</option>
                         </select>
-                        <input type="submit" name="filter_action" id="btnOtherFilter" class="button" value="Filter">
+                        <input type="submit" name="filter_action" id="btnOtherFilter" class="button" value="Filter" data-toggle="tooltip" title="Search order by selection criteria.">
                     </div>
                 </div>
             </div>

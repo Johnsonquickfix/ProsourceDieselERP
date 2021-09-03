@@ -1467,7 +1467,7 @@ function getItemShippingCharge() {
     let shipping_state = $("#ddlshipcountry").val() == 'US' ? sh_state : $("#ddlshipcountry").val();
     if (v_ids.join(',').length > 0) {
         $("#loader").show();
-        let options = { strValue1: v_ids.join(','), strValue2: shipping_state };
+        let options = { strValue1: v_ids.join(','), strValue2: $("#ddlshipcountry").val(), strValue2: $("#ddlshipstate").val() };
         $(".TotalAmount").data("shippingamt", 0.00);
         $.ajax({
             type: "POST", url: '/Orders/GetProductShipping', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(options),
@@ -1506,7 +1506,7 @@ function calculateStateRecyclingFee() {
 function getItemList() {
     var res = $('#ddlProduct').val().split('$');
     var pid = parseInt(res[0]) || 0, vid = parseInt(res[1]) || 0;
-    var obj = { strValue1: pid, strValue2: vid };
+    var obj = { strValue1: pid, strValue2: vid, strValue3: $('#ddlshipcountry').val(), strValue4: $('#ddlshipstate').val()};
     var tax_rate = parseFloat($('#hfTaxRate').val()) || 0.00;
     $.ajax({
         type: "POST", url: '/Orders/GetProductInfo', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
@@ -1540,7 +1540,7 @@ function getItemList() {
         async: false
     });
     let shipping_state = $("#ddlshipcountry").val() == 'US' ? $("#ddlshipstate").val() : $("#ddlshipcountry").val();
-    setTimeout(function () { getItemShippingCharge(); }, 100);
+    //setTimeout(function () { getItemShippingCharge(); }, 100);
 }
 //-----bind Item Table ---------------------------
 function bindItemListDataTable(data) {

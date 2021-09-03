@@ -199,7 +199,7 @@
             try
             {
                 string strSQl = "select wp_t.term_id,wp_t.name,p.id pr_id,p.post_title as post_title,"
-                                + " group_concat(JSON_OBJECT('vr_id', ps.id, 'vr_title', ps.post_title, pm_rp.meta_key, pm_rp.meta_value, pm_sp.meta_key, pm_sp.meta_value)) variation_details"
+                                + " concat('[',group_concat(JSON_OBJECT('vr_id', ps.id, 'vr_title', ps.post_title, pm_rp.meta_key, pm_rp.meta_value, pm_sp.meta_key, pm_sp.meta_value)),']') variation_details"
                                 + "        from wp_posts p"
                                 + " inner join wp_term_relationships wp_tr on wp_tr.object_id = p.id"
                                 + " inner join wp_term_taxonomy wp_ttn on wp_ttn.term_taxonomy_id = wp_tr.term_taxonomy_id and wp_ttn.taxonomy = 'product_cat'"
@@ -268,32 +268,39 @@
             List<OrderProductsModel> _list = new List<OrderProductsModel>();
             try
             {
-                string free_products = string.Empty;
-                if (product_id == 118)
-                    free_products = "632713";
-                else if (product_id == 611172)
-                    free_products = "78676";
-                else
-                    free_products = "";
-
+                _list = GetProductListDetails(product_id, variation_id, "-", "-");                
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return _list;
+        }
+        public static List<OrderProductsModel> GetProductListDetails(long product_id, long variation_id,string countrycode, string statecode)
+        {
+            List<OrderProductsModel> _list = new List<OrderProductsModel>();
+            try
+            {
                 OrderProductsModel productsModel = new OrderProductsModel();
                 MySqlParameter[] parameters =
                 {
                     new MySqlParameter("@product_id", product_id),
-                    new MySqlParameter("@variation_id", variation_id)
+                    new MySqlParameter("@variation_id", variation_id),
+                    new MySqlParameter("@countrycode", countrycode),
+                    new MySqlParameter("@statecode", statecode)
                 };
                 string strSQl = "SELECT post.id,ps.ID pr_id,CONCAT(COALESCE(ps.post_title,post.post_title), COALESCE(CONCAT(' (' ,psku.meta_value,')'),''))  as post_title,"
-                            + " COALESCE(pr.meta_value, 0) reg_price,COALESCE(psr.meta_value, 0) sale_price,1 quantity,'false' is_free,"
+                            + " COALESCE(pr.meta_value, 0) reg_price,COALESCE(psr.meta_value, 0) sale_price,1 quantity,'false' is_free,scd.Shipping_price,scd.type Shipping_type,"
                             + " concat('{', group_concat(concat('\"', free_product_id, '\": \"', free_quantity, '\"') separator ','), '}') free_itmes FROM wp_posts as post"
                             + " LEFT OUTER JOIN wp_posts ps ON ps.post_parent = post.id and ps.post_type LIKE 'product_variation'"
                             + " left outer join wp_postmeta psku on psku.post_id = COALESCE(ps.id, post.id)and psku.meta_key = '_sku'"
                             + " left outer join wp_postmeta pr on pr.post_id = COALESCE(ps.id, post.id) and pr.meta_key = '_regular_price'"
                             + " left outer join wp_postmeta psr on psr.post_id = COALESCE(ps.id, post.id) and psr.meta_key = '_price'"
                             + " left outer join wp_product_free free_it on free_it.product_id = post.id or free_it.product_id = ps.id"
+                            + " left outer join Shipping_Product sp on sp.fk_productid = COALESCE(ps.id, post.id)"
+                            + " left outer join ShippingClass_Details scd on scd.fk_ShippingID = sp.fk_shippingID and countrycode = @countrycode and statecode = @statecode"
                             + " WHERE post.post_type = 'product' and post.id = @product_id and COALESCE(ps.id,0) = @variation_id group by post.id,ps.ID"
                             + " union all"
-                            + " SELECT(case when isnull(p.post_parent) = 0 then p.id else p.post_parent end) id,(case when isnull(p.post_parent)= 0 then 0 else p.id end) pr_id,"
-                            + " CONCAT(p.post_title, COALESCE(CONCAT(' (', psku.meta_value, ')'), '')) as post_title,0 reg_price,0 sale_price,free_quantity quantity,'true' is_free,'{}' free_itmes FROM wp_product_free free_it"
+                            + " SELECT(case when isnull(p.post_parent) = 0 then p.id else p.post_parent end) id,(case when isnull(p.post_parent)= 0 then 0 else p.id end) pr_id,CONCAT(p.post_title, COALESCE(CONCAT(' (', psku.meta_value, ')'), '')) as post_title,"
+                            + " 0 reg_price,0 sale_price,free_quantity quantity,'true' is_free,0 Shipping_price,'qty' Shipping_type,'{}' free_itmes FROM wp_product_free free_it"
                             + " inner join wp_posts as p on p.id = free_it.free_product_id"
                             + " left outer join wp_postmeta psku on psku.post_id = p.id and psku.meta_key = '_sku'"
                             + " WHERE p.post_type in ('product', 'product_variation') and free_it.product_id = @product_id or free_it.product_id = @variation_id;";
@@ -336,28 +343,11 @@
                     else
                         productsModel.free_itmes = string.Empty;
                     productsModel.group_id = 0;
+                    if (sdr["Shipping_price"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["Shipping_price"].ToString().Trim()))
+                        productsModel.shipping_amount = decimal.Parse(sdr["Shipping_price"].ToString().Trim());
+                    else
+                        productsModel.shipping_amount = 0;
 
-                    /// free item
-                    //if (productsModel.product_id == 78676) { productsModel.is_free = true; productsModel.quantity = 2; }
-                    //else if (productsModel.product_id == 632713) { productsModel.is_free = true; productsModel.quantity = 2; }
-                    //else productsModel.is_free = false;
-
-                    /// 
-                    //if (productsModel.product_id == 611172)
-                    //{
-                    //    productsModel.group_id = 78676;
-                    //    productsModel.free_itmes = "{\"78676\":2}";
-                    //}
-                    //else if (productsModel.product_id == 118)
-                    //{
-                    //    productsModel.group_id = 632713;
-                    //    productsModel.free_itmes = "{\"632713\":2}";
-                    //}
-                    //else
-                    //{
-                    //    productsModel.group_id = 0;
-                    //    productsModel.free_itmes = string.Empty;
-                    //}
                     _list.Add(productsModel);
                 }
             }
@@ -365,40 +355,44 @@
             { throw ex; }
             return _list;
         }
-        public static List<OrderShippingModel> GetProductShippingCharge(string variation_ids, string shipping_state)
+        public static List<OrderShippingModel> GetProductShippingCharge(string variation_ids, string statecode)
+        {
+            List<OrderShippingModel> _list = new List<OrderShippingModel>();
+            try
+            {
+                _list = GetProductShippingCharge(variation_ids, "US", statecode);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return _list;
+        }
+        public static List<OrderShippingModel> GetProductShippingCharge(string variation_ids, string countrycode, string statecode)
         {
             List<OrderShippingModel> _list = new List<OrderShippingModel>();
             try
             {
                 DataTable DT = new DataTable();
-                MySqlParameter[] parameters = { };
-                string strSQl = "select * from wp_ship_value where productid in (" + variation_ids + ") ";
+                MySqlParameter[] parameters =
+                {
+                    new MySqlParameter("@countrycode", countrycode),
+                    new MySqlParameter("@statecode", statecode)
+                };
+                string strSQl = "select fk_productid,Shipping_price,fk_productid from Shipping_Product sp"
+                            + " inner join ShippingClass_Details scd on scd.fk_ShippingID = sp.fk_shippingID and countrycode = @countrycode and statecode = @statecode"
+                            + " where fk_productid in (" + variation_ids + ") ";
                 MySqlDataReader sdr = SQLHelper.ExecuteReader(strSQl, parameters);
                 while (sdr.Read())
                 {
                     OrderShippingModel productsModel = new OrderShippingModel();
-                    if (sdr["productid"] != DBNull.Value)
-                        productsModel.product_id = Convert.ToInt64(sdr["productid"]);
+                    if (sdr["fk_productid"] != DBNull.Value)
+                        productsModel.product_id = Convert.ToInt64(sdr["fk_productid"]);
                     else
                         productsModel.product_id = 0;
 
-                    if (sdr[shipping_state] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr[shipping_state].ToString().Trim()))
-                        productsModel.AK = decimal.Parse(sdr[shipping_state].ToString());
+                    if (sdr["Shipping_price"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["Shipping_price"].ToString().Trim()))
+                        productsModel.AK = decimal.Parse(sdr["Shipping_price"].ToString());
                     else
                         productsModel.AK = 0;
-
-                    //if (sdr["AK"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["AK"].ToString().Trim()))
-                    //    productsModel.AK = decimal.Parse(sdr["AK"].ToString());
-                    //else
-                    //    productsModel.AK = 0;
-                    //if (sdr["HI"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["HI"].ToString().Trim()))
-                    //    productsModel.HI = decimal.Parse(sdr["HI"].ToString().Trim());
-                    //else
-                    //    productsModel.HI = 0;
-                    //if (sdr["CA"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["CA"].ToString().Trim()))
-                    //    productsModel.CA = decimal.Parse(sdr["CA"].ToString().Trim());
-                    //else
-                    //    productsModel.CA = 0;
 
                     _list.Add(productsModel);
                 }

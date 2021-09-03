@@ -49,12 +49,25 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
-        public static DataTable GetCategoryType()
+        public static DataTable GetCategoryType_Old()
         {
             DataTable dtr = new DataTable();
             try
             {
                 string strquery = "SELECT t.term_id,CONCAT(name,' ','(', count,')') NameCount FROM wp_terms AS t Left JOIN wp_term_taxonomy AS tt ON tt.term_id = t.term_id Left JOIN wp_term_relationships AS tr ON tr.term_taxonomy_id = tt.term_taxonomy_id WHERE tt.taxonomy IN('product_cat') GROUP by t.term_id";
+                dtr = SQLHelper.ExecuteDataTable(strquery);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dtr;
+        }
+
+        public static DataTable GetCategoryType()
+        {
+            DataTable dtr = new DataTable();
+            try
+            {
+                string strquery = "SELECT t.term_id,CONCAT(name,' ','(', count,')') NameCount FROM wp_terms AS t Left JOIN wp_term_taxonomy AS tt ON tt.term_id = t.term_id Left JOIN wp_term_relationships AS tr ON tr.term_taxonomy_id = tt.term_taxonomy_id left join wp_termmeta tm_a on tm_a.term_id = t.term_id and tm_a.meta_key = 'Is_Active' WHERE taxonomy = 'product_cat' and coalesce(tm_a.meta_value,'1') = '1' GROUP by t.term_id";
                 dtr = SQLHelper.ExecuteDataTable(strquery);
             }
             catch (Exception ex)
@@ -586,13 +599,26 @@ namespace LaylaERP.BAL
             }
             return caregory;
         }
-        public static DataTable GetProductcategoriesList()
+        public static DataTable GetProductcategoriesList_Old()
         {
             DataTable DT = new DataTable();
             try
             {
                 string strSQl = "Select * From wp_terms Left Join wp_term_taxonomy On wp_terms.term_id = wp_term_taxonomy.term_id"
                               + " WHERE wp_term_taxonomy.taxonomy = 'product_cat' ";
+                DT = SQLHelper.ExecuteDataTable(strSQl);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DT;
+        }
+        public static DataTable GetProductcategoriesList()
+        {
+            DataTable DT = new DataTable();
+            try
+            {
+                string strSQl = "Select t.term_id, name,tm.meta_value from wp_terms t left join wp_term_taxonomy tx on t.term_id = tx.term_id"
+                              + " left join wp_termmeta tm on t.term_id = tm.term_id and tm.meta_key = 'Is_Active' where coalesce(tm.meta_value,'1') = '1' and tx.taxonomy = 'product_cat'; ";
                 DT = SQLHelper.ExecuteDataTable(strSQl);
             }
             catch (Exception ex)
@@ -892,7 +918,7 @@ namespace LaylaERP.BAL
                 if (!string.IsNullOrEmpty(strValue1))
                 {
 
-                    strWhr += " and t.term_id =" + strValue1 + " ";
+                    strWhr += " and (case when p.post_parent = 0 then p.id else p.post_parent end) in (select object_id from wp_term_relationships ttr where ttr.term_taxonomy_id='" + strValue1 + "')";
                 }
                 if (!string.IsNullOrEmpty(strValue3))
                 {

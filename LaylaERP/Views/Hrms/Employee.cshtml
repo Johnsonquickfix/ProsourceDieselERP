@@ -1,8 +1,21 @@
 ﻿@{
     ViewBag.Title = "Employee";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.UiStyle = "/Content/AdminLTE-3.1.0/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css";
+    ViewBag.UiJs = "/Content/AdminLTE-3.1.0/bower_components/jquery-ui/jquery-ui.min.js";
 }
 
+<style>
+    .input-group .select2-container, .form-group .select2-container {
+        position: relative !important;
+        z-index: 2;
+        float: left !important;
+        width: 100% !important;
+        margin-bottom: 0 !important;
+        display: table !important;
+        table-layout: fixed !important;
+    }
+</style>
 <div class="page-title">
     <h2 class="page-heading">Create or Edit Existing Employee</h2>
 </div>
@@ -33,7 +46,7 @@
                     <div class="form-group">
                         <label for="Gender">Gender</label>
                         <div class="input-group">
-                            <select class="form-control" id="Gender" name="Gender">
+                            <select class="form-control select2" id="Gender" name="Gender">
                                 <option>Male</option>
                                 <option selected="selected" data-select2-id="2">Female</option>
                             </select>
@@ -47,7 +60,7 @@
                     <div class="form-group">
                         <label for="DateOfBirth">Date of Birth</label>
                         <div class="input-group">
-                            <input type="text" id="DateOfBirth" name="DateOfBirth" class="form-control">
+                            <input type="text" id="DateOfBirth" name="DateOfBirth" placeholder="yyyy-mm-dd" class="date-datepicker hasDatepicker form-control" autocomplete="off">
                         </div>
                     </div>
                 </div>
@@ -66,7 +79,7 @@
                     <div class="form-group">
                         <label for="MaritalStatus">Marital Status</label>
                         <div class="input-group">
-                            <select class="form-control" id="MaritalStatus" name="MaritalStatus">
+                            <select class="form-control select2" id="MaritalStatus" name="MaritalStatus">
                                 <option selected="selected">Single</option>
                                 <option>Married</option>
                                 <option>Remarried</option>
@@ -160,7 +173,7 @@
                     <div class="form-group">
                         <label for="DesignationId">Designation</label>
                         <div class="input-group">
-                            <select class="form-control" id="DesignationId" name="DesignationId">
+                            <select class="form-control select2" id="DesignationId" name="DesignationId">
                                 <option value=""></option>
                                 <option value="">Warehouse Senior Manager</option>
                                 <option value="">VP HR (ExComm)</option>
@@ -186,7 +199,7 @@
                     <div class="form-group">
                         <label for="DepartmentId">Department</label>
                         <div class="input-group">
-                            <select class="form-control" id="DepartmentId" name="DepartmentId">
+                            <select class="form-control select2" id="DepartmentId" name="DepartmentId">
                                 <option value=""></option>
                                 <option selected="selected" value="">Sales Department</option>
                                 <option value="">Warehouse Department</option>
@@ -201,7 +214,7 @@
                     <div class="form-group">
                         <label for="SupervisorId">Supervisor</label>
                         <div class="input-group">
-                            <select class="form-control" id="SupervisorId" name="SupervisorId">
+                            <select class="form-control select2" id="SupervisorId" name="SupervisorId">
                                 <option value=""></option>
                                 <option value="">EMPSLS003 Adria Russell</option>
                                 <option value="">EMPSLS001 Noelle Adams</option>
@@ -219,7 +232,7 @@
                                 <option value="">EMPHR003 Joan Romero</option>
                                 <option selected="selected" value="">EMPSLS002 Lillith Daniel</option>
                                 <option value="">EMPIT001 Kyla Olsen</option>
-                                </select>
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -259,7 +272,7 @@
             <div class="form-group">
                 <label for="BenefitTemplateId">Benefit Package Template</label>
                 <div class="input-group">
-                    <select class="form-control" id="BenefitTemplateId" name="BenefitTemplateId">
+                    <select class="form-control select2" id="BenefitTemplateId" name="BenefitTemplateId">
                         <option value=""></option>
                         <option>EMPWH004 Template</option>
                         <option>EMPFI005 Template</option>
@@ -319,7 +332,7 @@
             <div class="form-group">
                 <label for="SystemUserId">System Application User</label>
                 <div class="input-group">
-                    <select class="form-control" id="SystemUserId" name="SystemUserId" >
+                    <select class="form-control select2" id="SystemUserId" name="SystemUserId">
                         <option value=""></option>
                         <option value="">Aaron.Hawkins@hrmlite.com</option>
                         <option selected="selected" value="">Adria.Russell@hrmlite.com</option>
@@ -337,7 +350,7 @@
                         <option value="">Hedy.Greene@hrmlite.com</option>
                         <option value="">Hilda.Haynes@hrmlite.com</option>
                         <option value="">Hiroko.Potter@hrmlite.com</option>
-                        </select>
+                    </select>
                 </div>
             </div>
         </div>
@@ -350,3 +363,11 @@
         </div>
     </article>
 </section>
+<script type="text/javascript">
+    jQuery(function ($) {
+        $('#DateOfBirth').datepicker();
+        $("select").select2({
+            allowClear: true, minimumInputLength: 3
+        });
+    });
+</script>

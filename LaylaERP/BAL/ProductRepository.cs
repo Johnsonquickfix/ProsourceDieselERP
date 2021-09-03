@@ -1830,7 +1830,6 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
-      
        
         public int AddProductCategoryDesc(ProductCategoryModel model, long term_id, int thumbnail_id)
         {
@@ -2106,7 +2105,7 @@ namespace LaylaERP.BAL
             DataSet ds = new DataSet();
             try
             {
-                string strSQl = "Select name from wp_terms t left join wp_term_taxonomy tx on t.term_id = tx.term_id left join wp_termmeta tm on t.term_id = tm.term_id and tm.meta_key = 'Is_Active' where name = '" + name + "' and t.term_id != '" + termID + "' and coalesce(tm.meta_value,'1') in ('0', '1') and tx.taxonomy='product_cat';";
+                string strSQl = "Select name from wp_terms t left join wp_term_taxonomy tx on t.term_id = tx.term_id left join wp_termmeta tm on t.term_id = tm.term_id and tm.meta_key = 'Is_Active' where name = '" + name + "' and t.term_id not in ('" + termID + "') and coalesce(tm.meta_value,'1') ='1' and tx.taxonomy='product_cat';";
                 ds = SQLHelper.ExecuteDataSet(strSQl);
                 if (ds.Tables[0].Rows.Count > 0)
                     result = ds.Tables[0].Rows[0]["name"].ToString();

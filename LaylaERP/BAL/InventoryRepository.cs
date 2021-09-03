@@ -111,10 +111,12 @@ namespace LaylaERP.BAL
 
 
                 string strSql = "select p.id,p.post_type,p.post_title,s.meta_value sku,(case when p.post_parent = 0 then p.id else p.post_parent end) p_id,p.post_parent,"
-                            + " (select coalesce(sum(case when pwr_o.flag = 'R' then pwr_o.quantity else -pwr_o.quantity end),0) from product_stock_register pwr_o where pwr_o.product_id = p.id and pwr_o.flag != 'O' and cast(pwr_o.tran_date as date) <= cast('" + todate.ToString("yyyy-MM-dd") + "' as date)) stock,"
+                            + " (select coalesce(sum(case when pwr_o.flag = 'R' then pwr_o.quantity else -pwr_o.quantity end),0) from product_stock_register pwr_o where pwr_o.product_id = p.id and pwr_o.flag != 'O' and cast(pwr_o.tran_date as date) < cast('" + fromdate.ToString("yyyy-MM-dd") + "' as date)) op_stock,"
+                            + " coalesce(sum(case when pwr.flag = 'R' and pwr.tran_type not in ('DM','ST') then quantity else 0 end),0) stock,"
                             + " coalesce(sum(case when pwr.flag = 'O' then quantity else 0 end),0) UnitsinPO,"
-                            + " coalesce(sum(case when pwr.flag = 'I' and pwr.tran_type != 'DM' then quantity else 0 end),0) SaleUnits,"
-                            + " coalesce(sum(case when pwr.flag = 'I' and pwr.tran_type = 'DM' then quantity else 0 end),0) Damage"
+                            + " coalesce(sum(case when pwr.flag = 'I' and pwr.tran_type not in ('DM','ST') then quantity else 0 end),0) SaleUnits,"
+                            + " coalesce(sum(case when pwr.flag = 'I' and pwr.tran_type = 'DM' then quantity else 0 end),0) Damage,"
+                            + " (select group_concat(ui.name) from wp_terms ui join wp_term_taxonomy uim on uim.term_id = ui.term_id and uim.taxonomy IN('product_cat') JOIN wp_term_relationships AS trp ON trp.object_id = p.ID and trp.term_taxonomy_id = uim.term_taxonomy_id) category"
                             + "     FROM wp_posts as p left join wp_postmeta as s on p.id = s.post_id and s.meta_key = '_sku'"
                             + " left outer join product_stock_register pwr on pwr.product_id = p.id"
                             + " and cast(pwr.tran_date as date) >= cast('" + fromdate.ToString("yyyy-MM-dd") + "' as date) "
@@ -158,10 +160,12 @@ namespace LaylaERP.BAL
                 }
 
                 string strSql = "select p.id,p.post_type,p.post_title,s.meta_value sku,(case when p.post_parent = 0 then p.id else p.post_parent end) p_id,p.post_parent,"
-                            + " (select coalesce(sum(case when pwr_o.flag = 'R' then pwr_o.quantity else -pwr_o.quantity end),0) from product_stock_register pwr_o where pwr_o.product_id = p.id and pwr_o.flag != 'O' and cast(pwr_o.tran_date as date) <= cast('" + todate.ToString("yyyy-MM-dd") + "' as date)) stock,"
+                            + " (select coalesce(sum(case when pwr_o.flag = 'R' then pwr_o.quantity else -pwr_o.quantity end),0) from product_stock_register pwr_o where pwr_o.product_id = p.id and pwr_o.flag != 'O' and cast(pwr_o.tran_date as date) < cast('" + fromdate.ToString("yyyy-MM-dd") + "' as date)) op_stock,"
+                            + " coalesce(sum(case when pwr.flag = 'R' and pwr.tran_type not in ('DM','ST') then quantity else 0 end),0) stock,"
                             + " coalesce(sum(case when pwr.flag = 'O' then quantity else 0 end),0) UnitsinPO,"
-                            + " coalesce(sum(case when pwr.flag = 'I' and pwr.tran_type != 'DM' then quantity else 0 end),0) SaleUnits,"
-                            + " coalesce(sum(case when pwr.flag = 'I' and pwr.tran_type = 'DM' then quantity else 0 end),0) Damage"
+                            + " coalesce(sum(case when pwr.flag = 'I' and pwr.tran_type not in ('DM','ST') then quantity else 0 end),0) SaleUnits,"
+                            + " coalesce(sum(case when pwr.flag = 'I' and pwr.tran_type = 'DM' then quantity else 0 end),0) Damage,"
+                            + " (select group_concat(ui.name) from wp_terms ui join wp_term_taxonomy uim on uim.term_id = ui.term_id and uim.taxonomy IN('product_cat') JOIN wp_term_relationships AS trp ON trp.object_id = p.ID and trp.term_taxonomy_id = uim.term_taxonomy_id) category"
                             + "     FROM wp_posts as p left join wp_postmeta as s on p.id = s.post_id and s.meta_key = '_sku'"
                             + " left outer join product_stock_register pwr on pwr.product_id = p.id"
                             + " and cast(pwr.tran_date as date) >= cast('" + fromdate.ToString("yyyy-MM-dd") + "' as date) "
@@ -183,7 +187,7 @@ namespace LaylaERP.BAL
             }
             return ds;
         }
-        public static DataTable GetWarehouseStock(string product_id)
+        public static DataTable GetWarehouseStock(string product_id, DateTime todate)
         {
             DataTable dt = new DataTable();
             try
@@ -193,7 +197,7 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@product_id", product_id)
                 };
                 //string strSql = "select ref,coalesce(sum(case when pwr.flag = 'R' then quantity else -quantity end),0) stock from product_stock_register pwr inner join wp_warehouse wr on wr.rowid = pwr.warehouse_id where product_id = @product_id group by pwr.warehouse_id";
-                string strSql = "select ref,(coalesce(sum(case when pwr.flag = 'R' then quantity end),0) - coalesce(sum(case when pwr.flag = 'I' then quantity end),0)) stock from product_stock_register pwr inner join wp_warehouse wr on wr.rowid = pwr.warehouse_id where product_id = @product_id group by pwr.warehouse_id";
+                string strSql = "select ref,coalesce(sum(case pwr.flag when 'R' then quantity when 'I' then -quantity else 0 end),0) stock from product_stock_register pwr inner join wp_warehouse wr on wr.rowid = pwr.warehouse_id where product_id = @product_id and cast(pwr.tran_date as date) <= cast('" + todate.ToString("yyyy-MM-dd") + "' as date) group by pwr.warehouse_id";
 
                 dt = SQLHelper.ExecuteDataTable(strSql, parameters);
             }

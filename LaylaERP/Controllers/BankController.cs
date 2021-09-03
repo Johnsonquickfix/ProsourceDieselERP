@@ -214,5 +214,17 @@ namespace LaylaERP.Controllers
             }
         }
 
+        public JsonResult GetEntries()
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = BankRepository.GetEntries();
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+
     }
 }

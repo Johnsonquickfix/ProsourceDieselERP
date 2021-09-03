@@ -24,15 +24,13 @@
 
 
     if (id != "" && id != "AddNewProduct") {
-        $("#target :input").prop("disabled", true);       
-        $('#lbltitle').text("Update Product");        
-        $("#btnedit").show();
+        $('#lbltitle').text("Update Product");
+        //  $("#btnPurchase").show();
         $('#divPurchase').show();
-
         $("#hfid").val(id);
         // $("#btnPurchase").prop("href", "../AddNewPurchase/" + id)
         $("#btnbacklist").prop("href", "../ListProduct")
-        $("#ddlProductType").prop("disabled", true);
+
         GetDataByID(id);
         //  console.log($("#hfprodcid").val());
 
@@ -51,29 +49,11 @@
 
         //setTimeout(function () { GetAttributesID($("#hfvproductattributes").val()); }, 7500);
         //setTimeout(function () { GetProductvariationID(id); }, 9000);
-        //$("#tbhold *").attr("disabled", true);
-        //$("#simple-table").attr("disabled", "disabled");
-        $("#tbhold").find("input,button,textarea,select").attr("disabled", true);
-        $("#product_variations").find("input,button,textarea,select").attr("disabled", true);
-        $("#btnedit").show();
-        $("#btncancel").hide();
-        $("#btnedit").prop("disabled", false);
-       // $("#btncancel").prop("disabled", false);
-        $("#btnSave").hide();
-        $('#btnSave').text("Update");
     }
     else {
-        $("#target :input").prop("disabled", false);
         $("#btnAdd").hide();
         $('#lbltitle').text("Add New Product");
         //  BindControls();
-        $("#ddlProductType").prop("disabled", false);
-        $("#tbhold").find("input,button,textarea,select").attr("disabled", false);
-        $("#product_variations").find("input,button,textarea,select").attr("disabled", false);
-        $("#btnedit").hide();
-        $("#btncancel").hide();
-        $("#btnSave").show();
-       
     }
     $("#txtregularprice").keyup(function () {
         var $this = $(this);
@@ -320,38 +300,10 @@
         $("#row" + button_id + '').remove();
     });
 
-
-    $(document).on('click', "#btnedit", function () {
-        $("#target :input").prop("disabled", false);
-        $("#tbhold").find("input,button,textarea,select").attr("disabled", false);
-        $("#product_variations").find("input,button,textarea,select").attr("disabled", false);
-        $("#btncancel").show();
-        $("#btnedit").hide();
-        $("#btnSave").show();
-        $('#btnSave').text("Update");
-        $("#ddlProductType").prop("disabled", true);
-
-    });
-
-    $(document).on('click', "#btncancel", function () {
-        $("#target :input").prop("disabled", true);
-        $("#tbhold").find("input,button,textarea,select").attr("disabled", true);
-        $("#product_variations").find("input,button,textarea,select").attr("disabled", true);
-        $("#btncancel").hide();
-        $("#btnedit").show();
-        $("#btnSave").hide();
-        $("#btnedit").prop("disabled", false);
-        $("#ddlProductType").prop("disabled", true);
-       
-    });
-
-
     $(document).on('click', "#btnSave", function () {
         AddProduct();
     })
 
-
-   
 
     $("#btnSavevariations").click(function (e) {
         debugger

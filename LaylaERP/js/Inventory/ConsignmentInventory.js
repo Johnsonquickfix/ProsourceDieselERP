@@ -99,38 +99,37 @@ function ProductStockGrid() {
                     if (row.post_parent > 0) return '<a href="javascript:void(0);" class="details-control"><i class="glyphicon glyphicon-plus-sign"></i></a> -  #' + row.id; else return ' <b>#' + row.id + '</b>';
                 }
             },
-            {
-                data: 'post_type', title: 'Product Type', sWidth: "10%", render: function (data, type, row) {
-                    if (data == 'product') return 'Product';
-                    else if (data == 'product_variation') return 'Variable Product';
-                    else return '-';
-                }
-            },
+            { data: 'category', title: 'Category', sWidth: "10%" },
             { data: 'sku', title: 'SKU', sWidth: "10%" },
             { data: 'post_title', title: 'Product Name', sWidth: "20%" },
+            {
+                data: 'op_stock', title: 'OP Stock', sWidth: "8%", className: "text-right", render: function (data, type, row) {
+                    if (row.post_parent > 0) return row.op_stock.toFixed(0); else return '';
+                }
+            },
             {
                 data: 'stock', title: 'Units In Stock', sWidth: "10%", className: "text-right", render: function (data, type, row) {
                     if (row.post_parent > 0) return row.stock.toFixed(0); else return '';
                 }
             },
             {
-                data: 'UnitsinPO', title: 'Units in POs', sWidth: "10%", className: "text-right", render: function (data, type, row) {
+                data: 'UnitsinPO', title: 'Units in POs', sWidth: "7%", className: "text-right", render: function (data, type, row) {
                     if (row.post_parent > 0) return row.UnitsinPO.toFixed(0); else return '';
                 }
             },
             {
-                data: 'SaleUnits', title: 'Sale Units', sWidth: "10%", className: "text-right", render: function (data, type, row) {
+                data: 'SaleUnits', title: 'Sale Units', sWidth: "7%", className: "text-right", render: function (data, type, row) {
                     if (row.post_parent > 0) return row.SaleUnits.toFixed(0); else return '';
                 }
             },
             {
-                data: 'Damage', title: 'Damage Units', sWidth: "10%", className: "text-right", render: function (data, type, row) {
+                data: 'Damage', title: 'Damage Units', sWidth: "7%", className: "text-right", render: function (data, type, row) {
                     if (row.post_parent > 0) return row.Damage.toFixed(0); else return '';
                 }
             },
             {
-                data: 'available', title: 'Available Units', sWidth: "10%", className: "text-right", render: function (data, type, row) {
-                    if (row.post_parent > 0) return (row.stock + row.UnitsinPO).toFixed(0); else return '';
+                data: 'available', title: 'Available Units', sWidth: "7%", className: "text-right", render: function (data, type, row) {
+                    if (row.post_parent > 0) return (row.op_stock + row.stock + row.UnitsinPO - row.SaleUnits - row.Damage).toFixed(0); else return '';
                 }
             },
         ],
@@ -140,7 +139,10 @@ function ProductStockGrid() {
 /* Formatting function for row details - modify as you need */
 function format(d) {
     console.log(d);
-    let option = { strValue1: d.id }, wrHTML = '<table class="inventory-table table-blue table check-table table-bordered table-striped dataTable no-footer"><tr><th>Warehouse</th><th>Stock</th></tr>';
+    let dfa = $('#txtDate').val().split('-');
+    let ed = dfa[1].split('/'); ed = ed[1] + '/' + ed[0] + '/' + ed[2];
+
+    let option = { strValue1: d.id, strValue2: ed }, wrHTML = '<table class="inventory-table table-blue table check-table table-bordered table-striped dataTable no-footer"><tr><th>Warehouse</th><th>Stock</th></tr>';
     $.ajax({
         url: '/Inventory/GetStockByWarehouse', type: 'post', dataType: 'json', contentType: "application/json; charset=utf-8", data: JSON.stringify(option),
         success: function (result) {
@@ -163,25 +165,25 @@ function exportTableToCSV(filename) {
     let colDelim = (filename.indexOf("xls") != -1) ? '\t' : ',';
     let rowDelim = '\r\n';
 
-    let csv = 'id' + colDelim + 'Product Type' + colDelim + 'SKU' + colDelim + 'Product Name' + colDelim + 'Units In Stock' + colDelim + 'Units in POs' + colDelim + 'Sale Units' + colDelim + 'Damage Units' + colDelim + 'Available Units' + rowDelim;
+    let csv = 'id' + colDelim + 'Product Type' + colDelim + 'SKU' + colDelim + 'Product Name' + colDelim + 'OP Stock' + colDelim + 'Units In Stock' + colDelim + 'Units in POs' + colDelim + 'Sale Units' + colDelim + 'Damage Units' + colDelim + 'Available Units' + rowDelim;
 
     let dfa = $('#txtDate').val().split('-');
     let sd = dfa[0].split('/'); sd = sd[1] + '/' + sd[0] + '/' + sd[2];
     let ed = dfa[1].split('/'); ed = ed[1] + '/' + ed[0] + '/' + ed[2];
     let pid = parseInt($("#ddlProduct").val()) || 0, ctid = parseInt($("#ddlCategory").val()) || 0;
     let obj = { strValue1: $("#txtsku").val().trim(), strValue2: (ctid > 0 ? ctid : ''), strValue3: (pid > 0 ? pid : ''), strValue4: sd, strValue5: ed };
-    
+    console.log(dfa,);
     $.ajax({
-        url: "/Inventory/ExportProductStock",
+        url: "/Inventory/ExportProductStock", data: obj,
         type: "Get", beforeSend: function () { $("#loader").show(); },
         success: function (result) {
             result = JSON.parse(result);
             $(result['item']).each(function (index, data) {
                 //Parent Row
                 if (data.post_parent > 0)
-                    csv += '-  #' + data.id + colDelim + data.post_type + colDelim + data.sku + colDelim + data.post_title.replace(/\,/g, '') + colDelim + data.stock.toFixed(0) + colDelim + data.UnitsinPO.toFixed(0) + colDelim + data.SaleUnits.toFixed(0) + colDelim + data.Damage.toFixed(0) + colDelim + (data.stock + data.UnitsinPO).toFixed(0) + rowDelim;
+                    csv += '-  #' + data.id + colDelim + data.post_type + colDelim + data.sku + colDelim + data.post_title.replace(/\,/g, '') + colDelim + data.op_stock.toFixed(0) + colDelim + data.stock.toFixed(0) + colDelim + data.UnitsinPO.toFixed(0) + colDelim + data.SaleUnits.toFixed(0) + colDelim + data.Damage.toFixed(0) + colDelim + (data.op_stock + data.stock + data.UnitsinPO - data.SaleUnits - data.Damage).toFixed(0) + rowDelim;
                 else
-                    csv += '#' + data.id + colDelim + data.post_type + colDelim + data.sku + colDelim + data.post_title.replace(/\,/g, '') + colDelim + data.stock.toFixed(0) + colDelim + data.UnitsinPO.toFixed(0) + colDelim + data.SaleUnits.toFixed(0) + colDelim + data.Damage.toFixed(0) + colDelim + (data.stock + data.UnitsinPO).toFixed(0) + rowDelim;
+                    csv += '#' + data.id + colDelim + data.post_type + colDelim + data.sku + colDelim + data.post_title.replace(/\,/g, '') + colDelim + data.op_stock.toFixed(0) + colDelim + data.stock.toFixed(0) + colDelim + data.UnitsinPO.toFixed(0) + colDelim + data.SaleUnits.toFixed(0) + colDelim + data.Damage.toFixed(0) + colDelim + (data.op_stock + data.stock + data.UnitsinPO - data.SaleUnits - data.Damage).toFixed(0) + rowDelim;
                 //Child Row                
                 let res = result['details'].filter(element => element.product_id == data.id);
                 if (res.length > 0) csv += '' + colDelim + '' + colDelim + '' + colDelim + 'Warehouse' + colDelim + 'Stock' + colDelim + rowDelim;

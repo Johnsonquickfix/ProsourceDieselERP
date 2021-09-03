@@ -245,7 +245,7 @@ namespace LaylaERP.BAL
                 string strSql = "select ID,BankID,FileName,concat(FileSize,' KB') FileSize,FileType,FilePath,DATE_FORMAT(CreatedDate, '%m-%d-%Y') Date from erp_BankLinkedFiles where BankID='" + id + "' and 1=1 ";
                 if (!string.IsNullOrEmpty(searchid))
                 {
-                    strWhr += " and (FileName like '%" + searchid + "%' OR FileSize='%" + searchid + "%' OR Date='%" + searchid + "%' OR Date like '%" + searchid + "%')";
+                    strWhr += " and (FileName like '%" + searchid + "%' OR FileSize='%" + searchid + "%' OR CreatedDate='%" + searchid + "%')";
                 }
                 if (userstatus != null)
                 {
@@ -285,6 +285,22 @@ namespace LaylaERP.BAL
             {
                 throw Ex;
             }
+        }
+
+        public static DataTable GetEntries()
+        {
+            DataTable dtr = new DataTable();
+            try
+            {
+                string strquery = "select Date_format(ab.doc_date, '%m-%d-%Y') due_date, ab.doc_ref as description, wv.name third_party, COALESCE(sum(case when ab.senstag = 'C' then ab.credit end), 0) credit, COALESCE(sum(case when ab.senstag = 'D' then ab.debit end), 0) debit, "
+                                  + " (COALESCE(sum(CASE WHEN ab.senstag = 'C' then credit end), 0) + invtotal) - (invtotal - COALESCE(sum(CASE WHEN ab.senstag = 'D' then credit end), 0)) as balance from erp_accounting_bookkeeping ab"
+                                  + " left join wp_vendor wv on wv.code_vendor = ab.thirdparty_code group by ab.thirdparty_code";
+                DataSet ds = SQLHelper.ExecuteDataSet(strquery);
+                dtr = ds.Tables[0];
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dtr;
         }
     }
 }

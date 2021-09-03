@@ -102,7 +102,7 @@ namespace LaylaERP.Controllers
 
                 DataTable dt = ProductRepository.GetList(model.strValue1, model.strValue2, model.strValue3, model.strValue4, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
                 result = JsonConvert.SerializeObject(dt, Formatting.Indented);
-                
+
             }
             catch { }
             return Json(result, 0);
@@ -320,16 +320,16 @@ namespace LaylaERP.Controllers
                     resultOne = ProductRepository.AddBuyingtProduct(model, dateinc);
                 }
             }
-                    if (resultOne > 0)
-                    {
-                        return Json(new { status = true, message = "updated successfully!!", url = "Manage" }, 0);
-                    }
-                    else
-                    {
-                        return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
-                    }
-                
-            
+            if (resultOne > 0)
+            {
+                return Json(new { status = true, message = "updated successfully!!", url = "Manage" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+
+
         }
         public JsonResult Createwarehouse(ProductModel model)
         {
@@ -550,8 +550,8 @@ namespace LaylaERP.Controllers
                 ProductRepository.EditProducts(model, model.ID);
                 UpdateVariation_MetaData(model, model.ID);
                 update_term(model, model.ID);
-                if(model.updatedID > 0)
-                return Json(new { status = true, message = "Product Record has been updated successfully!!", url = "" }, 0);
+                if (model.updatedID > 0)
+                    return Json(new { status = true, message = "Product Record has been updated successfully!!", url = "" }, 0);
                 else
                     return Json(new { status = true, message = "Product Record has been updated successfully!!", url = "Manage" }, 0);
             }
@@ -1481,80 +1481,85 @@ namespace LaylaERP.Controllers
             string FileName = "";
             string FileExtension = "";
             string checkname = new ProductRepository().GetName(name);
-            if(checkname == name)
+            string checknameonEdit = new ProductRepository().GetNameonEdit(name, model.term_id);
+            if (model.term_id == 0 && checkname == name)
+            {
+                return Json(new { status = false, message = "Category already exists", url = "", id = 0 }, 0);
+            }
+            else if (model.term_id > 0 && checknameonEdit == name)
             {
                 return Json(new { status = false, message = "Category already exists", url = "", id = 0 }, 0);
             }
             else
             {
-            if (ImageFile != null)
-            {
-                FileName = Path.GetFileNameWithoutExtension(ImageFile.FileName);
-                FileName = Regex.Replace(FileName, @"\s+", "");
-                string size = (ImageFile.ContentLength / 1024).ToString();
-                FileExtension = Path.GetExtension(ImageFile.FileName);
-                if (FileExtension == ".png" || FileExtension == ".jpg" || FileExtension == ".jpeg" || FileExtension == ".bmp")
+                if (ImageFile != null)
                 {
-                    FileName = DateTime.Now.ToString("MMddyyhhmmss") + "-" + FileName.Trim() + FileExtension;
-                   
-                    string UploadPath = Path.Combine(Server.MapPath("~/Content/ProductCategory"));
-                    UploadPath = UploadPath + "\\";
-                    model.ImagePath = UploadPath + FileName;
-                    if (FileName == "")
+                    FileName = Path.GetFileNameWithoutExtension(ImageFile.FileName);
+                    FileName = Regex.Replace(FileName, @"\s+", "");
+                    string size = (ImageFile.ContentLength / 1024).ToString();
+                    FileExtension = Path.GetExtension(ImageFile.FileName);
+                    if (FileExtension == ".png" || FileExtension == ".jpg" || FileExtension == ".jpeg" || FileExtension == ".bmp")
                     {
-                        FileName = "default.png";
+                        FileName = DateTime.Now.ToString("MMddyyhhmmss") + "-" + FileName.Trim() + FileExtension;
+
+                        string UploadPath = Path.Combine(Server.MapPath("~/Content/ProductCategory"));
+                        UploadPath = UploadPath + "\\";
+                        model.ImagePath = UploadPath + FileName;
+                        if (FileName == "")
+                        {
+                            FileName = "default.png";
+                        }
+                        ImagePath = "~/Content/ProductCategory/" + FileName;
+                        ImageFile.SaveAs(model.ImagePath);
                     }
-                    ImagePath = "~/Content/ProductCategory/" + FileName;
-                    ImageFile.SaveAs(model.ImagePath);
+                    else
+                    {
+                        return Json(new { status = false, message = "File Formate " + FileExtension + " is not allowed!!", url = "" }, 0);
+
+                    }
+                }
+
+                if (model.term_id > 0)
+                {
+                    long thumbnailID = 0;
+                    if (model.Meta_id > 0 && ImagePath == "")
+                    {
+                        FileName = new ProductRepository().GetFileName(model.Meta_id);
+
+                        ImagePath = "~/Content/ProductCategory/" + FileName;
+                    }
+                    if (model.Meta_id > 0)
+                    {
+                        thumbnailID = model.Meta_id;
+                        ProductRepository.EditImage(FileName, ImagePath, FileExtension, thumbnailID);
+                    }
+                    else
+                    {
+                        thumbnailID = ProductRepository.AddImage(FileName, ImagePath, FileExtension);
+                    }
+
+                    ProductRepository.EditPostMeta(thumbnailID, ImagePath, FileName);
+                    new ProductRepository().EditProductCategory(model, name, slug, parent, description, thumbnailID);
+                    return Json(new { status = true, message = "Product category has been updated successfully!!", url = "", id = model.term_id }, 0);
                 }
                 else
                 {
-                    return Json(new { status = false, message = "File Formate " + FileExtension + " is not allowed!!", url = "" }, 0);
 
+                    int ID = new ProductRepository().AddProductCategory(model, name, slug);
+                    if (ID > 0)
+                    {
+                        int thumbnailID = ProductRepository.AddImage(FileName, ImagePath, FileExtension);
+                        ProductRepository.postmeta(thumbnailID, ImagePath);
+                        new ProductRepository().AddProductCategoryDesc(model, ID, thumbnailID);
+                        return Json(new { status = true, message = "Product category has been saved successfully!!", url = "" }, 0);
+                    }
+                    else
+                    {
+                        return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
+                    }
                 }
             }
-
-            if (model.term_id > 0)
-            {
-                long thumbnailID = 0;
-                if (model.Meta_id > 0 && ImagePath == "")
-                {
-                    FileName = new ProductRepository().GetFileName(model.Meta_id);
-
-                    ImagePath = "~/Content/ProductCategory/" + FileName;
-                }
-                if (model.Meta_id > 0)
-                {
-                    thumbnailID = model.Meta_id;
-                    ProductRepository.EditImage(FileName, ImagePath, FileExtension, thumbnailID);
-                }
-                else
-                {
-                    thumbnailID = ProductRepository.AddImage(FileName, ImagePath, FileExtension);
-                }
-
-                ProductRepository.EditPostMeta(thumbnailID, ImagePath, FileName);
-                new ProductRepository().EditProductCategory(model, name, slug, parent, description, thumbnailID);
-                return Json(new { status = true, message = "Product category has been updated successfully!!", url = "", id = model.term_id }, 0);
-            }
-            else
-            {
-              
-                int ID = new ProductRepository().AddProductCategory(model, name, slug);
-                if (ID > 0)
-                {
-                    int thumbnailID = ProductRepository.AddImage(FileName, ImagePath, FileExtension);
-                    ProductRepository.postmeta(thumbnailID, ImagePath);
-                    new ProductRepository().AddProductCategoryDesc(model, ID, thumbnailID);
-                    return Json(new { status = true, message = "Product category has been saved successfully!!", url = "" }, 0);
-
-                }
-                else
-                {
-                    return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
-                }
-            }
-            }
+           
         }
         public JsonResult ProductCategoryList(ProductCategoryModel model)
         {
@@ -1610,9 +1615,6 @@ namespace LaylaERP.Controllers
                 return Json(new { status = false, message = "Product category not Found", url = "", id = 0 }, 0);
             }
         }
-
-       
-
         public JsonResult GetCategoryByID(long id)
         {
             string JSONresult = string.Empty;

@@ -2419,3 +2419,15 @@ margin-left:0px !important;}
 #PrintModal .container_table {width:100% !important;}
 #PrintModal .product-tables th:first-child {width:15% !important;}
 #PrintModal .product-tables th:first-child + th {width:45% !important;}
+#tbhold [type="checkbox"]#tb1 {
+    margin: 6px 3px 0px 0px;
+    vertical-align: middle;
+}
+#tbhold [type="checkbox"]#tb1 + [for="tb1"] {
+    margin: 6px 0px 0px;
+    vertical-align: middle;
+}
+.inputdes {resize:none;}
+#ProdCat .col-md-4 .control-label {
+display:block;}
+.employees-section .input-group {width:100%;}

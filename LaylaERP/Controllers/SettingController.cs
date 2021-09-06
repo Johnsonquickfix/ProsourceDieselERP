@@ -1,5 +1,6 @@
 ﻿using LaylaERP.BAL;
 using LaylaERP.Models;
+using LaylaERP.UTILITIES;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -141,7 +142,6 @@ namespace LaylaERP.Controllers
         {
             SettingRepository.Update_EntityInfo(model, id);
         }
-
         [HttpPost]
         public JsonResult settingdone(SettingModel model)
         {
@@ -157,7 +157,20 @@ namespace LaylaERP.Controllers
             }
             return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
         }
-
         //Code for setting end
+
+        [HttpGet]
+        public JsonResult GetPayPalToken(SearchModel model)
+        {
+            string result = string.Empty;
+            bool b_status = false;
+            try
+            {
+                result = clsPayPal.GetToken();
+                b_status = true;
+            }
+            catch { b_status = false; result = ""; }
+            return Json(new { status = b_status, message = result }, 0);
+        }
     }
 }

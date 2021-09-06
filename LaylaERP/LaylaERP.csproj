@@ -165,6 +165,7 @@
     <Compile Include="BAL\DashboardRepository.cs" />
     <Compile Include="BAL\ExportRepository.cs" />
     <Compile Include="BAL\FeeNTaxRepository.cs" />
+    <Compile Include="BAL\HrmsRepository.cs" />
     <Compile Include="BAL\InventoryRepository.cs" />
     <Compile Include="BAL\OrderRepository.cs" />
     <Compile Include="BAL\ProductRepository.cs" />
@@ -220,6 +221,7 @@
     <Compile Include="Models\ExportModel.cs" />
     <Compile Include="Models\Export_Details.cs" />
     <Compile Include="Models\FeeNTax.cs" />
+    <Compile Include="Models\HrmsModel.cs" />
     <Compile Include="Models\InventoryModel.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\OrderModel.cs" />
@@ -605,6 +607,7 @@
     <Content Include="js\Customer\Customer.js" />
     <Content Include="js\FeeNTax\FeeNTax.js" />
     <Content Include="js\GooglePlace\index.js" />
+    <Content Include="js\Hrms\Hrms.js" />
     <Content Include="js\Inventory\ConsignmentInventory.js" />
     <Content Include="js\Inventory\Inventory.js" />
     <Content Include="js\jquery.mask.js" />

@@ -1,9 +1,11 @@
 ﻿@{
     ViewBag.Title = "Employee";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    ViewBag.UiStyle = "/Content/AdminLTE-3.1.0/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css";
-    ViewBag.UiJs = "/Content/AdminLTE-3.1.0/bower_components/jquery-ui/jquery-ui.min.js";
+    
 }
+
+<link href="~/Content/DataTables/bootstrap-datepicker.css" rel="stylesheet" />
+<script src="~/Content/DataTables/bootstrap-datepicker.js"></script>
 
 <style>
     .input-group .select2-container, .form-group .select2-container {
@@ -30,7 +32,7 @@
                     <div class="form-group">
                         <label for="FirstName">First Name</label>
                         <div class="input-group">
-                            <input class="form-control" type="text" id="FirstName" name="FirstName">
+                            <input class="form-control" type="text" id="txtFirstName" name="FirstName">
                         </div>
                     </div>
                 </div>
@@ -38,7 +40,7 @@
                     <div class="form-group">
                         <label for="LastName">Last Name</label>
                         <div class="input-group">
-                            <input class="form-control" type="text" id="LastName" name="LastName">
+                            <input class="form-control" type="text" id="txtLastName" name="LastName">
                         </div>
                     </div>
                 </div>
@@ -46,29 +48,10 @@
                     <div class="form-group">
                         <label for="Gender">Gender</label>
                         <div class="input-group">
-                            <select class="form-control select2" id="Gender" name="Gender">
-                                <option>Male</option>
-                                <option selected="selected" data-select2-id="2">Female</option>
+                            <select class="form-control select2" id="ddlGender" name="Gender">
+                                <option selected="selected" value="1">Male</option>
+                                <option value="2">Female</option>
                             </select>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="DateOfBirth">Date of Birth</label>
-                        <div class="input-group">
-                            <input type="text" id="DateOfBirth" name="DateOfBirth" placeholder="yyyy-mm-dd" class="date-datepicker hasDatepicker form-control" autocomplete="off">
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="PlaceOfBirth">Place of Birth</label>
-                        <div class="input-group">
-                            <input class="form-control" type="text" id="PlaceOfBirth" name="PlaceOfBirth">
                         </div>
                     </div>
                 </div>
@@ -77,15 +60,49 @@
             <div class="row">
                 <div class="col-md-4">
                     <div class="form-group">
+                        <label for="DateOfBirth">Date of Birth</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="txtdob" /><span class="even-space"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="PlaceOfBirth">Place of Birth</label>
+                        <div class="input-group">
+                            <input class="form-control" type="text" id="txtPlaceOfBirth" name="PlaceOfBirth">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="PlaceOfBirth">Employee Type</label>
+                        @*<div class="input-group">
+                            <input class="form-control" type="text" id="txtType" name="PlaceOfBirth">
+                        </div>*@
+
+                        <select class="form-control select2" id="txtType" name="MaritalStatus">
+                            <option selected="selected" value="1">Full Time</option>
+                            <option value="2">Part Time</option>
+                        </select>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
                         <label for="MaritalStatus">Marital Status</label>
                         <div class="input-group">
-                            <select class="form-control select2" id="MaritalStatus" name="MaritalStatus">
-                                <option selected="selected">Single</option>
-                                <option>Married</option>
-                                <option>Remarried</option>
-                                <option>Separated</option>
-                                <option>Divorced</option>
-                                <option>Widowed</option>
+                            <select class="form-control select2" id="ddlMaritalStatus" name="MaritalStatus">
+                                <option selected="selected" value="Single">Single</option>
+                                <option value="Married">Married</option>
+                                <option value="Remarried">Remarried</option>
+                                <option value="Separated">Separated</option>
+                                <option value="Divorced">Divorced</option>
+                                <option value="Widowed">Widowed</option>
                             </select>
                         </div>
                     </div>
@@ -94,7 +111,7 @@
                     <div class="form-group">
                         <label for="Email">Email</label>
                         <div class="input-group">
-                            <input class="form-control" type="text" id="Email" name="Email">
+                            <input class="form-control" type="text" id="txtEmail" name="Email">
                         </div>
                     </div>
                 </div>
@@ -102,7 +119,7 @@
                     <div class="form-group">
                         <label for="Phone">Phone</label>
                         <div class="input-group">
-                            <input class="form-control" type="text" id="Phone" name="Phone">
+                            <input class="form-control" type="text" id="txtPhone" name="Phone">
                         </div>
                     </div>
                 </div>
@@ -111,13 +128,13 @@
             <div class="form-group">
                 <label for="Address1">Address1</label>
                 <div class="input-group">
-                    <input class="form-control" type="text" id="Address1" name="Address1">
+                    <input class="form-control" type="text" id="txtAddress1" name="Address1">
                 </div>
             </div>
             <div class="form-group">
                 <label for="Address2">Address2</label>
                 <div class="input-group">
-                    <input class="form-control" type="text" id="Address2" name="Address2" value="">
+                    <input class="form-control" type="text" id="txtAddress2" name="Address2" value="">
                 </div>
             </div>
 
@@ -126,7 +143,7 @@
                     <div class="form-group">
                         <label for="City">City</label>
                         <div class="input-group">
-                            <input class="form-control" type="text" id="City" name="City">
+                            <input class="form-control" type="text" id="txtCity" name="City">
                         </div>
                     </div>
                 </div>
@@ -134,7 +151,7 @@
                     <div class="form-group">
                         <label for="StateProvince">State</label>
                         <div class="input-group">
-                            <input class="form-control" type="text" id="StateProvince" name="StateProvince">
+                            <input class="form-control" type="text" id="txtState" name="StateProvince">
                         </div>
                     </div>
                 </div>
@@ -142,7 +159,7 @@
                     <div class="form-group">
                         <label for="ZipCode">ZipCode</label>
                         <div class="input-group">
-                            <input class="form-control" type="text" id="ZipCode" name="ZipCode">
+                            <input class="form-control" type="text" id="txtZipCode" name="ZipCode">
                         </div>
                     </div>
                 </div>
@@ -150,8 +167,11 @@
             <div class="form-group">
                 <label for="Country">Country</label>
                 <div class="input-group">
-                    <input class="form-control" type="text" id="Country" name="Country">
+                    <input class="form-control" type="text" id="txtCountry" name="Country">
                 </div>
+            </div>
+            <div title="Check Active">
+                <input type="checkbox" id="chkemployeestatus" /><label for="Active">Active</label>
             </div>
         </div>
     </article>
@@ -164,7 +184,7 @@
             <div class="form-group">
                 <label for="EmployeeIDNumber">Employee ID Number</label>
                 <div class="input-group">
-                    <input class="form-control" type="text" id="EmployeeIDNumber" name="EmployeeIDNumber">
+                    <input class="form-control" type="text" id="txtEmployeeIDNumber" name="EmployeeIDNumber">
                 </div>
             </div>
 
@@ -173,25 +193,7 @@
                     <div class="form-group">
                         <label for="DesignationId">Designation</label>
                         <div class="input-group">
-                            <select class="form-control select2" id="DesignationId" name="DesignationId">
-                                <option value=""></option>
-                                <option value="">Warehouse Senior Manager</option>
-                                <option value="">VP HR (ExComm)</option>
-                                <option value="">Head of Finance</option>
-                                <option value="">VP Sales / CMO (ExComm)</option>
-                                <option value="">Finance Staff</option>
-                                <option value="">IT Manager</option>
-                                <option value="">Head of IT</option>
-                                <option value="">Head of Warehouse</option>
-                                <option value="">IT Senior Manager</option>
-                                <option value="">VP Finance / CEO (ExComm)</option>
-                                <option value="">Sales Staff</option>
-                                <option value="">Head of Sales</option>
-                                <option value="">VP Warehouse (ExComm)</option>
-                                <option value="">HR Staff</option>
-                                <option value="">Sales Manager</option>
-                                <option value="">VP IT / COO (ExComm)</option>
-                            </select>
+                            <select class="form-control select2" id="ddldesignation" name="DesignationId"></select>
                         </div>
                     </div>
                 </div>
@@ -199,14 +201,7 @@
                     <div class="form-group">
                         <label for="DepartmentId">Department</label>
                         <div class="input-group">
-                            <select class="form-control select2" id="DepartmentId" name="DepartmentId">
-                                <option value=""></option>
-                                <option selected="selected" value="">Sales Department</option>
-                                <option value="">Warehouse Department</option>
-                                <option value="">HR Department</option>
-                                <option value="">Finance Department</option>
-                                <option value="">IT Department</option>
-                            </select>
+                            <select class="form-control select2" id="ddldepartment" name="DepartmentId"></select>
                         </div>
                     </div>
                 </div>
@@ -214,8 +209,8 @@
                     <div class="form-group">
                         <label for="SupervisorId">Supervisor</label>
                         <div class="input-group">
-                            <select class="form-control select2" id="SupervisorId" name="SupervisorId">
-                                <option value=""></option>
+                            <select class="form-control select2" id="ddlSupervisorId" name="SupervisorId">
+                                @*<option value=""></option>
                                 <option value="">EMPSLS003 Adria Russell</option>
                                 <option value="">EMPSLS001 Noelle Adams</option>
                                 <option value="">EMPHR005 Colby Bernard</option>
@@ -229,9 +224,9 @@
                                 <option value="">EMPSLS005 Rebecca Chambers</option>
                                 <option value="">EMPIT003 Hiroko Potter</option>
                                 <option value="">EMPIT005 Aaron Hawkins</option>
-                                <option value="">EMPHR003 Joan Romero</option>
-                                <option selected="selected" value="">EMPSLS002 Lillith Daniel</option>
-                                <option value="">EMPIT001 Kyla Olsen</option>
+                                <option value="">EMPHR003 Joan Romero</option>*@
+                                <option selected="selected" value="EMPSLS002">EMPSLS002 Lillith Daniel</option>
+                                <option value="EMPIT001">EMPIT001 Kyla Olsen</option>
                             </select>
                         </div>
                     </div>
@@ -240,13 +235,13 @@
             <div class="form-group">
                 <label for="JoiningDate">Joining Date</label>
                 <div class="input-group">
-                    <input type="text" id="JoiningDate" name="JoiningDate" class="form-control">
+                    <input type="text" id="txtJoiningDate" name="JoiningDate" class="form-control">
                 </div>
             </div>
             <div class="form-group">
                 <label for="LeavingDate">Leaving Date</label>
                 <div class="input-group">
-                    <input type="text" id="LeavingDate" name="LeavingDate" class="form-control">
+                    <input type="text" id="txtLeavingDate" name="LeavingDate" class="form-control">
                 </div>
             </div>
 
@@ -260,24 +255,24 @@
             <div class="form-group">
                 <label for="BasicSalary">Basic Salary</label>
                 <div class="input-group">
-                    <input class="form-control" type="text" id="BasicSalary" name="BasicSalary">
+                    <input class="form-control" type="text" id="txtBasicSalary" name="BasicSalary">
                 </div>
             </div>
             <div class="form-group">
                 <label for="UnpaidLeavePerDay">Un Paid Leave Per Day</label>
                 <div class="input-group">
-                    <input class="form-control" type="text" id="UnpaidLeavePerDay" name="UnpaidLeavePerDay">
+                    <input class="form-control" type="text" id="txtUnpaidLeavePerDay" name="UnpaidLeavePerDay">
                 </div>
             </div>
-            <div class="form-group">
+            @*<div class="form-group">
                 <label for="BenefitTemplateId">Benefit Package Template</label>
                 <div class="input-group">
-                    <select class="form-control select2" id="BenefitTemplateId" name="BenefitTemplateId">
+                    <select class="form-control select2" id="txtBenefitTemplateId" name="BenefitTemplateId">
                         <option value=""></option>
-                       
+
                     </select>
                 </div>
-            </div>
+            </div>*@
         </div>
     </article>
 
@@ -289,32 +284,32 @@
             <div class="form-group">
                 <label for="AccountTitle">Account Title</label>
                 <div class="input-group">
-                    <input class="form-control" type="text" id="AccountTitle" name="AccountTitle">
+                    <input class="form-control" type="text" id="txtAccountTitle" name="AccountTitle">
                 </div>
             </div>
             <div class="form-group">
                 <label for="BankName">Bank Name</label>
                 <div class="input-group">
-                    <input class="form-control" type="text" id="BankName" name="BankName">
+                    <input class="form-control" type="text" id="txtBankName" name="BankName">
                 </div>
             </div>
             <div class="form-group">
                 <label for="AccountNumber">Account Number</label>
                 <div class="input-group">
-                    <input class="form-control" type="text" id="AccountNumber" name="AccountNumber">
+                    <input class="form-control" type="text" id="txtAccountNumber" name="AccountNumber">
                 </div>
             </div>
             <div class="form-group">
                 <label for="SwiftCode">Swift Code</label>
                 <div class="input-group">
-                    <input class="form-control" type="text" id="SwiftCode" name="SwiftCode" value="">
+                    <input class="form-control" type="text" id="txtSwiftCode" name="SwiftCode" value="">
 
                 </div>
             </div>
         </div>
     </article>
 
-    <article class="box box-primary mb-4">
+    @*<article class="box box-primary mb-4">
         <div class="box-header with-border">
             <h4 class="box-title">User Account Info</h4>
         </div>
@@ -345,19 +340,40 @@
             </div>
         </div>
 
-    </article>
+    </article>*@
     <article class="box box-primary mb-4">
         <div class="box-footer text-right">
             <a href="#" class="btn btn-danger">Back</a>
-            <button type="submit" class="btn btn-danger">Save</button>
+            <button type="submit" class="btn btn-danger" id="btnSave">Save</button>
         </div>
     </article>
 </section>
 <script type="text/javascript">
-    jQuery(function ($) {
-        $('#DateOfBirth').datepicker();
-        $("select").select2({
-            allowClear: true, minimumInputLength: 3
+    $(document).ready(function () {
+        $(document).on('click', "#btnSave", function () {
+            AddEmployee();
         });
+
+        $(".select2").select2();
+        setTimeout(function () { $(".select2").select2(); }, 2000);
+    })
+
+</script>
+<script>
+    $(function () {
+        $("#txtdob").datepicker({
+            format: 'mm-dd-yyyy',
+        });
+
+        $("#txtJoiningDate").datepicker({
+            format: 'mm-dd-yyyy',
+        });
+
+        $("#txtLeavingDate").datepicker({
+            format: 'mm-dd-yyyy',
+        });
+
     });
 </script>
+
+<script src="@Url.Content("~/js/Hrms/Hrms.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>

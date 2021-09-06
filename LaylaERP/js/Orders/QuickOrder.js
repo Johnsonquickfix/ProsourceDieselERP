@@ -2,6 +2,17 @@
     $('.billinfo,.billnote').prop("disabled", true);
     $("#txtbillphone").mask("(999) 999-9999");
     CategoryWiseProducts();
+    $(".addnvar,.addnvar-qty").change(function (t) {
+        t.preventDefault(); let $row = $(this).parent(); let vr = $row.find('.addnvar').val().split('-');
+        let regular_price = parseFloat(vr[1]) || 0.00, price = parseFloat(vr[2]) || 0.00, qty = parseFloat($row.find('.addnvar-qty').val()) || 0.00;
+        $row.find('.hub-pro-price').html('<span>$' + (price * qty).toFixed(2) + '<span>$' + (regular_price * qty).toFixed(2) + '</span></span>')
+    });
+    $(".agentaddtocart").click(function (t) {
+        t.preventDefault(); let $row = $(this).parent(); let vr = $row.find('.addnvar').val().split('-');
+        let pid = parseInt($row.data('proid')) || 0, vid = parseInt(vr[0]) || 0, cid = parseInt($('#ddlUser').val()) || 0, qty = parseFloat($row.find('.addnvar-qty').val()) || 0.00;
+        if (cid <= 0) { swal('Alert!', 'Please Select Customer.', "error").then((result) => { $('#ddlUser').select2('open'); return false; }); return false; }
+        getItemList(pid, vid, qty);
+    });
     setTimeout(function () { $("#loader").show(); getOrderInfo(); }, 20);
     $('#txtLogDate').daterangepicker({ singleDatePicker: true, autoUpdateInput: true, locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' } });
     $(".select2").select2(); BindStateCounty("ddlbillstate", { id: 'US' }); BindStateCounty("ddlshipstate", { id: 'US' });
@@ -18,16 +29,6 @@
     $("#ddlbillcountry").change(function () { var obj = { id: $("#ddlbillcountry").val() }; BindStateCounty("ddlbillstate", obj); });
     $("#ddlshipcountry").change(function () { var obj = { id: $("#ddlshipcountry").val() }; BindStateCounty("ddlshipstate", obj); });
     $("#ddlshipstate").change(function () { GetTaxRate(); getItemShippingCharge(); });
-    //$('#ddlProduct').select2({
-    //    allowClear: true, minimumInputLength: 3, placeholder: "Search Product",
-    //    ajax: {
-    //        url: '/Orders/GetProductList', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
-    //        data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
-    //        processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.post_title, name: item.post_title, id: item.r_id } }) }; },
-    //        error: function (xhr, status, err) { }, cache: true
-    //    }
-    //});
-    //$("#ddlProduct").change(function () { if ($('#ddlProduct').val() == null) return false; getItemList(); $('#ddlProduct').val('').trigger('change'); });
     $(document).on("click", "#btnApplyCoupon", function (t) { t.preventDefault(); CouponModal(); });
     //$("#billModal").on("keypress", function (e) { if (e.which == 13 && e.target.type != "textarea") { $("#btnCouponAdd").click(); } });
     $("#billModal").on("click", "#btnCouponAdd", function (t) { t.preventDefault(); ApplyCoupon(); });
@@ -36,11 +37,6 @@
     $(document).on("click", "#btnCheckout", function (t) { t.preventDefault(); saveCO(); });
     $(document).on("click", "#btnpay", function (t) { t.preventDefault(); PaymentModal(); });
     $("#billModal").on("click", "#btnPlaceOrder", function (t) { t.preventDefault(); AcceptPayment(); });
-    $("#billModal").on("change", "#ddlPaymentMethod", function (t) {
-        t.preventDefault(); if ($("#ddlPaymentMethod").val() == "ppec_paypal") { $("#txtPPEmail").removeClass('hidden'); $("#txtPPEmail").focus(); $("#txtPPEmail").val($("#txtbillemail").val()); }
-        else if ($("#ddlPaymentMethod").val() == "podium") { $("#txtPPEmail").addClass('hidden'); }
-        else { $("#txtPPEmail").addClass('hidden'); }
-    });
     $("#billModal").on("click", "#btnNewOrder", function (t) { t.preventDefault(); window.location.href = window.location.href; });
     /*Start New order Popup function*/
     $(document).on("click", "#btnSearch", function (t) {
@@ -55,9 +51,9 @@
     });
     $(document).on("click", ".btnEditOrder", function (t) {
         t.preventDefault(); $("#loader").show();
-        $('#ddlStatus').prop("disabled", true); $('.billinfo').prop("disabled", false); $('#txtbillfirstname').focus();
-        $('.box-tools').empty().append('<button type="button" class="btn btn-danger btnOrderUndo"><i class="fa fa-undo"></i> Cancel</button> <button type="button" id="btnOrderUpdate" class="btn btn-danger"><i class="far fa-save"></i> Update</button>');
-        $('.footer-finalbutton').empty().append('<button type="button" class="btn btn-danger pull-left btnOrderUndo"><i class="fa fa-undo"></i> Cancel</button>  <button type="button" id="btnCheckout" class="btn btn-danger billinfo"> Checkout</button>');
+        $('#ddlStatus').prop("disabled", true); $('.billinfo').prop("disabled", false); $('#txtbillfirstname').focus(); $('.agentaddtocart').removeClass('hidden');
+        $('.box-tools-header').empty().append('<button type="button" class="btn btn-danger btnOrderUndo" data-toggle="tooltip" title="Reset Order"><i class="fa fa-undo"></i> Cancel</button> <button type="button" id="btnOrderUpdate" class="btn btn-danger" data-toggle="tooltip" title="Update Order"><i class="far fa-save"></i> Update</button>');
+        $('.footer-finalbutton').empty().append('<button type="button" class="btn btn-danger pull-left btnOrderUndo"><i class="fa fa-undo"></i> Cancel</button>  <button type="button" id="btnCheckout" class="btn btn-danger billinfo" data-toggle="tooltip" title="Save and Checkout Order"> Checkout</button>');
         $("#loader").hide();
     });
     $(document).on("click", ".btnOrderUndo", function (t) { t.preventDefault(); setTimeout(function () { $("#loader").show(); getOrderInfo(); }, 10); });
@@ -154,7 +150,7 @@ function NewOrderNo() {
     );
     let option = { OrderPostMeta: postMetaxml };
     if (cus_id > 0) {
-        //ajaxFunction('/Orders/GetNewOrderNo', option, beforeSendFun, function (result) { $('#hfOrderNo').val(result.message); $('#lblOrderNo').text('Order #' + result.message + ' detail '); }, completeFun, errorFun, false);
+        ajaxFunction('/Orders/GetNewOrderNo', option, beforeSendFun, function (result) { $('#hfOrderNo').val(result.message); $('#lblOrderNo').text('Order #' + result.message + ' detail '); }, completeFun, errorFun, false);
     }
 }
 ///Find Address of Customer
@@ -223,27 +219,35 @@ function CategoryWiseProducts() {
                 result = JSON.parse(result);
                 result = groupArrayOfObjects(result, 'term_id');
                 $.each(result, function (key, pr) {
-                    console.log(pr)
+                    //console.log(pr)
                     strHTML += '<div class="hub-accord col-sm-12 wow animate__slideInLeft" data-wow-duration="1s" data-wow-delay=".5s">';
-                    strHTML += '<h5><span>' + pr[0].name + '</span><i aria-hidden="true" class="fa fa-plus"></i></h5>';
+                    strHTML += '<h5><span>' + pr[0].name.toUpperCase() + '</span><i aria-hidden="true" class="fa fa-plus"></i></h5>';
                     strHTML += '<div class="hub-box-open">';
                     $.each(pr, function (index, data) {
-                        console.log('index', data);
-                        strHTML += '<div class="hub-pro-box"><h2>' + data.post_title + '</h2>';
+                        let variation_details = JSON.parse(data.variation_details);
+                        let regular_price = 0.00, price = 0.00;
+                        strHTML += '<div class="hub-pro-box"><h2>' + data.post_title.toUpperCase() + '</h2>';
                         strHTML += '<div data-proid="' + data.pr_id + '" class="hub-pro-shop">';
+                        strHTML += '<select class="form-control addnvar">';
+                        $(variation_details).each(function (pvIndex, pvRow) {
+                            if (isNullAndUndef(pvRow.vr_id))
+                                strHTML += '<option value="' + pvRow.vr_id + '-' + pvRow._regular_price + '-' + pvRow._price + '">' + pvRow.vr_title + '</option>';
+                            else
+                                strHTML += '<option value="0-0-0">No Variations</option>';
+                            if (pvIndex == 0) {
+                                //console.log(pvIndex, pvRow, pvRow._regular_price, pvRow._price);
+                                regular_price = parseFloat(pvRow._regular_price) || 0.00, price = parseFloat(pvRow._price) || 0.00;
+                            }
+                        });
+                        strHTML += '</select>';
                         strHTML += '<select class="form-control addnvar-qty">';
                         strHTML += '<option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option>';
                         strHTML += '</select>';
-                        strHTML += '<select class="form-control addnvar">';
-                        strHTML += '    <option value="Queen">Queen</option>';
-                        strHTML += '    <option value="Twin">Twin</option>';
-                        strHTML += '    <option value="Twin XL">Twin XL</option>';
-                        strHTML += '    <option value="Full">Full</option>';
-                        strHTML += '    <option value="King">King</option>';
-                        strHTML += '    <option value="Cal King">Cal King</option>';
-                        strHTML += '    </select>';
-                        strHTML += '<div class="hub-pro-price"><span>$699.00</span></div>';
-                        strHTML += '<a href="javascript://" class="agentaddtocart btn btn-danger">Add to Cart</a>';
+                        if (price < regular_price && regular_price > 0)
+                            strHTML += '<div class="hub-pro-price"><span>$' + price.toFixed(2) + '<span>$' + regular_price.toFixed(2) + '</span></span></div>';
+                        else
+                            strHTML += '<div class="hub-pro-price"><span>$' + price.toFixed(2) + '</span></div>';
+                        strHTML += '<a href="javascript://" class="agentaddtocart btn btn-danger hidden">Add to Cart</a>';
                         strHTML += '</div>';
                         strHTML += '</div>';
                     });
@@ -260,7 +264,6 @@ function CategoryWiseProducts() {
         complete: function () { $("#loader").hide(); },
         error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); }, async: false
     });
-    ajaxFunction('/Orders/GetNewOrderNo', option, beforeSendFun, function (result) { $('#hfOrderNo').val(result.message); $('#lblOrderNo').text('Order #' + result.message + ' detail '); }, completeFun, errorFun, false);
 }
 
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Search Customer Popup ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -582,12 +585,12 @@ function initMap() {
 function getOrderInfo() {
     let oid = parseInt($('#hfOrderNo').val()) || 0;
     if (oid > 0) {
-        $('.billnote').prop("disabled", false);
+        $('.billnote').prop("disabled", false); $('.agentaddtocart').addClass('hidden');
         $('#ddlStatus,#btnSearch').prop("disabled", true);
-        $('.page-heading').text('Edit order ').append('<a class="btn btn-danger" href="/Orders/OrdersHistory">Back to List</a>');
+        $('.page-heading').text('Edit order ').append('<a class="btn btn-danger" href="/Orders/OrdersHistory" data-toggle="tooltip" title="Go to Order List">Back to List</a>');
         $('#lblOrderNo').text('Order #' + oid + ' detail '); $('#hfOrderNo').val(oid);
         $('#order_line_items,#order_state_recycling_fee_line_items,#order_fee_line_items,#order_shipping_line_items,#order_refunds,#billCoupon,.refund-action').empty();
-        $('#btnCheckout').remove(); $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/Orders/OrdersHistory">Back to List</a>   <button type="button" class="btn btn-danger btnEditOrder"><i class="far fa-edit"></i> Edit</button>');
+        $('#btnCheckout').remove(); $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/Orders/OrdersHistory" data-toggle="tooltip" title="Go to Order List">Back to List</a>   <button type="button" class="btn btn-danger btnEditOrder" data-toggle="tooltip" title="Edit Order"><i class="far fa-edit"></i> Edit</button>');
         var opt = { strValue1: oid };
         ajaxFunction('/Orders/GetOrderInfo', opt, beforeSendFun, function (result) {
             try {
@@ -616,7 +619,7 @@ function getOrderInfo() {
                     getOrderItemList(oid);
                     getOrderNotesList(oid);
                     //if (data[0].status.trim() == "wc-pending") {
-                    $('.box-tools').empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf"><i class="fas fa-print"></i> Print</button> <button type="button" class="btn btn-danger btnEditOrder"><i class="far fa-edit"></i> Edit</button>');
+                    $('.box-tools-header').empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Order invoice"><i class="fas fa-print"></i> Print</button> <button type="button" class="btn btn-danger btnEditOrder" data-toggle="tooltip" title="Edit Order"><i class="far fa-edit"></i> Edit</button>');
                     //}                
                 }
             }
@@ -627,9 +630,9 @@ function getOrderInfo() {
         setTimeout(function () { getItemShippingCharge(); }, 100);
     }
     else {
-        $('.billnote').prop("disabled", true);
+        $('.billnote').prop("disabled", true); $('.agentaddtocart').removeClass('hidden');
         $("#loader").hide(); $('#lblOrderNo').data('pay_by', ''); $('#lblOrderNo').data('pay_id', '');
-        $('.refund-action').append('<button type="button" id="btnAddFee" class="btn btn-danger billinfo" disabled>Add Fee</button> ');
+        $('.refund-action').append('<button type="button" id="btnAddFee" class="btn btn-danger billinfo" disabled data-toggle="tooltip" title="Add Other Fee">Add Fee</button> ');
         $('.page-heading').text('Add New Order'); $('#btnSearch').prop("disabled", false); searchOrderModal();
     }
 }
@@ -778,44 +781,36 @@ function getOrderNotesList(oid) {
     }, completeFun, errorFun, false);
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Add/Edit Order Item Tab Section ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-function getItemList() {
-    var res = $('#ddlProduct').val().split('$');
-    var pid = parseInt(res[0]) || 0, vid = parseInt(res[1]) || 0;
-    var obj = { strValue1: pid, strValue2: vid };
-    var tax_rate = parseFloat($('#hfTaxRate').val()) || 0.00;
-    $.ajax({
-        type: "POST", url: '/Orders/GetProductInfo', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
-        beforeSend: function () { $("#loader").show(); },
-        success: function (data) {
-            var itemsDetailsxml = [], auto_code = [];
-            for (var i = 0; i < data.length; i++) {
-                let coupon_amt = 0.00, coupon_type = 'fixed_product', row_key = data[i].product_id + '_' + data[i].variation_id;
-                if (!data[i].is_free) {
-                    if (data[i].reg_price > data[i].sale_price) {
-                        coupon_amt = (data[i].reg_price - data[i].sale_price) * data[i].quantity;
-                        let pro_ids = data[i].variation_id + " ";
-                        let coupon_list = auto_coupon.filter(element => element.post_title == data[i].product_id);
-                        if (coupon_list.length > 0) {
-                            coupon_list[0].coupon_amount = coupon_amt; coupon_list[0].product_ids = pro_ids;
-                            if (coupon_list.length > 0) auto_code.push(coupon_list[0]);
-                        }
+function getItemList(pid, vid, Qty) {
+    if ($('#tritemId_' + pid + '_' + vid).length > 0) { swal('Alert!', 'Product already added to list.', "error"); return false; }
+    $("#loader").show();
+    let option = { strValue1: pid, strValue2: vid, strValue3: $('#ddlshipcountry').val(), strValue4: $('#ddlshipstate').val() };
+    let tax_rate = parseFloat($('#hfTaxRate').val()) || 0.00;
+    ajaxFunction('/Orders/GetProductInfo', option, beforeSendFun, function (result) {
+        let itemsDetailsxml = [], auto_code = [];
+        $.each(result, function (key, pr) {
+            pr.quantity = pr.quantity * Qty;
+            let coupon_amt = 0.00, coupon_type = 'fixed_product', row_key = pr.product_id + '_' + pr.variation_id;
+            if (!pr.is_free) {
+                if (pr.reg_price > pr.sale_price) {
+                    coupon_amt = (pr.reg_price - pr.sale_price) * pr.quantity;
+                    let pro_ids = pr.variation_id + " ";
+                    let coupon_list = auto_coupon.filter(element => element.post_title == pr.product_id);
+                    if (coupon_list.length > 0) {
+                        coupon_list[0].coupon_amount = coupon_amt; coupon_list[0].product_ids = pro_ids;
+                        if (coupon_list.length > 0) auto_code.push(coupon_list[0]);
                     }
                 }
-                itemsDetailsxml.push({
-                    PKey: row_key, product_id: data[i].product_id, variation_id: data[i].variation_id, product_name: data[i].product_name, quantity: data[i].quantity, reg_price: data[i].reg_price, sale_rate: data[i].sale_price, total: (data[i].reg_price * data[i].quantity), discount_type: coupon_type, discount: coupon_amt, tax_amount: ((data[i].reg_price * data[i].quantity) * tax_rate).toFixed(2), shipping_amount: 0, is_free: data[i].is_free, free_itmes: data[i].free_itmes, group_id: data[i].group_id, order_item_id: 0
-                });
-                console.log(itemsDetailsxml);
             }
-            //Bind diff Coupon
-            if (auto_code.length > 0) bindCouponList(auto_code);
-            if (itemsDetailsxml.length > 0) bindItemListDataTable(itemsDetailsxml);
-        },
-        complete: function () { $("#loader").hide(); },
-        error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); },
-        async: false
-    });
-    let shipping_state = $("#ddlshipcountry").val() == 'US' ? $("#ddlshipstate").val() : $("#ddlshipcountry").val();
-    setTimeout(function () { getItemShippingCharge(); }, 100);
+            itemsDetailsxml.push({
+                PKey: row_key, product_id: pr.product_id, variation_id: pr.variation_id, product_name: pr.product_name, quantity: pr.quantity, reg_price: pr.reg_price, sale_rate: pr.sale_price, total: (pr.reg_price * pr.quantity), discount_type: coupon_type, discount: coupon_amt, tax_amount: ((pr.reg_price * pr.quantity) * tax_rate).toFixed(2), shipping_amount: pr.shipping_amount, is_free: pr.is_free, free_itmes: pr.free_itmes, group_id: pr.group_id, order_item_id: 0
+            });
+        });
+        console.log(itemsDetailsxml);
+        //Bind diff Coupon
+        if (auto_code.length > 0) bindCouponList(auto_code);
+        if (itemsDetailsxml.length > 0) bindItemListDataTable(itemsDetailsxml);
+    }, function () { $("#loader").hide(); }, function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); }, true);
 }
 function bindItemListDataTable(data) {
     var layoutHtml = '';
@@ -1506,7 +1501,10 @@ function freeQtyUpdate() {
                 zQty += parseFloat($(prow).find("[name=txt_ItemQty]").val()) * parseFloat($(prow).data('freeitems')[pid]);
             }
         });
-        $(row).find("[name=txt_ItemQty]").val(zQty.toFixed(0));
+        if (zQty <= 0)
+            $('#tritemId_' + $(row).data('id')).remove();
+        else
+            $(row).find("[name=txt_ItemQty]").val(zQty.toFixed(0));
     });
 }
 function calculateDiscountAcount() {
@@ -1600,12 +1598,11 @@ function calculateDiscountAcount() {
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Shipping Charges ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function getItemShippingCharge() {
-    let v_ids = []; let sh_state = $("#ddlshipstate").val() == 'CA' ? "CAA" : $("#ddlshipstate").val();
+    let v_ids = [];
     $("#order_line_items  > tr.paid_item").each(function () { v_ids.push($(this).data('vid')); });
-    let shipping_state = $("#ddlshipcountry").val() == 'US' ? sh_state : $("#ddlshipcountry").val();
     if (v_ids.join(',').length > 0) {
         $("#loader").show();
-        let options = { strValue1: v_ids.join(','), strValue2: shipping_state };
+        let options = { strValue1: v_ids.join(','), strValue2: $("#ddlshipcountry").val(), strValue2: $("#ddlshipstate").val() };
         $(".TotalAmount").data("shippingamt", 0.00);
         $.ajax({
             type: "POST", url: '/Orders/GetProductShipping', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(options),
@@ -1861,7 +1858,7 @@ function PaymentModal() {
     }
     myHtml += '</select>';
     myHtml += '</span>';
-    myHtml += '<input class="form-control" type="text" id="txtPPEmail" name="txtPPEmail" placeholder="PayPal Email" maxlength="60" disabled>';
+    //myHtml += '<input class="form-control" type="text" id="txtPPEmail" name="txtPPEmail" placeholder="PayPal Email" maxlength="60" disabled>';
     myHtml += '</div>';
     myHtml += '</div>';
     myHtml += '<button type="button" class="btn btn-primary" id="btnPlaceOrder">Place Order $' + $('#orderTotal').text() + '</button>';
@@ -1889,15 +1886,12 @@ function PaymentModal() {
     $('#tblmodalitems tbody').append(myHtml);
     $('#tblmodalTotal').append($('#order_final_total').html());
     $("#billModal").modal({ backdrop: 'static', keyboard: false }); $("#txt_Coupon").focus();
-    pay_by = pay_by.length > 0 ? pay_by : 'podium';
+    //pay_by = pay_by.length > 0 ? pay_by : 'podium';
+    pay_by = pay_by.length > 0 ? pay_by : 'ppec_paypal';
     $('#ddlPaymentMethod').val(pay_by).trigger('change'); //console.log(pay_by);
 }
 function AcceptPayment() {
-    if ($("#ddlPaymentMethod").val() == "ppec_paypal") {
-        if ($("#txtPPEmail").val().length <= 5) swal('Alert!', 'Please enter PayPal Email.', "info").then((result) => { return false; });
-        else PaypalPayment($("#txtbillemail").val());
-        //else PaypalPayment($("#txtPPEmail").val());        
-    }
+    if ($("#ddlPaymentMethod").val() == "ppec_paypal") { $("#loader").show(); PaypalPayment($("#txtbillemail").val()); }
     else if ($("#ddlPaymentMethod").val() == "podium") { $("#loader").show(); PodiumPayment() }
     else { swal('Alert!', 'Please Select Payment Method.', "error"); }
 }
@@ -2025,7 +2019,7 @@ function CreatePaypalInvoice(oid, pp_no, pp_email, access_token) {
         success: function (data) {
             console.log(data);
             let sendURL = data.href + '/send';
-            $("txtPPEmail").data('surl', sendURL);
+            $("txtbillemail").data('surl', sendURL);
             if (action_method == 'POST') {
                 SendPaypalInvoice(oid, access_token, sendURL);
             }

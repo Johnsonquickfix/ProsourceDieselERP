@@ -1,4 +1,4 @@
-﻿$(document).ready(function () {
+﻿ $(document).ready(function () {
     $(".subsubsub li a").click(function (e) {
         $('.subsubsub li a').removeClass('current');
         $(this).addClass('current');
@@ -238,7 +238,7 @@ function dataGridLoad(order_type) {
             {
                 'data': 'id', sWidth: "4%   ",
                 'render': function (data, type, row) {
-                    if (row.post_parent > 0)
+                    if (row.post_parent > 0 || row.term_id == 2)
                         return '<input type = "checkbox" style = "opacity: 1; position: relative; visibility: visible; display: block" onClick="Singlecheck(this);" name="CheckSingle" value="' + $('<div/>').text(data).html() + '">';
                         return ' <b></b>';
                 }

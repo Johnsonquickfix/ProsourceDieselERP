@@ -664,7 +664,7 @@ function getOrderItemList(oid) {
     var option = { strValue1: oid };
     //let coupon_list = [];
     ajaxFunc('/Orders/GetOrderProductList', option, beforeSendFun, function (data) {
-        let itemHtml = '', recyclingfeeHtml = '', feeHtml = '', shippingHtml = '', refundHtml = '', couponHtml = ''; 
+        let itemHtml = '', recyclingfeeHtml = '', feeHtml = '', shippingHtml = '', refundHtml = '', couponHtml = '';
         let zQty = 0.00, zGAmt = 0.00, zTDiscount = 0.00, zTotalTax = 0.00, zShippingAmt = 0.00, zStateRecyclingAmt = 0.00, zFeeAmt = 0.00, zRefundAmt = 0.00;
         for (var i = 0; i < data.length; i++) {
             let orderitemid = parseInt(data[i].order_item_id) || 0;
@@ -1367,7 +1367,10 @@ function freeQtyUpdate() {
                 zQty += parseFloat($(prow).find("[name=txt_ItemQty]").val()) * parseFloat($(prow).data('freeitems')[pid]);
             }
         });
-        $(row).find("[name=txt_ItemQty]").val(zQty.toFixed(0));
+        if (zQty <= 0)
+            $('#tritemId_' + $(row).data('id')).remove();
+        else
+            $(row).find("[name=txt_ItemQty]").val(zQty.toFixed(0));
     });
 }
 function calculateDiscountAcount() {
@@ -1467,7 +1470,7 @@ function getItemShippingCharge() {
     let shipping_state = $("#ddlshipcountry").val() == 'US' ? sh_state : $("#ddlshipcountry").val();
     if (v_ids.join(',').length > 0) {
         $("#loader").show();
-        let options = { strValue1: v_ids.join(','), strValue2: shipping_state };
+        let options = { strValue1: v_ids.join(','), strValue2: $("#ddlshipcountry").val(), strValue2: $("#ddlshipstate").val() };
         $(".TotalAmount").data("shippingamt", 0.00);
         $.ajax({
             type: "POST", url: '/Orders/GetProductShipping', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(options),
@@ -1506,7 +1509,7 @@ function calculateStateRecyclingFee() {
 function getItemList() {
     var res = $('#ddlProduct').val().split('$');
     var pid = parseInt(res[0]) || 0, vid = parseInt(res[1]) || 0;
-    var obj = { strValue1: pid, strValue2: vid };
+    var obj = { strValue1: pid, strValue2: vid, strValue3: $('#ddlshipcountry').val(), strValue4: $('#ddlshipstate').val() };
     var tax_rate = parseFloat($('#hfTaxRate').val()) || 0.00;
     $.ajax({
         type: "POST", url: '/Orders/GetProductInfo', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
@@ -1540,7 +1543,7 @@ function getItemList() {
         async: false
     });
     let shipping_state = $("#ddlshipcountry").val() == 'US' ? $("#ddlshipstate").val() : $("#ddlshipcountry").val();
-    setTimeout(function () { getItemShippingCharge(); }, 100);
+    //setTimeout(function () { getItemShippingCharge(); }, 100);
 }
 //-----bind Item Table ---------------------------
 function bindItemListDataTable(data) {

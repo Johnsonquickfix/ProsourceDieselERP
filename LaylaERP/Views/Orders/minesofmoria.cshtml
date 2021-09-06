@@ -1,6 +1,5 @@
-﻿
-@{
-    ViewBag.Title = "Mines of Moria";
+﻿@{
+    ViewBag.Title = "Order";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @*datatables CSS*@
@@ -44,14 +43,14 @@
             <div class="radtype_span">
                 <h5 class="payment-history"></h5>
             </div>
-            <div class="box-tools pull-right"></div>
+            <div class="box-tools pull-right box-tools-header"></div>
         </div>
         <div class="box-body box-sections">
             <div class="row">
                 <div class="col-md-4">
                     <h2 class="sm-heading">General</h2>
                     <div class="form-group">
-                        <label>Create Date</label>
+                        <label data-toggle="tooltip" title="Order created date">Create Date</label>
                         <div class="input-group">
                             <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                             <input id="txtLogDate" data-auto-update-input="false" readonly="readonly" disabled class="form-control">
@@ -70,11 +69,11 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Customer</label>
+                        <label data-toggle="tooltip" title="Select Customer for creating Order.">Customer</label>
                         <div class="input-group">
                             <select class="form-control select2 " id="ddlUser" placeholder="Select Customer Email" data-width="100%">
                             </select>
-                            <span class="input-group-btn"><button type="button" id="btnSearch" class="btn btn-danger btn-flat"><i class="fa fa-search"></i> Search</button></span>
+                            <span class="input-group-btn"><button type="button" id="btnSearch" class="btn btn-danger btn-flat" data-toggle="tooltip" title="Click search customers for creating Order."><i class="fa fa-search"></i> Search</button></span>
                         </div>
                     </div>
                 </div>
@@ -190,9 +189,7 @@
                             <tbody id="order_refunds"></tbody>
                             <tfoot class="thead-dark">
                                 <tr>
-                                    <th colspan="2" class="text-left" style="width: 58%">
-                                        <select class="form-control select2 billinfo" id="ddlProduct" placeholder="Select Products" style="width: 100%;"></select>
-                                    </th>
+                                    <th colspan="2" class="text-left" style="width: 58%"></th>
                                     <th class="text-right" style="width: 8%"></th>
                                     <th class="text-right" style="width: 10%"></th>
                                     <th class="text-right refund-action" style="width: 27%" colspan="3"></th>
@@ -206,13 +203,19 @@
     </div>
 
     <div class="box box-primary">
+        <div class="box-header with-border">
+            <h3 class="box-title">Category Wise Products</h3>
+            <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+            </div>
+        </div>
         <div class="box-body">
             <div class="product-hub">
                 <div class="hub-pro-container">
                     <div class="row" id="category_items">
                         <div class="hub-accord col-sm-12 wow animate__slideInLeft" data-wow-duration="1s" data-wow-delay=".5s">
                             <h5>
-                                <span>Mattresses</span>
+                                <span>Categories</span>
                                 <i aria-hidden="true" class="fa fa-plus"></i>
                             </h5>
                             <div class="hub-box-open">
@@ -220,28 +223,11 @@
                                     <h2>Essential Mattress</h2>
                                     <div data-proid="813990" class="hub-pro-shop">
                                         <select class="form-control addnvar-qty">
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                            <option value="6">6</option>
-                                            <option value="7">7</option>
-                                            <option value="8">8</option>
-                                            <option value="9">9</option>
-                                            <option value="10">10</option>
                                         </select>
                                         <select class="form-control addnvar">
-                                            <option value="Queen">Queen</option>
-                                            <option value="Twin">Twin</option>
-                                            <option value="Twin XL">Twin XL</option>
-                                            <option value="Full">Full</option>
-                                            <option value="King">King</option>
-                                            <option value="Cal King">Cal King</option>
-                                            <!---->
+                                            <option value="0">Select</option>
                                         </select>
-                                        <div class="hub-pro-price"><span>$699.00</span></div>
-                                        <a href="javascript://" class="agentaddtocart btn btn-danger">Add to Cart</a>
+                                        <div class="hub-pro-price"><span>$0.00</span></div>
                                     </div>
                                 </div>
                                 <div class="hub-pro-box">
@@ -306,608 +292,6 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="hub-accord col-sm-12 wow animate__slideInLeft" data-wow-duration="1s" data-wow-delay=".5s">
-                            <h5>
-                                <span>Pillows</span>
-                                <i aria-hidden="true" class="fa fa-plus"></i>
-                            </h5>
-                            <div class="hub-box-open">
-                                <div class="hub-pro-box">
-                                    <h2>Kapok Pillow</h2>
-                                    <div data-proid="14023" class="hub-pro-shop">
-                                        <select class="form-control addnvar-qty">
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                            <option value="6">6</option>
-                                            <option value="7">7</option>
-                                            <option value="8">8</option>
-                                            <option value="9">9</option>
-                                            <option value="10">10</option>
-                                        </select>
-                                        <select class="form-control addnvar">
-                                            <option value="Queen">Queen</option>
-                                            <option value="King">King</option>
-                                            <!---->
-                                        </select>
-                                        <div class="hub-pro-price"><span>$109.00</span></div>
-                                        <a href="javascript://" class="agentaddtocart btn btn-danger">Add to Cart</a>
-                                    </div>
-                                </div>
-                                <div class="hub-pro-box">
-                                    <h2>Shredded Memory Foam Pillow</h2>
-                                    <div data-proid="611238" class="hub-pro-shop">
-                                        <select class="form-control addnvar-qty">
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                            <option value="6">6</option>
-                                            <option value="7">7</option>
-                                            <option value="8">8</option>
-                                            <option value="9">9</option>
-                                            <option value="10">10</option>
-                                        </select>
-                                        <select class="form-control addnvar">
-                                            <option value="Queen">Queen</option>
-                                            <option value="King">King</option>
-                                            <!---->
-                                        </select>
-                                        <div class="hub-pro-price">
-                                            <span>$69.00 <span>$89.00</span></span>
-                                        </div>
-                                        <a href="javascript://" class="agentaddtocart btn btn-danger">Add to Cart</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="hub-accord col-sm-12 wow animate__slideInLeft" data-wow-duration="1s" data-wow-delay=".5s">
-                            <h5>
-                                <span>Bases</span>
-                                <i aria-hidden="true" class="fa fa-plus"></i>
-                            </h5>
-                            <div class="hub-box-open">
-                                <div class="hub-pro-box">
-                                    <h2>Layla Mattress Foundation</h2>
-                                    <div data-proid="20861" class="hub-pro-shop">
-                                        <select class="form-control addnvar-qty">
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                            <option value="6">6</option>
-                                            <option value="7">7</option>
-                                            <option value="8">8</option>
-                                            <option value="9">9</option>
-                                            <option value="10">10</option>
-                                        </select>
-                                        <select class="form-control addnvar">
-                                            <option value="Queen">Queen</option>
-                                            <option value="Twin">Twin</option>
-                                            <option value="Twin XL">Twin XL</option>
-                                            <option value="Full">Full</option>
-                                            <option value="Cal King">Cal King</option>
-                                            <option value="King">King</option>
-                                            <!---->
-                                        </select>
-                                        <div class="hub-pro-price">
-                                            <span>$299.00 <span>$324.00</span></span>
-                                        </div>
-                                        <a href="javascript://" class="agentaddtocart btn btn-danger">Add to Cart</a>
-                                    </div>
-                                </div>
-                                <div class="hub-pro-box">
-                                    <h2>Layla Bed Frame</h2>
-                                    <div data-proid="31729" class="hub-pro-shop">
-                                        <select class="form-control addnvar-qty">
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                            <option value="6">6</option>
-                                            <option value="7">7</option>
-                                            <option value="8">8</option>
-                                            <option value="9">9</option>
-                                            <option value="10">10</option>
-                                        </select>
-                                        <select class="form-control addnvar">
-                                            <option value="Queen">Queen</option>
-                                            <option value="Twin">Twin</option>
-                                            <option value="Full">Full</option>
-                                            <option value="Cal King">Cal King</option>
-                                            <option value="King">King</option>
-                                            <!---->
-                                        </select>
-                                        <div class="hub-pro-price"><span>$199.00</span></div>
-                                        <a href="javascript://" class="agentaddtocart btn btn-danger">Add to Cart</a>
-                                    </div>
-                                </div>
-                                <div class="hub-pro-box">
-                                    <h2>Layla Adjustable Base</h2>
-                                    <div data-proid="611286" class="hub-pro-shop">
-                                        <select class="form-control addnvar-qty">
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                            <option value="6">6</option>
-                                            <option value="7">7</option>
-                                            <option value="8">8</option>
-                                            <option value="9">9</option>
-                                            <option value="10">10</option>
-                                        </select>
-                                        <select class="form-control addnvar">
-                                            <option value="Queen">Queen</option>
-                                            <option value="Twin XL">Twin XL</option>
-                                            <option value="Split King">Split King</option>
-                                            <option value="King">King</option>
-                                            <!---->
-                                        </select>
-                                        <div class="hub-pro-price">
-                                            <span>$799.00 <span>$999.00</span></span>
-                                        </div>
-                                        <a href="javascript://" class="agentaddtocart btn btn-danger">Add to Cart</a>
-                                    </div>
-                                </div>
-                                <div class="hub-pro-box">
-                                    <h2>Layla Adjustable Base Plus</h2>
-                                    <div data-proid="612995" class="hub-pro-shop">
-                                        <select class="form-control addnvar-qty">
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                            <option value="6">6</option>
-                                            <option value="7">7</option>
-                                            <option value="8">8</option>
-                                            <option value="9">9</option>
-                                            <option value="10">10</option>
-                                        </select>
-                                        <select class="form-control addnvar">
-                                            <option value="Queen">Queen</option>
-                                            <option value="Twin XL">Twin XL</option>
-                                            <option value="Split King">Split King</option>
-                                            <option value="King">King</option>
-                                            <!---->
-                                        </select>
-                                        <div class="hub-pro-price">
-                                            <span>$1,199.00 <span>$1,499.00</span></span>
-                                        </div>
-                                        <a href="javascript://" class="agentaddtocart btn btn-danger">Add to Cart</a>
-                                    </div>
-                                </div>
-                                <div class="hub-pro-box">
-                                    <h2>Layla Platform Bed</h2>
-                                    <div data-proid="611252" class="hub-pro-shop">
-                                        <select class="form-control addnvar-qty">
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                            <option value="6">6</option>
-                                            <option value="7">7</option>
-                                            <option value="8">8</option>
-                                            <option value="9">9</option>
-                                            <option value="10">10</option>
-                                        </select>
-                                        <select class="form-control addnvar">
-                                            <option value="Queen">Queen</option>
-                                            <option value="Twin">Twin</option>
-                                            <option value="Twin XL">Twin XL</option>
-                                            <option value="Full">Full</option>
-                                            <option value="King">King</option>
-                                            <option value="Cal King">Cal King</option>
-                                            <!---->
-                                        </select>
-                                        <div class="hub-pro-price">
-                                            <span>$399.00 <span>$424.00</span></span>
-                                        </div>
-                                        <a href="javascript://" class="agentaddtocart btn btn-danger">Add to Cart</a>
-                                    </div>
-                                </div>
-                                <div class="hub-pro-box">
-                                    <h2>Layla Metal Platform Base</h2>
-                                    <div data-proid="733500" class="hub-pro-shop">
-                                        <select class="form-control addnvar-qty">
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                            <option value="6">6</option>
-                                            <option value="7">7</option>
-                                            <option value="8">8</option>
-                                            <option value="9">9</option>
-                                            <option value="10">10</option>
-                                        </select>
-                                        <select class="form-control addnvar">
-                                            <option value="Queen">Queen</option>
-                                            <option value="Twin">Twin</option>
-                                            <option value="Twin XL">Twin XL</option>
-                                            <option value="Full">Full</option>
-                                            <option value="King">King</option>
-                                            <option value="Cal King">Cal King</option>
-                                            <!---->
-                                        </select>
-                                        <div class="hub-pro-price">
-                                            <span>$129.00 <span>$224.00</span></span>
-                                        </div>
-                                        <a href="javascript://" class="agentaddtocart btn btn-danger">Add to Cart</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="hub-accord col-sm-12 wow animate__slideInRight" data-wow-duration="1s" data-wow-delay=".5s">
-                            <h5>
-                                <span>Bedding</span>
-                                <i aria-hidden="true" class="fa fa-plus"></i>
-                            </h5>
-                            <div class="hub-box-open">
-                                <div class="hub-pro-box">
-                                    <h2>Layla Comforter</h2>
-                                    <div data-proid="823358" class="hub-pro-shop">
-                                        <select class="form-control addnvar-qty">
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                            <option value="6">6</option>
-                                            <option value="7">7</option>
-                                            <option value="8">8</option>
-                                            <option value="9">9</option>
-                                            <option value="10">10</option>
-                                        </select>
-                                        <select class="form-control addnvar">
-                                            <option value="Full/Queen">Full/Queen</option>
-                                            <option value="King/Cal King">King/Cal King</option>
-                                            <option value="Twin/Twin XL">Twin/Twin XL</option>
-                                            <!---->
-                                        </select>
-                                        <select class="form-control addnvar">
-                                            <option value="White">White</option>
-                                            <option value="Gray">Gray</option>
-                                            <!---->
-                                        </select>
-                                        <div class="hub-pro-price">
-                                            <span>
-                                                $229.00
-                                                <!---->
-                                            </span>
-                                        </div>
-                                        <a href="javascript://" class="agentaddtocart btn btn-danger">Add to Cart</a>
-                                    </div>
-                                </div>
-                                <div class="hub-pro-box">
-                                    <h2>Layla Bamboo Sheets</h2>
-                                    <div data-proid="124524" class="hub-pro-shop">
-                                        <select class="form-control addnvar-qty">
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                            <option value="6">6</option>
-                                            <option value="7">7</option>
-                                            <option value="8">8</option>
-                                            <option value="9">9</option>
-                                            <option value="10">10</option>
-                                        </select>
-                                        <select class="form-control addnvar">
-                                            <option value="Queen">Queen</option>
-                                            <option value="Twin">Twin</option>
-                                            <option value="Twin XL">Twin XL</option>
-                                            <option value="Full">Full</option>
-                                            <option value="King">King</option>
-                                            <option value="Split King">Split King</option>
-                                            <option value="Cal King">Cal King</option>
-                                            <!---->
-                                        </select>
-                                        <select class="form-control addnvar">
-                                            <option value="White">White</option>
-                                            <option value="Gray">Gray</option>
-                                            <!---->
-                                        </select>
-                                        <div class="hub-pro-price">
-                                            <span>$155.00 <span>$205.00</span></span>
-                                        </div>
-                                        <a href="javascript://" class="agentaddtocart btn btn-danger">Add to Cart</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="hub-accord col-sm-12 wow animate__slideInRight" data-wow-duration="1s" data-wow-delay=".5s">
-                            <h5>
-                                <span>Blankets</span>
-                                <i aria-hidden="true" class="fa fa-plus"></i>
-                            </h5>
-                            <div class="hub-box-open">
-                                <div class="hub-pro-box">
-                                    <h2>Layla Weighted Blanket</h2>
-                                    <div data-proid="128244" class="hub-pro-shop">
-                                        <select class="form-control addnvar-qty">
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                            <option value="6">6</option>
-                                            <option value="7">7</option>
-                                            <option value="8">8</option>
-                                            <option value="9">9</option>
-                                            <option value="10">10</option>
-                                        </select>
-                                        <select class="form-control addnvar">
-                                            <option value='20 lbs (60" x 80")'>20 lbs (60" x 80")</option>
-                                            <option value='25 lbs (80" x 87")'>25 lbs (80" x 87")</option>
-                                            <option value='15 lbs (48" x 72")'>15 lbs (48" x 72")</option>
-                                            <!---->
-                                        </select>
-                                        <div class="hub-pro-price">
-                                            <span>$129.00 <span>$189.00</span></span>
-                                        </div>
-                                        <a href="javascript://" class="agentaddtocart btn btn-danger">Add to Cart</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="hub-accord col-sm-12 wow animate__slideInRight" data-wow-duration="1s" data-wow-delay=".5s">
-                            <h5>
-                                <span>Accessories</span>
-                                <i aria-hidden="true" class="fa fa-plus"></i>
-                            </h5>
-                            <div class="hub-box-open">
-                                <div class="hub-pro-box">
-                                    <div><h2 class="toppertitle">Layla Memory Foam Topper</h2></div>
-                                    <div data-proid="56774" class="hub-pro-shop">
-                                        <select class="form-control addnvar-qty">
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                            <option value="6">6</option>
-                                            <option value="7">7</option>
-                                            <option value="8">8</option>
-                                            <option value="9">9</option>
-                                            <option value="10">10</option>
-                                        </select>
-                                        <select class="form-control addnvar">
-                                            <option value="Queen">Queen</option>
-                                            <option value="Cal King">Cal King</option>
-                                            <option value="Full">Full</option>
-                                            <option value="Twin XL">Twin XL</option>
-                                            <option value="Twin">Twin</option>
-                                            <option value="King">King</option>
-                                            <!---->
-                                        </select>
-                                        <div class="hub-pro-price">
-                                            <span>$299.00 <span>$349.00</span></span>
-                                        </div>
-                                        <a href="javascript://" class="agentaddtocart btn btn-danger">Add to Cart</a>
-                                    </div>
-                                </div>
-                                <div class="hub-pro-box">
-                                    <h2>Layla Essential Mattress Protector</h2>
-                                    <div data-proid="611268" class="hub-pro-shop">
-                                        <select class="form-control addnvar-qty">
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                            <option value="6">6</option>
-                                            <option value="7">7</option>
-                                            <option value="8">8</option>
-                                            <option value="9">9</option>
-                                            <option value="10">10</option>
-                                        </select>
-                                        <select class="form-control addnvar">
-                                            <option value="Queen">Queen</option>
-                                            <option value="Twin">Twin</option>
-                                            <option value="Twin XL">Twin XL</option>
-                                            <option value="Full">Full</option>
-                                            <option value="King">King</option>
-                                            <option value="Cal King">Cal King</option>
-                                            <!---->
-                                        </select>
-                                        <div class="hub-pro-price">
-                                            <span>$79.00 <span>$104.00</span></span>
-                                        </div>
-                                        <a href="javascript://" class="agentaddtocart btn btn-danger">Add to Cart</a>
-                                    </div>
-                                </div>
-                                <div class="hub-pro-box">
-                                    <h2>Layla Cooling Mattress Protector</h2>
-                                    <div data-proid="612947" class="hub-pro-shop">
-                                        <select class="form-control addnvar-qty">
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                            <option value="6">6</option>
-                                            <option value="7">7</option>
-                                            <option value="8">8</option>
-                                            <option value="9">9</option>
-                                            <option value="10">10</option>
-                                        </select>
-                                        <select class="form-control addnvar">
-                                            <option value="Queen">Queen</option>
-                                            <option value="Twin">Twin</option>
-                                            <option value="Twin XL">Twin XL</option>
-                                            <option value="Full">Full</option>
-                                            <option value="King">King</option>
-                                            <option value="Cal King">Cal King</option>
-                                            <!---->
-                                        </select>
-                                        <div class="hub-pro-price">
-                                            <span>$149.00 <span>$174.00</span></span>
-                                        </div>
-                                        <a href="javascript://" class="agentaddtocart btn btn-danger">Add to Cart</a>
-                                    </div>
-                                </div>
-                                <div class="hub-pro-box">
-                                    <h2>Layla Full Encasement Protector</h2>
-                                    <div data-proid="612955" class="hub-pro-shop">
-                                        <select class="form-control addnvar-qty">
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                            <option value="6">6</option>
-                                            <option value="7">7</option>
-                                            <option value="8">8</option>
-                                            <option value="9">9</option>
-                                            <option value="10">10</option>
-                                        </select>
-                                        <select class="form-control addnvar">
-                                            <option value="Queen">Queen</option>
-                                            <option value="Twin">Twin</option>
-                                            <option value="Twin XL">Twin XL</option>
-                                            <option value="Full">Full</option>
-                                            <option value="King">King</option>
-                                            <option value="Cal King">Cal King</option>
-                                            <!---->
-                                        </select>
-                                        <div class="hub-pro-price">
-                                            <span>$109.00 <span>$134.00</span></span>
-                                        </div>
-                                        <a href="javascript://" class="agentaddtocart btn btn-danger">Add to Cart</a>
-                                    </div>
-                                </div>
-                                <div class="hub-pro-box">
-                                    <div>
-                                        <h2>Layla Pet Bed</h2>
-                                        <span style="color: #ff4100; font-size: 13px; font-weight: 600;">Out of Stock</span>
-                                    </div>
-                                    <div data-proid="611220" class="hub-pro-shop">
-                                        <select class="form-control addnvar-qty">
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                            <option value="6">6</option>
-                                            <option value="7">7</option>
-                                            <option value="8">8</option>
-                                            <option value="9">9</option>
-                                            <option value="10">10</option>
-                                        </select>
-                                        <select class="form-control addnvar">
-                                            <option value="Small">Small</option>
-                                            <option value="Medium">Medium</option>
-                                            <option value="Large">Large</option>
-                                            <!---->
-                                        </select>
-                                        <div class="hub-pro-price">
-                                            <span>$149.00 <span>$174.00</span></span>
-                                        </div>
-                                        <a href="javascript://" class="agentaddtocart btn btn-danger">Add to Cart</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="hub-accord col-sm-12 wow animate__slideInRight" data-wow-duration="1s" data-wow-delay=".5s">
-                            <h5>
-                                <span>Promotional Items</span>
-                                <i aria-hidden="true" class="fa fa-plus"></i>
-                            </h5>
-                            <div class="hub-box-open">
-                                <div class="hub-pro-box">
-                                    <h2>Microfiber Sheet Set - Free</h2>
-                                    <div data-proid="727126" class="hub-pro-shop">
-                                        <select class="form-control addnvar-qty">
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                            <option value="6">6</option>
-                                            <option value="7">7</option>
-                                            <option value="8">8</option>
-                                            <option value="9">9</option>
-                                            <option value="10">10</option>
-                                        </select>
-                                        <select class="form-control addnvar">
-                                            <option value="Queen">Queen</option>
-                                            <option value="Twin">Twin</option>
-                                            <option value="Twin XL">Twin XL</option>
-                                            <option value="Full">Full</option>
-                                            <option value="King">King</option>
-                                            <option value="Cal King">Cal King</option>
-                                            <!---->
-                                        </select>
-                                        <div class="hub-pro-price"><span>$0.00</span></div>
-                                        <a href="javascript://" class="agentaddtocart btn btn-danger">Add to Cart</a>
-                                    </div>
-                                </div>
-                                <div class="hub-pro-box">
-                                    <h2>Layla Essential Mattress Protector - Free</h2>
-                                    <div data-proid="612940" class="hub-pro-shop">
-                                        <select class="form-control addnvar-qty">
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                            <option value="6">6</option>
-                                            <option value="7">7</option>
-                                            <option value="8">8</option>
-                                            <option value="9">9</option>
-                                            <option value="10">10</option>
-                                        </select>
-                                        <select class="form-control addnvar">
-                                            <option value="Queen">Queen</option>
-                                            <option value="Twin">Twin</option>
-                                            <option value="Twin XL">Twin XL</option>
-                                            <option value="Full">Full</option>
-                                            <option value="King">King</option>
-                                            <option value="Cal King">Cal King</option>
-                                            <!---->
-                                        </select>
-                                        <div class="hub-pro-price"><span>$0.00</span></div>
-                                        <a href="javascript://" class="agentaddtocart btn btn-danger">Add to Cart</a>
-                                    </div>
-                                </div>
-                                <div class="hub-pro-box">
-                                    <h2>Protector &amp; Sheet Set Bundle - Free</h2>
-                                    <div data-proid="727138" class="hub-pro-shop">
-                                        <select class="form-control addnvar-qty">
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                            <option value="6">6</option>
-                                            <option value="7">7</option>
-                                            <option value="8">8</option>
-                                            <option value="9">9</option>
-                                            <option value="10">10</option>
-                                        </select>
-                                        <select class="form-control addnvar">
-                                            <option value="Queen">Queen</option>
-                                            <option value="Twin">Twin</option>
-                                            <option value="Twin XL">Twin XL</option>
-                                            <option value="King">King</option>
-                                            <option value="Cal King">Cal King</option>
-                                            <!---->
-                                        </select>
-                                        <div class="hub-pro-price"><span>$0.00</span></div>
-                                        <a href="javascript://" class="agentaddtocart btn btn-danger">Add to Cart</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -920,6 +304,9 @@
             <div class="box box-primary direct-chat">
                 <div class="box-header with-border">
                     <h3 class="box-title">Order notes</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body" style="">
@@ -951,7 +338,7 @@
             <div class="box box-primary">
                 <div class="box-header with-border">
                     <h3 class="box-title">Coupon(s)</h3>
-                    <button type="button" id="btnApplyCoupon" class="btn btn-danger pull-right billinfo">Apply coupon</button>
+                    <button type="button" id="btnApplyCoupon" class="btn btn-danger pull-right billinfo" data-toggle="tooltip" title="Add coupon">Apply coupon</button>
                 </div>
                 <div class="box-body no-padding">
                     <ul class="nav nav-pills nav-stacked" id="billCoupon">
@@ -962,6 +349,9 @@
             <div class="box box-primary">
                 <div class="box-header with-border">
                     <h3 class="box-title">Totals(s)</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
                 </div>
                 <div class="box-body text-right">
                     <div id="order_final_total">
@@ -1030,7 +420,7 @@
                 <!-- /.box-body -->
                 <div class="box-footer text-right footer-finalbutton">
                     @*<button type="button" id="btnpay" class="btn btn-primary"> Payment</button>*@
-                    <button type="button" id="btnCheckout" class="btn btn-danger billinfo"> Checkout</button>
+                    <button type="button" id="btnCheckout" class="btn btn-danger billinfo" data-toggle="tooltip" title="Save and Checkout Order"> Checkout</button>
                 </div>
             </div>
         </div>

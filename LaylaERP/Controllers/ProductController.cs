@@ -308,7 +308,10 @@ namespace LaylaERP.Controllers
             DataTable dt = ProductRepository.GetproductPurchase_Items(model);
 
             if (model.ID > 0)
+            {
+
                 resultOne = ProductRepository.updateBuyingtProduct(model, dateinc);
+            }
             else
             {
                 if (dt.Rows.Count > 0)
@@ -317,7 +320,16 @@ namespace LaylaERP.Controllers
                 }
                 else
                 {
-                    resultOne = ProductRepository.AddBuyingtProduct(model, dateinc);
+                    DataTable dtware = ProductRepository.Getwarehouse(model);
+                    if (dt.Rows.Count > 0)
+                    {
+                        resultOne = ProductRepository.AddBuyingtProduct(model, dateinc);
+                    }
+                    else
+                    {
+                        resultOne = ProductRepository.AddBuyingtProduct(model, dateinc);
+                        ProductRepository.AddBuyingtProductwarehouse(model, dateinc);
+                    }
                 }
             }
             if (resultOne > 0)
@@ -424,7 +436,25 @@ namespace LaylaERP.Controllers
                 resultOne = ProductRepository.DeleteProductwarehouse(model);
             if (resultOne > 0)
             {
-                return Json(new { status = true, message = "deleted successfully!!", url = "Manage" }, 0);
+                return Json(new { status = true, message = "In-Activated successfully!!", url = "Manage" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+        }
+        public JsonResult ActiveProductwarehouse(ProductModel model)
+        {
+            JsonResult result = new JsonResult();
+            //DateTime dateinc = DateTime.Now;
+            //DateTime dateinc = UTILITIES.CommonDate.CurrentDate();
+            var resultOne = 0;
+            // model.ID = model.strVal;
+            if (model.ID > 0)
+                resultOne = ProductRepository.ActiveProductwarehouse(model);
+            if (resultOne > 0)
+            {
+                return Json(new { status = true, message = "Activated successfully !!", url = "Manage" }, 0);
             }
             else
             {
@@ -527,7 +557,7 @@ namespace LaylaERP.Controllers
                 resultOne = ProductRepository.DeleteBuyingtProduct(model);
             if (resultOne > 0)
             {
-                return Json(new { status = true, message = "deleted successfully!!", url = "Manage" }, 0);
+                return Json(new { status = true, message = "In-Activated successfully!!", url = "Manage" }, 0);
             }
             else
             {
@@ -535,6 +565,24 @@ namespace LaylaERP.Controllers
             }
         }
 
+        public JsonResult ActiveuyingPrice(ProductModel model)
+        {
+            JsonResult result = new JsonResult();
+            //DateTime dateinc = DateTime.Now;
+            //DateTime dateinc = UTILITIES.CommonDate.CurrentDate();
+            var resultOne = 0;
+            // model.ID = model.strVal;
+            if (model.ID > 0)
+                resultOne = ProductRepository.ActiveuyingPrice(model);
+            if (resultOne > 0)
+            {
+                return Json(new { status = true, message = "Activated successfully!!", url = "Manage" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+        }
         public JsonResult CreateProduct(ProductModel model)
         {
             if (model.ID > 0 || model.updatedID > 0)
@@ -622,12 +670,14 @@ namespace LaylaERP.Controllers
                 for (var i = 0; i < myarray.Length; i++)
                 {
                     ProductRepository.Add_term(Convert.ToInt32(myarray[i]), ID);
+                    ProductRepository.update_countinc(Convert.ToInt32(myarray[i]), Convert.ToInt32(ID));
 
                 }
             }
         }
         private void update_term(ProductModel model, long ID)
         {
+            update_countdes(model, ID);
             delete_term(model, ID);
             ProductRepository.Add_term(model.ProductTypeID, Convert.ToInt32(ID));
             ProductRepository.Add_Shipping(model.ShippingclassID, Convert.ToInt32(ID));
@@ -643,12 +693,31 @@ namespace LaylaERP.Controllers
                 }
                 else
                 {
+                   
                     ProductRepository.Add_term(Convert.ToInt32(myarray[i]), Convert.ToInt32(ID));
+                    ProductRepository.update_countinc(Convert.ToInt32(myarray[i]), Convert.ToInt32(ID));
                 }
             }
         }
+        private void update_countdes(ProductModel model, long ID)
+        {
+            string CommaStr = new ProductRepository().GetCountforupdate(ID); 
 
-        private void delete_term(ProductModel model, long ID)
+            var myarray = CommaStr.Split(',');
+
+            for (var i = 0; i < myarray.Length; i++)
+            {
+                if (myarray[i] == "")
+                {
+
+                }
+                else
+                {
+                    ProductRepository.update_count(Convert.ToInt32(myarray[i]), Convert.ToInt32(ID));
+                }
+            }
+        }
+            private void delete_term(ProductModel model, long ID)
         {
             ProductRepository.Edit_term(model.ProductTypeID, Convert.ToInt32(ID));
             //ProductRepository.Edit_term(model.ShippingclassID, Convert.ToInt32(ID));

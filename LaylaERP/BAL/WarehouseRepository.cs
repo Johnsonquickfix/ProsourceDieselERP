@@ -645,20 +645,21 @@ namespace LaylaERP.BAL
                 //                    + " inner join product_warehouse pw on pw.fk_product = ps.id and pw.fk_warehouse = '" + warehouseid + "'"
                 //                    + " WHERE post.post_type = 'product' AND post.post_status = 'publish' AND CONCAT(post.post_title, ' (' , COALESCE(psku.meta_value, '') , ') - ' ,LTRIM(REPLACE(REPLACE(COALESCE(ps.post_excerpt, ''), 'Size:', ''), 'Color:', ''))) like '%"+ strSearch + "%'"
                 //                    + " ORDER BY post.ID";
-                //string strquery = "SELECT DISTINCT post.id,ps.ID pr_id, CONCAT(post.post_title, ' (', COALESCE(psku.meta_value, ''), ') - ', LTRIM(REPLACE(REPLACE(COALESCE(ps.post_excerpt, ''), 'Size:', ''), 'Color:', ''))) as post_title, format(psr.meta_value,2) as sale_price, format(pr.meta_value,2) reg_price,"
-                //                    + " CONCAT(post.id, '$', COALESCE(ps.id, 0)) r_id FROM wp_posts as post"
-                //                    + " left join wp_postmeta psr1 on psr1.post_id = post.ID"
-                //                    + " left join wp_posts ps ON ps.post_parent = post.id and ps.post_type LIKE 'product_variation'"
-                //                    + " left join wp_postmeta psku on psku.post_id = ps.id and psku.meta_key = '_sku'"
-                //                    + " left join wp_postmeta pr on pr.post_id = ps.id and pr.meta_key = '_regular_price'"
-                //                    + " left join wp_postmeta psr on psr.post_id = COALESCE(ps.id, post.id) and psr.meta_key = '_sale_price'"
-                //                    + " left join product_warehouse pw on pw.fk_product = ps.ID "
-                //                    + " WHERE pw.fk_warehouse = '" + warehouseid + "' and post.post_type = 'product' AND post.post_status = 'publish' AND CONCAT(post.post_title, ' (' , COALESCE(psku.meta_value, '') , ') - ' ,LTRIM(REPLACE(REPLACE(COALESCE(ps.post_excerpt, ''), 'Size:', ''), 'Color:', ''))) like '%%%'"
-                //                    + " ORDER BY post.ID";
+                string strquery = "SELECT DISTINCT post.id,ps.ID pr_id, CONCAT(post.post_title, ' (', COALESCE(psku.meta_value, ''), ') - ', LTRIM(REPLACE(REPLACE(COALESCE(ps.post_excerpt, ''), 'Size:', ''), 'Color:', ''))) as post_title, format(psr.meta_value,2) as sale_price, format(pr.meta_value,2) reg_price,"
+                                    + " CONCAT(post.id, '$', COALESCE(ps.id, 0)) r_id FROM wp_posts as post"
+                                    + " left join wp_postmeta psr1 on psr1.post_id = post.ID"
+                                    + " left join wp_posts ps ON ps.post_parent = post.id and ps.post_type LIKE 'product_variation'"
+                                    + " left join wp_postmeta psku on psku.post_id = ps.id and psku.meta_key = '_sku'"
+                                    + " left join wp_postmeta pr on pr.post_id = ps.id and pr.meta_key = '_regular_price'"
+                                    + " left join wp_postmeta psr on psr.post_id = COALESCE(ps.id, post.id) and psr.meta_key = '_sale_price'"
+                                    + " left join product_warehouse pw on pw.fk_product = ps.ID "
+                                    + " WHERE pw.fk_warehouse = '" + warehouseid + "' and post.post_type = 'product' AND post.post_status = 'publish' "
+                                    + " ORDER BY post.ID";
 
-                string strquery = "select p.id as pr_id,p.post_type,p.post_title ,max(case when p.id = s.post_id and s.meta_key = '_sku' then s.meta_value else '' end) sku, COALESCE(format(psi.purchase_price,2),0) buy_price, COALESCE(format(max(case when p.id = s.post_id and s.meta_key = '_regular_price' then s.meta_value else '' end),2),0) reg_price,  COALESCE(format(max(case when p.id = s.post_id and s.meta_key = '_sale_price' then s.meta_value else '' end),2),0) sale_price,  (select (coalesce(sum(case when pwr.flag = 'R' then quantity end),0) - coalesce(sum(case when pwr.flag = 'I' then quantity end),0)) from product_stock_register pwr where pwr.product_id = p.id and pwr.warehouse_id = pw.fk_warehouse) stock, (case when p.post_parent = 0 then p.id else p.post_parent end) p_id,p.post_parent,p.post_status FROM wp_posts as p left join wp_postmeta as s on p.id = s.post_id left join product_warehouse pw on pw.fk_product = p.ID  left join Product_Purchase_Items psi on psi.fk_product = pw.fk_product  left join product_stock_register psr on psr.product_id = pw.fk_product where pw.fk_warehouse = '" + warehouseid + "' and p.post_type in ('product', 'product_variation') and p.post_status != 'draft'  group by p.id order by p_id";
+                //string strquery = "select p.id as pr_id,p.post_type,p.post_title ,max(case when p.id = s.post_id and s.meta_key = '_sku' then s.meta_value else '' end) sku, COALESCE(format(psi.purchase_price,2),0) buy_price, COALESCE(format(max(case when p.id = s.post_id and s.meta_key = '_regular_price' then s.meta_value else '' end),2),0) reg_price,  COALESCE(format(max(case when p.id = s.post_id and s.meta_key = '_sale_price' then s.meta_value else '' end),2),0) sale_price,  (select (coalesce(sum(case when pwr.flag = 'R' then quantity end),0) - coalesce(sum(case when pwr.flag = 'I' then quantity end),0)) from product_stock_register pwr where pwr.product_id = p.id and pwr.warehouse_id = pw.fk_warehouse) stock, (case when p.post_parent = 0 then p.id else p.post_parent end) p_id,p.post_parent,p.post_status FROM wp_posts as p left join wp_postmeta as s on p.id = s.post_id left join product_warehouse pw on pw.fk_product = p.ID  left join Product_Purchase_Items psi on psi.fk_product = pw.fk_product  left join product_stock_register psr on psr.product_id = pw.fk_product where pw.fk_warehouse = '" + warehouseid + "' and p.post_type in ('product', 'product_variation') and p.post_status != 'draft'  group by p.id order by p_id";
 
-                dtr = SQLHelper.ExecuteDataTable(strquery);
+                DataSet ds = SQLHelper.ExecuteDataSet(strquery);
+                dtr = ds.Tables[0];
 
             }
             catch (Exception ex)

@@ -22,10 +22,10 @@
     <div class="nav-tabs-custom">
         <ul class="nav nav-tabs">
             <li class="active"><a href="#tab_1" data-toggle="tab">Bank account</a></li>
-            @*<li><a href="#tab_2" data-toggle="tab">Bank entries</a></li>
-                <li><a href="#tab_3" data-toggle="tab">Planned entries</a></li>
-                <li><a href="#tab_4" data-toggle="tab">Monthly reporting</a></li>
-                <li><a href="#tab_6" data-toggle="tab">Account statements</a></li>*@
+            <li><a href="#tab_2" data-toggle="tab">Entries</a></li>
+            @*<li><a href="#tab_3" data-toggle="tab">Planned entries</a></li>
+        <li><a href="#tab_4" data-toggle="tab">Monthly reporting</a></li>
+        <li><a href="#tab_6" data-toggle="tab">Account statements</a></li>*@
             <li><a href="#tab_7" data-toggle="tab">Linked files</a></li>
         </ul>
         <div class="tab-content">
@@ -224,70 +224,32 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div>*@
                     <div class="row rowbox proposal-row">
                         <div class="col-md-12">
                             <div class="box box-primary">
-                                <div class="box-header">
-                                    <h3 class="box-title">
-                                        Bank entries <span class="badge">6</span>
-                                    </h3>
-                                </div>
+                               
                                 <div class="box-body">
                                     <div class="table-responsive bank-table-wrapper">
-                                        <table id="dtdata" class="table-blue table check-table table-bordered table-striped">
+                                        <table id="entries" class="table-blue table check-table table-bordered table-striped">
                                             <thead>
                                                 <tr>
-                                                    <th>Ref.</th>
+                                                    <th>Due Date</th>
                                                     <th>Description</th>
-                                                    <th>Oper. Date</th>
-                                                    <th>Value date</th>
-                                                    <th>Type</th>
-                                                    <th>Number</th>
-                                                    <th>Third-party/User</th>
-                                                    <th>Bank account</th>
+                                                    <th>Third Party</th>
                                                     <th>Debit</th>
                                                     <th>Credit</th>
                                                     <th>Balance</th>
-                                                    <th>Account statement</th>
-                                                    <th>&nbsp;</th>
                                                 </tr>
                                             </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td><span class="ws_nowrap"><i class="fas fa-receipt"></i>- 13</span></td>
-                                                    <td><span class="ws_nowrap"><i class="fas fa-money-check-alt"></i>Vendor payment</span></td>
-                                                    <td>08/09/2021</td>
-                                                    <td>08/09/2021</td>
-                                                    <td>Credit card</td>
-                                                    <td>&nbsp;</td>
-                                                    <td>Hangzhou Pinhang Home Textile Co.,Ltd (Home Tex)</td>
-                                                    <td>#101</td>
-                                                    <td>54,434.14</td>
-                                                    <td>&nbsp;</td>
-                                                    <td>-6,684.14</td>
-                                                    <td>&nbsp;</td>
-                                                    <td>
-                                                        <span class="ws_nowrap">
-                                                            <a href="#">
-                                                                <i class="fas fa-pencil-alt"></i>
-                                                            </a>
-                                                            <a href="#">
-                                                                <i class="fas fa-trash marginleftonly"></i>
-                                                            </a>
-                                                        </span>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
+                                           
                                         </table>
                                     </div>
                                 </div>
-                                <div class="box-footer text-right">
-                                    <button class="btn btn-danger">Modify</button>
-                                </div>
+                                
                             </div>
                         </div>
-                    </div>*@
+                    </div>
             </div>
             <div class="tab-pane" id="tab_3">
                 @*<div class="box box-primary">
@@ -410,7 +372,7 @@
                                     <label class="control-label">Attached files and documents</label>
                                     
                                     <div class="table-responsive bank-table-wrapper">
-                                        <table id="VendorLinkedFiles" class="inventory-table table-blue table check-table table-bordered table-striped">
+                                        <table id="LinkedFiles" class="inventory-table table-blue table check-table table-bordered table-striped">
                                             <thead>
                                                 <tr>
                                                     <th>Document Name</th>
@@ -535,8 +497,8 @@
                         $("#txtbankaddress").val(d[0].bank_address);
                         $("#txtaccountowner").val(d[0].owner_name);
                         $("#txtowneraddress").val(d[0].owner_address);
-                        $("#ddlaccounting").val(d[0].accounting_number);
-                        $("#ddljournal").val(d[0].fk_accountancy_journal);
+                        $("#ddlaccounting").val(d[0].accounting_number).trigger('change');
+                        $("#ddljournal").val(d[0].fk_accountancy_journal).trigger('change');
                         $("#txtcurrency").val(d[0].currency_code);
 
                         BankLinkedFiles();

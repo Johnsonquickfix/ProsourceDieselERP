@@ -172,11 +172,14 @@ namespace LaylaERP.BAL
                             + " and cast(pwr.tran_date as date) <= cast('" + todate.ToString("yyyy-MM-dd") + "' as date) "
                             + " where p.post_type in ('product', 'product_variation') and p.post_status != 'draft' " + strWhr
                             + " group by p.id order by p_id,id;";
-                strSql += "select ref,pwr.product_id,coalesce(sum(case pwr.flag when 'R' then quantity when 'I' then -quantity else 0 end),0) stock "
-                            + " from product_stock_register pwr inner"
-                            + " join wp_warehouse wr on wr.rowid = pwr.warehouse_id"
-                            + " where cast(pwr.tran_date as date) <= cast('" + todate.ToString("yyyy-MM-dd") + "' as date)"
-                            + " group by pwr.warehouse_id,pwr.product_id ";
+                strSql += " select pwr.warehouse_id,ref,pwr.product_id,coalesce(sum(case when pwr.flag = 'R' and pwr.tran_type not in ('DM','ST') then quantity else 0 end),0) stock,"
+                            + " (select coalesce(sum(case when pwr_o.flag = 'R' then pwr_o.quantity else -pwr_o.quantity end),0) from product_stock_register pwr_o where pwr_o.product_id = pwr.product_id and pwr_o.flag != 'O' and cast(pwr_o.tran_date as date) < cast('" + fromdate.ToString("yyyy-MM-dd") + "' as date)) op_stock,"
+                            + " coalesce(sum(case when pwr.flag = 'O' then quantity else 0 end),0) UnitsinPO,"
+                            + " coalesce(sum(case when pwr.flag = 'I' and pwr.tran_type not in ('DM', 'ST') then quantity else 0 end),0) SaleUnits,"
+                            + " coalesce(sum(case when pwr.flag = 'I' and pwr.tran_type = 'DM' then quantity else 0 end),0) Damage"
+                            + " from product_stock_register pwr inner join wp_warehouse wr on wr.rowid = pwr.warehouse_id"
+                            + " where cast(pwr.tran_date as date) >= cast('" + fromdate.ToString("yyyy-MM-dd") + "' as date) and cast(pwr.tran_date as date) <= cast('" + todate.ToString("yyyy-MM-dd") + "' as date)"
+                            + " group by pwr.warehouse_id,pwr.product_id";
 
                 ds = SQLHelper.ExecuteDataSet(strSql);
                 ds.Tables[0].TableName = "item"; ds.Tables[1].TableName = "details";
@@ -187,7 +190,7 @@ namespace LaylaERP.BAL
             }
             return ds;
         }
-        public static DataTable GetWarehouseStock(string product_id, DateTime todate)
+        public static DataTable GetWarehouseStock(string product_id, DateTime fromdate, DateTime todate)
         {
             DataTable dt = new DataTable();
             try
@@ -197,8 +200,14 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@product_id", product_id)
                 };
                 //string strSql = "select ref,coalesce(sum(case when pwr.flag = 'R' then quantity else -quantity end),0) stock from product_stock_register pwr inner join wp_warehouse wr on wr.rowid = pwr.warehouse_id where product_id = @product_id group by pwr.warehouse_id";
-                string strSql = "select ref,coalesce(sum(case pwr.flag when 'R' then quantity when 'I' then -quantity else 0 end),0) stock from product_stock_register pwr inner join wp_warehouse wr on wr.rowid = pwr.warehouse_id where product_id = @product_id and cast(pwr.tran_date as date) <= cast('" + todate.ToString("yyyy-MM-dd") + "' as date) group by pwr.warehouse_id";
-
+                string strSql = "select pwr.warehouse_id,ref,pwr.product_id,coalesce(sum(case when pwr.flag = 'R' and pwr.tran_type not in ('DM','ST') then quantity else 0 end),0) stock,"
+                            + " (select coalesce(sum(case when pwr_o.flag = 'R' then pwr_o.quantity else -pwr_o.quantity end),0) from product_stock_register pwr_o where pwr_o.product_id = pwr.product_id and pwr_o.flag != 'O' and cast(pwr_o.tran_date as date) < cast('" + fromdate.ToString("yyyy-MM-dd") + "' as date)) op_stock,"
+                            + " coalesce(sum(case when pwr.flag = 'O' then quantity else 0 end),0) UnitsinPO,"
+                            + " coalesce(sum(case when pwr.flag = 'I' and pwr.tran_type not in ('DM', 'ST') then quantity else 0 end),0) SaleUnits,"
+                            + " coalesce(sum(case when pwr.flag = 'I' and pwr.tran_type = 'DM' then quantity else 0 end),0) Damage"
+                            + " from product_stock_register pwr inner join wp_warehouse wr on wr.rowid = pwr.warehouse_id"
+                            + " where pwr.product_id = @product_id and cast(pwr.tran_date as date) >= cast('" + fromdate.ToString("yyyy-MM-dd") + "' as date) and cast(pwr.tran_date as date) <= cast('" + todate.ToString("yyyy-MM-dd") + "' as date)"
+                            + " group by pwr.warehouse_id,pwr.product_id";
                 dt = SQLHelper.ExecuteDataTable(strSql, parameters);
             }
             catch (Exception ex)

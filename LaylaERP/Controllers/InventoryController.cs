@@ -107,10 +107,12 @@ namespace LaylaERP.Controllers
             string result = string.Empty;
             try
             {
-                DateTime todate = DateTime.Now;
+                DateTime fromdate = DateTime.Now, todate = DateTime.Now;
                 if (!string.IsNullOrEmpty(model.strValue2))
-                    todate = Convert.ToDateTime(model.strValue2);
-                DataTable dt = InventoryRepository.GetWarehouseStock(model.strValue1, todate);
+                    fromdate = Convert.ToDateTime(model.strValue2);
+                if (!string.IsNullOrEmpty(model.strValue3))
+                    todate = Convert.ToDateTime(model.strValue3);
+                DataTable dt = InventoryRepository.GetWarehouseStock(model.strValue1, fromdate, todate);
                 result = JsonConvert.SerializeObject(dt, Formatting.Indented);
             }
             catch { }

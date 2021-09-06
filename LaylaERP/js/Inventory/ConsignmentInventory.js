@@ -29,7 +29,6 @@
     $('#dtdata tbody').on('click', '.details-control', function () {
         var tr = $(this).closest('tr');
         var row = $('#dtdata').DataTable().row(tr);
-
         if (row.child.isShown()) {
             // This row is already open - close it
             tr.find('.details-control').empty().append('<i class="glyphicon glyphicon-plus-sign"></i>');
@@ -43,7 +42,7 @@
         }
     });
 })
-
+function isNullAndUndef(variable) { return (variable !== null && variable !== undefined); }
 function getProducts() {
     $.ajax({
         url: "/Inventory/GetProductList",
@@ -140,16 +139,17 @@ function ProductStockGrid() {
 function format(d) {
     console.log(d);
     let dfa = $('#txtDate').val().split('-');
+    let sd = dfa[0].split('/'); sd = sd[1] + '/' + sd[0] + '/' + sd[2];
     let ed = dfa[1].split('/'); ed = ed[1] + '/' + ed[0] + '/' + ed[2];
 
-    let option = { strValue1: d.id, strValue2: ed }, wrHTML = '<table class="inventory-table table-blue table check-table table-bordered table-striped dataTable no-footer"><tr><th>Warehouse</th><th>Stock</th></tr>';
+    let option = { strValue1: d.id, strValue2: sd, strValue3: ed }, wrHTML = '<table class="inventory-table table-blue table check-table table-bordered table-striped dataTable no-footer"><thead><tr><th>Warehouse</th><th style="width:8%">OP Stock</th><th style="width:7%">Units In Stock</th><th style="width:7%">Units in POs</th><th style="width:7%">Sale Units</th><th style="width:7%">Damage Units</th><th style="width:7%">Available Units</th></thead></tr>';
     $.ajax({
         url: '/Inventory/GetStockByWarehouse', type: 'post', dataType: 'json', contentType: "application/json; charset=utf-8", data: JSON.stringify(option),
         success: function (result) {
-            result = JSON.parse(result); console.log(result);
-            for (var i = 0; i < result.length; i++) {
-                wrHTML += '<tr><td>' + result[i].ref + '</td><td>' + result[i].stock + '</td></tr>';
-            }
+            result = JSON.parse(result); 
+            $(result).each(function (index, row) {
+                wrHTML += '<tr><td>' + row.ref + '</td><td>' + row.op_stock.toFixed(0) + '</td><td>' + row.stock.toFixed(0) + '</td><td>' + row.UnitsinPO.toFixed(0) + '</td><td>' + row.SaleUnits.toFixed(0) + '</td><td>' + row.Damage.toFixed(0) + '</td><td>' + (row.op_stock + row.stock + row.UnitsinPO - row.SaleUnits - row.Damage).toFixed(0) + '</td></tr>';
+            });
         },
         error: function (xhr, status, err) { alert(err); },
         complete: function () { }, async: false
@@ -165,30 +165,30 @@ function exportTableToCSV(filename) {
     let colDelim = (filename.indexOf("xls") != -1) ? '\t' : ',';
     let rowDelim = '\r\n';
 
-    let csv = 'id' + colDelim + 'Product Type' + colDelim + 'SKU' + colDelim + 'Product Name' + colDelim + 'OP Stock' + colDelim + 'Units In Stock' + colDelim + 'Units in POs' + colDelim + 'Sale Units' + colDelim + 'Damage Units' + colDelim + 'Available Units' + rowDelim;
+    let csv = 'id' + colDelim + 'Category' + colDelim + 'SKU' + colDelim + 'Product Name' + colDelim + 'OP Stock' + colDelim + 'Units In Stock' + colDelim + 'Units in POs' + colDelim + 'Sale Units' + colDelim + 'Damage Units' + colDelim + 'Available Units' + rowDelim;
 
     let dfa = $('#txtDate').val().split('-');
     let sd = dfa[0].split('/'); sd = sd[1] + '/' + sd[0] + '/' + sd[2];
     let ed = dfa[1].split('/'); ed = ed[1] + '/' + ed[0] + '/' + ed[2];
     let pid = parseInt($("#ddlProduct").val()) || 0, ctid = parseInt($("#ddlCategory").val()) || 0;
     let obj = { strValue1: $("#txtsku").val().trim(), strValue2: (ctid > 0 ? ctid : ''), strValue3: (pid > 0 ? pid : ''), strValue4: sd, strValue5: ed };
-    console.log(dfa,);
+    //console.log(dfa);
     $.ajax({
         url: "/Inventory/ExportProductStock", data: obj,
         type: "Get", beforeSend: function () { $("#loader").show(); },
-        success: function (result) {
+        success: function (result) {            
             result = JSON.parse(result);
             $(result['item']).each(function (index, data) {
                 //Parent Row
                 if (data.post_parent > 0)
-                    csv += '-  #' + data.id + colDelim + data.post_type + colDelim + data.sku + colDelim + data.post_title.replace(/\,/g, '') + colDelim + data.op_stock.toFixed(0) + colDelim + data.stock.toFixed(0) + colDelim + data.UnitsinPO.toFixed(0) + colDelim + data.SaleUnits.toFixed(0) + colDelim + data.Damage.toFixed(0) + colDelim + (data.op_stock + data.stock + data.UnitsinPO - data.SaleUnits - data.Damage).toFixed(0) + rowDelim;
+                    csv += '-  #' + data.id + colDelim + (isNullAndUndef(data.category) ? data.category : '') + colDelim + (isNullAndUndef(data.sku) ? data.sku : '') + colDelim + data.post_title.replace(/\,/g, '') + colDelim + data.op_stock.toFixed(0) + colDelim + data.stock.toFixed(0) + colDelim + data.UnitsinPO.toFixed(0) + colDelim + data.SaleUnits.toFixed(0) + colDelim + data.Damage.toFixed(0) + colDelim + (data.op_stock + data.stock + data.UnitsinPO - data.SaleUnits - data.Damage).toFixed(0) + rowDelim;
                 else
-                    csv += '#' + data.id + colDelim + data.post_type + colDelim + data.sku + colDelim + data.post_title.replace(/\,/g, '') + colDelim + data.op_stock.toFixed(0) + colDelim + data.stock.toFixed(0) + colDelim + data.UnitsinPO.toFixed(0) + colDelim + data.SaleUnits.toFixed(0) + colDelim + data.Damage.toFixed(0) + colDelim + (data.op_stock + data.stock + data.UnitsinPO - data.SaleUnits - data.Damage).toFixed(0) + rowDelim;
+                    csv += '#' + data.id + colDelim + (isNullAndUndef(data.category) ? data.category : '') + colDelim + (isNullAndUndef(data.sku) ? data.sku : '') + colDelim + data.post_title.replace(/\,/g, '') + colDelim + data.op_stock.toFixed(0) + colDelim + data.stock.toFixed(0) + colDelim + data.UnitsinPO.toFixed(0) + colDelim + data.SaleUnits.toFixed(0) + colDelim + data.Damage.toFixed(0) + colDelim + (data.op_stock + data.stock + data.UnitsinPO - data.SaleUnits - data.Damage).toFixed(0) + rowDelim;
                 //Child Row                
                 let res = result['details'].filter(element => element.product_id == data.id);
-                if (res.length > 0) csv += '' + colDelim + '' + colDelim + '' + colDelim + 'Warehouse' + colDelim + 'Stock' + colDelim + rowDelim;
+                if (res.length > 0) csv += '' + colDelim + '' + colDelim + '' + colDelim + 'Warehouse' + colDelim + 'OP Stock' + colDelim + 'Units In Stock' + colDelim + 'Units in POs' + colDelim + 'Sale Units' + colDelim + 'Damage Units' + colDelim + 'Available Units' + rowDelim;
                 $(res).each(function (index, wrhRow) {
-                    csv += '' + colDelim + '' + colDelim + '' + colDelim + wrhRow.ref + colDelim + wrhRow.stock.toFixed(0) + colDelim + rowDelim;
+                    csv += '' + colDelim + '' + colDelim + '' + colDelim + wrhRow.ref + colDelim + wrhRow.op_stock.toFixed(0) + colDelim + wrhRow.stock.toFixed(0) + colDelim + wrhRow.UnitsinPO.toFixed(0) + colDelim + wrhRow.SaleUnits.toFixed(0) + colDelim + wrhRow.Damage.toFixed(0) + colDelim + (wrhRow.op_stock + wrhRow.stock + wrhRow.UnitsinPO - wrhRow.SaleUnits - wrhRow.Damage).toFixed(0) + colDelim + rowDelim;
                 });
             });
             download_csv(csv, filename);

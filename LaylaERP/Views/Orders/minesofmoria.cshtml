@@ -43,14 +43,14 @@
             <div class="radtype_span">
                 <h5 class="payment-history"></h5>
             </div>
-            <div class="box-tools pull-right"></div>
+            <div class="box-tools pull-right box-tools-header"></div>
         </div>
         <div class="box-body box-sections">
             <div class="row">
                 <div class="col-md-4">
                     <h2 class="sm-heading">General</h2>
                     <div class="form-group">
-                        <label>Create Date</label>
+                        <label data-toggle="tooltip" title="Order created date">Create Date</label>
                         <div class="input-group">
                             <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                             <input id="txtLogDate" data-auto-update-input="false" readonly="readonly" disabled class="form-control">
@@ -69,11 +69,11 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Customer</label>
+                        <label data-toggle="tooltip" title="Select Customer for creating Order.">Customer</label>
                         <div class="input-group">
                             <select class="form-control select2 " id="ddlUser" placeholder="Select Customer Email" data-width="100%">
                             </select>
-                            <span class="input-group-btn"><button type="button" id="btnSearch" class="btn btn-danger btn-flat"><i class="fa fa-search"></i> Search</button></span>
+                            <span class="input-group-btn"><button type="button" id="btnSearch" class="btn btn-danger btn-flat" data-toggle="tooltip" title="Click search customers for creating Order."><i class="fa fa-search"></i> Search</button></span>
                         </div>
                     </div>
                 </div>
@@ -203,6 +203,12 @@
     </div>
 
     <div class="box box-primary">
+        <div class="box-header with-border">
+            <h3 class="box-title">Category Wise Products</h3>
+            <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+            </div>
+        </div>
         <div class="box-body">
             <div class="product-hub">
                 <div class="hub-pro-container">
@@ -298,6 +304,9 @@
             <div class="box box-primary direct-chat">
                 <div class="box-header with-border">
                     <h3 class="box-title">Order notes</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body" style="">
@@ -329,7 +338,7 @@
             <div class="box box-primary">
                 <div class="box-header with-border">
                     <h3 class="box-title">Coupon(s)</h3>
-                    <button type="button" id="btnApplyCoupon" class="btn btn-danger pull-right billinfo">Apply coupon</button>
+                    <button type="button" id="btnApplyCoupon" class="btn btn-danger pull-right billinfo" data-toggle="tooltip" title="Add coupon">Apply coupon</button>
                 </div>
                 <div class="box-body no-padding">
                     <ul class="nav nav-pills nav-stacked" id="billCoupon">
@@ -340,6 +349,9 @@
             <div class="box box-primary">
                 <div class="box-header with-border">
                     <h3 class="box-title">Totals(s)</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
                 </div>
                 <div class="box-body text-right">
                     <div id="order_final_total">
@@ -408,7 +420,7 @@
                 <!-- /.box-body -->
                 <div class="box-footer text-right footer-finalbutton">
                     @*<button type="button" id="btnpay" class="btn btn-primary"> Payment</button>*@
-                    <button type="button" id="btnCheckout" class="btn btn-danger billinfo"> Checkout</button>
+                    <button type="button" id="btnCheckout" class="btn btn-danger billinfo" data-toggle="tooltip" title="Save and Checkout Order"> Checkout</button>
                 </div>
             </div>
         </div>

@@ -1501,7 +1501,10 @@ function freeQtyUpdate() {
                 zQty += parseFloat($(prow).find("[name=txt_ItemQty]").val()) * parseFloat($(prow).data('freeitems')[pid]);
             }
         });
-        $(row).find("[name=txt_ItemQty]").val(zQty.toFixed(0));
+        if (zQty <= 0)
+            $('#tritemId_' + $(row).data('id')).remove();
+        else
+            $(row).find("[name=txt_ItemQty]").val(zQty.toFixed(0));
     });
 }
 function calculateDiscountAcount() {

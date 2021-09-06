@@ -1947,7 +1947,7 @@ function updatePayment(taskUid) {
 function PaypalPayment(ppemail) {
     //swal('Alert!', 'Working....', "success").then((result) => { return false; });    
     let oid = parseInt($('#hfOrderNo').val()) || 0, pp_no = 'WC-' + new Date().getTime();
-    let postMetaxml = [{ post_id: oid, meta_key: '_payment_method', meta_value: 'ppec_paypal' }, { post_id: oid, meta_key: '_payment_method_title', meta_value: 'PayPal' }, { post_id: oid, meta_key: '_paypal_invoice_id', meta_value: pp_no }];
+    let postMetaxml = [{ post_id: oid, meta_key: '_payment_method', meta_value: 'ppec_paypal' }, { post_id: oid, meta_key: '_payment_method_title', meta_value: 'PayPal' }, { post_id: oid, meta_key: '_paypal_invoice_id', meta_value: pp_no }, { post_id: oid, meta_key: '_paypal_status', meta_value: 'DRAFT' }];
     $('#btnPlaceOrder').prop("disabled", true);
     var opt = { OrderPostMeta: postMetaxml };
     ajaxFunction('/Orders/GetPayPalToken', opt, beforeSendFun, function (result) { CreatePaypalInvoice(oid, pp_no, ppemail, result.message); }, function () { $('#btnPlaceOrder').prop("disabled", false); }, function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); }, false);
@@ -2034,7 +2034,7 @@ function CreatePaypalInvoice(oid, pp_no, pp_email, access_token) {
 }
 function SendPaypalInvoice(oid, access_token, sendURL) {
     let id = sendURL.split('/');
-    let _postMeta = [{ post_id: oid, meta_key: '_paypal_id', meta_value: id[id.length - 2] }];
+    let _postMeta = [{ post_id: oid, meta_key: '_paypal_id', meta_value: id[id.length - 2] }, { post_id: oid, meta_key: '_paypal_status', meta_value: 'SENT' }];
     console.log(oid, access_token, sendURL);
     $.ajax({
         type: "POST", url: sendURL, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify({ send_to_recipient: true, send_to_invoicer: true }),

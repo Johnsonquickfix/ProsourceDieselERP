@@ -707,11 +707,12 @@ function bindbuyingprice() {
         type: "POST", url: '/Product/GetBuyingdata', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
         beforeSend: function () { $("#loader1").show(); },
         success: function (data) {
+            console.log('g', data);
             var itemsDetailsxml = [];
             for (var i = 0; i < data.length; i++) {
                 // let row_key = data[i].ID ;                      
                 itemsDetailsxml.push({
-                    PKey: data[i].ID, product_id: data[i].ID, product_name: data[i].name, salestax: data[i].salestax, purchase_price: data[i].purchase_price, cost_price: data[i].cost_price, date_inc: data[i].date_inc, discount: data[i].discount, minpurchasequantity: data[i].minpurchasequantity, taglotserialno: data[i].taglotserialno, shipping_price: data[i].shipping_price
+                    PKey: data[i].ID, product_id: data[i].ID, product_name: data[i].name, salestax: data[i].salestax, purchase_price: data[i].purchase_price, cost_price: data[i].cost_price, date_inc: data[i].date_inc, discount: data[i].discount, minpurchasequantity: data[i].minpurchasequantity, taglotserialno: data[i].taglotserialno, shipping_price: data[i].shipping_price, StatusActive: data[i].Status
                 });
 
             }
@@ -725,7 +726,7 @@ function bindbuyingprice() {
 }
 
 function bindbuying(data) {
-   // console.log('g', data);
+  
     var layoutHtml = '';
     if (data.length > 0) {
         for (var i = 0; i < data.length; i++) {
@@ -740,8 +741,13 @@ function bindbuying(data) {
                 layoutHtml += '<td>' + '$' + data[i].cost_price + '</td>';
                 layoutHtml += '<td>' + data[i].discount + '%' + '</td>';
                 layoutHtml += '<td>' + data[i].date_inc + '</td>';
-                layoutHtml += '<td><a href="javascript:void(0);" class="editbutton" onClick="EditUser(' + data[i].PKey + ')"><i class="glyphicon glyphicon-pencil"></i></a></td>';
-                layoutHtml += '<td><a href="javascript:void(0);" class="editbutton" onClick="DeleteUser(' + data[i].PKey + ')"><i class="glyphicon glyphicon-trash"></i></a></td>';
+                layoutHtml += '<td>' + data[i].StatusActive + '</td>';              
+                layoutHtml += '<td><a href="javascript:void(0);" title="Click here to edit" data-toggle="tooltip" class="editbutton" onClick="EditUser(' + data[i].PKey + ')"><i class="glyphicon glyphicon-pencil"></i></a></td>';
+                if (data[i].StatusActive == "InActive")
+                    layoutHtml += '<td><a href="javascript:void(0);" title="Click here to Active" data-toggle="tooltip" class="editbutton" onClick="ActiveUser(' + data[i].PKey + ')"><i class="glyphicon glyphicon-eye-open"></i></a></td>';
+                else
+                    layoutHtml += '<td><a href="javascript:void(0);" title="Click here In-Active" data-toggle="tooltip" class="editbutton" onClick="DeleteUser(' + data[i].PKey + ')"><i class="glyphicon glyphicon-trash"></i></a></td>';
+                    
                 layoutHtml += '</tr>';
             }
         }
@@ -762,6 +768,7 @@ function bindbuying(data) {
         layoutHtml += '<th>Cost Price</th>';
         layoutHtml += '<th>Discount</th>';   
         layoutHtml += '<th>Date</th>';
+        layoutHtml += '<th>Status</th>';
         layoutHtml += '<th>Action</th>';
         layoutHtml += '<th>Delete</th>';
         layoutHtml += '</tr>';
@@ -843,6 +850,43 @@ function DeleteUser(id) {
   
 }
 
+function ActiveUser(id) {
+    var ids = id;
+    var obj = { ID: ids }
+
+    $.ajax({
+        url: '/Product/ActiveuyingPrice/', dataType: 'json', type: 'Post',
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(obj),
+        dataType: "json",
+        beforeSend: function () {
+            $("#loader1").show();
+        },
+        success: function (data) {
+            if (data.status == true) {
+                if (data.url == "Manage") {
+                    bindbuyingprice();
+                    swal('Alert!', data.message, 'success');
+                }
+                else {
+                    swal('Alert!', data.message, 'success');
+                }
+
+            }
+            else {
+                swal('Alert!', data.message, 'error')
+            }
+        },
+        complete: function () {
+            $("#loader1").hide();
+        },
+        error: function (error) {
+            swal('Error!', 'something went wrong', 'error');
+        },
+    })
+
+}
+
 
 $(document).on('click', "#btnWarehouse", function () {
     AddWarehouse();
@@ -922,7 +966,7 @@ function bindwarehouse() {
             for (var i = 0; i < data.length; i++) {
                 // let row_key = data[i].ID ;                      
                 itemsDetailsxml.push({
-                    PKey: data[i].ID, product_id: data[i].ID, product_name: data[i].product_name, product_label: data[i].product_label
+                    PKey: data[i].ID, product_id: data[i].ID, product_name: data[i].product_name, product_label: data[i].product_label, StatusActive: data[i].Stock
                 });
 
             }
@@ -944,7 +988,11 @@ function bindwarehouseDetails(data) {
                 layoutHtml += '<tr id="tritemId_' + data[i].PKey + '" data-key="' + data[i].PKey + '">';          
                 layoutHtml += '<td class="text-left">' + data[i].product_label + '</td>';
                 layoutHtml += '<td class="text-left">' + data[i].product_name + '</td>';
-                layoutHtml += '<td class="text-right"><a href="javascript:void(0);" class="editbutton" onClick="Deletewarehouser(' + data[i].PKey + ')"><i class="glyphicon glyphicon-trash"></i></a></td>';
+                layoutHtml += '<td>' + data[i].StatusActive + '</td>';
+                if (data[i].StatusActive == "InActive")
+                    layoutHtml += '<td><a href="javascript:void(0);" title="Click here to Active" data-toggle="tooltip" class="editbutton" onClick="Activewarehouser(' + data[i].PKey + ')"><i class="glyphicon glyphicon-eye-open"></i></a></td>';
+                else
+                    layoutHtml += '<td><a href="javascript:void(0);" title="Click here In-Active" data-toggle="tooltip" class="editbutton" onClick="Deletewarehouser(' + data[i].PKey + ')"><i class="glyphicon glyphicon-trash"></i></a></td>';
                 layoutHtml += '</tr>';
             }
         }
@@ -958,6 +1006,7 @@ function bindwarehouseDetails(data) {
         layoutHtml += '<tr>';
         layoutHtml += '<th class="text-left">Warehouse</th>';
         layoutHtml += '<th class="text-left">Product</th>';
+        layoutHtml += '<th>Status</th>';
         layoutHtml += '<th class="text-right">Delete</th>';
         layoutHtml += '</tr>';
         layoutHtml += '</thead><tbody id="warehouse_services"></tbody>';
@@ -1003,6 +1052,43 @@ function Deletewarehouser(id) {
         success: function (data) {
             if (data.status == true) {
                 if (data.url == "Manage") {           
+                    bindwarehouse();
+                    swal('Alert!', data.message, 'success');
+                }
+                else {
+                    swal('Alert!', data.message, 'success');
+                }
+
+            }
+            else {
+                swal('Alert!', data.message, 'error')
+            }
+        },
+        complete: function () {
+            $("#loader1").hide();
+        },
+        error: function (error) {
+            swal('Error!', 'something went wrong', 'error');
+        },
+    })
+
+}
+
+function Activewarehouser(id) {
+    var ids = id;
+    var obj = { ID: ids }
+
+    $.ajax({
+        url: '/Product/ActiveProductwarehouse/', dataType: 'json', type: 'Post',
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(obj),
+        dataType: "json",
+        beforeSend: function () {
+            $("#loader1").show();
+        },
+        success: function (data) {
+            if (data.status == true) {
+                if (data.url == "Manage") {
                     bindwarehouse();
                     swal('Alert!', data.message, 'success');
                 }

@@ -150,7 +150,7 @@ function NewOrderNo() {
     );
     let option = { OrderPostMeta: postMetaxml };
     if (cus_id > 0) {
-        //ajaxFunction('/Orders/GetNewOrderNo', option, beforeSendFun, function (result) { $('#hfOrderNo').val(result.message); $('#lblOrderNo').text('Order #' + result.message + ' detail '); }, completeFun, errorFun, false);
+        ajaxFunction('/Orders/GetNewOrderNo', option, beforeSendFun, function (result) { $('#hfOrderNo').val(result.message); $('#lblOrderNo').text('Order #' + result.message + ' detail '); }, completeFun, errorFun, false);
     }
 }
 ///Find Address of Customer

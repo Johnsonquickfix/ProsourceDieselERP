@@ -1773,15 +1773,28 @@ namespace LaylaERP.BAL
         }
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Product Categories~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        //public static DataSet GetParentCategory(string term_taxonomy_id)
+        //{
+        //    DataSet DS = new DataSet();
+        //    try
+        //    {
+        //        string strSQl = "Select tx.term_taxonomy_id ID, if(tx.parent=0,t.name,concat('- ',t.name)) name,tx.parent  " +
+        //            "from wp_terms t left join wp_term_taxonomy tx on tx.term_id = t.term_id left join wp_termmeta tm_a on tm_a.term_id = t.term_id and tm_a.meta_key = 'Is_Active' " +
+        //            "where taxonomy = 'product_cat' and coalesce(tm_a.meta_value,'1') = '1' and tx.term_taxonomy_id !='"+term_taxonomy_id+"' and 1 = 1 order by CASE WHEN tx.parent = 0 THEN tx.term_taxonomy_id ELSE tx.parent END DESC, CASE WHEN tx.parent = tx.term_taxonomy_id " +
+        //            "THEN tx.parent ELSE tx.parent END ASC; ";
+        //        DS = SQLHelper.ExecuteDataSet(strSQl);
+        //    }
+        //    catch (Exception ex)
+        //    { throw ex; }
+        //    return DS;
+        //}
+
         public static DataSet GetParentCategory(string term_taxonomy_id)
         {
             DataSet DS = new DataSet();
             try
             {
-                string strSQl = "Select tx.term_taxonomy_id ID, if(tx.parent=0,t.name,concat('- ',t.name)) name,tx.parent  " +
-                    "from wp_terms t left join wp_term_taxonomy tx on tx.term_id = t.term_id left join wp_termmeta tm_a on tm_a.term_id = t.term_id and tm_a.meta_key = 'Is_Active' " +
-                    "where taxonomy = 'product_cat' and coalesce(tm_a.meta_value,'1') = '1' and tx.term_taxonomy_id !='"+term_taxonomy_id+"' and 1 = 1 order by CASE WHEN tx.parent = 0 THEN tx.term_taxonomy_id ELSE tx.parent END DESC, CASE WHEN tx.parent = tx.term_taxonomy_id " +
-                    "THEN tx.parent ELSE tx.parent END ASC; ";
+                string strSQl = "sp_ProductCategory";
                 DS = SQLHelper.ExecuteDataSet(strSQl);
             }
             catch (Exception ex)
@@ -1855,6 +1868,44 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
+        //public static DataTable ProductCategoryList(long id, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        //{
+        //    DataTable dt = new DataTable();
+        //    totalrows = 0;
+        //    try
+        //    {
+        //        string strWhr = string.Empty;
+
+        //        string strSql = "Select ifnull(p.post_title,'default.png') ImagePath,  tm.meta_key, tx.term_id ID,if(tx.parent=0,t.name,concat('# ',t.name)) name, " +
+        //            "t.slug,tx.taxonomy,tx.description,tx.parent, (Select Count(*) from wp_term_relationships where term_taxonomy_id=t.term_id) count,tm.meta_value thumbnailId, coalesce(tm_a.meta_value, '1') Active " +
+        //            "from wp_terms t left join wp_term_taxonomy tx on tx.term_id = t.term_id left join wp_termmeta tm on t.term_id = tm.term_id and tm.meta_key = 'thumbnail_id' left join wp_termmeta tm_a on tm_a.term_id = t.term_id and tm_a.meta_key = 'Is_Active' " +
+        //            "left join wp_posts p on tm.meta_value = p.ID where taxonomy = 'product_cat' and coalesce(tm_a.meta_value,'1') = '1' and 1 = 1  ";
+        //        if (!string.IsNullOrEmpty(searchid))
+        //        {
+        //            strWhr += " and (t.name like '%" + searchid + "%')";
+        //        }
+        //        if (userstatus != null)
+        //        {
+        //            strWhr += " and (v.VendorStatus='" + userstatus + "') ";
+        //        }
+        //        //strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
+        //        strSql += strWhr + string.Format(" order by {0} LIMIT {1}, {2}", "CASE WHEN tx.parent = 0 THEN tx.term_taxonomy_id ELSE tx.parent END DESC, CASE WHEN tx.parent = tx.term_taxonomy_id THEN tx.parent ELSE tx.parent END ASC ", pageno.ToString(), pagesize.ToString());
+
+        //        strSql += "; SELECT ceil(Count(tx.term_id)/" + pagesize.ToString() + ") TotalPage,Count(tx.term_id) TotalRecord  from wp_terms t left join wp_term_taxonomy tx on tx.term_id = t.term_id left join wp_termmeta tm on t.term_id = tm.term_id and tm.meta_key = 'thumbnail_id' left join wp_termmeta tm_a on tm_a.term_id = t.term_id and tm_a.meta_key = 'Is_Active' " +
+        //            "left join wp_posts p on tm.meta_value = p.ID where taxonomy = 'product_cat' and coalesce(tm_a.meta_value,'1') = '1' and 1 = 1   " + strWhr.ToString();
+
+        //        DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+        //        dt = ds.Tables[0];
+        //        if (ds.Tables[1].Rows.Count > 0)
+        //            totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw ex;
+        //    }
+        //    return dt;
+        //}
+
         public static DataTable ProductCategoryList(long id, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
         {
             DataTable dt = new DataTable();
@@ -1863,25 +1914,16 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "Select ifnull(p.post_title,'default.png') ImagePath,  tm.meta_key, tx.term_id ID,if(tx.parent=0,t.name,concat('# ',t.name)) name, " +
-                    "t.slug,tx.taxonomy,tx.description,tx.parent, (Select Count(*) from wp_term_relationships where term_taxonomy_id=t.term_id) count,tm.meta_value thumbnailId, coalesce(tm_a.meta_value, '1') Active " +
-                    "from wp_terms t left join wp_term_taxonomy tx on tx.term_id = t.term_id left join wp_termmeta tm on t.term_id = tm.term_id and tm.meta_key = 'thumbnail_id' left join wp_termmeta tm_a on tm_a.term_id = t.term_id and tm_a.meta_key = 'Is_Active' " +
-                    "left join wp_posts p on tm.meta_value = p.ID where taxonomy = 'product_cat' and coalesce(tm_a.meta_value,'1') = '1' and 1 = 1  ";
-                if (!string.IsNullOrEmpty(searchid))
-                {
-                    strWhr += " and (t.name like '%" + searchid + "%')";
-                }
-                if (userstatus != null)
-                {
-                    strWhr += " and (v.VendorStatus='" + userstatus + "') ";
-                }
-                //strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
-                strSql += strWhr + string.Format(" order by {0} LIMIT {1}, {2}", "CASE WHEN tx.parent = 0 THEN tx.term_taxonomy_id ELSE tx.parent END DESC, CASE WHEN tx.parent = tx.term_taxonomy_id THEN tx.parent ELSE tx.parent END ASC ", pageno.ToString(), pagesize.ToString());
+                string strSql = "sp_ProductCategoryByPara;";
+                
+                MySqlParameter[] para =
+               {
+                    new MySqlParameter("@pagesize", pagesize.ToString()),
+                    new MySqlParameter("@pageno", pageno),
+                    new MySqlParameter("@searchid", searchid is null ? "" : searchid),
+                };
 
-                strSql += "; SELECT ceil(Count(tx.term_id)/" + pagesize.ToString() + ") TotalPage,Count(tx.term_id) TotalRecord  from wp_terms t left join wp_term_taxonomy tx on tx.term_id = t.term_id left join wp_termmeta tm on t.term_id = tm.term_id and tm.meta_key = 'thumbnail_id' left join wp_termmeta tm_a on tm_a.term_id = t.term_id and tm_a.meta_key = 'Is_Active' " +
-                    "left join wp_posts p on tm.meta_value = p.ID where taxonomy = 'product_cat' and coalesce(tm_a.meta_value,'1') = '1' and 1 = 1   " + strWhr.ToString();
-
-                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql, para);
                 dt = ds.Tables[0];
                 if (ds.Tables[1].Rows.Count > 0)
                     totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());

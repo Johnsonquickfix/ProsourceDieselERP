@@ -659,10 +659,10 @@ function AddProduct() {
     var n = dfad.lastIndexOf(",");
     var categorydata = dfad.substring(0, n)
     let date_publish = $("#txtPublishDate").val().split('/');
-    if ($("#enableStock").prop('checked') == true)
+    //if ($("#enableStock").prop('checked') == true)
         enableStock = "yes";
-    else
-        enableStock = "no";
+    //else
+        //enableStock = "no";
 
     if ($("#solidIndividually").prop('checked') == true)
         solidIndividually = "yes";

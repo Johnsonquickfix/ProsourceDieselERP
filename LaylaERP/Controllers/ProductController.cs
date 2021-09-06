@@ -622,12 +622,14 @@ namespace LaylaERP.Controllers
                 for (var i = 0; i < myarray.Length; i++)
                 {
                     ProductRepository.Add_term(Convert.ToInt32(myarray[i]), ID);
+                    ProductRepository.update_countinc(Convert.ToInt32(myarray[i]), Convert.ToInt32(ID));
 
                 }
             }
         }
         private void update_term(ProductModel model, long ID)
         {
+            update_countdes(model, ID);
             delete_term(model, ID);
             ProductRepository.Add_term(model.ProductTypeID, Convert.ToInt32(ID));
             ProductRepository.Add_Shipping(model.ShippingclassID, Convert.ToInt32(ID));
@@ -643,12 +645,31 @@ namespace LaylaERP.Controllers
                 }
                 else
                 {
+                   
                     ProductRepository.Add_term(Convert.ToInt32(myarray[i]), Convert.ToInt32(ID));
+                    ProductRepository.update_countinc(Convert.ToInt32(myarray[i]), Convert.ToInt32(ID));
                 }
             }
         }
+        private void update_countdes(ProductModel model, long ID)
+        {
+            string CommaStr = model.CategoryID;
 
-        private void delete_term(ProductModel model, long ID)
+            var myarray = CommaStr.Split(',');
+
+            for (var i = 0; i < myarray.Length; i++)
+            {
+                if (string.IsNullOrEmpty(myarray[i]) || myarray[i] == "undefined" || myarray[i] == "")
+                {
+
+                }
+                else
+                {
+                    ProductRepository.update_count(Convert.ToInt32(myarray[i]), Convert.ToInt32(ID));
+                }
+            }
+        }
+            private void delete_term(ProductModel model, long ID)
         {
             ProductRepository.Edit_term(model.ProductTypeID, Convert.ToInt32(ID));
             //ProductRepository.Edit_term(model.ShippingclassID, Convert.ToInt32(ID));

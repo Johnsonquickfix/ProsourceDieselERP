@@ -1711,6 +1711,35 @@ namespace LaylaERP.BAL
             }
         }
 
+
+        public static int update_count(int TermID, int ID)
+        {
+            int result = 0;
+            try
+            {
+                string strSql_insert = string.Empty;
+                StringBuilder strSql = new StringBuilder();               
+                strSql.Append(string.Format("update wp_term_taxonomy set count = count-1 where term_taxonomy_id = {0} ; ", TermID));
+                result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
+            }
+            catch { }
+            return result;
+        }
+
+        public static int update_countinc(int TermID, int ID)
+        {
+            int result = 0;
+            try
+            {
+                string strSql_insert = string.Empty;
+                StringBuilder strSql = new StringBuilder();
+                strSql.Append(string.Format("update wp_term_taxonomy set count = count+1 where term_taxonomy_id = {0} ; ", TermID));
+                result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
+            }
+            catch { }
+            return result;
+        }
+
         public static void Add_Shipping(int TermID, int ID)
         {
             try

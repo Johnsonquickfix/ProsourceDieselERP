@@ -164,6 +164,7 @@ namespace LaylaERP.Models
         public string discount { get; set; }
         public string date_inc { get; set; }
         public string taglotserialno { get; set; }
+        public string Status { get; set; }
 
     }
     public class ProductCategoryModel : PaggingModel

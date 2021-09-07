@@ -242,7 +242,7 @@
             List<OrderShippingModel> _list = new List<OrderShippingModel>();
             try
             {
-                _list = OrderRepository.GetProductShippingCharge(model.strValue1, model.strValue2, model.strValue2);
+                _list = OrderRepository.GetProductShippingCharge(model.strValue1, model.strValue2, model.strValue3);
             }
             catch { }
             return Json(_list, 0);

@@ -1431,14 +1431,15 @@
                 if (!string.IsNullOrEmpty(searchid))
                 {
                     strWhr += " and (p.id like '" + searchid + "%' "
+                            + " or concat(pmf.first_name,' ',pmf.last_name,' ',p.post_status) like '" + searchid + "%' "
                             //+ " OR os.num_items_sold='%" + searchid + "%' "
                             //+ " OR os.total_sales='%" + searchid + "%' "
                             //+ " OR os.customer_id='%" + searchid + "%' "
-                            + " OR p.post_status like '" + searchid + "%' "
+                            //+ " OR p.post_status like '" + searchid + "%' "
                             //+ " OR p.post_date like '%" + searchid + "%' "
-                            + " OR COALESCE(pmf.meta_value, '') like '" + searchid + "%' "
-                            + " OR COALESCE(pml.meta_value, '') like '" + searchid + "%' "
-                            + " OR replace(replace(replace(replace(pmp.meta_value, '-', ''), ' ', ''), '(', ''), ')', '') like '%" + searchid + "%'"
+                            //+ " OR COALESCE(pmf.first_name, '') like '" + searchid + "%' "
+                            //+ " OR COALESCE(pmf.last_name, '') like '" + searchid + "%' "
+                            + " OR replace(replace(replace(replace(pmf.billing_phone, '-', ''), ' ', ''), '(', ''), ')', '') like '%" + searchid + "%'"
                             + " )";
                 }
 
@@ -1448,25 +1449,35 @@
                 }
                 if (!string.IsNullOrEmpty(CustomerID))
                 {
-                    strWhr += " and os.customer_id= '" + CustomerID + "' ";
+                    strWhr += " and pmf.customer_id= '" + CustomerID + "' ";
                 }
 
-                string strSql = "SELECT p.id,os.num_items_sold,Cast(os.total_sales As DECIMAL(10, 2)) as total_sales, os.customer_id as customer_id,"
-                            + " p.post_status status, DATE_FORMAT(p.post_date, '%M %d %Y') date_created,COALESCE(pmf.meta_value, '') FirstName,COALESCE(pml.meta_value, '') LastName,"
-                            + " replace(replace(replace(replace(pmp.meta_value,'-', ''),' ',''),'(',''),')','') billing_phone,"
+                //string strSql = "SELECT p.id,os.num_items_sold,Cast(os.total_sales As DECIMAL(10, 2)) as total_sales, os.customer_id as customer_id,"
+                //            + " p.post_status status, DATE_FORMAT(p.post_date, '%M %d %Y') date_created,COALESCE(pmf.meta_value, '') FirstName,COALESCE(pml.meta_value, '') LastName,"
+                //            + " replace(replace(replace(replace(pmp.meta_value,'-', ''),' ',''),'(',''),')','') billing_phone,"
+                //            + " (SELECT sum(rpm.meta_value) FROM wp_posts rp JOIN wp_postmeta rpm ON rp.ID = rpm.post_id AND meta_key = '_order_total' WHERE rp.post_parent = p.ID AND rp.post_type = 'shop_order_refund') AS refund_total"
+                //            + " FROM wp_posts p inner join wp_wc_order_stats os on p.id = os.order_id"
+                //            + " left join wp_postmeta pmf on p.id = pmf.post_id and pmf.meta_key = '_billing_first_name'"
+                //            + " left join wp_postmeta pml on p.id = pml.post_id and pml.meta_key = '_billing_last_name'"
+                //            + " left join wp_postmeta pmp on p.id = pmp.post_id and pmp.meta_key = '_billing_phone'"
+                //            + " WHERE p.post_type = 'shop_order' " + strWhr
+                //            + " order by " + SortCol + " " + SortDir + " limit " + (pageno).ToString() + ", " + pagesize + "";
+
+                //strSql += "; SELECT sum(1) TotalRecord from wp_posts p"
+                //        + " left join wp_postmeta pmf on p.id = pmf.post_id and pmf.meta_key = '_billing_first_name'"
+                //        + " left join wp_postmeta pml on p.id = pml.post_id and pml.meta_key = '_billing_last_name'"
+                //        + " left join wp_postmeta pmp on p.id = pmp.post_id and pmp.meta_key = '_billing_phone'"
+                //        + " WHERE p.post_type = 'shop_order' " + strWhr.ToString();
+                string strSql = "SELECT p.id,p.post_status status, DATE_FORMAT(p.post_date, '%M %d %Y') date_created,os.num_items_sold,pmf.total_sales,pmf.customer_id,"
+                            + " pmf.first_name,pmf.last_name,pmf.billing_phone,pmf.payment_method,pmf.payment_method_title,pmf.paypal_status,pmf.paypal_id,"
                             + " (SELECT sum(rpm.meta_value) FROM wp_posts rp JOIN wp_postmeta rpm ON rp.ID = rpm.post_id AND meta_key = '_order_total' WHERE rp.post_parent = p.ID AND rp.post_type = 'shop_order_refund') AS refund_total"
                             + " FROM wp_posts p inner join wp_wc_order_stats os on p.id = os.order_id"
-                            + " left join wp_postmeta pmf on p.id = pmf.post_id and pmf.meta_key = '_billing_first_name'"
-                            + " left join wp_postmeta pml on p.id = pml.post_id and pml.meta_key = '_billing_last_name'"
-                            + " left join wp_postmeta pmp on p.id = pmp.post_id and pmp.meta_key = '_billing_phone'"
-                            + " WHERE p.post_type = 'shop_order' " + strWhr
+                            + " inner join vw_Order_details pmf on p.id = pmf.post_id"
+                            + " WHERE p.post_type = 'shop_order' and p.post_status != 'auto-draft' " + strWhr
                             + " order by " + SortCol + " " + SortDir + " limit " + (pageno).ToString() + ", " + pagesize + "";
-
-                strSql += "; SELECT sum(1) TotalRecord from wp_posts p"
-                        + " left join wp_postmeta pmf on p.id = pmf.post_id and pmf.meta_key = '_billing_first_name'"
-                        + " left join wp_postmeta pml on p.id = pml.post_id and pml.meta_key = '_billing_last_name'"
-                        + " left join wp_postmeta pmp on p.id = pmp.post_id and pmp.meta_key = '_billing_phone'"
+                strSql += "; SELECT sum(1) TotalRecord from wp_posts p inner join vw_Order_details pmf on p.id = pmf.post_id "
                         + " WHERE p.post_type = 'shop_order' " + strWhr.ToString();
+
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
                 if (ds.Tables[1].Rows.Count > 0)

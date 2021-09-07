@@ -173,6 +173,7 @@
     <Compile Include="BAL\ReceptionRepository.cs" />
     <Compile Include="BAL\ReportsRepository.cs" />
     <Compile Include="BAL\SettingRepository.cs" />
+    <Compile Include="BAL\SetupRepostiory.cs" />
     <Compile Include="BAL\ThirdPartyRepository.cs" />
     <Compile Include="BAL\UserProfileRepository.cs" />
     <Compile Include="BAL\Users.cs" />
@@ -230,6 +231,7 @@
     <Compile Include="Models\PurchaseOrderModel.cs" />
     <Compile Include="Models\SearchModel.cs" />
     <Compile Include="Models\SettingModel.cs" />
+    <Compile Include="Models\SetupModel.cs" />
     <Compile Include="Models\ThirdPartyModel.cs" />
     <Compile Include="Models\UserClassification.cs" />
     <Compile Include="Models\UsersModel.cs" />
@@ -632,6 +634,7 @@
     <Content Include="js\Reception\NewReceive.js" />
     <Content Include="js\Reception\ReceiveOrderList.js" />
     <Content Include="js\Reception\ReceivePrint.js" />
+    <Content Include="js\Setup\productrule.js" />
     <Content Include="js\Ship\ShipStation.js" />
     <Content Include="js\ThirdParty\Vendor.js" />
     <Content Include="js\ThirdParty\VendorList.js" />

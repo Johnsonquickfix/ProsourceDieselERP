@@ -81,7 +81,7 @@ $('#btnAddNewCategory').click(function () {
                         }
                     });
                     $("#ProdCat option[value='-1']").attr('selected', true)
-                    $("#ddlDisplayType").val("");
+                    $("#ddlDisplayType").val("products");
                     swal('Alert!', data.message, 'success');
                 }
                 else { swal('Alert!', data.message, 'error') }

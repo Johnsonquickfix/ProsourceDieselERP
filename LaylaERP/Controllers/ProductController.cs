@@ -1499,6 +1499,56 @@ namespace LaylaERP.Controllers
             ////}
         }
 
+        public JsonResult ProductImages(ProductCategoryModel model, HttpPostedFileBase ImageFile, string ID)
+        {
+            var ImagePath = "";
+            string FileName = "";
+            string FileExtension = "";
+            if (ImageFile != null)
+            {
+                FileName = Path.GetFileNameWithoutExtension(ImageFile.FileName);
+                FileName = Regex.Replace(FileName, @"\s+", "");
+                string size = (ImageFile.ContentLength / 1024).ToString();
+                FileExtension = Path.GetExtension(ImageFile.FileName);
+                if (FileExtension == ".png" || FileExtension == ".jpg" || FileExtension == ".jpeg" || FileExtension == ".bmp")
+                {
+                    FileName = DateTime.Now.ToString("MMddyyhhmmss") + "-" + FileName.Trim() + FileExtension;
+
+                    string UploadPath = Path.Combine(Server.MapPath("~/Content/Product"));
+                    UploadPath = UploadPath + "\\";
+                    model.ImagePath = UploadPath + FileName;
+                    if (FileName == "")
+                    {
+                        FileName = "default.png";
+                    }
+                    ImagePath = "~/Content/Product/" + FileName;
+                    ImageFile.SaveAs(model.ImagePath);
+
+                    if (Convert.ToInt32(ID) > 0)
+                    {
+                        ProductRepository.EditProductImage(FileName, Convert.ToInt32(ID));
+                        return Json(new { status = true, message = "Product Image has been uploaded successfully!!", url = "", id = model.term_id }, 0);
+                    }
+                    else
+                        return Json(new { status = true, message = "Invalid Details!!", url = "", id = model.term_id }, 0);
+
+                }
+                else
+                {
+                    return Json(new { status = false, message = "File Formate " + FileExtension + " is not allowed!!", url = "" }, 0);
+
+                }
+
+            }
+            else
+                return Json(new { status = false, message = "Please Upload File", url = "" }, 0);
+
+
+
+
+
+        }
+
         public JsonResult SaveChildvariations(ProductModel model)
         {
 
@@ -1535,27 +1585,26 @@ namespace LaylaERP.Controllers
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Product Categories~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         public JsonResult GetParentCategory(string id)
         {
-            DataSet ds = BAL.ProductRepository.GetParentCategory(id);
-            List<SelectListItem> productlist = new List<SelectListItem>();
-            foreach (DataRow dr in ds.Tables[0].Rows)
-            {
-                productlist.Add(new SelectListItem { Text = dr["name"].ToString(), Value = dr["ID"].ToString() });
-
-            }
-            return Json(productlist, JsonRequestBehavior.AllowGet);
+            DataTable ds = BAL.ProductRepository.GetParentCategory(id);
+            string JSONresult = JsonConvert.SerializeObject(ds);
+            return Json(JSONresult, 0);
         }
-        public JsonResult AddProductCategory(ProductCategoryModel model, HttpPostedFileBase ImageFile, string name, string slug, string parent, string description)
+        public JsonResult AddProductCategory(ProductCategoryModel model, HttpPostedFileBase ImageFile, string name, string slug, string parent, string ParentText, string description)
         {
             var ImagePath = "";
             string FileName = "";
             string FileExtension = "";
             string checkname = new ProductRepository().GetName(name);
             string checknameonEdit = new ProductRepository().GetNameonEdit(name, model.term_id);
-            if (model.term_id == 0 && checkname == name)
+            if (ParentText.ToLower() == name.ToLower())
+            {
+                return Json(new { status = false, message = "Parent and category can not be same. Please select another parent category.", url = "", id = 0 }, 0);
+            }
+            if (model.term_id == 0 && checkname.ToLower() == name.ToLower())
             {
                 return Json(new { status = false, message = "Category already exists", url = "", id = 0 }, 0);
             }
-            else if (model.term_id > 0 && checknameonEdit == name)
+            else if (model.term_id > 0 && checknameonEdit.ToLower() == name.ToLower())
             {
                 return Json(new { status = false, message = "Category already exists", url = "", id = 0 }, 0);
             }

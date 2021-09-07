@@ -254,9 +254,23 @@ function dataGridLoad(order_type) {
             },
 
             {
-                'data': 'id', sWidth: "5%   ",
-                'render': function (data, type, full, meta) {
-                    return '<i class="glyphicon glyphicon-picture"></i>';
+                "data": "guid", 
+                //'render': function (data, type, full, meta) {
+                //    return '<i class="glyphicon glyphicon-picture"></i>';
+                //}
+                "render": function (data) {
+
+                    url = "../../Content/Product/" + data + "";
+                    if (data.indexOf('product') == -1)
+                     var result = checkFileExist(url);
+                    if (data.indexOf('product') != -1) {
+                        return '<img src="../../Content/ProductCategory/default.png" width="50" height="50"/>';
+                    }
+                    else {
+                        if (result == true) { return '<img src=' + url + ' width="50" height="50"/>'; }
+                        else if (data == null || data == "") { return '<img src="../../Content/ProductCategory/default.png" width="50" height="50"/>'; }
+                        else { return '<img src="../../Content/ProductCategory/default.png" width="50" height="50"/>'; }
+                    }
                 }
             },
             { data: 'post_title', title: 'Name', sWidth: "18%" },
@@ -337,6 +351,8 @@ function dataGridLoad(order_type) {
     });
 }
 
+
+
 function CheckAll() {
     var isChecked = $('#checkall').prop("checked");
     $('#dtdata tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
@@ -386,5 +402,17 @@ function Status() {
             },
 
         })
+    }
+}
+
+function checkFileExist(urlToFile) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('HEAD', urlToFile, false);
+    xhr.send();
+
+    if (xhr.status == "404") {
+        return false;
+    } else {
+        return true;
     }
 }

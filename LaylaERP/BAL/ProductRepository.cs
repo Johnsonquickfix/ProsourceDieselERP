@@ -83,7 +83,7 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "SELECT P.ID ID,post_title,post_content,post_name,"
+                string strSql = "SELECT P.ID ID,post_title,post_content,post_name,guid,"
                              + "  DATE_FORMAT(P.post_modified,'%m/%d/%Y') Publish_Date,pmregularamount.meta_value regularamount,pmsaleprice.meta_value saleprice,pmtotalsales.meta_value totalsales,pmtaxstatus.meta_value axstatus,pmtaxclass.meta_value taxclass,pmmanagestock.meta_value managestock,pmsoldindividually.meta_value soldindividually,"
                              + "  pmbackorders.meta_value backorders,pmweight.meta_value weight,pmlength.meta_value length,pmeheight.meta_value height,pmwidth.meta_value width,pmupsellids.meta_value upsellids,pmcrosssellids.meta_value crosssellids,"
                              + "  pmstock.meta_value stock,pmstockstatus.meta_value stockstatus,pmlowstockamount.meta_value lowstockamount, pmsku.meta_value sku,pmsatt.meta_value productattributes,(SELECT group_concat(ID) FROM `wp_posts` where post_parent = P.ID) VariantID,"
@@ -982,7 +982,7 @@ namespace LaylaERP.BAL
                 //////+ " WHERE p.post_type in('product') and p.post_status != 'draft' and tt.taxonomy IN('product_cat','product_type') " + strWhr;
 
 
-                string strSql = "select t.term_id,p.id,p.post_type,p.post_title,post_date_gmt,DATE_FORMAT(p.post_date_gmt, '%m-%d-%Y') Date,DATE_FORMAT(p.post_modified, '%m-%d-%Y') publishDate,"
+                string strSql = "select t.term_id,p.id,p.post_type,p.post_title,post_date_gmt,DATE_FORMAT(p.post_date_gmt, '%m-%d-%Y') Date,DATE_FORMAT(p.post_modified, '%m-%d-%Y') publishDate,case when guid = '' then 'default.png' else ifnull(guid,'default.png') end guid,"
               + " (select group_concat(ui.name) from wp_terms ui join wp_term_taxonomy uim on uim.term_id = ui.term_id and uim.taxonomy IN('product_cat') JOIN wp_term_relationships AS trp ON trp.object_id = p.ID and trp.term_taxonomy_id = uim.term_taxonomy_id) itemname ,"
               + " case when p.post_status = 'trash' then 'InActive' else 'Active' end Activestatus,max(case when p.id = s.post_id and s.meta_key = '_sku' then s.meta_value else '' end) sku,"
               + " max(case when p.id = s.post_id and s.meta_key = '_regular_price' then s.meta_value else '' end) regular_price, max(case when p.id = s.post_id and s.meta_key = '_sale_price' then s.meta_value else '' end) sale_price, "
@@ -1923,14 +1923,14 @@ namespace LaylaERP.BAL
         //    return DS;
         //}
 
-        public static DataSet GetParentCategory(string term_taxonomy_id)
+        public static DataTable GetParentCategory(string term_taxonomy_id)
         {
-            DataSet DS = new DataSet();
+            DataTable DS = new DataTable();
             try
             {
 
                 string strSQl = "sp_ProductCategory";
-                DS = SQLHelper.ExecuteDataSet(strSQl);
+                DS = SQLHelper.ExecuteDataTable(strSQl);
             }
             catch (Exception ex)
             { throw ex; }
@@ -1950,6 +1950,26 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@slug",  Regex.Replace(model.slug, @"\s+", "")),
                     new MySqlParameter("@parent", model.parent),
                     new MySqlParameter("@description", model.description == null ? "" : model.description),
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+        public static int EditProductImage(string FileName, long metaid)
+        {
+            try
+            {
+                string strsql = "";
+                strsql = "update wp_posts set guid = @guid" +
+                         " where ID=" + metaid + " ;";
+                MySqlParameter[] para =
+               {                 
+                    new MySqlParameter("@guid", FileName=="" ? "default.png" : FileName)
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
                 return result;

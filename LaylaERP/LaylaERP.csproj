@@ -192,6 +192,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\HrmsController.cs" />
     <Compile Include="Controllers\InventoryController.cs" />
+    <Compile Include="Controllers\IPNPaypalController.cs" />
     <Compile Include="Controllers\OrdersController.cs" />
     <Compile Include="Controllers\PodiumController.cs" />
     <Compile Include="Controllers\ProductController.cs" />
@@ -555,6 +556,7 @@
     <Content Include="Content\img\flags%402x.png" />
     <Content Include="Content\img\flags.png" />
     <Content Include="Content\ProductCategory\default.png" />
+    <Content Include="Content\Product\default.png" />
     <Content Include="Content\Style11.css" />
     <Content Include="Content\Style12.css" />
     <Content Include="Content\VendorLinkedFiles\default.png" />
@@ -874,6 +876,7 @@
     <Content Include="Views\Hrms\Appraisal.cshtml" />
     <Content Include="Views\Hrms\RoleMembership.cshtml" />
     <Content Include="Views\Setup\productrule.cshtml" />
+    <Content Include="Views\IPNPaypal\ipnpaypal.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

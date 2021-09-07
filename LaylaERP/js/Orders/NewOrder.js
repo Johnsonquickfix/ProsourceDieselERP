@@ -1470,7 +1470,7 @@ function getItemShippingCharge() {
     let shipping_state = $("#ddlshipcountry").val() == 'US' ? sh_state : $("#ddlshipcountry").val();
     if (v_ids.join(',').length > 0) {
         $("#loader").show();
-        let options = { strValue1: v_ids.join(','), strValue2: $("#ddlshipcountry").val(), strValue2: $("#ddlshipstate").val() };
+        let options = { strValue1: v_ids.join(','), strValue2: $("#ddlshipcountry").val(), strValue3: $("#ddlshipstate").val() };
         $(".TotalAmount").data("shippingamt", 0.00);
         $.ajax({
             type: "POST", url: '/Orders/GetProductShipping', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(options),

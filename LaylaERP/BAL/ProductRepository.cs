@@ -2313,14 +2313,38 @@ namespace LaylaERP.BAL
             return result;
         }
 
+        //public string GetTermID(string ID)
+        //{
+        //    string result = "";
+        //    DataSet ds = new DataSet();
+        //    try
+        //    {
+        //        string strSQl = "Select GROUP_CONCAT(term_id) term_id from wp_term_taxonomy where  parent in (" + ID + ") or term_id in (" + ID + "); ";
+        //        ds = SQLHelper.ExecuteDataSet(strSQl);
+        //        if (ds.Tables[0].Rows.Count > 0)
+        //            result = ds.Tables[0].Rows[0]["term_id"].ToString();
+        //        else
+        //            result = "0";
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw ex;
+        //    }
+        //    return result;
+        //}
+
         public string GetTermID(string ID)
         {
             string result = "";
             DataSet ds = new DataSet();
             try
             {
-                string strSQl = "Select GROUP_CONCAT(term_id) term_id from wp_term_taxonomy where  parent in (" + ID + ") or term_id in (" + ID + "); ";
-                ds = SQLHelper.ExecuteDataSet(strSQl);
+                string strSQl = "sp_getTermID";
+                MySqlParameter[] para =
+              {
+                    new MySqlParameter("@Userterm_ID", ID)
+                   };
+                ds = SQLHelper.ExecuteDataSet(strSQl,para);
                 if (ds.Tables[0].Rows.Count > 0)
                     result = ds.Tables[0].Rows[0]["term_id"].ToString();
                 else

@@ -6,7 +6,7 @@ $(document).ready(function () {
     CategoryList();
 })
 $('#txtCategoryName').keyup(function () {
-    var cat = $('#txtCategoryName').val();
+    var cat = $('#txtCategoryName').val().trim();
     cat = cat.replace(/\s/g, '-');
     $('#txtCategorySlug').val(cat);
 })
@@ -27,7 +27,7 @@ function getParentCategory(id) {
         data: JSON.stringify(obj),
         success: function (data) {
             data = JSON.parse(data);
-            var opt = '<option value="0">Please Select Parent category</option>';
+            var opt = '<option value="0">Please select parent category</option>';
             for (var i = 0; i < data.length; i++) {
                 opt += '<option value="' + data[i].ID + '">' + space(data[i].level)+ data[i].name + '</option>';
             }

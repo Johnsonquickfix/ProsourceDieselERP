@@ -7,10 +7,10 @@
     $('li:contains(Variations)').hide();
 
     $("#btnbacklist").prop("href", "ListProduct")
-
+    $('#divimage').hide();
     $('#divPurchase').hide();
     $('#txtPublishDate').datepicker({ format: 'mm/dd/yyyy', autoclose: true, todayHighlight: true });
-    //let today = new Date();
+    //let today = new Date(); divimage
     //$('#txtPublishDate').val(today.toLocaleDateString("en-US"));
 
     $.get('/Product/GetShipping/' + 1, function (data) {
@@ -28,7 +28,7 @@
         $('#lbltitle').text("Update Product");        
         $("#btnedit").show();
         $('#divPurchase').show();
-
+        $('#divimage').show();
         $("#hfid").val(id);
         // $("#btnPurchase").prop("href", "../AddNewPurchase/" + id)
         $("#btnbacklist").prop("href", "../ListProduct")
@@ -346,6 +346,11 @@
     });
 
 
+    $(document).on('click', "#btnproductuploade", function () {
+        AddProductImages();
+    })
+
+
     $(document).on('click', "#btnSave", function () {
         AddProduct();
     })
@@ -641,6 +646,46 @@
     //});
 
 });
+
+function readURL(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            $('#show_picture').attr('src', e.target.result);
+        };
+        reader.readAsDataURL(input.files[0]);
+
+    }
+}
+function AddProductImages() {
+    ID = $("#hfid").val();
+    var file = document.getElementById("ImageFile").files[0];
+    var obj = new FormData();
+    obj.append("ImageFile", file);
+    obj.append("ID", ID);
+
+    $.ajax({
+        url: '/Product/ProductImages/', dataType: 'json', type: 'Post',
+        contentType: "application/json; charset=utf-8",
+        data: obj,
+        processData: false,
+        contentType: false,
+        beforeSend: function () { $("#loader").show(); },
+        success: function (data) {
+            if (data.status == true) {               
+                swal('Alert!', data.message, 'success');
+            }
+            else { swal('Alert!', data.message, 'error') }
+        },
+        complete: function () { $("#loader").hide(); },
+        error: function (error) { swal('Error!', error.message, 'error'); },
+    })
+}
+
+
+
+
+
 function AddProduct() {
     debugger
     ID = $("#hfid").val();
@@ -887,11 +932,49 @@ function GetDataByID(order_id) {
                 $('#divsale').show();
                 $('li:contains(Variations)').hide();
             }
+
+            var path = i[0].guid;
+            //console.log(i[0].guid);
+            //console.log(path);      
+            url = "../../Content/Product/" + path + "";
+            var result = checkFileExist(url);
+           // console.log(result);
+
+            if (path.indexOf('laylasleep.com') != -1) {
+              //  console.log('sddd');
+                $('#show_picture').attr('src', "../../Content/ProductCategory/default.png");
+            }
+            else {
+                if (result == true) {
+
+                    $('#show_picture').attr('src', url);
+
+                } 
+                else if (path == null || path == "") {
+                    $('#show_picture').attr('src', "../../Content/ProductCategory/default.png");
+
+                }
+                else {
+                    $('#show_picture').attr('src', "../../Content/ProductCategory/default.png");
+                }
+            }
+
         },
         error: function (msg) { alert(msg); },
         async: false
     });
 
+}
+function checkFileExist(urlToFile) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('HEAD', urlToFile, false);
+    xhr.send();
+
+    if (xhr.status == "404") {
+        return false;
+    } else {
+        return true;
+    }
 }
 
 function GetProdctByID(ProdctID) {

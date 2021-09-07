@@ -554,6 +554,7 @@
     <Content Include="Content\img\flags%402x.png" />
     <Content Include="Content\img\flags.png" />
     <Content Include="Content\ProductCategory\default.png" />
+    <Content Include="Content\Product\default.png" />
     <Content Include="Content\Style11.css" />
     <Content Include="Content\Style12.css" />
     <Content Include="Content\VendorLinkedFiles\default.png" />
@@ -876,7 +877,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Content\Product\" />
     <Folder Include="js\Appearance\" />
     <Folder Include="Properties\PublishProfiles\" />
     <Folder Include="Views\ShipStation\" />

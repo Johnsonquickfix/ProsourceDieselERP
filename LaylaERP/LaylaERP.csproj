@@ -199,6 +199,7 @@
     <Compile Include="Controllers\ReportsController.cs" />
     <Compile Include="Controllers\SaleOrderController.cs" />
     <Compile Include="Controllers\SettingController.cs" />
+    <Compile Include="Controllers\SetupController.cs" />
     <Compile Include="Controllers\ShipController.cs" />
     <Compile Include="Controllers\ThirdPartyController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
@@ -869,6 +870,7 @@
     <Content Include="Views\Hrms\Payroll.cshtml" />
     <Content Include="Views\Hrms\Appraisal.cshtml" />
     <Content Include="Views\Hrms\RoleMembership.cshtml" />
+    <Content Include="Views\Setup\productrule.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

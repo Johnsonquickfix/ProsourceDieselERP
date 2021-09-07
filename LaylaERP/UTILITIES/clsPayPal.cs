@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using LaylaERP.DAL;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -62,6 +63,19 @@ namespace LaylaERP.UTILITIES
                 else { result.invoice_number = string.Empty; }
             }
             return result.invoice_number;
+        }
+        public static int UpdatePaymentLog(string strQueryString)
+        {
+            int result = 0;
+            try
+            {
+                DateTime cDate = DateTime.Now, cUTFDate = DateTime.UtcNow;
+                /// step 1 : wp_wc_order_stats
+                StringBuilder strSql = new StringBuilder(string.Format("insert into erp_paypal_payment_log(logtext,logdate) value('{0}','{1}');", strQueryString, cUTFDate.ToString("yyyy-MM-dd HH:mm:ss")));
+                result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
+            }
+            catch (Exception Ex) { throw Ex; }
+            return result;
         }
     }
     public class clsAccessToken

@@ -9,7 +9,7 @@ namespace LaylaERP.Controllers
     public class SetupController : Controller
     {
         // GET: Setup
-        public ActionResult Index()
+        public ActionResult productrule()
         {
             return View();
         }

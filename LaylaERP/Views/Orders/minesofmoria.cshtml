@@ -203,10 +203,10 @@
     </div>
 
     <div class="box box-primary">
-        <div class="box-header with-border">
-            <h3 class="box-title">Category Wise Products</h3>
+        <div class="box-header with-border full-dropy" data-widget="collapse">
+            <h3 class="box-title removefa">Category Wise Products</h3>
             <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                <button type="button" class="btn btn-box-tool"><i class="fa fa-minus"></i></button>
             </div>
         </div>
         <div class="box-body">
@@ -450,6 +450,9 @@
 
         $('.hub-accord h5').click(function () {
             $(this).find('i').toggleClass('fa-plus fa-minus').parent().next('.hub-box-open').slideToggle(500).parent('.hub-accord').siblings().find('.fa').removeClass('fa-minus').addClass('fa-plus').parent().next('.hub-box-open').slideUp(500);
+        });
+        $('.full-dropy').click(function () {
+            $(this).find('.fa').toggleClass('fa-minus fa-plus');
         });
     });
 </script>

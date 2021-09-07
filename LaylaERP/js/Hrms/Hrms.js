@@ -76,6 +76,22 @@ function AddEmployee() {
     var y = formattedDate.getFullYear();
     var dateofbirth = y + "-" + m + "-" + d;
 
+    var formattedDate = new Date(joiningdate);
+    var d = formattedDate.getDate();
+    //var m = formattedDate.getMonth();
+    var m = ("0" + (formattedDate.getMonth() + 1)).slice(-2)
+    //m += 1;  // JavaScript months are 0-11
+    var y = formattedDate.getFullYear();
+    var dateofjoining = y + "-" + m + "-" + d;
+
+    var formattedDate = new Date(leavingdate);
+    var d = formattedDate.getDate();
+    //var m = formattedDate.getMonth();
+    var m = ("0" + (formattedDate.getMonth() + 1)).slice(-2)
+    //m += 1;  // JavaScript months are 0-11
+    var y = formattedDate.getFullYear();
+    var dateofleaving = y + "-" + m + "-" + d;
+
 
     if (firstname == "") {
         swal('Alert', 'Please Enter First Name', 'error').then(function () { swal.close(); $('#txtFirstName').focus(); });
@@ -124,8 +140,8 @@ function AddEmployee() {
             designation: designation,
             department: department,
             undertaking_emp: undertaking_emp,
-            joining_date: joiningdate,
-            leaving_date: leavingdate,
+            joining_date: dateofjoining,
+            leaving_date: dateofleaving,
             basic_sal: basicsalary,
             unpaid_leave_perday: unpaidleave,
             bank_account_title: accounttitle,

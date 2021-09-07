@@ -1535,14 +1535,9 @@ namespace LaylaERP.Controllers
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Product Categories~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         public JsonResult GetParentCategory(string id)
         {
-            DataSet ds = BAL.ProductRepository.GetParentCategory(id);
-            List<SelectListItem> productlist = new List<SelectListItem>();
-            foreach (DataRow dr in ds.Tables[0].Rows)
-            {
-                productlist.Add(new SelectListItem { Text = dr["name"].ToString(), Value = dr["ID"].ToString() });
-
-            }
-            return Json(productlist, JsonRequestBehavior.AllowGet);
+            DataTable ds = BAL.ProductRepository.GetParentCategory(id);
+            string JSONresult = JsonConvert.SerializeObject(ds);
+            return Json(JSONresult, 0);
         }
         public JsonResult AddProductCategory(ProductCategoryModel model, HttpPostedFileBase ImageFile, string name, string slug, string parent, string description)
         {
@@ -1551,11 +1546,11 @@ namespace LaylaERP.Controllers
             string FileExtension = "";
             string checkname = new ProductRepository().GetName(name);
             string checknameonEdit = new ProductRepository().GetNameonEdit(name, model.term_id);
-            if (model.term_id == 0 && checkname == name)
+            if (model.term_id == 0 && checkname.ToLower() == name.ToLower())
             {
                 return Json(new { status = false, message = "Category already exists", url = "", id = 0 }, 0);
             }
-            else if (model.term_id > 0 && checknameonEdit == name)
+            else if (model.term_id > 0 && checknameonEdit.ToLower() == name.ToLower())
             {
                 return Json(new { status = false, message = "Category already exists", url = "", id = 0 }, 0);
             }

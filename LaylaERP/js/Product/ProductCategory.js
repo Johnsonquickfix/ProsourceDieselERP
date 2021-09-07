@@ -10,6 +10,13 @@ $('#txtCategoryName').keyup(function () {
     cat = cat.replace(/\s/g, '-');
     $('#txtCategorySlug').val(cat);
 })
+function space(noOfSpaces) {
+    var space = "# ", returnValue = "";
+    for (var index = 0; index < noOfSpaces; index++) {
+        returnValue += space;
+    }
+    return returnValue;
+}
 function getParentCategory(id) {
     var obj = { strValue1: id };
     $.ajax({
@@ -19,8 +26,16 @@ function getParentCategory(id) {
         dataType: 'JSON',
         data: JSON.stringify(obj),
         success: function (data) {
+            data = JSON.parse(data);
             var opt = '<option value="-1">Please Select Parent category</option>';
-            for (var i = 0; i < data.length; i++) { opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>'; }
+            console.log(data);
+            for (var i = 0; i < data.length; i++) {
+                console.log(data[i], data[i].name);
+                opt += '<option value="' + data[i].ID + '">' + space(data[i].level)+ data[i].name + '</option>';
+               
+            }
+
+            
             $('#ddlParentCategory').html(opt);
         }
     });
@@ -80,10 +95,12 @@ $('#btnAddNewCategory').click(function () {
 $('#btnSearchCategory').click(function () {
     CategoryList();
 })
+
+
 function CategoryList() {
     var urid = "";
     ID = $("#hfid").val();
-    var sid = $("#txtSearchCategory").val();
+    var sid = $("#txtSearchCategory").val().trim();
     var obj = { user_status: urid, Search: sid, PageNo: 0, PageSize: 50, sEcho: 1, SortCol: 'id', SortDir: 'desc', rowid: ID };
     $('#ProductCategory').DataTable({
         columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
@@ -139,7 +156,7 @@ function CategoryList() {
                     if (full.parent == 0)
                         return '<b>' + id + '</b>';
                     else
-                        return ' ' + id + '';
+                        return ' ' + space(full.level) + id + '';
                 }
             },
             { data: 'description', title: 'Description', sWidth: "25%" },

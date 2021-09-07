@@ -1539,13 +1539,17 @@ namespace LaylaERP.Controllers
             string JSONresult = JsonConvert.SerializeObject(ds);
             return Json(JSONresult, 0);
         }
-        public JsonResult AddProductCategory(ProductCategoryModel model, HttpPostedFileBase ImageFile, string name, string slug, string parent, string description)
+        public JsonResult AddProductCategory(ProductCategoryModel model, HttpPostedFileBase ImageFile, string name, string slug, string parent, string ParentText, string description)
         {
             var ImagePath = "";
             string FileName = "";
             string FileExtension = "";
             string checkname = new ProductRepository().GetName(name);
             string checknameonEdit = new ProductRepository().GetNameonEdit(name, model.term_id);
+            if (ParentText.ToLower() == name.ToLower())
+            {
+                return Json(new { status = false, message = "Parent and category can not be same. Please select another parent category.", url = "", id = 0 }, 0);
+            }
             if (model.term_id == 0 && checkname.ToLower() == name.ToLower())
             {
                 return Json(new { status = false, message = "Category already exists", url = "", id = 0 }, 0);

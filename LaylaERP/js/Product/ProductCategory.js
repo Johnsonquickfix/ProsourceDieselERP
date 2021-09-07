@@ -27,15 +27,10 @@ function getParentCategory(id) {
         data: JSON.stringify(obj),
         success: function (data) {
             data = JSON.parse(data);
-            var opt = '<option value="-1">Please Select Parent category</option>';
-            console.log(data);
+            var opt = '<option value="0">Please Select Parent category</option>';
             for (var i = 0; i < data.length; i++) {
-                console.log(data[i], data[i].name);
                 opt += '<option value="' + data[i].ID + '">' + space(data[i].level)+ data[i].name + '</option>';
-               
             }
-
-            
             $('#ddlParentCategory').html(opt);
         }
     });
@@ -46,9 +41,12 @@ $('#btnAddNewCategory').click(function () {
     CategoryName = $("#txtCategoryName").val();
     CategorySlug = $("#txtCategorySlug").val();
     ParentCategory = $("#ddlParentCategory").val();
+    var data = $('#ddlParentCategory').select2('data');
+    ParentText = data[0].text;
     Description = $("#txtDescription").val();
     DisplayType = $("#ddlDisplayType").val();
     var file = document.getElementById("ImageFile").files[0];
+  
     if (CategoryName == "") { swal('alert', 'Please Enter Category Name', 'error').then(function () { swal.close(); $('#txtCategoryName').focus(); }) }
     else if (CategorySlug == "") { swal('alert', 'Please Enter Category Slug', 'error').then(function () { swal.close(); $('#txtCategorySlug').focus(); }) }
     else {
@@ -58,6 +56,7 @@ $('#btnAddNewCategory').click(function () {
         obj.append("name", CategoryName);
         obj.append("slug", CategorySlug);
         obj.append("parent", ParentCategory);
+        obj.append("ParentText", ParentText);
         obj.append("description", Description);
         obj.append("display_type", DisplayType);
         obj.append("Meta_id", Meta_id);
@@ -282,7 +281,7 @@ function DeleteCategory(id) {
     });
 }
 function GetCategoryByID(id) {
-    getParentCategory(id);
+   // getParentCategory(id);
     var obj =
         $.ajax({
             url: "/Product/GetCategoryByID/" + id,
@@ -294,12 +293,12 @@ function GetCategoryByID(id) {
             success: function (data) {
                 var d = JSON.parse(data);
                 if (d.length > 0) {
-
+                    $("#ddlParentCategory").val(d[0].parent).trigger("change");
                     $("#btnAddNewCategory").text('Update category');
                     $("#lblNewCategory").text('Update category');
                     $("#txtCategoryName").val(d[0].name);
                     $("#txtCategorySlug").val(d[0].slug);
-                    $("#ddlParentCategory").val(d[0].parent == "" ? "-1" : d[0].parent).trigger("change");
+                  
                     $("#hfid").val(d[0].ID);
                     $("#hfMetaid").val(d[0].ThumbnailID);
 

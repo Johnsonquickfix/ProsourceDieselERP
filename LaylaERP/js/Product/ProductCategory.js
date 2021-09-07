@@ -38,7 +38,7 @@ function getParentCategory(id) {
 $('#btnAddNewCategory').click(function () {
     ID = $("#hfid").val();
     Meta_id = $("#hfMetaid").val();
-    CategoryName = $("#txtCategoryName").val();
+    CategoryName = $("#txtCategoryName").val().trim();
     CategorySlug = $("#txtCategorySlug").val();
     ParentCategory = $("#ddlParentCategory").val();
     var data = $('#ddlParentCategory').select2('data');
@@ -324,9 +324,9 @@ $('#btnReset').click(function () {
             case "text": case "email": case "textarea": case "tel": $(this).val(''); case "file": $(this).val(''); break;
         }
     });
-    $("#ProdCat option[value='-1']").attr('selected', true)
-    $("#ddlDisplayType").val("");
-    $("#ddlParentCategory").val("").trigger("change");
+    $("#ProdCat option[value='0']").attr('selected', true)
+    $("#ddlDisplayType").val("products");
+    $("#ddlParentCategory").val("0").trigger("change");
 })
 
 function checkFileExist(urlToFile) {

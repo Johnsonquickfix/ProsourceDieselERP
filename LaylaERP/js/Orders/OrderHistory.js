@@ -103,7 +103,7 @@ function dataGridLoad(order_type) {
         oSearch: { "sSearch": searchText },
         columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true,
-        bAutoWidth: false, scrollX: true, scrollY: ($(window).height() - 215),
+        bAutoWidth: true, scrollX: true, scrollY: ($(window).height() - 215),
         responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
         language: {
             lengthMenu: "_MENU_ per page",

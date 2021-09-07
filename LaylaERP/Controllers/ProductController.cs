@@ -1499,6 +1499,56 @@ namespace LaylaERP.Controllers
             ////}
         }
 
+        public JsonResult ProductImages(ProductCategoryModel model, HttpPostedFileBase ImageFile, string ID)
+        {
+            var ImagePath = "";
+            string FileName = "";
+            string FileExtension = "";
+            if (ImageFile != null)
+            {
+                FileName = Path.GetFileNameWithoutExtension(ImageFile.FileName);
+                FileName = Regex.Replace(FileName, @"\s+", "");
+                string size = (ImageFile.ContentLength / 1024).ToString();
+                FileExtension = Path.GetExtension(ImageFile.FileName);
+                if (FileExtension == ".png" || FileExtension == ".jpg" || FileExtension == ".jpeg" || FileExtension == ".bmp")
+                {
+                    FileName = DateTime.Now.ToString("MMddyyhhmmss") + "-" + FileName.Trim() + FileExtension;
+
+                    string UploadPath = Path.Combine(Server.MapPath("~/Content/Product"));
+                    UploadPath = UploadPath + "\\";
+                    model.ImagePath = UploadPath + FileName;
+                    if (FileName == "")
+                    {
+                        FileName = "default.png";
+                    }
+                    ImagePath = "~/Content/Product/" + FileName;
+                    ImageFile.SaveAs(model.ImagePath);
+
+                    if (Convert.ToInt32(ID) > 0)
+                    {
+                        ProductRepository.EditProductImage(FileName, Convert.ToInt32(ID));
+                        return Json(new { status = true, message = "Product Image has been uploaded successfully!!", url = "", id = model.term_id }, 0);
+                    }
+                    else
+                        return Json(new { status = true, message = "Invalid Details!!", url = "", id = model.term_id }, 0);
+
+                }
+                else
+                {
+                    return Json(new { status = false, message = "File Formate " + FileExtension + " is not allowed!!", url = "" }, 0);
+
+                }
+
+            }
+            else
+                return Json(new { status = false, message = "Please Upload File", url = "" }, 0);
+
+
+
+
+
+        }
+
         public JsonResult SaveChildvariations(ProductModel model)
         {
 

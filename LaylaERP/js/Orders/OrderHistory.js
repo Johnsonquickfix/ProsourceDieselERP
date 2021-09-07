@@ -1,4 +1,5 @@
 ﻿$(document).ready(function () {
+    //PaymentStatus();
     $(".subsubsub li a").click(function (e) {
         $('.subsubsub li a').removeClass('current');
         $(this).addClass('current');
@@ -102,7 +103,7 @@ function dataGridLoad(order_type) {
         oSearch: { "sSearch": searchText },
         columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true,
-        bAutoWidth: false, scrollX: true, scrollY: ($(window).height() - 215),
+        bAutoWidth: true, scrollX: true, scrollY: ($(window).height() - 215),
         responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
         language: {
             lengthMenu: "_MENU_ per page",
@@ -147,14 +148,17 @@ function dataGridLoad(order_type) {
                 }
             },
             { data: 'id', title: 'OrderID', sWidth: "8%", render: $.fn.dataTable.render.number('', '.', 0, '#') },
-            { data: 'FirstName', title: 'First Name', sWidth: "12%" },
-            { data: 'LastName', title: 'Last Name', sWidth: "12%" },
+            {
+                data: 'first_name', title: 'Name', sWidth: "14%", render: function (id, type, row) {
+                    return row.first_name + ' ' + row.last_name;
+                }
+            },
+            //{ data: 'last_name', title: 'Last Name', sWidth: "10%" },
             {
                 data: 'billing_phone', title: 'Phone No.', sWidth: "10%", render: function (toFormat) {
                     var tPhone = '';
                     if (toFormat != null) {
-                        tPhone = toFormat.toString();
-                        tPhone = '(' + tPhone.substring(0, 3) + ') ' + tPhone.substring(3, 6) + ' ' + tPhone.substring(6, 10);
+                        tPhone = toFormat.replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3");
                     }
                     return tPhone
                 }
@@ -163,8 +167,8 @@ function dataGridLoad(order_type) {
             //{ data: 'total_sales', title: 'Order Total', sWidth: "10%", render: $.fn.dataTable.render.number(',', '.', 2, '$') },
             {
                 data: 'total_sales', title: 'Order Total', sWidth: "10%", render: function (id, type, row, meta) {
-                    let refund_amt = parseFloat(row.refund_total) || 0.00;
-                    let amt = refund_amt != 0 ? '<span style="text-decoration: line-through;"> $' + row.total_sales.toFixed(2) + '<br></span><span style="text-decoration: underline;"> $' + (parseFloat(row.total_sales) + refund_amt).toFixed(2) + '</span>' : '$' + row.total_sales.toFixed(2);
+                    let sale_amt = parseFloat(row.total_sales) || 0.00, refund_amt = parseFloat(row.refund_total) || 0.00;
+                    let amt = refund_amt != 0 ? '<span style="text-decoration: line-through;"> $' + sale_amt.toFixed(2) + '<br></span><span style="text-decoration: underline;"> $' + (parseFloat(sale_amt) + refund_amt).toFixed(2) + '</span>' : '$' + sale_amt.toFixed(2);
                     return amt;
                 }
             },
@@ -182,6 +186,12 @@ function dataGridLoad(order_type) {
                 }
             },
             { data: 'date_created', title: 'Creation Date', sWidth: "12%" },
+            {
+                data: 'payment_method_title', title: 'Payment Method', sWidth: "10%", render: function (data, type, row) {
+                    if (row.payment_method == 'ppec_paypal' && row.paypal_status != 'COMPLETED') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="PaymentStatus(' + row.id + ',\'' + row.paypal_id + '\');">' + row.payment_method_title + '</a>';
+                    else return row.payment_method_title;
+                }
+            },
             {
                 'data': 'id', title: 'Action', sWidth: "5%",
                 'render': function (id, type, full, meta) {
@@ -243,4 +253,70 @@ function orderStatus() {
 
         })
     }
+}
+
+//Check PayPal Payment Status.
+function PaymentStatus(oid, pp_id) {
+    let option = { strValue1: 'getToken' };
+    $.ajax({ method: 'get', url: '/Setting/GetPayPalToken', data: option }).done(function (result, textStatus, jqXHR) {
+        let access_token = result.message;
+        let create_url = 'https://api.sandbox.paypal.com/v1/invoicing/invoices/' + pp_id;
+        $.ajax({
+            type: 'get', url: create_url, contentType: "application/json; charset=utf-8", dataType: "json", data: {},
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("Accept", "application/json");
+                xhr.setRequestHeader("Authorization", "Bearer " + access_token);
+            },
+            success: function (data) {
+                let status = data.status;
+                if (status == 'PAID') {
+                    swal.queue([{
+                        title: status, confirmButtonText: 'Yes, Update it!', text: "You Payment has been received. Do you want to update your status?",
+                        showLoaderOnConfirm: true, icon: "success",
+                        preConfirm: function () {
+                            return new Promise(function (resolve) {
+                                let _postMeta = [{ post_id: oid, meta_key: '_paypal_status', meta_value: 'COMPLETED' }];
+                                let opt = { OrderPostMeta: _postMeta };
+                                $.post('/Orders/UpdatePayPalID', opt)
+                                    .done(function (data) {
+                                        swal.insertQueueStep('Status updated successfully.');
+                                        $('#dtdata').DataTable().ajax.reload();
+                                        resolve();
+                                    })
+                            })
+                        }
+                    }]);
+                }
+                else {
+                    swal(status, 'Request has sent for payment.', 'info');
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); console.log(XMLHttpRequest); swal('Alert!', XMLHttpRequest.responseJSON.message, "error"); },
+            complete: function () { $("#loader").hide(); }, async: false
+        });
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        swal('Alert!', 'Something went wrong, please try again.', "error");
+    });
+
+    //$.ajax({
+    //    type: "get", url: '/Setting/GetPayPalToken', contentType: "application/json; charset=utf-8", dataType: "json", data: option,
+    //    success: function (result) {
+    //        console.log(result);
+    //        let access_token = result.message;
+    //        let create_url = 'https://api.sandbox.paypal.com/v1/invoicing/invoices/INV2-DTYZ-JPV6-ZK8Z-CSYN';
+    //        $.ajax({
+    //            type: 'get', url: create_url, contentType: "application/json; charset=utf-8", dataType: "json", data: {},
+    //            beforeSend: function (xhr) {
+    //                xhr.setRequestHeader("Accept", "application/json");
+    //                xhr.setRequestHeader("Authorization", "Bearer " + access_token);
+    //            },
+    //            success: function (data) {
+    //                console.log(data);
+    //            },
+    //            error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); console.log(XMLHttpRequest); swal('Alert!', XMLHttpRequest.responseJSON.message, "error"); },
+    //            complete: function () { $("#loader").hide(); }, async: false
+    //        });
+    //    },
+    //    complete: function () { }, error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); }, async: false
+    //});
 }

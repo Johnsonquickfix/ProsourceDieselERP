@@ -1923,14 +1923,14 @@ namespace LaylaERP.BAL
         //    return DS;
         //}
 
-        public static DataSet GetParentCategory(string term_taxonomy_id)
+        public static DataTable GetParentCategory(string term_taxonomy_id)
         {
-            DataSet DS = new DataSet();
+            DataTable DS = new DataTable();
             try
             {
 
                 string strSQl = "sp_ProductCategory";
-                DS = SQLHelper.ExecuteDataSet(strSQl);
+                DS = SQLHelper.ExecuteDataTable(strSQl);
             }
             catch (Exception ex)
             { throw ex; }

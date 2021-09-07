@@ -10,6 +10,13 @@ $('#txtCategoryName').keyup(function () {
     cat = cat.replace(/\s/g, '-');
     $('#txtCategorySlug').val(cat);
 })
+function space(noOfSpaces) {
+    var space = "# ", returnValue = "";
+    for (var index = 0; index < noOfSpaces; index++) {
+        returnValue += space;
+    }
+    return returnValue;
+}
 function getParentCategory(id) {
     var obj = { strValue1: id };
     $.ajax({
@@ -19,8 +26,11 @@ function getParentCategory(id) {
         dataType: 'JSON',
         data: JSON.stringify(obj),
         success: function (data) {
-            var opt = '<option value="-1">Please Select Parent category</option>';
-            for (var i = 0; i < data.length; i++) { opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>'; }
+            data = JSON.parse(data);
+            var opt = '<option value="0">Please Select Parent category</option>';
+            for (var i = 0; i < data.length; i++) {
+                opt += '<option value="' + data[i].ID + '">' + space(data[i].level)+ data[i].name + '</option>';
+            }
             $('#ddlParentCategory').html(opt);
         }
     });
@@ -28,12 +38,15 @@ function getParentCategory(id) {
 $('#btnAddNewCategory').click(function () {
     ID = $("#hfid").val();
     Meta_id = $("#hfMetaid").val();
-    CategoryName = $("#txtCategoryName").val();
+    CategoryName = $("#txtCategoryName").val().trim();
     CategorySlug = $("#txtCategorySlug").val();
     ParentCategory = $("#ddlParentCategory").val();
+    var data = $('#ddlParentCategory').select2('data');
+    ParentText = data[0].text;
     Description = $("#txtDescription").val();
     DisplayType = $("#ddlDisplayType").val();
     var file = document.getElementById("ImageFile").files[0];
+  
     if (CategoryName == "") { swal('alert', 'Please Enter Category Name', 'error').then(function () { swal.close(); $('#txtCategoryName').focus(); }) }
     else if (CategorySlug == "") { swal('alert', 'Please Enter Category Slug', 'error').then(function () { swal.close(); $('#txtCategorySlug').focus(); }) }
     else {
@@ -43,6 +56,7 @@ $('#btnAddNewCategory').click(function () {
         obj.append("name", CategoryName);
         obj.append("slug", CategorySlug);
         obj.append("parent", ParentCategory);
+        obj.append("ParentText", ParentText);
         obj.append("description", Description);
         obj.append("display_type", DisplayType);
         obj.append("Meta_id", Meta_id);
@@ -67,7 +81,7 @@ $('#btnAddNewCategory').click(function () {
                         }
                     });
                     $("#ProdCat option[value='-1']").attr('selected', true)
-                    $("#ddlDisplayType").val("");
+                    $("#ddlDisplayType").val("products");
                     swal('Alert!', data.message, 'success');
                 }
                 else { swal('Alert!', data.message, 'error') }
@@ -80,10 +94,12 @@ $('#btnAddNewCategory').click(function () {
 $('#btnSearchCategory').click(function () {
     CategoryList();
 })
+
+
 function CategoryList() {
     var urid = "";
     ID = $("#hfid").val();
-    var sid = $("#txtSearchCategory").val();
+    var sid = $("#txtSearchCategory").val().trim();
     var obj = { user_status: urid, Search: sid, PageNo: 0, PageSize: 50, sEcho: 1, SortCol: 'id', SortDir: 'desc', rowid: ID };
     $('#ProductCategory').DataTable({
         columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
@@ -139,7 +155,7 @@ function CategoryList() {
                     if (full.parent == 0)
                         return '<b>' + id + '</b>';
                     else
-                        return ' ' + id + '';
+                        return ' ' + space(full.level) + id + '';
                 }
             },
             { data: 'description', title: 'Description', sWidth: "25%" },
@@ -265,7 +281,7 @@ function DeleteCategory(id) {
     });
 }
 function GetCategoryByID(id) {
-    getParentCategory(id);
+   // getParentCategory(id);
     var obj =
         $.ajax({
             url: "/Product/GetCategoryByID/" + id,
@@ -277,12 +293,12 @@ function GetCategoryByID(id) {
             success: function (data) {
                 var d = JSON.parse(data);
                 if (d.length > 0) {
-
+                    $("#ddlParentCategory").val(d[0].parent).trigger("change");
                     $("#btnAddNewCategory").text('Update category');
                     $("#lblNewCategory").text('Update category');
                     $("#txtCategoryName").val(d[0].name);
                     $("#txtCategorySlug").val(d[0].slug);
-                    $("#ddlParentCategory").val(d[0].parent == "" ? "-1" : d[0].parent).trigger("change");
+                  
                     $("#hfid").val(d[0].ID);
                     $("#hfMetaid").val(d[0].ThumbnailID);
 
@@ -308,9 +324,9 @@ $('#btnReset').click(function () {
             case "text": case "email": case "textarea": case "tel": $(this).val(''); case "file": $(this).val(''); break;
         }
     });
-    $("#ProdCat option[value='-1']").attr('selected', true)
-    $("#ddlDisplayType").val("");
-    $("#ddlParentCategory").val("").trigger("change");
+    $("#ProdCat option[value='0']").attr('selected', true)
+    $("#ddlDisplayType").val("products");
+    $("#ddlParentCategory").val("0").trigger("change");
 })
 
 function checkFileExist(urlToFile) {

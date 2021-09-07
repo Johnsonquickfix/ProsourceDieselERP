@@ -44,8 +44,6 @@ namespace LaylaERP.BAL
             {
                 string strsql = "INSERT into erp_hrms_emp(firstname, lastname, email, emp_type, dob, phone, gender, is_active )" +
                     " values(@firstname, @lastname, @email, @emp_type, @dob, @phone, @gender, @is_active );SELECT LAST_INSERT_ID();";
-                string strsql1 = "INSERT into erp_hrms_empdetails(birthplace, maritalstatus, address1, address2, city, state, zipcode,country, emp_number, designation, department, undertaking_emp, joining_date, leaving_date, basic_sal, unpaid_leave_perday, bank_account_title,bank_name, account_number, bank_swift_code  )" +
-                                 " values(@birthplace, @maritalstatus, @address1, @address2, @city, @state, @zipcode, @country, @emp_number, @designation, @department, @undertaking_emp, @joining_date, @leaving_date, @basic_sal, @unpaid_leave_perday, @bank_account_title, @bank_name, @account_number, @bank_swift_code); SELECT LAST_INSERT_ID();";
 
 
                 MySqlParameter[] para =
@@ -59,7 +57,30 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@gender", model.gender),
                     new MySqlParameter("@is_active", model.is_active),
 
+               };
+                int result = Convert.ToInt32(DAL.SQLHelper.ExecuteScalar(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+        public static int AddEmployeeDetails(HrmsModel model, int id)
+        {
+
+            try
+            {
+                
+                string strsql = "INSERT into erp_hrms_empdetails(fk_emp,birthplace, maritalstatus, address1, address2, city, state, zipcode,country, emp_number, designation, department, undertaking_emp, joining_date, leaving_date, basic_sal, unpaid_leave_perday, bank_account_title,bank_name, account_number, bank_swift_code  )" +
+                                 " values(@fk_emp, @birthplace, @maritalstatus, @address1, @address2, @city, @state, @zipcode, @country, @emp_number, @designation, @department, @undertaking_emp, @joining_date, @leaving_date, @basic_sal, @unpaid_leave_perday, @bank_account_title, @bank_name, @account_number, @bank_swift_code); SELECT LAST_INSERT_ID();";
+
+
+                MySqlParameter[] para =
+                {
                     //2nd table
+                    new MySqlParameter("@fk_emp", id),
                     new MySqlParameter("@birthplace", model.birthplace),
                     new MySqlParameter("@maritalstatus",model.maritalstatus),
                     new MySqlParameter("@address1", model.address1),
@@ -82,13 +103,15 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@bank_swift_code", model.bank_swift_code),
 
                };
-                int result = Convert.ToInt32(DAL.SQLHelper.ExecuteScalar(strsql + strsql1, para));
+                int result = Convert.ToInt32(DAL.SQLHelper.ExecuteScalar(strsql, para));
                 return result;
+
             }
             catch (Exception Ex)
             {
                 throw Ex;
             }
         }
+
     }
 }

@@ -990,7 +990,7 @@ function bindwarehouseDetails(data) {
                 layoutHtml += '<td class="text-left">' + data[i].product_name + '</td>';
                 layoutHtml += '<td>' + data[i].StatusActive + '</td>';
                 if (data[i].StatusActive == "InActive")
-                    layoutHtml += '<td><a href="javascript:void(0);" title="Click here to Active" data-toggle="tooltip" class="editbutton" onClick="ActiveUser(' + data[i].PKey + ')"><i class="glyphicon glyphicon-eye-open"></i></a></td>';
+                    layoutHtml += '<td><a href="javascript:void(0);" title="Click here to Active" data-toggle="tooltip" class="editbutton" onClick="Activewarehouser(' + data[i].PKey + ')"><i class="glyphicon glyphicon-eye-open"></i></a></td>';
                 else
                     layoutHtml += '<td><a href="javascript:void(0);" title="Click here In-Active" data-toggle="tooltip" class="editbutton" onClick="Deletewarehouser(' + data[i].PKey + ')"><i class="glyphicon glyphicon-trash"></i></a></td>';
                 layoutHtml += '</tr>';

@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using LaylaERP.BAL;
+using LaylaERP.Models;
 
 namespace LaylaERP.Controllers
 {
@@ -43,5 +46,47 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+
+        public JsonResult GetDesignation()
+        {
+            DataSet ds = HrmsRepository.GetDesignation();
+            List<SelectListItem> designationlist = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                designationlist.Add(new SelectListItem { Text = dr["designation"].ToString(), Value = dr["rowid"].ToString() });
+            }
+            return Json(designationlist, JsonRequestBehavior.AllowGet);
+
+        }
+
+        public JsonResult GetDepartment()
+        {
+            DataSet ds = HrmsRepository.GetDepartment();
+            List<SelectListItem> designationlist = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                designationlist.Add(new SelectListItem { Text = dr["department"].ToString(), Value = dr["rowid"].ToString() });
+            }
+            return Json(designationlist, JsonRequestBehavior.AllowGet);
+
+        }
+
+        [HttpPost]
+        public JsonResult AddEmployee(HrmsModel model)
+        {
+
+            int ID = HrmsRepository.AddEmployee(model);
+            if (ID > 0)
+            {
+                HrmsRepository.AddEmployeeDetails(model, ID);
+                return Json(new { status = true, message = "Data has been saved successfully!!", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+
+        }
+
     }
 }

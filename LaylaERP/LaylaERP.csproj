@@ -165,6 +165,7 @@
     <Compile Include="BAL\DashboardRepository.cs" />
     <Compile Include="BAL\ExportRepository.cs" />
     <Compile Include="BAL\FeeNTaxRepository.cs" />
+    <Compile Include="BAL\HrmsRepository.cs" />
     <Compile Include="BAL\InventoryRepository.cs" />
     <Compile Include="BAL\OrderRepository.cs" />
     <Compile Include="BAL\ProductRepository.cs" />
@@ -198,6 +199,7 @@
     <Compile Include="Controllers\ReportsController.cs" />
     <Compile Include="Controllers\SaleOrderController.cs" />
     <Compile Include="Controllers\SettingController.cs" />
+    <Compile Include="Controllers\SetupController.cs" />
     <Compile Include="Controllers\ShipController.cs" />
     <Compile Include="Controllers\ThirdPartyController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
@@ -220,6 +222,7 @@
     <Compile Include="Models\ExportModel.cs" />
     <Compile Include="Models\Export_Details.cs" />
     <Compile Include="Models\FeeNTax.cs" />
+    <Compile Include="Models\HrmsModel.cs" />
     <Compile Include="Models\InventoryModel.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\OrderModel.cs" />
@@ -605,6 +608,7 @@
     <Content Include="js\Customer\Customer.js" />
     <Content Include="js\FeeNTax\FeeNTax.js" />
     <Content Include="js\GooglePlace\index.js" />
+    <Content Include="js\Hrms\Hrms.js" />
     <Content Include="js\Inventory\ConsignmentInventory.js" />
     <Content Include="js\Inventory\Inventory.js" />
     <Content Include="js\jquery.mask.js" />
@@ -866,6 +870,7 @@
     <Content Include="Views\Hrms\Payroll.cshtml" />
     <Content Include="Views\Hrms\Appraisal.cshtml" />
     <Content Include="Views\Hrms\RoleMembership.cshtml" />
+    <Content Include="Views\Setup\productrule.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

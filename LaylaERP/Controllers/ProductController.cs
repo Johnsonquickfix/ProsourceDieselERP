@@ -1701,10 +1701,11 @@ namespace LaylaERP.Controllers
             string termID = model.strVal;
             if (termID != "")
             {
+                int ProductID = new ProductRepository().DeleteProductfromCategory(termID);
                 int ID = new ProductRepository().DeleteProductCategory(termID);
                 if (ID > 0)
                 {
-                    int ProductID = new ProductRepository().DeleteProductfromCategory(termID);
+                    
                     return Json(new { status = true, message = "Product category has been deleted successfully!!", url = "", id = ID }, 0);
                 }
                 else

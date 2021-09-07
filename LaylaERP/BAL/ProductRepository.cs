@@ -109,7 +109,7 @@ namespace LaylaERP.BAL
                              + " left join wp_postmeta pmstockstatus on P.ID = pmstockstatus.post_id and pmstockstatus.meta_key = '_stock_status'"
                              + " left join wp_postmeta pmlowstockamount on P.ID = pmlowstockamount.post_id and pmlowstockamount.meta_key = '_low_stock_amount'"
                              + " left join wp_postmeta pmsku on P.ID = pmsku.post_id and pmsku.meta_key = '_sku'"
-                             + " left join wp_postmeta pmsatt on P.ID = pmsatt.post_id and pmsatt.meta_key = '_product_attributes'"                             
+                             + " left join wp_postmeta pmsatt on P.ID = pmsatt.post_id and pmsatt.meta_key = '_product_attributes'"
                              + " WHERE P.post_type in ('product','product_variation') and P.ID = " + model.strVal + " ";
 
 
@@ -502,7 +502,7 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "SELECT count(distinct Filename) filecount, P.ID ID,post_title,FORMAT(pmregularamount.meta_value,2) regularamount,FORMAT(pmsaleprice.meta_value,2) saleprice,min( FORMAT(purchase_price,2)) purchase_price,min(FORMAT(cost_price,2)) cost_price,(select name from wp_vendor where rowid = (select fk_vendor from Product_Purchase_Items where fk_product = "+ model.strVal + " and cost_price = (SELECT MIN(cost_price) FROM Product_Purchase_Items WHERE fk_product = "+ model.strVal + ")LIMIT 1)) vname,pmsku.meta_value sku,pmpublic.meta_value Public_Notes,pmprivate.meta_value Private_Notes"
+                string strSql = "SELECT count(distinct Filename) filecount, P.ID ID,post_title,FORMAT(pmregularamount.meta_value,2) regularamount,FORMAT(pmsaleprice.meta_value,2) saleprice,min( FORMAT(purchase_price,2)) purchase_price,min(FORMAT(cost_price,2)) cost_price,(select name from wp_vendor where rowid = (select fk_vendor from Product_Purchase_Items where fk_product = " + model.strVal + " and cost_price = (SELECT MIN(cost_price) FROM Product_Purchase_Items WHERE fk_product = " + model.strVal + ")LIMIT 1)) vname,pmsku.meta_value sku,pmpublic.meta_value Public_Notes,pmprivate.meta_value Private_Notes"
                              + " FROM wp_posts P"
                              + " left join wp_postmeta pmregularamount on P.ID = pmregularamount.post_id and pmregularamount.meta_key = '_regular_price'"
                              + " left join wp_postmeta pmsaleprice on P.ID = pmsaleprice.post_id and pmsaleprice.meta_key = '_sale_price'"
@@ -682,7 +682,7 @@ namespace LaylaERP.BAL
                 string strsql = "insert into Shipping_class(Shippingclass_Name)values(@Shippingclass_Name);SELECT LAST_INSERT_ID();";
                 MySqlParameter[] para =
                 {
-                    new MySqlParameter("@Shippingclass_Name", model.Shippingclass_Name),               
+                    new MySqlParameter("@Shippingclass_Name", model.Shippingclass_Name),
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
                 return result;
@@ -697,8 +697,8 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "delete from ShippingClass_Details where  fk_ShippingID = " + model.fk_ShippingID + " and countrycode = '"+ model.countrycode + "' ";
-               
+                string strsql = "delete from ShippingClass_Details where  fk_ShippingID = " + model.fk_ShippingID + " and countrycode = '" + model.countrycode + "' ";
+
                 int result = SQLHelper.ExecuteNonQuery(strsql.ToString());
                 return result;
             }
@@ -712,7 +712,7 @@ namespace LaylaERP.BAL
             DataTable DT = new DataTable();
             try
             {
-                string strSQl = "Select StateFullName,State from erp_StateList where Country = '"+ Country + "' ";
+                string strSQl = "Select StateFullName,State from erp_StateList where Country = '" + Country + "' ";
                 DT = SQLHelper.ExecuteDataTable(strSQl);
             }
             catch (Exception ex)
@@ -724,9 +724,9 @@ namespace LaylaERP.BAL
             DataTable DT = new DataTable();
             try
             {
-                
-             DT = SQLHelper.ExecuteDataTable("select distinct StateFullName,State from erp_StateList where Country = '" + country + "' and  (StateFullName like '" + strSearch + "%' or State like '" + strSearch + "%') order by StateFullName limit 50;");
-               
+
+                DT = SQLHelper.ExecuteDataTable("select distinct StateFullName,State from erp_StateList where Country = '" + country + "' and  (StateFullName like '" + strSearch + "%' or State like '" + strSearch + "%') order by StateFullName limit 50;");
+
             }
             catch (Exception ex)
             { throw ex; }
@@ -901,10 +901,10 @@ namespace LaylaERP.BAL
 
                 if (!string.IsNullOrEmpty(userstatus))
                 {
-                    if(userstatus == "private")
-                    strWhr += " and p.post_status in ('publish','private')";
+                    if (userstatus == "private")
+                        strWhr += " and p.post_status in ('publish','private')";
                     else
-                       strWhr += " and p.post_status = '" + userstatus + "'";
+                        strWhr += " and p.post_status = '" + userstatus + "'";
                 }
                 //else
                 //    strWhr += " and p.post_status != 'auto-draft' ";
@@ -1033,7 +1033,7 @@ namespace LaylaERP.BAL
                             + " OR eslcun.CountryFullName like '%" + searchid + "%' "
                             + " OR esl.StateFullName like '%" + searchid + "%' "
                             + " OR Shipping_price like '%" + searchid + "%' "
-                            + " OR taxable like '%" + searchid + "%' "  
+                            + " OR taxable like '%" + searchid + "%' "
                             + " )";
                 }
 
@@ -1055,7 +1055,7 @@ namespace LaylaERP.BAL
 
               + " order by " + SortCol + " " + SortDir + " limit " + (pageno).ToString() + ", " + pagesize + "";
 
-                strSql += "; SELECT count(distinct rowid) TotalRecord from ShippingClass_Details ScD"                              
+                strSql += "; SELECT count(distinct rowid) TotalRecord from ShippingClass_Details ScD"
                 + " left OUTER join Shipping_class sc on sc.id = ScD.fk_ShippingID"
                 + " left OUTER join erp_StateList esl on esl.State = ScD.statecode"
                 + " left OUTER join erp_StateList eslcun on eslcun.Country = ScD.countrycode"
@@ -1140,8 +1140,8 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@post_mime_type", string.Empty),
                     new MySqlParameter("@post_parent", model.post_parent),
                     new MySqlParameter("@comment_status", model.comment_status),
-                    new MySqlParameter("@post_modified",model.PublishDate), 
-                   
+                    new MySqlParameter("@post_modified",model.PublishDate),
+
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
                 return result;
@@ -1159,7 +1159,7 @@ namespace LaylaERP.BAL
                 string strsql = "Insert into Shipping_class(Shippingclass_Name) values(@Shippingclass_Name);SELECT LAST_INSERT_ID();";
                 MySqlParameter[] para =
                 {
-                    new MySqlParameter("@Shippingclass_Name", model.Shippingclass_Name),   
+                    new MySqlParameter("@Shippingclass_Name", model.Shippingclass_Name),
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
                 return result;
@@ -1216,7 +1216,7 @@ namespace LaylaERP.BAL
                 strSql.Append(string.Format("insert into Product_Purchase_Items ( fk_product,fk_vendor,purchase_price,cost_price,minpurchasequantity,salestax,taxrate,discount,remark,taglotserialno,shipping_price) values ({0},{1},{2},{3},{4},{5},{6},{7},'{8}','{9}',{10}); ", model.fk_product, model.fk_vendor, model.purchase_price, model.cost_price, model.minpurchasequantity, model.salestax, model.taxrate, model.discount, model.remark, model.taglotserialno, model.shipping_price));
                 //strSql.Append(string.Format("delete from product_warehouse where fk_product = {0}; ", model.fk_product));
                 //strSql.Append(string.Format("update product_warehouse set is_active = 0 where fk_product = {0}; ", model.fk_product));
-               // strSql.Append(string.Format("insert into product_warehouse(fk_product,fk_warehouse) (select '"+ model.fk_product + "',warehouseid from wp_VendorWarehouse where VendorID = "+ model.fk_vendor + ") "));
+                // strSql.Append(string.Format("insert into product_warehouse(fk_product,fk_warehouse) (select '"+ model.fk_product + "',warehouseid from wp_VendorWarehouse where VendorID = "+ model.fk_vendor + ") "));
                 /// step 6 : wp_posts
                 //strSql.Append(string.Format(" update wp_posts set post_status = '{0}' ,comment_status = 'closed' where id = {1} ", model.OrderPostStatus.status, model.OrderPostStatus.order_id));
 
@@ -1279,9 +1279,9 @@ namespace LaylaERP.BAL
                 /// step 6 : wp_posts
                 strSql.Append(string.Format("update Product_Purchase_Items set fk_vendor = {0} ,purchase_price = {1},cost_price = {2},minpurchasequantity = {3},salestax = {4},taxrate = {5},discount = {6},remark = '{7}',taglotserialno = '{8}',shipping_price = {9} where rowid = {10} ;", model.fk_vendor, model.purchase_price, model.cost_price, model.minpurchasequantity, model.salestax, model.taxrate, model.discount, model.remark, model.taglotserialno, model.shipping_price, model.ID));
                 //  strSql.Append(string.Format("delete from product_warehouse where fk_product = {0}; ", model.fk_product));
-               // strSql.Append(string.Format("update product_warehouse set is_active = 0 where fk_product = {0}; ", model.fk_product));
+                // strSql.Append(string.Format("update product_warehouse set is_active = 0 where fk_product = {0}; ", model.fk_product));
 
-               // strSql.Append(string.Format("insert into product_warehouse(fk_product,fk_warehouse) (select '" + model.fk_product + "',warehouseid from wp_VendorWarehouse where VendorID = " + model.fk_vendor + ") "));
+                // strSql.Append(string.Format("insert into product_warehouse(fk_product,fk_warehouse) (select '" + model.fk_product + "',warehouseid from wp_VendorWarehouse where VendorID = " + model.fk_vendor + ") "));
                 result = SQLHelper.ExecuteNonQuery(strSql.ToString());
             }
             catch (Exception ex)
@@ -1462,7 +1462,7 @@ namespace LaylaERP.BAL
             try
             {
                 string strSQl = "select rowid from ShippingClass_Details"
-                                + " WHERE fk_ShippingID =" + model.fk_ShippingID + " and countrycode = '"+ model.countrycode + "' and statecode = '"+ model.statecode + "' "
+                                + " WHERE fk_ShippingID =" + model.fk_ShippingID + " and countrycode = '" + model.countrycode + "' and statecode = '" + model.statecode + "' "
                                 + " limit 10;";
                 dt = SQLHelper.ExecuteDataTable(strSQl);
             }
@@ -1639,10 +1639,10 @@ namespace LaylaERP.BAL
                 string strSql_insert = string.Empty;
                 StringBuilder strSql = new StringBuilder();
                 foreach (ProductModelItemModel obj in model)
-                {                     
+                {
                     strSql.Append("delete from Shipping_Product where fk_productid=" + obj.object_id + ";");
                     strSql.Append("Insert into Shipping_Product(fk_productid,fk_shippingID) values(" + obj.object_id + "," + obj.term_taxonomy_id + ");SELECT LAST_INSERT_ID();");
-                      
+
                     // strSql_insert += (strSql_insert.Length > 0 ? " union all " : "") + string.Format("select '{0}' post_id,'{1}' meta_key,'{2}' meta_value", obj.post_id, obj.meta_key, obj.meta_value);
                     //strSql.Append(string.Format("update wp_postmeta set meta_value = '{0}' where post_id = '{1}' and meta_key = '{2}' ; ", obj.meta_value, obj.post_id, obj.meta_key));
                 }
@@ -1797,7 +1797,7 @@ namespace LaylaERP.BAL
             try
             {
                 string strSql_insert = string.Empty;
-                StringBuilder strSql = new StringBuilder();               
+                StringBuilder strSql = new StringBuilder();
                 strSql.Append(string.Format("update wp_term_taxonomy set count = count-1 where term_taxonomy_id = {0} ; ", TermID));
                 result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
             }
@@ -1838,7 +1838,7 @@ namespace LaylaERP.BAL
                 strSql.Append("Insert into Shipping_Product(fk_productid,fk_shippingID) values(" + ID + "," + TermID + ");SELECT LAST_INSERT_ID();");
 
 
-              int result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
+                int result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
 
             }
             catch (Exception Ex)
@@ -1968,7 +1968,7 @@ namespace LaylaERP.BAL
                 strsql = "update wp_posts set guid = @guid" +
                          " where ID=" + metaid + " ;";
                 MySqlParameter[] para =
-               {                 
+               {
                     new MySqlParameter("@guid", FileName=="" ? "default.png" : FileName)
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
@@ -2364,7 +2364,7 @@ namespace LaylaERP.BAL
               {
                     new MySqlParameter("@Userterm_ID", ID)
                    };
-                ds = SQLHelper.ExecuteDataSet(strSQl,para);
+                ds = SQLHelper.ExecuteDataSet(strSQl, para);
                 if (ds.Tables[0].Rows.Count > 0)
                     result = ds.Tables[0].Rows[0]["term_id"].ToString();
                 else
@@ -2377,14 +2377,37 @@ namespace LaylaERP.BAL
             return result;
         }
 
+        //public string GetProductID(string ID)
+        //{
+        //    string result = "";
+        //    DataSet dt = new DataSet();
+        //    try
+        //    {
+        //        string strSQl = "Select GROUP_CONCAT(object_id) object_id from wp_term_relationships where term_taxonomy_id in (" + ID + "); ";
+        //        DataSet ds = SQLHelper.ExecuteDataSet(strSQl);
+        //        if (ds.Tables[0].Rows.Count > 0)
+        //            result = ds.Tables[0].Rows[0]["object_id"].ToString();
+        //        else
+        //            result = "0";
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw ex;
+        //    }
+        //    return result;
+        //}
         public string GetProductID(string ID)
         {
             string result = "";
             DataSet dt = new DataSet();
             try
             {
-                string strSQl = "Select GROUP_CONCAT(object_id) object_id from wp_term_relationships where term_taxonomy_id in (" + ID + "); ";
-                DataSet ds = SQLHelper.ExecuteDataSet(strSQl);
+                string strSQl = "sp_getProductID";
+                MySqlParameter[] para =
+              {
+                    new MySqlParameter("@Userterm_ID", ID)
+                   };
+                DataSet ds = SQLHelper.ExecuteDataSet(strSQl,para);
                 if (ds.Tables[0].Rows.Count > 0)
                     result = ds.Tables[0].Rows[0]["object_id"].ToString();
                 else

@@ -2443,7 +2443,7 @@ margin-left:0px !important;}
 .add.new.product .add-profile #btnfileproduct{margin-bottom:0px;}
 
 .in-hand.inventory .table-blue.table.check-table th,  .in-hand.inventory .table-blue.table.check-table td{padding-right:30px !important;}
-.in-hand.inventory .table-blue.table.check-table {min-width:1400px;}
+/*.in-hand.inventory .table-blue.table.check-table {min-width:1400px;}*/
 .in-hand.inventory #dtdata_info{width:auto; float:left;}
 .in-hand.inventory #dtdata_paginate{width:auto; float:right;}
 .neworders .sm-heading, .order .sm-heading {
@@ -2452,6 +2452,14 @@ margin-left:0px !important;}
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
+}
+#dtdata.inventory-table {
+table-layout:fixed;}
+#dtdata.inventory-table .shown + tr > td tbody td:not(:first-child){text-align:right;}
+#dtdata.inventory-table .shown + tr > td {
+    padding-top: 0px !important;
+    padding-left: 0px !important;
+    padding-right: 0px !important;
 }
 .neworders a.billinfo, .order a.billinfo {
     background-color: #ff4100;

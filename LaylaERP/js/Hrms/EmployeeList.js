@@ -47,9 +47,21 @@ function EmployeeList() {
         aoColumns: [
             { data: 'name', title: 'Name', sWidth: "20%", class: 'text-left' },
             { data: 'email', title: 'Email', sWidth: "20%" },
-            { data: 'phone', title: 'Phone', sWidth: "20%" },
             {
-                'data': 'is_active', 'sClass': 'ws_nowrap text-center', sWidth: "20%",
+
+                data: 'phone', title: 'Phone', sWidth: "20%",
+                render: function (toFormat) {
+                    var tPhone = '';
+                    if (toFormat != null) {
+                        tPhone = toFormat.toString();
+                        tPhone = '(' + tPhone.substring(0, 3) + ') ' + tPhone.substring(3, 6) + ' ' + tPhone.substring(6, 10);
+                    }
+                    return tPhone
+                }
+            },
+          
+            {
+                'data': 'is_active', 'sClass': 'ws_nowrap text-center', sWidth: "10%",
                 'render': function (id, type, full, meta) {
                     if (id == 1) {
                         toggleclass = "fas fa-toggle-on";
@@ -65,7 +77,7 @@ function EmployeeList() {
                 }
             },
             {
-                'data': 'ID', sWidth: "20%",
+                'data': 'ID', sWidth: "10%",
                 'render': function (id, type, full, meta) {
                     return '<a href="../Hrms/Employee/' + id + '"><i class="glyphicon glyphicon-pencil"></i></a>';
                 }

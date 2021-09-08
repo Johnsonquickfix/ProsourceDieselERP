@@ -1,7 +1,8 @@
 ﻿$(document).ready(function () {
-    $("#loader").hide();
+   
     getDepartment();
     getDesignation();
+    $("#loader").hide();
     $("#txtPhone").mask("(999) 999-9999");
     var url = window.location.pathname;
     var id = url.substring(url.lastIndexOf('/') + 1);
@@ -43,8 +44,8 @@ function getDepartment() {
 
 function AddEmployee() {
     ID = $("#hfid").val();
-    firstname = $("#txtFirstName").val();
-    lastname = $("#txtLastName").val();
+    firstname = $("#txtFirstName").val().trim();
+    lastname = $("#txtLastName").val().trim();
     gender = $("#ddlGender").val();
     email = $("#txtEmail").val();
     phone = $("#txtPhone").unmask().val();

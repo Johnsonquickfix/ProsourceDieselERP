@@ -20,21 +20,39 @@ namespace LaylaERP.Controllers
         public ActionResult AddNewProduct()
         {
             DataTable dt = new DataTable();
-            dt = BAL.ProductRepository.GetProductcategoriesList();
+            // dt = BAL.ProductRepository.GetProductcategoriesList();
+            string id = "";
+            dt = BAL.ProductRepository.GetParentCategory(id);
             List<SelectListItem> usertype = new List<SelectListItem>();
             for (int i = 0; i < dt.Rows.Count; i++)
             {
                 usertype.Add(new SelectListItem
                 {
-                    Value = dt.Rows[i]["term_id"].ToString(),
-                    Text = dt.Rows[i]["name"].ToString()
+                    Value = dt.Rows[i]["ID"].ToString(),
+                    Text = space(Convert.ToInt32(dt.Rows[i]["level"])) + dt.Rows[i]["name"].ToString()
 
                 });
             }
             ViewBag.product = usertype.Select(N => new SelectListItem { Text = N.Text, Value = N.Value.ToString() });
-
             return View();
         }
+
+        public string space(int noOfSpaces)
+        {
+            //try
+            //{
+            string returnValue = string.Empty;
+            string space = "#";      
+            for (var index = 0; index < noOfSpaces; index++)
+            {
+                returnValue += space;
+            }          
+            //}
+            //catch { }
+            return returnValue;
+        }
+
+
         public ActionResult AddNewPurchase()
         {
             return View();
@@ -1104,27 +1122,27 @@ namespace LaylaERP.Controllers
 
         //public JsonResult Savevariations(string fields,string UpdateList, string UpdateID, string PID, string post_title,string regularprice, string Salepricevariationval, string Stockquantityvariationval, string allowbackordersvariationval, string weightvariationval, string Lvariationval, string Wvariationval, string Hvariationval, string shipvariationval, string cassvariationval, string descriptionvariationval, string stockchec, string chkvirtual, string sku, string parentid, string attributeheaderval , ProductModel model)
         //{
-
+        [HttpPost]
         public JsonResult Savevariations(ProductModel model)
         {
 
             string result = string.Empty;
-            bool status = false;
+            bool status = false;      
             try
             {
-                int res = ProductRepository.UpdateVariantStatus(model.ProductPostMeta);
-                if (res > 0)
+               int res = ProductRepository.UpdateVariantStatus(model.ProductPostMeta);
+               if (res > 0)
                 {
-                    status = true;
-                }
+                  status = true;
+               }
 
                 //  int resl = ProductRepository.UpdateItemVariantStatus(model.ProductPostItemMeta);
 
-                int resl = ProductRepository.UpdateshippingVariantStatus(model.ProductPostItemMeta);
+              int resl = ProductRepository.UpdateshippingVariantStatus(model.ProductPostItemMeta);
 
-                int respost = ProductRepository.UpdatePostStatus(model.ProductPostPostMeta);
+               int respost = ProductRepository.UpdatePostStatus(model.ProductPostPostMeta);
 
-                int reprice = ProductRepository.addprice(model.ProductPostPriceMeta);
+              int reprice = ProductRepository.addprice(model.ProductPostPriceMeta);
             }
             catch { status = false; result = ""; }
             return Json(new { status = true, message = "Product Variations has been update successfully!!", ID = 1 }, 0);

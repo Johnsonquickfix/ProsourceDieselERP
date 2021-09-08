@@ -1,7 +1,8 @@
 ﻿
 @{
     ViewBag.Title = "ListProduct";
-    
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
 }
 
 <link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap.min.css" rel="stylesheet" />
@@ -52,8 +53,8 @@
                     </div>
 
                     <div class="alignleft actions">
-                        <select class="form-control" id="ddltype">
-                            <option value="0">Select a category</option>
+                        <select class="form-control select2" id="ddltype">
+                            @*<option value="0">Select a category</option>*@
                         </select>
                         <input type="submit" name="filter_action" id="btnOtherFilter" class="button" value="Filter">
                     </div>

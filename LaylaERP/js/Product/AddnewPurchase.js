@@ -71,16 +71,16 @@
             //}
           //  console.log('FF',items);
         });
-   
-        $.get('/Product/GetProductCategory/' + id, function (data) {
-            var items = "";
-            $('#ddlCategoryfilter').empty();
-            items += "<option value=''>Please select</option>";
-            $.each(data, function (index, value) {
-                items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddlCategoryfilter");
-            })
-            $('#ddlCategoryfilter').bind(items);
-        });
+        getParentCategory();
+        //$.get('/Product/GetProductCategory/' + id, function (data) {
+        //    var items = "";
+        //    $('#ddlCategoryfilter').empty();
+        //    items += "<option value=''>Please select</option>";
+        //    $.each(data, function (index, value) {
+        //        items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddlCategoryfilter");
+        //    })
+        //    $('#ddlCategoryfilter').bind(items);
+        //});
 
 
         $.get('/Product/GetVender/' + id, function (data) {
@@ -131,6 +131,32 @@
     $('#ddlvendercopy').hide();
     $('#btncopybuying').hide();
 });
+function space(noOfSpaces) {
+    var space = "# ", returnValue = "";
+    for (var index = 0; index < noOfSpaces; index++) {
+        returnValue += space;
+    }
+    return returnValue;
+}
+function getParentCategory(id) {
+    var obj = { strValue1: id };
+    $.ajax({
+        url: "/Product/GetParentCategory/" + id,
+        type: "Get",
+        contentType: "application/json; charset=utf-8",
+        dataType: 'JSON',
+        data: JSON.stringify(obj),
+        success: function (data) {
+            data = JSON.parse(data);
+            var opt = '<option value="0">Please select category</option>';
+            for (var i = 0; i < data.length; i++) {
+                opt += '<option value="' + data[i].ID + '">' + space(data[i].level) + data[i].name + '</option>';
+            }
+            $('#ddlCategoryfilter').html(opt);
+        }
+    });
+}
+
 
 $(document).on("click", "#btnRefresh", function (t) {    
     $('#ddlproductchild').trigger('change'); 
@@ -533,7 +559,7 @@ $(document).on('click', "#btncopybuying", function () {
     btncopybuying();
 })
 function AddBuyingt() {
-    debugger
+   
     ID = $("#hfbuyingid").val();
     fk_productval = $('#ddlproductchild').val();
     vender = $("#ddlvender").val();

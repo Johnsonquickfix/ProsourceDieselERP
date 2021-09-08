@@ -560,7 +560,7 @@ namespace LaylaERP.BAL
                 //             + " left join wp_postmeta pmsku on P.ID = pmsku.post_id and pmsku.meta_key = '_sku'"
                 //             + " left join wp_postmeta pmsatt on P.ID = pmsatt.post_id and pmsatt.meta_key = '_product_attributes'"
                 //             + " WHERE P.post_type = 'product_variation' and P.ID = " + model.strVal + " ";
-                string strSql = "SELECT p.id,p.post_title,p.post_content,p.post_name,concat('{', group_concat(concat('\"',LOWER(pm.meta_key), '\": \"', pm.meta_value,'\"')), '}') meta_data,"
+                string strSql = "SELECT p.id,p.post_title,p.post_content,p.post_name,case when guid = '' then 'default.png' else ifnull(guid,'default.png') end guid,concat('{', group_concat(concat('\"',LOWER(pm.meta_key), '\": \"', pm.meta_value,'\"')), '}') meta_data,"
                         + " (SELECT fk_shippingID FROM Shipping_Product where fk_productid = p.ID) shippingclass"
                         + " FROM wp_posts p left outer join wp_postmeta pm on pm.post_id = p.id"
                         + " and(pm.meta_key in ('_regular_price', '_sale_price', 'total_sales', '_tax_status', '_tax_class', '_manage_stock', '_backorders', '_sold_individually',"

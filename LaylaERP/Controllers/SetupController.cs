@@ -82,18 +82,32 @@ namespace LaylaERP.Controllers
         [HttpPost]
         public JsonResult AddProductWarehouseRule(SetupModel model)
         {
-            //int ID = 1;
-            int ID =SetupRepostiory.AddProductWarehouseRule(model);
+            
+            int ID = SetupRepostiory.AddProductWarehouseRule(model);
             if (ID > 0)
             {
-                SetupRepostiory.AddProductWarehouseRuleDetails(model, ID);
+                
+                return Json(new { status = true, message = "Product Data has been saved successfully!!", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+        }
+
+        public JsonResult AddProductWarehouseRuleDetails(SetupModel model)
+        {
+            
+            int ID = SetupRepostiory.AddProductWarehouseRuleDetails(model);
+            if (ID > 0)
+            {
+                
                 return Json(new { status = true, message = "Data has been saved successfully!!", url = "" }, 0);
             }
             else
             {
                 return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
             }
-
         }
 
         public JsonResult GetTableWarehouseRule()
@@ -107,6 +121,63 @@ namespace LaylaERP.Controllers
             }
             catch { }
             return Json(JSONresult, 0);
+        }
+
+        public JsonResult SelectTableWarehouseRule(SearchModel model)
+        {
+
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = SetupRepostiory.SelectTableWarehouseRule(model);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateProductWarehouseRule(SetupModel model)
+        {
+            
+            if (model.searchid > 0)
+            {
+                SetupRepostiory.UpdateProductWarehouseRule(model);
+                return Json(new { status = true, message = "Data has been saved successfully!!", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+
+        }
+
+        public JsonResult GetProductCount(SetupModel model)
+        {
+            int ID = SetupRepostiory.GetProductCount(model);
+            if (ID > 0)
+            {
+
+                return Json(new { status = true, message = "Product already exists", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+        }
+
+        public JsonResult GetPrefixCount(SetupModel model)
+        {
+            int ID = SetupRepostiory.GetPrefixCount(model);
+            if (ID > 0)
+            {
+
+                return Json(new { status = true, message = "Product already exists", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
         }
     }
 }

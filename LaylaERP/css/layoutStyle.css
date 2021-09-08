@@ -2446,7 +2446,28 @@ margin-left:0px !important;}
 .in-hand.inventory .table-blue.table.check-table {min-width:1400px;}
 .in-hand.inventory #dtdata_info{width:auto; float:left;}
 .in-hand.inventory #dtdata_paginate{width:auto; float:right;}
-
+.neworders .sm-heading, .order .sm-heading {
+    min-height: 30px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+}
+.neworders a.billinfo, .order a.billinfo {
+    background-color: #ff4100;
+    transition: all .5s ease;
+    padding: 8px 12px;
+    color: #fff;
+    font-size: 12px;
+    display: inline-block;
+    text-align: center;
+    border-radius: 5px;
+    margin-left: 15px;
+}
+.input-group-btn [type="button"]{height:34px;}
+#order_final_total .form-group {
+display:flex;}
+#billCoupon div.pull-right{display:flex; align-items:center;}
 @media(max-width:900px) {
     .hub-pro-shop select:first-child{margin-left:0px;}
     .hub-pro-shop {width: 100%; margin-top:5px;}

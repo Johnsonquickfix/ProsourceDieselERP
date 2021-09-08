@@ -101,7 +101,7 @@ function ProductStockGrid() {
             },
             { data: 'category', title: 'Category', sWidth: "100px" },
             { data: 'sku', title: 'SKU', sWidth: "120px" },
-            { data: 'post_title', title: 'Product Name', sWidth: "300px" },
+            { data: 'post_title', title: 'Product Name', sWidth: "320px" },
             {
                 data: 'op_stock', title: 'OP Stock', sWidth: "100px", className: "text-right", render: function (data, type, row) {
                     if (row.post_parent > 0) return row.op_stock.toFixed(0); else return '';

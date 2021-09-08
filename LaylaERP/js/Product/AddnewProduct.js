@@ -12,7 +12,7 @@
     $('#txtPublishDate').datepicker({ format: 'mm/dd/yyyy', autoclose: true, todayHighlight: true });
     //let today = new Date(); divimage
     //$('#txtPublishDate').val(today.toLocaleDateString("en-US"));
-
+    
     $.get('/Product/GetShipping/' + 1, function (data) {
         var items = "";
         // $('#ddlShipping').empty();
@@ -513,13 +513,28 @@
         //    }); _ItemProduct
 
         //console.log(_attxml);
-       // console.log(_ItemProduct);
-       // console.log(_PostTitleProduct);
-      //  console.log(_PriceProduct);
-         
-        var obj = {
-            ProductPostMeta: _attxml, ProductPostItemMeta: _ItemProduct, ProductPostPostMeta: _PostTitleProduct, ProductPostPriceMeta: _PriceProduct
-        }
+        //console.log(_attxml.length);
+        //console.log(_ItemProduct);
+        //console.log(_PostTitleProduct);
+        //console.log(_PriceProduct);
+
+        //if (_attxml.length > 180) {
+
+        //    var indexToSplit = chunkArray(_attxml, 2);
+        //    console.log(indexToSplit);
+        //    var first = indexToSplit[0];
+        //    var second = indexToSplit[1];
+        //    console.log(first);
+        //    console.log(second);           
+        //    var obj = {
+        //        ProductPostMeta: first, ProductPostMetaExtanded: second, ProductPostItemMeta: _ItemProduct, ProductPostPostMeta: _PostTitleProduct, ProductPostPriceMeta: _PriceProduct
+        //    }
+        //}
+        //else {
+            var obj = {
+                ProductPostMeta: _attxml, ProductPostItemMeta: _ItemProduct, ProductPostPostMeta: _PostTitleProduct, ProductPostPriceMeta: _PriceProduct
+            }
+        //}
        // console.log(obj);
         if (_attxml != '') {
             //  NOW CALL THE WEB METHOD WITH THE PARAMETERS USING AJAX.
@@ -656,6 +671,44 @@ function readURL(input) {
         reader.readAsDataURL(input.files[0]);
 
     }
+}
+function readURLvarition(input,Id) {
+    //console.log(input.files);
+   // console.log(Id);
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+           // console.log(e.target.result);
+            $('#show_pictureVar_' + Id +'').attr('src', e.target.result);
+           // $("#show_pictureVar" + data[i].id).val(v_data['_backorders']).trigger('change');
+        };
+        reader.readAsDataURL(input.files[0]);
+
+    }
+}
+function UpdateImagevarition(input, Id) {
+    ID = Id;
+    var file = document.getElementById("ImageFileVariation_"+Id+"").files[0];
+    var obj = new FormData();
+    obj.append("ImageFile", file);
+    obj.append("ID", ID);
+
+    $.ajax({
+        url: '/Product/ProductImages/', dataType: 'json', type: 'Post',
+        contentType: "application/json; charset=utf-8",
+        data: obj,
+        processData: false,
+        contentType: false,
+        beforeSend: function () { $("#loader").show(); },
+        success: function (data) {
+            if (data.status == true) {
+                swal('Alert!', data.message, 'success');
+            }
+            else { swal('Alert!', data.message, 'error') }
+        },
+        complete: function () { $("#loader").hide(); },
+        error: function (error) { swal('Error!', error.message, 'error'); },
+    })
 }
 function AddProductImages() {
     ID = $("#hfid").val();
@@ -937,11 +990,17 @@ function GetDataByID(order_id) {
             //console.log(i[0].guid);
             //console.log(path);      
             url = "../../Content/Product/" + path + "";
-            var result = checkFileExist(url);
-           // console.log(result);
+           //// var result = checkFileExist(url);
+           ////// console.log(result);
 
-            if (path.indexOf('laylasleep.com') != -1) {
-              //  console.log('sddd');
+           //// if (path.indexOf('laylasleep.com') != -1) {
+           ////   //  console.log('sddd');
+           ////     $('#show_picture').attr('src', "../../Content/ProductCategory/default.png");
+           //// }
+           //// else {
+            if (path.indexOf('product') == -1)
+                var result = checkFileExist(url);
+            if (path.indexOf('product') != -1) {
                 $('#show_picture').attr('src', "../../Content/ProductCategory/default.png");
             }
             else {
@@ -1173,6 +1232,32 @@ function GetProductvariationID(ProductID) {
                 //varHTML += '    <div class="form-check-input"><input type="checkbox" value="' + v_data['_manage_stock'] + '" class="chkproducttypestc" id="stockcheck"><label>Manage Stock?</label></div>';
                 //varHTML += '    </div>';
                 //varHTML += '</div>';
+                varHTML += '<div>';
+                varHTML += '<div class="form-group d-flex">';
+                varHTML += '<div class="col-sm-3">';
+                varHTML += '<label class="control-label">Product Image</label>';
+                varHTML += '</div>';
+                varHTML += '<div class="col-sm-9">';
+                varHTML += '</div>';
+                varHTML += '</div>';
+                varHTML += '<div class="form-group d-flex">';
+                varHTML += '<div class="col-sm-3">';
+                varHTML += '<div class="add-profile">';
+                varHTML += '<span class="edit-pic-profile">';
+                varHTML += '<input type="file" onchange="readURLvarition(this,' + data[i].id +');" name="ImageFileVariation" id="ImageFileVariation_' + data[i].id + '" class="inputfile" />';
+                varHTML += '<label for="ImageFileVariation_' + data[i].id + '"><i class="fa fa-edit"></i>Edit</label>';
+                varHTML += '</span>';
+                varHTML += '<img runat="server" id="show_pictureVar_' + data[i].id + '" class="profile-user-img img-responsive img-circle" src="../../Content/Product/default.png" alt="Product Image">';
+                varHTML += '</div>';
+                varHTML += '</div>';
+                varHTML += '<div class="col-sm-9>';
+               // varHTML += '<button type="button" id="btnproductVariation_' + data[i].id + '" onchange="UpdateImagevarition(this,' + data[i].id +');" title="Click here to Upload" data-toggle="tooltip" style="float: left;" class="control-label">Upload</button>';
+                varHTML += '<<a href="javascript:void(0);" title="Click here to Upload" data-toggle="tooltip" class="editbutton" onClick="UpdateImagevarition(this,' + data[i].id + ')"><i>Upload</i></a>';
+                varHTML += '</div>';
+                varHTML += '</div>';
+                varHTML += '</div>';
+
+
                 varHTML += '<div class="form-group d-flex mt-25">';
                 varHTML += '    <div class="col-md-6"><label class="control-label">Retail Price($)</label><input type="text" name="txtregularvar" class="form-control" placeholder="Variation price *" value="' + v_data['_regular_price'] + '"></div>';
                 varHTML += '<div class="col-md-6"><label class="control-label">Sale Price($)</label><input type="text" name="txtSalepricevariation" class="form-control" value="' + sale_price + '"></div>';
@@ -1224,6 +1309,35 @@ function GetProductvariationID(ProductID) {
                     $("#allowwebsite_" + data[i].id).prop("checked", true);
                 else
                     $("#allowwebsite_" + data[i].id).prop("checked", false);
+
+                var path = data[i].guid;
+
+                url = "../../Content/Product/" + path + "";
+                if (path.indexOf('product') == -1)
+                    var result = checkFileExist(url);
+                if (path.indexOf('product') != -1) {
+                    $('#show_pictureVar_' + data[i].id + '').attr('src', "../../Content/ProductCategory/default.png");
+                }
+                else {
+
+                    if (result == true) {
+
+                        $('#show_pictureVar_' + data[i].id + '').attr('src', url);
+
+                    }
+                    else if (path == null || path == "") {
+                        $('#show_pictureVar_' + data[i].id + '').attr('src', "../../Content/ProductCategory/default.png");
+
+                    }
+                    else {
+                        $('#show_pictureVar_' + data[i].id + '').attr('src', "../../Content/ProductCategory/default.png");
+                    }
+
+
+                }
+
+                //url = "../../Content/Product/" + data[i].guid + "";
+               // $('#show_pictureVar_' + data[i].id + '').attr('src', url);
                 
             }
 
@@ -1251,3 +1365,11 @@ function GetProductvariationID(ProductID) {
 
 
 
+function chunkArray(arr, n) {
+    var chunkLength = Math.max(arr.length / n, 1);
+    var chunks = [];
+    for (var i = 0; i < n; i++) {
+        if (chunkLength * (i + 1) <= arr.length) chunks.push(arr.slice(chunkLength * i, chunkLength * (i + 1)));
+    }
+    return chunks;
+}

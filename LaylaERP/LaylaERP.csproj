@@ -612,6 +612,7 @@
     <Content Include="js\Customer\Customer.js" />
     <Content Include="js\FeeNTax\FeeNTax.js" />
     <Content Include="js\GooglePlace\index.js" />
+    <Content Include="js\Hrms\EmployeeList.js" />
     <Content Include="js\Hrms\Hrms.js" />
     <Content Include="js\Inventory\ConsignmentInventory.js" />
     <Content Include="js\Inventory\Inventory.js" />
@@ -877,6 +878,7 @@
     <Content Include="Views\Hrms\RoleMembership.cshtml" />
     <Content Include="Views\Setup\productrule.cshtml" />
     <Content Include="Views\IPNPaypal\ipnpaypal.cshtml" />
+    <Content Include="Views\Hrms\EmployeeList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

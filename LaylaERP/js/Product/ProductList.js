@@ -3,12 +3,12 @@
         $('.subsubsub li a').removeClass('current');
         $(this).addClass('current');
     });
-    $.get('GetCategoryType', function (data) {
-        var items = "";
-        $.each(data, function (index, value) {
-            items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#ddltype");
-        })
-    })
+    //$.get('GetCategoryType', function (data) {
+    //    var items = "";
+    //    $.each(data, function (index, value) {
+    //        items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#  ");
+    //    })
+    //})
 
     $('#dtdata tbody').on('click', '.details-control', function () {
         var tr = $(this).closest('tr');
@@ -29,7 +29,7 @@
         }
     });
 
-
+     getParentCategory();
     GetDetails();
     setTimeout(function () { dataGridLoad(''); }, 100);
     $("#loader").hide();
@@ -38,7 +38,34 @@
     $('#private').click(function () { var order_type = "private"; $('#hfType').val(order_type); dataGridLoad(order_type); });
     $('#trash').click(function () { var order_type = "trash"; $('#hfType').val(order_type); dataGridLoad(order_type); });
     $('#btnOtherFilter').click(function () { var order_type = $('#hfType').val(); dataGridLoad(order_type); });
-});
+ });
+
+function space(noOfSpaces) {
+    var space = "# ", returnValue = "";
+    for (var index = 0; index < noOfSpaces; index++) {
+        returnValue += space;
+    }
+    return returnValue;
+}
+function getParentCategory(id) {
+    var obj = { strValue1: id };
+    $.ajax({
+        url: "/Product/GetParentCategory/" + id,
+        type: "Get",
+        contentType: "application/json; charset=utf-8",
+        dataType: 'JSON',
+        data: JSON.stringify(obj),
+        success: function (data) {
+            data = JSON.parse(data);
+            var opt = '<option value="0">Please select category</option>';
+            for (var i = 0; i < data.length; i++) {
+                opt += '<option value="' + data[i].ID + '">' + space(data[i].level) + data[i].name + ' (' + data[i].count + ')' +'</option>';
+            }
+            $('#ddltype').html(opt);
+        }
+    });
+}
+
 function GetDetails() {
     var opt = { strValue1: '' };
     $.ajax({
@@ -254,7 +281,7 @@ function dataGridLoad(order_type) {
             },
 
             {
-                "data": "guid", 
+                "data": "guid", sWidth: "4%   ",
                 //'render': function (data, type, full, meta) {
                 //    return '<i class="glyphicon glyphicon-picture"></i>';
                 //}

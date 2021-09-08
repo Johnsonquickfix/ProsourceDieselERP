@@ -223,6 +223,13 @@ namespace LaylaERP.BAL
                             obj.tva_tx, obj.localtax1_tx, obj.localtax1_type, obj.localtax2_tx, obj.localtax2_type, obj.total_tva, obj.total_localtax1, obj.total_localtax2);
                     }
                 }
+
+                //Add Stock
+                strsql += "delete from product_stock_register where tran_type = 'PO' and flag = 'O' and tran_id = " + model.RowID + ";"
+                        + " insert into product_stock_register (tran_type,tran_id,product_id,warehouse_id,tran_date,quantity,flag)"
+                        + " select 'PO',pod.fk_purchase,pod.fk_product,(select wp_w.rowid from wp_warehouse wp_w where wp_w.is_system = 1 limit 1) warehouse_id,po.date_creation,pod.qty,'O' from commerce_purchase_order_detail pod"
+                        + " inner join commerce_purchase_order po on po.rowid = pod.fk_purchase where fk_purchase = "+ model.RowID + ";";
+
                 if (SQLHelper.ExecuteNonQueryWithTrans(strsql) > 0)
                     result = model.RowID;
             }

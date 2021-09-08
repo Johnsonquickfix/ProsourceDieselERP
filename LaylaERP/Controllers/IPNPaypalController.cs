@@ -43,8 +43,9 @@ namespace LaylaERP.Controllers
                 //Set values for the verification request
                 verificationRequest.Method = "POST";
                 verificationRequest.ContentType = "application/x-www-form-urlencoded";
-                var param = Request.BinaryRead(ipnRequest.ContentLength);
-                var strRequest = Encoding.ASCII.GetString(param);
+                //var param = Request.BinaryRead(ipnRequest.ContentLength);
+                //var strRequest = Encoding.ASCII.GetString(param);
+                var strRequest = ipnRequest.QueryString.ToString();
 
                 //Add cmd=_notify-validate to the payload
                 strRequest = "cmd=_notify-validate&" + strRequest;
@@ -89,6 +90,7 @@ namespace LaylaERP.Controllers
 
         private void ProcessVerificationResponse(string verificationResponse)
         {
+            clsPayPal.UpdatePaymentLog(verificationResponse);
             if (verificationResponse.Equals("VERIFIED"))
             {
                 // check that Payment_status=Completed   -- Request.QueryString["Payment_status"]

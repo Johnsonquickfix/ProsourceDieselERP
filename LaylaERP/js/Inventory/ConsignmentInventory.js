@@ -70,6 +70,7 @@ function ProductStockGrid() {
     let obj = { strValue1: $("#txtsku").val().trim(), strValue2: (ctid > 0 ? ctid : ''), strValue3: (pid > 0 ? pid : ''), strValue4: sd, strValue5: ed };// console.log(obj);
     $('#dtdata').DataTable({
         oSearch: { "sSearch": '' },
+        bAutoWidth: false, scrollX: false,
         dom: 'lBftip', buttons: [{ extend: 'excelHtml5', title: 'Product In-Hand Inventory Report', action: function (e, dt, button, config) { exportTableToCSV('Product In-Hand Inventory Report.xls'); } },
         {
             extend: 'csvHtml5', title: 'Product In-Hand Inventory Report', titleAttr: 'CSV',
@@ -85,21 +86,21 @@ function ProductStockGrid() {
             infoEmpty: "No records found",
             processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
         },
-        destroy: true, bAutoWidth: false, ajax: {
+        destroy: true, ajax: {
             url: '/Inventory/GetProductStock', type: 'GET', dataType: 'json', contentType: "application/json; charset=utf-8", data: obj,
             dataSrc: function (data) { return JSON.parse(data); }
         },
         lengthMenu: [[10, 20, 50, 100], [10, 20, 50, 100]],
         columns: [
-            { data: 'p_id', title: 'Parent ID', sWidth: "10%" },
+            { data: 'p_id', title: 'Parent ID', sWidth: "8%" },
             {
-                data: 'id', title: 'ID', sWidth: "10%", render: function (data, type, row) {
+                data: 'id', title: 'ID', sWidth: "8%", render: function (data, type, row) {
                     //if (row.post_parent > 0) return '<a href="javascript:void(0);" class="details-control"><i class="glyphicon glyphicon-plus-sign"></i></a> ↳  #' + row.id; else return '<a href="javascript:void(0);" class="details-control"><i class="glyphicon glyphicon-plus-sign"></i></a> <b>#' + row.id + '</b>';
                     if (row.post_parent > 0) return '<a href="javascript:void(0);" class="details-control"><i class="glyphicon glyphicon-plus-sign"></i></a> -  #' + row.id; else return ' <b>#' + row.id + '</b>';
                 }
             },
-            { data: 'category', title: 'Category', sWidth: "10%" },
-            { data: 'sku', title: 'SKU', sWidth: "10%" },
+            { data: 'category', title: 'Category', sWidth: "8%" },
+            { data: 'sku', title: 'SKU', sWidth: "8%" },
             { data: 'post_title', title: 'Product Name', sWidth: "20%" },
             {
                 data: 'op_stock', title: 'OP Stock', sWidth: "8%", className: "text-right", render: function (data, type, row) {
@@ -107,27 +108,27 @@ function ProductStockGrid() {
                 }
             },
             {
-                data: 'stock', title: 'Units In Stock', sWidth: "10%", className: "text-right", render: function (data, type, row) {
+                data: 'stock', title: 'Units In Stock', sWidth: "8%", className: "text-right", render: function (data, type, row) {
                     if (row.post_parent > 0) return row.stock.toFixed(0); else return '';
                 }
             },
             {
-                data: 'UnitsinPO', title: 'Units in POs', sWidth: "7%", className: "text-right", render: function (data, type, row) {
+                data: 'UnitsinPO', title: 'Units in POs', sWidth: "8%", className: "text-right", render: function (data, type, row) {
                     if (row.post_parent > 0) return row.UnitsinPO.toFixed(0); else return '';
                 }
             },
             {
-                data: 'SaleUnits', title: 'Sale Units', sWidth: "7%", className: "text-right", render: function (data, type, row) {
+                data: 'SaleUnits', title: 'Sale Units', sWidth: "8%", className: "text-right", render: function (data, type, row) {
                     if (row.post_parent > 0) return row.SaleUnits.toFixed(0); else return '';
                 }
             },
             {
-                data: 'Damage', title: 'Damage Units', sWidth: "7%", className: "text-right", render: function (data, type, row) {
+                data: 'Damage', title: 'Damage Units', sWidth: "8%", className: "text-right", render: function (data, type, row) {
                     if (row.post_parent > 0) return row.Damage.toFixed(0); else return '';
                 }
             },
             {
-                data: 'available', title: 'Available Units', sWidth: "7%", className: "text-right", render: function (data, type, row) {
+                data: 'available', title: 'Available Units', sWidth: "8%", className: "text-right", render: function (data, type, row) {
                     if (row.post_parent > 0) return (row.op_stock + row.stock + row.UnitsinPO - row.SaleUnits - row.Damage).toFixed(0); else return '';
                 }
             },
@@ -142,7 +143,7 @@ function format(d) {
     let sd = dfa[0].split('/'); sd = sd[1] + '/' + sd[0] + '/' + sd[2];
     let ed = dfa[1].split('/'); ed = ed[1] + '/' + ed[0] + '/' + ed[2];
 
-    let option = { strValue1: d.id, strValue2: sd, strValue3: ed }, wrHTML = '<table class="inventory-table table-blue table check-table table-bordered table-striped dataTable no-footer"><thead><tr><th>Warehouse</th><th style="width:8%">OP Stock</th><th style="width:7%">Units In Stock</th><th style="width:7%">Units in POs</th><th style="width:7%">Sale Units</th><th style="width:7%">Damage Units</th><th style="width:7%">Available Units</th></thead></tr>';
+    let option = { strValue1: d.id, strValue2: sd, strValue3: ed }, wrHTML = '<table class="inventory-table table-blue table check-table table-bordered table-striped dataTable no-footer"><thead><tr><th style="width:40.8%; text-align:left;">Warehouse</th><th style="width:8%; text-align:right;">OP Stock</th><th style="width:8%; text-align:right;">Units In Stock</th><th style="width:8%; text-align:right;">Units in POs</th><th style="width:8%; text-align:right;">Sale Units</th><th style="width:8%; text-align:right;">Damage Units</th><th style="width:8%; text-align:right;">Available Units</th></thead></tr>';
     $.ajax({
         url: '/Inventory/GetStockByWarehouse', type: 'post', dataType: 'json', contentType: "application/json; charset=utf-8", data: JSON.stringify(option),
         success: function (result) {

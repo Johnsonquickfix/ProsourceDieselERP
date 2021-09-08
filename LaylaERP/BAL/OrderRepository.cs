@@ -269,13 +269,13 @@
             List<OrderProductsModel> _list = new List<OrderProductsModel>();
             try
             {
-                _list = GetProductListDetails(product_id, variation_id, "-", "-");                
+                _list = GetProductListDetails(product_id, variation_id, "-", "-");
             }
             catch (Exception ex)
             { throw ex; }
             return _list;
         }
-        public static List<OrderProductsModel> GetProductListDetails(long product_id, long variation_id,string countrycode, string statecode)
+        public static List<OrderProductsModel> GetProductListDetails(long product_id, long variation_id, string countrycode, string statecode)
         {
             List<OrderProductsModel> _list = new List<OrderProductsModel>();
             try
@@ -466,6 +466,8 @@
                         strSql.Append(string.Format(" select LAST_INSERT_ID(),'{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}';", model.OrderPostStatus.order_id, obj.product_id, obj.variation_id, model.OrderPostStatus.customer_id,
                                 cDate.ToString("yyyy/MM/dd HH:mm:ss"), obj.quantity, (obj.total - obj.discount), (obj.total - obj.discount + obj.tax_amount), obj.discount, obj.tax_amount, obj.shipping_amount, obj.shipping_tax_amount));
                     }
+
+                   // str_Stock+= string.Format("select 'SO',{0},{1},13 warehouse_id,{2},{3},'I'", model.OrderPostStatus.order_id, obj.variation_id > 0 ? obj.variation_id : obj.product_id, model.OrderPostStatus.date_created.ToString("MMMM dd, yyyy @ HH:mm tt"), obj.quantity);
                 }
                 /// step 4 : wp_woocommerce_order_itemmeta
                 strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'_product_id',product_id from wp_wc_order_product_lookup where order_id={0} and order_item_id not in ({1})", model.OrderPostStatus.order_id, str_oiid));
@@ -505,7 +507,7 @@
                         {
                             strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'discount_amount',{0} from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}' and order_item_name = '{3}'; ", obj.amount, model.OrderPostStatus.order_id, obj.item_type, obj.item_name));
                         }
-                        else if (obj.item_type == "fee")
+                        else if (obj.item_type == "fee" && obj.amount != 0)
                         {
                             strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'tax_status','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}'; ", "taxable", model.OrderPostStatus.order_id, obj.item_type));
                             strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'_line_total','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}'; ", obj.amount, model.OrderPostStatus.order_id, obj.item_type));
@@ -543,7 +545,14 @@
                 }
 
                 /// step 8 : wp_posts
-                strSql.Append(string.Format(" update wp_posts set post_status = '{0}' ,comment_status = 'closed',post_modified = '{1}',post_modified_gmt = '{2}',post_excerpt = '{3}' where id = {4} ", model.OrderPostStatus.status, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"), model.OrderPostStatus.Search, model.OrderPostStatus.order_id));
+                strSql.Append(string.Format(" update wp_posts set post_status = '{0}' ,comment_status = 'closed',post_modified = '{1}',post_modified_gmt = '{2}',post_excerpt = '{3}' where id = {4}; ", model.OrderPostStatus.status, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"), model.OrderPostStatus.Search, model.OrderPostStatus.order_id));
+
+                ///step 9 : Reduce Stock
+                strSql.Append("delete from product_stock_register where tran_type ='SO' and tran_id = "+ model.OrderPostStatus.order_id + ";");
+                strSql.Append("insert into product_stock_register (tran_type,tran_id,product_id,warehouse_id,tran_date,quantity,flag)");
+                strSql.Append("select 'SO', opl.order_id, (case when opl.variation_id > 0 then opl.variation_id else opl.product_id end) fk_product,");
+                strSql.Append("(select wp_w.rowid from wp_warehouse wp_w where wp_w.is_system = 1 limit 1) warehouse_id,p.post_date,opl.product_qty,'I'");
+                strSql.Append("from wp_wc_order_product_lookup opl inner join wp_posts p on p.id = opl.order_id where p.id = " + model.OrderPostStatus.order_id + ";");
 
                 result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
             }

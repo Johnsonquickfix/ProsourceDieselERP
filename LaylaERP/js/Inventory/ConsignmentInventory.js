@@ -70,6 +70,7 @@ function ProductStockGrid() {
     let obj = { strValue1: $("#txtsku").val().trim(), strValue2: (ctid > 0 ? ctid : ''), strValue3: (pid > 0 ? pid : ''), strValue4: sd, strValue5: ed };// console.log(obj);
     $('#dtdata').DataTable({
         oSearch: { "sSearch": '' },
+        bAutoWidth: true, scrollX: true,
         dom: 'lBftip', buttons: [{ extend: 'excelHtml5', title: 'Product In-Hand Inventory Report', action: function (e, dt, button, config) { exportTableToCSV('Product In-Hand Inventory Report.xls'); } },
         {
             extend: 'csvHtml5', title: 'Product In-Hand Inventory Report', titleAttr: 'CSV',
@@ -85,49 +86,49 @@ function ProductStockGrid() {
             infoEmpty: "No records found",
             processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
         },
-        destroy: true, bAutoWidth: false, ajax: {
+        destroy: true, ajax: {
             url: '/Inventory/GetProductStock', type: 'GET', dataType: 'json', contentType: "application/json; charset=utf-8", data: obj,
             dataSrc: function (data) { return JSON.parse(data); }
         },
         lengthMenu: [[10, 20, 50, 100], [10, 20, 50, 100]],
         columns: [
-            { data: 'p_id', title: 'Parent ID', sWidth: "10%" },
+            { data: 'p_id', title: 'Parent ID', sWidth: "100px" },
             {
-                data: 'id', title: 'ID', sWidth: "10%", render: function (data, type, row) {
+                data: 'id', title: 'ID', sWidth: "100px", render: function (data, type, row) {
                     //if (row.post_parent > 0) return '<a href="javascript:void(0);" class="details-control"><i class="glyphicon glyphicon-plus-sign"></i></a> ↳  #' + row.id; else return '<a href="javascript:void(0);" class="details-control"><i class="glyphicon glyphicon-plus-sign"></i></a> <b>#' + row.id + '</b>';
                     if (row.post_parent > 0) return '<a href="javascript:void(0);" class="details-control"><i class="glyphicon glyphicon-plus-sign"></i></a> -  #' + row.id; else return ' <b>#' + row.id + '</b>';
                 }
             },
-            { data: 'category', title: 'Category', sWidth: "10%" },
-            { data: 'sku', title: 'SKU', sWidth: "10%" },
-            { data: 'post_title', title: 'Product Name', sWidth: "20%" },
+            { data: 'category', title: 'Category', sWidth: "100px" },
+            { data: 'sku', title: 'SKU', sWidth: "120px" },
+            { data: 'post_title', title: 'Product Name', sWidth: "300px" },
             {
-                data: 'op_stock', title: 'OP Stock', sWidth: "8%", className: "text-right", render: function (data, type, row) {
+                data: 'op_stock', title: 'OP Stock', sWidth: "100px", className: "text-right", render: function (data, type, row) {
                     if (row.post_parent > 0) return row.op_stock.toFixed(0); else return '';
                 }
             },
             {
-                data: 'stock', title: 'Units In Stock', sWidth: "10%", className: "text-right", render: function (data, type, row) {
+                data: 'stock', title: 'Units In Stock', sWidth: "120px", className: "text-right", render: function (data, type, row) {
                     if (row.post_parent > 0) return row.stock.toFixed(0); else return '';
                 }
             },
             {
-                data: 'UnitsinPO', title: 'Units in POs', sWidth: "7%", className: "text-right", render: function (data, type, row) {
+                data: 'UnitsinPO', title: 'Units in POs', sWidth: "120px", className: "text-right", render: function (data, type, row) {
                     if (row.post_parent > 0) return row.UnitsinPO.toFixed(0); else return '';
                 }
             },
             {
-                data: 'SaleUnits', title: 'Sale Units', sWidth: "7%", className: "text-right", render: function (data, type, row) {
+                data: 'SaleUnits', title: 'Sale Units', sWidth: "100px", className: "text-right", render: function (data, type, row) {
                     if (row.post_parent > 0) return row.SaleUnits.toFixed(0); else return '';
                 }
             },
             {
-                data: 'Damage', title: 'Damage Units', sWidth: "7%", className: "text-right", render: function (data, type, row) {
+                data: 'Damage', title: 'Damage Units', sWidth: "120px", className: "text-right", render: function (data, type, row) {
                     if (row.post_parent > 0) return row.Damage.toFixed(0); else return '';
                 }
             },
             {
-                data: 'available', title: 'Available Units', sWidth: "7%", className: "text-right", render: function (data, type, row) {
+                data: 'available', title: 'Available Units', sWidth: "120px", className: "text-right", render: function (data, type, row) {
                     if (row.post_parent > 0) return (row.op_stock + row.stock + row.UnitsinPO - row.SaleUnits - row.Damage).toFixed(0); else return '';
                 }
             },

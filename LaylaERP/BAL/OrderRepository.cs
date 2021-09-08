@@ -269,13 +269,13 @@
             List<OrderProductsModel> _list = new List<OrderProductsModel>();
             try
             {
-                _list = GetProductListDetails(product_id, variation_id, "-", "-");                
+                _list = GetProductListDetails(product_id, variation_id, "-", "-");
             }
             catch (Exception ex)
             { throw ex; }
             return _list;
         }
-        public static List<OrderProductsModel> GetProductListDetails(long product_id, long variation_id,string countrycode, string statecode)
+        public static List<OrderProductsModel> GetProductListDetails(long product_id, long variation_id, string countrycode, string statecode)
         {
             List<OrderProductsModel> _list = new List<OrderProductsModel>();
             try
@@ -505,7 +505,7 @@
                         {
                             strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'discount_amount',{0} from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}' and order_item_name = '{3}'; ", obj.amount, model.OrderPostStatus.order_id, obj.item_type, obj.item_name));
                         }
-                        else if (obj.item_type == "fee")
+                        else if (obj.item_type == "fee" && obj.amount != 0)
                         {
                             strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'tax_status','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}'; ", "taxable", model.OrderPostStatus.order_id, obj.item_type));
                             strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'_line_total','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}'; ", obj.amount, model.OrderPostStatus.order_id, obj.item_type));

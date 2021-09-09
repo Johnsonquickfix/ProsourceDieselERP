@@ -733,7 +733,7 @@ function bindbuyingprice() {
         type: "POST", url: '/Product/GetBuyingdata', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
         beforeSend: function () { $("#loader1").show(); },
         success: function (data) {
-            console.log('g', data);
+            //console.log('g', data);
             var itemsDetailsxml = [];
             for (var i = 0; i < data.length; i++) {
                 // let row_key = data[i].ID ;                      

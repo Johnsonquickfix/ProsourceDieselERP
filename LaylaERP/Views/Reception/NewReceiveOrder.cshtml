@@ -9,7 +9,7 @@
     <span>&nbsp;&nbsp;Loading......</span>
 </div>
 <div class="page-title">
-    <h2 class="page-heading" id="lbltitle">New Purchase Order</h2>
+    <h2 class="page-heading" id="lbltitle">Receive Order</h2>
     <button type="button" class="btn btn-danger hidden" id="btnPrintPdf"><i class="fas fa-print"></i> Print</button>
 </div>
 <!-- Main content -->
@@ -72,6 +72,12 @@
                                 <select class="form-control select2 billinfo" id="ddlPaymentType"></select>
                             </div>
                         </div>
+                        <div class="form-group">
+                            <label class="control-label" for="ddlwarehouse" data-toggle="tooltip" title="Warehouse .">Warehouse <span class="text-red">*</span></label>
+                            <div class="">
+                                <select class="form-control select2 billinfofo" id="ddlwarehouse"></select>
+                            </div>
+                        </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
@@ -115,6 +121,7 @@
                                     <th style="width: 10%">Vendor SKU</th>
                                     <th class="text-right" style="width: 10%">Price</th>
                                     <th class="text-right" style="width: 10%">Quantity</th>
+                                    <th class="text-right" style="width: 10%">RecQuantity</th>
                                     <th class="text-right" style="width: 10%">Discount(%)</th>
                                     <th class="text-right" style="width: 8%">Tax</th>
                                     <th class="text-right" style="width: 8%">Shipping</th>
@@ -193,7 +200,7 @@
                 </div>
                 <!-- /.box-body -->
                 <div class="box-footer text-right footer-finalbutton">
-                    <a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList">Back to List</a>
+                    <a class="btn btn-danger pull-left" href="/Reception/ReceiveOrder">Back to List</a>
                 </div>
             </div>
         </div>

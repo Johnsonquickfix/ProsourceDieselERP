@@ -26,6 +26,42 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+
+        public JsonResult Getwarehouse(SearchModel model)
+        {
+            DataSet ds = BAL.ReceptionRepository.Getwarehouse(model.strValue1);
+            List<SelectListItem> productlist = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                productlist.Add(new SelectListItem { Text = dr["Name"].ToString(), Value = dr["ID"].ToString() });
+            }
+            return Json(productlist, JsonRequestBehavior.AllowGet);
+
+        }
+
+        [HttpPost]
+        public JsonResult ReceptionPurchase(PurchaseReceiceOrderModel model)
+        {
+            string JSONstring = string.Empty; bool b_status = false; long ID = 0;
+            try
+            {
+                ID = new ReceptionRepository().ReceptionPurchase(model);
+
+                if (ID > 0)
+                {
+                    b_status = true; JSONstring = "Purchase Record has been updated successfully!!";
+                }
+                else
+                {
+                    b_status = false; JSONstring = "Invalid Details.";
+                }
+            }
+            catch (Exception Ex)
+            {
+                b_status = false; JSONstring = Ex.Message;
+            }
+            return Json(new { status = b_status, message = JSONstring, id = ID }, 0);
+        }
         public JsonResult GetPurchaseOrderList(JqDataTableModel model)
         {
             string result = string.Empty;

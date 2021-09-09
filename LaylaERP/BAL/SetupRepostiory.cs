@@ -144,7 +144,7 @@ namespace LaylaERP.BAL
             DataTable dtr = new DataTable();
             try
             {
-                string strquery = "SELECT pwr.rowid as id, COALESCE(ps.id,p.id) id,COALESCE(ps.post_title,p.post_title) as product, ww.ref as warehouse, wv.name as vendor, pwr.prefix_code as code"
+                string strquery = "SELECT pwrd.rowid as id, COALESCE(ps.id,p.id) id,COALESCE(ps.post_title,p.post_title) as product, ww.ref as warehouse, wv.name as vendor, pwr.prefix_code as code"
                                   +" FROM wp_posts as p"
                                   +" LEFT JOIN wp_posts ps ON ps.post_parent = p.id and ps.post_type LIKE 'product_variation'"
                                   +" left join wp_postmeta psku on psku.post_id = ps.id and psku.meta_key = '_sku'"
@@ -162,7 +162,7 @@ namespace LaylaERP.BAL
             return dtr;
         }
 
-        public static DataTable SelectTableWarehouseRule(SearchModel model)
+        public static DataTable SelectTableWarehouseRule(long id)
         {
             DataTable dtr = new DataTable();
             try
@@ -175,7 +175,7 @@ namespace LaylaERP.BAL
                                   + " INNER join product_warehouse_rule_details pwrd on pwrd.fk_product_rule = pwr.rowid"
                                   + " inner join wp_warehouse ww on ww.rowid = pwrd.fk_warehouse"
                                   + " inner join wp_vendor wv on wv.rowid = pwrd.fk_vendor"
-                                  + " WHERE pwrd.rowid='"+model.strValue1+"' AND p.post_type = 'product' AND p.post_status = 'publish'";
+                                  + " WHERE pwrd.rowid='"+id+"' AND p.post_type = 'product' AND p.post_status = 'publish'";
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strquery);
                 dtr = ds.Tables[0];
@@ -190,20 +190,22 @@ namespace LaylaERP.BAL
 
             try
             {
-
-                string strsql = "UPDATE product_warehouse_rule_details set fk_vendor=@fk_vendor, fk_warehouse=@fk_warehouse where rowid = '" + model.searchid + "'";
+                string strsql = "UPDATE product_warehouse_rule set product_id = @product_id, prefix_code = @prefix_code where product_id = '" + model.searchproductid + "';";
+                string strsql1 ="UPDATE product_warehouse_rule_details set fk_vendor=@fk_vendor, fk_warehouse=@fk_warehouse where rowid = '" + model.searchid + "';";
 
 
                 MySqlParameter[] para =
                {
-                     
+                    new MySqlParameter("@product_id", model.product_id),
+                    new MySqlParameter("@prefix_code",model.prefix_code),
+
                     new MySqlParameter("@fk_vendor",model.fk_vendor),
                     new MySqlParameter("@fk_warehouse",model.fk_warehouse),
 
 
             };
 
-                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql+strsql1, para));
                 return result;
             }
             catch (Exception Ex)

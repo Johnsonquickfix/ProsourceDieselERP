@@ -6,8 +6,8 @@
     getEmployeeCode();
     $("#loader").hide();
     $("#txtPhone").mask("(999) 999-9999");
-  
     $("#txtAlternateContactNumber").mask("(999) 999-9999");
+
     $("#txtdob").datepicker({ format: 'mm-dd-yyyy', });
     $("#txtJoiningDate").datepicker({ format: 'mm-dd-yyyy', });
     $("#txtLeavingDate").datepicker({ format: 'mm-dd-yyyy', });
@@ -83,12 +83,13 @@ function getEmployeeCode() {
 }
 
 $(document).on('click', "#btnNext1", function () {
+   
     ID = $("#hfid").val();
     firstname = $("#txtFirstName").val().trim();
     lastname = $("#txtLastName").val().trim();
     gender = $("#ddlGender").val();
     email = $("#txtEmail").val();
-    phone = $("#txtPhone").unmask().val();
+    phone = $("#txtPhone").val();
     dob = $("#txtdob").val();
     emptype = $("#ddlEmployeeType").val();
     status = $("#chkemployeestatus").prop("checked") ? 1 : 0;
@@ -107,14 +108,17 @@ $(document).on('click', "#btnNext1", function () {
     var m = ("0" + (formattedDate.getMonth() + 1)).slice(-2)
     var y = formattedDate.getFullYear();
     var dateofbirth = y + "-" + m + "-" + d;
+    var pattern = /^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
     if (firstname == "") { swal('Alert', 'Please Enter First Name', 'error').then(function () { swal.close(); $('#txtFirstName').focus(); }); }
     else if (lastname == "") { swal('Alert', 'Please Enter Last Name', 'error').then(function () { swal.close(); $('#txtLastName').focus(); }); }
     else if (gender == 0) { swal('Alert', 'Please select gender', 'error').then(function () { swal.close(); $('#ddlGender').focus(); }); }
     else if (email == "") { swal('Alert', 'Please email id', 'error').then(function () { swal.close(); $('#txtEmail').focus(); }); }
+    else if (!pattern.test(email)) { swal('alert', 'not a valid e-mail address', 'error').then(function () { swal.close(); $('#txtAccountEmail').focus(); }) }
     else if (phone == "") { swal('Alert', 'Please Enter Phone Number', 'error').then(function () { swal.close(); $('#txtPhone').focus(); }); }
     else if (dob == "") { swal('Alert', 'Please Enter Date Of Birth', 'error').then(function () { swal.close(); $('#txtdob').focus(); }); }
     else if (emptype == 0) { swal('Alert', 'Please Select Employee Type', 'error').then(function () { swal.close(); $('#ddlEmployeeType').focus(); }); }
     else {
+        phone = $("#txtPhone").unmask().val();
         var obj = {
             rowid: ID,
             firstname: firstname, lastname: lastname, email: email, emp_type: emptype, dob: dateofbirth, phone: phone, gender: gender,
@@ -146,6 +150,11 @@ $(document).on('click', "#btnNext1", function () {
     }
 
 });
+
+$(document).on('click', "#btnBack2", function () {
+    var link = $('#mytabs .active').prev().children('a').attr('href');
+    $('#mytabs a[href="' + link + '"]').tab('show');
+});
 $(document).on('click', "#btnNext2", function () {
     ID = $("#hfid").val();
     employeenumber = $("#txtEmployeeIDNumber").val();
@@ -165,7 +174,6 @@ $(document).on('click', "#btnNext2", function () {
     alternatezipcode = $("#txtAlternateZipCode").val();
     alternatecountry = $("#txtAlternateCountry").val();
     alternatecontactNumber = $("#txtAlternateContactNumber").unmask().val();
-
     var formattedDate = new Date(joiningdate);
     var d = formattedDate.getDate();
     var m = ("0" + (formattedDate.getMonth() + 1)).slice(-2)
@@ -207,6 +215,10 @@ $(document).on('click', "#btnNext2", function () {
 
 
 });
+$(document).on('click', "#btnBack3", function () {
+    var link = $('#mytabs .active').prev().children('a').attr('href');
+    $('#mytabs a[href="' + link + '"]').tab('show');
+});
 $(document).on('click', "#btnNext3", function () {
     ID = $("#hfid").val();
     basicsalary = $("#txtBasicSalary").val();
@@ -233,6 +245,10 @@ $(document).on('click', "#btnNext3", function () {
             complete: function () { $("#loader").hide(); },
             error: function (error) { swal('Error!', 'something went wrong', 'error'); },
         })
+});
+$(document).on('click', "#btnBack4", function () {
+    var link = $('#mytabs .active').prev().children('a').attr('href');
+    $('#mytabs a[href="' + link + '"]').tab('show');
 });
 $(document).on('click', "#btnNext4", function () {
     ID = $("#hfid").val();
@@ -264,7 +280,10 @@ $(document).on('click', "#btnNext4", function () {
             error: function (error) { swal('Error!', 'something went wrong', 'error'); },
         })
 });
-
+$(document).on('click', "#btnBack5", function () {
+    var link = $('#mytabs .active').prev().children('a').attr('href');
+    $('#mytabs a[href="' + link + '"]').tab('show');
+});
 $("#btnuploadFiles").click(function () {
     fk_emp = $("#hfid").val();
     var file = document.getElementById("ImageFile").files[0];
@@ -443,16 +462,16 @@ function GetVendorByID(id) {
 
                     $('#show_picture').attr('src', '../../Content/EmployeeProfileImage/' + d[0].ProfileImageName);
                     $("#txtEmployeeIDNumber").val(d[0].emp_number);
-                    $("#ddldesignation").val(d[0].designation).trigger("change");
-                    $("#ddldepartment").val(d[0].department).trigger("change");
-                    $("#ddlSupervisorId").val(d[0].undertaking_emp).trigger("change");
+                    $("#ddldesignation").val(d[0].designation == null ? "0" : d[0].designation).trigger("change");
+                    $("#ddldepartment").val(d[0].department == null ? "0" : d[0].department).trigger("change");
+                    $("#ddlSupervisorId").val(d[0].undertaking_emp == null ? "0" : d[0].undertaking_emp).trigger("change");
                     var date = new Date(d[0].joining_date);
                     var Jdate = ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '-' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '-' + date.getFullYear();
                     $("#txtJoiningDate").val(Jdate);
                     var date = new Date(d[0].leaving_date);
                     var Ldate = ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '-' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '-' + date.getFullYear();
                     $("#txtLeavingDate").val(Ldate);
-                    $("#ddlBloodGroup").val(d[0].bloodgroup).trigger("change");
+                    $("#ddlBloodGroup").val(d[0].bloodgroup == null ? "0" : d[0].bloodgroup).trigger("change");
                     $("#txtEducation").val(d[0].education);
                     $("#txtProfessionalQualification").val(d[0].professionalqualification);
                     $("#txtOtherDetails").val(d[0].otherdetails);

@@ -17,6 +17,7 @@ namespace LaylaERP.Models
         public int status { get; set; }
         public int searchid { get; set; }
         public int fk_product_rule { get; set; }
+        public int searchproductid { get; set; }
 
 
     }

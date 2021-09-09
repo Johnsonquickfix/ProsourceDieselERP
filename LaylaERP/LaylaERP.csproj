@@ -230,6 +230,7 @@
     <Compile Include="Models\OrderModel.cs" />
     <Compile Include="Models\ProductModel.cs" />
     <Compile Include="Models\PurchaseOrderModel.cs" />
+    <Compile Include="Models\PurchaseReceiceOrderModel.cs" />
     <Compile Include="Models\SearchModel.cs" />
     <Compile Include="Models\SettingModel.cs" />
     <Compile Include="Models\SetupModel.cs" />
@@ -640,6 +641,7 @@
     <Content Include="js\Reception\NewReceive.js" />
     <Content Include="js\Reception\ReceiveOrderList.js" />
     <Content Include="js\Reception\ReceivePrint.js" />
+    <Content Include="js\Setup\editproductrule.js" />
     <Content Include="js\Setup\productrule.js" />
     <Content Include="js\Ship\ShipStation.js" />
     <Content Include="js\ThirdParty\Vendor.js" />
@@ -882,6 +884,7 @@
     <Content Include="Views\Setup\productrule.cshtml" />
     <Content Include="Views\IPNPaypal\ipnpaypal.cshtml" />
     <Content Include="Views\Hrms\EmployeeList.cshtml" />
+    <Content Include="Views\Setup\Editproductrule.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -90,7 +90,7 @@ $(document).on('click', "#btnNext1", function () {
     email = $("#txtEmail").val();
     phone = $("#txtPhone").unmask().val();
     dob = $("#txtdob").val();
-    emptype = $("#txtEmployeeType").val();
+    emptype = $("#ddlEmployeeType").val();
     status = $("#chkemployeestatus").prop("checked") ? 1 : 0;
     //2nd table
     birthplace = $("#txtPlaceOfBirth").val();
@@ -113,7 +113,7 @@ $(document).on('click', "#btnNext1", function () {
     else if (email == "") { swal('Alert', 'Please email id', 'error').then(function () { swal.close(); $('#txtEmail').focus(); }); }
     else if (phone == "") { swal('Alert', 'Please Enter Phone Number', 'error').then(function () { swal.close(); $('#txtPhone').focus(); }); }
     else if (dob == "") { swal('Alert', 'Please Enter Date Of Birth', 'error').then(function () { swal.close(); $('#txtdob').focus(); }); }
-    else if (emptype == 0) { swal('Alert', 'Please Select Employee Type', 'error').then(function () { swal.close(); $('#txtEmployeeType').focus(); }); }
+    else if (emptype == 0) { swal('Alert', 'Please Select Employee Type', 'error').then(function () { swal.close(); $('#ddlEmployeeType').focus(); }); }
     else {
         var obj = {
             rowid: ID,
@@ -428,7 +428,7 @@ function GetVendorByID(id) {
                     var dobDate = ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '-' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '-' + date.getFullYear();
                     $("#txtdob").val(dobDate);
                     $("#txtPlaceOfBirth").val(d[0].birthplace);
-                    $("#txtEmployeeType").val(d[0].emp_type);
+                    $("#ddlEmployeeType").val(d[0].emp_type).trigger("change");
                     $("#ddlMaritalStatus").val(d[0].maritalstatus).trigger("change");
                     $("#txtEmail").val(d[0].email);
                     var t = d[0].phone.toString().replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3");
@@ -452,7 +452,7 @@ function GetVendorByID(id) {
                     var date = new Date(d[0].leaving_date);
                     var Ldate = ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '-' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '-' + date.getFullYear();
                     $("#txtLeavingDate").val(Ldate);
-                    $("#ddlBloodGroup").val(d[0].bloodgroup);
+                    $("#ddlBloodGroup").val(d[0].bloodgroup).trigger("change");
                     $("#txtEducation").val(d[0].education);
                     $("#txtProfessionalQualification").val(d[0].professionalqualification);
                     $("#txtOtherDetails").val(d[0].otherdetails);

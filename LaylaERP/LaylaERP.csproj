@@ -526,6 +526,7 @@
     <Content Include="Content\DataTables\images\sort_desc_disabled.png" />
     <Content Include="Content\DataTables\select.dataTables.min.css" />
     <Content Include="Content\DataTables\swf\flashExport.swf" />
+    <Content Include="Content\default.png" />
     <Content Include="Content\dx\dx.all.js" />
     <Content Include="Content\dx\dx.light.css" />
     <Content Include="Content\AdminLTE-3.1.0\jquery\jquery.min.js" />
@@ -638,6 +639,7 @@
     <Content Include="js\Reception\NewReceive.js" />
     <Content Include="js\Reception\ReceiveOrderList.js" />
     <Content Include="js\Reception\ReceivePrint.js" />
+    <Content Include="js\Setup\editproductrule.js" />
     <Content Include="js\Setup\productrule.js" />
     <Content Include="js\Ship\ShipStation.js" />
     <Content Include="js\ThirdParty\Vendor.js" />
@@ -880,9 +882,12 @@
     <Content Include="Views\Setup\productrule.cshtml" />
     <Content Include="Views\IPNPaypal\ipnpaypal.cshtml" />
     <Content Include="Views\Hrms\EmployeeList.cshtml" />
+    <Content Include="Views\Setup\Editproductrule.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Content\EmployeeLinkedFiles\" />
+    <Folder Include="Content\EmployeeProfileImage\" />
     <Folder Include="js\Appearance\" />
     <Folder Include="Properties\PublishProfiles\" />
     <Folder Include="Views\ShipStation\" />

@@ -15,6 +15,10 @@ namespace LaylaERP.Models
         public int fk_warehouse { get; set; }
         public int fk_vendor { get; set; }
         public int status { get; set; }
-        
+        public int searchid { get; set; }
+        public int fk_product_rule { get; set; }
+        public int searchproductid { get; set; }
+
+
     }
 }

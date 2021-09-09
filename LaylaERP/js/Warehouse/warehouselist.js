@@ -20,7 +20,16 @@ function WarehouseGrid() {
                         //{ data: 'description', title: 'Description', sWidth: "15%" },
                         { data: 'lieu', title: 'Short Name Location', sWidth: "20%" },
                         { data: 'address', title: 'Address', sWidth: "15%" },
-                        { data: 'phone', title: 'Phone', sWidth: "15%" },
+                        {
+                            data: 'phone', title: 'Phone', sWidth: "15%", render: function (toFormat) {
+                                var tPhone = '';
+                                if (toFormat != null) {
+                                    tPhone = toFormat.toString();
+                                    tPhone = '(' + tPhone.substring(0, 3) + ') ' + tPhone.substring(3, 6) + ' ' + tPhone.substring(6, 10);
+                                }
+                                return tPhone
+                            }
+                        },
                         { data: 'status', title: 'Status', sWidth: "10%" },
                         { data:'warehouse_type', title:'Type', sWidth:"10%"},
                         {

@@ -54,7 +54,7 @@ function PurchaseOrderGrid() {
             {
                 'data': 'ref', sWidth: "10%", title: 'PO No',
                 'render': function (id, type, full, meta) {
-                    return '<a href="NewPurchaseOrder/' + full.id + '">' + id + '</a> <a href="#" onclick="getPurchaseOrderPrint(' + full.id + ', false);"><i class="fas fa-search-plus"></i></a>';
+                    return '<a href="NewReceiveOrder/' + full.id + '">' + id + '</a> <a href="#" onclick="getPurchaseOrderPrint(' + full.id + ', false);"><i class="fas fa-search-plus"></i></a>';
                 }
             },
             { data: 'date_creation', title: 'Order Date', sWidth: "10%" },

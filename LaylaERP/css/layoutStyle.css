@@ -13,6 +13,7 @@ button, input, select, textarea, h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5
 .p-0 {
     padding: 0px !important;
 }
+
 /*****
 dashboard
 *******/
@@ -2446,6 +2447,7 @@ margin-left:0px !important;}
 /*.in-hand.inventory .table-blue.table.check-table {min-width:1400px;}*/
 .in-hand.inventory #dtdata_info{width:auto; float:left;}
 .in-hand.inventory #dtdata_paginate{width:auto; float:right;}
+
 .neworders .sm-heading, .order .sm-heading {
     min-height: 30px;
     display: flex;
@@ -2476,6 +2478,7 @@ table-layout:fixed;}
 #order_final_total .form-group {
 display:flex;}
 #billCoupon div.pull-right{display:flex; align-items:center;}
+.mb-1 {margin-bottom: 15px;}
 @media(max-width:900px) {
     .hub-pro-shop select:first-child{margin-left:0px;}
     .hub-pro-shop {width: 100%; margin-top:5px;}

@@ -1,5 +1,6 @@
 ﻿$(document).ready(function () {
     $('#txtDate').daterangepicker({
+        
         ranges: {
             'Today': [moment(), moment()],
             'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
@@ -10,7 +11,9 @@
         },
         startDate: moment().add(-29, 'day'),
         autoUpdateInput: true, alwaysShowCalendars: true,
-        locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' }
+        locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' },
+        opens: 'right',
+        orientation: "left auto",
     });
     getProducts();
     ProductStockGrid();

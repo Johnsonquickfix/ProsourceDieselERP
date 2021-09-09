@@ -1,8 +1,13 @@
 ﻿@{
     ViewBag.Title = "Employee";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    
+
 }
+<link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+<link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
+@*datatables js*@
+<script src="~/Content/AdminLTE-3.1.0/datatables/datatables.min.js" type="text/javascript"></script>
+<script src="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/js/dataTables.bootstrap.min.js" type="text/javascript"></script>
 
 <link href="~/Content/DataTables/bootstrap-datepicker.css" rel="stylesheet" />
 <script src="~/Content/DataTables/bootstrap-datepicker.js"></script>
@@ -23,359 +28,507 @@
     <span>&nbsp;&nbsp;Loading......</span>
 </div>
 <div class="page-title">
-    <h2 class="page-heading" id="lbltitle">Create Employee</h2>
+    <h2 class="page-heading" id="lbltitle">Create Employee</h2>   <a href="../../Hrms/EmployeeList" class="btn btn-danger">Back to List</a>
 </div>
 <section class="content section-content employees-section">
-    <article class="box box-primary mb-4">
-        <div class="box-header with-border">
-            <input type="hidden" id="hfid" value="@ViewBag.id" />
-            <h4 class="box-title">Basic Info</h4>
+    <div class="contennt setting-section">
+        <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs" id="mytabs" role="tablist">
+                <li class="active"><a href="#tab_1" data-toggle="tab"><span title="Basic Info" data-toggle="tooltip">Basic Info</span></a></li>
+                <li><a href="#tab_2" data-toggle="tab"><span title="Employee Info" data-placement="bottom" data-toggle="tooltip">Employee Info</span></a></li>
+                <li><a href="#tab_3" data-toggle="tab"><span title="Salary Info" data-toggle="tooltip">Salary Info</span></a></li>
+                <li><a href="#tab_4" data-toggle="tab"><span title="Bank Account" data-placement="bottom" data-toggle="tooltip">Bank Account</span></a></li>
+                <li><a href="#tab_5" data-toggle="tab"><span title="Linked Files" data-toggle="tooltip">Linked Files</span></a></li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active" id="tab_1">
+                    <article class="box box-primary mb-4">
+                        <div class="box-header with-border">
+                            <input type="hidden" id="hfid" value="@ViewBag.id" />
+                            <h4 class="box-title">Basic Info</h4>
+                        </div>
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="FirstName">First Name</label>
+                                        <div class="input-group">
+                                            <input class="form-control" type="text" id="txtFirstName" name="FirstName">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="LastName">Last Name</label>
+                                        <div class="input-group">
+                                            <input class="form-control" type="text" id="txtLastName" name="LastName">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="Gender">Gender</label>
+                                        <div class="input-group">
+                                            <select class="form-control select2" id="ddlGender" name="Gender">
+                                                <option selected="selected" value="1">Male</option>
+                                                <option value="2">Female</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="DateOfBirth">Date of Birth</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="txtdob" /><span class="even-space"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="PlaceOfBirth">Place of Birth</label>
+                                        <div class="input-group">
+                                            <input class="form-control" type="text" id="txtPlaceOfBirth" name="PlaceOfBirth">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="PlaceOfBirth">Employee Type</label>
+                                        @*<div class="input-group">
+                                                <input class="form-control" type="text" id="txtType" name="PlaceOfBirth">
+                                            </div>*@
+
+                                        <select class="form-control select2" id="ddlEmployeeType" name="MaritalStatus">
+                                            <option selected="selected" value="1">Full Time</option>
+                                            <option value="2">Part Time</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="MaritalStatus">Marital Status</label>
+                                        <div class="input-group">
+                                            <select class="form-control select2" id="ddlMaritalStatus" name="MaritalStatus">
+                                                <option selected="selected" value="Single">Single</option>
+                                                <option value="Married">Married</option>
+                                                <option value="Remarried">Remarried</option>
+                                                <option value="Separated">Separated</option>
+                                                <option value="Divorced">Divorced</option>
+                                                <option value="Widowed">Widowed</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="Email">Email</label>
+                                        <div class="input-group">
+                                            <input class="form-control" type="text" id="txtEmail" name="Email">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="ContactNumber">Contact Number</label>
+                                        <div class="input-group">
+                                            <input class="form-control" type="text" id="txtPhone" name="Phone">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="Address1">Address1</label>
+                                <div class="input-group">
+                                    <input class="form-control" type="text" id="txtAddress1" name="Address1">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="Address2">Address2</label>
+                                <div class="input-group">
+                                    <input class="form-control" type="text" id="txtAddress2" name="Address2" value="">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="City">City</label>
+                                        <div class="input-group">
+                                            <input class="form-control" type="text" id="txtCity" name="City">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="StateProvince">State</label>
+                                        <div class="input-group">
+                                            <input class="form-control" type="text" id="txtState" name="StateProvince">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="ZipCode">ZipCode</label>
+                                        <div class="input-group">
+                                            <input class="form-control" type="text" id="txtZipCode" name="ZipCode">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="Country">Country</label>
+                                <div class="input-group">
+                                    <input class="form-control" type="text" id="txtCountry" name="Country">
+                                </div>
+                            </div>
+                            <div title="Check Active">
+                                <input type="checkbox" id="chkemployeestatus" /> <label for="Active"> Active</label>
+                            </div>
+                        </div>
+                        <article class="box box-primary mb-4">
+                            <div class="box-footer text-right">
+                                <button type="submit" class="btn btn-danger" id="btnNext1">Next</button>
+                            </div>
+                        </article>
+                    </article>
+                </div>
+                <div class="tab-pane" id="tab_2">
+                    <article class="box box-primary mb-4">
+                        <div class="box-header with-border">
+                            <h4 class="box-title">Employee Info</h4>
+                        </div>
+                        <div class="box-body">
+                            <div class="col-md-2">
+                                <div id="divimage">
+                                    <div class="form-group d-flex">
+                                        <div class="col-sm-12">
+                                            <label class="control-label">Profile Image</label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group d-flex">
+                                        <div class="col-sm-3">
+                                            <div class="add-profile">
+                                                <span class="edit-pic-profile">
+                                                    <input type="file" onchange="readURL(this);" name="EmpImageFile" id="EmpImageFile" class="inputfile" />
+                                                    <label id="btnfileproduct" for="EmpImageFile"><i class="fa fa-edit"></i>Edit</label>
+                                                </span>
+                                                <img id="show_picture" class="profile-user-img img-responsive img-circle" src="~/Content/default.png" alt="Employee Image">
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-sm-9">
+                                        <button id="btnUploadProfile" title="Click here to Upload" data-toggle="tooltip" style="float: left;" class="btn btn-danger">Upload</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-10">
+                                <div class="form-group">
+                                    <label for="EmployeeIDNumber">Employee ID Number</label>
+                                    <div class="input-group">
+                                        <input class="form-control" type="text" id="txtEmployeeIDNumber" name="EmployeeIDNumber" disabled>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="DesignationId">Designation</label>
+                                            <div class="input-group">
+                                                <select class="form-control select2" id="ddldesignation" name="DesignationId"></select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="DepartmentId">Department</label>
+                                            <div class="input-group">
+                                                <select class="form-control select2" id="ddldepartment" name="DepartmentId"></select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="SupervisorId">Reporting To</label>
+                                            <div class="input-group">
+                                                <select class="form-control select2" id="ddlSupervisorId" name="SupervisorId">
+                                                    <option selected="selected" value="EMPSLS002">EMPSLS002 Lillith Daniel</option>
+                                                    <option value="EMPIT001">EMPIT001 Kyla Olsen</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="BloodGroup">Blood Group</label>
+                                            <div class="input-group">
+                                                <select class="form-control select2" id="ddlBloodGroup" name="BloodGroup">
+                                                    <option selected="selected" value="0">Please select blood Group</option>
+                                                    <option value="O−">O−</option>
+                                                    <option value="O+">O+</option>
+                                                    <option value="A−">A−</option>
+                                                    <option value="A+">A+</option>
+                                                    <option value="B−">B−</option>
+                                                    <option value="AB−">AB−</option>
+                                                    <option value="AB+">AB+</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="JoiningDate">Joining Date</label>
+                                            <div class="input-group">
+                                                <input type="text" id="txtJoiningDate" name="JoiningDate" class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="LeavingDate">Relieving Date</label>
+                                            <div class="input-group">
+                                                <input type="text" id="txtLeavingDate" name="LeavingDate" class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="BloodGroup">Education</label>
+                                        <div class="input-group">
+                                            <input type="text" id="txtEducation" name="Education" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="JoiningDate">Professional Qualification</label>
+                                        <div class="input-group">
+                                            <input type="text" id="txtProfessionalQualification" name="ProfessionalQualification" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="OtherDetails">Other Details</label>
+                                        <div class="input-group">
+                                            <input type="text" id="txtOtherDetails" name="OtherDetails" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box-header with-border">
+                            <h4 class="box-title">Alternate Address</h4>
+                        </div>
+                        <div class="box-body">
+                            <div class="form-group">
+                                <label for="Address1">Address1</label>
+                                <div class="input-group">
+                                    <input class="form-control" type="text" id="txtAlternateAddress1" name="Address1">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="Address2">Address2</label>
+                                <div class="input-group">
+                                    <input class="form-control" type="text" id="txtAlternateAddress2" name="Address2" value="">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="City">City</label>
+                                        <div class="input-group">
+                                            <input class="form-control" type="text" id="txtAlternateCity" name="City">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="StateProvince">State</label>
+                                        <div class="input-group">
+                                            <input class="form-control" type="text" id="txtAlternateState" name="StateProvince">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="ZipCode">ZipCode</label>
+                                        <div class="input-group">
+                                            <input class="form-control" type="text" id="txtAlternateZipCode" name="ZipCode">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="Country">Country</label>
+                                        <div class="input-group">
+                                            <input class="form-control" type="text" id="txtAlternateCountry" name="Country">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="ContactNumber">Alternate Contact Number</label>
+                                        <div class="input-group">
+                                            <input class="form-control" type="text" id="txtAlternateContactNumber" name="Country">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <article class="box box-primary mb-4">
+                            <div class="box-footer text-right">
+                                <button type="submit" class="btn btn-danger" id="btnNext2">Next</button>
+                            </div>
+                        </article>
+                    </article>
+                    
+                </div>
+                <div class="tab-pane" id="tab_3">
+                    <article class="box box-primary mb-4">
+                        <div class="box-header with-border">
+                            <h4 class="box-title">Salary Info</h4>
+                        </div>
+                        <div class="box-body">
+                            <div class="form-group">
+                                <label for="BasicSalary">Basic Salary</label>
+                                <div class="input-group">
+                                    <input class="form-control" type="text" id="txtBasicSalary" name="BasicSalary">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="UnpaidLeavePerDay">Un Paid Leave Per Day</label>
+                                <div class="input-group">
+                                    <input class="form-control" type="text" id="txtUnpaidLeavePerDay" name="UnpaidLeavePerDay">
+                                </div>
+                            </div>
+                        </div>
+                        <article class="box box-primary mb-4">
+                            <div class="box-footer text-right">
+                                <button type="submit" class="btn btn-danger" id="btnNext3">Next</button>
+                            </div>
+                        </article>
+                    </article>
+                </div>
+                <div class="tab-pane" id="tab_4">
+                    <article class="box box-primary mb-4" id="tab_4">
+                        <div class="box-header with-border">
+                            <h4 class="box-title">Bank Account Info</h4>
+                        </div>
+                        <div class="box-body">
+                            <div class="form-group">
+                                <label for="AccountTitle">Account Title</label>
+                                <div class="input-group">
+                                    <input class="form-control" type="text" id="txtAccountTitle" name="AccountTitle">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="BankName">Bank Name</label>
+                                <div class="input-group">
+                                    <input class="form-control" type="text" id="txtBankName" name="BankName">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="AccountNumber">Account Number</label>
+                                <div class="input-group">
+                                    <input class="form-control" type="text" id="txtAccountNumber" name="AccountNumber">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="SwiftCode">Swift Code</label>
+                                <div class="input-group">
+                                    <input class="form-control" type="text" id="txtSwiftCode" name="SwiftCode" value="">
+
+                                </div>
+                            </div>
+                        </div>
+                        <article class="box box-primary mb-4">
+                            <div class="box-footer text-right">
+                                <button type="submit" class="btn btn-danger" id="btnNext4">Next</button>
+                            </div>
+                        </article>
+                    </article>
+                </div>
+                
+                <div class="tab-pane" id="tab_5">
+                    <div class="box box-primary">
+                        <div class="box-body">
+                            <table class="table-blue table check-table table-bordered inventory-table fixed-table">
+                                <tbody>
+                                    <tr>
+                                        <td class="titlefield">Number of attached files/documents</td>
+                                        <td class="text-left" colspan="3" id="lblAttachedFiles"> <label id="lblAttachedFiles" for="javascript"></label></td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row rowbox proposal-row">
+                        <div class="col-md-12">
+                            <div class="box box-primary">
+                                <div class="box-header with-border">
+                                    <label class="control-label">Attach a new file/document</label>
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <div class="col-md-6">
+                                                <input type="file" name="ImageFile" class="form-control" id="ImageFile" />
+                                            </div>
+                                            <div class="col-md-6 left">
+                                                <input type="button" id="btnuploadFiles" class="btn btn-danger" value="Upload" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="box-body">
+                                    <div class="mb-35">
+                                        <label class="control-label">Attached files and documents</label>
+                                        <div class="table-responsive bank-table-wrapper">
+                                            <table id="EmployeeLinkedFiles" class="inventory-table table-blue table check-table table-bordered table-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Document Name</th>
+                                                        <th>Size</th>
+                                                        <th>Date</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
         </div>
-        <div class="box-body">
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label for="FirstName">First Name</label>
-                        <div class="input-group">
-                            <input class="form-control" type="text" id="txtFirstName" name="FirstName">
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label for="LastName">Last Name</label>
-                        <div class="input-group">
-                            <input class="form-control" type="text" id="txtLastName" name="LastName">
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label for="Gender">Gender</label>
-                        <div class="input-group">
-                            <select class="form-control select2" id="ddlGender" name="Gender">
-                                <option selected="selected" value="1">Male</option>
-                                <option value="2">Female</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label for="DateOfBirth">Date of Birth</label>
-                        <div class="input-group">
-                            <input type="text" class="form-control" id="txtdob" /><span class="even-space"></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label for="PlaceOfBirth">Place of Birth</label>
-                        <div class="input-group">
-                            <input class="form-control" type="text" id="txtPlaceOfBirth" name="PlaceOfBirth">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label for="PlaceOfBirth">Employee Type</label>
-                        @*<div class="input-group">
-                            <input class="form-control" type="text" id="txtType" name="PlaceOfBirth">
-                        </div>*@
-
-                        <select class="form-control select2" id="txtEmployeeType" name="MaritalStatus">
-                            <option selected="selected" value="1">Full Time</option>
-                            <option value="2">Part Time</option>
-                        </select>
-                    </div>
-                </div>
-
-            </div>
-
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label for="MaritalStatus">Marital Status</label>
-                        <div class="input-group">
-                            <select class="form-control select2" id="ddlMaritalStatus" name="MaritalStatus">
-                                <option selected="selected" value="Single">Single</option>
-                                <option value="Married">Married</option>
-                                <option value="Remarried">Remarried</option>
-                                <option value="Separated">Separated</option>
-                                <option value="Divorced">Divorced</option>
-                                <option value="Widowed">Widowed</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label for="Email">Email</label>
-                        <div class="input-group">
-                            <input class="form-control" type="text" id="txtEmail" name="Email">
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label for="Phone">Phone</label>
-                        <div class="input-group">
-                            <input class="form-control" type="text" id="txtPhone" name="Phone">
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="Address1">Address1</label>
-                <div class="input-group">
-                    <input class="form-control" type="text" id="txtAddress1" name="Address1">
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="Address2">Address2</label>
-                <div class="input-group">
-                    <input class="form-control" type="text" id="txtAddress2" name="Address2" value="">
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label for="City">City</label>
-                        <div class="input-group">
-                            <input class="form-control" type="text" id="txtCity" name="City">
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label for="StateProvince">State</label>
-                        <div class="input-group">
-                            <input class="form-control" type="text" id="txtState" name="StateProvince">
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label for="ZipCode">ZipCode</label>
-                        <div class="input-group">
-                            <input class="form-control" type="text" id="txtZipCode" name="ZipCode">
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="Country">Country</label>
-                <div class="input-group">
-                    <input class="form-control" type="text" id="txtCountry" name="Country">
-                </div>
-            </div>
-            <div title="Check Active">
-                <input type="checkbox" id="chkemployeestatus" /><label for="Active">Active</label>
-            </div>
-        </div>
-    </article>
-
-    <article class="box box-primary mb-4">
-        <div class="box-header with-border">
-            <h4 class="box-title">Staff Info</h4>
-        </div>
-        <div class="box-body">
-            <div class="form-group">
-                <label for="EmployeeIDNumber">Employee ID Number</label>
-                <div class="input-group">
-                    <input class="form-control" type="text" id="txtEmployeeIDNumber" name="EmployeeIDNumber">
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label for="DesignationId">Designation</label>
-                        <div class="input-group">
-                            <select class="form-control select2" id="ddldesignation" name="DesignationId"></select>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label for="DepartmentId">Department</label>
-                        <div class="input-group">
-                            <select class="form-control select2" id="ddldepartment" name="DepartmentId"></select>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label for="SupervisorId">Supervisor</label>
-                        <div class="input-group">
-                            <select class="form-control select2" id="ddlSupervisorId" name="SupervisorId">
-                                @*<option value=""></option>
-                                <option value="">EMPSLS003 Adria Russell</option>
-                                <option value="">EMPSLS001 Noelle Adams</option>
-                                <option value="">EMPHR005 Colby Bernard</option>
-                                <option value="">EMPHR004 Leilani Boyer</option>
-                                <option value="">EMPIT002 Forrest Ray</option>
-                                <option value="">EMPSLS004 Hilda Haynes</option>
-                                <option value="">EMPFI005 Calista Wise</option>
-                                <option value="">EMPFI003 Celeste Slater</option>
-                                <option value="">EMPFI001 Cecilia Chapman</option>
-                                <option value="">EMPHR001 Hedy Greene</option>
-                                <option value="">EMPSLS005 Rebecca Chambers</option>
-                                <option value="">EMPIT003 Hiroko Potter</option>
-                                <option value="">EMPIT005 Aaron Hawkins</option>
-                                <option value="">EMPHR003 Joan Romero</option>*@
-                                <option selected="selected" value="EMPSLS002">EMPSLS002 Lillith Daniel</option>
-                                <option value="EMPIT001">EMPIT001 Kyla Olsen</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="JoiningDate">Joining Date</label>
-                <div class="input-group">
-                    <input type="text" id="txtJoiningDate" name="JoiningDate" class="form-control">
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="LeavingDate">Leaving Date</label>
-                <div class="input-group">
-                    <input type="text" id="txtLeavingDate" name="LeavingDate" class="form-control">
-                </div>
-            </div>
-
-        </div>
-    </article>
-    <article class="box box-primary mb-4">
-        <div class="box-header with-border">
-            <h4 class="box-title">Salary Info</h4>
-        </div>
-        <div class="box-body">
-            <div class="form-group">
-                <label for="BasicSalary">Basic Salary</label>
-                <div class="input-group">
-                    <input class="form-control" type="text" id="txtBasicSalary" name="BasicSalary">
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="UnpaidLeavePerDay">Un Paid Leave Per Day</label>
-                <div class="input-group">
-                    <input class="form-control" type="text" id="txtUnpaidLeavePerDay" name="UnpaidLeavePerDay">
-                </div>
-            </div>
-            @*<div class="form-group">
-                <label for="BenefitTemplateId">Benefit Package Template</label>
-                <div class="input-group">
-                    <select class="form-control select2" id="txtBenefitTemplateId" name="BenefitTemplateId">
-                        <option value=""></option>
-
-                    </select>
-                </div>
-            </div>*@
-        </div>
-    </article>
-
-    <article class="box box-primary mb-4">
-        <div class="box-header with-border">
-            <h4 class="box-title">Bank Account Info</h4>
-        </div>
-        <div class="box-body">
-            <div class="form-group">
-                <label for="AccountTitle">Account Title</label>
-                <div class="input-group">
-                    <input class="form-control" type="text" id="txtAccountTitle" name="AccountTitle">
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="BankName">Bank Name</label>
-                <div class="input-group">
-                    <input class="form-control" type="text" id="txtBankName" name="BankName">
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="AccountNumber">Account Number</label>
-                <div class="input-group">
-                    <input class="form-control" type="text" id="txtAccountNumber" name="AccountNumber">
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="SwiftCode">Swift Code</label>
-                <div class="input-group">
-                    <input class="form-control" type="text" id="txtSwiftCode" name="SwiftCode" value="">
-
-                </div>
-            </div>
-        </div>
-    </article>
-
-    @*<article class="box box-primary mb-4">
-        <div class="box-header with-border">
-            <h4 class="box-title">User Account Info</h4>
-        </div>
-        <div class="box-body">
-            <div class="form-group">
-                <label for="SystemUserId">Application User</label>
-                <div class="input-group">
-                    <select class="form-control select2" id="SystemUserId" name="SystemUserId">
-                        <option value=""></option>
-                        <option value="">Aaron.Hawkins@hrmlite.com</option>
-                        <option selected="selected" value="">Adria.Russell@hrmlite.com</option>
-                        <option value="">Calista.Wise@hrmlite.com</option>
-                        <option value="">Castor.Richardson@hrmlite.com</option>
-                        <option value="">Cecilia.Chapman@hrmlite.com</option>
-                        <option value="">Celeste.Slater@hrmlite.com</option>
-                        <option value="">Chester.Bennett@hrmlite.com</option>
-                        <option value="">Christian.Emerson@hrmlite.com</option>
-                        <option value="">Colby.Bernard@hrmlite.com</option>
-                        <option value="">Edward.Nieves@hrmlite.com</option>
-                        <option value="">Forrest.Ray@hrmlite.com</option>
-                        <option value="">g@gamil.com</option>
-                        <option value="">Harrison.Mcguire@hrmlite.com</option>
-                        <option value="">Hedy.Greene@hrmlite.com</option>
-                        <option value="">Hilda.Haynes@hrmlite.com</option>
-                        <option value="">Hiroko.Potter@hrmlite.com</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-
-    </article>*@
-    <article class="box box-primary mb-4">
-        <div class="box-footer text-right">
-            <a href="../../Hrms/EmployeeList" class="btn btn-danger">Back to List</a>
-            <button type="submit" class="btn btn-danger" id="btnSave">Save</button>
-        </div>
-    </article>
+    </div>
 </section>
-<script type="text/javascript">
-    $(document).ready(function () {
-        $(document).on('click', "#btnSave", function () {
-            AddEmployee();
-        });
 
-        $(".select2").select2();
-        setTimeout(function () { $(".select2").select2(); }, 2000);
-    })
-
-</script>
 <script>
     $(function () {
-        $("#txtdob").datepicker({
-            format: 'mm-dd-yyyy',
-        });
-        $("#txtJoiningDate").datepicker({
-            format: 'mm-dd-yyyy',
-        });
 
-        $("#txtLeavingDate").datepicker({
-            format: 'mm-dd-yyyy',
-        });
 
     });
 </script>

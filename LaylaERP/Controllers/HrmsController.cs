@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 using LaylaERP.BAL;
@@ -52,7 +54,6 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
-
         public JsonResult GetDesignation()
         {
             DataSet ds = HrmsRepository.GetDesignation();
@@ -64,7 +65,6 @@ namespace LaylaERP.Controllers
             return Json(designationlist, JsonRequestBehavior.AllowGet);
 
         }
-
         public JsonResult GetDepartment()
         {
             DataSet ds = HrmsRepository.GetDepartment();
@@ -76,23 +76,33 @@ namespace LaylaERP.Controllers
             return Json(designationlist, JsonRequestBehavior.AllowGet);
 
         }
-
+        public JsonResult GetEmployeeCode(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable DT = BAL.HrmsRepository.GetEmployeeCode();
+                JSONresult = JsonConvert.SerializeObject(DT);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
         [HttpPost]
-        public JsonResult AddEmployee(HrmsModel model)
+        public JsonResult AddEmployeeBasicInfo(HrmsModel model)
         {
             if (model.rowid > 0)
             {
-                int ID = HrmsRepository.EditEmployee(model,model.rowid);
-                HrmsRepository.EditEmployeeDetails(model, model.rowid);
-                return Json(new { status = true, message = "Data has been Updated successfully!!", url = "" }, 0);
+                int ID = HrmsRepository.EditEmployeeBasicInfo(model,model.rowid);
+                HrmsRepository.EditEmployeeBasicDetails(model, model.rowid);
+                return Json(new { status = true, message = "Data has been Updated successfully!!", url = "", id= model.rowid }, 0);
             }
             else
             {
-                int ID = HrmsRepository.AddEmployee(model);
+                int ID = HrmsRepository.AddEmployeeBasicInfo(model);
                 if (ID > 0)
                 {
-                    HrmsRepository.AddEmployeeDetails(model, ID);
-                    return Json(new { status = true, message = "Data has been saved successfully!!", url = "" }, 0);
+                    HrmsRepository.AddEmployeeBasicDetails(model, ID);
+                    return Json(new { status = true, message = "Data has been saved successfully!!", url = "", id=ID }, 0);
                 }
                 else
                 {
@@ -100,7 +110,42 @@ namespace LaylaERP.Controllers
                 }
             }
         }
-
+        public JsonResult AddEmployeeAdditionalInfo(HrmsModel model)
+        {
+            if (model.rowid > 0)
+            {
+                int ID = HrmsRepository.EditEmployeeAdditionalInfo(model, model.rowid);
+                return Json(new { status = true, message = "Employee Info has been Updated successfully!!", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+        }
+        public JsonResult AddSalaryInfo(HrmsModel model)
+        {
+            if (model.rowid > 0)
+            {
+                int ID = HrmsRepository.EditSalaryInfo(model, model.rowid);
+                return Json(new { status = true, message = "Employee Info has been Updated successfully!!", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+        }
+        public JsonResult AddBankInfo(HrmsModel model)
+        {
+            if (model.rowid > 0)
+            {
+                int ID = HrmsRepository.EditBankInfo(model, model.rowid);
+                return Json(new { status = true, message = "Bank Info has been Updated successfully!!", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+        }
         public JsonResult GetEmployeeList(JqDataTableModel model)
         {
             string result = string.Empty;
@@ -113,7 +158,6 @@ namespace LaylaERP.Controllers
             catch (Exception ex) { throw ex; }
             return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
         }
-
         public JsonResult UpdateEmployeeStatus(HrmsModel model)
         {
             if (model.rowid > 0)
@@ -136,6 +180,141 @@ namespace LaylaERP.Controllers
             }
             catch { }
             return Json(JSONresult, 0);
+        }
+        public ActionResult EmployeeFileUpload(int fk_emp, HttpPostedFileBase ImageFile)
+        {
+            try
+            {
+                HrmsModel model = new HrmsModel();
+                if (ImageFile != null)
+                {
+                    string FileName = Path.GetFileNameWithoutExtension(ImageFile.FileName);
+                    FileName = Regex.Replace(FileName, @"\s+", "");
+                    string size = (ImageFile.ContentLength / 1024).ToString();
+                    string FileExtension = Path.GetExtension(ImageFile.FileName);
+                    if (FileExtension == ".pdf" || FileExtension == ".doc" || FileExtension == ".docx" || FileExtension == ".png" || FileExtension == ".jpg" || FileExtension == ".jpeg")
+                    {
+                        FileName = FileName.Trim() + FileExtension;
+                        string FileNameForsave = FileName;
+                        DataTable dt = HrmsRepository.GetfileCountdata(fk_emp, FileName);
+                        if (dt.Rows.Count > 0)
+                        {
+                            return Json(new { status = false, message = "File already exist in table", url = "" }, 0);
+                        }
+                        else
+                        {
+                            string UploadPath = Path.Combine(Server.MapPath("~/Content/EmployeeLinkedFiles"));
+                            UploadPath = UploadPath + "\\";
+                            model.ImagePath = UploadPath + FileName;
+                            var ImagePath = "~/Content/EmployeeLinkedFiles/" + FileName;
+                            ImageFile.SaveAs(model.ImagePath);
+                            int resultOne = HrmsRepository.EmployeeFileUpload(fk_emp, FileName, ImagePath, FileExtension, size);
+                            if (resultOne > 0)
+                            {
+                                return Json(new { status = true, message = "File Upload successfully!!", url = "" }, 0);
+                            }
+                            else
+                            {
+                                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        return Json(new { status = false, message = "File Type " + FileExtension + " Not allowed", url = "" }, 0);
+                    }
+                }
+                else
+                {
+                    return Json(new { status = false, message = "Please attach a document", url = "" }, 0);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+
+        }
+        public ActionResult EmployeeProfileUpload(int fk_emp, HttpPostedFileBase EmpImageFile)
+        {
+            try
+            {
+                HrmsModel model = new HrmsModel();
+                if (EmpImageFile != null)
+                {
+                    string FileName = Path.GetFileNameWithoutExtension(EmpImageFile.FileName);
+                    FileName = Regex.Replace(FileName, @"\s+", "");
+                    string size = (EmpImageFile.ContentLength / 1024).ToString();
+                    string FileExtension = Path.GetExtension(EmpImageFile.FileName);
+                    if (FileExtension == ".pdf" || FileExtension == ".doc" || FileExtension == ".docx" || FileExtension == ".png" || FileExtension == ".jpg" || FileExtension == ".jpeg")
+                    {
+                        FileName = FileName.Trim() + FileExtension;
+                        string FileNameForsave = FileName;
+                        DataTable dt = HrmsRepository.GetProfileCountdata(fk_emp, FileName);
+                        if (dt.Rows.Count > 0)
+                        {
+                            return Json(new { status = false, message = "File already exist in table", url = "" }, 0);
+                        }
+                        else
+                        {
+                            string UploadPath = Path.Combine(Server.MapPath("~/Content/EmployeeProfileImage"));
+                            UploadPath = UploadPath + "\\";
+                            model.ProfileImagePath = UploadPath + FileName;
+                            var ImagePath = "~/Content/EmployeeProfileImage/" + FileName;
+                            EmpImageFile.SaveAs(model.ProfileImagePath);
+                            int resultOne = HrmsRepository.EmployeeProfileUpload(fk_emp, FileName, ImagePath);
+                            if (resultOne > 0)
+                            {
+                                return Json(new { status = true, message = "File Upload successfully!!", url = "" }, 0);
+                            }
+                            else
+                            {
+                                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        return Json(new { status = false, message = "File Type " + FileExtension + " Not allowed", url = "" }, 0);
+                    }
+                }
+                else
+                {
+                    return Json(new { status = false, message = "Please attach a document", url = "" }, 0);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+
+        }
+        public JsonResult GetEmployeeLinkedFiles(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                DataTable dt = HrmsRepository.GetEmployeeLinkedFiles(model.strValue1, model.strValue2, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                result = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+        }
+        public JsonResult DeleteEmployeeLinkedFiles(HrmsModel model)
+        {
+            if (model.rowid > 0)
+            {
+                int ID = new HrmsRepository().DeleteEmployeeLinkedFiles(model);
+                if (ID > 0)
+                    return Json(new { status = true, message = "Employee Linked Files has been deleted successfully!!", url = "", id = ID }, 0);
+                else
+                    return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Employee info not Found", url = "", id = 0 }, 0);
+            }
         }
 
     }

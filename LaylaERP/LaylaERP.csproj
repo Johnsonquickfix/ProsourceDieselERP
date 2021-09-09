@@ -525,6 +525,7 @@
     <Content Include="Content\DataTables\images\sort_desc_disabled.png" />
     <Content Include="Content\DataTables\select.dataTables.min.css" />
     <Content Include="Content\DataTables\swf\flashExport.swf" />
+    <Content Include="Content\default.png" />
     <Content Include="Content\dx\dx.all.js" />
     <Content Include="Content\dx\dx.light.css" />
     <Content Include="Content\AdminLTE-3.1.0\jquery\jquery.min.js" />
@@ -884,6 +885,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Content\EmployeeLinkedFiles\" />
+    <Folder Include="Content\EmployeeProfileImage\" />
     <Folder Include="js\Appearance\" />
     <Folder Include="Properties\PublishProfiles\" />
     <Folder Include="Views\ShipStation\" />

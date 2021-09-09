@@ -60,11 +60,10 @@ function getWarehouse() {
         contentType: "application/json; charset=utf-8",
         data: JSON.stringify(obj),
         success: function (data) {
-            //var opt;
             var opt = '<option value="0">Please Select Warehouse</option>';
             for (var i = 0; i < data.length; i++) {
                 opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
-                 //opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
+                 
             }
             $('#ddlwarehouse').html(opt);
         }

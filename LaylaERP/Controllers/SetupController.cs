@@ -18,6 +18,10 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult Editproductrule()
+        {
+            return View();
+        }
 
         public JsonResult GetProduct()
         {
@@ -82,7 +86,7 @@ namespace LaylaERP.Controllers
         [HttpPost]
         public JsonResult AddProductWarehouseRule(SetupModel model)
         {
-            
+           
             int ID = SetupRepostiory.AddProductWarehouseRule(model);
             if (ID > 0)
             {
@@ -123,13 +127,26 @@ namespace LaylaERP.Controllers
             return Json(JSONresult, 0);
         }
 
-        public JsonResult SelectTableWarehouseRule(SearchModel model)
+        //public JsonResult SelectTableWarehouseRule(SearchModel model)
+        //{
+
+        //    string JSONresult = string.Empty;
+        //    try
+        //    {
+        //        DataTable dt = SetupRepostiory.SelectTableWarehouseRule(model);
+        //        JSONresult = JsonConvert.SerializeObject(dt);
+        //    }
+        //    catch { }
+        //    return Json(JSONresult, 0);
+        //}
+
+        public JsonResult SelectTableWarehouseRule(long id)
         {
 
             string JSONresult = string.Empty;
             try
             {
-                DataTable dt = SetupRepostiory.SelectTableWarehouseRule(model);
+                DataTable dt = SetupRepostiory.SelectTableWarehouseRule(id);
                 JSONresult = JsonConvert.SerializeObject(dt);
             }
             catch { }

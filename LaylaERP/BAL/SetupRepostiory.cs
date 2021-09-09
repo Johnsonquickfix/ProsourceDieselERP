@@ -117,14 +117,14 @@ namespace LaylaERP.BAL
             }
         }
 
-        public static int AddProductWarehouseRuleDetails(SetupModel model, int id)
+        public static int AddProductWarehouseRuleDetails(SetupModel model)
         {
             try
             {
                 string strsql = "INSERT into product_warehouse_rule_details(fk_product_rule, country, state, fk_vendor, fk_warehouse) values(@fk_product_rule, @country, @state, @fk_vendor, @fk_warehouse);SELECT LAST_INSERT_ID();";
                 MySqlParameter[] para =
                 {
-                    new MySqlParameter("@fk_product_rule", id),
+                    new MySqlParameter("@fk_product_rule", model.fk_product_rule),
                     new MySqlParameter("@country",model.country),
                     new MySqlParameter("@state",model.state),
                     new MySqlParameter("@fk_vendor",model.fk_vendor),
@@ -144,7 +144,7 @@ namespace LaylaERP.BAL
             DataTable dtr = new DataTable();
             try
             {
-                string strquery = "SELECT COALESCE(ps.id,p.id) id,COALESCE(ps.post_title,p.post_title) as product, ww.ref as warehouse, wv.name as vendor, pwr.prefix_code as code"
+                string strquery = "SELECT pwr.rowid as id, COALESCE(ps.id,p.id) id,COALESCE(ps.post_title,p.post_title) as product, ww.ref as warehouse, wv.name as vendor, pwr.prefix_code as code"
                                   +" FROM wp_posts as p"
                                   +" LEFT JOIN wp_posts ps ON ps.post_parent = p.id and ps.post_type LIKE 'product_variation'"
                                   +" left join wp_postmeta psku on psku.post_id = ps.id and psku.meta_key = '_sku'"
@@ -160,6 +160,106 @@ namespace LaylaERP.BAL
             catch (Exception ex)
             { throw ex; }
             return dtr;
+        }
+
+        public static DataTable SelectTableWarehouseRule(SearchModel model)
+        {
+            DataTable dtr = new DataTable();
+            try
+            {
+                string strquery = "SELECT pwrd.rowid as id, COALESCE(ps.id,p.id) pid,COALESCE(ps.post_title,p.post_title) as product, ww.ref as warehouse, ww.rowid as warehouseid, wv.rowid as vendorid, wv.name as vendor, pwrd.country as country, pwrd.state as state, pwr.prefix_code as code"
+                                  + " FROM wp_posts as p"
+                                  + " LEFT JOIN wp_posts ps ON ps.post_parent = p.id and ps.post_type LIKE 'product_variation'"
+                                  + " left join wp_postmeta psku on psku.post_id = ps.id and psku.meta_key = '_sku'"
+                                  + " INNER join product_warehouse_rule pwr on pwr.product_id = ps.id"
+                                  + " INNER join product_warehouse_rule_details pwrd on pwrd.fk_product_rule = pwr.rowid"
+                                  + " inner join wp_warehouse ww on ww.rowid = pwrd.fk_warehouse"
+                                  + " inner join wp_vendor wv on wv.rowid = pwrd.fk_vendor"
+                                  + " WHERE pwrd.rowid='"+model.strValue1+"' AND p.post_type = 'product' AND p.post_status = 'publish'";
+
+                DataSet ds = SQLHelper.ExecuteDataSet(strquery);
+                dtr = ds.Tables[0];
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dtr;
+        }
+
+        public static int UpdateProductWarehouseRule(SetupModel model)
+        {
+
+            try
+            {
+
+                string strsql = "UPDATE product_warehouse_rule_details set fk_vendor=@fk_vendor, fk_warehouse=@fk_warehouse where rowid = '" + model.searchid + "'";
+
+
+                MySqlParameter[] para =
+               {
+                     
+                    new MySqlParameter("@fk_vendor",model.fk_vendor),
+                    new MySqlParameter("@fk_warehouse",model.fk_warehouse),
+
+
+            };
+
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+        public static DataTable GetProductCount1(SetupModel model)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                string strSQl = "SELECT product_id from product_warehouse_rule WHERE product_id = '" + model.product_id + "' ";
+                dt = SQLHelper.ExecuteDataTable(strSQl);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static int GetProductCount(SetupModel model)
+        {
+            try
+            {
+                string strquery = "SELECT COUNT(product_id) from product_warehouse_rule WHERE product_id = '" + model.product_id + "' ";
+                MySqlParameter[] para =
+                {
+
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strquery).ToString());
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+        public static int GetPrefixCount(SetupModel model)
+        {
+            try
+            {
+                string strquery = "SELECT COUNT(prefix_code) from product_warehouse_rule WHERE prefix_code = '" + model.prefix_code + "' ";
+                MySqlParameter[] para =
+                {
+
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strquery).ToString());
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
         }
 
     }

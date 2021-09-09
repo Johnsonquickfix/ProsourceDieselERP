@@ -13,6 +13,7 @@ button, input, select, textarea, h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5
 .p-0 {
     padding: 0px !important;
 }
+
 /*****
 dashboard
 *******/
@@ -2235,7 +2236,19 @@ body .form-control {font-size:12px;}
 .flex-row_box .control-label {display:flex; align-items:center; margin:0px;}
 .new-product-section .no-btn {position:relative;}
 .new-product-section .no-btn:active, .new-product-section .no-btn:focus{background:transparent !important; box-shadow:none !important;}
-.new-product-section a.no-btn:before {content:""; transform:rotate(45deg); width:10px; height:10px; border-width:0px 0px 1px 1px;border-color:#4f4f4f; border-style:solid;display:inline-block;}
+.new-product-section a.no-btn:before 
+{content:none; transform:rotate(45deg); width:10px; height:10px; border-width:0px 0px 1px 1px;border-color:#4f4f4f; border-style:solid;display:inline-block;}
+
+.new-product-section a.no-btn {
+    background-color: #ff4100;
+    transition: all .5s ease;
+    padding: 6px 12px;
+    color: #fff;
+    font-size: 12px;
+    text-align: center;
+    border-radius: 3px;
+    margin-left: auto;
+}
 .flex-row_box .col-md-3 {padding-top:5px;    display: flex;  flex-direction: column;}
 .flex-row_box .col-md-3 .page-title{margin-bottom:14px;}
 .attribute-btn {margin-top:10px; text-align:right;}
@@ -2437,15 +2450,31 @@ margin-left:0px !important;}
 .checkout-box-total .form-group label + .controls{min-width:100px; text-align:center;}
 .box-title.removefa:before {content:none;}
 /*.box-title.removefa {font-weight:700;}*/
+.select2-container--default .select2-selection--multiple .select2-selection__choice{color:#4f4f4f;}
 .full-dropy{cursor:pointer;}
-.add.new.product .add-profile{border-radius:0px;}
-.add.new.product .add-profile img{border-radius:0px;}
+
+.profile-flex {align-items: flex-end; padding: 0px 10px !important;}
+.profile-flex > div:first-child{margin-right:12px;}
+.add.new.product .add-profile {
+    border-radius: 0px;
+    cursor: pointer;
+    margin: 0px;
+    display: flex;
+}
+
+.daterangepicker .ranges li:hover{color:#4f4f4f;}
+.daterangepicker .ranges li.active:hover{color:#fff;}
+    .add.new.product .add-profile img {
+        border-radius: 0px;
+        cursor: pointer;
+    }
 .add.new.product .add-profile #btnfileproduct{margin-bottom:0px;}
 
 .in-hand.inventory .table-blue.table.check-table th,  .in-hand.inventory .table-blue.table.check-table td{padding-right:30px !important;}
 /*.in-hand.inventory .table-blue.table.check-table {min-width:1400px;}*/
 .in-hand.inventory #dtdata_info{width:auto; float:left;}
 .in-hand.inventory #dtdata_paginate{width:auto; float:right;}
+
 .neworders .sm-heading, .order .sm-heading {
     min-height: 30px;
     display: flex;
@@ -2476,6 +2505,9 @@ table-layout:fixed;}
 #order_final_total .form-group {
 display:flex;}
 #billCoupon div.pull-right{display:flex; align-items:center;}
+.mb-1 {margin-bottom: 15px;}
+
+.neworders a.billinfo, .order a.billinfo{color:#fff !important;}
 @media(max-width:900px) {
     .hub-pro-shop select:first-child{margin-left:0px;}
     .hub-pro-shop {width: 100%; margin-top:5px;}

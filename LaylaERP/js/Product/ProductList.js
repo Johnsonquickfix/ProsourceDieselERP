@@ -281,7 +281,7 @@ function dataGridLoad(order_type) {
             },
 
             {
-                "data": "guid", 
+                "data": "guid", sWidth: "4%   ",
                 //'render': function (data, type, full, meta) {
                 //    return '<i class="glyphicon glyphicon-picture"></i>';
                 //}

@@ -18,7 +18,16 @@ function VendorWarehouseGrid() {
                     //{ data: 'wname', title: 'Warehouse Name', sWidth: "25%" },
                     { data: 'vname', title: 'Vendor Name', sWidth: "25%" },
                     { data: 'Vaddress', title: 'Vendor Address', sWidth: "25%" },
-                    { data: 'phone', title: 'Vendor Phone', sWidth: "25%" }
+                    {
+                        data: 'phone', title: 'Vendor Phone', sWidth: "25%", render: function (toFormat) {
+                            var tPhone = '';
+                            if (toFormat != null) {
+                                tPhone = toFormat.toString();
+                                tPhone = '(' + tPhone.substring(0, 3) + ') ' + tPhone.substring(3, 6) + ' ' + tPhone.substring(6, 10);
+                            }
+                            return tPhone
+                        }
+                    },
                 ],
                 "order": [[0, 'desc']],
             });

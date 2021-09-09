@@ -45,5 +45,21 @@ namespace LaylaERP.Models
         public string bank_swift_code { get; set; }
         public string note_public { get; set; }
         public string note_private { get; set; }
+        public string bloodgroup { get; set; }
+        public string education { get; set; }
+        public string professionalqualification { get; set; }
+        public string otherdetails { get; set; }
+        public string alternateaddress1 { get; set; }
+        public string alternateaddress2 { get; set; }
+        public string alternatecity { get; set; }
+        public string alternatestate { get; set; }
+        public string alternatezipcode { get; set; }
+        public string alternatecountry { get; set; }
+        public string alternatecontactNumber { get; set; }
+        public byte[] ImageFiledata { get; set; }
+        public string ImagePath { get; set; }
+        public string ProfileImagePath { get; set; }
+        public HttpPostedFileBase ImageFile { get; set; }
+        public string EmployeeLinkedFilesID { get; set; }
     }
 }

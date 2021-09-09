@@ -553,6 +553,8 @@
     <Content Include="Content\easyui\images\tree_icons.png" />
     <Content Include="Content\easyui\images\validatebox_warning.png" />
     <Content Include="Content\easyui\jquery.easyui.min.js" />
+    <Content Include="Content\EmployeeLinkedFiles\default.png" />
+    <Content Include="Content\EmployeeProfileImage\default.png" />
     <Content Include="Content\fontawesome-all.min.css" />
     <Content Include="Content\img\flags%402x.png" />
     <Content Include="Content\img\flags.png" />
@@ -883,8 +885,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Content\EmployeeLinkedFiles\" />
-    <Folder Include="Content\EmployeeProfileImage\" />
     <Folder Include="js\Appearance\" />
     <Folder Include="Properties\PublishProfiles\" />
     <Folder Include="Views\ShipStation\" />

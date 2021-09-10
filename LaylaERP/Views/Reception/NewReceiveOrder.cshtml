@@ -10,7 +10,7 @@
 </div>
 <div class="page-title">
     <h2 class="page-heading" id="lbltitle">Receive Order</h2>
-    <button type="button" class="btn btn-danger hidden" id="btnPrintPdf"><i class="fas fa-print"></i> Print</button>
+    <button type="button" style="display:none" class="btn btn-danger hidden" id="btnPrintPdf"><i class="fas fa-print"></i> Print</button>
 </div>
 <!-- Main content -->
 <section class="content content-section p-0">
@@ -22,6 +22,7 @@
                         <div class="form-group">
                             <label>Date<span class="text-red">*</span></label>
                             <div class="input-group">
+                                <input type="hidden" id="hfid" />
                                 <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                                 <input id="txtPODate" readonly="readonly" disabled class="form-control">
                             </div>
@@ -72,12 +73,7 @@
                                 <select class="form-control select2 billinfo" id="ddlPaymentType"></select>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="control-label" for="ddlwarehouse" data-toggle="tooltip" title="Warehouse .">Warehouse <span class="text-red">*</span></label>
-                            <div class="">
-                                <select class="form-control select2 billinfofo" id="ddlwarehouse"></select>
-                            </div>
-                        </div>
+                    
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
@@ -99,6 +95,12 @@
                             <label class="control-label " for="Note (private)">Note (private)</label>
                             <div class="">
                                 <textarea id="txtNotePrivate" class="form-control billinfo" placeholder="Note (private)"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="ddlwarehouse" data-toggle="tooltip" title="Warehouse .">Warehouse <span class="text-red">*</span></label>
+                            <div class="">
+                                <select class="form-control select2 billinfofo" id="ddlwarehouse"></select>
                             </div>
                         </div>
 

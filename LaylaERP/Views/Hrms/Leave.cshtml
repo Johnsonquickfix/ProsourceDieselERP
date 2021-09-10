@@ -1,7 +1,112 @@
 ﻿
 @{ ViewBag.Title = "Leave";
-    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<link href="~/Content/DataTables/bootstrap-datepicker.css" rel="stylesheet" />
+<script src="~/Content/DataTables/bootstrap-datepicker.js"></script>
+
+<div class="row">
+    <div class="col-sm-6">
+        <div class="box box-primary">
+            <div class="box-body">
+                <div class="form-group">
+                    <label for="Employee">Employee<span style="color:red">*</span></label>
+                    <select class="form-control select2" id="ddlemployee" style="width:100%;"></select>
+                </div>
+
+                <div class="form-group">
+                    <label for="ddlproduct">Leave Type<span style="color:red">*</span></label>
+                    <select class="form-control select2" id="ddlLeaveType" style="width:100%;"></select>
+                </div>
+                <div class="form-group">
+                    <label for="FromDate">From</label>
+                    <input type="text" id="txtfrom" name="from" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label for="ToDate">To</label>
+                    <input type="text" id="txtto" name="to" class="form-control">
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6" id="details">
+        <div class="box box-primary">
+            <div class="box-body">
+                <div class="form-group">
+                    <label for="vendor">Number of Days<span style="color:red"></span></label>
+                    <input type="text" class="form-control" id="txtdays" readonly />
+                </div>
+
+                <div class="form-group">
+                    <label for="vendor">Description<span style="color:red">*</span></label>
+                    <input type="text" class="form-control" id="txtdescription" />
+                </div>
+
+                <div class="form-group">
+                    <label for="country">Public note<span style="color:red"></span></label>
+                    <input type="text" class="form-control" id="txtpublic" />
+                </div>
+
+                <div class="form-group">
+                    <label for="state">Private note<span style="color:red"></span></label>
+                    <input type="text" class="form-control" id="txtprivate" />
+                </div>
 
 
+                <div class="box-footer">
+                    <a href="#" class="btn btn-danger" id="btnAdd"><b>Save</b></a>
+                    <a href="#" class="btn btn-danger" id="btnReset"><b>Reset</b></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*<div class="col-sm-12">
+        <div class="box box-primary">
+            <div class="box-body">
+                <table id="dtdata" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Product</th>
+                            <th>Prefix</th>
+                            <th>Vendor</th>
+                            <th>Warehouse</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                </table>
+
+            </div>
+        </div>
+    </div>*@
+
+
+</div>
+
+<script>
+    $(document).ready(function () {
+
+        $("#txtfrom").datepicker({ format: 'mm-dd-yyyy', });
+        $("#txtto").datepicker({ format: 'mm-dd-yyyy', });
+
+        $(".select2").select2();
+
+
+        $(document).on('click', "#btnAdd", function () {
+            addLeave();
+        });
+
+        $(document).on('click', "#btnReset", function () {
+            reset();
+        });
+
+    })
+
+</script>
+
+
+<script src="@Url.Content("~/js/Hrms/Leave.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>

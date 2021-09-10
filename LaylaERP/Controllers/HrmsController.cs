@@ -317,5 +317,46 @@ namespace LaylaERP.Controllers
             }
         }
 
+//My code
+        public JsonResult GetLeaveType()
+        {
+            DataSet ds = HrmsRepository.GetLeaveType();
+            List<SelectListItem> leavelist = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                leavelist.Add(new SelectListItem { Text = dr["leave_type"].ToString(), Value = dr["leave_code"].ToString() });
+            }
+            return Json(leavelist, JsonRequestBehavior.AllowGet);
+
+        }
+
+        public JsonResult GetEmployee()
+        {
+            DataSet ds = HrmsRepository.GetEmployee();
+            List<SelectListItem> employeelist = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                employeelist.Add(new SelectListItem { Text = dr["firstname"].ToString(), Value = dr["rowid"].ToString() });
+            }
+            return Json(employeelist, JsonRequestBehavior.AllowGet);
+
+        }
+
+        [HttpPost]
+        public JsonResult AddLeave(LeaveModel model)
+        {
+
+            int ID = HrmsRepository.AddLeave(model);
+            if (ID > 0)
+            {
+
+                return Json(new { status = true, message = "Data has been saved successfully!!", url = "", id = ID }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+        }
+
     }
 }

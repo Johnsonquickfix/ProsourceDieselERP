@@ -7,7 +7,7 @@ namespace LaylaERP.Models
 {
     public class PurchaseReceiceOrderModel : PaggingModel
     {
-
+        
         public long RowID { get; set; }
         public string PONo { get; set; }
         public long VendorID { get; set; }
@@ -32,6 +32,7 @@ namespace LaylaERP.Models
         public double localtax2 { get; set; }
         public double total_ht { get; set; }
         public double total_ttc { get; set; }
+        public long IDRec { get; set; }
         public List<PurchaseReceiceOrderProductsModel> PurchaseOrderProducts { get; set; }
     }
 

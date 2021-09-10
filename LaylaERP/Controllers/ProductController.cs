@@ -338,8 +338,8 @@ namespace LaylaERP.Controllers
                 }
                 else
                 {
-                    DataTable dtware = ProductRepository.Getwarehouse(model);
-                    if (dt.Rows.Count > 0)
+                   DataTable dtware = ProductRepository.Getwarehouse(model);
+                    if (dtware.Rows.Count > 0)
                     {
                         resultOne = ProductRepository.AddBuyingtProduct(model, dateinc);
                     }

@@ -49,7 +49,7 @@ function EmployeeList() {
             { data: 'email', title: 'Email', sWidth: "20%" },
             {
 
-                data: 'phone', title: 'Phone', sWidth: "20%",
+                data: 'phone', title: 'Phone Number', sWidth: "20%",
                 render: function (toFormat) {
                     var tPhone = '';
                     if (toFormat != null) {
@@ -61,7 +61,7 @@ function EmployeeList() {
             },
           
             {
-                'data': 'is_active', 'sClass': 'ws_nowrap text-center', sWidth: "10%",
+                'data': 'is_active', 'sClass': 'ws_nowrap text-center', sWidth: "10%", title: 'Status',
                 'render': function (id, type, full, meta) {
                     if (id == 1) {
                         toggleclass = "fas fa-toggle-on";
@@ -77,7 +77,7 @@ function EmployeeList() {
                 }
             },
             {
-                'data': 'ID', sWidth: "10%",
+                'data': 'ID', sWidth: "10%", title: 'Action',
                 'render': function (id, type, full, meta) {
                     return '<a href="../Hrms/Employee/' + id + '"><i class="glyphicon glyphicon-pencil"></i></a>';
                 }

@@ -358,12 +358,13 @@ namespace LaylaERP.BAL
                             + "  ((opl.product_qty * ir.purchase_price) * (ir.discount / 100)) discount,0 total_tva,round((opl.product_qty * ir.salestax), 2) localtax1,round((opl.product_qty * ir.shipping_price), 2) localtax2,"
                             + " round((opl.product_qty * ir.purchase_price), 2) total_ht,"
                             + " round((opl.product_qty * ir.purchase_price), 2) - round(((opl.product_qty * ir.purchase_price) * (ir.discount / 100)), 2) + round((opl.product_qty * ir.salestax), 2) + round((opl.product_qty * ir.shipping_price), 2) total_ttc,"
-                            + " opl.order_id,wp_oi.order_item_name,(case when opl.variation_id > 0 then opl.variation_id else opl.product_id end) fk_product,p.post_date,opl.product_qty,"
+                            + " opl.order_id,psku.meta_value sku,wp_oi.order_item_name,(case when opl.variation_id > 0 then opl.variation_id else opl.product_id end) fk_product,p.post_date,opl.product_qty,"
                             + " ir.purchase_price,ir.salestax,ir.shipping_price,ir.discount discountPer"
                             + " from wp_posts p"
                             + " inner join wp_woocommerce_order_items wp_oi on p.id = wp_oi.order_id and wp_oi.order_item_type = 'line_item'"
                             + " inner join wp_wc_order_product_lookup opl on opl.order_item_id = wp_oi.order_item_id"
                             + " inner join Product_Purchase_Items ir on ir.fk_product = (case when opl.variation_id > 0 then opl.variation_id else opl.product_id end)"
+                            + " left outer join wp_postmeta psku on psku.post_id = (case when opl.variation_id > 0 then opl.variation_id else opl.product_id end) and psku.meta_key = '_sku'"
                             + " left outer join wp_vendor wp_v on wp_v.rowid = ir.fk_vendor"
                             + " left outer join wp_VendorPaymentDetails wp_vpd on wp_vpd.VendorID = wp_v.rowid"
                             + " where p.id = " + id + " group by p.id,(case when opl.variation_id > 0 then opl.variation_id else opl.product_id end) order by ref_supplier;"
@@ -389,7 +390,7 @@ namespace LaylaERP.BAL
                         {
                             strsql += "insert into commerce_purchase_order_detail (fk_purchase,fk_product,ref,description,qty,discount_percent,discount,subprice,total_ht,total_ttc,product_type,date_start,date_end,rang,tva_tx,localtax1_tx,localtax1_type,localtax2_tx,localtax2_type,total_tva,total_localtax1,total_localtax2) ";
                             strsql += string.Format(" select '{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}','{16}','{17}','{18}','{19}','{20}','{21}';",
-                                po_id, DRMC["fk_product"], "", DRMC["order_item_name"], DRMC["product_qty"], DRMC["discountPer"], DRMC["discount"], DRMC["shipping_price"], DRMC["total_ht"], DRMC["total_ttc"], 0, "", "", 1,
+                                po_id, DRMC["fk_product"], DRMC["sku"], DRMC["order_item_name"], DRMC["product_qty"], DRMC["discountPer"], DRMC["discount"], DRMC["shipping_price"], DRMC["total_ht"], DRMC["total_ttc"], 0, "", "", 1,
                                 0, DRMC["salestax"], "F", DRMC["shipping_price"], "F", 0, DRMC["localtax1"], DRMC["localtax2"]);
                             total_gm += Convert.ToDecimal(DRMC["total_ht"].ToString());
                             total_discamt += Convert.ToDecimal(DRMC["discount"].ToString());

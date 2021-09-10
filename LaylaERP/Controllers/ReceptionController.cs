@@ -62,6 +62,22 @@ namespace LaylaERP.Controllers
             }
             return Json(new { status = b_status, message = JSONstring, id = ID }, 0);
         }
+
+        [HttpGet]
+        public JsonResult GetPurchaseOrderByID(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                long id = 0;
+                if (!string.IsNullOrEmpty(model.strValue1))
+                    id = Convert.ToInt64(model.strValue1);
+                DataSet ds = ReceptionRepository.GetPurchaseOrderByID(id);
+                JSONresult = JsonConvert.SerializeObject(ds);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
         public JsonResult GetPurchaseOrderList(JqDataTableModel model)
         {
             string result = string.Empty;

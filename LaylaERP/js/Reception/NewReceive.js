@@ -380,7 +380,7 @@ function getPurchaseOrderInfo() {
         $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/Reception/ReceiveOrder">Back to List</a>');
         var option = { strValue1: oid };
         $.ajax({
-            url: "/PurchaseOrder/GetPurchaseOrderByID", type: "Get", beforeSend: function () { $("#loader").show(); }, data: option,
+            url: "/Reception/GetPurchaseOrderByID", type: "Get", beforeSend: function () { $("#loader").show(); }, data: option,
             success: function (result) {
                 try {
                     let data = JSON.parse(result); let VendorID = 0;

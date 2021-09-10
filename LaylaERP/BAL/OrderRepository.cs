@@ -467,7 +467,7 @@
                                 cDate.ToString("yyyy/MM/dd HH:mm:ss"), obj.quantity, (obj.total - obj.discount), (obj.total - obj.discount + obj.tax_amount), obj.discount, obj.tax_amount, obj.shipping_amount, obj.shipping_tax_amount));
                     }
 
-                   // str_Stock+= string.Format("select 'SO',{0},{1},13 warehouse_id,{2},{3},'I'", model.OrderPostStatus.order_id, obj.variation_id > 0 ? obj.variation_id : obj.product_id, model.OrderPostStatus.date_created.ToString("MMMM dd, yyyy @ HH:mm tt"), obj.quantity);
+                    // str_Stock+= string.Format("select 'SO',{0},{1},13 warehouse_id,{2},{3},'I'", model.OrderPostStatus.order_id, obj.variation_id > 0 ? obj.variation_id : obj.product_id, model.OrderPostStatus.date_created.ToString("MMMM dd, yyyy @ HH:mm tt"), obj.quantity);
                 }
                 /// step 4 : wp_woocommerce_order_itemmeta
                 strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'_product_id',product_id from wp_wc_order_product_lookup where order_id={0} and order_item_id not in ({1})", model.OrderPostStatus.order_id, str_oiid));
@@ -548,7 +548,7 @@
                 strSql.Append(string.Format(" update wp_posts set post_status = '{0}' ,comment_status = 'closed',post_modified = '{1}',post_modified_gmt = '{2}',post_excerpt = '{3}' where id = {4}; ", model.OrderPostStatus.status, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"), model.OrderPostStatus.Search, model.OrderPostStatus.order_id));
 
                 ///step 9 : Reduce Stock
-                strSql.Append("delete from product_stock_register where tran_type ='SO' and tran_id = "+ model.OrderPostStatus.order_id + ";");
+                strSql.Append("delete from product_stock_register where tran_type ='SO' and tran_id = " + model.OrderPostStatus.order_id + ";");
                 strSql.Append("insert into product_stock_register (tran_type,tran_id,product_id,warehouse_id,tran_date,quantity,flag)");
                 strSql.Append("select 'SO', opl.order_id, (case when opl.variation_id > 0 then opl.variation_id else opl.product_id end) fk_product,");
                 strSql.Append("(select wp_w.rowid from wp_warehouse wp_w where wp_w.is_system = 1 limit 1) warehouse_id,p.post_date,opl.product_qty,'I'");
@@ -1068,6 +1068,22 @@
                 result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
             }
             catch { }
+            return result;
+        }
+        public static int UpdatePaymentStatus(OrderPostMetaModel model)
+        {
+            int result = 0;
+            try
+            {
+                string strSql_insert = string.Empty;
+                StringBuilder strSql = new StringBuilder();
+                strSql.Append(string.Format("insert into wp_postmeta (post_id,meta_key,meta_value) SELECT * FROM (SELECT {0},'{1}','{2}') AS tmp WHERE NOT EXISTS (SELECT meta_key FROM wp_postmeta WHERE post_id = {3} and meta_key = '{4}');", model.post_id, model.meta_key, model.meta_value, model.post_id, model.meta_key));
+                strSql.Append(string.Format("update wp_postmeta set meta_value = '{0}' where post_id = '{1}' and meta_key = '{2}' ; ", model.meta_value, model.post_id, model.meta_key));
+
+                result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
+                if (model.meta_value.ToUpper() == "COMPLETED") PurchaseOrderRepository.CreateOrders(model.post_id);
+            }
+            catch (Exception ex) { throw ex; }
             return result;
         }
         public int ChangeOrderStatus(OrderPostStatusModel model, string ID)

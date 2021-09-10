@@ -13,7 +13,7 @@ namespace LaylaERP.BAL
     {
         public static DataTable GetWarehouseDetail(SearchModel model)
         {
-            string strwhr = " where status= '" + model.strValue1 + "'";
+            string strwhr = " where is_system=0 and status= '" + model.strValue1 + "'";
             DataTable dtr = new DataTable();
             try
             {

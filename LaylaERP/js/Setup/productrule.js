@@ -177,9 +177,17 @@ function addProductWarehouseRuleDetails() {
 
 }
 
-
-
 function reset() {
+    $("#txtcountry").val('');
+    $("#txtstate").val('');
+    $("#ddlwarehouse").val("0").trigger('change');
+    $("#ddlvendor").val("0").trigger('change');
+    $("#hfid").val("");
+}
+
+
+
+function resetbtn() {
     $("#txtprefixcode").val('');
     $("#ddlProduct").val("0").trigger('change');
     $("#txtcountry").val('');

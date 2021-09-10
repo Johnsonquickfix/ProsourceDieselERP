@@ -228,7 +228,7 @@ namespace LaylaERP.BAL
                 strsql += "delete from product_stock_register where tran_type = 'PO' and flag = 'O' and tran_id = " + model.RowID + ";"
                         + " insert into product_stock_register (tran_type,tran_id,product_id,warehouse_id,tran_date,quantity,flag)"
                         + " select 'PO',pod.fk_purchase,pod.fk_product,(select wp_w.rowid from wp_warehouse wp_w where wp_w.is_system = 1 limit 1) warehouse_id,po.date_creation,pod.qty,'O' from commerce_purchase_order_detail pod"
-                        + " inner join commerce_purchase_order po on po.rowid = pod.fk_purchase where fk_purchase = "+ model.RowID + ";";
+                        + " inner join commerce_purchase_order po on po.rowid = pod.fk_purchase where fk_purchase = " + model.RowID + ";";
 
                 if (SQLHelper.ExecuteNonQueryWithTrans(strsql) > 0)
                     result = model.RowID;
@@ -341,6 +341,72 @@ namespace LaylaERP.BAL
                 throw ex;
             }
             return dt;
+        }
+
+        public static int CreateOrders(long id)
+        {
+            int result = 0;
+            try
+            {
+                DateTime cDate = CommonDate.CurrentDate(), cUTFDate = CommonDate.UtcDate();
+                string strPOYearMonth = cDate.ToString("yyMM").PadRight(4);
+                MySqlParameter[] para = { };
+                string strsql = "";
+                DataTable DT = new DataTable();
+                string strSQl = "select '' ref,'' ref_ext,code_vendor ref_supplier,ir.fk_vendor fk_supplier,1 fk_status,0 source,wp_v.PaymentTermsID,wp_v.BalanceID,wp_vpd.Paymentmethod,"
+                            + " p.post_date date_livraison, wp_v.fk_incoterms,wp_v.location_incoterms,'System Created' note_private,'' note_public,0 fk_user_author,p.post_date date_creation,"
+                            + "  ((opl.product_qty * ir.purchase_price) * (ir.discount / 100)) discount,0 total_tva,round((opl.product_qty * ir.salestax), 2) localtax1,round((opl.product_qty * ir.shipping_price), 2) localtax2,"
+                            + " round((opl.product_qty * ir.purchase_price), 2) total_ht,"
+                            + " round((opl.product_qty * ir.purchase_price), 2) - round(((opl.product_qty * ir.purchase_price) * (ir.discount / 100)), 2) + round((opl.product_qty * ir.salestax), 2) + round((opl.product_qty * ir.shipping_price), 2) total_ttc,"
+                            + " opl.order_id,wp_oi.order_item_name,(case when opl.variation_id > 0 then opl.variation_id else opl.product_id end) fk_product,p.post_date,opl.product_qty,"
+                            + " ir.purchase_price,ir.salestax,ir.shipping_price,ir.discount discountPer"
+                            + " from wp_posts p"
+                            + " inner join wp_woocommerce_order_items wp_oi on p.id = wp_oi.order_id and wp_oi.order_item_type = 'line_item'"
+                            + " inner join wp_wc_order_product_lookup opl on opl.order_item_id = wp_oi.order_item_id"
+                            + " inner join Product_Purchase_Items ir on ir.fk_product = (case when opl.variation_id > 0 then opl.variation_id else opl.product_id end)"
+                            + " left outer join wp_vendor wp_v on wp_v.rowid = ir.fk_vendor"
+                            + " left outer join wp_VendorPaymentDetails wp_vpd on wp_vpd.VendorID = wp_v.rowid"
+                            + " where p.id = " + id + " group by p.id,(case when opl.variation_id > 0 then opl.variation_id else opl.product_id end) order by ref_supplier;"
+                            + "delete from commerce_purchase_order_detail where fk_purchase in (select rowid from commerce_purchase_order where fk_projet = " + id + ");"
+                            + "delete from commerce_purchase_order where fk_projet = " + id + ";";
+                DT = SQLHelper.ExecuteDataTable(strSQl);
+
+                foreach (DataRow DR in DT.DefaultView.ToTable(true, "ref_supplier", "fk_supplier", "PaymentTermsID", "BalanceID", "Paymentmethod", "date_livraison", "fk_incoterms", "location_incoterms", "date_creation").Rows)
+                {
+                    strsql = "insert into commerce_purchase_order(ref,ref_ext,ref_supplier,fk_supplier,fk_status,source,fk_payment_term,fk_balance_days,fk_payment_type,date_livraison,fk_incoterms,location_incoterms,note_private,note_public,fk_user_author,date_creation,discount,total_tva,localtax1,localtax2,total_ht,total_ttc,fk_projet) "
+                        + string.Format("select concat('PO" + strPOYearMonth + "-',lpad(coalesce(max(right(ref,5)),0) + 1,5,'0')) ref,'','{0}','{1}','1','0','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}','{16}','{17}','{18}' from commerce_purchase_order where lpad(ref,6,0) = 'PO" + strPOYearMonth + "';select LAST_INSERT_ID();",
+                                DR["ref_supplier"], DR["fk_supplier"], DR["PaymentTermsID"], DR["BalanceID"], DR["Paymentmethod"], cDate.ToString("yyyy-MM-dd HH:mm:ss"), DR["fk_incoterms"], DR["location_incoterms"], "", "", 0, cDate.ToString("yyyy-MM-dd HH:mm:ss"), 0, 0, 0, 0, 0, 0, id);
+
+                    long po_id = Convert.ToInt64(SQLHelper.ExecuteScalar(strsql, para));
+                    strsql = string.Empty;
+                    if (po_id > 0)
+                    {
+                        DT.DefaultView.RowFilter = "fk_supplier = " + DR["fk_supplier"].ToString().Trim();
+
+                        /// step 2 : commerce_purchase_order_detail
+                        foreach (DataRow DRMC in DT.DefaultView.ToTable().Rows)
+                        {
+                            strsql += "insert into commerce_purchase_order_detail (fk_purchase,fk_product,ref,description,qty,discount_percent,discount,subprice,total_ht,total_ttc,product_type,date_start,date_end,rang,tva_tx,localtax1_tx,localtax1_type,localtax2_tx,localtax2_type,total_tva,total_localtax1,total_localtax2) ";
+                            strsql += string.Format(" select '{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}','{16}','{17}','{18}','{19}','{20}','{21}';",
+                                po_id, DRMC["fk_product"], "", DRMC["order_item_name"], DRMC["product_qty"], DRMC["discountPer"], DRMC["discount"], DRMC["shipping_price"], DRMC["total_ht"], DRMC["total_ttc"], 0, "", "", 1,
+                                0, DRMC["salestax"], "F", DRMC["shipping_price"], "F", 0, DRMC["localtax1"], DRMC["localtax2"]);
+                        }
+
+                        //Add Stock
+                        strsql += "delete from product_stock_register where tran_type = 'PO' and flag = 'O' and tran_id = " + po_id + ";"
+                                + " insert into product_stock_register (tran_type,tran_id,product_id,warehouse_id,tran_date,quantity,flag)"
+                                + " select 'PO',pod.fk_purchase,pod.fk_product,(select wp_w.rowid from wp_warehouse wp_w where wp_w.is_system = 1 limit 1) warehouse_id,po.date_creation,pod.qty,'O' from commerce_purchase_order_detail pod"
+                                + " inner join commerce_purchase_order po on po.rowid = pod.fk_purchase where fk_purchase = " + po_id + ";";
+
+                    }
+                }
+                result = SQLHelper.ExecuteNonQueryWithTrans(strsql);
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+            return result;
         }
     }
 }

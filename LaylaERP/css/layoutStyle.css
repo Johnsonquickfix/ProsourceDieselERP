@@ -2506,8 +2506,16 @@ table-layout:fixed;}
 display:flex;}
 #billCoupon div.pull-right{display:flex; align-items:center;}
 .mb-1 {margin-bottom: 15px;}
+.listproduct .inventory-table{min-width:1400px;}
+.profile-flex.col-12 {padding:0px 15px;}
 
-.neworders a.billinfo, .order a.billinfo{color:#fff !important;}
+.listproduct .inventory-table th, .listproduct .inventory-table td{padding-right:30px !important;}
+.neworders a.billinfo, .order a.billinfo {
+    color: #fff !important;
+}
+
+
+
 @media(max-width:900px) {
     .hub-pro-shop select:first-child{margin-left:0px;}
     .hub-pro-shop {width: 100%; margin-top:5px;}

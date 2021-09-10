@@ -1246,8 +1246,8 @@ function GetProductvariationID(ProductID) {
                 varHTML += '<div class="col-sm-9">';
                 varHTML += '</div>';
                 varHTML += '</div>';
-                varHTML += '<div class="form-group d-flex">';
-                varHTML += '<div class="col-sm-3">';
+                varHTML += '<div class="form-group d-flex profile-flex col-12">';
+                varHTML += '<div class="col">';
                 varHTML += '<div class="add-profile">';
                 varHTML += '<span class="edit-pic-profile">';
                 varHTML += '<input type="file" onchange="readURLvarition(this,' + data[i].id +');" name="ImageFileVariation" id="ImageFileVariation_' + data[i].id + '" class="inputfile" />';
@@ -1256,9 +1256,9 @@ function GetProductvariationID(ProductID) {
                 varHTML += '<img runat="server" id="show_pictureVar_' + data[i].id + '" class="profile-user-img img-responsive img-circle" src="../../Content/Product/default.png" alt="Product Image">';
                 varHTML += '</div>';
                 varHTML += '</div>';
-                varHTML += '<div class="col-sm-9>';
+                varHTML += '<div class="col">';
                // varHTML += '<button type="button" id="btnproductVariation_' + data[i].id + '" onchange="UpdateImagevarition(this,' + data[i].id +');" title="Click here to Upload" data-toggle="tooltip" style="float: left;" class="control-label">Upload</button>';
-                varHTML += '<<a href="javascript:void(0);" title="Click here to Upload" data-toggle="tooltip" class="editbutton" onClick="UpdateImagevarition(this,' + data[i].id + ')"><i>Upload</i></a>';
+                varHTML += '<a href="javascript:void(0);" title="Click here to Upload" data-toggle="tooltip" class="editbutton btn btn-danger" onClick="UpdateImagevarition(this,' + data[i].id + ')"><i>Upload</i></a>';
                 varHTML += '</div>';
                 varHTML += '</div>';
                 varHTML += '</div>';

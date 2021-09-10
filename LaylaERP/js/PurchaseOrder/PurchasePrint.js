@@ -18,10 +18,10 @@ function getPurchaseOrderPrint(id, is_mail) {
         $.ajax({
             url: "/PurchaseOrder/GetPurchaseOrderPrint", type: "Get", beforeSend: function () { }, data: option,
             success: function (result) {
-                //try {
-                printinvoice(id, result, is_mail, false);
-                //}
-                //catch (error) { swal('Alert!', "something went wrong.", "error"); }
+                try {
+                    printinvoice(id, result, is_mail, false);
+                }
+                catch (error) { swal('Alert!', "something went wrong.", "error"); }
             },
             complete: function () { },
             error: function (xhr, status, err) { swal('Alert!', "something went wrong.", "error"); }, async: false

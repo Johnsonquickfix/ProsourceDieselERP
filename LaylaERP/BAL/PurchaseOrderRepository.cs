@@ -383,6 +383,7 @@ namespace LaylaERP.BAL
                     {
                         DT.DefaultView.RowFilter = "fk_supplier = " + DR["fk_supplier"].ToString().Trim();
 
+                        decimal total_gm = 0, total_tax = 0, total_shamt = 0, total_discamt = 0, total_net = 0;
                         /// step 2 : commerce_purchase_order_detail
                         foreach (DataRow DRMC in DT.DefaultView.ToTable().Rows)
                         {
@@ -390,7 +391,13 @@ namespace LaylaERP.BAL
                             strsql += string.Format(" select '{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}','{16}','{17}','{18}','{19}','{20}','{21}';",
                                 po_id, DRMC["fk_product"], "", DRMC["order_item_name"], DRMC["product_qty"], DRMC["discountPer"], DRMC["discount"], DRMC["shipping_price"], DRMC["total_ht"], DRMC["total_ttc"], 0, "", "", 1,
                                 0, DRMC["salestax"], "F", DRMC["shipping_price"], "F", 0, DRMC["localtax1"], DRMC["localtax2"]);
+                            total_gm += Convert.ToDecimal(DRMC["total_ht"].ToString());
+                            total_discamt += Convert.ToDecimal(DRMC["discount"].ToString());
+                            total_tax += Convert.ToDecimal(DRMC["localtax1"].ToString());
+                            total_shamt += Convert.ToDecimal(DRMC["localtax2"].ToString());
+                            total_net += Convert.ToDecimal(DRMC["total_ttc"].ToString());
                         }
+                        strsql += string.Format("update commerce_purchase_order set discount = {0},localtax1={1},localtax2={2},total_ht={3},total_ttc={4} where rowid={5};", total_discamt, total_tax, total_shamt, total_gm, total_net, po_id);
 
                         //Add Stock
                         strsql += "delete from product_stock_register where tran_type = 'PO' and flag = 'O' and tran_id = " + po_id + ";"

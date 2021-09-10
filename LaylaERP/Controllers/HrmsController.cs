@@ -316,16 +316,6 @@ namespace LaylaERP.Controllers
                 return Json(new { status = false, message = "Employee info not Found", url = "", id = 0 }, 0);
             }
         }
-//My code
-        public JsonResult GetLeaveType()
-        {
-            DataSet ds = HrmsRepository.GetLeaveType();
-            List<SelectListItem> leavelist = new List<SelectListItem>();
-            foreach (DataRow dr in ds.Tables[0].Rows)
-            {
-                leavelist.Add(new SelectListItem { Text = dr["leave_type"].ToString(), Value = dr["leave_code"].ToString() });
-            }
-            return Json(leavelist, JsonRequestBehavior.AllowGet);
 
 //My code
         public JsonResult GetLeaveType()

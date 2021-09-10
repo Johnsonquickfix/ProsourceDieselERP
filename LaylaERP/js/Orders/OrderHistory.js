@@ -189,6 +189,7 @@ function dataGridLoad(order_type) {
             {
                 data: 'payment_method_title', title: 'Payment Method', sWidth: "10%", render: function (data, type, row) {
                     if (row.payment_method == 'ppec_paypal' && row.paypal_status != 'COMPLETED') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="PaymentStatus(' + row.id + ',\'' + row.paypal_id + '\');">' + row.payment_method_title + '</a>';
+                    //if (row.payment_method == 'ppec_paypal') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="PaymentStatus(' + row.id + ',\'' + row.paypal_id + '\');">' + row.payment_method_title + '</a>';
                     else return row.payment_method_title;
                 }
             },
@@ -275,12 +276,14 @@ function PaymentStatus(oid, pp_id) {
                         showLoaderOnConfirm: true, icon: "success",
                         preConfirm: function () {
                             return new Promise(function (resolve) {
-                                let _postMeta = [{ post_id: oid, meta_key: '_paypal_status', meta_value: 'COMPLETED' }];
-                                let opt = { OrderPostMeta: _postMeta };
-                                $.post('/Orders/UpdatePayPalID', opt)
+                                let opt = { post_id: oid, meta_key: '_paypal_status', meta_value: 'COMPLETED' };
+                                $.get('/Orders/UpdatePaymentStatus', opt)
                                     .done(function (data) {
-                                        swal.insertQueueStep('Status updated successfully.');
-                                        $('#dtdata').DataTable().ajax.reload();
+                                        if (data.status) {
+                                            swal.insertQueueStep('Status updated successfully.');
+                                            $('#dtdata').DataTable().ajax.reload();
+                                        }
+                                        else { swal.insertQueueStep('Status updated successfully.');}
                                         resolve();
                                     })
                             })

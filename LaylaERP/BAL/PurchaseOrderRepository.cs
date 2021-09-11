@@ -398,7 +398,7 @@ namespace LaylaERP.BAL
                             total_shamt += Convert.ToDecimal(DRMC["localtax2"].ToString());
                             total_net += Convert.ToDecimal(DRMC["total_ttc"].ToString());
                         }
-                        strsql += string.Format("update commerce_purchase_order set discount = {0},localtax1={1},localtax2={2},total_ht={3},total_ttc={4} where rowid={5};", total_discamt, total_tax, total_shamt, total_gm, total_net, po_id);
+                        strsql += string.Format("update commerce_purchase_order set fk_status='3',ref_ext=REPLACE(ref,'PO','PI'),billed='1',discount = {0},localtax1={1},localtax2={2},total_ht={3},total_ttc={4} where rowid={5};", total_discamt, total_tax, total_shamt, total_gm, total_net, po_id);
 
                         //Add Stock
                         strsql += "delete from product_stock_register where tran_type = 'PO' and flag = 'O' and tran_id = " + po_id + ";"

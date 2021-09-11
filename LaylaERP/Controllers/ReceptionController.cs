@@ -45,7 +45,7 @@ namespace LaylaERP.Controllers
             string JSONstring = string.Empty; bool b_status = false; long ID = 0;
             try
             {
-                ID = new ReceptionRepository().ReceptionPurchase(model);
+            ID = new ReceptionRepository().ReceptionPurchase(model);
 
                 if (ID > 0)
                 {

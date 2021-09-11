@@ -64,6 +64,11 @@ function PurchaseOrderGrid() {
                     return str_inv;
                 }
             },
+            {
+                data: 'fk_projet', title: 'SO No.', sWidth: "10%", render: function (data, type, dtrow) {
+                    if (data > 0) return '#' + data; else return '';
+                }
+            },
             { data: 'vendor_name', title: 'Vendor Name', sWidth: "15%" },
             {
                 data: 'city', title: 'Address', sWidth: "20%", render: function (data, type, dtrow) {
@@ -71,9 +76,9 @@ function PurchaseOrderGrid() {
                     return val;
                 }
             },
-            { data: 'total_ttc', title: 'Amount', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
+            { data: 'total_ttc', title: 'Amount', sWidth: "8%", class: 'text-right', render: $.fn.dataTable.render.number('', '.', 2, '$') },
             { data: 'date_livraison', title: 'Planned date of delivery', sWidth: "10%" },
-            { data: 'Status', title: 'Status', sWidth: "10%" }
+            { data: 'Status', title: 'Status', sWidth: "8%" }
         ]
     });
 }

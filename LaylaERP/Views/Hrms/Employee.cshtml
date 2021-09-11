@@ -98,14 +98,11 @@
 
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="PlaceOfBirth">Employee Type</label>
+                                        <label for="PlaceOfBirth">Group</label>
                                         @*<div class="input-group">
                                                 <input class="form-control" type="text" id="txtType" name="PlaceOfBirth">
                                             </div>*@
-
-                                        <select class="form-control select2" id="ddlEmployeeType" name="MaritalStatus">
-                                            <option selected="selected" value="1">Full Time</option>
-                                            <option value="2">Part Time</option>
+                                        <select class="form-control select2" id="ddlEmployeeType" name="ddlEmployeeType">
                                         </select>
                                     </div>
                                 </div>
@@ -147,9 +144,10 @@
                             </div>
 
                             <div class="form-group">
+                                <img class="sb-title-icon" src="https://fonts.gstatic.com/s/i/googlematerialicons/location_pin/v5/24px.svg" alt="">
                                 <label for="Address1">Address1</label>
                                 <div class="input-group">
-                                    <input class="form-control" type="text" id="txtAddress1" name="Address1">
+                                    <input class="form-control" type="text" id="txtAddress1" data-addresstype="Permanent" name="Address1">
                                 </div>
                             </div>
                             <div class="form-group">
@@ -402,7 +400,7 @@
                             </div>
                         </article>
                     </article>
-                    
+
                 </div>
                 <div class="tab-pane" id="tab_3">
                     <article class="box box-primary mb-4">
@@ -471,7 +469,7 @@
                         </article>
                     </article>
                 </div>
-                
+
                 <div class="tab-pane" id="tab_5">
                     <div class="box box-primary">
                         <div class="box-body">
@@ -535,11 +533,6 @@
     </div>
 </section>
 
-<script>
-    $(function () {
-
-
-    });
-</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBIgngCCIJ3D8_s3G7aIfvQckhsDtbAe4E&libraries&callback=initMap&libraries=places&v=weekly" async></script>
 <script src="~/js/jquery.mask.js" asp-append-version="true"></script>
 <script src="@Url.Content("~/js/Hrms/Hrms.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>

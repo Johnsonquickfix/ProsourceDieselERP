@@ -1,13 +1,14 @@
 ﻿$(document).ready(function () {
+    $("#loader").hide();
     var url = window.location.pathname;
     var id = url.substring(url.lastIndexOf('/') + 1);
     getDepartment();
     getDesignation();
+    getGroup();
     getEmployeeCode();
-    $("#loader").hide();
     $("#txtPhone").mask("(999) 999-9999");
     $("#txtAlternateContactNumber").mask("(999) 999-9999");
-
+   
     $("#txtdob").datepicker({ format: 'mm-dd-yyyy', });
     $("#txtJoiningDate").datepicker({ format: 'mm-dd-yyyy', });
     $("#txtLeavingDate").datepicker({ format: 'mm-dd-yyyy', });
@@ -18,7 +19,6 @@
     EmployeeLinkedFiles();
     $('input:checkbox').prop('checked', true);
 })
-
 
 function readURL(input) {
     if (input.files && input.files[0]) {
@@ -31,7 +31,20 @@ function readURL(input) {
     }
 }
 
+function getGroup() {
+    $.ajax({
+        url: "/Hrms/GetGroup",
+        type: "Get",
+        success: function (data) {
+            var opt = '<option value="0">Please Select Group</option>';
+            for (var i = 0; i < data.length; i++) {
+                opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
+            }
+            $('#ddlEmployeeType').html(opt);
+        }
 
+    });
+}
 function getDesignation() {
     $.ajax({
         url: "/Hrms/GetDesignation",
@@ -175,23 +188,23 @@ $(document).on('click', "#btnNext2", function () {
     alternatezipcode = $("#txtAlternateZipCode").val();
     alternatecountry = $("#txtAlternateCountry").val();
     alternatecontactNumber = $("#txtAlternateContactNumber").val();
-    var formattedDate = new Date(joiningdate);
-    var d = formattedDate.getDate();
-    var m = ("0" + (formattedDate.getMonth() + 1)).slice(-2)
-    var y = formattedDate.getFullYear();
-    var dateofjoining = y + "-" + m + "-" + d;
+    //var formattedDate = new Date(joiningdate);
+    //var d = formattedDate.getDate();
+    //var m = ("0" + (formattedDate.getMonth() + 1)).slice(-2)
+    //var y = formattedDate.getFullYear();
+    //var dateofjoining = y + "-" + m + "-" + d;
 
-    var formattedDate = new Date(leavingdate);
-    var d = formattedDate.getDate();
-    var m = ("0" + (formattedDate.getMonth() + 1)).slice(-2)
-    var y = formattedDate.getFullYear();
-    var dateofleaving = y + "-" + m + "-" + d;
+    //var formattedDate = new Date(leavingdate);
+    //var d = formattedDate.getDate();
+    //var m = ("0" + (formattedDate.getMonth() + 1)).slice(-2)
+    //var y = formattedDate.getFullYear();
+    //var dateofleaving = y + "-" + m + "-" + d;
     alternatecontactNumber = $("#txtAlternateContactNumber").unmask().val();
     var obj = {
         
         rowid: ID,
        emp_number: employeenumber, designation: designation,
-        department: department, undertaking_emp: undertaking_emp, joining_date: dateofjoining, leaving_date: dateofleaving,
+        department: department, undertaking_emp: undertaking_emp, joining_date: joiningdate, leaving_date: leavingdate,
         bloodgroup: bloodgroup, education: education, professionalqualification: professionalqualification, otherdetails: otherdetails,
         alternateaddress1: alternateaddress1, alternateaddress2: alternateaddress2, alternatecity: alternatecity,
         alternatestate: alternatestate, alternatezipcode: alternatezipcode, alternatecountry: alternatecountry,
@@ -463,18 +476,23 @@ function GetVendorByID(id) {
                     $("#txtZipCode").val(d[0].zipcode);
                     $("#txtCountry").val(d[0].country);
                     d[0].is_active == true ? $("#chkemployeestatus").prop("checked", true) : $("#chkemployeestatus").prop("checked", false);
-
-                    $('#show_picture').attr('src', '../../Content/EmployeeProfileImage/' + d[0].ProfileImageName);
+                    var profileimg = d[0].ProfileImageName;
+                    checkImage('../../Content/EmployeeProfileImage/' + profileimg, function () {
+                        $('#show_picture').attr('src', '../../Content/EmployeeProfileImage/' + profileimg);
+                    }, function () {
+                        $('#show_picture').attr('src', '../../Content/EmployeeProfileImage/default.png');
+                    });
                     $("#txtEmployeeIDNumber").val(d[0].emp_number);
                     $("#ddldesignation").val(d[0].designation == null ? "0" : d[0].designation).trigger("change");
                     $("#ddldepartment").val(d[0].department == null ? "0" : d[0].department).trigger("change");
                     $("#ddlSupervisorId").val(d[0].undertaking_emp == null ? "0" : d[0].undertaking_emp).trigger("change");
-                    var date = new Date(d[0].joining_date);
-                    var Jdate = ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '-' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '-' + date.getFullYear();
-                    $("#txtJoiningDate").val(Jdate);
-                    var date = new Date(d[0].leaving_date);
-                    var Ldate = ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '-' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '-' + date.getFullYear();
-                    $("#txtLeavingDate").val(Ldate);
+                    //var date = new Date(d[0].joining_date);
+                    //var Jdate = ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '-' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '-' + date.getFullYear();
+                   
+                    $("#txtJoiningDate").val(d[0].joining_date);
+                    //var date = new Date(d[0].leaving_date);
+                    //var Ldate = ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '-' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '-' + date.getFullYear();
+                    $("#txtLeavingDate").val(d[0].leaving_date);
                     $("#ddlBloodGroup").val(d[0].bloodgroup == null ? "0" : d[0].bloodgroup).trigger("change");
                     $("#txtEducation").val(d[0].education);
                     $("#txtProfessionalQualification").val(d[0].professionalqualification);
@@ -498,7 +516,7 @@ function GetVendorByID(id) {
 
                     var alternate = d[0].alternatecontactNumber = null ? "" : d[0].alternatecontactNumber.toString().replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3");
                     $("#txtAlternateContactNumber").val(alternate);
-                    console.log(alternate);
+                  
                 }
             },
             error: function (msg) {
@@ -507,3 +525,61 @@ function GetVendorByID(id) {
         });
 }
 
+function checkImage(imageSrc, good, bad) {
+    var img = new Image();
+    img.onload = good;
+    img.onerror = bad;
+    img.src = imageSrc;
+}
+
+///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Search Google Place API ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+var autocompleteOptions = { componentRestrictions: { country: ["us", "ca"] }, fields: ["address_components", "geometry"], types: ["address"] };
+function setupAutocomplete(inputs) {
+    //console.log('setupAutocomplete...', $(inputs));
+    autocomplete = new google.maps.places.Autocomplete(inputs, autocompleteOptions);
+    autocomplete.addListener("place_changed", fillInAddress);
+    function fillInAddress() {
+        let place = autocomplete.getPlace();
+        let address = '';
+        let cAdd1 = '', cZipCode = '', cCity = '', cCountry = '', cState = '';
+
+        if ($(inputs).data('addresstype') == 'Permanent')
+            cAdd1 = 'txtAddress1', cZipCode = 'txtZipCode', cCity = 'txtCity', cCountry = 'txtCountry', cState = 'txtState';
+        else
+            cAdd1 = 'txtAlternateAddress1', cZipCode = 'txtAlternateZipCode', cCity = 'txtAlternateCity', cCountry = 'txtAlternateCountry', cState = 'txtAlternateState';
+        let obj = place.address_components.filter(element => element.types[0] == 'street_number');
+        if (obj.length > 0)
+            address = obj[0].long_name;
+        obj = place.address_components.filter(element => element.types[0] == 'route');
+        if (obj.length > 0)
+            address = address + ' ' + obj[0].long_name;
+        $("#" + cAdd1).val(address);
+        obj = place.address_components.filter(element => element.types[0] == 'postal_code');
+        if (obj.length > 0)
+            $("#" + cZipCode).val(obj[0].long_name);
+        else
+            $("#" + cZipCode).val('');
+        obj = place.address_components.filter(element => element.types[0] == 'locality');
+        if (obj.length > 0)
+            $("#" + cCity).val(obj[0].long_name);
+        else
+            $("#" + cCity).val('');
+        obj = place.address_components.filter(element => element.types[0] == 'country');
+        if (obj.length > 0)
+            $("#" + cCountry).val(obj[0].short_name).trigger('change');
+        else
+            $("#" + cCountry).val('US').trigger('change');
+        obj = place.address_components.filter(element => element.types[0] == 'administrative_area_level_1');
+        if (obj.length > 0)
+            $("#" + cState).val(obj[0].long_name);
+            //$("#" + cState).empty().append('<option value="' + obj[0].short_name + '" selected>' + obj[0].long_name + '</option>');
+        //$("#" + cState).val(obj[0].short_name).trigger('change');//.append('<option value="' + obj[0].short_name + '" selected>' + obj[0].long_name + '</option>');
+        else
+            $("#" + cState).val('').trigger('change');;
+    }
+}
+function initMap() {
+    var inputs = document.getElementById("txtAddress1", "txtAlternateAddress1");
+    setupAutocomplete(inputs);
+   
+}

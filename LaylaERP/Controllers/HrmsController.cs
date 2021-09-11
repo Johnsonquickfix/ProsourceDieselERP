@@ -54,6 +54,17 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public JsonResult GetGroup()
+        {
+            DataSet ds = HrmsRepository.GetGroup();
+            List<SelectListItem> list = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                list.Add(new SelectListItem { Text = dr["Text"].ToString(), Value = dr["rowid"].ToString() });
+            }
+            return Json(list, JsonRequestBehavior.AllowGet);
+
+        }
         public JsonResult GetDesignation()
         {
             DataSet ds = HrmsRepository.GetDesignation();
@@ -262,13 +273,13 @@ namespace LaylaERP.Controllers
                     {
                         FileName = FileName.Trim() + FileExtension;
                         string FileNameForsave = FileName;
-                        DataTable dt = HrmsRepository.GetProfileCountdata(fk_emp, FileName);
-                        if (dt.Rows.Count > 0)
-                        {
-                            return Json(new { status = false, message = "File already exist in table", url = "" }, 0);
-                        }
-                        else
-                        {
+                        //DataTable dt = HrmsRepository.GetProfileCountdata(fk_emp, FileName);
+                        //if (dt.Rows.Count > 0)
+                        //{
+                        //    return Json(new { status = false, message = "File already exist in table", url = "" }, 0);
+                        //}
+                        //else
+                        //{
                             string UploadPath = Path.Combine(Server.MapPath("~/Content/EmployeeProfileImage"));
                             UploadPath = UploadPath + "\\";
                             model.ProfileImagePath = UploadPath + FileName;
@@ -283,7 +294,7 @@ namespace LaylaERP.Controllers
                             {
                                 return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
                             }
-                        }
+                        //}
                     }
                     else
                     {

@@ -33,6 +33,7 @@ namespace LaylaERP.Models
         public double total_ht { get; set; }
         public double total_ttc { get; set; }
         public long IDRec { get; set; }
+        public int fk_status { get; set; }
         public List<PurchaseReceiceOrderProductsModel> PurchaseOrderProducts { get; set; }
     }
 

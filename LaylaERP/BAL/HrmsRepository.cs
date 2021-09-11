@@ -23,13 +23,24 @@ namespace LaylaERP.BAL
             { throw ex; }
             return DS;
         }
+        public static DataSet GetGroup()
+        {
+            DataSet DS = new DataSet();
+            try
+            {
+                DS = SQLHelper.ExecuteDataSet("Select rowid, group_description as Text from erp_hrms_employee_group where is_status=1 order by rowid;");
 
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
+        }
         public static DataSet GetDepartment()
         {
             DataSet DS = new DataSet();
             try
             {
-                DS = SQLHelper.ExecuteDataSet("Select rowid, department from erp_hrms_department order by rowid limit 50;");
+                DS = SQLHelper.ExecuteDataSet("Select rowid, department from erp_hrms_department order by rowid;");
 
             }
             catch (Exception ex)
@@ -172,11 +183,10 @@ namespace LaylaERP.BAL
 
         public static int EditEmployeeAdditionalInfo(HrmsModel model, int id)
         {
-
             try
             {
 
-                string strsql = "update erp_hrms_empdetails set emp_number = @emp_number, " +
+                string strsql = "update erp_hrms_empdetails set emp_number = CONCAT('EMP', LPAD("+id+", 5, 0)), " +
                     "designation = @designation, department = @department, undertaking_emp = @undertaking_emp, joining_date = @joining_date, " +
                     "leaving_date = @leaving_date,bloodgroup=@bloodgroup,education=@education,professionalqualification=@professionalqualification,otherdetails=@otherdetails," +
                     "alternateaddress1 = @alternateaddress1,alternateaddress2 = @alternateaddress2,alternatecity = @alternatecity,alternatestate = @alternatestate," +
@@ -185,7 +195,7 @@ namespace LaylaERP.BAL
                 {
                     //2nd table
                     new MySqlParameter("@fk_emp", id),
-                    new MySqlParameter("@emp_number", model.emp_number),
+                    //new MySqlParameter("@emp_number", model.emp_number),
                     new MySqlParameter("@designation", model.designation),
                     new MySqlParameter("@department", model.department),
                     new MySqlParameter("@undertaking_emp", model.undertaking_emp),
@@ -355,7 +365,7 @@ namespace LaylaERP.BAL
                     "d.birthplace,d.maritalstatus,d.address1,d.address2,d.city,d.state,d.zipcode,d.country,d.emp_number,d.designation,d.department,d.undertaking_emp," +
                     "d.joining_date,d.leaving_date,d.basic_sal,d.unpaid_leave_perday,d.bank_account_title,d.bank_name,d.account_number, " +
                     "d.bank_swift_code,d.note_public,d.note_private,d.bloodgroup,d.education,d.professionalqualification,d.otherdetails,d.alternateaddress1,d.alternateaddress2,d.alternatecity,d.alternatestate," +
-                    "d.alternatezipcode,d.alternatecountry,d.alternatecontactNumber,d.ProfileImageName,d.ProfileImagePath " +
+                    "d.alternatezipcode,d.alternatecountry,d.alternatecontactNumber,ifnull(d.ProfileImageName,'default.png') ProfileImageName,d.ProfileImagePath " +
                     "from erp_hrms_emp e left join erp_hrms_empdetails d on d.fk_emp = e.rowid where  e.rowid = '" + id + "'";
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];

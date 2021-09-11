@@ -315,7 +315,7 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "Select p.rowid id, p.ref, p.ref_ext refordervendor,v.SalesRepresentative request_author,v.name vendor_name,v.address,v.town,v.fk_country,v.fk_state,v.zip,v.phone,"
+                string strSql = "Select p.rowid id, p.ref, p.ref_ext refordervendor,p.fk_projet,v.SalesRepresentative request_author,v.name vendor_name,v.address,v.town,v.fk_country,v.fk_state,v.zip,v.phone,"
                                 + " DATE_FORMAT(p.date_creation,'%m/%d/%Y') date_creation,DATE_FORMAT(p.date_livraison, '%m/%d/%Y') date_livraison, s.Status,total_ttc from commerce_purchase_order p"
                                 + " inner join wp_vendor v on p.fk_supplier = v.rowid inner join wp_StatusMaster s on p.fk_status = s.ID where 1 = 1";
                 if (!string.IsNullOrEmpty(searchid))
@@ -390,7 +390,7 @@ namespace LaylaERP.BAL
                         {
                             strsql += "insert into commerce_purchase_order_detail (fk_purchase,fk_product,ref,description,qty,discount_percent,discount,subprice,total_ht,total_ttc,product_type,date_start,date_end,rang,tva_tx,localtax1_tx,localtax1_type,localtax2_tx,localtax2_type,total_tva,total_localtax1,total_localtax2) ";
                             strsql += string.Format(" select '{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}','{16}','{17}','{18}','{19}','{20}','{21}';",
-                                po_id, DRMC["fk_product"], DRMC["sku"], DRMC["order_item_name"], DRMC["product_qty"], DRMC["discountPer"], DRMC["discount"], DRMC["shipping_price"], DRMC["total_ht"], DRMC["total_ttc"], 0, "", "", 1,
+                                po_id, DRMC["fk_product"], DRMC["sku"], DRMC["order_item_name"], DRMC["product_qty"], DRMC["discountPer"], DRMC["discount"], DRMC["purchase_price"], DRMC["total_ht"], DRMC["total_ttc"], 0, "", "", 1,
                                 0, DRMC["salestax"], "F", DRMC["shipping_price"], "F", 0, DRMC["localtax1"], DRMC["localtax2"]);
                             total_gm += Convert.ToDecimal(DRMC["total_ht"].ToString());
                             total_discamt += Convert.ToDecimal(DRMC["discount"].ToString());
@@ -398,17 +398,18 @@ namespace LaylaERP.BAL
                             total_shamt += Convert.ToDecimal(DRMC["localtax2"].ToString());
                             total_net += Convert.ToDecimal(DRMC["total_ttc"].ToString());
                         }
-                        strsql += string.Format("update commerce_purchase_order set discount = {0},localtax1={1},localtax2={2},total_ht={3},total_ttc={4} where rowid={5};", total_discamt, total_tax, total_shamt, total_gm, total_net, po_id);
+                        strsql += string.Format("update commerce_purchase_order set fk_status='3',ref_ext=REPLACE(ref,'PO','PI'),billed='1',discount = {0},localtax1={1},localtax2={2},total_ht={3},total_ttc={4} where rowid={5};", total_discamt, total_tax, total_shamt, total_gm, total_net, po_id);
 
                         //Add Stock
                         strsql += "delete from product_stock_register where tran_type = 'PO' and flag = 'O' and tran_id = " + po_id + ";"
                                 + " insert into product_stock_register (tran_type,tran_id,product_id,warehouse_id,tran_date,quantity,flag)"
                                 + " select 'PO',pod.fk_purchase,pod.fk_product,(select wp_w.rowid from wp_warehouse wp_w where wp_w.is_system = 1 limit 1) warehouse_id,po.date_creation,pod.qty,'O' from commerce_purchase_order_detail pod"
                                 + " inner join commerce_purchase_order po on po.rowid = pod.fk_purchase where fk_purchase = " + po_id + ";";
-
+                        
+                        result = SQLHelper.ExecuteNonQueryWithTrans(strsql);
                     }
                 }
-                result = SQLHelper.ExecuteNonQueryWithTrans(strsql);
+                
             }
             catch (Exception Ex)
             {

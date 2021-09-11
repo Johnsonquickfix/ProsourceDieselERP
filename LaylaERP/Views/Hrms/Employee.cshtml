@@ -146,7 +146,7 @@
                             <div class="form-group">
                                 <label for="Address1">Address1</label>
                                 <div class="input-group">
-                                    <input class="form-control" type="text" id="txtAddress1" name="Address1">
+                                    <input class="form-control" type="text" id="txtAddress1" data-addresstype="Permanent" name="Address1">
                                 </div>
                             </div>
                             <div class="form-group">
@@ -399,7 +399,7 @@
                             </div>
                         </article>
                     </article>
-                    
+
                 </div>
                 <div class="tab-pane" id="tab_3">
                     <article class="box box-primary mb-4">
@@ -468,7 +468,7 @@
                         </article>
                     </article>
                 </div>
-                
+
                 <div class="tab-pane" id="tab_5">
                     <div class="box box-primary">
                         <div class="box-body">
@@ -532,11 +532,6 @@
     </div>
 </section>
 
-<script>
-    $(function () {
-
-
-    });
-</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBIgngCCIJ3D8_s3G7aIfvQckhsDtbAe4E&libraries&callback=initMap&libraries=places&v=weekly" async></script>
 <script src="~/js/jquery.mask.js" asp-append-version="true"></script>
 <script src="@Url.Content("~/js/Hrms/Hrms.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>

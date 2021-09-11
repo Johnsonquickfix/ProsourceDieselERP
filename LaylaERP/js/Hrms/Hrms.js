@@ -6,10 +6,9 @@
     getDesignation();
     getGroup();
     getEmployeeCode();
-   
     $("#txtPhone").mask("(999) 999-9999");
     $("#txtAlternateContactNumber").mask("(999) 999-9999");
-
+   
     $("#txtdob").datepicker({ format: 'mm-dd-yyyy', });
     $("#txtJoiningDate").datepicker({ format: 'mm-dd-yyyy', });
     $("#txtLeavingDate").datepicker({ format: 'mm-dd-yyyy', });
@@ -20,7 +19,6 @@
     EmployeeLinkedFiles();
     $('input:checkbox').prop('checked', true);
 })
-
 
 function readURL(input) {
     if (input.files && input.files[0]) {
@@ -532,4 +530,56 @@ function checkImage(imageSrc, good, bad) {
     img.onload = good;
     img.onerror = bad;
     img.src = imageSrc;
+}
+
+///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Search Google Place API ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+var autocompleteOptions = { componentRestrictions: { country: ["us", "ca"] }, fields: ["address_components", "geometry"], types: ["address"] };
+function setupAutocomplete(inputs) {
+    //console.log('setupAutocomplete...', $(inputs));
+    autocomplete = new google.maps.places.Autocomplete(inputs, autocompleteOptions);
+    autocomplete.addListener("place_changed", fillInAddress);
+    function fillInAddress() {
+        let place = autocomplete.getPlace();
+        let address = '';
+        let cAdd1 = '', cZipCode = '', cCity = '', cCountry = '', cState = '';
+
+        if ($(inputs).data('addresstype') == 'Permanent')
+            cAdd1 = 'txtAddress1', cZipCode = 'txtZipCode', cCity = 'txtCity', cCountry = 'txtCountry', cState = 'txtState';
+        else
+            cAdd1 = 'txtAlternateAddress1', cZipCode = 'txtAlternateZipCode', cCity = 'txtAlternateCity', cCountry = 'txtAlternateCountry', cState = 'txtAlternateState';
+        let obj = place.address_components.filter(element => element.types[0] == 'street_number');
+        if (obj.length > 0)
+            address = obj[0].long_name;
+        obj = place.address_components.filter(element => element.types[0] == 'route');
+        if (obj.length > 0)
+            address = address + ' ' + obj[0].long_name;
+        $("#" + cAdd1).val(address);
+        obj = place.address_components.filter(element => element.types[0] == 'postal_code');
+        if (obj.length > 0)
+            $("#" + cZipCode).val(obj[0].long_name);
+        else
+            $("#" + cZipCode).val('');
+        obj = place.address_components.filter(element => element.types[0] == 'locality');
+        if (obj.length > 0)
+            $("#" + cCity).val(obj[0].long_name);
+        else
+            $("#" + cCity).val('');
+        obj = place.address_components.filter(element => element.types[0] == 'country');
+        if (obj.length > 0)
+            $("#" + cCountry).val(obj[0].short_name).trigger('change');
+        else
+            $("#" + cCountry).val('US').trigger('change');
+        obj = place.address_components.filter(element => element.types[0] == 'administrative_area_level_1');
+        if (obj.length > 0)
+            $("#" + cState).val(obj[0].long_name);
+            //$("#" + cState).empty().append('<option value="' + obj[0].short_name + '" selected>' + obj[0].long_name + '</option>');
+        //$("#" + cState).val(obj[0].short_name).trigger('change');//.append('<option value="' + obj[0].short_name + '" selected>' + obj[0].long_name + '</option>');
+        else
+            $("#" + cState).val('').trigger('change');;
+    }
+}
+function initMap() {
+    var inputs = document.getElementById("txtAddress1", "txtAlternateAddress1");
+    setupAutocomplete(inputs);
+   
 }

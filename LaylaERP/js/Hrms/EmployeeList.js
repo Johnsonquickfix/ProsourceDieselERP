@@ -10,7 +10,7 @@ function EmployeeList() {
     var urid = $("#ddlSearchStatus").val();
     ID = $("#hfid").val();
     var table_EL = $('#EmployeeListdata').DataTable({
-        columnDefs: [{ "orderable": true, "targets": 0 }], order: [[1, "desc"]],
+        columnDefs: [{ "orderable": true, "targets": 0 }, { 'visible': false, 'targets': [0] }], order: [[0, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: false, searching: true,
         responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
         language: {
@@ -33,7 +33,7 @@ function EmployeeList() {
             aoData.push({ name: "strValue1", value: urid });
             var col = 'id';
             if (oSettings.aaSorting.length >= 0) {
-                var col = oSettings.aaSorting[0][0] == 0 ? "name" : oSettings.aaSorting[0][0] == 1 ? "email" : oSettings.aaSorting[0][0] == 1 ? "phone" : "id";
+                var col = oSettings.aaSorting[0][0] == 0 ? "ID" : oSettings.aaSorting[0][0] == 1 ? "name" : oSettings.aaSorting[0][0] == 2 ? "email" : oSettings.aaSorting[0][0] == 3 ? "phone" : "id";
                 aoData.push({ name: "sSortColName", value: col });
             }
             oSettings.jqXHR = $.ajax({
@@ -45,6 +45,7 @@ function EmployeeList() {
             });
         },
         aoColumns: [
+            { data: 'ID', title: 'ID', sWidth: "20%", class: 'text-left' },
             { data: 'name', title: 'Name', sWidth: "20%", class: 'text-left' },
             { data: 'email', title: 'Email', sWidth: "20%" },
             {

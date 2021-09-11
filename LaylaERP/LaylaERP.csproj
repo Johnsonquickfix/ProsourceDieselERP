@@ -616,6 +616,7 @@
     <Content Include="js\Customer\Customer.js" />
     <Content Include="js\FeeNTax\FeeNTax.js" />
     <Content Include="js\GooglePlace\index.js" />
+    <Content Include="js\Hrms\Attendence.js" />
     <Content Include="js\Hrms\EmployeeList.js" />
     <Content Include="js\Hrms\Hrms.js" />
     <Content Include="js\Inventory\ConsignmentInventory.js" />
@@ -876,7 +877,6 @@
     <Content Include="Views\Reception\NewReceiveOrder.cshtml" />
     <Content Include="Views\Product\ListProduct.cshtml" />
     <Content Include="Views\Hrms\Employee.cshtml" />
-    <Content Include="Views\Hrms\Attendance.cshtml" />
     <Content Include="Views\Hrms\Leave.cshtml" />
     <Content Include="Views\Hrms\Payroll.cshtml" />
     <Content Include="Views\Hrms\Appraisal.cshtml" />
@@ -885,6 +885,7 @@
     <Content Include="Views\IPNPaypal\ipnpaypal.cshtml" />
     <Content Include="Views\Hrms\EmployeeList.cshtml" />
     <Content Include="Views\Setup\Editproductrule.cshtml" />
+    <Content Include="Views\Hrms\Attendance.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

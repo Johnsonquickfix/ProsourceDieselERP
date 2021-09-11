@@ -291,6 +291,41 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
+        public static DataTable GetEmployeeAttendenceList(string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                string strWhr = string.Empty;
+
+                string strSql = "Select e.rowid ID, concat(e.firstname,' ',e.lastname) as name,d.designation, e.email,e.phone,e.gender,e.emp_type," +
+                    "s.in_time,s.out_time,s.is_approved,e.is_active from erp_hrms_emp e left join erp_hrms_attendance_sheet s on s.fk_emp = e.rowid " +
+                    "left join erp_hrms_empdetails ed on ed.fk_emp = e.rowid left join erp_hrms_designation d on d.rowid = ed.designation where 1 = 1 and e.is_active = 1 ";
+                if (!string.IsNullOrEmpty(searchid))
+                {
+                    strWhr += " and (concat(e.firstname,' ',e.lastname) like '%" + searchid + "%' OR d.designation like '%" + searchid + "%')";
+                }
+                if (userstatus != null)
+                {
+                    strWhr += " and (e.is_active='" + userstatus + "') ";
+                }
+                strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
+
+                strSql += "; SELECT ceil(Count(e.rowid)/" + pagesize.ToString() + ") TotalPage,Count(e.rowid) TotalRecord from erp_hrms_emp e left join erp_hrms_attendance_sheet s on s.fk_emp = e.rowid " +
+                    "left join erp_hrms_empdetails ed on ed.fk_emp = e.rowid left join erp_hrms_designation d on d.rowid = ed.designation where 1 = 1 and e.is_active = 1 " + strWhr.ToString();
+
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dt = ds.Tables[0];
+                if (ds.Tables[1].Rows.Count > 0)
+                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
         public int UpdateEmployeeStatus(HrmsModel model)
         {
             try

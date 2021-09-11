@@ -1,5 +1,11 @@
 ﻿$(document).ready(function () {
+    $("#txtfromdate").datepicker({ format: 'mm-dd-yyyy', }).datepicker("setDate", 'now');
+    $("#txttodate").datepicker({ format: 'mm-dd-yyyy', }).datepicker("setDate", 'now');
+    var now = new Date(Date.now());
+    var formatted = now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
     EmployeeList();
+
+
 })
 
 $('#btnSearch').click(function () {
@@ -10,7 +16,7 @@ function EmployeeList() {
     var urid = $("#ddlSearchStatus").val();
     ID = $("#hfid").val();
     var table_EL = $('#EmployeeListdata').DataTable({
-        columnDefs: [{ "orderable": true, "targets": 0 }, { 'visible': false, 'targets': [0] }], order: [[0, "desc"]],
+        columnDefs: [{ "orderable": true, "targets": 0 }, { "orderable": false, "targets": [1,4, 5] }, { 'visible': false, 'targets': [0] }], order: [[0, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: false, searching: true,
         responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
         language: {
@@ -46,15 +52,52 @@ function EmployeeList() {
         },
         aoColumns: [
             { data: 'ID', title: 'ID', sWidth: "20%", class: 'text-left' },
+            {
+                'data': 'ID', sWidth: "15%   ",
+                'render': function (data, type, full, meta) {
+
+                    return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + $('<div/>').text(data).html() + '"><label></label>';
+                }
+            },
             { data: 'name', title: 'Name', sWidth: "20%", class: 'text-left' },
             { data: 'designation', title: 'Designation', sWidth: "20%" },
-           
             {
-                'data': 'ID', sWidth: "10%", title: 'Action',
+                'data': 'in_time', sWidth: "20%",
                 'render': function (id, type, full, meta) {
-                    return '<a href="../Hrms/Employee/' + id + '"><i class="glyphicon glyphicon-pencil"></i></a>';
+                    var today = new Date();
+                    var date = today.getFullYear() + '-' + ((today.getMonth()) + 1) + '-' + today.getDate();
+                    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+                    var dateTime = date + ' ' + time;
+                   
+                    return '<span><input type="text" class="form-control" name="txtintime" id="txtintime" value="' + dateTime + '" /></span>';
+                }
+            },
+            {
+                'data': 'ID', sWidth: "20%",
+                'render': function (id, type, full, meta) {
+                    var now = new Date(Date.now());
+                    var formatted = now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
+                    return '<span><input type="text" class="form-control" name="txtouttime" id="txtouttime" value="' + formatted + '" /></span>';
                 }
             }
         ]
     });
+}
+
+$('#checkAll').click(function () {
+    var isChecked = $(this).prop("checked");
+    $('#EmployeeListdata tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
+});
+function Singlecheck() {
+    var isChecked = $('#CheckSingle').prop("checked");
+    var isHeaderChecked = $("#checkAll").prop("checked");
+    if (isChecked == false && isHeaderChecked)
+        $("#checkAll").prop('checked', isChecked);
+    else {
+        $('#EmployeeListdata tr:has(td)').find('input[type="checkbox"]').each(function () {
+            if ($(this).prop("checked") == false)
+                isChecked = false;
+        });
+        $("#checkAll").prop('checked', isChecked);
+    }
 }

@@ -136,6 +136,7 @@ $(document).on('click', "#btnNext1", function () {
             success: function (data) {
                 $("#hfid").val(data.id);
                 if (data.status == true) {
+                    $("#txtPhone").mask("(999) 999-9999");
                     var link = $('#mytabs .active').next().children('a').attr('href');
                     $('#mytabs a[href="' + link + '"]').tab('show');
                 }
@@ -173,7 +174,7 @@ $(document).on('click', "#btnNext2", function () {
     alternatestate = $("#txtAlternateState").val();
     alternatezipcode = $("#txtAlternateZipCode").val();
     alternatecountry = $("#txtAlternateCountry").val();
-    alternatecontactNumber = $("#txtAlternateContactNumber").unmask().val();
+    alternatecontactNumber = $("#txtAlternateContactNumber").val();
     var formattedDate = new Date(joiningdate);
     var d = formattedDate.getDate();
     var m = ("0" + (formattedDate.getMonth() + 1)).slice(-2)
@@ -185,7 +186,9 @@ $(document).on('click', "#btnNext2", function () {
     var m = ("0" + (formattedDate.getMonth() + 1)).slice(-2)
     var y = formattedDate.getFullYear();
     var dateofleaving = y + "-" + m + "-" + d;
+    alternatecontactNumber = $("#txtAlternateContactNumber").unmask().val();
     var obj = {
+        
         rowid: ID,
        emp_number: employeenumber, designation: designation,
         department: department, undertaking_emp: undertaking_emp, joining_date: dateofjoining, leaving_date: dateofleaving,
@@ -202,6 +205,7 @@ $(document).on('click', "#btnNext2", function () {
         beforeSend: function () { $("#loader").show(); },
         success: function (data) {
             if (data.status == true) {
+                $("#txtAlternateContactNumber").mask("(999) 999-9999");
                 var link = $('#mytabs .active').next().children('a').attr('href');
                 $('#mytabs a[href="' + link + '"]').tab('show');
             }
@@ -481,8 +485,8 @@ function GetVendorByID(id) {
                     $("#txtAlternateState").val(d[0].alternatestate);
                     $("#txtAlternateZipCode").val(d[0].alternatezipcode);
                     $("#txtAlternateCountry").val(d[0].alternatecountry);
-                    var alternate = d[0].alternatecontactNumber.toString().replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3");
-                    $("#txtAlternateContactNumber").val(alternate);
+                    
+                  
                     //tab 3
                     $("#txtBasicSalary").val(d[0].basic_sal);
                     $("#txtUnpaidLeavePerDay").val(d[0].unpaid_leave_perday);
@@ -491,6 +495,10 @@ function GetVendorByID(id) {
                     $("#txtBankName").val(d[0].bank_name);
                     $("#txtAccountNumber").val(d[0].account_number);
                     $("#txtSwiftCode").val(d[0].bank_swift_code);
+
+                    var alternate = d[0].alternatecontactNumber = null ? "" : d[0].alternatecontactNumber.toString().replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3");
+                    $("#txtAlternateContactNumber").val(alternate);
+                    console.log(alternate);
                 }
             },
             error: function (msg) {

@@ -621,6 +621,7 @@
     <Content Include="js\Hrms\EmployeeList.js" />
     <Content Include="js\Hrms\Hrms.js" />
     <Content Include="js\Hrms\Leave.js" />
+    <Content Include="js\Hrms\LeaveList.js" />
     <Content Include="js\Inventory\ConsignmentInventory.js" />
     <Content Include="js\Inventory\Inventory.js" />
     <Content Include="js\jquery.mask.js" />

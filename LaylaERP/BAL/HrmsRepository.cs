@@ -493,5 +493,64 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
+
+        //My code
+        public static DataSet GetLeaveType()
+        {
+            DataSet DS = new DataSet();
+            try
+            {
+                DS = SQLHelper.ExecuteDataSet("Select leave_code, leave_type from erp_hrms_leave_type order by rowid");
+
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
+        }
+
+        public static DataSet GetEmployee()
+        {
+            DataSet DS = new DataSet();
+            try
+            {
+                DS = SQLHelper.ExecuteDataSet("Select rowid, firstname from erp_hrms_emp where is_active=1 order by rowid");
+
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
+        }
+
+        public static int AddLeave(LeaveModel model)
+        {
+
+            try
+            {
+                string strsql = "INSERT into erp_hrms_leave(fk_emp, leave_code, description, leave_type, is_paid, from_date, to_date, is_approved, note_public, note_private, days )" +
+                    " values(@fk_emp, @leave_code, @description, @leave_type, @is_paid, @from_date, @to_date, @is_approved, @note_public, @note_private, @days );SELECT LAST_INSERT_ID();";
+
+                MySqlParameter[] para =
+              {
+                    new MySqlParameter("@fk_emp", model.fk_emp),
+                    new MySqlParameter("@leave_code",model.leave_code),
+                    new MySqlParameter("@description", model.description),
+                    new MySqlParameter("@leave_type", model.leave_type),
+                    new MySqlParameter("@is_paid", "0"),
+                    new MySqlParameter("@from_date", model.from_date),
+                    new MySqlParameter("@to_date", model.to_date),
+                    new MySqlParameter("@is_approved","0"),
+                    new MySqlParameter("@note_public", model.note_public),
+                    new MySqlParameter("@note_private", model.note_private),
+                    new MySqlParameter("@days", model.days),
+
+                };
+                int result = Convert.ToInt32(DAL.SQLHelper.ExecuteScalar(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
     }
 }

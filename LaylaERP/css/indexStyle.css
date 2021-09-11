@@ -656,3 +656,4 @@ width:50px; height:50px; border-radius:100%; padding:3px; border:1px solid #d2d6
 }
 .treeview-menu .treeview-menu a {padding-left:40px !important;}
 .treeview-menu .treeview-menu {padding-left:0px;}
+.sidebar-menu  li  a  [class^="fa"]{width:20px;}

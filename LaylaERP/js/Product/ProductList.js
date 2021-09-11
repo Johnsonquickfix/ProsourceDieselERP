@@ -241,6 +241,7 @@ function dataGridLoad(order_type) {
         oSearch: { "sSearch": '' }, order: [[0, "asc"]],
        //sPaginationType: "full_numbers", searching: true, ordering: true, lengthChange: true,
        //bAutoWidth: false, scrollX: true, scrollY: ($(window).height() - 215),
+        scrollX: true,
         language: {
             lengthMenu: "_MENU_ per page",
             zeroRecords: "Sorry no records found",

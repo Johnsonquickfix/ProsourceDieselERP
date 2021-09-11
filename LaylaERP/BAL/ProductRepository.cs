@@ -1412,7 +1412,7 @@ namespace LaylaERP.BAL
             DataTable dt = new DataTable();
             try
             {
-                string strSQl = "select WarehouseID from product_warehouse "
+                string strSQl = "select fk_warehouse from product_warehouse "
                                 + " WHERE fk_product = " + model.fk_product + " and fk_warehouse in (select WarehouseID from wp_VendorWarehouse where VendorID = " + model.fk_vendor + ") "
                                 + " limit 10;";
                 dt = SQLHelper.ExecuteDataTable(strSQl);

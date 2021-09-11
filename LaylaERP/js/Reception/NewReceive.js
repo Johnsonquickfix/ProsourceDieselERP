@@ -375,15 +375,16 @@ function getPurchaseOrderInfo() {
     let oid = parseInt($('#lblPoNo').data('id')) || 0;
     if (oid > 0) {
         $('#ddlVendor,.billinfo').prop("disabled", true);
-        $('.page-heading').text('Edit Purchase Order ').append('<a class="btn btn-danger" href="/Reception/ReceiveOrder">Back to List</a>');
+        $('.page-heading').text('Receive Order ').append('<a class="btn btn-danger" href="/Reception/ReceiveOrder">Back to List</a>');
         $('#line_items,#product_line_items').empty();
         $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/Reception/ReceiveOrder">Back to List</a>');
         var option = { strValue1: oid };
         $.ajax({
-            url: "/PurchaseOrder/GetPurchaseOrderByID", type: "Get", beforeSend: function () { $("#loader").show(); }, data: option,
+            url: "/Reception/GetPurchaseOrderByID", type: "Get", beforeSend: function () { $("#loader").show(); }, data: option,
             success: function (result) {
                 try {
                     let data = JSON.parse(result); let VendorID = 0;
+                    console.log(data);
                     for (let i = 0; i < data['po'].length; i++) {
                         VendorID = parseInt(data['po'][i].fk_supplier) || 0;
                         $('#lblPoNo').text(data['po'][i].ref); $('#txtRefvendor').val(data['po'][i].ref_supplier); $('#txtPODate').val(data['po'][i].date_creation);
@@ -394,9 +395,11 @@ function getPurchaseOrderInfo() {
                         $('#ddlPaymentType').val(data['po'][i].fk_payment_type).trigger('change');
                         $('#txtNotePublic').val(data['po'][i].note_public); $('#txtNotePrivate').val(data['po'][i].note_private);
                         $('#txtIncoTerms').val(data['po'][i].location_incoterms);
+                        $("#hfid").val(data['po'][i].rowid);
                         if (!data['po'][i].date_livraison.includes('00/00/0000')) $('#txtPlanneddateofdelivery').val(data['po'][i].date_livraison);
 
                     }
+                    console.log($("#hfid").val());
                     getVendorProducts(VendorID);
                     for (let i = 0; i < data['pod'].length; i++) {
                         let itemHtml = '';
@@ -500,7 +503,7 @@ function saveVendorPO() {
     let payment_type = parseInt($("#ddlPaymentType").val()) || 0;
     let warehouse_ID = parseInt($("#ddlwarehouse").val()) || 0;
     let date_livraison = $("#txtPlanneddateofdelivery").val().split('/');
-
+    let IDRecVal = parseInt($("#hfid").val()) || 0;
     let incoterms = parseInt($("#ddlIncoTerms").val()) || 0;
     let location_incoterms = $("#txtIncoTerms").val();
     let note_public = $("#txtNotePublic").val();
@@ -514,7 +517,7 @@ function saveVendorPO() {
         if (date_livraison.length > 0) date_livraison = date_livraison[2] + '/' + date_livraison[0] + '/' + date_livraison[1];
         let option = {
             RowID: id, VendorID: vendorid, PONo: '', VendorBillNo: ref_vendor, PaymentTerms: payment_term, Balancedays: balance_days, PaymentType: payment_type, WarehouseID: warehouse_ID,
-            Planneddateofdelivery: date_livraison, IncotermType: incoterms, Incoterms: location_incoterms, NotePublic: note_public, NotePrivate: note_private,
+            Planneddateofdelivery: date_livraison, IncotermType: incoterms, Incoterms: location_incoterms, NotePublic: note_public, NotePrivate: note_private, IDRec: IDRecVal,
             total_tva: 0, localtax1: parseFloat($("#salesTaxTotal").text()), localtax2: parseFloat($("#shippingTotal").text()), total_ht: parseFloat($("#SubTotal").text()),
             discount: parseFloat($("#discountTotal").text()), total_ttc: parseFloat($("#orderTotal").text()), PurchaseOrderProducts: _list
         }
@@ -526,7 +529,7 @@ function saveVendorPO() {
             success: function (data) {
                 if (data.status == true) {
                     $('#lblPoNo').data('id', data.id);
-                    getPurchaseOrderInfo();
+                   // getPurchaseOrderInfo();
                     swal('Alert!', data.message, 'success').then(function () { swal.close();  });
                 /*    swal('Alert!', data.message, 'success').then(function () { swal.close(); getPurchaseOrderPrint(id, true); });*/
                 }

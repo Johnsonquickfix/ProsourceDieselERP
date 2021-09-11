@@ -460,6 +460,23 @@
             catch { status = false; result = ""; }
             return Json(new { status = status, message = result }, 0);
         }
+        [HttpGet]
+        public JsonResult UpdatePaymentStatus(OrderPostMetaModel model)
+        {
+            string result = string.Empty;
+            bool status = false;
+            try
+            {
+                int res = OrderRepository.UpdatePaymentStatus(model);
+                if (res > 0)
+                {
+                    result = "Success.";
+                    status = true;
+                }
+            }
+            catch (Exception ex) { status = false; result = ex.Message; }
+            return Json(new { status = status, message = result }, 0);
+        }
         [HttpPost]
         public JsonResult SendMailInvoice(SearchModel model)
         {

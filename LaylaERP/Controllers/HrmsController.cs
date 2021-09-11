@@ -340,7 +340,7 @@ namespace LaylaERP.Controllers
             }
         }
 
-//My code
+        //My code
         public JsonResult GetLeaveType()
         {
             DataSet ds = HrmsRepository.GetLeaveType();
@@ -374,6 +374,44 @@ namespace LaylaERP.Controllers
             {
 
                 return Json(new { status = true, message = "Data has been saved successfully!!", url = "", id = ID }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+        }
+
+        public JsonResult LeaveList()
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = HrmsRepository.GetLeaveList();
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+        public JsonResult GetLeaveListSelect(LeaveModel model)
+        {
+
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = HrmsRepository.GetLeaveListSelect(model);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+        [HttpPost]
+        public JsonResult UpdateLeave(LeaveModel model)
+        {
+
+            if (model.rowid > 0)
+            {
+                HrmsRepository.UpdateLeave(model);
+                return Json(new { status = true, message = "Data has been saved successfully!!", url = "", id = model.rowid }, 0);
             }
             else
             {

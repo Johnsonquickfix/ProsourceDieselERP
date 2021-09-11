@@ -115,6 +115,9 @@ function addProductWarehouseRule() {
                 if (data.status == true) {
                     swal('Alert!', data.message, 'success');
                     getID();
+                    disable1stCol();
+                    $("#details").show(1000);
+                    $('#btnAddProduct').hide();
                 }
                 else {
                     swal('Alert!', data.message, 'error');

@@ -1,10 +1,12 @@
 ﻿$(document).ready(function () {
+    $("#loader").hide();
     var url = window.location.pathname;
     var id = url.substring(url.lastIndexOf('/') + 1);
     getDepartment();
     getDesignation();
+    getGroup();
     getEmployeeCode();
-    $("#loader").hide();
+   
     $("#txtPhone").mask("(999) 999-9999");
     $("#txtAlternateContactNumber").mask("(999) 999-9999");
 
@@ -31,7 +33,20 @@ function readURL(input) {
     }
 }
 
+function getGroup() {
+    $.ajax({
+        url: "/Hrms/GetGroup",
+        type: "Get",
+        success: function (data) {
+            var opt = '<option value="0">Please Select Group</option>';
+            for (var i = 0; i < data.length; i++) {
+                opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
+            }
+            $('#ddlEmployeeType').html(opt);
+        }
 
+    });
+}
 function getDesignation() {
     $.ajax({
         url: "/Hrms/GetDesignation",
@@ -175,23 +190,23 @@ $(document).on('click', "#btnNext2", function () {
     alternatezipcode = $("#txtAlternateZipCode").val();
     alternatecountry = $("#txtAlternateCountry").val();
     alternatecontactNumber = $("#txtAlternateContactNumber").val();
-    var formattedDate = new Date(joiningdate);
-    var d = formattedDate.getDate();
-    var m = ("0" + (formattedDate.getMonth() + 1)).slice(-2)
-    var y = formattedDate.getFullYear();
-    var dateofjoining = y + "-" + m + "-" + d;
+    //var formattedDate = new Date(joiningdate);
+    //var d = formattedDate.getDate();
+    //var m = ("0" + (formattedDate.getMonth() + 1)).slice(-2)
+    //var y = formattedDate.getFullYear();
+    //var dateofjoining = y + "-" + m + "-" + d;
 
-    var formattedDate = new Date(leavingdate);
-    var d = formattedDate.getDate();
-    var m = ("0" + (formattedDate.getMonth() + 1)).slice(-2)
-    var y = formattedDate.getFullYear();
-    var dateofleaving = y + "-" + m + "-" + d;
+    //var formattedDate = new Date(leavingdate);
+    //var d = formattedDate.getDate();
+    //var m = ("0" + (formattedDate.getMonth() + 1)).slice(-2)
+    //var y = formattedDate.getFullYear();
+    //var dateofleaving = y + "-" + m + "-" + d;
     alternatecontactNumber = $("#txtAlternateContactNumber").unmask().val();
     var obj = {
         
         rowid: ID,
        emp_number: employeenumber, designation: designation,
-        department: department, undertaking_emp: undertaking_emp, joining_date: dateofjoining, leaving_date: dateofleaving,
+        department: department, undertaking_emp: undertaking_emp, joining_date: joiningdate, leaving_date: leavingdate,
         bloodgroup: bloodgroup, education: education, professionalqualification: professionalqualification, otherdetails: otherdetails,
         alternateaddress1: alternateaddress1, alternateaddress2: alternateaddress2, alternatecity: alternatecity,
         alternatestate: alternatestate, alternatezipcode: alternatezipcode, alternatecountry: alternatecountry,
@@ -463,18 +478,23 @@ function GetVendorByID(id) {
                     $("#txtZipCode").val(d[0].zipcode);
                     $("#txtCountry").val(d[0].country);
                     d[0].is_active == true ? $("#chkemployeestatus").prop("checked", true) : $("#chkemployeestatus").prop("checked", false);
-
-                    $('#show_picture').attr('src', '../../Content/EmployeeProfileImage/' + d[0].ProfileImageName);
+                    var profileimg = d[0].ProfileImageName;
+                    checkImage('../../Content/EmployeeProfileImage/' + profileimg, function () {
+                        $('#show_picture').attr('src', '../../Content/EmployeeProfileImage/' + profileimg);
+                    }, function () {
+                        $('#show_picture').attr('src', '../../Content/EmployeeProfileImage/default.png');
+                    });
                     $("#txtEmployeeIDNumber").val(d[0].emp_number);
                     $("#ddldesignation").val(d[0].designation == null ? "0" : d[0].designation).trigger("change");
                     $("#ddldepartment").val(d[0].department == null ? "0" : d[0].department).trigger("change");
                     $("#ddlSupervisorId").val(d[0].undertaking_emp == null ? "0" : d[0].undertaking_emp).trigger("change");
-                    var date = new Date(d[0].joining_date);
-                    var Jdate = ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '-' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '-' + date.getFullYear();
-                    $("#txtJoiningDate").val(Jdate);
-                    var date = new Date(d[0].leaving_date);
-                    var Ldate = ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '-' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '-' + date.getFullYear();
-                    $("#txtLeavingDate").val(Ldate);
+                    //var date = new Date(d[0].joining_date);
+                    //var Jdate = ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '-' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '-' + date.getFullYear();
+                   
+                    $("#txtJoiningDate").val(d[0].joining_date);
+                    //var date = new Date(d[0].leaving_date);
+                    //var Ldate = ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '-' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '-' + date.getFullYear();
+                    $("#txtLeavingDate").val(d[0].leaving_date);
                     $("#ddlBloodGroup").val(d[0].bloodgroup == null ? "0" : d[0].bloodgroup).trigger("change");
                     $("#txtEducation").val(d[0].education);
                     $("#txtProfessionalQualification").val(d[0].professionalqualification);
@@ -498,7 +518,7 @@ function GetVendorByID(id) {
 
                     var alternate = d[0].alternatecontactNumber = null ? "" : d[0].alternatecontactNumber.toString().replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3");
                     $("#txtAlternateContactNumber").val(alternate);
-                    console.log(alternate);
+                  
                 }
             },
             error: function (msg) {
@@ -507,3 +527,9 @@ function GetVendorByID(id) {
         });
 }
 
+function checkImage(imageSrc, good, bad) {
+    var img = new Image();
+    img.onload = good;
+    img.onerror = bad;
+    img.src = imageSrc;
+}

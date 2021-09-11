@@ -35,8 +35,8 @@ namespace LaylaERP.Models
         public string designation { get; set; }
         public string department { get; set; }
         public string undertaking_emp { get; set; }
-        public DateTime joining_date { get; set; }
-        public DateTime leaving_date { get; set; }
+        public string joining_date { get; set; }
+        public string leaving_date { get; set; }
         public double basic_sal { get; set; }
         public double unpaid_leave_perday { get; set; }
         public string bank_name { get; set; }

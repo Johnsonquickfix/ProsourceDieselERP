@@ -37,6 +37,16 @@ namespace LaylaERP.Controllers
             return View();
         }
 
+        //GET: Grant Leave
+        public ActionResult ListGrantLeave()
+        {
+            return View();
+        }
+        public ActionResult EditGrantLeave()
+        {
+            return View();
+        }
+
         // GET: Payroll
         public ActionResult Payroll()
         {
@@ -432,6 +442,7 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(JSONresult, 0);
         }
+
         [HttpPost]
         public JsonResult UpdateLeave(LeaveModel model)
         {
@@ -447,5 +458,44 @@ namespace LaylaERP.Controllers
             }
         }
 
+        public JsonResult GetGrantLeaveList(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                DataTable dt = LeaveRepository.GetGrantLeaveList(model.strValue1, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                result = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+        }
+
+        public JsonResult ChangeLeaveStatus(LeaveModel model)
+        {
+            string strID = model.strVal;
+            if (!string.IsNullOrEmpty(strID))
+            {
+                LeaveRepository.ChangeLeaveStatus(model, strID);
+                return Json(new { status = true, message = "Status has been Changed successfully!!", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Something went wrong", url = "" }, 0);
+            }
+
+        }
+
+        public JsonResult SelectGrantLeave(long id)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = LeaveRepository.SelectGrantLeave(id);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
     }
 }

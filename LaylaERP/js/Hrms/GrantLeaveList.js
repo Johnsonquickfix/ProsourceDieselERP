@@ -1,4 +1,41 @@
-﻿EmployeeList();
+﻿$(document).ready(function () {
+    getLeaveType();
+    getEmployee();
+    EmployeeList();
+})
+
+function getLeaveType() {
+    $.ajax({
+        url: "/Hrms/GetLeaveType",
+        type: "Get",
+        success: function (data) {
+            var opt = '<option value="0">Please Select Leave Type</option>';
+            for (var i = 0; i < data.length; i++) {
+                opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
+            }
+            $('#ddlLeaveType').html(opt);
+        }
+
+    });
+}
+
+function getEmployee() {
+    $.ajax({
+        url: "/Hrms/GetEmployee",
+        type: "Get",
+        success: function (data) {
+            var opt = '<option value="0">Please Select Employee</option>';
+            for (var i = 0; i < data.length; i++) {
+                opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
+            }
+            $('#ddlemployee').html(opt);
+        }
+
+    });
+}
+
+
+
 /*
 function GrantLeaveList() {
 
@@ -44,7 +81,7 @@ function EmployeeList() {
     var urid = $("#ddlSearchStatus").val();
     ID = $("#hfid").val();
     var table_EL = $('#EmployeeListdata').DataTable({
-        columnDefs: [{ "orderable": true, "targets": 1 }, { "orderable": false, "targets": [0] }, { 'visible': true, 'targets': [0] }], order: [[0, "desc"]],
+        columnDefs: [{ "orderable": true, "targets": 1 }, { "orderable": false, "targets": [0,8] }, { 'visible': true, 'targets': [0] }], order: [[0, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: false, searching: true,
         responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
         language: {
@@ -86,14 +123,22 @@ function EmployeeList() {
                     return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + $('<div/>').text(data).html() + '"><label></label>';
                 }
             },
-            { data: 'rowid', title: 'ID', sWidth: "10%" },
+            { data: 'rowid', title: 'Id', sWidth: "5%" },
             { data: 'name', title: 'Name', sWidth: "10%" },
-            { data: 'leavetype', title: 'Leave Type', sWidth: "20%" },
+            { data: 'leavetype', title: 'Leave Type', sWidth: "10%" },
             { data: 'date_from', title: 'From', sWidth: "15%" },
             { data: 'date_to', title: 'To', sWidth: "15%" },
             { data: 'days', title: 'Days', sWidth: "10%" },
             { data: 'status', title: 'Status', sWidth: "10%" },
-            
+            {
+                'data': 'rowid',
+                'sortable': true,
+                'searchable': false,
+                sWidth: "10%",
+                'render': function (id, type, full, meta) {
+                    return '<a href="../Hrms/EditGrantLeave/' + id + '"><i class="glyphicon glyphicon-pencil"></i></a>';
+                }
+            },
 
         ]
     });

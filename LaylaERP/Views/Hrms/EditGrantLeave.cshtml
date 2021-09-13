@@ -4,5 +4,137 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>EditGrantLeave</h2>
 
+<div class="page-title">
+    <h2>Approve Leave</h2>
+</div>
+<div class="row">
+    <div class="col-sm-6">
+        <div class="box box-primary">
+            <div class="box-body">
+                <div class="form-group">
+                    <input type="hidden" id="hfid" />
+                    <label for="Employee">Employee<span style="color:red">*</span></label>
+                    <select class="form-control select2" id="ddlemployee" style="width:100%;"></select>
+                </div>
+
+                <div class="form-group">
+                    <label for="ddlproduct">Leave Type<span style="color:red">*</span></label>
+                    <select class="form-control select2" id="ddlLeaveType" style="width:100%;"></select>
+                </div>
+                <div class="form-group">
+                    <label for="FromDate">From<span style="color:red">*</span></label>
+                    <input type="text" id="txtfrom" name="from" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label for="ToDate">To<span style="color:red">*</span></label>
+                    <input type="text" id="txtto" name="to" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="Status">Status<span style="color:red">*</span></label>
+                    <select class="form-control select2" id="ddlStatus">
+                        <option value="0">--Select Status--</option>
+                        <option value="1">Approved</option>
+                        <option value="2">Rejected</option>
+                    </select>
+                </div>
+
+                </div>
+            </div>
+    </div>
+
+    <div class="col-sm-6" id="details">
+        <div class="box box-primary">
+            <div class="box-body">
+                <div class="form-group">
+                    <label for="vendor">Days<span style="color:red"></span></label>
+                    <input type="text" class="form-control" id="txtdays" readonly />
+                </div>
+
+                <div class="form-group">
+                    <label for="vendor">Description<span style="color:red">*</span></label>
+                    <input type="text" class="form-control" id="txtdescription" />
+                </div>
+
+                <div class="form-group">
+                    <label for="country">Public note<span style="color:red"></span></label>
+                    <input type="text" class="form-control" id="txtpublic" />
+                </div>
+
+                <div class="form-group">
+                    <label for="state">Private note<span style="color:red"></span></label>
+                    <input type="text" class="form-control" id="txtprivate" />
+                </div>
+
+                <div class="form-group">
+                    <label for="state">Decision Justification<span style="color:red"></span></label>
+                    <input type="text" class="form-control" id="txtdecision" />
+                </div>
+
+                <div class="box-footer">
+
+                    <a href="#" class="btn btn-danger" id="btnUpdate"><b>Update</b></a>
+                    @Html.ActionLink("Back to List", "ListGrantLeave", null, new { @class = "btn btn-danger" })
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        var url = window.location.pathname;
+        var id = url.substring(url.lastIndexOf('/') + 1);
+        EditSelect(id);
+       
+        $(document).on('click', "#btnUpdate", function () {
+           
+        });
+
+        $(".select2").select2();
+        setTimeout(function () { $(".select2").select2(); }, 2000);
+
+    });
+
+
+</script>
+
+<script>
+    function EditSelect(id) {
+        var strValue1 = id;
+        var obj =
+            $.ajax({
+                url: "/Hrms/SelectGrantLeave/" + strValue1,
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                dataType: 'JSON',
+                data: JSON.stringify(obj),
+                success: function (data) {
+                    //console.log(data);
+
+                    var jobj = JSON.parse(data);
+                    if (jobj.length > 0) {
+                        $("#hfid").val(jobj[0].rowid);
+                        $("#ddlemployee").val(jobj[0].fk_emp).trigger('change');
+                        $('#ddlLeaveType').val(jobj[0].leave_code).trigger('change');
+                        $('#txtfrom').val(jobj[0].from_date);
+                        $("#txtto").val(jobj[0].to_date);
+                        $("#txtdays").val(jobj[0].days);
+                        $("#txtdescription").val(jobj[0].description);
+                        $("#txtpublic").val(jobj[0].note_public);
+                        $("#txtprivate").val(jobj[0].note_private);
+                        $("#ddlStatus").val(jobj[0].status).trigger('change');
+                    }
+                },
+                error: function (msg) {
+
+                }
+            });
+
+    }
+
+</script>
+
+<script src="@Url.Content("~/js/Hrms/GrantLeaveList.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>

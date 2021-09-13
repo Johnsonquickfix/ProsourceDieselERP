@@ -20,5 +20,6 @@ namespace LaylaERP.Models
         public string note_private { get; set; }
         public float days { get; set; }
         public string searchid { get; set; }
+        public string strVal { get; set; }
     }
 }

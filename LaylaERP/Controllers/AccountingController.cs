@@ -144,10 +144,11 @@ namespace LaylaERP.Controllers
         [HttpGet]
         public JsonResult GetProductStock(JqDataTableModel model)
         {
+            string optType = model.strValue1;
             string result = string.Empty;
             try
             {
-                DataTable dt = AccountingRepository.GetProductStock();
+                DataTable dt = AccountingRepository.GetProductStock(optType);
                 result = JsonConvert.SerializeObject(dt, Formatting.Indented);
             }
             catch { }

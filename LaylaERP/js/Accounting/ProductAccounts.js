@@ -6,7 +6,7 @@ $(document).ready(function () {
     getAccounttoAssign();
     GetNewAccounttoAssign();
     ProductAccountingGrid();
-    setTimeout(function () { $(".select2").select2();}, 2000);
+    setTimeout(function () { $(".select2").select2();}, 3000);
 
     /*$("#lblTotalProducts").text(table.fnGetData().length);*/
 })
@@ -37,6 +37,8 @@ function getAccounttoAssign() {
     });
 }
 function ProductAccountingGrid() {
+    var optType = $('input[name="accounting_product_mode"]:checked').val();
+    obj = { strValue1: optType }
     $('#dtProductsAccount').DataTable({
         oSearch: { "sSearch": '' }, order: [[0, "asc"]],
         language: {
@@ -49,7 +51,7 @@ function ProductAccountingGrid() {
         },
         destroy: true, bAutoWidth: false, ajax: {
             url: '/Accounting/GetProductStock', type: 'GET', dataType: 'json', contentType: "application/json; charset=utf-8",
-            /* data: obj,*/
+             data: obj,
             dataSrc: function (data) { return JSON.parse(data); }
         },
         lengthMenu: [[10, 20, 50, 100], [10, 20, 50, 100]],
@@ -111,6 +113,9 @@ function Singlecheck() {
 
 }
 
+$('#btnRefresh').click(function () {
+    ProductAccountingGrid();
+});
 $('#btnSaveProductAccount').click(function () {
     debugger
     var Productid = "";

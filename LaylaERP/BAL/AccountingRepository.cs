@@ -182,7 +182,7 @@ namespace LaylaERP.BAL
             { throw ex; }
             return dtr;
         }
-        public static DataTable GetProductStock()
+        public static DataTable GetProductStock(string optType)
         {
             DataTable dt = new DataTable();
             try
@@ -195,7 +195,7 @@ namespace LaylaERP.BAL
                     "where pwr.product_id = p.id) stock, (case when p.post_parent = 0 then p.id else p.post_parent end) p_id,p.post_parent,p.post_status " +
                     "FROM wp_posts as p left join wp_postmeta as s on p.id = s.post_id left join product_accounting as pa on p.id = pa.fk_product_id " +
                     "left join erp_accounting_account as eaa on pa.fk_account_number = eaa.account_number " +
-                    "where p.post_type in ('product', 'product_variation') and p.post_status != 'draft'  group by p.id order by p_id;";
+                    "where p.post_type in ('product', 'product_variation') and p.post_status != 'draft' and pa.option_mode = '"+optType+"'  group by p.id order by p_id;";
 
                 dt = SQLHelper.ExecuteDataTable(strSql);
 

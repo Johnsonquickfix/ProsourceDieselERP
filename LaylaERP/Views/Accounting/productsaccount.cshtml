@@ -31,7 +31,7 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td class="text-left"><input type="radio" name="accounting_product_mode" value="ACCOUNTANCY_SELL" checked /> Mode sales</td>
+                                <td class="text-left"><input type="radio" name="accounting_product_mode" value="sales" checked /> Mode sales</td>
                                 <td>Show all products with accounting account for sales.</td>
                             </tr>
                             @*<tr>
@@ -39,7 +39,7 @@
                                 <td>Show all products with accounting account for other foreign sales.</td>
                             </tr>*@
                             <tr>
-                                <td class="text-left"><input type="radio" name="accounting_product_mode" value="ACCOUNTANCY_BUY" /> Mode purchases</td>
+                                <td class="text-left"><input type="radio" name="accounting_product_mode" value="purchase" /> Mode purchases</td>
                                 <td>Show all products with accounting account for purchases.</td>
                             </tr>
                             @*<tr>
@@ -50,7 +50,7 @@
                     </table>
                 </div>
                 <div class="box-footer text-right">
-                    <button class="btn btn-danger">Refresh</button>
+                    <button class="btn btn-danger" id="btnRefresh">Refresh</button>
                 </div>
             </div>
         </div>

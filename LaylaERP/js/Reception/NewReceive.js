@@ -229,11 +229,8 @@ function calculateFinal() {
         prvQty = parseFloat($(row).find("[name=txt_itembalqty]").val()) || 0.00;
         rDisPer = parseFloat($(row).find("[name=txt_itemdisc]").val()) || 0.00;
         rTax1 = parseFloat($(row).find(".tax-amount").data('tax1')) || 0.00; rTax2 = parseFloat($(row).find(".tax-amount").data('tax2')) || 0.00;
+
         totalqty = rQty + prvQty;
-        tquty += rpQty;
-        tpquty += totalqty;
-        //console.log('A', tquty);
-        //console.log('R', tpquty);
       
         //if (rQty == 0) {
         //    swal('Alert!', "Receive quantity should not be zero", "error");
@@ -243,6 +240,7 @@ function calculateFinal() {
         if (totalqty > rpQty) {
             swal('Alert!', "you can't receive greater quantity form  actual quantity", "error");
             parseFloat($(row).find("[name=txt_itemRecqty]").val(0.00));
+            tpquty += prvQty;
         }
         else {
             rGrossAmt = rPrice * rQty; rDisAmt = rGrossAmt * (rDisPer / 100);
@@ -250,8 +248,13 @@ function calculateFinal() {
             rNetAmt = (rGrossAmt - rDisAmt) + rTax_Amt1 + rTax_Amt2;
             $(row).find(".tax-amount").text(rTax_Amt1.toFixed(2)); $(row).find(".ship-amount").text(rTax_Amt2.toFixed(2)); $(row).find(".row-total").text(rNetAmt.toFixed(2));
             tGrossAmt += rGrossAmt, tDisAmt += rDisAmt, tTax_Amt1 += rTax_Amt1, tTax_Amt2 += rTax_Amt2, tNetAmt += rNetAmt;
+       
+            tpquty += totalqty;
            
-        }  
+        }
+        tquty += rpQty;
+       // console.log('A', tquty);
+       // console.log('R', tpquty);
     });
     //other item
     $("#product_line_items > tr.other_item").each(function (index, row) {
@@ -559,7 +562,8 @@ function saveVendorPO() {
                 if (data.status == true) {
                     $('#lblPoNo').data('id', data.id);
                    // getPurchaseOrderInfo();
-                    swal('Alert!', data.message, 'success').then(function () { swal.close();  });
+                    //swal('Alert!', data.message, 'success').then(function () { swal.close(); });
+                    swal('Alert!', data.message, 'success').then((result) => { location.href = '../ReceiveOrder'; });
                 /*    swal('Alert!', data.message, 'success').then(function () { swal.close(); getPurchaseOrderPrint(id, true); });*/
                 }
                 else {

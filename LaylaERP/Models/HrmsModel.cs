@@ -61,5 +61,8 @@ namespace LaylaERP.Models
         public string ProfileImagePath { get; set; }
         public HttpPostedFileBase ImageFile { get; set; }
         public string EmployeeLinkedFilesID { get; set; }
+        public string strValue1 { get; set; }
+        public string strValue2 { get; set; }
+        public string strValue3 { get; set; }
     }
 }

@@ -16,7 +16,7 @@ function getPurchaseOrderPrint(id, is_mail) {
     if (id > 0) {
         var option = { strValue1: id };
         $.ajax({
-            url: "/PurchaseOrder/GetPurchaseOrderPrint", type: "Get", beforeSend: function () { }, data: option,
+            url: "/Reception/GetPurchaseOrderPrint", type: "Get", beforeSend: function () { }, data: option,
             success: function (result) {
                 try {
                     printinvoice(id, result, is_mail, false);
@@ -30,7 +30,7 @@ function getPurchaseOrderPrint(id, is_mail) {
 }
 function printinvoice(id, result, is_mail, is_inv) {
     let data = JSON.parse(result.data); //console.log(data);
-    let inv_title = is_inv ? 'Invoice' : 'Purchase Order';
+    let inv_title = is_inv ? 'Bill' : 'Receive Order';
     var modalHtml = '';
     modalHtml += '<div class="modal-dialog modal-lg">';
     modalHtml += '<div class="modal-content">';
@@ -160,22 +160,22 @@ function printinvoice(id, result, is_mail, is_inv) {
     myHtml += '</div>';
     myHtml += '</div>';
     $('#PrintModal .modal-body').append(myHtml);
-    let opt = { strValue1: data['po'][0].vendor_email, strValue2: data['po'][0].ref, strValue3: myHtml }
-    if (opt.strValue1.length > 5 && is_mail) {
-        $.ajax({
-            type: "POST", url: '/PurchaseOrder/SendMailInvoice', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
-            success: function (result) { console.log(result); },
-            error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
-            complete: function () { }, async: false
-        });
-    }
+    //let opt = { strValue1: data['po'][0].vendor_email, strValue2: data['po'][0].ref, strValue3: myHtml }
+    //if (opt.strValue1.length > 5 && is_mail) {
+    //    $.ajax({
+    //        type: "POST", url: '/PurchaseOrder/SendMailInvoice', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
+    //        success: function (result) { console.log(result); },
+    //        error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
+    //        complete: function () { }, async: false
+    //    });
+    //}
 }
 
 function getInvoicePrint(id) {
     if (id > 0) {
         var option = { strValue1: id };
         $.ajax({
-            url: "/PurchaseOrder/GetPurchaseOrderPrint", type: "Get", beforeSend: function () { }, data: option,
+            url: "/Reception/GetPurchaseOrderPrint", type: "Get", beforeSend: function () { }, data: option,
             success: function (result) {
                 try {
                     printinvoice(id, result, false, true);
@@ -337,13 +337,13 @@ function printinvoice_old(is_mail) {
     $('#POModal .modal-body').append(myHtml);
 
     $("#POModal").modal({ backdrop: 'static', keyboard: false });
-    var opt = { strValue1: email, strValue2: $('#lblPoNo').text(), strValue3: $('#POModal .modal-body').html() }
-    if (opt.strValue1.length > 5 && is_mail) {
-        $.ajax({
-            type: "POST", url: '/PurchaseOrder/SendMailInvoice', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
-            success: function (result) { console.log(result); },
-            error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
-            complete: function () { }, async: false
-        });
-    }
+    //var opt = { strValue1: email, strValue2: $('#lblPoNo').text(), strValue3: $('#POModal .modal-body').html() }
+    //if (opt.strValue1.length > 5 && is_mail) {
+    //    $.ajax({
+    //        type: "POST", url: '/PurchaseOrder/SendMailInvoice', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
+    //        success: function (result) { console.log(result); },
+    //        error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
+    //        complete: function () { }, async: false
+    //    });
+    //}
 }

@@ -503,7 +503,62 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
+        public int AddAttendence(string Empid, string intime, string outtime)
+        {
+            try
+            {
+                int result = 0;
+                string[] ID = Empid.Split(',');
+                string[] invalue = intime.Split(',');
+                string[] outvalue = outtime.Split(',');
+                for (int i = 0; i <= ID.Length - 1; i++)
+                {
+                    Empid = ID[i].ToString();
+                    DateTime in_time = DateTime.Parse(invalue[i]);
+                    DateTime out_time = DateTime.Parse(outvalue[i]);
+                    if (Empid != "0")
+                    {
+                        string strsql = "";
+                        string Product = GetPresentEmp(Empid).ToString();
+                        if (Product == Empid)
+                        {
+                            strsql = "Update erp_hrms_attendance_sheet set fk_emp=@fk_emp,in_time=@in_time,out_time=@out_time where fk_emp=@fk_emp";
+                        }
+                        else
+                        {
+                            strsql = "insert into erp_hrms_attendance_sheet(fk_emp,in_time,out_time) values(@fk_emp,@in_time,@out_time); SELECT LAST_INSERT_ID();";
+                        }
+                        MySqlParameter[] para =
+                        {
+                            new MySqlParameter("@fk_emp",Empid),
+                            new MySqlParameter("@in_time", in_time),
+                            new MySqlParameter("@out_time", out_time),
+                        };
+                        result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                    }
+                }
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+        public int GetPresentEmp(string id)
+        {
+            try
+            {
+                string strSql = "Select fk_emp from erp_hrms_attendance_sheet where fk_emp='" + id + "'";
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strSql));
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
 
+        //My code
         public static DataSet GetLeaveType()
         {
             DataSet DS = new DataSet();

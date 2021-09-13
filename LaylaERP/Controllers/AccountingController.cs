@@ -144,10 +144,11 @@ namespace LaylaERP.Controllers
         [HttpGet]
         public JsonResult GetProductStock(JqDataTableModel model)
         {
+            string optType = model.strValue1;
             string result = string.Empty;
             try
             {
-                DataTable dt = AccountingRepository.GetProductStock();
+                DataTable dt = AccountingRepository.GetProductStock(optType);
                 result = JsonConvert.SerializeObject(dt, Formatting.Indented);
             }
             catch { }
@@ -156,7 +157,8 @@ namespace LaylaERP.Controllers
 
         public JsonResult GetNewAccounttoAssign(SearchModel model)
         {
-            DataSet ds = BAL.AccountingRepository.GetNewAccounttoAssign();
+            string optType = model.strValue1;
+            DataSet ds = BAL.AccountingRepository.GetNewAccounttoAssign(optType);
             List<SelectListItem> productlist = new List<SelectListItem>();
             foreach (DataRow dr in ds.Tables[0].Rows)
             {
@@ -170,7 +172,7 @@ namespace LaylaERP.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (model.rowid > 0)
+                if (model.rowid > 0 )
                 {
                     AccountingRepository.UpdateAccount(model);
                     return Json(new { status = true, message = "Data has been updated successfully!!", url = "", id = model.rowid }, 0);
@@ -217,7 +219,7 @@ namespace LaylaERP.Controllers
             if (ModelState.IsValid)
             {
                 string ProductID = model.strValue1;
-                string ProductFor = model.Productfor;
+                string option_mode = model.option_mode;
                 string ProductAccountNumberID = model.strValue2;
 
                 if (model.ID > 0)
@@ -227,7 +229,7 @@ namespace LaylaERP.Controllers
                 }
                 else
                 {
-                    int ID = new AccountingRepository().AddProductAccount(ProductID,ProductFor, ProductAccountNumberID);
+                    int ID = new AccountingRepository().AddProductAccount(ProductID, option_mode, ProductAccountNumberID);
                     if (ID > 0)
                     {
                         return Json(new { status = true, message = "Product account has been saved successfully!!", url = "", id = ID }, 0);

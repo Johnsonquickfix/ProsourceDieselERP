@@ -2119,7 +2119,9 @@ border-top:1px solid #eee; margin-top:8px; margin-bottom:8px;}
 .inventory-actions .tablenav label b {font-size: inherit;font-weight: 600;}
 .user-top-section.inventory-actions {margin-bottom:15px;}
 .table-design #dtdata.inventory-table thead th {visibility:visible; opacity:1; padding:8px 10px !important;}
-.dataTables_scrollBody #dtdata.inventory-table.table-blue thead th {visibility: hidden; opacity: 0; padding: 0px 10px !important;}
+.dataTables_scrollBody #dtdata.inventory-table.table-blue thead th,
+.dataTables_scrollBody #dtdataPartially.inventory-table.table-blue thead th,
+.dataTables_scrollBody #dtdataPoClosure.inventory-table.table-blue thead th{visibility: hidden; opacity: 0; padding: 0px 10px !important;}
 .inventory-btn [type="button"] {float:right;}
 #dtdata.inventory-table td:first-child, .check-table.inventory-table th:first-child {text-align: left !important;}
 .top-with-select .box-title {margin-right:10px;white-space:nowrap;}
@@ -2506,7 +2508,15 @@ table-layout:fixed;}
 display:flex;}
 #billCoupon div.pull-right{display:flex; align-items:center;}
 .mb-1 {margin-bottom: 15px;}
-.listproduct .inventory-table{min-width:1400px;}
+.listproduct .inventory-table{table-layout:fixed !important; }
+html .listproduct .inventory-table th,
+html .listproduct .inventory-table td{padding-right:25px !important;box-sizing:border-box;}
+html .listproduct .inventory-table th:first-child,
+html .listproduct .inventory-table td:first-child,
+html .listproduct .inventory-table th:nth-child(2),
+html .listproduct .inventory-table td:nth-child(2) {
+    padding-right: 10px !important;
+}
 .profile-flex.col-12 {padding:0px 15px;}
 
 .listproduct .inventory-table th, .listproduct .inventory-table td{padding-right:30px !important;}
@@ -2514,7 +2524,15 @@ display:flex;}
     color: #fff !important;
 }
 
-
+.table-blue.check-table [type="checkbox"]{margin:0px;width:15px; height:15px;}
+.table-blue.check-table [type="checkbox"] + label{width:15px; height:15px;}
+.receive.order .dataTables_scrollHeadInner{width:100% !important;}
+#dtdataPartially th,
+#dtdataPoClosure th,
+#dtdataPartially td,
+#dtdataPoClosure td {
+    box-sizing: border-box !important;
+}
 
 @media(max-width:900px) {
     .hub-pro-shop select:first-child{margin-left:0px;}

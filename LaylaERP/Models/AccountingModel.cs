@@ -28,6 +28,7 @@ namespace LaylaERP.Models
         public string strValue1 { get; set; }
         public string strValue2 { get; set;}
         public string Productfor { get; set; }
+        public string option_mode { get; set; }
         public int fk_account_number { get; set; }
         public string user_status { get; set; }
         public string Search { get; set; }

@@ -1,4 +1,5 @@
-﻿$(document).ready(function () {
+$(document).ready(function () {
+    $("#loader").hide();
     $("#txtfromdate").datepicker({ format: 'mm-dd-yyyy', }).datepicker("setDate", 'now');
     $("#txttodate").datepicker({ format: 'mm-dd-yyyy', }).datepicker("setDate", 'now');
     var now = new Date(Date.now());
@@ -10,10 +11,11 @@ $('#btnSearch').click(function () {
 })
 
 function EmployeeList() {
+  
     var urid = $("#ddlSearchStatus").val();
     ID = $("#hfid").val();
     var table_EL = $('#EmployeeListdata').DataTable({
-        columnDefs: [{ "orderable": true, "targets": 0 }, { "orderable": false, "targets": [1,4, 5] }, { 'visible': false, 'targets': [0] }], order: [[0, "desc"]],
+        columnDefs: [{ "orderable": true, "targets": 0 }, { "orderable": false, "targets": [1, 4, 5] }, { 'visible': false, 'targets': [0] }], order: [[0, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: false, searching: true,
         responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
         language: {
@@ -61,20 +63,33 @@ function EmployeeList() {
             {
                 'data': 'in_time', sWidth: "20%",
                 'render': function (id, type, full, meta) {
-                    var today = new Date();
-                    var date = today.getFullYear() + '-' + ((today.getMonth()) + 1) + '-' + today.getDate();
-                    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-                    var dateTime = date + ' ' + time;
-                   
-                    return '<span><input type="text" class="form-control" name="txtintime" id="txtintime" value="' + dateTime + '" /></span>';
+                    var dateTime = "";
+                    if (id == null) {
+                        var today = new Date();
+                        var date = ((today.getMonth()) + 1) + '-' + today.getDate() + '-' + today.getFullYear();
+                        var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+                        dateTime = date + ' ' + time;
+                    }
+                    else {
+                        dateTime = id;
+                    }
+                    return '<span><input type="text" class="form-control" name="txtintime" id="txtintime_' + full.ID + '" value="' + dateTime + '" /></span>';
                 }
             },
             {
-                'data': 'ID', sWidth: "20%",
+                'data': 'out_time', sWidth: "20%",
                 'render': function (id, type, full, meta) {
-                    var now = new Date(Date.now());
-                    var formatted = now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
-                    return '<span><input type="text" class="form-control" name="txtouttime" id="txtouttime" value="' + formatted + '" /></span>';
+                    var dateTime = "";
+                    if (id == null) {
+                        var today = new Date();
+                        var date = ((today.getMonth()) + 1) + '-' + today.getDate() + '-' + today.getFullYear();
+                        var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+                        dateTime = date + ' ' + time;
+                    }
+                    else {
+                        dateTime = id;
+                    }
+                    return '<span><input type="text" class="form-control" name="txtouttime" id="txtouttime_' + full.ID + '" value="' + dateTime + '" /></span>';
                 }
             }
         ]
@@ -84,10 +99,19 @@ function EmployeeList() {
 $('#checkAll').click(function () {
     var isChecked = $(this).prop("checked");
     $('#EmployeeListdata tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
+    $("#btnSave").prop("disabled", isChecked == true ? false : true);
+
 });
 function Singlecheck() {
     var isChecked = $('#CheckSingle').prop("checked");
     var isHeaderChecked = $("#checkAll").prop("checked");
+    var EnableButton = true;
+    $('#EmployeeListdata tr:has(td)').find('input[type="checkbox"]').each(function () {
+        if ($(this).prop("checked") == true)
+            EnableButton = false;
+
+    });
+    $("#btnSave").prop("disabled", EnableButton);
     if (isChecked == false && isHeaderChecked)
         $("#checkAll").prop('checked', isChecked);
     else {
@@ -97,4 +121,52 @@ function Singlecheck() {
         });
         $("#checkAll").prop('checked', isChecked);
     }
+}
+
+$('#btnSave').click(function () {
+    var Empid = "";
+    var intime = "";
+    var outtime = "";
+
+    $("input:checkbox[name=CheckSingle]:checked").each(function () {
+        Empid += $(this).val() + ",";
+        intime += $("#txtintime_" + $(this).val()).val() + ",";
+        outtime += $("#txtouttime_" + $(this).val()).val() + ",";
+    });
+    Empid = Empid.replace(/,(?=\s*$)/, '');
+    intime = intime.replace(/,(?=\s*$)/, '');
+    outtime = outtime.replace(/,(?=\s*$)/, '');
+    console.log(Empid, intime, outtime);
+    saveAttendence(Empid, intime, outtime);
+
+});
+
+function saveAttendence(Empid, intime, outtime) {
+    var ID = $("#hfid").val();
+    var obj = {
+        rowid: ID, strValue1: Empid, strValue2: intime, strValue3: outtime,
+    }
+    $.ajax({
+        url: '/Hrms/AddAttendence/', dataType: 'json', type: 'Post',
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(obj),
+        dataType: "json",
+        beforeSend: function () { $("#loader").show(); },
+        success: function (data) {
+            if (data.status == true) {
+                $("#checkAll").prop('checked', false);
+                $("#ddlAccounttoAssign").select2("val", "0");
+                $("#btnSaveProductAccount").prop("disabled", true);
+                EmployeeList();
+                swal('Alert!', data.message, 'success');
+            }
+            else {
+                swal('Alert!', data.message, 'error')
+            }
+        },
+        complete: function () { $("#loader").hide(); },
+        error: function (error) {
+            swal('Error!', 'something went wrong', 'error');
+        },
+    })
 }

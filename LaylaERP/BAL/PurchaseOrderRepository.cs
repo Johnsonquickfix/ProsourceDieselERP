@@ -205,6 +205,7 @@ namespace LaylaERP.BAL
 
                     model.RowID = Convert.ToInt64(SQLHelper.ExecuteScalar(strsql, para));
                 }
+                strsql = "";
                 /// step 2 : commerce_purchase_order_detail
                 foreach (PurchaseOrderProductsModel obj in model.PurchaseOrderProducts)
                 {

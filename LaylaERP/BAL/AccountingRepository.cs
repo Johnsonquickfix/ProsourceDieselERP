@@ -187,15 +187,15 @@ namespace LaylaERP.BAL
             DataTable dt = new DataTable();
             try
             {
-               
+
                 string strSql = "select  p.id,eaa.label AccountingAccount,CAST(pa.fk_account_number AS INT) AccountingAccountNumber,p.post_type,p.post_title,max(case when p.id = s.post_id and s.meta_key = '_sku' then s.meta_value else '' end) sku, " +
                     "max(case when p.id = s.post_id and s.meta_key = '_regular_price' then s.meta_value else '' end) regular_price, " +
                     "max(case when p.id = s.post_id and s.meta_key = '_price' then s.meta_value else '' end) sale_price, " +
                     "(select coalesce(sum(case when pwr.flag = 'R' then quantity else -quantity end),0) from product_stock_register pwr " +
                     "where pwr.product_id = p.id) stock, (case when p.post_parent = 0 then p.id else p.post_parent end) p_id,p.post_parent,p.post_status " +
-                    "FROM wp_posts as p left join wp_postmeta as s on p.id = s.post_id left join product_accounting as pa on p.id = pa.fk_product_id " +
+                    "FROM wp_posts as p left join wp_postmeta as s on p.id = s.post_id left join product_accounting as pa on p.id = pa.fk_product_id  and pa.option_mode = '" + optType + "'" +
                     "left join erp_accounting_account as eaa on pa.fk_account_number = eaa.account_number " +
-                    "where p.post_type in ('product', 'product_variation') and p.post_status != 'draft' and pa.option_mode = '"+optType+"'  group by p.id order by p_id;";
+                    "where p.post_type in ('product', 'product_variation') and p.post_status != 'draft'  group by p.id order by p_id;";
 
                 dt = SQLHelper.ExecuteDataTable(strSql);
 
@@ -207,12 +207,24 @@ namespace LaylaERP.BAL
             return dt;
         }
 
-        public static DataSet GetNewAccounttoAssign()
+        public static DataSet GetNewAccounttoAssign(string optType)
         {
             DataSet DS = new DataSet();
             try
             {
-                string strSQl = "Select account_number ID, concat(account_number,' - ',label) label from erp_accounting_account order by rowid;";
+                string account = "";
+                string pcg = "";
+                if (optType == "sales")
+                {
+                    account = "4";
+                    pcg = "INCOME";
+                }
+                else
+                {
+                    account = "5";
+                    pcg = "COGS";
+                }
+                string strSQl = "Select account_number ID, concat(account_number,' - ',label) label from erp_accounting_account where  account_number like '" + account + "%' and pcg_type='" + pcg + "' order by account_number;";
                 DS = SQLHelper.ExecuteDataSet(strSQl);
             }
             catch (Exception ex)
@@ -299,7 +311,7 @@ namespace LaylaERP.BAL
                     if (ProductAccountNumberID != "0")
                     {
                         string strsql = "";
-                        string Product = GetAccountNumber(ProductID).ToString();
+                        string Product = GetAccountNumber(ProductID, option_mode).ToString();
                         if (Product == ProductID)
                         {
                             strsql = "Update product_accounting set fk_product_id=@fk_product_id,option_mode=@option_mode,fk_account_number=@fk_account_number where fk_product_id=@fk_product_id";
@@ -349,11 +361,11 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
-        public int GetAccountNumber(string id)
+        public int GetAccountNumber(string id, string option_mode)
         {
             try
             {
-                string strSql = "Select fk_product_id from product_accounting where fk_product_id='" + id + "'";
+                string strSql = "Select fk_product_id from product_accounting where fk_product_id='" + id + "' and option_mode='" + option_mode + "'";
                 int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strSql));
                 return result;
             }

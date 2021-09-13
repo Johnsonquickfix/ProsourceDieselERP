@@ -157,7 +157,8 @@ namespace LaylaERP.Controllers
 
         public JsonResult GetNewAccounttoAssign(SearchModel model)
         {
-            DataSet ds = BAL.AccountingRepository.GetNewAccounttoAssign();
+            string optType = model.strValue1;
+            DataSet ds = BAL.AccountingRepository.GetNewAccounttoAssign(optType);
             List<SelectListItem> productlist = new List<SelectListItem>();
             foreach (DataRow dr in ds.Tables[0].Rows)
             {
@@ -171,7 +172,7 @@ namespace LaylaERP.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (model.rowid > 0)
+                if (model.rowid > 0 )
                 {
                     AccountingRepository.UpdateAccount(model);
                     return Json(new { status = true, message = "Data has been updated successfully!!", url = "", id = model.rowid }, 0);

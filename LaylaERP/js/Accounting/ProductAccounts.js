@@ -6,15 +6,25 @@ $(document).ready(function () {
     getAccounttoAssign();
     GetNewAccounttoAssign();
     ProductAccountingGrid();
-    setTimeout(function () { $(".select2").select2();}, 3000);
+    setTimeout(function () { $(".select2").select2();}, 1500);
 
     /*$("#lblTotalProducts").text(table.fnGetData().length);*/
 })
+$('#btnRefresh').click(function () {
+    ProductAccountingGrid();
+    getAccounttoAssign();
+    GetNewAccounttoAssign();
+});
 function GetNewAccounttoAssign() {
+    var optType = $('input[name="accounting_product_mode"]:checked').val();
+    obj = { strValue1: optType }
     $.ajax({
         url: "/Accounting/GetNewAccounttoAssign",
+        data: obj,
         type: "Get",
         success: function (data) {
+            htmlAcc = "";
+            htmlAcc = '<option value="0">Please Select Account to Assign</option>';
             for (var i = 0; i < data.length; i++) {
                 htmlAcc += '<option value="' + data[i].Value + '" data-' + data[i].Value+'>' + data[i].Text + '</option>';
             }
@@ -23,8 +33,11 @@ function GetNewAccounttoAssign() {
     });
 };
 function getAccounttoAssign() {
+    var optType = $('input[name="accounting_product_mode"]:checked').val();
+    obj = { strValue1: optType }
     $.ajax({
         url: "/Accounting/GetNewAccounttoAssign",
+        data: obj,
         type: "Get",
         success: function (data) {
             var opt = '<option value="0">Please Select Account to Assign</option>';
@@ -32,8 +45,8 @@ function getAccounttoAssign() {
                 opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
             }
             $('#ddlAccounttoAssign').html(opt);
-        }
-
+        },
+        async:false
     });
 }
 function ProductAccountingGrid() {
@@ -113,9 +126,7 @@ function Singlecheck() {
 
 }
 
-$('#btnRefresh').click(function () {
-    ProductAccountingGrid();
-});
+
 $('#btnSaveProductAccount').click(function () {
     debugger
     var Productid = "";

@@ -339,8 +339,36 @@ namespace LaylaERP.Controllers
                 return Json(new { status = false, message = "Employee info not Found", url = "", id = 0 }, 0);
             }
         }
+        public JsonResult AddAttendence(HrmsModel model)
+         {
+            if (ModelState.IsValid)
+            {
+                string Empid = model.strValue1;
+                string intime = model.strValue2;
+                string outtime = model.strValue3;
 
-//My code
+                if (model.rowid > 0)
+                {
+                    //new ThirdPartyRepository().EditVendorBasicInfo(model);
+                    //return Json(new { status = true, message = "Product account has been updated successfully!!", url = "", id = model.rowid }, 0);
+                }
+                else
+                {
+                    int ID = new HrmsRepository().AddAttendence(Empid, intime, outtime);
+                    if (ID > 0)
+                    {
+                        return Json(new { status = true, message = "Attendence has been saved successfully!!", url = "", id = ID }, 0);
+                    }
+                    else
+                    {
+                        return Json(new { status = false, message = "something went wrong!! Attendence not saved ", url = "", id = 0 }, 0);
+                    }
+                }
+            }
+            return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
+        }
+
+        //My code
         public JsonResult GetLeaveType()
         {
             DataSet ds = HrmsRepository.GetLeaveType();

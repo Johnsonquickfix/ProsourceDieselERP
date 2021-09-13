@@ -284,7 +284,7 @@ namespace LaylaERP.BAL
             return dt;
         }
 
-        public int AddProductAccount(string ProductID, string ProductFor, string ProductAccountNumberID)
+        public int AddProductAccount(string ProductID, string option_mode, string ProductAccountNumberID)
         {
             try
             {
@@ -302,16 +302,16 @@ namespace LaylaERP.BAL
                         string Product = GetAccountNumber(ProductID).ToString();
                         if (Product == ProductID)
                         {
-                            strsql = "Update product_accounting set fk_product_id=@fk_product_id,Productfor=@Productfor,fk_account_number=@fk_account_number where fk_product_id=@fk_product_id";
+                            strsql = "Update product_accounting set fk_product_id=@fk_product_id,option_mode=@option_mode,fk_account_number=@fk_account_number where fk_product_id=@fk_product_id";
                         }
                         else
                         {
-                            strsql = "insert into product_accounting(fk_product_id,Productfor,fk_account_number) values(@fk_product_id,@Productfor,@fk_account_number); SELECT LAST_INSERT_ID();";
+                            strsql = "insert into product_accounting(fk_product_id,option_mode,fk_account_number) values(@fk_product_id,@option_mode,@fk_account_number); SELECT LAST_INSERT_ID();";
                         }
                         MySqlParameter[] para =
                         {
                             new MySqlParameter("@fk_product_id",ProductID),
-                            new MySqlParameter("@Productfor", ProductFor),
+                            new MySqlParameter("@option_mode", option_mode),
                             new MySqlParameter("@fk_account_number", ProductAccountNumberID),
                         };
                         result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));

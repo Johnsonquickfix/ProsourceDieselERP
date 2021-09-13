@@ -218,7 +218,7 @@ namespace LaylaERP.Controllers
             if (ModelState.IsValid)
             {
                 string ProductID = model.strValue1;
-                string ProductFor = model.Productfor;
+                string option_mode = model.option_mode;
                 string ProductAccountNumberID = model.strValue2;
 
                 if (model.ID > 0)
@@ -228,7 +228,7 @@ namespace LaylaERP.Controllers
                 }
                 else
                 {
-                    int ID = new AccountingRepository().AddProductAccount(ProductID,ProductFor, ProductAccountNumberID);
+                    int ID = new AccountingRepository().AddProductAccount(ProductID, option_mode, ProductAccountNumberID);
                     if (ID > 0)
                     {
                         return Json(new { status = true, message = "Product account has been saved successfully!!", url = "", id = ID }, 0);

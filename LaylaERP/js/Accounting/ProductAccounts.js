@@ -119,6 +119,7 @@ $('#btnRefresh').click(function () {
 $('#btnSaveProductAccount').click(function () {
     debugger
     var Productid = "";
+    var optType = $('input[name="accounting_product_mode"]:checked').val();
     var account = "";
     var acc = $('#ddlAccounttoAssign').val();
    
@@ -133,14 +134,14 @@ $('#btnSaveProductAccount').click(function () {
         });
         Productid = Productid.replace(/,(?=\s*$)/, '');
         account = account.replace(/,(?=\s*$)/, '');
-    saveProductAccount(Productid,'', account);
+    saveProductAccount(Productid,optType, account);
 
 });
 
-function saveProductAccount(ProductID, ProductFor, ProductAccountNumberID) {
+function saveProductAccount(ProductID, optType, ProductAccountNumberID) {
     var ID = $("#hfid").val();
     var obj = {
-        ID: ID, strValue1: ProductID, Productfor: ProductFor, strValue2: ProductAccountNumberID,
+        ID: ID, strValue1: ProductID, option_mode: optType, strValue2: ProductAccountNumberID,
     }
     $.ajax({
         url: '/Accounting/AddProductAccount/', dataType: 'json', type: 'Post',

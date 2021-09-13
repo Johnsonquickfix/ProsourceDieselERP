@@ -256,7 +256,7 @@ function dataGridLoad(order_type) {
         },
         lengthMenu: [[10, 20, 50, 100], [10, 20, 50, 100]],
         columns: [
-            { data: 'p_id', title: 'Parent ID', sWidth: "10%" },
+            { data: 'p_id', title: 'Parent ID', sWidth: "3%" },
             //{
             //    'data': 'ID', sWidth: "5%   ",
             //    'render': function (data, type, full, meta) {
@@ -264,7 +264,7 @@ function dataGridLoad(order_type) {
             //    }
             //},
             {
-                'data': 'id', sWidth: "4%   ",
+                'data': 'id', sWidth: "3%   ",
                 'render': function (data, type, row) {
                     if (row.post_parent > 0 || row.term_id == 2)
                         return '<input type = "checkbox" style = "opacity: 1; position: relative; visibility: visible; display: block" onClick="Singlecheck(this);" name="CheckSingle" value="' + $('<div/>').text(data).html() + '">';
@@ -282,7 +282,7 @@ function dataGridLoad(order_type) {
             },
 
             {
-                "data": "guid", sWidth: "4%   ",
+                "data": "guid", sWidth: "7%   ",
                 //'render': function (data, type, full, meta) {
                 //    return '<i class="glyphicon glyphicon-picture"></i>';
                 //}
@@ -292,17 +292,17 @@ function dataGridLoad(order_type) {
                     if (data.indexOf('product') == -1)
                      var result = checkFileExist(url);
                     if (data.indexOf('product') != -1) {
-                        return '<img src="../../Content/ProductCategory/default.png" width="50" height="50"/>';
+                        return '<img src="../../Content/ProductCategory/default.png" width="40" height="40"/>';
                     }
                     else {
-                        if (result == true) { return '<img src=' + url + ' width="50" height="50"/>'; }
+                        if (result == true) { return '<img src=' + url + ' width="40" height="40"/>'; }
                         else if (data == null || data == "") { return '<img src="../../Content/ProductCategory/default.png" width="50" height="50"/>'; }
                         else { return '<img src="../../Content/ProductCategory/default.png" width="50" height="50"/>'; }
                     }
                 }
             },
-            { data: 'post_title', title: 'Name', sWidth: "18%" },
-            { data: 'sku', title: 'SKU', sWidth: "10%" },
+            { data: 'post_title', title: 'Name', sWidth: "12%" },
+            { data: 'sku', title: 'SKU', sWidth: "8%" },
             //{ data: 'stockstatus', title: 'Stock', sWidth: "12%" },
 
             //{
@@ -350,7 +350,7 @@ function dataGridLoad(order_type) {
                     return tprice
                 }
             },
-            { data: 'itemname', title: 'Categories', sWidth: "12%" },
+            { data: 'itemname', title: 'Categories', sWidth: "10%" },
             //{
             //    'data': 'ID', sWidth: "5%   ",
             //    'render': function (data, type, full, meta) {
@@ -358,11 +358,11 @@ function dataGridLoad(order_type) {
             //    }
             //},
 
-            { data: 'Date', title: 'Creation Date', sWidth: "11%" },
-            { data: 'publishDate', title: 'Publish Date', sWidth: "15%" },
-            { data: 'Activestatus', title: 'Status', sWidth: "8%" },
+            { data: 'Date', title: 'Creation Date', sWidth: "10%" },
+            { data: 'publishDate', title: 'Publish Date', sWidth: "8%" },
+            { data: 'Activestatus', title: 'Status', sWidth: "7%" },
             {
-                'data': 'id', title: 'Action', sWidth: "3%",
+                'data': 'id', title: 'Action', sWidth: "7%",
                 'render': function (id, type, row) {
                     if (row.post_parent > 0)
                         return ' <b></b>';

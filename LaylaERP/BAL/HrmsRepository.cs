@@ -512,52 +512,6 @@ namespace LaylaERP.BAL
                 string[] invalue = intime.Split(',');
                 string[] outvalue = outtime.Split(',');
 
-                for (int i = 0; i <= ID.Length - 1; i++)
-                {
-                    Empid = ID[i].ToString();
-                    intime = invalue[i].ToString();
-                    outtime = outvalue[i].ToString();
-                    if (Empid != "0")
-                    {
-                        string strsql = "";
-                        string Product = GetPresentEmp(Empid).ToString();
-                        if (Product == Empid)
-                        {
-                            strsql = "Update erp_hrms_attendance_sheet set fk_emp=@fk_emp,in_time=@in_time,out_time=@out_time where fk_emp=@fk_emp";
-                        }
-                        else
-                        {
-                            strsql = "insert into erp_hrms_attendance_sheet(fk_emp,in_time,out_time) values(@fk_emp,@in_time,@out_time); SELECT LAST_INSERT_ID();";
-                        }
-                        MySqlParameter[] para =
-                        {
-                            new MySqlParameter("@fk_emp",Empid),
-                            new MySqlParameter("@in_time", intime),
-                            new MySqlParameter("@out_time", outtime),
-                        };
-                        result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
-                    }
-                }
-                return result;
-            }
-            catch (Exception Ex)
-            {
-                throw Ex;
-            }
-        }
-        public int GetPresentEmp(string id)
-        {
-            try
-            {
-                string strSql = "Select fk_emp from erp_hrms_attendance_sheet where fk_emp='" + id + "'";
-                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strSql));
-                return result;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
         //My code
         public static DataSet GetLeaveType()
         {
@@ -615,6 +569,62 @@ namespace LaylaERP.BAL
             {
                 throw Ex;
             }
+        }
+
+        public static DataTable GetLeaveList()
+        {
+            DataTable dtr = new DataTable();
+            try
+            {
+                string strquery = "SELECT ehl.rowid ,ehe.firstname as name, ehl.leave_type as leavetype,DATE_FORMAT(ehl.from_date, '%m-%d-%Y') as date_from ,DATE_FORMAT(ehl.to_date,'%m-%d-%Y') as date_to,FORMAT(ehl.days,2) as days from erp_hrms_leave ehl Left join erp_hrms_emp ehe on ehe.rowid = ehl.fk_emp WHERE 1 = 1 ";
+                DataSet ds = SQLHelper.ExecuteDataSet(strquery);
+                dtr = ds.Tables[0];
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dtr;
+        }
+
+        public static int UpdateLeave(LeaveModel model)
+        {
+
+            try
+            {
+                string strsql = "UPDATE erp_hrms_leave set fk_emp = @fk_emp, leave_code = @leave_code, description=@description, leave_type=@leave_type, from_date=@from_date, to_date=@to_date," +
+                    "note_public=@note_public, note_private=@note_private, days=@days where rowid = '" + model.rowid + "';";
+                MySqlParameter[] para =
+               {
+                    new MySqlParameter("@fk_emp", model.fk_emp),
+                    new MySqlParameter("@leave_code",model.leave_code),
+                    new MySqlParameter("@description", model.description),
+                    new MySqlParameter("@leave_type", model.leave_type),
+                    new MySqlParameter("@from_date", model.from_date),
+                    new MySqlParameter("@to_date", model.to_date),
+                    new MySqlParameter("@note_public", model.note_public),
+                    new MySqlParameter("@note_private", model.note_private),
+                    new MySqlParameter("@days", model.days),
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+        public static DataTable GetLeaveListSelect(LeaveModel model)
+        {
+            DataTable dtr = new DataTable();
+            try
+            {
+                string strquery = "SELECT rowid, fk_emp,leave_code,description,leave_type,is_paid,DATE_FORMAT(from_date,'%m-%d-%Y') as from_date,DATE_FORMAT(to_date,'%m-%d-%Y') as to_date,note_public,note_private,is_approved, FORMAT(days,2) as days FROM erp_hrms_leave WHERE rowid='" + model.searchid + "'";
+                DataSet ds = SQLHelper.ExecuteDataSet(strquery);
+                dtr = ds.Tables[0];
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dtr;
         }
     }
 }

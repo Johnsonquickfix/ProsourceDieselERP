@@ -84,6 +84,11 @@
         let id = parseInt($('#lblPoNo').data('id')) || 0;
         getPurchaseOrderPrint(id, false);
     });
+    $(document).on("click", ".btnApproved", function (t) {
+        t.preventDefault();
+        let id = parseInt($('#lblPoNo').data('id')) || 0;
+        orderStatusUpdate(id);
+    });
 });
 function getMasters() {
     $.ajax({
@@ -135,7 +140,7 @@ function getVendorDetails() {
     return _details;
 }
 function getVendorProducts(VendorID) {
-    $('#line_items').empty(); calculateFinal(); 
+    $('#line_items').empty(); calculateFinal();
     $.ajax({
         url: '/PurchaseOrder/GetVenderProducts', dataType: 'json', type: "get", contentType: "application/json; charset=utf-8",
         data: { strValue1: VendorID },
@@ -344,7 +349,7 @@ function getPurchaseOrderInfo() {
             url: "/PurchaseOrder/GetPurchaseOrderByID", type: "Get", beforeSend: function () { $("#loader").show(); }, data: option,
             success: function (result) {
                 try {
-                    let data = JSON.parse(result); let VendorID = 0;
+                    let data = JSON.parse(result); let VendorID = 0; 
                     for (let i = 0; i < data['po'].length; i++) {
                         VendorID = parseInt(data['po'][i].fk_supplier) || 0;
                         $('#lblPoNo').text(data['po'][i].ref); $('#txtRefvendor').val(data['po'][i].ref_supplier); $('#txtPODate').val(data['po'][i].date_creation);
@@ -357,6 +362,10 @@ function getPurchaseOrderInfo() {
                         $('#txtIncoTerms').val(data['po'][i].location_incoterms);
                         if (!data['po'][i].date_livraison.includes('00/00/0000')) $('#txtPlanneddateofdelivery').val(data['po'][i].date_livraison);
 
+                        if (data['po'][i].fk_status == '1')
+                            $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList">Back to List</a><button type="button" class="btn btn-danger btnEdit"><i class="far fa-edit"></i> Edit</button> <button type="button" class="btn btn-danger btnApproved"><i class="fas fa-check-double"></i> Approved</button>');
+                        else
+                            $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList">Back to List</a><button type="button" class="btn btn-danger btnEdit"><i class="far fa-edit"></i> Edit</button>');
                     }
                     getVendorProducts(VendorID);
                     for (let i = 0; i < data['pod'].length; i++) {
@@ -401,7 +410,7 @@ function getPurchaseOrderInfo() {
         });
         $("#divAddItemFinal").find(".rowCalulate").change(function () { calculateFinal(); })
         $('#ddlVendor,.billinfo').prop("disabled", true); calculateFinal(); $('.entry-mode-action').empty();
-        $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList">Back to List</a><button type="button" class="btn btn-danger btnEdit"><i class="far fa-edit"></i> Edit</button>');
+
         $("#btnPrintPdf").removeClass('hidden');
     }
     else {
@@ -491,4 +500,19 @@ function saveVendorPO() {
             error: function (error) { swal('Error!', 'something went wrong', 'error'); },
         });
     }
+}
+function orderStatusUpdate(oid) {
+    let obj = { Search: oid, Status: '3' }
+    $.ajax({
+        url: '/PurchaseOrder/UpdatePurchaseOrderStatus', dataType: 'JSON', type: 'get',
+        contentType: "application/json; charset=utf-8",
+        data: obj,
+        beforeSend: function () { $("#loader").show(); },
+        success: function (data) {
+            if (data.status == true) { swal('alert', data.message, 'success').then((result) => { window.location.href = window.location.origin + "/PurchaseOrder/PurchaseOrderList"; }); }
+            else { swal('alert', 'something went wrong!', 'success'); }
+        },
+        complete: function () { $("#loader").hide(); },
+        error: function (error) { swal('Error!', 'something went wrong', 'error'); }
+    });
 }

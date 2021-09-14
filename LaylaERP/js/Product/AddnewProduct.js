@@ -67,7 +67,7 @@
         $('#txtPublishDate').attr('readonly', true);
         $('#txtsku').attr('readonly', true);
         //$("#txtPublishDate").datepicker("disable"); txtsku
-       // $("#txtPublishDate").datepicker("destroy");
+        $("#txtPublishDate").datepicker("destroy");
         
     }
     else {
@@ -820,7 +820,7 @@ function AddProduct() {
 
     if (date_publish.length > 0)
         date_publish = date_publish[2] + '/' + date_publish[0] + '/' + date_publish[1];
-    //console.log(date_publish);
+    // console.log(date_publish);
 
     if (productname == "") {
         swal('Alert', 'Please Enter Product', 'error').then(function () { swal.close(); $('#txtProductName').focus(); });

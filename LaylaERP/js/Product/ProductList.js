@@ -59,7 +59,7 @@ function getParentCategory(id) {
             data = JSON.parse(data);
             var opt = '<option value="0">Please select category</option>';
             for (var i = 0; i < data.length; i++) {
-                opt += '<option value="' + data[i].ID + '">' + space(data[i].level) + data[i].name + ' (' + data[i].count + ')' +'</option>';
+                opt += '<option value="' + data[i].ID + '">' + space(data[i].level) + data[i].name.toUpperCase() + ' (' + data[i].count + ')' +'</option>';
             }
             $('#ddltype').html(opt);
         }
@@ -234,7 +234,7 @@ function dataGridLoad(order_type) {
 
     let _items = [];
     //let pid = parseInt($("#ddlProduct").val()) || 0, ctid = parseInt($("#ddlCategory").val()) || 0;
-    let obj = { strValue1: types, strValue2: order_type, strValue3: prodctype, strValue4: stockstatus}; console.log(obj);
+    let obj = { strValue1: types, strValue2: order_type, strValue3: prodctype, strValue4: stockstatus}; //console.log(obj);
 
 
     $('#dtdata').DataTable({

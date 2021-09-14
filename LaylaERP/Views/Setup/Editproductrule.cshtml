@@ -3,7 +3,12 @@
     ViewBag.Title = "Editproductrule";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
+<div class="page-title">
+    <h2 class="page-heading">Update Order Split Logic</h2>
+    <div class="text-right">
+        <span title="Click Here To Back To Order Split Logic List" data-placement="bottom" data-toggle="tooltip">@Html.ActionLink("Back to List", "productrule", null, new { @class = "btn btn-danger" })</span>
+    </div>
+</div>
 <div class="row">
     <div class="col-sm-6">
         <div class="box box-primary">
@@ -49,8 +54,8 @@
                     <select class="form-control select2" id="ddlwarehouse" style="width:100%;"></select>
                 </div>
                 <div class="box-footer">
-                    <a href="#" class="btn btn-danger" id="btnUpdate"><b>Update</b></a>
-                    @Html.ActionLink("Back to List", "productrule", null, new { @class = "btn btn-danger" })
+                    <a href="#" class="btn btn-danger" id="btnUpdate"><span title="Click Here To Update Record" data-placement="bottom" data-toggle="tooltip"><b>Update</b></span></a>
+                    
                 </div>
             </div>
         </div>

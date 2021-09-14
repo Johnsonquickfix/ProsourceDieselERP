@@ -121,7 +121,8 @@ namespace LaylaERP.BAL
                 string strSQl = "Select id,PaymentTerm text from PaymentTerms order by id;"
                             + " Select id, PaymentType text from wp_PaymentType order by id;"
                             + " Select id, Balance text from BalanceDays order by id;"
-                            + " Select rowid id,IncoTerm text,short_description from IncoTerms order by id;";
+                            + " Select rowid id,IncoTerm text,short_description from IncoTerms order by id;"
+                            + " select rowid id,ref text from wp_warehouse where status = 1 order by ref;";
                 DS = SQLHelper.ExecuteDataSet(strSQl);
             }
             catch (Exception ex)
@@ -192,20 +193,21 @@ namespace LaylaERP.BAL
                 if (model.RowID > 0)
                 {
                     strsql = string.Format("delete from commerce_purchase_order_detail where fk_purchase = '{0}' and rowid not in ({1});", model.RowID, str_oiid);
-                    strsql += string.Format("update commerce_purchase_order set ref_ext='',fk_status='1',ref_supplier='{0}',fk_supplier='{1}',fk_payment_term='{2}',fk_balance_days='{3}',fk_incoterms='{4}',location_incoterms='{5}',"
-                            + "fk_payment_type='{6}',date_livraison='{7}',note_private='{8}',note_public='{9}',discount='{10}',total_tva='{11}',localtax1='{12}',localtax2='{13}',total_ht='{14}',total_ttc='{15}' where rowid='{16}';",
+                    strsql += string.Format("update commerce_purchase_order set ref_supplier='{0}',fk_supplier='{1}',fk_payment_term='{2}',fk_balance_days='{3}',fk_incoterms='{4}',location_incoterms='{5}',"
+                            + "fk_payment_type='{6}',date_livraison='{7}',note_private='{8}',note_public='{9}',discount='{10}',total_tva='{11}',localtax1='{12}',localtax2='{13}',total_ht='{14}',total_ttc='{15}',fk_warehouse='{16}' where rowid='{17}';",
                             model.VendorBillNo, model.VendorID, model.PaymentTerms, model.Balancedays, model.IncotermType, model.Incoterms, model.PaymentType, model.Planneddateofdelivery, model.NotePrivate, model.NotePublic,
-                            model.discount, model.total_tva, model.localtax1, model.localtax2, model.total_ht, model.total_ttc, model.RowID);
+                            model.discount, model.total_tva, model.localtax1, model.localtax2, model.total_ht, model.total_ttc, model.fk_warehouse, model.RowID);
                 }
                 else
                 {
-                    strsql = "insert into commerce_purchase_order(ref,ref_ext,ref_supplier,fk_supplier,fk_status,source,fk_payment_term,fk_balance_days,fk_payment_type,date_livraison,fk_incoterms,location_incoterms,note_private,note_public,fk_user_author,date_creation,discount,total_tva,localtax1,localtax2,total_ht,total_ttc) "
-                        + string.Format("select concat('PO" + strPOYearMonth + "-',lpad(coalesce(max(right(ref,5)),0) + 1,5,'0')) ref,'','{0}','{1}','1','0','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}','{16}','{17}' from commerce_purchase_order where lpad(ref,6,0) = 'PO" + strPOYearMonth + "';select LAST_INSERT_ID();",
-                                model.VendorBillNo, model.VendorID, model.PaymentTerms, model.Balancedays, model.PaymentType, model.Planneddateofdelivery, model.IncotermType, model.Incoterms, model.NotePrivate, model.NotePublic, model.LoginID, cDate.ToString("yyyy-MM-dd HH:mm:ss"), model.discount, model.total_tva, model.localtax1, model.localtax2, model.total_ht, model.total_ttc);
+                    strsql = "insert into commerce_purchase_order(ref,ref_ext,ref_supplier,fk_supplier,fk_status,source,fk_payment_term,fk_balance_days,fk_payment_type,date_livraison,fk_incoterms,location_incoterms,note_private,note_public,fk_user_author,date_creation,discount,total_tva,localtax1,localtax2,total_ht,total_ttc,fk_warehouse) "
+                        + string.Format("select concat('PO" + strPOYearMonth + "-',lpad(coalesce(max(right(ref,5)),0) + 1,5,'0')) ref,'','{0}','{1}','1','0','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}','{16}','{17}','{18}' from commerce_purchase_order where lpad(ref,6,0) = 'PO" + strPOYearMonth + "';select LAST_INSERT_ID();",
+                                model.VendorBillNo, model.VendorID, model.PaymentTerms, model.Balancedays, model.PaymentType, model.Planneddateofdelivery, model.IncotermType, model.Incoterms, model.NotePrivate, model.NotePublic, model.LoginID, cDate.ToString("yyyy-MM-dd HH:mm:ss"), model.discount, model.total_tva, model.localtax1, model.localtax2, model.total_ht, model.total_ttc, model.fk_warehouse);
 
                     model.RowID = Convert.ToInt64(SQLHelper.ExecuteScalar(strsql, para));
+                    strsql = "";
                 }
-                strsql = "";
+               
                 /// step 2 : commerce_purchase_order_detail
                 foreach (PurchaseOrderProductsModel obj in model.PurchaseOrderProducts)
                 {
@@ -228,7 +230,7 @@ namespace LaylaERP.BAL
                 //Add Stock
                 strsql += "delete from product_stock_register where tran_type = 'PO' and flag = 'O' and tran_id = " + model.RowID + ";"
                         + " insert into product_stock_register (tran_type,tran_id,product_id,warehouse_id,tran_date,quantity,flag)"
-                        + " select 'PO',pod.fk_purchase,pod.fk_product,(select wp_w.rowid from wp_warehouse wp_w where wp_w.is_system = 1 limit 1) warehouse_id,po.date_creation,pod.qty,'O' from commerce_purchase_order_detail pod"
+                        + " select 'PO',pod.fk_purchase,pod.fk_product,po.fk_warehouse warehouse_id,po.date_creation,pod.qty,'O' from commerce_purchase_order_detail pod"
                         + " inner join commerce_purchase_order po on po.rowid = pod.fk_purchase where fk_purchase = " + model.RowID + ";";
 
                 if (SQLHelper.ExecuteNonQueryWithTrans(strsql) > 0)
@@ -269,7 +271,7 @@ namespace LaylaERP.BAL
             try
             {
                 MySqlParameter[] para = { new MySqlParameter("@po_id", id), };
-                string strSql = "select rowid,ref,ref_ext,ref_supplier,fk_supplier,fk_status,source,fk_payment_term,fk_balance_days,fk_payment_type,DATE_FORMAT(date_livraison,'%m/%d/%Y') date_livraison,"
+                string strSql = "select rowid,ref,ref_ext,ref_supplier,fk_supplier,fk_warehouse,fk_status,source,fk_payment_term,fk_balance_days,fk_payment_type,DATE_FORMAT(date_livraison,'%m/%d/%Y') date_livraison,"
                                 + " fk_incoterms,location_incoterms,note_private,note_public,fk_user_author,DATE_FORMAT(date_creation,'%m/%d/%Y') date_creation from commerce_purchase_order where rowid = @po_id;"
                                 + " select rowid,fk_purchase,fk_product,ref product_sku,description,qty,discount_percent,discount,subprice,total_ht,tva_tx,localtax1_tx,localtax1_type,"
                                 + " localtax2_tx,localtax2_type,total_tva,total_localtax1,total_localtax2,total_ttc,product_type,date_start,date_end,rang"
@@ -290,7 +292,7 @@ namespace LaylaERP.BAL
             try
             {
                 MySqlParameter[] para = { new MySqlParameter("@po_id", id), };
-                string strSql = "select po.rowid,po.ref,po.ref_ext,po.ref_supplier,po.fk_supplier,po.fk_status,po.fk_payment_term,coalesce(pt.PaymentTerm,'') PaymentTerm,po.fk_balance_days,bd.Balance,po.fk_payment_type,"
+                string strSql = "select po.rowid,po.ref,po.ref_ext,po.ref_supplier,po.fk_supplier,po.fk_warehouse,po.fk_status,po.fk_payment_term,coalesce(pt.PaymentTerm,'') PaymentTerm,po.fk_balance_days,bd.Balance,po.fk_payment_type,"
                                 + " DATE_FORMAT(po.date_livraison, '%m/%d/%Y') date_livraison,po.fk_incoterms,po.location_incoterms,po.note_private,po.note_public,DATE_FORMAT(po.date_creation, '%m/%d/%Y') date_creation,"
                                 + " v.name vendor_name,v.address,COALESCE(v.town,'') town,v.fk_country,v.fk_state,v.zip,COALESCE(v.phone,'') phone,COALESCE(v.email,'') vendor_email"
                                 + " from commerce_purchase_order po inner join wp_vendor v on po.fk_supplier = v.rowid"
@@ -406,11 +408,11 @@ namespace LaylaERP.BAL
                                 + " insert into product_stock_register (tran_type,tran_id,product_id,warehouse_id,tran_date,quantity,flag)"
                                 + " select 'PO',pod.fk_purchase,pod.fk_product,(select wp_w.rowid from wp_warehouse wp_w where wp_w.is_system = 1 limit 1) warehouse_id,po.date_creation,pod.qty,'O' from commerce_purchase_order_detail pod"
                                 + " inner join commerce_purchase_order po on po.rowid = pod.fk_purchase where fk_purchase = " + po_id + ";";
-                        
+
                         result = SQLHelper.ExecuteNonQueryWithTrans(strsql);
                     }
                 }
-                
+
             }
             catch (Exception Ex)
             {

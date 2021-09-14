@@ -12,7 +12,7 @@
             if (data[0].add_ == 1) { $(add).show(); } else { $(add).remove(); }
             if (data[0].delete_ == 1) { $(del).show(); } else { $(del).remove(); }
         },
-
+        async: false,
         error: function (jqXHR, textStatus, errorThrown) { swal('Error!', errorThrown, "error"); }
     });
 }

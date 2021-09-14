@@ -83,7 +83,7 @@ namespace LaylaERP.BAL
             DataTable dtr = new DataTable();
             try
             {
-                string strquery = "SELECT rowid, fk_emp,leave_code,description,leave_type,is_paid,DATE_FORMAT(from_date,'%m-%d-%Y') as from_date,DATE_FORMAT(to_date,'%m-%d-%Y') as to_date,note_public,note_private,is_approved, FORMAT(days,2) as days, is_approved as status FROM erp_hrms_leave WHERE rowid='" + id + "'";
+                string strquery = "SELECT ehl.rowid,CONCAT(ehe.firstname, ' ', ehe.lastname) as name, fk_emp,leave_code,description,leave_type,is_paid,DATE_FORMAT(from_date, '%m-%d-%Y') as from_date,DATE_FORMAT(to_date, '%m-%d-%Y') as to_date,note_public,note_private,is_approved, FORMAT(days, 2) as days, is_approved as status, justification FROM erp_hrms_leave ehl inner join erp_hrms_emp ehe on ehe.rowid = fk_emp WHERE ehl.rowid='" + id + "'";
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strquery);
                 dtr = ds.Tables[0];
@@ -91,6 +91,37 @@ namespace LaylaERP.BAL
             catch (Exception ex)
             { throw ex; }
             return dtr;
+        }
+
+        public static int UpdateGrantLeave(LeaveModel model)
+        {
+
+            try
+            {
+                string strsql = "UPDATE erp_hrms_leave set fk_emp = @fk_emp, leave_code = @leave_code, description=@description, leave_type=@leave_type, from_date=@from_date, to_date=@to_date," +
+                    "note_public=@note_public, note_private=@note_private, days=@days, apply_date=@apply_date, justification=@justification, is_approved=@is_approved where rowid = '" + model.rowid + "';";
+                MySqlParameter[] para =
+               {
+                    new MySqlParameter("@fk_emp", model.fk_emp),
+                    new MySqlParameter("@leave_code",model.leave_code),
+                    new MySqlParameter("@description", model.description),
+                    new MySqlParameter("@leave_type", model.leave_type),
+                    new MySqlParameter("@from_date", model.from_date),
+                    new MySqlParameter("@to_date", model.to_date),
+                    new MySqlParameter("@note_public", model.note_public),
+                    new MySqlParameter("@note_private", model.note_private),
+                    new MySqlParameter("@apply_date",Convert.ToDateTime(DateTime.UtcNow.ToString("yyyy-MM-dd"))),
+                    new MySqlParameter("@days", model.days),
+                    new MySqlParameter("@justification",model.justification),
+                    new MySqlParameter("@is_approved", model.is_approved)
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
         }
 
     }

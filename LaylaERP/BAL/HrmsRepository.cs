@@ -514,8 +514,8 @@ namespace LaylaERP.BAL
                 for (int i = 0; i <= ID.Length - 1; i++)
                 {
                     Empid = ID[i].ToString();
-                    DateTime in_time = DateTime.Parse(invalue[i]);
-                    DateTime out_time = DateTime.Parse(outvalue[i]);
+                    intime = invalue[i].ToString();
+                    outtime = outvalue[i].ToString();
                     if (Empid != "0")
                     {
                         string strsql = "";
@@ -531,8 +531,8 @@ namespace LaylaERP.BAL
                         MySqlParameter[] para =
                         {
                             new MySqlParameter("@fk_emp",Empid),
-                            new MySqlParameter("@in_time", in_time),
-                            new MySqlParameter("@out_time", out_time),
+                            new MySqlParameter("@in_time", intime),
+                            new MySqlParameter("@out_time", outtime),
                         };
                         result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
                     }

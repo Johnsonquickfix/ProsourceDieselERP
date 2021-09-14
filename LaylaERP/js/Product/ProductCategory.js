@@ -5,11 +5,23 @@ $(document).ready(function () {
     getParentCategory();
     CategoryList();
 })
-$('#txtCategoryName').keyup(function () {
-    var cat = $('#txtCategoryName').val().trim();
+//$('#txtCategoryName').keyup(function () {
+//    var cat = $('#txtCategoryName').val().trim();
+//    $(this).val(txt.replace(/^(.)|\s(.)/g, function ($1) { return $1.toUpperCase(); }));
+//    cat = cat.replace(/\s/g, '-');
+//    $('#txtCategorySlug').val(cat);
+//})
+$('#txtCategoryName').keyup(function (event) {
+    var textBox = event.target;
+    var start = textBox.selectionStart;
+    var end = textBox.selectionEnd;
+    textBox.value = textBox.value.charAt(0).toUpperCase() + textBox.value.slice(1);
+    textBox.setSelectionRange(start, end);
+
+    var cat = $('#txtCategoryName').val().toLowerCase().trim();
     cat = cat.replace(/\s/g, '-');
     $('#txtCategorySlug').val(cat);
-})
+});
 function space(noOfSpaces) {
     var space = "# ", returnValue = "";
     for (var index = 0; index < noOfSpaces; index++) {
@@ -131,10 +143,10 @@ function CategoryList() {
                 'data': 'ID', sWidth: "5%   ",
                 'render': function (data, type, full, meta) {
                     if (data == 80) {
-                        return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + $('<div/>').text(data).html() + '" disabled><label></label>';
+                        return '<input type="checkbox" data-placement="left" title="Uncategories category can not edit and delete. it is a default category" data-toggle="tooltip" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + $('<div/>').text(data).html() + '" disabled><label></label>';
                     }
                     else {
-                        return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + $('<div/>').text(data).html() + '"><label></label>';
+                        return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + $('<div/>').text(data).html() + '" ><label></label>';
                     }
                 }
             },
@@ -149,7 +161,7 @@ function CategoryList() {
                 }
             },
             {
-                data: 'name', title: 'Name', sWidth: "25%",
+                data: 'name', title: 'Name', sWidth: "25%", class:"uppercase",
                 'render': function (id, type, full, meta) {
                     /*  return  id;*/
                     if (full.parent == 0)
@@ -165,10 +177,10 @@ function CategoryList() {
                 'data': 'ID',
                 'render': function (id, type, full, meta) {
                     if (id == 80) {
-                        return '<i class="glyphicon glyphicon-pencil"></i>';
+                        return '<i class="glyphicon glyphicon-pencil" data-placement="left" title="Edit category" data-toggle="tooltip"></i>';
                     }
                     else {
-                        return '<a href="#" onclick="GetCategoryByID(' + id + ');"><i class="glyphicon glyphicon-pencil"></i></a>';
+                        return '<a href="#" onclick="GetCategoryByID(' + id + ');"  data-placement="left" title="Edit category" data-toggle="tooltip"><i class="glyphicon glyphicon-pencil"></i></a>';
                     }
                 }
             }

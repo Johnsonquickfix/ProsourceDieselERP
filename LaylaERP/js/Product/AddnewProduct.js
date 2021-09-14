@@ -10,8 +10,8 @@
     $('#divimage').hide();
     $('#divPurchase').hide();
     $('#txtPublishDate').datepicker({ format: 'mm/dd/yyyy', autoclose: true, todayHighlight: true });
-    //let today = new Date(); divimage
-    //$('#txtPublishDate').val(today.toLocaleDateString("en-US"));
+    let today = new Date(); divimage
+    $('#txtPublishDate').val(today.toLocaleDateString("en-US"));
     
     $.get('/Product/GetShipping/' + 1, { async: false }, function (data) {
         var items = "";
@@ -59,9 +59,16 @@
         $("#btnedit").show();
         $("#btncancel").hide();
         $("#btnedit").prop("disabled", false);
-       // $("#btncancel").prop("disabled", false);
+       // $("#btncancel").prop("disabled", false); btnSaveupdate
+        $("#btnSaveupdate").hide();
+        $('#btnSaveupdate').text("Update");
         $("#btnSave").hide();
         $('#btnSave').text("Update");
+        $('#txtPublishDate').attr('readonly', true);
+        $('#txtsku').attr('readonly', true);
+        //$("#txtPublishDate").datepicker("disable"); txtsku
+       // $("#txtPublishDate").datepicker("destroy");
+        
     }
     else {
         $("#target :input").prop("disabled", false);
@@ -74,6 +81,7 @@
         $("#btnedit").hide();
         $("#btncancel").hide();
         $("#btnSave").show();
+        $("#btnSaveupdate").show();
        
     }
     $("#txtregularprice").keyup(function () {
@@ -264,7 +272,7 @@
                         varHTML += '<div class="col-md-6"><label class="control-label">Sale Price($)</label><input type="text" value="0"  name="txtSalepricevariation" class="form-control"></div>';
                         varHTML += '</div>';
                         varHTML += '<div id="divstock">';
-                        varHTML += '<div class="form-group d-flex mt-25"><div class="col-md-6"><label class="control-label">Stock quantity</label><input type="text" name="txtStockquantityvariation" value="0"  class="form-control"></div><div class="col-md-6"><label class="control-label">Allow backorders?</label> <select class="txtallowbackordersvariation form-control"> <option value="no" selected="selected">Do not allow</option> <option value="notify">Allow, but notify customer</option><option value="yes">Allow</option></select> </div>';
+                        varHTML += '<div class="form-group d-flex mt-25"><div style="display:none" class="col-md-6"><label class="control-label">Stock quantity</label><input type="text" name="txtStockquantityvariation" value="0"  class="form-control"></div><div class="col-md-6"><label class="control-label">Allow backorders?</label> <select class="txtallowbackordersvariation form-control"> <option value="no" selected="selected">Do not allow</option> <option value="notify">Allow, but notify customer</option><option value="yes">Allow</option></select> </div>';
                         varHTML += '</div> <div id="divaria">';
                         varHTML += '<div class="form-group d-flex"><div class="col-md-6"><label class="control-label">Weight (lbs)</label><input type="text" value="0"  name="txtweightvariation" class="form-control" placeholder="50" ></div><div class="col-md-6"><label class="control-label">Dimensions (L x W x H) (in)</label><div class="weight-box"><div class="col-md-4"><input type="text" value="0"  name="txtLvariation" class="form-control" placeholder="60"></div><div class="col-md-4"><input type="text" value="0"  name="txtWvariation" class="form-control" placeholder="60"></div><div class="col-md-4"> <input type="text" value="0"  name="txtHvariation" class="form-control" placeholder="60"></div></div></div></div>';
                         varHTML += '</div>';
@@ -329,6 +337,8 @@
         $("#btnedit").hide();
         $("#btnSave").show();
         $('#btnSave').text("Update");
+        $("#btnSaveupdate").show();
+        $('#btnSaveupdate').text("Update");
         $("#ddlProductType").prop("disabled", true);
 
     });
@@ -340,6 +350,7 @@
         $("#btncancel").hide();
         $("#btnedit").show();
         $("#btnSave").hide();
+        $("#btnSaveupdate").hide();
         $("#btnedit").prop("disabled", false);
         $("#ddlProductType").prop("disabled", true);
        
@@ -354,7 +365,9 @@
     $(document).on('click', "#btnSave", function () {
         AddProduct();
     })
-
+    $(document).on('click', "#btnSaveupdate", function () {
+        AddProduct();
+    })
 
    
 
@@ -538,6 +551,9 @@
        // console.log(obj);
         if (_attxml != '') {
             //  NOW CALL THE WEB METHOD WITH THE PARAMETERS USING AJAX.
+
+            var checkstr = confirm('are you sure want to save/update variations?');
+            if (checkstr == true) {
             $.ajax({
                 type: 'POST',
                 url: '/Product/Savevariations',
@@ -565,6 +581,10 @@
                     // alert(errorThrown);
                 }
             });
+
+            } else {
+                return false;
+            }
         }
         else { alert("Fields cannot be empty.") }
 
@@ -601,8 +621,10 @@
             inputchkvariation.push(this.checked);
         });
 
-
-        if (_list != '') {
+        //console.log(values);
+        if (values != '') {
+            var checkstr = confirm('are you sure want to save/update Attributes?');
+            if (checkstr == true) {
             //  NOW CALL THE WEB METHOD WITH THE PARAMETERS USING AJAX.
             $.ajax({
                 type: 'POST',
@@ -638,6 +660,9 @@
                     // alert(errorThrown);
                 }
             });
+            } else {
+                return false;
+            }
         }
         else { alert("Fields cannot be empty.") }
 
@@ -806,6 +831,12 @@ function AddProduct() {
     else if (categorydataval == "" ) {
         swal('Alert', 'Please Select Category', 'error').then(function () { swal.close(); $('#chkproducttype').focus(); });
     }
+    else if (sku == "") {
+        swal('Alert', 'Please Enter SKU', 'error').then(function () { swal.close(); $('#txtsku').focus(); });
+    }
+    else if (date_publish == "") {
+        swal('Alert', 'Please Enter Publish date', 'error').then(function () { swal.close(); $('#txtPublishDate').focus(); });
+    }
     else {
         
         var obj = {
@@ -837,6 +868,8 @@ function AddProduct() {
             CategoryID: categorydataval,
             PublishDate: date_publish
         }
+        var checkstr = confirm('are you sure want to save/update product?');
+        if (checkstr == true) {
         $.ajax({
             url: '/Product/CreateProduct/', dataType: 'json', type: 'Post',
             contentType: "application/json; charset=utf-8",
@@ -872,6 +905,9 @@ function AddProduct() {
                 swal('Error!', 'something went wrong', 'error');
             },
         })
+        } else {
+            return false;
+        }
     }
 
 
@@ -1207,20 +1243,20 @@ function GetProductvariationID(ProductID) {
                 //header
                 varHTML += '<div class="box-header with-border user-top-section top-with-select">';
                 varHTML += '<div class="tablenav top tablenav-top2">';
-                varHTML += '<input type="text" readonly class="nmvariationid" id="hfvariationid" value="' + data[i].id + '">';
+                varHTML += '<input type="text" style="background-color: #EBEBE4" readonly class="nmvariationid" id="hfvariationid" value="' + data[i].id + '">';
 
                 varHTML += '<div class="alignleft actions bulkactions">';
                 varHTML += '<table class="data-contacts1-js table table-striped"><tbody class="variation_att">';
                 //console.log(v_data);
                 $.each(JSON.parse($("#hfvproductattributes").val()), function (key, value) {
                     let _values = value.value.split('|'); let sel_val = v_data['attribute_' + value.key.trim().toLowerCase()];
-                    varHTML += '<tr><select class="inputddl" id="ddl_attribute_' + value.key.trim() + '" data-key="' + value.key.trim() + '"><option value="' + value.key.trim() + '">Any ' + value.key.trim() + '</option>';
+                    varHTML += '<tr><select style="pointer-events: none;background-color: #EBEBE4" class="inputddl" id="ddl_attribute_' + value.key.trim() + '" data-key="' + value.key.trim() + '"><option value="' + value.key.trim() + '">Any ' + value.key.trim() + '</option>';
                     for (let j = 0; j < _values.length; j++) {
                         varHTML += '<option value="' + _values[j].trim() + '" ' + (sel_val == _values[j].trim() ? 'selected' : '') + '> ' + _values[j].trim() + '</option>';
                     }
                     varHTML += '</select></tr>';
                 });
-                varHTML += '&nbsp;&nbsp;<label class="control-label">SKU</label><input id="varsku" type="text" class="skucval" value="' + sku + '">'
+                varHTML += '&nbsp;&nbsp;<label class="control-label">SKU</label><input id="varsku" style="background-color: #EBEBE4" readonly type="text" class="skucval" value="' + sku + '">'
                 varHTML += '</tbody></table>';
                 varHTML += '</div>';
                 varHTML += '<div class="a-float-right" id="angle-box"> <span><i class="fa fa-angle-down" aria-hidden="true"></i></span></div>';
@@ -1269,7 +1305,7 @@ function GetProductvariationID(ProductID) {
                 varHTML += '<div class="col-md-6"><label class="control-label">Sale Price($)</label><input type="text" name="txtSalepricevariation" class="form-control" value="' + sale_price + '"></div>';
                 varHTML += '</div>';
                 varHTML += '<div id="divstock">';
-                varHTML += '<div class="form-group d-flex mt-25"><div class="col-md-6"><label class="control-label">Stock quantity</label><input type="text" name="txtStockquantityvariation" class="form-control" value="' + stock + '"></div><div div class="col-md-6"> <label class="control-label">Allow backorders?</label> <select class="txtallowbackordersvariation form-control" id="ddlallow_' + data[i].id + '"> <option value="no">Do not allow</option> <option value="notify">Allow, but notify customer</option><option value="yes">Allow</option></select> </div>';
+                varHTML += '<div class="form-group d-flex mt-25"><div style="display:none" class="col-md-6"><label class="control-label">Stock quantity</label><input type="text" name="txtStockquantityvariation" class="form-control" value="' + stock + '"></div><div div class="col-md-6"> <label class="control-label">Allow backorders?</label> <select class="txtallowbackordersvariation form-control" id="ddlallow_' + data[i].id + '"> <option value="no">Do not allow</option> <option value="notify">Allow, but notify customer</option><option value="yes">Allow</option></select> </div>';
                 varHTML += '</div> <div id="divaria">';
                 varHTML += '<div class="form-group d-flex"><div class="col-md-6"><label class="control-label">Weight (lbs)</label><input type="text" name="txtweightvariation" class="form-control" placeholder="50" value="' + weight + '"></div><div class="col-md-6"><label class="control-label">Dimensions (L x W x H) (in)</label><div class="weight-box"><div class="col-md-4"><input type="text" name="txtLvariation" class="form-control" placeholder="60" value="' + length + '"></div><div class="col-md-4"><input type="text" name="txtWvariation" class="form-control" placeholder="60" value="' + width + '"></div><div class="col-md-4"> <input type="text" name="txtHvariation" class="form-control" placeholder="60" value="' + height + '"></div></div></div></div>';
                 varHTML += '</div>';
@@ -1310,6 +1346,7 @@ function GetProductvariationID(ProductID) {
                 $(".select2").select2();
                 $("#ddlcsv_" + data[i].id).val(v_data['_tax_class']).trigger('change');
                 $("#ddlallow_" + data[i].id).val(v_data['_backorders']).trigger('change');
+                
                // console.log(allowwebsite);
                 if (allowwebsite == 'True')
                     $("#allowwebsite_" + data[i].id).prop("checked", true);

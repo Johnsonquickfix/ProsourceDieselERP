@@ -25,82 +25,83 @@
 </div>
 <div class="page-title">
     <h2 class="page-heading">
-        On-hand Inventory
+        On-Hand Inventory
     </h2>
+</div>
+<section class="content section-content neworder-section">
+    <div class="row">
+        <div class="col-md-4 mt-1 mb-1">
+            <div class="active">
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    <input id="txtDate" data-auto-update-input="false" readonly="readonly" class="form-control pull-right">
+                </div>
+            </div>
+        </div>
     </div>
-        <section class="content section-content neworder-section">
-            <div class="row">
-                <div class="col-md-4 mt-1 mb-1">
-                    <div class="active">
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                            <input id="txtDate" data-auto-update-input="false" readonly="readonly" class="form-control pull-right">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-group">
+                <label>SKU</label>
+                <input type="text" class="form-control" id="txtsku" placeholder="SKU" maxlength="100">
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label>Products</label>
+                <select class="form-control select2" id="ddlProduct" placeholder="Select Products" style="width: 100%;"></select>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label>Category</label>
+                <select class="form-control select2" id="ddlCategory" placeholder="Select Category" style="width: 100%;"></select>
+            </div>
+        </div>
+        <div class="col-md-3 text-center mt-25">
+            <button type="button" id="btnSearch" class="btn btn-danger">Search</button>
+        </div>
+    </div>
+    <!-- end top-->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <table id="dtdata" class="inventory-table table-blue table check-table table-bordered table-striped dataTable" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th class="hidden">Parent ID</th>
+                                        <th>ID</th>
+                                        <th>Category</th>
+                                        <th>SKU</th>
+                                        <th>Product Name</th>
+                                        <th class="text-right">Opening Stock</th>
+                                        <th class="text-right">In-Hand Stock</th>
+                                        <th class="text-right">Units in POs</th>
+                                        <th class="text-right">Sale Units</th>
+                                        <th class="text-right">Available Units</th>
+                                        <th class="text-right">Damage Units</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="box-footer">
+                    <div class="row">
+                        <div class="col-sm-12 inventory-btn">
+
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-3">
-                    <div class="form-group">
-                        <label>SKU</label>
-                        <input type="text" class="form-control" id="txtsku" placeholder="SKU" maxlength="100">
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="form-group">
-                        <label>Products</label>
-                        <select class="form-control select2" id="ddlProduct" placeholder="Select Products" style="width: 100%;"></select>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="form-group">
-                        <label>Category</label>
-                        <select class="form-control select2" id="ddlCategory" placeholder="Select Category" style="width: 100%;"></select>
-                    </div>
-                </div>
-                <div class="col-md-3 text-center mt-25">
-                    <button type="button" id="btnSearch" class="btn btn-danger">Search</button>
-                </div>
-            </div>
-            <!-- end top-->
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="box box-primary">
-                        <div class="box-header">
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <table id="dtdata" class="inventory-table table-blue table check-table table-bordered table-striped dataTable" width="100%">
-                                        <thead>
-                                            <tr>
-                                                <th class="hidden">Parent ID</th>
-                                                <th>ID</th>
-                                                <th>Category</th>
-                                                <th>SKU</th>
-                                                <th>Product Name</th>
-                                                <th class="text-right">OP Stock</th>
-                                                <th class="text-right">In-Hand Stock</th>
-                                                <th class="text-right">Units in POs</th>
-                                                <th class="text-right">Sale Units</th>
-                                                <th class="text-right">Available Units</th>
-                                                <th class="text-right">Damage Units</th>
-                                            </tr>
-                                        </thead>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="box-footer">
-                            <div class="row">
-                                <div class="col-sm-12 inventory-btn">
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        </div>
+    </div>
 
 
-        </section>
-        <script src="@Url.Content("~/js/Inventory/ConsignmentInventory.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+</section>
+<div class="modal in printable " id="billModal" role="dialog" aria-hidden="true"></div>
+<script src="@Url.Content("~/js/Inventory/ConsignmentInventory.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 

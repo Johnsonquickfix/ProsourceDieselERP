@@ -11,9 +11,11 @@ $(document).ready(function () {
     /*$("#lblTotalProducts").text(table.fnGetData().length);*/
 })
 $('#btnRefresh').click(function () {
+   
     ProductAccountingGrid();
     getAccounttoAssign();
     GetNewAccounttoAssign();
+   
 });
 function GetNewAccounttoAssign() {
     var optType = $('input[name="accounting_product_mode"]:checked').val();

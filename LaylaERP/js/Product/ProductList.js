@@ -411,6 +411,8 @@ function Status() {
     else if (status == "0") { swal('alert', 'Please select Bulk Action', 'error'); }
     else {
         var obj = { strVal: id, status: status }
+        var checkstr = confirm('are you sure want to update this?');
+        if (checkstr == true) {
         $.ajax({
             url: '/Product/Changestatus', dataType: 'JSON', type: 'POST',
             contentType: "application/json; charset=utf-8",
@@ -430,6 +432,9 @@ function Status() {
             },
 
         })
+        } else {
+            return false;
+        }
     }
 }
 

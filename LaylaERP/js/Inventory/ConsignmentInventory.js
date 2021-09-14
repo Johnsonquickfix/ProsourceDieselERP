@@ -154,7 +154,7 @@ function format(d) {
                 let post_title = d.post_title + ' [' + row.ref + ']';
                 wrHTML += '<tr><td>' + row.ref + '</td><td>' + row.op_stock.toFixed(0) + '</td><td>' + row.stock.toFixed(0) + '</td>';
                 if (row.UnitsinPO > 0)
-                    wrHTML += '<td><a href="#" onclick="getPurchaseOrder(' + d.id + ',' + row.warehouse_id + ',\'' + post_title + '\'); "><i class="fas fa - search - plus"></i>' + row.UnitsinPO.toFixed(0) + '</a></td>';
+                    wrHTML += '<td><a style="text-decoration: underline;font-weight: 700;" href="#" onclick="getPurchaseOrder(' + d.id + ',' + row.warehouse_id + ',\'' + post_title + '\'); "><i class="fas fa - search - plus"></i>' + row.UnitsinPO.toFixed(0) + '</a></td>';
                 else
                     wrHTML += '<td>' + row.UnitsinPO.toFixed(0) + '</td>';
                 wrHTML += '<td>' + row.SaleUnits.toFixed(0) + '</td><td>' + row.Damage.toFixed(0) + '</td><td>' + (row.op_stock + row.stock + row.UnitsinPO - row.SaleUnits - row.Damage).toFixed(0) + '</td></tr > ';

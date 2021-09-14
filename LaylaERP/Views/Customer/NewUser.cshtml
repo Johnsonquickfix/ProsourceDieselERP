@@ -13,6 +13,7 @@
 </div>
 <div class="page-title">
     <h2 class="page-heading" id="lbltitle">Add New Customer</h2>
+    @Html.ActionLink("Back to List", "Customer", null, new { @class = "btn btn-danger" })
 </div>
 <!-- Main content -->
 <section class="content content-section p-0">
@@ -108,7 +109,6 @@
         <div class="box-footer">
             <div class="text-right">
                 <input type="submit" value="Submit" id="btnSave" class="btn btn-danger" />
-                @Html.ActionLink("Back to List", "Customer", null, new { @class = "btn btn-danger" })
             </div>
         </div>
         <!-- /.row -->

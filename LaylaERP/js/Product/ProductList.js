@@ -59,7 +59,7 @@ function getParentCategory(id) {
             data = JSON.parse(data);
             var opt = '<option value="0">Please select category</option>';
             for (var i = 0; i < data.length; i++) {
-                opt += '<option value="' + data[i].ID + '">' + space(data[i].level) + data[i].name.toUpperCase() + ' (' + data[i].count + ')' +'</option>';
+                opt += '<option value="' + data[i].ID + '">' + space(data[i].level) + data[i].name + ' (' + data[i].count + ')' +'</option>';
             }
             $('#ddltype').html(opt);
         }

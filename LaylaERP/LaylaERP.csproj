@@ -891,6 +891,8 @@
     <Content Include="Views\Hrms\EmployeeList.cshtml" />
     <Content Include="Views\Setup\Editproductrule.cshtml" />
     <Content Include="Views\Hrms\Attendance.cshtml" />
+    <Content Include="Views\Reception\PartiallyOrder.cshtml" />
+    <Content Include="Views\Reception\POClosureOrder.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

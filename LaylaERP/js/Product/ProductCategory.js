@@ -18,7 +18,7 @@ $('#txtCategoryName').keyup(function (event) {
     textBox.value = textBox.value.charAt(0).toUpperCase() + textBox.value.slice(1);
     textBox.setSelectionRange(start, end);
 
-    var cat = $('#txtCategoryName').val().trim();
+    var cat = $('#txtCategoryName').val().toLowerCase().trim();
     cat = cat.replace(/\s/g, '-');
     $('#txtCategorySlug').val(cat);
 });

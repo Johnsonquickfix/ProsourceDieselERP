@@ -12,7 +12,7 @@
         startDate: moment().add(-29, 'day'),
         autoUpdateInput: true, alwaysShowCalendars: true,
         locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' },
-        opens: 'right',
+        opens: 'left',
         orientation: "left auto",
     });
     getProducts();

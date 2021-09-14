@@ -499,7 +499,7 @@ function CorrectStockGrid() {
                         'render': function (ref) {
                             //return '<input type="button" onclick="chk_status(this)" data-id="' + ref + '"  id="chk_sts_str" />'
                             //return '< a href = "#" onclick = "chk_status(this)" data-id="' + ref + '" id="chk_sts_str"> <i class="glyphicon glyphicon-pencil"></i></a >'
-                            return '<a href="#" onclick = "chk_status(this)" data-id="' + ref + '" ;"><i class="glyphicon glyphicon-pencil"></i></a>';
+                            return '<span title="Click Here To Edit Correct Stock Details" data-placement="bottom" data-toggle="tooltip"><a href="#" onclick = "chk_status(this)" data-id="' + ref + '" ;"><i class="glyphicon glyphicon-pencil"></i></a></span>';
                         }
                     },
                 ],
@@ -610,7 +610,7 @@ function StockTransferGrid() {
                         'render': function (ref) {
                             //return '<input type="button" onclick="chk_status(this)" data-id="' + ref + '"  id="chk_sts_str" />'
                             //return '< a href = "#" onclick = "chk_status(this)" data-id="' + ref + '" id="chk_sts_str"> <i class="glyphicon glyphicon-pencil"></i></a >'
-                            return '<a href="#" onclick = "transferstockstatus(this)" data-id="' + ref + '" ;"><i class="glyphicon glyphicon-pencil"></i></a>';
+                            return '<span title="Click Here To Edit Transfer Stock Details" data-placement="bottom" data-toggle="tooltip"><a href="#" onclick = "transferstockstatus(this)" data-id="' + ref + '" ;"><i class="glyphicon glyphicon-pencil"></i></a></span>';
                         }
                     },
                 ],
@@ -690,8 +690,10 @@ function getstock1() {
 
 function warehousebyproduct() {
     var fk_product = $('#ddltransferProduct').val();
+    var fk_entrepot = $("#hfid").val();
     var obj = {
         productid: fk_product,
+        id : fk_entrepot,
     }
     $.ajax({
         url: '/Warehouse/GetWarehouseByProduct/', dataType: 'json', type: 'Post',
@@ -1049,7 +1051,7 @@ function ProductWarehouseGrid() {
                 data: JSON.parse(data),
                 "columns": [
                     //{ data: 'warehouse', title: 'Warehouse Name', sWidth: "25%" },
-                    { data: 'post_title', title: 'Product Name', sWidth: "25%" },
+                    { data: 'post_title', title: 'Product Name', sWidth: "25%", class: 'text-left' },
                     {
                         data: 'reg_price', title: 'Regular Price', sWidth: "25%",
                         'render': function (reg_price) {
@@ -1335,7 +1337,7 @@ function StockDamageGrid() {
                         'searchable': false,
                         sWidth:"10%",
                         'render': function (ref, type, full, meta) {
-                            return '<a href="#" onclick="EditSelect(' + ref + ');"><i class="glyphicon glyphicon-pencil"></i></a>';
+                            return '<span title="Click Here To Edit Damage Stock Details" data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="EditSelect(' + ref + ');"><i class="glyphicon glyphicon-pencil"></i></a></span>';
                         }
                     },
                 ],

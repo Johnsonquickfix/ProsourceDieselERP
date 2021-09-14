@@ -808,12 +808,12 @@ namespace LaylaERP.BAL
             }
         }
 
-        public static DataSet GetWarehouseByProduct(int productid)
+        public static DataSet GetWarehouseByProduct(int productid, int id)
         {
             DataSet DS = new DataSet();
             try
             {
-                DS = SQLHelper.ExecuteDataSet("select wr.ref,wr.rowid from product_warehouse pw inner join wp_warehouse wr on wr.rowid = pw.fk_warehouse where pw.fk_product='"+productid+"'");
+                DS = SQLHelper.ExecuteDataSet("select wr.ref,wr.rowid from product_warehouse pw inner join wp_warehouse wr on wr.rowid = pw.fk_warehouse where pw.fk_product='"+productid+ "' and wr.rowid not in('"+id+ "') and wr.is_system=0");
             }
             catch (Exception ex)
             { throw ex; }

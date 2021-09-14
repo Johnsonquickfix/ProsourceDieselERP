@@ -35,7 +35,7 @@ function WarehouseGrid() {
                         {
                             'data': 'rowid', sWidth: "10%",
                             'render': function (rowid, type, full, meta) {
-                                return '<a href="javascript:void(0);" onClick="EditUser(' + rowid + ')"><i class="glyphicon glyphicon-pencil"></i></a>'
+                                return '<a href="javascript:void(0);" onClick="EditUser(' + rowid + ')"><span title="Click Here To Edit Warehouse Details" data-placement="bottom" data-toggle="tooltip"><i class="glyphicon glyphicon-pencil"></i></span></a>'
                             }
                         }
                     ],

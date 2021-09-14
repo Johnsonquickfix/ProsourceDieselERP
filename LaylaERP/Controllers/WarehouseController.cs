@@ -605,9 +605,9 @@ namespace LaylaERP.Controllers
             }
         }
 
-        public JsonResult GetWarehouseByProduct(int productid)
+        public JsonResult GetWarehouseByProduct(int productid, int id)
         {
-            DataSet ds = WarehouseRepository.GetWarehouseByProduct(productid);
+            DataSet ds = WarehouseRepository.GetWarehouseByProduct(productid, id);
             List<SelectListItem> warehouselist = new List<SelectListItem>();
             foreach (DataRow dr in ds.Tables[0].Rows)
             {

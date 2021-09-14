@@ -2533,7 +2533,11 @@ html .listproduct .inventory-table td:nth-child(2) {
 #dtdataPoClosure td {
     box-sizing: border-box !important;
 }
-.add.product #target .flex-row_box .col-md-3{height:300px !important;}
+.on-hand.inventory .neworder-section #btnSearch{margin-left:auto;}
+.index_col_row {display:flex; align-items:flex-start;}
+.add.product #target .flex-row_box .col-md-3 {
+    height: 300px !important;
+}
 .managecoupons .table-blue.table.check-table {
     table-layout: fixed !important;
 }

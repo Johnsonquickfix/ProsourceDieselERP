@@ -161,7 +161,7 @@ function CategoryList() {
                 }
             },
             {
-                data: 'name', title: 'Name', sWidth: "25%", class:"uppercase",
+                data: 'name', title: 'Name', sWidth: "25%",
                 'render': function (id, type, full, meta) {
                     /*  return  id;*/
                     if (full.parent == 0)

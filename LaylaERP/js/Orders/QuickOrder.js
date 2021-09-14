@@ -216,8 +216,8 @@ function CategoryWiseProducts() {
         beforeSend: function () { $("#loader").show(); },
         success: function (result) {
             try {
-                result = JSON.parse(result);
-                result = groupArrayOfObjects(result, 'term_id');
+                result = JSON.parse(result); console.log(result);
+                result = groupArrayOfObjects(result, 'term_order'); console.log(result);
                 $.each(result, function (key, pr) {
                     //console.log(pr)
                     strHTML += '<div class="hub-accord col-sm-12 wow animate__slideInLeft" data-wow-duration="1s" data-wow-delay=".5s">';

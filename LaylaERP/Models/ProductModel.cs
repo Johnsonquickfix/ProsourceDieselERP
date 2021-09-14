@@ -59,6 +59,7 @@ namespace LaylaERP.Models
         public float purchase_price { get; set; }
         public float cost_price { get; set; }
         public float shipping_price { get; set; }
+        public float Misc_Costs { get; set; }
         public float salestax { get; set; }
         public float discount { get; set; }
         public int minpurchasequantity { get; set; }
@@ -160,6 +161,7 @@ namespace LaylaERP.Models
         public string salestax { get; set; }
         public string purchase_price { get; set; }
         public string shipping_price { get; set; }
+        public string Misc_Costs { get; set; }
         public string cost_price { get; set; }
         public string discount { get; set; }
         public string date_inc { get; set; }

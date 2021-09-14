@@ -198,7 +198,7 @@
             DataTable DT = new DataTable();
             try
             {
-                string strSQl = "select wp_t.term_id,wp_t.name,p.id pr_id,p.post_title as post_title,"
+                string strSQl = "select wp_t.term_order,wp_t.term_id,wp_t.name,p.id pr_id,p.post_title as post_title,"
                                 + " concat('[',group_concat(JSON_OBJECT('vr_id', ps.id, 'vr_title', ps.post_title, pm_rp.meta_key, pm_rp.meta_value, pm_sp.meta_key, pm_sp.meta_value)),']') variation_details"
                                 + "        from wp_posts p"
                                 + " inner join wp_term_relationships wp_tr on wp_tr.object_id = p.id"
@@ -209,7 +209,7 @@
                                 + " left outer join wp_postmeta pm_rp on pm_rp.post_id = ps.id and pm_rp.meta_key = '_regular_price'"
                                 + " left outer join wp_postmeta pm_sp on pm_sp.post_id = ps.id and pm_sp.meta_key = '_price'"
                                 + " where p.post_type = 'product' and p.post_status = 'publish' and coalesce(wp_tm.meta_value,'1') = 1"
-                                + " group by wp_t.term_id,p.id order by wp_t.term_id;";
+                                + " group by wp_t.term_id,p.id order by wp_t.term_order,wp_t.term_id;";
                 DT = SQLHelper.ExecuteDataTable(strSQl);
             }
             catch (Exception ex)

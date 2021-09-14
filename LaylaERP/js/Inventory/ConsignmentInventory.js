@@ -98,7 +98,7 @@ function ProductStockGrid() {
             {
                 data: 'id', title: 'ID', sWidth: "8%", render: function (data, type, row) {
                     //if (row.post_parent > 0) return '<a href="javascript:void(0);" class="details-control"><i class="glyphicon glyphicon-plus-sign"></i></a> ↳  #' + row.id; else return '<a href="javascript:void(0);" class="details-control"><i class="glyphicon glyphicon-plus-sign"></i></a> <b>#' + row.id + '</b>';
-                    if (row.post_parent > 0) return '<a href="javascript:void(0);" class="details-control"><i class="glyphicon glyphicon-plus-sign"></i></a> -  #' + row.id; else return ' <b>#' + row.id + '</b>';
+                    if (row.post_parent > 0) return '<a href="javascript:void(0);" class="details-control" data-toggle="tooltip" title="Click here to show warehouse On-Hand Inventory."><i class="glyphicon glyphicon-plus-sign"></i></a> -  #' + row.id; else return ' <b>#' + row.id + '</b>';
                 }
             },
             { data: 'category', title: 'Category', sWidth: "8%" },
@@ -152,7 +152,12 @@ function format(d) {
             if (result.length == 0) { wrHTML += '<tbody><tr><td valign="top" colspan="7" class="no-data-available">Sorry no matching records found.</td></tr></tbody>'; }
             $(result).each(function (index, row) {
                 let post_title = d.post_title + ' [' + row.ref + ']';
-                wrHTML += '<tr><td>' + row.ref + '</td><td>' + row.op_stock.toFixed(0) + '</td><td>' + row.stock.toFixed(0) + '</td><td><a href="#" onclick="getPurchaseOrder(' + d.id + ',' + row.warehouse_id + ',\'' + post_title + '\'); "><i class="fas fa - search - plus"></i>' + row.UnitsinPO.toFixed(0) + '</a></td><td>' + row.SaleUnits.toFixed(0) + '</td><td>' + row.Damage.toFixed(0) + '</td><td>' + (row.op_stock + row.stock + row.UnitsinPO - row.SaleUnits - row.Damage).toFixed(0) + '</td></tr>';
+                wrHTML += '<tr><td>' + row.ref + '</td><td>' + row.op_stock.toFixed(0) + '</td><td>' + row.stock.toFixed(0) + '</td>';
+                if (row.UnitsinPO > 0)
+                    wrHTML += '<td><a style="text-decoration: underline;font-weight: 700;" href="#" onclick="getPurchaseOrder(' + d.id + ',' + row.warehouse_id + ',\'' + post_title + '\'); "><i class="fas fa - search - plus"></i>' + row.UnitsinPO.toFixed(0) + '</a></td>';
+                else
+                    wrHTML += '<td>' + row.UnitsinPO.toFixed(0) + '</td>';
+                wrHTML += '<td>' + row.SaleUnits.toFixed(0) + '</td><td>' + row.Damage.toFixed(0) + '</td><td>' + (row.op_stock + row.stock + row.UnitsinPO - row.SaleUnits - row.Damage).toFixed(0) + '</td></tr > ';
             });
         },
         error: function (xhr, status, err) { alert(err); },

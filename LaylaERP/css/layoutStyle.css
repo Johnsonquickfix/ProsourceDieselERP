@@ -2533,6 +2533,16 @@ html .listproduct .inventory-table td:nth-child(2) {
 #dtdataPoClosure td {
     box-sizing: border-box !important;
 }
+.add.product #target .flex-row_box .col-md-3{height:300px !important;}
+.managecoupons .table-blue.table.check-table {
+    table-layout: fixed !important;
+}
+.managecoupons .dataTables_scrollHeadInner{width:100% !important;}
+.managecoupons .table-blue.table.check-table .linking_product_ids{display:block;word-break:break-word;}
+.managecoupons .table-blue.table.check-table th,
+.managecoupons .table-blue.table.check-table td{box-sizing:border-box;}
+#btnbacklist.backtoback{margin-right:auto;}
+#btnbacklist.backtoback ~ button{margin-left:5px;}
 
 @media(max-width:900px) {
     .hub-pro-shop select:first-child{margin-left:0px;}

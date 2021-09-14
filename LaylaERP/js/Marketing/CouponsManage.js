@@ -44,7 +44,7 @@ function dataGridLoad(order_type) {
         columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true,
         //sPaginationType: "full_numbers", searching: true, ordering: true, lengthChange: true,
-        bAutoWidth: false, scrollX: true, scrollY: ($(window).height() - 215),
+        bAutoWidth: false, scrollX: false, scrollY: ($(window).height() - 215),
         responsive: true,
         lengthMenu: [[10, 20, 50], [10, 20, 50]],
         language: {
@@ -86,11 +86,16 @@ function dataGridLoad(order_type) {
             { data: 'discount_type', title: 'Coupon Type', sWidth: "12%" },
             { data: 'coupon_amount', title: 'Coupon amount', sWidth: "12%" },
             { data: 'post_excerpt', title: 'Description', sWidth: "12%" },
-            { data: 'product_ids', title: 'Product IDs', sWidth: "12%" },
-            { data: 'UsageLimit', title: 'Usage/Limit', sWidth: "12%" },
-            { data: 'date_expires', title: 'Expiry date', sWidth: "12%" },
             {
-                'data': 'ID', title: 'Action', sWidth: "5%",
+                data: 'product_ids', title: 'Product IDs', sWidth: "12%",
+                'render': function (data, type, full, meta) {
+                    return '<span class="linking_product_ids">' + data +'</span>'
+                }
+            },
+            { data: 'UsageLimit', title: 'Usage/Limit', sWidth: "10%" },
+            { data: 'date_expires', title: 'Expiry date', sWidth: "10%" },
+            {
+                'data': 'ID', title: 'Action', sWidth: "9%",
                 'render': function (id, type, full, meta) {
                     return '<a href="Index/' + id + '"><i class="glyphicon glyphicon-eye-open"></i></a>'
                 }

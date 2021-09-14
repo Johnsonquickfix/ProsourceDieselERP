@@ -167,6 +167,7 @@
     <Compile Include="BAL\FeeNTaxRepository.cs" />
     <Compile Include="BAL\HrmsRepository.cs" />
     <Compile Include="BAL\InventoryRepository.cs" />
+    <Compile Include="BAL\LeaveRepository.cs" />
     <Compile Include="BAL\OrderRepository.cs" />
     <Compile Include="BAL\ProductRepository.cs" />
     <Compile Include="BAL\PurchaseOrderRepository.cs" />
@@ -619,6 +620,7 @@
     <Content Include="js\GooglePlace\index.js" />
     <Content Include="js\Hrms\Attendence.js" />
     <Content Include="js\Hrms\EmployeeList.js" />
+    <Content Include="js\Hrms\GrantLeaveList.js" />
     <Content Include="js\Hrms\Hrms.js" />
     <Content Include="js\Hrms\Leave.js" />
     <Content Include="js\Hrms\LeaveList.js" />

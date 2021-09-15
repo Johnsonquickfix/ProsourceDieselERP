@@ -2173,7 +2173,7 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@comment_status", "closed"),
                     new MySqlParameter("@ping_status", "closed"),
                     new MySqlParameter("@post_name", FileName=="" ? "default.png" : FileName),
-                    new MySqlParameter("@post_type", "shop_order"),
+                    new MySqlParameter("@post_type", "product_cat"),
                     new MySqlParameter("@post_mime_type", FileType),
                     new MySqlParameter("@guid", FileName=="" ? "default.png" : FileName),
                 };
@@ -2201,7 +2201,7 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@comment_status", "closed"),
                     new MySqlParameter("@ping_status", "closed"),
                     new MySqlParameter("@post_name", FileName=="" ? "default.png" : FileName),
-                    new MySqlParameter("@post_type", "shop_order"),
+                    new MySqlParameter("@post_type", "product_cat"),
                     new MySqlParameter("@post_mime_type", FileType),
                     new MySqlParameter("@guid", FileName=="" ? "default.png" : FileName),
                 };

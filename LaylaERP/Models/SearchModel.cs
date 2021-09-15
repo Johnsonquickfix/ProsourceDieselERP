@@ -46,6 +46,8 @@ namespace LaylaERP.Models
         public string strValue4 { get; set; }
         public string strValue5 { get; set; }
         public string strValue6 { get; set; }
+        public string DateRange { get; set; }
+        public string DateRange2 { get; set; }
     }
 
     public class ZipCodeModel 

@@ -15,6 +15,10 @@
                 <span class="sub-heading" id="currentdatetime">
                 </span>
             </h2>
+            <div class="input-group text-right">
+                <input id="DateRange2" name="DateRange2" data-auto-update-input="false" readonly="readonly" class="form-control pull-right">
+                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+            </div>
         </div>
     </div>
     <div class="col-xs-6 col-drop-dash">
@@ -54,7 +58,7 @@
         <!-- small box -->
         <div class="small-box bg-info">
             <div class="inner">
-                <h3>@ViewBag.totalorders</h3>
+                <h3 id="lbltotalOrder">@*@ViewBag.totalorders*@</h3>
                 <p>Total Orders</p>
             </div>
             <div class="icon">
@@ -68,7 +72,7 @@
         <!-- small box -->
         <div class="small-box bg-success">
             <div class="inner">
-                <h3>$@ViewBag.totalsales<sup style="font-size: 20px"></sup></h3>
+                <h3 id="lbltotalSales">@*$@ViewBag.totalsales*@<sup style="font-size: 20px"></sup></h3>
                 <p>Total Sales</p>
             </div>
             <div class="icon">
@@ -82,7 +86,7 @@
         <!-- small box -->
         <div class="small-box bg-warning">
             <div class="inner">
-                <h3>@ViewBag.totalcustomers</h3>
+                <h3 id="lbltotalCustomer">@*@ViewBag.totalcustomers*@</h3>
                 <p>Total Customers</p>
             </div>
             <div class="icon">
@@ -96,7 +100,7 @@
         <!-- small box -->
         <div class="small-box bg-danger">
             <div class="inner">
-                <h3>@ViewBag.totalordercompleted</h3>
+                <h3 id="lblCompletedCustomer">@*@ViewBag.totalordercompleted*@</h3>
                 <p>Completed Orders</p>
             </div>
             <div class="icon">
@@ -119,22 +123,23 @@
                     <div class="box-header with-border">
                         <i class="fa fas fa-table"></i>
                         <h3 class="box-title">Date Created</h3>
+                     
                         <span class="radtype_span">
-                            <input class="radtype_input" id="strValue1" checked="checked" name="strValue1" type="radio" value="daily" />
-                            <label for="strValue1" title="Click here to see today orders" data-toggle="tooltip">Daily</label>
-                            <input class="radtype_input" id="strValue2" name="strValue1" type="radio" value="weekly" />
-                            <label for="strValue2" title="Click here to see current weekly orders" data-toggle="tooltip">Weekly</label>
+                            <div class="input-group">
+                                <input id="DateRange" name="DateRange" data-auto-update-input="false" readonly="readonly" class="form-control pull-right">
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            </div>
                         </span>
-                        <div class="pull-right box-tools">
-                            <span class="btn-span">
-                                <button type="button" class="btn btn-primary btn-sm" data-widget="collapse" title="Click here to show / close widgets." data-toggle="tooltip">
-                                    <i class="fa fa-minus"></i>
-                                </button>
-                                <button type="button" class="btn btn-primary btn-sm" data-widget="remove" title="Click here to close the widgets." data-toggle="tooltip">
-                                    <i class="fa fa-times"></i>
-                                </button>
-                            </span>
-                        </div>
+                            <div class="pull-right box-tools">
+                                <span class="btn-span">
+                                    <button type="button" class="btn btn-primary btn-sm" data-widget="collapse" title="Click here to show / close widgets." data-toggle="tooltip">
+                                        <i class="fa fa-minus"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-primary btn-sm" data-widget="remove" title="Click here to close the widgets." data-toggle="tooltip">
+                                        <i class="fa fa-times"></i>
+                                    </button>
+                                </span>
+                            </div>
                     </div>
                     <div class="box-body with-border">
                         <h5>
@@ -326,19 +331,56 @@
 <script>
     $(document).ready(function () {
         $('#loader').hide();
+        dateRange('#DateRange');
+        dateRange('#DateRange2');
+        gettotalOrder();
+        getTotalSales();
+        gettotalCustomer();
+        getCompletedOrder();
         loadData();
-        gettotal();
+
+        gettotal('#DateRange');
+        $('#DateRange').change(function () { loadData(); gettotal('#DateRange'); });
+        $('#DateRange2').change(function () {
+            var fromdate = $('#DateRange2').data('daterangepicker').startDate.format('MM-DD-YYYY');
+            var todate = $('#DateRange2').data('daterangepicker').endDate.format('MM-DD-YYYY');
+            $('#DateRange').val($('#DateRange2').val());
+            loadData(); gettotalOrder(fromdate, todate);
+            getTotalSales(fromdate, todate);
+            gettotalCustomer(fromdate, todate);
+            getCompletedOrder(fromdate, todate);
+            gettotal('#DateRange2');
+        });
         $('#sendEmail').click(function () { emails(); });
-        $('#strValue1,#strValue2').change(function () { loadData(); gettotal(); });
+
+       
     });
+    function dateRange(dtr) {
+        $(dtr).daterangepicker({
+            ranges: {
+                'Today': [moment(), moment()],
+                'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                'This Month': [moment().startOf('month'), moment().endOf('month')],
+                'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+            },
+            startDate: moment(),
+            autoUpdateInput: true, alwaysShowCalendars: true,
+            locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' },
+            opens: 'right',
+            orientation: "left auto",
+        });
+    }
     function loadData() {
         $.post("/Home/GetOrderList", $("#saveForm").serialize(), function (response) {
             $("#content").html(response);
         });
     }
-    function gettotal() {
-        var daily = $("input[name='strValue1']:checked").val();
-        var obj = { strValue1: daily };
+    function gettotal(dtr) {
+        var fromdate = $(dtr).data('daterangepicker').startDate.format('MM-DD-YYYY');
+        var todate = $(dtr).data('daterangepicker').endDate.format('MM-DD-YYYY');
+        var obj = {strValue5: fromdate, strValue6: todate };
         $.ajax({
             url: '/Home/GettotalDetsils/',
             type: 'post',
@@ -358,6 +400,65 @@
             error: function (msg) { alert(msg); }
         });
     }
+    function gettotalOrder(fromdate,todate) {
+        var obj = { strValue5: fromdate, strValue6: todate };
+        $.ajax({
+            url: '/Home/GettotalOrders/',
+            type: 'post',
+            contentType: "application/json; charset=utf-8",
+            dataType: 'JSON',
+            data: JSON.stringify(obj),
+            success: function (data) {
+                $("#lbltotalOrder").text(data.data);
+               },
+            error: function (msg) { alert(msg); }
+        });
+    }
+    function getTotalSales(fromdate, todate) {
+   
+        var obj = { strValue5: fromdate, strValue6: todate };
+        $.ajax({
+            url: '/Home/GettotalSales/',
+            type: 'post',
+            contentType: "application/json; charset=utf-8",
+            dataType: 'JSON',
+            data: JSON.stringify(obj),
+            success: function (data) {
+                $("#lbltotalSales").text('$' + data.data);
+            },
+            error: function (msg) { alert(msg); }
+        });
+    }
+    function gettotalCustomer(fromdate, todate) {
+      var obj = { strValue5: fromdate, strValue6: todate };
+        $.ajax({
+            url: '/Home/GettotalCustomer/',
+            type: 'post',
+            contentType: "application/json; charset=utf-8",
+            dataType: 'JSON',
+            data: JSON.stringify(obj),
+            success: function (data) {
+                $("#lbltotalCustomer").text(data.data);
+
+            },
+            error: function (msg) { alert(msg); }
+        });
+    }
+    function getCompletedOrder(fromdate, todate) {
+       var obj = { strValue5: fromdate, strValue6: todate };
+        $.ajax({
+            url: '/Home/GetcompletedOrders/',
+            type: 'post',
+            contentType: "application/json; charset=utf-8",
+            dataType: 'JSON',
+            data: JSON.stringify(obj),
+            success: function (data) {
+                $("#lblCompletedCustomer").text(data.data);
+            },
+            error: function (msg) { alert(msg); }
+        });
+    }
+   
     function emails() {
         let emails = $('#emailto').val();
         let subject = $('#subject').val();

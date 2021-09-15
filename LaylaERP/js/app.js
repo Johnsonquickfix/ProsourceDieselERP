@@ -459,7 +459,7 @@ var App = function () {
             //if ($('.modal:visible').size() > 1 && $('html').hasClass('modal-open') === false) {
             if ($('.modal:visible').length > 1 && $('html').hasClass('modal-open') === false) {
                 $('html').addClass('modal-open');
-            //} else if ($('.modal:visible').size() <= 1) {
+                //} else if ($('.modal:visible').size() <= 1) {
             } else if ($('.modal:visible').length <= 1) {
                 $('html').removeClass('modal-open');
             }
@@ -1811,6 +1811,7 @@ function canRemoveTab(pageId) {
 
 //Add tab
 var addTabs = function (options) {
+    if (!isLeavePage()) return false;
     var defaultTabOptions = {
         id: Math.random() * 200,
         urlType: "relative",
@@ -1913,10 +1914,12 @@ var addActivityLog = function (options) {
 
 //Close tab
 var closeTab = function (item) {
-    //Item can be a tag or i tag
-    //They all have a data-id attribute, and it’s okay after the acquisition is complete.
-    var pageId = getPageId(item);
-    closeTabByPageId(pageId);
+    if (isLeavePage()) {
+        //Item can be a tag or i tag
+        //They all have a data-id attribute, and it’s okay after the acquisition is complete.
+        var pageId = getPageId(item);
+        closeTabByPageId(pageId);
+    }
 };
 function sidemenu_breadcrumb(ids) {
     $('.sidebar-menu li').removeClass('activeLink');
@@ -1935,7 +1938,7 @@ function closeTabByPageId(pageId) {
         //Give priority to the next tab, if not, pass it to the previous one
         var $nextTitle = $title.next();
         var activePageId;
-       
+
         //if ($nextTitle.size() > 0) {
         if ($nextTitle.length > 0) {
             activePageId = getPageId($nextTitle);
@@ -1974,7 +1977,7 @@ function closeTabOnly(pageId) {
 
 var closeCurrentTab = function () {
     var pageId = getActivePageId();
-    if (canRemoveTab(pageId)) {
+    if (canRemoveTab(pageId) && isLeavePage()) {
         closeTabByPageId(pageId);
     }
 };
@@ -1998,9 +2001,11 @@ function refreshTabById(pageId) {
 }
 
 var refreshTab = function () {
-    //Refresh current tab
-    var pageId = getActivePageId();
-    refreshTabById(pageId);
+    if (isLeavePage()) {
+        //Refresh current tab
+        var pageId = getActivePageId();
+        refreshTabById(pageId);
+    }
 };
 
 function getTabUrlById(pageId) {
@@ -2127,39 +2132,30 @@ var scrollTabRight = function () {
 
 //Close other tabs
 var closeOtherTabs = function (isAll) {
-    if (isAll) {
-        //Close all
-        //$('.page-tabs-content').children("[" + pageIdField + "]").find('.fa-remove').parents('a').each(function () {
-        $('.page-tabs-content').children("[" + pageIdField + "]").find('.fa-times').parents('a').each(function () {
-            var $a = $(this);
-            var pageId = getPageId($a);
-            closeTabOnly(pageId);
+    if (isLeavePage()) {
+        if (isAll) {
+            //Close all
+            //$('.page-tabs-content').children("[" + pageIdField + "]").find('.fa-remove').parents('a').each(function () {
+            $('.page-tabs-content').children("[" + pageIdField + "]").find('.fa-times').parents('a').each(function () {
+                var $a = $(this);
+                var pageId = getPageId($a);
+                closeTabOnly(pageId);
+            });
+            var firstChild = $(".page-tabs-content").children().eq(0); //Select the first menu that cannot be deleted
+            if (firstChild) {
+                //Activate this tab
+                activeTabByPageId(getPageId(firstChild));
+            }
+        } else {
+            //Delete all except
+            //$('.page-tabs-content').children("[" + pageIdField + "]").find('.fa-remove').parents('a').not(".active").each(function () {
+            $('.page-tabs-content').children("[" + pageIdField + "]").find('.fa-times').parents('a').not(".active").each(function () {
+                var $a = $(this);
+                var pageId = getPageId($a);
+                closeTabOnly(pageId);
+            });
 
-            // closeTab($a);
-            /*$('#' + $(this).data('id')).remove();
-             $(this).remove();*/
-        });
-        var firstChild = $(".page-tabs-content").children().eq(0); //Select the first menu that cannot be deleted
-        if (firstChild) {
-            //Activate this tab
-            activeTabByPageId(getPageId(firstChild));
-
-            /*$('#' + firstChild.data('id')).addClass('active');
-             firstChild.addClass('active');*/
         }
-    } else {
-        //Delete all except
-        //$('.page-tabs-content').children("[" + pageIdField + "]").find('.fa-remove').parents('a').not(".active").each(function () {
-        $('.page-tabs-content').children("[" + pageIdField + "]").find('.fa-times').parents('a').not(".active").each(function () {
-            var $a = $(this);
-            var pageId = getPageId($a);
-            closeTabOnly(pageId);
-
-            // closeTab($a);
-            /*$('#' + $(this).data('id')).remove();
-             $(this).remove();*/
-        });
-
     }
 };
 
@@ -2174,17 +2170,32 @@ function activeTabByPageId(pageId) {
     scrollToTab($title[0]);
 }
 
+//Check is edit 
+function isLeavePage() {
+    let isedit = localStorage.getItem('isEdit');
+    if (isedit == 'yes') {
+        swal({ title: "Are you sure you want to leave?", text: 'All unsaved changes will be lost.', type: "question", showCancelButton: true })
+            .then((result) => {
+                if (result.value) { localStorage.setItem('isEdit', 'no'); }
+                return result.value;
+            });
+    }
+    else
+        return true;
+}
+
 $(function () {
     var $tabs = $(".menuTabs");
     //Activate tab when you click on the tab
     $tabs.on("click", ".menu_tab", function () {
-        var pageId = getPageId(this);
-        activeTabByPageId(pageId);
+        if (isLeavePage()) {
+            var pageId = getPageId(this);
+            activeTabByPageId(pageId);
+        }
     });
 
     //Double click on the tab to refresh the page
     $tabs.on("dblclick", ".menu_tab", function () {
-        // console.log("dbclick");
         var pageId = getPageId(this);
         refreshTabById(pageId);
     });
@@ -2275,8 +2286,8 @@ $(function () {
                 }
 
                 //header
-                var li = $('<li data-level="' + level + '" data-menuId="' + item.id+'"></li>');
-               
+                var li = $('<li data-level="' + level + '" data-menuId="' + item.id + '"></li>');
+
                 //a
                 var $a;
                 if (level > 0) {
@@ -2355,16 +2366,16 @@ $(function () {
                     li.append($a);
                 }
                 $menu_ul.append(li);
-               });
+            });
         }
-        
+
         //In addition, the binding menu is clicked and other actions are taken.
         $('.sidebar-menu > li:first').addClass('activeLink');
         $(".sidebar-menu  ul li").each(function (i) {
             $(this).parents('li').addClass('treeview');
         });
         $menu_ul.on("click", "li.treeview a", function () {
-            
+
             var $a = $(this);
             //if ($a.next().size() == 0) {
             if ($a.next().length == 0) {

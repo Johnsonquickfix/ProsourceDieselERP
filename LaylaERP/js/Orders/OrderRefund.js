@@ -32,11 +32,11 @@ $(document).ready(function () {
     setTimeout(function () { $("#loader").show(); getOrderInfo(); }, 20);
     $("#ddlshipcountry").change(function () { var obj = { id: $("#ddlshipcountry").val() }; BindStateCounty("ddlshipstate", obj); });
     $(document).on("click", ".btnRefundOrder", function (t) {
-        t.preventDefault(); $('.billinfo').prop("disabled", false);
+        t.preventDefault(); $('.billinfo').prop("disabled", false); isEdit(true);
         $('.box-tools,.footer-finalbutton').empty().append('<button type="button" class="btn btn-danger btnRefundCancel">Cancel</button> <button type="button" class="btn btn-danger btnRefundOk">Refund $0.00 manually</button>');
     });
     $(document).on("click", ".btnRefundCancel", function (t) {
-        t.preventDefault(); $('.billinfo').prop("disabled", true); getOrderInfo();
+        t.preventDefault(); $('.billinfo').prop("disabled", true); getOrderInfo(); isEdit(false);
     });
     $(document).on("click", ".btnRefundOk", function (t) { t.preventDefault(); saveCO(); });
 });
@@ -62,7 +62,7 @@ function ValidateMaxValue(value, min, max) {
         return max;
     else return value;
 }
-
+function isEdit(val) { localStorage.setItem('isEdit', val ? 'yes' : 'no'); }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Edit Order ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function getOrderInfo() {
     let oid = parseInt($('#hfOrderNo').val()) || 0;
@@ -477,7 +477,7 @@ function saveCO() {
             else { swal('Alert!', data.message, "error").then((result) => { return false; }); }
         },
         error: function (xhr, status, err) { $("#loader").hide(); alert(err); },
-        complete: function () { $("#loader").hide(); },
+        complete: function () { $("#loader").hide(); isEdit(false);},
     });
     return false;
 }

@@ -54,9 +54,9 @@
         $('#ddlStatus').prop("disabled", true); $('.billinfo').prop("disabled", false); $('#txtbillfirstname').focus(); $('.agentaddtocart').removeClass('hidden');
         $('.box-tools-header').empty().append('<button type="button" class="btn btn-danger btnOrderUndo" data-toggle="tooltip" title="Reset Order"><i class="fa fa-undo"></i> Cancel</button> <button type="button" id="btnOrderUpdate" class="btn btn-danger" data-toggle="tooltip" title="Update Order"><i class="far fa-save"></i> Update</button>');
         $('.footer-finalbutton').empty().append('<button type="button" class="btn btn-danger pull-left btnOrderUndo"><i class="fa fa-undo"></i> Cancel</button>  <button type="button" id="btnCheckout" class="btn btn-danger billinfo" data-toggle="tooltip" title="Save and Checkout Order"> Checkout</button>');
-        $("#loader").hide();
+        $("#loader").hide(); isEdit(true);
     });
-    $(document).on("click", ".btnOrderUndo", function (t) { t.preventDefault(); setTimeout(function () { $("#loader").show(); getOrderInfo(); }, 10); });
+    $(document).on("click", ".btnOrderUndo", function (t) { t.preventDefault(); setTimeout(function () { $("#loader").show(); getOrderInfo(); isEdit(false);}, 10); });
     $(document).on("click", "#btnOrderUpdate", function (t) { t.preventDefault(); updateCO(); });
     $('#billModal').on('shown.bs.modal', function () {
         $('#ddlCustomerSearch').select2({
@@ -119,6 +119,9 @@
         successModal(pay_mode, pay_id, false);
     });
 });
+function isEdit(val) {
+    localStorage.setItem('isEdit', val ? 'yes' : 'no');
+}
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Get New Order No ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function NewOrderNo() {
     let cus_id = parseInt($("#ddlUser").val()) || 0, oid = 0, postMetaxml = [];
@@ -151,6 +154,7 @@ function NewOrderNo() {
     let option = { OrderPostMeta: postMetaxml };
     if (cus_id > 0) {
         ajaxFunction('/Orders/GetNewOrderNo', option, beforeSendFun, function (result) { $('#hfOrderNo').val(result.message); $('#lblOrderNo').text('Order #' + result.message + ' detail '); }, completeFun, errorFun, false);
+        isEdit(true);
     }
 }
 ///Find Address of Customer
@@ -216,8 +220,8 @@ function CategoryWiseProducts() {
         beforeSend: function () { $("#loader").show(); },
         success: function (result) {
             try {
-                result = JSON.parse(result); console.log(result);
-                result = groupArrayOfObjects(result, 'term_order'); console.log(result);
+                result = JSON.parse(result); 
+                result = groupArrayOfObjects(result, 'term_order');
                 $.each(result, function (key, pr) {
                     //console.log(pr)
                     strHTML += '<div class="hub-accord col-sm-12 wow animate__slideInLeft" data-wow-duration="1s" data-wow-delay=".5s">';
@@ -1761,7 +1765,7 @@ function saveCO() {
             else { swal('Alert!', data.message, "error").then((result) => { return false; }); }
         },
         error: function (xhr, status, err) { $("#loader").hide(); $('#btnCheckout').prop("disabled", false); $('.billinfo').prop("disabled", false); alert(err); },
-        complete: function () { $("#loader").hide(); $('#btnCheckout').prop("disabled", false); $('.billinfo').prop("disabled", false); $('#btnCheckout').text("Checkout"); },
+        complete: function () { $("#loader").hide(); $('#btnCheckout').prop("disabled", false); $('.billinfo').prop("disabled", false); $('#btnCheckout').text("Checkout"); isEdit(false);},
     });
     $('#btnCheckout').text("Checkout");
     return false;
@@ -1783,7 +1787,7 @@ function updateCO() {
             else { swal('Alert!', data.message, "error").then((result) => { return false; }); }
         },
         error: function (xhr, status, err) { $("#loader").hide(); alert(err); },
-        complete: function () { $("#loader").hide(); },
+        complete: function () { $("#loader").hide(); isEdit(false); },
     });
     //ajaxFunc('/Orders/SaveCustomerOrder', obj, beforeSendFun, function (data) {
     //    if (data.status == true) {

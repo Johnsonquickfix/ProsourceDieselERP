@@ -250,6 +250,7 @@
     <script>
         var GetUserID = parseInt('@(user.UserID)') || 0;
         $(document).ready(function () {
+            localStorage.setItem('isEdit', 'no');
             setTimeout(function () {
                 //addTabs({ id: '10008', title: '', close: false, url: '/home/Dashboard', urlType: "none" });
                 addTabs({ id: '1', title: '', close: false, url: '/home/Dashboard', urlType: "none" });

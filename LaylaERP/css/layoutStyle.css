@@ -2547,7 +2547,8 @@ html .listproduct .inventory-table td:nth-child(2) {
 .managecoupons .table-blue.table.check-table td{box-sizing:border-box;}
 #btnbacklist.backtoback{margin-right:auto;}
 #btnbacklist.backtoback ~ button{margin-left:5px;}
-
+.managecoupons .check-table [type="checkbox"] ,
+.managecoupons .check-table [type="checkbox"] + label{top:12px; transform:none;}
 @media(max-width:900px) {
     .hub-pro-shop select:first-child{margin-left:0px;}
     .hub-pro-shop {width: 100%; margin-top:5px;}

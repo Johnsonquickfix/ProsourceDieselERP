@@ -26,7 +26,7 @@
     <span>&nbsp;&nbsp;Loading......</span>
 </div>
 <div class="page-title">
-    <h2 class="page-heading">Users</h2> <a class="btn btn-danger" id="btnCreateUser" href="CreateUser">Create User</a>
+    <h2 class="page-heading">Users</h2> <a class="btn btn-danger" id="btnCreateUser" href="CreateUser"><span title="Click Here To Create New User" data-placement="bottom" data-toggle="tooltip">Create User</span></a>
 </div>
 <div class="user_subCrumbs">
     <ul class="subsubsub" id="role-ul">
@@ -58,27 +58,27 @@
                     <option value="2">Active</option>
                     <option value="3">InActive</option>
                 </select>
-                <input type="submit" id="btnApply" class="button action" value="Apply">
-            </div>
+                <span title="Click Here For Bulk Action" data-placement="bottom" data-toggle="tooltip"><input type="submit" id="btnApply" class="button action" value="Apply"></span>
+</div>
             <div class="alignleft actions">
                 <select name="new_role" id="new_role">
                     <option value="">Change role to…</option>
                 </select>
-                <input type="submit" name="changeit" id="changeit" class="button" value="Change">
-            </div>
+                <span title="Click Here To Change Role" data-placement="bottom" data-toggle="tooltip"><input type="submit" name="changeit" id="changeit" class="button" value="Change"></span>
+</div>
 
             <div class="alignleft actions">
                 <select name="grant_role" id="grant_role">
                     <option value="">Grant Roal to…</option>
                 </select>
-                <input type="submit" name="Grantrole" id="Grantrole" class="button" value="Grant">
-            </div>
+                <span title="Click Here To Grant Role" data-placement="bottom" data-toggle="tooltip"><input type="submit" name="Grantrole" id="Grantrole" class="button" value="Grant"></span>
+</div>
             <div class="alignleft actions">
                 <select name="revoke_role" id="revoke_role">
                     <option value="">Revoke Roal to…</option>
                 </select>
-                <input type="submit" name="Revoke" id="Revoke" class="button" value="Revoke">
-            </div>
+                <span title="Click Here To Revoke Role" data-placement="bottom" data-toggle="tooltip"><input type="submit" name="Revoke" id="Revoke" class="button" value="Revoke"></span>
+</div>
             <input type="hidden" name="varpass" id="varpass" value="">
             @*<div class="tablenav-pages">
                     <span class="displaying-num">61,641 items</span>
@@ -248,13 +248,27 @@
         if (status == "1") { UpdateCustomerStatus(); }
         if (status == "3") {
             id = id.replace(/,(?=\s*$)/, '');
-            DeleteUsers(id);
+            swal({
+                title: 'Are you sure?', text: "Want to inactive user ?", type: 'warning', showCancelButton: true,
+                confirmButtonColor: '#3085d6', cancelButtonColor: '#3085d6', confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.value) {
+                    DeleteUsers(id);
+                }
             //dataGridLoad();
+                })
         }
         if (status == "2") {
 
             id = id.replace(/,(?=\s*$)/, '');
-            ActiveUsers(id);
+            swal({
+                title: 'Are you sure?', text: "Want to active user ?", type: 'warning', showCancelButton: true,
+                confirmButtonColor: '#3085d6', cancelButtonColor: '#3085d6', confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.value) {
+                    ActiveUsers(id);
+                }
+            })
             //dataGridLoad();
         }
         $("input:checkbox[name=CheckSingle]:checked").each(function () {
@@ -266,8 +280,16 @@
         var new_role = $("#new_role").val();
         $("input:checkbox[name=CheckSingle]:checked").each(function () { ID += $(this).val() + ","; });
         ID = ID.replace(/,(?=\s*$)/, '');
-        changeRole(ID);
-        
+        if (new_role != "") {
+            swal({
+                title: 'Are you sure?', text: "Want to change role ?", type: 'warning', showCancelButton: true,
+                confirmButtonColor: '#3085d6', cancelButtonColor: '#3085d6', confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.value) {
+                    changeRole(ID);
+                }
+            })
+        }
     })
 
     //Grantrole
@@ -279,18 +301,37 @@
 
         });
         ID = ID.replace(/,(?=\s*$)/, '');
-        Grantrole(ID);
+        if (new_role != "") {
+            swal({
+                title: 'Are you sure?', text: "Want to grant role ?", type: 'warning', showCancelButton: true,
+                confirmButtonColor: '#3085d6', cancelButtonColor: '#3085d6', confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.value) {
+                    Grantrole(ID);
+                }
+            })
+        }
     })
     //Revoke
     $("#Revoke").click(function () {
         var ID = "";
         var new_role = $("#revoke_role").val();
+        
         $("input:checkbox[name=CheckSingle]:checked").each(function () {
             ID += $(this).val() + ",";
 
         });
         ID = ID.replace(/,(?=\s*$)/, '');
-        Revokerole(ID);
+        if (new_role !="") {
+            swal({
+                title: 'Are you sure?', text: "Want to revoke role ?", type: 'warning', showCancelButton: true,
+                confirmButtonColor: '#3085d6', cancelButtonColor: '#3085d6', confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.value) {
+                    Revokerole(ID);
+                }
+            })
+        }
     })
 
 

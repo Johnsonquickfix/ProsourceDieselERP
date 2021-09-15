@@ -366,7 +366,7 @@ namespace LaylaERP.BAL
                             + " from wp_posts p"
                             + " inner join wp_woocommerce_order_items wp_oi on p.id = wp_oi.order_id and wp_oi.order_item_type = 'line_item'"
                             + " inner join wp_wc_order_product_lookup opl on opl.order_item_id = wp_oi.order_item_id"
-                            + " inner join Product_Purchase_Items ir on ir.fk_product = (case when opl.variation_id > 0 then opl.variation_id else opl.product_id end)"
+                            + " inner join Product_Purchase_Items ir on ir.is_active = 1 and ir.fk_product = (case when opl.variation_id > 0 then opl.variation_id else opl.product_id end)"
                             + " left outer join wp_postmeta psku on psku.post_id = (case when opl.variation_id > 0 then opl.variation_id else opl.product_id end) and psku.meta_key = '_sku'"
                             + " left outer join wp_vendor wp_v on wp_v.rowid = ir.fk_vendor"
                             + " left outer join wp_VendorPaymentDetails wp_vpd on wp_vpd.VendorID = wp_v.rowid"

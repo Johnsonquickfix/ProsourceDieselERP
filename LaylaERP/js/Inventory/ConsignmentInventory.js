@@ -143,7 +143,7 @@ function format(d) {
     let dfa = $('#txtDate').val().split('-');
     let sd = dfa[0].split('/'); sd = sd[1] + '/' + sd[0] + '/' + sd[2];
     let ed = dfa[1].split('/'); ed = ed[1] + '/' + ed[0] + '/' + ed[2];
-    console.log(d);
+    //console.log(d);
     let option = { strValue1: d.id, strValue2: sd, strValue3: ed }, wrHTML = '<table class="inventory-table table-blue table check-table table-bordered table-striped dataTable no-footer"><thead><tr><th style="width:40.8%; text-align:left;">Warehouse</th><th style="width:8%; text-align:right;">Opening Stock</th><th style="width:8%; text-align:right;">Units In Stock</th><th style="width:8%; text-align:right;">Units in POs</th><th style="width:8%; text-align:right;">Sale Units</th><th style="width:8%; text-align:right;">Damage Units</th><th style="width:8%; text-align:right;">Available Units</th></tr></thead>';
     $.ajax({
         url: '/Inventory/GetStockByWarehouse', type: 'post', dataType: 'json', contentType: "application/json; charset=utf-8", data: JSON.stringify(option),

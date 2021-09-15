@@ -373,7 +373,12 @@
             </div>
             <div class="box box-primary">
                 <div class="box-header">
-                    <div id="tblprodctype" class="form-check">
+
+                    <div>
+                        <input id="txtsrc" type="text" value="" />
+                        <input id="btnsrc" type="button" value="Search" />
+                    </div>
+                    <div id="tblprodctype" class="form-check tblprodctype">
 
                         @{
                             int i = 0;
@@ -381,8 +386,8 @@
                         <ul class="categorychecklist">
                             @foreach (var item in @ViewBag.product)
                             {
-                                <li>
-                                    <input  type="checkbox" name="chkproducttype" id="chkproductID@(++i)" value="@item.Value" />
+                                <li class="w3-check">
+                                    <input type="checkbox" name="chkproducttype" id="chkproductID@(++i)" value="@item.Value"  />
                                     <label for="chkproductID@(i++)">@item.Text</label>
                                 </li>
                             }
@@ -399,7 +404,7 @@
     </div>
 </section>
 
-<script src="https://cdn.tiny.cloud/1/qagffr3pkuv17a8on1afax661irst1hbr4e6tbv888sz91jc/tinymce/5.8.2-114/tinymce.min.js"></script>
+@*<script src="https://cdn.tiny.cloud/1/qagffr3pkuv17a8on1afax661irst1hbr4e6tbv888sz91jc/tinymce/5.8.2-114/tinymce.min.js"></script>*@
 <script src="@Url.Content("~/js/Product/AddnewProduct.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 <script type="text/javascript">
     //tinymce.init({
@@ -407,6 +412,31 @@
     //    height: 200,
     //    plugins: 'table wordcount'
     //});
+    $("input[id*=btnsrc]").click(function () {
+        var searchvalue = $("input[id*=txtsrc]").val();    
+        if (searchvalue != "") {
+            $('.tblprodctype .categorychecklist').each(function () {    
+                $(this).find('li').each(function () {
+                    var current = $(this);
+                    var s = current.text().trim().toLowerCase();
+                    //console.log(s);
+                    //console.log(searchvalue);
+                    if (s.match(searchvalue.toLowerCase())) {
+                        $(this).show();
+                    }
+                    else {
+                        $(this).hide();
+                        $(this.nextSibling).wrap('<span style="display:none"></style>');
+                    }
+
+                })               
+            })
+        }
+        else {
+            $("#cboAll,.w3-check").show();
+        }
+
+    })
 </script>
 
 <script>

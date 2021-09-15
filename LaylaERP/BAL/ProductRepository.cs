@@ -1906,6 +1906,80 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
+        //notes
+        public static DataTable GetNotes(long OrderID,string type)
+        {
+            DataTable DT = new DataTable();
+            try
+            {
+                string strSQl = string.Empty;
+                MySqlParameter[] parameters =
+                {
+                    new MySqlParameter("order_id", OrderID)
+                };
+                if (type.ToUpper() == "ADMINISTRATOR")
+                {
+                    strSQl = "select wp_c.comment_ID,DATE_FORMAT(wp_c.comment_date, '%M %d, %Y at %H:%i') comment_date,wp_c.comment_content,case when comment_type = 'Private' then 1 else 0 end is_customer_note from wp_Productnotes wp_c"
+                            + " where  comment_approved = '1' and comment_post_ID = @order_id order by wp_c.comment_ID desc;";
+                }
+                else
+                {
+                    strSQl = "select wp_c.comment_ID,DATE_FORMAT(wp_c.comment_date, '%M %d, %Y at %H:%i') comment_date,wp_c.comment_content,wp_cm.meta_value is_customer_note from wp_Productnotes wp_c"
+                            + " where comment_type = 'Public' and comment_approved = '1' and comment_post_ID = @order_id order by wp_c.comment_ID desc;";
+                }
+                DT = SQLHelper.ExecuteDataTable(strSQl, parameters);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DT;
+        }
+        public static int AddNotes(OrderNotesModel obj)
+        {
+            int result = 0;
+            try
+            {
+                obj.comment_date = DateTime.UtcNow.AddMinutes(-420);
+                obj.comment_date_gmt = DateTime.UtcNow;
+
+                string strSQL = "INSERT INTO wp_Productnotes(comment_post_ID,comment_date, comment_date_gmt, comment_content,  comment_approved, comment_type,user_id)"
+                            + " VALUES(@comment_post_ID,@comment_date,@comment_date_gmt,@comment_content,'1',@comment_type,'0');";
+             
+
+                MySqlParameter[] parameters =
+                {
+                    new MySqlParameter("@comment_post_ID", obj.post_ID),           
+                    new MySqlParameter("@comment_date", obj.comment_date),
+                    new MySqlParameter("@comment_date_gmt", obj.comment_date_gmt),
+                    new MySqlParameter("@comment_content", obj.comment_content),
+                    new MySqlParameter("@comment_type", obj.is_customer_note)
+                };
+                result = SQLHelper.ExecuteNonQuery(strSQL, parameters);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return result;
+        }
+        public static int RemoveNotes(OrderNotesModel obj)
+        {
+            int result = 0;
+            try
+            {
+                //string strSQL = "delete from wp_comments where comment_ID = @comment_ID;";
+                string strSQL = "update wp_Productnotes set comment_approved = '0' where comment_ID = @comment_ID;";
+                MySqlParameter[] parameters =
+                {
+                    new MySqlParameter("@comment_ID", obj.comment_ID)
+                };
+                result = SQLHelper.ExecuteNonQuery(strSQL, parameters);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return result;
+        }
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Product Categories~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         //public static DataSet GetParentCategory(string term_taxonomy_id)

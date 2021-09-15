@@ -781,6 +781,7 @@ function AddProduct() {
     let dfad = dfa.replace('undefined,', '');
     var n = dfad.lastIndexOf(",");
     var categorydata = dfad.substring(0, n)
+    //console.log(categorydata);
     let date_publish = $("#txtPublishDate").val().split('/');
     //if ($("#enableStock").prop('checked') == true)
         enableStock = "yes";

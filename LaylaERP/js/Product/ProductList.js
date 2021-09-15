@@ -407,12 +407,17 @@ function Status() {
     id = id.replace(/,(?=\s*$)/, '');
     $("#checkAll").prop('checked', false);
     var status = $('#ddlbulkaction').val();
+    var statusval = $("#ddlbulkaction :selected").text();  
+    console.log(statusval);
     if (id == "") { swal('alert', 'Please select product from list', 'error'); }
     else if (status == "0") { swal('alert', 'Please select Bulk Action', 'error'); }
     else {
         var obj = { strVal: id, status: status }
-        var checkstr = confirm('are you sure want to update this?');
-        if (checkstr == true) {
+        //var checkstr = confirm('are you sure want to update this?');
+        //if (checkstr == true) {
+        swal({ title: "Are you sure?", text: 'Would you like to ' + statusval +' this Product?', type: "question", showCancelButton: true })
+            .then((result) => {
+                if (result.value) {                 
         $.ajax({
             url: '/Product/Changestatus', dataType: 'JSON', type: 'POST',
             contentType: "application/json; charset=utf-8",
@@ -432,9 +437,13 @@ function Status() {
             },
 
         })
-        } else {
-            return false;
-        }
+
+
+        //} else {
+        //    return false;
+        //}
+                }
+            });
     }
 }
 

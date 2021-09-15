@@ -89,9 +89,9 @@ $(document).ready(function () {
         $('#ddlStatus').prop("disabled", true); $('.billinfo').prop("disabled", false); $('#txtbillfirstname').focus();
         $('.box-tools').empty().append('<button type="button" class="btn btn-danger btnOrderUndo"><i class="fa fa-undo"></i> Cancel</button> <button type="button" id="btnOrderUpdate" class="btn btn-danger"><i class="far fa-save"></i> Update</button>');
         $('.footer-finalbutton').empty().append('<button type="button" class="btn btn-danger pull-left btnOrderUndo"><i class="fa fa-undo"></i> Cancel</button>  <button type="button" id="btnCheckout" class="btn btn-danger billinfo"> Checkout</button>');
-        $("#loader").hide();
+        $("#loader").hide(); isEdit(true);
     });
-    $(document).on("click", ".btnOrderUndo", function (t) { t.preventDefault(); setTimeout(function () { $("#loader").show(); getOrderInfo(); }, 10); });
+    $(document).on("click", ".btnOrderUndo", function (t) { t.preventDefault(); setTimeout(function () { $("#loader").show(); getOrderInfo(); isEdit(false); }, 10); });
     $(document).on("click", "#btnOrderUpdate", function (t) { t.preventDefault(); updateCO(); });
     $('#billModal').on('shown.bs.modal', function () {
         $('#ddlCustomerSearch').select2({
@@ -154,6 +154,9 @@ $(document).ready(function () {
         successModal(pay_mode, pay_id, false);
     });
 });
+function isEdit(val) {
+    localStorage.setItem('isEdit', val ? 'yes' : 'no');
+}
 ///Bind States of Country
 function BindStateCounty(ctr, obj) {
     var res = wc_users_params.filter(element => element.abbreviation == obj.id);
@@ -206,6 +209,7 @@ function NewOrderNo() {
     let option = { OrderPostMeta: postMetaxml };
     if (cus_id > 0) {
         ajaxFunc('/Orders/GetNewOrderNo', option, beforeSendFun, function (result) { $('#hfOrderNo').val(result.message); $('#lblOrderNo').text('Order #' + result.message + ' detail '); }, completeFun, errorFun);
+        isEdit(true);
     }
 }
 ///Find Address of Customer
@@ -1784,7 +1788,7 @@ function saveCO() {
             else { swal('Alert!', data.message, "error").then((result) => { return false; }); }
         },
         error: function (xhr, status, err) { $("#loader").hide(); $('#btnCheckout').prop("disabled", false); $('.billinfo').prop("disabled", false); alert(err); },
-        complete: function () { $("#loader").hide(); $('#btnCheckout').prop("disabled", false); $('.billinfo').prop("disabled", false); $('#btnCheckout').text("Checkout"); },
+        complete: function () { $("#loader").hide(); $('#btnCheckout').prop("disabled", false); $('.billinfo').prop("disabled", false); $('#btnCheckout').text("Checkout"); isEdit(false); },
     });
     $('#btnCheckout').text("Checkout");
     return false;
@@ -1824,7 +1828,7 @@ function updateCO() {
             else { swal('Alert!', data.message, "error").then((result) => { return false; }); }
         },
         error: function (xhr, status, err) { $("#loader").hide(); alert(err); },
-        complete: function () { $("#loader").hide(); },
+        complete: function () { $("#loader").hide(); isEdit(false); },
     });
     //ajaxFunc('/Orders/SaveCustomerOrder', obj, beforeSendFun, function (data) {
     //    if (data.status == true) {

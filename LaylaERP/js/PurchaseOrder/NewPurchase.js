@@ -12,7 +12,7 @@
         $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList">Back to List</a><input type="submit" value="Create Order" id="btnSave" class="btn btn-danger billinfo" />');
         $('.billinfo').prop("disabled", false);
         let VendorID = parseInt($('#ddlVendor').val()) || 0;
-        getVendorProducts(VendorID);
+        getVendorProducts(VendorID); isEdit(true);
         setTimeout(function () {
             let _details = getVendorDetails();
             if (_details.length > 0) {
@@ -54,7 +54,7 @@
         else { $('#txtIncoTerms').val(''); }
     });
     $(document).on("click", ".btnEdit", function (t) {
-        t.preventDefault(); $("#loader").show();
+        t.preventDefault(); $("#loader").show(); isEdit(true);
         $('#ddlVendor').prop("disabled", true); $('.billinfo').prop("disabled", false); //$('#txtbillfirstname').focus();
         $('.entry-mode-action').empty().append('<button type="button" id="btnOtherProduct" class="btn btn-danger billinfo"><i class="fas fa-cube"></i> Add Other Product</button> ');
         $('.entry-mode-action').append('<button type="button" id="btnService" class="btn btn-danger billinfo"><i class="fas fa-concierge-bell"></i> Add Service</button>');
@@ -90,6 +90,9 @@
         orderStatusUpdate(id);
     });
 });
+function isEdit(val) {
+    localStorage.setItem('isEdit', val ? 'yes' : 'no');
+}
 function getMasters() {
     $.ajax({
         url: "/PurchaseOrder/GetAllMaster",
@@ -353,7 +356,7 @@ function getPurchaseOrderInfo() {
             url: "/PurchaseOrder/GetPurchaseOrderByID", type: "Get", beforeSend: function () { $("#loader").show(); }, data: option,
             success: function (result) {
                 try {
-                    let data = JSON.parse(result); let VendorID = 0; console.log(data);
+                    let data = JSON.parse(result); let VendorID = 0; //console.log(data);
                     for (let i = 0; i < data['po'].length; i++) {
                         VendorID = parseInt(data['po'][i].fk_supplier) || 0;
                         $('#lblPoNo').text(data['po'][i].ref); $('#txtRefvendor').val(data['po'][i].ref_supplier); $('#txtPODate').val(data['po'][i].date_creation);
@@ -410,7 +413,7 @@ function getPurchaseOrderInfo() {
                     $("#loader").hide(); swal('Alert!', "something went wrong.", "error");
                 }
             },
-            complete: function () { $("#loader").hide(); },
+            complete: function () { $("#loader").hide(); isEdit(false); },
             error: function (xhr, status, err) { $("#loader").hide(); swal('Alert!', "something went wrong.", "error"); }, async: false
         });
         $("#divAddItemFinal").find(".rowCalulate").change(function () { calculateFinal(); })
@@ -501,7 +504,7 @@ function saveVendorPO() {
                     swal('Alert!', data.message, 'error')
                 }
             },
-            complete: function () { $("#loader").hide(); },
+            complete: function () { $("#loader").hide(); isEdit(false); },
             error: function (error) { swal('Error!', 'something went wrong', 'error'); },
         });
     }

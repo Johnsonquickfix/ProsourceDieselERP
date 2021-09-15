@@ -1,10 +1,10 @@
-﻿ 
+﻿
 @{
     ViewBag.Title = "Purchase Information";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
-
+ 
+<link href="~/css/order_style.css?v=1.0.0" rel="stylesheet" />
 <style>
     .ml-auto {
         margin-left: auto;
@@ -25,8 +25,8 @@
             @*<li><a href="#tab_22" style="display:none" data-toggle="tab">Product</a></li>
                 <li><a href="#tab_23" style="display:none" data-toggle="tab">Selling prices</a></li>*@
 
-            <li title="Click here to see Kits" data-toggle="tooltip"><a href="#tab_24"  data-toggle="tab">Kits<span class="badge badge-danger"></span></a></li>
-            <li title="Click here to see Linked Warehouse" data-toggle="tooltip"><a href="#tab_23"  data-toggle="tab">Linked Warehouse</a></li>
+            <li title="Click here to see Kits" data-toggle="tooltip"><a href="#tab_24" data-toggle="tab">Kits<span class="badge badge-danger"></span></a></li>
+            <li title="Click here to see Linked Warehouse" data-toggle="tooltip"><a href="#tab_23" data-toggle="tab">Linked Warehouse</a></li>
             <li title="Click here to see Linked Warehouse" data-toggle="tooltip"><a href="#tab_25" title="Click here to see Notes" data-toggle="tab">Notes</a></li>
             <li title="Click here to see Linked Warehouse" data-toggle="tooltip"><a href="#tab_26" title="Click here to see Linked files" data-toggle="tab">Linked files</a></li>
         </ul>
@@ -41,7 +41,7 @@
                                 <label class="control-label ws_nowrap">Select Variation:&nbsp;&nbsp;&nbsp;&nbsp;</label>
                                 <select name="ddlproductchild" id="ddlproductchild" class="form-control">
                                 </select>
-                                &nbsp;&nbsp;&nbsp;&nbsp;     
+                                &nbsp;&nbsp;&nbsp;&nbsp;
                                 <button id="btnRefresh" title="Click here to refresh" data-toggle="tooltip" class="fa-refresh">Refresh</button>
                             </div>
                             @*<p><button class="btn btn-danger">Signed(needs billing)</button></p>*@
@@ -128,80 +128,87 @@
                                             <button id="btncopybuying" class="btn btn-danger" title="Click here to Copy to another vender" data-toggle="tooltip" style="margin-bottom:20px;">Copy To</button>
                                         </div>
                                     </div>
-                                        <div class="form-group d-flex">
-                                            <label class="col-sm-3 control-label">Tag/Lot/Serial No.</label>
-                                            <div class="col-sm-9">
-                                                <input type="text" id="txttaglotno" class="form-control">
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group d-flex">
-                                            <label class="col-sm-3 control-label">Min. purchase quantity</label>
-                                            <div class="col-sm-9">
-                                                <input type="text" id="txtminpurchasequantity" value="1" class="form-control">
-                                            </div>
-                                        </div>
-                                        <div class="form-group d-flex">
-                                            <label class="col-sm-3 control-label">Sales Tax </label>
-                                            <div class="col-sm-9">
-                                                <input type="text" id="txtSaletax" class="form-control">
-                                            </div>
-                                        </div>
-
-
-                                        <div class="form-group d-flex">
-                                            <label class="col-sm-3 control-label">Price (with no discount)</label>
-                                            <div class="col-sm-3">
-                                                <input type="text" id="txtcurrencyconversionrate" value="0" class="form-control">
-                                            </div>
-                                            <div class="col-sm-6">
-                                                <select id="ddltaxrate" class="form-control">
-                                                    <option value="0" selected="">Excl. tax</option>
-                                                    <option value="1">Inc. tax</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="form-group d-flex">
-                                            <label class="col-sm-3 control-label">Shipping Price</label>
-                                            <div class="col-sm-3">
-                                                <input type="text" id="txtshippingprice" value="0" class="form-control">
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group d-flex">
-                                            <label class="col-sm-3 control-label">Cost Price</label>
-                                            <div class="col-sm-3">
-                                                <input type="text" id="txtcostprice" class="form-control">
-                                            </div>
-                                        </div>
-
-
-                                        <div class="form-group d-flex">
-                                            <label class="col-sm-3 control-label">Discount</label>
-                                            <div class="col-sm-8">
-                                                <input type="text" id="txtDiscountqty" class="form-control">
-                                            </div>
-                                            <div class="col-sm-1">
-                                                %
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group d-flex">
-                                            <label class="col-sm-3 control-label">Remarks</label>
-                                            <div class="col-sm-9">
-                                                <input type="text" id="txtRemarks" class="form-control">
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group d-flex">
-                                            <div class="col-sm-11 text-right">
-                                                <button id="btnbuyingsave" title="Click here to add buying price" data-toggle="tooltip" class="btn btn-danger">Add/Update</button>
-                                            </div>
-                                            <div class="col-sm-1 text-right">
-                                                <button id="btnbuyingcl" title="Click here to Cancel" data-toggle="tooltip" class="btn btn-danger">Cancel</button>
-                                            </div>
+                                    <div class="form-group d-flex">
+                                        <label class="col-sm-3 control-label">Tag/Lot/Serial No.</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" id="txttaglotno" class="form-control">
                                         </div>
                                     </div>
+
+                                    <div class="form-group d-flex">
+                                        <label class="col-sm-3 control-label">Min. purchase quantity</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" id="txtminpurchasequantity" value="1" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group d-flex">
+                                        <label class="col-sm-3 control-label">Sales Tax </label>
+                                        <div class="col-sm-9">
+                                            <input type="text" id="txtSaletax" class="form-control">
+                                        </div>
+                                    </div>
+
+
+                                    <div class="form-group d-flex">
+                                        <label class="col-sm-3 control-label">Price (with no discount)</label>
+                                        <div class="col-sm-3">
+                                            <input type="text" id="txtcurrencyconversionrate" value="0" class="form-control">
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <select id="ddltaxrate" class="form-control">
+                                                <option value="0" selected="">Excl. tax</option>
+                                                <option value="1">Inc. tax</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group d-flex">
+                                        <label class="col-sm-3 control-label">Shipping Price</label>
+                                        <div class="col-sm-3">
+                                            <input type="text" id="txtshippingprice" value="0" class="form-control">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group d-flex">
+                                        <label class="col-sm-3 control-label">Misc. Costs (Duties, 3PL charges, etc..)</label>
+                                        <div class="col-sm-3">
+                                            <input type="text" id="txtMisccosts" value="0" class="form-control">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group d-flex">
+                                        <label class="col-sm-3 control-label">Cost Price</label>
+                                        <div class="col-sm-3">
+                                            <input type="text" id="txtcostprice" class="form-control">
+                                        </div>
+                                    </div>
+
+
+                                    <div class="form-group d-flex">
+                                        <label class="col-sm-3 control-label">Discount</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" id="txtDiscountqty" class="form-control">
+                                        </div>
+                                        <div class="col-sm-1">
+                                            %
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group d-flex">
+                                        <label class="col-sm-3 control-label">Remarks</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" id="txtRemarks" class="form-control">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group d-flex">
+                                        <div class="col-sm-11 text-right">
+                                            <button id="btnbuyingsave" title="Click here to add buying price" data-toggle="tooltip" class="btn btn-danger">Add/Update</button>
+                                        </div>
+                                        <div class="col-sm-1 text-right">
+                                            <button id="btnbuyingcl" title="Click here to Cancel" data-toggle="tooltip" class="btn btn-danger">Cancel</button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -225,6 +232,7 @@
                                                         <th>Sales Tax</th>
                                                         <th>Price</th>
                                                         <th>Shipping Price</th>
+                                                        <th>Misc. Price</th>
                                                         <th>Cost Price</th>
                                                         <th>Discount</th>
                                                         <th>Date</th>
@@ -485,8 +493,8 @@
                     <div class="col-md-12">
                         <div class="form-group d-flex">
                             <div class="col-sm-12 text-right">
-                            
-                            
+
+
                                 <button id="btnaddupdatechild" title="Click here to Add/Update Child products" data-toggle="tooltip" class="btn btn-danger">Add/Update</button>
                             </div>
                         </div>
@@ -553,7 +561,35 @@
 
 
             <div class="tab-pane" id="tab_25">
-                <div class="box box-primary">
+                <div class="box box-primary direct-chat">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Order notes</h3>
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body" style="">
+                        <ul class="order_notes">
+                        </ul>
+                    </div>
+                    <!-- /.box-body -->
+                    <div class="box-footer" style="">
+                        <div class="form-group">
+                            <label>Add note</label>
+                            <textarea type="text" name="order_note" id="add_order_note" class="form-control billnote" rows="3"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Note type</label>
+                            <div class="input-group">
+                                <select class="form-control select2 billnote" id="order_note_type" placeholder="Select Status" style="width: 100%;">
+                                    <option value="Private">Private note</option>
+                                    <option value="Public">Public Note</option>
+                                </select>
+                                <span class="input-group-btn"><button type="button" id="btnAddnote" class="btn btn-danger btn-flat billnote">Add</button></span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.box-footer-->
+                </div>
+                <div class="box box-primary" style="display:none">
                     <div class="box-body">
                         <div class="form-group mx-0">
                             <label class="control-label">Private</label>
@@ -613,8 +649,8 @@
                                 <div class="col-sm-12">
 
                                     @*@using (Html.BeginForm("FileUploade", "Product", FormMethod.Post, new { enctype = "multipart/form-data" }))
-                                    {*@
-                                       
+                                        {*@
+
                                     <div class="form-group">
                                         <div class="col-md-6">
                                             <input type="file" name="ImageFile" id="ImageFile" />
@@ -654,9 +690,9 @@
                                                 </thead>
                                                 <tbody id="divfileupload_services"></tbody>
                                             </table>
-                                            </div>
                                         </div>
                                     </div>
+                                </div>
                                 @*<div class="mb-35">
                                         <label class="control-label">Linked files and documents</label>
                                         <div class="table-responsive bank-table-wrapper">

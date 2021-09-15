@@ -497,5 +497,21 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(JSONresult, 0);
         }
+
+
+        [HttpPost]
+        public JsonResult UpdateGrantLeave(LeaveModel model)
+        {
+
+            if (model.rowid > 0)
+            {
+                LeaveRepository.UpdateGrantLeave(model);
+                return Json(new { status = true, message = "Data has been saved successfully!!", url = "", id = model.rowid }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+        }
     }
 }

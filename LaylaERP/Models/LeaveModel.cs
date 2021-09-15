@@ -21,5 +21,6 @@ namespace LaylaERP.Models
         public float days { get; set; }
         public string searchid { get; set; }
         public string strVal { get; set; }
+        public string justification { get; set; }
     }
 }

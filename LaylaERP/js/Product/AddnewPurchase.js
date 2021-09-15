@@ -29,6 +29,13 @@
             $this.val($this.val().replace(/[^\d.]/g, ''));
             $this.val($this.val().substring(0, 10));
         });
+
+     $("#txtMisccosts").keyup(function () {
+         var $this = $(this);
+         $this.val($this.val().replace(/[^\d.]/g, ''));
+         $this.val($this.val().substring(0, 10));
+     });
+
         $("#txtDiscountqty").keyup(function () {
         var $this = $(this);
         $this.val($this.val().replace(/[^\d.]/g, ''));
@@ -41,6 +48,7 @@
         setTimeout(function () { bindChildproductsservices(); }, 13000);
         setTimeout(function () { bindparentproductsservices(); }, 14000);
         setTimeout(function () { bindwarehouse(); }, 15000);
+        setTimeout(function () { getNotesList($("#ddlproductchild").val()); }, 15500);
         setTimeout(function () { bindfileuploade(); }, 16000);
 
         $('#dvbuysing').hide();
@@ -127,6 +135,12 @@
         addshippingprice();
     });
 
+     $("#txtMisccosts").change(function () {
+         addshippingprice();
+     });
+     $("#txtSaletax").change(function () {
+         addshippingprice();
+     });
     $('#lblcopyto').hide();
     $('#ddlvendercopy').hide();
     $('#btncopybuying').hide();
@@ -161,7 +175,9 @@ function getParentCategory(id) {
 $(document).on("click", "#btnRefresh", function (t) {    
     $('#ddlproductchild').trigger('change'); 
 });
-
+$(document).on("click", "#btnAddnote", function (t) {
+    t.preventDefault(); AddNotes();
+});
 $("#btnaddupdatechild").click(function (e) {
     let _ItemProduct = [];
     $("#order_line_items > tr").each(function (index, tr) {
@@ -337,7 +353,8 @@ function GetDataPurchaseByID(order_id) {
          
 
         },
-        error: function (msg) { alert(msg); }
+        error: function (msg) { alert(msg); },
+        async: false
     });
 
 }
@@ -350,6 +367,7 @@ $("#ddlproductchild").change(function (t) {
     bindChildproductsservices();
     bindparentproductsservices();
     bindwarehouse();
+    getNotesList($("#ddlproductchild").val());
     bindfileuploade();
     ClearControl();
     $('#dvbuysing').hide();
@@ -567,6 +585,7 @@ function AddBuyingt() {
     tagno = $("#txttaglotno").val();
     costprice = $("#txtcostprice").val();
     shippingprice = $("#txtshippingprice").val();
+    Misccosts = $("#txtMisccosts").val();
     Saletax = $("#txtSaletax").val();
     currency = $("#txtcurrencyconversionrate").val();
     taxrate = $("#ddltaxrate").val();
@@ -591,6 +610,7 @@ function AddBuyingt() {
             taglotserialno: tagno,
             cost_price: costprice,
             shipping_price: shippingprice,
+            Misc_Costs: Misccosts,
             salestax: Saletax,
             purchase_price: currency,
             taxrate: taxrate,
@@ -651,6 +671,7 @@ function btncopybuying() {
     tagno = $("#txttaglotno").val();
     costprice = $("#txtcostprice").val();
     shippingprice = $("#txtshippingprice").val();
+    Misccosts = $("#txtMisccosts").val();
     Saletax = $("#txtSaletax").val();
     currency = $("#txtcurrencyconversionrate").val();
     taxrate = $("#ddltaxrate").val();
@@ -675,6 +696,7 @@ function btncopybuying() {
             taglotserialno: tagno,
             cost_price: costprice,
             shipping_price: shippingprice,
+            Misc_Costs: Misccosts,
             salestax: Saletax,
             purchase_price: currency,
             taxrate: taxrate,
@@ -738,7 +760,7 @@ function bindbuyingprice() {
             for (var i = 0; i < data.length; i++) {
                 // let row_key = data[i].ID ;                      
                 itemsDetailsxml.push({
-                    PKey: data[i].ID, product_id: data[i].ID, product_name: data[i].name, salestax: data[i].salestax, purchase_price: data[i].purchase_price, cost_price: data[i].cost_price, date_inc: data[i].date_inc, discount: data[i].discount, minpurchasequantity: data[i].minpurchasequantity, taglotserialno: data[i].taglotserialno, shipping_price: data[i].shipping_price, StatusActive: data[i].Status
+                    PKey: data[i].ID, product_id: data[i].ID, product_name: data[i].name, salestax: data[i].salestax, purchase_price: data[i].purchase_price, cost_price: data[i].cost_price, date_inc: data[i].date_inc, discount: data[i].discount, minpurchasequantity: data[i].minpurchasequantity, taglotserialno: data[i].taglotserialno, shipping_price: data[i].shipping_price, Misc_Costs: data[i].Misc_Costs , StatusActive: data[i].Status
                 });
 
             }
@@ -764,6 +786,7 @@ function bindbuying(data) {
                 layoutHtml += '<td>' + '$'+ data[i].salestax + '</td>';
                 layoutHtml += '<td>' + '$' + data[i].purchase_price + '</td>';
                 layoutHtml += '<td>' + '$' + data[i].shipping_price + '</td>';
+                layoutHtml += '<td>' + '$' + data[i].Misc_Costs + '</td>';
                 layoutHtml += '<td>' + '$' + data[i].cost_price + '</td>';
                 layoutHtml += '<td>' + data[i].discount + '%' + '</td>';
                 layoutHtml += '<td>' + data[i].date_inc + '</td>';
@@ -791,6 +814,7 @@ function bindbuying(data) {
         layoutHtml += '<th>Sales Tax</th>';
         layoutHtml += '<th>Price</th>';
         layoutHtml += '<th>Shipping Price</th>';
+        layoutHtml += '<th>Misc. Price</th>';
         layoutHtml += '<th>Cost Price</th>';
         layoutHtml += '<th>Discount</th>';   
         layoutHtml += '<th>Date</th>';
@@ -826,6 +850,7 @@ function EditUser(id) {
             $('#txtcurrencyconversionrate').val(i[0].purchase_price).trigger('change');
             $("#txtcostprice").val(i[0].cost_price);
             $("#txtshippingprice").val(i[0].shipping_price);
+            $("#txtMisccosts").val(i[0].Misc_Costs);
             $("#txtDiscountqty").val(i[0].discount);
             $("#txtRemarks").val(i[0].remark);
             $('#ddlvender').val(i[0].fk_vendor).trigger('change');
@@ -1368,7 +1393,7 @@ function viewfileupload(id) {
 }
 function addshippingprice() {
 
-    let castprice = parseFloat($("#txtcurrencyconversionrate").val()) + parseFloat($("#txtshippingprice").val());
+    let castprice = parseFloat($("#txtcurrencyconversionrate").val()) + parseFloat($("#txtshippingprice").val()) + parseFloat($("#txtMisccosts").val())  + parseFloat($("#txtSaletax").val());
     $("#txtcostprice").val(castprice);
 }
 function ClearControl() {
@@ -1378,6 +1403,7 @@ function ClearControl() {
     $('#txtcurrencyconversionrate').val('0');
     $("#txtcostprice").val('0');
     $("#txtshippingprice").val('0');
+    $("#txtMisccosts").val('0');
     $("#txtDiscountqty").val('');
     $("#txtRemarks").val('');
     $('#ddlvender').val('').trigger('change');
@@ -1385,4 +1411,53 @@ function ClearControl() {
     $('#lblcopyto').hide();
     $('#ddlvendercopy').hide();
     $('#btncopybuying').hide();
+}
+///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Product Notes ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+var ajaxFunc = function (url, data, beforeSendFun, successFun, completeFun, errorFun) {
+    $.ajax({
+        type: "POST", url: url, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(data),
+        beforeSend: beforeSendFun, success: successFun, complete: completeFun, error: errorFun, async: false
+    });
+}
+function beforeSendFun() { $("#loader").show(); }
+function completeFun() { $("#loader").hide(); }
+function errorFun(XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); }
+
+function getNotesList(oid) {
+    oid = parseInt($('#ddlproductchild').val()) || 0;
+    var option = { strValue1: oid };
+    ajaxFunc('/Product/GetNotesList', option, beforeSendFun, function (result) {
+        let data = JSON.parse(result);
+        let noteHtml = '';
+        for (var i = 0; i < data.length; i++) {
+            let is_customer_note = parseInt(data[i].is_customer_note) || 0;
+            noteHtml += '<li id="linoteid_' + data[i].comment_ID + '" class="note system-note ' + (is_customer_note == 0 ? '' : 'customer-note') + '">';
+            noteHtml += '<div class="note_content"><p>' + data[i].comment_content + '</p></div>';
+            noteHtml += '<p class="meta"><abbr class="exact-date" title="' + data[i].comment_date + '">' + data[i].comment_date + '</abbr> ';
+            noteHtml += '<a href="javascript:void(0)" onclick="DeleteNotes(' + data[i].comment_ID + ');" class="delete_note billinfo" role="button">Delete note</a>';
+            noteHtml += '</p>';
+            noteHtml += '</li>';
+        }
+        $(".order_notes").empty().html(noteHtml);
+    }, completeFun, errorFun);
+}
+function AddNotes() {
+    let oid = parseInt($('#ddlproductchild').val()) || 0;
+    let option = { post_ID: oid, comment_content: $('#add_order_note').val(), is_customer_note: $('#order_note_type').val() };
+    ajaxFunc('/Product/NoteAdd', option, beforeSendFun, function (result) {
+        if (result.status) { getNotesList(oid); $('#add_order_note').val(''); }
+        else swal('Alert!', result.message, "error");
+    }, completeFun, errorFun);
+}
+function DeleteNotes(id) {
+    let option = { comment_ID: id }; let oid = parseInt($('#ddlproductchild').val()) || 0;
+    swal({ title: "Are you sure?", text: 'Would you like to Remove this note?', type: "question", showCancelButton: true })
+        .then((result) => {
+            if (result.value) {
+                ajaxFunc('/Product/NoteDelete', option, beforeSendFun, function (result) {
+                    if (result.status) getNotesList(oid);
+                    else swal('Alert!', result.message, "error");
+                }, completeFun, errorFun);
+            }
+        });
 }

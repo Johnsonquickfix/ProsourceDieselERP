@@ -1,6 +1,6 @@
 ﻿$(document).ready(function () {
     $('#txtDate').daterangepicker({
-        
+
         ranges: {
             'Today': [moment(), moment()],
             'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
@@ -12,7 +12,7 @@
         startDate: moment().add(-29, 'day'),
         autoUpdateInput: true, alwaysShowCalendars: true,
         locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' },
-        opens: 'right',
+        opens: 'left',
         orientation: "left auto",
     });
     getProducts();
@@ -72,8 +72,7 @@ function ProductStockGrid() {
     let pid = parseInt($("#ddlProduct").val()) || 0, ctid = parseInt($("#ddlCategory").val()) || 0;
     let obj = { strValue1: $("#txtsku").val().trim(), strValue2: (ctid > 0 ? ctid : ''), strValue3: (pid > 0 ? pid : ''), strValue4: sd, strValue5: ed };// console.log(obj);
     $('#dtdata').DataTable({
-        oSearch: { "sSearch": '' },
-        bAutoWidth: false, scrollX: false,
+        oSearch: { "sSearch": '' }, bAutoWidth: false, scrollX: false,
         dom: 'lBftip', buttons: [{ extend: 'excelHtml5', title: 'Product In-Hand Inventory Report', action: function (e, dt, button, config) { exportTableToCSV('Product In-Hand Inventory Report.xls'); } },
         {
             extend: 'csvHtml5', title: 'Product In-Hand Inventory Report', titleAttr: 'CSV',
@@ -99,14 +98,14 @@ function ProductStockGrid() {
             {
                 data: 'id', title: 'ID', sWidth: "8%", render: function (data, type, row) {
                     //if (row.post_parent > 0) return '<a href="javascript:void(0);" class="details-control"><i class="glyphicon glyphicon-plus-sign"></i></a> ↳  #' + row.id; else return '<a href="javascript:void(0);" class="details-control"><i class="glyphicon glyphicon-plus-sign"></i></a> <b>#' + row.id + '</b>';
-                    if (row.post_parent > 0) return '<a href="javascript:void(0);" class="details-control"><i class="glyphicon glyphicon-plus-sign"></i></a> -  #' + row.id; else return ' <b>#' + row.id + '</b>';
+                    if (row.post_parent > 0) return '<a href="javascript:void(0);" class="details-control" data-toggle="tooltip" title="Click here to show warehouse On-Hand Inventory."><i class="glyphicon glyphicon-plus-sign"></i></a> -  #' + row.id; else return ' <b>#' + row.id + '</b>';
                 }
             },
             { data: 'category', title: 'Category', sWidth: "8%" },
             { data: 'sku', title: 'SKU', sWidth: "8%" },
             { data: 'post_title', title: 'Product Name', sWidth: "20%" },
             {
-                data: 'op_stock', title: 'OP Stock', sWidth: "8%", className: "text-right", render: function (data, type, row) {
+                data: 'op_stock', title: 'Opening Stock', sWidth: "8%", className: "text-right", render: function (data, type, row) {
                     if (row.post_parent > 0) return row.op_stock.toFixed(0); else return '';
                 }
             },
@@ -141,18 +140,24 @@ function ProductStockGrid() {
 }
 /* Formatting function for row details - modify as you need */
 function format(d) {
-    console.log(d);
     let dfa = $('#txtDate').val().split('-');
     let sd = dfa[0].split('/'); sd = sd[1] + '/' + sd[0] + '/' + sd[2];
     let ed = dfa[1].split('/'); ed = ed[1] + '/' + ed[0] + '/' + ed[2];
-
-    let option = { strValue1: d.id, strValue2: sd, strValue3: ed }, wrHTML = '<table class="inventory-table table-blue table check-table table-bordered table-striped dataTable no-footer"><thead><tr><th style="width:40.8%; text-align:left;">Warehouse</th><th style="width:8%; text-align:right;">OP Stock</th><th style="width:8%; text-align:right;">Units In Stock</th><th style="width:8%; text-align:right;">Units in POs</th><th style="width:8%; text-align:right;">Sale Units</th><th style="width:8%; text-align:right;">Damage Units</th><th style="width:8%; text-align:right;">Available Units</th></thead></tr>';
+    //console.log(d);
+    let option = { strValue1: d.id, strValue2: sd, strValue3: ed }, wrHTML = '<table class="inventory-table table-blue table check-table table-bordered table-striped dataTable no-footer"><thead><tr><th style="width:40.8%; text-align:left;">Warehouse</th><th style="width:8%; text-align:right;">Opening Stock</th><th style="width:8%; text-align:right;">Units In Stock</th><th style="width:8%; text-align:right;">Units in POs</th><th style="width:8%; text-align:right;">Sale Units</th><th style="width:8%; text-align:right;">Damage Units</th><th style="width:8%; text-align:right;">Available Units</th></tr></thead>';
     $.ajax({
         url: '/Inventory/GetStockByWarehouse', type: 'post', dataType: 'json', contentType: "application/json; charset=utf-8", data: JSON.stringify(option),
         success: function (result) {
-            result = JSON.parse(result); 
+            result = JSON.parse(result);
+            if (result.length == 0) { wrHTML += '<tbody><tr><td valign="top" colspan="7" class="no-data-available">Sorry no matching records found.</td></tr></tbody>'; }
             $(result).each(function (index, row) {
-                wrHTML += '<tr><td>' + row.ref + '</td><td>' + row.op_stock.toFixed(0) + '</td><td>' + row.stock.toFixed(0) + '</td><td>' + row.UnitsinPO.toFixed(0) + '</td><td>' + row.SaleUnits.toFixed(0) + '</td><td>' + row.Damage.toFixed(0) + '</td><td>' + (row.op_stock + row.stock + row.UnitsinPO - row.SaleUnits - row.Damage).toFixed(0) + '</td></tr>';
+                let post_title = d.post_title + ' [' + row.ref + ']';
+                wrHTML += '<tr><td>' + row.ref + '</td><td>' + row.op_stock.toFixed(0) + '</td><td>' + row.stock.toFixed(0) + '</td>';
+                if (row.UnitsinPO > 0)
+                    wrHTML += '<td><a style="text-decoration: underline;font-weight: 700;" href="#" onclick="getPurchaseOrder(' + d.id + ',' + row.warehouse_id + ',\'' + post_title + '\'); "><i class="fas fa - search - plus"></i>' + row.UnitsinPO.toFixed(0) + '</a></td>';
+                else
+                    wrHTML += '<td>' + row.UnitsinPO.toFixed(0) + '</td>';
+                wrHTML += '<td>' + row.SaleUnits.toFixed(0) + '</td><td>' + row.Damage.toFixed(0) + '</td><td>' + (row.op_stock + row.stock + row.UnitsinPO - row.SaleUnits - row.Damage).toFixed(0) + '</td></tr > ';
             });
         },
         error: function (xhr, status, err) { alert(err); },
@@ -162,6 +167,60 @@ function format(d) {
     return wrHTML;
 }
 
+function getPurchaseOrder(pid, wid, title) {
+    let dfa = $('#txtDate').val().split('-');
+    let sd = dfa[0].split('/'); sd = sd[1] + '/' + sd[0] + '/' + sd[2];
+    let ed = dfa[1].split('/'); ed = ed[1] + '/' + ed[0] + '/' + ed[2];
+    let obj = { strValue1: pid, strValue2: wid, strValue3: sd, strValue4: ed };
+    searchOrderModal(title);
+    $('#tblOrderList').dataTable({
+        destroy: true, bServerSide: false, order: [[0, "desc"]],
+        columns: [
+            { data: 'ref', title: 'PO No', sWidth: "15%" },
+            { data: 'po_date', title: 'Date', sWidth: "15%" },
+            { data: 'vendor_name', title: 'Vendor Name', sWidth: "55%" },
+            { data: 'quantity', title: 'Quantity', sWidth: "15%", class: 'text-right' }
+        ],
+        sAjaxSource: "/Inventory/GetPOByWarehouse",
+        fnServerData: function (sSource, aoData, fnCallback, oSettings) {
+            oSettings.jqXHR = $.ajax({
+                dataType: 'json', type: "GET", url: sSource, data: obj,
+                "success": function (data) {
+                    data = JSON.parse(data);
+                    let dtOption = { sEcho: aoData.sEcho, recordsTotal: aoData.recordsTotal, recordsFiltered: aoData.recordsFiltered, aaData: data };
+                    return fnCallback(dtOption);
+                }
+            });
+        },
+    });
+
+}
+function searchOrderModal(title) {
+    let modalHtml = '<div class="modal-dialog modal-lg modal-1040">';
+    modalHtml += '<div class="modal-content">';
+    modalHtml += '<div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button>';
+    modalHtml += '<h4 class="modal-title" id="myModalLabel">Purchase Order List - ' + title + '</h4>';
+    modalHtml += '</div>';
+    modalHtml += '<div class="modal-body"></div>';
+    modalHtml += '</div>';
+    modalHtml += '</div>';
+    $("#billModal").empty().html(modalHtml);
+
+    modalHtml = '<div class="row mt-1">';
+    modalHtml += '<div class="col-md-12">';
+    modalHtml += '<div class="table-responsive">';
+    modalHtml += '<table id="tblOrderList" class="table table-blue check-table table-bordered table-striped dataTable tablelist">';
+    modalHtml += '<thead><tr><th style="width: 15%">PO No</th><th style="width: 15%">Date</th><th style="width: 55%">Vendor Name</th><th class="text-right" style="width: 15%">Quantity</th></tr></thead>';
+    modalHtml += '<tbody></tbody>';
+    modalHtml += '</table>';
+    modalHtml += '</div>';
+    modalHtml += '</div>';
+    modalHtml += '</div>';
+
+    $('#billModal .modal-body').append(modalHtml);
+    $("#billModal").modal({ backdrop: 'static', keyboard: false });
+}
+
 function exportTableToCSV(filename) {
     let tmpColDelim = String.fromCharCode(11); // vertical tab character
     let tmpRowDelim = String.fromCharCode(0); // null character
@@ -169,7 +228,7 @@ function exportTableToCSV(filename) {
     let colDelim = (filename.indexOf("xls") != -1) ? '\t' : ',';
     let rowDelim = '\r\n';
 
-    let csv = 'id' + colDelim + 'Category' + colDelim + 'SKU' + colDelim + 'Product Name' + colDelim + 'OP Stock' + colDelim + 'Units In Stock' + colDelim + 'Units in POs' + colDelim + 'Sale Units' + colDelim + 'Damage Units' + colDelim + 'Available Units' + rowDelim;
+    let csv = 'id' + colDelim + 'Category' + colDelim + 'SKU' + colDelim + 'Product Name' + colDelim + 'Opening Stock' + colDelim + 'Units In Stock' + colDelim + 'Units in POs' + colDelim + 'Sale Units' + colDelim + 'Damage Units' + colDelim + 'Available Units' + rowDelim;
 
     let dfa = $('#txtDate').val().split('-');
     let sd = dfa[0].split('/'); sd = sd[1] + '/' + sd[0] + '/' + sd[2];
@@ -180,7 +239,7 @@ function exportTableToCSV(filename) {
     $.ajax({
         url: "/Inventory/ExportProductStock", data: obj,
         type: "Get", beforeSend: function () { $("#loader").show(); },
-        success: function (result) {            
+        success: function (result) {
             result = JSON.parse(result);
             $(result['item']).each(function (index, data) {
                 //Parent Row
@@ -190,7 +249,7 @@ function exportTableToCSV(filename) {
                     csv += '#' + data.id + colDelim + (isNullAndUndef(data.category) ? data.category : '') + colDelim + (isNullAndUndef(data.sku) ? data.sku : '') + colDelim + data.post_title.replace(/\,/g, '') + colDelim + data.op_stock.toFixed(0) + colDelim + data.stock.toFixed(0) + colDelim + data.UnitsinPO.toFixed(0) + colDelim + data.SaleUnits.toFixed(0) + colDelim + data.Damage.toFixed(0) + colDelim + (data.op_stock + data.stock + data.UnitsinPO - data.SaleUnits - data.Damage).toFixed(0) + rowDelim;
                 //Child Row                
                 let res = result['details'].filter(element => element.product_id == data.id);
-                if (res.length > 0) csv += '' + colDelim + '' + colDelim + '' + colDelim + 'Warehouse' + colDelim + 'OP Stock' + colDelim + 'Units In Stock' + colDelim + 'Units in POs' + colDelim + 'Sale Units' + colDelim + 'Damage Units' + colDelim + 'Available Units' + rowDelim;
+                if (res.length > 0) csv += '' + colDelim + '' + colDelim + '' + colDelim + 'Warehouse' + colDelim + 'Opening Stock' + colDelim + 'Units In Stock' + colDelim + 'Units in POs' + colDelim + 'Sale Units' + colDelim + 'Damage Units' + colDelim + 'Available Units' + rowDelim;
                 $(res).each(function (index, wrhRow) {
                     csv += '' + colDelim + '' + colDelim + '' + colDelim + wrhRow.ref + colDelim + wrhRow.op_stock.toFixed(0) + colDelim + wrhRow.stock.toFixed(0) + colDelim + wrhRow.UnitsinPO.toFixed(0) + colDelim + wrhRow.SaleUnits.toFixed(0) + colDelim + wrhRow.Damage.toFixed(0) + colDelim + (wrhRow.op_stock + wrhRow.stock + wrhRow.UnitsinPO - wrhRow.SaleUnits - wrhRow.Damage).toFixed(0) + colDelim + rowDelim;
                 });

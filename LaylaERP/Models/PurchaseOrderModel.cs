@@ -10,6 +10,7 @@ namespace LaylaERP.Models
         public long RowID { get; set; }
         public string PONo { get; set; }
         public long VendorID { get; set; }
+        public int fk_warehouse { get; set; }
         public string VendorBillNo { get; set; }
         public int PaymentTerms { get; set; }
         public int Balancedays { get; set; }

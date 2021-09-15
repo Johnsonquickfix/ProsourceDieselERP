@@ -132,7 +132,7 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "SELECT rowid ID,fk_vendor,purchase_price,cost_price,minpurchasequantity,salestax,taxrate,discount,remark,taglotserialno,shipping_price from Product_Purchase_Items"
+                string strSql = "SELECT rowid ID,fk_vendor,purchase_price,cost_price,minpurchasequantity,salestax,taxrate,discount,remark,taglotserialno,shipping_price,Misc_Costs from Product_Purchase_Items"
                              + " WHERE rowid = " + model.strVal + " ";
 
 
@@ -415,7 +415,7 @@ namespace LaylaERP.BAL
                 {
                     if (!string.IsNullOrEmpty(strValue1))
                         strWhr += " fk_product = " + strValue1;
-                    string strSQl = "SELECT ppi.rowid,name,minpurchasequantity,FORMAT(salestax,2) salestax,FORMAT(purchase_price, 2) purchase_price,FORMAT(cost_price, 2) cost_price,FORMAT(shipping_price, 2) shipping_price,DATE_FORMAT(date_inc, '%m-%d-%Y') date_inc,ppi.discount,taglotserialno,case when is_active = 1 then 'Active' else 'InActive' end as Status"
+                    string strSQl = "SELECT ppi.rowid,name,minpurchasequantity,FORMAT(salestax,2) salestax,FORMAT(purchase_price, 2) purchase_price,FORMAT(cost_price, 2) cost_price,FORMAT(shipping_price, 2) shipping_price,FORMAT(Misc_Costs, 2) Misc_Costs,DATE_FORMAT(date_inc, '%m-%d-%Y') date_inc,ppi.discount,taglotserialno,case when is_active = 1 then 'Active' else 'InActive' end as Status"
                                 + " FROM Product_Purchase_Items ppi"
                                 + " left outer JOIN wp_vendor wpv on wpv.rowid = ppi.fk_vendor"
                                 + " WHERE" + strWhr;
@@ -440,6 +440,7 @@ namespace LaylaERP.BAL
                         productsModel.purchase_price = sdr["purchase_price"].ToString();
                         productsModel.cost_price = sdr["cost_price"].ToString();
                         productsModel.shipping_price = sdr["shipping_price"].ToString();
+                        productsModel.Misc_Costs = sdr["Misc_Costs"].ToString();
                         productsModel.date_inc = sdr["date_inc"].ToString();
                         productsModel.discount = sdr["discount"].ToString();
                         productsModel.Status = sdr["Status"].ToString();
@@ -1213,7 +1214,7 @@ namespace LaylaERP.BAL
             {
                 StringBuilder strSql = new StringBuilder();
                 //StringBuilder strSql = new StringBuilder(string.Format("delete from Product_Purchase_Items where fk_product = {0}; ", model.fk_product));
-                strSql.Append(string.Format("insert into Product_Purchase_Items ( fk_product,fk_vendor,purchase_price,cost_price,minpurchasequantity,salestax,taxrate,discount,remark,taglotserialno,shipping_price) values ({0},{1},{2},{3},{4},{5},{6},{7},'{8}','{9}',{10}); ", model.fk_product, model.fk_vendor, model.purchase_price, model.cost_price, model.minpurchasequantity, model.salestax, model.taxrate, model.discount, model.remark, model.taglotserialno, model.shipping_price));
+                strSql.Append(string.Format("insert into Product_Purchase_Items ( fk_product,fk_vendor,purchase_price,cost_price,minpurchasequantity,salestax,taxrate,discount,remark,taglotserialno,shipping_price,Misc_Costs) values ({0},{1},{2},{3},{4},{5},{6},{7},'{8}','{9}',{10},{11}); ", model.fk_product, model.fk_vendor, model.purchase_price, model.cost_price, model.minpurchasequantity, model.salestax, model.taxrate, model.discount, model.remark, model.taglotserialno, model.shipping_price, model.Misc_Costs));
                 //strSql.Append(string.Format("delete from product_warehouse where fk_product = {0}; ", model.fk_product));
                 //strSql.Append(string.Format("update product_warehouse set is_active = 0 where fk_product = {0}; ", model.fk_product));
                 // strSql.Append(string.Format("insert into product_warehouse(fk_product,fk_warehouse) (select '"+ model.fk_product + "',warehouseid from wp_VendorWarehouse where VendorID = "+ model.fk_vendor + ") "));
@@ -1277,7 +1278,7 @@ namespace LaylaERP.BAL
                 // strSql.Append(string.Format("insert into Product_Purchase_Items ( fk_vendor,purchase_price,cost_price,minpurchasequantity,salestax,taxrate,discount,remark) values ({0},{1},{2},{3},{4},{5},{6},{7},'{8}') ", model.fk_product, model.fk_vendor, model.purchase_price, model.cost_price, model.minpurchasequantity, model.salestax, model.taxrate, model.discount, model.remark));
 
                 /// step 6 : wp_posts
-                strSql.Append(string.Format("update Product_Purchase_Items set fk_vendor = {0} ,purchase_price = {1},cost_price = {2},minpurchasequantity = {3},salestax = {4},taxrate = {5},discount = {6},remark = '{7}',taglotserialno = '{8}',shipping_price = {9} where rowid = {10} ;", model.fk_vendor, model.purchase_price, model.cost_price, model.minpurchasequantity, model.salestax, model.taxrate, model.discount, model.remark, model.taglotserialno, model.shipping_price, model.ID));
+                strSql.Append(string.Format("update Product_Purchase_Items set fk_vendor = {0} ,purchase_price = {1},cost_price = {2},minpurchasequantity = {3},salestax = {4},taxrate = {5},discount = {6},remark = '{7}',taglotserialno = '{8}',shipping_price = {9},Misc_Costs = {10} where rowid = {11} ;", model.fk_vendor, model.purchase_price, model.cost_price, model.minpurchasequantity, model.salestax, model.taxrate, model.discount, model.remark, model.taglotserialno, model.shipping_price, model.Misc_Costs, model.ID));
                 //  strSql.Append(string.Format("delete from product_warehouse where fk_product = {0}; ", model.fk_product));
                 // strSql.Append(string.Format("update product_warehouse set is_active = 0 where fk_product = {0}; ", model.fk_product));
 
@@ -1904,6 +1905,80 @@ namespace LaylaERP.BAL
                 throw ex;
             }
             return dt;
+        }
+        //notes
+        public static DataTable GetNotes(long OrderID,string type)
+        {
+            DataTable DT = new DataTable();
+            try
+            {
+                string strSQl = string.Empty;
+                MySqlParameter[] parameters =
+                {
+                    new MySqlParameter("order_id", OrderID)
+                };
+                if (type.ToUpper() == "ADMINISTRATOR")
+                {
+                    strSQl = "select wp_c.comment_ID,DATE_FORMAT(wp_c.comment_date, '%M %d, %Y at %H:%i') comment_date,wp_c.comment_content,case when comment_type = 'Private' then 1 else 0 end is_customer_note from wp_Productnotes wp_c"
+                            + " where  comment_approved = '1' and comment_post_ID = @order_id order by wp_c.comment_ID desc;";
+                }
+                else
+                {
+                    strSQl = "select wp_c.comment_ID,DATE_FORMAT(wp_c.comment_date, '%M %d, %Y at %H:%i') comment_date,wp_c.comment_content,wp_cm.meta_value is_customer_note from wp_Productnotes wp_c"
+                            + " where comment_type = 'Public' and comment_approved = '1' and comment_post_ID = @order_id order by wp_c.comment_ID desc;";
+                }
+                DT = SQLHelper.ExecuteDataTable(strSQl, parameters);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DT;
+        }
+        public static int AddNotes(OrderNotesModel obj)
+        {
+            int result = 0;
+            try
+            {
+                obj.comment_date = DateTime.UtcNow.AddMinutes(-420);
+                obj.comment_date_gmt = DateTime.UtcNow;
+
+                string strSQL = "INSERT INTO wp_Productnotes(comment_post_ID,comment_date, comment_date_gmt, comment_content,  comment_approved, comment_type,user_id)"
+                            + " VALUES(@comment_post_ID,@comment_date,@comment_date_gmt,@comment_content,'1',@comment_type,'0');";
+             
+
+                MySqlParameter[] parameters =
+                {
+                    new MySqlParameter("@comment_post_ID", obj.post_ID),           
+                    new MySqlParameter("@comment_date", obj.comment_date),
+                    new MySqlParameter("@comment_date_gmt", obj.comment_date_gmt),
+                    new MySqlParameter("@comment_content", obj.comment_content),
+                    new MySqlParameter("@comment_type", obj.is_customer_note)
+                };
+                result = SQLHelper.ExecuteNonQuery(strSQL, parameters);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return result;
+        }
+        public static int RemoveNotes(OrderNotesModel obj)
+        {
+            int result = 0;
+            try
+            {
+                //string strSQL = "delete from wp_comments where comment_ID = @comment_ID;";
+                string strSQL = "update wp_Productnotes set comment_approved = '0' where comment_ID = @comment_ID;";
+                MySqlParameter[] parameters =
+                {
+                    new MySqlParameter("@comment_ID", obj.comment_ID)
+                };
+                result = SQLHelper.ExecuteNonQuery(strSQL, parameters);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return result;
         }
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Product Categories~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

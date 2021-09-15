@@ -12,7 +12,7 @@
         $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList">Back to List</a><input type="submit" value="Create Order" id="btnSave" class="btn btn-danger billinfo" />');
         $('.billinfo').prop("disabled", false);
         let VendorID = parseInt($('#ddlVendor').val()) || 0;
-        getVendorProducts(VendorID);
+        getVendorProducts(VendorID); isEdit(true);
         setTimeout(function () {
             let _details = getVendorDetails();
             if (_details.length > 0) {
@@ -54,11 +54,12 @@
         else { $('#txtIncoTerms').val(''); }
     });
     $(document).on("click", ".btnEdit", function (t) {
-        t.preventDefault(); $("#loader").show();
+        t.preventDefault(); $("#loader").show(); isEdit(true);
         $('#ddlVendor').prop("disabled", true); $('.billinfo').prop("disabled", false); //$('#txtbillfirstname').focus();
-        $('.entry-mode-action').empty().append('<button type="button" id="btnOtherProduct" class="btn btn-danger billinfo"><i class="fas fa-cube"></i> Add Other Product</button> ');
-        $('.entry-mode-action').append('<button type="button" id="btnService" class="btn btn-danger billinfo"><i class="fas fa-concierge-bell"></i> Add Service</button>');
-        $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList">Back to List</a><button type="button" class="btn btn-danger btnUndoRecord"><i class="fa fa-undo"></i> Cancel</button>  <button type="button" class="btn btn-danger" id="btnSave"><i class="far fa-save"></i> Update</button>');
+        $('.entry-mode-action').empty().append('<button type="button" id="btnOtherProduct" class="btn btn-danger billinfo" data-toggle="tooltip" title="Add Other Product"><i class="fas fa-cube"></i> Add Other Product</button> ');
+        $('.entry-mode-action').append('<button type="button" id="btnService" class="btn btn-danger billinfo"><i class="fas fa-concierge-bell" data-toggle="tooltip" title="Add Service"></i> Add Service</button>');
+        $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList">Back to List</a><button type="button" class="btn btn-danger btnUndoRecord" data-toggle="tooltip" title="Cancel"><i class="fa fa-undo"></i> Cancel</button>  <button type="button" class="btn btn-danger" id="btnSave" data-toggle="tooltip" title="Update"><i class="far fa-save"></i> Update</button>');
+        $(".top-action").empty().append('<button type="button" class="btn btn-danger btnUndoRecord" data-toggle="tooltip" title="Cancel"><i class="fa fa-undo"></i> Cancel</button>  <button type="button" class="btn btn-danger" id="btnSave" data-toggle="tooltip" title="Update"><i class="far fa-save"></i> Update</button>');
         $("#loader").hide();
     });
     $(document).on("click", ".btnUndoRecord", function (t) { t.preventDefault(); $("#loader").show(); getPurchaseOrderInfo(); });
@@ -90,6 +91,9 @@
         orderStatusUpdate(id);
     });
 });
+function isEdit(val) {
+    localStorage.setItem('isEdit', val ? 'yes' : 'no');
+}
 function getMasters() {
     $.ajax({
         url: "/PurchaseOrder/GetAllMaster",
@@ -108,9 +112,13 @@ function getMasters() {
             $("#ddlBalancedays").html('<option value="0">Select Balance days</option>');
             for (i = 0; i < dt['Table2'].length; i++) { $("#ddlBalancedays").append('<option value="' + dt['Table2'][i].id + '">' + dt['Table2'][i].text + '</option>'); }
 
-            //Balance
+            //Incoterms
             $("#ddlIncoTerms").html('<option value="0">Select Incoterms</option>');
             for (i = 0; i < dt['Table3'].length; i++) { $("#ddlIncoTerms").append('<option value="' + dt['Table3'][i].id + '">' + dt['Table3'][i].text + '</option>'); }
+
+            //Warehouse
+            $("#ddlWarehouse").html('<option value="0">Select Warehouse</option>');
+            for (i = 0; i < dt['Table4'].length; i++) { $("#ddlWarehouse").append('<option value="' + dt['Table4'][i].id + '">' + dt['Table4'][i].text + '</option>'); }
         },
         complete: function () { $("#loader").hide(); },
         error: function (xhr, status, err) { $("#loader").hide(); }, async: false
@@ -341,15 +349,15 @@ function getPurchaseOrderInfo() {
     let oid = parseInt($('#lblPoNo').data('id')) || 0;
     if (oid > 0) {
         $('#ddlVendor,.billinfo').prop("disabled", true);
-        $('.page-heading').text('Edit Purchase Order ').append('<a class="btn btn-danger" href="/PurchaseOrder/PurchaseOrderList">Back to List</a>');
+        $('.page-heading').text('Edit Purchase Order ').append('<a class="btn btn-danger" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List">Back to List</a>');
         $('#line_items,#product_line_items').empty();
-        $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList">Back to List</a>');
+        $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List">Back to List</a>');
         var option = { strValue1: oid };
         $.ajax({
             url: "/PurchaseOrder/GetPurchaseOrderByID", type: "Get", beforeSend: function () { $("#loader").show(); }, data: option,
             success: function (result) {
                 try {
-                    let data = JSON.parse(result); let VendorID = 0; 
+                    let data = JSON.parse(result); let VendorID = 0; //console.log(data);
                     for (let i = 0; i < data['po'].length; i++) {
                         VendorID = parseInt(data['po'][i].fk_supplier) || 0;
                         $('#lblPoNo').text(data['po'][i].ref); $('#txtRefvendor').val(data['po'][i].ref_supplier); $('#txtPODate').val(data['po'][i].date_creation);
@@ -360,12 +368,13 @@ function getPurchaseOrderInfo() {
                         $('#ddlPaymentType').val(data['po'][i].fk_payment_type).trigger('change');
                         $('#txtNotePublic').val(data['po'][i].note_public); $('#txtNotePrivate').val(data['po'][i].note_private);
                         $('#txtIncoTerms').val(data['po'][i].location_incoterms);
+                        $('#ddlWarehouse').val(data['po'][i].fk_warehouse).trigger('change');
                         if (!data['po'][i].date_livraison.includes('00/00/0000')) $('#txtPlanneddateofdelivery').val(data['po'][i].date_livraison);
 
                         if (data['po'][i].fk_status == '1')
-                            $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList">Back to List</a><button type="button" class="btn btn-danger btnEdit"><i class="far fa-edit"></i> Edit</button> <button type="button" class="btn btn-danger btnApproved"><i class="fas fa-check-double"></i> Approved</button>');
+                            $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List">Back to List</a><button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button> <button type="button" class="btn btn-danger btnApproved" data-toggle="tooltip" title="Approved and create invoice."><i class="fas fa-check-double"></i> Approved</button>');
                         else
-                            $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList">Back to List</a><button type="button" class="btn btn-danger btnEdit"><i class="far fa-edit"></i> Edit</button>');
+                            $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List">Back to List</a><button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button>');
                     }
                     getVendorProducts(VendorID);
                     for (let i = 0; i < data['pod'].length; i++) {
@@ -405,18 +414,17 @@ function getPurchaseOrderInfo() {
                     $("#loader").hide(); swal('Alert!', "something went wrong.", "error");
                 }
             },
-            complete: function () { $("#loader").hide(); },
+            complete: function () { $("#loader").hide(); isEdit(false); },
             error: function (xhr, status, err) { $("#loader").hide(); swal('Alert!', "something went wrong.", "error"); }, async: false
         });
         $("#divAddItemFinal").find(".rowCalulate").change(function () { calculateFinal(); })
         $('#ddlVendor,.billinfo').prop("disabled", true); calculateFinal(); $('.entry-mode-action').empty();
-
-        $("#btnPrintPdf").removeClass('hidden');
+        $(".top-action").empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Purchase Order"><i class="fas fa-print"></i> Print</button> <button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button>');
     }
     else {
         $('.billinfo').prop("disabled", true); $('#lblPoNo').text('Draft');
         $("#loader").hide(); $('.page-heading').text('Add New Order');
-        $("#btnPrintPdf").addClass('hidden');
+        $(".top-action").empty();
     }
 }
 
@@ -463,7 +471,7 @@ function saveVendorPO() {
     let balance_days = parseInt($("#ddlBalancedays").val()) || 0;
     let payment_type = parseInt($("#ddlPaymentType").val()) || 0;
     let date_livraison = $("#txtPlanneddateofdelivery").val().split('/');
-
+    let wh_id = parseInt($("#ddlWarehouse").val()) || 0;
     let incoterms = parseInt($("#ddlIncoTerms").val()) || 0;
     let location_incoterms = $("#txtIncoTerms").val();
     let note_public = $("#txtNotePublic").val();
@@ -476,7 +484,7 @@ function saveVendorPO() {
     else {
         if (date_livraison.length > 0) date_livraison = date_livraison[2] + '/' + date_livraison[0] + '/' + date_livraison[1];
         let option = {
-            RowID: id, VendorID: vendorid, PONo: '', VendorBillNo: ref_vendor, PaymentTerms: payment_term, Balancedays: balance_days, PaymentType: payment_type,
+            RowID: id, VendorID: vendorid, PONo: '', VendorBillNo: ref_vendor, fk_warehouse: wh_id, PaymentTerms: payment_term, Balancedays: balance_days, PaymentType: payment_type,
             Planneddateofdelivery: date_livraison, IncotermType: incoterms, Incoterms: location_incoterms, NotePublic: note_public, NotePrivate: note_private,
             total_tva: 0, localtax1: parseFloat($("#salesTaxTotal").text()), localtax2: parseFloat($("#shippingTotal").text()), total_ht: parseFloat($("#SubTotal").text()),
             discount: parseFloat($("#discountTotal").text()), total_ttc: parseFloat($("#orderTotal").text()), PurchaseOrderProducts: _list
@@ -496,7 +504,7 @@ function saveVendorPO() {
                     swal('Alert!', data.message, 'error')
                 }
             },
-            complete: function () { $("#loader").hide(); },
+            complete: function () { $("#loader").hide(); isEdit(false); },
             error: function (error) { swal('Error!', 'something went wrong', 'error'); },
         });
     }

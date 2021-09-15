@@ -1,5 +1,6 @@
 ﻿using LaylaERP.BAL;
 using LaylaERP.Models;
+using LaylaERP.UTILITIES;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -42,11 +43,11 @@ namespace LaylaERP.Controllers
             //try
             //{
             string returnValue = string.Empty;
-            string space = "#";      
+            string space = "#";
             for (var index = 0; index < noOfSpaces; index++)
             {
                 returnValue += space;
-            }          
+            }
             //}
             //catch { }
             return returnValue;
@@ -338,7 +339,7 @@ namespace LaylaERP.Controllers
                 }
                 else
                 {
-                   DataTable dtware = ProductRepository.Getwarehouse(model);
+                    DataTable dtware = ProductRepository.Getwarehouse(model);
                     if (dtware.Rows.Count > 0)
                     {
                         resultOne = ProductRepository.AddBuyingtProduct(model, dateinc);
@@ -711,7 +712,7 @@ namespace LaylaERP.Controllers
                 }
                 else
                 {
-                   
+
                     ProductRepository.Add_term(Convert.ToInt32(myarray[i]), Convert.ToInt32(ID));
                     ProductRepository.update_countinc(Convert.ToInt32(myarray[i]), Convert.ToInt32(ID));
                 }
@@ -719,7 +720,7 @@ namespace LaylaERP.Controllers
         }
         private void update_countdes(ProductModel model, long ID)
         {
-            string CommaStr = new ProductRepository().GetCountforupdate(ID); 
+            string CommaStr = new ProductRepository().GetCountforupdate(ID);
 
             var myarray = CommaStr.Split(',');
 
@@ -735,7 +736,7 @@ namespace LaylaERP.Controllers
                 }
             }
         }
-            private void delete_term(ProductModel model, long ID)
+        private void delete_term(ProductModel model, long ID)
         {
             ProductRepository.Edit_term(model.ProductTypeID, Convert.ToInt32(ID));
             //ProductRepository.Edit_term(model.ShippingclassID, Convert.ToInt32(ID));
@@ -1127,22 +1128,22 @@ namespace LaylaERP.Controllers
         {
 
             string result = string.Empty;
-            bool status = false;      
+            bool status = false;
             try
             {
-               int res = ProductRepository.UpdateVariantStatus(model.ProductPostMeta);
-               if (res > 0)
+                int res = ProductRepository.UpdateVariantStatus(model.ProductPostMeta);
+                if (res > 0)
                 {
-                  status = true;
-               }
+                    status = true;
+                }
 
                 //  int resl = ProductRepository.UpdateItemVariantStatus(model.ProductPostItemMeta);
 
-              int resl = ProductRepository.UpdateshippingVariantStatus(model.ProductPostItemMeta);
+                int resl = ProductRepository.UpdateshippingVariantStatus(model.ProductPostItemMeta);
 
-               int respost = ProductRepository.UpdatePostStatus(model.ProductPostPostMeta);
+                int respost = ProductRepository.UpdatePostStatus(model.ProductPostPostMeta);
 
-              int reprice = ProductRepository.addprice(model.ProductPostPriceMeta);
+                int reprice = ProductRepository.addprice(model.ProductPostPriceMeta);
             }
             catch { status = false; result = ""; }
             return Json(new { status = true, message = "Product Variations has been update successfully!!", ID = 1 }, 0);
@@ -1600,6 +1601,59 @@ namespace LaylaERP.Controllers
             catch { status = false; result = ""; }
             return Json(new { status = true, message = "update successfully!!", ID = 1 }, 0);
         }
+
+        [HttpPost]
+        public JsonResult GetNotesList(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                long oid = 0;
+                string type = CommanUtilities.Provider.GetCurrent().UserType;
+                if (!string.IsNullOrEmpty(model.strValue1)) { oid = Convert.ToInt64(model.strValue1); }
+                if (oid <= 0)
+                {
+                    throw new Exception("Invalid Data");
+                }
+                DataTable DT = ProductRepository.GetNotes(oid, type);
+                JSONresult = JsonConvert.SerializeObject(DT);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+
+        [HttpPost]
+        public JsonResult NoteAdd(OrderNotesModel model)
+        {
+            string JSONresult = string.Empty; bool b_status = false;
+            try
+            {
+                OperatorModel om = CommanUtilities.Provider.GetCurrent();
+                model.comment_author = om.UserName; model.comment_author_email = om.EmailID;
+                int res = ProductRepository.AddNotes(model);
+                if (res > 0)
+                {
+                    JSONresult = "Product note added successfully."; b_status = true;
+                }
+            }
+            catch (Exception ex) { JSONresult = ex.Message; }
+            return Json(new { status = b_status, message = JSONresult }, 0);
+        }
+        [HttpPost]
+        public JsonResult NoteDelete(OrderNotesModel model)
+        {
+            string JSONresult = string.Empty; bool b_status = false;
+            try
+            {
+                int res = ProductRepository.RemoveNotes(model);
+                if (res > 0)
+                {
+                    JSONresult = "Product note deleted successfully."; b_status = true;
+                }
+            }
+            catch (Exception ex) { JSONresult = ex.Message; }
+            return Json(new { status = b_status, message = JSONresult }, 0);
+        }
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Product Categories~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         public JsonResult GetParentCategory(string id)
         {
@@ -1695,7 +1749,7 @@ namespace LaylaERP.Controllers
                     }
                 }
             }
-           
+
         }
         public JsonResult ProductCategoryList(ProductCategoryModel model)
         {
@@ -1723,7 +1777,7 @@ namespace LaylaERP.Controllers
                 int ID = new ProductRepository().DeleteProductCategory(termID);
                 if (ID > 0)
                 {
-                    
+
                     return Json(new { status = true, message = "Product category has been deleted successfully!!", url = "", id = ID }, 0);
                 }
                 else
@@ -1763,6 +1817,9 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(JSONresult, 0);
         }
-
+   
     }
+     
+
+    
 }

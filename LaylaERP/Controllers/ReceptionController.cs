@@ -141,5 +141,21 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(new { add = om.address, add1 = om.address1, city = om.City, state = om.State, zip = om.postal_code, country = om.Country, phone = om.user_mobile, email = om.email, website = om.website, data = JSONresult }, 0);
         }
+        [HttpGet]
+        public JsonResult GetPurchaseOrder_Rec(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            OperatorModel om = CommanUtilities.Provider.GetCurrent();
+            try
+            {
+                long id = 0;
+                if (!string.IsNullOrEmpty(model.strValue1))
+                    id = Convert.ToInt64(model.strValue1);
+                DataSet ds = ReceptionRepository.GetPurchaseOrder_Rec(id);
+                JSONresult = JsonConvert.SerializeObject(ds);
+            }
+            catch { }
+            return Json(new { add = om.address, add1 = om.address1, city = om.City, state = om.State, zip = om.postal_code, country = om.Country, phone = om.user_mobile, email = om.email, website = om.website, data = JSONresult }, 0);
+        }
     }
 }

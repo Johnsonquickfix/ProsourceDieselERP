@@ -1,6 +1,6 @@
 ﻿$(document).ready(function () {
-    getLeaveType();
-    getEmployee();
+    //getLeaveType();
+    //getEmployee();
     EmployeeList();
 })
 
@@ -142,6 +142,97 @@ function EmployeeList() {
 
         ]
     });
+}
+
+
+function updateLeave() {
+    fromdate = $("#txtfrom").val();
+    var formattedDate = new Date(fromdate);
+    var d = formattedDate.getDate();
+    var m = ("0" + (formattedDate.getMonth() + 1)).slice(-2)
+    var y = formattedDate.getFullYear();
+    var getfromdate = y + "-" + m + "-" + d;
+    //var getfromdate = y + "-" + m + "-" + d;
+
+    todate = $("#txtto").val();
+    var formattedDate1 = new Date(todate);
+    var d1 = formattedDate1.getDate();
+    var m1 = ("0" + (formattedDate1.getMonth() + 1)).slice(-2)
+    var y1 = formattedDate1.getFullYear();
+    var gettodate = y1 + "-" + m1 + "-" + d1;
+
+    id = $("#hfid").val();
+    employee = $("#ddlemployee").val();
+    leavecode = $("#ddlLeaveType").val();
+    var leave = $("#ddlLeaveType option:selected");
+    var leavetype = leave.text();
+    desc_ription = $("#txtdescription").val();
+    notepublic = $("#txtpublic").val();
+    noteprivate = $("#txtprivate").val();
+    getdays = $("#txtdays").val();
+    justification = $("#txtJustification").val();
+    status = $("#ddlStatus").val();
+
+    if (employee == 0) {
+        swal('Alert', 'Please select employee', 'error').then(function () { swal.close(); $('#ddlemployee').focus(); });
+    }
+    else if (leavecode == 0) {
+        swal('Alert', 'Please select leave type', 'error').then(function () { swal.close(); $('#ddlLeaveType').focus(); });
+    }
+    else if (fromdate == "") {
+        swal('Alert', 'Please enter from date', 'error').then(function () { swal.close(); $('#txtfrom').focus(); });
+    }
+    else if (todate == "") {
+        swal('Alert', 'Please enter to date', 'error').then(function () { swal.close(); $('#txtto').focus(); });
+    }
+    else if (desc_ription == "") {
+        swal('Alert', 'Please enter description', 'error').then(function () { swal.close(); $('#txtdescription').focus(); });
+    }
+    else if (desc_ription == "") {
+        swal('Alert', 'Please enter description', 'error').then(function () { swal.close(); $('#txtdescription').focus(); });
+    }
+    else {
+
+        var obj = {
+            rowid: id,
+            fk_emp: employee,
+            leave_code: leavecode,
+            description: desc_ription,
+            leave_type: leavetype,
+            from_date: getfromdate,
+            to_date: gettodate,
+            note_public: notepublic,
+            note_private: noteprivate,
+            days: getdays,
+            justification: justification,
+            is_approved: status,
+        }
+        $.ajax({
+            url: '/Hrms/UpdateGrantLeave/', dataType: 'json', type: 'Post',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(obj),
+            dataType: "json",
+            beforeSend: function () { $("#loader").show(); },
+            success: function (data) {
+                $("#loader").hide();
+                if (data.status == true) {
+                    swal('Alert!', data.message, 'success').then((result) => { location.href = '../ListGrantLeave'; });;
+                    reset();
+                    $("#btnUpdate").hide();
+                    $("#btnAdd").show();
+                    LeaveList();
+
+                }
+                else {
+                    swal('Alert!', data.message, 'error');
+                }
+            },
+            complete: function () { $("#loader").hide(); },
+            error: function (error) { swal('Error!', 'something went wrong', 'error'); },
+        })
+
+    }
+
 }
 
 

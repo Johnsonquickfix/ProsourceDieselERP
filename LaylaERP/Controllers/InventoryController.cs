@@ -119,6 +119,23 @@ namespace LaylaERP.Controllers
             return Json(result, 0);
         }
         [HttpGet]
+        public JsonResult GetPOByWarehouse(SearchModel model)
+        {
+            string result = string.Empty;
+            try
+            {
+                DateTime fromdate = DateTime.Now, todate = DateTime.Now;
+                if (!string.IsNullOrEmpty(model.strValue3))
+                    fromdate = Convert.ToDateTime(model.strValue3);
+                if (!string.IsNullOrEmpty(model.strValue4))
+                    todate = Convert.ToDateTime(model.strValue4);
+                DataTable dt = InventoryRepository.GetPurchaseOrderByWarehouse(model.strValue1, model.strValue2, fromdate, todate);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
+        [HttpGet]
         public JsonResult ExportProductStock(JqDataTableModel model)
         {
             string result = string.Empty;

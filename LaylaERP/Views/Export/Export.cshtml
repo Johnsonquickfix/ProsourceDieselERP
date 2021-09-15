@@ -11,9 +11,9 @@
 <div class="contennt setting-section table-design export-section">
     <div class="nav-tabs-custom">
         <ul class="nav nav-tabs">
-            <li class="active"><a href="#tab_1" data-toggle="tab">Orders</a></li>
-            <li><a href="#tab_2" data-toggle="tab">Users</a></li>
-            <li><a href="#tab_3" data-toggle="tab">Customers</a></li>
+            <li class="active"><a href="#tab_1" data-toggle="tab"><span title="Order's List" data-placement="bottom" data-toggle="tooltip">Orders</span></a></li>
+            <li><a href="#tab_2" data-toggle="tab"><span title="User's List" data-placement="bottom" data-toggle="tooltip">Users</span></a></li>
+            <li><a href="#tab_3" data-toggle="tab"><span title="Customer's List" data-placement="bottom" data-toggle="tooltip">Customers</span></a></li>
         </ul>
         <div class="tab-content">
             <div class="tab-pane active" id="tab_1">
@@ -24,9 +24,9 @@
                             <span class="even-space">To</span><input type="text" name="todate" id="todate" />
                             @*From <input type="date" name="fromdate" id="fromdate">
                                 To<input type="date" name="todate" id="todate" >*@
-                            <input type="button" id="btnorder" class="button action" value="Go" />
-                            <input type="button" id="btnvieworders" class="button action" value="Refresh" />
-                        </div>
+                            <span title="Click Here To Search Orders Datewise" data-placement="bottom" data-toggle="tooltip"><input type="button" id="btnorder" class="button action" value="Go" /></span>
+                            <span title="Click Here To Refresh Order List" data-placement="bottom" data-toggle="tooltip"><input type="button" id="btnvieworders" class="button action" value="Refresh" /></span>
+</div>
                     </div>
                 </div>
                 <div id="poststuff" class="woocommerce-reports-wide">
@@ -57,13 +57,13 @@
                         <div class="alignleft actions bulkactions">
                             <span>From</span><input type="text" name="fromdateusers" id="fromdateusers" />
                             <span>To</span><input type="text" name="todateusers" id="todateusers" />
-                            <input type="button" id="btnusers" class="button" value="Go" />&nbsp;&nbsp;
+                            <span title="Click Here To Search Users Datewise" data-placement="bottom" data-toggle="tooltip"><input type="button" id="btnusers" class="button" value="Go" /></span>&nbsp;&nbsp;
                             <select name="new_role" id="new_role" class="mydata" style="width:initial">
                                 <option value="%">Choose role</option>
                             </select>
-                            <input type="button" name="changeit" id="changeit" class="button" value="Go" />
-                            <input type="button" id="btnviewusers" class="button" value="Refresh" />
-                        </div>
+                            <span title="Click Here To Search User Role Wise" data-placement="bottom" data-toggle="tooltip"><input type="button" name="changeit" id="changeit" class="button" value="Go" /></span>
+                            <span title="Click Here To Refresh User's List" data-placement="bottom" data-toggle="tooltip"><input type="button" id="btnviewusers" class="button" value="Refresh" /></span>
+</div>
                     </div>
                 </div>
                 <div id="poststuff" class="woocommerce-reports-wide">
@@ -95,9 +95,9 @@
                         <div class="alignleft actions bulkactions">
                             <span>From</span><input type="text" name="fromdatecustomers" id="fromdatecustomers" />
                             <span>To</span><input type="text" name="todatecustomers" id="todatecustomers" />
-                            <input type="button" id="btncustomers" class="button" value="Go" />
-                            <input type="button" id="btnviewcustomers" class="button" value="Refresh" />
-                        </div>
+                            <span title="Click Here To Search Customers Datewise" data-placement="bottom" data-toggle="tooltip"><input type="button" id="btncustomers" class="button" value="Go" /></span>
+                            <span title="Click Here To Refresh Customer's List" data-placement="bottom" data-toggle="tooltip"><input type="button" id="btnviewcustomers" class="button" value="Refresh" /></span>
+</div>
                     </div>
                 </div>
                 <div id="poststuff" class="woocommerce-reports-wide">

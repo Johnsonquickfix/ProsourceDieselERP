@@ -13,7 +13,7 @@
 </div>
 <div class="page-title">
     <h2 class="page-heading" id="lbltitle">Add New Customer</h2>
-    @Html.ActionLink("Back to List", "Customer", null, new { @class = "btn btn-danger" })
+    <span title="Click Here To Back To Customer List" data-placement="bottom" data-toggle="tooltip">@Html.ActionLink("Back to List", "Customer", null, new { @class = "btn btn-danger" })</span>
 </div>
 <!-- Main content -->
 <section class="content content-section p-0">
@@ -108,8 +108,8 @@
         </div>
         <div class="box-footer">
             <div class="text-right">
-                <input type="submit" value="Submit" id="btnSave" class="btn btn-danger" />
-            </div>
+                <span title="Click Here To Save Customer Details" data-placement="bottom" data-toggle="tooltip"><input type="submit" value="Submit" id="btnSave" class="btn btn-danger" /></span>
+</div>
         </div>
         <!-- /.row -->
     </div>

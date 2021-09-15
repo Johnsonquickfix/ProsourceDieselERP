@@ -77,6 +77,13 @@
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
+                            <label class="control-label" for="ddlwarehouse" data-toggle="tooltip" title="Warehouse .">Warehouse <span class="text-red">*</span></label>
+                            <div class="">
+                                <select class="form-control select2 billinfofo" id="ddlwarehouse"></select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                             <label class="control-label " for="Planned date of delivery" data-toggle="tooltip" title="Planned date of delivery by vender.">Planned date of delivery<span class="text-red">*</span></label>
                             <div class="">
                                 <div class="input-group">
@@ -86,21 +93,15 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label " for="Note (public)">Note (public)</label>
+                            <label class="control-label " for="Note">Note</label>
                             <div class="">
-                                <textarea id="txtNotePublic" class="form-control billinfo" placeholder="Note (public)"></textarea>
+                                <textarea id="txtNotePublic" class="form-control billinfo" placeholder="Note"></textarea>
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div style="display:none" class="form-group">
                             <label class="control-label " for="Note (private)">Note (private)</label>
                             <div class="">
                                 <textarea id="txtNotePrivate" class="form-control billinfo" placeholder="Note (private)"></textarea>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label" for="ddlwarehouse" data-toggle="tooltip" title="Warehouse .">Warehouse <span class="text-red">*</span></label>
-                            <div class="">
-                                <select class="form-control select2 billinfofo" id="ddlwarehouse"></select>
                             </div>
                         </div>
 

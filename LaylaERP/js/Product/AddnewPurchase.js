@@ -43,13 +43,13 @@
     });
 
     if (id != "" && id != "AddNewPurchase" && id != "AddNewProduct") {        
-        setTimeout(function () { GetDataPurchaseByID($("#ddlproductchild").val()); }, 11000);
-        setTimeout(function () { bindbuyingprice(); }, 12000);
-        setTimeout(function () { bindChildproductsservices(); }, 13000);
-        setTimeout(function () { bindparentproductsservices(); }, 14000);
-        setTimeout(function () { bindwarehouse(); }, 15000);
-        setTimeout(function () { getNotesList($("#ddlproductchild").val()); }, 15500);
-        setTimeout(function () { bindfileuploade(); }, 16000);
+        setTimeout(function () { GetDataPurchaseByID($("#ddlproductchild").val()); }, 15000);
+        setTimeout(function () { bindbuyingprice(); }, 16000);
+        setTimeout(function () { bindChildproductsservices(); }, 17000);
+        setTimeout(function () { bindparentproductsservices(); }, 18000);
+        setTimeout(function () { bindwarehouse(); }, 19000);
+        setTimeout(function () { getNotesList($("#ddlproductchild").val()); }, 200000);
+        setTimeout(function () { bindfileuploade(); }, 210000);
 
         $('#dvbuysing').hide();
         $(document).on('click', "#btnbuying", function () {
@@ -1399,7 +1399,7 @@ function addshippingprice() {
 function ClearControl() {
     $("#txtminpurchasequantity").val('1');
     $("#txttaglotno").val('');
-    $("#txtSaletax").val('');
+    $("#txtSaletax").val('0');
     $('#txtcurrencyconversionrate').val('0');
     $("#txtcostprice").val('0');
     $("#txtshippingprice").val('0');

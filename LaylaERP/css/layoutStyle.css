@@ -2554,10 +2554,11 @@ html .listproduct .inventory-table td:nth-child(2) {
 .category-searchbox #btnsrc{padding:0 8px;height:30px;line-height:30px;text-decoration:none;border:1px solid #adadad;border-radius:3px;font-size:12px;line-height:normal;color:#4f4f4f;background:#f3f5f6;cursor:pointer}
 .category-searchbox {display: flex; margin-bottom:10px;}
 .configuration-section .input-group{width:100%;}
-#billModal .modal-dialog{margin-top:15px;font-family: sans-serif;} 
+#billModal .modal-dialog{margin-top:20px; margin-bottom:20px;font-family: sans-serif;} 
 #billModal #myModalLabel{color: #9da3a6;font-weight: 700;text-transform: uppercase;}
 #billModal .modal-header {padding:8px 10px;}
 #billModal .modal-footer {padding:8px 10px;}
+#billModal .modal-body {height: calc(100vh - 135px);overflow-y: auto;overflow-x: hidden;}
 #billModal .modal-footer .col-md-7{padding-left:0px;}
 #ddlPaymentMethod{margin-right:5px !important; }
 #billModal .modal-header .close {margin-top: 0px;}

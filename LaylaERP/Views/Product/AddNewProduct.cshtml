@@ -23,26 +23,27 @@
     <div class="row flex-row_box">
         <div class="col-md-9">
             <div class="page-title">
-                    <h2 class="page-heading" id="lbltitle">Add New Product</h2>
-                    <a id="btnbacklist" title="Click here to go back" data-toggle="tooltip" data-placement="bottom" class="backtoback btn btn-danger">Back to list</a>
-                    <a class="btn btn-danger" style="display:none" id="btnAdd" href="../AddNewProduct">Add New</a>
-                    <input type="hidden" id="hfid" />
-                    <input type="hidden" id="hfprodcid" />
-                    <input type="hidden" id="hfcategid" />
-                    <input type="hidden" id="hfprodectcategoryid" />
-                    <input type="hidden" id="hfUpdatedID" />
-                    <input type="hidden" id="hfproductattributesID" />
-                    <input type="hidden" id="hfattributeheaderval" />
-                    <input type="hidden" id="hfvproductattributes" />
-                    <input type="hidden" id="hfproductvariationID" />
-                    <input type="hidden" id="hfvariantprotuctID" />
-                    <input type="hidden" id="hftitle" />
-               
+                <h2 class="page-heading" id="lbltitle">Add New Product</h2>
+                <a id="btnbacklist" title="Click here to go back" data-toggle="tooltip" data-placement="bottom" class="backtoback btn btn-danger">Back to list</a>
+                <a class="btn btn-danger" style="display:none" id="btnAdd" href="../AddNewProduct">Add New</a>
+                <input type="hidden" id="hfid" />
+                <input type="hidden" id="hfprodcid" />
+                <input type="hidden" id="hfcategid" />
+                <input type="hidden" id="hfprodectcategoryid" />
+                <input type="hidden" id="hfUpdatedID" />
+                <input type="hidden" id="hfproductattributesID" />
+                <input type="hidden" id="hfattributeheaderval" />
+                <input type="hidden" id="hfvproductattributes" />
+                <input type="hidden" id="hfproductvariationID" />
+                <input type="hidden" id="hfvariantprotuctID" />
+                <input type="hidden" id="hftitle" />
+                <input type="hidden" id="hfEdit" value="" />
+
                 @*<a class="btn btn-danger" id="btnPurchase">Purchase Prices </a>*@
-                
-                    <button id="btnSave" title="Click here to Add/Update" data-toggle="tooltip" data-placement="bottom" class="btn btn-danger">Save</button>
-                    <button id="btnedit" title="Click here to Edit" data-toggle="tooltip" data-placement="bottom" class="btn btn-danger">Edit</button>
-                    <button id="btncancel" title="" data-toggle="tooltip" class="btn btn-danger">Cancel</button>
+
+                <button id="btnSave" title="Click here to Add/Update" data-toggle="tooltip" data-placement="bottom" class="btn btn-danger">Save</button>
+                <button id="btnedit" title="Click here to Edit" data-toggle="tooltip" data-placement="bottom" class="btn btn-danger">Edit</button>
+                <button id="btncancel" title="" data-toggle="tooltip" class="btn btn-danger">Cancel</button>
             </div>
             <div class="box box-primary">
                 <div class="box-header">
@@ -96,7 +97,7 @@
                                     <optgroup label="Product Type">
                                         <option value="2" selected="selected">Simple product</option>
                                         @*<option value="3">Grouped product</option>
-                                    <option value="5">External/Affiliate product</option>*@
+                                        <option value="5">External/Affiliate product</option>*@
                                         <option value="4">Variable product</option>
                                     </optgroup>
                                 </select>
@@ -238,32 +239,32 @@
                                         <select id="ddlShipping" class="form-control">
                                             <option value="-1">No shipping class</option>
                                             @*<option class="level-0" value="200">Adjustabe Base (Split King)</option>
-                                        <option class="level-0" value="246">Adjustable Base (Full)</option>
-                                        <option class="level-0" value="201">Adjustable Base (King)</option>
-                                        <option class="level-0" value="199">Adjustable Base (Queen)</option>
-                                        <option class="level-0" value="198">Adjustable Base (Twin XL)</option>
-                                        <option class="level-0" value="71">Bed Frame</option>
-                                        <option class="level-0" value="114">Blanket</option>
-                                        <option class="level-0" value="30">Foundation</option>
-                                        <option class="level-0" value="50">Free Shipping</option>
-                                        <option class="level-0" value="263">Hybrid Cal King</option>
-                                        <option class="level-0" value="260">Hybrid Full</option>
-                                        <option class="level-0" value="262">Hybrid King</option>
-                                        <option class="level-0" value="261">Hybrid Queen</option>
-                                        <option class="level-0" value="258">Hybrid Twin</option>
-                                        <option class="level-0" value="259">Hybrid Twin XL</option>
-                                        <option class="level-0" value="257">Mattress Cal King</option>
-                                        <option class="level-0" value="254">Mattress Full</option>
-                                        <option class="level-0" value="256">Mattress King</option>
-                                        <option class="level-0" value="196">Mattress Protector</option>
-                                        <option class="level-0" value="255">Mattress Queen</option>
-                                        <option class="level-0" value="252">Mattress Twin</option>
-                                        <option class="level-0" value="253">Mattress Twin XL</option>
-                                        <option class="level-0" value="195">Memory Foam Pillow</option>
-                                        <option class="level-0" value="52">Pillow</option>
-                                        <option class="level-0" value="202">Platform Bed</option>
-                                        <option class="level-0" value="107">Sheets</option>
-                                        <option class="level-0" value="87">Topper</option>*@
+                                            <option class="level-0" value="246">Adjustable Base (Full)</option>
+                                            <option class="level-0" value="201">Adjustable Base (King)</option>
+                                            <option class="level-0" value="199">Adjustable Base (Queen)</option>
+                                            <option class="level-0" value="198">Adjustable Base (Twin XL)</option>
+                                            <option class="level-0" value="71">Bed Frame</option>
+                                            <option class="level-0" value="114">Blanket</option>
+                                            <option class="level-0" value="30">Foundation</option>
+                                            <option class="level-0" value="50">Free Shipping</option>
+                                            <option class="level-0" value="263">Hybrid Cal King</option>
+                                            <option class="level-0" value="260">Hybrid Full</option>
+                                            <option class="level-0" value="262">Hybrid King</option>
+                                            <option class="level-0" value="261">Hybrid Queen</option>
+                                            <option class="level-0" value="258">Hybrid Twin</option>
+                                            <option class="level-0" value="259">Hybrid Twin XL</option>
+                                            <option class="level-0" value="257">Mattress Cal King</option>
+                                            <option class="level-0" value="254">Mattress Full</option>
+                                            <option class="level-0" value="256">Mattress King</option>
+                                            <option class="level-0" value="196">Mattress Protector</option>
+                                            <option class="level-0" value="255">Mattress Queen</option>
+                                            <option class="level-0" value="252">Mattress Twin</option>
+                                            <option class="level-0" value="253">Mattress Twin XL</option>
+                                            <option class="level-0" value="195">Memory Foam Pillow</option>
+                                            <option class="level-0" value="52">Pillow</option>
+                                            <option class="level-0" value="202">Platform Bed</option>
+                                            <option class="level-0" value="107">Sheets</option>
+                                            <option class="level-0" value="87">Topper</option>*@
                                         </select>
                                     </div>
                                 </div>
@@ -292,10 +293,10 @@
                                     </div>
 
                                     @*<div>
-                                    <input type="text" id="tbTableName" placeholder="Enter Table Name" />
-                                    <button id="btAdd" type="submit" class="btn btn-danger">Add</button>
-                                </div>
-                                <div id="main"></div>*@
+                                        <input type="text" id="tbTableName" placeholder="Enter Table Name" />
+                                        <button id="btAdd" type="submit" class="btn btn-danger">Add</button>
+                                    </div>
+                                    <div id="main"></div>*@
                                     <div class="col-auto ps-1">
                                         <button title="Click here to Add product attribute" data-toggle="tooltip" id="add" type="submit" class="btn btn-danger">Add</button>
                                     </div>
@@ -304,26 +305,26 @@
                                 <div class="d-flex">
                                     <table id="tbhold" class="simple-table">
                                         @*<thead>
-                                        <tr>
-                                            <th>Varenummer</th>
-                                            <th>Serienummer</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                <div class="col-md-8">
-                                                    <input type="text" name="Name[0]" id="Name" class="form-control" />
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="col-md-8">
-                                                    <input type="text" name="Value[0]" id="Value" class="form-control" />
-                                                </div>
-                                            </td>
-                                            <td>
-                                            </td>
-                                    </tbody>*@
+                                            <tr>
+                                                <th>Varenummer</th>
+                                                <th>Serienummer</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <div class="col-md-8">
+                                                        <input type="text" name="Name[0]" id="Name" class="form-control" />
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="col-md-8">
+                                                        <input type="text" name="Value[0]" id="Value" class="form-control" />
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                </td>
+                                        </tbody>*@
                                     </table>
                                 </div>
                                 @*</form>*@
@@ -369,7 +370,7 @@
         <div class="col-md-3">
             <div class="page-title">
                 <h2 class="page-heading">Choose Category <span style="color:red;"> *</span></h2>
-          
+
             </div>
             <div class="box box-primary">
                 <div class="box-header">
@@ -387,16 +388,24 @@
                             @foreach (var item in @ViewBag.product)
                             {
                                 <li class="w3-check">
-                                    <input type="checkbox" name="chkproducttype" id="chkproductID@(++i)" value="@item.Value"  />
+                                    <input type="checkbox" name="chkproducttype" id="chkproductID@(++i)" value="@item.Value" />
                                     <label for="chkproductID@(i++)">@item.Text</label>
                                 </li>
                             }
                         </ul>
                     </div>
+
                 </div>
             </div>
+
         </div>
+       
+       @*var url = window.location.pathname;*@
+        @*<a id="btnbackcategory" title="Click here to go category" href="javascript:;" onclick="addTabs({id:'41',title: 'Categories',close: true,url: '/Product/ProductCategories',urlType: 'none'});App.fixIframeCotent();" data-toggle="tooltip" style="float: right; margin-right:10px;" data-placement="bottom" class="btn btn-primary btn-flat button">Add New Category</a>*@
+    <div class="col-md-3" style="margin-top:5px;border-radius:5px">
+        <a id="btnbackcategory" title="Click here to go category" data-toggle="tooltip"   data-placement="bottom" class="btn btn-danger">Add New Category</a>
     </div>
+        </div>
     <div class="row">
         <div id="divPurchase" class="col-md-12">
             @Html.Partial("AddNewPurchase")
@@ -406,11 +415,19 @@
 
 @*<script src="https://cdn.tiny.cloud/1/qagffr3pkuv17a8on1afax661irst1hbr4e6tbv888sz91jc/tinymce/5.8.2-114/tinymce.min.js"></script>*@
 <script src="@Url.Content("~/js/Product/AddnewProduct.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+<script src="@Url.Content("~/js/Users/RolePermission.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 <script type="text/javascript">
     //tinymce.init({
     //    selector: 'textarea#formatcustom',
     //    height: 200,
     //    plugins: 'table wordcount'
+    //});
+
+    //$(document).ready(function () {
+    //    var urlperm = "/Product/ListProduct";
+    //    CheckPermissions("#btnSave", "#hfEdit", "", urlperm);
+    //    CheckPermissions("#btnedit", "#hfEdit", "", urlperm);
+    //    CheckPermissions("#btnSaveupdate", "#hfEdit", "", urlperm);
     //});
     $("input[id*=btnsrc]").click(function () {
         var searchvalue = $("input[id*=txtsrc]").val();    

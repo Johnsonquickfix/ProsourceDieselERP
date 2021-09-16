@@ -211,7 +211,7 @@
                     {
                     new MySqlParameter("@UserID", UserID),
                 };
-                DT = SQLHelper.ExecuteDataTable("Select wer.role_id,wem.menu_id,wem.menu_code,wem.menu_name,wem.menu_url,wem.menu_icon,wem.parent_id,wer.flag,if (wem.parent_id is null, 0, 1) as level, if (wer.role_id is null, false, (if(flag='C',true,null))) as checked,if (add_ is null, false, true) as RoleAdd,if (edit_ is null, false, true) as RoleEdit,if (delete_ is null, false, true) as RoleDelete, if (add_ is null, 'unchecked', 'checked') as CheckAdd,if (edit_ is null, '', 'checked') as CheckEdit,if (delete_ is null, '', 'checked') as CheckDelete from wp_erpmenus wem left outer join  wp_erprole_rest wer on wem.menu_id = wer.erpmenu_id and wer.role_id = @UserID;", para);
+                DT = SQLHelper.ExecuteDataTable("Select wer.role_id,wem.menu_id,wem.menu_code,wem.menu_name,wem.menu_url,wem.menu_icon,wem.parent_id,wer.flag,if (wem.parent_id is null, 0, 1) as level, if (wer.role_id is null, false, (if(flag='C',true,null))) as checked,if (add_ is null, false, true) as RoleAdd,if (edit_ is null, false, true) as RoleEdit,if (delete_ is null, false, true) as RoleDelete, if (add_ is null, 'unchecked', 'checked') as CheckAdd,if (edit_ is null, '', 'checked') as CheckEdit,if (delete_ is null, '', 'checked') as CheckDelete from wp_erpmenus wem left outer join  wp_erprole_rest wer on wem.menu_id = wer.erpmenu_id and wer.role_id = @UserID where wem.status = 1;", para);
             }
             catch (Exception ex)
             { throw ex; }

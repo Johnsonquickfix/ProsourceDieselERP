@@ -227,7 +227,7 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@warehouse_id", warehouse_id)
                 };
                 //string strSql = "select ref,coalesce(sum(case when pwr.flag = 'R' then quantity else -quantity end),0) stock from product_stock_register pwr inner join wp_warehouse wr on wr.rowid = pwr.warehouse_id where product_id = @product_id group by pwr.warehouse_id";
-                string strSql = "select psr.warehouse_id,psr.product_id,tran_type,tran_id,po.ref,DATE_FORMAT(date_creation,'%m/%d/%Y') po_date,v.name vendor_name,psr.quantity"
+                string strSql = "select psr.warehouse_id,psr.product_id,tran_type,tran_id,po.ref,DATE_FORMAT(date_creation,'%m/%d/%Y') po_date,DATE_FORMAT(date_livraison,'%m/%d/%Y') date_livraison,v.name vendor_name,psr.quantity"
                             + " from product_stock_register psr"
                             + " inner join commerce_purchase_order po on po.rowid = psr.tran_id"
                             + " inner join wp_vendor v on po.fk_supplier = v.rowid"

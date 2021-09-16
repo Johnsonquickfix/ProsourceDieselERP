@@ -1,4 +1,8 @@
-﻿@model LaylaERP.Models.ExportModel
+﻿
+@model dynamic
+@{
+    var user = LaylaERP.UTILITIES.CommanUtilities.Provider.GetCurrent();
+}
 
 @{
     ViewBag.Title = "Export";
@@ -12,21 +16,23 @@
     <div class="nav-tabs-custom">
         <ul class="nav nav-tabs">
             <li class="active"><a href="#tab_1" data-toggle="tab"><span title="Order's List" data-placement="bottom" data-toggle="tooltip">Orders</span></a></li>
-            <li><a href="#tab_2" data-toggle="tab"><span title="User's List" data-placement="bottom" data-toggle="tooltip">Users</span></a></li>
+            <li id="hello"><a href="#tab_2" data-toggle="tab"><span title="User's List" data-placement="bottom" data-toggle="tooltip">Users</span></a></li>
             <li><a href="#tab_3" data-toggle="tab"><span title="Customer's List" data-placement="bottom" data-toggle="tooltip">Customers</span></a></li>
         </ul>
         <div class="tab-content">
             <div class="tab-pane active" id="tab_1">
+                <input type="hidden" id="hfuserid" value="@user.UserID" />
+                <input type="hidden" id="hfusertype" value="@user.UserType" />
                 <div class="user-top-section">
                     <div class="tablenav top">
                         <div class="alignleft actions bulkactions">
                             <span class="even-space">From</span><input type="text" name="fromdate" id="fromdate" />
                             <span class="even-space">To</span><input type="text" name="todate" id="todate" />
                             @*From <input type="date" name="fromdate" id="fromdate">
-                                To<input type="date" name="todate" id="todate" >*@
+                    To<input type="date" name="todate" id="todate" >*@
                             <span title="Click Here To Search Orders Datewise" data-placement="bottom" data-toggle="tooltip"><input type="button" id="btnorder" class="button action" value="Go" /></span>
                             <span title="Click Here To Refresh Order List" data-placement="bottom" data-toggle="tooltip"><input type="button" id="btnvieworders" class="button action" value="Refresh" /></span>
-</div>
+                        </div>
                     </div>
                 </div>
                 <div id="poststuff" class="woocommerce-reports-wide">
@@ -63,7 +69,7 @@
                             </select>
                             <span title="Click Here To Search User Role Wise" data-placement="bottom" data-toggle="tooltip"><input type="button" name="changeit" id="changeit" class="button" value="Go" /></span>
                             <span title="Click Here To Refresh User's List" data-placement="bottom" data-toggle="tooltip"><input type="button" id="btnviewusers" class="button" value="Refresh" /></span>
-</div>
+                        </div>
                     </div>
                 </div>
                 <div id="poststuff" class="woocommerce-reports-wide">
@@ -97,7 +103,7 @@
                             <span>To</span><input type="text" name="todatecustomers" id="todatecustomers" />
                             <span title="Click Here To Search Customers Datewise" data-placement="bottom" data-toggle="tooltip"><input type="button" id="btncustomers" class="button" value="Go" /></span>
                             <span title="Click Here To Refresh Customer's List" data-placement="bottom" data-toggle="tooltip"><input type="button" id="btnviewcustomers" class="button" value="Refresh" /></span>
-</div>
+                        </div>
                     </div>
                 </div>
                 <div id="poststuff" class="woocommerce-reports-wide">
@@ -129,8 +135,9 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-
+        //$("#hello").css("display", "none");
         GetUsersCount();
+       
         //DatagridCustomers();
         //DatagridOrder();
 
@@ -152,9 +159,9 @@
                 if (d1 > d2) {
                     swal('Alert', 'Please check, From date should not be greater than To date ', 'error').then(function () { swal.close(); $('#fromdate').focus(); });
                 }
-                else if (d2 > d4) {
-                    swal('Alert', 'Please check, To date should not be greater than current date ', 'error').then(function () { swal.close(); $('#todate').focus(); });
-                }
+                //else if (d2 > d4) {
+                //    swal('Alert', 'Please check, To date should not be greater than current date ', 'error').then(function () { swal.close(); $('#todate').focus(); });
+                //}
                 else {
                     DatagridOrder();
                     $("#fromdate").val("");
@@ -181,9 +188,9 @@
             else if (d5 > d6) {
                 swal('Alert', 'Please check, From date should not be greater than To date ', 'error').then(function () { swal.close(); $('#fromdateusers').focus(); });
             }
-            else if (d6 > currentdate) {
-                swal('Alert', 'Please check, To date should not be greater than Current date ', 'error').then(function () { swal.close(); $('#todateusers').focus(); });
-            }
+            //else if (d6 > currentdate) {
+            //    swal('Alert', 'Please check, To date should not be greater than Current date ', 'error').then(function () { swal.close(); $('#todateusers').focus(); });
+            //}
             else {
                 DatagridUsers();
                 $("#fromdateusers").val("");
@@ -211,9 +218,9 @@
             else if (dt > dt1) {
                 swal('Alert', 'Please check, From date should not be greater than To date ', 'error').then(function () { swal.close(); $('#fromdatecustomers').focus(); });
             }
-            else if (dt1 > dt3) {
-                swal('Alert', 'Please check, To date should not be greater than Current date', 'error').then(function () { swa.close(); $('#todatecustomers').focus(); });
-            }
+            //else if (dt1 > dt3) {
+            //    swal('Alert', 'Please check, To date should not be greater than Current date', 'error').then(function () { swa.close(); $('#todatecustomers').focus(); });
+            //}
             else {
                 DatagridCustomers();
                 $("#fromdatecustomers").val("");
@@ -272,8 +279,10 @@
 
 
     function DatagridOrder() {
+       
         var from_date = $("#fromdate").val();
         var to_date = $("#todate").val();
+        var user_id = $("#hfuserid").val();
         //var obj = { mydate: mydate };
         $('#exportorderdata').DataTable({
             "lengthMenu": [[10, 20, 50, 100], [10, 20, 50, 100]],
@@ -285,7 +294,7 @@
                 "url": '/Export/GetData',
                 "type": 'POST',
                 "dataType": 'json',
-                "data": { from_date: from_date, to_date: to_date }
+                "data": { from_date: from_date, to_date: to_date, user: user_id }
                 //"data": JSON.stringify(obj)
 
             },
@@ -336,7 +345,7 @@
                     extend: 'csv',
                     className: 'button',
                     text: '<i class="fas fa-file-csv"></i> CSV',
-                    filename:'Order'
+                    filename: 'Order'
                 },
                 //{
                 //    extend: 'print',
@@ -366,6 +375,20 @@
         var fromdateusers = $("#fromdateusers").val();
         var todateusers = $("#todateusers").val();
         var userrole = $("#new_role").val();
+        var button = [];
+        var usertype = $("#hfusertype").val();
+        if (usertype.toUpperCase() == "ADMINISTRATOR") {
+            button = [
+                {
+                    extend: 'csv',
+                    className: 'button',
+                    text: '<i class="fas fa-file-csv"></i> CSV',
+                    filename: 'User'
+                },
+            ]
+        }
+        
+
         $('#exportuserdata').DataTable({
             destroy: true,
             searching: false,
@@ -391,7 +414,7 @@
                 },
                 { 'data': 'user_address', title: 'Address', sWidth: "15%" },
                 { 'data': 'phone', title: 'Phone Number', sWidth: "10%" },
-                {
+                { 
                     'data': 'created_date', title: 'Date', sWidth: "10%",
                     'render': function (jsonDate) {
                         var date = new Date(parseInt(jsonDate.substr(6)));
@@ -417,20 +440,21 @@
 
             "order": [1, 'desc'],
             "dom": 'lBfrtip',
-            "buttons": [
-
+            "buttons": button,
+            /*"buttons": [
                 {
+                    
                     extend: 'csv',
                     className: 'button',
                     text: '<i class="fas fa-file-csv"></i> CSV',
-                    filename:'User'
+                    filename: 'User'
                 },
-                //{
-                //    extend: 'print',
-                //    className: 'button',
-                //    text: '<i class="fas fa-print"></i> Print'
-                //}
-            ],
+                {
+                    extend: 'print',
+                    className: 'button',
+                    text: '<i class="fas fa-print"></i> Print'
+                }
+            ],*/
 
         });
 
@@ -450,6 +474,19 @@
     function DatagridCustomers() {
         var fromdatecustomers = $("#fromdatecustomers").val();
         var todatecustomers = $("#todatecustomers").val();
+        var buttons = [];
+        var usertype = $("#hfusertype").val();
+        if (usertype.toUpperCase() == "ADMINISTRATOR") {
+            buttons = [
+                {
+                    extend: 'csv',
+                    className: 'button',
+                    text: '<i class="fas fa-file-csv"></i> CSV',
+                    filename: 'User'
+                },
+            ]
+        }
+
         $('#exportcustomerdata').DataTable({
 
             destroy: true,
@@ -465,13 +502,13 @@
 
             "columns": [
                 { 'data': null, sWidth: "5%" },
-                { 'data': 'UID', title:'ID', sWidth: "10%" },
+                { 'data': 'UID', title: 'ID', sWidth: "10%" },
                 { 'data': 'customer_name', title: 'Name', sWidth: "10%" },
                 { 'data': 'customer_email', title: 'Email', sWidth: "20%" },
                 { 'data': 'customer_status', title: 'Address', sWidth: "20%" },
                 { 'data': 'customer_phone', title: 'Phone Number', sWidth: "20%" },
                 {
-                    'data': 'customerdate_created', title: 'Date', sWidth:"15%",
+                    'data': 'customerdate_created', title: 'Date', sWidth: "15%",
                     'render': function (jsonDate) {
                         var date = new Date(parseInt(jsonDate.substr(6)));
                         var datevalue = ("0" + (date.getDate())).slice(-2);
@@ -495,20 +532,21 @@
 
             "order": [1, 'desc'],
             "dom": 'lBfrtip',
-            "buttons": [
+            "buttons": buttons,
+           /* "buttons": [
 
                 {
                     extend: 'csv',
                     className: 'button',
                     text: '<i class="fas fa-file-csv"></i> CSV',
-                    filename:'Customer'
+                    filename: 'Customer'
                 },
                 //{
                 //    extend: 'print',
                 //    className: 'button',
                 //    text: '<i class="fas fa-print"></i> Print'
                 //}
-            ],
+            ], */
 
         });
 
@@ -532,31 +570,31 @@
 <script>
     $(function () {
         $("#fromdate").datepicker({
-            format: 'yyyy-mm-dd',
+            format: 'mm-dd-yyyy',
         });
 
 
         $("#todate").datepicker({
-            format: 'yyyy-mm-dd',
+            format: 'mm-dd-yyyy',
         });
 
 
         $("#fromdateusers").datepicker({
-            format: 'yyyy-mm-dd',
+            format: 'mm-dd-yyyy',
         });
 
 
         $("#todateusers").datepicker({
-            format: 'yyyy-mm-dd',
+            format: 'mm-dd-yyyy',
         });
 
         $("#fromdatecustomers").datepicker({
-            format: 'yyyy-mm-dd',
+            format: 'mm-dd-yyyy',
         });
 
 
         $("#todatecustomers").datepicker({
-            format: 'yyyy-mm-dd',
+            format: 'mm-dd-yyyy',
         });
 
     });

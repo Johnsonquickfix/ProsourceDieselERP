@@ -43,13 +43,13 @@
     });
 
     if (id != "" && id != "AddNewPurchase" && id != "AddNewProduct") {        
-        setTimeout(function () { GetDataPurchaseByID($("#ddlproductchild").val()); }, 11000);
-        setTimeout(function () { bindbuyingprice(); }, 12000);
-        setTimeout(function () { bindChildproductsservices(); }, 13000);
-        setTimeout(function () { bindparentproductsservices(); }, 14000);
-        setTimeout(function () { bindwarehouse(); }, 15000);
-        setTimeout(function () { getNotesList($("#ddlproductchild").val()); }, 15500);
-        setTimeout(function () { bindfileuploade(); }, 16000);
+        setTimeout(function () { GetDataPurchaseByID($("#ddlproductchild").val()); }, 15000);
+        setTimeout(function () { bindbuyingprice(); }, 16000);
+        setTimeout(function () { bindChildproductsservices(); }, 17000);
+        setTimeout(function () { bindparentproductsservices(); }, 18000);
+        setTimeout(function () { bindwarehouse(); }, 19000);
+        setTimeout(function () { getNotesList($("#ddlproductchild").val()); }, 200000);
+        setTimeout(function () { bindfileuploade(); }, 210000);
 
         $('#dvbuysing').hide();
         $(document).on('click', "#btnbuying", function () {
@@ -124,7 +124,7 @@
 
         $("#filtersrchexp").click(function (e) {
             dataGridLoad($("#ddlproductchild").val());
-        });
+        }); 
 
     }
 
@@ -1392,14 +1392,18 @@ function viewfileupload(id) {
 
 }
 function addshippingprice() {
-
-    let castprice = parseFloat($("#txtcurrencyconversionrate").val()) + parseFloat($("#txtshippingprice").val()) + parseFloat($("#txtMisccosts").val())  + parseFloat($("#txtSaletax").val());
+    let con = parseFloat($("#txtcurrencyconversionrate").val()) || 0.00;
+    let ship = parseFloat($("#txtshippingprice").val()) || 0.00;
+    let mis = parseFloat($("#txtMisccosts").val()) || 0.00;
+    let sal = parseFloat($("#txtSaletax").val()) || 0.00;
+   // console.log(con);
+    let castprice = con + ship + mis + sal;
     $("#txtcostprice").val(castprice);
 }
 function ClearControl() {
     $("#txtminpurchasequantity").val('1');
     $("#txttaglotno").val('');
-    $("#txtSaletax").val('');
+    $("#txtSaletax").val('0');
     $('#txtcurrencyconversionrate').val('0');
     $("#txtcostprice").val('0');
     $("#txtshippingprice").val('0');

@@ -1,6 +1,19 @@
 
 $(document).ready(function () {
     $("#loader").hide();
+    var urlpath = window.location.pathname;
+    var pathid = urlpath.substring(urlpath.lastIndexOf('/') + 1);
+   // alert(pathid);
+    $("#btnbackproduct").hide();
+    if (pathid != "" && pathid != "ProductCategories") {
+        $("#btnbackproduct").show();
+        if (pathid == 1000000001)
+            $("#btnbackproduct").prop("href", "/Product/AddNewProduct");
+        else
+            $("#btnbackproduct").prop("href", "/Product/AddNewProduct/" + pathid);
+      
+    }
+
     $(".select2").select2();
     getParentCategory();
     CategoryList();

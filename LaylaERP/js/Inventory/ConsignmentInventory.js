@@ -103,15 +103,15 @@ function ProductStockGrid() {
             },
             { data: 'category', title: 'Category', sWidth: "8%" },
             { data: 'sku', title: 'SKU', sWidth: "8%" },
-            { data: 'post_title', title: 'Product Name', sWidth: "20%" },
-            {
-                data: 'op_stock', title: 'Opening Stock', sWidth: "8%", className: "text-right", render: function (data, type, row) {
-                    if (row.post_parent > 0) return row.op_stock.toFixed(0); else return '';
-                }
-            },
+            { data: 'post_title', title: 'Product Name', sWidth: "28%" },
+            //{
+            //    data: 'op_stock', title: 'Opening Stock', sWidth: "8%", className: "text-right", render: function (data, type, row) {
+            //        if (row.post_parent > 0) return row.op_stock.toFixed(0); else return '';
+            //    }
+            //},
             {
                 data: 'stock', title: 'Units In Stock', sWidth: "8%", className: "text-right", render: function (data, type, row) {
-                    if (row.post_parent > 0) return row.stock.toFixed(0); else return '';
+                    if (row.post_parent > 0) return (row.op_stock + row.stock).toFixed(0); else return '';
                 }
             },
             {
@@ -144,15 +144,15 @@ function format(d) {
     let sd = dfa[0].split('/'); sd = sd[1] + '/' + sd[0] + '/' + sd[2];
     let ed = dfa[1].split('/'); ed = ed[1] + '/' + ed[0] + '/' + ed[2];
     //console.log(d);
-    let option = { strValue1: d.id, strValue2: sd, strValue3: ed }, wrHTML = '<table class="inventory-table table-blue table check-table table-bordered table-striped dataTable no-footer"><thead><tr><th style="width:40.8%; text-align:left;">Warehouse</th><th style="width:8%; text-align:right;">Opening Stock</th><th style="width:8%; text-align:right;">Units In Stock</th><th style="width:8%; text-align:right;">Units in POs</th><th style="width:8%; text-align:right;">Sale Units</th><th style="width:8%; text-align:right;">Damage Units</th><th style="width:8%; text-align:right;">Available Units</th></tr></thead>';
+    let option = { strValue1: d.id, strValue2: sd, strValue3: ed }, wrHTML = '<table class="inventory-table table-blue table check-table table-bordered table-striped dataTable no-footer"><thead><tr><th style="width:48.8%; text-align:left;">Warehouse</th><th style="width:8%; text-align:right;">Units In Stock</th><th style="width:8%; text-align:right;">Units in POs</th><th style="width:8%; text-align:right;">Sale Units</th><th style="width:8%; text-align:right;">Damage Units</th><th style="width:8%; text-align:right;">Available Units</th></tr></thead>';
     $.ajax({
         url: '/Inventory/GetStockByWarehouse', type: 'post', dataType: 'json', contentType: "application/json; charset=utf-8", data: JSON.stringify(option),
         success: function (result) {
             result = JSON.parse(result);
-            if (result.length == 0) { wrHTML += '<tbody><tr><td valign="top" colspan="7" class="no-data-available">Sorry no matching records found.</td></tr></tbody>'; }
+            if (result.length == 0) { wrHTML += '<tbody><tr><td valign="top" colspan="6" class="no-data-available">Sorry no matching records found.</td></tr></tbody>'; }
             $(result).each(function (index, row) {
                 let post_title = d.post_title + ' [' + row.ref + ']';
-                wrHTML += '<tr><td>' + row.ref + '</td><td>' + row.op_stock.toFixed(0) + '</td><td>' + row.stock.toFixed(0) + '</td>';
+                wrHTML += '<tr><td>' + row.ref + '</td><td>' + (row.op_stock + row.stock).toFixed(0) + '</td>';
                 if (row.UnitsinPO > 0)
                     wrHTML += '<td><a style="text-decoration: underline;font-weight: 700;" href="#" onclick="getPurchaseOrder(' + d.id + ',' + row.warehouse_id + ',\'' + post_title + '\'); "><i class="fas fa - search - plus"></i>' + row.UnitsinPO.toFixed(0) + '</a></td>';
                 else
@@ -177,8 +177,9 @@ function getPurchaseOrder(pid, wid, title) {
         destroy: true, bServerSide: false, order: [[0, "desc"]],
         columns: [
             { data: 'ref', title: 'PO No', sWidth: "15%" },
-            { data: 'po_date', title: 'Date', sWidth: "15%" },
-            { data: 'vendor_name', title: 'Vendor Name', sWidth: "55%" },
+            { data: 'po_date', title: 'Created Date', sWidth: "15%" },
+            { data: 'vendor_name', title: 'Vendor Name', sWidth: "40%" },
+            { data: 'date_livraison', title: 'Planned date of delivery', sWidth: "25%" },
             { data: 'quantity', title: 'Quantity', sWidth: "15%", class: 'text-right' }
         ],
         sAjaxSource: "/Inventory/GetPOByWarehouse",
@@ -210,7 +211,7 @@ function searchOrderModal(title) {
     modalHtml += '<div class="col-md-12">';
     modalHtml += '<div class="table-responsive">';
     modalHtml += '<table id="tblOrderList" class="table table-blue check-table table-bordered table-striped dataTable tablelist">';
-    modalHtml += '<thead><tr><th style="width: 15%">PO No</th><th style="width: 15%">Date</th><th style="width: 55%">Vendor Name</th><th class="text-right" style="width: 15%">Quantity</th></tr></thead>';
+    modalHtml += '<thead><tr><th style="width: 15%">PO No</th><th style="width: 15%">Date</th><th style="width: 30%">Vendor Name</th><th style="width: 25%">Planned date of delivery</th><th class="text-right" style="width: 15%">Quantity</th></tr></thead>';
     modalHtml += '<tbody></tbody>';
     modalHtml += '</table>';
     modalHtml += '</div>';
@@ -228,7 +229,7 @@ function exportTableToCSV(filename) {
     let colDelim = (filename.indexOf("xls") != -1) ? '\t' : ',';
     let rowDelim = '\r\n';
 
-    let csv = 'id' + colDelim + 'Category' + colDelim + 'SKU' + colDelim + 'Product Name' + colDelim + 'Opening Stock' + colDelim + 'Units In Stock' + colDelim + 'Units in POs' + colDelim + 'Sale Units' + colDelim + 'Damage Units' + colDelim + 'Available Units' + rowDelim;
+    let csv = 'id' + colDelim + 'Category' + colDelim + 'SKU' + colDelim + 'Product Name' + colDelim + 'Units In Stock' + colDelim + 'Units in POs' + colDelim + 'Sale Units' + colDelim + 'Damage Units' + colDelim + 'Available Units' + rowDelim;
 
     let dfa = $('#txtDate').val().split('-');
     let sd = dfa[0].split('/'); sd = sd[1] + '/' + sd[0] + '/' + sd[2];
@@ -244,14 +245,14 @@ function exportTableToCSV(filename) {
             $(result['item']).each(function (index, data) {
                 //Parent Row
                 if (data.post_parent > 0)
-                    csv += '-  #' + data.id + colDelim + (isNullAndUndef(data.category) ? data.category : '') + colDelim + (isNullAndUndef(data.sku) ? data.sku : '') + colDelim + data.post_title.replace(/\,/g, '') + colDelim + data.op_stock.toFixed(0) + colDelim + data.stock.toFixed(0) + colDelim + data.UnitsinPO.toFixed(0) + colDelim + data.SaleUnits.toFixed(0) + colDelim + data.Damage.toFixed(0) + colDelim + (data.op_stock + data.stock + data.UnitsinPO - data.SaleUnits - data.Damage).toFixed(0) + rowDelim;
+                    csv += '-  #' + data.id + colDelim + (isNullAndUndef(data.category) ? data.category : '') + colDelim + (isNullAndUndef(data.sku) ? data.sku : '') + colDelim + data.post_title.replace(/\,/g, '') + colDelim + (data.op_stock + data.stock).toFixed(0) + colDelim + data.UnitsinPO.toFixed(0) + colDelim + data.SaleUnits.toFixed(0) + colDelim + data.Damage.toFixed(0) + colDelim + (data.op_stock + data.stock + data.UnitsinPO - data.SaleUnits - data.Damage).toFixed(0) + rowDelim;
                 else
-                    csv += '#' + data.id + colDelim + (isNullAndUndef(data.category) ? data.category : '') + colDelim + (isNullAndUndef(data.sku) ? data.sku : '') + colDelim + data.post_title.replace(/\,/g, '') + colDelim + data.op_stock.toFixed(0) + colDelim + data.stock.toFixed(0) + colDelim + data.UnitsinPO.toFixed(0) + colDelim + data.SaleUnits.toFixed(0) + colDelim + data.Damage.toFixed(0) + colDelim + (data.op_stock + data.stock + data.UnitsinPO - data.SaleUnits - data.Damage).toFixed(0) + rowDelim;
+                    csv += '#' + data.id + colDelim + (isNullAndUndef(data.category) ? data.category : '') + colDelim + (isNullAndUndef(data.sku) ? data.sku : '') + colDelim + data.post_title.replace(/\,/g, '') + colDelim + (data.op_stock + data.stock) + colDelim + data.UnitsinPO.toFixed(0) + colDelim + data.SaleUnits.toFixed(0) + colDelim + data.Damage.toFixed(0) + colDelim + (data.op_stock + data.stock + data.UnitsinPO - data.SaleUnits - data.Damage).toFixed(0) + rowDelim;
                 //Child Row                
                 let res = result['details'].filter(element => element.product_id == data.id);
-                if (res.length > 0) csv += '' + colDelim + '' + colDelim + '' + colDelim + 'Warehouse' + colDelim + 'Opening Stock' + colDelim + 'Units In Stock' + colDelim + 'Units in POs' + colDelim + 'Sale Units' + colDelim + 'Damage Units' + colDelim + 'Available Units' + rowDelim;
+                if (res.length > 0) csv += '' + colDelim + '' + colDelim + '' + colDelim + 'Warehouse' + colDelim + 'Units In Stock' + colDelim + 'Units in POs' + colDelim + 'Sale Units' + colDelim + 'Damage Units' + colDelim + 'Available Units' + rowDelim;
                 $(res).each(function (index, wrhRow) {
-                    csv += '' + colDelim + '' + colDelim + '' + colDelim + wrhRow.ref + colDelim + wrhRow.op_stock.toFixed(0) + colDelim + wrhRow.stock.toFixed(0) + colDelim + wrhRow.UnitsinPO.toFixed(0) + colDelim + wrhRow.SaleUnits.toFixed(0) + colDelim + wrhRow.Damage.toFixed(0) + colDelim + (wrhRow.op_stock + wrhRow.stock + wrhRow.UnitsinPO - wrhRow.SaleUnits - wrhRow.Damage).toFixed(0) + colDelim + rowDelim;
+                    csv += '' + colDelim + '' + colDelim + '' + colDelim + wrhRow.ref + colDelim + (wrhRow.op_stock + wrhRow.stock).toFixed(0) + colDelim + wrhRow.UnitsinPO.toFixed(0) + colDelim + wrhRow.SaleUnits.toFixed(0) + colDelim + wrhRow.Damage.toFixed(0) + colDelim + (wrhRow.op_stock + wrhRow.stock + wrhRow.UnitsinPO - wrhRow.SaleUnits - wrhRow.Damage).toFixed(0) + colDelim + rowDelim;
                 });
             });
             download_csv(csv, filename);

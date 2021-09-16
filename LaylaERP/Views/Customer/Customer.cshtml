@@ -20,7 +20,7 @@
     <h2 class="page-heading">Customers</h2><a href="../../Customer/NewUser" class="btn btn-danger" id="btnAddUser"><span title="Click Here To Add New Customer" data-placement="bottom" data-toggle="tooltip">Add New Customer</span></a>
 </div>
 <section class="content section-content table-design customer-section">
-    <div class="user-top-section">
+    <div class="user-top-section" id="customer-section-top">
         @*<div class="col-md-3">
                 <div class="form-group">
                     <input type="text" id="txtSearch" class="form-control" placeholder="Search" />
@@ -84,6 +84,8 @@
         var loc = window.location.pathname;
 
         CheckPermissions("#btnAddUser", "#hfEdit", "", loc);
+        CheckPermissions("#customer-section-top", "#hfEdit", "", loc);
+        CheckPermissions("#role-ul", "#hfEdit", "", loc);
         $("#btnSearch").click(function () { dataGridLoad(); return false; });
         dataGridLoad();
     });

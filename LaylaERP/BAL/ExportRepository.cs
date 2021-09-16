@@ -23,8 +23,9 @@ namespace LaylaERP.BAL
                 string sqlquery = string.Empty;
                 if (!string.IsNullOrEmpty(from_dateusers) && !string.IsNullOrEmpty(to_dateusers))
                 {
-                    DateTime fromdateuser = DateTime.Parse(from_dateusers);
-                    DateTime todateusers = DateTime.Parse(to_dateusers);
+                    DateTime fromdateuser = DateTime.ParseExact(from_dateusers, "MM-dd-yyyy", null);
+                    DateTime todateusers = DateTime.ParseExact(to_dateusers, "MM-dd-yyyy", null);
+
                     //sqlquery = "select ID, User_Image, user_login, user_status, DATE(wp_users.user_registered) as created_date, if(user_status=0,'Active','InActive') as status,user_email,user_pass, meta_value from wp_users, wp_usermeta WHERE DATE(wp_users.user_registered)>='" + fromdateuser.ToString("yyyy-MM-dd") + "' and DATE(wp_users.user_registered)<='" + todateusers.ToString("yyyy-MM-dd") + "' and wp_usermeta.meta_key='wp_capabilities' And wp_users.ID=wp_usermeta.user_id And wp_users.ID IN (SELECT user_id FROM wp_usermeta WHERE meta_key = 'wp_capabilities' AND meta_value NOT LIKE '%customer%') ORDER BY ID DESC";
                     /*sqlquery = "select ID, User_Image, user_login, user_status, DATE_FORMAT(wp_users.user_registered,'%M %d %Y') as created_date, if(user_status=0,'Active','InActive') as status,user_email,user_pass, " +
                          "CONCAT((case when um.meta_value like '%administrator%' then 'Administrator,' else '' end),(case when um.meta_value like '%accounting%' then 'Accounting,' else '' end),"
@@ -277,7 +278,7 @@ namespace LaylaERP.BAL
 
         public static List<ExportModel> exportorderlist = new List<ExportModel>();
 
-        public static void ExportOrderDetails(string from_date, string to_date)
+        public static void ExportOrderDetails(string from_date, string to_date, string user)
         {
             try
             {
@@ -287,15 +288,16 @@ namespace LaylaERP.BAL
                 if (!string.IsNullOrEmpty(from_date) && !string.IsNullOrEmpty(to_date))
                 {
                     DateTime fromdate = DateTime.Now, todate = DateTime.Now;
-                    fromdate = DateTime.Parse(from_date);
-                    todate = DateTime.Parse(to_date);
+                    fromdate = DateTime.ParseExact(from_date,"MM-dd-yyyy",null);
+                    todate = DateTime.ParseExact(to_date, "MM-dd-yyyy", null);
 
                     //ssql = "select ws.order_id as id, ws.order_id as order_id, DATE_FORMAT(ws.date_created, '%M %d %Y') order_created, substring(ws.status,4) as status,  ws.num_items_sold as qty,format(ws.total_sales, 2) as subtotal,format(ws.net_total, 2) as total, ws.customer_id as customer_id from wp_wc_order_stats ws, wp_users wu where ws.customer_id = wu.ID and DATE(ws.date_created)>='" + fromdate.ToString("yyyy-MM-dd") + "' and DATE(ws.date_created)<='" + todate.ToString("yyyy-MM-dd") + "' order by ws.order_id desc limit 100";
                     ssql = "SELECT p.id order_id, p.id as chkorder,os.num_items_sold as qty,format(os.total_sales, 2) as subtotal,format(os.net_total, 2) as total,format(os.tax_total,2) as tax, os.customer_id as customer_id, REPLACE(p.post_status, 'wc-', '') as status, os.date_created as order_created,CONCAT(pmf.meta_value, ' ', COALESCE(pml.meta_value, '')) FirstName"
                          + " FROM wp_posts p inner join wp_wc_order_stats os on p.id = os.order_id"
                          + " left join wp_postmeta pmf on os.order_id = pmf.post_id and pmf.meta_key = '_billing_first_name'"
                          + " left join wp_postmeta pml on os.order_id = pml.post_id and pml.meta_key = '_billing_last_name'"
-                         + " WHERE p.post_type = 'shop_order'and p.post_status != 'auto-draft' and DATE(os.date_created)>='" + fromdate.ToString("yyyy-MM-dd") + "' and DATE(os.date_created)<='" + todate.ToString("yyyy-MM-dd") + "' order by p.id DESC limit 500";
+                         + " left join wp_postmeta pmm on os.order_id = pmm.post_id and pmm.meta_key = 'employee_id'"
+                         + " WHERE pmm.meta_value='"+user+"' and p.post_type = 'shop_order'and p.post_status != 'auto-draft' and DATE(os.date_created)>='" + fromdate.ToString("yyyy-MM-dd") + "' and DATE(os.date_created)<='" + todate.ToString("yyyy-MM-dd") + "' order by p.id DESC limit 500";
 
                 }
                 else
@@ -307,7 +309,8 @@ namespace LaylaERP.BAL
                             + " FROM wp_posts p inner join wp_wc_order_stats os on p.id = os.order_id"
                             + " left join wp_postmeta pmf on os.order_id = pmf.post_id and pmf.meta_key = '_billing_first_name'"
                             + " left join wp_postmeta pml on os.order_id = pml.post_id and pml.meta_key = '_billing_last_name'"
-                            + " WHERE p.post_type = 'shop_order' and p.post_status != 'auto-draft' order by p.id DESC limit 500";
+                            + " left join wp_postmeta pmm on os.order_id = pmm.post_id and pmm.meta_key = 'employee_id'"
+                            + " WHERE pmm.meta_value='" + user + "' and p.post_type = 'shop_order' and p.post_status != 'auto-draft' order by p.id DESC limit 500";
                 }
                 DataSet ds1 = new DataSet();
                 ds1 = DAL.SQLHelper.ExecuteDataSet(ssql);
@@ -340,9 +343,9 @@ namespace LaylaERP.BAL
                 string sqlquery = string.Empty;
                 if (!string.IsNullOrEmpty(from_dateusers) && !string.IsNullOrEmpty(to_dateusers))
                 {
-                    DateTime fromdateuser = DateTime.Parse(from_dateusers);
-                    DateTime todateusers = DateTime.Parse(to_dateusers);
-
+                    DateTime fromdateuser = DateTime.ParseExact(from_dateusers, "MM-dd-yyyy", null);
+                    DateTime todateusers = DateTime.ParseExact(to_dateusers, "MM-dd-yyyy", null);
+                    
 
                     sqlquery = "select ur.ID,null User_Image, user_login , user_status, ur.user_registered as created_date, if(user_status=0,'Active','InActive') as status,user_email,"
                           + " (SELECT meta_value FROM wp_usermeta WHERE user_id = ur.ID AND meta_key = 'first_name') as first_name,"

@@ -21,10 +21,9 @@ namespace LaylaERP.Controllers
         }
 
         [HttpPost]
-        public ActionResult GetData(string from_date, string to_date)
+        public ActionResult GetData(string from_date, string to_date, string user)
         {
-
-            ExportRepository.ExportOrderDetails(from_date, to_date);
+            ExportRepository.ExportOrderDetails(from_date, to_date, user);
             var k = Json(new { data = ExportRepository.exportorderlist }, JsonRequestBehavior.AllowGet);
             k.MaxJsonLength = int.MaxValue;
             return k;

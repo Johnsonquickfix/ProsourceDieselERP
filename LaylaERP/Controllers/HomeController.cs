@@ -188,7 +188,7 @@
                 JSONresult = BAL.DashboardRepository.Total_Sales(startDate, endDate).ToString();
 
             }
-            catch { }
+            catch(Exception ex) { throw ex; }
             return Json(new { data = Convert.ToDecimal(JSONresult).ToString("N2", us) }, 0);
         }
         public JsonResult GettotalCustomer(JqDataTableModel model)
@@ -201,7 +201,7 @@
                 string endDate = model.strValue6;
                 JSONresult = BAL.DashboardRepository.Total_Customer(startDate, endDate).ToString();
             }
-            catch { }
+            catch(Exception ex) { throw ex; }
             return Json(new { data = Convert.ToDecimal(JSONresult).ToString("N0", us) }, 0);
         }
         public JsonResult GetcompletedOrders(JqDataTableModel model)
@@ -532,35 +532,6 @@
         [HttpPost]
         public JsonResult SalesGraph()
         {
-            //string query = "select date_format(date_created,'%M %d') as Sales_date, sum(coalesce(total_sales,0)) as Total";
-            //query += " from wp_wc_order_stats where date(date_created) <= NOW() and date(date_created) >= Date_add(Now(), interval - 20 day) and total_sales >=0 and (status='wc-completed' or status='wc-processing' or status='wc-pending') group by date(date_created)";
-            //string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString;
-            //List<object> chartData = new List<object>();
-            //chartData.Add(new object[]
-            //            {
-            //                "Sales_date","Total"
-            //            });
-            //using (MySqlConnection con = new MySqlConnection(constr))
-            //{
-            //    using (MySqlCommand cmd = new MySqlCommand(query))
-            //    {
-            //        cmd.CommandType = CommandType.Text;
-            //        cmd.Connection = con;
-            //        con.Open();
-            //        using (MySqlDataReader sdr = cmd.ExecuteReader())
-            //        {
-            //            while (sdr.Read())
-            //            {
-            //                chartData.Add(new object[]
-            //            {
-            //                sdr["Sales_date"], sdr["Total"]
-            //            });
-            //            }
-            //        }
-
-            //        con.Close();
-            //    }
-            //}
             DashboardRepository.SalesGraph1();
             return Json(DashboardRepository.chartData);
         }

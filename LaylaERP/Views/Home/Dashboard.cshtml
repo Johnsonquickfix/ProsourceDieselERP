@@ -373,8 +373,10 @@
         });
     }
     function loadData() {
+        $("#loader").show();
         $.post("/Home/GetOrderList", $("#saveForm").serialize(), function (response) {
             $("#content").html(response);
+            $("#loader").hide();
         });
     }
     function gettotal(dtr) {
@@ -408,10 +410,12 @@
             contentType: "application/json; charset=utf-8",
             dataType: 'JSON',
             data: JSON.stringify(obj),
+            beforeSend: function () { $("#loader").show(); },
             success: function (data) {
                 $("#lbltotalOrder").text(data.data);
                },
-            error: function (msg) { alert(msg); }
+            error: function (msg) { alert(msg); },
+            complete: function () { $("#loader").hide(); }
         });
     }
     function getTotalSales(fromdate, todate) {
@@ -423,10 +427,12 @@
             contentType: "application/json; charset=utf-8",
             dataType: 'JSON',
             data: JSON.stringify(obj),
+            beforeSend: function () { $("#loader").show(); },
             success: function (data) {
                 $("#lbltotalSales").text('$' + data.data);
             },
-            error: function (msg) { alert(msg); }
+            error: function (msg) { alert(msg); },
+            complete: function () { $("#loader").hide(); }
         });
     }
     function gettotalCustomer(fromdate, todate) {
@@ -437,11 +443,13 @@
             contentType: "application/json; charset=utf-8",
             dataType: 'JSON',
             data: JSON.stringify(obj),
+            beforeSend: function () { $("#loader").show(); },
             success: function (data) {
                 $("#lbltotalCustomer").text(data.data);
 
             },
-            error: function (msg) { alert(msg); }
+            error: function (msg) { alert(msg); },
+            complete: function () { $("#loader").hide(); }
         });
     }
     function getCompletedOrder(fromdate, todate) {
@@ -452,10 +460,12 @@
             contentType: "application/json; charset=utf-8",
             dataType: 'JSON',
             data: JSON.stringify(obj),
+            beforeSend: function () { $("#loader").show(); },
             success: function (data) {
                 $("#lblCompletedCustomer").text(data.data);
             },
-            error: function (msg) { alert(msg); }
+            error: function (msg) { alert(msg); },
+             complete: function () { $("#loader").hide(); }
         });
     }
    
@@ -501,6 +511,7 @@
     google.load("visualization", "1", { packages: ["corechart"] });
     //google.charts.load("current", { packages: ["corechart"] });
     google.setOnLoadCallback(drawChart);
+   
     function drawChart() {
         $.ajax({
             type: "POST",

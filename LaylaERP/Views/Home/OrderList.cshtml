@@ -1,27 +1,33 @@
 ﻿@model dynamic
+
+<link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+<link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
+@*datatables js*@
+<script src="~/Content/AdminLTE-3.1.0/datatables/datatables.min.js" type="text/javascript"></script>
+<script src="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/js/dataTables.bootstrap.min.js" type="text/javascript"></script>
 <div class="table-responsive dash-table">
     @if (ViewData.Model == null)
     {
-    <table class="table-blue table check-table">
-        <thead>
-            <tr>
-                <th>Order ID</th>
-                <th>Customer Name</th>
-                <th>Status</th>
-                <th>Date Created</th>
-                <th>Total</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td colspan="5" align="center">No Data Found.</td>
-            </tr>
-        </tbody>
-    </table>
+        <table class="table-blue table check-table">
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Customer Name</th>
+                    <th>Status</th>
+                    <th>Date Created</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="5" align="center">No Data Found.</td>
+                </tr>
+            </tbody>
+        </table>
     }
     else
     {
-        <table class="table-blue table check-table">
+        <table class="table-blue table check-table" id="dtorderlist">
             <thead>
                 <tr>
                     <th>Order ID</th>
@@ -47,4 +53,9 @@
     }
 </div>
 <script src="~/js/common.js"></script>
+<script>
+    $(function () {
+        $("#dtorderlist").dataTable();
+    })
+</script>
 

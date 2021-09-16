@@ -1195,7 +1195,7 @@ body .tree-title {
     height: auto;
 }
 
-body .tree-node {
+body .tree-node {position:relative;
     height: auto;
     display: flex;
     align-items: center;
@@ -1220,7 +1220,8 @@ body .tree-indent, body .tree-hit {
 }
 
 body .tree-hit {
-    top: 13px;
+    top: 0px;
+    left: -20px;
     z-index: 9;
 }
 

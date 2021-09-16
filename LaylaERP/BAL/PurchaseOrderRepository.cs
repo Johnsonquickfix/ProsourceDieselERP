@@ -321,6 +321,10 @@ namespace LaylaERP.BAL
                 string strSql = "Select p.rowid id, p.ref, p.ref_ext refordervendor,p.fk_projet,v.SalesRepresentative request_author,v.name vendor_name,v.address,v.town,v.fk_country,v.fk_state,v.zip,v.phone,"
                                 + " DATE_FORMAT(p.date_creation,'%m/%d/%Y') date_creation,DATE_FORMAT(p.date_livraison, '%m/%d/%Y') date_livraison, s.Status,total_ttc from commerce_purchase_order p"
                                 + " inner join wp_vendor v on p.fk_supplier = v.rowid inner join wp_StatusMaster s on p.fk_status = s.ID where 1 = 1";
+                if (!CommanUtilities.Provider.GetCurrent().UserType.ToLower().Contains("administrator"))
+                {
+                    strWhr += " and (p.fk_user_author='" + CommanUtilities.Provider.GetCurrent().UserID + "') ";
+                }
                 if (!string.IsNullOrEmpty(searchid))
                 {
                     searchid = searchid.ToLower();

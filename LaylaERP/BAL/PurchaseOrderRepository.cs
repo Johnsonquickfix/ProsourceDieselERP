@@ -194,9 +194,9 @@ namespace LaylaERP.BAL
                 {
                     strsql = string.Format("delete from commerce_purchase_order_detail where fk_purchase = '{0}' and rowid not in ({1});", model.RowID, str_oiid);
                     strsql += string.Format("update commerce_purchase_order set ref_supplier='{0}',fk_supplier='{1}',fk_payment_term='{2}',fk_balance_days='{3}',fk_incoterms='{4}',location_incoterms='{5}',"
-                            + "fk_payment_type='{6}',date_livraison='{7}',note_private='{8}',note_public='{9}',discount='{10}',total_tva='{11}',localtax1='{12}',localtax2='{13}',total_ht='{14}',total_ttc='{15}',fk_warehouse='{16}' where rowid='{17}';",
+                            + "fk_payment_type='{6}',date_livraison='{7}',note_private='{8}',note_public='{9}',discount='{10}',total_tva='{11}',localtax1='{12}',localtax2='{13}',total_ht='{14}',total_ttc='{15}',fk_warehouse='{16}',fk_user_modif='{17}' where rowid='{18}';",
                             model.VendorBillNo, model.VendorID, model.PaymentTerms, model.Balancedays, model.IncotermType, model.Incoterms, model.PaymentType, model.Planneddateofdelivery, model.NotePrivate, model.NotePublic,
-                            model.discount, model.total_tva, model.localtax1, model.localtax2, model.total_ht, model.total_ttc, model.fk_warehouse, model.RowID);
+                            model.discount, model.total_tva, model.localtax1, model.localtax2, model.total_ht, model.total_ttc, model.fk_warehouse, model.LoginID, model.RowID);
                 }
                 else
                 {
@@ -253,7 +253,7 @@ namespace LaylaERP.BAL
                 if (model.Status == 1)
                     strsql += string.Format("update commerce_purchase_order set fk_status='{0}',ref_ext='',billed='0' where rowid in ({1});", model.Status, model.Search);
                 else if (model.Status == 3)
-                    strsql += string.Format("update commerce_purchase_order set fk_status='{0}',ref_ext=REPLACE(ref,'PO','PI'),billed='1' where rowid in ({1});", model.Status, model.Search);
+                    strsql += string.Format("update commerce_purchase_order set fk_status='{0}',ref_ext=REPLACE(ref,'PO','PI'),billed='1',fk_user_approve='{1}' where rowid in ({2});", model.Status, model.LoginID, model.Search);
                 else
                     strsql += string.Format("update commerce_purchase_order set fk_status='{0}' where rowid in ({1});", model.Status, model.Search);
                 result = SQLHelper.ExecuteNonQueryWithTrans(strsql);
@@ -321,6 +321,10 @@ namespace LaylaERP.BAL
                 string strSql = "Select p.rowid id, p.ref, p.ref_ext refordervendor,p.fk_projet,v.SalesRepresentative request_author,v.name vendor_name,v.address,v.town,v.fk_country,v.fk_state,v.zip,v.phone,"
                                 + " DATE_FORMAT(p.date_creation,'%m/%d/%Y') date_creation,DATE_FORMAT(p.date_livraison, '%m/%d/%Y') date_livraison, s.Status,total_ttc from commerce_purchase_order p"
                                 + " inner join wp_vendor v on p.fk_supplier = v.rowid inner join wp_StatusMaster s on p.fk_status = s.ID where 1 = 1";
+                if (!CommanUtilities.Provider.GetCurrent().UserType.ToLower().Contains("administrator"))
+                {
+                    strWhr += " and (p.fk_user_author='" + CommanUtilities.Provider.GetCurrent().UserID + "') ";
+                }
                 if (!string.IsNullOrEmpty(searchid))
                 {
                     searchid = searchid.ToLower();
@@ -366,7 +370,7 @@ namespace LaylaERP.BAL
                             + " from wp_posts p"
                             + " inner join wp_woocommerce_order_items wp_oi on p.id = wp_oi.order_id and wp_oi.order_item_type = 'line_item'"
                             + " inner join wp_wc_order_product_lookup opl on opl.order_item_id = wp_oi.order_item_id"
-                            + " inner join Product_Purchase_Items ir on ir.fk_product = (case when opl.variation_id > 0 then opl.variation_id else opl.product_id end)"
+                            + " inner join Product_Purchase_Items ir on ir.is_active = 1 and ir.fk_product = (case when opl.variation_id > 0 then opl.variation_id else opl.product_id end)"
                             + " left outer join wp_postmeta psku on psku.post_id = (case when opl.variation_id > 0 then opl.variation_id else opl.product_id end) and psku.meta_key = '_sku'"
                             + " left outer join wp_vendor wp_v on wp_v.rowid = ir.fk_vendor"
                             + " left outer join wp_VendorPaymentDetails wp_vpd on wp_vpd.VendorID = wp_v.rowid"

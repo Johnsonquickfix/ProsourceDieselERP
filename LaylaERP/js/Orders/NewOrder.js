@@ -209,7 +209,7 @@ function NewOrderNo() {
     let option = { OrderPostMeta: postMetaxml };
     if (cus_id > 0) {
         ajaxFunc('/Orders/GetNewOrderNo', option, beforeSendFun, function (result) { $('#hfOrderNo').val(result.message); $('#lblOrderNo').text('Order #' + result.message + ' detail '); }, completeFun, errorFun);
-        isEdit(true);
+        isEdit(true); $('.billnote').prop("disabled", false);
     }
 }
 ///Find Address of Customer
@@ -454,12 +454,12 @@ function addCustomerModal(cus_name) {
 
     myHtml += '<div class="form-group">';
     myHtml += '<label class="control-label " for="Address"><i class="glyphicon glyphicon-map-marker" aria-hidden="true"></i> Address<span class="text-red">*</span></label>';
-    myHtml += '<div class=""><input type="text" id="txtCusBillingAddress1" class="form-control searchAddress" data-addresstype="cus-bill" placeholder="Address 1" /></div>';
+    myHtml += '<div class=""><input type="text" id="txtCusBillingAddress1" class="form-control searchAddress" data-addresstype="cus-bill" placeholder="Address" /></div>';
     myHtml += '</div>';
 
     myHtml += '<div class="form-group">';
-    myHtml += '<label class="control-label " for="Address 1">Address 1</label>';
-    myHtml += '<div class=""><input type="text" id="txtCusBillingAddress2" class="form-control" placeholder="Address 2" /></div>';
+    myHtml += '<label class="control-label " for="Address 2">Address 1</label>';
+    myHtml += '<div class=""><input type="text" id="txtCusBillingAddress2" class="form-control" placeholder="Address 1" /></div>';
     myHtml += '</div>';
 
     myHtml += '<div class="form-group">';
@@ -1437,7 +1437,10 @@ function calculateDiscountAcount() {
 
                 if (zDiscType == 'fixed_product') { zDisAmt = cou_details.disc_amt * cou_details.qty; }
                 else if (zDiscType == 'fixed_cart') { zDisAmt = cou_details.disc_amt * cou_details.qty; }
-                else if (zDiscType == 'percent') { zDisAmt = (cou_details.price * cou_details.qty) * (cou_details.disc_amt / 100); }
+                else if (zDiscType == 'percent') {
+                    if (pid == 14023) zDisAmt = ((cou_details.price * cou_details.qty) - row_disc) * (cou_details.disc_amt / 100);
+                    else zDisAmt = (cou_details.price * cou_details.qty) * (cou_details.disc_amt / 100);
+                }
                 else if (zDiscType == '2x_percent') { zDisAmt = ((zRegPrice * zCouponAmt) / 100) * Math.floor(zQty / 2); }
                 //console.log(cou, cou_details, zDisAmt);
                 //if (zDiscType == 'fixed_product') { zDisAmt = zCouponAmt * zQty; }

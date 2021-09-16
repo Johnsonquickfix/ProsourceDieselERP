@@ -7,7 +7,7 @@ $('#btnSearch').click(function () {
 })
 
 function EmployeeList() {
-    var urid = $("#ddlSearchStatus").val();
+    var urid = $("#ddlSearchStatus").val().trim();
     ID = $("#hfid").val();
     var table_EL = $('#EmployeeListdata').DataTable({
         columnDefs: [{ "orderable": true, "targets": 0 }, { 'visible': false, 'targets': [0] }], order: [[0, "desc"]],
@@ -25,7 +25,7 @@ function EmployeeList() {
             $('#EmployeeListdata_filter input').unbind();
             $('#EmployeeListdata_filter input').bind('keyup', function (e) {
                 var code = e.keyCode || e.which;
-                if (code == 13) { table_EL.search(this.value).draw(); }
+                if (code == 13) { table_EL.search(this.value.trim()).draw(); }
             });
         },
         sAjaxSource: "/Hrms/GetEmployeeList",

@@ -68,6 +68,10 @@
         $('#txtsku').attr('readonly', true);
         //$("#txtPublishDate").datepicker("disable"); txtsku
         $("#txtPublishDate").datepicker("destroy");
+
+        var urlpath = window.location.pathname;
+        var pathid = urlpath.substring(urlpath.lastIndexOf('/') + 1);
+        $("#btnbackcategory").prop("href", "/Product/ProductCategories/" + pathid)
         
     }
     else {
@@ -82,6 +86,7 @@
         $("#btncancel").hide();
         $("#btnSave").show();
         $("#btnSaveupdate").show();
+        $("#btnbackcategory").prop("href", "/Product/ProductCategories/" + 1000000001)
        
     }
     $("#txtregularprice").keyup(function () {
@@ -328,7 +333,7 @@
         $("#row" + button_id + '').remove();
     });
 
-
+  
     $(document).on('click', "#btnedit", function () {
         $("#target :input").prop("disabled", false);
         $("#tbhold").find("input,button,textarea,select").attr("disabled", false);
@@ -340,6 +345,7 @@
         $("#btnSaveupdate").show();
         $('#btnSaveupdate').text("Update");
         $("#ddlProductType").prop("disabled", true);
+        isEdit(true);
 
     });
 
@@ -353,7 +359,7 @@
         $("#btnSaveupdate").hide();
         $("#btnedit").prop("disabled", false);
         $("#ddlProductType").prop("disabled", true);
-       
+        isEdit(false);
     });
 
 
@@ -687,6 +693,10 @@
 
 });
 
+function isEdit(val) {
+    localStorage.setItem('isEdit', val ? 'yes' : 'no');
+}
+
 function readURL(input) {
     if (input.files && input.files[0]) {
         var reader = new FileReader();
@@ -900,7 +910,7 @@ function AddProduct() {
                 $("#loader").hide();
                 //location.href = '/Users/Users/';
                 //window.location.href = '/Users/Users/';
-
+                isEdit(false);
             },
             error: function (error) {
                 swal('Error!', 'something went wrong', 'error');

@@ -134,17 +134,24 @@
             ViewBag.Type = strValue1;
             return View();
         }
-        public ActionResult Dashboard()
+        public ActionResult Dashboard(JqDataTableModel model)
         {
             try
             {
+                CultureInfo us = new CultureInfo("en-US");
                 DateTime startDate = DateTime.Now;
                 DateTime endDate = DateTime.Now;
-                CultureInfo us = new CultureInfo("en-US");
-                ViewBag.totalorders = Convert.ToDecimal(BAL.DashboardRepository.Total_Orders()).ToString("N0", us); //BAL.DashboardRepository.Total_Orders();
-                ViewBag.totalsales = Convert.ToDecimal(BAL.DashboardRepository.Total_Sales()).ToString("N2", us);
-                ViewBag.totalcustomers = Convert.ToDecimal(BAL.DashboardRepository.Total_Customer()).ToString("N0", us);
-                ViewBag.totalordercompleted = Convert.ToDecimal(BAL.DashboardRepository.Total_Order_Completed()).ToString("N0", us);
+                if (model.DateRange2 != null)
+                {
+                    string[] DateRange = model.DateRange2.Split('-');
+                    startDate = DateTime.Parse(DateRange[0].Trim(), us);
+                    endDate = DateTime.Parse(DateRange[1].Trim(), us);
+                }
+
+                //ViewBag.totalorders = Convert.ToDecimal(BAL.DashboardRepository.Total_Orders(startDate.ToString(), endDate.ToString())).ToString("N0", us); //BAL.DashboardRepository.Total_Orders();
+                //ViewBag.totalsales = Convert.ToDecimal(BAL.DashboardRepository.Total_Sales()).ToString("N2", us);
+                //ViewBag.totalcustomers = Convert.ToDecimal(BAL.DashboardRepository.Total_Customer()).ToString("N0", us);
+                //ViewBag.totalordercompleted = Convert.ToDecimal(BAL.DashboardRepository.Total_Order_Completed()).ToString("N0", us);
                 ViewBag.TotalOrder = Convert.ToInt32(DashboardRepository.TotalOrder(startDate.ToString(), endDate.ToString()).ToString());
                 if (ViewBag.TotalOrder > 10)
                     ViewBag.TotalOrder = 10;
@@ -156,31 +163,68 @@
             return View();
         }
 
+        public JsonResult GettotalOrders(JqDataTableModel model)
+       {
+            CultureInfo us = new CultureInfo("en-US");
+            string JSONresult = string.Empty;
+            try
+            {
+               
+                string startDate = model.strValue5;
+                string endDate = model.strValue6;
+                JSONresult = BAL.DashboardRepository.Total_Orders(startDate, endDate).ToString();
+            }
+            catch { }
+            return Json(new {data = Convert.ToDecimal(JSONresult).ToString("N0", us)}, 0);
+        }
+        public JsonResult GettotalSales(JqDataTableModel model)
+        {
+            CultureInfo us = new CultureInfo("en-US");
+            string JSONresult = string.Empty;
+            try
+            {
+                string startDate = model.strValue5;
+                string endDate = model.strValue6;
+                JSONresult = BAL.DashboardRepository.Total_Sales(startDate, endDate).ToString();
 
+            }
+            catch { }
+            return Json(new { data = Convert.ToDecimal(JSONresult).ToString("N2", us) }, 0);
+        }
+        public JsonResult GettotalCustomer(JqDataTableModel model)
+        {
+            CultureInfo us = new CultureInfo("en-US");
+            string JSONresult = string.Empty;
+            try
+            {
+                string startDate = model.strValue5;
+                string endDate = model.strValue6;
+                JSONresult = BAL.DashboardRepository.Total_Customer(startDate, endDate).ToString();
+            }
+            catch { }
+            return Json(new { data = Convert.ToDecimal(JSONresult).ToString("N0", us) }, 0);
+        }
+        public JsonResult GetcompletedOrders(JqDataTableModel model)
+        {
+            CultureInfo us = new CultureInfo("en-US");
+            string JSONresult = string.Empty;
+            try
+            {
+                string startDate = model.strValue5;
+                string endDate = model.strValue6;
+                JSONresult = BAL.DashboardRepository.Total_Order_Completed(startDate, endDate).ToString();
+            }
+            catch { }
+            return Json(new { data = Convert.ToDecimal(JSONresult).ToString("N0", us) }, 0);
+        }
         public ActionResult GetOrderList(JqDataTableModel model)
         {
-            dynamic dynamicModel = new ExpandoObject();
-            DateTime startDate = DateTime.Now;
-            DateTime endDate = DateTime.Now;
-            dynamicModel.DETAILS = null;
-            if (model.strValue1 == null)
-                model.strValue1 = "daily";
-            if (model.strValue1 == "daily")
-            {
-                startDate = DateTime.Now;
-                endDate = DateTime.Now;
-            }
-            else
-            {
-                DateTime date = DateTime.Now.AddDays(-7);
-                while (date.DayOfWeek != DayOfWeek.Monday)
-                {
-                    date = date.AddDays(-1);
-                }
+            CultureInfo culture = new CultureInfo("en-US");
+            string[] DateRange = model.DateRange.Split('-');
 
-                startDate = date;
-                endDate = date.AddDays(7);
-            }
+            DateTime startDate = DateTime.Parse(DateRange[0].Trim(), culture);
+            DateTime endDate = DateTime.Parse(DateRange[1].Trim(), culture);
+
             //DataTable dt = OrderRepository.OrderListDashboard(startDate.ToString(), endDate.ToString(), model.strValue3, model.sSearch, model.iDisplayStart, model.iDisplayLength, model.sSortColName, model.sSortDir_0);
             DataTable dt = DashboardRepository.OrderListDashboard(startDate.ToString(), endDate.ToString(), model.strValue3, model.sSearch, model.iDisplayStart, model.iDisplayLength, model.sSortColName, model.sSortDir_0);
             var result = JsonConvert.SerializeObject(dt, Formatting.Indented);
@@ -189,8 +233,6 @@
             else
                 ViewData.Model = null;
             return PartialView("OrderList", ViewData.Model);
-
-
         }
 
         public ActionResult GetUsers()
@@ -319,27 +361,9 @@
             try
             {
                 dynamic dynamicModel = new ExpandoObject();
-                DateTime startDate = DateTime.Now;
-                DateTime endDate = DateTime.Now;
-                dynamicModel.DETAILS = null;
-                if (model.strValue1 == null)
-                    model.strValue1 = "daily";
-                if (model.strValue1 == "daily")
-                {
-                    startDate = DateTime.Now;
-                    endDate = DateTime.Now;
-                }
-                else
-                {
-                    DateTime date = DateTime.Now.AddDays(-7);
-                    while (date.DayOfWeek != DayOfWeek.Monday)
-                    {
-                        date = date.AddDays(-1);
-                    }
-
-                    startDate = date;
-                    endDate = date.AddDays(7);
-                }
+                CultureInfo culture = new CultureInfo("en-US");
+                DateTime startDate = DateTime.Parse(model.strValue5, culture);
+                DateTime endDate = DateTime.Parse(model.strValue6, culture);
 
                 DataTable dt = DashboardRepository.Gettotal(startDate.ToString(), endDate.ToString());
                 JSONresult = JsonConvert.SerializeObject(dt);

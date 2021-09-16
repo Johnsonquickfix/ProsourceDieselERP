@@ -1423,13 +1423,16 @@
             try
             {
                 string strWhr = string.Empty;
-
+                if (!CommanUtilities.Provider.GetCurrent().UserType.ToLower().Contains("administrator"))
+                {
+                    strWhr += " and (pm_uc.meta_value='" + CommanUtilities.Provider.GetCurrent().UserID + "') ";
+                }
                 string strSql = "select sum(case when post_status != 'auto-draft' then 1 else 0 end) AllOrder,sum(case when post_author = 8 and post_status != 'auto-draft' then 1 else 0 end) Mine,"
                             + " sum(case when post_author != 8 and post_status = 'draft' then 1 else 0 end) Drafts,sum(case post_status when 'wc-pending' then 1 else 0 end) Pending,"
                             + " sum(case post_status when 'wc-processing' then 1 else 0 end) Processing,sum(case post_status when 'wc-on-hold' then 1 else 0 end) OnHold,"
                             + " sum(case post_status when 'wc-completed' then 1 else 0 end) Completed,sum(case post_status when 'wc-cancelled' then 1 else 0 end) Cancelled,"
                             + " sum(case post_status when 'wc-refunded' then 1 else 0 end) Refunded,sum(case post_status when 'wc-failed' then 1 else 0 end) Failed"
-                            + " from wp_posts p where p.post_type = 'shop_order' ";
+                            + " from wp_posts p left outer join wp_postmeta pm_uc on pm_uc.post_id = p.id and pm_uc.meta_key = 'employee_id' where p.post_type = 'shop_order' " + strWhr;
 
                 dt = SQLHelper.ExecuteDataTable(strSql);
             }
@@ -1446,6 +1449,10 @@
             try
             {
                 string strWhr = string.Empty;
+                if (!CommanUtilities.Provider.GetCurrent().UserType.ToLower().Contains("administrator"))
+                {
+                    strWhr += " and (pmf.employee_id='" + CommanUtilities.Provider.GetCurrent().UserID + "') ";
+                }
                 if (!string.IsNullOrEmpty(userstatus))
                 {
                     if (userstatus == "mine") { strWhr += " and p.post_author = 8 and p.post_status != 'auto-draft'"; }

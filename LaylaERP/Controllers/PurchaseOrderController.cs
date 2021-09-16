@@ -1,6 +1,7 @@
 ﻿using LaylaERP.BAL;
 using LaylaERP.Models;
 using LaylaERP.UTILITIES;
+using Microsoft.Ajax.Utilities;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -127,6 +128,7 @@ namespace LaylaERP.Controllers
             string JSONstring = string.Empty; bool b_status = false; long ID = 0;
             try
             {
+                model.LoginID = CommanUtilities.Provider.GetCurrent().UserID;
                 ID = new PurchaseOrderRepository().AddNewPurchase(model);
 
                 if (ID > 0)
@@ -150,6 +152,7 @@ namespace LaylaERP.Controllers
             string JSONstring = string.Empty; bool b_status = false;
             try
             {
+                model.LoginID = CommanUtilities.Provider.GetCurrent().UserID;
                 if (new PurchaseOrderRepository().UpdatePurchaseStatus(model) > 0)
                 { b_status = true; JSONstring = "Purchase Record has been updated successfully!!"; }
                 else

@@ -13,34 +13,65 @@ namespace LaylaERP.BAL
 {
     public class DashboardRepository
     {
-        public static int Total_Orders()
+        public static int Total_Orders(string from_date, string to_date)
         {
             int totalorders = 0;
-            string strQuery = "SELECT Count(distinct p.id) from wp_posts p WHERE p.post_type = 'shop_order' and p.post_status != 'auto-draft'";
+            //DateTime fromdate = DateTime.Now, todate = DateTime.Now;
+            
+            string strQuery = "SELECT Count(distinct p.id) from wp_posts p WHERE p.post_type = 'shop_order' and p.post_status != 'auto-draft' ";
+            if(from_date != null)
+            {
+                CultureInfo us = new CultureInfo("en-US");
+                DateTime startDate = DateTime.Parse(from_date, us);
+                DateTime endDate = DateTime.Parse(to_date, us);
+                strQuery += " and DATE(p.post_date) >= '" + startDate.ToString("yyyy-MM-dd") + "' and DATE(post_date)<= '" + endDate.ToString("yyyy-MM-dd") + "'";
+            }
             totalorders = Convert.ToInt32(SQLHelper.ExecuteScalar(strQuery).ToString());
             return totalorders;
         }
 
-        public static decimal Total_Sales()
+        public static decimal Total_Sales(string from_date, string to_date)
         {
             decimal totalsales = 0;
-            string strQuery = "SELECT IFNULL(round(sum(rpm.meta_value),0),0) from wp_posts p inner join wp_postmeta rpm ON p.id = rpm.post_id AND meta_key = '_order_total' WHERE p.post_type = 'shop_order' and p.post_status in ('wc-completed','wc-pending','wc-processing','wc-on-hold','wc-refunded')";
+           string strQuery = "SELECT IFNULL(round(sum(rpm.meta_value),0),0) from wp_posts p inner join wp_postmeta rpm ON p.id = rpm.post_id AND meta_key = '_order_total' WHERE p.post_type = 'shop_order' and p.post_status in ('wc-completed','wc-pending','wc-processing','wc-on-hold','wc-refunded')  ";
+            if (from_date != null)
+            {
+                CultureInfo us = new CultureInfo("en-US");
+                DateTime startDate = DateTime.Parse(from_date, us);
+                DateTime endDate = DateTime.Parse(to_date, us);
+                strQuery += " and DATE(p.post_date) >= '" + startDate.ToString("yyyy-MM-dd") + "' and DATE(post_date)<= '" + endDate.ToString("yyyy-MM-dd") + "'";
+            }
             totalsales = Convert.ToInt32(SQLHelper.ExecuteScalar(strQuery).ToString());
             return totalsales;
         }
 
-        public static decimal Total_Customer()
+        public static decimal Total_Customer(string from_date, string to_date)
         {
             decimal totalsales = 0;
-            string strQuery = "SELECT Count(ur.id) TotalRecord from wp_users ur INNER JOIN wp_usermeta um on um.meta_key='wp_capabilities' And um.user_id = ur.ID And um.meta_value LIKE '%customer%'";
+           string strQuery = "SELECT Count(ur.id) TotalRecord from wp_users ur INNER JOIN wp_usermeta um on um.meta_key='wp_capabilities' And um.user_id = ur.ID And um.meta_value LIKE '%customer%' ";
+            if (from_date != null)
+            {
+                CultureInfo us = new CultureInfo("en-US");
+                DateTime startDate = DateTime.Parse(from_date, us);
+                DateTime endDate = DateTime.Parse(to_date, us);
+                strQuery += "  WHERE DATE(ur.user_registered) >= '" + startDate.ToString("yyyy-MM-dd") + "' and DATE(ur.user_registered)<= '" + endDate.ToString("yyyy-MM-dd") + "'";
+            }
             totalsales = Convert.ToInt32(SQLHelper.ExecuteScalar(strQuery).ToString());
             return totalsales;
         }
 
-        public static decimal Total_Order_Completed()
+        public static decimal Total_Order_Completed(string from_date, string to_date)
         {
             decimal totalsales = 0;
-            string strQuery = "SELECT IFNULL(Count(distinct p.id),0) from wp_posts p WHERE p.post_type = 'shop_order' and p.post_status != 'auto-draft' and p.post_status='wc-completed'";
+          
+            string strQuery = "SELECT IFNULL(Count(distinct p.id),0) from wp_posts p WHERE p.post_type = 'shop_order' and p.post_status != 'auto-draft' and p.post_status='wc-completed'  ";
+            if (from_date != null)
+            {
+                CultureInfo us = new CultureInfo("en-US");
+                DateTime startDate = DateTime.Parse(from_date, us);
+                DateTime endDate = DateTime.Parse(to_date, us);
+                strQuery += " and DATE(p.post_date) >= '" + startDate.ToString("yyyy-MM-dd") + "' and DATE(post_date)<= '" + endDate.ToString("yyyy-MM-dd") + "'";
+            }
             totalsales = Convert.ToInt32(SQLHelper.ExecuteScalar(strQuery).ToString());
             return totalsales;
         }
@@ -275,6 +306,63 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
+
+        //public static DataTable OrderListDashboard(string from_date, string to_date, string userstatus, string searchid, int pageno, int pagesize, string SortCol = "order_id", string SortDir = "DESC")
+        //{
+        //    DataTable dt = new DataTable();
+        //    // totalrows = 0;
+        //    try
+        //    {
+        //        string strWhr = string.Empty;
+        //        DateTime fromdate = DateTime.Now, todate = DateTime.Now;
+        //        fromdate = DateTime.Parse(from_date);
+        //        todate = DateTime.Parse(to_date);
+        //        if (!string.IsNullOrEmpty(searchid))
+        //        {
+        //            strWhr += " and (p.id like '%" + searchid + "%' "
+        //                    + " OR os.num_items_sold='%" + searchid + "%' "
+        //                    + " OR os.total_sales='%" + searchid + "%' "
+        //                    + " OR os.customer_id='%" + searchid + "%' "
+        //                    + " OR p.post_status like '%" + searchid + "%' "
+        //                    + " OR p.post_date like '%" + searchid + "%' "
+        //                    + " OR COALESCE(pmf.meta_value, '') like '%" + searchid + "%' "
+        //                    + " OR COALESCE(pml.meta_value, '') like '%" + searchid + "%' "
+        //                    + " OR replace(replace(replace(replace(pmp.meta_value, '-', ''), ' ', ''), '(', ''), ')', '') like '%" + searchid + "%'"
+        //                    + " )";
+        //        }
+
+        //        if (!string.IsNullOrEmpty(from_date))
+        //        {
+        //            strWhr += " and DATE(p.post_date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and DATE(post_date)<= '" + todate.ToString("yyyy-MM-dd") + "' ";
+        //        }
+
+
+        //        string strSql = "SELECT  p.id order_id, p.id as chkorder,os.num_items_sold,Cast(os.total_sales As DECIMAL(10, 2)) as total_sales, os.customer_id as customer_id,"
+        //                    + " REPLACE(p.post_status, 'wc-', '') status, DATE_FORMAT(p.post_date, '%M %d %Y') date_created,CONCAT(pmf.meta_value, ' ', COALESCE(pml.meta_value, '')) FirstName,COALESCE(pml.meta_value, '') LastName,"
+        //                    + " replace(replace(replace(replace(pmp.meta_value,'-', ''),' ',''),'(',''),')','') billing_phone"
+        //                    + " FROM wp_posts p inner join wp_wc_order_stats os on p.id = os.order_id"
+        //                    + " left join wp_postmeta pmf on os.order_id = pmf.post_id and pmf.meta_key = '_billing_first_name'"
+        //                    + " left join wp_postmeta pml on os.order_id = pml.post_id and pml.meta_key = '_billing_last_name'"
+        //                    + " left join wp_postmeta pmp on os.order_id = pmp.post_id and pmp.meta_key = '_billing_phone'"
+        //                    + " WHERE p.post_type = 'shop_order' " + strWhr.ToString()
+        //                    + " limit 10 ";
+
+        //        strSql += "; SELECT Count(distinct p.id) TotalRecord from wp_wc_order_stats os inner join wp_posts p on p.id = os.order_id "
+        //                + " left join wp_postmeta pmf on os.order_id = pmf.post_id and pmf.meta_key = '_billing_first_name'"
+        //                + " left join wp_postmeta pml on os.order_id = pml.post_id and pml.meta_key = '_billing_last_name'"
+        //                + " left join wp_postmeta pmp on os.order_id = pmp.post_id and pmp.meta_key = '_billing_phone'"
+        //                + " WHERE p.post_type = 'shop_order' " + strWhr.ToString();
+        //        DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+        //        dt = ds.Tables[0];
+        //        //if (ds.Tables[1].Rows.Count > 0)
+        //        //    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw ex;
+        //    }
+        //    return dt;
+        //}
 
         public static List<object> chartData = new List<object>();
         public static void SalesGraph1()

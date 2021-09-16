@@ -56,7 +56,7 @@
         $('.footer-finalbutton').empty().append('<button type="button" class="btn btn-danger pull-left btnOrderUndo"><i class="fa fa-undo"></i> Cancel</button>  <button type="button" id="btnCheckout" class="btn btn-danger billinfo" data-toggle="tooltip" title="Save and Checkout Order"> Checkout</button>');
         $("#loader").hide(); isEdit(true);
     });
-    $(document).on("click", ".btnOrderUndo", function (t) { t.preventDefault(); setTimeout(function () { $("#loader").show(); getOrderInfo(); isEdit(false);}, 10); });
+    $(document).on("click", ".btnOrderUndo", function (t) { t.preventDefault(); setTimeout(function () { $("#loader").show(); getOrderInfo(); isEdit(false); }, 10); });
     $(document).on("click", "#btnOrderUpdate", function (t) { t.preventDefault(); updateCO(); });
     $('#billModal').on('shown.bs.modal', function () {
         $('#ddlCustomerSearch').select2({
@@ -154,7 +154,7 @@ function NewOrderNo() {
     let option = { OrderPostMeta: postMetaxml };
     if (cus_id > 0) {
         ajaxFunction('/Orders/GetNewOrderNo', option, beforeSendFun, function (result) { $('#hfOrderNo').val(result.message); $('#lblOrderNo').text('Order #' + result.message + ' detail '); }, completeFun, errorFun, false);
-        isEdit(true);
+        isEdit(true); $('.billnote').prop("disabled", false);
     }
 }
 ///Find Address of Customer
@@ -220,7 +220,7 @@ function CategoryWiseProducts() {
         beforeSend: function () { $("#loader").show(); },
         success: function (result) {
             try {
-                result = JSON.parse(result); 
+                result = JSON.parse(result);
                 result = groupArrayOfObjects(result, 'term_order');
                 $.each(result, function (key, pr) {
                     //console.log(pr)
@@ -431,12 +431,12 @@ function addCustomerModal(cus_name) {
 
     myHtml += '<div class="form-group">';
     myHtml += '<label class="control-label " for="Address"><i class="glyphicon glyphicon-map-marker" aria-hidden="true"></i> Address<span class="text-red">*</span></label>';
-    myHtml += '<div class=""><input type="text" id="txtCusBillingAddress1" class="form-control searchAddress" data-addresstype="cus-bill" placeholder="Address 1" /></div>';
+    myHtml += '<div class=""><input type="text" id="txtCusBillingAddress1" class="form-control searchAddress" data-addresstype="cus-bill" placeholder="Address" /></div>';
     myHtml += '</div>';
 
     myHtml += '<div class="form-group">';
     myHtml += '<label class="control-label " for="Address 1">Address 1</label>';
-    myHtml += '<div class=""><input type="text" id="txtCusBillingAddress2" class="form-control" placeholder="Address 2" /></div>';
+    myHtml += '<div class=""><input type="text" id="txtCusBillingAddress2" class="form-control" placeholder="Address 1" /></div>';
     myHtml += '</div>';
 
     myHtml += '<div class="form-group">';
@@ -1571,7 +1571,10 @@ function calculateDiscountAcount() {
 
                 if (zDiscType == 'fixed_product') { zDisAmt = cou_details.disc_amt * cou_details.qty; }
                 else if (zDiscType == 'fixed_cart') { zDisAmt = cou_details.disc_amt * cou_details.qty; }
-                else if (zDiscType == 'percent') { zDisAmt = (cou_details.price * cou_details.qty) * (cou_details.disc_amt / 100); }
+                else if (zDiscType == 'percent') {
+                    if (pid == 14023) zDisAmt = ((cou_details.price * cou_details.qty) - row_disc) * (cou_details.disc_amt / 100);
+                    else zDisAmt = (cou_details.price * cou_details.qty) * (cou_details.disc_amt / 100);
+                }
                 else if (zDiscType == '2x_percent') { zDisAmt = ((zRegPrice * zCouponAmt) / 100) * Math.floor(zQty / 2); }
                 //console.log(cou, cou_details, zDisAmt);
                 //if (zDiscType == 'fixed_product') { zDisAmt = zCouponAmt * zQty; }
@@ -1607,7 +1610,7 @@ function getItemShippingCharge() {
     if (v_ids.join(',').length > 0) {
         $("#loader").show();
         let options = { strValue1: v_ids.join(','), strValue2: $("#ddlshipcountry").val(), strValue3: $("#ddlshipstate").val() };
-        $(".TotalAmount").data("shippingamt", 0.00); 
+        $(".TotalAmount").data("shippingamt", 0.00);
         $.ajax({
             type: "POST", url: '/Orders/GetProductShipping', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(options),
             beforeSend: function () { },
@@ -1765,7 +1768,7 @@ function saveCO() {
             else { swal('Alert!', data.message, "error").then((result) => { return false; }); }
         },
         error: function (xhr, status, err) { $("#loader").hide(); $('#btnCheckout').prop("disabled", false); $('.billinfo').prop("disabled", false); alert(err); },
-        complete: function () { $("#loader").hide(); $('#btnCheckout').prop("disabled", false); $('.billinfo').prop("disabled", false); $('#btnCheckout').text("Checkout"); isEdit(false);},
+        complete: function () { $("#loader").hide(); $('#btnCheckout').prop("disabled", false); $('.billinfo').prop("disabled", false); $('#btnCheckout').text("Checkout"); isEdit(false); },
     });
     $('#btnCheckout').text("Checkout");
     return false;

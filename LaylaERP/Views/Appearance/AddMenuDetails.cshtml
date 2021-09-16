@@ -44,6 +44,10 @@
                                     <input type="text" class="form-control" id="txtmenuparent" placeholder="Enter Parent ID">
                                 </div>
                                 <div class="form-group">
+                                    <label for="MenuOrderNumber">Menu Order Number</label>
+                                    <input type="text" class="form-control" id="txtmenuordernumber" placeholder="Enter Menu Order Number">
+                                </div>
+                                <div class="form-group">
                                     <input type="checkbox" id="chkmenustatus" name="MenuStatus"> <label for="Active">Active</label><br>
                                 </div>
                             </div>
@@ -73,13 +77,14 @@
 
 <script>
     function UpdateMenus() {
-        debugger
+        //debugger
         menucode = $("#txtmenucode").val();
         menuid = $("#hfid").val();
         menuname = $("#txtmenuname").val();
         menuurl = $("#txtmenuurl").val();
         menuicon = $("#txtmenuicon").val();
         parentid = $("#txtmenuparent").val();
+        menuorderno = $("#txtmenuordernumber").val();
         status = $("#chkmenustatus").prop("checked") ? 1 : 0;
 
         if (menucode == "") {
@@ -104,6 +109,7 @@
                 menu_url: menuurl,
                 menu_icon: menuicon,
                 parent_id: parentid,
+                menu_order: menuorderno,
                 status: status
                 }
                 $.ajax({

@@ -1202,7 +1202,7 @@ body .tree-node {position:relative;
 }
 
     body .tree-node > span {
-        margin: 0px;
+        margin: 0px; z-index:99;
     }
 
         body .tree-node > span input {
@@ -1220,7 +1220,7 @@ body .tree-indent, body .tree-hit {
 }
 
 body .tree-hit {
-    top: 0px;
+    top: 2px;
     left: -20px;
     z-index: 9;
 }

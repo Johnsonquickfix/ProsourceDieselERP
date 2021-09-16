@@ -2581,7 +2581,7 @@ html .listproduct .inventory-table td:nth-child(2) {
 #billModal #tblmodalTotal .form-group:not(:nth-last-child(3)) label{padding-top:2px; padding-bottom:2px;}
 #billModal #tblmodalTotal .form-group:first-child .col-sm-2.controls{padding-top:5px;}
 #billModal #tblmodalTotal .form-group:first-child label{padding-top:5px;}
-.neworders #billModal .modal-body{height:auto; overflow:visible;}
+.neworders #billModal .modal-body{}
 @media(max-width:900px) {
     .hub-pro-shop select:first-child{margin-left:0px;}
     .hub-pro-shop {width: 100%; margin-top:5px;}

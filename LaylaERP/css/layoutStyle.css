@@ -2552,6 +2552,8 @@ html .listproduct .inventory-table td:nth-child(2) {
 .category-searchbox #txtsrc{font-size:12px;line-height:2;color:#32373c;border-color:#7e8993;box-shadow:none;height:30px;border-radius:3px; margin-right:5px; flex:1;padding:0 8px;min-height:30px;border:1px solid #7e8993;vertical-align:middle}
 .category-searchbox #btnsrc{padding:0 8px;height:30px;line-height:30px;text-decoration:none;border:1px solid #adadad;border-radius:3px;font-size:12px;line-height:normal;color:#4f4f4f;background:#f3f5f6;cursor:pointer}
 .category-searchbox {display: flex; margin-bottom:10px;}
+
+.configuration-section .input-group{width:100%;}
 @media(max-width:900px) {
     .hub-pro-shop select:first-child{margin-left:0px;}
     .hub-pro-shop {width: 100%; margin-top:5px;}

@@ -18,6 +18,7 @@
 <script>
     $(document).ready(function () {
         GetUsersCount();
+        //async: false;
         setTimeout(function () { Datagrid('', $("#hfroletype").val()); }, 3000);
     });
 </script>
@@ -49,7 +50,7 @@
     <p id="selectStatus"><label><b class="sm-heading">Status</b></label></p>
 </div>*@
 <section class="content section-content manage-user-section">
-    <div class="user-top-section">
+    <div class="user-top-section" id="user-section-top">
 
         <div class="tablenav top">
             <div class="alignleft actions bulkactions">
@@ -132,6 +133,8 @@
 
         var loc = window.location.pathname;
         CheckPermissions("#btnCreateUser", "#hfEdit", "", loc);
+        CheckPermissions("#user-section-top", "#hfEdit", "", loc);
+        CheckPermissions("#role-ul", "#hfEdit", "", loc);
         //GetUsersCount();
         //setTimeout(function () { Datagrid('', $("#hfroletype").val()); }, 3000);
 

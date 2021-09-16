@@ -138,13 +138,13 @@
                                     <div class="form-group d-flex">
                                         <label class="col-sm-3 control-label">Min. purchase quantity</label>
                                         <div class="col-sm-9">
-                                            <input type="text" id="txtminpurchasequantity" value="1" class="form-control">
+                                            <input type="text" min="0" id="txtminpurchasequantity" value="1" class="form-control">
                                         </div>
                                     </div>
                                     <div class="form-group d-flex">
                                         <label class="col-sm-3 control-label">Sales Tax </label>
                                         <div class="col-sm-9">
-                                            <input type="text" id="txtSaletax" value="0" class="form-control">
+                                            <input type="text" min="0" id="txtSaletax" value="0" class="form-control">
                                         </div>
                                     </div>
 
@@ -152,7 +152,7 @@
                                     <div class="form-group d-flex">
                                         <label class="col-sm-3 control-label">Price (with no discount)</label>
                                         <div class="col-sm-3">
-                                            <input type="text" id="txtcurrencyconversionrate" value="0" class="form-control">
+                                            <input type="text" min="0" id="txtcurrencyconversionrate" value="0" class="form-control">
                                         </div>
                                         <div class="col-sm-6">
                                             <select id="ddltaxrate" class="form-control">
@@ -164,21 +164,21 @@
                                     <div class="form-group d-flex">
                                         <label class="col-sm-3 control-label">Shipping Price</label>
                                         <div class="col-sm-3">
-                                            <input type="text" id="txtshippingprice" value="0" class="form-control">
+                                            <input type="text" min="0" id="txtshippingprice" value="0" class="form-control">
                                         </div>
                                     </div>
 
                                     <div class="form-group d-flex">
                                         <label class="col-sm-3 control-label">Misc. Costs (Duties, 3PL charges, etc..)</label>
                                         <div class="col-sm-3">
-                                            <input type="text" id="txtMisccosts" value="0" class="form-control">
+                                            <input type="text" min="0" id="txtMisccosts" value="0" class="form-control">
                                         </div>
                                     </div>
 
                                     <div class="form-group d-flex">
                                         <label class="col-sm-3 control-label">Cost Price</label>
                                         <div class="col-sm-3">
-                                            <input type="text" id="txtcostprice" class="form-control">
+                                            <input type="text" min="0" id="txtcostprice" class="form-control">
                                         </div>
                                     </div>
 
@@ -717,6 +717,6 @@
 <body>
     <img src="">
 </body>
-<script src="https://cdn.tiny.cloud/1/qagffr3pkuv17a8on1afax661irst1hbr4e6tbv888sz91jc/tinymce/5.8.2-114/tinymce.min.js"></script>
+@*<script src="https://cdn.tiny.cloud/1/qagffr3pkuv17a8on1afax661irst1hbr4e6tbv888sz91jc/tinymce/5.8.2-114/tinymce.min.js"></script>*@
 <script src="@Url.Content("~/js/Product/AddnewPurchase.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 

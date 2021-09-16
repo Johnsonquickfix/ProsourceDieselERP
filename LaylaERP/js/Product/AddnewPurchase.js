@@ -1392,8 +1392,12 @@ function viewfileupload(id) {
 
 }
 function addshippingprice() {
-
-    let castprice = parseFloat($("#txtcurrencyconversionrate").val()) + parseFloat($("#txtshippingprice").val()) + parseFloat($("#txtMisccosts").val())  + parseFloat($("#txtSaletax").val());
+    let con = parseFloat($("#txtcurrencyconversionrate").val()) || 0.00;
+    let ship = parseFloat($("#txtshippingprice").val()) || 0.00;
+    let mis = parseFloat($("#txtMisccosts").val()) || 0.00;
+    let sal = parseFloat($("#txtSaletax").val()) || 0.00;
+   // console.log(con);
+    let castprice = con + ship + mis + sal;
     $("#txtcostprice").val(castprice);
 }
 function ClearControl() {

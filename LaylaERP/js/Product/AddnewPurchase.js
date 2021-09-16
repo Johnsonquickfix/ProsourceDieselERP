@@ -124,7 +124,7 @@
 
         $("#filtersrchexp").click(function (e) {
             dataGridLoad($("#ddlproductchild").val());
-        });
+        }); 
 
     }
 

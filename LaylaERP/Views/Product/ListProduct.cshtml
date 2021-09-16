@@ -35,6 +35,7 @@
         <div class="col-md-12">
             <div class="user_subCrumbs">
                 <input type="hidden" id="hfType" value="" />
+                <input type="hidden" id="hfEdit" value="" />
                 <ul class="subsubsub">
                     <li class="all"><a id="all" href="javascript:void(0);" class="current">All (<span class="count">0</span></a>) |</li>
                     <li class="published"><a href="javascript:void(0);" id="published">Live (<span class="count">0</span>)</a> |</li>
@@ -142,5 +143,13 @@
 
 
 </section>
-<script src="~/js/common.js"></script>
+<script>
+    $(document).ready(function () {
+        var loc = window.location.pathname;
+        CheckPermissions("#btnAdd", "#hfEdit", "", loc);
+    });
+
+</script>
+        <script src="~/js/common.js"></script>
 <script src="@Url.Content("~/js/Product/ProductList.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+<script src="@Url.Content("~/js/Users/RolePermission.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>

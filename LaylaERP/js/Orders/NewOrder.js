@@ -1437,7 +1437,10 @@ function calculateDiscountAcount() {
 
                 if (zDiscType == 'fixed_product') { zDisAmt = cou_details.disc_amt * cou_details.qty; }
                 else if (zDiscType == 'fixed_cart') { zDisAmt = cou_details.disc_amt * cou_details.qty; }
-                else if (zDiscType == 'percent') { zDisAmt = (cou_details.price * cou_details.qty) * (cou_details.disc_amt / 100); }
+                else if (zDiscType == 'percent') {
+                    if (pid == 14023) zDisAmt = ((cou_details.price * cou_details.qty) - row_disc) * (cou_details.disc_amt / 100);
+                    else zDisAmt = (cou_details.price * cou_details.qty) * (cou_details.disc_amt / 100);
+                }
                 else if (zDiscType == '2x_percent') { zDisAmt = ((zRegPrice * zCouponAmt) / 100) * Math.floor(zQty / 2); }
                 //console.log(cou, cou_details, zDisAmt);
                 //if (zDiscType == 'fixed_product') { zDisAmt = zCouponAmt * zQty; }

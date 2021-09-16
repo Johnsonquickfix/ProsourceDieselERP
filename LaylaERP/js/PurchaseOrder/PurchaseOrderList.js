@@ -100,27 +100,30 @@ function Singlecheck(chk) {
     }
 }
 function orderStatus() {
-    var id = "";
+    let id = "";
     $("input:checkbox[name=CheckSingle]:checked").each(function () { id += $(this).val() + ","; });
-    id = id.replace(/,(?=\s*$)/, '');
-    $("#checkAll").prop('checked', false);
-    var status = $('#ddlOrderStatus').val();
+    id = id.replace(/,(?=\s*$)/, ''); $("#checkAll").prop('checked', false);
+    let status = $('#ddlOrderStatus').val();
 
-    if (id == "") { swal('alert', 'Please select a Purchase order.', 'error'); }
-    else if (status == "") { swal('alert', 'Please select status.', 'error'); }
-    else {
-        var obj = { Search: id, Status: status }
-        $.ajax({
-            url: '/PurchaseOrder/UpdatePurchaseOrderStatus', dataType: 'JSON', type: 'get',
-            contentType: "application/json; charset=utf-8",
-            data: obj,
-            beforeSend: function () { $("#loader").show(); },
-            success: function (data) {
-                if (data.status == true) { swal('alert', data.message, 'success').then((result) => { PurchaseOrderGrid(); }); }
-                else { swal('alert', 'something went wrong!', 'success'); }
-            },
-            complete: function () { $("#loader").hide(); },
-            error: function (error) { swal('Error!', 'something went wrong', 'error'); }
-        });
-    }
+    if (id == "") { swal('alert', 'Please select a Purchase order.', 'error'); return false; }
+    if (status == "") { swal('alert', 'Please select status.', 'error'); return false;}
+    
+    swal.queue([{
+        title: 'Alert!', confirmButtonText: 'Yes, Update it!', text: "Do you want to update your status?",
+        showLoaderOnConfirm: true, showCancelButton: true, icon: "question",
+        preConfirm: function () {
+            return new Promise(function (resolve) {
+                let obj = { Search: id, Status: status };
+                $.get('/PurchaseOrder/UpdatePurchaseOrderStatus', obj)
+                    .done(function (data) {
+                        if (data.status) {
+                            swal.insertQueueStep(data.message);
+                            PurchaseOrderGrid();
+                        }
+                        else { swal.insertQueueStep('something went wrong!'); }
+                        resolve();
+                    })
+            })
+        }
+    }]);
 }

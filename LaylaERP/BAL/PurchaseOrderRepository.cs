@@ -194,9 +194,9 @@ namespace LaylaERP.BAL
                 {
                     strsql = string.Format("delete from commerce_purchase_order_detail where fk_purchase = '{0}' and rowid not in ({1});", model.RowID, str_oiid);
                     strsql += string.Format("update commerce_purchase_order set ref_supplier='{0}',fk_supplier='{1}',fk_payment_term='{2}',fk_balance_days='{3}',fk_incoterms='{4}',location_incoterms='{5}',"
-                            + "fk_payment_type='{6}',date_livraison='{7}',note_private='{8}',note_public='{9}',discount='{10}',total_tva='{11}',localtax1='{12}',localtax2='{13}',total_ht='{14}',total_ttc='{15}',fk_warehouse='{16}' where rowid='{17}';",
+                            + "fk_payment_type='{6}',date_livraison='{7}',note_private='{8}',note_public='{9}',discount='{10}',total_tva='{11}',localtax1='{12}',localtax2='{13}',total_ht='{14}',total_ttc='{15}',fk_warehouse='{16}',fk_user_modif='{17}' where rowid='{18}';",
                             model.VendorBillNo, model.VendorID, model.PaymentTerms, model.Balancedays, model.IncotermType, model.Incoterms, model.PaymentType, model.Planneddateofdelivery, model.NotePrivate, model.NotePublic,
-                            model.discount, model.total_tva, model.localtax1, model.localtax2, model.total_ht, model.total_ttc, model.fk_warehouse, model.RowID);
+                            model.discount, model.total_tva, model.localtax1, model.localtax2, model.total_ht, model.total_ttc, model.fk_warehouse, model.LoginID, model.RowID);
                 }
                 else
                 {
@@ -253,7 +253,7 @@ namespace LaylaERP.BAL
                 if (model.Status == 1)
                     strsql += string.Format("update commerce_purchase_order set fk_status='{0}',ref_ext='',billed='0' where rowid in ({1});", model.Status, model.Search);
                 else if (model.Status == 3)
-                    strsql += string.Format("update commerce_purchase_order set fk_status='{0}',ref_ext=REPLACE(ref,'PO','PI'),billed='1' where rowid in ({1});", model.Status, model.Search);
+                    strsql += string.Format("update commerce_purchase_order set fk_status='{0}',ref_ext=REPLACE(ref,'PO','PI'),billed='1',fk_user_approve='{1}' where rowid in ({2});", model.Status, model.LoginID, model.Search);
                 else
                     strsql += string.Format("update commerce_purchase_order set fk_status='{0}' where rowid in ({1});", model.Status, model.Search);
                 result = SQLHelper.ExecuteNonQueryWithTrans(strsql);

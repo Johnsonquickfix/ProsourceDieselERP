@@ -618,7 +618,7 @@ function getOrderInfo() {
         $('.page-heading').text('Edit order ').append('<a class="btn btn-danger" href="/Orders/OrdersHistory">Back to List</a>');
         $('#lblOrderNo').text('Order #' + oid + ' detail '); $('#hfOrderNo').val(oid);
         $('#order_line_items,#order_state_recycling_fee_line_items,#order_fee_line_items,#order_shipping_line_items,#order_refunds,#billCoupon,.refund-action').empty();
-        $('#btnCheckout').remove(); $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/Orders/OrdersHistory">Back to List</a>   <button type="button" class="btn btn-danger btnEditOrder"><i class="far fa-edit"></i> Edit</button>');
+        $('#btnCheckout').remove(); $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/Orders/OrdersHistory">Back to List</a>');
         var opt = { strValue1: oid };
         ajaxFunc('/Orders/GetOrderInfo', opt, beforeSendFun, function (result) {
             try {
@@ -643,12 +643,18 @@ function getOrderInfo() {
                     $('#txtshipcompany').val(data[0].s_company); $('#txtshipzipcode').val(data[0].s_postcode); $('#txtshipcity').val(data[0].s_city);
                     $('#ddlshipcountry').val(data[0].s_country.trim()).trigger('change'); $('#ddlshipstate').val(data[0].s_state.trim()).trigger('change');
                     $('#txtCustomerNotes').val(data[0].post_excerpt);
+                    if (data[0].is_shiped > 0) {
+                        $('.box-tools').empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf"><i class="fas fa-print"></i> Print</button>');
+                        $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/Orders/OrdersHistory">Back to List</a>');
+                    }
+                    else {
+                        $('.box-tools').empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf"><i class="fas fa-print"></i> Print</button> <button type="button" class="btn btn-danger btnEditOrder"><i class="far fa-edit"></i> Edit</button>');
+                        $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/Orders/OrdersHistory">Back to List</a>   <button type="button" class="btn btn-danger btnEditOrder"><i class="far fa-edit"></i> Edit</button>');                        
+                    }
+
                     //bind Product
                     getOrderItemList(oid);
                     getOrderNotesList(oid);
-                    //if (data[0].status.trim() == "wc-pending") {
-                    $('.box-tools').empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf"><i class="fas fa-print"></i> Print</button> <button type="button" class="btn btn-danger btnEditOrder"><i class="far fa-edit"></i> Edit</button>');
-                    //}                
                 }
             }
             catch (error) {

@@ -195,7 +195,7 @@ function dataGridLoad(order_type) {
             },
             {
                 'data': 'id', title: 'Action', sWidth: "5%",
-                'render': function (id, type, full, meta) {
+                'render': function (id, type, row, meta) {
                     return '<a href="NewOrders/' + id + '" data-toggle="tooltip" title="View/Edit Order"><i class="glyphicon glyphicon-eye-open"></i></a> <a href="OrderRefund/' + id + '" data-toggle="tooltip" title="Refund Order"><i class="fa fa-undo"></i></a>'
                 }
             }
@@ -272,7 +272,7 @@ function PaymentStatus(oid, pp_id) {
                         title: status, confirmButtonText: 'Yes, Update it!', text: "You Payment has been received. Do you want to update your status?",
                         showLoaderOnConfirm: true, icon: "success",
                         preConfirm: function () {
-                            return new Promise(function (resolve) {                                
+                            return new Promise(function (resolve) {
                                 let opt = { post_id: oid, meta_key: '_paypal_status', meta_value: 'COMPLETED' };
                                 $.get('/Orders/UpdatePaymentStatus', opt)
                                     .done(function (data) {

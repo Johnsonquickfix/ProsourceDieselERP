@@ -183,7 +183,7 @@
             {
                 string strSQl = "SELECT DISTINCT post.id,ps.ID pr_id,CONCAT(COALESCE(ps.post_title,post.post_title), COALESCE(CONCAT(' (' ,psku.meta_value,')'),'')) as post_title"
                             + " , CONCAT(post.id, '$', COALESCE(ps.id, 0)) r_id FROM wp_posts as post"
-                            + " LEFT OUTER JOIN wp_posts ps ON ps.post_parent = post.id and ps.post_type LIKE 'product_variation'"
+                            + " LEFT OUTER JOIN wp_posts ps ON ps.post_parent = post.id and ps.post_type LIKE 'product_variation' AND ps.post_status = 'publish'"
                             + " left outer join wp_postmeta psku on psku.post_id = ps.id and psku.meta_key = '_sku'"
                             + " WHERE post.id not in (632713,78676) and post.post_type = 'product' AND post.post_status = 'publish' AND CONCAT(COALESCE(ps.post_title,post.post_title), COALESCE(CONCAT(' (' ,psku.meta_value,')'),'')) like '%" + strSearch + "%' "
                             + " ORDER BY post.ID limit 50;";
@@ -205,7 +205,7 @@
                                 + " inner join wp_term_taxonomy wp_ttn on wp_ttn.term_taxonomy_id = wp_tr.term_taxonomy_id and wp_ttn.taxonomy = 'product_cat'"
                                 + " inner join wp_terms wp_t on wp_t.term_id = wp_ttn.term_id"
                                 + " left outer join wp_termmeta wp_tm on wp_tm.term_id = wp_t.term_id and wp_tm.meta_key = 'is_active'"
-                                + " left outer join wp_posts ps ON ps.post_parent = p.id and ps.post_type LIKE 'product_variation'"
+                                + " left outer join wp_posts ps ON ps.post_parent = p.id and ps.post_type LIKE 'product_variation' and ps.post_status = 'publish'"
                                 + " left outer join wp_postmeta pm_rp on pm_rp.post_id = ps.id and pm_rp.meta_key = '_regular_price'"
                                 + " left outer join wp_postmeta pm_sp on pm_sp.post_id = ps.id and pm_sp.meta_key = '_price'"
                                 + " where p.post_type = 'product' and p.post_status = 'publish' and coalesce(wp_tm.meta_value,'1') = 1"

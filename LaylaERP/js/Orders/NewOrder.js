@@ -204,7 +204,7 @@ function NewOrderNo() {
         { post_id: oid, meta_key: '_order_total', meta_value: 0.00 }, { post_id: oid, meta_key: '_cart_discount', meta_value: 0.00 },
         { post_id: oid, meta_key: '_cart_discount_tax', meta_value: '0' }, { post_id: oid, meta_key: '_order_shipping', meta_value: 0.00 },
         { post_id: oid, meta_key: '_order_shipping_tax', meta_value: 0.00 }, { post_id: oid, meta_key: '_order_tax', meta_value: 0.00 },
-        { post_id: oid, meta_key: 'employee_id', meta_value: '0' }, { post_id: oid, meta_key: 'employee_name', meta_value: '' }
+        //{ post_id: oid, meta_key: 'employee_id', meta_value: '0' }, { post_id: oid, meta_key: 'employee_name', meta_value: '' }
     );
     let option = { OrderPostMeta: postMetaxml };
     if (cus_id > 0) {
@@ -256,7 +256,7 @@ function CustomerAddress(id) {
 }
 function GetTaxRate() {
     ///Tax Calculate for state
-    let tax_states = ["CA", "CO", "CT", "IL", "IN", "MI", "MS", "NC", "NE", "NJ", "NM", "PA", "TN", "TX", "WA", "AR", "FL", "GA", "IA", "MO", "OH", "SC", "WI"];
+    let tax_states = ["NY", "CA", "CO", "CT", "IL", "IN", "MI", "MS", "NC", "NE", "NJ", "NM", "PA", "TN", "TX", "WA", "AR", "FL", "GA", "IA", "MO", "OH", "SC", "WI"];
     let s_state = $("#ddlshipstate").val(), sub_total = parseFloat($("#ddlshipstate").val()) || 100, ship_total = parseFloat($("#shippingTotal").val()) || 0.00;
     if (tax_states.includes(s_state)) {
         var opt = {

@@ -35,7 +35,7 @@ function printinvoice(id, result, is_mail, is_inv) {
     modalHtml += '<div class="modal-dialog modal-lg">';
     modalHtml += '<div class="modal-content">';
     modalHtml += '<div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button><h5 class="modal-title">' + inv_title + ' Preview</h5></div>';
-    modalHtml += '<div class="modal-body no-padding"></div>';
+    modalHtml += '<div class="modal-body no-padding modal-body-fixHeight"></div>';
     modalHtml += '<div class="modal-footer"><button type="button" class="btn btn-success pull-left btnprintinvoice"><i class="fa fa-print"></i> Print</button ><button type="button" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">OK</button></div>';
     //modalHtml += '<div class="modal-footer"><button type="button" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">OK</button></div>';
     modalHtml += '</div>';

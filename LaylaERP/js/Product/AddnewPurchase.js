@@ -51,6 +51,15 @@
         setTimeout(function () { getNotesList($("#ddlproductchild").val()); }, 200000);
         setTimeout(function () { bindfileuploade(); }, 210000);
 
+         //GetDataPurchaseByID($("#ddlproductchild").val()); 
+         //bindbuyingprice(); 
+         //bindChildproductsservices();
+         //bindparentproductsservices();
+         //bindwarehouse(); 
+         //getNotesList($("#ddlproductchild").val()); 
+         //bindfileuploade(); 
+
+
         $('#dvbuysing').hide();
         $(document).on('click', "#btnbuying", function () {
             $('#dvbuysing').show();

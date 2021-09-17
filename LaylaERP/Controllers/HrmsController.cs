@@ -64,6 +64,12 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult configuration()
+        {
+            return View();
+        }
+
+
         public JsonResult GetGroup()
         {
             DataSet ds = HrmsRepository.GetGroup();
@@ -512,6 +518,83 @@ namespace LaylaERP.Controllers
             {
                 return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
             }
+        }
+
+        //Bind Dropdown for configuration
+        public JsonResult GetEmployeeCodeForConfig()
+        {
+            DataSet ds = HrmsConfigurationRepository.GetEmployeeCode();
+            List<SelectListItem> employeecode = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                employeecode.Add(new SelectListItem { Text = dr["emp_number"].ToString(), Value = dr["fk_emp"].ToString() });
+            }
+            return Json(employeecode, JsonRequestBehavior.AllowGet);
+
+        }
+
+        public JsonResult GetEmployeeNameForConfig(string id)
+        {
+            DataSet ds = HrmsConfigurationRepository.GetEmployeeName(id);
+            List<SelectListItem> employeename = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                employeename.Add(new SelectListItem { Text = dr["name"].ToString(), Value = dr["rowid"].ToString() });
+            }
+            return Json(employeename, JsonRequestBehavior.AllowGet);
+
+        }
+
+        public JsonResult GetEmployeeTypeForConfig(string id)
+        {
+            DataSet ds = HrmsConfigurationRepository.GetEmployeeType();
+            List<SelectListItem> employeetype = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                employeetype.Add(new SelectListItem { Text = dr["type"].ToString(), Value = dr["rowid"].ToString() });
+            }
+            return Json(employeetype, JsonRequestBehavior.AllowGet);
+
+        }
+
+        public JsonResult GetAccountingTypeForConfig()
+        {
+            DataSet ds = HrmsConfigurationRepository.GetAccountingType();
+            List<SelectListItem> accountingtype = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                accountingtype.Add(new SelectListItem { Text = dr["label"].ToString(), Value = dr["account_number"].ToString() });
+            }
+            return Json(accountingtype, JsonRequestBehavior.AllowGet);
+
+        }
+
+        public JsonResult GetWorkTypeForConfig()
+        {
+            DataSet ds = HrmsConfigurationRepository.GetWorkType();
+            List<SelectListItem> worktype = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                worktype.Add(new SelectListItem { Text = dr["designation"].ToString(), Value = dr["rowid"].ToString() });
+            }
+            return Json(worktype, JsonRequestBehavior.AllowGet);
+
+        }
+
+        public JsonResult AddConfiguration(HrmsConfigurationModel model)
+        {
+            
+            int ID = HrmsConfigurationRepository.AddConfiguration(model);
+            if (ID > 0)
+            {
+
+                return Json(new { status = true, message = "Data has been saved successfully!!", url = "", id = ID }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+
         }
     }
 }

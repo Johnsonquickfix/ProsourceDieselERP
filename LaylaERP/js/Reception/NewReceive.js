@@ -4,6 +4,7 @@
     $(".select2").select2();
     getVendor(); getMasters();
     getPurchaseOrderInfo()
+    getwarehaouseid();
 
     $("#ddlVendor").change(function () {
         let today = new Date();
@@ -27,7 +28,7 @@
         }, 50);
     });
 
-    getwarehaouseid();
+ 
     //$('#ddlProduct').select2({
     //    allowClear: true, minimumInputLength: 3, placeholder: "Search Product",
     //    ajax: {
@@ -114,6 +115,10 @@ function getMasters() {
             //Balance
             $("#ddlIncoTerms").html('<option value="0">Select Incoterms</option>');
             for (i = 0; i < dt['Table3'].length; i++) { $("#ddlIncoTerms").append('<option value="' + dt['Table3'][i].id + '">' + dt['Table3'][i].text + '</option>'); }
+
+            //Warehouse
+            $("#ddlwarehousepo").html('<option value="0">Select Warehouse</option>');
+            for (i = 0; i < dt['Table4'].length; i++) { $("#ddlwarehousepo").append('<option value="' + dt['Table4'][i].id + '">' + dt['Table4'][i].text + '</option>'); }
         },
         complete: function () { $("#loader").hide(); },
         error: function (xhr, status, err) { $("#loader").hide(); }, async: false
@@ -144,6 +149,8 @@ function getwarehaouseid() {
             }
         }, async: false
     });
+
+    $('#ddlwarehouse').val($('#ddlwarehousepo').val()).trigger('change');
 }
 function getVendorDetails() {
     let VendorID = parseInt($('#ddlVendor').val()) || 0;
@@ -410,6 +417,8 @@ function getPurchaseOrderInfo() {
                         $('#ddlPaymentType').val(data['po'][i].fk_payment_type).trigger('change');
                         $('#txtNotePublic').val(data['po'][i].note_public); $('#txtNotePrivate').val(data['po'][i].note_private);
                         $('#txtIncoTerms').val(data['po'][i].location_incoterms);
+                        $('#ddlwarehousepo').val(data['po'][i].fk_warehouse).trigger('change');
+                        $('#ddlWarehouse').val(data['po'][i].fk_warehouse).trigger('change');
                         $("#hfid").val(data['po'][i].rowid);
                         if (!data['po'][i].date_livraison.includes('00/00/0000')) $('#txtPlanneddateofdelivery').val(data['po'][i].date_livraison);
 
@@ -524,6 +533,7 @@ function saveVendorPO() {
     let balance_days = parseInt($("#ddlBalancedays").val()) || 0;
     let payment_type = parseInt($("#ddlPaymentType").val()) || 0;
     let warehouse_ID = parseInt($("#ddlwarehouse").val()) || 0;
+    let warehousepo_ID = parseInt($("#ddlwarehousepo").val()) || 0;
     let date_livraison = $("#txtPlanneddateofdelivery").val().split('/');
     let IDRecVal = parseInt($("#hfid").val()) || 0;
     let incoterms = parseInt($("#ddlIncoTerms").val()) || 0;
@@ -548,7 +558,7 @@ function saveVendorPO() {
     else {
         if (date_livraison.length > 0) date_livraison = date_livraison[2] + '/' + date_livraison[0] + '/' + date_livraison[1];
         let option = {
-            RowID: id, VendorID: vendorid, PONo: '', VendorBillNo: ref_vendor, PaymentTerms: payment_term, Balancedays: balance_days, PaymentType: payment_type, WarehouseID: warehouse_ID,
+            RowID: id, VendorID: vendorid, PONo: '', VendorBillNo: ref_vendor, PaymentTerms: payment_term, Balancedays: balance_days, PaymentType: payment_type, WarehouseID: warehouse_ID, WarehousepoID: warehousepo_ID,
             Planneddateofdelivery: date_livraison, IncotermType: incoterms, Incoterms: location_incoterms, NotePublic: note_public, NotePrivate: note_private, IDRec: IDRecVal,
             total_tva: 0, localtax1: parseFloat($("#salesTaxTotal").text()), localtax2: parseFloat($("#shippingTotal").text()), total_ht: parseFloat($("#SubTotal").text()),
             discount: parseFloat($("#discountTotal").text()), total_ttc: parseFloat($("#orderTotal").text()), fk_status: status, PurchaseOrderProducts: _list

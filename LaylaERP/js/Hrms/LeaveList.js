@@ -19,6 +19,7 @@ function LeaveList() {
                     { data: 'date_from', title: 'From', sWidth: "15%" },
                     { data: 'date_to', title: 'To', sWidth: "15%" },
                     { data: 'days', title: 'Days', sWidth: "10%" },
+                    { data: 'status', title: 'Status', sWidth: "10%" },
                     {
                         'data': 'rowid',
                         'sortable': false,

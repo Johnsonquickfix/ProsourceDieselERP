@@ -61,10 +61,7 @@ function PurchaseOrderGrid() {
             },
             { data: 'date_creation', title: 'Order Date', sWidth: "10%" },
             {
-                data: 'refordervendor', title: 'Invoice No', sWidth: "10%", 'render': function (id, type, full, meta) {
-                    let str_inv = (id.substr(7) > 0 ? ' <a href="#" onclick="getInvoicePrint(' + full.RicD + '); "><i class="fas fa - search - plus"></i>' + id + '</a>' : '');
-                    return str_inv;
-                }
+                'data': 'refordervendor', sWidth: "10%", title: 'Invoice No', sWidth: "10%"                
             },
             { data: 'vendor_name', title: 'Vendor Name', sWidth: "15%" },
             {
@@ -131,7 +128,7 @@ function PartiallyGrid() {
                     return '<a href="NewReceiveOrder/' + full.id + '">' + id + '</a> <a href="#" onclick="getPurchaseOrderPrint(' + full.id + ', false);"><i class="fas fa-search-plus"></i></a>';
                 }
             },
-            { data: 'date_creation', title: 'Order Date', sWidth: "10%" },
+            { data: 'date_creation', title: 'Receive Date', sWidth: "10%" },
             {
                 data: 'refordervendor', title: 'Bill No', sWidth: "10%", 'render': function (id, type, full, meta) {
                     let str_inv = (id.substr(7) > 0 ? ' <a href="#" onclick="getInvoicePrint(' + full.RicD + '); "><i class="fas fa - search - plus"></i>' + id + '</a>' : '');
@@ -203,7 +200,7 @@ function PoClosureGrid() {
                     return id + '<a href="#" onclick="getPurchaseOrderPrint(' + full.id + ', false);"><i class="fas fa-search-plus"></i></a>';
                 }
             },
-            { data: 'date_creation', title: 'Order Date', sWidth: "10%" },
+            { data: 'date_creation', title: 'Receive Date', sWidth: "10%" },
             {
                 data: 'refordervendor', title: 'Bill No', sWidth: "10%", 'render': function (id, type, full, meta) {
                     let str_inv = (id.substr(7) > 0 ? ' <a href="#" onclick="getInvoicePrint(' + full.RicD + '); "><i class="fas fa - search - plus"></i>' + id + '</a>' : '');

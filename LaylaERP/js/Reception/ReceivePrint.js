@@ -355,7 +355,7 @@ function printinvoice(id, result, is_mail, is_inv) {
     myHtml += '                <div class="row" style="padding:0px 15px;margin-bottom:10px;display: flex;">';
     myHtml += '                    <div id="printPreview" style="width: 45.66666667%;">';
     myHtml += '                    <div class="businfobox">' + data['po'][0].vendor_name + '<br/>' + data['po'][0].address + '<br/>' + data['po'][0].town + ', ' + data['po'][0].fk_state + ' ' + data['po'][0].zip + ' ' + (data['po'][0].fk_country == "CA" ? "Canada" : data['po'][0].fk_country == "US" ? "United States" : data['po'][0].fk_country);
-    myHtml += '                    <div class="businfobox">' + data['po'][0].vendor_email + '</div>';
+    myHtml += '                    </div><div class="businfobox">' + data['po'][0].vendor_email + '</div>';
     myHtml += '                    </div>';
     myHtml += '                    <div style="width:58.33333333%; float:right;">';
     myHtml += '                        <table style="width: 100%;">';
@@ -385,7 +385,7 @@ function printinvoice(id, result, is_mail, is_inv) {
     myHtml += '                <div class="row" style="padding:0px 15px;margin-bottom: 10px;">';
     myHtml += '                    <div class="headline"><h3>Bill To:</h3></div>';
 
-    myHtml += '                        <div><img src="/Images/layla1-logo.png" alt="" id="logoUrl" style="width: 90px;" /></div>';
+    myHtml += '                        <div><img src="/Images/layla1-logo.png" alt="" id="logoUrl" style="width: 60px;" /></div>';
     myHtml += '                        <div>' + result.add + '<br>' + result.city + ', ' + result.state + ' ' + result.zip + ', <br>' + (result.country == "CA" ? "Canada" : result.country == "US" ? "United States" : result.country) + '</div>';
     myHtml += '                        <div>Phone: 001 ' + result.phone.toString().replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + '<br/>' + result.email + '<br />' + result.website + '<br /></div>';
 

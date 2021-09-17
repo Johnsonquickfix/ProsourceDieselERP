@@ -423,12 +423,17 @@
     //    plugins: 'table wordcount'
     //});
 
-    //$(document).ready(function () {
+    $(document).ready(function () {
+        $("#txtsrc").keyup(function (event) {
+            if (event.keyCode === 13) {
+                $("input[id*=btnsrc]").click();
+            }
+        });
     //    var urlperm = "/Product/ListProduct";
     //    CheckPermissions("#btnSave", "#hfEdit", "", urlperm);
     //    CheckPermissions("#btnedit", "#hfEdit", "", urlperm);
     //    CheckPermissions("#btnSaveupdate", "#hfEdit", "", urlperm);
-    //});
+    });
     $("input[id*=btnsrc]").click(function () {
         var searchvalue = $("input[id*=txtsrc]").val();    
         if (searchvalue != "") {

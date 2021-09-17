@@ -530,10 +530,19 @@
 
         // Sales graph 
         [HttpPost]
-        public JsonResult SalesGraph()
+        public JsonResult SalesGraph(JqDataTableModel model)
         {
-            DashboardRepository.SalesGraph1();
-            return Json(DashboardRepository.chartData);
+            try
+            {
+                string startDate = model.strValue5;
+                string endDate = model.strValue6;
+                DashboardRepository.SalesGraph1(startDate, endDate);
+                return Json(DashboardRepository.chartData);
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }

@@ -133,8 +133,8 @@ namespace LaylaERP.BAL
                 }
                 string strSql = "Select (SELECT IFNULL(Count(distinct p.id),0) from wp_posts p  left join wp_postmeta pm ON p.id = pm.post_id AND pm.meta_key = 'employee_id' WHERE p.post_type = 'shop_order '" + strWhr.ToString() + " and DATE(p.post_date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and DATE(post_date)<= '" + todate.ToString("yyyy-MM-dd") + "' and p.post_status != 'auto-draft') TotalOrder , (SELECT IFNULL(round(sum(rpm.meta_value),0),0) " +
                     "from wp_posts p inner join wp_postmeta rpm ON p.id = rpm.post_id AND meta_key = '_order_total' left join wp_postmeta pm ON p.id = pm.post_id AND pm.meta_key = 'employee_id' " +
-                    "WHERE p.post_type = 'shop_order' and DATE(p.post_date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and DATE(post_date)<= '" + todate.ToString("yyyy-MM-dd") + "' and p.post_status in ('wc-completed','wc-pending','wc-processing','wc-on-hold','wc-refunded') "+ strWhr.ToString() + ") TotalSale ";
-              
+                    "WHERE p.post_type = 'shop_order' and DATE(p.post_date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and DATE(post_date)<= '" + todate.ToString("yyyy-MM-dd") + "' and p.post_status in ('wc-completed','wc-pending','wc-processing','wc-on-hold','wc-refunded') " + strWhr.ToString() + ") TotalSale ";
+
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
             }
@@ -323,7 +323,7 @@ namespace LaylaERP.BAL
                 strSql += "; SELECT Count(distinct p.id) TotalRecord from wp_posts p "
                         + " left join wp_postmeta pmf on p.id = pmf.post_id and pmf.meta_key = '_billing_first_name'"
                         + " left join wp_postmeta pml on p.id = pml.post_id and pml.meta_key = '_billing_last_name'"
-                        + " left join wp_postmeta pmp on p.id = pmp.post_id and pmp.meta_key = '_billing_phone'" 
+                        + " left join wp_postmeta pmp on p.id = pmp.post_id and pmp.meta_key = '_billing_phone'"
                         + " left join wp_postmeta pm ON p.id = pm.post_id AND pm.meta_key = 'employee_id'"
                         + " WHERE p.post_type = 'shop_order' and p.post_status != 'auto-draft' " + strWhr.ToString();
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
@@ -431,10 +431,22 @@ namespace LaylaERP.BAL
 
         //}
 
-        public static void SalesGraph1()
+        public static void SalesGraph1(string from_date, string to_date)
         {
             chartData.Clear();
             string strWhr = string.Empty;
+            string datebetween = string.Empty;
+            CultureInfo us = new CultureInfo("en-US");
+            if (from_date != null)
+            {
+                DateTime fromdate = DateTime.Parse(from_date, us);
+                DateTime todate = DateTime.Parse(to_date, us);
+                datebetween = " and DATE(p.post_date) >= '"+ fromdate.ToString("yyyy-MM-dd") + "' and DATE(post_date)<= '"+ todate.ToString("yyyy-MM-dd") + "'";
+            }
+            else
+            {
+                datebetween = "and date(p.post_date) >= Date_add(Now(), interval - 20 day)";
+            }
             if (CommanUtilities.Provider.GetCurrent().UserType != "Administrator")
             {
                 long user = CommanUtilities.Provider.GetCurrent().UserID;
@@ -443,10 +455,9 @@ namespace LaylaERP.BAL
             string query = "select date_format(p.post_date,'%b %d') as Sales_date, pm_uc.meta_value as Employee, sum(coalesce(pm_st.meta_value,0)) as Total";
             query += " from wp_posts p left outer join wp_postmeta pm_uc on pm_uc.post_id = p.id and pm_uc.meta_key = 'employee_id' " +
                 "left outer join wp_postmeta pm_st on pm_st.post_id = p.id and pm_st.meta_key = '_order_total' where date(p.post_date) <= NOW() " +
-                "and date(p.post_date) >= Date_add(Now(), interval - 20 day) and pm_st.meta_value > 0 " +
+                ""+ datebetween.ToString()+ " and pm_st.meta_value > 0 " +
                 " and p.post_type = 'shop_order' and p.post_status in ('wc-completed','wc-pending','wc-processing','wc-on-hold','wc-refunded') " + strWhr.ToString() + " group by date(p.post_date)";
             string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString;
-            //List<object> chartData = new List<object>();
             chartData.Add(new object[]
                         {
                             "Sales_date","Total"

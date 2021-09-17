@@ -232,7 +232,7 @@ namespace LaylaERP.BAL
                             + " from product_stock_register psr"
                             + " inner join commerce_purchase_order po on po.rowid = psr.tran_id"
                             + " inner join wp_vendor v on po.fk_supplier = v.rowid"
-                            + " where flag = 'O' and psr.product_id = @product_id and psr.warehouse_id = @warehouse_id and cast(psr.tran_date as date) >= cast('" + fromdate.ToString("yyyy-MM-dd") + "' as date) and cast(psr.tran_date as date) <= cast('" + todate.ToString("yyyy-MM-dd") + "' as date)";
+                            + " where tran_type = 'PO' and flag = 'O' and psr.product_id = @product_id and psr.warehouse_id = @warehouse_id and cast(psr.tran_date as date) >= cast('" + fromdate.ToString("yyyy-MM-dd") + "' as date) and cast(psr.tran_date as date) <= cast('" + todate.ToString("yyyy-MM-dd") + "' as date)";
                 dt = SQLHelper.ExecuteDataTable(strSql, parameters);
             }
             catch (Exception ex)

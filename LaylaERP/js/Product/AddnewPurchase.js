@@ -43,21 +43,21 @@
     });
 
     if (id != "" && id != "AddNewPurchase" && id != "AddNewProduct") {        
-        //setTimeout(function () { GetDataPurchaseByID($("#ddlproductchild").val()); }, 15000);
-        //setTimeout(function () { bindbuyingprice(); }, 16000);
-        //setTimeout(function () { bindChildproductsservices(); }, 17000);
-        //setTimeout(function () { bindparentproductsservices(); }, 18000);
-        //setTimeout(function () { bindwarehouse(); }, 19000);
-        //setTimeout(function () { getNotesList($("#ddlproductchild").val()); }, 200000);
-        //setTimeout(function () { bindfileuploade(); }, 210000);
+        setTimeout(function () { GetDataPurchaseByID($("#ddlproductchild").val()); }, 15000);
+        setTimeout(function () { bindbuyingprice(); }, 16000);
+        setTimeout(function () { bindChildproductsservices(); }, 17000);
+        setTimeout(function () { bindparentproductsservices(); }, 18000);
+        setTimeout(function () { bindwarehouse(); }, 19000);
+        setTimeout(function () { getNotesList($("#ddlproductchild").val()); }, 200000);
+        setTimeout(function () { bindfileuploade(); }, 210000);
 
-         GetDataPurchaseByID($("#ddlproductchild").val()); 
-         bindbuyingprice(); 
-         bindChildproductsservices();
-         bindparentproductsservices();
-         bindwarehouse(); 
-         getNotesList($("#ddlproductchild").val()); 
-         bindfileuploade(); 
+         //GetDataPurchaseByID($("#ddlproductchild").val()); 
+         //bindbuyingprice(); 
+         //bindChildproductsservices();
+         //bindparentproductsservices();
+         //bindwarehouse(); 
+         //getNotesList($("#ddlproductchild").val()); 
+         //bindfileuploade(); 
 
 
         $('#dvbuysing').hide();

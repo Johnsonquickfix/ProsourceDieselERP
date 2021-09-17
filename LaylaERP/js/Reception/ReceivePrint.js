@@ -355,12 +355,12 @@ function printinvoice(id, result, is_mail, is_inv) {
     myHtml += '                <div class="row" style="padding:0px 15px;margin-bottom:10px;display: flex;">';
     myHtml += '                    <div id="printPreview" style="width: 45.66666667%;">';
     myHtml += '                    <div class="businfobox">' + data['po'][0].vendor_name + '<br/>' + data['po'][0].address + '<br/>' + data['po'][0].town + ', ' + data['po'][0].fk_state + ' ' + data['po'][0].zip + ' ' + (data['po'][0].fk_country == "CA" ? "Canada" : data['po'][0].fk_country == "US" ? "United States" : data['po'][0].fk_country);
-    myHtml += '                    <div class="businfobox">' + data['po'][0].vendor_email + '</div>';
+    myHtml += '                    </div><div class="businfobox">' + data['po'][0].vendor_email + '</div>';
     myHtml += '                    </div>';
     myHtml += '                    <div style="width:58.33333333%; float:right;">';
     myHtml += '                        <table style="width: 100%;">';
     myHtml += '                            <tr>';
-    myHtml += '                                <td colspan="2" style="padding-left:3px;text-align:center;"><div style="color:#9da3a6;font-weight:700;font-size:30px;width:100%;">' + inv_title.toUpperCase() + '</div></td>';
+    myHtml += '                                <td colspan="2" style="padding-left:3px;text-align:center;"><div style="color:#9da3a6;font-weight:700;font-size:30px;margin-top: -6px;width:100%;">' + inv_title.toUpperCase() + '</div></td>';
     myHtml += '                            </tr>';
     myHtml += '                            <tr>';
     myHtml += '                                <td style="text-align:right;padding-right:10px;width:58.33333333%;font-size:14px;">' + inv_title + ' No. #:</td>';
@@ -385,7 +385,7 @@ function printinvoice(id, result, is_mail, is_inv) {
     myHtml += '                <div class="row" style="padding:0px 15px;margin-bottom: 10px;">';
     myHtml += '                    <div class="headline"><h3>Bill To:</h3></div>';
 
-    myHtml += '                        <div><img src="/Images/layla1-logo.png" alt="" id="logoUrl" style="width: 90px;" /></div>';
+    myHtml += '                        <div><img src="/Images/layla1-logo.png" alt="" id="logoUrl" style="width: 60px;" /></div>';
     myHtml += '                        <div>' + result.add + '<br>' + result.city + ', ' + result.state + ' ' + result.zip + ', <br>' + (result.country == "CA" ? "Canada" : result.country == "US" ? "United States" : result.country) + '</div>';
     myHtml += '                        <div>Phone: 001 ' + result.phone.toString().replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + '<br/>' + result.email + '<br />' + result.website + '<br /></div>';
 

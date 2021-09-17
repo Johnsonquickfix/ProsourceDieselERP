@@ -2558,7 +2558,7 @@ html .listproduct .inventory-table td:nth-child(2) {
 #billModal #myModalLabel{color: #9da3a6;font-weight: 700;text-transform: uppercase;}
 #billModal .modal-header {padding:8px 10px;}
 #billModal .modal-footer {padding:8px 10px;}
-#billModal .modal-body {height: calc(100vh - 135px);overflow-y: auto;overflow-x: hidden;}
+#billModal .modal-body {max-height: calc(100vh - 135px);overflow-y: auto;overflow-x: hidden;}
 #billModal .modal-footer .col-md-7{padding-left:0px;}
 #ddlPaymentMethod{margin-right:5px !important; }
 #billModal .modal-header .close {margin-top: 0px;}
@@ -2581,6 +2581,7 @@ html .listproduct .inventory-table td:nth-child(2) {
 #billModal #tblmodalTotal .form-group:not(:nth-last-child(3)) label{padding-top:2px; padding-bottom:2px;}
 #billModal #tblmodalTotal .form-group:first-child .col-sm-2.controls{padding-top:5px;}
 #billModal #tblmodalTotal .form-group:first-child label{padding-top:5px;}
+.modal-dialog .modal-body-fixHeight {max-height: calc(100vh - 135px);overflow-y: auto;overflow-x: hidden;}
 .neworders #billModal .modal-body{}
 @media(max-width:900px) {
     .hub-pro-shop select:first-child{margin-left:0px;}

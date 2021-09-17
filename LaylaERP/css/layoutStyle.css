@@ -2589,8 +2589,9 @@ a#btnbackcategory {max-width: 135px; margin-top: 5px;}
 .add.new.product ul.order_notes li{width:50%; padding:15px 15px 0px 15px;}
 .add.new.product ul.order_notes li:first-child, 
 .add.new.product ul.order_notes li:first-child + li{padding-top:0px;}
-.add.new.product ul.order_notes li .note_content{padding:12px; border-radius:3px; background:#f1f1f1;min-height: 70px;}
+.add.new.product ul.order_notes li .note_content{border: 1px solid #d2d6de;padding:12px; border-radius:3px; background:#f1f1f1;min-height: 70px;}
 .add.new.product ul.order_notes li .note_content::after{bottom: -15px; border-color:#f1f1f1 transparent; left:auto;right: 25px;border-width: 15px 15px 0 5px;}
+.add.new.product ul.order_notes li .note_content::before{content:"";border-color:#d2d6de transparent; position:absolute; right:25px; bottom:-17px; border-style:solid;  border-width: 16px 16px 0 6px;}
 .add.new.product ul.order_notes li .meta{text-align:right; margin-top:20px;}
     .add.new.product ul.order_notes li .delete_note { margin-left:5px;
         background-color: #ff4100;

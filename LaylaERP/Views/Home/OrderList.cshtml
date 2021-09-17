@@ -41,11 +41,11 @@
                 @foreach (var record in ViewData.Model)
                 {
                     <tr>
-                        <td> @record["order_id"]</td>
+                        <td>#@record["order_id"]</td>
                         <td> @record["FirstName"]</td>
                         <td> @record["status"]</td>
                         <td> @record["date_created"]</td>
-                        <td> @record["total_sales"]</td>
+                        <td>$@record["total_sales"]</td>
                     </tr>
                 }
             </tbody>
@@ -55,7 +55,7 @@
 <script src="~/js/common.js"></script>
 <script>
     $(function () {
-        $("#dtorderlist").dataTable();
+        $("#dtorderlist").dataTable({ order: [[0, "desc"]] });
     })
 </script>
 

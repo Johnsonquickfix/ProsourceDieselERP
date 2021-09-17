@@ -2079,7 +2079,7 @@ namespace LaylaERP.BAL
             try
             {
                 string strsql = "";
-                strsql = "Insert into wp_term_taxonomy(term_id,taxonomy,description,parent) values(@term_id,@taxonomy,@description,@parent); INSERT INTO wp_termmeta(term_id,meta_key,meta_value) VALUES(@term_id, 'order', 0),(@term_id, 'display_type', @display_type),(@term_id, 'thumbnail_id', @thumbnail_id); SELECT LAST_INSERT_ID();";
+                strsql = "Insert into wp_term_taxonomy(term_id,taxonomy,description,parent) values(@term_id,@taxonomy,@description,@parent); INSERT INTO wp_termmeta(term_id,meta_key,meta_value) VALUES(@term_id, 'order', 0),(@term_id, 'display_type', @display_type),(@term_id, 'thumbnail_id', @thumbnail_id),(@term_id,'Is_Active','1'); SELECT LAST_INSERT_ID();";
                 MySqlParameter[] para =
                 {
                     new MySqlParameter("@term_id", term_id),
@@ -2198,14 +2198,14 @@ namespace LaylaERP.BAL
             try
             {
                 int result = 0;
-                string metaValue = GetProductID(val).ToString();
-                string[] value = metaValue.Split(',');
-                for (int i = 0; i <= value.Length - 1; i++)
-                {
-                    var ProductID = value[i].ToString();
-                    string strsql = "Update wp_posts set post_status='trash' where id=" + ProductID + " or (post_parent=" + ProductID + " and post_type = 'product_variation');Update wp_term_relationships set term_taxonomy_id=80 where term_taxonomy_id=" + val + ";";
+               // string metaValue = GetProductID(val).ToString();
+                //string[] value = val.Split(',');
+                //for (int i = 0; i <= value.Length - 1; i++)
+                //{
+                    //var ProductID = value[i].ToString();
+                    string strsql = "Update wp_term_relationships set term_taxonomy_id=80 where term_taxonomy_id in (" + val + ");";
                     result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql));
-                }
+                //}
                 return result;
             }
             catch (Exception Ex)
@@ -2457,11 +2457,10 @@ namespace LaylaERP.BAL
             DataSet ds = new DataSet();
             try
             {
-                string strSQl = "SELECT group_concat(c.term_id) as term_id FROM wp_term_taxonomy c " +
-                    "left join wp_termmeta tm_a on tm_a.term_id = c.term_id and tm_a.meta_key = 'Is_Active' " +
-                    "left join wp_termmeta tm on c.term_id = tm.term_id and tm.meta_key = 'thumbnail_id' " +
-                    "left join wp_posts p on tm.meta_value = p.ID where coalesce(tm_a.meta_value,'1') = '1' " +
-                    "and c.term_taxonomy_id in ("+ID+")";
+                string strSQl = "SELECT group_concat(c.term_id) as term_id FROM wp_terms t " +
+                    "inner join wp_term_taxonomy c on t.term_id = c.term_id " +
+                    "left join wp_termmeta tm_a on tm_a.term_id = t.term_id and tm_a.meta_key = 'Is_Active' " +
+                    "where coalesce(tm_a.meta_value,'1') = '1' and t.term_id in ("+ID+")";
               
                 ds = SQLHelper.ExecuteDataSet(strSQl);
                 if (ds.Tables[0].Rows.Count > 0)
@@ -2501,16 +2500,13 @@ namespace LaylaERP.BAL
             DataSet dt = new DataSet();
             try
             {
-                string strSQl = "Select GROUP_CONCAT(tr.object_id) object_id FROM wp_term_taxonomy c " +
-                    "left join wp_terms t on t.term_id = c.term_id inner join wp_term_relationships tr on tr.term_taxonomy_id = c.term_id " +
-                    "left join wp_termmeta tm_a on tm_a.term_id = c.term_id and tm_a.meta_key = 'Is_Active' " +
-                    "left join wp_termmeta tm on c.term_id = tm.term_id and tm.meta_key = 'thumbnail_id' " +
-                    "left join wp_posts p on tm.meta_value = p.ID where coalesce(tm_a.meta_value,'1') = '1' and c.term_taxonomy_id in (" + ID + ")";
-                MySqlParameter[] para =
-              {
-                    new MySqlParameter("@Userterm_ID", ID)
-                   };
-                DataSet ds = SQLHelper.ExecuteDataSet(strSQl,para);
+                string strSQl = "SELECT GROUP_CONCAT(tr.object_id) object_id FROM wp_terms t " +
+                    "inner join wp_term_taxonomy c on t.term_id = c.term_id " +
+                    "inner join wp_term_relationships tr on tr.term_taxonomy_id = t.term_id " +
+                    "left join wp_termmeta tm_a on tm_a.term_id = t.term_id and tm_a.meta_key = 'Is_Active' " +
+                    "where coalesce(tm_a.meta_value,'1') = '1' and t.term_id in (" + ID + ")";
+                
+                DataSet ds = SQLHelper.ExecuteDataSet(strSQl);
                 if (ds.Tables[0].Rows.Count > 0)
                     result = ds.Tables[0].Rows[0]["object_id"].ToString();
                 else

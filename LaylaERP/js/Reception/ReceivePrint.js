@@ -360,7 +360,7 @@ function printinvoice(id, result, is_mail, is_inv) {
     myHtml += '                    <div style="width:58.33333333%; float:right;">';
     myHtml += '                        <table style="width: 100%;">';
     myHtml += '                            <tr>';
-    myHtml += '                                <td colspan="2" style="padding-left:3px;text-align:center;"><div style="color:#9da3a6;font-weight:700;font-size:30px;width:100%;">' + inv_title.toUpperCase() + '</div></td>';
+    myHtml += '                                <td colspan="2" style="padding-left:3px;text-align:center;"><div style="color:#9da3a6;font-weight:700;font-size:30px;margin-top: -6px;width:100%;">' + inv_title.toUpperCase() + '</div></td>';
     myHtml += '                            </tr>';
     myHtml += '                            <tr>';
     myHtml += '                                <td style="text-align:right;padding-right:10px;width:58.33333333%;font-size:14px;">' + inv_title + ' No. #:</td>';

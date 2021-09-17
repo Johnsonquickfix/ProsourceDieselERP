@@ -852,7 +852,7 @@ function AddProduct() {
 
     if (date_publish.length > 0)
         date_publish = date_publish[2] + '/' + date_publish[0] + '/' + date_publish[1];
-    // console.log(date_publish);
+     //console.log(date_publish);
 
     if (productname == "") {
         swal('Alert', 'Please Enter Product', 'error').then(function () { swal.close(); $('#txtProductName').focus(); });
@@ -866,7 +866,7 @@ function AddProduct() {
     else if (sku == "") {
         swal('Alert', 'Please Enter SKU', 'error').then(function () { swal.close(); $('#txtsku').focus(); });
     }
-    else if (date_publish == "") {
+    else if (date_publish == "" || date_publish == "undefined//undefined") {
         swal('Alert', 'Please Enter Publish date', 'error').then(function () { swal.close(); $('#txtPublishDate').focus(); });
     }
     else {

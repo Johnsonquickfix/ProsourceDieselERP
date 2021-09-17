@@ -590,8 +590,8 @@ namespace LaylaERP.BAL
 
             try
             {
-                string strsql = "INSERT into erp_hrms_leave(fk_emp, leave_code, description, leave_type, is_paid, from_date, to_date, is_approved, note_public, note_private, days )" +
-                    " values(@fk_emp, @leave_code, @description, @leave_type, @is_paid, @from_date, @to_date, @is_approved, @note_public, @note_private, @days );SELECT LAST_INSERT_ID();";
+                string strsql = "INSERT into erp_hrms_leave(fk_emp, leave_code, description, leave_type, is_paid, from_date, to_date, is_approved, note_public, note_private, days, apply_date)" +
+                    " values(@fk_emp, @leave_code, @description, @leave_type, @is_paid, @from_date, @to_date, @is_approved, @note_public, @note_private, @days, @apply_date);SELECT LAST_INSERT_ID();";
 
                 MySqlParameter[] para =
               {
@@ -606,6 +606,7 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@note_public", model.note_public),
                     new MySqlParameter("@note_private", model.note_private),
                     new MySqlParameter("@days", model.days),
+                    new MySqlParameter("@apply_date",Convert.ToDateTime(DateTime.UtcNow.ToString("yyyy-MM-dd"))),
 
                 };
                 int result = Convert.ToInt32(DAL.SQLHelper.ExecuteScalar(strsql, para));
@@ -622,7 +623,7 @@ namespace LaylaERP.BAL
             DataTable dtr = new DataTable();
             try
             {
-                string strquery = "SELECT ehl.rowid ,ehe.firstname as name, ehl.leave_type as leavetype,DATE_FORMAT(ehl.from_date, '%m-%d-%Y') as date_from ,DATE_FORMAT(ehl.to_date,'%m-%d-%Y') as date_to,FORMAT(ehl.days,2) as days from erp_hrms_leave ehl Left join erp_hrms_emp ehe on ehe.rowid = ehl.fk_emp WHERE 1 = 1 ";
+                string strquery = "SELECT ehl.rowid , CONCAT(ehe.firstname, ' ', ehe.lastname) as name, ehl.leave_type as leavetype,DATE_FORMAT(ehl.from_date, '%m-%d-%Y') as date_from ,DATE_FORMAT(ehl.to_date,'%m-%d-%Y') as date_to,FORMAT(ehl.days,2) as days,(case WHEN ehl.is_approved=0 then 'Pending' when ehl.is_approved=1 then 'Approved' when ehl.is_approved=2 then 'Rejected' end) as status from erp_hrms_leave ehl Left join erp_hrms_emp ehe on ehe.rowid = ehl.fk_emp WHERE 1 = 1 ";
                 DataSet ds = SQLHelper.ExecuteDataSet(strquery);
                 dtr = ds.Tables[0];
             }

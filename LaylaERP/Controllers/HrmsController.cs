@@ -583,8 +583,8 @@ namespace LaylaERP.Controllers
 
         public JsonResult AddConfiguration(HrmsConfigurationModel model)
         {
-            int ID = 1;
-            //int ID = HrmsConfigurationRepository.AddConfiguration(model);
+            
+            int ID = HrmsConfigurationRepository.AddConfiguration(model);
             if (ID > 0)
             {
 

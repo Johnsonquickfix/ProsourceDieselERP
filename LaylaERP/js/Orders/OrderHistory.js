@@ -267,7 +267,7 @@ function PaymentStatus(oid, pp_id) {
             },
             success: function (data) {
                 let status = data.status;
-                if (status == 'SENT') {
+                if (status == 'PAID') {
                     swal.queue([{
                         title: status, confirmButtonText: 'Yes, Update it!', text: "You Payment has been received. Do you want to update your status?",
                         showLoaderOnConfirm: true, icon: "success",

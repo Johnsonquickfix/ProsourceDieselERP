@@ -2428,18 +2428,42 @@ namespace LaylaERP.BAL
         //    return result;
         //}
 
+        //public string GetTermID(string ID)
+        //{
+        //    string result = "";
+        //    DataSet ds = new DataSet();
+        //    try
+        //    {
+        //        string strSQl = "sp_getTermID1";
+        //        MySqlParameter[] para =
+        //      {
+        //            new MySqlParameter("@Userterm_ID", ID)
+        //           };
+        //        ds = SQLHelper.ExecuteDataSet(strSQl, para);
+        //        if (ds.Tables[0].Rows.Count > 0)
+        //            result = ds.Tables[0].Rows[0]["term_id"].ToString();
+        //        else
+        //            result = "0";
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw ex;
+        //    }
+        //    return result;
+        //}
         public string GetTermID(string ID)
         {
             string result = "";
             DataSet ds = new DataSet();
             try
             {
-                string strSQl = "sp_getTermID";
-                MySqlParameter[] para =
-              {
-                    new MySqlParameter("@Userterm_ID", ID)
-                   };
-                ds = SQLHelper.ExecuteDataSet(strSQl, para);
+                string strSQl = "SELECT group_concat(c.term_id) as term_id FROM wp_term_taxonomy c " +
+                    "left join wp_termmeta tm_a on tm_a.term_id = c.term_id and tm_a.meta_key = 'Is_Active' " +
+                    "left join wp_termmeta tm on c.term_id = tm.term_id and tm.meta_key = 'thumbnail_id' " +
+                    "left join wp_posts p on tm.meta_value = p.ID where coalesce(tm_a.meta_value,'1') = '1' " +
+                    "and c.term_taxonomy_id in ("+ID+")";
+              
+                ds = SQLHelper.ExecuteDataSet(strSQl);
                 if (ds.Tables[0].Rows.Count > 0)
                     result = ds.Tables[0].Rows[0]["term_id"].ToString();
                 else
@@ -2477,7 +2501,11 @@ namespace LaylaERP.BAL
             DataSet dt = new DataSet();
             try
             {
-                string strSQl = "sp_getProductID";
+                string strSQl = "Select GROUP_CONCAT(tr.object_id) object_id FROM wp_term_taxonomy c " +
+                    "left join wp_terms t on t.term_id = c.term_id inner join wp_term_relationships tr on tr.term_taxonomy_id = c.term_id " +
+                    "left join wp_termmeta tm_a on tm_a.term_id = c.term_id and tm_a.meta_key = 'Is_Active' " +
+                    "left join wp_termmeta tm on c.term_id = tm.term_id and tm.meta_key = 'thumbnail_id' " +
+                    "left join wp_posts p on tm.meta_value = p.ID where coalesce(tm_a.meta_value,'1') = '1' and c.term_taxonomy_id in (" + ID + ")";
                 MySqlParameter[] para =
               {
                     new MySqlParameter("@Userterm_ID", ID)

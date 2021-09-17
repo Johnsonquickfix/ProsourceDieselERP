@@ -4,6 +4,13 @@
     //location.href = 'ListProduct';
     var url = window.location.pathname;
     var id = url.substring(url.lastIndexOf('/') + 1);
+
+     var urlperm = "/Product/ListProduct";
+        CheckPermissions("#btnSave", "#hfEdit", "", urlperm);
+        CheckPermissions("#btnedit", "#hfEdit", "", urlperm);
+        CheckPermissions("#btnSaveupdate", "#hfEdit", "", urlperm);  
+
+
     $('li:contains(Variations)').hide();
 
     $("#btnbacklist").prop("href", "ListProduct")
@@ -69,9 +76,13 @@
         //$("#txtPublishDate").datepicker("disable"); txtsku
         $("#txtPublishDate").datepicker("destroy");
 
-        var urlpath = window.location.pathname;
-        var pathid = urlpath.substring(urlpath.lastIndexOf('/') + 1);
-        $("#btnbackcategory").prop("href", "/Product/ProductCategories/" + pathid)
+        $("#btnbackcategory").off("click").attr('href', "javascript: void(0);");
+
+        //var urlpath = window.location.pathname;
+        //var pathid = urlpath.substring(urlpath.lastIndexOf('/') + 1);
+        //$("#btnbackcategory").prop("href", "/Product/ProductCategories/" + pathid)
+         $('#btnbackcategory').attr("disabled", "disabled");
+   
         
     }
     else {
@@ -87,6 +98,10 @@
         $("#btnSave").show();
         $("#btnSaveupdate").show();
         $("#btnbackcategory").prop("href", "/Product/ProductCategories/" + 1000000001)
+       // $("#btnbackcategory").prop("disabled", false);
+      //  $('#btnbackcategory').attr("disabled", "disabled");
+      //  $("#btnbackcategory").off('click');
+       
        
     }
     $("#txtregularprice").keyup(function () {
@@ -345,6 +360,10 @@
         $("#btnSaveupdate").show();
         $('#btnSaveupdate').text("Update");
         $("#ddlProductType").prop("disabled", true);
+        var urlpath = window.location.pathname;
+        var pathid = urlpath.substring(urlpath.lastIndexOf('/') + 1);
+        $("#btnbackcategory").prop("href", "/Product/ProductCategories/" + pathid)
+        $('#btnbackcategory').attr("disabled", false);
         isEdit(true);
 
     });
@@ -359,6 +378,8 @@
         $("#btnSaveupdate").hide();
         $("#btnedit").prop("disabled", false);
         $("#ddlProductType").prop("disabled", true);
+        $("#btnbackcategory").off("click").attr('href', "javascript: void(0);");
+        $('#btnbackcategory').attr("disabled", "disabled");
         isEdit(false);
     });
 
@@ -831,7 +852,7 @@ function AddProduct() {
 
     if (date_publish.length > 0)
         date_publish = date_publish[2] + '/' + date_publish[0] + '/' + date_publish[1];
-    // console.log(date_publish);
+     //console.log(date_publish);
 
     if (productname == "") {
         swal('Alert', 'Please Enter Product', 'error').then(function () { swal.close(); $('#txtProductName').focus(); });
@@ -845,7 +866,7 @@ function AddProduct() {
     else if (sku == "") {
         swal('Alert', 'Please Enter SKU', 'error').then(function () { swal.close(); $('#txtsku').focus(); });
     }
-    else if (date_publish == "") {
+    else if (date_publish == "" || date_publish == "undefined//undefined") {
         swal('Alert', 'Please Enter Publish date', 'error').then(function () { swal.close(); $('#txtPublishDate').focus(); });
     }
     else {

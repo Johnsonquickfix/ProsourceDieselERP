@@ -183,7 +183,7 @@
             {
                 string strSQl = "SELECT DISTINCT post.id,ps.ID pr_id,CONCAT(COALESCE(ps.post_title,post.post_title), COALESCE(CONCAT(' (' ,psku.meta_value,')'),'')) as post_title"
                             + " , CONCAT(post.id, '$', COALESCE(ps.id, 0)) r_id FROM wp_posts as post"
-                            + " LEFT OUTER JOIN wp_posts ps ON ps.post_parent = post.id and ps.post_type LIKE 'product_variation'"
+                            + " LEFT OUTER JOIN wp_posts ps ON ps.post_parent = post.id and ps.post_type LIKE 'product_variation' AND ps.post_status = 'publish'"
                             + " left outer join wp_postmeta psku on psku.post_id = ps.id and psku.meta_key = '_sku'"
                             + " WHERE post.id not in (632713,78676) and post.post_type = 'product' AND post.post_status = 'publish' AND CONCAT(COALESCE(ps.post_title,post.post_title), COALESCE(CONCAT(' (' ,psku.meta_value,')'),'')) like '%" + strSearch + "%' "
                             + " ORDER BY post.ID limit 50;";
@@ -205,7 +205,7 @@
                                 + " inner join wp_term_taxonomy wp_ttn on wp_ttn.term_taxonomy_id = wp_tr.term_taxonomy_id and wp_ttn.taxonomy = 'product_cat'"
                                 + " inner join wp_terms wp_t on wp_t.term_id = wp_ttn.term_id"
                                 + " left outer join wp_termmeta wp_tm on wp_tm.term_id = wp_t.term_id and wp_tm.meta_key = 'is_active'"
-                                + " left outer join wp_posts ps ON ps.post_parent = p.id and ps.post_type LIKE 'product_variation'"
+                                + " left outer join wp_posts ps ON ps.post_parent = p.id and ps.post_type LIKE 'product_variation' and ps.post_status = 'publish'"
                                 + " left outer join wp_postmeta pm_rp on pm_rp.post_id = ps.id and pm_rp.meta_key = '_regular_price'"
                                 + " left outer join wp_postmeta pm_sp on pm_sp.post_id = ps.id and pm_sp.meta_key = '_price'"
                                 + " where p.post_type = 'product' and p.post_status = 'publish' and coalesce(wp_tm.meta_value,'1') = 1"
@@ -1099,20 +1099,20 @@
                     new MySqlParameter("@post_modified_gmt", DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"))
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
-                if (result > 0 && model.status == "wc-processing")
-                {
-                    var orders = ID.Split(',');
-                    for (int i = 0; i < orders.Length; i++)
-                    {
-                        try
-                        {
-                            OrderPostStatusModel o = new OrderPostStatusModel();
-                            o.order_id = Convert.ToInt64(orders[i]);
-                            SplitOrder(o);
-                        }
-                        catch { }
-                    }
-                }
+                //if (result > 0 && model.status == "wc-processing")
+                //{
+                //    var orders = ID.Split(',');
+                //    for (int i = 0; i < orders.Length; i++)
+                //    {
+                //        try
+                //        {
+                //            OrderPostStatusModel o = new OrderPostStatusModel();
+                //            o.order_id = Convert.ToInt64(orders[i]);
+                //            SplitOrder(o);
+                //        }
+                //        catch { }
+                //    }
+                //}
                 return result;
             }
             catch (Exception Ex)
@@ -1142,7 +1142,7 @@
                             + " max(case meta_key when '_shipping_company' then meta_value else '' end) s_company,max(case meta_key when '_shipping_address_1' then meta_value else '' end) s_address_1,max(case meta_key when '_shipping_address_2' then meta_value else '' end) s_address_2,"
                             + " max(case meta_key when '_shipping_postcode' then meta_value else '' end) s_postcode,max(case meta_key when '_shipping_city' then meta_value else '' end) s_city,"
                             + " max(case meta_key when '_shipping_country' then meta_value else '' end) s_country,max(case meta_key when '_shipping_state' then meta_value else '' end) s_state,"
-                            + " max(case meta_key when '_paypal_id' then meta_value else '' end) paypal_id"
+                            + " max(case meta_key when '_paypal_id' then meta_value else '' end) paypal_id,(SELECT count(split_id) FROM split_record WHERE main_order_id=os.id) is_shiped"
                             + " from wp_posts os inner join wp_postmeta pm on pm.post_id = os.id"
                             + " left outer join wp_users u on u.id = meta_value and meta_key='_customer_user'"
                             + " where os.id = @order_id "
@@ -1641,50 +1641,53 @@
             int result = 0;
             try
             {
-                List<SplitOrderItemsModel> _list = new List<SplitOrderItemsModel>();
-                _list.Add(new SplitOrderItemsModel { order_prefix = "-MTE", product_id = "118, 56774, 78676, 106923, 1595, 1610, 1619, 208417, 306817, 611172, 611220, 632713, 611172, 716434, 716425, 716418, 787847", variation_id = "684957" });
-                _list.Add(new SplitOrderItemsModel { order_prefix = "-PSW", product_id = "124524", variation_id = "684958" });
-                _list.Add(new SplitOrderItemsModel { order_prefix = "-KP", product_id = "14023", variation_id = "" });
-                _list.Add(new SplitOrderItemsModel { order_prefix = "-W", product_id = "128244", variation_id = "" });
-                _list.Add(new SplitOrderItemsModel { order_prefix = "-B", product_id = "31729", variation_id = "684960" });
-                _list.Add(new SplitOrderItemsModel { order_prefix = "-F", product_id = "20861", variation_id = "684961" });
-                _list.Add(new SplitOrderItemsModel { order_prefix = "-PB", product_id = "611252", variation_id = "684962" });
-                _list.Add(new SplitOrderItemsModel { order_prefix = "-FMF", product_id = "727138,612940,727126", variation_id = "684959" });
-                _list.Add(new SplitOrderItemsModel { order_prefix = "-AJ", product_id = "611286,612995,613207", variation_id = "684963" });
-                _list.Add(new SplitOrderItemsModel { order_prefix = "-CPB", product_id = "733500", variation_id = "" });
-                _list.Add(new SplitOrderItemsModel { order_prefix = "-PRO", product_id = "612955,612947,611268", variation_id = "" });
-                _list.Add(new SplitOrderItemsModel { order_prefix = "-SMF", product_id = "611238", variation_id = "" });
-                _list.Add(new SplitOrderItemsModel { order_prefix = "-COM", product_id = "772065,787909", variation_id = "" });
+                //List<SplitOrderItemsModel> _list = new List<SplitOrderItemsModel>();
+                //_list.Add(new SplitOrderItemsModel { order_prefix = "-MTE", product_id = "118, 56774, 78676, 106923, 1595, 1610, 1619, 208417, 306817, 611172, 611220, 632713, 611172, 716434, 716425, 716418, 787847", variation_id = "684957" });
+                //_list.Add(new SplitOrderItemsModel { order_prefix = "-PSW", product_id = "124524", variation_id = "684958" });
+                //_list.Add(new SplitOrderItemsModel { order_prefix = "-KP", product_id = "14023", variation_id = "" });
+                //_list.Add(new SplitOrderItemsModel { order_prefix = "-W", product_id = "128244", variation_id = "" });
+                //_list.Add(new SplitOrderItemsModel { order_prefix = "-B", product_id = "31729", variation_id = "684960" });
+                //_list.Add(new SplitOrderItemsModel { order_prefix = "-F", product_id = "20861", variation_id = "684961" });
+                //_list.Add(new SplitOrderItemsModel { order_prefix = "-PB", product_id = "611252", variation_id = "684962" });
+                //_list.Add(new SplitOrderItemsModel { order_prefix = "-FMF", product_id = "727138,612940,727126", variation_id = "684959" });
+                //_list.Add(new SplitOrderItemsModel { order_prefix = "-AJ", product_id = "611286,612995,613207", variation_id = "684963" });
+                //_list.Add(new SplitOrderItemsModel { order_prefix = "-CPB", product_id = "733500", variation_id = "" });
+                //_list.Add(new SplitOrderItemsModel { order_prefix = "-PRO", product_id = "612955,612947,611268", variation_id = "" });
+                //_list.Add(new SplitOrderItemsModel { order_prefix = "-SMF", product_id = "611238", variation_id = "" });
+                //_list.Add(new SplitOrderItemsModel { order_prefix = "-COM", product_id = "772065,787909", variation_id = "" });
 
                 DataTable dt = SQLHelper.ExecuteDataTable(string.Format("SELECT * FROM split_record WHERE main_order_id={0}; ", model.order_id));
+                string strSql = string.Empty;
                 if (dt.Rows.Count == 0)
                 {
                     DateTime cDate = DateTime.Now, cUTFDate = DateTime.UtcNow;
-                    string strSql = string.Format("INSERT INTO split_record (main_order_id) values({0});", model.order_id);
+                    strSql = string.Format("INSERT INTO split_record (main_order_id) values({0});", model.order_id);
                     strSql += string.Format(" INSERT INTO split_meta (split_id,meta_key,meta_value) SELECT split_id,p.meta_key,p.meta_value FROM split_record sr INNER JOIN wp_postmeta p on p.post_id = sr.main_order_id where p.post_id = {0} and (p.meta_key like '_billing_%' or p.meta_key like '_shipping_%') order by p.meta_key; ", model.order_id);
-
-                    foreach (SplitOrderItemsModel o in _list)
-                    {
-                        strSql += " INSERT INTO split_detail (split_id,order_name) SELECT distinct sr.split_id,CONCAT('#',oi.order_id,'" + o.order_prefix + "') order_id FROM split_record sr ";
-                        strSql += " INNER JOIN wp_woocommerce_order_items oi on oi.order_id = sr.main_order_id and oi.order_item_type = 'line_item' INNER JOIN wp_woocommerce_order_itemmeta oim on oim.order_item_id = oi.order_item_id";
-                        strSql += " where oi.order_id = " + model.order_id + " group by sr.split_id, oi.order_id, oi.order_item_name, oi.order_item_type";
-                        strSql += " having max(case meta_key when '_product_id' then meta_value else '' end) in (" + o.product_id + ") ";
-                        if (!string.IsNullOrEmpty(o.variation_id))
-                            strSql += " OR max(case meta_key when '_variation_id' then meta_value else '' end) in (" + o.variation_id + "); ";
-                        else
-                            strSql += " ; ";
-
-                        strSql += " INSERT INTO split_detail_items (split_detail_id,product_id,variation_id,qty,meta_key,meta_value) select sd.split_detail_id,max(case meta_key when '_product_id' then meta_value else '' end) p_id,max(case meta_key when '_variation_id' then meta_value else '' end) v_id,max(case meta_key when '_qty' then meta_value else '' end) qty,'' meta_key,'' meta_value ";
-                        strSql += " from split_detail sd inner join wp_woocommerce_order_items oi on CONCAT('#',oi.order_id,'" + o.order_prefix + "') = sd.order_name and oi.order_item_type = 'line_item' and oi.order_id = " + model.order_id;
-                        strSql += " inner join wp_woocommerce_order_itemmeta oim on oim.order_item_id = oi.order_item_id group by oi.order_id, oi.order_item_name, oi.order_item_type ";
-                        strSql += " having max(case meta_key when '_product_id' then meta_value else '' end) in (" + o.product_id + ") ";
-                        if (!string.IsNullOrEmpty(o.variation_id))
-                            strSql += " OR max(case meta_key when '_variation_id' then meta_value else '' end) in (" + o.variation_id + "); ";
-                        else
-                            strSql += " ; ";
-                    }
-                    result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
                 }
+                else
+                {
+                    strSql += string.Format("delete from split_detail_items where split_detail_id in (SELECT split_detail_id FROM split_detail where split_id in (SELECT split_id FROM split_record WHERE main_order_id={0}));", model.order_id);
+                    strSql += string.Format("delete from split_detail where split_id in (SELECT split_id FROM split_record WHERE main_order_id={0});", model.order_id);
+                }
+                strSql += " INSERT INTO split_detail (split_id,order_name) "
+                            + " SELECT distinct sr.split_id,CONCAT('#',oi.order_id,'-',pwr.prefix_code) order_id FROM split_record sr"
+                            + " inner join wp_woocommerce_order_items oi on oi.order_id = sr.main_order_id and oi.order_item_type = 'line_item'"
+                            + " inner join wp_woocommerce_order_itemmeta oim_p on oim_p.order_item_id = oi.order_item_id and oim_p.meta_key = '_product_id'"
+                            + " inner join wp_woocommerce_order_itemmeta oim_v on oim_v.order_item_id = oi.order_item_id and oim_v.meta_key = '_variation_id'"
+                            + " inner join product_warehouse_rule pwr on pwr.status = 1 and pwr.product_id = (case when oim_v.meta_value = '0' then oim_p.meta_value else oim_v.meta_value end)"
+                            + " where oi.order_id = " + model.order_id + " group by sr.split_id, oi.order_id, pwr.prefix_code;";
+
+                strSql += " INSERT INTO split_detail_items (split_detail_id,product_id,variation_id,qty,meta_key,meta_value) "
+                        + " SELECT sd.split_detail_id,oim_p.meta_value p_id,oim_v.meta_value v_id,oim_qty.meta_value qty,'','' FROM split_record sr"
+                        + " INNER JOIN wp_woocommerce_order_items oi on oi.order_id = sr.main_order_id and oi.order_item_type = 'line_item'"
+                        + " inner join wp_woocommerce_order_itemmeta oim_p on oim_p.order_item_id = oi.order_item_id and oim_p.meta_key = '_product_id'"
+                        + " inner join wp_woocommerce_order_itemmeta oim_v on oim_v.order_item_id = oi.order_item_id and oim_v.meta_key = '_variation_id'"
+                        + " inner join wp_woocommerce_order_itemmeta oim_qty on oim_qty.order_item_id = oi.order_item_id and oim_qty.meta_key = '_qty'"
+                        + " inner join product_warehouse_rule pwr on pwr.status = 1 and pwr.product_id = (case when oim_v.meta_value = '0' then oim_p.meta_value else oim_v.meta_value end)"
+                        + " inner join split_detail sd on sd.split_id = sr.split_id and sd.order_name = CONCAT('#', oi.order_id, '-', pwr.prefix_code)"
+                        + " where oi.order_id = " + model.order_id + " group by sr.split_id, oi.order_id, pwr.prefix_code;";
+
+                result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
             }
             catch (Exception Ex) { throw Ex; }
             return result;

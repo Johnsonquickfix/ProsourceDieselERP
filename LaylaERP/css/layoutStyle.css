@@ -2558,7 +2558,7 @@ html .listproduct .inventory-table td:nth-child(2) {
 #billModal #myModalLabel{color: #9da3a6;font-weight: 700;text-transform: uppercase;}
 #billModal .modal-header {padding:8px 10px;}
 #billModal .modal-footer {padding:8px 10px;}
-#billModal .modal-body {height: calc(100vh - 135px);overflow-y: auto;overflow-x: hidden;}
+#billModal .modal-body {max-height: calc(100vh - 135px);overflow-y: auto;overflow-x: hidden;}
 #billModal .modal-footer .col-md-7{padding-left:0px;}
 #ddlPaymentMethod{margin-right:5px !important; }
 #billModal .modal-header .close {margin-top: 0px;}
@@ -2581,6 +2581,28 @@ html .listproduct .inventory-table td:nth-child(2) {
 #billModal #tblmodalTotal .form-group:not(:nth-last-child(3)) label{padding-top:2px; padding-bottom:2px;}
 #billModal #tblmodalTotal .form-group:first-child .col-sm-2.controls{padding-top:5px;}
 #billModal #tblmodalTotal .form-group:first-child label{padding-top:5px;}
+.modal-dialog .modal-body-fixHeight {max-height: calc(100vh - 135px);overflow-y: auto;overflow-x: hidden;}
+.neworders #billModal .modal-body{}
+.profile-flex .btn-danger i{font-style:normal;}
+a#btnbackcategory {max-width: 135px; margin-top: 5px;}
+.add.new.product ul.order_notes {padding: 10px; margin-bottom:0px;display:flex; flex-wrap:wrap;list-style:none;margin:0px -15px;}
+.add.new.product ul.order_notes li{width:50%; padding:15px 15px 0px 15px;}
+.add.new.product ul.order_notes li:first-child, 
+.add.new.product ul.order_notes li:first-child + li{padding-top:0px;}
+.add.new.product ul.order_notes li .note_content{border: 1px solid #d2d6de;padding:12px; border-radius:3px; background:#f1f1f1;min-height: 70px;}
+.add.new.product ul.order_notes li .note_content::after{bottom: -15px; border-color:#f1f1f1 transparent; left:auto;right: 25px;border-width: 15px 15px 0 5px;}
+.add.new.product ul.order_notes li .note_content::before{content:"";border-color:#d2d6de transparent; position:absolute; right:25px; bottom:-17px; border-style:solid;  border-width: 16px 16px 0 6px;}
+.add.new.product ul.order_notes li .meta{text-align:right; margin-top:20px;}
+    .add.new.product ul.order_notes li .delete_note { margin-left:5px;
+        background-color: #ff4100;
+        transition: all .5s ease;
+        padding: 6px 12px;
+        color: #fff;
+        font-size: 12px;
+        text-align: center;
+        border-radius: 3px;
+        }
+#saveForm #DateRange, .dashboard-dropy #DateRange2{min-width: 230px;padding-top: 0px;padding-bottom: 0px;height: 28px;border-radius: 0px !important;}
 
 @media(max-width:900px) {
     .hub-pro-shop select:first-child{margin-left:0px;}

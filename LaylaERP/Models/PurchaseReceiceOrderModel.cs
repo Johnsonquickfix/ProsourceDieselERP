@@ -16,6 +16,7 @@ namespace LaylaERP.Models
         public int Balancedays { get; set; }
         public int PaymentType { get; set; }
         public int WarehouseID { get; set; }
+        public int WarehousepoID { get; set; }
         public string Planneddateofdelivery { get; set; }
         public int IncotermsTypeID { get; set; }
         public int Status { get; set; }

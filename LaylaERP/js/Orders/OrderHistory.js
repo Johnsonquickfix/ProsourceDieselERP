@@ -222,38 +222,35 @@ function Singlecheck(chk) {
 }
 
 function orderStatus() {
-    var id = "";
+    let id = "";
     $("input:checkbox[name=CheckSingle]:checked").each(function () {
         id += $(this).val() + ",";
     });
     id = id.replace(/,(?=\s*$)/, '');
     $("#checkAll").prop('checked', false);
-    var status = $('#ddlOrderStatus').val();
+    let status = $('#ddlOrderStatus').val();
 
     if (id == "") { swal('alert', 'Please select a order', 'error'); }
-    else if (status == "") { swal('alert', 'Please select status', 'error'); }
-    else {
-        var obj = { strVal: id, status: status }
-        $.ajax({
-            url: '/Orders/ChangeOrderStatus', dataType: 'JSON', type: 'POST',
-            contentType: "application/json; charset=utf-8",
-            data: JSON.stringify(obj),
-            beforeSend: function () { $("#loader").show(); },
-            success: function (data) {
-                if (data.status == true) {
-                    swal('alert', data.message, 'success').then((result) => { GetOrderDetails(); var order_type = $('#hfOrderType').val(); dataGridLoad(order_type); });
-                }
-                else {
-                    swal('alert', 'something went wrong!', 'success');
-                }
-            },
-            complete: function () { $("#loader").hide(); },
-            error: function (error) {
-                swal('Error!', 'something went wrong', 'error');
-            },
+    if (status == "") { swal('alert', 'Please select status', 'error'); }
 
-        })
-    }
+    swal.queue([{
+        title: 'Alert!', confirmButtonText: 'Yes, Update it!', text: "Do you want to change your order status?",
+        showLoaderOnConfirm: true, showCancelButton: true,
+        preConfirm: function () {
+            return new Promise(function (resolve) {
+                let obj = { strVal: id, status: status }
+                $.post('/Orders/ChangeOrderStatus', obj)
+                    .done(function (data) {
+                        if (data.status) {
+                            swal.insertQueueStep(data.message);
+                            GetOrderDetails(); let order_type = $('#hfOrderType').val(); dataGridLoad(order_type);
+                        }
+                        else { swal.insertQueueStep('something went wrong!'); }
+                        resolve();
+                    })
+            })
+        }
+    }]);
 }
 
 //Check PayPal Payment Status.
@@ -270,20 +267,21 @@ function PaymentStatus(oid, pp_id) {
             },
             success: function (data) {
                 let status = data.status;
-                if (status == 'PAID') {
+                if (status == 'SENT') {
                     swal.queue([{
                         title: status, confirmButtonText: 'Yes, Update it!', text: "You Payment has been received. Do you want to update your status?",
                         showLoaderOnConfirm: true, icon: "success",
                         preConfirm: function () {
-                            return new Promise(function (resolve) {
+                            return new Promise(function (resolve) {                                
                                 let opt = { post_id: oid, meta_key: '_paypal_status', meta_value: 'COMPLETED' };
                                 $.get('/Orders/UpdatePaymentStatus', opt)
                                     .done(function (data) {
                                         if (data.status) {
                                             swal.insertQueueStep('Status updated successfully.');
+                                            order_Split(oid);
                                             $('#dtdata').DataTable().ajax.reload();
                                         }
-                                        else { swal.insertQueueStep('Status updated successfully.');}
+                                        else { swal.insertQueueStep('Status updated successfully.'); }
                                         resolve();
                                     })
                             })
@@ -300,26 +298,17 @@ function PaymentStatus(oid, pp_id) {
     }).fail(function (jqXHR, textStatus, errorThrown) {
         swal('Alert!', 'Something went wrong, please try again.', "error");
     });
-
-    //$.ajax({
-    //    type: "get", url: '/Setting/GetPayPalToken', contentType: "application/json; charset=utf-8", dataType: "json", data: option,
-    //    success: function (result) {
-    //        console.log(result);
-    //        let access_token = result.message;
-    //        let create_url = 'https://api.sandbox.paypal.com/v1/invoicing/invoices/INV2-DTYZ-JPV6-ZK8Z-CSYN';
-    //        $.ajax({
-    //            type: 'get', url: create_url, contentType: "application/json; charset=utf-8", dataType: "json", data: {},
-    //            beforeSend: function (xhr) {
-    //                xhr.setRequestHeader("Accept", "application/json");
-    //                xhr.setRequestHeader("Authorization", "Bearer " + access_token);
-    //            },
-    //            success: function (data) {
-    //                console.log(data);
-    //            },
-    //            error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); console.log(XMLHttpRequest); swal('Alert!', XMLHttpRequest.responseJSON.message, "error"); },
-    //            complete: function () { $("#loader").hide(); }, async: false
-    //        });
-    //    },
-    //    complete: function () { }, error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); }, async: false
-    //});
+}
+function order_Split(order_id) {
+    var obj = { order_id: parseInt(order_id) || 0 };
+    $.ajax({
+        type: "POST", contentType: "application/json; charset=utf-8",
+        url: "/Orders/SplitOrderByStatus", // Controller/View
+        data: JSON.stringify(obj), dataType: "json", beforeSend: function () { },
+        success: function (result) {
+            if (result.status) { console.log(result); }
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
+        async: false
+    });
 }

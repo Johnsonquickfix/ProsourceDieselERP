@@ -73,6 +73,11 @@ namespace LaylaERP.Controllers
             return View();
         }
 
+        public ActionResult OrderShippingRule()
+        {
+            return View();
+        }
+
         [HttpPost]
         public JsonResult GetUserList(SearchModel model)
         {
@@ -171,6 +176,143 @@ namespace LaylaERP.Controllers
             }
             catch { b_status = false; result = ""; }
             return Json(new { status = b_status, message = result }, 0);
+        }
+
+        //For Order Shipping Rule
+
+        [HttpPost]
+        public JsonResult NewRule(SettingModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                int RoleID = new SettingRepository().CheckDuplicateRoule(model);
+                if (RoleID == 0)
+                {
+                    int ID = new SettingRepository().AddNewRule(model);
+                    if (ID > 0)
+                    {
+                        ModelState.Clear();
+                        return Json(new { status = true, message = "Rule has been saved successfully!!", url = "" }, 0);
+                    }
+                    else
+                    {
+                        return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                    }
+                }
+                else
+                {
+                    return Json(new { status = false, message = "Rule Can not be Duplicate", url = "" }, 0);
+                }
+
+            }
+            return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+        }
+        public JsonResult GetRule()
+        {
+            DataTable dt = new DataTable();
+            dt = BAL.SettingRepository.GetRoule();
+            List<SelectListItem> usertype = new List<SelectListItem>();
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                usertype.Add(new SelectListItem
+                {
+                    Value = dt.Rows[i]["rowid"].ToString(),
+                    Text = dt.Rows[i]["name"].ToString()
+
+                });
+            }
+            return Json(usertype, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public JsonResult CreateShiprule(SettingModel model)
+        {
+            JsonResult result = new JsonResult();
+            string msg = "";
+            //int ID = 0;
+            if (!string.IsNullOrEmpty(model.location))
+            {
+                string[] state = model.location.Split(',');
+                for (int x = 0; x < state.Length; x++)
+                {
+                    model.location = state[x].Trim();
+                    DataTable dt = SettingRepository.Getcountrystatecountry(model);
+                    if (dt.Rows.Count > 0 && model.ID == 0)
+                    {
+                        return Json(new { status = false, message = "Rule with state has been already existed", url = "" }, 0);
+                    }
+                    else
+                    {
+
+                        if (model.ID > 0)
+                        {
+                            model.location = state[x].Trim();
+                            SettingRepository.updateshippingrule(model);
+                            msg = "Details has been updated successfully!!";
+                            //return Json(new { status = true, message = "", url = "Manage" }, 0);
+                        }
+                        else
+                        {
+                            model.location = state[x].Trim();
+                            SettingRepository.Addshippingruledetails(model);
+                            //return Json(new { status = true, message = "Details has been saved successfully!!", url = "" }, 0);
+                            msg = "Details has been save successfully!!";
+                        }
+                    }
+                }
+            }
+            else
+            {
+                msg = "Please Select State!!";               
+            }
+            return Json(new { status = true, message = msg, url = "Manage" }, 0);
+
+        }
+
+        [HttpGet]
+        public JsonResult GetShippingrulelist(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+
+                DataTable dt = SettingRepository.GetShippingruleList(model.strValue1, model.strValue2, model.strValue3, model.strValue4, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, aaData = result }, 0);
+        }
+
+        public JsonResult GetEditDataID(OrderPostStatusModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+
+                DataTable dt = SettingRepository.GetEditDataID(model);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+        public JsonResult deleteShippingrule(SettingModel model)
+        {
+            if (ModelState.IsValid)
+            {
+
+                int ID = new SettingRepository().deleteShipping(model);
+                if (ID > 0)
+                {
+                    ModelState.Clear();
+                    return Json(new { status = true, message = "Rule has been delete successfully!!", url = "" }, 0);
+                }
+                else
+                {
+                    return Json(new { status = false, message = "No data found for delete", url = "" }, 0);
+                }
+            }
+            return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
         }
     }
 }

@@ -440,8 +440,8 @@ function addCustomerModal(cus_name) {
     myHtml += '</div>';
 
     myHtml += '<div class="form-group">';
-    myHtml += '<label class="control-label " for="Address 1">Address 1</label>';
-    myHtml += '<div class=""><input type="text" id="txtCusBillingAddress2" class="form-control" placeholder="Address 1" /></div>';
+    myHtml += '<label class="control-label " for="Address 1">Address Line 2</label>';
+    myHtml += '<div class=""><input type="text" id="txtCusBillingAddress2" class="form-control" placeholder="Address Line 2" /></div>';
     myHtml += '</div>';
 
     myHtml += '<div class="form-group">';

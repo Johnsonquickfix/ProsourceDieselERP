@@ -41,7 +41,25 @@ function EmployeeList() {
             
             { data: 'id', title: 'Id', sWidth: "5%" },
             { data: 'name', title: 'Name', sWidth: "10%" },
-            { data: 'discription', title: 'Leave Type', sWidth: "10%" },
+            {
+
+                data: 'phone', title: 'Phone Number', sWidth: "20%",
+                render: function (toFormat) {
+                    var tPhone = '';
+                    if (toFormat != null) {
+                        tPhone = toFormat.toString();
+                        tPhone = '(' + tPhone.substring(0, 3) + ') ' + tPhone.substring(3, 6) + ' ' + tPhone.substring(6, 10);
+                    }
+                    return tPhone
+                }
+            },
+            { data: 'email', title: 'Email', sWidth: "20%" },
+            {
+                'data': 'id', sWidth: "10%", title: 'Action',
+                'render': function (id, type, full, meta) {
+                    return '<a href="../Hrms/EditConfigurationList/' + id + '"><i class="glyphicon glyphicon-pencil"></i></a>';
+                }
+            }
             
         ]
     });

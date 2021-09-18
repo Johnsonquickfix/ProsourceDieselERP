@@ -621,6 +621,8 @@
     <Content Include="js\FeeNTax\FeeNTax.js" />
     <Content Include="js\GooglePlace\index.js" />
     <Content Include="js\Hrms\Attendence.js" />
+    <Content Include="js\Hrms\ConfigurationList.js" />
+    <Content Include="js\Hrms\EditConfiguration.js" />
     <Content Include="js\Hrms\EmployeeList.js" />
     <Content Include="js\Hrms\GrantLeaveList.js" />
     <Content Include="js\Hrms\Hrms.js" />
@@ -895,6 +897,8 @@
     <Content Include="Views\Setup\Editproductrule.cshtml" />
     <Content Include="Views\Hrms\Attendance.cshtml" />
     <Content Include="Views\Hrms\configuration.cshtml" />
+    <Content Include="Views\Hrms\ConfigurationList.cshtml" />
+    <Content Include="Views\Hrms\EditConfigurationList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -1,7 +1,7 @@
-﻿@{
-    ViewBag.Title = "Configuration";
+﻿
+@{
+    ViewBag.Title = "EditConfigurationList";
     Layout = "~/Views/Shared/_Layout.cshtml";
-
 }
 
 <div id="loader" class="d-flex align-items-center">
@@ -20,10 +20,11 @@
         <div class="box-body">
             <div class="row">
                 <div class="col-md-6">
+                    <input type="hidden" id="hfDA1" />
+                    <input type="hidden" id="hfDA2" />
+                    <input type="hidden" id="hfDAothers" />
+                    <input type="text" id="hfid" value="@ViewBag.id" />
                     <div class="form-group">
-                        <input type="hidden" id="hfDA1" />
-                        <input type="hidden" id="hfDA2" />
-                        <input type="hidden" id="hfDAothers" />
                         <label for="FirstName">Employee Type<span style="color:red">*</span></label>
                         <div class="input-group">
                             <select class="form-control select2" id="ddlemptype"></select>
@@ -43,16 +44,14 @@
                     <div class="form-group">
                         <label for="FirstName">Employee Code<span style="color:red">*</span></label>
                         <div class="input-group">
-                            <select class="form-control select2" id="ddlempcode">
-                            </select>
+                            <select class="form-control select2" id="ddlempcode"></select>
                         </div>
                     </div>
                 </div><div class="col-md-6">
                     <div class="form-group">
                         <label for="FirstName">Employee Name<span style="color:red">*</span></label>
                         <div class="input-group">
-                            <select class="form-control select2" id="ddlempname">
-                            </select>
+                            <select class="form-control select2" id="ddlempname"></select>
                         </div>
                     </div>
                 </div>
@@ -157,7 +156,7 @@
                     <div class="form-group">
                         <label for="FirstName">Advance EMI Months<span style="color:red"></span></label>
                         <div class="input-group">
-                            <input class="form-control" type="number" id="txtadvanceEmiMonths" value="0">
+                            <input class="form-control" type="number" id="txtadvanceEmiMonths"  value="0">
                         </div>
                     </div>
                 </div>
@@ -207,9 +206,7 @@
                     <div class="form-group">
                         <label for="FirstName">Work Type<span style="color:red">*</span></label>
                         <div class="input-group">
-                            <select class="form-control select2" id="ddlworktype">
-                                
-                            </select>
+                            <select class="form-control select2" id="ddlworktype"></select>
                         </div>
                     </div>
                 </div>
@@ -261,7 +258,7 @@
                 </div>
                 <div class="box-footer">
                     <div class="text-right">
-                        <a href="#" class="btn btn-danger" id="btnSave"><span title="Click Here To Save Details" data-placement="bottom" data-toggle="tooltip"><b>Save</b></span></a>
+                        <a href="#" class="btn btn-danger" id="btnUpdate"><span title="Click Here To Update Details" data-placement="bottom" data-toggle="tooltip"><b>Update</b></span></a>
                     </div>
                 </div>
             </div>
@@ -274,9 +271,66 @@
 <script>
     $(document).ready(function () {
         $("#loader").hide();
-        $(document).on('click', "#btnSave", function () {
-            AddConfiguration();
+        var url = window.location.pathname;
+        var id = url.substring(url.lastIndexOf('/') + 1);
+        EditSelect(id);
+        $(document).on('click', "#btnUpdate", function () {
+            UpdateConfiguration();
         });
-    })
+
+        $(".select2").select2();
+        setTimeout(function () { $(".select2").select2(); }, 2000);
+
+    });
+
+
+</script>
+
+<script>
+    function EditSelect(id) {
+        var strValue1 = id;
+        var obj =
+            $.ajax({
+                url: "/Hrms/SelectConguration/" + strValue1,
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                dataType: 'JSON',
+                data: JSON.stringify(obj),
+                success: function (data) {
+                    //console.log(data);
+                    var jobj = JSON.parse(data);
+                    if (jobj.length > 0) {
+                        $("#ddlemptype").val(jobj[0].emp_type).trigger('change');
+                        $("#ddlempcode").val(jobj[0].emp_code).trigger('change');
+                        $("#ddlempname").val(jobj[0].fk_emp).trigger('change');
+                        $("#txtbasic").val(jobj[0].basic);
+                        $("#txtda").val(jobj[0].da);
+
+                        $("#txthra").val(jobj[0].hra);
+                        $("#txtotherallowance").val(jobj[0].other_allowance);
+                        $("#txtpf").val(jobj[0].pf);
+                        $("#txtloanamount").val(jobj[0].loan_amount);
+                        $("#txtloanemi").val(jobj[0].loan_emi);
+
+                        $("#txtloanmonths").val(jobj[0].loan_months);
+                        $("#txtadvanceamount").val(jobj[0].adv_amount);
+                        $("#txtadvanceEmi").val(jobj[0].adv_emi);
+                        $("#txtadvanceEmiMonths").val(jobj[0].adv_emi_months);
+                        $("#txttds").val(jobj[0].tds);
+                        $("#txtotherdeductions").val(jobj[0].other_deductions);
+                        $("#txtreibursement").val(jobj[0].reimbursement);
+                        $("#ddlworktype").val(jobj[0].work_type).trigger('change');
+                        $("#txtworkhours").val(jobj[0].default_work_hours);
+                        $("#ddlpreparesalary").val(jobj[0].prepare_salary).trigger('change');
+                        $("#ddlaccountingtype").val(jobj[0].accounting_type).trigger('change');
+                    }
+                },
+                error: function (msg) {
+
+                }
+            });
+
+    }
+
 </script>
 <script src="@Url.Content("~/js/Hrms/HrmsConfiguration.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>

@@ -11,7 +11,7 @@ function AddCustomer() {
 
     ID = $("#hfid").val();
     Email = $("#txtUserEmail").val();
-    NickName = $("#txtUserNickName").val();
+    NickName = $("#txtUserEmail").val();
     FirstName = $("#txtFirstName").val();
     LastName = $("#txtLastName").val();
     BillingAddress1 = $("#txtBillingAddress1").val();
@@ -21,11 +21,11 @@ function AddCustomer() {
     BillingState = $("#txtBillingState").val();
     BillingCity = $("#txtBillingCity").val();
     BillingPhone = $("#txtBillingPhone").val();
-    if (NickName == "") {
-        swal('alert', 'Please Enter User Name', 'error').then(function () { swal.close(); $('#txtUserNickName').focus(); })
-    }
-    else if (Email == "") {
-        swal('alert', 'Please Enter Email', 'error').then(function () { swal.close(); $('#txtUserEmail').focus(); })
+    //if (NickName == "") {
+    //    swal('alert', 'Please Enter User Name', 'error').then(function () { swal.close(); $('#txtUserNickName').focus(); })
+    //}
+    if (Email == "") {
+       swal('alert', 'Please Enter Email', 'error').then(function () { swal.close(); $('#txtUserEmail').focus(); })
     }
 
     else if (FirstName == "") {

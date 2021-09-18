@@ -1478,7 +1478,8 @@
 
                 if (!string.IsNullOrEmpty(sMonths))
                 {
-                    strWhr += " and DATE_FORMAT(p.post_date,'%Y%m') BETWEEN " + sMonths;
+                    //strWhr += " and DATE_FORMAT(p.post_date,'%Y%m') BETWEEN " + sMonths;
+                    strWhr += " and cast(p.post_date as date) BETWEEN " + sMonths;
                 }
                 if (!string.IsNullOrEmpty(CustomerID))
                 {
@@ -1508,7 +1509,7 @@
                             + " inner join vw_Order_details pmf on p.id = pmf.post_id"
                             + " WHERE p.post_type = 'shop_order' and p.post_status != 'auto-draft' " + strWhr
                             + " order by " + SortCol + " " + SortDir + " limit " + (pageno).ToString() + ", " + pagesize + "";
-                strSql += "; SELECT sum(1) TotalRecord from wp_posts p inner join vw_Order_details pmf on p.id = pmf.post_id "
+                strSql += "; SELECT coalesce(sum(1),0) TotalRecord from wp_posts p inner join vw_Order_details pmf on p.id = pmf.post_id "
                         + " WHERE p.post_type = 'shop_order' " + strWhr.ToString();
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);

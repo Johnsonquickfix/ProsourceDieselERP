@@ -68,6 +68,16 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult ConfigurationList()
+        {
+            return View();
+        }
+        public ActionResult EditConfigurationList(long id)
+        {
+            ViewBag.id = id;
+            return View();
+        }
+
 
 
         public JsonResult GetGroup()
@@ -580,7 +590,7 @@ namespace LaylaERP.Controllers
             return Json(worktype, JsonRequestBehavior.AllowGet);
 
         }
-
+        [HttpPost]
         public JsonResult AddConfiguration(HrmsConfigurationModel model)
         {
             
@@ -594,7 +604,59 @@ namespace LaylaERP.Controllers
             {
                 return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
             }
+        }
 
+        public JsonResult GetConfigList(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                DataTable dt = HrmsConfigurationRepository.GetConfigList(model.strValue1, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                result = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+        }
+
+        public JsonResult SelectConguration(long id)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = HrmsConfigurationRepository.SelectConfiguration(id);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+
+
+        [HttpPost]
+        public JsonResult UpdateConfiguration(HrmsConfigurationModel model)
+        {
+
+            if (model.rowid > 0)
+            {
+                HrmsConfigurationRepository.UpdateConfiguration(model);
+                return Json(new { status = true, message = "Data has been saved successfully!!", url = "", id = model.rowid }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+        }
+
+        public JsonResult SelectDAList()
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = HrmsConfigurationRepository.SelectDAList();
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
         }
     }
 }

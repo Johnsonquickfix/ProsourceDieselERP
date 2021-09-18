@@ -366,7 +366,7 @@ namespace LaylaERP.BAL
                             + " round((opl.product_qty * ir.purchase_price), 2) total_ht,"
                             + " round((opl.product_qty * ir.purchase_price), 2) - round(((opl.product_qty * ir.purchase_price) * (ir.discount / 100)), 2) + round((opl.product_qty * ir.salestax), 2) + round((opl.product_qty * ir.shipping_price), 2) total_ttc,"
                             + " opl.order_id,psku.meta_value sku,wp_oi.order_item_name,(case when opl.variation_id > 0 then opl.variation_id else opl.product_id end) fk_product,p.post_date,opl.product_qty,"
-                            + " ir.purchase_price,ir.salestax,ir.shipping_price,ir.discount discountPer"
+                            + " ir.purchase_price,ir.salestax,ir.shipping_price,ir.discount discountPer,(select wp_w.rowid from wp_warehouse wp_w where wp_w.is_system = 1 limit 1) warehouse_id"
                             + " from wp_posts p"
                             + " inner join wp_woocommerce_order_items wp_oi on p.id = wp_oi.order_id and wp_oi.order_item_type = 'line_item'"
                             + " inner join wp_wc_order_product_lookup opl on opl.order_item_id = wp_oi.order_item_id"
@@ -381,9 +381,9 @@ namespace LaylaERP.BAL
 
                 foreach (DataRow DR in DT.DefaultView.ToTable(true, "ref_supplier", "fk_supplier", "PaymentTermsID", "BalanceID", "Paymentmethod", "date_livraison", "fk_incoterms", "location_incoterms", "date_creation").Rows)
                 {
-                    strsql = "insert into commerce_purchase_order(ref,ref_ext,ref_supplier,fk_supplier,fk_status,source,fk_payment_term,fk_balance_days,fk_payment_type,date_livraison,fk_incoterms,location_incoterms,note_private,note_public,fk_user_author,date_creation,discount,total_tva,localtax1,localtax2,total_ht,total_ttc,fk_projet) "
+                    strsql = "insert into commerce_purchase_order(ref,ref_ext,ref_supplier,fk_supplier,fk_status,source,fk_payment_term,fk_balance_days,fk_payment_type,date_livraison,fk_incoterms,location_incoterms,note_private,note_public,fk_user_author,date_creation,discount,total_tva,localtax1,localtax2,total_ht,total_ttc,fk_projet,fk_warehouse) "
                         + string.Format("select concat('PO" + strPOYearMonth + "-',lpad(coalesce(max(right(ref,5)),0) + 1,5,'0')) ref,'','{0}','{1}','1','0','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}','{16}','{17}','{18}' from commerce_purchase_order where lpad(ref,6,0) = 'PO" + strPOYearMonth + "';select LAST_INSERT_ID();",
-                                DR["ref_supplier"], DR["fk_supplier"], DR["PaymentTermsID"], DR["BalanceID"], DR["Paymentmethod"], cDate.ToString("yyyy-MM-dd HH:mm:ss"), DR["fk_incoterms"], DR["location_incoterms"], "", "", 0, cDate.ToString("yyyy-MM-dd HH:mm:ss"), 0, 0, 0, 0, 0, 0, id);
+                                DR["ref_supplier"], DR["fk_supplier"], DR["PaymentTermsID"], DR["BalanceID"], DR["Paymentmethod"], cDate.ToString("yyyy-MM-dd HH:mm:ss"), DR["fk_incoterms"], DR["location_incoterms"], "", "", 0, cDate.ToString("yyyy-MM-dd HH:mm:ss"), 0, 0, 0, 0, 0, 0, id, DR["warehouse_id"]);
 
                     long po_id = Convert.ToInt64(SQLHelper.ExecuteScalar(strsql, para));
                     strsql = string.Empty;
@@ -410,7 +410,7 @@ namespace LaylaERP.BAL
                         //Add Stock
                         strsql += "delete from product_stock_register where tran_type = 'PO' and flag = 'O' and tran_id = " + po_id + ";"
                                 + " insert into product_stock_register (tran_type,tran_id,product_id,warehouse_id,tran_date,quantity,flag)"
-                                + " select 'PO',pod.fk_purchase,pod.fk_product,(select wp_w.rowid from wp_warehouse wp_w where wp_w.is_system = 1 limit 1) warehouse_id,po.date_creation,pod.qty,'O' from commerce_purchase_order_detail pod"
+                                + " select 'PO',pod.fk_purchase,pod.fk_product,po.fk_warehouse,po.date_creation,pod.qty,'O' from commerce_purchase_order_detail pod"
                                 + " inner join commerce_purchase_order po on po.rowid = pod.fk_purchase where fk_purchase = " + po_id + ";";
 
                         result = SQLHelper.ExecuteNonQueryWithTrans(strsql);

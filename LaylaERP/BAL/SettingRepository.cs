@@ -6,6 +6,7 @@ using System.Data;
 using LaylaERP.DAL;
 using LaylaERP.Models;
 using MySql.Data.MySqlClient;
+using System.Text;
 
 namespace LaylaERP.BAL
 {
@@ -105,5 +106,194 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
+
+        // For Order Shipping Rule
+        public static DataTable GetRoule()
+        {
+            DataTable DT = new DataTable();
+            try
+            {
+                string strSQl = "Select rowid , name from erp_order_automation_filter";
+                DT = SQLHelper.ExecuteDataTable(strSQl);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DT;
+        }
+        public int CheckDuplicateRoule(SettingModel model)
+        {
+            try
+            {
+                string strquery = "select count(rowid) from erp_order_automation_filter where name = '" + model.rule_name + "' ";
+                MySqlParameter[] para =
+                {
+
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strquery).ToString());
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+        public int AddNewRule(SettingModel model)
+        {
+            try
+            {
+                string strsql = "insert into erp_order_automation_filter(name,description)values(@name,@description);SELECT LAST_INSERT_ID();";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@name", model.rule_name),
+                     new MySqlParameter("@description", model.description)
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+        public static DataTable GetShippingruleList(string strValue1, string userstatus, string strValue3, string strValue4, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "order_id", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                string strWhr = string.Empty;
+
+                if (!string.IsNullOrEmpty(searchid))
+                {
+                    strWhr += " and (eoar.rowid like '%" + searchid + "%' "
+                            + " OR eoaf.name like '%" + searchid + "%' "
+                            + " OR esl.StateFullName like '%" + searchid + "%' "
+                            + " OR wv.name like '%" + searchid + "%' "
+                            + " OR post_title like '%" + searchid + "%' "
+
+                            + " )";
+                }
+
+                string strSql = "select DISTINCT eoar.rowid rowid, eoaf.name rulrname,esl.StateFullName"
+                + " State,wv.name vendrname,post_title title,services"
+                + " from erp_order_automation_rule eoar"
+                + " left OUTER join erp_order_automation_filter eoaf on eoaf.rowid = eoar.fk_rule"
+                + " left OUTER join erp_StateList esl on esl.State = eoar.location"
+                + " left OUTER join wp_posts ps on ps.id = eoar.fk_product"
+                + " left OUTER join wp_vendor wv on wv.rowid = eoar.fk_vendor"
+                + " WHERE eoar.rowid > 0" + strWhr
+
+              + " order by " + SortCol + " " + SortDir + " limit " + (pageno).ToString() + ", " + pagesize + "";
+
+                strSql += "; SELECT count(distinct eoar.rowid) TotalRecord from erp_order_automation_rule eoar"
+                + " left OUTER join erp_order_automation_filter eoaf on eoaf.rowid = eoar.fk_rule"
+                + " left OUTER join erp_StateList esl on esl.State = eoar.location"
+                + " left OUTER join wp_posts ps on ps.id = eoar.fk_product"
+                + " left OUTER join wp_vendor wv on wv.rowid = eoar.fk_vendor"
+                + " WHERE eoar.rowid > 0" + strWhr.ToString();
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dt = ds.Tables[0];
+                if (ds.Tables[1].Rows.Count > 0)
+                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public int deleteShipping(SettingModel model)
+        {
+            try
+            {
+                string strsql = "delete from erp_order_automation_rule where  fk_rule = " + model.fk_rule + " ";
+
+                int result = SQLHelper.ExecuteNonQuery(strsql.ToString());
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+        public static DataTable GetEditDataID(OrderPostStatusModel model)
+        {
+            DataTable dt = new DataTable();
+
+            try
+            {
+                string strWhr = string.Empty;
+
+                string strSql = "SELECT rowid ID,fk_rule,location,Statefullname,fk_product,fk_vendor,services from erp_order_automation_rule ScD left outer join erp_StateList esl on esl.State = ScD.location"
+                             + " WHERE rowid = " + model.strVal + " ";
+
+
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dt = ds.Tables[0];
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static DataTable Getcountrystatecountry(SettingModel model)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                string strSQl = "select rowid from erp_order_automation_rule"
+                                + " WHERE fk_rule =" + model.fk_rule + " and location = '" + model.location + "' "
+                                + " limit 10;";
+                dt = SQLHelper.ExecuteDataTable(strSQl);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+        public static int updateshippingrule(SettingModel model)
+        {
+            int result = 0;
+            try
+            {
+                StringBuilder strSql = new StringBuilder();
+                //StringBuilder strSql = new StringBuilder(string.Format("delete from Product_Purchase_Items where fk_product = {0}; ", model.fk_product));
+                // strSql.Append(string.Format("insert into Product_Purchase_Items ( fk_vendor,purchase_price,cost_price,minpurchasequantity,salestax,taxrate,discount,remark) values ({0},{1},{2},{3},{4},{5},{6},{7},'{8}') ", model.fk_product, model.fk_vendor, model.purchase_price, model.cost_price, model.minpurchasequantity, model.salestax, model.taxrate, model.discount, model.remark));
+
+                /// step 6 : wp_posts
+                strSql.Append(string.Format("update erp_order_automation_rule set location = '{0}',fk_product = {1},fk_vendor = {2},services = '{3}',fk_rule = {4} where rowid = {5}", model.location, model.fk_product, model.fk_vendor, model.services, model.fk_rule, model.ID));
+
+                result = SQLHelper.ExecuteNonQuery(strSql.ToString());
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return result;
+        }
+        public static int Addshippingruledetails(SettingModel model)
+        {
+            int result = 0;
+            try
+            {
+                StringBuilder strSql = new StringBuilder();
+                //StringBuilder strSql = new StringBuilder(string.Format("delete from Product_Purchase_Items where fk_product = {0}; ", model.fk_product));
+                strSql.Append(string.Format("insert into erp_order_automation_rule (fk_rule,fk_product,location,fk_vendor,services) values ({0},{1},'{2}',{3},'{4}') ", model.fk_rule, model.fk_product, model.location, model.fk_vendor, model.services));
+
+                /// step 6 : wp_posts
+                //strSql.Append(string.Format(" update wp_posts set post_status = '{0}' ,comment_status = 'closed' where id = {1} ", model.OrderPostStatus.status, model.OrderPostStatus.order_id));
+
+                result = SQLHelper.ExecuteNonQuery(strSql.ToString());
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return result;
+        }
+
     }
 }

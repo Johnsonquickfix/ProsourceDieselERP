@@ -1,7 +1,7 @@
 ﻿@model LaylaERP.Models.CustomerModel
 
 @{
-    ViewBag.Title = "NewUser";
+    ViewBag.Title = "Add New Customer";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <link href="~/Content/css/intlTelInput.css" rel="stylesheet" />
@@ -23,14 +23,14 @@
                 <input type="hidden" id="hfid" value="@ViewBag.id" />
                 <div class="row">
                     <div class="col-md-4">
-                        <div class="form-group">
+                        <div class="form-group" style="display:none;">
                             <label class="control-label " for="User Name">User Name/Email</label>
                             <div class="">
                                 <input type="text" id="txtUserNickName" class="form-control" placeholder="User Name" />
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label " for="Email">Email</label>
+                            <label class="control-label " for="Email">User Name/Email</label>
                             <div class="">
                                 <input type="email" id="txtUserEmail" class="form-control" placeholder="Email" />
                             </div>
@@ -48,14 +48,15 @@
                                 <input type="text" id="txtLastName" class="form-control" placeholder="Last Name" />
                             </div>
                         </div>
-                    </div>
-                    <div class="col-md-4">
                         <div class="form-group">
                             <label class="control-label " for="Contact No.">Contact No.</label>
                             <div class="">
                                 <input type="tel" id="txtBillingPhone" class="form-control" placeholder="Contact No." />
                             </div>
                         </div>
+                    </div>
+                    <div class="col-md-4">
+                     
                         <div class="form-group">
                             <img class="sb-title-icon" src="https://fonts.gstatic.com/s/i/googlematerialicons/location_pin/v5/24px.svg" alt="">
                             <label class="control-label " for="Address 1">Address</label>
@@ -64,9 +65,9 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label " for="Address 2">Address 1</label>
+                            <label class="control-label " for="Address 2">Address Line 2</label>
                             <div class="">
-                                <input type="text" id="txtBillingAddress2" class="form-control" placeholder="Address 1 optional" />
+                                <input type="text" id="txtBillingAddress2" class="form-control" placeholder="Address Line 2" />
                             </div>
                         </div>
                         <div class="form-group">
@@ -164,6 +165,45 @@
         });
 
     });
+
+
+    $('#txtUserEmail').change(function () {
+
+        var emailReg = /^([\w-\.]+@@([\w-]+\.)+[\w-]{2,4})?$/;
+        var emailaddressVal = $("#txtUserEmail").val();
+        if (!emailReg.test(emailaddressVal)) {
+            $("#txtUserEmail").val('');
+            swal('Alert', 'Is not a valid email', 'error').then(function () { swal.close(); $('#txtUserEmail').focus(); });
+        }
+        //else {
+
+        //    email = $("#txtUserEmail").val();
+        //    var obj = {
+        //        user_email: email
+        //    }
+        //    $.ajax({
+        //        url: '/Users/GetEmailName/', dataType: 'json', type: 'Post',
+        //        contentType: "application/json; charset=utf-8",
+        //        data: JSON.stringify(obj),
+        //        dataType: "json",
+        //        success: function (data) {
+        //            if (data.status == false) {
+
+        //            }
+        //            else {
+        //                $("#txtUserEmail").val("");
+        //                swal('Alert', 'User email is already exists ', 'error').then(function () { swal.close(); $('#txtUserEmail').focus(); });
+        //            }
+        //        },
+
+        //        error: function (error) {
+        //            swal('Error!', 'something went wrong', 'error');
+        //        },
+        //    })
+        //}
+
+    });
+
 
     $('#txtBillingCountry').change(function () {
 

@@ -4,18 +4,31 @@
         $('.subsubsub li a').removeClass('current');
         $(this).addClass('current');
     });
-    datePickers(
-        moment().subtract(24, 'month').startOf('month'),
-        moment().subtract(0, 'month').endOf('month'),
-        $('#txtOrderDate'), 'YYYY-MM', true,
-        {
+    //datePickers(
+    //    moment().subtract(24, 'month').startOf('month'),moment().subtract(0, 'month').endOf('month'),
+    //    $('#txtOrderDate'), 'YYYY-MM', true,
+    //    {
+    //        'This Month': [moment().startOf('month'), moment().endOf('month')],
+    //        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+    //        'Last Three Months': [moment().subtract(3, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+    //        'Last Year': [moment().subtract(12, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+    //    },
+    //    true, true
+    //);
+    $('#txtOrderDate').daterangepicker({
+        ranges: {
+            'Today': [moment(), moment()],
+            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
             'This Month': [moment().startOf('month'), moment().endOf('month')],
-            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-            'Last Three Months': [moment().subtract(3, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-            'Last Year': [moment().subtract(12, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
         },
-        true, true
-    );
+        startDate: moment().add(-24, 'month'), autoUpdateInput: true, alwaysShowCalendars: true,
+        locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' }, opens: 'right', orientation: "left auto"
+    }, function (start, end, label) {
+            let order_type = $('#hfOrderType').val(); dataGridLoad(order_type, true);
+    });
     //GetMonths();
     $("#ddlUser").select2({
         allowClear: true, minimumInputLength: 3, placeholder: "Search Customer",
@@ -33,20 +46,20 @@
         if (order_type.length > 0) {
             $('.subsubsub li a').removeClass('current'); $('#wc-completed').addClass('current'); $('#hfOrderType').val(order_type);;
         }
-        dataGridLoad(order_type)
+        dataGridLoad(order_type, false)
     }, 50);
     //$("#loader").hide();
-    $('#all').click(function () { var order_type = ""; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
-    $('#mine').click(function () { var order_type = "mine"; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
-    $('#draft').click(function () { var order_type = "draft"; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
-    $('#wc-pending').click(function () { var order_type = "wc-pending"; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
-    $('#wc-processing').click(function () { var order_type = "wc-processing"; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
-    $('#wc-on-hold').click(function () { var order_type = "wc-on-hold"; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
-    $('#wc-completed').click(function () { var order_type = "wc-completed"; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
-    $('#wc-cancelled').click(function () { var order_type = "wc-cancelled"; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
-    $('#wc-refunded').click(function () { var order_type = "wc-refunded"; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
-    $('#wc-failed').click(function () { var order_type = "wc-failed"; $('#hfOrderType').val(order_type); dataGridLoad(order_type); });
-    $('#btnOtherFilter').click(function () { var order_type = $('#hfOrderType').val(); dataGridLoad(order_type); });
+    $('#all').click(function () { var order_type = ""; $('#hfOrderType').val(order_type); dataGridLoad(order_type, true); });
+    $('#mine').click(function () { var order_type = "mine"; $('#hfOrderType').val(order_type); dataGridLoad(order_type, true); });
+    $('#draft').click(function () { var order_type = "draft"; $('#hfOrderType').val(order_type); dataGridLoad(order_type, true); });
+    $('#wc-pending').click(function () { var order_type = "wc-pending"; $('#hfOrderType').val(order_type); dataGridLoad(order_type, true); });
+    $('#wc-processing').click(function () { var order_type = "wc-processing"; $('#hfOrderType').val(order_type); dataGridLoad(order_type, true); });
+    $('#wc-on-hold').click(function () { var order_type = "wc-on-hold"; $('#hfOrderType').val(order_type); dataGridLoad(order_type, true); });
+    $('#wc-completed').click(function () { var order_type = "wc-completed"; $('#hfOrderType').val(order_type); dataGridLoad(order_type, true); });
+    $('#wc-cancelled').click(function () { var order_type = "wc-cancelled"; $('#hfOrderType').val(order_type); dataGridLoad(order_type, true); });
+    $('#wc-refunded').click(function () { var order_type = "wc-refunded"; $('#hfOrderType').val(order_type); dataGridLoad(order_type, true); });
+    $('#wc-failed').click(function () { var order_type = "wc-failed"; $('#hfOrderType').val(order_type); dataGridLoad(order_type, true); });
+    $('#btnOtherFilter').click(function () { var order_type = $('#hfOrderType').val(); dataGridLoad(order_type, true); });
 });
 function GetMonths() {
     var d1 = new Date('01-01-2020');
@@ -92,13 +105,21 @@ function GetOrderDetails() {
     });
 }
 
-function dataGridLoad(order_type) {
+function dataGridLoad(order_type, is_date) {
     var urlParams = new URLSearchParams(window.location.search);
     let searchText = urlParams.get('name') ? urlParams.get('name') : '';
     var monthYear = '', cus_id = (parseInt($('#ddlUser').val()) || 0);
     if ($('#filter-by-date').val() != "0") monthYear = $('#filter-by-date').val();
-    let dfa = "'" + $('#txtOrderDate').val().replace(' - ', '\' AND \'') + "'";
-    dfa = dfa.replaceAll('-', '');
+    //let dfa = "'" + $('#txtOrderDate').val().replace(' - ', '\' AND \'') + "'";
+
+    //var dfa = $('#txtOrderDate').val().split('-');
+    //let sd = dfa[0].split('/'); sd = "'" + sd[2].toString().trim() + '-' + sd[0].toString().trim() + '-' + sd[1].toString().trim() + "'";
+    //let ed = dfa[1].split('/'); ed = "'" + ed[2].toString().trim() + '-' + ed[0].toString().trim() + '-' + ed[1].toString().trim() + "'";
+    let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
+    let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
+    let dfa = is_date ? "'" + sd + "' and '" + ed + "'" : '';
+
+
     let table = $('#dtdata').DataTable({
         oSearch: { "sSearch": searchText },
         columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
@@ -196,7 +217,7 @@ function dataGridLoad(order_type) {
             {
                 'data': 'id', title: 'Action', sWidth: "5%",
                 'render': function (id, type, row, meta) {
-                    return '<a href="NewOrders/' + id + '" data-toggle="tooltip" title="View/Edit Order"><i class="glyphicon glyphicon-eye-open"></i></a> <a href="OrderRefund/' + id + '" data-toggle="tooltip" title="Refund Order"><i class="fa fa-undo"></i></a>'
+                    return '<a href="minesofmoria/' + id + '" data-toggle="tooltip" title="View/Edit Order"><i class="glyphicon glyphicon-eye-open"></i></a> <a href="OrderRefund/' + id + '" data-toggle="tooltip" title="Refund Order"><i class="fa fa-undo"></i></a>'
                 }
             }
         ]
@@ -243,7 +264,7 @@ function orderStatus() {
                     .done(function (data) {
                         if (data.status) {
                             swal.insertQueueStep(data.message);
-                            GetOrderDetails(); let order_type = $('#hfOrderType').val(); dataGridLoad(order_type);
+                            GetOrderDetails(); let order_type = $('#hfOrderType').val(); dataGridLoad(order_type, true);
                         }
                         else { swal.insertQueueStep('something went wrong!'); }
                         resolve();

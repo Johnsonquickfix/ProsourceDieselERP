@@ -396,7 +396,7 @@
                     $("#lblorder").text('10');
                 else
                     $("#lblorder").text(i[0].TotalOrder);
-                $("#lblsale").text(i[0].TotalSale);
+                $("#lblsale").text(parseFloat(i[0].TotalSale).toFixed(2));
                 $("#lblordercounting").text(i[0].TotalOrder);
                 //$("#content").html(response);
             },

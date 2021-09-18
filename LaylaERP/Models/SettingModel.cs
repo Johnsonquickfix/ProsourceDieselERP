@@ -184,6 +184,15 @@ namespace LaylaERP.Models
         public string website { get; set; }
         public string logo_url { get; set; }
         public string additional_notes { get; set; }
+
+        public string rule_name { get; set; }
+        public string description { get; set; }
+        public string location { get; set; }
+        public string services { get; set; }
+        public int fk_rule { get; set; }
+        public int fk_product { get; set; }
+        public int fk_vendor { get; set; }       
+
     }
 
     public static class GlobalVariables

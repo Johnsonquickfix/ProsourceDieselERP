@@ -652,6 +652,7 @@
     <Content Include="js\Reception\NewReceive.js" />
     <Content Include="js\Reception\ReceiveOrderList.js" />
     <Content Include="js\Reception\ReceivePrint.js" />
+    <Content Include="js\Setting\OrderShippingRule.js" />
     <Content Include="js\Setup\editproductrule.js" />
     <Content Include="js\Setup\productrule.js" />
     <Content Include="js\Ship\ShipStation.js" />
@@ -897,8 +898,6 @@
     <Content Include="Views\Setup\Editproductrule.cshtml" />
     <Content Include="Views\Hrms\Attendance.cshtml" />
     <Content Include="Views\Hrms\configuration.cshtml" />
-    <Content Include="Views\Hrms\ConfigurationList.cshtml" />
-    <Content Include="Views\Hrms\EditConfigurationList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

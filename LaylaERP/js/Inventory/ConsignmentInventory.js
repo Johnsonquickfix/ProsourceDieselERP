@@ -178,9 +178,15 @@ function getPurchaseOrder(pid, wid, title) {
         columns: [
             { data: 'ref', title: 'PO No', sWidth: "15%" },
             { data: 'po_date', title: 'Created Date', sWidth: "15%" },
-            { data: 'vendor_name', title: 'Vendor Name', sWidth: "40%" },
+            { data: 'vendor_name', title: 'Vendor Name', sWidth: "25%" },
             { data: 'date_livraison', title: 'Planned date of delivery', sWidth: "25%" },
-            { data: 'quantity', title: 'Quantity', sWidth: "15%", class: 'text-right' }
+            { data: 'quantity', title: 'Quantity', sWidth: "10%", class: 'text-right' },
+            { data: 'recqty', title: 'Received Quantity', sWidth: "10%", class: 'text-right' },
+            {
+                data: 'balance', title: 'Balance', sWidth: "10%", class: 'text-right', render: function (data, type, row) {
+                    return (row.quantity - row.recqty).toFixed(0);
+                }
+            }
         ],
         sAjaxSource: "/Inventory/GetPOByWarehouse",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
@@ -211,7 +217,7 @@ function searchOrderModal(title) {
     modalHtml += '<div class="col-md-12">';
     modalHtml += '<div class="table-responsive">';
     modalHtml += '<table id="tblOrderList" class="table table-blue check-table table-bordered table-striped dataTable tablelist">';
-    modalHtml += '<thead><tr><th style="width: 15%">PO No</th><th style="width: 15%">Date</th><th style="width: 30%">Vendor Name</th><th style="width: 25%">Planned date of delivery</th><th class="text-right" style="width: 15%">Quantity</th></tr></thead>';
+    modalHtml += '<thead><tr><th style="width: 15%">PO No</th><th style="width: 15%">Date</th><th style="width: 25%">Vendor Name</th><th style="width: 25%">Planned date of delivery</th><th class="text-right" style="width: 10%">Quantity</th><th class="text-right" style="width: 10%">Received Quantity</th><th class="text-right" style="width: 10%">Balance</th></tr></thead>';
     modalHtml += '<tbody></tbody>';
     modalHtml += '</table>';
     modalHtml += '</div>';

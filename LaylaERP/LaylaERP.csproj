@@ -622,7 +622,6 @@
     <Content Include="js\GooglePlace\index.js" />
     <Content Include="js\Hrms\Attendence.js" />
     <Content Include="js\Hrms\ConfigurationList.js" />
-    <Content Include="js\Hrms\EditConfiguration.js" />
     <Content Include="js\Hrms\EmployeeList.js" />
     <Content Include="js\Hrms\GrantLeaveList.js" />
     <Content Include="js\Hrms\Hrms.js" />

@@ -227,13 +227,13 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@warehouse_id", warehouse_id)
                 };
                 //string strSql = "select ref,coalesce(sum(case when pwr.flag = 'R' then quantity else -quantity end),0) stock from product_stock_register pwr inner join wp_warehouse wr on wr.rowid = pwr.warehouse_id where product_id = @product_id group by pwr.warehouse_id";
-                string strSql = "select psr.warehouse_id,psr.product_id,tran_type,tran_id,po.ref,DATE_FORMAT(date_creation,'%m/%d/%Y') po_date,DATE_FORMAT(date_livraison,'%m/%d/%Y') date_livraison,v.name vendor_name,psr.quantity,sum(pord.recqty) recqty"
+                string strSql = "select psr.warehouse_id,psr.product_id,tran_type,tran_id,po.ref,DATE_FORMAT(date_creation,'%m/%d/%Y') po_date,DATE_FORMAT(date_livraison,'%m/%d/%Y') date_livraison,v.name vendor_name,psr.quantity,coalesce(sum(pord.recqty),0) recqty"
                             + " from product_stock_register psr"
                             + " inner join commerce_purchase_order po on po.rowid = psr.tran_id"
                             + " left join commerce_purchase_receive_order_detail pord on pord.fk_purchase = po.rowid and pord.fk_product = psr.product_id"
                             + " inner join wp_vendor v on po.fk_supplier = v.rowid"
                             + " where tran_type = 'PO' and flag = 'O' and psr.product_id = @product_id and psr.warehouse_id = @warehouse_id and cast(psr.tran_date as date) >= cast('" + fromdate.ToString("yyyy-MM-dd") + "' as date) and cast(psr.tran_date as date) <= cast('" + todate.ToString("yyyy-MM-dd") + "' as date)"
-                            + " group by psr.warehouse_id,psr.product_id,tran_type,tran_id,po.ref,v.name,psr.quantity having sum(pord.recqty) < psr.quantity";
+                            + " group by psr.warehouse_id,psr.product_id,tran_type,tran_id,po.ref,v.name,psr.quantity having coalesce(sum(pord.recqty),0) < psr.quantity";
                 dt = SQLHelper.ExecuteDataTable(strSql, parameters);
             }
             catch (Exception ex)

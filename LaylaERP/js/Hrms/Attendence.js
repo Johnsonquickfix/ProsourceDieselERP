@@ -1,17 +1,21 @@
 $(document).ready(function () {
     $("#loader").hide();
-    $("#txtfromdate").datepicker({ format: 'mm-dd-yyyy', }).datepicker("setDate", 'now');
-    $("#txttodate").datepicker({ format: 'mm-dd-yyyy', }).datepicker("setDate", 'now');
+    $("#DateRange").datepicker({ format: 'mm-dd-yyyy', }).datepicker("setDate", 'now');
+   /* $("#txttodate").datepicker({ format: 'mm-dd-yyyy', }).datepicker("setDate", 'now');*/
+    
     var now = new Date(Date.now());
     var formatted = now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
     EmployeeList();
+    $("input[name='txtouttime']").datepicker({ format: 'mm-dd-yyyy', }).datepicker("setDate", 'now');
+    $("input[name='txtintime']").datepicker({ format: 'mm-dd-yyyy', }).datepicker("setDate", 'now');
 })
-$('#btnSearch').click(function () {
+$("#btnGo").click(function () {
     EmployeeList();
 })
 
+
 function EmployeeList() {
-  
+    fromdate = $("#DateRange").val();
     var urid = $("#ddlSearchStatus").val();
     ID = $("#hfid").val();
     var table_EL = $('#EmployeeListdata').DataTable({
@@ -36,6 +40,7 @@ function EmployeeList() {
         sAjaxSource: "/Hrms/GetEmployeeAttendenceList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
             aoData.push({ name: "strValue1", value: urid });
+            aoData.push({ name: "strValue2", value: fromdate });
             var col = 'id';
             if (oSettings.aaSorting.length >= 0) {
                 var col = oSettings.aaSorting[0][0] == 0 ? "ID" : oSettings.aaSorting[0][0] == 1 ? "name" : oSettings.aaSorting[0][0] == 2 ? "email" : oSettings.aaSorting[0][0] == 3 ? "phone" : "id";

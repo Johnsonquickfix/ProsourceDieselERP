@@ -1,7 +1,7 @@
 ﻿@model LaylaERP.Models.CustomerModel
 
 @{
-    ViewBag.Title = "NewUser";
+    ViewBag.Title = "New Customer";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <link href="~/Content/css/intlTelInput.css" rel="stylesheet" />
@@ -29,7 +29,7 @@
                                 <input type="text" id="txtUserNickName" class="form-control" placeholder="User Name" />
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" style="display:none;">
                             <label class="control-label " for="Email">Email</label>
                             <div class="">
                                 <input type="email" id="txtUserEmail" class="form-control" placeholder="Email" />

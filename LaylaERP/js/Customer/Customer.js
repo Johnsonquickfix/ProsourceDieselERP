@@ -10,7 +10,8 @@ function AddCustomer() {
     //debugger
 
     ID = $("#hfid").val();
-    Email = $("#txtUserEmail").val();
+    //Email = $("#txtUserEmail").val();
+    Email = $("#txtUserNickName").val();
     NickName = $("#txtUserNickName").val();
     FirstName = $("#txtFirstName").val();
     LastName = $("#txtLastName").val();
@@ -24,9 +25,9 @@ function AddCustomer() {
     if (NickName == "") {
         swal('alert', 'Please Enter User Name', 'error').then(function () { swal.close(); $('#txtUserNickName').focus(); })
     }
-    else if (Email == "") {
-        swal('alert', 'Please Enter Email', 'error').then(function () { swal.close(); $('#txtUserEmail').focus(); })
-    }
+    //else if (Email == "") {
+    //    swal('alert', 'Please Enter Email', 'error').then(function () { swal.close(); $('#txtUserEmail').focus(); })
+    //}
 
     else if (FirstName == "") {
         swal('alert', 'Please Enter First Name', 'error').then(function () { swal.close(); $('#txtFirstName').focus(); })

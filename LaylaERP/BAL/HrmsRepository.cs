@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.Linq;
 using System.Web;
 using LaylaERP.DAL;
@@ -301,17 +302,21 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
-        public static DataTable GetEmployeeAttendenceList(string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        public static DataTable GetEmployeeAttendenceList(string userstatus, string fromdate, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
         {
             DataTable dt = new DataTable();
             totalrows = 0;
             try
             {
+                CultureInfo us = new CultureInfo("en-US");
+                DateTime startDate = DateTime.Parse(fromdate, us);
+                //DateTime endDate = DateTime.Parse(todate, us);
                 string strWhr = string.Empty;
-
                 string strSql = "Select e.rowid ID, concat(e.firstname,' ',e.lastname) as name,d.designation, e.email,e.phone,e.gender,e.emp_type," +
                     "s.in_time,s.out_time,s.is_approved,e.is_active from erp_hrms_emp e left join erp_hrms_attendance_sheet s on s.fk_emp = e.rowid " +
-                    "left join erp_hrms_empdetails ed on ed.fk_emp = e.rowid left join erp_hrms_designation d on d.rowid = ed.designation where 1 = 1 and e.is_active = 1 ";
+                    " and date(in_time) >= '" + startDate.ToString("yyyy-MM-dd") + "' and date(out_time) = '" + startDate.ToString("yyyy-MM-dd") + "'" +
+                    " left join erp_hrms_empdetails ed on ed.fk_emp = e.rowid left join erp_hrms_designation d on d.rowid = ed.designation where 1 = 1 " +
+                    "and e.is_active = 1 ";
                 if (!string.IsNullOrEmpty(searchid))
                 {
                     strWhr += " and (concat(e.firstname,' ',e.lastname) like '%" + searchid + "%' OR d.designation like '%" + searchid + "%')";
@@ -508,6 +513,7 @@ namespace LaylaERP.BAL
             try
             {
                 int result = 0;
+                CultureInfo us = new CultureInfo("en-US");
                 string[] ID = Empid.Split(',');
                 string[] invalue = intime.Split(',');
                 string[] outvalue = outtime.Split(',');
@@ -530,9 +536,9 @@ namespace LaylaERP.BAL
                         }
                         MySqlParameter[] para =
                         {
-                            new MySqlParameter("@fk_emp",Empid),
-                            new MySqlParameter("@in_time", intime),
-                            new MySqlParameter("@out_time", outtime),
+                            new MySqlParameter("@fk_emp", Empid),
+                            new MySqlParameter("@in_time",DateTime.Parse(intime, us)),
+                            new MySqlParameter("@out_time",DateTime.Parse(outtime, us)),
                         };
                         result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
                     }

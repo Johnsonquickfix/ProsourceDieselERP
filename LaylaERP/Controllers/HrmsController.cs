@@ -64,6 +64,7 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        //GET: configuration
         public ActionResult configuration()
         {
             return View();
@@ -77,7 +78,15 @@ namespace LaylaERP.Controllers
             ViewBag.id = id;
             return View();
         }
-
+        //Get HRA
+        public ActionResult HRA()
+        {
+            return View();
+        }
+        public ActionResult EditHRA()
+        {
+            return View();
+        }
 
 
         public JsonResult GetGroup()
@@ -658,5 +667,57 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(JSONresult, 0);
         }
+
+        [HttpPost]
+        public JsonResult AddHRADetails(HrmsConfigurationModel model)
+        {
+            int ID = HrmsConfigurationRepository.AddHRADetails(model);
+            if (ID > 0)
+            {
+                return Json(new { status = true, message = "Data has been saved successfully!!", url = "", id = model.rowid }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+        }
+
+        public JsonResult GetHRAList()
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = HrmsConfigurationRepository.GetHRAList();
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+
+        public JsonResult SelectHRAList(long id)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = HrmsConfigurationRepository.SelectHRAList(id);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+        [HttpPost]
+        public JsonResult UpdateHRA(HrmsConfigurationModel model)
+        {
+            if (model.rowid > 0)
+            {
+                HrmsConfigurationRepository.UpdateHRA(model);
+                return Json(new { status = true, message = "Data has been saved successfully!!", url = "", id = model.rowid }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+        }
+
     }
 }

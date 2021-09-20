@@ -76,36 +76,36 @@ namespace LaylaERP.BAL
             return DS;
         }
 
-        public static int AddEmployeeBasicDetails(HrmsModel model, int id)
-        {
-            try
-            {
-                string strsql = "INSERT into erp_hrms_empdetails(fk_emp,birthplace, maritalstatus, address1, address2, city, state, zipcode,country   )" +
-                                 " values(@fk_emp, @birthplace, @maritalstatus, @address1, @address2, @city, @state, @zipcode, @country); SELECT LAST_INSERT_ID();";
+        //public static int AddEmployeeBasicDetails(HrmsModel model, int id)
+        //{
+        //    try
+        //    {
+        //        string strsql = "INSERT into erp_hrms_empdetails(fk_emp,birthplace, maritalstatus, address1, address2, city, state, zipcode,country   )" +
+        //                         " values(@fk_emp, @birthplace, @maritalstatus, @address1, @address2, @city, @state, @zipcode, @country); SELECT LAST_INSERT_ID();";
 
 
-                MySqlParameter[] para =
-                {
-                    //2nd table
-                    new MySqlParameter("@fk_emp", id),
-                    new MySqlParameter("@birthplace", model.birthplace),
-                    new MySqlParameter("@maritalstatus",model.maritalstatus),
-                    new MySqlParameter("@address1", model.address1),
-                    new MySqlParameter("@address2", model.address2),
-                    new MySqlParameter("@city", model.city),
-                    new MySqlParameter("@state", model.state),
-                    new MySqlParameter("@zipcode", model.zipcode),
-                    new MySqlParameter("@country", model.country),
-               };
-                int result = Convert.ToInt32(DAL.SQLHelper.ExecuteScalar(strsql, para));
-                return result;
+        //        MySqlParameter[] para =
+        //        {
+        //            //2nd table
+        //            new MySqlParameter("@fk_emp", id),
+        //            new MySqlParameter("@birthplace", model.birthplace),
+        //            new MySqlParameter("@maritalstatus",model.maritalstatus),
+        //            new MySqlParameter("@address1", model.address1),
+        //            new MySqlParameter("@address2", model.address2),
+        //            new MySqlParameter("@city", model.city),
+        //            new MySqlParameter("@state", model.state),
+        //            new MySqlParameter("@zipcode", model.zipcode),
+        //            new MySqlParameter("@country", model.country),
+        //       };
+        //        int result = Convert.ToInt32(DAL.SQLHelper.ExecuteScalar(strsql, para));
+        //        return result;
 
-            }
-            catch (Exception Ex)
-            {
-                throw Ex;
-            }
-        }
+        //    }
+        //    catch (Exception Ex)
+        //    {
+        //        throw Ex;
+        //    }
+        //}
 
         public static int AddConfiguration(HrmsConfigurationModel model)
         {
@@ -186,7 +186,7 @@ namespace LaylaERP.BAL
             DataTable dtr = new DataTable();
             try
             {
-                string strquery = "SELECT * from erp_hrms_salary_configuration WHERE rowid='" + id + "'";
+                string strquery = "SELECT rowid,emp_type,fk_emp,format(basic,2) basic,emp_code,da,hra,other_allowance,pf,loan_amount,loan_emi,loan_months,adv_amount,adv_emi,adv_emi_months,tds,other_deductions,reimbursement,work_type,default_work_hours,prepare_salary,accounting_type from erp_hrms_salary_configuration WHERE rowid='" + id + "'";
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strquery);
                 dtr = ds.Tables[0];
@@ -242,7 +242,7 @@ namespace LaylaERP.BAL
             DataTable dtr = new DataTable();
             try
             {
-                string strquery = "SELECT * from erp_hrms_DA order by rowid DESC";
+                string strquery = "SELECT rowid,da_rate1,da_rate2,da_rate_others,from_date from erp_hrms_DA order by rowid DESC";
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strquery);
                 dtr = ds.Tables[0];
@@ -250,6 +250,122 @@ namespace LaylaERP.BAL
             catch (Exception ex)
             { throw ex; }
             return dtr;
+        }
+
+        public static int AddHRADetails(HrmsConfigurationModel model)
+        {
+            try
+            {
+                string strsql = "INSERT into erp_hrms_HRA(basic1, basic2, hra_office, hra_field, from_date)" +
+                                 " values(@basic1, @basic2, @hra_office, @hra_field, @from_date); SELECT LAST_INSERT_ID();";
+
+
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@basic1",model.basic1),
+                    new MySqlParameter("@basic2", model.basic2),
+                    new MySqlParameter("@hra_office",model.hra_office),
+                    new MySqlParameter("@hra_field", model.hra_field),
+                    new MySqlParameter("@from_date", model.from_date),
+               };
+                int result = Convert.ToInt32(DAL.SQLHelper.ExecuteScalar(strsql, para));
+                return result;
+
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+        /*
+        public static DataTable GetHRAList(string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                string strWhr = string.Empty;
+
+                string strSql = "SELECT rowid as id, format(basic1,2) as basic1, format(basic2,2) as basic2 , format(hra_office,2) as hra_office, format(hra_field,2) as hra_field, DATE_FORMAT(from_date, '%m%d%y') as from_date from erp_hrms_HRA where 1=1";
+                if (!string.IsNullOrEmpty(searchid))
+                {
+                    strWhr += " and (rowid like '%" + searchid + "%' OR basic1 like '%" + searchid + "%' OR basic2 like '%" + searchid + "%' OR hra_office like '%" + searchid + "%' OR hra_field like '%" + searchid + "%' OR from_date like '%" + searchid + "%')";
+                }
+                if (userstatus != null)
+                {
+                    //strWhr += " and (ehe.is_active='" + userstatus + "') ";
+                }
+                strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
+
+                strSql += "; SELECT ceil(Count(rowid)/" + pagesize.ToString() + ") TotalPage,Count(rowid) TotalRecord from erp_hrms_HRA where 1=1 " + strWhr.ToString();
+
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dt = ds.Tables[0];
+                if (ds.Tables[1].Rows.Count > 0)
+                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+        */
+        public static DataTable SelectHRAList(long id)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                string strSql = "SELECT rowid as id, format(basic1,2) as basic1, format(basic2,2) as basic2 , format(hra_office,2) as hra_office, format(hra_field,2) as hra_field, DATE_FORMAT(from_date, '%m%d%y') as from_date from erp_hrms_HRA where rowid='"+id+"'"; 
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dt = ds.Tables[0];
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static DataTable GetHRAList()
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                string strWhr = string.Empty;
+
+                string strSql = "SELECT rowid as id, format(basic1,2) as basic1, format(basic2,2) as basic2 , format(hra_office,2) as hra_office, format(hra_field,2) as hra_field, DATE_FORMAT(from_date, '%m-%d-%Y') as from_date from erp_hrms_HRA where 1=1";
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dt = ds.Tables[0];
+               
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static int UpdateHRA(HrmsConfigurationModel model)
+        {
+            try
+            {
+                string strsql = "UPDATE erp_hrms_HRA set basic1=@basic1, basic2=@basic2, hra_office=@hra_office, hra_field=@hra_field, from_date=@from_date where rowid = '" + model.rowid + "';";
+                MySqlParameter[] para =
+                 {
+                    new MySqlParameter("@basic1",model.basic1),
+                    new MySqlParameter("@basic2", model.basic2),
+                    new MySqlParameter("@hra_office",model.hra_office),
+                    new MySqlParameter("@hra_field", model.hra_field),
+                    new MySqlParameter("@from_date", model.from_date),
+                };
+                int result = Convert.ToInt32(DAL.SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }

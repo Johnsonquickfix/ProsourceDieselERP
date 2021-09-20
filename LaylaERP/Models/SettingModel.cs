@@ -32,6 +32,8 @@ namespace LaylaERP.Models
         string _TaxjarPwd = string.Empty;
         string _podiumAPIKey = string.Empty;
         string _podiumSecretKey = string.Empty;
+        string _podium_code = string.Empty;
+        string _podium_refresh_code = string.Empty;
 
         public bool AuthorizeNet
         {
@@ -160,6 +162,17 @@ namespace LaylaERP.Models
             set { _podiumSecretKey = value; }
         }
 
+
+        public string podium_code
+        {
+            get { return _podium_code; }
+            set { _podium_code = value; }
+        }
+        public string podium_refresh_code
+        {
+            get { return _podium_refresh_code; }
+            set { _podium_refresh_code = value; }
+        }
         public int ID
         {
             get { return _ID; }

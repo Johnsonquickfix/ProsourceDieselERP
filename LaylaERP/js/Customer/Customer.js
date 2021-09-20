@@ -73,8 +73,14 @@ function AddCustomer() {
             },
             success: function (data) {
                 if (data.status == true) {
-
-                    swal('Alert!', data.message, 'success');
+                    if (data.url == "Manage") {
+                        swal('Alert!', data.message, 'success').then((result) => { location.href = '../Customer'; });
+                    }
+                    else {
+                        $('#fetch_results > input:text').val('');
+                        swal('Alert!', data.message, 'success').then((result) => { location.href = 'Customer'; });
+                    }
+                   // swal('Alert!', data.message, 'success');
                     $("#parent").find(":input").each(function () {
                         switch (this.type) {
                             case "text":
@@ -277,9 +283,9 @@ function GetCustomerByID(id) {
                 $("#txtBillingState").select2({
                     allowClear: true, minimumInputLength: 2, placeholder: "Search State",
                     ajax: {
-                        url: '/Users/GetState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+                        url: '/Users/GetCustState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
                         data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
-                        processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.StateFullName, name: item.StateFullName, id: item.StateFullName } }) }; },
+                        processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.StateFullName, name: item.StateFullName, id: item.State } }) }; },
                         error: function (xhr, status, err) { }, cache: true
                     }
                 });

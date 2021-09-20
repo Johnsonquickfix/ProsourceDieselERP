@@ -71,7 +71,7 @@ namespace LaylaERP.Controllers
                     Updateuser_MetaData(model, model.ID);
                     Updateuser_MetaData_BillingAddress(model, model.ID);
                     Updateuser_MetaData_ShippingAddress(model, model.ID);
-                    return Json(new { status = true, message = "Customer Record has been updated successfully!!", url = "", id = model.ID }, 0);
+                    return Json(new { status = true, message = "Customer Record has been updated successfully!!", url = "Manage", id = model.ID }, 0);
                 }
                 else
                 {

@@ -365,8 +365,14 @@ namespace LaylaERP.BAL
                 else
                 {
                     if (!string.IsNullOrEmpty(strValue1))
+                        //    strWhr += " fk_product_fils = " + strValue1;
+                        //string strSQl = "SELECT distinct wp.post_parent ID,wp.post_title,post_title title,qty"
+                        //            + " FROM product_association p"
+                        //            + "  left outer join wp_posts wp on wp.ID = p.fk_product"
+                        //            + " WHERE " + strWhr;
+
                         strWhr += " fk_product_fils = " + strValue1;
-                    string strSQl = "SELECT distinct wp.post_parent ID,wp.post_title,post_title title,qty"
+                    string strSQl = "SELECT distinct case when wp.post_parent = 0 then wp.ID else post_parent end ID,wp.post_title,post_title title,qty"
                                 + " FROM product_association p"
                                 + "  left outer join wp_posts wp on wp.ID = p.fk_product"
                                 + " WHERE " + strWhr;
@@ -2200,13 +2206,20 @@ namespace LaylaERP.BAL
             {
                 int result = 0;
                 string metaValue = GetProductID(val).ToString();
-                string[] value = metaValue.Split(',');
-                for (int i = 0; i <= value.Length - 1; i++)
+                if (metaValue != "")
                 {
-                    var ProductID = value[i].ToString();
-                    string strsql = "Delete r from wp_term_relationships r inner join wp_term_taxonomy t on t.term_id = r.term_taxonomy_id where t.taxonomy = 'product_cat' and object_id =" + ProductID + "; " +
-                        "Insert into wp_term_relationships(object_id, term_taxonomy_id, term_order) values(" + ProductID + ", 80, 0);";
-                    result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql));
+                    string[] value = metaValue.Split(',');
+                    for (int i = 0; i <= value.Length - 1; i++)
+                    {
+                        var ProductID = value[i].ToString();
+                        string strsql = "Delete r from wp_term_relationships r inner join wp_term_taxonomy t on t.term_id = r.term_taxonomy_id where t.taxonomy = 'product_cat' and object_id =" + ProductID + "; " +
+                            "Insert into wp_term_relationships(object_id, term_taxonomy_id, term_order) values(" + ProductID + ", 80, 0);";
+                        result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql));
+                    }
+                }
+                else
+                {
+                    result = 0;
                 }
                 return result;
             }
@@ -2540,23 +2553,40 @@ namespace LaylaERP.BAL
             DataSet dt = new DataSet();
             try
             {
-                string strSQl = "SELECT GROUP_CONCAT(tr.object_id) object_id FROM wp_terms t " +
+                string[] value = ID.Split(',');
+                for (int i = 0; i <= value.Length - 1; i++)
+                {
+                    var termID = value[i].ToString();
+                    string parent = GetParent(termID).ToString();
+                    string strSQl = "";
+                    if (parent == "0")
+                    {
+                        strSQl = "sp_getProductID";
+                    }
+                    else
+                    {
+                        strSQl = "SELECT GROUP_CONCAT(tr.object_id) object_id FROM wp_terms t " +
                     "inner join wp_term_taxonomy c on t.term_id = c.term_id " +
                     "inner join wp_term_relationships tr on tr.term_taxonomy_id = t.term_id " +
                     "left join wp_termmeta tm_a on tm_a.term_id = t.term_id and tm_a.meta_key = 'Is_Active' " +
                     "where coalesce(tm_a.meta_value,'1') = '1' and t.term_id in (" + ID + ")";
-
-                DataSet ds = SQLHelper.ExecuteDataSet(strSQl);
-                if (ds.Tables[0].Rows.Count > 0)
-                    result = ds.Tables[0].Rows[0]["object_id"].ToString();
-                else
-                    result = "0";
+                    }
+                    MySqlParameter[] para =
+                   {
+                    new MySqlParameter("@Userterm_ID", termID)
+                   };
+                    DataSet ds = SQLHelper.ExecuteDataSet(strSQl, para);
+                    if (ds.Tables[0].Rows.Count > 0)
+                        result = ds.Tables[0].Rows[0]["object_id"].ToString() + ",";
+                    else
+                        result = "0";
+                }
             }
             catch (Exception ex)
             {
                 throw ex;
             }
-            return result;
+            return result.TrimEnd(',');
         }
 
         public string GetIsActiveID(string ID)

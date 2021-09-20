@@ -11,6 +11,7 @@ $(document).ready(function () {
 })
 $("#btnGo").click(function () {
     EmployeeList();
+    $('#checkAll').val('');
 })
 
 
@@ -70,10 +71,11 @@ function EmployeeList() {
                 'render': function (id, type, full, meta) {
                     var dateTime = "";
                     if (id == null) {
-                        var today = new Date();
-                        var date = ((today.getMonth()) + 1) + '-' + today.getDate() + '-' + today.getFullYear();
-                        var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-                        dateTime = date + ' ' + time;
+                        //var today = new Date();
+                        //var date = ((today.getMonth()) + 1) + '-' + today.getDate() + '-' + today.getFullYear();
+                        //var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+                        //dateTime = date + ' ' + time;
+                        dateTime = "";
                     }
                     else {
                         dateTime = id;
@@ -86,10 +88,11 @@ function EmployeeList() {
                 'render': function (id, type, full, meta) {
                     var dateTime = "";
                     if (id == null) {
-                        var today = new Date();
-                        var date = ((today.getMonth()) + 1) + '-' + today.getDate() + '-' + today.getFullYear();
-                        var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-                        dateTime = date + ' ' + time;
+                        //var today = new Date();
+                        //var date = ((today.getMonth()) + 1) + '-' + today.getDate() + '-' + today.getFullYear();
+                        //var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+                        //dateTime = date + ' ' + time;
+                        dateTime = "";
                     }
                     else {
                         dateTime = id;
@@ -103,26 +106,48 @@ function EmployeeList() {
 
 $('#checkAll').click(function () {
     var isChecked = $(this).prop("checked");
+    var dateTime = "";
+    var today = new Date();
+    var date = $("#DateRange").val();
+    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    dateTime = isChecked == true ? date + ' ' + time : "";
+
     $('#EmployeeListdata tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
+    $('#EmployeeListdata tr:has(td)').find('input[type="text"]').val(dateTime);
     $("#btnSave").prop("disabled", isChecked == true ? false : true);
 
 });
+
 function Singlecheck() {
+    var dateTime = ""; var today = new Date(); var date = $("#DateRange").val();
+    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    dateTime = date + ' ' + time;
+
     var isChecked = $('#CheckSingle').prop("checked");
     var isHeaderChecked = $("#checkAll").prop("checked");
     var EnableButton = true;
-    $('#EmployeeListdata tr:has(td)').find('input[type="checkbox"]').each(function () {
-        if ($(this).prop("checked") == true)
-            EnableButton = false;
 
+    $('#EmployeeListdata tr:has(td)').find('input[type="checkbox"]').each(function () {
+        if ($(this).prop("checked") == true) {
+            EnableButton = false;
+           
+            $("#txtintime_" + $(this).val()).val(dateTime);
+            $("#txtouttime_" + $(this).val()).val(dateTime);
+        }
+        else {
+            $("#txtintime_" + $(this).val()).val(''); $("#txtouttime_" + $(this).val()).val('');
+        }
     });
     $("#btnSave").prop("disabled", EnableButton);
     if (isChecked == false && isHeaderChecked)
         $("#checkAll").prop('checked', isChecked);
     else {
         $('#EmployeeListdata tr:has(td)').find('input[type="checkbox"]').each(function () {
-            if ($(this).prop("checked") == false)
+            if ($(this).prop("checked") == false) {
                 isChecked = false;
+                $("#txtintime_" + $(this).val()).val('');
+                $("#txtouttime_" + $(this).val()).val('');
+            }
         });
         $("#checkAll").prop('checked', isChecked);
     }

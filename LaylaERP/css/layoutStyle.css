@@ -2281,9 +2281,10 @@ body .btn {font-size:12px;}
 .tooltip.bottom .tooltip-arrow {
     border-bottom-color: orange !important;
 }
-.tooltip.top .tooltip-arrow {
+.tooltip.top .tooltip-arrow{
     border-top-color: orange !important;
 }
+.tooltip.right .tooltip-arrow {border-right-color:orange !important;}
 #txtkeewordfilter {margin-right:10px;}
 #dtAddservices [type="number"], #dtdatachildkits [type="number"] {
     width: 80px;
@@ -2597,6 +2598,7 @@ html .listproduct .inventory-table td:nth-child(2) {
 .modal-dialog .modal-body-fixHeight {max-height: calc(100vh - 135px);overflow-y: auto;overflow-x: hidden;}
 .neworders #billModal .modal-body{}
 .profile-flex .btn-danger i{font-style:normal;}
+.add.new.product #proposal-table .tooltip.top.in{margin-right:-30px;}
 a#btnbackcategory {max-width: 135px; margin-top: 5px;}
 .add.new.product ul.order_notes {padding: 10px; margin-bottom:0px;display:flex; flex-wrap:wrap;list-style:none;margin:0px -15px;}
 .add.new.product ul.order_notes li{width:50%; padding:15px 15px 0px 15px;}

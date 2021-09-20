@@ -365,8 +365,14 @@ namespace LaylaERP.BAL
                 else
                 {
                     if (!string.IsNullOrEmpty(strValue1))
+                        //    strWhr += " fk_product_fils = " + strValue1;
+                        //string strSQl = "SELECT distinct wp.post_parent ID,wp.post_title,post_title title,qty"
+                        //            + " FROM product_association p"
+                        //            + "  left outer join wp_posts wp on wp.ID = p.fk_product"
+                        //            + " WHERE " + strWhr;
+
                         strWhr += " fk_product_fils = " + strValue1;
-                    string strSQl = "SELECT distinct wp.post_parent ID,wp.post_title,post_title title,qty"
+                    string strSQl = "SELECT distinct case when wp.post_parent = 0 then wp.ID else post_parent end ID,wp.post_title,post_title title,qty"
                                 + " FROM product_association p"
                                 + "  left outer join wp_posts wp on wp.ID = p.fk_product"
                                 + " WHERE " + strWhr;

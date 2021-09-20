@@ -2528,6 +2528,7 @@ html .listproduct .inventory-table td:nth-child(2) {
 .table-blue.check-table [type="checkbox"]{margin:0px;width:15px; height:15px;}
 .table-blue.check-table [type="checkbox"] + label{width:15px; height:15px;}
 .order .table-blue.check-table [type="checkbox"]{top:12px; transform:translateY(0);} 
+.list.products .table-blue.check-table [type="checkbox"]{top:2px; transform:translateY(0);} 
 .order .table-blue.check-table [type="checkbox"] + label{top:12px; transform:translateY(0);width:15px; height:15px;}
 .order .table-blue.check-table td:first-child{padding-top:40px !important;}
 .receive.order .dataTables_scrollHeadInner{width:100% !important;}
@@ -2539,6 +2540,8 @@ html .listproduct .inventory-table td:nth-child(2) {
 #dtdataPoClosure td {
     box-sizing: border-box !important;
 }
+.list.products .dataTables_scrollHeadInner{width:100% !important;}
+.pos.reception .dataTables_scrollHeadInner{width:100% !important;}
 .on-hand.inventory .neworder-section #btnSearch{margin-left:auto;}
 .index_col_row {display:flex; align-items:flex-start;}
 .add.product #target .flex-row_box .col-md-3 {
@@ -2547,7 +2550,12 @@ html .listproduct .inventory-table td:nth-child(2) {
 .managecoupons .table-blue.table.check-table {
     table-layout: fixed !important;
 }
-.managecoupons .dataTables_scrollHeadInner{width:100% !important;}
+.add.new.customer .content-section{min-height:450px;}
+.userdetails .createuser-section{min-height:450px;}
+.createuser .createuser-section{min-height:450px;}
+.managecoupons .dataTables_scrollHeadInner {
+    width: 100% !important;
+}
 .managecoupons .table-blue.table.check-table .linking_product_ids{display:block;word-break:break-word;}
 .managecoupons .table-blue.table.check-table th,
 .managecoupons .table-blue.table.check-table td{box-sizing:border-box;}

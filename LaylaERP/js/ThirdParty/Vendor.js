@@ -1548,7 +1548,7 @@ function InvoiceGrid() {
                 'render': function (id, type, full, meta) {
                     if (id == 1)
                         return '<a href="../../PurchaseOrder/NewPurchaseOrder/' + full.id + '">' + full.ref + '</a> <a href="#" onclick="getPurchaseOrderPrint(' + full.id + ', false);"><i class="fas fa-search-plus"></i></a>';
-                    else if(id == 3)
+                    else  
                     return '<a href="../../PurchaseOrder/NewPurchaseOrder/' + full.id + '">' + full.refordervendor + '</a> <a href="#" onclick="getPurchaseOrderPrint(' + full.id + ', false);"><i class="fas fa-search-plus"></i></a>';
                 }
             },

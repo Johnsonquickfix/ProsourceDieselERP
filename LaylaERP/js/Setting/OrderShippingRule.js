@@ -1,5 +1,5 @@
 ﻿$(document).ready(function () {
-
+    $("#loader").hide();
     $.get('/Product/GetVender/' + 1, function (data) {
         var items = "";
         // $('#ddlvender').empty();
@@ -29,7 +29,7 @@
 $('#btnSave').click(function () {
     var RuleName = $('#txtRuleName').val();
     var Description = $('#txtDescription').val();
-    if (txtRuleName == "") {
+    if (RuleName == "") {
         swal("alert", "Please enter Rule Name", "error").then(function () { swal.close(); $('#txtRuleName').focus(); })
     }
     else {
@@ -67,7 +67,7 @@ $('#btndelete').click(function () {
     var fk_rule = $('#ddlRuledel').val();
     //var country = $('#ddlCountrydel').val();
     if (fk_rule == "") {
-        swal("alert", "Please select Shipping Class", "error").then(function () { swal.close(); $('#ddlRuledel').focus(); })
+        swal("alert", "Please select Rule", "error").then(function () { swal.close(); $('#ddlRuledel').focus(); })
     }
     //else if (country == "") {
     //    swal("alert", "Please select Country", "error").then(function () { swal.close(); $('#ddlCountrydel').focus(); })
@@ -80,6 +80,9 @@ $('#btndelete').click(function () {
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify(obj),
             dataType: "json",
+            beforeSend: function () {
+                $("#loader").show();
+            },
             success: function (data) {
                 if (data.status == true) {
                     swal("alert", data.message, "success");
@@ -90,9 +93,13 @@ $('#btndelete').click(function () {
                     swal('Alert!', data.message, 'error');
                 }
             },
+            complete: function () {
+                $("#loader").hide();
+            },
             error: function () {
                 swal("alert", "something went wrong", "error");
                 $("#deletepriceModal").modal('hide');
+
             }
         })
     }
@@ -105,7 +112,7 @@ function getProducts() {
         success: function (data) {
             let dt = JSON.parse(data);
             //Product
-            $("#ddlProduct").html('<option value="0">Select Product</option>');
+            $("#ddlProduct").html('<option value="">Select Product</option>');
             for (i = 0; i < dt['Table'].length; i++) { $("#ddlProduct").append('<option value="' + dt['Table'][i].id + '">' + dt['Table'][i].text + '</option>'); }
         },
         complete: function () { $("#loader").hide(); },
@@ -319,8 +326,6 @@ function dataGridLoad(order_type) {
                 'data': 'rowid', title: 'Action', sWidth: "5%",
                 'render': function (id, type, full, meta) {
                     return '<a href="#" title="Click here to Edit" onClick="EditData(' + id + ');" data-toggle="tooltip"><i class="glyphicon glyphicon-eye-open"></i></a>'
-
-
                 }
             }
         ]

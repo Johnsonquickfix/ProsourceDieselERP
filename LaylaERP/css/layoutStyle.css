@@ -2527,7 +2527,12 @@ html .listproduct .inventory-table td:nth-child(2) {
 
 .table-blue.check-table [type="checkbox"]{margin:0px;width:15px; height:15px;}
 .table-blue.check-table [type="checkbox"] + label{width:15px; height:15px;}
+.order .table-blue.check-table [type="checkbox"]{top:12px; transform:translateY(0);} 
+.order .table-blue.check-table [type="checkbox"] + label{top:12px; transform:translateY(0);width:15px; height:15px;}
+.order .table-blue.check-table td:first-child{padding-top:40px !important;}
 .receive.order .dataTables_scrollHeadInner{width:100% !important;}
+.order .table-blue.check-table td:first-child .btn-danger{padding:5px 10px;}
+.order .modal-dialog {width: 700px;}
 #dtdataPartially th,
 #dtdataPoClosure th,
 #dtdataPartially td,

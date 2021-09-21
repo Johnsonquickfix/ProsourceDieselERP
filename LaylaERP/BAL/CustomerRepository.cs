@@ -170,11 +170,15 @@ namespace LaylaERP.Models
             {
                 string strWhr = string.Empty;
 
+                //string strSql = "SELECT ur.id,null User_Image,user_nicename, DATE_FORMAT(user_registered, '%M %d %Y') user_registered, user_status, if(user_status=0,'Active','InActive') as status,user_email,CONCAT(umfn.meta_value,' ',umln.meta_value) name ,umph.meta_value  billing_phone"
+                //            + " from wp_users ur INNER JOIN wp_usermeta um on um.meta_key='wp_capabilities' And um.user_id = ur.ID And um.meta_value LIKE '%customer%'"
+                //            + " LEFT OUTER JOIN wp_usermeta umph on umph.meta_key='billing_phone' And umph.user_id = ur.ID LEFT OUTER JOIN wp_usermeta umfn on umfn.meta_key='first_name' And umfn.user_id = ur.ID LEFT OUTER JOIN wp_usermeta umln on umln.meta_key='last_name' And umln.user_id = ur.ID WHERE 1 = 1";
+
                 string strSql = "SELECT ur.id,null User_Image,user_nicename, DATE_FORMAT(user_registered, '%M %d %Y') user_registered, user_status, if(user_status=0,'Active','InActive') as status,user_email,CONCAT(umfn.meta_value,' ',umln.meta_value) name ,umph.meta_value  billing_phone"
-                            + " from wp_users ur INNER JOIN wp_usermeta um on um.meta_key='wp_capabilities' And um.user_id = ur.ID And um.meta_value LIKE '%customer%'"
-                            + " LEFT OUTER JOIN wp_usermeta umph on umph.meta_key='billing_phone' And umph.user_id = ur.ID LEFT OUTER JOIN wp_usermeta umfn on umfn.meta_key='first_name' And umfn.user_id = ur.ID LEFT OUTER JOIN wp_usermeta umln on umln.meta_key='last_name' And umln.user_id = ur.ID WHERE 1 = 1";
+                          + " from wp_users ur INNER JOIN wp_usermeta um on um.meta_key='wp_capabilities' And um.user_id = ur.ID And um.meta_value like '%customer%' "
+                          + " LEFT OUTER JOIN wp_usermeta umph on umph.meta_key='billing_phone' And umph.user_id = ur.ID LEFT OUTER JOIN wp_usermeta umfn on umfn.meta_key='first_name' And umfn.user_id = ur.ID LEFT OUTER JOIN wp_usermeta umln on umln.meta_key='last_name' And umln.user_id = ur.ID WHERE 1 = 1";
                 if (!string.IsNullOrEmpty(searchid)) {
-                    strWhr += " and (User_Email like '%"+ searchid + "%' OR User_Login='%" + searchid + "%' OR user_nicename='%" + searchid + "%' OR ID='%" + searchid + "%' OR um.meta_value like '%" + searchid + "%')"; 
+                    strWhr += " and (User_Email like '%"+ searchid + "%' OR User_Login='%" + searchid + "%' OR user_nicename='%" + searchid + "%' OR ID='%" + searchid + "%' OR um.meta_value like '%" + searchid + "%' OR CONCAT(umfn.meta_value,' ',umln.meta_value) like '%" + searchid + "%'  OR umph.meta_value like '%" + searchid + "%')"; 
                 }
                 if (userstatus != null)
                 {
@@ -182,7 +186,7 @@ namespace LaylaERP.Models
                 }
                 strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}" , SortCol, SortDir, pageno.ToString() , pagesize.ToString());
 
-                strSql += "; SELECT ceil(Count(ur.id)/" + pagesize.ToString() + ") TotalPage,Count(ur.id) TotalRecord from wp_users ur INNER JOIN wp_usermeta um on um.meta_key='wp_capabilities' And um.user_id = ur.ID And um.meta_value LIKE '%customer%' WHERE 1 = 1 " + strWhr.ToString();
+                strSql += "; SELECT ceil(Count(ur.id)/" + pagesize.ToString() + ") TotalPage,Count(ur.id) TotalRecord from wp_users ur INNER JOIN wp_usermeta um on um.meta_key='wp_capabilities' And um.user_id = ur.ID And um.meta_value like '%customer%' LEFT OUTER JOIN wp_usermeta umph on umph.meta_key='billing_phone' And umph.user_id = ur.ID  LEFT OUTER JOIN wp_usermeta umfn on umfn.meta_key='first_name' And umfn.user_id = ur.ID  LEFT OUTER JOIN wp_usermeta umln on umln.meta_key='last_name' And umln.user_id = ur.ID WHERE 1 = 1 " + strWhr.ToString();
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];

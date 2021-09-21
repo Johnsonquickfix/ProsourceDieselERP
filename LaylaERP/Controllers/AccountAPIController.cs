@@ -146,7 +146,16 @@
                                 op.podiumSecretKey = ds.Tables[1].Rows[0]["podiumSecretKey"].ToString();
                             else
                                 op.podiumSecretKey = string.Empty;
-                            
+
+                            if (ds.Tables[1].Rows[0]["podium_code"] != DBNull.Value)
+                                op.podium_code = ds.Tables[1].Rows[0]["podium_code"].ToString();
+                            else
+                                op.podium_code = string.Empty;
+                            if (ds.Tables[1].Rows[0]["podium_refresh_code"] != DBNull.Value)
+                                op.podium_refresh_code = ds.Tables[1].Rows[0]["podium_refresh_code"].ToString();
+                            else
+                                op.podium_refresh_code = string.Empty;
+
                         }
                         // For Entity info
                         if (ds.Tables[2].Rows.Count > 0)

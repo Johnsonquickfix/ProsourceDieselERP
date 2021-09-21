@@ -255,18 +255,18 @@ function dataGridLoad(order_type) {
             //    }
             //},
 
-            { data: 'rulrname', title: 'Rule Name', sWidth: "12%" },
-            { data: 'Country', title: 'Country', sWidth: "12%" },
-            { data: 'State', title: 'State', sWidth: "12%" },
-            { data: 'vendrname', title: 'Vendor', sWidth: "12%" },
-            { data: 'title', title: 'Product', sWidth: "12%" },
+            { data: 'rulrname', title: 'Rule Name', sWidth: "15%" },
+            { data: 'Country', title: 'Country', sWidth: "15%" },
+            { data: 'State', title: 'State', sWidth: "15%" },
+            { data: 'vendrname', title: 'Vendor', sWidth: "15%" },
+            { data: 'title', title: 'Product', sWidth: "15%" },
        
-            { data: 'services', title: 'Services', sWidth: "12%" },
+            { data: 'services', title: 'Services', sWidth: "15%" },
  
             // { data: 'Shipping_taxrate', title: 'TaxCost', sWidth: "12%" },
 
             {
-                'data': 'rowid', title: 'Action', sWidth: "5%",
+                'data': 'rowid', title: 'Action', sWidth: "10%",
                 'render': function (id, type, full, meta) {
                     return '<a href="#" title="Click here to Edit" onClick="EditData(' + id + ');" data-toggle="tooltip"><i class="glyphicon glyphicon-eye-open"></i></a>'
                 }

@@ -566,7 +566,6 @@
     <Content Include="Content\img\flags.png" />
     <Content Include="Content\ProductCategory\default.png" />
     <Content Include="Content\Product\default.png" />
-    <Content Include="Content\resources\fonts\iconfont.svg" />
     <Content Include="Content\Style11.css" />
     <Content Include="Content\Style12.css" />
     <Content Include="Content\VendorLinkedFiles\default.png" />
@@ -770,9 +769,6 @@
     <Content Include="Content\bootstrap\bootstrap.less" />
     <Content Include="Content\bootstrap\badges.less" />
     <Content Include="Content\bootstrap\alerts.less" />
-    <Content Include="Content\resources\fonts\iconfont.eot" />
-    <Content Include="Content\resources\fonts\iconfont.ttf" />
-    <Content Include="Content\resources\fonts\iconfont.woff" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\DataTables\autoFill.bootstrap.js" />
     <Content Include="Scripts\DataTables\autoFill.bootstrap.min.js" />

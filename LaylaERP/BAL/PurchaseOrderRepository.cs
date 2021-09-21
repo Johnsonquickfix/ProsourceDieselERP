@@ -379,10 +379,10 @@ namespace LaylaERP.BAL
                             + "delete from commerce_purchase_order where fk_projet = " + id + ";";
                 DT = SQLHelper.ExecuteDataTable(strSQl);
 
-                foreach (DataRow DR in DT.DefaultView.ToTable(true, "ref_supplier", "fk_supplier", "PaymentTermsID", "BalanceID", "Paymentmethod", "date_livraison", "fk_incoterms", "location_incoterms", "date_creation").Rows)
+                foreach (DataRow DR in DT.DefaultView.ToTable(true, "ref_supplier", "fk_supplier", "PaymentTermsID", "BalanceID", "Paymentmethod", "date_livraison", "fk_incoterms", "location_incoterms", "date_creation", "warehouse_id").Rows)
                 {
                     strsql = "insert into commerce_purchase_order(ref,ref_ext,ref_supplier,fk_supplier,fk_status,source,fk_payment_term,fk_balance_days,fk_payment_type,date_livraison,fk_incoterms,location_incoterms,note_private,note_public,fk_user_author,date_creation,discount,total_tva,localtax1,localtax2,total_ht,total_ttc,fk_projet,fk_warehouse) "
-                        + string.Format("select concat('PO" + strPOYearMonth + "-',lpad(coalesce(max(right(ref,5)),0) + 1,5,'0')) ref,'','{0}','{1}','1','0','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}','{16}','{17}','{18}' from commerce_purchase_order where lpad(ref,6,0) = 'PO" + strPOYearMonth + "';select LAST_INSERT_ID();",
+                        + string.Format("select concat('PO" + strPOYearMonth + "-',lpad(coalesce(max(right(ref,5)),0) + 1,5,'0')) ref,'','{0}','{1}','1','0','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}','{16}','{17}','{18}','{19}' from commerce_purchase_order where lpad(ref,6,0) = 'PO" + strPOYearMonth + "';select LAST_INSERT_ID();",
                                 DR["ref_supplier"], DR["fk_supplier"], DR["PaymentTermsID"], DR["BalanceID"], DR["Paymentmethod"], cDate.ToString("yyyy-MM-dd HH:mm:ss"), DR["fk_incoterms"], DR["location_incoterms"], "", "", 0, cDate.ToString("yyyy-MM-dd HH:mm:ss"), 0, 0, 0, 0, 0, 0, id, DR["warehouse_id"]);
 
                     long po_id = Convert.ToInt64(SQLHelper.ExecuteScalar(strsql, para));

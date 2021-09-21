@@ -245,6 +245,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="recaptcha\recaptcha.cs" />
     <Compile Include="UTILITIES\clsPayPal.cs" />
+    <Compile Include="UTILITIES\clsPodium.cs" />
     <Compile Include="UTILITIES\clsTaxJar.cs" />
     <Compile Include="UTILITIES\CommanUtilities.cs" />
     <Compile Include="UTILITIES\CommonDate.cs" />
@@ -628,6 +629,7 @@
     <Content Include="js\Hrms\ConfigurationList.js" />
     <Content Include="js\Hrms\EmployeeList.js" />
     <Content Include="js\Hrms\GrantLeaveList.js" />
+    <Content Include="js\Hrms\HRA.js" />
     <Content Include="js\Hrms\Hrms.js" />
     <Content Include="js\Hrms\HrmsConfiguration.js" />
     <Content Include="js\Hrms\Leave.js" />
@@ -987,6 +989,12 @@
     <Content Include="Views\Setup\Editproductrule.cshtml" />
     <Content Include="Views\Hrms\Attendance.cshtml" />
     <Content Include="Views\Hrms\configuration.cshtml" />
+    <Content Include="Views\Hrms\ConfigurationList.cshtml" />
+    <Content Include="Views\Hrms\EditConfigurationList.cshtml" />
+    <Content Include="Views\Hrms\EditGrantLeave.cshtml" />
+    <Content Include="Views\Hrms\EditHRA.cshtml" />
+    <Content Include="Views\Hrms\HRA.cshtml" />
+    <Content Include="Views\Hrms\ListGrantLeave.cshtml" />
     <Content Include="Views\Setting\OrderShippingRule.cshtml" />
   </ItemGroup>
   <ItemGroup>

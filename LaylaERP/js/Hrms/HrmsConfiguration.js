@@ -161,49 +161,7 @@ function AddConfiguration() {
     else if (empname == 0) {
         swal('Alert', 'Please select employee name', 'error').then(function () { swal.close(); $('#ddlempname').focus(); });
     }
-    else if (empbasic == "") {
-        swal('Alert', 'Please enter basic', 'error').then(function () { swal.close(); $('#txtbasic').focus(); });
-    }
-/*
-    else if (empda == "") {
-        swal('Alert', 'Please enter DA', 'error').then(function () { swal.close(); $('#txtda').focus(); });
-    }
-    else if (emphra == "") {
-        swal('Alert', 'Please enter HRA ', 'error').then(function () { swal.close(); $('#txthra').focus(); });
-    }
-    else if (otherallowance == "") {
-        swal('Alert', 'Please enter other allowance', 'error').then(function () { swal.close(); $('#txtotherallowance').focus(); });
-    }
-    else if (emppf == "") {
-        swal('Alert', 'Please enter PF', 'error').then(function () { swal.close(); $('#txtpf').focus(); });
-    }
-    else if (loanamount == "") {
-        swal('Alert', 'Please enter loan amount', 'error').then(function () { swal.close(); $('#txtloanamount').focus(); });
-    }
-    else if (loanemi == "") {
-        swal('Alert', 'Please enter loan EMI', 'error').then(function () { swal.close(); $('#txtloanemi').focus(); });
-    }
-    else if (loanmonth == "") {
-        swal('Alert', 'Please enter loan months', 'error').then(function () { swal.close(); $('#txtloanmonths').focus(); });
-    }
-    else if (advancemount == "") {
-        swal('Alert', 'Please enter advance amount', 'error').then(function () { swal.close(); $('#txtadvanceamount').focus(); });
-    }
-    else if (advanceEmi == "") {
-        swal('Alert', 'Please enter advance EMI', 'error').then(function () { swal.close(); $('#txtadvanceEmi').focus(); });
-    }
-    else if (advanceEmiMonth == "") {
-        swal('Alert', 'Please enter advance EMI months', 'error').then(function () { swal.close(); $('#txtadvanceEmiMonths').focus(); });
-    }
-    else if (tds == "") {
-        swal('Alert', 'Please enter TDS', 'error').then(function () { swal.close(); $('#txttds').focus(); });
-    }
-    else if (otherdeductions == "") {
-        swal('Alert', 'Please enter other deductions', 'error').then(function () { swal.close(); $('#txtotherdeductions').focus(); });
-    }
-    else if (reimbursement == "") {
-        swal('Alert', 'Please enter reimbursement', 'error').then(function () { swal.close(); $('#txtreibursement').focus(); });
-    } */
+    
     else if (worktype == "0") {
         swal('Alert', 'Please select work type', 'error').then(function () { swal.close(); $('#ddlworktype').focus(); });
     }
@@ -324,48 +282,6 @@ function UpdateConfiguration() {
     else if (empname == 0) {
         swal('Alert', 'Please select employee name', 'error').then(function () { swal.close(); $('#ddlempname').focus(); });
     }
-    /*else if (empbasic == "") {
-        swal('Alert', 'Please enter basic', 'error').then(function () { swal.close(); $('#txtbasic').focus(); });
-    }
-    else if (empda == "") {
-        swal('Alert', 'Please enter DA', 'error').then(function () { swal.close(); $('#txtda').focus(); });
-    }
-    else if (emphra == "") {
-        swal('Alert', 'Please enter HRA ', 'error').then(function () { swal.close(); $('#txthra').focus(); });
-    }
-    else if (otherallowance == "") {
-        swal('Alert', 'Please enter other allowance', 'error').then(function () { swal.close(); $('#txtotherallowance').focus(); });
-    }
-    else if (emppf == "") {
-        swal('Alert', 'Please enter PF', 'error').then(function () { swal.close(); $('#txtpf').focus(); });
-    }
-    else if (loanamount == "") {
-        swal('Alert', 'Please enter loan amount', 'error').then(function () { swal.close(); $('#txtloanamount').focus(); });
-    }
-    else if (loanemi == "") {
-        swal('Alert', 'Please enter loan EMI', 'error').then(function () { swal.close(); $('#txtloanemi').focus(); });
-    }
-    else if (loanmonth == "") {
-        swal('Alert', 'Please enter loan months', 'error').then(function () { swal.close(); $('#txtloanmonths').focus(); });
-    }
-    else if (advancemount == "") {
-        swal('Alert', 'Please enter advance amount', 'error').then(function () { swal.close(); $('#txtadvanceamount').focus(); });
-    }
-    else if (advanceEmi == "") {
-        swal('Alert', 'Please enter advance EMI', 'error').then(function () { swal.close(); $('#txtadvanceEmi').focus(); });
-    }
-    else if (advanceEmiMonth == "") {
-        swal('Alert', 'Please enter advance EMI months', 'error').then(function () { swal.close(); $('#txtadvanceEmiMonths').focus(); });
-    }
-    else if (tds == "") {
-        swal('Alert', 'Please enter TDS', 'error').then(function () { swal.close(); $('#txttds').focus(); });
-    }
-    else if (otherdeductions == "") {
-        swal('Alert', 'Please enter other deductions', 'error').then(function () { swal.close(); $('#txtotherdeductions').focus(); });
-    }
-    else if (reimbursement == "") {
-        swal('Alert', 'Please enter reimbursement', 'error').then(function () { swal.close(); $('#txtreibursement').focus(); });
-    }*/
     else if (worktype == "0") {
         swal('Alert', 'Please select work type', 'error').then(function () { swal.close(); $('#ddlworktype').focus(); });
     }
@@ -411,7 +327,7 @@ function UpdateConfiguration() {
             beforeSend: function () { $("#loader").show(); },
             success: function (data) {
                 if (data.status == true) {
-                    swal('Alert!', data.message, 'success').then((result) => { location.href = '../ConfigurationList'; });
+                    swal('Alert!', data.message, 'success').then((result) => { location.href = '../configurationlist'; });
                     reset();
                 }
                 else {

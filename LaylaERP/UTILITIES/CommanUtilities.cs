@@ -48,6 +48,8 @@
         public string TaxjarPwd { get; set; }
         public string podiumAPIKey { get; set; }
         public string podiumSecretKey { get; set; }
+        public string podium_code { get; set; }
+        public string podium_refresh_code { get; set; }
 
         // For Entity info
         public string CompanyName { get; set; }

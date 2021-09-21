@@ -1916,33 +1916,47 @@ function AcceptPayment() {
 
 ///Accept Podium Payment
 function PodiumPayment() {
-    var oid = parseInt($('#hfOrderNo').val()) || 0;
-    var order_total = parseFloat($('#orderTotal').text()) || 0.00;
-    var order_phone = $('#txtbillphone').val();
-    $("#loader").show();
-    var opt = { clientId: '51eed2ee1dbdced0d6e17548dde7e8a8', clientSecret: '80b1f585430df45f5a71e7a1a866c54dd2329856ced8503f55deee5313a20caf' };
-    //var opt = { clientId: '2f936404-dabc-4cf7-a61b-80e6bef42f66', clientSecret: 'e55ba4b7817f146c2fbb9de507052411c25761a9fbc03ff48b4fef324824a9fa', "grant_type": "authorization_code", "code": "de37f1997d3503d3fe23ac07687e34f0f", "redirect_uri": "https://localhost:44371/Orders/NewOrders",};
-    $.ajax({
+    let oid = parseInt($('#hfOrderNo').val()) || 0;
+    let bill_email = $("#txtbillemail").val();
+    let bill_name = $('#txtbillfirstname').val() + ' ' + $('#txtbilllastname').val();
 
-        type: "POST", url: 'https://api.podium.com/api/session', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
-        //type: "POST", url: 'https://accounts.podium.com/oauth/authorize', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
-        success: function (result) {
-            var optinv = { employeeName: 'Layla', firstName: $('#txtbillfirstname').val(), lastName: $('#txtbilllastname').val(), invoiceAmount: order_total, invoiceDescription: 'Layla #' + oid, invoiceId: oid, locationId: '155425', customer_email: 'noreply@podium.com', phone: order_phone };
-            console.log(result, optinv);
-            $.ajax({
-                type: "POST", url: 'https://api.podium.com/api/v1/webhook/3e23125f-cf42-4348-ace4-f38f759de0c2', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(optinv),
-                beforeSend: function (xhr) { xhr.setRequestHeader("Authorization", result.token); },
-                success: function (data) {
-                    //console.log(data);
-                    setTimeout(function () { updatePayment(data.taskUid); }, 50);
-                },
-                error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); },
-                async: false
-            });
-        },
-        error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); },
-        complete: function () { $("#loader").hide(); }, async: false
+    let _lineItems = [];
+    $('#order_line_items > tr').each(function (index, tr) {
+        let qty = parseFloat($(this).find("[name=txt_ItemQty]").val()) || 0.00;
+        let grossAmount = parseFloat($(this).find(".TotalAmount").data('amount')) || 0.00;
+        let discount = parseFloat($(this).find(".RowDiscount").text()) || 0.00;
+        if ((grossAmount - discount) > 0)
+            _lineItems.push({ description: $(this).data('pname').replace(/[^a-zA-Z0-9 ]/g, "").substring(0, 40) + ' X ' + qty.toFixed(0), amount: (grossAmount - discount) * 100 });
+            //_lineItems.push({ description: 'Item - ' + index+ ' X ' + qty.toFixed(0), amount: (grossAmount - discount) * 100 });
+
     });
+    let st_total = parseFloat($('#salesTaxTotal').text()) || 0.00, srf_total = parseFloat($('#stateRecyclingFeeTotal').text()) || 0.00, fee_total = parseFloat($('#feeTotal').text()) || 0.00;
+    if (st_total > 0) _lineItems.push({ description: "Tax", amount: st_total * 100 });
+    if (srf_total > 0) _lineItems.push({ description: "State Recycling Fee", amount: srf_total * 100 });
+    if (fee_total > 0) _lineItems.push({ description: "Shipping", amount: fee_total * 100 });
+
+    let opt_inv = { lineItems: _lineItems, channelIdentifier: bill_email, customerName: bill_name, invoiceNumber: 'INV-' + oid, locationUid: "6c2ee0d4-0429-5eac-b27c-c3ef0c8f0bc7" };
+    console.log(opt_inv);
+    $("#loader").show();
+    var opt = { client_id: '2f936404-dabc-4cf7-a61b-80e6bef42f66', client_secret: 'fd4b08be31c507860517f1f411b216d2beea25076348fe4fb0311073080e94df', "refresh_token": "703ddfb54f8f811bdfdc77356a6a9d66168ce97865ab029557dbbf7e15ded85f", "grant_type": "refresh_token", };
+    $.post('https://accounts.podium.com/oauth/token', opt, function (token_result) {
+        let access_token = 'Bearer ' + token_result.access_token;
+
+        //console.log(token_result, opt_inv);
+        $.ajax({
+            type: "POST", url: 'https://api.podium.com/v4/invoices', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_inv),
+            beforeSend: function (xhr) { xhr.setRequestHeader("Content-Type", 'application/json'); xhr.setRequestHeader("Authorization", access_token); },
+            success: function (result) {
+                console.log('Success.');
+                //console.log(result, result.data.uid);
+                setTimeout(function () { updatePayment(result.data.uid); }, 50);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) { console.log(XMLHttpRequest); $("#loader").hide(); swal('Alert!', 'Something went wrong.', "error"); },
+            complete: function () { $("#loader").hide(); }, async: false
+        });
+    });
+
+
 }
 function updatePayment(taskUid) {
     var opt = { post_id: parseInt($('#hfOrderNo').val()) || 0, meta_value: taskUid };
@@ -1956,7 +1970,7 @@ function updatePayment(taskUid) {
                 setTimeout(function () { successModal('podium', taskUid, true); }, 50);
             }
         },
-        error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
+        error: function (XMLHttpRequest, textStatus, errorThrown) { console.log(XMLHttpRequest); swal('Alert!', errorThrown, "error"); },
         async: false
     });
 }

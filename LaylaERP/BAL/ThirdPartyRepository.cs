@@ -1088,8 +1088,11 @@ namespace LaylaERP.BAL
                     strWhr += " and (p.rowid like '%" + searchid + "%' OR p.date_livraison='%" + searchid + "%')";
                 }
                 if (userstatus != null)
-                {
-                    strWhr += " and (s.id='" + userstatus + "') ";
+                {  if(userstatus == "3")
+                        strWhr += " and (s.id in (3,5,6)) ";
+                   else
+                        strWhr += " and (s.id='" + userstatus + "') ";
+
                 }
                 strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
 

@@ -29,5 +29,12 @@ namespace LaylaERP.Models
         public string default_work_hours { get; set; }
         public int prepare_salary { get; set; }
         public int accounting_type { get; set; }
+
+        //HRA
+        public float basic1 { get; set; }
+        public float basic2 { get; set; }
+        public float hra_office { get; set; }
+        public float hra_field { get; set; }
+        public DateTime from_date { get; set; }
     }
 }

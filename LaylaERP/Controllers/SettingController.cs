@@ -160,7 +160,7 @@ namespace LaylaERP.Controllers
                 {
                     Update_Setting(model, model.ID);
                     Update_EntityInfo(model, model.ID);
-                    return Json(new { status = true, message = "Setting has been saved successfully please login again!!", url = "" }, 0);
+                    return Json(new { status = true, message = "Setting has been saved successfully, Please login again!!", url = "" }, 0);
                 }
                 
             }

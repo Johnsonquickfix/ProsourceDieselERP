@@ -92,7 +92,7 @@ function addProductWarehouseRule() {
     product = $("#ddlProduct").val();
 
     if (prefixcode == "") {
-        swal('Alert', 'Please Enter Prefix Code', 'error').then(function () { swal.close(); $('#txtprefixcode').focus(); });
+        swal('Alert', 'Please Enter Suffix Code', 'error').then(function () { swal.close(); $('#txtprefixcode').focus(); });
     }
     else if (product == 0) {
         swal('Alert', 'Please Select Product', 'error').then(function () { swal.close(); $('#ddlProduct').focus(); });
@@ -218,7 +218,7 @@ function ProductWarehouseRuleGrid() {
                 "columns": [
                     { data: 'id', title: 'Id', sWidth: "5%" },
                     { data: 'product', title: 'Product', sWidth: "25%" },
-                    { data: 'code', title: 'Prefix', sWidth: "15%" },
+                    { data: 'code', title: 'Suffix', sWidth: "15%" },
                     { data: 'vendor', title: 'Vendor', sWidth: "20%" },
                     { data: 'warehouse', title: 'Warehouse', sWidth: "10%" },
                     {
@@ -390,7 +390,7 @@ $('#txtprefixcode').change(function () {
             }
             else {
                 $("#txtprefixcode").val("");
-                swal('Alert', 'Prefix already exists in table', 'error').then(function () { swal.close(); $('#txtprefixcode').focus(); });
+                swal('Alert', 'Suffix already exists in table', 'error').then(function () { swal.close(); $('#txtprefixcode').focus(); });
             }
         },
 

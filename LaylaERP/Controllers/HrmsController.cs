@@ -147,6 +147,7 @@ namespace LaylaERP.Controllers
                 }
             }
         }
+
         public JsonResult AddEmployeeAdditionalInfo(HrmsModel model)
         {
             if (model.rowid > 0)
@@ -372,6 +373,7 @@ namespace LaylaERP.Controllers
                 string Empid = model.strValue1;
                 string intime = model.strValue2;
                 string outtime = model.strValue3;
+                
 
                 if (model.rowid > 0)
                 {
@@ -380,7 +382,7 @@ namespace LaylaERP.Controllers
                 }
                 else
                 {
-                    int ID = new HrmsRepository().AddAttendence(Empid, intime, outtime);
+                    int ID = new HrmsRepository().AddAttendence(Empid, intime, outtime, model.strValue4, model.strValue5);
                     if (ID > 0)
                     {
                         return Json(new { status = true, message = "Attendence has been saved successfully!!", url = "", id = ID }, 0);

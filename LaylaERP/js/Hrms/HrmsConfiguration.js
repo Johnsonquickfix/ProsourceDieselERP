@@ -1,11 +1,13 @@
 ﻿$(document).ready(function () {
     DAcalculation();
-    getEmployeeCode();
+    //getEmployeeCode();
+    ChangeCode();
     getEmployeeType();
     $(".select2").select2();
     getAccountingType();
     getWorkType();
-    
+    EMI();
+    AdvanceEMI();
 })
 
 function getEmployeeType() {
@@ -41,40 +43,74 @@ function getEmployeeName() {
 
 
 function getEmployeeCode() {
+    var empcode = $('#hfemptype').val();
+    var obj = {
+        rowid: empcode,
+    }
     $.ajax({
         url:"/Hrms/GetEmployeeCodeForConfig",
-        type: "Get",
+        dataType: 'json', type: "Post",
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(obj),
         success: function (data) {
-            var opt = '<option value="0">Please Select Employee Code</option>';
-            for (var i = 0; i < data.length; i++) {
-                opt += '<option value="' + data[i].Value + '">' + data[i].Text+'</option>'
-            }
-            $("#ddlempcode").html(opt);
+            //if ($("#ddlempcode").val() == null) {
+                var opt = '<option value="0">Please Select Employee Code</option>';
+                for (var i = 0; i < data.length; i++) {
+                    opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>'
+                }
+                $("#ddlempcode").html(opt);
+            //}
         }
     })
 }
 
-$('#ddlempcode').change(function () { 
-    var empcode = $('#ddlempcode').val();
-    var obj = {
-        id: empcode,
-    }
-    jQuery.ajax({
-        url: "/Hrms/GetEmployeeNameForConfig/", dataType: 'json', type: "Post",
-        contentType: "application/json; charset=utf-8",
-        data: JSON.stringify(obj),
-        success: function (data) {
-            var opt;
-            for (var i = 0; i < data.length; i++) {
-                opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
+function changename() {
+    $('#ddlempcode').change(function () {
+        var empcode = $('#ddlempcode').val();
+        var obj = {
+            id: empcode,
+        }
+        jQuery.ajax({
+            url: "/Hrms/GetEmployeeNameForConfig/", dataType: 'json', type: "Post",
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(obj),
+            success: function (data) {
+                var jobj = JSON.parse(data);
+                if (jobj.length > 0) {
+                    $("#hfemployeeid").val(jobj[0].rowid);
+                    $("#txtempname").val(jobj[0].name);
+                }
+            },
+            error: function (msg) {
 
             }
-            $('#ddlempname').html(opt);
-        },
-        //error: function (jqXHR, textStatus, errorThrown) { swal('Error!', errorThrown, "error"); }
+        });
     });
-});
+}
 
+function ChangeCode() {
+    $('#ddlemptype').change(function () {
+        var empcode = $('#ddlemptype').val();
+        var obj = {
+            rowid: empcode,
+        }
+        jQuery.ajax({
+            url: "/Hrms/GetEmployeeCodeForConfig/", dataType: 'json', type: "Post",
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(obj),
+            success: function (data) {
+                var opt = '<option value="0">Please Select Employee Code</option>';
+                for (var i = 0; i < data.length; i++) {
+                    opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>'
+                }
+                $("#ddlempcode").html(opt);
+            },
+            error: function (msg) {
+
+            }
+        });
+    });
+}
 function getAccountingType() {
     $.ajax({
         url: "/Hrms/GetAccountingTypeForConfig",
@@ -130,7 +166,7 @@ function getWarehouse() {
 function AddConfiguration() {
     emptype = $("#ddlemptype").val();
     empcode = $("#ddlempcode").val();
-    empname = $("#ddlempname").val();
+    empname = $("#hfemployeeid").val();
     empbasic = $("#txtbasic").val();
     empda = $("#txtda").val();
 
@@ -158,9 +194,9 @@ function AddConfiguration() {
     else if (empcode == 0) {
         swal('Alert', 'Please select employee code', 'error').then(function () { swal.close(); $('#ddlempcode').focus(); });
     }
-    else if (empname == 0) {
-        swal('Alert', 'Please select employee name', 'error').then(function () { swal.close(); $('#ddlempname').focus(); });
-    }
+    //else if (empname == "") {
+    //    swal('Alert', 'Enter employee name', 'error').then(function () { swal.close(); $('#ddlempname').focus(); });
+    //}
     
     else if (worktype == "0") {
         swal('Alert', 'Please select work type', 'error').then(function () { swal.close(); $('#ddlworktype').focus(); });
@@ -251,7 +287,7 @@ function UpdateConfiguration() {
     id = $("#hfid").val();
     emptype = $("#ddlemptype").val();
     empcode = $("#ddlempcode").val();
-    empname = $("#ddlempname").val();
+    empname = $("#hfemployeeid").val();
     empbasic = $("#txtbasic").val();
     empda = $("#txtda").val();
 
@@ -279,9 +315,9 @@ function UpdateConfiguration() {
     else if (empcode == 0) {
         swal('Alert', 'Please select employee code', 'error').then(function () { swal.close(); $('#ddlempcode').focus(); });
     }
-    else if (empname == 0) {
-        swal('Alert', 'Please select employee name', 'error').then(function () { swal.close(); $('#ddlempname').focus(); });
-    }
+    //else if (empname == "") {
+    //    swal('Alert', 'Please select employee name', 'error').then(function () { swal.close(); $('#ddlempname').focus(); });
+    //}
     else if (worktype == "0") {
         swal('Alert', 'Please select work type', 'error').then(function () { swal.close(); $('#ddlworktype').focus(); });
     }
@@ -364,14 +400,53 @@ function DAcalculation() {
         }
     });
 }
-
+//DA Calculation and PF calculation
 function DA() {
     var da = parseFloat($("#hfDA1").val()).toFixed(2);
     $("#txtbasic").change(function () {
             var basic = parseFloat($("#txtbasic").val()).toFixed(2);
-        DAcal = parseFloat(basic * (da / 100)).toFixed(2) || 0.00;
-        DA_calculate = parseFloat(DAcal) || 0.00;
-        parseFloat($("#txtda").val(DA_calculate));
+        DAcal = parseFloat(basic * da) || 0.00;
+        PF = parseFloat(basic * 0.12) || 0.00;
+        PF_Calculate = parseFloat(PF).toFixed(2) || 0.00;
+        DA_calculate = parseFloat(DAcal).toFixed(2) || 0.00;
+        $("#txtda").val(DA_calculate);
+        $("#txtpf").val(PF_Calculate);  
+        
+    });
+}
+
+//EMI calculation
+function EMI() {
+    $("#txtloanmonths").change(function () {
+        var loanamount = $("#txtloanamount").val();
+        var loanmonths = $("#txtloanmonths").val();
+        var intrest = parseFloat(loanamount * 0.10);
+        if (parseInt(loanmonths) > 0) {
+            var EMI = (parseFloat(loanamount) + parseFloat(intrest)) / parseInt(loanmonths);
+            var j=parseFloat(EMI).toFixed(2);
+            $("#txtloanemi").val(j);
+        }
+        else {
+            parseFloat($("#txtloanemi").val(0.00));
+            alert('not passed');
+        }
+        
+    });
+}
+
+//Advance EMI calculation
+function AdvanceEMI() {
+    $("#txtadvanceEmiMonths").change(function () {
+        var advloanamount = $("#txtadvanceamount").val();
+        var advloanmonths = $("#txtadvanceEmiMonths").val();
+        if (parseFloat(advloanmonths) > 0) {
+            var advEMI = (parseFloat(advloanamount) / parseInt(advloanmonths));
+            adv = parseFloat(advEMI).toFixed(2);
+            $("#txtadvanceEmi").val(adv);
+        }
+        else {
+            $("#txtadvanceEmi").val(0.00);
+        }
         
     });
 }

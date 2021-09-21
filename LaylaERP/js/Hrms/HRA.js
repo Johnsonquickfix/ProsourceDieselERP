@@ -45,7 +45,7 @@ function AddHRA() {
             success: function (data) {
                 if (data.status == true) {
                     swal('Alert!', data.message, 'success');//.then((result) => { location.href = '../productrule'; });
-                    HRAList();
+                    ListHra();
                     reset();
                 }
                 else {
@@ -124,11 +124,11 @@ function HRAList() {
         ]
     });
 }
-
+/*
 function EditSelect(id) {
-    var obj = { }
+    var strValue1 = id;
     $.ajax({
-        url: '/Hrms/GetHRAList/',
+        url: '/Hrms/SelectHRAList/' + strValue1,
         datatype: 'json',
         type: 'Post',
         contentType: "application/json;charset=utf-8",
@@ -151,8 +151,8 @@ function EditSelect(id) {
         complete: function () { $("#loader").hide(); },
         error: function (error) { swal('Error!', 'something went wrong', 'error'); },
     })
-}
-
+} */
+/*
 function UpdateHRA() {
     id = $("#hfid").val();
     basic_1 = $("#txtbasic1").val();
@@ -199,8 +199,8 @@ function UpdateHRA() {
             beforeSend: function () { $("#loader").show(); },
             success: function (data) {
                 if (data.status == true) {
-                    swal('Alert!', data.message, 'success').then((result) => { location.href = '../HRA'; });
-                    HRAList();
+                    swal('Alert!', data.message, 'success');//then((result) => { location.href = '../HRA'; });
+                    //ListHra();
                     reset();
                 }
                 else {
@@ -214,7 +214,7 @@ function UpdateHRA() {
     }
 
 }
-
+*/
 ListHra();
 function ListHra() {
     $.ajax({

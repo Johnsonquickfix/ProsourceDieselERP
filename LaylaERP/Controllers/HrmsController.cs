@@ -76,6 +76,8 @@ namespace LaylaERP.Controllers
         public ActionResult EditConfigurationList(long id)
         {
             ViewBag.id = id;
+            DataTable dt = HrmsConfigurationRepository.SelectConfiguration(id);
+            ViewBag.emptype = dt.Rows[0]["emp_type"];
             return View();
         }
         //Get HRA
@@ -540,9 +542,9 @@ namespace LaylaERP.Controllers
         }
 
         //Bind Dropdown for configuration
-        public JsonResult GetEmployeeCodeForConfig()
+        public JsonResult GetEmployeeCodeForConfig(int rowid)
         {
-            DataSet ds = HrmsConfigurationRepository.GetEmployeeCode();
+            DataSet ds = HrmsConfigurationRepository.GetEmployeeCode(rowid);
             List<SelectListItem> employeecode = new List<SelectListItem>();
             foreach (DataRow dr in ds.Tables[0].Rows)
             {
@@ -554,13 +556,22 @@ namespace LaylaERP.Controllers
 
         public JsonResult GetEmployeeNameForConfig(string id)
         {
-            DataSet ds = HrmsConfigurationRepository.GetEmployeeName(id);
-            List<SelectListItem> employeename = new List<SelectListItem>();
-            foreach (DataRow dr in ds.Tables[0].Rows)
+            //DataSet ds = HrmsConfigurationRepository.GetEmployeeName(id);
+            //List<SelectListItem> employeename = new List<SelectListItem>();
+            //foreach (DataRow dr in ds.Tables[0].Rows)
+            //{
+            //    employeename.Add(new SelectListItem { Text = dr["name"].ToString(), Value = dr["rowid"].ToString() });
+            //}
+            //return Json(employeename, JsonRequestBehavior.AllowGet);
+
+            string JSONresult = string.Empty;
+            try
             {
-                employeename.Add(new SelectListItem { Text = dr["name"].ToString(), Value = dr["rowid"].ToString() });
+                DataTable dt = HrmsConfigurationRepository.GetEmployeeName(id);
+                JSONresult = JsonConvert.SerializeObject(dt);
             }
-            return Json(employeename, JsonRequestBehavior.AllowGet);
+            catch { }
+            return Json(JSONresult, 0);
 
         }
 

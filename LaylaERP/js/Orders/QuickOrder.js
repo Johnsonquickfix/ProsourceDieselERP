@@ -1926,8 +1926,8 @@ function PodiumPayment() {
         let grossAmount = parseFloat($(this).find(".TotalAmount").data('amount')) || 0.00;
         let discount = parseFloat($(this).find(".RowDiscount").text()) || 0.00;
         if ((grossAmount - discount) > 0)
-            _lineItems.push({ description: $(this).data('pname').replace(/[^a-zA-Z0-9 ]/g, "") + ' X ' + qty.toFixed(0), amount: (grossAmount - discount) * 100 });
-        //_lineItems.push({ description: $(this).data('pname').replace(/[^a-zA-Z0-1 ]/g, "") + ' X ' + qty.toFixed(0), amount: (grossAmount - discount) * 100 });
+            _lineItems.push({ description: $(this).data('pname').replace(/[^a-zA-Z0-9 ]/g, "").substring(0, 40) + ' X ' + qty.toFixed(0), amount: (grossAmount - discount) * 100 });
+            //_lineItems.push({ description: 'Item - ' + index+ ' X ' + qty.toFixed(0), amount: (grossAmount - discount) * 100 });
 
     });
     let st_total = parseFloat($('#salesTaxTotal').text()) || 0.00, srf_total = parseFloat($('#stateRecyclingFeeTotal').text()) || 0.00, fee_total = parseFloat($('#feeTotal').text()) || 0.00;
@@ -1936,7 +1936,7 @@ function PodiumPayment() {
     if (fee_total > 0) _lineItems.push({ description: "Shipping", amount: fee_total * 100 });
 
     let opt_inv = { lineItems: _lineItems, channelIdentifier: bill_email, customerName: bill_name, invoiceNumber: 'INV-' + oid, locationUid: "6c2ee0d4-0429-5eac-b27c-c3ef0c8f0bc7" };
-
+    console.log(opt_inv);
     $("#loader").show();
     var opt = { client_id: '2f936404-dabc-4cf7-a61b-80e6bef42f66', client_secret: 'fd4b08be31c507860517f1f411b216d2beea25076348fe4fb0311073080e94df', "refresh_token": "703ddfb54f8f811bdfdc77356a6a9d66168ce97865ab029557dbbf7e15ded85f", "grant_type": "refresh_token", };
     $.post('https://accounts.podium.com/oauth/token', opt, function (token_result) {

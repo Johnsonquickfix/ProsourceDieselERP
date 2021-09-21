@@ -365,8 +365,6 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\css\intlTelInput.css" />
-    <Content Include="Content\css\jquery.datetimepicker.css" />
-    <Content Include="Content\css\mdDateTimePicker.css" />
     <Content Include="Content\css\Style.css" />
     <Content Include="Content\css\tabcss.css" />
     <Content Include="Content\AdminLTE-3.1.0\daterangepicker\daterangepicker.css" />
@@ -564,7 +562,6 @@
     <Content Include="Content\EmployeeLinkedFiles\default.png" />
     <Content Include="Content\EmployeeProfileImage\default.png" />
     <Content Include="Content\fontawesome-all.min.css" />
-    <Content Include="Content\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Content\img\flags%402x.png" />
     <Content Include="Content\img\flags.png" />
     <Content Include="Content\ProductCategory\default.png" />
@@ -702,10 +699,6 @@
     <Content Include="Content\AdminLTE-3.1.0\font-awesome\webfonts\fa-solid-900.woff2" />
     <Content Include="Files\TEST2.pdf" />
     <Content Include="Content\WarehouseLinkedFiles\myfile.docx" />
-    <Content Include="Content\fonts\glyphicons-halflings-regular.woff2" />
-    <Content Include="Content\fonts\glyphicons-halflings-regular.woff" />
-    <Content Include="Content\fonts\glyphicons-halflings-regular.ttf" />
-    <Content Include="Content\fonts\glyphicons-halflings-regular.eot" />
     <Content Include="Content\bootstrap\wells.less" />
     <Content Include="Content\bootstrap\variables.less" />
     <Content Include="Content\bootstrap\utilities.less" />

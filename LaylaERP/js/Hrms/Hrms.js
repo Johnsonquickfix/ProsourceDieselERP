@@ -2,6 +2,8 @@
     $("#loader").hide();
     var url = window.location.pathname;
     var id = url.substring(url.lastIndexOf('/') + 1);
+    passwordcheck();
+
     getDepartment();
     getDesignation();
     getGroup();
@@ -16,8 +18,107 @@
     if (id != "NewVendor") {
         GetVendorByID(id);
     }
+   
     EmployeeLinkedFiles();
     $('input:checkbox').prop('checked', true);
+   
+})
+
+$("#txtPassword").change(function () {
+    $('#result').html(passwordStrength($('#txtPassword').val(), ""))
+    result = $('#result').html();
+    if (result == "Password strength is weak") {
+        $('#result').attr({ 'style': 'color:Red;' });
+
+    }
+    if (result == "Password Strength is low") {
+        $('#result').attr({ 'style': 'color:Olive;' });
+    }
+    if (result == "Password strength is medium") {
+        $('#result').attr({ 'style': 'color:Lime;' });
+    }
+    if (result == "Password strength is strong") {
+        $('#result').attr({ 'style': 'color:Green;' });
+    }
+    Password = $("#txtPassword").val();
+    strength = 1;
+    var arr = [/.{5,}/, /[a-z]+/, /[0-9]+/, /[A-Z]+/];
+    jQuery.map(arr, function (regexp) {
+        if (Password.match(regexp))
+            strength++;
+    });
+
+})
+$("#txtPassword").on("input", function () {
+    $('#result').html(passwordStrength($('#txtPassword').val(), ""))
+    result = $('#result').html();
+    if (result == "Password strength is weak") {
+        $('#result').attr({ 'style': 'color:Red;' });
+
+    }
+    if (result == "Password Strength is low") {
+        $('#result').attr({ 'style': 'color:Olive;' });
+    }
+    if (result == "Password strength is medium") {
+        $('#result').attr({ 'style': 'color:Lime;' });
+    }
+    if (result == "Password strength is strong") {
+        $('#result').attr({ 'style': 'color:Green;' });
+    }
+    Password = $("#txtPassword").val();
+    strength = 1;
+    var arr = [/.{5,}/, /[a-z]+/, /[0-9]+/, /[A-Z]+/];
+    jQuery.map(arr, function (regexp) {
+        if (Password.match(regexp))
+            strength++;
+    });
+
+})
+
+$(document).on('click', "#btnGeneratePassword", function () {
+    Password = $("#txtPassword").val();
+    var obj = {
+        password: Password,
+    }
+    $.ajax({
+        url: '/Users/CreatePassword/', dataType: 'json', type: 'Post',
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(obj),
+        dataType: "json",
+        success: function (data) {
+            if (data.status == true) {
+                $('#txtPassword').val(data.message);
+                $('#txtConfirmPassword').val(data.message);
+                $('#hfvpassordshow').val(data.message);
+                $("#txtConfirmPassword").trigger('keyup');
+                passwordcheck();
+            }
+            else {
+                $("#txtPassword").val("");
+                $("#txtConfirmPassword").val("");
+            }
+           
+        },
+
+        error: function (error) {
+            swal('Error!', 'something went wrong', 'error');
+        },
+    })
+});
+function passwordcheck() {
+    $('#txtPassword, #txtConfirmPassword').on('keyup', function () {
+        if ($('#txtPassword').val() == $('#txtConfirmPassword').val()) {
+            $('#message').html('Matching').css({ "color": "green", "opacity": "1" });
+        } else
+            $('#message').html('Not Matching').css({ "color": "red", "opacity": "1" });
+    });
+}
+$(document).on('click', "#PasswordShow", function () {
+    if ($('#txtPassword').val() == "")
+        swal('Alert', 'Password is not generated!', 'error');
+    else
+        swal('Alert', 'Password is ' + $('#txtPassword').val() + '', 'success');
+
 })
 
 function readURL(input) {
@@ -103,6 +204,8 @@ $(document).on('click', "#btnNext1", function () {
     gender = $("#ddlGender").val();
     email = $("#txtEmail").val();
     phone = $("#txtPhone").val();
+    Password = $('#txtPassword').val();
+    ConfirmPassword = $('#txtConfirmPassword').val();
     dob = $("#txtdob").val();
     emptype = $("#ddlEmployeeType").val();
     status = $("#chkemployeestatus").prop("checked") ? 1 : 0;
@@ -128,13 +231,29 @@ $(document).on('click', "#btnNext1", function () {
     else if (email == "") { swal('Alert', 'Please email id', 'error').then(function () { swal.close(); $('#txtEmail').focus(); }); }
     else if (!pattern.test(email)) { swal('alert', 'not a valid e-mail address', 'error').then(function () { swal.close(); $('#txtAccountEmail').focus(); }) }
     else if (phone == "") { swal('Alert', 'Please Enter Phone Number', 'error').then(function () { swal.close(); $('#txtPhone').focus(); }); }
+    else if (Password == "") {
+        swal('Alert', 'Please Enter Password', 'error').then(function () { swal.close(); $('#txtPassword').focus(); });
+    }
+    else if (Password.length < 8) {
+        swal('Alert', 'Passwords must be 8 characters.', 'error').then(function () { swal.close(); $('#txtPassword').focus(); });
+    }
+    else if (strength < 5) {
+        swal('Alert', 'Passwords must be have number,one special and one capital characters.', 'error').then(function () { swal.close(); $('#txtPassword').focus(); });
+    }
+    else if (ConfirmPassword == "") {
+        console.log(strength);
+        swal('Alert', 'Please Enter Confirm Password', 'error').then(function () { swal.close(); $('#txtConfirmPassword').focus(); });
+    }
+    else if (Password !== ConfirmPassword) {
+        swal('Alert', 'Confirm Password is not matching.', 'error').then(function () { swal.close(); $('#txtConfirmPassword').focus(); });
+    }
     else if (dob == "") { swal('Alert', 'Please Enter Date Of Birth', 'error').then(function () { swal.close(); $('#txtdob').focus(); }); }
     else if (emptype == 0) { swal('Alert', 'Please Select Employee Type', 'error').then(function () { swal.close(); $('#ddlEmployeeType').focus(); }); }
     else {
         phone = $("#txtPhone").unmask().val();
         var obj = {
             rowid: ID,
-            firstname: firstname, lastname: lastname, email: email, emp_type: emptype, dob: dateofbirth, phone: phone, gender: gender,
+            firstname: firstname, lastname: lastname, email: email, pwd: Password, emp_type: emptype, dob: dateofbirth, phone: phone, gender: gender,
             is_active: status,
 
             birthplace: birthplace, maritalstatus: maritalstatus, address1: address1, address2: address2, city: city,

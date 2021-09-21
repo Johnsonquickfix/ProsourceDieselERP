@@ -1,15 +1,15 @@
 $(document).ready(function () {
     $("#loader").hide();
     $("#DateRange").datepicker({ format: 'mm-dd-yyyy', }).datepicker("setDate", 'now');
-   /* $("#txttodate").datepicker({ format: 'mm-dd-yyyy', }).datepicker("setDate", 'now');*/
     
+
     var now = new Date(Date.now());
     var formatted = now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
     EmployeeList();
-    $("input[name='txtouttime']").datepicker({ format: 'mm-dd-yyyy', }).datepicker("setDate", 'now');
-    $("input[name='txtintime']").datepicker({ format: 'mm-dd-yyyy', }).datepicker("setDate", 'now');
+    //$("input[name='txtouttime']").datepicker({ format: 'mm-dd-yyyy', }).datepicker("setDate", 'now');
+    //$("input[name='txtintime']").datepicker({ format: 'mm-dd-yyyy', }).datepicker("setDate", 'now');
 })
-$("#btnGo").click(function () {
+$("#DateRange").change(function () {
     EmployeeList();
     $('#checkAll').val('');
 })
@@ -109,11 +109,12 @@ $('#checkAll').click(function () {
     var dateTime = "";
     var today = new Date();
     var date = $("#DateRange").val();
+    var inout = $("#ddlInOut").val();
     var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
     dateTime = isChecked == true ? date + ' ' + time : "";
 
     $('#EmployeeListdata tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
-    $('#EmployeeListdata tr:has(td)').find('input[type="text"]').val(dateTime);
+    $('#EmployeeListdata tr:has(td)').find('input[name=' + inout+']').val(dateTime);
     $("#btnSave").prop("disabled", isChecked == true ? false : true);
 
 });
@@ -122,6 +123,7 @@ function Singlecheck() {
     var dateTime = ""; var today = new Date(); var date = $("#DateRange").val();
     var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
     dateTime = date + ' ' + time;
+    var inout = $("#ddlInOut").val();
 
     var isChecked = $('#CheckSingle').prop("checked");
     var isHeaderChecked = $("#checkAll").prop("checked");
@@ -130,12 +132,12 @@ function Singlecheck() {
     $('#EmployeeListdata tr:has(td)').find('input[type="checkbox"]').each(function () {
         if ($(this).prop("checked") == true) {
             EnableButton = false;
-           
-            $("#txtintime_" + $(this).val()).val(dateTime);
-            $("#txtouttime_" + $(this).val()).val(dateTime);
+            $("#" + inout + "_" + $(this).val()).val(dateTime);
+            //$("#txtouttime_" + $(this).val()).val(dateTime);
         }
         else {
-            $("#txtintime_" + $(this).val()).val(''); $("#txtouttime_" + $(this).val()).val('');
+            $("#" + inout + "_" + $(this).val()).val('');
+           /* $("#txtintime_" + $(this).val()).val(''); $("#txtouttime_" + $(this).val()).val('');*/
         }
     });
     $("#btnSave").prop("disabled", EnableButton);
@@ -145,8 +147,8 @@ function Singlecheck() {
         $('#EmployeeListdata tr:has(td)').find('input[type="checkbox"]').each(function () {
             if ($(this).prop("checked") == false) {
                 isChecked = false;
-                $("#txtintime_" + $(this).val()).val('');
-                $("#txtouttime_" + $(this).val()).val('');
+                //$("#txtintime_" + $(this).val()).val('');
+                //$("#txtouttime_" + $(this).val()).val('');
             }
         });
         $("#checkAll").prop('checked', isChecked);
@@ -166,15 +168,20 @@ $('#btnSave').click(function () {
     Empid = Empid.replace(/,(?=\s*$)/, '');
     intime = intime.replace(/,(?=\s*$)/, '');
     outtime = outtime.replace(/,(?=\s*$)/, '');
-    console.log(Empid, intime, outtime);
+   
     saveAttendence(Empid, intime, outtime);
 
 });
 
 function saveAttendence(Empid, intime, outtime) {
+    var date = new Date($('#DateRange').val());
+    var month = date.getMonth() + 1;
+    var year = date.getFullYear();
+   
     var ID = $("#hfid").val();
     var obj = {
         rowid: ID, strValue1: Empid, strValue2: intime, strValue3: outtime,
+        strValue4: month, strValue5: year,
     }
     $.ajax({
         url: '/Hrms/AddAttendence/', dataType: 'json', type: 'Post',

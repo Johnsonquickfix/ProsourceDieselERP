@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewBag.Title = "OrderShippingRule";
+    ViewBag.Title = "Order Shipping Rule";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
@@ -50,21 +50,21 @@
                             <label class="col-sm-3 control-label">Rule<span style="color:red;"> *</span></label>
                             <div class="col-sm-9">
                                 <select id="ddlRule" class="form-control select2">
-                                    <option value="">Please select Rule</option>
+                                    <option value="">Please Select Rule</option>
                                 </select>
                             </div>
                         </div>
-                        @*<div class="form-group d-flex">
-            <input type="hidden" id="hfshipingid" />
-            <label class="col-sm-3 control-label">Country</label>
-            <div class="col-sm-9">
-                <select id="ddlCountry" class="form-control">
-                    <option value="">Select Country</option>
-                    <option value="US">United States</option>
-                    <option value="CA">Canada</option>
-                </select>
-            </div>
-        </div>*@
+                        <div class="form-group d-flex">
+                            <input type="hidden" id="hfshipingid" />
+                            <label class="col-sm-3 control-label">Country</label>
+                            <div class="col-sm-9">
+                                <select id="ddlCountry" class="form-control">
+                                    <option value="">Select Country</option>
+                                    <option value="US">United States</option>
+                                    <option value="CA">Canada</option>
+                                </select>
+                            </div>
+                        </div>
                         <div class="form-group d-flex">
                             <input type="hidden" id="hfshipingid" />
                             <label class="col-sm-3 control-label">Country/State</label>
@@ -74,20 +74,20 @@
                             </div>
                         </div>
                         @*<select class="form-control select2" id="ddlStatecity" placeholder="Select City State" multiple style="width: 100%;"></select>*@
-                    <div class="form-group d-flex">
-                        <label class="col-sm-3 control-label">Products<span style="color:red;"> *</span></label>
-                        <div class="col-sm-9">
-                            <select class="form-control select2" id="ddlProduct" placeholder="Select Products" style="width: 100%;"></select>
+                        <div class="form-group d-flex">
+                            <label class="col-sm-3 control-label">Products<span style="color:red;"> *</span></label>
+                            <div class="col-sm-9">
+                                <select class="form-control select2" id="ddlProduct" placeholder="Select Products" style="width: 100%;"></select>
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group d-flex">
-                        <label class="col-sm-3 control-label">Vendor<span style="color:red;"> *</span></label>
-                        <div class="col-sm-9">
-                            <select class="form-control select2" id="ddlvender" placeholder="Select Vendor" style="width: 100%;">
-                                <option value="">Select Vendor</option>
-                            </select>
+                        <div class="form-group d-flex">
+                            <label class="col-sm-3 control-label">Vendor<span style="color:red;"> *</span></label>
+                            <div class="col-sm-9">
+                                <select class="form-control select2" id="ddlvender" placeholder="Select Vendor" style="width: 100%;">
+                                    <option value="">Select Vendor</option>
+                                </select>
+                            </div>
                         </div>
-                    </div>
                         <div class="form-group d-flex">
                             <label class="col-sm-3 control-label">Service</label>
                             <div class="col-sm-9">
@@ -118,11 +118,12 @@
                         <thead>
                             <tr>
                                 @*<th><input type="checkbox" name="checkall" id="checkall" onClick="CheckAll();"><label></label></th>*@
-                                <th align="left">Rule Name</th> 
+                                <th>Rule Name</th>
+                                <th>Country</th>
                                 <th>State</th>
                                 <th>Vendor</th>
                                 <th>Product</th>
-                                <th>Services</th> 
+                                <th>Services</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -186,7 +187,7 @@
                             </select>
                         </div>
                     </div>
-                    @*<div class="form-group">
+                    <div class="form-group">
                         <label class="col-sm-3 control-label">Country</label>
                         <div class="col-sm-9">
                             <select id="ddlCountrydel" class="form-control">
@@ -195,7 +196,7 @@
                                 <option value="CA">Canada</option>
                             </select>
                         </div>
-                    </div>*@
+                    </div>
                 </div>
             </div>
         </div>

@@ -150,4 +150,16 @@
         public string comment_content { get; set; }
         public string is_customer_note { get; set; }
     }
+    public class OrderPodiumDetailsModel
+    {
+        public long post_id { get; set; }
+        public string taskuidforsms { get; set; }
+        public string payment_method_title { get; set; }
+        public string payment_method { get; set; }
+        public string payment_uid { get; set; }
+        public string location_uid { get; set; }
+        public string invoice_number { get; set; }
+        public string payment_status { get; set; }
+        public string order_note { get; set; }
+    }
 }

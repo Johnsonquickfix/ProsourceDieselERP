@@ -204,7 +204,8 @@ namespace LaylaERP.Models
         public string services { get; set; }
         public int fk_rule { get; set; }
         public int fk_product { get; set; }
-        public int fk_vendor { get; set; }       
+        public int fk_vendor { get; set; }
+        public string countryshipping { get; set; }
 
     }
 

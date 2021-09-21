@@ -64,6 +64,8 @@ namespace LaylaERP.Models
         public string strValue1 { get; set; }
         public string strValue2 { get; set; }
         public string strValue3 { get; set; }
+        public string strValue4 { get; set; }
+        public string strValue5 { get; set; }
     }
 
     public class AttendenceModel

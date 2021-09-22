@@ -260,6 +260,7 @@ function dataGridLoad(order_type) {
             { data: 'State', title: 'State', sWidth: "15%" },
             { data: 'vendrname', title: 'Vendor', sWidth: "15%" },
             { data: 'title', title: 'Product', sWidth: "15%" },
+            { data: 'prefix_code', title: 'Suffix Code', sWidth: "15%" },
        
             { data: 'services', title: 'Services', sWidth: "15%" },
  

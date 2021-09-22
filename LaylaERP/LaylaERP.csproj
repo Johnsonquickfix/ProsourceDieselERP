@@ -170,6 +170,7 @@
     <Compile Include="BAL\InventoryRepository.cs" />
     <Compile Include="BAL\LeaveRepository.cs" />
     <Compile Include="BAL\OrderRepository.cs" />
+    <Compile Include="BAL\PaymentInvoiceRepository.cs" />
     <Compile Include="BAL\ProductRepository.cs" />
     <Compile Include="BAL\PurchaseOrderRepository.cs" />
     <Compile Include="BAL\ReceptionRepository.cs" />
@@ -642,6 +643,7 @@
     <Content Include="js\Orders\OrderRefund.js" />
     <Content Include="js\Orders\QuickOrder.js" />
     <Content Include="js\Orders\SplitOrder.js" />
+    <Content Include="js\PaymentInvoice\CreatePaymentInvoice.js" />
     <Content Include="js\PaymentInvoice\PaymentInvoice.js" />
     <Content Include="js\Product\AddnewProduct.js" />
     <Content Include="js\Product\AddnewPurchase.js" />
@@ -909,6 +911,7 @@
     <Content Include="Views\Hrms\ListGrantLeave.cshtml" />
     <Content Include="Views\Setting\OrderShippingRule.cshtml" />
     <Content Include="Views\PaymentInvoice\PaymentInvoiceList.cshtml" />
+    <Content Include="Views\PaymentInvoice\PaymentInvoice.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

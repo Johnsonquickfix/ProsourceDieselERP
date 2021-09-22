@@ -1282,6 +1282,7 @@ body .easyui-tree {
                 margin-right: 20px;
             }
 
+body .easyui-tree > li ul ul .table-row > div:first-child + div{margin-left:-20px;}
 /*****************/
 
 /*********/
@@ -2285,6 +2286,7 @@ body .btn {font-size:12px;}
     border-top-color: orange !important;
 }
 .tooltip.right .tooltip-arrow {border-right-color:orange !important;}
+.tooltip.left .tooltip-arrow {border-left-color:orange !important;}
 #txtkeewordfilter {margin-right:10px;}
 #dtAddservices [type="number"], #dtdatachildkits [type="number"] {
     width: 80px;
@@ -2604,7 +2606,9 @@ a#btnbackcategory {max-width: 135px; margin-top: 5px;}
 .add.new.product ul.order_notes li{width:50%; padding:15px 15px 0px 15px;}
 .add.new.product ul.order_notes li:first-child, 
 .add.new.product ul.order_notes li:first-child + li{padding-top:0px;}
-.add.new.product ul.order_notes li .note_content{border: 1px solid #d2d6de;padding:12px; border-radius:3px; background:#f1f1f1;min-height: 70px;}
+
+.add.new.product ul.order_notes li .note_content{border: 1px solid #d2d6de;padding:12px; border-radius:3px; background:#f1f1f1;min-height:20px;}
+
 .add.new.product ul.order_notes li .note_content::after{bottom: -15px; border-color:#f1f1f1 transparent; left:auto;right: 25px;border-width: 15px 15px 0 5px;}
 .add.new.product ul.order_notes li .note_content::before{content:"";border-color:#d2d6de transparent; position:absolute; right:25px; bottom:-17px; border-style:solid;  border-width: 16px 16px 0 6px;}
 .add.new.product ul.order_notes li .meta{text-align:right; margin-top:20px;}
@@ -2618,6 +2622,15 @@ a#btnbackcategory {max-width: 135px; margin-top: 5px;}
         border-radius: 3px;
         }
 #saveForm #DateRange, .dashboard-dropy #DateRange2{min-width: 230px;padding-top: 0px;padding-bottom: 0px;height: 28px;border-radius: 0px !important;}
+.manage.customers .dataTables_scrollHeadInner{width:100% !important;}
+#fetch_results > div > .row > .box-primary .box-body .form-group{display:flex;}
+#fetch_results > div > .row > .box-primary .box-body .form-group >div{flex:1;margin-left:15px;}
+#fetch_results > div > .row > .box-primary .box-body .form-group >div:last-child{order:-1; margin-left:0px;}
+#fetch_results > div > .row > .box-primary .box-body .form-group >div #btnGenerateCoupon{margin-left:15px;}
+.on-hand.inventory #dtdata_info{float:left; width:auto;}
+.on-hand.inventory #dtdata_paginate{float:right; width:auto;}
+
+.add.new.product .new-product-section #divPurchase{padding-left:0px; padding-right:0px;}
 
 @media(max-width:900px) {
     .hub-pro-shop select:first-child{margin-left:0px;}

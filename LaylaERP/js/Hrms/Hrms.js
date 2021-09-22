@@ -2,6 +2,13 @@
     $("#loader").hide();
     var url = window.location.pathname;
     var id = url.substring(url.lastIndexOf('/') + 1);
+    if (id == "Employee") {
+        $("#PasswordParent").css("display", "block");
+    }
+    else {
+        $("#PasswordParent").css("display", "none");
+    }
+
     passwordcheck();
 
     getDepartment();
@@ -15,8 +22,8 @@
     $("#txtJoiningDate").datepicker({ format: 'mm-dd-yyyy', });
     $("#txtLeavingDate").datepicker({ format: 'mm-dd-yyyy', });
     $(".select2").select2();
-    if (id != "NewVendor") {
-        GetVendorByID(id);
+    if (id != "Employee") {
+        GetEmployeeByID(id);
     }
    
     EmployeeLinkedFiles();
@@ -197,7 +204,9 @@ function getEmployeeCode() {
 }
 
 $(document).on('click', "#btnNext1", function () {
-   
+    var url = window.location.pathname;
+    var URL = url.substring(url.lastIndexOf('/') + 1);
+
     ID = $("#hfid").val();
     firstname = $("#txtFirstName").val().trim();
     lastname = $("#txtLastName").val().trim();
@@ -231,25 +240,28 @@ $(document).on('click', "#btnNext1", function () {
     else if (email == "") { swal('Alert', 'Please email id', 'error').then(function () { swal.close(); $('#txtEmail').focus(); }); }
     else if (!pattern.test(email)) { swal('alert', 'not a valid e-mail address', 'error').then(function () { swal.close(); $('#txtAccountEmail').focus(); }) }
     else if (phone == "") { swal('Alert', 'Please Enter Phone Number', 'error').then(function () { swal.close(); $('#txtPhone').focus(); }); }
-    else if (Password == "") {
-        swal('Alert', 'Please Enter Password', 'error').then(function () { swal.close(); $('#txtPassword').focus(); });
-    }
-    else if (Password.length < 8) {
-        swal('Alert', 'Passwords must be 8 characters.', 'error').then(function () { swal.close(); $('#txtPassword').focus(); });
-    }
-    else if (strength < 5) {
-        swal('Alert', 'Passwords must be have number,one special and one capital characters.', 'error').then(function () { swal.close(); $('#txtPassword').focus(); });
-    }
-    else if (ConfirmPassword == "") {
-        console.log(strength);
-        swal('Alert', 'Please Enter Confirm Password', 'error').then(function () { swal.close(); $('#txtConfirmPassword').focus(); });
-    }
-    else if (Password !== ConfirmPassword) {
-        swal('Alert', 'Confirm Password is not matching.', 'error').then(function () { swal.close(); $('#txtConfirmPassword').focus(); });
-    }
+    
     else if (dob == "") { swal('Alert', 'Please Enter Date Of Birth', 'error').then(function () { swal.close(); $('#txtdob').focus(); }); }
     else if (emptype == 0) { swal('Alert', 'Please Select Employee Type', 'error').then(function () { swal.close(); $('#ddlEmployeeType').focus(); }); }
     else {
+        if (URL == "Employee") {
+             if (Password == "") {
+                swal('Alert', 'Please Enter Password', 'error').then(function () { swal.close(); $('#txtPassword').focus(); });
+            }
+            else if (Password.length < 8) {
+                swal('Alert', 'Passwords must be 8 characters.', 'error').then(function () { swal.close(); $('#txtPassword').focus(); });
+            }
+            else if (strength < 5) {
+                swal('Alert', 'Passwords must be have number,one special and one capital characters.', 'error').then(function () { swal.close(); $('#txtPassword').focus(); });
+            }
+            else if (ConfirmPassword == "") {
+                console.log(strength);
+                swal('Alert', 'Please Enter Confirm Password', 'error').then(function () { swal.close(); $('#txtConfirmPassword').focus(); });
+            }
+            else if (Password !== ConfirmPassword) {
+                swal('Alert', 'Confirm Password is not matching.', 'error').then(function () { swal.close(); $('#txtConfirmPassword').focus(); });
+            }
+        } else {
         phone = $("#txtPhone").unmask().val();
         var obj = {
             rowid: ID,
@@ -280,6 +292,7 @@ $(document).on('click', "#btnNext1", function () {
             error: function (error) { swal('Error!', 'something went wrong', 'error'); },
         })
 
+        }
     }
 
 });
@@ -563,7 +576,7 @@ function DeleteEmployeeLinkedFiles(id) {
         })
     }
 }
-function GetVendorByID(id) {
+function GetEmployeeByID(id) {
     var obj =
         $.ajax({
             url: "/Hrms/GetEmployeeByID/" + id,

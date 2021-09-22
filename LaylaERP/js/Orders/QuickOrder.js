@@ -13,7 +13,6 @@
         if (cid <= 0) { swal('Alert!', 'Please Select Customer.', "error").then((result) => { $('#ddlUser').select2('open'); return false; }); return false; }
         getItemList(pid, vid, qty);
     });
-    setTimeout(function () { $("#loader").show(); getOrderInfo(); }, 20);
     $('#txtLogDate').daterangepicker({ singleDatePicker: true, autoUpdateInput: true, locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' } });
     $(".select2").select2(); BindStateCounty("ddlbillstate", { id: 'US' }); BindStateCounty("ddlshipstate", { id: 'US' });
     $("#ddlUser").select2({
@@ -29,6 +28,7 @@
     $("#ddlbillcountry").change(function () { var obj = { id: $("#ddlbillcountry").val() }; BindStateCounty("ddlbillstate", obj); });
     $("#ddlshipcountry").change(function () { var obj = { id: $("#ddlshipcountry").val() }; BindStateCounty("ddlshipstate", obj); });
     $("#ddlshipstate").change(function () { GetTaxRate(); getItemShippingCharge(); });
+    getOrderInfo();
     $(document).on("click", "#btnApplyCoupon", function (t) { t.preventDefault(); CouponModal(); });
     //$("#billModal").on("keypress", function (e) { if (e.which == 13 && e.target.type != "textarea") { $("#btnCouponAdd").click(); } });
     $("#billModal").on("click", "#btnCouponAdd", function (t) { t.preventDefault(); ApplyCoupon(); });
@@ -321,7 +321,7 @@ function bindCustomerOrders(id) {
                 {
                     data: 'meta_data', title: 'BILLING ADDRESS', sWidth: "35%", render: function (data, type, dtrow) {
                         let row = JSON.parse(dtrow.meta_data);// console.log(dtrow);
-                        let val = '<address class="no-margin">' + row._billing_first_name + ' ' + row._billing_last_name + (dtrow.IsDefault != '' ? ' <span class="label label-success">' + dtrow.IsDefault + '</span>' : '')+ '<br>' + (row._billing_company != '' && row._billing_company != undefined ? row._billing_company + '<br>' : '') + row._billing_address_1 + (row._billing_address_2 > 0 && row._billing_address_2 != undefined ? '<br>' + row._billing_address_2 : '') + '<br>' + row._billing_city + ' ,' + row._billing_state + ' ' + row._billing_postcode + '<br>Phone: ' + row._billing_phone.replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + '<br>Email: ' + row._billing_email + '</address>';
+                        let val = '<address class="no-margin">' + row._billing_first_name + ' ' + row._billing_last_name + (dtrow.IsDefault != '' ? ' <span class="label label-success">' + dtrow.IsDefault + '</span>' : '') + '<br>' + (row._billing_company != '' && row._billing_company != undefined ? row._billing_company + '<br>' : '') + row._billing_address_1 + (row._billing_address_2 > 0 && row._billing_address_2 != undefined ? '<br>' + row._billing_address_2 : '') + '<br>' + row._billing_city + ' ,' + row._billing_state + ' ' + row._billing_postcode + '<br>Phone: ' + row._billing_phone.replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + '<br>Email: ' + row._billing_email + '</address>';
                         return val;
                     }
                 },
@@ -599,15 +599,19 @@ function getOrderInfo() {
         $('.page-heading').text('Edit Order ').append('<a class="btn btn-danger" href="/Orders/OrdersHistory" data-toggle="tooltip" title="Go to Order List">Back to List</a>');
         $('#lblOrderNo').text('Order #' + oid + ' detail '); $('#hfOrderNo').val(oid);
         $('#order_line_items,#order_state_recycling_fee_line_items,#order_fee_line_items,#order_shipping_line_items,#order_refunds,#billCoupon,.refund-action').empty();
-        $('#btnCheckout').remove(); 
+        $('#btnCheckout').remove();
         var opt = { strValue1: oid };
         ajaxFunction('/Orders/GetOrderInfo', opt, beforeSendFun, function (result) {
             try {
-                var data = JSON.parse(result);
+                var data = JSON.parse(result); 
                 if (data.length > 0) {
-                    $('#lblOrderNo').data('pay_by', data[0].payment_method); $('#lblOrderNo').data('pay_id', data[0].paypal_id);
+                    $('#lblOrderNo').data('pay_by', data[0].payment_method);
+                    if (data[0].payment_method == 'ppec_paypal') $('#lblOrderNo').data('pay_id', data[0].paypal_id);
+                    else if (data[0].payment_method == 'podium') $('#lblOrderNo').data('pay_id', data[0].podium_id);
+                    else $('#lblOrderNo').data('pay_id', '');
+
                     if (data[0].payment_method.trim().length > 0)
-                        $('.payment-history').text('Payment via ' + data[0]._payment_method_title + ' ' + data[0].created_via + '. Customer IP: ' + data[0].ip_address);
+                        $('.payment-history').text('Payment via ' + data[0].payment_method_title + ' ' + data[0].created_via + '. Customer IP: ' + data[0].ip_address);
                     else
                         $('.payment-history').text('Customer IP: ' + data[0].ip_address);
                     $('#txtLogDate').val(data[0].date_created);
@@ -642,7 +646,7 @@ function getOrderInfo() {
                 $("#loader").hide(); swal('Alert!', "something went wrong.", "error");
             }
         }, function () { $("#loader").hide(); $('.billinfo').prop("disabled", true); }, function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); }, false);
-        setTimeout(function () { getItemShippingCharge(); }, 100);
+        getItemShippingCharge();
     }
     else {
         $('.billnote').prop("disabled", true); $('.agentaddtocart').removeClass('hidden');
@@ -1622,23 +1626,13 @@ function getItemShippingCharge() {
         $("#loader").show();
         let options = { strValue1: v_ids.join(','), strValue2: $("#ddlshipcountry").val(), strValue3: $("#ddlshipstate").val() };
         $(".TotalAmount").data("shippingamt", 0.00);
-        $.ajax({
-            type: "POST", url: '/Orders/GetProductShipping', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(options),
-            beforeSend: function () { },
-            success: function (data) {
-                $("#order_line_items > tr.paid_item").each(function (index, tr) {
-                    let proudct_item = data.find(el => el.product_id === $(tr).data('vid'));
-                    if (proudct_item != null) {
-                        $(tr).find(".TotalAmount").data("shippingamt", proudct_item.AK);
-                    }
-                });
-            },
-            complete: function () { $("#loader").hide(); },
-            error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); },
-            async: false
-        });
-        calcFinalTotals();
-        $("#loader").hide();
+        $.post('/Orders/GetProductShipping', options).then(response => {
+            $("#order_line_items > tr.paid_item").each(function (index, tr) {
+                let proudct_item = response.find(el => el.product_id === $(tr).data('vid'));
+                if (proudct_item != null) { $(tr).find(".TotalAmount").data("shippingamt", proudct_item.AK); }
+            });
+            calcFinalTotals();
+        }).catch(err => { $("#loader").hide(); swal('Error!', err, 'error'); }).always(function () { $("#loader").hide(); });
     }
 }
 function calculateStateRecyclingFee() {
@@ -1910,7 +1904,7 @@ function PaymentModal() {
 }
 function AcceptPayment() {
     if ($("#ddlPaymentMethod").val() == "ppec_paypal") { $("#loader").show(); PaypalPayment($("#txtbillemail").val()); }
-    else if ($("#ddlPaymentMethod").val() == "podium") { $("#loader").show(); PodiumPayment() }
+    else if ($("#ddlPaymentMethod").val() == "podium") { PodiumPayment() }
     else { swal('Alert!', 'Please Select Payment Method.', "error"); }
 }
 
@@ -1927,7 +1921,7 @@ function PodiumPayment() {
         let discount = parseFloat($(this).find(".RowDiscount").text()) || 0.00;
         if ((grossAmount - discount) > 0)
             _lineItems.push({ description: $(this).data('pname').replace(/[^a-zA-Z0-9 ]/g, "").substring(0, 40) + ' X ' + qty.toFixed(0), amount: (grossAmount - discount) * 100 });
-            //_lineItems.push({ description: 'Item - ' + index+ ' X ' + qty.toFixed(0), amount: (grossAmount - discount) * 100 });
+        //_lineItems.push({ description: 'Item - ' + index+ ' X ' + qty.toFixed(0), amount: (grossAmount - discount) * 100 });
 
     });
     let st_total = parseFloat($('#salesTaxTotal').text()) || 0.00, srf_total = parseFloat($('#stateRecyclingFeeTotal').text()) || 0.00, fee_total = parseFloat($('#feeTotal').text()) || 0.00;
@@ -1936,43 +1930,40 @@ function PodiumPayment() {
     if (fee_total > 0) _lineItems.push({ description: "Shipping", amount: fee_total * 100 });
 
     let opt_inv = { lineItems: _lineItems, channelIdentifier: bill_email, customerName: bill_name, invoiceNumber: 'INV-' + oid, locationUid: "6c2ee0d4-0429-5eac-b27c-c3ef0c8f0bc7" };
-    console.log(opt_inv);
-    $("#loader").show();
-    var opt = { client_id: '2f936404-dabc-4cf7-a61b-80e6bef42f66', client_secret: 'fd4b08be31c507860517f1f411b216d2beea25076348fe4fb0311073080e94df', "refresh_token": "703ddfb54f8f811bdfdc77356a6a9d66168ce97865ab029557dbbf7e15ded85f", "grant_type": "refresh_token", };
-    $.post('https://accounts.podium.com/oauth/token', opt, function (token_result) {
-        let access_token = 'Bearer ' + token_result.access_token;
-
-        //console.log(token_result, opt_inv);
-        $.ajax({
-            type: "POST", url: 'https://api.podium.com/v4/invoices', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_inv),
-            beforeSend: function (xhr) { xhr.setRequestHeader("Content-Type", 'application/json'); xhr.setRequestHeader("Authorization", access_token); },
-            success: function (result) {
-                console.log('Success.');
-                //console.log(result, result.data.uid);
-                setTimeout(function () { updatePayment(result.data.uid); }, 50);
-            },
-            error: function (XMLHttpRequest, textStatus, errorThrown) { console.log(XMLHttpRequest); $("#loader").hide(); swal('Alert!', 'Something went wrong.', "error"); },
-            complete: function () { $("#loader").hide(); }, async: false
-        });
-    });
-
-
+    //console.log(opt_inv);
+    console.log('Start Podium Payment Processing...');
+    let option = { strValue1: 'getToken' };
+    swal.queue([{
+        title: 'Podium Payment Processing.', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,
+        onOpen: () => {
+            swal.showLoading();
+            $.get('/Setting/GetPodiumToken', option).then(response => {
+                let access_token = response.message;
+                let inv_id = $('#lblOrderNo').data('pay_id').trim();
+                if (inv_id.length > 0) {
+                    let create_url = 'https://api.podium.com/v4/invoices/' + inv_id + '/cancel';
+                    let opt_cnl = { locationUid: "6c2ee0d4-0429-5eac-b27c-c3ef0c8f0bc7", note: 'Invoice has been canceled.' };
+                    $.ajax({
+                        type: 'post', url: create_url, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_cnl),
+                        beforeSend: function (xhr) { xhr.setRequestHeader("Accept", "application/json"); xhr.setRequestHeader("Authorization", "Bearer " + access_token); }
+                    }).then(response => { console.log('Invoice has been canceled.'); }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', err, 'error'); });
+                }
+                $.ajax({
+                    type: 'post', url: 'https://api.podium.com/v4/invoices', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_inv),
+                    beforeSend: function (xhr) { xhr.setRequestHeader("Accept", "application/json"); xhr.setRequestHeader("Authorization", "Bearer " + access_token); }
+                }).then(response => {
+                    updatePayment(response.data.uid);
+                }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', err, 'error'); });
+            }).catch(err => { swal.hideLoading(); swal('Error!', err, 'error'); });//.always(function () { swal.hideLoading(); });
+        }
+    }]);
 }
 function updatePayment(taskUid) {
     var opt = { post_id: parseInt($('#hfOrderNo').val()) || 0, meta_value: taskUid };
-    $.ajax({
-        type: "POST", url: '/Orders/UpdatePaymentDetail', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
-        success: function (result) {
-            console.log(result);
-            if (result.status == true) {
-                $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true);
-                //setTimeout(function () { swal('Alert!', result.message, "success"); }, 50);
-                setTimeout(function () { successModal('podium', taskUid, true); }, 50);
-            }
-        },
-        error: function (XMLHttpRequest, textStatus, errorThrown) { console.log(XMLHttpRequest); swal('Alert!', errorThrown, "error"); },
-        async: false
-    });
+    $.post('/Orders/UpdatePaymentDetail', opt).then(response => {
+        swal('Success!', response.message, 'success');
+        if (response.status == true) { $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true); successModal('podium', taskUid, true); }
+    }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', err, 'error'); });
 }
 
 ///Accept paypal Payment

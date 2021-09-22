@@ -179,7 +179,7 @@ namespace LaylaERP.BAL
                 }
 
                 string strSql = "select DISTINCT eoar.rowid rowid, eoaf.name rulrname,esl.StateFullName State,eslcun.CountryFullName Country,"
-                + " wv.name vendrname,post_title title,services"
+                + " wv.name vendrname,post_title title,services,prefix_code"
                 + " from erp_order_automation_rule eoar"
                 + " left OUTER join erp_order_automation_filter eoaf on eoaf.rowid = eoar.fk_rule"
                 + " left OUTER join erp_StateList esl on esl.State = eoar.location"
@@ -273,7 +273,7 @@ namespace LaylaERP.BAL
                 // strSql.Append(string.Format("insert into Product_Purchase_Items ( fk_vendor,purchase_price,cost_price,minpurchasequantity,salestax,taxrate,discount,remark) values ({0},{1},{2},{3},{4},{5},{6},{7},'{8}') ", model.fk_product, model.fk_vendor, model.purchase_price, model.cost_price, model.minpurchasequantity, model.salestax, model.taxrate, model.discount, model.remark));
 
                 /// step 6 : wp_posts
-                strSql.Append(string.Format("update erp_order_automation_rule set location = '{0}',fk_product = {1},fk_vendor = {2},services = '{3}',fk_rule = {4},country= '{5}' where rowid = {6}", model.location, model.fk_product, model.fk_vendor, model.services, model.fk_rule,model.countryshipping, model.ID));
+                strSql.Append(string.Format("update erp_order_automation_rule set location = '{0}',fk_product = {1},fk_vendor = {2},services = '{3}',fk_rule = {4},country= '{5}',prefix_code= (select prefix_code from product_warehouse_rule where product_id = {1} ) where rowid = {6}", model.location, model.fk_product, model.fk_vendor, model.services, model.fk_rule,model.countryshipping, model.ID));
 
                 result = SQLHelper.ExecuteNonQuery(strSql.ToString());
             }
@@ -288,8 +288,8 @@ namespace LaylaERP.BAL
             {
                 StringBuilder strSql = new StringBuilder();
                 //StringBuilder strSql = new StringBuilder(string.Format("delete from Product_Purchase_Items where fk_product = {0}; ", model.fk_product));
-                strSql.Append(string.Format("insert into erp_order_automation_rule (fk_rule,fk_product,location,fk_vendor,services,country) values ({0},{1},'{2}',{3},'{4}','{5}') ", model.fk_rule, model.fk_product, model.location, model.fk_vendor, model.services,model.countryshipping));
-
+                //strSql.Append(string.Format("insert into erp_order_automation_rule (fk_rule,fk_product,location,fk_vendor,services,country,prefix_code) values ({0},{1},'{2}',{3},'{4}','{5}') ", model.fk_rule, model.fk_product, model.location, model.fk_vendor, model.services,model.countryshipping));
+                strSql.Append(string.Format("insert into erp_order_automation_rule (fk_rule,fk_product,location,fk_vendor,services,country,prefix_code) select {0},{1},'{2}',{3},'{4}','{5}', (select prefix_code from product_warehouse_rule where product_id = {1} ) prefix_code", model.fk_rule, model.fk_product, model.location, model.fk_vendor, model.services, model.countryshipping));
                 /// step 6 : wp_posts
                 //strSql.Append(string.Format(" update wp_posts set post_status = '{0}' ,comment_status = 'closed' where id = {1} ", model.OrderPostStatus.status, model.OrderPostStatus.order_id));
 
@@ -298,6 +298,21 @@ namespace LaylaERP.BAL
             catch (Exception ex)
             { throw ex; }
             return result;
+        }
+
+        public static DataSet GetProducts()
+        {
+            DataSet DS = new DataSet();
+            try
+            {
+                string strSQl = "SELECT p.id,CONCAT(p.post_title, COALESCE(CONCAT(' (',s.meta_value,')'),'')) text FROM wp_posts AS p left join wp_postmeta as s on p.id = s.post_id and s.meta_key = '_sku' WHERE p.post_type in ('product','product_variation') AND p.post_status != 'draft' group by p.post_title  ORDER BY p.ID;"
+                            + " Select t.term_id id,name text From wp_terms t Left Join wp_term_taxonomy tt On t.term_id = tt.term_id WHERE tt.taxonomy = 'product_cat'";
+
+                DS = SQLHelper.ExecuteDataSet(strSQl);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
         }
 
     }

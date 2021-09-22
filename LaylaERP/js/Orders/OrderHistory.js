@@ -210,7 +210,7 @@ function dataGridLoad(order_type, is_date) {
             {
                 data: 'payment_method_title', title: 'Payment Method', sWidth: "10%", render: function (data, type, row) {
                     if (row.payment_method == 'ppec_paypal' && row.paypal_status != 'COMPLETED') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="PaymentStatus(' + row.id + ',\'' + row.paypal_id + '\');">' + row.payment_method_title + '</a>';
-                    else if (row.payment_method == 'podium') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="podiumPaymentStatus(' + row.id + ',\'' + row.paypal_id + '\');">' + row.payment_method_title + '</a>';
+                    else if (row.payment_method == 'podium' && row.paypal_status != 'PAID') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="podiumPaymentStatus(' + row.id + ',\'' + row.paypal_id + '\');">' + row.payment_method_title + '</a>';
                     //if (row.payment_method == 'ppec_paypal') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="PaymentStatus(' + row.id + ',\'' + row.paypal_id + '\');">' + row.payment_method_title + '</a>';
                     else return row.payment_method_title;
                 }
@@ -291,8 +291,7 @@ function PaymentStatus(oid, pp_id) {
                 let status = data.status;
                 if (status == 'PAID') {
                     swal.queue([{
-                        title: status, confirmButtonText: 'Yes, Update it!', text: "You Payment has been received. Do you want to update your status?",
-                        showLoaderOnConfirm: true, icon: "success",
+                        title: status, confirmButtonText: 'Yes, Update it!', text: "You Payment has been received. Do you want to update your status?", showLoaderOnConfirm: true, showCloseButton: true, showCancelButton: true,
                         preConfirm: function () {
                             return new Promise(function (resolve) {
                                 let opt = { post_id: oid, meta_key: '_paypal_status', meta_value: 'COMPLETED' };
@@ -325,38 +324,42 @@ function PaymentStatus(oid, pp_id) {
 //Check podium Payment Status.
 function podiumPaymentStatus(oid, podium_id) {
     let option = { strValue1: 'getToken' }; let create_url = 'https://api.podium.com/v4/invoices/' + podium_id;
-    $("#loader").show(); 
-    $.get('/Setting/GetPodiumToken', option).done(function (result, textStatus, jqXHR) {
-        let access_token = result.message;
-        $.ajax({
-            type: 'get', url: create_url, contentType: "application/json; charset=utf-8", dataType: "json", data: { locationUid: "6c2ee0d4-0429-5eac-b27c-c3ef0c8f0bc7" },
-            beforeSend: function (xhr) { xhr.setRequestHeader("Accept", "application/json"); xhr.setRequestHeader("Authorization", "Bearer " + access_token); }
-        }).then(response => {
-            console.log(response);
-            let status = response.data.status.toUpperCase();
-            if (status == 'PAID') {
-                let payment_uid = response.data.payments[0].uid, location_uid = response.data.location.uid, invoiceNumber = response.data.invoiceNumber;
-                let order_note = 'Payment completed through Podium by ' + response.data.customerName + ' on ';
-                swal.queue([{
-                    title: status, confirmButtonText: 'Yes, Update it!', text: "You Payment has been received. Do you want to update your status?", showLoaderOnConfirm: true, 
-                    preConfirm: function () {
-                        return new Promise(function (resolve) {
-                            let opt = { post_id: oid, payment_uid: payment_uid, location_uid: location_uid, invoice_number: invoiceNumber, order_note: order_note };
-                            $.post('/Orders/UpdatePodiumPaymentAccept', opt)
-                                .done(function (data) {
-                                    if (data.status) {
-                                        swal.insertQueueStep('Status updated successfully.'); order_Split(oid); $('#dtdata').DataTable().ajax.reload();
-                                    }
-                                    else { swal.insertQueueStep('Status updated successfully.'); }
-                                    resolve();
-                                })
-                        })
+    swal.queue([{
+        title: 'Payment Status', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,
+        onOpen: () => {
+            swal.showLoading();
+            $.get('/Setting/GetPodiumToken', option).then(response => {
+                let access_token = response.message;
+                $.ajax({
+                    type: 'get', url: create_url, contentType: "application/json; charset=utf-8", dataType: "json", data: { locationUid: "6c2ee0d4-0429-5eac-b27c-c3ef0c8f0bc7" },
+                    beforeSend: function (xhr) { xhr.setRequestHeader("Accept", "application/json"); xhr.setRequestHeader("Authorization", "Bearer " + access_token); }
+                }).then(response => {
+                    let status = response.data.status.toUpperCase();
+                    if (status == 'PAID') {
+                        let payment_uid = response.data.payments[0].uid, location_uid = response.data.location.uid, invoiceNumber = response.data.invoiceNumber;
+                        let order_note = 'Payment completed through Podium by ' + response.data.customerName + ' on ';
+                        swal.queue([{
+                            title: status, confirmButtonText: 'Yes, Update it!', text: "You Payment has been received. Do you want to update your status?", showLoaderOnConfirm: true, showCloseButton: true, showCancelButton: true,
+                            preConfirm: function () {
+                                return new Promise(function (resolve) {
+                                    let opt = { post_id: oid, payment_uid: payment_uid, location_uid: location_uid, invoice_number: invoiceNumber, order_note: order_note };
+                                    $.post('/Orders/UpdatePodiumPaymentAccept', opt)
+                                        .done(function (data) {
+                                            if (data.status) {
+                                                swal.insertQueueStep('Status updated successfully.'); order_Split(oid); $('#dtdata').DataTable().ajax.reload();
+                                            }
+                                            else { swal.insertQueueStep('Status updated successfully.'); }
+                                            resolve();
+                                        });
+                                });
+                            }
+                        }]);
                     }
-                }]);
-            }
-            else { swal(status, 'Request has sent for payment.', 'info'); }
-        }).catch(err => console.error('error', err));
-    }).fail(function (jqXHR, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', 'Something went wrong, please try again.', "error"); }).always(function () { $("#loader").hide(); });
+                    else { swal.hideLoading(); swal(status, 'Request has sent for payment.', 'info'); }
+                }).catch(err => { swal.hideLoading(); swal('Error!', err, 'error'); });
+            }).catch(err => { swal.hideLoading(); swal('Error!', err, 'error'); }).always(function () { swal.hideLoading(); });
+        }
+    }]);
 }
 function order_Split(order_id) {
     var obj = { order_id: parseInt(order_id) || 0 };

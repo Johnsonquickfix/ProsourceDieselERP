@@ -644,6 +644,32 @@
             catch { }
             return result;
         }
+        public static int UpdatePodiumRefundStatus(OrderPodiumDetailsModel model)
+        {
+            int result = 0;
+            try
+            {
+                DateTime cDate = CommonDate.CurrentDate(), cUTFDate = CommonDate.UtcDate();
+                StringBuilder strSql = new StringBuilder();
+                strSql.Append(string.Format("insert into wp_postmeta (post_id,meta_key,meta_value) select {0} post_id,meta_key,meta_value from ", model.post_id));
+                strSql.Append(string.Format("(select '_podium_payment_uid' meta_key,'{0}' meta_value union all select '_podium_location_uid' meta_key,'{1}' meta_value union all select '_podium_invoice_number' meta_key,'{2}' meta_value union all select '_podium_status' meta_key,'PAID' meta_value) tt ", model.payment_uid, model.location_uid, model.invoice_number));
+                strSql.Append(string.Format("where tt.meta_key not in (select meta_key from wp_postmeta where post_id = {0});", model.post_id));
+
+                strSql.Append(string.Format("update wp_postmeta set meta_value='{0}' where post_id='{1}' and meta_key='{2}';", model.payment_uid, model.post_id, "_podium_payment_uid"));
+                strSql.Append(string.Format("update wp_postmeta set meta_value='{0}' where post_id='{1}' and meta_key='{2}';", model.location_uid, model.post_id, "_podium_location_uid"));
+                strSql.Append(string.Format("update wp_postmeta set meta_value='{0}' where post_id='{1}' and meta_key='{2}';", model.invoice_number, model.post_id, "_podium_invoice_number"));
+
+                strSql.Append(string.Format("update wp_posts set post_status = '{0}' where id = {1};", "wc-processing", model.post_id));
+
+                strSql.Append("insert into wp_comments(comment_post_ID, comment_author, comment_author_email, comment_author_url, comment_author_IP, comment_date, comment_date_gmt, comment_content, comment_karma, comment_approved, comment_agent, comment_type, comment_parent, user_id) ");
+                strSql.Append(string.Format("VALUES({0}, 'WooCommerce', 'woocommerce@laylasleep.com', '', '', '{1}', '{2}', '{3}{4}', '0', '1', 'WooCommerce', 'order_note', '0', '0');", model.post_id, cDate.ToString("yyyy/MM/dd HH:mm:ss"), cUTFDate.ToString("yyyy/MM/dd HH:mm:ss"), model.order_note, cDate.ToString("yyyy/MM/dd HH:mm:ss")));
+
+                result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
+                if (!string.IsNullOrEmpty(model.payment_uid)) PurchaseOrderRepository.CreateOrders(model.post_id);
+            }
+            catch { }
+            return result;
+        }
         //Refund Order
         public static long AddRefundOrderPost(long parent_id)
         {
@@ -1168,7 +1194,7 @@
                             + " max(case meta_key when '_shipping_company' then meta_value else '' end) s_company,max(case meta_key when '_shipping_address_1' then meta_value else '' end) s_address_1,max(case meta_key when '_shipping_address_2' then meta_value else '' end) s_address_2,"
                             + " max(case meta_key when '_shipping_postcode' then meta_value else '' end) s_postcode,max(case meta_key when '_shipping_city' then meta_value else '' end) s_city,"
                             + " max(case meta_key when '_shipping_country' then meta_value else '' end) s_country,max(case meta_key when '_shipping_state' then meta_value else '' end) s_state,"
-                            + " max(case meta_key when '_paypal_id' then meta_value else '' end) paypal_id,max(case meta_key when 'taskuidforsms' then meta_value else '' end) podium_id,(SELECT count(split_id) FROM split_record WHERE main_order_id=os.id) is_shiped"
+                            + " max(case meta_key when '_paypal_id' then meta_value else '' end) paypal_id,max(case meta_key when 'taskuidforsms' then meta_value else '' end) podium_id,max(case meta_key when '_podium_payment_uid' then meta_value else '' end) podium_payment_uid,(SELECT count(split_id) FROM split_record WHERE main_order_id=os.id) is_shiped"
                             + " from wp_posts os inner join wp_postmeta pm on pm.post_id = os.id"
                             + " left outer join wp_users u on u.id = meta_value and meta_key='_customer_user'"
                             + " where os.id = @order_id "

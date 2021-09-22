@@ -608,7 +608,7 @@ function getOrderInfo() {
                     $('#lblOrderNo').data('pay_by', data[0].payment_method);
                     if (data[0].payment_method == 'ppec_paypal') $('#lblOrderNo').data('pay_id', data[0].paypal_id);
                     else if (data[0].payment_method == 'podium') $('#lblOrderNo').data('pay_id', data[0].podium_id);
-                    else $('#lblOrderNo').data('pay_id', '')
+                    else $('#lblOrderNo').data('pay_id', '');
 
                     if (data[0].payment_method.trim().length > 0)
                         $('.payment-history').text('Payment via ' + data[0].payment_method_title + ' ' + data[0].created_via + '. Customer IP: ' + data[0].ip_address);

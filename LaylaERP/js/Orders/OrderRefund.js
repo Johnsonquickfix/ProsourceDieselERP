@@ -1,36 +1,7 @@
-﻿var wc_users_params = [{ "name": "United States", "abbreviation": "US", "states": [{ "name": "Alabama", "abbreviation": "AL" }, { "name": "Alaska", "abbreviation": "AK" }, { "name": "American Samoa", "abbreviation": "AS" }, { "name": "Arizona", "abbreviation": "AZ" }, { "name": "Arkansas", "abbreviation": "AR" }, { "name": "California", "abbreviation": "CA" }, { "name": "Colorado", "abbreviation": "CO" }, { "name": "Connecticut", "abbreviation": "CT" }, { "name": "Delaware", "abbreviation": "DE" }, { "name": "District Of Columbia", "abbreviation": "DC" }, { "name": "Federated States Of Micronesia", "abbreviation": "FM" }, { "name": "Florida", "abbreviation": "FL" }, { "name": "Georgia", "abbreviation": "GA" }, { "name": "Guam", "abbreviation": "GU" }, { "name": "Hawaii", "abbreviation": "HI" }, { "name": "Idaho", "abbreviation": "ID" }, { "name": "Illinois", "abbreviation": "IL" }, { "name": "Indiana", "abbreviation": "IN" }, { "name": "Iowa", "abbreviation": "IA" }, { "name": "Kansas", "abbreviation": "KS" }, { "name": "Kentucky", "abbreviation": "KY" }, { "name": "Louisiana", "abbreviation": "LA" }, { "name": "Maine", "abbreviation": "ME" }, { "name": "Marshall Islands", "abbreviation": "MH" }, { "name": "Maryland", "abbreviation": "MD" }, { "name": "Massachusetts", "abbreviation": "MA" }, { "name": "Michigan", "abbreviation": "MI" }, { "name": "Minnesota", "abbreviation": "MN" }, { "name": "Mississippi", "abbreviation": "MS" }, { "name": "Missouri", "abbreviation": "MO" }, { "name": "Montana", "abbreviation": "MT" }, { "name": "Nebraska", "abbreviation": "NE" }, { "name": "Nevada", "abbreviation": "NV" }, { "name": "New Hampshire", "abbreviation": "NH" }, { "name": "New Jersey", "abbreviation": "NJ" }, { "name": "New Mexico", "abbreviation": "NM" }, { "name": "New York", "abbreviation": "NY" }, { "name": "North Carolina", "abbreviation": "NC" }, { "name": "North Dakota", "abbreviation": "ND" }, { "name": "Northern Mariana Islands", "abbreviation": "MP" }, { "name": "Ohio", "abbreviation": "OH" }, { "name": "Oklahoma", "abbreviation": "OK" }, { "name": "Oregon", "abbreviation": "OR" }, { "name": "Palau", "abbreviation": "PW" }, { "name": "Pennsylvania", "abbreviation": "PA" }, { "name": "Puerto Rico", "abbreviation": "PR" }, { "name": "Rhode Island", "abbreviation": "RI" }, { "name": "South Carolina", "abbreviation": "SC" }, { "name": "South Dakota", "abbreviation": "SD" }, { "name": "Tennessee", "abbreviation": "TN" }, { "name": "Texas", "abbreviation": "TX" }, { "name": "Utah", "abbreviation": "UT" }, { "name": "Vermont", "abbreviation": "VT" }, { "name": "Virgin Islands", "abbreviation": "VI" }, { "name": "Virginia", "abbreviation": "VA" }, { "name": "Washington", "abbreviation": "WA" }, { "name": "West Virginia", "abbreviation": "WV" }, { "name": "Wisconsin", "abbreviation": "WI" }, { "name": "Wyoming", "abbreviation": "WY" }] }, { "name": "Canada", "abbreviation": "CA", "states": [{ "name": "Alberta", "abbreviation": "AB" }, { "name": "British Columbia", "abbreviation": "BC" }, { "name": "Manitoba", "abbreviation": "MB" }, { "name": "New Brunswick", "abbreviation": "NB" }, { "name": "Newfoundland and Labrador", "abbreviation": "NL" }, { "name": "Northwest Territories", "abbreviation": "NT" }, { "name": "Nova Scotia", "abbreviation": "NS" }, { "name": "Nunavut", "abbreviation": "NU" }, { "name": "Ontario", "abbreviation": "ON" }, { "name": "Prince Edward Island", "abbreviation": "PE" }, { "name": "Quebec", "abbreviation": "QC" }, { "name": "Saskatchewan", "abbreviation": "SK" }, { "name": "Yukon Territory", "abbreviation": "YT" }] }]
-var auto_coupon = [{ post_title: "matt-found", title: "Mattress-Foundation", type: 'auto_coupon', discount_type: 'fixed_cart', coupon_amount: 10, product_ids: '20861,118', exclude_product_ids: '' },
-{ post_title: "matt-topper", title: "Mattress-Topper", type: 'auto_coupon', discount_type: 'fixed_cart', coupon_amount: 10, product_ids: '56774,118', exclude_product_ids: '' },
-{ post_title: "matt-bedframe", title: "Mattress-Bedframe", type: 'auto_coupon', discount_type: 'fixed_cart', coupon_amount: 10, product_ids: '56774,118', exclude_product_ids: '' },
-{ post_title: "matt-sheet", title: "Mattress-Sheet", type: 'auto_coupon', discount_type: 'fixed_cart', coupon_amount: 10, product_ids: '124524,118', exclude_product_ids: '' },
-{ post_title: "matt-blanket", title: "Mattress-Blanket", type: 'auto_coupon', discount_type: 'fixed_cart', coupon_amount: 10, product_ids: '128244,118', exclude_product_ids: '' },
-{ post_title: "matt-pillow", title: "Mattress-Pillow", type: 'auto_coupon', discount_type: 'fixed_cart', coupon_amount: 10, product_ids: '14023,118', exclude_product_ids: '' },
-{ post_title: "found-frame", title: "Bundle Discount", type: 'auto_coupon', discount_type: 'fixed_cart', coupon_amount: 25, product_ids: '31729,20861', exclude_product_ids: '' },
-{ post_title: "kapok-pillow", title: "Kapok Pillow", type: 'diff', discount_type: '2x_percent', coupon_amount: 50, product_ids: '14023,14023', exclude_product_ids: '' },
-{ post_title: '118', title: 'Memory Foam Mattress', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, product_ids: "118 ", exclude_product_ids: '' },
-{ post_title: '611172', title: 'Hybrid Mattress', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, product_ids: "611172 ", exclude_product_ids: '' },
-{ post_title: '14023', title: 'Kapok Pillow', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, product_ids: "14023 ", exclude_product_ids: '' },
-{ post_title: '611238', title: 'Memory Foam Pillow', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, product_ids: "611238 ", exclude_product_ids: '' },
-{ post_title: '20861', title: 'Mattress Foundation', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, product_ids: "20861 ", exclude_product_ids: '' },
-{ post_title: '31729', title: 'Bed Frame', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, product_ids: "31729 ", exclude_product_ids: '' },
-{ post_title: '611252', title: 'Platform Bed', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, product_ids: "611252 ", exclude_product_ids: '' },
-{ post_title: '611286', title: 'Adjustable Base', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, product_ids: "611286 ", exclude_product_ids: '' },
-{ post_title: '124524', title: 'Bamboo Sheets', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, product_ids: "124524 ", exclude_product_ids: '' },
-{ post_title: '128244', title: 'Weighted Blanket', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, product_ids: "128244 ", exclude_product_ids: '' },
-{ post_title: '56774', title: 'Memory Foam Topper', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, product_ids: "56774 ", exclude_product_ids: '' },
-{ post_title: '611268', title: 'Essential Mattress Protector', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, product_ids: "611268 ", exclude_product_ids: '' },
-{ post_title: '612955', title: 'Full Encasement Mattress Protector', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, product_ids: "612955 ", exclude_product_ids: '' },
-{ post_title: '612947', title: 'Cooling Mattress Protector', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, product_ids: "612947 ", exclude_product_ids: '' },
-{ post_title: '611220', title: 'Pet Bed', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, product_ids: "611220 ", exclude_product_ids: '' },
-{ post_title: '612995', title: 'Adjustable Base Plus', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, product_ids: "612995 ", exclude_product_ids: '' },
-{ post_title: '733500', title: 'Metal Platform Base', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, product_ids: "733500 ", exclude_product_ids: '' }
-];
-var recycling_item = [118, 20861, 611172];
-
-$(document).ready(function () {
+﻿$(document).ready(function () {
     $('.billinfo').prop("disabled", true);
-    setTimeout(function () { $("#loader").show(); getOrderInfo(); }, 20);
     $("#ddlshipcountry").change(function () { var obj = { id: $("#ddlshipcountry").val() }; BindStateCounty("ddlshipstate", obj); });
+    getOrderInfo();
     $(document).on("click", ".btnRefundOrder", function (t) {
         t.preventDefault(); $('.billinfo').prop("disabled", false); isEdit(true);
         $('.box-tools,.footer-finalbutton').empty().append('<button type="button" class="btn btn-danger btnRefundCancel">Cancel</button> <button type="button" class="btn btn-danger btnRefundOk">Refund $0.00 manually</button>');
@@ -47,14 +18,7 @@ var ajaxFunc = function (url, data, beforeSendFun, successFun, completeFun, erro
 function beforeSendFun() { $("#loader").css("display", ""); $("#loader").show(); }
 function completeFun() { $("#loader").css("display", "none"); $("#loader").hide(); }
 function errorFun(XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); }
-///Bind States of Country
-function BindStateCounty(ctr, obj) {
-    var res = wc_users_params.filter(element => element.abbreviation == obj.id);
-    $("#" + ctr + "").html('<option value="0">Select</option>');
-    if (res.length > 0) {
-        for (i = 0; i < res[0].states.length; i++) { $("#" + ctr + "").append('<option value="' + res[0].states[i].abbreviation + '">' + res[0].states[i].name + '</option>'); }
-    }
-}
+
 function ValidateMaxValue(value, min, max) {
     if (parseInt(value) < min || isNaN(value))
         return 0;
@@ -75,7 +39,11 @@ function getOrderInfo() {
         ajaxFunc('/Orders/GetOrderInfo', opt, beforeSendFun, function (result) {
             var data = JSON.parse(result);
             if (data.length > 0) {
-                $('#lblOrderNo').data('pay_by', data[0].payment_method); $('#lblOrderNo').data('pay_id', data[0].paypal_id);
+                $('#lblOrderNo').data('pay_by', data[0].payment_method);
+                if (data[0].payment_method == 'ppec_paypal') $('#lblOrderNo').data('pay_id', data[0].paypal_id);
+                else if (data[0].payment_method == 'podium') { $('#lblOrderNo').data('pay_id', data[0].podium_id); $('#lblOrderNo').data('payment_uid', data[0].podium_payment_uid); }
+                else $('#lblOrderNo').data('pay_id', '');
+
                 if (data[0].payment_method.trim().length > 0)
                     $('.payment-history').text('Payment via ' + data[0].payment_method + ' ' + data[0].created_via + '. Customer IP: ' + data[0].ip_address);
                 else
@@ -453,7 +421,7 @@ function createItemsList() {
     return itemsDetails;
 }
 function saveCO() {
-    let oid = parseInt($('#hfOrderNo').val()) || 0;
+    let oid = parseInt($('#hfOrderNo').val()) || 0, pay_by = $('#lblOrderNo').data('pay_by').trim();
     //if (!ValidateData()) { $("#loader").hide(); return false };    
     let postMeta = createPostMeta(), postStatus = createPostStatus(), otherItems = createOtherItemsList(), taxItems = createTaxItemsList(), itemsDetails = createItemsList();
 
@@ -467,20 +435,59 @@ function saveCO() {
         data: JSON.stringify(obj), dataType: "json", beforeSend: function () { $("#loader").show(); },
         success: function (data) {
             if (data.status == true) {
-                PaypalRefundsPayment();
+                if (pay_by == 'ppec_paypal') PaypalRefundsPayment();
+                else if (pay_by == 'podium') PodiumPayment();
+                else '';
+
                 $('.box-tools,.footer-finalbutton').empty().append('<button type="button" class="btn btn-danger btnRefundOrder"><i class="far fa-edit"></i> Refund</button>');
                 $('#order_line_items,#order_state_recycling_fee_line_items,#order_fee_line_items,#order_shipping_line_items,#order_refunds,#billCoupon,.refund-action').empty();
                 $('.billinfo').prop("disabled", true);
                 swal('Alert!', data.message, "success");
-                setTimeout(function () { getOrderItemList(oid); }, 50);
+                setTimeout(function () { getOrderItemList(oid); $('.billinfo').prop("disabled", true); }, 50);
             }
             else { swal('Alert!', data.message, "error").then((result) => { return false; }); }
         },
         error: function (xhr, status, err) { $("#loader").hide(); alert(err); },
-        complete: function () { $("#loader").hide(); isEdit(false);},
+        complete: function () { $("#loader").hide(); isEdit(false); },
     });
     return false;
 }
+
+///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Podium Payment Return ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+function PodiumPayment() {
+    let oid = parseInt($('#hfOrderNo').val()) || 0;
+    let invoice_no = $('#lblOrderNo').data('pay_id').trim(), payment_uid = $('#lblOrderNo').data('payment_uid').trim(), invoice_amt = (parseFloat($('.btnRefundOk').data('nettotal')) || 0.00);
+
+    let opt_refund = { reason: 'requested_by_customer', locationUid: "6c2ee0d4-0429-5eac-b27c-c3ef0c8f0bc7", amount: invoice_amt * 100, paymentUid: payment_uid, note: '' };
+    //console.log(opt_inv);
+    console.log('Start Podium Payment Processing...');
+    let option = { strValue1: 'getToken' };
+    swal.queue([{
+        title: 'Podium Payment Processing.', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,
+        onOpen: () => {
+            swal.showLoading();
+            $.get('/Setting/GetPodiumToken', option).then(response => {
+                let access_token = response.message;
+                $.ajax({
+                    type: 'post', url: 'https://api.podium.com/v4/invoices/' + invoice_no + '/refund', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_refund),
+                    beforeSend: function (xhr) { xhr.setRequestHeader("Accept", "application/json"); xhr.setRequestHeader("Authorization", "Bearer " + access_token); }
+                }).then(response => {
+                    console.log(response);
+                    //updatePayment(response.data.uid, invoice_amt.toFixed(2));
+                }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', err, 'error'); });
+            }).catch(err => { swal.hideLoading(); swal('Error!', err, 'error'); }).always(function () { swal.hideLoading(); });
+        }
+    }]);
+}
+function updatePayment(oid, taskUid, invoice_amt) {
+    let order_note = 'Refund Issued for $' + invoice_amt + '. The refund should appear on your statement in 5 to 10 days. Payment completed through Podium by on ';
+    let opt = { post_id: oid, payment_uid: '', location_uid: '', invoice_number: 'INV-' + oid, order_note: order_note };
+    $.post('/Orders/UpdatePodiumPaymentAccept', opt).then(response => {
+        swal('Success!', response.message, 'success');
+        if (response.status == true) { $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true); successModal('podium', taskUid, true); }
+    }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', err, 'error'); });
+}
+
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ PayPal Payment Return ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function PaypalRefundsPayment() {
     let oid = parseInt($('#hfOrderNo').val()) || 0;

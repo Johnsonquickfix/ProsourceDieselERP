@@ -196,6 +196,7 @@
     <Compile Include="Controllers\InventoryController.cs" />
     <Compile Include="Controllers\IPNPaypalController.cs" />
     <Compile Include="Controllers\OrdersController.cs" />
+    <Compile Include="Controllers\PaymentInvoiceController.cs" />
     <Compile Include="Controllers\PodiumController.cs" />
     <Compile Include="Controllers\ProductController.cs" />
     <Compile Include="Controllers\PurchaseOrderController.cs" />
@@ -640,6 +641,7 @@
     <Content Include="js\Orders\OrderRefund.js" />
     <Content Include="js\Orders\QuickOrder.js" />
     <Content Include="js\Orders\SplitOrder.js" />
+    <Content Include="js\PaymentInvoice\PaymentInvoice.js" />
     <Content Include="js\Product\AddnewProduct.js" />
     <Content Include="js\Product\AddnewPurchase.js" />
     <Content Include="js\Product\Product.js" />
@@ -905,6 +907,7 @@
     <Content Include="Views\Hrms\HRA.cshtml" />
     <Content Include="Views\Hrms\ListGrantLeave.cshtml" />
     <Content Include="Views\Setting\OrderShippingRule.cshtml" />
+    <Content Include="Views\PaymentInvoice\PaymentInvoiceList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

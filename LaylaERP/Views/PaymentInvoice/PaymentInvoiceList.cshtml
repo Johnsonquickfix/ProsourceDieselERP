@@ -20,7 +20,7 @@
             <div class="user-top-section">
                 <div class="tablenav top tablenav-top2">
                     <div class="alignleft actions bulkactions">                        
-                        <button type="button" id="btnChange" onclick="orderStatus();" class="btn btn-primary btn-flat button" data-toggle="tooltip" title="Go For Payment">Go For Payment</button>
+                        <button type="button" id="btnChange" onclick="takepayment();" class="btn btn-primary btn-flat button" data-toggle="tooltip" title="Go For Payment">Go For Payment</button>
                     </div>
                     <div class="alignleft actions">
                         <div class="input-group">
@@ -29,12 +29,12 @@
                         </div>
                     </div>
                     <div class="alignleft actions">
-                        <select class="form-control" id="ddlOrderStatus">
-                            <option value="">Select Type</option>
-                            <option value="PO">Purchases Order</option>
+                        <select class="form-control" id="ddlStatus">
+                            @*<option value="">Select Type</option>*@
                             <option value="PR">Received Order</option>
+                            <option value="PO">Purchases Order</option>
                         </select>
-                        <input type="submit" name="filter_action" id="btnOtherFilter" class="button" value="Filter" data-toggle="tooltip" title="Search order by selection criteria.">
+                        @*<input type="submit" name="filter_action" id="btnOtherFilter" class="button" value="Filter" data-toggle="tooltip" title="Search order by selection criteria.">*@
                     </div>
                 </div>
             </div>
@@ -48,7 +48,7 @@
                         <table id="dtdata" class="inventory-table table-blue table check-table table-bordered table-striped dataTable">
                             <thead>
                                 <tr>
-                                    @*<th width="5%" style="display:none"><input type="checkbox" name="checkall" id="checkall" onClick="CheckAll();"><label></label></th>*@
+                                    <th width="5%"><input type="checkbox" name="checkall" id="checkall" onClick="CheckAll();"><label></label></th>
                                     <th>PO No.</th>
                                     <th>Date</th>
                                     <th>Invoice No</th>

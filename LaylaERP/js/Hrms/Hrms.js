@@ -22,8 +22,8 @@
     $("#txtJoiningDate").datepicker({ format: 'mm-dd-yyyy', });
     $("#txtLeavingDate").datepicker({ format: 'mm-dd-yyyy', });
     $(".select2").select2();
-    if (id != "NewVendor") {
-        GetVendorByID(id);
+    if (id != "Employee") {
+        GetEmployeeByID(id);
     }
    
     EmployeeLinkedFiles();
@@ -576,7 +576,7 @@ function DeleteEmployeeLinkedFiles(id) {
         })
     }
 }
-function GetVendorByID(id) {
+function GetEmployeeByID(id) {
     var obj =
         $.ajax({
             url: "/Hrms/GetEmployeeByID/" + id,

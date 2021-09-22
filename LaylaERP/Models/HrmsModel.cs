@@ -23,6 +23,7 @@ namespace LaylaERP.Models
         //erp_employee_details
         public int rowid1 { get; set; }
         public int fk_emp { get; set; }
+        public int fk_user { get; set; }
         public string birthplace { get; set; }
         public string maritalstatus { get; set; }
         public string address1 { get; set; }
@@ -73,5 +74,7 @@ namespace LaylaERP.Models
         public string strValue1 { get; set; }
         public string strValue2 { get; set; }
         public string strValue3 { get; set; }
+        public string strValue4 { get; set; }
+        public string strValue5 { get; set; }
     }
 }

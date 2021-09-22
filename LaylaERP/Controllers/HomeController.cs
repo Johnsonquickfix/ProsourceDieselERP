@@ -55,26 +55,27 @@
 
                         mailMessage.IsBodyHtml = true;
 
-                        mailMessage.To.Add(new MailAddress("david.quickfix1@gmail.com"));
+                       string emails = "david.quickfix1@gmail.com";
 
+                        SendEmail.SendEmails(emails,mailMessage.Subject,mailMessage.Body);
 
-                        SmtpClient smtp = new SmtpClient();
+                        //SmtpClient smtp = new SmtpClient();
 
-                        smtp.Host = ds.Tables[0].Rows[0]["SMTPServerName"].ToString();
+                        //smtp.Host = ds.Tables[0].Rows[0]["SMTPServerName"].ToString();
 
-                        smtp.EnableSsl = Convert.ToBoolean(ConfigurationManager.AppSettings["EnableSsl"]);
+                        //smtp.EnableSsl = Convert.ToBoolean(ConfigurationManager.AppSettings["EnableSsl"]);
 
-                        System.Net.NetworkCredential NetworkCred = new System.Net.NetworkCredential();
+                        //System.Net.NetworkCredential NetworkCred = new System.Net.NetworkCredential();
 
-                        NetworkCred.UserName = ds.Tables[0].Rows[0]["SenderEmailID"].ToString(); //reading from web.config  
+                        //NetworkCred.UserName = ds.Tables[0].Rows[0]["SenderEmailID"].ToString(); //reading from web.config  
 
-                        NetworkCred.Password = ds.Tables[0].Rows[0]["SenderEmailPwd"].ToString(); //reading from web.config  
+                        //NetworkCred.Password = ds.Tables[0].Rows[0]["SenderEmailPwd"].ToString(); //reading from web.config  
 
-                        smtp.UseDefaultCredentials = true;
+                        //smtp.UseDefaultCredentials = true;
 
-                        smtp.Credentials = NetworkCred;
+                        //smtp.Credentials = NetworkCred;
 
-                        smtp.Port = Convert.ToInt32(ds.Tables[0].Rows[0]["SMTPServerPortNo"]); //reading from web.config  
+                        //smtp.Port = Convert.ToInt32(ds.Tables[0].Rows[0]["SMTPServerPortNo"]); //reading from web.config  
 
                         //smtp.Send(mailMessage);
 

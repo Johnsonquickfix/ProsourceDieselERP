@@ -330,5 +330,18 @@ namespace LaylaERP.Controllers
             }
             return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
         }
+
+        [HttpGet]
+        public JsonResult GetProductList()
+        {
+            string result = string.Empty;
+            try
+            {
+                DataSet DS = SettingRepository.GetProducts();
+                result = JsonConvert.SerializeObject(DS, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
     }
 }

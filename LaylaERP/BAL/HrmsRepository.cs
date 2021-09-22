@@ -136,7 +136,7 @@ namespace LaylaERP.BAL
             {
                 model.pwd = EncryptedPwd(model.pwd);
                 string strsql = "INSERT into erp_hrms_emp(firstname, lastname, email,pwd, emp_type, dob, phone, gender, is_active )" +
-                    " values(@firstname, @lastname, @email,@pwd @emp_type, @dob, @phone, @gender, @is_active );SELECT LAST_INSERT_ID();";
+                    " values(@firstname, @lastname, @email,@pwd, @emp_type, @dob, @phone, @gender, @is_active );SELECT LAST_INSERT_ID();";
                 MySqlParameter[] para =
                 {
                     new MySqlParameter("@firstname", model.firstname),
@@ -187,6 +187,52 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
+        //Add customers
+        public static int AddNewEmployeeasUser(HrmsModel model)
+        {
+            try
+            {
+                model.pwd = EncryptedPwd(model.pwd);
+                string username = model.firstname + " " + model.lastname;
+
+                string strsql = "insert into wp_users(user_login,user_pass,user_nicename, user_email, user_registered, display_name, user_image) values(@user_login,@user_pass,@user_nicename, @user_email, @user_registered, @display_name, @user_image);SELECT LAST_INSERT_ID();";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@user_login", model.email),
+                    new MySqlParameter("@user_pass", model.pwd),
+                    new MySqlParameter("@user_nicename", username),
+                    new MySqlParameter("@user_email", model.email),
+                    new MySqlParameter("@user_registered", Convert.ToDateTime(DateTime.UtcNow.ToString("yyyy-MM-dd"))),
+                    new MySqlParameter("@display_name", username),
+                    new MySqlParameter("@user_image", ""),
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+        public static void AddEmployeeUserMetaData(long id)
+        {
+            try
+            {
+                 string varFieldsName = "wp_capabilities", varFieldsValue = "employee";
+                string strsql = "INSERT INTO wp_usermeta(user_id,meta_key,meta_value) VALUES(@user_id,@meta_key,@meta_value); select LAST_INSERT_ID() as ID;";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@user_id", id),
+                    new MySqlParameter("@meta_key", varFieldsName),
+                    new MySqlParameter("@meta_value", varFieldsValue),
+                };
+                SQLHelper.ExecuteNonQuery(strsql, para);
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
 
         public static int AddEmployeeBasicDetails(HrmsModel model, int id)
         {
@@ -194,7 +240,6 @@ namespace LaylaERP.BAL
             {
                 string strsql = "INSERT into erp_hrms_empdetails(fk_emp,birthplace, maritalstatus, address1, address2, city, state, zipcode,country   )" +
                                  " values(@fk_emp, @birthplace, @maritalstatus, @address1, @address2, @city, @state, @zipcode, @country); SELECT LAST_INSERT_ID();";
-
 
                 MySqlParameter[] para =
                 {

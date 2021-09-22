@@ -5,7 +5,7 @@
 }
 
 <div class="page-title">
-    <h2 class="page-heading">Free Product</h2>
+    <h2 class="page-heading">Free Product</h2><span title="Click Here To Back To List" data-placement="bottom" data-toggle="tooltip"><a href="../../Setup/freeproduct" class="btn btn-danger">Back to List</a></span>
     <div class="text-right">
 
     </div>
@@ -15,7 +15,7 @@
         <div class="box box-primary">
             <div class="box-body">
                 <div class="form-group">
-                    <input type="text" id="hfid" />
+                    <input type="hidden" id="hfid" />
                     <label for="product">Product<span style="color:red">*</span></label>
                     <select class="form-control select2" id="ddlproduct" style="width:100%;" disabled></select>
                 </div>
@@ -28,6 +28,10 @@
                 <div class="form-group">
                     <label for="quantity">Quantity<span style="color:red">*</span></label>
                     <input type="text" class="form-control" id="txtquantity" />
+                </div>
+
+                <div class="form-group">
+                    <input type="checkbox" id="chkstatus" name="status"> <label for="Active">Active</label><br>
                 </div>
 
                 <div class="box-footer">
@@ -72,6 +76,7 @@
                         $("#ddlproduct").val(jobj[0].product_id).trigger('change');
                         $("#ddlfreeproduct").val(jobj[0].free_product_id).trigger('change');
                         $("#txtquantity").val(jobj[0].free_quantity);
+                        jobj[0].status == true ? $("#chkstatus").prop("checked", true) : $("#chkstatus").prop("checked", false);
                     }
                 },
                 error: function (msg) {
@@ -121,6 +126,7 @@
         productid = $("#ddlproduct").val();
         freeproductid = $("#ddlfreeproduct").val();
         quantity = $("#txtquantity").val();
+        status = $("#chkstatus").prop("checked") ? 1 : 0;
 
         if (productid == 0) {
             swal('Alert', 'Please Select Product', 'error').then(function () { swal.close(); $('#ddlproduct').focus(); });
@@ -140,6 +146,7 @@
                 rowid: id,
                 free_product_id: freeproductid,
                 free_quantity: quantity,
+                status: status,
             }
             $.ajax({
                 url: '/Setup/UpdateFreeProduct/', dataType: 'json', type: 'Post',
@@ -149,7 +156,7 @@
                 beforeSend: function () { $("#loader").show(); },
                 success: function (data) {
                     if (data.status == true) {
-                        swal('Alert!', data.message, 'success');
+                        swal('Alert!', data.message, 'success').then((result) => { location.href = '../freeproduct'; });
 
                     }
                     else {

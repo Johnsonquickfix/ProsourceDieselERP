@@ -287,7 +287,7 @@ namespace LaylaERP.BAL
             DataTable dt = new DataTable();
             try
             {
-                string strSql = "SELECT rowid as id, format(basic1,2) as basic1, format(basic2,2) as basic2 , format(hra_office,2) as hra_office, format(hra_field,2) as hra_field, DATE_FORMAT(from_date, '%m-%d-%Y') as from_date from erp_hrms_HRA where rowid='" + id +"'"; 
+                string strSql = "SELECT rowid as id, Replace(format(basic1,2),',','') as basic1, Replace(format(basic2,2),',','') as basic2 , Replace(format(hra_office,2),',','') as hra_office, Replace(format(hra_field,2),',','') as hra_field, DATE_FORMAT(from_date, '%m-%d-%Y') as from_date from erp_hrms_HRA where rowid='" + id +"'"; 
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
             }

@@ -4,5 +4,78 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>freeproduct</h2>
+@*datatables CSS*@
+<link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+<link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
+@*datatables js*@
+<script src="~/Content/AdminLTE-3.1.0/datatables/datatables.min.js" type="text/javascript"></script>
+<script src="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/js/dataTables.bootstrap.min.js" type="text/javascript"></script>
 
+
+<div class="page-title">
+    <h2 class="page-heading">Free Product</h2>
+    <div class="text-right">
+
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-6">
+        <div class="box box-primary">
+            <div class="box-body">
+                <div class="form-group">
+                    <label for="product">Product<span style="color:red">*</span></label>
+                    <select class="form-control select2" id="ddlproduct" style="width:100%;"></select>
+                </div>
+
+                <div class="form-group">
+                    <label for="freeproduct">Free Product<span style="color:red">*</span></label>
+                    <select class="form-control select2" id="ddlfreeproduct" style="width:100%;"></select>
+                </div>
+
+                <div class="form-group">
+                    <label for="quantity">Quantity<span style="color:red">*</span></label>
+                    <input type="text" class="form-control" id="txtquantity" />
+                </div>
+
+                <div class="box-footer">
+                    <a href="#" class="btn btn-danger" id="btnSave"><span title="Click Here To Save Details" data-placement="bottom" data-toggle="tooltip"><b>Save</b></span></a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-12">
+        <div class="box box-primary">
+            <div class="box-body">
+                <table id="dtdata" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Product</th>
+                            <th>Product</th>
+                            <th>Product</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                </table>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    $(document).ready(function () {
+        getProduct("#ddlproduct");
+        getProduct("#ddlfreeproduct");
+        productcheck();
+        $('.select2').select2();
+        $("#btnSave").click(function () {
+            AddFreeProduct();
+        })
+    })
+</script>
+
+<script src="@Url.Content("~/js/Setup/freeproduct.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>

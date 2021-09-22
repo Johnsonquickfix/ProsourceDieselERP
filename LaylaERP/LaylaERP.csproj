@@ -663,6 +663,7 @@
     <Content Include="js\Reception\ReceivePrint.js" />
     <Content Include="js\Setting\OrderShippingRule.js" />
     <Content Include="js\Setup\editproductrule.js" />
+    <Content Include="js\Setup\freeproduct.js" />
     <Content Include="js\Setup\productrule.js" />
     <Content Include="js\Ship\ShipStation.js" />
     <Content Include="js\ThirdParty\Vendor.js" />
@@ -996,6 +997,8 @@
     <Content Include="Views\Hrms\HRA.cshtml" />
     <Content Include="Views\Hrms\ListGrantLeave.cshtml" />
     <Content Include="Views\Setting\OrderShippingRule.cshtml" />
+    <Content Include="Views\Setup\freeproduct.cshtml" />
+    <Content Include="Views\Setup\editfreeproduct.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

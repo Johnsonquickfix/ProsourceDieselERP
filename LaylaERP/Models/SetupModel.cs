@@ -19,6 +19,11 @@ namespace LaylaERP.Models
         public int fk_product_rule { get; set; }
         public int searchproductid { get; set; }
 
+        //Free Product
+        public int on_product_id { get; set; }
+        public int free_product_id { get; set; }
+        public int free_quantity { get; set; }
+
 
     }
 }

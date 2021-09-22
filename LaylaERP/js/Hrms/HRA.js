@@ -19,6 +19,9 @@ function AddHRA() {
     else if (basic_2 == "") {
         swal('Alert', 'Please Enter Basic 2', 'error').then(function () { swal.close(); $('#txtbasic2').focus(); });
     }
+    //else if (parseInt(basic_1) > parseInt(basic_2)) {
+    //    swal('Alert', 'Basic 1 Is Not Greater Than Basic 2', 'error').then(function () { swal.close(); $('#txtbasic1').focus(); });
+    //}
     else if (hraoffice == "") {
         swal('Alert', 'Please Enter HRA Office', 'error').then(function () { swal.close(); $('#txthraoffice').focus(); });
     }
@@ -66,7 +69,6 @@ function reset() {
     $("#txthraoffice").val("");
     $("#txthrafield").val("");
     $("#txtfromdate").val("");
-
 }
 
 function HRAList() {

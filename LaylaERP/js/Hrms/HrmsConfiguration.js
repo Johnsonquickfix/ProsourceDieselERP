@@ -89,7 +89,9 @@ function changename() {
 }
 
 function ChangeCode() {
-    $('#ddlemptype').change(function () {
+    //$('#ddlemptype').select(function () {
+    $('#ddlemptype').on('select2:select', function (e) {
+        // Do something
         var empcode = $('#ddlemptype').val();
         var obj = {
             rowid: empcode,
@@ -111,6 +113,7 @@ function ChangeCode() {
         });
     });
 }
+
 function getAccountingType() {
     $.ajax({
         url: "/Hrms/GetAccountingTypeForConfig",

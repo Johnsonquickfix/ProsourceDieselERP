@@ -151,7 +151,7 @@ function SelectedStateCounty() {
 
 function getProducts() {
     $.ajax({
-        url: "/Inventory/GetProductList",
+        url: "/Setting/GetProductList",
         type: "Get", beforeSend: function () { $("#loader").show(); },
         success: function (data) {
             let dt = JSON.parse(data);

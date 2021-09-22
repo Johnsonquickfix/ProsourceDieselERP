@@ -8,6 +8,7 @@ using System.Text;
 using System.Web;
 using LaylaERP.DAL;
 using LaylaERP.Models;
+using LaylaERP.UTILITIES;
 using MySql.Data.MySqlClient;
 
 namespace LaylaERP.BAL
@@ -130,13 +131,13 @@ namespace LaylaERP.BAL
             { throw ex; }
             return DT;
         }
-        public static int AddEmployeeBasicInfo(HrmsModel model)
+        public static int AddEmployeeBasicInfo(HrmsModel model, int UserID)
         {
             try
             {
                 model.pwd = EncryptedPwd(model.pwd);
-                string strsql = "INSERT into erp_hrms_emp(firstname, lastname, email,pwd, emp_type, dob, phone, gender, is_active )" +
-                    " values(@firstname, @lastname, @email,@pwd, @emp_type, @dob, @phone, @gender, @is_active );SELECT LAST_INSERT_ID();";
+                string strsql = "INSERT into erp_hrms_emp(firstname, lastname, email,pwd, emp_type, dob, phone, gender, is_active,fk_user )" +
+                    " values(@firstname, @lastname, @email,@pwd, @emp_type, @dob, @phone, @gender, @is_active,@fk_user );SELECT LAST_INSERT_ID();";
                 MySqlParameter[] para =
                 {
                     new MySqlParameter("@firstname", model.firstname),
@@ -148,6 +149,7 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@phone", model.phone),
                     new MySqlParameter("@gender", model.gender),
                     new MySqlParameter("@is_active", model.is_active),
+                     new MySqlParameter("@fk_user", UserID),
 
                };
                 int result = Convert.ToInt32(DAL.SQLHelper.ExecuteScalar(strsql, para));
@@ -245,6 +247,7 @@ namespace LaylaERP.BAL
                 {
                     //2nd table
                     new MySqlParameter("@fk_emp", id),
+                   
                     new MySqlParameter("@birthplace", model.birthplace),
                     new MySqlParameter("@maritalstatus",model.maritalstatus),
                     new MySqlParameter("@address1", model.address1),
@@ -440,6 +443,11 @@ namespace LaylaERP.BAL
                 {
                     strWhr += " and (e.is_active='" + userstatus + "') ";
                 }
+                if (CommanUtilities.Provider.GetCurrent().UserType != "Administrator")
+                {
+                    long user = CommanUtilities.Provider.GetCurrent().UserID;
+                    strWhr += " and fk_user = '" + user + "'";
+                }
                 strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
 
                 strSql += "; SELECT ceil(Count(e.rowid)/" + pagesize.ToString() + ") TotalPage,Count(e.rowid) TotalRecord from erp_hrms_emp e left join erp_hrms_attendance_sheet s on s.fk_emp = e.rowid " +
@@ -630,13 +638,17 @@ namespace LaylaERP.BAL
                 int result = 0;
                 CultureInfo us = new CultureInfo("en-US");
                 string[] ID = Empid.Split(',');
-                string[] invalue = intime.Split(',');
-                string[] outvalue = outtime.Split(',');
+                
+                string[] invalue = { };
+                if (intime != null) { invalue = intime.Split(','); }
+                
+                string[] outvalue = { };
+                if (outtime != null){ outvalue = outtime.Split(',');}
                 for (int i = 0; i <= ID.Length - 1; i++)
                 {
                     Empid = ID[i].ToString();
-                    intime = invalue[i].ToString();
-                    outtime = outvalue[i].ToString();
+                    if (intime != null) { intime = invalue[i].ToString(); }
+                    if (outtime != null) { outtime = outvalue[i].ToString(); }
                     if (Empid != "0")
                     {
                         string strsql = "";
@@ -644,11 +656,11 @@ namespace LaylaERP.BAL
                         if (IsAvailable != "0")
                         {
                             string inout = "";
-                            if(intime == "")
+                            if(intime == "" || intime == null)
                             {
                                 inout = ",out_time=@out_time";
                             }
-                            else if(outtime == "")
+                            else if(outtime == "" || outtime == null)
                             {
                                 inout = ",in_time=@in_time";
                             }
@@ -686,10 +698,26 @@ namespace LaylaERP.BAL
             try
             {
                 CultureInfo us = new CultureInfo("en-US");
-                DateTime? Empintime = string.IsNullOrEmpty(intime) ? (DateTime?)null : DateTime.Parse(intime, us);
-                DateTime? Empouttime = string.IsNullOrEmpty(outtime) ? (DateTime?)null : DateTime.Parse(outtime, us);
+                string strSql = "";
+                if (intime != "")
+                {
+                    DateTime Empintime = DateTime.Parse(intime, us);
+                    strSql = "Select rowid from erp_hrms_attendance_sheet where fk_emp='" + id + "' and  (Date(out_time) >= Date('" + Empintime.ToString("yyyy-MM-dd") + "') and Date(out_time) <= Date('" + Empintime.ToString("yyyy-MM-dd") + "'))";
 
-                string strSql = "Select rowid from erp_hrms_attendance_sheet where fk_emp='" + id + "' and ((in_time or out_time)>=Date('" + Empintime+ "') or (in_time or out_time)>=Date('" + Empouttime+ "'))";
+                }
+                else if (outtime != "")
+                {
+                    DateTime Empouttime = DateTime.Parse(outtime, us);
+                    strSql = "Select rowid from erp_hrms_attendance_sheet where fk_emp='" + id + "' and  (Date(in_time) >= Date('" + Empouttime.ToString("yyyy-MM-dd") + "') and Date(in_time) <= Date('" + Empouttime.ToString("yyyy-MM-dd") + "'))";
+
+                }
+                else
+                {
+                    DateTime Empintime = DateTime.Parse(intime, us);
+                    strSql = "Select rowid from erp_hrms_attendance_sheet where fk_emp='" + id + "' and  (Date(in_time) >= Date('" + Empintime.ToString("yyyy-MM-dd") + "') and Date(in_time) <= Date('" + Empintime.ToString("yyyy-MM-dd") + "'))";
+
+                }
+                //string strSql = "Select rowid from erp_hrms_attendance_sheet where fk_emp='" + id + "' and ((Date(in_time) or Date(out_time))>=Date('" + Empintime.ToString("yyyy-MM-dd") + "') or (in_time or out_time)>=Date('" + Empouttime+ "'))";
                 //MySqlParameter[] para =
                 //       {
                 //             new MySqlParameter("@in_time",string.IsNullOrEmpty(intime) ? (DateTime?)null : DateTime.Parse(intime, us)),

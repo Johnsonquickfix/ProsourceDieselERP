@@ -146,15 +146,15 @@ namespace LaylaERP.Controllers
             }
             else
             {
-                int ID = HrmsRepository.AddEmployeeBasicInfo(model);
-                if (ID > 0)
+                int UserID = HrmsRepository.AddNewEmployeeasUser(model);
+                if (UserID > 0)
                 {
-                    int UserID = HrmsRepository.AddNewEmployeeasUser(model);
-                    if(UserID > 0)
+                    HrmsRepository.AddEmployeeUserMetaData(UserID);
+                    int ID = HrmsRepository.AddEmployeeBasicInfo(model,UserID);
+                    if (ID > 0)
                     {
-                        HrmsRepository.AddEmployeeUserMetaData(UserID);
+                        HrmsRepository.AddEmployeeBasicDetails(model, ID);
                     }
-                    HrmsRepository.AddEmployeeBasicDetails(model, ID);
                     return Json(new { status = true, message = "Data has been saved successfully!!", url = "", id=ID }, 0);
                 }
                 else

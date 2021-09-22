@@ -246,6 +246,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="recaptcha\recaptcha.cs" />
     <Compile Include="UTILITIES\clsPayPal.cs" />
+    <Compile Include="UTILITIES\clsPodium.cs" />
     <Compile Include="UTILITIES\clsTaxJar.cs" />
     <Compile Include="UTILITIES\CommanUtilities.cs" />
     <Compile Include="UTILITIES\CommonDate.cs" />

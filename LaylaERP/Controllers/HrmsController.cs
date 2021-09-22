@@ -76,6 +76,8 @@ namespace LaylaERP.Controllers
         public ActionResult EditConfigurationList(long id)
         {
             ViewBag.id = id;
+            DataTable dt = HrmsConfigurationRepository.SelectConfiguration(id);
+            ViewBag.emptype = dt.Rows[0]["emp_type"];
             return View();
         }
         //Get HRA
@@ -156,6 +158,7 @@ namespace LaylaERP.Controllers
                 }
             }
         }
+
         public JsonResult AddEmployeeAdditionalInfo(HrmsModel model)
         {
             if (model.rowid > 0)
@@ -381,6 +384,7 @@ namespace LaylaERP.Controllers
                 string Empid = model.strValue1;
                 string intime = model.strValue2;
                 string outtime = model.strValue3;
+                
 
                 if (model.rowid > 0)
                 {
@@ -389,7 +393,7 @@ namespace LaylaERP.Controllers
                 }
                 else
                 {
-                    int ID = new HrmsRepository().AddAttendence(Empid, intime, outtime);
+                    int ID = new HrmsRepository().AddAttendence(Empid, intime, outtime, model.strValue4, model.strValue5);
                     if (ID > 0)
                     {
                         return Json(new { status = true, message = "Attendence has been saved successfully!!", url = "", id = ID }, 0);
@@ -540,9 +544,9 @@ namespace LaylaERP.Controllers
         }
 
         //Bind Dropdown for configuration
-        public JsonResult GetEmployeeCodeForConfig()
+        public JsonResult GetEmployeeCodeForConfig(int rowid)
         {
-            DataSet ds = HrmsConfigurationRepository.GetEmployeeCode();
+            DataSet ds = HrmsConfigurationRepository.GetEmployeeCode(rowid);
             List<SelectListItem> employeecode = new List<SelectListItem>();
             foreach (DataRow dr in ds.Tables[0].Rows)
             {
@@ -554,13 +558,22 @@ namespace LaylaERP.Controllers
 
         public JsonResult GetEmployeeNameForConfig(string id)
         {
-            DataSet ds = HrmsConfigurationRepository.GetEmployeeName(id);
-            List<SelectListItem> employeename = new List<SelectListItem>();
-            foreach (DataRow dr in ds.Tables[0].Rows)
+            //DataSet ds = HrmsConfigurationRepository.GetEmployeeName(id);
+            //List<SelectListItem> employeename = new List<SelectListItem>();
+            //foreach (DataRow dr in ds.Tables[0].Rows)
+            //{
+            //    employeename.Add(new SelectListItem { Text = dr["name"].ToString(), Value = dr["rowid"].ToString() });
+            //}
+            //return Json(employeename, JsonRequestBehavior.AllowGet);
+
+            string JSONresult = string.Empty;
+            try
             {
-                employeename.Add(new SelectListItem { Text = dr["name"].ToString(), Value = dr["rowid"].ToString() });
+                DataTable dt = HrmsConfigurationRepository.GetEmployeeName(id);
+                JSONresult = JsonConvert.SerializeObject(dt);
             }
-            return Json(employeename, JsonRequestBehavior.AllowGet);
+            catch { }
+            return Json(JSONresult, 0);
 
         }
 

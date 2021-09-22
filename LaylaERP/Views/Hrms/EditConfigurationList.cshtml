@@ -20,9 +20,11 @@
         <div class="box-body">
             <div class="row">
                 <div class="col-md-6">
-                    <input type="text" id="hfDA1" />
-                    <input type="text" id="hfDA2" />
-                    <input type="text" id="hfDAothers" />
+                    <input type="hidden" id="hfDA1" />
+                    <input type="hidden" id="hfDA2" />
+                    <input type="hidden" id="hfDAothers" />
+                    <input type="hidden" id="hfemployeeid" />
+                    <input type="hidden" value="@ViewBag.emptype" id="hfemptype" />
                     <input type="hidden" id="hfid" value="@ViewBag.id" />
                     <div class="form-group">
                         <label for="FirstName">Employee Type<span style="color:red">*</span></label>
@@ -51,7 +53,8 @@
                     <div class="form-group">
                         <label for="FirstName">Employee Name<span style="color:red">*</span></label>
                         <div class="input-group">
-                            <select class="form-control select2" id="ddlempname"></select>
+                            @*<select class="form-control select2" id="ddlempname"></select>*@
+                            <input class="form-control" type="text" id="txtempname" />
                         </div>
                     </div>
                 </div>
@@ -117,22 +120,25 @@
                         </div>
                     </div>
                 </div> <div class="col-md-4">
+                           <div class="form-group">
+                               <label for="FirstName">Loan months<span style="color:red"></span></label>
+                               <div class="input-group">
+                                   <input class="form-control" type="text" id="txtloanmonths" value="0">
+                               </div>
+                           </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+
                     <div class="form-group">
                         <label for="FirstName">Loan EMI<span style="color:red"></span></label>
                         <div class="input-group">
                             <input class="form-control" type="text" id="txtloanemi" value="0">
                         </div>
                     </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label for="FirstName">Loan months<span style="color:red"></span></label>
-                        <div class="input-group">
-                            <input class="form-control" type="text" id="txtloanmonths" value="0">
-                        </div>
-                    </div>
+
+                    
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
@@ -144,9 +150,9 @@
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label for="FirstName">Advance EMI<span style="color:red"></span></label>
+                        <label for="FirstName">Advance EMI Months<span style="color:red"></span></label>
                         <div class="input-group">
-                            <input class="form-control" type="text" id="txtadvanceEmi" value="0">
+                            <input class="form-control" type="text" id="txtadvanceEmiMonths" value="0">
                         </div>
                     </div>
                 </div>
@@ -154,9 +160,9 @@
             <div class="row">
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label for="FirstName">Advance EMI Months<span style="color:red"></span></label>
+                        <label for="FirstName">Advance EMI<span style="color:red"></span></label>
                         <div class="input-group">
-                            <input class="form-control" type="text" id="txtadvanceEmiMonths"  value="0">
+                            <input class="form-control" type="text" id="txtadvanceEmi" value="0">
                         </div>
                     </div>
                 </div>
@@ -271,6 +277,8 @@
 <script>
     $(document).ready(function () {
         $("#loader").hide();
+        getEmployeeCode();
+        changename();
         var url = window.location.pathname;
         var id = url.substring(url.lastIndexOf('/') + 1);
         EditSelect(id);
@@ -282,8 +290,6 @@
         setTimeout(function () { $(".select2").select2(); }, 2000);
 
     });
-
-
 </script>
 
 <script>
@@ -302,7 +308,7 @@
                     if (jobj.length > 0) {
                         $("#ddlemptype").val(jobj[0].emp_type).trigger('change');
                         $("#ddlempcode").val(jobj[0].emp_code).trigger('change');
-                        $("#ddlempname").val(jobj[0].fk_emp).trigger('change');
+                        //$("#ddlempname").val(jobj[0].fk_emp).trigger('change');
                         $("#txtbasic").val(jobj[0].basic);
                         $("#txtda").val(jobj[0].da);
 
@@ -323,6 +329,7 @@
                         $("#txtworkhours").val(jobj[0].default_work_hours);
                         $("#ddlpreparesalary").val(jobj[0].prepare_salary).trigger('change');
                         $("#ddlaccountingtype").val(jobj[0].accounting_type).trigger('change');
+                        
                     }
                 },
                 error: function (msg) {

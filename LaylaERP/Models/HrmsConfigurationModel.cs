@@ -31,10 +31,10 @@ namespace LaylaERP.Models
         public int accounting_type { get; set; }
 
         //HRA
-        public float basic1 { get; set; }
-        public float basic2 { get; set; }
-        public float hra_office { get; set; }
-        public float hra_field { get; set; }
+        public decimal basic1 { get; set; }
+        public decimal basic2 { get; set; }
+        public decimal hra_office { get; set; }
+        public decimal hra_field { get; set; }
         public DateTime from_date { get; set; }
     }
 }

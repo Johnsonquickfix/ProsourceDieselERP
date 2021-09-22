@@ -11,12 +11,12 @@ namespace LaylaERP.BAL
 {
     public class HrmsConfigurationRepository
     {
-        public static DataSet GetEmployeeCode()
+        public static DataSet GetEmployeeCode(int rowid)
         {
             DataSet DS = new DataSet();
             try
             {
-                DS = SQLHelper.ExecuteDataSet("SELECT fk_emp, emp_number from erp_hrms_empdetails order by rowid");
+                DS = SQLHelper.ExecuteDataSet("SELECT ehd.emp_number, ehd.fk_emp FROM erp_hrms_emp ehe INNER join erp_hrms_empdetails ehd on ehd.fk_emp = ehe.rowid inner join erp_hrms_employee_group eheg on eheg.rowid=ehe.emp_type where eheg.rowid='"+ rowid +"'");
 
             }
             catch (Exception ex)
@@ -24,17 +24,17 @@ namespace LaylaERP.BAL
             return DS;
         }
 
-        public static DataSet GetEmployeeName(string id)
+        public static DataTable GetEmployeeName(string id)
         {
-            DataSet DS = new DataSet();
+            DataTable dt = new DataTable();
             try
             {
-                DS = SQLHelper.ExecuteDataSet("SELECT ehe.rowid, concat(firstname,' ',lastname) as name, ehd.emp_number from erp_hrms_emp ehe inner join erp_hrms_empdetails ehd on ehd.fk_emp = ehe.rowid where ehd.fk_emp = '" + id + "'");
-
+                DataSet ds = SQLHelper.ExecuteDataSet("SELECT ehe.rowid, concat(firstname,' ',lastname) as name, ehd.emp_number from erp_hrms_emp ehe inner join erp_hrms_empdetails ehd on ehd.fk_emp = ehe.rowid where ehd.fk_emp = '" + id + "'");
+                dt = ds.Tables[0];
             }
             catch (Exception ex)
             { throw ex; }
-            return DS;
+            return dt;
         }
 
         public static DataSet GetEmployeeType()
@@ -75,37 +75,6 @@ namespace LaylaERP.BAL
             { throw ex; }
             return DS;
         }
-
-        //public static int AddEmployeeBasicDetails(HrmsModel model, int id)
-        //{
-        //    try
-        //    {
-        //        string strsql = "INSERT into erp_hrms_empdetails(fk_emp,birthplace, maritalstatus, address1, address2, city, state, zipcode,country   )" +
-        //                         " values(@fk_emp, @birthplace, @maritalstatus, @address1, @address2, @city, @state, @zipcode, @country); SELECT LAST_INSERT_ID();";
-
-
-        //        MySqlParameter[] para =
-        //        {
-        //            //2nd table
-        //            new MySqlParameter("@fk_emp", id),
-        //            new MySqlParameter("@birthplace", model.birthplace),
-        //            new MySqlParameter("@maritalstatus",model.maritalstatus),
-        //            new MySqlParameter("@address1", model.address1),
-        //            new MySqlParameter("@address2", model.address2),
-        //            new MySqlParameter("@city", model.city),
-        //            new MySqlParameter("@state", model.state),
-        //            new MySqlParameter("@zipcode", model.zipcode),
-        //            new MySqlParameter("@country", model.country),
-        //       };
-        //        int result = Convert.ToInt32(DAL.SQLHelper.ExecuteScalar(strsql, para));
-        //        return result;
-
-        //    }
-        //    catch (Exception Ex)
-        //    {
-        //        throw Ex;
-        //    }
-        //}
 
         public static int AddConfiguration(HrmsConfigurationModel model)
         {
@@ -186,7 +155,9 @@ namespace LaylaERP.BAL
             DataTable dtr = new DataTable();
             try
             {
-                string strquery = "SELECT rowid,emp_type,fk_emp,format(basic,2) basic,emp_code,da,hra,other_allowance,pf,loan_amount,loan_emi,loan_months,adv_amount,adv_emi,adv_emi_months,tds,other_deductions,reimbursement,work_type,default_work_hours,prepare_salary,accounting_type from erp_hrms_salary_configuration WHERE rowid='" + id + "'";
+                string strquery = "SELECT rowid,emp_type,fk_emp,Replace(format(basic,2),',','') basic,emp_code,Replace(format(da,2),',','') as da, Replace(format(hra,2),',','') as hra, Replace(format(other_allowance,2),',','') as other_allowance,Replace(format(pf,2),',','') as pf ," +
+                    "Replace(format(loan_amount,2),',','') as loan_amount, Replace(format(loan_emi,2),',','') as loan_emi,loan_months, Replace(format(adv_amount,2),',','') as adv_amount, Replace(format(adv_emi,2),',','') as adv_emi,adv_emi_months,Replace(format(tds,2),',','') as tds," +
+                    " Replace(format(other_deductions,2),',','') as other_deductions, Replace(format(reimbursement,2),',','') as reimbursement,work_type,default_work_hours,prepare_salary,accounting_type from erp_hrms_salary_configuration WHERE rowid='" + id + "'";
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strquery);
                 dtr = ds.Tables[0];
@@ -316,7 +287,7 @@ namespace LaylaERP.BAL
             DataTable dt = new DataTable();
             try
             {
-                string strSql = "SELECT rowid as id, format(basic1,2) as basic1, format(basic2,2) as basic2 , format(hra_office,2) as hra_office, format(hra_field,2) as hra_field, DATE_FORMAT(from_date, '%m%d%y') as from_date from erp_hrms_HRA where rowid='"+id+"'"; 
+                string strSql = "SELECT rowid as id, format(basic1,2) as basic1, format(basic2,2) as basic2 , format(hra_office,2) as hra_office, format(hra_field,2) as hra_field, DATE_FORMAT(from_date, '%m-%d-%Y') as from_date from erp_hrms_HRA where rowid='" + id +"'"; 
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
             }

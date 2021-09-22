@@ -51,8 +51,9 @@
                     <div class="form-group">
                         <label for="FirstName">Employee Name<span style="color:red">*</span></label>
                         <div class="input-group">
-                            <select class="form-control select2" id="ddlempname">
-                            </select>
+                            @*<select class="form-control select2" id="ddlempname">
+                            </select>*@
+                            <input class="form-control" type="text" id="txtempname" />
                         </div>
                     </div>
                 </div>
@@ -118,20 +119,20 @@
                         </div>
                     </div>
                 </div> <div class="col-md-4">
+                           <div class="form-group">
+                               <label for="FirstName">Loan months<span style="color:red"></span></label>
+                               <div class="input-group">
+                                   <input class="form-control" type="text" id="txtloanmonths" value="0">
+                               </div>
+                           </div>
+                       </div>
+              </div>
+            <div class="row">
+                <div class="col-md-4">
                     <div class="form-group">
                         <label for="FirstName">Loan EMI<span style="color:red"></span></label>
                         <div class="input-group">
                             <input class="form-control" type="text" id="txtloanemi" value="0">
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label for="FirstName">Loan months<span style="color:red"></span></label>
-                        <div class="input-group">
-                            <input class="form-control" type="text" id="txtloanmonths" value="0">
                         </div>
                     </div>
                 </div>
@@ -145,9 +146,9 @@
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label for="FirstName">Advance EMI<span style="color:red"></span></label>
+                        <label for="FirstName">Advance EMI Months<span style="color:red"></span></label>
                         <div class="input-group">
-                            <input class="form-control" type="text" id="txtadvanceEmi" value="0">
+                            <input class="form-control" type="text" id="txtadvanceEmiMonths" value="0">
                         </div>
                     </div>
                 </div>
@@ -155,9 +156,9 @@
             <div class="row">
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label for="FirstName">Advance EMI Months<span style="color:red"></span></label>
+                        <label for="FirstName">Advance EMI<span style="color:red"></span></label>
                         <div class="input-group">
-                            <input class="form-control" type="text" id="txtadvanceEmiMonths" value="0">
+                            <input class="form-control" type="text" id="txtadvanceEmi" value="0">
                         </div>
                     </div>
                 </div>

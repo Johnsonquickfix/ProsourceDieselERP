@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Web;
 using LaylaERP.DAL;
 using LaylaERP.Models;
@@ -12,6 +14,75 @@ namespace LaylaERP.BAL
 {
     public class HrmsRepository
     {
+        private static string itoa64 = "./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+        //Password----------------
+
+        public static string EncryptedPwd(string varPassword)
+        {
+            string expected = "$P$BPGbwPLs6N6VlZ7OqRUvIY1Uvo/Bh9/";
+            return MD5Encode(varPassword, expected);
+        }
+        static string MD5Encode(string password, string hash)
+        {
+            string output = "*0";
+            if (hash == null) return output;
+            if (hash.StartsWith(output)) output = "*1";
+
+            string id = hash.Substring(0, 3);
+            // We use "$P$", phpBB3 uses "$H$" for the same thing
+            if (id != "$P$" && id != "$H$") return output;
+
+            // get who many times will generate the hash
+            int count_log2 = itoa64.IndexOf(hash[3]);
+            if (count_log2 < 7 || count_log2 > 30)
+                return output;
+
+            int count = 1 << count_log2;
+
+            string salt = hash.Substring(4, 8);
+            if (salt.Length != 8)
+                return output;
+
+            byte[] hashBytes = { };
+            using (MD5 md5Hash = MD5.Create())
+            {
+                hashBytes = md5Hash.ComputeHash(Encoding.ASCII.GetBytes(salt + password));
+                byte[] passBytes = Encoding.ASCII.GetBytes(password);
+                do
+                {
+                    hashBytes = md5Hash.ComputeHash(hashBytes.Concat(passBytes).ToArray());
+                } while (--count > 0);
+            }
+
+            output = hash.Substring(0, 12);
+            string newHash = Encode64(hashBytes, 16);
+
+            return output + newHash;
+        }
+        static string Encode64(byte[] input, int count)
+        {
+            StringBuilder sb = new StringBuilder();
+            int i = 0;
+            do
+            {
+                int value = (int)input[i++];
+                sb.Append(itoa64[value & 0x3f]); // to uppercase
+                if (i < count)
+                    value = value | ((int)input[i] << 8);
+                sb.Append(itoa64[(value >> 6) & 0x3f]);
+                if (i++ >= count)
+                    break;
+                if (i < count)
+                    value = value | ((int)input[i] << 16);
+                sb.Append(itoa64[(value >> 12) & 0x3f]);
+                if (i++ >= count)
+                    break;
+                sb.Append(itoa64[(value >> 18) & 0x3f]);
+            } while (i < count);
+
+            return sb.ToString();
+        }
+        //Password End--------------
         public static DataSet GetDesignation()
         {
             DataSet DS = new DataSet();
@@ -61,18 +132,17 @@ namespace LaylaERP.BAL
         }
         public static int AddEmployeeBasicInfo(HrmsModel model)
         {
-
             try
             {
-                string strsql = "INSERT into erp_hrms_emp(firstname, lastname, email, emp_type, dob, phone, gender, is_active )" +
-                    " values(@firstname, @lastname, @email, @emp_type, @dob, @phone, @gender, @is_active );SELECT LAST_INSERT_ID();";
-
-
+                model.pwd = EncryptedPwd(model.pwd);
+                string strsql = "INSERT into erp_hrms_emp(firstname, lastname, email,pwd, emp_type, dob, phone, gender, is_active )" +
+                    " values(@firstname, @lastname, @email,@pwd @emp_type, @dob, @phone, @gender, @is_active );SELECT LAST_INSERT_ID();";
                 MySqlParameter[] para =
                 {
                     new MySqlParameter("@firstname", model.firstname),
                     new MySqlParameter("@lastname",model.lastname),
                     new MySqlParameter("@email", model.email),
+                    new MySqlParameter("@pwd", model.pwd),
                     new MySqlParameter("@emp_type", model.emp_type),
                     new MySqlParameter("@dob", model.dob),
                     new MySqlParameter("@phone", model.phone),
@@ -91,18 +161,18 @@ namespace LaylaERP.BAL
 
         public static int EditEmployeeBasicInfo(HrmsModel model, int ID)
         {
-
             try
             {
+                //model.pwd = EncryptedPwd(model.pwd);
                 string strsql = "Update erp_hrms_emp set firstname=@firstname,lastname=@lastname,email=@email,emp_type=@emp_type,dob=@dob," +
                    "phone=@phone,gender=@gender,is_active=@is_active where rowid=@rowid";
-
                 MySqlParameter[] para =
                 {
                     new MySqlParameter("@rowid", ID),
                     new MySqlParameter("@firstname", model.firstname),
                     new MySqlParameter("@lastname",model.lastname),
                     new MySqlParameter("@email", model.email),
+                    //new MySqlParameter("@pwd", model.pwd),
                     new MySqlParameter("@emp_type", model.emp_type),
                     new MySqlParameter("@dob", model.dob),
                     new MySqlParameter("@phone", model.phone),
@@ -187,7 +257,7 @@ namespace LaylaERP.BAL
             try
             {
 
-                string strsql = "update erp_hrms_empdetails set emp_number = CONCAT('EMP', LPAD("+id+", 5, 0)), " +
+                string strsql = "update erp_hrms_empdetails set emp_number = CONCAT('EMP', LPAD(" + id + ", 5, 0)), " +
                     "designation = @designation, department = @department, undertaking_emp = @undertaking_emp, joining_date = @joining_date, " +
                     "leaving_date = @leaving_date,bloodgroup=@bloodgroup,education=@education,professionalqualification=@professionalqualification,otherdetails=@otherdetails," +
                     "alternateaddress1 = @alternateaddress1,alternateaddress2 = @alternateaddress2,alternatecity = @alternatecity,alternatestate = @alternatestate," +
@@ -508,7 +578,7 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
-        public int AddAttendence(string Empid, string intime, string outtime)
+        public int AddAttendence(string Empid, string intime, string outtime, string month, string year)
         {
             try
             {
@@ -525,20 +595,36 @@ namespace LaylaERP.BAL
                     if (Empid != "0")
                     {
                         string strsql = "";
-                        string Product = GetPresentEmp(Empid).ToString();
-                        if (Product == Empid)
+                        string IsAvailable = GetPresentEmp(Empid, intime, outtime).ToString();
+                        if (IsAvailable != "0")
                         {
-                            strsql = "Update erp_hrms_attendance_sheet set fk_emp=@fk_emp,in_time=@in_time,out_time=@out_time where fk_emp=@fk_emp";
+                            string inout = "";
+                            if(intime == "")
+                            {
+                                inout = ",out_time=@out_time";
+                            }
+                            else if(outtime == "")
+                            {
+                                inout = ",in_time=@in_time";
+                            }
+                            else
+                            {
+                                inout = ",in_time=@in_time,out_time=@out_time";
+                            }
+                            strsql = "Update erp_hrms_attendance_sheet set fk_emp=@fk_emp "+inout+",month=@month,year=@year where rowid="+ IsAvailable + "";
                         }
                         else
                         {
-                            strsql = "insert into erp_hrms_attendance_sheet(fk_emp,in_time,out_time) values(@fk_emp,@in_time,@out_time); SELECT LAST_INSERT_ID();";
+                            strsql = "insert into erp_hrms_attendance_sheet(fk_emp,in_time,out_time,month,year) values(@fk_emp,@in_time,@out_time,@month,@year); SELECT LAST_INSERT_ID();";
                         }
                         MySqlParameter[] para =
                         {
+
                             new MySqlParameter("@fk_emp", Empid),
-                            new MySqlParameter("@in_time",DateTime.Parse(intime, us)),
-                            new MySqlParameter("@out_time",DateTime.Parse(outtime, us)),
+                            new MySqlParameter("@in_time",string.IsNullOrEmpty(intime) ? (DateTime?)null : DateTime.Parse(intime, us)),
+                            new MySqlParameter("@out_time",string.IsNullOrEmpty(outtime) ? (DateTime?)null : DateTime.Parse(outtime, us)),
+                            new MySqlParameter("@month",month),
+                            new MySqlParameter("@year",year),
                         };
                         result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
                     }
@@ -550,11 +636,21 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
-        public int GetPresentEmp(string id)
+        public int GetPresentEmp(string id, string intime, string outtime)
         {
             try
             {
-                string strSql = "Select fk_emp from erp_hrms_attendance_sheet where fk_emp='" + id + "'";
+                CultureInfo us = new CultureInfo("en-US");
+                DateTime? Empintime = string.IsNullOrEmpty(intime) ? (DateTime?)null : DateTime.Parse(intime, us);
+                DateTime? Empouttime = string.IsNullOrEmpty(outtime) ? (DateTime?)null : DateTime.Parse(outtime, us);
+
+                string strSql = "Select rowid from erp_hrms_attendance_sheet where fk_emp='" + id + "' and ((in_time or out_time)>=Date('" + Empintime+ "') or (in_time or out_time)>=Date('" + Empouttime+ "'))";
+                //MySqlParameter[] para =
+                //       {
+                //             new MySqlParameter("@in_time",string.IsNullOrEmpty(intime) ? (DateTime?)null : DateTime.Parse(intime, us)),
+                //            new MySqlParameter("@out_time",string.IsNullOrEmpty(outtime) ? (DateTime?)null : DateTime.Parse(outtime, us)),
+
+                //        };
                 int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strSql));
                 return result;
             }

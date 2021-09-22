@@ -366,6 +366,20 @@
             return Json(new { status = status, message = JSONresult }, 0);
         }
         [HttpPost]
+        public JsonResult UpdatePodiumPaymentAccept(OrderPodiumDetailsModel model)
+        {
+            string JSONresult = string.Empty; bool status = false;
+            try
+            {
+                int result = OrderRepository.UpdatePodiumStatus(model);
+                if (result > 0)
+                { status = true; JSONresult = "Order placed successfully."; }
+                //JSONresult = JsonConvert.SerializeObject(DT);
+            }
+            catch (Exception ex) { JSONresult = ex.Message; }
+            return Json(new { status = status, message = JSONresult }, 0);
+        }
+        [HttpPost]
         public JsonResult GetOrdersCount(SearchModel model)
         {
             string result = string.Empty;

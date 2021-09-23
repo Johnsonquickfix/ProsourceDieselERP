@@ -332,6 +332,8 @@
         $('#loader').hide();
         dateRange('#DateRange');
         dateRange('#DateRange2');
+        $('#DateRange2').val('');
+        $('#DateRange2').on('cancel.daterangepicker', function (ev, picker) { $(this).val(''); });
         gettotalOrder();
         getTotalSales();
         gettotalCustomer();

@@ -1478,7 +1478,7 @@
                 string strWhr = string.Empty;
                 if (!CommanUtilities.Provider.GetCurrent().UserType.ToLower().Contains("administrator"))
                 {
-                    strWhr += " and (pmf.employee_id='" + CommanUtilities.Provider.GetCurrent().UserID + "') ";
+                    //strWhr += " and (pmf.employee_id='" + CommanUtilities.Provider.GetCurrent().UserID + "') ";
                 }
                 if (!string.IsNullOrEmpty(userstatus))
                 {

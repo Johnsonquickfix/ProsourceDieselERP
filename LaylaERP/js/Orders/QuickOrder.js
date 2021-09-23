@@ -28,7 +28,6 @@
     $("#ddlbillcountry").change(function () { var obj = { id: $("#ddlbillcountry").val() }; BindStateCounty("ddlbillstate", obj); });
     $("#ddlshipcountry").change(function () { var obj = { id: $("#ddlshipcountry").val() }; BindStateCounty("ddlshipstate", obj); });
     $("#ddlshipstate").change(function () { GetTaxRate(); getItemShippingCharge(); });
-    getOrderInfo();
     $(document).on("click", "#btnApplyCoupon", function (t) { t.preventDefault(); CouponModal(); });
     //$("#billModal").on("keypress", function (e) { if (e.which == 13 && e.target.type != "textarea") { $("#btnCouponAdd").click(); } });
     $("#billModal").on("click", "#btnCouponAdd", function (t) { t.preventDefault(); ApplyCoupon(); });
@@ -70,6 +69,7 @@
             }
         });
     });
+    getOrderInfo();
     $("#billModal").on("click", "#btnSelectDefaltAddress", function (t) {
         t.preventDefault();
         let cus_id = parseInt($("#ddlCustomerSearch").val()) || 0, cus_text = $("#ddlCustomerSearch option:selected").text();
@@ -234,11 +234,18 @@ function CategoryWiseProducts() {
                         strHTML += '<div data-proid="' + data.pr_id + '" class="hub-pro-shop">';
                         strHTML += '<select class="form-control addnvar">';
                         $(variation_details).each(function (pvIndex, pvRow) {
-                            if (isNullAndUndef(pvRow.vr_id))
-                                strHTML += '<option value="' + pvRow.vr_id + '-' + pvRow._regular_price + '-' + pvRow._price + '">' + pvRow.vr_title + '</option>';
+                            if (isNullAndUndef(pvRow.vr_id)) {
+                                if (pr[0].name.toUpperCase() == 'MATTRESS' && pvRow.vr_title.includes('Queen'))
+                                    strHTML += '<option value="' + pvRow.vr_id + '-' + pvRow._regular_price + '-' + pvRow._price + '" selected>' + pvRow.vr_title + '</option>';
+                                else
+                                    strHTML += '<option value="' + pvRow.vr_id + '-' + pvRow._regular_price + '-' + pvRow._price + '">' + pvRow.vr_title + '</option>';
+                            }
                             else
                                 strHTML += '<option value="0-0-0">No Variations</option>';
-                            if (pvIndex == 0) {
+
+                            if (pr[0].name.toUpperCase() == 'MATTRESS' && pvRow.vr_title.includes('Queen'))
+                                regular_price = parseFloat(pvRow._regular_price) || 0.00, price = parseFloat(pvRow._price) || 0.00;
+                            else if (data.post_title.toUpperCase() != 'MATTRESS' && pvIndex == 0) {
                                 //console.log(pvIndex, pvRow, pvRow._regular_price, pvRow._price);
                                 regular_price = parseFloat(pvRow._regular_price) || 0.00, price = parseFloat(pvRow._price) || 0.00;
                             }
@@ -412,10 +419,10 @@ function addCustomerModal(cus_name) {
     myHtml += '<div class=""><input type="text" id="txtCusNickName" class="form-control" placeholder="User Name" value="' + cus_name + '"/></div>';
     myHtml += '</div>';
 
-    myHtml += '<div class="form-group">';
-    myHtml += '<label class="control-label " for="Email">Email<span class="text-red">*</span></label>';
-    myHtml += '<div class=""><input type="email" id="txtCusEmail" class="form-control" placeholder="Email" value="' + cus_name + '"/></div>';
-    myHtml += '</div>';
+    //myHtml += '<div class="form-group">';
+    //myHtml += '<label class="control-label " for="Email">Email<span class="text-red">*</span></label>';
+    //myHtml += '<div class=""><input type="email" id="txtCusEmail" class="form-control" placeholder="Email" value="' + cus_name + '"/></div>';
+    //myHtml += '</div>';
 
     myHtml += '<div class="form-group">';
     myHtml += '<label class="control-label " for="First Name">First Name<span class="text-red">*</span></label>';
@@ -426,13 +433,14 @@ function addCustomerModal(cus_name) {
     myHtml += '<label class="control-label " for="Last Name">Last Name<span class="text-red">*</span></label>';
     myHtml += '<div class=""><input type="text" id="txtCusLastName" class="form-control" placeholder="Last Name" /></div>';
     myHtml += '</div>';
-    myHtml += '</div >';
 
-    myHtml += '<div class="col-md-4">';
     myHtml += '<div class="form-group">';
     myHtml += '<label class="control-label " for="Contact No.">Contact No.<span class="text-red">*</span></label>';
     myHtml += '<div class=""><input type="tel" id="txtCusBillingMobile" class="form-control" placeholder="Contact No."  maxlength="11"/></div>';
     myHtml += '</div>';
+    myHtml += '</div >';
+
+    myHtml += '<div class="col-md-4">';
 
     myHtml += '<div class="form-group">';
     myHtml += '<label class="control-label " for="Address"><i class="glyphicon glyphicon-map-marker" aria-hidden="true"></i> Address<span class="text-red">*</span></label>';
@@ -476,7 +484,7 @@ function addCustomerModal(cus_name) {
 }
 function saveCustomer() {
     var oid = parseInt($('#hfOrderNo').val()) || 0;
-    let Email = $("#txtCusEmail").val();
+    let Email = $("#txtCusNickName").val()//$("#txtCusEmail").val();
     let NickName = $("#txtCusNickName").val();
     let FirstName = $("#txtCusFirstName").val();
     let LastName = $("#txtCusLastName").val();
@@ -488,8 +496,11 @@ function saveCustomer() {
     let BillingCity = $("#txtCusBillingCity").val();
     let BillingPhone = $("#txtCusBillingMobile").val();
 
-    if (Email == "") { swal('alert', 'Please Enter Email', 'error').then(function () { swal.close(); $('#txtUserEmail').focus(); }) }
-    else if (NickName == "") { swal('alert', 'Please Enter User Name', 'error').then(function () { swal.close(); $('#txtUserNickName').focus(); }) }
+    let rex_email = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i;
+
+    if (Email == "") { swal('alert', 'Please Enter Email', 'error').then(function () { swal.close(); $('#txtCusNickName').focus(); }) }
+    else if (Email != "" || !rex_email.test(Email)) { swal('alert', 'Please enter valid email.', 'error').then(function () { swal.close(); $('#txtCusNickName').focus(); }) }
+    //else if (NickName == "") { swal('alert', 'Please Enter User Name', 'error').then(function () { swal.close(); $('#txtUserNickName').focus(); }) }
     else if (FirstName == "") { swal('alert', 'Please Enter First Name', 'error').then(function () { swal.close(); $('#txtFirstName').focus(); }) }
     else if (LastName == "") { swal('alert', 'Please Enter Last Name', 'error').then(function () { swal.close(); $('#txtLastName').focus(); }) }
     else if (BillingAddress1 == "") { swal('alert', 'Please Enter Address 1', 'error').then(function () { swal.close(); $('#txtBillingAddress1').focus(); }) }
@@ -603,7 +614,7 @@ function getOrderInfo() {
         var opt = { strValue1: oid };
         ajaxFunction('/Orders/GetOrderInfo', opt, beforeSendFun, function (result) {
             try {
-                var data = JSON.parse(result); 
+                var data = JSON.parse(result); console.log(data);
                 if (data.length > 0) {
                     $('#lblOrderNo').data('pay_by', data[0].payment_method);
                     if (data[0].payment_method == 'ppec_paypal') $('#lblOrderNo').data('pay_id', data[0].paypal_id);
@@ -629,13 +640,19 @@ function getOrderInfo() {
                     $('#ddlshipcountry').val(data[0].s_country.trim()).trigger('change'); $('#ddlshipstate').val(data[0].s_state.trim()).trigger('change');
                     $('#txtCustomerNotes').val(data[0].post_excerpt);
 
-                    if (data[0].is_shiped > 0) {
-                        $('.box-tools-header').empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Order invoice"><i class="fas fa-print"></i> Print</button>');
-                        $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/Orders/OrdersHistory" data-toggle="tooltip" title="Go to Order List">Back to List</a>');
+                    if (data[0].is_edit == '1') {
+                        if (data[0].is_shiped > 0) {
+                            $('.box-tools-header').empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Order invoice"><i class="fas fa-print"></i> Print</button>');
+                            $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/Orders/OrdersHistory" data-toggle="tooltip" title="Go to Order List">Back to List</a>');
+                        }
+                        else {
+                            $('.box-tools-header').empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Order invoice"><i class="fas fa-print"></i> Print</button> <button type="button" class="btn btn-danger btnEditOrder" data-toggle="tooltip" title="Edit Order"><i class="far fa-edit"></i> Edit</button>');
+                            $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/Orders/OrdersHistory" data-toggle="tooltip" title="Go to Order List">Back to List</a>   <button type="button" class="btn btn-danger btnEditOrder" data-toggle="tooltip" title="Edit Order"><i class="far fa-edit"></i> Edit</button>');
+                        }
                     }
                     else {
-                        $('.box-tools-header').empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Order invoice"><i class="fas fa-print"></i> Print</button> <button type="button" class="btn btn-danger btnEditOrder" data-toggle="tooltip" title="Edit Order"><i class="far fa-edit"></i> Edit</button>');
-                        $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/Orders/OrdersHistory" data-toggle="tooltip" title="Go to Order List">Back to List</a>   <button type="button" class="btn btn-danger btnEditOrder" data-toggle="tooltip" title="Edit Order"><i class="far fa-edit"></i> Edit</button>');
+                        $('.box-tools-header').empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Order invoice"><i class="fas fa-print"></i> Print</button>');
+                        $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/Orders/OrdersHistory" data-toggle="tooltip" title="Go to Order List">Back to List</a>');
                     }
                     //bind Product
                     getOrderItemList(oid);
@@ -1924,10 +1941,11 @@ function PodiumPayment() {
         //_lineItems.push({ description: 'Item - ' + index+ ' X ' + qty.toFixed(0), amount: (grossAmount - discount) * 100 });
 
     });
-    let st_total = parseFloat($('#salesTaxTotal').text()) || 0.00, srf_total = parseFloat($('#stateRecyclingFeeTotal').text()) || 0.00, fee_total = parseFloat($('#feeTotal').text()) || 0.00;
+    let Shipping_total = parseFloat($('#shippingTotal').text()) || 0.00, st_total = parseFloat($('#salesTaxTotal').text()) || 0.00, srf_total = parseFloat($('#stateRecyclingFeeTotal').text()) || 0.00, fee_total = parseFloat($('#feeTotal').text()) || 0.00;
+    if (Shipping_total > 0) _lineItems.push({ description: "Shipping", amount: Shipping_total * 100 });
     if (st_total > 0) _lineItems.push({ description: "Tax", amount: st_total * 100 });
     if (srf_total > 0) _lineItems.push({ description: "State Recycling Fee", amount: srf_total * 100 });
-    if (fee_total > 0) _lineItems.push({ description: "Shipping", amount: fee_total * 100 });
+    if (fee_total > 0) _lineItems.push({ description: "Fee", amount: fee_total * 100 });
 
     let opt_inv = { lineItems: _lineItems, channelIdentifier: bill_email, customerName: bill_name, invoiceNumber: 'INV-' + oid, locationUid: "6c2ee0d4-0429-5eac-b27c-c3ef0c8f0bc7" };
     //console.log(opt_inv);
@@ -1941,19 +1959,19 @@ function PodiumPayment() {
                 let access_token = response.message;
                 let inv_id = $('#lblOrderNo').data('pay_id').trim();
                 if (inv_id.length > 0) {
-                    let create_url = 'https://api.podium.com/v4/invoices/' + inv_id + '/cancel';
+                    let create_url = podium_baseurl + '/v4/invoices/' + inv_id + '/cancel';
                     let opt_cnl = { locationUid: "6c2ee0d4-0429-5eac-b27c-c3ef0c8f0bc7", note: 'Invoice has been canceled.' };
                     $.ajax({
                         type: 'post', url: create_url, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_cnl),
                         beforeSend: function (xhr) { xhr.setRequestHeader("Accept", "application/json"); xhr.setRequestHeader("Authorization", "Bearer " + access_token); }
-                    }).then(response => { console.log('Invoice has been canceled.'); }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', err, 'error'); });
+                    }).then(response => { console.log('Invoice has been canceled.'); }).catch(err => { console.log(err); });
                 }
                 $.ajax({
-                    type: 'post', url: 'https://api.podium.com/v4/invoices', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_inv),
+                    type: 'post', url: podium_baseurl + '/v4/invoices', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_inv),
                     beforeSend: function (xhr) { xhr.setRequestHeader("Accept", "application/json"); xhr.setRequestHeader("Authorization", "Bearer " + access_token); }
                 }).then(response => {
                     updatePayment(response.data.uid);
-                }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', err, 'error'); });
+                }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', 'Something went wrong.', 'error'); });
             }).catch(err => { swal.hideLoading(); swal('Error!', err, 'error'); });//.always(function () { swal.hideLoading(); });
         }
     }]);
@@ -2031,7 +2049,7 @@ function CreatePaypalInvoice(oid, pp_no, pp_email, access_token) {
             }
         }
     }
-    let create_url = 'https://api-m.sandbox.paypal.com/v2/invoicing/invoices' + (inv_id.length > 0 ? '/' + inv_id : ''), action_method = (inv_id.length > 0 ? 'PUT' : 'POST');
+    let create_url = paypal_baseurl + '/v2/invoicing/invoices' + (inv_id.length > 0 ? '/' + inv_id : ''), action_method = (inv_id.length > 0 ? 'PUT' : 'POST');
     console.log(create_url, option);
     $.ajax({
         type: action_method, url: create_url, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(option),

@@ -51,14 +51,57 @@ namespace LaylaERP.Controllers
             string JSONresult = string.Empty;
             try
             {
-                long id = 0;
+                //long id = 0;
+                DataSet ds = new DataSet();
+                if (model.strValue1 == "PO")
+                     ds = PaymentInvoiceRepository.GetPRPurchaseOrderByID(model.strValue2);
+                else
+                     ds = PaymentInvoiceRepository.GetPurchaseOrderByID(model.strValue2);
+
                 //if (!string.IsNullOrEmpty(model.strValue1))
                 //    id = Convert.ToInt64(model.strValue1);
-                DataSet ds = PaymentInvoiceRepository.GetPurchaseOrderByID(id);
+                //DataSet ds = PaymentInvoiceRepository.GetPurchaseOrderByID(id);
                 JSONresult = JsonConvert.SerializeObject(ds);
             }
             catch { }
             return Json(JSONresult, 0);
         }
+        [HttpGet]
+        public JsonResult GetPaymentType()
+        {
+            string result = string.Empty;
+            try
+            {
+                DataSet DS = PaymentInvoiceRepository.GetPaymentType();
+                result = JsonConvert.SerializeObject(DS, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
+
+        [HttpPost]
+        public JsonResult TakePayment(PurchaseReceiceOrderModel model)
+        {
+            string JSONstring = string.Empty; bool b_status = false; long ID = 0;
+            try
+            {
+                ID = new PaymentInvoiceRepository().TakePayment(model);
+
+                if (ID > 0)
+                {
+                    b_status = true; JSONstring = "Purchase Record has been updated successfully!!";
+                }
+                else
+                {
+                    b_status = false; JSONstring = "Invalid Details.";
+                }
+            }
+            catch (Exception Ex)
+            {
+                b_status = false; JSONstring = Ex.Message;
+            }
+            return Json(new { status = b_status, message = JSONstring, id = ID }, 0);
+        }
+
     }
 }

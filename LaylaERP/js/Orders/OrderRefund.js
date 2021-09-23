@@ -1,6 +1,5 @@
 ﻿$(document).ready(function () {
     $('.billinfo').prop("disabled", true);
-    $("#ddlshipcountry").change(function () { var obj = { id: $("#ddlshipcountry").val() }; BindStateCounty("ddlshipstate", obj); });
     getOrderInfo();
     $(document).on("click", ".btnRefundOrder", function (t) {
         t.preventDefault(); $('.billinfo').prop("disabled", false); isEdit(true);
@@ -66,9 +65,7 @@ function getOrderInfo() {
                     + (data[0].s_address_2.length > 0 ? data[0].s_address_2 + '<br>' : '') + (data[0].s_city.length > 0 ? data[0].s_city + ', ' : '') + (data[0].s_state.length > 0 ? data[0].s_state + ', ' : '')
                     + (data[0].s_country.length > 0 ? data[0].s_country + ' ' : '') + (data[0].s_postcode.length > 0 ? data[0].s_postcode : '');
                 $('.shipping-address').empty().append(shipping_Details);
-                $('#txtshipfirstname').val(data[0].s_first_name); $('#txtshiplastname').val(data[0].s_last_name); $('#txtshipaddress1').val(data[0].s_address_1.trim()); $('#txtshipaddress2').val(data[0].s_address_2);
-                $('#txtshipcompany').val(data[0].s_company); $('#txtshipzipcode').val(data[0].s_postcode); $('#txtshipcity').val(data[0].s_city);
-                $('#ddlshipcountry').val(data[0].s_country.trim()).trigger('change'); $('#ddlshipstate').val(data[0].s_state.trim()).trigger('change');
+                $('.shipping-address').data('shipstate', data[0].s_state.trim());
                 //bind Product
                 getOrderItemList(oid); getOrderNotesList(oid);
             }
@@ -245,25 +242,22 @@ function getOrderNotesList(oid) {
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Shipping Charges ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function getShippingCharge() {
-    let v_ids = []; let sh_state = $("#ddlshipstate").val() == 'CA' ? "CAA" : $("#ddlshipstate").val();
+    let v_ids = []; let zShippingAmt = 0.00;
     $("#order_line_items  > tr.paid_item").each(function () { v_ids.push($(this).data('vid')); });
-    let shipping_state = $("#ddlshipcountry").val() == 'US' ? sh_state : $("#ddlshipcountry").val();
-    let options = { strValue1: v_ids.join(','), strValue2: shipping_state };
-    $(".TotalAmount").data("shippingamt", 0.00);
-    let zShippingAmt = 0.00;
-    ajaxFunc('/Orders/GetProductShipping', options, beforeSendFun, function (data) {
-        $("#order_line_items > tr.paid_item").each(function (index, tr) {
-            let proudct_item = data.find(el => el.product_id === $(tr).data('vid'));
-            if (proudct_item != null) {
-                $('#tritemId_' + $(tr).data('id')).find(".TotalAmount").data("shippingamt", proudct_item.AK);
-                zShippingAmt += proudct_item.AK;
-            }
-        });
-    }, completeFun, errorFun);
-    $('#order_shipping_line_items').find(".RefundAmount").text(zShippingAmt.toFixed(2));
+    if (v_ids.join(',').length > 0) {
+        let options = { strValue1: v_ids.join(','), strValue2: $("#ddlshipcountry").val(), strValue3: $("#ddlshipstate").val() };
+        $(".TotalAmount").data("shippingamt", 0.00);
+        $.post('/Orders/GetProductShipping', options).then(response => {
+            $("#order_line_items > tr.paid_item").each(function (index, tr) {
+                let proudct_item = response.find(el => el.product_id === $(tr).data('vid'));
+                if (proudct_item != null) { $(tr).find(".TotalAmount").data("shippingamt", proudct_item.AK); zShippingAmt += proudct_item.AK; }
+            });
+        }).catch(err => { $("#loader").hide(); swal('Error!', err, 'error'); }).always(function () { $("#loader").hide(); });
+        $('#order_shipping_line_items').find(".RefundAmount").text(zShippingAmt.toFixed(2));
+    }
 }
 function getStateRecyclingCharge() {
-    let ship_state = $("#ddlshipstate").val();
+    let ship_state = $('.shipping-address').data('shipstate');
     let zStateRecyclingAmt = 0.00, matCount = 0;
     $("#order_line_items > tr.paid_item").each(function () {
         if (parseInt($(this).find("[name=txt_RefundAmt]").val()) == 0) {
@@ -428,7 +422,7 @@ function saveCO() {
     if (itemsDetails.length <= 0) { swal('Alert!', 'Please add product.', "error"); return false; }
     var obj = { OrderPostMeta: postMeta, OrderProducts: itemsDetails, OrderPostStatus: postStatus, OrderOtherItems: otherItems, OrderTaxItems: taxItems };
 
-    console.log(obj);
+    //console.log(obj);
     $.ajax({
         type: "POST", contentType: "application/json; charset=utf-8",
         url: "/Orders/SaveCustomerOrderRefund",
@@ -469,47 +463,48 @@ function PodiumPayment() {
             $.get('/Setting/GetPodiumToken', option).then(response => {
                 let access_token = response.message;
                 $.ajax({
-                    type: 'post', url: 'https://api.podium.com/v4/invoices/' + invoice_no + '/refund', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_refund),
+                    type: 'post', url: podium_baseurl + '/v4/invoices/' + invoice_no + '/refund', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_refund),
                     beforeSend: function (xhr) { xhr.setRequestHeader("Accept", "application/json"); xhr.setRequestHeader("Authorization", "Bearer " + access_token); }
                 }).then(response => {
                     console.log(response);
-                    //updatePayment(response.data.uid, invoice_amt.toFixed(2));
+                    let option = { post_ID: oid, comment_content: 'Refund Issued for $' + invoice_amt + '. The refund should appear on your statement in 5 to 10 days.', is_customer_note: '' };
+                    $.post('/Orders/OrderNoteAdd', option).then(response => {
+                        if (response.status) { $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true); }
+                    }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', err, 'error'); });
                 }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', err, 'error'); });
             }).catch(err => { swal.hideLoading(); swal('Error!', err, 'error'); }).always(function () { swal.hideLoading(); });
         }
     }]);
 }
-function updatePayment(oid, taskUid, invoice_amt) {
-    let order_note = 'Refund Issued for $' + invoice_amt + '. The refund should appear on your statement in 5 to 10 days. Payment completed through Podium by on ';
-    let opt = { post_id: oid, payment_uid: '', location_uid: '', invoice_number: 'INV-' + oid, order_note: order_note };
-    $.post('/Orders/UpdatePodiumPaymentAccept', opt).then(response => {
-        swal('Success!', response.message, 'success');
-        if (response.status == true) { $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true); successModal('podium', taskUid, true); }
-    }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', err, 'error'); });
-}
 
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ PayPal Payment Return ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function PaypalRefundsPayment() {
     let oid = parseInt($('#hfOrderNo').val()) || 0;
-    let postMetaxml = [{ post_id: oid, meta_key: '_payment_method', meta_value: 'ppec_paypal' }, { post_id: oid, meta_key: '_payment_method_title', meta_value: 'PayPal' }, { post_id: oid, meta_key: '_paypal_id', meta_value: $('#lblOrderNo').data('pay_id').trim() }];
-    var opt = { OrderPostMeta: postMetaxml };
-    ajaxFunc('/Orders/GetPayPalToken', opt, beforeSendFun, function (result) { RefundPaypalInvoice(result.message); }, function () { }, function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); });
-}
-function RefundPaypalInvoice(access_token) {
     let invoice_no = $('#lblOrderNo').data('pay_id').trim(), invoice_amt = (parseFloat($('.btnRefundOk').data('nettotal')) || 0.00);
     let date = new Date();
-    let invoice_date = date.getUTCFullYear() + '-' + (date.getUTCMonth() + 1) + '-' + date.getUTCDate();
-    let option = { method: "BANK_TRANSFER", refund_date: invoice_date, amount: { currency_code: "USD", value: invoice_amt } }
-    let create_url = 'https://api-m.sandbox.paypal.com/v2/invoicing/invoices/' + invoice_no + '/refunds';
-    console.log(create_url, option);
-    $.ajax({
-        type: "POST", url: create_url, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(option),
-        beforeSend: function (xhr) {
-            xhr.setRequestHeader("Accept", "application/json");
-            xhr.setRequestHeader("Authorization", "Bearer " + access_token);
-        },
-        success: function (data) { console.log(data); },
-        error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); console.log(XMLHttpRequest); swal('Alert!', XMLHttpRequest.responseJSON.message, "error"); },
-        complete: function () { $("#loader").hide(); }, async: false
-    });
+    let invoice_date = [date.getFullYear(), ('0' + (date.getMonth() + 1)).slice(-2), ('0' + date.getDate()).slice(-2)].join('-'); 
+    let opt_refund = { method: "BANK_TRANSFER", refund_date: invoice_date, amount: { currency_code: "USD", value: invoice_amt } }
+
+    let option = { strValue1: 'getToken' };
+    swal.queue([{
+        title: 'Podium Payment Processing.', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,
+        onOpen: () => {
+            swal.showLoading();
+            $.get('/Setting/GetPayPalToken', option).then(response => {
+                let access_token = response.message;
+                let create_url = paypal_baseurl + '/v2/invoicing/invoices/' + invoice_no + '/refunds';
+                console.log(create_url, opt_refund);
+                $.ajax({
+                    type: 'post', url: create_url, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_refund),
+                    beforeSend: function (xhr) { xhr.setRequestHeader("Accept", "application/json"); xhr.setRequestHeader("Authorization", "Bearer " + access_token); }
+                }).then(response => {
+                    console.log(response);
+                    let option = { post_ID: oid, comment_content: 'PayPal Refund Issued for $' + invoice_amt + '. transaction ID = ' + response.refund_id, is_customer_note: '' };
+                    $.post('/Orders/OrderNoteAdd', option).then(response => {
+                        if (response.status) { $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true); }
+                    }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', err, 'error'); });
+                }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', 'Something went wrong.', 'error'); }).always(function () { swal.hideLoading(); });
+            });
+        }
+    }]);
 }

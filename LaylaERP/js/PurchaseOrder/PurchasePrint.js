@@ -298,7 +298,7 @@ function printinvoice_old(id, result, is_mail, is_inv) {
     myHtml += '            <div class="col-xs-12">';
     myHtml += '                <div class="row" style="padding:0px 15px;margin-bottom:10px;display: flex;">';
     myHtml += '                    <div id="printPreview" style="width: 41.66666667%;">';
-    myHtml += '                        <div class="businessLogo"><img src="~/Images/layla1-logo.png" alt="" id="logoUrl" style="width: 90px;" /></div>';
+    myHtml += '                        <div class="businessLogo"><img src="http://40.114.51.80/Images/layla1-logo.png" alt="" id="logoUrl" style="width: 90px;" /></div>';
     myHtml += '                        <div class="businfobox">' + result.add + '<br>' + result.city + ', ' + result.state + ' ' + result.zip + ', <br>' + (result.country == "CA" ? "Canada" : result.country == "US" ? "United States" : result.country) + '</div>';
     myHtml += '                        <div class="businfobox">Phone: 001 ' + result.phone.toString().replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + '<br/>' + result.email + '<br />' + result.website + '<br /></div>';
     myHtml += '                    </div>';

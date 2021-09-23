@@ -1452,7 +1452,7 @@
                 string strWhr = string.Empty;
                 if (!CommanUtilities.Provider.GetCurrent().UserType.ToLower().Contains("administrator"))
                 {
-                    strWhr += " and (pm_uc.meta_value='" + CommanUtilities.Provider.GetCurrent().UserID + "') ";
+                    //strWhr += " and (pm_uc.meta_value='" + CommanUtilities.Provider.GetCurrent().UserID + "') ";
                 }
                 string strSql = "select sum(case when post_status != 'auto-draft' then 1 else 0 end) AllOrder,sum(case when post_author = 8 and post_status != 'auto-draft' then 1 else 0 end) Mine,"
                             + " sum(case when post_author != 8 and post_status = 'draft' then 1 else 0 end) Drafts,sum(case post_status when 'wc-pending' then 1 else 0 end) Pending,"

@@ -1155,7 +1155,7 @@
             {
                 string strWhr = "'1' is_edit";
                 if (!CommanUtilities.Provider.GetCurrent().UserType.ToLower().Contains("administrator"))
-                    strWhr = " (case when max(case meta_key when 'employee_id' then meta_value else '' end) = " + CommanUtilities.Provider.GetCurrent().UserID + " then '1' end '0' end) is_edit";
+                    strWhr = " coalesce((SELECT '1' FROM wp_postmeta pm_em WHERE pm_em.post_id=os.id and meta_key = 'employee_id' and meta_value = '" + CommanUtilities.Provider.GetCurrent().UserID + " '),'0') is_edit";
                 MySqlParameter[] parameters =
                 {
                     new MySqlParameter("@order_id", OrderID)

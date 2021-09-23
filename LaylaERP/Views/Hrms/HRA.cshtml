@@ -85,8 +85,6 @@
                 </div>
             </div>
         </div>
-
-
     </div>
 </section>
 <script>
@@ -102,7 +100,7 @@
     $(function () {
         $("#txtfromdate").datepicker({
             format: 'mm-dd-yyyy',
-        });
+        }).datepicker("setDate", 'now');
 
     });
 </script>

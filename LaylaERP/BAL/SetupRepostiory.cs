@@ -264,5 +264,126 @@ namespace LaylaERP.BAL
             }
         }
 
+        public static int GetFreeProductCount(SetupModel model)
+        {
+            try
+            {
+                string strquery = "SELECT COUNT(product_id) from wp_product_free WHERE product_id = '" + model.product_id + "' ";
+                MySqlParameter[] para =
+                {
+
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strquery).ToString());
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+        public static DataTable GetFreeProductCount1(SetupModel model)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                string strSQl = "SELECT product_id from wp_product_free WHERE product_id = '" + model.product_id + "' ";
+                dt = SQLHelper.ExecuteDataTable(strSQl);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static int AddFreeProduct(SetupModel model)
+        {
+            try
+            {
+                string strsql = "INSERT into wp_product_free(product_id, free_product_id, free_quantity) values(@product_id, @free_product_id, @free_quantity);SELECT LAST_INSERT_ID();";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@product_id", model.on_product_id),
+                    new MySqlParameter("@free_product_id",model.free_product_id),
+                    new MySqlParameter("@free_quantity",model.free_quantity),
+               };
+                int result = Convert.ToInt32(DAL.SQLHelper.ExecuteScalar(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+        public static DataTable GetFreeProduct()
+        {
+            DataTable dtr = new DataTable();
+            try
+            {
+                string strquery = "SELECT wpf.rowid as id,concat(wpf.product_id,' - ',p.post_title) as product,concat(wpf.free_product_id,' - ',ps.post_title) as freeproduct ,free_quantity as quantity,wpf.product_id,wpf.free_product_id from wp_product_free wpf "
+                                  + " left outer join wp_posts p on p.id = wpf.product_id"
+                                  + " left outer join wp_posts ps on ps.id = wpf.free_product_id";
+                DataSet ds = SQLHelper.ExecuteDataSet(strquery);
+                dtr = ds.Tables[0];
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dtr;
+        }
+
+        public static DataTable SelectFreeProduct(long id)
+        {
+            DataTable dtr = new DataTable();
+            try
+            {
+                string strquery = "SELECT * from wp_product_free where rowid='" + id + "'";
+
+                DataSet ds = SQLHelper.ExecuteDataSet(strquery);
+                dtr = ds.Tables[0];
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dtr;
+        }
+
+        public static DataSet GetProducts2()
+        {
+            DataSet DS = new DataSet();
+            try
+            {
+                string strSQl = "SELECT COALESCE(ps.id,p.id) id,CONCAT(COALESCE(ps.post_title,p.post_title), COALESCE(CONCAT(' (' ,psku.meta_value,')'),'')) as text"
+                                + " FROM wp_posts as p"
+                                + " LEFT OUTER JOIN wp_posts ps ON ps.post_parent = p.id and ps.post_type LIKE 'product_variation'"
+                                + " left outer join wp_postmeta psku on psku.post_id = ps.id and psku.meta_key = '_sku'"
+                                + " WHERE p.post_type = 'product' AND p.post_status = 'publish'";
+
+                DS = SQLHelper.ExecuteDataSet(strSQl);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
+        }
+
+        public static int UpdateFreeProduct(SetupModel model)
+        {
+            try
+            {
+                string strsql = "UPDATE wp_product_free set free_product_id=@free_product_id, free_quantity=@free_quantity, status=@status where rowid = '" + model.rowid + "';";
+                MySqlParameter[] para =
+               {                    
+                    new MySqlParameter("@free_product_id",model.free_product_id),
+                    new MySqlParameter("@free_quantity",model.free_quantity),
+                    new MySqlParameter("@status",model.status),
+                };
+
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
     }
 }

@@ -23,6 +23,15 @@ namespace LaylaERP.Controllers
             return View();
         }
 
+        public ActionResult freeproduct()
+        {
+            return View();
+        }
+        public ActionResult editfreeproduct()
+        {
+            return View();
+        }
+
         public JsonResult GetProduct()
         {
             DataSet ds = SetupRepostiory.GetProducts();
@@ -196,5 +205,87 @@ namespace LaylaERP.Controllers
                 return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
             }
         }
+
+        public JsonResult GetFreeProductCount(SetupModel model)
+        {
+            int ID = SetupRepostiory.GetFreeProductCount(model);
+            if (ID > 0)
+            {
+
+                return Json(new { status = true, message = "Product already exists", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+        }
+
+        public JsonResult AddFreeProduct(SetupModel model)
+        {
+            int ID = SetupRepostiory.AddFreeProduct(model);
+            if (ID > 0)
+            {
+
+                return Json(new { status = true, message = "Data has been saved successfully!!", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+        }
+
+        public JsonResult GetFreeProduct()
+        {
+
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = SetupRepostiory.GetFreeProduct();
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+
+        public JsonResult SelectFreeProduct(long id)
+        {
+
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = SetupRepostiory.SelectFreeProduct(id);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+
+        public JsonResult GetProducts2()
+        {
+            DataSet ds = SetupRepostiory.GetProducts2();
+            List<SelectListItem> productlist = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                productlist.Add(new SelectListItem { Text = dr["text"].ToString(), Value = dr["id"].ToString() });
+            }
+            return Json(productlist, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateFreeProduct(SetupModel model)
+        {
+
+            if (model.rowid > 0)
+            {
+                SetupRepostiory.UpdateFreeProduct(model);
+                return Json(new { status = true, message = "Data has been saved successfully!!", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+
+        }
+
     }
 }

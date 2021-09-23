@@ -54,7 +54,7 @@ function printinvoice(id, result, is_mail, is_inv) {
     myHtml += '                    <table cellpadding="0" cellspacing="0" border="0" style="width:100%;border-bottom: 1px solid #ddd;">';
     myHtml += '                        <tr>';
     myHtml += '                            <td style="padding:0; vertical-align: top;">';
-    myHtml += '                                <img src="~/Images/layla1-logo.png" alt="" width="95" height="41" class="logo-size"/>';
+    myHtml += '                                <img src="http://40.114.51.80/Images/layla1-logo.png" alt="" width="95" height="41" class="logo-size"/>';
     myHtml += '                                <p style="margin:15px 0px;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">';
     myHtml += '                                    ' + result.add + ', <br>' + result.city + ', ' + result.state + ' ' + result.zip + ', <br>' + (result.country == "CA" ? "Canada" : result.country == "US" ? "United States" : result.country) + '.<br>';
     myHtml += '                                    Phone: 001 ' + result.phone.toString().replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + '<br />' + result.email + '<br />' + result.website;

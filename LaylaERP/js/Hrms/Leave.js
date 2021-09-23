@@ -20,9 +20,16 @@ function getLeaveType() {
 }
 
 function getEmployee() {
+    var usertype = $("#hfusertype").val();
+    if (usertype.toUpperCase() != "ADMINISTRATOR") {
+        var obj = { fkuser: $("#hfuserid").val() }
+    }
     $.ajax({
         url: "/Hrms/GetEmployee",
-        type: "Get",
+        type: 'Post',
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(obj),
+        dataType: "json",
         success: function (data) {
             var opt = '<option value="0">Please Select Employee</option>';
             for (var i = 0; i < data.length; i++) {

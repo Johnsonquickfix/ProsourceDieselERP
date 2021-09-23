@@ -1,12 +1,16 @@
 ﻿
 function LeaveList() {
-
+    var usertype = $("#hfusertype").val();
+    if (usertype.toUpperCase() != "ADMINISTRATOR") {
+        var obj = { fkuser: $("#hfuserid").val() }
+    }
     $.ajax({
         url: '/Hrms/LeaveList',
         method: 'post',
         datatype: 'json',
         contentType: "application/json; charset=utf-8",
         processing: true,
+        data: JSON.stringify(obj),
         success: function (data) {
             $('#EmployeeListdata').dataTable({
                 destroy: true,

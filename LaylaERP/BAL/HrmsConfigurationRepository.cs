@@ -80,8 +80,8 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "INSERT into erp_hrms_salary_configuration(emp_type, fk_emp, basic, emp_code, da, hra, other_allowance, pf, loan_amount, loan_emi, loan_months, adv_amount, adv_emi, adv_emi_months, tds, other_deductions, reimbursement, work_type, default_work_hours, prepare_salary, accounting_type)" +
-                                 " values(@emp_type, @fk_emp, @basic, @emp_code, @da, @hra, @other_allowance, @pf, @loan_amount, @loan_emi, @loan_months, @adv_amount, @adv_emi, @adv_emi_months, @tds, @other_deductions, @reimbursement, @work_type, @default_work_hours, @prepare_salary, @accounting_type); SELECT LAST_INSERT_ID();";
+                string strsql = "INSERT into erp_hrms_salary_configuration(emp_type, fk_emp, basic, emp_code, da, hra, other_allowance, pf, loan_amount, loan_emi, loan_months, adv_amount, adv_emi, adv_emi_months, tds, other_deductions, reimbursement, work_type, default_work_hours, prepare_salary, accounting_type, hra_type)" +
+                                 " values(@emp_type, @fk_emp, @basic, @emp_code, @da, @hra, @other_allowance, @pf, @loan_amount, @loan_emi, @loan_months, @adv_amount, @adv_emi, @adv_emi_months, @tds, @other_deductions, @reimbursement, @work_type, @default_work_hours, @prepare_salary, @accounting_type, @hra_type); SELECT LAST_INSERT_ID();";
 
                 MySqlParameter[] para =
                 {
@@ -107,6 +107,7 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@other_allowance", model.other_allowance),
                     new MySqlParameter("@prepare_salary", model.prepare_salary),
                     new MySqlParameter("@accounting_type", model.accounting_type),
+                    new MySqlParameter("@hra_type", model.hra_type),
                 };
                 int result = Convert.ToInt32(DAL.SQLHelper.ExecuteScalar(strsql, para));
                 return result;
@@ -125,7 +126,7 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "SELECT ehsc.rowid as id, concat(ehe.firstname,' ',ehe.lastname) as name, eheg.group_description as discription, ehe.phone, ehe.email from erp_hrms_salary_configuration ehsc inner join erp_hrms_emp ehe on ehe.rowid = ehsc.fk_emp inner join erp_hrms_empdetails ehed on ehed.fk_emp = ehe.rowid inner join erp_hrms_employee_group eheg on eheg.rowid = ehsc.emp_type where 1 = 1 ";
+                string strSql = "SELECT ehsc.rowid as id, ehed.emp_number as code, concat(ehe.firstname,' ',ehe.lastname) as name, eheg.group_description as discription, ehe.phone, ehe.email from erp_hrms_salary_configuration ehsc inner join erp_hrms_emp ehe on ehe.rowid = ehsc.fk_emp inner join erp_hrms_empdetails ehed on ehed.fk_emp = ehe.rowid inner join erp_hrms_employee_group eheg on eheg.rowid = ehsc.emp_type where 1 = 1 ";
                 if (!string.IsNullOrEmpty(searchid))
                 {
                     strWhr += " and (concat(ehe.firstname,' ',ehe.lastname) like '%" + searchid + "%' OR eheg.group_description like '%" + searchid + "%')";
@@ -157,7 +158,7 @@ namespace LaylaERP.BAL
             {
                 string strquery = "SELECT rowid,emp_type,fk_emp,Replace(format(basic,2),',','') basic,emp_code,Replace(format(da,2),',','') as da, Replace(format(hra,2),',','') as hra, Replace(format(other_allowance,2),',','') as other_allowance,Replace(format(pf,2),',','') as pf ," +
                     "Replace(format(loan_amount,2),',','') as loan_amount, Replace(format(loan_emi,2),',','') as loan_emi,loan_months, Replace(format(adv_amount,2),',','') as adv_amount, Replace(format(adv_emi,2),',','') as adv_emi,adv_emi_months,Replace(format(tds,2),',','') as tds," +
-                    " Replace(format(other_deductions,2),',','') as other_deductions, Replace(format(reimbursement,2),',','') as reimbursement,work_type,default_work_hours,prepare_salary,accounting_type from erp_hrms_salary_configuration WHERE rowid='" + id + "'";
+                    " Replace(format(other_deductions,2),',','') as other_deductions, Replace(format(reimbursement,2),',','') as reimbursement,work_type,default_work_hours,prepare_salary,accounting_type,hra_type from erp_hrms_salary_configuration WHERE rowid='" + id + "'";
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strquery);
                 dtr = ds.Tables[0];
@@ -173,7 +174,7 @@ namespace LaylaERP.BAL
             try
             {
                 string strsql = "UPDATE erp_hrms_salary_configuration set emp_type=@emp_type, fk_emp=@fk_emp, basic=@basic, emp_code=@emp_code, da=@da, hra=@hra, other_allowance=@other_allowance, pf=@pf, loan_amount=@loan_amount, loan_emi=@loan_emi, loan_months=@loan_months, adv_amount=@adv_amount," +
-                    "adv_emi=@adv_emi, adv_emi_months=@adv_emi_months, tds=@tds, other_deductions=@other_deductions, reimbursement=@reimbursement, work_type=@work_type, default_work_hours=@default_work_hours, prepare_salary=@prepare_salary, accounting_type=@accounting_type where rowid = '" + model.rowid + "';";
+                    "adv_emi=@adv_emi, adv_emi_months=@adv_emi_months, tds=@tds, other_deductions=@other_deductions, reimbursement=@reimbursement, work_type=@work_type, default_work_hours=@default_work_hours, prepare_salary=@prepare_salary, accounting_type=@accounting_type, hra_type=@hra_type where rowid = '" + model.rowid + "';";
                 MySqlParameter[] para =
                  {
                     new MySqlParameter("@emp_type", model.emp_type),
@@ -198,6 +199,7 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@other_allowance", model.other_allowance),
                     new MySqlParameter("@prepare_salary", model.prepare_salary),
                     new MySqlParameter("@accounting_type", model.accounting_type),
+                    new MySqlParameter("@hra_type", model.hra_type),
                 };
                 int result = Convert.ToInt32(DAL.SQLHelper.ExecuteNonQuery(strsql, para));
                 return result;
@@ -280,8 +282,8 @@ namespace LaylaERP.BAL
                 throw ex;
             }
             return dt;
-        }
-        */
+        }*/
+        
         public static DataTable SelectHRAList(long id)
         {
             DataTable dt = new DataTable();
@@ -297,7 +299,7 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
-
+        
         public static DataTable GetHRAList()
         {
             DataTable dt = new DataTable();
@@ -337,6 +339,25 @@ namespace LaylaERP.BAL
             {
                 throw ex;
             }
+        }
+
+        public static DataTable HRAValue(long basic)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                if (basic > 0)
+                {
+                    string strSql = "SELECT * from erp_hrms_HRA where basic1 >='" + basic + "' or basic2 <='" + basic + "' order by rowid DESC";
+                    DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                    dt = ds.Tables[0];
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
         }
     }
 }

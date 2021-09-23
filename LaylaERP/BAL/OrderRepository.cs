@@ -1153,6 +1153,9 @@
             DataTable dt = new DataTable();
             try
             {
+                string strWhr = "'1' is_edit";
+                if (!CommanUtilities.Provider.GetCurrent().UserType.ToLower().Contains("administrator"))
+                    strWhr = " (case when max(case meta_key when 'employee_id' then meta_value else '' end) = " + CommanUtilities.Provider.GetCurrent().UserID + " then '1' end '0' end) is_edit";
                 MySqlParameter[] parameters =
                 {
                     new MySqlParameter("@order_id", OrderID)
@@ -1169,7 +1172,8 @@
                             + " max(case meta_key when '_shipping_company' then meta_value else '' end) s_company,max(case meta_key when '_shipping_address_1' then meta_value else '' end) s_address_1,max(case meta_key when '_shipping_address_2' then meta_value else '' end) s_address_2,"
                             + " max(case meta_key when '_shipping_postcode' then meta_value else '' end) s_postcode,max(case meta_key when '_shipping_city' then meta_value else '' end) s_city,"
                             + " max(case meta_key when '_shipping_country' then meta_value else '' end) s_country,max(case meta_key when '_shipping_state' then meta_value else '' end) s_state,"
-                            + " max(case meta_key when '_paypal_id' then meta_value else '' end) paypal_id,max(case meta_key when 'taskuidforsms' then meta_value else '' end) podium_id,max(case meta_key when '_podium_payment_uid' then meta_value else '' end) podium_payment_uid,(SELECT count(split_id) FROM split_record WHERE main_order_id=os.id) is_shiped"
+                            + " max(case meta_key when '_paypal_id' then meta_value else '' end) paypal_id,max(case meta_key when 'taskuidforsms' then meta_value else '' end) podium_id,max(case meta_key when '_podium_payment_uid' then meta_value else '' end) podium_payment_uid,"
+                            + " (SELECT count(split_id) FROM split_record WHERE main_order_id=os.id) is_shiped," + strWhr
                             + " from wp_posts os inner join wp_postmeta pm on pm.post_id = os.id"
                             + " left outer join wp_users u on u.id = meta_value and meta_key='_customer_user'"
                             + " where os.id = @order_id "

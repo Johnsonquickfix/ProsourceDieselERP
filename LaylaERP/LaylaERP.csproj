@@ -911,6 +911,8 @@
     <Content Include="Views\Hrms\HRA.cshtml" />
     <Content Include="Views\Hrms\ListGrantLeave.cshtml" />
     <Content Include="Views\Setting\OrderShippingRule.cshtml" />
+    <Content Include="Views\Setup\editfreeproduct.cshtml" />
+    <Content Include="Views\Setup\freeproduct.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

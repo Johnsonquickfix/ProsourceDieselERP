@@ -28,7 +28,7 @@
     $("#ddlbillcountry").change(function () { var obj = { id: $("#ddlbillcountry").val() }; BindStateCounty("ddlbillstate", obj); });
     $("#ddlshipcountry").change(function () { var obj = { id: $("#ddlshipcountry").val() }; BindStateCounty("ddlshipstate", obj); });
     $("#ddlshipstate").change(function () { GetTaxRate(); getItemShippingCharge(); });
-   
+
 
     $(document).on("click", "#btnApplyCoupon", function (t) { t.preventDefault(); CouponModal(); });
     //$("#billModal").on("keypress", function (e) { if (e.which == 13 && e.target.type != "textarea") { $("#btnCouponAdd").click(); } });
@@ -414,10 +414,10 @@ function addCustomerModal(cus_name) {
     myHtml += '<div class=""><input type="text" id="txtCusNickName" class="form-control" placeholder="User Name" value="' + cus_name + '"/></div>';
     myHtml += '</div>';
 
-    myHtml += '<div class="form-group">';
-    myHtml += '<label class="control-label " for="Email">Email<span class="text-red">*</span></label>';
-    myHtml += '<div class=""><input type="email" id="txtCusEmail" class="form-control" placeholder="Email" value="' + cus_name + '"/></div>';
-    myHtml += '</div>';
+    //myHtml += '<div class="form-group">';
+    //myHtml += '<label class="control-label " for="Email">Email<span class="text-red">*</span></label>';
+    //myHtml += '<div class=""><input type="email" id="txtCusEmail" class="form-control" placeholder="Email" value="' + cus_name + '"/></div>';
+    //myHtml += '</div>';
 
     myHtml += '<div class="form-group">';
     myHtml += '<label class="control-label " for="First Name">First Name<span class="text-red">*</span></label>';
@@ -428,13 +428,14 @@ function addCustomerModal(cus_name) {
     myHtml += '<label class="control-label " for="Last Name">Last Name<span class="text-red">*</span></label>';
     myHtml += '<div class=""><input type="text" id="txtCusLastName" class="form-control" placeholder="Last Name" /></div>';
     myHtml += '</div>';
-    myHtml += '</div >';
 
-    myHtml += '<div class="col-md-4">';
     myHtml += '<div class="form-group">';
     myHtml += '<label class="control-label " for="Contact No.">Contact No.<span class="text-red">*</span></label>';
     myHtml += '<div class=""><input type="tel" id="txtCusBillingMobile" class="form-control" placeholder="Contact No."  maxlength="11"/></div>';
     myHtml += '</div>';
+    myHtml += '</div >';
+
+    myHtml += '<div class="col-md-4">';    
 
     myHtml += '<div class="form-group">';
     myHtml += '<label class="control-label " for="Address"><i class="glyphicon glyphicon-map-marker" aria-hidden="true"></i> Address<span class="text-red">*</span></label>';
@@ -478,7 +479,7 @@ function addCustomerModal(cus_name) {
 }
 function saveCustomer() {
     var oid = parseInt($('#hfOrderNo').val()) || 0;
-    let Email = $("#txtCusEmail").val();
+    let Email = $("#txtCusNickName").val()//$("#txtCusEmail").val();
     let NickName = $("#txtCusNickName").val();
     let FirstName = $("#txtCusFirstName").val();
     let LastName = $("#txtCusLastName").val();
@@ -490,8 +491,11 @@ function saveCustomer() {
     let BillingCity = $("#txtCusBillingCity").val();
     let BillingPhone = $("#txtCusBillingMobile").val();
 
-    if (Email == "") { swal('alert', 'Please Enter Email', 'error').then(function () { swal.close(); $('#txtUserEmail').focus(); }) }
-    else if (NickName == "") { swal('alert', 'Please Enter User Name', 'error').then(function () { swal.close(); $('#txtUserNickName').focus(); }) }
+    let rex_email = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i;
+
+    if (Email == "") { swal('alert', 'Please Enter Email', 'error').then(function () { swal.close(); $('#txtCusNickName').focus(); }) }
+    else if (Email != "" || !rex_email.test(Email)) { swal('alert', 'Please enter valid email.', 'error').then(function () { swal.close(); $('#txtCusNickName').focus(); }) }
+    //else if (NickName == "") { swal('alert', 'Please Enter User Name', 'error').then(function () { swal.close(); $('#txtUserNickName').focus(); }) }
     else if (FirstName == "") { swal('alert', 'Please Enter First Name', 'error').then(function () { swal.close(); $('#txtFirstName').focus(); }) }
     else if (LastName == "") { swal('alert', 'Please Enter Last Name', 'error').then(function () { swal.close(); $('#txtLastName').focus(); }) }
     else if (BillingAddress1 == "") { swal('alert', 'Please Enter Address 1', 'error').then(function () { swal.close(); $('#txtBillingAddress1').focus(); }) }
@@ -2034,7 +2038,7 @@ function CreatePaypalInvoice(oid, pp_no, pp_email, access_token) {
             }
         }
     }
-    let create_url = paypal_baseurl+'/v2/invoicing/invoices' + (inv_id.length > 0 ? '/' + inv_id : ''), action_method = (inv_id.length > 0 ? 'PUT' : 'POST');
+    let create_url = paypal_baseurl + '/v2/invoicing/invoices' + (inv_id.length > 0 ? '/' + inv_id : ''), action_method = (inv_id.length > 0 ? 'PUT' : 'POST');
     console.log(create_url, option);
     $.ajax({
         type: action_method, url: create_url, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(option),

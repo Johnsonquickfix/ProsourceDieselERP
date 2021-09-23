@@ -28,7 +28,8 @@
     $("#ddlbillcountry").change(function () { var obj = { id: $("#ddlbillcountry").val() }; BindStateCounty("ddlbillstate", obj); });
     $("#ddlshipcountry").change(function () { var obj = { id: $("#ddlshipcountry").val() }; BindStateCounty("ddlshipstate", obj); });
     $("#ddlshipstate").change(function () { GetTaxRate(); getItemShippingCharge(); });
-    getOrderInfo();
+   
+
     $(document).on("click", "#btnApplyCoupon", function (t) { t.preventDefault(); CouponModal(); });
     //$("#billModal").on("keypress", function (e) { if (e.which == 13 && e.target.type != "textarea") { $("#btnCouponAdd").click(); } });
     $("#billModal").on("click", "#btnCouponAdd", function (t) { t.preventDefault(); ApplyCoupon(); });
@@ -70,6 +71,7 @@
             }
         });
     });
+    getOrderInfo();
     $("#billModal").on("click", "#btnSelectDefaltAddress", function (t) {
         t.preventDefault();
         let cus_id = parseInt($("#ddlCustomerSearch").val()) || 0, cus_text = $("#ddlCustomerSearch option:selected").text();
@@ -1924,10 +1926,11 @@ function PodiumPayment() {
         //_lineItems.push({ description: 'Item - ' + index+ ' X ' + qty.toFixed(0), amount: (grossAmount - discount) * 100 });
 
     });
-    let st_total = parseFloat($('#salesTaxTotal').text()) || 0.00, srf_total = parseFloat($('#stateRecyclingFeeTotal').text()) || 0.00, fee_total = parseFloat($('#feeTotal').text()) || 0.00;
+    let Shipping_total = parseFloat($('#shippingTotal').text()) || 0.00, st_total = parseFloat($('#salesTaxTotal').text()) || 0.00, srf_total = parseFloat($('#stateRecyclingFeeTotal').text()) || 0.00, fee_total = parseFloat($('#feeTotal').text()) || 0.00;
+    if (Shipping_total > 0) _lineItems.push({ description: "Shipping", amount: Shipping_total * 100 });
     if (st_total > 0) _lineItems.push({ description: "Tax", amount: st_total * 100 });
     if (srf_total > 0) _lineItems.push({ description: "State Recycling Fee", amount: srf_total * 100 });
-    if (fee_total > 0) _lineItems.push({ description: "Shipping", amount: fee_total * 100 });
+    if (fee_total > 0) _lineItems.push({ description: "Fee", amount: fee_total * 100 });
 
     let opt_inv = { lineItems: _lineItems, channelIdentifier: bill_email, customerName: bill_name, invoiceNumber: 'INV-' + oid, locationUid: "6c2ee0d4-0429-5eac-b27c-c3ef0c8f0bc7" };
     //console.log(opt_inv);

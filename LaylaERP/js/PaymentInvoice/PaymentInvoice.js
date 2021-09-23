@@ -209,12 +209,16 @@ function takepayment() {
     let status = $('#ddlStatus').val();
     console.log(id);
 
-    var name = $("#txtName").val();
-    var tech = $("#ddlTechnolgy").val();
-    /*var url = "Page2.htm?status=" + encodeURIComponent(name) + "&technology=" + encodeURIComponent(tech);*/
-    var url = "/PaymentInvoice/PaymentInvoice?status=" + status + "&id=" + id;
-     window.location.href = url;
-
+    if (id == "") {
+        swal('alert', 'Please select a PO', 'error');
+    }
+    else {
+        var name = $("#txtName").val();
+        var tech = $("#ddlTechnolgy").val();
+        /*var url = "Page2.htm?status=" + encodeURIComponent(name) + "&technology=" + encodeURIComponent(tech);*/
+        var url = "/PaymentInvoice/PaymentInvoice?status=" + status + "&id=" + id;
+        window.location.href = url;
+    }
     //if (id == "") { swal('alert', 'Please select a order', 'error'); }
     //if (status == "") { swal('alert', 'Please select status', 'error'); }
 

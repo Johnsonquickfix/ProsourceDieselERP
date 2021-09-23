@@ -18,40 +18,98 @@
     <div class="top-action text-right" style="margin-left:auto;min-width:280px;">
     </div>
 </div>
-    <section class="content section-content neworder-section table-design">
-        <div class="row">
-            <span id="lblData"></span>
-            <input type="hidden" id="hfid" />
-            <div class="col-sm-12">
-                <div class="box box-primary mb-0">
-                    <div class="box-header">
-                        <div class="table-responsive" id="divAddItemFinal">
-                            <table id="tblAddItemFinal" class="table-blue table table-bordered table-striped dataTable">
-                                <thead>
-                                    <tr>
-                                        <th class="text-center" style="width: 8%">Actions</th>
-                                        <th style="width: 26%">Description</th>
-                                        <th style="width: 10%">Vendor SKU</th>
-                                        <th class="text-right" style="width: 10%">Price</th>
-                                        <th class="text-right" style="width: 10%">Quantity</th>
-                                        <th class="text-right" style="width: 10%">Prev.Quantity</th>
-                                        <th class="text-right" style="width: 10%">Rec.Quantity</th>
-                                        <th class="text-right" style="width: 10%">Discount(%)</th>
-                                        <th class="text-right" style="width: 8%">Tax</th>
-                                        <th class="text-right" style="width: 8%">Shipping</th>
-                                        <th class="text-right" style="width: 10%">Total</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="line_items"></tbody>
-                            </table>
+<section class="content section-content neworder-section table-design">
+    <div class="row rowbox proposal-row">
+        <div class="col-md-12">
+            <div id="dvdetails">
+                <div class="box box-primary">
+                    <div class="box-body">
+                        <div class="form-group d-flex">
+                            <input type="hidden" id="hfstatus" />
+                            <input type="hidden" id="hfqueryids" />
+                            <label class="col-sm-3 control-label">Payment Type<span style="color:red;"> *</span></label>
+                            <div class="col-sm-9">
+                                <select id="ddlPaymentType" class="form-control select2 billinfo">
+                                    <option value="">Please Select Payment Type</option>
+                                </select>
+                            </div>
                         </div>
-                    </div>
-                    <div class="box-footer text-right footer-finalbutton">
-                        <a class="btn btn-danger pull-left" href="/PaymentInvoice/PaymentInvoiceList">Back to List</a>
+                        <div class="form-group d-flex">
+
+                            <label class="col-sm-3 control-label">Account to credit<span style="color:red;"> *</span></label>
+                            <div class="col-sm-9">
+                                <select id="ddlaccount" class="form-control select2 billinfo">
+                                    <option value="">Please Select Account</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group d-flex">
+                            
+                            <label class="col-sm-3 control-label">Number (Check/Transfer N)</label>
+                            <div class="col-sm-9">
+                                <input type="text" id="txtNumbertransfer" class="form-control billinfo">
+                            </div>
+                        </div>
+    
+                        <div class="form-group d-flex">
+                            <label class="col-sm-3 control-label">Transmitter (Check/Transfer Transmitter)</label>
+                            <div class="col-sm-9">
+                                <input type="text" id="txtTransmitter" class="form-control billinfo">
+                            </div>
+                        </div>
+                        <div class="form-group d-flex">
+                            <label class="col-sm-3 control-label">Bank (Bank of Check)</label>
+                            <div class="col-sm-9">
+                                <input type="text" id="txtBankCheck" class="form-control billinfo">
+                            </div>
+                        </div>
+                        <div class="form-group d-flex">
+                            <label class="col-sm-3 control-label">Comments</label>
+                            <div class="col-sm-9">
+                                <input type="text" id="txtComments" class="form-control billinfo">
+                            </div>
+                        </div>
+                        
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+    <div class="row">
+        <span id="lblData"></span>
+        <input type="hidden" id="hfid" />
+        <div class="col-sm-12">
+            <div class="box box-primary mb-0">
+                <div class="box-header">
+                    <div class="table-responsive" id="divAddItemFinal">
+                        <table id="tblAddItemFinal" class="table-blue table table-bordered table-striped dataTable">
+                            <thead>
+                                <tr>
+                                    <th class="text-left" style="width: 8%">Invoice</th>
+                                    <th style="width: 10%">Date</th>
+                                    <th style="width: 10%">Payment Due On</th>
+                                    <th class="text-right" style="width: 10%">Amount (Inc Tax)</th>
+                                    <th class="text-right" style="width: 10%">Received</th>
+                                    <th class="text-right" style="width: 10%">Remaining amount to take</th>
+                                    <th style="width: 10%">Payment amount</th>
+                                </tr>
+                            </thead>
+                            <tbody id="line_items"></tbody>
+                        </table>
+                    </div>
+                    <div style="display:none" class="form-group">
+                        <label class="col-sm-10 control-label">Total</label>
+                        <div class="col-sm-2 controls text-right">
+                            <strong>$<span id="Total">0.00</span></strong>
+                        </div>
+                    </div>
+                </div>
+                <div class="box-footer text-right footer-finalbutton">
+                    @*<a class="btn btn-danger pull-left" href="/PaymentInvoice/PaymentInvoiceList">Back to List</a>*@
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
     <script src="@Url.Content("~/js/PaymentInvoice/CreatePaymentInvoice.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 

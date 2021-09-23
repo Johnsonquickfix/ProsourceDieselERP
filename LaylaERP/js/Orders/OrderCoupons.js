@@ -27,6 +27,8 @@ var auto_coupon = [{ post_title: "matt-found", title: "Mattress-Foundation", typ
 { post_title: '733500', title: 'Metal Platform Base', type: 'diff', discount_type: 'fixed_product', coupon_amount: 0, individual_use: 'no', product_ids: [733500, -1], exclude_product_ids: [] }
 ];
 var recycling_item = [118, 20861, 611172];
+var podium_baseurl = 'https://api.podium.com', paypal_baseurl = 'https://api-m.sandbox.paypal.com';
+
 ///Bind States of Country
 function BindStateCounty(ctr, obj) {
     var res = wc_states.filter(element => element.abbreviation == obj.id);

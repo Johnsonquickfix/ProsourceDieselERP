@@ -280,7 +280,7 @@ function PaymentStatus(oid, pp_id) {
     let option = { strValue1: 'getToken' };
     $.ajax({ method: 'get', url: '/Setting/GetPayPalToken', data: option }).done(function (result, textStatus, jqXHR) {
         let access_token = result.message;
-        let create_url = 'https://api.sandbox.paypal.com/v1/invoicing/invoices/' + pp_id;
+        let create_url = paypal_baseurl + '/v1/invoicing/invoices/' + pp_id;
         $.ajax({
             type: 'get', url: create_url, contentType: "application/json; charset=utf-8", dataType: "json", data: {},
             beforeSend: function (xhr) {
@@ -323,7 +323,7 @@ function PaymentStatus(oid, pp_id) {
 
 //Check podium Payment Status.
 function podiumPaymentStatus(oid, podium_id) {
-    let option = { strValue1: 'getToken' }; let create_url = 'https://api.podium.com/v4/invoices/' + podium_id;
+    let option = { strValue1: 'getToken' }; let create_url = podium_baseurl + '/v4/invoices/' + podium_id;
     swal.queue([{
         title: 'Payment Status', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,
         onOpen: () => {
@@ -356,7 +356,7 @@ function podiumPaymentStatus(oid, podium_id) {
                         }]);
                     }
                     else { swal.hideLoading(); swal(status, 'Request has sent for payment.', 'info'); }
-                }).catch(err => { swal.hideLoading(); swal('Error!', err, 'error'); });
+                }).catch(err => { swal.hideLoading(); console.log(err); swal('Error!', 'No invoice for the invoice UID.', 'error'); });
             }).catch(err => { swal.hideLoading(); swal('Error!', err, 'error'); }).always(function () { swal.hideLoading(); });
         }
     }]);

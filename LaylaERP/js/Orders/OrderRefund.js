@@ -469,47 +469,49 @@ function PodiumPayment() {
             $.get('/Setting/GetPodiumToken', option).then(response => {
                 let access_token = response.message;
                 $.ajax({
-                    type: 'post', url: 'https://api.podium.com/v4/invoices/' + invoice_no + '/refund', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_refund),
+                    type: 'post', url: podium_baseurl + '/v4/invoices/' + invoice_no + '/refund', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_refund),
                     beforeSend: function (xhr) { xhr.setRequestHeader("Accept", "application/json"); xhr.setRequestHeader("Authorization", "Bearer " + access_token); }
                 }).then(response => {
                     console.log(response);
-                    //updatePayment(response.data.uid, invoice_amt.toFixed(2));
+                    let option = { post_ID: oid, comment_content: 'Refund Issued for $' + invoice_amt + '. The refund should appear on your statement in 5 to 10 days.', is_customer_note: '' };
+                    $.post('/Orders/OrderNoteAdd', option).then(response => {
+                        if (response.status) { $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true); }
+                    }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', err, 'error'); });
                 }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', err, 'error'); });
             }).catch(err => { swal.hideLoading(); swal('Error!', err, 'error'); }).always(function () { swal.hideLoading(); });
         }
     }]);
 }
-function updatePayment(oid, taskUid, invoice_amt) {
-    let order_note = 'Refund Issued for $' + invoice_amt + '. The refund should appear on your statement in 5 to 10 days. Payment completed through Podium by on ';
-    let opt = { post_id: oid, payment_uid: '', location_uid: '', invoice_number: 'INV-' + oid, order_note: order_note };
-    $.post('/Orders/UpdatePodiumPaymentAccept', opt).then(response => {
-        swal('Success!', response.message, 'success');
-        if (response.status == true) { $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true); successModal('podium', taskUid, true); }
-    }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', err, 'error'); });
-}
 
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ PayPal Payment Return ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function PaypalRefundsPayment() {
     let oid = parseInt($('#hfOrderNo').val()) || 0;
-    let postMetaxml = [{ post_id: oid, meta_key: '_payment_method', meta_value: 'ppec_paypal' }, { post_id: oid, meta_key: '_payment_method_title', meta_value: 'PayPal' }, { post_id: oid, meta_key: '_paypal_id', meta_value: $('#lblOrderNo').data('pay_id').trim() }];
-    var opt = { OrderPostMeta: postMetaxml };
-    ajaxFunc('/Orders/GetPayPalToken', opt, beforeSendFun, function (result) { RefundPaypalInvoice(result.message); }, function () { }, function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); });
-}
-function RefundPaypalInvoice(access_token) {
-    let invoice_no = $('#lblOrderNo').data('pay_id').trim(), invoice_amt = (parseFloat($('.btnRefundOk').data('nettotal')) || 0.00);
-    let date = new Date();
-    let invoice_date = date.getUTCFullYear() + '-' + (date.getUTCMonth() + 1) + '-' + date.getUTCDate();
-    let option = { method: "BANK_TRANSFER", refund_date: invoice_date, amount: { currency_code: "USD", value: invoice_amt } }
-    let create_url = 'https://api-m.sandbox.paypal.com/v2/invoicing/invoices/' + invoice_no + '/refunds';
-    console.log(create_url, option);
-    $.ajax({
-        type: "POST", url: create_url, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(option),
-        beforeSend: function (xhr) {
-            xhr.setRequestHeader("Accept", "application/json");
-            xhr.setRequestHeader("Authorization", "Bearer " + access_token);
-        },
-        success: function (data) { console.log(data); },
-        error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); console.log(XMLHttpRequest); swal('Alert!', XMLHttpRequest.responseJSON.message, "error"); },
-        complete: function () { $("#loader").hide(); }, async: false
-    });
+    let option = { strValue1: 'getToken' };
+    swal.queue([{
+        title: 'Podium Payment Processing.', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,
+        onOpen: () => {
+            swal.showLoading();
+            $.get('/Setting/GetPayPalToken', option).then(response => {
+                let access_token = response.message;
+
+                let invoice_no = $('#lblOrderNo').data('pay_id').trim(), invoice_amt = (parseFloat($('.btnRefundOk').data('nettotal')) || 0.00);
+                let date = new Date();
+                let invoice_date = date.getUTCFullYear() + '-' + (date.getUTCMonth() + 1) + '-' + date.getUTCDate();
+                let opt_refund = { method: "BANK_TRANSFER", refund_date: invoice_date, amount: { currency_code: "USD", value: invoice_amt } }
+                let create_url = paypal_baseurl + '/v2/invoicing/invoices/' + invoice_no + '/refunds';
+                console.log(create_url, opt_refund);
+
+                $.ajax({
+                    type: 'post', url: create_url, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_refund),
+                    beforeSend: function (xhr) { xhr.setRequestHeader("Accept", "application/json"); xhr.setRequestHeader("Authorization", "Bearer " + access_token); }
+                }).then(response => {
+                    console.log(response);
+                    //let option = { post_ID: oid, comment_content: 'Refund Issued for $' + invoice_amt + '. The refund should appear on your statement in 5 to 10 days.', is_customer_note: '' };
+                    //$.post('/Orders/OrderNoteAdd', option).then(response => {
+                    //    if (response.status) { $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true); }
+                    //}).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', err, 'error'); });
+                }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', err, 'error'); });
+            });
+        }
+    }]);
 }

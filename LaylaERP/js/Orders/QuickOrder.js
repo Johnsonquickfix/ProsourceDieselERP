@@ -603,7 +603,7 @@ function getOrderInfo() {
         var opt = { strValue1: oid };
         ajaxFunction('/Orders/GetOrderInfo', opt, beforeSendFun, function (result) {
             try {
-                var data = JSON.parse(result); 
+                var data = JSON.parse(result);
                 if (data.length > 0) {
                     $('#lblOrderNo').data('pay_by', data[0].payment_method);
                     if (data[0].payment_method == 'ppec_paypal') $('#lblOrderNo').data('pay_id', data[0].paypal_id);
@@ -1941,19 +1941,19 @@ function PodiumPayment() {
                 let access_token = response.message;
                 let inv_id = $('#lblOrderNo').data('pay_id').trim();
                 if (inv_id.length > 0) {
-                    let create_url = 'https://api.podium.com/v4/invoices/' + inv_id + '/cancel';
+                    let create_url = podium_baseurl + '/v4/invoices/' + inv_id + '/cancel';
                     let opt_cnl = { locationUid: "6c2ee0d4-0429-5eac-b27c-c3ef0c8f0bc7", note: 'Invoice has been canceled.' };
                     $.ajax({
                         type: 'post', url: create_url, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_cnl),
                         beforeSend: function (xhr) { xhr.setRequestHeader("Accept", "application/json"); xhr.setRequestHeader("Authorization", "Bearer " + access_token); }
-                    }).then(response => { console.log('Invoice has been canceled.'); }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', err, 'error'); });
+                    }).then(response => { console.log('Invoice has been canceled.'); }).catch(err => { console.log(err); });
                 }
                 $.ajax({
-                    type: 'post', url: 'https://api.podium.com/v4/invoices', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_inv),
+                    type: 'post', url: podium_baseurl + '/v4/invoices', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_inv),
                     beforeSend: function (xhr) { xhr.setRequestHeader("Accept", "application/json"); xhr.setRequestHeader("Authorization", "Bearer " + access_token); }
                 }).then(response => {
                     updatePayment(response.data.uid);
-                }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', err, 'error'); });
+                }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', 'Something went wrong.', 'error'); });
             }).catch(err => { swal.hideLoading(); swal('Error!', err, 'error'); });//.always(function () { swal.hideLoading(); });
         }
     }]);
@@ -2031,7 +2031,7 @@ function CreatePaypalInvoice(oid, pp_no, pp_email, access_token) {
             }
         }
     }
-    let create_url = 'https://api-m.sandbox.paypal.com/v2/invoicing/invoices' + (inv_id.length > 0 ? '/' + inv_id : ''), action_method = (inv_id.length > 0 ? 'PUT' : 'POST');
+    let create_url = paypal_baseurl+'/v2/invoicing/invoices' + (inv_id.length > 0 ? '/' + inv_id : ''), action_method = (inv_id.length > 0 ? 'PUT' : 'POST');
     console.log(create_url, option);
     $.ajax({
         type: action_method, url: create_url, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(option),

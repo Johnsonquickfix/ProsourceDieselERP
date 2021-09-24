@@ -202,6 +202,9 @@ function dataGridLoad(order_type, is_date) {
                     else if (data == 'wc-cancelled') return 'Cancelled';
                     else if (data == 'wc-refunded') return 'Refunded';
                     else if (data == 'wc-failed') return 'Failed';
+                    else if (data == 'wc-cancelnopay') return 'Cancelled - No Payment';
+                    else if (data == 'wc-pendingpodiuminv') return 'Pending Podium Invoice';
+                    else if (data == 'wc-podium') return 'Order via Podium';
                     else if (data == 'draft') return 'draft';
                     else return '-';
                 }

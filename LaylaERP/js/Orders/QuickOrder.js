@@ -309,10 +309,11 @@ function searchOrderModal() {
     $("#billModal").modal({ backdrop: 'static', keyboard: false });
 }
 function bindCustomerOrders(id) {
-    let opt = { strValue1: parseInt(id) || 0 }; console.log(id);
-    ajaxFunction('/Orders/GetCustomersAddresssList', opt, beforeSendFun, function (data) {
+    let opt = { strValue1: parseInt(id) || 0 };
+    let _address = [];
+    $.post('/Orders/GetCustomersAddresssList', opt).then(response => {
         $('#tblCusOrders').dataTable({
-            destroy: true, data: JSON.parse(data), order: [[0, "desc"]],
+            destroy: true, data: JSON.parse(response), order: [[0, "desc"]],
             columns: [
                 {
                     data: 'customer_id', title: 'NO', sWidth: "30%",
@@ -320,39 +321,29 @@ function bindCustomerOrders(id) {
                         //return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="ShowUseAddress(this);" value="' + $('<div/>').text(data).html() + '"><label></label>';
                         let row = JSON.parse(dtrow.meta_data);
                         let defval = '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="ShowUseAddress(this);" value="' + $('<div/>').text(data).html() + '"><label></label>';
-                        let val = ' data-bfn="' + row._billing_first_name + '" data-bln="' + row._billing_last_name + '" data-bcom="' + (row._billing_company != undefined ? row._billing_company : '') + '" data-ba1="' + row._billing_address_1 + '" data-ba2="' + (row._billing_address_2 > 0 && row._billing_address_2 != undefined ? row._billing_address_2 : '') + '" data-bc="' + row._billing_city + '" data-bs="' + row._billing_state + '" data-bct="' + row._billing_country + '" data-bpc="' + row._billing_postcode + '" data-bp="' + row._billing_phone.replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + '" data-bem="' + row._billing_email + '"';
-                        val += ' data-sfn="' + row._shipping_first_name + '" data-sln="' + row._shipping_last_name + '" data-scom="' + (row._shipping_company != undefined ? row._shipping_company : '') + '" data-sa1="' + row._shipping_address_1 + '" data-sa2="' + (row._shipping_address_2 > 0 && row._shipping_address_2 != undefined ? row._shipping_address_2 : '') + '" data-sc="' + row._shipping_city + '" data-ss="' + row._shipping_state + '" data-sct="' + row._billing_country + '" data-spc="' + row._shipping_postcode + '"';
-                        return defval + ' <button type="button" id="btnUseAddress" class="btn btn-danger hidden" onclick="selectOrderAddress(this);" ' + val + '>Use Address for Order</button>'
+                        let val = ' data-bfn="' + row._billing_first_name + '" data-bln="' + row._billing_last_name + '" data-bcom="' + (isNullAndUndef(row._billing_company) ? row._billing_company : '') + '" data-ba1="' + (isNullAndUndef(row._billing_address_1) ? row._billing_address_1 : '') + '" data-ba2="' + (isNullAndUndef(row._billing_address_2) ? row._billing_address_2 : '') + '" data-bc="' + row._billing_city + '" data-bs="' + row._billing_state + '" data-bct="' + row._billing_country + '" data-bpc="' + row._billing_postcode + '" data-bp="' + row._billing_phone.replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + '" data-bem="' + row._billing_email + '"';
+                        val += ' data-sfn="' + row._shipping_first_name + '" data-sln="' + row._shipping_last_name + '" data-scom="' + (isNullAndUndef(row._shipping_company) ? row._shipping_company : '') + '" data-sa1="' + (isNullAndUndef(row._shipping_address_1) ? row._shipping_address_1 : '') + '" data-sa2="' + (isNullAndUndef(row._shipping_address_2) ? row._shipping_address_2 : '') + '" data-sc="' + row._shipping_city + '" data-ss="' + row._shipping_state + '" data-sct="' + row._billing_country + '" data-spc="' + row._shipping_postcode + '"';
+                        return defval + ' <button type="button" id="btnUseAddress" class="btn btn-danger hidden" onclick="selectOrderAddress(this);" ' + val + '>Use This Address for Order</button>'
                     }
                 },
                 {
                     data: 'meta_data', title: 'BILLING ADDRESS', sWidth: "35%", render: function (data, type, dtrow) {
-                        let row = JSON.parse(dtrow.meta_data);// console.log(dtrow);
-                        let val = '<address class="no-margin">' + row._billing_first_name + ' ' + row._billing_last_name + (dtrow.IsDefault != '' ? ' <span class="label label-success">' + dtrow.IsDefault + '</span>' : '') + '<br>' + (row._billing_company != '' && row._billing_company != undefined ? row._billing_company + '<br>' : '') + row._billing_address_1 + (row._billing_address_2 > 0 && row._billing_address_2 != undefined ? '<br>' + row._billing_address_2 : '') + '<br>' + row._billing_city + ' ,' + row._billing_state + ' ' + row._billing_postcode + '<br>Phone: ' + row._billing_phone.replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + '<br>Email: ' + row._billing_email + '</address>';
+                        let row = JSON.parse(dtrow.meta_data); console.log(dtrow, isNullAndUndef(row._billing_company));
+                        let val = '<address class="no-margin">' + row._billing_first_name + ' ' + row._billing_last_name + (!isNullAndUndef(dtrow.IsDefault) ? ' <span class="label label-success">' + dtrow.IsDefault + '</span>' : '') + (isNullUndefAndSpace(row._billing_company) ? '<br>' + row._billing_company : '') + (isNullUndefAndSpace(row._billing_address_1) ? '<br>' + row._billing_address_1 : '') + (isNullUndefAndSpace(row._billing_address_2) ? '<br>' + row._billing_address_2 : '') + '<br>' + row._billing_city + ', ' + row._billing_state + ' ' + row._billing_postcode + '<br>Phone: ' + row._billing_phone.replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + '<br>Email: ' + row._billing_email + '</address>';
                         return val;
                     }
                 },
                 {
                     data: 'shipping_first_name', title: 'SHIPPING ADDRESS', sWidth: "35%", render: function (data, type, dtrow) {
                         let row = JSON.parse(dtrow.meta_data);
-                        let val = '<address class="no-margin">' + row._shipping_first_name + ' ' + row._shipping_last_name + '<br>' + (row._shipping_company != '' && row._shipping_company != undefined ? row._shipping_company + '<br>' : '') + row._shipping_address_1 + (row._shipping_address_2 > 0 && row._shipping_address_2 != undefined ? '<br>' + row._shipping_address_2 : '') + '<br>' + row._shipping_city + ' ,' + row._shipping_state + ' ' + row._shipping_postcode + '</address>';
+                        let val = '<address class="no-margin">' + row._shipping_first_name + ' ' + row._shipping_last_name + (isNullUndefAndSpace(row._shipping_company) ? '<br>' + row._shipping_company : '') + (isNullUndefAndSpace(row._shipping_address_1) ? '<br>' + row._shipping_address_1 : '') + (isNullUndefAndSpace(row._shipping_address_2) ? '<br>' + row._shipping_address_2 : '') + '<br>' + row._shipping_city + ', ' + row._shipping_state + ' ' + row._shipping_postcode + '</address>';
                         return val;
                     }
                 }
-                //{
-                //    'data': 'customer_id', sWidth: "20%", class: "text-center",
-                //    'render': function (id, type, dtrow, meta) {
-                //        let row = JSON.parse(dtrow.meta_data);
-                //        let defval = dtrow.IsDefault != '' ? '<span class="label label-success">' + dtrow.IsDefault + '</span>' : '';
-                //        let val = ' data-bfn="' + row._billing_first_name + '" data-bln="' + row._billing_last_name + '" data-bcom="' + (row._billing_company != undefined ? row._billing_company : '') + '" data-ba1="' + row._billing_address_1 + '" data-ba2="' + (row._billing_address_2 > 0 && row._billing_address_2 != undefined ? row._billing_address_2 : '') + '" data-bc="' + row._billing_city + '" data-bs="' + row._billing_state + '" data-bct="' + row._billing_country + '" data-bpc="' + row._billing_postcode + '" data-bp="' + row._billing_phone.replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + '" data-bem="' + row._billing_email + '"';
-                //        val += ' data-sfn="' + row._shipping_first_name + '" data-sln="' + row._shipping_last_name + '" data-scom="' + (row._shipping_company != undefined ? row._shipping_company : '') + '" data-sa1="' + row._shipping_address_1 + '" data-sa2="' + (row._shipping_address_2 > 0 && row._shipping_address_2 != undefined ? row._shipping_address_2 : '') + '" data-sc="' + row._shipping_city + '" data-ss="' + row._shipping_state + '" data-sct="' + row._billing_country + '" data-spc="' + row._shipping_postcode + '"';
-                //        return defval + ' <button type="button" id="btnUseAddress" class="btn btn-danger hidden" onclick="selectOrderAddress(this);" ' + val + '>Use Address for Order</button>'
-                //        //return '<a href="javascript:;" class="glyphicon glyphicon glyphicon-check" onclick="selectOrderAddress(this);" ' + val + '></a>';
-                //    }
-                //}
             ]
         });
-    }, completeFun, errorFun, true);
+    }).catch(err => { swal('Error!', err, 'error'); });
+
 }
 function ShowUseAddress(chk) {
     var isChecked = $(chk).prop("checked");
@@ -1920,7 +1911,7 @@ function PaymentModal() {
     $('#ddlPaymentMethod').val(pay_by).trigger('change'); //console.log(pay_by);
 }
 function AcceptPayment() {
-    if ($("#ddlPaymentMethod").val() == "ppec_paypal") { $("#loader").show(); PaypalPayment($("#txtbillemail").val()); }
+    if ($("#ddlPaymentMethod").val() == "ppec_paypal") { PaypalPayment($("#txtbillemail").val()); }
     else if ($("#ddlPaymentMethod").val() == "podium") { PodiumPayment() }
     else { swal('Alert!', 'Please Select Payment Method.', "error"); }
 }
@@ -1970,49 +1961,40 @@ function PodiumPayment() {
                     type: 'post', url: podium_baseurl + '/v4/invoices', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_inv),
                     beforeSend: function (xhr) { xhr.setRequestHeader("Accept", "application/json"); xhr.setRequestHeader("Authorization", "Bearer " + access_token); }
                 }).then(response => {
-                    updatePayment(response.data.uid);
+                    updatePayment(oid, response.data.uid);
                 }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', 'Something went wrong.', 'error'); });
             }).catch(err => { swal.hideLoading(); swal('Error!', err, 'error'); });//.always(function () { swal.hideLoading(); });
         }
     }]);
 }
-function updatePayment(taskUid) {
-    var opt = { post_id: parseInt($('#hfOrderNo').val()) || 0, meta_value: taskUid };
-    $.post('/Orders/UpdatePaymentDetail', opt).then(response => {
+function updatePayment(oid, taskUid) {
+    let _postMeta = [
+        { post_id: oid, meta_key: '_payment_method', meta_value: 'podium' }, { post_id: oid, meta_key: '_payment_method_title', meta_value: 'Podium Order' },
+        { post_id: oid, meta_key: 'taskuidforsms', meta_value: taskUid }, { post_id: oid, meta_key: '_podium_status', meta_value: 'SENT' }
+    ];
+    let opt = { OrderPostMeta: _postMeta };
+    $.post('/Orders/UpdatePaymentInvoiceID', opt).then(response => {
         swal('Success!', response.message, 'success');
         if (response.status == true) { $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true); successModal('podium', taskUid, true); }
     }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', err, 'error'); });
 }
 
 ///Accept paypal Payment
-function PaypalPayment(ppemail) {
-    //swal('Alert!', 'Working....', "success").then((result) => { return false; });    
-    let oid = parseInt($('#hfOrderNo').val()) || 0, pp_no = 'WC-' + new Date().getTime();
-    let postMetaxml = [{ post_id: oid, meta_key: '_payment_method', meta_value: 'ppec_paypal' }, { post_id: oid, meta_key: '_payment_method_title', meta_value: 'PayPal' }, { post_id: oid, meta_key: '_paypal_invoice_id', meta_value: pp_no }, { post_id: oid, meta_key: '_paypal_status', meta_value: 'DRAFT' }];
-    $('#btnPlaceOrder').prop("disabled", true);
-    var opt = { OrderPostMeta: postMetaxml };
-    ajaxFunction('/Orders/GetPayPalToken', opt, beforeSendFun, function (result) { CreatePaypalInvoice(oid, pp_no, ppemail, result.message); }, function () { $('#btnPlaceOrder').prop("disabled", false); }, function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); }, false);
-}
-function CreatePaypalInvoice(oid, pp_no, pp_email, access_token) {
-    let dfa = $('#txtLogDate').val().split(/\//); df = [dfa[2], dfa[0], dfa[1]].join('-');
-    let taxPer = parseFloat($('#hfTaxRate').val()) || 0.00;
+function createPaypalXML(oid, pp_no, pp_email) {
+    let taxPer = parseFloat($('#hfTaxRate').val()) || 0.00, dfa = $('#txtLogDate').val().split(/\//); df = [dfa[2], dfa[0], dfa[1]].join('-');
     let shipping_total = parseFloat($('#shippingTotal').text()) || 0.00, srf_total = parseFloat($('#stateRecyclingFeeTotal').text()) || 0.00, fee_total = parseFloat($('#feeTotal').text()) || 0.00;
     let custom_label = (srf_total > 0 ? 'State Recycling Fee' : '') + (srf_total > 0 && fee_total > 0 ? ' & ' : '') + (fee_total > 0 ? 'Fee' : ''); fee_total = fee_total + srf_total;
     custom_label = custom_label.length > 0 ? custom_label : 'Other Fee';
-    let itemsList = [];
+    let _items = [];
     //get items
     $('#order_line_items > tr').each(function (index, tr) {
         let qty = parseFloat($(this).find("[name=txt_ItemQty]").val()) || 0.00;
         let rate = parseFloat($(this).find(".TotalAmount").data('regprice')) || 0.00;
         let taxAmount = parseFloat($(this).find(".TotalAmount").data('taxamount')) || 0.00;
         let discountAmount = parseFloat($(this).find(".TotalAmount").data('discount')) || 0.00;
-        itemsList.push({
-            name: $(this).data('pname'), quantity: qty, unit_amount: { currency_code: "USD", value: rate },
-            tax: { name: "Sales Tax", value: taxAmount, percent: taxPer * 100 }, discount: { amount: { currency_code: "USD", value: discountAmount } }, unit_of_measure: "QUANTITY"
-        });
+        _items.push({ name: $(this).data('pname'), quantity: qty, unit_amount: { currency_code: "USD", value: rate }, tax: { name: "Sales Tax", value: taxAmount, percent: taxPer * 100 }, discount: { amount: { currency_code: "USD", value: discountAmount } }, unit_of_measure: "QUANTITY" });
     });
-    let inv_id = $('#lblOrderNo').data('pay_id').trim();
-    var option = {
+    let paupal_xml = {
         //id: inv_id, status: "DRAFT",
         detail: { invoice_number: pp_no, reference: oid, invoice_date: df, currency_code: "USD", note: "Layla Invoice.", payment_term: { term_type: "NET_10" } },
         invoicer: {
@@ -2039,44 +2021,56 @@ function CreatePaypalInvoice(oid, pp_no, pp_email, access_token) {
                 }
             }
         ],
-        items: itemsList,
+        items: _items,
         configuration: { partial_payment: { allow_partial_payment: false }, allow_tip: false, tax_calculated_after_discount: true, tax_inclusive: false },
         amount: {
             breakdown: {
-                discount: { invoice_discount: { percent: 0 } }, shipping: {
-                    amount: { currency_code: "USD", value: shipping_total }
-                }, custom: { label: custom_label, amount: { currency_code: "USD", value: fee_total } }
+                discount: { invoice_discount: { percent: 0 } }, shipping: { amount: { currency_code: "USD", value: shipping_total } }, custom: { label: custom_label, amount: { currency_code: "USD", value: fee_total } }
             }
         }
     }
-    let create_url = paypal_baseurl + '/v2/invoicing/invoices' + (inv_id.length > 0 ? '/' + inv_id : ''), action_method = (inv_id.length > 0 ? 'PUT' : 'POST');
-    console.log(create_url, option);
-    $.ajax({
-        type: action_method, url: create_url, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(option),
-        beforeSend: function (xhr) {
-            xhr.setRequestHeader("Accept", "application/json");
-            xhr.setRequestHeader("Authorization", "Bearer " + access_token);
-        },
-        success: function (data) {
-            console.log(data);
-            let sendURL = data.href + '/send';
-            $("txtbillemail").data('surl', sendURL);
-            if (action_method == 'POST') {
-                SendPaypalInvoice(oid, access_token, sendURL);
-            }
-            else {
-                $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true);
-                successModal('PayPal', inv_id, true);
-            }
-        },
-        error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); console.log(XMLHttpRequest); swal('Alert!', XMLHttpRequest.responseJSON.message, "error"); },
-        complete: function () { $("#loader").hide(); }, async: false
-    });
+    return paupal_xml;
 }
-function SendPaypalInvoice(oid, access_token, sendURL) {
+function PaypalPayment(ppemail) {
+    let oid = parseInt($('#hfOrderNo').val()) || 0, pp_no = 'WC-' + new Date().getTime();
+    let option_pp = createPaypalXML(oid, pp_no, ppemail)
+    console.log('Start PayPal Payment Processing...');
+    swal.queue([{
+        title: 'PayPal Payment Processing.', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,
+        onOpen: () => {
+            swal.showLoading();
+            $.get('/Setting/GetPayPalToken', { strValue1: 'getToken' }).then(response => {
+                let access_token = response.message;
+                let inv_id = $('#lblOrderNo').data('pay_id').trim();
+                let create_url = paypal_baseurl + '/v2/invoicing/invoices' + (inv_id.length > 0 ? '/' + inv_id : ''), action_method = (inv_id.length > 0 ? 'PUT' : 'POST');
+                //CreatePaypalInvoice(oid, pp_no, ppemail, response.message);
+                $.ajax({
+                    type: action_method, url: create_url, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(option_pp),
+                    beforeSend: function (xhr) { xhr.setRequestHeader("Accept", "application/json"); xhr.setRequestHeader("Authorization", "Bearer " + access_token); }
+                }).then(data => {
+                    console.log('Invoice has been Created.');
+                    let sendURL = data.href + '/send';
+                    $("txtbillemail").data('surl', sendURL);
+                    if (action_method == 'POST') {
+                        SendPaypalInvoice(oid, pp_no, access_token, sendURL);
+                    }
+                    else {
+                        swal('Success!', 'Order placed successfully.', 'success');
+                        $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true);
+                        successModal('PayPal', inv_id, true);
+                    }
+                }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', 'Something went wrong.', 'error'); });
+            }).catch(err => { swal.hideLoading(); swal('Error!', err, 'error'); });//.always(function () { swal.hideLoading(); });
+        }
+    }]);
+}
+function SendPaypalInvoice(oid, pp_no, access_token, sendURL) {
     let id = sendURL.split('/');
-    let _postMeta = [{ post_id: oid, meta_key: '_paypal_id', meta_value: id[id.length - 2] }, { post_id: oid, meta_key: '_paypal_status', meta_value: 'SENT' }];
-    console.log(oid, access_token, sendURL);
+    let _postMeta = [
+        { post_id: oid, meta_key: '_payment_method', meta_value: 'ppec_paypal' }, { post_id: oid, meta_key: '_payment_method_title', meta_value: 'PayPal' },
+        { post_id: oid, meta_key: '_paypal_invoice_id', meta_value: pp_no }, { post_id: oid, meta_key: '_paypal_id', meta_value: id[id.length - 2] },
+        { post_id: oid, meta_key: '_paypal_status', meta_value: 'SENT' }
+    ];
     $.ajax({
         type: "POST", url: sendURL, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify({ send_to_recipient: true, send_to_invoicer: true }),
         beforeSend: function (xhr) {
@@ -2086,15 +2080,15 @@ function SendPaypalInvoice(oid, access_token, sendURL) {
         success: function (senddata, textStatus, jqXHR) {
             console.log(senddata);
             let opt = { OrderPostMeta: _postMeta };
-            ajaxFunction('/Orders/UpdatePayPalID', opt, beforeSendFun, function (result) { $('#lblOrderNo').data('pay_id', id); }, completeFun, errorFun, false);
-
-            $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true);
-            //setTimeout(function () { swal('Order received!', 'Thank you. Your invoice has been send on your email for payment.', "success").then((result) => { window.location.href = window.location.href; }); }, 50);
-            setTimeout(function () { successModal('PayPal', id[id.length - 2], true); }, 50);
+            $.post('/Orders/UpdatePaymentInvoiceID', opt).then(result => {
+                swal('Success!', result.message, 'success'); $('#lblOrderNo').data('pay_id', id);
+                $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true);
+                successModal('PayPal', id[id.length - 2], true);
+            }).catch(err => { console.log(err); swal.hideLoading(); });
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
             $('#ddlPaymentMethod').prop("disabled", true); $('#btnPlaceOrder').addClass('hidden'); $('#btnResendInv').removeClass('hidden');
-            console.log(XMLHttpRequest); swal('Alert!', XMLHttpRequest.responseJSON.message, "error");
+            console.log(XMLHttpRequest); swal('Error!', 'Something went wrong.', 'error');
         },
         complete: function () { $('#btnPlaceOrder').prop("disabled", false); },
         async: false

@@ -351,34 +351,7 @@
             catch { status = false; JSONresult = "Something went wrong! Please try again."; }
             return Json(new { status = status, message = JSONresult }, 0);
         }
-        [HttpPost]
-        public JsonResult UpdatePaymentDetail(OrderPostMetaModel model)
-        {
-            string JSONresult = string.Empty; bool status = false;
-            try
-            {
-                int result = OrderRepository.UpdatePodiumStatus(model);
-                if (result > 0)
-                { status = true; JSONresult = "Order placed successfully."; }
-                //JSONresult = JsonConvert.SerializeObject(DT);
-            }
-            catch (Exception ex) { JSONresult = ex.Message; }
-            return Json(new { status = status, message = JSONresult }, 0);
-        }
-        [HttpPost]
-        public JsonResult UpdatePodiumPaymentAccept(OrderPodiumDetailsModel model)
-        {
-            string JSONresult = string.Empty; bool status = false;
-            try
-            {
-                int result = OrderRepository.UpdatePodiumStatus(model);
-                if (result > 0)
-                { status = true; JSONresult = "Order placed successfully."; }
-                //JSONresult = JsonConvert.SerializeObject(DT);
-            }
-            catch (Exception ex) { JSONresult = ex.Message; }
-            return Json(new { status = status, message = JSONresult }, 0);
-        }
+        
         [HttpPost]
         public JsonResult GetOrdersCount(SearchModel model)
         {
@@ -445,33 +418,16 @@
 
         }
         [HttpPost]
-        public JsonResult GetPayPalToken(OrderModel model)
+        public JsonResult UpdatePaymentInvoiceID(OrderModel model)
         {
             string result = string.Empty;
             bool status = false;
             try
             {
-                int res = OrderRepository.UpdatePayPalStatus(model.OrderPostMeta);
+                int res = OrderRepository.UpdatePaymentInvoice(model.OrderPostMeta);
                 if (res > 0)
                 {
-                    result = clsPayPal.GetToken();
-                    status = true;
-                }
-            }
-            catch { status = false; result = ""; }
-            return Json(new { status = status, message = result }, 0);
-        }
-        [HttpPost]
-        public JsonResult UpdatePayPalID(OrderModel model)
-        {
-            string result = string.Empty;
-            bool status = false;
-            try
-            {
-                int res = OrderRepository.UpdatePayPalStatus(model.OrderPostMeta);
-                if (res > 0)
-                {
-                    result = "Success.";
+                    result = "Order placed successfully.";
                     status = true;
                 }
             }
@@ -494,6 +450,20 @@
             }
             catch (Exception ex) { status = false; result = ex.Message; }
             return Json(new { status = status, message = result }, 0);
+        }
+        [HttpPost]
+        public JsonResult UpdatePodiumPaymentAccept(OrderPodiumDetailsModel model)
+        {
+            string JSONresult = string.Empty; bool status = false;
+            try
+            {
+                int result = OrderRepository.UpdatePodiumStatus(model);
+                if (result > 0)
+                { status = true; JSONresult = "Order placed successfully."; }
+                //JSONresult = JsonConvert.SerializeObject(DT);
+            }
+            catch (Exception ex) { JSONresult = ex.Message; }
+            return Json(new { status = status, message = JSONresult }, 0);
         }
         [HttpPost]
         public JsonResult SendMailInvoice(SearchModel model)

@@ -545,14 +545,15 @@
                 }
 
                 /// step 8 : wp_posts
-                strSql.Append(string.Format(" update wp_posts set post_status = '{0}' ,comment_status = 'closed',post_modified = '{1}',post_modified_gmt = '{2}',post_excerpt = '{3}' where id = {4}; ", model.OrderPostStatus.status, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"), model.OrderPostStatus.Search, model.OrderPostStatus.order_id));
+                //strSql.Append(string.Format(" update wp_posts set post_status = '{0}' ,comment_status = 'closed',post_modified = '{1}',post_modified_gmt = '{2}',post_excerpt = '{3}' where id = {4}; ", model.OrderPostStatus.status, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"), model.OrderPostStatus.Search, model.OrderPostStatus.order_id));
+                strSql.Append(string.Format(" update wp_posts set post_status = '{0}',post_modified = '{1}',post_modified_gmt = '{2}' where id = {3}; ", model.OrderPostStatus.status, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"), model.OrderPostStatus.order_id));
 
-                ///step 9 : Reduce Stock
-                strSql.Append("delete from product_stock_register where tran_type ='SO' and tran_id = " + model.OrderPostStatus.order_id + ";");
-                strSql.Append("insert into product_stock_register (tran_type,tran_id,product_id,warehouse_id,tran_date,quantity,flag)");
-                strSql.Append("select 'SO', opl.order_id, (case when opl.variation_id > 0 then opl.variation_id else opl.product_id end) fk_product,");
-                strSql.Append("(select wp_w.rowid from wp_warehouse wp_w where wp_w.is_system = 1 limit 1) warehouse_id,p.post_date,opl.product_qty,'I'");
-                strSql.Append("from wp_wc_order_product_lookup opl inner join wp_posts p on p.id = opl.order_id where p.id = " + model.OrderPostStatus.order_id + ";");
+                /////step 9 : Reduce Stock
+                //strSql.Append("delete from product_stock_register where tran_type ='SO' and tran_id = " + model.OrderPostStatus.order_id + ";");
+                //strSql.Append("insert into product_stock_register (tran_type,tran_id,product_id,warehouse_id,tran_date,quantity,flag)");
+                //strSql.Append("select 'SO', opl.order_id, (case when opl.variation_id > 0 then opl.variation_id else opl.product_id end) fk_product,");
+                //strSql.Append("(select wp_w.rowid from wp_warehouse wp_w where wp_w.is_system = 1 limit 1) warehouse_id,p.post_date,opl.product_qty,'I'");
+                //strSql.Append("from wp_wc_order_product_lookup opl inner join wp_posts p on p.id = opl.order_id where p.id = " + model.OrderPostStatus.order_id + ";");
 
                 result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
             }
@@ -602,22 +603,6 @@
             catch { }
             return result;
         }
-        public static int UpdatePodiumStatus(OrderPostMetaModel model)
-        {
-            int result = 0;
-            try
-            {
-                DateTime cDate = DateTime.Now, cUTFDate = DateTime.UtcNow;
-                StringBuilder strSql = new StringBuilder(string.Format("delete from wp_postmeta where post_id = {0} and meta_key = 'taskuidforsms'; ", model.post_id));
-                strSql.Append(string.Format("insert into wp_postmeta (post_id,meta_key,meta_value) values ('{0}','{1}','{2}');", model.post_id, "taskuidforsms", model.meta_value));
-                strSql.Append(string.Format("update wp_postmeta set meta_value='{0}' where post_id='{1}' and meta_key='{2}';", "podium", model.post_id, "_payment_method"));
-                strSql.Append(string.Format("update wp_postmeta set meta_value='{0}' where post_id='{1}' and meta_key='{2}';", "Podium Order", model.post_id, "_payment_method_title"));
-                strSql.Append(string.Format("update wp_posts set post_status = '{0}' where id = {1};", "wc-processing", model.post_id));
-                result = SQLHelper.ExecuteNonQuery(strSql.ToString());
-            }
-            catch { }
-            return result;
-        }
         public static int UpdatePodiumStatus(OrderPodiumDetailsModel model)
         {
             int result = 0;
@@ -644,7 +629,7 @@
             catch { }
             return result;
         }
-        
+
         //Refund Order
         public static long AddRefundOrderPost(long parent_id)
         {
@@ -1076,21 +1061,25 @@
             return result;
         }
 
-        public static int UpdatePayPalStatus(List<OrderPostMetaModel> model)
+        public static int UpdatePaymentInvoice(List<OrderPostMetaModel> model)
         {
             int result = 0;
             try
             {
-                string strSql_insert = string.Empty;
+                string strSql_insert = string.Empty, Payment_method = string.Empty;
                 StringBuilder strSql = new StringBuilder();
                 foreach (OrderPostMetaModel obj in model)
                 {
                     strSql_insert += (strSql_insert.Length > 0 ? " union all " : "") + string.Format("select '{0}' post_id,'{1}' meta_key,'{2}' meta_value", obj.post_id, obj.meta_key, obj.meta_value);
                     strSql.Append(string.Format("update wp_postmeta set meta_value = '{0}' where post_id = '{1}' and meta_key = '{2}' ; ", obj.meta_value, obj.post_id, obj.meta_key));
+                    if (obj.meta_key.ToLower() == "_payment_method") Payment_method = obj.meta_value;
                 }
                 strSql_insert = "insert into wp_postmeta (post_id,meta_key,meta_value) select * from (" + strSql_insert + ") as tmp where tmp.meta_key not in (select meta_key from wp_postmeta where post_id = " + model[0].post_id.ToString() + ");";
                 strSql.Append(strSql_insert);
-                strSql.Append(string.Format("update wp_posts set post_status = '{0}' where id = {1};", "wc-processing", model[0].post_id));
+                if (Payment_method.ToLower() == "podium")
+                    strSql.Append(string.Format("update wp_posts set post_status = '{0}' where id = {1};", "wc-pendingpodiuminv", model[0].post_id));
+                else
+                    strSql.Append(string.Format("update wp_posts set post_status = '{0}' where id = {1};", "wc-pending", model[0].post_id));
 
                 result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
             }

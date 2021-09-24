@@ -18,7 +18,7 @@ namespace LaylaERP.BAL
             try
             {
 
-                string strquery = "SELECT rowid, ref,entity,description,lieu,concat(address,' ',town,' ',country,' ',zip)as address,Replace(Replace(Replace(Replace(phone,')',''),'(',''),'-',''),' ','') as phone,fax,if(status=0,'Inactive','Active')as status,warehouse_type,concat(cor_address,' ',cor_city,' ',cor_country,' ',cor_zip)as addressinfo FROM wp_warehouse";
+                string strquery = "SELECT rowid, ref,entity,description,lieu,concat(address,',',' ',town,',',' ',country,',',' ',zip)as address,Replace(Replace(Replace(Replace(phone,')',''),'(',''),'-',''),' ','') as phone,fax,if(status=0,'Inactive','Active')as status,warehouse_type,concat(cor_address,' ',cor_city,' ',cor_country,' ',cor_zip)as addressinfo FROM wp_warehouse";
                 if (!string.IsNullOrEmpty(model.strValue1))
                 {
                     strquery += strwhr;
@@ -303,7 +303,7 @@ namespace LaylaERP.BAL
             try
             {
 
-                string strSql = "SELECT v.rowid as rowid, v.name as vname, w.ref as wname, concat(v.address,' ',v.town,' ',v.fk_state,' ',v.zip,' ',v.fk_country) as Vaddress, v.phone as phone FROM wp_VendorWarehouse vs"
+                string strSql = "SELECT v.rowid as rowid, v.name as vname, w.ref as wname, concat(v.address,',',' ',v.town,',',' ',v.fk_state,',',' ',v.zip,',',' ',v.fk_country) as Vaddress, v.phone as phone FROM wp_VendorWarehouse vs"
                                + " inner JOIN wp_warehouse w on vs.WarehouseID = w.rowid"
                               + " inner join wp_vendor v on v.rowid = vs.VendorID";
                 if (!string.IsNullOrEmpty(model.strValue1))

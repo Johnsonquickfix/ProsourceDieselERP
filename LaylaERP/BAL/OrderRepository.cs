@@ -603,6 +603,40 @@
             catch { }
             return result;
         }
+
+        public static int UpdatePaymentInvoice(List<OrderPostMetaModel> model)
+        {
+            int result = 0;
+            try
+            {
+                DateTime cDate = CommonDate.CurrentDate(), cUTFDate = CommonDate.UtcDate();
+                string strSql_insert = string.Empty, Payment_method = string.Empty;
+                StringBuilder strSql = new StringBuilder();
+                foreach (OrderPostMetaModel obj in model)
+                {
+                    strSql_insert += (strSql_insert.Length > 0 ? " union all " : "") + string.Format("select '{0}' post_id,'{1}' meta_key,'{2}' meta_value", obj.post_id, obj.meta_key, obj.meta_value);
+                    strSql.Append(string.Format("update wp_postmeta set meta_value = '{0}' where post_id = '{1}' and meta_key = '{2}' ; ", obj.meta_value, obj.post_id, obj.meta_key));
+                    if (obj.meta_key.ToLower() == "_payment_method") Payment_method = obj.meta_value;
+                }
+                strSql_insert = "insert into wp_postmeta (post_id,meta_key,meta_value) select * from (" + strSql_insert + ") as tmp where tmp.meta_key not in (select meta_key from wp_postmeta where post_id = " + model[0].post_id.ToString() + ");";
+                strSql.Append(strSql_insert);
+                if (Payment_method.ToLower() == "podium")
+                {                    
+                    strSql.Append(string.Format("update wp_posts set post_status = '{0}' where id = {1};", "wc-pendingpodiuminv", model[0].post_id));
+                    //// step 3 : Add Order Note
+                    strSql.Append("insert into wp_comments(comment_post_ID, comment_author, comment_author_email, comment_author_url, comment_author_IP, comment_date, comment_date_gmt, comment_content, comment_karma, comment_approved, comment_agent, comment_type, comment_parent, user_id) ");
+                    strSql.Append(string.Format("values ({0}, 'WooCommerce', 'woocommerce@laylasleep.com', '', '', '{1}', '{2}', '{3}', '0', '1', 'WooCommerce', 'order_note', '0', '0');", model[0].post_id, cDate.ToString("yyyy/MM/dd HH:mm:ss"), cUTFDate.ToString("yyyy/MM/dd HH:mm:ss"), "Order status changed from Pending payment to Pending Podium Invoice."));
+                }
+                else
+                {
+                    strSql.Append(string.Format("update wp_posts set post_status = '{0}' where id = {1};", "wc-pending", model[0].post_id));
+                }
+                
+                result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
+            }
+            catch { }
+            return result;
+        }
         public static int UpdatePodiumStatus(OrderPodiumDetailsModel model)
         {
             int result = 0;
@@ -610,6 +644,7 @@
             {
                 DateTime cDate = CommonDate.CurrentDate(), cUTFDate = CommonDate.UtcDate();
                 StringBuilder strSql = new StringBuilder();
+                ///step 1 : Update Podium payment receipt
                 strSql.Append(string.Format("insert into wp_postmeta (post_id,meta_key,meta_value) select {0} post_id,meta_key,meta_value from ", model.post_id));
                 strSql.Append(string.Format("(select '_podium_payment_uid' meta_key,'{0}' meta_value union all select '_podium_location_uid' meta_key,'{1}' meta_value union all select '_podium_invoice_number' meta_key,'{2}' meta_value union all select '_podium_status' meta_key,'PAID' meta_value) tt ", model.payment_uid, model.location_uid, model.invoice_number));
                 strSql.Append(string.Format("where tt.meta_key not in (select meta_key from wp_postmeta where post_id = {0});", model.post_id));
@@ -617,16 +652,52 @@
                 strSql.Append(string.Format("update wp_postmeta set meta_value='{0}' where post_id='{1}' and meta_key='{2}';", model.payment_uid, model.post_id, "_podium_payment_uid"));
                 strSql.Append(string.Format("update wp_postmeta set meta_value='{0}' where post_id='{1}' and meta_key='{2}';", model.location_uid, model.post_id, "_podium_location_uid"));
                 strSql.Append(string.Format("update wp_postmeta set meta_value='{0}' where post_id='{1}' and meta_key='{2}';", model.invoice_number, model.post_id, "_podium_invoice_number"));
-
+                strSql.Append(string.Format("update wp_postmeta set meta_value='{0}' where post_id='{1}' and meta_key='{2}';", 'PAID', model.post_id, "_podium_status"));
+                ///step 2 : Update Order status wc-processing
                 strSql.Append(string.Format("update wp_posts set post_status = '{0}' where id = {1};", "wc-processing", model.post_id));
-
+                ///step 3 : Add Order Note
                 strSql.Append("insert into wp_comments(comment_post_ID, comment_author, comment_author_email, comment_author_url, comment_author_IP, comment_date, comment_date_gmt, comment_content, comment_karma, comment_approved, comment_agent, comment_type, comment_parent, user_id) ");
-                strSql.Append(string.Format("VALUES({0}, 'WooCommerce', 'woocommerce@laylasleep.com', '', '', '{1}', '{2}', '{3}{4}', '0', '1', 'WooCommerce', 'order_note', '0', '0');", model.post_id, cDate.ToString("yyyy/MM/dd HH:mm:ss"), cUTFDate.ToString("yyyy/MM/dd HH:mm:ss"), model.order_note, cDate.ToString("yyyy/MM/dd HH:mm:ss")));
+                strSql.Append(string.Format("values ({0}, 'WooCommerce', 'woocommerce@laylasleep.com', '', '', '{1}', '{2}', '{3}{4}', '0', '1', 'WooCommerce', 'order_note', '0', '0');", model.post_id, cDate.ToString("yyyy/MM/dd HH:mm:ss"), cUTFDate.ToString("yyyy/MM/dd HH:mm:ss"), model.order_note, cDate.ToString("yyyy/MM/dd HH:mm:ss")));
+                ///step 4 : Reduce Stock
+                strSql.Append("delete from product_stock_register where tran_type ='SO' and tran_id = " + model.post_id + ";");
+                strSql.Append("insert into product_stock_register (tran_type,tran_id,product_id,warehouse_id,tran_date,quantity,flag)");
+                strSql.Append("select 'SO', opl.order_id, (case when opl.variation_id > 0 then opl.variation_id else opl.product_id end) fk_product,");
+                strSql.Append("(select wp_w.rowid from wp_warehouse wp_w where wp_w.is_system = 1 limit 1) warehouse_id,p.post_date,opl.product_qty,'I'");
+                strSql.Append("from wp_wc_order_product_lookup opl inner join wp_posts p on p.id = opl.order_id where p.id = " + model.post_id + ";");
 
                 result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
                 if (!string.IsNullOrEmpty(model.payment_uid)) PurchaseOrderRepository.CreateOrders(model.post_id);
             }
             catch { }
+            return result;
+        }
+        public static int UpdatePaypalStatus(OrderPostMetaModel model)
+        {
+            int result = 0;
+            try
+            {
+                DateTime cDate = CommonDate.CurrentDate(), cUTFDate = CommonDate.UtcDate();
+                StringBuilder strSql = new StringBuilder();
+                ///step 1 : Update Podium payment receipt
+                strSql.Append(string.Format("insert into wp_postmeta (post_id,meta_key,meta_value) SELECT * FROM (SELECT {0},'{1}','{2}') AS tmp WHERE NOT EXISTS (SELECT meta_key FROM wp_postmeta WHERE post_id = {3} and meta_key = '{4}');", model.post_id, model.meta_key, model.meta_value, model.post_id, model.meta_key));
+                strSql.Append(string.Format("update wp_postmeta set meta_value = '{0}' where post_id = '{1}' and meta_key = '{2}' ; ", model.meta_value, model.post_id, model.meta_key));
+
+                ///step 2 : Update Order status wc-processing
+                strSql.Append(string.Format("update wp_posts set post_status = '{0}' where id = {1};", "wc-processing", model.post_id));
+                ///step 3 : Add Order Note
+                //strSql.Append("insert into wp_comments(comment_post_ID, comment_author, comment_author_email, comment_author_url, comment_author_IP, comment_date, comment_date_gmt, comment_content, comment_karma, comment_approved, comment_agent, comment_type, comment_parent, user_id) ");
+                //strSql.Append(string.Format("values ({0}, 'WooCommerce', 'woocommerce@laylasleep.com', '', '', '{1}', '{2}', '{3}{4}', '0', '1', 'WooCommerce', 'order_note', '0', '0');", model.post_id, cDate.ToString("yyyy/MM/dd HH:mm:ss"), cUTFDate.ToString("yyyy/MM/dd HH:mm:ss"), model.order_note, cDate.ToString("yyyy/MM/dd HH:mm:ss")));
+                ///step 4 : Reduce Stock
+                strSql.Append("delete from product_stock_register where tran_type ='SO' and tran_id = " + model.post_id + ";");
+                strSql.Append("insert into product_stock_register (tran_type,tran_id,product_id,warehouse_id,tran_date,quantity,flag)");
+                strSql.Append("select 'SO', opl.order_id, (case when opl.variation_id > 0 then opl.variation_id else opl.product_id end) fk_product,");
+                strSql.Append("(select wp_w.rowid from wp_warehouse wp_w where wp_w.is_system = 1 limit 1) warehouse_id,p.post_date,opl.product_qty,'I'");
+                strSql.Append("from wp_wc_order_product_lookup opl inner join wp_posts p on p.id = opl.order_id where p.id = " + model.post_id + ";");
+
+                result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
+                if (model.meta_value.ToUpper() == "COMPLETED") PurchaseOrderRepository.CreateOrders(model.post_id);
+            }
+            catch (Exception ex) { throw ex; }
             return result;
         }
 
@@ -1061,47 +1132,8 @@
             return result;
         }
 
-        public static int UpdatePaymentInvoice(List<OrderPostMetaModel> model)
-        {
-            int result = 0;
-            try
-            {
-                string strSql_insert = string.Empty, Payment_method = string.Empty;
-                StringBuilder strSql = new StringBuilder();
-                foreach (OrderPostMetaModel obj in model)
-                {
-                    strSql_insert += (strSql_insert.Length > 0 ? " union all " : "") + string.Format("select '{0}' post_id,'{1}' meta_key,'{2}' meta_value", obj.post_id, obj.meta_key, obj.meta_value);
-                    strSql.Append(string.Format("update wp_postmeta set meta_value = '{0}' where post_id = '{1}' and meta_key = '{2}' ; ", obj.meta_value, obj.post_id, obj.meta_key));
-                    if (obj.meta_key.ToLower() == "_payment_method") Payment_method = obj.meta_value;
-                }
-                strSql_insert = "insert into wp_postmeta (post_id,meta_key,meta_value) select * from (" + strSql_insert + ") as tmp where tmp.meta_key not in (select meta_key from wp_postmeta where post_id = " + model[0].post_id.ToString() + ");";
-                strSql.Append(strSql_insert);
-                if (Payment_method.ToLower() == "podium")
-                    strSql.Append(string.Format("update wp_posts set post_status = '{0}' where id = {1};", "wc-pendingpodiuminv", model[0].post_id));
-                else
-                    strSql.Append(string.Format("update wp_posts set post_status = '{0}' where id = {1};", "wc-pending", model[0].post_id));
-
-                result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
-            }
-            catch { }
-            return result;
-        }
-        public static int UpdatePaymentStatus(OrderPostMetaModel model)
-        {
-            int result = 0;
-            try
-            {
-                string strSql_insert = string.Empty;
-                StringBuilder strSql = new StringBuilder();
-                strSql.Append(string.Format("insert into wp_postmeta (post_id,meta_key,meta_value) SELECT * FROM (SELECT {0},'{1}','{2}') AS tmp WHERE NOT EXISTS (SELECT meta_key FROM wp_postmeta WHERE post_id = {3} and meta_key = '{4}');", model.post_id, model.meta_key, model.meta_value, model.post_id, model.meta_key));
-                strSql.Append(string.Format("update wp_postmeta set meta_value = '{0}' where post_id = '{1}' and meta_key = '{2}' ; ", model.meta_value, model.post_id, model.meta_key));
-
-                result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
-                if (model.meta_value.ToUpper() == "COMPLETED") PurchaseOrderRepository.CreateOrders(model.post_id);
-            }
-            catch (Exception ex) { throw ex; }
-            return result;
-        }
+        
+        
         public int ChangeOrderStatus(OrderPostStatusModel model, string ID)
         {
             try

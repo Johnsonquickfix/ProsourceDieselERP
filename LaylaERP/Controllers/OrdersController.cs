@@ -435,13 +435,13 @@
             return Json(new { status = status, message = result }, 0);
         }
         [HttpGet]
-        public JsonResult UpdatePaymentStatus(OrderPostMetaModel model)
+        public JsonResult UpdatePaypalPaymentAccept(OrderPostMetaModel model)
         {
             string result = string.Empty;
             bool status = false;
             try
             {
-                int res = OrderRepository.UpdatePaymentStatus(model);
+                int res = OrderRepository.UpdatePaypalStatus(model);
                 if (res > 0)
                 {
                     result = "Success.";

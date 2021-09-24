@@ -67,4 +67,5 @@ function errorFun(XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide()
 function groupArrayOfObjects(list, key) {
     return list.reduce(function (rv, x) { (rv[x[key]] = rv[x[key]] || []).push(x); return rv; }, {});
 };
-function isNullAndUndef(variable) { return (variable !== null && variable !== undefined); }
+function isNullAndUndef(variable) { return (variable !== null && variable !== undefined && variable !== 'undefined' && variable !== 'null'); }
+function isNullUndefAndSpace(variable) { return (variable !== null && variable !== undefined && variable !== 'undefined' && variable !== 'null' && variable.length !== 0); }

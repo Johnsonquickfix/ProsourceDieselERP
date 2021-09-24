@@ -298,7 +298,7 @@ function PaymentStatus(oid, pp_id) {
                         preConfirm: function () {
                             return new Promise(function (resolve) {
                                 let opt = { post_id: oid, meta_key: '_paypal_status', meta_value: 'COMPLETED' };
-                                $.get('/Orders/UpdatePaymentStatus', opt)
+                                $.get('/Orders/UpdatePaypalPaymentAccept', opt)
                                     .done(function (data) {
                                         if (data.status) {
                                             swal.insertQueueStep('Status updated successfully.');
@@ -360,7 +360,7 @@ function podiumPaymentStatus(oid, podium_id) {
                     }
                     else { swal.hideLoading(); swal(status, 'Request has sent for payment.', 'info'); }
                 }).catch(err => { swal.hideLoading(); console.log(err); swal('Error!', 'No invoice for the invoice UID.', 'error'); });
-            }).catch(err => { swal.hideLoading(); swal('Error!', err, 'error'); }).always(function () { swal.hideLoading(); });
+            }).catch(err => { swal.hideLoading(); swal('Error!', 'Something went wrong, please try again.', 'error'); }).always(function () { swal.hideLoading(); });
         }
     }]);
 }

@@ -81,7 +81,10 @@ function PurchaseOrderGrid(is_date) {
         aoColumns: [
             {
                 'data': 'id', sWidth: "5%   ",
-                'render': function (data, type, full, meta) {
+                'render': function (data, type, row) {
+                    if ( parseInt(row.remaining) == 0)
+                        return '';
+                    else
                     return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + data + '"><label></label>';
                 }
             },
@@ -94,15 +97,10 @@ function PurchaseOrderGrid(is_date) {
             {
                 'data': 'refordervendor', sWidth: "10%", title: 'Invoice No', sWidth: "10%"
             },
-            { data: 'vendor_name', title: 'Vendor Name', sWidth: "15%" },
-            {
-                data: 'city', title: 'Address', sWidth: "20%", render: function (data, type, dtrow) {
-                    let val = dtrow.address + ', ' + dtrow.town + ' ,' + dtrow.fk_state + ' ' + dtrow.zip;
-                    return val;
-                }
-            },
+            { data: 'vendor_name', title: 'Vendor Name', sWidth: "10%" },            
             { data: 'total_ttc', title: 'Amount', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
-            { data: 'date_livraison', title: 'Planned date of delivery', sWidth: "10%" },
+            { data: 'recieved', title: 'Received', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
+            { data: 'remaining', title: 'Remaining', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },   
             { data: 'Status', title: 'Status', sWidth: "10%" }
         ],
 
@@ -153,8 +151,11 @@ function PartiallyGrid(is_date) {
         aoColumns: [
             {
                 'data': 'ids', sWidth: "5%   ",
-                'render': function (data, type, full, meta) {
-                    return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + data + '"><label></label>';
+                'render': function (data, type, row) {
+                    if (parseInt(row.remaining) == 0)
+                        return '';
+                    else
+                        return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + data + '"><label></label>';
                 }
             },
             {
@@ -165,15 +166,10 @@ function PartiallyGrid(is_date) {
             {
                 data: 'refordervendor', title: 'Bill No', sWidth: "10%"
             },
-            { data: 'vendor_name', title: 'Vendor Name', sWidth: "15%" },
-            {
-                data: 'city', title: 'Address', sWidth: "20%", render: function (data, type, dtrow) {
-                    let val = dtrow.address + ', ' + dtrow.town + ' ,' + dtrow.fk_state + ' ' + dtrow.zip;
-                    return val;
-                }
-            },
+            { data: 'vendor_name', title: 'Vendor Name', sWidth: "10%" },
             { data: 'total_ttc', title: 'Amount', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
-            { data: 'date_livraison', title: 'Planned date of delivery', sWidth: "10%" },
+            { data: 'recieved', title: 'Received', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
+            { data: 'remaining', title: 'Remaining', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
             { data: 'Status', title: 'Status', sWidth: "10%" }
         ]
 

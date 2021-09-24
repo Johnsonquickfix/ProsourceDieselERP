@@ -913,8 +913,6 @@
     <Content Include="Views\Setting\OrderShippingRule.cshtml" />
     <Content Include="Views\Setup\editfreeproduct.cshtml" />
     <Content Include="Views\Setup\freeproduct.cshtml" />
-    <Content Include="Views\PaymentInvoice.cshtml" />
-    <Content Include="Views\PaymentInvoiceList.cshtml" />
     <Content Include="Views\PaymentInvoice\PaymentInvoice.cshtml" />
     <Content Include="Views\PaymentInvoice\PaymentInvoiceList.cshtml" />
   </ItemGroup>

@@ -652,7 +652,7 @@
                 strSql.Append(string.Format("update wp_postmeta set meta_value='{0}' where post_id='{1}' and meta_key='{2}';", model.payment_uid, model.post_id, "_podium_payment_uid"));
                 strSql.Append(string.Format("update wp_postmeta set meta_value='{0}' where post_id='{1}' and meta_key='{2}';", model.location_uid, model.post_id, "_podium_location_uid"));
                 strSql.Append(string.Format("update wp_postmeta set meta_value='{0}' where post_id='{1}' and meta_key='{2}';", model.invoice_number, model.post_id, "_podium_invoice_number"));
-                strSql.Append(string.Format("update wp_postmeta set meta_value='{0}' where post_id='{1}' and meta_key='{2}';", 'PAID', model.post_id, "_podium_status"));
+                strSql.Append(string.Format("update wp_postmeta set meta_value='{0}' where post_id='{1}' and meta_key='{2}';", "PAID", model.post_id, "_podium_status"));
                 ///step 2 : Update Order status wc-processing
                 strSql.Append(string.Format("update wp_posts set post_status = '{0}' where id = {1};", "wc-processing", model.post_id));
                 ///step 3 : Add Order Note

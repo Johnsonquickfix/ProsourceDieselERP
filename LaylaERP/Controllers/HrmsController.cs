@@ -425,9 +425,9 @@ namespace LaylaERP.Controllers
 
         }
 
-        public JsonResult GetEmployee()
+        public JsonResult GetEmployee(string fkuser)
         {
-            DataSet ds = HrmsRepository.GetEmployee();
+            DataSet ds = HrmsRepository.GetEmployee(fkuser);
             List<SelectListItem> employeelist = new List<SelectListItem>();
             foreach (DataRow dr in ds.Tables[0].Rows)
             {
@@ -453,12 +453,12 @@ namespace LaylaERP.Controllers
             }
         }
 
-        public JsonResult LeaveList()
+        public JsonResult LeaveList(string fkuser)
         {
             string JSONresult = string.Empty;
             try
             {
-                DataTable dt = HrmsRepository.GetLeaveList();
+                DataTable dt = HrmsRepository.GetLeaveList(fkuser);
                 JSONresult = JsonConvert.SerializeObject(dt);
             }
             catch { }
@@ -735,6 +735,18 @@ namespace LaylaERP.Controllers
             {
                 return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
             }
+        }
+
+        public JsonResult HRAValue(long basic)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = HrmsConfigurationRepository.HRAValue(basic);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
         }
 
     }

@@ -63,33 +63,33 @@ function AddFreeProduct() {
 
 }
 
-function productcheck() {
-    $('#ddlproduct').change(function () {
-        product = $("#ddlproduct").val();
-        var obj = {
-            product_id: product,
-        }
-        $.ajax({
-            url: '/Setup/GetFreeProductCount/', dataType: 'json', type: 'Post',
-            contentType: "application/json; charset=utf-8",
-            data: JSON.stringify(obj),
-            dataType: "json",
-            success: function (data) {
-                if (data.status == false) {
+//function productcheck() {
+//    $('#ddlproduct').change(function () {
+//        product = $("#ddlproduct").val();
+//        var obj = {
+//            product_id: product,
+//        }
+//        $.ajax({
+//            url: '/Setup/GetFreeProductCount/', dataType: 'json', type: 'Post',
+//            contentType: "application/json; charset=utf-8",
+//            data: JSON.stringify(obj),
+//            dataType: "json",
+//            success: function (data) {
+//                if (data.status == false) {
 
-                }
-                else {
-                    $("#ddlproduct").val("0").trigger('change');
-                    swal('Alert', 'Product already exists in table', 'error').then(function () { swal.close(); $('#ddlProduct').focus(); });
-                }
-            },
+//                }
+//                else {
+//                    $("#ddlproduct").val("0").trigger('change');
+//                    swal('Alert', 'Product already exists in table', 'error').then(function () { swal.close(); $('#ddlProduct').focus(); });
+//                }
+//            },
 
-            error: function (error) {
-                swal('Error!', 'something went wrong', 'error');
-            },
-        })
-    });
-}
+//            error: function (error) {
+//                swal('Error!', 'something went wrong', 'error');
+//            },
+//        })
+//    });
+//}
 
 function freeproductlist() {
     $.ajax({

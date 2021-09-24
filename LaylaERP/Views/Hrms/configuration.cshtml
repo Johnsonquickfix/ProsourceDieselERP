@@ -10,7 +10,7 @@
 </div>
 
 <div class="page-title">
-    <h2 class="page-heading">Configuration</h2><span title="Click Here To Back To List" data-placement="bottom" data-toggle="tooltip"><a href="../../Hrms/ConfigurationList" class="btn btn-danger">Back to List</a></span>
+    <h2 class="page-heading">Emp Config</h2><span title="Click Here To Back To List" data-placement="bottom" data-toggle="tooltip"><a href="../../Hrms/ConfigurationList" class="btn btn-danger">Back to List</a></span>
 </div>
 <section class="content section-content configuration-section">
     <div class="box box-primary">
@@ -53,7 +53,7 @@
                         <div class="input-group">
                             @*<select class="form-control select2" id="ddlempname">
                             </select>*@
-                            <input class="form-control" type="text" id="txtempname" />
+                            <input class="form-control" type="text" id="txtempname" readonly/>
                         </div>
                     </div>
                 </div>
@@ -80,7 +80,18 @@
                             <input class="form-control" type="text" id="txtda" value="0" readonly>
                         </div>
                     </div>
-                </div> <div class="col-md-3">
+                </div><div class="col-md-3">
+                    <div class="form-group">
+                        <label for="FirstName">HRA Type<span style="color:red"></span></label>
+                        <div class="input-group">
+                            <select class="form-control select2" id="ddlhra">
+                                <option value="0">--Select HRA Type--</option>
+                                <option value="1">HRA Office</option>
+                                <option value="2">HRA Field</option>
+                            </select>
+                        </div>
+                    </div>
+                </div><div class="col-md-3">
                     <div class="form-group">
                         <label for="FirstName">HRA<span style="color:red"></span></label>
                         <div class="input-group">
@@ -275,6 +286,11 @@
 <script>
     $(document).ready(function () {
         $("#loader").hide();
+        getEmployeeType();
+        changename(); //User for employee name
+        getAccountingType();
+        getWorkType();
+        changeHRA(); //use for HRA auto fill
         $(document).on('click', "#btnSave", function () {
             AddConfiguration();
         });

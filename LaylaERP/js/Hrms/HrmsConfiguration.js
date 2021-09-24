@@ -1,11 +1,10 @@
 ﻿$(document).ready(function () {
     DAcalculation();
-    //getEmployeeCode();
     ChangeCode();
     getEmployeeType();
     $(".select2").select2();
-    getAccountingType();
-    getWorkType();
+    //getAccountingType();
+    //getWorkType();
     EMI();
     AdvanceEMI();
 })
@@ -144,6 +143,42 @@ function getWorkType() {
     });
 }
 
+function changeHRA() {
+    $('#ddlhra').on('select2:select', function (e) {
+        var basic = parseInt($('#txtbasic').val());
+        var hratype = $('#ddlhra').val();
+        var obj = {
+            basic: basic,
+        }
+        jQuery.ajax({
+            url: "/Hrms/HRAValue/", dataType: 'json', type: "Post",
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(obj),
+            success: function (data) {
+                var jobj = JSON.parse(data);
+                if (jobj.length > 0) {
+                    if (hratype == 1) {
+                        var office = parseFloat(jobj[0].hra_office).toFixed(2);
+                        $("#txthra").val(office);
+                    }
+                    else if (hratype == 2) {
+                        var field = parseFloat(jobj[0].hra_field).toFixed(2);
+                        $("#txthra").val(field);
+                    }
+                    else { }
+                    //$("#txthra").val(jobj[0].hra_field);
+                }
+                },
+                error: function (msg) {
+
+                }
+        });
+    });
+}
+
+
+
+
 function getWarehouse() {
     var empcode = $('#ddlempcode').val();
     var obj = {
@@ -170,9 +205,10 @@ function AddConfiguration() {
     emptype = $("#ddlemptype").val();
     empcode = $("#ddlempcode").val();
     empname = $("#hfemployeeid").val();
+    textempname = $("#txtempname").val();
     empbasic = $("#txtbasic").val();
     empda = $("#txtda").val();
-
+    hratype = $("#ddlhra").val();
     emphra = $("#txthra").val();
     otherallowance = $("#txtotherallowance").val();
     emppf = $("#txtpf").val();
@@ -197,9 +233,9 @@ function AddConfiguration() {
     else if (empcode == 0) {
         swal('Alert', 'Please select employee code', 'error').then(function () { swal.close(); $('#ddlempcode').focus(); });
     }
-    //else if (empname == "") {
-    //    swal('Alert', 'Enter employee name', 'error').then(function () { swal.close(); $('#ddlempname').focus(); });
-    //}
+    else if (textempname == "") {
+        swal('Alert', 'Employee name not found', 'error').then(function () { swal.close(); $('#txtempname').focus(); });
+    }
     
     else if (worktype == "0") {
         swal('Alert', 'Please select work type', 'error').then(function () { swal.close(); $('#ddlworktype').focus(); });
@@ -236,6 +272,7 @@ function AddConfiguration() {
             default_work_hours: workhours,
             prepare_salary: preparesalary,
             accounting_type: accountingtype,
+            hra_type: hratype,
         }
         $.ajax({
             url: '/Hrms/AddConfiguration', dataType: 'json', type: 'Post',
@@ -291,9 +328,10 @@ function UpdateConfiguration() {
     emptype = $("#ddlemptype").val();
     empcode = $("#ddlempcode").val();
     empname = $("#hfemployeeid").val();
+    textempname = $("#txtempname").val();
     empbasic = $("#txtbasic").val();
     empda = $("#txtda").val();
-
+    hratype = $("#ddlhra").val();
     emphra = $("#txthra").val();
     otherallowance = $("#txtotherallowance").val();
     emppf = $("#txtpf").val();
@@ -318,9 +356,9 @@ function UpdateConfiguration() {
     else if (empcode == 0) {
         swal('Alert', 'Please select employee code', 'error').then(function () { swal.close(); $('#ddlempcode').focus(); });
     }
-    //else if (empname == "") {
-    //    swal('Alert', 'Please select employee name', 'error').then(function () { swal.close(); $('#ddlempname').focus(); });
-    //}
+    else if (textempname == "") {
+        swal('Alert', 'Employee name not found', 'error').then(function () { swal.close(); $('#ddlempcode').focus(); });
+    }
     else if (worktype == "0") {
         swal('Alert', 'Please select work type', 'error').then(function () { swal.close(); $('#ddlworktype').focus(); });
     }
@@ -357,6 +395,7 @@ function UpdateConfiguration() {
             default_work_hours: workhours,
             prepare_salary: preparesalary,
             accounting_type: accountingtype,
+            hra_type: hratype,
         }
         $.ajax({
             url: '/Hrms/UpdateConfiguration', dataType: 'json', type: 'Post',

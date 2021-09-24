@@ -163,7 +163,7 @@ function dataGridLoad(order_type, is_date) {
         },
         columns: [
             {
-                'data': 'id', sWidth: "5%   ",
+                'data': 'id', sWidth: "7%   ",
                 'render': function (data, type, full, meta) {
                     return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck(this);" value="' + $('<div/>').text(data).html() + '"><label></label>';
                 }
@@ -194,7 +194,7 @@ function dataGridLoad(order_type, is_date) {
                 }
             },
             {
-                data: 'status', title: 'Status', sWidth: "14%", render: function (data, type, row) {
+                data: 'status', title: 'Status', sWidth: "10%", render: function (data, type, row) {
                     if (data == 'wc-pending') return 'Pending payment';
                     else if (data == 'wc-processing') return 'Processing';
                     else if (data == 'wc-on-hold') return 'On hold';
@@ -208,7 +208,7 @@ function dataGridLoad(order_type, is_date) {
             },
             { data: 'date_created', title: 'Creation Date', sWidth: "12%" },
             {
-                data: 'payment_method_title', title: 'Payment Method', sWidth: "10%", render: function (data, type, row) {
+                data: 'payment_method_title', title: 'Payment Method', sWidth: "11%", render: function (data, type, row) {
                     if (row.payment_method == 'ppec_paypal' && row.paypal_status != 'COMPLETED') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="PaymentStatus(' + row.id + ',\'' + row.paypal_id + '\');">' + row.payment_method_title + '</a>';
                     else if (row.payment_method == 'podium' && row.paypal_status != 'PAID') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="podiumPaymentStatus(' + row.id + ',\'' + row.paypal_id + '\');">' + row.payment_method_title + '</a>';
                     //if (row.payment_method == 'ppec_paypal') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="PaymentStatus(' + row.id + ',\'' + row.paypal_id + '\');">' + row.payment_method_title + '</a>';
@@ -216,7 +216,7 @@ function dataGridLoad(order_type, is_date) {
                 }
             },
             {
-                'data': 'id', title: 'Action', sWidth: "5%",
+                'data': 'id', title: 'Action', sWidth: "8%",
                 'render': function (id, type, row, meta) {
                     return '<a href="minesofmoria/' + id + '" data-toggle="tooltip" title="View/Edit Order"><i class="glyphicon glyphicon-eye-open"></i></a> <a href="OrderRefund/' + id + '" data-toggle="tooltip" title="Refund Order"><i class="fa fa-undo"></i></a>'
                 }

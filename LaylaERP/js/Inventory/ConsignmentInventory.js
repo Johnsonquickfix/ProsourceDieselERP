@@ -72,7 +72,7 @@ function ProductStockGrid() {
     let pid = parseInt($("#ddlProduct").val()) || 0, ctid = parseInt($("#ddlCategory").val()) || 0;
     let obj = { strValue1: $("#txtsku").val().trim(), strValue2: (ctid > 0 ? ctid : ''), strValue3: (pid > 0 ? pid : ''), strValue4: sd, strValue5: ed };// console.log(obj);
     $('#dtdata').DataTable({
-        oSearch: { "sSearch": '' }, bAutoWidth: false, scrollX: false,
+        oSearch: { "sSearch": '' }, bAutoWidth: false, scrollX: true,
         dom: 'lBftip', buttons: [{ extend: 'excelHtml5', title: 'Product In-Hand Inventory Report', action: function (e, dt, button, config) { exportTableToCSV('Product In-Hand Inventory Report.xls'); } },
         {
             extend: 'csvHtml5', title: 'Product In-Hand Inventory Report', titleAttr: 'CSV',

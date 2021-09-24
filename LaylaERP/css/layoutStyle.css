@@ -2631,7 +2631,12 @@ a#btnbackcategory {max-width: 135px; margin-top: 5px;}
 .on-hand.inventory #dtdata_paginate{float:right; width:auto;}
 
 .add.new.product .new-product-section #divPurchase{padding-left:0px; padding-right:0px;}
-
+.dashboard-dropy{flex-direction:column;}
+.dashboard-dropy > div:first-child {margin-right: 0px; width:100%;}
+.dashboard-dropy .page-title{justify-content:space-between;}
+.order.history .dataTables_scroll th,
+.order.history .dataTables_scroll td{box-sizing:border-box;}
+.order.history .table-blue.table.check-table {table-layout: fixed;}
 @media(max-width:900px) {
     .hub-pro-shop select:first-child{margin-left:0px;}
     .hub-pro-shop {width: 100%; margin-top:5px;}
@@ -2641,7 +2646,44 @@ a#btnbackcategory {max-width: 135px; margin-top: 5px;}
     div.table-responsive > div.dataTables_wrapper > div.row > div[class^="col-"]:first-child, 
     div.table-responsive > div.dataTables_wrapper > div.row > div[class^="col-"]:last-child{padding:0px;}
     .hub-pro-shop {flex-wrap:wrap;}
+    .modal-dialog{max-width:calc(100% - 20px);}
+    .order.history .table-blue.table.check-table,
+    .on-hand.inventory .table-blue.table.check-table,
+    .managecoupons .table-blue.table.check-table {width: 1000px !important;}
+    .managecoupons .dataTables_scroll{overflow:auto;}
+    .managecoupons .dataTables_scrollBody{overflow:initial !important;}
+    .managecoupons .dataTables_scrollHead{width: 1000px !important;}
     }
 @media(max-width:600px) {
+    .dashboard-dropy .page-title, .on-hand.inventory .page-title {
+        flex-direction: column;
+        margin-bottom: 18px;
+        align-items: flex-start;
+    }
+
+        .dashboard-dropy .page-title h2, .on-hand.inventory .page-title h2{
+            margin-bottom: 10px;
+        }
     .hub-pro-shop select{margin:0px 0px 5px 0px; width:100%;}
+    #tblCusOrders_wrapper > .row:first-child {display:flex;}
+        #tblCusOrders_wrapper > .row > .col-sm-6:first-child {
+        margin-right:auto;}
+    #tblCusOrders_wrapper .row > .col-sm-12 {
+    overflow-x:auto;}
+    #tblCusOrders_wrapper #tblCusOrders{width:600px !important;}
+    #tblCusOrders_wrapper .row .col-sm-5,
+    #tblCusOrders_wrapper .row .col-sm-7{width:100%;}
+}
+@media(max-width:400px) {
+    .dashboard-order-list .radtype_span {
+    margin-top:15px;}
+    .userdetails .create-user-primary .box-header > .col-sm-4 {
+    padding:0px;}
+    .userrole_section .box-primary .box-primary .box-header {
+        overflow-y: auto;
+        max-width: calc(100% - 20px);
+        margin-left: 10px;
+        padding-left: 0px;
+        padding-right: 0px;
+    }
 }

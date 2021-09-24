@@ -84,16 +84,16 @@ function dataGridLoad(order_type) {
             },       
             { data: 'post_title', title: 'Code', sWidth: "12%" },
             { data: 'discount_type', title: 'Coupon Type', sWidth: "12%" },
-            { data: 'coupon_amount', title: 'Coupon amount', sWidth: "12%" },
+            { data: 'coupon_amount', title: 'Coupon amount', sWidth: "10%" },
             { data: 'post_excerpt', title: 'Description', sWidth: "12%" },
             {
-                data: 'product_ids', title: 'Product IDs', sWidth: "23%",
+                data: 'product_ids', title: 'Product IDs', sWidth: "20%",
                 'render': function (data, type, full, meta) {
                     return '<span class="linking_product_ids">' + data +'</span>'
                 }
             },
             { data: 'UsageLimit', title: 'Usage/Limit', sWidth: "10%" },
-            { data: 'date_expires', title: 'Expiry date', sWidth: "10%" },
+            { data: 'date_expires', title: 'Expiry date', sWidth: "14%" },
             {
                 'data': 'ID', title: 'Action', sWidth: "9%",
                 'render': function (id, type, full, meta) {

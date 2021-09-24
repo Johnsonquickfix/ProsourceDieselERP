@@ -36,5 +36,27 @@ namespace LaylaERP.Models
         public decimal hra_office { get; set; }
         public decimal hra_field { get; set; }
         public DateTime from_date { get; set; }
+        //Extra field added
+
+        public string comp_name { get; set; }
+	    public string section { get; set; }
+        public DateTime salary_date { get; set; }
+        public string classemp { get; set; }
+        public decimal special_pay { get; set; }
+        public decimal wash_allowance { get; set; }
+        public decimal incentive { get; set; }
+        public decimal cca { get; set; }
+        public decimal vpf { get; set; }
+        public decimal adv_epf { get; set; }
+        public decimal insurance { get; set; }
+        public decimal emp_welfare { get; set; }
+        public decimal imprest { get; set; }
+        public decimal misc_refund { get; set; }
+        public decimal fastival_allowance { get; set; }
+        public string bank_name { get; set; }
+        public string bank_account { get; set; }
+        public string epf_account { get; set; }
+        public decimal pay_sacle { get; set; }
+
     }
 }

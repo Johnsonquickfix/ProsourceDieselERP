@@ -80,8 +80,10 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "INSERT into erp_hrms_salary_configuration(emp_type, fk_emp, basic, emp_code, da, hra, other_allowance, pf, loan_amount, loan_emi, loan_months, adv_amount, adv_emi, adv_emi_months, tds, other_deductions, reimbursement, work_type, default_work_hours, prepare_salary, accounting_type, hra_type)" +
-                                 " values(@emp_type, @fk_emp, @basic, @emp_code, @da, @hra, @other_allowance, @pf, @loan_amount, @loan_emi, @loan_months, @adv_amount, @adv_emi, @adv_emi_months, @tds, @other_deductions, @reimbursement, @work_type, @default_work_hours, @prepare_salary, @accounting_type, @hra_type); SELECT LAST_INSERT_ID();";
+                string strsql = "INSERT into erp_hrms_salary_configuration(emp_type, fk_emp, basic, emp_code, da, hra, other_allowance, pf, loan_amount, loan_emi, loan_months, adv_amount, adv_emi, adv_emi_months, tds, other_deductions, reimbursement, work_type, default_work_hours, prepare_salary, accounting_type, hra_type," +
+                    "comp_name,section,salary_date,emp_class,special_pay,wash_allowance,incentive,cca,vpf,adv_epf,insurance,emp_welfare,imprest,misc_refund,fastival_allowance,bank_name,bank_account,epf_account,pay_sacle)" +
+                                 " values(@emp_type, @fk_emp, @basic, @emp_code, @da, @hra, @other_allowance, @pf, @loan_amount, @loan_emi, @loan_months, @adv_amount, @adv_emi, @adv_emi_months, @tds, @other_deductions, @reimbursement, @work_type, @default_work_hours, @prepare_salary, @accounting_type, @hra_type," +
+                                 " @comp_name, @section, @salary_date, @emp_class, @special_pay, @wash_allowance, @incentive, @cca, @vpf, @adv_epf, @insurance, @emp_welfare, @imprest, @misc_refund, @fastival_allowance, @bank_name, @bank_account, @epf_account, @pay_sacle); SELECT LAST_INSERT_ID();";
 
                 MySqlParameter[] para =
                 {
@@ -108,6 +110,28 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@prepare_salary", model.prepare_salary),
                     new MySqlParameter("@accounting_type", model.accounting_type),
                     new MySqlParameter("@hra_type", model.hra_type),
+
+                    //Extra
+                    new MySqlParameter("@comp_name", model.comp_name),
+                    new MySqlParameter("@salary_date", model.salary_date),
+                    new MySqlParameter("@emp_class", model.classemp),
+                    new MySqlParameter("@special_pay", model.special_pay),
+                    new MySqlParameter("@wash_allowance", model.wash_allowance),
+                    new MySqlParameter("@incentive", model.incentive),
+                    new MySqlParameter("@cca", model.cca),
+                    new MySqlParameter("@vpf", model.vpf),
+                    new MySqlParameter("@adv_epf",model.adv_epf),
+                    new MySqlParameter("@insurance", model.insurance),
+                    new MySqlParameter("@emp_welfare", model.emp_welfare),
+                    new MySqlParameter("@imprest", model.imprest),
+                    new MySqlParameter("@misc_refund", model.misc_refund),
+                    new MySqlParameter("@fastival_allowance", model.fastival_allowance),
+                    new MySqlParameter("@bank_name", model.bank_name),
+                    new MySqlParameter("@bank_account", model.bank_account),
+                    new MySqlParameter("@epf_account", model.epf_account),
+                    new MySqlParameter("@pay_sacle", model.pay_sacle),
+                    new MySqlParameter("@section", model.section),
+
                 };
                 int result = Convert.ToInt32(DAL.SQLHelper.ExecuteScalar(strsql, para));
                 return result;
@@ -129,7 +153,7 @@ namespace LaylaERP.BAL
                 string strSql = "SELECT ehsc.rowid as id, ehed.emp_number as code, concat(ehe.firstname,' ',ehe.lastname) as name, eheg.group_description as discription, ehe.phone, ehe.email from erp_hrms_salary_configuration ehsc inner join erp_hrms_emp ehe on ehe.rowid = ehsc.fk_emp inner join erp_hrms_empdetails ehed on ehed.fk_emp = ehe.rowid inner join erp_hrms_employee_group eheg on eheg.rowid = ehsc.emp_type where 1 = 1 ";
                 if (!string.IsNullOrEmpty(searchid))
                 {
-                    strWhr += " and (concat(ehe.firstname,' ',ehe.lastname) like '%" + searchid + "%' OR eheg.group_description like '%" + searchid + "%')";
+                    strWhr += " and (concat(ehe.firstname,' ',ehe.lastname) like '%" + searchid + "%' OR eheg.group_description like '%" + searchid + "%' OR ehed.emp_number like '%" + searchid + "%')";
                 }
                 if (userstatus != null)
                 {
@@ -158,7 +182,10 @@ namespace LaylaERP.BAL
             {
                 string strquery = "SELECT rowid,emp_type,fk_emp,Replace(format(basic,2),',','') basic,emp_code,Replace(format(da,2),',','') as da, Replace(format(hra,2),',','') as hra, Replace(format(other_allowance,2),',','') as other_allowance,Replace(format(pf,2),',','') as pf ," +
                     "Replace(format(loan_amount,2),',','') as loan_amount, Replace(format(loan_emi,2),',','') as loan_emi,loan_months, Replace(format(adv_amount,2),',','') as adv_amount, Replace(format(adv_emi,2),',','') as adv_emi,adv_emi_months,Replace(format(tds,2),',','') as tds," +
-                    " Replace(format(other_deductions,2),',','') as other_deductions, Replace(format(reimbursement,2),',','') as reimbursement,work_type,default_work_hours,prepare_salary,accounting_type,hra_type from erp_hrms_salary_configuration WHERE rowid='" + id + "'";
+                    " Replace(format(other_deductions,2),',','') as other_deductions, Replace(format(reimbursement,2),',','') as reimbursement,work_type,default_work_hours,prepare_salary,accounting_type,hra_type," +
+                    " comp_name,section,DATE_FORMAT(salary_date,'%m-%d-%Y') as salary_date,emp_class,Replace(format(special_pay,2),',','') as special_pay,Replace(format(wash_allowance,2),',','') as wash_allowance,Replace(format(incentive,2),',','') as incentive,Replace(format(cca,2),',','') as cca,Replace(format(vpf,2),',','') as vpf,Replace(format(adv_epf,2),',','') as adv_epf," +
+                    " Replace(format(insurance,2),',','') as insurance,Replace(format(emp_welfare,2),',','') as emp_welfare,Replace(format(imprest,2),',','') as imprest, Replace(format(misc_refund,2),',','') as misc_refund,Replace(format(fastival_allowance,2),',','') as fastival_allowance,bank_name,bank_account,epf_account,Replace(format(pay_sacle,2),',','') as pay_sacle" +
+                    " from erp_hrms_salary_configuration WHERE rowid='" + id + "'";
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strquery);
                 dtr = ds.Tables[0];
@@ -170,11 +197,12 @@ namespace LaylaERP.BAL
 
         public static int UpdateConfiguration(HrmsConfigurationModel model)
         {
-
             try
             {
                 string strsql = "UPDATE erp_hrms_salary_configuration set emp_type=@emp_type, fk_emp=@fk_emp, basic=@basic, emp_code=@emp_code, da=@da, hra=@hra, other_allowance=@other_allowance, pf=@pf, loan_amount=@loan_amount, loan_emi=@loan_emi, loan_months=@loan_months, adv_amount=@adv_amount," +
-                    "adv_emi=@adv_emi, adv_emi_months=@adv_emi_months, tds=@tds, other_deductions=@other_deductions, reimbursement=@reimbursement, work_type=@work_type, default_work_hours=@default_work_hours, prepare_salary=@prepare_salary, accounting_type=@accounting_type, hra_type=@hra_type where rowid = '" + model.rowid + "';";
+                    "adv_emi=@adv_emi, adv_emi_months=@adv_emi_months, tds=@tds, other_deductions=@other_deductions, reimbursement=@reimbursement, work_type=@work_type, default_work_hours=@default_work_hours, prepare_salary=@prepare_salary, accounting_type=@accounting_type, hra_type=@hra_type, " +
+            "comp_name=@comp_name, salary_date=@salary_date, emp_class=@emp_class, special_pay=@special_pay, wash_allowance=@wash_allowance, incentive=@incentive,  " +
+            "cca=@cca, vpf=@vpf, adv_epf=@adv_epf, insurance=@insurance, emp_welfare=@emp_welfare, imprest=@imprest, misc_refund=@misc_refund, fastival_allowance=@fastival_allowance, bank_name=@bank_name, bank_account=@bank_account, epf_account=@epf_account, pay_sacle=@pay_sacle, section=@section where rowid = '" + model.rowid + "';";
                 MySqlParameter[] para =
                  {
                     new MySqlParameter("@emp_type", model.emp_type),
@@ -200,6 +228,26 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@prepare_salary", model.prepare_salary),
                     new MySqlParameter("@accounting_type", model.accounting_type),
                     new MySqlParameter("@hra_type", model.hra_type),
+                    //Extra
+                    new MySqlParameter("@comp_name", model.comp_name),
+                    new MySqlParameter("@salary_date", model.salary_date),
+                    new MySqlParameter("@emp_class", model.classemp),
+                    new MySqlParameter("@special_pay", model.special_pay),
+                    new MySqlParameter("@wash_allowance", model.wash_allowance),
+                    new MySqlParameter("@incentive", model.incentive),
+                    new MySqlParameter("@cca", model.cca),
+                    new MySqlParameter("@vpf", model.vpf),
+                    new MySqlParameter("@adv_epf",model.adv_epf),
+                    new MySqlParameter("@insurance", model.insurance),
+                    new MySqlParameter("@emp_welfare", model.emp_welfare),
+                    new MySqlParameter("@imprest", model.imprest),
+                    new MySqlParameter("@misc_refund", model.misc_refund),
+                    new MySqlParameter("@fastival_allowance", model.fastival_allowance),
+                    new MySqlParameter("@bank_name", model.bank_name),
+                    new MySqlParameter("@bank_account", model.bank_account),
+                    new MySqlParameter("@epf_account", model.epf_account),
+                    new MySqlParameter("@pay_sacle", model.pay_sacle),
+                    new MySqlParameter("@section", model.section),
                 };
                 int result = Convert.ToInt32(DAL.SQLHelper.ExecuteNonQuery(strsql, para));
                 return result;

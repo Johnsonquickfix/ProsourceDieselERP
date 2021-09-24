@@ -187,7 +187,7 @@ namespace LaylaERP.BAL
                     strWhr += " and pmdistype.meta_value like '%" + strValue1 + "%' ";
                 }
 
-                string strSql = "SELECT P.ID ID, post_title,post_excerpt,case when pmdistype.meta_value = 'percent' then 'Percentage discount' when  pmdistype.meta_value = 'fixed_cart' then 'Fixed cart discount' else 'Fixed product discount' end discount_type ,pmproid.meta_value product_ids,pmamount.meta_value coupon_amount,"
+                string strSql = "SELECT P.ID ID, post_title,post_excerpt,case when pmdistype.meta_value = 'percent' then 'Percentage discount' when  pmdistype.meta_value = 'fixed_cart' then 'Fixed cart discount' else 'Fixed product discount' end discount_type ,case when pmproid.meta_value is null then '' else replace(pmproid.meta_value, ',', ', ') end product_ids,pmamount.meta_value coupon_amount,"
                             + "  pmexdate.meta_value date_expires,CONCAT(COALESCE(pmpuscount.meta_value,'0'),' / ',COALESCE(pmpuslimit.meta_value, '0' )) UsageLimit"
                             + " FROM wp_posts P"
                             + " left join wp_postmeta pmamount on P.ID = pmamount.post_id and pmamount.meta_key = 'coupon_amount'"

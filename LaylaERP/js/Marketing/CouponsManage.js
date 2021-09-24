@@ -87,7 +87,7 @@ function dataGridLoad(order_type) {
             { data: 'coupon_amount', title: 'Coupon amount', sWidth: "12%" },
             { data: 'post_excerpt', title: 'Description', sWidth: "12%" },
             {
-                data: 'product_ids', title: 'Product IDs', sWidth: "12%",
+                data: 'product_ids', title: 'Product IDs', sWidth: "23%",
                 'render': function (data, type, full, meta) {
                     return '<span class="linking_product_ids">' + data +'</span>'
                 }

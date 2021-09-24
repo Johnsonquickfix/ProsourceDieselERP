@@ -80,7 +80,7 @@ namespace LaylaERP.Controllers
         }
 
         [HttpPost]
-        public JsonResult TakePayment(PurchaseReceiceOrderModel model)
+        public JsonResult TakePayment(PaymentInvoiceModel model)
         {
             string JSONstring = string.Empty; bool b_status = false; long ID = 0;
             try
@@ -89,7 +89,7 @@ namespace LaylaERP.Controllers
 
                 if (ID > 0)
                 {
-                    b_status = true; JSONstring = "Purchase Record has been updated successfully!!";
+                    b_status = true; JSONstring = "Payment has been taken successfully!!";
                 }
                 else
                 {

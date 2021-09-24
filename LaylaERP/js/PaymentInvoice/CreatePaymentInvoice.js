@@ -52,7 +52,7 @@ function getPurchaseOrderInfo() {
   
     //let oid = parseInt($('#lblPoNo').data('id')) || 0;
   /*  if (id > 0) {*/
-    $('.page-heading').text('Payment Invoice').append('<a class="btn btn-danger" href="/PaymentInvoice/PaymentInvoiceList">Back to List</a>');
+    $('.page-heading').text('Payment Process').append('<a class="btn btn-danger" href="/PaymentInvoice/PaymentInvoiceList">Back to List</a>');
         $('#line_items').empty();
         $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PaymentInvoice/PaymentInvoiceList">Back to List</a>');
         var option = { strValue1: status, strValue2: id };
@@ -110,8 +110,8 @@ function getPurchaseOrderInfo() {
 $(document).on("click", ".btnEdit", function (t) {
     t.preventDefault(); $("#loader").show();
     $('.billinfo').prop("disabled", false); //$('#txtbillfirstname').focus();
-    $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PaymentInvoice/PaymentInvoiceList">Back to List</a><button type="button" class="btn btn-danger btnUndoRecord"><i class="fa fa-undo"></i> Cancel</button>  <button type="button" class="btn btn-danger" id="btnSave"><i class="far fa-save"></i> Update</button>');
-    $(".top-action").empty().append('<button type="button" class="btn btn-danger btnUndoRecord" data-toggle="tooltip" title="Cancel"><i class="fa fa-undo"></i> Cancel</button>  <button type="button" class="btn btn-danger" id="btnSave" data-toggle="tooltip" title="Update"><i class="far fa-save"></i> Update</button>');
+    $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PaymentInvoice/PaymentInvoiceList">Back to List</a><button type="button" class="btn btn-danger btnUndoRecord"><i class="fa fa-undo"></i> Cancel</button>  <button type="button" class="btn btn-danger" id="btnSave"><i class="far fa-save"></i> Pay</button>');
+    $(".top-action").empty().append('<button type="button" class="btn btn-danger btnUndoRecord" data-toggle="tooltip" title="Cancel"><i class="fa fa-undo"></i> Cancel</button>  <button type="button" class="btn btn-danger" id="btnSave" data-toggle="tooltip" title="Pay"><i class="far fa-save"></i> Pay</button>');
     $("#loader").hide();
 });
 $(document).on("click", ".btnUndoRecord", function (t) { t.preventDefault(); $("#loader").show(); getPurchaseOrderInfo(); });
@@ -135,46 +135,26 @@ function calculateFinal() {
     $("#Total").html(tGrossAmt.toFixed(2));
 }
 
-/*$(document).on("click", "#btnSave", function (t) { t.preventDefault(); saveVendorPO(); });*/
-$(document).on("click", "#btnSave", function (t) { t.preventDefault();  });
+$(document).on("click", "#btnSave", function (t) { t.preventDefault(); saveVendorPO(); });
+//$(document).on("click", "#btnSave", function (t) { t.preventDefault();  });
 
 function saveVendorPO() {
-    let id = parseInt($('#lblPoNo').data('id')) || 0;
-    let vendorid = parseInt($("#ddlVendor").val()) || 0;
-    let ref_vendor = $("#txtRefvendor").val();
-    let payment_term = parseInt($("#ddlPaymentTerms").val()) || 0;
-    let balance_days = parseInt($("#ddlBalancedays").val()) || 0;
-    let payment_type = parseInt($("#ddlPaymentType").val()) || 0;
-    let warehouse_ID = parseInt($("#ddlwarehouse").val()) || 0;
-    let warehousepo_ID = parseInt($("#ddlwarehousepo").val()) || 0;
-    let date_livraison = $("#txtPlanneddateofdelivery").val().split('/');
-    let IDRecVal = parseInt($("#hfid").val()) || 0;
-    let incoterms = parseInt($("#ddlIncoTerms").val()) || 0;
-    let location_incoterms = $("#txtIncoTerms").val();
-    let note_public = $("#txtNotePublic").val();
-    let note_private = $("#txtNotePrivate").val();
-    let statusqty = parseInt($("#QtyTotal").text()) || 0;
-    let statustotalqty = parseInt($("#QtyRecTotal").text()) || 0;
-    let status = 0;
-    if (statusqty == statustotalqty)
-        status = 6;
-    else
-        status = 5;
-
+   // let id = parseInt($('#lblPoNo').data('id')) || 0;
+    let PaymentTypeid = parseInt($("#ddlPaymentType").val()) || 0;
+    let accountid = parseInt($("#ddlaccount").val()) || 0;  
+    let Numbertransfer = $("#txtNumbertransfer").val();
+    let Transmitter = $("#txtTransmitter").val();
+    let BankCheck = $("#txtBankCheck").val();
+    let Comments = $("#txtComments").val();   
     let _list = createItemsList();
     //console.log(_list);
-    if (vendorid <= 0) { swal('alert', 'Please Select Vendor', 'error').then(function () { swal.close(); $('#ddlVendor').focus(); }) }
-    else if (payment_type <= 0) { swal('alert', 'Please Select Payment Type', 'error').then(function () { swal.close(); $('#ddlPaymentType').focus(); }) }
-    else if (warehouse_ID <= 0) { swal('alert', 'Please Select Warehouse', 'error').then(function () { swal.close(); $('#ddlwarehouse').focus(); }) }
-    else if (date_livraison == "") { swal('alert', 'Please Select Planned date of delivery', 'error').then(function () { swal.close(); $('#txtPlanneddateofdelivery').focus(); }) }
-    else if (_list.length <= 0) { swal('alert', 'Receive quantity should not be zero', 'error').then(function () { swal.close(); }) }
+    if (PaymentTypeid <= 0) { swal('alert', 'Please Select Payment Type', 'error').then(function () { swal.close(); $('#ddlPaymentType').focus(); }) }
+    else if (accountid <= 0) { swal('alert', 'Please Select Account', 'error').then(function () { swal.close(); $('#ddlaccount').focus(); }) }
+    else if (_list.length <= 0) { swal('alert', 'Receive payment should not be zero', 'error').then(function () { swal.close(); }) }
     else {
-        if (date_livraison.length > 0) date_livraison = date_livraison[2] + '/' + date_livraison[0] + '/' + date_livraison[1];
         let option = {
-            RowID: id, VendorID: vendorid, PONo: '', VendorBillNo: ref_vendor, PaymentTerms: payment_term, Balancedays: balance_days, PaymentType: payment_type, WarehouseID: warehouse_ID, WarehousepoID: warehousepo_ID,
-            Planneddateofdelivery: date_livraison, IncotermType: incoterms, Incoterms: location_incoterms, NotePublic: note_public, NotePrivate: note_private, IDRec: IDRecVal,
-            total_tva: 0, localtax1: parseFloat($("#salesTaxTotal").text()), localtax2: parseFloat($("#shippingTotal").text()), total_ht: parseFloat($("#SubTotal").text()),
-            discount: parseFloat($("#discountTotal").text()), total_ttc: parseFloat($("#orderTotal").text()), fk_status: status, PurchaseOrderProducts: _list
+            fk_payment: PaymentTypeid, fk_bank: accountid, num_payment: Numbertransfer, note: Transmitter, bankcheck: BankCheck, comments: Comments,
+            amount: parseFloat($("#Total").text()), fk_status: 0, PaymentInvoiceDetails: _list
         }
         //console.log(option);
         $.ajax({
@@ -183,10 +163,10 @@ function saveVendorPO() {
             beforeSend: function () { $("#loader").show(); },
             success: function (data) {
                 if (data.status == true) {
-                    $('#lblPoNo').data('id', data.id);
+                   // $('#lblPoNo').data('id', data.id);
                     // getPurchaseOrderInfo();
                     //swal('Alert!', data.message, 'success').then(function () { swal.close(); });
-                    swal('Alert!', data.message, 'success').then((result) => { location.href = '../ReceiveOrder'; });
+                    swal('Alert!', data.message, 'success').then((result) => { location.href = 'PaymentInvoiceList'; });
                     /*    swal('Alert!', data.message, 'success').then(function () { swal.close(); getPurchaseOrderPrint(id, true); });*/
                 }
                 else {
@@ -202,24 +182,16 @@ function saveVendorPO() {
 function createItemsList() {
     let _list = []; let _rang = 0;
     $('#line_items > tr').each(function (index, row) {
-        let rPrice = 0.00, rQty = 0.00, rcvQty = 0.00, rDisPer = 0.00, rGrossAmt = 0.00, rDisAmt = 0.00, rTax1 = 0.00, rTax_Amt1 = 0.00, rTax2 = 0.00, rTax_Amt2 = 0.00, rNetAmt = 0.00;
-        rPrice = parseFloat($(row).find("[name=txt_itemprice]").val()) || 0.00;
-        rQty = parseFloat($(row).find("[name=txt_itemqty]").val()) || 0.00;
-        rcvQty = parseFloat($(row).find("[name=txt_itemRecqty]").val()) || 0.00;
-        rDisPer = parseFloat($(row).find("[name=txt_itemdisc]").val()) || 0.00;
-        rTax1 = parseFloat($(row).find(".tax-amount").data('tax1')) || 0.00; rTax2 = parseFloat($(row).find(".tax-amount").data('tax2')) || 0.00;
-        rGrossAmt = rPrice * rcvQty; rDisAmt = rGrossAmt * (rDisPer / 100);
-        rTax_Amt1 = rTax1 * rcvQty; rTax_Amt2 = rTax2 * rcvQty;
-        rNetAmt = (rGrossAmt - rDisAmt) + rTax_Amt1 + rTax_Amt2;
+        let payment = 0.00, remaing = 0.00;
+        payment = parseFloat($(row).find("[name=txt_itemprice]").val()) || 0.00;
+        remaing = parseFloat($(row).find(".price-remaining").data('tax1')) || 0.00;
 
         _rang += 1;
-        if (rcvQty == 0) {
+        if (payment == 0) {
         }
         else {
             _list.push({
-                rowid: $(row).data('rowid'), rang: _rang, product_type: 0, fk_product: $(row).data('pid'), description: $(row).data('pname'), product_sku: $(row).data('psku'),
-                qty: rQty, Recqty: rcvQty, subprice: rPrice, discount_percent: rDisPer, discount: rDisAmt, tva_tx: 0, localtax1_tx: rTax1, localtax1_type: 'F', localtax2_tx: rTax2, localtax2_type: 'F',
-                total_ht: rGrossAmt, total_tva: 0, total_localtax1: rTax_Amt1, total_localtax2: rTax_Amt2, total_ttc: rNetAmt, date_start: '0000/00/00', date_end: '0000/00/00'
+                rowid: $(row).data('rowid'), payamount: payment, type: $("#hfstatus").val()
             });
         }
     });

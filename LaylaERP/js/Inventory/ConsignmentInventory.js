@@ -141,8 +141,8 @@ function ProductStockGrid() {
 /* Formatting function for row details - modify as you need */
 function format(d) {
     let dfa = $('#txtDate').val().split('-');
-    let sd = dfa[0].split('/'); sd = sd[1] + '/' + sd[0] + '/' + sd[2];
-    let ed = dfa[1].split('/'); ed = ed[1] + '/' + ed[0] + '/' + ed[2];
+    let sd = dfa[0].split('/'); sd = sd[2].trim() + '/' + sd[0].trim() + '/' + sd[1].trim();
+    let ed = dfa[1].split('/'); ed = ed[2].trim() + '/' + ed[0].trim() + '/' + ed[1].trim();
     //console.log(d);
     let option = { strValue1: d.id, strValue2: sd, strValue3: ed }, wrHTML = '<table class="inventory-table table-blue table check-table table-bordered table-striped dataTable no-footer"><thead><tr><th style="width:48.8%; text-align:left;">Warehouse</th><th style="width:8%; text-align:right;">Units in Stock</th><th style="width:8%; text-align:right;">Units in POs</th><th style="width:8%; text-align:right;">Sale Units</th><th style="width:8%; text-align:right;">Damage Units</th><th style="width:8%; text-align:right;">Available Units</th></tr></thead>';
     $.ajax({
@@ -169,8 +169,8 @@ function format(d) {
 
 function getPurchaseOrder(pid, wid, title) {
     let dfa = $('#txtDate').val().split('-');
-    let sd = dfa[0].split('/'); sd = sd[1] + '/' + sd[0] + '/' + sd[2];
-    let ed = dfa[1].split('/'); ed = ed[1] + '/' + ed[0] + '/' + ed[2];
+    let sd = dfa[0].split('/'); sd = sd[2].trim() + '/' + sd[0].trim() + '/' + sd[1].trim();
+    let ed = dfa[1].split('/'); ed = ed[2].trim() + '/' + ed[0].trim() + '/' + ed[1].trim();
     let obj = { strValue1: pid, strValue2: wid, strValue3: sd, strValue4: ed };
     searchOrderModal(title);
     $('#tblOrderList').dataTable({
@@ -238,8 +238,8 @@ function exportTableToCSV(filename) {
     let csv = 'id' + colDelim + 'Category' + colDelim + 'SKU' + colDelim + 'Product Name' + colDelim + 'Units in Stock' + colDelim + 'Units in POs' + colDelim + 'Sale Units' + colDelim + 'Damage Units' + colDelim + 'Available Units' + rowDelim;
 
     let dfa = $('#txtDate').val().split('-');
-    let sd = dfa[0].split('/'); sd = sd[1] + '/' + sd[0] + '/' + sd[2];
-    let ed = dfa[1].split('/'); ed = ed[1] + '/' + ed[0] + '/' + ed[2];
+    let sd = dfa[0].split('/'); sd = sd[2].trim() + '/' + sd[0].trim() + '/' + sd[1].trim();
+    let ed = dfa[1].split('/'); ed = ed[2].trim() + '/' + ed[0].trim() + '/' + ed[1].trim();
     let pid = parseInt($("#ddlProduct").val()) || 0, ctid = parseInt($("#ddlCategory").val()) || 0;
     let obj = { strValue1: $("#txtsku").val().trim(), strValue2: (ctid > 0 ? ctid : ''), strValue3: (pid > 0 ? pid : ''), strValue4: sd, strValue5: ed };
     //console.log(dfa);

@@ -291,12 +291,20 @@ namespace LaylaERP.BAL
                         //            + "  left outer join wp_posts wp on wp.ID = p.fk_product_fils"                                
                         //            + " WHERE wp.post_type in('product','product_variation') " + strWhr;
 
-                        strWhr += " and p.fk_product = " + strValue1;
-                    string strSQl = "SELECT distinct fk_product_fils ID,wp.post_title,post_title title,ifnull((SELECT min(FORMAT(purchase_price,2)) purchase_price from Product_Purchase_Items where fk_product = p.fk_product_fils),'0.00') buyingprice,ifnull(FORMAT(pmsaleprice.meta_value,2),'0.00') sellingpric,0 Stock ,qty"
-                                + " FROM product_association p"
-                                + "  left outer join wp_posts wp on wp.ID = p.fk_product_fils"
+                        //    strWhr += " and p.fk_product = " + strValue1;
+                        //string strSQl = "SELECT distinct fk_product_fils ID,wp.post_title,post_title title,ifnull((SELECT min(FORMAT(purchase_price,2)) purchase_price from Product_Purchase_Items where fk_product = p.fk_product_fils),'0.00') buyingprice,ifnull(FORMAT(pmsaleprice.meta_value,2),'0.00') sellingpric,0 Stock ,qty"
+                        //            + " FROM product_association p"
+                        //            + "  left outer join wp_posts wp on wp.ID = p.fk_product_fils"
+                        //            + "  left join wp_postmeta pmsaleprice on wp.ID = pmsaleprice.post_id and pmsaleprice.meta_key = '_sale_price'"
+                        //            + "  WHERE wp.post_type in('product','product_variation') " + strWhr;
+
+                        strWhr += " and p.product_id = " + strValue1;
+                    string strSQl = "SELECT distinct free_product_id ID,wp.post_title,post_title title,ifnull((SELECT min(FORMAT(purchase_price,2)) purchase_price from Product_Purchase_Items where fk_product = p.free_product_id),'0.00') buyingprice,ifnull(FORMAT(pmsaleprice.meta_value,2),'0.00') sellingpric,0 Stock ,free_quantity qty"
+                                + " FROM wp_product_free p"
+                                + "  left outer join wp_posts wp on wp.ID = p.free_product_id"
                                 + "  left join wp_postmeta pmsaleprice on wp.ID = pmsaleprice.post_id and pmsaleprice.meta_key = '_sale_price'"
                                 + "  WHERE wp.post_type in('product','product_variation') " + strWhr;
+
 
                     strSQl += ";";
                     MySqlDataReader sdr = SQLHelper.ExecuteReader(strSQl);
@@ -371,11 +379,18 @@ namespace LaylaERP.BAL
                         //            + "  left outer join wp_posts wp on wp.ID = p.fk_product"
                         //            + " WHERE " + strWhr;
 
-                        strWhr += " fk_product_fils = " + strValue1;
-                    string strSQl = "SELECT distinct case when wp.post_parent = 0 then wp.ID else post_parent end ID,wp.post_title,post_title title,qty"
-                                + " FROM product_association p"
-                                + "  left outer join wp_posts wp on wp.ID = p.fk_product"
+                    //    strWhr += " fk_product_fils = " + strValue1;
+                    //string strSQl = "SELECT distinct case when wp.post_parent = 0 then wp.ID else post_parent end ID,wp.post_title,post_title title,qty"
+                    //            + " FROM product_association p"
+                    //            + "  left outer join wp_posts wp on wp.ID = p.fk_product"
+                    //            + " WHERE " + strWhr;
+
+                    strWhr += " free_product_id = " + strValue1;
+                    string strSQl = "SELECT distinct case when wp.post_parent = 0 then wp.ID else post_parent end ID,wp.post_title,post_title title,free_quantity qty"
+                                + " FROM wp_product_free p"
+                                + "  left outer join wp_posts wp on wp.ID = p.product_id"
                                 + " WHERE " + strWhr;
+
 
                     strSQl += ";";
                     MySqlDataReader sdr = SQLHelper.ExecuteReader(strSQl);
@@ -1743,7 +1758,9 @@ namespace LaylaERP.BAL
                 foreach (ProductChildModel obj in model)
                 {
 
-                    strSql.Append("Insert into product_association(fk_product,fk_product_fils,qty) values(" + obj.fk_product + ",'" + obj.fk_product_fils + "','" + obj.qty + "');SELECT LAST_INSERT_ID();");
+                    // strSql.Append("Insert into product_association(fk_product,fk_product_fils,qty) values(" + obj.fk_product + ",'" + obj.fk_product_fils + "','" + obj.qty + "');SELECT LAST_INSERT_ID();");
+                    strSql.Append("Insert into wp_product_free(product_id,free_product_id,free_quantity) values(" + obj.fk_product + ",'" + obj.fk_product_fils + "','" + obj.qty + "');SELECT LAST_INSERT_ID();");
+
                     // strSql_insert += (strSql_insert.Length > 0 ? " union all " : "") + string.Format("select '{0}' post_id,'{1}' meta_key,'{2}' meta_value", obj.post_id, obj.meta_key, obj.meta_value);
                     //strSql.Append(string.Format("update wp_postmeta set meta_value = '{0}' where post_id = '{1}' and meta_key = '{2}' ; ", obj.meta_value, obj.post_id, obj.meta_key));
                 }
@@ -1765,9 +1782,14 @@ namespace LaylaERP.BAL
                 foreach (ProductChildModel obj in model)
                 {
                     if (obj.qty == 0)
-                        strSql.Append("delete from product_association where fk_product =" + obj.fk_product + " and fk_product_fils =" + obj.fk_product_fils + ";");
+                        strSql.Append("delete from wp_product_free where product_id =" + obj.fk_product + " and free_product_id =" + obj.fk_product_fils + ";");
                     else
-                        strSql.Append(string.Format("update product_association set qty = '{0}' where fk_product_fils = '{1}' and fk_product = '{2}' ; ", obj.qty, obj.fk_product_fils, obj.fk_product));
+                        strSql.Append(string.Format("update wp_product_free set free_quantity = '{0}' where free_product_id = '{1}' and product_id = '{2}' ; ", obj.qty, obj.fk_product_fils, obj.fk_product));
+
+                    //if (obj.qty == 0)
+                    //    strSql.Append("delete from product_association where fk_product =" + obj.fk_product + " and fk_product_fils =" + obj.fk_product_fils + ";");
+                    //else
+                    //    strSql.Append(string.Format("update product_association set qty = '{0}' where fk_product_fils = '{1}' and fk_product = '{2}' ; ", obj.qty, obj.fk_product_fils, obj.fk_product));
                 }
                 result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
             }

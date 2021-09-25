@@ -190,6 +190,7 @@
     <Compile Include="Controllers\CommercialProposalController.cs" />
     <Compile Include="Controllers\CouponsController.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
+    <Compile Include="Controllers\EmailSettingController.cs" />
     <Compile Include="Controllers\ExportController.cs" />
     <Compile Include="Controllers\FeeNTaxController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -916,6 +917,7 @@
     <Content Include="Views\Setup\freeproduct.cshtml" />
     <Content Include="Views\PaymentInvoice\PaymentInvoice.cshtml" />
     <Content Include="Views\PaymentInvoice\PaymentInvoiceList.cshtml" />
+    <Content Include="Views\EmailSetting\EmailNotifications.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

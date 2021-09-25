@@ -104,7 +104,7 @@ function DAList() {
             { data: 'id', title: 'Id', sWidth: "5%" },
             { data: 'da_rate1', title: 'DA rate 1', sWidth: "10%" },
             { data: 'da_rate2', title: 'DA rate 2', sWidth: "20%", },
-            { data: 'da_rate_others', title: 'DA rate office', sWidth: "20%" },
+            { data: 'da_rate_others', title: 'DA rate others', sWidth: "20%" },
             { data: 'from_date', title: 'Date', sWidth: "20%", },
             {
                 'data': 'id', sWidth: "10%", title: 'Action',

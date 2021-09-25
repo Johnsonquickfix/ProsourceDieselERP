@@ -925,6 +925,7 @@
     <Content Include="Views\Hrms\Da.cshtml" />
     <Content Include="Views\Hrms\DaEdit.cshtml" />
     <Content Include="Views\EmailNotifications\NewOrder.cshtml" />
+    <Content Include="Views\EmailSetting\EmailNotifications.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

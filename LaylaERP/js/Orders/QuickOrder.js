@@ -668,7 +668,7 @@ function getOrderInfo() {
         $('.page-heading').text('Quick Order'); $('#btnSearch').prop("disabled", false); searchOrderModal();
     }
 
-    successModal('PayPal', '', false)
+    //successModal('PayPal', '', false)
 }
 function getOrderItemList(oid) {
     var option = { strValue1: oid };

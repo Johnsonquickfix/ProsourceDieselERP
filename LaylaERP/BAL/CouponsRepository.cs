@@ -75,11 +75,47 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
+        public static void AddexpiresMeta(CouponsModel model, long id, string varFieldsName, string varFieldsValue)
+        {
+            try
+            {
+                string strsql = "Insert into wp_postmeta(post_id,meta_key,meta_value) values(@post_id,@meta_key,UNIX_TIMESTAMP(STR_TO_DATE(@meta_value, '%m/%d/%Y'))); select LAST_INSERT_ID() as ID;";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@post_id", id),
+                    new MySqlParameter("@meta_key", varFieldsName),
+                    new MySqlParameter("@meta_value", varFieldsValue),
+                };
+                SQLHelper.ExecuteNonQuery(strsql, para);
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
         public static void UpdateMetaData(CouponsModel model, long id, string varFieldsName, string varFieldsValue)
         {
             try
             {
                 string strsql = "update wp_postmeta set meta_value=@meta_value where post_id=@post_id and meta_key=@meta_key";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@post_id", id),
+                    new MySqlParameter("@meta_key", varFieldsName),
+                    new MySqlParameter("@meta_value", varFieldsValue),
+                };
+                SQLHelper.ExecuteNonQuery(strsql, para);
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+        public static void UpdateExpiresData(CouponsModel model, long id, string varFieldsName, string varFieldsValue)
+        {
+            try
+            {
+                string strsql = "update wp_postmeta set meta_value=UNIX_TIMESTAMP(STR_TO_DATE(@meta_value, '%m/%d/%Y'))  where post_id=@post_id and meta_key=@meta_key";
                 MySqlParameter[] para =
                 {
                     new MySqlParameter("@post_id", id),
@@ -188,7 +224,7 @@ namespace LaylaERP.BAL
                 }
 
                 string strSql = "SELECT P.ID ID, post_title,post_excerpt,case when pmdistype.meta_value = 'percent' then 'Percentage discount' when  pmdistype.meta_value = 'fixed_cart' then 'Fixed cart discount' else 'Fixed product discount' end discount_type ,case when pmproid.meta_value is null then '' else replace(pmproid.meta_value, ',', ', ') end product_ids,pmamount.meta_value coupon_amount,"
-                            + "  from_unixtime(pmexdate.meta_value) date_expires,CONCAT(COALESCE(pmpuscount.meta_value,'0'),' / ',COALESCE(pmpuslimit.meta_value, '0' )) UsageLimit"
+                            + "  from_unixtime(pmexdate.meta_value,'%m-%d-%Y') date_expires,CONCAT(COALESCE(pmpuscount.meta_value,'0'),' / ',COALESCE(pmpuslimit.meta_value, '0' )) UsageLimit"
                             + " FROM wp_posts P"
                             + " left join wp_postmeta pmamount on P.ID = pmamount.post_id and pmamount.meta_key = 'coupon_amount'"
                             + " left join wp_postmeta pmexdate on P.ID = pmexdate.post_id and pmexdate.meta_key = 'date_expires'"
@@ -248,7 +284,7 @@ namespace LaylaERP.BAL
                 string strWhr = string.Empty;
 
                 string strSql = "SELECT P.ID ID, post_title, post_excerpt,pmdistype.meta_value discount_type, pmproid.meta_value product_ids, pmamount.meta_value coupon_amount,"
-                             + "  from_unixtime(pmexdate.meta_value) date_expires,pmpuscount.meta_value usage_count,pmpuslimit.meta_value  usage_limit,pmfreesp.meta_value free_shipping,from_unixtime(pmdateexp.meta_value) date_expires,pmminimam.meta_value minimum_amount,"
+                             + "  from_unixtime(pmexdate.meta_value,'%m/%d/%Y') date_expires,pmpuscount.meta_value usage_count,pmpuslimit.meta_value  usage_limit,pmfreesp.meta_value free_shipping,from_unixtime(pmdateexp.meta_value) date_expires,pmminimam.meta_value minimum_amount,"
                              + "  pmmaximam.meta_value maximum_amount,pmindividual.meta_value individual_use,pmexcludesaleitme.meta_value exclude_sale_items,pmautocp.meta_value _wjecf_is_auto_coupon,"
                              + "  pmexprdid.meta_value exclude_product_ids,pmcatg.meta_value product_categories,pmexcatg.meta_value exclude_product_categories,pmlimituser.meta_value usage_limit_per_user,pmcutemail.meta_value customer_email,pmlimituseritem.meta_value limit_usage_to_x_items"
                              + " FROM wp_posts P"
@@ -319,6 +355,41 @@ namespace LaylaERP.BAL
                 dt = SQLHelper.ExecuteDataTable(strSQl);
 
                 
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static DataTable GetProductList(string strSearch)
+        {
+            DataTable DT = new DataTable();
+            try
+            {
+                string strSQl = "SELECT p.id,CONCAT(p.post_title, COALESCE(CONCAT(' (',s.meta_value,')'),'')) post_title FROM wp_posts AS p"
+                            + " left join wp_postmeta as s on p.id = s.post_id and s.meta_key = '_sku' "
+                            + " WHERE p.post_type in ('product','product_variation') AND p.post_status != 'draft' "
+                            + " group by p.id  ORDER BY p.ID limit 50;";
+                DT = SQLHelper.ExecuteDataTable(strSQl);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DT;
+        }
+        public static DataTable GetSelectProdctByID(OrderPostStatusModel model)
+        {
+            DataTable dt = new DataTable();
+
+            try
+            {
+                string strWhr = string.Empty;
+                string strSQl = "SELECT p.id pr_id,CONCAT(p.post_title, COALESCE(CONCAT(' (',s.meta_value,')'),'')) post_title FROM wp_posts AS p "
+                             + " left join wp_postmeta as s on p.id = s.post_id and s.meta_key = '_sku' "
+                             + " WHERE p.post_type in ('product','product_variation') AND p.post_status != 'draft' and p.id in (" + model.strVal + ") "
+                             + " group by p.id  ORDER BY p.ID;";
+                dt = SQLHelper.ExecuteDataTable(strSQl);
             }
             catch (Exception ex)
             {

@@ -2665,8 +2665,11 @@ a#btnbackcategory {max-width: 135px; margin-top: 5px;}
     .modal-dialog{max-width:calc(100% - 20px);}
     .order.history .table-blue.table.check-table,
     .on-hand.inventory .table-blue.table.check-table,
-    .managecoupons .table-blue.table.check-table {width: 1000px !important;}
-    .managecoupons .dataTables_scroll{overflow:auto;}
+    .managecoupons .table-blue.table.check-table ,
+    .wrapper-invents .table-blue.table.check-table{width: 1000px !important;}
+    .wrapper-invents, .managecoupons .dataTables_scroll {
+        overflow: auto;
+    }
     .managecoupons .dataTables_scrollBody{overflow:initial !important;}
     .managecoupons .dataTables_scrollHead{width: 1000px !important;}
     }

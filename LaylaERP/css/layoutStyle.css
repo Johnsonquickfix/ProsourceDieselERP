@@ -2673,6 +2673,7 @@ a#btnbackcategory {max-width: 135px; margin-top: 5px;}
     #tblCusOrders_wrapper #tblCusOrders{width:600px !important;}
     #tblCusOrders_wrapper .row .col-sm-5,
     #tblCusOrders_wrapper .row .col-sm-7{width:100%;}
+    .on-hand.inventory .page-title .active{margin-left:0px !important;width: 100%;}
 }
 @media(max-width:400px) {
     .dashboard-order-list .radtype_span {
@@ -2686,4 +2687,9 @@ a#btnbackcategory {max-width: 135px; margin-top: 5px;}
         padding-left: 0px;
         padding-right: 0px;
     }
+    .on-hand.inventory .index_col_row{flex-wrap:wrap;}
+    .on-hand.inventory .index_col_row .col-md-3{width:100%;}
+    .on-hand.inventory .index_col_row .col-md-3.mt-25{margin-top:0px !important;}
+    .on-hand.inventory .index_col_row .col-md-3 .form-group{display:flex;align-items:center;}
+    .on-hand.inventory .index_col_row .col-md-3 .form-group label{width:85px;}
 }

@@ -162,6 +162,7 @@
     <Compile Include="BAL\CommercialProposalRepositiory.cs" />
     <Compile Include="BAL\CouponsRepository.cs" />
     <Compile Include="BAL\CustomerRepository.cs" />
+    <Compile Include="BAL\DaRepository.cs" />
     <Compile Include="BAL\DashboardRepository.cs" />
     <Compile Include="BAL\ExportRepository.cs" />
     <Compile Include="BAL\FeeNTaxRepository.cs" />
@@ -225,6 +226,7 @@
     <Compile Include="Models\CommercialProposalModel.cs" />
     <Compile Include="Models\CouponsModel.cs" />
     <Compile Include="Models\CustomerModel.cs" />
+    <Compile Include="Models\DaModel.cs" />
     <Compile Include="Models\ExportModel.cs" />
     <Compile Include="Models\Export_Details.cs" />
     <Compile Include="Models\FeeNTax.cs" />
@@ -626,6 +628,7 @@
     <Content Include="js\GooglePlace\index.js" />
     <Content Include="js\Hrms\Attendence.js" />
     <Content Include="js\Hrms\ConfigurationList.js" />
+    <Content Include="js\Hrms\Da.js" />
     <Content Include="js\Hrms\EmployeeList.js" />
     <Content Include="js\Hrms\GrantLeaveList.js" />
     <Content Include="js\Hrms\HRA.js" />
@@ -916,6 +919,8 @@
     <Content Include="Views\Setup\freeproduct.cshtml" />
     <Content Include="Views\PaymentInvoice\PaymentInvoice.cshtml" />
     <Content Include="Views\PaymentInvoice\PaymentInvoiceList.cshtml" />
+    <Content Include="Views\Hrms\Da.cshtml" />
+    <Content Include="Views\Hrms\DaEdit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

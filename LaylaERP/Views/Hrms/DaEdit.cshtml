@@ -5,14 +5,14 @@
 }
 
 <div class="page-title">
-    <h2 class="page-heading">DA config</h2>
+    <h2 class="page-heading">DA config</h2><span title="Click Here To Back To List" data-placement="bottom" data-toggle="tooltip"><a href="../../Hrms/DA" class="btn btn-danger">Back to List</a></span>
 </div>
 <section class="content section-content employees-section">
     <div class="row">
         <div class="col-sm-6">
             <div class="box box-primary">
                 <div class="box-body">
-
+                    <input type="hidden" class="form-control" id="hfid" />
                     <div class="form-group">
                         <label for="prefixcode">DA rate1<span style="color:red">*</span></label>
                         <input type="text" class="form-control decimal_number" id="txtdarate1" />
@@ -45,6 +45,56 @@
                 </div>
             </div>
         </div>
-        
+
     </div>
 </section>
+
+<script>
+    $(document).ready(function () {
+        $("#loader").hide();
+
+        var url = window.location.pathname;
+        var id = url.substring(url.lastIndexOf('/') + 1);
+        EditSelect(id);
+
+
+        $("#btnUpdate").click(function () {
+            UpdateDA();
+        });
+
+        $("#txtfromdate").datepicker({
+            format: 'mm-dd-yyyy',
+        });
+    })
+
+</script>
+
+<script>
+    function EditSelect(id) {
+        var strValue1 = id;
+        var obj =
+            $.ajax({
+                url: "/Hrms/SelectDa/" + strValue1,
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                dataType: 'JSON',
+                data: JSON.stringify(obj),
+                success: function (data) {
+                    console.log(data);
+                    var jobj = JSON.parse(data);
+                    if (jobj.length > 0) {
+                        $("#hfid").val(jobj[0].id);
+                        $("#txtdarate1").val(jobj[0].da_rate1);
+                        $("#txtdarate2").val(jobj[0].da_rate2);
+                        $("#txtdarateothers").val(jobj[0].da_rate_others);
+                        $("#txtfromdate").val(jobj[0].from_date);
+                    }
+                },
+                error: function (msg) {
+
+                }
+            });
+    }
+
+</script>
+<script src="@Url.Content("~/js/Hrms/Da.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>

@@ -2637,6 +2637,14 @@ a#btnbackcategory {max-width: 135px; margin-top: 5px;}
 .order.history .dataTables_scroll th,
 .order.history .dataTables_scroll td{box-sizing:border-box;}
 .order.history .table-blue.table.check-table {table-layout: fixed;}
+.on-hand.inventory #dtdata_wrapper {display: flex;flex-wrap: wrap;justify-content: space-between;}
+.on-hand.inventory #dtdata_wrapper #dtdata_length { order: -2;}
+.on-hand.inventory #dtdata_wrapper #dtdata_filter {order: -1; margin-left: auto;margin-right: 15px;}
+.on-hand.inventory #dtdata_wrapper .dataTables_scroll{width:100%; overflow:auto;}
+#billModal .modal-footer .col-md-6{display:flex; margin-top:5px; align-items:center; justify-content:space-around;}
+#billModal .modal-footer .col-md-6 .form-check-inline{display:flex; align-items:center;}
+#billModal .modal-footer .col-md-6 .form-check-inline *{margin:0px;}
+#billModal .modal-footer .col-md-6 .form-check-inline input{margin-right:5px;}
 @media(max-width:900px) {
     .hub-pro-shop select:first-child{margin-left:0px;}
     .hub-pro-shop {width: 100%; margin-top:5px;}
@@ -2654,6 +2662,9 @@ a#btnbackcategory {max-width: 135px; margin-top: 5px;}
     .managecoupons .dataTables_scrollBody{overflow:initial !important;}
     .managecoupons .dataTables_scrollHead{width: 1000px !important;}
     }
+@media(max-width:767px){
+    
+}
 @media(max-width:600px) {
     .dashboard-dropy .page-title, .on-hand.inventory .page-title {
         flex-direction: column;
@@ -2673,17 +2684,45 @@ a#btnbackcategory {max-width: 135px; margin-top: 5px;}
     #tblCusOrders_wrapper #tblCusOrders{width:600px !important;}
     #tblCusOrders_wrapper .row .col-sm-5,
     #tblCusOrders_wrapper .row .col-sm-7{width:100%;}
+    .on-hand.inventory .page-title .active{margin-left:0px !important;width: 100%;}
+    
 }
 @media(max-width:400px) {
-    .dashboard-order-list .radtype_span {
-    margin-top:15px;}
-    .userdetails .create-user-primary .box-header > .col-sm-4 {
-    padding:0px;}
-    .userrole_section .box-primary .box-primary .box-header {
-        overflow-y: auto;
-        max-width: calc(100% - 20px);
-        margin-left: 10px;
-        padding-left: 0px;
-        padding-right: 0px;
-    }
+.dashboard-order-list .radtype_span {
+margin-top: 15px;
+}
+
+.userdetails .create-user-primary .box-header > .col-sm-4 {
+padding: 0px;
+}
+
+.userrole_section .box-primary .box-primary .box-header {
+overflow-y: auto;
+max-width: calc(100% - 20px);
+margin-left: 10px;
+padding-left: 0px;
+padding-right: 0px;
+}
+
+.on-hand.inventory .index_col_row {
+flex-wrap: wrap;
+}
+
+.on-hand.inventory .index_col_row .col-md-3 {
+width: 100%;
+}
+
+.on-hand.inventory .index_col_row .col-md-3.mt-25 {
+margin-top: 0px !important; margin-bottom:15px;
+}
+
+.on-hand.inventory .index_col_row .col-md-3 .form-group {
+display: flex;
+align-items: center;
+}
+
+.on-hand.inventory .index_col_row .col-md-3 .form-group label {
+width: 85px;
+}
+
 }

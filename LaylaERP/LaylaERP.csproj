@@ -702,6 +702,7 @@
     <Content Include="Files\TEST2.pdf" />
     <Content Include="Content\WarehouseLinkedFiles\myfile.docx" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
+    <Content Include="Scripts\color_picker_alpha.js" />
     <Content Include="Scripts\DataTables\autoFill.bootstrap.js" />
     <Content Include="Scripts\DataTables\autoFill.bootstrap.min.js" />
     <Content Include="Scripts\DataTables\autoFill.bootstrap4.js" />

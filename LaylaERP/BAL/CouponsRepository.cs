@@ -398,6 +398,23 @@ namespace LaylaERP.BAL
             return dt;
         }
 
+        public static DataTable GetDuplicateCoupons(CouponsModel model)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                string strSQl = "select post_title from wp_posts"
+                                + " WHERE post_type = 'shop_coupon' and post_title = '" + model.post_title + "' "
+                                + " limit 10;";
+                dt = SQLHelper.ExecuteDataTable(strSQl);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
     }
 
 }

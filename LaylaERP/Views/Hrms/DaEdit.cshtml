@@ -1,0 +1,50 @@
+﻿
+@{
+    ViewBag.Title = "DaEdit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="page-title">
+    <h2 class="page-heading">DA config</h2>
+</div>
+<section class="content section-content employees-section">
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="box box-primary">
+                <div class="box-body">
+
+                    <div class="form-group">
+                        <label for="prefixcode">DA rate1<span style="color:red">*</span></label>
+                        <input type="text" class="form-control decimal_number" id="txtdarate1" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ddlproduct">DA rate2<span style="color:red">*</span></label>
+                        <input type="text" class="form-control decimal_number" id="txtdarate2" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6" id="details">
+            <div class="box box-primary">
+                <div class="box-body">
+                    <div class="form-group">
+                        <label for="vendor">DA rate other's<span style="color:red">*</span></label>
+                        <input type="text" class="form-control decimal_number" id="txtdarateothers" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="country">From Date<span style="color:red"></span>*</label>
+                        <input type="text" class="form-control" id="txtfromdate" /><span class="even-space"></span>
+                    </div>
+
+                    <div class="box-footer">
+                        <span title="Click Here To Update DA" data-placement="bottom" data-toggle="tooltip"><input type="button" class="btn btn-danger" id="btnUpdate" value="Update"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</section>

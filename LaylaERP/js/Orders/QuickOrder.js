@@ -1869,7 +1869,7 @@ function PaymentModal() {
     myHtml += '</div>';
 
     myHtml += '<div class="modal-footer">';
-    myHtml += '<div class="col-md-7 ">';
+    myHtml += '<div class="col-md-3">';
     myHtml += '<div class="input-group">';
     myHtml += '<span class="input-group-btn"  >';
     myHtml += '<select class="form-control select2" id="ddlPaymentMethod" style="width: auto;">';
@@ -1878,9 +1878,15 @@ function PaymentModal() {
     }
     myHtml += '</select>';
     myHtml += '</span>';
+    myHtml += '</div>';
+    myHtml += '</div>';
+
+    myHtml += '<div class="col-md-6">';
+    myHtml += '<div class="form-check-inline"><input type="radio" name="podiumchannel" checked="" value="' + billing_email + '"><label class="form-check-label">Email Channel</label></div>';
+    myHtml += '<div class="form-check-inline"><input type="radio" name="podiumchannel" value="' + billing_phone.replace(/[^0-9]/g, "") + '"><label class="form-check-label">SMS Channel</label></div>';
+    myHtml += '</div>';
     //myHtml += '<input class="form-control" type="text" id="txtPPEmail" name="txtPPEmail" placeholder="PayPal Email" maxlength="60" disabled>';
-    myHtml += '</div>';
-    myHtml += '</div>';
+        
     myHtml += '<button type="button" class="btn btn-primary" id="btnPlaceOrder">Place Order $' + $('#orderTotal').text() + '</button>';
     myHtml += '<button type="button" class="btn btn-primary hidden" id="btnResendInv">Resend Invoice $' + $('#orderTotal').text() + '</button>';
     myHtml += '</div>';
@@ -1920,6 +1926,7 @@ function AcceptPayment() {
 function PodiumPayment() {
     let oid = parseInt($('#hfOrderNo').val()) || 0;
     let bill_email = $("#txtbillemail").val();
+    let bill_to = $('input[name="podiumchannel"]:checked').val();
     let bill_name = $('#txtbillfirstname').val() + ' ' + $('#txtbilllastname').val();
 
     let _lineItems = [];
@@ -1938,7 +1945,7 @@ function PodiumPayment() {
     if (srf_total > 0) _lineItems.push({ description: "State Recycling Fee", amount: srf_total * 100 });
     if (fee_total > 0) _lineItems.push({ description: "Fee", amount: fee_total * 100 });
 
-    let opt_inv = { lineItems: _lineItems, channelIdentifier: bill_email, customerName: bill_name, invoiceNumber: 'INV-' + oid, locationUid: "6c2ee0d4-0429-5eac-b27c-c3ef0c8f0bc7" };
+    let opt_inv = { lineItems: _lineItems, channelIdentifier: bill_to, customerName: bill_name, invoiceNumber: 'INV-' + oid, locationUid: "6c2ee0d4-0429-5eac-b27c-c3ef0c8f0bc7" };
     //console.log(opt_inv);
     console.log('Start Podium Payment Processing...');
     let option = { strValue1: 'getToken' };

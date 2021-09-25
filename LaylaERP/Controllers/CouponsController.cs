@@ -40,25 +40,34 @@ namespace LaylaERP.Controllers
         [HttpPost]
         public JsonResult CreateCoupons(CouponsModel model)
         {
-            if (model.ID > 0)
-            {
 
-                CouponsRepository.EditCoupons(model, model.ID);
-               Update_MetaData(model, model.ID);
-                return Json(new { status = true, message = "Coupons Record has been updated successfully!!", url = "Manage" }, 0);
+            DataTable dt = CouponsRepository.GetDuplicateCoupons(model);
+            if (dt.Rows.Count > 0 && model.ID == 0)
+            {
+                return Json(new { status = false, message = "Coupons has been already existed", url = "" }, 0);
             }
             else
             {
-                int ID = CouponsRepository.AddCoupons(model);
-                if (ID > 0)
+                if (model.ID > 0)
                 {
-                    Adduser_MetaData(model, ID);
-                    ModelState.Clear();
-                    return Json(new { status = true, message = "Coupons has been saved successfully!!", url = "" }, 0);
+
+                    CouponsRepository.EditCoupons(model, model.ID);
+                    Update_MetaData(model, model.ID);
+                    return Json(new { status = true, message = "Coupons Record has been updated successfully!!", url = "Manage" }, 0);
                 }
                 else
                 {
-                    return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                    int ID = CouponsRepository.AddCoupons(model);
+                    if (ID > 0)
+                    {
+                        Adduser_MetaData(model, ID);
+                        ModelState.Clear();
+                        return Json(new { status = true, message = "Coupons has been saved successfully!!", url = "" }, 0);
+                    }
+                    else
+                    {
+                        return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                    }
                 }
             }
         }

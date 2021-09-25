@@ -2645,6 +2645,12 @@ a#btnbackcategory {max-width: 135px; margin-top: 5px;}
 #billModal .modal-footer .col-md-6 .form-check-inline{display:flex; align-items:center;}
 #billModal .modal-footer .col-md-6 .form-check-inline *{margin:0px;}
 #billModal .modal-footer .col-md-6 .form-check-inline input{margin-right:5px;}
+.email_settings textarea.form-control{min-height:100px;}
+.email.notifications .page-title{flex-wrap:wrap;}
+.email.notifications .page-title .sub-title{width:100%;}
+.email_settings .form-group{margin-left:-15px; margin-right:-15px;}
+.email_table_wrapper .fa-times-circle{font-size:16px; color:#ff4100}
+.email_table_wrapper .fa-check-circle{font-size:16px; color:green;}
 @media(max-width:900px) {
     .hub-pro-shop select:first-child{margin-left:0px;}
     .hub-pro-shop {width: 100%; margin-top:5px;}

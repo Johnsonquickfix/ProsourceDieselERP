@@ -44,7 +44,7 @@ namespace LaylaERP.Controllers
             DataTable dt = CouponsRepository.GetDuplicateCoupons(model);
             if (dt.Rows.Count > 0 && model.ID == 0)
             {
-                return Json(new { status = false, message = "Coupons has been already existed", url = "" }, 0);
+                return Json(new { status = false, message = "Coupon with the same code already exists", url = "" }, 0);
             }
             else
             {

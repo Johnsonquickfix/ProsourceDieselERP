@@ -89,6 +89,15 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        //Get DA
+        public ActionResult Da()
+        {
+            return View();
+        }
+        public ActionResult DaEdit()
+        {
+            return View();
+        }
 
 
         public JsonResult GetGroup()
@@ -620,8 +629,7 @@ namespace LaylaERP.Controllers
         [HttpPost]
         public JsonResult AddConfiguration(HrmsConfigurationModel model)
         {
-            int ID = 1;
-            //int ID = HrmsConfigurationRepository.AddConfiguration(model);
+            int ID = HrmsConfigurationRepository.AddConfiguration(model);
             if (ID > 0)
             {
 
@@ -749,5 +757,56 @@ namespace LaylaERP.Controllers
             return Json(JSONresult, 0);
         }
 
+        [HttpPost]
+        public JsonResult AddDaDetails(DaModel model)
+        {
+            int ID = DaRepository.AddDaDetails(model);
+            if (ID > 0)
+            {
+                return Json(new { status = true, message = "DA Data has been saved successfully!!", url = "", id = model.rowid }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+        }
+
+        public JsonResult GetDaList(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                DataTable dt = DaRepository.GetDaList(model.strValue1, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                result = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+        }
+
+        public JsonResult SelectDa(long id)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = DaRepository.SelectDa(id);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+        [HttpPost]
+        public JsonResult UpdateDA(DaModel model)
+        {
+            if (model.rowid > 0)
+            {
+                DaRepository.UpdateDA(model);
+                return Json(new { status = true, message = "DA Data has been saved successfully!!", url = "", id = model.rowid }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+        }
     }
 }

@@ -106,6 +106,11 @@
     $("#billModal").on("click", "#btnSaveCustomer", function (t) {
         t.preventDefault(); saveCustomer();
     });
+    $("#billModal").on("change", "#ddlPaymentMethod", function (t) {
+        t.preventDefault();
+        if ($("#ddlPaymentMethod").val() == "podium") { $('.podiumchannel').removeClass('hidden'); }
+        else { $('.podiumchannel').addClass('hidden'); }
+    });
     /*end New order Popup function*/
     /*Start Return Items*/
     $(document).on("click", "#btnAddFee", function (t) { t.preventDefault(); AddFeeModal(0, ''); });
@@ -662,6 +667,8 @@ function getOrderInfo() {
         $('.refund-action').append('<button type="button" id="btnAddFee" class="btn btn-danger billinfo" disabled data-toggle="tooltip" title="Add Other Fee">Add Fee</button> ');
         $('.page-heading').text('Quick Order'); $('#btnSearch').prop("disabled", false); searchOrderModal();
     }
+
+    //successModal('PayPal', '', false)
 }
 function getOrderItemList(oid) {
     var option = { strValue1: oid };
@@ -1881,12 +1888,12 @@ function PaymentModal() {
     myHtml += '</div>';
     myHtml += '</div>';
 
-    myHtml += '<div class="col-md-6">';
+    myHtml += '<div class="col-md-6 podiumchannel">';
     myHtml += '<div class="form-check-inline"><input type="radio" name="podiumchannel" checked="" value="' + billing_email + '"><label class="form-check-label">Email Channel</label></div>';
     myHtml += '<div class="form-check-inline"><input type="radio" name="podiumchannel" value="' + billing_phone.replace(/[^0-9]/g, "") + '"><label class="form-check-label">SMS Channel</label></div>';
     myHtml += '</div>';
     //myHtml += '<input class="form-control" type="text" id="txtPPEmail" name="txtPPEmail" placeholder="PayPal Email" maxlength="60" disabled>';
-        
+
     myHtml += '<button type="button" class="btn btn-primary" id="btnPlaceOrder">Place Order $' + $('#orderTotal').text() + '</button>';
     myHtml += '<button type="button" class="btn btn-primary hidden" id="btnResendInv">Resend Invoice $' + $('#orderTotal').text() + '</button>';
     myHtml += '</div>';

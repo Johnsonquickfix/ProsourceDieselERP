@@ -65,24 +65,37 @@ namespace LaylaERP.Controllers
 
         private void Adduser_MetaData(CouponsModel model, long id)
         {
-            string[] varQueryArr1 = new string[21];
-            string[] varFieldsName = new string[21] { "discount_type", "coupon_amount", "free_shipping", "date_expires", "minimum_amount", "maximum_amount", "individual_use", "exclude_sale_items", "_wjecf_is_auto_coupon", "product_ids", "exclude_product_ids", "product_categories", "exclude_product_categories", "usage_limit", "limit_usage_to_x_items", "usage_limit_per_user", "usage_count", "shareasale_wc_tracker_coupon_upload_enabled", "_wjecf_products_and", "_wjecf_categories_and", "customer_email" };
-            string[] varFieldsValue = new string[21] { model.discount_type, model.coupon_amount, model.free_shipping, model.date_expires.ToString(), model.min_subtotal, model.max_subtotal, model.individual_use, model.exclude_sale_items, model.wjecf_is_auto_coupon, model.product_ids, model.exclude_product_ids, model.categories_ids, model.exclude_categories_ids, model.usage_limit, model.limit_usage_to_x_items, model.usage_limit_per_user,"0","no","no","no",model.cus_email };
-            for (int n = 0; n < 21; n++)
+            //string[] varQueryArr1 = new string[21];
+            //string[] varFieldsName = new string[21] { "discount_type", "coupon_amount", "free_shipping", "date_expires", "minimum_amount", "maximum_amount", "individual_use", "exclude_sale_items", "_wjecf_is_auto_coupon", "product_ids", "exclude_product_ids", "product_categories", "exclude_product_categories", "usage_limit", "limit_usage_to_x_items", "usage_limit_per_user", "usage_count", "shareasale_wc_tracker_coupon_upload_enabled", "_wjecf_products_and", "_wjecf_categories_and", "customer_email" };
+            //string[] varFieldsValue = new string[21] { model.discount_type, model.coupon_amount, model.free_shipping, model.date_expires.ToString(), model.min_subtotal, model.max_subtotal, model.individual_use, model.exclude_sale_items, model.wjecf_is_auto_coupon, model.product_ids, model.exclude_product_ids, model.categories_ids, model.exclude_categories_ids, model.usage_limit, model.limit_usage_to_x_items, model.usage_limit_per_user,"0","no","no","no",model.cus_email };
+
+            string[] varQueryArr1 = new string[20];
+            string[] varFieldsName = new string[20] { "discount_type", "coupon_amount", "free_shipping",  "minimum_amount", "maximum_amount", "individual_use", "exclude_sale_items", "_wjecf_is_auto_coupon", "product_ids", "exclude_product_ids", "product_categories", "exclude_product_categories", "usage_limit", "limit_usage_to_x_items", "usage_limit_per_user", "usage_count", "shareasale_wc_tracker_coupon_upload_enabled", "_wjecf_products_and", "_wjecf_categories_and", "customer_email" };
+            string[] varFieldsValue = new string[20] { model.discount_type, model.coupon_amount, model.free_shipping, model.min_subtotal, model.max_subtotal, model.individual_use, model.exclude_sale_items, model.wjecf_is_auto_coupon, model.product_ids, model.exclude_product_ids, model.categories_ids, model.exclude_categories_ids, model.usage_limit, model.limit_usage_to_x_items, model.usage_limit_per_user, "0", "no", "no", "no", model.cus_email };
+            for (int n = 0; n < 20; n++)
             {
                 CouponsRepository.AddCouponMeta(model, id, varFieldsName[n], varFieldsValue[n]);
             }
+            //if(!string.IsNullOrEmpty(model.date_expires.ToString()))
+            //{
+                CouponsRepository.AddexpiresMeta(model, id, "date_expires", model.date_expires.ToString());
+            //}
         }
 
         private void Update_MetaData(CouponsModel model, long id)
         {
-            string[] varQueryArr1 = new string[21];
-            string[] varFieldsName = new string[21] { "discount_type", "coupon_amount", "free_shipping", "date_expires", "minimum_amount", "maximum_amount", "individual_use", "exclude_sale_items", "_wjecf_is_auto_coupon", "product_ids", "exclude_product_ids", "product_categories", "exclude_product_categories", "usage_limit", "limit_usage_to_x_items", "usage_limit_per_user", "usage_count", "shareasale_wc_tracker_coupon_upload_enabled", "_wjecf_products_and", "_wjecf_categories_and", "customer_email" };
-            string[] varFieldsValue = new string[21] { model.discount_type, model.coupon_amount, model.free_shipping, model.date_expires.ToString(), model.min_subtotal, model.max_subtotal, model.individual_use, model.exclude_sale_items, model.wjecf_is_auto_coupon, model.product_ids, model.exclude_product_ids, model.categories_ids, model.exclude_categories_ids, model.usage_limit, model.limit_usage_to_x_items, model.usage_limit_per_user, "0", "no", "no", "no", model.cus_email };
-            for (int n = 0; n < 21; n++)
+            //string[] varQueryArr1 = new string[21];
+            //string[] varFieldsName = new string[21] { "discount_type", "coupon_amount", "free_shipping", "date_expires", "minimum_amount", "maximum_amount", "individual_use", "exclude_sale_items", "_wjecf_is_auto_coupon", "product_ids", "exclude_product_ids", "product_categories", "exclude_product_categories", "usage_limit", "limit_usage_to_x_items", "usage_limit_per_user", "usage_count", "shareasale_wc_tracker_coupon_upload_enabled", "_wjecf_products_and", "_wjecf_categories_and", "customer_email" };
+            //string[] varFieldsValue = new string[21] { model.discount_type, model.coupon_amount, model.free_shipping, model.date_expires.ToString(), model.min_subtotal, model.max_subtotal, model.individual_use, model.exclude_sale_items, model.wjecf_is_auto_coupon, model.product_ids, model.exclude_product_ids, model.categories_ids, model.exclude_categories_ids, model.usage_limit, model.limit_usage_to_x_items, model.usage_limit_per_user, "0", "no", "no", "no", model.cus_email };
+
+            string[] varQueryArr1 = new string[20];
+            string[] varFieldsName = new string[20] { "discount_type", "coupon_amount", "free_shipping",  "minimum_amount", "maximum_amount", "individual_use", "exclude_sale_items", "_wjecf_is_auto_coupon", "product_ids", "exclude_product_ids", "product_categories", "exclude_product_categories", "usage_limit", "limit_usage_to_x_items", "usage_limit_per_user", "usage_count", "shareasale_wc_tracker_coupon_upload_enabled", "_wjecf_products_and", "_wjecf_categories_and", "customer_email" };
+            string[] varFieldsValue = new string[20] { model.discount_type, model.coupon_amount, model.free_shipping, model.min_subtotal, model.max_subtotal, model.individual_use, model.exclude_sale_items, model.wjecf_is_auto_coupon, model.product_ids, model.exclude_product_ids, model.categories_ids, model.exclude_categories_ids, model.usage_limit, model.limit_usage_to_x_items, model.usage_limit_per_user, "0", "no", "no", "no", model.cus_email };
+            for (int n = 0; n < 20; n++)
             {
                 CouponsRepository.UpdateMetaData(model, id, varFieldsName[n], varFieldsValue[n]);
             }
+            CouponsRepository.UpdateExpiresData(model, id, "date_expires", model.date_expires.ToString());
         }
         [HttpPost]
         public JsonResult GetCount(SearchModel model)
@@ -163,6 +176,29 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(JSONresult, 0);
         }
+        [HttpPost]
+        public JsonResult GetProductList(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable DT = CouponsRepository.GetProductList(model.strValue1);
+                JSONresult = JsonConvert.SerializeObject(DT);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+        public JsonResult GetSelectProdctByID(OrderPostStatusModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
 
+                DataTable dt = CouponsRepository.GetSelectProdctByID(model);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
     }
 }

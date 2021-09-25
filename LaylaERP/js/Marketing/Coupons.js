@@ -8,12 +8,17 @@ $(document).ready(function () {
 
     if (id != "" && id != "Index") {
         $("#hfid").val(id);  
-        setTimeout(function () { GetDataByID(id); }, 10);
+    /*    setTimeout(function () { GetDataByID(id); }, 100);*/
        // $("#hfprodcid").val("629,632");
-        setTimeout(function () { GetProdctByID($("#hfprodcid").val()); }, 2000);
-        setTimeout(function () { GetExProdctByID($("#hfexprodcid").val()); }, 2020);
-        setTimeout(function () { GetCategoryProdctByID($("#hfcategid").val()); }, 2040);
-        setTimeout(function () { GetExCategoryProdctByID($("#exhfcategid").val()); }, 2050);
+        //setTimeout(function () { GetProdctByID($("#hfprodcid").val()); }, 2000);
+        //setTimeout(function () { GetExProdctByID($("#hfexprodcid").val()); }, 2020);
+        //setTimeout(function () { GetCategoryProdctByID($("#hfcategid").val()); }, 2040);
+        //setTimeout(function () { GetExCategoryProdctByID($("#exhfcategid").val()); }, 2050);
+         GetDataByID(id); 
+       GetProdctByID($("#hfprodcid").val()); 
+      GetExProdctByID($("#hfexprodcid").val()); 
+      GetCategoryProdctByID($("#hfcategid").val()); 
+       GetExCategoryProdctByID($("#exhfcategid").val()); 
     }
 
     $("#txtCouponAmount").keyup(function () {
@@ -44,18 +49,18 @@ $('#btnGenerateCoupon').click(function () {
     $('#ddlProduct').select2({
         allowClear: true, minimumInputLength: 3, placeholder: "Search Product",
         ajax: {
-            url: '/Orders/GetProductList', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+            url: '/Coupons/GetProductList', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
             data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
-            processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.post_title, name: item.post_title, id: parseInt(item.pr_id) > 0 ? item.pr_id : item.id} }) }; },
+            processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.post_title, name: item.post_title, id: item.id} }) }; },
             error: function (xhr, status, err) { }, cache: true
         }
     });
     $('#ddlProductExlude').select2({
         allowClear: true, minimumInputLength: 3, placeholder: "Search Product",
         ajax: {
-            url: '/Orders/GetProductList', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+            url: '/Coupons/GetProductList', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
             data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
-            processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.post_title, name: item.post_title, id: parseInt(item.pr_id) > 0 ? item.pr_id : item.id } }) }; },
+            processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.post_title, name: item.post_title, id: item.id } }) }; },
             error: function (xhr, status, err) { }, cache: true
         }
     });
@@ -315,99 +320,119 @@ function GetDataByID(order_id) {
             //  $('#Item_Name').val(i[0].item_name.trim()).trigger('change');
 
         },
-        error: function (msg) { alert(msg); }
+        error: function (msg) { alert(msg); },
+        async: false
     });
 
 }
 
 function GetProdctByID(ProdctID) {
+    if (ProdctID == '') {
+    }
+    else {
+        var ID = ProdctID;
+        var obj = { strVal: ProdctID }
+        $.ajax({
 
-    var ID = ProdctID;
-    var obj = { strVal: ProdctID }
-    $.ajax({
+            url: '/Coupons/GetSelectProdctByID/' + ID,
+            type: 'post',
+            contentType: "application/json; charset=utf-8",
+            dataType: 'JSON',
+            data: JSON.stringify(obj),
+            success: function (data) {
+                var datalog = JSON.parse(data);
+                for (var i = 0; i < datalog.length; i++) {
+                    $("#ddlProduct").append('<option value="' + datalog[i].pr_id + '" selected>' + datalog[i].post_title + '</option>');
+                }
 
-        url: '/Coupons/GetProdctByID/' + ID,
-        type: 'post',
-        contentType: "application/json; charset=utf-8",
-        dataType: 'JSON',
-        data: JSON.stringify(obj),
-        success: function (data) {
-            var datalog = JSON.parse(data);
-            for (var i = 0; i < datalog.length; i++) {    
-                $("#ddlProduct").append('<option value="' + datalog[i].pr_id + '" selected>' + datalog[i].post_title + '</option>');               
-            }
-           
-        },
-        error: function (msg) { alert(msg); }
-    });
+            },
+            error: function (msg) { alert(msg); },
+            async: false
+        });
+    }
 
 }
 
 function GetExProdctByID(ProdctID) {
-    
-    var ID = ProdctID;
-    var obj = { strVal: ProdctID }
-    $.ajax({
+    console.log(ProdctID);
+    if (ProdctID == '') {
+    }
+    else {
+        var ID = ProdctID;
+        var obj = { strVal: ProdctID }
+        $.ajax({
 
-        url: '/Coupons/GetProdctByID/' + ID,
-        type: 'post',
-        contentType: "application/json; charset=utf-8",
-        dataType: 'JSON',
-        data: JSON.stringify(obj),
-        success: function (data) {
-            var datalog = JSON.parse(data);
-            for (var i = 0; i < datalog.length; i++) {
-                $("#ddlProductExlude").append('<option value="' + datalog[i].pr_id + '" selected>' + datalog[i].post_title + '</option>');
-            }
+            url: '/Coupons/GetSelectProdctByID/' + ID,
+            type: 'post',
+            contentType: "application/json; charset=utf-8",
+            dataType: 'JSON',
+            data: JSON.stringify(obj),
+            success: function (data) {
+                var datalog = JSON.parse(data);
+                for (var i = 0; i < datalog.length; i++) {
+                    $("#ddlProductExlude").append('<option value="' + datalog[i].pr_id + '" selected>' + datalog[i].post_title + '</option>');
+                }
 
-        },
-        error: function (msg) { alert(msg); }
-    });
+            },
+            error: function (msg) { alert(msg); },
+            async: false
+        });
+    }
 
 }
 
 function GetCategoryProdctByID(ProdctID) {
-    
-    var ID = ProdctID;
-    var obj = { strVal: ProdctID }
-    $.ajax({
+    console.log(ProdctID);
+    if (ProdctID == '') {
+    }
+    else {
+        var ID = ProdctID;
+        var obj = { strVal: ProdctID }
+        $.ajax({
 
-        url: '/Coupons/GetCategoryProdctByID/' + ID,
-        type: 'post',
-        contentType: "application/json; charset=utf-8",
-        dataType: 'JSON',
-        data: JSON.stringify(obj),
-        success: function (data) {
-            var datalog = JSON.parse(data);
-            for (var i = 0; i < datalog.length; i++) {
-                $("#ddlProductCategories").append('<option value="' + datalog[i].term_id + '" selected>' + datalog[i].name + '</option>');
-            }
+            url: '/Coupons/GetCategoryProdctByID/' + ID,
+            type: 'post',
+            contentType: "application/json; charset=utf-8",
+            dataType: 'JSON',
+            data: JSON.stringify(obj),
+            success: function (data) {
+                var datalog = JSON.parse(data);
+                for (var i = 0; i < datalog.length; i++) {
+                    $("#ddlProductCategories").append('<option value="' + datalog[i].term_id + '" selected>' + datalog[i].name + '</option>');
+                }
 
-        },
-        error: function (msg) { alert(msg); }
-    });
-
+            },
+            error: function (msg) { alert(msg); },
+            async: false
+        });
+    }
 }
 
-function GetExCategoryProdctByID(ProdctID) {  
-    var ID = ProdctID;
-    var obj = { strVal: ProdctID }
-    $.ajax({
+function GetExCategoryProdctByID(ProdctID) {
+    console.log(ProdctID);
+    if (ProdctID == '') {
+    }
+    else {
+        var ID = ProdctID;
+        var obj = { strVal: ProdctID }
+        $.ajax({
 
-        url: '/Coupons/GetCategoryProdctByID/' + ID,
-        type: 'post',
-        contentType: "application/json; charset=utf-8",
-        dataType: 'JSON',
-        data: JSON.stringify(obj),
-        success: function (data) {
-            var datalog = JSON.parse(data);
-            for (var i = 0; i < datalog.length; i++) {
-                $("#ddlExcludeCategories").append('<option value="' + datalog[i].term_id + '" selected>' + datalog[i].name + '</option>');
-            }
+            url: '/Coupons/GetCategoryProdctByID/' + ID,
+            type: 'post',
+            contentType: "application/json; charset=utf-8",
+            dataType: 'JSON',
+            data: JSON.stringify(obj),
+            success: function (data) {
+                var datalog = JSON.parse(data);
+                for (var i = 0; i < datalog.length; i++) {
+                    $("#ddlExcludeCategories").append('<option value="' + datalog[i].term_id + '" selected>' + datalog[i].name + '</option>');
+                }
 
-        },
-        error: function (msg) { alert(msg); }
-    });
+            },
+            error: function (msg) { alert(msg); },
+            async: false
+        });
+    }
 
 }
 

@@ -55,7 +55,7 @@ namespace LaylaERP.BAL
             DataSet DS = new DataSet();
             try
             {
-                DS = SQLHelper.ExecuteDataSet("SELECT account_number, label from erp_accounting_account");
+                DS = SQLHelper.ExecuteDataSet("SELECT account_number, label from erp_accounting_account where account_number='1030'");
 
             }
             catch (Exception ex)
@@ -180,12 +180,12 @@ namespace LaylaERP.BAL
             DataTable dtr = new DataTable();
             try
             {
-                string strquery = "SELECT rowid,emp_type,fk_emp,Replace(format(basic,2),',','') basic,emp_code,Replace(format(da,2),',','') as da, Replace(format(hra,2),',','') as hra, Replace(format(other_allowance,2),',','') as other_allowance,Replace(format(pf,2),',','') as pf ," +
+                string strquery = "SELECT ehsc.rowid,emp_type,fk_emp,Replace(format(basic,2),',','') basic,emp_code,Replace(format(da,2),',','') as da, Replace(format(hra,2),',','') as hra, Replace(format(other_allowance,2),',','') as other_allowance,Replace(format(pf,2),',','') as pf ," +
                     "Replace(format(loan_amount,2),',','') as loan_amount, Replace(format(loan_emi,2),',','') as loan_emi,loan_months, Replace(format(adv_amount,2),',','') as adv_amount, Replace(format(adv_emi,2),',','') as adv_emi,adv_emi_months,Replace(format(tds,2),',','') as tds," +
                     " Replace(format(other_deductions,2),',','') as other_deductions, Replace(format(reimbursement,2),',','') as reimbursement,work_type,default_work_hours,prepare_salary,accounting_type,hra_type," +
                     " comp_name,section,DATE_FORMAT(salary_date,'%m-%d-%Y') as salary_date,emp_class,Replace(format(special_pay,2),',','') as special_pay,Replace(format(wash_allowance,2),',','') as wash_allowance,Replace(format(incentive,2),',','') as incentive,Replace(format(cca,2),',','') as cca,Replace(format(vpf,2),',','') as vpf,Replace(format(adv_epf,2),',','') as adv_epf," +
-                    " Replace(format(insurance,2),',','') as insurance,Replace(format(emp_welfare,2),',','') as emp_welfare,Replace(format(imprest,2),',','') as imprest, Replace(format(misc_refund,2),',','') as misc_refund,Replace(format(fastival_allowance,2),',','') as fastival_allowance,bank_name,bank_account,epf_account,Replace(format(pay_sacle,2),',','') as pay_sacle" +
-                    " from erp_hrms_salary_configuration WHERE rowid='" + id + "'";
+                    " Replace(format(insurance,2),',','') as insurance,Replace(format(emp_welfare,2),',','') as emp_welfare,Replace(format(imprest,2),',','') as imprest, Replace(format(misc_refund,2),',','') as misc_refund,Replace(format(fastival_allowance,2),',','') as fastival_allowance,bank_name,bank_account,epf_account,Replace(format(pay_sacle,2),',','') as pay_sacle, eheg.group_description as type" +
+                    " from erp_hrms_salary_configuration ehsc left join erp_hrms_employee_group eheg on eheg.rowid=ehsc.emp_type WHERE ehsc.rowid='" + id + "'";
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strquery);
                 dtr = ds.Tables[0];

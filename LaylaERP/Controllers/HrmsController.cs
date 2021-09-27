@@ -89,6 +89,15 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        //Get DA
+        public ActionResult Da()
+        {
+            return View();
+        }
+        public ActionResult DaEdit()
+        {
+            return View();
+        }
 
 
         public JsonResult GetGroup()
@@ -425,9 +434,9 @@ namespace LaylaERP.Controllers
 
         }
 
-        public JsonResult GetEmployee()
+        public JsonResult GetEmployee(string fkuser)
         {
-            DataSet ds = HrmsRepository.GetEmployee();
+            DataSet ds = HrmsRepository.GetEmployee(fkuser);
             List<SelectListItem> employeelist = new List<SelectListItem>();
             foreach (DataRow dr in ds.Tables[0].Rows)
             {
@@ -453,12 +462,12 @@ namespace LaylaERP.Controllers
             }
         }
 
-        public JsonResult LeaveList()
+        public JsonResult LeaveList(string fkuser)
         {
             string JSONresult = string.Empty;
             try
             {
-                DataTable dt = HrmsRepository.GetLeaveList();
+                DataTable dt = HrmsRepository.GetLeaveList(fkuser);
                 JSONresult = JsonConvert.SerializeObject(dt);
             }
             catch { }
@@ -620,7 +629,6 @@ namespace LaylaERP.Controllers
         [HttpPost]
         public JsonResult AddConfiguration(HrmsConfigurationModel model)
         {
-            
             int ID = HrmsConfigurationRepository.AddConfiguration(model);
             if (ID > 0)
             {
@@ -737,5 +745,68 @@ namespace LaylaERP.Controllers
             }
         }
 
+        public JsonResult HRAValue(long basic)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = HrmsConfigurationRepository.HRAValue(basic);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+
+        [HttpPost]
+        public JsonResult AddDaDetails(DaModel model)
+        {
+            int ID = DaRepository.AddDaDetails(model);
+            if (ID > 0)
+            {
+                return Json(new { status = true, message = "DA Data has been saved successfully!!", url = "", id = model.rowid }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+        }
+
+        public JsonResult GetDaList(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                DataTable dt = DaRepository.GetDaList(model.strValue1, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                result = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+        }
+
+        public JsonResult SelectDa(long id)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = DaRepository.SelectDa(id);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+        [HttpPost]
+        public JsonResult UpdateDA(DaModel model)
+        {
+            if (model.rowid > 0)
+            {
+                DaRepository.UpdateDA(model);
+                return Json(new { status = true, message = "DA Data has been saved successfully!!", url = "", id = model.rowid }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+        }
     }
 }

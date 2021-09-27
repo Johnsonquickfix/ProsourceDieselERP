@@ -40,6 +40,7 @@ function EmployeeList() {
         aoColumns: [
             
             { data: 'id', title: 'Id', sWidth: "5%" },
+            { data: 'code', title: 'Emp Code', sWidth: "10%" },
             { data: 'name', title: 'Name', sWidth: "10%" },
             {
 

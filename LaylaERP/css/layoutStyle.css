@@ -2631,7 +2631,30 @@ a#btnbackcategory {max-width: 135px; margin-top: 5px;}
 .on-hand.inventory #dtdata_paginate{float:right; width:auto;}
 
 .add.new.product .new-product-section #divPurchase{padding-left:0px; padding-right:0px;}
-
+.dashboard-dropy{flex-direction:column;}
+.dashboard-dropy > div:first-child {margin-right: 0px; width:100%;}
+.dashboard-dropy .page-title{justify-content:space-between;}
+.order.history .dataTables_scroll th,
+.order.history .dataTables_scroll td{box-sizing:border-box;}
+.order.history .table-blue.table.check-table {table-layout: fixed;}
+.on-hand.inventory #dtdata_wrapper {display: flex;flex-wrap: wrap;justify-content: space-between;}
+.on-hand.inventory #dtdata_wrapper #dtdata_length { order: -2;}
+.on-hand.inventory #dtdata_wrapper #dtdata_filter {order: -1; margin-left: auto;margin-right: 15px;}
+.on-hand.inventory #dtdata_wrapper .dataTables_scroll{width:100%; overflow:auto;}
+#billModal .modal-footer .col-md-6{display:flex; margin-top:5px; align-items:center; justify-content:space-around;}
+#billModal .modal-footer .col-md-6 .form-check-inline{display:flex; align-items:center;}
+#billModal .modal-footer .col-md-6 .form-check-inline *{margin:0px;}
+#billModal .modal-footer .col-md-6 .form-check-inline input{margin-right:5px;}
+.email_settings textarea.form-control{min-height:100px;}
+.email.notifications .page-title{flex-wrap:wrap;}
+.email.notifications .page-title .sub-title{width:100%;}
+.email_settings .form-group{margin-left:-15px; margin-right:-15px;}
+.email_table_wrapper .fa-times-circle{font-size:16px; color:#ff4100}
+.email_table_wrapper .fa-check-circle{font-size:16px; color:green;}
+.email_settings_in .form-group{margin-left:-15px; margin-right:-15px; flex-wrap:wrap;}
+.email_settings_in textarea{min-height:100px;}
+.payment.invoice.list {position: static;background: transparent;border: 0px;padding: 0px;margin: 0px;}
+.payment.invoice.list .dataTables_scrollHeadInner{width:100% !important;}
 @media(max-width:900px) {
     .hub-pro-shop select:first-child{margin-left:0px;}
     .hub-pro-shop {width: 100%; margin-top:5px;}
@@ -2641,7 +2664,81 @@ a#btnbackcategory {max-width: 135px; margin-top: 5px;}
     div.table-responsive > div.dataTables_wrapper > div.row > div[class^="col-"]:first-child, 
     div.table-responsive > div.dataTables_wrapper > div.row > div[class^="col-"]:last-child{padding:0px;}
     .hub-pro-shop {flex-wrap:wrap;}
+    .modal-dialog{max-width:calc(100% - 20px);}
+    .order.history .table-blue.table.check-table,
+    .on-hand.inventory .table-blue.table.check-table,
+    .managecoupons .table-blue.table.check-table,
+    .list.products .table-blue.table.check-table,
+    .wrapper-invents .table-blue.table.check-table {
+        width: 1000px !important;
     }
+    .wrapper-invents, .managecoupons .dataTables_scroll {
+        overflow: auto;
+    }
+    .managecoupons .dataTables_scrollBody{overflow:initial !important;}
+    .managecoupons .dataTables_scrollHead{width: 1000px !important;}
+    }
+@media(max-width:767px){
+    
+}
 @media(max-width:600px) {
+    .dashboard-dropy .page-title, .on-hand.inventory .page-title {
+        flex-direction: column;
+        margin-bottom: 18px;
+        align-items: flex-start;
+    }
+
+        .dashboard-dropy .page-title h2, .on-hand.inventory .page-title h2{
+            margin-bottom: 10px;
+        }
     .hub-pro-shop select{margin:0px 0px 5px 0px; width:100%;}
+    #tblCusOrders_wrapper > .row:first-child {display:flex;}
+        #tblCusOrders_wrapper > .row > .col-sm-6:first-child {
+        margin-right:auto;}
+    #tblCusOrders_wrapper .row > .col-sm-12 {
+    overflow-x:auto;}
+    #tblCusOrders_wrapper #tblCusOrders{width:600px !important;}
+    #tblCusOrders_wrapper .row .col-sm-5,
+    #tblCusOrders_wrapper .row .col-sm-7{width:100%;}
+    .on-hand.inventory .page-title .active{margin-left:0px !important;width: 100%;}
+    
+}
+@media(max-width:400px) {
+.dashboard-order-list .radtype_span {
+margin-top: 15px;
+}
+
+.userdetails .create-user-primary .box-header > .col-sm-4 {
+padding: 0px;
+}
+
+.userrole_section .box-primary .box-primary .box-header {
+overflow-y: auto;
+max-width: calc(100% - 20px);
+margin-left: 10px;
+padding-left: 0px;
+padding-right: 0px;
+}
+
+.on-hand.inventory .index_col_row {
+flex-wrap: wrap;
+}
+
+.on-hand.inventory .index_col_row .col-md-3 {
+width: 100%;
+}
+
+.on-hand.inventory .index_col_row .col-md-3.mt-25 {
+margin-top: 0px !important; margin-bottom:15px;
+}
+
+.on-hand.inventory .index_col_row .col-md-3 .form-group {
+display: flex;
+align-items: center;
+}
+
+.on-hand.inventory .index_col_row .col-md-3 .form-group label {
+width: 85px;
+}
+
 }

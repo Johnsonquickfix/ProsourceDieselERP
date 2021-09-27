@@ -13,18 +13,35 @@
             'This Month': [moment().startOf('month'), moment().endOf('month')],
             'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
         },
-        startDate: moment().add(-24, 'month'), autoUpdateInput: true, alwaysShowCalendars: true,
+        startDate: moment(), autoUpdateInput: true, alwaysShowCalendars: true,
         locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' }, opens: 'right', orientation: "left auto"
     }, function (start, end, label) {
-        let order_type = $('#hfOrderType').val(); PurchaseOrderGrid();
+        let type = $('#ddlStatus').val();
+        if (type == 'PO')
+            PurchaseOrderGrid(true);
+        else
+            PartiallyGrid(true);
     });
-   
+    PartiallyGrid(true);
+    
   
    
 });
 
-function PurchaseOrderGrid() {
-    let urid = parseInt($("#ddlSearchStatus").val());
+$('#ddlStatus').change(function () {
+    let type = $('#ddlStatus').val();
+    if (type == 'PO')
+        PurchaseOrderGrid(true);
+    else
+        PartiallyGrid(true);
+
+});
+
+function PurchaseOrderGrid(is_date) {
+   // let urid = parseInt($("#ddlStatus").val());
+    let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
+    let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
+    let dfa = is_date ? "'" + sd + "' and '" + ed + "'" : '';
     let table = $('#dtdata').DataTable({
         columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: false, scrollX: true, scrollY: ($(window).height() - 215),
@@ -44,9 +61,9 @@ function PurchaseOrderGrid() {
                 if (code == 13) { table.search(this.value).draw(); }
             });
         },
-        sAjaxSource: "/Reception/GetPurchaseOrderList",
+        sAjaxSource: "/PaymentInvoice/GetPurchaseOrderList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
-            aoData.push({ name: "strValue1", value: urid });
+            aoData.push({ name: "strValue1", value: dfa });        
             var col = 'order_id';
             if (oSettings.aaSorting.length > 0) {
                 var col = oSettings.aaSorting[0][0] == 2 ? "refordervendor" : oSettings.aaSorting[0][0] == 3 ? "request_author" : oSettings.aaSorting[0][0] == 4 ? "vendor_name" : oSettings.aaSorting[0][0] == 5 ? "city" : oSettings.aaSorting[0][0] == 6 ? "zip" : oSettings.aaSorting[0][0] == 6 ? "date_livraison" : oSettings.aaSorting[0][0] == 7 ? "Status" : "ref";
@@ -62,12 +79,15 @@ function PurchaseOrderGrid() {
             });
         },
         aoColumns: [
-            //{
-            //    'data': 'id', sWidth: "5%   ",
-            //    'render': function (data, type, full, meta) {
-            //        return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + data + '"><label></label>';
-            //    }
-            //},
+            {
+                'data': 'id', sWidth: "5%   ",
+                'render': function (data, type, row) {
+                    if ( parseInt(row.remaining) == 0)
+                        return '';
+                    else
+                    return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + data + '"><label></label>';
+                }
+            },
             {
                 'data': 'ref', sWidth: "10%", title: 'PO No'
           
@@ -77,22 +97,21 @@ function PurchaseOrderGrid() {
             {
                 'data': 'refordervendor', sWidth: "10%", title: 'Invoice No', sWidth: "10%"
             },
-            { data: 'vendor_name', title: 'Vendor Name', sWidth: "15%" },
-            {
-                data: 'city', title: 'Address', sWidth: "20%", render: function (data, type, dtrow) {
-                    let val = dtrow.address + ', ' + dtrow.town + ' ,' + dtrow.fk_state + ' ' + dtrow.zip;
-                    return val;
-                }
-            },
+            { data: 'vendor_name', title: 'Vendor Name', sWidth: "10%" },            
             { data: 'total_ttc', title: 'Amount', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
-            { data: 'date_livraison', title: 'Planned date of delivery', sWidth: "10%" },
+            { data: 'recieved', title: 'Received', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
+            { data: 'remaining', title: 'Remaining', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },   
             { data: 'Status', title: 'Status', sWidth: "10%" }
         ],
 
     });
 }
-function PartiallyGrid() {
-    let urid = parseInt($("#ddlSearchStatus").val());
+function PartiallyGrid(is_date) {
+   // let urid = parseInt($("#ddlSearchStatus").val());
+    let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
+    let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
+    let dfa = is_date ? "'" + sd + "' and '" + ed + "'" : '';
+
     let table = $('#dtdata').DataTable({
         columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: false, scrollX: true, scrollY: ($(window).height() - 215),
@@ -112,9 +131,9 @@ function PartiallyGrid() {
                 if (code == 13) { table.search(this.value).draw(); }
             });
         },
-        sAjaxSource: "/Reception/GetPartiallyOrderList",
+        sAjaxSource: "/PaymentInvoice/GetPartiallyOrderList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
-            aoData.push({ name: "strValue1", value: urid });
+            aoData.push({ name: "strValue1", value: dfa });
             var col = 'order_id';
             if (oSettings.aaSorting.length > 0) {
                 var col = oSettings.aaSorting[0][0] == 2 ? "refordervendor" : oSettings.aaSorting[0][0] == 3 ? "request_author" : oSettings.aaSorting[0][0] == 4 ? "vendor_name" : oSettings.aaSorting[0][0] == 5 ? "city" : oSettings.aaSorting[0][0] == 6 ? "zip" : oSettings.aaSorting[0][0] == 6 ? "date_livraison" : oSettings.aaSorting[0][0] == 7 ? "Status" : "ref";
@@ -130,12 +149,15 @@ function PartiallyGrid() {
             });
         },
         aoColumns: [
-            //{
-            //    'data': 'id', sWidth: "5%   ",
-            //    'render': function (data, type, full, meta) {
-            //        return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + data + '"><label></label>';
-            //    }
-            //},
+            {
+                'data': 'ids', sWidth: "5%   ",
+                'render': function (data, type, row) {
+                    if (parseInt(row.remaining) == 0)
+                        return '';
+                    else
+                        return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + data + '"><label></label>';
+                }
+            },
             {
                 'data': 'ref', sWidth: "10%", title: 'PO No'
                 
@@ -144,17 +166,74 @@ function PartiallyGrid() {
             {
                 data: 'refordervendor', title: 'Bill No', sWidth: "10%"
             },
-            { data: 'vendor_name', title: 'Vendor Name', sWidth: "15%" },
-            {
-                data: 'city', title: 'Address', sWidth: "20%", render: function (data, type, dtrow) {
-                    let val = dtrow.address + ', ' + dtrow.town + ' ,' + dtrow.fk_state + ' ' + dtrow.zip;
-                    return val;
-                }
-            },
+            { data: 'vendor_name', title: 'Vendor Name', sWidth: "10%" },
             { data: 'total_ttc', title: 'Amount', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
-            { data: 'date_livraison', title: 'Planned date of delivery', sWidth: "10%" },
+            { data: 'recieved', title: 'Received', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
+            { data: 'remaining', title: 'Remaining', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
             { data: 'Status', title: 'Status', sWidth: "10%" }
         ]
 
     });
+}
+
+function CheckAll() {
+    var isChecked = $('#checkall').prop("checked");
+    $('#dtdata tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
+}
+function Singlecheck(chk) {
+    var isChecked = $(chk).prop("checked");
+    var isHeaderChecked = $("#checkall").prop("checked");
+    if (isChecked == false && isHeaderChecked)
+        $("#checkall").prop('checked', isChecked);
+    else {
+        $('#dtdata tr:has(td)').find('input[type="checkbox"]').each(function () {
+            if ($(this).prop("checked") == false)
+                isChecked = false;
+        });
+        $("#checkall").prop('checked', isChecked);
+    }
+}
+
+
+function takepayment() {
+    let id = "";
+    $("input:checkbox[name=CheckSingle]:checked").each(function () {
+        id += $(this).val() + ",";
+    });
+    id = id.replace(/,(?=\s*$)/, '');
+    $("#checkAll").prop('checked', false);
+    let status = $('#ddlStatus').val();
+    console.log(id);
+
+    if (id == "") {
+        swal('alert', 'Please select a PO', 'error');
+    }
+    else {
+        var name = $("#txtName").val();
+        var tech = $("#ddlTechnolgy").val();
+        /*var url = "Page2.htm?status=" + encodeURIComponent(name) + "&technology=" + encodeURIComponent(tech);*/
+        var url = "/PaymentInvoice/PaymentInvoice?status=" + status + "&id=" + id;
+        window.location.href = url;
+    }
+    //if (id == "") { swal('alert', 'Please select a order', 'error'); }
+    //if (status == "") { swal('alert', 'Please select status', 'error'); }
+
+    //swal.queue([{
+    //    title: 'Alert!', confirmButtonText: 'Yes, Update it!', text: "Do you want to change your order status?",
+    //    showLoaderOnConfirm: true, showCancelButton: true,
+    //    preConfirm: function () {
+    //        return new Promise(function (resolve) {
+    //            let obj = { strVal: id, status: status }
+    //            $.post('/Orders/ChangeOrderStatus', obj)
+    //                .done(function (data) {
+    //                    if (data.status) {
+    //                        swal.insertQueueStep(data.message);
+    //                        GetOrderDetails(); let order_type = $('#hfOrderType').val(); dataGridLoad(order_type, true);
+    //                    }
+    //                    else { swal.insertQueueStep('something went wrong!'); }
+    //                    resolve();
+    //                })
+    //        })
+    //    }
+    //}]);
 }

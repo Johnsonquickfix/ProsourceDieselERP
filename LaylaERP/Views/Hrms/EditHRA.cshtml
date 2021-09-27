@@ -48,15 +48,14 @@
             <div class="box box-primary">
                 <div class="box-body">
                     <div class="form-group">
-                        <label for="country">HRA Field<span style="color:red"></span></label>
+                        <label for="country">HRA Field<span style="color:red">*</span></label>
                         <input type="text" class="form-control" id="txthrafield" />
                     </div>
 
                     <div class="form-group">
-                        <label for="country">From Date<span style="color:red"></span></label>
+                        <label for="country">From Date<span style="color:red">*</span></label>
                         <input type="text" class="form-control" id="txtfromdate" /><span class="even-space"></span>
                     </div>
-
 
                     <div class="box-footer">
                         <a href="#" class="btn btn-danger" id="btnUpdate"><span title="Click Here To Update HRA" data-placement="bottom" data-toggle="tooltip"><b>Update</b></span></a>
@@ -116,7 +115,6 @@
 
                 }
             });
-
     }
 
 </script>
@@ -143,11 +141,17 @@
         else if (basic_2 == "") {
             swal('Alert', 'Please Enter Basic 2', 'error').then(function () { swal.close(); $('#txtbasic2').focus(); });
         }
+        else if (parseFloat(basic_1) > parseFloat(basic_2)) {
+            swal('Alert', 'Basic2 Is Not Less Than Basic1', 'error').then(function () { swal.close(); $('#txtbasic2').focus(); });
+        }
         else if (hraoffice == "") {
             swal('Alert', 'Please Enter HRA Office', 'error').then(function () { swal.close(); $('#txthraoffice').focus(); });
         }
         else if (hrafield == "") {
             swal('Alert', 'Please Enter HRA Field', 'error').then(function () { swal.close(); $('#txthrafield').focus(); });
+        }
+        else if (parseFloat(hraoffice) > parseFloat(hrafield)) {
+            swal('Alert', 'HRA Field Is Not Less Than HRA Office', 'error').then(function () { swal.close(); $('#txthrafield').focus(); });
         }
         else if (fromdate == "") {
             swal('Alert', 'Please Enter Date', 'error').then(function () { swal.close(); $('#txtfromdate').focus(); });

@@ -748,12 +748,19 @@ namespace LaylaERP.BAL
             return DS;
         }
 
-        public static DataSet GetEmployee()
+        public static DataSet GetEmployee(string fkuser)
         {
             DataSet DS = new DataSet();
             try
             {
-                DS = SQLHelper.ExecuteDataSet("Select rowid, firstname from erp_hrms_emp where is_active=1 order by rowid");
+                if (!string.IsNullOrEmpty(fkuser))
+                {
+                    DS = SQLHelper.ExecuteDataSet("Select rowid, firstname from erp_hrms_emp where is_active=1 and fk_user='"+fkuser+"' order by rowid");
+                }
+                else
+                {
+                    DS = SQLHelper.ExecuteDataSet("Select rowid, firstname from erp_hrms_emp where is_active=1 order by rowid");
+                }
 
             }
             catch (Exception ex)
@@ -794,12 +801,20 @@ namespace LaylaERP.BAL
             }
         }
 
-        public static DataTable GetLeaveList()
+        public static DataTable GetLeaveList(string fkuser)
         {
             DataTable dtr = new DataTable();
             try
             {
-                string strquery = "SELECT ehl.rowid , CONCAT(ehe.firstname, ' ', ehe.lastname) as name, ehl.leave_type as leavetype,DATE_FORMAT(ehl.from_date, '%m-%d-%Y') as date_from ,DATE_FORMAT(ehl.to_date,'%m-%d-%Y') as date_to,FORMAT(ehl.days,2) as days,(case WHEN ehl.is_approved=0 then 'Pending' when ehl.is_approved=1 then 'Approved' when ehl.is_approved=2 then 'Rejected' end) as status from erp_hrms_leave ehl Left join erp_hrms_emp ehe on ehe.rowid = ehl.fk_emp WHERE 1 = 1 ";
+                string strquery = string.Empty;
+                if (!string.IsNullOrEmpty(fkuser))
+                {
+                    strquery = "SELECT ehl.rowid , CONCAT(ehe.firstname, ' ', ehe.lastname) as name, ehl.leave_type as leavetype,DATE_FORMAT(ehl.from_date, '%m-%d-%Y') as date_from ,DATE_FORMAT(ehl.to_date,'%m-%d-%Y') as date_to,FORMAT(ehl.days,2) as days,(case WHEN ehl.is_approved=0 then 'Pending' when ehl.is_approved=1 then 'Approved' when ehl.is_approved=2 then 'Rejected' end) as status from erp_hrms_leave ehl Left join erp_hrms_emp ehe on ehe.rowid = ehl.fk_emp WHERE ehe.fk_user='"+ fkuser + "' ";
+                }
+                else
+                {
+                    strquery = "SELECT ehl.rowid , CONCAT(ehe.firstname, ' ', ehe.lastname) as name, ehl.leave_type as leavetype,DATE_FORMAT(ehl.from_date, '%m-%d-%Y') as date_from ,DATE_FORMAT(ehl.to_date,'%m-%d-%Y') as date_to,FORMAT(ehl.days,2) as days,(case WHEN ehl.is_approved=0 then 'Pending' when ehl.is_approved=1 then 'Approved' when ehl.is_approved=2 then 'Rejected' end) as status from erp_hrms_leave ehl Left join erp_hrms_emp ehe on ehe.rowid = ehl.fk_emp WHERE 1 = 1 ";
+                }
                 DataSet ds = SQLHelper.ExecuteDataSet(strquery);
                 dtr = ds.Tables[0];
             }

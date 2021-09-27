@@ -48,9 +48,9 @@
         setTimeout(function () { bindChildproductsservices(); }, 17000);
         setTimeout(function () { bindparentproductsservices(); }, 18000);
         setTimeout(function () { bindwarehouse(); }, 19000);
-        setTimeout(function () { getNotesList($("#ddlproductchild").val()); }, 200000);
-        setTimeout(function () { bindfileuploade(); }, 210000);
-
+   
+        setTimeout(function () { bindfileuploade(); }, 19700);
+        setTimeout(function () { getNotesList($("#ddlproductchild").val()); }, 19500);
          //GetDataPurchaseByID($("#ddlproductchild").val()); 
          //bindbuyingprice(); 
          //bindChildproductsservices();

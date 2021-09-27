@@ -332,6 +332,8 @@
         $('#loader').hide();
         dateRange('#DateRange');
         dateRange('#DateRange2');
+        $('#DateRange2').val('');
+        $('#DateRange2').on('cancel.daterangepicker', function (ev, picker) { $(this).val(''); });
         gettotalOrder();
         getTotalSales();
         gettotalCustomer();
@@ -369,8 +371,8 @@
             startDate: moment(),
             autoUpdateInput: true, alwaysShowCalendars: true,
             locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' },
-            opens: 'right',
-            orientation: "left auto",
+            opens: 'left',
+            orientation: "right auto",
         });
     }
     function loadData() {

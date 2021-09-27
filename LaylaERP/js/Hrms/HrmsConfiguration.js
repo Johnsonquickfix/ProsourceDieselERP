@@ -1,11 +1,7 @@
 ﻿$(document).ready(function () {
     DAcalculation();
-    //getEmployeeCode();
     ChangeCode();
-    getEmployeeType();
     $(".select2").select2();
-    getAccountingType();
-    getWorkType();
     EMI();
     AdvanceEMI();
 })
@@ -89,7 +85,9 @@ function changename() {
 }
 
 function ChangeCode() {
-    $('#ddlemptype').change(function () {
+    //$('#ddlemptype').select(function () {
+    $('#ddlemptype').on('select2:select', function (e) {
+        // Do something
         var empcode = $('#ddlemptype').val();
         var obj = {
             rowid: empcode,
@@ -111,6 +109,7 @@ function ChangeCode() {
         });
     });
 }
+
 function getAccountingType() {
     $.ajax({
         url: "/Hrms/GetAccountingTypeForConfig",
@@ -141,6 +140,42 @@ function getWorkType() {
     });
 }
 
+function changeHRA() {
+    $('#ddlhra').on('select2:select', function (e) {
+        var basic = parseInt($('#txtbasic').val());
+        var hratype = $('#ddlhra').val();
+        var obj = {
+            basic: basic,
+        }
+        jQuery.ajax({
+            url: "/Hrms/HRAValue/", dataType: 'json', type: "Post",
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(obj),
+            success: function (data) {
+                var jobj = JSON.parse(data);
+                if (jobj.length > 0) {
+                    if (hratype == 1) {
+                        var office = parseFloat(jobj[0].hra_office).toFixed(2);
+                        $("#txthra").val(office);
+                    }
+                    else if (hratype == 2) {
+                        var field = parseFloat(jobj[0].hra_field).toFixed(2);
+                        $("#txthra").val(field);
+                    }
+                    else { }
+                    //$("#txthra").val(jobj[0].hra_field);
+                }
+                },
+                error: function (msg) {
+
+                }
+        });
+    });
+}
+
+
+
+
 function getWarehouse() {
     var empcode = $('#ddlempcode').val();
     var obj = {
@@ -167,9 +202,10 @@ function AddConfiguration() {
     emptype = $("#ddlemptype").val();
     empcode = $("#ddlempcode").val();
     empname = $("#hfemployeeid").val();
+    textempname = $("#txtempname").val();
     empbasic = $("#txtbasic").val();
     empda = $("#txtda").val();
-
+    hratype = $("#ddlhra").val();
     emphra = $("#txthra").val();
     otherallowance = $("#txtotherallowance").val();
     emppf = $("#txtpf").val();
@@ -188,16 +224,50 @@ function AddConfiguration() {
     preparesalary = $("#ddlpreparesalary").val();
     accountingtype = $("#ddlaccountingtype").val();
 
+    //Extra
+    compname = $("#txtcompany").val();
+    salarydate = $("#txtsaldate").val();
+    classemp = $("#txtclass").val();
+    specialpay = $("#txtspecialpay").val();
+    washallowance = $("#txtwashingallowance").val();
+    incentive = $("#txtincentive").val();
+    cca = $("#txtcca").val();
+    vpf = $("#txtvpf").val();
+    advepf = $("#txtadvvpf").val();
+    insurance = $("#txtinsurance").val();
+    empwelfare = $("#txtwelfare").val();
+    imprest = $("#txtimprest").val();
+    miscrefund = $("#txtmiscrefund").val();
+    fastivalallowance = $("#txtfestivaladvance").val();
+    bankname = $("#txtbank").val();
+    bankaccount = $("#txtbankaccount").val();
+    epfaccount = $("#txtepfaccount").val();
+    paysacle = $("#txtpayscale").val();
+    section = $("#txtsection").val();
+
+    var formattedDate = new Date(salarydate);
+    var d = formattedDate.getDate();
+    var m = ("0" + (formattedDate.getMonth() + 1)).slice(-2);
+    var y = formattedDate.getFullYear();
+    var salary_date = y + "-" + m + "-" + d;
+
     if (emptype == 0) {
         swal('Alert', 'Please select employee type', 'error').then(function () { swal.close(); $('#ddlemptype').focus(); });
     }
     else if (empcode == 0) {
         swal('Alert', 'Please select employee code', 'error').then(function () { swal.close(); $('#ddlempcode').focus(); });
     }
-    //else if (empname == "") {
-    //    swal('Alert', 'Enter employee name', 'error').then(function () { swal.close(); $('#ddlempname').focus(); });
-    //}
-    
+    else if (textempname == "") {
+        swal('Alert', 'Employee name not found', 'error').then(function () { swal.close(); $('#txtempname').focus(); });
+    }
+
+    else if (compname == "") {
+        swal('Alert', 'Please enter company name', 'error').then(function () { swal.close(); $('#txtcompany').focus(); });
+    }
+
+    else if (salarydate == "") {
+        swal('Alert', 'Please enter salary date', 'error').then(function () { swal.close(); $('#txtsaldate').focus(); });
+    }
     else if (worktype == "0") {
         swal('Alert', 'Please select work type', 'error').then(function () { swal.close(); $('#ddlworktype').focus(); });
     }
@@ -210,6 +280,16 @@ function AddConfiguration() {
     else if (accountingtype == "0") {
         swal('Alert', 'Please select accounting type', 'error').then(function () { swal.close(); $('#ddlaccountingtype').focus(); });
     }
+    else if (bankname == "") {
+        swal('Alert', 'Please enter bank name', 'error').then(function () { swal.close(); $('#txtbank').focus(); });
+    }
+    else if (bankaccount == "") {
+        swal('Alert', 'Please enter bank account number', 'error').then(function () { swal.close(); $('#txtbankaccount').focus(); });
+    }
+    else if (epfaccount == "") {
+        swal('Alert', 'Please enter EPF account number', 'error').then(function () { swal.close(); $('#txtepfaccount').focus(); });
+    }
+    
     else {
         var obj = {
             emp_type: emptype,
@@ -233,6 +313,27 @@ function AddConfiguration() {
             default_work_hours: workhours,
             prepare_salary: preparesalary,
             accounting_type: accountingtype,
+            hra_type: hratype,
+            //Extra
+            comp_name: compname,
+            salary_date: salary_date,
+            classemp: classemp,
+            special_pay: specialpay,
+            wash_allowance: washallowance,
+            incentive: incentive,
+            cca: cca,
+            vpf: vpf,
+            adv_epf: advepf,
+            insurance: insurance,
+            emp_welfare: empwelfare,
+            imprest: imprest,
+            misc_refund: miscrefund,
+            fastival_allowance: fastivalallowance,
+            bank_name: bankname,
+            bank_account: bankaccount,
+            epf_account: epfaccount,
+            pay_sacle: paysacle,
+            section: section,
         }
         $.ajax({
             url: '/Hrms/AddConfiguration', dataType: 'json', type: 'Post',
@@ -242,7 +343,7 @@ function AddConfiguration() {
             beforeSend: function () { $("#loader").show(); },
             success: function (data) {
                 if (data.status == true) {
-                    swal('Alert!', data.message, 'success');//.then((result) => { location.href = '../productrule'; });
+                    swal('Alert!', data.message, 'success').then((result) => { location.href = '../Hrms/configurationlist'; });
                     reset();
                 }
                 else {
@@ -288,9 +389,10 @@ function UpdateConfiguration() {
     emptype = $("#ddlemptype").val();
     empcode = $("#ddlempcode").val();
     empname = $("#hfemployeeid").val();
+    textempname = $("#txtempname").val();
     empbasic = $("#txtbasic").val();
     empda = $("#txtda").val();
-
+    hratype = $("#ddlhra").val();
     emphra = $("#txthra").val();
     otherallowance = $("#txtotherallowance").val();
     emppf = $("#txtpf").val();
@@ -308,6 +410,32 @@ function UpdateConfiguration() {
     workhours = $("#txtworkhours").val();
     preparesalary = $("#ddlpreparesalary").val();
     accountingtype = $("#ddlaccountingtype").val();
+    //Extra
+    compname = $("#txtcompany").val();
+    salarydate = $("#txtsaldate").val();
+    classemp = $("#txtclass").val();
+    specialpay = $("#txtspecialpay").val();
+    washallowance = $("#txtwashingallowance").val();
+    incentive = $("#txtincentive").val();
+    cca = $("#txtcca").val();
+    vpf = $("#txtvpf").val();
+    advepf = $("#txtadvvpf").val();
+    insurance = $("#txtinsurance").val();
+    empwelfare = $("#txtwelfare").val();
+    imprest = $("#txtimprest").val();
+    miscrefund = $("#txtmiscrefund").val();
+    fastivalallowance = $("#txtfestivaladvance").val();
+    bankname = $("#txtbank").val();
+    bankaccount = $("#txtbankaccount").val();
+    epfaccount = $("#txtepfaccount").val();
+    paysacle = $("#txtpayscale").val();
+    section = $("#txtsection").val();
+
+    var formattedDate = new Date(salarydate);
+    var d = formattedDate.getDate();
+    var m = ("0" + (formattedDate.getMonth() + 1)).slice(-2);
+    var y = formattedDate.getFullYear();
+    var salary_date = y + "-" + m + "-" + d;
 
     if (emptype == 0) {
         swal('Alert', 'Please select employee type', 'error').then(function () { swal.close(); $('#ddlemptype').focus(); });
@@ -315,9 +443,17 @@ function UpdateConfiguration() {
     else if (empcode == 0) {
         swal('Alert', 'Please select employee code', 'error').then(function () { swal.close(); $('#ddlempcode').focus(); });
     }
-    //else if (empname == "") {
-    //    swal('Alert', 'Please select employee name', 'error').then(function () { swal.close(); $('#ddlempname').focus(); });
-    //}
+    else if (textempname == "") {
+        swal('Alert', 'Employee name not found', 'error').then(function () { swal.close(); $('#ddlempcode').focus(); });
+    }
+
+    else if (compname == "") {
+        swal('Alert', 'Please enter company name', 'error').then(function () { swal.close(); $('#txtcompany').focus(); });
+    }
+
+    else if (salarydate == "") {
+        swal('Alert', 'Please enter salary date', 'error').then(function () { swal.close(); $('#txtsaldate').focus(); });
+    }
     else if (worktype == "0") {
         swal('Alert', 'Please select work type', 'error').then(function () { swal.close(); $('#ddlworktype').focus(); });
     }
@@ -329,6 +465,15 @@ function UpdateConfiguration() {
     }
     else if (accountingtype == "0") {
         swal('Alert', 'Please select accounting type', 'error').then(function () { swal.close(); $('#ddlaccountingtype').focus(); });
+    }
+    else if (bankname == "") {
+        swal('Alert', 'Please enter bank name', 'error').then(function () { swal.close(); $('#txtbank').focus(); });
+    }
+    else if (bankaccount == "") {
+        swal('Alert', 'Please enter bank account number', 'error').then(function () { swal.close(); $('#txtbankaccount').focus(); });
+    }
+    else if (epfaccount == "") {
+        swal('Alert', 'Please enter EPF account number', 'error').then(function () { swal.close(); $('#txtepfaccount').focus(); });
     }
     else {
         var obj = {
@@ -354,6 +499,27 @@ function UpdateConfiguration() {
             default_work_hours: workhours,
             prepare_salary: preparesalary,
             accounting_type: accountingtype,
+            hra_type: hratype,
+            //Extra
+            comp_name: compname,
+            salary_date: salary_date,
+            classemp: classemp,
+            special_pay: specialpay, 
+            wash_allowance: washallowance, 
+            incentive: incentive, 
+            cca:cca, 
+            vpf: vpf,
+            adv_epf: advepf,
+            insurance: insurance,
+            emp_welfare: empwelfare,
+            imprest: imprest,
+            misc_refund: miscrefund,
+            fastival_allowance: fastivalallowance,
+            bank_name: bankname,
+            bank_account: bankaccount,
+            epf_account: epfaccount,
+            pay_sacle: paysacle, 
+            section: section,
         }
         $.ajax({
             url: '/Hrms/UpdateConfiguration', dataType: 'json', type: 'Post',
@@ -407,11 +573,13 @@ function DA() {
             var basic = parseFloat($("#txtbasic").val()).toFixed(2);
         DAcal = parseFloat(basic * da) || 0.00;
         PF = parseFloat(basic * 0.12) || 0.00;
+        VPF = parseFloat(basic * 0.12) || 0.00;
         PF_Calculate = parseFloat(PF).toFixed(2) || 0.00;
         DA_calculate = parseFloat(DAcal).toFixed(2) || 0.00;
+        VPF_calculate = parseFloat(VPF).toFixed(2) || 0.00;
         $("#txtda").val(DA_calculate);
         $("#txtpf").val(PF_Calculate);  
-        
+        $("#txtvpf").val(VPF_calculate);
     });
 }
 

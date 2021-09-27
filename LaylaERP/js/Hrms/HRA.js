@@ -6,7 +6,7 @@ function AddHRA() {
     hraoffice = $("#txthraoffice").val();
     hrafield = $("#txthrafield").val();
     fromdate = $("#txtfromdate").val();
-
+    
     var formattedDate = new Date(fromdate);
     var d = formattedDate.getDate();
     var m = ("0" + (formattedDate.getMonth() + 1)).slice(-2)
@@ -19,11 +19,17 @@ function AddHRA() {
     else if (basic_2 == "") {
         swal('Alert', 'Please Enter Basic 2', 'error').then(function () { swal.close(); $('#txtbasic2').focus(); });
     }
+    else if (parseFloat(basic_1) > parseFloat(basic_2)) {
+        swal('Alert', 'Basic 2 Is Not Less Than Basic 1', 'error').then(function () { swal.close(); $('#txtbasic2').focus(); });
+    }
     else if (hraoffice == "") {
         swal('Alert', 'Please Enter HRA Office', 'error').then(function () { swal.close(); $('#txthraoffice').focus(); });
     }
     else if (hrafield == "") {
         swal('Alert', 'Please Enter HRA Field', 'error').then(function () { swal.close(); $('#txthrafield').focus(); });
+    }
+    else if (parseFloat(hraoffice) > parseFloat(hrafield)) {
+        swal('Alert', 'HRA Field Is Not Less Than HRA Office', 'error').then(function () { swal.close(); $('#txthrafield').focus(); });
     }
     else if (fromdate == "") {
         swal('Alert', 'Please Enter Date', 'error').then(function () { swal.close(); $('#txtfromdate').focus(); });
@@ -66,7 +72,6 @@ function reset() {
     $("#txthraoffice").val("");
     $("#txthrafield").val("");
     $("#txtfromdate").val("");
-
 }
 
 function HRAList() {
@@ -124,98 +129,8 @@ function HRAList() {
         ]
     });
 }
-/*
-function EditSelect(id) {
-    var strValue1 = id;
-    $.ajax({
-        url: '/Hrms/SelectHRAList/' + strValue1,
-        datatype: 'json',
-        type: 'Post',
-        contentType: "application/json;charset=utf-8",
-        data: JSON.stringify(obj),
-        success: function (data) {
-            var jobj = JSON.parse(data);
-            console.log(jobj[0].id);
-            $("#hfid").val(jobj[0].id);
-            $("#txtbasic1").val(jobj[0].basic1);
-            $("#txtbasic2").val(jobj[0].basic2);
-            $("#txthraoffice").val(jobj[0].hra_office);
-            $("#txthrafield").val(jobj[0].hra_field);
-            $("#txtfromdate").val(jobj[0].from_date);
-            
-            //$("#btnDamageStock").hide();
-            //$("#btnDamageStockUpdate").show();
-            //$("#btnDamageStockCancel").show();
 
-        },
-        complete: function () { $("#loader").hide(); },
-        error: function (error) { swal('Error!', 'something went wrong', 'error'); },
-    })
-} */
-/*
-function UpdateHRA() {
-    id = $("#hfid").val();
-    basic_1 = $("#txtbasic1").val();
-    basic_2 = $("#txtbasic2").val();
-    hraoffice = $("#txthraoffice").val();
-    hrafield = $("#txthrafield").val();
-    fromdate = $("#txtfromdate").val();
 
-    var formattedDate = new Date(fromdate);
-    var d = formattedDate.getDate();
-    var m = ("0" + (formattedDate.getMonth() + 1)).slice(-2)
-    var y = formattedDate.getFullYear();
-    var date_created = y + "-" + m + "-" + d;
-
-    if (basic_1 == "") {
-        swal('Alert', 'Please Enter Basic 1', 'error').then(function () { swal.close(); $('#txtbasic1').focus(); });
-    }
-    else if (basic_2 == "") {
-        swal('Alert', 'Please Enter Basic 2', 'error').then(function () { swal.close(); $('#txtbasic2').focus(); });
-    }
-    else if (hraoffice == "") {
-        swal('Alert', 'Please Enter HRA Office', 'error').then(function () { swal.close(); $('#txthraoffice').focus(); });
-    }
-    else if (hrafield == "") {
-        swal('Alert', 'Please Enter HRA Field', 'error').then(function () { swal.close(); $('#txthrafield').focus(); });
-    }
-    else if (fromdate == "") {
-        swal('Alert', 'Please Enter Date', 'error').then(function () { swal.close(); $('#txtfromdate').focus(); });
-    }
-    else {
-        var obj = {
-            rowid:id,
-            basic1: basic_1,
-            basic2: basic_2,
-            hra_office: hraoffice,
-            hra_field: hrafield,
-            from_date: date_created,
-        }
-        $.ajax({
-            url: '/Hrms/UpdateHRA', dataType: 'json', type: 'Post',
-            contentType: "application/json; charset=utf-8",
-            data: JSON.stringify(obj),
-            dataType: "json",
-            beforeSend: function () { $("#loader").show(); },
-            success: function (data) {
-                if (data.status == true) {
-                    swal('Alert!', data.message, 'success');//then((result) => { location.href = '../HRA'; });
-                    //ListHra();
-                    reset();
-                }
-                else {
-                    swal('Alert!', data.message, 'error');
-                }
-            },
-            complete: function () { $("#loader").hide(); },
-            error: function (error) { swal('Error!', 'something went wrong', 'error'); },
-        })
-
-    }
-
-}
-*/
-ListHra();
 function ListHra() {
     $.ajax({
         url: '/Hrms/GetHRAList',
@@ -223,9 +138,8 @@ function ListHra() {
         datatype: 'json',
         contentType: "application/json; charset=utf-8",
         processing: true,
-
         success: function (data) {
-            $('#dtdata').dataTable({
+            $('#EmployeeListdata').dataTable({
                 destroy: true,
                 scrollX: false,
                 data: JSON.parse(data),

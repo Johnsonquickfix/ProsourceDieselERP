@@ -163,7 +163,7 @@ function dataGridLoad(order_type, is_date) {
         },
         columns: [
             {
-                'data': 'id', sWidth: "5%   ",
+                'data': 'id', sWidth: "7%   ",
                 'render': function (data, type, full, meta) {
                     return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck(this);" value="' + $('<div/>').text(data).html() + '"><label></label>';
                 }
@@ -194,7 +194,7 @@ function dataGridLoad(order_type, is_date) {
                 }
             },
             {
-                data: 'status', title: 'Status', sWidth: "14%", render: function (data, type, row) {
+                data: 'status', title: 'Status', sWidth: "10%", render: function (data, type, row) {
                     if (data == 'wc-pending') return 'Pending payment';
                     else if (data == 'wc-processing') return 'Processing';
                     else if (data == 'wc-on-hold') return 'On hold';
@@ -202,13 +202,16 @@ function dataGridLoad(order_type, is_date) {
                     else if (data == 'wc-cancelled') return 'Cancelled';
                     else if (data == 'wc-refunded') return 'Refunded';
                     else if (data == 'wc-failed') return 'Failed';
+                    else if (data == 'wc-cancelnopay') return 'Cancelled - No Payment';
+                    else if (data == 'wc-pendingpodiuminv') return 'Pending Podium Invoice';
+                    else if (data == 'wc-podium') return 'Order via Podium';
                     else if (data == 'draft') return 'draft';
                     else return '-';
                 }
             },
             { data: 'date_created', title: 'Creation Date', sWidth: "12%" },
             {
-                data: 'payment_method_title', title: 'Payment Method', sWidth: "10%", render: function (data, type, row) {
+                data: 'payment_method_title', title: 'Payment Method', sWidth: "11%", render: function (data, type, row) {
                     if (row.payment_method == 'ppec_paypal' && row.paypal_status != 'COMPLETED') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="PaymentStatus(' + row.id + ',\'' + row.paypal_id + '\');">' + row.payment_method_title + '</a>';
                     else if (row.payment_method == 'podium' && row.paypal_status != 'PAID') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="podiumPaymentStatus(' + row.id + ',\'' + row.paypal_id + '\');">' + row.payment_method_title + '</a>';
                     //if (row.payment_method == 'ppec_paypal') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="PaymentStatus(' + row.id + ',\'' + row.paypal_id + '\');">' + row.payment_method_title + '</a>';
@@ -216,7 +219,7 @@ function dataGridLoad(order_type, is_date) {
                 }
             },
             {
-                'data': 'id', title: 'Action', sWidth: "5%",
+                'data': 'id', title: 'Action', sWidth: "8%",
                 'render': function (id, type, row, meta) {
                     return '<a href="minesofmoria/' + id + '" data-toggle="tooltip" title="View/Edit Order"><i class="glyphicon glyphicon-eye-open"></i></a> <a href="OrderRefund/' + id + '" data-toggle="tooltip" title="Refund Order"><i class="fa fa-undo"></i></a>'
                 }
@@ -280,7 +283,7 @@ function PaymentStatus(oid, pp_id) {
     let option = { strValue1: 'getToken' };
     $.ajax({ method: 'get', url: '/Setting/GetPayPalToken', data: option }).done(function (result, textStatus, jqXHR) {
         let access_token = result.message;
-        let create_url = 'https://api.sandbox.paypal.com/v1/invoicing/invoices/' + pp_id;
+        let create_url = paypal_baseurl + '/v1/invoicing/invoices/' + pp_id;
         $.ajax({
             type: 'get', url: create_url, contentType: "application/json; charset=utf-8", dataType: "json", data: {},
             beforeSend: function (xhr) {
@@ -295,7 +298,7 @@ function PaymentStatus(oid, pp_id) {
                         preConfirm: function () {
                             return new Promise(function (resolve) {
                                 let opt = { post_id: oid, meta_key: '_paypal_status', meta_value: 'COMPLETED' };
-                                $.get('/Orders/UpdatePaymentStatus', opt)
+                                $.get('/Orders/UpdatePaypalPaymentAccept', opt)
                                     .done(function (data) {
                                         if (data.status) {
                                             swal.insertQueueStep('Status updated successfully.');
@@ -323,7 +326,7 @@ function PaymentStatus(oid, pp_id) {
 
 //Check podium Payment Status.
 function podiumPaymentStatus(oid, podium_id) {
-    let option = { strValue1: 'getToken' }; let create_url = 'https://api.podium.com/v4/invoices/' + podium_id;
+    let option = { strValue1: 'getToken' }; let create_url = podium_baseurl + '/v4/invoices/' + podium_id;
     swal.queue([{
         title: 'Payment Status', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,
         onOpen: () => {
@@ -356,8 +359,8 @@ function podiumPaymentStatus(oid, podium_id) {
                         }]);
                     }
                     else { swal.hideLoading(); swal(status, 'Request has sent for payment.', 'info'); }
-                }).catch(err => { swal.hideLoading(); swal('Error!', err, 'error'); });
-            }).catch(err => { swal.hideLoading(); swal('Error!', err, 'error'); }).always(function () { swal.hideLoading(); });
+                }).catch(err => { swal.hideLoading(); console.log(err); swal('Error!', 'No invoice for the invoice UID.', 'error'); });
+            }).catch(err => { swal.hideLoading(); swal('Error!', 'Something went wrong, please try again.', 'error'); }).always(function () { swal.hideLoading(); });
         }
     }]);
 }

@@ -2669,9 +2669,24 @@ a#btnbackcategory {max-width: 135px; margin-top: 5px;}
 .shipping.class .table-blue.table td{box-sizing:border-box !important;}
 .shipping.class .table-blue.table{width:100% !important; table-layout:fixed;}
 .shipping.class .dataTables_scrollHeadInner{width:100% !important;}
-
+.manage.vendors .dataTables_scrollBody{overflow:visible !important;}
+.manage.vendors .dataTables_scroll{overflow:auto;}
+.manage.vendors .dataTables_scrollHeadInner{width:100% !important;}
+.manage.vendors .dataTables_scrollHead{overflow:visible !important;width:100% !important;}
 @media(max-width:900px) {
-
+    #dtdataPartially_wrapper .row:first-child{display:flex;}
+#dtdataPartially_wrapper .row:first-child > div:first-child{margin-right:auto;}
+#dtdataPartially_wrapper .table-blue.table{table-layout:fixed;    min-width: 1000px;}
+#dtdataPoClosure_wrapper .row:first-child{display:flex;}
+#dtdataPoClosure_wrapper .row:first-child > div:first-child{margin-right:auto;}
+#dtdataPoClosure_wrapper .table-blue.table{table-layout:fixed;    min-width: 1000px;}
+#dtdataPoClosure_wrapper .table-blue.table th,
+#dtdataPoClosure_wrapperr .table-blue.table td,
+#dtdataPartially_wrapper .table-blue.table th,
+#dtdataPartially_wrapper .table-blue.table td,
+    .new.receive.order .table-blue.table th,
+    .new.receive.order .table-blue.table td{box-sizing:border-box;white-space:normal !important;}
+    .new.receive.order .table-blue.table{table-layout:fixed;    min-width: 1230px;}
     #PrintModal .modal-body{overflow:auto;}
     #invoice{min-width:900px;}
     .shipping.class .table-blue.table{width:1000px !important;}
@@ -2699,6 +2714,8 @@ a#btnbackcategory {max-width: 135px; margin-top: 5px;}
     .managecoupons .dataTables_scrollHead{width: 1000px !important;}
     .shipping.class .neworder-section > .row:first-child{display:flex;}
 .shipping.class .neworder-section > .row:first-child > .col-md-6{width:50%;max-width:50%;}
+#PrintModal .invoice{margin:10px; width:100%; overflow:auto;}
+#PrintModal .invoice .invoiceDetails{width:1000px;}
     }
 @media(max-width:767px){
     

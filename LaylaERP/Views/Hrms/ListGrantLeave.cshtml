@@ -16,49 +16,145 @@
     @*<h2 class="page-heading">Approve Leave List</h2>*@
 </div>
 <section class="content section-content table-design customer-section">
-    <div class="user-top-section">
-
-        <div class="tablenav top tablenav-top2">
-            <div class="alignleft actions bulkactions">
-                <select class="form-control select2" id="ddlStatus" placeholder="Select User">
-                    <option value="1">Approved</option>
-                    <option value="2">Rejected</option>
-                </select>
-                <span title="Click Here To Change Status Of Leave After Selecting Checkbox" data-placement="bottom" data-toggle="tooltip"><button type="button" id="btnChange" class="btn btn-primary btn-flat button">Change</button></span>
-</div>
-        </div>
-    </div>
-    <!-- end top-->
-    <div class="row">
-        <div class="col-md-12">
-            <div class="box box-primary">
-                <div class="box-header">
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <table id="EmployeeListdata" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
-                                <thead>
-                                    <tr>
-                                        @*<th><input type="checkbox" name="checkAll" id="checkAll"><label></label></th>*@
-                                        <th><input type="checkbox" name="checkAll" id="checkAll"><label></label></th>
-                                        <th>Id</th>
-                                        <th>Name</th>
-                                        <th>Leave Type</th>
-                                        <th>From</th>
-                                        <th>To</th>
-                                        <th>Days</th>
-                                        <th>Status</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                            </table>
+    <div class="nav-tabs-custom">
+        <ul class="nav nav-tabs" id="mytabs" role="tablist">
+            <li class="active"><a href="#tab_1" data-toggle="tab"><span title="Approved Leave" data-placement="bottom" data-toggle="tooltip">Approved Leave</span></a></li>
+            <li><a href="#tab_2" data-toggle="tab"><span title="Pending Leave" data-placement="bottom" data-toggle="tooltip">Pending Leave</span></a></li>
+            <li><a href="#tab_3" data-toggle="tab"><span title="Rejected Leave" data-placement="bottom" data-toggle="tooltip">Rejected Leave</span></a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane active" id="tab_1">
+                <div class="user-top-section">
+                    <div class="tablenav top tablenav-top2">
+                        <div class="alignleft actions bulkactions">
+                            <select class="form-control select2" id="ddlStatus" placeholder="Select User">
+                                <option value="1">Approved</option>
+                                <option value="2">Rejected</option>
+                            </select>
+                            <span title="Click Here To Change Status Of Leave After Selecting Checkbox" data-placement="bottom" data-toggle="tooltip"><button type="button" id="btnChange" class="btn btn-primary btn-flat button">Change</button></span>
                         </div>
                     </div>
                 </div>
+                <!-- end top-->
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="box box-primary">
+                            <div class="box-header">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <table id="EmployeeListdata" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
+                                            <thead>
+                                                <tr>
+                                                    @*<th><input type="checkbox" name="checkAll" id="checkAll"><label></label></th>*@
+                                                    <th><input type="checkbox" name="checkAll" id="checkAll"><label></label></th>
+                                                    <th>Id</th>
+                                                    <th>Name</th>
+                                                    <th>Leave Type</th>
+                                                    <th>From</th>
+                                                    <th>To</th>
+                                                    <th>Days</th>
+                                                    <th>Status</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
 
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
 
+            <div class="tab-pane" id="tab_2">
+                <div class="user-top-section">
+                    <div class="tablenav top tablenav-top2">
+                        <div class="alignleft actions bulkactions">
+                            <select class="form-control select2" id="ddlStatusPending" placeholder="Select User">
+                                <option value="1">Approved</option>
+                                <option value="2">Rejected</option>
+                            </select>
+                            <span title="Click Here To Change Status Of Leave After Selecting Checkbox" data-placement="bottom" data-toggle="tooltip"><button type="button" id="btnChangePending" class="btn btn-primary btn-flat button">Change</button></span>
+                        </div>
+                    </div>
+                </div>
+                <!-- end top-->
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="box box-primary">
+                            <div class="box-header">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <table id="PendingEmployeeListdata" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
+                                            <thead>
+                                                <tr>
+                                                    @*<th><input type="checkbox" name="checkAll" id="checkAll"><label></label></th>*@
+                                                    <th><input type="checkbox" name="checkAll2" id="checkAll2"><label></label></th>
+                                                    <th>Id</th>
+                                                    <th>Name</th>
+                                                    <th>Leave Type</th>
+                                                    <th>From</th>
+                                                    <th>To</th>
+                                                    <th>Days</th>
+                                                    <th>Status</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane" id="tab_3">
+                <div class="user-top-section">
+                    <div class="tablenav top tablenav-top2">
+                        <div class="alignleft actions bulkactions">
+                            <select class="form-control select2" id="ddlStatusReject" placeholder="Select User">
+                                <option value="1">Approved</option>
+                                <option value="2">Rejected</option>
+                            </select>
+                            <span title="Click Here To Change Status Of Leave After Selecting Checkbox" data-placement="bottom" data-toggle="tooltip"><button type="button" id="btnChangeReject" class="btn btn-primary btn-flat button">Change</button></span>
+                        </div>
+                    </div>
+                </div>
+                <!-- end top-->
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="box box-primary">
+                            <div class="box-header">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <table id="RejectEmployeeListdata" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
+                                            <thead>
+                                                <tr>
+                                                    <th><input type="checkbox" name="checkAll1" id="checkAll1"><label></label></th>
+                                                    <th>Id</th>
+                                                    <th>Name</th>
+                                                    <th>Leave Type</th>
+                                                    <th>From</th>
+                                                    <th>To</th>
+                                                    <th>Days</th>
+                                                    <th>Status</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        </div>
 
 </section>
 

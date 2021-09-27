@@ -74,3 +74,35 @@ function EditSelect(rowid) {
         error: function (error) { swal('Error!', 'something went wrong', 'error'); },
     })
 }
+
+
+function LeaveCalculationList() {
+    var id = $("#empid").val();
+    var obj = { i: id }
+    $.ajax({
+        url: '/Hrms/GetLeaveCalculation',
+        method: 'post',
+        datatype: 'json',
+        contentType: "application/json; charset=utf-8",
+        processing: true,
+        data: JSON.stringify(obj),
+        success: function (data) {
+            $('#LeaveCalculationList').dataTable({
+                destroy: true,
+                scrollX: false,
+                data: JSON.parse(data),
+                "columns": [
+                    { data: 'leave_type', title: 'Type', sWidth: "10%"},
+                    { data: 'leave_days', title: 'Days', sWidth: "10%" },
+                    { data: 'remain', title: 'Balance', sWidth: "20%" },
+                ],
+
+                "order": [[0, 'desc']],
+            });
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            alert(xhr.responseText);
+        }
+    });
+
+}

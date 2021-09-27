@@ -742,7 +742,7 @@ namespace LaylaERP.BAL
             DataSet DS = new DataSet();
             try
             {
-                DS = SQLHelper.ExecuteDataSet("Select leave_code, leave_type from erp_hrms_leave_type order by rowid");
+                DS = SQLHelper.ExecuteDataSet("Select rowid, leave_type from erp_hrms_leave_type order by rowid");
 
             }
             catch (Exception ex)
@@ -866,5 +866,6 @@ namespace LaylaERP.BAL
             { throw ex; }
             return dtr;
         }
+
     }
 }

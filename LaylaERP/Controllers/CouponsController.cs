@@ -209,5 +209,35 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(JSONresult, 0);
         }
+        [HttpPost]
+        public JsonResult AutogenrateCoupon(OrderPostStatusModel model)
+        {
+            string month = model.strVal;
+            string year = model.status;
+            var date = Convert.ToDateTime( ""+ month + "/01/20"+ year + "");
+            var monthval = new DateTime(date.Year, date.Month, 1);
+            var first = monthval.AddMonths(1);
+            var Expiredate =  first.Date.ToString("MM/dd/yyyy");
+            if (month != "" && year != "" && Expiredate != "")
+            {
+                DataTable dt = CouponsRepository.GetDuplicateCouponsMonth(month + year);
+                if (dt.Rows.Count > 0)
+                {
+                    return Json(new { status = false, message = "Coupon with the same month is already prepared", url = "" }, 0);
+                }
+                else
+                {
+
+                    CouponsRepository or = new CouponsRepository();
+                    or.CoupanAutogenrate(month + year, Expiredate);
+                    return Json(new { status = true, message = "Auto generate coupon has been prepared!!", url = "" }, 0);
+                }
+            }
+            else
+            {
+                return Json(new { status = false, message = "Something went wrong", url = "" }, 0);
+            }
+
+        }
     }
 }

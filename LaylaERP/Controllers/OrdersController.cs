@@ -351,7 +351,7 @@
             catch { status = false; JSONresult = "Something went wrong! Please try again."; }
             return Json(new { status = status, message = JSONresult }, 0);
         }
-        
+
         [HttpPost]
         public JsonResult GetOrdersCount(SearchModel model)
         {
@@ -466,14 +466,18 @@
             return Json(new { status = status, message = JSONresult }, 0);
         }
         [HttpPost]
-        public JsonResult SendMailInvoice(SearchModel model)
+        public JsonResult SendMailInvoice(OrderModel model)
         {
             string result = string.Empty;
             bool status = false;
             try
             {
                 status = true;
-                result = SendEmail.SendEmails(model.strValue1, model.strValue2, model.strValue3);
+                //OrderModel obj = OrderRepository.OrderInvoice(Convert.ToInt64(model.strValue2));
+
+                String renderedHTML = EmailNotificationsController.RenderViewToString("EmailNotifications", "NewOrder", model);
+
+                result = SendEmail.SendEmails(model.b_email, "Your order #" + model.order_id + " has been received", renderedHTML);
             }
             catch { status = false; result = ""; }
             return Json(new { status = status, message = result }, 0);
@@ -492,6 +496,6 @@
             }
             catch (Exception ex) { JSONresult = ex.Message; }
             return Json(new { status = status, message = JSONresult }, 0);
-        }        
+        }
     }
 }

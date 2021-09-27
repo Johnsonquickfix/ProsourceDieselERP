@@ -1,8 +1,14 @@
-﻿using System;
+﻿using LaylaERP.BAL;
+using LaylaERP.Models;
+using LaylaERP.UTILITIES;
+using System;
 using System.Collections.Generic;
+using System.Data;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Routing;
 
 namespace LaylaERP.Controllers
 {
@@ -13,11 +19,26 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
-        // GET: New Orders
-        public ActionResult NewOrder(long id = 0)
+        [HttpPost]
+        public ActionResult NewOrder(OrderModel model)
+        {            
+            return View(model);
+        }
+        public static string RenderViewToString(string controllerName, string viewName, object viewData)
         {
-            ViewBag.id = id;
-            return View();
+            using (var writer = new StringWriter())
+            {
+                var routeData = new RouteData();
+                routeData.Values.Add("controller", controllerName);
+                var fakeControllerContext = new ControllerContext(new HttpContextWrapper(new HttpContext(new HttpRequest(null, "http://google.com", null), new HttpResponse(null))), routeData, new EmailNotificationsController());
+                var razorViewEngine = new RazorViewEngine();
+                var razorViewResult = razorViewEngine.FindView(fakeControllerContext, viewName, "", false);
+
+                var viewContext = new ViewContext(fakeControllerContext, razorViewResult.View, new ViewDataDictionary(viewData), new TempDataDictionary(), writer);
+                razorViewResult.View.Render(viewContext, writer);
+                return writer.ToString();
+
+            }
         }
     }
 }

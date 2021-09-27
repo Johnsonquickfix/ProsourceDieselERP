@@ -421,7 +421,7 @@ namespace LaylaERP.BAL
             return dt;
         }
         public static DataTable GetEmployeeAttendenceList(string userstatus, string fromdate, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
-        {
+      {
             DataTable dt = new DataTable();
             totalrows = 0;
             try
@@ -451,6 +451,7 @@ namespace LaylaERP.BAL
                 strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
 
                 strSql += "; SELECT ceil(Count(e.rowid)/" + pagesize.ToString() + ") TotalPage,Count(e.rowid) TotalRecord from erp_hrms_emp e left join erp_hrms_attendance_sheet s on s.fk_emp = e.rowid " +
+                    " and date(in_time) >= '" + startDate.ToString("yyyy-MM-dd") + "' and date(out_time) = '" + startDate.ToString("yyyy-MM-dd") + "'" +
                     "left join erp_hrms_empdetails ed on ed.fk_emp = e.rowid left join erp_hrms_designation d on d.rowid = ed.designation where 1 = 1 and e.is_active = 1 " + strWhr.ToString();
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);

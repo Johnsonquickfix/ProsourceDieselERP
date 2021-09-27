@@ -1279,11 +1279,12 @@ function ApplyAutoCoupon() {
     if (auto_code.length > 0) { bindCouponList(auto_code); }
 }
 function ApplyCoupon() {
-    let coupon_code = $("#txt_Coupon").val().toLowerCase();
+    let coupon_code = $("#txt_Coupon").val().toLowerCase().trim();
     if ($('#li_' + coupon_code).length > 0) { swal('Alert!', 'Coupon code already applied!', "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false; };
 
     let autocode = ["cbdistillery", "thesleepadvisor", "tuck", "rv10", "rizslumber", "bestsleep10", "get140", "calm", "relax", "cupid110", "sleepopolis", "tv140", "pennymac", "pnmac", "sleepfoundation", "matt-topper", "matt-sheet", "matt-blanket", "matt-pillow", "matt-bedframe", "matt-found", "found-frame", "sleepy10", "sleepy20"];
-    let monthlySaleCoupon = ["sales10off", "sales25off", "sales50off", "sales75off", "sales100off", "sales125off", "sales150off", "sales175off", "sales200off", "cxstaff20off", "mgr20off", "mgr50off"];
+    //let monthlySaleCoupon = ["sales10off", "sales25off", "sales50off", "sales75off", "sales100off", "sales125off", "sales150off", "sales175off", "sales200off", "cxstaff20off", "mgr20off", "mgr50off"];
+    let monthlySaleCoupon = [];
     let is_monthly_sale_cpn = monthlySaleCoupon.some(el => coupon_code.includes(el));
 
     if (coupon_code == '') { swal('Alert!', 'Please Enter a Coupon Code.', "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false; }

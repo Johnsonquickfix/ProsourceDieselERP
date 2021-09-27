@@ -1,0 +1,73 @@
+﻿@{
+    ViewBag.Title = "Order on-hold";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="page-title">
+    <h2 class="page-heading">Order on-hold</h2>
+</div>
+<section class="content section-content table-design email_settings_in">
+    <div class="box box-primary">
+        <div class="box-body">
+            <div class="form-group d-flex">
+                <label class="col-sm-12 control-label">
+                    This is an order notification sent to customers containing order details after an order is placed on-hold.
+                </label>
+
+            </div>
+            <div class="form-group d-flex">
+                <label class="col-sm-2 control-label">
+                    Enable/Disable
+                </label>
+                <div class="col-sm-10">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="themelocation">
+                        <label class="form-check-label" for="themelocation">
+                            Enable this email notification
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group d-flex">
+                <label class="col-sm-2 control-label">
+                    Subject
+                </label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" value="" placeholder="Your {site_title} order has been received!">
+                </div>
+            </div>
+            <div class="form-group d-flex">
+                <label class="col-sm-2 control-label">
+                    Email heading
+                </label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" value="" placeholder="Thank you for your order">
+                </div>
+            </div>
+            <div class="form-group d-flex">
+                <label class="col-sm-2 control-label">
+                    Additional content
+                </label>
+                <div class="col-sm-10">
+                    <textarea class="form-control">We look forward to fulfilling your order soon.</textarea>
+                </div>
+            </div>
+            <div class="form-group d-flex">
+                <label class="col-sm-2 control-label">
+                    HTML template
+                </label>
+                <div class="col-sm-10">
+                    <select class="form-control">
+                        <option>Plain Text</option>
+                        <option>Html</option>
+                        <option>MultiPart</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="box-footer text-right">
+            <a href="#" class="btn btn-danger">View template</a>
+            <button class="btn btn-danger">Save Changes</button>
+        </div>
+    </div>
+</section>

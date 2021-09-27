@@ -1,13 +1,14 @@
 $(document).ready(function () {
     $("#loader").hide();
     $("#DateRange").datepicker({ format: 'mm-dd-yyyy', }).datepicker("setDate", 'now');
-    
 
     var now = new Date(Date.now());
     var formatted = now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
+    $("#txtTime").val(formatted);
+    
+
     EmployeeList();
-    //$("input[name='txtouttime']").datepicker({ format: 'mm-dd-yyyy', }).datepicker("setDate", 'now');
-    //$("input[name='txtintime']").datepicker({ format: 'mm-dd-yyyy', }).datepicker("setDate", 'now');
+    $("#ddlInOut").change(function () { EmployeeList(); $('#checkAll').val(''); })
 })
 $("#DateRange").change(function () {
     EmployeeList();
@@ -110,7 +111,8 @@ $('#checkAll').click(function () {
     var today = new Date();
     var date = $("#DateRange").val();
     var inout = $("#ddlInOut").val();
-    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    var time = $("#txtTime").val();
+    //var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
     dateTime = isChecked == true ? date + ' ' + time : "";
 
     $('#EmployeeListdata tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
@@ -121,7 +123,8 @@ $('#checkAll').click(function () {
 
 function Singlecheck() {
     var dateTime = ""; var today = new Date(); var date = $("#DateRange").val();
-    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    var time = $("#txtTime").val();
+    //var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
     dateTime = date + ' ' + time;
     var inout = $("#ddlInOut").val();
 

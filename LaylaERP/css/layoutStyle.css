@@ -2653,6 +2653,8 @@ a#btnbackcategory {max-width: 135px; margin-top: 5px;}
 .email_table_wrapper .fa-check-circle{font-size:16px; color:green;}
 .email_settings_in .form-group{margin-left:-15px; margin-right:-15px; flex-wrap:wrap;}
 .email_settings_in textarea{min-height:100px;}
+.payment.invoice.list {position: static;background: transparent;border: 0px;padding: 0px;margin: 0px;}
+.payment.invoice.list .dataTables_scrollHeadInner{width:100% !important;}
 @media(max-width:900px) {
     .hub-pro-shop select:first-child{margin-left:0px;}
     .hub-pro-shop {width: 100%; margin-top:5px;}
@@ -2665,8 +2667,11 @@ a#btnbackcategory {max-width: 135px; margin-top: 5px;}
     .modal-dialog{max-width:calc(100% - 20px);}
     .order.history .table-blue.table.check-table,
     .on-hand.inventory .table-blue.table.check-table,
-    .managecoupons .table-blue.table.check-table ,
-    .wrapper-invents .table-blue.table.check-table{width: 1000px !important;}
+    .managecoupons .table-blue.table.check-table,
+    .list.products .table-blue.table.check-table,
+    .wrapper-invents .table-blue.table.check-table {
+        width: 1000px !important;
+    }
     .wrapper-invents, .managecoupons .dataTables_scroll {
         overflow: auto;
     }

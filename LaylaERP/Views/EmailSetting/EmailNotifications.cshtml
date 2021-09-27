@@ -1,5 +1,298 @@
-﻿
-@{
-    Layout = null;
+﻿@{
+    ViewBag.Title = "Email notifications";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
+<script src="~/Scripts/color_picker_alpha.js"></script>
+<script>
+    // Here we can adjust defaults for all color pickers on page:
+    jscolor.presets.default = {
+        palette: [
+            '#000000', '#7d7d7d', '#870014', '#ec1c23', '#ff7e26', '#fef100', '#22b14b', '#00a1e7', '#3f47cc', '#a349a4',
+            '#ffffff', '#c3c3c3', '#b87957', '#feaec9', '#ffc80d', '#eee3af', '#b5e61d', '#99d9ea', '#7092be', '#c8bfe7',
+        ],
+        //paletteCols: 12,
+        //hideOnPaletteClick: true,
+        //width: 271,
+        //height: 151,
+        //position: 'right',
+        //previewPosition: 'right',
+        //backgroundColor: 'rgba(51,51,51,1)', controlBorderColor: 'rgba(153,153,153,1)', buttonColor: 'rgba(240,240,240,1)',
+    }
+</script>
+<div class="page-title">
+    <h2 class="page-heading">Email notifications</h2>
+    <div class="sub-title">Email notifications sent from Layla. Click on an email to configure it.</div>
+</div>
+<section class="content section-content table-design email_settings">
+    <div class="box box-primary">
+        <div class="box-body">
+        <div class="email_table_wrapper">
+            <table class="table-blue table check-table">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Email</th>
+                        <th>Content type</th>
+                        <th>Recipient(s)</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span><i class="fa fa-times-circle" aria-hidden="true"></i></span></td>
+                        <td>
+                            <a href="/EmailSetting/ManageEmailNotifications">New order</a>
+                        </td>
+                        <td>
+                            text/html
+                        </td>
+                        <td>
+                            info@laylasleep.com
+                        </td>
+                        <td>
+                            <a class="btn btn-danger" href="/EmailSetting/ManageEmailNotifications">Manage</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span><i class="fa fa-check-circle" aria-hidden="true"></i></span></td>
+                        <td>
+                            <a href="/EmailSetting/ManageEmailNotifications">Cancelled order</a>
+                        </td>
+                        <td>
+                            text/html
+                        </td>
+                        <td>
+                            cs@laylasleep.com
+                        </td>
+                        <td>
+                            <a class="btn btn-danger" href="/EmailSetting/ManageEmailNotifications">Manage</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span><i class="fa fa-check-circle" aria-hidden="true"></i></span></td>
+                        <td>
+                            <a href="/EmailSetting/ManageEmailNotifications">Failed order</a>
+                        </td>
+                        <td>
+                            text/html
+                        </td>
+                        <td>
+                            support@laylasleep.com
+                        </td>
+                        <td>
+                            <a class="btn btn-danger" href="/EmailSetting/ManageEmailNotifications">Manage</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span><i class="fa fa-times-circle" aria-hidden="true"></i></span></td>
+                        <td>
+                            <a href="#">Order on-hold</a>
+                        </td>
+                        <td>
+                            text/html
+                        </td>
+                        <td>
+                            Customer
+                        </td>
+                        <td>
+                            <a class="btn btn-danger" href="/EmailSetting/ManageEmailNotifications">Manage</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span><i class="fa fa-times-circle" aria-hidden="true"></i></span></td>
+                        <td>
+                            <a href="/EmailSetting/ManageEmailNotifications">Processing order</a>
+                        </td>
+                        <td>
+                            text/html
+                        </td>
+                        <td>
+                            Customer
+                        </td>
+                        <td>
+                            <a class="btn btn-danger" href="/EmailSetting/ManageEmailNotifications">Manage</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span><i class="fa fa-times-circle" aria-hidden="true"></i></span></td>
+                        <td>
+                            <a href="/EmailSetting/ManageEmailNotifications">Completed order</a>
+                        </td>
+                        <td>
+                            text/html
+                        </td>
+                        <td>
+                            Customer
+                        </td>
+                        <td>
+                            <a class="btn btn-danger" href="/EmailSetting/ManageEmailNotificationss">Manage</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span><i class="fa fa-times-circle" aria-hidden="true"></i></span></td>
+                        <td>
+                            <a href="/EmailSetting/ManageEmailNotifications">Refunded order</a>
+                        </td>
+                        <td>
+                            text/html
+                        </td>
+                        <td>
+                            Customer
+                        </td>
+                        <td>
+                            <a class="btn btn-danger" href="/EmailSetting/ManageEmailNotificationss">Manage</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span><i class="fa fa-times-circle" aria-hidden="true"></i></span></td>
+                        <td>
+                            <a href="/EmailSetting/ManageEmailNotifications">Customer invoice/Order details</a>
+                        </td>
+                        <td>
+                            text/html
+                        </td>
+                        <td>
+                            Customer
+                        </td>
+                        <td>
+                            <a class="btn btn-danger" href="/EmailSetting/ManageEmailNotificationss">Manage</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span><i class="fa fa-times-circle" aria-hidden="true"></i></span></td>
+                        <td>
+                            <a href="/EmailSetting/ManageEmailNotifications">Customer note</a>
+                        </td>
+                        <td>
+                            text/html
+                        </td>
+                        <td>
+                            Customer
+                        </td>
+                        <td>
+                            <a class="btn btn-danger" href="/EmailSetting/ManageEmailNotificationss">Manage</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span><i class="fa fa-times-circle" aria-hidden="true"></i></span></td>
+                        <td>
+                            <a href="/EmailSetting/ManageEmailNotifications">Reset Password</a>
+                        </td>
+                        <td>
+                            text/html
+                        </td>
+                        <td>
+                            Customer
+                        </td>
+                        <td>
+                            <a class="btn btn-danger" href="/EmailSetting/ManageEmailNotificationss">Manage</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span><i class="fa fa-times-circle" aria-hidden="true"></i></span></td>
+                        <td>
+                            <a href="/EmailSetting/ManageEmailNotifications">New account</a>
+                        </td>
+                        <td>
+                            text/html
+                        </td>
+                        <td>
+                            Customer
+                        </td>
+                        <td>
+                            <a class="btn btn-danger" href="/EmailSetting/ManageEmailNotificationss">Manage</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        </div>
+    </div>
+    <div class="box box-primary">
+        <div class="box-header">
+            <h3 class="box-title">Email sender options</h3>
+        </div>
+        <div class="box-body">
+            <div class="sender-mailbox">
+                <div class="form-group d-flex">
+                    <label class="col-sm-2 control-label">
+                        "From" name
+                    </label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" value="Layla">
+                    </div>
+                </div>
+                <div class="form-group d-flex">
+                    <label class="col-sm-2 control-label">
+                        "From" address
+                    </label>
+                    <div class="col-sm-10">
+                        <input type="email" class="form-control" value="orders@laylasleep.com">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="box-header">
+            <h3 class="box-title">
+                Email template
+            </h3>
+        </div>
+        <div class="box-body">
+            <div class="form-group d-flex">
+                <label class="col-sm-2 control-label">
+                    Header image
+                </label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" value="https://laylasleep.com/wp-content/uploads/2018/12/logo-mail-1.png">
+                </div>
+            </div>
+            <div class="form-group d-flex">
+                <label class="col-sm-2 control-label">
+                    Footer text
+                </label>
+                <div class="col-sm-10">
+                    <textarea class="form-control">Layla Sleep Inc
+157 Church Street Suite 1956
+New Haven, CT 06510
+855-358-1676
+support@laylasleep.com</textarea>
+                </div>
+            </div>
+            @*<div class="form-group d-flex">
+            <label class="col-sm-2 control-label">
+                Base color
+            </label>
+            <div class="col-sm-3">
+                <input class="form-control" value="#6c311d" data-jscolor="{}">
+            </div>
+        </div>
+        <div class="form-group d-flex">
+            <label class="col-sm-2 control-label">
+                Background color
+            </label>
+            <div class="col-sm-3">
+                <input class="form-control" value="#59595b" data-jscolor="{}">
+            </div>
+        </div>
+        <div class="form-group d-flex">
+                  <label class="col-sm-2 control-label">
+                      Body background color
+                  </label>
+            <div class="col-sm-3">
+                <input class="form-control" value="#ffffff" data-jscolor="{}">
+            </div>
+        </div>
+        <div class="form-group d-flex">
+            <label class="col-sm-2 control-label">
+                Body text color
+            </label>
+            <div class="col-sm-3">
+                <input class="form-control" value="#3c3c3c" data-jscolor="{}">
+            </div>
+        </div>*@
+        </div>
+        <div class="box-footer with-border">
+            <a href="#" class="btn btn-danger">Save Changes</a>
+        </div>
+    </div>
+</section>

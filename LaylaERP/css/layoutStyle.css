@@ -2645,27 +2645,72 @@ a#btnbackcategory {max-width: 135px; margin-top: 5px;}
 #billModal .modal-footer .col-md-6 .form-check-inline{display:flex; align-items:center;}
 #billModal .modal-footer .col-md-6 .form-check-inline *{margin:0px;}
 #billModal .modal-footer .col-md-6 .form-check-inline input{margin-right:5px;}
+.email_settings textarea.form-control{min-height:100px;}
+.email.notifications .page-title{flex-wrap:wrap;}
+.email.notifications .page-title .sub-title{width:100%;}
+.email_settings .form-group{margin-left:-15px; margin-right:-15px;}
+.email_table_wrapper .fa-times-circle{font-size:16px; color:#ff4100}
+.email_table_wrapper .fa-check-circle{font-size:16px; color:green;}
+.email_settings_in .form-group{margin-left:-15px; margin-right:-15px; flex-wrap:wrap;}
+.email_settings_in textarea{min-height:100px;}
+
+.payment.invoice.list {position: static;background: transparent;border: 0px;padding: 0px;margin: 0px;}
+.payment.invoice.list .dataTables_scrollHeadInner{width:100% !important;}
+.list.products .table-blue.table th,
+.list.products .table-blue.table td{box-sizing:border-box !important;}
+#ProductCategory_wrapper{width:100%;}
+#ProductCategory_wrapper #ProductCategory{width:1000px !important;}
+#ProductCategory_wrapper #ProductCategory th,
+#ProductCategory_wrapper #ProductCategory td{box-sizing:border-box;}
+#ProductCategory_wrapper .row:nth-child(2){margin:0px;}
+#ProductCategory_wrapper .row:nth-child(2) .col-sm-12{overflow:auto;width:100%;padding: 0px;}
+.categories #ProdCat .col-md-8{width:100%;}
+.shipping.class .table-blue.table th,
+.shipping.class .table-blue.table td{box-sizing:border-box !important;}
+.shipping.class .table-blue.table{width:100% !important; table-layout:fixed;}
+.shipping.class .dataTables_scrollHeadInner{width:100% !important;}
+
 @media(max-width:900px) {
+
+    #PrintModal .modal-body{overflow:auto;}
+    #invoice{min-width:900px;}
+    .shipping.class .table-blue.table{width:1000px !important;}
     .hub-pro-shop select:first-child{margin-left:0px;}
     .hub-pro-shop {width: 100%; margin-top:5px;}
     .agentaddtocart, .hub-pro-shop > a{margin-left:auto; width:auto;}
     .manage-user-section #dtdata_wrapper .table-blue{min-width: 1000px;}
-    .customer-section #dtdata_wrapper .table-blue {min-width: 1000px;}
     div.table-responsive > div.dataTables_wrapper > div.row > div[class^="col-"]:first-child, 
     div.table-responsive > div.dataTables_wrapper > div.row > div[class^="col-"]:last-child{padding:0px;}
     .hub-pro-shop {flex-wrap:wrap;}
     .modal-dialog{max-width:calc(100% - 20px);}
+    .customer-section #dtdata_wrapper .table-blue {min-width: 1000px;}
+    .list.products #dtdata_wrapper .table-blue {min-width: 1000px;}
     .order.history .table-blue.table.check-table,
     .on-hand.inventory .table-blue.table.check-table,
-    .managecoupons .table-blue.table.check-table {width: 1000px !important;}
-    .managecoupons .dataTables_scroll{overflow:auto;}
+    .managecoupons .table-blue.table.check-table,
+    .list.products .table-blue.table.check-table,
+    .wrapper-invents .table-blue.table.check-table {
+        width: 1000px !important;
+    }
+    .wrapper-invents, .managecoupons .dataTables_scroll {
+        overflow: auto;
+    }
     .managecoupons .dataTables_scrollBody{overflow:initial !important;}
     .managecoupons .dataTables_scrollHead{width: 1000px !important;}
+    .shipping.class .neworder-section > .row:first-child{display:flex;}
+.shipping.class .neworder-section > .row:first-child > .col-md-6{width:50%;max-width:50%;}
     }
 @media(max-width:767px){
     
+.proposal-row .form-group.d-flex{}
+    .proposal-row .form-group.d-flex .col-sm-3{width:33.333%;}
+    .proposal-row .form-group.d-flex.flex-2-last{flex-wrap:wrap;}
+    .proposal-row .form-group.d-flex.flex-2-last > label{margin-top:2.5px; margin-bottom:2.5px;width:33.333%}
+    .proposal-row .form-group.d-flex .col-sm-9{width:66.666%;}
+    .proposal-row .form-group.d-flex.flex-2-last >div:nth-child(2n){width:66.666%;margin-top:2.5px; margin-bottom:2.5px;}
 }
 @media(max-width:600px) {
+    
     .dashboard-dropy .page-title, .on-hand.inventory .page-title {
         flex-direction: column;
         margin-bottom: 18px;

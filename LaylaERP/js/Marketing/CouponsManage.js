@@ -82,8 +82,8 @@ function dataGridLoad(order_type) {
                     return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck(this);" value="' + $('<div/>').text(data).html() + '"><label></label>';
                 }
             },       
-            { data: 'post_title', title: 'Code', sWidth: "12%" },
-            { data: 'discount_type', title: 'Coupon Type', sWidth: "12%" },
+            { data: 'post_title', title: 'Code', sWidth: "16%" },
+            { data: 'discount_type', title: 'Coupon Type', sWidth: "10%" },
             { data: 'coupon_amount', title: 'Coupon amount', sWidth: "10%" },
             { data: 'post_excerpt', title: 'Description', sWidth: "12%" },
             {
@@ -93,7 +93,7 @@ function dataGridLoad(order_type) {
                 }
             },
             { data: 'UsageLimit', title: 'Usage/Limit', sWidth: "10%" },
-            { data: 'date_expires', title: 'Expiry date', sWidth: "14%" },
+            { data: 'date_expires', title: 'Expiry date', sWidth: "12%" },
             {
                 'data': 'ID', title: 'Action', sWidth: "9%",
                 'render': function (id, type, full, meta) {
@@ -155,3 +155,41 @@ function Status() {
         })
     }
 }
+
+$('#btnmontholyautoGenerate').click(function () {
+    var month = $('#month').val();
+    var year = $('#ddlyear').val();
+    if (month == "") { swal('alert', 'Please Select Month', 'error'); }
+    else if (year == "0") { swal('alert', 'Please Select Year', 'error'); }
+    else {
+        var obj = { strVal: month, status: year }
+        swal({ title: "Are you sure?", text: 'Would you like to process auto generate monthly coupon?', type: "question", showCancelButton: true })
+            .then((result) => {
+                if (result.value) {
+                    $.ajax({
+                        url: '/Coupons/AutogenrateCoupon', dataType: 'JSON', type: 'POST',
+                        contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify(obj),
+                        beforeSend: function () { $("#loader").show(); },
+                        success: function (data) {
+                            if (data.status == true) {
+                                swal("alert", data.message, "success");
+                                $("#roleModal").modal('hide');
+                                GetDetails();
+                                dataGridLoad('');
+                            }
+                            else {
+                                swal('Alert!', data.message, 'error');
+                            }
+                        },
+                        complete: function () { $("#loader").hide(); },
+                        error: function (error) {
+                            swal('Error!', 'something went wrong', 'error');
+                        },
+
+                    })
+                }
+            });
+    }
+
+});

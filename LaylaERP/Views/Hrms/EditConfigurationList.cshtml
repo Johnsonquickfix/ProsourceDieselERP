@@ -433,12 +433,12 @@
 <script>
     $(document).ready(function () {
         $("#loader").hide();
-        getEmployeeCode(); //Again fill
+        getEmployeeCode();
         changename();
         getAccountingType();
-        getWorkType();
+        //getWorkType();
         changeHRA();
-        getEmployeeType();
+        //getEmployeeType();
         var url = window.location.pathname;
         var id = url.substring(url.lastIndexOf('/') + 1);
         EditSelect(id);
@@ -463,10 +463,22 @@
                 dataType: 'JSON',
                 data: JSON.stringify(obj),
                 success: function (data) {
-                    console.log(data);
+                    //console.log(data);
                     var jobj = JSON.parse(data);
                     if (jobj.length > 0) {
-                        $("#ddlemptype").val(jobj[0].emp_type).trigger('change');
+                        $.ajax({
+                            url: "/Hrms/GetEmployeeTypeForConfig",
+                            type: "Get",
+                            success: function (data) {
+                                var opt = '<option value="0">Select Employee Type</option>';
+                                for (var i = 0; i < data.length; i++) {
+                                    opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
+                                }
+                                $('#ddlemptype').html(opt);
+                                $("#ddlemptype").val(jobj[0].emp_type).trigger('change');
+                            }
+
+                        });
                         $("#ddlempcode").val(jobj[0].emp_code).trigger('change');
                         //console.log(jobj[0].emp_code);
                         //$("#ddlempname").val(jobj[0].fk_emp).trigger('change');
@@ -487,7 +499,7 @@
                         $("#txttds").val(jobj[0].tds);
                         $("#txtotherdeductions").val(jobj[0].other_deductions);
                         $("#txtreibursement").val(jobj[0].reimbursement);
-                        $("#ddlworktype").val(jobj[0].work_type).trigger('change');
+                        //$("#ddlworktype").val(jobj[0].work_type).trigger('change');
                         $("#txtworkhours").val(jobj[0].default_work_hours);
                         $("#ddlpreparesalary").val(jobj[0].prepare_salary).trigger('change');
                         $("#ddlaccountingtype").val(jobj[0].accounting_type).trigger('change');
@@ -512,6 +524,21 @@
                         $("#txtepfaccount").val(jobj[0].epf_account);
                         $("#txtpayscale").val(jobj[0].pay_sacle);
                         $("#txtsection").val(jobj[0].section);
+
+                        $.ajax({
+                            url: "/Hrms/GetWorkTypeForConfig",
+                            type: "Get",
+                            success: function (data) {
+                                var opt = '<option value="0">Select Work Type</option>';
+                                for (var i = 0; i < data.length; i++) {
+                                    opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
+                                }
+                                $('#ddlworktype').html(opt);
+                                $("#ddlworktype").val(jobj[0].work_type).trigger('change');
+                            }
+
+                        });
+
                     }
                 },
                 error: function (msg) {

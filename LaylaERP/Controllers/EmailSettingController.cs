@@ -13,5 +13,11 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+
+        // GET: EmailSetting
+        public ActionResult ManageEmailNotifications()
+        {
+            return View();
+        }
     }
 }

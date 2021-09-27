@@ -44,7 +44,7 @@
                         </select>
                         <button type="button" id="btnChange" onclick="Status();" class="btn btn-primary btn-flat button">Apply</button>
                     </div>
-                    
+
                     <div class="alignleft actions">
                         <select class="form-control" id="ddltype">
                             <option value="0">Show all types</option>
@@ -55,6 +55,11 @@
                         <input type="submit" name="filter_action" id="btnOtherFilter" class="button" value="Filter">
                     </div>
 
+                    <div>
+                        <button type="button" id="btnautogenerate" class="btn btn-danger" style="float:right;" data-toggle="modal" data-target="#roleModal">
+                            <i class="fa fa-plus"></i> Auto Generate Coupon
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -85,6 +90,63 @@
         </div>
     </div>
 </section>
+<div class="modal fade" id="roleModal" tabindex="-1" role="dialog" aria-labelledby="roleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="exampleModalLongTitle">Auto Generate Monthly Coupon</h4>
+                @*<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>*@
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label">Month</label>
+                        <div class="col-sm-5">
+                            <select class="form-control" id="month">
+                                <option value="">Month</option>
+                                <option value="01">January</option>
+                                <option value="02">February</option>
+                                <option value="03">March</option>
+                                <option value="04">April</option>
+                                <option value="05">May</option>
+                                <option value="06">Jun</option>
+                                <option value="07">July</option>
+                                <option value="08">August</option>
+                                <option value="09">September</option>
+                                <option value="10">October</option>
+                                <option value="11">November</option>
+                                <option value="12">December</option>
+                            </select>
+                        </div>
+                        <label class="col-sm-1 control-label">Year</label>
+                        <div class="col-sm-5">
+                            <select class="form-control" id="ddlyear">
+                                <option value="">Year</option>
+                                <option value="21">2021</option>
+                                <option value="22">2022</option>
+                                <option value="23">2023</option>
+                                <option value="24">2024</option>
+                                <option value="25">2025</option>
+                            </select>
+                            @*<input type="submit" name="filtersrchexp" value="Export" class="button button-primary" />*@
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                    </div>
+                </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" id="btnmontholyautoGenerate" class="btn btn-danger"><i class="fa fa-save"></i> Save </button>
+                </div>
+            </div>
+    </div>
+</div>
 <script src="~/js/common.js"></script>
 <script src="@Url.Content("~/js/Marketing/CouponsManage.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 <script>

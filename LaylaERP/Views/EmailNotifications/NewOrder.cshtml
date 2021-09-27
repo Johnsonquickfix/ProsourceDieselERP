@@ -1,6 +1,7 @@
-﻿
+﻿@model  LaylaERP.Models.OrderModel
 @{
     Layout = null;
+
 }
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -11,82 +12,92 @@
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400&display=swap" rel="stylesheet" />
     <title>Layla Customer Invoice</title>
 </head>
-<body style="font-size:14px; margin:0; padding:0; padding-top:15px; font-family:Arial, Helvetica, sans-serif; font-family: 'Open Sans', sans-serif; background-color:#e0e0e0; text-align: center; color:#4f4f4f;">
+<body id="main-body" style="font-size:14px; margin:0; padding:0; padding-top:15px; font-family:Arial, Helvetica, sans-serif; font-family: 'Open Sans', sans-serif; background-color:#e0e0e0; text-align: center; color:#4f4f4f;">
     <div style=" background-color:#fff; box-shadow:0px 0px 4px #ddd; max-width:600px; margin:auto;">
-        <div style="text-align: center; padding:25px 10px 10px 10px;"><a style="text-decoration:none;" href="<?php echo home_url();?>"><img style="width:40%" src="https://laylasleep.com/wp-content/themes/layla-white/images/logo-mail-registered.png" alt="Layla Logo" /></a></div>
+        <div style="text-align: center; padding:25px 10px 10px 10px;"><a style="text-decoration:none;" href=""><img style="width:40%" src="https://laylasleep.com/wp-content/themes/layla-white/images/logo-mail-registered.png" alt="Layla Logo" /></a></div>
         <div style="padding:0 15px 15px 15px;">
             <h5 style=" font-family:Arial, Helvetica, sans-serif; margin-bottom: 5px; margin-top: 10px; font-size:20px; color:#4f4f4f;">Thank you for your purchase!</h5>
             <div style="color:#ff4100; font-style:italic; margin-bottom: 7px;">We will notify you when your order ships.</div>
-            <div style="font-size: 18px;">Your order ID: <strong><?php echo $order->get_order_number();?></strong></div>
+            <div style="font-size: 18px;">Your order ID: <strong id="lblorder">@Html.DisplayFor(model => model.order_id)</strong></div>
         </div>
 
         <div style="background-color:#f6f7f9; margin:0 15px;">
             <div style="max-width:320px; margin:auto; padding:15px 0;">
-                <div style=" float:left; width:50%; max-width:150px; margin-right:5px; text-align:left;">
+                <div style=" float:left; width:50%; max-width:150px; margin-right:5px; text-align:left;" id="sp_ad">
                     <h6 style="font-size:15px; line-height:20px; font-weight:400; margin:0px 0 0px 0; display:inline-block;">Ship to:</h6>
-                    <p style="margin: 1px 0; line-height: 18px;"><strong style="font-weight:300;"><?php echo esc_html( $order->get_shipping_first_name() ).' '.esc_html( $order->get_shipping_last_name() );?></strong></p>
-                    <?php if($order->get_shipping_company()!=''){?><p style="margin: 5px 0;"><?php echo esc_html( $order->get_shipping_company() );?></p><?php }?>
-                    <p style="margin: 1px 0; font-weight:300; line-height: 18px;"><?php echo esc_html( $order->get_shipping_address_1() );?></p>
-                    <?php if(esc_html( $order->get_shipping_address_2() )!=''){?><p style="margin: 1px 0; font-weight:300; line-height: 18px;"><?php echo esc_html( $order->get_shipping_address_2() );?></p><?php }?>
-                    <p style="margin: 1px 0; font-weight:300; line-height: 18px;"><?php echo esc_html( $order->get_shipping_city() );?>, <?php echo esc_html( $order->get_shipping_state() );?> <?php echo esc_html( $order->get_shipping_postcode() );?> <?php echo esc_html( $order->get_shipping_country() );?></p>
+                    <p style="margin: 1px 0; line-height: 18px;"><strong style="font-weight:300;" id="s_fn">@Model.s_first_name  @Model.s_last_name</strong></p>
+                    @if (!string.IsNullOrEmpty(@Model.s_company))
+                    {<p style="margin: 5px 0;" id="s_com">@Model.s_company</p>}
+                    @if (!string.IsNullOrEmpty(@Model.s_address_1))
+                    {<p style="margin: 1px 0; font-weight:300; line-height: 18px;">@Model.s_address_1</p>}
+                    @if (!string.IsNullOrEmpty(@Model.s_address_2))
+                    {<p style="margin: 1px 0; font-weight:300; line-height: 18px;">@Model.s_address_2</p>}
+                    <p style="margin: 1px 0; font-weight:300; line-height: 18px;">@Model.s_city, @Model.s_state @Model.s_postcode @Model.s_country</p>
                 </div>
-                <div style="float:left; width:50%; max-width:150px; margin-left:5px; text-align:left;">
+                <div style="float:left; width:50%; max-width:150px; margin-left:5px; text-align:left;" id="bill_ad">
                     <h6 style="font-size:15px; line-height: 20px; font-weight:400; margin:0px 0 0px 0; display:inline-block;">Bill to:</h6>
-                    <p style="margin: 1px 0; line-height: 18px;"><strong style="font-weight:300;"><?php echo esc_html( $order->get_billing_first_name() ).' '.esc_html( $order->get_billing_last_name() );?></strong></p>
-                    <?php if($order->get_billing_company()!=''){?><p style="margin: 5px 0;"><?php echo esc_html( $order->get_billing_company() );?></p><?php }?>
-                    <p style="margin: 1px 0; font-weight:300; line-height: 18px;"><?php echo esc_html( $order->get_billing_address_1() );?></p>
-                    <?php if(esc_html( $order->get_billing_address_2() )!=''){?><p style="margin: 1px 0; font-weight:300; line-height: 18px;"><?php echo esc_html( $order->get_billing_address_2() );?></p><?php }?>
-                    <p style="margin: 1px 0; font-weight:300; line-height: 18px;"><?php echo esc_html( $order->get_billing_city() );?>, <?php echo esc_html( $order->get_billing_state() );?> <?php echo esc_html( $order->get_billing_postcode() );?> <?php echo esc_html( $order->get_billing_country() );?></p>
+                    <p style="margin: 1px 0; line-height: 18px;"><strong style="font-weight:300;">@Model.b_first_name  @Model.b_last_name</strong></p>
+                    @if (!string.IsNullOrEmpty(@Model.b_company))
+                    {<p style="margin: 5px 0;" id="s_com">@Model.b_company</p>}
+                    @if (!string.IsNullOrEmpty(@Model.b_address_1))
+                    {<p style="margin: 1px 0; font-weight:300; line-height: 18px;">@Model.b_address_1</p>}
+                    @if (!string.IsNullOrEmpty(@Model.b_address_2))
+                    {<p style="margin: 1px 0; font-weight:300; line-height: 18px;">@Model.b_address_2</p>}
+                    <p style="margin: 1px 0; font-weight:300; line-height: 18px;">@Model.b_city, @Model.b_state @Model.b_postcode @Model.b_country</p>
                 </div>
                 <div style="clear:both;"></div>
             </div>
         </div>
 
-        <div style="background-color: #f6f6f6; margin: 0 15px;">
+        <div style="background-color: #f6f6f6; margin: 0 15px;" id="o_items">
             <div>
                 <h2 style="margin-bottom:20px; font-size:18px; text-align:center; margin-top:0px; padding:15px; background-color:#4f4f4f; color:#fff">Order Details</h2>
             </div>
-            <?php $i=1;
-            foreach($order->get_items() as $item_id => $order_item){
-            $productid = $order_item->get_product_id();
-            $img_url = get_post_meta($productid,'popup_image',true);
-            ?>
-            <div style="padding: 15px 10px; border-bottom: 1px solid #c8c8c8;<?php if($i%2==0){echo 'background-color:#fff;';}?>">
-                <div style="max-width:300px; display: inline-block; background-color:#fff; padding:10px; border:1px solid #ddd;">
-                    <img style="width:100%; margin:0;" src="<?php echo str_replace(" koolsleep.com=koolsleep.com =/layla","laylasleep.com",$img_url);? />" />
-                </div>
-                <div style="font-size:16px;">
-                    <h5 style="font-size: 16px; margin: 10px 0;"><?php echo $order_item->get_name();?></h5>
-                    <div style="margin-bottom:8px;"><span>Quantity:</span> <strong><?php echo $order_item->get_quantity();?></strong></div>
-                    <div><span>Total:</span> <strong><?php echo woocommerce_price($order_item->get_total());?></strong></div>
-                </div>
-            </div>
-            <?php $i++;}?>
+            @if (Model.OrderProducts != null)
+            {
+                foreach (var item in Model.OrderProducts)
+                {
+                    if (item.product_type == "line_item")
+                    {
+                        <div style="padding: 15px 10px; border-bottom: 1px solid #c8c8c8;">
+                            <div style="max-width:300px; display: inline-block; background-color:#fff; padding:10px; border:1px solid #ddd;">
+                                <img style="width:100%; margin:0;" src="@item.product_img" />
+                            </div>
+                            <div style="font-size:16px;">
+                                <h5 style="font-size: 16px; margin: 10px 0;">@item.product_name</h5>
+                                <div style="margin-bottom:8px;"><span>Quantity:</span> <strong>@item.quantity</strong></div>
+                                <div><span>Total:</span> <strong>@String.Format("${0:0.00}", @item.total)</strong></div>
+                            </div>
+                        </div>
+                    }
+                }
+            }
         </div>
         <div style="margin:0 15px 20px; padding:15px 0; border-bottom:1px solid #ddd; background-color:#f6f6f6;">
             <div style="margin:0 auto;">
-                <span style="display:block;">
-                    <strong style="width:150px; display:inline-block; text-align:left;">Discount:</strong><span><?php echo '$'.number_format(get_post_meta($order->get_order_number(),'_cart_discount',true),2);?></span>
-                </span>
-                <?php if(!empty($order->get_items('fee'))){
-                foreach($order->get_items('fee') as $item_id => $item_fee){?>
-                <span style="display:block;">
-                    <strong style="width:150px; display:inline-block; text-align:left;"><?php echo $item_fee->get_name();?>:</strong><span><?php echo woocommerce_price($item_fee->get_total());?></span>
-                </span>
-                <?php }}?>
-
-                <span style="display:block;">
-                    <strong style="width:150px; display:inline-block; text-align:left;">Shipping:</strong><span><?php echo '$'.number_format(get_post_meta($order->get_order_number(),'_order_shipping',true),2);?></span>
+                <span style="display: block;">
+                    <strong style="width:150px; display:inline-block; text-align:left;">Sub-Total:</strong><span id="tgtotal">@String.Format("${0:0.00}", @Model.GrassAmount)</span>
                 </span>
                 <span style="display:block;">
-                    <strong style="width:150px; display:inline-block; text-align:left; font-size: 22px;">Total:</strong><span style="font-size: 20px;"><strong><?php echo '$'.number_format(get_post_meta($order->get_order_number(),'_order_total',true),2);?></strong></span>
+                    <strong style="width:150px; display:inline-block; text-align:left;">Discount:</strong><span id="tdiscount">@String.Format("${0:0.00}", @Model.TotalDiscount)</span>
+                </span>
+                <span style="display:block;">
+                    <strong style="width:150px; display:inline-block; text-align:left;">Shipping:</strong><span id="tshipping">@String.Format("${0:0.00}", @Model.TotalShipping)</span>
+                </span>
+                <span style="display:block;">
+                    <strong style="width:150px; display:inline-block; text-align:left;">Sale Tax:</strong><span id="ttax">@String.Format("${0:0.00}", @Model.TotalTax)</span>
+                </span>
+                <span style="display:block;">
+                    <strong style="width:150px; display:inline-block; text-align:left;">State Recycling Fee:</strong><span id="tsrfee">@String.Format("${0:0.00}", @Model.TotalStateRecycling)</span>
+                </span>
+                <span style="display:block;">
+                    <strong style="width:150px; display:inline-block; text-align:left;">Fee:</strong><span id="tfee">@String.Format("${0:0.00}", @Model.TotalFee)</span>
+                </span>
+                <span style="display:block;">
+                    <strong style="width:150px; display:inline-block; text-align:left; font-size: 22px;">Total:</strong><span style="font-size: 20px;"><strong id="total">@String.Format("${0:0.00}", @Model.NetTotal)</strong></span>
                 </span>
             </div>
         </div>
-
-
-
-
         <div>
             <ul style="padding:0 15px; margin:0;">
                 <li style="list-style:none; margin-bottom:20px; margin-left:0;  width:47%; float:left; padding:10px 2px; border-radius: 3px; border:1px solid #ddd;">
@@ -97,7 +108,6 @@
                     <a style="text-decoration:none;" href="tel:855-358-1676"><img src="https://laylasleep.com/wp-content/themes/layla-white/images/mail-phone-icon.png" alt="Layla Phone" /></a>
                     <span style="margin-top: 5px; display:block; line-height: 20px;"><a style="width:auto; color:#4f4f4f; text-decoration:none;" href="tel:855-358-1676">855-358-1676</a><br /> 24 HOURS</span>
                 </li>
-                <div style="clear:both;"></div>
                 <li style="list-style:none; margin-bottom:20px; margin-left:0; width:100%; float:left; padding:10px 0; border-radius: 3px;border:1px solid #ddd;">
                     <a style="text-decoration:none;" href="mailto:support@laylasleep.com"><img src="https://laylasleep.com/wp-content/themes/layla-white/images/mail-mail-icon.png" alt="Layla Mail" /></a>
                     <span style="margin-top: 5px; display:block; line-height: 20px;"><a style="width:auto; color:#4f4f4f; text-decoration:none;" href="mailto:support@laylasleep.com">support@laylasleep.com</a></span>
@@ -128,5 +138,106 @@
             </ul>
         </div>
     </div>
+    <!-- jQuery -->
+    <script src="~/Content/AdminLTE-3.1.0/jquery/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            //let id = @ViewBag.id;
+            //PrintOrder(id);
+        });
+        function isNullUndefAndSpace(variable) { return (variable !== null && variable !== undefined && variable !== 'undefined' && variable !== 'null' && variable.length !== 0); }
+        function PrintOrder(oid) {
+            $("#lblorder").text(oid);
+            if (oid > 0) {
+                var opt_mail = { strValue1: '', strValue2: 'Your order #' + oid + ' has been received', strValue3: '' }
+                var option = { strValue1: oid };
+                $.ajax({
+                    type: "post", url: '/Orders/GetOrderInfo', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(option),
+                    success: function (response, textStatus, jqXHR) {
+                    try {
+                        var data = JSON.parse(response);
+                        ///Ship to
+                        $("#sp_ad").empty().append('<h6 style="font-size:15px; line-height:20px; font-weight:400; margin:0px 0 0px 0; display:inline-block;">Ship to:</h6>');
+                        $("#sp_ad").append('<p style="margin: 1px 0; line-height: 18px;"><strong style="font-weight:300;">' + data[0].s_first_name + ' ' + data[0].s_last_name+'</strong></p>');
+                        if (isNullUndefAndSpace(data[0].s_company)) $("#sp_ad").append('<p style="margin: 5px 0;">' + data[0].s_company + '</p>');
+                        if (isNullUndefAndSpace(data[0].b_address_1)) $("#sp_ad").append('<p style="margin: 1px 0; font-weight:300; line-height: 18px;">' + data[0].s_address_1 + '</p>');
+                        if (isNullUndefAndSpace(data[0].b_address_2)) $("#sp_ad").append('<p style="margin: 1px 0; font-weight:300; line-height: 18px;">' + data[0].s_address_2 + '</p>');
+                        $("#sp_ad").append('<p style="margin: 1px 0; font-weight:300; line-height: 18px;">' + data[0].s_city + ', ' + data[0].s_state.trim() + ' ' + data[0].s_postcode + ' ' + data[0].s_country + '</p>');
+
+                        ///Bill to
+                        $("#bill_ad").empty().append('<h6 style="font-size:15px; line-height:20px; font-weight:400; margin:0px 0 0px 0; display:inline-block;">Bill to:</h6>');
+                        $("#bill_ad").append('<p style="margin: 1px 0; line-height: 18px;"><strong style="font-weight:300;">' + data[0].b_first_name + ' ' + data[0].b_last_name + '</strong></p>');
+                        if (isNullUndefAndSpace(data[0].b_company)) $("#bill_ad").append('<p style="margin: 5px 0;">' + data[0].b_company + '</p>');
+                        if (isNullUndefAndSpace(data[0].b_address_1)) $("#bill_ad").append('<p style="margin: 1px 0; font-weight:300; line-height: 18px;">' + data[0].b_address_1 + '</p>');
+                        if (isNullUndefAndSpace(data[0].b_address_2)) $("#bill_ad").append('<p style="margin: 1px 0; font-weight:300; line-height: 18px;">' + data[0].b_address_2 + '</p>');
+                        $("#bill_ad").append('<p style="margin: 1px 0; font-weight:300; line-height: 18px;">' + data[0].b_city + ', ' + data[0].b_state.trim() + ' ' + data[0].b_postcode + ' ' + data[0].b_country + '</p>');
+                        getOrderItemList(oid);
+                    }
+                    catch (error) {}
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        $('#ddlPaymentMethod').prop("disabled", true); $('#btnPlaceOrder').addClass('hidden'); $('#btnResendInv').removeClass('hidden');
+                        console.log(XMLHttpRequest); swal('Error!', 'Something went wrong.', 'error');
+                    },
+                    complete: function () { $('#btnPlaceOrder').prop("disabled", false); },
+                    async: false
+                });
+
+
+                console.log(opt_mail);
+                $.ajax({
+                    type: "post", url: '/Orders/SendMailInvoice', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_mail),
+                    success: function (result, textStatus, jqXHR) { console.log(result); }, async: false
+                });
+            }
+        }
+        function getOrderItemList(oid) {
+            let option = { strValue1: oid }; var itemHtml = '<div><h2 style = "margin-bottom:20px; font-size:18px; text-align:center; margin-top:0px; padding:15px; background-color:#4f4f4f; color:#fff" > Order Details</h2></div>';
+            $.ajax({
+                type: "post", url: '/Orders/GetOrderProductList', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(option),
+                success: function (response, textStatus, jqXHR) {
+                    let zGAmt = 0.00, zTDiscount = 0.00, zTotalTax = 0.00, zShippingAmt = 0.00, zStateRecyclingAmt = 0.00, zFeeAmt = 0.00, zRefundAmt = 0.00;
+                    $.each(response, function (index, row) {
+                        if (row.product_type == 'line_item') {
+                            itemHtml += '<div style="padding: 15px 10px; border-bottom: 1px solid #c8c8c8;' + ((index % 2 == 0) ? 'background - color:#fff;' : '') + '">';
+                            itemHtml += '    <div style="max-width:300px; display: inline-block; background-color:#fff; padding:10px; border:1px solid #ddd;">';
+                            itemHtml += '        <img style="width:100%; margin:0;" src="" />';
+                            itemHtml += '    </div>';
+                            itemHtml += '    <div style="font-size:16px;">';
+                            itemHtml += '        <h5 style="font-size: 16px; margin: 10px 0;">' + row.product_name + '</h5>';
+                            itemHtml += '        <div style="margin-bottom:8px;"><span>Quantity:</span> <strong>' + row.quantity.toFixed(0) + '</strong></div>';
+                            itemHtml += '        <div><span>Total:</span> <strong>$' + row.total.toFixed(2) + '</strong></div>';
+                            itemHtml += '    </div>';
+                            itemHtml += '</div>';
+                            //zQty = zQty + (parseFloat(data[i].quantity) || 0.00);
+                            zGAmt = zGAmt + (parseFloat(row.total) || 0.00);
+                            zTotalTax = zTotalTax + (parseFloat(row.tax_amount) || 0.00);
+                        }
+                        else if (row.product_type == 'coupon') {
+                            zTDiscount = zTDiscount + (parseFloat(row.discount) || 0.00);
+                        }
+                        else if (row.product_type == 'fee' && row.product_name == 'State Recycling Fee') {
+                            zStateRecyclingAmt = zStateRecyclingAmt + (parseFloat(row.total) || 0.00);
+                        }
+                        else if (row.product_type == 'fee' && row.product_name != 'State Recycling Fee') {
+                            zFeeAmt = zFeeAmt + (parseFloat(row.total) || 0.00);
+                        }
+                        else if (row.product_type == 'shipping') {
+                            zShippingAmt = zShippingAmt + (parseFloat(row.total) || 0.00);
+                        }
+                    });
+                    $("#o_items").empty().append(itemHtml);
+                    $("#tgtotal").text(zGAmt.toFixed(2));
+                    $("#tdiscount").text(zTDiscount.toFixed(2));
+                    $("#tshipping").text(zShippingAmt.toFixed(2));
+                    $("#salesTaxTotal").text(zTotalTax.toFixed(2));
+                    $("#tsrfee").text(zStateRecyclingAmt.toFixed(2));
+                    $("#tfee").text(zFeeAmt.toFixed(2));
+                    $("#total").html((zGAmt - zTDiscount + zShippingAmt + zTotalTax + zStateRecyclingAmt + zFeeAmt).toFixed(2));
+                },
+                complete: function () { },async: false
+            });
+        }
+    </script>
 </body>
 </html>

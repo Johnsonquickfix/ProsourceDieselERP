@@ -8,6 +8,39 @@
 
     public class OrderModel
     {
+        public long order_id { get; set; }
+        public string order_date { get; set; }
+        public string payment_method { get; set; }
+        public string payment_method_title { get; set; }
+        public string b_first_name { get; set; }
+        public string b_last_name { get; set; }
+        public string b_company { get; set; }
+        public string b_address_1 { get; set; }
+        public string b_address_2 { get; set; }
+        public string b_postcode { get; set; }
+        public string b_city { get; set; }
+        public string b_country { get; set; }
+        public string b_state { get; set; }
+        public string b_email { get; set; }
+        public string b_phone { get; set; }
+        public string s_first_name { get; set; }
+        public string s_last_name { get; set; }
+        public string s_company { get; set; }
+        public string s_address_1 { get; set; }
+        public string s_address_2 { get; set; }
+        public string s_postcode { get; set; }
+        public string s_city { get; set; }
+        public string s_country { get; set; }
+        public string s_state { get; set; }
+        public string paypal_id { get; set; }
+        public decimal GrassAmount { get; set; }
+        public decimal TotalDiscount { get; set; }
+        public decimal TotalTax { get; set; }
+        public decimal TotalShipping { get; set; }
+        public decimal TotalStateRecycling { get; set; }
+        public decimal TotalFee{ get; set; }
+        public decimal NetTotal { get; set; }
+
         public List<OrderPostMetaModel> OrderPostMeta { get; set; }
         public List<OrderProductsModel> OrderProducts { get; set; }
         public OrderPostStatusModel OrderPostStatus { get; set; }
@@ -94,6 +127,7 @@
         public long product_id { get; set; }
         public long variation_id { get; set; }
         public string product_name { get; set; }
+        public string product_img { get; set; }
         public string meta_data { get; set; }
         public string free_itmes { get; set; }
         public bool is_free { get; set; }

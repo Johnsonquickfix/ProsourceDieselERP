@@ -621,7 +621,7 @@
                 strSql_insert = "insert into wp_postmeta (post_id,meta_key,meta_value) select * from (" + strSql_insert + ") as tmp where tmp.meta_key not in (select meta_key from wp_postmeta where post_id = " + model[0].post_id.ToString() + ");";
                 strSql.Append(strSql_insert);
                 if (Payment_method.ToLower() == "podium")
-                {                    
+                {
                     strSql.Append(string.Format("update wp_posts set post_status = '{0}' where id = {1};", "wc-pendingpodiuminv", model[0].post_id));
                     //// step 3 : Add Order Note
                     strSql.Append("insert into wp_comments(comment_post_ID, comment_author, comment_author_email, comment_author_url, comment_author_IP, comment_date, comment_date_gmt, comment_content, comment_karma, comment_approved, comment_agent, comment_type, comment_parent, user_id) ");
@@ -631,7 +631,7 @@
                 {
                     strSql.Append(string.Format("update wp_posts set post_status = '{0}' where id = {1};", "wc-pending", model[0].post_id));
                 }
-                
+
                 result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
             }
             catch { }
@@ -1132,8 +1132,8 @@
             return result;
         }
 
-        
-        
+
+
         public int ChangeOrderStatus(OrderPostStatusModel model, string ID)
         {
             try
@@ -1210,6 +1210,7 @@
             List<OrderProductsModel> _list = new List<OrderProductsModel>();
             try
             {
+                string base_path = Net.Host + "/Content/Product/";
                 OrderProductsModel productsModel = new OrderProductsModel();
                 MySqlParameter[] parameters =
                 {
@@ -1223,11 +1224,13 @@
                             + "         and psr.post_id = (case when max(case oim.meta_key when '_variation_id' then oim.meta_value else '' end) != '0' then max(case oim.meta_key when '_variation_id' then oim.meta_value else '' end)"
                             + "             else max(case oim.meta_key when '_product_id' then oim.meta_value else '' end) end)) sale_price,"
                             + " (select concat('{',group_concat(concat('\"',free_product_id,'\": \"',free_quantity,'\"') separator ','),'}') from wp_product_free free_it"
-                            + " where free_it.product_id = max(case oim.meta_key when '_product_id' then oim.meta_value else '0' end) or free_it.product_id = max(case oim.meta_key when '_variation_id' then oim.meta_value else '0' end)) as meta_data"
+                            + " where free_it.product_id = max(case oim.meta_key when '_product_id' then oim.meta_value else '0' end) or free_it.product_id = max(case oim.meta_key when '_variation_id' then oim.meta_value else '0' end)) as meta_data,"
+                            + " (select COALESCE(p.guid, '') sale_price from wp_posts p where p.id = (case when max(case oim.meta_key when '_variation_id' then oim.meta_value else '' end) != '0' then max(case oim.meta_key when '_variation_id' then oim.meta_value else '' end)"
+                            + "             else max(case oim.meta_key when '_product_id' then oim.meta_value else '' end) end)) p_img"
                             + " from wp_woocommerce_order_items oi inner join wp_woocommerce_order_itemmeta oim on oim.order_item_id = oi.order_item_id"
                             + " where oi.order_id = @order_id and oi.order_item_type!='coupon' group by oi.order_id,oi.order_item_id,oi.order_item_name,oi.order_item_type "
                             + " union all "
-                            + " Select oi.order_id,oi.order_item_id,oi.order_item_name,oi.order_item_type,0 p_id,0 v_id,0 qty,0 line_subtotal,0 line_total,0 tax,oim.meta_value discount_amount,0 shipping_amount,0 sale_price,concat('{', group_concat(concat('\"', pm.meta_key, '\": \"', pm.meta_value, '\"') separator ','), '}') as meta_data"
+                            + " Select oi.order_id,oi.order_item_id,oi.order_item_name,oi.order_item_type,0 p_id,0 v_id,0 qty,0 line_subtotal,0 line_total,0 tax,oim.meta_value discount_amount,0 shipping_amount,0 sale_price,concat('{', group_concat(concat('\"', pm.meta_key, '\": \"', pm.meta_value, '\"') separator ','), '}') as meta_data,'' p_img"
                             + " from wp_woocommerce_order_items oi inner join wp_woocommerce_order_itemmeta oim on oim.order_item_id = oi.order_item_id and oim.meta_key = 'discount_amount'"
                             + " left outer join wp_posts p on lower(p.post_title) = lower(oi.order_item_name) and p.post_type = 'shop_coupon'"
                             + " left outer join wp_postmeta pm on pm.post_id = p.id and pm.meta_key in ('coupon_amount','discount_type', 'product_ids', 'exclude_product_ids')"
@@ -1235,7 +1238,7 @@
                             + " union all "
                             + " select p.post_parent order_id,p_oim.meta_value order_item_id,oi.order_item_type order_item_name,'refund_items' order_item_type,0 p_id,0 v_id,"
                             + " sum(case oim.meta_key when '_qty' then oim.meta_value else '' end) qty,0 line_subtotal,sum(case oim.meta_key when '_line_total' then oim.meta_value else '' end) line_total,"
-                            + " sum(case oim.meta_key when '_line_tax' then oim.meta_value when 'tax_amount' then oim.meta_value else '' end) tax,0 discount_amount,sum(case oim.meta_key when 'cost' then oim.meta_value else '' end) shipping_amount,0 sale_price,'{}' as meta_data"
+                            + " sum(case oim.meta_key when '_line_tax' then oim.meta_value when 'tax_amount' then oim.meta_value else '' end) tax,0 discount_amount,sum(case oim.meta_key when 'cost' then oim.meta_value else '' end) shipping_amount,0 sale_price,'{}' as meta_data,'' p_img"
                             + " from wp_posts p left outer join wp_woocommerce_order_items oi on oi.order_id = p.id"
                             + " left outer join wp_woocommerce_order_itemmeta p_oim on p_oim.order_item_id = oi.order_item_id and p_oim.meta_key = '_refunded_item_id'"
                             + " left outer join wp_woocommerce_order_itemmeta oim on oim.order_item_id = p_oim.order_item_id and oim.meta_key in ('_qty', '_line_total', '_line_tax', 'tax_amount', 'cost')"
@@ -1243,7 +1246,7 @@
                             + " union all "
                             + " select p.id order_id,p.id order_item_id,concat('Refund #',p.id,' - ',DATE_FORMAT(p.post_date,'%b %e, %Y, %h:%i'),' by ',ur.user_nicename,'</br>',"
                             + " coalesce(group_concat(concat(oi.order_item_name, ' x ', oim.meta_value) ORDER BY oi.order_item_name separator '</br>'),'')) order_item_name,'refund' order_item_type,"
-                            + " 0 p_id,0 v_id,0 qty,pm.meta_value line_subtotal, pm.meta_value line_total,0 tax,0 discount_amount,0 shipping_amount,0 sale_price,'{}' as meta_data"
+                            + " 0 p_id,0 v_id,0 qty,pm.meta_value line_subtotal, pm.meta_value line_total,0 tax,0 discount_amount,0 shipping_amount,0 sale_price,'{}' as meta_data,'' p_img"
                             + " from wp_posts p inner join wp_postmeta pm on pm.post_id = p.id and pm.meta_key = '_order_total'"
                             + " inner join wp_postmeta pmur on pmur.post_id = p.id and pmur.meta_key = '_refunded_by' inner join wp_users ur on ur.id = pmur.meta_value"
                             + " left outer join wp_woocommerce_order_items oi on oi.order_id = p.id and oi.order_item_type = 'line_item'"
@@ -1257,17 +1260,13 @@
                         productsModel.order_item_id = Convert.ToInt64(sdr["order_item_id"]);
                     else
                         productsModel.order_item_id = 0;
-                    if (sdr["order_item_type"] != DBNull.Value)
-                        productsModel.product_type = sdr["order_item_type"].ToString().Trim();
-                    else
-                        productsModel.product_type = "line_item";
-                    if (sdr["order_item_name"] != DBNull.Value)
-                        productsModel.product_name = sdr["order_item_name"].ToString();
-                    else
-                        productsModel.product_name = string.Empty;
+
+                    productsModel.product_type = (sdr["order_item_type"] != Convert.DBNull) ? sdr["order_item_type"].ToString() : "line_item";
+                    productsModel.product_name = (sdr["order_item_name"] != Convert.DBNull) ? sdr["order_item_name"].ToString() : "";
 
                     if (productsModel.product_type == "line_item")
                     {
+                        productsModel.product_img = (sdr["p_img"] != Convert.DBNull) ? base_path + sdr["p_img"].ToString() : "";
                         if (sdr["p_id"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["p_id"].ToString().Trim()))
                             productsModel.product_id = Convert.ToInt64(sdr["p_id"]);
                         else
@@ -1398,6 +1397,74 @@
             catch (Exception ex)
             { throw ex; }
             return _list;
+        }
+        public static OrderModel OrderInvoice(long OrderID)
+        {
+            OrderModel obj = new OrderModel();
+            try
+            {
+                MySqlParameter[] parameters =
+                {
+                    new MySqlParameter("@order_id", OrderID)
+                };
+                string strSQl = "select os.id order_id,DATE_FORMAT(os.post_date,'%m/%d/%Y') date_created,"
+                            + " max(case meta_key when '_payment_method' then meta_value else '' end) payment_method,max(case meta_key when '_payment_method_title' then meta_value else '' end) payment_method_title,"
+                            + " max(case meta_key when '_billing_first_name' then meta_value else '' end) b_first_name,max(case meta_key when '_billing_last_name' then meta_value else '' end) b_last_name,"
+                            + " max(case meta_key when '_billing_company' then meta_value else '' end) b_company,max(case meta_key when '_billing_address_1' then meta_value else '' end) b_address_1,max(case meta_key when '_billing_address_2' then meta_value else '' end) b_address_2,"
+                            + " max(case meta_key when '_billing_postcode' then meta_value else '' end) b_postcode,max(case meta_key when '_billing_city' then meta_value else '' end) b_city,"
+                            + " max(case meta_key when '_billing_country' then meta_value else '' end) b_country,max(case meta_key when '_billing_state' then meta_value else '' end) b_state,"
+                            + " max(case meta_key when '_billing_email' then meta_value else '' end) b_email,max(case meta_key when '_billing_phone' then meta_value else '' end) b_phone,"
+                            + " max(case meta_key when '_shipping_first_name' then meta_value else '' end) s_first_name,max(case meta_key when '_shipping_last_name' then meta_value else '' end) s_last_name,"
+                            + " max(case meta_key when '_shipping_company' then meta_value else '' end) s_company,max(case meta_key when '_shipping_address_1' then meta_value else '' end) s_address_1,max(case meta_key when '_shipping_address_2' then meta_value else '' end) s_address_2,"
+                            + " max(case meta_key when '_shipping_postcode' then meta_value else '' end) s_postcode,max(case meta_key when '_shipping_city' then meta_value else '' end) s_city,"
+                            + " max(case meta_key when '_shipping_country' then meta_value else '' end) s_country,max(case meta_key when '_shipping_state' then meta_value else '' end) s_state,"
+                            + " max(case meta_key when '_paypal_id' then meta_value else '' end) paypal_id,max(case meta_key when 'taskuidforsms' then meta_value else '' end) podium_id,max(case meta_key when '_podium_payment_uid' then meta_value else '' end) podium_payment_uid"
+                            + " from wp_posts os inner join wp_postmeta pm on pm.post_id = os.id"
+                            + " where os.id = @order_id"
+                            + " group by os.id,os.post_date";
+                MySqlDataReader sdr = SQLHelper.ExecuteReader(strSQl, parameters);
+                while (sdr.Read())
+                {
+                    obj.order_id = (sdr["order_id"] != Convert.DBNull) ? Convert.ToInt64(sdr["order_id"]) : 0;
+                    obj.order_date = (sdr["date_created"] != Convert.DBNull) ? sdr["date_created"].ToString() : "";
+                    obj.payment_method = (sdr["payment_method"] != Convert.DBNull) ? sdr["payment_method"].ToString() : "";
+                    obj.payment_method_title = (sdr["payment_method_title"] != Convert.DBNull) ? sdr["payment_method_title"].ToString() : "";
+                    obj.b_first_name = (sdr["b_first_name"] != Convert.DBNull) ? sdr["b_first_name"].ToString() : "";
+                    obj.b_last_name = (sdr["b_last_name"] != Convert.DBNull) ? sdr["b_last_name"].ToString() : "";
+                    obj.b_company = (sdr["b_company"] != Convert.DBNull) ? sdr["b_company"].ToString() : "";
+                    obj.b_address_1 = (sdr["b_address_1"] != Convert.DBNull) ? sdr["b_address_1"].ToString() : "";
+                    obj.b_address_2 = (sdr["b_address_2"] != Convert.DBNull) ? sdr["b_address_2"].ToString() : "";
+                    obj.b_postcode = (sdr["b_postcode"] != Convert.DBNull) ? sdr["b_postcode"].ToString() : "";
+                    obj.b_city = (sdr["b_city"] != Convert.DBNull) ? sdr["b_city"].ToString() : "";
+                    obj.b_country = (sdr["b_country"] != Convert.DBNull) ? sdr["b_country"].ToString() : "";
+                    obj.b_state = (sdr["b_state"] != Convert.DBNull) ? sdr["b_state"].ToString() : "";
+                    obj.b_email = (sdr["b_email"] != Convert.DBNull) ? sdr["b_email"].ToString() : "";
+                    obj.b_phone = (sdr["b_phone"] != Convert.DBNull) ? sdr["b_phone"].ToString() : "";
+                    obj.s_first_name = (sdr["s_first_name"] != Convert.DBNull) ? sdr["s_first_name"].ToString() : "";
+                    obj.s_last_name = (sdr["s_last_name"] != Convert.DBNull) ? sdr["s_last_name"].ToString() : "";
+                    obj.s_company = (sdr["s_company"] != Convert.DBNull) ? sdr["s_company"].ToString() : "";
+                    obj.s_address_1 = (sdr["s_address_1"] != Convert.DBNull) ? sdr["s_address_1"].ToString() : "";
+                    obj.s_address_2 = (sdr["s_address_2"] != Convert.DBNull) ? sdr["s_address_2"].ToString() : "";
+                    obj.s_postcode = (sdr["s_postcode"] != Convert.DBNull) ? sdr["s_postcode"].ToString() : "";
+                    obj.s_city = (sdr["s_city"] != Convert.DBNull) ? sdr["s_city"].ToString() : "";
+                    obj.s_country = (sdr["s_country"] != Convert.DBNull) ? sdr["s_country"].ToString() : "";
+                    obj.s_state = (sdr["s_state"] != Convert.DBNull) ? sdr["s_state"].ToString() : "";
+                    obj.paypal_id = (sdr["paypal_id"] != Convert.DBNull) ? sdr["paypal_id"].ToString() : "";
+                }
+
+                obj.OrderProducts = GetOrderProductList(OrderID);
+
+                obj.GrassAmount = obj.OrderProducts.Sum(x => x.total);
+                obj.TotalDiscount = obj.OrderProducts.Sum(x => x.discount);
+                obj.TotalTax = obj.OrderProducts.Sum(x => x.tax_amount);
+                obj.TotalShipping = obj.OrderProducts.Sum(x => x.total);
+                obj.TotalFee = obj.OrderProducts.Sum(x => x.total);
+
+                obj.NetTotal = (obj.GrassAmount - obj.TotalDiscount) + obj.TotalTax + obj.TotalShipping + obj.TotalFee;
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return obj;
         }
         //Order comments/notes
         public static DataTable GetOrderNotes(long OrderID)

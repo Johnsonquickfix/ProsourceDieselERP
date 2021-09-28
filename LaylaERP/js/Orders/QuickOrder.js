@@ -1325,7 +1325,7 @@ function ApplyCoupon() {
             }
             //check expires date
             if (data[0].date_expires != "" && data[0].date_expires != null) {
-                let exp_date = new Date(data[0].date_expires); 
+                let exp_date = new Date(data[0].date_expires * 1000); console.log(exp_date);
                 let today = new Date();
                 if (exp_date < today) {
                     swal('Alert!', 'Coupon code has been expired.', "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false;

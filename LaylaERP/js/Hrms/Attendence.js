@@ -9,6 +9,7 @@ $(document).ready(function () {
 
     EmployeeList();
     $("#ddlInOut").change(function () { EmployeeList(); $('#checkAll').val(''); })
+    $("#btnReset").click(function () { EmployeeList(); })
 })
 $("#DateRange").change(function () {
     EmployeeList();
@@ -21,12 +22,12 @@ function EmployeeList() {
     var urid = $("#ddlSearchStatus").val();
     ID = $("#hfid").val();
     var table_EL = $('#EmployeeListdata').DataTable({
-        columnDefs: [{ "orderable": true, "targets": 0 }, { "orderable": false, "targets": [1, 4, 5] }, { 'visible': false, 'targets': [0] }], order: [[0, "desc"]],
+        columnDefs: [{ "orderable": true, "targets": 0 }, { "orderable": false, "targets": [1, 4, 5,6] }, { 'visible': false, 'targets': [0] }], order: [[0, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: false, searching: true,
         responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
         language: {
             lengthMenu: "_MENU_ per page",
-            zeroRecords: "Sorry no records found",
+            zeroRecords: "May on leave",
             info: "Showing _START_ to _END_ of _TOTAL_ entries",
             infoFiltered: "",
             infoEmpty: "No records found",
@@ -57,16 +58,16 @@ function EmployeeList() {
             });
         },
         aoColumns: [
-            { data: 'ID', title: 'ID', sWidth: "20%", class: 'text-left' },
+            { data: 'ID', title: 'ID', class: 'text-left' },
             {
                 'data': 'ID', sWidth: "15%   ",
                 'render': function (data, type, full, meta) {
-
+                  
                     return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + $('<div/>').text(data).html() + '"><label></label>';
                 }
             },
             { data: 'name', title: 'Name', sWidth: "20%", class: 'text-left' },
-            { data: 'designation', title: 'Designation', sWidth: "20%" },
+            { data: 'designation', title: 'Designation', sWidth: "10%" },
             {
                 'data': 'in_time', sWidth: "20%",
                 'render': function (id, type, full, meta) {
@@ -77,11 +78,18 @@ function EmployeeList() {
                         //var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
                         //dateTime = date + ' ' + time;
                         dateTime = "";
+                        return '<span><input type="text" class="form-control txtintime_null" name="txtintime" id="txtintime_' + full.ID + '" value="' + dateTime + '" /></span>';
+                    }
+                    else if (id != null && full.Is_Employee == 1) {
+                        $('#ddlInOut').val('txtouttime').prop("disabled", true);
+                        dateTime = id.replace('T', ' ');
+                        return '<span><input type="text" class="form-control" name="txtintime" id="txtintime_' + full.ID + '" value="' + dateTime + '" disabled /></span>';
                     }
                     else {
-                        dateTime = id;
+                        dateTime = id.replace('T', ' ');
+                        return '<span><input type="text" class="form-control" name="txtintime" id="txtintime_' + full.ID + '" value="' + dateTime + '" /></span>';
+
                     }
-                    return '<span><input type="text" class="form-control" name="txtintime" id="txtintime_' + full.ID + '" value="' + dateTime + '" /></span>';
                 }
             },
             {
@@ -89,18 +97,21 @@ function EmployeeList() {
                 'render': function (id, type, full, meta) {
                     var dateTime = "";
                     if (id == null) {
-                        //var today = new Date();
-                        //var date = ((today.getMonth()) + 1) + '-' + today.getDate() + '-' + today.getFullYear();
-                        //var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-                        //dateTime = date + ' ' + time;
                         dateTime = "";
+                        return '<span><input type="text" class="form-control txtouttime_null" name="txtouttime" id="txtouttime_' + full.ID + '" value="' + dateTime + '" /></span>';
+                    } else if (id != null && full.Is_Employee == 1) {
+                        $('#ddlInOut').val('txtouttime').prop("disabled", true);
+                        dateTime = id.replace('T', ' ');
+                        return '<span><input type="text" class="form-control" name="txtouttime" id="txtouttime_' + full.ID + '" value="' + dateTime + '" disabled/></span>';
                     }
                     else {
-                        dateTime = id;
+                        dateTime = id.replace('T',' ');
+                        return '<span><input type="text" class="form-control" name="txtouttime" id="txtouttime_' + full.ID + '" value="' + dateTime + '" /></span>';
                     }
-                    return '<span><input type="text" class="form-control" name="txtouttime" id="txtouttime_' + full.ID + '" value="' + dateTime + '" /></span>';
+                    
                 }
-            }
+            },
+            { data: 'WorkingHours', title: 'Working Hours', sWidth: "10%" },
         ]
     });
 }
@@ -108,7 +119,7 @@ function EmployeeList() {
 $('#checkAll').click(function () {
     var isChecked = $(this).prop("checked");
     var dateTime = "";
-    var today = new Date();
+    //var today = new Date();
     var date = $("#DateRange").val();
     var inout = $("#ddlInOut").val();
     var time = $("#txtTime").val();
@@ -116,13 +127,15 @@ $('#checkAll').click(function () {
     dateTime = isChecked == true ? date + ' ' + time : "";
 
     $('#EmployeeListdata tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
-    $('#EmployeeListdata tr:has(td)').find('input[name=' + inout+']').val(dateTime);
+  
+    $('#EmployeeListdata tr:has(td)').find('.' + inout + '_null').val(dateTime);
+  
     $("#btnSave").prop("disabled", isChecked == true ? false : true);
 
 });
 
 function Singlecheck() {
-    var dateTime = ""; var today = new Date(); var date = $("#DateRange").val();
+    var dateTime = ""; /*var today = new Date();*/ var date = $("#DateRange").val();
     var time = $("#txtTime").val();
     //var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
     dateTime = date + ' ' + time;
@@ -135,7 +148,10 @@ function Singlecheck() {
     $('#EmployeeListdata tr:has(td)').find('input[type="checkbox"]').each(function () {
         if ($(this).prop("checked") == true) {
             EnableButton = false;
-            $("#" + inout + "_" + $(this).val()).val(dateTime);
+            console.log($("#" + inout + "_" + $(this).val()).val());
+            if ($("#" + inout + "_" + $(this).val()).val() == "") {
+                $("#" + inout + "_" + $(this).val()).val(dateTime);
+            }
             //$("#txtouttime_" + $(this).val()).val(dateTime);
         }
         else {

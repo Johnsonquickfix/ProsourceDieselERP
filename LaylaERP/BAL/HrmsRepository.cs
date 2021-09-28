@@ -430,11 +430,18 @@ namespace LaylaERP.BAL
                 DateTime startDate = DateTime.Parse(fromdate, us);
                 //DateTime endDate = DateTime.Parse(todate, us);
                 string strWhr = string.Empty;
-                string strSql = "Select e.rowid ID, concat(e.firstname,' ',e.lastname) as name,d.designation, e.email,e.phone,e.gender,e.emp_type," +
-                    "s.in_time,s.out_time,s.is_approved,e.is_active from erp_hrms_emp e left join erp_hrms_attendance_sheet s on s.fk_emp = e.rowid " +
-                    " and date(in_time) >= '" + startDate.ToString("yyyy-MM-dd") + "' and date(out_time) = '" + startDate.ToString("yyyy-MM-dd") + "'" +
+                string strAdd = string.Empty;
+                if (CommanUtilities.Provider.GetCurrent().UserType != "Administrator")
+                {
+                    long user = CommanUtilities.Provider.GetCurrent().UserID;
+                    strWhr += " and fk_user = '" + user + "'";
+                    strAdd = "'1' as Is_Employee,";
+                }
+                string strSql = "Select e.rowid ID, concat(e.firstname,' ',e.lastname) as name,d.designation, "+ strAdd.ToString() +" e.email,e.phone,e.gender,e.emp_type," +
+                    "s.in_time,s.out_time,SUBTIME(Time(s.out_time),Time(s.in_time)) as WorkingHours,s.is_approved,e.is_active from erp_hrms_emp e left join erp_hrms_attendance_sheet s on s.fk_emp = e.rowid " +
+                    " and (date(in_time) >= '" + startDate.ToString("yyyy-MM-dd") + "' and date(in_time) <= '" + startDate.ToString("yyyy-MM-dd") + "' or date(out_time) >= '" + startDate.ToString("yyyy-MM-dd") + "' and date(out_time) <= '" + startDate.ToString("yyyy-MM-dd") + "')" +
                     " left join erp_hrms_empdetails ed on ed.fk_emp = e.rowid left join erp_hrms_designation d on d.rowid = ed.designation where 1 = 1 " +
-                    "and e.is_active = 1 ";
+                    "and e.is_active = 1  ";
                 if (!string.IsNullOrEmpty(searchid))
                 {
                     strWhr += " and (concat(e.firstname,' ',e.lastname) like '%" + searchid + "%' OR d.designation like '%" + searchid + "%')";
@@ -443,15 +450,11 @@ namespace LaylaERP.BAL
                 {
                     strWhr += " and (e.is_active='" + userstatus + "') ";
                 }
-                if (CommanUtilities.Provider.GetCurrent().UserType != "Administrator")
-                {
-                    long user = CommanUtilities.Provider.GetCurrent().UserID;
-                    strWhr += " and fk_user = '" + user + "'";
-                }
+                strWhr += " and e.rowid not in (Select fk_emp from erp_hrms_leave where (date('" + startDate.ToString("yyyy-MM-dd") + "') between Date(from_date) and Date(to_date)) and is_approved=1 ) ";
                 strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
 
                 strSql += "; SELECT ceil(Count(e.rowid)/" + pagesize.ToString() + ") TotalPage,Count(e.rowid) TotalRecord from erp_hrms_emp e left join erp_hrms_attendance_sheet s on s.fk_emp = e.rowid " +
-                    " and date(in_time) >= '" + startDate.ToString("yyyy-MM-dd") + "' and date(out_time) = '" + startDate.ToString("yyyy-MM-dd") + "'" +
+                    " and date(in_time) >= '" + startDate.ToString("yyyy-MM-dd") + "' and date(out_time) <= '" + startDate.ToString("yyyy-MM-dd") + "'" +
                     "left join erp_hrms_empdetails ed on ed.fk_emp = e.rowid left join erp_hrms_designation d on d.rowid = ed.designation where 1 = 1 and e.is_active = 1 " + strWhr.ToString();
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
@@ -700,13 +703,13 @@ namespace LaylaERP.BAL
             {
                 CultureInfo us = new CultureInfo("en-US");
                 string strSql = "";
-                if (intime != "")
+                if (outtime == null)
                 {
                     DateTime Empintime = DateTime.Parse(intime, us);
                     strSql = "Select rowid from erp_hrms_attendance_sheet where fk_emp='" + id + "' and  (Date(out_time) >= Date('" + Empintime.ToString("yyyy-MM-dd") + "') and Date(out_time) <= Date('" + Empintime.ToString("yyyy-MM-dd") + "'))";
 
                 }
-                else if (outtime != "")
+                else if (intime == null)
                 {
                     DateTime Empouttime = DateTime.Parse(outtime, us);
                     strSql = "Select rowid from erp_hrms_attendance_sheet where fk_emp='" + id + "' and  (Date(in_time) >= Date('" + Empouttime.ToString("yyyy-MM-dd") + "') and Date(in_time) <= Date('" + Empouttime.ToString("yyyy-MM-dd") + "'))";

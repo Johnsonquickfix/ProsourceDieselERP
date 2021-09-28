@@ -438,10 +438,10 @@ namespace LaylaERP.BAL
                     strAdd = "'1' as Is_Employee,";
                 }
                 string strSql = "Select e.rowid ID, concat(e.firstname,' ',e.lastname) as name,d.designation, "+ strAdd.ToString() +" e.email,e.phone,e.gender,e.emp_type," +
-                    "s.in_time,s.out_time,s.is_approved,e.is_active from erp_hrms_emp e left join erp_hrms_attendance_sheet s on s.fk_emp = e.rowid " +
+                    "s.in_time,s.out_time,SUBTIME(Time(s.out_time),Time(s.in_time)) as WorkingHours,s.is_approved,e.is_active from erp_hrms_emp e left join erp_hrms_attendance_sheet s on s.fk_emp = e.rowid " +
                     " and (date(in_time) >= '" + startDate.ToString("yyyy-MM-dd") + "' and date(in_time) <= '" + startDate.ToString("yyyy-MM-dd") + "' or date(out_time) >= '" + startDate.ToString("yyyy-MM-dd") + "' and date(out_time) <= '" + startDate.ToString("yyyy-MM-dd") + "')" +
                     " left join erp_hrms_empdetails ed on ed.fk_emp = e.rowid left join erp_hrms_designation d on d.rowid = ed.designation where 1 = 1 " +
-                    "and e.is_active = 1 ";
+                    "and e.is_active = 1  ";
                 if (!string.IsNullOrEmpty(searchid))
                 {
                     strWhr += " and (concat(e.firstname,' ',e.lastname) like '%" + searchid + "%' OR d.designation like '%" + searchid + "%')";
@@ -450,6 +450,7 @@ namespace LaylaERP.BAL
                 {
                     strWhr += " and (e.is_active='" + userstatus + "') ";
                 }
+                strWhr += " and e.rowid not in (Select fk_emp from erp_hrms_leave where (date('" + startDate.ToString("yyyy-MM-dd") + "') between Date(from_date) and Date(to_date)) and is_approved=1 ) ";
                 strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
 
                 strSql += "; SELECT ceil(Count(e.rowid)/" + pagesize.ToString() + ") TotalPage,Count(e.rowid) TotalRecord from erp_hrms_emp e left join erp_hrms_attendance_sheet s on s.fk_emp = e.rowid " +

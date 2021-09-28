@@ -2623,12 +2623,14 @@ a#btnbackcategory {max-width: 135px; margin-top: 5px;}
         }
 #saveForm #DateRange, .dashboard-dropy #DateRange2{min-width: 230px;padding-top: 0px;padding-bottom: 0px;height: 28px;border-radius: 0px !important;}
 .manage.customers .dataTables_scrollHeadInner{width:100% !important;}
+
 /*
 #fetch_results > div > .row > .box-primary .box-body .form-group{display:flex;}
 #fetch_results > div > .row > .box-primary .box-body .form-group >div{flex:1;margin-left:15px;}
 #fetch_results > div > .row > .box-primary .box-body .form-group >div:last-child{order:-1; margin-left:0px;}
 #fetch_results > div > .row > .box-primary .box-body .form-group >div #btnGenerateCoupon{margin-left:15px;}
 */
+
 .on-hand.inventory #dtdata_info{float:left; width:auto;}
 .on-hand.inventory #dtdata_paginate{float:right; width:auto;}
 

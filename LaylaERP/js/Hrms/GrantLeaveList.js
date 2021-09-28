@@ -495,7 +495,7 @@ $('#checkAll2').click(function () {
     $('#PendingEmployeeListdata tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
 });
 
-function Singlecheck1() {
+function Singlecheck2() {
     var isChecked = $('#CheckSingle2').prop("checked");
     var isHeaderChecked = $("#checkAll2").prop("checked");
     if (isChecked == false && isHeaderChecked)

@@ -1,12 +1,8 @@
 ﻿$(document).ready(function () {
     dataGridLoad();
+    $("#loader").hide();
 });
 function dataGridLoad() {
-
-    //var types = $('#ddltype').val();
-    //let prodctype = $('#ddlproducttype').val();
-    //let stockstatus = $('#ddstockstatus').val();
-
     $('#dtdata').DataTable({
         columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true,
@@ -22,7 +18,7 @@ function dataGridLoad() {
             infoEmpty: "No records found",
             processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
         },
-        sAjaxSource: "/Product/GetShippinfclassList",
+        sAjaxSource: "/EmailSetting/GetEmailList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
             //aoData.push({ name: "strValue1", value: monthYear });
             aoData.push({ name: "strValue1", value: '' });
@@ -31,7 +27,7 @@ function dataGridLoad() {
             aoData.push({ name: "strValue4", value: '' });
             var col = 'rowid';
             if (oSettings.aaSorting.length > 0) {
-                var col = oSettings.aaSorting[0][0] == 0 ? "ShipName" : oSettings.aaSorting[0][0] == 1 ? "Country" : oSettings.aaSorting[0][0] == 2 ? "State" : oSettings.aaSorting[0][0] == 3 ? "Method" : oSettings.aaSorting[0][0] == 4 ? "Shipping_price" : oSettings.aaSorting[0][0] == 5 ? "Type" : "rowid";
+                var col = oSettings.aaSorting[0][0] == 0 ? "email_text" : oSettings.aaSorting[0][0] == 1 ? "email_content_type" : oSettings.aaSorting[0][0] == 2 ? "recipients" : oSettings.aaSorting[0][0] == 3 ? "is_active" : "rowid";
                 aoData.push({ name: "sSortColName", value: col });
             }
             //console.log(aoData);
@@ -44,35 +40,32 @@ function dataGridLoad() {
             });
         },
         columns: [
-            //{
-            //    'data': 'rowid', sWidth: "5%   ",
-            //    'render': function (data, type, full, meta) {
-            //        return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck(this);" value="' + $('<div/>').text(data).html() + '"><label></label>';
-            //    }
-            //},
 
-            { data: 'ShipName', title: 'Shipping Class', sWidth: "12%" },
-            { data: 'Country', title: 'Country', sWidth: "12%" },
-            { data: 'State', title: 'State', sWidth: "12%" },
-            { data: 'Method', title: 'Method', sWidth: "12%" },
-            /*{ data: 'Shipping_price', title: 'Price', sWidth: "12%" },*/
             {
-                data: 'Shipping_price', title: 'Price', sWidth: "12%", render: function (data, type, row) {
-                    var tprice = 'toFormat';
-                    tprice = '$' + row.Shipping_price;
-                    return tprice
+
+            'data': 'id', sWidth: "5%   ",
+                'render': function (data, type, row) {
+                    if (parseInt(row.is_active) == 0)
+                        return '<span><i class="fa fa-times-circle" aria-hidden="true"></i></span>';
+                    else
+                        return '<span><i class="fa fa-check-circle" aria-hidden="true"></i></span>';
                 }
             },
-            { data: 'Type', title: 'Cost Type', sWidth: "12%" },
-            { data: 'taxable', title: 'Taxable', sWidth: "12%" },
-            // { data: 'Shipping_taxrate', title: 'TaxCost', sWidth: "12%" },
-
 
             {
-                'data': 'rowid', title: 'Action', sWidth: "5%",
+                'data': 'email_text', sWidth: "10%", title: 'Email',
                 'render': function (id, type, full, meta) {
-                    return '<a href="#" title="Click here to Edit" onClick="EditData(' + id + ');" data-toggle="tooltip"><i class="glyphicon glyphicon-eye-open"></i></a>'
+                    return '<a href="ManageEmailNotifications/' + full.email_notify_key + '">' + id + '</a>';
+                }
+            },
+            { data: 'email_content_type', title: 'Content type', sWidth: "12%" },
+            { data: 'recipients', title: 'Recipient(s)', sWidth: "12%" },
 
+            {
+                'data': 'email_notify_key', title: 'Action', sWidth: "5%",
+                'render': function (id, type, full, meta) {
+                    return '<a class="btn btn-danger" title="Click here to view details" data-toggle="tooltip" href="ManageEmailNotifications/' + id + '">Manage</a>'
+                    
 
                 }
             }

@@ -1831,7 +1831,7 @@
                         + " inner join wp_postmeta pm on pm.post_id = p.ID "
                         + " WHERE post_status = 'wc-processing' AND post_type = 'shop_order' "
                         + " AND DATE_FORMAT(p.post_modified_gmt,'%Y-%m-%d %h:%i:%s') BETWEEN DATE_FORMAT('" + from_date.ToString("yyyy-MM-dd hh:mm:ss") + "','%Y-%m-%d %h:%i:%s') AND DATE_FORMAT('" + to_date.ToString("yyyy-MM-dd hh:mm:ss") + "','%Y-%m-%d %h:%i:%s') "
-                        + " group by p.ID,p.post_date,sr.split_id,sd.order_name";
+                        + " group by p.ID order by p.ID desc";
                 dt = SQLHelper.ExecuteDataTable(strSql);
             }
             catch (Exception ex)

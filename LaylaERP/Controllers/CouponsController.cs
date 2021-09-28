@@ -215,9 +215,16 @@ namespace LaylaERP.Controllers
             string month = model.strVal;
             string year = model.status;
             var date = Convert.ToDateTime( ""+ month + "/01/20"+ year + "");
+           // var monthval = new DateTime(date.Year, date.Month, 1);
+          //  var first = monthval.AddMonths(1);
+           // var last = monthval.AddMonths(1).AddDays(-1);
+           // var Expiredate = last.Date.ToString("MM/dd/yyyy");
+            // var Expiredated = last.Date.ToString("MM/dd/yyyy");
+
             var monthval = new DateTime(date.Year, date.Month, 1);
             var first = monthval.AddMonths(1);
-            var Expiredate =  first.Date.ToString("MM/dd/yyyy");
+            var Expiredate = first.Date.ToString("MM/dd/yyyy");
+
             if (month != "" && year != "" && Expiredate != "")
             {
                 DataTable dt = CouponsRepository.GetDuplicateCouponsMonth(month + year);
@@ -237,6 +244,7 @@ namespace LaylaERP.Controllers
             {
                 return Json(new { status = false, message = "Something went wrong", url = "" }, 0);
             }
+    
 
         }
     }

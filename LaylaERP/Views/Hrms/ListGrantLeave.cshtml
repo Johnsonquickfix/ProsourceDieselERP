@@ -13,13 +13,13 @@
 
 
 <div class="page-title">
-    @*<h2 class="page-heading">Approve Leave List</h2>*@
+    <h2 class="page-heading">Leave List</h2>
 </div>
 <section class="content section-content table-design customer-section">
     <div class="nav-tabs-custom">
         <ul class="nav nav-tabs" id="mytabs" role="tablist">
-            <li class="active"><a href="#tab_1" data-toggle="tab"><span title="Approved Leave" data-placement="bottom" data-toggle="tooltip">Approved Leave</span></a></li>
             <li><a href="#tab_2" data-toggle="tab"><span title="Pending Leave" data-placement="bottom" data-toggle="tooltip">Pending Leave</span></a></li>
+            <li class="active"><a href="#tab_1" data-toggle="tab"><span title="Approved Leave" data-placement="bottom" data-toggle="tooltip">Approved Leave</span></a></li>
             <li><a href="#tab_3" data-toggle="tab"><span title="Rejected Leave" data-placement="bottom" data-toggle="tooltip">Rejected Leave</span></a></li>
         </ul>
         <div class="tab-content">
@@ -30,6 +30,7 @@
                             <select class="form-control select2" id="ddlStatus" placeholder="Select User">
                                 <option value="1">Approved</option>
                                 <option value="2">Rejected</option>
+                                <option value="0">Pending</option>
                             </select>
                             <span title="Click Here To Change Status Of Leave After Selecting Checkbox" data-placement="bottom" data-toggle="tooltip"><button type="button" id="btnChange" class="btn btn-primary btn-flat button">Change</button></span>
                         </div>
@@ -74,6 +75,7 @@
                             <select class="form-control select2" id="ddlStatusPending" placeholder="Select User">
                                 <option value="1">Approved</option>
                                 <option value="2">Rejected</option>
+                                <option value="0">Pending</option>
                             </select>
                             <span title="Click Here To Change Status Of Leave After Selecting Checkbox" data-placement="bottom" data-toggle="tooltip"><button type="button" id="btnChangePending" class="btn btn-primary btn-flat button">Change</button></span>
                         </div>
@@ -118,6 +120,7 @@
                             <select class="form-control select2" id="ddlStatusReject" placeholder="Select User">
                                 <option value="1">Approved</option>
                                 <option value="2">Rejected</option>
+                                <option value="0">Pending</option>
                             </select>
                             <span title="Click Here To Change Status Of Leave After Selecting Checkbox" data-placement="bottom" data-toggle="tooltip"><button type="button" id="btnChangeReject" class="btn btn-primary btn-flat button">Change</button></span>
                         </div>

@@ -333,7 +333,7 @@ function bindCustomerOrders(id) {
                 },
                 {
                     data: 'meta_data', title: 'BILLING ADDRESS', sWidth: "35%", render: function (data, type, dtrow) {
-                        let row = JSON.parse(dtrow.meta_data); 
+                        let row = JSON.parse(dtrow.meta_data);
                         let val = '<address class="no-margin">' + row._billing_first_name + ' ' + row._billing_last_name + (!isNullAndUndef(dtrow.IsDefault) ? ' <span class="label label-success">' + dtrow.IsDefault + '</span>' : '') + (isNullUndefAndSpace(row._billing_company) ? '<br>' + row._billing_company : '') + (isNullUndefAndSpace(row._billing_address_1) ? '<br>' + row._billing_address_1 : '') + (isNullUndefAndSpace(row._billing_address_2) ? '<br>' + row._billing_address_2 : '') + '<br>' + row._billing_city + ', ' + row._billing_state + ' ' + row._billing_postcode + '<br>Phone: ' + row._billing_phone.replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + '<br>Email: ' + row._billing_email + '</address>';
                         return val;
                     }
@@ -914,26 +914,11 @@ function removeItemsInTable(id) {
                 }
                 let index = rq_prd_ids.indexOf(vid); // 2
                 rq_prd_ids.splice(index, 1);
-                if (rq_prd_ids.length > 0) {
-                    $('#li_' + pid).data('rqprdids', rq_prd_ids.join(','));
-                }
-                else {
-                    $('#li_' + pid).remove();
-                }
+                if (rq_prd_ids.length > 0) { $('#li_' + pid).data('rqprdids', rq_prd_ids.join(',')); }
+                else { $('#li_' + pid).remove(); }
 
-                //free item should be remove when removed that product on which free item will be given.
-                if ($("#tblAddItemFinal").find("tr[data-gid='" + gid + "']").length == 0) {
-                    $('#tritemId_' + gid + '_0').remove();
-                }
-                //let zFreeQty = 0.00, gid = parseInt($(this).data("gid")) || 0;
-                //$("#order_line_items > tr").each(function () {
-                //    if ($(this).data('gid') == gid && $(this).data('pid') != gid) {
-                //        zFreeQty += parseFloat($(this).find("[name=txt_ItemQty]").val()) || 0.00;
-                //    }
-                //});
-                ////free item should be remove when removed that product on which free item will be given.
-                //if (zFreeQty == 0)
-                //    $('#tritemId_' + $(this).data("gid") + '_0').remove();
+                // no cart item
+                if ($("#order_line_items > tr.paid_item").length == 0) $('#billCoupon').empty();
 
                 //auto Coupon add
                 ApplyAutoCoupon();
@@ -1325,7 +1310,7 @@ function ApplyCoupon() {
             }
             //check expires date
             if (data[0].date_expires != "" && data[0].date_expires != null) {
-                let exp_date = new Date(data[0].date_expires); 
+                let exp_date = new Date(data[0].date_expires * 1000); console.log(exp_date);
                 let today = new Date();
                 if (exp_date < today) {
                     swal('Alert!', 'Coupon code has been expired.', "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false;
@@ -1628,6 +1613,7 @@ function calculateDiscountAcount() {
         $(li).find("#cou_discamt").text(cou_amt.toFixed(2))
         if (zDiscType == '2x_percent' && cou_amt > 0) $(li).removeClass('hidden');
         else if (zDiscType == '2x_percent') $(li).addClass('hidden');
+        //if (cou_amt == 0) $('#li_' + cou).remove();
         //if (cou_amt == 0) deleteAllCoupons(cou);
     });
     calcFinalTotals();
@@ -1706,7 +1692,8 @@ function createOtherItemsList() {
     var oid = parseInt($('#hfOrderNo').val()) || 0;
     var otherItemsxml = [];
     $('#billCoupon li').each(function (index) {
-        otherItemsxml.push({ order_item_id: parseInt($(this).data('orderitemid')), order_id: oid, item_name: $(this).data('coupon'), item_type: 'coupon', amount: parseFloat($(this).find("#cou_discamt").text()) || 0.00 });
+        let cou_amt = parseFloat($(this).find("#cou_discamt").text()) || 0.00;
+        if (cou_amt > 0) otherItemsxml.push({ order_item_id: parseInt($(this).data('orderitemid')), order_id: oid, item_name: $(this).data('coupon'), item_type: 'coupon', amount: parseFloat($(this).find("#cou_discamt").text()) || 0.00 });
     });
     //Add Fee
     $('#order_fee_line_items > tr').each(function (index, tr) {

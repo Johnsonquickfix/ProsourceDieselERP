@@ -164,6 +164,7 @@
     <Compile Include="BAL\CustomerRepository.cs" />
     <Compile Include="BAL\DaRepository.cs" />
     <Compile Include="BAL\DashboardRepository.cs" />
+    <Compile Include="BAL\EmailNotificationsRepository.cs" />
     <Compile Include="BAL\ExportRepository.cs" />
     <Compile Include="BAL\FeeNTaxRepository.cs" />
     <Compile Include="BAL\HrmsConfigurationRepository.cs" />
@@ -229,6 +230,7 @@
     <Compile Include="Models\CouponsModel.cs" />
     <Compile Include="Models\CustomerModel.cs" />
     <Compile Include="Models\DaModel.cs" />
+    <Compile Include="Models\EmailSettingModel.cs" />
     <Compile Include="Models\ExportModel.cs" />
     <Compile Include="Models\Export_Details.cs" />
     <Compile Include="Models\FeeNTax.cs" />
@@ -626,6 +628,8 @@
     <Content Include="js\CommercialPorposal\NewPorposal.js" />
     <Content Include="js\common.js" />
     <Content Include="js\Customer\Customer.js" />
+    <Content Include="js\EmailSetting\EmailSetting.js" />
+    <Content Include="js\EmailSetting\EmailSettingNotifications.js" />
     <Content Include="js\FeeNTax\FeeNTax.js" />
     <Content Include="js\GooglePlace\index.js" />
     <Content Include="js\Hrms\Attendence.js" />

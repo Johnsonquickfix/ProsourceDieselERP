@@ -2623,11 +2623,18 @@ a#btnbackcategory {max-width: 135px; margin-top: 5px;}
         }
 #saveForm #DateRange, .dashboard-dropy #DateRange2{min-width: 230px;padding-top: 0px;padding-bottom: 0px;height: 28px;border-radius: 0px !important;}
 .manage.customers .dataTables_scrollHeadInner{width:100% !important;}
+#fetch_results .generate-boxs{margin-bottom:12px;}
+#fetch_results #btnGenerateCoupon{margin-left:6px;}
+/*
 #fetch_results > div > .row > .box-primary .box-body .form-group{display:flex;}
 #fetch_results > div > .row > .box-primary .box-body .form-group >div{flex:1;margin-left:15px;}
 #fetch_results > div > .row > .box-primary .box-body .form-group >div:last-child{order:-1; margin-left:0px;}
 #fetch_results > div > .row > .box-primary .box-body .form-group >div #btnGenerateCoupon{margin-left:15px;}
-.on-hand.inventory #dtdata_info{float:left; width:auto;}
+*/
+.on-hand.inventory #dtdata_info {
+    float: left;
+    width: auto;
+}
 .on-hand.inventory #dtdata_paginate{float:right; width:auto;}
 
 .add.new.product .new-product-section #divPurchase{padding-left:0px; padding-right:0px;}
@@ -2675,12 +2682,23 @@ a#btnbackcategory {max-width: 135px; margin-top: 5px;}
 .manage.vendors .dataTables_scrollHead{overflow:visible !important;width:100% !important;}
 .customer-section #dtdata_wrapper .table-blue th,
 .customer-section #dtdata_wrapper .table-blue td{box-sizing:border-box;}
+.manage.warehouses .nav-tabs-custom .tablenav-top2{margin-top:0px;}
+.chart.of.accounts{overflow:visible;}
 @media(max-width:900px) {
-#dtdatawarehouse_wrapper .row:first-child{display:flex;}
+    #dtProductsAccount_wrapper .row:first-child{display:flex;}
+    #dtdatawarehouse_wrapper .row:first-child{display:flex;}
+    #Journaldata_wrapper .row:first-child{display:flex;}
+#dtProductsAccount_wrapper .row:first-child > div:first-child{margin-right:auto;}
+#Journaldata_wrapper .row:first-child > div:first-child{margin-right:auto;}
 #dtdatawarehouse_wrapper .row:first-child > div:first-child{margin-right:auto;}
 #dtdatawarehouse_wrapper .table-blue.table{table-layout:fixed;    min-width: 1000px;}
+.payment.invoice.list .table-blue.table{min-width: 1000px;}
+.payment.invoice.list .table-blue.table th,
+.payment.invoice.list .table-blue.table td{white-space:normal !important;}
 #dtdatawarehouse_wrapper .table-blue.table th,
 #dtdatawarehouse_wrapper .table-blue.table td{white-space:normal !important;}
+#tblAddJournal.table-blue.table{table-layout:fixed; min-width: 1000px;}
+.accounting.journal .journal-section > .row > .col-md-12 > .box-primary > .box-header{width:100%; overflow:auto;}
 /*************/
 #dtdataPartially_wrapper .row:first-child{display:flex;}
 #dtdataPartially_wrapper .row:first-child > div:first-child{margin-right:auto;}
@@ -2724,6 +2742,10 @@ a#btnbackcategory {max-width: 135px; margin-top: 5px;}
 .shipping.class .neworder-section > .row:first-child > .col-md-6{width:50%;max-width:50%;}
 #PrintModal .invoice{margin:10px; width:100%; overflow:auto;}
 #PrintModal .invoice .invoiceDetails{width:1000px;}
+#Journaldata_wrapper > .row:nth-child(2){margin:0px;}
+#Journaldata_wrapper > .row:nth-child(2) > .col-sm-12{padding:0px;width:100%; overflow:auto;}
+#dtProductsAccount_wrapper > .row:nth-child(2){margin:0px;}
+#dtProductsAccount_wrapper > .row:nth-child(2) > .col-sm-12{padding:0px;width:100%; overflow:auto;}
     }
 @media(max-width:767px){
     
@@ -2758,6 +2780,10 @@ a#btnbackcategory {max-width: 135px; margin-top: 5px;}
     
 }
 @media(max-width:400px) {
+#btnSaveProductAccount{margin-left:6px;}
+.products.account .row .page-title{flex-wrap:wrap;}
+.products.account .row .page-title h2{width:100%;}
+.products.account .row .page-title .ml-auto{display:flex;}
 .dashboard-order-list .radtype_span {
 margin-top: 15px;
 }

@@ -34,7 +34,7 @@ namespace LaylaERP.BAL
             try
             {
                 string strquery = string.Empty;
-                strquery = "select ehlt.leave_type, format(ehlt.leave_days,2) as leave_days, format(if(ehl.is_approved=1, (ehlt.leave_days-ehl.days), ehlt.leave_days),2) as remain from erp_hrms_leave_type ehlt left join erp_hrms_leave ehl on ehl.leave_code=ehlt.rowid and ehl.fk_emp='" + id+"'";
+                strquery = "select ehlt.rowid, ehlt.leave_type, format(ehlt.leave_days,2) as leave_days, format(if(ehl.is_approved=1, (ehlt.leave_days-ehl.days), ehlt.leave_days),2) as remain from erp_hrms_leave_type ehlt left join erp_hrms_leave ehl on ehl.leave_code=ehlt.rowid and ehl.fk_emp='" + id+ "' order by ehlt.rowid";
                 DataSet ds = SQLHelper.ExecuteDataSet(strquery);
                 dtr = ds.Tables[0];
             }

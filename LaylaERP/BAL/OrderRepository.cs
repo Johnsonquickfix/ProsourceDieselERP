@@ -654,7 +654,7 @@
                 strSql.Append(string.Format("update wp_postmeta set meta_value='{0}' where post_id='{1}' and meta_key='{2}';", model.invoice_number, model.post_id, "_podium_invoice_number"));
                 strSql.Append(string.Format("update wp_postmeta set meta_value='{0}' where post_id='{1}' and meta_key='{2}';", "PAID", model.post_id, "_podium_status"));
                 ///step 2 : Update Order status wc-processing
-                strSql.Append(string.Format("update wp_posts set post_status = '{0}' where id = {1};", "wc-processing", model.post_id));
+                strSql.Append(string.Format("update wp_posts set post_status='{0}',post_modified_gmt='{1}' where id = {1};", "wc-processing", cUTFDate.ToString("yyyy/MM/dd HH:mm:ss"), model.post_id));
                 ///step 3 : Add Order Note
                 strSql.Append("insert into wp_comments(comment_post_ID, comment_author, comment_author_email, comment_author_url, comment_author_IP, comment_date, comment_date_gmt, comment_content, comment_karma, comment_approved, comment_agent, comment_type, comment_parent, user_id) ");
                 strSql.Append(string.Format("values ({0}, 'WooCommerce', 'woocommerce@laylasleep.com', '', '', '{1}', '{2}', '{3}{4}', '0', '1', 'WooCommerce', 'order_note', '0', '0');", model.post_id, cDate.ToString("yyyy/MM/dd HH:mm:ss"), cUTFDate.ToString("yyyy/MM/dd HH:mm:ss"), model.order_note, cDate.ToString("yyyy/MM/dd HH:mm:ss")));
@@ -683,7 +683,7 @@
                 strSql.Append(string.Format("update wp_postmeta set meta_value = '{0}' where post_id = '{1}' and meta_key = '{2}' ; ", model.meta_value, model.post_id, model.meta_key));
 
                 ///step 2 : Update Order status wc-processing
-                strSql.Append(string.Format("update wp_posts set post_status = '{0}' where id = {1};", "wc-processing", model.post_id));
+                strSql.Append(string.Format("update wp_posts set post_status='{0}',post_modified_gmt='{1}' where id = {1};", "wc-processing", cUTFDate.ToString("yyyy/MM/dd HH:mm:ss"), model.post_id));
                 ///step 3 : Add Order Note
                 //strSql.Append("insert into wp_comments(comment_post_ID, comment_author, comment_author_email, comment_author_url, comment_author_IP, comment_date, comment_date_gmt, comment_content, comment_karma, comment_approved, comment_agent, comment_type, comment_parent, user_id) ");
                 //strSql.Append(string.Format("values ({0}, 'WooCommerce', 'woocommerce@laylasleep.com', '', '', '{1}', '{2}', '{3}{4}', '0', '1', 'WooCommerce', 'order_note', '0', '0');", model.post_id, cDate.ToString("yyyy/MM/dd HH:mm:ss"), cUTFDate.ToString("yyyy/MM/dd HH:mm:ss"), model.order_note, cDate.ToString("yyyy/MM/dd HH:mm:ss")));
@@ -1831,7 +1831,7 @@
                         + " inner join wp_postmeta pm on pm.post_id = p.ID "
                         + " WHERE post_status = 'wc-processing' AND post_type = 'shop_order' "
                         + " AND DATE_FORMAT(p.post_modified_gmt,'%Y-%m-%d %h:%i:%s') BETWEEN DATE_FORMAT('" + from_date.ToString("yyyy-MM-dd hh:mm:ss") + "','%Y-%m-%d %h:%i:%s') AND DATE_FORMAT('" + to_date.ToString("yyyy-MM-dd hh:mm:ss") + "','%Y-%m-%d %h:%i:%s') "
-                        + " group by p.ID,p.post_date,sr.split_id,sd.order_name";
+                        + " group by p.ID,sr.split_id,sd.order_name order by p.ID desc";
                 dt = SQLHelper.ExecuteDataTable(strSql);
             }
             catch (Exception ex)

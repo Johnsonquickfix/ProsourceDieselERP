@@ -30,12 +30,12 @@ namespace LaylaERP.Controllers
                 if (Request.QueryString["start_date"] != null)
                 {
                     start_date = Request.QueryString["start_date"].ToString();
-                    start_date = start_date.Split('/')[1] + "/" + start_date.Split('/')[0] + "/" + start_date.Split('/')[2];
+                    //start_date = start_date.Split('/')[1] + "/" + start_date.Split('/')[0] + "/" + start_date.Split('/')[2];
                 }
                 if (Request.QueryString["end_date"] != null)
                 {
                     end_date = Request.QueryString["end_date"].ToString();
-                    end_date = end_date.Split('/')[1] + "/" + end_date.Split('/')[0] + "/" + end_date.Split('/')[2];
+                    //end_date = end_date.Split('/')[1] + "/" + end_date.Split('/')[0] + "/" + end_date.Split('/')[2];
                 }
                 if (action == "export")
                 {
@@ -54,13 +54,13 @@ namespace LaylaERP.Controllers
                         str += "<Order>";
                         str += "<OrderID><![CDATA[" + DR["order_name"].ToString().Replace("#", "") + "]]></OrderID>";
                         str += "<OrderNumber><![CDATA[" + DR["order_name"].ToString().Replace("#", "") + "]]></OrderNumber>";
-                        if (DR["post_date"] != DBNull.Value)
+                        if (DR["post_date_gmt"] != DBNull.Value)
                             str += "<OrderDate>" + Convert.ToDateTime(DR["post_date_gmt"].ToString()).ToString("MM/dd/yyyy hh:mm") + "</OrderDate>";
                         else
                             str += "<OrderDate></OrderDate>";
                         //str += "<OrderDate>'.gmdate("m / d / Y H: i", strtotime($each_order->post_date) - $tz_offset).'</OrderDate>";
                         str += "<OrderStatus><![CDATA[processing]]></OrderStatus>";
-                        if (DR["post_modified"] != DBNull.Value)
+                        if (DR["post_modified_gmt"] != DBNull.Value)
                             str += "<LastModified>" + Convert.ToDateTime(DR["post_modified_gmt"].ToString()).ToString("MM/dd/yyyy hh:mm") + "</LastModified>";
                         else
                             str += "<LastModified></LastModified>";

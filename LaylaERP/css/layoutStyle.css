@@ -2673,8 +2673,16 @@ a#btnbackcategory {max-width: 135px; margin-top: 5px;}
 .manage.vendors .dataTables_scroll{overflow:auto;}
 .manage.vendors .dataTables_scrollHeadInner{width:100% !important;}
 .manage.vendors .dataTables_scrollHead{overflow:visible !important;width:100% !important;}
+.customer-section #dtdata_wrapper .table-blue th,
+.customer-section #dtdata_wrapper .table-blue td{box-sizing:border-box;}
 @media(max-width:900px) {
-    #dtdataPartially_wrapper .row:first-child{display:flex;}
+#dtdatawarehouse_wrapper .row:first-child{display:flex;}
+#dtdatawarehouse_wrapper .row:first-child > div:first-child{margin-right:auto;}
+#dtdatawarehouse_wrapper .table-blue.table{table-layout:fixed;    min-width: 1000px;}
+#dtdatawarehouse_wrapper .table-blue.table th,
+#dtdatawarehouse_wrapper .table-blue.table td{white-space:normal !important;}
+/*************/
+#dtdataPartially_wrapper .row:first-child{display:flex;}
 #dtdataPartially_wrapper .row:first-child > div:first-child{margin-right:auto;}
 #dtdataPartially_wrapper .table-blue.table{table-layout:fixed;    min-width: 1000px;}
 #dtdataPoClosure_wrapper .row:first-child{display:flex;}

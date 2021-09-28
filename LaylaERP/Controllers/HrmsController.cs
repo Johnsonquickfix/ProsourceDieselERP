@@ -34,6 +34,11 @@ namespace LaylaERP.Controllers
         // GET: Leave
         public ActionResult Leave()
         {
+            DataTable dt = LeaveRepository.GetSelectEmployeeID();
+            if (dt.Rows.Count > 0)
+            {
+                ViewBag.empid = dt.Rows[0]["rowid"];
+            }
             return View();
         }
 
@@ -428,7 +433,7 @@ namespace LaylaERP.Controllers
             List<SelectListItem> leavelist = new List<SelectListItem>();
             foreach (DataRow dr in ds.Tables[0].Rows)
             {
-                leavelist.Add(new SelectListItem { Text = dr["leave_type"].ToString(), Value = dr["leave_code"].ToString() });
+                leavelist.Add(new SelectListItem { Text = dr["leave_type"].ToString(), Value = dr["rowid"].ToString() });
             }
             return Json(leavelist, JsonRequestBehavior.AllowGet);
 
@@ -807,6 +812,56 @@ namespace LaylaERP.Controllers
             {
                 return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
             }
+        }
+
+        public JsonResult GetSelectEmployeeID()
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = LeaveRepository.GetSelectEmployeeID();
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+
+        public JsonResult GetLeaveCalculation(string i)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt =LeaveRepository.GetLeaveCalculation(i);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+
+        public JsonResult GetPendingLeaveList(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                DataTable dt = LeaveRepository.GetPendingLeaveList(model.strValue1, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                result = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+        }
+
+        public JsonResult GetRejectedLeaveList(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                DataTable dt = LeaveRepository.GetRejectedLeaveList(model.strValue1, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                result = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
         }
     }
 }

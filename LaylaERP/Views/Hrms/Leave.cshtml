@@ -26,120 +26,172 @@
 <div class="page-title">
     <h2>Leave</h2>
 </div>
-<div class="row">
-    <div class="col-sm-6">
-        <div class="box box-primary">
-            <div class="box-body">
-                <div class="form-group">
-                    <input type="hidden" id="hfid" />
-                    <input type="hidden" id="hfuserid" value="@user.UserID" />
-                    <input type="hidden" id="hfusertype" value="@user.UserType" />
-                    <label for="Employee">Employee<span style="color:red">*</span></label>
-                    <select class="form-control select2" id="ddlemployee" style="width:100%;"></select>
-                </div>
+<section class="content section-content table-design customer-section">
+    <div class="nav-tabs-custom">
+        <ul class="nav nav-tabs" id="mytabs" role="tablist">
+            <li class="active"><a href="#tab_1" data-toggle="tab"><span title="Apply for leave" data-placement="bottom" data-toggle="tooltip">Apply Leave</span></a></li>
+            <li><a href="#tab_2" data-toggle="tab" class="tab_2"><span title="Balance leave" data-placement="bottom" data-toggle="tooltip">Balance Leave</span></a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane active" id="tab_1">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="form-group">
+                                    <input type="hidden" id="empid" value="@ViewBag.empid"/>
+                                    <input type="hidden" id="hfid" />
+                                    <input type="hidden" id="hfuserid" value="@user.UserID" />
+                                    <input type="hidden" id="hfusertype" value="@user.UserType" />
+                                    <label for="Employee">Employee<span style="color:red">*</span></label>
+                                    <select class="form-control select2" id="ddlemployee" style="width:100%;"></select>
+                                </div>
 
-                <div class="form-group">
-                    <label for="ddlproduct">Leave Type<span style="color:red">*</span></label>
-                    <select class="form-control select2" id="ddlLeaveType" style="width:100%;"></select>
-                </div>
-                <div class="form-group">
-                    <label for="FromDate">From<span style="color:red">*</span></label>
-                    <input type="text" id="txtfrom" name="from" class="form-control">
-                </div>
+                                <div class="form-group">
+                                    <label for="ddlproduct">Leave Type<span style="color:red">*</span></label>
+                                    <select class="form-control select2" id="ddlLeaveType" style="width:100%;"></select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="FromDate">From<span style="color:red">*</span></label>
+                                    <input type="text" id="txtfrom" name="from" class="form-control">
+                                </div>
 
-                <div class="form-group">
-                    <label for="ToDate">To<span style="color:red">*</span></label>
-                    <input type="text" id="txtto" name="to" class="form-control">
+                                <div class="form-group">
+                                    <label for="ToDate">To<span style="color:red">*</span></label>
+                                    <input type="text" id="txtto" name="to" class="form-control">
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6" id="details">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="form-group">
+                                    <label for="vendor">Days<span style="color:red"></span></label>
+                                    <input type="text" class="form-control" id="txtdays" readonly />
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="vendor">Description<span style="color:red">*</span></label>
+                                    <input type="text" class="form-control" id="txtdescription" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="country">Note<span style="color:red"></span></label>
+                                    <input type="text" class="form-control" id="txtpublic" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="state"><span style="color:red"></span></label>
+                                    <input type="hidden" class="form-control" id="txtprivate" />
+                                </div>
+
+                                <div class="box-footer">
+                                    <a href="#" class="btn btn-danger" id="btnAdd"><span title="Click Here To Apply Leave" data-placement="bottom" data-toggle="tooltip"><b>Save</b></span></a>
+                                    <a href="#" class="btn btn-danger" id="btnUpdate"><span title="Click Here To Update Leave" data-placement="bottom" data-toggle="tooltip"><b>Update</b></span></a>
+                                    <a href="#" class="btn btn-danger" id="btnReset"><span title="Click Here To Reset" data-placement="bottom" data-toggle="tooltip"><b>Reset</b></span></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <table id="EmployeeListdata" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
+                                    <thead>
+                                        <tr>
+                                            <th>Id</th>
+                                            <th>Name</th>
+                                            <th>Leave Type</th>
+                                            <th>From</th>
+                                            <th>To</th>
+                                            <th>Days</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+
+                            </div>
+                        </div>
+                    </div>
                 </div>
+            </div>
+            <div class="tab-pane tab_2" id="tab_2">
+                <div class="col-sm-12">
+                    <div class="box box-primary">
+                        <div class="box-body">
+                            <table id="LeaveCalculationList" class="table-blue table check-table table-bordered table-striped dataTable text-left" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>Leave Type</th>
+                                        <th>Leave Days</th>
+                                        <th>Remaining Leave</th>
+                                    </tr>
+                                </thead>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             </div>
         </div>
-    </div>
+</section>
 
-    <div class="col-sm-6" id="details">
-        <div class="box box-primary">
-            <div class="box-body">
-                <div class="form-group">
-                    <label for="vendor">Days<span style="color:red"></span></label>
-                    <input type="text" class="form-control" id="txtdays" readonly />
-                </div>
+        <script>
+            $(document).ready(function () {
+                var usertype = $("#hfusertype").val();
+                if(usertype.toUpperCase() == "ADMINISTRATOR") {
+                    $(".tab_2").css("display", "none");
+                }
+                $("#loader").hide();
+                $("#txtfrom").datepicker({ format: 'mm-dd-yyyy', });
+                $("#txtto").datepicker({ format: 'mm-dd-yyyy', });
+                $("#btnUpdate").hide();
 
-                <div class="form-group">
-                    <label for="vendor">Description<span style="color:red">*</span></label>
-                    <input type="text" class="form-control" id="txtdescription" />
-                </div>
-
-                <div class="form-group">
-                    <label for="country">Note<span style="color:red"></span></label>
-                    <input type="text" class="form-control" id="txtpublic" />
-                </div>
-
-                <div class="form-group">
-                    <label for="state"><span style="color:red"></span></label>
-                    <input type="hidden" class="form-control" id="txtprivate" />
-                </div>
-
-                <div class="box-footer">
-                    <a href="#" class="btn btn-danger" id="btnAdd"><span title="Click Here To Apply Leave" data-placement="bottom" data-toggle="tooltip"><b>Save</b></span></a>
-                    <a href="#" class="btn btn-danger" id="btnUpdate"><span title="Click Here To Update Leave" data-placement="bottom" data-toggle="tooltip"><b>Update</b></span></a>
-                    <a href="#" class="btn btn-danger" id="btnReset"><span title="Click Here To Reset" data-placement="bottom" data-toggle="tooltip"><b>Reset</b></span></a>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-sm-12">
-        <div class="box box-primary">
-            <div class="box-body">
-                <table id="EmployeeListdata" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
-                    <thead>
-                        <tr>
-                            <th>Id</th>
-                            <th>Name</th>
-                            <th>Leave Type</th>
-                            <th>From</th>
-                            <th>To</th>
-                            <th>Days</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                </table>
-
-            </div>
-        </div>
-    </div>
+                $(".select2").select2();
 
 
-</div>
+                $(document).on('click', "#btnAdd", function () {
+                    addLeave();
+                });
 
+                $(document).on('click', "#btnReset", function () {
+                    reset();
+                    $("#btnUpdate").hide();
+                    $("#btnAdd").show();
+                });
+
+                $(document).on('click', "#btnUpdate", function () {
+                    updateLeave();
+                });
+
+                LeaveList();
+                //getempid();
+                LeaveCalculationList();
+            });
+
+        </script>
 <script>
-    $(document).ready(function () {
-        $("#loader").hide();
-        $("#txtfrom").datepicker({ format: 'mm-dd-yyyy', });
-        $("#txtto").datepicker({ format: 'mm-dd-yyyy', });
-        $("#btnUpdate").hide();
-
-        $(".select2").select2();
-
-
-        $(document).on('click', "#btnAdd", function () {
-            addLeave();
-        });
-
-        $(document).on('click', "#btnReset", function () {
-            reset();
-            $("#btnUpdate").hide();
-            $("#btnAdd").show();
-        });
-
-        $(document).on('click', "#btnUpdate", function () {
-            updateLeave();
-        });
-
-        LeaveList();
-    });
-
+    function getempid() {
+        $.ajax({
+            url: '/Hrms/GetSelectEmployeeID/',
+            datatype: 'json',
+            type: 'Post',
+            contentType: "application/json;charset=utf-8",
+            success: function (data) {
+                var jobj = JSON.parse(data);
+                console.log(data)
+                $("#empid").val(jobj[0].rowid);
+            },
+            complete: function () { $("#loader").hide(); },
+            error: function (error) { swal('Error!', 'something went wrong', 'error'); },
+        })
+    }
 </script>
-
-<script src="@Url.Content("~/js/Hrms/Leave.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
-<script src="@Url.Content("~/js/Hrms/LeaveList.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+        <script src="@Url.Content("~/js/Hrms/Leave.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+        <script src="@Url.Content("~/js/Hrms/LeaveList.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>

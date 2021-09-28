@@ -2684,10 +2684,19 @@ a#btnbackcategory {max-width: 135px; margin-top: 5px;}
 .customer-section #dtdata_wrapper .table-blue td{box-sizing:border-box;}
 .manage.warehouses .nav-tabs-custom .tablenav-top2{margin-top:0px;}
 .chart.of.accounts{overflow:visible;}
+#bank_account_section #tab_2 .proposal-row .box-primary .box-body{padding-top:10px;padding-bottom:10px;}
+#bank_account_section #tab_2 .proposal-row .col-md-12{width:100%;}
+
 @media(max-width:900px) {
+    #LinkedFiles_wrapper .col-sm-12{width:100%;}   
+    #entries_wrapper .col-sm-12{width:100%;}
+    #entries_wrapper .row:first-child{display:flex;}
+    #EmployeeListdata_wrapper .row:first-child{display:flex;}
     #dtProductsAccount_wrapper .row:first-child{display:flex;}
     #dtdatawarehouse_wrapper .row:first-child{display:flex;}
     #Journaldata_wrapper .row:first-child{display:flex;}
+#entries_wrapper .row:first-child > div:first-child{margin-right:auto;}
+#EmployeeListdata_wrapper .row:first-child > div:first-child{margin-right:auto;}
 #dtProductsAccount_wrapper .row:first-child > div:first-child{margin-right:auto;}
 #Journaldata_wrapper .row:first-child > div:first-child{margin-right:auto;}
 #dtdatawarehouse_wrapper .row:first-child > div:first-child{margin-right:auto;}
@@ -2699,6 +2708,7 @@ a#btnbackcategory {max-width: 135px; margin-top: 5px;}
 #dtdatawarehouse_wrapper .table-blue.table td{white-space:normal !important;}
 #tblAddJournal.table-blue.table{table-layout:fixed; min-width: 1000px;}
 .accounting.journal .journal-section > .row > .col-md-12 > .box-primary > .box-header{width:100%; overflow:auto;}
+
 /*************/
 #dtdataPartially_wrapper .row:first-child{display:flex;}
 #dtdataPartially_wrapper .row:first-child > div:first-child{margin-right:auto;}
@@ -2746,9 +2756,14 @@ a#btnbackcategory {max-width: 135px; margin-top: 5px;}
 #Journaldata_wrapper > .row:nth-child(2) > .col-sm-12{padding:0px;width:100%; overflow:auto;}
 #dtProductsAccount_wrapper > .row:nth-child(2){margin:0px;}
 #dtProductsAccount_wrapper > .row:nth-child(2) > .col-sm-12{padding:0px;width:100%; overflow:auto;}
+#EmployeeListdata_wrapper > .row:nth-child(2){margin:0px;}
+#EmployeeListdata_wrapper > .row:nth-child(2) > .col-sm-12{padding:0px;width:100%; overflow:auto;}
+#bank_account_section #tab_7 .col-md-12{width:100%;}
     }
 @media(max-width:767px){
-    
+#bank_account_section #tab_1 .col-sm-4,
+#bank_account_section #tab_1 .col-md-4{width:100%;}
+#bank_account_section #tab_1 .col-sm-4 label ~ .form-control{display:block; width:100%;}
 .proposal-row .form-group.d-flex{}
     .proposal-row .form-group.d-flex .col-sm-3{width:33.333%;}
     .proposal-row .form-group.d-flex.flex-2-last{flex-wrap:wrap;}

@@ -68,5 +68,21 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(JSONresult, 0);
         }
+
+        public JsonResult Updatewoocommerce(EmailSettingModel model)
+        {
+            string[] varQueryArr1 = new string[4];
+            string[] varFieldsName = new string[4] { "woocommerce_email_from_name", "woocommerce_email_from_address", "woocommerce_email_header_image", "woocommerce_email_footer_text" };
+            string[] varFieldsValue = new string[4] { model.option_name, model.email_type, model.additional_content, model.email_heading };
+            string[] ids = new string[4] { "225", "226", "227", "228" };
+            for (int n = 0; n < 4; n++)
+            {
+                EmailNotificationsRepository.UpdateMetaData(ids[n], varFieldsName[n], varFieldsValue[n]);
+            }
+            return Json(new { status = true, message = "updated successfully!!", url = "Manage" }, 0);
+        }
+
+       
+        
     }
 }

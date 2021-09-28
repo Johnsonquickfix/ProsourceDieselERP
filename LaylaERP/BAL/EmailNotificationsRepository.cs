@@ -1,5 +1,6 @@
 ﻿using LaylaERP.DAL;
 using LaylaERP.Models;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -55,7 +56,7 @@ namespace LaylaERP.BAL
                             + " OR recipients like '%" + searchid + "%' "
                             + " )";
                 }
-                string strSql = "select rowid,email_notify_key,email_text,email_content_type,eno.is_active,recipients"
+                string strSql = "select rowid,email_notify_key,email_text,email_content_type,et.is_active,recipients"
                 + " from erp_email_notify_options eno"
                 + " left outer join  erp_email_templates et on et.option_name = eno.email_notify_key"
                 + " WHERE rowid > 0" + strWhr
@@ -143,6 +144,24 @@ namespace LaylaERP.BAL
                 throw ex;
             }
             return dt;
+        }
+        public static void UpdateMetaData(string id, string varFieldsName, string varFieldsValue)
+        {
+            try
+            {
+                string strsql = "update wp_options set option_value=@option_value where option_id=@option_id and option_name=@option_name";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@option_id", id),
+                    new MySqlParameter("@option_name", varFieldsName),
+                    new MySqlParameter("@option_value", varFieldsValue),
+                };
+                SQLHelper.ExecuteNonQuery(strsql, para);
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
         }
     }
 }

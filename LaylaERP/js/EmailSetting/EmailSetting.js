@@ -2,6 +2,68 @@
     dataGridLoad();
     $("#loader").hide();
 });
+$(document).on('click', "#btnchanges", function () {
+    addchanges();
+});
+function addchanges() {  
+    debugger
+    fromnameval = $("#txtfromname").val();
+    fromaddressval = $("#txtfromaddress").val();
+    headerimagval = $("#txtheaderimage").val();
+    footertextval = $("#txtfootertext").val(); 
+
+    if (fromnameval == "") {
+        swal('Alert', 'Please Enter From Name', 'error').then(function () { swal.close(); $('#txtfromname').focus(); });
+    }
+    else if (fromaddressval == "") {
+        swal('Alert', 'Please Enter From Address', 'error').then(function () { swal.close(); $('#txtfromaddress').focus(); });
+    }
+    else if (headerimagval == "") {
+        swal('Alert', 'Please Enter Header Image', 'error').then(function () { swal.close(); $('#txtheaderimage').focus(); });
+    }
+    else if (footertextval == "") {
+        swal('Alert', 'Please Enter Footer Text', 'error').then(function () { swal.close(); $('#txtfootertext').focus(); });
+    }
+    else {
+        var obj = {
+            option_name: fromnameval,
+            email_type: fromaddressval,
+            additional_content: headerimagval,
+            email_heading: footertextval,
+        }
+        $.ajax({
+            url: '/EmailSetting/Updatewoocommerce/', dataType: 'json', type: 'Post',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(obj),
+            dataType: "json",
+            beforeSend: function () {
+                $("#loader").show();
+            },
+            success: function (data) {
+                if (data.status == true) {
+                    if (data.url == "Manage") {
+                        swal('Alert!', data.message, 'success');
+                    }
+                    else {
+                        swal('Alert!', data.message, 'success');
+                    }
+                }
+                else {
+                    swal('Alert!', data.message, 'error')
+                }
+            },
+            complete: function () {
+                $("#loader").hide();
+            },
+            error: function (error) {
+                swal('Error!', 'something went wrong', 'error');
+            },
+        })
+    }
+
+
+
+}
 function dataGridLoad() {
     $('#dtdata').DataTable({
         columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
@@ -45,10 +107,10 @@ function dataGridLoad() {
 
             'data': 'id', sWidth: "5%   ",
                 'render': function (data, type, row) {
-                    if (parseInt(row.is_active) == 0)
-                        return '<span><i class="fa fa-times-circle" aria-hidden="true"></i></span>';
+                    if (parseInt(row.is_active) == 1)
+                        return '<span><i class="fa fa-check-circle" aria-hidden="true"></i></span>';                
                     else
-                        return '<span><i class="fa fa-check-circle" aria-hidden="true"></i></span>';
+                        return '<span><i class="fa fa-times-circle" aria-hidden="true"></i></span>';
                 }
             },
 

@@ -654,7 +654,7 @@
                 strSql.Append(string.Format("update wp_postmeta set meta_value='{0}' where post_id='{1}' and meta_key='{2}';", model.invoice_number, model.post_id, "_podium_invoice_number"));
                 strSql.Append(string.Format("update wp_postmeta set meta_value='{0}' where post_id='{1}' and meta_key='{2}';", "PAID", model.post_id, "_podium_status"));
                 ///step 2 : Update Order status wc-processing
-                strSql.Append(string.Format("update wp_posts set post_status='{0}',post_modified_gmt='{1}' where id = {1};", "wc-processing", cUTFDate.ToString("yyyy/MM/dd HH:mm:ss"), model.post_id));
+                strSql.Append(string.Format("update wp_posts set post_status='{0}',post_modified_gmt='{1}' where id = {2};", "wc-processing", cUTFDate.ToString("yyyy/MM/dd HH:mm:ss"), model.post_id));
                 ///step 3 : Add Order Note
                 strSql.Append("insert into wp_comments(comment_post_ID, comment_author, comment_author_email, comment_author_url, comment_author_IP, comment_date, comment_date_gmt, comment_content, comment_karma, comment_approved, comment_agent, comment_type, comment_parent, user_id) ");
                 strSql.Append(string.Format("values ({0}, 'WooCommerce', 'woocommerce@laylasleep.com', '', '', '{1}', '{2}', '{3}{4}', '0', '1', 'WooCommerce', 'order_note', '0', '0');", model.post_id, cDate.ToString("yyyy/MM/dd HH:mm:ss"), cUTFDate.ToString("yyyy/MM/dd HH:mm:ss"), model.order_note, cDate.ToString("yyyy/MM/dd HH:mm:ss")));
@@ -666,7 +666,7 @@
                 strSql.Append("from wp_wc_order_product_lookup opl inner join wp_posts p on p.id = opl.order_id where p.id = " + model.post_id + ";");
 
                 result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
-                if (!string.IsNullOrEmpty(model.payment_uid)) PurchaseOrderRepository.CreateOrders(model.post_id);
+                //if (!string.IsNullOrEmpty(model.payment_uid)) PurchaseOrderRepository.CreateOrders(model.post_id);
             }
             catch { }
             return result;
@@ -683,7 +683,7 @@
                 strSql.Append(string.Format("update wp_postmeta set meta_value = '{0}' where post_id = '{1}' and meta_key = '{2}' ; ", model.meta_value, model.post_id, model.meta_key));
 
                 ///step 2 : Update Order status wc-processing
-                strSql.Append(string.Format("update wp_posts set post_status='{0}',post_modified_gmt='{1}' where id = {1};", "wc-processing", cUTFDate.ToString("yyyy/MM/dd HH:mm:ss"), model.post_id));
+                strSql.Append(string.Format("update wp_posts set post_status='{0}',post_modified_gmt='{1}' where id = {2};", "wc-processing", cUTFDate.ToString("yyyy/MM/dd HH:mm:ss"), model.post_id));
                 ///step 3 : Add Order Note
                 //strSql.Append("insert into wp_comments(comment_post_ID, comment_author, comment_author_email, comment_author_url, comment_author_IP, comment_date, comment_date_gmt, comment_content, comment_karma, comment_approved, comment_agent, comment_type, comment_parent, user_id) ");
                 //strSql.Append(string.Format("values ({0}, 'WooCommerce', 'woocommerce@laylasleep.com', '', '', '{1}', '{2}', '{3}{4}', '0', '1', 'WooCommerce', 'order_note', '0', '0');", model.post_id, cDate.ToString("yyyy/MM/dd HH:mm:ss"), cUTFDate.ToString("yyyy/MM/dd HH:mm:ss"), model.order_note, cDate.ToString("yyyy/MM/dd HH:mm:ss")));
@@ -695,7 +695,7 @@
                 strSql.Append("from wp_wc_order_product_lookup opl inner join wp_posts p on p.id = opl.order_id where p.id = " + model.post_id + ";");
 
                 result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
-                if (model.meta_value.ToUpper() == "COMPLETED") PurchaseOrderRepository.CreateOrders(model.post_id);
+                //if (model.meta_value.ToUpper() == "COMPLETED") PurchaseOrderRepository.CreateOrders(model.post_id);
             }
             catch (Exception ex) { throw ex; }
             return result;
@@ -1622,7 +1622,7 @@
                 //        + " left join wp_postmeta pmp on p.id = pmp.post_id and pmp.meta_key = '_billing_phone'"
                 //        + " WHERE p.post_type = 'shop_order' " + strWhr.ToString();
                 string strSql = "SELECT p.id,p.post_status status, DATE_FORMAT(p.post_date, '%M %d %Y') date_created,os.num_items_sold,pmf.total_sales,pmf.customer_id,"
-                            + " pmf.first_name,pmf.last_name,pmf.billing_phone,pmf.payment_method,pmf.payment_method_title,pmf.paypal_status,pmf.paypal_id,"
+                            + " pmf.first_name,pmf.last_name,pmf.billing_email,pmf.billing_phone,pmf.payment_method,pmf.payment_method_title,pmf.paypal_status,pmf.paypal_id,"
                             + " (SELECT sum(rpm.meta_value) FROM wp_posts rp JOIN wp_postmeta rpm ON rp.ID = rpm.post_id AND meta_key = '_order_total' WHERE rp.post_parent = p.ID AND rp.post_type = 'shop_order_refund') AS refund_total"
                             + " FROM wp_posts p inner join wp_wc_order_stats os on p.id = os.order_id"
                             + " inner join vw_Order_details pmf on p.id = pmf.post_id"

@@ -25,4 +25,18 @@ namespace LaylaERP.Models
         public string woocommerce_email_header_image { get; set; }
         public string woocommerce_email_footer_text { get; set; }
     }
+    public class EmailNotificationsModel
+    {
+        public string option_name { get; set; }
+
+        public string recipients { get; set; }
+
+        public string site_title { get; set; }
+
+        public string order_number { get; set; }
+
+        public string site_address { get; set; }
+
+        public string site_url { get; set; }
+    }
 }

@@ -1,27 +1,155 @@
-﻿@{
-    ViewBag.Title = "Accounting Journal";
+﻿
+@{
+    ViewBag.Title = "ManageCoupons";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
 }
-<section class="content section-content 404-section">
-    <div class="notfound-container">
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="error-msg">
-                        <span _ngcontent-serverapp-c40="">Ooops.</span>
-                        The Page You’re Looking For Isn’t Here.
+<link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+<link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
+<!-- datatables js -->
+<script src="~/Content/AdminLTE-3.1.0/datatables/datatables.min.js" type="text/javascript"></script>
+<script src="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/js/dataTables.bootstrap4.min.js" type="text/javascript"></script>
+<div class="page-title">
+    <h2>Manage Coupons</h2><a class="btn btn-danger" id="btnAdd" href="Index">Add New</a>
+</div>
+<section class="content section-content neworder-section table-design">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="user_subCrumbs">
+                <input type="hidden" id="hfType" value="" />
+                <ul class="subsubsub">
+                    <li class="all"><a id="all" href="javascript:void(0);" class="current">All (<span class="count">0</span></a>) |</li>
+                    <li class="mine"><a href="javascript:void(0);" id="mine">Mine (<span class="count">0</span>)</a> |</li>
+                    <li class="published"><a href="javascript:void(0);" id="published">Published (<span class="count">0</span>)</a> |</li>
+                    <li class="draft"><a href="javascript:void(0);" id="draft">Draft (<span class="count">0</span>)</a> |</li>
+                    <li class="pending"><a href="javascript:void(0);" id="pending">Pending(<span class="count">0</span>)</a> |</li>
+                    <li class="private"><a href="javascript:void(0);" id="private">Private (<span class="count">0</span>)</a> </li>
+                    <li class="trash"><a href="javascript:void(0);" id="trash">Trash (<span class="count">0</span>)</a> </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="user-top-section">
+                <div class="tablenav top tablenav-top2">
+                    <div class="alignleft actions bulkactions">
+                        <select class="form-control" id="ddlbulkaction">
+                            <option value="0" selected="selected">Bulk actions</option>
+                            <option value="publish">Published</option>
+                            <option value="draft">Draft</option>
+                            <option value="pending">Pending</option>
+                            <option value="private">Private</option>
+                            <option value="trash">Move to Trash</option>
+                        </select>
+                        <button type="button" id="btnChange" onclick="Status();" class="btn btn-primary btn-flat button">Apply</button>
                     </div>
-                    <div class="back-home">
-                        <a href="/">GO BACK</a>
-                        <a href="/">Laylasleep.com</a>
+
+                    <div class="alignleft actions">
+                        <select class="form-control" id="ddltype">
+                            <option value="0">Show all types</option>
+                            <option value="percent">Percentage discount</option>
+                            <option value="fixed_cart">Fixed cart discount</option>
+                            <option value="fixed_product">Fixed product discount</option>
+                        </select>
+                        <input type="submit" name="filter_action" id="btnOtherFilter" class="button" value="Filter">
                     </div>
-                </div>
-                <div class="col-sm-6">
-                    <div class="error-icon">
-                        <img loading="lazy" alt="Page Not Found" src="https://quickfix16.com/wp-content/themes/layla-white/images/home-404.jpg">
+
+                    <div>
+                        <button type="button" id="btnautogenerate" class="btn btn-danger" style="float:right;" data-toggle="modal" data-target="#roleModal">
+                            <i class="fa fa-plus"></i> Auto Generate Coupon
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-primary table-design not-fixed">
+                <div class="box-header">
+                    @*<div class="table-responsive">  *@
+                    <table id="dtdata" class="table-blue table check-table table-bordered table-striped dataTable" width="100%">
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox" name="checkall" id="checkall" onClick="CheckAll();"><label></label></th>
+                                <th>Code</th>
+                                <th>Coupon type</th>
+                                <th>Coupon amount</th>
+                                <th>Description</th>
+                                <th>Product IDs</th>
+                                <th>Usage / Limit</th>
+                                <th>Expiry date</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                    </table>
+                    @*</div>*@
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
+<div class="modal fade" id="roleModal" tabindex="-1" role="dialog" aria-labelledby="roleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="exampleModalLongTitle">Auto Generate Monthly Coupon</h4>
+                @*<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>*@
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label">Month</label>
+                        <div class="col-sm-5">
+                            <select class="form-control" id="month">
+                                <option value="">Month</option>
+                                <option value="01">January</option>
+                                <option value="02">February</option>
+                                <option value="03">March</option>
+                                <option value="04">April</option>
+                                <option value="05">May</option>
+                                <option value="06">Jun</option>
+                                <option value="07">July</option>
+                                <option value="08">August</option>
+                                <option value="09">September</option>
+                                <option value="10">October</option>
+                                <option value="11">November</option>
+                                <option value="12">December</option>
+                            </select>
+                        </div>
+                        <label class="col-sm-1 control-label">Year</label>
+                        <div class="col-sm-5">
+                            <select class="form-control" id="ddlyear">
+                                <option value="">Year</option>
+                                <option value="21">2021</option>
+                                <option value="22">2022</option>
+                                <option value="23">2023</option>
+                                <option value="24">2024</option>
+                                <option value="25">2025</option>
+                            </select>
+                            @*<input type="submit" name="filtersrchexp" value="Export" class="button button-primary" />*@
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" id="btnmontholyautoGenerate" class="btn btn-danger"><i class="fa fa-save"></i> Save </button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/js/common.js"></script>
+<script src="@Url.Content("~/js/Marketing/CouponsManage.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+<script>
+    $(document).ready(function () {
+    });
+</script>
+

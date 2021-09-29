@@ -2686,7 +2686,7 @@ a#btnbackcategory {max-width: 135px; margin-top: 5px;}
 .chart.of.accounts{overflow:visible;}
 #bank_account_section #tab_2 .proposal-row .box-primary .box-body{padding-top:10px;padding-bottom:10px;}
 #bank_account_section #tab_2 .proposal-row .col-md-12{width:100%;}
-.error-msg span {font-size: 110px;line-height: 100px; display: block;font-style: italic;font-family: 'darwin_ess_rdbold';color: #3a3a3a;margin-bottom: 20px;}
+.error-msg span {font-size: 110px;line-height: 100px; display: block;font-style: italic;color: #3a3a3a;margin-bottom: 20px;}
 .error-msg {
     border-bottom: 5px solid #ff4100;
     color: #242223;

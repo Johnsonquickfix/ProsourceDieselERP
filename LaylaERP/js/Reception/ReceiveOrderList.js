@@ -63,6 +63,11 @@ function PurchaseOrderGrid() {
             {
                 'data': 'refordervendor', sWidth: "10%", title: 'Invoice No', sWidth: "10%"                
             },
+            {
+                data: 'fk_projet', title: 'SO No.', sWidth: "10%", render: function (data, type, dtrow) {
+                    if (data > 0) return '#' + data; else return '';
+                }
+            },
             { data: 'vendor_name', title: 'Vendor Name', sWidth: "15%" },
             {
                 data: 'city', title: 'Address', sWidth: "20%", render: function (data, type, dtrow) {

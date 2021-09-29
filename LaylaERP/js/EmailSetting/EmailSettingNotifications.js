@@ -3,7 +3,8 @@
     var url = window.location.pathname;
     var id = url.substring(url.lastIndexOf('/') + 1);
     $("#hfid").val(id);
-    setTimeout(function () { GetDetails(id); }, 200);
+    GetDetails(id); 
+ /*   setTimeout(function () { GetDetails(id); }, 200);*/
 });
 $(document).on('click', "#btnsave", function () {
     addemailnotification();
@@ -72,30 +73,29 @@ function addemailnotification() {
 
 function GetDetails(type) {   
     var ID = type;
-    var obj = { strVal: type }
+    var obj = { strValue1: type }
+
+
+    var option = { strValue1: type };
     $.ajax({
+        type: "POST", url: '/EmailSetting/GetDetails', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(option),
+        beforeSend: function () { $("#loader").show(); },
+        success: function (result) {
 
-        url: '/EmailSetting/GetDetails/' + ID,
-        type: 'post',
-        contentType: "application/json; charset=utf-8",
-        dataType: 'JSON',
-        data: JSON.stringify(obj),
-        success: function (data) {
-            var i = JSON.parse(data);
-
-            if (i[0].is_active == "1")
+            if (result.is_active == "1")
                 $("#theemailenable").prop("checked", true);
-                else
+            else
                 $("#theemailenable").prop("checked", false);
 
-            $("#recipients").val(i[0].recipients);
-            $("#emailsubject").val(i[0].subject);
-            $("#emailheading").val(i[0].email_heading);
-            $("#emailcontent").val(i[0].additional_content);
-            $('#templatetype').val(i[0].email_type.trim()).trigger('change');
-            
+            $("#recipients").val(result.recipients);
+            $("#emailsubject").val(result.subject);
+            $("#emailheading").val(result.email_heading);
+            $("#emailcontent").val(result.additional_content);
+            $('#templatetype').val(result.email_type).trigger('change');
+ 
         },
-        error: function (msg) { alert(msg); },
+        error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); },
+        complete: function () { $("#loader").hide(); },
         async: false
     });
 

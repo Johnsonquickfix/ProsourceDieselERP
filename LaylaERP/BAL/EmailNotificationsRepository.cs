@@ -122,28 +122,71 @@ namespace LaylaERP.BAL
             { throw ex; }
             return result;
         }
-        public static DataTable GetDetails(OrderPostStatusModel model)
+        public static EmailSettingModel GetDetails(string optionname)
         {
-            DataTable dt = new DataTable();
+            EmailSettingModel EmailSetting = new EmailSettingModel();
 
             try
             {
+
+                EmailSetting.recipients = EmailSetting.subject = EmailSetting.email_heading = EmailSetting.additional_content = EmailSetting.email_type = string.Empty;
+                EmailSetting.email_type = "email_pln_text";
+                EmailSetting.is_active = 0;
                 string strWhr = string.Empty;
 
                 string strSql = "SELECT recipients,subject,email_heading,additional_content,email_type,is_active"
                              + " FROM erp_email_templates P"
-                             + " WHERE P.option_name = '" + model.strVal + "' ";
+                             + " WHERE P.option_name = '" + optionname + "' ";
 
+                MySqlDataReader sdr = SQLHelper.ExecuteReader(strSql);
+                if (sdr != null)
+                {
+                    while (sdr.Read())
+                    {                       
+                        if (sdr["recipients"] != DBNull.Value)
+                            EmailSetting.recipients = sdr["recipients"].ToString();
+                        else
+                            EmailSetting.recipients = string.Empty;
 
-                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
-                dt = ds.Tables[0];
+                        if (sdr["subject"] != DBNull.Value)
+                            EmailSetting.subject = sdr["subject"].ToString();
+                        else
+                            EmailSetting.subject = string.Empty;
+
+                        if (sdr["email_heading"] != DBNull.Value)
+                            EmailSetting.email_heading = sdr["email_heading"].ToString();
+                        else
+                            EmailSetting.email_heading = string.Empty;
+
+                        if (sdr["additional_content"] != DBNull.Value)
+                            EmailSetting.additional_content = sdr["additional_content"].ToString();
+                        else
+                            EmailSetting.additional_content = string.Empty;
+
+                        if (sdr["email_type"] != DBNull.Value)
+                            EmailSetting.email_type = sdr["email_type"].ToString();
+                        else
+                            EmailSetting.email_type = "email_pln_text";
+
+                        if (sdr["is_active"] != DBNull.Value)
+                            EmailSetting.is_active = Convert.ToInt32(sdr["is_active"].ToString());
+                        else
+                            EmailSetting.is_active = 0;
+                    }
+                }
+               
+                   
+              
+
+                //DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                //dt = ds.Tables[0];
 
             }
             catch (Exception ex)
             {
                 throw ex;
             }
-            return dt;
+            return EmailSetting;
         }
         public static void UpdateMetaData(string id, string varFieldsName, string varFieldsValue)
         {

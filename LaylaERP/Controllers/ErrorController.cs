@@ -11,7 +11,7 @@ namespace LaylaERP.Controllers
         // GET: Error
         public ActionResult Index()
         {
-            return View();
+            return View("Error");
         }
     }
 }

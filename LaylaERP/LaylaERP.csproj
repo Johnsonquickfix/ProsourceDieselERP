@@ -194,6 +194,7 @@
     <Compile Include="Controllers\CustomerController.cs" />
     <Compile Include="Controllers\EmailNotificationsController.cs" />
     <Compile Include="Controllers\EmailSettingController.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\ExportController.cs" />
     <Compile Include="Controllers\FeeNTaxController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -595,6 +596,7 @@
     <Content Include="Images\Customer.png" />
     <Content Include="Images\datagrid_icons.png" />
     <Content Include="Images\datebox_arrow.png" />
+    <Content Include="Images\home-404.jpg" />
     <Content Include="Images\layla1-logo.png" />
     <Content Include="Images\layla32.png" />
     <Content Include="Images\layout_arrows.png" />
@@ -816,7 +818,7 @@
     </Content>
     <Content Include="Views\Web.config" />
     <Content Include="Views\_ViewStart.cshtml" />
-    <Content Include="Views\Shared\Error.cshtml" />
+    <Content Include="Views\Shared\_Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
@@ -931,6 +933,9 @@
     <Content Include="Views\EmailNotifications\NewOrder.cshtml" />
     <Content Include="Views\EmailSetting\EmailNotifications.cshtml" />
     <Content Include="Views\EmailSetting\ManageEmailNotifications.cshtml" />
+    <Content Include="Views\Reception\PartiallyOrder.cshtml" />
+    <Content Include="Views\Reception\POClosureOrder.cshtml" />
+    <Content Include="Views\Error\Error.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

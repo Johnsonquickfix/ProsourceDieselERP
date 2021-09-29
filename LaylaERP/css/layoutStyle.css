@@ -2648,8 +2648,13 @@ a#btnbackcategory {max-width: 135px; margin-top: 5px;}
 .on-hand.inventory #dtdata_wrapper #dtdata_length { order: -2;}
 .on-hand.inventory #dtdata_wrapper #dtdata_filter {order: -1; margin-left: auto;margin-right: 15px;}
 .on-hand.inventory #dtdata_wrapper .dataTables_scroll{width:100%; overflow:auto;}
-#billModal .modal-footer .col-md-6{display:flex; margin-top:5px; align-items:center; justify-content:space-around;}
-#billModal .modal-footer .col-md-6 .form-check-inline{display:flex; align-items:center;}
+#billModal .modal-footer .col-md-6{display:flex; margin-top:5px; align-items:center;}
+#billModal .modal-footer .col-md-6 .form-check-inline:last-child{margin-left:20px;}
+#billModal .modal-footer .col-md-3:first-child{width:auto;padding:0px;}
+#billModal .modal-footer .col-md-3:first-child select{margin-right:0px;}
+#billModal .modal-footer .col-md-6 .form-check-inline {display: flex;align-items: center;}
+#billModal .modal-footer{display:flex; align-items:center;}  
+#billModal .modal-footer #btnPlaceOrder{margin-left:auto;} 
 #billModal .modal-footer .col-md-6 .form-check-inline *{margin:0px;}
 #billModal .modal-footer .col-md-6 .form-check-inline input{margin-right:5px;}
 .email_settings textarea.form-control{min-height:100px;}
@@ -2686,15 +2691,40 @@ a#btnbackcategory {max-width: 135px; margin-top: 5px;}
 .chart.of.accounts{overflow:visible;}
 #bank_account_section #tab_2 .proposal-row .box-primary .box-body{padding-top:10px;padding-bottom:10px;}
 #bank_account_section #tab_2 .proposal-row .col-md-12{width:100%;}
+.error-msg span {font-size: 110px;line-height: 100px; display: block;font-style: italic;color: #3a3a3a;margin-bottom: 20px;}
+.error-msg {
+    border-bottom: 5px solid #ff4100;
+    color: #242223;
+    font-weight: 700;
+    font-size: 34px;
+    font-style: italic;
+    line-height: 40px;
+    padding-bottom: 15px;
+}
+.notfound-container .row {
+    align-items: center; display:flex;
+}
+.notfound-container {padding: 70px 0;}
+.back-home {margin-top: 20px;}
+.back-home a {color: #000;font-size: 20px;font-weight: 600;display: inline-block;}
+.back-home a:first-child {margin-right: 15px;border: 2px solid #ff4100;padding: 7px 25px;border-radius: 4px;}
+.error-icon img {width: 100%;}
+.attendance .user-top-section .tablenav .bulkactions > .input-group{margin-right:10px;}
+.attendance .user-top-section .tablenav .bulkactions > #btnSave{margin-left:10px;}
+.order.shipping.rule .dataTables_scrollHeadInner{width:100% !important;}
 
 @media(max-width:900px) {
+.email.notifications .email_settings .form-group .col-sm-2{flex:1;}
+.email.notifications .email_settings .form-group .col-sm-10{flex:3;}
     #LinkedFiles_wrapper .col-sm-12{width:100%;}   
     #entries_wrapper .col-sm-12{width:100%;}
+    #PendingEmployeeListdata_wrapper .row:first-child{display:flex;}
     #entries_wrapper .row:first-child{display:flex;}
     #EmployeeListdata_wrapper .row:first-child{display:flex;}
     #dtProductsAccount_wrapper .row:first-child{display:flex;}
     #dtdatawarehouse_wrapper .row:first-child{display:flex;}
     #Journaldata_wrapper .row:first-child{display:flex;}
+#PendingEmployeeListdata_wrapper .row:first-child > div:first-child{margin-right:auto;}
 #entries_wrapper .row:first-child > div:first-child{margin-right:auto;}
 #EmployeeListdata_wrapper .row:first-child > div:first-child{margin-right:auto;}
 #dtProductsAccount_wrapper .row:first-child > div:first-child{margin-right:auto;}
@@ -2708,7 +2738,8 @@ a#btnbackcategory {max-width: 135px; margin-top: 5px;}
 #dtdatawarehouse_wrapper .table-blue.table td{white-space:normal !important;}
 #tblAddJournal.table-blue.table{table-layout:fixed; min-width: 1000px;}
 .accounting.journal .journal-section > .row > .col-md-12 > .box-primary > .box-header{width:100%; overflow:auto;}
-
+#poststuff #exportorderdata, #exportuserdata_wrapper #exportuserdata, #exportcustomerdata_wrapper table{min-width:1000px;}
+#poststuff, #exportuserdata_wrapper, #exportcustomerdata_wrapper{width:100%; overflow:auto;}
 /*************/
 #dtdataPartially_wrapper .row:first-child{display:flex;}
 #dtdataPartially_wrapper .row:first-child > div:first-child{margin-right:auto;}
@@ -2759,8 +2790,38 @@ a#btnbackcategory {max-width: 135px; margin-top: 5px;}
 #EmployeeListdata_wrapper > .row:nth-child(2){margin:0px;}
 #EmployeeListdata_wrapper > .row:nth-child(2) > .col-sm-12{padding:0px;width:100%; overflow:auto;}
 #bank_account_section #tab_7 .col-md-12{width:100%;}
+#entries_wrapper > .row:nth-child(2){margin:0px;}
+#entries_wrapper > .row:nth-child(2) > .col-sm-12{padding:0px;width:100%; overflow:auto;}
+#entries_wrapper .table-blue{min-width:900px;}
+#LinkedFiles_wrapper > .row:nth-child(2){margin:0px;}
+#LinkedFiles_wrapper > .row:nth-child(2) > .col-sm-12{padding:0px;width:100%; overflow:auto;}
+#LinkedFiles_wrapper .table-blue{min-width:600px;}
+#entries_wrapper > .row:nth-child(3){display:flex; flex-direction:column;}
+#LinkedFiles_wrapper > .row:nth-child(3){display:flex; flex-direction:column;}
+#EmployeeListdata{min-width:900px;}
+.employees-section #tab_5 .proposal-row > .col-md-12{width:100%;}
+#EmployeeLinkedFiles_wrapper > .row:nth-child(2) > .col-sm-12{padding:0px;width:100%; overflow:auto;}
+#EmployeeLinkedFiles_wrapper > .row:nth-child(2){margin:0px;}
+#EmployeeLinkedFiles_wrapper .table-blue{min-width:1000px;}
+#PendingEmployeeListdata_wrapper > .row:nth-child(2) > .col-sm-12{padding:0px;width:100%; overflow:auto;}
+#PendingEmployeeListdata_wrapper > .row:nth-child(2){margin:0px;}
+#PendingEmployeeListdata_wrapper .table-blue{min-width:1000px;}
+.staterecycletax .table-blue{min-width:1000px;}
+.agent.commission.rate .table-blue{min-width:700px;}
+.menus .appearance-menu-section .table-blue{min-width:1000px;}
+.suffix.split.logic #dtdata_wrapper .table-blue{min-width:1000px;}
+.suffix.split.logic #dtdata_wrapper > .row:nth-child(2){margin:0px;}
+.suffix.split.logic #dtdata_wrapper > .row:nth-child(2) > .col-sm-12{padding:0px;width:100%; overflow:auto;}
+.order.shipping.rule .proposal-row .col-md-12{width:100%;}
+.order.shipping.rule .neworder-section > .row:first-child{display:flex;}
+.order.shipping.rule .neworder-section > .row:first-child .col-md-6:last-child{margin-left:auto;}
+.order.shipping.rule #dvdetails .select2-container{max-width:100%;}
+
     }
 @media(max-width:767px){
+.attendance .user-top-section .tablenav .bulkactions{width:100% !important; flex:0 0 100%;}
+.attendance .user-top-section .tablenav .bulkactions .input-group:last-child{margin-right:0px;}
+.attendance .user-top-section .tablenav .bulkactions .input-group:last-child select {flex: 0 0 100%;margin-right: 0px;width: 100%;}
 #bank_account_section #tab_1 .col-sm-4,
 #bank_account_section #tab_1 .col-md-4{width:100%;}
 #bank_account_section #tab_1 .col-sm-4 label ~ .form-control{display:block; width:100%;}
@@ -2795,6 +2856,8 @@ a#btnbackcategory {max-width: 135px; margin-top: 5px;}
     
 }
 @media(max-width:400px) {
+.list.financial.accounts .page-title{flex-wrap:wrap;}
+.list.financial.accounts .page-title .ml-auto{margin-left:0px;}
 #btnSaveProductAccount{margin-left:6px;}
 .products.account .row .page-title{flex-wrap:wrap;}
 .products.account .row .page-title h2{width:100%;}

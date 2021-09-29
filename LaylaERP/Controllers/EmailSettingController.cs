@@ -56,17 +56,21 @@ namespace LaylaERP.Controllers
                 
                 return Json(new { status = true, message = "updated successfully!!", url = "Manage" }, 0);
         }
-        public JsonResult GetDetails(OrderPostStatusModel model)
+        [HttpPost]
+        public JsonResult GetDetails(SearchModel model)
         {
-            string JSONresult = string.Empty;
+            EmailSettingModel obj = new EmailSettingModel();
             try
             {
-
-                DataTable dt = EmailNotificationsRepository.GetDetails(model);
-                JSONresult = JsonConvert.SerializeObject(dt);
+                if (string.IsNullOrEmpty(model.strValue1))
+                {
+                    throw new Exception("Invalid Data");
+                }
+                obj = EmailNotificationsRepository.GetDetails(model.strValue1);
+            
             }
             catch { }
-            return Json(JSONresult, 0);
+            return Json(obj, 0);
         }
 
         public JsonResult Updatewoocommerce(EmailSettingModel model)

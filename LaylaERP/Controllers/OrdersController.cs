@@ -460,6 +460,8 @@
                 int result = OrderRepository.UpdatePodiumStatus(model);
                 if (result > 0)
                 { status = true; JSONresult = "Order placed successfully."; }
+                else
+                { status = true; JSONresult = "Something went wrong."; }
                 //JSONresult = JsonConvert.SerializeObject(DT);
             }
             catch (Exception ex) { JSONresult = ex.Message; }

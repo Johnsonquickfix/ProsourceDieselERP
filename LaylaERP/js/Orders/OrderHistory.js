@@ -212,8 +212,8 @@ function dataGridLoad(order_type, is_date) {
             { data: 'date_created', title: 'Creation Date', sWidth: "12%" },
             {
                 data: 'payment_method_title', title: 'Payment Method', sWidth: "11%", render: function (data, type, row) {
-                    if (row.payment_method == 'ppec_paypal' && row.paypal_status != 'COMPLETED') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="PaymentStatus(' + row.id + ',\'' + row.paypal_id + '\');">' + row.payment_method_title + '</a>';
-                    else if (row.payment_method == 'podium' && row.paypal_status != 'PAID') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="podiumPaymentStatus(' + row.id + ',\'' + row.paypal_id + '\');">' + row.payment_method_title + '</a>';
+                    if (row.payment_method == 'ppec_paypal' && row.paypal_status != 'COMPLETED') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="PaymentStatus(' + row.id + ',\'' + row.paypal_id + '\',\'' + row.billing_email + '\');">' + row.payment_method_title + '</a>';
+                    else if (row.payment_method == 'podium' && row.paypal_status != 'PAID') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="podiumPaymentStatus(' + row.id + ',\'' + row.paypal_id + '\',\'' + row.billing_email + '\');">' + row.payment_method_title + '</a>';
                     //if (row.payment_method == 'ppec_paypal') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="PaymentStatus(' + row.id + ',\'' + row.paypal_id + '\');">' + row.payment_method_title + '</a>';
                     else return row.payment_method_title;
                 }
@@ -279,7 +279,7 @@ function orderStatus() {
 }
 
 //Check PayPal Payment Status.
-function PaymentStatus(oid, pp_id) {
+function PaymentStatus(oid, pp_id, email) {
     let option = { strValue1: 'getToken' };
     $.ajax({ method: 'get', url: '/Setting/GetPayPalToken', data: option }).done(function (result, textStatus, jqXHR) {
         let access_token = result.message;
@@ -302,7 +302,7 @@ function PaymentStatus(oid, pp_id) {
                                     .done(function (data) {
                                         if (data.status) {
                                             swal.insertQueueStep('Status updated successfully.');
-                                            order_Split(oid);
+                                            order_Split(oid, email);
                                             $('#dtdata').DataTable().ajax.reload();
                                         }
                                         else { swal.insertQueueStep('Status updated successfully.'); }
@@ -325,7 +325,7 @@ function PaymentStatus(oid, pp_id) {
 }
 
 //Check podium Payment Status.
-function podiumPaymentStatus(oid, podium_id) {
+function podiumPaymentStatus(oid, podium_id, email) {
     let option = { strValue1: 'getToken' }; let create_url = podium_baseurl + '/v4/invoices/' + podium_id;
     swal.queue([{
         title: 'Payment Status', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,
@@ -349,9 +349,9 @@ function podiumPaymentStatus(oid, podium_id) {
                                     $.post('/Orders/UpdatePodiumPaymentAccept', opt)
                                         .done(function (data) {
                                             if (data.status) {
-                                                swal.insertQueueStep('Status updated successfully.'); order_Split(oid); $('#dtdata').DataTable().ajax.reload();
+                                                swal.insertQueueStep('Status updated successfully.'); order_Split(oid, email); $('#dtdata').DataTable().ajax.reload();
                                             }
-                                            else { swal.insertQueueStep('Status updated successfully.'); }
+                                            else { swal.insertQueueStep(data.message); }
                                             resolve();
                                         });
                                 });
@@ -364,16 +364,21 @@ function podiumPaymentStatus(oid, podium_id) {
         }
     }]);
 }
-function order_Split(order_id) {
+function order_Split(order_id, email) {
     var obj = { order_id: parseInt(order_id) || 0 };
     $.ajax({
         type: "POST", contentType: "application/json; charset=utf-8",
         url: "/Orders/SplitOrderByStatus", // Controller/View
         data: JSON.stringify(obj), dataType: "json", beforeSend: function () { },
         success: function (result) {
-            if (result.status) { console.log(result); }
+            if (result.status) { console.log(result); sendInvoice(order_id, email) }
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
         async: false
     });
+}
+
+function sendInvoice(id, email) {
+    var opt_mail = { order_number: id, option_name: 'wc_email_customer_processing_order', recipients: email, site_title: 'Lyala', site_address: 'us', site_url: '' }
+    $.post('/EmailNotifications/SendMailNotification', opt_mail).done(function (response) { console.log(response); });
 }

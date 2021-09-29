@@ -15,8 +15,9 @@ namespace LaylaERP.Controllers
     public class BankController : Controller
     {
         // GET: Bank
-        public ActionResult financialaccount()
+        public ActionResult financialaccount(long id)
         {
+            ViewBag.id = id;
             return View();
         }
 
@@ -214,16 +215,29 @@ namespace LaylaERP.Controllers
             }
         }
 
-        public JsonResult GetEntries()
+        public JsonResult GetEntries(string id)
         {
             string JSONresult = string.Empty;
             try
             {
-                DataTable dt = BankRepository.GetEntries();
+                DataTable dt = BankRepository.GetEntries(id);
                 JSONresult = JsonConvert.SerializeObject(dt);
             }
             catch { }
             return Json(JSONresult, 0);
+        }
+
+        public JsonResult BankEntriesList(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                DataTable dt = BankRepository.BankEntriesList(model.strValue2,model.strValue1, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                result = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
         }
 
     }

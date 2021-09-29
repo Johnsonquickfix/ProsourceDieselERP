@@ -157,10 +157,10 @@ namespace LaylaERP.Controllers
             return View();
         }
 
-        public JsonResult Gettargetwarehouse()
+        public JsonResult Gettargetwarehouse(string id)
         {
             DataTable dt = new DataTable();
-            dt = WarehouseRepository.GetSourceWarehouse();
+            dt = WarehouseRepository.GetSourceWarehouse(id);
             List<SelectListItem> warehouselist = new List<SelectListItem>();
             for (int i = 0; i < dt.Rows.Count; i++)
             {

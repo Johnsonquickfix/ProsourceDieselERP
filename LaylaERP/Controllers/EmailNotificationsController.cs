@@ -28,19 +28,19 @@ namespace LaylaERP.Controllers
             {
                 EmailSettingModel obj = EmailNotificationsRepository.GetDetails(model.option_name);
                 obj.recipients = model.recipients;
-                obj.subject.Replace("{site_title}", model.site_title).Replace("{order_number}", model.order_number);
-                obj.email_heading.Replace("{site_title}", model.site_title).Replace("{order_number}", model.order_number);
-                obj.additional_content.Replace("{site_title}", model.site_title).Replace("{order_number}", model.order_number).Replace("{site_address}", model.site_address).Replace("{site_url}", model.site_url);
+                obj.subject = obj.subject.Replace("{site_title}", model.site_title).Replace("{order_number}", model.order_number).Replace("{site_address}", model.site_address).Replace("{site_url}", model.site_url);
+                obj.email_heading = obj.email_heading.Replace("{site_title}", model.site_title).Replace("{order_number}", model.order_number).Replace("{site_address}", model.site_address).Replace("{site_url}", model.site_url);
+                obj.additional_content = obj.additional_content.Replace("{site_title}", model.site_title).Replace("{order_number}", model.order_number).Replace("{site_address}", model.site_address).Replace("{site_url}", model.site_url);
                 status = true;
-                String renderedHTML = EmailNotificationsController.RenderViewToString("EmailNotifications", "Index", model);
+                String renderedHTML = EmailNotificationsController.RenderViewToString("EmailNotifications", "Index", obj);
                 result = SendEmail.SendEmails(model.recipients, obj.subject, renderedHTML);
             }
-            catch(Exception ex) { status = false; result = ex.Message; }
+            catch (Exception ex) { status = false; result = ex.Message; }
             return Json(new { status = status, message = result }, 0);
         }
         [HttpPost]
         public ActionResult NewOrder(OrderModel model)
-        {            
+        {
             return View(model);
         }
         public static string RenderViewToString(string controllerName, string viewName, object viewData)

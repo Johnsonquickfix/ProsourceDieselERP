@@ -22,12 +22,12 @@ function EmployeeList() {
     var urid = $("#ddlSearchStatus").val();
     ID = $("#hfid").val();
     var table_EL = $('#EmployeeListdata').DataTable({
-        columnDefs: [{ "orderable": true, "targets": 0 }, { "orderable": false, "targets": [1, 4, 5] }, { 'visible': false, 'targets': [0] }], order: [[0, "desc"]],
+        columnDefs: [{ "orderable": true, "targets": 0 }, { "orderable": false, "targets": [1, 4, 5,6] }, { 'visible': false, 'targets': [0] }], order: [[0, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: false, searching: true,
         responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
         language: {
             lengthMenu: "_MENU_ per page",
-            zeroRecords: "Sorry no records found",
+            zeroRecords: "May on leave",
             info: "Showing _START_ to _END_ of _TOTAL_ entries",
             infoFiltered: "",
             infoEmpty: "No records found",
@@ -58,7 +58,7 @@ function EmployeeList() {
             });
         },
         aoColumns: [
-            { data: 'ID', title: 'ID', sWidth: "20%", class: 'text-left' },
+            { data: 'ID', title: 'ID', class: 'text-left' },
             {
                 'data': 'ID', sWidth: "15%   ",
                 'render': function (data, type, full, meta) {
@@ -67,7 +67,7 @@ function EmployeeList() {
                 }
             },
             { data: 'name', title: 'Name', sWidth: "20%", class: 'text-left' },
-            { data: 'designation', title: 'Designation', sWidth: "20%" },
+            { data: 'designation', title: 'Designation', sWidth: "10%" },
             {
                 'data': 'in_time', sWidth: "20%",
                 'render': function (id, type, full, meta) {
@@ -110,7 +110,8 @@ function EmployeeList() {
                     }
                     
                 }
-            }
+            },
+            { data: 'WorkingHours', title: 'Working Hours', sWidth: "10%" },
         ]
     });
 }

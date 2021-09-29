@@ -311,7 +311,19 @@ namespace LaylaERP.BAL
                 }
 
                 string strSql = "SELECT  p.id order_id, p.id as chkorder,os.num_items_sold,Cast(os.total_sales As DECIMAL(10, 2)) as total_sales, os.customer_id as customer_id,"
-                            + " REPLACE(p.post_status, 'wc-', '') status, DATE_FORMAT(p.post_date, '%M %d %Y') date_created,CONCAT(pmf.meta_value, ' ', COALESCE(pml.meta_value, '')) FirstName,COALESCE(pml.meta_value, '') LastName,"
+                            + " (case when p.post_status = 'wc-pendingpodiuminv' then 'Pending Podium Invoice'"
+                            + " when p.post_status = 'wc-processing' then 'Processing'"
+                            + " when p.post_status = 'wc-pending' then 'Pending payment'"
+                            + " when p.post_status = 'wc-on-hold' then 'On Hold'"
+                            + " when p.post_status = 'wc-completed' then 'Completed'"
+                            + " when p.post_status = 'wc-cancelled' then 'Cancelled'"
+                            + " when p.post_status = 'wc-refunded' then 'Refunded'"
+                            + " when p.post_status = 'wc-failed' then 'Failed'"
+                            + " when p.post_status = 'wc-cancelnopay' then 'Cancelled - No Payment'"
+                            + " when p.post_status = 'wc-podium' then 'Order via Podium'"
+                            + " when p.post_status = 'draft' then 'Draft'"
+                            + " else '-' end) as status,"
+                            + " DATE_FORMAT(p.post_date, '%M %d %Y') date_created,CONCAT(pmf.meta_value, ' ', COALESCE(pml.meta_value, '')) FirstName,COALESCE(pml.meta_value, '') LastName,"
                             + " replace(replace(replace(replace(pmp.meta_value,'-', ''),' ',''),'(',''),')','') billing_phone"
                             + " FROM wp_posts p inner join wp_wc_order_stats os on p.id = os.order_id"
                             + " left join wp_postmeta pmf on p.id = pmf.post_id and pmf.meta_key = '_billing_first_name'"
@@ -457,7 +469,7 @@ namespace LaylaERP.BAL
             query += " from wp_posts p left outer join wp_postmeta pm_uc on pm_uc.post_id = p.id and pm_uc.meta_key = 'employee_id' " +
                 "left outer join wp_postmeta pm_st on pm_st.post_id = p.id and pm_st.meta_key = '_order_total' where date(p.post_date) <= NOW() " +
                 ""+ datebetween.ToString()+ " and pm_st.meta_value > 0 " +
-                " and p.post_type = 'shop_order' and p.post_status in ('wc-completed','wc-pending','wc-processing','wc-on-hold','wc-refunded') " + strWhr.ToString() + " group by date(p.post_date)";
+                " and p.post_type = 'shop_order' and p.post_status in ('wc-completed','wc-pending','wc-processing','wc-on-hold','wc-refunded', 'wc-pendingpodiuminv') " + strWhr.ToString() + " group by date(p.post_date)";
             string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString;
             chartData.Add(new object[]
                         {

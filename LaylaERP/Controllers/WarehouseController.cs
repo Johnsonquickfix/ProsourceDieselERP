@@ -1,5 +1,6 @@
 ﻿using LaylaERP.BAL;
 using LaylaERP.Models;
+using LaylaERP.UTILITIES;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -29,6 +30,7 @@ namespace LaylaERP.Controllers
         }
         public ActionResult Warehouse()
         {
+            ViewBag.user_role = CommanUtilities.Provider.GetCurrent().UserType;
             return View();
         }
 

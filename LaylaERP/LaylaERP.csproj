@@ -935,11 +935,6 @@
     <Content Include="Views\EmailSetting\ManageEmailNotifications.cshtml" />
     <Content Include="Views\Reception\PartiallyOrder.cshtml" />
     <Content Include="Views\Reception\POClosureOrder.cshtml" />
-<<<<<<< HEAD
-    <Content Include="Views\EmailNotifications\Index.cshtml" />
-=======
-    <Content Include="Views\Error\Error.cshtml" />
->>>>>>> 7639857aed47be84d443eed62129523c7834102a
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

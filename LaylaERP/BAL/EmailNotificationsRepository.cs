@@ -130,11 +130,12 @@ namespace LaylaERP.BAL
             {
 
                 EmailSetting.recipients = EmailSetting.subject = EmailSetting.email_heading = EmailSetting.additional_content = EmailSetting.email_type = string.Empty;
+                EmailSetting.filename = "Index.cshtml";
                 EmailSetting.email_type = "email_pln_text";
                 EmailSetting.is_active = 0;
                 string strWhr = string.Empty;
 
-                string strSql = "SELECT recipients,subject,email_heading,additional_content,email_type,is_active"
+                string strSql = "SELECT recipients,subject,email_heading,additional_content,email_type,is_active,filename"
                              + " FROM erp_email_templates P"
                              + " WHERE P.option_name = '" + optionname + "' ";
 
@@ -172,6 +173,11 @@ namespace LaylaERP.BAL
                             EmailSetting.is_active = Convert.ToInt32(sdr["is_active"].ToString());
                         else
                             EmailSetting.is_active = 0;
+
+                        if (sdr["filename"] != DBNull.Value)
+                            EmailSetting.filename = sdr["filename"].ToString();
+                        else
+                            EmailSetting.filename = "Index.cshtml";
                     }
                 }
                
@@ -205,6 +211,13 @@ namespace LaylaERP.BAL
             {
                 throw Ex;
             }
+        }
+        public static string filename(string option_name)
+        {
+            string value = "";
+            string strQuery = "select filename from erp_email_templates where option_name = '"+option_name+"' ";
+            value = SQLHelper.ExecuteScalar(strQuery).ToString();
+            return value;
         }
     }
 }

@@ -12,14 +12,14 @@
 </div>
 <section class="content section-content table-design email_settings_in">
     <div class="box box-primary">
-        <div class="box-body">            
+        <div class="box-body">
             <div class="form-group d-flex">
                 <label class="col-sm-2 control-label">
                     Enable/Disable
                     <input type="hidden" id="hfid" />
                 </label>
                 <div class="col-sm-10">
-                    <div class="form-check">                
+                    <div class="form-check">
                         <input class="form-check-input" type="checkbox" name="theemailenable" id="theemailenable">
                         <label class="form-check-label" for="theemailenable">
                             Enable this email notification
@@ -75,6 +75,44 @@
         <div class="box-footer text-right">
             <button id="btnsave" class="btn btn-danger">Save Changes</button>
         </div>
+
+        <button id="btnshow" class="btn btn-danger">View Template</button>
+        <button id="btnhide" class="btn btn-danger">Hide Template</button>
     </div>
+
+   
+
+    <div id="divhtml" class="editor" style="">
+        @*@ViewBag.filename*@
+        @{
+            //var dataFile = "D:/LaylaERP/LaylaERP/Views/EmailNotifications/NewOrder.cshtml";
+            // var dataFile = "D:/LaylaERP/LaylaERP/Views/EmailNotifications/NewOrderTest.cshtml";
+            //                  D:\LaylaERP\LaylaERP\EmailNotifications\NewOrderTest.cshtml "NewOrderTest.cshtml";
+            var filename = @ViewBag.filename;
+            var dataFile = Path.Combine(Server.MapPath("~/Views/EmailNotifications"));
+            dataFile = dataFile + "\\" + filename;
+            var ListFromFile = File.ReadAllLines(dataFile);
+            var str = String.Join("\n", ListFromFile.ToArray());
+        }
+        @*<textarea name="textbox01" class="form-control" id="textbox01" rows="30" cols="50">loaded text here</textarea>
+            <textarea name="text" class="form-control" id="text" rows="30" cols="50">loaded text here</textarea>*@
+
+
+
+
+
+
+        @using (Html.BeginForm("createfile", "EmailSetting", FormMethod.Post))
+        {
+            <textarea name="text" class="form-control" id="txtText" rows="30" cols="50">@str</textarea>
+            <input type="text" value="@ViewBag.filename" style="display:none" rows="30" cols="50" name="filename" id="txtfileText" />
+            <input type="submit" class="btn btn-danger" style="float:right" value="Update Template" />
+        }
+
+
+    </div>
+
+
 </section>
-<script src="@Url.Content("~/js/EmailSetting/EmailSettingNotifications.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+        <script src="@Url.Content("~/js/EmailSetting/EmailSettingNotifications.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+

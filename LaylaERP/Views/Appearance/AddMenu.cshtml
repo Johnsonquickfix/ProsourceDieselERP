@@ -162,7 +162,9 @@
                     opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
                 }
                 $('#txtmenuparent').html(opt);
-            }
+            },
+            error: function (jqXHR, textStatus, errorThrown) { swal('Error!', errorThrown, "error"); },
+            async: false
 
         });
     }
@@ -181,7 +183,8 @@
                 console.log(data);
                 $('#txtmenuparent').val(data[0].parent_id).trigger('change');
             },
-            error: function (jqXHR, textStatus, errorThrown) { swal('Error!', errorThrown, "error"); }
+            error: function (jqXHR, textStatus, errorThrown) { swal('Error!', errorThrown, "error"); },
+            async: false
         });
     }
 </script>

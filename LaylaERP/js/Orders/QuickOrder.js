@@ -55,7 +55,7 @@
         $('.footer-finalbutton').empty().append('<button type="button" class="btn btn-danger pull-left btnOrderUndo"><i class="fa fa-undo"></i> Cancel</button>  <button type="button" id="btnCheckout" class="btn btn-danger billinfo" data-toggle="tooltip" title="Save and Checkout Order"> Checkout</button>');
         $("#loader").hide(); isEdit(true);
     });
-    $(document).on("click", ".btnOrderUndo", function (t) { t.preventDefault(); setTimeout(function () { $("#loader").show(); getOrderInfo(); isEdit(false); }, 10); });
+    $(document).on("click", ".btnOrderUndo", function (t) { t.preventDefault(); $("#loader").show(); getOrderInfo(); isEdit(false); });
     $(document).on("click", "#btnOrderUpdate", function (t) { t.preventDefault(); updateCO(); });
     $('#billModal').on('shown.bs.modal', function () {
         $('#ddlCustomerSearch').select2({
@@ -256,9 +256,10 @@ function CategoryWiseProducts() {
                             }
                         });
                         strHTML += '</select>';
-                        strHTML += '<select class="form-control addnvar-qty">';
-                        strHTML += '<option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option>';
-                        strHTML += '</select>';
+                        //strHTML += '<select class="form-control addnvar-qty">';
+                        //strHTML += '<option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option>';
+                        //strHTML += '</select>';
+                        strHTML += '<input min="1" class="form-control addnvar-qty" type="number" value="1" name="txt_ItemQty" placeholder="Qty">';
                         if (price < regular_price && regular_price > 0)
                             strHTML += '<div class="hub-pro-price"><span>$' + price.toFixed(2) + '<span>$' + regular_price.toFixed(2) + '</span></span></div>';
                         else
@@ -334,7 +335,7 @@ function bindCustomerOrders(id) {
                 {
                     data: 'meta_data', title: 'BILLING ADDRESS', sWidth: "35%", render: function (data, type, dtrow) {
                         let row = JSON.parse(dtrow.meta_data);
-                        let val = '<address class="no-margin">' + row._billing_first_name + ' ' + row._billing_last_name + (!isNullAndUndef(dtrow.IsDefault) ? ' <span class="label label-success">' + dtrow.IsDefault + '</span>' : '') + (isNullUndefAndSpace(row._billing_company) ? '<br>' + row._billing_company : '') + (isNullUndefAndSpace(row._billing_address_1) ? '<br>' + row._billing_address_1 : '') + (isNullUndefAndSpace(row._billing_address_2) ? '<br>' + row._billing_address_2 : '') + '<br>' + row._billing_city + ', ' + row._billing_state + ' ' + row._billing_postcode + '<br>Phone: ' + row._billing_phone.replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + '<br>Email: ' + row._billing_email + '</address>';
+                        let val = '<address class="no-margin">' + row._billing_first_name + ' ' + row._billing_last_name + (!isNullAndUndef(row.IsDefault) ? ' <span class="label label-success">' + dtrow.IsDefault + '</span>' : '') + (isNullUndefAndSpace(row._billing_company) ? '<br>' + row._billing_company : '') + (isNullUndefAndSpace(row._billing_address_1) ? '<br>' + row._billing_address_1 : '') + (isNullUndefAndSpace(row._billing_address_2) ? '<br>' + row._billing_address_2 : '') + '<br>' + row._billing_city + ', ' + row._billing_state + ' ' + row._billing_postcode + '<br>Phone: ' + row._billing_phone.replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + '<br>Email: ' + row._billing_email + '</address>';
                         return val;
                     }
                 },
@@ -638,12 +639,12 @@ function getOrderInfo() {
 
                     if (data[0].is_edit == '1') {
                         if (data[0].is_shiped > 0) {
-                            $('.box-tools-header').empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Order invoice"><i class="fas fa-print"></i> Print</button>');
+                            $('.box-tools-header').empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Order invoice"><i class="fas fa-print"></i> Print</button> <button type="button" class="btn btn-danger btnOrderUndo" data-toggle="tooltip" title="Refresh Order"><i class="fa fa-undo"></i> Refresh</button>');
                             $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/Orders/OrdersHistory" data-toggle="tooltip" title="Go to Order List">Back to List</a>');
                         }
                         else {
-                            $('.box-tools-header').empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Order invoice"><i class="fas fa-print"></i> Print</button> <button type="button" class="btn btn-danger btnEditOrder" data-toggle="tooltip" title="Edit Order"><i class="far fa-edit"></i> Edit</button>');
-                            $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/Orders/OrdersHistory" data-toggle="tooltip" title="Go to Order List">Back to List</a>   <button type="button" class="btn btn-danger btnEditOrder" data-toggle="tooltip" title="Edit Order"><i class="far fa-edit"></i> Edit</button>');
+                            $('.box-tools-header').empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Order invoice"><i class="fas fa-print"></i> Print</button> <button type="button" class="btn btn-danger btnOrderUndo" data-toggle="tooltip" title="Refresh Order"><i class="fa fa-undo"></i> Refresh</button> <button type="button" class="btn btn-danger btnEditOrder" data-toggle="tooltip" title="Edit Order"><i class="far fa-edit"></i> Edit</button>');
+                            $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/Orders/OrdersHistory" data-toggle="tooltip" title="Go to Order List">Back to List</a> <button type="button" class="btn btn-danger btnEditOrder" data-toggle="tooltip" title="Edit Order"><i class="far fa-edit"></i> Edit</button>');
                         }
                     }
                     else {
@@ -1069,7 +1070,7 @@ function CouponModal() {
     $("#billModal").modal({ backdrop: 'static', keyboard: false }); $("#txt_Coupon").focus();
 }
 function Coupon_get_discount_amount(id, parent_id, coupon_code, coupon_amt, item_qty, reg_price, sale_price) {
-    coupon_code = coupon_code.toString().toLowerCase();
+    coupon_code = coupon_code.toString().toLowerCase(); 
     let coupon_isedu = ["mhsu15", "pu15", "utep74", "msu15", "cabarrus15", "crusader15", "ucsd15", "vt15", "kent15", "fcs15", "sisd15", "isu15", "uh15", "teacher15", "csusm15", "abbey15"];
     let coupon_isgrin = ["erin10off", "venezia10off", "jasmine10off", "liz10off", "jamie10off", "nicole10off", "faye10off", "vinny10off", "ava10off", "kelsey10off", "aimy10off", "grace10off", "ramya10off", "georgia10off", "slayer10off", "victoria10off", "nickayla10off", "saraida10off", "garnerfamily5", "gina10off", "brooke10off", "lolo10off", "melissa10off", "claudia10off"];
     let isedu = 0;
@@ -1189,6 +1190,9 @@ function Coupon_get_discount_amount(id, parent_id, coupon_code, coupon_amt, item
         if (kap_qnty % 2 == 0) { $('#li_' + coupon_code).remove(); coupon_amt = 0; }
         return { price: reg_price, disc_amt: coupon_amt, qty: item_qty };
     }
+    else if (coupon_code.includes("sales10off")) {
+        return { price: reg_price, disc_amt: coupon_amt, qty: 1 };
+    }
     else {
         return { price: reg_price, disc_amt: coupon_amt, qty: item_qty };
     }
@@ -1268,13 +1272,12 @@ function ApplyCoupon() {
     if ($('#li_' + coupon_code).length > 0) { swal('Alert!', 'Coupon code already applied!', "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false; };
 
     let autocode = ["cbdistillery", "thesleepadvisor", "tuck", "rv10", "rizslumber", "bestsleep10", "get140", "calm", "relax", "cupid110", "sleepopolis", "tv140", "pennymac", "pnmac", "sleepfoundation", "matt-topper", "matt-sheet", "matt-blanket", "matt-pillow", "matt-bedframe", "matt-found", "found-frame", "sleepy10", "sleepy20"];
-    //let monthlySaleCoupon = ["sales10off", "sales25off", "sales50off", "sales75off", "sales100off", "sales125off", "sales150off", "sales175off", "sales200off", "cxstaff20off", "mgr20off", "mgr50off"];
-    let monthlySaleCoupon = [];
+    let monthlySaleCoupon = ["sales10off", "sales25off", "sales50off", "sales75off", "sales100off", "sales125off", "sales150off", "sales175off", "sales200off", "cxstaff20off", "mgr20off", "mgr50off"];
     let is_monthly_sale_cpn = monthlySaleCoupon.some(el => coupon_code.includes(el));
 
     if (coupon_code == '') { swal('Alert!', 'Please Enter a Coupon Code.', "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false; }
     else if (autocode.includes(coupon_code)) { swal('Alert!', 'Cannot Add this Auto-Coupon.', "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false; }
-    else if (is_monthly_sale_cpn) { swal('Alert!', 'Can not add ' + coupon_code, "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false; }
+    //else if (is_monthly_sale_cpn) { swal('Alert!', 'Can not add ' + coupon_code, "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false; }
     else {
         if (coupon_code == 'forbes') { swal('Alert!', 'Can not add ' + coupon_code, "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false; }
         else if (coupon_code == 'slumber') { swal('Alert!', 'Can not add ' + coupon_code, "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false; }
@@ -1294,7 +1297,7 @@ function ApplyCoupon() {
     $.ajax({
         type: "POST", url: '/Orders/GetCouponAmount', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
         success: function (result) {
-            var data = JSON.parse(result); //console.log(data);
+            var data = JSON.parse(result); console.log(data);
             if (data.length == 0) { swal('Alert!', 'Invalid code entered. Please try again.', "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false; }
             //Check valid for email
             if (data[0].cus_email.length && data[0].cus_email != '') {
@@ -1310,7 +1313,7 @@ function ApplyCoupon() {
             }
             //check expires date
             if (data[0].date_expires != "" && data[0].date_expires != null) {
-                let exp_date = new Date(data[0].date_expires * 1000); console.log(exp_date);
+                let exp_date = new Date(data[0].date_expires * 1000);
                 let today = new Date();
                 if (exp_date < today) {
                     swal('Alert!', 'Coupon code has been expired.', "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false;
@@ -1325,7 +1328,7 @@ function ApplyCoupon() {
             //console.log(data[0]);
             let cpns_with_other_cpns = ["freeprotector", "founder50", "kapok second pillow", "tsjpillow"];//not remove other coupon
             if (coupon_code.includes("friend") && coupon_code.substr(6) > 8500) { deleteAllCoupons('friend_diff'); }
-            else if (cpns_with_other_cpns.includes(coupon_code) || (coupon_code.includes("vip") && data[0].individual_use == "no")) { }
+            else if (coupon_code.includes("sales10off") || cpns_with_other_cpns.includes(coupon_code) || (coupon_code.includes("vip") && data[0].individual_use == "no")) { }
             else {
                 if (data[0].individual_use == "yes") { deleteAllCoupons('all'); }
                 if (data[0].discount_type != "fixed_cart") { deleteAllCoupons('diff'); }

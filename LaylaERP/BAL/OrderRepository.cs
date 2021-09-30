@@ -47,12 +47,11 @@
             DataTable DT = new DataTable();
             try
             {
-                string strWhr = "select id,CONCAT(User_Login, ' (#',id,' - ', user_email, ')') as displayname,replace(replace(replace(replace(ump.meta_value, '-', ''), ' ', ''), '(', ''), ')', '')  billing_phone"
+                string strWhr = "select id,CONCAT(User_Login, ' (#',id,' - ', user_email, ')') as displayname,REGEXP_REPLACE(ump.meta_value, '[^0-9]+', '')  billing_phone"
                                 + " from wp_users as ur"
                                 + " inner join wp_usermeta um on ur.id = um.user_id and um.meta_key = 'wp_capabilities' and meta_value like '%customer%'"
                                 + " left outer join wp_usermeta ump on ur.id = ump.user_id and ump.meta_key = 'billing_phone'";
-                strWhr += " where User_Login  like '%" + strSearch + "%' or user_email like '%" + strSearch + "%' ";
-                strWhr += " OR replace(replace(replace(replace(ump.meta_value, '-', ''), ' ', ''), '(', ''), ')', '') like '%" + strSearch + "%' limit 50;";
+                strWhr += " where CONCAT(User_Login, ' ', user_email,' ',REGEXP_REPLACE(ump.meta_value, '[^0-9]+', '')) like  '%" + strSearch + "%' limit 50;";
 
                 DT = SQLHelper.ExecuteDataTable(strWhr);
             }
@@ -1745,7 +1744,7 @@
                                 + " (SELECT '' IsDefault, pmu.meta_value customer_id, concat('{', group_concat(concat('\"', pm.meta_key, '\": \"', pm.meta_value, '\"') ORDER BY pm.meta_key separator ','), '}') as meta_data"
                                 + " FROM wp_posts po inner join wp_postmeta pmu on pmu.post_id = po.ID and pmu.meta_key = '_customer_user' and pmu.meta_value = '" + CustomerID + "'"
                                 + " inner join wp_postmeta pm on pm.post_id = pmu.post_id and (pm.meta_key like '_billing%' OR pm.meta_key like '_shipping_%') and pm.meta_key not like '%_method'"
-                                + " WHERE po.post_type = 'shop_order' group by po.ID, pmu.meta_value) tt";
+                                + " WHERE po.post_type = 'shop_order' and po.post_status != 'auto-draft' group by po.ID, pmu.meta_value) tt";
                 dt = SQLHelper.ExecuteDataTable(strSql);
             }
             catch (Exception ex)

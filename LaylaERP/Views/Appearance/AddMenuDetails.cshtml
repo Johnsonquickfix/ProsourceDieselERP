@@ -40,8 +40,9 @@
                                     <input type="text" class="form-control" id="txtmenuicon" placeholder="Enter Menu Icon">
                                 </div>
                                 <div class="form-group">
-                                    <label for="exampleInputEmail1">Parent Id</label>
-                                    <input type="text" class="form-control" id="txtmenuparent" placeholder="Enter Parent ID">
+                                    <label for="exampleInputEmail1">Parent Name</label>
+                                    @*<input type="text" class="form-control" id="txtmenuparent" placeholder="Enter Parent ID">*@
+                                    <select class="form-control select2" id="txtmenuparent"></select>
                                 </div>
                                 <div class="form-group">
                                     <label for="MenuOrderNumber">Menu Order Number</label>
@@ -71,7 +72,7 @@
         $(document).on('click', "#btnSave", function () {
             UpdateMenus();
         })
-
+        getMenuId();
     });
 </script>
 
@@ -133,5 +134,22 @@
 
         }
 
+    }
+</script>
+
+<script>
+    function getMenuId() {
+        $.ajax({
+            url: "/Appearance/GetMenus",
+            type: "Get",
+            success: function (data) {
+                var opt = '<option value="">Please Select Menu</option>';
+                for (var i = 0; i < data.length; i++) {
+                    opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
+                }
+                $('#txtmenuparent').html(opt);
+            }
+
+        });
     }
 </script>

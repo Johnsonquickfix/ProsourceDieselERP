@@ -1,5 +1,4 @@
 ﻿$(document).ready(function () {
-    //sendInvoice(852124, 'johnson.quickfix@gmail.com') 
     $("#loader").hide();
     $(".subsubsub li a").click(function (e) {
         $('.subsubsub li a').removeClass('current');
@@ -380,14 +379,6 @@ function order_Split(order_id, email) {
 }
 
 function sendInvoice(id, email) {
-    var opt_mail = {
-        order_number: id, option_name: 'wc_email_customer_processing_order', recipients: email, site_title: 'Lyala', site_address: '', site_url: ''
-    }
-    console.log(opt_mail);
-    $.ajax({
-        type: "POST", url: '/EmailNotifications/SendMailNotification', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt_mail),
-        success: function (result) { console.log(result); },
-        error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
-        complete: function () { }, async: false
-    });
+    var opt_mail = { order_number: id, option_name: 'wc_email_customer_processing_order', recipients: email, site_title: 'Lyala', site_address: 'us', site_url: '' }
+    $.post('/EmailNotifications/SendMailNotification', opt_mail).done(function (response) { console.log(response); });
 }

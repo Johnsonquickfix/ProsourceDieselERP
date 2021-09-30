@@ -145,12 +145,12 @@ namespace LaylaERP.BAL
             }
         }
 
-        public static DataTable GetSourceWarehouse()
+        public static DataTable GetSourceWarehouse(string id)
         {
             DataTable dtr = new DataTable();
             try
             {
-                string strquery = "select rowid, ref from wp_warehouse where status='1' order by rowid desc";
+                string strquery = "select rowid, ref from wp_warehouse where rowid not in('" + id + "') and is_system=0 and status ='1' order by rowid desc";
                 dtr = SQLHelper.ExecuteDataTable(strquery);
             }
             catch (Exception ex)

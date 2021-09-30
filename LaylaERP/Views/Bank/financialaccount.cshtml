@@ -13,20 +13,17 @@
 
 <div class="page-title">
     <h2>Bank Accounts</h2>
-    <a class="btn btn-danger" href="../newfinaccount">Add Account</a>
-    <div class="ml-auto">
-        @Html.ActionLink("Back to List", "BankAccountList", null, new { @class = "btn btn-danger" })
-    </div>
+    <span title="Click Here To Back To Bank List" data-placement="bottom" data-toggle="tooltip">@Html.ActionLink("Back to List", "BankAccountList", null, new { @class = "btn btn-danger" })</span>
 </div>
 <section class="content section-content massstocktransfer commercial_proposal mt-1" id="bank_account_section">
     <div class="nav-tabs-custom">
         <ul class="nav nav-tabs">
-            <li class="active"><a href="#tab_1" data-toggle="tab">Bank account</a></li>
-            <li><a href="#tab_2" data-toggle="tab">Entries</a></li>
-            @*<li><a href="#tab_3" data-toggle="tab">Planned entries</a></li>
-        <li><a href="#tab_4" data-toggle="tab">Monthly reporting</a></li>
+            <li class="active"><a href="#tab_1" data-toggle="tab"><span title="Bank Account" data-placement="bottom" data-toggle="tooltip">Bank account</span></a></li>
+            <li><a href="#tab_2" data-toggle="tab"><span title="Bank Entries" data-placement="bottom" data-toggle="tooltip">Bank Entries</span></a></li>
+            <li><a href="#tab_3" data-toggle="tab"><span title="Entries" data-placement="bottom" data-toggle="tooltip">Entries</span></a></li>
+        @*<li><a href="#tab_4" data-toggle="tab">Monthly reporting</a></li>
         <li><a href="#tab_6" data-toggle="tab">Account statements</a></li>*@
-            <li><a href="#tab_7" data-toggle="tab">Linked files</a></li>
+            <li><a href="#tab_7" data-toggle="tab"><span title="Linked Files" data-placement="bottom" data-toggle="tooltip">Linked files</span></a></li>
         </ul>
         <div class="tab-content">
             <div class="tab-pane active" id="tab_1">
@@ -54,7 +51,7 @@
 
                 <div class="row" style="background-color:white">
                     <div class="col-md-4">
-                        <input type="hidden" id="hfid" />
+                        <input type="hidden" id="hfid" value="@ViewBag.id"/>
                         <div class="form-group">
                             <label for="bankcash">Bank or Cash Label</label><span style="color:red">*</span>
                             <input type="text" class="form-control" id="txtbankcashlabel" placeholder="Enter Bank or Cash Label">
@@ -130,20 +127,17 @@
                         </div>
 
                         <div class="form-group">
-                            <span style="color:red">*</span>
                             <label for="tag">Bank Code</label><span style="color:red">*</span>
                             <input type="text" class="form-control" id="txtbankcode" />
                         </div>
 
                         <div class="form-group">
-                            <span style="color:red">*</span>
-                            <label for="tag">Account Number</label>
+                            <label for="tag">Account Number</label><span style="color:red">*</span>
                             <input type="text" class="form-control" id="txtaccountnumber" />
                         </div>
 
                         <div class="form-group">
-                            <span style="color:red">*</span>
-                            <label for="tag">IBAN Account Number</label>
+                            <label for="tag">IBAN Account Number</label><span style="color:red">*</span>
                             <input type="text" class="form-control" id="txtIBAN" />
                         </div>
 
@@ -162,20 +156,17 @@
                         </div>
 
                         <div class="form-group">
-                            <span style="color:red">*</span>
-                            <label for="tag">Bank address</label>
+                            <label for="tag">Bank address</label><span style="color:red">*</span>
                             <input type="text" class="form-control" id="txtbankaddress" />
                         </div>
 
                         <div class="form-group">
-                            <span style="color:red">*</span>
-                            <label for="tag">Account owner name</label>
+                            <label for="tag">Account owner name</label><span style="color:red">*</span>
                             <input type="text" class="form-control" id="txtaccountowner" />
                         </div>
 
                         <div class="form-group">
-                            <span style="color:red">*</span>
-                            <label for="tag">Account owner address</label>
+                            <label for="tag">Account owner address</label><span style="color:red">*</span>
                             <input type="text" class="form-control" id="txtowneraddress" />
                         </div>
                         <div class="form-group">
@@ -186,15 +177,13 @@
                         </div>
 
                         <div class="form-group">
-                            <span style="color:red">*</span>
-                            <label for="tag">Accounting code journal</label>
+                            <label for="tag">Accounting code journal</label><span style="color:red">*</span>
                             <select class="form-control select2" id="ddljournal">
                                 @*<option value="1">JR</option>*@
                             </select>
                         </div>
 
-                        <a href="#" class="btn btn-danger" id="btnSave"><b>Update</b></a>
-                        @Html.ActionLink("Back to List", "BankAccountList", null, new { @class = "btn btn-danger" })
+                        <a href="#" class="btn btn-danger" id="btnSave"><span title="Click Here To Update" data-placement="bottom" data-toggle="tooltip"><b>Update</b></span></a>                        
                     </div>
 
 
@@ -228,106 +217,51 @@
                     <div class="row rowbox proposal-row">
                         <div class="col-md-12">
                             <div class="box box-primary">
-                               
                                 <div class="box-body">
                                     <div class="table-responsive bank-table-wrapper">
-                                        <table id="entries" class="table-blue table check-table table-bordered table-striped">
+                                        <table id="EmployeeListdata" class="table-blue table check-table table-bordered table-striped">
                                             <thead>
                                                 <tr>
-                                                    <th>Due Date</th>
-                                                    <th>Description</th>
+                                                    <th>Ref</th>
+                                                    <th>Date</th>
+                                                    <th>Payment Type</th>
+                                                    <th>Number</th>
                                                     <th>Third Party</th>
-                                                    <th>Debit</th>
+                                                    <th>Bank Account</th>
                                                     <th>Credit</th>
-                                                    <th>Balance</th>
+                                                    <th>Debit</th>
                                                 </tr>
                                             </thead>
-                                           
                                         </table>
                                     </div>
                                 </div>
-                                
                             </div>
                         </div>
                     </div>
             </div>
             <div class="tab-pane" id="tab_3">
-                @*<div class="box box-primary">
-                        <div class="box-header">
-                            <div class="d-flex proposal-top">
-                                <div class="edit-proposal-box">
-                                    <div class="proposal-box">
-                                        <input type="file" name="file" id="proposal" class="inputfile">
-                                        <label for="proposal"><i class="fas fa-landmark"></i></label>
-                                    </div>
-                                    <div class="edit-proposal-texts">
-                                        <h3 class="box-title">#101</h3>
-                                        <p>Capital One</p>
-                                        <p><i class="fas fa-map-marker-alt" aria-hidden="true"></i>United States</p>
-                                    </div>
-                                </div>
-                                <div class="back-to-list">
-                                    <p><button class="btn btn-danger">Back to list</button></p>
-                                    <p><button class="btn btn-danger">Open</button></p>
+                <div class="row rowbox proposal-row">
+                    <div class="col-md-12">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="table-responsive bank-table-wrapper"><br />
+                                    <table id="entries" class="table-blue table check-table table-bordered table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Due Date</th>
+                                                <th>Description</th>
+                                                <th>Third Party</th>
+                                                <th>Debit</th>
+                                                <th>Credit</th>
+                                                <th>Balance</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="row rowbox proposal-row">
-                        <div class="col-md-12">
-                            <div class="box box-primary">
-                                <div class="box-header">
-                                    <h3 class="box-title">
-                                        Bank entries <span class="badge">6</span>
-                                    </h3>
-                                </div>
-                                <div class="box-body">
-                                    <div class="table-responsive bank-table-wrapper">
-                                        <table id="dtdata" class="inventory-table table-blue table check-table table-bordered table-striped">
-                                            <tbody>
-                                                <tr>
-                                                    <td>Due date</td>
-                                                    <td>Description</td>
-                                                    <td>Third-party</td>
-                                                    <td>Debit</td>
-                                                    <td>Credit</td>
-                                                    <td class="text-right">Balance</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="text-left" colspan="5">Current balance</td>
-                                                    <td class="ws_nowrap text-right">-6,684.14</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="text-left" colspan="5">Remaining unpaid</td>
-                                                    <td class="ws_nowrap text-right">&nbsp;</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>08/09/2021</td>
-                                                    <td>SI2108-0002</td>
-                                                    <td>FXI</td>
-                                                    <td class="ws_nowrap text-right">50,794.00</td>
-                                                    <td>&nbsp;</td>
-                                                    <td class="ws_nowrap text-right">-57,478.14</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>08/09/2021</td>
-                                                    <td>SI2108-0002</td>
-                                                    <td>FXI</td>
-                                                    <td class="ws_nowrap text-right">50,794.00</td>
-                                                    <td>&nbsp;</td>
-                                                    <td class="ws_nowrap text-right">-57,478.14</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="text-left" colspan="5">Future balance (USD)</td>
-                                                    <td class="ws_nowrap text-right">$-57,560.96</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>*@
+                </div>
             </div>
             <div class="tab-pane" id="tab_4">
                 @*<h2 class="box-title">Monthly reporting</h2>*@
@@ -454,9 +388,6 @@
         //$(".select2").select2();
         
     });
-
-   
-
 </script>
 
 

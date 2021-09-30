@@ -882,6 +882,7 @@
         //alert(d);
 
         $("#loader").hide();
+        getTargetWarehoue();
         CorrectStockGrid();
         StockTransferGrid();
         $("#btnStockUpdate").hide();
@@ -1189,6 +1190,25 @@
     }
 
 </script>
+<script>
+    function getTargetWarehoue() {
+        var id = $("#hfid").val();
+        $.ajax({
+            url: "/Warehouse/Gettargetwarehouse",
+            data: { id: id },
+            type: "Get",
+            success: function (data) {
+                var opt = '<option value="0">Please Select Warehouse</option>';
+                for (var i = 0; i < data.length; i++) {
+                    opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
+                }
+                $('#ddltargetwarehouse').html(opt);
+            }
+
+        });
+    }
+</script>
+
 
 <script src="@Url.Content("~/js/Warehouse/updatewarehouse.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 <script src="@Url.Content("~/js/Warehouse/vendorwarehouselist.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>

@@ -335,7 +335,7 @@ function bindCustomerOrders(id) {
                 {
                     data: 'meta_data', title: 'BILLING ADDRESS', sWidth: "35%", render: function (data, type, dtrow) {
                         let row = JSON.parse(dtrow.meta_data);
-                        let val = '<address class="no-margin">' + row._billing_first_name + ' ' + row._billing_last_name + (!isNullAndUndef(dtrow.IsDefault) ? ' <span class="label label-success">' + dtrow.IsDefault + '</span>' : '') + (isNullUndefAndSpace(row._billing_company) ? '<br>' + row._billing_company : '') + (isNullUndefAndSpace(row._billing_address_1) ? '<br>' + row._billing_address_1 : '') + (isNullUndefAndSpace(row._billing_address_2) ? '<br>' + row._billing_address_2 : '') + '<br>' + row._billing_city + ', ' + row._billing_state + ' ' + row._billing_postcode + '<br>Phone: ' + row._billing_phone.replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + '<br>Email: ' + row._billing_email + '</address>';
+                        let val = '<address class="no-margin">' + row._billing_first_name + ' ' + row._billing_last_name + (!isNullAndUndef(row.IsDefault) ? ' <span class="label label-success">' + dtrow.IsDefault + '</span>' : '') + (isNullUndefAndSpace(row._billing_company) ? '<br>' + row._billing_company : '') + (isNullUndefAndSpace(row._billing_address_1) ? '<br>' + row._billing_address_1 : '') + (isNullUndefAndSpace(row._billing_address_2) ? '<br>' + row._billing_address_2 : '') + '<br>' + row._billing_city + ', ' + row._billing_state + ' ' + row._billing_postcode + '<br>Phone: ' + row._billing_phone.replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + '<br>Email: ' + row._billing_email + '</address>';
                         return val;
                     }
                 },
@@ -1190,24 +1190,69 @@ function Coupon_get_discount_amount(id, parent_id, coupon_code, coupon_amt, item
         if (kap_qnty % 2 == 0) { $('#li_' + coupon_code).remove(); coupon_amt = 0; }
         return { price: reg_price, disc_amt: coupon_amt, qty: item_qty };
     }
+    else if (coupon_code.includes("sales10off")) {
+        return { price: reg_price, disc_amt: coupon_amt, qty: 1 };
+    }
     else {
         return { price: reg_price, disc_amt: coupon_amt, qty: item_qty };
     }
 }
 function check_applied_coupon(coupon_code, product_ids, exclude_product_ids) {
-    let check = false, rq_prd_ids = [], exclude_ids = [];
-    if (product_ids != "" && product_ids != null) {
-        rq_prd_ids = product_ids.split(",").map((el) => parseInt(el));
+    let check = false, rq_prd_ids = [], exclude_ids = [], cart_prnt_ids = [];
+    $('#order_line_items > tr').each(function (index, row) {
+        cart_prnt_ids.push($(row).data('pid'));
+        cart_prnt_ids.push($(row).data('vid'));
+    })
+    if (coupon_code.includes("sales10off")) { return true; }
+    else if (coupon_code.includes("sales25off")) { return true; }
+    else if (coupon_code.includes("sales50off")) { return true; }
+    else if (coupon_code.includes("sales75off")) {
+        if (cart_prnt_ids.includes(611172) && (cart_prnt_ids.includes(20861) || cart_prnt_ids.includes(611252) || cart_prnt_ids.includes(733500))) return true;
     }
-    if (exclude_product_ids != "" && exclude_product_ids != null) {
-        exclude_ids = exclude_product_ids.split(",").map((el) => parseInt(el));
+    else if (coupon_code.includes("sales100off")) {
+        if (cart_prnt_ids.includes(611286) && (cart_prnt_ids.includes(611172) || cart_prnt_ids.includes(118))) return true;
     }
-    $("#order_line_items > tr.paid_item").each(function (index, row) {
-        let pid = $(row).data('pid'), vid = $(row).data('vid');
-        if (!exclude_ids.includes(pid) && !exclude_ids.includes(vid) && ((rq_prd_ids.includes(pid) || rq_prd_ids.includes(vid)) || rq_prd_ids == 0)) {
-            check = true;
+    else if (coupon_code.includes("sales125off")) { if (cart_prnt_ids.includes(118) && cart_prnt_ids.includes(612995)) return true; }
+    else if (coupon_code.includes("sales150off")) { if (cart_prnt_ids.includes(611172) && cart_prnt_ids.includes(612995)) return true; }
+    else if (coupon_code.includes("sales175off")) {
+        if (cart_prnt_ids.includes(118) && cart_prnt_ids.includes(612995) && (
+            cart_prnt_ids.includes(14023) || cart_prnt_ids.includes(611238) ||
+            cart_prnt_ids.includes(20861) || cart_prnt_ids.includes(611252) ||
+            cart_prnt_ids.includes(611286) || cart_prnt_ids.includes(612995) ||
+            cart_prnt_ids.includes(733500) || cart_prnt_ids.includes(124524) ||
+            cart_prnt_ids.includes(128244) || cart_prnt_ids.includes(56774) ||
+            cart_prnt_ids.includes(611268) || cart_prnt_ids.includes(612947) ||
+            cart_prnt_ids.includes(612955) || cart_prnt_ids.includes(611220)
+        ))
+            return true;
+    }
+    else if (coupon_code.includes("sales200off")) {
+        if (cart_prnt_ids.includes(611172) && cart_prnt_ids.includes(612995) && (
+            cart_prnt_ids.includes(14023) || cart_prnt_ids.includes(611238) ||
+            cart_prnt_ids.includes(20861) || cart_prnt_ids.includes(611252) ||
+            cart_prnt_ids.includes(611286) || cart_prnt_ids.includes(612995) ||
+            cart_prnt_ids.includes(733500) || cart_prnt_ids.includes(124524) ||
+            cart_prnt_ids.includes(128244) || cart_prnt_ids.includes(56774) ||
+            cart_prnt_ids.includes(611268) || cart_prnt_ids.includes(612947) ||
+            cart_prnt_ids.includes(612955) || cart_prnt_ids.includes(611220)
+        ))
+            return true;
+    }
+    else {
+        if (product_ids != "" && product_ids != null) {
+            rq_prd_ids = product_ids.split(",").map((el) => parseInt(el));
         }
-    });
+        if (exclude_product_ids != "" && exclude_product_ids != null) {
+            exclude_ids = exclude_product_ids.split(",").map((el) => parseInt(el));
+        }
+        $("#order_line_items > tr.paid_item").each(function (index, row) {
+            let pid = $(row).data('pid'), vid = $(row).data('vid');
+            if (!exclude_ids.includes(pid) && !exclude_ids.includes(vid) && ((rq_prd_ids.includes(pid) || rq_prd_ids.includes(vid)) || rq_prd_ids == 0)) {
+                check = true;
+            }
+        });
+        return check;
+    }
     return check;
 }
 function getAllCoupons() {
@@ -1269,13 +1314,12 @@ function ApplyCoupon() {
     if ($('#li_' + coupon_code).length > 0) { swal('Alert!', 'Coupon code already applied!', "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false; };
 
     let autocode = ["cbdistillery", "thesleepadvisor", "tuck", "rv10", "rizslumber", "bestsleep10", "get140", "calm", "relax", "cupid110", "sleepopolis", "tv140", "pennymac", "pnmac", "sleepfoundation", "matt-topper", "matt-sheet", "matt-blanket", "matt-pillow", "matt-bedframe", "matt-found", "found-frame", "sleepy10", "sleepy20"];
-    //let monthlySaleCoupon = ["sales10off", "sales25off", "sales50off", "sales75off", "sales100off", "sales125off", "sales150off", "sales175off", "sales200off", "cxstaff20off", "mgr20off", "mgr50off"];
-    let monthlySaleCoupon = [];
+    let monthlySaleCoupon = ["sales10off", "sales25off", "sales50off", "sales75off", "sales100off", "sales125off", "sales150off", "sales175off", "sales200off", "cxstaff20off", "mgr20off", "mgr50off"];
     let is_monthly_sale_cpn = monthlySaleCoupon.some(el => coupon_code.includes(el));
 
     if (coupon_code == '') { swal('Alert!', 'Please Enter a Coupon Code.', "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false; }
     else if (autocode.includes(coupon_code)) { swal('Alert!', 'Cannot Add this Auto-Coupon.', "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false; }
-    else if (is_monthly_sale_cpn) { swal('Alert!', 'Can not add ' + coupon_code, "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false; }
+    //else if (is_monthly_sale_cpn) { swal('Alert!', 'Can not add ' + coupon_code, "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false; }
     else {
         if (coupon_code == 'forbes') { swal('Alert!', 'Can not add ' + coupon_code, "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false; }
         else if (coupon_code == 'slumber') { swal('Alert!', 'Can not add ' + coupon_code, "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false; }
@@ -1295,7 +1339,7 @@ function ApplyCoupon() {
     $.ajax({
         type: "POST", url: '/Orders/GetCouponAmount', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
         success: function (result) {
-            var data = JSON.parse(result); //console.log(data);
+            var data = JSON.parse(result); console.log(data);
             if (data.length == 0) { swal('Alert!', 'Invalid code entered. Please try again.', "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false; }
             //Check valid for email
             if (data[0].cus_email.length && data[0].cus_email != '') {
@@ -1311,7 +1355,7 @@ function ApplyCoupon() {
             }
             //check expires date
             if (data[0].date_expires != "" && data[0].date_expires != null) {
-                let exp_date = new Date(data[0].date_expires * 1000); console.log(exp_date);
+                let exp_date = new Date(data[0].date_expires * 1000);
                 let today = new Date();
                 if (exp_date < today) {
                     swal('Alert!', 'Coupon code has been expired.', "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false;
@@ -1326,7 +1370,7 @@ function ApplyCoupon() {
             //console.log(data[0]);
             let cpns_with_other_cpns = ["freeprotector", "founder50", "kapok second pillow", "tsjpillow"];//not remove other coupon
             if (coupon_code.includes("friend") && coupon_code.substr(6) > 8500) { deleteAllCoupons('friend_diff'); }
-            else if (cpns_with_other_cpns.includes(coupon_code) || (coupon_code.includes("vip") && data[0].individual_use == "no")) { }
+            else if (coupon_code.includes("sales10off") || cpns_with_other_cpns.includes(coupon_code) || (coupon_code.includes("vip") && data[0].individual_use == "no")) { }
             else {
                 if (data[0].individual_use == "yes") { deleteAllCoupons('all'); }
                 if (data[0].discount_type != "fixed_cart") { deleteAllCoupons('diff'); }

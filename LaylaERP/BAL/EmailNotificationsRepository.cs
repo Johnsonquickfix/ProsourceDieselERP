@@ -100,7 +100,7 @@ namespace LaylaERP.BAL
             try
             {
                 StringBuilder strSql = new StringBuilder();
-                strSql.Append(string.Format("insert into erp_email_templates (option_name,recipients,subject,email_heading,additional_content,email_type,is_active) values ('{0}','{1}','{2}','{3}','{4}','{5}',{6}); ", model.option_name, model.recipients, model.subject, model.email_heading, model.additional_content, model.email_type, model.is_active));
+                strSql.Append(string.Format("insert into erp_email_templates (option_name,recipients,subject,email_heading,additional_content,email_type,is_active,filename) values ('{0}','{1}','{2}','{3}','{4}','{5}',{6},'{7}'); ", model.option_name, model.recipients, model.subject, model.email_heading, model.additional_content, model.email_type, model.is_active,model.filename));
                 result = SQLHelper.ExecuteNonQuery(strSql.ToString());
             }
             catch (Exception ex)
@@ -114,7 +114,7 @@ namespace LaylaERP.BAL
             try
             {
                 StringBuilder strSql = new StringBuilder();                
-                strSql.Append(string.Format("update erp_email_templates set recipients = '{0}' ,subject = '{1}',email_heading = '{2}',additional_content = '{3}',email_type = '{4}',is_active = {5} where option_name = '{6}' ;", model.recipients, model.subject, model.email_heading, model.additional_content, model.email_type, model.is_active, model.option_name));
+                strSql.Append(string.Format("update erp_email_templates set recipients = '{0}' ,subject = '{1}',email_heading = '{2}',additional_content = '{3}',email_type = '{4}',is_active = {5},filename = '{6}' where option_name = '{7}' ;", model.recipients, model.subject, model.email_heading, model.additional_content, model.email_type, model.is_active,model.filename, model.option_name));
                 strSql.Append(string.Format("update erp_email_notify_options set is_active  = {0} where email_notify_key = '{1}' ;", model.is_active, model.option_name));
                 result = SQLHelper.ExecuteNonQuery(strSql.ToString());
             }
@@ -130,11 +130,12 @@ namespace LaylaERP.BAL
             {
 
                 EmailSetting.recipients = EmailSetting.subject = EmailSetting.email_heading = EmailSetting.additional_content = EmailSetting.email_type = string.Empty;
+                EmailSetting.filename = "Index.cshtml";
                 EmailSetting.email_type = "email_pln_text";
                 EmailSetting.is_active = 0;
                 string strWhr = string.Empty;
 
-                string strSql = "SELECT recipients,subject,email_heading,additional_content,email_type,is_active"
+                string strSql = "SELECT recipients,subject,email_heading,additional_content,email_type,is_active,filename"
                              + " FROM erp_email_templates P"
                              + " WHERE P.option_name = '" + optionname + "' ";
 
@@ -172,6 +173,11 @@ namespace LaylaERP.BAL
                             EmailSetting.is_active = Convert.ToInt32(sdr["is_active"].ToString());
                         else
                             EmailSetting.is_active = 0;
+
+                        if (sdr["filename"] != DBNull.Value)
+                            EmailSetting.filename = sdr["filename"].ToString();
+                        else
+                            EmailSetting.filename = "Index.cshtml";
                     }
                 }
                
@@ -205,6 +211,13 @@ namespace LaylaERP.BAL
             {
                 throw Ex;
             }
+        }
+        public static string filename(string option_name)
+        {
+            string value = "";
+            string strQuery = "select filename from erp_email_templates where option_name = '"+option_name+"' ";
+            value = SQLHelper.ExecuteScalar(strQuery).ToString();
+            return value;
         }
     }
 }

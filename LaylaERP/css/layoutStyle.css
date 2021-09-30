@@ -2369,7 +2369,7 @@ body .btn {font-size:12px;}
     align-items: center;
 }
 .hub-pro-shop select {
-    width:auto;
+    width:auto; margin-right:10px;
     margin-left: 10px;
 }
 .hub-pro-shop select.addnvar-qty {

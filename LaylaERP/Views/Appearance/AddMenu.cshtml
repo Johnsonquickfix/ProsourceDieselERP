@@ -21,7 +21,7 @@
                     <div class="box-header with-border">
                         <div class="row">
                             <div class="col-sm-6">
-                                <input type="text" id="hfid" value="@Model.menu_id" />
+                                <input type="hidden" id="hfid" value="@Model.menu_id" />
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Menu Code</label>
                                     <input type="email" class="form-control" id="txtmenucode" placeholder="Enter Menu Code" value="@Model.menu_code">
@@ -169,23 +169,8 @@
 </script>
 
 <script>
-    jQuery.ajax({
-        url: "/Appearance/GetProductInfo/", dataType: 'json', type: "Post",
-        contentType: "application/json; charset=utf-8",
-        data: JSON.stringify(obj),
-        success: function (data) {
-            data = JSON.parse(data);
-            console.log(data);
-            $('#hfprice').val(data[0].buy_price);
-        },
-        error: function (jqXHR, textStatus, errorThrown) { swal('Error!', errorThrown, "error"); }
-    });
-</script>
-
-<script>
     function dropdownfill() {
         var id = $("#hfid").val();
-        alert(id);
         var obj = { menu_id: id }
         jQuery.ajax({
             url: "/Appearance/SelectMenus/", dataType: 'json', type: "Post",

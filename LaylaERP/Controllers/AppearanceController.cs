@@ -69,8 +69,6 @@ namespace LaylaERP.Controllers
         [HttpPost]
         public JsonResult UpdateMenus(Appearance model)
         {
-            //int menu_id = 0;
-            //AppearanceRepository.UpdateUsers(model);
             if (model.menu_id > 0)
             {
                 AppearanceRepository.UpdateMenus(model);
@@ -117,5 +115,29 @@ namespace LaylaERP.Controllers
             return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
         }
 
+
+        public JsonResult GetMenus()
+        {
+            DataSet ds = AppearanceRepository.GetMenus();
+            List<SelectListItem> productlist = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                productlist.Add(new SelectListItem { Text = dr["menu_name"].ToString(), Value = dr["id"].ToString() });
+            }
+            return Json(productlist, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult SelectMenus(int menu_id )
+        {
+
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = AppearanceRepository.MenuByID(menu_id);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
     }
 }

@@ -18,7 +18,8 @@ namespace LaylaERP.BAL
             DataTable dtr = new DataTable();
             try
             {
-                string strquery = "Select menu_id, menu_code, menu_name, menu_url, menu_icon, parent_id,menu_order, if(status= 1, 'Active', 'Inactive') as status from wp_erpmenus order by menu_code;";
+                //string strquery = "Select menu_id, menu_code, menu_name, menu_url, menu_icon, parent_id,menu_order, if(status= 1, 'Active', 'Inactive') as status from wp_erpmenus order by menu_code;";
+                string strquery = "SELECT m.*, epr.menu_name as parent_name FROM wp_erpmenus m left join wp_erpmenus epr on m.parent_id = epr.menu_id order by m.menu_code";
                 dtr = SQLHelper.ExecuteDataTable(strquery);
             }
             catch (Exception ex)
@@ -111,6 +112,20 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
+
+        public static DataSet GetMenus()
+        {
+            DataSet DS = new DataSet();
+            try
+            {
+                string strSQl = "SELECT menu_id as id, concat(menu_id,'-',menu_name) as menu_name FROM wp_erpmenus order by menu_id";
+                DS = SQLHelper.ExecuteDataSet(strSQl);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
+        }
+
     }
 
 

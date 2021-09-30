@@ -20,6 +20,8 @@ namespace LaylaERP.Models
         public string email_type { get; set; }
 
         public int is_active { get; set; }
+
+        public string filename { get; set; }
         public string woocommerce_email_from_name { get; set; }
         public string woocommerce_email_from_address { get; set; }
         public string woocommerce_email_header_image { get; set; }

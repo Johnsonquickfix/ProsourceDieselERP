@@ -4,7 +4,9 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 
@@ -23,8 +25,11 @@ namespace LaylaERP.Controllers
         }
 
         // GET: EmailSetting
-        public ActionResult ManageEmailNotifications()
-        {
+        public ActionResult ManageEmailNotifications(string id)
+        {           
+           EmailSettingModel obj = EmailNotificationsRepository.GetDetails(id);
+            
+            ViewBag.filename = obj.filename; //EmailNotificationsRepository.filename(id).ToString();
             return View();
         }
 
@@ -48,13 +53,27 @@ namespace LaylaERP.Controllers
             JsonResult result = new JsonResult();
             DateTime dateinc = DateTime.Now;
             var resultOne = 0;
-            DataTable dt = EmailNotificationsRepository.Getoption_Details(model);   
-                if (dt.Rows.Count > 0) 
-                     resultOne = EmailNotificationsRepository.updateEmailNotification(model); 
-                else          
-                     resultOne = EmailNotificationsRepository.AddEmailNotification(model);     
-                
+
+            if (string.IsNullOrEmpty(model.filename))
+                model.filename = "Index";          
+            string path = Path.Combine(Server.MapPath("~/Views/EmailNotifications"));
+            path = path + "\\" + model.filename + ".cshtml";
+            if (System.IO.File.Exists(path))
+            {
+                model.filename = model.filename + ".cshtml";
+                DataTable dt = EmailNotificationsRepository.Getoption_Details(model);
+                if (dt.Rows.Count > 0)
+                    resultOne = EmailNotificationsRepository.updateEmailNotification(model);
+                else
+                    resultOne = EmailNotificationsRepository.AddEmailNotification(model);
+
                 return Json(new { status = true, message = "updated successfully!!", url = "Manage" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "File name is not exist please contact to administrator.", url = "Manage" }, 0);
+            }
+  
         }
         [HttpPost]
         public JsonResult GetDetails(SearchModel model)
@@ -85,8 +104,27 @@ namespace LaylaERP.Controllers
             }
             return Json(new { status = true, message = "updated successfully!!", url = "Manage" }, 0);
         }
-
        
-        
+        [ValidateInput(false)]
+        [HttpPost]
+        public ActionResult createfile(string text,string filename)
+        {
+            //string path = Server.MapPath("~/EmailNotifications/test.txt");
+           // string path = "D:/LaylaERP/LaylaERP/Views/EmailNotifications/NewOrderTest.cshtml";
+
+            //var filename = "NewOrderTest.cshtml";
+            string path = Path.Combine(Server.MapPath("~/Views/EmailNotifications"));
+            path = path + "\\" + filename;
+
+            using (StreamWriter sw = System.IO.File.CreateText(path))
+            {
+                sw.WriteLine(text);
+            }
+            //EmailNotifications();
+            //return View();
+            //  return View("EmailSetting/EmailNotifications");
+            return RedirectToAction("EmailNotifications");
+        }
+
     }
 }

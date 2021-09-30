@@ -100,7 +100,7 @@ namespace LaylaERP.BAL
             try
             {
                 StringBuilder strSql = new StringBuilder();
-                strSql.Append(string.Format("insert into erp_email_templates (option_name,recipients,subject,email_heading,additional_content,email_type,is_active) values ('{0}','{1}','{2}','{3}','{4}','{5}',{6}); ", model.option_name, model.recipients, model.subject, model.email_heading, model.additional_content, model.email_type, model.is_active));
+                strSql.Append(string.Format("insert into erp_email_templates (option_name,recipients,subject,email_heading,additional_content,email_type,is_active,filename) values ('{0}','{1}','{2}','{3}','{4}','{5}',{6},'{7}'); ", model.option_name, model.recipients, model.subject, model.email_heading, model.additional_content, model.email_type, model.is_active,model.filename));
                 result = SQLHelper.ExecuteNonQuery(strSql.ToString());
             }
             catch (Exception ex)
@@ -114,7 +114,7 @@ namespace LaylaERP.BAL
             try
             {
                 StringBuilder strSql = new StringBuilder();                
-                strSql.Append(string.Format("update erp_email_templates set recipients = '{0}' ,subject = '{1}',email_heading = '{2}',additional_content = '{3}',email_type = '{4}',is_active = {5} where option_name = '{6}' ;", model.recipients, model.subject, model.email_heading, model.additional_content, model.email_type, model.is_active, model.option_name));
+                strSql.Append(string.Format("update erp_email_templates set recipients = '{0}' ,subject = '{1}',email_heading = '{2}',additional_content = '{3}',email_type = '{4}',is_active = {5},filename = '{6}' where option_name = '{7}' ;", model.recipients, model.subject, model.email_heading, model.additional_content, model.email_type, model.is_active,model.filename, model.option_name));
                 strSql.Append(string.Format("update erp_email_notify_options set is_active  = {0} where email_notify_key = '{1}' ;", model.is_active, model.option_name));
                 result = SQLHelper.ExecuteNonQuery(strSql.ToString());
             }

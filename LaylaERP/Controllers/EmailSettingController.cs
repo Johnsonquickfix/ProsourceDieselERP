@@ -53,13 +53,27 @@ namespace LaylaERP.Controllers
             JsonResult result = new JsonResult();
             DateTime dateinc = DateTime.Now;
             var resultOne = 0;
-            DataTable dt = EmailNotificationsRepository.Getoption_Details(model);   
-                if (dt.Rows.Count > 0) 
-                     resultOne = EmailNotificationsRepository.updateEmailNotification(model); 
-                else          
-                     resultOne = EmailNotificationsRepository.AddEmailNotification(model);     
-                
+
+            if (string.IsNullOrEmpty(model.filename))
+                model.filename = "Index";          
+            string path = Path.Combine(Server.MapPath("~/Views/EmailNotifications"));
+            path = path + "\\" + model.filename + ".cshtml";
+            if (System.IO.File.Exists(path))
+            {
+
+                DataTable dt = EmailNotificationsRepository.Getoption_Details(model);
+                if (dt.Rows.Count > 0)
+                    resultOne = EmailNotificationsRepository.updateEmailNotification(model);
+                else
+                    resultOne = EmailNotificationsRepository.AddEmailNotification(model);
+
                 return Json(new { status = true, message = "updated successfully!!", url = "Manage" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "File name is not exist please contact to administrator.", url = "Manage" }, 0);
+            }
+  
         }
         [HttpPost]
         public JsonResult GetDetails(SearchModel model)

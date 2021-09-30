@@ -934,6 +934,7 @@
     <Content Include="Views\EmailSetting\ManageEmailNotifications.cshtml" />
     <Content Include="Views\Reception\PartiallyOrder.cshtml" />
     <Content Include="Views\Reception\POClosureOrder.cshtml" />
+    <Content Include="Views\EmailNotifications\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

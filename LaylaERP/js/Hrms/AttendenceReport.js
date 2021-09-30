@@ -1,29 +1,39 @@
 $(document).ready(function () {
     $("#loader").hide();
-    $("#DateRange").datepicker({ format: 'mm-dd-yyyy', }).datepicker("setDate", 'now');
+    $('#DateRange').daterangepicker({
+        ranges: {
+            'Today': [moment(), moment()],
+            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+            'This Month': [moment().startOf('month'), moment().endOf('month')],
+            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        },
+        startDate: moment().add(-1, 'month'), autoUpdateInput: true, alwaysShowCalendars: true,
+        locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' }, opens: 'right', orientation: "left auto"
+    });
+    var fromdate = $('#DateRange').data('daterangepicker').startDate.format('YYYY-MM-DD');
+    var todate = $('#DateRange').data('daterangepicker').endDate.format('MM-DD-YYYY');
+    EmployeeList(fromdate, todate);
+    $("#DateRange").change(function () {
+        console.log(fromdate, todate);
+        EmployeeList(fromdate, todate);
 
-    var now = new Date(Date.now());
-    var formatted = now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
-    $("#txtTime").val(formatted);
-    
-
-    EmployeeList();
-    $("#ddlInOut").change(function () { EmployeeList(); $('#checkAll').val(''); })
-    $("#btnReset").click(function () { EmployeeList(); })
+    })
 })
-$("#DateRange").change(function () {
-    EmployeeList();
-    $('#checkAll').val('');
-})
 
 
-function EmployeeList() {
-    fromdate = $("#DateRange").val();
-    todate = $("#DateRange").val();
+
+
+
+
+function EmployeeList(fromdate, todate) {
+    //var fromdate = $('#DateRange').data('daterangepicker').startDate.format('MM-DD-YYYY');
+    //var todate = $('#DateRange').data('daterangepicker').endDate.format('MM-DD-YYYY');
     var urid = $("#ddlSearchStatus").val();
     ID = $("#hfid").val();
     var table_EL = $('#AttendanceReport').DataTable({
-        columnDefs: [{ "orderable": true, "targets": 0 }, { "orderable": false, "targets": [1, 4, 5] }, { 'visible': false, 'targets': [0] }], order: [[0, "desc"]],
+        columnDefs: [{ "orderable": true, "targets": 0 }, { "orderable": false, "targets": [1, 4, 5] }], order: [[0, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: false, searching: true,
         responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
         language: {
@@ -53,19 +63,22 @@ function EmployeeList() {
             oSettings.jqXHR = $.ajax({
                 dataType: 'json', type: "GET", url: sSource, data: aoData,
                 "success": function (data) {
-                    var dtOption = {  aaData: JSON.parse(data.aaData) };
+                    var dtOption = { aaData: JSON.parse(data.aaData) };
                     return fnCallback(dtOption);
                 }
             });
         },
         aoColumns: [
-           
-            { data: 'name', title: 'ID', class: 'text-left' },
-           
-            { data: '2021-09-01', title: 'Name', sWidth: "20%", class: 'text-left' },
-            { data: '2021-09-02', title: 'Designation', sWidth: "10%" },
-        
-            { data: '2021-09-03', title: 'Working Hours', sWidth: "10%" },
+
+            { data: 'name', title: 'Name', class: 'text-left' },
+
+            { data: '2021-09-30', title: '2021-09-30',class: 'text-left' },
+            { data: '2021-09-29', title: '2021-09-29' },
+            { data: '2021-09-28', title: '2021-09-28' },
+            { data: '2021-09-27', title: '2021-09-27'},
+            { data: '2021-09-26', title: '2021-09-26'},
+            { data: '2021-09-25', title: '2021-09-25' },
+            { data: '2021-09-24', title: '2021-09-24' },
         ]
     });
 }

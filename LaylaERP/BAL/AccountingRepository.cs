@@ -266,7 +266,7 @@ namespace LaylaERP.BAL
             DataSet DS = new DataSet();
             try
             {
-                DS = SQLHelper.ExecuteDataSet("SELECT * from pcg_type");
+                DS = SQLHelper.ExecuteDataSet("SELECT * from erp_pcg_type");
 
             }
             catch (Exception ex)
@@ -372,6 +372,82 @@ namespace LaylaERP.BAL
             catch (Exception ex)
             {
                 throw ex;
+            }
+        }
+
+        public static int AddPcgTypeDetails(PcgtypeModel model)
+        {
+            try
+            {
+                string strsql = "";
+                strsql = "INSERT into erp_pcg_type(pcg_type,account_parent) values(@pcg_type,@account_parent); SELECT LAST_INSERT_ID();";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@pcg_type", model.pcg_type),
+                    new MySqlParameter("@account_parent", model.account_parent),
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+        public static DataTable GetPcgTypeList()
+        {
+            DataTable dtr = new DataTable();
+            try
+            {
+
+                string strSql = "SELECT id as ID, account_parent, pcg_type from erp_pcg_type ";
+                
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dtr = ds.Tables[0];
+
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dtr;
+        }
+
+        public static DataTable GetPcgTypeById(string strValue1)
+        {
+            DataTable dtr = new DataTable();
+            try
+            {
+
+                string strSql = "SELECT id as ID, account_parent, pcg_type from erp_pcg_type where id='"+ strValue1 + "'";
+
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dtr = ds.Tables[0];
+
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dtr;
+        }
+
+        public static int UpdatePcgType(PcgtypeModel model)
+        {
+            try
+            {
+                string strsql = "";
+                strsql = "UPDATE erp_pcg_type set account_parent=@account_parent, pcg_type=@pcg_type where id='" + model.rowid + "'";
+
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@account_parent", model.account_parent),
+                    new MySqlParameter("@pcg_type", model.pcg_type),
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
             }
         }
     }

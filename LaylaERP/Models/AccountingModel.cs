@@ -34,4 +34,11 @@ namespace LaylaERP.Models
         public string Search { get; set; }
     }
 
+    public class PcgtypeModel
+    {
+        public int rowid { get; set; }
+        public int account_parent { get; set; }
+        public string pcg_type { get; set; }
+    }
+
 }

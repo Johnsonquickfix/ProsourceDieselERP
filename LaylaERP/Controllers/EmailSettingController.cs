@@ -60,7 +60,7 @@ namespace LaylaERP.Controllers
             path = path + "\\" + model.filename + ".cshtml";
             if (System.IO.File.Exists(path))
             {
-
+                model.filename = model.filename + ".cshtml";
                 DataTable dt = EmailNotificationsRepository.Getoption_Details(model);
                 if (dt.Rows.Count > 0)
                     resultOne = EmailNotificationsRepository.updateEmailNotification(model);

@@ -1070,7 +1070,7 @@ function CouponModal() {
     $("#billModal").modal({ backdrop: 'static', keyboard: false }); $("#txt_Coupon").focus();
 }
 function Coupon_get_discount_amount(id, parent_id, coupon_code, coupon_amt, item_qty, reg_price, sale_price) {
-    coupon_code = coupon_code.toString().toLowerCase(); 
+    coupon_code = coupon_code.toString().toLowerCase();
     let coupon_isedu = ["mhsu15", "pu15", "utep74", "msu15", "cabarrus15", "crusader15", "ucsd15", "vt15", "kent15", "fcs15", "sisd15", "isu15", "uh15", "teacher15", "csusm15", "abbey15"];
     let coupon_isgrin = ["erin10off", "venezia10off", "jasmine10off", "liz10off", "jamie10off", "nicole10off", "faye10off", "vinny10off", "ava10off", "kelsey10off", "aimy10off", "grace10off", "ramya10off", "georgia10off", "slayer10off", "victoria10off", "nickayla10off", "saraida10off", "garnerfamily5", "gina10off", "brooke10off", "lolo10off", "melissa10off", "claudia10off"];
     let isedu = 0;
@@ -1198,19 +1198,61 @@ function Coupon_get_discount_amount(id, parent_id, coupon_code, coupon_amt, item
     }
 }
 function check_applied_coupon(coupon_code, product_ids, exclude_product_ids) {
-    let check = false, rq_prd_ids = [], exclude_ids = [];
-    if (product_ids != "" && product_ids != null) {
-        rq_prd_ids = product_ids.split(",").map((el) => parseInt(el));
+    let check = false, rq_prd_ids = [], exclude_ids = [], cart_prnt_ids = [];
+    $('#order_line_items > tr').each(function (index, row) {
+        cart_prnt_ids.push($(row).data('pid'));
+        cart_prnt_ids.push($(row).data('vid'));
+    })
+    if (coupon_code.includes("sales10off")) { return true; }
+    else if (coupon_code.includes("sales25off")) { return true; }
+    else if (coupon_code.includes("sales50off")) { return true; }
+    else if (coupon_code.includes("sales75off")) {
+        if (cart_prnt_ids.includes(611172) && (cart_prnt_ids.includes(20861) || cart_prnt_ids.includes(611252) || cart_prnt_ids.includes(733500))) return true;
     }
-    if (exclude_product_ids != "" && exclude_product_ids != null) {
-        exclude_ids = exclude_product_ids.split(",").map((el) => parseInt(el));
+    else if (coupon_code.includes("sales100off")) {
+        if (cart_prnt_ids.includes(611286) && (cart_prnt_ids.includes(611172) || cart_prnt_ids.includes(118))) return true;
     }
-    $("#order_line_items > tr.paid_item").each(function (index, row) {
-        let pid = $(row).data('pid'), vid = $(row).data('vid');
-        if (!exclude_ids.includes(pid) && !exclude_ids.includes(vid) && ((rq_prd_ids.includes(pid) || rq_prd_ids.includes(vid)) || rq_prd_ids == 0)) {
-            check = true;
+    else if (coupon_code.includes("sales125off")) { if (cart_prnt_ids.includes(118) && cart_prnt_ids.includes(612995)) return true; }
+    else if (coupon_code.includes("sales150off")) { if (cart_prnt_ids.includes(611172) && cart_prnt_ids.includes(612995)) return true; }
+    else if (coupon_code.includes("sales175off")) {
+        if (cart_prnt_ids.includes(118) && cart_prnt_ids.includes(612995) && (
+            cart_prnt_ids.includes(14023) || cart_prnt_ids.includes(611238) ||
+            cart_prnt_ids.includes(20861) || cart_prnt_ids.includes(611252) ||
+            cart_prnt_ids.includes(611286) || cart_prnt_ids.includes(612995) ||
+            cart_prnt_ids.includes(733500) || cart_prnt_ids.includes(124524) ||
+            cart_prnt_ids.includes(128244) || cart_prnt_ids.includes(56774) ||
+            cart_prnt_ids.includes(611268) || cart_prnt_ids.includes(612947) ||
+            cart_prnt_ids.includes(612955) || cart_prnt_ids.includes(611220)
+        ))
+            return true;
+    }
+    else if (coupon_code.includes("sales200off")) {
+        if (cart_prnt_ids.includes(611172) && cart_prnt_ids.includes(612995) && (
+            cart_prnt_ids.includes(14023) || cart_prnt_ids.includes(611238) ||
+            cart_prnt_ids.includes(20861) || cart_prnt_ids.includes(611252) ||
+            cart_prnt_ids.includes(611286) || cart_prnt_ids.includes(612995) ||
+            cart_prnt_ids.includes(733500) || cart_prnt_ids.includes(124524) ||
+            cart_prnt_ids.includes(128244) || cart_prnt_ids.includes(56774) ||
+            cart_prnt_ids.includes(611268) || cart_prnt_ids.includes(612947) ||
+            cart_prnt_ids.includes(612955) || cart_prnt_ids.includes(611220)
+        ))
+            return true;
+    }
+    else {
+        if (product_ids != "" && product_ids != null) {
+            rq_prd_ids = product_ids.split(",").map((el) => parseInt(el));
         }
-    });
+        if (exclude_product_ids != "" && exclude_product_ids != null) {
+            exclude_ids = exclude_product_ids.split(",").map((el) => parseInt(el));
+        }
+        $("#order_line_items > tr.paid_item").each(function (index, row) {
+            let pid = $(row).data('pid'), vid = $(row).data('vid');
+            if (!exclude_ids.includes(pid) && !exclude_ids.includes(vid) && ((rq_prd_ids.includes(pid) || rq_prd_ids.includes(vid)) || rq_prd_ids == 0)) {
+                check = true;
+            }
+        });
+        return check;
+    }
     return check;
 }
 function getAllCoupons() {

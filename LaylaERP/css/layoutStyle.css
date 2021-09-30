@@ -2676,7 +2676,7 @@ a#btnbackcategory {max-width: 135px; margin-top: 5px;}
 #ProductCategory_wrapper #ProductCategory td{box-sizing:border-box;}
 #ProductCategory_wrapper .row:nth-child(2){margin:0px;}
 #ProductCategory_wrapper .row:nth-child(2) .col-sm-12{overflow:auto;width:100%;padding: 0px;}
-.categories #ProdCat .col-md-8{width:100%;}
+
 .shipping.class .table-blue.table th,
 .shipping.class .table-blue.table td{box-sizing:border-box !important;}
 .shipping.class .table-blue.table{width:100% !important; table-layout:fixed;}
@@ -2714,6 +2714,7 @@ a#btnbackcategory {max-width: 135px; margin-top: 5px;}
 .order.shipping.rule .dataTables_scrollHeadInner{width:100% !important;}
 
 @media(max-width:900px) {
+    .categories #ProdCat .col-md-8{width:100%;}
 .email.notifications .email_settings .form-group .col-sm-2{flex:1;}
 .email.notifications .email_settings .form-group .col-sm-10{flex:3;}
     #LinkedFiles_wrapper .col-sm-12{width:100%;}   

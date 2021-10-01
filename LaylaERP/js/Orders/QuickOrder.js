@@ -1206,7 +1206,7 @@ function check_applied_coupon(coupon_code, product_ids, exclude_product_ids) {
         else cart_prnt_ids.push($(row).data('pid'));
         cart_prnt_ids.push($(row).data('vid'));
     });
-    console.log(cart_matt_ids, cart_prnt_ids);
+    //console.log(cart_matt_ids, cart_prnt_ids);
     if (coupon_code.includes("sales10off")) { if (!cart_prnt_ids.includes(118) && !cart_prnt_ids.includes(611172)) return true; }
     else if (coupon_code.includes("sales25off")) { if (cart_matt_ids.includes(118)) return true; }
     else if (coupon_code.includes("sales50off")) { if (cart_matt_ids.includes(611172)) return true; }

@@ -367,6 +367,10 @@
     <Content Include="Content\AdminLTE-3.1.0\smartwizard\jquery.smartWizard.js" />
     <Content Include="Content\AdminLTE-3.1.0\smartwizard\smart_wizard_all.css" />
     <Content Include="Content\AdminLTE-3.1.0\_all-skins.min.css" />
+    <Content Include="Content\ajax\libs\jquery\3.5.1\jquery.min.js" />
+    <Content Include="Content\ajax\libs\jszip\3.1.3\jszip.min.js" />
+    <Content Include="Content\ajax\libs\pdfmake\0.1.53\pdfmake.min.js" />
+    <Content Include="Content\ajax\libs\pdfmake\0.1.53\vfs_fonts.js" />
     <Content Include="Content\alert\sweetalert2.all.min.js" />
     <Content Include="Content\alert\sweetalert2.min.css" />
     <Content Include="Content\BankLinkedFiles\default.png" />
@@ -374,6 +378,8 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\bootstrap\3.4.1\css\bootstrap.min.css" />
+    <Content Include="Content\bootstrap\3.4.1\js\bootstrap.min.js" />
     <Content Include="Content\css\intlTelInput.css" />
     <Content Include="Content\css\Style.css" />
     <Content Include="Content\css\tabcss.css" />
@@ -574,6 +580,7 @@
     <Content Include="Content\fontawesome-all.min.css" />
     <Content Include="Content\img\flags%402x.png" />
     <Content Include="Content\img\flags.png" />
+    <Content Include="Content\ionicons\2.0.1\css\ionicons.min.css" />
     <Content Include="Content\ProductCategory\default.png" />
     <Content Include="Content\Product\default.png" />
     <Content Include="Content\Style11.css" />
@@ -634,6 +641,7 @@
     <Content Include="js\EmailSetting\EmailSettingNotifications.js" />
     <Content Include="js\FeeNTax\FeeNTax.js" />
     <Content Include="js\GooglePlace\index.js" />
+    <Content Include="js\Hrms\AttendenceReport.js" />
     <Content Include="js\Hrms\Attendence.js" />
     <Content Include="js\Hrms\ConfigurationList.js" />
     <Content Include="js\Hrms\Da.js" />
@@ -938,7 +946,6 @@
     <Content Include="Views\Reception\POClosureOrder.cshtml" />
     <Content Include="Views\Error\Error.cshtml" />
     <Content Include="Views\Accounting\AddPcgType.cshtml" />
-    <Content Include="Views\Hrms\Configsetup.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

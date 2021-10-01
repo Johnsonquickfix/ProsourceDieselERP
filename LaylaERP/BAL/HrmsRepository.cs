@@ -476,10 +476,10 @@ namespace LaylaERP.BAL
             try
             {
                 CultureInfo us = new CultureInfo("en-US");
-                //DateTime startDate = DateTime.Parse(fromdate, us);
-                //DateTime endDate = DateTime.Parse(todate, us);
-                DateTime startDate = DateTime.Parse("2021-09-24", us);
-                DateTime endDate = DateTime.Parse("2021-09-30", us);
+                DateTime startDate = DateTime.Parse(fromdate, us);
+                DateTime endDate = DateTime.Parse(todate, us);
+                //DateTime startDate = DateTime.Parse("2021-09-24", us);
+                //DateTime endDate = DateTime.Parse("2021-09-30", us);
                 string strWhr = string.Empty;
                 string strAdd = string.Empty;
                 if (CommanUtilities.Provider.GetCurrent().UserType != "Administrator")

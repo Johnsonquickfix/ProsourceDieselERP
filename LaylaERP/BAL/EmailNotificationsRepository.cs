@@ -215,7 +215,7 @@ namespace LaylaERP.BAL
         public static string filename(string option_name)
         {
             string value = "";
-            string strQuery = "select filename from erp_email_templates where option_name = '"+option_name+"' ";
+            string strQuery = "select email_text from erp_email_notify_options where email_notify_key = '" + option_name+"' ";
             value = SQLHelper.ExecuteScalar(strQuery).ToString();
             return value;
         }

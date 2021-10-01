@@ -143,7 +143,7 @@ background:#000 !important; color:#fff !important;}
     transform: rotate( -90deg );
 }
 .sidebar-menu > li > a {
-    padding: 8px 5px 8px 15px;
+    padding: 8px 5px 8px 10px;
 }
     .sidebar-menu a {
 cursor:pointer;}
@@ -171,8 +171,9 @@ background:#fff;padding-left:0px;}
         color: #4f4f4f;
     }
 .treeview-menu > li > a {
-    padding: 5px 5px 5px 20px !important;
+    padding: 5px 10px 5px 15px !important; text-transform:none !important;
 }
+.sidebar-menu li > a > .pull-right-container i{margin-right:0px !important;}
 .navbar-nav > .user-menu > .dropdown-menu, .navbar-nav > .user-menu > .dropdown-menu > .user-body {
     padding: 0px;
     border-color: #c5c5c5;
@@ -546,7 +547,9 @@ height:calc(100% - 40px);}
         margin-top:0px;} 
 }
 @media(max-width:767px) {
-   
+    .main-sidebar {
+        padding-top: 50px !important;
+    }
 }
 @media(max-width:575px) {
     .create-user-primary .box-header .col-sm-4 {
@@ -654,7 +657,7 @@ width:50px; height:50px; border-radius:100%; padding:3px; border:1px solid #d2d6
     right: 10px;
     top: 10px;
 }
-.treeview-menu .treeview-menu a {padding-left:40px !important;}
+.treeview-menu .treeview-menu a {padding-left:25px !important;}
 .treeview-menu .treeview-menu {padding-left:0px;}
 .sidebar-menu  li  a  [class^="fa"]{width:20px;}
 .sidebar .user-panel > .info {width: calc(100% - 55px);}

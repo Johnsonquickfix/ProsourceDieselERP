@@ -1,17 +1,70 @@
-﻿
+﻿@model  LaylaERP.Models.EmailSettingModel
 @{
     Layout = null;
 }
 
-<!DOCTYPE html>
-
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Processing</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no" />
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400&display=swap" rel="stylesheet" />
+    <title>@Model.email_heading</title>
 </head>
-<body>
-    <div> 
+<body style="font-size:14px; margin:0; padding:0; padding-top:15px; font-family:Arial, Helvetica, sans-serif; font-family: 'Open Sans', sans-serif; background-color:#e0e0e0; text-align: center; color:#4f4f4f;">
+    <div style=" background-color:#fff; box-shadow:0px 0px 4px #ddd; max-width:600px; margin:auto;">
+        <div style="text-align: center; padding:25px 10px 10px 10px;">
+            <a style="text-decoration:none;" href="#">
+                <img style="width:40%" src="https://laylasleep.com/wp-content/themes/layla-white/images/logo-mail-registered.png" alt="Layla Logo" />
+            </a>
+        </div>
+        <div style="background-color:#f6f7f9; margin:15px; padding:15px 0px;">
+            <h2>@Model.email_heading</h2>
+        </div>
+        <div style="background-color:#f6f7f9; margin:15px; padding:15px 0px;">
+            <h2>@Model.additional_content</h2>
+        </div>
+        <div style="clear:both;"></div>
+        <div>
+            <ul style="padding:0 15px; margin:0;">
+                <li style="list-style:none; margin-bottom:20px; margin-left:0;  width:47%; float:left; padding:10px 2px; border-radius: 3px; border:1px solid #ddd;">
+                    <a style="text-decoration:none;" href="http://v2.zopim.com/widget/livechat.html?key=GNFx4Up7Iivqtqu4bIG8HnTTR2CwGeaA&utm_campaign=MAP%3A%20Topper%20-%20Shipping%20Delay%20Version%20%28HXbiAm%29&utm_medium=email&utm_source=2019%20-%20Topper%20MAP&_ke=eyJrbF9lbWFpbCI6ICJncmVnZ0BsYXlsYXNsZWVwLmNvbSIsICJrbF9jb21wYW55X2lkIjogIkxGUVRKSyJ9"><img src="https://laylasleep.com/wp-content/themes/layla-white/images/mail-chat-icon.png" alt="Layla Chat" /></a>
+                    <span style="margin-top: 5px; display:block; line-height: 20px;">M-F 7AM-4PM MST<br />S-S 8AM-5PM MST</span>
+                </li>
+                <li style="list-style:none; margin-bottom:20px; margin-left:0; width:47%; float:right; padding:10px 2px; border-radius: 3px;border:1px solid #ddd;">
+                    <a style="text-decoration:none;" href="tel:855-358-1676"><img src="https://laylasleep.com/wp-content/themes/layla-white/images/mail-phone-icon.png" alt="Layla Phone" /></a>
+                    <span style="margin-top: 5px; display:block; line-height: 20px;"><a style="width:auto; color:#4f4f4f; text-decoration:none;" href="tel:855-358-1676">855-358-1676</a><br /> 24 HOURS</span>
+                </li>
+                <div style="clear:both;"></div>
+                <li style="list-style:none; margin-bottom:20px; margin-left:0; width:100%; float:left; padding:10px 0; border-radius: 3px;border:1px solid #ddd;">
+                    <a style="text-decoration:none;" href="mailto:support@laylasleep.com"><img src="https://laylasleep.com/wp-content/themes/layla-white/images/mail-mail-icon.png" alt="Layla Mail" /></a>
+                    <span style="margin-top: 5px; display:block; line-height: 20px;"><a style="width:auto; color:#4f4f4f; text-decoration:none;" href="mailto:support@laylasleep.com">support@laylasleep.com</a></span>
+                </li>
+            </ul>
+        </div>
+        <div style="clear:both;"></div>
+        <div style="margin-top:20px; padding:15px;">
+            <a href="//refer.laylasleep.com" target="_blank"><img style="margin:0; width:100%;" style="width:100%;" src="https://laylasleep.com/wp-content/themes/layla-white/images/share-reward.jpg" alt="Layla Offers" /></a>
+        </div>
+        <div style="margin:0; background-color:#404042;">
+            <ul style="padding:0; margin:0;">
+                <li style="list-style:none; margin: 10px 2px 10px; display:inline-block;">
+                    <a style="display:block;" href="https://www.facebook.com/laylasleep">
+                        <img style="max-height:45px;" src="https://laylasleep.com/wp-content/themes/layla-white/images/mail-fb.png" alt="Layla On Facebook" />
+                    </a>
+                </li>
+                <li style="list-style:none; margin: 10px 2px 10px; display:inline-block;">
+                    <a style="display:block;" href="https://twitter.com/laylasleep">
+                        <img style="max-height:45px;" src="https://laylasleep.com/wp-content/themes/layla-white/images/mail-twit.png" alt="Layla On Twitter" />
+                    </a>
+                </li>
+                <li style="list-style:none; margin: 10px 2px 10px; display:inline-block;">
+                    <a style="display:block;" href="https://www.instagram.com/laylasleep/">
+                        <img style="max-height:45px;" src="https://laylasleep.com/wp-content/themes/layla-white/images/mail-insta.png" alt="Layla On Insta" />
+                    </a>
+                </li>
+            </ul>
+        </div>
     </div>
 </body>
 </html>

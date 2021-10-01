@@ -637,6 +637,7 @@
     <Content Include="js\Hrms\Attendence.js" />
     <Content Include="js\Hrms\ConfigurationList.js" />
     <Content Include="js\Hrms\Da.js" />
+    <Content Include="js\Hrms\Empconfigsetting.js" />
     <Content Include="js\Hrms\EmployeeList.js" />
     <Content Include="js\Hrms\GrantLeaveList.js" />
     <Content Include="js\Hrms\HRA.js" />
@@ -937,6 +938,7 @@
     <Content Include="Views\Reception\POClosureOrder.cshtml" />
     <Content Include="Views\Error\Error.cshtml" />
     <Content Include="Views\Accounting\AddPcgType.cshtml" />
+    <Content Include="Views\Hrms\Configsetup.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

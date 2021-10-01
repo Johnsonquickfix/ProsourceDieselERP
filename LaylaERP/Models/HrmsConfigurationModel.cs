@@ -59,4 +59,27 @@ namespace LaylaERP.Models
         public decimal pay_sacle { get; set; }
 
     }
+    public class empconfigsetting
+    {
+        public int rowid { get; set; }
+        public int basic { get; set; }
+        public int special_pay { get; set; }
+        public int washing_allowance { get; set; }
+        public int other_allowance { get; set; }
+        public int incentive { get; set; }
+        public int cca { get; set; }
+        public int epf { get; set; }
+        public int vpf { get; set; }
+        public int adv_staff { get; set; }
+        public int adv_epf { get; set; }
+        public int incometax { get; set; }
+        public int insurance { get; set; }
+        public int loan_emi { get; set; }
+        public int emp_walfare { get; set; }
+        public int imprest { get; set; }
+        public int misc_refund { get; set; }
+        public int festival_adv { get; set; }
+        public int hra_percent { get; set; }
+        public int hra_slab { get; set; }
+    }
 }

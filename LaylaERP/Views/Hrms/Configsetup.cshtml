@@ -10,7 +10,7 @@
 </div>
 
 <div class="page-title">
-    <h2 class="page-heading">Config Setup</h2><span title="Click Here To Back To List" data-placement="bottom" data-toggle="tooltip"><a href="../../Hrms/ConfigurationList" class="btn btn-danger">Back to List</a></span>
+    <h2 class="page-heading">Configuration</h2>
 </div>
 <section class="content section-content configuration-section">
 
@@ -20,34 +20,43 @@
         </div>
         <div class="box-body">
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="form-group">
-                        <label for="FirstName">DA Office<span style="color:red">*</span></label>
+                        <input type="hidden" id="hfid" value="@ViewBag.id" />
+                        <label for="FirstName">DA Office %<span style="color:red">*</span></label>
                         <div class="input-group">
                             <input class="form-control" type="text" id="txtdarate1" />
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="form-group">
-                        <label for="FirstName">DA Field<span style="color:red">*</span></label>
+                        <label for="FirstName">DA Field %<span style="color:red">*</span></label>
                         <div class="input-group">
                             <input class="form-control" type="text" id="txtdarate2" />
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="form-group">
-                        <label for="FirstName">DA others<span style="color:red">*</span></label>
+                        <label for="FirstName">DA others %<span style="color:red">*</span></label>
                         <div class="input-group">
                             <input class="form-control" type="text" id="txtdaothers" />
                         </div>
                     </div>
                 </div>
-               
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="country">From Date<span style="color:red">*</span></label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="txtfromdate" /><span class="even-space"></span>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="box-footer">
                     <div class="text-left">
-                        <input type="button" id="btndasave" value="Save" class="btn btn-danger" />
+                        <input type="button" id="btndasave" value="Add" class="btn btn-danger" />
                     </div>
                 </div>
             </div>
@@ -60,24 +69,33 @@
         </div>
         <div class="box-body">
             <div class="row">
-                <div class="col-md-3">
-                    <div class="form-group">
-                        <label for="FirstName">HRA %<span style="color:red">*</span></label>
-                        <div class="input-group">
-                            <input class="form-control" type="text" id="txtdarate1" />
+                <div class="col-md-1">
+                    <input type="checkbox" id="chkhrapercent" name="hrapercent" /><label for="hrapercent">HRA %</label>
+                </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="txthrapercent" />
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="form-group">
-                        <label for="FirstName">HRA Slab<span style="color:red">*</span></label>
-                        <div class="input-group">
-                            <input class="form-control" type="text" id="txtdarate2" />
+
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            <div title="Check Active">
+                                <input type="checkbox" id="chkhraslab" name="hraslab" /><label for="hraslab">HRA Slab</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3" id="slabsetbtn">
+                        <div class="form-group">
+                            <div class="text-left">
+                                <span title="Click Here To Back To List" data-placement="bottom" data-toggle="tooltip"><a href="../../Hrms/HRA" class="btn btn-danger" id="btnhraslab">Set Hra Slab</a></span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
     </div>
 
 
@@ -119,6 +137,14 @@
                     <div class="form-group">
                         <div title="Check Active">
                             <input type="checkbox" id="chkincentive" name="incentive" /><label for="incentive">Incentive</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <div title="Check Active">
+                            <input type="checkbox" id="chkcca" name="cca" /><label for="cca">CCA</label>
                         </div>
                     </div>
                 </div>
@@ -208,121 +234,9 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-    <div class="box box-primary">
-        <div class="box-header with-border">
-            <h4 class="box-title">Reimbursements</h4>
-        </div>
-        <div class="box-body">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="FirstName">Reimbursements<span style="color:red"></span></label>
-                        <div class="input-group">
-                            <input class="form-control" type="text" id="txtreibursement" value="0">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="box box-primary">
-        <div class="box-header with-border">
-            <h4 class="box-title">Work</h4>
-        </div>
-        <div class="box-body">
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label for="FirstName">Work Type<span style="color:red">*</span></label>
-                        <div class="input-group">
-                            <select class="form-control select2" id="ddlworktype"></select>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="FirstName">Default Working Hours<span style="color:red">*</span></label>
-                        <div class="input-group">
-                            <input class="form-control" type="text" id="txtworkhours">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="box box-primary">
-        <div class="box-header with-border">
-            <h4 class="box-title">Prepare Salary</h4>
-        </div>
-        <div class="box-body">
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label for="FirstName">Prepare Salary<span style="color:red">*</span></label>
-                        <div class="input-group">
-                            <select class="form-control select2" id="ddlpreparesalary">
-                                <option value="1">Yes</option>
-                                <option value="2">No</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-    <div class="box box-primary">
-        <div class="box-header with-border">
-            <h4 class="box-title">Computation Accounting</h4>
-        </div>
-        <div class="box-body">
-            <div class="row">
-                <div class="col-sm-4">
-                    <div class="form-group">
-                        <label for="FirstName">Accounting Type<span style="color:red">*</span></label>
-                        <div class="input-group">
-                            <select class="form-control select2" id="ddlaccountingtype"></select>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-4">
-                    <div class="form-group">
-                        <label for="FirstName">Bank<span style="color:red">*</span></label>
-                        <div class="input-group">
-                            <input class="form-control" type="text" id="txtbank">
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-4">
-                    <div class="form-group">
-                        <label for="FirstName">Bank Account Number<span style="color:red">*</span></label>
-                        <div class="input-group">
-                            <input class="form-control" type="text" id="txtbankaccount">
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-4">
-                    <div class="form-group">
-                        <label for="FirstName">EPF Account Number<span style="color:red">*</span></label>
-                        <div class="input-group">
-                            <input class="form-control" type="text" id="txtepfaccount">
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-4">
-                    <div class="form-group">
-                        <label for="FirstName">Pay scale<span style="color:red"></span></label>
-                        <div class="input-group">
-                            <input class="form-control" type="text" id="txtpayscale">
-                        </div>
-                    </div>
-                </div>
                 <div class="box-footer">
-                    <div class="text-right">
-                        <a href="#" class="btn btn-danger" id="btnSave"><span title="Click Here To Save Details" data-placement="bottom" data-toggle="tooltip"><b>Save</b></span></a>
+                    <div class="text-left">
+                        <input type="button" id="btnconfigsave" value="Save" class="btn btn-danger" />
                     </div>
                 </div>
             </div>
@@ -333,13 +247,78 @@
 <script>
     $(document).ready(function () {
         $("#loader").hide();
-        getEmployeeType();
-        changename(); //User for employee name
-        getAccountingType();
-        getWorkType();
-        changeHRA(); //use for HRA auto fill
-        $(document).on('click', "#btnSave", function () {
-            AddConfiguration();
+        $("#slabsetbtn").hide();
+
+        $("#chkhraslab").click(function () {
+            if ($('#chkhraslab').prop('checked') === true) {
+                $('#slabsetbtn').show();
+            }
         });
-    })
+
+        $("#chkhraslab").click(function () {
+            if ($('#chkhraslab').prop('checked') === false) {
+                $('#slabsetbtn').hide();
+            }
+        });
+
+        $("#btnconfigsave").click(function () {
+            UpdateConfig();
+        })
+        SelectConfig();
+    });
 </script>
+
+<script>
+    $(function () {
+        $("#txtfromdate").datepicker({
+            format: 'mm-dd-yyyy',
+        }).datepicker("setDate", 'now');
+    });
+</script>
+<script>
+    function SelectConfig() {
+            $.ajax({
+                url: "/Hrms/GetConfigSetting/",
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                dataType: 'JSON',
+                //data: JSON.stringify(),
+                success: function (data) {
+                    console.log(data);
+                    var jobj = JSON.parse(data);
+                    if (jobj.length > 0) {
+
+                        jobj[0].basic == true ? $("#chkbasic").prop("checked", true) : $("#chkbasic").prop("checked", false);
+                        jobj[0].special_pay == true ? $("#chkspecialpay").prop("checked", true) : $("#chkspecialpay").prop("checked", false);
+                        jobj[0].washing_allowance == true ? $("#chkwashingallowance").prop("checked", true) : $("#chkwashingallowance").prop("checked", false);
+                        jobj[0].other_allowance == true ? $("#chkotherallowance").prop("checked", true) : $("#chkotherallowance").prop("checked", false);
+                        jobj[0].incentive == true ? $("#chkincentive").prop("checked", true) : $("#chkincentive").prop("checked", false);
+                        jobj[0].cca == true ? $("#chkcca").prop("checked", true) : $("#chkcca").prop("checked", false);
+                        jobj[0].epf == true ? $("#chkepf").prop("checked", true) : $("#chkepf").prop("checked", false);
+                        jobj[0].vpf == true ? $("#chkvpf").prop("checked", true) : $("#chkvpf").prop("checked", false);
+                        jobj[0].adv_staff == true ? $("#chkadvancestaff").prop("checked", true) : $("#chkadvancestaff").prop("checked", false);
+                        jobj[0].adv_epf == true ? $("#chkadvanceepf").prop("checked", true) : $("#chkadvanceepf").prop("checked", false);
+                        jobj[0].incometax == true ? $("#chkincometax").prop("checked", true) : $("#chkincometax").prop("checked", false);
+                        jobj[0].insurance == true ? $("#chkinsurance").prop("checked", true) : $("#chkinsurance").prop("checked", false);
+                        jobj[0].loan_emi == true ? $("#chkloanemi").prop("checked", true) : $("#chkloanemi").prop("checked", false);
+                        jobj[0].emp_walfare == true ? $("#chkempwalfare").prop("checked", true) : $("#chkempwalfare").prop("checked", false);
+                        jobj[0].imprest == true ? $("#chkimprest").prop("checked", true) : $("#chkimprest").prop("checked", false);
+                        jobj[0].misc_refund == true ? $("#chkmiscrefund").prop("checked", true) : $("#chkmiscrefund").prop("checked", false);
+                        jobj[0].festival_adv == true ? $("#chkfestivaladvance").prop("checked", true) : $("#chkfestivaladvance").prop("checked", false);
+                        jobj[0].hra_percent == true ? $("#chkhrapercent").prop("checked", true) : $("#chkhrapercent").prop("checked", false);
+                        jobj[0].hra_slab == true ? $("#chkhraslab").prop("checked", true) : $("#chkhraslab").prop("checked", false);
+                        
+                    }
+                },
+                error: function (msg) {
+
+                }
+            });
+
+    }
+</script>
+
+
+
+
+<script src="@Url.Content("~/js/Hrms/Empconfigsetting.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>

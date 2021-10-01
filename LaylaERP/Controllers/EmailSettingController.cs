@@ -30,6 +30,7 @@ namespace LaylaERP.Controllers
            EmailSettingModel obj = EmailNotificationsRepository.GetDetails(id);
             
             ViewBag.filename = obj.filename; //EmailNotificationsRepository.filename(id).ToString();
+            ViewBag.emailtext = EmailNotificationsRepository.filename(id).ToString();
             return View();
         }
 

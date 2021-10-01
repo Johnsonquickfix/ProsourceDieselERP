@@ -2715,6 +2715,7 @@ a#btnbackcategory {max-width: 135px; margin-top: 5px;}
 
 @media(max-width:900px) {
     .categories #ProdCat .col-md-8{width:100%;}
+    .categories #ProdCat .col-md-4{width:100%;}
 .email.notifications .email_settings .form-group .col-sm-2{flex:1;}
 .email.notifications .email_settings .form-group .col-sm-10{flex:3;}
     #LinkedFiles_wrapper .col-sm-12{width:100%;}   
@@ -2820,6 +2821,7 @@ a#btnbackcategory {max-width: 135px; margin-top: 5px;}
 
     }
 @media(max-width:767px){
+.main-sidebar {padding-top: 50px;}
 .attendance .user-top-section .tablenav .bulkactions{width:100% !important; flex:0 0 100%;}
 .attendance .user-top-section .tablenav .bulkactions .input-group:last-child{margin-right:0px;}
 .attendance .user-top-section .tablenav .bulkactions .input-group:last-child select {flex: 0 0 100%;margin-right: 0px;width: 100%;}

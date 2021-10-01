@@ -35,6 +35,12 @@ namespace LaylaERP.Controllers
             return View();
         }
 
+        public ActionResult AddPcgType()
+        {
+            return View();
+        }
+
+
         public JsonResult GetNatureofJournal(SearchModel model)
         {
             DataSet ds = BAL.AccountingRepository.GetNatureofJournal();
@@ -241,6 +247,57 @@ namespace LaylaERP.Controllers
                 }
             }
             return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
+        }
+
+
+        public JsonResult AddPcgTypeDetails(PcgtypeModel model)
+        {
+            int ID = AccountingRepository.AddPcgTypeDetails(model);
+            if (ID > 0)
+            {
+                return Json(new { status = true, message = "Pcg Type has been saved successfully!!", url = "", id = ID }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Something went wrong!!", url = "", id = 0 }, 0);
+            }
+        }
+
+        public JsonResult GetPcgTypeList()
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = AccountingRepository.GetPcgTypeList();
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+
+        public JsonResult GetPcgTypeById(string strValue1)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = AccountingRepository.GetPcgTypeById(strValue1);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+
+        public JsonResult UpdatePcgType(PcgtypeModel model)
+        {
+            if (model.rowid > 0)
+            {
+                AccountingRepository.UpdatePcgType(model);
+                return Json(new { status = true, message = "Data has been saved successfully!!", url = "", id = model.rowid }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Something went wrong!!", url = "", id = 0 }, 0);
+            }
         }
     }
 }

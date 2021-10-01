@@ -171,7 +171,7 @@ background:#fff;padding-left:0px;}
         color: #4f4f4f;
     }
 .treeview-menu > li > a {
-    padding: 5px 10px 5px 15px !important;
+    padding: 5px 10px 5px 15px !important; text-transform:none !important;
 }
 .sidebar-menu li > a > .pull-right-container i{margin-right:0px !important;}
 .navbar-nav > .user-menu > .dropdown-menu, .navbar-nav > .user-menu > .dropdown-menu > .user-body {

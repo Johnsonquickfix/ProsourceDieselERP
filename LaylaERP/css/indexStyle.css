@@ -547,7 +547,9 @@ height:calc(100% - 40px);}
         margin-top:0px;} 
 }
 @media(max-width:767px) {
-   
+    .main-sidebar {
+        padding-top: 50px !important;
+    }
 }
 @media(max-width:575px) {
     .create-user-primary .box-header .col-sm-4 {

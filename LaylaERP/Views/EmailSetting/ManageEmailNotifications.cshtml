@@ -13,112 +13,121 @@
 <section class="content section-content table-design email_settings_in">
     <div class="box box-primary">
         <div class="box-body">
+
             <div class="form-group d-flex">
-                <label class="col-sm-2 control-label">
-                    Enable/Disable
-                    <input type="hidden" id="hfid" />
-                </label>
-                <div class="col-sm-10">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="theemailenable" id="theemailenable">
-                        <label class="form-check-label" for="theemailenable">
-                            Enable this email notification
-                        </label>
+                
+                    <h3> @ViewBag.emailtext</h3>
+            
+            </div>
+                <div class="form-group d-flex">
+                    <label class="col-sm-2 control-label">
+                        Enable/Disable
+                        <input type="hidden" id="hfid" />
+                    </label>
+                    <div class="col-sm-10">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="theemailenable" id="theemailenable">
+                            <label class="form-check-label" for="theemailenable">
+                                Enable this email notification
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group d-flex">
+                    <label class="col-sm-2 control-label">
+                        Recipient(s)
+                    </label>
+                    <div class="col-sm-10">
+                        <input type="text" id="recipients" class="form-control" value="" placeholder="Recipients.">
+                    </div>
+                </div>
+                <div class="form-group d-flex">
+                    <label class="col-sm-2 control-label">
+                        Subject
+                    </label>
+                    <div class="col-sm-10">
+                        <input type="text" id="emailsubject" class="form-control" value="" placeholder="Subject.">
+                    </div>
+                </div>
+                <div class="form-group d-flex">
+                    <label class="col-sm-2 control-label">
+                        Email heading
+                    </label>
+                    <div class="col-sm-10">
+                        <input type="text" id="emailheading" class="form-control" value="" placeholder="Email heading.">
+                    </div>
+                </div>
+                <div class="form-group d-flex">
+                    <label class="col-sm-2 control-label">
+                        Additional content
+                    </label>
+                    <div class="col-sm-10">
+                        <textarea id="emailcontent" class="form-control">We look forward to fulfilling your order soon.</textarea>
+                    </div>
+                </div>
+                <div class="form-group d-flex">
+                    <label class="col-sm-2 control-label">
+                        HTML template
+                    </label>
+                    <div class="col-sm-10">
+                        <select id="templatetype" class="form-control">
+                            <option value="email_pln_text">Plain Text</option>
+                            <option value="email_html">Html</option>
+                            <option value="email_multipart">MultiPart</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group d-flex">
+                    <label class="col-sm-2 control-label">
+                        Template Name
+
+                    </label>
+                    <div class="col-sm-10">
+                        <input type="text" id="templatename" class="form-control" value="" placeholder="Template Name.">
                     </div>
                 </div>
             </div>
-            <div class="form-group d-flex">
-                <label class="col-sm-2 control-label">
-                    Recipient(s)
-                </label>
-                <div class="col-sm-10">
-                    <input type="text" id="recipients" class="form-control" value="" placeholder="Recipients.">
-                </div>
+            <div class="box-footer text-right">
+                <button id="btnsave" class="btn btn-danger">Save Changes</button>
             </div>
-            <div class="form-group d-flex">
-                <label class="col-sm-2 control-label">
-                    Subject
-                </label>
-                <div class="col-sm-10">
-                    <input type="text" id="emailsubject" class="form-control" value="" placeholder="Subject.">
-                </div>
-            </div>
-            <div class="form-group d-flex">
-                <label class="col-sm-2 control-label">
-                    Email heading
-                </label>
-                <div class="col-sm-10">
-                    <input type="text" id="emailheading" class="form-control" value="" placeholder="Email heading.">
-                </div>
-            </div>
-            <div class="form-group d-flex">
-                <label class="col-sm-2 control-label">
-                    Additional content
-                </label>
-                <div class="col-sm-10">
-                    <textarea id="emailcontent" class="form-control">We look forward to fulfilling your order soon.</textarea>
-                </div>
-            </div>
-            <div class="form-group d-flex">
-                <label class="col-sm-2 control-label">
-                    HTML template
-                </label>
-                <div class="col-sm-10">
-                    <select id="templatetype" class="form-control">
-                        <option value="email_pln_text">Plain Text</option>
-                        <option value="email_html">Html</option>
-                        <option value="email_multipart">MultiPart</option>
-                    </select>
-                </div>
-            </div>
-            <div class="form-group d-flex">
-                <label class="col-sm-2 control-label">
-                    Template Name
-                </label>
-                <div class="col-sm-10">
-                    <input type="text" id="templatename" class="form-control" value="" placeholder="Template Name.">
-                </div>
-            </div>
+
         </div>
-        <div class="box-footer text-right">
-            <button id="btnsave" class="btn btn-danger">Save Changes</button>
-        </div>
+    
+    <b>
+        This template has been overridden by your theme and can be found in Views/EmailNotifications/@ViewBag.filename   . </b>
 
-        <button id="btnshow" class="btn btn-danger">View Template</button>
-        <button id="btnhide" class="btn btn-danger">Hide Template</button>
-    </div>
+            <button id="btnshow" style="float:right" class="btn btn-danger">View Template</button>
+            <button id="btnhide" style="float:right" class="btn btn-danger">Hide Template</button>
 
-   
-
-    <div id="divhtml" class="editor" style="">
-        @*@ViewBag.filename*@
-        @{
-            //var dataFile = "D:/LaylaERP/LaylaERP/Views/EmailNotifications/NewOrder.cshtml";
-            // var dataFile = "D:/LaylaERP/LaylaERP/Views/EmailNotifications/NewOrderTest.cshtml";
-            //                  D:\LaylaERP\LaylaERP\EmailNotifications\NewOrderTest.cshtml "NewOrderTest.cshtml";
-            var filename = @ViewBag.filename;
-            var dataFile = Path.Combine(Server.MapPath("~/Views/EmailNotifications"));
-            dataFile = dataFile + "\\" + filename;
-            var ListFromFile = File.ReadAllLines(dataFile);
-            var str = String.Join("\n", ListFromFile.ToArray());
-        }
-        @*<textarea name="textbox01" class="form-control" id="textbox01" rows="30" cols="50">loaded text here</textarea>
-            <textarea name="text" class="form-control" id="text" rows="30" cols="50">loaded text here</textarea>*@
+            <div id="divhtml" class="editor" style="">
+                @*@ViewBag.filename*@
+                @{
+                    //var dataFile = "D:/LaylaERP/LaylaERP/Views/EmailNotifications/NewOrder.cshtml";
+                    // var dataFile = "D:/LaylaERP/LaylaERP/Views/EmailNotifications/NewOrderTest.cshtml";
+                    //                  D:\LaylaERP\LaylaERP\EmailNotifications\NewOrderTest.cshtml "NewOrderTest.cshtml";
+                    var filename = @ViewBag.filename;
+                    var dataFile = Path.Combine(Server.MapPath("~/Views/EmailNotifications"));
+                    dataFile = dataFile + "\\" + filename;
+                    var ListFromFile = File.ReadAllLines(dataFile);
+                    var str = String.Join("\n", ListFromFile.ToArray());
+                }
+                @*<textarea name="textbox01" class="form-control" id="textbox01" rows="30" cols="50">loaded text here</textarea>
+                <textarea name="text" class="form-control" id="text" rows="30" cols="50">loaded text here</textarea>*@
 
 
 
 
 
 
-        @using (Html.BeginForm("createfile", "EmailSetting", FormMethod.Post))
-        {
-            <textarea name="text" class="form-control" id="txtText" rows="30" cols="50">@str</textarea>
-            <input type="text" value="@ViewBag.filename" style="display:none" rows="30" cols="50" name="filename" id="txtfileText" />
-            <input type="submit" class="btn btn-danger" style="float:right" value="Update Template" />
-        }
+                @using (Html.BeginForm("createfile", "EmailSetting", FormMethod.Post))
+                {
+                    <textarea name="text" class="form-control" id="txtText" rows="30" cols="50">@str</textarea>
+                    <input type="text" value="@ViewBag.filename" style="display:none" rows="30" cols="50" name="filename" id="txtfileText" />
+                    <input type="submit" class="btn btn-danger" style="float:right" value="Update Template" />
+                }
 
 
-    </div>
+            </div>
 
 
 </section>

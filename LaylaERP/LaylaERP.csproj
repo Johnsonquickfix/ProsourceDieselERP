@@ -367,6 +367,7 @@
     <Content Include="Content\AdminLTE-3.1.0\smartwizard\jquery.smartWizard.js" />
     <Content Include="Content\AdminLTE-3.1.0\smartwizard\smart_wizard_all.css" />
     <Content Include="Content\AdminLTE-3.1.0\_all-skins.min.css" />
+    <Content Include="Content\ajax\libs\jquery\3.5.1\jquery.min.js" />
     <Content Include="Content\alert\sweetalert2.all.min.js" />
     <Content Include="Content\alert\sweetalert2.min.css" />
     <Content Include="Content\BankLinkedFiles\default.png" />
@@ -374,6 +375,8 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\bootstrap\3.4.1\css\bootstrap.min.css" />
+    <Content Include="Content\bootstrap\3.4.1\js\bootstrap.min.js" />
     <Content Include="Content\css\intlTelInput.css" />
     <Content Include="Content\css\Style.css" />
     <Content Include="Content\css\tabcss.css" />

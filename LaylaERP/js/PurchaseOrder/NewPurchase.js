@@ -53,6 +53,15 @@
         }
         else { $('#txtIncoTerms').val(''); }
     });
+    $('#txtPlanneddateofdelivery').change(function () {
+        let date1 = new Date($('#txtPODate').val()), date2 = new Date($('#txtPlanneddateofdelivery').val());
+        var Difference_In_Time = date2.getTime() - date1.getTime();
+        var Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
+        $('#lblPlannedDays').text("(Planned Days : " + Difference_In_Days + ")");
+    });
+    $('#ddlWarehouse').change(function (t) {
+        t.preventDefault(); $('#txtWarehouseAddress').val($(this).find(':selected').data('ad'))
+    });
     $(document).on("click", ".btnEdit", function (t) {
         t.preventDefault(); $("#loader").show(); isEdit(true);
         $('#ddlVendor').prop("disabled", true); $('.billinfo').prop("disabled", false); //$('#txtbillfirstname').focus();
@@ -118,7 +127,7 @@ function getMasters() {
 
             //Warehouse
             $("#ddlWarehouse").html('<option value="0">Select Warehouse</option>');
-            for (i = 0; i < dt['Table4'].length; i++) { $("#ddlWarehouse").append('<option value="' + dt['Table4'][i].id + '">' + dt['Table4'][i].text + '</option>'); }
+            for (i = 0; i < dt['Table4'].length; i++) { $("#ddlWarehouse").append('<option value="' + dt['Table4'][i].id + '" data-ad="' + dt['Table4'][i].address + '">' + dt['Table4'][i].text + '</option>'); }
         },
         complete: function () { $("#loader").hide(); },
         error: function (xhr, status, err) { $("#loader").hide(); }, async: false
@@ -210,7 +219,7 @@ function removeItems(id) {
         });
 }
 function calculateFinal() {
-    let tGrossAmt = 0.00, tDisAmt = 0.00, tTax_Amt1 = 0.00, tTax_Amt2 = 0.00, tNetAmt = 0.00;
+    let tGrossAmt = 0.00, tQty = 0.00, tDisAmt = 0.00, tTax_Amt1 = 0.00, tTax_Amt2 = 0.00, tNetAmt = 0.00;
     //main item
     $("#line_items > tr.paid_item").each(function (index, row) {
         let rPrice = 0.00, rQty = 0.00, rDisPer = 0.00, rGrossAmt = 0.00, rDisAmt = 0.00, rTax1 = 0.00, rTax_Amt1 = 0.00, rTax2 = 0.00, rTax_Amt2 = 0.00, rNetAmt = 0.00;
@@ -218,7 +227,7 @@ function calculateFinal() {
         rQty = parseFloat($(row).find("[name=txt_itemqty]").val()) || 0.00;
         rDisPer = parseFloat($(row).find("[name=txt_itemdisc]").val()) || 0.00;
         rTax1 = parseFloat($(row).find(".tax-amount").data('tax1')) || 0.00; rTax2 = parseFloat($(row).find(".tax-amount").data('tax2')) || 0.00;
-        rGrossAmt = rPrice * rQty; rDisAmt = rGrossAmt * (rDisPer / 100);
+        tQty += rQty; rGrossAmt = rPrice * rQty; rDisAmt = rGrossAmt * (rDisPer / 100);
         rTax_Amt1 = rTax1 * rQty; rTax_Amt2 = rTax2 * rQty;
         rNetAmt = (rGrossAmt - rDisAmt) + rTax_Amt1 + rTax_Amt2;
         $(row).find(".tax-amount").text(rTax_Amt1.toFixed(2)); $(row).find(".ship-amount").text(rTax_Amt2.toFixed(2)); $(row).find(".row-total").text(rNetAmt.toFixed(2));
@@ -235,6 +244,7 @@ function calculateFinal() {
         $(row).find(".tax-amount").text(rTax_Amt1.toFixed(2)); $(row).find(".row-total").text(rNetAmt.toFixed(2));
         tGrossAmt += rGrossAmt, tDisAmt += rDisAmt, tTax_Amt1 += rTax_Amt1, tNetAmt += rNetAmt;
     });
+    $(".thQuantity").text(tQty.toFixed(0));
     $("#SubTotal").text(tGrossAmt.toFixed(2));
     $("#discountTotal").text(tDisAmt.toFixed(2));
     $("#salesTaxTotal").text(tTax_Amt1.toFixed(2));
@@ -369,7 +379,12 @@ function getPurchaseOrderInfo() {
                         $('#txtNotePublic').val(data['po'][i].note_public); $('#txtNotePrivate').val(data['po'][i].note_private);
                         $('#txtIncoTerms').val(data['po'][i].location_incoterms);
                         $('#ddlWarehouse').val(data['po'][i].fk_warehouse).trigger('change');
+                        $('#txtWarehouseAddress').val($('#ddlWarehouse').find(':selected').data('ad'))
                         if (!data['po'][i].date_livraison.includes('00/00/0000')) $('#txtPlanneddateofdelivery').val(data['po'][i].date_livraison);
+                        let date1 = new Date(data['po'][i].date_creation), date2 = new Date(data['po'][i].date_livraison);
+                        var Difference_In_Time = date2.getTime() - date1.getTime();
+                        var Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
+                        $('#lblPlannedDays').text("(Planned Days : " + Difference_In_Days + ")");
 
                         if (data['po'][i].fk_status == '1')
                             $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List">Back to List</a><button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button> <button type="button" class="btn btn-danger btnApproved" data-toggle="tooltip" title="Approved and create invoice."><i class="fas fa-check-double"></i> Approved</button>');

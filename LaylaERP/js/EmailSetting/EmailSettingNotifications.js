@@ -25,7 +25,8 @@ function addemailnotification() {
     email_headingval = $("#emailheading").val();
     subjectval = $("#emailsubject").val();
     recipientsval = $("#recipients").val();
-    
+    templatename = $("#templatename").val();
+
     if (option_nameval == "") {
         swal('Alert', 'Please Enter Option Name', 'error').then(function () { swal.close(); });
     }
@@ -37,7 +38,8 @@ function addemailnotification() {
             additional_content: additional_contentval,
             email_heading: email_headingval,
             subject: subjectval,
-            recipients: recipientsval          
+            recipients: recipientsval,
+            filename: templatename
 
         }
         $.ajax({
@@ -85,7 +87,7 @@ function GetDetails(type) {
         type: "POST", url: '/EmailSetting/GetDetails', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(option),
         beforeSend: function () { $("#loader").show(); },
         success: function (result) {
-
+            
             if (result.is_active == "1")
                 $("#theemailenable").prop("checked", true);
             else
@@ -96,7 +98,9 @@ function GetDetails(type) {
             $("#emailheading").val(result.email_heading);
             $("#emailcontent").val(result.additional_content);
             $('#templatetype').val(result.email_type).trigger('change');
-            //$("#txtfileText").val("NewOrderTest.cshtml");
+            let str = result.filename.replace(".cshtml", "");
+            //str.replace(".cshtml", "");
+            $("#templatename").val(str);
  
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); },

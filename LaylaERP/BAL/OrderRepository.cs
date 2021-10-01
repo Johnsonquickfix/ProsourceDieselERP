@@ -1224,7 +1224,7 @@
                             + "             else max(case oim.meta_key when '_product_id' then oim.meta_value else '' end) end)) sale_price,"
                             + " (select concat('{',group_concat(concat('\"',free_product_id,'\": \"',free_quantity,'\"') separator ','),'}') from wp_product_free free_it"
                             + " where free_it.product_id = max(case oim.meta_key when '_product_id' then oim.meta_value else '0' end) or free_it.product_id = max(case oim.meta_key when '_variation_id' then oim.meta_value else '0' end)) as meta_data,"
-                            + " (select COALESCE(p.guid, '') sale_price from wp_posts p where p.id = (case when max(case oim.meta_key when '_variation_id' then oim.meta_value else '' end) != '0' then max(case oim.meta_key when '_variation_id' then oim.meta_value else '' end)"
+                            + " (select COALESCE(p.image, '') sale_price from wp_image p where p.id = (case when max(case oim.meta_key when '_variation_id' then oim.meta_value else '' end) != '0' then max(case oim.meta_key when '_variation_id' then oim.meta_value else '' end)"
                             + "             else max(case oim.meta_key when '_product_id' then oim.meta_value else '' end) end)) p_img"
                             + " from wp_woocommerce_order_items oi inner join wp_woocommerce_order_itemmeta oim on oim.order_item_id = oi.order_item_id"
                             + " where oi.order_id = @order_id and oi.order_item_type!='coupon' group by oi.order_id,oi.order_item_id,oi.order_item_name,oi.order_item_type "
@@ -1581,8 +1581,8 @@
 
                 if (!string.IsNullOrEmpty(searchid))
                 {
-                    strWhr += " and (p.id like '" + searchid + "%' "
-                            + " or concat(pmf.first_name,' ',pmf.last_name,' ',p.post_status) like '" + searchid + "%' "
+                    //strWhr += " and (p.id like '" + searchid + "%' "
+                    strWhr += " and concat(p.id,' ', pmf.first_name,' ',pmf.last_name,' ',p.post_status,' ', REGEXP_REPLACE(pmf.billing_phone, '[^0-9]+', '')) like '%" + searchid + "%' ";
                             //+ " OR os.num_items_sold='%" + searchid + "%' "
                             //+ " OR os.total_sales='%" + searchid + "%' "
                             //+ " OR os.customer_id='%" + searchid + "%' "
@@ -1590,8 +1590,8 @@
                             //+ " OR p.post_date like '%" + searchid + "%' "
                             //+ " OR COALESCE(pmf.first_name, '') like '" + searchid + "%' "
                             //+ " OR COALESCE(pmf.last_name, '') like '" + searchid + "%' "
-                            + " OR replace(replace(replace(replace(pmf.billing_phone, '-', ''), ' ', ''), '(', ''), ')', '') like '%" + searchid + "%'"
-                            + " )";
+                            //+ " OR replace(replace(replace(replace(pmf.billing_phone, '-', ''), ' ', ''), '(', ''), ')', '') like '%" + searchid + "%'"
+                            //+ " )";
                 }
 
                 if (!string.IsNullOrEmpty(sMonths))

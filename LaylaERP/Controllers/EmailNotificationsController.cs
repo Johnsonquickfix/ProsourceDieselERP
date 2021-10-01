@@ -84,8 +84,7 @@ namespace LaylaERP.Controllers
         {
             return View(model);
         }
-
-        [HttpPost]
+                
         public ActionResult NewOrder(OrderModel model)
         {
             return View(model);

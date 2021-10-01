@@ -2714,6 +2714,7 @@ a#btnbackcategory {max-width: 135px; margin-top: 5px;}
 .order.shipping.rule .dataTables_scrollHeadInner{width:100% !important;}
 
 @media(max-width:900px) {
+    .suffix.split.logic .box-body{overflow:auto;}
     .categories #ProdCat .col-md-8{width:100%;}
     .categories #ProdCat .col-md-4{width:100%;}
 .email.notifications .email_settings .form-group .col-sm-2{flex:1;}
@@ -2859,6 +2860,9 @@ a#btnbackcategory {max-width: 135px; margin-top: 5px;}
     
 }
 @media(max-width:400px) {
+/*.export-section .user-top-section .tablenav .actions{justify-content:flex-start;}
+.export-section .user-top-section .tablenav .actions span{width:auto; flex:auto;}*/
+/*.export-section .user-top-section .tablenav .actions span:nth-last-child(2) {width:auto; flex:auto;}*/ 
 .list.financial.accounts .page-title{flex-wrap:wrap;}
 .list.financial.accounts .page-title .ml-auto{margin-left:0px;}
 #btnSaveProductAccount{margin-left:6px;}

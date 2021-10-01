@@ -921,6 +921,8 @@ function removeItemsInTable(id) {
                 // no cart item
                 if ($("#order_line_items > tr.paid_item").length == 0) $('#billCoupon').empty();
 
+                //remove sales coupons
+                deleteSaleCoupon();
                 //auto Coupon add
                 ApplyAutoCoupon();
                 calculateDiscountAcount();
@@ -1203,9 +1205,9 @@ function check_applied_coupon(coupon_code, product_ids, exclude_product_ids) {
         cart_prnt_ids.push($(row).data('pid'));
         cart_prnt_ids.push($(row).data('vid'));
     })
-    if (coupon_code.includes("sales10off")) { return true; }
-    else if (coupon_code.includes("sales25off")) { return true; }
-    else if (coupon_code.includes("sales50off")) { return true; }
+    if (coupon_code.includes("sales10off")) { if (!cart_prnt_ids.includes(118) && !cart_prnt_ids.includes(611172)) return true; }
+    else if (coupon_code.includes("sales25off")) { if (cart_prnt_ids.includes(118)) return true; }
+    else if (coupon_code.includes("sales50off")) { if (cart_prnt_ids.includes(611172)) return true; }
     else if (coupon_code.includes("sales75off")) {
         if (cart_prnt_ids.includes(611172) && (cart_prnt_ids.includes(20861) || cart_prnt_ids.includes(611252) || cart_prnt_ids.includes(733500))) return true;
     }
@@ -1216,25 +1218,17 @@ function check_applied_coupon(coupon_code, product_ids, exclude_product_ids) {
     else if (coupon_code.includes("sales150off")) { if (cart_prnt_ids.includes(611172) && cart_prnt_ids.includes(612995)) return true; }
     else if (coupon_code.includes("sales175off")) {
         if (cart_prnt_ids.includes(118) && cart_prnt_ids.includes(612995) && (
-            cart_prnt_ids.includes(14023) || cart_prnt_ids.includes(611238) ||
-            cart_prnt_ids.includes(20861) || cart_prnt_ids.includes(611252) ||
-            cart_prnt_ids.includes(611286) || cart_prnt_ids.includes(612995) ||
-            cart_prnt_ids.includes(733500) || cart_prnt_ids.includes(124524) ||
-            cart_prnt_ids.includes(128244) || cart_prnt_ids.includes(56774) ||
-            cart_prnt_ids.includes(611268) || cart_prnt_ids.includes(612947) ||
-            cart_prnt_ids.includes(612955) || cart_prnt_ids.includes(611220)
+            cart_prnt_ids.includes(56774) || cart_prnt_ids.includes(611268) ||
+            cart_prnt_ids.includes(612947) || cart_prnt_ids.includes(612955) ||
+            cart_prnt_ids.includes(611220)
         ))
             return true;
     }
     else if (coupon_code.includes("sales200off")) {
         if (cart_prnt_ids.includes(611172) && cart_prnt_ids.includes(612995) && (
-            cart_prnt_ids.includes(14023) || cart_prnt_ids.includes(611238) ||
-            cart_prnt_ids.includes(20861) || cart_prnt_ids.includes(611252) ||
-            cart_prnt_ids.includes(611286) || cart_prnt_ids.includes(612995) ||
-            cart_prnt_ids.includes(733500) || cart_prnt_ids.includes(124524) ||
-            cart_prnt_ids.includes(128244) || cart_prnt_ids.includes(56774) ||
-            cart_prnt_ids.includes(611268) || cart_prnt_ids.includes(612947) ||
-            cart_prnt_ids.includes(612955) || cart_prnt_ids.includes(611220)
+            cart_prnt_ids.includes(56774) || cart_prnt_ids.includes(611268) ||
+            cart_prnt_ids.includes(612947) || cart_prnt_ids.includes(612955) ||
+            cart_prnt_ids.includes(611220)
         ))
             return true;
     }
@@ -1259,6 +1253,23 @@ function getAllCoupons() {
     var coupons = [];
     $('#billCoupon li').each(function (index) { coupons.push($(this).data('coupon')); });
     return coupons;
+}
+function deleteSaleCoupon() {
+    let cart_prnt_ids = [];
+    $('#order_line_items > tr.paid_item').each(function (index, row) {
+        cart_prnt_ids.push($(row).data('pid')); cart_prnt_ids.push($(row).data('vid'));
+    });
+    if (!cart_prnt_ids.includes(118) && !cart_prnt_ids.includes(611172)) { } else $('[id*="li_sales10off"]').remove();
+    if (cart_prnt_ids.includes(118)) { } else { $('[id*="li_sales25off"]').remove(); }
+    if (cart_prnt_ids.includes(611172)) { } else { $('[id*="li_sales50off"]').remove(); }
+    if (cart_prnt_ids.includes(611172) && (cart_prnt_ids.includes(20861) || cart_prnt_ids.includes(611252) || cart_prnt_ids.includes(733500))) { } else $('[id*="li_sales75off"]').remove();
+    if (cart_prnt_ids.includes(611286) && (cart_prnt_ids.includes(611172) || cart_prnt_ids.includes(118))) { } else $('[id*="li_sales100off"]').remove();
+    if (cart_prnt_ids.includes(118) && cart_prnt_ids.includes(612995)) { } else { $('[id*="li_sales125off"]').remove(); }
+    if (cart_prnt_ids.includes(611172) && cart_prnt_ids.includes(612995)) { } else { $('[id*="li_sales125off"]').remove(); }
+    if (cart_prnt_ids.includes(118) && cart_prnt_ids.includes(612995) && (cart_prnt_ids.includes(56774) || cart_prnt_ids.includes(611268) || cart_prnt_ids.includes(612947) || cart_prnt_ids.includes(612955) || cart_prnt_ids.includes(611220))) { }
+    else { $('[id*="li_sales175off"]').remove(); }
+    if (cart_prnt_ids.includes(611172) && cart_prnt_ids.includes(612995) && (cart_prnt_ids.includes(56774) || cart_prnt_ids.includes(611268) || cart_prnt_ids.includes(612947) || cart_prnt_ids.includes(612955) || cart_prnt_ids.includes(611220))) { }
+    else { $('[id*="li_sales200off"]').remove(); }
 }
 function ApplyAutoCoupon() {
     var cart_prnt_ids = [];

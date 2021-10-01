@@ -122,7 +122,7 @@ namespace LaylaERP.BAL
                             + " Select id, PaymentType text from wp_PaymentType order by id;"
                             + " Select id, Balance text from BalanceDays order by id;"
                             + " Select rowid id,IncoTerm text,short_description from IncoTerms order by id;"
-                            + " select rowid id,ref text from wp_warehouse where status = 1 order by ref;";
+                            + " select rowid id,ref text,concat(address,', ',city,', ',town,' ',zip,' ',country) address from wp_warehouse where status = 1 order by ref;";
                 DS = SQLHelper.ExecuteDataSet(strSQl);
             }
             catch (Exception ex)

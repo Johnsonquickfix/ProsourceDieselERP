@@ -31,13 +31,60 @@ namespace LaylaERP.Controllers
                 obj.subject = obj.subject.Replace("{site_title}", model.site_title).Replace("{order_number}", model.order_number).Replace("{site_address}", model.site_address).Replace("{site_url}", model.site_url);
                 obj.email_heading = obj.email_heading.Replace("{site_title}", model.site_title).Replace("{order_number}", model.order_number).Replace("{site_address}", model.site_address).Replace("{site_url}", model.site_url);
                 obj.additional_content = obj.additional_content.Replace("{site_title}", model.site_title).Replace("{order_number}", model.order_number).Replace("{site_address}", model.site_address).Replace("{site_url}", model.site_url);
+                obj.filename = obj.filename.Replace(".cshtml", "");
                 status = true;
-                String renderedHTML = EmailNotificationsController.RenderViewToString("EmailNotifications", "Index", obj);
+                String renderedHTML = EmailNotificationsController.RenderViewToString("EmailNotifications", obj.filename, obj);
                 result = SendEmail.SendEmails(model.recipients, obj.subject, renderedHTML);
             }
             catch (Exception ex) { status = false; result = ex.Message; }
             return Json(new { status = status, message = result }, 0);
         }
+
+        public ActionResult Cancel(EmailSettingModel model)
+        {
+            return View(model);
+        }
+        public ActionResult Completed(EmailSettingModel model)
+        {
+            return View(model);
+        }
+        public ActionResult Customerinvoice(EmailSettingModel model)
+        {
+            return View(model);
+        }
+        public ActionResult Customernote(EmailSettingModel model)
+        {
+            return View(model);
+        }
+        public ActionResult Failed(EmailSettingModel model)
+        {
+            return View(model);
+        }
+        public ActionResult Giftcard(EmailSettingModel model)
+        {
+            return View(model);
+        }
+        public ActionResult Newaccount(EmailSettingModel model)
+        {
+            return View(model);
+        }
+        public ActionResult Onhold(EmailSettingModel model)
+        {
+            return View(model);
+        }
+        public ActionResult Processing(EmailSettingModel model)
+        {
+            return View(model);
+        }
+        public ActionResult Refunded(EmailSettingModel model)
+        {
+            return View(model);
+        }
+        public ActionResult Resetpassword(EmailSettingModel model)
+        {
+            return View(model);
+        }
+
         [HttpPost]
         public ActionResult NewOrder(OrderModel model)
         {

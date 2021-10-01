@@ -30,6 +30,10 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult AttendanceReport()
+        {
+            return View();
+        }
 
         // GET: Leave
         public ActionResult Leave()
@@ -237,6 +241,19 @@ namespace LaylaERP.Controllers
             }
             catch (Exception ex) { throw ex; }
             return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+        }
+
+        public JsonResult GetAttendanceReport(JqDataTableModel model)
+        {
+            string result = string.Empty;
+           
+            try
+            {
+                DataTable dt = HrmsRepository.GetAttendanceReport(model.strValue1, model.strValue2);
+                result = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(new { aaData = result }, 0);
         }
         public JsonResult UpdateEmployeeStatus(HrmsModel model)
         {

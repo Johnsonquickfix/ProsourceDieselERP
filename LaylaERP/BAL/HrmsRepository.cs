@@ -468,6 +468,44 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
+
+        public static DataTable GetAttendanceReport(string fromdate, string todate)
+        {
+            DataTable dt = new DataTable();
+           
+            try
+            {
+                CultureInfo us = new CultureInfo("en-US");
+                //DateTime startDate = DateTime.Parse(fromdate, us);
+                //DateTime endDate = DateTime.Parse(todate, us);
+                DateTime startDate = DateTime.Parse("2021-09-24", us);
+                DateTime endDate = DateTime.Parse("2021-09-30", us);
+                string strWhr = string.Empty;
+                string strAdd = string.Empty;
+                if (CommanUtilities.Provider.GetCurrent().UserType != "Administrator")
+                {
+                    long user = CommanUtilities.Provider.GetCurrent().UserID;
+                    strWhr += " and fk_user = '" + user + "'";
+                    strAdd = "'1' as Is_Employee,";
+                }
+                string strSql = "get_AttendanceReport";
+                MySqlParameter[] para =
+               {
+                    //2nd table
+                    new MySqlParameter("@StartDate", startDate.ToString("yyyy-MM-dd")),
+                    new MySqlParameter("@EndDate", endDate.ToString("yyyy-MM-dd")),
+               };
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql,para);
+                dt = ds.Tables[0];
+                //if (ds.Tables[1].Rows.Count > 0)
+                //    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
         public int UpdateEmployeeStatus(HrmsModel model)
         {
             try

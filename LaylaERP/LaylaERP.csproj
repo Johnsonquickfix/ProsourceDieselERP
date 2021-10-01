@@ -937,6 +937,7 @@
     <Content Include="Views\Reception\PartiallyOrder.cshtml" />
     <Content Include="Views\Reception\POClosureOrder.cshtml" />
     <Content Include="Views\Error\Error.cshtml" />
+    <Content Include="Views\Hrms\AttendanceReport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -83,7 +83,7 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "SELECT P.ID ID,post_title,post_content,post_name,guid,"
+                string strSql = "SELECT P.ID ID,post_title,post_content,post_name,guid,ifnull(thumbnails,'default.png') thumbnails,ifnull(image,'default.png') image,"
                              + "  DATE_FORMAT(P.post_modified,'%m/%d/%Y') Publish_Date,pmregularamount.meta_value regularamount,pmsaleprice.meta_value saleprice,pmtotalsales.meta_value totalsales,pmtaxstatus.meta_value axstatus,pmtaxclass.meta_value taxclass,pmmanagestock.meta_value managestock,pmsoldindividually.meta_value soldindividually,"
                              + "  pmbackorders.meta_value backorders,pmweight.meta_value weight,pmlength.meta_value length,pmeheight.meta_value height,pmwidth.meta_value width,pmupsellids.meta_value upsellids,pmcrosssellids.meta_value crosssellids,"
                              + "  pmstock.meta_value stock,pmstockstatus.meta_value stockstatus,pmlowstockamount.meta_value lowstockamount, pmsku.meta_value sku,pmsatt.meta_value productattributes,(SELECT group_concat(ID) FROM `wp_posts` where post_parent = P.ID) VariantID,"
@@ -110,6 +110,7 @@ namespace LaylaERP.BAL
                              + " left join wp_postmeta pmlowstockamount on P.ID = pmlowstockamount.post_id and pmlowstockamount.meta_key = '_low_stock_amount'"
                              + " left join wp_postmeta pmsku on P.ID = pmsku.post_id and pmsku.meta_key = '_sku'"
                              + " left join wp_postmeta pmsatt on P.ID = pmsatt.post_id and pmsatt.meta_key = '_product_attributes'"
+                             + " left join wp_image wpimg on wpimg.id = P.ID "
                              + " WHERE P.post_type in ('product','product_variation') and P.ID = " + model.strVal + " ";
 
 
@@ -583,11 +584,11 @@ namespace LaylaERP.BAL
                 //             + " left join wp_postmeta pmsatt on P.ID = pmsatt.post_id and pmsatt.meta_key = '_product_attributes'"
                 //             + " WHERE P.post_type = 'product_variation' and P.ID = " + model.strVal + " ";
                 string strSql = "SELECT p.id,p.post_title,p.post_content,p.post_name,case when guid = '' then 'default.png' else ifnull(guid,'default.png') end guid,concat('{', group_concat(concat('\"',LOWER(pm.meta_key), '\": \"', pm.meta_value,'\"')), '}') meta_data,"
-                        + " (SELECT fk_shippingID FROM Shipping_Product where fk_productid = p.ID) shippingclass"
+                        + " (SELECT fk_shippingID FROM Shipping_Product where fk_productid = p.ID) shippingclass,ifnull(thumbnails,'default.png') thumbnails,ifnull(image,'default.png') image"
                         + " FROM wp_posts p left outer join wp_postmeta pm on pm.post_id = p.id"
                         + " and(pm.meta_key in ('_regular_price', '_sale_price', 'total_sales', '_tax_status', '_tax_class', '_manage_stock', '_backorders', '_sold_individually',"
                         + " '_weight', '_length', '_width', '_height', '_upsell_ids', '_crosssell_ids', '_stock', '_low_stock_amount', '_sku', '_product_attributes','_variation_description','_allowwebsite')"
-                        + " or meta_key like 'Attribute_%')"
+                        + " or meta_key like 'Attribute_%') left join wp_image wpimg on wpimg.id = p.ID"
                         + " where p.post_type = 'product_variation' and p.post_parent = " + model.strVal + " group by p.id,p.post_title,p.post_content,p.post_name order by p.id";
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
@@ -1004,7 +1005,7 @@ namespace LaylaERP.BAL
                 //////+ " WHERE p.post_type in('product') and p.post_status != 'draft' and tt.taxonomy IN('product_cat','product_type') " + strWhr;
 
 
-                string strSql = "select t.term_id,p.id,p.post_type,p.post_title,post_date_gmt,DATE_FORMAT(p.post_date_gmt, '%m-%d-%Y') Date,DATE_FORMAT(p.post_modified, '%m-%d-%Y') publishDate,case when guid = '' then 'default.png' else ifnull(guid,'default.png') end guid,"
+                string strSql = "select t.term_id,p.id,p.post_type,p.post_title,post_date_gmt,DATE_FORMAT(p.post_date_gmt, '%m-%d-%Y') Date,DATE_FORMAT(p.post_modified, '%m-%d-%Y') publishDate,case when guid = '' then 'default.png' else ifnull(guid,'default.png') end guid,ifnull(thumbnails,'default.png') thumbnails,"
               + " (select group_concat(ui.name) from wp_terms ui join wp_term_taxonomy uim on uim.term_id = ui.term_id and uim.taxonomy IN('product_cat') JOIN wp_term_relationships AS trp ON trp.object_id = p.ID and trp.term_taxonomy_id = uim.term_taxonomy_id) itemname ,"
               + " case when p.post_status = 'trash' then 'InActive' else 'Active' end Activestatus,max(case when p.id = s.post_id and s.meta_key = '_sku' then s.meta_value else '' end) sku,"
               + " max(case when p.id = s.post_id and s.meta_key = '_regular_price' then s.meta_value else '' end) regular_price, max(case when p.id = s.post_id and s.meta_key = '_sale_price' then s.meta_value else '' end) sale_price, "
@@ -1014,6 +1015,7 @@ namespace LaylaERP.BAL
               + " LEFT JOIN wp_term_relationships AS tr ON tr.object_id = p.ID"
               + " LEFT JOIN wp_term_taxonomy AS tt ON tt.term_taxonomy_id = tr.term_taxonomy_id and taxonomy IN('product_type')"
               + " LEFT JOIN wp_terms AS t ON t.term_id = tt.term_id"
+               + " left join wp_image wpimg on wpimg.id = p.ID"
               + " WHERE p.post_type in ('product', 'product_variation') and p.post_status != 'draft' " + strWhr
               + " GROUP BY p.ID"
                + " order by p_id";
@@ -1024,6 +1026,7 @@ namespace LaylaERP.BAL
               + " LEFT JOIN wp_term_relationships AS tr ON tr.object_id = p.ID"
               + " LEFT JOIN wp_term_taxonomy AS tt ON tt.term_taxonomy_id = tr.term_taxonomy_id"
               + " LEFT JOIN wp_terms AS t ON t.term_id = tt.term_id"
+              + " left join wp_image wpimg on wpimg.id = p.ID"
               + " WHERE p.post_type in ('product', 'product_variation') and p.post_status != 'draft' " + strWhr;
 
 
@@ -2082,6 +2085,68 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
+
+        public static int thumbnailsImage(string FileName, long metaid)
+        {
+            int result = 0;
+            try
+            {
+                if (FileName == "")
+                    FileName = "default.png";
+                StringBuilder strSql = new StringBuilder();
+                strSql.Append(string.Format("insert into wp_image (id,thumbnails,image) values ({0},'{1}','{2}'); ", metaid, FileName, "default.png"));
+                result = SQLHelper.ExecuteNonQuery(strSql.ToString());
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return result;
+        }
+        public static int updatethumbnailsImage(string FileName, long metaid)
+        {
+            int result = 0;
+            try
+            {
+                if (FileName == "")
+                    FileName = "default.png";
+                StringBuilder strSql = new StringBuilder();
+                strSql.Append(string.Format("update wp_image set thumbnails = '{0}' where id = {1} ", FileName, metaid));
+                result = SQLHelper.ExecuteNonQuery(strSql.ToString());
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return result;
+        }
+        public static int PopupImage(string FileName, long metaid)
+        {
+            int result = 0;
+            try
+            {
+                if (FileName == "")
+                    FileName = "default.png";
+                StringBuilder strSql = new StringBuilder();
+                strSql.Append(string.Format("insert into wp_image (id,thumbnails,image) values ({0},'{1}','{2}'); ", metaid, "default.png",FileName));
+                result = SQLHelper.ExecuteNonQuery(strSql.ToString());
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return result;
+        }
+
+        public static int UpdatePopupImage(string FileName, long metaid)
+        {
+            int result = 0;
+            try
+            {
+                if (FileName == "")
+                    FileName = "default.png";
+                StringBuilder strSql = new StringBuilder();
+                strSql.Append(string.Format("update wp_image set image = '{0}' where id = {1} ", FileName, metaid));
+                result = SQLHelper.ExecuteNonQuery(strSql.ToString());
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return result;
+        }
         public int AddProductCategory(ProductCategoryModel model, string name, string slug)
         {
             try
@@ -2101,7 +2166,21 @@ namespace LaylaERP.BAL
                 throw Ex;
             }
         }
-
+        public static DataTable GetImage_Details(int ID)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                string strSQl = "select id from wp_image"
+                                + " WHERE id = " + ID + " "; 
+                dt = SQLHelper.ExecuteDataTable(strSQl);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
         public int AddProductCategoryDesc(ProductCategoryModel model, long term_id, int thumbnail_id)
         {
             try

@@ -107,7 +107,15 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
-
+        public ActionResult Configsetup()
+        {
+            DataTable dt = HrmsConfigurationRepository.SelectConfigSetting();
+            if (dt.Rows.Count > 0)
+            {
+                ViewBag.id = dt.Rows[0]["rowid"];
+            }
+            return View();
+        }
 
         public JsonResult GetGroup()
         {
@@ -878,6 +886,32 @@ namespace LaylaERP.Controllers
             }
             catch (Exception ex) { throw ex; }
             return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateConfigSetting(empconfigsetting model)
+        {
+            if (model.rowid > 0)
+            {
+                HrmsConfigurationRepository.UpdateConfigSetting(model);
+                return Json(new { status = true, message = "Configuration has been saved successfully!!", url = "", id = model.rowid }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+        }
+
+        public JsonResult GetConfigSetting()
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = HrmsConfigurationRepository.SelectConfigSetting();
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
         }
     }
 }

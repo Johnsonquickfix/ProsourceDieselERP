@@ -407,5 +407,64 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
+
+        public static DataTable SelectConfigSetting()
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+
+                string strSql = "SELECT * from erp_hrms_config_setting";
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dt = ds.Tables[0];
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static int UpdateConfigSetting(empconfigsetting model)
+        {
+            try
+            {
+                string strsql = "UPDATE erp_hrms_config_setting set basic=@basic, special_pay=@special_pay, washing_allowance=@washing_allowance, other_allowance=@other_allowance, incentive=@incentive, cca=@cca, " +
+                    "epf=@epf,vpf=@vpf, adv_staff=@adv_staff, adv_epf=@adv_epf, incometax=@incometax, insurance=@insurance, loan_emi=@loan_emi, emp_walfare=@emp_walfare, imprest=@imprest, misc_refund=@misc_refund, festival_adv=@festival_adv, hra_percent=@hra_percent, hra_slab=@hra_slab, hra_percent_value=@hra_percent_value where rowid ='" + model.rowid + "'";
+                MySqlParameter[] para =
+                 {
+                    new MySqlParameter("@basic",model.basic),
+                    new MySqlParameter("@special_pay", model.special_pay),
+                    new MySqlParameter("@washing_allowance",model.washing_allowance),
+                    new MySqlParameter("@other_allowance", model.other_allowance),
+                    new MySqlParameter("@incentive", model.incentive),
+
+                    new MySqlParameter("@cca",model.cca),
+                    new MySqlParameter("@epf", model.epf),
+                    new MySqlParameter("@vpf",model.vpf),
+                    new MySqlParameter("@adv_staff", model.adv_staff),
+                    new MySqlParameter("@adv_epf", model.adv_epf),
+
+                    new MySqlParameter("@incometax",model.incometax),
+                    new MySqlParameter("@insurance", model.insurance),
+                    new MySqlParameter("@loan_emi",model.loan_emi),
+                    new MySqlParameter("@emp_walfare", model.emp_walfare),
+                    new MySqlParameter("@imprest", model.imprest),
+
+                    new MySqlParameter("@misc_refund",model.misc_refund),
+                    new MySqlParameter("@festival_adv", model.festival_adv),
+                    new MySqlParameter("@hra_percent",model.hra_percent),
+                    new MySqlParameter("@hra_slab", model.hra_slab),
+                    new MySqlParameter("@hra_percent_value", model.hra_percent_value),
+                };
+                int result = Convert.ToInt32(DAL.SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }

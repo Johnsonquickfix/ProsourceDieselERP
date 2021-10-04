@@ -386,8 +386,15 @@
     <Content Include="Content\AdminLTE-3.1.0\daterangepicker\daterangepicker.css" />
     <Content Include="Content\AdminLTE-3.1.0\daterangepicker\daterangepicker.js" />
     <Content Include="Content\AdminLTE-3.1.0\daterangepicker\moment.min.js" />
+    <Content Include="Content\DataTables\1.10.24\css\jquery.dataTables.min.css" />
     <Content Include="Content\DataTables\bootstrap-datepicker.css" />
     <Content Include="Content\DataTables\bootstrap-datepicker.js" />
+    <Content Include="Content\DataTables\buttons\1.6.2\js\buttons.bootstrap4.min.js" />
+    <Content Include="Content\DataTables\buttons\1.6.2\js\buttons.colVis.min.js" />
+    <Content Include="Content\DataTables\buttons\1.6.2\js\buttons.html5.min.js" />
+    <Content Include="Content\DataTables\buttons\1.6.2\js\buttons.print.min.js" />
+    <Content Include="Content\DataTables\buttons\1.6.2\js\dataTables.buttons.min.js" />
+    <Content Include="Content\DataTables\select\1.3.3\js\dataTables.select.min.js" />
     <Content Include="Content\DataTables\css\autoFill.bootstrap.css" />
     <Content Include="Content\DataTables\css\autoFill.bootstrap.min.css" />
     <Content Include="Content\DataTables\css\autoFill.bootstrap4.css" />
@@ -628,6 +635,7 @@
     <Content Include="Images\userprofile2.png" />
     <Content Include="Images\validatebox_warning.png" />
     <Content Include="Images\varient_pic.png" />
+    <Content Include="js\Accounting\AccountBalanceList.js" />
     <Content Include="js\Accounting\AccountingJournal.js" />
     <Content Include="js\Accounting\ChartOfAccounts.js" />
     <Content Include="js\Accounting\ProductAccounts.js" />
@@ -946,6 +954,7 @@
     <Content Include="Views\Reception\POClosureOrder.cshtml" />
     <Content Include="Views\Error\Error.cshtml" />
     <Content Include="Views\Accounting\AddPcgType.cshtml" />
+    <Content Include="Views\Accounting\AccountBalance.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

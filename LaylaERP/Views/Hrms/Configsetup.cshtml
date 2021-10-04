@@ -41,7 +41,7 @@
                     <div class="form-group">
                         <label for="FirstName">DA others %<span style="color:red">*</span></label>
                         <div class="input-group">
-                            <input class="form-control" type="text" id="txtdaothers" />
+                            <input class="form-control" type="text" id="txtdarateothers" />
                         </div>
                     </div>
                 </div>
@@ -75,7 +75,7 @@
                     <div class="col-md-3">
                         <div class="form-group">
                             <div class="input-group">
-                                <input type="text" class="form-control" id="txthrapercent" />
+                                <input type="text" class="form-control" id="txthrapercentvalue" />
                             </div>
                         </div>
                     </div>
@@ -83,14 +83,14 @@
                     <div class="col-md-1">
                         <div class="form-group">
                             <div title="Check Active">
-                                <input type="checkbox" id="chkhraslab" name="hraslab" /><label for="hraslab">HRA Slab</label>
+                                <input type="checkbox" id="chkhraslab" name="hraslab1" /><label for="hraslab">HRA Slab</label>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-3" id="slabsetbtn">
                         <div class="form-group">
                             <div class="text-left">
-                                <span title="Click Here To Back To List" data-placement="bottom" data-toggle="tooltip"><a href="../../Hrms/HRA" class="btn btn-danger" id="btnhraslab">Set Hra Slab</a></span>
+                                <span title="Click Here To Set HRA slab" data-placement="bottom" data-toggle="tooltip"><a href="../../Hrms/HRA" class="btn btn-danger" id="btnhraslab">Set Hra Slab</a></span>
                             </div>
                         </div>
                     </div>
@@ -252,17 +252,37 @@
         $("#chkhraslab").click(function () {
             if ($('#chkhraslab').prop('checked') === true) {
                 $('#slabsetbtn').show();
+                $('#chkhrapercent').prop('checked', false);
             }
         });
 
         $("#chkhraslab").click(function () {
             if ($('#chkhraslab').prop('checked') === false) {
                 $('#slabsetbtn').hide();
+                $('#chkhrapercent').prop('checked', true);
             }
         });
 
+        $("#chkhrapercent").click(function () {
+            if ($('#chkhrapercent').prop('checked') === false) {
+                $('#chkhraslab').prop('checked', true);
+                $('#slabsetbtn').show();
+            }
+        });
+
+        $("#chkhrapercent").click(function () {
+            if ($('#chkhrapercent').prop('checked') === true) {
+                $('#chkhraslab').prop('checked', false);
+                $('#slabsetbtn').hide();
+            }
+        });
+             
         $("#btnconfigsave").click(function () {
             UpdateConfig();
+        })
+
+        $("#btndasave").click(function () {
+            AddDA();
         })
         SelectConfig();
     });
@@ -306,7 +326,8 @@
                         jobj[0].misc_refund == true ? $("#chkmiscrefund").prop("checked", true) : $("#chkmiscrefund").prop("checked", false);
                         jobj[0].festival_adv == true ? $("#chkfestivaladvance").prop("checked", true) : $("#chkfestivaladvance").prop("checked", false);
                         jobj[0].hra_percent == true ? $("#chkhrapercent").prop("checked", true) : $("#chkhrapercent").prop("checked", false);
-                        jobj[0].hra_slab == true ? $("#chkhraslab").prop("checked", true) : $("#chkhraslab").prop("checked", false);
+                        jobj[0].hra_slab == true ? $("#chkhraslab").prop("checked", true) && $("#slabsetbtn").show() : $("#chkhraslab").prop("checked", false);
+                        $("#txthrapercentvalue").val(jobj[0].hra_percent_value);
                         
                     }
                 },

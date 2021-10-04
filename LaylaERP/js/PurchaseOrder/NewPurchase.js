@@ -250,6 +250,7 @@ function calculateFinal() {
         else if (proc_type == 2) tTax_Amt1 += rNetAmt;
         else if (proc_type == 3) tOther_Amt += rNetAmt;
     });
+    
     $(".thQuantity").text(tQty.toFixed(0));
     $("#SubTotal").text(tGrossAmt.toFixed(2));
     $("#discountTotal").text(tDisAmt.toFixed(2));
@@ -257,6 +258,8 @@ function calculateFinal() {
     $("#shippingTotal").text(tTax_Amt2.toFixed(2));
     $("#otherTotal").text(tOther_Amt.toFixed(2));
     $("#orderTotal").html(tNetAmt.toFixed(2));
+    let paid_amt = parseFloat($('#paidTotal').text()) || 0.00;
+    $('#unpaidTotal').text((tNetAmt - paid_amt).toFixed(2))
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Add Other Product and Services ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function AddProductModal(proc_type, row_num) {
@@ -387,7 +390,7 @@ function getPurchaseOrderInfo() {
             url: "/PurchaseOrder/GetPurchaseOrderByID", type: "Get", beforeSend: function () { $("#loader").show(); }, data: option,
             success: function (result) {
                 try {
-                    let data = JSON.parse(result); let VendorID = 0; console.log(data);
+                    let data = JSON.parse(result); let VendorID = 0;
                     $.each(data['po'], function (key, row) {
                         VendorID = parseInt(row.fk_supplier) || 0;
                         $('#lblPoNo').text(row.ref); $('#txtRefvendor').val(row.ref_supplier); $('#txtPODate').val(row.date_creation);
@@ -445,6 +448,7 @@ function getPurchaseOrderInfo() {
                             $('#product_line_items').append(itemHtml);
                         }
                     });
+                    getPurchaseOrderPayments(oid);
                 }
                 catch (error) {
                     $("#loader").hide(); swal('Alert!', "something went wrong.", "error");
@@ -463,7 +467,42 @@ function getPurchaseOrderInfo() {
         $(".top-action").empty();
     }
 }
-
+function getPurchaseOrderPayments(oid) {
+    $('.paymentlist').empty();
+    if (oid > 0) {
+        let option = { strValue1: oid };
+        $.ajax({
+            url: "/PurchaseOrder/GetPurchaseOrderPayments", type: "Get", beforeSend: function () { $("#loader").show(); }, data: option,
+            success: function (result) {
+                try {
+                    let data = JSON.parse(result); let paid_amt = 0.00; let itemHtml = '';
+                    $.each(data, function (key, row) {
+                        paid_amt = paid_amt + parseFloat(row.amount);
+                        itemHtml = '<tr>';
+                        itemHtml += '<td>' + row.datec + '</td>';
+                        itemHtml += '<td class="text-right" data-amount="' + row.amount.toFixed(2) + '">$' + row.amount.toFixed(2) + '</td>';
+                        itemHtml += '<td>' + row.paymenttype + '</td>';
+                        itemHtml += '<td>' + row.num_payment + '</td>';
+                        itemHtml += '</tr>';                        
+                    });
+                    $('.paymentlist').append(itemHtml);
+                    $('#paidTotal').text(paid_amt.toFixed(2));                   
+                }
+                catch (error) { $("#loader").hide(); swal('Alert!', "something went wrong.", "error"); }
+            },
+            complete: function () { $("#loader").hide(); isEdit(false); },
+            error: function (xhr, status, err) { $("#loader").hide(); swal('Alert!', "something went wrong.", "error"); }, async: false
+        });
+        $("#divAddItemFinal").find(".rowCalulate").change(function () { calculateFinal(); })
+        $('#ddlVendor,.billinfo').prop("disabled", true); calculateFinal(); $('.entry-mode-action').empty();
+        $(".top-action").empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Purchase Order"><i class="fas fa-print"></i> Print</button> <button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button>');
+    }
+    else {
+        $('.billinfo').prop("disabled", true); $('#lblPoNo').text('Draft');
+        $("#loader").hide(); $('.page-heading').text('Add New Order');
+        $(".top-action").empty();
+    }
+}
 function createItemsList() {
     let _list = []; let _rang = 0;
     $('#line_items > tr').each(function (index, row) {

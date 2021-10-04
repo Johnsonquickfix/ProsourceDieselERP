@@ -157,14 +157,22 @@
     </div>
     <div class="row">
         <div class="col-sm-6">
-            <div class="box box-solid hidden">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Files</h3>
+            <div class="box">
+                <div class="box-header border-0">
+                    <h3 class="box-title">Payments</h3>
                 </div>
-                <div class="box-body">
-                    <ul class="nav nav-pills nav-stacked" id="billfiles">
-                        <li>None</li>
-                    </ul>
+                <div class="box-body table-responsive p-0">
+                    <table class="table-blue table table-striped table-valign-middle">
+                        <thead>
+                            <tr>
+                                <th style="width:25%">Payment Date</th>
+                                <th class="text-right" style="width:25%">Amount</th>
+                                <th style="width:25%">Type</th>
+                                <th style="width:25%">Num</th>
+                            </tr>
+                        </thead>
+                        <tbody class="paymentlist"></tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -215,6 +223,18 @@
                             <label class="col-sm-10 control-label">Amount (inc. tax)</label>
                             <div class="col-sm-2 controls text-right">
                                 <strong>$<span id="orderTotal">0.00</span></strong>
+                            </div>
+                        </div>
+                        <div class="form-group text-success">
+                            <label class="col-sm-10 control-label">Paid</label>
+                            <div class="col-sm-2 controls text-right">
+                                <strong>$<span id="paidTotal">0.00</span></strong>
+                            </div>
+                        </div>
+                        <div class="form-group text-danger">
+                            <label class="col-sm-10 control-label">Remaining Unpaid</label>
+                            <div class="col-sm-2 controls text-right">
+                                <strong>$<span id="unpaidTotal">0.00</span></strong>
                             </div>
                         </div>
                     </div>

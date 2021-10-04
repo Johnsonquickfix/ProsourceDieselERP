@@ -286,6 +286,29 @@ namespace LaylaERP.BAL
             return ds;
         }
         //Get Purchase order
+        public static DataTable GetPurchaseOrderPayment(long id)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                MySqlParameter[] para = { new MySqlParameter("@po_id", id), };
+                string strSql = "select date_format(datec,'%Y%m%d%k%i%s') sn,date_format(datec,'%m/%d/%Y') datec,ep.ref,epi.type,pt.paymenttype,epi.amount,num_payment from erp_payment_invoice epi"
+                                + " inner join erp_payment ep on ep.rowid = epi.fk_payment inner join wp_PaymentType pt on pt.id = ep.fk_payment"
+                                + " where epi.fk_invoice = @po_id and type = 'PO'"
+                                + " union all"
+                                + " select date_format(datec,'%Y%m%d%k%i%s') sn,date_format(datec, '%m/%d/%Y') datec,ep.ref, epi.type,pt.paymenttype,epi.amount,num_payment from commerce_purchase_receive_order_detail rod"
+                                + " inner join erp_payment_invoice epi on rod.fk_purchase_re = epi.fk_invoice"
+                                + " inner join erp_payment ep on ep.rowid = epi.fk_payment inner join wp_PaymentType pt on pt.id = ep.fk_payment"
+                                + " where rod.fk_purchase = @po_id and type = 'PR' group by epi.fk_payment,ep.ref";
+                dt = SQLHelper.ExecuteDataTable(strSql, para);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+        //Get Purchase order
         public static DataSet GetPurchaseOrder(long id)
         {
             DataSet ds = new DataSet();

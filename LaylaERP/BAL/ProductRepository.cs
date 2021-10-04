@@ -2147,6 +2147,38 @@ namespace LaylaERP.BAL
             { throw ex; }
             return result;
         }
+
+        public static int PopupBothImage(string thumbFileName, string FileName, long metaid)
+        {
+            int result = 0;
+            try
+            {
+                //if (FileName == "")
+                //    FileName = "default.png";
+                StringBuilder strSql = new StringBuilder();
+                strSql.Append(string.Format("insert into wp_image (id,thumbnails,image) values ({0},'{1}','{2}'); ", metaid, thumbFileName, FileName));
+                result = SQLHelper.ExecuteNonQuery(strSql.ToString());
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return result;
+        }
+
+        public static int UpdateBothImage(string thumbFileName,string FileName, long metaid )
+        {
+            int result = 0;
+            try
+            {
+                //if (FileName == "")
+                //    FileName = "default.png";
+                StringBuilder strSql = new StringBuilder();
+                strSql.Append(string.Format("update wp_image set thumbnails = '{0}', image = '{1}' where id = {2} ", thumbFileName,FileName, metaid));
+                result = SQLHelper.ExecuteNonQuery(strSql.ToString());
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return result;
+        }
         public int AddProductCategory(ProductCategoryModel model, string name, string slug)
         {
             try

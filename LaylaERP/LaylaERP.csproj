@@ -955,6 +955,7 @@
     <Content Include="Views\EmailNotifications\Resetpassword.cshtml" />
     <Content Include="Views\EmailNotifications\Newaccount.cshtml" />
     <Content Include="Views\EmailNotifications\Giftcard.cshtml" />
+    <Content Include="Views\Hrms\AttendanceReport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

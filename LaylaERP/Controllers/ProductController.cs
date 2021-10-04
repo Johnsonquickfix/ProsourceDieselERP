@@ -1691,9 +1691,9 @@ namespace LaylaERP.Controllers
         static Size GetThumbnailSize(Image original)
         {
             // Maximum size of any dimension.
-            const int maxPixels = 40;
+            const int maxPixels = 600;
 
-            // Width and height.
+            // Width and height.        
             int originalWidth = original.Width;
             int originalHeight = original.Height;
 
@@ -1709,6 +1709,7 @@ namespace LaylaERP.Controllers
             }
 
             // Return thumbnail size.
+           // return new Size((int)(originalWidth * factor), (int)(originalHeight));
             return new Size((int)(originalWidth * factor), (int)(originalHeight * factor));
         }
 

@@ -295,12 +295,12 @@ function dataGridLoad(order_type) {
                     if (data.indexOf('product') == -1)
                      var result = checkFileExist(url);
                     if (data.indexOf('product') != -1) {
-                        return '<img src="../../Content/ProductCategory/default.png" width="40" height="40"/>';
+                        return '<img src="../../Content/ProductCategory/default.png" width="65" height="50" />';
                     }
                     else {
-                        if (result == true) { return '<img src=' + url + ' width="40" height="40"/>'; }
-                        else if (data == null || data == "") { return '<img src="../../Content/ProductCategory/default.png" width="50" height="50"/>'; }
-                        else { return '<img src="../../Content/ProductCategory/default.png" width="50" height="50"/>'; }
+                        if (result == true) { return '<img src=' + url + ' width="65" height="50"/>'; }
+                        else if (data == null || data == "") { return '<img src="../../Content/ProductCategory/default.png" width="65"  height="50"/>'; }
+                        else { return '<img src="../../Content/ProductCategory/default.png" width="65" height="50"/>'; }
                     }
                 }
             },

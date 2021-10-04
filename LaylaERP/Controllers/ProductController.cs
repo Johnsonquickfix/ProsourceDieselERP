@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -1518,10 +1519,115 @@ namespace LaylaERP.Controllers
             ////}
         }
 
+        //public JsonResult ProductImages(ProductCategoryModel model, HttpPostedFileBase ImageFile, string ID)
+        //{
+        //    var ImagePath = "";
+        //    string FileName = "";
+        //    string FileExtension = "";
+        //    if (ImageFile != null)
+        //    {
+        //        FileName = Path.GetFileNameWithoutExtension(ImageFile.FileName);
+        //        FileName = Regex.Replace(FileName, @"\s+", "");
+        //        string size = (ImageFile.ContentLength / 1024).ToString();
+        //        FileExtension = Path.GetExtension(ImageFile.FileName);
+        //        if (FileExtension == ".png" || FileExtension == ".jpg" || FileExtension == ".jpeg" || FileExtension == ".bmp")
+        //        {
+        //            FileName = DateTime.Now.ToString("MMddyyhhmmss") + "-" + FileName.Trim() + FileExtension;
+
+        //            string UploadPath = Path.Combine(Server.MapPath("~/Content/Product"));
+        //            UploadPath = UploadPath + "\\";
+        //            model.ImagePath = UploadPath + FileName;
+        //            if (FileName == "")
+        //            {
+        //                FileName = "default.png";
+        //            }
+        //            ImagePath = "~/Content/Product/" + FileName;
+        //            ImageFile.SaveAs(model.ImagePath);
+
+        //            if (Convert.ToInt32(ID) > 0)
+        //            {
+        //                ProductRepository.EditProductImage(FileName, Convert.ToInt32(ID));
+        //                return Json(new { status = true, message = "Product Image has been uploaded successfully!!", url = "", id = model.term_id }, 0);
+        //            }
+        //            else
+        //                return Json(new { status = true, message = "Invalid Details!!", url = "", id = model.term_id }, 0);
+
+        //        }
+        //        else
+        //        {
+        //            return Json(new { status = false, message = "File Formate " + FileExtension + " is not allowed!!", url = "" }, 0);
+
+        //        }
+
+        //    }
+        //    else
+        //        return Json(new { status = false, message = "Please Upload File", url = "" }, 0);
+
+
+
+
+
+        //}
+
+        //public JsonResult ProductImages(ProductCategoryModel model, HttpPostedFileBase ImageFile, string ID)
+        //{
+        //    var ImagePath = "";
+        //    string FileName = "";
+        //    string FileExtension = "";
+        //    if (ImageFile != null)
+        //    {
+        //        FileName = Path.GetFileNameWithoutExtension(ImageFile.FileName);
+        //        FileName = Regex.Replace(FileName, @"\s+", "");
+        //        string size = (ImageFile.ContentLength / 1024).ToString();
+        //        FileExtension = Path.GetExtension(ImageFile.FileName);
+        //        if (FileExtension == ".png" || FileExtension == ".jpg" || FileExtension == ".jpeg" || FileExtension == ".bmp")
+        //        {
+        //            FileName = DateTime.Now.ToString("MMddyyhhmmss") + "-" + FileName.Trim() + FileExtension;
+
+        //            string UploadPath = Path.Combine(Server.MapPath("~/Content/Product"));
+        //            UploadPath = UploadPath + "\\";
+        //            model.ImagePath = UploadPath + FileName;
+        //            if (FileName == "")
+        //            {
+        //                FileName = "default.png";
+        //            }
+        //            ImagePath = "~/Content/Product/" + FileName;
+        //            ImageFile.SaveAs(model.ImagePath);
+
+        //            if (Convert.ToInt32(ID) > 0)
+        //            {
+        //                DataTable dt = ProductRepository.GetImage_Details(Convert.ToInt32(ID));
+        //                if (dt.Rows.Count > 0)
+        //                    ProductRepository.updatethumbnailsImage(FileName, Convert.ToInt32(ID));
+        //                else
+        //                    ProductRepository.thumbnailsImage(FileName, Convert.ToInt32(ID));
+        //                return Json(new { status = true, message = "Product Image has been uploaded successfully!!", url = "", id = model.term_id }, 0);
+        //            }
+        //            else
+        //                return Json(new { status = true, message = "Invalid Details!!", url = "", id = model.term_id }, 0);
+
+        //        }
+        //        else
+        //        {
+        //            return Json(new { status = false, message = "File Formate " + FileExtension + " is not allowed!!", url = "" }, 0);
+
+        //        }
+
+        //    }
+        //    else
+        //        return Json(new { status = false, message = "Please Upload File", url = "" }, 0);
+
+
+
+
+
+        //}
         public JsonResult ProductImages(ProductCategoryModel model, HttpPostedFileBase ImageFile, string ID)
         {
             var ImagePath = "";
+            var ImagePaththum = "";
             string FileName = "";
+            string FileNamethumb = "";
             string FileExtension = "";
             if (ImageFile != null)
             {
@@ -1531,21 +1637,38 @@ namespace LaylaERP.Controllers
                 FileExtension = Path.GetExtension(ImageFile.FileName);
                 if (FileExtension == ".png" || FileExtension == ".jpg" || FileExtension == ".jpeg" || FileExtension == ".bmp")
                 {
-                    FileName = DateTime.Now.ToString("MMddyyhhmmss") + "-" + FileName.Trim() + FileExtension;
+                    FileNamethumb = DateTime.Now.ToString("MMddyyhhmmss") + "-" + FileName.Trim() + "_thumb" + FileExtension;
+                    FileName = DateTime.Now.ToString("MMddyyhhmmss") + "-" + FileName.Trim() + FileExtension;                   
 
                     string UploadPath = Path.Combine(Server.MapPath("~/Content/Product"));
                     UploadPath = UploadPath + "\\";
                     model.ImagePath = UploadPath + FileName;
+                    model.ImagePathOut = UploadPath + FileNamethumb ; 
                     if (FileName == "")
                     {
                         FileName = "default.png";
                     }
                     ImagePath = "~/Content/Product/" + FileName;
+                    ImagePaththum = "~/Content/Product/" + FileNamethumb ;
                     ImageFile.SaveAs(model.ImagePath);
+
+                    Image image = Image.FromFile(model.ImagePath);
+                    Size thumbnailSize = GetThumbnailSize(image);
+
+                    // Get thumbnail.
+                    Image thumbnail = image.GetThumbnailImage(thumbnailSize.Width,
+                        thumbnailSize.Height, null, IntPtr.Zero);
+
+                    // Save thumbnail.
+                    thumbnail.Save(model.ImagePathOut);
 
                     if (Convert.ToInt32(ID) > 0)
                     {
-                        ProductRepository.EditProductImage(FileName, Convert.ToInt32(ID));
+                        DataTable dt = ProductRepository.GetImage_Details(Convert.ToInt32(ID));
+                        if(dt.Rows.Count > 0)
+                            ProductRepository.UpdateBothImage(FileNamethumb , FileName, Convert.ToInt32(ID));
+                        else
+                             ProductRepository.PopupBothImage(FileNamethumb ,FileName, Convert.ToInt32(ID));
                         return Json(new { status = true, message = "Product Image has been uploaded successfully!!", url = "", id = model.term_id }, 0);
                     }
                     else
@@ -1562,10 +1685,31 @@ namespace LaylaERP.Controllers
             else
                 return Json(new { status = false, message = "Please Upload File", url = "" }, 0);
 
+        }
 
 
+        static Size GetThumbnailSize(Image original)
+        {
+            // Maximum size of any dimension.
+            const int maxPixels = 40;
 
+            // Width and height.
+            int originalWidth = original.Width;
+            int originalHeight = original.Height;
 
+            // Compute best factor to scale entire image based on larger dimension.
+            double factor;
+            if (originalWidth > originalHeight)
+            {
+                factor = (double)maxPixels / originalWidth;
+            }
+            else
+            {
+                factor = (double)maxPixels / originalHeight;
+            }
+
+            // Return thumbnail size.
+            return new Size((int)(originalWidth * factor), (int)(originalHeight * factor));
         }
 
         public JsonResult SaveChildvariations(ProductModel model)

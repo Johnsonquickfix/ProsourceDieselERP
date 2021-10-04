@@ -231,7 +231,7 @@ namespace LaylaERP.BAL
                 strsql += "delete from product_stock_register where tran_type = 'PO' and flag = 'O' and tran_id = " + model.RowID + ";"
                         + " insert into product_stock_register (tran_type,tran_id,product_id,warehouse_id,tran_date,quantity,flag)"
                         + " select 'PO',pod.fk_purchase,pod.fk_product,po.fk_warehouse warehouse_id,po.date_creation,pod.qty,'O' from commerce_purchase_order_detail pod"
-                        + " inner join commerce_purchase_order po on po.rowid = pod.fk_purchase where fk_purchase = " + model.RowID + ";";
+                        + " inner join commerce_purchase_order po on po.rowid = pod.fk_purchase where pod.fk_product > 0 and fk_purchase = " + model.RowID + ";";
 
                 if (SQLHelper.ExecuteNonQueryWithTrans(strsql) > 0)
                     result = model.RowID;
@@ -274,7 +274,7 @@ namespace LaylaERP.BAL
                 string strSql = "select rowid,ref,ref_ext,ref_supplier,fk_supplier,fk_warehouse,fk_status,source,fk_payment_term,fk_balance_days,fk_payment_type,DATE_FORMAT(date_livraison,'%m/%d/%Y') date_livraison,"
                                 + " fk_incoterms,location_incoterms,note_private,note_public,fk_user_author,DATE_FORMAT(date_creation,'%m/%d/%Y') date_creation from commerce_purchase_order where rowid = @po_id;"
                                 + " select rowid,fk_purchase,fk_product,ref product_sku,description,qty,discount_percent,discount,subprice,total_ht,tva_tx,localtax1_tx,localtax1_type,"
-                                + " localtax2_tx,localtax2_type,total_tva,total_localtax1,total_localtax2,total_ttc,product_type,date_start,date_end,rang"
+                                + " localtax2_tx,localtax2_type,total_tva,total_localtax1,total_localtax2,total_ttc,product_type,DATE_FORMAT(date_start, '%m/%d/%Y') date_start,DATE_FORMAT(date_end, '%m/%d/%Y') date_end,rang"
                                 + " from commerce_purchase_order_detail where fk_purchase = @po_id;";
                 ds = SQLHelper.ExecuteDataSet(strSql, para);
                 ds.Tables[0].TableName = "po"; ds.Tables[1].TableName = "pod";
@@ -299,8 +299,8 @@ namespace LaylaERP.BAL
                                 + " left outer join PaymentTerms pt on pt.id = po.fk_payment_term"
                                 + " left outer join BalanceDays bd on bd.id = po.fk_balance_days where po.rowid = @po_id;"
                                 + " select rowid,fk_purchase,fk_product,ref product_sku,description,qty,discount_percent,discount,subprice,total_ht,tva_tx,localtax1_tx,localtax1_type,"
-                                + " localtax2_tx,localtax2_type,total_tva,total_localtax1,total_localtax2,total_ttc,product_type,date_start,date_end,rang"
-                                + " from commerce_purchase_order_detail where fk_purchase = @po_id;";
+                                + " localtax2_tx,localtax2_type,total_tva,total_localtax1,total_localtax2,total_ttc,product_type,DATE_FORMAT(date_start, '%m/%d/%Y') date_start,DATE_FORMAT(date_end, '%m/%d/%Y') date_end,rang"
+                                + " from commerce_purchase_order_detail where fk_purchase = @po_id order by product_type,rowid;";
                 ds = SQLHelper.ExecuteDataSet(strSql, para);
                 ds.Tables[0].TableName = "po"; ds.Tables[1].TableName = "pod";
             }

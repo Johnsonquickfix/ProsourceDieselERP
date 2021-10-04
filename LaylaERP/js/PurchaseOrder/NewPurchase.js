@@ -76,7 +76,7 @@
     $(document).on("click", "#btnService", function (t) { t.preventDefault(); AddProductModal(1, 0); });
     $("#POModal").on("click", "#btnAddProc", function (t) {
         t.preventDefault();
-        let rang = parseInt($(this).data('rang')) || 0, proc_type = parseInt($(this).data('proc_type')) || 0;
+        let rang = parseInt($(this).data('rang')) || 0, proc_type = parseInt($('#ddl_service_type').val()) || 0;
         bindOtherItems(proc_type, rang);
     });
     $("#POModal").on("change", ".addCalulate", function (t) {
@@ -100,6 +100,7 @@
         orderStatusUpdate(id);
     });
 });
+function isNullAndUndef(variable) { return (variable !== null && variable !== undefined && variable !== 'undefined' && variable !== 'null'); }
 function isEdit(val) {
     localStorage.setItem('isEdit', val ? 'yes' : 'no');
 }
@@ -219,7 +220,7 @@ function removeItems(id) {
         });
 }
 function calculateFinal() {
-    let tGrossAmt = 0.00, tQty = 0.00, tDisAmt = 0.00, tTax_Amt1 = 0.00, tTax_Amt2 = 0.00, tNetAmt = 0.00;
+    let tGrossAmt = 0.00, tQty = 0.00, tDisAmt = 0.00, tTax_Amt1 = 0.00, tTax_Amt2 = 0.00, tOther_Amt = 0.00, tNetAmt = 0.00;
     //main item
     $("#line_items > tr.paid_item").each(function (index, row) {
         let rPrice = 0.00, rQty = 0.00, rDisPer = 0.00, rGrossAmt = 0.00, rDisAmt = 0.00, rTax1 = 0.00, rTax_Amt1 = 0.00, rTax2 = 0.00, rTax_Amt2 = 0.00, rNetAmt = 0.00;
@@ -235,20 +236,26 @@ function calculateFinal() {
     });
     //other item
     $("#product_line_items > tr.other_item").each(function (index, row) {
-        let rPrice = 0.00, rQty = 0.00, rDisPer = 0.00, rDisAmt = 0.00, rTax_Amt1 = 0.00, rGrossAmt = 0.00, rNetAmt = 0.00;
+        let proc_type = 0, rPrice = 0.00, rQty = 0.00, rDisPer = 0.00, rDisAmt = 0.00, rTax_Amt1 = 0.00, rGrossAmt = 0.00, rNetAmt = 0.00;
+        proc_type = parseInt($(row).data("proc_type")) || 0;
         rPrice = parseFloat($(row).find("[name=txt_itemprice]").val()) || 0.00;
         rQty = parseFloat($(row).find("[name=txt_itemqty]").val()) || 0.00;
         rDisPer = parseFloat($(row).find("[name=txt_itemdisc]").val()) || 0.00;
         rGrossAmt = rPrice * rQty; rDisAmt = rGrossAmt * (rDisPer / 100);
         rNetAmt = (rGrossAmt - rDisAmt) + rTax_Amt1;
         $(row).find(".tax-amount").text(rTax_Amt1.toFixed(2)); $(row).find(".row-total").text(rNetAmt.toFixed(2));
-        tGrossAmt += rGrossAmt, tDisAmt += rDisAmt, tTax_Amt1 += rTax_Amt1, tNetAmt += rNetAmt;
+        tGrossAmt += 0;
+        tDisAmt += rDisAmt, tTax_Amt1 += rTax_Amt1, tNetAmt += rNetAmt;
+        if (proc_type == 1) tTax_Amt2 += rNetAmt;
+        else if (proc_type == 2) tTax_Amt1 += rNetAmt;
+        else if (proc_type == 3) tOther_Amt += rNetAmt;
     });
     $(".thQuantity").text(tQty.toFixed(0));
     $("#SubTotal").text(tGrossAmt.toFixed(2));
     $("#discountTotal").text(tDisAmt.toFixed(2));
     $("#salesTaxTotal").text(tTax_Amt1.toFixed(2));
     $("#shippingTotal").text(tTax_Amt2.toFixed(2));
+    $("#otherTotal").text(tOther_Amt.toFixed(2));
     $("#orderTotal").html(tNetAmt.toFixed(2));
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Add Other Product and Services ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -259,6 +266,8 @@ function AddProductModal(proc_type, row_num) {
     rPrice = parseFloat(row.find("[name=txt_itemprice]").val()) || 0;
     rDescPer = parseFloat(row.find("[name=txt_itemdisc]").val()) || 0;
     rTotal = parseFloat(row.find(".row-total").text()) || 0;
+    rSDate = isNullAndUndef(row.data('proc_fromdate')) ? row.data('proc_fromdate') : $('#txtPODate').val();
+    rEDate = isNullAndUndef(row.data('proc_todate')) ? row.data('proc_todate') : $('#txtPODate').val();
 
     var prodHtml = '<div class="modal-dialog">';
     prodHtml += '<div class="modal-content">';
@@ -268,28 +277,35 @@ function AddProductModal(proc_type, row_num) {
     prodHtml += '</div>';
     prodHtml += '<div class="modal-body">';
 
-    prodHtml += '<div class="row">';
-    prodHtml += '<div class="col-md-12">Description<span class="text-red">*</span>';
-    prodHtml += '<input class="form-control" type="input" id="txt_proc_desc" placeholder="Description" maxlength="250" autocomplete="off" value="' + rDesc + '">';
-    prodHtml += '</div>';
     if (proc_type == 0) {
+        prodHtml += '<div class="row">';
+        prodHtml += '<div class="col-md-12">Description<span class="text-red">*</span>';
+        prodHtml += '<input class="form-control" type="input" id="txt_proc_desc" placeholder="Description" maxlength="250" autocomplete="off" value="' + rDesc + '">';
+        prodHtml += '</div>';
         prodHtml += '<div class="col-md-12">Vender SKU';
         prodHtml += '<input class="form-control" type="input" id="txt_proc_sku" placeholder="Vender SKU" maxlength="150" autocomplete="off" value="' + rSku + '">';
         prodHtml += '</div>';
     }
     else {
+        prodHtml += '<div class="row">';
+        prodHtml += '<div class="col-md-6">Service Type<span class="text-red">*</span>';
+        prodHtml += '<select class="form-control" id="ddl_service_type" placeholder="Select Service Type"><option value="1">Shipping</option><option value="2">Tax</option><option value="3">other Fee</option></select>';
+        prodHtml += '</div>';
+        prodHtml += '<div class="col-md-6">Description<span class="text-red">*</span>';
+        prodHtml += '<input class="form-control" type="input" id="txt_proc_desc" placeholder="Description" maxlength="250" autocomplete="off" value="' + rDesc + '">';
+        prodHtml += '</div>';
         prodHtml += '<div class="col-md-6">From Date';
-        prodHtml += '<input class="form-control date-picker" type="input" id="txt_proc_fromdate" placeholder="MM/DD/YYYY" maxlength="150" autocomplete="off" value="">';
+        prodHtml += '<input class="form-control date-picker" type="input" id="txt_proc_fromdate" placeholder="MM/DD/YYYY" maxlength="150" autocomplete="off" value="' + rSDate + '">';
         prodHtml += '</div>';
         prodHtml += '<div class="col-md-6">To Date';
-        prodHtml += '<input class="form-control date-picker" type="input" id="txt_proc_todate" placeholder="MM/DD/YYYY" maxlength="150" autocomplete="off" value="">';
+        prodHtml += '<input class="form-control date-picker" type="input" id="txt_proc_todate" placeholder="MM/DD/YYYY" maxlength="150" autocomplete="off" value="' + rEDate + '">';
         prodHtml += '</div>';
     }
     prodHtml += '<div class="col-md-6">Price<span class="text-red">*</span>';
     prodHtml += '<input class="form-control addCalulate" type="number" id="txt_proc_price" placeholder="Price" maxlength="20" autocomplete="off" value="' + rPrice.toFixed(2) + '">';
     prodHtml += '</div>';
     prodHtml += '<div class="col-md-6">Quantity<span class="text-red">*</span>';
-    prodHtml += '<input class="form-control addCalulate" type="number" id="txt_proc_qty" placeholder="Quantity" maxlength="20" autocomplete="off" value="' + rQty + '">';
+    prodHtml += '<input class="form-control addCalulate" type="number" id="txt_proc_qty" placeholder="Quantity" maxlength="20" autocomplete="off" value="' + rQty + '" ' + (proc_type > 0 ? 'disabled' : '') + '>';
     prodHtml += '</div>';
     prodHtml += '<div class="col-md-6">Discount(%)';
     prodHtml += '<input class="form-control addCalulate" min="0" max="100" type="number" id="txt_proc_disc" placeholder="Discount" maxlength="20" autocomplete="off" value="' + rDescPer.toFixed(2) + '">';
@@ -307,6 +323,7 @@ function AddProductModal(proc_type, row_num) {
     prodHtml += '</div>';
     $("#POModal").empty().html(prodHtml);
     $("#POModal").modal({ backdrop: 'static', keyboard: false }); $("#txt_proc_desc").focus();
+    $("#ddl_service_type").val(proc_type);
     $('.date-picker').datepicker({ format: 'mm/dd/yyyy', autoclose: true, todayHighlight: true });
 }
 function bindOtherItems(proc_type, row_num) {
@@ -329,14 +346,14 @@ function bindOtherItems(proc_type, row_num) {
     rTotal = parseFloat($("#txt_proc_total").val()) || 0.00;
     let itemHtml = '';
     if ($('#tritemid_' + row_num).length <= 0) {
-        itemHtml += '<tr id="tritemid_' + row_num + '" class="other_item" data-rowid="0" data-rang="' + row_num + '" data-proc_type="' + proc_type + '">';
+        itemHtml += '<tr id="tritemid_' + row_num + '" class="other_item" data-rowid="0" data-rang="' + row_num + '" data-proc_type="' + proc_type + '" data-proc_fromdate="' + rSDate + '" data-proc_todate="' + rEDate + '">';
         itemHtml += '<td class="text-center">';
         itemHtml += '<button class="btn p-0 billinfo" onclick="AddProductModal(\'' + proc_type + '\',\'' + row_num + '\');"><i class="glyphicon glyphicon-edit"></i></button>';
         itemHtml += '<button class="btn p-0 text-red billinfo" onclick="removeItems(\'' + row_num + '\');"><i class="glyphicon glyphicon-trash"></i></button>';
         itemHtml += '</td > ';
         itemHtml += '<td class="item-desc">' + rDesc + '</td><td class="item-sku">' + rSku + '</td>';
         itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemprice_' + row_num + '" value="' + rPrice.toFixed(2) + '" name="txt_itemprice" placeholder="Price"></td>';
-        itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemqty_' + row_num + '" value="' + rQty.toFixed(0) + '" name="txt_itemqty" placeholder="Qty."></td>';
+        itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemqty_' + row_num + '" value="' + rQty.toFixed(0) + '" name="txt_itemqty" placeholder="Qty." ' + (proc_type > 0 ? 'disabled' : '') + '></td>';
         itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemdisc_' + row_num + '" value="' + rDescPer.toFixed(2) + '" name="txt_itemdisc" placeholder="Discount"></td>';
         itemHtml += '<td class="text-right tax-amount">0.00</td><td class="text-right ship-amount">0.00</td>';
         itemHtml += '<td class="text-right row-total">' + rTotal.toFixed(2) + '</td>';
@@ -344,11 +361,14 @@ function bindOtherItems(proc_type, row_num) {
         $('#product_line_items').append(itemHtml);
     }
     else {
+        $('#tritemid_' + row_num).data('proc_type', proc_type);
+        $('#tritemid_' + row_num).data('proc_fromdate', rSDate); $('#tritemid_' + row_num).data('proc_todate', rEDate);
         $('#tritemid_' + row_num).find('.item-desc').text(rDesc); $('#tritemid_' + row_num).find('.item-sku').text(rSku);
         $('#tritemid_' + row_num).find("[name=txt_itemprice]").val(rPrice);
         $('#tritemid_' + row_num).find("[name=txt_itemqty]").val(rQty);
         $('#tritemid_' + row_num).find("[name=txt_itemdisc]").val(rDescPer);
         $('#tritemid_' + row_num).find(".tax-amount").text(0.00); $('#tritemid_' + row_num).find('.row-total').text(rTotal);
+
     }
     $("#POModal").modal('hide');
     $("#product_line_items").find(".rowCalulate").change(function () { calculateFinal(); });
@@ -367,63 +387,64 @@ function getPurchaseOrderInfo() {
             url: "/PurchaseOrder/GetPurchaseOrderByID", type: "Get", beforeSend: function () { $("#loader").show(); }, data: option,
             success: function (result) {
                 try {
-                    let data = JSON.parse(result); let VendorID = 0; //console.log(data);
-                    for (let i = 0; i < data['po'].length; i++) {
-                        VendorID = parseInt(data['po'][i].fk_supplier) || 0;
-                        $('#lblPoNo').text(data['po'][i].ref); $('#txtRefvendor').val(data['po'][i].ref_supplier); $('#txtPODate').val(data['po'][i].date_creation);
-                        $('#ddlVendor').val(data['po'][i].fk_supplier).trigger('change');
-                        $('#ddlPaymentTerms').val(data['po'][i].fk_payment_term).trigger('change');
-                        $('#ddlBalancedays').val(data['po'][i].fk_balance_days).trigger('change');
-                        $('#ddlIncoTerms').val(data['po'][i].fk_incoterms).trigger('change');
-                        $('#ddlPaymentType').val(data['po'][i].fk_payment_type).trigger('change');
-                        $('#txtNotePublic').val(data['po'][i].note_public); $('#txtNotePrivate').val(data['po'][i].note_private);
-                        $('#txtIncoTerms').val(data['po'][i].location_incoterms);
-                        $('#ddlWarehouse').val(data['po'][i].fk_warehouse).trigger('change');
+                    let data = JSON.parse(result); let VendorID = 0; console.log(data);
+                    $.each(data['po'], function (key, row) {
+                        VendorID = parseInt(row.fk_supplier) || 0;
+                        $('#lblPoNo').text(row.ref); $('#txtRefvendor').val(row.ref_supplier); $('#txtPODate').val(row.date_creation);
+                        $('#ddlVendor').val(row.fk_supplier).trigger('change');
+                        $('#ddlPaymentTerms').val(row.fk_payment_term).trigger('change');
+                        $('#ddlBalancedays').val(row.fk_balance_days).trigger('change');
+                        $('#ddlIncoTerms').val(row.fk_incoterms).trigger('change');
+                        $('#ddlPaymentType').val(row.fk_payment_type).trigger('change');
+                        $('#txtNotePublic').val(row.note_public); $('#txtNotePrivate').val(row.note_private);
+                        $('#txtIncoTerms').val(row.location_incoterms);
+                        $('#ddlWarehouse').val(row.fk_warehouse).trigger('change');
                         $('#txtWarehouseAddress').val($('#ddlWarehouse').find(':selected').data('ad'))
-                        if (!data['po'][i].date_livraison.includes('00/00/0000')) $('#txtPlanneddateofdelivery').val(data['po'][i].date_livraison);
-                        let date1 = new Date(data['po'][i].date_creation), date2 = new Date(data['po'][i].date_livraison);
+                        if (!row.date_livraison.includes('00/00/0000')) $('#txtPlanneddateofdelivery').val(row.date_livraison);
+                        let date1 = new Date(row.date_creation), date2 = new Date(row.date_livraison);
                         var Difference_In_Time = date2.getTime() - date1.getTime();
                         var Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
                         $('#lblPlannedDays').text("(Planned Days : " + Difference_In_Days + ")");
 
-                        if (data['po'][i].fk_status == '1')
+                        if (row.fk_status == '1')
                             $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List">Back to List</a><button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button> <button type="button" class="btn btn-danger btnApproved" data-toggle="tooltip" title="Approved and create invoice."><i class="fas fa-check-double"></i> Approved</button>');
                         else
                             $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List">Back to List</a><button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button>');
-                    }
+                    });
                     getVendorProducts(VendorID);
-                    for (let i = 0; i < data['pod'].length; i++) {
+                    $.each(data['pod'], function (key, row) {
                         let itemHtml = '';
-                        if (data['pod'][i].fk_product > 0) {
-                            itemHtml = '<tr id="tritemid_' + data['pod'][i].fk_product + '" class="paid_item" data-pid="' + data['pod'][i].fk_product + '" data-pname="' + data['pod'][i].description + '" data-psku="' + data['pod'][i].product_sku + '" data-rowid="' + data['pod'][i].rowid + '">';
-                            itemHtml += '<td class="text-center"><button class="btn p-0 text-red btnDeleteItem billinfo" onclick="removeItems(\'' + data['pod'][i].fk_product + '\');"> <i class="glyphicon glyphicon-trash"></i> </button></td>';
-                            itemHtml += '<td>' + data['pod'][i].description + '</td><td>' + data['pod'][i].product_sku + '</td>';
-                            itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemprice_' + data['pod'][i].fk_product + '" value="' + data['pod'][i].subprice.toFixed(2) + '" name="txt_itemprice" placeholder="Price"></td>';
-                            itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemqty_' + data['pod'][i].fk_product + '" value="' + data['pod'][i].qty.toFixed(0) + '" name="txt_itemqty" placeholder="Qty."></td>';
-                            itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemdisc_' + data['pod'][i].fk_product + '" value="' + data['pod'][i].discount_percent.toFixed(2) + '" name="txt_itemdisc" placeholder="Discount"></td>';
-                            itemHtml += '<td class="text-right tax-amount" data-tax1="' + data['pod'][i].localtax1_tx + '" data-tax2="' + data['pod'][i].localtax2_tx + '">' + data['pod'][i].total_localtax1.toFixed(2) + '</td>';
-                            itemHtml += '<td class="text-right ship-amount">' + data['pod'][i].total_localtax2.toFixed(2) + '</td>';
-                            itemHtml += '<td class="text-right row-total">' + data['pod'][i].total_ttc.toFixed(2) + '</td>';
+                        if (row.fk_product > 0) {
+                            itemHtml = '<tr id="tritemid_' + row.fk_product + '" class="paid_item" data-pid="' + row.fk_product + '" data-pname="' + row.description + '" data-psku="' + row.product_sku + '" data-rowid="' + row.rowid + '">';
+                            itemHtml += '<td class="text-center"><button class="btn p-0 text-red btnDeleteItem billinfo" onclick="removeItems(\'' + row.fk_product + '\');"> <i class="glyphicon glyphicon-trash"></i> </button></td>';
+                            itemHtml += '<td>' + row.description + '</td><td>' + row.product_sku + '</td>';
+                            itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemprice_' + row.fk_product + '" value="' + row.subprice.toFixed(2) + '" name="txt_itemprice" placeholder="Price"></td>';
+                            itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemqty_' + row.fk_product + '" value="' + row.qty.toFixed(0) + '" name="txt_itemqty" placeholder="Qty."></td>';
+                            itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemdisc_' + row.fk_product + '" value="' + row.discount_percent.toFixed(2) + '" name="txt_itemdisc" placeholder="Discount"></td>';
+                            itemHtml += '<td class="text-right tax-amount" data-tax1="' + row.localtax1_tx + '" data-tax2="' + row.localtax2_tx + '">' + row.total_localtax1.toFixed(2) + '</td>';
+                            itemHtml += '<td class="text-right ship-amount">' + row.total_localtax2.toFixed(2) + '</td>';
+                            itemHtml += '<td class="text-right row-total">' + row.total_ttc.toFixed(2) + '</td>';
                             itemHtml += '</tr>';
                             $('#line_items').append(itemHtml);
                         }
                         else {
-                            itemHtml = '<tr id="tritemid_' + data['pod'][i].rowid + '" class="other_item" data-rowid="' + data['pod'][i].rowid + '" data-rang="' + data['pod'][i].rowid + '" data-proc_type="' + data['pod'][i].product_type + '">';
+                            let rSDate = !row.date_start.includes('00/00/0000') ? row.date_start : '', rEDate = !row.date_end.includes('00/00/0000') ? row.date_end : '';
+                            itemHtml = '<tr id="tritemid_' + row.rowid + '" class="other_item" data-rowid="' + row.rowid + '" data-rang="' + row.rowid + '" data-proc_type="' + row.product_type + '"  data-proc_fromdate="' + rSDate + '" data-proc_todate="' + rEDate + '">';
                             itemHtml += '<td class="text-center">';
-                            itemHtml += '<button class="btn p-0 billinfo" onclick="AddProductModal(\'' + data['pod'][i].product_type + '\',\'' + data['pod'][i].rowid + '\');"><i class="glyphicon glyphicon-edit"></i></button>';
-                            itemHtml += '<button class="btn p-0 text-red billinfo" onclick="removeItems(\'' + data['pod'][i].rowid + '\');"><i class="glyphicon glyphicon-trash"></i></button>';
+                            itemHtml += '<button class="btn p-0 billinfo" onclick="AddProductModal(\'' + row.product_type + '\',\'' + row.rowid + '\');"><i class="glyphicon glyphicon-edit"></i></button>';
+                            itemHtml += '<button class="btn p-0 text-red billinfo" onclick="removeItems(\'' + row.rowid + '\');"><i class="glyphicon glyphicon-trash"></i></button>';
                             itemHtml += '</td > ';
-                            itemHtml += '<td class="item-desc">' + data['pod'][i].description + '</td><td class="item-sku">' + data['pod'][i].product_sku + '</td>';
-                            itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemprice_' + data['pod'][i].rowid + '" value="' + data['pod'][i].subprice.toFixed(2) + '" name="txt_itemprice" placeholder="Price"></td>';
-                            itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemqty_' + data['pod'][i].rowid + '" value="' + data['pod'][i].qty.toFixed(0) + '" name="txt_itemqty" placeholder="Qty."></td>';
-                            itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemdisc_' + data['pod'][i].rowid + '" value="' + data['pod'][i].discount_percent.toFixed(2) + '" name="txt_itemdisc" placeholder="Discount"></td>';
-                            itemHtml += '<td class="text-right tax-amount">' + data['pod'][i].total_localtax1.toFixed(2) + '</td>';
-                            itemHtml += '<td class="text-right ship-amount">' + data['pod'][i].total_localtax2.toFixed(2) + '</td>';
-                            itemHtml += '<td class="text-right row-total">' + data['pod'][i].total_ttc.toFixed(2) + '</td>';
+                            itemHtml += '<td class="item-desc">' + row.description + '</td><td class="item-sku">' + row.product_sku + '</td>';
+                            itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemprice_' + row.rowid + '" value="' + row.subprice.toFixed(2) + '" name="txt_itemprice" placeholder="Price"></td>';
+                            itemHtml += '<td><input min="0" autocomplete="off" class="form-control ' + (row.product_type > 0 ? '' : 'billinfo') + ' number rowCalulate" type="number" id="txt_itemqty_' + row.rowid + '" value="' + row.qty.toFixed(0) + '" name="txt_itemqty" placeholder="Qty." ' + (row.product_type > 0 ? 'disabled' : '') + '></td>';
+                            itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemdisc_' + row.rowid + '" value="' + row.discount_percent.toFixed(2) + '" name="txt_itemdisc" placeholder="Discount"></td>';
+                            itemHtml += '<td class="text-right tax-amount">' + row.total_localtax1.toFixed(2) + '</td>';
+                            itemHtml += '<td class="text-right ship-amount">' + row.total_localtax2.toFixed(2) + '</td>';
+                            itemHtml += '<td class="text-right row-total">' + row.total_ttc.toFixed(2) + '</td>';
                             itemHtml += '</tr>';
                             $('#product_line_items').append(itemHtml);
                         }
-                    }
+                    });
                 }
                 catch (error) {
                     $("#loader").hide(); swal('Alert!', "something went wrong.", "error");
@@ -469,13 +490,17 @@ function createItemsList() {
         rDisPer = parseFloat($(row).find("[name=txt_itemdisc]").val()) || 0.00;
         rGrossAmt = rPrice * rQty; rDisAmt = rGrossAmt * (rDisPer / 100);
         rNetAmt = (rGrossAmt - rDisAmt) + rTax1;
+        let rSDate = isNullAndUndef($(row).data('proc_fromdate')) ? moment($(row).data('proc_fromdate'), 'MM/DD/YYYY').format('YYYY-MM-DD') : '0000-00-00', rEDate = isNullAndUndef($(row).data('proc_todate')) ? moment($(row).data('proc_todate'), 'MM/DD/YYYY').format('YYYY-MM-DD') : '0000-00-00';
+        //console.log(_sDate, moment(_sDate).format('YYYY-MM-DD'), _eDate, moment(_eDate).format('YYYY-MM-DD'));
         _rang += 1;
         _list.push({
             rowid: $(row).data('rowid'), rang: _rang, product_type: $(row).data('proc_type'), fk_product: 0, description: $(row).find('.item-desc').text(), product_sku: $(row).find('.item-sku').text(),
             qty: rQty, subprice: rPrice, discount_percent: rDisPer, discount: rDisAmt, tva_tx: 0, localtax1_tx: rTax1, localtax1_type: 'F', localtax2_tx: rTax2, localtax2_type: 'F',
-            total_ht: rGrossAmt, total_tva: 0, total_localtax1: rTax_Amt1, total_localtax2: rTax_Amt2, total_ttc: rNetAmt, date_start: '0000/00/00', date_end: '0000/00/00'
+            total_ht: rGrossAmt, total_tva: 0, total_localtax1: rTax_Amt1, total_localtax2: rTax_Amt2, total_ttc: rNetAmt, date_start: rSDate, date_end: rEDate
         });
+
     });
+    console.log(_list)
     return _list;
 }
 function saveVendorPO() {

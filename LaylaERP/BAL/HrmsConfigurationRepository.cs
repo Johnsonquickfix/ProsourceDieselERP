@@ -430,9 +430,8 @@ namespace LaylaERP.BAL
         {
             try
             {
-                //string strsql = " basic1=@basic1, basic2=@basic2, hra_office=@hra_office, hra_field=@hra_field, from_date=@from_date where rowid = '" + model.rowid + "';";
                 string strsql = "UPDATE erp_hrms_config_setting set basic=@basic, special_pay=@special_pay, washing_allowance=@washing_allowance, other_allowance=@other_allowance, incentive=@incentive, cca=@cca, " +
-                    "epf=@epf,vpf=@vpf, adv_staff=@adv_staff, adv_epf=@adv_epf, incometax=@incometax, insurance=@insurance, loan_emi=@loan_emi, emp_walfare=@emp_walfare, imprest=@imprest, misc_refund=@misc_refund, festival_adv=@festival_adv, hra_percent=@hra_percent, hra_slab=@hra_slab where rowid ='" + model.rowid + "'";
+                    "epf=@epf,vpf=@vpf, adv_staff=@adv_staff, adv_epf=@adv_epf, incometax=@incometax, insurance=@insurance, loan_emi=@loan_emi, emp_walfare=@emp_walfare, imprest=@imprest, misc_refund=@misc_refund, festival_adv=@festival_adv, hra_percent=@hra_percent, hra_slab=@hra_slab, hra_percent_value=@hra_percent_value where rowid ='" + model.rowid + "'";
                 MySqlParameter[] para =
                  {
                     new MySqlParameter("@basic",model.basic),
@@ -457,6 +456,7 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@festival_adv", model.festival_adv),
                     new MySqlParameter("@hra_percent",model.hra_percent),
                     new MySqlParameter("@hra_slab", model.hra_slab),
+                    new MySqlParameter("@hra_percent_value", model.hra_percent_value),
                 };
                 int result = Convert.ToInt32(DAL.SQLHelper.ExecuteNonQuery(strsql, para));
                 return result;

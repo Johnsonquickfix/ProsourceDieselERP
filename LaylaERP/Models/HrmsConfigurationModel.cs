@@ -81,5 +81,6 @@ namespace LaylaERP.Models
         public int festival_adv { get; set; }
         public int hra_percent { get; set; }
         public int hra_slab { get; set; }
+        public decimal hra_percent_value { get; set; }
     }
 }

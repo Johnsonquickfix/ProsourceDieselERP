@@ -73,6 +73,30 @@ namespace LaylaERP.Controllers
             return Json(new { status = b_status, message = JSONstring, id = ID }, 0);
         }
 
+        [HttpPost]
+        public JsonResult UpdateStatusReceptionPurchase(PurchaseReceiceOrderModel model)
+        {
+            string JSONstring = string.Empty; bool b_status = false; long ID = 0;
+            try
+            {
+                ID = new ReceptionRepository().UpdateStatusReceptionPurchase(model);
+
+                if (ID > 0)
+                {
+                    b_status = true; JSONstring = "Purchase Record has been Closed successfully!!";
+                }
+                else
+                {
+                    b_status = false; JSONstring = "Invalid Details.";
+                }
+            }
+            catch (Exception Ex)
+            {
+                b_status = false; JSONstring = Ex.Message;
+            }
+            return Json(new { status = b_status, message = JSONstring, id = ID }, 0);
+        }
+
         [HttpGet]
         public JsonResult GetPurchaseOrderByID(SearchModel model)
         {
@@ -83,6 +107,23 @@ namespace LaylaERP.Controllers
                 if (!string.IsNullOrEmpty(model.strValue1))
                     id = Convert.ToInt64(model.strValue1);
                 DataSet ds = ReceptionRepository.GetPurchaseOrderByID(id);
+                JSONresult = JsonConvert.SerializeObject(ds);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+
+
+        [HttpGet]
+        public JsonResult GetPurchaseHistory(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                long id = 0;
+                if (!string.IsNullOrEmpty(model.strValue1))
+                    id = Convert.ToInt64(model.strValue1);
+                DataSet ds = ReceptionRepository.GetPurchaseHistory(id);
                 JSONresult = JsonConvert.SerializeObject(ds);
             }
             catch { }

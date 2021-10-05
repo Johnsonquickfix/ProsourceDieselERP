@@ -17,6 +17,14 @@ $('#btnRefresh').click(function () {
     GetNewAccounttoAssign();
    
 });
+
+$("input[name = accounting_product_mode]:radio").change(function () {
+    ProductAccountingGrid();
+    getAccounttoAssign();
+    GetNewAccounttoAssign();
+});
+
+
 function GetNewAccounttoAssign() {
     var optType = $('input[name="accounting_product_mode"]:checked').val();
     obj = { strValue1: optType }

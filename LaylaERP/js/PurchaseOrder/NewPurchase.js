@@ -539,7 +539,7 @@ function createItemsList() {
         });
 
     });
-    console.log(_list)
+    //console.log(_list)
     return _list;
 }
 function saveVendorPO() {

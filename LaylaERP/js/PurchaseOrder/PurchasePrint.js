@@ -38,7 +38,7 @@ function getPurchaseOrderPrint(id, is_mail) {
                 catch (error) { swal('Alert!', "something went wrong.", "error"); }
             },
             complete: function () { },
-            error: function (xhr, status, err) { swal('Alert!', "something went wrong.", "error"); }, async: true
+            error: function (xhr, status, err) { swal('Alert!', "something went wrong.", "error"); }, async: false
         });
     }
 }

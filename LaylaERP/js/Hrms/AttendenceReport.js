@@ -9,10 +9,11 @@ $(document).ready(function () {
             'This Month': [moment().startOf('month'), moment().endOf('month')],
             'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
         },
-        startDate: moment().add(-1, 'month'), autoUpdateInput: true, alwaysShowCalendars: true,
+        startDate: moment().startOf('month'), autoUpdateInput: true, alwaysShowCalendars: true,
         locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' }, opens: 'right', orientation: "left auto"
     });
     $("#DateRange").change(function () {
+        $("#AttendanceReport").empty();
         employee();
     })
     employee();
@@ -81,7 +82,8 @@ $(document).ready(function () {
 
 
 function makeColumnHeaderHtml(columnHeaderNames) {
-    var table_head = '<thead>< tr >';
+    var table_head = '';
+     table_head = '<thead>< tr >';
     $.each(columnHeaderNames, function (data, value) {
         table_head += '<th>';
         table_head += value;
@@ -90,14 +92,26 @@ function makeColumnHeaderHtml(columnHeaderNames) {
     });
     table_head += '</thead ></tr>';
     return table_head;
+    
 }
+function makeColumnBodyHtml(columnBodyNames) {
+    var table_body = '<tbody>< tr >';
+    $.each(columnBodyNames, function (data, value) {
+        table_body += '<td>';
+        table_body += value;
+        table_body += '</td>';
 
+    });
+    table_body += '</tr></tbody>';
+    return table_body;
+}
 function getDataTableDef(columnDef) {
     var dataTableFormat = {
         columns: columnDef,
-        paging: true,
-        info: true,
-        searching: true,
+        paging: false,
+        destroy: true,
+        info: false,
+        searching: false,
         responsive: true,
         ordering: false,
         "sScrollX": "100%"
@@ -108,36 +122,46 @@ function getTableData() {
     var fromdate = $('#DateRange').data('daterangepicker').startDate.format('YYYY-MM-DD');
     var todate = $('#DateRange').data('daterangepicker').endDate.format('MM-DD-YYYY');
     var obj = { strValue1: fromdate, strValue2: todate}
-    console.log(fromdate, todate);
     return $.ajax({
         url: "/Hrms/GetAttendanceReport",
         dataType: 'json', type: 'Post',
         contentType: "application/json; charset=utf-8",
-        /*method: "POST",*/
+       
         data: JSON.stringify(obj),
         success: function (data) {
-          /*  alert(data.aaData);*/
         }
     })
 }
 
-
 function employee() {
-
     getTableData().done(function (records) {
-
-        records = JSON.parse(records.aaData);
+        
+         records = JSON.parse(records.aaData);
+        
+      
         var headerName = Object.keys(records[0]);
         var headerHtml = makeColumnHeaderHtml(headerName);
 
-        var columns = [];
+         var bodyHtml = "";
+         for (var i = 0; i < records.length; i++) {
+             var bodyName = records[i];
+             bodyHtml += makeColumnBodyHtml(bodyName);
+         }
 
-        $('#AttendanceReport').append(headerHtml);
+      
 
-        for (var i = 0; i < headerName.length; i++) {
-            columns.push({ "data": headerName[i] });
-        }
-        var datatableInstance = $('#AttendanceReport').DataTable(getDataTableDef(columns));
-        datatableInstance.rows.add(records).draw();
+        $('#AttendanceReport').append(headerHtml, bodyHtml);
+
+
+        //$('#AttendanceReport').append(bodyHtml);
+
+     /*   $('#AttendanceReport').append(headerHtml);*/
+
+        //for(var i = 0; i < headerName.length; i++) {
+        //    columns.push({ "data": headerName[i] });
+        //}
+
+        //var datatableInstance = $('#AttendanceReport').DataTable(getDataTableDef(columns));
+        //datatableInstance.rows.add(records).draw();
     });
 };

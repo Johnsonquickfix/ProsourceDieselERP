@@ -12,8 +12,22 @@
         a.document.close();
     });
 });
+function printmodal(is_inv) {
+    let inv_title = is_inv ? 'Invoice' : 'Purchase Order';
+    let modalHtml = '<div class="modal-dialog modal-lg">';
+    modalHtml += '<div class="modal-content">';
+    modalHtml += '<div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button><h5 class="modal-title">' + inv_title + ' Preview</h5></div>';
+    modalHtml += '<div class="modal-body no-padding modal-body-fixHeight"><div class="text-center"><h3>Loading...</h3></div></div>';
+    modalHtml += '<div class="modal-footer"><button type="button" class="btn btn-success pull-left btnprintinvoice"><i class="fa fa-print"></i> Print</button ><button type="button" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">OK</button></div>';
+    //modalHtml += '<div class="modal-footer"><button type="button" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">OK</button></div>';
+    modalHtml += '</div>';
+    modalHtml += '</div>';
+    $('<div class="modal in printable autoprint" id="PrintModal" role="dialog" aria-hidden="true"></div>').html(modalHtml).modal({ backdrop: 'static', keyboard: false });
+    //console.log('show');
+}
 function getPurchaseOrderPrint(id, is_mail) {
     if (id > 0) {
+        printmodal(false);
         var option = { strValue1: id };
         $.ajax({
             url: "/PurchaseOrder/GetPurchaseOrderPrint", type: "Get", beforeSend: function () { }, data: option,
@@ -29,19 +43,10 @@ function getPurchaseOrderPrint(id, is_mail) {
     }
 }
 function printinvoice(id, result, is_mail, is_inv) {
-    let data = JSON.parse(result.data); console.log(data);
+    let data = JSON.parse(result.data); //console.log(data);
     let inv_title = is_inv ? 'Invoice' : 'Purchase Order';
-    var modalHtml = '';
-    modalHtml += '<div class="modal-dialog modal-lg">';
-    modalHtml += '<div class="modal-content">';
-    modalHtml += '<div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button><h5 class="modal-title">' + inv_title + ' Preview</h5></div>';
-    modalHtml += '<div class="modal-body no-padding modal-body-fixHeight"></div>';
-    modalHtml += '<div class="modal-footer"><button type="button" class="btn btn-success pull-left btnprintinvoice"><i class="fa fa-print"></i> Print</button ><button type="button" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">OK</button></div>';
-    //modalHtml += '<div class="modal-footer"><button type="button" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">OK</button></div>';
-    modalHtml += '</div>';
-    modalHtml += '</div>';
-    $('<div class="modal in printable autoprint" id="PrintModal" role="dialog" aria-hidden="true"></div>').html(modalHtml).modal({ backdrop: 'static', keyboard: false });
-    let total_qty = 0, total_gm = 0.00, total_tax = 0.00, total_shamt = 0.00, total_discamt = 0.00, total_other = 0.00,  total_net = 0.00;
+    
+    let total_qty = 0, total_gm = 0.00, total_tax = 0.00, total_shamt = 0.00, total_discamt = 0.00, total_other = 0.00, paid_amt = 0.00;  total_net = 0.00;
 
     let startingNumber = parseFloat(data['po'][0].PaymentTerm.match(/^-?\d+\.\d+|^-?\d+\b|^\d+(?=\w)/g)) || 0.00;
 
@@ -141,17 +146,44 @@ function printinvoice(id, result, is_mail, is_inv) {
     myHtml += '                        <td style="color:#4f4f4f;line-height:1.4;text-align:left;font-family:sans-serif;font-size:15px;padding:5px 12px;background:#f9f9f9;font-weight:600; border-bottom:1px solid #ddd;">Comments or Special Instructions</td>';
     myHtml += '                    </tr>';
     myHtml += '                    <tr>';
-    myHtml += '                        <td style="padding:5px 12px;text-align:left;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">1.Payment term:' + data['po'][0].PaymentTerm + ', ' + data['po'][0].Balance + '</td>';
+    myHtml += '                        <td style="padding:5px 12px;text-align:left;font-family:sans-serif; font-size:12px; color:#4f4f4f;line-height:1.4;">1.Payment term:' + data['po'][0].PaymentTerm + ', ' + data['po'][0].Balance + '</td>';
     myHtml += '                    </tr>';
     myHtml += '                    <tr>';
-    myHtml += '                        <td style="padding:5px 12px;text-align:left;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">2.' + data['po'][0].location_incoterms + '</td>';
+    myHtml += '                        <td style="padding:5px 12px;text-align:left;font-family:sans-serif; font-size:12px; color:#4f4f4f;line-height:1.4;">2.' + data['po'][0].location_incoterms + '</td>';
     myHtml += '                    </tr>';
     myHtml += '                    <tr>';
     myHtml += '                        <td style="border-top: 1px solid #ddd;padding:5px 12px;text-align:left;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">';
     myHtml += '                            <h4 class="headline" style="text-align:left;font-family:sans-serif;color: #555;font-size: 16px;line-height: 18px;margin-bottom: 5px;margin-top: 0px;vertical-align: middle;text-align: left;width: 100%;font-weight: 600;">Notes</h4>';
-    myHtml += '                            <p class="notes" style="text-align:left;font-family:sans-serif;color: #4f4f4f;font-size: 16px;line-height: 18px;margin-bottom: 0px;margin-top: 0px;vertical-align: middle;text-align: left;width: 100%;font-weight: 400;">' + data['po'][0].note_public + '</p>';
+    myHtml += '                            <p class="notes" style="text-align:left;font-family:sans-serif;color: #4f4f4f;font-size: 12px;line-height: 18px;margin-bottom: 0px;margin-top: 0px;vertical-align: middle;text-align: left;width: 100%;font-weight: 400;">' + data['po'][0].note_public + '</p>';
     myHtml += '                        </td>';
     myHtml += '                    </tr>';
+
+    myHtml += '                    <tr>';
+    myHtml += '                        <td style="border-top: 1px solid #ddd;padding:0px;">';
+    myHtml += '                        <table style="border-collapse: collapse;width: 100%; table-layout: fixed;font-family:sans-serif;font-size:12px;">';
+    myHtml += '                            <thead style="border: 1px solid #ddd;background-color: #f9f9f9;">';
+    myHtml += '                                <tr>';
+    myHtml += '                                    <th style="text-align:left;width:20%;padding:2px 5px;">Payment</th>';
+    myHtml += '                                    <th style="text-align:right;width:25%;padding:2px 5px;">Amount</th>';
+    myHtml += '                                    <th style="text-align:left;width:30%;padding:2px 5px;">Type</th>';
+    myHtml += '                                    <th style="text-align:left;width:25%;padding:2px 5px;">Num</th>';
+    myHtml += '                                </tr>';
+    myHtml += '                            </thead>';
+    myHtml += '                            <tbody style="border:1px solid #ddd;">';
+    $(data['popd']).each(function (index, trpd) {
+        myHtml += '<tr style="border-bottom: 1px solid #ddd;">';
+        myHtml += '    <td style="width:20%;padding:2px 5px;">' + trpd.datec + '</td>';
+        myHtml += '    <td style="text-align:right;width:20%;padding:2px 5px;">$' + number_format(trpd.amount, 2, '.', ',') + '</td>';
+        myHtml += '    <td style="width:20%;padding:2px 5px;">' + trpd.paymenttype + '</td>';
+        myHtml += '    <td style="width:20%;padding:2px 5px;">' + trpd.num_payment + '</td>';
+        myHtml += '</tr>';
+        paid_amt += trpd.amount
+    });
+    myHtml += '                            </tbody>';
+    myHtml += '                        </table>';
+    myHtml += '                        </td>';
+    myHtml += '                    </tr>';
+
     myHtml += '                </table>';
     myHtml += '            </td>';
     myHtml += '            <td style="vertical-align: top; width:50%; padding:0px;">';
@@ -185,6 +217,14 @@ function printinvoice(id, result, is_mail, is_inv) {
     myHtml += '                        <td colspan="2" class="text-right" style="border-right: 1px solid #ddd; padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">Payment Terms (' + startingNumber + '%)</td>';
     myHtml += '                        <td class="text-right" style="padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">$' + number_format((total_net * (startingNumber / 100)), 2, '.', ',') + '</td>';
     myHtml += '                    </tr>';
+    myHtml += '                    <tr class="invoiceTotal" style="background-color: #f9f9f9;font-weight: 700;border-top: 1px solid #ddd;">';
+    myHtml += '                        <td colspan="2" class="text-right" style="border-right: 1px solid #ddd; padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">Paid</td>';
+    myHtml += '                        <td class="text-right" style="padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">$' + number_format(paid_amt, 2, '.', ',') + '</td>';
+    myHtml += '                    </tr>';
+    myHtml += '                    <tr class="invoiceTotal" style="background-color: #f9f9f9;font-weight: 700;border-top: 1px solid #ddd;">';
+    myHtml += '                        <td colspan="2" class="text-right" style="border-right: 1px solid #ddd; padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">Remaining Unpaid</td>';
+    myHtml += '                        <td class="text-right" style="padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">$' + number_format((total_net-paid_amt), 2, '.', ',') + '</td>';
+    myHtml += '                    </tr>';
     myHtml += '                </table>';
     myHtml += '            </td>';
     myHtml += '        </tr>';
@@ -196,7 +236,7 @@ function printinvoice(id, result, is_mail, is_inv) {
     myHtml += '</tr > ';
     myHtml += '</table >';
 
-    $('#PrintModal .modal-body').append(myHtml);
+    $('#PrintModal .modal-body').empty().append(myHtml);
     let opt = { strValue1: data['po'][0].vendor_email, strValue2: data['po'][0].ref, strValue3: myHtml }
     if (opt.strValue1.length > 5 && is_mail) {
         $.ajax({
@@ -210,6 +250,7 @@ function printinvoice(id, result, is_mail, is_inv) {
 
 function getInvoicePrint(id) {
     if (id > 0) {
+        printmodal(true);
         var option = { strValue1: id };
         $.ajax({
             url: "/PurchaseOrder/GetPurchaseOrderPrint", type: "Get", beforeSend: function () { }, data: option,

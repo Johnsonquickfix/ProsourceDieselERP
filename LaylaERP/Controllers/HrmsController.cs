@@ -254,7 +254,6 @@ namespace LaylaERP.Controllers
         public JsonResult GetAttendanceReport(JqDataTableModel model)
         {
             string result = string.Empty;
-           
             try
             {
                 DataTable dt = HrmsRepository.GetAttendanceReport(model.strValue1, model.strValue2);

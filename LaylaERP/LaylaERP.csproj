@@ -955,6 +955,7 @@
     <Content Include="Views\Error\Error.cshtml" />
     <Content Include="Views\Accounting\AddPcgType.cshtml" />
     <Content Include="Views\Accounting\AccountBalance.cshtml" />
+    <Content Include="Views\Hrms\AttendanceReport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

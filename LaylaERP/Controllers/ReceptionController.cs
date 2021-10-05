@@ -157,5 +157,56 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(new { add = om.address, add1 = om.address1, city = om.City, state = om.State, zip = om.postal_code, country = om.Country, phone = om.user_mobile, email = om.email, website = om.website, data = JSONresult }, 0);
         }
+
+        [HttpGet]
+        public JsonResult GetPoClosureOrderDetailsList(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            try
+            {               
+                DataTable dt = ReceptionRepository.GetPoClosureOrderDetailsList(model.strValue1, model.strValue2, model.strValue3);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
+        [HttpPost]
+        public JsonResult GetPoClosureOrderDataList(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            try
+            {
+                DataTable dt = ReceptionRepository.GetPoClosureOrderDataList(model.strValue1, model.strValue2, model.strValue3);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
+
+        [HttpGet]
+        public JsonResult GetPartiallyDetailsList(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            try
+            {
+                DataTable dt = ReceptionRepository.GetPartiallyDetailsList(model.strValue1, model.strValue2, model.strValue3);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
+        [HttpPost]
+        public JsonResult GetPartiallyOrderDataList(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            try
+            {
+                DataTable dt = ReceptionRepository.GetPartiallyOrderDataList(model.strValue1, model.strValue2, model.strValue3);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
+
     }
 }

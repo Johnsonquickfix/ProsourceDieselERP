@@ -1,10 +1,48 @@
 ﻿$(document).ready(function () {
     $("#loader").hide(); $('.select2').select2();
     PurchaseOrderGrid();
-    PartiallyGrid();
-    PoClosureGrid();
+    //PartiallyGrid();
+    //PoClosureGrid();
+    PoPartiallyColleps();
+    PoClosureGridColleps();
+    
     $('#btnSearch').click(function () {
         PurchaseOrderGrid();
+    });
+
+
+    // Add event listener for opening and closing details
+    $('#dtdataPoClosure tbody').on('click', '.details-control', function () {
+        var tr = $(this).closest('tr');
+        var row = $('#dtdataPoClosure').DataTable().row(tr);
+        if (row.child.isShown()) {
+            // This row is already open - close it
+            tr.find('.details-control').empty().append('<i class="glyphicon glyphicon-plus-sign"></i>');
+            row.child.hide();
+            tr.removeClass('shown');
+        } else {
+            // Open this row
+            tr.find('.details-control').empty().append('<i class="glyphicon glyphicon-minus-sign"></i>');
+            row.child(format(row.data())).show();
+            tr.addClass('shown');
+        }
+    });
+
+    // Add event listener for opening and closing details
+    $('#dtdataPartially tbody').on('click', '.pdetails-control', function () {
+        var tr = $(this).closest('tr');
+        var row = $('#dtdataPartially').DataTable().row(tr);
+        if (row.child.isShown()) {
+            // This row is already open - close it
+            tr.find('.pdetails-control').empty().append('<i class="glyphicon glyphicon-plus-sign"></i>');
+            row.child.hide();
+            tr.removeClass('shown');
+        } else {
+            // Open this row
+            tr.find('.pdetails-control').empty().append('<i class="glyphicon glyphicon-minus-sign"></i>');
+            row.child(formatPartially(row.data())).show();
+            tr.addClass('shown');
+        }
     });
    
 });
@@ -237,6 +275,159 @@ function PoClosureGrid() {
         ]
       
     });
+}
+
+
+function PoClosureGridColleps() {   
+    let obj = { strValue1: $("#ddlSearchStatus").val() };// console.log(obj);
+    console.log(obj);
+    $('#dtdataPoClosure').DataTable({
+        oSearch: { "sSearch": '' }, bAutoWidth: false, scrollX: false,   
+        language: {
+            lengthMenu: "_MENU_ per page",
+            zeroRecords: "Sorry no records found",
+            info: "Showing <b>_START_ to _END_</b> (of _TOTAL_)",
+            infoFiltered: "",
+            infoEmpty: "No records found",
+            processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
+        },
+        destroy: true, ajax: {
+            url: '/Reception/GetPoClosureOrderDetailsList', type: 'GET', dataType: 'json', contentType: "application/json; charset=utf-8", data: obj,
+            dataSrc: function (data) { return JSON.parse(data); }
+        },
+        lengthMenu: [[10, 20, 50, 100], [10, 20, 50, 100]],
+        columns: [
+            { data: 'ref', title: 'Parent ID', sWidth: "8%" },
+            {
+                data: 'ref', title: 'PO No', sWidth: "8%", render: function (data, type, row) {
+                    //if (row.post_parent > 0) return '<a href="javascript:void(0);" class="details-control"><i class="glyphicon glyphicon-plus-sign"></i></a> ↳  #' + row.id; else return '<a href="javascript:void(0);" class="details-control"><i class="glyphicon glyphicon-plus-sign"></i></a> <b>#' + row.id + '</b>';
+                    return '<a href="javascript:void(0);" class="details-control" data-toggle="tooltip" title="Click here to show details."><i class="glyphicon glyphicon-plus-sign"></i></a> -  #' + row.ref + '<a href="#" onclick="getPurchaseOrderPrint(' + row.id + ', false);"><i class="fas fa-search-plus"></i></a>' ;
+                
+                  
+                }        
+            },
+
+            
+           
+            {
+                data: 'fk_projet', title: 'SO No.', sWidth: "10%", render: function (data, type, dtrow) {
+                    if (data > 0) return '#' + data; else return '';
+                }
+            },
+            { data: 'vendor_name', title: 'Vendor Name', sWidth: "15%" },
+            {
+                data: 'city', title: 'Address', sWidth: "20%", render: function (data, type, dtrow) {
+                    /*    let val = dtrow.address + ', ' + dtrow.town + ' ,' + dtrow.fk_state + ' ' + dtrow.zip;*/
+                    let val = dtrow.address + ', ' + dtrow.town + ', ' + dtrow.fk_state + ' ' + dtrow.zip;
+                    return val;
+                }
+            },
+ 
+            { data: 'date_livraison', title: 'Planned date of delivery', sWidth: "10%" },
+            { data: 'Status', title: 'Status', sWidth: "10%" }
+
+        ],
+        columnDefs: [{ targets: [0], visible: false, searchable: false }]
+    });
+}
+
+/* Formatting function for row details - modify as you need */
+function format(d) {
+    console.log(d.ref);
+    let option = { strValue1: d.id }, wrHTML = '<table class="inventory-table table-blue table check-table table-bordered table-striped dataTable no-footer"><thead><tr><th style="width:12.2%; text-align:left;">Bill No</th><th style="width:20%; text-align:left;">Receive Date</th><th style="width:20%; text-align:right;">Amount</th></tr></thead>';
+    $.ajax({
+        url: '/Reception/GetPoClosureOrderDataList', type: 'post', dataType: 'json', contentType: "application/json; charset=utf-8", data: JSON.stringify(option),
+        success: function (result) {
+            result = JSON.parse(result);
+            if (result.length == 0) { wrHTML += '<tbody><tr><td valign="top" colspan="6" class="no-data-available">Sorry no matching records found.</td></tr></tbody>'; }
+            $(result).each(function (index, row) {
+           
+                wrHTML += '<tr><td style="width:12.2%; text-align:left;"> <a href="#" onclick="getInvoicePrint(' + row.RicD + '); "><i class="fas fa - search - plus"></i>' + row.refordervendor + '</a></td><td style="width:20%; text-align:left;">' + row.date_creation + '</td>';
+                wrHTML += '<td style="width:20%; text-align:right;">' + '$' + row.total_ttc + '</td></tr > ';
+            });
+        },
+        error: function (xhr, status, err) { alert(err); },
+        complete: function () { }, async: false
+    });
+    wrHTML += '</table>';
+    return wrHTML;
+}
+
+
+
+function PoPartiallyColleps() {
+    let obj = { strValue1: $("#ddlSearchStatus").val() };// console.log(obj);
+    console.log(obj);
+    $('#dtdataPartially').DataTable({
+        oSearch: { "sSearch": '' }, bAutoWidth: false, scrollX: false,
+        language: {
+            lengthMenu: "_MENU_ per page",
+            zeroRecords: "Sorry no records found",
+            info: "Showing <b>_START_ to _END_</b> (of _TOTAL_)",
+            infoFiltered: "",
+            infoEmpty: "No records found",
+            processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
+        },
+        destroy: true, ajax: {
+            url: '/Reception/GetPartiallyDetailsList', type: 'GET', dataType: 'json', contentType: "application/json; charset=utf-8", data: obj,
+            dataSrc: function (data) { return JSON.parse(data); }
+        },
+        lengthMenu: [[10, 20, 50, 100], [10, 20, 50, 100]],
+        columns: [
+            { data: 'ref', title: 'Parent ID', sWidth: "8%" },
+            {
+                data: 'ref', title: 'PO No', sWidth: "8%", render: function (data, type, row) {
+                    //if (row.post_parent > 0) return '<a href="javascript:void(0);" class="details-control"><i class="glyphicon glyphicon-plus-sign"></i></a> ↳  #' + row.id; else return '<a href="javascript:void(0);" class="details-control"><i class="glyphicon glyphicon-plus-sign"></i></a> <b>#' + row.id + '</b>';
+                   /* return '<a href="javascript:void(0);" class="pdetails-control" data-toggle="tooltip" title="Click here to show details."><i class="glyphicon glyphicon-plus-sign"></i></a> -  #' + row.ref + '<a href="NewReceiveOrder/' + row.RicD + '"><i class="glyphicon glyphicon-eye-open"></i> </a> <a href="#" onclick="getPurchaseOrderPrint(' + row.id + ', false);"><i class="fas fa-search-plus"></i></a>';*/
+
+                    return '<a href="javascript:void(0);" class="pdetails-control" data-toggle="tooltip" title="Click here to show details."><i class="glyphicon glyphicon-plus-sign"></i></a> -  #' + row.ref + '<a><i class="glyphicon glyphicon-eye-open"></i> </a> <a href="#" onclick="getPurchaseOrderPrint(' + row.id + ', false);"><i class="fas fa-search-plus"></i></a>';
+                }
+            },
+
+
+
+            {
+                data: 'fk_projet', title: 'SO No.', sWidth: "10%", render: function (data, type, dtrow) {
+                    if (data > 0) return '#' + data; else return '';
+                }
+            },
+            { data: 'vendor_name', title: 'Vendor Name', sWidth: "15%" },
+            {
+                data: 'city', title: 'Address', sWidth: "20%", render: function (data, type, dtrow) {
+                    /*    let val = dtrow.address + ', ' + dtrow.town + ' ,' + dtrow.fk_state + ' ' + dtrow.zip;*/
+                    let val = dtrow.address + ', ' + dtrow.town + ', ' + dtrow.fk_state + ' ' + dtrow.zip;
+                    return val;
+                }
+            },
+
+            { data: 'date_livraison', title: 'Planned date of delivery', sWidth: "10%" },
+            { data: 'Status', title: 'Status', sWidth: "10%" }
+
+        ],
+        columnDefs: [{ targets: [0], visible: false, searchable: false }]
+    });
+}
+
+/* Formatting function for row details - modify as you need */
+function formatPartially(d) {
+    console.log(d.ref);
+    let option = { strValue1: d.id }, wrHTML = '<table class="inventory-table table-blue table check-table table-bordered table-striped dataTable no-footer"><thead><tr><th style="width:12.2%; text-align:left;">Bill No</th><th style="width:20%; text-align:left;">Receive Date</th><th style="width:20%; text-align:right;">Amount</th></tr></thead>';
+    $.ajax({
+        url: '/Reception/GetPartiallyOrderDataList', type: 'post', dataType: 'json', contentType: "application/json; charset=utf-8", data: JSON.stringify(option),
+        success: function (result) {
+            result = JSON.parse(result);
+            if (result.length == 0) { wrHTML += '<tbody><tr><td valign="top" colspan="6" class="no-data-available">Sorry no matching records found.</td></tr></tbody>'; }
+            $(result).each(function (index, row) {
+
+                wrHTML += '<tr><td style="width:12.2%; text-align:left;"> <a href="#" onclick="getInvoicePrint(' + row.RicD + '); "><i class="fas fa - search - plus"></i>' + row.refordervendor + '</a></td><td style="width:20%; text-align:left;">' + row.date_creation + '</td>';
+                wrHTML += '<td style="width:20%; text-align:right;">' + '$' + row.total_ttc + '</td></tr > ';
+            });
+        },
+        error: function (xhr, status, err) { alert(err); },
+        complete: function () { }, async: false
+    });
+    wrHTML += '</table>';
+    return wrHTML;
 }
 
 function CheckAll() {

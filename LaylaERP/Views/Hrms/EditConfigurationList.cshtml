@@ -433,21 +433,23 @@
 <script>
     $(document).ready(function () {
         $("#loader").hide();
+        
+        //getEmployeeType();
+        var url = window.location.pathname;
+        var id = url.substring(url.lastIndexOf('/') + 1);
+
         getEmployeeCode();
         changename();
         getAccountingType();
         //getWorkType();
         changeHRA();
-        //getEmployeeType();
-        var url = window.location.pathname;
-        var id = url.substring(url.lastIndexOf('/') + 1);
-        EditSelect(id);
+        
         $(document).on('click', "#btnUpdate", function () {
             UpdateConfiguration();
         });
 
         $(".select2").select2();
-        //setTimeout(function () { $(".select2").select2(); }, 2000);
+        setTimeout(function () { EditSelect(id);}, 5000);
 
     });
 </script>

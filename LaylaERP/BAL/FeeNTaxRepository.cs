@@ -173,7 +173,7 @@ namespace LaylaERP.BAL
             DataTable DT = new DataTable();
             try
             {
-                DT = SQLHelper.ExecuteDataTable("select distinct State, StateFullName,StateFullName from ZIPCodes1 where StateFullName like '%" + strSearch + "%' order by StateFullName limit 50;");
+                DT = SQLHelper.ExecuteDataTable("select distinct State, StateFullName,StateFullName from ZIPCodes1 where StateFullName like '" + strSearch + "%' order by StateFullName limit 50;");
             }
             catch (Exception ex)
             { throw ex; }

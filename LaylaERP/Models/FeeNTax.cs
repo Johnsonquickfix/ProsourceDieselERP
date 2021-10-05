@@ -20,5 +20,9 @@ namespace LaylaERP.Models
         public string country { get; set; }
         public string recyclefee { get; set; }
         public List<FeeNTax> lst { get; set; }
+        public int is_taxable { get; set; }
+        public int is_active { get; set; }
+        public string taxableshow { get; set; }
+        public string activeshow { get; set; }
     }
 }

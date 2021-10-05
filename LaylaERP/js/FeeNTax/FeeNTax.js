@@ -23,7 +23,7 @@
 
 function Datagrid() {
 
-    var id;
+    var s = $("#ddlSearchStatus").val();
     $('#dtdata').DataTable({
         destroy: true,
         scrollX: true,
@@ -32,7 +32,7 @@ function Datagrid() {
             "url": "/FeeNTax/GetFeeNTaxList",
             "type": 'GET',
             "dataType": 'json',
-            data: {},
+            data: { status: s },
             contentType: "application/json; charset=utf-8",
         },
         lengthMenu: [[10, 20, 50, 100], [10, 20, 50, 100]],
@@ -41,10 +41,10 @@ function Datagrid() {
             { 'data': 'id', 'sWidth': "8%" },
             { 'data': 'recyclefee', 'sWidth': "15%" },
             { 'data': 'item_name', 'sWidth': "20%" },
-            { 'data': 'city', 'sWidth': "10%" },
             { 'data': 'state', 'sWidth': "15%" },
-            { 'data': 'zip', 'sWidth': "10%" },
             { 'data': 'country', 'sWidth': "10%" },
+            { 'data': 'taxableshow', 'sWidth': "10%" },
+            { 'data': 'activeshow', 'sWidth': "10%" },
 
             {
                 'data': 'id', sWidth: "12%",
@@ -88,6 +88,8 @@ function AddFeeNTax() {
     Zip = $("#Ship_Zip_PostCode").val();
     Country = $("#shipcountry").val();
     item_parent_id = $("#Item_Name").val();
+    istaxable = $("#chktaxable").prop("checked") ? 1 : 0;
+    isactive = $("#chkactive").prop("checked") ? 1 : 0;
 
     if (Staterecyclefee == "") {
         swal('alert', 'Please Enter StateRecyclefee', 'error').then(function () { swal.close(); $('#StateRecycleFee').focus(); })
@@ -108,7 +110,7 @@ function AddFeeNTax() {
     else {
         var obj = {
             id: id, staterecyclefee: Staterecyclefee, item_name: Item_name, city: City, state: State, zip: Zip,
-            country: Country, item_parent_id: item_parent_id
+            country: Country, item_parent_id: item_parent_id, is_taxable: istaxable, is_active: isactive,
         }
         $.ajax({
             url: '/FeeNTax/StateRecycleTax/', dataType: 'json', type: 'Post',
@@ -121,7 +123,7 @@ function AddFeeNTax() {
             success: function (data) {
                 if (data.status == true) {
                     $('#parent > input:text').val('');
-                    swal('Alert!', data.message, 'success').then((result) => { location.href = 'Index'; });
+                    swal('Alert!', data.message, 'success').then((result) => { location.href = '../Index'; });
                 }
                 else {
                     swal('Alert!', data.message, 'error')
@@ -160,7 +162,9 @@ function GetFeeNTaxByID(id) {
             $("#shipstate").empty().append('<option value="' + i[0].state + '" selected>' + i[0].state + '</option>');
             $("#Item_Name").empty().append('<option value="' + i[0].item_parent_id + '" selected>' + i[0].item_name + '</option>');
             $("#Ship_Zip_PostCode").val(i[0].zip);
-            // $("#shipcountry").val(i[0].country);
+            i[0].is_taxable == true ? $("#chktaxable").prop("checked", true) : $("#chktaxable").prop("checked", false);
+            i[0].is_active == true ? $("#chkactive").prop("checked", true) : $("#chkactive").prop("checked", false);
+            $("#shipcountry").val(i[0].country).trigger('change');
             //  $('#Item_Name').val(i[0].item_name.trim()).trigger('change');
 
         },

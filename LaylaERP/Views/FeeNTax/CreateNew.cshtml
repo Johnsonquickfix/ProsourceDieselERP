@@ -12,7 +12,7 @@
     <span>&nbsp;&nbsp;Loading......</span>
 </div>
 <div class="page-title">
-    <h2 class="page-heading" id="lbltitle">Add New State Recycle Fee</h2>
+    <h2 class="page-heading" id="lbltitle">State Recycle Tax</h2><span title="Click Here To Back To List" data-placement="bottom" data-toggle="tooltip">@Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-danger" })</span>
 </div>
 <section class="content content-section p-0">
     <div class="box box-primary">
@@ -25,7 +25,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="control-label " for="StateRecycleFee ">State Recycle Fee </label>
+                            <label class="control-label " for="StateRecycleFee ">State Recycle Fee</label>
                             <div class="">
                                 <input type="text" id="StateRecycleFee" class="form-control" placeholder="State Recycle Fee " />
                             </div>
@@ -59,29 +59,45 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label " for="Ship_Zip_PostCode">ShipZip/PostCode</label>
+                            <label class="control-label " for="Ship_Zip_PostCode">Ship Zip Code</label>
                             <div class="">
-                                <input type="text" id="Ship_Zip_PostCode" class="form-control" placeholder="ShipZip/PostCode" />
+                                <input type="text" id="Ship_Zip_PostCode" class="form-control" placeholder="Ship Zip Code" />
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label " for="ShipState">Ship Country</label>
                             <div class="">
+                                @*<Select class="form-control" id="shipcountry">
+                                    <option value="US - United States" selected>US</option>
+                                    <option value="CA - Canada">CA</option>
+                                </Select>*@
                                 <Select class="form-control" id="shipcountry">
-                                    <option value="US - United States" selected>US - United States</option>
-                                    <option value="CA - Canada">CA - Canada</option>
+                                    <option value="US" selected>US</option>
+                                    <option value="CA">CA</option>
                                 </Select>
                             </div>
                         </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <div class="">
+                                    <input type="checkbox" id="chktaxable" name="istaxable" /><label for="taxable">Taxable</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                          <div class="form-group">
+                            <div class="">
+                                <input type="checkbox" id="chkactive" name="isactive" /><label for="active">Active</label>
+                            </div>
+                          </div>
+                        </div>
                     </div>
-                </div>
+                    </div>
             </div>
         </div>
         <div class="box-footer">
             <div class="text-right">
                 <input type="submit" value="Submit" id="btnSave" class="btn btn-danger" />
-
-                @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-danger" })
             </div>
         </div>
         <!-- /.row -->
@@ -102,9 +118,9 @@
         });
 
         $("#shipcity").select2({
-            allowClear: true, minimumInputLength: 3, placeholder: "Search City",
+            allowClear: true, minimumInputLength: 2, placeholder: "Search City",
             ajax: {
-                url: '/Users/GetCity', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+                url: '/FeeNTax/GetCity', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
                 data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
                 processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.City, name: item.City, id: item.City } }) }; },
                 error: function (xhr, status, err) { }, cache: true
@@ -112,11 +128,11 @@
         });
 
         $("#shipstate").select2({
-            allowClear: true, minimumInputLength: 3, placeholder: "Search State",
+            allowClear: true, minimumInputLength: 2, placeholder: "Search State",
             ajax: {
-                url: '/Users/GetState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+                url: '/FeeNTax/GetState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
                 data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
-                processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.StateFullName, name: item.StateFullName, id: item.StateFullName } }) }; },
+                processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.StateFullName, name: item.StateFullName, id: item.State } }) }; },
                 error: function (xhr, status, err) { }, cache: true
             }
         });

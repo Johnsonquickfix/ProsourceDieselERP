@@ -41,16 +41,15 @@ namespace LaylaERP.Controllers
             {
 
                 FNT.EditFeeNTaxStatus(model);
-                return Json(new { status = true, message = "Customer Record has been updated successfully!!", url = "" }, 0);
+                return Json(new { status = true, message = "State Recycle Fee has been updated successfully!!", url = "" }, 0);
             }
             else
             {
                 // int ID = Repo.AddNewCustomer(model);
 
                 FNT.AddFeeNTax(model);
-
                 ModelState.Clear();
-                return Json(new { status = true, message = "Customer Record has been saved successfully!!", url = "" }, 0);
+                return Json(new { status = true, message = "State Recycle Fee has been saved successfully!!", url = "" }, 0);
 
 
             }
@@ -78,7 +77,7 @@ namespace LaylaERP.Controllers
             {
 
                 FNT.EditFeeNTaxStatus(model);
-                return Json(new { status = true, message = "Customer Status has been updated successfully!!", url = "" }, 0);
+                return Json(new { status = true, message = " State Recycle Fee has been updated successfully!!", url = "" }, 0);
 
             }
             return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
@@ -136,10 +135,23 @@ namespace LaylaERP.Controllers
         //}
 
         [HttpGet]
-        public JsonResult GetFeeNTaxList()
+        public JsonResult GetFeeNTaxList(string status)
         {
-            FeeNTaxRepository.GetFeeNTaxList();
+            FeeNTaxRepository.GetFeeNTaxList(status);
             return Json(new { data = FeeNTaxRepository.FeeNTaxlist }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public JsonResult GetState(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable DT = FeeNTaxRepository.GetState(model.strValue1);
+                JSONresult = JsonConvert.SerializeObject(DT);
+            }
+            catch { }
+            return Json(JSONresult, 0);
         }
 
     }

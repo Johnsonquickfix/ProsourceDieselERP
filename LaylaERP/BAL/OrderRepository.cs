@@ -1223,7 +1223,7 @@
             List<OrderProductsModel> _list = new List<OrderProductsModel>();
             try
             {
-                string base_path = Net.Host + "/Content/Product/";
+                string base_path = "http://40.114.51.80" + "/Content/Product/";
                 OrderProductsModel productsModel = new OrderProductsModel();
                 MySqlParameter[] parameters =
                 {

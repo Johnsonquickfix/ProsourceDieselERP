@@ -1,1 +1,71 @@
-﻿
+﻿@{
+    ViewBag.Title = "PodiumStatus";
+    Layout = null;
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="~/Images/layla32.png">
+    <title>PodiumStatus</title>
+    <!-- jQuery -->
+    <script src="~/Content/AdminLTE-3.1.0/jquery/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            let d = new Date(), d1 = new Date(d - (8 * 3600));
+            console.log(d, d - (8 * 3600), d1);
+            //$end_time = date('Y-m-d H:i:s', time() - 7 * 3600);
+
+            //var urlParams = new URLSearchParams(window.location.search);
+            //let action = urlParams.get('action'), start_date = urlParams.get('start_date'), end_date = urlParams.get('end_date');
+
+        });
+        //Check podium Payment Status.
+        function podiumPaymentStatus(oid, podium_id, email) {
+            let option = { strValue1: 'getToken' }; let create_url = podium_baseurl + '/v4/invoices/' + podium_id;
+            swal.queue([{
+                title: 'Payment Status', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,
+                onOpen: () => {
+                    swal.showLoading();
+                    $.get('/Setting/GetPodiumToken', option).then(response => {
+                        let access_token = response.message;
+                        $.ajax({
+                            type: 'get', url: create_url, contentType: "application/json; charset=utf-8", dataType: "json", data: { locationUid: "6c2ee0d4-0429-5eac-b27c-c3ef0c8f0bc7" },
+                            beforeSend: function (xhr) { xhr.setRequestHeader("Accept", "application/json"); xhr.setRequestHeader("Authorization", "Bearer " + access_token); }
+                        }).then(response => {
+                            let status = response.data.status.toUpperCase();
+                            if (status == 'PAID') {
+                                let payment_uid = response.data.payments[0].uid, location_uid = response.data.location.uid, invoiceNumber = response.data.invoiceNumber;
+                                let order_note = 'Payment completed through Podium by ' + response.data.customerName + ' on ';
+                                swal.queue([{
+                                    title: status, confirmButtonText: 'Yes, Update it!', text: "You Payment has been received. Do you want to update your status?", showLoaderOnConfirm: true, showCloseButton: true, showCancelButton: true,
+                                    preConfirm: function () {
+                                        return new Promise(function (resolve) {
+                                            let opt = { post_id: oid, payment_uid: payment_uid, location_uid: location_uid, invoice_number: invoiceNumber, order_note: order_note };
+                                            $.post('/Orders/UpdatePodiumPaymentAccept', opt)
+                                                .done(function (data) {
+                                                    if (data.status) {
+                                                        swal.insertQueueStep('Status updated successfully.'); order_Split(oid, email); $('#dtdata').DataTable().ajax.reload();
+                                                    }
+                                                    else { swal.insertQueueStep(data.message); }
+                                                    resolve();
+                                                });
+                                        });
+                                    }
+                                }]);
+                            }
+                            else { swal.hideLoading(); swal(status, 'Request has sent for payment.', 'info'); }
+                        }).catch(err => { swal.hideLoading(); console.log(err); swal('Error!', 'No invoice for the invoice UID.', 'error'); });
+                    }).catch(err => { swal.hideLoading(); swal('Error!', 'Something went wrong, please try again.', 'error'); }).always(function () { swal.hideLoading(); });
+                }
+            }]);
+        }
+    </script>
+</head>
+<body>
+
+</body>
+</html>

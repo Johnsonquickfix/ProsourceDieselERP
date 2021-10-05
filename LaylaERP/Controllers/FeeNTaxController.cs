@@ -141,6 +141,19 @@ namespace LaylaERP.Controllers
             return Json(new { data = FeeNTaxRepository.FeeNTaxlist }, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpPost]
+        public JsonResult GetState(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable DT = FeeNTaxRepository.GetState(model.strValue1);
+                JSONresult = JsonConvert.SerializeObject(DT);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+
     }
 }
 

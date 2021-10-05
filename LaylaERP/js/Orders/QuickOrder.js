@@ -2028,7 +2028,7 @@ function PodiumPayment() {
 function updatePayment(oid, taskUid) {
     let _postMeta = [
         { post_id: oid, meta_key: '_payment_method', meta_value: 'podium' }, { post_id: oid, meta_key: '_payment_method_title', meta_value: 'Podium Order' },
-        { post_id: oid, meta_key: 'taskuidforsms', meta_value: taskUid }, { post_id: oid, meta_key: '_podium_status', meta_value: 'SENT' }
+        { post_id: oid, meta_key: '_podium_uid', meta_value: taskUid }, { post_id: oid, meta_key: 'taskuidforsms', meta_value: taskUid }, { post_id: oid, meta_key: '_podium_status', meta_value: 'SENT' }
     ];
     let opt = { OrderPostMeta: _postMeta };
     $.post('/Orders/UpdatePaymentInvoiceID', opt).then(response => {

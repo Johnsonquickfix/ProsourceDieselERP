@@ -636,6 +636,20 @@
             catch { }
             return result;
         }
+        public static DataTable GetPodiumOrdersList()
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                MySqlParameter[] parameters = { };
+                string strSQl = "SELECT id,post_date,pm.meta_value podium_uid FROM wp_posts p inner join wp_postmeta pm on pm.post_id = p.id and pm.meta_key = '_podium_uid'"
+                                + " WHERE post_status = 'wc-pendingpodiuminv' AND post_type = 'shop_order' AND post_modified > DATE_SUB(now(), INTERVAL 3 DAY)";
+                dt = SQLHelper.ExecuteDataTable(strSQl, parameters);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dt;
+        }
         public static int UpdatePodiumStatus(OrderPodiumDetailsModel model)
         {
             int result = 0;
@@ -669,7 +683,7 @@
             }
             catch { }
             return result;
-        }
+        }        
         public static int UpdatePaypalStatus(OrderPostMetaModel model)
         {
             int result = 0;

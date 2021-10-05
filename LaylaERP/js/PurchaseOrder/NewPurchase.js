@@ -478,7 +478,7 @@ function getPurchaseOrderPayments(oid) {
                     let data = JSON.parse(result); let paid_amt = 0.00; let itemHtml = '';
                     $.each(data, function (key, row) {
                         paid_amt = paid_amt + parseFloat(row.amount);
-                        itemHtml = '<tr>';
+                        itemHtml += '<tr>';
                         itemHtml += '<td>' + row.datec + '</td>';
                         itemHtml += '<td class="text-right" data-amount="' + row.amount.toFixed(2) + '">$' + row.amount.toFixed(2) + '</td>';
                         itemHtml += '<td>' + row.paymenttype + '</td>';

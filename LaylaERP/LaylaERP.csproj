@@ -952,9 +952,18 @@
     <Content Include="Views\EmailSetting\ManageEmailNotifications.cshtml" />
     <Content Include="Views\Reception\PartiallyOrder.cshtml" />
     <Content Include="Views\Reception\POClosureOrder.cshtml" />
-    <Content Include="Views\Error\Error.cshtml" />
-    <Content Include="Views\Accounting\AddPcgType.cshtml" />
-    <Content Include="Views\Accounting\AccountBalance.cshtml" />
+    <Content Include="Views\EmailNotifications\Index.cshtml" />
+    <Content Include="Views\EmailNotifications\Processing.cshtml" />
+    <Content Include="Views\EmailNotifications\Completed.cshtml" />
+    <Content Include="Views\EmailNotifications\Cancel.cshtml" />
+    <Content Include="Views\EmailNotifications\Failed.cshtml" />
+    <Content Include="Views\EmailNotifications\Onhold.cshtml" />
+    <Content Include="Views\EmailNotifications\Refunded.cshtml" />
+    <Content Include="Views\EmailNotifications\Customerinvoice.cshtml" />
+    <Content Include="Views\EmailNotifications\Customernote.cshtml" />
+    <Content Include="Views\EmailNotifications\Resetpassword.cshtml" />
+    <Content Include="Views\EmailNotifications\Newaccount.cshtml" />
+    <Content Include="Views\EmailNotifications\Giftcard.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

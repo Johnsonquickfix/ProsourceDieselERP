@@ -16,9 +16,20 @@
 <script src="~/Content/AdminLTE-3.1.0/datatables/datatables.min.js" type="text/javascript"></script>
 <script src="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/js/dataTables.bootstrap4.min.js" type="text/javascript"></script>
 <div class="page-title">
-    <h2 class="page-heading">State Recycle Tax</h2> <a class="btn btn-danger" id="btnAdd" href="CreateNew">Create New</a>
+    <h2 class="page-heading">State Recycle Tax</h2> <a class="btn btn-danger" id="btnAdd" href="CreateNew"><span title="Click Here To Add State Recycle Tax" data-placement="bottom" data-toggle="tooltip">Create New</span></a>
 </div>
 <section class="content content-section p-0 feentax-section table-design">
+    <div class="user-top-section">
+        <div class="tablenav top tablenav-top2">
+            <div class="alignleft actions bulkactions">
+                <select class="form-control" id="ddlSearchStatus" placeholder="Select User">
+                    <option value="1">Active</option>
+                    <option value="0">Inactive</option>
+                </select>
+                <button type="button" id="btnSearch" class="btn btn-primary btn-flat button"><span title="Click Here To Search Active/Inactive State Recycle Tax" data-placement="bottom" data-toggle="tooltip">Search</span></button>
+            </div>
+        </div>
+    </div>
     <div class="row">
         <div class="col-md-12">
             <div class="box box-primary">
@@ -29,10 +40,10 @@
                                 <th>ID</th>
                                 <th>State Recycle Fee</th>
                                 <th>Product Name</th>
-                                <th>Ship City</th>
                                 <th>Ship State</th>
-                                <th>ShipZip</th>
                                 <th>Ship Country</th>
+                                <th>Taxable</th>
+                                <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -49,12 +60,14 @@
 
 
     <script>
-
         $(document).ready(function () {
             var loc = window.location.pathname;
             CheckPermissions("#btnAdd", "#hfEdit", "", loc);
 
             setTimeout(function () { Datagrid(); }, 2000);
+            $("#btnSearch").click(function () {
+                Datagrid();
+            });
 
         });
 

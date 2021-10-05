@@ -18,7 +18,7 @@ namespace LaylaERP.BAL
             {
                 //string strsql = "INSERT INTO wp_usermeta(user_id,meta_key,meta_value) VALUES(@user_id,@meta_key,@meta_value)";
 
-                string strsql = "INSERT INTO wp_staterecyclefee( staterecyclefee, item_parent_id, item_name, city, state, zip, country) VALUES (@staterecyclefee,@item_parent_id,@item_name,@city,@state,@zip,@country)";
+                string strsql = "INSERT INTO wp_staterecyclefee( staterecyclefee, item_parent_id, item_name, city, state, zip, country, is_taxable, is_active) VALUES (@staterecyclefee,@item_parent_id,@item_name,@city,@state,@zip,@country,@is_taxable,@is_active)";
                 MySqlParameter[] para =
                 {
 
@@ -29,7 +29,8 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@state", model.state),
                     new MySqlParameter("@zip", model.zip),
                     new MySqlParameter("@country", model.country),
-
+                    new MySqlParameter("@is_taxable",model.is_taxable),
+                    new MySqlParameter("@is_active",model.is_active),
                 };
                 SQLHelper.ExecuteNonQuery(strsql, para);
             }
@@ -45,7 +46,7 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "update wp_staterecyclefee set staterecyclefee= @staterecyclefee,item_parent_id=@item_parent_id,item_name=@item_name,city=@city,state=@state,zip=@zip,country=@country where id=@id ";
+                string strsql = "update wp_staterecyclefee set staterecyclefee= @staterecyclefee,item_parent_id=@item_parent_id,item_name=@item_name,city=@city,state=@state,zip=@zip,country=@country, is_taxable=@is_taxable, is_active=@is_active where id=@id ";
                 MySqlParameter[] para =
                 {
                      new MySqlParameter("@staterecyclefee", model.staterecyclefee),
@@ -56,6 +57,8 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@zip", model.zip),
                     new MySqlParameter("@country", model.country),
                     new MySqlParameter("@id", model.id),
+                    new MySqlParameter("@is_taxable",model.is_taxable),
+                    new MySqlParameter("@is_active",model.is_active),
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
                 return result;
@@ -74,7 +77,7 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "SELECT id, staterecyclefee, item_parent_id, item_name, city, state, zip, country FROM wp_staterecyclefee where id='" + model.id + "'";
+                string strSql = "SELECT id, staterecyclefee, item_parent_id, item_name, city, state, zip, country, is_taxable, is_active FROM wp_staterecyclefee where id='" + model.id + "'";
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
@@ -100,14 +103,14 @@ namespace LaylaERP.BAL
             return dtr;
         }
 
-        public static void GetFeeNTaxList()
+        public static void GetFeeNTaxList(string status)
         {
 
             try
             {
                 FeeNTaxlist.Clear();
                 DataSet ds1 = new DataSet();
-                string sqlquery = "SELECT id, staterecyclefee, item_parent_id, item_name, city, state, zip, country FROM wp_staterecyclefee WHERE 1";
+                string sqlquery = "SELECT id, staterecyclefee, item_parent_id, concat(item_parent_id,' - ',item_name) as item_name, city, state, zip, country, if(is_taxable=0,'No','Yes') as is_taxable, if(is_active=1,'Active','Inactive') as is_active FROM wp_staterecyclefee WHERE is_active='"+status+"'";
 
                 ds1 = DAL.SQLHelper.ExecuteDataSet(sqlquery);
                 string result = string.Empty;
@@ -127,6 +130,8 @@ namespace LaylaERP.BAL
                     uobj.state = ds1.Tables[0].Rows[i]["state"].ToString();
                     uobj.zip = ds1.Tables[0].Rows[i]["zip"].ToString();
                     uobj.country = ds1.Tables[0].Rows[i]["country"].ToString();
+                    uobj.taxableshow = ds1.Tables[0].Rows[i]["is_taxable"].ToString();
+                    uobj.activeshow = ds1.Tables[0].Rows[i]["is_active"].ToString();
                     //Code For Role End
                     FeeNTaxlist.Add(uobj);
                 }

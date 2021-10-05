@@ -308,7 +308,7 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
-        //Get Purchase order
+        //Get Purchase order Print 
         public static DataSet GetPurchaseOrder(long id)
         {
             DataSet ds = new DataSet();
@@ -324,8 +324,16 @@ namespace LaylaERP.BAL
                                 + " select rowid,fk_purchase,fk_product,ref product_sku,description,qty,discount_percent,discount,subprice,total_ht,tva_tx,localtax1_tx,localtax1_type,"
                                 + " localtax2_tx,localtax2_type,total_tva,total_localtax1,total_localtax2,total_ttc,product_type,DATE_FORMAT(date_start, '%m/%d/%Y') date_start,DATE_FORMAT(date_end, '%m/%d/%Y') date_end,rang"
                                 + " from commerce_purchase_order_detail where fk_purchase = @po_id order by product_type,rowid;";
+                strSql += "select date_format(datec,'%Y%m%d%k%i%s') sn,date_format(datec,'%m/%d/%Y') datec,ep.ref,epi.type,pt.paymenttype,epi.amount,num_payment from erp_payment_invoice epi"
+                                + " inner join erp_payment ep on ep.rowid = epi.fk_payment inner join wp_PaymentType pt on pt.id = ep.fk_payment"
+                                + " where epi.fk_invoice = @po_id and type = 'PO'"
+                                + " union all"
+                                + " select date_format(datec,'%Y%m%d%k%i%s') sn,date_format(datec, '%m/%d/%Y') datec,ep.ref, epi.type,pt.paymenttype,epi.amount,num_payment from commerce_purchase_receive_order_detail rod"
+                                + " inner join erp_payment_invoice epi on rod.fk_purchase_re = epi.fk_invoice"
+                                + " inner join erp_payment ep on ep.rowid = epi.fk_payment inner join wp_PaymentType pt on pt.id = ep.fk_payment"
+                                + " where rod.fk_purchase = @po_id and type = 'PR' group by epi.fk_payment,ep.ref;";
                 ds = SQLHelper.ExecuteDataSet(strSql, para);
-                ds.Tables[0].TableName = "po"; ds.Tables[1].TableName = "pod";
+                ds.Tables[0].TableName = "po"; ds.Tables[1].TableName = "pod"; ds.Tables[2].TableName = "popd";
             }
             catch (Exception ex)
             {

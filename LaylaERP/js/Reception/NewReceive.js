@@ -5,6 +5,7 @@
     getVendor(); getMasters();
     getPurchaseOrderInfo()
     getwarehaouseid();
+    getPurchasehistory();
 
     $("#ddlVendor").change(function () {
         let today = new Date();
@@ -226,7 +227,7 @@ function removeItems(id) {
         });
 }
 function calculateFinal() {
-    let tGrossAmt = 0.00, tDisAmt = 0.00, tTax_Amt1 = 0.00, tTax_Amt2 = 0.00, tNetAmt = 0.00, status = 0, tquty = 0, tpquty = 0;
+    let tGrossAmt = 0.00, tDisAmt = 0.00, tTax_Amt1 = 0.00, tTax_Amt2 = 0.00, tNetAmt = 0.00, status = 0, tquty = 0, tpquty = 0, tproduct = 0, torder = 0, trecve = 0, tremaning = 0 ;
     //main item
     $("#line_items > tr.paid_item").each(function (index, row) {
         let rPrice = 0.00, rQty = 0.00, rDisPer = 0.00, rGrossAmt = 0.00, rDisAmt = 0.00, rTax1 = 0.00, rTax_Amt1 = 0.00, rTax2 = 0.00, rTax_Amt2 = 0.00, rNetAmt = 0.00, rpQty = 0.00, prvQty = 0.00, totalqty = 0.00;
@@ -238,28 +239,32 @@ function calculateFinal() {
         rTax1 = parseFloat($(row).find(".tax-amount").data('tax1')) || 0.00; rTax2 = parseFloat($(row).find(".tax-amount").data('tax2')) || 0.00;
 
         totalqty = rQty + prvQty;
-      
+
+        tproduct += 1;
+        torder += rpQty;
+        trecve += prvQty;
+        tremaning += rQty;
         //if (rQty == 0) {
         //    swal('Alert!', "Receive quantity should not be zero", "error");
         //    parseFloat($(row).find("[name=txt_itemRecqty]").val(1.00));
         //}
       // else if (totalqty > rpQty) {
-        if (totalqty > rpQty) {
-            swal('Alert!', "you can't receive greater quantity form  actual quantity", "error");
-            parseFloat($(row).find("[name=txt_itemRecqty]").val(0.00));
-            tpquty += prvQty;
-        }
-        else {
+       /// if (totalqty > rpQty) {
+           // swal('Alert!', "you can't receive greater quantity form  actual quantity", "error");
+          //  parseFloat($(row).find("[name=txt_itemRecqty]").val(0.00));
+           // tpquty += prvQty;
+        //}
+        //else {
             rGrossAmt = rPrice * rQty; rDisAmt = rGrossAmt * (rDisPer / 100);
             rTax_Amt1 = rTax1 * rQty; rTax_Amt2 = rTax2 * rQty;
             rNetAmt = (rGrossAmt - rDisAmt) + rTax_Amt1 + rTax_Amt2;
             $(row).find(".tax-amount").text(rTax_Amt1.toFixed(2)); $(row).find(".ship-amount").text(rTax_Amt2.toFixed(2)); $(row).find(".row-total").text(rNetAmt.toFixed(2));
             tGrossAmt += rGrossAmt, tDisAmt += rDisAmt, tTax_Amt1 += rTax_Amt1, tTax_Amt2 += rTax_Amt2, tNetAmt += rNetAmt;
        
-            tpquty += totalqty;
+            //tpquty += totalqty;
            
-        }
-        tquty += rpQty;
+        //}
+        //tquty += rpQty;
        // console.log('A', tquty);
        // console.log('R', tpquty);
     });
@@ -280,8 +285,13 @@ function calculateFinal() {
     $("#shippingTotal").text(tTax_Amt2.toFixed(2));
     $("#orderTotal").html(tNetAmt.toFixed(2));
 
-    $("#QtyTotal").html(tquty.toFixed(2));
-    $("#QtyRecTotal").html(tpquty.toFixed(2));
+    $("#Totalqty").html(tproduct);
+    $("#Totalorder").html(torder);
+    $("#Totalrecived").html(trecve);
+    $("#Totalbalc").html(tremaning);
+
+    //$("#QtyTotal").html(tquty.toFixed(2));
+    //$("#QtyRecTotal").html(tpquty.toFixed(2));
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Add Other Product and Services ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function AddProductModal(proc_type, row_num) {
@@ -420,6 +430,12 @@ function getPurchaseOrderInfo() {
                         $('#ddlwarehousepo').val(data['po'][i].fk_warehouse).trigger('change');
                         $('#ddlWarehouse').val(data['po'][i].fk_warehouse).trigger('change');
                         $("#hfid").val(data['po'][i].rowid);
+                        $("#hfstatus").val(data['po'][i].fk_status);
+                        //console.log(data['po'][i].fk_status);
+                        if (data['po'][i].fk_status == "5")
+                            $("#btnpoclosed").show();
+                        else
+                            $("#btnpoclosed").hide();
                         if (!data['po'][i].date_livraison.includes('00/00/0000')) $('#txtPlanneddateofdelivery').val(data['po'][i].date_livraison);
 
                     }
@@ -428,13 +444,16 @@ function getPurchaseOrderInfo() {
                     for (let i = 0; i < data['pod'].length; i++) {
                         let itemHtml = '';
                         if (data['pod'][i].fk_product > 0) {
+                            let Remainingval = data['pod'][i].recbal.toFixed(0);
+                            if (Remainingval < 0)
+                                Remainingval = 0;
                             itemHtml = '<tr id="tritemid_' + data['pod'][i].fk_product + '" class="paid_item" data-pid="' + data['pod'][i].fk_product + '" data-pname="' + data['pod'][i].description + '" data-psku="' + data['pod'][i].product_sku + '" data-rowid="' + data['pod'][i].rowid + '">';
                             itemHtml += '<td class="text-center"><button class="btn p-0 text-red btnDeleteItem billinfo" onclick="removeItems(\'' + data['pod'][i].fk_product + '\');"> <i class="glyphicon glyphicon-trash"></i> </button></td>';
                             itemHtml += '<td>' + data['pod'][i].description + '</td><td>' + data['pod'][i].product_sku + '</td>';
                             itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemprice_' + data['pod'][i].fk_product + '" value="' + data['pod'][i].subprice.toFixed(2) + '" name="txt_itemprice" placeholder="Price"></td>';
                             itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemqty_' + data['pod'][i].fk_product + '" value="' + data['pod'][i].qty.toFixed(0) + '" name="txt_itemqty" placeholder="Qty."></td>';
-                            itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itembalqty_' + data['pod'][i].fk_product + '" value="' + data['pod'][i].recbal.toFixed(0) + '" name="txt_itembalqty" placeholder="BalQty."></td>';
-                            itemHtml += '<td><input min="1" autocomplete="off" class="form-control billinfofo number rowCalulate" type="number" id="txt_itemRecqty_' + data['pod'][i].fk_product + '" value="' + data['pod'][i].recbal.toFixed(0) + '" name="txt_itemRecqty" placeholder="RecQty."></td>';
+                            itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itembalqty_' + data['pod'][i].fk_product + '" value="' + data['pod'][i].treceved.toFixed(0) + '" name="txt_itembalqty" placeholder="BalQty."></td>';
+                            itemHtml += '<td><input min="1" autocomplete="off" class="form-control billinfofo number rowCalulate" type="number" id="txt_itemRecqty_' + data['pod'][i].fk_product + '" value="' + Remainingval + '" name="txt_itemRecqty" placeholder="RecQty."></td>';
                             itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemdisc_' + data['pod'][i].fk_product + '" value="' + data['pod'][i].discount_percent.toFixed(2) + '" name="txt_itemdisc" placeholder="Discount"></td>';
                             itemHtml += '<td class="text-right tax-amount" data-tax1="' + data['pod'][i].localtax1_tx + '" data-tax2="' + data['pod'][i].localtax2_tx + '">' + data['pod'][i].total_localtax1.toFixed(2) + '</td>';
                             itemHtml += '<td class="text-right ship-amount">' + data['pod'][i].total_localtax2.toFixed(2) + '</td>';
@@ -543,12 +562,12 @@ function saveVendorPO() {
     let location_incoterms = $("#txtIncoTerms").val();
     let note_public = $("#txtNotePublic").val();
     let note_private = $("#txtNotePrivate").val();
-    let statusqty = parseInt($("#QtyTotal").text()) || 0;
-    let statustotalqty = parseInt($("#QtyRecTotal").text()) || 0;
+    //let statusqty = parseInt($("#QtyTotal").text()) || 0;
+    //let statustotalqty = parseInt($("#QtyRecTotal").text()) || 0;
     let status = 0;
-    if (statusqty == statustotalqty)
-        status = 6;
-    else
+    //if (statusqty == statustotalqty)
+    //    status = 6;
+    //else
         status = 5;
 
     let _list = createItemsList();
@@ -587,4 +606,64 @@ function saveVendorPO() {
             error: function (error) { swal('Error!', 'something went wrong', 'error'); },
         });
     }
+}
+
+
+$(document).on("click", "#btnpoclosed", function (t) {
+    t.preventDefault(); updatepocloser();
+});
+function updatepocloser() {
+    let IDRecVal = parseInt($("#hfid").val()) || 0;
+    status = 6;    
+        let option = {IDRec: IDRecVal,fk_status: status } 
+        $.ajax({
+            url: '/Reception/UpdateStatusReceptionPurchase', dataType: 'json', type: 'post', contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(option),
+            beforeSend: function () { $("#loader").show(); },
+            success: function (data) {
+                if (data.status == true) {
+                    swal('Alert!', data.message, 'success').then((result) => { location.href = '../ReceiveOrder'; });
+                }
+                else {
+                    swal('Alert!', data.message, 'error')
+                }
+            },
+            complete: function () { $("#loader").hide(); },
+            error: function (error) { swal('Error!', 'something went wrong', 'error'); },
+        });
+}
+
+function getPurchasehistory() {
+    let oid = parseInt($('#lblPoNo').data('id')) || 0;
+    if (oid > 0) {       
+        var option = { strValue1: oid };
+        $.ajax({
+            url: "/Reception/GetPurchaseHistory", type: "Get", beforeSend: function () { $("#loader").show(); }, data: option,
+            success: function (result) {
+                try {
+                    let data = JSON.parse(result);
+                    console.log(result);
+                    let itemHtml = '';
+                    if (data['pod'].length > 0) {
+                        for (let i = 0; i < data['pod'].length; i++) {
+                            itemHtml += '<tr id="tritemId_' + data['pod'][i].rowid + '" data-key="' + data['pod'][i].rowid + '">';
+                            itemHtml += '<td>' + data['pod'][i].description + '</td>';
+                            itemHtml += '<td>' + data['pod'][i].date_creation + '</td>';
+                            itemHtml += '<td>' + data['pod'][i].recqty + '</td>';
+                            itemHtml += '</tr>';
+
+                        }
+                        $('#product_history').empty().append(itemHtml);
+                    }                    
+                }
+                catch (error) {
+                    $("#loader").hide(); swal('Alert!', "something went wrong.", "error");
+                }
+            },
+            complete: function () { $("#loader").hide(); },
+            error: function (xhr, status, err) { $("#loader").hide(); swal('Alert!', "something went wrong.", "error"); }, async: false
+        });
+       
+    }
+    
 }

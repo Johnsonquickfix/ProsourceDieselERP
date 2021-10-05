@@ -189,7 +189,7 @@ namespace LaylaERP.BAL
                 //  + " inner join wp_vendor v on p.fk_supplier = v.rowid inner join wp_StatusMaster s on p.fk_status = s.ID where p.fk_status= 6 and 1 = 1";
 
 
-                string strSql = "Select distinct  p.rowid RicD, p.fk_purchase id,(select ref from commerce_purchase_order where rowid = p.fk_purchase) ref,(select fk_projet from commerce_purchase_order where rowid = p.fk_purchase) fk_projet,v.SalesRepresentative request_author,v.name vendor_name,v.address,v.town,v.fk_country,v.fk_state,v.zip,v.phone,DATE_FORMAT(p.date_livraison, '%m/%d/%Y') date_livraison, s.Status from commerce_purchase_receive_order p "
+                string strSql = "Select distinct  p.fk_purchase id,(select ref from commerce_purchase_order where rowid = p.fk_purchase) ref,(select fk_projet from commerce_purchase_order where rowid = p.fk_purchase) fk_projet,v.SalesRepresentative request_author,v.name vendor_name,v.address,v.town,v.fk_country,v.fk_state,v.zip,v.phone,DATE_FORMAT(p.date_livraison, '%m/%d/%Y') date_livraison, s.Status from commerce_purchase_receive_order p "
              + "inner join wp_vendor v on p.fk_supplier = v.rowid "
              + "inner join wp_StatusMaster s on p.fk_status = s.ID where p.fk_status= 5 and 1 = 1";
 
@@ -238,9 +238,29 @@ namespace LaylaERP.BAL
                 MySqlParameter[] para = { new MySqlParameter("@po_id", id), };
                 string strSql = "select rowid,ref,ref_ext,ref_supplier,fk_supplier,fk_warehouse,fk_status,source,fk_payment_term,fk_balance_days,fk_payment_type,DATE_FORMAT(date_livraison,'%m/%d/%Y') date_livraison,"
                                 + " fk_incoterms,location_incoterms,note_private,note_public,fk_user_author,DATE_FORMAT(date_creation,'%m/%d/%Y') date_creation from commerce_purchase_order where rowid = @po_id;"
-                                + " select rowid,fk_purchase,fk_product,ref product_sku,description,qty, (select IFNULL(sum(recqty),0) from  commerce_purchase_receive_order_detail  where fk_purchase = cprd.fk_purchase and fk_product =  cprd.fk_product ) recbal,discount_percent,discount,subprice,total_ht,tva_tx,localtax1_tx,localtax1_type,"
+                                + " select rowid,fk_purchase,fk_product,ref product_sku,description,qty,(select IFNULL(sum(recqty),0) from  commerce_purchase_receive_order_detail  where fk_purchase = cprd.fk_purchase and fk_product =  cprd.fk_product ) treceved ,qty-(select IFNULL(sum(recqty),0) from  commerce_purchase_receive_order_detail  where fk_purchase = cprd.fk_purchase and fk_product =  cprd.fk_product ) recbal,discount_percent,discount,subprice,total_ht,tva_tx,localtax1_tx,localtax1_type,"
                                 + " localtax2_tx,localtax2_type,total_tva,total_localtax1,total_localtax2,total_ttc,product_type,date_start,date_end,rang"
-                                + " from commerce_purchase_order_detail cprd where fk_purchase = @po_id;";
+                                + " from commerce_purchase_order_detail cprd where fk_product > 0 and fk_purchase = @po_id;";
+                ds = SQLHelper.ExecuteDataSet(strSql, para);
+                ds.Tables[0].TableName = "po"; ds.Tables[1].TableName = "pod";
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return ds;
+        }
+        public static DataSet GetPurchaseHistory(long id)
+        {
+            DataSet ds = new DataSet();
+            try
+            {
+                MySqlParameter[] para = { new MySqlParameter("@po_id", id), };
+                string strSql = "select fk_purchase from commerce_purchase_receive_order"
+                                + " where fk_purchase = @po_id;"
+                                + " select cprod.rowid,description,DATE_FORMAT(date_creation,'%m/%d/%Y') date_creation,recqty  from commerce_purchase_receive_order_detail  cprod"
+                                + " left outer join commerce_purchase_receive_order cpro on cpro.rowid = cprod.fk_purchase_re"
+                                + " where fk_product > 0 and cprod.fk_purchase = @po_id;";
                 ds = SQLHelper.ExecuteDataSet(strSql, para);
                 ds.Tables[0].TableName = "po"; ds.Tables[1].TableName = "pod";
             }
@@ -366,6 +386,24 @@ namespace LaylaERP.BAL
             return result;
         }
 
+
+        public long UpdateStatusReceptionPurchase(PurchaseReceiceOrderModel model)
+        {
+            long result = 0;
+            try
+            {
+                StringBuilder strupdate = new StringBuilder();
+                strupdate.Append(string.Format("update commerce_purchase_order set fk_status = '{0}' where rowid = '{1}'; ", model.fk_status, model.IDRec));
+                strupdate.Append(string.Format("update commerce_purchase_receive_order set fk_status = '{0}' where fk_purchase = '{1}' ", model.fk_status, model.IDRec));
+                SQLHelper.ExecuteNonQueryWithTrans(strupdate.ToString());  
+                result = model.RowID;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+            return result;
+        }
 
         public static DataSet GetPurchaseOrder(long id)
         {

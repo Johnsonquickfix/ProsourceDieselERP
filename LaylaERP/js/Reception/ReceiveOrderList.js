@@ -299,7 +299,7 @@ function PoClosureGridColleps() {
         columns: [
             { data: 'ref', title: 'Parent ID', sWidth: "8%" },
             {
-                data: 'ref', title: 'PO No', sWidth: "8%", render: function (data, type, row) {
+                data: 'ref', title: 'PO No', sWidth: "10%", render: function (data, type, row) {
                     //if (row.post_parent > 0) return '<a href="javascript:void(0);" class="details-control"><i class="glyphicon glyphicon-plus-sign"></i></a> ↳  #' + row.id; else return '<a href="javascript:void(0);" class="details-control"><i class="glyphicon glyphicon-plus-sign"></i></a> <b>#' + row.id + '</b>';
                     return '<a href="javascript:void(0);" class="details-control" data-toggle="tooltip" title="Click here to show details."><i class="glyphicon glyphicon-plus-sign"></i></a> -  #' + row.ref + '<a href="#" onclick="getPurchaseOrderPrint(' + row.id + ', false);"><i class="fas fa-search-plus"></i></a>' ;
                 
@@ -334,7 +334,7 @@ function PoClosureGridColleps() {
 /* Formatting function for row details - modify as you need */
 function format(d) {
     console.log(d.ref);
-    let option = { strValue1: d.id }, wrHTML = '<table class="inventory-table table-blue table check-table table-bordered table-striped dataTable no-footer"><thead><tr><th style="width:12.2%; text-align:left;">Bill No</th><th style="width:20%; text-align:left;">Receive Date</th><th style="width:20%; text-align:right;">Amount</th></tr></thead>';
+    let option = { strValue1: d.id }, wrHTML = '<table class="inventory-table table-blue table check-table table-bordered table-striped dataTable no-footer"><thead><tr><th style="width:14.2%; text-align:left;">Bill No</th><th style="width:20%; text-align:left;">Receive Date</th><th style="width:20%; text-align:right;">Amount</th></tr></thead>';
     $.ajax({
         url: '/Reception/GetPoClosureOrderDataList', type: 'post', dataType: 'json', contentType: "application/json; charset=utf-8", data: JSON.stringify(option),
         success: function (result) {
@@ -342,7 +342,7 @@ function format(d) {
             if (result.length == 0) { wrHTML += '<tbody><tr><td valign="top" colspan="6" class="no-data-available">Sorry no matching records found.</td></tr></tbody>'; }
             $(result).each(function (index, row) {
            
-                wrHTML += '<tr><td style="width:12.2%; text-align:left;"> <a href="#" onclick="getInvoicePrint(' + row.RicD + '); "><i class="fas fa - search - plus"></i>' + row.refordervendor + '</a></td><td style="width:20%; text-align:left;">' + row.date_creation + '</td>';
+                wrHTML += '<tr><td style="width:14.2%; text-align:left;"> <a href="#" onclick="getInvoicePrint(' + row.RicD + '); "><i class="fas fa - search - plus"></i>' + row.refordervendor + '</a></td><td style="width:20%; text-align:left;">' + row.date_creation + '</td>';
                 wrHTML += '<td style="width:20%; text-align:right;">' + '$' + row.total_ttc + '</td></tr > ';
             });
         },
@@ -376,15 +376,12 @@ function PoPartiallyColleps() {
         columns: [
             { data: 'ref', title: 'Parent ID', sWidth: "8%" },
             {
-                data: 'ref', title: 'PO No', sWidth: "8%", render: function (data, type, row) {
+                data: 'ref', title: 'PO No', sWidth: "10%", render: function (data, type, row) {
                     //if (row.post_parent > 0) return '<a href="javascript:void(0);" class="details-control"><i class="glyphicon glyphicon-plus-sign"></i></a> ↳  #' + row.id; else return '<a href="javascript:void(0);" class="details-control"><i class="glyphicon glyphicon-plus-sign"></i></a> <b>#' + row.id + '</b>';
-                   /* return '<a href="javascript:void(0);" class="pdetails-control" data-toggle="tooltip" title="Click here to show details."><i class="glyphicon glyphicon-plus-sign"></i></a> -  #' + row.ref + '<a href="NewReceiveOrder/' + row.RicD + '"><i class="glyphicon glyphicon-eye-open"></i> </a> <a href="#" onclick="getPurchaseOrderPrint(' + row.id + ', false);"><i class="fas fa-search-plus"></i></a>';*/
-
-                    return '<a href="javascript:void(0);" class="pdetails-control" data-toggle="tooltip" title="Click here to show details."><i class="glyphicon glyphicon-plus-sign"></i></a> -  #' + row.ref + '<a><i class="glyphicon glyphicon-eye-open"></i> </a> <a href="#" onclick="getPurchaseOrderPrint(' + row.id + ', false);"><i class="fas fa-search-plus"></i></a>';
+                    return '<a href="javascript:void(0);" class="pdetails-control" data-toggle="tooltip" title="Click here to show details."><i class="glyphicon glyphicon-plus-sign"></i></a> -  #' + row.ref + '<a href="#" onclick="getPurchaseOrderPrint(' + row.id + ', false);"><i class="fas fa-search-plus"></i></a>';
+                   
                 }
             },
-
-
 
             {
                 data: 'fk_projet', title: 'SO No.', sWidth: "10%", render: function (data, type, dtrow) {
@@ -401,8 +398,15 @@ function PoPartiallyColleps() {
             },
 
             { data: 'date_livraison', title: 'Planned date of delivery', sWidth: "10%" },
-            { data: 'Status', title: 'Status', sWidth: "10%" }
+            { data: 'Status', title: 'Status', sWidth: "10%" },
 
+            {
+                'data': 'ref', title: 'Action', sWidth: "7%",
+                'render': function (id, type, row) {
+                    return '<a title="Click here to view details" data-toggle="tooltip" href="NewReceiveOrder/' + row.id + '"><i class="glyphicon glyphicon-pencil"></i></a>'
+                    
+                }
+            }
         ],
         columnDefs: [{ targets: [0], visible: false, searchable: false }]
     });
@@ -411,7 +415,7 @@ function PoPartiallyColleps() {
 /* Formatting function for row details - modify as you need */
 function formatPartially(d) {
     console.log(d.ref);
-    let option = { strValue1: d.id }, wrHTML = '<table class="inventory-table table-blue table check-table table-bordered table-striped dataTable no-footer"><thead><tr><th style="width:12.2%; text-align:left;">Bill No</th><th style="width:20%; text-align:left;">Receive Date</th><th style="width:20%; text-align:right;">Amount</th></tr></thead>';
+    let option = { strValue1: d.id }, wrHTML = '<table class="inventory-table table-blue table check-table table-bordered table-striped dataTable no-footer"><thead><tr><th style="width:14.2%; text-align:left;">Bill No</th><th style="width:20%; text-align:left;">Receive Date</th><th style="width:20%; text-align:right;">Amount</th></tr></thead>';
     $.ajax({
         url: '/Reception/GetPartiallyOrderDataList', type: 'post', dataType: 'json', contentType: "application/json; charset=utf-8", data: JSON.stringify(option),
         success: function (result) {
@@ -419,7 +423,7 @@ function formatPartially(d) {
             if (result.length == 0) { wrHTML += '<tbody><tr><td valign="top" colspan="6" class="no-data-available">Sorry no matching records found.</td></tr></tbody>'; }
             $(result).each(function (index, row) {
 
-                wrHTML += '<tr><td style="width:12.2%; text-align:left;"> <a href="#" onclick="getInvoicePrint(' + row.RicD + '); "><i class="fas fa - search - plus"></i>' + row.refordervendor + '</a></td><td style="width:20%; text-align:left;">' + row.date_creation + '</td>';
+                wrHTML += '<tr><td style="width:14.2%; text-align:left;"> <a href="#" onclick="getInvoicePrint(' + row.RicD + '); "><i class="fas fa - search - plus"></i>' + row.refordervendor + '</a></td><td style="width:20%; text-align:left;">' + row.date_creation + '</td>';
                 wrHTML += '<td style="width:20%; text-align:right;">' + '$' + row.total_ttc + '</td></tr > ';
             });
         },

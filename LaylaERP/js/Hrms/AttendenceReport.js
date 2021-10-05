@@ -143,7 +143,7 @@ function employee() {
         var headerHtml = makeColumnHeaderHtml(headerName);
 
          var bodyHtml = "";
-         for (var i = 1; i < records.length; i++) {
+         for (var i = 0; i < records.length; i++) {
              var bodyName = records[i];
              bodyHtml += makeColumnBodyHtml(bodyName);
          }

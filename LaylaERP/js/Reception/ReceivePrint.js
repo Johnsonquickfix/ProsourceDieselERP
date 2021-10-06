@@ -708,7 +708,7 @@ function printinvoice_Bill(id, result, is_mail, is_inv) {
     myHtml += '    <table cellpadding="0" cellspacing="0" border="0">';
     myHtml += '    <tr>';
     myHtml += '        <td style="padding:0;">';
-    myHtml += '            <h3 class="billto" style="font-family: sans-serif;font-size:20px;margin:0px 0px 5px 0px;;color:#2c2e2f;font-weight:200;">Bill To :</h3>';
+    myHtml += '            <h3 class="billto" style="font-family: sans-serif;font-size:20px;margin:0px 0px 5px 0px;;color:#2c2e2f;font-weight:200;"></h3>';
     myHtml += '                                <img src="http://40.114.51.80/Images/layla1-logo.png" alt="" width="95" height="41" class="logo-size"/>';
     myHtml += '                                <p style="margin:15px 0px;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">';
     myHtml += '                                    ' + result.add + ', <br>' + result.city + ', ' + result.state + ' ' + result.zip + ', <br>' + (result.country == "CA" ? "Canada" : result.country == "US" ? "United States" : result.country) + '.<br>';
@@ -773,31 +773,31 @@ function printinvoice_Bill(id, result, is_mail, is_inv) {
     myHtml += '                        </td>';
     myHtml += '                    </tr>';
 
-    myHtml += '                    <tr>';
-    myHtml += '                        <td style="border-top: 1px solid #ddd;padding:0px;">';
-    myHtml += '                        <table style="border-collapse: collapse;width: 100%; table-layout: fixed;font-family:sans-serif;font-size:12px;">';
-    myHtml += '                            <thead style="border: 1px solid #ddd;background-color: #f9f9f9;">';
-    myHtml += '                                <tr>';
-    myHtml += '                                    <th style="text-align:left;width:20%;padding:2px 5px;">Payment</th>';
-    myHtml += '                                    <th style="text-align:right;width:25%;padding:2px 5px;">Amount</th>';
-    myHtml += '                                    <th style="text-align:left;width:30%;padding:2px 5px;">Type</th>';
-    myHtml += '                                    <th style="text-align:left;width:25%;padding:2px 5px;">Num</th>';
-    myHtml += '                                </tr>';
-    myHtml += '                            </thead>';
-    myHtml += '                            <tbody style="border:1px solid #ddd;">';
-    $(data['popd']).each(function (index, trpd) {
-        myHtml += '<tr style="border-bottom: 1px solid #ddd;">';
-        myHtml += '    <td style="width:20%;padding:2px 5px;">' + trpd.datec + '</td>';
-        myHtml += '    <td style="text-align:right;width:20%;padding:2px 5px;">$' + number_format(trpd.amount, 2, '.', ',') + '</td>';
-        myHtml += '    <td style="width:20%;padding:2px 5px;">' + trpd.paymenttype + '</td>';
-        myHtml += '    <td style="width:20%;padding:2px 5px;">' + trpd.num_payment + '</td>';
-        myHtml += '</tr>';
-        paid_amt += trpd.amount
-    });
-    myHtml += '                            </tbody>';
-    myHtml += '                        </table>';
-    myHtml += '                        </td>';
-    myHtml += '                    </tr>';
+    //myHtml += '                    <tr>';
+    //myHtml += '                        <td style="border-top: 1px solid #ddd;padding:0px;">';
+    //myHtml += '                        <table style="border-collapse: collapse;width: 100%; table-layout: fixed;font-family:sans-serif;font-size:12px;">';
+    //myHtml += '                            <thead style="border: 1px solid #ddd;background-color: #f9f9f9;">';
+    //myHtml += '                                <tr>';
+    //myHtml += '                                    <th style="text-align:left;width:20%;padding:2px 5px;">Payment</th>';
+    //myHtml += '                                    <th style="text-align:right;width:25%;padding:2px 5px;">Amount</th>';
+    //myHtml += '                                    <th style="text-align:left;width:30%;padding:2px 5px;">Type</th>';
+    //myHtml += '                                    <th style="text-align:left;width:25%;padding:2px 5px;">Num</th>';
+    //myHtml += '                                </tr>';
+    //myHtml += '                            </thead>';
+    //myHtml += '                            <tbody style="border:1px solid #ddd;">';
+    //$(data['popd']).each(function (index, trpd) {
+    //    myHtml += '<tr style="border-bottom: 1px solid #ddd;">';
+    //    myHtml += '    <td style="width:20%;padding:2px 5px;">' + trpd.datec + '</td>';
+    //    myHtml += '    <td style="text-align:right;width:20%;padding:2px 5px;">$' + number_format(trpd.amount, 2, '.', ',') + '</td>';
+    //    myHtml += '    <td style="width:20%;padding:2px 5px;">' + trpd.paymenttype + '</td>';
+    //    myHtml += '    <td style="width:20%;padding:2px 5px;">' + trpd.num_payment + '</td>';
+    //    myHtml += '</tr>';
+    //    paid_amt += trpd.amount
+    //});
+    //myHtml += '                            </tbody>';
+    //myHtml += '                        </table>';
+    //myHtml += '                        </td>';
+    //myHtml += '                    </tr>';
 
     myHtml += '                </table>';
     myHtml += '            </td>';
@@ -828,18 +828,18 @@ function printinvoice_Bill(id, result, is_mail, is_inv) {
     myHtml += '                        <td colspan="2" class="text-right" style="border-right: 1px solid #ddd; padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">Total</td>';
     myHtml += '                        <td class="text-right" style="padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">$' + number_format(total_net, 2, '.', ',') + '</td>';
     myHtml += '                    </tr>';
-    myHtml += '                    <tr class="invoiceTotal" style="background-color: #f9f9f9;font-weight: 700;border-top: 1px solid #ddd;">';
-    myHtml += '                        <td colspan="2" class="text-right" style="border-right: 1px solid #ddd; padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">Payment Terms (' + startingNumber + '%)</td>';
-    myHtml += '                        <td class="text-right" style="padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">$' + number_format((total_net * (startingNumber / 100)), 2, '.', ',') + '</td>';
-    myHtml += '                    </tr>';
-    myHtml += '                    <tr class="invoiceTotal" style="background-color: #f9f9f9;font-weight: 700;border-top: 1px solid #ddd;">';
-    myHtml += '                        <td colspan="2" class="text-right" style="border-right: 1px solid #ddd; padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">Paid</td>';
-    myHtml += '                        <td class="text-right" style="padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">$' + number_format(paid_amt, 2, '.', ',') + '</td>';
-    myHtml += '                    </tr>';
-    myHtml += '                    <tr class="invoiceTotal" style="background-color: #f9f9f9;font-weight: 700;border-top: 1px solid #ddd;">';
-    myHtml += '                        <td colspan="2" class="text-right" style="border-right: 1px solid #ddd; padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">Remaining Unpaid</td>';
-    myHtml += '                        <td class="text-right" style="padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">$' + number_format((total_net - paid_amt), 2, '.', ',') + '</td>';
-    myHtml += '                    </tr>';
+    //myHtml += '                    <tr class="invoiceTotal" style="background-color: #f9f9f9;font-weight: 700;border-top: 1px solid #ddd;">';
+    //myHtml += '                        <td colspan="2" class="text-right" style="border-right: 1px solid #ddd; padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">Payment Terms (' + startingNumber + '%)</td>';
+    //myHtml += '                        <td class="text-right" style="padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">$' + number_format((total_net * (startingNumber / 100)), 2, '.', ',') + '</td>';
+    //myHtml += '                    </tr>';
+    //myHtml += '                    <tr class="invoiceTotal" style="background-color: #f9f9f9;font-weight: 700;border-top: 1px solid #ddd;">';
+    //myHtml += '                        <td colspan="2" class="text-right" style="border-right: 1px solid #ddd; padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">Paid</td>';
+    //myHtml += '                        <td class="text-right" style="padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">$' + number_format(paid_amt, 2, '.', ',') + '</td>';
+    //myHtml += '                    </tr>';
+    //myHtml += '                    <tr class="invoiceTotal" style="background-color: #f9f9f9;font-weight: 700;border-top: 1px solid #ddd;">';
+    //myHtml += '                        <td colspan="2" class="text-right" style="border-right: 1px solid #ddd; padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">Remaining Unpaid</td>';
+    //myHtml += '                        <td class="text-right" style="padding:5px 12px;text-align:right;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">$' + number_format((total_net - paid_amt), 2, '.', ',') + '</td>';
+    //myHtml += '                    </tr>';
     myHtml += '                </table>';
     myHtml += '            </td>';
     myHtml += '        </tr>';

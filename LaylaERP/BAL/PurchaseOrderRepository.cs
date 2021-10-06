@@ -60,7 +60,7 @@ namespace LaylaERP.BAL
                 {
                     new MySqlParameter("@product_id", product_id),new MySqlParameter("@vendor_id", vendor_id)
                 };
-                string strSQl = "SELECT p.id,p.post_title,psku.meta_value sku,ir.fk_vendor,purchase_price,salestax,shipping_price,discount"
+                string strSQl = "SELECT p.id,p.post_title,psku.meta_value sku,ir.fk_vendor,purchase_price,0 salestax,0 shipping_price,discount"
                             + " FROM wp_posts as p"
                             + " left outer join wp_postmeta psku on psku.post_id = p.id and psku.meta_key = '_sku'"
                             + " left outer join Product_Purchase_Items ir on ir.fk_product = p.id and(ir.fk_vendor=0 or ir.fk_vendor=@vendor_id)"

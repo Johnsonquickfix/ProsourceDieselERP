@@ -2712,7 +2712,7 @@ a#btnbackcategory {max-width: 135px; margin-top: 5px;}
 .attendance .user-top-section .tablenav .bulkactions > .input-group{margin-right:10px;}
 .attendance .user-top-section .tablenav .bulkactions > #btnSave{margin-left:10px;}
 .order.shipping.rule .dataTables_scrollHeadInner{width:100% !important;}
-
+#btnpoclosed{margin-right:8px;}
 #parent textarea.form-control.billinfo{height:34px;}
 #parent #lblPoNo{min-height:34px;}
 @media(max-width:900px) {

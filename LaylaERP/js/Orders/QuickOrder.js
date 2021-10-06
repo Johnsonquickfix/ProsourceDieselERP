@@ -840,7 +840,7 @@ function getItemList(pid, vid, Qty) {
                 shipping_amount: pr.shipping_amount, is_free: pr.is_free, free_itmes: pr.free_itmes, order_item_id: 0, sr_fee: pr.staterecycle_fee, sr_fee_istaxable: pr.staterecycle_istaxable
             });
         });
-        //console.log(itemsDetailsxml);
+        //console.log(auto_code,itemsDetailsxml);
         //Bind diff Coupon
         if (auto_code.length > 0) bindCouponList(auto_code);
         if (itemsDetailsxml.length > 0) bindItemListDataTable(itemsDetailsxml);
@@ -910,10 +910,10 @@ function removeItemsInTable(id) {
                     $('#billCoupon').empty();
                 }
                 else {
-                    //auto Coupon add
-                    ApplyAutoCoupon();
                     //remove sales coupons
                     deleteSaleCoupon();
+                    //auto Coupon add
+                    ApplyAutoCoupon();                    
                 }
                 calculateDiscountAcount();
             }
@@ -1598,7 +1598,6 @@ function calculateDiscountAcount() {
         zTotalTax = (zGrossAmount - zDisAmt) * tax_rate;
         $(row).find(".RowTax").text(zTotalTax.toFixed(2)); $(row).find(".TotalAmount").data("taxamount", zTotalTax.toFixed(2));
         let sr_fee = parseFloat($(row).data("srfee")) || 0.00, sristaxable = $(row).data("sristaxable");
-        console.log(sr_fee, sristaxable);
         if (sristaxable) zStateRecyclingAmt += (zQty * sr_fee) + (zQty * sr_fee * tax_rate)
         else zStateRecyclingAmt += (zQty * sr_fee);
     });
@@ -1659,12 +1658,14 @@ function calculateDiscountAcount() {
                 $(row).find(".RowTax").text(zTotalTax.toFixed(2)); $(row).find(".TotalAmount").data("taxamount", zTotalTax.toFixed(2));
             }
         });
-
+        console.log($(li).data('type'), zDiscType, cou_amt);
         //update Coupon Amount
         $(li).find("#cou_discamt").text(cou_amt.toFixed(2))
-        if (zDiscType == '2x_percent' && cou_amt > 0) $(li).removeClass('hidden');
-        else if (zDiscType == '2x_percent') $(li).addClass('hidden');
-        else if ($(li).data('type') == 'diff' && zDiscType != '2x_percent' && cou_amt <= 0) $(li).remove();
+        if ($(li).data('type') == 'diff' && cou_amt > 0) $(li).removeClass('hidden');
+        else if ($(li).data('type') == 'diff') $(li).addClass('hidden');
+        //if (zDiscType == '2x_percent' && cou_amt > 0) $(li).removeClass('hidden');
+        //else if (zDiscType == '2x_percent') $(li).addClass('hidden');
+        //else if ($(li).data('type') == 'diff' && zDiscType != '2x_percent' && cou_amt <= 0) $(li).remove();
         //if (cou_amt == 0) $('#li_' + cou).remove();
         //if (cou_amt == 0) deleteAllCoupons(cou);
     });

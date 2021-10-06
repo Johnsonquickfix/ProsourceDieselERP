@@ -22,5 +22,6 @@ namespace LaylaERP.Models
         public string searchid { get; set; }
         public string strVal { get; set; }
         public string justification { get; set; }
+        public string strVal1 { get; set; }
     }
 }

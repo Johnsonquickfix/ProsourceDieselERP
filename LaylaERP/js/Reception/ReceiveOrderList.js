@@ -333,17 +333,37 @@ function PoClosureGridColleps() {
 
 /* Formatting function for row details - modify as you need */
 function format(d) {
-    console.log(d.ref);
-    let option = { strValue1: d.id }, wrHTML = '<table class="inventory-table table-blue table check-table table-bordered table-striped dataTable no-footer"><thead><tr><th style="width:14.2%; text-align:left;">Bill No</th><th style="width:20%; text-align:left;">Receive Date</th><th style="width:20%; text-align:right;">Amount</th></tr></thead>';
+    //console.log(d.ref);
+    //let option = { strValue1: d.id }, wrHTML = '<table class="inventory-table table-blue table check-table table-bordered table-striped dataTable no-footer"><thead><tr><th style="width:14.2%; text-align:left;">Bill No</th><th style="width:20%; text-align:left;">Receive Date</th><th style="width:20%; text-align:right;">Amount</th></tr></thead>';
+    //$.ajax({
+    //    url: '/Reception/GetPoClosureOrderDataList', type: 'post', dataType: 'json', contentType: "application/json; charset=utf-8", data: JSON.stringify(option),
+    //    success: function (result) {
+    //        result = JSON.parse(result);
+    //        if (result.length == 0) { wrHTML += '<tbody><tr><td valign="top" colspan="6" class="no-data-available">Sorry no matching records found.</td></tr></tbody>'; }
+    //        $(result).each(function (index, row) {
+           
+    //            wrHTML += '<tr><td style="width:14.2%; text-align:left;"> <a href="#" onclick="getInvoicePrint(' + row.RicD + '); "><i class="fas fa - search - plus"></i>' + row.refordervendor + '</a></td><td style="width:20%; text-align:left;">' + row.date_creation + '</td>';
+    //            wrHTML += '<td style="width:20%; text-align:right;">' + '$' + row.total_ttc + '</td></tr > ';
+    //        });
+    //    },
+    //    error: function (xhr, status, err) { alert(err); },
+    //    complete: function () { }, async: false
+    //});
+    //wrHTML += '</table>';
+    //return wrHTML;
+
+    let option = { strValue1: d.id }, wrHTML = '<table class="inventory-table table-blue table check-table table-bordered table-striped dataTable no-footer"><thead><tr><th style="width:10%; text-align:left;">Bill No</th><th style="width:12%; text-align:left;">Receive Date</th><th style="width:60%; text-align:left;">Description</th><th style="width:10%; text-align:left;">Quantity</th><th style="width:10%; text-align:right;">Amount</th></tr></thead>';
     $.ajax({
         url: '/Reception/GetPoClosureOrderDataList', type: 'post', dataType: 'json', contentType: "application/json; charset=utf-8", data: JSON.stringify(option),
         success: function (result) {
             result = JSON.parse(result);
             if (result.length == 0) { wrHTML += '<tbody><tr><td valign="top" colspan="6" class="no-data-available">Sorry no matching records found.</td></tr></tbody>'; }
             $(result).each(function (index, row) {
-           
-                wrHTML += '<tr><td style="width:14.2%; text-align:left;"> <a href="#" onclick="getInvoicePrint(' + row.RicD + '); "><i class="fas fa - search - plus"></i>' + row.refordervendor + '</a></td><td style="width:20%; text-align:left;">' + row.date_creation + '</td>';
-                wrHTML += '<td style="width:20%; text-align:right;">' + '$' + row.total_ttc + '</td></tr > ';
+
+                wrHTML += '<tr><td style="width:10%; text-align:left;"> <a href="#" onclick="getInvoicePrint(' + row.RicD + '); "><i class="fas fa - search - plus"></i>' + row.refordervendor + '</a></td><td style="width:12%; text-align:left;">' + row.dtcration + '</td>';
+                wrHTML += '<td style="width:60%; text-align:left;">' + row.des + '</td>'
+                wrHTML += '<td style="width:10%; text-align:left;">' + row.Quenty + '</td>'
+                wrHTML += '<td style="width:10%; text-align:right;">' + '$' + row.total_ttc + '</td></tr > ';
             });
         },
         error: function (xhr, status, err) { alert(err); },
@@ -414,8 +434,8 @@ function PoPartiallyColleps() {
 
 /* Formatting function for row details - modify as you need */
 function formatPartially(d) {
-    console.log(d.ref);
-    let option = { strValue1: d.id }, wrHTML = '<table class="inventory-table table-blue table check-table table-bordered table-striped dataTable no-footer"><thead><tr><th style="width:14.2%; text-align:left;">Bill No</th><th style="width:20%; text-align:left;">Receive Date</th><th style="width:20%; text-align:right;">Amount</th></tr></thead>';
+    //console.log(d.ref);
+    let option = { strValue1: d.id }, wrHTML = '<table class="inventory-table table-blue table check-table table-bordered table-striped dataTable no-footer"><thead><tr><th style="width:10%; text-align:left;">Bill No</th><th style="width:12%; text-align:left;">Receive Date</th><th style="width:60%; text-align:left;">Description</th><th style="width:10%; text-align:left;">Quantity</th><th style="width:10%; text-align:right;">Amount</th></tr></thead>';
     $.ajax({
         url: '/Reception/GetPartiallyOrderDataList', type: 'post', dataType: 'json', contentType: "application/json; charset=utf-8", data: JSON.stringify(option),
         success: function (result) {
@@ -423,8 +443,10 @@ function formatPartially(d) {
             if (result.length == 0) { wrHTML += '<tbody><tr><td valign="top" colspan="6" class="no-data-available">Sorry no matching records found.</td></tr></tbody>'; }
             $(result).each(function (index, row) {
 
-                wrHTML += '<tr><td style="width:14.2%; text-align:left;"> <a href="#" onclick="getInvoicePrint(' + row.RicD + '); "><i class="fas fa - search - plus"></i>' + row.refordervendor + '</a></td><td style="width:20%; text-align:left;">' + row.date_creation + '</td>';
-                wrHTML += '<td style="width:20%; text-align:right;">' + '$' + row.total_ttc + '</td></tr > ';
+                wrHTML += '<tr><td style="width:10%; text-align:left;"> <a href="#" onclick="getInvoicePrint(' + row.RicD + '); "><i class="fas fa - search - plus"></i>' + row.refordervendor + '</a></td><td style="width:12%; text-align:left;">' + row.dtcration + '</td>';
+                wrHTML += '<td style="width:60%; text-align:left;">'  + row.des + '</td>'
+                wrHTML += '<td style="width:10%; text-align:left;">'  + row.Quenty + '</td>'
+                wrHTML += '<td style="width:10%; text-align:right;">' + '$' + row.total_ttc + '</td></tr > ';
             });
         },
         error: function (xhr, status, err) { alert(err); },

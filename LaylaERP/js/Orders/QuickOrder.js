@@ -679,7 +679,7 @@ function getOrderItemList(oid) {
             let orderitemid = parseInt(data[i].order_item_id) || 0;
             if (data[i].product_type == 'line_item') {
                 let PKey = data[i].product_id + '_' + data[i].variation_id;
-                itemHtml += '<tr id="tritemId_' + PKey + '" data-id="' + PKey + '" class="' + (data[i].is_free ? 'free_item' : 'paid_item') + '" data-pid="' + data[i].product_id + '" data-vid="' + data[i].variation_id + '" data-pname="' + data[i].product_name + '" data-gid="' + data[i].group_id + '" data-freeitem="' + data[i].is_free + '" data-freeitems=\'' + data[i].free_itmes + '\' data-orderitemid="' + orderitemid + '" data-img="' + data[i].product_img + '">';
+                itemHtml += '<tr id="tritemId_' + PKey + '" data-id="' + PKey + '" class="' + (data[i].is_free ? 'free_item' : 'paid_item') + '" data-pid="' + data[i].product_id + '" data-vid="' + data[i].variation_id + '" data-pname="' + data[i].product_name + '" data-gid="' + data[i].group_id + '" data-freeitem="' + data[i].is_free + '" data-freeitems=\'' + data[i].free_itmes + '\' data-orderitemid="' + orderitemid + '" data-img="' + data[i].product_img + '" data-srfee="0" data-sristaxable="' + false + '">';
                 if (data[i].is_free)
                     itemHtml += '<td class="text-center item-action"></td>';
                 else
@@ -836,7 +836,8 @@ function getItemList(pid, vid, Qty) {
                 }
             }
             itemsDetailsxml.push({
-                PKey: row_key, product_id: pr.product_id, variation_id: pr.variation_id, product_name: pr.product_name, product_img: '', quantity: pr.quantity, reg_price: pr.reg_price, sale_rate: pr.sale_price, total: (pr.reg_price * pr.quantity), discount_type: coupon_type, discount: coupon_amt, tax_amount: ((pr.reg_price * pr.quantity) * tax_rate).toFixed(2), shipping_amount: pr.shipping_amount, is_free: pr.is_free, free_itmes: pr.free_itmes, group_id: pr.group_id, order_item_id: 0
+                PKey: row_key, product_id: pr.product_id, variation_id: pr.variation_id, product_name: pr.product_name, product_img: '', quantity: pr.quantity, reg_price: pr.reg_price, sale_rate: pr.sale_price, total: (pr.reg_price * pr.quantity), discount_type: coupon_type, discount: coupon_amt, tax_amount: ((pr.reg_price * pr.quantity) * tax_rate).toFixed(2),
+                shipping_amount: pr.shipping_amount, is_free: pr.is_free, free_itmes: pr.free_itmes, order_item_id: 0, sr_fee: pr.staterecycle_fee, sr_fee_istaxable: pr.staterecycle_istaxable
             });
         });
         //console.log(itemsDetailsxml);
@@ -851,7 +852,7 @@ function bindItemListDataTable(data) {
         for (var i = 0; i < data.length; i++) {
             if (data[i].product_id > 0) {
                 if ($('#tritemId_' + data[i].PKey).length <= 0) {
-                    layoutHtml += '<tr id="tritemId_' + data[i].PKey + '" data-id="' + data[i].PKey + '" class="' + (data[i].is_free ? 'free_item' : 'paid_item') + '" data-pid="' + data[i].product_id + '" data-vid="' + data[i].variation_id + '" data-pname="' + data[i].product_name + '" data-gid="' + data[i].group_id + '" data-freeitem="' + data[i].is_free + '" data-freeitems=\'' + data[i].free_itmes + '\' data-orderitemid="' + data[i].order_item_id + '" data-img="' + data[i].product_img + '">';
+                    layoutHtml += '<tr id="tritemId_' + data[i].PKey + '" data-id="' + data[i].PKey + '" class="' + (data[i].is_free ? 'free_item' : 'paid_item') + '" data-pid="' + data[i].product_id + '" data-vid="' + data[i].variation_id + '" data-pname="' + data[i].product_name + '" data-freeitem="' + data[i].is_free + '" data-freeitems=\'' + data[i].free_itmes + '\' data-orderitemid="' + data[i].order_item_id + '" data-img="' + data[i].product_img + '" data-srfee="' + data[i].sr_fee + '" data-sristaxable="' + data[i].sr_fee_istaxable + '">';
                     if (data[i].is_free)
                         layoutHtml += '<td class="text-center"></td>';
                     else
@@ -870,7 +871,6 @@ function bindItemListDataTable(data) {
                 else {
                     var zQty = parseFloat($('#txt_ItemQty_' + data[i].rd_id).val()) || 0.00;
                     $('#txt_ItemQty_' + data[i].rd_id).val((parseFloat($('#txt_ItemQty_' + data[i].PKey).val()) + data[i].quantity).toFixed(2));
-                    //calcRowAmount($('#txt_ItemQty_' + data[i].rd_id), $($('#txt_ItemQty_' + data[i].PKey)).parents('tr')[0]);
                 }
             }
         }
@@ -904,37 +904,23 @@ function removeItemsInTable(id) {
     swal({ title: "Are you sure?", text: 'Would you like to Remove this Item?', type: "question", showCancelButton: true })
         .then((result) => {
             if (result.value) {
-                let gid = parseInt($('#tritemId_' + id).data("gid")) || 0;
                 $('#tritemId_' + id).remove();
-                //Remove diff Coupon
-                let res = id.split('_');
-                let pid = parseInt(res[0]) || 0, vid = parseInt(res[1]) || 0;
-                let rq_prd_ids = [];
-                if ($('#li_' + pid).data('rqprdids') != "" && $('#li_' + pid).data('rqprdids') != null) {
-                    rq_prd_ids = $('#li_' + pid).data('rqprdids').split(",").map((el) => parseInt(el));
-                }
-                let index = rq_prd_ids.indexOf(vid); // 2
-                rq_prd_ids.splice(index, 1);
-                if (rq_prd_ids.length > 0) { $('#li_' + pid).data('rqprdids', rq_prd_ids.join(',')); }
-                else { $('#li_' + pid).remove(); }
-
                 // no cart item
-                if ($("#order_line_items > tr.paid_item").length == 0) $('#billCoupon').empty();
-
-                //remove sales coupons
-                deleteSaleCoupon();
-                //auto Coupon add
-                ApplyAutoCoupon();
+                if ($("#order_line_items > tr.paid_item").length == 0) {
+                    $('#billCoupon').empty();
+                }
+                else {
+                    //auto Coupon add
+                    ApplyAutoCoupon();
+                    //remove sales coupons
+                    deleteSaleCoupon();
+                }
                 calculateDiscountAcount();
             }
         });
 }
-function calcRowAmount(objControl, objRow) // objRow is row object
-{
-    calculateDiscountAcount();
-}
 function calcFinalTotals() {
-    calculateStateRecyclingFee();
+    //calculateStateRecyclingFee();
     let tax_rate = parseFloat($('#hfTaxRate').val()) || 0.00, is_freighttax = $('#hfFreighttaxable').val();
     let zQty = 0.00, zDiscQty = 0.00, zGAmt = 0.00, zTDiscount = 0.00, zTotalTax = 0.00, zShippingAmt = 0.00, zStateRecyclingAmt = 0.00, zFeeAmt = 0.00;
     $("#order_line_items > tr").each(function (index, tr) {
@@ -946,7 +932,7 @@ function calcFinalTotals() {
         zTDiscount = zTDiscount + parseFloat($(tr).find(".RowDiscount").text());
         //zTotalTax = zTotalTax + parseFloat($(tr).find(".TotalAmount").data("taxamount"));
         zShippingAmt = zShippingAmt + (parseFloat($(tr).find(".TotalAmount").data("shippingamt")) * rQty);
-        //console.log(zShippingAmt, rQty, $(tr).find(".TotalAmount").data("shippingamt"));
+        //console.log(zShippingAmt, rQty, $(tr).find(".TotalAmount").data("shippingamt"));        
     });
     if (is_freighttax) zTotalTax = zTotalTax + (zShippingAmt * tax_rate);
     zTotalTax = zTotalTax + ((zGAmt - zTDiscount) * tax_rate);
@@ -1257,11 +1243,12 @@ function getAllCoupons() {
     return coupons;
 }
 function deleteSaleCoupon() {
-    let cart_prnt_ids = [];
+    let cart_other_mrt_ids = [], cart_prnt_ids = [];
     $('#order_line_items > tr.paid_item').each(function (index, row) {
+        if ($(row).data('pid') != "118" && $(row).data('pid') != "611172") { cart_other_mrt_ids.push($(row).data('pid')); cart_other_mrt_ids.push($(row).data('vid')); }
         cart_prnt_ids.push($(row).data('pid')); cart_prnt_ids.push($(row).data('vid'));
     });
-    if (!cart_prnt_ids.includes(118) && !cart_prnt_ids.includes(611172)) { } else $('[id*="li_sales10off"]').remove();
+    if (cart_prnt_ids.includes(118) && cart_prnt_ids.includes(611172) && cart_other_mrt_ids.length == 0) { $('[id*="li_sales10off"]').remove() };
     if (cart_prnt_ids.includes(118)) { } else { $('[id*="li_sales25off"]').remove(); }
     if (cart_prnt_ids.includes(611172)) { } else { $('[id*="li_sales50off"]').remove(); }
     if (cart_prnt_ids.includes(611172) && (cart_prnt_ids.includes(20861) || cart_prnt_ids.includes(611252) || cart_prnt_ids.includes(733500))) { } else $('[id*="li_sales75off"]').remove();
@@ -1586,7 +1573,7 @@ function freeQtyUpdate() {
 function calculateDiscountAcount() {
     freeQtyUpdate();
     let tax_rate = parseFloat($('#hfTaxRate').val()) || 0.00;
-    let zCartDisAmt = 0.00, perqty_discamt = 0.00, paid_qty = 0.00;
+    let zCartDisAmt = 0.00, perqty_discamt = 0.00, paid_qty = 0.00, zStateRecyclingAmt = 0.00;
     $('#billCoupon li.cart').each(function (index, li) {
         let zCouponAmt = parseFloat($(li).data('couponamt')) || 0.00;
         if ($(li).data('coupon').toString().toLowerCase().includes("tsjpillow")) {
@@ -1610,7 +1597,13 @@ function calculateDiscountAcount() {
         $(row).find(".RowDiscount").data("lastdiscount", 0.00);
         zTotalTax = (zGrossAmount - zDisAmt) * tax_rate;
         $(row).find(".RowTax").text(zTotalTax.toFixed(2)); $(row).find(".TotalAmount").data("taxamount", zTotalTax.toFixed(2));
+        let sr_fee = parseFloat($(row).data("srfee")) || 0.00, sristaxable = $(row).data("sristaxable");
+        console.log(sr_fee, sristaxable);
+        if (sristaxable) zStateRecyclingAmt += (zQty * sr_fee) + (zQty * sr_fee * tax_rate)
+        else zStateRecyclingAmt += (zQty * sr_fee);
     });
+    $("#stateRecyclingFeeTotal").text(zStateRecyclingAmt.toFixed(2));
+    $('#order_state_recycling_fee_line_items').find(".TotalAmount").text(zStateRecyclingAmt.toFixed(2));
     //Calculate discount
     $('#billCoupon li.items').each(function (index, li) {
         let cou_amt = 0.00, cou = $(li).data('coupon').toString().toLowerCase();
@@ -1671,6 +1664,7 @@ function calculateDiscountAcount() {
         $(li).find("#cou_discamt").text(cou_amt.toFixed(2))
         if (zDiscType == '2x_percent' && cou_amt > 0) $(li).removeClass('hidden');
         else if (zDiscType == '2x_percent') $(li).addClass('hidden');
+        else if ($(li).data('type') == 'diff' && zDiscType != '2x_percent' && cou_amt <= 0) $(li).remove();
         //if (cou_amt == 0) $('#li_' + cou).remove();
         //if (cou_amt == 0) deleteAllCoupons(cou);
     });
@@ -1678,16 +1672,19 @@ function calculateDiscountAcount() {
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Shipping Charges ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function getItemShippingCharge() {
-    let v_ids = [];
-    $("#order_line_items  > tr.paid_item").each(function () { v_ids.push($(this).data('vid')); });
-    if (v_ids.join(',').length > 0) {
+    let p_ids = [], v_ids = [];
+    $("#order_line_items  > tr.paid_item").each(function () { p_ids.push($(this).data('pid')); v_ids.push($(this).data('vid')); });
+    if (p_ids.join(',').length > 0 || v_ids.join(',').length > 0) {
         $("#loader").show();
-        let options = { strValue1: v_ids.join(','), strValue2: $("#ddlshipcountry").val(), strValue3: $("#ddlshipstate").val() };
+        let options = { strValue1: p_ids.join(','), strValue2: v_ids.join(','), strValue3: $("#ddlshipcountry").val(), strValue4: $("#ddlshipstate").val() };
         $(".TotalAmount").data("shippingamt", 0.00);
         $.post('/Orders/GetProductShipping', options).then(response => {
+            response = JSON.parse(response);
             $("#order_line_items > tr.paid_item").each(function (index, tr) {
-                let proudct_item = response.find(el => el.product_id === $(tr).data('vid'));
-                if (proudct_item != null) { $(tr).find(".TotalAmount").data("shippingamt", proudct_item.AK); }
+                let proudct_item = response['Table'].find(el => el.vid === $(tr).data('vid'));
+                if (proudct_item != null) { $(tr).find(".TotalAmount").data("shippingamt", proudct_item.fee); }
+                let proudct_sr = response['Table1'].find(el => el.pid === $(tr).data('pid'));
+                if (proudct_sr != null) { $(tr).data("srfee", proudct_sr.fee); $(tr).data("sristaxable", proudct_sr.is_taxable); }
             });
             calcFinalTotals();
         }).catch(err => { $("#loader").hide(); swal('Error!', err, 'error'); }).always(function () { $("#loader").hide(); });

@@ -426,6 +426,19 @@ namespace LaylaERP.BAL
             DataSet ds = new DataSet();
             try
             {
+                //MySqlParameter[] para = { new MySqlParameter("@po_id", id), };
+                //string strSql = "select po.rowid,po.ref,po.ref_ext,po.ref_supplier,po.fk_supplier,po.fk_status,po.fk_payment_term,coalesce(pt.PaymentTerm,'') PaymentTerm,po.fk_balance_days,bd.Balance,po.fk_payment_type,"
+                //                + " DATE_FORMAT(po.date_livraison, '%m/%d/%Y') date_livraison,po.fk_incoterms,po.location_incoterms,po.note_private,po.note_public,DATE_FORMAT(po.date_creation, '%m/%d/%Y') date_creation,"
+                //                + " v.name vendor_name,v.address,COALESCE(v.town,'') town,v.fk_country,v.fk_state,v.zip,COALESCE(v.phone,'') phone,COALESCE(v.email,'') vendor_email"
+                //                + " from commerce_purchase_receive_order po inner join wp_vendor v on po.fk_supplier = v.rowid"
+                //                + " left outer join PaymentTerms pt on pt.id = po.fk_payment_term"
+                //                + " left outer join BalanceDays bd on bd.id = po.fk_balance_days where po.rowid = @po_id;"
+                //                + " select rowid,fk_purchase,fk_product,ref product_sku,description,recqty qty,discount_percent,discount,subprice,total_ht,tva_tx,localtax1_tx,localtax1_type,"
+                //                + " localtax2_tx,localtax2_type,total_tva,total_localtax1,total_localtax2,total_ttc,product_type,date_start,date_end,rang"
+                //                + " from commerce_purchase_receive_order_detail where fk_purchase_re = @po_id;";
+                //ds = SQLHelper.ExecuteDataSet(strSql, para);
+                //ds.Tables[0].TableName = "po"; ds.Tables[1].TableName = "pod";
+
                 MySqlParameter[] para = { new MySqlParameter("@po_id", id), };
                 string strSql = "select po.rowid,po.ref,po.ref_ext,po.ref_supplier,po.fk_supplier,po.fk_status,po.fk_payment_term,coalesce(pt.PaymentTerm,'') PaymentTerm,po.fk_balance_days,bd.Balance,po.fk_payment_type,"
                                 + " DATE_FORMAT(po.date_livraison, '%m/%d/%Y') date_livraison,po.fk_incoterms,po.location_incoterms,po.note_private,po.note_public,DATE_FORMAT(po.date_creation, '%m/%d/%Y') date_creation,"
@@ -433,11 +446,19 @@ namespace LaylaERP.BAL
                                 + " from commerce_purchase_receive_order po inner join wp_vendor v on po.fk_supplier = v.rowid"
                                 + " left outer join PaymentTerms pt on pt.id = po.fk_payment_term"
                                 + " left outer join BalanceDays bd on bd.id = po.fk_balance_days where po.rowid = @po_id;"
-                                + " select rowid,fk_purchase,fk_product,ref product_sku,description,recqty qty,discount_percent,discount,subprice,total_ht,tva_tx,localtax1_tx,localtax1_type,"
-                                + " localtax2_tx,localtax2_type,total_tva,total_localtax1,total_localtax2,total_ttc,product_type,date_start,date_end,rang"
-                                + " from commerce_purchase_receive_order_detail where fk_purchase_re = @po_id;";
+                                + " select rowid,fk_purchase,fk_product,ref product_sku,description,qty,discount_percent,discount,subprice,total_ht,tva_tx,localtax1_tx,localtax1_type,"
+                                + " localtax2_tx,localtax2_type,total_tva,total_localtax1,total_localtax2,total_ttc,product_type,DATE_FORMAT(date_start, '%m/%d/%Y') date_start,DATE_FORMAT(date_end, '%m/%d/%Y') date_end,rang"
+                                + " from commerce_purchase_receive_order_detail where fk_purchase_re = @po_id order by product_type,rowid;";
+                strSql += "select date_format(datec,'%Y%m%d%k%i%s') sn,date_format(datec,'%m/%d/%Y') datec,ep.ref,epi.type,pt.paymenttype,epi.amount,num_payment from erp_payment_invoice epi"
+                                + " inner join erp_payment ep on ep.rowid = epi.fk_payment inner join wp_PaymentType pt on pt.id = ep.fk_payment"
+                                + " where epi.fk_invoice = @po_id and type = 'PO'"
+                                + " union all"
+                                + " select date_format(datec,'%Y%m%d%k%i%s') sn,date_format(datec, '%m/%d/%Y') datec,ep.ref, epi.type,pt.paymenttype,epi.amount,num_payment from commerce_purchase_receive_order_detail rod"
+                                + " inner join erp_payment_invoice epi on rod.fk_purchase_re = epi.fk_invoice"
+                                + " inner join erp_payment ep on ep.rowid = epi.fk_payment inner join wp_PaymentType pt on pt.id = ep.fk_payment"
+                                + " where rod.fk_purchase_re = @po_id and type = 'PR' group by epi.fk_payment,ep.ref;";
                 ds = SQLHelper.ExecuteDataSet(strSql, para);
-                ds.Tables[0].TableName = "po"; ds.Tables[1].TableName = "pod";
+                ds.Tables[0].TableName = "po"; ds.Tables[1].TableName = "pod"; ds.Tables[2].TableName = "popd";
             }
             catch (Exception ex)
             {

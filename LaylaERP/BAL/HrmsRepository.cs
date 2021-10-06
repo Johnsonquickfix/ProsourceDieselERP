@@ -438,7 +438,7 @@ namespace LaylaERP.BAL
                     strAdd = "'1' as Is_Employee,";
                 }
                 string strSql = "Select e.rowid ID, concat(e.firstname,' ',e.lastname) as name,d.designation, "+ strAdd.ToString() +" e.email,e.phone,e.gender,e.emp_type," +
-                    "s.in_time,s.out_time,SUBTIME(Time(s.out_time),Time(s.in_time)) as WorkingHours,s.is_approved,e.is_active from erp_hrms_emp e left join erp_hrms_attendance_sheet s on s.fk_emp = e.rowid " +
+                    "DATE_FORMAT(s.in_time, '%m-%d-%Y %T') as in_time, DATE_FORMAT(s.out_time, '%m-%d-%Y %T') out_time,SUBTIME(Time(s.out_time),Time(s.in_time)) as WorkingHours,s.is_approved,e.is_active from erp_hrms_emp e left join erp_hrms_attendance_sheet s on s.fk_emp = e.rowid " +
                     " and (date(in_time) >= '" + startDate.ToString("yyyy-MM-dd") + "' and date(in_time) <= '" + startDate.ToString("yyyy-MM-dd") + "' or date(out_time) >= '" + startDate.ToString("yyyy-MM-dd") + "' and date(out_time) <= '" + startDate.ToString("yyyy-MM-dd") + "')" +
                     " left join erp_hrms_empdetails ed on ed.fk_emp = e.rowid left join erp_hrms_designation d on d.rowid = ed.designation where 1 = 1 " +
                     "and e.is_active = 1  ";

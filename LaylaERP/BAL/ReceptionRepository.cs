@@ -157,11 +157,18 @@ namespace LaylaERP.BAL
                 };
 
 
-                string strSql = "Select p.fk_purchase id,p.rowid RicD, (select ref from commerce_purchase_order where rowid = p.fk_purchase) ref,(select fk_projet from commerce_purchase_order where rowid = p.fk_purchase) fk_projet, p.ref refordervendor,v.SalesRepresentative request_author,v.name vendor_name,v.address,v.town,v.fk_country,v.fk_state,v.zip,v.phone,"
-                                     + " DATE_FORMAT(p.date_creation,'%m/%d/%Y %h:%i %p') dt,DATE_FORMAT(p.date_creation,'%m/%d/%Y %H:%i') date_creation,DATE_FORMAT(p.date_livraison, '%m/%d/%Y') date_livraison, s.Status,FORMAT(total_ttc,2) total_ttc from commerce_purchase_receive_order p"
-                                      + " inner join wp_vendor v on p.fk_supplier = v.rowid inner join wp_StatusMaster s on p.fk_status = s.ID where p.fk_purchase = @ref and p.fk_status= 6 and 1 = 1";               
+                //string strSql = "Select p.fk_purchase id,p.rowid RicD, (select ref from commerce_purchase_order where rowid = p.fk_purchase) ref,(select fk_projet from commerce_purchase_order where rowid = p.fk_purchase) fk_projet, p.ref refordervendor,v.SalesRepresentative request_author,v.name vendor_name,v.address,v.town,v.fk_country,v.fk_state,v.zip,v.phone,"
+                //                     + " DATE_FORMAT(p.date_creation,'%m/%d/%Y %h:%i %p') dt,DATE_FORMAT(p.date_creation,'%m/%d/%Y %H:%i') date_creation,DATE_FORMAT(p.date_livraison, '%m/%d/%Y') date_livraison, s.Status,FORMAT(total_ttc,2) total_ttc from commerce_purchase_receive_order p"
+                //                      + " inner join wp_vendor v on p.fk_supplier = v.rowid inner join wp_StatusMaster s on p.fk_status = s.ID where p.fk_purchase = @ref and p.fk_status= 6 and 1 = 1";               
          
-                strSql += strWhr + string.Format(" order by DATE_FORMAT(p.date_creation,'%m/%d/%Y %H:%i') desc");
+                //strSql += strWhr + string.Format(" order by DATE_FORMAT(p.date_creation,'%m/%d/%Y %H:%i') desc");
+
+                string strSql = "Select p.fk_purchase id,p.rowid RicD,p.ref refordervendor,sum(recqty) Quenty,group_concat(' ',description,' (*',recqty,')') des,DATE_FORMAT(p.date_creation,'%m/%d/%Y %h:%i %p') dtcration,DATE_FORMAT(p.date_creation,'%m/%d/%Y %H:%i') date_creation,"
+                                     + " FORMAT(p.total_ttc,2) total_ttc from commerce_purchase_receive_order p"
+                                      + " inner join commerce_purchase_receive_order_detail pr on pr.fk_purchase_re = p.rowid where p.fk_purchase = @ref and fk_product > 0 and p.fk_status= 6 and 1 = 1 ";
+
+                strSql += strWhr + string.Format("group by  p.ref order by p.rowid desc");
+
                 dt = SQLHelper.ExecuteDataTable(strSql, parameters);
             }
             catch (Exception ex)
@@ -216,11 +223,20 @@ namespace LaylaERP.BAL
                 };
 
 
-                string strSql = "Select p.fk_purchase id,p.rowid RicD, (select ref from commerce_purchase_order where rowid = p.fk_purchase) ref,(select fk_projet from commerce_purchase_order where rowid = p.fk_purchase) fk_projet, p.ref refordervendor,v.SalesRepresentative request_author,v.name vendor_name,v.address,v.town,v.fk_country,v.fk_state,v.zip,v.phone,"
-                                     + " DATE_FORMAT(p.date_creation,'%m/%d/%Y %h:%i %p') dt,DATE_FORMAT(p.date_creation,'%m/%d/%Y %H:%i') date_creation,DATE_FORMAT(p.date_livraison, '%m/%d/%Y') date_livraison, s.Status,FORMAT(total_ttc,2) total_ttc from commerce_purchase_receive_order p"
-                                      + " inner join wp_vendor v on p.fk_supplier = v.rowid inner join wp_StatusMaster s on p.fk_status = s.ID where p.fk_purchase = @ref and p.fk_status= 5 and 1 = 1";
+                //string strSql = "Select p.fk_purchase id,p.rowid RicD, (select ref from commerce_purchase_order where rowid = p.fk_purchase) ref,(select fk_projet from commerce_purchase_order where rowid = p.fk_purchase) fk_projet, p.ref refordervendor,v.SalesRepresentative request_author,v.name vendor_name,v.address,v.town,v.fk_country,v.fk_state,v.zip,v.phone,"
+                //                     + " DATE_FORMAT(p.date_creation,'%m/%d/%Y %h:%i %p') dt,DATE_FORMAT(p.date_creation,'%m/%d/%Y %H:%i') date_creation,DATE_FORMAT(p.date_livraison, '%m/%d/%Y') date_livraison, s.Status,FORMAT(total_ttc,2) total_ttc from commerce_purchase_receive_order p"
+                //                      + " inner join wp_vendor v on p.fk_supplier = v.rowid inner join wp_StatusMaster s on p.fk_status = s.ID where p.fk_purchase = @ref and p.fk_status= 5 and 1 = 1";
 
-                strSql += strWhr + string.Format(" order by DATE_FORMAT(p.date_creation,'%m/%d/%Y %H:%i') desc");
+                //strSql += strWhr + string.Format(" order by DATE_FORMAT(p.date_creation,'%m/%d/%Y %H:%i') desc");
+
+                string strSql = "Select p.fk_purchase id,p.rowid RicD,p.ref refordervendor,sum(recqty) Quenty,group_concat(' ',description,' (*',recqty,')') des,DATE_FORMAT(p.date_creation,'%m/%d/%Y %h:%i %p') dtcration,DATE_FORMAT(p.date_creation,'%m/%d/%Y %H:%i') date_creation,"
+                                     + " FORMAT(p.total_ttc,2) total_ttc from commerce_purchase_receive_order p"
+                                      + " inner join commerce_purchase_receive_order_detail pr on pr.fk_purchase_re = p.rowid where p.fk_purchase = @ref and fk_product > 0 and p.fk_status= 5 and 1 = 1 ";
+
+                strSql += strWhr + string.Format("group by  p.ref order by p.rowid desc");
+
+
+
                 dt = SQLHelper.ExecuteDataTable(strSql, parameters);
             }
             catch (Exception ex)

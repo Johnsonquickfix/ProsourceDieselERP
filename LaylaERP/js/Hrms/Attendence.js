@@ -7,12 +7,20 @@ $(document).ready(function () {
     $("#txtTime").val(formatted);
 
     EmployeeList();
-    $("#ddlInOut").change(function () { EmployeeList(); $('#checkAll').val(''); })
-    $("#btnReset").click(function () { EmployeeList(); })
+    $("#ddlInOut").change(function () {
+        var now = new Date(Date.now()); var formatted = now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
+        $("#txtTime").val(formatted); EmployeeList(); $('#checkAll').val('');
+    })
+    $("#btnReset").click(function () {
+        var now = new Date(Date.now());
+        var formatted = now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
+        $("#txtTime").val(formatted); EmployeeList();
+    })
   
 })
 
 $("#DateRange").change(function () {
+    var now = new Date(Date.now()); var formatted = now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
     var todayDate = new Date(); var today = new Date();
     var dd = String(today.getDate()).padStart(2, '0');
     var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
@@ -23,13 +31,13 @@ $("#DateRange").change(function () {
     if (date > todayDate) {
         swal('Alert!', 'Date can not be greater than today', 'error').then(function () {
             $("#DateRange").val(today);
+            $("#txtTime").val(formatted);
             EmployeeList();
         });
     } else {
+        $("#txtTime").val(formatted);
        EmployeeList();
     }
-    console.log(todayDate, date);
-    
 })
 
 $("#btnGo").click(function () {

@@ -292,16 +292,16 @@ function dataGridLoad(order_type) {
                 "render": function (data) {
 
                     url = "../../Content/Product/" + data + "";
-                    if (data.indexOf('product') == -1)
-                     var result = checkFileExist(url);
-                    if (data.indexOf('product') != -1) {
-                        return '<img src="../../Content/ProductCategory/default.png" width="65" height="50" />';
-                    }
-                    else {
-                        if (result == true) { return '<img src=' + url + ' width="65" height="50"/>'; }
+                    //if (data.indexOf('product') == -1)
+                    // var result = checkFileExist(url);
+                    //if (data.indexOf('product') != -1) {
+                    //    return '<img src="../../Content/ProductCategory/default.png" width="65" height="50" />';
+                    //}
+                    //else {
+                    if (data != null) { return '<img src=' + url + ' width="65" height="50"/>'; }
                         else if (data == null || data == "") { return '<img src="../../Content/ProductCategory/default.png" width="65"  height="50"/>'; }
                         else { return '<img src="../../Content/ProductCategory/default.png" width="65" height="50"/>'; }
-                    }
+                    //}
                 }
             },
             { data: 'post_title', title: 'Name', sWidth: "12%" },

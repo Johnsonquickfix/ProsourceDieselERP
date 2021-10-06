@@ -243,13 +243,15 @@
         [HttpPost]
         public JsonResult GetProductShipping(SearchModel model)
         {
-            List<OrderShippingModel> _list = new List<OrderShippingModel>();
+            string JSONresult = string.Empty;
             try
             {
-                _list = OrderRepository.GetProductShippingCharge(model.strValue1, model.strValue2, model.strValue3);
+                //_list = OrderRepository.GetProductShippingCharge(model.strValue1, model.strValue2, model.strValue3);
+                DataSet ds = OrderRepository.GetShippingWithRecycling(model.strValue1, model.strValue2, model.strValue3, model.strValue4);
+                JSONresult = JsonConvert.SerializeObject(ds);
             }
             catch { }
-            return Json(_list, 0);
+            return Json(JSONresult, 0);
         }
         [HttpPost]
         public JsonResult GetTaxRate(SearchModel model)

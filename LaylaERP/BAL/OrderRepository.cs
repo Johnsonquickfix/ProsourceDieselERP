@@ -289,7 +289,7 @@
                 };
                 string strSQl = "SELECT post.id,ps.ID pr_id,CONCAT(COALESCE(ps.post_title,post.post_title), COALESCE(CONCAT(' (' ,psku.meta_value,')'),''))  as post_title,"
                             + " COALESCE(pr.meta_value, 0) reg_price,COALESCE(psr.meta_value, 0) sale_price,1 quantity,'false' is_free,scd.Shipping_price,scd.type Shipping_type,"
-                            + " concat('{', group_concat(concat('\"', free_product_id, '\": \"', free_quantity, '\"') separator ','), '}') free_itmes FROM wp_posts as post"
+                            + " srf.staterecyclefee,srf.is_taxable,concat('{', group_concat(concat('\"', free_product_id, '\": \"', free_quantity, '\"') separator ','), '}') free_itmes FROM wp_posts as post"
                             + " LEFT OUTER JOIN wp_posts ps ON ps.post_parent = post.id and ps.post_type LIKE 'product_variation'"
                             + " left outer join wp_postmeta psku on psku.post_id = COALESCE(ps.id, post.id)and psku.meta_key = '_sku'"
                             + " left outer join wp_postmeta pr on pr.post_id = COALESCE(ps.id, post.id) and pr.meta_key = '_regular_price'"
@@ -297,10 +297,11 @@
                             + " left outer join wp_product_free free_it on free_it.product_id = post.id or free_it.product_id = ps.id"
                             + " left outer join Shipping_Product sp on sp.fk_productid = COALESCE(ps.id, post.id)"
                             + " left outer join ShippingClass_Details scd on scd.fk_ShippingID = sp.fk_shippingID and countrycode = @countrycode and statecode = @statecode"
+                            + " left outer join wp_staterecyclefee srf on srf.is_active = 1 and srf.item_parent_id = post.id and srf.state = @statecode"
                             + " WHERE post.post_type = 'product' and post.id = @product_id and COALESCE(ps.id,0) = @variation_id group by post.id,ps.ID"
                             + " union all"
                             + " SELECT(case when isnull(p.post_parent) = 0 then p.id else p.post_parent end) id,(case when isnull(p.post_parent)= 0 then 0 else p.id end) pr_id,CONCAT(p.post_title, COALESCE(CONCAT(' (', psku.meta_value, ')'), '')) as post_title,"
-                            + " 0 reg_price,0 sale_price,free_quantity quantity,'true' is_free,0 Shipping_price,'qty' Shipping_type,'{}' free_itmes FROM wp_product_free free_it"
+                            + " 0 reg_price,0 sale_price,free_quantity quantity,'true' is_free,0 Shipping_price,'qty' Shipping_type,0 staterecyclefee,0 is_taxable,'{}' free_itmes FROM wp_product_free free_it"
                             + " inner join wp_posts as p on p.id = free_it.free_product_id"
                             + " left outer join wp_postmeta psku on psku.post_id = p.id and psku.meta_key = '_sku'"
                             + " WHERE p.post_type in ('product', 'product_variation') and free_it.product_id = @product_id or free_it.product_id = @variation_id;";
@@ -347,7 +348,14 @@
                         productsModel.shipping_amount = decimal.Parse(sdr["Shipping_price"].ToString().Trim());
                     else
                         productsModel.shipping_amount = 0;
-
+                    if (sdr["staterecyclefee"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["staterecyclefee"].ToString().Trim()))
+                        productsModel.staterecycle_fee = decimal.Parse(sdr["staterecyclefee"].ToString().Trim());
+                    else
+                        productsModel.staterecycle_fee = 0;
+                    if (sdr["is_taxable"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["is_taxable"].ToString().Trim()))
+                        productsModel.staterecycle_istaxable = Convert.ToBoolean(sdr["is_taxable"]);
+                    else
+                        productsModel.staterecycle_istaxable = false;
                     _list.Add(productsModel);
                 }
             }
@@ -400,6 +408,25 @@
             catch (Exception ex)
             { throw ex; }
             return _list;
+        }
+        public static DataSet GetShippingWithRecycling(string product_ids, string variation_ids, string countrycode, string statecode)
+        {
+            DataSet ds = new DataSet();
+            try
+            {
+                DataTable DT = new DataTable();
+                MySqlParameter[] parameters =
+                {
+                    new MySqlParameter("@countrycode", countrycode),
+                    new MySqlParameter("@statecode", statecode)
+                };
+                string strSQl = "select fk_productid vid,Shipping_price fee from Shipping_Product sp inner join ShippingClass_Details scd on scd.fk_ShippingID = sp.fk_shippingID and countrycode = @countrycode and statecode = @statecode where fk_productid in (" + variation_ids + ");"
+                            + " select item_parent_id pid,staterecyclefee fee,is_taxable from wp_staterecyclefee where is_active = 1 and state = @statecode and item_parent_id in (" + product_ids + ");";
+                ds = SQLHelper.ExecuteDataSet(strSQl, parameters);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return ds;
         }
         public static DataTable GetCouponDiscount(string strCoupon)
         {
@@ -1223,7 +1250,7 @@
             List<OrderProductsModel> _list = new List<OrderProductsModel>();
             try
             {
-                string base_path = Net.Host + "/Content/Product/";
+                string base_path = "http://40.114.51.80" + "/Content/Product/";
                 OrderProductsModel productsModel = new OrderProductsModel();
                 MySqlParameter[] parameters =
                 {

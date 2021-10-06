@@ -913,5 +913,17 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(JSONresult, 0);
         }
+
+        public JsonResult GetDA()
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = HrmsConfigurationRepository.GetDA();
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
     }
 }

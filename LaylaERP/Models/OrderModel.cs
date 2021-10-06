@@ -141,6 +141,8 @@
         public decimal tax_amount { get; set; }
         public decimal shipping_amount { get; set; }
         public decimal shipping_tax_amount { get; set; }
+        public decimal staterecycle_fee { get; set; }
+        public bool staterecycle_istaxable { get; set; }
     }
     public class OrderShippingModel
     {

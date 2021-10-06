@@ -285,6 +285,7 @@
             AddDA();
         })
         SelectConfig();
+        SelectDA();
     });
 </script>
 
@@ -335,6 +336,34 @@
 
                 }
             });
+
+    }
+
+
+
+    function SelectDA() {
+        $.ajax({
+            url: "/Hrms/GetDA/",
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            dataType: 'JSON',
+            //data: JSON.stringify(),
+            success: function (data) {
+                console.log(data);
+                var jobj = JSON.parse(data);
+                if (jobj.length > 0) {
+
+                    $("#txtdarate1").val(jobj[0].da_rate1);
+                    $("#txtdarate2").val(jobj[0].da_rate2);
+                    $("#txtdarateothers").val(jobj[0].da_rate_others);
+                    $("#txtfromdate").val(jobj[0].from_date);
+
+                }
+            },
+            error: function (msg) {
+
+            }
+        });
 
     }
 </script>

@@ -2713,6 +2713,8 @@ a#btnbackcategory {max-width: 135px; margin-top: 5px;}
 .attendance .user-top-section .tablenav .bulkactions > #btnSave{margin-left:10px;}
 .order.shipping.rule .dataTables_scrollHeadInner{width:100% !important;}
 
+#parent textarea.form-control.billinfo{height:34px;}
+#parent #lblPoNo{min-height:34px;}
 @media(max-width:900px) {
     .suffix.split.logic .box-body{overflow:auto;}
     .categories #ProdCat .col-md-8{width:100%;}

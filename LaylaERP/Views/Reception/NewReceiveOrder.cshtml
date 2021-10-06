@@ -76,7 +76,7 @@
                                 <select class="form-control select2 billinfo" id="ddlPaymentType"></select>
                             </div>
                         </div>
-                    
+
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
@@ -113,15 +113,14 @@
                         </div>
                     </div>
 
-                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <!--table start-->
-    <div class="row mb-35">
+    `    <!--table start-->
+    <div class="">
         <div class="col-sm-12">
-            <div class="box box-primary mb-0">
+            <div class="box box-primary">
                 <div class="box-header">
                     <div class="table-responsive" id="divAddItemFinal">
                         <table id="tblAddItemFinal" class="table-blue table table-bordered table-striped dataTable">
@@ -159,39 +158,41 @@
                                 </tr>
                             </tfoot>
                         </table>
-                        
+
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="row">
+    <div class="">
         <div class="col-sm-6">
-            <div class="box-header with-border">
-                <h3 class="box-title">Received History </h3>
-        </div>
-            <div class="box box-solid">
-                <div class="table-responsive" id="divhistory">
-                    <table id="tblhistory" class="table-blue table table-bordered table-striped dataTable">
-                        <thead>
-                            <tr>       
-                                <th class="text-left" style="width: 50%">Description</th>
-                                <th class="text-left" style="width: 10%">Date</th>
-                                <th class="text-left" style="width: 10%">Received</th>
-                            </tr>
-                        </thead>                 
-                        <tbody id="product_history"></tbody>                        
-                    </table>
-
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Received History </h3>
                 </div>
-                @*<div class="box-header with-border">
-            <h3 class="box-title">Files</h3>
-        </div>
-        <div class="box-body">
-            <ul class="nav nav-pills nav-stacked" id="billfiles">
-                <li>None</li>
-            </ul>
-        </div>*@
+                <div class="box box-solid">
+                    <div class="table-responsive" id="divhistory">
+                        <table id="tblhistory" class="table-blue table table-bordered table-striped dataTable">
+                            <thead>
+                                <tr>
+                                    <th class="text-left" style="width: 50%">Description</th>
+                                    <th class="text-left" style="width: 10%">Date</th>
+                                    <th class="text-left" style="width: 10%">Received</th>
+                                </tr>
+                            </thead>
+                            <tbody id="product_history"></tbody>
+                        </table>
+
+                    </div>
+                    @*<div class="box-header with-border">
+                            <h3 class="box-title">Files</h3>
+                        </div>
+                        <div class="box-body">
+                            <ul class="nav nav-pills nav-stacked" id="billfiles">
+                                <li>None</li>
+                            </ul>
+                        </div>*@
+                </div>
             </div>
         </div>
         <div class="col-sm-6 order-box-total">
@@ -249,7 +250,6 @@
                 <!-- /.box-body -->
                 <div class="box-footer text-right footer-finalbutton">
                     <a class="btn btn-danger pull-left" href="/Reception/ReceiveOrder">Back to List</a>
-
                 </div>
             </div>
         </div>

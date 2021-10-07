@@ -45,8 +45,7 @@ $("#btnGo").click(function () {
 
     if ($("#ddlInOut").val() == "txtouttime") {
         $("input:checkbox[name=CheckSingle]:checked").each(function () {
-            $("#txtouttime_" + $(this).val()).val(dateTime);
-
+            $(".txtouttime_null").val(dateTime);
         })
     }
     else {
@@ -147,8 +146,10 @@ function EmployeeList() {
                     var dateTime = "";
                     if (id == null) {
                         dateTime = "";
+                        console.log(id);
                         return '<span><input type="text" class="form-control txtouttime_null" name="txtouttime" id="txtouttime_' + full.ID + '" value="' + dateTime + '" /></span>';
-                    } else if (id != null && full.Is_Employee == 1) {
+                    }
+                    else if (id != null && full.Is_Employee == 1) {
                         $('#ddlInOut').val('txtouttime').prop("disabled", true);
                         dateTime = id.replace('T', ' ');
                         return '<span><input type="text" class="form-control" name="txtouttime" id="txtouttime_' + full.ID + '" value="' + dateTime + '" disabled/></span>';

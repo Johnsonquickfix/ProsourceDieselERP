@@ -158,7 +158,7 @@ namespace LaylaERP.BAL
         }
 
 
-        public static DataTable GetPendingLeaveList(string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        public static DataTable GetPendingLeaveList(string fromdate,string todate, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
         {
             DataTable dt = new DataTable();
             totalrows = 0;
@@ -171,9 +171,12 @@ namespace LaylaERP.BAL
                 {
                     strWhr += " and (ehl.leave_type like '%" + searchid + "%' OR ehl.days like '%" + searchid + "%')";
                 }
-                if (userstatus != null)
+                if (!string.IsNullOrEmpty(fromdate) && !string.IsNullOrEmpty(todate))
                 {
-                    //strWhr += " and (is_active='" + userstatus + "') ";
+                    DateTime fromdatepending = DateTime.ParseExact(fromdate, "MM-dd-yyyy", null);
+                    DateTime todatepending = DateTime.ParseExact(todate, "MM-dd-yyyy", null);
+
+                    strWhr += " and (ehl.from_date >='" + fromdatepending.ToString("yyyy-MM-dd") + "' and ehl.from_date <= '"+todatepending.ToString("yyyy-MM-dd")+"') ";
                 }
                 strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
 

@@ -238,9 +238,6 @@ function updateLeave() {
 }
 
 
-
-
-
 $('#checkAll').click(function () {
     var isChecked = $(this).prop("checked");
     $('#EmployeeListdata tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
@@ -299,6 +296,8 @@ function ChangeStatus(id) {
 function PendingEmployeeList() {
     var urid = $("#ddlSearchStatus").val();
     ID = $("#hfid").val();
+    var from_date = $("#txtfromdate").val();
+    var to_date = $("#txttodate").val();
     var table_EL = $('#PendingEmployeeListdata').DataTable({
         columnDefs: [{ "orderable": true, "targets": 1 }, { "orderable": false, "targets": [0, 8] }, { 'visible': true, 'targets': [0] }], order: [[0, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: false, searching: true,
@@ -311,6 +310,16 @@ function PendingEmployeeList() {
             infoEmpty: "No records found",
             processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
         },
+        "dom": 'lBftipr',
+        "buttons": [
+            {
+                extend: 'csv',
+                className: 'button',
+                text: '<i class="fas fa-file-csv"></i> Export',
+                filename: 'Pending Leave',
+            },
+        ],
+
         initComplete: function () {
             $('#PendingEmployeeListdata_filter input').unbind();
             $('#PendingEmployeeListdata_filter input').bind('keyup', function (e) {
@@ -321,6 +330,8 @@ function PendingEmployeeList() {
         sAjaxSource: "/Hrms/GetPendingLeaveList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
             aoData.push({ name: "strValue1", value: urid });
+            aoData.push({ name: "strValue2", value: from_date });
+            aoData.push({ name: "strValue3", value: to_date });
             var col = 'id';
             if (oSettings.aaSorting.length >= 0) {
                 var col = oSettings.aaSorting[0][0] == 1 ? "rowid" : oSettings.aaSorting[0][0] == 2 ? "name" : oSettings.aaSorting[0][0] == 3 ? "days" : oSettings.aaSorting[0][0] == 4 ? "leavetype" : oSettings.aaSorting[0][0] == 5 ? "date_from" : "rowid";

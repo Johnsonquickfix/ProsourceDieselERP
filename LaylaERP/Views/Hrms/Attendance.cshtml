@@ -37,12 +37,11 @@
                         <option value="txtouttime">Out-time</option>
                     </select>
                 </div>
-
-               
+                <button type="button" id="btnGo" class="btn btn-danger">Go</button>
+                <button type="button" id="btnReset" class="btn btn-danger">Reset</button>
             </div>
             <div class="alignright actions bulkactions">
-                <button type="button" id="btnReset" class="btn btn-danger">Reset</button>
-                <button type="button" id="btnSave" class="btn btn-danger" disabled>Save</button>
+                <button type="button" id="btnSave" class="btn btn-danger" data-tooltip="tooltip" title="Save Checked value">Save</button>
             </div>
         </div>
     </div>
@@ -56,7 +55,7 @@
                             <table id="EmployeeListdata" class="inventory-table table-blue table check-table table-bordered table-striped dataTable " width="100%">
                                 <thead>
                                     <tr>
-                                        <th></th>
+                                        <th class="hidden"></th>
                                         <th><input type="checkbox" name="checkAll" id="checkAll"><label></label></th>
                                         <th>Name</th>
                                         <th>Designation</th>

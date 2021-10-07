@@ -7,15 +7,46 @@ $(document).ready(function () {
     $("#txtTime").val(formatted);
 
     EmployeeList();
-    $("#ddlInOut").change(function () { EmployeeList(); $('#checkAll').val(''); })
-    $("#btnReset").click(function () { EmployeeList(); })
-})
-$("#DateRange").change(function () {
-    
-    EmployeeList();
-   
+    $("#ddlInOut").change(function () {
+        var now = new Date(Date.now()); var formatted = now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
+        $("#txtTime").val(formatted); EmployeeList(); $('#checkAll').val('');
+    })
+    $("#btnReset").click(function () {
+        var now = new Date(Date.now());
+        var formatted = now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
+        $("#txtTime").val(formatted); EmployeeList();
+    })
 })
 
+$("#DateRange").change(function () {
+    var now = new Date(Date.now()); var formatted = now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
+    var todayDate = new Date(); var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    var yyyy = today.getFullYear();
+
+    today = mm + '-' + dd + '-' + yyyy;
+    var date = new Date($("#DateRange").val());
+    if (date > todayDate) {
+        swal('Alert!', 'Date can not be greater than today', 'error').then(function () {
+            $("#DateRange").val(today);
+            $("#txtTime").val(formatted);
+            EmployeeList();
+        });
+    } else {
+        $("#txtTime").val(formatted);
+       EmployeeList();
+    }
+})
+
+$("#btnGo").click(function () {
+    var dateTime = ""; var date = $("#DateRange").val(); var inout = $("#ddlInOut").val();
+    var time = $("#txtTime").val(); dateTime = date + ' ' + time;
+    $('#EmployeeListdata tr:has(td)').find('.' + inout + '_null').val(dateTime);
+    $("#checkAll").prop('checked', true);
+    $('#EmployeeListdata tr:has(td)').find('input[type="checkbox"]').prop('checked', true);
+    $("#btnSave").prop("disabled", false);
+})
 
 function EmployeeList() {
     fromdate = $("#DateRange").val();
@@ -27,7 +58,7 @@ function EmployeeList() {
         responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
         language: {
             lengthMenu: "_MENU_ per page",
-            zeroRecords: "May on leave",
+            zeroRecords: "You are on leave!!",
             info: "Showing _START_ to _END_ of _TOTAL_ entries",
             infoFiltered: "",
             infoEmpty: "No records found",
@@ -58,21 +89,21 @@ function EmployeeList() {
             });
         },
         aoColumns: [
-            { data: 'ID', title: 'ID', class: 'text-left' },
+            { data: 'ID', title: 'ID', class: 'text-left hidden' },
             {
                 'data': 'ID', sWidth: "15%   ",
                 'render': function (data, type, full, meta) {
                     if (full.in_time == null) {
                         $('#checkAll').prop('checked', false);
-                        return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + $('<div/>').text(data).html() + '"><label></label>';
+                        return '<input type="checkbox" name="CheckSingle" id="CheckSingle" data-type="blank" onClick="Singlecheck(this);" value="' + $('<div/>').text(data).html() + '"><label></label>';
                     }
                     else if (full.in_time != null && full.Is_Employee == 1) {
                         $('#checkAll').prop('checked', true);
-                        return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + $('<div/>').text(data).html() + '" checked><label></label>';
+                        return '<input type="checkbox" name="CheckSingle" id="CheckSingle" data-type="fill" onClick="Singlecheck(this);" value="' + $('<div/>').text(data).html() + '" checked><label></label>';
                     }
                     else {
                         $('#checkAll').prop('checked', true);
-                        return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + $('<div/>').text(data).html() + '" checked><label></label>';
+                        return '<input type="checkbox" name="CheckSingle" id="CheckSingle" data-type="fill" onClick="Singlecheck(this);" value="' + $('<div/>').text(data).html() + '" checked><label></label>';
                     }
                 }
             },
@@ -85,17 +116,17 @@ function EmployeeList() {
                     if (id == null) {
 
                         dateTime = "";
-                        return '<span><input type="text" class="form-control txtintime_null" data-checktype="blank" name="txtintime" id="txtintime_' + full.ID + '" value="' + dateTime + '" /></span>';
+                        return '<span><input type="text" class="form-control txtintime_null" name="txtintime" id="txtintime_' + full.ID + '" value="' + dateTime + '" /></span>';
                     }
                     else if (id != null && full.Is_Employee == 1) {
                         $('#ddlInOut').val('txtouttime').prop("disabled", true);
                         dateTime = id.replace('T', ' ');
-                        return '<span><input type="text" class="form-control" data-checktype="fill" name="txtintime" id="txtintime_' + full.ID + '" value="' + dateTime + '" disabled /></span>';
+                        return '<span><input type="text" class="form-control" name="txtintime" id="txtintime_' + full.ID + '" value="' + dateTime + '" disabled /></span>';
                     }
                     else {
                         dateTime = id.replace('T', ' ');
 
-                        return '<span><input type="text" class="form-control" data-checktype="fill" name="txtintime" id="txtintime_' + full.ID + '" value="' + dateTime + '" /></span>';
+                        return '<span><input type="text" class="form-control" name="txtintime" id="txtintime_' + full.ID + '" value="' + dateTime + '" /></span>';
 
                     }
                 }
@@ -106,15 +137,15 @@ function EmployeeList() {
                     var dateTime = "";
                     if (id == null) {
                         dateTime = "";
-                        return '<span><input type="text" class="form-control txtouttime_null" data-checktype="blank" name="txtouttime" id="txtouttime_' + full.ID + '" value="' + dateTime + '" /></span>';
+                        return '<span><input type="text" class="form-control txtouttime_null" name="txtouttime" id="txtouttime_' + full.ID + '" value="' + dateTime + '" /></span>';
                     } else if (id != null && full.Is_Employee == 1) {
                         $('#ddlInOut').val('txtouttime').prop("disabled", true);
                         dateTime = id.replace('T', ' ');
-                        return '<span><input type="text" class="form-control" name="txtouttime" data-checktype="fill" id="txtouttime_' + full.ID + '" value="' + dateTime + '" disabled/></span>';
+                        return '<span><input type="text" class="form-control" name="txtouttime" id="txtouttime_' + full.ID + '" value="' + dateTime + '" disabled/></span>';
                     }
                     else {
                         dateTime = id.replace('T', ' ');
-                        return '<span><input type="text" class="form-control" name="txtouttime" data-checktype="fill" id="txtouttime_' + full.ID + '" value="' + dateTime + '" /></span>';
+                        return '<span><input type="text" class="form-control" name="txtouttime" id="txtouttime_' + full.ID + '" value="' + dateTime + '" /></span>';
                     }
 
                 }
@@ -127,27 +158,41 @@ function EmployeeList() {
 $('#checkAll').click(function () {
 
     var isChecked = $(this).prop("checked");
-    var dateTime = "";
-    //var today = new Date();
-    var date = $("#DateRange").val();
-    var inout = $("#ddlInOut").val();
-    var time = $("#txtTime").val();
-    dateTime = isChecked == true ? date + ' ' + time : "";
+    //var dateTime = "";
+    ////var today = new Date();
+    //var date = $("#DateRange").val();
+    //var inout = $("#ddlInOut").val();
+    //var time = $("#txtTime").val();
+    //dateTime = isChecked == true ? date + ' ' + time : "";
 
     $('#EmployeeListdata tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
 
-    $('#EmployeeListdata tr:has(td)').find('.' + inout + '_null').val(dateTime);
+   /* $('#EmployeeListdata tr:has(td)').find('.' + inout + '_null').val(dateTime);*/
 
     $("#btnSave").prop("disabled", isChecked == true ? false : true);
 
 });
 
-function Singlecheck() {
+function Singlecheck(obj) {
+    var dateTime = ""; var date = $("#DateRange").val(); var inout = $("#ddlInOut").val();
+    var time = $("#txtTime").val(); dateTime = date + ' ' + time;
 
-    var dateTime = ""; var date = $("#DateRange").val();
-    var time = $("#txtTime").val();
-    dateTime = date + ' ' + time;
-    var inout = $("#ddlInOut").val();
+    if ($(obj).prop("checked") == true && $(obj).data('type') == 'blank') {
+        $("#" + inout + "_" + $(obj).val()).val(dateTime);
+    }
+    else if ($(obj).prop("checked") == true && $(obj).data('type') == 'fill') {
+        $("#txtintime_" + $(obj).val()).val(dateTime);
+        $("#txtouttime_" + $(obj).val()).val(dateTime);
+    }
+    else if ($(obj).prop("checked") == false && $(obj).data('type') == 'fill') {
+        $("#txtintime_" + $(obj).val()).val('');
+        $("#txtouttime_" + $(obj).val()).val('');
+    }
+    else {
+        $("#" + inout + "_" + $(obj).val()).val('');
+        //$("#txtintime_" + $(obj).val()).val('');
+        //$("#txtouttime_" + $(obj).val()).val('');
+    }
 
     var isChecked = $('#CheckSingle').prop("checked");
     var isHeaderChecked = $("#checkAll").prop("checked");
@@ -155,17 +200,6 @@ function Singlecheck() {
     $('#EmployeeListdata tr:has(td)').find('input[type="checkbox"]').each(function () {
         if ($(this).prop("checked") == true) {
             EnableButton = false;
-            if ($("#" + inout + "_" + $(this).val()).data('checktype') == "blank") {
-                if ($("#" + inout + "_" + $(this).val()).val() == "") {
-                    $("#" + inout + "_" + $(this).val()).val(dateTime);
-                }
-            }
-
-        }
-        else {
-            if ($("#" + inout + "_" + $(this).val()).data('checktype') == "blank") {
-                $("#" + inout + "_" + $(this).val()).val('');
-            }
         }
     });
     $("#btnSave").prop("disabled", EnableButton);
@@ -182,22 +216,65 @@ function Singlecheck() {
 }
 
 $('#btnSave').click(function () {
+    
     var Empid = "";
     var intime = "";
     var outtime = "";
-
+    let status = false;
     $("input:checkbox[name=CheckSingle]:checked").each(function () {
         Empid += $(this).val() + ",";
-        intime += $("#txtintime_" + $(this).val()).val() + ",";
-        outtime += $("#txtouttime_" + $(this).val()).val() + ",";
+        intime += $("#txtintime_" + $(this).val()).val() + ","; outtime += $("#txtouttime_" + $(this).val()).val() + ",";
+      
+        if ($("#ddlInOut").val() == "txtintime" && $("#txtintime_" + $(this).val()).val() == "") {
+            status = false;
+            swal('Alert!', 'Checked time value can not be null', 'error');
+            breakOut = true;
+
+            return false;
+        }
+        else if ($("#ddlInOut").val() == "txtouttime" && $("#txtintime_" + $(this).val()).val() == "") {
+            status = false;
+            swal('Alert!', 'Checked time value can not be null', 'error');
+            breakOut = true;
+            return false;
+        }
+        else if ($("#ddlInOut").val() == "txtouttime" && $("#txtouttime_" + $(this).val()).val() == "") {
+            status = false;
+            swal('Alert!', 'Checked value can not be null', 'error');
+            breakOut = true;
+            return false;
+        }
+        else if (Date.parse($("#txtintime_" + $(this).val()).val()) > Date.parse($("#txtouttime_" + $(this).val()).val())) {
+            status = false;
+            swal('Alert!', 'out time can not be less than in time', 'error');
+            breakOut = true;
+            return false;
+        }
+        else {
+            status = true;
+        }
     });
-    Empid = Empid.replace(/,(?=\s*$)/, '');
-    intime = intime.replace(/,(?=\s*$)/, '');
-    outtime = outtime.replace(/,(?=\s*$)/, '');
-    
+    Empid = Empid.replace(/,(?=\s*$)/, ''); intime = intime.replace(/,(?=\s*$)/, ''); outtime = outtime.replace(/,(?=\s*$)/, '');
+    console.log(status)
+    if (status != false) {
         saveAttendence(Empid, intime, outtime);
-   
+    }
 });
+
+//$('#btnSave').click(function () {
+//    var date = new Date($('#DateRange').val());
+//    var month = date.getMonth() + 1;
+//    var year = date.getFullYear();
+//    let _list = [];
+    
+//    $("input:checkbox[name=CheckSingle]:checked").each(function () {
+//        _list.push({ strValue4: month, strValue5: year, strValue1: parseInt($(this).val()) || 0, strValue2: $("#txtintime_" + $(this).val()).val(), strValue3: $("#txtouttime_" + $(this).val()).val() });
+
+//    });
+//    //console.log(_list);
+//    saveAttendence(_list);
+
+//});
 
 function saveAttendence(Empid, intime, outtime) {
     var date = new Date($('#DateRange').val());

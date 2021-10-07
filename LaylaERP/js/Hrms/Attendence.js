@@ -42,14 +42,12 @@ $("#DateRange").change(function () {
 $("#btnGo").click(function () {
     var dateTime = ""; var date = $("#DateRange").val(); var inout = $("#ddlInOut").val();
     var time = $("#txtTime").val(); dateTime = date + ' ' + time;
-
     if ($("#ddlInOut").val() == "txtouttime") {
         $("input:checkbox[name=CheckSingle]:checked").each(function () {
             $(".txtouttime_null").val(dateTime);
         })
     }
     else {
-       
         $('#EmployeeListdata tr:has(td)').find('.' + inout + '_null').val(dateTime);
         $("#checkAll").prop('checked', true);
         $('#EmployeeListdata tr:has(td)').find('input[type="checkbox"]').prop('checked', true);

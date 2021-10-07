@@ -2710,7 +2710,7 @@ a#btnbackcategory {max-width: 135px; margin-top: 5px;}
 .back-home a:first-child {margin-right: 15px;border: 2px solid #ff4100;padding: 7px 25px;border-radius: 4px;}
 .error-icon img {width: 100%;}
 .attendance .user-top-section .tablenav .bulkactions > .input-group{margin-right:10px;}
-.attendance .user-top-section .tablenav .bulkactions > #btnSave{margin-left:10px;}
+.attendance .user-top-section .tablenav .bulkactions > #btnSave{margin-right:10px;}
 .order.shipping.rule .dataTables_scrollHeadInner{width:100% !important;}
 
 #btnpoclosed{margin-right:3px;}

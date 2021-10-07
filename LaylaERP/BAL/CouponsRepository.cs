@@ -185,6 +185,83 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
+
+        public static DataTable GetListUserType(int userid,string strValue1, string userstatus, string strValue3, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "order_id", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                string strWhr = string.Empty;
+                if (strValue1 == "0")
+                    strValue1 = "";
+
+                if (!string.IsNullOrEmpty(userstatus))
+                {
+                    if (userstatus == "mine") { strWhr += " and P.post_author = 8 and P.post_status != 'auto-draft'"; }
+                    else { strWhr += " and P.post_status = '" + userstatus + "'"; }
+                }
+                else
+                    strWhr += " and P.post_status != 'auto-draft' ";
+                if (userstatus != "trash")
+                {
+                    strWhr += " and P.post_status != 'trash' ";
+                }
+                if (!string.IsNullOrEmpty(searchid))
+                {
+                    strWhr += " and (P.ID like '%" + searchid + "%' "
+                            + " OR post_title like '%" + searchid + "%' "
+                            + " OR pmdistype.meta_value like '%" + searchid + "%' "
+                            + " OR post_excerpt like '%" + searchid + "%' "
+                            + " OR pmproid.meta_value like '%" + searchid + "%' "
+                            + " OR pmexdate.meta_value like '%" + searchid + "%' "
+
+                            + " )";
+                }
+
+
+                if (!string.IsNullOrEmpty(strValue1))
+                {
+
+                    strWhr += " and pmdistype.meta_value like '%" + strValue1 + "%' ";
+                }
+                 if (userid > 0)
+                {
+
+                    strWhr += " and pmempid.meta_value = " + userid + " ";
+                }
+                string strSql = "SELECT P.ID ID, post_title,post_excerpt,case when pmdistype.meta_value = 'percent' then 'Percentage discount' when  pmdistype.meta_value = 'fixed_cart' then 'Fixed cart discount' else 'Fixed product discount' end discount_type ,case when pmproid.meta_value is null then '' else replace(pmproid.meta_value, ',', ', ') end product_ids,pmamount.meta_value coupon_amount,"
+                            + "  case when pmexdate.meta_value = '' then '' else from_unixtime(pmexdate.meta_value,'%m/%d/%Y') end date_expires,CONCAT(COALESCE(pmpuscount.meta_value,'0'),' / ',COALESCE(pmpuslimit.meta_value, '0' )) UsageLimit"
+                            + " FROM wp_posts P"
+                            + " left join wp_postmeta pmamount on P.ID = pmamount.post_id and pmamount.meta_key = 'coupon_amount'"
+                            + " left join wp_postmeta pmexdate on P.ID = pmexdate.post_id and pmexdate.meta_key = 'date_expires'"
+                            + " left join wp_postmeta pmdistype on P.ID = pmdistype.post_id and pmdistype.meta_key = 'discount_type'"
+                            + " left join wp_postmeta pmproid on P.ID = pmproid.post_id and pmproid.meta_key = 'product_ids'"
+                            + " left join wp_postmeta pmpuslimit on P.ID = pmpuslimit.post_id and pmpuslimit.meta_key = 'usage_limit'"
+                            + " left join wp_postmeta pmpuscount on P.ID = pmpuscount.post_id and pmpuscount.meta_key = 'usage_count'"
+                            + " left join wp_postmeta pmempid on P.ID = pmempid.post_id and pmempid.meta_key = '_employee_id'"
+                            + " WHERE P.post_type = 'shop_coupon'" + strWhr
+                            + " order by " + SortCol + " " + SortDir + " limit " + (pageno).ToString() + ", " + pagesize + "";
+
+                strSql += "; SELECT Count(distinct P.ID) TotalRecord from wp_posts P"
+                         + " left join wp_postmeta pmexdate on P.ID = pmexdate.post_id and pmexdate.meta_key = 'date_expires'"
+                            + " left join wp_postmeta pmdistype on P.ID = pmdistype.post_id and pmdistype.meta_key = 'discount_type'"
+                            + " left join wp_postmeta pmproid on P.ID = pmproid.post_id and pmproid.meta_key = 'product_ids'"
+                            + " left join wp_postmeta pmpuslimit on P.ID = pmpuslimit.post_id and pmpuslimit.meta_key = 'usage_limit'"
+                            + " left join wp_postmeta pmpuscount on P.ID = pmpuscount.post_id and pmpuscount.meta_key = 'usage_count'"
+                            + " left join wp_postmeta pmempid on P.ID = pmempid.post_id and pmempid.meta_key = '_employee_id'"
+                        + " WHERE P.post_type = 'shop_coupon'" + strWhr.ToString();
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dt = ds.Tables[0];
+                if (ds.Tables[1].Rows.Count > 0)
+                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
         public static DataTable GetList(string strValue1, string userstatus, string strValue3, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "order_id", string SortDir = "DESC")
        {
             DataTable dt = new DataTable();

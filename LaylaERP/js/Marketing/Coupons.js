@@ -21,6 +21,14 @@ $(document).ready(function () {
         GetExCategoryProdctByID($("#exhfcategid").val());
     }
 
+    let usertype = $('#hfuserType').val();
+    if (usertype.toUpperCase() == "ADMINISTRATOR") {
+        $("#btnSave").show();
+    }
+    else {
+        $("#btnSave").hide();
+    }
+
     $("#txtCouponAmount").keyup(function () {
         var $this = $(this);
         $this.val($this.val().replace(/[^\d.]/g, ''));

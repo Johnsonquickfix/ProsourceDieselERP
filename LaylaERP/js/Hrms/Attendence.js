@@ -42,10 +42,17 @@ $("#DateRange").change(function () {
 $("#btnGo").click(function () {
     var dateTime = ""; var date = $("#DateRange").val(); var inout = $("#ddlInOut").val();
     var time = $("#txtTime").val(); dateTime = date + ' ' + time;
-    $('#EmployeeListdata tr:has(td)').find('.' + inout + '_null').val(dateTime);
-    $("#checkAll").prop('checked', true);
-    $('#EmployeeListdata tr:has(td)').find('input[type="checkbox"]').prop('checked', true);
-    $("#btnSave").prop("disabled", false);
+    if ($("#ddlInOut").val() == "txtouttime") {
+        $("input:checkbox[name=CheckSingle]:checked").each(function () {
+            $(".txtouttime_null").val(dateTime);
+        })
+    }
+    else {
+        $('#EmployeeListdata tr:has(td)').find('.' + inout + '_null').val(dateTime);
+        $("#checkAll").prop('checked', true);
+        $('#EmployeeListdata tr:has(td)').find('input[type="checkbox"]').prop('checked', true);
+        $("#btnSave").prop("disabled", false);
+    }
 })
 
 function EmployeeList() {
@@ -137,8 +144,10 @@ function EmployeeList() {
                     var dateTime = "";
                     if (id == null) {
                         dateTime = "";
+                        console.log(id);
                         return '<span><input type="text" class="form-control txtouttime_null" name="txtouttime" id="txtouttime_' + full.ID + '" value="' + dateTime + '" /></span>';
-                    } else if (id != null && full.Is_Employee == 1) {
+                    }
+                    else if (id != null && full.Is_Employee == 1) {
                         $('#ddlInOut').val('txtouttime').prop("disabled", true);
                         dateTime = id.replace('T', ' ');
                         return '<span><input type="text" class="form-control" name="txtouttime" id="txtouttime_' + full.ID + '" value="' + dateTime + '" disabled/></span>';
@@ -156,21 +165,9 @@ function EmployeeList() {
 }
 
 $('#checkAll').click(function () {
-
     var isChecked = $(this).prop("checked");
-    //var dateTime = "";
-    ////var today = new Date();
-    //var date = $("#DateRange").val();
-    //var inout = $("#ddlInOut").val();
-    //var time = $("#txtTime").val();
-    //dateTime = isChecked == true ? date + ' ' + time : "";
-
     $('#EmployeeListdata tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
-
-   /* $('#EmployeeListdata tr:has(td)').find('.' + inout + '_null').val(dateTime);*/
-
     $("#btnSave").prop("disabled", isChecked == true ? false : true);
-
 });
 
 function Singlecheck(obj) {
@@ -216,65 +213,60 @@ function Singlecheck(obj) {
 }
 
 $('#btnSave').click(function () {
-    
-    var Empid = "";
-    var intime = "";
-    var outtime = "";
-    let status = false;
+    var Empid = ""; var intime = ""; var outtime = ""; let status = false;
     $("input:checkbox[name=CheckSingle]:checked").each(function () {
-        Empid += $(this).val() + ",";
-        intime += $("#txtintime_" + $(this).val()).val() + ","; outtime += $("#txtouttime_" + $(this).val()).val() + ",";
-      
+        Empid += $(this).val() + ","; intime += $("#txtintime_" + $(this).val()).val() + ","; outtime += $("#txtouttime_" + $(this).val()).val() + ",";
         if ($("#ddlInOut").val() == "txtintime" && $("#txtintime_" + $(this).val()).val() == "") {
-            status = false;
-            swal('Alert!', 'Checked time value can not be null', 'error');
-            breakOut = true;
-
-            return false;
+            status = false; swal('Alert!', 'Checked time value can not be null', 'error'); breakOut = true; return false;
         }
         else if ($("#ddlInOut").val() == "txtouttime" && $("#txtintime_" + $(this).val()).val() == "") {
-            status = false;
-            swal('Alert!', 'Checked time value can not be null', 'error');
-            breakOut = true;
+            status = false; swal('Alert!', 'Checked time value can not be null', 'error'); breakOut = true;
             return false;
         }
         else if ($("#ddlInOut").val() == "txtouttime" && $("#txtouttime_" + $(this).val()).val() == "") {
-            status = false;
-            swal('Alert!', 'Checked value can not be null', 'error');
-            breakOut = true;
-            return false;
+            status = false; swal('Alert!', 'Checked value can not be null', 'error'); breakOut = true; return false;
         }
         else if (Date.parse($("#txtintime_" + $(this).val()).val()) > Date.parse($("#txtouttime_" + $(this).val()).val())) {
-            status = false;
-            swal('Alert!', 'out time can not be less than in time', 'error');
-            breakOut = true;
-            return false;
+            status = false; swal('Alert!', 'out time can not be less than in time', 'error'); breakOut = true; return false;
         }
         else {
             status = true;
         }
     });
     Empid = Empid.replace(/,(?=\s*$)/, ''); intime = intime.replace(/,(?=\s*$)/, ''); outtime = outtime.replace(/,(?=\s*$)/, '');
-    console.log(status)
     if (status != false) {
         saveAttendence(Empid, intime, outtime);
     }
 });
 
-//$('#btnSave').click(function () {
-//    var date = new Date($('#DateRange').val());
-//    var month = date.getMonth() + 1;
-//    var year = date.getFullYear();
-//    let _list = [];
-    
-//    $("input:checkbox[name=CheckSingle]:checked").each(function () {
-//        _list.push({ strValue4: month, strValue5: year, strValue1: parseInt($(this).val()) || 0, strValue2: $("#txtintime_" + $(this).val()).val(), strValue3: $("#txtouttime_" + $(this).val()).val() });
+$('#btnAbsent').click(function () {
+    let _list = []; let status = false;
+    $("input:checkbox[name=CheckSingle]:checked").each(function () {
+        if ($("#ddlInOut").val() == "txtintime" && $("#txtintime_" + $(this).val()).val() == "") {
+            status = false; swal('Alert!', 'Checked time value can not be null', 'error'); breakOut = true; return false;
+        }
+        else if ($("#ddlInOut").val() == "txtouttime" && $("#txtintime_" + $(this).val()).val() == "") {
+            status = false; swal('Alert!', 'Checked time value can not be null', 'error'); breakOut = true;
+            return false;
+        }
+        else if ($("#ddlInOut").val() == "txtouttime" && $("#txtouttime_" + $(this).val()).val() == "") {
+            status = false; swal('Alert!', 'Checked value can not be null', 'error'); breakOut = true; return false;
+        }
+        else if (Date.parse($("#txtintime_" + $(this).val()).val()) > Date.parse($("#txtouttime_" + $(this).val()).val())) {
+            status = false; swal('Alert!', 'out time can not be less than in time', 'error'); breakOut = true; return false;
+        }
+        else {
+            status = true;
+        }
 
-//    });
-//    //console.log(_list);
-//    saveAttendence(_list);
+        _list.push({ strValue1: parseInt($(this).val()), strValue2: $("#txtintime_" + $(this).val()).val(), strValue3: $("#txtouttime_" + $(this).val()).val() });
+    });
 
-//});
+    if (status != false) {
+        AbsentEmployee(_list);
+    }
+
+});
 
 function saveAttendence(Empid, intime, outtime) {
     var date = new Date($('#DateRange').val());
@@ -290,6 +282,32 @@ function saveAttendence(Empid, intime, outtime) {
         url: '/Hrms/AddAttendence/', dataType: 'json', type: 'Post',
         contentType: "application/json; charset=utf-8",
         data: JSON.stringify(obj),
+        dataType: "json",
+        beforeSend: function () { $("#loader").show(); },
+        success: function (data) {
+            if (data.status == true) {
+                $("#checkAll").prop('checked', false);
+                $("#ddlAccounttoAssign").select2("val", "0");
+                $("#btnSaveProductAccount").prop("disabled", true);
+                EmployeeList();
+                swal('Alert!', data.message, 'success');
+            }
+            else {
+                swal('Alert!', data.message, 'error')
+            }
+        },
+        complete: function () { $("#loader").hide(); },
+        error: function (error) {
+            swal('Error!', 'something went wrong', 'error');
+        },
+    })
+}
+
+function AbsentEmployee(list) {
+    $.ajax({
+        url: '/Hrms/AbsentEmployee/', dataType: 'json', type: 'Post',
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(list),
         dataType: "json",
         beforeSend: function () { $("#loader").show(); },
         success: function (data) {

@@ -649,6 +649,7 @@
     <Content Include="js\EmailSetting\EmailSettingNotifications.js" />
     <Content Include="js\FeeNTax\FeeNTax.js" />
     <Content Include="js\GooglePlace\index.js" />
+    <Content Include="js\Hrms\Payroll.js" />
     <Content Include="js\Hrms\AttendenceReport.js" />
     <Content Include="js\Hrms\Attendence.js" />
     <Content Include="js\Hrms\ConfigurationList.js" />

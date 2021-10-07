@@ -937,5 +937,11 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(JSONresult, 0);
         }
+
+        #region Payroll
+
+       
+
+        #endregion
     }
 }

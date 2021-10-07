@@ -221,6 +221,17 @@ function GetTaxRate() {
     else { $('#hfTaxRate').val(0.00); $('#hfFreighttaxable').val(false); }
     //calculateDiscountAcount();
 }
+function GetSRTaxRate() {
+    let tax_states = ["CT", "RI"], s_state = $("#ddlshipstate").val();
+    if (tax_states.includes(s_state)) {
+        var opt = {
+            strValue1: $("#txtshipzipcode").val(), strValue2: $("#txtshipaddress1").val(), strValue3: $("#txtshipcity").val(), strValue4: s_state, strValue5: $("#ddlshipcountry").val()
+        };
+        $.post('/Orders/GetTaxRate', opt).then(response => { console.log(response); $('#hfTaxRate').data('srfee', response.rate); });
+    }
+    else { $('#hfTaxRate').data('srfee', 0.00); }
+    //calculateDiscountAcount();
+}
 function CategoryWiseProducts() {
     let option = { strValue1: 'category' }, strHTML = '';
     $.ajax({
@@ -550,7 +561,7 @@ function copyBillingAddress() {
     $('#txtshipzipcode').val($("#txtbillzipcode").val());
     $('#txtshipcity').val($("#txtbillcity").val());
     $('#ddlshipcountry').val($("#ddlbillcountry").val()).trigger('change');
-    $('#ddlshipstate').val($("#ddlbillstate").val()).trigger('change'); 
+    $('#ddlshipstate').val($("#ddlbillstate").val()).trigger('change');
     $("#loader").hide();
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Search Google Place API ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1342,7 +1353,7 @@ function ApplyCoupon() {
     $.ajax({
         type: "POST", url: '/Orders/GetCouponAmount', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
         success: function (result) {
-            var data = JSON.parse(result); 
+            var data = JSON.parse(result);
             if (data.length == 0) { swal('Alert!', 'Invalid code entered. Please try again.', "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false; }
             if (data[0].use_it == false) { swal('Alert!', 'Invalid code entered. Please try again.', "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false; }
             //Check valid for email
@@ -1576,7 +1587,7 @@ function freeQtyUpdate() {
 }
 function calculateDiscountAcount() {
     freeQtyUpdate();
-    let tax_rate = parseFloat($('#hfTaxRate').val()) || 0.00;
+    let tax_rate = parseFloat($('#hfTaxRate').val()) || 0.00, tax_sr_rate = parseFloat($('#hfTaxRate').data('srfee')) || 0.00;
     let zCartDisAmt = 0.00, perqty_discamt = 0.00, paid_qty = 0.00, zStateRecyclingAmt = 0.00;
     $('#billCoupon li.cart').each(function (index, li) {
         let zCouponAmt = parseFloat($(li).data('couponamt')) || 0.00;
@@ -1602,7 +1613,7 @@ function calculateDiscountAcount() {
         zTotalTax = (zGrossAmount - zDisAmt) * tax_rate;
         $(row).find(".RowTax").text(zTotalTax.toFixed(2)); $(row).find(".TotalAmount").data("taxamount", zTotalTax.toFixed(2));
         let sr_fee = parseFloat($(row).data("srfee")) || 0.00, sristaxable = $(row).data("sristaxable");
-        if (sristaxable) zStateRecyclingAmt += (zQty * sr_fee) + (zQty * sr_fee * tax_rate)
+        if (sristaxable) zStateRecyclingAmt += (zQty * sr_fee) + (zQty * sr_fee * tax_sr_rate)
         else zStateRecyclingAmt += (zQty * sr_fee);
     });
     $("#stateRecyclingFeeTotal").text(zStateRecyclingAmt.toFixed(2));
@@ -1682,18 +1693,22 @@ function getItemShippingCharge() {
         $("#loader").show();
         let options = { strValue1: p_ids.join(','), strValue2: v_ids.join(','), strValue3: $("#ddlshipcountry").val(), strValue4: $("#ddlshipstate").val() };
         $(".TotalAmount").data("shippingamt", 0.00);
-        $.post('/Orders/GetProductShipping', options).then(response => {
-            response = JSON.parse(response); 
-            $("#order_line_items > tr.paid_item").each(function (index, tr) {
-                let proudct_item = response['Table'].find(el => el.vid === $(tr).data('vid'));
-                if (proudct_item != null) { $(tr).find(".TotalAmount").data("shippingamt", proudct_item.fee); }
-                else { $(tr).find(".TotalAmount").data("shippingamt", 0.00); }
-                let proudct_sr = response['Table1'].find(el => el.pid === $(tr).data('pid'));
-                if (proudct_sr != null) { $(tr).data("srfee", proudct_sr.fee); $(tr).data("sristaxable", !!parseInt(proudct_sr.is_taxable)); }
-                else { $(tr).data("srfee", 0.00); $(tr).data("sristaxable", false); }
-            });
-            //calcFinalTotals();
-        }).then(response => { calculateDiscountAcount(); }).catch(err => { $("#loader").hide(); swal('Error!', err, 'error'); }).always(function () { $("#loader").hide(); });
+
+        $.when(GetSRTaxRate()).done(function () {
+            $.post('/Orders/GetProductShipping', options).then(response => {
+                response = JSON.parse(response);
+                $("#order_line_items > tr.paid_item").each(function (index, tr) {
+                    let proudct_item = response['Table'].find(el => el.vid === $(tr).data('vid'));
+                    if (proudct_item != null) { $(tr).find(".TotalAmount").data("shippingamt", proudct_item.fee); }
+                    else { $(tr).find(".TotalAmount").data("shippingamt", 0.00); }
+                    let proudct_sr = response['Table1'].find(el => el.pid === $(tr).data('pid'));
+                    if (proudct_sr != null) { $(tr).data("srfee", proudct_sr.fee); $(tr).data("sristaxable", !!parseInt(proudct_sr.is_taxable)); }
+                    else { $(tr).data("srfee", 0.00); $(tr).data("sristaxable", false); }
+                });
+            }).then(response => { calculateDiscountAcount(); }).catch(err => { $("#loader").hide(); swal('Error!', err, 'error'); }).always(function () { $("#loader").hide(); });
+        });
+
+
     }
 }
 function calculateStateRecyclingFee() {

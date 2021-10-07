@@ -25,6 +25,7 @@
     .pac-container {
         z-index: 1051 !important;
     }
+
     .swal2-container .swal2-popup {
         max-width: 500px;
     }
@@ -46,7 +47,7 @@
     <div class="box box-primary create-user-primary mb-35">
         <div class="box-header with-border">
             <input type="hidden" id="hfOrderNo" value="@ViewBag.id" />
-            <input type="hidden" id="hfTaxRate" value="0" />
+            <input type="hidden" id="hfTaxRate" value="0" data-srfee="0" />
             <input type="hidden" id="hfFreighttaxable" value="false" />
             <h4 class="box-title" id="lblOrderNo" data-pay_option="@ViewBag.pay_option" data-pay_by="" data-pay_id="">Order #000000 detail</h4>
             <div class="radtype_span">

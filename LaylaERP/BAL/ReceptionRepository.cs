@@ -457,8 +457,16 @@ namespace LaylaERP.BAL
                                 + " inner join erp_payment_invoice epi on rod.fk_purchase_re = epi.fk_invoice"
                                 + " inner join erp_payment ep on ep.rowid = epi.fk_payment inner join wp_PaymentType pt on pt.id = ep.fk_payment"
                                 + " where rod.fk_purchase_re = @po_id and type = 'PR' group by epi.fk_payment,ep.ref;";
+
+                strSql += "select ref,ifnull(address,'') address, ifnull(address1,'') address1,ifnull(City,'') City,ifnull(town,'') state, ifnull(zip,'') zip, ifnull( Country,'') Country, ifnull( phone,'') phone, ifnull(email,'') email,"
+                                + " (select ref from commerce_purchase_order where rowid = (select fk_purchase from commerce_purchase_receive_order_detail where fk_purchase_re = @po_id limit 1)) pono"
+                                + " from product_stock_register psr"
+                                 + " inner join wp_warehouse wh on wh.rowid = psr.warehouse_id"
+                                + " where tran_id = @po_id limit 1;";
+
+
                 ds = SQLHelper.ExecuteDataSet(strSql, para);
-                ds.Tables[0].TableName = "po"; ds.Tables[1].TableName = "pod"; ds.Tables[2].TableName = "popd";
+                ds.Tables[0].TableName = "po"; ds.Tables[1].TableName = "pod"; ds.Tables[2].TableName = "popd"; ds.Tables[3].TableName = "podvadd";
             }
             catch (Exception ex)
             {

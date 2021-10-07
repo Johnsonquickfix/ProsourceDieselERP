@@ -727,14 +727,14 @@ function printinvoice_Bill(id, result, is_mail, is_inv) {
     myHtml += '                                <table cellpadding="0" cellspacing="0" border="0">';
     myHtml += '                                    <tr>';
     myHtml += '                                        <td colspan="2" style="padding:0px 2.5px">';
-    myHtml += '            <h3 class="billto" style="font-family: sans-serif;font-size:20px;margin:0px 0px 15px 0px;;color:#2c2e2f;font-weight:200;">Delivery ADD:</h3>';
+    myHtml += '            <h3 class="billto" style="font-family: sans-serif;font-size:20px;margin:0px 0px 15px 0px;;color:#2c2e2f;font-weight:200;">Delivery Address:</h3>';
     //myHtml += '            <h3 class="billto" style="font-family: sans-serif;font-size:20px;margin:0px 0px 5px 0px;;color:#2c2e2f;font-weight:200;">' + data['podvadd'][0].ref + '</h3> ';
     myHtml += '                                        </td>';
     myHtml += '                                    </tr>';
 
     myHtml += '                                    <tr>';
     myHtml += '                               <td <p style="margin:15px 0px;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">';
-    myHtml += '                                    ' + data['podvadd'][0].ref + ',<br>' + data['podvadd'][0].address + ', <br>' + data['podvadd'][0].address1 + ', ' + data['podvadd'][0].City + ' ' + data['podvadd'][0].state + ', ' + data['podvadd'][0].zip + ', <br>' + (data['podvadd'][0].Country == "CA" ? "Canada" : data['podvadd'][0].fk_country == "CN" ? "China"  : data['podvadd'][0].Country == "US" ? "United States" : data['podvadd'][0].Country) + '.<br>';
+    myHtml += '                                    ' + data['podvadd'][0].ref + ',<br>' + data['podvadd'][0].address + ',<br>' + data['podvadd'][0].address1 + data['podvadd'][0].City + ' ' + data['podvadd'][0].state + ', ' + data['podvadd'][0].zip + '<br>' + (data['podvadd'][0].Country == "CA" ? "Canada" : data['podvadd'][0].fk_country == "CN" ? "China"  : data['podvadd'][0].Country == "US" ? "United States" : data['podvadd'][0].Country) + '.<br>';
     myHtml += '                                    Phone: 001 ' + data['podvadd'][0].phone.toString().replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + '<br />' + data['podvadd'][0].email + '<br />' ;
     myHtml += '                                </p> </td>';
     myHtml += '                                    </tr>';

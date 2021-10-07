@@ -17,7 +17,8 @@
         <div class="col-md-12">
             <div class="user_subCrumbs">
                 <input type="hidden" id="hfType" value="" />
-                <ul class="subsubsub">
+                <input type="hidden" id="hfuserType" value="@ViewBag.user_role" />
+                <ul id="allul" class="subsubsub">
                     <li class="all"><a id="all" href="javascript:void(0);" class="current">All (<span class="count">0</span></a>) |</li>
                     <li class="mine"><a href="javascript:void(0);" id="mine">Mine (<span class="count">0</span>)</a> |</li>
                     <li class="published"><a href="javascript:void(0);" id="published">Published (<span class="count">0</span>)</a> |</li>
@@ -30,7 +31,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-12">
+        <div id ="divbulkaction" class="col-md-12">
             <div class="user-top-section">
                 <div class="tablenav top tablenav-top2">
                     <div class="alignleft actions bulkactions">

@@ -661,6 +661,7 @@
     <Content Include="js\Hrms\HrmsConfiguration.js" />
     <Content Include="js\Hrms\Leave.js" />
     <Content Include="js\Hrms\LeaveList.js" />
+    <Content Include="js\Hrms\LeaveListForAdmin.js" />
     <Content Include="js\Inventory\ConsignmentInventory.js" />
     <Content Include="js\Inventory\Inventory.js" />
     <Content Include="js\jquery.mask.js" />
@@ -957,6 +958,7 @@
     <Content Include="Views\Accounting\AccountBalance.cshtml" />
     <Content Include="Views\Hrms\AttendanceReport.cshtml" />
     <Content Include="Views\Hrms\Configsetup.cshtml" />
+    <Content Include="Views\Hrms\LeaveListForAdmin.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

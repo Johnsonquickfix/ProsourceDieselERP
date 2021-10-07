@@ -655,9 +655,9 @@ function getInvoicePrint(id) {
 }
 
 function printinvoice_Bill(id, result, is_mail, is_inv) {
-    let data = JSON.parse(result.data); //console.log(data);
+    let data = JSON.parse(result.data); console.log(result);
     let inv_title = is_inv ? 'Bill' : 'Receive Order';
-
+    let inv_titleNew = 'Commercial Invoice';
     let total_qty = 0, total_gm = 0.00, total_tax = 0.00, total_shamt = 0.00, total_discamt = 0.00, total_other = 0.00, paid_amt = 0.00; total_net = 0.00;
 
     let startingNumber = parseFloat(data['po'][0].PaymentTerm.match(/^-?\d+\.\d+|^-?\d+\b|^\d+(?=\w)/g)) || 0.00;
@@ -673,7 +673,7 @@ function printinvoice_Bill(id, result, is_mail, is_inv) {
     myHtml += '                            <td style="padding:0; vertical-align: top;">';
 
     myHtml += '            <p class="recipientInfo" style="width: 225px;margin:0px 0px 15px 0px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;">';
-    myHtml += '               ' + data['po'][0].vendor_name + '<br>' + data['po'][0].address + '<br>' + data['po'][0].town + ', ' + data['po'][0].fk_state + ' ' + data['po'][0].zip + ', ' + (data['po'][0].fk_country == "CA" ? "Canada" : data['po'][0].fk_country == "US" ? "United States" : data['po'][0].fk_country) + '<br>' + data['po'][0].vendor_email;
+    myHtml += '               ' + data['po'][0].vendor_name + '<br>' + data['po'][0].address + '<br>' + data['po'][0].town + ', ' + data['po'][0].fk_state + ' ' + data['po'][0].zip + ', ' + (data['po'][0].fk_country == "CA" ? "Canada" : data['po'][0].fk_country == "CN" ? "China"  : data['po'][0].fk_country == "US" ? "United States" : data['po'][0].fk_country) + '<br>' + data['po'][0].vendor_email;
     myHtml += '            </p>';
 
 
@@ -682,7 +682,7 @@ function printinvoice_Bill(id, result, is_mail, is_inv) {
     myHtml += '                                <table cellpadding="0" cellspacing="0" border="0">';
     myHtml += '                                    <tr>';
     myHtml += '                                        <td colspan="2" style="padding:0px 2.5px">';
-    myHtml += '                                            <h2 class="pageCurl" style="color:#9da3a6;font-family: sans-serif;font-weight: 700;margin:0px 0px 8px 0px;font-size: 30px;">' + inv_title.toUpperCase() + '</h2>';
+    myHtml += '                                            <h2 class="pageCurl" style="color:#9da3a6;font-family: sans-serif;font-weight: 700;margin:0px 0px 8px 0px;font-size: 30px;">' + inv_titleNew + '</h2>';
     myHtml += '                                        </td>';
     myHtml += '                                    </tr>';
     myHtml += '                                    <tr>';
@@ -692,10 +692,16 @@ function printinvoice_Bill(id, result, is_mail, is_inv) {
     myHtml += '                                        <td style="font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4; padding:0px 2.5px;">' + inv_title + ' date:</td><td style=" padding:0px 2.5px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;">' + data['po'][0].date_creation + '</td>';
     myHtml += '                                    </tr>';
     myHtml += '                                    <tr>';
+    myHtml += '                                        <td style="font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4; padding:0px 2.5px;">Client PO#:</td><td style=" padding:0px 2.5px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;">' + data['podvadd'][0].pono + '</td>';
+    myHtml += '                                    </tr>';
+    myHtml += '                                    <tr>';
     myHtml += '                                        <td style="font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4; padding:0px 2.5px;">Reference:</td><td style=" padding:0px 2.5px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;">' + data['po'][0].ref_supplier + '</td>';
     myHtml += '                                    </tr>';
     myHtml += '                                    <tr>';
     myHtml += '                                        <td style="font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4; padding:0px 2.5px;">Expected delivery date:</td><td style=" padding:0px 2.5px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;">' + data['po'][0].date_livraison + '</td>';
+    myHtml += '                                    </tr>';
+    myHtml += '                                    <tr>';
+    myHtml += '                                        <td style="font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4; padding:0px 2.5px;">Country of Origin:</td><td style=" padding:0px 2.5px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;">' + (data['po'][0].fk_country == "CA" ? "Canada" : data['po'][0].fk_country == "CN" ? "China" : data['po'][0].fk_country == "US" ? "United States" : data['po'][0].fk_country) + '</td>';
     myHtml += '                                    </tr>';
     myHtml += '                                </table>';
     myHtml += '                            </td>';
@@ -705,15 +711,34 @@ function printinvoice_Bill(id, result, is_mail, is_inv) {
     myHtml += '            </tr >';
     myHtml += '<tr>';
     myHtml += '<td style="padding:0px 15px 0px 15px;">';
-    myHtml += '    <table cellpadding="0" cellspacing="0" border="0">';
-    myHtml += '    <tr>';
-    myHtml += '        <td style="padding:0;">';
-    myHtml += '            <h3 class="billto" style="font-family: sans-serif;font-size:20px;margin:0px 0px 5px 0px;;color:#2c2e2f;font-weight:200;"></h3>';
+    myHtml += '    <table cellpadding="0" width="100%" cellspacing="0" border="0">';
+    myHtml += '    <tr width="100%">';
+    myHtml += '        <td  width="65%" style="padding:0;">';
+    myHtml += '            <h3 class="billto" style="font-family: sans-serif;font-size:20px;margin:0px 0px 5px 0px;;color:#2c2e2f;font-weight:200;">Sold to</h3>';
     myHtml += '                                <img src="http://40.114.51.80/Images/layla1-logo.png" alt="" width="95" height="41" class="logo-size"/>';
+    myHtml += '            <h3 class="billto" style="font-family: sans-serif;font-size:20px;margin:0px 0px 5px 0px;;color:#2c2e2f;font-weight:200;">' + result.name +'</h3>';
     myHtml += '                                <p style="margin:15px 0px;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">';
-    myHtml += '                                    ' + result.add + ', <br>' + result.city + ', ' + result.state + ' ' + result.zip + ', <br>' + (result.country == "CA" ? "Canada" : result.country == "US" ? "United States" : result.country) + '.<br>';
+    myHtml += '                                    ' + result.add + ', <br>' + result.city + ', ' + result.state + ' ' + result.zip + ', <br>' + (result.country == "CA" ? "Canada" : result.country == "CN" ? "China" : result.country == "US" ? "United States" : result.country) + '.<br>';
     myHtml += '                                    Phone: 001 ' + result.phone.toString().replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + '<br />' + result.email + '<br />' + result.website;
     myHtml += '                                </p>';
+    myHtml += '        </td>';
+
+    myHtml += '        <td width="35%" style="padding:0; vertical-align: top;" align="left">';
+    myHtml += '                                <table cellpadding="0" cellspacing="0" border="0">';
+    myHtml += '                                    <tr>';
+    myHtml += '                                        <td colspan="2" style="padding:0px 2.5px">';
+    myHtml += '            <h3 class="billto" style="font-family: sans-serif;font-size:20px;margin:0px 0px 5px 0px;;color:#2c2e2f;font-weight:200;">Delivery ADD:</h3> <br>';
+    myHtml += '            <h3 class="billto" style="font-family: sans-serif;font-size:20px;margin:0px 0px 5px 0px;;color:#2c2e2f;font-weight:200;">' + data['podvadd'][0].ref + '</h3> ';
+    myHtml += '                                        </td>';
+    myHtml += '                                    </tr>';
+
+    myHtml += '                                    <tr>';
+    myHtml += '                               <td <p style="margin:15px 0px;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">';
+    myHtml += '                                    ' + data['podvadd'][0].address + ', <br>' + data['podvadd'][0].address1 + ', ' + data['podvadd'][0].City + ' ' + data['podvadd'][0].state + ', ' + data['podvadd'][0].zip + ', <br>' + (data['podvadd'][0].Country == "CA" ? "Canada" : data['podvadd'][0].fk_country == "CN" ? "China"  : data['podvadd'][0].Country == "US" ? "United States" : data['podvadd'][0].Country) + '.<br>';
+    myHtml += '                                    Phone: 001 ' + data['podvadd'][0].phone.toString().replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + '<br />' + data['podvadd'][0].email + '<br />' ;
+    myHtml += '                                </p> </td>';
+    myHtml += '                                    </tr>';
+    myHtml += '                                </table>';
     myHtml += '        </td>';
     myHtml += '     </tr>';
     myHtml += '     </table>';

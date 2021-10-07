@@ -472,11 +472,9 @@ namespace LaylaERP.BAL
             DataTable dt = new DataTable();
             try
             {
-
                 string strSql = "SELECT format(da_rate1,2) as da_rate1,format(da_rate2,2) as da_rate2,format(da_rate_others,2) as da_rate_others,DATE_FORMAT(from_date, '%m-%d-%Y') as from_date FROM erp_hrms_DA order by rowid DESC limit 1";
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
-
             }
             catch (Exception ex)
             {

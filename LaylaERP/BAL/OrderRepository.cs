@@ -433,6 +433,8 @@
             DataTable dt = new DataTable();
             try
             {
+                string lid = CommanUtilities.Provider.GetCurrent().UserID.ToString();
+
                 MySqlParameter[] parameters =
                 {
                     new MySqlParameter("@strCoupon", strCoupon)
@@ -442,7 +444,8 @@
                                 + "     max(case when pm.meta_key = 'individual_use' then pm.meta_value else '' end) individual_use,max(case when pm.meta_key = '_wjecf_products_and' then pm.meta_value else 'no' end) and_or,"
                                 + "     max(case when pm.meta_key = 'limit_x_items' then pm.meta_value else '' end) limit_x_items,max(case when pm.meta_key = 'cus_email' then pm.meta_value else '' end) cus_email,"
                                 + "     max(case when pm.meta_key = 'usage_limit' then pm.meta_value else '' end) usage_limit,max(case when pm.meta_key = 'usage_limit_per_user' then pm.meta_value else '' end) usage_limit_per_user,"
-                                + "     max(case when pm.meta_key = '_wjecf_is_auto_coupon' then(case when pm.meta_value = 'yes' then 'auto_coupon' else 'add_coupon' end) else 'add_coupon' end) type"
+                                + "     max(case when pm.meta_key = '_wjecf_is_auto_coupon' then(case when pm.meta_value = 'yes' then 'auto_coupon' else 'add_coupon' end) else 'add_coupon' end) type,"
+                                + "     max(case when pm.meta_key = '_employee_id' then (case when coalesce(pm.meta_value,'0') = '"+ lid + "' then 1 else 0 end) else 1 end) use_it"
                                 + " from wp_posts p inner join wp_postmeta pm on pm.post_id = p.id"
                                 + " where lower(post_title) = @strCoupon And post_type = 'shop_coupon' group by pm.post_id";
                 dt = SQLHelper.ExecuteDataTable(strSQl, parameters);

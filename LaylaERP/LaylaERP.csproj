@@ -958,6 +958,7 @@
     <Content Include="Views\Accounting\AccountBalance.cshtml" />
     <Content Include="Views\Hrms\AttendanceReport.cshtml" />
     <Content Include="Views\Hrms\Configsetup.cshtml" />
+    <Content Include="Views\Hrms\LeaveListForAdmin.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

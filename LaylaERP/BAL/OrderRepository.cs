@@ -445,7 +445,7 @@
                                 + "     max(case when pm.meta_key = 'limit_x_items' then pm.meta_value else '' end) limit_x_items,max(case when pm.meta_key = 'cus_email' then pm.meta_value else '' end) cus_email,"
                                 + "     max(case when pm.meta_key = 'usage_limit' then pm.meta_value else '' end) usage_limit,max(case when pm.meta_key = 'usage_limit_per_user' then pm.meta_value else '' end) usage_limit_per_user,"
                                 + "     max(case when pm.meta_key = '_wjecf_is_auto_coupon' then(case when pm.meta_value = 'yes' then 'auto_coupon' else 'add_coupon' end) else 'add_coupon' end) type,"
-                                + "     coalesce((select IF(trim(pmt.meta_value) = '" + lid + "',1,0) from wp_postmeta pmt where pmt.post_id = p.id and pmt.meta_key = '_employee_id'),1)"
+                                + "     coalesce((select IF(trim(pmt.meta_value) = '" + lid + "',1,0) from wp_postmeta pmt where pmt.post_id = p.id and pmt.meta_key = '_employee_id'),1) use_it"
                                 + " from wp_posts p inner join wp_postmeta pm on pm.post_id = p.id"
                                 + " where lower(post_title) = @strCoupon And post_type = 'shop_coupon' group by pm.post_id";
                 dt = SQLHelper.ExecuteDataTable(strSQl, parameters);

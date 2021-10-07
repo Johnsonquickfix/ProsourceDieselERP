@@ -27,7 +27,10 @@
     $("#ddlUser").change(function () { setTimeout(function () { NewOrderNo(); CustomerAddress($("#ddlUser").val()); }, 50); return false; });
     $("#ddlbillcountry").change(function () { var obj = { id: $("#ddlbillcountry").val() }; BindStateCounty("ddlbillstate", obj); });
     $("#ddlshipcountry").change(function () { var obj = { id: $("#ddlshipcountry").val() }; BindStateCounty("ddlshipstate", obj); });
-    $("#ddlshipstate").change(function () { GetTaxRate(); getItemShippingCharge(); });
+    $("#ddlshipstate").change(function (t) {
+        t.preventDefault();
+        $.when(GetTaxRate()).done(function () { getItemShippingCharge(); });
+    });
     $(document).on("click", "#btnApplyCoupon", function (t) { t.preventDefault(); CouponModal(); });
     //$("#billModal").on("keypress", function (e) { if (e.which == 13 && e.target.type != "textarea") { $("#btnCouponAdd").click(); } });
     $("#billModal").on("click", "#btnCouponAdd", function (t) { t.preventDefault(); ApplyCoupon(); });
@@ -216,7 +219,7 @@ function GetTaxRate() {
         else { ajaxFunction('/Orders/GetTaxAmounts', opt, function () { }, function (res) { $('#hfTaxRate').val(res.rate); $('#hfFreighttaxable').val(res.freight_taxable); }, function () { }, function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); }, false); }
     }
     else { $('#hfTaxRate').val(0.00); $('#hfFreighttaxable').val(false); }
-    calculateDiscountAcount();
+    //calculateDiscountAcount();
 }
 function CategoryWiseProducts() {
     let option = { strValue1: 'category' }, strHTML = '';
@@ -547,7 +550,7 @@ function copyBillingAddress() {
     $('#txtshipzipcode').val($("#txtbillzipcode").val());
     $('#txtshipcity').val($("#txtbillcity").val());
     $('#ddlshipcountry').val($("#ddlbillcountry").val()).trigger('change');
-    $('#ddlshipstate').val($("#ddlbillstate").val()).trigger('change');
+    $('#ddlshipstate').val($("#ddlbillstate").val()).trigger('change'); 
     $("#loader").hide();
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Search Google Place API ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -913,7 +916,7 @@ function removeItemsInTable(id) {
                     //remove sales coupons
                     deleteSaleCoupon();
                     //auto Coupon add
-                    ApplyAutoCoupon();                    
+                    ApplyAutoCoupon();
                 }
                 calculateDiscountAcount();
             }
@@ -1331,7 +1334,7 @@ function ApplyCoupon() {
     });
     if (add_coupon_count > 0) { swal('Alert!', 'Cannot add any other Coupon.', "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false; };
     if (coupon_code.includes("tsjpillow")) {
-        let cou_details = Coupon_get_discount_amount(0, 0, coupon_code, 25, 0, 0, 0); console.log(cou_details);
+        let cou_details = Coupon_get_discount_amount(0, 0, coupon_code, 25, 0, 0, 0); //console.log(cou_details);
         if (cou_details.disc_amt == 0) { swal('Alert!', 'Cannot add ' + coupon_code, "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false; };
     }
 
@@ -1339,8 +1342,9 @@ function ApplyCoupon() {
     $.ajax({
         type: "POST", url: '/Orders/GetCouponAmount', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
         success: function (result) {
-            var data = JSON.parse(result); console.log(data);
+            var data = JSON.parse(result); 
             if (data.length == 0) { swal('Alert!', 'Invalid code entered. Please try again.', "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false; }
+            if (data[0].use_it == false) { swal('Alert!', 'Invalid code entered. Please try again.', "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false; }
             //Check valid for email
             if (data[0].cus_email.length && data[0].cus_email != '') {
                 var get_email_arr = res[0].cus_email;
@@ -1658,7 +1662,6 @@ function calculateDiscountAcount() {
                 $(row).find(".RowTax").text(zTotalTax.toFixed(2)); $(row).find(".TotalAmount").data("taxamount", zTotalTax.toFixed(2));
             }
         });
-        console.log($(li).data('type'), zDiscType, cou_amt);
         //update Coupon Amount
         $(li).find("#cou_discamt").text(cou_amt.toFixed(2))
         if ($(li).data('type') == 'diff' && cou_amt > 0) $(li).removeClass('hidden');
@@ -1680,15 +1683,17 @@ function getItemShippingCharge() {
         let options = { strValue1: p_ids.join(','), strValue2: v_ids.join(','), strValue3: $("#ddlshipcountry").val(), strValue4: $("#ddlshipstate").val() };
         $(".TotalAmount").data("shippingamt", 0.00);
         $.post('/Orders/GetProductShipping', options).then(response => {
-            response = JSON.parse(response);
+            response = JSON.parse(response); 
             $("#order_line_items > tr.paid_item").each(function (index, tr) {
                 let proudct_item = response['Table'].find(el => el.vid === $(tr).data('vid'));
                 if (proudct_item != null) { $(tr).find(".TotalAmount").data("shippingamt", proudct_item.fee); }
+                else { $(tr).find(".TotalAmount").data("shippingamt", 0.00); }
                 let proudct_sr = response['Table1'].find(el => el.pid === $(tr).data('pid'));
-                if (proudct_sr != null) { $(tr).data("srfee", proudct_sr.fee); $(tr).data("sristaxable", proudct_sr.is_taxable); }
+                if (proudct_sr != null) { $(tr).data("srfee", proudct_sr.fee); $(tr).data("sristaxable", !!parseInt(proudct_sr.is_taxable)); }
+                else { $(tr).data("srfee", 0.00); $(tr).data("sristaxable", false); }
             });
-            calcFinalTotals();
-        }).catch(err => { $("#loader").hide(); swal('Error!', err, 'error'); }).always(function () { $("#loader").hide(); });
+            //calcFinalTotals();
+        }).then(response => { calculateDiscountAcount(); }).catch(err => { $("#loader").hide(); swal('Error!', err, 'error'); }).always(function () { $("#loader").hide(); });
     }
 }
 function calculateStateRecyclingFee() {
@@ -1854,13 +1859,6 @@ function updateCO() {
         error: function (xhr, status, err) { $("#loader").hide(); alert(err); },
         complete: function () { $("#loader").hide(); isEdit(false); },
     });
-    //ajaxFunc('/Orders/SaveCustomerOrder', obj, beforeSendFun, function (data) {
-    //    if (data.status == true) {
-    //        $('#order_line_items,#order_state_recycling_fee_line_items,#order_fee_line_items,#order_shipping_line_items,#order_refunds,#billCoupon,.refund-action').empty();
-    //        getOrderInfo();
-    //    }
-    //    else { swal('Alert!', data.message, "error").then((result) => { return false; }); }
-    //}, completeFun, errorFun);
     return false;
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Payment Modal ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

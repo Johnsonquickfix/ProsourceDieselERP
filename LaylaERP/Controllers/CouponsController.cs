@@ -1,5 +1,6 @@
 ﻿using LaylaERP.BAL;
 using LaylaERP.Models;
+using LaylaERP.UTILITIES;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -17,10 +18,12 @@ namespace LaylaERP.Controllers
         public ActionResult Index(long id = 0)
         {
             ViewBag.id = id;
+            ViewBag.user_role = CommanUtilities.Provider.GetCurrent().UserType;
             return View("Coupons");
         }
         public ActionResult ManageCoupons()
         {
+            ViewBag.user_role = CommanUtilities.Provider.GetCurrent().UserType;
             return View();
         }
         
@@ -125,8 +128,19 @@ namespace LaylaERP.Controllers
             int TotalRecord = 0;
             try
             {
-                DataTable dt = CouponsRepository.GetList(model.strValue1, model.strValue2, model.strValue3, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
-                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+                string usertype = CommanUtilities.Provider.GetCurrent().UserType;
+                DataTable dt = new DataTable();
+                int userid = Convert.ToInt32(CommanUtilities.Provider.GetCurrent().UserID);
+                if (usertype.ToUpper() == "ADMINISTRATOR")
+                {
+                    dt = CouponsRepository.GetList(model.strValue1, model.strValue2, model.strValue3, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                    result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+                }
+                else
+                {
+                    dt = CouponsRepository.GetListUserType(userid,model.strValue1, model.strValue2, model.strValue3, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                    result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+                }
             }
             catch { }
             return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, aaData = result }, 0);

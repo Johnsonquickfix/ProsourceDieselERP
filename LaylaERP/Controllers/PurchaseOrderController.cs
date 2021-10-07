@@ -206,7 +206,7 @@ namespace LaylaERP.Controllers
                 JSONresult = JsonConvert.SerializeObject(ds);
             }
             catch { }
-            return Json(new { add = om.address, add1 = om.address1, city = om.City, state = om.State, zip = om.postal_code, country = om.Country, phone = om.user_mobile, email = om.email, website = om.website, data = JSONresult }, 0);
+            return Json(new { com_name = om.CompanyName, add = om.address, add1 = om.address1, city = om.City, state = om.State, zip = om.postal_code, country = om.Country, phone = om.user_mobile, email = om.email, website = om.website, data = JSONresult }, 0);
         }
         [HttpGet]
         public JsonResult GetPurchaseOrderPayments(SearchModel model)

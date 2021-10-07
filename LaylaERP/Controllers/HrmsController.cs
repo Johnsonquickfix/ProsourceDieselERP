@@ -82,6 +82,11 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult LeaveListForAdmin()
+        {
+            return View();
+        }
+
         public ActionResult EditConfigurationList(long id)
         {
             ViewBag.id = id;
@@ -932,6 +937,18 @@ namespace LaylaERP.Controllers
             try
             {
                 DataTable dt = HrmsConfigurationRepository.GetDA();
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+
+        public JsonResult GetLeaveDetailsForAdmin()
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = LeaveRepository.GetLeaveDetailsForAdmin();
                 JSONresult = JsonConvert.SerializeObject(dt);
             }
             catch { }

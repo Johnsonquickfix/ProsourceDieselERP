@@ -670,7 +670,7 @@ function printinvoice_Bill(id, result, is_mail, is_inv) {
     myHtml += '                <td style="padding:15px;">';
     myHtml += '                    <table cellpadding="0" cellspacing="0" border="0" style="width:100%;border-bottom: 1px solid #ddd;">';
     myHtml += '                        <tr>';
-    myHtml += '                            <td style="padding:0; vertical-align: top;">';
+    myHtml += '                            <td style="padding:; vertical-align: top;">';
 
     myHtml += '            <p class="recipientInfo" style="width: 225px;margin:0px 0px 15px 0px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;">';
     myHtml += '               ' + data['po'][0].vendor_name + '<br>' + data['po'][0].address + '<br>' + data['po'][0].town + ', ' + data['po'][0].fk_state + ' ' + data['po'][0].zip + ', ' + (data['po'][0].fk_country == "CA" ? "Canada" : data['po'][0].fk_country == "CN" ? "China"  : data['po'][0].fk_country == "US" ? "United States" : data['po'][0].fk_country) + '<br>' + data['po'][0].vendor_email;
@@ -678,7 +678,7 @@ function printinvoice_Bill(id, result, is_mail, is_inv) {
 
 
     myHtml += '                            </td>';
-    myHtml += '                            <td style="padding:0; vertical-align: top;" align="right">';
+    myHtml += '                            <td style="padding:0px 0px 15px 0px; vertical-align: top;" align="right">';
     myHtml += '                                <table cellpadding="0" cellspacing="0" border="0">';
     myHtml += '                                    <tr>';
     myHtml += '                                        <td colspan="2" style="padding:0px 2.5px">';
@@ -713,28 +713,28 @@ function printinvoice_Bill(id, result, is_mail, is_inv) {
     myHtml += '<td style="padding:0px 15px 0px 15px;">';
     myHtml += '    <table cellpadding="0" width="100%" cellspacing="0" border="0">';
     myHtml += '    <tr width="100%">';
-    myHtml += '        <td  width="65%" style="padding:0;">';
-    myHtml += '            <h3 class="billto" style="font-family: sans-serif;font-size:20px;margin:0px 0px 5px 0px;;color:#2c2e2f;font-weight:200;">Sold to</h3>';
+    myHtml += '        <td  width="66%" style="padding:0;">';
+    myHtml += '            <h3 class="billto" style="font-family: sans-serif;font-size:20px;margin:0px 0px 15px 0px;;color:#2c2e2f;font-weight:200;">Sold to:</h3>';
     myHtml += '                                <img src="http://40.114.51.80/Images/layla1-logo.png" alt="" width="95" height="41" class="logo-size"/>';
-    myHtml += '            <h3 class="billto" style="font-family: sans-serif;font-size:20px;margin:0px 0px 5px 0px;;color:#2c2e2f;font-weight:200;">' + result.name +'</h3>';
+   // myHtml += '            <h3 class="billto" style="font-family: sans-serif;font-size:20px;margin:5px 0px 5px 0px;;color:#2c2e2f;font-weight:200;">' '</h3>';
     myHtml += '                                <p style="margin:15px 0px;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">';
-    myHtml += '                                    ' + result.add + ', <br>' + result.city + ', ' + result.state + ' ' + result.zip + ', <br>' + (result.country == "CA" ? "Canada" : result.country == "CN" ? "China" : result.country == "US" ? "United States" : result.country) + '.<br>';
+    myHtml += '                                    ' + result.name +', <br>' + result.add + ', <br>' + result.city + ', ' + result.state + ' ' + result.zip + ', <br>' + (result.country == "CA" ? "Canada" : result.country == "CN" ? "China" : result.country == "US" ? "United States" : result.country) + '.<br>';
     myHtml += '                                    Phone: 001 ' + result.phone.toString().replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + '<br />' + result.email + '<br />' + result.website;
     myHtml += '                                </p>';
     myHtml += '        </td>';
 
-    myHtml += '        <td width="35%" style="padding:0; vertical-align: top;" align="left">';
+    myHtml += '        <td width="34%" style="padding:0px 0px ; vertical-align: top;" align="left">';
     myHtml += '                                <table cellpadding="0" cellspacing="0" border="0">';
     myHtml += '                                    <tr>';
     myHtml += '                                        <td colspan="2" style="padding:0px 2.5px">';
-    myHtml += '            <h3 class="billto" style="font-family: sans-serif;font-size:20px;margin:0px 0px 5px 0px;;color:#2c2e2f;font-weight:200;">Delivery ADD:</h3> <br>';
-    myHtml += '            <h3 class="billto" style="font-family: sans-serif;font-size:20px;margin:0px 0px 5px 0px;;color:#2c2e2f;font-weight:200;">' + data['podvadd'][0].ref + '</h3> ';
+    myHtml += '            <h3 class="billto" style="font-family: sans-serif;font-size:20px;margin:0px 0px 15px 0px;;color:#2c2e2f;font-weight:200;">Delivery ADD:</h3>';
+    //myHtml += '            <h3 class="billto" style="font-family: sans-serif;font-size:20px;margin:0px 0px 5px 0px;;color:#2c2e2f;font-weight:200;">' + data['podvadd'][0].ref + '</h3> ';
     myHtml += '                                        </td>';
     myHtml += '                                    </tr>';
 
     myHtml += '                                    <tr>';
     myHtml += '                               <td <p style="margin:15px 0px;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">';
-    myHtml += '                                    ' + data['podvadd'][0].address + ', <br>' + data['podvadd'][0].address1 + ', ' + data['podvadd'][0].City + ' ' + data['podvadd'][0].state + ', ' + data['podvadd'][0].zip + ', <br>' + (data['podvadd'][0].Country == "CA" ? "Canada" : data['podvadd'][0].fk_country == "CN" ? "China"  : data['podvadd'][0].Country == "US" ? "United States" : data['podvadd'][0].Country) + '.<br>';
+    myHtml += '                                    ' + data['podvadd'][0].ref + ',<br>' + data['podvadd'][0].address + ', <br>' + data['podvadd'][0].address1 + ', ' + data['podvadd'][0].City + ' ' + data['podvadd'][0].state + ', ' + data['podvadd'][0].zip + ', <br>' + (data['podvadd'][0].Country == "CA" ? "Canada" : data['podvadd'][0].fk_country == "CN" ? "China"  : data['podvadd'][0].Country == "US" ? "United States" : data['podvadd'][0].Country) + '.<br>';
     myHtml += '                                    Phone: 001 ' + data['podvadd'][0].phone.toString().replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + '<br />' + data['podvadd'][0].email + '<br />' ;
     myHtml += '                                </p> </td>';
     myHtml += '                                    </tr>';

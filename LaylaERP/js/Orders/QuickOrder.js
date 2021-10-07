@@ -29,7 +29,7 @@
     $("#ddlshipcountry").change(function () { var obj = { id: $("#ddlshipcountry").val() }; BindStateCounty("ddlshipstate", obj); });
     $("#ddlshipstate").change(function (t) {
         t.preventDefault();
-        $.when(GetTaxRate()).done(function () { getItemShippingCharge(); });
+        $.when(GetTaxRate()).done(function () { getItemShippingCharge(true); });
     });
     $(document).on("click", "#btnApplyCoupon", function (t) { t.preventDefault(); CouponModal(); });
     //$("#billModal").on("keypress", function (e) { if (e.which == 13 && e.target.type != "textarea") { $("#btnCouponAdd").click(); } });
@@ -674,7 +674,7 @@ function getOrderInfo() {
                 $("#loader").hide(); swal('Alert!', "something went wrong.", "error");
             }
         }, function () { $("#loader").hide(); $('.billinfo').prop("disabled", true); }, function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); }, false);
-        getItemShippingCharge();
+        getItemShippingCharge(false);
     }
     else {
         $('.billnote').prop("disabled", true); $('.agentaddtocart').removeClass('hidden');
@@ -1686,7 +1686,7 @@ function calculateDiscountAcount() {
     calcFinalTotals();
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Shipping Charges ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-function getItemShippingCharge() {
+function getItemShippingCharge(isFinalcal) {
     let p_ids = [], v_ids = [];
     $("#order_line_items  > tr.paid_item").each(function () { p_ids.push($(this).data('pid')); v_ids.push($(this).data('vid')); });
     if (p_ids.join(',').length > 0 || v_ids.join(',').length > 0) {
@@ -1705,7 +1705,7 @@ function getItemShippingCharge() {
                     if (proudct_sr != null) { $(tr).data("srfee", proudct_sr.fee); $(tr).data("sristaxable", !!parseInt(proudct_sr.is_taxable)); }
                     else { $(tr).data("srfee", 0.00); $(tr).data("sristaxable", false); }
                 });
-            }).then(response => { calculateDiscountAcount(); }).catch(err => { $("#loader").hide(); swal('Error!', err, 'error'); }).always(function () { $("#loader").hide(); });
+            }).then(response => { if (isFinalcal) calculateDiscountAcount(); }).catch(err => { $("#loader").hide(); swal('Error!', err, 'error'); }).always(function () { $("#loader").hide(); });
         });
 
 

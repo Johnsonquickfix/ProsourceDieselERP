@@ -220,7 +220,7 @@ namespace LaylaERP.BAL
         {
             try
             {
-                 string varFieldsName = "wp_capabilities", varFieldsValue = "employee";
+                string varFieldsName = "wp_capabilities", varFieldsValue = "employee";
                 string strsql = "INSERT INTO wp_usermeta(user_id,meta_key,meta_value) VALUES(@user_id,@meta_key,@meta_value); select LAST_INSERT_ID() as ID;";
                 MySqlParameter[] para =
                 {
@@ -247,7 +247,7 @@ namespace LaylaERP.BAL
                 {
                     //2nd table
                     new MySqlParameter("@fk_emp", id),
-                   
+
                     new MySqlParameter("@birthplace", model.birthplace),
                     new MySqlParameter("@maritalstatus",model.maritalstatus),
                     new MySqlParameter("@address1", model.address1),
@@ -421,7 +421,7 @@ namespace LaylaERP.BAL
             return dt;
         }
         public static DataTable GetEmployeeAttendenceList(string userstatus, string fromdate, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
-      {
+        {
             DataTable dt = new DataTable();
             totalrows = 0;
             try
@@ -437,7 +437,7 @@ namespace LaylaERP.BAL
                     strWhr += " and fk_user = '" + user + "'";
                     strAdd = "'1' as Is_Employee,";
                 }
-                string strSql = "Select e.rowid ID, concat(e.firstname,' ',e.lastname) as name,d.designation, "+ strAdd.ToString() +" e.email,e.phone,e.gender,e.emp_type," +
+                string strSql = "Select e.rowid ID, concat(e.firstname,' ',e.lastname) as name,d.designation, " + strAdd.ToString() + " e.email,e.phone,e.gender,e.emp_type," +
                     "DATE_FORMAT(s.in_time, '%m-%d-%Y %T') as in_time, DATE_FORMAT(s.out_time, '%m-%d-%Y %T') out_time,SUBTIME(Time(s.out_time),Time(s.in_time)) as WorkingHours,s.is_approved,e.is_active from erp_hrms_emp e left join erp_hrms_attendance_sheet s on s.fk_emp = e.rowid " +
                     " and (date(in_time) >= '" + startDate.ToString("yyyy-MM-dd") + "' and date(in_time) <= '" + startDate.ToString("yyyy-MM-dd") + "' or date(out_time) >= '" + startDate.ToString("yyyy-MM-dd") + "' and date(out_time) <= '" + startDate.ToString("yyyy-MM-dd") + "')" +
                     " left join erp_hrms_empdetails ed on ed.fk_emp = e.rowid left join erp_hrms_designation d on d.rowid = ed.designation where 1 = 1 " +
@@ -472,7 +472,7 @@ namespace LaylaERP.BAL
         public static DataTable GetAttendanceReport(string fromdate, string todate)
         {
             DataTable dt = new DataTable();
-           
+
             try
             {
                 CultureInfo us = new CultureInfo("en-US");
@@ -495,7 +495,7 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@StartDate", startDate.ToString("yyyy-MM-dd")),
                     new MySqlParameter("@EndDate", endDate.ToString("yyyy-MM-dd")),
                };
-                DataSet ds = SQLHelper.ExecuteDataSet(strSql,para);
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql, para);
                 dt = ds.Tables[0];
                 //if (ds.Tables[1].Rows.Count > 0)
                 //    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
@@ -680,12 +680,12 @@ namespace LaylaERP.BAL
                 int result = 0;
                 CultureInfo us = new CultureInfo("en-US");
                 string[] ID = Empid.Split(',');
-                
+
                 string[] invalue = { };
                 if (intime != null) { invalue = intime.Split(','); }
-                
+
                 string[] outvalue = { };
-                if (outtime != null){ outvalue = outtime.Split(',');}
+                if (outtime != null) { outvalue = outtime.Split(','); }
                 for (int i = 0; i <= ID.Length - 1; i++)
                 {
                     Empid = ID[i].ToString();
@@ -698,11 +698,11 @@ namespace LaylaERP.BAL
                         if (IsAvailable != "0")
                         {
                             string inout = "";
-                            if(intime == "" || intime == null)
+                            if (intime == "" || intime == null)
                             {
                                 inout = ",out_time=@out_time";
                             }
-                            else if(outtime == "" || outtime == null)
+                            else if (outtime == "" || outtime == null)
                             {
                                 inout = ",in_time=@in_time";
                             }
@@ -710,7 +710,7 @@ namespace LaylaERP.BAL
                             {
                                 inout = ",in_time=@in_time,out_time=@out_time";
                             }
-                            strsql = "Update erp_hrms_attendance_sheet set fk_emp=@fk_emp "+inout+",month=@month,year=@year where rowid="+ IsAvailable + "";
+                            strsql = "Update erp_hrms_attendance_sheet set fk_emp=@fk_emp " + inout + ",month=@month,year=@year where rowid=" + IsAvailable + "";
                         }
                         else
                         {
@@ -727,6 +727,31 @@ namespace LaylaERP.BAL
                         };
                         result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
                     }
+                }
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+        public int AbsentEmployee(List<AttendenceModel> _list)
+        {
+            try
+            {
+                int result = 0;
+                string strsql = "";
+                foreach (AttendenceModel list in _list)
+                {
+                    string EmpID = list.strValue1;
+                    string intime = list.strValue2;
+                    string outtime = list.strValue3;
+                    string IsAvailable = GetPresentEmp(EmpID, intime, outtime).ToString();
+                    if (IsAvailable != "0")
+                    {
+                        strsql = "Update erp_hrms_attendance_sheet set status='A', in_time='' ,out_time='' where rowid=" + IsAvailable + " and fk_emp=" + EmpID + "";
+                    }
+                    result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql));
                 }
                 return result;
             }
@@ -774,7 +799,6 @@ namespace LaylaERP.BAL
                 throw ex;
             }
         }
-
         //My code
         public static DataSet GetLeaveType()
         {
@@ -796,7 +820,7 @@ namespace LaylaERP.BAL
             {
                 if (!string.IsNullOrEmpty(fkuser))
                 {
-                    DS = SQLHelper.ExecuteDataSet("Select rowid, firstname from erp_hrms_emp where is_active=1 and fk_user='"+fkuser+"' order by rowid");
+                    DS = SQLHelper.ExecuteDataSet("Select rowid, firstname from erp_hrms_emp where is_active=1 and fk_user='" + fkuser + "' order by rowid");
                 }
                 else
                 {
@@ -850,7 +874,7 @@ namespace LaylaERP.BAL
                 string strquery = string.Empty;
                 if (!string.IsNullOrEmpty(fkuser))
                 {
-                    strquery = "SELECT ehl.rowid , CONCAT(ehe.firstname, ' ', ehe.lastname) as name, ehl.leave_type as leavetype,DATE_FORMAT(ehl.from_date, '%m-%d-%Y') as date_from ,DATE_FORMAT(ehl.to_date,'%m-%d-%Y') as date_to,FORMAT(ehl.days,2) as days,(case WHEN ehl.is_approved=0 then 'Pending' when ehl.is_approved=1 then 'Approved' when ehl.is_approved=2 then 'Rejected' end) as status from erp_hrms_leave ehl Left join erp_hrms_emp ehe on ehe.rowid = ehl.fk_emp WHERE ehe.fk_user='"+ fkuser + "' ";
+                    strquery = "SELECT ehl.rowid , CONCAT(ehe.firstname, ' ', ehe.lastname) as name, ehl.leave_type as leavetype,DATE_FORMAT(ehl.from_date, '%m-%d-%Y') as date_from ,DATE_FORMAT(ehl.to_date,'%m-%d-%Y') as date_to,FORMAT(ehl.days,2) as days,(case WHEN ehl.is_approved=0 then 'Pending' when ehl.is_approved=1 then 'Approved' when ehl.is_approved=2 then 'Rejected' end) as status from erp_hrms_leave ehl Left join erp_hrms_emp ehe on ehe.rowid = ehl.fk_emp WHERE ehe.fk_user='" + fkuser + "' ";
                 }
                 else
                 {

@@ -166,9 +166,9 @@ namespace LaylaERP.Controllers
         {
             if (model.rowid > 0)
             {
-                int ID = HrmsRepository.EditEmployeeBasicInfo(model,model.rowid);
+                int ID = HrmsRepository.EditEmployeeBasicInfo(model, model.rowid);
                 HrmsRepository.EditEmployeeBasicDetails(model, model.rowid);
-                return Json(new { status = true, message = "Data has been Updated successfully!!", url = "", id= model.rowid }, 0);
+                return Json(new { status = true, message = "Data has been Updated successfully!!", url = "", id = model.rowid }, 0);
             }
             else
             {
@@ -176,12 +176,12 @@ namespace LaylaERP.Controllers
                 if (UserID > 0)
                 {
                     HrmsRepository.AddEmployeeUserMetaData(UserID);
-                    int ID = HrmsRepository.AddEmployeeBasicInfo(model,UserID);
+                    int ID = HrmsRepository.AddEmployeeBasicInfo(model, UserID);
                     if (ID > 0)
                     {
                         HrmsRepository.AddEmployeeBasicDetails(model, ID);
                     }
-                    return Json(new { status = true, message = "Data has been saved successfully!!", url = "", id=ID }, 0);
+                    return Json(new { status = true, message = "Data has been saved successfully!!", url = "", id = ID }, 0);
                 }
                 else
                 {
@@ -244,7 +244,7 @@ namespace LaylaERP.Controllers
             int TotalRecord = 0;
             try
             {
-                DataTable dt = HrmsRepository.GetEmployeeAttendenceList(model.strValue1,model.strValue2, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                DataTable dt = HrmsRepository.GetEmployeeAttendenceList(model.strValue1, model.strValue2, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
                 result = JsonConvert.SerializeObject(dt);
             }
             catch (Exception ex) { throw ex; }
@@ -361,20 +361,20 @@ namespace LaylaERP.Controllers
                         //}
                         //else
                         //{
-                            string UploadPath = Path.Combine(Server.MapPath("~/Content/EmployeeProfileImage"));
-                            UploadPath = UploadPath + "\\";
-                            model.ProfileImagePath = UploadPath + FileName;
-                            var ImagePath = "~/Content/EmployeeProfileImage/" + FileName;
-                            EmpImageFile.SaveAs(model.ProfileImagePath);
-                            int resultOne = HrmsRepository.EmployeeProfileUpload(fk_emp, FileName, ImagePath);
-                            if (resultOne > 0)
-                            {
-                                return Json(new { status = true, message = "File Upload successfully!!", url = "" }, 0);
-                            }
-                            else
-                            {
-                                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
-                            }
+                        string UploadPath = Path.Combine(Server.MapPath("~/Content/EmployeeProfileImage"));
+                        UploadPath = UploadPath + "\\";
+                        model.ProfileImagePath = UploadPath + FileName;
+                        var ImagePath = "~/Content/EmployeeProfileImage/" + FileName;
+                        EmpImageFile.SaveAs(model.ProfileImagePath);
+                        int resultOne = HrmsRepository.EmployeeProfileUpload(fk_emp, FileName, ImagePath);
+                        if (resultOne > 0)
+                        {
+                            return Json(new { status = true, message = "File Upload successfully!!", url = "" }, 0);
+                        }
+                        else
+                        {
+                            return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                        }
                         //}
                     }
                     else
@@ -421,13 +421,13 @@ namespace LaylaERP.Controllers
             }
         }
         public JsonResult AddAttendence(HrmsModel model)
-         {
+        {
             if (ModelState.IsValid)
             {
                 string Empid = model.strValue1;
                 string intime = model.strValue2;
                 string outtime = model.strValue3;
-                
+
 
                 if (model.rowid > 0)
                 {
@@ -448,6 +448,18 @@ namespace LaylaERP.Controllers
                 }
             }
             return Json(new { status = false, message = "Invalid Details", url = "", id = 0 }, 0);
+        }
+        public JsonResult AbsentEmployee(List<AttendenceModel> model)
+        {
+            int ID = new HrmsRepository().AbsentEmployee(model);
+            if (ID > 0)
+            {
+                return Json(new { status = true, message = "Employee Absent saved successfully!!", url = "", id = ID }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "something went wrong!! Attendence not saved ", url = "", id = 0 }, 0);
+            }
         }
 
         //My code
@@ -855,7 +867,7 @@ namespace LaylaERP.Controllers
             string JSONresult = string.Empty;
             try
             {
-                DataTable dt =LeaveRepository.GetLeaveCalculation(i);
+                DataTable dt = LeaveRepository.GetLeaveCalculation(i);
                 JSONresult = JsonConvert.SerializeObject(dt);
             }
             catch { }
@@ -868,7 +880,7 @@ namespace LaylaERP.Controllers
             int TotalRecord = 0;
             try
             {
-                DataTable dt = LeaveRepository.GetPendingLeaveList(model.strValue2,model.strValue3,model.strValue1, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                DataTable dt = LeaveRepository.GetPendingLeaveList(model.strValue2, model.strValue3, model.strValue1, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
                 result = JsonConvert.SerializeObject(dt);
             }
             catch (Exception ex) { throw ex; }

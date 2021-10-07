@@ -25,6 +25,7 @@
     .pac-container {
         z-index: 1051 !important;
     }
+
     .swal2-container .swal2-popup {
         max-width: 500px;
     }
@@ -46,7 +47,7 @@
     <div class="box box-primary create-user-primary mb-35">
         <div class="box-header with-border">
             <input type="hidden" id="hfOrderNo" value="@ViewBag.id" />
-            <input type="hidden" id="hfTaxRate" value="0" />
+            <input type="hidden" id="hfTaxRate" value="0" data-srfee="0" />
             <input type="hidden" id="hfFreighttaxable" value="false" />
             <h4 class="box-title" id="lblOrderNo" data-pay_option="@ViewBag.pay_option" data-pay_by="" data-pay_id="">Order #000000 detail</h4>
             <div class="radtype_span">
@@ -109,10 +110,13 @@
                             <input type="text" class="form-control billinfo" id="txtbilladdress2" placeholder="Enter Address Line 2">
                         </div>
                         <div class="form-group col-md-6">
-                            <input type="text" class="form-control billinfo" id="txtbillzipcode" placeholder="Zip Code">
+                            <input type="text" class="form-control billinfo" id="txtbillcity" placeholder="Enter City">
                         </div>
                         <div class="form-group col-md-6">
-                            <input type="text" class="form-control billinfo" id="txtbillcity" placeholder="Enter City">
+                            <select class="form-control select2 billinfo" id="ddlbillstate" placeholder="State / County" style="width: 100%;"></select>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <input type="text" class="form-control billinfo" id="txtbillzipcode" placeholder="Zip Code">
                         </div>
                         <div class="form-group col-md-6">
                             <select class="form-control select2 billinfo" id="ddlbillcountry" placeholder="Country / Region" style="width: 100%;">
@@ -120,9 +124,6 @@
                                 <option value="CA">Canada</option>
                                 <option value="US" selected>United States (US)</option>
                             </select>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <select class="form-control select2 billinfo" id="ddlbillstate" placeholder="State / County" style="width: 100%;"></select>
                         </div>
                         <div class="form-group col-md-12">
                             <input type="text" class="form-control billinfo" id="txtbillemail" placeholder="Enter Email Address">
@@ -133,7 +134,7 @@
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <h2 class="sm-heading">Shipping Address <a href="javascript:;" class="billinfo" onclick="copyBillingAddress();"> Copy Billing Address</a></h2>
+                    <h2 class="sm-heading">Shipping Address<button type="button" class="btn btn-danger billinfo" data-toggle="tooltip" title="" data-original-title="Copy Billing Address" onclick="copyBillingAddress();">Copy Billing Address</button></h2>
                     <div class="row row-small">
                         <div class="form-group col-md-6">
                             <input type="email" class="form-control billinfo" id="txtshipfirstname" placeholder="First Name">
@@ -154,10 +155,13 @@
                             <input type="text" class="form-control billinfo" id="txtshipaddress2" placeholder="Enter Address Line 2">
                         </div>
                         <div class="form-group col-md-6">
-                            <input type="text" class="form-control billinfo" id="txtshipzipcode" placeholder="Zip Code">
+                            <input type="text" class="form-control billinfo" id="txtshipcity" placeholder="Enter City">
                         </div>
                         <div class="form-group col-md-6">
-                            <input type="text" class="form-control billinfo" id="txtshipcity" placeholder="Enter City">
+                            <select class="form-control select2 billinfo" id="ddlshipstate" placeholder="State / County" style="width: 100%;"></select>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <input type="text" class="form-control billinfo" id="txtshipzipcode" placeholder="Zip Code">
                         </div>
                         <div class="form-group col-md-6">
                             <select class="form-control select2 billinfo" id="ddlshipcountry" placeholder="Country / Region" style="width: 100%;">
@@ -165,9 +169,6 @@
                                 <option value="CA">Canada</option>
                                 <option value="US" selected>United States (US)</option>
                             </select>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <select class="form-control select2 billinfo" id="ddlshipstate" placeholder="State / County" style="width: 100%;"></select>
                         </div>
                         <div class="form-group col-md-12">
                             <textarea class="form-control billinfo" id="txtCustomerNotes" placeholder="Customer notes about the order" rows="3"></textarea>

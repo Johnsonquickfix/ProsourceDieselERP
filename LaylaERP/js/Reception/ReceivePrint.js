@@ -727,7 +727,7 @@ function printinvoice_Bill(id, result, is_mail, is_inv) {
     myHtml += '                                <table cellpadding="0" cellspacing="0" border="0">';
     myHtml += '                                    <tr>';
     myHtml += '                                        <td colspan="2" style="padding:0px 2.5px">';
-    myHtml += '            <h3 class="billto" style="font-family: sans-serif;font-size:20px;margin:0px 0px 15px 0px;;color:#2c2e2f;font-weight:200;">Delivery ADD:</h3>';
+    myHtml += '            <h3 class="billto" style="font-family: sans-serif;font-size:20px;margin:0px 0px 15px 0px;;color:#2c2e2f;font-weight:200;">Delivery Address:</h3>';
     //myHtml += '            <h3 class="billto" style="font-family: sans-serif;font-size:20px;margin:0px 0px 5px 0px;;color:#2c2e2f;font-weight:200;">' + data['podvadd'][0].ref + '</h3> ';
     myHtml += '                                        </td>';
     myHtml += '                                    </tr>';

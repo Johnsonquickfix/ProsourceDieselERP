@@ -3,7 +3,19 @@
         $('.subsubsub li a').removeClass('current');
         $(this).addClass('current');
     });
-    GetDetails();
+    let usertype = $('#hfuserType').val();
+    if (usertype.toUpperCase() == "ADMINISTRATOR") {
+        GetDetails();
+        $("#btnautogenerate").show();
+        $("#divbulkaction").show();
+        $("#btnAdd").show();
+    }
+    else {
+        $("#allul li").hide();
+        $("#btnautogenerate").hide();
+        $("#divbulkaction").hide();
+        $("#btnAdd").hide();
+    }
     setTimeout(function () { dataGridLoad(''); }, 100);
     //$("#loader").hide();
     $('#all').click(function () { var order_type = ""; $('#hfType').val(order_type); dataGridLoad(order_type); });

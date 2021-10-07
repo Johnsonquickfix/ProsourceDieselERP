@@ -43,7 +43,7 @@ function getPurchaseOrderPrint(id, is_mail) {
     }
 }
 function printinvoice(id, result, is_mail, is_inv) {
-    let data = JSON.parse(result.data); //console.log(data);
+    let data = JSON.parse(result.data); console.log(result);
     let inv_title = is_inv ? 'Invoice' : 'Purchase Order';
     
     let total_qty = 0, total_gm = 0.00, total_tax = 0.00, total_shamt = 0.00, total_discamt = 0.00, total_other = 0.00, paid_amt = 0.00;  total_net = 0.00;
@@ -61,7 +61,7 @@ function printinvoice(id, result, is_mail, is_inv) {
     myHtml += '                            <td style="padding:0; vertical-align: top;">';
     myHtml += '                                <img src="http://40.114.51.80/Images/layla1-logo.png" alt="" width="95" height="41" class="logo-size"/>';
     myHtml += '                                <p style="margin:15px 0px;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">';
-    myHtml += '                                    ' + result.add + ', <br>' + result.city + ', ' + result.state + ' ' + result.zip + ', <br>' + (result.country == "CA" ? "Canada" : result.country == "US" ? "United States" : result.country) + '.<br>';
+    myHtml += '                                    ' + result.com_name + ', <br>' + result.add + ', <br>' + result.city + ', ' + result.state + ' ' + result.zip + ', <br>' + (result.country == "CA" ? "Canada" : result.country == "US" ? "United States" : result.country) + '.<br>';
     myHtml += '                                    Phone: 001 ' + result.phone.toString().replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + '<br />' + result.email + '<br />' + result.website;
     myHtml += '                                </p>';
     myHtml += '                            </td>';
@@ -95,7 +95,7 @@ function printinvoice(id, result, is_mail, is_inv) {
     myHtml += '    <table cellpadding="0" cellspacing="0" border="0">';
     myHtml += '    <tr>';
     myHtml += '        <td style="padding:0;">';
-    myHtml += '            <h3 class="billto" style="font-family: sans-serif;font-size:20px;margin:0px 0px 5px 0px;;color:#2c2e2f;font-weight:200;">Vendor :</h3>';
+    myHtml += '            <h3 class="billto" style="font-family: sans-serif;font-size:20px;margin:0px 0px 5px 0px;;color:#2c2e2f;font-weight:200;">Vendor:</h3>';
     myHtml += '            <p class="recipientInfo" style="width: 225px;margin:0px 0px 15px 0px;font-family: sans-serif;font-size: 15px;color: #4f4f4f;line-height: 1.4;">';
     myHtml += '               ' + data['po'][0].vendor_name + '<br>' + data['po'][0].address + '<br>' + data['po'][0].town + ', ' + data['po'][0].fk_state + ' ' + data['po'][0].zip + ', ' + (data['po'][0].fk_country == "CA" ? "Canada" : data['po'][0].fk_country == "US" ? "United States" : data['po'][0].fk_country) + '<br>' + data['po'][0].vendor_email;
     myHtml += '            </p>';

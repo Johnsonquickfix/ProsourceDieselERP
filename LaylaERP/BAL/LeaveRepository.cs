@@ -227,5 +227,43 @@ namespace LaylaERP.BAL
             return dt;
         }
 
+        public static DataTable GetLeaveDetailsForAdmin()
+        {
+            DataTable dtr = new DataTable();
+            try
+            {
+                string strquery = string.Empty;
+                /*strquery = "select r.fk_emp, concat(ehe.firstname,' ',ehe.lastname) as name,"
+                    + "SUM(case when p.rowid = 1 and r.is_approved = 1 then(p.leave_days - r.days) else 0 end) as CL,"
+                    + "SUM(case when p.rowid = 2 and r.is_approved = 1 then(p.leave_days - r.days) else 0 end) as ML,"
+                    + "SUM(case when p.rowid = 3 and r.is_approved = 1 then(p.leave_days - r.days) else 0 end) as SL,"
+                    + "SUM(case when p.rowid = 4 and r.is_approved = 1 then(p.leave_days - r.days) else 0 end) as LWP,"
+                    + "SUM(case when p.rowid = 5 and r.is_approved = 1 then(p.leave_days - r.days) else 0 end) as HF"
+                    + " from erp_hrms_leave r left join erp_hrms_leave_type p on p.rowid = r.leave_code LEFT join erp_hrms_emp ehe on ehe.rowid = r.fk_emp GROUP by r.fk_emp";*/
+
+                strquery = "select r.fk_emp, concat(ehe.firstname, ' ', ehe.lastname) as name, ehd.designation,"
+                           + " format(min(if(r.leave_code = 5 and r.is_approved = 1, (p5.leave_days - r.days), p5.leave_days)),2) HF,"
+                           + " format(min(if(r.leave_code = 4 and r.is_approved = 1, (p4.leave_days - r.days), p4.leave_days)),2) LWP,"
+                           + " format(min(if(r.leave_code = 3 and r.is_approved = 1, (p3.leave_days - r.days), p3.leave_days)),2) SL,"
+                           + " format(min(if(r.leave_code = 2 and r.is_approved = 1, (p2.leave_days - r.days), p2.leave_days)),2) ML,"
+                           + " format(min(if(r.leave_code = 1 and r.is_approved = 1, (p1.leave_days - r.days), p1.leave_days)),2) CL"
+                           + " from erp_hrms_leave r"
+                           + " left join erp_hrms_leave_type p1 on p1.rowid = 1"
+                           + " left join erp_hrms_leave_type p2 on p2.rowid = 2"
+                           + " left join erp_hrms_leave_type p3 on p3.rowid = 3"
+                           + " left join erp_hrms_leave_type p4 on p4.rowid = 4"
+                           + " left join erp_hrms_leave_type p5 on p5.rowid = 5"
+                           + " left join erp_hrms_emp ehe on ehe.rowid = r.fk_emp"
+                           + " left join erp_hrms_empdetails ehed on ehed.fk_emp = ehe.rowid"
+                           + " left join erp_hrms_designation ehd on ehd.rowid = ehed.designation"
+                           + " GROUP by r.fk_emp";
+                DataSet ds = SQLHelper.ExecuteDataSet(strquery);
+                dtr = ds.Tables[0];
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dtr;
+        }
+
     }
 }

@@ -197,6 +197,7 @@
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\ExportController.cs" />
     <Compile Include="Controllers\FeeNTaxController.cs" />
+    <Compile Include="Controllers\GiftcardController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\HrmsController.cs" />
     <Compile Include="Controllers\InventoryController.cs" />
@@ -610,6 +611,7 @@
     <Content Include="Images\Customer.png" />
     <Content Include="Images\datagrid_icons.png" />
     <Content Include="Images\datebox_arrow.png" />
+    <Content Include="Images\gift-card.png" />
     <Content Include="Images\home-404.jpg" />
     <Content Include="Images\layla1-logo.png" />
     <Content Include="Images\layla32.png" />
@@ -649,6 +651,7 @@
     <Content Include="js\EmailSetting\EmailSettingNotifications.js" />
     <Content Include="js\FeeNTax\FeeNTax.js" />
     <Content Include="js\GooglePlace\index.js" />
+    <Content Include="js\Hrms\Payroll.js" />
     <Content Include="js\Hrms\AttendenceReport.js" />
     <Content Include="js\Hrms\Attendence.js" />
     <Content Include="js\Hrms\ConfigurationList.js" />
@@ -661,13 +664,12 @@
     <Content Include="js\Hrms\HrmsConfiguration.js" />
     <Content Include="js\Hrms\Leave.js" />
     <Content Include="js\Hrms\LeaveList.js" />
+    <Content Include="js\Hrms\LeaveListForAdmin.js" />
     <Content Include="js\Inventory\ConsignmentInventory.js" />
     <Content Include="js\Inventory\Inventory.js" />
     <Content Include="js\jquery.mask.js" />
-    <Content Include="js\Marketing\AutoGenerateCoupons.js" />
     <Content Include="js\Marketing\Coupons.js" />
     <Content Include="js\Marketing\CouponsManage.js" />
-    <Content Include="js\Marketing\NewAutoGenerate.js" />
     <Content Include="js\Orders\NewOrder.js" />
     <Content Include="js\Orders\OrderCoupons.js" />
     <Content Include="js\Orders\OrderHistory.js" />
@@ -959,8 +961,20 @@
     <Content Include="Views\Accounting\AccountBalance.cshtml" />
     <Content Include="Views\Hrms\AttendanceReport.cshtml" />
     <Content Include="Views\Hrms\Configsetup.cshtml" />
-    <Content Include="Views\Coupons\AutoGenerate.cshtml" />
-    <Content Include="Views\Coupons\NewAutoGenerate.cshtml" />
+    <Content Include="Views\Hrms\LeaveListForAdmin.cshtml" />
+    <Content Include="Views\Giftcard\Giftcard.cshtml" />
+    <Content Include="Views\EmailNotifications\Cancel.cshtml" />
+    <Content Include="Views\EmailNotifications\Completed.cshtml" />
+    <Content Include="Views\EmailNotifications\Customerinvoice.cshtml" />
+    <Content Include="Views\EmailNotifications\Customernote.cshtml" />
+    <Content Include="Views\EmailNotifications\Failed.cshtml" />
+    <Content Include="Views\EmailNotifications\Giftcard.cshtml" />
+    <Content Include="Views\EmailNotifications\Index.cshtml" />
+    <Content Include="Views\EmailNotifications\Newaccount.cshtml" />
+    <Content Include="Views\EmailNotifications\Onhold.cshtml" />
+    <Content Include="Views\EmailNotifications\Processing.cshtml" />
+    <Content Include="Views\EmailNotifications\Refunded.cshtml" />
+    <Content Include="Views\EmailNotifications\Resetpassword.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

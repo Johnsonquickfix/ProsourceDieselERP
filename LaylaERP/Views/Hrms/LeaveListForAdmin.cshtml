@@ -1,0 +1,59 @@
+﻿
+@{
+    ViewBag.Title = "LeaveDetailsForAdmin";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+<link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
+@*datatables js*@
+<script src="~/Content/AdminLTE-3.1.0/datatables/datatables.min.js" type="text/javascript"></script>
+<script src="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/js/dataTables.bootstrap.min.js" type="text/javascript"></script>
+
+<div class="page-title">
+    <h2 class="page-heading">Leave List</h2>
+</div>
+<section class="content section-content table-design customer-section">
+    @*<div class="user-top-section">
+            <div class="tablenav top tablenav-top2">
+                <div class="alignleft actions bulkactions">
+                    <select class="form-control" id="ddlStatusPending" placeholder="Select User">
+                        <option value="1">Approved</option>
+                        <option value="2">Rejected</option>
+                        <option value="0">Pending</option>
+                    </select>
+                    <span title="Click Here To Change Status Of Leave After Selecting Checkbox" data-placement="bottom" data-toggle="tooltip"><button type="button" id="btnChangePending" class="btn btn-primary btn-flat button">Change</button></span>&nbsp;&nbsp;
+                    <span class="even-space">From</span><input type="text" class="form-control" id="txtfromdate" />
+                    <span class="even-space">To</span><input type="text" class="form-control" id="txttodate" />
+                    <span title="Click Here To Search Pending Leave Datewise" data-placement="bottom" data-toggle="tooltip"><button type="button" id="btnGo" class="btn btn-primary btn-flat button">Go</button></span>
+                </div>
+            </div>
+        </div>*@
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <table id="LeaveCalculationList" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Designation</th>
+                                        <th>Casual leave</th>
+                                        <th>Medical leave</th>
+                                        <th>Sick leave</th>
+                                        <th>Leave without pay</th>
+                                        <th>Half Day</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="@Url.Content("~/js/Hrms/LeaveListForAdmin.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>

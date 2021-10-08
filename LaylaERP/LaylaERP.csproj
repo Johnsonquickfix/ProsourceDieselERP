@@ -197,6 +197,7 @@
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\ExportController.cs" />
     <Compile Include="Controllers\FeeNTaxController.cs" />
+    <Compile Include="Controllers\GiftcardController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\HrmsController.cs" />
     <Compile Include="Controllers\InventoryController.cs" />
@@ -961,6 +962,7 @@
     <Content Include="Views\Hrms\AttendanceReport.cshtml" />
     <Content Include="Views\Hrms\Configsetup.cshtml" />
     <Content Include="Views\Hrms\LeaveListForAdmin.cshtml" />
+    <Content Include="Views\Giftcard\Giftcard.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

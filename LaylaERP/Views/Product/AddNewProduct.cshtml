@@ -114,10 +114,13 @@
                                     <optgroup label="Product Type">
                                         <option value="2" selected="selected">Simple product</option>
                                         @*<option value="3">Grouped product</option>
-                                        <option value="5">External/Affiliate product</option>*@
+                    <option value="5">External/Affiliate product</option>*@
                                         <option value="4">Variable product</option>
                                     </optgroup>
                                 </select>
+                            </div>
+                            <div class="form-check d-flex">                              
+                              <input type="checkbox" class="form-check-input" id="chkgiftcard"><label for="chkgiftcard">Gift Card</label>                         
                             </div>
                         </div>
                     </div>
@@ -172,6 +175,23 @@
                                         <input type="text" id="txtPublishDate" class="form-control billinfo" placeholder="Publish Date (MM/DD/YYYY)" autocomplete="off" />
                                     </div>
                                 </div>
+
+                                <div id="divdayexpire" class="form-group d-flex">
+                                    <label class="col-sm-3 control-label">Days to expire</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" id="txtdaysexpire" class="form-control">
+                                    </div>
+                                </div>
+                                <div id="divRecipientemail" class="form-group d-flex">
+                                    <label class="col-sm-3 control-label">Recipient email</label>
+                                    <div class="col-sm-9">
+                                        <select id="ddlRecipientemail" class="form-control">
+                                            <option value="none">None</option>
+                                            <option value="product" selected="selected">Use product</option>                                        
+                                        </select>
+                                    </div>
+                                </div>
+
                             </div>
                             <div class="tab-pane" id="tab_2">
                                 <div class="form-group d-flex">

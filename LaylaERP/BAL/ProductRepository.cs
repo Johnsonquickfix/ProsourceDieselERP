@@ -83,7 +83,7 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "SELECT P.ID ID,post_title,post_content,post_name,guid,ifnull(thumbnails,'default.png') thumbnails,ifnull(image,'default.png') image,"
+                string strSql = "SELECT P.ID ID,post_title,post_content,post_name,guid,ifnull(thumbnails,'default.png') thumbnails,ifnull(image,'default.png') image,pmgiftcard.meta_value giftcard,pmexpday.meta_value expirationdayes,pmtemlatimage.meta_value gifttemplate,"
                              + "  DATE_FORMAT(P.post_modified,'%m/%d/%Y') Publish_Date,pmregularamount.meta_value regularamount,pmsaleprice.meta_value saleprice,pmtotalsales.meta_value totalsales,pmtaxstatus.meta_value axstatus,pmtaxclass.meta_value taxclass,pmmanagestock.meta_value managestock,pmsoldindividually.meta_value soldindividually,"
                              + "  pmbackorders.meta_value backorders,pmweight.meta_value weight,pmlength.meta_value length,pmeheight.meta_value height,pmwidth.meta_value width,pmupsellids.meta_value upsellids,pmcrosssellids.meta_value crosssellids,"
                              + "  pmstock.meta_value stock,pmstockstatus.meta_value stockstatus,pmlowstockamount.meta_value lowstockamount, pmsku.meta_value sku,pmsatt.meta_value productattributes,(SELECT group_concat(ID) FROM `wp_posts` where post_parent = P.ID) VariantID,"
@@ -110,6 +110,9 @@ namespace LaylaERP.BAL
                              + " left join wp_postmeta pmlowstockamount on P.ID = pmlowstockamount.post_id and pmlowstockamount.meta_key = '_low_stock_amount'"
                              + " left join wp_postmeta pmsku on P.ID = pmsku.post_id and pmsku.meta_key = '_sku'"
                              + " left join wp_postmeta pmsatt on P.ID = pmsatt.post_id and pmsatt.meta_key = '_product_attributes'"
+                             + " left join wp_postmeta pmgiftcard on P.ID = pmgiftcard.post_id and pmgiftcard.meta_key = '_gift_card'"
+                             + " left join wp_postmeta pmexpday on P.ID = pmexpday.post_id and pmexpday.meta_key = '_gift_card_expiration_days'"
+                             + " left join wp_postmeta pmtemlatimage on P.ID = pmtemlatimage.post_id and pmtemlatimage.meta_key = '_gift_card_template_default_use_image'"
                              + " left join wp_image wpimg on wpimg.id = P.ID "
                              + " WHERE P.post_type in ('product','product_variation') and P.ID = " + model.strVal + " ";
 

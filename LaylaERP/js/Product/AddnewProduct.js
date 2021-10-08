@@ -29,7 +29,7 @@
         })
     });
 
-
+    $('#chkgiftcard').change();
 
     if (id != "" && id != "AddNewProduct") {
         $("#target :input").prop("disabled", true);       
@@ -162,17 +162,9 @@
             $('#dvsock').hide();
         }
     });
-    $('#divdayexpire').hide();
-    $('#divRecipientemail').hide();
-    $('#chkgiftcard').change(function () {
-        if ($(this).prop("checked")) {
-            $('#divdayexpire').show();
-            $('#divRecipientemail').show();
-        } else {
-            $('#divdayexpire').hide();
-            $('#divRecipientemail').hide();
-        }
-    });
+   // $('#divdayexpire').hide();
+    //$('#divRecipientemail').hide();
+   
 
     $('#ddlProductType').change(function () {
 
@@ -734,6 +726,18 @@
 
 });
 
+$('#chkgiftcard').change(function () {
+    if ($(this).prop("checked")) {
+        console.log('s');
+        $('#divdayexpire').show();
+        $('#divRecipientemail').show();
+    } else {
+        console.log('N');
+        $('#divdayexpire').hide();
+        $('#divRecipientemail').hide();
+    }
+});
+
 function isEdit(val) {
     localStorage.setItem('isEdit', val ? 'yes' : 'no');
 }
@@ -1122,17 +1126,23 @@ function GetDataByID(order_id) {
             }
 
             if (i[0].giftcard == "yes") {
-                $("#chkgiftcard").prop("checked", true);
+  
+                $("#chkgiftcard").prop("checked", true);        
+
                 $('#divdayexpire').show();
-                $('#divRecipientemail').show();
+    
+               // $('#divRecipientemail').show();
+          
                 $("#txtdaysexpire").val(i[0].expirationdayes);
+
                 $('#ddlRecipientemail').val(i[0].gifttemplate.trim()).trigger('change');
+ 
             }
             else {
                 $('#divdayexpire').hide();
                 $('#divRecipientemail').hide();
             }
-
+            $('#chkgiftcard').change();
 
             $("#txtStockquantity").val(i[0].stock);
             $('#txtallowbackorders').val(i[0].backorders).trigger('change');

@@ -956,7 +956,6 @@ namespace LaylaERP.Controllers
             return Json(JSONresult, 0);
         }
 
-        #region Payroll
 
         public JsonResult GetEmployeePayrollList(JqDataTableModel model)
         {
@@ -968,7 +967,8 @@ namespace LaylaERP.Controllers
                 result = JsonConvert.SerializeObject(dt);
             }
             catch { }
-            return Json(JSONresult, 0);
+            //return Json(JSONresult, 0);
+            return Json(0);
         }
 
         [HttpPost]

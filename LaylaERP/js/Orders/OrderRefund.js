@@ -305,11 +305,10 @@ function calculateRefunAmount() {
     freeQtyUpdate();
     let _items = createItemsList();
     //getStateRecyclingCharge();
-    for (var i = 0; i < _items.length; i++) {
-        qty += _items[i].refundqty; subtotal += _items[i].total; shippingtotal += _items[i].shipping_amount;
-        taxtotal += _items[i].tax_amount;
-        total += (_items[i].total - _items[i].discount + _items[i].tax_amount + _items[i].shipping_amount);
-    }
+    $.each(_items, function (key, item) {
+        qty += item.refundqty; subtotal += item.total; shippingtotal += item.shipping_amount;
+        taxtotal += item.tax_amount; total += (item.total - item.discount + item.tax_amount + item.shipping_amount);
+    });
     // Fee
     $('#order_fee_line_items > tr').each(function (index, tr) {
         let zAmt = 0.00;
@@ -501,7 +500,7 @@ function PaypalRefundsPayment() {
     let oid = parseInt($('#hfOrderNo').val()) || 0;
     let invoice_no = $('#lblOrderNo').data('pay_id').trim(), invoice_amt = (parseFloat($('.btnRefundOk').data('nettotal')) || 0.00);
     let date = new Date();
-    let invoice_date = [date.getFullYear(), ('0' + (date.getMonth() + 1)).slice(-2), ('0' + date.getDate()).slice(-2)].join('-'); 
+    let invoice_date = [date.getFullYear(), ('0' + (date.getMonth() + 1)).slice(-2), ('0' + date.getDate()).slice(-2)].join('-');
     let opt_refund = { method: "BANK_TRANSFER", refund_date: invoice_date, amount: { currency_code: "USD", value: invoice_amt } }
 
     let option = { strValue1: 'getToken' };

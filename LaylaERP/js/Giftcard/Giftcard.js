@@ -2,7 +2,7 @@
     $("#loader").hide();
     jQuery(function ($) {
         $('.main_radio_div a').click(function () {
-            $(this).addClass('checked').siblings().removeClass('checked');
+            $(this).addClass('checked_amount').siblings().removeClass('checked_amount');
             if ($(this).hasClass('other')) {
                 $('.customprice_div').toggleClass('open_custom')
             }
@@ -12,5 +12,5 @@
 })
 
 $("#btnAdd").click(function () {
-    console.log($('.checked').text());
+    console.log($('.checked_amount').val());
 })

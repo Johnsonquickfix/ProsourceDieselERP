@@ -2923,7 +2923,7 @@ width: 85px;
 .gift_card_field{margin-bottom: .8em;}
 .gift_card_field label{display:block;}
 .radio_amt:hover {color: #ff4100; box-shadow: 1px 1px #000;}
-.radio_amt.check, .radio_amt.checked {background-color: #4d4d4d;color:#fff;}
+.radio_amt.check, .radio_amt.checked_amount {background-color: #4d4d4d;color:#fff;}
 .form-control.customprice{max-width:50%;}
 .customprice_div.open_custom{display:flex; align-items:center;min-width:150px;}
 #counter {color: #ff4100 !important;}

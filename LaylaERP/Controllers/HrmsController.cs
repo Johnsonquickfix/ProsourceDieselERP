@@ -942,17 +942,5 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(JSONresult, 0);
         }
-
-        public JsonResult GetLeaveDetailsForAdmin()
-        {
-            string JSONresult = string.Empty;
-            try
-            {
-                DataTable dt = LeaveRepository.GetLeaveDetailsForAdmin();
-                JSONresult = JsonConvert.SerializeObject(dt);
-            }
-            catch { }
-            return Json(JSONresult, 0);
-        }
     }
 }

@@ -1,0 +1,82 @@
+﻿@{
+    ViewBag.Title = "Gift Card";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+ ViewBag.rangePicker = "/Content/AdminLTE-3.1.0/bower_components/bootstrap-daterangepicker/daterangepicker.css";
+}
+<div class="page-title">
+    <h2 class="page-heading">
+        Layla E-Gift Card
+    </h2>
+</div>
+<section class="content gift_card-section">
+    <div class=" move-up row">
+        <div class="product">
+            <div class="giftcard">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="slide-cont">
+                            <div class="product-banner"><img alt="Layla E-Gift Card" style="width: 100%;" src="~/Images/gift-card.png" /></div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 align-box">
+                        <div class="box box-primary">
+                            <div class="product-description">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">Send a Layla E-gift card to someone via email.</h3>
+                                </div>
+                                <div class="box-body">
+                                    <div class="giftcard_form">
+                                        <label class="select_amount">Select Amount</label>
+                                        <div class="main_radio_div">
+                                            <a href="javascript://" id="25" class="radio_amt">$25</a><a href="javascript://" id="50" class="radio_amt">$50</a><a href="javascript://" id="75" class="radio_amt">$75</a>
+                                            <a href="javascript://" id="100" class="radio_amt">$100</a><a href="javascript://" id="150" class="radio_amt">$150</a><a href="javascript://" id="175" class="radio_amt">$175</a>
+                                            <a href="javascript://" id="200" class="radio_amt">$200</a><a href="javascript://" id="other" class="radio_amt other">Other</a>
+                                        </div>
+                                        <div class="customprice_div">
+                                        $<input type="number" value="" min="1" class="form-control customprice" /></div>
+                                        <div class="ermsg">Please choose an amount.</div>
+                                        <div class="gift_card_field giftcard_to_multiple">
+                                            <label>To</label>
+                                            <input type="text" class="form-control" placeholder="Enter an e-mail for each recipient, separating e-mails by comma (,)" value="" />
+                                        </div>
+                                        <div class="gift_card_field giftcard_from">
+                                            <label>From</label>
+                                            <input type="text" class="form-control" placeholder="Enter your name" value="" />
+                                        </div>
+                                        <div class="gift_card_field giftcard_message">
+                                            <label>Message</label>
+                                            <textarea class="form-control" rows="3" maxlength="500" placeholder="Add your message (optional)"></textarea>
+                                            <div id="counter" class="text-right limit-text-status text-primary">
+                                                <small><strong>0/500</strong> characters limit.</small>
+                                            </div>
+                                        </div>
+                                        <div class="gift_card_field giftcard_delivery">
+                                            <label for="giftcard_delivery">Delivery Date</label>
+                                            <input autocomplete="off" type="text" placeholder="Now" value="" id="gift_date" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="box-footer text-right">
+                                    <button type="submit" class="btn btn-danger">Add to cart</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<link href="~/Content/AdminLTE-3.1.0/daterangepicker/daterangepicker.monthpicker.css" rel="stylesheet" />
+<script src="~/Content/AdminLTE-3.1.0/daterangepicker/daterangepicker.monthpicker.js"></script>
+<script type="text/javascript">
+    jQuery(function ($) {
+        $('.main_radio_div a').click(function () {
+            $(this).addClass('checked').siblings().removeClass('checked');
+            if ($(this).hasClass('other')) {
+                $('.customprice_div').toggleClass('open_custom')
+            }
+        });
+        $('#gift_date').datepicker();
+    });
+</script>

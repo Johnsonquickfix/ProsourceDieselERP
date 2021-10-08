@@ -749,7 +749,7 @@ namespace LaylaERP.BAL
                     string IsAvailable = GetPresentEmp(EmpID, intime, outtime).ToString();
                     if (IsAvailable != "0")
                     {
-                        strsql = "Update erp_hrms_attendance_sheet set status='A', in_time='' ,out_time='' where rowid=" + IsAvailable + " and fk_emp=" + EmpID + "";
+                        strsql = "delete from erp_hrms_attendance_sheet where rowid=" + IsAvailable + " and fk_emp=" + EmpID + "";
                     }
                     result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql));
                 }

@@ -930,5 +930,48 @@ namespace LaylaERP.BAL
             return dtr;
         }
 
+        #region Payroll
+        public static DataTable GetEmployeePayrollList(string department, string month, string year, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                
+                string strWhr = string.Empty;
+                string strAdd = string.Empty;
+              
+                string strSql = "Select e.rowid as ID, concat(firstname,' ', lastname) as name, design.designation from erp_hrms_emp e " +
+                    "inner join erp_hrms_empdetails ed on e.rowid = ed.fk_emp " +
+                    "left join erp_hrms_designation design on ed.department = design.rowid where 1=1 and e.is_active = 1 ";
+                if (!string.IsNullOrEmpty(searchid))
+                {
+                    strWhr += " and (concat(e.firstname,' ',e.lastname) like '%" + searchid + "%' OR design.designation like '%" + searchid + "%')";
+                }
+                if (!string.IsNullOrEmpty(department))
+                {
+                    strWhr += " and ed.department = " + department + " and e.is_active = 1 ";
+                }
+              
+                strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
+
+                strSql += "; SELECT ceil(Count(e.rowid)/" + pagesize.ToString() + ") TotalPage,Count(e.rowid) TotalRecord from erp_hrms_emp e " +
+                    "inner join erp_hrms_empdetails ed on e.rowid = ed.fk_emp " +
+                    "left join erp_hrms_designation design on ed.department = design.rowid where 1=1 and e.is_active = 1 " + strWhr.ToString();
+
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dt = ds.Tables[0];
+                if (ds.Tables[1].Rows.Count > 0)
+                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        #endregion
+
     }
 }

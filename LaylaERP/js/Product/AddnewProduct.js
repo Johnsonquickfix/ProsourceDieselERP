@@ -146,6 +146,12 @@
         $this.val($this.val().substring(0, 10));
     });
 
+    $("#txtdaysexpire").keyup(function () {
+        var $this = $(this);
+        $this.val($this.val().replace(/[^\d.]/g, ''));
+        $this.val($this.val().substring(0, 10));
+    });
+
 
 
     $('#dvsock').hide();
@@ -154,6 +160,17 @@
             $('#dvsock').show();
         } else {
             $('#dvsock').hide();
+        }
+    });
+    $('#divdayexpire').hide();
+    $('#divRecipientemail').hide();
+    $('#chkgiftcard').change(function () {
+        if ($(this).prop("checked")) {
+            $('#divdayexpire').show();
+            $('#divRecipientemail').show();
+        } else {
+            $('#divdayexpire').hide();
+            $('#divRecipientemail').hide();
         }
     });
 
@@ -899,6 +916,13 @@ function AddProduct() {
     //else
         //enableStock = "no";
 
+    if ($("#chkgiftcard").prop('checked') == true)
+        giftcard = "yes";
+    else
+        giftcard = "no";
+    Recipientemail = $("#ddlRecipientemail").val();
+    dayexpire = $("#txtdaysexpire").val();
+
     if ($("#solidIndividually").prop('checked') == true)
         solidIndividually = "yes";
     else
@@ -978,7 +1002,10 @@ function AddProduct() {
             crosssell_ids: Crosssellsval,
             price: saleprice,
             CategoryID: categorydataval,
-            PublishDate: date_publish
+            PublishDate: date_publish,
+            _gift_card: giftcard,
+            _gift_card_expiration_days: dayexpire,
+            _gift_card_template_default_use_image: Recipientemail
         }
         var checkstr = confirm('are you sure want to save/update product?');
         if (checkstr == true) {
@@ -1093,6 +1120,20 @@ function GetDataByID(order_id) {
             else {
                 $('#dvsock').hide();
             }
+
+            if (i[0].giftcard == "yes") {
+                $("#chkgiftcard").prop("checked", true);
+                $('#divdayexpire').show();
+                $('#divRecipientemail').show();
+                $("#txtdaysexpire").val(i[0].expirationdayes);
+                $('#ddlRecipientemail').val(i[0].gifttemplate.trim()).trigger('change');
+            }
+            else {
+                $('#divdayexpire').hide();
+                $('#divRecipientemail').hide();
+            }
+
+
             $("#txtStockquantity").val(i[0].stock);
             $('#txtallowbackorders').val(i[0].backorders).trigger('change');
             $("#txtLowstockthreshold").val(i[0].lowstockamount);

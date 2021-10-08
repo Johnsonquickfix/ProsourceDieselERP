@@ -34,6 +34,7 @@ namespace LaylaERP.Models
         public string exclude_categories_ids { get; set; }
         public string wjecf_is_auto_coupon { get; set; }
         public string cus_email { get; set; }
-        public string post_excerpt { get; set; }   
+        public string post_excerpt { get; set; }
+        public string _employee_id { get; set; }
     }
 }

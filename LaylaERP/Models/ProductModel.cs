@@ -88,6 +88,9 @@ namespace LaylaERP.Models
         public float Ship_price { get; set; }
         public float Shipping_taxrate { get; set; }
         public string PublishDate { get; set; }
+        public string _gift_card { get; set; }
+        public string _gift_card_expiration_days { get; set; }
+        public string _gift_card_template_default_use_image { get; set; }
     }
     public class ProductModelMetaModel
     {

@@ -34,7 +34,7 @@ namespace LaylaERP.BAL
             try
             {
                 string strquery = string.Empty;
-                strquery = "select ehlt.rowid, ehlt.leave_type, format(ehlt.leave_days,2) as leave_days, format(if(ehl.is_approved=1, (ehlt.leave_days-ehl.days), ehlt.leave_days),2) as remain from erp_hrms_leave_type ehlt left join erp_hrms_leave ehl on ehl.leave_code=ehlt.rowid and ehl.fk_emp='" + id+ "' order by ehlt.rowid";
+                strquery = "select ehlt.rowid, ehlt.leave_type, format(ehlt.leave_days,2) as leave_days, format(if(ehl.is_approved=1, (ehlt.leave_days-ehl.days), ehlt.leave_days),2) as remain from erp_hrms_leave_type ehlt left join erp_hrms_leave ehl on ehl.leave_code=ehlt.rowid and ehl.fk_emp='" + id + "' WHERE ehlt.is_active=1 order by ehlt.rowid";
                 DataSet ds = SQLHelper.ExecuteDataSet(strquery);
                 dtr = ds.Tables[0];
             }
@@ -265,5 +265,205 @@ namespace LaylaERP.BAL
             return dtr;
         }
 
+        public static int AddDesignation(DesignationModel model)
+        {
+
+            try
+            {
+                string strsql = "INSERT into erp_hrms_designation(designation) values(@desgnation);SELECT LAST_INSERT_ID();";
+                MySqlParameter[] para = {
+                    new MySqlParameter("@desgnation", model.designation),
+                };
+                int result = Convert.ToInt32(DAL.SQLHelper.ExecuteScalar(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+        public static DataTable GetDesignationList()
+        {
+            DataTable dtr = new DataTable();
+            try
+            {
+                string strquery = "SELECT rowid as id, designation from erp_hrms_designation";
+                DataSet ds = SQLHelper.ExecuteDataSet(strquery);
+                dtr = ds.Tables[0];
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dtr;
+        }
+
+        public static DataTable GetDesignationById(DesignationModel model)
+        {
+            DataTable dtr = new DataTable();
+            try
+            {
+                string strquery = "SELECT rowid as id, designation from erp_hrms_designation where rowid='"+model.strValue1+"'";
+                DataSet ds = SQLHelper.ExecuteDataSet(strquery);
+                dtr = ds.Tables[0];
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dtr;
+        }
+
+        public static int UpdateDesignation(DesignationModel model)
+        {
+            try
+            {
+                string strsql = "UPDATE erp_hrms_designation set designation=@designation where rowid=@rowid";
+                MySqlParameter[] para =
+                 {
+                    new MySqlParameter("@designation",model.designation),
+                    new MySqlParameter("@rowid", model.rowid),
+                };
+                int result = Convert.ToInt32(DAL.SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
+        public static int AddDeprtment(DepartmentModel model)
+        {
+
+            try
+            {
+                string strsql = "INSERT into erp_hrms_department(department) values(@department);SELECT LAST_INSERT_ID();";
+                MySqlParameter[] para = {
+                    new MySqlParameter("@department", model.department),
+                };
+                int result = Convert.ToInt32(DAL.SQLHelper.ExecuteScalar(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+        public static DataTable GetDepartmentList()
+        {
+            DataTable dtr = new DataTable();
+            try
+            {
+                string strquery = "SELECT rowid as id, department from erp_hrms_department";
+                DataSet ds = SQLHelper.ExecuteDataSet(strquery);
+                dtr = ds.Tables[0];
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dtr;
+        }
+
+        public static DataTable GetDepartmentById(DepartmentModel model)
+        {
+            DataTable dtr = new DataTable();
+            try
+            {
+                string strquery = "SELECT rowid as id, department from erp_hrms_department where rowid='" + model.strValue1 + "'";
+                DataSet ds = SQLHelper.ExecuteDataSet(strquery);
+                dtr = ds.Tables[0];
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dtr;
+        }
+
+        public static int UpdateDepartment(DepartmentModel model)
+        {
+            try
+            {
+                string strsql = "UPDATE erp_hrms_department set department=@department where rowid=@rowid";
+                MySqlParameter[] para =
+                 {
+                    new MySqlParameter("@department",model.department),
+                    new MySqlParameter("@rowid", model.rowid),
+                };
+                int result = Convert.ToInt32(DAL.SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public static DataTable GetLeaveMasterList()
+        {
+            DataTable dtr = new DataTable();
+            try
+            {
+                string strquery = "SELECT rowid as id, leave_code, leave_type, leave_days, if(is_active=1,'Active','Inactive') as status from erp_hrms_leave_type";
+                DataSet ds = SQLHelper.ExecuteDataSet(strquery);
+                dtr = ds.Tables[0];
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dtr;
+        }
+
+        public static int AddLeaveType(LeaveTypeModel model)
+        {
+            try
+            {
+                string strsql = "INSERT into erp_hrms_leave_type(leave_code, leave_type, leave_days, is_active) values(@leave_code, @leave_type, @leave_days, @is_active);SELECT LAST_INSERT_ID();";
+                MySqlParameter[] para = {
+                    new MySqlParameter("@leave_code", model.leave_code),
+                    new MySqlParameter("@leave_type", model.leave_type),
+                    new MySqlParameter("@leave_days", model.leave_days),
+                    new MySqlParameter("@is_active", model.is_active),
+                };
+                int result = Convert.ToInt32(DAL.SQLHelper.ExecuteScalar(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+        public static DataTable GetLeaveTypeById(LeaveTypeModel model)
+        {
+            DataTable dtr = new DataTable();
+            try
+            {
+                string strquery = "SELECT rowid as id, leave_code, leave_type, leave_days, is_active from erp_hrms_leave_type where rowid='" + model.strValue1 + "'";
+                DataSet ds = SQLHelper.ExecuteDataSet(strquery);
+                dtr = ds.Tables[0];
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dtr;
+        }
+
+        public static int UpdateLeaveType(LeaveTypeModel model)
+        {
+            try
+            {
+                string strsql = "UPDATE erp_hrms_leave_type set leave_code=@leave_code, leave_type=@leave_type, leave_days=@leave_days, is_active=@is_active where rowid=@rowid";
+                MySqlParameter[] para =
+                 {
+                    new MySqlParameter("@rowid", model.rowid),
+                    new MySqlParameter("@leave_code", model.leave_code),
+                    new MySqlParameter("@leave_type", model.leave_type),
+                    new MySqlParameter("@leave_days", model.leave_days),
+                    new MySqlParameter("@is_active", model.is_active),                    
+                };
+                int result = Convert.ToInt32(DAL.SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }

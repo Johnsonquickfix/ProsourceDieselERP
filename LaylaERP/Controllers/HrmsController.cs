@@ -112,6 +112,19 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult Designation()
+        {
+            return View();
+        }
+        public ActionResult Department()
+        {
+            return View();
+        }
+        public ActionResult LeaveMaster()
+        {
+            return View();
+        }
+
         public ActionResult Configsetup()
         {
             DataTable dt = HrmsConfigurationRepository.SelectConfigSetting();
@@ -954,10 +967,8 @@ namespace LaylaERP.Controllers
                 DataTable dt = HrmsRepository.GetEmployeePayrollList(model.strValue1, model.strValue2, model.strValue3, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
                 result = JsonConvert.SerializeObject(dt);
             }
-            catch (Exception ex) { throw ex; }
-            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+            catch { }
+            return Json(JSONresult, 0);
         }
-
-        #endregion
     }
 }

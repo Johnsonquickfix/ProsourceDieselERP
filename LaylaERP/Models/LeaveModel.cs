@@ -24,4 +24,28 @@ namespace LaylaERP.Models
         public string justification { get; set; }
         public string strVal1 { get; set; }
     }
+    public class DesignationModel
+    {
+        public int rowid { get; set; }
+        public string designation { get; set; }
+        public string strValue1 { get; set; }
+    }
+
+    public class DepartmentModel
+    {
+        public int rowid { get; set; }
+        public string department { get; set; }
+        public string strValue1 { get; set; }
+    }
+
+    public class LeaveTypeModel
+    {
+        public int rowid { get; set; }
+        public string leave_code { get; set; }
+        public string leave_type { get; set; }
+        public int leave_days { get; set; }
+        public int is_active { get; set; }
+        public string strValue1 { get; set; }
+    }
+
 }

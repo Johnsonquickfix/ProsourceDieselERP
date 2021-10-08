@@ -65,6 +65,7 @@ function getOrderInfo() {
                     + (data[0].s_address_2.length > 0 ? data[0].s_address_2 + '<br>' : '') + (data[0].s_city.length > 0 ? data[0].s_city + ', ' : '') + (data[0].s_state.length > 0 ? data[0].s_state + ', ' : '')
                     + (data[0].s_country.length > 0 ? data[0].s_country + ' ' : '') + (data[0].s_postcode.length > 0 ? data[0].s_postcode : '');
                 $('.shipping-address').empty().append(shipping_Details);
+                $('.shipping-address').data('shipcountry', data[0].s_country.trim());
                 $('.shipping-address').data('shipstate', data[0].s_state.trim());
                 //bind Product
                 getOrderItemList(oid); getOrderNotesList(oid);
@@ -242,18 +243,36 @@ function getOrderNotesList(oid) {
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Shipping Charges ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function getShippingCharge() {
-    let v_ids = []; let zShippingAmt = 0.00;
-    $("#order_line_items  > tr.paid_item").each(function () { v_ids.push($(this).data('vid')); });
-    if (v_ids.join(',').length > 0) {
-        let options = { strValue1: v_ids.join(','), strValue2: $("#ddlshipcountry").val(), strValue3: $("#ddlshipstate").val() };
+    //let v_ids = []; let zShippingAmt = 0.00;
+    //$("#order_line_items  > tr.paid_item").each(function () { v_ids.push($(this).data('vid')); });
+    //if (v_ids.join(',').length > 0) {
+    //    let options = { strValue1: v_ids.join(','), strValue2: $("#ddlshipcountry").val(), strValue3: $("#ddlshipstate").val() };
+    //    $(".TotalAmount").data("shippingamt", 0.00);
+    //    $.post('/Orders/GetProductShipping', options).then(response => {
+    //        $("#order_line_items > tr.paid_item").each(function (index, tr) {
+    //            let proudct_item = response.find(el => el.product_id === $(tr).data('vid'));
+    //            if (proudct_item != null) { $(tr).find(".TotalAmount").data("shippingamt", proudct_item.AK); zShippingAmt += proudct_item.AK; }
+    //        });
+    //    }).catch(err => { $("#loader").hide(); swal('Error!', err, 'error'); }).always(function () { $("#loader").hide(); });
+    //    $('#order_shipping_line_items').find(".RefundAmount").text(zShippingAmt.toFixed(2));
+    //}
+
+    let p_ids = [], v_ids = [];
+    $("#order_line_items  > tr.paid_item").each(function () { p_ids.push($(this).data('pid')); v_ids.push($(this).data('vid')); });
+    if (p_ids.join(',').length > 0 || v_ids.join(',').length > 0) {
+        let options = { strValue1: p_ids.join(','), strValue2: v_ids.join(','), strValue3: $('.shipping-address').data('shipcountry'), strValue4: $('.shipping-address').data('shipstate') };
         $(".TotalAmount").data("shippingamt", 0.00);
         $.post('/Orders/GetProductShipping', options).then(response => {
+            response = JSON.parse(response);
             $("#order_line_items > tr.paid_item").each(function (index, tr) {
-                let proudct_item = response.find(el => el.product_id === $(tr).data('vid'));
-                if (proudct_item != null) { $(tr).find(".TotalAmount").data("shippingamt", proudct_item.AK); zShippingAmt += proudct_item.AK; }
+                let proudct_item = response['Table'].find(el => el.vid === $(tr).data('vid'));
+                if (proudct_item != null) { $(tr).find(".TotalAmount").data("shippingamt", proudct_item.fee); }
+                else { $(tr).find(".TotalAmount").data("shippingamt", 0.00); }
+                //let proudct_sr = response['Table1'].find(el => el.pid === $(tr).data('pid'));
+                //if (proudct_sr != null) { $(tr).data("srfee", proudct_sr.fee); $(tr).data("sristaxable", !!parseInt(proudct_sr.is_taxable)); }
+                //else { $(tr).data("srfee", 0.00); $(tr).data("sristaxable", false); }
             });
         }).catch(err => { $("#loader").hide(); swal('Error!', err, 'error'); }).always(function () { $("#loader").hide(); });
-        $('#order_shipping_line_items').find(".RefundAmount").text(zShippingAmt.toFixed(2));
     }
 }
 function getStateRecyclingCharge() {
@@ -285,12 +304,11 @@ function calculateRefunAmount() {
     let qty = 0.00, subtotal = 0.00, taxtotal = 0.00, shippingtotal = 0.00, staterecyclingtotal = 0.00, feetotal = 0.00, total = 0.00;
     freeQtyUpdate();
     let _items = createItemsList();
-    getStateRecyclingCharge();
-    for (var i = 0; i < _items.length; i++) {
-        qty += _items[i].refundqty; subtotal += _items[i].total; shippingtotal += _items[i].shipping_amount;
-        taxtotal += _items[i].tax_amount;
-        total += (_items[i].total - _items[i].discount + _items[i].tax_amount + _items[i].shipping_amount);
-    }
+    //getStateRecyclingCharge();
+    $.each(_items, function (key, item) {
+        qty += item.refundqty; subtotal += item.total; shippingtotal += item.shipping_amount;
+        taxtotal += item.tax_amount; total += (item.total - item.discount + item.tax_amount + item.shipping_amount);
+    });
     // Fee
     $('#order_fee_line_items > tr').each(function (index, tr) {
         let zAmt = 0.00;
@@ -482,7 +500,7 @@ function PaypalRefundsPayment() {
     let oid = parseInt($('#hfOrderNo').val()) || 0;
     let invoice_no = $('#lblOrderNo').data('pay_id').trim(), invoice_amt = (parseFloat($('.btnRefundOk').data('nettotal')) || 0.00);
     let date = new Date();
-    let invoice_date = [date.getFullYear(), ('0' + (date.getMonth() + 1)).slice(-2), ('0' + date.getDate()).slice(-2)].join('-'); 
+    let invoice_date = [date.getFullYear(), ('0' + (date.getMonth() + 1)).slice(-2), ('0' + date.getDate()).slice(-2)].join('-');
     let opt_refund = { method: "BANK_TRANSFER", refund_date: invoice_date, amount: { currency_code: "USD", value: invoice_amt } }
 
     let option = { strValue1: 'getToken' };

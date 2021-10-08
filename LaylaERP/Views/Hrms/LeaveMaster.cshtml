@@ -21,7 +21,7 @@
 <script src="~/Content/DataTables/bootstrap-datepicker.js"></script>
 
 <div class="page-title">
-    <h2 class="page-heading">Leave</h2>
+    <h2 class="page-heading">Leave Type</h2>
 </div>
 <section class="content section-content employees-section">
     <div class="row">
@@ -30,14 +30,35 @@
                 <div class="box-body">
                     <div class="form-group">
                         <input type="hidden" id="hfid" />
-                        <label for="designation">Leave Name<span style="color:red">*</span></label>
-                        <input type="text" class="form-control" id="txtdesignation" />
+                        <label for="leavecode">Leave Code<span style="color:red">*</span></label>
+                        <input type="text" class="form-control" id="txtleavecode" />
+                    </div>
+                    <div class="form-group">
+                        <label for="leavetype">Leave Type<span style="color:red">*</span></label>
+                        <input type="text" class="form-control" id="txtleavetype" />
+                    </div>
+                   
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6">
+            <div class="box box-primary">
+                <div class="box-body">
+                    <div class="form-group">
+                        <label for="leavedays">Leave Days<span style="color:red">*</span></label>
+                        <input type="text" class="form-control" id="txtleavedays" />
+                    </div>
+                    <div class="form-group">
+                        <div title="Check Active">
+                            <input type="checkbox" id="chkstatus" name="status" /><label for="status">Active</label>
+                        </div>
                     </div>
                     <div class="box-footer">
                         <div class="text-left">
-                            <span title="Click Here To Save Designation" data-placement="bottom" data-toggle="tooltip"><input type="button" class="btn btn-danger" id="btnAdd" value="Save"></span>
-                            <span title="Click Here To Save Designation" data-placement="bottom" data-toggle="tooltip"><input type="button" class="btn btn-danger" id="btnUpdate" value="Update"></span>
-                            <span title="Click Here To Save Designation" data-placement="bottom" data-toggle="tooltip"><input type="button" class="btn btn-danger" id="btnReset" value="Reset"></span>
+                            <span title="Click Here To Save Leave Type" data-placement="bottom" data-toggle="tooltip"><input type="button" class="btn btn-danger" id="btnAdd" value="Save"></span>
+                            <span title="Click Here To Save Leave Type" data-placement="bottom" data-toggle="tooltip"><input type="button" class="btn btn-danger" id="btnUpdate" value="Update"></span>
+                            <span title="Click Here To Reset" data-placement="bottom" data-toggle="tooltip"><input type="button" class="btn btn-danger" id="btnReset" value="Reset"></span>
                         </div>
                     </div>
                 </div>
@@ -47,11 +68,14 @@
         <div class="col-sm-12">
             <div class="box box-primary">
                 <div class="box-body">
-                    <table id="DesignationList" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
+                    <table id="LeaveTypeList" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
                         <thead>
                             <tr>
                                 <th>Id</th>
-                                <th>Designation name</th>
+                                <th>Leave code</th>
+                                <th>Leave type</th>
+                                <th>Leave days</th>
+                                <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -65,156 +89,22 @@
 <script>
     $(document).ready(function () {
         $("#loader").hide();
-        DesignationList();
         $("#btnUpdate").hide();
+
         $("#btnAdd").click(function () {
-            AddDesignation();
+            AddLeaveType();
         });
         $('#btnUpdate').click(function () {
-            UpdateDesignation();
+            UpdateLeaveType();
         });
 
         $("#btnReset").click(function () {
             controlreset();
             $("#btnUpdate").hide();
             $("#btnAdd").show();
-        })
+        });
+        LeaveTypeList();
     })
 </script>
 
-<script>
-    function AddDesignation() {
-        designationname = $("#txtdesignation").val();
-        if (designationname == "") {
-            swal('Alert', 'Please Enter Designation Name', 'error').then(function () { swal.close(); $('#txtdesignation').focus(); });
-        }
-        else {
-            var obj = {
-                designation: designationname,
-            }
-            $.ajax({
-                url: '/Hrms/AddDesignation/', dataType: 'json', type: 'Post',
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify(obj),
-                dataType: "json",
-                beforeSend: function () { $("#loader").show(); },
-                success: function (data) {
-                    if (data.status == true) {
-                        swal('Alert!', data.message, 'success');//.then((result) => { location.href = '../productrule'; });
-                        DesignationList();
-                        controlreset();
-                    }
-                    else {
-                        swal('Alert!', data.message, 'error');
-                    }
-                },
-                complete: function () { $("#loader").hide(); },
-                error: function (error) { swal('Error!', 'something went wrong', 'error'); },
-            })
-
-        }
-    }
-</script>
-
-<script>
-    function DesignationList() {
-        $.ajax({
-            url: '/Hrms/GetDesignationList',
-            method: 'post',
-            datatype: 'json',
-            contentType: "application/json; charset=utf-8",
-            processing: true,
-            data: JSON.stringify(),
-            success: function (data) {
-                $('#DesignationList').dataTable({
-                    destroy: true,
-                    scrollX: false,
-                    data: JSON.parse(data),
-                    "columns": [
-                        { data: 'id', title: 'Id', sWidth: "10%" },
-                        { data: 'designation', title: 'Designation', sWidth: "10%" },
-                        {
-                            'data': 'id', sWidth: "10%", title: 'Action',
-                            'render': function (id, type, full, meta) {
-                                return '<a href="#" onclick="EditSelect(' + id + ');"><i class="glyphicon glyphicon-pencil"></i></a>';
-                            }
-                        }
-                    ],
-
-                    "order": [[0, 'desc']],
-                });
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                alert(xhr.responseText);
-            }
-        });
-
-    }
-</script>
-<script>
-    function EditSelect(id) {
-        var obj = { strValue1: id }
-        $.ajax({
-            url: '/Hrms/GetDesignationById/',
-            datatype: 'json',
-            type: 'Post',
-            contentType: "application/json;charset=utf-8",
-            data: JSON.stringify(obj),
-            success: function (data) {
-                var jobj = JSON.parse(data);
-                console.log(jobj[0].label);
-                $("#hfid").val(jobj[0].id);
-                $('#txtdesignation').val(jobj[0].designation);
-                $("#btnUpdate").show();
-                $("#btnAdd").hide();
-            },
-            complete: function () { $("#loader").hide(); },
-            error: function (error) { swal('Error!', 'something went wrong', 'error'); },
-        })
-    }
-</script>
-
-<script>
-    function UpdateDesignation() {
-        let designationname, id;
-        id = $("#hfid").val();
-        designationname = $("#txtdesignation").val();
-        if (designationname == "") {
-            swal('Alert', 'Please Enter Designation Name', 'error').then(function () { swal.close(); $('#txtdesignation').focus(); });
-        }
-        else {
-            var obj = {
-                rowid:id,
-                designation: designationname,
-            }
-            $.ajax({
-                url: '/Hrms/UpdateDesignation/', dataType: 'json', type: 'Post',
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify(obj),
-                dataType: "json",
-                beforeSend: function () { $("#loader").show(); },
-                success: function (data) {
-                    if (data.status == true) {
-                        swal('Alert!', data.message, 'success');//.then((result) => { location.href = '../productrule'; });
-                        DesignationList();
-                        controlreset();
-                        $("#btnUpdate").hide();
-                        $("#btnAdd").show();
-                    }
-                    else {
-                        swal('Alert!', data.message, 'error');
-                    }
-                },
-                complete: function () { $("#loader").hide(); },
-                error: function (error) { swal('Error!', 'something went wrong', 'error'); },
-            })
-
-        }
-    }
-</script>
-
-<script>
-    function controlreset() {
-        $("#txtdesignation").val("");
-    }
-</script>
+<script src="@Url.Content("~/js/Hrms/LeaveType.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>

@@ -7,10 +7,10 @@ function AddLeaveType() {
     if (leavecode == "") {
         swal('Alert', 'Please Enter Leave Code', 'error').then(function () { swal.close(); $('#txtleavecode').focus(); });
     }
-    if (leavetype == "") {
+    else if (leavetype == "") {
         swal('Alert', 'Please Enter Leave Type', 'error').then(function () { swal.close(); $('#txtleavetype').focus(); });
     }
-    if (leavedays == "") {
+    else if (leavedays == "") {
         swal('Alert', 'Please Enter Leave Days', 'error').then(function () { swal.close(); $('#txtleavedays').focus(); });
     }
     else {
@@ -21,7 +21,7 @@ function AddLeaveType() {
             is_active: status,
         }
         $.ajax({
-            url: '/Hrms//', dataType: 'json', type: 'Post',
+            url: '/Hrms/AddLeaveType/', dataType: 'json', type: 'Post',
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify(obj),
             dataType: "json",
@@ -52,7 +52,7 @@ function LeaveTypeList() {
         processing: true,
         data: JSON.stringify(),
         success: function (data) {
-            $('#DesignationList').dataTable({
+            $('#LeaveTypeList').dataTable({
                 destroy: true,
                 scrollX: false,
                 data: JSON.parse(data),
@@ -113,10 +113,10 @@ function UpdateLeaveType() {
     if (leavecode == "") {
         swal('Alert', 'Please Enter Leave Code', 'error').then(function () { swal.close(); $('#txtleavecode').focus(); });
     }
-    if (leavetype == "") {
+    else if (leavetype == "") {
         swal('Alert', 'Please Enter Leave Type', 'error').then(function () { swal.close(); $('#txtleavetype').focus(); });
     }
-    if (leavedays == "") {
+    else if (leavedays == "") {
         swal('Alert', 'Please Enter Leave Days', 'error').then(function () { swal.close(); $('#txtleavedays').focus(); });
     }
     else {
@@ -138,6 +138,9 @@ function UpdateLeaveType() {
                     swal('Alert!', data.message, 'success');//.then((result) => { location.href = '../productrule'; });
                     LeaveTypeList();
                     controlreset();
+
+                    $("#btnUpdate").hide();
+                    $("#btnAdd").show();
                 }
                 else {
                     swal('Alert!', data.message, 'error');

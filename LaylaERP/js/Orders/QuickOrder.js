@@ -1902,10 +1902,10 @@ function PaymentModal() {
     /// row invoice-info
     myHtml += '<div class="row invoice-info">';
     myHtml += '<div class="col-sm-6 invoice-col">';
-    myHtml += 'Billing Address: <address class="no-margin"><strong>' + billing_first_name + ' ' + billing_last_name + '</strong > <br>' + billing_address_1 + (billing_address_2 > 0 ? '<br>' : '') + billing_address_2 + '<br>' + billing_city + ' ,' + billing_state + ' ' + billing_postcode + '<br>Phone: ' + billing_phone + '<br>Email: ' + billing_email + '</address>';
+    myHtml += 'Billing Address: <address class="no-margin"><strong>' + billing_first_name + ' ' + billing_last_name + '</strong > <br>' + billing_address_1 + (billing_address_2 > 0 ? '<br>' : '') + billing_address_2 + '<br>' + billing_city + ', ' + billing_state + ' ' + billing_postcode + '<br>Phone: ' + billing_phone + '<br>Email: ' + billing_email + '</address>';
     myHtml += '</div>';
     myHtml += '<div class="col-sm-6 invoice-col">';
-    myHtml += 'Shipping Address: <address class="no-margin"><strong>' + shipping_first_name + ' ' + shipping_last_name + '</strong > <br>' + shipping_address_1 + (shipping_address_2 > 0 ? '<br>' : '') + shipping_address_2 + '<br>' + shipping_city + ' ,' + shipping_state + ' ' + shipping_postcode + '</address>';
+    myHtml += 'Shipping Address: <address class="no-margin"><strong>' + shipping_first_name + ' ' + shipping_last_name + '</strong > <br>' + shipping_address_1 + (shipping_address_2 > 0 ? '<br>' : '') + shipping_address_2 + '<br>' + shipping_city + ', ' + shipping_state + ' ' + shipping_postcode + '</address>';
     myHtml += '</div>';
     myHtml += '</div>';
     /// row invoice-items

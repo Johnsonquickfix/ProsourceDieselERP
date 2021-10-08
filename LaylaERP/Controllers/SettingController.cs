@@ -75,12 +75,6 @@ namespace LaylaERP.Controllers
             return View();
         }
 
-        // GET: Gift Card
-        public ActionResult Giftcard()
-        {
-            return View();
-        }
-
         public ActionResult OrderShippingRule()
         {
             return View();

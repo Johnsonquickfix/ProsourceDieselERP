@@ -111,6 +111,9 @@
     $(document).ready(function () {
         $("#loader").hide();
 
+        //getProduct();
+        //$('.select1').select2();
+
         $("#StateRecycleFee").keyup(function () {
             var $this = $(this);
             $this.val($this.val().replace(/[^\d.]/g, ''));
@@ -120,7 +123,7 @@
         $("#shipcity").select2({
             allowClear: true, minimumInputLength: 2, placeholder: "Search City",
             ajax: {
-                url: '/FeeNTax/GetCity', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+                url: '/Users/GetCity', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
                 data: function (params) { var obj = { strValue1: params.term }; return JSON.stringify(obj); },
                 processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.City, name: item.City, id: item.City } }) }; },
                 error: function (xhr, status, err) { }, cache: true
@@ -152,6 +155,7 @@
         if (id != "") {
             $("#hfid").val(id);
             GetFeeNTaxByID(id);
+            //setTimeout(function () { GetFeeNTaxByID(id); }, 5000);
         }
         $("#ShipCity").empty().append('<option>' + $("#cityid").val() + '</option>');
         $('#Ship_Zip_PostCode').change(function () {
@@ -223,4 +227,20 @@
     //    utilsScript: "~/Scripts/intlTelInput.js",
     //});
 
+</script>
+<script>
+    function getProduct() {
+        $.ajax({
+            url: "/FeeNTax/GetParentproduct",
+            type: "Get",
+            success: function (data) {
+                var opt = '<option value="0">Please Select Product</option>';
+                for (var i = 0; i < data.length; i++) {
+                    opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
+                }
+                $("#Item_Name").html(opt);
+            }
+
+        });
+    }
 </script>

@@ -56,7 +56,7 @@ function Datagrid() {
                 }
             }
         ],
-        "order": [[1, 'desc']],
+        "order": [[0, 'desc']],
     });
 }
 //    $.ajax({
@@ -82,7 +82,10 @@ function AddFeeNTax() {
     debugger
     id = $("#hfid").val();
     Staterecyclefee = $("#StateRecycleFee").val();
-    Item_name = $("#Item_Name").text().trim();
+    //Item_name = $("#Item_Name").text().trim();
+    var data = $("#Item_Name option:selected").text();
+    Item_name=data;
+    alert(data);
     City = $("#shipcity").val();
     State = $("#shipstate").val();
     Zip = $("#Ship_Zip_PostCode").val();
@@ -165,7 +168,7 @@ function GetFeeNTaxByID(id) {
             i[0].is_taxable == true ? $("#chktaxable").prop("checked", true) : $("#chktaxable").prop("checked", false);
             i[0].is_active == true ? $("#chkactive").prop("checked", true) : $("#chkactive").prop("checked", false);
             $("#shipcountry").val(i[0].country).trigger('change');
-            //  $('#Item_Name').val(i[0].item_name.trim()).trigger('change');
+            $('#Item_Name').val(i[0].item_parent_id).trigger('change');
 
         },
         error: function (msg) { alert(msg); }

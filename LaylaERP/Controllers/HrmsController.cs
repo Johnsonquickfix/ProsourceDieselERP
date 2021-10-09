@@ -112,6 +112,19 @@ namespace LaylaERP.Controllers
         {
             return View();
         }
+        public ActionResult Designation()
+        {
+            return View();
+        }
+        public ActionResult Department()
+        {
+            return View();
+        }
+        public ActionResult LeaveMaster()
+        {
+            return View();
+        }
+
         public ActionResult Configsetup()
         {
             DataTable dt = HrmsConfigurationRepository.SelectConfigSetting();
@@ -943,7 +956,6 @@ namespace LaylaERP.Controllers
             return Json(JSONresult, 0);
         }
 
-        #region Payroll
 
         public JsonResult GetEmployeePayrollList(JqDataTableModel model)
         {
@@ -954,10 +966,177 @@ namespace LaylaERP.Controllers
                 DataTable dt = HrmsRepository.GetEmployeePayrollList(model.strValue1, model.strValue2, model.strValue3, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
                 result = JsonConvert.SerializeObject(dt);
             }
-            catch (Exception ex) { throw ex; }
-            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+            catch { }
+            //return Json(JSONresult, 0);
+            return Json(0);
         }
 
-        #endregion
+        [HttpPost]
+        public JsonResult AddDesignation(DesignationModel model)
+        {
+            int ID = LeaveRepository.AddDesignation(model);
+            if (ID > 0)
+            {
+                return Json(new { status = true, message = "Designation has been saved successfully!!", url = "", id = model.rowid }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+        }
+
+        public JsonResult GetDesignationList()
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = LeaveRepository.GetDesignationList();
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+        public JsonResult GetDesignationById(DesignationModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = LeaveRepository.GetDesignationById(model);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateDesignation(DesignationModel model)
+        {
+            if (model.rowid > 0)
+            {
+                LeaveRepository.UpdateDesignation(model);
+                return Json(new { status = true, message = "Designation has been saved successfully!!", url = "", id = model.rowid }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+        }
+
+        [HttpPost]
+        public JsonResult AddDepartment(DepartmentModel model)
+        {
+            int ID = LeaveRepository.AddDeprtment(model);
+            if (ID > 0)
+            {
+                return Json(new { status = true, message = "Department has been saved successfully!!", url = "", id = model.rowid }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+        }
+
+        public JsonResult GetDepartmentList()
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = LeaveRepository.GetDepartmentList();
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+        public JsonResult GetDepartmentById(DepartmentModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = LeaveRepository.GetDepartmentById(model);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateDepartment(DepartmentModel model)
+        {
+            if (model.rowid > 0)
+            {
+                LeaveRepository.UpdateDepartment(model);
+                return Json(new { status = true, message = "Department has been saved successfully!!", url = "", id = model.rowid }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+        }
+
+        [HttpPost]
+        public JsonResult AddMasterLeave(DesignationModel model)
+        {
+            int ID = LeaveRepository.AddDesignation(model);
+            if (ID > 0)
+            {
+                return Json(new { status = true, message = "Designation has been saved successfully!!", url = "", id = model.rowid }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+        }
+
+        public JsonResult GetLeaveMasterList()
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = LeaveRepository.GetLeaveMasterList();
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+
+        [HttpPost]
+        public JsonResult AddLeaveType(LeaveTypeModel model)
+        {
+            int ID = LeaveRepository.AddLeaveType(model);
+            if (ID > 0)
+            {
+                return Json(new { status = true, message = "Leave Type has been saved successfully!!", url = "", id = model.rowid }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+        }
+
+        public JsonResult GetLeaveTypeById(LeaveTypeModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = LeaveRepository.GetLeaveTypeById(model);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateLeaveType(LeaveTypeModel model)
+        {
+            if (model.rowid > 0)
+            {
+                LeaveRepository.UpdateLeaveType(model);
+                return Json(new { status = true, message = "Leave Type has been saved successfully!!", url = "", id = model.rowid }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+        }
     }
 }

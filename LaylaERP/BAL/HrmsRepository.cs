@@ -972,6 +972,70 @@ namespace LaylaERP.BAL
         }
 
         #endregion
+        public static int AddConfiguration(HrmsModel model, int id)
+        {
+            try
+            {
+                string strsql = "INSERT into erp_hrms_salary_configuration(emp_type, fk_emp, basic, emp_code, da, hra, other_allowance, pf, loan_amount, loan_emi, loan_months, adv_amount, adv_emi, adv_emi_months, tds, other_deductions, reimbursement, work_type, default_work_hours, prepare_salary, accounting_type, hra_type," +
+                    "comp_name,section,salary_date,emp_class,special_pay,wash_allowance,incentive,cca,vpf,adv_epf,insurance,emp_welfare,imprest,misc_refund,fastival_allowance,bank_name,bank_account,epf_account,pay_sacle)" +
+                                 " values(@emp_type, @fk_emp, @basic, @emp_code, @da, @hra, @other_allowance, @pf, @loan_amount, @loan_emi, @loan_months, @adv_amount, @adv_emi, @adv_emi_months, @tds, @other_deductions, @reimbursement, @work_type, @default_work_hours, @prepare_salary, @accounting_type, @hra_type," +
+                                 " @comp_name, @section, @salary_date, @emp_class, @special_pay, @wash_allowance, @incentive, @cca, @vpf, @adv_epf, @insurance, @emp_welfare, @imprest, @misc_refund, @fastival_allowance, @bank_name, @bank_account, @epf_account, @pay_sacle); SELECT LAST_INSERT_ID();";
 
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@emp_type", model.emp_type),
+                    new MySqlParameter("@fk_emp", id),
+                    new MySqlParameter("@basic","0"),
+                    new MySqlParameter("@emp_code", id),
+                    new MySqlParameter("@da", "0"),
+                    new MySqlParameter("@hra","0"),
+                    new MySqlParameter("@pf","0"),
+                    new MySqlParameter("@loan_amount","0"),
+                    new MySqlParameter("@loan_emi","0"),
+
+                    new MySqlParameter("@loan_months","0"),
+                    new MySqlParameter("@adv_amount","0"),
+                    new MySqlParameter("@adv_emi","0"),
+                    new MySqlParameter("@adv_emi_months","0"),
+                    new MySqlParameter("@tds","0"),
+                    new MySqlParameter("@other_deductions","0"),
+                    new MySqlParameter("@reimbursement","0"),
+                    new MySqlParameter("@work_type", "1"),
+                    new MySqlParameter("@default_work_hours","0"),
+                    new MySqlParameter("@other_allowance","0"),
+                    new MySqlParameter("@prepare_salary","1"),
+                    new MySqlParameter("@accounting_type","1"),
+                    new MySqlParameter("@hra_type",1),
+
+                    //Extra
+                    new MySqlParameter("@comp_name",""),
+                    new MySqlParameter("@salary_date",Convert.ToDateTime(DateTime.UtcNow.ToString("yyyy-MM-dd"))),
+                    new MySqlParameter("@emp_class",""),
+                    new MySqlParameter("@special_pay","0"),
+                    new MySqlParameter("@wash_allowance","0"),
+                    new MySqlParameter("@incentive","0"),
+                    new MySqlParameter("@cca","0"),
+                    new MySqlParameter("@vpf", "0"),
+                    new MySqlParameter("@adv_epf","0"),
+                    new MySqlParameter("@insurance", "0"),
+                    new MySqlParameter("@emp_welfare", "0"),
+                    new MySqlParameter("@imprest","0"),
+                    new MySqlParameter("@misc_refund","0"),
+                    new MySqlParameter("@fastival_allowance","0"),
+                    new MySqlParameter("@bank_name",""),
+                    new MySqlParameter("@bank_account",""),
+                    new MySqlParameter("@epf_account",""),
+                    new MySqlParameter("@pay_sacle","0"),
+                    new MySqlParameter("@section",""),
+
+                };
+                int result = Convert.ToInt32(DAL.SQLHelper.ExecuteScalar(strsql, para));
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }

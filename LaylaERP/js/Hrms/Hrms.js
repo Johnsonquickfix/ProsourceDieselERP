@@ -206,7 +206,7 @@ function getEmployeeCode() {
 $(document).on('click', "#btnNext1", function () {
     var url = window.location.pathname;
     var URL = url.substring(url.lastIndexOf('/') + 1);
-
+    debugger
     ID = $("#hfid").val();
     firstname = $("#txtFirstName").val().trim();
     lastname = $("#txtLastName").val().trim();
@@ -244,8 +244,16 @@ $(document).on('click', "#btnNext1", function () {
     else if (dob == "") { swal('Alert', 'Please Enter Date Of Birth', 'error').then(function () { swal.close(); $('#txtdob').focus(); }); }
     else if (emptype == 0) { swal('Alert', 'Please Select Employee Type', 'error').then(function () { swal.close(); $('#ddlEmployeeType').focus(); }); }
     else {
+        var obj = {
+            rowid: ID,
+            firstname: firstname, lastname: lastname, email: email, pwd: Password, emp_type: emptype, dob: dateofbirth, phone: phone, gender: gender,
+            is_active: status,
+
+            birthplace: birthplace, maritalstatus: maritalstatus, address1: address1, address2: address2, city: city,
+            state: state, zipcode: zipcode, country: country,
+        }
         if (URL == "Employee") {
-             if (Password == "") {
+            if (Password == "") {
                 swal('Alert', 'Please Enter Password', 'error').then(function () { swal.close(); $('#txtPassword').focus(); });
             }
             else if (Password.length < 8) {
@@ -261,16 +269,22 @@ $(document).on('click', "#btnNext1", function () {
             else if (Password !== ConfirmPassword) {
                 swal('Alert', 'Confirm Password is not matching.', 'error').then(function () { swal.close(); $('#txtConfirmPassword').focus(); });
             }
-        } else {
-        phone = $("#txtPhone").unmask().val();
-        var obj = {
-            rowid: ID,
-            firstname: firstname, lastname: lastname, email: email, pwd: Password, emp_type: emptype, dob: dateofbirth, phone: phone, gender: gender,
-            is_active: status,
-
-            birthplace: birthplace, maritalstatus: maritalstatus, address1: address1, address2: address2, city: city,
-            state: state, zipcode: zipcode, country: country,
+            else {
+                addBasicInfo(obj);
+            }
         }
+        else {
+            addBasicInfo(obj);
+            }
+      
+    }
+
+});
+
+function addBasicInfo(obj) {
+    
+        phone = $("#txtPhone").unmask().val();
+       
         $.ajax({
             url: '/Hrms/AddEmployeeBasicInfo/', dataType: 'json', type: 'Post',
             contentType: "application/json; charset=utf-8",
@@ -291,11 +305,7 @@ $(document).on('click', "#btnNext1", function () {
             complete: function () { $("#loader").hide(); },
             error: function (error) { swal('Error!', 'something went wrong', 'error'); },
         })
-
-        }
-    }
-
-});
+}
 
 $(document).on('click', "#btnBack2", function () {
     var link = $('#mytabs .active').prev().children('a').attr('href');

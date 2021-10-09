@@ -239,6 +239,7 @@
     <Compile Include="Models\ExportModel.cs" />
     <Compile Include="Models\Export_Details.cs" />
     <Compile Include="Models\FeeNTax.cs" />
+    <Compile Include="Models\GiftCardModel.cs" />
     <Compile Include="Models\HrmsConfigurationModel.cs" />
     <Compile Include="Models\HrmsModel.cs" />
     <Compile Include="Models\InventoryModel.cs" />
@@ -979,6 +980,7 @@
     <Content Include="Views\EmailNotifications\Processing.cshtml" />
     <Content Include="Views\EmailNotifications\Refunded.cshtml" />
     <Content Include="Views\EmailNotifications\Resetpassword.cshtml" />
+    <Content Include="Views\Giftcard\Giftcard.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

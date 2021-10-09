@@ -10,9 +10,9 @@
 
     public class clsAuthorizeNet
     {
-        public static ANetApiResponse RefundTransaction(string TransactionID, string CardNumber, string ExpirationDate, decimal TransactionAmount)
+        public static dynamic RefundTransaction(string TransactionID, string CardNumber, string ExpirationDate, decimal TransactionAmount)
         {
-            Console.WriteLine("Refund Transaction");
+            string transId = string.Empty;
             String ApiLoginID = CommanUtilities.Provider.GetCurrent().AuthorizeAPILogin, ApiTransactionKey = CommanUtilities.Provider.GetCurrent().AuthorizeTransKey;
             ApiOperationBase<ANetApiRequest, ANetApiResponse>.RunEnvironment = AuthorizeNet.Environment.SANDBOX;
 
@@ -53,6 +53,7 @@
                 {
                     if (response.transactionResponse.messages != null)
                     {
+                        transId = response.transactionResponse.transId;
                         Console.WriteLine("Successfully created transaction with Transaction ID: " + response.transactionResponse.transId);
                         Console.WriteLine("Response Code: " + response.transactionResponse.responseCode);
                         Console.WriteLine("Message Code: " + response.transactionResponse.messages[0].code);
@@ -61,6 +62,7 @@
                     }
                     else
                     {
+                        transId = string.Empty;
                         Console.WriteLine("Failed Transaction.");
                         if (response.transactionResponse.errors != null)
                         {
@@ -71,6 +73,7 @@
                 }
                 else
                 {
+                    transId = string.Empty;
                     Console.WriteLine("Failed Transaction.");
                     if (response.transactionResponse != null && response.transactionResponse.errors != null)
                     {
@@ -86,10 +89,11 @@
             }
             else
             {
+                transId = string.Empty;
                 Console.WriteLine("Null Response.");
             }
 
-            return response;
+            return transId;
         }
     }
 }

@@ -9,6 +9,7 @@
         t.preventDefault(); $('.billinfo').prop("disabled", true); getOrderInfo(); isEdit(false);
     });
     $(document).on("click", ".btnRefundOk", function (t) { t.preventDefault(); saveCO(); });
+    $(document).on("click", ".btntest", function (t) { t.preventDefault(); AuthorizeNetPaymentRefunds(); });
 });
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Common ajax function ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 var ajaxFunc = function (url, data, beforeSendFun, successFun, completeFun, errorFun) {
@@ -447,15 +448,16 @@ function saveCO() {
         data: JSON.stringify(obj), dataType: "json", beforeSend: function () { $("#loader").show(); },
         success: function (data) {
             if (data.status == true) {
-                if (pay_by == 'ppec_paypal') PaypalRefundsPayment();
-                else if (pay_by == 'podium') PodiumPayment();
+                if (pay_by == 'ppec_paypal') PaypalPaymentRefunds();
+                else if (pay_by == 'podium') PodiumPaymentRefunds();
+                else if (pay_by == 'authorize_net_cim_credit_card') AuthorizeNetPaymentRefunds();
                 else '';
 
                 $('.box-tools,.footer-finalbutton').empty().append('<button type="button" class="btn btn-danger btnRefundOrder"><i class="far fa-edit"></i> Refund</button>');
                 $('#order_line_items,#order_state_recycling_fee_line_items,#order_fee_line_items,#order_shipping_line_items,#order_refunds,#billCoupon,.refund-action').empty();
                 $('.billinfo').prop("disabled", true);
                 swal('Alert!', data.message, "success");
-                setTimeout(function () { getOrderItemList(oid); $('.billinfo').prop("disabled", true); }, 50);
+                setTimeout(function () { getOrderItemList(oid); getOrderNotesList(oid); $('.billinfo').prop("disabled", true); }, 50);
             }
             else { swal('Alert!', data.message, "error").then((result) => { return false; }); }
         },
@@ -466,7 +468,7 @@ function saveCO() {
 }
 
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Podium Payment Return ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-function PodiumPayment() {
+function PodiumPaymentRefunds() {
     let oid = parseInt($('#hfOrderNo').val()) || 0;
     let invoice_no = $('#lblOrderNo').data('pay_id').trim(), payment_uid = $('#lblOrderNo').data('payment_uid').trim(), invoice_amt = (parseFloat($('.btnRefundOk').data('nettotal')) || 0.00);
 
@@ -496,7 +498,7 @@ function PodiumPayment() {
 }
 
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ PayPal Payment Return ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-function PaypalRefundsPayment() {
+function PaypalPaymentRefunds() {
     let oid = parseInt($('#hfOrderNo').val()) || 0;
     let invoice_no = $('#lblOrderNo').data('pay_id').trim(), invoice_amt = (parseFloat($('.btnRefundOk').data('nettotal')) || 0.00);
     let date = new Date();
@@ -523,6 +525,30 @@ function PaypalRefundsPayment() {
                     }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', err, 'error'); });
                 }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', 'Something went wrong.', 'error'); }).always(function () { swal.hideLoading(); });
             });
+        }
+    }]);
+}
+
+///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Authorize.Net Payment Return ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+function AuthorizeNetPaymentRefunds() {
+    let oid = parseInt($('#hfOrderNo').val()) || 0, invoice_amt = (parseFloat($('.btnRefundOk').data('nettotal')) || 0.00);
+    let option = { order_id: oid, NetTotal: invoice_amt }; 
+    swal.queue([{
+        title: 'Authorize.Net Payment Processing.', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,
+        onOpen: () => {
+            swal.showLoading();
+            $.post('/Orders/UpdateAuthorizeNetPaymentRefund', option).then(response => {
+                console.log('Authorize.Net ', response);
+                if (response.status) {
+                    let option_note = { post_ID: oid, comment_content: 'Refund Issued for $' + invoice_amt + '. The refund should appear on your statement in 5 to 10 days.', is_customer_note: '' };
+                    $.post('/Orders/OrderNoteAdd', option_note).then(response => {
+                        if (response.status) { $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true); }
+                    }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', err, 'error'); });
+                }
+                //$.post('/Orders/OrderNoteAdd', option).then(response => {
+                //    if (response.status) { $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true); }
+                //}).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', err, 'error'); });
+            }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', err, 'error'); });
         }
     }]);
 }

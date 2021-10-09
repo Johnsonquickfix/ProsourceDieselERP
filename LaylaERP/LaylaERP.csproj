@@ -170,6 +170,7 @@
     <Compile Include="BAL\EmailNotificationsRepository.cs" />
     <Compile Include="BAL\ExportRepository.cs" />
     <Compile Include="BAL\FeeNTaxRepository.cs" />
+    <Compile Include="BAL\GiftCardRepository.cs" />
     <Compile Include="BAL\HrmsConfigurationRepository.cs" />
     <Compile Include="BAL\HrmsRepository.cs" />
     <Compile Include="BAL\InventoryRepository.cs" />

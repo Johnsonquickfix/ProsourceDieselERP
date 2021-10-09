@@ -27,11 +27,11 @@ $("#btnAdd").click(function () {
     else if (giftFrom == "") { swal('Alert', 'Please enter gift from', 'error').then(function () { swal.close(); $('#txtGiftFrom').focus(); }); }
     else {
         var obj = {
-            rowid: ID,
-            firstname: firstname, lastname: lastname, email: email, pwd: Password, is_active: status,
+           /* id: ID,*/
+            amount: amount, recipient: giftTo, sender_email: giftFrom, message: giftMessage, date: giftdate,
         }
         $.ajax({
-            url: '/Hrms/AddEmployeeBasicInfo/', dataType: 'json', type: 'Post',
+            url: '/GiftCard/AddGiftCard/', dataType: 'json', type: 'Post',
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify(obj),
             dataType: "json",

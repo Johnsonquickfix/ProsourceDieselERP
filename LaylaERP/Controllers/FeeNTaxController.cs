@@ -98,42 +98,7 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(JSONresult, 0);
         }
-        //[HttpGet]
-        //public ActionResult GetFeeNTaxList()
-        //{
-        //    FeeNTax FNT = new FeeNTax();
-        //    DataTable dt = new DataTable();
-        //    dt = FeeNTaxRepository.FeeNTaxList();
-        //    List<FeeNTax> lststu = new List<FeeNTax>();
-        //    if (dt != null)
-        //    {
-
-        //        if (dt.Rows.Count > 0)
-        //        {
-        //            for (int i = 0; i < dt.Rows.Count; i++)
-        //            {
-
-        //                FeeNTax obj = new FeeNTax();
-        //                obj.staterecyclefee = Convert.ToUInt64(dt.Rows[i]["staterecyclefee"].ToString());
-        //                obj.item_name = dt.Rows[i]["item_name"].ToString();
-        //                obj.state = dt.Rows[i]["state"].ToString();
-        //                obj.id = Convert.ToInt32(dt.Rows[i]["id"].ToString());
-        //                obj.zip = Convert.ToInt32(dt.Rows[i]["zip"].ToString());
-        //                obj.city = dt.Rows[i]["city"].ToString();
-        //                obj.country = dt.Rows[i]["country"].ToString();
-
-        //                lststu.Add(obj);
-        //            }
-
-
-        //        }
-
-        //        FNT.lst = lststu;
-
-        //    }
-        //    return Json(lststu, JsonRequestBehavior.AllowGet);
-        //}
-
+        
         [HttpGet]
         public JsonResult GetFeeNTaxList(string status)
         {
@@ -152,6 +117,17 @@ namespace LaylaERP.Controllers
             }
             catch { }
             return Json(JSONresult, 0);
+        }
+
+        public JsonResult GetParentproduct()
+        {
+            DataSet ds = FeeNTaxRepository.GetParentProduct();
+            List<SelectListItem> vendorlist = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                vendorlist.Add(new SelectListItem { Text = dr["post_title"].ToString(), Value = dr["ID"].ToString() });
+            }
+            return Json(vendorlist, JsonRequestBehavior.AllowGet);
         }
 
     }

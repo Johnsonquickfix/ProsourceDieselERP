@@ -77,7 +77,9 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "SELECT id, staterecyclefee, item_parent_id, item_name, city, state, zip, country, is_taxable, is_active FROM wp_staterecyclefee where id='" + model.id + "'";
+                //string strSql = "SELECT id, staterecyclefee, item_parent_id, item_name, city, state, zip, country, is_taxable, is_active FROM wp_staterecyclefee where id='" + model.id + "'";
+                string strSql = "SELECT e.id,e.staterecyclefee, e.item_parent_id, p.post_title as item_name, e.city, e.state, e.zip, e.country, e.is_taxable , e.is_active FROM wp_staterecyclefee e"
+                               + " left join wp_posts p on p.ID = e.item_parent_id where e.id = '" + model.id + "'";
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
@@ -110,8 +112,9 @@ namespace LaylaERP.BAL
             {
                 FeeNTaxlist.Clear();
                 DataSet ds1 = new DataSet();
-                string sqlquery = "SELECT id, staterecyclefee, item_parent_id, concat(item_parent_id,' - ',item_name) as item_name, city, state, zip, country, if(is_taxable=0,'No','Yes') as is_taxable, if(is_active=1,'Active','Inactive') as is_active FROM wp_staterecyclefee WHERE is_active='"+status+"'";
-
+                //string sqlquery = "SELECT id, staterecyclefee, item_parent_id, concat(item_parent_id,' - ',item_name) as item_name, city, state, zip, country, if(is_taxable=0,'No','Yes') as is_taxable, if(is_active=1,'Active','Inactive') as is_active FROM wp_staterecyclefee WHERE is_active='"+status+"'";
+                string sqlquery = "SELECT e.id,e.staterecyclefee, e.item_parent_id, concat(e.item_parent_id,' - ',p.post_title) as item_name, e.city, e.state, e.zip, e.country, if(e.is_taxable=0,'No','Yes') as is_taxable, if(e.is_active=1,'Active','Inactive') as is_active FROM wp_staterecyclefee e"
+                                  + " left join wp_posts p on p.ID = e.item_parent_id where is_active='" + status + "'";
                 ds1 = DAL.SQLHelper.ExecuteDataSet(sqlquery);
                 string result = string.Empty;
 
@@ -178,6 +181,20 @@ namespace LaylaERP.BAL
             catch (Exception ex)
             { throw ex; }
             return DT;
+        }
+
+        public static DataSet GetParentProduct()
+        {
+            DataSet DS = new DataSet();
+            try
+            {
+                string strSQl = "SELECT ID, post_title FROM wp_posts WHERE post_type = 'product' and post_status = 'publish' order by post_title";
+
+                DS = SQLHelper.ExecuteDataSet(strSQl);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
         }
     }
 }

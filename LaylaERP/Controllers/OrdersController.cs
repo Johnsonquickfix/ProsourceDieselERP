@@ -470,6 +470,42 @@
             return Json(new { status = status, message = JSONresult }, 0);
         }
         [HttpPost]
+        public JsonResult UpdateAuthorizeNetPaymentRefund(OrderModel model)
+        {
+            string JSONresult = string.Empty; bool status = false;
+            try
+            {
+                DataTable dt = OrderRepository.OrderPaymentDetails(model.order_id);
+                string TransactionID = string.Empty, CardNumber = string.Empty, ExpirationDate = string.Empty;
+                if (dt.Rows.Count > 0)
+                {
+                    TransactionID = (dt.Rows[0]["authorize_net_trans_id"] != Convert.DBNull) ? dt.Rows[0]["authorize_net_trans_id"].ToString() : "";
+                    CardNumber = (dt.Rows[0]["authorize_net_card_account_four"] != Convert.DBNull) ? dt.Rows[0]["authorize_net_card_account_four"].ToString() : "";
+                    ExpirationDate = (dt.Rows[0]["authorize_net_card_expiry_date"] != Convert.DBNull) ? dt.Rows[0]["authorize_net_card_expiry_date"].ToString() : "";
+                    ExpirationDate = ExpirationDate.Split('-')[1] + ExpirationDate.Split('-')[0];
+                }
+                var result = clsAuthorizeNet.RefundTransaction(TransactionID, CardNumber, ExpirationDate, model.NetTotal);
+                if (!string.IsNullOrEmpty(result))
+                {
+                    status = true; JSONresult = "Order placed successfully.";
+                    OrderNotesModel note_model = new OrderNotesModel();
+                    note_model.post_ID = model.order_id;
+                    note_model.comment_content = string.Format("Refund Issued for ${0:0.00}. The refund should appear on your statement in 5 to 10 days.", model.NetTotal);
+                    note_model.is_customer_note = string.Empty;
+                    note_model.is_customer_note = string.Empty;
+
+                    OperatorModel om = CommanUtilities.Provider.GetCurrent();
+                    note_model.comment_author = om.UserName; note_model.comment_author_email = om.EmailID;
+                    int res = OrderRepository.AddOrderNotes(note_model);
+                }
+                else
+                { status = false; JSONresult = "Something went wrong."; }
+                JSONresult = JsonConvert.SerializeObject(result);
+            }
+            catch (Exception ex) { JSONresult = ex.Message; }
+            return Json(new { status = status, message = JSONresult }, 0);
+        }
+        [HttpPost]
         public JsonResult SendMailInvoice(OrderModel model)
         {
             string result = string.Empty;

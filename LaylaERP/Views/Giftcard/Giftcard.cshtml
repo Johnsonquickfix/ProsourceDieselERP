@@ -42,19 +42,19 @@
                                             <a href="javascript://" id="other" class="radio_amt other">Other</a>
                                         </div>
                                         <div class="customprice_div">
-                                        $<input type="number" value="" min="1" class="form-control customprice" /></div>
+                                        $<input type="number" id="txtAmount" min="1" class="form-control customprice" /></div>
                                         <div class="ermsg">Please choose an amount.</div>
                                         <div class="gift_card_field giftcard_to_multiple">
                                             <label>To</label>
-                                            <input type="text" class="form-control" placeholder="Enter an e-mail for each recipient, separating e-mails by comma (,)" value="" />
+                                            <input type="text" id="txtGiftTo" class="form-control" placeholder="Enter an e-mail for each recipient, separating e-mails by comma (,)" value="" />
                                         </div>
                                         <div class="gift_card_field giftcard_from">
                                             <label>From</label>
-                                            <input type="text" class="form-control" placeholder="Enter your name" value="" />
+                                            <input type="text" id="txtGiftFrom" class="form-control" placeholder="Enter your name" value="" />
                                         </div>
                                         <div class="gift_card_field giftcard_message">
                                             <label>Message</label>
-                                            <textarea class="form-control" rows="3" maxlength="500" placeholder="Add your message (optional)"></textarea>
+                                            <textarea class="form-control" id="txtGiftMessage" rows="3"  maxlength="500" placeholder="Add your message (optional)"></textarea>
                                             <div id="counter" class="text-right limit-text-status text-primary">
                                                 <small><strong>0/500</strong> characters limit.</small>
                                             </div>

@@ -540,14 +540,8 @@ function AuthorizeNetPaymentRefunds() {
             $.post('/Orders/UpdateAuthorizeNetPaymentRefund', option).then(response => {
                 console.log('Authorize.Net ', response);
                 if (response.status) {
-                    let option_note = { post_ID: oid, comment_content: 'Refund Issued for $' + invoice_amt + '. The refund should appear on your statement in 5 to 10 days.', is_customer_note: '' };
-                    $.post('/Orders/OrderNoteAdd', option_note).then(response => {
-                        if (response.status) { $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true); }
-                    }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', err, 'error'); });
+                    swal('Alert!', 'Order placed successfully.', "success"); getOrderNotesList(oid);
                 }
-                //$.post('/Orders/OrderNoteAdd', option).then(response => {
-                //    if (response.status) { $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true); }
-                //}).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', err, 'error'); });
             }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', err, 'error'); }).always(function () { swal.hideLoading(); });
         }
     }]);

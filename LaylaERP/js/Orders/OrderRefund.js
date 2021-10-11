@@ -548,7 +548,7 @@ function AuthorizeNetPaymentRefunds() {
                 //$.post('/Orders/OrderNoteAdd', option).then(response => {
                 //    if (response.status) { $("#billModal").modal('hide'); $('.billinfo').prop("disabled", true); }
                 //}).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', err, 'error'); });
-            }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', err, 'error'); });
+            }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', err, 'error'); }).always(function () { swal.hideLoading(); });
         }
     }]);
 }

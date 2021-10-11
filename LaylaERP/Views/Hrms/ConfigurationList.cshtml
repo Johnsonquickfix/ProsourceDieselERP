@@ -4,6 +4,10 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@{
+    var user = LaylaERP.UTILITIES.CommanUtilities.Provider.GetCurrent();
+}
+
 @*datatables CSS*@
 <link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap.min.css" rel="stylesheet" />
 <link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
@@ -13,21 +17,21 @@
 
 
 <div class="page-title">
-    <h2 class="page-heading">Employee configuration</h2><span title="Click Here To Add Configuration" data-placement="bottom" data-toggle="tooltip"><a href="../../Hrms/configuration" class="btn btn-danger">Add Emp Config</a></span>
+    @*<h2 class="page-heading">Employee configuration</h2><span title="Click Here To Add Configuration" data-placement="bottom" data-toggle="tooltip"><a href="../../Hrms/configuration" class="btn btn-danger" id="btnaddconfig">Add Emp Config</a></span>*@
 </div>
 <section class="content section-content table-design customer-section">
     @*<div class="user-top-section">
 
-        <div class="tablenav top tablenav-top2">
-            <div class="alignleft actions bulkactions">
-                <select class="form-control select2" id="ddlSearchStatus" placeholder="Select User">
-                    <option value="1">Active</option>
-                    <option value="2">Inactive</option>
-                </select>
-                <span title="Click Here To Change Status Of Leave After Selecting Checkbox" data-placement="bottom" data-toggle="tooltip"><button type="button" id="btnChange" class="btn btn-primary btn-flat button">Change</button></span>
+            <div class="tablenav top tablenav-top2">
+                <div class="alignleft actions bulkactions">
+                    <select class="form-control select2" id="ddlSearchStatus" placeholder="Select User">
+                        <option value="1">Active</option>
+                        <option value="2">Inactive</option>
+                    </select>
+                    <span title="Click Here To Change Status Of Leave After Selecting Checkbox" data-placement="bottom" data-toggle="tooltip"><button type="button" id="btnChange" class="btn btn-primary btn-flat button">Change</button></span>
+                </div>
             </div>
-        </div>
-    </div>*@
+        </div>*@
     <!-- end top-->
     <div class="row">
         <div class="col-md-12">
@@ -35,6 +39,7 @@
                 <div class="box-header">
                     <div class="row">
                         <div class="col-sm-12">
+                            <input type="hidden" id="hfusertype" value="@user.UserType" />
                             <table id="EmployeeListdata" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
                                 <thead>
                                     <tr>

@@ -94,7 +94,14 @@
                     <strong style="width:150px; display:inline-block; text-align:left;">Fee:</strong><span id="tfee">@String.Format("${0:0.00}", @Model.TotalFee)</span>
                 </span>
                 <span style="display:block;">
-                    <strong style="width:150px; display:inline-block; text-align:left; font-size: 22px;">Total:</strong><span style="font-size: 20px;"><strong id="total">@String.Format("${0:0.00}", @Model.NetTotal)</strong></span>
+                    @if (Model.payment_method == "PayPal")
+                    {
+                        <strong style="width:150px; display:inline-block; text-align:left; font-size: 22px;">Total:</strong><span style="font-size: 20px;"><strong id="total"><a href="https://www.sandbox.paypal.com/invoice/p/#@Model.paypal_id" target="_blank" style="margin:12px;min-width:110px;background-color:#0070BA;color:#fff;font-size:12px;box-sizing:border-box!important;padding: 8px;border-radius:5px;font-weight:600;">@String.Format("Pay ${0:0.00}", @Model.NetTotal)</a></strong></span>
+                    }
+                    else
+                    {
+                        <strong style="width:150px; display:inline-block; text-align:left; font-size: 22px;">Total:</strong><span style="font-size: 20px;"><strong id="total">@String.Format("${0:0.00}", @Model.NetTotal)</strong></span>
+                    }
                 </span>
             </div>
         </div>

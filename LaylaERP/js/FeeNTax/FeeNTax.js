@@ -85,7 +85,7 @@ function AddFeeNTax() {
     //Item_name = $("#Item_Name").text().trim();
     var data = $("#Item_Name option:selected").text();
     Item_name=data;
-    alert(data);
+    //alert(data);
     City = $("#shipcity").val();
     State = $("#shipstate").val();
     Zip = $("#Ship_Zip_PostCode").val();

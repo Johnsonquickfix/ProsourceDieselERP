@@ -409,8 +409,8 @@ namespace LaylaERP.BAL
             try
             {
                 StringBuilder strupdate = new StringBuilder();
-                strupdate.Append(string.Format("update commerce_purchase_order set fk_status = '{0}' where rowid = '{1}'; ", model.fk_status, model.IDRec));
-                strupdate.Append(string.Format("update commerce_purchase_receive_order set fk_status = '{0}' where fk_purchase = '{1}' ", model.fk_status, model.IDRec));
+                strupdate.Append(string.Format("update commerce_purchase_order set fk_status = {0} where rowid = {1}; ", model.fk_status, model.IDRec));
+                strupdate.Append(string.Format("update commerce_purchase_receive_order set fk_status = {0} where fk_purchase = {1} ", model.fk_status, model.IDRec));
                 SQLHelper.ExecuteNonQueryWithTrans(strupdate.ToString());  
                 result = model.RowID;
             }

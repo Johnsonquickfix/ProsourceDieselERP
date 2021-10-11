@@ -52,9 +52,9 @@ function getPurchaseOrderInfo() {
   
     //let oid = parseInt($('#lblPoNo').data('id')) || 0;
   /*  if (id > 0) {*/
-    $('.page-heading').text('Payment Process').append('<a class="btn btn-danger" href="/PaymentInvoice/PaymentInvoiceList">Back to List</a>');
+    $('.page-heading').text('Payment Process').append('<a class="btn btn-danger back_to_list" href="/PaymentInvoice/PaymentInvoiceList">Back to List</a>');
         $('#line_items').empty();
-        $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PaymentInvoice/PaymentInvoiceList">Back to List</a>');
+    $('.footer-finalbutton').empty().append('<a class="btn btn-danger back_to_list" href="/PaymentInvoice/PaymentInvoiceList">Back to List</a>');
         var option = { strValue1: status, strValue2: id };
         $.ajax({
             url: "/PaymentInvoice/GetPurchaseOrderByID", type: "Get", beforeSend: function () { $("#loader").show(); }, data: option,
@@ -95,7 +95,7 @@ function getPurchaseOrderInfo() {
             error: function (xhr, status, err) { $("#loader").hide(); swal('Alert!', "something went wrong.", "error"); }, async: false
         });
     $("#divAddItemFinal").find(".rowCalulate").change(function () { calculateFinal(); }); calculateFinal();
-        $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PaymentInvoice/PaymentInvoiceList">Back to List</a><button type="button" class="btn btn-danger btnEdit"><i class="far fa-edit"></i> Edit</button>');
+    $('.footer-finalbutton').empty().append('<a class="btn btn-danger back_to_list" href="/PaymentInvoice/PaymentInvoiceList">Back to List</a><button type="button" class="btn btn-danger btnEdit"><i class="far fa-edit"></i> Edit</button>');
        // $(".top-action").empty().append('<button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button>');
         $(".top-action").empty().append('<button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button>');
     $('.billinfo').prop("disabled", true);
@@ -110,7 +110,7 @@ function getPurchaseOrderInfo() {
 $(document).on("click", ".btnEdit", function (t) {
     t.preventDefault(); $("#loader").show();
     $('.billinfo').prop("disabled", false); //$('#txtbillfirstname').focus();
-    $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PaymentInvoice/PaymentInvoiceList">Back to List</a><button type="button" class="btn btn-danger btnUndoRecord"><i class="fa fa-undo"></i> Cancel</button>  <button type="button" class="btn btn-danger" id="btnSave"><i class="far fa-save"></i> Pay</button>');
+    $('.footer-finalbutton').empty().append('<a class="btn btn-danger back_to_list" href="/PaymentInvoice/PaymentInvoiceList">Back to List</a><button type="button" class="btn btn-danger btnUndoRecord"><i class="fa fa-undo"></i> Cancel</button>  <button type="button" class="btn btn-danger" id="btnSave"><i class="far fa-save"></i> Pay</button>');
     $(".top-action").empty().append('<button type="button" class="btn btn-danger btnUndoRecord" data-toggle="tooltip" title="Cancel"><i class="fa fa-undo"></i> Cancel</button>  <button type="button" class="btn btn-danger" id="btnSave" data-toggle="tooltip" title="Pay"><i class="far fa-save"></i> Pay</button>');
     $("#loader").hide();
 });

@@ -198,6 +198,7 @@ namespace LaylaERP.Controllers
                     if (ID > 0)
                     {
                         HrmsRepository.AddEmployeeBasicDetails(model, ID);
+                        HrmsRepository.AddConfiguration(model, ID);
                     }
                     return Json(new { status = true, message = "Data has been saved successfully!!", url = "", id = ID }, 0);
                 }

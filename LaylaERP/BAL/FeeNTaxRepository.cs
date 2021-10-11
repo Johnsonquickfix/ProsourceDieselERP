@@ -97,7 +97,12 @@ namespace LaylaERP.BAL
             DataTable dtr = new DataTable();
             try
             {
-                string strquery = "SELECT ID,post_title FROM wp_posts WHERE post_type='product' and post_status='publish' and post_title like '" + strSearch + "%' order by post_title";
+                //string strquery = "SELECT ID,post_title FROM wp_posts WHERE post_type='product' and post_status='publish' and post_title like '" + strSearch + "%' order by post_title";
+                string strquery = "SELECT COALESCE(ps.id,p.id) ID,CONCAT(COALESCE(ps.post_title,p.post_title), COALESCE(CONCAT(' (' ,psku.meta_value,')'),'')) as post_title"
+                                + " FROM wp_posts as p"
+                                + " LEFT OUTER JOIN wp_posts ps ON ps.post_parent = p.id and ps.post_type LIKE 'product_variation'"
+                                + " left outer join wp_postmeta psku on psku.post_id = ps.id and psku.meta_key = '_sku'"
+                                + " WHERE p.post_type = 'product' AND p.post_status = 'publish' AND CONCAT(COALESCE(ps.post_title,p.post_title), COALESCE(CONCAT(' (' ,psku.meta_value,')'),'')) like '%" + strSearch + "%'";
                 dtr = SQLHelper.ExecuteDataTable(strquery);
             }
             catch (Exception ex)

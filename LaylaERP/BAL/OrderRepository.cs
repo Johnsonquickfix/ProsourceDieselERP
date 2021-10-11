@@ -575,7 +575,7 @@
 
                 /// step 8 : wp_posts
                 //strSql.Append(string.Format(" update wp_posts set post_status = '{0}' ,comment_status = 'closed',post_modified = '{1}',post_modified_gmt = '{2}',post_excerpt = '{3}' where id = {4}; ", model.OrderPostStatus.status, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"), model.OrderPostStatus.Search, model.OrderPostStatus.order_id));
-                strSql.Append(string.Format(" update wp_posts set post_status = '{0}',post_modified = '{1}',post_modified_gmt = '{2}' where id = {3}; ", model.OrderPostStatus.status, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"), model.OrderPostStatus.order_id));
+                strSql.Append(string.Format(" update wp_posts set post_status = '{0}',post_modified = '{1}',post_modified_gmt = '{2}' where id = {3}; ", model.OrderPostStatus.status, cDate.ToString("yyyy-MM-dd HH:mm:ss"), cUTFDate.ToString("yyyy-MM-dd HH:mm:ss"), model.OrderPostStatus.order_id));
 
                 /////step 9 : Reduce Stock
                 //strSql.Append("delete from product_stock_register where tran_type ='SO' and tran_id = " + model.OrderPostStatus.order_id + ";");
@@ -673,7 +673,8 @@
             {
                 MySqlParameter[] parameters = { };
                 string strSQl = "SELECT id,post_date,pm.meta_value podium_uid FROM wp_posts p inner join wp_postmeta pm on pm.post_id = p.id and pm.meta_key = '_podium_uid'"
-                                + " WHERE post_status = 'wc-pendingpodiuminv' AND post_type = 'shop_order' AND post_modified > DATE_SUB(now(), INTERVAL 3 DAY)";
+                                + " WHERE post_status = 'wc-pendingpodiuminv' AND post_type = 'shop_order' AND post_modified > DATE_SUB(now(), INTERVAL 3 DAY);"
+                                + " update wp_posts set post_status = 'wc-cancelnopay',post_modified_gmt = UTC_TIMESTAMP() WHERE post_status = 'wc-pendingpodiuminv' AND post_type = 'shop_order' AND post_modified < DATE_SUB(now(), INTERVAL 3 DAY);";
                 dt = SQLHelper.ExecuteDataTable(strSQl, parameters);
             }
             catch (Exception ex)
@@ -1509,6 +1510,29 @@
             { throw ex; }
             return obj;
         }
+        public static DataTable OrderPaymentDetails(long OrderID)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                MySqlParameter[] parameters =
+                {
+                    new MySqlParameter("@order_id", OrderID)
+                };
+                string strSQl = "SELECT post_id,max(case meta_key when '_payment_method' then meta_value else '' end) payment_method,max(case meta_key when '_payment_method_title' then meta_value else '' end) payment_method_title,"
+                                + " max(case meta_key when '_wc_authorize_net_cim_credit_card_trans_id' then meta_value else '' end) authorize_net_trans_id,max(case meta_key when '_wc_authorize_net_cim_credit_card_account_four' then meta_value else '' end) authorize_net_card_account_four,"
+                                + " max(case meta_key when '_wc_authorize_net_cim_credit_card_card_expiry_date' then meta_value else '' end) authorize_net_card_expiry_date,max(case meta_key when '_wc_authorize_net_cim_credit_card_charge_captured' then meta_value else '' end) _wc_authorize_net_captured,"
+                                + " max(case meta_key when '_paypal_id' then meta_value else '' end) paypal_id,max(case meta_key when '_paypal_status' then meta_value else '' end) paypal_status,"
+                                + " max(case meta_key when '_podium_uid' then meta_value else '' end) podium_uid,max(case meta_key when '_podium_status' then meta_value else '' end) podium_status"
+                                + " FROM wp_postmeta WHERE post_id = 853299 and(meta_key like '_payment_method%' or meta_key like '_wc_authorize_net%' or meta_key like '_paypal%' or meta_key like '_podium%')"
+                                + " group by post_id";
+                dt = SQLHelper.ExecuteDataTable(strSQl, parameters);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dt;
+        }
+
         //Order comments/notes
         public static DataTable GetOrderNotes(long OrderID)
         {

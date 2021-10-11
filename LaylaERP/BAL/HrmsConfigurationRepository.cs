@@ -150,7 +150,7 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "SELECT ehsc.rowid as id, ehed.emp_number as code, concat(ehe.firstname,' ',ehe.lastname) as name, eheg.group_description as discription, ehe.phone, ehe.email from erp_hrms_salary_configuration ehsc inner join erp_hrms_emp ehe on ehe.rowid = ehsc.fk_emp inner join erp_hrms_empdetails ehed on ehed.fk_emp = ehe.rowid inner join erp_hrms_employee_group eheg on eheg.rowid = ehsc.emp_type where 1 = 1 ";
+                string strSql = "SELECT ehsc.rowid as id, ehed.emp_number as code, concat(ehe.firstname,' ',ehe.lastname) as name, eheg.group_description as discription, Replace(Replace(Replace(Replace(ehe.phone,')',''),'(',''),'-',''),' ','') as phone, ehe.email from erp_hrms_salary_configuration ehsc inner join erp_hrms_emp ehe on ehe.rowid = ehsc.fk_emp inner join erp_hrms_empdetails ehed on ehed.fk_emp = ehe.rowid inner join erp_hrms_employee_group eheg on eheg.rowid = ehsc.emp_type where 1 = 1 ";
                 if (!string.IsNullOrEmpty(searchid))
                 {
                     strWhr += " and (concat(ehe.firstname,' ',ehe.lastname) like '%" + searchid + "%' OR eheg.group_description like '%" + searchid + "%' OR ehed.emp_number like '%" + searchid + "%')";

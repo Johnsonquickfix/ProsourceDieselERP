@@ -396,7 +396,7 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "Select rowid ID, concat(firstname,' ',lastname) as name, email,phone,gender,emp_type,is_active from erp_hrms_emp where 1=1 ";
+                string strSql = "Select rowid ID, concat(firstname,' ',lastname) as name, email,Replace(Replace(Replace(Replace(phone,')',''),'(',''),'-',''),' ','') as phone,gender,emp_type,is_active from erp_hrms_emp where 1=1 ";
                 if (!string.IsNullOrEmpty(searchid))
                 {
                     strWhr += " and (concat(firstname,' ',lastname) like '%" + searchid + "%' OR email like '%" + searchid + "%' OR phone like '%" + searchid + "%')";

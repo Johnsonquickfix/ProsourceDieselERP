@@ -255,7 +255,7 @@ namespace LaylaERP.Controllers
                     DataTable dt = SettingRepository.Getcountrystatecountry(model);
                     if (dt.Rows.Count > 0 && model.ID == 0)
                     {
-                        return Json(new { status = false, message = "Rule with state has been already existed", url = "" }, 0);
+                        return Json(new { status = false, message = "Rule with state with same product has been already existed", url = "" }, 0);
                     }
                     else
                     {

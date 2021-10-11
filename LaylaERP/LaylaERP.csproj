@@ -170,6 +170,7 @@
     <Compile Include="BAL\EmailNotificationsRepository.cs" />
     <Compile Include="BAL\ExportRepository.cs" />
     <Compile Include="BAL\FeeNTaxRepository.cs" />
+    <Compile Include="BAL\GiftCardRepository.cs" />
     <Compile Include="BAL\HrmsConfigurationRepository.cs" />
     <Compile Include="BAL\HrmsRepository.cs" />
     <Compile Include="BAL\InventoryRepository.cs" />
@@ -596,6 +597,7 @@
     <Content Include="Content\ionicons\2.0.1\css\ionicons.min.css" />
     <Content Include="Content\ProductCategory\default.png" />
     <Content Include="Content\Product\default.png" />
+    <Content Include="Content\PurchaseFiles\default.png" />
     <Content Include="Content\Style11.css" />
     <Content Include="Content\Style12.css" />
     <Content Include="Content\VendorLinkedFiles\default.png" />

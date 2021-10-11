@@ -52,8 +52,8 @@
         $("#loader").hide();
     });
     $(document).on("click", ".btnEditOrder", function (t) {
-        t.preventDefault(); $("#loader").show();
-        $('#ddlStatus').prop("disabled", true); $('.billinfo').prop("disabled", false); $('#txtbillfirstname').focus(); $('.agentaddtocart').removeClass('hidden');
+        t.preventDefault(); $("#loader").show(); //$('#ddlStatus').prop("disabled", true); 
+        $('#ddlStatus,.billinfo').prop("disabled", false); $('#txtbillfirstname').focus(); $('.agentaddtocart').removeClass('hidden');
         $('.box-tools-header').empty().append('<button type="button" class="btn btn-danger btnOrderUndo" data-toggle="tooltip" title="Reset Order"><i class="fa fa-undo"></i> Cancel</button> <button type="button" id="btnOrderUpdate" class="btn btn-danger" data-toggle="tooltip" title="Update Order"><i class="far fa-save"></i> Update</button>');
         $('.footer-finalbutton').empty().append('<button type="button" class="btn btn-danger pull-left btnOrderUndo"><i class="fa fa-undo"></i> Cancel</button>  <button type="button" id="btnCheckout" class="btn btn-danger billinfo" data-toggle="tooltip" title="Save and Checkout Order"> Checkout</button>');
         $("#loader").hide(); isEdit(true);

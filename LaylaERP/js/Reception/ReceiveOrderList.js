@@ -324,7 +324,14 @@ function PoClosureGridColleps() {
             },
  
             { data: 'date_livraison', title: 'Planned date of delivery', sWidth: "10%" },
-            { data: 'Status', title: 'Status', sWidth: "10%" }
+            { data: 'Status', title: 'Status', sWidth: "10%" },
+            {
+                'data': 'ref', title: 'Action', sWidth: "7%",
+                'render': function (id, type, row) {
+                    return '<a title="Click here to view details" data-toggle="tooltip" href="NewReceiveOrder/' + row.id + '"><i class="glyphicon glyphicon-pencil"></i></a>'
+
+                }
+            }
 
         ],
         columnDefs: [{ targets: [0], visible: false, searchable: false }]

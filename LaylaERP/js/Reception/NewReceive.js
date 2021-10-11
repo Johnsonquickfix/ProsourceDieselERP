@@ -5,14 +5,28 @@
     getVendor(); getMasters();
     getPurchaseOrderInfo()
     getwarehaouseid();
-    getPurchasehistory();
+     getPurchasehistory();
+     bindfileuploade();
+
+  
+
+
+     if ($("#hfstatus").val() == "5") {
+         $(".btnpoclosed").show();
+        
+     }
+     else {
+         $(".btnpoclosed").hide();
+       
+     }
+
 
     $("#ddlVendor").change(function () {
         let today = new Date();
         $('#txtPODate').val(today.toLocaleDateString("en-US"));
        // $('.entry-mode-action').empty().append('<button type="button" id="btnOtherProduct" class="btn btn-danger billinfo"><i class="fas fa-cube"></i> Add Other Product</button> ');
        // $('.entry-mode-action').append('<button type="button" id="btnService" class="btn btn-danger billinfo"><i class="fas fa-concierge-bell"></i> Add Service</button>');
-        $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/Reception/ReceiveOrder">Back to List</a><button type="button" id="btnpoclosed" class="btn btn-danger" style="float:unset" data-toggle="tooltip" title="Close PO"><i class="far fa-btnpoclosed"></i> Close PO</button><input type="submit" value="Create Order" id="btnSave" class="btn btn-danger billinfo" />');
+        $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/Reception/ReceiveOrder">Back to List</a><button type="button" id="btnpoclosed" class="btn btn-danger btnpoclosed" style="float:unset" data-toggle="tooltip" title="Close PO"><i class="far fa-btnpoclosed"></i> Close PO</button><input type="submit" value="Create Order" id="btnSave" class="btn btn-danger billinfo" />');
         $('.billinfo').prop("disabled", false);
         let VendorID = parseInt($('#ddlVendor').val()) || 0;
         getVendorProducts(VendorID);
@@ -29,7 +43,7 @@
         }, 50);
     });
 
- 
+   
     //$('#ddlProduct').select2({
     //    allowClear: true, minimumInputLength: 3, placeholder: "Search Product",
     //    ajax: {
@@ -63,9 +77,15 @@
         $('#ddlVendor').prop("disabled", true); $('.billinfo').prop("disabled", true); //$('#txtbillfirstname').focus();
         $('.entry-mode-action').empty().append('<button type="button" id="btnOtherProduct" class="btn btn-danger billinfo"><i class="fas fa-cube"></i> Add Other Product</button> ');
         $('.entry-mode-action').append('<button type="button" id="btnService" class="btn btn-danger billinfo"><i class="fas fa-concierge-bell"></i> Add Service</button>');
-        $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/Reception/ReceiveOrder">Back to List</a><button type="button" id="btnpoclosed" class="btn btn-danger" style="float:unset" data-toggle="tooltip" title="Close PO"><i class="far fa-btnpoclosed"></i> Close PO</button><button type="button" class="btn btn-danger btnUndoRecord"><i class="fa fa-undo"></i> Cancel</button>  <button type="button" class="btn btn-danger" id="btnSave"><i class="far fa-save"></i> Update</button>');
+        $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/Reception/ReceiveOrder">Back to List</a><button type="button" id="btnpoclosed" class="btn btn-danger btnpoclosed" style="float:unset" data-toggle="tooltip" title="Close PO"><i class="far fa-btnpoclosed"></i> Close PO</button><button type="button" class="btn btn-danger btnUndoRecord"><i class="fa fa-undo"></i> Cancel</button>  <button type="button" class="btn btn-danger" id="btnSave"><i class="far fa-save"></i> Update</button>');
         $(".top-action").empty().append('<button type="button" class="btn btn-danger btnUndoRecord" data-toggle="tooltip" title="Cancel"><i class="fa fa-undo"></i> Cancel</button>  <button type="button" class="btn btn-danger" id="btnSave" data-toggle="tooltip" title="Update"><i class="far fa-save"></i> Update</button>');
         $('.billinfofo').prop("disabled", false);
+
+
+        if ($("#hfstatus").val() == "5")
+            $(".btnpoclosed").show();
+        else
+            $(".btnpoclosed").hide();
 
         $("#loader").hide();
        
@@ -94,6 +114,18 @@
         let id = parseInt($('#lblPoNo').data('id')) || 0;
         getPurchaseOrderPrint(id, false);
     });
+
+     if ($("#hfstatus").val() == "6") {
+         console.log($("#hfstatus").val());
+         $('.btnEdit').hide();
+     
+         console.log('gg');
+     }
+     else {
+         $('.btnEdit').show();
+         
+     }
+
 });
 function getMasters() {
     $.ajax({
@@ -407,9 +439,9 @@ function getPurchaseOrderInfo() {
     let oid = parseInt($('#lblPoNo').data('id')) || 0;
     if (oid > 0) {
         $('#ddlVendor,.billinfo').prop("disabled", true);
-        $('.page-heading').text('Receive Order ').append('<a class="btn btn-danger" href="/Reception/ReceiveOrder">Back to List</a><button type="button" id="btnpoclosed" class="btn btn-danger" style="float:unset" data-toggle="tooltip" title="Close PO"><i class="far fa-btnpoclosed"></i> Close PO</button>');
+        $('.page-heading').text('Receive Order ').append('<a class="btn btn-danger" href="/Reception/ReceiveOrder">Back to List</a><button type="button" id="btnpoclosed" class="btn btn-danger btnpoclosed" style="float:unset" data-toggle="tooltip" title="Close PO"><i class="far fa-btnpoclosed"></i> Close PO</button>');
         $('#line_items,#product_line_items').empty();
-        $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/Reception/ReceiveOrder">Back to List</a><button type="button" id="btnpoclosed" class="btn btn-danger" style="float:unset" data-toggle="tooltip" title="Close PO"><i class="far fa-btnpoclosed"></i> Close PO</button>');
+        $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/Reception/ReceiveOrder">Back to List</a><button type="button" id="btnpoclosed" class="btn btn-danger btnpoclosed" style="float:unset" data-toggle="tooltip" title="Close PO"><i class="far fa-btnpoclosed"></i> Close PO</button>');
         var option = { strValue1: oid };
         $.ajax({
             url: "/Reception/GetPurchaseOrderByID", type: "Get", beforeSend: function () { $("#loader").show(); }, data: option,
@@ -433,9 +465,9 @@ function getPurchaseOrderInfo() {
                         $("#hfstatus").val(data['po'][i].fk_status);
                         //console.log(data['po'][i].fk_status);
                         if (data['po'][i].fk_status == "5")
-                            $("#btnpoclosed").show();
+                            $(".btnpoclosed").show();
                         else
-                            $("#btnpoclosed").hide();
+                            $(".btnpoclosed").hide();
                         if (!data['po'][i].date_livraison.includes('00/00/0000')) $('#txtPlanneddateofdelivery').val(data['po'][i].date_livraison);
 
                     }
@@ -494,11 +526,17 @@ function getPurchaseOrderInfo() {
         });
         $("#divAddItemFinal").find(".rowCalulate").change(function () { calculateFinal(); })
         $('#ddlVendor,.billinfo').prop("disabled", true); calculateFinal(); $('.entry-mode-action').empty();
-        $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/Reception/ReceiveOrder">Back to List</a><button type="button" id="btnpoclosed" class="btn btn-danger" style="float:unset" data-toggle="tooltip" title="Close PO"><i class="far fa-btnpoclosed"></i> Close PO</button><button type="button" class="btn btn-danger btnEdit"><i class="far fa-edit"></i> Edit</button>');
+        $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/Reception/ReceiveOrder">Back to List</a><button type="button" id="btnpoclosed" class="btn btn-danger btnpoclosed" style="float:unset" data-toggle="tooltip" title="Close PO"><i class="far fa-btnpoclosed"></i> Close PO</button><button type="button" class="btn btn-danger btnEdit"><i class="far fa-edit"></i> Edit</button>');
         $(".top-action").empty().append('<button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button>');
 
         $("#btnPrintPdf").removeClass('hidden');
         $('.billinfofo').prop("disabled", true);
+
+
+        if ($("#hfstatus").val() == "5")
+            $(".btnpoclosed").show();
+        else
+            $(".btnpoclosed").hide();
     }
     else {
         $('.billinfo').prop("disabled", true); $('#lblPoNo').text('Draft');
@@ -613,7 +651,7 @@ function saveVendorPO() {
 }
 
 
-$(document).on("click", "#btnpoclosed", function (t) {
+$(document).on("click", ".btnpoclosed", function (t) {
     t.preventDefault(); updatepocloser();
 });
 function updatepocloser() {
@@ -670,4 +708,156 @@ function getPurchasehistory() {
        
     }
     
+}
+
+$(document).on('click', "#btnuploade", function () {
+    Adduploade();
+})
+
+function Adduploade() {
+    debugger
+
+    var formData = new FormData();
+    var file = document.getElementById("ImageFile").files[0];
+    formData.append("ImageFile", file);
+
+    var Name = $("#hfid").val();
+    formData.append("Name", Name);
+
+    if (file == "") {
+        swal('Alert', 'Please upload files', 'error').then(function () { swal.close();});
+    }
+    else {
+
+        $.ajax({
+            type: "POST",
+            url: '/Reception/FileUploade/',
+            data: formData,
+            processData: false,
+            contentType: false,
+            beforeSend: function () {
+                $("#loader").show();
+            },
+            success: function (data) {
+                if (data.status == true) {
+                    if (data.url == "Manage") {
+                        swal('Alert!', data.message, 'success');
+                        bindfileuploade();
+                    }
+                    else {
+                        swal('Alert!', data.message, 'success');
+                    }
+                }
+                else {
+                    swal('Alert!', data.message, 'error')
+                }
+            },
+            complete: function () {
+                $("#loader").hide();
+            },
+            error: function (error) {
+                swal('Error!', 'something went wrong', 'error');
+            },
+        })
+    }
+}
+
+function bindfileuploade() {
+    let PostID = $("#hfid").val();
+    var obj = { strValue1: PostID };
+    $.ajax({
+        type: "POST", url: '/Reception/GetfileuploadData', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
+        beforeSend: function () { $("#loader").show(); },
+        success: function (data) {
+            var itemsDetailsxml = [];
+            for (var i = 0; i < data.length; i++) {
+                // let row_key = data[i].ID ;                      
+                itemsDetailsxml.push({
+                    PKey: data[i].ID, product_id: data[i].ID, product_name: data[i].product_name, Length: data[i].product_label, CreateDate: data[i].sellingpric
+                });
+
+            }
+            bindbindfileuploadeDetails(itemsDetailsxml);
+        },
+        complete: function () { $("#loader").hide(); },
+        error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); },
+        async: false
+    });
+}
+function bindbindfileuploadeDetails(data) {
+    // console.log('g', data);
+    var layoutHtml = '';
+    if (data.length > 0) {
+        for (var i = 0; i < data.length; i++) {
+            if (data[i].PKey > 0) {
+                layoutHtml += '<tr id="tritemId_' + data[i].PKey + '" data-key="' + data[i].PKey + '">';
+                layoutHtml += '<td><a target="popup" href="../../Content/PurchaseFiles/' + data[i].product_name + '">' + data[i].product_name + '</i></a ></td>';
+                layoutHtml += '<td>' + data[i].Length + 'KB' + '</td>';
+                layoutHtml += '<td>' + data[i].CreateDate + '</td>';
+              /*  layoutHtml += '<td><a href="javascript:void(0);" class="editbutton" onClick="viewfileupload(' + data[i].PKey + ')"><i class="glyphicon glyphicon-eye-open"></i></a></td>';*/
+                layoutHtml += '<td class="text-right"><a href="javascript:void(0);" class="editbutton" onClick="Deletefileupload(' + data[i].PKey + ')"><i class="glyphicon glyphicon-trash"></i></a></td>';
+                layoutHtml += '</tr>';
+            }
+        }
+        // console.log(layoutHtml);
+        $('#divfileupload_services').empty().append(layoutHtml);
+
+    }
+    else {
+        layoutHtml += '<table id="dtfileupload" class="table-blue table table-bordered table-striped dataTable">';
+        layoutHtml += '<thead>';
+        layoutHtml += '<tr>';
+        layoutHtml += '<th>Documents</th>';
+        layoutHtml += '<th>Size</th>';
+        layoutHtml += '<th>Date</th>';
+    /*    layoutHtml += '<th>View</th>';*/
+        layoutHtml += '<th class="text-right">Delete</th>';
+        layoutHtml += '</tr>';
+        layoutHtml += '</thead><tbody id="divfileupload_services"></tbody>';
+        layoutHtml += '</table>';
+        $('#divfileupload').empty().html(layoutHtml);
+    }
+
+}
+
+function Deletefileupload(id) {
+    var ids = id;
+    var obj = { ID: ids }
+
+    $.ajax({
+        url: '/Reception/Deletefileuploade/', dataType: 'json', type: 'Post',
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(obj),
+        dataType: "json",
+        beforeSend: function () {
+            $("#loader").show();
+        },
+        success: function (data) {
+            if (data.status == true) {
+                if (data.url == "Manage") {
+                    bindfileuploade();
+                    swal('Alert!', data.message, 'success');
+                }
+                else {
+                    swal('Alert!', data.message, 'success');
+                }
+
+            }
+            else {
+                swal('Alert!', data.message, 'error')
+            }
+        },
+        complete: function () {
+            $("#loader").hide();
+        },
+        error: function (error) {
+            swal('Error!', 'something went wrong', 'error');
+        },
+    })
+
+}
+
+function viewfileupload(id) {
+
+
 }

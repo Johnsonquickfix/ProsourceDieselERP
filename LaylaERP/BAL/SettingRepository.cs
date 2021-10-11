@@ -253,7 +253,7 @@ namespace LaylaERP.BAL
             try
             {
                 string strSQl = "select rowid from erp_order_automation_rule"
-                                + " WHERE fk_rule =" + model.fk_rule + " and location = '" + model.location + "' "
+                                + " WHERE fk_rule =" + model.fk_rule + " and location = '" + model.location + "' and fk_product  = "+ model.fk_product + " "
                                 + " limit 10;";
                 dt = SQLHelper.ExecuteDataTable(strSQl);
             }

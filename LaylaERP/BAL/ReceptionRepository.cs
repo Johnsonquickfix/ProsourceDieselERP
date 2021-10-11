@@ -134,7 +134,7 @@ namespace LaylaERP.BAL
              + "inner join wp_vendor v on p.fk_supplier = v.rowid "
              + "inner join wp_StatusMaster s on p.fk_status = s.ID where p.fk_status= 6 and 1 = 1";
 
-                strSql += strWhr + string.Format(" order by p.date_creation");
+                strSql += strWhr + string.Format(" order by p.fk_purchase desc");
                 dt = SQLHelper.ExecuteDataTable(strSql);
             }
             catch (Exception ex)
@@ -200,7 +200,7 @@ namespace LaylaERP.BAL
              + "inner join wp_vendor v on p.fk_supplier = v.rowid "
              + "inner join wp_StatusMaster s on p.fk_status = s.ID where p.fk_status= 5 and 1 = 1";
 
-                strSql += strWhr + string.Format(" order by p.date_creation");
+                strSql += strWhr + string.Format(" order by p.fk_purchase desc");
                 dt = SQLHelper.ExecuteDataTable(strSql);
             }
             catch (Exception ex)
@@ -409,8 +409,8 @@ namespace LaylaERP.BAL
             try
             {
                 StringBuilder strupdate = new StringBuilder();
-                strupdate.Append(string.Format("update commerce_purchase_order set fk_status = '{0}' where rowid = '{1}'; ", model.fk_status, model.IDRec));
-                strupdate.Append(string.Format("update commerce_purchase_receive_order set fk_status = '{0}' where fk_purchase = '{1}' ", model.fk_status, model.IDRec));
+                strupdate.Append(string.Format("update commerce_purchase_order set fk_status = {0} where rowid = {1}; ", model.fk_status, model.IDRec));
+                strupdate.Append(string.Format("update commerce_purchase_receive_order set fk_status = {0} where fk_purchase = {1} ", model.fk_status, model.IDRec));
                 SQLHelper.ExecuteNonQueryWithTrans(strupdate.ToString());  
                 result = model.RowID;
             }

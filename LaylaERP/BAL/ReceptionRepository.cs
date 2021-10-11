@@ -134,7 +134,7 @@ namespace LaylaERP.BAL
              + "inner join wp_vendor v on p.fk_supplier = v.rowid "
              + "inner join wp_StatusMaster s on p.fk_status = s.ID where p.fk_status= 6 and 1 = 1";
 
-                strSql += strWhr + string.Format(" order by p.date_creation");
+                strSql += strWhr + string.Format(" order by p.fk_purchase desc");
                 dt = SQLHelper.ExecuteDataTable(strSql);
             }
             catch (Exception ex)
@@ -200,7 +200,7 @@ namespace LaylaERP.BAL
              + "inner join wp_vendor v on p.fk_supplier = v.rowid "
              + "inner join wp_StatusMaster s on p.fk_status = s.ID where p.fk_status= 5 and 1 = 1";
 
-                strSql += strWhr + string.Format(" order by p.date_creation");
+                strSql += strWhr + string.Format(" order by p.fk_purchase desc");
                 dt = SQLHelper.ExecuteDataTable(strSql);
             }
             catch (Exception ex)

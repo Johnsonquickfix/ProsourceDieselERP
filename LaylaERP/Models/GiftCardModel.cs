@@ -20,14 +20,14 @@ namespace LaylaERP.Models
         public string code { get; set; }
         public long order_id { get; set; }
         public long order_item_id { get; set; }
-        public string recipient { get; set; }
+        public List<string> recipient { get; set; }
         public int redeemed_by { get; set; }
         public string sender { get; set; }
         public string sender_email { get; set; }
         public string message { get; set; }
         public double balance { get; set; }
         public double remaining { get; set; }
-        public string template_id { get; set; } 
+        public string template_id { get; set; }
         public int create_date { get; set; }
         public int deliver_date { get; set; }
         public string delivered { get; set; }
@@ -36,4 +36,5 @@ namespace LaylaERP.Models
         public string is_virtual { get; set; }
         public string is_active { get; set; }
     }
+    
 }

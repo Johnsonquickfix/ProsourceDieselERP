@@ -35,6 +35,7 @@ namespace LaylaERP.Models
         public int redeem_date { get; set; }
         public string is_virtual { get; set; }
         public string is_active { get; set; }
+        public int qty { get; set; }
     }
     
 }

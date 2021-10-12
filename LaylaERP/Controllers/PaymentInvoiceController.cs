@@ -45,6 +45,33 @@ namespace LaylaERP.Controllers
             catch (Exception ex) { throw ex; }
             return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
         }
+
+        [HttpGet]
+        public JsonResult GetPartiallyDetailsList(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            try
+            {
+                DataTable dt = PaymentInvoiceRepository.GetPartiallyDetailsList(model.strValue1, model.strValue2, model.strValue3);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
+
+        [HttpPost]
+        public JsonResult GetPartiallyOrderDataList(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            try
+            {
+                DataTable dt = PaymentInvoiceRepository.GetPartiallyOrderDataList(model.strValue1, model.strValue2, model.strValue3);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
+
         [HttpGet]
         public JsonResult GetPurchaseOrderByID(SearchModel model)
         {

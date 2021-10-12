@@ -38,7 +38,7 @@ function printmodalBill(is_inv) {
     $('<div class="modal in printable autoprint" id="PrintModal" role="dialog" aria-hidden="true"></div>').html(modalHtml).modal({ backdrop: 'static', keyboard: false });
     //console.log('show');
 }
-function getPurchaseOrderPrint(id, is_mail) {
+function getPurchaseOrderPrint1(id, is_mail) {
     //if (id > 0) {
     //    var option = { strValue1: id };
     //    $.ajax({
@@ -622,7 +622,7 @@ function number_format(number, decimals, decPoint, thousandsSep) {
 //    //}
 //}
 
-function getInvoicePrint(id) {
+function getInvoicePrintnew(id) {
     //if (id > 0) {
     //    var option = { strValue1: id };
     //    $.ajax({

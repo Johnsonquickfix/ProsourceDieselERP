@@ -175,16 +175,16 @@ namespace LaylaERP.BAL
                             + " OR wv.name like '%" + searchid + "%' "
                             + " OR post_title like '%" + searchid + "%' "
 
-                            + " )";
+                            + " )"; 
                 }
 
-                string strSql = "select DISTINCT eoar.rowid rowid, eoaf.name rulrname,esl.StateFullName State,eslcun.CountryFullName Country,"
-                + " wv.name vendrname,post_title title,services,prefix_code"
+                string strSql = "select DISTINCT eoar.rowid rowid, eoaf.name rulrname,location State,eslcun.CountryFullName Country,"
+                + " wv.name vendrname,services,prefix_code"
                 + " from erp_order_automation_rule eoar"
                 + " left OUTER join erp_order_automation_filter eoaf on eoaf.rowid = eoar.fk_rule"
-                + " left OUTER join erp_StateList esl on esl.State = eoar.location"
+                //+ " left OUTER join erp_StateList esl on esl.State = eoar.location "
                  + " left OUTER join erp_StateList eslcun on eslcun.Country = eoar.country"
-                + " left OUTER join wp_posts ps on ps.id = eoar.fk_product"
+                //+ " left OUTER join wp_posts ps on ps.id = eoar.fk_product"
                 + " left OUTER join wp_vendor wv on wv.rowid = eoar.fk_vendor"
                 + " WHERE eoar.rowid > 0" + strWhr
 
@@ -192,11 +192,11 @@ namespace LaylaERP.BAL
 
                 strSql += "; SELECT count(distinct eoar.rowid) TotalRecord from erp_order_automation_rule eoar"
                 + " left OUTER join erp_order_automation_filter eoaf on eoaf.rowid = eoar.fk_rule"
-                + " left OUTER join erp_StateList esl on esl.State = eoar.location"
+                //+ " left OUTER join erp_StateList esl on esl.State = eoar.location"
                 + " left OUTER join erp_StateList eslcun on eslcun.Country = eoar.country"
-                + " left OUTER join wp_posts ps on ps.id = eoar.fk_product"
+                //+ " left OUTER join wp_posts ps on ps.id = eoar.fk_product"
                 + " left OUTER join wp_vendor wv on wv.rowid = eoar.fk_vendor"
-                + " WHERE eoar.rowid > 0" + strWhr.ToString();
+                + " WHERE eoar.rowid > 0 " + strWhr.ToString();
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
                 if (ds.Tables[1].Rows.Count > 0)
@@ -232,8 +232,11 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "SELECT rowid ID,fk_rule,location,Statefullname,fk_product,fk_vendor,services,ScD.country from erp_order_automation_rule ScD left outer join erp_StateList esl on esl.State = ScD.location"
-                             + " WHERE rowid = " + model.strVal + " ";
+                //string strSql = "SELECT rowid ID,fk_rule,location,Statefullname,fk_product,fk_vendor,services,ScD.country from erp_order_automation_rule ScD left outer join erp_StateList esl on esl.State = ScD.location"
+                //             + " WHERE rowid = " + model.strVal + " ";
+
+                string strSql = "SELECT rowid ID,fk_rule,location,fk_product,fk_vendor,services,Country from erp_order_automation_rule ScD"
+                           + " WHERE rowid = " + model.strVal + " ";
 
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
@@ -253,7 +256,7 @@ namespace LaylaERP.BAL
             try
             {
                 string strSQl = "select rowid from erp_order_automation_rule"
-                                + " WHERE fk_rule =" + model.fk_rule + " and location = '" + model.location + "' "
+                                + " WHERE fk_rule =" + model.fk_rule + " and location = '" + model.location + "' and fk_product  = "+ model.fk_product + " "
                                 + " limit 10;";
                 dt = SQLHelper.ExecuteDataTable(strSQl);
             }
@@ -273,7 +276,7 @@ namespace LaylaERP.BAL
                 // strSql.Append(string.Format("insert into Product_Purchase_Items ( fk_vendor,purchase_price,cost_price,minpurchasequantity,salestax,taxrate,discount,remark) values ({0},{1},{2},{3},{4},{5},{6},{7},'{8}') ", model.fk_product, model.fk_vendor, model.purchase_price, model.cost_price, model.minpurchasequantity, model.salestax, model.taxrate, model.discount, model.remark));
 
                 /// step 6 : wp_posts
-                strSql.Append(string.Format("update erp_order_automation_rule set location = '{0}',fk_product = {1},fk_vendor = {2},services = '{3}',fk_rule = {4},country= '{5}',prefix_code= (select prefix_code from product_warehouse_rule where product_id = {1} ) where rowid = {6}", model.location, model.fk_product, model.fk_vendor, model.services, model.fk_rule,model.countryshipping, model.ID));
+                strSql.Append(string.Format("update erp_order_automation_rule set location = '{0}',fk_product = '{1}',fk_vendor = {2},services = '{3}',fk_rule = {4},country= '{5}',prefix_code= (select group_concat(prefix_code) from product_warehouse_rule where product_id in ({1})) where rowid = {6}", model.location, model.fk_products, model.fk_vendor, model.services, model.fk_rule,model.countryshipping, model.ID));
 
                 result = SQLHelper.ExecuteNonQuery(strSql.ToString());
             }
@@ -289,12 +292,12 @@ namespace LaylaERP.BAL
                 StringBuilder strSql = new StringBuilder();
                 //StringBuilder strSql = new StringBuilder(string.Format("delete from Product_Purchase_Items where fk_product = {0}; ", model.fk_product));
                 //strSql.Append(string.Format("insert into erp_order_automation_rule (fk_rule,fk_product,location,fk_vendor,services,country,prefix_code) values ({0},{1},'{2}',{3},'{4}','{5}') ", model.fk_rule, model.fk_product, model.location, model.fk_vendor, model.services,model.countryshipping));
-                strSql.Append(string.Format("insert into erp_order_automation_rule (fk_rule,fk_product,location,fk_vendor,services,country,prefix_code) select {0},{1},'{2}',{3},'{4}','{5}', (select prefix_code from product_warehouse_rule where product_id = {1} ) prefix_code", model.fk_rule, model.fk_product, model.location, model.fk_vendor, model.services, model.countryshipping));
+                strSql.Append(string.Format("insert into erp_order_automation_rule (fk_rule,fk_product,location,fk_vendor,services,country,prefix_code) select {0},'{1}','{2}',{3},'{4}','{5}', (select group_concat(prefix_code)  from product_warehouse_rule where product_id in ({1}) ) prefix_code", model.fk_rule, model.fk_products, model.location, model.fk_vendor, model.services, model.countryshipping));
                 /// step 6 : wp_posts
                 //strSql.Append(string.Format(" update wp_posts set post_status = '{0}' ,comment_status = 'closed' where id = {1} ", model.OrderPostStatus.status, model.OrderPostStatus.order_id));
 
                 result = SQLHelper.ExecuteNonQuery(strSql.ToString());
-            }
+                }
             catch (Exception ex)
             { throw ex; }
             return result;

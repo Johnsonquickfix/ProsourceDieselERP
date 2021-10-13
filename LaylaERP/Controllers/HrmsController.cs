@@ -193,7 +193,7 @@ namespace LaylaERP.Controllers
                 int UserID = HrmsRepository.AddNewEmployeeasUser(model);
                 if (UserID > 0)
                 {
-                    HrmsRepository.AddEmployeeUserMetaData(UserID);
+                    AddEmployeeMetaData(model,UserID);
                     int ID = HrmsRepository.AddEmployeeBasicInfo(model, UserID);
                     if (ID > 0)
                     {
@@ -1137,6 +1137,17 @@ namespace LaylaERP.Controllers
             else
             {
                 return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+        }
+
+        private void AddEmployeeMetaData(HrmsModel model, long id)
+        {
+            string[] varQueryArr1 = new string[10];
+            string[] varFieldsName = new string[10] { "first_name", "last_name", "wp_capabilities", "billing_address_1", "billing_country", "billing_phone", "billing_address_2", "billing_city", "billing_state", "billing_postcode" };
+            string[] varFieldsValue = new string[10] { model.firstname, model.lastname, "employee", model.address1, model.country, model.phone, model.address2, model.city, model.state, model.zipcode };
+            for (int n = 0; n < 10; n++)
+            {
+                HrmsRepository.AddUserEmployeeMetaData(model, id, varFieldsName[n], varFieldsValue[n]);
             }
         }
     }

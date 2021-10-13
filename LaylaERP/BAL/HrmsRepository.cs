@@ -136,8 +136,8 @@ namespace LaylaERP.BAL
             try
             {
                 model.pwd = EncryptedPwd(model.pwd);
-                string strsql = "INSERT into erp_hrms_emp(firstname, lastname, email,pwd, emp_type, dob, phone, gender, is_active,fk_user )" +
-                    " values(@firstname, @lastname, @email,@pwd, @emp_type, @dob, @phone, @gender, @is_active,@fk_user );SELECT LAST_INSERT_ID();";
+                string strsql = "INSERT into erp_hrms_emp(firstname, lastname, email,pwd, emp_type, dob, phone, gender, is_active,fk_user,insperity_id )" +
+                    " values(@firstname, @lastname, @email,@pwd, @emp_type, @dob, @phone, @gender, @is_active,@fk_user,@insperity_id );SELECT LAST_INSERT_ID();";
                 MySqlParameter[] para =
                 {
                     new MySqlParameter("@firstname", model.firstname),
@@ -149,8 +149,8 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@phone", model.phone),
                     new MySqlParameter("@gender", model.gender),
                     new MySqlParameter("@is_active", model.is_active),
-                     new MySqlParameter("@fk_user", UserID),
-
+                    new MySqlParameter("@fk_user", UserID),
+                    new MySqlParameter("@insperity_id",model.insperity_id),
                };
                 int result = Convert.ToInt32(DAL.SQLHelper.ExecuteScalar(strsql, para));
                 return result;
@@ -167,7 +167,7 @@ namespace LaylaERP.BAL
             {
                 //model.pwd = EncryptedPwd(model.pwd);
                 string strsql = "Update erp_hrms_emp set firstname=@firstname,lastname=@lastname,email=@email,emp_type=@emp_type,dob=@dob," +
-                   "phone=@phone,gender=@gender,is_active=@is_active where rowid=@rowid";
+                   "phone=@phone,gender=@gender,is_active=@is_active,insperity_id=@insperity_id where rowid=@rowid";
                 MySqlParameter[] para =
                 {
                     new MySqlParameter("@rowid", ID),
@@ -180,6 +180,7 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@phone", model.phone),
                     new MySqlParameter("@gender", model.gender),
                     new MySqlParameter("@is_active", model.is_active),
+                    new MySqlParameter("@insperity_id",model.insperity_id),
                };
                 int result = Convert.ToInt32(DAL.SQLHelper.ExecuteNonQuery(strsql, para));
                 return result;
@@ -221,6 +222,25 @@ namespace LaylaERP.BAL
             try
             {
                 string varFieldsName = "wp_capabilities", varFieldsValue = "employee";
+                string strsql = "INSERT INTO wp_usermeta(user_id,meta_key,meta_value) VALUES(@user_id,@meta_key,@meta_value); select LAST_INSERT_ID() as ID;";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@user_id", id),
+                    new MySqlParameter("@meta_key", varFieldsName),
+                    new MySqlParameter("@meta_value", varFieldsValue),
+                };
+                SQLHelper.ExecuteNonQuery(strsql, para);
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+        public static void AddUserEmployeeMetaData(HrmsModel model, long id, string varFieldsName, string varFieldsValue)
+        {
+            try
+            {
                 string strsql = "INSERT INTO wp_usermeta(user_id,meta_key,meta_value) VALUES(@user_id,@meta_key,@meta_value); select LAST_INSERT_ID() as ID;";
                 MySqlParameter[] para =
                 {
@@ -394,9 +414,19 @@ namespace LaylaERP.BAL
             totalrows = 0;
             try
             {
+                string strSql = string.Empty;
                 string strWhr = string.Empty;
 
-                string strSql = "Select rowid ID, concat(firstname,' ',lastname) as name, email,Replace(Replace(Replace(Replace(phone,')',''),'(',''),'-',''),' ','') as phone,gender,emp_type,is_active from erp_hrms_emp where 1=1 ";
+                long id = CommanUtilities.Provider.GetCurrent().UserID;
+
+                if (CommanUtilities.Provider.GetCurrent().UserType == "Administrator")
+                {
+                    strSql = "Select rowid ID, concat(firstname,' ',lastname) as name, email,Replace(Replace(Replace(Replace(phone,')',''),'(',''),'-',''),' ','') as phone,gender,emp_type,is_active from erp_hrms_emp where 1=1 ";
+                }
+                else
+                {
+                    strSql = "Select rowid ID, concat(firstname,' ',lastname) as name, email,Replace(Replace(Replace(Replace(phone,')',''),'(',''),'-',''),' ','') as phone,gender,emp_type,is_active from erp_hrms_emp where fk_user='" + id + "' ";
+                }
                 if (!string.IsNullOrEmpty(searchid))
                 {
                     strWhr += " and (concat(firstname,' ',lastname) like '%" + searchid + "%' OR email like '%" + searchid + "%' OR phone like '%" + searchid + "%')";
@@ -407,8 +437,14 @@ namespace LaylaERP.BAL
                 }
                 strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
 
-                strSql += "; SELECT ceil(Count(rowid)/" + pagesize.ToString() + ") TotalPage,Count(rowid) TotalRecord from erp_hrms_emp where 1 = 1 " + strWhr.ToString();
-
+                if (CommanUtilities.Provider.GetCurrent().UserType == "Administrator")
+                {
+                    strSql += "; SELECT ceil(Count(rowid)/" + pagesize.ToString() + ") TotalPage,Count(rowid) TotalRecord from erp_hrms_emp where 1 = 1 " + strWhr.ToString();
+                }
+                else
+                {
+                    strSql += "; SELECT ceil(Count(rowid)/" + pagesize.ToString() + ") TotalPage,Count(rowid) TotalRecord from erp_hrms_emp where fk_user='" + id + "' " + strWhr.ToString();
+                }
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
                 if (ds.Tables[1].Rows.Count > 0)
@@ -531,7 +567,7 @@ namespace LaylaERP.BAL
             try
             {
                 string strWhr = string.Empty;
-                string strSql = "Select e.rowid, e.firstname,e.lastname,e.dob, e.email,e.phone,e.gender,e.emp_type,e.is_active, " +
+                string strSql = "Select e.rowid, e.firstname,e.lastname,e.dob, e.email,e.phone,e.gender,e.emp_type,e.is_active,e.insperity_id, " +
                     "d.birthplace,d.maritalstatus,d.address1,d.address2,d.city,d.state,d.zipcode,d.country,d.emp_number,d.designation,d.department,d.undertaking_emp," +
                     "d.joining_date,d.leaving_date,d.basic_sal,d.unpaid_leave_perday,d.bank_account_title,d.bank_name,d.account_number, " +
                     "d.bank_swift_code,d.note_public,d.note_private,d.bloodgroup,d.education,d.professionalqualification,d.otherdetails,d.alternateaddress1,d.alternateaddress2,d.alternatecity,d.alternatestate," +

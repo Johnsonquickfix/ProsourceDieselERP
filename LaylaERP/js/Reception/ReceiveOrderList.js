@@ -334,7 +334,7 @@ function PoClosureGridColleps() {
             }
 
         ],
-        columnDefs: [{ targets: [0], visible: false, searchable: false }]
+        columnDefs: [{ targets: [0], visible: false, searchable: false }], order: [[1, "desc"]]
     });
 }
 
@@ -367,7 +367,7 @@ function format(d) {
             if (result.length == 0) { wrHTML += '<tbody><tr><td valign="top" colspan="6" class="no-data-available">Sorry no matching records found.</td></tr></tbody>'; }
             $(result).each(function (index, row) {
 
-                wrHTML += '<tr><td style="width:10%; text-align:left;"> <a href="#" onclick="getInvoicePrint(' + row.RicD + '); "><i class="fas fa - search - plus"></i>' + row.refordervendor + '</a></td><td style="width:12%; text-align:left;">' + row.dtcration + '</td>';
+                wrHTML += '<tr><td style="width:10%; text-align:left;"> <a href="#" onclick="getInvoicePrintnew(' + row.RicD + '); "><i class="fas fa - search - plus"></i>' + row.refordervendor + '</a></td><td style="width:12%; text-align:left;">' + row.dtcration + '</td>';
                 wrHTML += '<td style="width:60%; text-align:left;">' + row.des + '</td>'
                 wrHTML += '<td style="width:10%; text-align:left;">' + row.Quenty + '</td>'
                 wrHTML += '<td style="width:10%; text-align:right;">' + '$' + row.total_ttc + '</td></tr > ';
@@ -435,7 +435,7 @@ function PoPartiallyColleps() {
                 }
             }
         ],
-        columnDefs: [{ targets: [0], visible: false, searchable: false }]
+        columnDefs: [{ targets: [0], visible: false, searchable: false }],order: [[1, "desc"]]
     });
 }
 
@@ -450,7 +450,7 @@ function formatPartially(d) {
             if (result.length == 0) { wrHTML += '<tbody><tr><td valign="top" colspan="6" class="no-data-available">Sorry no matching records found.</td></tr></tbody>'; }
             $(result).each(function (index, row) {
 
-                wrHTML += '<tr><td style="width:10%; text-align:left;"> <a href="#" onclick="getInvoicePrint(' + row.RicD + '); "><i class="fas fa - search - plus"></i>' + row.refordervendor + '</a></td><td style="width:12%; text-align:left;">' + row.dtcration + '</td>';
+                wrHTML += '<tr><td style="width:10%; text-align:left;"> <a href="#" onclick="getInvoicePrintnew(' + row.RicD + '); "><i class="fas fa - search - plus"></i>' + row.refordervendor + '</a></td><td style="width:12%; text-align:left;">' + row.dtcration + '</td>';
                 wrHTML += '<td style="width:60%; text-align:left;">'  + row.des + '</td>'
                 wrHTML += '<td style="width:10%; text-align:left;">'  + row.Quenty + '</td>'
                 wrHTML += '<td style="width:10%; text-align:right;">' + '$' + row.total_ttc + '</td></tr > ';

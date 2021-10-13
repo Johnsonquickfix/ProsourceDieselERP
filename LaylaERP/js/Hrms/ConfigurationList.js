@@ -58,7 +58,7 @@ function EmployeeList() {
             {
                 'data': 'id', sWidth: "10%", title: 'Action',
                 'render': function (id, type, full, meta) {
-                    return '<a href="../Hrms/EditConfigurationList/' + id + '"><i class="glyphicon glyphicon-pencil"></i></a>';
+                    return '<a href="../../Hrms/EditConfigurationList/' + id + '"><i class="glyphicon glyphicon-pencil"></i></a>';
                 }
             }
             

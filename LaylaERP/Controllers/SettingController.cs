@@ -246,41 +246,68 @@ namespace LaylaERP.Controllers
             JsonResult result = new JsonResult();
             string msg = "";
             //int ID = 0;
-            if (!string.IsNullOrEmpty(model.location))
-            {
-                string[] state = model.location.Split(',');
-                for (int x = 0; x < state.Length; x++)
-                {
-                    model.location = state[x].Trim();
-                    DataTable dt = SettingRepository.Getcountrystatecountry(model);
-                    if (dt.Rows.Count > 0 && model.ID == 0)
-                    {
-                        return Json(new { status = false, message = "Rule with state has been already existed", url = "" }, 0);
-                    }
-                    else
-                    {
 
-                        if (model.ID > 0)
-                        {
-                            model.location = state[x].Trim();
-                            SettingRepository.updateshippingrule(model);
-                            msg = "Details has been updated successfully!!";
-                            //return Json(new { status = true, message = "", url = "Manage" }, 0);
-                        }
-                        else
-                        {
-                            model.location = state[x].Trim();
-                            SettingRepository.Addshippingruledetails(model);
-                            //return Json(new { status = true, message = "Details has been saved successfully!!", url = "" }, 0);
-                            msg = "Details has been save successfully!!";
-                        }
-                    }
-                }
+            DataTable dt = SettingRepository.Getcountrystatecountry(model);
+            if (dt.Rows.Count > 0 && model.ID == 0)
+            {
+                return Json(new { status = false, message = "Rule with state with same product has been already existed", url = "" }, 0);
             }
             else
             {
-                msg = "Please Select State!!";               
+
+                if (model.ID > 0)
+                {
+                    //model.location = state[x].Trim();
+                    SettingRepository.updateshippingrule(model);
+                    msg = "Details has been updated successfully!!";
+                    //return Json(new { status = true, message = "", url = "Manage" }, 0);
+                }
+                else
+                {
+                    //model.location = state[x].Trim();
+                    SettingRepository.Addshippingruledetails(model);
+                    //return Json(new { status = true, message = "Details has been saved successfully!!", url = "" }, 0);
+                    msg = "Details has been save successfully!!";
+                }
             }
+
+
+
+            //if (!string.IsNullOrEmpty(model.location))
+            //{
+            //    string[] state = model.location.Split(',');
+            //    for (int x = 0; x < state.Length; x++)
+            //    {
+            //        model.location = state[x].Trim();
+            //        DataTable dt = SettingRepository.Getcountrystatecountry(model);
+            //        if (dt.Rows.Count > 0 && model.ID == 0)
+            //        {
+            //            return Json(new { status = false, message = "Rule with state with same product has been already existed", url = "" }, 0);
+            //        }
+            //        else
+            //        {
+
+            //            if (model.ID > 0)
+            //            {
+            //                model.location = state[x].Trim();
+            //                SettingRepository.updateshippingrule(model);
+            //                msg = "Details has been updated successfully!!";
+            //                //return Json(new { status = true, message = "", url = "Manage" }, 0);
+            //            }
+            //            else
+            //            {
+            //                model.location = state[x].Trim();
+            //                SettingRepository.Addshippingruledetails(model);
+            //                //return Json(new { status = true, message = "Details has been saved successfully!!", url = "" }, 0);
+            //                msg = "Details has been save successfully!!";
+            //            }
+            //        }
+            //    }
+            //}
+            //else
+            //{
+            //    msg = "Please Select State!!";               
+            //}
             return Json(new { status = true, message = msg, url = "Manage" }, 0);
 
         }

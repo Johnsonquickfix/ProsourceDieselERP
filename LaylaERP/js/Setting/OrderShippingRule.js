@@ -156,7 +156,7 @@ function getProducts() {
         success: function (data) {
             let dt = JSON.parse(data);
             //Product
-            $("#ddlProduct").html('<option value="">Select Product</option>');
+           // $("#ddlProduct").html('<option value="">Select Product</option>');
             for (i = 0; i < dt['Table'].length; i++) { $("#ddlProduct").append('<option value="' + dt['Table'][i].id + '">' + dt['Table'][i].text + '</option>'); }
         },
         complete: function () { $("#loader").hide(); },
@@ -259,7 +259,7 @@ function dataGridLoad(order_type) {
             { data: 'Country', title: 'Country', sWidth: "15%" },
             { data: 'State', title: 'State', sWidth: "15%" },
             { data: 'vendrname', title: 'Vendor', sWidth: "15%" },
-            { data: 'title', title: 'Product', sWidth: "15%" },
+/*            { data: 'title', title: 'Product', sWidth: "15%" },*/
             { data: 'prefix_code', title: 'Suffix Code', sWidth: "15%" },
        
             { data: 'services', title: 'Services', sWidth: "15%" },
@@ -295,11 +295,18 @@ function EditData(id) {
             var i = JSON.parse(data);
             $('#ddlRule').focus();
             $('#ddlRule').val(i[0].fk_rule).trigger('change');
-            $('#ddlCountry').val(i[0].country).trigger('change');
+            $('#ddlCountry').val(i[0].Country).trigger('change');
             $('#ddlProduct').val(i[0].fk_product).trigger('change');
             $('#ddlvender').val(i[0].fk_vendor).trigger('change');
             $('#ddlService').val(i[0].services).trigger('change');
-            setTimeout(function () { statedata(i[0].location, i[0].Statefullname); }, 2000);
+
+            if (i[0].fk_product !== null && i[0].fk_product !== undefined)
+                $("#ddlProduct").select2("val", [i[0].fk_product.split(',')]);
+
+            if (i[0].location !== null && i[0].location !== undefined)
+                $("#ddlState").select2("val", [i[0].location.split(',')]);
+
+            //setTimeout(function () { statedata(i[0].location, i[0].Statefullname); }, 2000);
         },
         complete: function () { $("#loader").hide(); },
         error: function (msg) { alert(msg); }
@@ -323,7 +330,10 @@ function Adddetails() {
     Countryval = $('#ddlCountry').val();
     fk_rule = $("#ddlRule").val();
     services = $("#ddlService").val();
-    fk_product = $("#ddlProduct").val();
+    //fk_product = $("#ddlProduct").val();
+    var fk_productval = $('#ddlProduct option:selected')
+        .toArray().map(item => item.value).join();
+    fk_product = fk_productval;
     fk_vendor = $("#ddlvender").val();
 
     //taxprise = $("#txttaxprice").val();
@@ -350,7 +360,7 @@ function Adddetails() {
             location: locationval,
             countryshipping: Countryval,
             services: services,
-            fk_product: fk_product,
+            fk_products: fk_product,
             fk_vendor: fk_vendor
             //Shipping_taxrate: taxprise
         }
@@ -366,12 +376,14 @@ function Adddetails() {
                     if (data.url == "Manage") {
                         dataGridLoad('');
                         $('#ddlState').val(null).trigger('change');
+                        $('#ddlProduct').val(null).trigger('change');
                         ClearControl();
                         swal('Alert!', data.message, 'success');
                     }
                     else {
                         dataGridLoad('');
                         $('#ddlState').val(null).trigger('change');
+                        $('#ddlProduct').val(null).trigger('change');
                         ClearControl();
                         // $('#fetch_results > input:text').val('');
                         swal('Alert!', data.message, 'success');

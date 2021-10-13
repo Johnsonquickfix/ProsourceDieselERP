@@ -546,3 +546,21 @@ function AuthorizeNetPaymentRefunds() {
         }
     }]);
 }
+
+///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Amazon Pay Payment Return ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+function AuthorizeNetPaymentRefunds() {
+    let oid = parseInt($('#hfOrderNo').val()) || 0, invoice_amt = (parseFloat($('.btnRefundOk').data('nettotal')) || 0.00);
+    let option = { order_id: oid, NetTotal: invoice_amt };
+    swal.queue([{
+        title: 'Amazon Payment Processing.', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,
+        onOpen: () => {
+            swal.showLoading();
+            $.post('/Orders/UpdateAmazonPaymentRefund', option).then(response => {
+                console.log('Amazon Pay ', response);
+                if (response.status) {
+                    swal('Alert!', 'Order placed successfully.', "success"); getOrderNotesList(oid);
+                }
+            }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', err, 'error'); }).always(function () { swal.hideLoading(); });
+        }
+    }]);
+}

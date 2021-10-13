@@ -28,8 +28,15 @@
     $("#ddlbillcountry").change(function () { var obj = { id: $("#ddlbillcountry").val() }; BindStateCounty("ddlbillstate", obj); });
     $("#ddlshipcountry").change(function () { var obj = { id: $("#ddlshipcountry").val() }; BindStateCounty("ddlshipstate", obj); });
     $("#ddlshipstate").change(function (t) {
+        t.preventDefault(); $.when(GetTaxRate()).done(function () { getItemShippingCharge(true); });
+    });
+    $("#ddlStatus").change(function (t) {
         t.preventDefault();
-        $.when(GetTaxRate()).done(function () { getItemShippingCharge(true); });
+        if ($(this).val() == 'wc-on-hold') {
+            $('.releasedate').empty().append('<label data-toggle="tooltip" title="Order release date">What day would you like your order to ship?*</label><div class= "input-group"><span class="input-group-addon"><i class="fa fa-calendar"></i></span><input id="txtReleaseDate" class="form-control"></div>');
+            $('#txtReleaseDate').daterangepicker({ singleDatePicker: true, minDate: moment($('#txtLogDate').val(), "MM/DD/YYYY").add(7, 'd'), autoUpdateInput: true, locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' } });
+        }
+        else { $('.releasedate').empty(); }
     });
     $(document).on("click", "#btnApplyCoupon", function (t) { t.preventDefault(); CouponModal(); });
     //$("#billModal").on("keypress", function (e) { if (e.which == 13 && e.target.type != "textarea") { $("#btnCouponAdd").click(); } });
@@ -1745,6 +1752,8 @@ function createPostMeta() {
         { post_id: oid, meta_key: '_cart_discount_tax', meta_value: '0' }, { post_id: oid, meta_key: '_order_shipping', meta_value: parseFloat($('#shippingTotal').text()) || 0.00 },
         { post_id: oid, meta_key: '_order_shipping_tax', meta_value: '0' }, { post_id: oid, meta_key: '_order_tax', meta_value: parseFloat($('#salesTaxTotal').text()) || 0.00 }
     );
+    if ($('#ddlStatus').val() == 'wc-on-hold') { postMetaxml.push({ post_id: oid, meta_key: '_release_date', meta_value: $('#txtReleaseDate').val() }); }
+    else { postMetaxml.push({ post_id: oid, meta_key: '_release_date', meta_value: '' });  }
     return postMetaxml;
 }
 function createPostStatus() {

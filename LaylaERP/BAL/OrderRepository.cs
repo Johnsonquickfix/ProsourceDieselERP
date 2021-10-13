@@ -651,14 +651,15 @@
                 strSql.Append(strSql_insert);
                 if (Payment_method.ToLower() == "podium")
                 {
-                    strSql.Append(string.Format("update wp_posts set post_status = '{0}' where id = {1};", "wc-pendingpodiuminv", model[0].post_id));
+                    //strSql.Append(string.Format("update wp_posts set post_status = '{0}' where id = {1};", "wc-pendingpodiuminv", model[0].post_id));
+                    strSql.Append(string.Format("update wp_posts set post_status = '{0}' where id = {1} and post_status != 'wc-on-hold';", "wc-pendingpodiuminv", model[0].post_id));
                     //// step 3 : Add Order Note
                     strSql.Append("insert into wp_comments(comment_post_ID, comment_author, comment_author_email, comment_author_url, comment_author_IP, comment_date, comment_date_gmt, comment_content, comment_karma, comment_approved, comment_agent, comment_type, comment_parent, user_id) ");
                     strSql.Append(string.Format("values ({0}, 'WooCommerce', 'woocommerce@laylasleep.com', '', '', '{1}', '{2}', '{3}', '0', '1', 'WooCommerce', 'order_note', '0', '0');", model[0].post_id, cDate.ToString("yyyy/MM/dd HH:mm:ss"), cUTFDate.ToString("yyyy/MM/dd HH:mm:ss"), "Order status changed from Pending payment to Pending Podium Invoice."));
                 }
                 else
                 {
-                    strSql.Append(string.Format("update wp_posts set post_status = '{0}' where id = {1};", "wc-pending", model[0].post_id));
+                    strSql.Append(string.Format("update wp_posts set post_status = '{0}' where id = {1} and post_status != 'wc-on-hold';", "wc-pending", model[0].post_id));
                 }
 
                 result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
@@ -666,6 +667,10 @@
             catch { }
             return result;
         }
+        /// <summary>
+        /// Update Podium payment cancel after 72 Hours and Update hold order status processing before 48-hour.
+        /// </summary>
+        /// <returns></returns>
         public static DataTable GetPodiumOrdersList()
         {
             DataTable dt = new DataTable();
@@ -674,7 +679,9 @@
                 MySqlParameter[] parameters = { };
                 string strSQl = "SELECT id,post_date,pm.meta_value podium_uid FROM wp_posts p inner join wp_postmeta pm on pm.post_id = p.id and pm.meta_key = '_podium_uid'"
                                 + " WHERE post_status = 'wc-pendingpodiuminv' AND post_type = 'shop_order' AND post_modified > DATE_SUB(now(), INTERVAL 3 DAY);"
-                                + " update wp_posts set post_status = 'wc-cancelnopay',post_modified_gmt = UTC_TIMESTAMP() WHERE post_status = 'wc-pendingpodiuminv' AND post_type = 'shop_order' AND post_modified < DATE_SUB(now(), INTERVAL 3 DAY);";
+                                + " update wp_posts set post_status = 'wc-cancelnopay',post_modified_gmt = UTC_TIMESTAMP() WHERE post_status = 'wc-pendingpodiuminv' AND post_type = 'shop_order' AND post_modified < DATE_SUB(now(), INTERVAL 3 DAY);"
+                                + " update wp_posts set post_status = 'wc-processing' WHERE post_status = 'wc-on-hold' AND post_type = 'shop_order'"
+                                + " and id in (select post_id from wp_postmeta pmu where pmu.meta_key = '_release_date' and REGEXP_REPLACE(pmu.meta_value,'[^0-9]+','') >= DATE_FORMAT(DATE_SUB(now(), INTERVAL 2 DAY), '%m%d%Y'))";
                 dt = SQLHelper.ExecuteDataTable(strSQl, parameters);
             }
             catch (Exception ex)

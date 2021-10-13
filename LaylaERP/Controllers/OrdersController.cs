@@ -506,6 +506,35 @@
             return Json(new { status = status, message = JSONresult }, 0);
         }
         [HttpPost]
+        public JsonResult UpdateAmazonPaymentRefund(OrderModel model)
+        {
+            string JSONresult = string.Empty; bool status = false;
+            try
+            {
+                
+                var result = clsAmazonPay.RefundTransaction("", model.NetTotal);
+                //if (!string.IsNullOrEmpty(result))
+                //{
+                //    status = true; JSONresult = "Order placed successfully.";
+                //    OrderNotesModel note_model = new OrderNotesModel();
+                //    note_model.post_ID = model.order_id;
+                //    note_model.comment_content = string.Format("Refund Issued for ${0:0.00}. The refund should appear on your statement in 5 to 10 days.", model.NetTotal);
+                //    note_model.is_customer_note = string.Empty;
+                //    note_model.is_customer_note = string.Empty;
+
+                //    OperatorModel om = CommanUtilities.Provider.GetCurrent();
+                //    note_model.comment_author = om.UserName; note_model.comment_author_email = om.EmailID;
+                //    int res = OrderRepository.AddOrderNotes(note_model);
+                //}
+                //else
+                //{ status = false; JSONresult = "Something went wrong."; }
+                JSONresult = JsonConvert.SerializeObject(result);
+            }
+            catch (Exception ex) { JSONresult = ex.Message; }
+            return Json(new { status = status, message = JSONresult }, 0);
+        }
+
+        [HttpPost]
         public JsonResult SendMailInvoice(OrderModel model)
         {
             string result = string.Empty;

@@ -237,6 +237,25 @@ namespace LaylaERP.BAL
             }
         }
 
+        public static void AddUserEmployeeMetaData(HrmsModel model, long id, string varFieldsName, string varFieldsValue)
+        {
+            try
+            {
+                string strsql = "INSERT INTO wp_usermeta(user_id,meta_key,meta_value) VALUES(@user_id,@meta_key,@meta_value); select LAST_INSERT_ID() as ID;";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@user_id", id),
+                    new MySqlParameter("@meta_key", varFieldsName),
+                    new MySqlParameter("@meta_value", varFieldsValue),
+                };
+                SQLHelper.ExecuteNonQuery(strsql, para);
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
         public static int AddEmployeeBasicDetails(HrmsModel model, int id)
         {
             try

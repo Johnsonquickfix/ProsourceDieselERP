@@ -2,249 +2,169 @@
 
 @{
     ViewBag.Title = "ordermeta";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>ordermeta</h2>
+<section class="content content-section p-0">
+    <div class="box box-primary">
+        <div class="box-body">
+            <div class="form-horizontal create-new-customer" id="parent">
 
-<div>
-    <h4>GiftCardModel</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.type)
-        </dt>
+                <div class="row">
+                    <div class="col-md-4">
 
-        <dd>
-            @Html.DisplayFor(model => model.type)
-        </dd>
+                        <div class="form-group">
+                            <label class="control-label " for="Email">Email</label>
+                            <div class="">
+                                <input type="email" id="txtSenderEmail" class="form-control" value="@Model.sender_email" placeholder="Email" />
+                            </div>
+                        </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.user_id)
-        </dt>
+                        <div class="form-group">
+                            <label class="control-label " for="First Name">First Name</label>
+                            <div class="">
+                                <input type="text" id="txtFirstName" class="form-control" placeholder="First Name" value="@Model.FirstName" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label " for="Last Name">Last Name</label>
+                            <div class="">
+                                <input type="text" id="txtLastName" class="form-control" placeholder="Last Name" value="@Model.LastName" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label " for="Contact No.">Contact No.</label>
+                            <div class="">
+                                <input type="tel" id="txtPhone" class="form-control" placeholder="Contact No." value="@Model.PhoneNumber" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="control-label " for="Company">Company</label>
+                            <div class="">
+                                <input type="text" id="txtCompany" class="form-control" placeholder="Company" value="@Model.Company" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <img class="sb-title-icon" src="https://fonts.gstatic.com/s/i/googlematerialicons/location_pin/v5/24px.svg" alt="">
+                            <label class="control-label " for="Address 1">Address</label>
+                            <div class="">
+                                <input type="text" id="txtAddress1" class="form-control" placeholder="Address" value="@Model.Address" autocomplete="off" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label " for="Address 2">Address Line 2</label>
+                            <div class="">
+                                <input type="text" id="txtAddress2" class="form-control" placeholder="Address Line 2" value="@Model.Address2" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label " for="City">City</label>
+                            <div class="">
+                                <input type="tel" id="txtCity" class="form-control" placeholder="City" value="@Model.City" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
 
-        <dd>
-            @Html.DisplayFor(model => model.user_id)
-        </dd>
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">State</label>
+                            <select class="form-control" id="ddlState" value="@Model.State">
+                                <option selected value=""></option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label " for="Post/Zip Code">Zip Code</label>
+                            <div class="">
+                                <input type="text" id="txtPostCode" class="form-control" placeholder="Zip Code" value="@Model.Zipcode" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">Country</label>
+                            <select class="form-control" id="ddlCountry" value="@Model.Country">
+                                <option value="US">US - United States</option>
+                                <option value="CA">CA - Canada</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label " for="Order Notes">Notes</label>
+                            <div class="">
+                                <input type="text" id="txtOrderNotes" class="form-control" placeholder="Notes" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="box-footer">
+            <div class="text-right">
+                <span title="Click Here To Checkout" data-placement="bottom" data-toggle="tooltip"><input type="submit" value="Checkout" id="btnCheckout" class="btn btn-danger" /></span>
+            </div>
+        </div>
+        <!-- /.row -->
+    </div>
+    <div class="map" id="map" style="display:none;"></div>
+</section>
+<script src="~/js/jquery.mask.js" asp-append-version="true"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBIgngCCIJ3D8_s3G7aIfvQckhsDtbAe4E&libraries&callback=initMap&libraries=places&v=weekly" async></script>
+<script src="@Url.Content("~/js/Giftcard/Giftcard.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.user_email)
-        </dt>
+<script>
+    $(document).ready(function () {
+        $("#ddlState").select2({
+            allowClear: true, minimumInputLength: 2, placeholder: "Search State",
+            ajax: {
+                url: '/Users/GetCustState', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+                data: function (params) {
+                    var obj = { strValue1: params.term, strValue2: $("#ddlCountry").val() };
+                    return JSON.stringify(obj);
+                },
+                processResults: function (data) {
+                    var jobj = JSON.parse(data);
+                    console.log(jobj);
+                    return {
+                        results: $.map(jobj, function (item) {
+                            return { text: item.StateFullName, name: item.StateFullName, id: item.State }
+                        })
+                    };
+                },
+                error: function (xhr, status, err) { }, cache: true
+            }
+        });
 
-        <dd>
-            @Html.DisplayFor(model => model.user_email)
-        </dd>
+        $('#txtPostCode').change(function () {
+            City = $("#ddlCity").val();
+            State = $("#ddlState").val();
+            PostalCode = $("#txtPostCode").val();
+            var obj = {
+                billing_state: State, billing_city: City, billing_postcode: PostalCode
+            }
+            $.ajax({
+                url: '/Users/CityStateZip/', dataType: 'json', type: 'Post',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(obj),
+                dataType: "json",
+                success: function (data) {
+                    if (data.status == true) {
+                        $('#hfzipstatus').val(data.status);
+                    } else {
+                        if ($('#ddlCountry').val() == "US") {
+                            $("#txtPostCode").val("");
+                            $('#hfzipstatus').val(data.status);
+                            swal('Alert', 'Zip code is not valid for the State', 'error').then(function () {
+                                swal.close();
+                                $('#txtZipCode').focus();
+                            });
+                        }
+                    }
+                },
 
-        <dt>
-            @Html.DisplayNameFor(model => model.object_id)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.object_id)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.gc_id)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.gc_id)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.gc_code)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.gc_code)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.amount)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.amount)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.date)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.date)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.note)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.note)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.code)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.code)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.order_id)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.order_id)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.order_item_id)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.order_item_id)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.recipient)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.recipient)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.redeemed_by)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.redeemed_by)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.sender)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.sender)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.sender_email)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.sender_email)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.message)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.message)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.balance)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.balance)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.remaining)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.remaining)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.template_id)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.template_id)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.create_date)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.create_date)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.deliver_date)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.deliver_date)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.delivered)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.delivered)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.expire_date)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.expire_date)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.redeem_date)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.redeem_date)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.is_virtual)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.is_virtual)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.is_active)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.is_active)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.qty)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.qty)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.delivery_date)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.delivery_date)
-        </dd>
-
-    </dl>
-</div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.id }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
+                error: function (error) {
+                    swal('Error!', 'something went wrong', 'error');
+                },
+            })
+        });
+        $("#txtPhone").mask("(999) 999-9999");
+    })
+</script>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
@@ -14,6 +15,7 @@ namespace LaylaERP.Models
         public long object_id { get; set; }
         public long gc_id { get; set; }
         public string gc_code { get; set; }
+        [Required]
         public double amount { get; set; }
         public int date { get; set; }
         public string note { get; set; }

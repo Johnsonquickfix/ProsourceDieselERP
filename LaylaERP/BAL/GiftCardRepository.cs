@@ -1,10 +1,12 @@
 ﻿using LaylaERP.DAL;
 using LaylaERP.Models;
+using LaylaERP.UTILITIES;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Text;
 using System.Web;
 
 namespace LaylaERP.BAL
@@ -153,6 +155,106 @@ namespace LaylaERP.BAL
             {
                 throw ex;
             }
+        }
+
+        public static long AddOrdersPost(List<OrderPostMetaModel> _list)
+        {
+            long result = 0;
+            try
+            {
+                OrderPostModel model = new OrderPostModel();
+                model.ID = 0;
+                model.post_author = "1";
+                model.post_date = CommonDate.CurrentDate();
+                model.post_date_gmt = CommonDate.UtcDate();
+                model.post_content = string.Empty;
+                model.post_title = "Order &ndash; " + model.post_date_gmt.ToString("MMMM dd, yyyy @ HH:mm tt");
+                model.post_excerpt = string.Empty;
+                model.post_status = "auto-draft";// "draft";
+                model.comment_status = "open";
+                model.ping_status = "closed";
+                model.post_password = string.Empty;
+                model.post_name = "order-" + model.post_date_gmt.ToString("MMM-dd-yyyy-HHmm-tt").ToLower();
+                model.to_ping = string.Empty;
+                model.pinged = string.Empty;
+                model.post_modified = model.post_date;
+                model.post_modified_gmt = model.post_date_gmt;
+                model.post_content_filtered = string.Empty;
+                model.post_parent = "0";
+                model.post_type = "shop_order";
+                //model.guid = string.Format("{0}?{1}={2}", Net.Host, "post_type=shop_order&p", "");
+                model.guid = string.Format("{0}?{1}={2}", "http://173.247.242.204/~rpsisr/woo/", "post_type=shop_order&p", "");
+                model.menu_order = "0";
+                model.post_mime_type = string.Empty;
+                model.comment_count = "0";
+
+                string strSQL = "INSERT INTO wp_posts(post_author, post_date, post_date_gmt, post_content, post_title, post_excerpt,post_status, comment_status, ping_status, post_password, post_name,"
+                                    + " to_ping, pinged, post_modified, post_modified_gmt,post_content_filtered, post_parent, guid, menu_order,post_type, post_mime_type, comment_count)"
+                                    + " VALUES(@post_author,@post_date,@post_date_gmt,@post_content,@post_title,@post_excerpt,@post_status,@comment_status,@ping_status,@post_password,@post_name,"
+                                    + " @to_ping,@pinged,@post_modified,@post_modified_gmt,@post_content_filtered,@post_parent,@guid,@menu_order,@post_type,@post_mime_type,@comment_count)";
+
+                strSQL += "; insert into wp_wc_order_stats (order_id,parent_id,date_created,date_created_gmt,num_items_sold,total_sales,tax_total,shipping_total,net_total,returning_customer,status,customer_id)";
+                strSQL += " SELECT LAST_INSERT_ID(),'0',@post_date,@post_date_gmt,'0','0','0','0','0','0',@post_status,'0' ; SELECT LAST_INSERT_ID();";
+
+                MySqlParameter[] parameters =
+                {
+                    new MySqlParameter("@post_author", model.post_author),
+                    new MySqlParameter("@post_date", model.post_date),
+                    new MySqlParameter("@post_date_gmt", model.post_date_gmt),
+                    new MySqlParameter("@post_content", model.post_content),
+                    new MySqlParameter("@post_title", model.post_title),
+                    new MySqlParameter("@post_excerpt", model.post_excerpt),
+                    new MySqlParameter("@post_status", model.post_status),
+                    new MySqlParameter("@comment_status", model.comment_status),
+                    new MySqlParameter("@ping_status", model.ping_status),
+                    new MySqlParameter("@post_password", model.post_password),
+                    new MySqlParameter("@post_name", model.post_name),
+                    new MySqlParameter("@to_ping", model.to_ping),
+                    new MySqlParameter("@pinged", model.pinged),
+                    new MySqlParameter("@post_modified", model.post_modified),
+                    new MySqlParameter("@post_modified_gmt", model.post_modified_gmt),
+                    new MySqlParameter("@post_content_filtered", model.post_content_filtered),
+                    new MySqlParameter("@post_parent", model.post_parent),
+                    new MySqlParameter("@guid", model.guid),
+                    new MySqlParameter("@menu_order", model.menu_order),
+                    new MySqlParameter("@post_type", model.post_type),
+                    new MySqlParameter("@post_mime_type", model.post_mime_type),
+                    new MySqlParameter("@comment_count", model.comment_count)
+                };
+                result = Convert.ToInt64(SQLHelper.ExecuteScalar(strSQL, parameters));
+                if (result > 0)
+                {
+                    AddOrdersPostMeta(result, _list);
+                }
+            }
+            catch (MySql.Data.MySqlClient.MySqlException ex)
+            {
+                throw new Exception(ex.Message);
+
+            }
+            return result;
+        }
+        public static int AddOrdersPostMeta(long post_id, List<OrderPostMetaModel> model)
+        {
+            int result = 0;
+            try
+            {
+                StringBuilder strSql = new StringBuilder("update wp_posts set guid=concat(guid,'" + post_id.ToString() + "') where id=" + post_id.ToString() + ";insert into wp_postmeta (post_id,meta_key,meta_value) values ");
+                var i = 0;
+                foreach (OrderPostMetaModel obj in model)
+                {
+                    if (++i == model.Count)
+                        strSql.Append(string.Format("('{0}','{1}','{2}') ", post_id, obj.meta_key, obj.meta_value));
+                    else
+                        strSql.Append(string.Format("('{0}','{1}','{2}'), ", post_id, obj.meta_key, obj.meta_value));
+                }
+                result = SQLHelper.ExecuteNonQuery(strSql.ToString());
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            return result;
         }
     }
 }

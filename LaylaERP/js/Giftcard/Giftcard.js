@@ -15,7 +15,7 @@ $(".radio_amt").click(function () {
     let amount = $(this).text().replace('$', '');
     let amo = $('#hfAmount').val(amount);
 })
-$("#btnCheckout").click(function () {
+$("#btnPlaceOrder").click(function () {
     let SenderEmail = $('#txtSenderEmail').val().trim();
     let FirstName = $('#txtFirstName').val();
     let LastName = $('#txtLastName').val();
@@ -32,66 +32,68 @@ $("#btnCheckout").click(function () {
     if (SenderEmail == "") { swal('Alert', 'Please enter e-mail', 'error'); }
     else if (FirstName == "") { swal('Alert', 'Please Enter First Name', 'error').then(function () { swal.close(); $('#txtFirstName').focus(); }); }
     else if (LastName == "") { swal('Alert', 'Please enter Last Name', 'error').then(function () { swal.close(); $('#txtLastName').focus(); }); }
-    else if (Phone == "") { swal('Alert', 'Please enter phone Number', 'error').then(function () { swal.close(); $('#txtPhone').focus(); }); }
+    else if (Phone == "" || Phone=="() -") { swal('Alert', 'Please enter phone Number', 'error').then(function () { swal.close(); $('#txtPhone').focus(); }); }
     else if (Address1 == "") { swal('Alert', 'Please enter Address1', 'error').then(function () { swal.close(); $('#txtAddress1').focus(); }); }
     else if (City == "") { swal('Alert', 'Please enter City', 'error').then(function () { swal.close(); $('#txtCity').focus(); }); }
     else if (State == "") { swal('Alert', 'Please enter State', 'error').then(function () { swal.close(); $('#txtState').focus(); }); }
     else if (PostCode == "") { swal('Alert', 'Please enter Zip Code', 'error').then(function () { swal.close(); $('#txtState').focus(); }); }
     else if (Country == "") { swal('Alert', 'Please select Country', 'error').then(function () { swal.close(); $('#ddlCountry').focus(); }); }
     else {
-        console.log('done');
+        let oid = 0, postMetaxml = [];
+        postMetaxml.push(
+            { post_id: oid, meta_key: '_order_key', meta_value: 'wc_order_' }, { post_id: oid, meta_key: '_customer_user', meta_value: cus_id },
+            { post_id: oid, meta_key: '_payment_method', meta_value: '' }, { post_id: oid, meta_key: '_payment_method_title', meta_value: '' },
+            { post_id: oid, meta_key: '_customer_ip_address', meta_value: '::1' }, { post_id: oid, meta_key: '_customer_user_agent', meta_value: '0' },
+            { post_id: oid, meta_key: '_created_via', meta_value: 'checkout' }, { post_id: oid, meta_key: '_cart_hash', meta_value: '0' },
+            { post_id: oid, meta_key: '_billing_company', meta_value: '' }, { post_id: oid, meta_key: '_shipping_company', meta_value: '' },
+            { post_id: oid, meta_key: '_billing_first_name', meta_value: '' }, { post_id: oid, meta_key: '_billing_last_name', meta_value: '' },
+            { post_id: oid, meta_key: '_billing_address_1', meta_value: '' }, { post_id: oid, meta_key: '_billing_address_2', meta_value: '' },
+            { post_id: oid, meta_key: '_billing_city', meta_value: '' }, { post_id: oid, meta_key: '_billing_state', meta_value: '' },
+            { post_id: oid, meta_key: '_billing_postcode', meta_value: '' }, { post_id: oid, meta_key: '_billing_country', meta_value: '' },
+            { post_id: oid, meta_key: '_billing_email', meta_value: '' }, { post_id: oid, meta_key: '_billing_phone', meta_value: '' },
+            { post_id: oid, meta_key: '_order_version', meta_value: '4.8.0' }, { post_id: oid, meta_key: '_prices_include_tax', meta_value: 'no' },
+            { post_id: oid, meta_key: '_shipping_address_index', meta_value: '' }, { post_id: oid, meta_key: 'is_vat_exempt', meta_value: 'no' },
+            { post_id: oid, meta_key: '_download_permissions_granted', meta_value: 'yes' }, { post_id: oid, meta_key: '_recorded_sales', meta_value: 'yes' },
+            { post_id: oid, meta_key: '_recorded_coupon_usage_counts', meta_value: 'yes' }, { post_id: oid, meta_key: '_order_stock_reduced', meta_value: 'yes' },
+            { post_id: oid, meta_key: '_edit_lock', meta_value: '1' }, { post_id: oid, meta_key: '_shipping_first_name', meta_value: '' },
+            { post_id: oid, meta_key: '_shipping_last_name', meta_value: '' }, { post_id: oid, meta_key: '_shipping_address_1', meta_value: '' },
+            { post_id: oid, meta_key: '_shipping_address_2', meta_value: '' }, { post_id: oid, meta_key: '_shipping_city', meta_value: '' },
+            { post_id: oid, meta_key: '_shipping_state', meta_value: '' }, { post_id: oid, meta_key: '_shipping_postcode', meta_value: '' },
+            { post_id: oid, meta_key: '_shipping_country', meta_value: '' }, { post_id: oid, meta_key: '_shipping_email', meta_value: '' },
+            { post_id: oid, meta_key: '_shipping_phone', meta_value: '' }, { post_id: oid, meta_key: '_order_currency', meta_value: 'USD' },
+            { post_id: oid, meta_key: '_order_total', meta_value: 0.00 }, { post_id: oid, meta_key: '_cart_discount', meta_value: 0.00 },
+            { post_id: oid, meta_key: '_cart_discount_tax', meta_value: '0' }, { post_id: oid, meta_key: '_order_shipping', meta_value: 0.00 },
+            { post_id: oid, meta_key: '_order_shipping_tax', meta_value: 0.00 }, { post_id: oid, meta_key: '_order_tax', meta_value: 0.00 },
+            //{ post_id: oid, meta_key: 'employee_id', meta_value: '0' }, { post_id: oid, meta_key: 'employee_name', meta_value: '' }
+        );
+        let option = { OrderPostMeta: postMetaxml };
+
+        ajaxFunc('/GiftCard/GetNewOrderNo', option, beforeSendFun, function (result) { $('#hfOrderNo').val(result.message); $('#lblOrderNo').text('Order #' + result.message + ' detail '); }, completeFun, errorFun);
+
     }
 })
 
 
-//$("#btnAdd").click(function () {
-//    let amount = $('.checked_amount').text().replace('$','');
-//    if (amount == 'Other') {
-//        amount = $('#txtAmount').val();
-//    }
-//    let giftTo = $('#txtGiftTo').val().trim();
-//    let giftFrom = $('#txtGiftFrom').val();
-//    let SenderName = $('#txtSenderName').val();
-//    let giftMessage = $('#txtGiftMessage').val();
-//    let giftdate = $('#gift_date').val();
-//    let recipient = [];
-//    recipient = giftTo.split(",");
-//    let qty = recipient.length;
+function validateForm() {
+    let amount = $('.checked_amount').text().replace('$', '');
+    if (amount == 'Other') {
+        amount = $('#txtAmount').val();
+    }
+    let giftTo = $('#txtGiftTo').val().trim();
+    let giftFrom = $('#txtGiftFrom').val();
+    let giftMessage = $('#txtGiftMessage').val();
+    let giftdate = $('#gift_date').val();
+    let recipient = [];
+    recipient = giftTo.split(",");
+    let qty = recipient.length;
 
-//    var pattern = /^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
-//    if (amount == "") { swal('Alert', 'Please select amount', 'error'); }
-//    else if (giftTo == "") { swal('Alert', 'Please Enter email to', 'error').then(function () { swal.close(); $('#txtGiftTo').focus(); }); }
-//    else if (giftFrom == "") { swal('Alert', 'Please enter email from', 'error').then(function () { swal.close(); $('#txtGiftFrom').focus(); }); }
-//    else if (SenderName == "") { swal('Alert', 'Please enter Sender Name', 'error').then(function () { swal.close(); $('#txtSenderName').focus(); }); }
-//    else {
-//        var obj = {
-//           /* id: ID,*/
-//            amount: amount, recipient: recipient, sender_email: giftFrom, sender: SenderName, message: giftMessage, date: giftdate,
-//            qty: qty,
-//        }
-       
-//        $.ajax({
-//            url: '/GiftCard/AddGiftCard/', dataType: 'json', type: 'Post',
-//            contentType: "application/json; charset=utf-8",
-//            data: JSON.stringify(obj),
-//            dataType: "json",
-//            beforeSend: function () { $("#loader").show(); },
-//            success: function (data) {
-//                $("#hfid").val(data.id);
-//                if (data.status == true) {
-//                    window.location.href = '../../Giftcard/ordermeta/'
-//                }
-//                else {
-//                    swal('Alert!', data.message, 'error');
-//                }
-//            },
-//            complete: function () { $("#loader").hide(); },
-//            error: function (error) { swal('Error!', 'something went wrong', 'error'); },
-//        })
-
-//    }
-    
-//}) 
+    var pattern = /^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
+    if (amount == "") {
+        swal('Alert', 'Please select amount', 'error');  return false; }
+    else if (giftTo == "") { swal('Alert', 'Please Enter email to', 'error').then(function () { swal.close(); $('#txtGiftTo').focus(); }); return false;}
+    else if (giftFrom == "") { swal('Alert', 'Please enter email from', 'error').then(function () { swal.close(); $('#txtGiftFrom').focus(); }); return false; }
+    else { }
+}
 
 
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Search Google Place API ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -141,3 +143,18 @@ function initMap() {
     var inputs = document.getElementById("txtAddress1");
     setupAutocomplete(inputs);
 }
+
+///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Common ajax function ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+var ajaxFunc = function (url, data, beforeSendFun, successFun, completeFun, errorFun) {
+    $.ajax({
+        type: "POST", url: url, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(data),
+        beforeSend: beforeSendFun, success: successFun, complete: completeFun, error: errorFun, async: false
+    });
+}
+function beforeSendFun() { $("#loader").show(); }
+function completeFun() { $("#loader").hide(); }
+function errorFun(XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); }
+
+function NewOrderNo() {
+
+   }

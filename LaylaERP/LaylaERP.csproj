@@ -987,6 +987,7 @@
     <Content Include="Views\EmailNotifications\Refunded.cshtml" />
     <Content Include="Views\EmailNotifications\Resetpassword.cshtml" />
     <Content Include="Views\Giftcard\Giftcard.cshtml" />
+    <Content Include="Views\Giftcard\ordermeta.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -10,6 +10,7 @@
     using MySql.Data.MySqlClient;
     using System.Text;
     using LaylaERP.UTILITIES;
+    using System.Text.RegularExpressions;
 
     public class OrderRepository
     {
@@ -721,7 +722,7 @@
             }
             catch { }
             return result;
-        }        
+        }
         public static int UpdatePaypalStatus(OrderPostMetaModel model)
         {
             int result = 0;
@@ -1658,15 +1659,15 @@
                 {
                     //strWhr += " and (p.id like '" + searchid + "%' "
                     strWhr += " and concat(p.id,' ', pmf.first_name,' ',pmf.last_name,' ',p.post_status,' ', REGEXP_REPLACE(pmf.billing_phone, '[^0-9]+', '')) like '%" + searchid + "%' ";
-                            //+ " OR os.num_items_sold='%" + searchid + "%' "
-                            //+ " OR os.total_sales='%" + searchid + "%' "
-                            //+ " OR os.customer_id='%" + searchid + "%' "
-                            //+ " OR p.post_status like '" + searchid + "%' "
-                            //+ " OR p.post_date like '%" + searchid + "%' "
-                            //+ " OR COALESCE(pmf.first_name, '') like '" + searchid + "%' "
-                            //+ " OR COALESCE(pmf.last_name, '') like '" + searchid + "%' "
-                            //+ " OR replace(replace(replace(replace(pmf.billing_phone, '-', ''), ' ', ''), '(', ''), ')', '') like '%" + searchid + "%'"
-                            //+ " )";
+                    //+ " OR os.num_items_sold='%" + searchid + "%' "
+                    //+ " OR os.total_sales='%" + searchid + "%' "
+                    //+ " OR os.customer_id='%" + searchid + "%' "
+                    //+ " OR p.post_status like '" + searchid + "%' "
+                    //+ " OR p.post_date like '%" + searchid + "%' "
+                    //+ " OR COALESCE(pmf.first_name, '') like '" + searchid + "%' "
+                    //+ " OR COALESCE(pmf.last_name, '') like '" + searchid + "%' "
+                    //+ " OR replace(replace(replace(replace(pmf.billing_phone, '-', ''), ' ', ''), '(', ''), ')', '') like '%" + searchid + "%'"
+                    //+ " )";
                 }
 
                 if (!string.IsNullOrEmpty(sMonths))
@@ -1704,6 +1705,68 @@
                             + " order by " + SortCol + " " + SortDir + " limit " + (pageno).ToString() + ", " + pagesize + "";
                 strSql += "; SELECT coalesce(sum(1),0) TotalRecord from wp_posts p inner join vw_Order_details pmf on p.id = pmf.post_id "
                         + " WHERE p.post_type = 'shop_order' " + strWhr.ToString();
+
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dt = ds.Tables[0];
+                if (ds.Tables[1].Rows.Count > 0)
+                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+        public static DataTable OrderList_JSON(string sMonths, string CustomerID, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                string strWhr = string.Empty, subSort = string.Empty;
+                if (SortCol.StartsWith("_")) { subSort = SortCol; SortCol = "meta_sort"; } else subSort = "_billing_first_name";
+                if (!CommanUtilities.Provider.GetCurrent().UserType.ToLower().Contains("administrator"))
+                {
+                    //strWhr += " and (pmf.employee_id='" + CommanUtilities.Provider.GetCurrent().UserID + "') ";
+                }
+                if (!string.IsNullOrEmpty(userstatus))
+                {
+                    if (userstatus == "mine") { strWhr += " and p.post_author = 8 and p.post_status != 'auto-draft'"; }
+                    else { strWhr += " and p.post_status = '" + userstatus + "'"; }
+                }
+                else
+                    strWhr += " and p.post_status != 'auto-draft' ";
+
+                if (!string.IsNullOrEmpty(searchid))
+                {
+                    string subWhr = string.Empty;
+                    if (Regex.IsMatch(searchid, @"\d"))
+                        subWhr = "w_pm.meta_key = '_billing_phone' and REGEXP_REPLACE(w_pm.meta_value,'[^0-9]+', '') like '%" + searchid + "%'";
+                    else
+                        subWhr = "w_pm.meta_key in ('_billing_first_name','_billing_last_name') and w_pm.meta_value like '%" + searchid + "%'";
+
+                    strWhr += string.Format(" and p.id in (select w_pm.post_id from wp_postmeta w_pm where {0})", subWhr);
+                }
+
+                if (!string.IsNullOrEmpty(sMonths))
+                {
+                    //strWhr += " and DATE_FORMAT(p.post_date,'%Y%m') BETWEEN " + sMonths;
+                    strWhr += " and cast(p.post_date as date) BETWEEN " + sMonths;
+                }
+                if (!string.IsNullOrEmpty(CustomerID))
+                {
+                    strWhr += " and pmf.customer_id= '" + CustomerID + "' ";
+                }
+
+                string strSql = "SELECT p.id,p.post_status as status, DATE_FORMAT(p.post_date, '%M %d %Y') date_created,os.num_items_sold,"
+                            //+ " JSON_ARRAYAGG(JSON_OBJECT('meta_key', meta_key, 'meta_value', meta_value)) meta_val,"
+                            + " json_objectagg(meta_key, meta_value) meta_val,JSON_EXTRACT(json_objectagg(meta_key, meta_value),'$." + subSort + "') meta_sort,"
+                            + " (SELECT sum(rpm.meta_value) FROM wp_posts rp JOIN wp_postmeta rpm ON rp.ID = rpm.post_id AND meta_key = '_order_total' WHERE rp.post_parent = p.ID AND rp.post_type = 'shop_order_refund') AS refund_total"
+                            + " FROM wp_posts p inner join wp_wc_order_stats os on p.id = os.order_id"
+                            + " inner join wp_postmeta pmf on pmf.post_id = p.id and(pmf.meta_key not like '_edit_lock' or pmf.meta_key not like '%index%')"
+                            + " WHERE p.post_type = 'shop_order' and p.post_status != 'auto-draft' " + strWhr
+                            + " group by p.id order by " + SortCol + " " + SortDir + " limit " + (pageno).ToString() + ", " + pagesize + "; ";
+                strSql += " select coalesce(sum(1),0) TotalRecord from wp_posts p inner join wp_wc_order_stats os on p.id = os.order_id where p.post_type = 'shop_order' " + strWhr.ToString();
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];

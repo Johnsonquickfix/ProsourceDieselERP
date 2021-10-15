@@ -246,7 +246,7 @@ function CategoryWiseProducts() {
         beforeSend: function () { $("#loader").show(); },
         success: function (result) {
             try {
-                result = JSON.parse(result);
+                result = JSON.parse(result); 
                 result = groupArrayOfObjects(result, 'term_order');
                 $.each(result, function (key, pr) {
                     //console.log(pr)
@@ -254,7 +254,7 @@ function CategoryWiseProducts() {
                     strHTML += '<h5><span>' + pr[0].name.toUpperCase() + '</span><i aria-hidden="true" class="fa fa-plus"></i></h5>';
                     strHTML += '<div class="hub-box-open">';
                     $.each(pr, function (index, data) {
-                        let variation_details = JSON.parse(data.variation_details);
+                        let variation_details = JSON.parse(data.variation_details); 
                         let regular_price = 0.00, price = 0.00;
                         strHTML += '<div class="hub-pro-box"><h2>' + data.post_title.toUpperCase() + '</h2>';
                         strHTML += '<div data-proid="' + data.pr_id + '" class="hub-pro-shop">';

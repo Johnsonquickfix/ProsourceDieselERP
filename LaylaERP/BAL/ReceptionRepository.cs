@@ -165,7 +165,7 @@ namespace LaylaERP.BAL
 
                 string strSql = "Select p.fk_purchase id,p.rowid RicD,p.ref refordervendor,sum(recqty) Quenty,group_concat(' ',description,' (*',recqty,')') des,DATE_FORMAT(p.date_creation,'%m/%d/%Y %h:%i %p') dtcration,DATE_FORMAT(p.date_creation,'%m/%d/%Y %H:%i') date_creation,"
                                      + " FORMAT(p.total_ttc,2) total_ttc from commerce_purchase_receive_order p"
-                                      + " inner join commerce_purchase_receive_order_detail pr on pr.fk_purchase_re = p.rowid where p.fk_purchase = @ref and fk_product > 0 and p.fk_status= 6 and 1 = 1 ";
+                                      + " inner join commerce_purchase_receive_order_detail pr on pr.fk_purchase_re = p.rowid where p.fk_purchase = @ref and product_type = 0 and p.fk_status= 6 and 1 = 1 ";
 
                 strSql += strWhr + string.Format("group by  p.ref order by p.rowid desc");
 
@@ -231,7 +231,7 @@ namespace LaylaERP.BAL
 
                 string strSql = "Select p.fk_purchase id,p.rowid RicD,p.ref refordervendor,sum(recqty) Quenty,group_concat(' ',description,' (*',recqty,')') des,DATE_FORMAT(p.date_creation,'%m/%d/%Y %h:%i %p') dtcration,DATE_FORMAT(p.date_creation,'%m/%d/%Y %H:%i') date_creation,"
                                      + " FORMAT(p.total_ttc,2) total_ttc from commerce_purchase_receive_order p"
-                                      + " inner join commerce_purchase_receive_order_detail pr on pr.fk_purchase_re = p.rowid where p.fk_purchase = @ref and fk_product > 0 and p.fk_status= 5 and 1 = 1 ";
+                                      + " inner join commerce_purchase_receive_order_detail pr on pr.fk_purchase_re = p.rowid where p.fk_purchase = @ref and product_type = 0 and p.fk_status= 5 and 1 = 1 ";
 
                 strSql += strWhr + string.Format("group by  p.ref order by p.rowid desc");
 
@@ -256,7 +256,7 @@ namespace LaylaERP.BAL
                                 + " fk_incoterms,location_incoterms,note_private,note_public,fk_user_author,DATE_FORMAT(date_creation,'%m/%d/%Y') date_creation from commerce_purchase_order where rowid = @po_id;"
                                 + " select rowid,fk_purchase,fk_product,ref product_sku,description,qty,(select IFNULL(sum(recqty),0) from  commerce_purchase_receive_order_detail  where fk_purchase = cprd.fk_purchase and fk_product =  cprd.fk_product ) treceved ,qty-(select IFNULL(sum(recqty),0) from  commerce_purchase_receive_order_detail  where fk_purchase = cprd.fk_purchase and fk_product =  cprd.fk_product ) recbal,discount_percent,discount,subprice,total_ht,tva_tx,localtax1_tx,localtax1_type,"
                                 + " localtax2_tx,localtax2_type,total_tva,total_localtax1,total_localtax2,total_ttc,product_type,date_start,date_end,rang"
-                                + " from commerce_purchase_order_detail cprd where fk_product > 0 and fk_purchase = @po_id;";
+                                + " from commerce_purchase_order_detail cprd where product_type = 0 and fk_purchase = @po_id;";
                 ds = SQLHelper.ExecuteDataSet(strSql, para);
                 ds.Tables[0].TableName = "po"; ds.Tables[1].TableName = "pod";
             }
@@ -276,7 +276,7 @@ namespace LaylaERP.BAL
                                 + " where fk_purchase = @po_id;"
                                 + " select cprod.rowid,description,DATE_FORMAT(date_creation,'%m/%d/%Y') date_creation,recqty  from commerce_purchase_receive_order_detail  cprod"
                                 + " left outer join commerce_purchase_receive_order cpro on cpro.rowid = cprod.fk_purchase_re"
-                                + " where fk_product > 0 and cprod.fk_purchase = @po_id;";
+                                + " where product_type = 0 and cprod.fk_purchase = @po_id;";
                 ds = SQLHelper.ExecuteDataSet(strSql, para);
                 ds.Tables[0].TableName = "po"; ds.Tables[1].TableName = "pod";
             }
@@ -293,6 +293,7 @@ namespace LaylaERP.BAL
             {
                 string strSQl = "select WarehouseID ID,ref as Name from wp_VendorWarehouse  wvw inner join wp_warehouse ww on  ww.rowid = wvw.WarehouseID where VendorID = "+Id+";";
                 DS = SQLHelper.ExecuteDataSet(strSQl);
+
             }
             catch (Exception ex)
             { throw ex; }
@@ -346,10 +347,12 @@ namespace LaylaERP.BAL
                     //}
                     //else
                     //{
+                    
                         strsql += "insert into commerce_purchase_receive_order_detail (fk_purchase_re,fk_purchase,fk_product,ref,description,qty,recqty,discount_percent,discount,subprice,total_ht,total_ttc,product_type,date_start,date_end,rang,tva_tx,localtax1_tx,localtax1_type,localtax2_tx,localtax2_type,total_tva,total_localtax1,total_localtax2) ";
                         strsql += string.Format(" select '{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}','{16}','{17}','{18}','{19}','{20}','{21}','{22}','{23}';",
                             model.RowID, model.IDRec, obj.fk_product, obj.product_sku, obj.description, obj.qty, obj.Recqty, obj.discount_percent, obj.discount, obj.subprice, obj.total_ht, obj.total_ttc, obj.product_type, obj.date_start, obj.date_end, obj.rang,
                             obj.tva_tx, obj.localtax1_tx, obj.localtax1_type, obj.localtax2_tx, obj.localtax2_type, obj.total_tva, obj.total_localtax1, obj.total_localtax2);
+                   
                     //}
                 }
               SQLHelper.ExecuteNonQueryWithTrans(strsql);
@@ -358,12 +361,15 @@ namespace LaylaERP.BAL
 
                 if (model.WarehouseID == model.WarehousepoID)
                 {
+
                     foreach (PurchaseReceiceOrderProductsModel obj in model.PurchaseOrderProducts)
                     {
-                        strstock += "insert into product_stock_register (tran_type,tran_id,product_id,warehouse_id,tran_date,quantity,flag)";
-                        strstock += string.Format("select 'PR','{0}','{1}','{2}','{3}','{4}','R' ;",
-                              model.RowID, obj.fk_product, model.WarehouseID, cDate.ToString("yyyy-MM-dd HH:mm:ss"), obj.Recqty);
-
+                        if (obj.fk_product > 0)
+                        {
+                            strstock += "insert into product_stock_register (tran_type,tran_id,product_id,warehouse_id,tran_date,quantity,flag)";
+                            strstock += string.Format("select 'PR','{0}','{1}','{2}','{3}','{4}','R' ;",
+                                  model.RowID, obj.fk_product, model.WarehouseID, cDate.ToString("yyyy-MM-dd HH:mm:ss"), obj.Recqty);
+                        }
                         //+" inner join commerce_purchase_receive_order po on po.rowid = pod.fk_purchase_re where fk_purchase_re = " + model.RowID + ";");
                     }
                 }
@@ -371,28 +377,31 @@ namespace LaylaERP.BAL
                 {
                     foreach (PurchaseReceiceOrderProductsModel obj in model.PurchaseOrderProducts)
                     {
-                        strstock += "insert into product_stock_register (tran_type,tran_id,product_id,warehouse_id,tran_date,quantity,flag)";
-                        strstock += string.Format("select 'PR','{0}','{1}','{2}','{3}','{4}','R' ;",
-                              model.RowID, obj.fk_product, model.WarehouseID, cDate.ToString("yyyy-MM-dd HH:mm:ss"), obj.Recqty);
+                        if (obj.fk_product > 0)
+                        {
+                            strstock += "insert into product_stock_register (tran_type,tran_id,product_id,warehouse_id,tran_date,quantity,flag)";
+                            strstock += string.Format("select 'PR','{0}','{1}','{2}','{3}','{4}','R' ;",
+                                  model.RowID, obj.fk_product, model.WarehouseID, cDate.ToString("yyyy-MM-dd HH:mm:ss"), obj.Recqty);
 
-                        strstock += "insert into product_stock_register (tran_type,tran_id,product_id,warehouse_id,tran_date,quantity,flag)";
-                        strstock += string.Format("select 'PR','{0}','{1}','{2}','{3}','{4}','O' ;",
-                              model.RowID, obj.fk_product, model.WarehousepoID, cDate.ToString("yyyy-MM-dd HH:mm:ss"), obj.Recqty);
+                            strstock += "insert into product_stock_register (tran_type,tran_id,product_id,warehouse_id,tran_date,quantity,flag)";
+                            strstock += string.Format("select 'PR','{0}','{1}','{2}','{3}','{4}','O' ;",
+                                  model.RowID, obj.fk_product, model.WarehousepoID, cDate.ToString("yyyy-MM-dd HH:mm:ss"), obj.Recqty);
 
-                        strstock += "insert into product_stock_register (tran_type,tran_id,product_id,warehouse_id,tran_date,quantity,flag)";
-                        strstock += string.Format("select 'PR','{0}','{1}','{2}','{3}','{4}','R' ;",
-                              model.RowID, obj.fk_product, model.WarehousepoID, cDate.ToString("yyyy-MM-dd HH:mm:ss"), obj.Recqty);
+                            strstock += "insert into product_stock_register (tran_type,tran_id,product_id,warehouse_id,tran_date,quantity,flag)";
+                            strstock += string.Format("select 'PR','{0}','{1}','{2}','{3}','{4}','R' ;",
+                                  model.RowID, obj.fk_product, model.WarehousepoID, cDate.ToString("yyyy-MM-dd HH:mm:ss"), obj.Recqty);
 
-                        strstock += "insert into product_stock_register (tran_type,tran_id,product_id,warehouse_id,tran_date,quantity,flag)";
-                        strstock += string.Format("select 'PR','{0}','{1}','{2}','{3}','{4}','I' ;",
-                              model.RowID, obj.fk_product, model.WarehousepoID, cDate.ToString("yyyy-MM-dd HH:mm:ss"), obj.Recqty);
-
+                            strstock += "insert into product_stock_register (tran_type,tran_id,product_id,warehouse_id,tran_date,quantity,flag)";
+                            strstock += string.Format("select 'PR','{0}','{1}','{2}','{3}','{4}','I' ;",
+                                  model.RowID, obj.fk_product, model.WarehousepoID, cDate.ToString("yyyy-MM-dd HH:mm:ss"), obj.Recqty);
+                        }
                         //+" inner join commerce_purchase_receive_order po on po.rowid = pod.fk_purchase_re where fk_purchase_re = " + model.RowID + ";");
                     }
                 }
                 // if (SQLHelper.ExecuteNonQueryWithTrans(strstock) > 0)
                // select 'PR',pod.fk_purchase_re,pod.fk_product," + model.WarehouseID + ",po.date_creation,pod.qty,'R' from commerce_purchase_receive_order_detail pod"
-                SQLHelper.ExecuteScalar(strstock, para);
+               if(!string.IsNullOrEmpty(strstock))
+                  SQLHelper.ExecuteScalar(strstock, para);
                 result = model.RowID;
             }
             catch (Exception Ex)

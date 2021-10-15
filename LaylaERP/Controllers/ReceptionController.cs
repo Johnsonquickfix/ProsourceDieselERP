@@ -43,11 +43,21 @@ namespace LaylaERP.Controllers
         {
             DataSet ds = BAL.ReceptionRepository.Getwarehouse(model.strValue1);
             List<SelectListItem> productlist = new List<SelectListItem>();
-            foreach (DataRow dr in ds.Tables[0].Rows)
+            if (ds.Tables[0].Rows.Count > 0)
             {
-                productlist.Add(new SelectListItem { Text = dr["Name"].ToString(), Value = dr["ID"].ToString() });
+                foreach (DataRow dr in ds.Tables[0].Rows)
+                {
+                    productlist.Add(new SelectListItem { Text = dr["Name"].ToString(), Value = dr["ID"].ToString() });
+                }
+                return Json(productlist, JsonRequestBehavior.AllowGet);
             }
-            return Json(productlist, JsonRequestBehavior.AllowGet);
+            else
+            {
+                productlist.Add(new SelectListItem { Text = "ReSurge", Value = "3" });
+                return Json(productlist, JsonRequestBehavior.AllowGet);
+
+            }
+           
 
         }
 

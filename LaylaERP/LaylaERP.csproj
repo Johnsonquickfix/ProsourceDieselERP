@@ -681,8 +681,10 @@
     <Content Include="js\Inventory\ConsignmentInventory.js" />
     <Content Include="js\Inventory\Inventory.js" />
     <Content Include="js\jquery.mask.js" />
+    <Content Include="js\Marketing\AutoGenerateCoupons.js" />
     <Content Include="js\Marketing\Coupons.js" />
     <Content Include="js\Marketing\CouponsManage.js" />
+    <Content Include="js\Marketing\NewAutoGenerate.js" />
     <Content Include="js\Orders\NewOrder.js" />
     <Content Include="js\Orders\OrderCoupons.js" />
     <Content Include="js\Orders\OrderHistory.js" />

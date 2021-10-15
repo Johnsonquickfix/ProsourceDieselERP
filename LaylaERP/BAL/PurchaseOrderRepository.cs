@@ -317,10 +317,11 @@ namespace LaylaERP.BAL
                 MySqlParameter[] para = { new MySqlParameter("@po_id", id), };
                 string strSql = "select po.rowid,po.ref,po.ref_ext,po.ref_supplier,po.fk_supplier,po.fk_warehouse,po.fk_status,po.fk_payment_term,coalesce(pt.PaymentTerm,'') PaymentTerm,po.fk_balance_days,bd.Balance,po.fk_payment_type,"
                                 + " DATE_FORMAT(po.date_livraison, '%m/%d/%Y') date_livraison,po.fk_incoterms,po.location_incoterms,po.note_private,po.note_public,DATE_FORMAT(po.date_creation, '%m/%d/%Y') date_creation,"
-                                + " v.name vendor_name,v.address,COALESCE(v.town,'') town,v.fk_country,v.fk_state,v.zip,COALESCE(v.phone,'') phone,COALESCE(v.email,'') vendor_email"
+                                + " v.name vendor_name,v.address,COALESCE(v.town,'') town,v.fk_country,v.fk_state,v.zip,COALESCE(v.phone,'') phone,COALESCE(v.email,'') vendor_email,"
+                                + " wh.ref warehouse,wh.address wrh_add,wh.city wrh_city,wh.town wrh_town,wh.zip wrh_zip,wh.country wrh_country,wh.phone wrh_phone"
                                 + " from commerce_purchase_order po inner join wp_vendor v on po.fk_supplier = v.rowid"
-                                + " left outer join PaymentTerms pt on pt.id = po.fk_payment_term"
-                                + " left outer join BalanceDays bd on bd.id = po.fk_balance_days where po.rowid = @po_id;"
+                                + " left outer join PaymentTerms pt on pt.id = po.fk_payment_term left outer join BalanceDays bd on bd.id = po.fk_balance_days"
+                                + " left outer join wp_warehouse wh on wh.rowid = po.fk_warehouse  where po.rowid = @po_id;"
                                 + " select rowid,fk_purchase,fk_product,ref product_sku,description,qty,discount_percent,discount,subprice,total_ht,tva_tx,localtax1_tx,localtax1_type,"
                                 + " localtax2_tx,localtax2_type,total_tva,total_localtax1,total_localtax2,total_ttc,product_type,DATE_FORMAT(date_start, '%m/%d/%Y') date_start,DATE_FORMAT(date_end, '%m/%d/%Y') date_end,rang"
                                 + " from commerce_purchase_order_detail where fk_purchase = @po_id order by product_type,rowid;";

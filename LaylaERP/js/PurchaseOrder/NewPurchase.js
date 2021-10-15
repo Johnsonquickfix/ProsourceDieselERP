@@ -57,7 +57,7 @@
         let date1 = new Date($('#txtPODate').val()), date2 = new Date($('#txtPlanneddateofdelivery').val());
         var Difference_In_Time = date2.getTime() - date1.getTime();
         var Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
-        $('#lblPlannedDays').text("(Planned Days : " + Difference_In_Days + ")");
+        $('#lblPlannedDays').text("(Planned Days : " + parseInt(Difference_In_Days) + ")");
     });
     $('#ddlWarehouse').change(function (t) {
         t.preventDefault(); $('#txtWarehouseAddress').val($(this).find(':selected').data('ad'))
@@ -249,8 +249,11 @@ function calculateFinal() {
         if (proc_type == 1) tTax_Amt2 += rNetAmt;
         else if (proc_type == 2) tTax_Amt1 += rNetAmt;
         else if (proc_type == 3) tOther_Amt += rNetAmt;
+        else {
+            tQty += rQty, tGrossAmt += rGrossAmt;
+        }
     });
-    
+
     $(".thQuantity").text(tQty.toFixed(0));
     $("#SubTotal").text(tGrossAmt.toFixed(2));
     $("#discountTotal").text(tDisAmt.toFixed(2));
@@ -330,7 +333,7 @@ function AddProductModal(proc_type, row_num) {
     $('.date-picker').datepicker({ format: 'mm/dd/yyyy', autoclose: true, todayHighlight: true });
 }
 function bindOtherItems(proc_type, row_num) {
-    let rDesc = '', rSku = '', rSDate = '', rEDate = '', rQty = 0.00, rPrice = 0.00, rDescPer = 0.00, rTotal = 0.00;
+    let rDesc = '', rSku = '', rSDate = '00/00/0000', rEDate = '00/00/0000', rQty = 0.00, rPrice = 0.00, rDescPer = 0.00, rTotal = 0.00;
     if (row_num == 0) row_num = (parseInt($('#product_line_items tr:last').data("rang")) || 0) + 1;
     rDesc = $("#txt_proc_desc").val();
     if (rDesc == "") { swal('alert', 'Please Enter Description.', 'error').then(function () { swal.close(); $('#txt_proc_desc').focus(); }); return false; }
@@ -338,6 +341,7 @@ function bindOtherItems(proc_type, row_num) {
     if ($('#txt_proc_price').val() == "") { swal('alert', 'Please Enter Price.', 'error').then(function () { swal.close(); $('#txt_proc_price').focus(); }); return false; }
     if (proc_type == 0) {
         rSku = $("#txt_proc_sku").val();
+        rSDate = rEDate = $("#txtPODate").val();
     }
     else {
         rSDate = $("#txt_proc_fromdate").val();
@@ -371,7 +375,6 @@ function bindOtherItems(proc_type, row_num) {
         $('#tritemid_' + row_num).find("[name=txt_itemqty]").val(rQty);
         $('#tritemid_' + row_num).find("[name=txt_itemdisc]").val(rDescPer);
         $('#tritemid_' + row_num).find(".tax-amount").text(0.00); $('#tritemid_' + row_num).find('.row-total').text(rTotal);
-
     }
     $("#POModal").modal('hide');
     $("#product_line_items").find(".rowCalulate").change(function () { calculateFinal(); });
@@ -407,7 +410,7 @@ function getPurchaseOrderInfo() {
                         let date1 = new Date(row.date_creation), date2 = new Date(row.date_livraison);
                         var Difference_In_Time = date2.getTime() - date1.getTime();
                         var Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
-                        $('#lblPlannedDays').text("(Planned Days : " + Difference_In_Days + ")");
+                        $('#lblPlannedDays').text("(Planned Days : " + parseInt(Difference_In_Days) + ")");
 
                         if (row.fk_status == '1')
                             $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List">Back to List</a><button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button> <button type="button" class="btn btn-danger btnApproved" data-toggle="tooltip" title="Approved and create invoice."><i class="fas fa-check-double"></i> Approved</button>');
@@ -483,10 +486,10 @@ function getPurchaseOrderPayments(oid) {
                         itemHtml += '<td class="text-right" data-amount="' + row.amount.toFixed(2) + '">$' + row.amount.toFixed(2) + '</td>';
                         itemHtml += '<td>' + row.paymenttype + '</td>';
                         itemHtml += '<td>' + row.num_payment + '</td>';
-                        itemHtml += '</tr>';                        
+                        itemHtml += '</tr>';
                     });
                     $('.paymentlist').append(itemHtml);
-                    $('#paidTotal').text(paid_amt.toFixed(2));                   
+                    $('#paidTotal').text(paid_amt.toFixed(2));
                 }
                 catch (error) { $("#loader").hide(); swal('Alert!', "something went wrong.", "error"); }
             },
@@ -577,7 +580,7 @@ function saveVendorPO() {
                 if (data.status == true) {
                     $('#lblPoNo').data('id', data.id);
                     getPurchaseOrderInfo();
-                    swal('Alert!', data.message, 'success').then(function () { swal.close(); getPurchaseOrderPrint(id, true); });
+                    swal('Success!', data.message, 'success').then(function () { swal.close(); getPurchaseOrderPrint(id, true); });
                 }
                 else {
                     swal('Alert!', data.message, 'error')

@@ -65,6 +65,17 @@ namespace LaylaERP.Controllers
             UsersRepositry.ShowUsersDetails(rolepass);
             return Json(new { data = UsersRepositry.userslist }, JsonRequestBehavior.AllowGet);
         }
+
+        public JsonResult ShowDataUsersDetails(string rolepass)
+        {
+            //string urid = "0";
+            //urid = details.user_status;
+            //string result = Models.UsersRepositry.userslist.ToString();
+            //UsersRepositry.userslist.Clear();
+            // string role="";
+            UsersRepositry.ShowDataUsersDetails(rolepass);
+            return Json(new { data = UsersRepositry.userslist }, JsonRequestBehavior.AllowGet);
+        }
         public JsonResult GetDetails(CustomerModel model)
         {
             string result = string.Empty;

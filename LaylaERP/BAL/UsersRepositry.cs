@@ -150,6 +150,59 @@ namespace LaylaERP.BAL
 
         }
 
+
+        public static void ShowDataUsersDetails(string rolee)
+        {
+
+            try
+            {
+               
+                userslist.Clear();
+                DataSet ds1 = new DataSet();           
+
+                string sqlquery = "select ID, user_login,user_status,user_email,user_pass,max(case when um.meta_key = 'wp_capabilities' then um.meta_value else '' end) meta_value,max(case when um.meta_key = 'billing_phone' then um.meta_value else '' end) Phone,"
+                                  + "max(case when um.meta_key = 'billing_address_1' then um.meta_value else '' end) billing_address_1,max(case when um.meta_key = 'billing_address_2' then um.meta_value else '' end) billing_address_2,"
+                                  + " max(case when um.meta_key = 'billing_city' then um.meta_value else '' end) billing_city,"
+                                  + " max(case when um.meta_key = 'billing_state' then um.meta_value else '' end) billing_state,"
+                                  + " max(case when um.meta_key = 'billing_postcode' then um.meta_value else '' end) billing_postcode"
+                                  + " from wp_users u"
+                                  + " inner join wp_usermeta um on um.user_id = u.id "
+                                  + " where u.id in (select w_um.user_id from  wp_usermeta w_um where w_um.meta_key = 'wp_capabilities' and w_um.meta_value NOT LIKE '%customer%' and meta_value not like '%a:2%' and w_um.meta_value not like '%a:5%' and w_um.meta_value not like '%a:0%' "
+                                  + " and w_um.meta_value not like '%a:8%') group by id ORDER BY id ASC";
+                if (!string.IsNullOrEmpty(rolee))
+                {
+                    sqlquery += " and um.meta_value like '%" + rolee + "%' ";
+                }
+                ds1 = DAL.SQLHelper.ExecuteDataSet(sqlquery);
+                string result = string.Empty;
+
+                for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
+                {
+                    clsUserDetails uobj = new clsUserDetails();   
+                    uobj.ID = Convert.ToInt32(ds1.Tables[0].Rows[i]["ID"].ToString());
+                    uobj.user_login = ds1.Tables[0].Rows[i]["user_login"].ToString();
+                    result = ds1.Tables[0].Rows[i]["meta_value"].ToString().TrimEnd(',');
+                    uobj.my = ds1.Tables[0].Rows[i]["meta_value"].ToString();    
+                    uobj.user_email = ds1.Tables[0].Rows[i]["user_email"].ToString();
+                    if ((ds1.Tables[0].Rows[i]["user_status"].ToString() == "0"))
+                    { uobj.user_status = "Active"; }
+                    else { uobj.user_status = "InActive"; }
+                    uobj.phone = ds1.Tables[0].Rows[i]["Phone"].ToString();
+                    string address = ds1.Tables[0].Rows[i]["billing_address_1"].ToString() + ' ' + ds1.Tables[0].Rows[i]["billing_address_2"].ToString() + ' ' + ds1.Tables[0].Rows[i]["billing_city"].ToString() + ' ' + ds1.Tables[0].Rows[i]["billing_state"].ToString() + ' ' + ds1.Tables[0].Rows[i]["billing_postcode"].ToString();
+                    uobj.address = address;
+                    //Code For Role End
+                    userslist.Add(uobj);
+                }
+
+            }
+            catch (Exception e)
+            {
+
+            }
+
+
+        }
+
         public static DataTable GetDetails(string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
         {
             DataTable dt = new DataTable();

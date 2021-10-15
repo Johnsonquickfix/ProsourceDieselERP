@@ -19,7 +19,7 @@
     $(document).ready(function () {
         GetUsersCount();
         //async: false;
-        setTimeout(function () { Datagrid('', $("#hfroletype").val()); }, 3000);
+       setTimeout(function () { Datagrid('', $("#hfroletype").val()); }, 3000);
     });
 </script>
 <div id="loader" class="d-flex align-items-center hide">
@@ -136,10 +136,21 @@
         CheckPermissions("#user-section-top", "#hfEdit", "", loc);
         CheckPermissions("#role-ul", "#hfEdit", "", loc);
         //GetUsersCount();
-        //setTimeout(function () { Datagrid('', $("#hfroletype").val()); }, 3000);
+       //setTimeout(function () { Datagrid('', $("#hfroletype").val()); }, 3000);
+
+
+        $(".subsubsub li").click(function (e) {
+            var role_type = $(this).data('usertext');
+           $('#hfStatusType').val(role_type);
+           // Datagrid(role_type, $("#hfroletype").val());
+
+            $("#dtdata").DataTable().search(role_type).draw();
+           // console.log();
+        });
 
         $(".subsubsub li a").click(function (e) {
             $('.subsubsub li').removeClass('current');
+          
             $('.subsubsub li a').removeClass('current');
             $(this).addClass('current'); $(this).parent().addClass('current');
         });
@@ -185,11 +196,16 @@
 
         $(document).on("click", ".caction", function (t) { 
             t.preventDefault();
-            console.log('a', $(this));
+            //console.log('a', $(this));
             $('.subsubsub li').removeClass('current');
+
+
+           // console.log(txt);
             $('.subsubsub li a').removeClass('current');
             $(this).addClass('current');
             var role_type = $(this).attr("id");
+
+
             //if (role_type === "seoeditor") {
             //    role_type = "wpseo_editor";
             //} else if (role_type === "seomanager") {
@@ -206,8 +222,8 @@
 
             //alert(role_type);
             //console.log(role_type);
-            $('#hfStatusType').val(role_type);
-            Datagrid(role_type, $("#hfroletype").val());
+          //  $('#hfStatusType').val(role_type);
+           // Datagrid(role_type, $("#hfroletype").val());
         });
 
         //Count Role Grid End

@@ -46,6 +46,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AmazonPay, Version=3.9.1.0, Culture=neutral, PublicKeyToken=74dc226be5eca88b, processorArchitecture=MSIL">
+      <HintPath>..\packages\AmazonPay.3.9.1\lib\net20\AmazonPay.dll</HintPath>
+    </Reference>
     <Reference Include="AuthorizeNet, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\AuthorizeNet.2.0.2\lib\AuthorizeNet.dll</HintPath>
     </Reference>
@@ -260,6 +263,7 @@
     <Compile Include="Models\WarehouseModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="recaptcha\recaptcha.cs" />
+    <Compile Include="UTILITIES\clsAmazonPay.cs" />
     <Compile Include="UTILITIES\clsAuthorizeNet.cs" />
     <Compile Include="UTILITIES\clsPayPal.cs" />
     <Compile Include="UTILITIES\clsPodium.cs" />
@@ -677,8 +681,10 @@
     <Content Include="js\Inventory\ConsignmentInventory.js" />
     <Content Include="js\Inventory\Inventory.js" />
     <Content Include="js\jquery.mask.js" />
+    <Content Include="js\Marketing\AutoGenerateCoupons.js" />
     <Content Include="js\Marketing\Coupons.js" />
     <Content Include="js\Marketing\CouponsManage.js" />
+    <Content Include="js\Marketing\NewAutoGenerate.js" />
     <Content Include="js\Orders\NewOrder.js" />
     <Content Include="js\Orders\OrderCoupons.js" />
     <Content Include="js\Orders\OrderHistory.js" />
@@ -983,6 +989,9 @@
     <Content Include="Views\EmailNotifications\Refunded.cshtml" />
     <Content Include="Views\EmailNotifications\Resetpassword.cshtml" />
     <Content Include="Views\Giftcard\Giftcard.cshtml" />
+    <Content Include="Views\Giftcard\ordermeta.cshtml" />
+    <Content Include="Views\Coupons\AutoGenerate.cshtml" />
+    <Content Include="Views\Coupons\NewAutoGenerate.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

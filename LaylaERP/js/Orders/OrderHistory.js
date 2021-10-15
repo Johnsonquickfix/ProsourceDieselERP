@@ -104,7 +104,7 @@ function GetOrderDetails() {
         async: false
     });
 }
-
+function isNullUndefAndSpace(variable) { return (variable !== null && variable !== undefined && variable !== 'undefined' && variable !== 'null' && variable.length !== 0); }
 function dataGridLoad(order_type, is_date) {
     var urlParams = new URLSearchParams(window.location.search);
     let searchText = urlParams.get('name') ? urlParams.get('name') : '';
@@ -147,12 +147,8 @@ function dataGridLoad(order_type, is_date) {
             aoData.push({ name: "strValue1", value: dfa });
             aoData.push({ name: "strValue2", value: (cus_id > 0 ? cus_id : '') });
             aoData.push({ name: "strValue3", value: order_type });
-            var col = 'order_id';
-            if (oSettings.aaSorting.length > 0) {
-                var col = oSettings.aaSorting[0][0] == 2 ? "customer_id" : oSettings.aaSorting[0][0] == 3 ? "FirstName" : oSettings.aaSorting[0][0] == 4 ? "LastName" : oSettings.aaSorting[0][0] == 5 ? "num_items_sold" : oSettings.aaSorting[0][0] == 6 ? "total_sales" : oSettings.aaSorting[0][0] == 6 ? "status" : oSettings.aaSorting[0][0] == 6 ? "date_created" : "order_id";
-                aoData.push({ name: "sSortColName", value: col });
-            }
-            //console.log(aoData);
+            var col = 'id';
+            if (oSettings.aaSorting.length > 0) { aoData.push({ name: "sSortColName", value: oSettings.aoColumns[oSettings.aaSorting[0][0]].data }); }
             oSettings.jqXHR = $.ajax({
                 dataType: 'json', type: "GET", url: sSource, data: aoData,
                 "success": function (data) {
@@ -170,25 +166,23 @@ function dataGridLoad(order_type, is_date) {
             },
             { data: 'id', title: 'OrderID', sWidth: "8%", render: $.fn.dataTable.render.number('', '.', 0, '#') },
             {
-                data: 'first_name', title: 'Name', sWidth: "14%", render: function (id, type, row) {
-                    return row.first_name + ' ' + row.last_name;
+                data: '_billing_first_name', title: 'Name', sWidth: "14%", render: function (id, type, row) {
+                    let rValues = JSON.parse(row.meta_val);
+                    let name = (isNullUndefAndSpace(rValues._billing_first_name) ? rValues._billing_first_name : "") + ' ' + (isNullUndefAndSpace(rValues._billing_last_name) ? rValues._billing_last_name : "");
+                    return name;
                 }
             },
-            //{ data: 'last_name', title: 'Last Name', sWidth: "10%" },
             {
-                data: 'billing_phone', title: 'Phone No.', sWidth: "10%", render: function (toFormat) {
-                    var tPhone = '';
-                    if (toFormat != null) {
-                        tPhone = toFormat.replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3");
-                    }
-                    return tPhone
+                data: '_billing_phone', title: 'Phone No.', sWidth: "10%", render: function (id, type, row) {
+                    let rValues = JSON.parse(row.meta_val); 
+                    //return rValues._billing_phone.replace(/[0-9]+/, '');
+                    if (isNullUndefAndSpace(rValues._billing_phone)) return rValues._billing_phone.replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3"); else "";
                 }
             },
             { data: 'num_items_sold', title: 'No. of Items', sWidth: "10%" },
-            //{ data: 'total_sales', title: 'Order Total', sWidth: "10%", render: $.fn.dataTable.render.number(',', '.', 2, '$') },
             {
-                data: 'total_sales', title: 'Order Total', sWidth: "10%", render: function (id, type, row, meta) {
-                    let sale_amt = parseFloat(row.total_sales) || 0.00, refund_amt = parseFloat(row.refund_total) || 0.00;
+                data: '_order_total', title: 'Order Total', sWidth: "10%", render: function (id, type, row, meta) {
+                    let rValues = JSON.parse(row.meta_val); let sale_amt = parseFloat(rValues._order_total) || 0.00, refund_amt = parseFloat(row.refund_total) || 0.00;
                     let amt = refund_amt != 0 ? '<span style="text-decoration: line-through;"> $' + sale_amt.toFixed(2) + '<br></span><span style="text-decoration: underline;"> $' + (parseFloat(sale_amt) + refund_amt).toFixed(2) + '</span>' : '$' + sale_amt.toFixed(2);
                     return amt;
                 }
@@ -211,14 +205,16 @@ function dataGridLoad(order_type, is_date) {
             },
             { data: 'date_created', title: 'Creation Date', sWidth: "12%" },
             {
-                data: 'payment_method_title', title: 'Payment Method', sWidth: "11%", render: function (data, type, row) {
+                data: '_payment_method_title', title: 'Payment Method', sWidth: "11%", render: function (id, type, row) {
+                    let rValues = JSON.parse(row.meta_val);
+                    let pm_title = isNullUndefAndSpace(rValues._payment_method_title) ? rValues._payment_method_title : "";
                     if (row.status != 'wc-cancelled' && row.status != 'wc-failed' && row.status != 'wc-cancelnopay') {
-                        if (row.payment_method == 'ppec_paypal' && row.paypal_status != 'COMPLETED') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="PaymentStatus(' + row.id + ',\'' + row.paypal_id + '\',\'' + row.billing_email + '\');">' + row.payment_method_title + '</a>';
-                        else if (row.payment_method == 'podium' && row.paypal_status != 'PAID') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="podiumPaymentStatus(' + row.id + ',\'' + row.paypal_id + '\',\'' + row.billing_email + '\');">' + row.payment_method_title + '</a>';
+                        if (rValues._payment_method == 'ppec_paypal' && rValues._paypal_status != 'COMPLETED') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="PaymentStatus(' + id + ',\'' + rValues._paypal_id + '\',\'' + rValues._billing_email + '\');">' + pm_title + '</a>';
+                        else if (rValues._payment_method == 'podium' && rValues._podium_status != 'PAID') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="podiumPaymentStatus(' + id + ',\'' + rValues._podium_uid + '\',\'' + rValues._billing_email + '\');">' + pm_title + '</a>';
                         //if (row.payment_method == 'ppec_paypal') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="PaymentStatus(' + row.id + ',\'' + row.paypal_id + '\');">' + row.payment_method_title + '</a>';
-                        else return row.payment_method_title;
+                        else return pm_title;
                     }
-                    else return row.payment_method_title;
+                    else return pm_title;
 
                 }
             },

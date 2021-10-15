@@ -631,7 +631,7 @@ function saveVendorPO() {
             total_tva: 0, localtax1: parseFloat($("#salesTaxTotal").text()), localtax2: parseFloat($("#shippingTotal").text()), total_ht: parseFloat($("#SubTotal").text()),
             discount: parseFloat($("#discountTotal").text()), total_ttc: parseFloat($("#orderTotal").text()), fk_status: status, PurchaseOrderProducts: _list
         }
-        //console.log(option);
+        //console.log(option); 
         $.ajax({
             url: '/Reception/ReceptionPurchase', dataType: 'json', type: 'post', contentType: "application/json; charset=utf-8",
             data: JSON.stringify(option),

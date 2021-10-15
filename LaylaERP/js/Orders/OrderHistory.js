@@ -174,7 +174,7 @@ function dataGridLoad(order_type, is_date) {
             },
             {
                 data: '_billing_phone', title: 'Phone No.', sWidth: "10%", render: function (id, type, row) {
-                    let rValues = JSON.parse(row.meta_val); console.log('_billing_phone', rValues)
+                    let rValues = JSON.parse(row.meta_val); 
                     //return rValues._billing_phone.replace(/[0-9]+/, '');
                     if (isNullUndefAndSpace(rValues._billing_phone)) return rValues._billing_phone; else "";
                 }

@@ -1737,26 +1737,27 @@
                 else
                     strWhr += " and p.post_status != 'auto-draft' ";
 
+                string subWhr = string.Empty;
+                if (!string.IsNullOrEmpty(CustomerID)) subWhr = "w_pm.meta_key = '_customer_user' and w_pm.meta_value = '" + CustomerID + "' ";
+
                 if (!string.IsNullOrEmpty(searchid))
                 {
-                    string subWhr = string.Empty;
                     if (Regex.IsMatch(searchid, @"\d"))
-                        subWhr = "w_pm.meta_key = '_billing_phone' and REGEXP_REPLACE(w_pm.meta_value,'[^0-9]+', '') like '%" + searchid + "%'";
+                    {
+                        subWhr = (!string.IsNullOrEmpty(subWhr) ? subWhr + " and " : "") + "((w_pm.meta_key = '_billing_phone' and REGEXP_REPLACE(w_pm.meta_value,'[^0-9]+', '') like '%" + searchid + "%')";
+                        subWhr += " or w_pm.post_id like '%" + searchid + "%')";
+                    }
                     else
-                        subWhr = "w_pm.meta_key in ('_billing_first_name','_billing_last_name') and w_pm.meta_value like '%" + searchid + "%'";
-
-                    strWhr += string.Format(" and p.id in (select w_pm.post_id from wp_postmeta w_pm where {0})", subWhr);
+                        subWhr = (!string.IsNullOrEmpty(subWhr) ? subWhr + " and " : "") + "w_pm.meta_key in ('_billing_first_name','_billing_last_name') and w_pm.meta_value like '%" + searchid + "%'";
                 }
+                if (!string.IsNullOrEmpty(subWhr)) strWhr += string.Format(" and p.id in (select distinct w_pm.post_id from wp_postmeta w_pm where {0})", subWhr);
 
                 if (!string.IsNullOrEmpty(sMonths))
                 {
                     //strWhr += " and DATE_FORMAT(p.post_date,'%Y%m') BETWEEN " + sMonths;
                     strWhr += " and cast(p.post_date as date) BETWEEN " + sMonths;
                 }
-                if (!string.IsNullOrEmpty(CustomerID))
-                {
-                    strWhr += " and pmf.customer_id= '" + CustomerID + "' ";
-                }
+
 
                 string strSql = "SELECT p.id,p.post_status as status, DATE_FORMAT(p.post_date, '%M %d %Y') date_created,os.num_items_sold,"
                             //+ " JSON_ARRAYAGG(JSON_OBJECT('meta_key', meta_key, 'meta_value', meta_value)) meta_val,"
@@ -1764,7 +1765,7 @@
                             + " (SELECT sum(rpm.meta_value) FROM wp_posts rp JOIN wp_postmeta rpm ON rp.ID = rpm.post_id AND meta_key = '_order_total' WHERE rp.post_parent = p.ID AND rp.post_type = 'shop_order_refund') AS refund_total"
                             + " FROM wp_posts p inner join wp_wc_order_stats os on p.id = os.order_id"
                             + " inner join wp_postmeta pmf on pmf.post_id = p.id and(pmf.meta_key not like '_edit_lock' or pmf.meta_key not like '%index%')"
-                            + " WHERE p.post_type = 'shop_order' and p.post_status != 'auto-draft' " + strWhr
+                            + " WHERE p.post_type = 'shop_order' " + strWhr
                             + " group by p.id order by " + SortCol + " " + SortDir + " limit " + (pageno).ToString() + ", " + pagesize + "; ";
                 strSql += " select coalesce(sum(1),0) TotalRecord from wp_posts p inner join wp_wc_order_stats os on p.id = os.order_id where p.post_type = 'shop_order' " + strWhr.ToString();
 

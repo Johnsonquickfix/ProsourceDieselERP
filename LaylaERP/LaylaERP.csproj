@@ -988,6 +988,8 @@
     <Content Include="Views\EmailNotifications\Resetpassword.cshtml" />
     <Content Include="Views\Giftcard\Giftcard.cshtml" />
     <Content Include="Views\Giftcard\ordermeta.cshtml" />
+    <Content Include="Views\Coupons\AutoGenerate.cshtml" />
+    <Content Include="Views\Coupons\NewAutoGenerate.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

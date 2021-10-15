@@ -64,7 +64,7 @@
     });
     $(document).on("click", ".btnEdit", function (t) {
         t.preventDefault(); $("#loader").show(); isEdit(true);
-        $('#ddlVendor').prop("disabled", true); $('.billinfo').prop("disabled", false); //$('#txtbillfirstname').focus();
+        $('#ddlVendor').prop("disabled", true); $('.billinfo,.orderfiles').prop("disabled", false); //$('#txtbillfirstname').focus();
         $('.entry-mode-action').empty().append('<button type="button" id="btnOtherProduct" class="btn btn-danger billinfo" data-toggle="tooltip" title="Add Other Product"><i class="fas fa-cube"></i> Add Other Product</button> ');
         $('.entry-mode-action').append('<button type="button" id="btnService" class="btn btn-danger billinfo"><i class="fas fa-concierge-bell" data-toggle="tooltip" title="Add Service"></i> Add Service</button>');
         $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList">Back to List</a><button type="button" class="btn btn-danger btnUndoRecord" data-toggle="tooltip" title="Cancel"><i class="fa fa-undo"></i> Cancel</button>  <button type="button" class="btn btn-danger" id="btnSave" data-toggle="tooltip" title="Update"><i class="far fa-save"></i> Update</button>');
@@ -99,6 +99,9 @@
         let id = parseInt($('#lblPoNo').data('id')) || 0;
         orderStatusUpdate(id);
     });
+    $(document).on('click', "#btnuploade", function (t) {
+        t.preventDefault(); Adduploade();
+    })
 });
 function isNullAndUndef(variable) { return (variable !== null && variable !== undefined && variable !== 'undefined' && variable !== 'null'); }
 function isEdit(val) {
@@ -384,7 +387,7 @@ function bindOtherItems(proc_type, row_num) {
 function getPurchaseOrderInfo() {
     let oid = parseInt($('#lblPoNo').data('id')) || 0;
     if (oid > 0) {
-        $('#ddlVendor,.billinfo').prop("disabled", true);
+        $('#ddlVendor,.billinfo,.orderfiles').prop("disabled", true); $(".order-files").removeClass('hidden');
         $('.page-heading').text('Edit Purchase Order ').append('<a class="btn btn-danger" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List">Back to List</a>');
         $('#line_items,#product_line_items').empty();
         $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List">Back to List</a>');
@@ -465,9 +468,9 @@ function getPurchaseOrderInfo() {
         $(".top-action").empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Purchase Order"><i class="fas fa-print"></i> Print</button> <button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button>');
     }
     else {
-        $('.billinfo').prop("disabled", true); $('#lblPoNo').text('Draft');
+        $('.billinfo,.orderfiles').prop("disabled", true); $('#lblPoNo').text('Draft');
         $("#loader").hide(); $('.page-heading').text('Add New Order');
-        $(".top-action").empty();
+        $(".top-action").empty(); $(".order-files").addClass('hidden');
     }
 }
 function getPurchaseOrderPayments(oid) {
@@ -496,9 +499,11 @@ function getPurchaseOrderPayments(oid) {
             complete: function () { $("#loader").hide(); isEdit(false); },
             error: function (xhr, status, err) { $("#loader").hide(); swal('Alert!', "something went wrong.", "error"); }, async: false
         });
+        bindfileuploade();
         $("#divAddItemFinal").find(".rowCalulate").change(function () { calculateFinal(); })
-        $('#ddlVendor,.billinfo').prop("disabled", true); calculateFinal(); $('.entry-mode-action').empty();
+        $('#ddlVendor,.billinfo,.orderfiles').prop("disabled", true); calculateFinal(); $('.entry-mode-action').empty();
         $(".top-action").empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Purchase Order"><i class="fas fa-print"></i> Print</button> <button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button>');
+        
     }
     else {
         $('.billinfo').prop("disabled", true); $('#lblPoNo').text('Draft');
@@ -580,7 +585,7 @@ function saveVendorPO() {
                 if (data.status == true) {
                     $('#lblPoNo').data('id', data.id);
                     getPurchaseOrderInfo();
-                    swal('Success!', data.message, 'success').then(function () { swal.close(); getPurchaseOrderPrint(id, true); });
+                    swal('Success', data.message, 'success').then(function () { swal.close(); getPurchaseOrderPrint(id, true); });
                 }
                 else {
                     swal('Alert!', data.message, 'error')
@@ -605,4 +610,67 @@ function orderStatusUpdate(oid) {
         complete: function () { $("#loader").hide(); },
         error: function (error) { swal('Error!', 'something went wrong', 'error'); }
     });
+}
+///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Purchase Order File Upload ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+function Adduploade() {
+    var formData = new FormData();
+    var file = document.getElementById("ImageFile").files[0];
+    formData.append("ImageFile", file);
+
+    var Name = parseInt($('#lblPoNo').data('id')) || 0;
+    formData.append("Name", Name);
+    if (file == "") { swal('Alert', 'Please upload files', 'error').then(function () { swal.close(); }); }
+    else {
+
+        $.ajax({
+            type: 'post', url: '/Reception/FileUploade', processData: false, contentType: false, data: formData,
+            beforeSend: function (xhr) { $("#loader").show(); }
+        }).then(response => {
+            if (response.status == true) {
+                if (response.url == "Manage") {
+                    swal('Success', response.message, 'success');
+                    bindfileuploade();
+                }
+                else swal('Success', response.message, 'success');
+            }
+            else swal('Alert!', response.message, 'error')
+        }).catch(err => { swal.hideLoading(); swal('Error!', 'something went wrong', 'error'); }).always(function () { $("#loader").hide(); });
+    }
+}
+function bindfileuploade() {
+    let id = parseInt($('#lblPoNo').data('id')) || 0;
+    var obj = { strValue1: id };
+    $.ajax({
+        type: "POST", url: '/Reception/GetfileuploadData', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
+        beforeSend: function () { $("#loader").show(); },
+        success: function (data) {
+            let itemHtml = ''; console.log(data);
+            $.each(data, function (key, row) {
+                itemHtml += '<tr id="tritemId_' + row.ID + '" data-id="' + row.ID + '">';
+                itemHtml += '<td><a target="popup" href="../../Content/PurchaseFiles/' + row.product_name + '">' + row.product_name + '</i></a ></td>';
+                itemHtml += '<td>' + row.product_label + 'KB' + '</td>';
+                itemHtml += '<td>' + row.sellingpric + '</td>';
+                itemHtml += '<td class="text-right"><button class="btn menu-icon-gr text-red btnDeleteItem editbutton orderfiles" onClick="Deletefileupload(' + row.ID + ')"><i class="glyphicon glyphicon-trash"></i></button></td>';
+                itemHtml += '</tr>';
+            });
+            $('#divfileupload_services').empty().append(itemHtml);
+        },
+        complete: function () { $("#loader").hide(); },
+        error: function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); },
+        async: false
+    });
+}
+function Deletefileupload(id) {
+    var ids = id;
+    var obj = { ID: ids }
+    $("#loader").show();
+    $.post('/Reception/Deletefileuploade', obj).then(response => {
+        if (response.status == true) {
+            if (response.url == "Manage") {
+                swal('Success', response.message, 'success'); bindfileuploade();
+            }
+            else swal('Success', response.message, 'success');
+        }
+        else swal('Alert!', response.message, 'error')
+    }).catch(err => { swal.hideLoading(); swal('Error!', 'something went wrong', 'error'); }).always(function () { $("#loader").hide(); });
 }

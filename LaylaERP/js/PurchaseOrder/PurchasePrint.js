@@ -41,7 +41,7 @@ function getPurchaseOrderPrint(id, is_mail) {
             error: function (xhr, status, err) { swal('Alert!', "something went wrong.", "error"); }, async: false
         });
     }
-}
+} 
 function printinvoice(id, result, is_mail, is_inv) {
     let data = JSON.parse(result.data); //console.log(result);
     let inv_title = is_inv ? 'Invoice' : 'Purchase Order';

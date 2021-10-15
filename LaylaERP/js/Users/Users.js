@@ -35,33 +35,33 @@ function GetUsersCount() {
     });
 }
 
-function GetUserCountTopBar() {
-    var opt = { strValue1: '' };
-    $.ajax({
-        type: "POST", url: '/Users/GetUsersCount', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
-        success: function (result) {
-            var data = JSON.parse(result);
-            //console.log(data);
-            if (data.length > 0) {
-                $('#all').find(".count").text(number_format(data[0].AllUser));
-                $('#accounting').find(".count").text(number_format(data[0].Accounting));
-                $('#administrator').find(".count").text(number_format(data[0].Administrator));
-                //$('#Author').find(".count").text(number_format(data[0].Author));
-                //$('#Contributor').find(".count").text(number_format(data[0].Contributor));
-                //$('#Editor').find(".count").text(number_format(data[0].Editor));
-                //$('#Modsquad').find(".count").text(number_format(data[0].ModSquad));
-                //$('#shopmanager').find(".count").text(number_format(data[0].ShopManager));
-                //$('#Subscriber').find(".count").text(number_format(data[0].Subscriber));
-                //$('#supplychainmanager').find(".count").text(number_format(data[0].SupplyChainManager));
-                //$('#seoeditor').find(".count").text(number_format(data[0].SEOEditor));
-                //$('#seomanager').find(".count").text(number_format(data[0].SEOManager));
-                $('#norole').find(".count").text(number_format(data[0].Norole));
-            }
-        },
-        error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
-        async: false
-    });
-}
+//function GetUserCountTopBar() {
+//    var opt = { strValue1: '' };
+//    $.ajax({
+//        type: "POST", url: '/Users/GetUsersCount', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(opt),
+//        success: function (result) {
+//            var data = JSON.parse(result);
+//            //console.log(data);
+//            if (data.length > 0) {
+//                $('#all').find(".count").text(number_format(data[0].AllUser));
+//                $('#accounting').find(".count").text(number_format(data[0].Accounting));
+//                $('#administrator').find(".count").text(number_format(data[0].Administrator));
+//                //$('#Author').find(".count").text(number_format(data[0].Author));
+//                //$('#Contributor').find(".count").text(number_format(data[0].Contributor));
+//                //$('#Editor').find(".count").text(number_format(data[0].Editor));
+//                //$('#Modsquad').find(".count").text(number_format(data[0].ModSquad));
+//                //$('#shopmanager').find(".count").text(number_format(data[0].ShopManager));
+//                //$('#Subscriber').find(".count").text(number_format(data[0].Subscriber));
+//                //$('#supplychainmanager').find(".count").text(number_format(data[0].SupplyChainManager));
+//                //$('#seoeditor').find(".count").text(number_format(data[0].SEOEditor));
+//                //$('#seomanager').find(".count").text(number_format(data[0].SEOManager));
+//                $('#norole').find(".count").text(number_format(data[0].Norole));
+//            }
+//        },
+//        error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
+//        async: false
+//    });
+//}
 
 function Datagrid(role_type, type) {
     //alert(type);
@@ -136,14 +136,14 @@ function Datagrid(role_type, type) {
     console.log(role_type, type);
     var id;
     $('#dtdata').DataTable({
-        oSearch: { "sSearch": searchText },
+        oSearch: { "sSearch": role_type.trim() },
         destroy: true,
         bAutoWidth: false,
         "ajax": {
-            "url": '/Users/GetData',
+            "url": '/Users/ShowDataUsersDetails',
             "type": 'GET',
             "dataType": 'json',
-            data: { rolepass: role_type },
+           // data: { rolepass: role_type.trim() },
             contentType: "application/json; charset=utf-8",
         },
         lengthMenu: [[10, 20, 50, 100], [10, 20, 50, 100]],
@@ -225,7 +225,10 @@ function getAllUserType(sValue) {
         var user_type = '';
         $('.subsubsub li').each(function (index) {
             let val = $(this).data('uservalue'), txt = $(this).data('usertext');
-            let i = sValue.toLowerCase().trim().indexOf(val);
+            //console.log(val);
+           // console.log(sValue);
+              let i = sValue.toLowerCase().trim().indexOf(val);
+            //let i = sValue.trim().indexOf(val);
             if (i > -1) user_type = (user_type.length > 0 ? user_type + ', ' : '') + txt;
         });
         return user_type.substring(0, user_type.length - 2);

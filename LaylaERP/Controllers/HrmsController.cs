@@ -186,6 +186,8 @@ namespace LaylaERP.Controllers
             {
                 int ID = HrmsRepository.EditEmployeeBasicInfo(model, model.rowid);
                 HrmsRepository.EditEmployeeBasicDetails(model, model.rowid);
+                HrmsRepository.UpdateNewEmployeeasUser(model);
+                UpdateEmployeeMetaData(model, model.userid);
                 return Json(new { status = true, message = "Data has been Updated successfully!!", url = "", id = model.rowid }, 0);
             }
             else
@@ -1142,12 +1144,23 @@ namespace LaylaERP.Controllers
 
         private void AddEmployeeMetaData(HrmsModel model, long id)
         {
-            string[] varQueryArr1 = new string[10];
-            string[] varFieldsName = new string[10] { "first_name", "last_name", "wp_capabilities", "billing_address_1", "billing_country", "billing_phone", "billing_address_2", "billing_city", "billing_state", "billing_postcode" };
-            string[] varFieldsValue = new string[10] { model.firstname, model.lastname, "employee", model.address1, model.country, model.phone, model.address2, model.city, model.state, model.zipcode };
-            for (int n = 0; n < 10; n++)
+            string[] varQueryArr1 = new string[11];
+            string[] varFieldsName = new string[11] { "first_name", "last_name", "wp_capabilities", "billing_address_1", "billing_country", "billing_phone", "billing_address_2", "billing_city", "billing_state", "billing_postcode", "insperity_id" };
+            string[] varFieldsValue = new string[11] { model.firstname, model.lastname, "employee", model.address1, model.country, model.phone, model.address2, model.city, model.state, model.zipcode, model.insperity_id };
+            for (int n = 0; n < 11; n++)
             {
                 HrmsRepository.AddUserEmployeeMetaData(model, id, varFieldsName[n], varFieldsValue[n]);
+            }
+        }
+
+        private void UpdateEmployeeMetaData(HrmsModel model, long id)
+        {
+            string[] varQueryArr1 = new string[11];
+            string[] varFieldsName = new string[11] { "first_name", "last_name", "wp_capabilities", "billing_address_1", "billing_country", "billing_phone", "billing_address_2", "billing_city", "billing_state", "billing_postcode", "insperity_id" };
+            string[] varFieldsValue = new string[11] { model.firstname, model.lastname, "employee", model.address1, model.country, model.phone, model.address2, model.city, model.state, model.zipcode, model.insperity_id };
+            for (int n = 0; n < 11; n++)
+            {
+                HrmsRepository.UpdateUserEmployeeMetaData(model, id, varFieldsName[n], varFieldsValue[n]);
             }
         }
     }

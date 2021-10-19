@@ -103,7 +103,7 @@
         t.preventDefault(); Adduploade();
     })
 });
-function isNullAndUndef(variable) { return (variable !== null && variable !== undefined && variable !== 'undefined' && variable !== 'null'); }
+function isNullAndUndef(variable) { return (variable !== null && variable !== undefined && variable !== 'undefined' && variable !== 'null' && variable.length !== 0); }
 function isEdit(val) {
     localStorage.setItem('isEdit', val ? 'yes' : 'no');
 }
@@ -396,9 +396,9 @@ function getPurchaseOrderInfo() {
             url: "/PurchaseOrder/GetPurchaseOrderByID", type: "Get", beforeSend: function () { $("#loader").show(); }, data: option,
             success: function (result) {
                 try {
-                    let data = JSON.parse(result); let VendorID = 0;
+                    let data = JSON.parse(result); let VendorID = 0, status_id = 0;
                     $.each(data['po'], function (key, row) {
-                        VendorID = parseInt(row.fk_supplier) || 0;
+                        VendorID = parseInt(row.fk_supplier) || 0; status_id = parseInt(row.fk_status) || 0;
                         $('#lblPoNo').text(row.ref); $('#txtRefvendor').val(row.ref_supplier); $('#txtPODate').val(row.date_creation);
                         $('#ddlVendor').val(row.fk_supplier).trigger('change');
                         $('#ddlPaymentTerms').val(row.fk_payment_term).trigger('change');
@@ -415,10 +415,18 @@ function getPurchaseOrderInfo() {
                         var Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
                         $('#lblPlannedDays').text("(Planned Days : " + parseInt(Difference_In_Days) + ")");
 
-                        if (row.fk_status == '1')
+                        if (status_id == 1) {
                             $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List">Back to List</a><button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button> <button type="button" class="btn btn-danger btnApproved" data-toggle="tooltip" title="Approved and create invoice."><i class="fas fa-check-double"></i> Approved</button>');
-                        else
+                            $(".top-action").empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Purchase Order"><i class="fas fa-print"></i> Print</button> <button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button>');
+                        }
+                        else if (status_id == 3) {
                             $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List">Back to List</a><button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button>');
+                            $(".top-action").empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Purchase Order"><i class="fas fa-print"></i> Print</button> <button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button>');
+                        }
+                        else {
+                            $(".top-action").empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Purchase Order"><i class="fas fa-print"></i> Print</button>');
+                            $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List">Back to List</a>');
+                        }
                     });
                     getVendorProducts(VendorID);
                     $.each(data['pod'], function (key, row) {
@@ -465,7 +473,7 @@ function getPurchaseOrderInfo() {
         });
         $("#divAddItemFinal").find(".rowCalulate").change(function () { calculateFinal(); })
         $('#ddlVendor,.billinfo').prop("disabled", true); calculateFinal(); $('.entry-mode-action').empty();
-        $(".top-action").empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Purchase Order"><i class="fas fa-print"></i> Print</button> <button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button>');
+
     }
     else {
         $('.billinfo,.orderfiles').prop("disabled", true); $('#lblPoNo').text('Draft');
@@ -500,10 +508,6 @@ function getPurchaseOrderPayments(oid) {
             error: function (xhr, status, err) { $("#loader").hide(); swal('Alert!', "something went wrong.", "error"); }, async: false
         });
         bindfileuploade();
-        $("#divAddItemFinal").find(".rowCalulate").change(function () { calculateFinal(); })
-        $('#ddlVendor,.billinfo,.orderfiles').prop("disabled", true); calculateFinal(); $('.entry-mode-action').empty();
-        $(".top-action").empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Purchase Order"><i class="fas fa-print"></i> Print</button> <button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button>');
-        
     }
     else {
         $('.billinfo').prop("disabled", true); $('#lblPoNo').text('Draft');
@@ -538,7 +542,7 @@ function createItemsList() {
         rGrossAmt = rPrice * rQty; rDisAmt = rGrossAmt * (rDisPer / 100);
         rNetAmt = (rGrossAmt - rDisAmt) + rTax1;
         let rSDate = isNullAndUndef($(row).data('proc_fromdate')) ? moment($(row).data('proc_fromdate'), 'MM/DD/YYYY').format('YYYY-MM-DD') : '0000-00-00', rEDate = isNullAndUndef($(row).data('proc_todate')) ? moment($(row).data('proc_todate'), 'MM/DD/YYYY').format('YYYY-MM-DD') : '0000-00-00';
-        //console.log(_sDate, moment(_sDate).format('YYYY-MM-DD'), _eDate, moment(_eDate).format('YYYY-MM-DD'));
+        //console.log(rSDate, rEDate);
         _rang += 1;
         _list.push({
             rowid: $(row).data('rowid'), rang: _rang, product_type: $(row).data('proc_type'), fk_product: 0, description: $(row).find('.item-desc').text(), product_sku: $(row).find('.item-sku').text(),
@@ -585,7 +589,8 @@ function saveVendorPO() {
                 if (data.status == true) {
                     $('#lblPoNo').data('id', data.id);
                     getPurchaseOrderInfo();
-                    swal('Success', data.message, 'success').then(function () { swal.close(); getPurchaseOrderPrint(id, true); });
+                    swal('Success', data.message, 'success');
+                    //swal('Success', data.message, 'success').then(function () { swal.close(); getPurchaseOrderPrint(id, true); });
                 }
                 else {
                     swal('Alert!', data.message, 'error')
@@ -604,7 +609,14 @@ function orderStatusUpdate(oid) {
         data: obj,
         beforeSend: function () { $("#loader").show(); },
         success: function (data) {
-            if (data.status == true) { swal('alert', data.message, 'success').then((result) => { window.location.href = window.location.origin + "/PurchaseOrder/PurchaseOrderList"; }); }
+            if (data.status == true) {
+                swal('Success', data.message, 'success').then((result) => {
+                    $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List">Back to List</a><button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button>');
+                    $(".top-action").empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Purchase Order"><i class="fas fa-print"></i> Print</button> <button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button>');
+                    getPurchaseOrderPrint(oid, true);
+                    //window.location.href = window.location.origin + "/PurchaseOrder/PurchaseOrderList";
+                });
+            }
             else { swal('alert', 'something went wrong!', 'success'); }
         },
         complete: function () { $("#loader").hide(); },

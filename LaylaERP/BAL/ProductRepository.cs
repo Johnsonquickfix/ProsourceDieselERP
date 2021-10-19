@@ -2287,7 +2287,7 @@ namespace LaylaERP.BAL
                 string strWhr = string.Empty;
 
                 //string strSql = "sp_ProductCategoryByPara;";
-                string strSQl = "sp_ProductCategory";
+                string strSQl = "sp_ProductCategoryByPara";
                 dt = SQLHelper.ExecuteDataTable(strSQl);
                // MySqlParameter[] para =
                //{

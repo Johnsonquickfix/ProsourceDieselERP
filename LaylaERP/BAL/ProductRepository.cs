@@ -2286,19 +2286,20 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "sp_ProductCategoryByPara;";
+                //string strSql = "sp_ProductCategoryByPara;";
+                string strSQl = "sp_ProductCategory";
+                dt = SQLHelper.ExecuteDataTable(strSQl);
+               // MySqlParameter[] para =
+               //{
+               //     new MySqlParameter("?pagesize", pagesize.ToString()),
+               //     new MySqlParameter("?pageno", pageno),
+               //     new MySqlParameter("?searchid", searchid is null ? "" : searchid),
+               // };
 
-                MySqlParameter[] para =
-               {
-                    new MySqlParameter("@pagesize", pagesize.ToString()),
-                    new MySqlParameter("@pageno", pageno),
-                    new MySqlParameter("@searchid", searchid is null ? "" : searchid),
-                };
-
-                DataSet ds = SQLHelper.ExecuteDataSet(strSql, para);
-                dt = ds.Tables[0];
-                if (ds.Tables[1].Rows.Count > 0)
-                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+               // DataSet ds = SQLHelper.ExecuteDataSet(strSql, para);
+               // dt = ds.Tables[0];
+               // if (ds.Tables[1].Rows.Count > 0)
+               //     totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
             }
             catch (Exception ex)
             {

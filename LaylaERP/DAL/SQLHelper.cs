@@ -319,7 +319,7 @@
                 {
                     throw new DataException("You don't have permission to access.");
                 }
-                if (query.ToUpper().StartsWith("SELECT"))
+                if (query.ToUpper().StartsWith("SELECT")|| query.ToUpper().StartsWith("SP_"))
                 {
                     cmd.CommandType = CommandType.Text;
                 }
@@ -364,7 +364,7 @@
                 {
                     throw new DataException("You don't have permission to access.");
                 }
-                if (query.ToUpper().StartsWith("SELECT"))
+                if (query.ToUpper().StartsWith("SELECT") || query.ToUpper().StartsWith("SP_"))
                 {
                     cmd.CommandType = CommandType.Text;
                 }

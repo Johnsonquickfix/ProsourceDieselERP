@@ -256,6 +256,26 @@ namespace LaylaERP.BAL
             }
         }
 
+        public static void UpdateUserEmployeeMetaData(HrmsModel model, long id, string varFieldsName, string varFieldsValue)
+        {
+            try
+            {
+                string strsql = "UPDATE wp_usermeta set meta_value=@meta_value where user_id=@user_id and meta_key=@meta_key";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@user_id", id),
+                    new MySqlParameter("@meta_key", varFieldsName),
+                    new MySqlParameter("@meta_value", varFieldsValue),
+                };
+                SQLHelper.ExecuteNonQuery(strsql, para);
+
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
         public static int AddEmployeeBasicDetails(HrmsModel model, int id)
         {
             try
@@ -567,7 +587,7 @@ namespace LaylaERP.BAL
             try
             {
                 string strWhr = string.Empty;
-                string strSql = "Select e.rowid, e.firstname,e.lastname,e.dob, e.email,e.phone,e.gender,e.emp_type,e.is_active,e.insperity_id, " +
+                string strSql = "Select e.rowid, e.firstname,e.lastname,e.dob, e.email,e.phone,e.gender,e.emp_type,e.is_active,e.insperity_id,e.fk_user, " +
                     "d.birthplace,d.maritalstatus,d.address1,d.address2,d.city,d.state,d.zipcode,d.country,d.emp_number,d.designation,d.department,d.undertaking_emp," +
                     "d.joining_date,d.leaving_date,d.basic_sal,d.unpaid_leave_perday,d.bank_account_title,d.bank_name,d.account_number, " +
                     "d.bank_swift_code,d.note_public,d.note_private,d.bloodgroup,d.education,d.professionalqualification,d.otherdetails,d.alternateaddress1,d.alternateaddress2,d.alternatecity,d.alternatestate," +
@@ -1041,7 +1061,7 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@other_allowance","0"),
                     new MySqlParameter("@prepare_salary","1"),
                     new MySqlParameter("@accounting_type","1"),
-                    new MySqlParameter("@hra_type",1),
+                    new MySqlParameter("@hra_type","1"),
 
                     //Extra
                     new MySqlParameter("@comp_name",""),
@@ -1071,6 +1091,28 @@ namespace LaylaERP.BAL
             catch (Exception ex)
             {
                 throw ex;
+            }
+        }
+
+        public static int UpdateNewEmployeeasUser(HrmsModel model)
+        {
+            try
+            {
+                string username = model.firstname + " " + model.lastname;
+
+                string strsql = "UPDATE wp_users set user_nicename = @user_nicename, user_email = @user_email, display_name=@display_name where ID = '" + model.userid + "';";
+                MySqlParameter[] para =
+                {
+                    new MySqlParameter("@user_nicename", username),
+                    new MySqlParameter("@user_email", model.email),
+                    new MySqlParameter("@display_name", username),
+                };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
             }
         }
     }

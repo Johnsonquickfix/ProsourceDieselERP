@@ -20,6 +20,7 @@ namespace LaylaERP.Models
         public string gender { get; set; }
         public int is_active { get; set; }
         public string insperity_id { get; set; }
+        public long userid { get; set; }
         //erp_employee_details
         public int rowid1 { get; set; }
         public int fk_emp { get; set; }

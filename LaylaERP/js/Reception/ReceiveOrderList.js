@@ -401,7 +401,7 @@ function PoPartiallyColleps() {
         },
         lengthMenu: [[10, 20, 50, 100], [10, 20, 50, 100]],
         columns: [
-            { data: 'ref', title: 'Parent ID', sWidth: "8%" },
+            { data: 'rowid', title: 'Parent ID', sWidth: "8%" },
             {
                 data: 'ref', title: 'PO No', sWidth: "10%", render: function (data, type, row) {
                     //if (row.post_parent > 0) return '<a href="javascript:void(0);" class="details-control"><i class="glyphicon glyphicon-plus-sign"></i></a> ↳  #' + row.id; else return '<a href="javascript:void(0);" class="details-control"><i class="glyphicon glyphicon-plus-sign"></i></a> <b>#' + row.id + '</b>';
@@ -435,7 +435,7 @@ function PoPartiallyColleps() {
                 }
             }
         ],
-        columnDefs: [{ targets: [0], visible: false, searchable: false }],order: [[1, "desc"]]
+        columnDefs: [{ targets: [0], visible: false, searchable: false }],order: [[0, "desc"]]
     });
 }
 

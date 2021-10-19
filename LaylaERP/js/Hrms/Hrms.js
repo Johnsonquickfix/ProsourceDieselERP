@@ -228,6 +228,7 @@ $(document).on('click', "#btnNext1", function () {
     zipcode = $("#txtZipCode").val();
     country = $("#txtCountry").val();
     insperityid = $("#txtinsperityid").val();
+    user_id = $("#hfuserid").val();
 
     var formattedDate = new Date(dob);
     var d = formattedDate.getDate();
@@ -251,7 +252,7 @@ $(document).on('click', "#btnNext1", function () {
             is_active: status,
 
             birthplace: birthplace, maritalstatus: maritalstatus, address1: address1, address2: address2, city: city,
-            state: state, zipcode: zipcode, country: country, insperity_id: insperityid,
+            state: state, zipcode: zipcode, country: country, insperity_id: insperityid, userid: user_id,
         }
         if (URL == "Employee") {
             if (Password == "") {
@@ -647,6 +648,7 @@ function GetEmployeeByID(id) {
                     $("#txtAlternateZipCode").val(d[0].alternatezipcode);
                     $("#txtAlternateCountry").val(d[0].alternatecountry);
                     $("#txtinsperityid").val(d[0].insperity_id);
+                    $("#hfuserid").val(d[0].fk_user);
                     console.log(d[0].insperity_id);
                   
                     //tab 3

@@ -87,7 +87,7 @@ function printinvoice_Receive(id, result, is_mail, is_inv) {
     myHtml += '                    <table cellpadding="0" cellspacing="0" border="0" style="width:100%;border-bottom: 1px solid #ddd;">';
     myHtml += '                        <tr>';
     myHtml += '                            <td style="padding:0; vertical-align: top;">';
-    myHtml += '                                <img src="http://40.114.51.80/Images/layla1-logo.png" alt="" width="95" height="41" class="logo-size"/>';
+    myHtml += '                                <img src="//laylaerp.com/Images/layla1-logo.png" alt="" width="95" height="41" class="logo-size"/>';
     myHtml += '                                <p style="margin:15px 0px;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">';
     myHtml += '                                    ' + result.add + ', <br>' + result.city + ', ' + result.state + ' ' + result.zip + ', <br>' + (result.country == "CA" ? "Canada" : result.country == "US" ? "United States" : result.country) + '.<br>';
     myHtml += '                                    Phone: ' + result.phone.toString().replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + '<br />' + result.email + '<br />' + result.website;
@@ -300,7 +300,7 @@ function printinvoice_Re(id, result, is_mail, is_inv) {
     myHtml += '            <div class="col-xs-12">';
     myHtml += '                <div class="row" style="padding:0px 15px;margin-bottom:10px;display: flex;">';
     myHtml += '                    <div id="printPreview" style="width: 41.66666667%;">';
-    myHtml += '                        <div class="businessLogo"><img src="http://40.114.51.80/Images/layla1-logo.png" alt="" id="logoUrl" style="width: 90px;" /></div>';
+    myHtml += '                        <div class="businessLogo"><img src="//laylaerp.com/Images/layla1-logo.png" alt="" id="logoUrl" style="width: 90px;" /></div>';
     myHtml += '                        <div class="businfobox">' + result.add + '<br>' + result.city + ', ' + result.state + ' ' + result.zip + ', <br>' + (result.country == "CA" ? "Canada" : result.country == "US" ? "United States" : result.country) + '</div>';
     myHtml += '                        <div class="businfobox">Phone: ' + result.phone.toString().replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + '<br/>' + result.email + '<br />' + result.website + '<br /></div>';
     myHtml += '                    </div>';
@@ -503,7 +503,7 @@ function number_format(number, decimals, decPoint, thousandsSep) {
 //    myHtml += '            <div class="col-xs-12">';
 //    myHtml += '                <div class="row" style="padding:0px 15px;margin-bottom:10px;display: flex;">';
 //    myHtml += '                    <div id="printPreview" style="width: 41.66666667%;">';
-//    myHtml += '                        <div class="businessLogo"><img src="http://40.114.51.80/Images/layla1-logo.png" alt="" id="logoUrl" style="width: 90px;" /></div>';
+//    myHtml += '                        <div class="businessLogo"><img src="//laylaerp.com/Images/layla1-logo.png" alt="" id="logoUrl" style="width: 90px;" /></div>';
 //    myHtml += '                        <div class="businfobox">' + result.add + '<br>' + result.city + ', ' + result.state + ' ' + result.zip + ', <br>' + (result.country == "CA" ? "Canada" : result.country == "US" ? "United States" : result.country) + '</div>';
 //    myHtml += '                        <div class="businfobox">Phone: 001 ' + result.phone.toString().replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + '<br/>' + result.email + '<br />' + result.website + '<br /></div>';
 //    myHtml += '                    </div>';
@@ -724,7 +724,7 @@ function printinvoice_Bill(id, result, is_mail, is_inv) {
     myHtml += '    <tr width="100%">';
     myHtml += '        <td  width="69.9%" style="padding:0;">';
     myHtml += '            <h3 class="billto" style="font-family: sans-serif;font-size:20px;margin:0px 0px 15px 0px;;color:#2c2e2f;font-weight:200;">Sold to:</h3>';
-    myHtml += '                                <img src="http://40.114.51.80/Images/layla1-logo.png" alt="" width="95" height="41" class="logo-size"/>';
+    myHtml += '                                <img src="//laylaerp.com/Images/layla1-logo.png" alt="" width="95" height="41" class="logo-size"/>';
    // myHtml += '            <h3 class="billto" style="font-family: sans-serif;font-size:20px;margin:5px 0px 5px 0px;;color:#2c2e2f;font-weight:200;">' '</h3>';
     myHtml += '                                <p style="margin:15px 0px;font-family:sans-serif; font-size:15px; color:#4f4f4f;line-height:1.4;">';
     myHtml += '                                    ' + result.name +', <br>' + result.add + ', <br>' + result.city + ', ' + result.state + ' ' + result.zip + ', <br>' + (result.country == "CA" ? "Canada" : result.country == "CN" ? "China" : result.country == "US" ? "United States" : result.country) + '.<br>';
@@ -958,7 +958,7 @@ function printinvoice(id, result, is_mail, is_inv) {
     myHtml += '                <div class="row" style="padding:0px 15px;margin-bottom: 10px;">';
     myHtml += '                    <div class="headline"><h3>Bill To:</h3></div>';
 
-    myHtml += '                        <div><img src="http://40.114.51.80/Images/layla1-logo.png" alt="" id="logoUrl" style="width: 60px;" /></div>';
+    myHtml += '                        <div><img src="//laylaerp.com/Images/layla1-logo.png" alt="" id="logoUrl" style="width: 60px;" /></div>';
     myHtml += '                        <div>' + result.add + '<br>' + result.city + ', ' + result.state + ' ' + result.zip + ', <br>' + (result.country == "CA" ? "Canada" : result.country == "US" ? "United States" : result.country) + '</div>';
     myHtml += '                        <div>Phone: ' + result.phone.toString().replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3") + '<br/>' + result.email + '<br />' + result.website + '<br /></div>';
 

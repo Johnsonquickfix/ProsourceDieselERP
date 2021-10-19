@@ -548,7 +548,7 @@ function AuthorizeNetPaymentRefunds() {
 }
 
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Amazon Pay Payment Return ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-function AuthorizeNetPaymentRefunds() {
+function AmazonPayPaymentRefunds() {
     let oid = parseInt($('#hfOrderNo').val()) || 0, invoice_amt = (parseFloat($('.btnRefundOk').data('nettotal')) || 0.00);
     let option = { order_id: oid, NetTotal: invoice_amt };
     swal.queue([{

@@ -138,22 +138,23 @@ function CategoryList() {
     var obj = { user_status: urid, Search: sid, PageNo: 0, PageSize: 50, sEcho: 1, SortCol: 'id', SortDir: 'desc', rowid: ID };
     $('#ProductCategory').DataTable({
         columnDefs: [{ "orderable": false, "targets": 0 }], order: [[1, "desc"]],
-        destroy: true, bProcessing: true, bServerSide: true,
-        sPaginationType: "full_numbers", searching: false, ordering: false, lengthChange: true, "paging": true,
+        destroy: true, bProcessing: true, bServerSide: false,
+        sPaginationType: "full_numbers", searching: true, ordering: false, lengthChange: true, "paging": true,
         bAutoWidth: false, scrollX: false,
         lengthMenu: [[10, 20, 50], [10, 20, 50]],
         sAjaxSource: "/Product/ProductCategoryList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
             var col = 'id';
-            if (oSettings.aaSorting.length >= 0) {
-                var col = oSettings.aaSorting[0][0] == 1 ? "Name" : oSettings.aaSorting[0][0] == 2 ? "Description" : oSettings.aaSorting[0][0] == 3 ? "Slug" : oSettings.aaSorting[0][0] == 4 ? "Count" : "id";
-                obj.SortCol = col; obj.SortDir = oSettings.aaSorting.length >= 0 ? oSettings.aaSorting[0][1] : "desc";
-            }
-            obj.sEcho = aoData[0].value; obj.PageSize = oSettings._iDisplayLength; obj.PageNo = oSettings._iDisplayStart;
+            //if (oSettings.aaSorting.length >= 0) {
+            //    var col = oSettings.aaSorting[0][0] == 1 ? "Name" : oSettings.aaSorting[0][0] == 2 ? "Description" : oSettings.aaSorting[0][0] == 3 ? "Slug" : oSettings.aaSorting[0][0] == 4 ? "Count" : "id";
+            //    obj.SortCol = col; obj.SortDir = oSettings.aaSorting.length >= 0 ? oSettings.aaSorting[0][1] : "desc";
+            //}
+           /* obj.sEcho = aoData[0].value; obj.PageSize = oSettings._iDisplayLength; obj.PageNo = oSettings._iDisplayStart;*/
             $.ajax({
                 type: "POST", url: sSource, async: true, contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
                 success: function (data) {
-                    var dtOption = { sEcho: data.sEcho, recordsTotal: data.recordsTotal, recordsFiltered: data.recordsFiltered, iTotalRecords: data.iTotalRecords, iTotalDisplayRecords: data.iTotalDisplayRecords, aaData: JSON.parse(data.aaData) };
+                    var dtOption = { aaData: JSON.parse(data.aaData) };
+
                     return fnCallback(dtOption);
 
                 },

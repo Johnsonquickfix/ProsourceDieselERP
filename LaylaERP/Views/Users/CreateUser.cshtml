@@ -706,9 +706,12 @@
             if (obj.length > 0)
                 address = obj[0].long_name;
             obj = place.address_components.filter(element => element.types[0] == 'route');
-            if (obj.length > 0)
+            if (obj.length > 0) {
                 address = address + ' ' + obj[0].long_name;
-            $("#txtAddress").val(address);
+                $("#txtAddress").val(address);
+            }
+            else
+                $("#txtAddress").prop('disabled', false);
             obj = place.address_components.filter(element => element.types[0] == 'locality');
             if (obj.length > 0)
                 $("#txtCity").val(obj[0].long_name);

@@ -109,7 +109,7 @@ namespace LaylaERP.BAL
 
                 string strSql = "Select distinct  p.fk_purchase id,(select ref from commerce_purchase_order where rowid = p.fk_purchase) ref,(select fk_projet from commerce_purchase_order where rowid = p.fk_purchase) fk_projet,v.SalesRepresentative request_author,v.name vendor_name,v.address,v.town,v.fk_country,v.fk_state,v.zip,v.phone,DATE_FORMAT(p.date_livraison, '%m/%d/%Y') date_livraison, s.Status from commerce_purchase_receive_order p "
              + "inner join wp_vendor v on p.fk_supplier = v.rowid "
-             + "inner join wp_StatusMaster s on p.fk_status = s.ID where p.fk_status= 5 and 1 = 1";
+             + "inner join wp_StatusMaster s on p.fk_status = s.ID where p.fk_status in (5,6) and 1 = 1";
 
                 strSql += strWhr + string.Format(" order by p.fk_purchase desc");
                 dt = SQLHelper.ExecuteDataTable(strSql);
@@ -141,7 +141,7 @@ namespace LaylaERP.BAL
 
                 string strSql = "Select p.fk_purchase id,p.rowid RicD,p.ref refordervendor,sum(recqty) Quenty,group_concat(' ',description,' (*',recqty,')') des,DATE_FORMAT(p.date_creation,'%m/%d/%Y %h:%i %p') dtcration,DATE_FORMAT(p.date_creation,'%m/%d/%Y %H:%i') date_creation, FORMAT(p.total_ttc,2) total_ttc ,"
                                      + " (select FORMAT(ifnull(sum(amount),0),2) from erp_payment_invoice where fk_invoice=p.rowid and  type = 'PR') recieved, FORMAT(ifnull(p.total_ttc - (select ifnull(sum(amount), 0) from erp_payment_invoice epi  where fk_invoice = p.rowid and  type = 'PR'),0) ,2)  remaining from commerce_purchase_receive_order p"
-                                      + " inner join commerce_purchase_receive_order_detail pr on pr.fk_purchase_re = p.rowid where p.fk_purchase = @ref and fk_product > 0 and p.fk_status= 5 and 1 = 1 ";
+                                      + " inner join commerce_purchase_receive_order_detail pr on pr.fk_purchase_re = p.rowid where p.fk_purchase = @ref and fk_product > 0 and p.fk_status in (5,6) and 1 = 1 ";
 
                 strSql += strWhr + string.Format("group by  p.ref order by p.rowid desc");
 
@@ -165,7 +165,7 @@ namespace LaylaERP.BAL
                 //                + "   left outer join erp_payment_invoice epi on epi.fk_invoice = cpo.rowid and type = 'PR'"
                 //                + "  where cpo.rowid in (" + id + ");";
 
-                string strSql = "select rowid,ref,ref_ext,ref_supplier,fk_supplier, fk_warehouse from commerce_purchase_order where rowid in (" + id + "); select cpo.rowid,ref ref_ext,DATE_FORMAT(date_creation,'%m/%d/%Y') date_creation,DATE_FORMAT(date_livraison,'%m/%d/%Y') date_livraison,total_ttc,(select ifnull(sum(amount),0) from erp_payment_invoice where fk_invoice=cpo.rowid and  type = 'PR') recieved,ifnull(total_ttc-(select ifnull(sum(amount),0) from erp_payment_invoice where fk_invoice=cpo.rowid and  type = 'PR'),0) remaining "
+                string strSql = "select rowid,ref,ref_ext,ref_supplier,fk_supplier, fk_warehouse from commerce_purchase_order where rowid in (" + id + "); select cpo.rowid,concat(cpo.ref, ' (' , (select ref from commerce_purchase_order where rowid = cpo.fk_purchase ),')')  ref_ext,DATE_FORMAT(date_creation,'%m/%d/%Y') date_creation,DATE_FORMAT(date_livraison,'%m/%d/%Y') date_livraison,total_ttc,(select ifnull(sum(amount),0) from erp_payment_invoice where fk_invoice=cpo.rowid and  type = 'PR') recieved,ifnull(total_ttc-(select ifnull(sum(amount),0) from erp_payment_invoice where fk_invoice=cpo.rowid and  type = 'PR'),0) remaining "
                             + "  from commerce_purchase_receive_order cpo"
                             + "  where cpo.rowid in ( select distinct fk_purchase_re from commerce_purchase_receive_order_detail where fk_purchase in (" + id + "));";
                 ds = SQLHelper.ExecuteDataSet(strSql, para);
@@ -221,7 +221,8 @@ namespace LaylaERP.BAL
             {
                 //string str_oiid = string.Join(",", model.PurchaseOrderProducts.Select(x => x.rowid.ToString()).ToArray());
                 string strsql = "";
-                string strsqlins = "";
+                string strsqlaccount = "";
+                string strsqlins = "";                
                 StringBuilder strupdate = new StringBuilder();
                 DateTime cDate = CommonDate.CurrentDate(), cUTFDate = CommonDate.UtcDate();
                 string strPOYearMonth = cDate.ToString("yyMM").PadRight(4);
@@ -238,8 +239,18 @@ namespace LaylaERP.BAL
                     strsql += "insert into erp_payment_invoice(fk_payment,fk_invoice,amount,type) ";
                     strsql += string.Format(" select '{0}','{1}','{2}','{3}';",
                         model.rowid, obj.rowid, obj.payamount, obj.type);
+                    //if (obj.type == "PO")
+                    //{
+                    //    strsql += "insert into erp_accounting_bookkeeping (entity,inv_num,doc_date,doc_type,doc_ref,PO_SO_ref,fk_doc,fk_docdet,thirdparty_code,subledger_account,subledger_label,inv_complete,label_complete,debit,credit,invtotal,senstag,fk_user_author,date_creation,code_journal,journal_label,fk_bank)"
+                    //                  + " select 1,rowid,'" + cDate.ToString("yyyy-MM-dd HH:mm:ss") + "','PY',ref_ext,ref,1,0,ref_supplier,'5010',(select concat(name,' (',name_alias,')')  from wp_vendor where VendorStatus=1  and rowid = cpo.fk_supplier) vname,'5010','Product Cost',format("+ obj.payamount + ",2),'0.00',"+ obj.payamount + ",'D','1','" + cDate.ToString("yyyy-MM-dd HH:mm:ss") + "','AC','Purchase journal',"+ model.fk_bank + " from commerce_purchase_order cpo where rowid = " + obj.rowid + "";
+                    //}
+                    //else
+                    //{
+
+                    //}
                 }
                 SQLHelper.ExecuteNonQueryWithTrans(strsql);
+
            
                 result = model.rowid;
             }

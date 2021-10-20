@@ -2,7 +2,7 @@
     var urid = $("#ddlSearchStatus").val();
     var ID = $("#hfid").val();
     var table_EL = $('#JournalListdata').DataTable({
-        columnDefs: [{ "orderable": true, "targets": 1 }, { 'visible': true, 'targets': [0] }], order: [[0, "desc"]],
+        columnDefs: [{ "orderable": true, "targets": 1 }, { 'visible': true, 'targets': [0] }], order: [[0, "asc"]],
         destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: false, searching: true,
         responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
         language: {
@@ -20,12 +20,12 @@
                 if (code == 13) { table_EL.search(this.value).draw(); }
             });
         },
-        sAjaxSource: "/Accounting/AccountJournalList",
+        sAjaxSource: "/Accounting/AccountLedgerList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
             aoData.push({ name: "strValue1", value: urid });
             var col = 'id';
             if (oSettings.aaSorting.length >= 0) {
-                var col = oSettings.aaSorting[0][0] == 0 ? "id" : oSettings.aaSorting[0][0] == 1 ? "code_journal" : oSettings.aaSorting[0][0] == 2 ? "debit" : "id";
+                var col = oSettings.aaSorting[0][0] == 0 ? "inv_complete" : oSettings.aaSorting[0][0] == 1 ? "code_journal" : oSettings.aaSorting[0][0] == 2 ? "datecreation" : oSettings.aaSorting[0][0] == 3 ? "name" : oSettings.aaSorting[0][0] == 4 ? "label_operation" : oSettings.aaSorting[0][0] == 5 ? "debit" : "id";
                 aoData.push({ name: "sSortColName", value: col });
             }
             oSettings.jqXHR = $.ajax({
@@ -37,10 +37,10 @@
             });
         },
         aoColumns: [
-            { data: 'id', title: 'Id', sWidth: "5%" },
+            { data: 'inv_complete', title: 'Account number', sWidth: "5%" },
             { data: 'code_journal', title: 'Journal', sWidth: "5%" },
             { data: 'datecreation', title: 'Date', sWidth: "10%" },
-            { data: 'name', title: 'Third party name', sWidth: "10%" },
+            { data: 'name', title: 'Vendor name', sWidth: "10%" },
             { data: 'label_operation', title: 'Label', sWidth: "10%" },
             { data: 'debit', title: 'Debit', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
             { data: 'credit', title: 'Credit', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },

@@ -198,9 +198,15 @@
         // $("#txtCity").change(function () { setTimeout(function () { NewOrderNo(); }, 50); CustomerAddress(); return false; });
 
         $(document).on('change', "#txtCountry", function () {
-            $("#txtAddress").prop('disabled', false);
+            $("#txtAddress").removeAttr("disabled");
            // $('#txtState').empty();
         })
+
+        $("#txtphone").click(function () {
+            //alert('123');
+            console.log(5555);
+            $("#txtAddress").removeAttr("disabled");
+        });
 
         $("#txtState").select2({
             //allowClear: true, minimumInputLength: 3, placeholder: "Search State",

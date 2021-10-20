@@ -198,6 +198,7 @@
         // $("#txtCity").change(function () { setTimeout(function () { NewOrderNo(); }, 50); CustomerAddress(); return false; });
 
         $(document).on('change', "#txtCountry", function () {
+            $("#txtAddress").prop('disabled', false);
            // $('#txtState').empty();
         })
 
@@ -712,6 +713,7 @@
             }
             else
                 $("#txtAddress").prop('disabled', false);
+
             obj = place.address_components.filter(element => element.types[0] == 'locality');
             if (obj.length > 0)
                 $("#txtCity").val(obj[0].long_name);

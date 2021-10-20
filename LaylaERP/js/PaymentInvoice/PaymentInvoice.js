@@ -23,10 +23,10 @@
             PoPartiallyColleps(true);
     });
     //PartiallyGrid(true);
-    
     PoPartiallyColleps(true);
-    $('#dtdataPartially').show();
-    $('#divpodata').hide();
+    PurchaseOrderGrid(true);
+    $('#divprdata').hide();
+    $('#divpodata').show();
 
     $(document).on('click', "#btnChange", function () {
         let type = $('#ddlStatus').val();
@@ -42,6 +42,7 @@
 
     // Add event listener for opening and closing details
     $('#dtdataPartially tbody').on('click', '.pdetails-control', function () {
+       // console.log('svvvd');
         var tr = $(this).closest('tr');
         var row = $('#dtdataPartially').DataTable().row(tr);
         if (row.child.isShown()) {
@@ -65,11 +66,13 @@ $('#ddlStatus').change(function () {
         $('#divprdata').hide();
         $('#divpodata').show();
         PurchaseOrderGrid(true);
+      //  console.log('dvvs');
     }
     else {
         $('#divprdata').show();
         $('#divpodata').hide();
         PoPartiallyColleps(true);
+        //console.log('ds');
     }
 
 });

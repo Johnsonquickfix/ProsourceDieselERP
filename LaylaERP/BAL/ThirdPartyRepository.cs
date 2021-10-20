@@ -1110,5 +1110,66 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
+
+        public static DataTable TotalPurcheseOrderReceived(long id)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                string strSQl = "SELECT format(coalesce(sum(total_ttc),0),2) as received FROM commerce_purchase_receive_order where fk_supplier=" + id + "";
+                dt = SQLHelper.ExecuteDataTable(strSQl);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static DataTable TotalPurcheseOrder(long id)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                string strSQl = "SELECT format(coalesce(sum(total_ttc),0),2) as PO from commerce_purchase_order where fk_supplier = " + id + "";
+                dt = SQLHelper.ExecuteDataTable(strSQl);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static DataTable TotalInvoiceOrder(long id)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                string strSQl = "SELECT format(coalesce(sum(total_ttc),0),2) as invoice from commerce_purchase_order where fk_supplier = " + id + " and fk_status=3 ";
+                dt = SQLHelper.ExecuteDataTable(strSQl);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static DataTable BalanceList(string vendorcode)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                string strSql = "SELECT format(COALESCE(sum(case when senstag = 'C' then credit end), 0),2) credit, format(COALESCE(sum(case when senstag = 'D' then debit end), 0),2) debit, format((COALESCE(sum(CASE WHEN senstag = 'C' then credit end), 0) + invtotal) - (invtotal - COALESCE(sum(CASE WHEN senstag = 'D' then credit end), 0)),2) as balance FROM erp_accounting_bookkeeping where thirdparty_code='"+ vendorcode + "'";
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dt = ds.Tables[0];
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
     }
 }

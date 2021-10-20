@@ -37,8 +37,10 @@
                 <li><a href="#tab_7" data-toggle="tab"><span title="Vendor Payment method" data-toggle="tooltip">Payments</span></a></li>
                 <li><a href="#tab_8" data-toggle="tab"><span title="Vendor Products & Services" data-placement="bottom" data-toggle="tooltip">Products & Services</span></a></li>
                 <li><a href="#tab_9" data-toggle="tab"><span title="Vendor Purchase/Invoices" data-toggle="tooltip">Invoices</span></a></li>
+                <li><a href="#tab_12" data-toggle="tab"><span title="Vendor Purchase Information" data-toggle="tooltip">Purchase Information</span></a></li>
                 <li><a href="#tab_10" data-toggle="tab"><span title="Vendor Linked Warehouses" data-placement="bottom" data-toggle="tooltip">Warehouses</span></a></li>
                 <li><a href="#tab_11" data-toggle="tab"><span title="Vendor Linked Files" data-toggle="tooltip">Linked Files</span></a></li>
+
             </ul>
             <div class="tab-content">
                 <div class="tab-pane active" id="tab_1">
@@ -1051,6 +1053,48 @@
                         </div>
                     </div>
                 </div>
+                <div class="tab-pane" id="tab_12">
+                    <div id="linkInvoice">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <span class="form-control">Received Bill</span><h3 id="receivebill" class="col-sm-2">$@ViewBag.purchaseorder_received</h3>
+                            </div>
+                            <div class="col-md-2">
+                                <span class="form-control">Purchase Order</span><h3 id="purchaseorder" class="col-sm-2">$@ViewBag.purchaseorder</h3>
+                            </div>
+                            <div class="col-md-2">
+                                <span class="form-control">Purchase Invoice</span><h3 id="invoiceorder" class="col-sm-2">$@ViewBag.invoiceorder</h3>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="box box-primary">
+                                    <div class="box-header">
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <table id="GetBalance" class="inventory-table table-blue table check-table table-bordered table-striped dataTable" style="width:100%;">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Credit</th>
+                                                            <th>Debit</th>
+                                                        </tr>
+                                                    </thead>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box-footer">
+                            <div class="text-right">
+                                <button type="button" id="btnNextTab9" class="btn btn-danger ">Next</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
                 <div class="tab-pane" id="tab_10">
                     <div id="linkWarehouse">
                         <div class="row">

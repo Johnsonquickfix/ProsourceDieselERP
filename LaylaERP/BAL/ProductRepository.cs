@@ -2286,19 +2286,20 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "sp_ProductCategoryByPara;";
+                //string strSql = "sp_ProductCategoryByPara;";
+                string strSQl = "sp_ProductCategoryByPara";
+                dt = SQLHelper.ExecuteDataTable(strSQl);
+               // MySqlParameter[] para =
+               //{
+               //     new MySqlParameter("?pagesize", pagesize.ToString()),
+               //     new MySqlParameter("?pageno", pageno),
+               //     new MySqlParameter("?searchid", searchid is null ? "" : searchid),
+               // };
 
-                MySqlParameter[] para =
-               {
-                    new MySqlParameter("@pagesize", pagesize.ToString()),
-                    new MySqlParameter("@pageno", pageno),
-                    new MySqlParameter("@searchid", searchid is null ? "" : searchid),
-                };
-
-                DataSet ds = SQLHelper.ExecuteDataSet(strSql, para);
-                dt = ds.Tables[0];
-                if (ds.Tables[1].Rows.Count > 0)
-                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+               // DataSet ds = SQLHelper.ExecuteDataSet(strSql, para);
+               // dt = ds.Tables[0];
+               // if (ds.Tables[1].Rows.Count > 0)
+               //     totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
             }
             catch (Exception ex)
             {
@@ -2389,16 +2390,22 @@ namespace LaylaERP.BAL
             try
             {
                 string strsql = "";
-                strsql = "Insert into wp_posts(post_author,post_title,post_status,comment_status,ping_status,post_name,guid,post_type,post_mime_type,post_date,post_date_gmt,post_modified,post_modified_gmt) " +
-                    "values(@post_author, @post_title, @post_status, @comment_status, @ping_status, @post_name, @guid, @post_type, @post_mime_type,current_timestamp(),current_timestamp(),current_timestamp(),current_timestamp()); SELECT LAST_INSERT_ID();";
+                strsql = "Insert into wp_posts(post_author,post_content,post_title,post_excerpt,post_status,comment_status,ping_status,post_name,to_ping,pinged,guid,post_type,post_mime_type,post_date,post_date_gmt,post_content_filtered,post_modified,post_modified_gmt) " +
+                    "values(@post_author,@post_content, @post_title,@post_excerpt, @post_status, @comment_status, @ping_status, @post_name,@to_ping,pinged, @guid, @post_type, @post_mime_type,current_timestamp(),current_timestamp(),@post_content_filtered,current_timestamp(),current_timestamp()); SELECT LAST_INSERT_ID();";
                 MySqlParameter[] para =
                {
                     new MySqlParameter("@post_author", "8"),
+                    new MySqlParameter("@post_content", ""),
                     new MySqlParameter("@post_title", FileName=="" ? "default.png" : FileName),
+                    new MySqlParameter("@post_excerpt", ""),
                     new MySqlParameter("@post_status", "inherit"),
                     new MySqlParameter("@comment_status", "closed"),
                     new MySqlParameter("@ping_status", "closed"),
                     new MySqlParameter("@post_name", FileName=="" ? "default.png" : FileName),
+                    new MySqlParameter("@to_ping", ""),
+                    new MySqlParameter("@pinged", ""),
+                    new MySqlParameter("@post_content_filtered", ""),
+
                     new MySqlParameter("@post_type", "product_cat"),
                     new MySqlParameter("@post_mime_type", FileType),
                     new MySqlParameter("@guid", FileName=="" ? "default.png" : FileName),

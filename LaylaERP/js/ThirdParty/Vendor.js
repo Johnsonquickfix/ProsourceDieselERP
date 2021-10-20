@@ -1586,6 +1586,36 @@ function orderStatus() {
     }
 }
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Purchase Information~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+setTimeout(function () { VendorBookkipping(); }, 10000);
+function VendorBookkipping() {
+    var vendor_code = $("#txtVendorCode").val();
+    console.log(vendor_code);
+    var obj = { vendorcode: vendor_code }
+    $.ajax({
+        url: '/ThirdParty/BalanceList',
+        method: 'post',
+        datatype: 'json',
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(obj),
+        processing: true,
+        success: function (data) {
+            $('#GetBalance').dataTable({
+                destroy: true,
+                scrollX: false,
+                data: JSON.parse(data),
+                "columns": [
+                    { data: 'credit', title: 'Credit', sWidth: "5%" },
+                    { data: 'debit', title: 'Debit', sWidth: "10%" },
+                ],
+                "order": [[0, 'desc']],
+            });
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            alert(xhr.responseText);
+        }
+    });
 
+}
 
 

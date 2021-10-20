@@ -84,7 +84,7 @@ function ChangePermission(id, addid, editid, deleteid,flag) {
         },
         success: function (data) {
             if (data.status == true) {
-                swal('Alert!', data.message, 'success');
+                swal('Success!', data.message, 'success');
             }
             else {
                 swal('Alert!', data.message, 'error')
@@ -107,7 +107,7 @@ $("#userrole").change(function () {
 $('#btnSaveRole').click(function () {
     var role = $('#txtRoleName').val();
     if (role == "") {
-        swal("alert", "Please enter role name", "error").then(function () { swal.close(); $('#txtRoleName').focus(); })
+        swal("Alert", "Please enter role name", "error").then(function () { swal.close(); $('#txtRoleName').focus(); })
     }
     else {
         var obj = { User_Type: role }
@@ -117,14 +117,14 @@ $('#btnSaveRole').click(function () {
             data: JSON.stringify(obj),
             dataType: "json",
             success: function (data) {
-                swal("alert", data.message, "success");
+                swal("Success!", data.message, "success");
                 $("#roleModal").modal('hide');
                 GetRoles();
                 CopyRoles();
                 //parent.location.reload();
             },
             error: function () {
-                swal("alert", "something went wrong", "error");
+                swal("Alert", "something went wrong", "error");
                 $("#roleModal").modal('hide');
             }
         })
@@ -148,7 +148,7 @@ $('#btnCopyRole').click(function () {
                 $("#loader").show();
             },
             success: function (data) {
-                swal("alert", data.message, "success");
+                swal("Success!", data.message, "success");
                 fillCheckMenu();
             },
             complete: function () {

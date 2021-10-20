@@ -40,7 +40,7 @@
             { data: 'inv_complete', title: 'Account number', sWidth: "5%" },
             { data: 'code_journal', title: 'Journal', sWidth: "5%" },
             { data: 'datecreation', title: 'Date', sWidth: "10%" },
-            { data: 'name', title: 'Third party name', sWidth: "10%" },
+            { data: 'name', title: 'Vendor name', sWidth: "10%" },
             { data: 'label_operation', title: 'Label', sWidth: "10%" },
             { data: 'debit', title: 'Debit', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
             { data: 'credit', title: 'Credit', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },

@@ -20,7 +20,7 @@
                 if (code == 13) { table_EL.search(this.value).draw(); }
             });
         },
-        sAjaxSource: "/Accounting/AccountLedgerList",
+        sAjaxSource: "/Accounting/AccountJournalList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
             aoData.push({ name: "strValue1", value: urid });
             var col = 'id';

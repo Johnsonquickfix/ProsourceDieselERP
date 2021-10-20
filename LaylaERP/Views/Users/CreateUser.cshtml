@@ -198,15 +198,9 @@
         // $("#txtCity").change(function () { setTimeout(function () { NewOrderNo(); }, 50); CustomerAddress(); return false; });
 
         $(document).on('change', "#txtCountry", function () {
-            $("#txtAddress").removeAttr("disabled");
+           // $("#txtAddress").removeAttr("disabled");
            // $('#txtState').empty();
         })
-
-        $("#txtphone").click(function () {
-            //alert('123');
-            console.log(5555);
-            $("#txtAddress").removeAttr("disabled");
-        });
 
         $("#txtState").select2({
             //allowClear: true, minimumInputLength: 3, placeholder: "Search State",
@@ -407,6 +401,12 @@
 
 
     });
+
+    $("#txtphone").click(function () {
+        console.log(5555);
+        $("#txtAddress").removeAttr("disabled");
+    });
+
     $("#txtPassword").change(function () {
         $('#result').html(passwordStrength($('#txtPassword').val(), ""))
         result = $('#result').html();
@@ -472,7 +472,7 @@
     //});
 
     function AddCustomer() {
-        debugger
+        //debugger
         var ImageURL;
         var canvas = document.createElement('canvas');
         var objimg = document.getElementById('show_picture');

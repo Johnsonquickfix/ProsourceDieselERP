@@ -65,7 +65,7 @@ namespace LaylaERP.Controllers
                         else
                             str += "<LastModified></LastModified>";
                         //str += "<LastModified>'.gmdate("m / d / Y H: i", strtotime($each_order->post_modified) - $tz_offset).'</LastModified>";
-                        str += "<ShippingMethod><![CDATA[USPSPriorityMail]]></ShippingMethod>";
+                        //str += "<ShippingMethod><![CDATA[USPSPriorityMail]]></ShippingMethod>";
                         str += "<PaymentMethod><![CDATA[" + DR["pm_title"].ToString() + "]]></PaymentMethod>";
                         str += "<CustomerNotes><![CDATA[" + "" + "]]></CustomerNotes>";
                         //str += "<CustomerNotes><![CDATA['.strip_tags($order->customer_note).']]></CustomerNotes>'; 

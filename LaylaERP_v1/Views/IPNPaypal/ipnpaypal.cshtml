@@ -1,0 +1,51 @@
+﻿
+@{
+    ViewBag.Title = "IPN Paypal";
+    Layout = null;
+    //Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+}
+<script src="~/Content/AdminLTE-3.1.0/jquery/jquery.min.js"></script>
+<script type="text/javascript">
+    //$(document).ready(function () {
+    //    doPost();
+    //});
+    //function doPost() {
+    //    $.post("/IPNPaypal/Receive", function (data) { console.log(data) });
+    //}
+    //function doPost(e) {
+    //    var isProduction = false;
+
+    //    var strSimulator = "https://ipnpb.sandbox.paypal.com/cgi-bin/webscr";
+    //    var strLive = "https://ipnpb.paypal.com/cgi-bin/webscr";
+    //    var paypalURL = strSimulator;
+
+    //    if (isProduction) paypalURL = strLive;
+
+    //    var payload = "cmd=_notify-validate&" + e.postData.contents;
+
+    //    var options = { "method": "post", "payload": payload, };
+
+    //    var resp = UrlFetchApp.fetch(paypalURL, options); //Handshake with PayPal - send acknowledgement and get VERIFIED or INVALID response
+    //    console.log(paypalURL, options);
+    //    if (resp == 'VERIFIED') {
+    //        if (e.parameter.payment_status == 'Completed') {
+    //            //Implement paid amount validation. If accepting payments in multiple currencies, use e.parameter.exchange_rate to convert to reference currency (USD) if paid in any other currency
+    //            if (amountValid) {
+
+    //                //All validated - can process the payment here
+
+    //                if (!(processSuccess)) {
+    //                    //Process of payment failed - raise notification to check it out
+    //                }
+    //            } else {
+    //                //Payment does not equal expected purchase value
+    //            }
+
+    //        } else {
+    //            //Payment status not Completed
+    //        }
+    //    } else {
+    //        //PayPal response INVALID
+    //    }
+    //}
+</script>

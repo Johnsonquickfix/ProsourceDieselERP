@@ -1,0 +1,2405 @@
+﻿/**
+ Core script to handle the entire theme and core functions
+ **/
+var App = function () {
+
+    // IE mode
+    var isRTL = false;
+    var isIE8 = false;
+    var isIE9 = false;
+    var isIE10 = false;
+
+    var resizeHandlers = [];
+
+    var basePath = '../content/superui/';
+
+    var globalImgPath = 'global/img/';
+
+    var globalPluginsPath = 'base/plugins/';
+
+    var globalCssPath = 'global/css/';
+
+    // theme layout color set
+
+    var brandColors = {
+        'blue': '#89C4F4',
+        'red': '#F3565D',
+        'green': '#1bbc9b',
+        'purple': '#9b59b6',
+        'grey': '#95a5a6',
+        'yellow': '#F8CB00',
+        'lightblue': '364150'
+    };
+
+    // initializes main settings
+    var handleInit = function () {
+
+        if ($('body').css('direction') === 'rtl') {
+            isRTL = true;
+        }
+
+        isIE8 = !!navigator.userAgent.match(/MSIE 8.0/);
+        isIE9 = !!navigator.userAgent.match(/MSIE 9.0/);
+        isIE10 = !!navigator.userAgent.match(/MSIE 10.0/);
+
+        if (isIE10) {
+            $('html').addClass('ie10'); // detect IE10 version
+        }
+
+        if (isIE10 || isIE9 || isIE8) {
+            $('html').addClass('ie'); // detect IE10 version
+        }
+    };
+
+    // runs callback functions set by App.addResponsiveHandler().
+    var _runResizeHandlers = function () {
+        // reinitialize other subscribed elements
+        for (var i = 0; i < resizeHandlers.length; i++) {
+            var each = resizeHandlers[i];
+            each.call();
+        }
+    };
+
+    //Initialize the iframe content page height
+    var handleIframeContent = function () {
+        var ht = $(window).height();//Get the overall height of the browser window；
+
+        var $footer = $(".main-footer");
+        var $header = $(".main-header");
+        var $tabs = $(".content-tabs");
+
+        var height = App.getViewPort().height - $footer.outerHeight() - $header.outerHeight();
+        if ($tabs.is(":visible")) {
+            height = height - $tabs.outerHeight();
+        }
+
+        $(".tab_iframe").css({
+            height: height,
+            width: "100%"
+        });
+
+        //var width = App.getViewPort().width- $(".page-sidebar-menu").width();
+        /*$(".tab_iframe").css({
+         });*/
+    };
+    //Initialize the content page layout component height
+    var handleIframeLayoutHeight = function () {
+
+        var height = App.getViewPort().height - $('.page-footer').outerHeight() - $('.page-header').outerHeight() - $(".content-tabs").height();
+        // $("#layout").css({ "height": height });
+        return height;
+    };
+
+    var handleSiderBarmenu = function () {
+        jQuery('.page-sidebar-menu').on('click', ' li > a.iframeOpen', function (e) {
+            e.preventDefault();
+            App.scrollTop();
+            $("#iframe-main").attr("src", $(this).attr('href'));
+        });
+    };
+
+    var isFullScreen = false;
+
+    var requestFullScreen = function () {
+        var de = document.documentElement;
+
+        if (de.requestFullscreen) {
+            de.requestFullscreen();
+        } else if (de.mozRequestFullScreen) {
+            de.mozRequestFullScreen();
+        } else if (de.webkitRequestFullScreen) {
+            de.webkitRequestFullScreen();
+        }
+        else {
+            App.alert({ message: "The browser does not support full screen！", type: "danger" });
+        }
+
+    };
+
+    var requestFullScreen2 = function (element) {
+        // Judge various browsers and find the right way
+        var requestMethod = element.requestFullScreen || //W3C
+            element.webkitRequestFullScreen ||    //Chrome, etc.
+            element.mozRequestFullScreen || //FireFox
+            element.msRequestFullScreen; //IE11
+        if (requestMethod) {
+            requestMethod.call(element);
+        }
+        else if (typeof window.ActiveXObject !== "undefined") {//for Internet Explorer
+            var wscript = new ActiveXObject("WScript.Shell");
+            if (wscript !== null) {
+                wscript.SendKeys("{F11}");
+            }
+        }
+    };
+
+    //Exit full screen to determine the browser type
+    var exitFull = function () {
+        // Judge various browsers and find the right way
+        var exitMethod = document.exitFullscreen || //W3C
+            document.mozCancelFullScreen ||    //Chrome etc.
+            document.webkitExitFullscreen || //FireFox
+            document.webkitExitFullscreen; //IE11
+        if (exitMethod) {
+            exitMethod.call(document);
+        }
+        else if (typeof window.ActiveXObject !== "undefined") {//for Internet Explorer
+            var wscript = new ActiveXObject("WScript.Shell");
+            if (wscript !== null) {
+                wscript.SendKeys("{F11}");
+            }
+        }
+    };
+
+    // handle the layout reinitialization on window resize
+    var handleOnResize = function () {
+        var resize;
+        if (isIE8) {
+            var currheight;
+            $(window).resize(function () {
+                if (currheight == document.documentElement.clientHeight) {
+                    return; //quite event since only body resized not window.
+                }
+                if (resize) {
+                    clearTimeout(resize);
+                }
+                resize = setTimeout(function () {
+                    _runResizeHandlers();
+                    handleIframeContent();
+                }, 50); // wait 50ms until window resize finishes.                
+                currheight = document.documentElement.clientHeight; // store last body client height
+            });
+        } else {
+            $(window).resize(function () {
+                if (resize) {
+                    clearTimeout(resize);
+                }
+                resize = setTimeout(function () {
+                    _runResizeHandlers();
+                    handleIframeContent();
+                }, 50); // wait 50ms until window resize finishes.
+            });
+        }
+    };
+
+    // Handles portlet tools & actions
+    var handlePortletTools = function () {
+        // handle portlet remove
+        $('body').on('click', '.portlet > .portlet-title > .tools > a.remove', function (e) {
+            e.preventDefault();
+            var portlet = $(this).closest(".portlet");
+
+            if ($('body').hasClass('page-portlet-fullscreen')) {
+                $('body').removeClass('page-portlet-fullscreen');
+            }
+
+            portlet.find('.portlet-title .fullscreen').tooltip('destroy');
+            portlet.find('.portlet-title > .tools > .reload').tooltip('destroy');
+            portlet.find('.portlet-title > .tools > .remove').tooltip('destroy');
+            portlet.find('.portlet-title > .tools > .config').tooltip('destroy');
+            portlet.find('.portlet-title > .tools > .collapse, .portlet > .portlet-title > .tools > .expand').tooltip('destroy');
+
+            portlet.remove();
+        });
+
+        // handle portlet fullscreen
+        $('body').on('click', '.portlet > .portlet-title .fullscreen', function (e) {
+            e.preventDefault();
+            var portlet = $(this).closest(".portlet");
+            if (portlet.hasClass('portlet-fullscreen')) {
+                $(this).removeClass('on');
+                portlet.removeClass('portlet-fullscreen');
+                $('body').removeClass('page-portlet-fullscreen');
+                portlet.children('.portlet-body').css('height', 'auto');
+            } else {
+                var height = App.getViewPort().height -
+                    portlet.children('.portlet-title').outerHeight() -
+                    parseInt(portlet.children('.portlet-body').css('padding-top')) -
+                    parseInt(portlet.children('.portlet-body').css('padding-bottom'));
+
+                $(this).addClass('on');
+                portlet.addClass('portlet-fullscreen');
+                $('body').addClass('page-portlet-fullscreen');
+                portlet.children('.portlet-body').css('height', height);
+            }
+        });
+
+        $('body').on('click', '.portlet > .portlet-title > .tools > a.reload', function (e) {
+            e.preventDefault();
+            var el = $(this).closest(".portlet").children(".portlet-body");
+            var url = $(this).attr("data-url");
+            var error = $(this).attr("data-error-display");
+            if (url) {
+                App.blockUI({
+                    target: el,
+                    animate: true,
+                    overlayColor: 'none'
+                });
+                $.ajax({
+                    type: "GET",
+                    cache: false,
+                    url: url,
+                    dataType: "html",
+                    success: function (res) {
+                        App.unblockUI(el);
+                        el.html(res);
+                        App.initAjax() // reinitialize elements & plugins for newly loaded content
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        App.unblockUI(el);
+                        var msg = 'Error on reloading the content. Please check your connection and try again.';
+                        if (error == "toastr" && toastr) {
+                            toastr.error(msg);
+                        } else if (error == "notific8" && $.notific8) {
+                            $.notific8('zindex', 11500);
+                            $.notific8(msg, {
+                                theme: 'ruby',
+                                life: 3000
+                            });
+                        } else {
+                            alert(msg);
+                        }
+                    }
+                });
+            } else {
+                // for demo purpose
+                App.blockUI({
+                    target: el,
+                    animate: true,
+                    overlayColor: 'none'
+                });
+                window.setTimeout(function () {
+                    App.unblockUI(el);
+                }, 1000);
+            }
+        });
+
+        // load ajax data on page init
+        $('.portlet .portlet-title a.reload[data-load="true"]').click();
+
+        $('body').on('click', '.portlet > .portlet-title > .tools > .collapse, .portlet .portlet-title > .tools > .expand', function (e) {
+            e.preventDefault();
+            var el = $(this).closest(".portlet").children(".portlet-body");
+            if ($(this).hasClass("collapse")) {
+                $(this).removeClass("collapse").addClass("expand");
+                el.slideUp(200);
+            } else {
+                $(this).removeClass("expand").addClass("collapse");
+                el.slideDown(200);
+            }
+        });
+    };
+
+    // Handles custom checkboxes & radios using jQuery Uniform plugin
+    var handleUniform = function () {
+        if (!$().uniform) {
+            return;
+        }
+        var test = $("input[type=checkbox]:not(.toggle, .md-check, .md-radiobtn, .make-switch, .icheck), input[type=radio]:not(.toggle, .md-check, .md-radiobtn, .star, .make-switch, .icheck)");
+        if (test.size() > 0) {
+            test.each(function () {
+                if ($(this).parents(".checker").size() === 0) {
+                    $(this).show();
+                    $(this).uniform();
+                }
+            });
+        }
+    };
+
+    // Handlesmaterial design checkboxes
+    var handleMaterialDesign = function () {
+
+        // Material design ckeckbox and radio effects
+        $('body').on('click', '.md-checkbox > label, .md-radio > label', function () {
+            var the = $(this);
+            // find the first span which is our circle/bubble
+            var el = $(this).children('span:first-child');
+
+            // add the bubble class (we do this so it doesnt show on page load)
+            el.addClass('inc');
+
+            // clone it
+            var newone = el.clone(true);
+
+            // add the cloned version before our original
+            el.before(newone);
+
+            // remove the original so that it is ready to run on next click
+            $("." + el.attr("class") + ":last", the).remove();
+        });
+
+        if ($('body').hasClass('page-md')) {
+            // Material design click effect
+            // credit where credit's due; http://thecodeplayer.com/walkthrough/ripple-click-effect-google-material-design       
+            var element, circle, d, x, y;
+            $('body').on('click', 'a.btn, button.btn, input.btn, label.btn', function (e) {
+                element = $(this);
+
+                if (element.find(".md-click-circle").length == 0) {
+                    element.prepend("<span class='md-click-circle'></span>");
+                }
+
+                circle = element.find(".md-click-circle");
+                circle.removeClass("md-click-animate");
+
+                if (!circle.height() && !circle.width()) {
+                    d = Math.max(element.outerWidth(), element.outerHeight());
+                    circle.css({ height: d, width: d });
+                }
+
+                x = e.pageX - element.offset().left - circle.width() / 2;
+                y = e.pageY - element.offset().top - circle.height() / 2;
+
+                circle.css({ top: y + 'px', left: x + 'px' }).addClass("md-click-animate");
+
+                setTimeout(function () {
+                    circle.remove();
+                }, 1000);
+            });
+        }
+
+        // Floating labels
+        var handleInput = function (el) {
+            if (el.val() != "") {
+                el.addClass('edited');
+            } else {
+                el.removeClass('edited');
+            }
+        }
+
+        $('body').on('keydown', '.form-md-floating-label .form-control', function (e) {
+            handleInput($(this));
+        });
+        $('body').on('blur', '.form-md-floating-label .form-control', function (e) {
+            handleInput($(this));
+        });
+
+        $('.form-md-floating-label .form-control').each(function () {
+            if ($(this).val().length > 0) {
+                $(this).addClass('edited');
+            }
+        });
+    };
+
+    // Handles custom checkboxes & radios using jQuery iCheck plugin
+    var handleiCheck = function () {
+        if (!$().iCheck) {
+            return;
+        }
+
+        $('.icheck').each(function () {
+            var checkboxClass = $(this).attr('data-checkbox') ? $(this).attr('data-checkbox') : 'icheckbox_minimal-grey';
+            var radioClass = $(this).attr('data-radio') ? $(this).attr('data-radio') : 'iradio_minimal-grey';
+
+            if (checkboxClass.indexOf('_line') > -1 || radioClass.indexOf('_line') > -1) {
+                $(this).iCheck({
+                    checkboxClass: checkboxClass,
+                    radioClass: radioClass,
+                    insert: '<div class="icheck_line-icon"></div>' + $(this).attr("data-label")
+                });
+            } else {
+                $(this).iCheck({
+                    checkboxClass: checkboxClass,
+                    radioClass: radioClass
+                });
+            }
+        });
+    };
+
+    // Handles Bootstrap switches
+    var handleBootstrapSwitch = function () {
+        if (!$().bootstrapSwitch) {
+            return;
+        }
+        $('.make-switch').bootstrapSwitch();
+    };
+
+    // Handles Bootstrap confirmations
+    var handleBootstrapConfirmation = function () {
+        if (!$().confirmation) {
+            return;
+        }
+        $('[data-toggle=confirmation]').confirmation({
+            container: 'body',
+            btnOkClass: 'btn btn-sm btn-success',
+            btnCancelClass: 'btn btn-sm btn-danger'
+        });
+    };
+
+    // Handles Bootstrap Accordions.
+    var handleAccordions = function () {
+        $('body').on('shown.bs.collapse', '.accordion.scrollable', function (e) {
+            App.scrollTo($(e.target));
+        });
+    };
+
+    // Handles Bootstrap Tabs.
+    var handleTabs = function () {
+        //activate tab if tab id provided in the URL
+        if (location.hash) {
+            var tabid = encodeURI(location.hash.substr(1));
+            $('a[href="#' + tabid + '"]').parents('.tab-pane:hidden').each(function () {
+                var tabid = $(this).attr("id");
+                $('a[href="#' + tabid + '"]').click();
+            });
+            $('a[href="#' + tabid + '"]').click();
+        }
+
+        if ($().tabdrop) {
+            $('.tabbable-tabdrop .nav-pills, .tabbable-tabdrop .nav-tabs').tabdrop({
+                text: '<i class="fa fa-ellipsis-v"></i>&nbsp;<i class="fa fa-angle-down"></i>'
+            });
+        }
+    };
+
+    // Handles Bootstrap Modals.
+    var handleModals = function () {
+        // fix stackable modal issue: when 2 or more modals opened, closing one of modal will remove .modal-open class. 
+        $('body').on('hide.bs.modal', function () {
+            //if ($('.modal:visible').size() > 1 && $('html').hasClass('modal-open') === false) {
+            if ($('.modal:visible').length > 1 && $('html').hasClass('modal-open') === false) {
+                $('html').addClass('modal-open');
+                //} else if ($('.modal:visible').size() <= 1) {
+            } else if ($('.modal:visible').length <= 1) {
+                $('html').removeClass('modal-open');
+            }
+        });
+
+        // fix page scrollbars issue
+        $('body').on('show.bs.modal', '.modal', function () {
+            if ($(this).hasClass("modal-scroll")) {
+                $('body').addClass("modal-open-noscroll");
+            }
+        });
+
+        // fix page scrollbars issue
+        $('body').on('hide.bs.modal', '.modal', function () {
+            $('body').removeClass("modal-open-noscroll");
+        });
+
+        // remove ajax content and remove cache on modal closed 
+        $('body').on('hidden.bs.modal', '.modal:not(.modal-cached)', function () {
+            $(this).removeData('bs.modal');
+        });
+    };
+
+    // Handles Bootstrap Dropdowns
+    var handleDropdowns = function () {
+        /*
+         Hold dropdown on click
+         */
+        $('body').on('click', '.dropdown-menu.hold-on-click', function (e) {
+            e.stopPropagation();
+        });
+    };
+
+    // Handle textarea autosize 
+    var handleTextareaAutosize = function () {
+        if (typeof (autosize) == "function") {
+            autosize(document.querySelector('textarea.autosizeme'));
+        }
+    };
+
+    // Handles scrollable contents using jQuery SlimScroll plugin.
+    var handleScrollers = function () {
+        App.initSlimScroll('.scroller');
+    };
+
+    // Handles Image Preview using jQuery Fancybox plugin
+    var handleFancybox = function () {
+        if (!jQuery.fancybox) {
+            return;
+        }
+
+        if ($(".fancybox-button").size() > 0) {
+            $(".fancybox-button").fancybox({
+                groupAttr: 'data-rel',
+                prevEffect: 'none',
+                nextEffect: 'none',
+                closeBtn: true,
+                helpers: {
+                    title: {
+                        type: 'inside'
+                    }
+                }
+            });
+        }
+    };
+
+    // Handles counterup plugin wrapper
+    var handleCounterup = function () {
+        if (!$().counterUp) {
+            return;
+        }
+
+        $("[data-counter='counterup']").counterUp({
+            delay: 10,
+            time: 1000
+        });
+    };
+
+    // Fix input placeholder issue for IE8 and IE9
+    var handleFixInputPlaceholderForIE = function () {
+        //fix html5 placeholder attribute for ie7 & ie8
+        if (isIE8 || isIE9) { // ie8 & ie9
+            // this is html5 placeholder fix for inputs, inputs with placeholder-no-fix class will be skipped(e.g: we need this for password fields)
+            $('input[placeholder]:not(.placeholder-no-fix), textarea[placeholder]:not(.placeholder-no-fix)').each(function () {
+                var input = $(this);
+
+                if (input.val() === '' && input.attr("placeholder") !== '') {
+                    input.addClass("placeholder").val(input.attr('placeholder'));
+                }
+
+                input.focus(function () {
+                    if (input.val() == input.attr('placeholder')) {
+                        input.val('');
+                    }
+                });
+
+                input.blur(function () {
+                    if (input.val() === '' || input.val() == input.attr('placeholder')) {
+                        input.val(input.attr('placeholder'));
+                    }
+                });
+            });
+        }
+    };
+
+    // Handle Select2 Dropdowns
+    var handleSelect2 = function () {
+        if ($().select2) {
+            $.fn.select2.defaults.set("theme", "bootstrap");
+            $('.select2me').select2({
+                placeholder: "Select",
+                width: 'auto',
+                allowClear: true
+            });
+        }
+    };
+
+    // handle group element heights
+    var handleHeight = function () {
+        $('[data-auto-height]').each(function () {
+            var parent = $(this);
+            var items = $('[data-height]', parent);
+            var height = 0;
+            var mode = parent.attr('data-mode');
+            var offset = parseInt(parent.attr('data-offset') ? parent.attr('data-offset') : 0);
+
+            items.each(function () {
+                if ($(this).attr('data-height') == "height") {
+                    $(this).css('height', '');
+                } else {
+                    $(this).css('min-height', '');
+                }
+
+                var height_ = (mode == 'base-height' ? $(this).outerHeight() : $(this).outerHeight(true));
+                if (height_ > height) {
+                    height = height_;
+                }
+            });
+
+            height = height + offset;
+
+            items.each(function () {
+                if ($(this).attr('data-height') == "height") {
+                    $(this).css('height', height);
+                } else {
+                    $(this).css('min-height', height);
+                }
+            });
+
+            if (parent.attr('data-related')) {
+                $(parent.attr('data-related')).css('height', parent.height());
+            }
+        });
+    };
+
+    //* END:CORE HANDLERS *//
+
+    return {
+
+        //main function to initiate the theme
+        init: function () {
+            //IMPORTANT!!!: Do not modify the core handlers call order.
+
+            //Core handlers
+            handleInit(); // initialize core variables
+            handleOnResize(); // set and handle responsive    
+
+            //UI Component handlers     
+            handleMaterialDesign(); // handle material design       
+            handleUniform(); // hanfle custom radio & checkboxes
+            handleiCheck(); // handles custom icheck radio and checkboxes
+            handleBootstrapSwitch(); // handle bootstrap switch plugin
+            handleScrollers(); // handles slim scrolling contents 
+            handleFancybox(); // handle fancy box
+            handleSelect2(); // handle custom Select2 dropdowns
+            handlePortletTools(); // handles portlet action bar functionality(refresh, configure, toggle, remove)
+            handleDropdowns(); // handle dropdowns
+            handleTabs(); // handle tabs
+            handleAccordions(); //handles accordions 
+            handleModals(); // handle modals
+            handleBootstrapConfirmation(); // handle bootstrap confirmations
+            handleTextareaAutosize(); // handle autosize textareas
+            handleCounterup(); // handle counterup instances
+
+            handleSiderBarmenu();
+            //Handle group element heights
+            this.addResizeHandler(handleHeight); // handle auto calculating height on window resize
+
+            // Hacks
+            handleFixInputPlaceholderForIE(); //IE8 & IE9 input placeholder issue fix
+        },
+
+        //main function to initiate core javascript after ajax complete
+        initAjax: function () {
+            handleUniform(); // handles custom radio & checkboxes     
+            handleiCheck(); // handles custom icheck radio and checkboxes
+            handleBootstrapSwitch(); // handle bootstrap switch plugin
+            handleDropdownHover(); // handles dropdown hover       
+            handleScrollers(); // handles slim scrolling contents 
+            handleSelect2(); // handle custom Select2 dropdowns
+            handleFancybox(); // handle fancy box
+            handleDropdowns(); // handle dropdowns
+            handleAccordions(); //handles accordions 
+            handleBootstrapConfirmation(); // handle bootstrap confirmations
+        },
+        handleFullScreen: function () {
+            if (isFullScreen) {
+                exitFull();
+                isFullScreen = false;
+            } else {
+                requestFullScreen();
+                isFullScreen = true;
+            }
+        },
+        fixIframeTab: function () {
+            handleIframeContent();
+        },
+        getIframeLayoutHeight: function () {
+            return handleIframeLayoutHeight();
+        },
+        //init main components 
+        initComponents: function () {
+            this.initAjax();
+        },
+        fixIframeCotent: function () {
+            setTimeout(function () {
+                //_runResizeHandlers();
+                handleIframeContent();
+            }, 50);
+        },
+        //public function to remember last opened popover that needs to be closed on click
+        setLastPopedPopover: function (el) {
+            lastPopedPopover = el;
+        },
+
+        //public function to add callback a function which will be called on window resize
+        addResizeHandler: function (func) {
+            resizeHandlers.push(func);
+        },
+
+        //public functon to call _runresizeHandlers
+        runResizeHandlers: function () {
+            _runResizeHandlers();
+        },
+
+        // wrApper function to scroll(focus) to an element
+        scrollTo: function (el, offeset) {
+            var pos = (el && el.size() > 0) ? el.offset().top : 0;
+
+            if (el) {
+                if ($('body').hasClass('page-header-fixed')) {
+                    pos = pos - $('.page-header').height();
+                } else if ($('body').hasClass('page-header-top-fixed')) {
+                    pos = pos - $('.page-header-top').height();
+                } else if ($('body').hasClass('page-header-menu-fixed')) {
+                    pos = pos - $('.page-header-menu').height();
+                }
+                pos = pos + (offeset ? offeset : -1 * el.height());
+            }
+
+            $('html,body').animate({
+                scrollTop: pos
+            }, 'slow');
+        },
+
+        initSlimScroll: function (el) {
+            $(el).each(function () {
+                if ($(this).attr("data-initialized")) {
+                    return; // exit
+                }
+
+                var height;
+
+                if ($(this).attr("data-height")) {
+                    height = $(this).attr("data-height");
+                } else {
+                    height = $(this).css('height');
+                }
+
+                $(this).slimScroll({
+                    allowPageScroll: true, // allow page scroll when the element scroll is ended
+                    size: '7px',
+                    color: ($(this).attr("data-handle-color") ? $(this).attr("data-handle-color") : '#bbb'),
+                    wrapperClass: ($(this).attr("data-wrapper-class") ? $(this).attr("data-wrapper-class") : 'slimScrollDiv'),
+                    railColor: ($(this).attr("data-rail-color") ? $(this).attr("data-rail-color") : '#eaeaea'),
+                    position: isRTL ? 'left' : 'right',
+                    height: height,
+                    alwaysVisible: ($(this).attr("data-always-visible") == "1" ? true : false),
+                    railVisible: ($(this).attr("data-rail-visible") == "1" ? true : false),
+                    disableFadeOut: true
+                });
+
+                $(this).attr("data-initialized", "1");
+            });
+        },
+
+        destroySlimScroll: function (el) {
+            $(el).each(function () {
+                if ($(this).attr("data-initialized") === "1") { // destroy existing instance before updating the height
+                    $(this).removeAttr("data-initialized");
+                    $(this).removeAttr("style");
+
+                    var attrList = {};
+
+                    // store the custom attribures so later we will reassign.
+                    if ($(this).attr("data-handle-color")) {
+                        attrList["data-handle-color"] = $(this).attr("data-handle-color");
+                    }
+                    if ($(this).attr("data-wrapper-class")) {
+                        attrList["data-wrapper-class"] = $(this).attr("data-wrapper-class");
+                    }
+                    if ($(this).attr("data-rail-color")) {
+                        attrList["data-rail-color"] = $(this).attr("data-rail-color");
+                    }
+                    if ($(this).attr("data-always-visible")) {
+                        attrList["data-always-visible"] = $(this).attr("data-always-visible");
+                    }
+                    if ($(this).attr("data-rail-visible")) {
+                        attrList["data-rail-visible"] = $(this).attr("data-rail-visible");
+                    }
+
+                    $(this).slimScroll({
+                        wrapperClass: ($(this).attr("data-wrapper-class") ? $(this).attr("data-wrapper-class") : 'slimScrollDiv'),
+                        destroy: true
+                    });
+
+                    var the = $(this);
+
+                    // reassign custom attributes
+                    $.each(attrList, function (key, value) {
+                        the.attr(key, value);
+                    });
+
+                }
+            });
+        },
+
+        // function to scroll to the top
+        scrollTop: function () {
+            App.scrollTo();
+        },
+
+        // wrApper function to  block element(indicate loading)
+        blockUI: function (options) {
+            options = $.extend(true, {}, options);
+            var html = '';
+            if (options.animate) {
+                html = '<div class="loading-message ' + (options.boxed ? 'loading-message-boxed' : '') + '">' + '<div class="block-spinner-bar"><div class="bounce1"></div><div class="bounce2"></div><div class="bounce3"></div></div>' + '</div>';
+            } else if (options.iconOnly) {
+                html = '<div class="loading-message ' + (options.boxed ? 'loading-message-boxed' : '') + '"><img src="data:image/gif;base64,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" align=""></div>';
+            } else if (options.textOnly) {
+                html = '<div class="loading-message ' + (options.boxed ? 'loading-message-boxed' : '') + '"><span>&nbsp;&nbsp;' + (options.message ? options.message : 'LOADING...') + '</span></div>';
+            } else {
+                html = '<div class="loading-message ' + (options.boxed ? 'loading-message-boxed' : '') + '"><img src="data:image/gif;base64,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" align=""><span>&nbsp;&nbsp;' + (options.message ? options.message : 'LOADING...') + '</span></div>';
+            }
+
+            if (options.target) { // element blocking
+                var el = $(options.target);
+                if (el.height() <= ($(window).height())) {
+                    options.cenrerY = true;
+                }
+                el.block({
+                    message: html,
+                    baseZ: options.zIndex ? options.zIndex : 1000,
+                    centerY: options.cenrerY !== undefined ? options.cenrerY : false,
+                    css: {
+                        top: '10%',
+                        border: '0',
+                        padding: '0',
+                        backgroundColor: 'none'
+                    },
+                    overlayCSS: {
+                        backgroundColor: options.overlayColor ? options.overlayColor : '#555',
+                        opacity: options.boxed ? 0.05 : 0.1,
+                        cursor: 'wait'
+                    }
+                });
+            } else { // page blocking
+                $.blockUI({
+                    message: html,
+                    baseZ: options.zIndex ? options.zIndex : 1000,
+                    css: {
+                        border: '0',
+                        padding: '0',
+                        backgroundColor: 'none'
+                    },
+                    overlayCSS: {
+                        backgroundColor: options.overlayColor ? options.overlayColor : '#555',
+                        opacity: options.boxed ? 0.05 : 0.1,
+                        cursor: 'wait'
+                    }
+                });
+            }
+        },
+
+        // wrApper function to  un-block element(finish loading)
+        unblockUI: function (target) {
+            if (target) {
+                $(target).unblock({
+                    onUnblock: function () {
+                        $(target).css('position', '');
+                        $(target).css('zoom', '');
+
+                    }
+                });
+            } else {
+                $.unblockUI();
+            }
+        },
+
+        startPageLoading: function (options) {
+            if (options && options.animate) {
+                $('.page-spinner-bar').remove();
+                $('body').append('<div class="page-spinner-bar"><div class="bounce1"></div><div class="bounce2"></div><div class="bounce3"></div></div>');
+            } else {
+                $('.page-loading').remove();
+                $('body').append('<div class="page-loading"><img src="' + this.getGlobalImgPath() + 'loading/loading-spinner-grey.gif"/>&nbsp;&nbsp;<span>' + (options && options.message ? options.message : 'Loading...') + '</span></div>');
+            }
+        },
+
+        stopPageLoading: function () {
+            $('.page-loading, .page-spinner-bar').remove();
+        },
+
+        alert: function (options) {
+
+            options = $.extend(true, {
+                container: "", // alerts parent container(by default placed after the page breadcrumbs)
+                place: "append", // "append" or "prepend" in container 
+                type: 'success', // alert's type
+                message: "", // alert's message
+                close: true, // make alert closable
+                reset: true, // close all previouse alerts first
+                focus: true, // auto scroll to the alert after shown
+                closeInSeconds: 0, // auto close after defined seconds
+                icon: "" // put icon before the message
+            }, options);
+
+            var id = App.getUniqueID("App_alert");
+
+            var html = '<div id="' + id + '" class="custom-alerts alert alert-' + options.type + ' fade in">' + (options.close ? '<button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>' : '') + (options.icon !== "" ? '<i class="fa-lg fa fa-' + options.icon + '"></i>  ' : '') + options.message + '</div>';
+
+            if (options.reset) {
+                $('.custom-alerts').remove();
+            }
+
+            if (!options.container) {
+                if ($('.page-fixed-main-content').size() === 1) {
+                    $('.page-fixed-main-content').prepend(html);
+                } else if (($('body').hasClass("page-container-bg-solid") || $('body').hasClass("page-content-white")) && $('.page-head').size() === 0) {
+                    $('.page-title').after(html);
+                } else {
+                    if ($('.page-bar').size() > 0) {
+                        $('.page-bar').after(html);
+                    } else {
+                        $('.page-breadcrumb, .breadcrumbs').after(html);
+                    }
+                }
+            } else {
+                if (options.place == "append") {
+                    $(options.container).append(html);
+                } else {
+                    $(options.container).prepend(html);
+                }
+            }
+
+            if (options.focus) {
+                App.scrollTo($('#' + id));
+            }
+
+            if (options.closeInSeconds > 0) {
+                setTimeout(function () {
+                    $('#' + id).remove();
+                }, options.closeInSeconds * 1000);
+            }
+
+            return id;
+        },
+
+        // initializes uniform elements
+        initUniform: function (els) {
+            if (els) {
+                $(els).each(function () {
+                    if ($(this).parents(".checker").size() === 0) {
+                        $(this).show();
+                        $(this).uniform();
+                    }
+                });
+            } else {
+                handleUniform();
+            }
+        },
+
+        //wrApper function to update/sync jquery uniform checkbox & radios
+        updateUniform: function (els) {
+            $.uniform.update(els); // update the uniform checkbox & radios UI after the actual input control state changed
+        },
+
+        //public function to initialize the fancybox plugin
+        initFancybox: function () {
+            handleFancybox();
+        },
+
+        //public helper function to get actual input value(used in IE9 and IE8 due to placeholder attribute not supported)
+        getActualVal: function (el) {
+            el = $(el);
+            if (el.val() === el.attr("placeholder")) {
+                return "";
+            }
+            return el.val();
+        },
+
+        //public function to get a paremeter by name from URL
+        getURLParameter: function (paramName) {
+            var searchString = window.location.search.substring(1),
+                i, val, params = searchString.split("&");
+
+            for (i = 0; i < params.length; i++) {
+                val = params[i].split("=");
+                if (val[0] == paramName) {
+                    return unescape(val[1]);
+                }
+            }
+            return null;
+        },
+
+        // check for device touch support
+        isTouchDevice: function () {
+            try {
+                document.createEvent("TouchEvent");
+                return true;
+            } catch (e) {
+                return false;
+            }
+        },
+
+        // To get the correct viewport width based on  http://andylangton.co.uk/articles/javascript/get-viewport-size-javascript/
+        getViewPort: function () {
+            var e = window,
+                a = 'inner';
+            if (!('innerWidth' in window)) {
+                a = 'client';
+                e = document.documentElement || document.body;
+            }
+
+            return {
+                width: e[a + 'Width'],
+                height: e[a + 'Height']
+            };
+        },
+
+        getUniqueID: function (prefix) {
+            return 'prefix_' + Math.floor(Math.random() * (new Date()).getTime());
+        },
+
+        // check IE8 mode
+        isIE8: function () {
+            return isIE8;
+        },
+
+        // check IE9 mode
+        isIE9: function () {
+            return isIE9;
+        },
+
+        //check RTL mode
+        isRTL: function () {
+            return isRTL;
+        },
+
+        // check IE8 mode
+        isAngularJsApp: function () {
+            return (typeof angular == 'undefined') ? false : true;
+        },
+
+        getbasePath: function () {
+            return basePath;
+        },
+
+        setbasePath: function (path) {
+            basePath = path;
+        },
+
+        setGlobalImgPath: function (path) {
+            globalImgPath = path;
+        },
+
+        getGlobalImgPath: function () {
+            return basePath + globalImgPath;
+        },
+
+        setGlobalPluginsPath: function (path) {
+            globalPluginsPath = path;
+        },
+
+        getGlobalPluginsPath: function () {
+            return basePath + globalPluginsPath;
+        },
+
+        getGlobalCssPath: function () {
+            return basePath + globalCssPath;
+        },
+
+        // get layout color code by color name
+        getBrandColor: function (name) {
+            if (brandColors[name]) {
+                return brandColors[name];
+            } else {
+                return '';
+            }
+        },
+
+        getResponsiveBreakpoint: function (size) {
+            // bootstrap responsive breakpoints
+            var sizes = {
+                'xs': 480,     // extra small
+                'sm': 768,     // small
+                'md': 992,     // medium
+                'lg': 1200     // large
+            };
+
+            return sizes[size] ? sizes[size] : 0;
+        }
+    };
+
+}();
+
+jQuery(document).ready(function () {
+    App.init(); // init metronic core componets
+});
+/*
+ * Context.js
+ * Copyright Jacob Kelley
+ * MIT License
+ *
+ * Modified by Joshua Christman
+ */
+
+context = (function () {
+
+    var options = {
+        fadeSpeed: 100,
+        filter: function ($obj) {
+            // Modify $obj, Do not return
+        },
+        above: 'auto',
+        left: 'auto',
+        preventDoubleContext: true,
+        compress: false
+    };
+
+    function initialize(opts) {
+
+        options = $.extend({}, options, opts);
+
+        $(document).on('click', function () {
+            $('.dropdown-context').fadeOut(options.fadeSpeed, function () {
+                $('.dropdown-context').css({ display: '' }).find('.drop-left').removeClass('drop-left');
+            });
+        });
+        if (options.preventDoubleContext) {
+            $(document).on('contextmenu', '.dropdown-context', function (e) {
+                e.preventDefault();
+            });
+        }
+        $(document).on('mouseenter', '.dropdown-submenu', function () {
+            var $sub = $(this).find('.dropdown-context-sub:first'),
+                subWidth = $sub.width(),
+                subLeft = $sub.offset().left,
+                collision = (subWidth + subLeft) > window.innerWidth;
+            if (collision) {
+                $sub.addClass('drop-left');
+            }
+        });
+
+    }
+
+    function updateOptions(opts) {
+        options = $.extend({}, options, opts);
+    }
+
+    function buildMenu(data, id, subMenu) {
+        var subClass = (subMenu) ? ' dropdown-context-sub' : '',
+            compressed = options.compress ? ' compressed-context' : '',
+            $menu = $('<ul class="dropdown-menu dropdown-context' + subClass + compressed + '" id="dropdown-' + id + '"></ul>');
+
+        return buildMenuItems($menu, data, id, subMenu);
+    }
+
+    function buildMenuItems($menu, data, id, subMenu, addDynamicTag) {
+        var linkTarget = '';
+        for (var i = 0; i < data.length; i++) {
+            if (typeof data[i].divider !== 'undefined') {
+                var divider = '<li class="divider';
+                divider += (addDynamicTag) ? ' dynamic-menu-item' : '';
+                divider += '"></li>';
+                $menu.append(divider);
+            } else if (typeof data[i].header !== 'undefined') {
+                var header = '<li class="nav-header';
+                header += (addDynamicTag) ? ' dynamic-menu-item' : '';
+                header += '">' + data[i].header + '</li>';
+                $menu.append(header);
+            } else if (typeof data[i].menu_item_src !== 'undefined') {
+                var funcName;
+                if (typeof data[i].menu_item_src === 'function') {
+                    if (data[i].menu_item_src.name === "") { // The function is declared like "foo = function() {}"
+                        for (var globalVar in window) {
+                            if (data[i].menu_item_src == window[globalVar]) {
+                                funcName = globalVar;
+                                break;
+                            }
+                        }
+                    } else {
+                        funcName = data[i].menu_item_src.name;
+                    }
+                } else {
+                    funcName = data[i].menu_item_src;
+                }
+                $menu.append('<li class="dynamic-menu-src" data-src="' + funcName + '"></li>');
+            } else {
+                if (typeof data[i].href == 'undefined') {
+                    data[i].href = '#';
+                }
+                if (typeof data[i].target !== 'undefined') {
+                    linkTarget = ' target="' + data[i].target + '"';
+                }
+                if (typeof data[i].subMenu !== 'undefined') {
+                    var sub_menu = '<li class="dropdown-submenu';
+                    sub_menu += (addDynamicTag) ? ' dynamic-menu-item' : '';
+                    sub_menu += '"><a tabindex="-1" href="' + data[i].href + '">' + data[i].text + '</a></li>'
+                    $sub = (sub_menu);
+                } else {
+                    var element = '<li';
+                    element += (addDynamicTag) ? ' class="dynamic-menu-item"' : '';
+                    element += '><a tabindex="-1" href="' + data[i].href + '"' + linkTarget + '>';
+                    if (typeof data[i].icon !== 'undefined')
+                        element += '<span class="glyphicon ' + data[i].icon + '"></span> ';
+                    element += data[i].text + '</a></li>';
+                    $sub = $(element);
+                }
+                if (typeof data[i].action !== 'undefined') {
+                    $action = data[i].action;
+                    $sub
+                        .find('a')
+                        .addClass('context-event')
+                        .on('click', createCallback($action));
+                }
+                $menu.append($sub);
+                if (typeof data[i].subMenu != 'undefined') {
+                    var subMenuData = buildMenu(data[i].subMenu, id, true);
+                    $menu.find('li:last').append(subMenuData);
+                }
+            }
+            if (typeof options.filter == 'function') {
+                options.filter($menu.find('li:last'));
+            }
+        }
+        return $menu;
+    }
+
+    function addContext(selector, data) {
+        if (typeof data.id !== 'undefined' && typeof data.data !== 'undefined') {
+            var id = data.id;
+            $menu = $('body').find('#dropdown-' + id)[0];
+            if (typeof $menu === 'undefined') {
+                $menu = buildMenu(data.data, id);
+                $('body').append($menu);
+            }
+        } else {
+            var d = new Date(),
+                id = d.getTime(),
+                $menu = buildMenu(data, id);
+            $('body').append($menu);
+        }
+
+        //右键事件
+        $(selector).on('contextmenu', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            rightClickEvent = e;
+            currentContextSelector = $(this);
+
+            $('.dropdown-context:not(.dropdown-context-sub)').hide();
+
+            $dd = $('#dropdown-' + id);
+
+            $dd.find('.dynamic-menu-item').remove(); // Destroy any old dynamic menu items
+            $dd.find('.dynamic-menu-src').each(function (idx, element) {
+                var menuItems = window[$(element).data('src')]($(selector));
+                $parentMenu = $(element).closest('.dropdown-menu.dropdown-context');
+                $parentMenu = buildMenuItems($parentMenu, menuItems, id, undefined, true);
+            });
+
+            if (typeof options.above == 'boolean' && options.above) {
+                $dd.addClass('dropdown-context-up').css({
+                    top: e.pageY - 20 - $('#dropdown-' + id).height(),
+                    left: e.pageX - 13
+                }).fadeIn(options.fadeSpeed);
+            } else if (typeof options.above == 'string' && options.above == 'auto') {
+                $dd.removeClass('dropdown-context-up');
+                var autoH = $dd.height() + 12;
+                if ((e.pageY + autoH) > $('html').height()) {
+                    $dd.addClass('dropdown-context-up').css({
+                        top: e.pageY - 20 - autoH,
+                        left: e.pageX - 13
+                    }).fadeIn(options.fadeSpeed);
+                } else {
+                    $dd.css({
+                        top: e.pageY + 10,
+                        left: e.pageX - 13
+                    }).fadeIn(options.fadeSpeed);
+                }
+            }
+
+            if (typeof options.left == 'boolean' && options.left) {
+                $dd.addClass('dropdown-context-left').css({
+                    left: e.pageX - $dd.width()
+                }).fadeIn(options.fadeSpeed);
+            } else if (typeof options.left == 'string' && options.left == 'auto') {
+                $dd.removeClass('dropdown-context-left');
+                var autoL = $dd.width() - 12;
+                if ((e.pageX + autoL) > $('html').width()) {
+                    $dd.addClass('dropdown-context-left').css({
+                        left: e.pageX - $dd.width() + 13
+                    });
+                }
+            }
+        });
+    }
+
+    function destroyContext(selector) {
+        $(document).off('contextmenu', selector).off('click', '.context-event');
+    }
+
+    return {
+        init: initialize,
+        settings: updateOptions,
+        attach: addContext,
+        destroy: destroyContext
+    };
+})();
+
+var createCallback = function (func) {
+    return function (event) {
+        func(event, currentContextSelector, rightClickEvent)
+    };
+};
+
+var currentContextSelector = undefined;
+var rightClickEvent = undefined;
+
+/*! Copyright (c) 2011 Piotr Rochala (http://rocha.la)
+ * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
+ * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
+ *
+ * Version: 1.3.8
+ *
+ */
+(function ($) {
+
+    $.fn.extend({
+        slimScroll: function (options) {
+
+            var defaults = {
+
+                // width in pixels of the visible scroll area
+                width: 'auto',
+
+                // height in pixels of the visible scroll area
+                height: '250px',
+
+                // width in pixels of the scrollbar and rail
+                size: '7px',
+
+                // scrollbar color, accepts any hex/color value
+                color: '#000',
+
+                // scrollbar position - left/right
+                position: 'right',
+
+                // distance in pixels between the side edge and the scrollbar
+                distance: '1px',
+
+                // default scroll position on load - top / bottom / $('selector')
+                start: 'top',
+
+                // sets scrollbar opacity
+                opacity: .4,
+
+                // enables always-on mode for the scrollbar
+                alwaysVisible: false,
+
+                // check if we should hide the scrollbar when user is hovering over
+                disableFadeOut: false,
+
+                // sets visibility of the rail
+                railVisible: false,
+
+                // sets rail color
+                railColor: '#333',
+
+                // sets rail opacity
+                railOpacity: .2,
+
+                // whether  we should use jQuery UI Draggable to enable bar dragging
+                railDraggable: true,
+
+                // defautlt CSS class of the slimscroll rail
+                railClass: 'slimScrollRail',
+
+                // defautlt CSS class of the slimscroll bar
+                barClass: 'slimScrollBar',
+
+                // defautlt CSS class of the slimscroll wrapper
+                wrapperClass: 'slimScrollDiv',
+
+                // check if mousewheel should scroll the window if we reach top/bottom
+                allowPageScroll: false,
+
+                // scroll amount applied to each mouse wheel step
+                wheelStep: 20,
+
+                // scroll amount applied when user is using gestures
+                touchScrollStep: 200,
+
+                // sets border radius
+                borderRadius: '7px',
+
+                // sets border radius of the rail
+                railBorderRadius: '7px'
+            };
+
+            var o = $.extend(defaults, options);
+
+            // do it for every element that matches selector
+            this.each(function () {
+
+                var isOverPanel, isOverBar, isDragg, queueHide, touchDif,
+                    barHeight, percentScroll, lastScroll,
+                    divS = '<div></div>',
+                    minBarHeight = 30,
+                    releaseScroll = false;
+
+                // used in event handlers and for better minification
+                var me = $(this);
+
+                // ensure we are not binding it again
+                if (me.parent().hasClass(o.wrapperClass)) {
+                    // start from last bar position
+                    var offset = me.scrollTop();
+
+                    // find bar and rail
+                    bar = me.siblings('.' + o.barClass);
+                    rail = me.siblings('.' + o.railClass);
+
+                    getBarHeight();
+
+                    // check if we should scroll existing instance
+                    if ($.isPlainObject(options)) {
+                        // Pass height: auto to an existing slimscroll object to force a resize after contents have changed
+                        if ('height' in options && options.height == 'auto') {
+                            me.parent().css('height', 'auto');
+                            me.css('height', 'auto');
+                            var height = me.parent().parent().height();
+                            me.parent().css('height', height);
+                            me.css('height', height);
+                        } else if ('height' in options) {
+                            var h = options.height;
+                            me.parent().css('height', h);
+                            me.css('height', h);
+                        }
+
+                        if ('scrollTo' in options) {
+                            // jump to a static point
+                            offset = parseInt(o.scrollTo);
+                        }
+                        else if ('scrollBy' in options) {
+                            // jump by value pixels
+                            offset += parseInt(o.scrollBy);
+                        }
+                        else if ('destroy' in options) {
+                            // remove slimscroll elements
+                            bar.remove();
+                            rail.remove();
+                            me.unwrap();
+                            return;
+                        }
+
+                        // scroll content by the given offset
+                        scrollContent(offset, false, true);
+                    }
+
+                    return;
+                }
+                else if ($.isPlainObject(options)) {
+                    if ('destroy' in options) {
+                        return;
+                    }
+                }
+
+                // optionally set height to the parent's height
+                o.height = (o.height == 'auto') ? me.parent().height() : o.height;
+
+                // wrap content
+                var wrapper = $(divS)
+                    .addClass(o.wrapperClass)
+                    .css({
+                        position: 'relative',
+                        overflow: 'hidden',
+                        width: o.width,
+                        height: o.height
+                    });
+
+                // update style for the div
+                me.css({
+                    overflow: 'hidden',
+                    width: o.width,
+                    height: o.height
+                });
+
+                // create scrollbar rail
+                var rail = $(divS)
+                    .addClass(o.railClass)
+                    .css({
+                        width: o.size,
+                        height: '100%',
+                        position: 'absolute',
+                        top: 0,
+                        display: (o.alwaysVisible && o.railVisible) ? 'block' : 'none',
+                        'border-radius': o.railBorderRadius,
+                        background: o.railColor,
+                        opacity: o.railOpacity,
+                        zIndex: 90
+                    });
+
+                // create scrollbar
+                var bar = $(divS)
+                    .addClass(o.barClass)
+                    .css({
+                        background: o.color,
+                        width: o.size,
+                        position: 'absolute',
+                        top: 0,
+                        opacity: o.opacity,
+                        display: o.alwaysVisible ? 'block' : 'none',
+                        'border-radius': o.borderRadius,
+                        BorderRadius: o.borderRadius,
+                        MozBorderRadius: o.borderRadius,
+                        WebkitBorderRadius: o.borderRadius,
+                        zIndex: 99
+                    });
+
+                // set position
+                var posCss = (o.position == 'right') ? { right: o.distance } : { left: o.distance };
+                rail.css(posCss);
+                bar.css(posCss);
+
+                // wrap it
+                me.wrap(wrapper);
+
+                // append to parent div
+                me.parent().append(bar);
+                me.parent().append(rail);
+
+                // make it draggable and no longer dependent on the jqueryUI
+                if (o.railDraggable) {
+                    bar.bind("mousedown", function (e) {
+                        var $doc = $(document);
+                        isDragg = true;
+                        t = parseFloat(bar.css('top'));
+                        pageY = e.pageY;
+
+                        $doc.bind("mousemove.slimscroll", function (e) {
+                            currTop = t + e.pageY - pageY;
+                            bar.css('top', currTop);
+                            scrollContent(0, bar.position().top, false);// scroll content
+                        });
+
+                        $doc.bind("mouseup.slimscroll", function (e) {
+                            isDragg = false; hideBar();
+                            $doc.unbind('.slimscroll');
+                        });
+                        return false;
+                    }).bind("selectstart.slimscroll", function (e) {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        return false;
+                    });
+                }
+
+                // on rail over
+                rail.hover(function () {
+                    showBar();
+                }, function () {
+                    hideBar();
+                });
+
+                // on bar over
+                bar.hover(function () {
+                    isOverBar = true;
+                }, function () {
+                    isOverBar = false;
+                });
+
+                // show on parent mouseover
+                me.hover(function () {
+                    isOverPanel = true;
+                    showBar();
+                    hideBar();
+                }, function () {
+                    isOverPanel = false;
+                    hideBar();
+                });
+
+                // support for mobile
+                me.bind('touchstart', function (e, b) {
+                    if (e.originalEvent.touches.length) {
+                        // record where touch started
+                        touchDif = e.originalEvent.touches[0].pageY;
+                    }
+                });
+
+                me.bind('touchmove', function (e) {
+                    // prevent scrolling the page if necessary
+                    if (!releaseScroll) {
+                        e.originalEvent.preventDefault();
+                    }
+                    if (e.originalEvent.touches.length) {
+                        // see how far user swiped
+                        var diff = (touchDif - e.originalEvent.touches[0].pageY) / o.touchScrollStep;
+                        // scroll content
+                        scrollContent(diff, true);
+                        touchDif = e.originalEvent.touches[0].pageY;
+                    }
+                });
+
+                // set up initial height
+                getBarHeight();
+
+                // check start position
+                if (o.start === 'bottom') {
+                    // scroll content to bottom
+                    bar.css({ top: me.outerHeight() - bar.outerHeight() });
+                    scrollContent(0, true);
+                }
+                else if (o.start !== 'top') {
+                    // assume jQuery selector
+                    scrollContent($(o.start).position().top, null, true);
+
+                    // make sure bar stays hidden
+                    if (!o.alwaysVisible) { bar.hide(); }
+                }
+
+                // attach scroll events
+                attachWheel(this);
+
+                function _onWheel(e) {
+                    // use mouse wheel only when mouse is over
+                    if (!isOverPanel) { return; }
+
+                    var e = e || window.event;
+
+                    var delta = 0;
+                    if (e.wheelDelta) { delta = -e.wheelDelta / 120; }
+                    if (e.detail) { delta = e.detail / 3; }
+
+                    var target = e.target || e.srcTarget || e.srcElement;
+                    if ($(target).closest('.' + o.wrapperClass).is(me.parent())) {
+                        // scroll content
+                        scrollContent(delta, true);
+                    }
+
+                    // stop window scroll
+                    if (e.preventDefault && !releaseScroll) { e.preventDefault(); }
+                    if (!releaseScroll) { e.returnValue = false; }
+                }
+
+                function scrollContent(y, isWheel, isJump) {
+                    releaseScroll = false;
+                    var delta = y;
+                    var maxTop = me.outerHeight() - bar.outerHeight();
+
+                    if (isWheel) {
+                        // move bar with mouse wheel
+                        delta = parseInt(bar.css('top')) + y * parseInt(o.wheelStep) / 100 * bar.outerHeight();
+
+                        // move bar, make sure it doesn't go out
+                        delta = Math.min(Math.max(delta, 0), maxTop);
+
+                        // if scrolling down, make sure a fractional change to the
+                        // scroll position isn't rounded away when the scrollbar's CSS is set
+                        // this flooring of delta would happened automatically when
+                        // bar.css is set below, but we floor here for clarity
+                        delta = (y > 0) ? Math.ceil(delta) : Math.floor(delta);
+
+                        // scroll the scrollbar
+                        bar.css({ top: delta + 'px' });
+                    }
+
+                    // calculate actual scroll amount
+                    percentScroll = parseInt(bar.css('top')) / (me.outerHeight() - bar.outerHeight());
+                    delta = percentScroll * (me[0].scrollHeight - me.outerHeight());
+
+                    if (isJump) {
+                        delta = y;
+                        var offsetTop = delta / me[0].scrollHeight * me.outerHeight();
+                        offsetTop = Math.min(Math.max(offsetTop, 0), maxTop);
+                        bar.css({ top: offsetTop + 'px' });
+                    }
+
+                    // scroll content
+                    me.scrollTop(delta);
+
+                    // fire scrolling event
+                    me.trigger('slimscrolling', ~~delta);
+
+                    // ensure bar is visible
+                    showBar();
+
+                    // trigger hide when scroll is stopped
+                    hideBar();
+                }
+
+                function attachWheel(target) {
+                    if (window.addEventListener) {
+                        target.addEventListener('DOMMouseScroll', _onWheel, false);
+                        target.addEventListener('mousewheel', _onWheel, false);
+                    }
+                    else {
+                        document.attachEvent("onmousewheel", _onWheel)
+                    }
+                }
+
+                function getBarHeight() {
+                    // calculate scrollbar height and make sure it is not too small
+                    barHeight = Math.max((me.outerHeight() / me[0].scrollHeight) * me.outerHeight(), minBarHeight);
+                    bar.css({ height: barHeight + 'px' });
+
+                    // hide scrollbar if content is not long enough
+                    var display = barHeight == me.outerHeight() ? 'none' : 'block';
+                    bar.css({ display: display });
+                }
+
+                function showBar() {
+                    // recalculate bar height
+                    getBarHeight();
+                    clearTimeout(queueHide);
+
+                    // when bar reached top or bottom
+                    if (percentScroll == ~~percentScroll) {
+                        //release wheel
+                        releaseScroll = o.allowPageScroll;
+
+                        // publish approporiate event
+                        if (lastScroll != percentScroll) {
+                            var msg = (~~percentScroll == 0) ? 'top' : 'bottom';
+                            me.trigger('slimscroll', msg);
+                        }
+                    }
+                    else {
+                        releaseScroll = false;
+                    }
+                    lastScroll = percentScroll;
+
+                    // show only when required
+                    if (barHeight >= me.outerHeight()) {
+                        //allow window scroll
+                        releaseScroll = true;
+                        return;
+                    }
+                    bar.stop(true, true).fadeIn('fast');
+                    if (o.railVisible) { rail.stop(true, true).fadeIn('fast'); }
+                }
+
+                function hideBar() {
+                    // only hide when options allow it
+                    if (!o.alwaysVisible) {
+                        queueHide = setTimeout(function () {
+                            if (!(o.disableFadeOut && isOverPanel) && !isOverBar && !isDragg) {
+                                bar.fadeOut('slow');
+                                rail.fadeOut('slow');
+                            }
+                        }, 1000);
+                    }
+                }
+
+            });
+
+            // maintain chainability
+            return this;
+        }
+    });
+
+    $.fn.extend({
+        slimscroll: $.fn.slimScroll
+    });
+
+})(jQuery);
+
+//Save the field of the page id
+var pageIdField = "data-pageId";
+
+function getPageId(element) {
+    if (element instanceof jQuery) {
+        return element.attr(pageIdField);
+    } else {
+        return $(element).attr(pageIdField);
+    }
+}
+
+function findTabTitle(pageId) {
+    var $ele = null;
+    $(".page-tabs-content").find("a.menu_tab").each(function () {
+        var $a = $(this);
+        if ($a.attr(pageIdField) == pageId) {
+            $ele = $a;
+            return false;//Exit loop
+        }
+    });
+    return $ele;
+}
+
+function findTabPanel(pageId) {
+    var $ele = null;
+    $("#tab-content").find("div.tab-pane").each(function () {
+        var $div = $(this);
+        if ($div.attr(pageIdField) == pageId) {
+            $ele = $div;
+            return false;//Exit loop
+        }
+    });
+    return $ele;
+}
+
+function findIframeById(pageId) {
+    return findTabPanel(pageId).children("iframe");
+}
+
+function getActivePageId() {
+    var $a = $('.page-tabs-content').find('.active');
+    return getPageId($a);
+}
+
+function canRemoveTab(pageId) {
+    //return findTabTitle(pageId).find('.fa-remove').size() > 0;
+    return findTabTitle(pageId).find('.fa-times').length > 0;
+}
+
+//Add tab
+var addTabs = function (options) {
+    if (!isLeavePage()) return false;
+    var defaultTabOptions = {
+        id: Math.random() * 200,
+        urlType: "relative",
+        title: "New Page"
+    };
+
+    options = $.extend(true, defaultTabOptions, options);
+
+    if (options.urlType === "relative") {
+        // var url = window.location.protocol + '//' + window.location.host + "/";
+        var basePath = window.location.pathname + "/../";
+        options.url = basePath + options.url;
+    }
+
+    var pageId = options.id;
+
+    //Determine whether the tab of this id already exists. If it does not exist, create a new one.
+    if (findTabPanel(pageId) === null) {
+
+        //Create a new TAB title
+        // title = '<a  id="tab_' + pageId + '"  data-id="' + pageId + '"  class="menu_tab" >';
+
+        var $title = $('<a href="javascript:void(0);"></a>').attr(pageIdField, pageId).addClass("menu_tab");
+
+        var $text = $("<span class='page_tab_title'></span>").text(options.title).appendTo($title);
+        // title += '<span class="page_tab_title">' + options.title + '</span>';
+
+        //Whether to allow closure
+        if (options.close) {
+            var $i = $("<i class='fas fa-times page_tab_close' style='cursor: pointer' onclick='closeTab(this);'></i>").attr(pageIdField, pageId).appendTo($title);
+            // title += ' <i class="fa fa-remove page_tab_close" style="cursor: pointer;" data-id="' + pageId + '" onclick="closeTab(this)"></i>';
+        }
+
+        //Join TABS
+        $(".page-tabs-content").append($title);
+
+
+        var $tabPanel = $('<div role="tabpanel" class="tab-pane"></div>').attr(pageIdField, pageId);
+
+        if (options.content) {
+            //Whether to specify TAB content
+            $tabPanel.append(options.content);
+        } else {
+            //No content, use IFRAME to open the link
+
+            App.blockUI({
+                target: '#tab-content',
+                boxed: true,
+                message: 'Loading......'//,
+                // animate: true
+            });
+
+            var $iframe = $("<iframe></iframe>").attr("src", options.url).css("width", "100%").attr("frameborder", "no").attr("id", "iframe_" + pageId).addClass("tab_iframe").attr(pageIdField, pageId);
+            //frameborder="no" border="0" marginwidth="0" marginheight="0" scrolling="yes"  allowtransparency="yes"
+
+            //iframe Load completion event
+            //$iframe.load(function () {
+            //    App.unblockUI('#tab-content');//Unlock interface
+            //    App.fixIframeCotent();//Corrected height
+            //});
+            $iframe.on('load', function () {
+                App.unblockUI('#tab-content');//Unlock interface
+                App.fixIframeCotent();//Corrected height
+                var obj = { ModuleURL: options.url, ModuleName: options.title };
+                setTimeout(function () { addActivityLog(obj); }, 50);
+            });
+
+            $tabPanel.append($iframe);
+
+        }
+
+        // $tab = $(content);
+        $("#tab-content").append($tabPanel);
+
+        //iframe Load completion event
+        /*$tab.find("iframe").load(function () {
+         App.fixIframeCotent();
+         });*/
+    }
+
+    activeTabByPageId(pageId);
+
+};
+
+//Add Activity Log
+var addActivityLog = function (options) {
+    var defaultOptions = {
+        ModuleURL: '/Home/Dashboard',
+        ModuleName: "Dashboard",
+    };
+    options = $.extend(true, defaultOptions, options);
+    jQuery.ajax({
+        url: '/AccountAPI/menuWriteDbLog', dataType: 'json', type: "Post",
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(options),
+        success: function (data) { },
+        error: function (jqXHR, textStatus, errorThrown) { alert(errorThrown); }
+    });
+};
+
+//Close tab
+var closeTab = function (item) {
+    if (isLeavePage()) {
+        //Item can be a tag or i tag
+        //They all have a data-id attribute, and it’s okay after the acquisition is complete.
+        var pageId = getPageId(item);
+        closeTabByPageId(pageId);
+    }
+};
+function sidemenu_breadcrumb(ids) {
+    $('.sidebar-menu li').removeClass('activeLink');
+    $('.sidebar-menu .treeview').removeClass('active');
+    $('.treeview-menu').removeClass('menu-open').css("display", "none");
+    $('.sidebar-menu [data-menuid="' + ids + '"]').addClass('activeLink').parents('.treeview-menu').addClass('menu-open').css("display", "block").parents('.treeview').addClass('active');
+}
+function closeTabByPageId(pageId) {
+    var $title = findTabTitle(pageId);//Tab title
+    var $tabPanel = findTabPanel(pageId);//With iframe
+
+    if ($title.hasClass("active")) {
+        //The tab to be closed is active
+        //To pass the active class to other tabs
+
+        //Give priority to the next tab, if not, pass it to the previous one
+        var $nextTitle = $title.next();
+        var activePageId;
+
+        //if ($nextTitle.size() > 0) {
+        if ($nextTitle.length > 0) {
+            activePageId = getPageId($nextTitle);
+            sidemenu_breadcrumb(activePageId)
+        } else {
+            activePageId = getPageId($title.prev());
+            sidemenu_breadcrumb(activePageId)
+        }
+        if (($title.prev().data('pageid') === 10008) && !($title.next().length)) {
+
+            $('.sidebar-menu [data-menuid="' + 1 + '"]').addClass('activeLink');
+        }
+        setTimeout(function () {
+            //Some kind of bug that needs to be delayed
+            activeTabByPageId(activePageId);
+        }, 100);
+
+    } else {
+        // The tab to be closed is not active
+        // Directly remove it, no need to pass active class
+
+    }
+
+    $title.remove();
+    $tabPanel.remove();
+    // scrollToTab($('.menu_tab.active')[0]);
+
+}
+
+function closeTabOnly(pageId) {
+    var $title = findTabTitle(pageId);//Tab title
+    var $tabPanel = findTabPanel(pageId);//With iframe
+    $title.remove();
+    $tabPanel.remove();
+}
+
+var closeCurrentTab = function () {
+    var pageId = getActivePageId();
+    if (canRemoveTab(pageId) && isLeavePage()) {
+        closeTabByPageId(pageId);
+    }
+};
+
+function refreshTabById(pageId) {
+    var $iframe = findIframeById(pageId);
+    var url = $iframe.attr('src');
+
+    if (url.indexOf(top.document.domain) < 0) {
+        $iframe.attr("src", url);// Reset the url under cross-domain conditions
+    } else {
+        $iframe[0].contentWindow.location.reload(true);//With parameter refresh
+    }
+
+    App.blockUI({
+        target: '#tab-content',
+        boxed: true,
+        message: 'Loading......'//,
+        // animate: true
+    });
+}
+
+var refreshTab = function () {
+    if (isLeavePage()) {
+        //Refresh current tab
+        var pageId = getActivePageId();
+        refreshTabById(pageId);
+    }
+};
+
+function getTabUrlById(pageId) {
+    var $iframe = findIframeById(pageId);
+    return $iframe[0].contentWindow.location.href;
+}
+
+function getTabUrl(element) {
+    var pageId = getPageId(element);
+    getTabUrlById(pageId);
+}
+
+
+/**
+ * Edit the title of the tab
+ * @param pageId
+ * @param title
+ */
+function editTabTitle(pageId, title) {
+    var $title = findTabTitle(pageId);//Tab title
+    var $span = $title.children("span.page_tab_title");
+    $span.text(title);
+}
+
+//Calculate the width and width of multiple jq objects
+var calSumWidth = function (element) {
+    var width = 0;
+    $(element).each(function () {
+        width += $(this).outerWidth(true);
+    });
+    return width;
+};
+//Scroll to the specified tab
+var scrollToTab = function (element) {
+    //element is tab (a tag), with the title
+    //div.content-tabs > div.page-tabs-content
+    var marginLeftVal = calSumWidth($(element).prevAll()),//The total width of all the tabs in front
+        marginRightVal = calSumWidth($(element).nextAll());//The total width of all the tabs behind
+    //The total width of some buttons (left, right)
+    var tabOuterWidth = calSumWidth($(".content-tabs").children().not(".menuTabs"));
+    // Tab (a label) shows the total width of the area
+    var visibleWidth = $(".content-tabs").outerWidth(true) - tabOuterWidth;
+    //The length to be scrolled
+    var scrollVal = 0;
+    if ($(".page-tabs-content").outerWidth() < visibleWidth) {
+        //All tabs can be displayed
+        scrollVal = 0;
+    } else if (marginRightVal <= (visibleWidth - $(element).outerWidth(true) - $(element).next().outerWidth(true))) {
+        // Scroll right
+        //marginRightVal (the total width of all subsequent tabs) is less than the visible area - (the width of the current tab and the next tab)
+        if ((visibleWidth - $(element).next().outerWidth(true)) > marginRightVal) {
+            scrollVal = marginLeftVal;
+            var tabElement = element;
+            while ((scrollVal - $(tabElement).outerWidth()) > ($(".page-tabs-content").outerWidth() - visibleWidth)) {
+                scrollVal -= $(tabElement).prev().outerWidth();
+                tabElement = $(tabElement).prev();
+            }
+        }
+    } else if (marginLeftVal > (visibleWidth - $(element).outerWidth(true) - $(element).prev().outerWidth(true))) {
+        //Scroll left
+        scrollVal = marginLeftVal - $(element).prev().outerWidth(true);
+    }
+    //Execution animation
+    $('.page-tabs-content').animate({
+        marginLeft: 0 - scrollVal + 'px'
+    }, "fast");
+};
+//Scroll bar scrolls to the left
+var scrollTabLeft = function () {
+    var marginLeftVal = Math.abs(parseInt($('.page-tabs-content').css('margin-left')));
+    var tabOuterWidth = calSumWidth($(".content-tabs").children().not(".menuTabs"));
+    var visibleWidth = $(".content-tabs").outerWidth(true) - tabOuterWidth;
+    var scrollVal = 0;
+    if ($(".page-tabs-content").width() < visibleWidth) {
+        return false;
+    } else {
+        var tabElement = $(".menu_tab:first");
+        var offsetVal = 0;
+        while ((offsetVal + $(tabElement).outerWidth(true)) <= marginLeftVal) {
+            offsetVal += $(tabElement).outerWidth(true);
+            tabElement = $(tabElement).next();
+        }
+        offsetVal = 0;
+        if (calSumWidth($(tabElement).prevAll()) > visibleWidth) {
+            while ((offsetVal + $(tabElement).outerWidth(true)) < (visibleWidth) && tabElement.length > 0) {
+                offsetVal += $(tabElement).outerWidth(true);
+                tabElement = $(tabElement).prev();
+            }
+            scrollVal = calSumWidth($(tabElement).prevAll());
+        }
+    }
+    $('.page-tabs-content').animate({
+        marginLeft: 0 - scrollVal + 'px'
+    }, "fast");
+};
+//Scroll bar scrolls to the right
+var scrollTabRight = function () {
+    var marginLeftVal = Math.abs(parseInt($('.page-tabs-content').css('margin-left')));
+    var tabOuterWidth = calSumWidth($(".content-tabs").children().not(".menuTabs"));
+    var visibleWidth = $(".content-tabs").outerWidth(true) - tabOuterWidth;
+    var scrollVal = 0;
+    if ($(".page-tabs-content").width() < visibleWidth) {
+        return false;
+    } else {
+        var tabElement = $(".menu_tab:first");
+        var offsetVal = 0;
+        while ((offsetVal + $(tabElement).outerWidth(true)) <= marginLeftVal) {
+            offsetVal += $(tabElement).outerWidth(true);
+            tabElement = $(tabElement).next();
+        }
+        offsetVal = 0;
+        while ((offsetVal + $(tabElement).outerWidth(true)) < (visibleWidth) && tabElement.length > 0) {
+            offsetVal += $(tabElement).outerWidth(true);
+            tabElement = $(tabElement).next();
+        }
+        scrollVal = calSumWidth($(tabElement).prevAll());
+        if (scrollVal > 0) {
+            $('.page-tabs-content').animate({
+                marginLeft: 0 - scrollVal + 'px'
+            }, "fast");
+        }
+    }
+};
+
+//Close other tabs
+var closeOtherTabs = function (isAll) {
+    if (isLeavePage()) {
+        if (isAll) {
+            //Close all
+            //$('.page-tabs-content').children("[" + pageIdField + "]").find('.fa-remove').parents('a').each(function () {
+            $('.page-tabs-content').children("[" + pageIdField + "]").find('.fa-times').parents('a').each(function () {
+                var $a = $(this);
+                var pageId = getPageId($a);
+                closeTabOnly(pageId);
+            });
+            var firstChild = $(".page-tabs-content").children().eq(0); //Select the first menu that cannot be deleted
+            if (firstChild) {
+                //Activate this tab
+                activeTabByPageId(getPageId(firstChild));
+            }
+        } else {
+            //Delete all except
+            //$('.page-tabs-content').children("[" + pageIdField + "]").find('.fa-remove').parents('a').not(".active").each(function () {
+            $('.page-tabs-content').children("[" + pageIdField + "]").find('.fa-times').parents('a').not(".active").each(function () {
+                var $a = $(this);
+                var pageId = getPageId($a);
+                closeTabOnly(pageId);
+            });
+
+        }
+    }
+};
+
+//Activate Tab, by id
+function activeTabByPageId(pageId) {
+    $(".menu_tab").removeClass("active");
+    $("#tab-content").find(".active").removeClass("active");
+    //Activate TAB
+    var $title = findTabTitle(pageId).addClass('active');
+    findTabPanel(pageId).addClass("active");
+    // scrollToTab($('.menu_tab.active'));
+    scrollToTab($title[0]);
+}
+
+//Check is edit 
+function isLeavePage() {
+    let isedit = localStorage.getItem('isEdit');
+    if (isedit == 'yes') {
+        swal({ title: "Are you sure you want to leave?", text: 'All unsaved changes will be lost.', type: "question", showCancelButton: true })
+            .then((result) => {
+                if (result.value) { localStorage.setItem('isEdit', 'no'); }
+                return result.value;
+            });
+    }
+    else
+        return true;
+}
+
+$(function () {
+    var $tabs = $(".menuTabs");
+    //Activate tab when you click on the tab
+    $tabs.on("click", ".menu_tab", function () {
+        if (isLeavePage()) {
+            var pageId = getPageId(this);
+            activeTabByPageId(pageId);
+        }
+    });
+
+    //Double click on the tab to refresh the page
+    $tabs.on("dblclick", ".menu_tab", function () {
+        var pageId = getPageId(this);
+        refreshTabById(pageId);
+    });
+
+    //Tab right-click menu
+    function findTabElement(target) {
+        var $ele = $(target);
+        if (!$ele.is("a")) {
+            $ele = $ele.parents("a.menu_tab");
+        }
+        return $ele;
+    }
+
+    context.init({
+        preventDoubleContext: false,//Do not disable the original right-click menu
+        compress: true//Less padding
+    });
+    context.attach('.page-tabs-content', [
+        //            {header: 'Options'},
+        {
+            text: 'Refresh',
+            action: function (e, $selector, rightClickEvent) {
+                //e is the event that clicks on the menu
+                //$selector is $(".page-tabs-content")
+                //rightClickEvent is the event that right-clicks on the menu.
+
+                var pageId = getPageId(findTabElement(rightClickEvent.target));
+                refreshTabById(pageId);
+
+            }
+        },
+        {
+            text: "Open in new window",
+            action: function (e, $selector, rightClickEvent) {
+
+                var pageId = getPageId(findTabElement(rightClickEvent.target));
+                var url = getTabUrlById(pageId);
+                window.open(url);
+
+            }
+        }
+        //            {text: 'Open in new Window', href: '#'},
+        //            {divider: true},
+        //            {text: 'Copy', href: '#'},
+        //            {text: 'Dafuq!?', href: '#'}
+    ]);
+
+});
+/*!
+ * jQuery blockUI plugin
+ * Version 2.70.0-2014.11.23
+ * Requires jQuery v1.7 or later
+ *
+ * Examples at: http://malsup.com/jquery/block/
+ * Copyright (c) 2007-2013 M. Alsup
+ * Dual licensed under the MIT and GPL licenses:
+ * http://www.opensource.org/licenses/mit-license.php
+ * http://www.gnu.org/licenses/gpl.html
+ *
+ * Thanks to Amir-Hossein Sobhi for some excellent contributions!
+ */
+!function () { "use strict"; function e(e) { function t(t, n) { var s, h, k = t == window, y = n && void 0 !== n.message ? n.message : void 0; if (n = e.extend({}, e.blockUI.defaults, n || {}), !n.ignoreIfBlocked || !e(t).data("blockUI.isBlocked")) { if (n.overlayCSS = e.extend({}, e.blockUI.defaults.overlayCSS, n.overlayCSS || {}), s = e.extend({}, e.blockUI.defaults.css, n.css || {}), n.onOverlayClick && (n.overlayCSS.cursor = "pointer"), h = e.extend({}, e.blockUI.defaults.themedCSS, n.themedCSS || {}), y = void 0 === y ? n.message : y, k && p && o(window, { fadeOut: 0 }), y && "string" != typeof y && (y.parentNode || y.jquery)) { var m = y.jquery ? y[0] : y, v = {}; e(t).data("blockUI.history", v), v.el = m, v.parent = m.parentNode, v.display = m.style.display, v.position = m.style.position, v.parent && v.parent.removeChild(m) } e(t).data("blockUI.onUnblock", n.onUnblock); var g, I, w, U, x = n.baseZ; g = e(r || n.forceIframe ? '<iframe class="blockUI" style="z-index:' + x++ + ';display:none;border:none;margin:0;padding:0;position:absolute;width:100%;height:100%;top:0;left:0" src="' + n.iframeSrc + '"></iframe>' : '<div class="blockUI" style="display:none"></div>'), I = e(n.theme ? '<div class="blockUI blockOverlay ui-widget-overlay" style="z-index:' + x++ + ';display:none"></div>' : '<div class="blockUI blockOverlay" style="z-index:' + x++ + ';display:none;border:none;margin:0;padding:0;width:100%;height:100%;top:0;left:0"></div>'), n.theme && k ? (U = '<div class="blockUI ' + n.blockMsgClass + ' blockPage ui-dialog ui-widget ui-corner-all" style="z-index:' + (x + 10) + ';display:none;position:fixed">', n.title && (U += '<div class="ui-widget-header ui-dialog-titlebar ui-corner-all blockTitle">' + (n.title || "&nbsp;") + "</div>"), U += '<div class="ui-widget-content ui-dialog-content"></div>', U += "</div>") : n.theme ? (U = '<div class="blockUI ' + n.blockMsgClass + ' blockElement ui-dialog ui-widget ui-corner-all" style="z-index:' + (x + 10) + ';display:none;position:absolute">', n.title && (U += '<div class="ui-widget-header ui-dialog-titlebar ui-corner-all blockTitle">' + (n.title || "&nbsp;") + "</div>"), U += '<div class="ui-widget-content ui-dialog-content"></div>', U += "</div>") : U = k ? '<div class="blockUI ' + n.blockMsgClass + ' blockPage" style="z-index:' + (x + 10) + ';display:none;position:fixed"></div>' : '<div class="blockUI ' + n.blockMsgClass + ' blockElement" style="z-index:' + (x + 10) + ';display:none;position:absolute"></div>', w = e(U), y && (n.theme ? (w.css(h), w.addClass("ui-widget-content")) : w.css(s)), n.theme || I.css(n.overlayCSS), I.css("position", k ? "fixed" : "absolute"), (r || n.forceIframe) && g.css("opacity", 0); var C = [g, I, w], S = e(k ? "body" : t); e.each(C, function () { this.appendTo(S) }), n.theme && n.draggable && e.fn.draggable && w.draggable({ handle: ".ui-dialog-titlebar", cancel: "li" }); var O = f && (!e.support.boxModel || e("object,embed", k ? null : t).length > 0); if (u || O) { if (k && n.allowBodyStretch && e.support.boxModel && e("html,body").css("height", "100%"), (u || !e.support.boxModel) && !k) var E = d(t, "borderTopWidth"), T = d(t, "borderLeftWidth"), M = E ? "(0 - " + E + ")" : 0, B = T ? "(0 - " + T + ")" : 0; e.each(C, function (e, t) { var o = t[0].style; if (o.position = "absolute", 2 > e) k ? o.setExpression("height", "Math.max(document.body.scrollHeight, document.body.offsetHeight) - (jQuery.support.boxModel?0:" + n.quirksmodeOffsetHack + ') + "px"') : o.setExpression("height", 'this.parentNode.offsetHeight + "px"'), k ? o.setExpression("width", 'jQuery.support.boxModel && document.documentElement.clientWidth || document.body.clientWidth + "px"') : o.setExpression("width", 'this.parentNode.offsetWidth + "px"'), B && o.setExpression("left", B), M && o.setExpression("top", M); else if (n.centerY) k && o.setExpression("top", '(document.documentElement.clientHeight || document.body.clientHeight) / 2 - (this.offsetHeight / 2) + (blah = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop) + "px"'), o.marginTop = 0; else if (!n.centerY && k) { var i = n.css && n.css.top ? parseInt(n.css.top, 10) : 0, s = "((document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop) + " + i + ') + "px"'; o.setExpression("top", s) } }) } if (y && (n.theme ? w.find(".ui-widget-content").append(y) : w.append(y), (y.jquery || y.nodeType) && e(y).show()), (r || n.forceIframe) && n.showOverlay && g.show(), n.fadeIn) { var j = n.onBlock ? n.onBlock : c, H = n.showOverlay && !y ? j : c, z = y ? j : c; n.showOverlay && I._fadeIn(n.fadeIn, H), y && w._fadeIn(n.fadeIn, z) } else n.showOverlay && I.show(), y && w.show(), n.onBlock && n.onBlock.bind(w)(); if (i(1, t, n), k ? (p = w[0], b = e(n.focusableElements, p), n.focusInput && setTimeout(l, 20)) : a(w[0], n.centerX, n.centerY), n.timeout) { var W = setTimeout(function () { k ? e.unblockUI(n) : e(t).unblock(n) }, n.timeout); e(t).data("blockUI.timeout", W) } } } function o(t, o) { var s, l = t == window, a = e(t), d = a.data("blockUI.history"), c = a.data("blockUI.timeout"); c && (clearTimeout(c), a.removeData("blockUI.timeout")), o = e.extend({}, e.blockUI.defaults, o || {}), i(0, t, o), null === o.onUnblock && (o.onUnblock = a.data("blockUI.onUnblock"), a.removeData("blockUI.onUnblock")); var r; r = l ? e("body").children().filter(".blockUI").add("body > .blockUI") : a.find(">.blockUI"), o.cursorReset && (r.length > 1 && (r[1].style.cursor = o.cursorReset), r.length > 2 && (r[2].style.cursor = o.cursorReset)), l && (p = b = null), o.fadeOut ? (s = r.length, r.stop().fadeOut(o.fadeOut, function () { 0 === --s && n(r, d, o, t) })) : n(r, d, o, t) } function n(t, o, n, i) { var s = e(i); if (!s.data("blockUI.isBlocked")) { t.each(function () { this.parentNode && this.parentNode.removeChild(this) }), o && o.el && (o.el.style.display = o.display, o.el.style.position = o.position, o.el.style.cursor = "default", o.parent && o.parent.appendChild(o.el), s.removeData("blockUI.history")), s.data("blockUI.static") && s.css("position", "static"), "function" == typeof n.onUnblock && n.onUnblock(i, n); var l = e(document.body), a = l.width(), d = l[0].style.width; l.width(a - 1).width(a), l[0].style.width = d } } function i(t, o, n) { var i = o == window, l = e(o); if ((t || (!i || p) && (i || l.data("blockUI.isBlocked"))) && (l.data("blockUI.isBlocked", t), i && n.bindEvents && (!t || n.showOverlay))) { var a = "mousedown mouseup keydown keypress keyup touchstart touchend touchmove"; t ? e(document).bind(a, n, s) : e(document).unbind(a, s) } } function s(t) { if ("keydown" === t.type && t.keyCode && 9 == t.keyCode && p && t.data.constrainTabKey) { var o = b, n = !t.shiftKey && t.target === o[o.length - 1], i = t.shiftKey && t.target === o[0]; if (n || i) return setTimeout(function () { l(i) }, 10), !1 } var s = t.data, a = e(t.target); return a.hasClass("blockOverlay") && s.onOverlayClick && s.onOverlayClick(t), a.parents("div." + s.blockMsgClass).length > 0 ? !0 : 0 === a.parents().children().filter("div.blockUI").length } function l(e) { if (b) { var t = b[e === !0 ? b.length - 1 : 0]; t && t.focus() } } function a(e, t, o) { var n = e.parentNode, i = e.style, s = (n.offsetWidth - e.offsetWidth) / 2 - d(n, "borderLeftWidth"), l = (n.offsetHeight - e.offsetHeight) / 2 - d(n, "borderTopWidth"); t && (i.left = s > 0 ? s + "px" : "0"), o && (i.top = l > 0 ? l + "px" : "0") } function d(t, o) { return parseInt(e.css(t, o), 10) || 0 } e.fn._fadeIn = e.fn.fadeIn; var c = e.noop || function () { }, r = /MSIE/.test(navigator.userAgent), u = /MSIE 6.0/.test(navigator.userAgent) && !/MSIE 8.0/.test(navigator.userAgent), f = (document.documentMode || 0, e.isFunction(document.createElement("div").style.setExpression)); e.blockUI = function (e) { t(window, e) }, e.unblockUI = function (e) { o(window, e) }, e.growlUI = function (t, o, n, i) { var s = e('<div class="growlUI"></div>'); t && s.append("<h1>" + t + "</h1>"), o && s.append("<h2>" + o + "</h2>"), void 0 === n && (n = 3e3); var l = function (t) { t = t || {}, e.blockUI({ message: s, fadeIn: "undefined" != typeof t.fadeIn ? t.fadeIn : 700, fadeOut: "undefined" != typeof t.fadeOut ? t.fadeOut : 1e3, timeout: "undefined" != typeof t.timeout ? t.timeout : n, centerY: !1, showOverlay: !1, onUnblock: i, css: e.blockUI.defaults.growlCSS }) }; l(); s.css("opacity"); s.mouseover(function () { l({ fadeIn: 0, timeout: 3e4 }); var t = e(".blockMsg"); t.stop(), t.fadeTo(300, 1) }).mouseout(function () { e(".blockMsg").fadeOut(1e3) }) }, e.fn.block = function (o) { if (this[0] === window) return e.blockUI(o), this; var n = e.extend({}, e.blockUI.defaults, o || {}); return this.each(function () { var t = e(this); n.ignoreIfBlocked && t.data("blockUI.isBlocked") || t.unblock({ fadeOut: 0 }) }), this.each(function () { "static" == e.css(this, "position") && (this.style.position = "relative", e(this).data("blockUI.static", !0)), this.style.zoom = 1, t(this, o) }) }, e.fn.unblock = function (t) { return this[0] === window ? (e.unblockUI(t), this) : this.each(function () { o(this, t) }) }, e.blockUI.version = 2.7, e.blockUI.defaults = { message: "<h1>Please wait...</h1>", title: null, draggable: !0, theme: !1, css: { padding: 0, margin: 0, width: "30%", top: "40%", left: "35%", textAlign: "center", color: "#000", border: "3px solid #aaa", backgroundColor: "#fff", cursor: "wait" }, themedCSS: { width: "30%", top: "40%", left: "35%" }, overlayCSS: { backgroundColor: "#000", opacity: .6, cursor: "wait" }, cursorReset: "default", growlCSS: { width: "350px", top: "10px", left: "", right: "10px", border: "none", padding: "5px", opacity: .6, cursor: "default", color: "#fff", backgroundColor: "#000", "-webkit-border-radius": "10px", "-moz-border-radius": "10px", "border-radius": "10px" }, iframeSrc: /^https/i.test(window.location.href || "") ? "javascript:false" : "about:blank", forceIframe: !1, baseZ: 1e3, centerX: !0, centerY: !0, allowBodyStretch: !0, bindEvents: !0, constrainTabKey: !0, fadeIn: 200, fadeOut: 400, timeout: 0, showOverlay: !0, focusInput: !0, focusableElements: ":input:enabled:visible", onBlock: null, onUnblock: null, onOverlayClick: null, quirksmodeOffsetHack: 4, blockMsgClass: "blockMsg", ignoreIfBlocked: !1 }; var p = null, b = [] } "function" == typeof define && define.amd && define.amd.jQuery ? define(["jquery"], e) : e(jQuery) }();
+(function ($) {
+    $.fn.sidebarMenu = function (options) {
+        options = $.extend({}, $.fn.sidebarMenu.defaults, options || {});
+        var $menu_ul = $(this);
+        var level = 0;
+        //  target.addClass('nav');
+        // target.addClass('nav-list');
+        if (options.data) {
+            init($menu_ul, options.data, level);
+        }
+        else {
+            if (!options.url) return;
+            $.getJSON(options.url, options.param, function (data) {
+                init($menu_ul, data, level);
+            });
+        }
+
+        function init($menu_ul, data, level) {
+            $.each(data, function (i, item) {
+                //isHeader
+                var $header = $('<li class="header"></li>');
+                if (item.isHeader !== null && item.isHeader === true) {
+                    $header.append(item.text);
+                    $menu_ul.append($header);
+                    return;
+                }
+
+                //header
+                var li = $('<li data-level="' + level + '" data-menuId="' + item.id + '"></li>');
+
+                //a
+                var $a;
+                if (level > 0) {
+                    //$a = $('<a style="padding-left:' + (level * 20) + 'px"></a>');
+                    $a = $('<a style="padding-left:' + (level * 0) + 'px"></a>');
+                } else {
+                    $a = $('<a></a>');
+                }
+
+                var $icon = $('<i></i>');
+                $icon.addClass(item.icon);
+
+                var $title = $('<span class="title"></span>');
+                $title.addClass('menu-text').text(item.text);
+
+                $a.append($icon);
+                $a.append($title);
+                $a.addClass("nav-link");
+
+                var isOpen = item.isOpen;
+
+                if (isOpen === true) {
+                    li.addClass("active");
+                }
+                if (item.children && item.children.length > 0) {
+                    var pullSpan = $('<span class="pull-right-container"></span>');
+                    var pullIcon = $('<i class="fa fa-angle-left pull-right"></i>');
+                    pullSpan.append(pullIcon);
+                    $a.append(pullSpan);
+                    li.append($a);
+
+                    var menus = $('<ul></ul>');
+                    menus.addClass('treeview-menu');
+                    if (isOpen === true) {
+                        menus.css("display", "block");
+                        menus.addClass("menu-open");
+                    } else {
+                        menus.css("display", "none");
+                    }
+                    init(menus, item.children, level + 1);
+                    li.append(menus);
+                }
+                else {
+
+                    if (item.targetType != null && item.targetType === "blank") //Representative opens a new page
+                    {
+                        $a.attr("href", item.url);
+                        $a.attr("target", "_blank");
+                    }
+                    else if (item.targetType != null && item.targetType === "ajax") { //Open page on behalf of ajax
+                        $a.attr("href", item.url);
+                        $a.addClass("ajaxify");
+                    }
+                    else if (item.targetType != null && item.targetType === "iframe-tab") {
+                        item.urlType = item.urlType ? item.urlType : 'relative';
+                        var href = 'addTabs({id:\'' + item.id + '\',title: \'' + item.text + '\',close: true,url: \'' + item.url + '\',urlType: \'' + item.urlType + '\'});';
+                        href += "App.fixIframeCotent();";
+                        $a.attr('onclick', href);
+                    }
+                    else if (item.targetType != null && item.targetType === "iframe") { //Represents a single iframe page
+                        $a.attr("href", item.url);
+                        $a.addClass("iframeOpen");
+                        $("#iframe-main").addClass("tab_iframe");
+                    } else {
+                        $a.attr("href", item.url);
+                        $a.addClass("iframeOpen");
+                        $("#iframe-main").addClass("tab_iframe");
+                    }
+                    $a.addClass("nav-link");
+                    var badge = $("<span></span>");
+                    // <span class="badge badge-success">1</span>
+                    if (item.tip != null && item.tip > 0) {
+                        badge.addClass("label").addClass("label-success").text(item.tip);
+                    }
+                    $a.append(badge);
+                    li.append($a);
+                }
+                $menu_ul.append(li);
+            });
+        }
+
+        //In addition, the binding menu is clicked and other actions are taken.
+        $('.sidebar-menu > li:first').addClass('activeLink');
+        $(".sidebar-menu  ul li").each(function (i) {
+            $(this).parents('li').addClass('treeview');
+        });
+        $menu_ul.on("click", "li.treeview a", function () {
+
+            var $a = $(this);
+            //if ($a.next().size() == 0) {
+            if ($a.next().length == 0) {
+                if ($(window).width() < $.AdminLTE.options.screenSizes.sm) {
+                    $($.AdminLTE.options.sidebarToggleSelector).click();
+                }
+            }
+        });
+        $(".sidebar-menu li a[onclick]").click(function (e) {
+            $('.sidebar-menu li').removeClass('activeLink');
+            $('.sidebar-menu .treeview').removeClass('active');
+            $('.sidebar-menu li').removeClass('activeLink');
+            $('.treeview-menu').removeClass('menu-open').css("display", "none");
+            $(this).parent().addClass('activeLink').parents('.treeview-menu').addClass('menu-open').css("display", "block").parents('.treeview').addClass('active');
+        });
+    };
+
+    $.fn.sidebarMenu.defaults = {
+        url: null,
+        param: null,
+        data: null,
+        isHeader: false
+    };
+})(jQuery);
+
+
+

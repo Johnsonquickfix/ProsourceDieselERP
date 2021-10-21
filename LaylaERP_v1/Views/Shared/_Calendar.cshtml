@@ -1,0 +1,62 @@
+﻿@model dynamic
+@{
+    var user = LaylaERP.UTILITIES.CommanUtilities.Provider.GetCurrent();
+
+}
+
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+
+@*<iframe src="https://calendar.google.com/calendar/embed?height=600&amp;wkst=1&amp;bgcolor=%23ffffff&amp;ctz=Asia%2FKolkata&amp;src=dG9tYmVsbC5xdWlja2ZpeEBnbWFpbC5jb20&amp;src=YWRkcmVzc2Jvb2sjY29udGFjdHNAZ3JvdXAudi5jYWxlbmRhci5nb29nbGUuY29t&amp;color=%23039BE5&amp;color=%2333B679&amp;showTitle=0&amp;showPrint=0&amp;showTz=0"
+    style="border:solid 1px #777" width="430" height="400" frameborder="0" scrolling="no"></iframe>*@
+
+@*@user.EmailID*@
+
+<iframe src="https://calendar.google.com/calendar/embed?src=@user.EmailID" style="border: 0" width="430" height="400" frameborder="0" scrolling="no"></iframe>
+
+<meta name="google-signin-client_id" content="246494437669-hes3qcftc96oqs4run6mu9ht42ppqjbd.apps.googleusercontent.com">
+<div class="g-signin2" data-onsuccess="onSignIn"></div>
+
+
+<a href="#" onclick="signOut();">Sign out</a>
+
+<script>
+
+    function onSignIn(googleUser) {
+        var profile = googleUser.getBasicProfile();
+        console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+        console.log('Name: ' + profile.getName());
+        console.log('Image URL: ' + profile.getImageUrl());
+        console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+    }
+</script>
+
+
+<script>
+    function signOut() {
+        var auth2 = gapi.auth2.getAuthInstance();
+        auth2.signOut().then(function () {
+            console.log('User signed out.');
+        });
+    }
+</script>
+
+@*<script src="https://apis.google.com/js/platform.js?onload=onLoadCallback" async defer></script>
+    <script>
+        window.onLoadCallback = function () {
+            gapi.auth2.init({
+                client_id: 'AIzaSyAsrhjNp2KHq1aOZubUFj3sTDTjAFbLpXo.apps.googleusercontent.com'
+            });
+
+            if (auth2.isSignedIn.get()) {
+                googleUserProfile = auth2.currentUser.get().getBasicProfile()
+                console.log('ID: ' + googleUserProfile.getId());
+                console.log('Full Name: ' + googleUserProfile.getName());
+                console.log('Given Name: ' + googleUserProfile.getGivenName());
+                console.log('Family Name: ' + googleUserProfile.getFamilyName());
+                console.log('Image URL: ' + googleUserProfile.getImageUrl());
+                console.log('Email: ' + googleUserProfile.getEmail());
+            }
+        }
+
+
+    </script>*@

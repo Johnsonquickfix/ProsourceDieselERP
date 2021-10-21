@@ -1,0 +1,134 @@
+﻿
+@{
+
+    ViewBag.Title = "StateRecycleTax";
+    //ViewBag.Title = "Fee & Tax";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+<input type="hidden" id="hfEdit" />
+
+<!-- datatables CSS -->
+<link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+<link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
+<!-- datatables js -->
+<script src="~/Content/AdminLTE-3.1.0/datatables/datatables.min.js" type="text/javascript"></script>
+<script src="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/js/dataTables.bootstrap4.min.js" type="text/javascript"></script>
+<div class="page-title">
+    <h2 class="page-heading">State Recycle Tax</h2> <a class="btn btn-danger" id="btnAdd" href="CreateNew"><span title="Click Here To Add State Recycle Tax" data-placement="bottom" data-toggle="tooltip">Create New</span></a>
+</div>
+<section class="content content-section p-0 feentax-section table-design">
+    <div class="user-top-section">
+        <div class="tablenav top tablenav-top2">
+            <div class="alignleft actions bulkactions">
+                <select class="form-control" id="ddlSearchStatus" placeholder="Select User">
+                    <option value="1">Active</option>
+                    <option value="0">Inactive</option>
+                </select>
+                <button type="button" id="btnSearch" class="btn btn-primary btn-flat button"><span title="Click Here To Search Active/Inactive State Recycle Tax" data-placement="bottom" data-toggle="tooltip">Search</span></button>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <table id="dtdata" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>State Recycle Fee</th>
+                                <th>Product Name</th>
+                                <th>Ship State</th>
+                                <th>Ship Country</th>
+                                <th>Taxable</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*<script src="~/Scripts/jquery-3.4.1.min.js"></script>*@
+
+    <script src="@Url.Content("~/js/FeeNTax/FeeNTax.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+    <script src="@Url.Content("~/js/Users/RolePermission.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+
+
+    <script>
+        $(document).ready(function () {
+            var loc = window.location.pathname;
+            CheckPermissions("#btnAdd", "#hfEdit", "", loc);
+
+            setTimeout(function () { Datagrid(); }, 2000);
+            $("#btnSearch").click(function () {
+                Datagrid();
+            });
+
+        });
+
+
+            @*var id = @ViewBag.id;
+            if(id> 0){
+                GetFeeNTaxByID(id);
+            }*@
+
+           //datagridLoad();
+
+
+
+            //$.get('/Users/GetCity', function (data) {
+            //    debugger
+
+            //    var Ct = $("#hfCity").val();
+            //    $.each(data, function (index, value) {
+            //        if (Ct == value)
+            //            $('<option selected>').val(value).text(value).appendTo("#shipcity");
+            //        else
+            //            $('<option>').val(value).text(value).appendTo("#shipcity");
+            //    })
+            //})
+            //txtState
+            //$.get('/Users/GetState', function (data) {
+            //    debugger
+
+            //    var st = $("#hfState").val();
+            //    $.each(data, function (index, value) {
+            //        if (st == value)
+            //            $('<option selected>').val(value).text(value).appendTo("#shipstate");
+            //        else
+            //            $('<option>').val(value).text(value).appendTo("#shipstate");
+            //    })
+            //})
+
+
+            //$(document).on('click', "#btnsave", function () {
+            //    debugger
+            //    AddFeeNTax();
+            //})
+
+
+
+            //function getdatazip() {
+            //    var Postcode = $("#Ship_Zip_PostCode").val();
+            //    $.ajax({
+            //        url: "https://ziptasticapi.com/" + Postcode,
+            //        type: "GET",
+            //        dataType: 'JSON',
+            //        data: [],
+            //        success: function (data) {
+            //            /*    $("#txtCountry").val(data.country);*/
+            //            $("#shipstate").val(data.state);
+            //            $("#shipcity").val(data.city);
+            //        },
+            //        error: function (msg) { alert(msg); }
+            //    });
+
+            //}
+
+    </script>
+</section>

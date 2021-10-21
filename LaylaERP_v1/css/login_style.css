@@ -1,0 +1,486 @@
+﻿body, html, .login_box-section {
+    height: 100% !important;
+}
+body {
+    font-family: 'Open Sans', sans-serif !important;
+    color: #4f4f4f !important;
+    font-size: 15px !important; line-height:1.5 !important;
+}
+.terms-privacy-dial p {
+    margin-bottom:16px; line-height:23px;
+}
+.terms-privacy-dial a {
+    color: #ee4823;
+}
+.terms-privacy-dial h4 {
+    font-size:24px; font-weight:400; margin:0px 0px 8px 0px;
+}
+button, input, select, textarea, h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+    font-family: 'Open Sans', sans-serif;
+}
+.login_box-section {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+.dropdown-menu > li > a {
+    color: #4f4f4f;font-size:12px;
+}
+/**content*/
+.main-login-box {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0px !important;
+    margin: 0px !important;
+    flex-direction: column;
+}
+/**footer*/
+.main-login-footer {
+    margin: 15px 0px 0px !important;
+    padding: 0px !important;
+}
+.main-login-footer .a-divider-inner:after
+{content:none !important;
+}
+.login-inner-box {
+    display: flex;
+    align-items: stretch;
+    max-width: 750px;
+    border-radius: 10px;
+    border: 1px solid #D2D6DE; overflow:hidden;
+    width: 100%;
+    background: #fff;
+}
+
+.login-varification .login-inner-box {
+    max-width: 650px;
+}
+.main-login-box.auth-workflow .auth-pagelet-container {
+    width: 100%;
+    margin: 0px;
+}
+.login-inner-box #authportal-center-section {
+    width: 60%;
+    margin: 0px;
+    padding:40px 30px;
+}
+.login-inner-box .auth-navbar {
+    display: flex;
+    border-right: 1px solid #D2D6DE;
+    align-items: center;
+    padding: 30px;
+    background: #f9f9f9;
+    width: 40%;
+}
+.login-continue {
+    text-align: left;
+    padding: 0px;
+}
+.login-page .a-spacing-base, .a-ws .a-ws-spacing-base {
+    margin: 0px !important;
+}
+.login-inner-box .a-padding-extra-large {
+padding:0px !important;}
+.login-page #authportal-main-section {
+margin:0px !important;}
+#btnLogin {
+    color: #fff;
+   
+    padding: 0px 50px;
+    height: 42px;
+    border-radius: 3px; background:transparent;
+    line-height: 42px;
+    font-size: 16px;
+    display: inline-block;
+    
+}
+.login-continue .login-inner, .a-button-primary.otp-varification-btn .a-button-inner {
+    border-radius: 3px;
+    background: #ee4823;
+    box-shadow: 0 1px 0 rgb(255 255 255 / 40%) inset;
+    background: -moz-linear-gradient(top, #ee4823 0%, #ed3b17 100%);
+    background: -webkit-linear-gradient(top, #ee4823 0%,#ed3b17 100%);
+    background: linear-gradient(to bottom, #ee4823 0%,#ed3b17 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ee4823', endColorstr='#ed3b17',GradientType=0 );
+}
+    .login-continue .login-inner:hover, .a-button-primary.otp-varification-btn .a-button-inner:hover {
+        background: #ed3b17;
+        background: -moz-linear-gradient(top, #ed3b17 0%, #ee4823 100%);
+        background: -webkit-linear-gradient(top, #ed3b17 0%,#ee4823 100%);
+        /*background: linear-gradient(to bottom, #ed3b17 0%,#ee4823 100%);*/
+        background: linear-gradient(to bottom, orange 0%,orange 100%);
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ed3b17', endColorstr='#ee4823',GradientType=0 );
+    }
+.a-button-primary.otp-varification-btn  {
+border:0px;}
+    .login-page, .register-page {
+        background: #fff;
+    }
+.login-h1 {
+    font-size: 30px;
+    margin-bottom: 20px !important;font-weight:400; margin-top:0px;
+}
+.footer-menu-login .auth-footer-seperator:first-child {width:0px;
+}
+.login-page [type="email"], .login-page [type="password"] {
+    border: 1px solid #D2D6DE;
+    /*border-width:0px 0px 1px 0px;*/
+    height: 42px;
+    background: #fff;
+    padding: 0px 15px;
+    width: 100%;
+    margin-top: 3px;
+}
+.login-page label {
+ padding-bottom:15px;
+    font-weight:400; width:100%;
+}
+.login-continue .login-inner {
+    display:inline-block;position:relative;
+}
+.login-continue {
+box-shadow:none !important; cursor:context-menu;
+}
+
+    .forgot-section .auth-footer-seperator {
+    width:15px;}
+.footer-menu-login {
+margin-bottom:5px;}
+#varification-box {
+margin:0px !important;border:0px;}
+    #varification-box .a-box-inner {
+    padding:0px;}
+#auth-verify-button {
+padding-top:0px; padding-bottom:0px; height:42px; line-height:42px;}
+.otp-varification-btn {
+    height: 42px; max-width:160px;
+    line-height: 42px;
+}
+    .otp-varification-btn .a-button-text, .otp-varification-btn .a-button-inner {
+        line-height: 42px;
+        font-size: 16px;
+        height: 42px;
+        color: #fff;
+    }
+
+.login-page.login-varification label {
+    padding-bottom: 5px;
+}
+#auth-pv-form h5 {
+font-weight:normal; color:#4f4f4f !important;}
+    #auth-pv-form h5 #lblCounter {
+    font-weight:700;}
+.login-continue {
+    text-align: left !important;
+    padding-left: 2px !important;
+}
+/**faq style*/
+.container-dialog.modal-dialog {
+    width: 1100px;
+}
+.container-dialog .container {
+max-width:100%;}
+.container-dialog.modal-dialog .modal-content {
+    border-radius: 5px;
+    background: #f9f9f9;
+}
+.container-dialog .modal-title {
+    text-align:center;
+}
+.container-dialog .modal-header {
+    padding-top: 35px;
+    background-color: #f8f8f8;
+    padding-bottom: 35px;
+}
+.container-dialog .modal-title {
+    font-size: 32px; font-weight:400; margin:0px;
+}
+.toggtitle.open i {
+    transition: 0.5s ease all;
+    transform: rotate( 45deg );
+}
+.container-dialog .row {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    margin-right: -15px;
+    margin-left: -15px;
+}
+    .faq-row h3 {
+    font-size: 28px;
+    margin-top: 30px;
+    margin-bottom: 20px;
+    text-align: left;
+    font-style: italic;
+    font-weight: 600;
+}
+.faq-row .col-sm-6 {
+    margin-bottom: 50px;
+    padding: 0px 25px 0px 15px;
+}
+.faq-row h5 {
+    font-size: 20px; font-weight:400;
+}
+.sep-faq {
+    border-bottom: 1px solid #c8c8c8;
+    padding: 15px 30px 15px 15px;
+}
+.toggtitle {
+    color: #4f4f4f;
+    position: relative;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+}
+    .toggtitle i {
+        position: absolute;
+        right: -20px;
+        font-size: 10px;
+        transition: 0.5s ease all;
+        color: #4f4f4f;
+        top: 4px;
+    }
+.toggcontent {
+    display: none;
+    padding-top: 4px;
+    padding-left: 15px;
+}
+.modal-header .close {
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    font-size: 21px;
+    line-height: 1;
+    color: #000;
+    text-shadow: 0 1px 0 #fff;
+    filter: alpha(opacity=20);
+    opacity: .2;
+}
+/******contact us*/
+.contact-form-box {
+    max-width: calc(100% - 30px);
+    margin: 30px auto 20px;
+/*    background: #eeeeee;
+    border: 1px solid #e5e5e5;*/
+    border-radius: 6px;
+    padding: 25px 40px 15px;
+}
+    .contact-form-box h2 {
+        color: #4a4f55;
+        font-size: 20px;
+        margin-bottom: 35px;
+        text-align: center;
+        line-height: 30px;
+        font-weight: 600;
+    }
+.contact-row-form > div[class^="col-md"] {
+    margin-bottom: 20px;
+}
+.form-contact label {
+    color: #323232;
+    font-size: 15px;
+    font-weight: 300; 
+    padding-bottom:0px;
+    margin-bottom: 3px;
+}
+.form-contact .wpcf7-form-control-wrap {
+    width: 100%;
+    display: inline-block;
+}
+.form-contact .wpcf7-form-control-wrap {
+    width: 100%;
+    display: inline-block;
+}
+.form-contact [type="text"], .form-contact [type="email"] {
+    border: 1px solid #c3c3c3;
+    height: 45px;
+    background: #fff;
+    padding: 0px 15px;
+    width: 100%; margin:0px;
+}
+.form-contact [type="submit"] {
+    color: #0e0e0e;
+    background: #eee;
+    text-transform: uppercase;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 400;
+    height: 42px;
+    padding: 0px 35px;
+    border: 1px solid #ef4623;
+    box-shadow: 0px 0px 4px #6b6b6b;
+    -webkit-box-shadow: 0px 0px 4px #6b6b6b;
+}
+
+.contact-box-text h5 {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.5;
+    color: #4f4f4f;
+}
+    .contact-box-text h5 a {
+        color: #ee4823;
+    }
+.contact-box {
+box-shadow:none;border:1px solid #c5c5c5;}
+    .contact-box .box-header {
+    padding-left:30px; padding-right:30px;}
+[name="signIn"] {
+    position: relative;
+}
+
+    [name="signIn"] .login-continue {
+        width: auto;
+    }
+
+.login-btn-group {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.contact-footer {
+    height: 100%;
+    text-align: center;
+    padding: 15px 35px;
+    border-radius: 5px;
+}
+
+.contact-links-box .row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+/*.contact-links-box .col-sm-4 {
+    padding: 10px;
+}*/
+
+.contact-footer i {
+    font-size: 50px;
+    margin: 30px 0px;
+    display: block;
+    color: #d9534f;
+}
+
+.contact-dialog .modal-content .modal-header, .container-dialog .modal-content .modal-header {
+    padding-bottom: 20px;
+    background: #f9f9f9;
+    border: 0px;
+}
+.post-faq-row .toggcontent table{text-align:center;}
+@media(min-width:992px) and (max-width:1199px) {
+.container-dialog.modal-dialog {
+    max-width: 950px;
+}
+}
+@media(min-width:768px) and (max-width:991px) {
+.login-inner-box {
+max-width:680px;}
+.container-dialog.modal-dialog {
+max-width:720px;
+}
+}
+@media(max-width:991px) {
+    .contact-footer {
+        padding: 10px;
+    }
+
+        .contact-footer address {
+            margin-bottom: 0px;
+        }
+
+        .contact-footer i {
+            margin: 20px auto 25px;
+        }
+
+    .contact-form-box h2 br {
+        display: none;
+    }
+
+    .contact-row-form {
+        display: flex;
+        flex-direction: column;
+    }
+}
+
+@media(max-width:767px) {
+.contact-form-box{margin-top:0px; max-width:100%; padding:15px;}
+    .contact-links-box .row {
+        margin: 0px -15px;
+    }
+    .contact-footer {
+    padding:10px 10px 25px 10px;}
+    .contact-links-box .row {
+    flex-direction:column;}
+.main-login-footer {
+margin-bottom:25px !important;}
+.login-inner-box, .login-varification .login-inner-box {
+    margin-top: 25px;
+    max-width: calc(100% - 40px);
+}
+.login-inner-box .auth-navbar {
+    padding:20px;
+}
+.login-inner-box #authportal-center-section {
+    padding:20px;
+}
+.login-h1 {
+margin-top:0px;
+}
+.container-dialog.modal-dialog {
+max-width:calc(100% - 40px);
+margin:25px auto;
+}
+    .footer-menu-login .a-link-normal {
+    font-size:12px;}
+    .container-dialog .modal-header {
+    padding-top:30px;padding-bottom:20px;}
+    .container-dialog .modal-title {
+    font-size:26px;}
+    .faq-row > .col-sm-12 {
+    padding-left:0px; padding-right:0px;}
+}
+@media(max-width:575px){
+    .container-dialog.modal-dialog {
+        max-width:calc(100% - 20px);
+        margin:10px auto;
+    }
+    .sep-faq {
+    padding:15px 20px 15px 5px;}
+    .faq-row .toggcontent {
+    padding-left:0px;}
+    .faq-row .col-sm-6 {
+    margin-bottom:30px;}
+    .faq-row h3 {font-size:26px;
+    margin-top:10px;}
+.login-inner-box {
+flex-direction:column;}
+.login-inner-box .auth-navbar {justify-content:center; border:0px; border-bottom:1px solid #d2d6de;
+width:100%;}
+.login-inner-box #authportal-center-section {
+width:100%;}
+.login-inner-box .auth-navbar > div {
+margin-bottom:0px !important; }
+.login-inner-box .auth-navbar img {
+max-width:160px;}
+    .footer-menu-login {
+    padding:0px 15px; text-align:center;
+    }
+.login-continue {
+    text-align:left !important;}
+    .forgot-section {
+    text-align:center;}
+    .auth-footer-seperator:not(:first-child) {
+    width:12px;}
+    .g-recaptcha {
+        transform: scale(.9) translateX(-15px);
+    }
+    .contact-row-form > div[class^="col-md"]{width:100%;}
+    .contact-form-box h2 {
+    margin-top:10px; margin-bottom:20px;font-size:18px; font-weight:400;}
+}

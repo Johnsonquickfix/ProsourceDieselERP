@@ -650,6 +650,8 @@
     <Content Include="Images\varient_pic.png" />
     <Content Include="js\Accounting\AccountBalanceList.js" />
     <Content Include="js\Accounting\AccountingJournal.js" />
+    <Content Include="js\Accounting\AccountJournalList.js" />
+    <Content Include="js\Accounting\AccountLedgerList.js" />
     <Content Include="js\Accounting\ChartOfAccounts.js" />
     <Content Include="js\Accounting\ProductAccounts.js" />
     <Content Include="js\app.js" />
@@ -992,6 +994,8 @@
     <Content Include="Views\Giftcard\ordermeta.cshtml" />
     <Content Include="Views\Coupons\AutoGenerate.cshtml" />
     <Content Include="Views\Coupons\NewAutoGenerate.cshtml" />
+    <Content Include="Views\Accounting\AccountJournal.cshtml" />
+    <Content Include="Views\Accounting\AccountLedger.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

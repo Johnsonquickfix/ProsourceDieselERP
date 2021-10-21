@@ -1,0 +1,112 @@
+﻿@model dynamic
+
+@{
+    ViewBag.Title = "AddCommissionRate";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="page-title">
+    <h2 class="page-heading">Update Commission Rate</h2>
+</div>
+
+<div class="createuser-section section_wrapper">
+    <div class="create-user-box">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box box-primary create-user-primary">
+                    <div class="box-header with-border">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <input type="hidden" id="hfid" value="@Model.id" />
+
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">AOV Range1</label>
+                                    <input type="number" class="form-control" id="txtaovrange1" placeholder="Enter AOV Range1" value="@Model.AOV_Range1">
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">AOV Range2</label>
+                                    <input type="number" class="form-control" id="txtaovrange2" placeholder="Enter AOV Range2" value="@Model.AOV_Range2">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">Commission Rate</label>
+                                    <input type="number" class="form-control" id="txtcommrate" placeholder="Enter Commission" value="@Model.Comm_Rate">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box-footer">
+                        <div class="text-right">
+                            <a href="#" class="btn btn-danger" id="btnSave"><b>Update</b></a>
+
+                            <a class="btn btn-danger" href="AgentCommissionRate">Back to List</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.nav-tabs-custom -->
+            </div>
+            <!-- /.col -->
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        $("#loader").hide();
+        $(document).on('click', "#btnSave", function () {
+            UpdateMenus();
+        })
+
+    });
+</script>
+
+<script>
+    function UpdateMenus() {
+        debugger
+        aovrange1 = $("#txtaovrange1").val();
+        id = $("#hfid").val();
+        aovrange2 = $("#txtaovrange2").val();
+        commrate = $("#txtcommrate").val();
+
+
+        if (aovrange1 == "") {
+            swal('Alert', 'Please Enter AOV Range 1', 'error').then(function () { swal.close(); $('#txtaovrange1').focus(); });
+        }
+        else if (aovrange2 == "") {
+            swal('Alert', 'Please Enter AOV Range 2', 'error').then(function () { swal.close(); $('#txtaovrange2').focus(); });
+        }
+        else if (commrate == "") {
+            swal('Alert', 'Please Enter Commission Rate', 'error').then(function () { swal.close(); $('#txtmenuurl').focus(); });
+        }
+
+        else {
+
+            var obj = {
+                id: id,
+                AOV_Range1: aovrange1,
+                AOV_Range2: aovrange2,
+                Comm_Rate: commrate,
+            }
+            $.ajax({
+                url: '/AgentCommissionRate/UpdateCommission/', dataType: 'json', type: 'Post',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(obj),
+                dataType: "json",
+                beforeSend: function () { $("#loader").show(); },
+                success: function (data) {
+                    if (data.status == true) {
+                        //$('#parent > input:text').val('');
+                        swal('Alert!', data.message, 'success').then((result) => { location.href = 'AgentCommissionRate'; });
+                    }
+                    else {
+                        swal('Alert!', data.message, 'error');
+                    }
+                },
+                complete: function () { $("#loader").hide(); },
+                error: function (error) { swal('Error!', 'something went wrong', 'error'); },
+            })
+        }
+    }
+</script>

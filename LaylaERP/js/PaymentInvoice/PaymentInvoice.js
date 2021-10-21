@@ -23,10 +23,10 @@
             PoPartiallyColleps(true);
     });
     //PartiallyGrid(true);
-    
     PoPartiallyColleps(true);
-    $('#dtdataPartially').show();
-    $('#divpodata').hide();
+    PurchaseOrderGrid(true);
+    $('#divprdata').hide();
+    $('#divpodata').show();
 
     $(document).on('click', "#btnChange", function () {
         let type = $('#ddlStatus').val();
@@ -42,6 +42,7 @@
 
     // Add event listener for opening and closing details
     $('#dtdataPartially tbody').on('click', '.pdetails-control', function () {
+       // console.log('svvvd');
         var tr = $(this).closest('tr');
         var row = $('#dtdataPartially').DataTable().row(tr);
         if (row.child.isShown()) {
@@ -65,11 +66,13 @@ $('#ddlStatus').change(function () {
         $('#divprdata').hide();
         $('#divpodata').show();
         PurchaseOrderGrid(true);
+      //  console.log('dvvs');
     }
     else {
         $('#divprdata').show();
         $('#divpodata').hide();
         PoPartiallyColleps(true);
+        //console.log('ds');
     }
 
 });
@@ -137,9 +140,9 @@ function PurchaseOrderGrid(is_date) {
                 'data': 'refordervendor', sWidth: "10%", title: 'Invoice No', sWidth: "10%"
             },
             { data: 'vendor_name', title: 'Vendor Name', sWidth: "10%" },            
-            { data: 'total_ttc', title: 'Amount', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
-            { data: 'recieved', title: 'Received', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
-            { data: 'remaining', title: 'Remaining', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },   
+            { data: 'total_ttc', title: 'Total Amount', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
+            { data: 'recieved', title: 'Paid Amount', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
+            { data: 'remaining', title: 'Remaining Amount', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
             { data: 'Status', title: 'Status', sWidth: "10%" }
         ],
 
@@ -284,7 +287,7 @@ function PoPartiallyColleps(is_date) {
 /* Formatting function for row details - modify as you need */
 function formatPartially(d) {
     //console.log(d.ref);
-    let option = { strValue1: d.id }, wrHTML = '<table class="inventory-table table-blue table check-table table-bordered table-striped dataTable no-footer"><thead><tr><th style="width:10%; text-align:left;">Bill No</th><th style="width:12%; text-align:left;">Receive Date</th><th style="width:60%; text-align:left;">Description</th><th style="width:10%; text-align:right;">Amount</th><th style="width:10%; text-align:right;">Paid Amount</th><th style="width:10%; text-align:right;">Remaining</th></tr></thead>';
+    let option = { strValue1: d.id }, wrHTML = '<table class="inventory-table table-blue table check-table table-bordered table-striped dataTable no-footer"><thead><tr><th style="width:10%; text-align:left;">Bill No</th><th style="width:12%; text-align:left;">Receive Date</th><th style="width:60%; text-align:left;">Description</th><th style="width:10%; text-align:right;">Total Amount</th><th style="width:10%; text-align:right;">Paid Amount</th><th style="width:10%; text-align:right;">Remaining Amount</th></tr></thead>';
     $.ajax({
         url: '/PaymentInvoice/GetPartiallyOrderDataList', type: 'post', dataType: 'json', contentType: "application/json; charset=utf-8", data: JSON.stringify(option),
         success: function (result) {

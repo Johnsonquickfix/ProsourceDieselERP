@@ -492,7 +492,7 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "SELECT eab.rowid as id, inv_complete, code_journal, date_format(date_creation,'%m-%d-%Y') as datecreation, debit, credit, label_operation, v.name FROM erp_accounting_bookkeeping"
+                string strSql = "SELECT eab.rowid as id, inv_num, PO_SO_ref, inv_complete, code_journal, date_format(date_creation,'%m-%d-%Y') as datecreation, if(debit=0,'',debit) as debit, if(credit=0,'',credit) as credit, label_operation, v.name FROM erp_accounting_bookkeeping"
                                 + " eab left join wp_vendor v on v.code_vendor = eab.thirdparty_code where 1=1 ";
                 if (!string.IsNullOrEmpty(searchid))
                 {
@@ -502,7 +502,7 @@ namespace LaylaERP.BAL
                 {
                     //strWhr += " and (is_active='" + userstatus + "') ";
                 }
-                strSql += strWhr + string.Format(" group by inv_complete, eab.rowid order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
+                strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
 
                 strSql += "; SELECT ceil(Count(eab.rowid)/" + pagesize.ToString() + ") TotalPage,Count(eab.rowid) TotalRecord FROM erp_accounting_bookkeeping eab left join wp_vendor v on v.code_vendor = eab.thirdparty_code where 1=1 " + strWhr.ToString();
 
@@ -550,6 +550,21 @@ namespace LaylaERP.BAL
                 throw ex;
             }
             return dt;
+        }
+
+        public static DataTable GrandTotal()
+        {
+            DataTable dtr = new DataTable();
+            try
+            {
+                string strSql = "SELECT replace(format(sum(debit),2),',','') as debit, replace(format(sum(credit),2),',','') as credit from erp_accounting_bookkeeping";
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dtr = ds.Tables[0];
+
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dtr;
         }
     }
 }

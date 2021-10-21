@@ -46,7 +46,7 @@ namespace LaylaERP.Controllers
                         e_date = Convert.ToDateTime(end_date);
                     str += "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
                     str += "<Orders pages=\"1\">";
-                    DataTable dt = OrderRepository.ProcessingOrders(s_date, e_date);
+                    DataTable dt = ShipRepository.ProcessingOrders(s_date, e_date);
                     int qty = 0; long var_id = 0, prod_id = 0; decimal order_price = 0, price = 0;
                     foreach (DataRow DR in dt.Rows)
                     {
@@ -104,7 +104,7 @@ namespace LaylaERP.Controllers
                             str += "<ShippingMethod>Mattress Protector - FedEx One Rate Pak</ShippingMethod>";
 
                         str += "<Items>";
-                        DataTable dtitems = OrderRepository.ProcessingOrdersItemsDetails(DR["ID"].ToString(), DR["split_detail_id"].ToString());
+                        DataTable dtitems = ShipRepository.ProcessingOrdersItemsDetails(DR["ID"].ToString(), DR["split_detail_id"].ToString());
                         foreach (DataRow DR_item in dtitems.Rows)
                         {
                             if (DR_item["product_id"] != DBNull.Value && !string.IsNullOrEmpty(DR_item["product_id"].ToString()))
@@ -175,9 +175,9 @@ namespace LaylaERP.Controllers
                     //$shipstation_xml = file_get_contents('php://input'); 
 
                     List<string> shipped_items = new List<string>();
-                    int shipped_item_count = 0;
-                    bool order_shipped = false;
-                    string order_note = "";
+                    //int shipped_item_count = 0;
+                    //bool order_shipped = false;
+                    //string order_note = "";
                 }
                 else
                 {
@@ -186,6 +186,27 @@ namespace LaylaERP.Controllers
             }
             catch { str = "<?xml version=\"1.0\" encoding=\"utf-8\"?><Orders></Orders>"; }
             return Content(str, ContentType.Xml, Encoding.UTF8);
+        }
+
+        public ActionResult CreateShipOrder()
+        {
+            try
+            {
+                DataTable dt = ShipRepository.GetPendingShipOrdersList();
+                foreach (DataRow dr in dt.Rows)
+                {
+                    if (dr["id"] != DBNull.Value)
+                    {
+                        try
+                        {
+                            ShipRepository.CreateShipOrder(Convert.ToInt64(dr["id"].ToString()));
+                        }
+                        catch { }
+                    }
+                }
+            }
+            catch { }
+            return View();
         }
     }
 }

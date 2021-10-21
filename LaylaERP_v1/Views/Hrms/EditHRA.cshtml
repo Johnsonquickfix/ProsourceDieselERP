@@ -1,0 +1,191 @@
+﻿
+@{
+    ViewBag.Title = "EditHRA";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@*datatables CSS*@
+<link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+<link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
+@*datatables js*@
+<script src="~/Content/AdminLTE-3.1.0/datatables/datatables.min.js" type="text/javascript"></script>
+<script src="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/js/dataTables.bootstrap.min.js" type="text/javascript"></script>
+
+<link href="~/Content/DataTables/bootstrap-datepicker.css" rel="stylesheet" />
+<script src="~/Content/DataTables/bootstrap-datepicker.js"></script>
+
+
+
+<div class="page-title">
+    <h2 class="page-heading">Update HRA</h2><span title="Click Here To Back To List" data-placement="bottom" data-toggle="tooltip"><a href="../../Hrms/HRA" class="btn btn-danger">Back to List</a></span>
+</div>
+<section class="content section-content employees-section">
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="box box-primary">
+                <div class="box-body">
+                    <input type="hidden" id="hfid" />
+                    <div class="form-group">
+                        <label for="prefixcode">Basic 1<span style="color:red">*</span></label>
+                        <input type="text" class="form-control" id="txtbasic1" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ddlproduct">Basic 2<span style="color:red">*</span></label>
+                        <input type="text" class="form-control" id="txtbasic2" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="vendor">HRA Office<span style="color:red">*</span></label>
+                        <input type="text" class="form-control" id="txthraoffice" />
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6" id="details">
+            <div class="box box-primary">
+                <div class="box-body">
+                    <div class="form-group">
+                        <label for="country">HRA Field<span style="color:red">*</span></label>
+                        <input type="text" class="form-control" id="txthrafield" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="country">From Date<span style="color:red">*</span></label>
+                        <input type="text" class="form-control" id="txtfromdate" /><span class="even-space"></span>
+                    </div>
+
+                    <div class="box-footer">
+                        <a href="#" class="btn btn-danger" id="btnUpdate"><span title="Click Here To Update HRA" data-placement="bottom" data-toggle="tooltip"><b>Update</b></span></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    $(document).ready(function () {
+        $("#loader").hide();
+        debugger
+        var url = window.location.pathname;
+        var id = url.substring(url.lastIndexOf('/') + 1);
+        EditSelect(id);
+
+        $("#btnUpdate").click(function () {
+            UpdateHRA();
+        })
+    })
+</script>
+<script>
+    $(function () {
+        $("#txtfromdate").datepicker({
+            format: 'mm-dd-yyyy',
+        });
+
+    });
+</script>
+
+<script>
+    function EditSelect(id) {
+        var strValue1 = id;
+        var obj =
+            $.ajax({
+                url: "/Hrms/SelectHRAList/" + strValue1,
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                dataType: 'JSON',
+                data: JSON.stringify(obj),
+                success: function (data) {
+                    console.log(data);
+                    var jobj = JSON.parse(data);
+                    if (jobj.length > 0) {
+                        console.log(jobj[0].id);
+                        $("#hfid").val(jobj[0].id);
+                        $("#txtbasic1").val(jobj[0].basic1);
+                        $("#txtbasic2").val(jobj[0].basic2);
+                        $("#txthraoffice").val(jobj[0].hra_office);
+                        $("#txthrafield").val(jobj[0].hra_field);
+                        $("#txtfromdate").val(jobj[0].from_date);
+                    }
+                },
+                error: function (msg) {
+
+                }
+            });
+    }
+
+</script>
+
+<script>
+    function UpdateHRA() {
+        debugger
+        id = $("#hfid").val();
+        basic_1 = $("#txtbasic1").val();
+        basic_2 = $("#txtbasic2").val();
+        hraoffice = $("#txthraoffice").val();
+        hrafield = $("#txthrafield").val();
+        fromdate = $("#txtfromdate").val();
+
+        var formattedDate = new Date(fromdate);
+        var d = formattedDate.getDate();
+        var m = ("0" + (formattedDate.getMonth() + 1)).slice(-2)
+        var y = formattedDate.getFullYear();
+        var date_created = y + "-" + m + "-" + d;
+
+        if (basic_1 == "") {
+            swal('Alert', 'Please Enter Basic 1', 'error').then(function () { swal.close(); $('#txtbasic1').focus(); });
+        }
+        else if (basic_2 == "") {
+            swal('Alert', 'Please Enter Basic 2', 'error').then(function () { swal.close(); $('#txtbasic2').focus(); });
+        }
+        else if (parseFloat(basic_1) > parseFloat(basic_2)) {
+            swal('Alert', 'Basic2 Is Not Less Than Basic1', 'error').then(function () { swal.close(); $('#txtbasic2').focus(); });
+        }
+        else if (hraoffice == "") {
+            swal('Alert', 'Please Enter HRA Office', 'error').then(function () { swal.close(); $('#txthraoffice').focus(); });
+        }
+        else if (hrafield == "") {
+            swal('Alert', 'Please Enter HRA Field', 'error').then(function () { swal.close(); $('#txthrafield').focus(); });
+        }
+        else if (parseFloat(hraoffice) > parseFloat(hrafield)) {
+            swal('Alert', 'HRA Field Is Not Less Than HRA Office', 'error').then(function () { swal.close(); $('#txthrafield').focus(); });
+        }
+        else if (fromdate == "") {
+            swal('Alert', 'Please Enter Date', 'error').then(function () { swal.close(); $('#txtfromdate').focus(); });
+        }
+        else {
+            var obj = {
+                rowid: id,
+                basic1: basic_1,
+                basic2: basic_2,
+                hra_office: hraoffice,
+                hra_field: hrafield,
+                from_date: date_created,
+            }
+            $.ajax({
+                url: '/Hrms/UpdateHRA', dataType: 'json', type: 'Post',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(obj),
+                dataType: "json",
+                beforeSend: function () { $("#loader").show(); },
+                success: function (data) {
+                    if (data.status == true) {
+                        swal('Alert!', data.message, 'success').then((result) => { location.href = '../HRA'; });
+                        //ListHra();
+                        reset();
+                    }
+                    else {
+                        swal('Alert!', data.message, 'error');
+                    }
+                },
+                complete: function () { $("#loader").hide(); },
+                error: function (error) { swal('Error!', 'something went wrong', 'error'); },
+            })
+
+        }
+
+    }
+</script>

@@ -1,0 +1,198 @@
+﻿
+@{
+    ViewBag.Title = "ListGrantLeave";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@*datatables CSS*@
+<link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+<link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
+@*datatables js*@
+<script src="~/Content/AdminLTE-3.1.0/datatables/datatables.min.js" type="text/javascript"></script>
+<script src="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/js/dataTables.bootstrap.min.js" type="text/javascript"></script>
+
+<link href="~/Content/DataTables/bootstrap-datepicker.css" rel="stylesheet" />
+<script src="~/Content/DataTables/bootstrap-datepicker.js"></script>
+
+
+<div class="page-title">
+    <h2 class="page-heading">Leave List</h2>
+</div>
+<section class="content section-content table-design customer-section">
+    <div class="nav-tabs-custom">
+        <ul class="nav nav-tabs" id="mytabs" role="tablist">
+            <li class="active"><a href="#tab_1" data-toggle="tab"><span title="Pending Leave" data-placement="bottom" data-toggle="tooltip">Pending Leave</span></a></li>
+            <li><a href="#tab_2" data-toggle="tab"><span title="Approved Leave" data-placement="bottom" data-toggle="tooltip">Approved Leave</span></a></li>
+            <li><a href="#tab_3" data-toggle="tab"><span title="Rejected Leave" data-placement="bottom" data-toggle="tooltip">Rejected Leave</span></a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane active" id="tab_1">
+                <div class="user-top-section">
+                    <div class="tablenav top tablenav-top2">
+                        <div class="alignleft actions bulkactions">
+                            <select class="form-control" id="ddlStatusPending" placeholder="Select User">
+                                <option value="1">Approved</option>
+                                <option value="2">Rejected</option>
+                                <option value="0">Pending</option>
+                            </select>
+                            <span title="Click Here To Change Status Of Leave After Selecting Checkbox" data-placement="bottom" data-toggle="tooltip"><button type="button" id="btnChangePending" class="btn btn-primary btn-flat button">Change</button></span>&nbsp;&nbsp;
+                            <span class="even-space">From</span><input type="text" class="form-control" id="txtfromdate" />
+                            <span class="even-space">To</span><input type="text" class="form-control" id="txttodate" />
+                            <span title="Click Here To Search Pending Leave Datewise" data-placement="bottom" data-toggle="tooltip"><button type="button" id="btnGo" class="btn btn-primary btn-flat button">Go</button></span>
+                        </div>
+                    </div>
+                </div>
+                <!-- end top-->
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="box box-primary">
+                            <div class="box-header">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <table id="PendingEmployeeListdata" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
+                                            <thead>
+                                                <tr>
+                                                    @*<th><input type="checkbox" name="checkAll" id="checkAll"><label></label></th>*@
+                                                    <th><input type="checkbox" name="checkAll2" id="checkAll2"><label></label></th>
+                                                    <th>Id</th>
+                                                    <th>Name</th>
+                                                    <th>Leave Type</th>
+                                                    <th>From</th>
+                                                    <th>To</th>
+                                                    <th>Days</th>
+                                                    <th>Status</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane" id="tab_2">
+                <div class="user-top-section">
+                    <div class="tablenav top tablenav-top2">
+                        <div class="alignleft actions bulkactions">
+                            <select class="form-control" id="ddlStatus" placeholder="Select User">
+                                <option value="1">Approved</option>
+                                <option value="2">Rejected</option>
+                                <option value="0">Pending</option>
+                            </select>
+                            <span title="Click Here To Change Status Of Leave After Selecting Checkbox" data-placement="bottom" data-toggle="tooltip"><button type="button" id="btnChange" class="btn btn-primary btn-flat button">Change</button></span>
+                        </div>
+                    </div>
+                </div>
+                <!-- end top-->
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="box box-primary">
+                            <div class="box-header">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <table id="EmployeeListdata" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
+                                            <thead>
+                                                <tr>
+                                                    @*<th><input type="checkbox" name="checkAll" id="checkAll"><label></label></th>*@
+                                                    <th><input type="checkbox" name="checkAll" id="checkAll"><label></label></th>
+                                                    <th>Id</th>
+                                                    <th>Name</th>
+                                                    <th>Leave Type</th>
+                                                    <th>From</th>
+                                                    <th>To</th>
+                                                    <th>Days</th>
+                                                    <th>Status</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane" id="tab_3">
+                <div class="user-top-section">
+                    <div class="tablenav top tablenav-top2">
+                        <div class="alignleft actions bulkactions">
+                            <select class="form-control" id="ddlStatusReject" placeholder="Select User">
+                                <option value="1">Approved</option>
+                                <option value="2">Rejected</option>
+                                <option value="0">Pending</option>
+                            </select>
+                            <span title="Click Here To Change Status Of Leave After Selecting Checkbox" data-placement="bottom" data-toggle="tooltip"><button type="button" id="btnChangeReject" class="btn btn-primary btn-flat button">Change</button></span>
+                        </div>
+                    </div>
+                </div>
+                <!-- end top-->
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="box box-primary">
+                            <div class="box-header">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <table id="RejectEmployeeListdata" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
+                                            <thead>
+                                                <tr>
+                                                    <th><input type="checkbox" name="checkAll1" id="checkAll1"><label></label></th>
+                                                    <th>Id</th>
+                                                    <th>Name</th>
+                                                    <th>Leave Type</th>
+                                                    <th>From</th>
+                                                    <th>To</th>
+                                                    <th>Days</th>
+                                                    <th>Status</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+<script>
+    $(document).ready(function () {
+
+        $("#btnGo").click(function () {
+            var fromdatechk = $("#txtfromdate").val();
+            var todatechk = $("#txttodate").val();
+            if (fromdatechk == "") {
+                swal('Alert', 'Please select from date', 'error').then(function () { swal.close(); $('#txtfromdate').focus(); });
+            }
+            else if (todatechk == "") {
+                swal('Alert', 'Please select to date', 'error').then(function () { swal.close(); $('#txttodate').focus(); });
+            }
+            else {
+                PendingEmployeeList();
+            }
+        })
+    })
+</script>
+<script>
+    $(function () {
+        $("#txtfromdate").datepicker({
+            format: 'mm-dd-yyyy',
+        });
+        $("#txttodate").datepicker({
+            format: 'mm-dd-yyyy',
+        });
+    });
+</script>
+
+<script src="@Url.Content("~/js/Hrms/GrantLeaveList.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>

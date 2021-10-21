@@ -1,0 +1,333 @@
+﻿@{
+    ViewBag.Title = "Purchase Order Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="page-title">
+    <h2>Purchase Order Details</h2>
+</div>
+<section class="content section-content massstocktransfer commercial_proposal mt-1" id="proposal-table">
+    <div class="nav-tabs-custom">
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#tab_1" data-toggle="tab">Purchase Order</a></li>
+            <li><a href="#tab_2" data-toggle="tab">Contacts/Addresses</a></li>
+            <li><a href="#tab_3" data-toggle="tab">Item receipts</a></li>
+            <li><a href="#tab_4" data-toggle="tab">Notes<span class="badge badge-danger">4</span></a></li>
+            <li><a href="#tab_5" data-toggle="tab">Linked files<span class="badge badge-danger">4</span></a></li>
+            <li><a href="#tab_6" data-toggle="tab">Events</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane active" id="tab_1">
+                <div class="box box-primary">
+                    <div class="box-header">
+                        <div class="d-flex proposal-top">
+                            <div class="edit-proposal-box">
+                                <div class="proposal-box">
+                                    <input type="file" name="file" id="proposal" class="inputfile">
+                                    <label for="proposal"><i class="fas fa-file-invoice"></i></label>
+                                </div>
+                                <div class="edit-proposal-texts">
+                                    <h3 class="box-title">PROV3</h3>
+                                    <p>Ref. vender<button><i class="fas fa-pencil-alt"></i>:SU21077</button></p>
+                                    <p>Third-party: Albert J (Albert J)(Other orders)</p>
+                                </div>
+                            </div>
+                            <div class="back-to-list">
+                                <p><button class="btn no-btn">Back to list</button></p>
+                                <p><button class="btn btn-danger">Draft(needs to be validated)</button></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row rowbox proposal-row">
+                    <div class="col-md-6">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">Request author</label>
+                                    <div class="col-md-8">
+                                        <p><i class="fas fa-user"></i>SuperAdmin</p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">Discounts</label>
+                                    <div class="col-md-8">
+                                        <p>
+                                            <span class="form-info">
+                                                You have no default relative discount from this vender<br />
+                                                You have no discount credit available from this vender
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">Payment Terms</label>
+                                    <div class="col-md-8">
+                                        <p><i class="fas fa-pencil-alt"></i>30 days</p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">Payment Type</label>
+                                    <div class="col-md-8">
+                                        <p><i class="fas fa-pencil-alt"></i>Check</p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">Delivery delay (days) <i class="fas fa-info-circle"></i></label>
+                                    <div class="col-md-8">
+                                        <p>&nbsp;</p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">Planned date of delevery  </label>
+                                    <div class="col-md-8">
+                                        <p><i class="fas fa-pencil-alt"></i>8/31/2021</p>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">Incoterms</label>
+                                    <div class="col-md-8">
+                                        <p><i class="fas fa-pencil-alt"></i>GIF - cif</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="form-group">
+                                    <label class="col-md-6 control-label">Amount (excl. tax)</label>
+                                    <div class="col-md-6">
+                                        <p>$22,000</p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-6 control-label">Amount tax</label>
+                                    <div class="col-md-6">
+                                        <p>$2,000</p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-6 control-label">Amount (inc. tax)</label>
+                                    <div class="col-md-6">
+                                        <p>$24,000</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="box box-primary">
+                    <div class="box-body">
+                        <table class="table-blue table check-table table-bordered">
+                            <thead>
+                                <tr role="row">
+                                    <th class="text-left">Description</th>
+                                    <th>&nbsp;</th>
+                                    <th>Sale tax</th>
+                                    <th>U.P.(net)</th>
+                                    <th>U.P.(inc. tax)</th>
+                                    <th>Qty</th>
+                                    <th>Disc</th>
+                                    <th>Total(excl.)</th>
+                                    <th>&nbsp;</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="text-left">Layla_Foam_Mattress-Layla foam</td>
+                                    <td>SU2107</td>
+                                    <td>6%</td>
+                                    <td>249.00</td>
+                                    <td>250.00</td>
+                                    <td>100</td>
+                                    <td>10%</td>
+                                    <td>24,000</td>
+                                    <td><a href="#"><i class="fas fa-pencil-alt"></i></a><a href="#"><i class="fas fa-trash"></i></a></td>
+                                </tr>
+                            </tbody>
+                            <tbody class="purchase-tfoot">
+                                <tr>
+                                    <td class="text-left">
+                                        <div class="purchase-fix">
+                                            <div class="purchase-radio">
+                                                <input type="radio" name="purchase_radio" id="purchase_for1" checked /><label for="purchase_for1">Free-text item</label>,
+                                                <label>type</label><select><option>----</option></select>
+                                            </div>
+                                            <div class="purchase-radio">
+                                                <input type="radio" name="purchase_radio" id="purchase_for2" /><label for="purchase_for2">Predefined products/services to purchase</label>
+                                            </div>
+                                            <div class="purchase_select">
+                                                <select class="">
+                                                    <option>Layla_Foam_Mattress-Layla foam-$140/Unit</option>
+                                                </select>
+                                            </div>
+                                            <div class="purchase_textarea">
+                                                <textarea></textarea>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>249.00</td>
+                                    <td>&nbsp;</td>
+                                    <td>1</td>
+                                    <td>0%</td>
+                                    <td colspan="2"><button class="btn btn-danger">Add</button></td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                <td colspan="9" class="text-left">
+                                    <span>If product is a service with limited duration: from and to</span>
+                                </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        <div class="proposals-btns text-right">
+                            <button class="text-uppercase btn btn-danger">Validate and Approve</button>
+                            <button class="text-uppercase btn btn-danger">Clone</button>
+                            <button class="text-uppercase btn btn-default">Delete</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row rowbox proposal-div">
+                    <div class="col-md-6">
+                        <div class="box box-primary">
+                            <div class="box-header with-border">
+                                <h3 class="box-title">Files</h3>
+                            </div>
+                            <div class="box-body">
+                                <table class="table-blue table check-table table-bordered">
+                                    <thead>
+                                        <tr role="row">
+                                            <th class="text-center linked-th" colspan="4">
+                                                &nbsp;
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="text-left"><i class="far fa-file-pdf"></i>Pr210722.pdf <i class="fas fa-search-plus"></i></td>
+                                            <td>8554 b.</td>
+                                            <td>07/26/2021 06:10 PM</td>
+                                            <td><a href="#"><i class="fas fa-trash"></i></a></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="box box-primary">
+                            <div class="box-header with-border">
+                                <h3 class="box-title">Events on Order</h3>
+                            </div>
+                            <div class="box-body">
+                                <table class="table-blue table check-table table-bordered">
+                                    <thead>
+                                        <tr role="row">
+                                            <th class="text-left">Ref.</th>
+                                            <th>By</th>
+                                            <th>Type</th>
+                                            <th>Title</th>
+                                            <th>Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td colspan="5" class="text-left">None</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="box box-primary">
+                            <div class="box-header with-border">
+                                <h3 class="box-title">Related Objects</h3>
+                                <span class="side-proposals">
+                                    <a href="#"><i class="fas fa-link"></i>Link to..</a>
+                                </span>
+                            </div>
+                            <div class="box-body">
+                                <table class="table-blue table check-table table-bordered ">
+                                    <thead>
+                                        <tr role="row">
+                                            <th class="text-left">Type</th>
+                                            <th class="text-left">Ref.</th>
+                                            <th>Date</th>
+                                            <th>Amount(excl.)0</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="active-row">
+                                            <td class="text-left">Sales Order</td>
+                                            <td>C02107-0002</td>
+                                            <td>07/30/2021</td>
+                                            <td>22,410.00</td>
+                                            <td>
+                                                <span class="proposal-status"><i class="fas fa-circle"></i></span>
+                                                <span class="proposal-links"><i class="fas fa-unlink"></i></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-left">Sales Order</td>
+                                            <td>C02107-0002</td>
+                                            <td>07/30/2021</td>
+                                            <td>22,410.00</td>
+                                            <td>
+                                                <span class="proposal-status"><i class="fas fa-circle"></i></span>
+                                                <span class="proposal-links"><i class="fas fa-unlink"></i></span>
+                                            </td>
+                                        </tr>
+                                        <tr class="active-row">
+                                            <td class="text-left">Sales Order</td>
+                                            <td>C02107-0002</td>
+                                            <td>07/30/2021</td>
+                                            <td>22,410.00</td>
+                                            <td>
+                                                <span class="proposal-status"><i class="fas fa-circle"></i></span>
+                                                <span class="proposal-links"><i class="fas fa-unlink"></i></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-left">Sales Order</td>
+                                            <td>C02107-0002</td>
+                                            <td>07/30/2021</td>
+                                            <td>22,410.00</td>
+                                            <td>
+                                                <span class="proposal-status"><i class="fas fa-circle"></i></span>
+                                                <span class="proposal-links"><i class="fas fa-unlink"></i></span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot class="proposal-tfoot">
+                                        <tr>
+                                            <td colspan="3" class="text-left">Total</td>
+                                            <td colspan="2">50,000</td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane" id="tab_2">
+                <h2>Contacts/Addresses</h2>
+            </div>
+            <div class="tab-pane" id="tab_3">
+                Notes
+            </div>
+            <div class="tab-pane" id="tab_4">
+                Linked files
+            </div>
+
+        </div>
+    </div>
+</section>

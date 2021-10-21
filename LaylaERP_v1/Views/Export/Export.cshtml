@@ -1,0 +1,650 @@
+﻿
+@model dynamic
+@{
+    var user = LaylaERP.UTILITIES.CommanUtilities.Provider.GetCurrent();
+}
+
+@{
+    ViewBag.Title = "Export";
+    Layout = "~/Views/Shared/_ExportLayout.cshtml";
+}
+<div class="page-title">
+    <h2 class="page-heading">Export</h2>
+</div>
+
+<div class="contennt setting-section table-design export-section">
+    <div class="nav-tabs-custom">
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#tab_1" data-toggle="tab"><span title="Order's List" data-placement="bottom" data-toggle="tooltip">Orders</span></a></li>
+            <li id="hello"><a href="#tab_2" data-toggle="tab"><span title="User's List" data-placement="bottom" data-toggle="tooltip">Users</span></a></li>
+            <li><a href="#tab_3" data-toggle="tab"><span title="Customer's List" data-placement="bottom" data-toggle="tooltip">Customers</span></a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane active" id="tab_1">
+                <input type="hidden" id="hfuserid" value="@user.UserID" />
+                <input type="hidden" id="hfusertype" value="@user.UserType" />
+                <div class="user-top-section">
+                    <div class="tablenav top">
+                        <div class="alignleft actions bulkactions">
+                            <span class="even-space">From</span><input type="text" name="fromdate" id="fromdate" />
+                            <span class="even-space">To</span><input type="text" name="todate" id="todate" />
+                            @*From <input type="date" name="fromdate" id="fromdate">
+                    To<input type="date" name="todate" id="todate" >*@
+                            <span title="Click Here To Search Orders Datewise" data-placement="bottom" data-toggle="tooltip"><input type="button" id="btnorder" class="button action" value="Go" /></span>
+                            <span title="Click Here To Refresh Order List" data-placement="bottom" data-toggle="tooltip"><input type="button" id="btnvieworders" class="button action" value="Refresh" /></span>
+                        </div>
+                    </div>
+                </div>
+                <div id="poststuff" class="woocommerce-reports-wide">
+                    <div class="box box-primary">
+                        <div class="box-header">
+                            <table id="exportorderdata" class="table-blue table table-bordered check-table" style="width:100%;">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th><input type="checkbox" class="selectAll" name="selectAll" value="all"><label></label></th>
+                                        <th>Order Id</th>
+                                        <th>Name</th>
+                                        <th>Total</th>
+                                        @*<th>Coupon Amount</th>*@
+                                        <th>Tax</th>
+                                        @*<th>Shipping Amount</th>*@
+                                        <th>Order Total</th>
+                                        <th>Order Date</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div><!--end tab one-->
+            <div class="tab-pane" id="tab_2">
+                <div class="user-top-section">
+                    <div class="tablenav top">
+                        <div class="alignleft actions bulkactions">
+                            <span>From</span><input type="text" name="fromdateusers" id="fromdateusers" />
+                            <span>To</span><input type="text" name="todateusers" id="todateusers" />
+                            <span title="Click Here To Search Users Datewise" data-placement="bottom" data-toggle="tooltip"><input type="button" id="btnusers" class="button" value="Go" /></span>&nbsp;&nbsp;
+                            <select name="new_role" id="new_role" class="mydata" style="width:initial">
+                                <option value="%">Choose role</option>
+                            </select>
+                            <span title="Click Here To Search User Role Wise" data-placement="bottom" data-toggle="tooltip"><input type="button" name="changeit" id="changeit" class="button" value="Go" /></span>
+                            <span title="Click Here To Refresh User's List" data-placement="bottom" data-toggle="tooltip"><input type="button" id="btnviewusers" class="button" value="Refresh" /></span>
+                        </div>
+                    </div>
+                </div>
+                <div id="poststuff" class="woocommerce-reports-wide">
+                    <div class="box box-primary">
+                        <div class="box-header">
+                            <div><ul class="subsubsub" id="role-ul" style="display:none"></ul></div>
+
+                            <table id="exportuserdata" class="table-blue table table-bordered check-table display" style="width:100%;">
+                                <thead>
+                                    <tr>
+                                        <th><input type="checkbox" class="selectAllUsers" name="selectAllUsers" value="all"><label></label></th>
+                                        <th>Id</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Role</th>
+                                        <th>Address</th>
+                                        <th>Phone Number</th>
+                                        <th>Date</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div><!--end tab two-->
+            <div class="tab-pane" id="tab_3">
+                <div class="user-top-section">
+                    <div class="tablenav top">
+                        <div class="alignleft actions bulkactions">
+                            <span>From</span><input type="text" name="fromdatecustomers" id="fromdatecustomers" />
+                            <span>To</span><input type="text" name="todatecustomers" id="todatecustomers" />
+                            <span title="Click Here To Search Customers Datewise" data-placement="bottom" data-toggle="tooltip"><input type="button" id="btncustomers" class="button" value="Go" /></span>
+                            <span title="Click Here To Refresh Customer's List" data-placement="bottom" data-toggle="tooltip"><input type="button" id="btnviewcustomers" class="button" value="Refresh" /></span>
+                        </div>
+                    </div>
+                </div>
+                <div id="poststuff" class="woocommerce-reports-wide">
+                    <div class="box box-primary">
+                        <div class="box-header">
+                            <table class="table-blue table table-bordered check-table display" id="exportcustomerdata" style="width:100%;">
+                                <thead>
+                                    <tr>
+                                        <th><input type="checkbox" class="selectAllCustomers" name="selectAllCustomers" value="all"><label></label></th>
+                                        <th>Id</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Address</th>
+                                        <th>Phone Number</th>
+                                        <th>Date</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div><!--end tab three-->
+
+        </div>
+    </div>
+</div>
+
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        //$("#hello").css("display", "none");
+        GetUsersCount();
+       
+        //DatagridCustomers();
+        //DatagridOrder();
+
+        //DatagridUsers();
+
+        //Button click for Orders
+        $("#btnorder").click(function () {
+            if ($("#fromdate").val() == "") {
+                swal('Alert', 'Please Enter From Date', 'error').then(function () { swal.close(); $('#fromdate').focus(); });
+            }
+            else if ($("#todate").val() == "") {
+                swal('Alert', 'Please Enter To Date', 'error').then(function () { swal.close(); $('#todate').focus(); });
+            }
+            else {
+                var d1 = $("#fromdate").val();
+                var d2 = $("#todate").val();
+                var d3 = new Date();
+                var d4 = d3.getFullYear() + '-' + ("0" + (d3.getMonth() + 1)).slice(-2) + '-' + d3.getDate();
+                if (d1 > d2) {
+                    swal('Alert', 'Please check, From date should not be greater than To date ', 'error').then(function () { swal.close(); $('#fromdate').focus(); });
+                }
+                //else if (d2 > d4) {
+                //    swal('Alert', 'Please check, To date should not be greater than current date ', 'error').then(function () { swal.close(); $('#todate').focus(); });
+                //}
+                else {
+                    DatagridOrder();
+                    $("#fromdate").val("");
+                    $("#todate").val("");
+                    return false;
+                }
+            }
+        });
+        setTimeout(function () { DatagridOrder(); }, 50);
+
+        //Button Click for users
+        $("#btnusers").click(function () {
+            var d5 = $("#fromdateusers").val();
+            var d6 = $("#todateusers").val();
+            var d7 = new Date();
+            var currentdate = d7.getFullYear() + '-' + ("0" + (d7.getMonth() + 1)).slice(-2) + '-' + d7.getDate();
+
+            if ($("#fromdateusers").val() == "") {
+                swal('Alert', 'Please Enter From Date', 'error').then(function () { swal.close(); $('#fromdateusers').focus(); });
+            }
+            else if ($("#todateusers").val() == "") {
+                swal('Alert', 'Please Enter To Date', 'error').then(function () { swal.close(); $('#todateusers').focus(); });
+            }
+            else if (d5 > d6) {
+                swal('Alert', 'Please check, From date should not be greater than To date ', 'error').then(function () { swal.close(); $('#fromdateusers').focus(); });
+            }
+            //else if (d6 > currentdate) {
+            //    swal('Alert', 'Please check, To date should not be greater than Current date ', 'error').then(function () { swal.close(); $('#todateusers').focus(); });
+            //}
+            else {
+                DatagridUsers();
+                $("#fromdateusers").val("");
+                $("#todateusers").val("");
+                return false;
+            }
+        });
+        setTimeout(function () { DatagridUsers(); }, 50);
+
+
+
+        //Button click for customer
+        $("#btncustomers").click(function () {
+            var dt = $("#fromdatecustomers").val();
+            var dt1 = $("#todatecustomers").val();
+            var dt2 = new Date();
+            var dt3 = dt2.getFullYear() + '-' + ("0" + (dt2.getMonth() + 1)).slice(-2) + '-' + dt2.getDate();
+
+            if ($("#fromdatecustomers").val() == "") {
+                swal('Alert', 'Please Enter From Date', 'error').then(function () { swal.close(); $('#fromdatecustomers').focus(); });
+            }
+            else if ($("#todatecustomers").val() == "") {
+                swal('Alert', 'Please Enter To Date', 'error').then(function () { swal.close(); $('#todatecustomers').focus(); });
+            }
+            else if (dt > dt1) {
+                swal('Alert', 'Please check, From date should not be greater than To date ', 'error').then(function () { swal.close(); $('#fromdatecustomers').focus(); });
+            }
+            //else if (dt1 > dt3) {
+            //    swal('Alert', 'Please check, To date should not be greater than Current date', 'error').then(function () { swa.close(); $('#todatecustomers').focus(); });
+            //}
+            else {
+                DatagridCustomers();
+                $("#fromdatecustomers").val("");
+                $("#todatecustomers").val("");
+                return false;
+            }
+        });
+        setTimeout(function () { DatagridCustomers(); }, 50);
+
+        //$(document).on('click', "#btnorder", function () {
+        //    DatagridOrder();
+        //})
+        //$(document).on('click', "#btnuser", function () {
+        //    DatagridUsers();
+        //})
+
+        $("#btnvieworders").click(function () { DatagridOrder(); });
+        $("#btnviewusers").click(function () { $("#new_role").val("%"); DatagridUsers(); });
+        $("#btnviewcustomers").click(function () { DatagridCustomers(); });
+
+        $(document).on("click", "tbody .select-checkbox", function (t) {
+            t.preventDefault();
+            var tRow = $('#exportorderdata').DataTable().row({ selected: false }).length; console.log(tRow);
+            if (tRow > 0)
+                $(".selectAll").prop('checked', false);
+            else
+                $(".selectAll").prop('checked', true);
+
+            var tRowuser = $('#exportuserdata').DataTable().row({ selected: false }).length; console.log(tRowuser);
+            if (tRowuser > 0)
+                $(".selectAllUsers").prop('checked', false);
+            else
+                $(".selectAllUsers").prop('checked', true);
+
+            var tRowcus = $('#exportcustomerdata').DataTable().row({ selected: false }).length; console.log(tRowcus);
+            if (tRowcus > 0)
+                $(".selectAllCustomers").prop('checked', false);
+            else
+                $(".selectAllCustomers").prop('checked', true);
+
+        });
+
+        $("#changeit").click(function () {
+            DatagridUsers();
+        });
+
+        $.get('/Export/GetUserRoles', function (data) {
+            var items = "";
+            $.each(data, function (index, value) {
+                items += $('<option>').val(this['Value']).text(this['Text']).appendTo("#new_role");
+            })
+        });
+    });
+
+    //-------------Order DataGrid Start----------------
+
+
+    function DatagridOrder() {
+       
+        var from_date = $("#fromdate").val();
+        var to_date = $("#todate").val();
+        var user_id = $("#hfuserid").val();
+        //var obj = { mydate: mydate };
+        $('#exportorderdata').DataTable({
+            "lengthMenu": [[10, 20, 50, 100], [10, 20, 50, 100]],
+
+            destroy: true,
+            searching: false,
+            bAutoWidth: false,
+            "ajax": {
+                "url": '/Export/GetData',
+                "type": 'POST',
+                "dataType": 'json',
+                "data": { from_date: from_date, to_date: to_date, user: user_id }
+                //"data": JSON.stringify(obj)
+
+            },
+
+            "columns": [
+
+                { 'data': null, sWidth: "5%" },
+                { 'data': 'order_id', title: 'Order Id', sWidth: "10%" },
+                { 'data': 'first_name', title: 'Name', sWidth: "15%" },
+                //{ 'data':'orderstatus' },
+                //{ 'data': 'qty', title: 'Items Sold', sWidth: "10%" },
+                { 'data': 'total', title: 'Total', sWidth: "10%" },
+                //{ 'data': 'coupon', title: 'Coupon Amount', sWidth: "10%" },
+                { 'data': 'tax', title: 'Tax', sWidth: "10%" },
+                //{ 'data': 'shipping_amount', title: 'Shipping Amount', sWidth: "10%" },
+                { 'data': 'subtotal', title: 'Order Total', sWidth: "10%" },
+                {
+                    'data': 'order_created', title: 'Order Date', sWidth: "10%",
+                    'render': function (jsonDate) {
+                        var date = new Date(parseInt(jsonDate.substr(6)));
+                        var datevalue = ("0" + (date.getDate())).slice(-2);
+                        return ("0" + (date.getMonth() + 1)).slice(-2) + '-' + datevalue + '-' + date.getFullYear() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+                    }
+
+                },
+
+            ],
+            columnDefs: [{
+                orderable: false,
+                className: 'select-checkbox',
+                targets: 0,
+                'checkboxes': {
+                    "selectRow": false,
+                },
+                data: null,
+                defaultContent: '',
+            }],
+            "select": {
+                "style": 'multi',
+                "selector": 'td:first-child',
+            },
+            "order": [1, 'desc'],
+
+            "dom": 'lBfrtip',
+            "buttons": [
+
+                {
+                    extend: 'csv',
+                    className: 'button',
+                    text: '<i class="fas fa-file-csv"></i> CSV',
+                    filename: 'Order'
+                },
+                //{
+                //    extend: 'print',
+                //    className: 'button',
+                //    text: '<i class="fas fa-print"></i> Print'
+
+                //}
+            ],
+
+        });
+
+        //------------SELECT ALL CHEBOX-----------
+        var DT1 = $('#exportorderdata').DataTable();
+        $(".selectAll").on("click", function (e) {
+            if ($(this).is(":checked")) {
+                DT1.rows().select();
+            } else {
+                DT1.rows().deselect();
+            }
+        });
+    }
+
+    //---------------Order DataGrid End---------------
+
+    //--------------Users DataGrid Start-----------------
+    function DatagridUsers() {
+        var fromdateusers = $("#fromdateusers").val();
+        var todateusers = $("#todateusers").val();
+        var userrole = $("#new_role").val();
+        var button = [];
+        var usertype = $("#hfusertype").val();
+        if (usertype.toUpperCase() == "ADMINISTRATOR") {
+            button = [
+                {
+                    extend: 'csv',
+                    className: 'button',
+                    text: '<i class="fas fa-file-csv"></i> CSV',
+                    filename: 'User'
+                },
+            ]
+        }
+        
+
+        $('#exportuserdata').DataTable({
+            destroy: true,
+            searching: false,
+            bAutoWidth: false,
+            "ajax": {
+                "url": '/Export/UsersExport',
+                "type": 'POST',
+                "dataType": 'json',
+                "data": { from_dateusers: fromdateusers, to_dateusers: todateusers, rolee: userrole }
+            },
+            "lengthMenu": [[10, 20, 50, 100], [10, 20, 50, 100]],
+
+            "columns": [
+                { 'data': null, sWidth: "5%" },
+                { 'data': 'UID', title: 'ID', sWidth: "10%" },
+                { 'data': 'first_name', title: 'Name', sWidth: "10%" },
+                { 'data': 'user_email', title: 'Email', sWidth: "15%" },
+                {
+                    data: 'my', title: 'Role', sWidth: "22%", render: function (data, type, row) {
+                        let str = getAllUserType(data);
+                        return str;
+                    }
+                },
+                { 'data': 'user_address', title: 'Address', sWidth: "15%" },
+                { 'data': 'phone', title: 'Phone Number', sWidth: "10%" },
+                { 
+                    'data': 'created_date', title: 'Date', sWidth: "10%",
+                    'render': function (jsonDate) {
+                        var date = new Date(parseInt(jsonDate.substr(6)));
+                        var datevalue = ("0" + (date.getDate())).slice(-2);
+                        return ("0" + (date.getMonth() + 1)).slice(-2) + '-' + datevalue + '-' + date.getFullYear() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+                    }
+                },
+
+            ],
+            columnDefs: [{
+                orderable: false,
+                className: 'select-checkbox',
+                targets: 0,
+                'checkboxes': { 'selectRow': false },
+                data: null,
+                defaultContent: '',
+
+            }],
+            select: {
+                style: 'multi',
+                selector: 'td:first-child',
+            },
+
+            "order": [1, 'desc'],
+            "dom": 'lBfrtip',
+            "buttons": button,
+            /*"buttons": [
+                {
+                    
+                    extend: 'csv',
+                    className: 'button',
+                    text: '<i class="fas fa-file-csv"></i> CSV',
+                    filename: 'User'
+                },
+                {
+                    extend: 'print',
+                    className: 'button',
+                    text: '<i class="fas fa-print"></i> Print'
+                }
+            ],*/
+
+        });
+
+        //------------------SELECT ALL CHECKBOXES---------------
+        var DT2 = $('#exportuserdata').DataTable();
+        $(".selectAllUsers").on("click", function (e) {
+            if ($(this).is(":checked")) {
+                DT2.rows().select();
+            } else {
+                DT2.rows().deselect();
+            }
+        });
+    }
+    //----------------Users DataGrid End--------------
+
+    //--------------Cuustomers Datagrid Start----------
+    function DatagridCustomers() {
+        var fromdatecustomers = $("#fromdatecustomers").val();
+        var todatecustomers = $("#todatecustomers").val();
+        var buttons = [];
+        var usertype = $("#hfusertype").val();
+        if (usertype.toUpperCase() == "ADMINISTRATOR") {
+            buttons = [
+                {
+                    extend: 'csv',
+                    className: 'button',
+                    text: '<i class="fas fa-file-csv"></i> CSV',
+                    filename: 'User'
+                },
+            ]
+        }
+
+        $('#exportcustomerdata').DataTable({
+
+            destroy: true,
+            searching: false,
+            bAutoWidth: false,
+            "ajax": {
+                "url": '/Export/CustomersExport',
+                "type": 'POST',
+                "dataType": 'json',
+                "data": { from_datecustomers: fromdatecustomers, to_datecustomers: todatecustomers }
+            },
+            "lengthMenu": [[10, 20, 50, 100], [10, 20, 50, 100]],
+
+            "columns": [
+                { 'data': null, sWidth: "5%" },
+                { 'data': 'UID', title: 'ID', sWidth: "10%" },
+                { 'data': 'customer_name', title: 'Name', sWidth: "10%" },
+                { 'data': 'customer_email', title: 'Email', sWidth: "20%" },
+                { 'data': 'customer_status', title: 'Address', sWidth: "20%" },
+                { 'data': 'customer_phone', title: 'Phone Number', sWidth: "20%" },
+                {
+                    'data': 'customerdate_created', title: 'Date', sWidth: "15%",
+                    'render': function (jsonDate) {
+                        var date = new Date(parseInt(jsonDate.substr(6)));
+                        var datevalue = ("0" + (date.getDate())).slice(-2);
+                        return ("0" + (date.getMonth() + 1)).slice(-2) + '-' + datevalue + '-' + date.getFullYear() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+                    }
+                },
+
+            ],
+            columnDefs: [{
+                orderable: false,
+                className: 'select-checkbox',
+                targets: 0,
+                'checkboxes': { 'selectRow': false },
+                data: null,
+                defaultContent: '',
+            }],
+            select: {
+                style: 'multi',
+                selector: 'td:first-child',
+            },
+
+            "order": [1, 'desc'],
+            "dom": 'lBfrtip',
+            "buttons": buttons,
+           /* "buttons": [
+
+                {
+                    extend: 'csv',
+                    className: 'button',
+                    text: '<i class="fas fa-file-csv"></i> CSV',
+                    filename: 'Customer'
+                },
+                //{
+                //    extend: 'print',
+                //    className: 'button',
+                //    text: '<i class="fas fa-print"></i> Print'
+                //}
+            ], */
+
+        });
+
+        var DT3 = $('#exportcustomerdata').DataTable();
+        $(".selectAllCustomers").on("click", function (e) {
+            if ($(this).is(":checked")) {
+                DT3.rows().select();
+            } else {
+                DT3.rows().deselect();
+            }
+        });
+
+    }
+
+
+    //CheckBoxes
+
+
+    //----------------Customers DataGrid End-----------------
+</script>
+<script>
+    $(function () {
+        $("#fromdate").datepicker({
+            format: 'mm-dd-yyyy',
+        });
+
+
+        $("#todate").datepicker({
+            format: 'mm-dd-yyyy',
+        });
+
+
+        $("#fromdateusers").datepicker({
+            format: 'mm-dd-yyyy',
+        });
+
+
+        $("#todateusers").datepicker({
+            format: 'mm-dd-yyyy',
+        });
+
+        $("#fromdatecustomers").datepicker({
+            format: 'mm-dd-yyyy',
+        });
+
+
+        $("#todatecustomers").datepicker({
+            format: 'mm-dd-yyyy',
+        });
+
+    });
+
+</script>
+
+<script>
+    function GetUsersCount() {
+        $("#role-ul").empty();
+        $.ajax({
+            type: "POST", url: '/Users/GetRolesTypeTopBar', contentType: "application/json; charset=utf-8", dataType: "json", data: [],
+            beforeSend: function () { $("#loader").show(); },
+            success: function (result) {
+                var data = JSON.parse(result);
+                let alltotal = 0;
+                let items = $('<li class="all" data-uservalue="" data-usertext=""><a class="caction" href="javascript:void(0);" id="all" aria-current="page">All (<span class="count">0</span>)</a> |</li>').appendTo("#role-ul");
+                $.each(data, function (index, value) {
+                    items += $('<li data-uservalue="' + value.User_Value + '" data-usertext="' + value.User_Type + '" class="' + value.User_Value.toLowerCase().replace(/ +/g, "").trim() + '"><a class="caction" href="javascript:void(0);" id="' + value.User_Value + '">' + value.User_Type + ' (' + value.cnt + ')</a > |</li >').appendTo("#role-ul"); //(<span class="count">0</span>)
+                    alltotal = alltotal + parseInt(value.cnt);
+                })
+                items += $('<li class="none" data-uservalue="" data-usertext=""><a class="caction" href="javascript:void(0);" id="norole">No role (<span class="count">0</span>)</a></li>').appendTo("#role-ul");
+                $('#all').find(".count").text(number_format(alltotal));
+                let id = $("#hfStatusType").val();
+                if (id != '')
+                    $('#' + id).addClass('current');
+                else
+                    $('#all').addClass('current');
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) { alert(errorThrown); },
+            complete: function () { $("#loader").hide(); },
+            async: false
+        });
+    }
+
+
+    function getAllUserType(sValue) {
+        if (sValue != null) {
+            var user_type = '';
+            $('.subsubsub li').each(function (index) {
+                let val = $(this).data('uservalue'), txt = $(this).data('usertext');
+                let i = sValue.toLowerCase().trim().indexOf(val);
+                if (i > -1) user_type = (user_type.length > 0 ? user_type + ', ' : '') + txt;
+            });
+            return user_type.substring(0, user_type.length - 2);
+        }
+        else
+            return '';
+    }
+
+
+
+
+</script>

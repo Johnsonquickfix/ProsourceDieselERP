@@ -1,0 +1,166 @@
+﻿
+@{
+    ViewBag.Title = "ArizonaSalesOrderExport";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!-- datatables CSS -->
+<link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+<link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
+<!-- datatables js -->
+<script src="~/Content/AdminLTE-3.1.0/datatables/datatables.min.js" type="text/javascript"></script>
+<script src="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/js/dataTables.bootstrap4.min.js" type="text/javascript"></script>
+<div class="page-title">
+    <h2>Arizona Sales Order Export</h2>
+</div>
+<section class="content content-section p-0 reports-section arizona-box not-fixed">
+    <div class="user-top-section">
+        <div class="tablenav top">
+            <div class="alignleft actions bulkactions">
+                <select class="form-control" id="year">
+                    <option value="">Whole Year:</option>
+                    <option value="2019">2019</option>
+                    <option value="2020">2020</option>
+                    <option value="2021">2021</option>
+                </select>
+
+                <input type="button" id="filtersrchexp" value="Search" class="button" />
+                @*<input type="submit" name="filtersrchexp" value="Export" class="button button-primary" />*@
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-primary">
+                <div class="box-header">
+                    <table id="dtdata" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
+                        <thead>
+                            <tr>
+                                <th>provider</th>
+                                <th>order_id</th>
+                                <th>transaction_type</th>
+                                <th>transaction_reference_id</th>
+                                <th>completed_at</th>
+                                <th>customer_name</th>
+                                <th>shiptostreet</th>
+                                <th>shiptocity</th>
+                                <th>shiptostate</th>
+                                <th>shiptozip</th>
+                                <th>shiptocountrycode</th>
+                                <th>from_street</th>
+                                <th>from_city</th>
+                                <th>from_state</th>
+                                <th>from_zip</th>
+                                <th>from_country</th>
+                                <th>shipping_amount</th>
+                                <th>handling_amount</th>
+                                <th>discount_amount</th>
+                                <th>total_sale</th>
+                                <th>sales_tax</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            //setTimeout(function () { DatagridOrder(); }, 50);
+            $("#filtersrchexp").click(function () {
+                if ($("#year").val() == "") {
+                    swal('Alert', 'Please Select Year', 'error').then(function () { swal.close(); $('#year').focus(); });
+                }
+                else {
+
+                    DatagridOrder();
+                    //$("#year").val("");
+                    return false;
+
+                }
+            });
+        });
+
+        function DatagridOrder() {
+            var Year = $("#year").val();
+            //var obj = { mydate: mydate };
+            $('#dtdata').DataTable({
+                destroy: true,
+                "scrollX": true,
+                searching: false,
+                "ajax": {
+                    "url": '/Reports/GetArizonaSalesOrder',
+                    "type": 'POST',
+                    "dataType": 'json',
+                    "data": { Year: Year }
+                    //"data": JSON.stringify(obj)
+
+                },
+                "columns": [
+
+
+                    { 'data': 'provider', 'sWidth': "15%" },
+                    { 'data': 'order_id', 'sWidth': "15%" },
+                    { 'data': 'transaction_type', 'sWidth': "15%" },
+                    { 'data': 'transaction_reference_id', 'sWidth': "15%" },
+                    {
+                        'data': 'order_created', sWidth: "15%",
+                        'render': function (jsonDate) {
+                            var date = new Date(parseInt(jsonDate.substr(6)));
+                            var datevalue = ("0" + (date.getDate())).slice(-2);
+                            return ("0" + (date.getMonth() + 1)).slice(-2) + '-' + datevalue + '-' + date.getFullYear() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds() + ' UTC';
+                        }
+                    },
+                    { 'data': 'first_name', 'sWidth': "15%" },
+                    //{ 'data':'orderstatus' },
+                    { 'data': 'shipping_address_1', 'sWidth': "15%" },
+                    { 'data': 'shipping_city', 'sWidth': "15%" },
+                    { 'data': 'shipping_state', 'sWidth': "15%" },
+                    { 'data': 'shipping_postcode', 'sWidth': "15%" },
+                    { 'data': 'shipping_country', 'sWidth': "15%" },
+                    { 'data': 'billing_address_1', 'sWidth': "15%" },
+                    { 'data': 'billing_city', 'sWidth': "15%" },
+                    { 'data': 'billing_state', 'sWidth': "15%" },
+                    { 'data': 'billing_postcode', 'sWidth': "15%" },
+                    { 'data': 'billing_country', 'sWidth': "15%" },
+                    { 'data': 'shipping_amount', 'sWidth': "15%" },
+                    { 'data': 'handling_amount', 'sWidth': "15%" },
+                    { 'data': 'Discount', 'sWidth': "15%" },
+                    { 'data': 'total', 'sWidth': "12%" },
+                    { 'data': 'tax', 'sWidth': "12%" }
+
+                ],
+
+                columnDefs: [{
+                    orderable: false,
+                    data: null,
+                    defaultContent: '',
+                }],
+
+                "order": [1, 'asc'],
+
+                "dom": 'Bfrtip',
+                "buttons": [
+
+                    {
+                        extend: 'csv',
+                        className: 'button',
+                        text: '<i class="fas fa-file-csv"></i> Export',
+                        filename: function () {
+                            var d = new Date();
+                            return '_' + $("#year").val() + '_Arizona_' + ("0" + (d.getMonth() + 1)).slice(-2) + '-' + d.getDate() + '-' + d.getFullYear();
+                        },
+
+                    },
+
+                ],
+
+
+            });
+        }
+
+
+    </script>
+</section>
+
+

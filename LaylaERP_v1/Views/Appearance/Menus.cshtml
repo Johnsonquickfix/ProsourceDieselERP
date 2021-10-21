@@ -1,0 +1,91 @@
+﻿
+@{ ViewBag.Title = "Menus";
+    Layout = "~/Views/Shared/_Layout.cshtml"; }
+
+@*datatables CSS*@
+<link href="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+<link href="~/Content/AdminLTE-3.1.0/datatables/Buttons-1.6.1/css/buttons.dataTables.min.css" rel="stylesheet" />
+@*datatables js*@
+<script src="~/Content/AdminLTE-3.1.0/datatables/datatables.min.js" type="text/javascript"></script>
+<script src="~/Content/AdminLTE-3.1.0/datatables/DataTables-1.10.20/js/dataTables.bootstrap.min.js" type="text/javascript"></script>
+
+<div class="page-title">
+    <h2 class="page-heading">Menus</h2><a class="btn btn-danger" href="AddMenuDetails">Add Menu</a>
+</div>
+<div class="userrole_section section_wrapper appearance-menu-section">
+    @*<form id="saveForm" name="saveForm" method="post" autocomplete="off">*@
+    <div class="box box-primary">
+        <div class="box-header">
+            <table id="dtdata" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
+                <thead>
+                    <tr>
+                        <th>Menu Id</th>
+                        <th>Menu Code</th>
+                        <th>Menu Name</th>
+                        <th>Menu URL</th>
+                        <th>Menu Icon</th>
+                        <th>Parent Name</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+    @*</form>*@
+</div>
+
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        MenuGrid();
+
+    })
+</script>
+
+<script>
+    function MenuGrid() {
+
+        $.ajax({
+            url: '/Appearance/GetERPMenus',
+            method: 'post',
+            datatype: 'json',
+            contentType: "application/json; charset=utf-8",
+            processing: true,
+            success: function (data) {
+                $('#dtdata').dataTable({
+                    destroy: true,
+                    scrollX:true,
+                    data: JSON.parse(data),
+                    "columns": [
+                        { data: 'menu_id', title: 'Menu Id', sWidth: "10%" },
+                        { data: 'menu_code', title: 'Menu Code', sWidth: "15%" },
+                        { data: 'menu_name', title: 'Menu Name', sWidth: "20%" },
+                        { data: 'menu_url', title: 'Menu URL', sWidth: "20%" },
+                        { data: 'menu_icon', title: 'Menu Icon', sWidth: "20%" },
+                        { data: 'parent_name', title: 'Parent Name', sWidth: "10%" },
+                        { data: 'status', title: 'Status', sWidth: "10%" },
+                        {
+                            'data': 'menu_id', sWidth: "15%",
+                            'render': function (menu_id, type, full, meta) {
+                                return '<a href="javascript:void(0);" onClick="EditUser(' + menu_id + ')"><i class="glyphicon glyphicon-pencil"></i></a>'
+                            }
+                        }
+                    ],
+                });
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(xhr.responseText);
+            }
+        });
+
+    } 
+
+    function EditUser(menu_id) {
+        window.location.href = 'AddMenu?menu_id=' + menu_id;
+    }
+</script>
+
+
+

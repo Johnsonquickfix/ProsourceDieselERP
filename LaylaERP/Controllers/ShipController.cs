@@ -55,17 +55,17 @@ namespace LaylaERP.Controllers
                         str += "<OrderID><![CDATA[" + DR["order_name"].ToString().Replace("#", "") + "]]></OrderID>";
                         str += "<OrderNumber><![CDATA[" + DR["order_name"].ToString().Replace("#", "") + "]]></OrderNumber>";
                         if (DR["post_date_gmt"] != DBNull.Value)
-                            str += "<OrderDate>" + Convert.ToDateTime(DR["post_date_gmt"].ToString()).ToString("MM/dd/yyyy hh:mm") + "</OrderDate>";
+                            str += "<OrderDate>" + Convert.ToDateTime(DR["post_date_gmt"].ToString()).ToString("MM/dd/yyyy HH:mm") + "</OrderDate>";
                         else
                             str += "<OrderDate></OrderDate>";
                         //str += "<OrderDate>'.gmdate("m / d / Y H: i", strtotime($each_order->post_date) - $tz_offset).'</OrderDate>";
                         str += "<OrderStatus><![CDATA[processing]]></OrderStatus>";
                         if (DR["post_modified_gmt"] != DBNull.Value)
-                            str += "<LastModified>" + Convert.ToDateTime(DR["post_modified_gmt"].ToString()).ToString("MM/dd/yyyy hh:mm") + "</LastModified>";
+                            str += "<LastModified>" + Convert.ToDateTime(DR["post_modified_gmt"].ToString()).ToString("MM/dd/yyyy HH:mm") + "</LastModified>";
                         else
                             str += "<LastModified></LastModified>";
                         //str += "<LastModified>'.gmdate("m / d / Y H: i", strtotime($each_order->post_modified) - $tz_offset).'</LastModified>";
-                        // str += "<ShippingMethod><![CDATA['.$ship_method.']]></ShippingMethod>"; 
+                        str += "<ShippingMethod><![CDATA[USPSPriorityMail]]></ShippingMethod>";
                         str += "<PaymentMethod><![CDATA[" + DR["pm_title"].ToString() + "]]></PaymentMethod>";
                         str += "<CustomerNotes><![CDATA[" + "" + "]]></CustomerNotes>";
                         //str += "<CustomerNotes><![CDATA['.strip_tags($order->customer_note).']]></CustomerNotes>'; 
@@ -126,7 +126,7 @@ namespace LaylaERP.Controllers
                             order_price = order_price + price;
 
                             str += "<Item>";
-                            str += "<SKU><![CDATA[" + DR_item["meta_value"].ToString() + "]]></SKU>";
+                            str += "<SKU><![CDATA[" + DR_item["sku"].ToString() + "]]></SKU>";
                             if (var_id > 0)
                                 str += "<Name><![CDATA[" + DR_item["variation_title"].ToString() + "]]></Name>";
                             else

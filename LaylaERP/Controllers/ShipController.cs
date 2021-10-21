@@ -46,7 +46,7 @@ namespace LaylaERP.Controllers
                         e_date = Convert.ToDateTime(end_date);
                     str += "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
                     str += "<Orders pages=\"1\">";
-                    DataTable dt = OrderRepository.ProcessingOrders(s_date, e_date);
+                    DataTable dt = ShipRepository.ProcessingOrders(s_date, e_date);
                     int qty = 0; long var_id = 0, prod_id = 0; decimal order_price = 0, price = 0;
                     foreach (DataRow DR in dt.Rows)
                     {
@@ -55,17 +55,17 @@ namespace LaylaERP.Controllers
                         str += "<OrderID><![CDATA[" + DR["order_name"].ToString().Replace("#", "") + "]]></OrderID>";
                         str += "<OrderNumber><![CDATA[" + DR["order_name"].ToString().Replace("#", "") + "]]></OrderNumber>";
                         if (DR["post_date_gmt"] != DBNull.Value)
-                            str += "<OrderDate>" + Convert.ToDateTime(DR["post_date_gmt"].ToString()).ToString("MM/dd/yyyy hh:mm") + "</OrderDate>";
+                            str += "<OrderDate>" + Convert.ToDateTime(DR["post_date_gmt"].ToString()).ToString("MM/dd/yyyy HH:mm") + "</OrderDate>";
                         else
                             str += "<OrderDate></OrderDate>";
                         //str += "<OrderDate>'.gmdate("m / d / Y H: i", strtotime($each_order->post_date) - $tz_offset).'</OrderDate>";
                         str += "<OrderStatus><![CDATA[processing]]></OrderStatus>";
                         if (DR["post_modified_gmt"] != DBNull.Value)
-                            str += "<LastModified>" + Convert.ToDateTime(DR["post_modified_gmt"].ToString()).ToString("MM/dd/yyyy hh:mm") + "</LastModified>";
+                            str += "<LastModified>" + Convert.ToDateTime(DR["post_modified_gmt"].ToString()).ToString("MM/dd/yyyy HH:mm") + "</LastModified>";
                         else
                             str += "<LastModified></LastModified>";
                         //str += "<LastModified>'.gmdate("m / d / Y H: i", strtotime($each_order->post_modified) - $tz_offset).'</LastModified>";
-                        // str += "<ShippingMethod><![CDATA['.$ship_method.']]></ShippingMethod>"; 
+                        str += "<ShippingMethod><![CDATA[USPSPriorityMail]]></ShippingMethod>";
                         str += "<PaymentMethod><![CDATA[" + DR["pm_title"].ToString() + "]]></PaymentMethod>";
                         str += "<CustomerNotes><![CDATA[" + "" + "]]></CustomerNotes>";
                         //str += "<CustomerNotes><![CDATA['.strip_tags($order->customer_note).']]></CustomerNotes>'; 
@@ -104,7 +104,7 @@ namespace LaylaERP.Controllers
                             str += "<ShippingMethod>Mattress Protector - FedEx One Rate Pak</ShippingMethod>";
 
                         str += "<Items>";
-                        DataTable dtitems = OrderRepository.ProcessingOrdersItemsDetails(DR["ID"].ToString(), DR["split_detail_id"].ToString());
+                        DataTable dtitems = ShipRepository.ProcessingOrdersItemsDetails(DR["ID"].ToString(), DR["split_detail_id"].ToString());
                         foreach (DataRow DR_item in dtitems.Rows)
                         {
                             if (DR_item["product_id"] != DBNull.Value && !string.IsNullOrEmpty(DR_item["product_id"].ToString()))
@@ -126,7 +126,7 @@ namespace LaylaERP.Controllers
                             order_price = order_price + price;
 
                             str += "<Item>";
-                            str += "<SKU><![CDATA[" + DR_item["meta_value"].ToString() + "]]></SKU>";
+                            str += "<SKU><![CDATA[" + DR_item["sku"].ToString() + "]]></SKU>";
                             if (var_id > 0)
                                 str += "<Name><![CDATA[" + DR_item["variation_title"].ToString() + "]]></Name>";
                             else
@@ -175,9 +175,9 @@ namespace LaylaERP.Controllers
                     //$shipstation_xml = file_get_contents('php://input'); 
 
                     List<string> shipped_items = new List<string>();
-                    int shipped_item_count = 0;
-                    bool order_shipped = false;
-                    string order_note = "";
+                    //int shipped_item_count = 0;
+                    //bool order_shipped = false;
+                    //string order_note = "";
                 }
                 else
                 {
@@ -186,6 +186,27 @@ namespace LaylaERP.Controllers
             }
             catch { str = "<?xml version=\"1.0\" encoding=\"utf-8\"?><Orders></Orders>"; }
             return Content(str, ContentType.Xml, Encoding.UTF8);
+        }
+
+        public ActionResult CreateShipOrder()
+        {
+            try
+            {
+                DataTable dt = ShipRepository.GetPendingShipOrdersList();
+                foreach (DataRow dr in dt.Rows)
+                {
+                    if (dr["id"] != DBNull.Value)
+                    {
+                        try
+                        {
+                            ShipRepository.CreateShipOrder(Convert.ToInt64(dr["id"].ToString()));
+                        }
+                        catch { }
+                    }
+                }
+            }
+            catch { }
+            return View();
         }
     }
 }

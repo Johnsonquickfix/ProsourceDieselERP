@@ -33,7 +33,7 @@ function getOrderInfo() {
     if (oid > 0) {
         $('#ddlStatus').prop("disabled", true);
         $('#lblOrderNo').text('Order #' + oid + ' detail '); $('#hfOrderNo').val(oid);
-        $('#order_line_items,#order_state_recycling_fee_line_items,#order_fee_line_items,#order_shipping_line_items,#order_refunds,#billCoupon,.refund-action').empty();
+        $('#order_line_items,#order_state_recycling_fee_line_items,#order_fee_line_items,#order_shipping_line_items,#gift_card_line_items,#order_refunds,#billCoupon,.refund-action').empty();
         $('#btnCheckout').remove(); $('.box-tools,.footer-finalbutton').empty().append('<button type="button" class="btn btn-danger btnRefundOrder"><i class="far fa-edit"></i> Refund</button>');
         var opt = { strValue1: oid };
         ajaxFunc('/Orders/GetOrderInfo', opt, beforeSendFun, function (result) {
@@ -83,8 +83,8 @@ function getOrderItemList(oid) {
     var option = { strValue1: oid };
     //let coupon_list = [];
     ajaxFunc('/Orders/GetOrderProductList', option, beforeSendFun, function (data) {
-        let itemHtml = '', recyclingfeeHtml = '', feeHtml = '', shippingHtml = '', refundHtml = '', couponHtml = '';
-        let zQty = 0.00, zGAmt = 0.00, zTDiscount = 0.00, zTotalTax = 0.00, zShippingAmt = 0.00, zStateRecyclingAmt = 0.00, zFeeAmt = 0.00, zRefundAmt = 0.00;
+        let itemHtml = '', recyclingfeeHtml = '', feeHtml = '', shippingHtml = '', giftCardHtml='', refundHtml = '', couponHtml = '';
+        let zQty = 0.00, zGAmt = 0.00, zTDiscount = 0.00, zTotalTax = 0.00, zShippingAmt = 0.00, zGiftCardAmt = 0.00, zStateRecyclingAmt = 0.00, zFeeAmt = 0.00, zRefundAmt = 0.00;
         for (var i = 0; i < data.length; i++) {
             let orderitemid = parseInt(data[i].order_item_id) || 0;
             if (data[i].product_type == 'line_item') {
@@ -176,6 +176,15 @@ function getOrderItemList(oid) {
                 zShippingAmt = zShippingAmt + (parseFloat(data[i].total) || 0.00);
                 $("#shippingTotal").data("orderitemid", orderitemid);
                 $('#order_shipping_line_items').append(shippingHtml);
+            }
+            else if (data[i].product_type == 'gift_card') {
+                giftCardHtml = '<tr id="tritemId_' + orderitemid + '" data-orderitemid="' + orderitemid + '" data-pname="' + data[i].product_name + '">';
+                giftCardHtml += '<td class="text-center item-action"><i class="fa fa-gift"></i></td>';
+                giftCardHtml += '<td>' + data[i].product_name + '</td><td></td><td class="text-right row-refuntamt"></td><td class="RefundAmount text-right"></td><td class="TotalAmount text-right">' + data[i].total.toFixed(2) + '</td><td></td><td></td>';
+                giftCardHtml += '</tr>';
+                zGiftCardAmt = zGiftCardAmt + (parseFloat(data[i].total) || 0.00);
+                $("#giftCardTotal").data("orderitemid", orderitemid);
+                $('#gift_card_line_items').append(giftCardHtml);
             }
             else if (data[i].product_type == 'refund') {
                 refundHtml = '<tr id="tritemId_' + orderitemid + '" data-orderitemid="' + orderitemid + '" data-pname="' + data[i].product_name + '">';

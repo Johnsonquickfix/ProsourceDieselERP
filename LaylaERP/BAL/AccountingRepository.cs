@@ -492,7 +492,7 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "SELECT eab.rowid as id, inv_complete, code_journal, date_format(date_creation,'%m-%d-%Y') as datecreation, debit, credit, label_operation, v.name FROM erp_accounting_bookkeeping"
+                string strSql = "SELECT eab.rowid as id, inv_complete, code_journal, date_format(date_creation,'%m-%d-%Y') as datecreation, if(debit=0,'',debit) as debit, if(credit=0,'',credit) as credit, label_operation, v.name FROM erp_accounting_bookkeeping"
                                 + " eab left join wp_vendor v on v.code_vendor = eab.thirdparty_code where 1=1 ";
                 if (!string.IsNullOrEmpty(searchid))
                 {

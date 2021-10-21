@@ -253,7 +253,16 @@ namespace LaylaERP.BAL
                 if (model.Status == 1)
                     strsql += string.Format("update commerce_purchase_order set fk_status='{0}',ref_ext='',billed='0' where rowid in ({1});", model.Status, model.Search);
                 else if (model.Status == 3)
+                {
                     strsql += string.Format("update commerce_purchase_order set fk_status='{0}',ref_ext=REPLACE(ref,'PO','PI'),billed='1',fk_user_approve='{1}' where rowid in ({2});", model.Status, model.LoginID, model.Search);
+                    strsql += "delete from erp_accounting_bookkeeping where inv_num = " + model.Search + ";";
+                    strsql += "insert into erp_accounting_bookkeeping (entity,inv_num,doc_date,doc_type,doc_ref,PO_SO_ref,fk_doc,fk_docdet,thirdparty_code,subledger_account,subledger_label,inv_complete,label_complete,debit,credit,invtotal,senstag,fk_user_author,date_creation,code_journal,journal_label,fk_bank)"
+                               + " select 1,rowid,'" + cDate.ToString("yyyy-MM-dd HH:mm:ss") + "','PO',ref_ext,ref,1,0,ref_supplier,'5010',(select concat(name,' (',name_alias,')')  from wp_vendor where VendorStatus=1  and rowid = cpo.fk_supplier) vname,'5010','Product Cost','0.00',format(total_ttc,2),total_ttc,'C','1','" + cDate.ToString("yyyy-MM-dd HH:mm:ss") + "','AC','Purchase journal','0' from commerce_purchase_order cpo where rowid = " + model.Search + ""
+                               + " Union all select 1,rowid,'" + cDate.ToString("yyyy-MM-dd HH:mm:ss") + "','PO',ref_ext,ref,1,0,ref_supplier,'','','5950','Purchase Discount','0.00',format(discount,2),discount,'C','1','" + cDate.ToString("yyyy-MM-dd HH:mm:ss") + "','AC','Purchase journal','0' from commerce_purchase_order where discount > 0 and rowid = " + model.Search + ""
+                               + " Union all select 1,rowid,'" + cDate.ToString("yyyy-MM-dd HH:mm:ss") + "','PO',ref_ext,ref,1,0,ref_supplier,'','','5010','Product Cost',format(total_ht,2),'0.00',total_ht,'D','1','" + cDate.ToString("yyyy-MM-dd HH:mm:ss") + "','AC','Purchase journal','0' from commerce_purchase_order where rowid = " + model.Search + ""
+                               + " Union all select 1,rowid,'" + cDate.ToString("yyyy-MM-dd HH:mm:ss") + "','PO',ref_ext,ref,1,0,ref_supplier,'','','1234','Tax',format(localtax1,2),'0.00',localtax1,'D','1','" + cDate.ToString("yyyy-MM-dd HH:mm:ss") + "','AC','Purchase journal','0' from commerce_purchase_order where localtax1 > 0 and rowid = " + model.Search + ""
+                               + " Union all select 1,rowid,'" + cDate.ToString("yyyy-MM-dd HH:mm:ss") + "','PO',ref_ext,ref,1,0,ref_supplier,'','','5800','Cost of Good, Other',format(localtax2,2),'0.00',localtax2,'D','1','" + cDate.ToString("yyyy-MM-dd HH:mm:ss") + "','AC','Purchase journal','0' from commerce_purchase_order where localtax2 > 0 and rowid = " + model.Search + "";
+                }
                 else
                     strsql += string.Format("update commerce_purchase_order set fk_status='{0}' where rowid in ({1});", model.Status, model.Search);
                 result = SQLHelper.ExecuteNonQueryWithTrans(strsql);

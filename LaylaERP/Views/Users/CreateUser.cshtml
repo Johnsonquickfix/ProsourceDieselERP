@@ -198,6 +198,7 @@
         // $("#txtCity").change(function () { setTimeout(function () { NewOrderNo(); }, 50); CustomerAddress(); return false; });
 
         $(document).on('change', "#txtCountry", function () {
+           // $("#txtAddress").removeAttr("disabled");
            // $('#txtState').empty();
         })
 
@@ -400,6 +401,12 @@
 
 
     });
+
+    $("#txtphone").click(function () {
+        console.log(5555);
+        $("#txtAddress").removeAttr("disabled");
+    });
+
     $("#txtPassword").change(function () {
         $('#result').html(passwordStrength($('#txtPassword').val(), ""))
         result = $('#result').html();
@@ -465,7 +472,7 @@
     //});
 
     function AddCustomer() {
-        debugger
+        //debugger
         var ImageURL;
         var canvas = document.createElement('canvas');
         var objimg = document.getElementById('show_picture');
@@ -712,6 +719,7 @@
             }
             else
                 $("#txtAddress").prop('disabled', false);
+
             obj = place.address_components.filter(element => element.types[0] == 'locality');
             if (obj.length > 0)
                 $("#txtCity").val(obj[0].long_name);
@@ -746,4 +754,4 @@
 </script>
 <!--Google Place API -->
 @*<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBIgngCCIJ3D8_s3G7aIfvQckhsDtbAe4E&libraries=places&callback=initMap&channel=GMPSB_addressselection_v1_cABC" async defer></script>*@
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBIgngCCIJ3D8_s3G7aIfvQckhsDtbAe4E&libraries&callback=initMap&libraries=places&v=weekly" async></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBIgngCCIJ3D8_s3G7aIfvQckhsDtbAe4E&libraries&callback=initMap&libraries=places&v=weekly" async defer></script>

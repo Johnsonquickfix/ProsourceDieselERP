@@ -1,0 +1,326 @@
+﻿
+@{
+    ViewBag.Title = "EditBankAccount";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<link href="~/Content/DataTables/bootstrap-datepicker.css" rel="stylesheet" />
+<script src="~/Content/DataTables/bootstrap-datepicker.js"></script>
+
+<div class="page-title">
+    <h2>Edit Bank Account</h2>
+</div>
+<section class="content section-content massstocktransfer commercial_proposal mt-1" id="new_bank_account_section">
+    <div class="col-md-12">
+        <div class="box box-primary create-user-primary">
+            <div class="box-header with-border">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <input type="hidden" id="hfid" />
+                        <div class="form-group">
+                            <label for="bankcash">Bank or Cash Label</label>
+                            <input type="text" class="form-control" id="txtbankcashlabel" placeholder="Enter Bank or Cash Label">
+                        </div>
+                        <div class="form-group">
+                            <label for="accounttype">Account Type</label>
+                            <select class="form-control" id="txtaccounttype">
+                                <option value="1">Saving Account</option>
+                                <option value="2">Current or Credit Card Account</option>
+                                <option value="3">Cash Account</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="bankstatus">Status</label>
+                            <select class="form-control" id="txtbankstatus">
+                                <option value="1">Open</option>
+                                <option value="0">Close</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="accountcountry">Account Country</label>
+                            <select class="form-control" id="txtaccountcountry">
+                                <option selected value="US">United States</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="state">State/Province</label>
+                            <select class="form-control" id="txtstate">
+                                <option selected value="NY">New York</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tag">Web</label>
+                            <input class="form-control" type="text" id="txtweb" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tag">Comment</label>
+                            <input class="form-control" type="text" id="txtcomment" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tag">Initial balance</label>
+                            <input type="text" class="form-control" id="txtinitial" />
+                        </div>
+
+                    </div>
+                    <div class="col-sm-4">
+
+
+                        <div class="form-group">
+                            <label for="tag">Date</label>
+                            <input type="text" class="form-control" id="txtdate" /><span class="even-space"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tag">Minimum allowed balance</label>
+                            <input type="text" class="form-control" id="txtminallowbalance" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tag">Minimum desired balance</label>
+                            <input type="text" class="form-control" id="txtdesiredbalance" />
+                        </div>
+
+                        @*<div class="form-group">
+                                <label for="tag">Minimum desired balance</label>
+                                <input type="text" class="form-control" id="txtdesiredbalance" />
+                            </div>*@
+
+                        <div class="form-group">
+                            <label for="tag">Bank name</label>
+                            <input type="text" class="form-control" id="txtbankname" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tag">Bank Code</label>
+                            <input type="text" class="form-control" id="txtbankcode" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tag">Account Number</label>
+                            <input type="text" class="form-control" id="txtaccountnumber" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tag">IBAN Account Number</label>
+                            <input type="text" class="form-control" id="txtIBAN" />
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+
+
+                        <div class="form-group">
+                            <label for="tag">BIC/SWIFT code</label>
+                            <input type="text" class="form-control" id="txtBIC" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tag">Currency</label>
+                            <input type="text" class="form-control" id="txtcurrency" value="USD" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tag">Bank address</label>
+                            <input type="text" class="form-control" id="txtbankaddress" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tag">Account owner name</label>
+                            <input type="text" class="form-control" id="txtaccountowner" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tag">Account owner address</label>
+                            <input type="text" class="form-control" id="txtowneraddress" />
+                        </div>
+                        <div class="form-group">
+                            <label for="tag">Accounting Account</label>
+                            <select class="form-control" id="ddlaccounting">
+                                @*<option value="1">Assets</option>*@
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tag">Accounting code journal</label>
+                            <select class="form-control" id="ddljournal">
+                                @*<option value="1">JR</option>*@
+                            </select>
+                        </div>
+
+                        <a href="#" class="btn btn-danger" id="btnSave"><b>Save</b></a>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    $(document).ready(function () {
+
+        $(document).on('click', "#btnSave", function () {
+            AddBankAccount();
+        });
+
+    });
+</script>
+<script>
+
+    function AddBankAccount() {
+        debugger
+        label = $("#txtbankcashlabel").val();
+        accounttype = $("#txtaccounttype").val();
+        status = $("#txtbankstatus").val();
+        country = $("#txtaccountcountry").val();
+        state = $("#txtstate").val();
+        web = $("#txtweb").val();
+        comment = $("#txtcomment").val();
+        inital = $("#txtinitial").val();
+        date = $("#txtdate").val();
+        minallowbalance = $("#txtminallowbalance").val();
+        desiredbalance = $("#txtdesiredbalance").val();
+        bankname = $("#txtbankname").val();
+        bankcode = $("#txtbankcode").val();
+        accountnumber = $("#txtaccountnumber").val();
+        iban = $("#txtIBAN").val();
+        bic = $("#txtBIC").val();
+        bankaddress = $("#txtbankaddress").val();
+        ownername = $("#txtaccountowner").val();
+        owneraddress = $("#txtowneraddress").val();
+        accounting = $("#ddlaccounting").val();
+        journal = $("#ddljournal").val();
+        currency = $("#txtcurrency").val();
+
+
+        if (label == "") {
+            swal('Alert', 'Please Enter Reference Name', 'error').then(function () { swal.close(); $('#txtbankcashlabel').focus(); });
+        }
+
+
+        else {
+
+            var obj = {
+
+                date_modified: date,
+                label: label,
+                account_type: accounttype,
+                working_status: status,
+                country_iban: country,
+                state: state,
+                comment: comment,
+                initial_balance: inital,
+                min_allowed: minallowbalance,
+                min_desired: desiredbalance,
+                bank: bankname,
+                code_bank: bankcode,
+                account_number: accountnumber,
+                owner_address: owneraddress,
+                iban_prefix: iban,
+                bic: bic,
+                bank_address: bankaddress,
+                owner_name: ownername,
+                owner_address: owneraddress,
+                accounting_number: accounting,
+                fk_accountancy_journal: journal,
+                url: web,
+                currency_code: currency,
+            }
+            $.ajax({
+                url: '/Bank/AddBankAccount/', dataType: 'json', type: 'Post',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(obj),
+                dataType: "json",
+                beforeSend: function () { $("#loader").show(); },
+                success: function (data) {
+                    if (data.status == true) {
+                        //$('#parent > input:text').val('');
+                        swal('Alert!', data.message, 'success');
+                    }
+                    else {
+                        swal('Alert!', data.message, 'error');
+                    }
+                },
+                complete: function () { $("#loader").hide(); },
+                error: function (error) { swal('Error!', 'something went wrong', 'error'); },
+            })
+
+        }
+
+    }
+</script>
+<script>
+    $(function () {
+        $("#txtdate").datepicker({
+            format: 'yyyy-mm-dd',
+        });
+
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        var url = window.location.pathname;
+        var id = url.substring(url.lastIndexOf('/') + 1);
+        GetAccountByID1(id);
+
+
+    });
+
+
+</script>
+
+<script>
+    function GetAccountByID1(id) {
+        var rowid = id;
+        var obj =
+            $.ajax({
+                url: "/Bank/GetAccountByID1/" + rowid,
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                dataType: 'JSON',
+                data: JSON.stringify(obj),
+                success: function (data) {
+                    //console.log(data);
+                  
+                    var d = JSON.parse(data);
+                    if (d.length > 0) {
+                        //$("#hfid").val(d[0].ID);
+                        $("#txtbankcashlabel").val(d[0].label);
+                        $("#txtaccounttype").val(d[0].min_allowed);
+                        $("#txtbankstatus").val(d[0].working_status);
+                        $("#txtaccountcountry").val(d[0].country_iban);
+                        $("#txtstate").val(d[0].state);
+                        $("#txtweb").val(d[0].url);
+                        $("#txtcomment").val(d[0].comment);
+                        $("#txtinitial").val(d[0].initial_balance);
+                        $("#txtdate").val(d[0].date_created);
+                        $("#txtminallowbalance").val(d[0].min_allowed);
+                        $("#txtdesiredbalance").val(d[0].min_desired);
+                        $("#txtbankname").val(d[0].bank);
+                        $("#txtbankcode").val(d[0].code_bank);
+                        $("#txtaccountnumber").val(d[0].account_number);
+                        $("#txtIBAN").val(d[0].iban_prefix);
+                        $("#txtBIC").val(d[0].bic);
+                        $("#txtbankaddress").val(d[0].bank_address);
+                        $("#txtaccountowner").val(d[0].owner_name);
+                        $("#txtowneraddress").val(d[0].owner_address);
+                        $("#ddlaccounting").val(d[0].accounting_number);
+                        $("#ddljournal").val(d[0].fk_accountancy_journal);
+                        $("#txtcurrency").val(d[0].currency_code);
+
+
+                        //console.log(d[0].rowid);
+                    }
+                },
+                error: function (msg) {
+
+                }
+            });
+
+    }
+
+</script>
+@*<script src="@Url.Content("~/js/Bank/Bank.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>*@

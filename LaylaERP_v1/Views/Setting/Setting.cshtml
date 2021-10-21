@@ -1,0 +1,605 @@
+﻿@model dynamic
+@{
+    ViewBag.Title = "Setting";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    //var user = LaylaERP.UTILITIES.CommanUtilities.Provider.GetCurrent();
+}
+
+<div class="page-title">
+    <h2 class="page-heading">Global Settings</h2>
+</div>
+<div class="setting-section">
+    <div class="box box-primary">
+        <div class="box-header with-border">
+            <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#tab_1" data-toggle="tab">Payment Method</a></li>
+                    <li><a href="#tab_2" data-toggle="tab">Email Setting</a></li>
+                    <li><a href="#tab_3" data-toggle="tab">Paypal Setting</a></li>
+                    <!--<li><a href="#tab_4" data-toggle="tab">Authorize.Net Setting</a></li>-->
+                    <li><a href="#tab_5" data-toggle="tab">Amazon Pay Setting</a></li>
+                    <li><a href="#tab_6" data-toggle="tab">TaxJar Setting</a></li>
+                    <li><a href="#tab_7" data-toggle="tab">Podium Setting</a></li>
+                    <li><a href="#tab_8" data-toggle="tab">Entity info</a></li>
+                </ul>
+                <div class="tab-content">
+                    <input type="hidden" id="hfid" value="@ViewBag.id" />
+                    <div class="tab-pane active" id="tab_1">
+                        <h2>Select Payment Method</h2>
+
+                        <div class="form-check">
+
+                            @{
+                                var value = "checked";
+                            }
+                            @if (Convert.ToInt32(ViewBag.AuthorizeNet) == 1)
+                            {
+                                <input class="form-check-input" type="checkbox" id="authorizenet" checked="@value">
+                            }
+                            else
+                            {
+                                <input class="form-check-input" type="checkbox" value="" id="authorizenet">
+                            }
+
+                            <label class="form-check-label" for="authorizenet">
+                                Authorize.Net
+                            </label>
+                        </div>
+
+                        <div class="form-check">
+                            @if (Convert.ToInt32(ViewBag.Paypal) == 1)
+                            {
+                                <input class="form-check-input" type="checkbox" value="" id="paypal" checked="@value">}
+                            else
+                            {
+                                <input class="form-check-input" type="checkbox" value="" id="paypal">
+                            }
+
+                            <label class="form-check-label" for="paypal">
+                                Paypal
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            @if (Convert.ToInt32(ViewBag.AmazonPay) == 1)
+                            {
+                                <input class="form-check-input" type="checkbox" value="" id="amazonpay" checked="@value">
+                            }
+                            else
+                            {
+                                <input class="form-check-input" type="checkbox" value="" id="amazonpay">
+                            }
+
+                            <label class="form-check-label" for="amazonpay">
+                                Amazon Pay
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            @if (Convert.ToInt32(ViewBag.CreditCustomer) == 1)
+                            {
+                                <input class="form-check-input" type="checkbox" value="" id="CreditCustomer" checked="@value">}
+                            else
+                            {
+                                <input class="form-check-input" type="checkbox" value="" id="CreditCustomer">
+                            }
+
+                            <label class="form-check-label" for="CreditCustomer">
+                                Credit Customer
+                            </label>
+                        </div>
+
+                        <div class="form-check">
+                            @if (Convert.ToInt32(ViewBag.Podium) == 1)
+                            {
+                                <input class="form-check-input" type="checkbox" value="" id="Podium" checked="@value">}
+                            else
+                            {
+                                <input class="form-check-input" type="checkbox" checked="@value" value="" id="Podium">
+                            }
+
+                            <label class="form-check-label" for="Podium">
+                                Podium
+                            </label>
+                        </div>
+
+                    </div>
+                    <!-- /.tab-pane -->
+                    <div class="tab-pane" id="tab_2">
+
+                        <div class="form-group d-flex">
+                            <label for="inputEmail3" class="col-sm-2 control-label">E-mail ID</label>
+                            <div class="col-sm-10">
+                                <input type="email" class="form-control" id="email" value="@ViewBag.SenderEmailID">
+                            </div>
+                        </div>
+                        <div class="form-group d-flex">
+                            <label for="inputEmail3" class="col-sm-2 control-label">Password</label>
+                            <div class="col-sm-10">
+                                <input type="password" class="form-control" id="SenderEmailPwd" value="@ViewBag.SenderEmailPwd">
+                            </div>
+                        </div>
+                        <div class="form-group d-flex">
+                            <label for="inputEmail3" class="col-sm-2 control-label">SMTP Server</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="SMTPServerName" value="@ViewBag.SMTPServerName">
+                            </div>
+                        </div>
+                        <div class="form-group d-flex">
+                            <label for="inputEmail3" class="col-sm-2 control-label">SMTP Port No.</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="SMTPServerPortNo" value="@ViewBag.SMTPServerPortNo">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.tab-pane -->
+                    <div class="tab-pane" id="tab_3">
+                        <div class="form-group d-flex">
+                            <label for="inputEmail3" class="col-sm-2 control-label">Paypal Client ID:</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="PaypalClientId" value="@ViewBag.PaypalClientId">
+                            </div>
+                        </div>
+                        <div class="form-group d-flex">
+                            <label for="inputEmail3" class="col-sm-2 control-label">Paypal Secret ID</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="PaypalSecret" value="@ViewBag.PaypalSecret">
+                            </div>
+                        </div>
+                        <div class="form-group d-flex">
+                            <label for="inputEmail3" class="col-sm-2 control-label">Paypal Seller Account</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="PaypalSellerAccount" value="@ViewBag.PaypalSellerAccount">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tab_4">
+                        <div class="form-group d-flex">
+                            <label for="inputEmail3" class="col-sm-2 control-label">API Login ID:</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="AuthorizeAPILogin" value="@ViewBag.AuthorizeAPILogin">
+                            </div>
+                        </div>
+                        <div class="form-group d-flex">
+                            <label for="inputEmail3" class="col-sm-2 control-label">Transaction Key:</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="AuthorizeTransKey" value="@ViewBag.AuthorizeTransKey">
+                            </div>
+                        </div>
+                        <div class="form-group d-flex">
+                            <label for="inputEmail3" class="col-sm-2 control-label">Key:</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="AuthorizeKey" value="@ViewBag.AuthorizeKey">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tab_5">
+                        <div class="form-group d-flex">
+                            <label for="inputEmail3" class="col-sm-2 control-label">API ID:</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="AmazonAPIId" value="@ViewBag.AmazonAPIId">
+                            </div>
+                        </div>
+                        <div class="form-group d-flex">
+                            <label for="inputEmail3" class="col-sm-2 control-label">User Name:</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="AmazonUser" value="@ViewBag.AmazonUser">
+                            </div>
+                        </div>
+                        <div class="form-group d-flex">
+                            <label for="inputEmail3" class="col-sm-2 control-label">Password:</label>
+                            <div class="col-sm-10">
+                                <input type="password" class="form-control" id="AmazonPwd" value="@ViewBag.AmazonPwd">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tab_6">
+                        <div class="form-group d-flex">
+                            <label for="inputEmail3" class="col-sm-2 control-label">API ID:</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="TaxjarAPIId" value="@ViewBag.TaxjarAPIId">
+                            </div>
+                        </div>
+                        <div class="form-group d-flex">
+                            <label for="inputEmail3" class="col-sm-2 control-label">User Name:</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="TaxjarUser" value="@ViewBag.TaxjarUser">
+                            </div>
+                        </div>
+                        <div class="form-group d-flex">
+                            <label for="inputEmail3" class="col-sm-2 control-label">Password:</label>
+                            <div class="col-sm-10">
+                                <input type="password" class="form-control" id="TaxjarPwd" value="@ViewBag.TaxjarPwd">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tab_7">
+                        <div class="form-group d-flex">
+                            <label for="podiumAPIKey" class="col-sm-2 control-label">ID</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="podiumAPIKey" value="@ViewBag.podiumAPIKey">
+                            </div>
+                        </div>
+                        <div class="form-group d-flex">
+                            <label for="podiumSecretKey" class="col-sm-2 control-label">Secret:</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="podiumSecretKey" value="@ViewBag.podiumSecretKey">
+                            </div>
+                        </div>
+                        <div class="form-group d-flex">
+                            <label for="txtpodiumCode" class="col-sm-2 control-label">Code</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="txtpodiumCode" value="@ViewBag.podium_code">
+                            </div>
+                        </div>
+                        <div class="form-group d-flex">
+                            <label for="txtpodiumRefreshCode" class="col-sm-2 control-label">Refresh Code:</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="txtpodiumRefreshCode" value="@ViewBag.podium_refresh_code">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tab_8">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">Company Name</label>
+                                    <input type="text" class="form-control" value="@ViewBag.CompanyName" id="txtcompanyname" placeholder="Enter Company Name">
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">E-mail</label>
+                                    <input type="email" class="form-control" value="@ViewBag.email" id="txtUserEmail" placeholder="Enter Your Mail Address">
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">First Name</label>
+                                    <input type="text" class="form-control" value="@ViewBag.firstname" id="txtFirstName" placeholder="First Name">
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">Last Name</label>
+                                    <input type="text" class="form-control" value="@ViewBag.lastname" id="txtLastName" placeholder="Last Name">
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">Country Code(Contact Number)</label>
+                                    <input type="text" class="form-control" value="@ViewBag.country_code_phone" id="txtCountrycode" placeholder="Enter Your Country Code">
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">Contact Number</label>
+                                    <input type="text" class="form-control" value="@ViewBag.user_mobile" id="txtPhone" placeholder="Enter Your Phone Number">
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <img class="sb-title-icon" src="https://fonts.gstatic.com/s/i/googlematerialicons/location_pin/v5/24px.svg" alt="">
+                                    <label for="exampleInputEmail1">Address </label>
+                                    <input type="text" class="form-control" value="@ViewBag.address" id="txtAddress" placeholder="Enter Your Address ">
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">Address Line 2</label>
+                                    <input type="text" class="form-control" value="@ViewBag.address1" id="txtAddress2" placeholder="Address Line 2">
+
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">City</label>
+                                    <input type="text" id="txtCity" placeholder="Enter Your City" class="form-control" value="@ViewBag.town">
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">State</label>
+                                    <select class="form-control" id="txtState">
+                                        <option selected value="@ViewBag.fk_state">@ViewBag.fk_state</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label" for="Zip Code">Zip Code</label>
+                                    <div class="">
+                                        <input type="text" id="txtPostCode" class="form-control" placeholder="Zip Code" value="@ViewBag.zip">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">Country</label>
+                                    <select class="form-control" id="txtCountry">
+                                        <option value="US">US - United States</option>
+                                        <option value="CA">CA - Canada</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">Website</label>
+                                    <input type="text" id="txtwebsite" class="form-control" value="@ViewBag.website"/>
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">Logo Url</label>
+                                    <input type="text" id="txtlogourl" class="form-control" value="@ViewBag.logo_url"/>
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">Additional Notes</label>
+                                    <input type="text" id="txtAdditionalNotes" class="form-control" value="@ViewBag.additional_notes"/>
+                                </div>
+                            </div>
+                            <!-- /.tab-pane -->
+                        </div>
+                        <!-- /.tab-content -->
+                    </div>
+                </div>
+                <div class="box-footer text-right">
+                    <div class="col-sm-12">
+                        <a class="btn btn-danger" id="btnSave">
+                            @*<input type="button" id="btnSave" value="Save" />*@
+                            Save
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/js/jquery.mask.js" asp-append-version="true"></script>
+<script src="@Url.Content("~/js/Users/RolePermission.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+
+<script>
+
+    $(document).ready(function () {
+        $(document).on('click', "#btnSave", function () {
+            UpdateSetting();
+
+        })
+        var loc = window.location.pathname;
+        CheckPermissions("#btnSave", "", "", loc);
+
+        $('#txtUserEmail').change(function () {
+
+            var emailReg = /^([\w-\.]+@@([\w-]+\.)+[\w-]{2,4})?$/;
+            var emailaddressVal = $("#txtUserEmail").val();
+            if (!emailReg.test(emailaddressVal)) {
+                $("#txtUserEmail").val('');
+                swal('Alert', 'Is not a valid email', 'error').then(function () { swal.close(); $('#txtUserEmail').focus(); });
+            }
+        });
+        $('#txtPostCode').change(function () {
+
+            City = $("#txtCity").val();
+            State = $("#txtState").val();
+            PostalCode = $("#txtPostCode").val();
+            var obj = {
+                billing_state: State,
+                billing_city: City,
+                billing_postcode: PostalCode
+            }
+            $.ajax({
+                url: '/Users/CityStateZip/', dataType: 'json', type: 'Post',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(obj),
+                dataType: "json",
+                success: function (data) {
+                    if (data.status == true) {
+                        //swal('Alert!', 'Post zip code is valid for City and State', 'success')
+                        // $('#hfzipstatus').val(data.status);
+                        $('#hfzipstatus').val(data.status);
+
+                    }
+                    else {
+                        if ($('#txtCountry').val() == "US") {
+                            $("#txtPostCode").val("");
+                            $('#hfzipstatus').val(data.status);
+                            swal('Alert', 'Zip code is not valid for the State', 'error').then(function () { swal.close(); $('#txtPostCode').focus(); });
+                        }
+                    }
+                },
+
+                error: function (error) {
+                    swal('Error!', 'something went wrong', 'error');
+                },
+            })
+        });
+        $("#txtPhone").mask("(999) 999-9999");
+    });
+
+    function UpdateSetting() {
+
+        ID = $("#hfid").val();
+        Email = $("#email").val();
+        SenderEmailPwd = $("#SenderEmailPwd").val();
+        SMTPServerName = $("#SMTPServerName").val();
+        SMTPServerPortNo = $("#SMTPServerPortNo").val();
+        PaypalClientId = $("#PaypalClientId").val();
+        PaypalSecret = $("#PaypalSecret").val();
+        PaypalSellerAccount = $("#PaypalSellerAccount").val();
+        AuthorizeAPILogin = $("#AuthorizeAPILogin").val();
+        AuthorizeTransKey = $("#AuthorizeTransKey").val();
+        AuthorizeKey = $("#AuthorizeKey").val();
+        AmazonAPIId = $("#AmazonAPIId").val();
+        AmazonUser = $("#AmazonUser").val();
+        AmazonPwd = $("#AmazonPwd").val();
+        TaxjarAPIId = $("#TaxjarAPIId").val();
+        TaxjarUser = $("#TaxjarUser").val();
+        TaxjarPwd = $("#TaxjarPwd").val();
+        podiumAPIKey = $('#podiumAPIKey').val();
+        podiumSecretKey = $('#podiumSecretKey').val();
+        podium_code = $('#txtpodiumCode').val();
+        podium_refresh_code = $('#txtpodiumRefreshCode').val();
+        Emailuser = $("#txtUserEmail").val();
+        companyname = $("#txtcompanyname").val();
+        FirstName = $("#txtFirstName").val();
+        LastName = $("#txtLastName").val();
+        address = $("#txtAddress").val();
+        country = $("#txtCountry").val();
+        Countrycode = $("#txtCountrycode").val();
+        Phone = $("#txtPhone").unmask().val();
+        Zipcode = $("#txtPostCode").val();
+        City = $("#txtCity").val();
+        State = $("#txtState").val();
+        address2 = $("#txtAddress2").val();
+        Website = $("#txtwebsite").val();
+        LogoUrl = $("#txtlogourl").val();
+        AdditionalNotes = $("#txtAdditionalNotes").val();
+
+        if ($(authorizenet).prop("checked")) {
+            authorizenet = 1;
+        }
+        else {
+            authorizenet = 0;
+        }
+
+        if ($(paypal).prop("checked")) {
+            paypal = 1;
+        }
+        else {
+            paypal = 0;
+        }
+
+        if ($(amazonpay).prop("checked")) {
+            amazonpay = 1;
+        }
+        else {
+            amazonpay = 0;
+        }
+
+        if ($(CreditCustomer).prop("checked")) {
+            CreditCustomer = 1;
+        }
+        else {
+            CreditCustomer = 0;
+        }
+
+        if ($(Podium).prop("checked")) {
+            Podium = 1;
+        }
+        else {
+            Podium = 0;
+        }
+
+        var obj = {
+            ID: ID,
+            authorizenet: authorizenet,
+            paypal: paypal,
+            amazonpay: amazonpay,
+            CreditCustomer: CreditCustomer,
+            Podium: Podium,
+            SenderEmailID: Email,
+            SenderEmailPwd: SenderEmailPwd,
+            SMTPServerName: SMTPServerName,
+            SMTPServerPortNo: SMTPServerPortNo,
+            PaypalClientId: PaypalClientId,
+            PaypalSecret: PaypalSecret,
+            PaypalSellerAccount: PaypalSellerAccount,
+            AuthorizeAPILogin: AuthorizeAPILogin,
+            AuthorizeTransKey: AuthorizeTransKey,
+            AuthorizeKey: AuthorizeKey,
+            AmazonAPIId: AmazonAPIId,
+            AmazonUser: AmazonUser,
+            AmazonPwd: AmazonPwd,
+            TaxjarAPIId: TaxjarAPIId,
+            TaxjarUser: TaxjarUser,
+            TaxjarPwd: TaxjarPwd,
+            podiumAPIKey: podiumAPIKey,
+            podiumSecretKey: podiumSecretKey,
+            podium_code: podium_code,
+            podium_refresh_code: podium_refresh_code,
+            lastname: LastName,
+            CompanyName: companyname,
+            firstname: FirstName,
+            address: address,
+            address1: address2,
+            postal_code: Zipcode,
+            City: City,
+            State: State,
+            Country: country,
+            country_code_phone: Countrycode,
+            user_mobile: Phone,
+            email: Emailuser,
+            website: Website,
+            logo_url: LogoUrl,
+            additional_notes: AdditionalNotes,
+
+
+
+        }
+
+
+        $.ajax({
+            url: '/Setting/settingdone/', dataType: 'json', type: 'Post',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(obj),
+            dataType: "json",
+            success: function (data) {
+                if (data.status == true) {                    
+                    swal('Alert!', data.message, 'success').then((result) => { top.window.location.href = top.window.location.origin + '/Home/Login'; });
+                }
+                else {
+                    swal('Alert!', data.message, 'error')
+                }
+            },
+            error: function (error) {
+                swal('Error!', 'something went wrong', 'error');
+            },
+
+
+        })
+    }
+
+    $(document).ajaxStop(function () {
+        //window.location.reload();
+    });
+    
+</script>
+
+
+<script>
+    function initMap() {
+        let address1Field = document.querySelector("#txtAddress");
+        // Create the autocomplete object, restricting the search predictions to
+        // addresses in the US and Canada.
+        autocomplete = new google.maps.places.Autocomplete(address1Field, {
+            componentRestrictions: { country: ["us", "ca"] },
+            fields: ["address_components", "geometry"],
+            types: ["address"],
+        });
+        // When the user selects an address from the drop-down, populate the
+        // address fields in the form.
+        autocomplete.addListener("place_changed", fillInAddress);
+
+        function fillInAddress() {
+            const place = autocomplete.getPlace();
+            //console.log(place);
+            let address = '';
+            let obj = place.address_components.filter(element => element.types[0] == 'street_number');
+            if (obj.length > 0)
+                address = obj[0].long_name;
+            obj = place.address_components.filter(element => element.types[0] == 'route');
+            if (obj.length > 0)
+                address = address + ' ' + obj[0].long_name;
+            $("#txtAddress").val(address);
+            obj = place.address_components.filter(element => element.types[0] == 'locality');
+            if (obj.length > 0)
+                $("#txtCity").val(obj[0].long_name);
+            else
+                $("#txtCity").val('');
+            obj = place.address_components.filter(element => element.types[0] == 'postal_code');
+            if (obj.length > 0)
+                $("#txtPostCode").val(obj[0].long_name);
+            else
+                $("#txtPostCode").val('');
+            obj = place.address_components.filter(element => element.types[0] == 'administrative_area_level_1');
+
+            if (obj.length > 0)
+                $("#txtState").empty().append('<option value="' + obj[0].short_name + '" selected>' + obj[0].long_name + '</option>');
+            else
+                $("#txtState").empty();
+            obj = place.address_components.filter(element => element.types[0] == 'country');
+            if (obj.length > 0)
+                $('#txtCountry').val(obj[0].short_name.trim()).trigger('change'); //$("#txtBillingCountry").val(obj[0].short_name + ' - ' + obj[0].long_name);
+            else
+                $("#txtCountry").empty();
+
+
+        }
+
+        function renderAddress(place) {
+            //map.setCenter(place.geometry.location);
+            //marker.setPosition(place.geometry.location);
+            //marker.setVisible(true);
+        }
+    }
+</script>
+<!--Google Place API -->
+@*<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBIgngCCIJ3D8_s3G7aIfvQckhsDtbAe4E&libraries=places&callback=initMap&channel=GMPSB_addressselection_v1_cABC" async defer></script>*@
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBIgngCCIJ3D8_s3G7aIfvQckhsDtbAe4E&libraries&callback=initMap&libraries=places&v=weekly" async></script>

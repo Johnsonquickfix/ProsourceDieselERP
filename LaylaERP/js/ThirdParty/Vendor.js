@@ -654,7 +654,7 @@ $('#btnLinkWarehouse').click(function (e) {
             beforeSend: function () { $("#loader").show(); },
             success: function (data) {
                 if (data.status == true) {
-                    swal('Alert!', data.message, 'success');
+                    swal('Success!', data.message, 'success');
                     VendorWarehouseList();
                     $("#tab_10 option[value='-1']").attr('selected', true);
                     e.preventDefault();
@@ -1619,3 +1619,7 @@ function VendorBookkipping() {
 }
 
 
+$('#btnNextTab12').click(function (e) {
+    var link = $('#mytabs .active').next().children('a').attr('href');
+    $('#mytabs a[href="' + link + '"]').tab('show');
+});

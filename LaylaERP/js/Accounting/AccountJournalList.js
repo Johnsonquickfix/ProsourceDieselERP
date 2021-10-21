@@ -2,7 +2,7 @@
     var urid = $("#ddlSearchStatus").val();
     var ID = $("#hfid").val();
     var table_EL = $('#JournalListdata').DataTable({
-        columnDefs: [{ "orderable": true, "targets": 1 }, { 'visible': true, 'targets': [0] }], order: [[0, "asc"]],
+        columnDefs: [{ "orderable": true, "targets": 1 }, { 'visible': true, 'targets': [0] }], order: [[2, "desc"]],
         destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: false, searching: true,
         responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
         language: {
@@ -20,6 +20,32 @@
                 if (code == 13) { table_EL.search(this.value).draw(); }
             });
         },
+
+        footerCallback: function (row, data, start, end, display) {
+            var api = this.api(), data;
+            console.log(data);
+            var intVal = function (i) {
+                return typeof i === 'string' ?
+                    i.replace(/[\$,]/g, '') * 1 :
+                    typeof i === 'number' ?
+                        i : 0;
+            };
+
+            var DebitTotal = api.column(7).data().reduce(function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0);
+
+            var CreditTotal = api.column(8).data().reduce(function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0);
+
+            $(api.column(0).footer()).html('Total');
+            $(api.column(7).footer()).html('$'+ DebitTotal);
+            $(api.column(8).footer()).html('$'+ CreditTotal);
+            console.log(DebitTotal);
+            console.log(CreditTotal);
+        },
+
         sAjaxSource: "/Accounting/AccountJournalList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
             aoData.push({ name: "strValue1", value: urid });
@@ -37,13 +63,15 @@
             });
         },
         aoColumns: [
-            { data: 'inv_complete', title: 'Account number', sWidth: "5%" },
+            { data: 'inv_num', title: 'Num Transcation', sWidth: "5%" },
             { data: 'code_journal', title: 'Journal', sWidth: "5%" },
             { data: 'datecreation', title: 'Date', sWidth: "10%" },
-            { data: 'name', title: 'Vendor name', sWidth: "10%" },
+            { data: 'PO_SO_ref', title: 'Accounting Doc', sWidth: "5%"},
+            { data: 'inv_complete', title: 'Account Number', sWidth: "5%" },
+            { data: 'name', title: 'Vendor Name', sWidth: "10%" },
             { data: 'label_operation', title: 'Label', sWidth: "10%" },
-            { data: 'debit', title: 'Debit', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
-            { data: 'credit', title: 'Credit', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
+            { data: 'debit', title: 'Debit', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$')},
+            { data: 'credit', title: 'Credit', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$')},
         ],
     });
 }

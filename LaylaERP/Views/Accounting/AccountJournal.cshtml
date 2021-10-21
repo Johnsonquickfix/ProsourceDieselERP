@@ -48,13 +48,14 @@
                                 <th class="text-left">Accounting Doc</th>
                                 <th class="text-left">Account Number</th>
                                 <th class="text-left">Vendor Name</th>
-                                <th class="text-left">Label</th>
+                                <th class="text-left">Operation Label</th>
                                 <th class="text-left">Debit</th>
                                 <th class="text-left">Credit</th>
                             </tr>
                         </thead>
                         <tfoot align="right">
                             <tr><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th></tr>
+                            <tr><th>Grand Total</th><th></th><th></th><th></th><th></th><th></th><th></th><th><h6 id="txtdebit" style="font-weight:bold"></h6></th><th><h6 id="txtcredit" style="font-weight:bold"></h6></th></tr>
                         </tfoot>
                     </table>
                 </div>
@@ -65,14 +66,11 @@
 <script>
     $(document).ready(function () {
         AccountJournalList();
+        getGrandTotal();
     })
 </script>
 
 <script src="@Url.Content("~/js/Accounting/AccountJournalList.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 
-
-<script>
-
-</script>
 
 

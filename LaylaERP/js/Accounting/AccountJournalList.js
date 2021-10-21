@@ -39,9 +39,9 @@
                     return intVal(a) + intVal(b);
                 }, 0);
 
-            $(api.column(0).footer()).html('Total');
-            $(api.column(7).footer()).html('$'+ DebitTotal);
-            $(api.column(8).footer()).html('$'+ CreditTotal);
+            $(api.column(0).footer()).html('Page Total');
+            $(api.column(7).footer()).html('$' + parseFloat(DebitTotal).toFixed(2));
+            $(api.column(8).footer()).html('$' + parseFloat(CreditTotal).toFixed(2));
             console.log(DebitTotal);
             console.log(CreditTotal);
         },
@@ -51,7 +51,7 @@
             aoData.push({ name: "strValue1", value: urid });
             var col = 'id';
             if (oSettings.aaSorting.length >= 0) {
-                var col = oSettings.aaSorting[0][0] == 0 ? "inv_complete" : oSettings.aaSorting[0][0] == 1 ? "code_journal" : oSettings.aaSorting[0][0] == 2 ? "datecreation" : oSettings.aaSorting[0][0] == 3 ? "name" : oSettings.aaSorting[0][0] == 4 ? "label_operation" : oSettings.aaSorting[0][0] == 5 ? "debit" : "id";
+                var col = oSettings.aaSorting[0][0] == 0 ? "inv_num" : oSettings.aaSorting[0][0] == 1 ? "code_journal" : oSettings.aaSorting[0][0] == 2 ? "datecreation" : oSettings.aaSorting[0][0] == 3 ? "PO_SO_ref" : oSettings.aaSorting[0][0] == 4 ? "inv_complete" : oSettings.aaSorting[0][0] == 5 ? "name" : oSettings.aaSorting[0][0] == 6 ? "label_operation" : oSettings.aaSorting[0][0] == 7 ? "debit" : oSettings.aaSorting[0][0] == 8 ? "credit" : "id";
                 aoData.push({ name: "sSortColName", value: col });
             }
             oSettings.jqXHR = $.ajax({
@@ -68,10 +68,31 @@
             { data: 'datecreation', title: 'Date', sWidth: "10%" },
             { data: 'PO_SO_ref', title: 'Accounting Doc', sWidth: "5%"},
             { data: 'inv_complete', title: 'Account Number', sWidth: "5%" },
-            { data: 'name', title: 'Vendor Name', sWidth: "10%" },
-            { data: 'label_operation', title: 'Label', sWidth: "10%" },
-            { data: 'debit', title: 'Debit', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$')},
-            { data: 'credit', title: 'Credit', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$')},
+            { data: 'name', title: 'Vendor Name', sWidth: "15%" },
+            { data: 'label_operation', title: 'Operation Label', sWidth: "25%" },
+            { data: 'debit', title: 'Debit', sWidth: "5%", render: $.fn.dataTable.render.number('', '.', 2, '$')},
+            { data: 'credit', title: 'Credit', sWidth: "5%", render: $.fn.dataTable.render.number('', '.', 2, '$')},
         ],
     });
+}
+
+
+function getGrandTotal() {
+        $.ajax({
+            url: "/Accounting/GrandTotal",
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            dataType: 'JSON',
+            success: function (data) {
+               
+                var d = JSON.parse(data);
+                if (d.length > 0) {
+                    $("#txtdebit").text('$'+ d[0].debit);
+                    $("#txtcredit").text('$'+ d[0].credit);
+                }
+            },
+            error: function (msg) {
+
+            }
+        });
 }

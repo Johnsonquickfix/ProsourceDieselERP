@@ -186,6 +186,7 @@
     <Compile Include="BAL\ReportsRepository.cs" />
     <Compile Include="BAL\SettingRepository.cs" />
     <Compile Include="BAL\SetupRepostiory.cs" />
+    <Compile Include="BAL\ShipRepository.cs" />
     <Compile Include="BAL\ThirdPartyRepository.cs" />
     <Compile Include="BAL\UserProfileRepository.cs" />
     <Compile Include="BAL\Users.cs" />
@@ -996,6 +997,7 @@
     <Content Include="Views\Coupons\NewAutoGenerate.cshtml" />
     <Content Include="Views\Accounting\AccountJournal.cshtml" />
     <Content Include="Views\Accounting\AccountLedger.cshtml" />
+    <Content Include="Views\Ship\CreateShipOrder.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

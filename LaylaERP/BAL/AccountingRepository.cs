@@ -551,5 +551,20 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
+
+        public static DataTable GrandTotal()
+        {
+            DataTable dtr = new DataTable();
+            try
+            {
+                string strSql = "SELECT replace(format(sum(debit),2),',','') as debit, replace(format(sum(credit),2),',','') as credit from erp_accounting_bookkeeping";
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dtr = ds.Tables[0];
+
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dtr;
+        }
     }
 }

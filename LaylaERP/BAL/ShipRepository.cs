@@ -105,9 +105,9 @@
                                 + "         having max(case oim.meta_key when '_product_id' then oim.meta_value else '' end) = sdi.product_id"
                                 + "             and max(case oim.meta_key when '_variation_id' then oim.meta_value else '' end) = sdi.variation_id) line_total"
                                 + " FROM split_detail_items sdi"
-                                + " inner join wp_posts pp on pp.ID = sdi.product_id AND pp.post_type = 'product'"
+                                + " inner join wp_posts pp on pp.ID = sdi.product_id"
                                 + " left outer join wp_posts pvp on pvp.ID = sdi.variation_id"
-                                + " left outer join wp_postmeta psku on psku.post_id = pp.id and psku.meta_key = '_sku'"
+                                + " left outer join wp_postmeta psku on psku.post_id = (case when sdi.variation_id = 0 then sdi.product_id else sdi.variation_id end) and psku.meta_key = '_sku'"
                                 + " where sdi.split_detail_id = " + split_detail_id.ToString();
                 dt = SQLHelper.ExecuteDataTable(strSql);
             }

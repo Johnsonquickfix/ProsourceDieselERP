@@ -166,23 +166,19 @@ function dataGridLoad(order_type, is_date) {
             },
             { data: 'id', title: 'OrderID', sWidth: "8%", render: $.fn.dataTable.render.number('', '.', 0, '#') },
             {
-                data: '_billing_first_name', title: 'Name', sWidth: "14%", render: function (id, type, row) {
-                    let rValues = JSON.parse(row.meta_val);
-                    let name = (isNullUndefAndSpace(rValues._billing_first_name) ? rValues._billing_first_name : "") + ' ' + (isNullUndefAndSpace(rValues._billing_last_name) ? rValues._billing_last_name : "");
-                    return name;
+                data: 'first_name', title: 'Name', sWidth: "14%", render: function (id, type, row) {
+                    return row.first_name + ' ' + row.last_name;
                 }
             },
             {
-                data: '_billing_phone', title: 'Phone No.', sWidth: "10%", render: function (id, type, row) {
-                    let rValues = JSON.parse(row.meta_val); 
-                    //return rValues._billing_phone.replace(/[0-9]+/, '');
-                    if (isNullUndefAndSpace(rValues._billing_phone)) return rValues._billing_phone.replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3"); else "";
+                data: 'billing_phone', title: 'Phone No.', sWidth: "10%", render: function (id, type, row) {
+                    if (isNullUndefAndSpace(id)) return id.replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3"); else "";
                 }
             },
             { data: 'num_items_sold', title: 'No. of Items', sWidth: "10%" },
             {
-                data: '_order_total', title: 'Order Total', sWidth: "10%", render: function (id, type, row, meta) {
-                    let rValues = JSON.parse(row.meta_val); let sale_amt = parseFloat(rValues._order_total) || 0.00, refund_amt = parseFloat(row.refund_total) || 0.00;
+                data: 'total_sales', title: 'Order Total', sWidth: "10%", render: function (id, type, row, meta) {
+                    let sale_amt = parseFloat(row.total_sales) || 0.00, refund_amt = parseFloat(row.refund_total) || 0.00;
                     let amt = refund_amt != 0 ? '<span style="text-decoration: line-through;"> $' + sale_amt.toFixed(2) + '<br></span><span style="text-decoration: underline;"> $' + (parseFloat(sale_amt) + refund_amt).toFixed(2) + '</span>' : '$' + sale_amt.toFixed(2);
                     return amt;
                 }
@@ -205,17 +201,15 @@ function dataGridLoad(order_type, is_date) {
             },
             { data: 'date_created', title: 'Creation Date', sWidth: "12%" },
             {
-                data: '_payment_method_title', title: 'Payment Method', sWidth: "11%", render: function (id, type, row) {
-                    let rValues = JSON.parse(row.meta_val);
-                    let pm_title = isNullUndefAndSpace(rValues._payment_method_title) ? rValues._payment_method_title : "";
+                data: 'payment_method_title', title: 'Payment Method', sWidth: "11%", render: function (id, type, row) {
+                    let pm_title = isNullUndefAndSpace(row.payment_method_title) ? row.payment_method_title : "";
                     if (row.status != 'wc-cancelled' && row.status != 'wc-failed' && row.status != 'wc-cancelnopay') {
-                        if (rValues._payment_method == 'ppec_paypal' && rValues._paypal_status != 'COMPLETED') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="PaymentStatus(' + id + ',\'' + rValues._paypal_id + '\',\'' + rValues._billing_email + '\');">' + pm_title + '</a>';
-                        else if (rValues._payment_method == 'podium' && rValues._podium_status != 'PAID') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="podiumPaymentStatus(' + id + ',\'' + rValues._podium_uid + '\',\'' + rValues._billing_email + '\');">' + pm_title + '</a>';
+                        if (row.payment_method == 'ppec_paypal' && row.paypal_status != 'COMPLETED') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="PaymentStatus(' + row.id + ',\'' + row.paypal_id + '\',\'' + row.billing_email + '\');">' + pm_title + '</a>';
+                        else if (row.payment_method == 'podium' && row.podium_status != 'PAID') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="podiumPaymentStatus(' + row.id + ',\'' + row.podium_uid + '\',\'' + row.billing_email + '\');">' + pm_title + '</a>';
                         //if (row.payment_method == 'ppec_paypal') return ' <a href="javascript:void(0);" data-toggle="tooltip" title="Check PayPal Payment Status." onclick="PaymentStatus(' + row.id + ',\'' + row.paypal_id + '\');">' + row.payment_method_title + '</a>';
                         else return pm_title;
                     }
                     else return pm_title;
-
                 }
             },
             {

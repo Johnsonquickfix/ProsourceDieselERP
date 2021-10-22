@@ -575,8 +575,8 @@
                 }
 
                 /// step 8 : wp_posts
-                //strSql.Append(string.Format(" update wp_posts set post_status = '{0}' ,comment_status = 'closed',post_modified = '{1}',post_modified_gmt = '{2}',post_excerpt = '{3}' where id = {4}; ", model.OrderPostStatus.status, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"), model.OrderPostStatus.Search, model.OrderPostStatus.order_id));
-                strSql.Append(string.Format(" update wp_posts set post_status = '{0}',post_modified = '{1}',post_modified_gmt = '{2}' where id = {3}; ", model.OrderPostStatus.status, cDate.ToString("yyyy-MM-dd HH:mm:ss"), cUTFDate.ToString("yyyy-MM-dd HH:mm:ss"), model.OrderPostStatus.order_id));
+                strSql.Append(string.Format(" update wp_posts set post_status = '{0}' ,comment_status = 'closed',post_modified = '{1}',post_modified_gmt = UTC_TIMESTAMP(),post_excerpt = '{2}' where id = {3}; ", model.OrderPostStatus.status, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), model.OrderPostStatus.Search, model.OrderPostStatus.order_id));
+                //strSql.Append(string.Format(" update wp_posts set post_status = '{0}',post_modified = '{1}',post_modified_gmt = '{2}' where id = {3}; ", model.OrderPostStatus.status, cDate.ToString("yyyy-MM-dd HH:mm:ss"), cUTFDate.ToString("yyyy-MM-dd HH:mm:ss"), model.OrderPostStatus.order_id));
 
                 /////step 9 : Reduce Stock
                 //strSql.Append("delete from product_stock_register where tran_type ='SO' and tran_id = " + model.OrderPostStatus.order_id + ";");

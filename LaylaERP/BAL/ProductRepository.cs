@@ -2600,7 +2600,20 @@ namespace LaylaERP.BAL
                     string strSQl = "";
                     if (parent == "0")
                     {
-                        strSQl = "sp_getTermID";
+                        //strSQl = "sp_getTermID";
+                        strSQl = string.Format("SELECT group_concat(c.term_id) as term_id FROM " +
+                            "(" +
+                            "SELECT term_taxonomy_id,t.term_id, name,slug, name as path, 0 as level FROM wp_term_taxonomy tx inner join wp_terms t on t.term_id = tx.term_id " +
+                            "WHERE parent=0 and taxonomy='product_cat' and tx.term_taxonomy_id in ({0}) " +
+                            "union all " +
+                            "SELECT c.term_taxonomy_id, t.term_id, t.name ,t.slug, CONCAT(cp.path, ' > ', t.name), " +
+                            "CONCAT(level + 1, t.name) as level " +
+                            "FROM (SELECT term_taxonomy_id,t.term_id, name,slug, name as path, 0 as level FROM wp_term_taxonomy tx left join wp_terms t on t.term_id = tx.term_id " +
+                            "WHERE parent=0 and taxonomy='product_cat' and tx.term_taxonomy_id in ({0})) AS cp " +
+                            "JOIN wp_term_taxonomy AS c ON cp.term_taxonomy_id = c.parent left join wp_terms t on t.term_id = c.term_taxonomy_id) as  c " +
+                            "left join wp_termmeta tm_a on tm_a.term_id = c.term_id and tm_a.meta_key = 'Is_Active' " +
+                            "left join wp_termmeta tm on c.term_id = tm.term_id and tm.meta_key = 'thumbnail_id' " +
+                            "left join wp_posts p on tm.meta_value = p.ID where  coalesce(tm_a.meta_value,'1') = '1' ORDER BY path; ", termID);
                     }
                     else
                     {
@@ -2609,11 +2622,11 @@ namespace LaylaERP.BAL
                     "left join wp_termmeta tm_a on tm_a.term_id = t.term_id and tm_a.meta_key = 'Is_Active' " +
                     "where coalesce(tm_a.meta_value,'1') = '1' and t.term_id in (" + termID + ")";
                     }
-                    MySqlParameter[] para =
-                    {
-                    new MySqlParameter("@Userterm_ID", termID)
-                   };
-                    ds = SQLHelper.ExecuteDataSet(strSQl, para);
+                   // MySqlParameter[] para =
+                   // {
+                   // new MySqlParameter("@Userterm_ID", termID)
+                   //};
+                    ds = SQLHelper.ExecuteDataSet(strSQl);
 
                     if (ds.Tables[0].Rows.Count > 0)
                         result += ds.Tables[0].Rows[0]["term_id"].ToString() + ",";
@@ -2704,7 +2717,20 @@ namespace LaylaERP.BAL
                     string strSQl = "";
                     if (parent == "0")
                     {
-                        strSQl = "sp_getProductID";
+                        //strSQl = "sp_getProductID";
+                        strSQl = string.Format("SELECT GROUP_CONCAT(tr.object_id) object_id FROM " +
+                            "(" +
+                            "SELECT tx.term_taxonomy_id, t.term_id, name, slug, name as path, 0 as level FROM " +
+                            "wp_term_taxonomy tx inner join wp_terms t on t.term_id = tx.term_id WHERE parent = 0 and tx.taxonomy = 'product_cat' and tx.term_taxonomy_id in ({0}) " +
+                            "union all " +
+                            "SELECT c.term_taxonomy_id, t.term_id, t.name, t.slug, CONCAT(cp.path, ' > ', t.name), " +
+                            "CONCAT(level + 1, t.name) as level FROM(SELECT tx.term_taxonomy_id, t.term_id, name, slug, name as path, 0 as level FROM " +
+                            "wp_term_taxonomy tx inner join wp_terms t on t.term_id = tx.term_id WHERE parent = 0 and tx.taxonomy = 'product_cat' and tx.term_taxonomy_id in ({0})) AS cp " +
+                            "JOIN wp_term_taxonomy AS c ON cp.term_taxonomy_id = c.parent left join wp_terms t on t.term_id = c.term_taxonomy_id) as c " +
+                            "left join wp_term_relationships tr on tr.term_taxonomy_id = c.term_id " +
+                            "left join wp_termmeta tm_a on tm_a.term_id = c.term_id and tm_a.meta_key = 'Is_Active' " +
+                            "left join wp_termmeta tm on c.term_id = tm.term_id and tm.meta_key = 'thumbnail_id' left join wp_posts p on tm.meta_value = p.ID " +
+                            "where  coalesce(tm_a.meta_value, '1') = '1' ORDER BY path; ", termID);
                     }
                     else
                     {
@@ -2714,11 +2740,11 @@ namespace LaylaERP.BAL
                     "left join wp_termmeta tm_a on tm_a.term_id = t.term_id and tm_a.meta_key = 'Is_Active' " +
                     "where coalesce(tm_a.meta_value,'1') = '1' and t.term_id in (" + ID + ")";
                     }
-                    MySqlParameter[] para =
-                   {
-                    new MySqlParameter("@Userterm_ID", termID)
-                   };
-                    DataSet ds = SQLHelper.ExecuteDataSet(strSQl, para);
+                   // MySqlParameter[] para =
+                   //{
+                   // new MySqlParameter("@Userterm_ID", termID)
+                   //};
+                    DataSet ds = SQLHelper.ExecuteDataSet(strSQl);
                     if (ds.Tables[0].Rows.Count > 0)
                         result = ds.Tables[0].Rows[0]["object_id"].ToString() + ",";
                     else

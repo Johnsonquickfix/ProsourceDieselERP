@@ -164,7 +164,7 @@ function CategoryList() {
         },
         aoColumns: [
             {
-                'data': 'ID', sWidth: "5%   ",
+                'data': 'ID', sWidth: "10%",
                 'render': function (data, type, full, meta) {
                     if (data == 80) {
                         return '<input type="checkbox" data-placement="left" title="Uncategories category can not edit and delete. it is a default category" data-toggle="tooltip" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + $('<div/>').text(data).html() + '" disabled><label></label>';
@@ -175,7 +175,7 @@ function CategoryList() {
                 }
             },
             {
-                "data": "ImagePath",
+                "data": "ImagePath", sWidth: "10%",
                 "render": function (data) {
                     url = "../../Content/ProductCategory/" + data + "";
                     var result = checkFileExist(url);
@@ -185,7 +185,7 @@ function CategoryList() {
                 }
             },
             {
-                data: 'name', title: 'Name', sWidth: "25%",
+                data: 'name', title: 'Name', sWidth: "15%",
                 'render': function (id, type, full, meta) {
                     /*  return  id;*/
                     if (full.parent == 0)
@@ -194,11 +194,11 @@ function CategoryList() {
                         return ' ' + space(full.level) + id + '';
                 }
             },
-            { data: 'description', title: 'Description', sWidth: "25%" },
-            { data: 'slug', title: 'Slug', sWidth: "25%" },
-            { data: 'count', title: 'Count', sWidth: "25%" },
+            { data: 'description', title: 'Description', sWidth: "15%" },
+            { data: 'slug', title: 'Slug', sWidth: "15%" },
+            { data: 'count', title: 'Count', sWidth: "10%" },
             {
-                'data': 'ID',
+                'data': 'ID', sWidth: "10%",
                 'render': function (id, type, full, meta) {
                     if (id == 80) {
                         return '<i class="glyphicon glyphicon-pencil" data-placement="left" title="Edit category" data-toggle="tooltip"></i>';

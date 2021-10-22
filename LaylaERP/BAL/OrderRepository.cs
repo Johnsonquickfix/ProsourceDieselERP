@@ -1282,7 +1282,7 @@
                 };
                 string strSQl = "select oi.order_id,oi.order_item_id,oi.order_item_name,oi.order_item_type,max(case meta_key when '_product_id' then meta_value else '' end) p_id,max(case meta_key when '_variation_id' then meta_value else '' end) v_id,"
                             + " max(case meta_key when '_qty' then meta_value else '' end) qty,max(case meta_key when '_line_subtotal' then meta_value else '' end) line_subtotal,"
-                            + " max(case meta_key when '_line_total' then meta_value else '' end) line_total,max(case meta_key when '_line_tax' then meta_value else '' end) tax,"
+                            + " max(case meta_key when '_line_total' then meta_value when 'amount' then meta_value else '' end) line_total,max(case meta_key when '_line_tax' then meta_value else '' end) tax,"
                             + " max(case meta_key when 'discount_amount' then meta_value else '' end) discount_amount,max(case meta_key when 'cost' then meta_value else '' end) shipping_amount,"
                             + " (select COALESCE(psr.meta_value, 0) sale_price from wp_postmeta psr where psr.meta_key = '_price' "
                             + "         and psr.post_id = (case when max(case oim.meta_key when '_variation_id' then oim.meta_value else '' end) != '0' then max(case oim.meta_key when '_variation_id' then oim.meta_value else '' end)"
@@ -1408,6 +1408,13 @@
                             productsModel.meta_data = "{}";
                     }
                     else if (productsModel.product_type == "fee")
+                    {
+                        if (sdr["line_total"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["line_total"].ToString().Trim()))
+                            productsModel.total = decimal.Parse(sdr["line_total"].ToString().Trim());
+                        else
+                            productsModel.total = 0;
+                    }
+                    else if (productsModel.product_type == "gift_card")
                     {
                         if (sdr["line_total"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["line_total"].ToString().Trim()))
                             productsModel.total = decimal.Parse(sdr["line_total"].ToString().Trim());

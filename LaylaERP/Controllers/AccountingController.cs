@@ -52,9 +52,13 @@ namespace LaylaERP.Controllers
 
         public ActionResult AccountLedger()
         {
-            return View();
+            return View("AccountLedgerList");
         }
 
+        //public ActionResult AccountLedgerList()
+        //{
+        //    return View();
+        //}
         public JsonResult GetNatureofJournal(SearchModel model)
         {
             DataSet ds = BAL.AccountingRepository.GetNatureofJournal();
@@ -363,6 +367,43 @@ namespace LaylaERP.Controllers
             }
             catch { }
             return Json(JSONresult, 0);
+        }
+
+        [HttpGet]
+        public JsonResult GetAccountLedgerDetailsList(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            try
+            {
+                DataTable dt = AccountingRepository.GetAccountLedgerDetailsList(model.strValue1, model.strValue2, model.strValue3);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
+
+        [HttpPost]
+        public JsonResult GetDetailsLedger(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            try
+            {
+                DataTable dt = AccountingRepository.GetDetailsLedger(model.strValue1, model.strValue2, model.strValue3);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
+        public JsonResult GetVendor(SearchModel model)
+        {
+            DataSet ds = BAL.AccountingRepository.GetVendor();
+            List<SelectListItem> productlist = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                productlist.Add(new SelectListItem { Text = dr["Name"].ToString(), Value = dr["ID"].ToString() });
+            }
+            return Json(productlist, JsonRequestBehavior.AllowGet);
+
         }
     }
 }

@@ -142,7 +142,7 @@ function PurchaseOrderGrid(is_date) {
             { data: 'vendor_name', title: 'Vendor Name', sWidth: "10%" },            
             { data: 'total_ttc', title: 'Total Amount', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
             { data: 'recieved', title: 'Paid Amount', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
-            { data: 'remaining', title: 'Remaining Amount', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
+            { data: 'remaining', title: 'Balance Amount', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
             { data: 'Status', title: 'Status', sWidth: "10%" }
         ],
 
@@ -211,7 +211,7 @@ function PartiallyGrid(is_date) {
             { data: 'vendor_name', title: 'Vendor Name', sWidth: "10%" },
             { data: 'total_ttc', title: 'Amount', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
             { data: 'recieved', title: 'Received', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
-            { data: 'remaining', title: 'Remaining', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
+            { data: 'remaining', title: 'Balance', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
             { data: 'Status', title: 'Status', sWidth: "10%" }
         ]
 
@@ -276,7 +276,7 @@ function PoPartiallyColleps(is_date) {
                 }
             },
 
-            { data: 'date_livraison', title: 'Planned date of delivery', sWidth: "10%" },
+            { data: 'date_livraison', title: 'Planned Date of Delivery', sWidth: "10%" },
             { data: 'Status', title: 'Status', sWidth: "10%" }
             
         ],
@@ -287,7 +287,7 @@ function PoPartiallyColleps(is_date) {
 /* Formatting function for row details - modify as you need */
 function formatPartially(d) {
     //console.log(d.ref);
-    let option = { strValue1: d.id }, wrHTML = '<table class="inventory-table table-blue table check-table table-bordered table-striped dataTable no-footer"><thead><tr><th style="width:10%; text-align:left;">Bill No</th><th style="width:12%; text-align:left;">Receive Date</th><th style="width:60%; text-align:left;">Description</th><th style="width:10%; text-align:right;">Total Amount</th><th style="width:10%; text-align:right;">Paid Amount</th><th style="width:10%; text-align:right;">Remaining Amount</th></tr></thead>';
+    let option = { strValue1: d.id }, wrHTML = '<table class="inventory-table table-blue table check-table table-bordered table-striped dataTable no-footer"><thead><tr><th style="width:10%; text-align:left;">Bill No</th><th style="width:12%; text-align:left;">Receive Date</th><th style="width:60%; text-align:left;">Description</th><th style="width:10%; text-align:right;">Total Amount</th><th style="width:10%; text-align:right;">Paid Amount</th><th style="width:10%; text-align:right;">Balance Amount</th></tr></thead>';
     $.ajax({
         url: '/PaymentInvoice/GetPartiallyOrderDataList', type: 'post', dataType: 'json', contentType: "application/json; charset=utf-8", data: JSON.stringify(option),
         success: function (result) {

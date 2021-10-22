@@ -170,7 +170,7 @@ namespace LaylaERP.Controllers
                     String jsonData = new StreamReader(Request.InputStream).ReadToEnd();
                     //$order = wc_get_order( $order_number); 
                     str = jsonData;
-
+                    LogData(oname, tracking_number, carrier, str);
                     //$timestamp = current_time('timestamp'); 
                     //$shipstation_xml = file_get_contents('php://input'); 
 
@@ -207,6 +207,37 @@ namespace LaylaERP.Controllers
             }
             catch { }
             return View();
+        }
+        public static void LogData(string order_number, string tracking_number, string carrier, string jsonData)
+        {
+            try
+            {
+                StringBuilder strErrorLog = new StringBuilder();
+                strErrorLog.Append("\r\n ==========================================================================================================");
+                strErrorLog.Append("\r\n Date Time: " + System.DateTime.UtcNow.ToString());
+                strErrorLog.Append("\r\n order_number: " + order_number);
+                strErrorLog.Append("\r\n tracking_number: " + tracking_number);
+                strErrorLog.Append("\r\n carrier: " + carrier);
+                strErrorLog.Append("\r\n jsonData : " + jsonData);
+                String FileName = string.Empty;
+                if (System.Web.HttpContext.Current != null)
+                    FileName = System.Web.HttpContext.Current.Server.MapPath("~//AppLog//Log" + System.DateTime.Now.Year.ToString() + System.DateTime.Now.Month.ToString() + System.DateTime.Now.Day.ToString() + ".txt");
+                else
+                    FileName = HttpRuntime.AppDomainAppPath.ToString() + ("AppLog//Log" + System.DateTime.Now.Year.ToString() + System.DateTime.Now.Month.ToString() + System.DateTime.Now.Day.ToString() + ".txt");
+                if (!System.IO.File.Exists(FileName))
+                {
+                    System.IO.File.Create(FileName).Dispose();
+                    string str = "\r\n=========================================================================================================="
+                               + "\r\n                                               LaylaERP                                                   "
+                               + "\r\n                                    Shipping data Read                                      "
+                               + "\r\n==========================================================================================================";
+                    strErrorLog.Insert(0, str);
+                }
+                StreamWriter objStreamWriter = new StreamWriter(FileName, true);// Open for appending!
+                objStreamWriter.WriteLine(strErrorLog);
+                objStreamWriter.Close();
+            }
+            catch { }
         }
     }
 }

@@ -221,15 +221,15 @@ namespace LaylaERP.Controllers
                 strErrorLog.Append("\r\n jsonData : " + jsonData);
                 String FileName = string.Empty;
                 if (System.Web.HttpContext.Current != null)
-                    FileName = System.Web.HttpContext.Current.Server.MapPath("~//AppLog//Log" + System.DateTime.Now.Year.ToString() + System.DateTime.Now.Month.ToString() + System.DateTime.Now.Day.ToString() + ".txt");
+                    FileName = System.Web.HttpContext.Current.Server.MapPath("~//Views//ship//Log" + System.DateTime.Now.Year.ToString() + System.DateTime.Now.Month.ToString() + System.DateTime.Now.Day.ToString() + ".txt");
                 else
-                    FileName = HttpRuntime.AppDomainAppPath.ToString() + ("AppLog//Log" + System.DateTime.Now.Year.ToString() + System.DateTime.Now.Month.ToString() + System.DateTime.Now.Day.ToString() + ".txt");
+                    FileName = HttpRuntime.AppDomainAppPath.ToString() + ("Views//ship//Log" + System.DateTime.Now.Year.ToString() + System.DateTime.Now.Month.ToString() + System.DateTime.Now.Day.ToString() + ".txt");
                 if (!System.IO.File.Exists(FileName))
                 {
                     System.IO.File.Create(FileName).Dispose();
                     string str = "\r\n=========================================================================================================="
                                + "\r\n                                               LaylaERP                                                   "
-                               + "\r\n                                    Shipping data Read                                      "
+                               + "\r\n                                           Shipping data Read                                             "
                                + "\r\n==========================================================================================================";
                     strErrorLog.Insert(0, str);
                 }

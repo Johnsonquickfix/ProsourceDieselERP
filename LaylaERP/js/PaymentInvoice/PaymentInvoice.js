@@ -142,7 +142,7 @@ function PurchaseOrderGrid(is_date) {
             { data: 'vendor_name', title: 'Vendor Name', sWidth: "10%" },            
             { data: 'total_ttc', title: 'Total Amount', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
             { data: 'recieved', title: 'Paid Amount', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
-            { data: 'remaining', title: 'Remaining Amount', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
+            { data: 'remaining', title: 'Balance Amount', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
             { data: 'Status', title: 'Status', sWidth: "10%" }
         ],
 
@@ -211,7 +211,7 @@ function PartiallyGrid(is_date) {
             { data: 'vendor_name', title: 'Vendor Name', sWidth: "10%" },
             { data: 'total_ttc', title: 'Amount', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
             { data: 'recieved', title: 'Received', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
-            { data: 'remaining', title: 'Remaining', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
+            { data: 'remaining', title: 'Balance', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
             { data: 'Status', title: 'Status', sWidth: "10%" }
         ]
 
@@ -276,7 +276,7 @@ function PoPartiallyColleps(is_date) {
                 }
             },
 
-            { data: 'date_livraison', title: 'Planned date of delivery', sWidth: "10%" },
+            { data: 'date_livraison', title: 'Planned Date of Delivery', sWidth: "10%" },
             { data: 'Status', title: 'Status', sWidth: "10%" }
             
         ],

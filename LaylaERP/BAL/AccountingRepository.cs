@@ -557,7 +557,7 @@ namespace LaylaERP.BAL
             DataTable dtr = new DataTable();
             try
             {
-                string strSql = "SELECT replace(format(sum(debit),2),',','') as debit, replace(format(sum(credit),2),',','') as credit from erp_accounting_bookkeeping";
+                string strSql = "SELECT replace(format(sum(debit),2),',','') as debit, replace(format(sum(credit),2),',','') as credit, replace(format(sum(credit)-sum(debit),2),',','') as balance from erp_accounting_bookkeeping";
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dtr = ds.Tables[0];
 

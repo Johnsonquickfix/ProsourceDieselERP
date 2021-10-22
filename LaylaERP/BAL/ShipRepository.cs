@@ -46,19 +46,33 @@
                             + " inner join wp_woocommerce_order_items oi on oi.order_id = sr.main_order_id and oi.order_item_type = 'line_item'"
                             + " inner join wp_woocommerce_order_itemmeta oim_p on oim_p.order_item_id = oi.order_item_id and oim_p.meta_key = '_product_id'"
                             + " inner join wp_woocommerce_order_itemmeta oim_v on oim_v.order_item_id = oi.order_item_id and oim_v.meta_key = '_variation_id'"
+                            + " inner join wp_woocommerce_order_itemmeta oim_lt on oim_lt.order_item_id = oi.order_item_id and oim_lt.meta_key = '_line_subtotal' and oim_lt.meta_value != 0"
                             + " inner join product_warehouse_rule pwr on pwr.status = 1 and pwr.product_id = (case when oim_v.meta_value = '0' then oim_p.meta_value else oim_v.meta_value end)"
                             + " where oi.order_id = " + orderid + " group by sr.split_id, oi.order_id, pwr.prefix_code;";
 
                 strSql += " INSERT INTO split_detail_items (split_detail_id,product_id,variation_id,qty,meta_key,meta_value) "
-                        + " SELECT sd.split_detail_id,oim_p.meta_value p_id,oim_v.meta_value v_id,oim_qty.meta_value qty,'','' FROM split_record sr"
-                        + " INNER JOIN wp_woocommerce_order_items oi on oi.order_id = sr.main_order_id and oi.order_item_type = 'line_item'"
+                        + " select split_detail_id,p_id,v_id,qty,meta_key,meta_value from "
+                        + " (SELECT sd.split_detail_id, oim_p.meta_value p_id, oim_v.meta_value v_id, oim_qty.meta_value qty, '' meta_key, '' meta_value FROM split_record sr"
+                        + " inner join wp_woocommerce_order_items oi on oi.order_id = sr.main_order_id and oi.order_item_type = 'line_item'"
                         + " inner join wp_woocommerce_order_itemmeta oim_p on oim_p.order_item_id = oi.order_item_id and oim_p.meta_key = '_product_id'"
                         + " inner join wp_woocommerce_order_itemmeta oim_v on oim_v.order_item_id = oi.order_item_id and oim_v.meta_key = '_variation_id'"
                         + " inner join wp_woocommerce_order_itemmeta oim_qty on oim_qty.order_item_id = oi.order_item_id and oim_qty.meta_key = '_qty'"
+                        + " inner join wp_woocommerce_order_itemmeta oim_lt on oim_lt.order_item_id = oi.order_item_id and oim_lt.meta_key = '_line_subtotal' and oim_lt.meta_value != 0"
                         + " inner join product_warehouse_rule pwr on pwr.status = 1 and pwr.product_id = (case when oim_v.meta_value = '0' then oim_p.meta_value else oim_v.meta_value end)"
-                        + " inner join split_detail sd on sd.split_id = sr.split_id and sd.order_name = CONCAT('#', oi.order_id, '-', pwr.prefix_code)"
-                        + " where oi.order_id = " + orderid + " group by sr.split_id, oi.order_id, pwr.prefix_code;";
-
+                        + " inner join split_detail sd on sd.split_id = sr.split_id and sd.order_name = CONCAT('#', sr.main_order_id, '-', pwr.prefix_code)"
+                        + " where oi.order_id = " + orderid + " group by sr.split_id, oi.order_id, pwr.prefix_code"
+                        + " union all"
+                        + " SELECT sd.split_detail_id,free_it.free_product_id p_id,0 v_id,oim_qty.meta_value* free_quantity qty,'','' FROM split_record sr"
+                        + " inner join wp_woocommerce_order_items oi on oi.order_id = sr.main_order_id and oi.order_item_type = 'line_item'"
+                        + " inner join wp_woocommerce_order_itemmeta oim_p on oim_p.order_item_id = oi.order_item_id and oim_p.meta_key = '_product_id'"
+                        + " inner join wp_woocommerce_order_itemmeta oim_v on oim_v.order_item_id = oi.order_item_id and oim_v.meta_key = '_variation_id'"
+                        + " inner join wp_woocommerce_order_itemmeta oim_qty on oim_qty.order_item_id = oi.order_item_id and oim_qty.meta_key = '_qty'"
+                        + " inner join wp_woocommerce_order_itemmeta oim_lt on oim_lt.order_item_id = oi.order_item_id and oim_lt.meta_key = '_line_subtotal' and oim_lt.meta_value != 0"
+                        + " inner join product_warehouse_rule pwr on pwr.status = 1 and pwr.product_id = (case when oim_v.meta_value = '0' then oim_p.meta_value else oim_v.meta_value end)"
+                        + " inner join split_detail sd on sd.split_id = sr.split_id and sd.order_name = CONCAT('#', sr.main_order_id, '-', pwr.prefix_code)"
+                        + " inner join wp_product_free free_it on free_it.product_id = pwr.product_id"
+                        + " where oi.order_id = " + orderid + " group by sr.split_id, oi.order_id, pwr.prefix_code) tt order by split_detail_id;";
+                strSql += string.Format("update wp_posts set post_modified = now(),post_modified_gmt = UTC_TIMESTAMP() where id = {0}; ", orderid);
                 result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
             }
             catch (Exception Ex) { throw Ex; }

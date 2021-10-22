@@ -232,7 +232,7 @@
                                                 <select class="form-control" id="ddlPaymentType">
                                                     <option value="-1">Please Select Payment Type</option>
                                                     <option value="banktranser">Bank Transfer</option>
-                                                    <option value="cheque">Cheque</option>
+                                                    <option value="Check">Check</option>
                                                     <option value="creditcard">Credit Card</option>
                                                 </select>
                                             </div>*@
@@ -814,7 +814,7 @@
                             </div>
                         </div>
                         <div id="cheq_payment" style="display:none;">
-                            <h2 class="box-header">Cheque Payment</h2>
+                            <h2 class="box-header">Check Payment</h2>
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="box box-primary">
@@ -1055,16 +1055,18 @@
                 </div>
                 <div class="tab-pane" id="tab_12">
                     <div id="linkInvoice">
-                        <div class="row">
-                            <div class="col-md-2">
-                                <span class="form-control">Received Bill</span><h3 id="receivebill" class="col-sm-2">$@ViewBag.purchaseorder_received</h3>
+                        <div class="row bxa-row">
+                            <div class="">
+                                <div class="bxa"><span class=""><i class="fas fa-file-invoice-dollar"></i>Received Bill</span><h3 id="receivebill" class="">$@ViewBag.purchaseorder_received</h3></div>
                             </div>
-                            <div class="col-md-2">
-                                <span class="form-control">Purchase Order</span><h3 id="purchaseorder" class="col-sm-2">$@ViewBag.purchaseorder</h3>
-                            </div>
-                            <div class="col-md-2">
-                                <span class="form-control">Purchase Invoice</span><h3 id="invoiceorder" class="col-sm-2">$@ViewBag.invoiceorder</h3>
-                            </div>
+                            <div class="">
+                                <div class="bxa">
+                                    <span class=""><i class="fas fa-file-invoice-dollar"></i>Purchase Order</span><h3 id="purchaseorder" class="">$@ViewBag.purchaseorder</h3></div>
+                                </div>
+                            <div class="">
+                                <div class="bxa">
+                                    <span class=""><i class="fas fa-file-invoice-dollar"></i>Purchase Invoice</span><h3 id="invoiceorder" class="">$@ViewBag.invoiceorder</h3></div>
+                                </div>
                         </div>
                         <div class="row">
                             <div class="col-md-12">

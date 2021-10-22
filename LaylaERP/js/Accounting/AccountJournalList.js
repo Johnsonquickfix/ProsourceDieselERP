@@ -2,7 +2,7 @@
     var urid = $("#ddlSearchStatus").val();
     var ID = $("#hfid").val();
     var table_EL = $('#JournalListdata').DataTable({
-        columnDefs: [{ "orderable": true, "targets": 1 }, { 'visible': true, 'targets': [0] }], order: [[2, "desc"]],
+        columnDefs: [{ "orderable": true, "targets": 1 }, { 'visible': true, 'targets': [0] }], order: [[0,"desc"],[2, "desc"],[4, "asc"]],
         destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: false, searching: true,
         responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
         language: {
@@ -66,12 +66,18 @@
             { data: 'inv_num', title: 'Num Transcation', sWidth: "5%" },
             { data: 'code_journal', title: 'Journal', sWidth: "5%" },
             { data: 'datecreation', title: 'Date', sWidth: "10%" },
-            { data: 'PO_SO_ref', title: 'Accounting Doc', sWidth: "5%"},
+            {
+                data: 'PO_SO_ref', title: 'Accounting Doc', sWidth: "11%",
+                'render': function (inv_num, type, full, meta) {
+                    //return '<a href="NewReceiveOrder/' + full.id + '">' + id + '</a> <a href="#" onclick="getPurchaseOrderPrint(' + full.id + ', false);"><i class="fas fa-search-plus"></i></a>';
+                    return '' + inv_num + '<a href="#" onclick="getPurchaseOrderPrint(' + full.inv_num + ', false);"><i class="fas fa-search-plus"></i></a>';
+                }
+            },
             { data: 'inv_complete', title: 'Account Number', sWidth: "5%" },
             { data: 'name', title: 'Vendor Name', sWidth: "15%" },
             { data: 'label_operation', title: 'Operation Label', sWidth: "25%" },
-            { data: 'debit', title: 'Debit', sWidth: "5%", render: $.fn.dataTable.render.number('', '.', 2, '$')},
-            { data: 'credit', title: 'Credit', sWidth: "5%", render: $.fn.dataTable.render.number('', '.', 2, '$')},
+            { data: 'debit', title: 'Debit', sWidth: "5%", class: 'text-bold', render: $.fn.dataTable.render.number('', '.', 2, '$')},
+            { data: 'credit', title: 'Credit', sWidth: "5%", class: 'text-bold', render: $.fn.dataTable.render.number('', '.', 2, '$')},
         ],
     });
 }
@@ -88,7 +94,8 @@ function getGrandTotal() {
                 var d = JSON.parse(data);
                 if (d.length > 0) {
                     $("#txtdebit").text('$'+ d[0].debit);
-                    $("#txtcredit").text('$'+ d[0].credit);
+                    $("#txtcredit").text('$' + d[0].credit);
+                    $("#txtbalance").text('$' + d[0].balance)
                 }
             },
             error: function (msg) {
@@ -96,3 +103,4 @@ function getGrandTotal() {
             }
         });
 }
+

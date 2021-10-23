@@ -369,6 +369,7 @@ namespace LaylaERP.Controllers
             return Json(JSONresult, 0);
         }
 
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Account Ledger~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         [HttpGet]
         public JsonResult GetAccountLedgerDetailsList(JqDataTableModel model)
         {
@@ -404,6 +405,17 @@ namespace LaylaERP.Controllers
             }
             return Json(productlist, JsonRequestBehavior.AllowGet);
 
+        }
+        public JsonResult DatewithVendoreTotal(JqDataTableModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = AccountingRepository.DatewithVendoreTotal(model.strValue1, model.strValue2, model.strValue3);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
         }
     }
 }

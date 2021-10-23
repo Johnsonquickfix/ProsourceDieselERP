@@ -566,5 +566,80 @@ namespace LaylaERP.BAL
             { throw ex; }
             return dtr;
         }
+
+        public static DataTable GetAccountLedgerDetailsList(string sMonths, string searchid, string productid)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                string strWhr = string.Empty;
+                //if (!string.IsNullOrEmpty(searchid))
+                //{
+                //    searchid = searchid.ToLower();
+                //    strWhr += " and (lower(p.inv_complete) like '" + searchid + "%' OR lower(p.inv_complete) like '" + searchid + "%' OR lower(p.label_complete)='" + searchid + "%' OR lower(p.label_complete) like '" + searchid + "%')";
+                //}
+                if (!string.IsNullOrEmpty(searchid))
+                {
+                    strWhr += " and thirdparty_code = '"+ searchid  + "'";
+                }
+                if (sMonths != null)
+                {
+                    strWhr += " and cast(p.doc_date as date) BETWEEN " + sMonths;
+                }
+                string strSql = "select ROW_NUMBER() OVER ( ORDER BY inv_complete ) row_num, concat(inv_complete,' : ',label_complete) Acctext,inv_complete rowid from erp_accounting_bookkeeping p "
+                + " where 1 = 1 ";
+                strSql += strWhr + string.Format(" group by inv_complete  order by inv_complete");
+                dt = SQLHelper.ExecuteDataTable(strSql);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+        public static DataTable GetDetailsLedger(string searchid, string vid, string productid)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                string strWhr = string.Empty;
+                //MySqlParameter[] parameters =
+                // {
+                //    new MySqlParameter("@inv_complete", searchid)
+                //};
+                if (!string.IsNullOrEmpty(searchid))
+                {
+                    strWhr += " and inv_complete = '" + searchid + "'";
+                }
+                if (!string.IsNullOrEmpty(vid))
+                {
+                    strWhr += " and thirdparty_code = '" + vid + "'";
+                }
+                string strSql = "select inv_complete,inv_num,code_journal,PO_SO_ref,label_operation,case when debit = '0.00000000' then '' else format(debit,2) end debit,case when credit = '0.00000000' then '' else format(credit,2) end credit,DATE_FORMAT(p.doc_date,'%m/%d/%Y %h:%i %p') doc_date"
+                                     + " from erp_accounting_bookkeeping p"
+                                      //   + " where inv_complete = @inv_complete ";
+                                      + " where 1=1 ";
+                strSql += strWhr + string.Format("order by doc_date desc");
+                //dt = SQLHelper.ExecuteDataTable(strSql, parameters);
+                dt = SQLHelper.ExecuteDataTable(strSql);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+        public static DataSet GetVendor()
+        {
+            DataSet DS = new DataSet();
+            try
+            {
+                string strSQl = "select code_vendor as ID, concat(name,' (',code_vendor,')') as Name from wp_vendor where VendorStatus=1 order by code_vendor desc;";
+                DS = SQLHelper.ExecuteDataSet(strSQl);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
+        }
     }
 }

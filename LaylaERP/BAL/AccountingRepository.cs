@@ -484,7 +484,7 @@ namespace LaylaERP.BAL
             return dt;
         }
 
-        //Start journals Date 23-02-2021
+        //Start journals
         public static DataTable AccountJournalList(string sMonths, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
         {
             DataTable dt = new DataTable();

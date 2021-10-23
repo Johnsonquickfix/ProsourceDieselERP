@@ -172,7 +172,7 @@ function dataGridLoad(order_type, is_date) {
             },
             {
                 data: 'billing_phone', title: 'Phone No.', sWidth: "10%", render: function (id, type, row) {
-                    if (isNullUndefAndSpace(id)) return id.replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3"); else "";
+                    if (isNullUndefAndSpace(row.billing_phone)) return row.billing_phone.replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, "($1) $2-$3"); else "";
                 }
             },
             { data: 'num_items_sold', title: 'No. of Items', sWidth: "10%" },

@@ -1685,7 +1685,7 @@
                             + " FROM wp_posts p inner join wp_wc_order_stats os on p.id = os.order_id"
                             + " inner join vw_Order_details pmf on p.id = pmf.post_id"
                             + " WHERE p.post_type = 'shop_order' and p.post_status != 'auto-draft' " + strWhr
-                            + " order by " + SortCol + " " + SortDir + " OFFSET " + (pageno / pagesize).ToString() + " ROWS FETCH NEXT " + pagesize + " ROWS ONLY;";
+                            + " order by " + SortCol + " " + SortDir + " OFFSET " + (pageno).ToString() + " ROWS FETCH NEXT " + pagesize + " ROWS ONLY;";
                 strSql += "SELECT coalesce(sum(1),0) TotalRecord from wp_posts p inner join vw_Order_details pmf on p.id = pmf.post_id "
                         + " WHERE p.post_type = 'shop_order' " + strWhr.ToString();
 

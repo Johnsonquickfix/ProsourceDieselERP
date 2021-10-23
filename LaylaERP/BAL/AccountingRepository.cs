@@ -484,7 +484,8 @@ namespace LaylaERP.BAL
             return dt;
         }
 
-        public static DataTable AccountJournalList(string id, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        //Start journals Date 23-02-2021
+        public static DataTable AccountJournalList(string sMonths, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
         {
             DataTable dt = new DataTable();
             totalrows = 0;
@@ -492,7 +493,7 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "SELECT eab.rowid as id, inv_num, PO_SO_ref, inv_complete, code_journal, date_format(date_creation,'%m-%d-%Y') as datecreation, if(debit=0,'',debit) as debit, if(credit=0,'',credit) as credit, label_operation, v.name FROM erp_accounting_bookkeeping"
+                string strSql = "SELECT eab.rowid as id, inv_num, PO_SO_ref, inv_complete, code_journal, date_format(doc_date,'%m-%d-%Y') as datecreation, if(debit=0,'',debit) as debit, if(credit=0,'',credit) as credit, label_operation, v.name FROM erp_accounting_bookkeeping"
                                 + " eab left join wp_vendor v on v.code_vendor = eab.thirdparty_code where 1=1 ";
                 if (!string.IsNullOrEmpty(searchid))
                 {
@@ -500,7 +501,11 @@ namespace LaylaERP.BAL
                 }
                 if (userstatus != null)
                 {
-                    //strWhr += " and (is_active='" + userstatus + "') ";
+                    strWhr += " and (thirdparty_code ='" + userstatus + "') ";
+                }
+                if (sMonths != null)
+                {
+                    strWhr += " and cast(doc_date as date) BETWEEN " + sMonths;
                 }
                 strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
 
@@ -517,6 +522,7 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
+        //End Journals
 
         public static DataTable AccountLedgerList(string id, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
         {

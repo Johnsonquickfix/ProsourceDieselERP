@@ -158,7 +158,7 @@ function saveVendorPO() {
             fk_payment: PaymentTypeid, fk_bank: accountid, num_payment: Numbertransfer, note: Transmitter, bankcheck: BankCheck, comments: Comments,
             amount: parseFloat($("#Total").text()), fk_status: 0, PaymentInvoiceDetails: _list
         }
-        swal({ title: "Are you sure?", text: 'would you like to payment for $' + parseFloat($("#Total").text()) +' amount ?', type: "question", showCancelButton: true })
+        swal({ title: "Are you sure?", text: 'Would you like to pay for the $' + parseFloat($("#Total").text()) +' amount?', type: "question", showCancelButton: true })
             .then((result) => {
                 if (result.value) {
                     //console.log(option);

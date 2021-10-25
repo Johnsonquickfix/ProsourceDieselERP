@@ -12,9 +12,9 @@
         $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList">Back to List</a><input type="submit" value="Create Order" id="btnSave" class="btn btn-danger billinfo" />');
         $('.billinfo').prop("disabled", false);
         let VendorID = parseInt($('#ddlVendor').val()) || 0;
-        getVendorProducts(VendorID); isEdit(true);
-        setTimeout(function () {
-            let _details = getVendorDetails();
+        $.when(getVendorProducts(VendorID)).done(function () {
+            isEdit(true);
+            let _details = getVendorDetails(); console.log(_details);
             if (_details.length > 0) {
                 $('#txtRefvendor').val(_details[0].code_vendor);
                 $('#ddlPaymentTerms').val((parseInt(_details[0].PaymentTermsID) || 0)).trigger('change');
@@ -22,9 +22,9 @@
                 $('#ddlIncoTerms').val((parseInt(_details[0].fk_incoterms) || 0)).trigger('change');
                 $('#ddlPaymentType').val((parseInt(_details[0].Paymentmethod) || 0)).trigger('change');
                 $('#txtIncoTerms').val(_details[0].location_incoterms);
-                $('#iddlWarehouse').val((parseInt(_details[0].fk_warehouse) || 0)).trigger('change');
+                $('#ddlWarehouse').val((parseInt(_details[0].fk_warehouse) || 0)).trigger('change');
             }
-        }, 50);
+        });
     });
     //$('#ddlProduct').select2({
     //    allowClear: true, minimumInputLength: 3, placeholder: "Search Product",

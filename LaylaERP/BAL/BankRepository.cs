@@ -394,7 +394,7 @@ namespace LaylaERP.BAL
             DataTable dtr = new DataTable();
             try
             {
-                string strquery = "SELECT if (epi.type = 'SO',format(sum(epi.amount), 2),'0.00')as debit, if (epi.type = 'PO',format(sum(epi.amount), 2),'0.00') as credit, (if (epi.type = 'PO', sum(epi.amount), '0') - if (epi.type = 'SO', sum(epi.amount),'0')) as balance from erp_payment ep"
+                string strquery = "SELECT if (epi.type = 'SO',replace(format(sum(epi.amount), 2),',',''),'0.00')as debit, if (epi.type = 'PO',replace(format(sum(epi.amount), 2),',',''),'0.00') as credit, (if (epi.type = 'PO', sum(epi.amount), '0') - if (epi.type = 'SO', sum(epi.amount),'0')) as balance from erp_payment ep"
                                   + " left JOIN erp_bank_account eba on eba.rowid = ep.fk_bank left JOIN wp_PaymentType wpt on wpt.ID = ep.fk_payment"
                                   + " inner JOIN erp_payment_invoice epi on epi.fk_payment = ep.rowid left JOIN wp_vendor wv on wv.code_vendor = epi.thirdparty_code where 1 = 1";
                 DataSet ds = SQLHelper.ExecuteDataSet(strquery);

@@ -190,7 +190,7 @@ function createItemsList() {
         _rang += 1;
         if (payment == 0) {
         }
-        else {
+        else { 
             _list.push({
                 rowid: $(row).data('rowid'), payamount: payment, type: 'PO', thirdparty_code: $(row).data('supplier')
             });

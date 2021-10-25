@@ -1,5 +1,42 @@
-﻿function AccountJournalList() {
-    var urid = $("#ddlSearchStatus").val();
+﻿$(document).ready(function () {
+
+    $('#txtOrderDate').daterangepicker({
+        ranges: {
+            'Today': [moment(), moment()],
+            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+            'This Month': [moment().startOf('month'), moment().endOf('month')],
+            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        },
+        startDate: moment().subtract(1, 'month'), autoUpdateInput: true, alwaysShowCalendars: true,
+        locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' }, opens: 'right', orientation: "left auto"
+    }, function (start, end, label) {
+        AccountJournalList(true);
+    });
+    getGrandTotal();
+    getVendor();
+    $(".select2").select2();
+    AccountJournalList(true);
+
+    $('#ddlVendor').change(function () {
+        AccountJournalList(true);
+    });
+
+    $("#btnSearch").click(function () {
+        $("#ddlVendor").val("").trigger('change');
+        AccountJournalList(false);
+    })
+
+});
+
+function AccountJournalList(is_date) {
+    var urid = $("#ddlVendor").val();
+
+    let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
+    let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
+    let dfa = is_date ? "'" + sd + "' and '" + ed + "'" : '';
+
     var ID = $("#hfid").val();
     var table_EL = $('#JournalListdata').DataTable({
         columnDefs: [{ "orderable": true, "targets": 1 }, { 'visible': true, 'targets': [0] }], order: [[0,"desc"],[2, "desc"],[4, "asc"]],
@@ -49,6 +86,7 @@
         sAjaxSource: "/Accounting/AccountJournalList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
             aoData.push({ name: "strValue1", value: urid });
+            aoData.push({ name: "strValue2", value: dfa });
             var col = 'id';
             if (oSettings.aaSorting.length >= 0) {
                 var col = oSettings.aaSorting[0][0] == 0 ? "inv_num" : oSettings.aaSorting[0][0] == 1 ? "code_journal" : oSettings.aaSorting[0][0] == 2 ? "datecreation" : oSettings.aaSorting[0][0] == 3 ? "PO_SO_ref" : oSettings.aaSorting[0][0] == 4 ? "inv_complete" : oSettings.aaSorting[0][0] == 5 ? "name" : oSettings.aaSorting[0][0] == 6 ? "label_operation" : oSettings.aaSorting[0][0] == 7 ? "debit" : oSettings.aaSorting[0][0] == 8 ? "credit" : "id";
@@ -104,3 +142,15 @@ function getGrandTotal() {
         });
 }
 
+function getVendor() {
+    $.ajax({
+        url: "/Accounting/GetVendor",
+        type: "Get",
+        success: function (data) {
+            $('#ddlVendor').append('<option value="">Please Select Vendor</option>');
+            for (var i = 0; i < data.length; i++) {
+                $('#ddlVendor').append('<option value="' + data[i].Value + '">' + data[i].Text + '</option>');
+            }
+        }, async: false
+    });
+}

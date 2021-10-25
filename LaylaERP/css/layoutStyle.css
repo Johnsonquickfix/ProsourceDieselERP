@@ -2265,7 +2265,7 @@ body .btn {font-size:12px;}
 .row_on .fa-toggle-on, .sale-active i {color: #25a580 !important; font-size: 30px;}
 .fas.fa-toggle-off {font-size: 30px; color:#4f4f4f;}
 .inventory-table td.text-left:first-child {text-align:left;}
-.journal-section table a i {font-size:16px;margin:0px 5px;}
+.journal-section table a i {font-size:12px;margin:0px 5px;}
 .journal-section table th a i {color:#fff;}
 .product-acctount-section .a-relative {position:relative; width:18px; height:18px;}
 .product-acctount-section th, .product-acctount-section td {vertical-align:middle !important;}
@@ -2951,3 +2951,6 @@ width: 85px;
 .list.purchases #PrintModal .modal-lg {
     width: 1000px;
 }
+.group-test .col-sm-3{width:85%;padding:0px;}
+.group-test .col-sm-9{width:15%;padding:0px;}
+.group-test .col-sm-9 > span{width:50%;padding:0px 10px; }

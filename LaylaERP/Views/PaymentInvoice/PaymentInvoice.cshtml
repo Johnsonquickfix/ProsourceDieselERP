@@ -64,7 +64,7 @@
                             </div>
                         </div>
                         <div class="form-group d-flex">
-                            <label class="col-sm-3 control-label">Comments</label>
+                            <label class="col-sm-3 control-label">Comments<span style="color:red;"> *</span></label>
                             <div class="col-sm-9">
                                 <input type="text" id="txtComments" class="form-control billinfo">
                             </div>
@@ -112,4 +112,5 @@
     </div>
 </section>
     <script src="@Url.Content("~/js/PaymentInvoice/CreatePaymentInvoice.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
+    <script src="@Url.Content("~/js/PurchaseOrder/PurchasePrint.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>
 

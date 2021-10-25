@@ -264,7 +264,7 @@ namespace LaylaERP.BAL
 
                 string strSql = "select rowid,ref,ref_ext,ref_supplier,fk_supplier,fk_warehouse,fk_status,source,fk_payment_term,fk_balance_days,fk_payment_type,DATE_FORMAT(date_livraison,'%m/%d/%Y') date_livraison,"
                        + " fk_incoterms,location_incoterms,note_private,note_public,fk_user_author,DATE_FORMAT(date_creation,'%m/%d/%Y') date_creation from commerce_purchase_order where rowid = @po_id;"
-                       + " select rowid,fk_purchase,fk_product,ref product_sku,description,qty,(select IFNULL(sum(recqty),0) from  commerce_purchase_receive_order_detail  where fk_purchase = cprd.fk_purchase ) treceved ,qty-(select IFNULL(sum(recqty),0) from  commerce_purchase_receive_order_detail  where fk_purchase = cprd.fk_purchase) recbal,discount_percent,discount,subprice,total_ht,tva_tx,localtax1_tx,localtax1_type,"
+                       + "  select rowid,fk_purchase,fk_product,ref product_sku,description,qty,(select IFNULL(sum(recqty),0)  from  commerce_purchase_receive_order_detail  where fk_purchase = cprd.fk_purchase and description =  cprd.description ) treceved , qty-(select IFNULL(sum(recqty),0) from  commerce_purchase_receive_order_detail  where fk_purchase = cprd.fk_purchase and description =  cprd.description) recbal,discount_percent,discount,subprice,total_ht,tva_tx,localtax1_tx,localtax1_type, "
                        + " localtax2_tx,localtax2_type,total_tva,total_localtax1,total_localtax2,total_ttc,product_type,date_start,date_end,rang"
                        + " from commerce_purchase_order_detail cprd where product_type = 0 and fk_purchase = @po_id;";
 

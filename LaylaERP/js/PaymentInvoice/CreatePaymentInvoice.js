@@ -73,8 +73,9 @@ function getPurchaseOrderInfo() {
                     for (let i = 0; i < data['pod'].length; i++) {
                         let itemHtml = '';
                         if (data['pod'][i].rowid > 0) {
-                            itemHtml = '<tr id="tritemid_' + data['pod'][i].rowid + '" class="paid_item" data-pid="' + data['pod'][i].rowid + '" data-rowid="' + data['pod'][i].rowid + '">';                            
-                            itemHtml += '<td>' + data['pod'][i].ref_ext + '</td>';
+                            itemHtml = '<tr id="tritemid_' + data['pod'][i].rowid + '" class="paid_item" data-pid="' + data['pod'][i].rowid + '" data-supplier="' + data['pod'][i].ref_supplier + '" data-rowid="' + data['pod'][i].rowid + '">';
+                            itemHtml += '<td>' + data['pod'][i].ref_ext + '<a href="#" onclick="getPurchaseOrderPrint(' + data['pod'][i].rowid + ', false);"><i class="fas fa-search-plus"></i></a></td>';
+
                             itemHtml += '<td class="text-left">' + data['pod'][i].date_creation + '</td>';
                             itemHtml += '<td class="text-left">' + data['pod'][i].date_livraison + '</td>';        
                             itemHtml += '<td class="text-right ship-amount">$' + data['pod'][i].total_ttc.toFixed(2) + '</td>';
@@ -191,7 +192,7 @@ function createItemsList() {
         }
         else {
             _list.push({
-                rowid: $(row).data('rowid'), payamount: payment, type: $("#hfstatus").val()
+                rowid: $(row).data('rowid'), payamount: payment, type: 'PO', thirdparty_code: $(row).data('supplier')
             });
         }
     });

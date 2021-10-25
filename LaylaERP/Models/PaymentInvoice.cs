@@ -28,6 +28,7 @@ namespace LaylaERP.Models
         public long fk_payment { get; set; }
         public long fk_invoice { get; set; }       
         public decimal payamount { get; set; }        
-        public string type { get; set; } 
+        public string type { get; set; }
+        public string thirdparty_code { get; set; }
     }
 }

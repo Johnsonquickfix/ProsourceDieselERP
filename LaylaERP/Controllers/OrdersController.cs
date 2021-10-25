@@ -315,6 +315,34 @@
             return Json(new { status = state, message = result }, 0);
         }
         [HttpPost]
+        public JsonResult AddOrderProduct(OrderProductsModel model)
+        {
+            string JSONresult = string.Empty; bool status = false;
+            long order_item_id = 0;
+            try
+            {
+                order_item_id = OrderRepository.AddOrderProduct(model);
+                if (order_item_id > 0)
+                { status = true; JSONresult = "Order placed successfully."; }
+                //JSONresult = JsonConvert.SerializeObject(DT);
+            }
+            catch { }
+            return Json(new { status = status, id= order_item_id, message = JSONresult }, 0);
+        }
+        [HttpPost]
+        public JsonResult SaveOrderProductMeta(List<OrderProductsMetaModel> _list)
+        {
+            bool status = false;
+            long id = 0;
+            try
+            {
+                id = OrderRepository.SaveOrderItemMeta(_list);
+                if (id > 0) status = true;
+            }
+            catch { }
+            return Json(status, 0);
+        }
+        [HttpPost]
         public JsonResult SaveCustomerOrder(OrderModel model)
         {
             string JSONresult = string.Empty; bool status = false;

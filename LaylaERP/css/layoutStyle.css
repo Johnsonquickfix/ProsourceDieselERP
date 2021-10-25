@@ -2951,3 +2951,12 @@ width: 85px;
 .list.purchases #PrintModal .modal-lg {
     width: 1000px;
 }
+.group-test .col-sm-3{width:85%;padding:0px;}
+.group-test .col-sm-9{width:15%;padding:0px;}
+.group-test .col-sm-9 > span{width:50%;padding:0px 10px; }
+
+.space-heads{margin-right:10px;}
+
+.new.purchase #PrintModal .modal-dialog {
+    min-width: 1000px;
+} 

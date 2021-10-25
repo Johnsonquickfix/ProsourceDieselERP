@@ -156,6 +156,9 @@ function getMasters() {
             //Warehouse
             $("#ddlwarehousepo").html('<option value="0">Select Warehouse</option>');
             for (i = 0; i < dt['Table4'].length; i++) { $("#ddlwarehousepo").append('<option value="' + dt['Table4'][i].id + '">' + dt['Table4'][i].text + '</option>'); }
+
+            $("#ddlwarehouse").html('<option value="0">Select Warehoused</option>');
+            for (i = 0; i < dt['Table4'].length; i++) { $("#ddlwarehouse").append('<option value="' + dt['Table4'][i].id + '">' + dt['Table4'][i].text + '</option>'); }
         },
         complete: function () { $("#loader").hide(); },
         error: function (xhr, status, err) { $("#loader").hide(); }, async: false
@@ -174,18 +177,18 @@ function getVendor() {
     });
 }
 function getwarehaouseid() {
-    let VendorID = parseInt($('#ddlVendor').val()) || 0;
-    $.ajax({
-        url: "/Reception/Getwarehouse", dataType: 'json', type: "get", contentType: "application/json; charset=utf-8",
-        type: "Get",
-        data: { strValue1: VendorID },
-        success: function (data) {
-            $('#ddlwarehouse').append('<option value="-1">Please Select Warehouse</option>');
-            for (var i = 0; i < data.length; i++) {
-                $('#ddlwarehouse').append('<option value="' + data[i].Value + '">' + data[i].Text + '</option>');
-            }
-        }, async: false
-    });
+    //let VendorID = parseInt($('#ddlVendor').val()) || 0;
+    //$.ajax({
+    //    url: "/Reception/Getwarehouse", dataType: 'json', type: "get", contentType: "application/json; charset=utf-8",
+    //    type: "Get",
+    //    data: { strValue1: VendorID },
+    //    success: function (data) {
+    //        $('#ddlwarehouse').append('<option value="-1">Please Select Warehouse</option>');
+    //        for (var i = 0; i < data.length; i++) {
+    //            $('#ddlwarehouse').append('<option value="' + data[i].Value + '">' + data[i].Text + '</option>');
+    //        }
+    //    }, async: false
+    //});
 
     $('#ddlwarehouse').val($('#ddlwarehousepo').val()).trigger('change');
 }

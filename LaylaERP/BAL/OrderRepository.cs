@@ -357,6 +357,7 @@
                         productsModel.staterecycle_istaxable = Convert.ToBoolean(sdr["is_taxable"]);
                     else
                         productsModel.staterecycle_istaxable = false;
+                    productsModel.meta_data = "[{\"id\": 0,\"item_id\": 0,\"key\": \"\", \"value\": \"\"}]";
                     _list.Add(productsModel);
                 }
             }
@@ -588,6 +589,62 @@
                 result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
             }
             catch (Exception Ex) { throw Ex; }
+            return result;
+        }
+        public static long AddOrderProduct(OrderProductsModel model)
+        {
+            long order_item_id = 0;
+            try
+            {
+                int result = 0;
+                DateTime cDate = CommonDate.CurrentDate(), cUTFDate = CommonDate.UtcDate();
+                StringBuilder strSql = new StringBuilder();
+                MySqlParameter[] parameters = { };
+                /// step 1 : wp_woocommerce_order_items
+                strSql.Append(string.Format("insert into wp_woocommerce_order_items(order_item_name,order_item_type,order_id) value('{0}','line_item','{1}');select LAST_INSERT_ID();", model.product_name, model.order_id));
+                var id = SQLHelper.ExecuteScalar(strSql.ToString(), parameters).ToString();
+                if (!string.IsNullOrEmpty(id)) order_item_id = Convert.ToInt64(id);
+                strSql = new StringBuilder();
+                /// step 2 : wp_wc_order_product_lookup
+                strSql.Append("insert into wp_wc_order_product_lookup(order_item_id,order_id,product_id,variation_id,customer_id,date_created,product_qty,product_net_revenue,product_gross_revenue,coupon_amount,tax_amount,shipping_amount,shipping_tax_amount)");
+                strSql.Append(string.Format(" select '{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}';", order_item_id, model.order_id, model.product_id, model.variation_id, model.group_id,
+                        cDate.ToString("yyyy/MM/dd HH:mm:ss"), model.quantity, (model.total - model.discount), (model.total - model.discount + model.tax_amount), model.discount, model.tax_amount, model.shipping_amount, model.shipping_tax_amount));
+                /// step 3 : wp_woocommerce_order_itemmeta
+                strSql.Append(string.Format("insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'_product_id',product_id from wp_wc_order_product_lookup where order_id = {0} and order_item_id = {1}", model.order_id, order_item_id));
+                strSql.Append(string.Format(" union all select order_item_id,'_variation_id',variation_id from wp_wc_order_product_lookup where order_id = {0} and order_item_id = {1}", model.order_id, order_item_id));
+                strSql.Append(string.Format(" union all select order_item_id,'_qty',product_qty from wp_wc_order_product_lookup where order_id = {0} and order_item_id = {1}", model.order_id, order_item_id));
+                strSql.Append(string.Format(" union all select order_item_id,'_tax_class','' from wp_wc_order_product_lookup where order_id = {0} and order_item_id = {1}", model.order_id, order_item_id));
+                strSql.Append(string.Format(" union all select order_item_id,'_line_subtotal',product_net_revenue + coupon_amount from wp_wc_order_product_lookup where order_id = {0} and order_item_id = {1}", model.order_id, order_item_id));
+                strSql.Append(string.Format(" union all select order_item_id,'_line_subtotal_tax',tax_amount from wp_wc_order_product_lookup where order_id = {0} and order_item_id = {1}", model.order_id, order_item_id));
+                strSql.Append(string.Format(" union all select order_item_id,'_line_total',product_net_revenue from wp_wc_order_product_lookup where order_id = {0} and order_item_id = {1}", model.order_id, order_item_id));
+                strSql.Append(string.Format(" union all select order_item_id,'_line_tax',tax_amount from wp_wc_order_product_lookup where order_id = {0} and order_item_id = {1}", model.order_id, order_item_id));
+                strSql.Append(string.Format(" union all select order_item_id,'_line_tax_data','0' from wp_wc_order_product_lookup where order_id = {0} and order_item_id = {1}", model.order_id, order_item_id));
+                strSql.Append(string.Format(" union all select order_item_id,'size','' from wp_wc_order_product_lookup where order_id = {0} and order_item_id = {1}", model.order_id, order_item_id));
+                strSql.Append(string.Format(" union all select order_item_id,'_reduced_stock',product_qty from wp_wc_order_product_lookup where order_id = {0} and order_item_id = {1}", model.order_id, order_item_id));
+
+                result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
+            }
+            catch (Exception ex) { throw ex; }
+            return order_item_id;
+        }
+        public static long SaveOrderItemMeta(List<OrderProductsMetaModel> _list)
+        {
+            long result = 0;
+            try
+            {
+                string strSQL = string.Empty;
+                foreach (OrderProductsMetaModel obj in _list)
+                {
+                    if (obj.id > 0 && !string.IsNullOrEmpty(obj.key))
+                        strSQL += string.Format("update wp_woocommerce_order_itemmeta set meta_key ='{0}',meta_value='{1}' where meta_id={2};", obj.key, obj.value, obj.id);
+                    else if (obj.id > 0 && string.IsNullOrEmpty(obj.key))
+                        strSQL += string.Format("delete from wp_woocommerce_order_itemmeta where meta_id={0};", obj.id);
+                    else
+                        strSQL += string.Format("insert into wp_woocommerce_order_itemmeta (order_item_id,meta_key,meta_value) value({0},'{1}','{2}');", obj.item_id, obj.key, obj.value);
+                }
+                result = SQLHelper.ExecuteNonQueryWithTrans(strSQL);
+            }
+            catch (Exception ex) { throw ex; }
             return result;
         }
         public static long AddOrderFee(OrderOtherItemsModel obj)
@@ -1284,17 +1341,16 @@
                             + " max(case meta_key when '_qty' then meta_value else '' end) qty,max(case meta_key when '_line_subtotal' then meta_value else '' end) line_subtotal,"
                             + " max(case meta_key when '_line_total' then meta_value when 'amount' then meta_value else '' end) line_total,max(case meta_key when '_line_tax' then meta_value else '' end) tax,"
                             + " max(case meta_key when 'discount_amount' then meta_value else '' end) discount_amount,max(case meta_key when 'cost' then meta_value else '' end) shipping_amount,"
-                            + " (select COALESCE(psr.meta_value, 0) sale_price from wp_postmeta psr where psr.meta_key = '_price' "
-                            + "         and psr.post_id = (case when max(case oim.meta_key when '_variation_id' then oim.meta_value else '' end) != '0' then max(case oim.meta_key when '_variation_id' then oim.meta_value else '' end)"
-                            + "             else max(case oim.meta_key when '_product_id' then oim.meta_value else '' end) end)) sale_price,"
-                            + " (select concat('{',group_concat(concat('\"',free_product_id,'\": \"',free_quantity,'\"') separator ','),'}') from wp_product_free free_it"
-                            + " where free_it.product_id = max(case oim.meta_key when '_product_id' then oim.meta_value else '0' end) or free_it.product_id = max(case oim.meta_key when '_variation_id' then oim.meta_value else '0' end)) as meta_data,"
-                            + " (select COALESCE(p.image, '') sale_price from wp_image p where p.id = (case when max(case oim.meta_key when '_variation_id' then oim.meta_value else '' end) != '0' then max(case oim.meta_key when '_variation_id' then oim.meta_value else '' end)"
-                            + "             else max(case oim.meta_key when '_product_id' then oim.meta_value else '' end) end)) p_img"
+                            + " (select COALESCE(psr.meta_value, 0) sale_price from wp_postmeta psr where psr.meta_key = '_price'"
+                            + "     and psr.post_id = (case when max(case oim.meta_key when '_variation_id' then oim.meta_value else '' end) != '0' then max(case oim.meta_key when '_variation_id' then oim.meta_value else '' end)"
+                            + "         else max(case oim.meta_key when '_product_id' then oim.meta_value else '' end) end)) sale_price,"
+                            + " (select json_arrayagg(json_object('id',oim_s.meta_id,'item_id',oim_s.order_item_id,'key',oim_s.meta_key,'value',oim_s.meta_value)) from wp_woocommerce_order_itemmeta oim_s where oim_s.order_item_id = oi.order_item_id and oim_s.meta_key like '_system_%') meta_data,"
+                            + " (select coalesce(pim.image, '') from wp_image pim where pim.id = (case when max(case oim.meta_key when '_variation_id' then oim.meta_value else '' end) != '0' then max(case oim.meta_key when '_variation_id' then oim.meta_value else '' end) else max(case oim.meta_key when '_product_id' then oim.meta_value else '' end) end)) p_img,"
+                            + " (select group_concat(json_object(free_product_id, free_quantity)) from wp_product_free fit where fit.product_id = max(case oim.meta_key when '_product_id' then oim.meta_value else '0' end) or fit.product_id = max(case oim.meta_key when '_variation_id' then oim.meta_value else '0' end)) free_itmes"
                             + " from wp_woocommerce_order_items oi inner join wp_woocommerce_order_itemmeta oim on oim.order_item_id = oi.order_item_id"
                             + " where oi.order_id = @order_id and oi.order_item_type!='coupon' group by oi.order_id,oi.order_item_id,oi.order_item_name,oi.order_item_type "
                             + " union all "
-                            + " Select oi.order_id,oi.order_item_id,oi.order_item_name,oi.order_item_type,0 p_id,0 v_id,0 qty,0 line_subtotal,0 line_total,0 tax,oim.meta_value discount_amount,0 shipping_amount,0 sale_price,concat('{', group_concat(concat('\"', pm.meta_key, '\": \"', pm.meta_value, '\"') separator ','), '}') as meta_data,'' p_img"
+                            + " Select oi.order_id,oi.order_item_id,oi.order_item_name,oi.order_item_type,0 p_id,0 v_id,0 qty,0 line_subtotal,0 line_total,0 tax,oim.meta_value discount_amount,0 shipping_amount,0 sale_price,concat('{', group_concat(concat('\"', pm.meta_key, '\": \"', pm.meta_value, '\"') separator ','), '}') as meta_data,'' p_img,null free_itmes"
                             + " from wp_woocommerce_order_items oi inner join wp_woocommerce_order_itemmeta oim on oim.order_item_id = oi.order_item_id and oim.meta_key = 'discount_amount'"
                             + " left outer join wp_posts p on lower(p.post_title) = lower(oi.order_item_name) and p.post_type = 'shop_coupon'"
                             + " left outer join wp_postmeta pm on pm.post_id = p.id and pm.meta_key in ('coupon_amount','discount_type', 'product_ids', 'exclude_product_ids')"
@@ -1302,7 +1358,7 @@
                             + " union all "
                             + " select p.post_parent order_id,p_oim.meta_value order_item_id,oi.order_item_type order_item_name,'refund_items' order_item_type,0 p_id,0 v_id,"
                             + " sum(case oim.meta_key when '_qty' then oim.meta_value else '' end) qty,0 line_subtotal,sum(case oim.meta_key when '_line_total' then oim.meta_value else '' end) line_total,"
-                            + " sum(case oim.meta_key when '_line_tax' then oim.meta_value when 'tax_amount' then oim.meta_value else '' end) tax,0 discount_amount,sum(case oim.meta_key when 'cost' then oim.meta_value else '' end) shipping_amount,0 sale_price,'{}' as meta_data,'' p_img"
+                            + " sum(case oim.meta_key when '_line_tax' then oim.meta_value when 'tax_amount' then oim.meta_value else '' end) tax,0 discount_amount,sum(case oim.meta_key when 'cost' then oim.meta_value else '' end) shipping_amount,0 sale_price,'{}' as meta_data,'' p_img,null free_itmes"
                             + " from wp_posts p left outer join wp_woocommerce_order_items oi on oi.order_id = p.id"
                             + " left outer join wp_woocommerce_order_itemmeta p_oim on p_oim.order_item_id = oi.order_item_id and p_oim.meta_key = '_refunded_item_id'"
                             + " left outer join wp_woocommerce_order_itemmeta oim on oim.order_item_id = p_oim.order_item_id and oim.meta_key in ('_qty', '_line_total', '_line_tax', 'tax_amount', 'cost')"
@@ -1310,7 +1366,7 @@
                             + " union all "
                             + " select p.id order_id,p.id order_item_id,concat('Refund #',p.id,' - ',DATE_FORMAT(p.post_date,'%b %e, %Y, %h:%i'),' by ',ur.user_nicename,'</br>',"
                             + " coalesce(group_concat(concat(oi.order_item_name, ' x ', oim.meta_value) ORDER BY oi.order_item_name separator '</br>'),'')) order_item_name,'refund' order_item_type,"
-                            + " 0 p_id,0 v_id,0 qty,pm.meta_value line_subtotal, pm.meta_value line_total,0 tax,0 discount_amount,0 shipping_amount,0 sale_price,'{}' as meta_data,'' p_img"
+                            + " 0 p_id,0 v_id,0 qty,pm.meta_value line_subtotal, pm.meta_value line_total,0 tax,0 discount_amount,0 shipping_amount,0 sale_price,'{}' as meta_data,'' p_img,null free_itmes"
                             + " from wp_posts p inner join wp_postmeta pm on pm.post_id = p.id and pm.meta_key = '_order_total'"
                             + " inner join wp_postmeta pmur on pmur.post_id = p.id and pmur.meta_key = '_refunded_by' inner join wp_users ur on ur.id = pmur.meta_value"
                             + " left outer join wp_woocommerce_order_items oi on oi.order_id = p.id and oi.order_item_type = 'line_item'"
@@ -1369,11 +1425,14 @@
                             productsModel.tax_amount = productsModel.price;
 
                         productsModel.is_free = productsModel.total > 0 ? false : true; productsModel.group_id = 0;
-                        if (sdr["meta_data"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["meta_data"].ToString().Trim()))
-                            productsModel.free_itmes = sdr["meta_data"].ToString().Trim();
+                        if (sdr["free_itmes"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["free_itmes"].ToString().Trim()))
+                            productsModel.free_itmes = sdr["free_itmes"].ToString().Trim();
                         else
                             productsModel.free_itmes = "{}";
-
+                        if (sdr["meta_data"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["meta_data"].ToString().Trim()))
+                            productsModel.meta_data = sdr["meta_data"].ToString().Trim();
+                        else
+                            productsModel.meta_data = "[{\"id\": 0,\"item_id\": " + productsModel.order_item_id.ToString() + ", \"key\": \"\", \"value\": \"\"}]";
                         ///// free item
                         //if (productsModel.product_id == 78676) { productsModel.is_free = true; }
                         //else if (productsModel.product_id == 632713) { productsModel.is_free = true; }
@@ -1551,7 +1610,7 @@
                                 + " max(case meta_key when '_wc_authorize_net_cim_credit_card_card_expiry_date' then meta_value else '' end) authorize_net_card_expiry_date,max(case meta_key when '_wc_authorize_net_cim_credit_card_charge_captured' then meta_value else '' end) _wc_authorize_net_captured,"
                                 + " max(case meta_key when '_paypal_id' then meta_value else '' end) paypal_id,max(case meta_key when '_paypal_status' then meta_value else '' end) paypal_status,"
                                 + " max(case meta_key when '_podium_uid' then meta_value else '' end) podium_uid,max(case meta_key when '_podium_status' then meta_value else '' end) podium_status"
-                                + " FROM wp_postmeta WHERE post_id = 853299 and(meta_key like '_payment_method%' or meta_key like '_wc_authorize_net%' or meta_key like '_paypal%' or meta_key like '_podium%')"
+                                + " FROM wp_postmeta WHERE post_id = @order_id and(meta_key like '_payment_method%' or meta_key like '_wc_authorize_net%' or meta_key like '_paypal%' or meta_key like '_podium%')"
                                 + " group by post_id";
                 dt = SQLHelper.ExecuteDataTable(strSQl, parameters);
             }

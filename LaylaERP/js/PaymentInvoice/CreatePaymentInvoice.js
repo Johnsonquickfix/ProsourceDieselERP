@@ -73,8 +73,9 @@ function getPurchaseOrderInfo() {
                     for (let i = 0; i < data['pod'].length; i++) {
                         let itemHtml = '';
                         if (data['pod'][i].rowid > 0) {
-                            itemHtml = '<tr id="tritemid_' + data['pod'][i].rowid + '" class="paid_item" data-pid="' + data['pod'][i].rowid + '" data-rowid="' + data['pod'][i].rowid + '">';                            
-                            itemHtml += '<td>' + data['pod'][i].ref_ext + '</td>';
+                            itemHtml = '<tr id="tritemid_' + data['pod'][i].rowid + '" class="paid_item" data-pid="' + data['pod'][i].rowid + '" data-supplier="' + data['pod'][i].ref_supplier + '" data-rowid="' + data['pod'][i].rowid + '">';
+                            itemHtml += '<td>' + data['pod'][i].ref_ext + '<a href="#" onclick="getPurchaseOrderPrint(' + data['pod'][i].rowid + ', false);"><i class="fas fa-search-plus"></i></a></td>';
+
                             itemHtml += '<td class="text-left">' + data['pod'][i].date_creation + '</td>';
                             itemHtml += '<td class="text-left">' + data['pod'][i].date_livraison + '</td>';        
                             itemHtml += '<td class="text-right ship-amount">$' + data['pod'][i].total_ttc.toFixed(2) + '</td>';
@@ -122,13 +123,13 @@ function calculateFinal() {
         let rPrice = 0.00, rQty = 0.00
         remaing = parseFloat($(row).find("[name=txt_itemprice]").val()) || 0.00;
         payment = parseFloat($(row).find(".price-remaining").data('tax1')) || 0.00;
-        if (remaing > payment) {
-            swal('Alert!', "you can't receive greater payment form  remaining payment", "error");
-            parseFloat($(row).find("[name=txt_itemprice]").val(0.00));
-            $(row).find("[name=txt_itemprice]").focus();
+        //if (remaing > payment) {
+        //    swal('Alert!', "you can't receive greater payment form  remaining payment", "error");
+        //    parseFloat($(row).find("[name=txt_itemprice]").val(0.00));
+        //    $(row).find("[name=txt_itemprice]").focus();
              
-        }
-        console.log(remaing);
+        //}
+       // console.log(remaing);
         tGrossAmt += remaing;
     });
   
@@ -150,32 +151,38 @@ function saveVendorPO() {
     //console.log(_list);
     if (PaymentTypeid <= 0) { swal('alert', 'Please Select Payment Type', 'error').then(function () { swal.close(); $('#ddlPaymentType').focus(); }) }
     else if (accountid <= 0) { swal('alert', 'Please Select Account', 'error').then(function () { swal.close(); $('#ddlaccount').focus(); }) }
+    else if (Comments == '') { swal('alert', 'Please Enter Some Comments', 'error').then(function () { swal.close(); $('#txtComments').focus(); }) }
     else if (_list.length <= 0) { swal('alert', 'Receive payment should not be zero', 'error').then(function () { swal.close(); }) }
     else {
         let option = {
             fk_payment: PaymentTypeid, fk_bank: accountid, num_payment: Numbertransfer, note: Transmitter, bankcheck: BankCheck, comments: Comments,
             amount: parseFloat($("#Total").text()), fk_status: 0, PaymentInvoiceDetails: _list
         }
-        //console.log(option);
-        $.ajax({
-            url: '/PaymentInvoice/TakePayment', dataType: 'json', type: 'post', contentType: "application/json; charset=utf-8",
-            data: JSON.stringify(option),
-            beforeSend: function () { $("#loader").show(); },
-            success: function (data) {
-                if (data.status == true) {
-                   // $('#lblPoNo').data('id', data.id);
-                    // getPurchaseOrderInfo();
-                    //swal('Alert!', data.message, 'success').then(function () { swal.close(); });
-                    swal('Alert!', data.message, 'success').then((result) => { location.href = 'PaymentInvoiceList'; });
-                    /*    swal('Alert!', data.message, 'success').then(function () { swal.close(); getPurchaseOrderPrint(id, true); });*/
+        swal({ title: "Are you sure?", text: 'Would you like to pay for the $' + parseFloat($("#Total").text()) +' amount?', type: "question", showCancelButton: true })
+            .then((result) => {
+                if (result.value) {
+                    //console.log(option);
+                    $.ajax({
+                        url: '/PaymentInvoice/TakePayment', dataType: 'json', type: 'post', contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify(option),
+                        beforeSend: function () { $("#loader").show(); },
+                        success: function (data) {
+                            if (data.status == true) {
+                                // $('#lblPoNo').data('id', data.id);
+                                // getPurchaseOrderInfo();
+                                //swal('Alert!', data.message, 'success').then(function () { swal.close(); });
+                                swal('Alert!', data.message, 'success').then((result) => { location.href = 'PaymentInvoiceList'; });
+                                /*    swal('Alert!', data.message, 'success').then(function () { swal.close(); getPurchaseOrderPrint(id, true); });*/
+                            }
+                            else {
+                                swal('Alert!', data.message, 'error')
+                            }
+                        },
+                        complete: function () { $("#loader").hide(); },
+                        error: function (error) { swal('Error!', 'something went wrong', 'error'); },
+                    });
                 }
-                else {
-                    swal('Alert!', data.message, 'error')
-                }
-            },
-            complete: function () { $("#loader").hide(); },
-            error: function (error) { swal('Error!', 'something went wrong', 'error'); },
-        });
+            });
     }
 }
 
@@ -189,9 +196,9 @@ function createItemsList() {
         _rang += 1;
         if (payment == 0) {
         }
-        else {
+        else { 
             _list.push({
-                rowid: $(row).data('rowid'), payamount: payment, type: $("#hfstatus").val()
+                rowid: $(row).data('rowid'), payamount: payment, type: 'PO', thirdparty_code: $(row).data('supplier')
             });
         }
     });

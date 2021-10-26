@@ -14,18 +14,19 @@
     }, function (start, end, label) {
         AccountJournalList(true);
     });
-    getGrandTotal();
+    getGrandTotal(true);
     getVendor();
     $(".select2").select2();
     AccountJournalList(true);
 
     $('#ddlVendor').change(function () {
         AccountJournalList(true);
+        getGrandTotal(true);
     });
 
     $("#btnSearch").click(function () {
         $("#ddlVendor").val("").trigger('change');
-        AccountJournalList(false);
+        AccountJournalList(true);
     })
 
 });
@@ -121,7 +122,7 @@ function AccountJournalList(is_date) {
 }
 
 
-function getGrandTotal() {
+function getGrandTotalFull() {
         $.ajax({
             url: "/Accounting/GrandTotal",
             type: "GET",
@@ -152,5 +153,32 @@ function getVendor() {
                 $('#ddlVendor').append('<option value="' + data[i].Value + '">' + data[i].Text + '</option>');
             }
         }, async: false
+    });
+}
+
+
+function getGrandTotal(is_date) {
+    let urid = $("#ddlVendor").val();
+    let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
+    let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
+    let dfa = is_date ? "'" + sd + "' and '" + ed + "'" : '';
+    let obj = { strValue1: dfa, strValue2: urid };
+    $.ajax({
+        url: "/Accounting/JournalDatewithVendoreTotal",
+        type: "GET",
+        contentType: "application/json; charset=utf-8",
+        dataType: 'JSON',
+        data: obj,
+        success: function (data) {
+            var d = JSON.parse(data);
+            if (d.length > 0) {
+                if (parseInt(d[0].debit).toFixed(2) > 0) {
+                    $("#txtdebit").text('$' + d[0].debit); $("#txtcredit").text('$' + d[0].credit); $("#txtbalance").text('$' + d[0].balance)
+                }
+            }
+        },
+        error: function (msg) {
+
+        }
     });
 }

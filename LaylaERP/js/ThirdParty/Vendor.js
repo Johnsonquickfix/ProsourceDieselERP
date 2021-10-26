@@ -46,6 +46,7 @@ function getNatureofJournal() {
                 opt += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
             }
             $('#ddlNatureofJournal').html(opt);
+            setTimeout(function () { $('#ddlNatureofJournal').val('3').trigger('change'); }, 5000);
         }
 
     });
@@ -1537,12 +1538,12 @@ function InvoiceGrid() {
             });
         },
         aoColumns: [
-            {
-                'data': 'id', sWidth: "5%   ",
-                'render': function (data, type, full, meta) {
-                    return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + data + '"><label></label>';
-                }
-            },
+            //{
+            //    'data': 'id', sWidth: "5%   ",
+            //    'render': function (data, type, full, meta) {
+            //        return '<input type="checkbox" name="CheckSingle" id="CheckSingle" onClick="Singlecheck();" value="' + data + '"><label></label>';
+            //    }
+            //},
             {
                 'data': 'StatusID', sWidth: "10%", title: 'PO/Invoice No.', class: 'text-left',
                 'render': function (id, type, full, meta) {

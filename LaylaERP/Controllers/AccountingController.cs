@@ -417,5 +417,17 @@ namespace LaylaERP.Controllers
             catch { }
             return Json(JSONresult, 0);
         }
+
+        public JsonResult JournalDatewithVendoreTotal(JqDataTableModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = AccountingRepository.JournalDatewithVendoreTotal(model.strValue1, model.strValue2, model.strValue3);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
     }
 }

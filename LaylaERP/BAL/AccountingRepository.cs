@@ -572,6 +572,31 @@ namespace LaylaERP.BAL
             { throw ex; }
             return dtr;
         }
+
+        public static DataTable JournalDatewithVendoreTotal(string sMonths, string searchid, string productid)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                string strWhr = string.Empty;
+                if (!string.IsNullOrEmpty(searchid))
+                {
+                    strWhr += " and thirdparty_code = '" + searchid + "'";
+                }
+                if (sMonths != null)
+                {
+                    strWhr += " and cast(doc_date as date) BETWEEN " + sMonths;
+                }
+                string strSql = "SELECT replace(format(sum(debit),2),',','')  as debit, replace(format(sum(credit),2),',','') as credit,replace(format(sum(debit)-sum(credit),2),',','') as balance from erp_accounting_bookkeeping"
+                                + " where 1 = 1 ";
+                strSql += strWhr;
+                dt = SQLHelper.ExecuteDataTable(strSql);
+
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dt;
+        }
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Account Ledger~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         public static DataTable GetAccountLedgerDetailsList(string sMonths, string searchid, string productid)
         {

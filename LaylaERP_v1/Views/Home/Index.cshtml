@@ -90,7 +90,7 @@
                                     {
                                         if (ViewBag.User_Image.Length > 0 && ViewBag.User_Image != null)
                                         {
-                                            <img src="data:image;base64,System.Convert.ToBase64String(ViewBag.User_Image)" class="img-circle" alt="User Image">
+                                            <img src="data:image;base64,System.Convert.ToBase64String(@ViewBag.User_Image)" class="img-circle" alt="User Image">
                                         }
                                         else
                                         {
@@ -153,7 +153,7 @@
                         {
                             if (ViewBag.User_Image.Length > 0 && ViewBag.User_Image != null)
                             {
-                                <img runat="server" id="show_Profile_image" class="img-circle" src="data:image;base64,System.Convert.ToBase64String(ViewBag.User_Image)" alt="User Image">
+                                <img runat="server" id="show_Profile_image" class="img-circle" src="data:image;base64,System.Convert.ToBase64String(@ViewBag.User_Image)" alt="User Image">
                             }
                             else
                             {

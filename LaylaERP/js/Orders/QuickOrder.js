@@ -1166,8 +1166,9 @@ function Coupon_get_discount_amount(id, parent_id, coupon_code, coupon_amt, item
                 if (coupon_amt == 130) coupon_amt = 130;
                 else if (coupon_amt == 150) coupon_amt = 200;
             }
-            else
-                coupon_amt = 10;
+            else {
+                coupon_amt = 10; reg_price = sale_price;
+            }
         }
         else
             return 0.00;
@@ -1461,6 +1462,7 @@ function ApplyCoupon() {
             //console.log(data[0]);
             let cpns_with_other_cpns = ["freeprotector", "founder50", "kapok second pillow", "tsjpillow"];//not remove other coupon
             if (coupon_code.includes("friend") && coupon_code.substr(6) > 8500) { deleteAllCoupons('friend_diff'); }
+            else if (coupon_code.includes("friend") && coupon_code.substr(6) <= 8500) { deleteAllCoupons('friend_auto'); }
             else if (coupon_code.includes("sales10off") || cpns_with_other_cpns.includes(coupon_code) || (coupon_code.includes("vip") && data[0].individual_use == "no")) { }
             else {
                 if (data[0].individual_use == "yes") { deleteAllCoupons('all'); }
@@ -1574,32 +1576,35 @@ function deleteAllCoupons(coupon_type) {
     }
     else if (coupon_type == 'friend_diff') {
         let tax_rate = parseFloat($('#hfTaxRate').val()) || 0.00;
-        $('#billCoupon li').each(function (index) {
-            if ($(this).data('type') == 'diff' && ($(this).data('coupon') == '118' || $(this).data('coupon') == '611172')) {
-                let id = $(this).data('coupon');
-                let rq_prd_ids = [];
-                if ($(this).data('rqprdids') != "" && $(this).data('rqprdids') != null) {
-                    rq_prd_ids = $(this).data('rqprdids').split(",").map((el) => parseInt(el));
-                }
-                $('#li_' + id).remove();
-                for (var i = 0; i < rq_prd_ids.length; i++) {
-                    let row_id = '#tritemId_' + id + '_' + rq_prd_ids[i];
-                    //Remove Discount to Items
-                    let zQty = parseFloat($(row_id).find("[name=txt_ItemQty]").val()) || 0.00;
-                    let zGrossAmount = parseFloat($(row_id).find(".TotalAmount").data("regprice")) || 0.00;
-                    zGrossAmount = zGrossAmount * zQty;
-                    $(row_id).find(".TotalAmount").data("amount", zGrossAmount.toFixed(2)); $(row_id).find(".TotalAmount").text(zGrossAmount.toFixed(2));
+        $('#li_118').remove(); $('#li_611172').remove();
+        //$('#billCoupon li').each(function (index, li) {
+        //    if ($(li).data('type') == 'diff' && ($(li).data('coupon') == '118' || $(li).data('coupon') == '611172')) {
+        //        let id = $(li).data('coupon'), rq_prd_ids = [];
+        //        if ($(li).data('rqprdids') != "" && $(li).data('rqprdids') != null) {
+        //            rq_prd_ids = $(li).data('rqprdids').split(",").map((el) => parseInt(el));
+        //        }
+        //        $('#li_' + id).remove();
+        //        for (let i = 0; i < rq_prd_ids.length; i++) {
+        //            let row_id = '#tritemId_' + id + '_' + rq_prd_ids[i];
+        //            //Remove Discount to Items
+        //            let zQty = parseFloat($(row_id).find("[name=txt_ItemQty]").val()) || 0.00;
+        //            let zGrossAmount = parseFloat($(row_id).find(".TotalAmount").data("regprice")) || 0.00;
+        //            zGrossAmount = zGrossAmount * zQty;
+        //            $(row_id).find(".TotalAmount").data("amount", zGrossAmount.toFixed(2)); $(row_id).find(".TotalAmount").text(zGrossAmount.toFixed(2));
 
-                    $(row_id).find(".RowDiscount").data("disctype", 'fixed');
-                    $(row_id).find(".RowDiscount").data("couponamt", 0.00);
-                    $(row_id).find(".RowDiscount").text(0.00); $(row_id).find(".TotalAmount").data("discount", 0.00);
+        //            $(row_id).find(".RowDiscount").data("disctype", 'fixed');
+        //            $(row_id).find(".RowDiscount").data("couponamt", 0.00);
+        //            $(row_id).find(".RowDiscount").text(0.00); $(row_id).find(".TotalAmount").data("discount", 0.00);
 
-                    //Taxation                     
-                    zTotalTax = ((zGrossAmount * tax_rate) / 100);
-                    $(row_id).find(".RowTax").text(zTotalTax.toFixed(2)); $(row_id).find(".TotalAmount").data("taxamount", zTotalTax.toFixed(2));
-                }
-            }
-        });
+        //            //Taxation                     
+        //            zTotalTax = ((zGrossAmount * tax_rate) / 100);
+        //            $(row_id).find(".RowTax").text(zTotalTax.toFixed(2)); $(row_id).find(".TotalAmount").data("taxamount", zTotalTax.toFixed(2));
+        //        }
+        //    }
+        //});
+    }
+    else if (coupon_type == 'friend_auto') {
+        $('#li_118').remove(); $('#li_611172').remove(); $("#billCoupon").find("[data-type='auto_coupon']").remove(); 
     }
     else if (coupon_type != '') {
         swal({ title: "Are you sure?", text: 'Would you like to Remove this Coupon?', type: "question", showCancelButton: true })
@@ -1641,8 +1646,8 @@ function deleteAllCoupons(coupon_type) {
                             zTotalTax = (((zGrossAmount - disc_amt) * tax_rate) / 100);
                             $(tr).find(".RowTax").text(zTotalTax.toFixed(2)); $(tr).find(".TotalAmount").data("taxamount", zTotalTax.toFixed(2));
                         }
-                    });
-                    bindCouponList(auto_code);
+                    }); //console.log(auto_code);
+                    $.when(bindCouponList(auto_code)).done(function () { ApplyAutoCoupon(); });
                 }
             });
     }
@@ -1681,7 +1686,9 @@ function calculateDiscountAcount() {
         let zQty = 0.00, zRegPrice = 0.00, zDisAmt = 0.00, zGrossAmount = 0.00;
         zQty = parseFloat($(row).find("[name=txt_ItemQty]").val()) || 0.00;
         zRegPrice = parseFloat($(row).find(".TotalAmount").data("regprice")) || 0.00;
-        zGrossAmount = zRegPrice * zQty; zDisAmt = perqty_discamt * zQty;
+        zGrossAmount = zRegPrice * zQty;
+        if (zGrossAmount > 0) { zDisAmt = perqty_discamt * zQty; }
+        else { zDisAmt = 0 }
         $(row).find(".TotalAmount").data("amount", zGrossAmount.toFixed(2)); $(row).find(".TotalAmount").text(zGrossAmount.toFixed(2));
         $(row).find(".RowDiscount").data("disctype", 'fixed'); $(row).find(".RowDiscount").data("couponamt", perqty_discamt);
         $(row).find(".RowDiscount").text(zDisAmt); $(row).find(".TotalAmount").data("discount", zDisAmt);

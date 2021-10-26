@@ -380,6 +380,10 @@ namespace LaylaERP.BAL
                             strstock += "insert into product_stock_register (tran_type,tran_id,product_id,warehouse_id,tran_date,quantity,flag)";
                             strstock += string.Format("select 'PR','{0}','{1}','{2}','{3}','{4}','R' ;",
                                   model.RowID, obj.fk_product, model.WarehouseID, cDate.ToString("yyyy-MM-dd HH:mm:ss"), obj.Recqty);
+
+                            strstock += "insert into product_stock_register (tran_type,tran_id,product_id,warehouse_id,tran_date,quantity,flag)";
+                            strstock += string.Format("select 'PR','{0}','{1}','{2}','{3}','{4}','O' ;",
+                                  model.RowID, obj.fk_product, model.WarehousepoID, cDate.ToString("yyyy-MM-dd HH:mm:ss"), obj.Recqty);
                         }
                         //+" inner join commerce_purchase_receive_order po on po.rowid = pod.fk_purchase_re where fk_purchase_re = " + model.RowID + ";");
                     }
@@ -430,9 +434,8 @@ namespace LaylaERP.BAL
             {
                 StringBuilder strupdate = new StringBuilder();
                 strupdate.Append(string.Format("update commerce_purchase_order set fk_status = {0} where rowid = {1}; ", model.fk_status, model.IDRec));
-                strupdate.Append(string.Format("update commerce_purchase_receive_order set fk_status = {0} where fk_purchase = {1} ", model.fk_status, model.IDRec));
-                SQLHelper.ExecuteNonQueryWithTrans(strupdate.ToString());  
-                result = model.RowID;
+                strupdate.Append(string.Format("update commerce_purchase_receive_order set fk_status = {0} where fk_purchase = {1} ", model.fk_status, model.IDRec));                  
+                result = SQLHelper.ExecuteNonQueryWithTrans(strupdate.ToString()); 
             }
             catch (Exception Ex)
             {
@@ -466,7 +469,7 @@ namespace LaylaERP.BAL
                                 + " from commerce_purchase_receive_order po inner join wp_vendor v on po.fk_supplier = v.rowid"
                                 + " left outer join PaymentTerms pt on pt.id = po.fk_payment_term"
                                 + " left outer join BalanceDays bd on bd.id = po.fk_balance_days where po.rowid = @po_id;"
-                                + " select rowid,fk_purchase,fk_product,ref product_sku,description,qty,discount_percent,discount,subprice,total_ht,tva_tx,localtax1_tx,localtax1_type,"
+                                + " select rowid,fk_purchase,fk_product,ref product_sku,description,recqty qty,discount_percent,discount,subprice,total_ht,tva_tx,localtax1_tx,localtax1_type,"
                                 + " localtax2_tx,localtax2_type,total_tva,total_localtax1,total_localtax2,total_ttc,product_type,DATE_FORMAT(date_start, '%m/%d/%Y') date_start,DATE_FORMAT(date_end, '%m/%d/%Y') date_end,rang"
                                 + " from commerce_purchase_receive_order_detail where fk_purchase_re = @po_id order by product_type,rowid;";
                 strSql += "select date_format(datec,'%Y%m%d%k%i%s') sn,date_format(datec,'%m/%d/%Y') datec,ep.ref,epi.type,pt.paymenttype,epi.amount,num_payment from erp_payment_invoice epi"

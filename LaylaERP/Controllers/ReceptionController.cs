@@ -67,7 +67,7 @@ namespace LaylaERP.Controllers
             string JSONstring = string.Empty; bool b_status = false; long ID = 0;
             try
             {
-            ID = new ReceptionRepository().ReceptionPurchase(model);
+                ID = new ReceptionRepository().ReceptionPurchase(model);
 
                 if (ID > 0)
                 {
@@ -95,7 +95,7 @@ namespace LaylaERP.Controllers
 
                 if (ID > 0)
                 {
-                    b_status = true; JSONstring = "Purchase Record has been Closed successfully!!";
+                    b_status = true; JSONstring = "Purchase Record status has been change successfully!!";
                 }
                 else
                 {

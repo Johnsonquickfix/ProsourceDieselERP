@@ -95,7 +95,11 @@ namespace LaylaERP.Controllers
 
                 if (ID > 0)
                 {
-                    b_status = true; JSONstring = "Purchase Record status has been change successfully!!";
+                    b_status = true;
+                    if (model.fk_status == 6)
+                         JSONstring = "Purchase Record has been Closed successfully!!";
+                    else
+                         JSONstring = "Purchase Record has been Opened successfully!!";
                 }
                 else
                 {

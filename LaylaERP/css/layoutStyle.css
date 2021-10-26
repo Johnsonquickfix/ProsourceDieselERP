@@ -2959,4 +2959,8 @@ width: 85px;
 
 .new.purchase #PrintModal .modal-dialog {
     min-width: 1000px;
-} 
+}
+
+.group_test2.group-test > .col-sm-3{width: 82.6%;}
+
+.group_test2.group-test > .col-sm-9{width: 17.4%;}

@@ -575,23 +575,25 @@ function getPurchaseOrderInfo() {
 function createItemsList() {
     let _list = []; let _rang = 0;
     $('#line_items > tr').each(function (index, row) {
-        let rPrice = 0.00, rQty = 0.00, rcvQty = 0.00, rDisPer = 0.00, rGrossAmt = 0.00, rDisAmt = 0.00, rTax1 = 0.00, rTax_Amt1 = 0.00, rTax2 = 0.00, rTax_Amt2 = 0.00, rNetAmt = 0.00;
+        let rPrice = 0.00, rQty = 0.00, remqtyval = 0.00, balqtyval = 0.00, rcvQty = 0.00, ritemrema = 0.00, rDisPer = 0.00, rGrossAmt = 0.00, rDisAmt = 0.00, rTax1 = 0.00, rTax_Amt1 = 0.00, rTax2 = 0.00, rTax_Amt2 = 0.00, rNetAmt = 0.00;
         rPrice = parseFloat($(row).find("[name=txt_itemprice]").val()) || 0.00;
         rQty = parseFloat($(row).find("[name=txt_itemqty]").val()) || 0.00;
+        remqtyval = parseFloat($(row).find("[name=txt_itembalqty]").val()) || 0.00; 
         rcvQty = parseFloat($(row).find("[name=txt_itemRecqty]").val()) || 0.00;
+        ritemrema = parseFloat($(row).find("[name=txt_itemremaningqty]").val()) || 0.00;
         rDisPer = parseFloat($(row).find("[name=txt_itemdisc]").val()) || 0.00;
         rTax1 = parseFloat($(row).find(".tax-amount").data('tax1')) || 0.00; rTax2 = parseFloat($(row).find(".tax-amount").data('tax2')) || 0.00;
         rGrossAmt = rPrice * rcvQty; rDisAmt = rGrossAmt * (rDisPer / 100);
         rTax_Amt1 = rTax1 * rcvQty; rTax_Amt2 = rTax2 * rcvQty;
         rNetAmt = (rGrossAmt - rDisAmt) + rTax_Amt1 + rTax_Amt2;
-      
+        balqtyval = rcvQty + remqtyval;
         _rang += 1;
         if (rcvQty == 0) {         
         }
         else {
             _list.push({
                 rowid: $(row).data('rowid'), rang: _rang, product_type: 0, fk_product: $(row).data('pid'), description: $(row).data('pname'), product_sku: $(row).data('psku'),
-                qty: rQty, Recqty: rcvQty, subprice: rPrice, discount_percent: rDisPer, discount: rDisAmt, tva_tx: 0, localtax1_tx: rTax1, localtax1_type: 'F', localtax2_tx: rTax2, localtax2_type: 'F',
+                qty: rQty, Recqty: rcvQty, Remqty: balqtyval, ItemRemqty: ritemrema, subprice: rPrice, discount_percent: rDisPer, discount: rDisAmt, tva_tx: 0, localtax1_tx: rTax1, localtax1_type: 'F', localtax2_tx: rTax2, localtax2_type: 'F',
                 total_ht: rGrossAmt, total_tva: 0, total_localtax1: rTax_Amt1, total_localtax2: rTax_Amt2, total_ttc: rNetAmt, date_start: '0000/00/00', date_end: '0000/00/00'
             });
         }

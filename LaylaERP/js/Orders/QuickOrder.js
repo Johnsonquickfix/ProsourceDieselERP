@@ -63,6 +63,7 @@
         $('#ddlStatus,.billinfo').prop("disabled", false); $('#txtbillfirstname').focus(); $('.agentaddtocart').removeClass('hidden');
         $('.box-tools-header').empty().append('<button type="button" class="btn btn-danger btnOrderUndo" data-toggle="tooltip" title="Reset Order"><i class="fa fa-undo"></i> Cancel</button> <button type="button" id="btnOrderUpdate" class="btn btn-danger" data-toggle="tooltip" title="Update Order"><i class="far fa-save"></i> Update</button>');
         $('.footer-finalbutton').empty().append('<button type="button" class="btn btn-danger pull-left btnOrderUndo"><i class="fa fa-undo"></i> Cancel</button>  <button type="button" id="btnCheckout" class="btn btn-danger billinfo" data-toggle="tooltip" title="Save and Checkout Order"> Checkout</button>');
+        $('.view-addmeta').empty().append('<button class="btn btn-danger btn-xs billinfo add_order_item_meta">Add&nbsp;meta</button>');
         $("#loader").hide(); isEdit(true);
     });
     $(document).on("click", ".btnOrderUndo", function (t) { t.preventDefault(); $("#loader").show(); getOrderInfo(); isEdit(false); });
@@ -133,6 +134,43 @@
         pay_mode = pay_mode.includes("ppec_paypal") ? "PayPal" : pay_mode.includes("podium") ? "Podium" : pay_mode;
         successModal(pay_mode, pay_id, false);
     });
+    /*start add order item meta*/
+    $(document).on("click", ".add_order_item_meta", function (t) {
+        t.preventDefault(); let $item = $(this).closest('tr');
+        let meta_list = $item.data('meta_data');
+        AddItemMetaModal($item.data('id'), $item.data('orderitemid'), meta_list);
+    });
+    $("#billModal").on("click", ".btnmeta_delete", function (t) { t.preventDefault(); $(this).closest('tr').addClass('hidden'); });
+    $("#billModal").on("click", ".btnmeta_add", function (t) {
+        t.preventDefault();
+        let trHtml = '<tr><td style="width:45%"><input class="form-control" id="txt_key" value="" name="txt_key" placeholder="Name"></td>';
+        trHtml += '<td style = "width:45%"><input class="form-control" id="txt_value" value="" name="txt_value" placeholder="Value"></td>';
+        trHtml += '<td style="width:10%"><button class="btn menu-icon-gr text-red btnmeta_delete"> <i class="glyphicon glyphicon-trash"></i></button></td></tr > ';
+        $('#order_items_meta').append(trHtml);
+    });
+    $("#billModal").on("click", "#btnmeta_ok", function (t) {
+        t.preventDefault(); let row_id = $(this).data('id'), _item_id = parseInt($(this).data('itemid')) || 0, meta_list = [], dis_list = [];
+        let _status = false;
+        $('#order_items_meta > tr').each(function (index, tr) {
+            let _id = parseInt($(tr).data('id')) || 0, _key = $(tr).find("[name=txt_key]").val().replace(/\s+/g, "_"), _value = $(tr).find("[name=txt_value]").val();
+            if (!$(tr).is(":hidden")) {
+                if (_key == '') { swal('Alert!', 'Please enter meta name.', "info").then((result) => { $(tr).find("[name=txt_key]").focus(); return false; }); _status = false; return false; }
+                else if (_value == '') { swal('Alert!', 'Please enter meta value.', "info").then((result) => { $(tr).find("[name=txt_value]").focus(); return false; }); _status = false; return false; }
+                meta_list.push({ id: _id, item_id: _item_id, key: '_system_' + _key, value: _value });
+                dis_list.push({ id: _id, item_id: _item_id, key: _key, value: _value });
+            }
+            else { meta_list.push({ id: _id, item_id: _item_id, key: '', value: '' }); }
+            _status = true;
+        });
+        if (_status) {
+            let _data = { _list: meta_list }; $(this).html("Please Wait"); $(this).attr('disabled', 'disabled');
+            $.ajax({ method: 'post', url: '/Orders/SaveOrderProductMeta', data: _data }).done(function (result, textStatus, jqXHR) {
+                if (result) { $('#tritemId_' + row_id).data('meta_data', dis_list); $("#billModal").modal('hide'); }
+            }).fail(function (jqXHR, textStatus, errorThrown) { swal('Alert!', 'Something went wrong, please try again.', "error"); })
+                .always(function () { $(this).html("Add"); $(this).removeAttr('disabled'); });
+        }
+    });
+    /*start add order item meta*/
 });
 function isEdit(val) {
     localStorage.setItem('isEdit', val ? 'yes' : 'no');
@@ -246,7 +284,7 @@ function CategoryWiseProducts() {
         beforeSend: function () { $("#loader").show(); },
         success: function (result) {
             try {
-                result = JSON.parse(result); 
+                result = JSON.parse(result);
                 result = groupArrayOfObjects(result, 'term_order');
                 $.each(result, function (key, pr) {
                     //console.log(pr)
@@ -254,7 +292,7 @@ function CategoryWiseProducts() {
                     strHTML += '<h5><span>' + pr[0].name.toUpperCase() + '</span><i aria-hidden="true" class="fa fa-plus"></i></h5>';
                     strHTML += '<div class="hub-box-open">';
                     $.each(pr, function (index, data) {
-                        let variation_details = JSON.parse(data.variation_details); 
+                        let variation_details = JSON.parse(data.variation_details);
                         let regular_price = 0.00, price = 0.00;
                         strHTML += '<div class="hub-pro-box"><h2>' + data.post_title.toUpperCase() + '</h2>';
                         strHTML += '<div data-proid="' + data.pr_id + '" class="hub-pro-shop">';
@@ -625,6 +663,7 @@ function initMap() {
 
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Edit Order ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function getOrderInfo() {
+    $('.view-addmeta').empty();
     let oid = parseInt($('#hfOrderNo').val()) || 0;
     if (oid > 0) {
         $('.billnote').prop("disabled", false); $('.agentaddtocart').addClass('hidden');
@@ -700,35 +739,36 @@ function getOrderItemList(oid) {
     ajaxFunction('/Orders/GetOrderProductList', option, beforeSendFun, function (data) {
         let itemHtml = '', recyclingfeeHtml = '', feeHtml = '', shippingHtml = '', refundHtml = '', couponHtml = '';
         let zQty = 0.00, zGAmt = 0.00, zTDiscount = 0.00, zTotalTax = 0.00, zShippingAmt = 0.00, zStateRecyclingAmt = 0.00, zFeeAmt = 0.00, zRefundAmt = 0.00;
-        for (var i = 0; i < data.length; i++) {
-            let orderitemid = parseInt(data[i].order_item_id) || 0;
-            if (data[i].product_type == 'line_item') {
-                let PKey = data[i].product_id + '_' + data[i].variation_id;
-                itemHtml += '<tr id="tritemId_' + PKey + '" data-id="' + PKey + '" class="' + (data[i].is_free ? 'free_item' : 'paid_item') + '" data-pid="' + data[i].product_id + '" data-vid="' + data[i].variation_id + '" data-pname="' + data[i].product_name + '" data-gid="' + data[i].group_id + '" data-freeitem="' + data[i].is_free + '" data-freeitems=\'' + data[i].free_itmes + '\' data-orderitemid="' + orderitemid + '" data-img="' + data[i].product_img + '" data-srfee="0" data-sristaxable="' + false + '">';
-                if (data[i].is_free)
+        //for (var i = 0; i < data.length; i++) {
+        $.each(data, function (i, row) {
+            let orderitemid = parseInt(row.order_item_id) || 0;
+            if (row.product_type == 'line_item') {
+                let PKey = row.product_id + '_' + row.variation_id;
+                itemHtml += '<tr id="tritemId_' + PKey + '" data-id="' + PKey + '" class="' + (row.is_free ? 'free_item' : 'paid_item') + '" data-pid="' + row.product_id + '" data-vid="' + row.variation_id + '" data-pname="' + row.product_name + '" data-gid="' + row.group_id + '" data-freeitem="' + row.is_free + '" data-freeitems=\'' + row.free_itmes + '\' data-orderitemid="' + orderitemid + '" data-img="' + row.product_img + '" data-srfee="0" data-sristaxable="' + false + '" data-meta_data=\'' + row.meta_data + '\'>';
+                if (row.is_free)
                     itemHtml += '<td class="text-center item-action"></td>';
                 else
                     itemHtml += '<td class="text-center item-action"><button class="btn menu-icon-gr text-red btnDeleteItem billinfo" tabitem_itemid="' + PKey + '" onclick="removeItemsInTable(\'' + PKey + '\');"> <i class="glyphicon glyphicon-trash"></i></button></td>';
 
-                itemHtml += '<td>' + data[i].product_name + '</td>';
-                itemHtml += '<td class="text-right">' + data[i].reg_price.toFixed(2) + '</td>';
-                if (data[i].is_free) {
-                    itemHtml += '<td><input min="1" autocomplete="off" disabled class="form-control number rowCalulate" type="number" id="txt_ItemQty_' + PKey + '" value="' + data[i].quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
+                itemHtml += '<td>' + row.product_name + '<div class="view-addmeta"></div></td>';
+                itemHtml += '<td class="text-right">' + row.reg_price.toFixed(2) + '</td>';
+                if (row.is_free) {
+                    itemHtml += '<td><input min="1" autocomplete="off" disabled class="form-control number rowCalulate" type="number" id="txt_ItemQty_' + PKey + '" value="' + row.quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
                 }
                 else {
-                    itemHtml += '<td><input min="1" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_ItemQty_' + PKey + '" value="' + data[i].quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
+                    itemHtml += '<td><input min="1" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_ItemQty_' + PKey + '" value="' + row.quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
                 }
-                itemHtml += '<td class="TotalAmount text-right" data-regprice="' + data[i].reg_price + '"data-salerate="' + data[i].sale_price + '" data-discount="' + data[i].discount.toFixed(2) + '" data-amount="' + data[i].total + '" data-taxamount="' + data[i].tax_amount + '" data-shippingamt="' + data[i].shipping_amount + '">' + data[i].total.toFixed(2) + '</td>';
-                itemHtml += '<td class="text-right RowDiscount" data-disctype="' + data[i].discount_type + '" data-couponamt="0">' + data[i].discount.toFixed(2) + '</td>';
-                itemHtml += '<td class="text-right RowTax">' + data[i].tax_amount.toFixed(2) + '</td>';
+                itemHtml += '<td class="TotalAmount text-right" data-regprice="' + row.reg_price + '"data-salerate="' + row.sale_price + '" data-discount="' + row.discount.toFixed(2) + '" data-amount="' + row.total + '" data-taxamount="' + row.tax_amount + '" data-shippingamt="' + row.shipping_amount + '">' + row.total.toFixed(2) + '</td>';
+                itemHtml += '<td class="text-right RowDiscount" data-disctype="' + row.discount_type + '" data-couponamt="0">' + row.discount.toFixed(2) + '</td>';
+                itemHtml += '<td class="text-right RowTax">' + row.tax_amount.toFixed(2) + '</td>';
                 itemHtml += '</tr>';
-                zQty = zQty + (parseFloat(data[i].quantity) || 0.00);
-                zGAmt = zGAmt + (parseFloat(data[i].total) || 0.00);
-                zTotalTax = zTotalTax + (parseFloat(data[i].tax_amount) || 0.00);
+                zQty = zQty + (parseFloat(row.quantity) || 0.00);
+                zGAmt = zGAmt + (parseFloat(row.total) || 0.00);
+                zTotalTax = zTotalTax + (parseFloat(row.tax_amount) || 0.00);
             }
-            else if (data[i].product_type == 'coupon') {
-                let cou_amt = parseFloat(data[i].discount) || 0.00;
-                let coupon_list = auto_coupon.filter(element => element.post_title == data[i].product_name);
+            else if (row.product_type == 'coupon') {
+                let cou_amt = parseFloat(row.discount) || 0.00;
+                let coupon_list = auto_coupon.filter(element => element.post_title == row.product_name);
                 for (var j = 0; j < coupon_list.length; j++) {
                     couponHtml += '<li id="li_' + coupon_list[j].post_title.toString().toLowerCase().replaceAll(' ', '_') + '" class="' + (coupon_list[j].discount_type == 'fixed_cart' ? 'cart' : 'items') + '" data-coupon= "' + coupon_list[j].post_title.toString().toLowerCase() + '" data-couponamt= "' + coupon_list[j].coupon_amount + '" data-disctype= "' + coupon_list[j].discount_type + '" data-rqprdids= "' + coupon_list[j].product_ids + '" data-excludeids= "' + coupon_list[j].exclude_product_ids + '" data-type= "' + coupon_list[j].type + '" data-orderitemid="' + orderitemid + '">';
                     couponHtml += '<a href="javascript:void(0);">';
@@ -749,60 +789,60 @@ function getOrderItemList(oid) {
                     couponHtml += '</li>';
                 }
                 if (coupon_list.length == 0) {
-                    let cpn_info = JSON.parse(data[i].meta_data);
-                    let cpn_name = data[i].product_name;
-                    couponHtml += '<li id="li_' + data[i].product_name.toString().toLowerCase().replaceAll(' ', '_') + '" class="' + (cpn_info.discount_type == 'fixed_cart' ? 'cart' : 'items') + '" data-coupon= "' + data[i].product_name + '" data-couponamt= "' + (cpn_info.coupon_amount != '' && cpn_info.coupon_amount != undefined ? cpn_info.coupon_amount : cou_amt) + '" data-disctype= "' + (cpn_info.discount_type != '' && cpn_info.discount_type != undefined ? cpn_info.discount_type : '') + '" data-rqprdids="' + (cpn_info.product_ids != '' && cpn_info.product_ids != undefined ? cpn_info.product_ids : '') + '" data-excludeids="' + (cpn_info.exclude_product_ids != '' && cpn_info.exclude_product_ids != undefined ? cpn_info.exclude_product_ids : '') + '" data-type= "add_coupon" data-orderitemid="' + orderitemid + '">';
+                    let cpn_info = JSON.parse(row.meta_data);
+                    let cpn_name = row.product_name;
+                    couponHtml += '<li id="li_' + row.product_name.toString().toLowerCase().replaceAll(' ', '_') + '" class="' + (cpn_info.discount_type == 'fixed_cart' ? 'cart' : 'items') + '" data-coupon= "' + row.product_name + '" data-couponamt= "' + (cpn_info.coupon_amount != '' && cpn_info.coupon_amount != undefined ? cpn_info.coupon_amount : cou_amt) + '" data-disctype= "' + (cpn_info.discount_type != '' && cpn_info.discount_type != undefined ? cpn_info.discount_type : '') + '" data-rqprdids="' + (cpn_info.product_ids != '' && cpn_info.product_ids != undefined ? cpn_info.product_ids : '') + '" data-excludeids="' + (cpn_info.exclude_product_ids != '' && cpn_info.exclude_product_ids != undefined ? cpn_info.exclude_product_ids : '') + '" data-type= "add_coupon" data-orderitemid="' + orderitemid + '">';
                     couponHtml += '<a href="javascript:void(0);">';
                     couponHtml += '<i class="fa fa-gift"></i>';
                     couponHtml += '<span>' + cpn_name.toString().toLowerCase() + '</span>';
                     couponHtml += '<div class="pull-right">';
                     couponHtml += '$<span id="cou_discamt">' + cou_amt.toFixed(2) + '</span>';
-                    couponHtml += '<button type="button" class="btn btn-box-tool pull-right billinfo" onclick="deleteAllCoupons(\'' + data[i].product_name.toString().toLowerCase() + '\');"><i class="fa fa-times"></i></button>'
+                    couponHtml += '<button type="button" class="btn btn-box-tool pull-right billinfo" onclick="deleteAllCoupons(\'' + row.product_name.toString().toLowerCase() + '\');"><i class="fa fa-times"></i></button>'
                     couponHtml += '</div>';
                     couponHtml += '</a>';
                     couponHtml += '</li>';
                 }
                 zTDiscount = zTDiscount + cou_amt;
             }
-            else if (data[i].product_type == 'fee' && data[i].product_name == 'State Recycling Fee') {
-                recyclingfeeHtml += '<tr id="trfeeid_' + orderitemid + '" data-orderitemid="' + orderitemid + '" data-pname="' + data[i].product_name + '">';
+            else if (row.product_type == 'fee' && row.product_name == 'State Recycling Fee') {
+                recyclingfeeHtml += '<tr id="trfeeid_' + orderitemid + '" data-orderitemid="' + orderitemid + '" data-pname="' + row.product_name + '">';
                 recyclingfeeHtml += '<td class="text-center item-action"><i class="fa fa-plus-circle"></i></td>';
-                recyclingfeeHtml += '<td>' + data[i].product_name + '</td><td></td><td></td><td class="TotalAmount text-right">' + data[i].total.toFixed(2) + '</td><td></td><td></td>';
+                recyclingfeeHtml += '<td>' + row.product_name + '</td><td></td><td></td><td class="TotalAmount text-right">' + row.total.toFixed(2) + '</td><td></td><td></td>';
                 recyclingfeeHtml += '</tr>';
-                zStateRecyclingAmt = zStateRecyclingAmt + (parseFloat(data[i].total) || 0.00);
+                zStateRecyclingAmt = zStateRecyclingAmt + (parseFloat(row.total) || 0.00);
                 $("#stateRecyclingFeeTotal").data("orderitemid", orderitemid);
             }
-            else if (data[i].product_type == 'fee' && data[i].product_name != 'State Recycling Fee') {
-                let startingNumber = (data[i].product_name.match(/^-?\d+\.\d+|^-?\d+\b|^\d+(?=\w)/g) || []);
-                let feetype = data[i].product_name.match(/%/g) != null ? '%' : '';
-                let sd = feetype == '%' ? (parseFloat(startingNumber) || 0.00) : parseFloat(data[i].total);
-                feeHtml += '<tr id="trfeeid_' + orderitemid + '" data-orderitemid="' + orderitemid + '" data-pname="' + data[i].product_name + '" data-feeamt="' + sd + '" data-feetype="' + feetype + '"> ';
-                feeHtml += '<td class="text-center item-action"><button class="btn menu-icon-gr text-success  billinfo" onclick="AddFeeModal(\'' + orderitemid + '\',\'' + data[i].product_name + '\');"> <i class="glyphicon glyphicon-edit"></i></button>';
+            else if (row.product_type == 'fee' && row.product_name != 'State Recycling Fee') {
+                let startingNumber = (row.product_name.match(/^-?\d+\.\d+|^-?\d+\b|^\d+(?=\w)/g) || []);
+                let feetype = row.product_name.match(/%/g) != null ? '%' : '';
+                let sd = feetype == '%' ? (parseFloat(startingNumber) || 0.00) : parseFloat(row.total);
+                feeHtml += '<tr id="trfeeid_' + orderitemid + '" data-orderitemid="' + orderitemid + '" data-pname="' + row.product_name + '" data-feeamt="' + sd + '" data-feetype="' + feetype + '"> ';
+                feeHtml += '<td class="text-center item-action"><button class="btn menu-icon-gr text-success  billinfo" onclick="AddFeeModal(\'' + orderitemid + '\',\'' + row.product_name + '\');"> <i class="glyphicon glyphicon-edit"></i></button>';
                 feeHtml += '<button class="btn menu-icon-gr text-red billinfo" onclick="RemoveFee(\'' + orderitemid + '\');"> <i class="glyphicon glyphicon-trash"></i></button></td>';
-                feeHtml += '<td>' + data[i].product_name + '</td><td></td><td></td><td class="TotalAmount text-right">' + data[i].total.toFixed(2) + '</td><td></td><td></td>';
+                feeHtml += '<td>' + row.product_name + '</td><td></td><td></td><td class="TotalAmount text-right">' + row.total.toFixed(2) + '</td><td></td><td></td>';
                 feeHtml += '</tr>';
-                zFeeAmt = zFeeAmt + (parseFloat(data[i].total) || 0.00);
+                zFeeAmt = zFeeAmt + (parseFloat(row.total) || 0.00);
             }
-            else if (data[i].product_type == 'shipping') {
-                shippingHtml += '<tr id="tritemId_' + orderitemid + '" data-orderitemid="' + orderitemid + '" data-pname="' + data[i].product_name + '">';
+            else if (row.product_type == 'shipping') {
+                shippingHtml += '<tr id="tritemId_' + orderitemid + '" data-orderitemid="' + orderitemid + '" data-pname="' + row.product_name + '">';
                 shippingHtml += '<td class="text-center item-action"><i class="fa fa-shipping-fast"></i></td>';
-                shippingHtml += '<td>Shipping</td><td></td><td></td><td class="TotalAmount text-right">' + data[i].total.toFixed(2) + '</td><td></td><td></td>';
+                shippingHtml += '<td>Shipping</td><td></td><td></td><td class="TotalAmount text-right">' + row.total.toFixed(2) + '</td><td></td><td></td>';
                 shippingHtml += '</tr>';
-                zShippingAmt = zShippingAmt + (parseFloat(data[i].total) || 0.00);
+                zShippingAmt = zShippingAmt + (parseFloat(row.total) || 0.00);
                 $("#shippingTotal").data("orderitemid", orderitemid);
             }
-            else if (data[i].product_type == 'refund') {
-                refundHtml += '<tr id="tritemId_' + orderitemid + '" data-orderitemid="' + orderitemid + '" data-pname="' + data[i].product_name + '">';
+            else if (row.product_type == 'refund') {
+                refundHtml += '<tr id="tritemId_' + orderitemid + '" data-orderitemid="' + orderitemid + '" data-pname="' + row.product_name + '">';
                 //refundHtml += '<td class="text-center item-action"><button class="btn menu-icon-gr text-red btnDeleteItem billinfo" tabitem_itemid="' + orderitemid + '" onclick="removeItemsInTable(\'' + orderitemid + '\');"> <i class="glyphicon glyphicon-trash"></i></button></td>';
                 refundHtml += '<td></td>';
-                refundHtml += '<td>' + data[i].product_name + '</td><td></td><td></td><td class="TotalAmount text-right">' + data[i].total.toFixed(2) + '</td><td></td><td></td>';
+                refundHtml += '<td>' + row.product_name + '</td><td></td><td></td><td class="TotalAmount text-right">' + row.total.toFixed(2) + '</td><td></td><td></td>';
                 refundHtml += '</tr>';
-                zRefundAmt = zRefundAmt + (parseFloat(data[i].total) || 0.00);
+                zRefundAmt = zRefundAmt + (parseFloat(row.total) || 0.00);
             }
-            else if (data[i].product_type == 'tax') {
+            else if (row.product_type == 'tax') {
                 $("#salesTaxTotal").data("orderitemid", orderitemid);
             }
-        }
+        });
         $('#order_line_items').append(itemHtml); $('#order_state_recycling_fee_line_items').append(recyclingfeeHtml); $('#order_fee_line_items').append(feeHtml); $('#order_shipping_line_items').append(shippingHtml); $('#order_refunds').append(refundHtml);
         $('.refund-action').append('<button type="button" id="btnAddFee" class="btn btn-danger billinfo">Add Fee</button> ');
         $('#billCoupon').append(couponHtml);
@@ -827,7 +867,7 @@ function getOrderNotesList(oid) {
         let data = JSON.parse(result);
         let noteHtml = '';
         for (var i = 0; i < data.length; i++) {
-            let is_customer_note = parseInt(data[i].is_customer_note) || 0;
+            let is_customer_note = parseInt(row.is_customer_note) || 0;
             noteHtml += '<li id="linoteid_' + data[i].comment_ID + '" class="note system-note ' + (is_customer_note == 0 ? '' : 'customer-note') + '">';
             noteHtml += '<div class="note_content"><p>' + data[i].comment_content + '</p></div>';
             noteHtml += '<p class="meta"><abbr class="exact-date" title="' + data[i].comment_date + '">' + data[i].comment_date + '</abbr> ';
@@ -862,7 +902,7 @@ function getItemList(pid, vid, Qty) {
             }
             itemsDetailsxml.push({
                 PKey: row_key, product_id: pr.product_id, variation_id: pr.variation_id, product_name: pr.product_name, product_img: '', quantity: pr.quantity, reg_price: pr.reg_price, sale_rate: pr.sale_price, total: (pr.reg_price * pr.quantity), discount_type: coupon_type, discount: coupon_amt, tax_amount: ((pr.reg_price * pr.quantity) * tax_rate).toFixed(2),
-                shipping_amount: pr.shipping_amount, is_free: pr.is_free, free_itmes: pr.free_itmes, order_item_id: 0, sr_fee: pr.staterecycle_fee, sr_fee_istaxable: pr.staterecycle_istaxable
+                shipping_amount: pr.shipping_amount, is_free: pr.is_free, free_itmes: pr.free_itmes, order_item_id: 0, sr_fee: pr.staterecycle_fee, sr_fee_istaxable: pr.staterecycle_istaxable, order_id: parseInt($('#hfOrderNo').val()) || 0, meta_data: pr.meta_data
             });
         });
         //console.log(auto_code,itemsDetailsxml);
@@ -874,31 +914,28 @@ function getItemList(pid, vid, Qty) {
 function bindItemListDataTable(data) {
     var layoutHtml = '';
     if (data.length > 0) {
-        for (var i = 0; i < data.length; i++) {
-            if (data[i].product_id > 0) {
-                if ($('#tritemId_' + data[i].PKey).length <= 0) {
-                    layoutHtml += '<tr id="tritemId_' + data[i].PKey + '" data-id="' + data[i].PKey + '" class="' + (data[i].is_free ? 'free_item' : 'paid_item') + '" data-pid="' + data[i].product_id + '" data-vid="' + data[i].variation_id + '" data-pname="' + data[i].product_name + '" data-freeitem="' + data[i].is_free + '" data-freeitems=\'' + data[i].free_itmes + '\' data-orderitemid="' + data[i].order_item_id + '" data-img="' + data[i].product_img + '" data-srfee="' + data[i].sr_fee + '" data-sristaxable="' + data[i].sr_fee_istaxable + '">';
-                    if (data[i].is_free)
-                        layoutHtml += '<td class="text-center"></td>';
-                    else
-                        layoutHtml += '<td class="text-center"><button class="btn menu-icon-gr text-red btnDeleteItem billinfo" tabitem_itemid="' + data[i].PKey + '" onclick="removeItemsInTable(\'' + data[i].PKey + '\');"> <i class="glyphicon glyphicon-trash"></i> </button></td>';
-                    layoutHtml += '<td>' + data[i].product_name + '</td>';
-                    layoutHtml += '<td class="text-right">' + data[i].reg_price.toFixed(2) + '</td>';
-                    if (data[i].is_free)
-                        layoutHtml += '<td><input min="1" autocomplete="off" disabled class="form-control billinfo number rowCalulate" type="number" id="txt_ItemQty_' + data[i].PKey + '" value="' + data[i].quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
-                    else
-                        layoutHtml += '<td><input min="1" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_ItemQty_' + data[i].PKey + '" value="' + data[i].quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
-                    layoutHtml += '<td class="TotalAmount text-right" data-regprice="' + data[i].reg_price + '"data-salerate="' + data[i].sale_rate + '" data-discount="' + data[i].discount + '" data-amount="' + data[i].total + '" data-taxamount="' + data[i].tax_amount + '" data-shippingamt="' + data[i].shipping_amount + '">' + data[i].total.toFixed(2) + '</td>';
-                    layoutHtml += '<td class="text-right RowDiscount" data-disctype="' + data[i].discount_type + '" data-couponamt="0">' + data[i].discount.toFixed(2) + '</td>';
-                    layoutHtml += '<td class="text-right RowTax">' + data[i].tax_amount + '</td>';
+        $.each(data, function (i, pr) {
+            if (pr.product_id > 0) {
+                if ($('#tritemId_' + pr.PKey).length <= 0) {
+                    layoutHtml += '<tr id="tritemId_' + pr.PKey + '" data-id="' + pr.PKey + '" class="' + (pr.is_free ? 'free_item' : 'paid_item') + '" data-pid="' + pr.product_id + '" data-vid="' + pr.variation_id + '" data-pname="' + pr.product_name + '" data-freeitem="' + pr.is_free + '" data-freeitems=\'' + pr.free_itmes + '\' data-orderitemid="' + pr.order_item_id + '" data-img="' + pr.product_img + '" data-srfee="' + pr.sr_fee + '" data-sristaxable="' + pr.sr_fee_istaxable + '" data-meta_data=\'' + pr.meta_data + '\'>';
+                    if (pr.is_free) layoutHtml += '<td class="text-center"></td>';
+                    else layoutHtml += '<td class="text-center"><button class="btn menu-icon-gr text-red btnDeleteItem billinfo" tabitem_itemid="' + pr.PKey + '" onclick="removeItemsInTable(\'' + pr.PKey + '\');"> <i class="glyphicon glyphicon-trash"></i> </button></td>';
+                    layoutHtml += '<td>' + pr.product_name + '</td>';
+                    layoutHtml += '<td class="text-right">' + pr.reg_price.toFixed(2) + '</td>';
+                    if (pr.is_free) layoutHtml += '<td><input min="1" autocomplete="off" disabled class="form-control billinfo number rowCalulate" type="number" id="txt_ItemQty_' + pr.PKey + '" value="' + pr.quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
+                    else layoutHtml += '<td><input min="1" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_ItemQty_' + pr.PKey + '" value="' + pr.quantity + '" name="txt_ItemQty" placeholder="Qty"></td>';
+                    layoutHtml += '<td class="TotalAmount text-right" data-regprice="' + pr.reg_price + '"data-salerate="' + pr.sale_rate + '" data-discount="' + pr.discount + '" data-amount="' + pr.total + '" data-taxamount="' + pr.tax_amount + '" data-shippingamt="' + pr.shipping_amount + '">' + pr.total.toFixed(2) + '</td>';
+                    layoutHtml += '<td class="text-right RowDiscount" data-disctype="' + pr.discount_type + '" data-couponamt="0">' + pr.discount.toFixed(2) + '</td>';
+                    layoutHtml += '<td class="text-right RowTax">' + pr.tax_amount + '</td>';
                     layoutHtml += '</tr>';
+                    //AddOrderProduct(pr);
                 }
                 else {
-                    var zQty = parseFloat($('#txt_ItemQty_' + data[i].rd_id).val()) || 0.00;
-                    $('#txt_ItemQty_' + data[i].rd_id).val((parseFloat($('#txt_ItemQty_' + data[i].PKey).val()) + data[i].quantity).toFixed(2));
+                    var zQty = parseFloat($('#txt_ItemQty_' + pr.rd_id).val()) || 0.00;
+                    $('#txt_ItemQty_' + pr.rd_id).val((parseFloat($('#txt_ItemQty_' + pr.PKey).val()) + pr.quantity).toFixed(2));
                 }
             }
-        }
+        });
         $('#order_line_items').append(layoutHtml);
         $("#divAddItemFinal").find(".rowCalulate").change(function () { calculateDiscountAcount(); });
     }
@@ -923,6 +960,14 @@ function bindItemListDataTable(data) {
     //auto Coupon add
     ApplyAutoCoupon();
     //calcFinalTotals();
+}
+function AddOrderProduct(product_info) {
+    product_info.order_id = parseInt($('#hfOrderNo').val()) || 0;
+    $.ajax({ method: 'post', url: '/Orders/AddOrderProduct', data: product_info }).done(function (result, textStatus, jqXHR) {
+        if (result.status) $('#tritemId_' + pr.PKey).data('orderitemid', result.id)
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        swal('Alert!', 'Something went wrong, please try again.', "error");
+    });
 }
 function removeItemsInTable(id) {
     //------------- Remove data in Temp AddItemList-----
@@ -970,6 +1015,26 @@ function calcFinalTotals() {
     CalculateFee();
     zFeeAmt = parseFloat($("#feeTotal").text()) || 0.00;
     $("#orderTotal").html((zGAmt - zTDiscount + zShippingAmt + zTotalTax + zStateRecyclingAmt + zFeeAmt).toFixed(2));
+}
+///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Add Item Meta ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+function AddItemMetaModal(id, itemid, meta_list) {
+    let metaHtml = '<div class="modal-dialog">';
+    metaHtml += '<div class="modal-content">';
+    metaHtml += '<div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button><h4 class="modal-title">Add Meta</h4></div>';
+    metaHtml += '<div class="modal-body p-0"><table class="table"><tbody id="order_items_meta">';
+    $.each(meta_list, function (index, row) {
+        metaHtml += '<tr data-id="' + row.id + '"><td style="width:45%"><input class="form-control" id="txt_key' + index + '" value="' + row.key.replace('_system_', '') + '" name="txt_key" placeholder="Name"></td>';
+        metaHtml += '<td style = "width:45%"><input class="form-control" id="txt_value' + index + '" value="' + row.value + '" name="txt_value" placeholder="Value"></td>';
+        metaHtml += '<td style="width:10%"><button class="btn menu-icon-gr text-red btnmeta_delete"> <i class="glyphicon glyphicon-trash"></i></button></td></tr > ';
+    });
+    metaHtml += '</tbody>';
+    metaHtml += '<tbody><tr><td style="width:45%"></td><td style="width:45%"></td><td style="width:10%"><button class="btn menu-icon-gr text-red btnmeta_add"> <i class="glyphicon glyphicon-plus"></i></button></td></tr></tbody>';
+    metaHtml += '</table></div>';
+    metaHtml += '<div class="modal-footer"><button type="button" class="btn btn-danger" id="btnmeta_ok" data-id="' + id + '" data-itemid="' + itemid + '">Add</button></div>';
+    metaHtml += '</div>';
+    metaHtml += '</div>';
+    $("#billModal").empty().html(metaHtml);
+    $("#billModal").modal({ backdrop: 'static', keyboard: false });
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Order Notes ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function AddNotes() {
@@ -1761,19 +1826,15 @@ function createPostMeta() {
     return postMetaxml;
 }
 function createPostStatus() {
-    var oid = $('#hfOrderNo').val();
-    var postStatus = {
-        order_id: oid,
-        parent_id: 0,
-        returning_customer: 0,
+    let postStatus = {
+        order_id: parseInt($('#hfOrderNo').val()) || 0, parent_id: 0, returning_customer: 0,
         customer_id: parseInt($('#ddlUser').val()) || 0,
         num_items_sold: parseInt($('#totalQty').text()) || 0,
-        total_sales: parseFloat($('#orderTotal').text()) || 0,
-        tax_total: parseFloat($('#salesTaxTotal').text()) || 0,
-        shipping_total: parseFloat($('#shippingTotal').text()) || 0,
-        net_total: (parseFloat($('#orderTotal').text()) || 0) - (parseFloat($('#salesTaxTotal').text()) || 0),
-        status: $('#ddlStatus').val(),
-        Search: $('#txtCustomerNotes').val()
+        total_sales: parseFloat($('#orderTotal').text()) || 0.00,
+        tax_total: parseFloat($('#salesTaxTotal').text()) || 0.00,
+        shipping_total: parseFloat($('#shippingTotal').text()) || 0.00,
+        net_total: (parseFloat($('#orderTotal').text()) || 0.00) - (parseFloat($('#salesTaxTotal').text()) || 0.00),
+        status: $('#ddlStatus').val(), Search: $('#txtCustomerNotes').val()
     };
     return postStatus;
 }

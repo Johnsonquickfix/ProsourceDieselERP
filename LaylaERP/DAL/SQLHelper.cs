@@ -125,6 +125,48 @@
             }
             return retval;
         }
+        public static int ExecuteNonQueryWithTrans(string query, params MySqlParameter[] parameters)
+        {
+            int retval;
+            MySqlConnection cnn = new MySqlConnection(_conString);
+            cnn.Open();
+            MySqlTransaction trans = cnn.BeginTransaction();
+            MySqlCommand cmd = new MySqlCommand(query, cnn, trans);
+            try
+            {
+                if (query.ToUpper().StartsWith("CREATE") | query.ToUpper().StartsWith("INSERT") | query.ToUpper().StartsWith("UPDATE") | query.ToUpper().StartsWith("DELETE"))
+                {
+                    cmd.CommandType = CommandType.Text;
+                }
+                else
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                }
+                for (int i = 0; i <= parameters.Length - 1; i++)
+                {
+                    cmd.Parameters.Add(parameters[i]);
+                }
+                retval = cmd.ExecuteNonQuery();
+                if (cmd.Parameters.Count > 0)
+                {
+                    cmd.Parameters.Clear();
+                }
+                trans.Commit();
+            }
+            catch (Exception ex)
+            {
+                trans.Rollback();
+                throw ex;
+            }
+            finally
+            {
+                if (cnn.State == ConnectionState.Open)
+                {
+                    cnn.Dispose();
+                }
+            }
+            return retval;
+        }
         #endregion
 
         #region ExecuteScalers

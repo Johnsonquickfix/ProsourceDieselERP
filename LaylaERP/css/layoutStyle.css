@@ -2954,3 +2954,13 @@ width: 85px;
 .group-test .col-sm-3{width:85%;padding:0px;}
 .group-test .col-sm-9{width:15%;padding:0px;}
 .group-test .col-sm-9 > span{width:50%;padding:0px 10px; }
+
+.space-heads{margin-right:10px;}
+
+.new.purchase #PrintModal .modal-dialog {
+    min-width: 1000px;
+}
+
+.group_test2.group-test > .col-sm-3{width: 82.6%;}
+
+.group_test2.group-test > .col-sm-9{width: 17.4%;}

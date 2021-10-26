@@ -679,5 +679,62 @@ namespace LaylaERP.Controllers
             }
         }
 
+        [HttpPost]
+        public JsonResult Addwarehousesinfo(WarehouseModel model)
+        {
+            int ID = WarehouseRepository.Addwarehousesinfo(model);
+            if (ID > 0)
+            {
+                return Json(new { status = true, message = "Data has been saved successfully!!", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+
+        }
+
+        public JsonResult WarehouseAddressInfoList(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            int TotalRecord = 0;
+            try
+            {
+                DataTable dt = WarehouseRepository.WarehouseAddressInfoList(model.strValue2, model.strValue1, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+                result = JsonConvert.SerializeObject(dt);
+            }
+            catch (Exception ex) { throw ex; }
+            return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+        }
+
+        public JsonResult SelectAddressByID(SearchModel model)
+        {
+
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = WarehouseRepository.SelectAddressByID(model);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+
+        [HttpPost]
+        public JsonResult Editwarehousesinfo(WarehouseModel model)
+        {   
+            if (model.address_id > 0)
+            {
+                WarehouseRepository.Editwarehousesinfo(model);
+                ModelState.Clear();
+                return Json(new { status = true, message = "Data has been updated successfully!!", url = "" }, 0);
+            }
+            else
+            {
+                return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+            }
+
+        }
+
     }
 }

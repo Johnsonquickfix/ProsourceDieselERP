@@ -60,7 +60,7 @@ namespace LaylaERP.Controllers
         {
             return View(model);
         }
-        public ActionResult Giftcard(EmailSettingModel model)
+        public ActionResult Giftcard(OrderModel model)
         {
             return View(model);
         }

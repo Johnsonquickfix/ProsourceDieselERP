@@ -40,6 +40,8 @@ function getOrderInfo() {
             var data = JSON.parse(result);
             if (data.length > 0) {
                 $('#lblOrderNo').data('pay_by', data[0].payment_method);
+                $('#lblOrderNo').data('pay_gift', data[0].IsGift);
+                $('#lblOrderNo').data('pay_giftCardAmount', data[0].giftCardAmount);
                 if (data[0].payment_method == 'ppec_paypal') $('#lblOrderNo').data('pay_id', data[0].paypal_id);
                 else if (data[0].payment_method == 'podium') { $('#lblOrderNo').data('pay_id', data[0].podium_id); $('#lblOrderNo').data('payment_uid', data[0].podium_payment_uid); }
                 else $('#lblOrderNo').data('pay_id', '');
@@ -83,7 +85,7 @@ function getOrderItemList(oid) {
     var option = { strValue1: oid };
     //let coupon_list = [];
     ajaxFunc('/Orders/GetOrderProductList', option, beforeSendFun, function (data) {
-        let itemHtml = '', recyclingfeeHtml = '', feeHtml = '', shippingHtml = '', giftCardHtml='', refundHtml = '', couponHtml = '';
+        let itemHtml = '', recyclingfeeHtml = '', feeHtml = '', shippingHtml = '', giftCardHtml = '', refundHtml = '', couponHtml = '';
         let zQty = 0.00, zGAmt = 0.00, zTDiscount = 0.00, zTotalTax = 0.00, zShippingAmt = 0.00, zGiftCardAmt = 0.00, zStateRecyclingAmt = 0.00, zFeeAmt = 0.00, zRefundAmt = 0.00;
         for (var i = 0; i < data.length; i++) {
             let orderitemid = parseInt(data[i].order_item_id) || 0;
@@ -178,6 +180,7 @@ function getOrderItemList(oid) {
                 $('#order_shipping_line_items').append(shippingHtml);
             }
             else if (data[i].product_type == 'gift_card') {
+
                 giftCardHtml = '<tr id="tritemId_' + orderitemid + '" data-orderitemid="' + orderitemid + '" data-pname="' + data[i].product_name + '">';
                 giftCardHtml += '<td class="text-center item-action"><i class="fa fa-gift"></i></td>';
                 giftCardHtml += '<td>' + data[i].product_name + '</td><td></td><td class="text-right row-refuntamt"></td><td class="RefundAmount text-right"></td><td class="TotalAmount text-right">' + data[i].total.toFixed(2) + '</td><td></td><td></td>';
@@ -224,12 +227,13 @@ function getOrderItemList(oid) {
         $("#SubTotal").text(zGAmt.toFixed(2));
         $("#discountTotal").text(zTDiscount.toFixed(2));
         $("#salesTaxTotal").text(zTotalTax.toFixed(2));
+        $("#giftCardTotal").text(zGiftCardAmt.toFixed(2));
         $("#shippingTotal").text(zShippingAmt.toFixed(2));
         $("#stateRecyclingFeeTotal").text(zStateRecyclingAmt.toFixed(2));
         $("#feeTotal").text(zFeeAmt.toFixed(2));
-        $("#orderTotal").html((zGAmt - zTDiscount + zShippingAmt + zTotalTax + zStateRecyclingAmt + zFeeAmt).toFixed(2));
+        $("#orderTotal").html((zGAmt - zTDiscount - zGiftCardAmt + zShippingAmt + zTotalTax + zStateRecyclingAmt + zFeeAmt).toFixed(2));
         $("#refundedTotal").text(zRefundAmt.toFixed(2));
-        $("#netPaymentTotal").text(((zGAmt - zTDiscount + zShippingAmt + zTotalTax + zStateRecyclingAmt + zFeeAmt) + zRefundAmt).toFixed(2));
+        $("#netPaymentTotal").text(((zGAmt - zTDiscount - zGiftCardAmt + zShippingAmt + zTotalTax + zStateRecyclingAmt + zFeeAmt) + zRefundAmt).toFixed(2));
         //if (zRefundAmt != 0) $(".refund-total").removeClass('hidden'); else $(".refund-total").addClass('hidden');
         $("#order_line_items,#order_fee_line_items").find(".rowCalulate").change(function () { calculateRefunAmount(); });
     }, completeFun, errorFun);
@@ -443,30 +447,48 @@ function createItemsList() {
     return itemsDetails;
 }
 function saveCO() {
-    let oid = parseInt($('#hfOrderNo').val()) || 0, pay_by = $('#lblOrderNo').data('pay_by').trim();
+    let oid = parseInt($('#hfOrderNo').val()) || 0, pay_by = $('#lblOrderNo').data('pay_by').trim(), pay_gift = ($('#lblOrderNo').data('pay_gift') || ''), pay_giftCardAmount = ($('#lblOrderNo').data('pay_giftCardAmount') || 0.00), net_total = (parseFloat($('.btnRefundOk').data('nettotal')) || 0.00);
     //if (!ValidateData()) { $("#loader").hide(); return false };    
     let postMeta = createPostMeta(), postStatus = createPostStatus(), otherItems = createOtherItemsList(), taxItems = createTaxItemsList(), itemsDetails = createItemsList();
 
     if (itemsDetails.length <= 0) { swal('Alert!', 'Please add product.', "error"); return false; }
     var obj = { OrderPostMeta: postMeta, OrderProducts: itemsDetails, OrderPostStatus: postStatus, OrderOtherItems: otherItems, OrderTaxItems: taxItems };
 
-    //console.log(obj);
     $.ajax({
         type: "POST", contentType: "application/json; charset=utf-8",
         url: "/Orders/SaveCustomerOrderRefund",
         data: JSON.stringify(obj), dataType: "json", beforeSend: function () { $("#loader").show(); },
         success: function (data) {
             if (data.status == true) {
-                if (pay_by == 'ppec_paypal') PaypalPaymentRefunds();
-                else if (pay_by == 'podium') PodiumPaymentRefunds();
-                else if (pay_by == 'authorize_net_cim_credit_card') AuthorizeNetPaymentRefunds();
+                if (pay_gift == '') {
+                    if (pay_by == 'ppec_paypal') PaypalPaymentRefunds();
+                    else if (pay_by == 'podium') PodiumPaymentRefunds();
+                    else if (pay_by == 'authorize_net_cim_credit_card') AuthorizeNetPaymentRefunds();
+                    else '';
+                }
+                else if (pay_gift == 'gift_card') {
+                    if (pay_giftCardAmount >= net_total) {
+                        $('#lblOrderNo').data('giftCardAmount', net_total);
+                        GiftCardPaymentRefunds();
+                    }
+                    else if (pay_giftCardAmount < net_total) {
+                        let total = net_total - pay_giftCardAmount;
+                        $('#lblOrderNo').data('giftCardAmount', pay_giftCardAmount);
+                        GiftCardPaymentRefunds();
+                        //partial refund by gift card and gateway
+                        $('.btnRefundOk').data('nettotal', total);
+                        if (pay_by == 'ppec_paypal') PaypalPaymentRefunds();
+                        else if (pay_by == 'podium') PodiumPaymentRefunds();
+                        else if (pay_by == 'authorize_net_cim_credit_card') AuthorizeNetPaymentRefunds();
+                        else '';
+                    }
+                    else '';
+                }
                 else '';
-
                 $('.box-tools,.footer-finalbutton').empty().append('<button type="button" class="btn btn-danger btnRefundOrder"><i class="far fa-edit"></i> Refund</button>');
-                $('#order_line_items,#order_state_recycling_fee_line_items,#order_fee_line_items,#order_shipping_line_items,#order_refunds,#billCoupon,.refund-action').empty();
+                $('#order_line_items,#order_state_recycling_fee_line_items,#order_fee_line_items,#gift_card_line_items,#order_shipping_line_items,#order_refunds,#billCoupon,.refund-action').empty();
                 $('.billinfo').prop("disabled", true);
-                swal('Alert!', data.message, "success");
-                setTimeout(function () { getOrderItemList(oid); getOrderNotesList(oid); $('.billinfo').prop("disabled", true); }, 50);
+                swal('Alert!', data.message, "success").then(function () { getOrderItemList(oid); getOrderNotesList(oid); $('.billinfo').prop("disabled", true); }, 50);
             }
             else { swal('Alert!', data.message, "error").then((result) => { return false; }); }
         },
@@ -541,7 +563,7 @@ function PaypalPaymentRefunds() {
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Authorize.Net Payment Return ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function AuthorizeNetPaymentRefunds() {
     let oid = parseInt($('#hfOrderNo').val()) || 0, invoice_amt = (parseFloat($('.btnRefundOk').data('nettotal')) || 0.00);
-    let option = { order_id: oid, NetTotal: invoice_amt }; 
+    let option = { order_id: oid, NetTotal: invoice_amt };
     swal.queue([{
         title: 'Authorize.Net Payment Processing.', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,
         onOpen: () => {
@@ -568,6 +590,24 @@ function AmazonPayPaymentRefunds() {
                 console.log('Amazon Pay ', response);
                 if (response.status) {
                     swal('Alert!', 'Order placed successfully.', "success"); getOrderNotesList(oid);
+                }
+            }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', err, 'error'); }).always(function () { swal.hideLoading(); });
+        }
+    }]);
+}
+
+///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Gift Card Payment Return ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+function GiftCardPaymentRefunds() {
+    let oid = parseInt($('#hfOrderNo').val()) || 0, invoice_amt = (parseFloat($('#lblOrderNo').data('giftCardAmount')) || 0.00);
+    let option = { order_id: oid, NetTotal: invoice_amt };
+    swal.queue([{
+        title: 'Gift Card Payment Processing.', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,
+        onOpen: () => {
+            swal.showLoading();
+            $.post('/Orders/UpdateGitCardPaymentRefund', option).then(response => {
+                console.log('Gift Card ', response);
+                if (response.status) {
+                    swal('Alert!', 'Order placed successfully.', "success"); getOrderNotesList(oid); getOrderItemList(oid);
                 }
             }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', err, 'error'); }).always(function () { swal.hideLoading(); });
         }

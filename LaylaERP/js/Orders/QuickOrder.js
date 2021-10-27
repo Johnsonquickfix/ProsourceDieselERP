@@ -890,18 +890,17 @@ function getItemList(pid, vid, Qty) {
         $.each(result, function (key, pr) {
             pr.quantity = pr.quantity * Qty;
             let coupon_amt = 0.00, coupon_type = 'fixed_product', row_key = pr.product_id + '_' + pr.variation_id;
-            //if (!pr.is_free &&) {
-            //    console.log(pr);
-            //    if (pr.reg_price > pr.sale_price) {
-            //        coupon_amt = (pr.reg_price - pr.sale_price) * pr.quantity;
-            //        let pro_ids = pr.variation_id + " ";
-            //        let coupon_list = auto_coupon.filter(element => element.post_title == pr.product_id);
-            //        if (coupon_list.length > 0) {
-            //            coupon_list[0].coupon_amount = coupon_amt; coupon_list[0].product_ids = pro_ids;
-            //            if (coupon_list.length > 0) auto_code.push(coupon_list[0]);
-            //        }
-            //    }
-            //}
+            if (!pr.is_free) {
+                if (pr.reg_price > pr.sale_price) {
+                    coupon_amt = (pr.reg_price - pr.sale_price) * pr.quantity;
+                    let pro_ids = pr.variation_id + " ";
+                    let coupon_list = auto_coupon.filter(element => element.post_title == pr.product_id);
+                    if (coupon_list.length > 0) {
+                        coupon_list[0].coupon_amount = coupon_amt; coupon_list[0].product_ids = pro_ids;
+                        if (coupon_list.length > 0) auto_code.push(coupon_list[0]);
+                    }
+                }
+            }
             itemsDetailsxml.push({
                 PKey: row_key, product_id: pr.product_id, variation_id: pr.variation_id, product_name: pr.product_name, product_img: '', quantity: pr.quantity, reg_price: pr.reg_price, sale_rate: pr.sale_price, total: (pr.reg_price * pr.quantity), discount_type: coupon_type, discount: coupon_amt, tax_amount: ((pr.reg_price * pr.quantity) * tax_rate).toFixed(2),
                 shipping_amount: pr.shipping_amount, is_free: pr.is_free, free_itmes: pr.free_itmes, order_item_id: 0, sr_fee: pr.staterecycle_fee, sr_fee_istaxable: pr.staterecycle_istaxable, order_id: parseInt($('#hfOrderNo').val()) || 0, meta_data: pr.meta_data
@@ -909,7 +908,7 @@ function getItemList(pid, vid, Qty) {
         });
         //console.log(auto_code,itemsDetailsxml);
         //Bind diff Coupon
-        //if (auto_code.length > 0) bindCouponList(auto_code);
+        if (auto_code.length > 0) bindCouponList(auto_code);
         if (itemsDetailsxml.length > 0) bindItemListDataTable(itemsDetailsxml);
     }, function () { $("#loader").hide(); }, function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); }, true);
 }
@@ -957,10 +956,10 @@ function bindItemListDataTable(data) {
         layoutHtml += '<tbody id="order_line_items"></tbody><tbody id="order_state_recycling_fee_line_items"></tbody><tbody id="order_fee_line_items"></tbody><tbody id="order_refunds"></tbody>';
         layoutHtml += '</table>';
         $('#divAddItemFinal').empty().html(layoutHtml);
-    }
+    }    
+    calculateDiscountAcount();
     //auto Coupon add
     ApplyAutoCoupon();
-    calculateDiscountAcount();
     //calcFinalTotals();
 }
 function AddOrderProduct(product_info) {
@@ -1726,11 +1725,13 @@ function calculateDiscountAcount() {
                 zSalePrice = parseFloat($(row).find(".TotalAmount").data("salerate")) || 0.00;
                 zGrossAmount = zRegPrice * zQty;
                 $(row).find(".TotalAmount").data("amount", zGrossAmount.toFixed(2)); $(row).find(".TotalAmount").text(zGrossAmount.toFixed(2));
-
+                console.log(is_sales);
                 ////Coupun Type 'diff' and DiscType not equal '2x_percent' (CouponAmt = RegPrice - SalePrice)
                 if (zType == 'diff' && is_sales == 0) {
                     if (zDiscType != '2x_percent') zCouponAmt = (zRegPrice - zSalePrice) > 0 ? (zRegPrice - zSalePrice) : 0.00;
                 }
+                else if (zType == 'diff' && is_sales > 0) zCouponAmt = 0.00;
+
                 //else { zCouponAmt = 0.00; }
                 let cou_details = Coupon_get_discount_amount((vid > 0 ? vid : pid), pid, cou, zCouponAmt, zQty, zRegPrice, zSalePrice);
 

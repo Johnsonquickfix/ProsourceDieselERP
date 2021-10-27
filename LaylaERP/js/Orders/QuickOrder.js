@@ -884,22 +884,24 @@ function getItemList(pid, vid, Qty) {
     $("#loader").show();
     let option = { strValue1: pid, strValue2: vid, strValue3: $('#ddlshipcountry').val(), strValue4: $('#ddlshipstate').val() };
     let tax_rate = parseFloat($('#hfTaxRate').val()) || 0.00;
+    let monthlySaleCoupon = ["sales20off"];
     ajaxFunction('/Orders/GetProductInfo', option, beforeSendFun, function (result) {
         let itemsDetailsxml = [], auto_code = [];
         $.each(result, function (key, pr) {
             pr.quantity = pr.quantity * Qty;
             let coupon_amt = 0.00, coupon_type = 'fixed_product', row_key = pr.product_id + '_' + pr.variation_id;
-            if (!pr.is_free) {
-                if (pr.reg_price > pr.sale_price) {
-                    coupon_amt = (pr.reg_price - pr.sale_price) * pr.quantity;
-                    let pro_ids = pr.variation_id + " ";
-                    let coupon_list = auto_coupon.filter(element => element.post_title == pr.product_id);
-                    if (coupon_list.length > 0) {
-                        coupon_list[0].coupon_amount = coupon_amt; coupon_list[0].product_ids = pro_ids;
-                        if (coupon_list.length > 0) auto_code.push(coupon_list[0]);
-                    }
-                }
-            }
+            //if (!pr.is_free &&) {
+            //    console.log(pr);
+            //    if (pr.reg_price > pr.sale_price) {
+            //        coupon_amt = (pr.reg_price - pr.sale_price) * pr.quantity;
+            //        let pro_ids = pr.variation_id + " ";
+            //        let coupon_list = auto_coupon.filter(element => element.post_title == pr.product_id);
+            //        if (coupon_list.length > 0) {
+            //            coupon_list[0].coupon_amount = coupon_amt; coupon_list[0].product_ids = pro_ids;
+            //            if (coupon_list.length > 0) auto_code.push(coupon_list[0]);
+            //        }
+            //    }
+            //}
             itemsDetailsxml.push({
                 PKey: row_key, product_id: pr.product_id, variation_id: pr.variation_id, product_name: pr.product_name, product_img: '', quantity: pr.quantity, reg_price: pr.reg_price, sale_rate: pr.sale_price, total: (pr.reg_price * pr.quantity), discount_type: coupon_type, discount: coupon_amt, tax_amount: ((pr.reg_price * pr.quantity) * tax_rate).toFixed(2),
                 shipping_amount: pr.shipping_amount, is_free: pr.is_free, free_itmes: pr.free_itmes, order_item_id: 0, sr_fee: pr.staterecycle_fee, sr_fee_istaxable: pr.staterecycle_istaxable, order_id: parseInt($('#hfOrderNo').val()) || 0, meta_data: pr.meta_data
@@ -907,7 +909,7 @@ function getItemList(pid, vid, Qty) {
         });
         //console.log(auto_code,itemsDetailsxml);
         //Bind diff Coupon
-        if (auto_code.length > 0) bindCouponList(auto_code);
+        //if (auto_code.length > 0) bindCouponList(auto_code);
         if (itemsDetailsxml.length > 0) bindItemListDataTable(itemsDetailsxml);
     }, function () { $("#loader").hide(); }, function (XMLHttpRequest, textStatus, errorThrown) { $("#loader").hide(); swal('Alert!', errorThrown, "error"); }, true);
 }
@@ -956,9 +958,9 @@ function bindItemListDataTable(data) {
         layoutHtml += '</table>';
         $('#divAddItemFinal').empty().html(layoutHtml);
     }
-    calculateDiscountAcount();
     //auto Coupon add
     ApplyAutoCoupon();
+    calculateDiscountAcount();
     //calcFinalTotals();
 }
 function AddOrderProduct(product_info) {
@@ -1604,7 +1606,7 @@ function deleteAllCoupons(coupon_type) {
         //});
     }
     else if (coupon_type == 'friend_auto') {
-        $('#li_118').remove(); $('#li_611172').remove(); $("#billCoupon").find("[data-type='auto_coupon']").remove(); 
+        $('#li_118').remove(); $('#li_611172').remove(); $("#billCoupon").find("[data-type='auto_coupon']").remove();
     }
     else if (coupon_type != '') {
         swal({ title: "Are you sure?", text: 'Would you like to Remove this Coupon?', type: "question", showCancelButton: true })
@@ -1701,6 +1703,7 @@ function calculateDiscountAcount() {
     });
     $("#stateRecyclingFeeTotal").text(zStateRecyclingAmt.toFixed(2));
     $('#order_state_recycling_fee_line_items').find(".TotalAmount").text(zStateRecyclingAmt.toFixed(2));
+    let is_sales = $("#billCoupon").find("[data-coupon='sales20off']").length;
     //Calculate discount
     $('#billCoupon li.items').each(function (index, li) {
         let cou_amt = 0.00, cou = $(li).data('coupon').toString().toLowerCase();
@@ -1725,7 +1728,7 @@ function calculateDiscountAcount() {
                 $(row).find(".TotalAmount").data("amount", zGrossAmount.toFixed(2)); $(row).find(".TotalAmount").text(zGrossAmount.toFixed(2));
 
                 ////Coupun Type 'diff' and DiscType not equal '2x_percent' (CouponAmt = RegPrice - SalePrice)
-                if (zType == 'diff') {
+                if (zType == 'diff' && is_sales == 0) {
                     if (zDiscType != '2x_percent') zCouponAmt = (zRegPrice - zSalePrice) > 0 ? (zRegPrice - zSalePrice) : 0.00;
                 }
                 //else { zCouponAmt = 0.00; }

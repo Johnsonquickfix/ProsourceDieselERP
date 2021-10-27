@@ -49,6 +49,45 @@ namespace LaylaERP.BAL
             return dt;
         }
 
+
+        public static DataTable GetPODetailsList(string sMonths, string searchid, string productid)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                string strWhr = string.Empty;
+                if (!string.IsNullOrEmpty(searchid))
+                {
+                    searchid = searchid.ToLower();
+                    strWhr += " and (lower(p.ref) like '" + searchid + "%' OR lower(p.ref_ext) like '" + searchid + "%' OR lower(v.SalesRepresentative)='" + searchid + "%' OR lower(v.name) like '" + searchid + "%' OR lower(v.fk_state) like '" + searchid + "%' OR lower(v.zip) like '" + searchid + "%')";
+                }
+                if (sMonths != null)
+                {
+                    strWhr += " and cast(p.date_creation as date) BETWEEN " + sMonths;
+                }
+                //string strSql = "Select p.fk_purchase id,p.rowid RicD, (select ref from commerce_purchase_order where rowid = p.fk_purchase) ref,(select fk_projet from commerce_purchase_order where rowid = p.fk_purchase) fk_projet, p.ref refordervendor,v.SalesRepresentative request_author,v.name vendor_name,v.address,v.town,v.fk_country,v.fk_state,v.zip,v.phone,"
+                //  + " DATE_FORMAT(p.date_creation,'%m/%d/%Y %h:%i %p') dt,DATE_FORMAT(p.date_creation,'%m/%d/%Y %H:%i') date_creation,DATE_FORMAT(p.date_livraison, '%m/%d/%Y') date_livraison, s.Status,total_ttc from commerce_purchase_receive_order p"
+                //  + " inner join wp_vendor v on p.fk_supplier = v.rowid inner join wp_StatusMaster s on p.fk_status = s.ID where p.fk_status= 6 and 1 = 1";
+
+
+                //   string strSql = "Select distinct  p.fk_purchase id,(select ref from commerce_purchase_order where rowid = p.fk_purchase) ref,(select fk_projet from commerce_purchase_order where rowid = p.fk_purchase) fk_projet,v.SalesRepresentative request_author,v.name vendor_name,v.address,v.town,v.fk_country,v.fk_state,v.zip,v.phone,DATE_FORMAT(p.date_livraison, '%m/%d/%Y') date_livraison, s.Status from commerce_purchase_receive_order p "
+                //+ "inner join wp_vendor v on p.fk_supplier = v.rowid "
+                //+ "inner join wp_StatusMaster s on p.fk_status = s.ID where p.fk_status in (5,6) and 1 = 1";
+
+                string strSql = "Select  p.rowid id, p.ref, p.ref_ext refordervendor,v.name vendor_name,DATE_FORMAT(p.date_creation,'%m/%d/%Y') date_creation,DATE_FORMAT(p.date_livraison, '%m/%d/%Y') date_livraison, s.Status,total_ttc,(select ifnull(sum(amount),0) from erp_payment_invoice where fk_invoice=p.rowid and  type = 'PO') recieved,ifnull(total_ttc - (select ifnull(sum(amount), 0) from erp_payment_invoice where fk_invoice = p.rowid and  type = 'PO'),0) remaining "
+             + " from commerce_purchase_order p inner join wp_vendor v on p.fk_supplier = v.rowid "
+             + " inner join wp_StatusMaster s on p.fk_status = s.ID where p.ref_ext <> '' and p.fk_status in  (3) and 1 = 1 ";
+
+                strSql += strWhr + string.Format(" order by p.rowid desc");
+                dt = SQLHelper.ExecuteDataTable(strSql);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
         public static DataTable GetPartiallyOrderList(string sMonths, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
         {
             DataTable dt = new DataTable();
@@ -147,16 +186,42 @@ namespace LaylaERP.BAL
                 //                     + " (select FORMAT(ifnull(sum(amount),0),2) from erp_payment_invoice where fk_invoice=p.rowid and  type = 'PR') recieved, FORMAT(ifnull(p.total_ttc - (select ifnull(sum(amount), 0) from erp_payment_invoice epi  where fk_invoice = p.rowid and  type = 'PR'),0) ,2)  remaining from commerce_purchase_receive_order p"
                 //                      + " inner join commerce_purchase_receive_order_detail pr on pr.fk_purchase_re = p.rowid where p.fk_purchase = @ref and fk_product > 0 and p.fk_status in (5,6) and 1 = 1 ";
 
-                string strSql = "Select p.fk_purchase id,p.rowid RicD,p.ref refordervendor,sum(recqty) Quenty,group_concat(' ',description,' (*',recqty,')') des,DATE_FORMAT(p.date_creation,'%m/%d/%Y %h:%i %p') dtcration,DATE_FORMAT(p.date_creation,'%m/%d/%Y %H:%i') date_creation "
-                                    + " from commerce_purchase_receive_order p"
-                                     + " inner join commerce_purchase_receive_order_detail pr on pr.fk_purchase_re = p.rowid where p.fk_purchase = @ref and fk_product > 0 and p.fk_status in (5,6) and 1 = 1 ";
+                string strSql = "Select ep.ref, total_ttc,format(epi.amount,2) amount,p.rowid RicD, DATE_FORMAT(datec,'%m/%d/%Y %h:%i %p') date_creation"
+                                    + "  from commerce_purchase_order p"
+                                     + " inner join erp_payment_invoice epi on epi.fk_invoice = p.rowid inner join erp_payment ep on ep.rowid = epi.fk_payment where p.rowid = @ref and p.fk_status in (5,6) and 1 = 1 ";
 
 
-                strSql += strWhr + string.Format("group by  p.ref order by p.rowid desc");
+                strSql += strWhr + string.Format(" group by  ep.ref order by ep.rowid desc");
+                 
+
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql, parameters);
+                dt = ds.Tables[0];
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static DataTable GetPOOrderDataList(string searchid, string categoryid, string productid)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                string strWhr = string.Empty;
+                MySqlParameter[] parameters =
+                 {
+                    new MySqlParameter("@ref", searchid)
+                };
+                string strSql = "Select ep.ref, total_ttc,format(epi.amount,2) amount,p.rowid RicD, DATE_FORMAT(datec,'%m/%d/%Y %h:%i %p') date_creation"
+                                    + "  from commerce_purchase_order p"
+                                     + " inner join erp_payment_invoice epi on epi.fk_invoice = p.rowid inner join erp_payment ep on ep.rowid = epi.fk_payment where p.rowid = @ref and p.fk_status in (3) and 1 = 1 ";
 
 
-
-                dt = SQLHelper.ExecuteDataTable(strSql, parameters);
+                strSql += strWhr + string.Format(" group by  ep.ref order by ep.rowid desc");
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql, parameters);
+                dt = ds.Tables[0];
             }
             catch (Exception ex)
             {

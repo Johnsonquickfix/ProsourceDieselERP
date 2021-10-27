@@ -33,6 +33,30 @@ namespace LaylaERP.Controllers
             catch (Exception ex) { throw ex; }
             return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
         }
+
+        public JsonResult GetPOOrderList(JqDataTableModel model)
+        {
+            //string result = string.Empty;
+            //int TotalRecord = 0;
+            //try
+            //{
+            //    DataTable dt = PaymentInvoiceRepository.GetPurchaseOrder(model.strValue1, model.sSearch, model.iDisplayStart, model.iDisplayLength, out TotalRecord, model.sSortColName, model.sSortDir_0);
+            //    result = JsonConvert.SerializeObject(dt);
+            //}
+            //catch (Exception ex) { throw ex; }
+            //return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
+
+            string result = string.Empty;
+            try
+            {
+                DataTable dt = PaymentInvoiceRepository.GetPODetailsList(model.strValue1, model.strValue2, model.strValue3);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+
+        }
+
         public JsonResult GetPartiallyOrderList(JqDataTableModel model)
         {
             string result = string.Empty;
@@ -66,6 +90,19 @@ namespace LaylaERP.Controllers
             try
             {
                 DataTable dt = PaymentInvoiceRepository.GetPartiallyOrderDataList(model.strValue1, model.strValue2, model.strValue3);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
+
+        [HttpPost]
+        public JsonResult GetPOOrderDataList(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            try
+            {
+                DataTable dt = PaymentInvoiceRepository.GetPOOrderDataList(model.strValue1, model.strValue2, model.strValue3);
                 result = JsonConvert.SerializeObject(dt, Formatting.Indented);
             }
             catch { }

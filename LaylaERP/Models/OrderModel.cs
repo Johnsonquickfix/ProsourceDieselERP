@@ -122,6 +122,7 @@
     }
     public class OrderProductsModel
     {
+        public long order_id { get; set; }
         public long order_item_id { get; set; }
         public string product_type { get; set; }
         public long product_id { get; set; }
@@ -143,6 +144,13 @@
         public decimal shipping_tax_amount { get; set; }
         public decimal staterecycle_fee { get; set; }
         public bool staterecycle_istaxable { get; set; }
+    }
+    public class OrderProductsMetaModel
+    {
+        public long id { get; set; }
+        public long item_id { get; set; }
+        public string key { get; set; }
+        public string value { get; set; }
     }
     public class OrderShippingModel
     {

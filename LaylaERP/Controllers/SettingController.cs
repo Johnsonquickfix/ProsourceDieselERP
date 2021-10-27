@@ -14,7 +14,7 @@ namespace LaylaERP.Controllers
     public class SettingController : Controller
     {
         //SettingRepository Repo = null;
-        // GET: Setting
+        // GET: Setting;
         public ActionResult Setting(SettingModel model)
         {
             string JSONresult = string.Empty;

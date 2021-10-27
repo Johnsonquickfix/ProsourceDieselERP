@@ -131,8 +131,9 @@ function PurchaseOrderGrid(is_date) {
                 }
             },
             {
-                'data': 'ref', sWidth: "10%", title: 'PO No'
-          
+                'data': 'ref', sWidth: "10%", title: 'PO No', render: function (data, type, row) {
+                    return  row.ref + '<a href="#" onclick="getPurchaseOrderPrint(' + row.id + ', false);"><i class="fas fa-search-plus"></i></a>';
+                }
             },
          
             { data: 'date_creation', title: 'Order Date', sWidth: "10%" },
@@ -142,7 +143,7 @@ function PurchaseOrderGrid(is_date) {
             { data: 'vendor_name', title: 'Vendor Name', sWidth: "10%" },            
             { data: 'total_ttc', title: 'Total Amount', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
             { data: 'recieved', title: 'Paid Amount', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
-            { data: 'remaining', title: 'Remaining Amount', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
+            { data: 'remaining', title: 'Balance Amount', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
             { data: 'Status', title: 'Status', sWidth: "10%" }
         ],
 
@@ -211,7 +212,7 @@ function PartiallyGrid(is_date) {
             { data: 'vendor_name', title: 'Vendor Name', sWidth: "10%" },
             { data: 'total_ttc', title: 'Amount', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
             { data: 'recieved', title: 'Received', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
-            { data: 'remaining', title: 'Remaining', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
+            { data: 'remaining', title: 'Balance', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
             { data: 'Status', title: 'Status', sWidth: "10%" }
         ]
 
@@ -255,28 +256,42 @@ function PoPartiallyColleps(is_date) {
                 }
             },
             {
-                data: 'ref', title: 'PO No', sWidth: "10%", render: function (data, type, row) {
+                data: 'ref', title: 'PO No', sWidth: "12%", render: function (data, type, row) {
                     //if (row.post_parent > 0) return '<a href="javascript:void(0);" class="details-control"><i class="glyphicon glyphicon-plus-sign"></i></a> ↳  #' + row.id; else return '<a href="javascript:void(0);" class="details-control"><i class="glyphicon glyphicon-plus-sign"></i></a> <b>#' + row.id + '</b>';
-                    return '<a href="javascript:void(0);" class="pdetails-control" data-toggle="tooltip" title="Click here to show details."><i class="glyphicon glyphicon-plus-sign"></i></a> -  #' + row.ref + '';
+                    return '<a href="javascript:void(0);" class="pdetails-control" data-toggle="tooltip" title="Click here to show details."><i class="glyphicon glyphicon-plus-sign"></i></a> -  #' + row.ref +  '<a href="#" onclick="getPurchaseOrderPrint(' + row.id + ', false);"><i class="fas fa-search-plus"></i></a>';
 
                 }
             },
 
+            //{
+            //    data: 'fk_projet', title: 'SO No.', sWidth: "10%", render: function (data, type, dtrow) {
+            //        if (data > 0) return '#' + data; else return '';
+            //    }
+            //},
+          //  { data: 'vendor_name', title: 'Vendor Name', sWidth: "15%" },
+            //{
+            //    data: 'city', title: 'Address', sWidth: "20%", render: function (data, type, dtrow) {
+            //        /*    let val = dtrow.address + ', ' + dtrow.town + ' ,' + dtrow.fk_state + ' ' + dtrow.zip;*/
+            //        let val = dtrow.address + ', ' + dtrow.town + ', ' + dtrow.fk_state + ' ' + dtrow.zip;
+            //        return val;
+            //    }
+            //},
+            //{ data: 'Status', title: 'Total Amount', sWidth: "10%" },
+            //{ data: 'Status', title: 'Paid Amount', sWidth: "10%" },
+            //{ data: 'Status', title: 'Balance Amount', sWidth: "10%" },
+            //{ data: 'date_livraison', title: 'Planned Date of Delivery', sWidth: "10%" },
+            //{ data: 'Status', title: 'Status', sWidth: "10%" }
+
+           
+
+            { data: 'date_creation', title: 'Order Date', sWidth: "10%" },
             {
-                data: 'fk_projet', title: 'SO No.', sWidth: "10%", render: function (data, type, dtrow) {
-                    if (data > 0) return '#' + data; else return '';
-                }
+                'data': 'refordervendor', sWidth: "10%", title: 'Invoice No', sWidth: "10%"
             },
-            { data: 'vendor_name', title: 'Vendor Name', sWidth: "15%" },
-            {
-                data: 'city', title: 'Address', sWidth: "20%", render: function (data, type, dtrow) {
-                    /*    let val = dtrow.address + ', ' + dtrow.town + ' ,' + dtrow.fk_state + ' ' + dtrow.zip;*/
-                    let val = dtrow.address + ', ' + dtrow.town + ', ' + dtrow.fk_state + ' ' + dtrow.zip;
-                    return val;
-                }
-            },
-
-            { data: 'date_livraison', title: 'Planned date of delivery', sWidth: "10%" },
+            { data: 'vendor_name', title: 'Vendor Name', sWidth: "10%" },
+            { data: 'total_ttc', title: 'Total Amount', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
+            { data: 'recieved', title: 'Paid Amount', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
+            { data: 'remaining', title: 'Balance Amount', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
             { data: 'Status', title: 'Status', sWidth: "10%" }
             
         ],
@@ -287,7 +302,8 @@ function PoPartiallyColleps(is_date) {
 /* Formatting function for row details - modify as you need */
 function formatPartially(d) {
     //console.log(d.ref);
-    let option = { strValue1: d.id }, wrHTML = '<table class="inventory-table table-blue table check-table table-bordered table-striped dataTable no-footer"><thead><tr><th style="width:10%; text-align:left;">Bill No</th><th style="width:12%; text-align:left;">Receive Date</th><th style="width:60%; text-align:left;">Description</th><th style="width:10%; text-align:right;">Total Amount</th><th style="width:10%; text-align:right;">Paid Amount</th><th style="width:10%; text-align:right;">Remaining Amount</th></tr></thead>';
+   /* let option = { strValue1: d.id }, wrHTML = '<table class="inventory-table table-blue table check-table table-bordered table-striped dataTable no-footer"><thead><tr><th style="width:10%; text-align:left;">Bill No</th><th style="width:12%; text-align:left;">Receive Date</th><th style="width:60%; text-align:left;">Description</th><th style="width:10%; text-align:right;">Total Amount</th><th style="width:10%; text-align:right;">Paid Amount</th><th style="width:10%; text-align:right;">Balance Amount</th></tr></thead>';*/
+    let option = { strValue1: d.id }, wrHTML = '<table class="inventory-table table-blue table check-table table-bordered table-striped dataTable no-footer"><thead><tr><th style="width:10%; text-align:left;">Bill No</th><th style="width:12%; text-align:left;">Receive Date</th><th style="width:60%; text-align:left;">Description</th></tr></thead>';
     $.ajax({
         url: '/PaymentInvoice/GetPartiallyOrderDataList', type: 'post', dataType: 'json', contentType: "application/json; charset=utf-8", data: JSON.stringify(option),
         success: function (result) {
@@ -296,10 +312,10 @@ function formatPartially(d) {
             $(result).each(function (index, row) {
 
                 wrHTML += '<tr><td style="width:10%; text-align:left;"> <a href="#"><i class="fas fa - search - plus"></i>' + row.refordervendor + '</a></td><td style="width:12%; text-align:left;">' + row.dtcration + '</td>';
-                wrHTML += '<td style="width:40%; text-align:left;">' + row.des + '</td>'
-                wrHTML += '<td style="width:10%; text-align:right;">' + '$' + row.total_ttc + '</td>';
-                wrHTML += '<td style="width:10%; text-align:right;">' + '$' + row.recieved + '</td>';
-                wrHTML += '<td style="width:10%; text-align:right;">' + '$' + row.remaining + '</td></tr > ';
+                wrHTML += '<td style="width:40%; text-align:left;">' + row.des + '</td></tr > ';
+                //wrHTML += '<td style="width:10%; text-align:right;">' + '$' + row.total_ttc + '</td>';
+                //wrHTML += '<td style="width:10%; text-align:right;">' + '$' + row.recieved + '</td>';
+                //wrHTML += '<td style="width:10%; text-align:right;">' + '$' + row.remaining + '</td></tr > ';
             });
         },
         error: function (xhr, status, err) { alert(err); },

@@ -80,10 +80,10 @@ namespace LaylaERP.Controllers
             {
                 //long id = 0;
                 DataSet ds = new DataSet();
-                if (model.strValue1 == "PO")
+                //if (model.strValue1 == "PO")
                      ds = PaymentInvoiceRepository.GetPRPurchaseOrderByID(model.strValue2);
-                else
-                     ds = PaymentInvoiceRepository.GetPurchaseOrderByID(model.strValue2);
+                //else
+                    // ds = PaymentInvoiceRepository.GetPurchaseOrderByID(model.strValue2);
 
                 //if (!string.IsNullOrEmpty(model.strValue1))
                 //    id = Convert.ToInt64(model.strValue1);

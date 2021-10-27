@@ -52,9 +52,13 @@ namespace LaylaERP.Controllers
 
         public ActionResult AccountLedger()
         {
-            return View();
+            return View("AccountLedgerList");
         }
 
+        //public ActionResult AccountLedgerList()
+        //{
+        //    return View();
+        //}
         public JsonResult GetNatureofJournal(SearchModel model)
         {
             DataSet ds = BAL.AccountingRepository.GetNatureofJournal();
@@ -359,6 +363,67 @@ namespace LaylaERP.Controllers
             try
             {
                 DataTable dt = AccountingRepository.GrandTotal();
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Account Ledger~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        [HttpGet]
+        public JsonResult GetAccountLedgerDetailsList(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            try
+            {
+                DataTable dt = AccountingRepository.GetAccountLedgerDetailsList(model.strValue1, model.strValue2, model.strValue3);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
+
+        [HttpPost]
+        public JsonResult GetDetailsLedger(JqDataTableModel model)
+        {
+            string result = string.Empty;
+            try
+            {
+                DataTable dt = AccountingRepository.GetDetailsLedger(model.strValue1, model.strValue2, model.strValue3);
+                result = JsonConvert.SerializeObject(dt, Formatting.Indented);
+            }
+            catch { }
+            return Json(result, 0);
+        }
+        public JsonResult GetVendor(SearchModel model)
+        {
+            DataSet ds = BAL.AccountingRepository.GetVendor();
+            List<SelectListItem> productlist = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                productlist.Add(new SelectListItem { Text = dr["Name"].ToString(), Value = dr["ID"].ToString() });
+            }
+            return Json(productlist, JsonRequestBehavior.AllowGet);
+
+        }
+        public JsonResult DatewithVendoreTotal(JqDataTableModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = AccountingRepository.DatewithVendoreTotal(model.strValue1, model.strValue2, model.strValue3);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+
+        public JsonResult JournalDatewithVendoreTotal(JqDataTableModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = AccountingRepository.JournalDatewithVendoreTotal(model.strValue1, model.strValue2, model.strValue3);
                 JSONresult = JsonConvert.SerializeObject(dt);
             }
             catch { }

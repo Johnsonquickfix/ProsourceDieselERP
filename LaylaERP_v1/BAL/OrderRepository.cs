@@ -48,11 +48,11 @@
             DataTable DT = new DataTable();
             try
             {
-                string strWhr = "select id,CONCAT(User_Login, ' (#',id,' - ', user_email, ')') as displayname,REGEXP_REPLACE(ump.meta_value, '[^0-9]+', '')  billing_phone"
+                string strWhr = "select top 100 id,CONCAT(User_Login, ' (#',id,' - ', user_email, ')') as displayname,replace(replace(replace(replace(ump.meta_value,'(', ''),')', ''),'-', ''),' ', '') billing_phone"
                                 + " from wp_users as ur"
                                 + " inner join wp_usermeta um on ur.id = um.user_id and um.meta_key = 'wp_capabilities' and meta_value like '%customer%'"
                                 + " left outer join wp_usermeta ump on ur.id = ump.user_id and ump.meta_key = 'billing_phone'";
-                strWhr += " where CONCAT(User_Login, ' ', user_email,' ',REGEXP_REPLACE(ump.meta_value, '[^0-9]+', '')) like  '%" + strSearch + "%' limit 50;";
+                strWhr += " where concat(User_Login, ' ', user_email,' ',replace(replace(replace(replace(ump.meta_value,'(', ''),')', ''),'-', ''),' ', '')) like  '%" + strSearch + "%';";
 
                 DT = SQLHelper.ExecuteDataTable(strWhr);
             }
@@ -199,7 +199,7 @@
             try
             {
                 string strSQl = "select wp_t.term_order,wp_t.term_id,wp_t.name,p.id pr_id,p.post_title as post_title,"
-                                + " concat('[',JSON_ARRAYAgg(json_object('vr_id', coalesce(ps.id,0), 'vr_title', coalesce(ps.post_title,'No Variations'),'_regular_price',pm_rp.meta_value,'_price',pm_sp.meta_value)),']') variation_details"
+                                + " '[' + STRING_AGG(concat('{','\"vr_id\":', coalesce(ps.id,0), ',\"vr_title\":\"', coalesce(ps.post_title,'No Variations'),'\",\"_regular_price\":\"',pm_rp.meta_value,'\",\"_price\":\"',pm_sp.meta_value,'\"}'), ',') + ']' variation_details"
                                 + "        from wp_posts p"
                                 + " inner join wp_term_relationships wp_tr on wp_tr.object_id = p.id"
                                 + " inner join wp_term_taxonomy wp_ttn on wp_ttn.term_taxonomy_id = wp_tr.term_taxonomy_id and wp_ttn.taxonomy = 'product_cat'"
@@ -209,7 +209,7 @@
                                 + " left outer join wp_postmeta pm_rp on pm_rp.post_id = coalesce(ps.id,p.id) and pm_rp.meta_key = '_regular_price'"
                                 + " left outer join wp_postmeta pm_sp on pm_sp.post_id = coalesce(ps.id,p.id) and pm_sp.meta_key = '_price'"
                                 + " where p.post_type = 'product' and p.post_status = 'publish' and coalesce(wp_tm.meta_value,'1') = 1"
-                                + " group by wp_t.term_id,p.id order by wp_t.term_order,wp_t.term_id;";
+                                + " group by wp_t.term_order,wp_t.term_id,p.id,wp_t.name,p.id,p.post_title order by wp_t.term_order,wp_t.term_id;";
                 DT = SQLHelper.ExecuteDataTable(strSQl);
             }
             catch (Exception ex)
@@ -1658,7 +1658,7 @@
                 if (!string.IsNullOrEmpty(searchid))
                 {
                     //strWhr += " and (p.id like '" + searchid + "%' "
-                    strWhr += " and concat(p.id,' ', pmf.first_name,' ',pmf.last_name,' ',p.post_status,' ', REGEXP_REPLACE(pmf.billing_phone, '[^0-9]+', '')) like '%" + searchid + "%' ";
+                    strWhr += " and concat(p.id,' ', pmf.first_name,' ',pmf.last_name,' ',p.post_status,' ', pmf.billing_phone) like '%" + searchid + "%' ";
                     //+ " OR os.num_items_sold='%" + searchid + "%' "
                     //+ " OR os.total_sales='%" + searchid + "%' "
                     //+ " OR os.customer_id='%" + searchid + "%' "
@@ -1679,31 +1679,14 @@
                 {
                     strWhr += " and pmf.customer_id= '" + CustomerID + "' ";
                 }
-
-                //string strSql = "SELECT p.id,os.num_items_sold,Cast(os.total_sales As DECIMAL(10, 2)) as total_sales, os.customer_id as customer_id,"
-                //            + " p.post_status status, DATE_FORMAT(p.post_date, '%M %d %Y') date_created,COALESCE(pmf.meta_value, '') FirstName,COALESCE(pml.meta_value, '') LastName,"
-                //            + " replace(replace(replace(replace(pmp.meta_value,'-', ''),' ',''),'(',''),')','') billing_phone,"
-                //            + " (SELECT sum(rpm.meta_value) FROM wp_posts rp JOIN wp_postmeta rpm ON rp.ID = rpm.post_id AND meta_key = '_order_total' WHERE rp.post_parent = p.ID AND rp.post_type = 'shop_order_refund') AS refund_total"
-                //            + " FROM wp_posts p inner join wp_wc_order_stats os on p.id = os.order_id"
-                //            + " left join wp_postmeta pmf on p.id = pmf.post_id and pmf.meta_key = '_billing_first_name'"
-                //            + " left join wp_postmeta pml on p.id = pml.post_id and pml.meta_key = '_billing_last_name'"
-                //            + " left join wp_postmeta pmp on p.id = pmp.post_id and pmp.meta_key = '_billing_phone'"
-                //            + " WHERE p.post_type = 'shop_order' " + strWhr
-                //            + " order by " + SortCol + " " + SortDir + " limit " + (pageno).ToString() + ", " + pagesize + "";
-
-                //strSql += "; SELECT sum(1) TotalRecord from wp_posts p"
-                //        + " left join wp_postmeta pmf on p.id = pmf.post_id and pmf.meta_key = '_billing_first_name'"
-                //        + " left join wp_postmeta pml on p.id = pml.post_id and pml.meta_key = '_billing_last_name'"
-                //        + " left join wp_postmeta pmp on p.id = pmp.post_id and pmp.meta_key = '_billing_phone'"
-                //        + " WHERE p.post_type = 'shop_order' " + strWhr.ToString();
-                string strSql = "SELECT p.id,p.post_status status, DATE_FORMAT(p.post_date, '%M %d %Y') date_created,os.num_items_sold,pmf.total_sales,pmf.customer_id,"
-                            + " pmf.first_name,pmf.last_name,pmf.billing_email,pmf.billing_phone,pmf.payment_method,pmf.payment_method_title,pmf.paypal_status,pmf.paypal_id,"
-                            + " (SELECT sum(rpm.meta_value) FROM wp_posts rp JOIN wp_postmeta rpm ON rp.ID = rpm.post_id AND meta_key = '_order_total' WHERE rp.post_parent = p.ID AND rp.post_type = 'shop_order_refund') AS refund_total"
+                string strSql = "SELECT p.id,p.post_status status, convert(varchar,p.post_date,101) date_created,os.num_items_sold,pmf.total_sales,pmf.customer_id,"
+                            + " pmf.first_name,pmf.last_name,pmf.billing_email,pmf.billing_phone,pmf.payment_method,pmf.payment_method_title,pmf.paypal_status,pmf.paypal_id,pmf.podium_status,pmf.podium_uid,"
+                            + " (SELECT sum(convert(float,rpm.meta_value)) FROM wp_posts rp JOIN wp_postmeta rpm ON rp.ID = rpm.post_id AND meta_key = '_order_total' WHERE rp.post_parent = p.ID AND rp.post_type = 'shop_order_refund') AS refund_total"
                             + " FROM wp_posts p inner join wp_wc_order_stats os on p.id = os.order_id"
                             + " inner join vw_Order_details pmf on p.id = pmf.post_id"
                             + " WHERE p.post_type = 'shop_order' and p.post_status != 'auto-draft' " + strWhr
-                            + " order by " + SortCol + " " + SortDir + " limit " + (pageno).ToString() + ", " + pagesize + "";
-                strSql += "; SELECT coalesce(sum(1),0) TotalRecord from wp_posts p inner join vw_Order_details pmf on p.id = pmf.post_id "
+                            + " order by " + SortCol + " " + SortDir + " OFFSET " + (pageno).ToString() + " ROWS FETCH NEXT " + pagesize + " ROWS ONLY;";
+                strSql += "SELECT coalesce(sum(1),0) TotalRecord from wp_posts p inner join vw_Order_details pmf on p.id = pmf.post_id "
                         + " WHERE p.post_type = 'shop_order' " + strWhr.ToString();
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
@@ -1876,11 +1859,11 @@
             DataTable dt = new DataTable();
             try
             {
-                string strSql = "SELECT 'Default' IsDefault,user_id customer_id,concat('{',group_concat(concat('\"_',meta_key,'\": \"',meta_value,'\"') separator ','),'}') as meta_data"
+                string strSql = "SELECT 'Default' IsDefault,user_id customer_id,concat('{',STRING_AGG(concat('\"_',meta_key,'\": \"',meta_value,'\"'),','),'}') as meta_data"
                                 + " FROM wp_usermeta WHERE user_id = '" + CustomerID + "' and (meta_key like 'billing_%' OR meta_key like 'shipping_%') and meta_key not like '%_method' group by user_id"
                                 + " UNION ALL"
                                 + " select distinct IsDefault, customer_id, meta_data from"
-                                + " (SELECT '' IsDefault, pmu.meta_value customer_id, concat('{', group_concat(concat('\"', pm.meta_key, '\": \"', pm.meta_value, '\"') ORDER BY pm.meta_key separator ','), '}') as meta_data"
+                                + " (SELECT '' IsDefault, pmu.meta_value customer_id, concat('{', STRING_AGG(concat('\"', pm.meta_key, '\": \"', pm.meta_value, '\"'),','), '}') as meta_data"
                                 + " FROM wp_posts po inner join wp_postmeta pmu on pmu.post_id = po.ID and pmu.meta_key = '_customer_user' and pmu.meta_value = '" + CustomerID + "'"
                                 + " inner join wp_postmeta pm on pm.post_id = pmu.post_id and (pm.meta_key like '_billing%' OR pm.meta_key like '_shipping_%') and pm.meta_key not like '%_method'"
                                 + " WHERE po.post_type = 'shop_order' and po.post_status != 'auto-draft' group by po.ID, pmu.meta_value) tt";

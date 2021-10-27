@@ -198,8 +198,8 @@
         // $("#txtCity").change(function () { setTimeout(function () { NewOrderNo(); }, 50); CustomerAddress(); return false; });
 
         $(document).on('change', "#txtCountry", function () {
-           // $("#txtAddress").removeAttr("disabled");
-           // $('#txtState').empty();
+            // $("#txtAddress").removeAttr("disabled");
+            // $('#txtState').empty();
         })
 
         $("#txtState").select2({
@@ -731,7 +731,7 @@
             else
                 $("#txtPostCode").val('');
             obj = place.address_components.filter(element => element.types[0] == 'administrative_area_level_1');
-            
+
             if (obj.length > 0)
                 $("#txtState").empty().append('<option value="' + obj[0].short_name + '" selected>' + obj[0].long_name + '</option>');
             else
@@ -754,4 +754,4 @@
 </script>
 <!--Google Place API -->
 @*<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBIgngCCIJ3D8_s3G7aIfvQckhsDtbAe4E&libraries=places&callback=initMap&channel=GMPSB_addressselection_v1_cABC" async defer></script>*@
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBIgngCCIJ3D8_s3G7aIfvQckhsDtbAe4E&libraries&callback=initMap&libraries=places&v=weekly" async defer></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxgkt6GqQuQK2Gb3PYFnicpFLmma-7i0A&libraries&callback=initMap&libraries=places&v=weekly" async defer></script>

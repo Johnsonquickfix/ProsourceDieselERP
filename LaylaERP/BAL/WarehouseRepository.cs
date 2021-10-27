@@ -388,7 +388,7 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@tran_type","PO"),
                     new MySqlParameter("@flag","R"),
                 };
-                SQLHelper.ExecuteScalar(strsql+strsql1, para);
+                SQLHelper.ExecuteScalar(strsql + strsql1, para);
                 //int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql+strsql1, para));
                 //return result;
             }
@@ -406,7 +406,7 @@ namespace LaylaERP.BAL
                 string strquery = "SELECT wsm.rowid as ref, post.post_title as product, DATE_FORMAT(wsm.datem, '%m-%d-%Y') as date,ww.ref as warehouse, wsm.inventorycode as invcode," +
                                    " wsm.label as label,wsm.value,concat('$', format(wsm.price, 2)) as price FROM wp_stock_mouvement wsm, wp_warehouse ww, wp_posts post where wsm.type_mouvement=2 and ww.rowid = wsm.fk_entrepot and post.id = wsm.fk_product and wsm.fk_entrepot = '" + model.fk_entrepot + "'";
 
-                
+
                 DataSet ds = SQLHelper.ExecuteDataSet(strquery);
                 dtr = ds.Tables[0];
             }
@@ -432,11 +432,11 @@ namespace LaylaERP.BAL
             { throw ex; }
             return dtr;
         }
-        
+
 
         public static void AddTransferStock(WarehouseModel model)
         {
-            
+
 
             int Timestamp1 = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
             try
@@ -468,7 +468,7 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@flag1","R"),
 
                 };
-                SQLHelper.ExecuteScalar(strsql1+ strsql2+ strsql3 + strsql4, para);
+                SQLHelper.ExecuteScalar(strsql1 + strsql2 + strsql3 + strsql4, para);
                 //int result=Convert.ToInt32(SQLHelper.ExecuteScalar(strsql1+strsql2, para));
                 //return result;
             }
@@ -504,15 +504,15 @@ namespace LaylaERP.BAL
                 //    "fk_product='"+model.fk_product+"', value='"+model.value+"', label='"+model.label+"', eatby='"+model.eatby+"', sellby='"+model.sellby+"', serial='"+model.serial+"', price='"+model.price+"'" +
                 //     " where rowid in(" + model.searchid + ");"
 
-                
+
 
                 string strsql = "update wp_stock_mouvement set " +
                     "fk_product=@fk_product, value=@value, label=@label, eatby=@eatby, sellby=@sellby, serial=@serial, price=@price" +
                      " where rowid in(" + model.searchid + ");";
                 string strsql1 = "update product_stock_register set " +
                                     "quantity=@value, product_id=@fk_product, tran_date=@eatby " +
-                                    " where tran_id = " + model.searchtransid + " and warehouse_id="+model.fk_entrepot+";";
-                
+                                    " where tran_id = " + model.searchtransid + " and warehouse_id=" + model.fk_entrepot + ";";
+
 
                 MySqlParameter[] para =
                {
@@ -542,7 +542,7 @@ namespace LaylaERP.BAL
                 //        //new MySqlParameter("@stock", model.stock),
 
                 //};
-                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql+ strsql1, para));
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql + strsql1, para));
                 return result;
             }
             catch (Exception Ex)
@@ -561,7 +561,7 @@ namespace LaylaERP.BAL
                      " where rowid in(" + model.searchtransferid + ");";
                 string strsql1 = "update wp_stock_mouvement set " +
                     "fk_product=@fk_product, value=-1*@value,fk_entrepot=@fk_entrepot, label=@label, eatby=@eatby, sellby=@sellby, serial=@serial, price=@price, inventorycode=@inventorycode" +
-                     " where fk_entrepot='"+model.fk_entrepot+ "' and tran_id='"+model.transfertranscationid+"';";
+                     " where fk_entrepot='" + model.fk_entrepot + "' and tran_id='" + model.transfertranscationid + "';";
                 string strsql2 = "update product_stock_register set " +
                                    "quantity=@value, product_id=@fk_product, tran_date=@eatby " +
                                    " where tran_id = " + model.transfertranscationid + " and warehouse_id=" + model.fk_entrepot + ";";
@@ -582,7 +582,7 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@serial", model.serial),
                     new MySqlParameter("@inventorycode",model.inventorycode),
             };
-                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql+ strsql1 + strsql2 + strsql3, para));
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql + strsql1 + strsql2 + strsql3, para));
                 return result;
             }
             catch (Exception Ex)
@@ -813,7 +813,7 @@ namespace LaylaERP.BAL
             DataSet DS = new DataSet();
             try
             {
-                DS = SQLHelper.ExecuteDataSet("select wr.ref,wr.rowid from product_warehouse pw inner join wp_warehouse wr on wr.rowid = pw.fk_warehouse where pw.fk_product='"+productid+ "' and wr.rowid not in('"+id+ "') and wr.is_system=0");
+                DS = SQLHelper.ExecuteDataSet("select wr.ref,wr.rowid from product_warehouse pw inner join wp_warehouse wr on wr.rowid = pw.fk_warehouse where pw.fk_product='" + productid + "' and wr.rowid not in('" + id + "') and wr.is_system=0");
             }
             catch (Exception ex)
             { throw ex; }
@@ -845,7 +845,7 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@tran_type","DM"),
                     new MySqlParameter("@flag","I"),
                 };
-                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql+strsql1, para));
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql + strsql1, para));
                 return result;
             }
             catch (Exception Ex)
@@ -890,10 +890,10 @@ namespace LaylaERP.BAL
 
         public static int UpdateDamagestock(WarehouseModel model)
         {
-            
+
             try
             {
-                
+
                 string strsql = "UPDATE wp_stock_mouvement set " +
                     "fk_product=@fk_product, value=@value, label=@label, eatby=@eatby, sellby=@sellby, serial=@serial, price=@price" +
                      " where rowid in(" + model.searchid + ");";
@@ -913,11 +913,117 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@eatby", model.eatby),
                     new MySqlParameter("@sellby", DateTime.UtcNow),
                     new MySqlParameter("@serial", model.serial),
-                   
+
 
             };
-               
+
                 int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql + strsql1, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+        public static int Addwarehousesinfo(WarehouseModel model)
+        {
+            try
+            {
+
+                string strsql = "INSERT into erp_warehousecontacts(warehouse_id, phone, address, address1, city, state, zip, country,note)" +
+                    " values(@warehouseid, @cor_phone, @cor_address, @cor_address1, @cor_city, @cor_state, @cor_zip, @cor_country, @note_public);SELECT LAST_INSERT_ID();";
+                MySqlParameter[] para =
+               {
+                    //additional info
+                    new MySqlParameter("@warehouseid",model.warehouse_id),
+                    new MySqlParameter("@cor_phone", model.cor_phone),
+                    new MySqlParameter("@cor_address", model.cor_address),
+                    new MySqlParameter("@cor_address1", model.cor_address1),
+                    new MySqlParameter("@cor_city", model.cor_city),
+                    new MySqlParameter("@cor_state", model.cor_state),
+                    new MySqlParameter("@cor_zip", model.cor_zip),
+                    new MySqlParameter("@cor_country", model.cor_country),
+                    new MySqlParameter("@note_public", model.note_public),
+            };
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+        public static DataTable WarehouseAddressInfoList(string id, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                string strWhr = string.Empty;
+
+                string strSql = "SELECT rowid as id, concat(address,',',' ',state,',',' ',country,' ',zip)as address, Replace(Replace(Replace(Replace(phone,')',''),'(',''),'-',''),' ','') as phone from erp_warehousecontacts where warehouse_id='" + id + "'";
+                if (!string.IsNullOrEmpty(searchid))
+                {
+                    strWhr += " and (address like '%" + searchid + "%' OR state like '%" + searchid + "%' OR country like '%" + searchid + "%' OR zip like '%" + searchid + "%' OR phone like '%" + searchid + "%') ";
+                }
+                if (userstatus != null)
+                {
+                    //strWhr += " and (is_active='" + userstatus + "') ";
+                }
+                strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
+
+                strSql += "; SELECT ceil(Count(rowid)/" + pagesize.ToString() + ") TotalPage,Count(rowid) TotalRecord FROM erp_warehousecontacts where warehouse_id='" + id + "' " + strWhr.ToString();
+
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dt = ds.Tables[0];
+                if (ds.Tables[1].Rows.Count > 0)
+                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static DataTable SelectAddressByID(SearchModel model)
+        {
+            DataTable dtr = new DataTable();
+            try
+            {
+                string strquery = "SELECT rowid, address, address1, city, state, phone, zip, country, note from erp_warehousecontacts where rowid='" + model.strValue1 + "'";
+
+
+                DataSet ds = SQLHelper.ExecuteDataSet(strquery);
+                dtr = ds.Tables[0];
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dtr;
+        }
+
+        public static int Editwarehousesinfo(WarehouseModel model)
+        {
+            try
+            {
+                string strsql = "UPDATE erp_warehousecontacts set " +
+                    "phone=@cor_phone, address=@cor_address," +
+                    "address1=@cor_address1, city=@cor_city, state=@cor_state, zip=@cor_zip, country=@cor_country, note=@note_public  where rowid in(" + model.address_id + ")";
+                MySqlParameter[] para =
+               {
+                    //additional info
+                    new MySqlParameter("@cor_phone", model.cor_phone),
+                    new MySqlParameter("@cor_address", model.cor_address),
+                    new MySqlParameter("@cor_address1", model.cor_address1),
+                    new MySqlParameter("@cor_city", model.cor_city),
+                    new MySqlParameter("@cor_state", model.cor_state),
+                    new MySqlParameter("@cor_zip", model.cor_zip),
+                    new MySqlParameter("@cor_country", model.cor_country),
+                    new MySqlParameter("@note_public", model.note_public),
+            };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
                 return result;
             }
             catch (Exception Ex)

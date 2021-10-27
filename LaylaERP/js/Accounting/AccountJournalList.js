@@ -1,5 +1,43 @@
-﻿function AccountJournalList() {
-    var urid = $("#ddlSearchStatus").val();
+﻿$(document).ready(function () {
+
+    $('#txtOrderDate').daterangepicker({
+        ranges: {
+            'Today': [moment(), moment()],
+            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+            'This Month': [moment().startOf('month'), moment().endOf('month')],
+            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        },
+        startDate: moment().subtract(1, 'month'), autoUpdateInput: true, alwaysShowCalendars: true,
+        locale: { format: 'MM/DD/YYYY', cancelLabel: 'Clear' }, opens: 'right', orientation: "left auto"
+    }, function (start, end, label) {
+        AccountJournalList(true);
+    });
+    getGrandTotal(true);
+    getVendor();
+    $(".select2").select2();
+    AccountJournalList(true);
+
+    $('#ddlVendor').change(function () {
+        AccountJournalList(true);
+        getGrandTotal(true);
+    });
+
+    $("#btnSearch").click(function () {
+        $("#ddlVendor").val("").trigger('change');
+        AccountJournalList(true);
+    })
+
+});
+
+function AccountJournalList(is_date) {
+    var urid = $("#ddlVendor").val();
+
+    let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
+    let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
+    let dfa = is_date ? "'" + sd + "' and '" + ed + "'" : '';
+
     var ID = $("#hfid").val();
     var table_EL = $('#JournalListdata').DataTable({
         columnDefs: [{ "orderable": true, "targets": 1 }, { 'visible': true, 'targets': [0] }], order: [[0,"desc"],[2, "desc"],[4, "asc"]],
@@ -49,6 +87,7 @@
         sAjaxSource: "/Accounting/AccountJournalList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
             aoData.push({ name: "strValue1", value: urid });
+            aoData.push({ name: "strValue2", value: dfa });
             var col = 'id';
             if (oSettings.aaSorting.length >= 0) {
                 var col = oSettings.aaSorting[0][0] == 0 ? "inv_num" : oSettings.aaSorting[0][0] == 1 ? "code_journal" : oSettings.aaSorting[0][0] == 2 ? "datecreation" : oSettings.aaSorting[0][0] == 3 ? "PO_SO_ref" : oSettings.aaSorting[0][0] == 4 ? "inv_complete" : oSettings.aaSorting[0][0] == 5 ? "name" : oSettings.aaSorting[0][0] == 6 ? "label_operation" : oSettings.aaSorting[0][0] == 7 ? "debit" : oSettings.aaSorting[0][0] == 8 ? "credit" : "id";
@@ -66,18 +105,24 @@
             { data: 'inv_num', title: 'Num Transcation', sWidth: "5%" },
             { data: 'code_journal', title: 'Journal', sWidth: "5%" },
             { data: 'datecreation', title: 'Date', sWidth: "10%" },
-            { data: 'PO_SO_ref', title: 'Accounting Doc', sWidth: "5%"},
+            {
+                data: 'PO_SO_ref', title: 'Accounting Doc', sWidth: "11%",
+                'render': function (inv_num, type, full, meta) {
+                    //return '<a href="NewReceiveOrder/' + full.id + '">' + id + '</a> <a href="#" onclick="getPurchaseOrderPrint(' + full.id + ', false);"><i class="fas fa-search-plus"></i></a>';
+                    return '' + inv_num + '<a href="#" onclick="getPurchaseOrderPrint(' + full.inv_num + ', false);"><i class="fas fa-search-plus"></i></a>';
+                }
+            },
             { data: 'inv_complete', title: 'Account Number', sWidth: "5%" },
             { data: 'name', title: 'Vendor Name', sWidth: "15%" },
             { data: 'label_operation', title: 'Operation Label', sWidth: "25%" },
-            { data: 'debit', title: 'Debit', sWidth: "5%", render: $.fn.dataTable.render.number('', '.', 2, '$')},
-            { data: 'credit', title: 'Credit', sWidth: "5%", render: $.fn.dataTable.render.number('', '.', 2, '$')},
+            { data: 'debit', title: 'Debit', sWidth: "5%", class: 'text-bold', render: $.fn.dataTable.render.number('', '.', 2, '$')},
+            { data: 'credit', title: 'Credit', sWidth: "5%", class: 'text-bold', render: $.fn.dataTable.render.number('', '.', 2, '$')},
         ],
     });
 }
 
 
-function getGrandTotal() {
+function getGrandTotalFull() {
         $.ajax({
             url: "/Accounting/GrandTotal",
             type: "GET",
@@ -88,11 +133,52 @@ function getGrandTotal() {
                 var d = JSON.parse(data);
                 if (d.length > 0) {
                     $("#txtdebit").text('$'+ d[0].debit);
-                    $("#txtcredit").text('$'+ d[0].credit);
+                    $("#txtcredit").text('$' + d[0].credit);
+                    $("#txtbalance").text('$' + d[0].balance)
                 }
             },
             error: function (msg) {
 
             }
         });
+}
+
+function getVendor() {
+    $.ajax({
+        url: "/Accounting/GetVendor",
+        type: "Get",
+        success: function (data) {
+            $('#ddlVendor').append('<option value="">Please Select Vendor</option>');
+            for (var i = 0; i < data.length; i++) {
+                $('#ddlVendor').append('<option value="' + data[i].Value + '">' + data[i].Text + '</option>');
+            }
+        }, async: false
+    });
+}
+
+
+function getGrandTotal(is_date) {
+    let urid = $("#ddlVendor").val();
+    let sd = $('#txtOrderDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
+    let ed = $('#txtOrderDate').data('daterangepicker').endDate.format('YYYY-MM-DD');
+    let dfa = is_date ? "'" + sd + "' and '" + ed + "'" : '';
+    let obj = { strValue1: dfa, strValue2: urid };
+    $.ajax({
+        url: "/Accounting/JournalDatewithVendoreTotal",
+        type: "GET",
+        contentType: "application/json; charset=utf-8",
+        dataType: 'JSON',
+        data: obj,
+        success: function (data) {
+            var d = JSON.parse(data);
+            if (d.length > 0) {
+                if (parseInt(d[0].debit).toFixed(2) > 0) {
+                    $("#txtdebit").text('$' + d[0].debit); $("#txtcredit").text('$' + d[0].credit); $("#txtbalance").text('$' + d[0].balance)
+                }
+            }
+        },
+        error: function (msg) {
+
+        }
+    });
 }

@@ -23,20 +23,10 @@ namespace LaylaERP.Controllers
         {
             //ThirdPartyModel model = new ThirdPartyModel();
             ViewBag.id = id;
-            DataTable dt = ThirdPartyRepository.TotalPurcheseOrderReceived(id);
-            DataTable dt1 = ThirdPartyRepository.TotalPurcheseOrder(id);
-            DataTable dt2 = ThirdPartyRepository.TotalInvoiceOrder(id);
+            DataTable dt = ThirdPartyRepository.SelectVendorCode(id);
             if (dt.Rows.Count > 0)
             {
-                ViewBag.purchaseorder_received = dt.Rows[0]["received"];
-            }
-            if (dt1.Rows.Count > 0)
-            {
-                ViewBag.purchaseorder = dt1.Rows[0]["PO"];
-            }
-            if (dt1.Rows.Count > 0)
-            {
-                ViewBag.invoiceorder = dt2.Rows[0]["invoice"];
+                ViewBag.vendor = dt.Rows[0]["code_vendor"];
             }
             return View();
         }
@@ -601,6 +591,18 @@ namespace LaylaERP.Controllers
             try
             {
                 DataTable dt = ThirdPartyRepository.BalanceList(vendorcode);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+
+        public JsonResult AmountsView(string vendorcode1)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = ThirdPartyRepository.AmountsView(vendorcode1);
                 JSONresult = JsonConvert.SerializeObject(dt);
             }
             catch { }

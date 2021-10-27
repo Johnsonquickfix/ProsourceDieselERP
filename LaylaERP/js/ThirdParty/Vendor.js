@@ -885,6 +885,7 @@ function GetVendorByID(id) {
                     $("#txtAliasName").val(d[0].AliasName);
                     $("#ddlvendortype").val(d[0].vendor_type).trigger("change");
                     $("#txtVendorCode").val(d[0].VendorCode);
+                    //$("#hfvendorcode").val(d[0].VendorCode);
                     $("#ddlStatus").val(d[0].status).trigger("change");
                     $("#txtAddress1").val(d[0].address);
                     $("#txtAddress2").val(d[0].address1);
@@ -1588,9 +1589,9 @@ function orderStatus() {
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Purchase Information~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-setTimeout(function () { VendorBookkipping(); }, 10000);
+setTimeout(function () { VendorBookkipping(); }, 2000);
 function VendorBookkipping() {
-    var vendor_code = $("#txtVendorCode").val();
+    var vendor_code = $("#hfvendorcode").val();
     console.log(vendor_code);
     var obj = { vendorcode: vendor_code }
     $.ajax({
@@ -1606,8 +1607,8 @@ function VendorBookkipping() {
                 scrollX: false,
                 data: JSON.parse(data),
                 "columns": [
-                    { data: 'credit', title: 'Credit', sWidth: "5%" },
-                    { data: 'debit', title: 'Debit', sWidth: "10%" },
+                    { data: 'credit', title: 'Credit', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
+                    { data: 'debit', title: 'Debit', sWidth: "10%", render: $.fn.dataTable.render.number('', '.', 2, '$') },
                 ],
                 "order": [[0, 'desc']],
             });
@@ -1619,8 +1620,35 @@ function VendorBookkipping() {
 
 }
 
+setTimeout(function () { CalculateAmount(); }, 2000);
+function CalculateAmount() {
+    var vendor_code = $("#hfvendorcode").val();
+    console.log(vendor_code);
+    var obj = { vendorcode1: vendor_code }
+    $.ajax({
+        url: '/ThirdParty/AmountsView',
+        method: 'post',
+        datatype: 'json',
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(obj),
+        processing: true,
+        success: function (data) {
+            console.log(data);
+            var d = JSON.parse(data);
 
+            $("#txtpurchaseorder").text('$'+ d[0].PurchaseOrder);
+            $("#txtpaidamount").text('$' + d[0].PaidAmount);
+            $("#txtoutstandingamount").text('$' + d[0].OutstandingAmount);
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            alert(xhr.responseText);
+        }
+    });
+
+}
+
+/*
 $('#btnNextTab12').click(function (e) {
     var link = $('#mytabs .active').next().children('a').attr('href');
     $('#mytabs a[href="' + link + '"]').tab('show');
-});
+}); */

@@ -70,6 +70,36 @@
             taxJarModel.freight_taxable = Taxes.FreightTaxable;
             return taxJarModel;
         }
+        public static TaxJarModel CreateTaxJarOrder(TaxJarModel taxJarModel)
+        {
+            var client = new TaxjarApi(CommanUtilities.Provider.GetCurrent().TaxjarAPIId);
+            ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+            var Taxes = client.CreateOrder(new
+            {
+                to_country = taxJarModel.to_country,
+                to_state = taxJarModel.to_state,
+                to_zip = taxJarModel.to_zip,
+                to_city = taxJarModel.to_city,
+                to_street = taxJarModel.to_street,
+                amount = taxJarModel.amount,
+                shipping = taxJarModel.shipping,
+                line_items = new[] {
+                    new {
+                      quantity = 1,
+                      product_identifier = "12-34243-0",
+                      description = "Heavy Widget",
+                      unit_price = 15,
+                      sales_tax = 0.95
+                    }
+                }
+            });
+            //taxJarModel.order_total_amount = Taxes.OrderTotalAmount;
+            //taxJarModel.taxable_amount = Taxes.TaxableAmount;
+            //taxJarModel.amount_to_collect = Taxes.AmountToCollect;
+            //taxJarModel.rate = Taxes.Rate;
+            //taxJarModel.freight_taxable = Taxes.FreightTaxable;
+            return taxJarModel;
+        }
     }
     public class TaxJarModel
     {

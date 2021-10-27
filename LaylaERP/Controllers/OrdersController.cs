@@ -381,6 +381,34 @@
             catch { status = false; JSONresult = "Something went wrong! Please try again."; }
             return Json(new { status = status, message = JSONresult }, 0);
         }
+        [HttpPost]
+        public JsonResult UpdateGitCardPaymentRefund(OrderModel model)
+        {
+            string JSONresult = string.Empty; bool status = false;
+            try
+            {
+                decimal NotesAmount = model.NetTotal;
+                int result = OrderRepository.UpdateRefundedGiftCard(model);
+                if (result > 0)
+                {
+                    status = true; JSONresult = "Order placed successfully.";
+                    OrderNotesModel note_model = new OrderNotesModel();
+                    note_model.post_ID = model.order_id;
+                    note_model.comment_content = string.Format("Gift card Issued for ${0:0.00}. The Gift Card will be send on your mail in 5 to 10 days.", NotesAmount);
+                    note_model.is_customer_note = string.Empty;
+                    note_model.is_customer_note = string.Empty;
+
+                    OperatorModel om = CommanUtilities.Provider.GetCurrent();
+                    note_model.comment_author = om.UserName; note_model.comment_author_email = om.EmailID;
+                    int res = OrderRepository.AddOrderNotes(note_model);
+                }
+                else
+                { status = false; JSONresult = "Something went wrong."; }
+                JSONresult = JsonConvert.SerializeObject(result);
+            }
+            catch (Exception ex) { JSONresult = ex.Message; }
+            return Json(new { status = status, message = JSONresult }, 0);
+        }
 
         [HttpPost]
         public JsonResult GetOrdersCount(SearchModel model)

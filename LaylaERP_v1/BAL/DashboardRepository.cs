@@ -25,7 +25,7 @@ namespace LaylaERP.BAL
                 CultureInfo us = new CultureInfo("en-US");
                 DateTime startDate = DateTime.Parse(from_date, us);
                 DateTime endDate = DateTime.Parse(to_date, us);
-                strQuery += " and DATE(p.post_date) >= '" + startDate.ToString("yyyy-MM-dd") + "' and DATE(post_date)<= '" + endDate.ToString("yyyy-MM-dd") + "'";
+                strQuery += " and convert(date,p.post_date) >= convert(date,'" + startDate.ToString("yyyy-MM-dd") + "') and convert(date,p.post_date) <= convert(date,'" + endDate.ToString("yyyy-MM-dd") + "')";
             }
             if (CommanUtilities.Provider.GetCurrent().UserType != "Administrator")
             {
@@ -39,14 +39,14 @@ namespace LaylaERP.BAL
         public static decimal Total_Sales(string from_date, string to_date)
         {
             decimal totalsales = 0;
-            string strQuery = "SELECT IFNULL(round(sum(rpm.meta_value),2),0) TotalSales from wp_posts p inner join wp_postmeta rpm ON p.id = rpm.post_id AND meta_key = '_order_total'" +
+            string strQuery = "SELECT coalesce(round(sum(convert(float,rpm.meta_value)),2),0) TotalSales from wp_posts p inner join wp_postmeta rpm ON p.id = rpm.post_id AND meta_key = '_order_total'" +
                  "left join  wp_postmeta pm ON p.id = pm.post_id AND pm.meta_key = 'employee_id' WHERE p.post_type = 'shop_order' and p.post_status in ('wc-completed','wc-pending','wc-processing','wc-on-hold','wc-refunded')";
             if (from_date != null)
             {
                 CultureInfo us = new CultureInfo("en-US");
                 DateTime startDate = DateTime.Parse(from_date, us);
                 DateTime endDate = DateTime.Parse(to_date, us);
-                strQuery += " and DATE(p.post_date) >= '" + startDate.ToString("yyyy-MM-dd") + "' and DATE(post_date)<= '" + endDate.ToString("yyyy-MM-dd") + "'";
+                strQuery += " and convert(date,p.post_date) >= convert(date,'" + startDate.ToString("yyyy-MM-dd") + "') and convert(date,p.post_date) <= convert(date,'" + endDate.ToString("yyyy-MM-dd") + "')";
             }
             if (CommanUtilities.Provider.GetCurrent().UserType != "Administrator")
             {
@@ -76,13 +76,13 @@ namespace LaylaERP.BAL
         {
             decimal totalordercompleted = 0;
 
-            string strQuery = "SELECT IFNULL(Count(distinct p.id),0) from wp_posts p left join wp_postmeta pm ON p.id = pm.post_id AND pm.meta_key = 'employee_id' WHERE p.post_type = 'shop_order' and p.post_status != 'auto-draft' and p.post_status='wc-completed'  ";
+            string strQuery = "SELECT coalesce(Count(distinct p.id),0) from wp_posts p left join wp_postmeta pm ON p.id = pm.post_id AND pm.meta_key = 'employee_id' WHERE p.post_type = 'shop_order' and p.post_status != 'auto-draft' and p.post_status='wc-completed'  ";
             if (from_date != null)
             {
                 CultureInfo us = new CultureInfo("en-US");
                 DateTime startDate = DateTime.Parse(from_date, us);
                 DateTime endDate = DateTime.Parse(to_date, us);
-                strQuery += " and DATE(p.post_date) >= '" + startDate.ToString("yyyy-MM-dd") + "' and DATE(post_date)<= '" + endDate.ToString("yyyy-MM-dd") + "'";
+                strQuery += " and convert(date,p.post_date) >= convert(date,'" + startDate.ToString("yyyy-MM-dd") + "') and convert(date,p.post_date) <= convert(date,'" + endDate.ToString("yyyy-MM-dd") + "')";
             }
             if (CommanUtilities.Provider.GetCurrent().UserType != "Administrator")
             {
@@ -100,7 +100,7 @@ namespace LaylaERP.BAL
             todate = DateTime.Parse(to_date);
 
             int totalorders = 0;
-            string strQuery = "SELECT IFNULL(Count(distinct p.id),0)  from wp_posts p WHERE p.post_type = 'shop_order' and DATE(p.post_date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and DATE(post_date)<= '" + todate.ToString("yyyy-MM-dd") + "' and p.post_status != 'auto-draft'";
+            string strQuery = "SELECT coalesce(Count(distinct p.id),0)  from wp_posts p WHERE p.post_type = 'shop_order' and DATE(p.post_date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and DATE(post_date)<= '" + todate.ToString("yyyy-MM-dd") + "' and p.post_status != 'auto-draft'";
             totalorders = Convert.ToInt32(SQLHelper.ExecuteScalar(strQuery).ToString());
             return totalorders;
         }
@@ -277,7 +277,7 @@ namespace LaylaERP.BAL
         }
 
         public static DataTable OrderListDashboard(string from_date, string to_date, string userstatus, string searchid, int pageno, int pagesize, string SortCol = "order_id", string SortDir = "DESC")
-         {
+        {
             DataTable dt = new DataTable();
             // totalrows = 0;
             try
@@ -302,7 +302,7 @@ namespace LaylaERP.BAL
 
                 if (!string.IsNullOrEmpty(from_date))
                 {
-                    strWhr += " and DATE(p.post_date) >= '" + fromdate.ToString("yyyy-MM-dd") + "' and DATE(post_date)<= '" + todate.ToString("yyyy-MM-dd") + "' ";
+                    strWhr += " and convert(date,p.post_date) >= convert(date,'" + fromdate.ToString("yyyy-MM-dd") + "') and convert(date,p.post_date) <= convert(date,'" + todate.ToString("yyyy-MM-dd") + "') ";
                 }
                 if (CommanUtilities.Provider.GetCurrent().UserType != "Administrator")
                 {
@@ -311,19 +311,19 @@ namespace LaylaERP.BAL
                 }
 
                 string strSql = "SELECT  p.id order_id, p.id as chkorder,os.num_items_sold,Cast(os.total_sales As DECIMAL(10, 2)) as total_sales, os.customer_id as customer_id,"
-                            + " (case when p.post_status = 'wc-pendingpodiuminv' then 'Pending Podium Invoice'"
-                            + " when p.post_status = 'wc-processing' then 'Processing'"
-                            + " when p.post_status = 'wc-pending' then 'Pending payment'"
-                            + " when p.post_status = 'wc-on-hold' then 'On Hold'"
-                            + " when p.post_status = 'wc-completed' then 'Completed'"
-                            + " when p.post_status = 'wc-cancelled' then 'Cancelled'"
-                            + " when p.post_status = 'wc-refunded' then 'Refunded'"
-                            + " when p.post_status = 'wc-failed' then 'Failed'"
-                            + " when p.post_status = 'wc-cancelnopay' then 'Cancelled - No Payment'"
-                            + " when p.post_status = 'wc-podium' then 'Order via Podium'"
-                            + " when p.post_status = 'draft' then 'Draft'"
+                            + " (case p.post_status when 'wc-pendingpodiuminv' then 'Pending Podium Invoice'"
+                            + " when 'wc-processing' then 'Processing'"
+                            + " when 'wc-pending' then 'Pending payment'"
+                            + " when 'wc-on-hold' then 'On Hold'"
+                            + " when 'wc-completed' then 'Completed'"
+                            + " when 'wc-cancelled' then 'Cancelled'"
+                            + " when 'wc-refunded' then 'Refunded'"
+                            + " when 'wc-failed' then 'Failed'"
+                            + " when 'wc-cancelnopay' then 'Cancelled - No Payment'"
+                            + " when 'wc-podium' then 'Order via Podium'"
+                            + " when 'draft' then 'Draft'"
                             + " else '-' end) as status,"
-                            + " DATE_FORMAT(p.post_date, '%M %d %Y') date_created,CONCAT(pmf.meta_value, ' ', COALESCE(pml.meta_value, '')) FirstName,COALESCE(pml.meta_value, '') LastName,"
+                            + " convert(varchar,p.post_date,101) date_created,CONCAT(pmf.meta_value, ' ', COALESCE(pml.meta_value, '')) FirstName,COALESCE(pml.meta_value, '') LastName,"
                             + " replace(replace(replace(replace(pmp.meta_value,'-', ''),' ',''),'(',''),')','') billing_phone"
                             + " FROM wp_posts p inner join wp_wc_order_stats os on p.id = os.order_id"
                             + " left join wp_postmeta pmf on p.id = pmf.post_id and pmf.meta_key = '_billing_first_name'"
@@ -454,22 +454,22 @@ namespace LaylaERP.BAL
             {
                 DateTime fromdate = DateTime.Parse(from_date, us);
                 DateTime todate = DateTime.Parse(to_date, us);
-                datebetween = " and DATE(p.post_date) >= '"+ fromdate.ToString("yyyy-MM-dd") + "' and DATE(post_date)<= '"+ todate.ToString("yyyy-MM-dd") + "'";
+                datebetween = " and convert(date,p.post_date) >= convert(date,'" + fromdate.ToString("yyyy-MM-dd") + "') and convert(date,post_date) <= convert(date,'" + todate.ToString("yyyy-MM-dd") + "')";
             }
             else
             {
-                datebetween = "and date(p.post_date) >= Date_add(Now(), interval - 20 day)";
+                datebetween = " and convert(date,p.post_date) >= convert(date,dateadd(DAY,-20,getdate()))";
             }
             if (CommanUtilities.Provider.GetCurrent().UserType != "Administrator")
             {
                 long user = CommanUtilities.Provider.GetCurrent().UserID;
                 strWhr = " and pm_uc.meta_value = '" + user + "'";
             }
-            string query = "select date_format(p.post_date,'%b %d') as Sales_date, pm_uc.meta_value as Employee, sum(coalesce(pm_st.meta_value,0)) as Total";
-            query += " from wp_posts p left outer join wp_postmeta pm_uc on pm_uc.post_id = p.id and pm_uc.meta_key = 'employee_id' " +
-                "left outer join wp_postmeta pm_st on pm_st.post_id = p.id and pm_st.meta_key = '_order_total' where date(p.post_date) <= NOW() " +
-                ""+ datebetween.ToString()+ " and pm_st.meta_value > 0 " +
-                " and p.post_type = 'shop_order' and p.post_status in ('wc-completed','wc-pending','wc-processing','wc-on-hold','wc-refunded', 'wc-pendingpodiuminv') " + strWhr.ToString() + " group by date(p.post_date)";
+            string query = "select convert(varchar(6),p.post_date,107) as Sales_date, pm_uc.meta_value as Employee, sum(convert(float,pm_st.meta_value)) as Total"
+                + " from wp_posts p left outer join wp_postmeta pm_uc on pm_uc.post_id = p.id and pm_uc.meta_key = 'employee_id' "
+                + " left outer join wp_postmeta pm_st on pm_st.post_id = p.id and pm_st.meta_key = '_order_total'"
+                + " where convert(date,p.post_date) <= convert(date,getdate()) " + datebetween.ToString() //+ " and pm_st.meta_value > 0 "
+                +" and p.post_type = 'shop_order' and p.post_status in ('wc-completed','wc-pending','wc-processing','wc-on-hold','wc-refunded', 'wc-pendingpodiuminv') " + strWhr.ToString() + " group by convert(varchar(6),p.post_date,107),pm_uc.meta_value";
             string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString;
             chartData.Add(new object[]
                         {

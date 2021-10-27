@@ -884,6 +884,7 @@ function getItemList(pid, vid, Qty) {
     $("#loader").show();
     let option = { strValue1: pid, strValue2: vid, strValue3: $('#ddlshipcountry').val(), strValue4: $('#ddlshipstate').val() };
     let tax_rate = parseFloat($('#hfTaxRate').val()) || 0.00;
+    let monthlySaleCoupon = ["sales20off"];
     ajaxFunction('/Orders/GetProductInfo', option, beforeSendFun, function (result) {
         let itemsDetailsxml = [], auto_code = [];
         $.each(result, function (key, pr) {
@@ -955,7 +956,7 @@ function bindItemListDataTable(data) {
         layoutHtml += '<tbody id="order_line_items"></tbody><tbody id="order_state_recycling_fee_line_items"></tbody><tbody id="order_fee_line_items"></tbody><tbody id="order_refunds"></tbody>';
         layoutHtml += '</table>';
         $('#divAddItemFinal').empty().html(layoutHtml);
-    }
+    }    
     calculateDiscountAcount();
     //auto Coupon add
     ApplyAutoCoupon();
@@ -1604,7 +1605,7 @@ function deleteAllCoupons(coupon_type) {
         //});
     }
     else if (coupon_type == 'friend_auto') {
-        $('#li_118').remove(); $('#li_611172').remove(); $("#billCoupon").find("[data-type='auto_coupon']").remove(); 
+        $('#li_118').remove(); $('#li_611172').remove(); $("#billCoupon").find("[data-type='auto_coupon']").remove();
     }
     else if (coupon_type != '') {
         swal({ title: "Are you sure?", text: 'Would you like to Remove this Coupon?', type: "question", showCancelButton: true })
@@ -1701,6 +1702,7 @@ function calculateDiscountAcount() {
     });
     $("#stateRecyclingFeeTotal").text(zStateRecyclingAmt.toFixed(2));
     $('#order_state_recycling_fee_line_items').find(".TotalAmount").text(zStateRecyclingAmt.toFixed(2));
+    let is_sales = $("#billCoupon").find("[data-coupon='sales20off']").length;
     //Calculate discount
     $('#billCoupon li.items').each(function (index, li) {
         let cou_amt = 0.00, cou = $(li).data('coupon').toString().toLowerCase();
@@ -1723,11 +1725,13 @@ function calculateDiscountAcount() {
                 zSalePrice = parseFloat($(row).find(".TotalAmount").data("salerate")) || 0.00;
                 zGrossAmount = zRegPrice * zQty;
                 $(row).find(".TotalAmount").data("amount", zGrossAmount.toFixed(2)); $(row).find(".TotalAmount").text(zGrossAmount.toFixed(2));
-
+                console.log(is_sales);
                 ////Coupun Type 'diff' and DiscType not equal '2x_percent' (CouponAmt = RegPrice - SalePrice)
-                if (zType == 'diff') {
+                if (zType == 'diff' && is_sales == 0) {
                     if (zDiscType != '2x_percent') zCouponAmt = (zRegPrice - zSalePrice) > 0 ? (zRegPrice - zSalePrice) : 0.00;
                 }
+                else if (zType == 'diff' && is_sales > 0) zCouponAmt = 0.00;
+
                 //else { zCouponAmt = 0.00; }
                 let cou_details = Coupon_get_discount_amount((vid > 0 ? vid : pid), pid, cou, zCouponAmt, zQty, zRegPrice, zSalePrice);
 

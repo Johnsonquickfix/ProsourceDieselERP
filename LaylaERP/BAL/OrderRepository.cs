@@ -972,6 +972,116 @@
             catch { }
             return result;
         }
+        public static int UpdateRefundedGiftCard(OrderModel model)
+        {
+            int result = 0;
+            try
+            {
+                long order_item_id = 0; string order_item_name = ""; string order_item_type = "";
+                string Userid = CommanUtilities.Provider.GetCurrent().UserID.ToString();
+                DataTable dt = OrderRepository.GiftCardDetails(model.order_id);
+                StringBuilder strSql = new StringBuilder();
+                foreach (DataRow dr in dt.Rows)
+                {
+                    order_item_id = Convert.ToInt64(dr["order_item_id"]);
+                    order_item_name = dr["order_item_name"].ToString();
+                    order_item_type = dr["order_item_type"].ToString();
+                    DataTable dtMeta = OrderRepository.GiftCardMetaItem(order_item_id);
+                    if (dtMeta.Rows.Count > 0)
+                    {
+                        int metaAmount = Convert.ToInt32(dtMeta.Rows[0]["meta_value"]);
+                        int metaID = Convert.ToInt32(dtMeta.Rows[0]["meta_id"]);
+                        decimal RefundAmount = 0;
+                        if (model.NetTotal > metaAmount && metaAmount > 0 && model.NetTotal > 0)
+                        {
+                            RefundAmount = metaAmount;
+
+                            strSql.Append(string.Format("Update wp_woocommerce_order_itemmeta set meta_value=meta_value-{0} where meta_id={1}; ", RefundAmount, metaID));
+                            strSql.Append(string.Format("Update wp_woocommerce_gc_cards set  is_active='on',remaining=remaining + {0} where order_item_id={1};", RefundAmount, order_item_id));
+                            strSql.Append(string.Format("Insert into wp_woocommerce_gc_activity(type,user_id,user_email,object_id,gc_id,gc_code,amount,date,note) " +
+                                "Select 'refunded', {1}, user_email, object_id, gc_id, gc_code, {2}, UNIX_TIMESTAMP(now()), note from wp_woocommerce_gc_activity where object_id = {0} and type = 'used'; ", order_item_id, Userid, RefundAmount));
+
+                            SendGiftCardMailInvoice(order_item_id, RefundAmount);
+                            model.NetTotal = model.NetTotal - metaAmount;
+                        }
+                        else if (model.NetTotal > 0 && metaAmount > 0)
+                        {
+                            strSql.Append(string.Format("Update wp_woocommerce_order_itemmeta set meta_value=meta_value-{0} where meta_id={1}; ", model.NetTotal, metaID));
+                            strSql.Append(string.Format("Update wp_woocommerce_gc_cards set is_active='on', remaining=remaining + {0} where order_item_id={1};", model.NetTotal, order_item_id));
+                            strSql.Append(string.Format("Insert into wp_woocommerce_gc_activity(type,user_id,user_email,object_id,gc_id,gc_code,amount,date,note) " +
+                               "Select 'refunded', {1}, user_email, object_id, gc_id, gc_code, {2}, UNIX_TIMESTAMP(now()), note from wp_woocommerce_gc_activity where object_id = {0} and type = 'used'; ", order_item_id, Userid, model.NetTotal));
+
+                            SendGiftCardMailInvoice(order_item_id, model.NetTotal);
+                            model.NetTotal = model.NetTotal - model.NetTotal;
+                        }
+                        else { strSql.Append(""); };
+                    }
+                }
+                result = SQLHelper.ExecuteNonQuery(strSql.ToString());
+            }
+            catch (Exception Ex) { throw Ex; }
+            return result;
+        }
+        public static DataTable GiftCardMetaItem(long OrderItemID)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                MySqlParameter[] parameters =
+                {
+                    new MySqlParameter("@OrderItemID", OrderItemID)
+                };
+                string strSQl = "Select * from wp_woocommerce_order_itemmeta where order_item_id=@OrderItemID and meta_key='amount';";
+                dt = SQLHelper.ExecuteDataTable(strSQl, parameters);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dt;
+        }
+        public static DataTable SendGiftCardMailInvoice(long order_item_id, decimal NetTotal)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                MySqlParameter[] parameters =
+                {
+                    new MySqlParameter("@order_item_id", order_item_id)
+                };
+                string strSQl = "Select * from wp_woocommerce_gc_cards where order_item_id=@order_item_id;";
+                dt = SQLHelper.ExecuteDataTable(strSQl, parameters);
+                if (dt.Rows.Count > 0)
+                {
+                    GiftCardModel model = new GiftCardModel();
+                    model.amount = NetTotal;
+                    model.code = dt.Rows[0]["code"].ToString();
+                    model.sender = dt.Rows[0]["sender"].ToString();
+                    model.order_id = Convert.ToInt64(dt.Rows[0]["order_id"]);
+                    String renderedHTML = Controllers.EmailNotificationsController.RenderViewToString("EmailNotifications", "Giftcard", model);
+                    SendEmail.SendEmails(dt.Rows[0]["recipient"].ToString(), "You have received a $" + NetTotal + " Gift Card from " + model.sender + "", renderedHTML);
+                }
+
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dt;
+        }
+        public static DataTable GiftCardDetails(long OrderID)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                MySqlParameter[] parameters =
+                {
+                    new MySqlParameter("@order_id", OrderID)
+                };
+                string strSQl = "Select order_item_id,order_item_name,order_item_type,order_id from wp_woocommerce_order_items where order_id=@order_id and order_item_type='gift_card'";
+                dt = SQLHelper.ExecuteDataTable(strSQl, parameters);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dt;
+        }
+
 
         public static long AddShopOrderEdit(long parent_id)
         {
@@ -1253,8 +1363,6 @@
             return result;
         }
 
-
-
         public int ChangeOrderStatus(OrderPostStatusModel model, string ID)
         {
             try
@@ -1315,6 +1423,8 @@
                             + " max(case meta_key when '_shipping_postcode' then meta_value else '' end) s_postcode,max(case meta_key when '_shipping_city' then meta_value else '' end) s_city,"
                             + " max(case meta_key when '_shipping_country' then meta_value else '' end) s_country,max(case meta_key when '_shipping_state' then meta_value else '' end) s_state,"
                             + " max(case meta_key when '_paypal_id' then meta_value else '' end) paypal_id,max(case meta_key when 'taskuidforsms' then meta_value else '' end) podium_id,max(case meta_key when '_podium_payment_uid' then meta_value else '' end) podium_payment_uid,"
+                            + "(select distinct order_item_type FROM wp_woocommerce_order_items WHERE order_id = @order_id and order_item_type='gift_card') as IsGift," 
+                            + "(select sum(meta_value) FROM wp_woocommerce_order_itemmeta where  meta_key='amount' and order_item_id in (select order_item_id FROM wp_woocommerce_order_items WHERE order_id = @order_id and order_item_type = 'gift_card')) as giftCardAmount,"
                             + " (SELECT count(split_id) FROM split_record WHERE main_order_id=os.id) is_shiped," + strWhr
                             + " from wp_posts os inner join wp_postmeta pm on pm.post_id = os.id"
                             + " left outer join wp_users u on u.id = meta_value and meta_key='_customer_user'"

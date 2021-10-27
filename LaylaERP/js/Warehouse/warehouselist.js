@@ -17,7 +17,6 @@ function WarehouseGrid() {
                     "columns": [
                         { data: 'rowid', title: 'ID', sWidth: "5%" },
                         { data: 'ref', title: 'Ref', sWidth: "10%" },
-                        //{ data: 'description', title: 'Description', sWidth: "15%" },
                         { data: 'lieu', title: 'Short Name Location', sWidth: "20%" },
                         { data: 'address', title: 'Address', sWidth: "15%" },
                         {
@@ -31,7 +30,7 @@ function WarehouseGrid() {
                             }
                         },
                         { data: 'status', title: 'Status', sWidth: "10%" },
-                        { data:'warehouse_type', title:'Type', sWidth:"10%"},
+                        //{ data:'warehouse_type', title:'Type', sWidth:"10%"},
                         {
                             'data': 'rowid', sWidth: "10%",
                             'render': function (rowid, type, full, meta) {

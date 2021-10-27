@@ -607,7 +607,8 @@ function GiftCardPaymentRefunds() {
             $.post('/Orders/UpdateGitCardPaymentRefund', option).then(response => {
                 console.log('Gift Card ', response);
                 if (response.status) {
-                    swal('Alert!', 'Order placed successfully.', "success"); getOrderNotesList(oid); getOrderItemList(oid);
+                    swal('Alert!', 'Refund Amount Added in gift card successfully.', "success");
+                    getOrderNotesList(oid); getOrderItemList(oid);
                 }
             }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', err, 'error'); }).always(function () { swal.hideLoading(); });
         }

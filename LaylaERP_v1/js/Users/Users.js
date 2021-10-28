@@ -140,7 +140,7 @@ function Datagrid(role_type, type) {
         destroy: true,
         bAutoWidth: false,
         "ajax": {
-            "url": '/Users/ShowDataUsersDetails',
+            "url": '/Users/GetData',
             "type": 'GET',
             "dataType": 'json',
            // data: { rolepass: role_type.trim() },

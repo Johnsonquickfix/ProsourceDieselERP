@@ -23,115 +23,28 @@ namespace LaylaERP.BAL
         //string result = string.Empty;
         public static void ShowUsersDetails(string rolee)
         {
-
             try
             {
                 if (rolee == null || rolee == "")
                 {
                     rolee = "%";
                 }
+                SqlParameter[] parameters =
+                 {
+                    new SqlParameter("@rolee", rolee)
+                };
                 userslist.Clear();
-                DataSet ds1 = new DataSet();
-                //string sqlquery = "select ID, user_login, user_status, if(user_status=0,'Active','InActive') as status,user_email,user_pass,"
-                //            + " CONCAT((case when um.meta_value like '%administrator%' then 'Administrator,' else '' end),(case when um.meta_value like '%accounting%' then 'Accounting,' else '' end),"
-                //            + " (case when um.meta_value like '%author%' then 'Author,' else '' end),(case when um.meta_value like '%modsquad%' then 'Mod Squad,' else '' end),"
-                //            + " (case when um.meta_value like '%shop_manager%' then 'Shop Manager,' else '' end),(case when um.meta_value like '%subscriber%' then 'Subscriber,' else '' end),"
-                //            + " (case when um.meta_value like '%supplychainmanager%' then 'Supply Chain Manager,' else '' end),(case when um.meta_value like '%wpseo_editor%' then 'SEO Editor,' else '' end),"
-                //            + " (case when um.meta_value like '%editor%' then 'Editor,' else '' end),(case when um.meta_value like '%seo_manager%' then 'SEO Manager,' else '' end),"
-                //            + " (case when um.meta_value like '%contributor%' then 'SEO Contributor,' else '' end)) meta_value,"
-                //            + " umph.meta_value Phone,"
-                //            + " CONCAT(umadd.meta_value, ' ',COALESCE(umadd2.meta_value,''), ' ' ,umacity.meta_value, ' ' , umastate.meta_value, ' ',umapostalcode.meta_value )  address"
-                //            + " from wp_users u"
-                //            + " inner join wp_usermeta um on um.user_id = u.id and um.meta_key = 'wp_capabilities' and meta_value NOT LIKE '%customer%'"
-                //            + " LEFT OUTER JOIN wp_usermeta umph on umph.meta_key='billing_phone' And umph.user_id = u.ID"
-                //            + " LEFT OUTER JOIN wp_usermeta umadd on umadd.meta_key='billing_address_1' And umadd.user_id = u.ID"
-                //            + " LEFT OUTER JOIN wp_usermeta umadd2 on umadd2.meta_key='billing_address_2' And umadd2.user_id = u.ID"
-                //            + " LEFT OUTER JOIN wp_usermeta umacity on umacity.meta_key='billing_city' And umacity.user_id = u.ID"
-                //            + " LEFT OUTER JOIN wp_usermeta umastate on umastate.meta_key='billing_state' And umastate.user_id = u.ID"
-                //            + " LEFT OUTER JOIN wp_usermeta umapostalcode on umapostalcode.meta_key='billing_postcode' And umapostalcode.user_id = u.ID"
-                //            + " WHERE um.meta_value like '%" + rolee + "%'  ORDER BY ID ASC";
-
-                string sqlquery = "select ID, user_login, user_status, if (user_status = 0,'Active','InActive') as status,user_email,user_pass,"
-                                  + "um.meta_value, umph.meta_value Phone, CONCAT(umadd.meta_value, ' ', COALESCE(umadd2.meta_value, ''), ' ', umacity.meta_value, ' ', umastate.meta_value, ' ', umapostalcode.meta_value )  address"
-                                  + " from wp_users u inner join wp_usermeta um on um.user_id = u.id and um.meta_key = 'wp_capabilities' and meta_value NOT LIKE '%customer%' and meta_value not like '%a:2%' and meta_value not like '%a:5%' and meta_value not like '%a:0%' and meta_value not like '%a:8%'"
-                                  + " LEFT OUTER JOIN wp_usermeta umph on umph.meta_key = 'billing_phone' And umph.user_id = u.ID"
-                                  + " LEFT OUTER JOIN wp_usermeta umadd on umadd.meta_key = 'billing_address_1' And umadd.user_id = u.ID"
-                                  + " LEFT OUTER JOIN wp_usermeta umadd2 on umadd2.meta_key = 'billing_address_2' And umadd2.user_id = u.ID"
-                                  + " LEFT OUTER JOIN wp_usermeta umacity on umacity.meta_key = 'billing_city' And umacity.user_id = u.ID"
-                                  + " LEFT OUTER JOIN wp_usermeta umastate on umastate.meta_key = 'billing_state' And umastate.user_id = u.ID"
-                                  + " LEFT OUTER JOIN wp_usermeta umapostalcode on umapostalcode.meta_key = 'billing_postcode' And umapostalcode.user_id = u.ID WHERE um.meta_value like '%" + rolee + "%'  ORDER BY ID ASC";
-
-                ds1 = DAL.SQLHelper.ExecuteDataSet(sqlquery);
+                DataSet ds1 = new DataSet();               
+                ds1 = DAL.SQLHelper.ExecuteDataSet("wp_userslist", parameters);
                 string result = string.Empty;
-
                 for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
                 {
-                    clsUserDetails uobj = new clsUserDetails();
-                    //Code for role
-
-                    //if (!string.IsNullOrEmpty(ds1.Tables[0].Rows[i]["meta_value"].ToString()) && ds1.Tables[0].Rows[i]["meta_value"].ToString().Length > 5 && ds1.Tables[0].Rows[i]["meta_value"].ToString().Substring(0, 2) == "a:")
-                    //{
-
-                    //    if (ds1.Tables[0].Rows[i]["meta_value"].ToString().Trim() == "a:0:{}")
-                    //        ds1.Tables[0].Rows[i]["meta_value"] = "Unknown";
-                    //    //result = ds1.Tables[0].Rows[i]["meta_value"].ToString();
-
-                    //    //else
-                    //    //    ds1.Tables[0].Rows[i]["meta_value"] = User_Role_Name(ds1.Tables[0].Rows[i]["meta_value"].ToString());
-
-                    //}
-                    //else
-                    //{
-                    //    ds1.Tables[0].Rows[i]["meta_value"] = ds1.Tables[0].Rows[i]["meta_value"];
-                    //}
-
+                    clsUserDetails uobj = new clsUserDetails();                   
                     uobj.ID = Convert.ToInt32(ds1.Tables[0].Rows[i]["ID"].ToString());
                     uobj.user_login = ds1.Tables[0].Rows[i]["user_login"].ToString();
                     result = ds1.Tables[0].Rows[i]["meta_value"].ToString().TrimEnd(',');
-                    uobj.my = ds1.Tables[0].Rows[i]["meta_value"].ToString();
-                    //if (result == "Mod_Squad")
-                    //{
-                    //    result = "Mod Squad";
-                    //}
-                    //else if (result == "wpseo_editor")
-                    //{
-                    //    result = "SEO Editor";
-                    //}
-                    //else if (result == "seo_manager")
-                    //{
-                    //    result = "SEO Manager";
-                    //}
-                    //else if (result == "Shop_Manager")
-                    //{
-                    //    result = "Shop Manager";
-                    //}
-                    //else if (result == "Supply_Chain_Manager")
-                    //{
-                    //    result = "Supply Chain Manager";
-                    //}
-                    //else if (result == "administrator")
-                    //{
-                    //    result = "Administrator";
-                    //}
-                    //else if (result == "author")
-                    //{
-                    //    result = "Author";
-                    //}
-                    //else if (result == "editor")
-                    //{
-                    //    result = "Editor";
-                    //}
-                    //else if (result == "")
-                    //{
-                    //    result = "No Role Assign.";
-                    //}
-                    //else
-                    //{
-                    //    uobj.my = result;
-                    //}
-
+                    uobj.my = ds1.Tables[0].Rows[i]["meta_value"].ToString();                    
                     uobj.user_email = ds1.Tables[0].Rows[i]["user_email"].ToString();
-
                     if ((ds1.Tables[0].Rows[i]["user_status"].ToString() == "0"))
                     { uobj.user_status = "Active"; }
                     else { uobj.user_status = "InActive"; }
@@ -146,7 +59,6 @@ namespace LaylaERP.BAL
             {
 
             }
-
 
         }
 
@@ -168,7 +80,7 @@ namespace LaylaERP.BAL
                                   + " from wp_users u"
                                   + " inner join wp_usermeta um on um.user_id = u.id "
                                   + " where u.id in (select w_um.user_id from  wp_usermeta w_um where w_um.meta_key = 'wp_capabilities' and w_um.meta_value NOT LIKE '%customer%' and meta_value not like '%a:2%' and w_um.meta_value not like '%a:5%' and w_um.meta_value not like '%a:0%' "
-                                  + " and w_um.meta_value not like '%a:8%') group by id ORDER BY id ASC";
+                                  + " and w_um.meta_value not like '%a:8%') group by id,user_login,user_status,user_email,user_pass ORDER BY id ASC";
                 if (!string.IsNullOrEmpty(rolee))
                 {
                     sqlquery += " and um.meta_value like '%" + rolee + "%' ";

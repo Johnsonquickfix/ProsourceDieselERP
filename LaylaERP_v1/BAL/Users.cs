@@ -72,7 +72,9 @@
             {
                 //string strquery = "select COALESCE(meta_value) user_value, CONCAT(COALESCE(meta_value, ''), '(', count(meta_value), ')') user_type from wp_users as ur inner join wp_usermeta um on ur.id = um.user_id and um.meta_key = 'wp_capabilities' and meta_value NOT like '%customer%' and meta_value not like '%a:1%' and meta_value not like '%a:2%' and meta_value not like '%a:5%' and meta_value not like '%a:0%' and meta_value not like '%a:8%'  and meta_value  not like '%,%' GROUP BY meta_value";
                 //string strquery = "select User_Type,User_Value,(select count(umc.user_id) from wp_usermeta umc where umc.meta_key = 'wp_capabilities' and umc.meta_value not like '%a:2%' and umc.meta_value not like '%a:5%' and umc.meta_value not like '%a:0%' and umc.meta_value not like '%a:8%' and umc.meta_value like CONCAT('%', User_Value, '%')) cnt from wp_user_classification as ur order BY ur.User_Type #inner join wp_usermeta um on ur.id = um.user_id and um.meta_key = 'wp_capabilities' and meta_value NOT like '%customer%' and meta_value not like '%a:2%' and meta_value not like '%a:5%' and meta_value not like '%a:0%' and meta_value not like '%a:8%' and meta_value not like '%,%' order BY ur.User_Type";
-                string strquery = "select User_Type,User_Value,(select count(umc.user_id) from wp_usermeta umc where umc.meta_key = 'wp_capabilities' and umc.meta_value like CONCAT('%', User_Value, '%')) cnt from wp_user_classification as ur order BY ur.User_Type #inner join wp_usermeta um on ur.id = um.user_id and um.meta_key = 'wp_capabilities' and meta_value NOT like '%customer%' and meta_value not like '%,%' order BY ur.User_Type";
+                // string strquery = "select User_Type,User_Value,(select count(umc.user_id) from wp_usermeta umc where umc.meta_key = 'wp_capabilities' and umc.meta_value like CONCAT('%', User_Value, '%')) cnt from wp_user_classification as ur order BY ur.User_Type #inner join wp_usermeta um on ur.id = um.user_id and um.meta_key = 'wp_capabilities' and meta_value NOT like '%customer%' and meta_value not like '%,%' order BY ur.User_Type";
+                string strquery = "select User_Type,User_Value,count(umc.user_id) cnt from wp_user_classification as ur left outer join wp_usermeta umc on umc.meta_key = 'wp_capabilities' and umc.meta_value NOT LIKE '%customer%' and meta_value not like '%a:2%' and umc.meta_value not like '%a:5%' and umc.meta_value not like '%a:0%'  and umc.meta_value not like '%a:8%' and  umc.meta_value like '%'+ur.User_Value+'%' group by User_Type,User_Value";
+
                 dtr = SQLHelper.ExecuteDataTable(strquery);
             }
             catch (Exception ex)
@@ -211,7 +213,7 @@
                     {
                     new SqlParameter("@UserID", UserID),
                 };
-                DT = SQLHelper.ExecuteDataTable("Select wer.role_id,wem.menu_id,wem.menu_code,wem.menu_name,wem.menu_url,wem.menu_icon,wem.parent_id,wer.flag,if (wem.parent_id is null, 0, 1) as level, if (wer.role_id is null, false, (if(flag='C',true,null))) as checked,if (add_ is null, false, true) as RoleAdd,if (edit_ is null, false, true) as RoleEdit,if (delete_ is null, false, true) as RoleDelete, if (add_ is null, 'unchecked', 'checked') as CheckAdd,if (edit_ is null, '', 'checked') as CheckEdit,if (delete_ is null, '', 'checked') as CheckDelete from wp_erpmenus wem left outer join  wp_erprole_rest wer on wem.menu_id = wer.erpmenu_id and wer.role_id = @UserID where wem.status = 1;", para);
+                DT = SQLHelper.ExecuteDataTable("wp_userauth", para);
             }
             catch (Exception ex)
             { throw ex; }
@@ -242,7 +244,8 @@
                     new SqlParameter("@User_Type", UserType),
                      new SqlParameter("@menu_url", menu_url)
                 };
-                DT = SQLHelper.ExecuteDataTable("Select wuc.User_Type,wem.menu_id,wem.menu_code,wem.menu_name,wem.menu_url,wem.menu_icon,wem.parent_id,wer.add_,wer.edit_,wer.delete_, if(wem.parent_id is null, 0, 1) as  level  from wp_erprole_rest wer left join wp_erpmenus wem on wem.menu_id = wer.erpmenu_id inner join wp_user_classification wuc on wer.role_id = wuc.ID where User_Type = @User_Type and menu_url=@menu_url;", para);
+                //DT = SQLHelper.ExecuteDataTable("Select wuc.User_Type,wem.menu_id,wem.menu_code,wem.menu_name,wem.menu_url,wem.menu_icon,wem.parent_id,wer.add_,wer.edit_,wer.delete_, if(wem.parent_id is null, 0, 1) as  level  from wp_erprole_rest wer left join wp_erpmenus wem on wem.menu_id = wer.erpmenu_id inner join wp_user_classification wuc on wer.role_id = wuc.ID where User_Type = @User_Type and menu_url=@menu_url;", para);
+                DT = SQLHelper.ExecuteDataTable("Select wuc.User_Type,wem.menu_id,wem.menu_code,wem.menu_name,wem.menu_url,wem.menu_icon,wem.parent_id,wer.add_,wer.edit_,wer.delete_ from wp_erprole_rest wer left join wp_erpmenus wem on wem.menu_id = wer.erpmenu_id inner join wp_user_classification wuc on wer.role_id = wuc.ID where User_Type = @User_Type and menu_url=@menu_url;", para);
             }
             catch (Exception ex)
             { throw ex; }

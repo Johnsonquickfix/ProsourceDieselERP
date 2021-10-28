@@ -11,6 +11,7 @@
     using System.Text;
     using LaylaERP.UTILITIES;
     using System.Text.RegularExpressions;
+    using System.Xml;
 
     public class OrderRepository
     {
@@ -76,106 +77,34 @@
             return DT;
         }
         //Add New Order With wp_postmeta and wp_wc_order_stats
-        public static long AddOrdersPost(List<OrderPostMetaModel> _list)
+        public static DataTable AddOrdersPost(long Pkey, string qFlag,long UserID, string UserName, XmlDocument postsXML, XmlDocument order_statsXML, XmlDocument postmetaXML, XmlDocument order_product_lookupXML, XmlDocument order_itemsXML, XmlDocument order_itemmetaXML)
         {
-            long result = 0;
+            var dt = new DataTable();
             try
             {
-                OrderPostModel model = new OrderPostModel();
-                model.ID = 0;
-                model.post_author = "1";
-                model.post_date = CommonDate.CurrentDate();
-                model.post_date_gmt = CommonDate.UtcDate();
-                model.post_content = string.Empty;
-                model.post_title = "Order &ndash; " + model.post_date_gmt.ToString("MMMM dd, yyyy @ HH:mm tt");
-                model.post_excerpt = string.Empty;
-                model.post_status = "auto-draft";// "draft";
-                model.comment_status = "open";
-                model.ping_status = "closed";
-                model.post_password = string.Empty;
-                model.post_name = "order-" + model.post_date_gmt.ToString("MMM-dd-yyyy-HHmm-tt").ToLower();
-                model.to_ping = string.Empty;
-                model.pinged = string.Empty;
-                model.post_modified = model.post_date;
-                model.post_modified_gmt = model.post_date_gmt;
-                model.post_content_filtered = string.Empty;
-                model.post_parent = "0";
-                model.post_type = "shop_order";
-                //model.guid = string.Format("{0}?{1}={2}", Net.Host, "post_type=shop_order&p", "");
-                model.guid = string.Format("{0}?{1}={2}", "http://173.247.242.204/~rpsisr/woo/", "post_type=shop_order&p", "");
-                model.menu_order = "0";
-                model.post_mime_type = string.Empty;
-                model.comment_count = "0";
-
-                string strSQL = "INSERT INTO wp_posts(post_author, post_date, post_date_gmt, post_content, post_title, post_excerpt,post_status, comment_status, ping_status, post_password, post_name,"
-                                    + " to_ping, pinged, post_modified, post_modified_gmt,post_content_filtered, post_parent, guid, menu_order,post_type, post_mime_type, comment_count)"
-                                    + " VALUES(@post_author,@post_date,@post_date_gmt,@post_content,@post_title,@post_excerpt,@post_status,@comment_status,@ping_status,@post_password,@post_name,"
-                                    + " @to_ping,@pinged,@post_modified,@post_modified_gmt,@post_content_filtered,@post_parent,@guid,@menu_order,@post_type,@post_mime_type,@comment_count)";
-
-                strSQL += "; insert into wp_wc_order_stats (order_id,parent_id,date_created,date_created_gmt,num_items_sold,total_sales,tax_total,shipping_total,net_total,returning_customer,status,customer_id)";
-                strSQL += " SELECT LAST_INSERT_ID(),'0',@post_date,@post_date_gmt,'0','0','0','0','0','0',@post_status,'0' ; SELECT LAST_INSERT_ID();";
-
+                long id = Pkey;
                 SqlParameter[] parameters =
                 {
-                    new SqlParameter("@post_author", model.post_author),
-                    new SqlParameter("@post_date", model.post_date),
-                    new SqlParameter("@post_date_gmt", model.post_date_gmt),
-                    new SqlParameter("@post_content", model.post_content),
-                    new SqlParameter("@post_title", model.post_title),
-                    new SqlParameter("@post_excerpt", model.post_excerpt),
-                    new SqlParameter("@post_status", model.post_status),
-                    new SqlParameter("@comment_status", model.comment_status),
-                    new SqlParameter("@ping_status", model.ping_status),
-                    new SqlParameter("@post_password", model.post_password),
-                    new SqlParameter("@post_name", model.post_name),
-                    new SqlParameter("@to_ping", model.to_ping),
-                    new SqlParameter("@pinged", model.pinged),
-                    new SqlParameter("@post_modified", model.post_modified),
-                    new SqlParameter("@post_modified_gmt", model.post_modified_gmt),
-                    new SqlParameter("@post_content_filtered", model.post_content_filtered),
-                    new SqlParameter("@post_parent", model.post_parent),
-                    new SqlParameter("@guid", model.guid),
-                    new SqlParameter("@menu_order", model.menu_order),
-                    new SqlParameter("@post_type", model.post_type),
-                    new SqlParameter("@post_mime_type", model.post_mime_type),
-                    new SqlParameter("@comment_count", model.comment_count)
+                    new SqlParameter("@pkey", Pkey),
+                    new SqlParameter("@qflag", qFlag),
+                    new SqlParameter("@userid", UserID),
+                    new SqlParameter("@username", UserName),
+                    new SqlParameter("@postsXML", postsXML.OuterXml),
+                    new SqlParameter("@order_statsXML", order_statsXML.OuterXml),
+                    new SqlParameter("@postmetaXML", postmetaXML.OuterXml),
+                    new SqlParameter("@order_product_lookupXML", order_product_lookupXML.OuterXml),
+                    new SqlParameter("@order_itemsXML", order_itemsXML.OuterXml),
+                    new SqlParameter("@order_itemmetaXML", order_itemmetaXML.OuterXml)
                 };
-                result = Convert.ToInt64(SQLHelper.ExecuteScalar(strSQL, parameters));
-                if (result > 0)
-                {
-                    AddOrdersPostMeta(result, _list);
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-
-            }
-            return result;
-        }
-        public static int AddOrdersPostMeta(long post_id, List<OrderPostMetaModel> model)
-        {
-            int result = 0;
-            try
-            {
-                StringBuilder strSql = new StringBuilder("update wp_posts set guid=concat(guid,'" + post_id.ToString() + "') where id=" + post_id.ToString() + ";insert into wp_postmeta (post_id,meta_key,meta_value) values ");
-                var i = 0;
-                foreach (OrderPostMetaModel obj in model)
-                {
-                    if (++i == model.Count)
-                        strSql.Append(string.Format("('{0}','{1}','{2}') ", post_id, obj.meta_key, obj.meta_value));
-                    else
-                        strSql.Append(string.Format("('{0}','{1}','{2}'), ", post_id, obj.meta_key, obj.meta_value));
-                }
-                result = SQLHelper.ExecuteNonQuery(strSql.ToString());
+                dt = SQLHelper.ExecuteDataTable("wp_posts_order_iud", parameters);
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
-            return result;
+            return dt;
         }
-
+       
         public static DataTable GetProducts(string strSearch)
         {
             DataTable DT = new DataTable();
@@ -283,31 +212,13 @@
                 OrderProductsModel productsModel = new OrderProductsModel();
                 SqlParameter[] parameters =
                 {
+                    new SqlParameter("@flag", "SRPOD"),
                     new SqlParameter("@product_id", product_id),
                     new SqlParameter("@variation_id", variation_id),
                     new SqlParameter("@countrycode", countrycode),
                     new SqlParameter("@statecode", statecode)
                 };
-                string strSQl = "SELECT post.id,ps.ID pr_id,CONCAT(COALESCE(ps.post_title,post.post_title), COALESCE(CONCAT(' (' ,psku.meta_value,')'),''))  as post_title,"
-                            + " COALESCE(pr.meta_value, 0) reg_price,COALESCE(psr.meta_value, 0) sale_price,1 quantity,'false' is_free,scd.Shipping_price,scd.type Shipping_type,"
-                            + " srf.staterecyclefee,srf.is_taxable,concat('{', group_concat(concat('\"', free_product_id, '\": \"', free_quantity, '\"') separator ','), '}') free_itmes FROM wp_posts as post"
-                            + " LEFT OUTER JOIN wp_posts ps ON ps.post_parent = post.id and ps.post_type LIKE 'product_variation'"
-                            + " left outer join wp_postmeta psku on psku.post_id = COALESCE(ps.id, post.id)and psku.meta_key = '_sku'"
-                            + " left outer join wp_postmeta pr on pr.post_id = COALESCE(ps.id, post.id) and pr.meta_key = '_regular_price'"
-                            + " left outer join wp_postmeta psr on psr.post_id = COALESCE(ps.id, post.id) and psr.meta_key = '_price'"
-                            + " left outer join wp_product_free free_it on free_it.product_id = post.id or free_it.product_id = ps.id"
-                            + " left outer join Shipping_Product sp on sp.fk_productid = COALESCE(ps.id, post.id)"
-                            + " left outer join ShippingClass_Details scd on scd.fk_ShippingID = sp.fk_shippingID and countrycode = @countrycode and statecode = @statecode"
-                            + " left outer join wp_staterecyclefee srf on srf.is_active = 1 and srf.item_parent_id = post.id and srf.state = @statecode"
-                            + " WHERE post.post_type = 'product' and post.id = @product_id and COALESCE(ps.id,0) = @variation_id group by post.id,ps.ID"
-                            + " union all"
-                            + " SELECT(case when isnull(p.post_parent) = 0 then p.id else p.post_parent end) id,(case when isnull(p.post_parent)= 0 then 0 else p.id end) pr_id,CONCAT(p.post_title, COALESCE(CONCAT(' (', psku.meta_value, ')'), '')) as post_title,"
-                            + " 0 reg_price,0 sale_price,free_quantity quantity,'true' is_free,0 Shipping_price,'qty' Shipping_type,0 staterecyclefee,0 is_taxable,'{}' free_itmes FROM wp_product_free free_it"
-                            + " inner join wp_posts as p on p.id = free_it.free_product_id"
-                            + " left outer join wp_postmeta psku on psku.post_id = p.id and psku.meta_key = '_sku'"
-                            + " WHERE p.post_type in ('product', 'product_variation') and free_it.product_id = @product_id or free_it.product_id = @variation_id;";
-
-                SqlDataReader sdr = SQLHelper.ExecuteReader(strSQl, parameters);
+                SqlDataReader sdr = SQLHelper.ExecuteReader("wp_posts_order_search", parameters);
                 while (sdr.Read())
                 {
                     productsModel = new OrderProductsModel();
@@ -357,6 +268,7 @@
                         productsModel.staterecycle_istaxable = Convert.ToBoolean(sdr["is_taxable"]);
                     else
                         productsModel.staterecycle_istaxable = false;
+                    productsModel.meta_data = "[{\"id\": 0,\"item_id\": 0,\"key\": \"\", \"value\": \"\"}]";
                     _list.Add(productsModel);
                 }
             }
@@ -434,21 +346,15 @@
             DataTable dt = new DataTable();
             try
             {
-                string lid = CommanUtilities.Provider.GetCurrent().UserID.ToString();
+                long lid = CommanUtilities.Provider.GetCurrent().UserID;
 
                 SqlParameter[] parameters =
                 {
-                    new SqlParameter("@strCoupon", strCoupon)
+                    new SqlParameter("@flag", "COUPN"),
+                    new SqlParameter("@coupon", strCoupon),
+                    new SqlParameter("@userid", lid)
                 };
-                string strSQl = "select post_title,post_title title,max(case when pm.meta_key = 'discount_type' then pm.meta_value else '' end) discount_type,max(case when pm.meta_key = 'product_ids' then pm.meta_value else '' end) product_ids,max(case when pm.meta_key = 'exclude_product_ids' then pm.meta_value else '' end) exclude_product_ids,"
-                                + "     max(case when pm.meta_key = 'date_expires' then pm.meta_value else '' end) date_expires,max(case when pm.meta_key = 'coupon_amount' then pm.meta_value else '' end) coupon_amount,"
-                                + "     max(case when pm.meta_key = 'individual_use' then pm.meta_value else '' end) individual_use,max(case when pm.meta_key = '_wjecf_products_and' then pm.meta_value else 'no' end) and_or,"
-                                + "     max(case when pm.meta_key = 'limit_x_items' then pm.meta_value else '' end) limit_x_items,max(case when pm.meta_key = 'cus_email' then pm.meta_value else '' end) cus_email,"
-                                + "     max(case when pm.meta_key = 'usage_limit' then pm.meta_value else '' end) usage_limit,max(case when pm.meta_key = 'usage_limit_per_user' then pm.meta_value else '' end) usage_limit_per_user,"
-                                + "     max(case when pm.meta_key = '_wjecf_is_auto_coupon' then(case when pm.meta_value = 'yes' then 'auto_coupon' else 'add_coupon' end) else 'add_coupon' end) type,"
-                                + "     coalesce((select IF(trim(pmt.meta_value) = '" + lid + "',1,0) from wp_postmeta pmt where pmt.post_id = p.id and pmt.meta_key = '_employee_id'),1) use_it"
-                                + " from wp_posts p inner join wp_postmeta pm on pm.post_id = p.id"
-                                + " where lower(post_title) = @strCoupon And post_type = 'shop_coupon' group by pm.post_id";
+                string strSQl = "wp_posts_order_search";
                 dt = SQLHelper.ExecuteDataTable(strSQl, parameters);
             }
             catch (Exception ex)
@@ -1233,7 +1139,8 @@
                 {
                     new SqlParameter("@order_id", OrderID)
                 };
-                string strSQl = "select os.id order_id,DATE_FORMAT(os.post_date,'%m/%d/%Y') date_created,max(case meta_key when '_customer_user' then meta_value else '' end) customer_id,max(CONCAT(COALESCE(u.User_Login,''), ' (', COALESCE(u.user_email,''), ')')) as customer_name,os.post_status status,"
+                string strSQl = "select os.id order_id,convert(varchar,os.post_date,101) date_created,max(case meta_key when '_customer_user' then meta_value else '' end) customer_id,"
+                            + " (select CONCAT(User_Login, ' (#',id,' - ', user_email, ')') from wp_users u where u.id = max(case meta_key when '_customer_user' then meta_value else '' end)) customer_name,os.post_status status,"
                             + " os.post_excerpt,0 shipping_total,max(case meta_key when '_payment_method' then meta_value else '' end) payment_method,max(case meta_key when '_payment_method_title' then meta_value else '' end) payment_method_title,"
                             + " max(case meta_key when '_customer_ip_address' then meta_value else '' end) ip_address,max(case meta_key when '_created_via' then meta_value else '' end) created_via,"
                             + " max(case meta_key when '_billing_first_name' then meta_value else '' end) b_first_name,max(case meta_key when '_billing_last_name' then meta_value else '' end) b_last_name,"
@@ -1248,7 +1155,6 @@
                             + " max(case meta_key when '_paypal_id' then meta_value else '' end) paypal_id,max(case meta_key when 'taskuidforsms' then meta_value else '' end) podium_id,max(case meta_key when '_podium_payment_uid' then meta_value else '' end) podium_payment_uid,"
                             + " (SELECT count(split_id) FROM split_record WHERE main_order_id=os.id) is_shiped," + strWhr
                             + " from wp_posts os inner join wp_postmeta pm on pm.post_id = os.id"
-                            + " left outer join wp_users u on u.id = meta_value and meta_key='_customer_user'"
                             + " where os.id = @order_id "
                             + " group by os.id,os.post_date,os.post_status,os.post_excerpt";
                 dt = SQLHelper.ExecuteDataTable(strSQl, parameters);
@@ -1549,11 +1455,10 @@
             {
                 SqlParameter[] parameters =
                 {
-                    new SqlParameter("order_id", OrderID)
+                    new SqlParameter("@flag", "ONOTE"),
+                    new SqlParameter("@order_id", OrderID)
                 };
-                string strSQl = "select wp_c.comment_ID,DATE_FORMAT(wp_c.comment_date, '%M %d, %Y at %H:%i') comment_date,wp_c.comment_content,wp_cm.meta_value is_customer_note from wp_comments wp_c"
-                            + " left outer join wp_commentmeta wp_cm on wp_cm.comment_id = wp_c.comment_ID and wp_cm.meta_key = 'is_customer_note'"
-                            + " where comment_type = 'order_note' and comment_approved = '1' and comment_post_ID = @order_id order by wp_c.comment_ID desc;";
+                string strSQl = "wp_posts_order_search";
                 DT = SQLHelper.ExecuteDataTable(strSQl, parameters);
             }
             catch (Exception ex)

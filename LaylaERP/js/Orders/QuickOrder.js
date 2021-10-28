@@ -1403,28 +1403,28 @@ function ApplyAutoCoupon() {
 }
 function ApplyCoupon() {
     let coupon_code = $("#txt_Coupon").val().toLowerCase().trim();
-    if ($('#li_' + coupon_code).length > 0) { swal('Alert!', 'Coupon code already applied!', "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false; };
+    if ($('#li_' + coupon_code).length > 0) { swal('Alert!', 'Coupon code already applied!', "error").then((result) => { $('#txt_Coupon').focus(); return false; }); return false; };
 
     let autocode = ["cbdistillery", "thesleepadvisor", "tuck", "rv10", "rizslumber", "bestsleep10", "get140", "calm", "relax", "cupid110", "sleepopolis", "tv140", "pennymac", "pnmac", "sleepfoundation", "matt-topper", "matt-sheet", "matt-blanket", "matt-pillow", "matt-bedframe", "matt-found", "found-frame", "sleepy10", "sleepy20"];
     let monthlySaleCoupon = ["sales10off", "sales25off", "sales50off", "sales75off", "sales100off", "sales125off", "sales150off", "sales175off", "sales200off", "cxstaff20off", "mgr20off", "mgr50off"];
     let is_monthly_sale_cpn = monthlySaleCoupon.some(el => coupon_code.includes(el));
 
-    if (coupon_code == '') { swal('Alert!', 'Please Enter a Coupon Code.', "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false; }
-    else if (autocode.includes(coupon_code)) { swal('Alert!', 'Cannot Add this Auto-Coupon.', "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false; }
+    if (coupon_code == '') { swal('Alert!', 'Please Enter a Coupon Code.', "error").then((result) => { $('#txt_Coupon').focus(); return false; }); return false; }
+    else if (autocode.includes(coupon_code)) { swal('Alert!', 'Cannot Add this Auto-Coupon.', "error").then((result) => { $('#txt_Coupon').focus(); return false; }); return false; }
     //else if (is_monthly_sale_cpn) { swal('Alert!', 'Can not add ' + coupon_code, "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false; }
     else {
-        if (coupon_code == 'forbes') { swal('Alert!', 'Can not add ' + coupon_code, "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false; }
-        else if (coupon_code == 'slumber') { swal('Alert!', 'Can not add ' + coupon_code, "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false; }
+        if (coupon_code == 'forbes') { swal('Alert!', 'Can not add ' + coupon_code, "error").then((result) => { $('#txt_Coupon').focus(); return false; }); return false; }
+        else if (coupon_code == 'slumber') { swal('Alert!', 'Can not add ' + coupon_code, "error").then((result) => { $('#txt_Coupon').focus(); return false; }); return false; }
     }
     let billing_email = $("#txtbillemail").val().toLowerCase();
     let add_coupon_count = 0;
     $('#billCoupon li').each(function (index, li) {
         if ($(li).data('type') == 'add_coupon') { add_coupon_count += 1; }
     });
-    if (add_coupon_count > 0) { swal('Alert!', 'Cannot add any other Coupon.', "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false; };
+    if (add_coupon_count > 0) { swal('Alert!', 'Cannot add any other Coupon.', "error").then((result) => { $('#txt_Coupon').focus(); return false; }); return false; };
     if (coupon_code.includes("tsjpillow")) {
         let cou_details = Coupon_get_discount_amount(0, 0, coupon_code, 25, 0, 0, 0); //console.log(cou_details);
-        if (cou_details.disc_amt == 0) { swal('Alert!', 'Cannot add ' + coupon_code, "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false; };
+        if (cou_details.disc_amt == 0) { swal('Alert!', 'Cannot add ' + coupon_code, "error").then((result) => { $('#txt_Coupon').focus(); return false; }); return false; };
     }
 
     let obj = { strValue1: coupon_code };
@@ -1432,18 +1432,18 @@ function ApplyCoupon() {
         type: "POST", url: '/Orders/GetCouponAmount', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
         success: function (result) {
             var data = JSON.parse(result);
-            if (data.length == 0) { swal('Alert!', 'Invalid code entered. Please try again.', "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false; }
-            if (data[0].use_it == false) { swal('Alert!', 'Invalid code entered. Please try again.', "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false; }
+            if (data.length == 0) { swal('Alert!', 'Invalid code entered. Please try again.', "error").then((result) => { $('#txt_Coupon').focus(); return false; }); return false; }
+            if (data[0].use_it == false) { swal('Alert!', 'Invalid code entered. Please try again.', "error").then((result) => { $('#txt_Coupon').focus(); return false; }); return false; }
             //Check valid for email
             if (data[0].cus_email.length && data[0].cus_email != '') {
                 var get_email_arr = res[0].cus_email;
                 if (billing_email != '') {
                     if (get_email_arr.includes(billing_email)) {
                     } else {
-                        swal('Alert!', 'Coupon cannot be added for this email.', "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false;
+                        swal('Alert!', 'Coupon cannot be added for this email.', "error").then((result) => { $('#txt_Coupon').focus(); return false; }); return false;
                     }
                 } else {
-                    swal('Alert!', 'Please enter a billing email.', "info").then((result) => { $('#txtbillemail').focus(); return false; }); return false;
+                    swal('Alert!', 'Please enter a billing email.', "error").then((result) => { $('#txtbillemail').focus(); return false; }); return false;
                 }
             }
             //check expires date
@@ -1451,14 +1451,14 @@ function ApplyCoupon() {
                 let exp_date = new Date(data[0].date_expires * 1000);
                 let today = new Date();
                 if (exp_date < today) {
-                    swal('Alert!', 'Coupon code has been expired.', "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false;
+                    swal('Alert!', 'Coupon code has been expired.', "error").then((result) => { $('#txt_Coupon').focus(); return false; }); return false;
                 }
             }
             data[0].coupon_amount = parseFloat(data[0].coupon_amount) || 0.00;
             data[0].limit_x_items = parseInt(data[0].limit_x_items) || 0;
 
             if (!check_applied_coupon(coupon_code, data[0].product_ids, data[0].exclude_product_ids)) {
-                swal('Alert!', 'Can not add ' + coupon_code, "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false;
+                swal('Alert!', 'Can not add ' + coupon_code, "error").then((result) => { $('#txt_Coupon').focus(); return false; }); return false;
             }
             //console.log(data[0]);
             let cpns_with_other_cpns = ["freeprotector", "founder50", "kapok second pillow", "tsjpillow"];//not remove other coupon

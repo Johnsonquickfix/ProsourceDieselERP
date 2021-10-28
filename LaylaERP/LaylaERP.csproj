@@ -1001,6 +1001,7 @@
     <Content Include="Views\Ship\CreateShipOrder.cshtml" />
     <Content Include="Views\Accounting\AccountLedgerList.cshtml" />
     <Content Include="Views\Bank\BankEntriesAll.cshtml" />
+    <Content Include="Views\PaymentInvoice\PartiallyOrderList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

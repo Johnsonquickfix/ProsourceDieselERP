@@ -362,13 +362,13 @@ namespace LaylaERP.BAL
         }
 
 
-        public static void AddCurrentstock(WarehouseModel model)
+        public static int AddCurrentstock(WarehouseModel model)
         {
             int Timestamp = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
             try
             {
-                string strsql = "INSERT into wp_stock_mouvement(datem,fk_product,fk_entrepot,value,type_mouvement,label,price,fk_origin,eatby,sellby,serial,tran_id) " +
-                    "values(@datem,@fk_product,@fk_entrepot,@value,2,@label,@price,0,@eatby,@sellby,@serial,@tran_id);";
+                string strsql = "INSERT into wp_stock_mouvement(datem,fk_product,fk_entrepot,value,type_mouvement,label,price,fk_origin,eatby,sellby,serial,tran_id,vendor_id) " +
+                    "values(@datem,@fk_product,@fk_entrepot,@value,2,@label,@price,0,@eatby,@sellby,@serial,@tran_id,@vendor_id); SELECT LAST_INSERT_ID();";
                 string strsql1 = "INSERT into product_stock_register(tran_type,tran_id,product_id,warehouse_id,tran_date,quantity,flag) " +
                     " values(@tran_type,@tran_id,@fk_product,@fk_entrepot,@eatby,@value,@flag)";
 
@@ -383,14 +383,14 @@ namespace LaylaERP.BAL
                     new MySqlParameter("@eatby", model.eatby),
                     new MySqlParameter("@sellby", DateTime.UtcNow),
                     new MySqlParameter("@serial", model.serial),
-
                     new MySqlParameter("@tran_id",Timestamp),
                     new MySqlParameter("@tran_type","PO"),
                     new MySqlParameter("@flag","R"),
+                    new MySqlParameter("@vendor_id",model.vendor_id),
                 };
-                SQLHelper.ExecuteScalar(strsql + strsql1, para);
-                //int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql+strsql1, para));
-                //return result;
+                //SQLHelper.ExecuteScalar(strsql + strsql1, para);
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql + strsql1, para));
+                return result;
             }
             catch (Exception Ex)
             {
@@ -403,10 +403,13 @@ namespace LaylaERP.BAL
             DataTable dtr = new DataTable();
             try
             {
-                string strquery = "SELECT wsm.rowid as ref, post.post_title as product, DATE_FORMAT(wsm.datem, '%m-%d-%Y') as date,ww.ref as warehouse, wsm.inventorycode as invcode," +
-                                   " wsm.label as label,wsm.value,concat('$', format(wsm.price, 2)) as price FROM wp_stock_mouvement wsm, wp_warehouse ww, wp_posts post where wsm.type_mouvement=2 and ww.rowid = wsm.fk_entrepot and post.id = wsm.fk_product and wsm.fk_entrepot = '" + model.fk_entrepot + "'";
+                //string strquery = "SELECT wsm.rowid as ref, post.post_title as product, DATE_FORMAT(wsm.datem, '%m-%d-%Y') as date,ww.ref as warehouse, wsm.inventorycode as invcode," +
+                //" wsm.label as label,wsm.value,concat('$', format(wsm.price, 2)) as price FROM wp_stock_mouvement wsm, wp_warehouse ww, wp_posts post where wsm.type_mouvement=2 and ww.rowid = wsm.fk_entrepot and post.id = wsm.fk_product and wsm.fk_entrepot = '" + model.fk_entrepot + "'";
 
-
+                string strquery = "SELECT wsm.rowid as ref, post.post_title as product, DATE_FORMAT(wsm.datem, '%m-%d-%Y') as date,ww.ref as warehouse, wsm.inventorycode as invcode,"
+                                 + " wsm.label as label,wsm.value,concat('$', format(wsm.price, 2)) as price FROM wp_stock_mouvement wsm"
+                                 + " inner join wp_warehouse ww on ww.rowid = wsm.fk_entrepot"
+                                 + " inner join wp_posts post on post.id = wsm.fk_product where wsm.type_mouvement = 2";
                 DataSet ds = SQLHelper.ExecuteDataSet(strquery);
                 dtr = ds.Tables[0];
             }
@@ -484,7 +487,7 @@ namespace LaylaERP.BAL
             DataTable dtr = new DataTable();
             try
             {
-                string strquery = "SELECT tran_id,rowid,label,fk_product,LEFT(CAST(eatby AS DATE), 10) as eatby,LEFT(CAST(sellby AS DATE), 10) as sellby,serial,value,price,fk_entrepot,inventorycode,post.post_title from wp_stock_mouvement wsm inner join wp_posts post ON post.ID = wsm.fk_product where rowid='" + model.strValue1 + "'";
+                string strquery = "SELECT tran_id,rowid,label,fk_product,LEFT(CAST(eatby AS DATE), 10) as eatby,LEFT(CAST(sellby AS DATE), 10) as sellby,serial,value,price,fk_entrepot,inventorycode,post.post_title, vendor_id from wp_stock_mouvement wsm inner join wp_posts post ON post.ID = wsm.fk_product where rowid='" + model.strValue1 + "'";
 
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strquery);
@@ -1032,5 +1035,49 @@ namespace LaylaERP.BAL
             }
         }
 
+        public static DataSet GetVendor()
+        {
+            DataSet DS = new DataSet();
+            try
+            {
+                DS = SQLHelper.ExecuteDataSet("SELECT rowid, name from wp_vendor order by rowid");
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
+        }
+
+        public static DataSet GetWarehouserByVendor(string rowid)
+        {
+            DataSet DS = new DataSet();
+            try
+            {
+                DS = SQLHelper.ExecuteDataSet("SELECT WarehouseID, VendorID, ww.ref as name FROM wp_VendorWarehouse wv inner join wp_warehouse ww on ww.rowid = wv.WarehouseID where wv.VendorID = '" + rowid + "'");
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
+        }
+
+        public static DataTable CurrentStockData(string fk_entrepot)
+        {
+            DataTable dtr = new DataTable();
+            try
+            {
+                //string strquery = "SELECT wsm.rowid as ref, post.post_title as product, DATE_FORMAT(wsm.datem, '%m-%d-%Y') as date,ww.ref as warehouse, wsm.inventorycode as invcode," +
+                //" wsm.label as label,wsm.value,concat('$', format(wsm.price, 2)) as price FROM wp_stock_mouvement wsm, wp_warehouse ww, wp_posts post where wsm.type_mouvement=2 and ww.rowid = wsm.fk_entrepot and post.id = wsm.fk_product and wsm.fk_entrepot = '" + model.fk_entrepot + "'";
+
+                string strquery = "SELECT wsm.rowid as ref, wv.name, ww.ref as warehouse, post.post_title as product, DATE_FORMAT(wsm.datem, '%m-%d-%Y') as date,ww.ref as warehouse, wsm.inventorycode as invcode,"
+                                 + " wsm.label as label,wsm.value,concat('$', format(wsm.price, 2)) as price FROM wp_stock_mouvement wsm"
+                                 + " inner join wp_warehouse ww on ww.rowid = wsm.fk_entrepot"
+                                 + " inner join wp_vendor wv on wv.rowid = wsm.vendor_id"
+                                 + " inner join wp_posts post on post.id = wsm.fk_product where wsm.type_mouvement = 2";
+                DataSet ds = SQLHelper.ExecuteDataSet(strquery);
+                dtr = ds.Tables[0];
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dtr;
+        }
     }
 }

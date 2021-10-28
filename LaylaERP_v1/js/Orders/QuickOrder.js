@@ -202,11 +202,15 @@ function NewOrderNo() {
         { post_id: oid, meta_key: '_order_total', meta_value: 0.00 }, { post_id: oid, meta_key: '_cart_discount', meta_value: 0.00 },
         { post_id: oid, meta_key: '_cart_discount_tax', meta_value: '0' }, { post_id: oid, meta_key: '_order_shipping', meta_value: 0.00 },
         { post_id: oid, meta_key: '_order_shipping_tax', meta_value: 0.00 }, { post_id: oid, meta_key: '_order_tax', meta_value: 0.00 },
-        //{ post_id: oid, meta_key: 'employee_id', meta_value: '0' }, { post_id: oid, meta_key: 'employee_name', meta_value: '' }
+        { post_id: oid, meta_key: 'employee_id', meta_value: '0' }, { post_id: oid, meta_key: 'employee_name', meta_value: '' }
     );
-    let option = { OrderPostMeta: postMetaxml };
+    let option = { postsXML: JSON.stringify([]), order_statsXML: JSON.stringify([]), postmetaXML: JSON.stringify(postMetaxml) }; console.log(option);
     if (cus_id > 0) {
-        ajaxFunction('/Orders/GetNewOrderNo', option, beforeSendFun, function (result) { $('#hfOrderNo').val(result.message); $('#lblOrderNo').text('Order #' + result.message + ' detail '); }, completeFun, errorFun, false);
+        ajaxFunction('/Orders/GetNewOrderNo', option, beforeSendFun, function (result) {
+            result = JSON.parse(result);
+            if (result[0].Response == "Success") { $('#hfOrderNo').val(result[0].id); $('#lblOrderNo').text('Order #' + result[0].id + ' detail '); }
+            else { swal('Error', data[0].Response, "error"); }
+        }, completeFun, errorFun, false);
         isEdit(true); $('.billnote').prop("disabled", false);
     }
 }
@@ -852,7 +856,7 @@ function getOrderNotesList(oid) {
         let data = JSON.parse(result);
         let noteHtml = '';
         for (var i = 0; i < data.length; i++) {
-            let is_customer_note = parseInt(row.is_customer_note) || 0;
+            let is_customer_note = parseInt(data[i].is_customer_note) || 0;
             noteHtml += '<li id="linoteid_' + data[i].comment_ID + '" class="note system-note ' + (is_customer_note == 0 ? '' : 'customer-note') + '">';
             noteHtml += '<div class="note_content"><p>' + data[i].comment_content + '</p></div>';
             noteHtml += '<p class="meta"><abbr class="exact-date" title="' + data[i].comment_date + '">' + data[i].comment_date + '</abbr> ';
@@ -1710,7 +1714,6 @@ function calculateDiscountAcount() {
                 zSalePrice = parseFloat($(row).find(".TotalAmount").data("salerate")) || 0.00;
                 zGrossAmount = zRegPrice * zQty;
                 $(row).find(".TotalAmount").data("amount", zGrossAmount.toFixed(2)); $(row).find(".TotalAmount").text(zGrossAmount.toFixed(2));
-                console.log(is_sales);
                 ////Coupun Type 'diff' and DiscType not equal '2x_percent' (CouponAmt = RegPrice - SalePrice)
                 if (zType == 'diff' && is_sales == 0) {
                     if (zDiscType != '2x_percent') zCouponAmt = (zRegPrice - zSalePrice) > 0 ? (zRegPrice - zSalePrice) : 0.00;

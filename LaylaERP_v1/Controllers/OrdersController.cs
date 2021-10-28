@@ -14,6 +14,7 @@
     using System.Net.Http.Headers;
     using System.Net;
     using System.Text;
+    //using System.Xml;
 
     public class OrdersController : Controller
     {
@@ -160,13 +161,18 @@
             try
             {
                 OperatorModel om = CommanUtilities.Provider.GetCurrent();
-                model.OrderPostMeta.Add(new OrderPostMetaModel() { post_id = 0, meta_key = "employee_id", meta_value = om.UserID.ToString() });
-                model.OrderPostMeta.Add(new OrderPostMetaModel() { post_id = 0, meta_key = "employee_name", meta_value = om.UserName.ToString() });
 
-                JSONresult = OrderRepository.AddOrdersPost(model.OrderPostMeta).ToString();
+                System.Xml.XmlDocument postsXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.postsXML + "}", "Items");
+                System.Xml.XmlDocument order_statsXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.order_statsXML + "}", "Items");
+                System.Xml.XmlDocument postmetaXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.postmetaXML + "}", "Items");
+                System.Xml.XmlDocument order_product_lookupXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
+                System.Xml.XmlDocument order_itemsXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
+                System.Xml.XmlDocument order_itemmetaXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
+
+                JSONresult = JsonConvert.SerializeObject(OrderRepository.AddOrdersPost(model.order_id,"I", om.UserID, om.UserName, postsXML, order_statsXML, postmetaXML, order_product_lookupXML, order_itemsXML, order_itemmetaXML));
             }
             catch { }
-            return Json(new { status = true, message = JSONresult, url = "" }, 0);
+            return Json(JSONresult, JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
         public JsonResult GetCustomerList(SearchModel model)

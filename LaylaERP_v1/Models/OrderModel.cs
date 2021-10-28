@@ -46,6 +46,14 @@
         public OrderPostStatusModel OrderPostStatus { get; set; }
         public List<OrderOtherItemsModel> OrderOtherItems { get; set; }
         public List<OrderTaxItemsModel> OrderTaxItems { get; set; }
+
+        //insert values dynamic column
+        public string postsXML { get; set; }
+        public string order_statsXML { get; set; }
+        public string postmetaXML { get; set; }
+        public string order_product_lookupXML { get; set; }
+        public string order_itemsXML { get; set; }
+        public string order_itemmetaXML { get; set; }
     }
     public class OrderPostModel
     {

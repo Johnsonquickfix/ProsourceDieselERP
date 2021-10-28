@@ -29,21 +29,14 @@ namespace LaylaERP.BAL
                 {
                     rolee = "%";
                 }
+                SqlParameter[] parameters =
+                 {
+                    new SqlParameter("@rolee", rolee)
+                };
                 userslist.Clear();
-                DataSet ds1 = new DataSet();
-                string sqlquery = "select ID, user_login, user_status, user_email,user_pass,"
-                                  + "um.meta_value, umph.meta_value Phone, CONCAT(umadd.meta_value, ' ', COALESCE(umadd2.meta_value, ''), ' ', umacity.meta_value, ' ', umastate.meta_value, ' ', umapostalcode.meta_value )  address"
-                                  + " from wp_users u inner join wp_usermeta um on um.user_id = u.id and um.meta_key = 'wp_capabilities' and meta_value NOT LIKE '%customer%' and meta_value not like '%a:2%' and meta_value not like '%a:5%' and meta_value not like '%a:0%' and meta_value not like '%a:8%'"
-                                  + " LEFT OUTER JOIN wp_usermeta umph on umph.meta_key = 'billing_phone' And umph.user_id = u.ID"
-                                  + " LEFT OUTER JOIN wp_usermeta umadd on umadd.meta_key = 'billing_address_1' And umadd.user_id = u.ID"
-                                  + " LEFT OUTER JOIN wp_usermeta umadd2 on umadd2.meta_key = 'billing_address_2' And umadd2.user_id = u.ID"
-                                  + " LEFT OUTER JOIN wp_usermeta umacity on umacity.meta_key = 'billing_city' And umacity.user_id = u.ID"
-                                  + " LEFT OUTER JOIN wp_usermeta umastate on umastate.meta_key = 'billing_state' And umastate.user_id = u.ID"
-                                  + " LEFT OUTER JOIN wp_usermeta umapostalcode on umapostalcode.meta_key = 'billing_postcode' And umapostalcode.user_id = u.ID WHERE um.meta_value like '%" + rolee + "%'  ORDER BY ID ASC";
-
-                ds1 = DAL.SQLHelper.ExecuteDataSet(sqlquery);
+                DataSet ds1 = new DataSet();               
+                ds1 = DAL.SQLHelper.ExecuteDataSet("wp_userslist", parameters);
                 string result = string.Empty;
-
                 for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
                 {
                     clsUserDetails uobj = new clsUserDetails();                   

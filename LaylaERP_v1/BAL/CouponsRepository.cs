@@ -287,15 +287,12 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "select sum(case when post_status not in('auto-draft','trash') then 1 else 0 end) AllOrder,"
-                            + " sum(case when post_author = 8 and  p.post_status != 'auto-draft'  then 1 else 0 end) Mine,"
-                            + " sum(case when post_status = 'publish' then 1 else 0 end) Publish,"
-                            + " sum(case when post_status = 'draft' then 1 else 0 end) Drafts,"
-                            + " sum(case post_status when 'pending' then 1 else 0 end) Pending,sum(case post_status when 'private' then 1 else 0 end) Private,"
-                            + " sum(case when post_status = 'trash' then 1 else 0 end) Trash"
-                            + " from wp_posts p where p.post_type = 'shop_coupon'";
-
-                dt = SQLHelper.ExecuteDataTable(strSql);
+                SqlParameter[] parameters =
+               {
+                    new SqlParameter("@flag", "coupon")
+                };
+                
+                dt = SQLHelper.ExecuteDataTable("wp_getcount", parameters);
             }
             catch (Exception ex)
             {
@@ -351,10 +348,10 @@ namespace LaylaERP.BAL
                 if (!string.IsNullOrEmpty(Expiredate))
                 {
 
-                    strWhr += " and from_unixtime(pmexdate.meta_value,'%m/%d/%Y') = '" + Expiredate + "' ";
+                    strWhr += " and format(cast(DATEADD(SECOND, convert(int, pmexdate.meta_value), '1970-01-01')  as date), 'MM/dd/yyyy') = '" + Expiredate + "' ";
                 }
                 string strSql = "SELECT P.ID ID, post_title,post_excerpt,case when pmdistype.meta_value = 'percent' then 'Percentage discount' when  pmdistype.meta_value = 'fixed_cart' then 'Fixed cart discount' else 'Fixed product discount' end discount_type ,case when pmproid.meta_value is null then '' else replace(pmproid.meta_value, ',', ', ') end product_ids,pmamount.meta_value coupon_amount,"
-                            + "  case when pmexdate.meta_value = '' then '' else from_unixtime(pmexdate.meta_value,'%m/%d/%Y') end date_expires,CONCAT(COALESCE(pmpuscount.meta_value,'0'),' / ',COALESCE(pmpuslimit.meta_value, '0' )) UsageLimit"
+                            + "  case when pmexdate.meta_value = '' then '' else format(cast(DATEADD(SECOND, convert(int, pmexdate.meta_value), '1970-01-01')  as date), 'MM/dd/yyyy') end date_expires,CONCAT(COALESCE(pmpuscount.meta_value,'0'),' / ',COALESCE(pmpuslimit.meta_value, '0' )) UsageLimit"
                             + " FROM wp_posts P"
                             + " left join wp_postmeta pmamount on P.ID = pmamount.post_id and pmamount.meta_key = 'coupon_amount'"
                             + " left join wp_postmeta pmexdate on P.ID = pmexdate.post_id and pmexdate.meta_key = 'date_expires'"
@@ -364,7 +361,7 @@ namespace LaylaERP.BAL
                             + " left join wp_postmeta pmpuscount on P.ID = pmpuscount.post_id and pmpuscount.meta_key = 'usage_count'"
                             + " left join wp_postmeta pmempid on P.ID = pmempid.post_id and pmempid.meta_key = '_employee_id'"
                             + " WHERE P.post_type = 'shop_coupon'" + strWhr
-                            + " order by " + SortCol + " " + SortDir + " limit " + (pageno).ToString() + ", " + pagesize + "";
+                            + " order by " + SortCol + " " + SortDir + " OFFSET " + (pageno).ToString() + " ROWS FETCH NEXT " + pagesize + " ROWS ONLY;";
 
                 strSql += "; SELECT Count(distinct P.ID) TotalRecord from wp_posts P"
                          + " left join wp_postmeta pmexdate on P.ID = pmexdate.post_id and pmexdate.meta_key = 'date_expires'"
@@ -425,8 +422,8 @@ namespace LaylaERP.BAL
                     strWhr += " and pmdistype.meta_value like '%" + strValue1 + "%' ";
                 }
 
-                string strSql = "SELECT P.ID ID, post_title,post_excerpt,case when pmdistype.meta_value = 'percent' then 'Percentage discount' when  pmdistype.meta_value = 'fixed_cart' then 'Fixed cart discount' else 'Fixed product discount' end discount_type ,case when pmproid.meta_value is null then '' else replace(pmproid.meta_value, ',', ', ') end product_ids,pmamount.meta_value coupon_amount,"
-                            + "  case when pmexdate.meta_value = '' then '' else from_unixtime(pmexdate.meta_value,'%m/%d/%Y') end date_expires,CONCAT(COALESCE(pmpuscount.meta_value,'0'),' / ',COALESCE(pmpuslimit.meta_value, '0' )) UsageLimit"
+                string strSql = "SELECT   P.ID ID, post_title,post_excerpt,case when pmdistype.meta_value = 'percent' then 'Percentage discount' when pmdistype.meta_value = 'fixed_cart' then 'Fixed cart discount' else 'Fixed product discount' end discount_type ,"
+                            + "  case when pmproid.meta_value is null then '' else replace(pmproid.meta_value, ',', ', ') end product_ids,pmamount.meta_value coupon_amount, case when pmexdate.meta_value = '' then '' else format(cast(DATEADD(SECOND, convert(int, pmexdate.meta_value), '1970-01-01')  as date), 'MM/dd/yyyy') end date_expires,CONCAT(COALESCE(pmpuscount.meta_value,'0'),' / ',COALESCE(pmpuslimit.meta_value, '0' )) UsageLimit "
                             + " FROM wp_posts P"
                             + " left join wp_postmeta pmamount on P.ID = pmamount.post_id and pmamount.meta_key = 'coupon_amount'"
                             + " left join wp_postmeta pmexdate on P.ID = pmexdate.post_id and pmexdate.meta_key = 'date_expires'"
@@ -435,7 +432,8 @@ namespace LaylaERP.BAL
                             + " left join wp_postmeta pmpuslimit on P.ID = pmpuslimit.post_id and pmpuslimit.meta_key = 'usage_limit'"
                             + " left join wp_postmeta pmpuscount on P.ID = pmpuscount.post_id and pmpuscount.meta_key = 'usage_count'"
                             + " WHERE P.post_type = 'shop_coupon'" + strWhr
-                            + " order by " + SortCol + " " + SortDir + " limit " + (pageno).ToString() + ", " + pagesize + "";
+                            //+ " order by " + SortCol + " " + SortDir + " limit " + (pageno).ToString() + ", " + pagesize + ""
+                            +" order by " + SortCol + " " + SortDir + " OFFSET " + (pageno).ToString() + " ROWS FETCH NEXT " + pagesize + " ROWS ONLY;";
 
                 strSql += "; SELECT Count(distinct P.ID) TotalRecord from wp_posts P"
                          + " left join wp_postmeta pmexdate on P.ID = pmexdate.post_id and pmexdate.meta_key = 'date_expires'"
@@ -554,35 +552,39 @@ namespace LaylaERP.BAL
             try
             {
                 string strWhr = string.Empty;
+                SqlParameter[] parameters =
+               {
+                    new SqlParameter("@ID", model.strVal)
+                };
 
-                string strSql = "SELECT P.ID ID, post_title, post_excerpt,pmdistype.meta_value discount_type, pmproid.meta_value product_ids, pmamount.meta_value coupon_amount,"
-                             + " case when pmexdate.meta_value = '' then '' else from_unixtime(pmexdate.meta_value,'%m/%d/%Y') end date_expires,pmpuscount.meta_value usage_count,pmpuslimit.meta_value  usage_limit,pmfreesp.meta_value free_shipping,from_unixtime(pmdateexp.meta_value) date_expires,pmminimam.meta_value minimum_amount,"
-                             + "  pmmaximam.meta_value maximum_amount,pmindividual.meta_value individual_use,pmexcludesaleitme.meta_value exclude_sale_items,pmautocp.meta_value _wjecf_is_auto_coupon,"
-                             + "  pmexprdid.meta_value exclude_product_ids,pmcatg.meta_value product_categories,pmexcatg.meta_value exclude_product_categories,pmlimituser.meta_value usage_limit_per_user,pmcutemail.meta_value customer_email,pmlimituseritem.meta_value limit_usage_to_x_items"
-                             + " FROM wp_posts P"
-                             + " left join wp_postmeta pmamount on P.ID = pmamount.post_id and pmamount.meta_key = 'coupon_amount'"
-                             + " left join wp_postmeta pmexdate on P.ID = pmexdate.post_id and pmexdate.meta_key = 'date_expires'"
-                             + " left join wp_postmeta pmdistype on P.ID = pmdistype.post_id and pmdistype.meta_key = 'discount_type'"
-                             + " left join wp_postmeta pmproid on P.ID = pmproid.post_id and pmproid.meta_key = 'product_ids'"
-                             + " left join wp_postmeta pmpuslimit on P.ID = pmpuslimit.post_id and pmpuslimit.meta_key = 'usage_limit'"
-                             + " left join wp_postmeta pmpuscount on P.ID = pmpuscount.post_id and pmpuscount.meta_key = 'usage_count'"
-                             + " left join wp_postmeta pmfreesp on P.ID = pmfreesp.post_id and pmfreesp.meta_key = 'free_shipping'"
-                             + " left join wp_postmeta pmdateexp on P.ID = pmdateexp.post_id and pmdateexp.meta_key = 'date_expires'"
-                             + " left join wp_postmeta pmminimam on P.ID = pmminimam.post_id and pmminimam.meta_key = 'minimum_amount'"
-                             + " left join wp_postmeta pmmaximam on P.ID = pmmaximam.post_id and pmmaximam.meta_key = 'maximum_amount'"
-                             + " left join wp_postmeta pmindividual on P.ID = pmindividual.post_id and pmindividual.meta_key = 'individual_use'"
-                             + " left join wp_postmeta pmexcludesaleitme on P.ID = pmexcludesaleitme.post_id and pmexcludesaleitme.meta_key = 'exclude_sale_items'"
-                             + " left join wp_postmeta pmautocp on P.ID = pmautocp.post_id and pmautocp.meta_key = '_wjecf_is_auto_coupon'"
-                             + " left join wp_postmeta pmexprdid on P.ID = pmexprdid.post_id and pmexprdid.meta_key = 'exclude_product_ids'"
-                             + " left join wp_postmeta pmcatg on P.ID = pmcatg.post_id and pmcatg.meta_key = 'product_categories'"
-                             + " left join wp_postmeta pmexcatg on P.ID = pmexcatg.post_id and pmexcatg.meta_key = 'exclude_product_categories'"
-                             + " left join wp_postmeta pmlimituser on P.ID = pmlimituser.post_id and pmlimituser.meta_key = 'usage_limit_per_user'"
-                             + " left join wp_postmeta pmlimituseritem on P.ID = pmlimituseritem.post_id and pmlimituseritem.meta_key = 'limit_usage_to_x_items'"
-                             + " left join wp_postmeta pmcutemail on P.ID = pmcutemail.post_id and pmcutemail.meta_key = 'customer_email'"
-                             + " WHERE P.post_type = 'shop_coupon' and P.ID = "+ model.strVal + " ";
+                //string strSql = "SELECT P.ID ID, post_title, post_excerpt,pmdistype.meta_value discount_type, pmproid.meta_value product_ids, pmamount.meta_value coupon_amount,"
+                //             + " case when pmexdate.meta_value = '' then '' else from_unixtime(pmexdate.meta_value,'%m/%d/%Y') end date_expires,pmpuscount.meta_value usage_count,pmpuslimit.meta_value  usage_limit,pmfreesp.meta_value free_shipping,from_unixtime(pmdateexp.meta_value) date_expires,pmminimam.meta_value minimum_amount,"
+                //             + "  pmmaximam.meta_value maximum_amount,pmindividual.meta_value individual_use,pmexcludesaleitme.meta_value exclude_sale_items,pmautocp.meta_value _wjecf_is_auto_coupon,"
+                //             + "  pmexprdid.meta_value exclude_product_ids,pmcatg.meta_value product_categories,pmexcatg.meta_value exclude_product_categories,pmlimituser.meta_value usage_limit_per_user,pmcutemail.meta_value customer_email,pmlimituseritem.meta_value limit_usage_to_x_items"
+                //             + " FROM wp_posts P"
+                //             + " left join wp_postmeta pmamount on P.ID = pmamount.post_id and pmamount.meta_key = 'coupon_amount'"
+                //             + " left join wp_postmeta pmexdate on P.ID = pmexdate.post_id and pmexdate.meta_key = 'date_expires'"
+                //             + " left join wp_postmeta pmdistype on P.ID = pmdistype.post_id and pmdistype.meta_key = 'discount_type'"
+                //             + " left join wp_postmeta pmproid on P.ID = pmproid.post_id and pmproid.meta_key = 'product_ids'"
+                //             + " left join wp_postmeta pmpuslimit on P.ID = pmpuslimit.post_id and pmpuslimit.meta_key = 'usage_limit'"
+                //             + " left join wp_postmeta pmpuscount on P.ID = pmpuscount.post_id and pmpuscount.meta_key = 'usage_count'"
+                //             + " left join wp_postmeta pmfreesp on P.ID = pmfreesp.post_id and pmfreesp.meta_key = 'free_shipping'"
+                //             + " left join wp_postmeta pmdateexp on P.ID = pmdateexp.post_id and pmdateexp.meta_key = 'date_expires'"
+                //             + " left join wp_postmeta pmminimam on P.ID = pmminimam.post_id and pmminimam.meta_key = 'minimum_amount'"
+                //             + " left join wp_postmeta pmmaximam on P.ID = pmmaximam.post_id and pmmaximam.meta_key = 'maximum_amount'"
+                //             + " left join wp_postmeta pmindividual on P.ID = pmindividual.post_id and pmindividual.meta_key = 'individual_use'"
+                //             + " left join wp_postmeta pmexcludesaleitme on P.ID = pmexcludesaleitme.post_id and pmexcludesaleitme.meta_key = 'exclude_sale_items'"
+                //             + " left join wp_postmeta pmautocp on P.ID = pmautocp.post_id and pmautocp.meta_key = '_wjecf_is_auto_coupon'"
+                //             + " left join wp_postmeta pmexprdid on P.ID = pmexprdid.post_id and pmexprdid.meta_key = 'exclude_product_ids'"
+                //             + " left join wp_postmeta pmcatg on P.ID = pmcatg.post_id and pmcatg.meta_key = 'product_categories'"
+                //             + " left join wp_postmeta pmexcatg on P.ID = pmexcatg.post_id and pmexcatg.meta_key = 'exclude_product_categories'"
+                //             + " left join wp_postmeta pmlimituser on P.ID = pmlimituser.post_id and pmlimituser.meta_key = 'usage_limit_per_user'"
+                //             + " left join wp_postmeta pmlimituseritem on P.ID = pmlimituseritem.post_id and pmlimituseritem.meta_key = 'limit_usage_to_x_items'"
+                //             + " left join wp_postmeta pmcutemail on P.ID = pmcutemail.post_id and pmcutemail.meta_key = 'customer_email'"
+                //             + " WHERE P.post_type = 'shop_coupon' and P.ID = "+ model.strVal + " ";
 
 
-                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                DataSet ds = SQLHelper.ExecuteDataSet("wp_couponsdatabyid", parameters);
                 dt = ds.Tables[0];
 
             }
@@ -686,12 +688,8 @@ namespace LaylaERP.BAL
         {
             DataTable DT = new DataTable();
             try
-            {
-                string strSQl = "SELECT p.id,CONCAT(p.post_title, COALESCE(CONCAT(' (',s.meta_value,')'),'')) text FROM wp_posts AS p"
-                            + " left join wp_postmeta as s on p.id = s.post_id and s.meta_key = '_sku' "
-                            + " WHERE p.post_type in ('product','product_variation') AND p.post_status != 'draft' "
-                            + " group by p.id  ORDER BY p.ID limit 500;";
-                DT = SQLHelper.ExecuteDataTable(strSQl);
+            {                 
+                DT = SQLHelper.ExecuteDataTable("wp_ddl_productlist");
             }
             catch (Exception ex)
             { throw ex; }

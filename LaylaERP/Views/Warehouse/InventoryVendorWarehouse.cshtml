@@ -25,8 +25,8 @@
 <div class="nav-tabs-custom">
     <ul class="nav nav-tabs" id="mytabs" role="tablist">
         <li class="active"><a href="#tab_3" data-toggle="tab"><span title="Correct Stock" data-placement="bottom" data-toggle="tooltip">Correct Stock</span></a></li>
-            @*<li><a href="#tab_4" data-toggle="tab"><span title="Warehouse Transfer Stock" data-placement="bottom" data-toggle="tooltip">Transfer Stock</span></a></li>*@
-            @*<li><a href="#tab_8" data-toggle="tab"><span title="Warehouse Damage Stock" data-placement="bottom" data-toggle="tooltip">Damage Stock</span></a></li>*@
+            @*<li><a href="#tab_4" data-toggle="tab"><span title="Transfer Stock" data-placement="bottom" data-toggle="tooltip">Transfer Stock</span></a></li>*@
+            <li><a href="#tab_8" data-toggle="tab"><span title="Damage Stock" data-placement="bottom" data-toggle="tooltip">Damage Stock</span></a></li>
     </ul>
     <div class="tab-content">
         
@@ -124,12 +124,12 @@
                                                 <th>Ref</th>
                                                 <th>Date</th>
                                                 <th>Product</th>
-                                                <th>Warehouse</th>
                                                 <th>Vendor</th>
+                                                <th>Warehouse</th>
                                                 <th>Label of movement</th>
                                                 <th>Qty</th>
                                                 @*<th>Unit Price</th>*@
-                                                @*<th>Action</th>*@
+                                                <th>Action</th>
                                             </tr>
                                         </thead>
                                     </table>
@@ -161,9 +161,18 @@
                             <div class="box box-primary">
                                 <div class="box-body">
                                     <div class="form-group">
-                                        <input type="hidden" id="txtTransid1" class="form-control" />
-                                        <input type="hidden" class="form-control" id="hfprice">
-                                        <input type="hidden" class="form-control" id="hftransferstockid">
+                                        <input type="text" id="txtTransid1" class="form-control" />
+                                        <input type="text" class="form-control" id="hfprice">
+                                        <input type="text" class="form-control" id="hftransferstockid">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Vendor<span style="color:red">*</span></label>
+                                        <select class="form-control select1" id="ddlVendorTransfer" style="width:100%;"></select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Warehouse<span style="color:red">*</span></label>
+                                        <select class="form-control select1" id="ddlWarehouseTransfer" style="width:100%;"></select>
                                     </div>
 
                                     <div class="form-group">
@@ -180,7 +189,7 @@
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Target Warehouse<span style="color:red">*</span></label>
                                         <select id="ddltargetwarehouse" class="form-control">
-                                            <option value="0">--Select Warehouse--</option>
+                                            <option value="0">Please Select Warehouse</option>
                                         </select>
                                     </div>
 
@@ -285,18 +294,33 @@
                                     <input type="hidden" id="hfdamagestockid" class="form-control" />
                                     <input type="hidden" id="hfdamagetransid" class="form-control" />
                                     <div class="form-group">
+                                        <label for="exampleInputEmail1">Vendor<span style="color:red">*</span></label>
+                                        <select class="form-control select1" id="ddlVendorDamage" style="width:100%;"></select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Warehouse<span style="color:red">*</span></label>
+                                        <select class="form-control select1" id="ddlWarehouseDamage" style="width:100%;"></select>
+                                    </div>
+
+                                    <div class="form-group">
                                         <label for="exampleInputEmail1">Products<span style="color:red">*</span></label>
                                         <select class="form-control select1" id="ddlDamageProduct" style="width:100%;">
-                                            <option value="0">--Select Product--</option>
+                                            <option value="0">Please Select Product</option>
                                         </select>
-                                    </div>  
+                                    </div>
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Unit purchase price<span style="color:red">*</span></label>
                                         <input type="text" id="txtdamageprice" class="form-control" placeholder="Enter Unit purchase price" readonly>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
 
+
+                        <div class="col-sm-4">
+                            <div class="box box-primary">
+                                <div class="box-body">
                                     <div class="form-group">
-
                                         <label for="exampleInputEmail1">Damage number of units<span style="color:red">*</span></label>
                                         <input type="text" id="txtdamageunit" class="form-control" placeholder="Enter Number of unit">
                                     </div>
@@ -305,15 +329,6 @@
                                         <label for="exampleInputEmail1">Lot/Serial number<span style="color:red">*</span></label>
                                         <input type="text" id="txtdamageserial" placeholder="Enter Lot/Serial number" class="form-control">
                                     </div>
-                                </div>
-
-                            </div>
-                        </div>
-
-
-                        <div class="col-sm-4">
-                            <div class="box box-primary">
-                                <div class="box-body">
 
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Stock Damage date<span style="color:red">*</span></label>
@@ -342,13 +357,14 @@
                         <div class="col-sm-12">
                             <div class="box box-primary">
                                 <div class="box-body">
-                                    <table id="" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
+                                    <table id="dtdamagestock" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
                                         <thead>
                                             <tr>
                                                 <th>Ref</th>
                                                 <th>Date</th>
                                                 <th>Product</th>
-                                                @*<th>Warehouse</th>*@
+                                                <th>Vendor</th>
+                                                <th>Warehouse</th>
                                                 <th>Label of movement</th>
                                                 <th>Qty</th>
                                                 @*<th>Unit Price</th>*@
@@ -455,15 +471,10 @@
             Updatedamagestock();
         });
 
-        $('#ddlProduct').change(function () {
-            $("#txtstock").val("");
-            $("#txtprice").val("");
-        });
+        //$('#ddltransferProduct').change(function () {
+        //    $("#txtstock1").val("");
 
-        $('#ddltransferProduct').change(function () {
-            $("#txtstock1").val("");
-
-        });
+        //});
 
         datecode();
 

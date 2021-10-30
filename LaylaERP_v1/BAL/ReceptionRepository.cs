@@ -331,7 +331,7 @@ namespace LaylaERP.BAL
                 strupdate.Append(string.Format("update commerce_purchase_receive_order set fk_status = '{0}',fk_warehouse = '{1}' where fk_purchase = '{2}' ", model.fk_status, model.WarehouseID, model.IDRec));
                 SQLHelper.ExecuteNonQueryWithTrans(strupdate.ToString());
                 strsqlins = "insert into commerce_purchase_receive_order(ref,ref_ext,ref_supplier,fk_supplier,fk_status,source,fk_payment_term,fk_balance_days,fk_payment_type,date_livraison,fk_incoterms,location_incoterms,note_private,note_public,fk_user_author,date_creation,discount,total_tva,localtax1,localtax2,total_ht,total_ttc,fk_purchase,fk_warehouse) "
-                        + string.Format("select concat('PR" + strPOYearMonth + "-',lpad(coalesce(max(right(ref,5)),0) + 1,5,'0')) ref,'','{0}','{1}','{2}','0','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}','{16}','{17}','{18}','{19}','{20}' from commerce_purchase_receive_order where lpad(ref,6,0) = 'PR" + strPOYearMonth + "';select LAST_INSERT_ID();",
+                        + string.Format("select concat('PR" + strPOYearMonth + "-',RIGHT(CONCAT('00000', max(right(ref,5))+1), 5)) ref,'','{0}','{1}','{2}','0','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}','{16}','{17}','{18}','{19}','{20}' from commerce_purchase_receive_order;select SCOPE_IDENTITY();",
                                 model.VendorBillNo, model.VendorID, model.fk_status, model.PaymentTerms, model.Balancedays, model.PaymentType, model.Planneddateofdelivery, model.IncotermType, model.Incoterms, model.NotePrivate, model.NotePublic, model.LoginID, cDate.ToString("yyyy-MM-dd HH:mm:ss"), model.discount, model.total_tva, model.localtax1, model.localtax2, model.total_ht, model.total_ttc, model.IDRec, model.WarehouseID);
 
                 model.RowID = Convert.ToInt64(SQLHelper.ExecuteScalar(strsqlins, para));
@@ -348,6 +348,10 @@ namespace LaylaERP.BAL
                     //}
                     //else
                     //{
+                    if (obj.date_start == "0000/00/00")
+                        obj.date_start = null;
+                    if (obj.date_end == "0000/00/00")
+                        obj.date_end = null;
 
                     strsql += "insert into commerce_purchase_receive_order_detail (fk_purchase_re,fk_purchase,fk_product,ref,description,qty,recqty,discount_percent,discount,subprice,total_ht,total_ttc,product_type,date_start,date_end,rang,tva_tx,localtax1_tx,localtax1_type,localtax2_tx,localtax2_type,total_tva,total_localtax1,total_localtax2) ";
                     strsql += string.Format(" select '{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}','{16}','{17}','{18}','{19}','{20}','{21}','{22}','{23}';",

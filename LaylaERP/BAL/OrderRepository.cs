@@ -456,12 +456,34 @@
             { throw ex; }
             return dt;
         }
+
+        public static DataTable GetGiftCardDiscount(string strGiftCard)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                string lid = CommanUtilities.Provider.GetCurrent().UserID.ToString();
+
+                MySqlParameter[] parameters =
+                {
+                    new MySqlParameter("@strGiftCard", strGiftCard)
+                };
+                string strSQl = "Select id, code,order_id,order_item_id,recipient,sender,sender_email,message,balance,remaining as GiftCard_Amount,'add_giftcard' as type " +
+                    "from wp_woocommerce_gc_cards where code=@strGiftCard and is_active='on';";
+                dt = SQLHelper.ExecuteDataTable(strSQl, parameters);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dt;
+        }
         //Save/Update Order 
         public static int SaveOrder(OrderModel model)
         {
             int result = 0;
+            int resultG = 0;
             try
             {
+                string Userid = CommanUtilities.Provider.GetCurrent().UserID.ToString();
                 string str_oiid = string.Join(",", model.OrderProducts.Where(f => f.quantity > 0).Select(x => x.order_item_id.ToString()).ToArray()) + "," + string.Join(",", model.OrderOtherItems.Select(x => x.order_item_id.ToString()).ToArray()) + "," + string.Join(",", model.OrderTaxItems.Select(x => x.order_item_id.ToString()).ToArray());
                 DateTime cDate = CommonDate.CurrentDate(), cUTFDate = CommonDate.UtcDate();
                 /// step 1 : wp_wc_order_stats
@@ -528,7 +550,7 @@
                         }
                         else if (obj.item_type == "shipping")
                         {
-                            strSql.Append(string.Format(" update wp_woocommerce_order_itemmeta set meta_value='{0}' where order_item_id={1} and meta_key='{2}'; ", obj.amount, obj.order_item_id, "cost"));
+                            strSql.Append(string.Format(" update wp_woocommerce_order_itemmeta set meta_value='{0}' where order_item_id={1} and meta_key='{2}'; ", obj.amount, obj.order_item_id, "amount"));
                         }
                     }
                     else
@@ -547,6 +569,7 @@
                         {
                             strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select order_item_id,'cost',{0} from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}'; ", obj.amount, model.OrderPostStatus.order_id, obj.item_type));
                         }
+                       
                     }
                 }
                 /// step 6 : wp_posts (Coupon used by)
@@ -587,6 +610,32 @@
                 //strSql.Append("from wp_wc_order_product_lookup opl inner join wp_posts p on p.id = opl.order_id where p.id = " + model.OrderPostStatus.order_id + ";");
 
                 result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
+                if(result > 0)
+                {
+                    long order_item_id = 0; string order_item_name = ""; string order_item_type = "";
+                    DataTable dt = OrderRepository.GiftCardDetails(model.OrderPostStatus.order_id);
+
+                    StringBuilder strSqlG = new StringBuilder("");
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        order_item_id = Convert.ToInt64(dr["order_item_id"]);
+                        order_item_name = dr["order_item_name"].ToString();
+                        order_item_type = dr["order_item_type"].ToString();
+                        var amount = model.OrderOtherItems.Where(f => f.item_name == order_item_name).Select(x => x.amount).ToArray();
+                        var giftcard_id = model.OrderOtherItems.Where(f => f.item_name == order_item_name).Select(x => x.giftcard_id).ToArray();
+                        if (Convert.ToInt64(giftcard_id[0]) > 0)
+                        {
+                            strSqlG.Append("insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) Select " + order_item_id + ", 'giftcard_id', '" + giftcard_id[0] + "';");
+                            strSqlG.Append(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) Select " + order_item_id + ", 'code', '" + order_item_name + "';");
+                            strSqlG.Append(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) Select " + order_item_id + ", 'amount', " + amount[0] + ";");
+                            strSqlG.Append(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) Select " + order_item_id + ",'gift_card_debited','yes';");
+                            strSqlG.Append(string.Format("Update wp_woocommerce_gc_cards set remaining=remaining - {0} where id=({1});", amount[0], giftcard_id[0]));
+                            strSqlG.Append(string.Format("Insert into wp_woocommerce_gc_activity(type,user_id,user_email,object_id,gc_id,gc_code,amount,date,note) " +
+                                "Select 'used', {1}, user_email, object_id, gc_id, gc_code, {2}, UNIX_TIMESTAMP(now()), note from wp_woocommerce_gc_activity where gc_code ='{0}' and type='issued'; ", order_item_name, Userid, amount[0]));
+                        }
+                    }
+                    resultG = SQLHelper.ExecuteNonQuery(strSqlG.ToString());
+                }
             }
             catch (Exception Ex) { throw Ex; }
             return result;

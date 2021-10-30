@@ -166,6 +166,8 @@
         public string item_name { get; set; }
         public string item_type { get; set; }
         public decimal amount { get; set; }
+        public long giftcard_id { get; set; }
+
     }
     public class OrderTaxItemsModel
     {

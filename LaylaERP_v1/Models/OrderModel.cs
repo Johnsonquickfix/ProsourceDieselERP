@@ -51,8 +51,9 @@
         public string postsXML { get; set; }
         public string order_statsXML { get; set; }
         public string postmetaXML { get; set; }
-        public string order_product_lookupXML { get; set; }
         public string order_itemsXML { get; set; }
+        public string order_otheritemsXML { get; set; }
+        public string order_taxitemsXML { get; set; }
         public string order_itemmetaXML { get; set; }
     }
     public class OrderPostModel
@@ -130,6 +131,7 @@
     }
     public class OrderProductsModel
     {
+        public long order_id { get; set; }
         public long order_item_id { get; set; }
         public string product_type { get; set; }
         public long product_id { get; set; }
@@ -151,6 +153,13 @@
         public decimal shipping_tax_amount { get; set; }
         public decimal staterecycle_fee { get; set; }
         public bool staterecycle_istaxable { get; set; }
+    }
+    public class OrderProductsMetaModel
+    {
+        public long id { get; set; }
+        public long item_id { get; set; }
+        public string key { get; set; }
+        public string value { get; set; }
     }
     public class OrderShippingModel
     {

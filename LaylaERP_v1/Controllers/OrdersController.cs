@@ -165,11 +165,10 @@
                 System.Xml.XmlDocument postsXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.postsXML + "}", "Items");
                 System.Xml.XmlDocument order_statsXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.order_statsXML + "}", "Items");
                 System.Xml.XmlDocument postmetaXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.postmetaXML + "}", "Items");
-                System.Xml.XmlDocument order_product_lookupXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
                 System.Xml.XmlDocument order_itemsXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
                 System.Xml.XmlDocument order_itemmetaXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
 
-                JSONresult = JsonConvert.SerializeObject(OrderRepository.AddOrdersPost(model.order_id,"I", om.UserID, om.UserName, postsXML, order_statsXML, postmetaXML, order_product_lookupXML, order_itemsXML, order_itemmetaXML));
+                JSONresult = JsonConvert.SerializeObject(OrderRepository.AddOrdersPost(model.order_id, "I", om.UserID, om.UserName, postsXML, order_statsXML, postmetaXML, order_itemsXML, order_itemmetaXML));
             }
             catch { }
             return Json(JSONresult, JsonRequestBehavior.AllowGet);
@@ -293,6 +292,19 @@
             return Json(JSONresult, 0);
         }
         [HttpPost]
+        public JsonResult GetOrderItemMeta(SearchModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                long id = 0;
+                if (!string.IsNullOrEmpty(model.strValue1)) id = Convert.ToInt64(model.strValue1);
+                JSONresult = OrderRepository.GetOrderItemMeta(id);
+            }
+            catch { }
+            return Json(JSONresult, 0);
+        }
+        [HttpPost]
         public JsonResult AddFee(OrderOtherItemsModel model)
         {
             long id = 0;
@@ -321,24 +333,41 @@
             return Json(new { status = state, message = result }, 0);
         }
         [HttpPost]
-        public JsonResult SaveCustomerOrder(OrderModel model)
+        public JsonResult SaveOrderProductMeta(OrderModel model)
         {
-            string JSONresult = string.Empty; bool status = false;
+            string JSONresult = string.Empty;
             try
             {
-                //OperatorModel om = CommanUtilities.Provider.GetCurrent();
-                model.OrderPostMeta.Add(new OrderPostMetaModel() { post_id = model.OrderPostStatus.order_id, meta_key = "_customer_ip_address", meta_value = Net.Ip });
-                model.OrderPostMeta.Add(new OrderPostMetaModel() { post_id = model.OrderPostStatus.order_id, meta_key = "_customer_user_agent", meta_value = Net.BrowserInfo });
-                //model.OrderPostMeta.Add(new OrderPostMetaModel() { post_id = model.OrderPostStatus.order_id, meta_key = "employee_id", meta_value = om.UserID.ToString() });
-                //model.OrderPostMeta.Add(new OrderPostMetaModel() { post_id = model.OrderPostStatus.order_id, meta_key = "employee_name", meta_value = om.UserName.ToString() });
+                System.Xml.XmlDocument postsXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
+                System.Xml.XmlDocument order_statsXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
+                System.Xml.XmlDocument postmetaXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
+                System.Xml.XmlDocument order_itemsXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
+                System.Xml.XmlDocument order_itemmetaXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.order_itemmetaXML + "}", "Items");
 
-                int result = OrderRepository.SaveOrder(model);
-                if (result > 0)
-                { status = true; JSONresult = "Order placed successfully."; }
-                //JSONresult = JsonConvert.SerializeObject(DT);
+                JSONresult = JsonConvert.SerializeObject(OrderRepository.AddOrdersPost(0, "PMU", 0, "", postsXML, order_statsXML, postmetaXML, order_itemsXML, order_itemmetaXML));
             }
             catch { }
-            return Json(new { status = status, message = JSONresult }, 0);
+            return Json(JSONresult, JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public JsonResult SaveCustomerOrder(OrderModel model)
+        {
+            string JSONresult = string.Empty;
+            try
+            {
+                OperatorModel om = CommanUtilities.Provider.GetCurrent();
+                System.Xml.XmlDocument postsXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
+                System.Xml.XmlDocument order_statsXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.order_statsXML + "}", "Items");
+                System.Xml.XmlDocument postmetaXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.postmetaXML + "}", "Items");
+                System.Xml.XmlDocument order_itemsXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.order_itemsXML + "}", "Items");
+                //System.Xml.XmlDocument order_otheritemsXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.order_otheritemsXML + "}", "Items");
+                //System.Xml.XmlDocument order_taxitemsXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.order_taxitemsXML + "}", "Items");
+                System.Xml.XmlDocument order_itemmetaXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
+
+                JSONresult = JsonConvert.SerializeObject(OrderRepository.AddOrdersPost(model.order_id, "U", om.UserID, om.UserName, postsXML, order_statsXML, postmetaXML, order_itemsXML, order_itemmetaXML));
+            }
+            catch { }
+            return Json(JSONresult, JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
         public JsonResult SaveCustomerOrderRefund(OrderModel model)
@@ -518,7 +547,7 @@
             string JSONresult = string.Empty; bool status = false;
             try
             {
-                
+
                 var result = clsAmazonPay.RefundTransaction("", model.NetTotal);
                 //if (!string.IsNullOrEmpty(result))
                 //{

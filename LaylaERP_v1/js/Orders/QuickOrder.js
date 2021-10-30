@@ -127,7 +127,15 @@
     $(document).on("click", "#btnAddFee", function (t) { t.preventDefault(); AddFeeModal(0, ''); });
     $(document).on("click", "#btnApplyFee", function (t) { t.preventDefault(); $("#loader").show(); ApplyFee($(this).data('orderitemid'), $('#txt_FeeAmt').val()); });
     /*End Return Items*/
-    $(document).on("click", "#btnAddnote", function (t) { t.preventDefault(); AddNotes(); });
+    $(document).on("click", "#btnAddnote", function (t) {
+        t.preventDefault(); let $btn = $(this), oid = parseInt($('#hfOrderNo').val()) || 0;
+        let option = { post_ID: oid, comment_content: $('#add_order_note').val(), is_customer_note: $('#order_note_type').val() };
+        $($btn).attr('disabled', 'disabled');
+        $.post('/Orders/OrderNoteAdd', option).then(response => {
+            if (response.status) { getOrderNotesList(oid); $('#add_order_note').val(''); }
+            else swal('Alert!', result.message, "error");
+        }).catch(err => { $($btn).removeAttr('disabled'); swal('Error!', err, 'error'); }).always(function () { $($btn).removeAttr('disabled'); });
+    });
     $(document).on("click", "#btnPrintPdf", function (t) {
         t.preventDefault();
         let pay_mode = $('#lblOrderNo').data('pay_by'), pay_id = $('#lblOrderNo').data('pay_id');
@@ -136,9 +144,13 @@
     });
     /*start add order item meta*/
     $(document).on("click", ".add_order_item_meta", function (t) {
-        t.preventDefault(); let $item = $(this).closest('tr');
-        let meta_list = $item.data('meta_data');
-        AddItemMetaModal($item.data('id'), $item.data('orderitemid'), meta_list);
+        t.preventDefault(); let $btn = $(this), $item = $(this).closest('tr');
+        let _item_id = parseInt($item.data('orderitemid')); $($btn).html("Please Wait"); $($btn).attr('disabled', 'disabled');
+        $.post('/Orders/GetOrderItemMeta', { strValue1: _item_id }).then(response => {
+            let meta_list = JSON.parse(response);
+            if (meta_list.length == 0) meta_list.push({ id: 0, item_id: $item.data('orderitemid'), key: '', 'value': '' });
+            AddItemMetaModal($item.data('id'), _item_id, meta_list);
+        }).catch(err => { $($btn).html("Add meta"); $($btn).removeAttr('disabled'); swal('Error!', 'Something went wrong, please try again.', 'error'); }).always(function () { $($btn).html("Add meta"); $($btn).removeAttr('disabled'); });
     });
     $("#billModal").on("click", ".btnmeta_delete", function (t) { t.preventDefault(); $(this).closest('tr').addClass('hidden'); });
     $("#billModal").on("click", ".btnmeta_add", function (t) {
@@ -149,8 +161,8 @@
         $('#order_items_meta').append(trHtml);
     });
     $("#billModal").on("click", "#btnmeta_ok", function (t) {
-        t.preventDefault(); let row_id = $(this).data('id'), _item_id = parseInt($(this).data('itemid')) || 0, meta_list = [], dis_list = [];
-        let _status = false;
+        t.preventDefault();
+        let $btn = $(this), row_id = $(this).data('id'), _item_id = parseInt($(this).data('itemid')) || 0, _status = false, meta_list = [], dis_list = [];
         $('#order_items_meta > tr').each(function (index, tr) {
             let _id = parseInt($(tr).data('id')) || 0, _key = $(tr).find("[name=txt_key]").val().replace(/\s+/g, "_"), _value = $(tr).find("[name=txt_value]").val();
             if (!$(tr).is(":hidden")) {
@@ -163,11 +175,10 @@
             _status = true;
         });
         if (_status) {
-            let _data = { _list: meta_list }; $(this).html("Please Wait"); $(this).attr('disabled', 'disabled');
+            let _data = { order_itemmetaXML: JSON.stringify(meta_list) }; $($btn).html("Please Wait"); $($btn).attr('disabled', 'disabled');
             $.ajax({ method: 'post', url: '/Orders/SaveOrderProductMeta', data: _data }).done(function (result, textStatus, jqXHR) {
                 if (result) { $('#tritemId_' + row_id).data('meta_data', dis_list); $("#billModal").modal('hide'); }
-            }).fail(function (jqXHR, textStatus, errorThrown) { swal('Alert!', 'Something went wrong, please try again.', "error"); })
-                .always(function () { $(this).html("Add"); $(this).removeAttr('disabled'); });
+            }).fail(function (jqXHR, textStatus, errorThrown) { swal('Alert!', 'Something went wrong, please try again.', "error"); }).always(function () { $($btn).html("Add"); $($btn).removeAttr('disabled'); });
         }
     });
     /*start add order item meta*/
@@ -204,7 +215,7 @@ function NewOrderNo() {
         { post_id: oid, meta_key: '_order_shipping_tax', meta_value: 0.00 }, { post_id: oid, meta_key: '_order_tax', meta_value: 0.00 },
         { post_id: oid, meta_key: 'employee_id', meta_value: '0' }, { post_id: oid, meta_key: 'employee_name', meta_value: '' }
     );
-    let option = { postsXML: JSON.stringify([]), order_statsXML: JSON.stringify([]), postmetaXML: JSON.stringify(postMetaxml) }; console.log(option);
+    let option = { postsXML: JSON.stringify([]), order_statsXML: JSON.stringify([]), postmetaXML: JSON.stringify(postMetaxml) };
     if (cus_id > 0) {
         ajaxFunction('/Orders/GetNewOrderNo', option, beforeSendFun, function (result) {
             result = JSON.parse(result);
@@ -728,7 +739,6 @@ function getOrderItemList(oid) {
     ajaxFunction('/Orders/GetOrderProductList', option, beforeSendFun, function (data) {
         let itemHtml = '', recyclingfeeHtml = '', feeHtml = '', shippingHtml = '', refundHtml = '', couponHtml = '';
         let zQty = 0.00, zGAmt = 0.00, zTDiscount = 0.00, zTotalTax = 0.00, zShippingAmt = 0.00, zStateRecyclingAmt = 0.00, zFeeAmt = 0.00, zRefundAmt = 0.00;
-        //for (var i = 0; i < data.length; i++) {
         $.each(data, function (i, row) {
             let orderitemid = parseInt(row.order_item_id) || 0;
             if (row.product_type == 'line_item') {
@@ -782,12 +792,8 @@ function getOrderItemList(oid) {
                     let cpn_name = row.product_name;
                     couponHtml += '<li id="li_' + row.product_name.toString().toLowerCase().replaceAll(' ', '_') + '" class="' + (cpn_info.discount_type == 'fixed_cart' ? 'cart' : 'items') + '" data-coupon= "' + row.product_name + '" data-couponamt= "' + (cpn_info.coupon_amount != '' && cpn_info.coupon_amount != undefined ? cpn_info.coupon_amount : cou_amt) + '" data-disctype= "' + (cpn_info.discount_type != '' && cpn_info.discount_type != undefined ? cpn_info.discount_type : '') + '" data-rqprdids="' + (cpn_info.product_ids != '' && cpn_info.product_ids != undefined ? cpn_info.product_ids : '') + '" data-excludeids="' + (cpn_info.exclude_product_ids != '' && cpn_info.exclude_product_ids != undefined ? cpn_info.exclude_product_ids : '') + '" data-type= "add_coupon" data-orderitemid="' + orderitemid + '">';
                     couponHtml += '<a href="javascript:void(0);">';
-                    couponHtml += '<i class="fa fa-gift"></i>';
-                    couponHtml += '<span>' + cpn_name.toString().toLowerCase() + '</span>';
-                    couponHtml += '<div class="pull-right">';
-                    couponHtml += '$<span id="cou_discamt">' + cou_amt.toFixed(2) + '</span>';
-                    couponHtml += '<button type="button" class="btn btn-box-tool pull-right billinfo" onclick="deleteAllCoupons(\'' + row.product_name.toString().toLowerCase() + '\');"><i class="fa fa-times"></i></button>'
-                    couponHtml += '</div>';
+                    couponHtml += '<i class="fa fa-gift"></i><span>' + cpn_name.toString().toLowerCase() + '</span>';
+                    couponHtml += '<div class="pull-right">$<span id="cou_discamt">' + cou_amt.toFixed(2) + '</span><button type="button" class="btn btn-box-tool pull-right billinfo" onclick="deleteAllCoupons(\'' + row.product_name.toString().toLowerCase() + '\');"><i class="fa fa-times"></i></button></div>';
                     couponHtml += '</a>';
                     couponHtml += '</li>';
                 }
@@ -1027,14 +1033,6 @@ function AddItemMetaModal(id, itemid, meta_list) {
     $("#billModal").modal({ backdrop: 'static', keyboard: false });
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Order Notes ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-function AddNotes() {
-    let oid = parseInt($('#hfOrderNo').val()) || 0;
-    let option = { post_ID: oid, comment_content: $('#add_order_note').val(), is_customer_note: $('#order_note_type').val() };
-    ajaxFunction('/Orders/OrderNoteAdd', option, beforeSendFun, function (result) {
-        if (result.status) { getOrderNotesList(oid); $('#add_order_note').val(''); }
-        else swal('Alert!', result.message, "error");
-    }, completeFun, errorFun, false);
-}
 function DeleteNotes(id) {
     let option = { comment_ID: id }; let oid = parseInt($('#hfOrderNo').val()) || 0;
     swal({ title: "Are you sure?", text: 'Would you like to Remove this note?', type: "question", showCancelButton: true })
@@ -1644,10 +1642,13 @@ function deleteAllCoupons(coupon_type) {
 }
 function freeQtyUpdate() {
     $("#order_line_items > tr.free_item").each(function (index, row) {
-        let zQty = 0.00, pid = parseInt($(this).data("pid")) || 0;
+        let zQty = 0.00, pid = parseInt($(this).data("pid")) || 0, vid = parseInt($(this).data("vid")) || 0;
         $("#order_line_items  > tr.paid_item").each(function (pindex, prow) {
             if ($(prow).data('freeitems')[pid] != undefined) {
                 zQty += parseFloat($(prow).find("[name=txt_ItemQty]").val()) * parseFloat($(prow).data('freeitems')[pid]);
+            }
+            else if ($(prow).data('freeitems')[vid] != undefined) {
+                zQty += parseFloat($(prow).find("[name=txt_ItemQty]").val()) * parseFloat($(prow).data('freeitems')[vid]);
             }
         });
         if (zQty <= 0)
@@ -1837,44 +1838,38 @@ function createPostStatus() {
     };
     return postStatus;
 }
-function createOtherItemsList() {
-    var oid = parseInt($('#hfOrderNo').val()) || 0;
-    var otherItemsxml = [];
-    $('#billCoupon li').each(function (index) {
-        let cou_amt = parseFloat($(this).find("#cou_discamt").text()) || 0.00;
-        if (cou_amt > 0) otherItemsxml.push({ order_item_id: parseInt($(this).data('orderitemid')), order_id: oid, item_name: $(this).data('coupon'), item_type: 'coupon', amount: parseFloat($(this).find("#cou_discamt").text()) || 0.00 });
-    });
-    //Add Fee
-    $('#order_fee_line_items > tr').each(function (index, tr) {
-        otherItemsxml.push({ order_item_id: parseInt($(this).data('orderitemid')), order_id: oid, item_name: $(this).data('pname'), item_type: 'fee', amount: parseFloat($(this).find(".TotalAmount").text()) || 0.00 });
-    });
-    //Add State Recycling Fee
-    otherItemsxml.push({ order_item_id: parseInt($('#stateRecyclingFeeTotal').data('orderitemid')), order_id: oid, item_name: 'State Recycling Fee', item_type: 'fee', amount: parseFloat($('#stateRecyclingFeeTotal').text()) || 0.00 });
-    //Add Shipping
-    otherItemsxml.push({ order_item_id: parseInt($('#shippingTotal').data('orderitemid')), order_id: oid, item_name: '', item_type: 'shipping', amount: parseFloat($('#shippingTotal').text()) || 0.00 });
-    return otherItemsxml;
-}
-function createTaxItemsList() {
-    let oid = parseInt($('#hfOrderNo').val()) || 0, taxRate = parseInt($('#hfTaxRate').val()) || 0.00;
-    let sCountry = $('#ddlshipcountry').val(), sState = $('#ddlshipstate').val();
-    let taxItemsxml = [];
-    taxItemsxml.push({ order_item_id: parseInt($('#salesTaxTotal').data('orderitemid')), order_id: oid, tax_rate_country: sCountry, tax_rate_state: sState, tax_rate: taxRate * 100, amount: parseFloat($('#salesTaxTotal').text()) || 0.00 });
-    return taxItemsxml;
-}
 function createItemsList() {
     let oid = parseInt($('#hfOrderNo').val()) || 0, cid = parseInt($('#ddlUser').val()) || 0;
     let itemsDetails = [];
+    //Add Fee
     $('#order_line_items > tr').each(function (index, tr) {
-        var qty = parseFloat($(this).find("[name=txt_ItemQty]").val()) || 0.00;
-        var rate = parseFloat($(this).find(".TotalAmount").data('regprice')) || 0.00;
-        var grossAmount = parseFloat($(this).find(".TotalAmount").data('amount')) || 0.00;
-        var discountAmount = parseFloat($(this).find(".RowDiscount").text()) || 0.00;
-        var taxAmount = parseFloat($(this).find(".TotalAmount").data('taxamount')) || 0.00;
-        var shippinAmount = parseFloat($(this).find(".TotalAmount").data('shippingamt')) || 0.00;
+        let qty = parseFloat($(tr).find("[name=txt_ItemQty]").val()) || 0.00;
+        let rate = parseFloat($(tr).find(".TotalAmount").data('regprice')) || 0.00;
+        let grossAmount = parseFloat($(tr).find(".TotalAmount").data('amount')) || 0.00;
+        let discountAmount = parseFloat($(tr).find(".RowDiscount").text()) || 0.00;
+        let taxAmount = parseFloat($(tr).find(".TotalAmount").data('taxamount')) || 0.00;
+        let shippinAmount = parseFloat($(tr).find(".TotalAmount").data('shippingamt')) || 0.00;
         itemsDetails.push({
-            order_item_id: $(this).data('orderitemid'), PKey: index, order_id: oid, customer_id: cid, product_type: 'line_item', product_id: $(this).data('pid'), variation_id: $(this).data('vid'), product_name: $(this).data('pname'), quantity: qty, sale_rate: rate, total: grossAmount, discount: discountAmount, tax_amount: taxAmount, shipping_amount: shippinAmount, shipping_tax_amount: 0
+            order_item_id: $(tr).data('orderitemid'), PKey: index, order_id: oid, customer_id: cid, product_type: 'line_item', product_id: $(tr).data('pid'), variation_id: $(tr).data('vid'), product_name: $(tr).data('pname'), quantity: qty, sale_rate: rate, total: grossAmount, discount: discountAmount, tax_amount: taxAmount, shipping_amount: shippinAmount, shipping_tax_amount: 0
         });
     });
+    //Add Coupon
+    $('#billCoupon li').each(function (index, li) {
+        let cou_amt = parseFloat($(this).find("#cou_discamt").text()) || 0.00;
+        if (cou_amt > 0) itemsDetails.push({ order_item_id: parseInt($(li).data('orderitemid')), order_id: oid, product_name: $(li).data('coupon'), product_type: 'coupon', total: parseFloat($(li).find("#cou_discamt").text()) || 0.00 });
+    });
+    //Add Fee
+    $('#order_fee_line_items > tr').each(function (index, tr) {
+        itemsDetails.push({ order_item_id: parseInt($(tr).data('orderitemid')), order_id: oid, product_name: $(tr).data('pname'), product_type: 'fee', total: parseFloat($(tr).find(".TotalAmount").text()) || 0.00 });
+    });
+    //Add State Recycling Fee
+    itemsDetails.push({ order_item_id: parseInt($('#stateRecyclingFeeTotal').data('orderitemid')), order_id: oid, product_name: 'State Recycling Fee', product_type: 'fee', total: parseFloat($('#stateRecyclingFeeTotal').text()) || 0.00 });
+    //Add Shipping
+    itemsDetails.push({ order_item_id: parseInt($('#shippingTotal').data('orderitemid')), order_id: oid, product_name: '', product_type: 'shipping', total: parseFloat($('#shippingTotal').text()) || 0.00 });
+    //Add Tax
+    let _taxRate = parseInt($('#hfTaxRate').val()) || 0.00, sCountry = $('#ddlshipcountry').val(), sState = $('#ddlshipstate').val();
+    itemsDetails.push({ order_item_id: parseInt($('#salesTaxTotal').data('orderitemid')) || 0.00, order_id: oid, product_name: sCountry + '-' + sState + '-' + sState, product_type: 'tax', tax_rate_state: sState, tax_amount: _taxRate * 100, total: parseFloat($('#salesTaxTotal').text()) || 0.00 });
+
     return itemsDetails;
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Save Details ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1902,25 +1897,23 @@ function saveCO() {
     if (cid <= 0) { swal('Alert!', 'Please Select Customer.', "error").then((result) => { $('#ddlUser').select2('focus'); return false; }); return false; }
     if (!ValidateData()) { $("#loader").hide(); return false };
 
-    let postMeta = createPostMeta(), postStatus = createPostStatus(), otherItems = createOtherItemsList(), taxItems = createTaxItemsList(), itemsDetails = createItemsList();
+    let postMeta = createPostMeta(), postStatus = createPostStatus(), itemsDetails = createItemsList();
 
     if (itemsDetails.length <= 0) { swal('Alert!', 'Please add product.', "error").then((result) => { $('#ddlProduct').select2('open'); return false; }); return false; }
-    var obj = { OrderPostMeta: postMeta, OrderProducts: itemsDetails, OrderPostStatus: postStatus, OrderOtherItems: otherItems, OrderTaxItems: taxItems };
-
+    let obj = { order_id: oid, order_statsXML: JSON.stringify(postStatus), postmetaXML: JSON.stringify(postMeta), order_itemsXML: JSON.stringify(itemsDetails) };
     $('#btnCheckout').prop("disabled", true); $('.billinfo').prop("disabled", true); $('#btnCheckout').text("Waiting...");
     //console.log(obj);
     $.ajax({
         type: "POST", contentType: "application/json; charset=utf-8",
         url: "/Orders/SaveCustomerOrder",
         data: JSON.stringify(obj), dataType: "json", beforeSend: function () { $("#loader").show(); },
-        success: function (data) {
-            if (data.status == true) {
+        success: function (result) {
+            result = JSON.parse(result);
+            if (result[0].Response == "Success") {
                 $('#order_line_items,#order_state_recycling_fee_line_items,#order_fee_line_items,#order_shipping_line_items,#order_refunds,#billCoupon,.refund-action').empty();
-                getOrderItemList(oid);
-                //swal('Alert!', data.message, "success");
-                setTimeout(function () { PaymentModal(); }, 50);
+                $.when(getOrderItemList(oid)).done(function () { PaymentModal(); });
             }
-            else { swal('Alert!', data.message, "error").then((result) => { return false; }); }
+            else { swal('Error', 'Something went wrong, please try again.', "error").then((result) => { return false; }); }
         },
         error: function (xhr, status, err) { $("#loader").hide(); $('#btnCheckout').prop("disabled", false); $('.billinfo').prop("disabled", false); alert(err); },
         complete: function () { $("#loader").hide(); $('#btnCheckout').prop("disabled", false); $('.billinfo').prop("disabled", false); $('#btnCheckout').text("Checkout"); isEdit(false); },
@@ -1929,24 +1922,29 @@ function saveCO() {
     return false;
 }
 function updateCO() {
+    let oid = parseInt($('#hfOrderNo').val()) || 0;
     if (!ValidateData()) { $("#loader").hide(); return false };
-    let postMeta = createPostMeta(), postStatus = createPostStatus(), otherItems = createOtherItemsList(), taxItems = createTaxItemsList(), itemsDetails = createItemsList();
+    let postMeta = createPostMeta(), postStatus = createPostStatus(), itemsDetails = createItemsList();
 
     if (itemsDetails.length <= 0) { swal('Alert!', 'Please add product.', "error").then((result) => { $('#ddlProduct').select2('open'); return false; }); return false; }
-    var obj = { OrderPostMeta: postMeta, OrderProducts: itemsDetails, OrderPostStatus: postStatus, OrderOtherItems: otherItems, OrderTaxItems: taxItems };
+    let obj = { order_id: oid, order_statsXML: JSON.stringify(postStatus), postmetaXML: JSON.stringify(postMeta), order_itemsXML: JSON.stringify(itemsDetails) };
     //console.log(obj);
-    $.ajax({
-        type: "POST", contentType: "application/json; charset=utf-8", url: "/Orders/SaveCustomerOrder", data: JSON.stringify(obj), dataType: "json", beforeSend: function () { $("#loader").show(); },
-        success: function (data) {
-            if (data.status == true) {
-                $('#order_line_items,#order_state_recycling_fee_line_items,#order_fee_line_items,#order_shipping_line_items,#order_refunds,#billCoupon,.refund-action').empty();
-                getOrderInfo();
-            }
-            else { swal('Alert!', data.message, "error").then((result) => { return false; }); }
-        },
-        error: function (xhr, status, err) { $("#loader").hide(); alert(err); },
-        complete: function () { $("#loader").hide(); isEdit(false); },
-    });
+    swal.queue([{
+        title: 'Alert!', confirmButtonText: 'Yes, Update it!', text: "Do you want to update your order?",
+        showLoaderOnConfirm: true, showCancelButton: true,
+        preConfirm: function () {
+            return new Promise(function (resolve) {
+                $.post('/Orders/SaveCustomerOrder', obj).done(function (result) {
+                    result = JSON.parse(result);
+                    if (result[0].Response == "Success") {
+                        $('#order_line_items,#order_state_recycling_fee_line_items,#order_fee_line_items,#order_shipping_line_items,#order_refunds,#billCoupon,.refund-action').empty();
+                        swal('Success', 'Order updated successfully.', "success"); getOrderInfo();
+                    }
+                    else { swal('Error', 'Something went wrong, please try again.', "error"); }
+                }).catch(err => { swal.hideLoading(); swal('Error!', 'Something went wrong, please try again.', 'error'); });
+            });
+        }
+    }]);
     return false;
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Payment Modal ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

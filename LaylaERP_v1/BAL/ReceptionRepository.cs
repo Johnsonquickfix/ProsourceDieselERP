@@ -256,7 +256,7 @@ namespace LaylaERP.BAL
             try
             {
                 SqlParameter[] para = { new SqlParameter("@po_id", id), };              
-                ds = SQLHelper.ExecuteDataSet("wp_receiveorderdatabyid", para);
+                ds = SQLHelper.ExecuteDataSet("erp_receiveorderdatabyid", para);
                 ds.Tables[0].TableName = "po"; ds.Tables[1].TableName = "pod";
             }
             catch (Exception ex)
@@ -491,7 +491,7 @@ namespace LaylaERP.BAL
                 //strSql += "select wh.ref,ifnull(address,'') address, ifnull(address1,'') address1,ifnull(City,'') City,ifnull(town,'') state, ifnull(zip,'') zip,"
                 //            + " ifnull( Country,'') Country, ifnull( phone,'') phone, ifnull(email,'') email,"
                 //            + " (select ref from commerce_purchase_order where rowid = psr.fk_purchase) pono from commerce_purchase_receive_order psr inner join wp_warehouse wh on wh.rowid = psr.fk_warehouse where psr.rowid = @po_id limit 1;";
-                ds = SQLHelper.ExecuteDataSet("wp_receiveorderprint", para);
+                ds = SQLHelper.ExecuteDataSet("erp_receiveorderprint", para);
                 ds.Tables[0].TableName = "po"; ds.Tables[1].TableName = "pod"; ds.Tables[2].TableName = "popd"; ds.Tables[3].TableName = "podvadd";
             }
             catch (Exception ex)

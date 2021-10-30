@@ -12,9 +12,9 @@
         $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList">Back to List</a><input type="submit" value="Create Order" id="btnSave" class="btn btn-danger billinfo" />');
         $('.billinfo').prop("disabled", false);
         let VendorID = parseInt($('#ddlVendor').val()) || 0;
-        getVendorProducts(VendorID); isEdit(true);
-        setTimeout(function () {
-            let _details = getVendorDetails();
+        $.when(getVendorProducts(VendorID)).done(function () {
+            isEdit(true);
+            let _details = getVendorDetails(); console.log(_details);
             if (_details.length > 0) {
                 $('#txtRefvendor').val(_details[0].code_vendor);
                 $('#ddlPaymentTerms').val((parseInt(_details[0].PaymentTermsID) || 0)).trigger('change');
@@ -22,8 +22,9 @@
                 $('#ddlIncoTerms').val((parseInt(_details[0].fk_incoterms) || 0)).trigger('change');
                 $('#ddlPaymentType').val((parseInt(_details[0].Paymentmethod) || 0)).trigger('change');
                 $('#txtIncoTerms').val(_details[0].location_incoterms);
+                $('#ddlWarehouse').val((parseInt(_details[0].fk_warehouse) || 0)).trigger('change');
             }
-        }, 50);
+        });
     });
     //$('#ddlProduct').select2({
     //    allowClear: true, minimumInputLength: 3, placeholder: "Search Product",
@@ -197,9 +198,9 @@ function bindItems(data) {
                     itemHtml += '<tr id="tritemid_' + data[i].fk_product + '" class="paid_item" data-pid="' + data[i].fk_product + '" data-pname="' + data[i].description + '" data-psku="' + data[i].product_sku + '" data-rowid="' + data[i].rowid + '">';
                     itemHtml += '<td class="text-center"><button class="btn p-0 text-red btnDeleteItem billinfo" onclick="removeItems(\'' + data[i].fk_product + '\');"> <i class="glyphicon glyphicon-trash"></i> </button></td>';
                     itemHtml += '<td>' + data[i].description + '</td><td>' + data[i].product_sku + '</td>';
-                    itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemprice_' + data[i].fk_product + '" value="' + data[i].subprice + '" name="txt_itemprice" placeholder="Price"></td>';
+                    itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemprice_' + data[i].fk_product + '" value="' + data[i].subprice.toFixed(2) + '" name="txt_itemprice" placeholder="Price"></td>';
                     itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemqty_' + data[i].fk_product + '" value="' + data[i].qty + '" name="txt_itemqty" placeholder="Qty."></td>';
-                    itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemdisc_' + data[i].fk_product + '" value="' + data[i].discount_percent + '" name="txt_itemdisc" placeholder="Discount"></td>';
+                    itemHtml += '<td><input min="0" autocomplete="off" class="form-control billinfo number rowCalulate" type="number" id="txt_itemdisc_' + data[i].fk_product + '" value="' + data[i].discount_percent.toFixed(2) + '" name="txt_itemdisc" placeholder="Discount"></td>';
                     itemHtml += '<td class="text-right tax-amount" data-tax1="' + data[i].localtax1_tx + '" data-tax2="' + data[i].localtax2_tx + '">' + data[i].total_localtax1 + '</td>';
                     itemHtml += '<td class="text-right ship-amount">' + data[i].total_localtax2 + '</td>';
                     itemHtml += '<td class="text-right row-total">' + data[i].total_ttc.toFixed(2) + '</td>';
@@ -575,6 +576,7 @@ function saveVendorPO() {
     let _list = createItemsList();
     if (vendorid <= 0) { swal('alert', 'Please Select Vendor', 'error').then(function () { swal.close(); $('#ddlVendor').focus(); }) }
     else if (payment_type <= 0) { swal('alert', 'Please Select Payment Type', 'error').then(function () { swal.close(); $('#ddlPaymentType').focus(); }) }
+    else if (wh_id <= 0) { swal('alert', 'Please Select Warehouse.', 'error').then(function () { swal.close(); $('#ddlWarehouse').focus(); }) }
     else if (date_livraison == "") { swal('alert', 'Please Select Planned date of delivery', 'error').then(function () { swal.close(); $('#txtPlanneddateofdelivery').focus(); }) }
     else if (_list.length <= 0) { swal('Alert!', 'Please add product.', "error").then((result) => { $('#ddlProduct').select2('open'); return false; }); return false; }
     else {

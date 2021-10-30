@@ -368,7 +368,6 @@
     <Content Include="Content\ajax\libs\jszip\3.1.3\jszip.min.js" />
     <Content Include="Content\ajax\libs\pdfmake\0.1.53\pdfmake.min.js" />
     <Content Include="Content\ajax\libs\pdfmake\0.1.53\vfs_fonts.js" />
-    <Content Include="Content\alert\sweetalert2.all.min.js" />
     <Content Include="Content\alert\sweetalert2.min.css" />
     <Content Include="Content\BankLinkedFiles\default.png" />
     <Content Include="Content\bootstrap-theme.css" />

@@ -2265,7 +2265,7 @@ body .btn {font-size:12px;}
 .row_on .fa-toggle-on, .sale-active i {color: #25a580 !important; font-size: 30px;}
 .fas.fa-toggle-off {font-size: 30px; color:#4f4f4f;}
 .inventory-table td.text-left:first-child {text-align:left;}
-.journal-section table a i {font-size:16px;margin:0px 5px;}
+.journal-section table a i {font-size:12px;margin:0px 5px;}
 .journal-section table th a i {color:#fff;}
 .product-acctount-section .a-relative {position:relative; width:18px; height:18px;}
 .product-acctount-section th, .product-acctount-section td {vertical-align:middle !important;}
@@ -2671,9 +2671,19 @@ a#btnbackcategory {max-width: 135px; margin-top: 5px;}
 .list.products .table-blue.table th,
 .list.products .table-blue.table td{box-sizing:border-box !important;}
 #ProductCategory_wrapper{width:100%;}
-#ProductCategory_wrapper #ProductCategory{width:1000px !important;}
+.bxa {text-align:center;border: 1px solid #ddd; padding: 5px 15px; margin-bottom:15px;}
+.bxa span{display:block; text-transform:uppercase; font-weight:600;}
+.bxa h3{margin:0px;}
+#linkInvoice > .row > .col-md-2:first-child{margin-left:10px;}
+.bxa i{font-size:18px; margin-right:5px;}
+.bxa-row > div{display:inline-block; margin-left:10px;}
+/*#ProductCategory_wrapper #ProductCategory {width: 1000px !important;}
+
+.categories #ProductCategory_wrapper #ProductCategory {width: 100% !important;}*/
 #ProductCategory_wrapper #ProductCategory th,
-#ProductCategory_wrapper #ProductCategory td{box-sizing:border-box;}
+#ProductCategory_wrapper #ProductCategory td {
+    box-sizing: border-box;
+}
 #ProductCategory_wrapper .row:nth-child(2){margin:0px;}
 #ProductCategory_wrapper .row:nth-child(2) .col-sm-12{overflow:auto;width:100%;padding: 0px;}
 
@@ -2941,3 +2951,16 @@ width: 85px;
 .list.purchases #PrintModal .modal-lg {
     width: 1000px;
 }
+.group-test .col-sm-3{width:85%;padding:0px;}
+.group-test .col-sm-9{width:15%;padding:0px;}
+.group-test .col-sm-9 > span{width:50%;padding:0px 10px; }
+
+.space-heads{margin-right:10px;}
+
+.new.purchase #PrintModal .modal-dialog {
+    min-width: 1000px;
+}
+
+.group_test2.group-test > .col-sm-3{width: 82.6%;}
+
+.group_test2.group-test > .col-sm-9{width: 17.4%;}

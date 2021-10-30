@@ -9,7 +9,7 @@ namespace LaylaERP.Models
     {
         public int AddNewCustomer(CustomerModel model)
         {
-            try
+            try 
             {
                 string strsql = "insert into wp_users(user_login,user_nicename, user_email, user_registered, display_name, user_image)values(@user_login,@user_nicename, @user_email, @user_registered, @display_name, @user_image);SELECT LAST_INSERT_ID();";
                 SqlParameter[] para =

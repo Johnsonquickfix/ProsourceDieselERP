@@ -33,6 +33,10 @@ namespace LaylaERP.Controllers
             ViewBag.user_role = CommanUtilities.Provider.GetCurrent().UserType;
             return View();
         }
+        public ActionResult InventoryVendorWarehouse()
+        {
+            return View();
+        }
 
         public JsonResult GetWarehouse(SearchModel model)
         {
@@ -212,8 +216,6 @@ namespace LaylaERP.Controllers
             try
             {
                 DataTable dt = WarehouseRepository.GetProductDetails(id);
-                //model.price = Convert.ToInt32(dt.Rows[0]["sale_price"].ToString());
-                //ViewBag.price = model.price;
                 JSONresult = JsonConvert.SerializeObject(dt);
             }
             catch { }
@@ -324,11 +326,9 @@ namespace LaylaERP.Controllers
         [HttpPost]
         public JsonResult AddCurrentstock(WarehouseModel model)
         {
-            int ID = 1;
-            //int ID = WarehouseRepository.AddCurrentstock(model);
+            int ID = WarehouseRepository.AddCurrentstock(model);
             if (ID > 0)
             {
-                WarehouseRepository.AddCurrentstock(model);
                 return Json(new { status = true, message = "Data has been saved successfully!!", url = "" }, 0);
             }
             else
@@ -376,8 +376,8 @@ namespace LaylaERP.Controllers
             else
             {
                 return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
-            }
 
+            }
         }
 
         public JsonResult GetCurrentStock1(SearchModel model)
@@ -734,6 +734,45 @@ namespace LaylaERP.Controllers
                 return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
             }
 
+        }
+
+        public JsonResult GetVendor()
+        {
+            DataSet ds = WarehouseRepository.GetVendor();
+            List<SelectListItem> vendorlist = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+
+                vendorlist.Add(new SelectListItem { Text = dr["name"].ToString(), Value = dr["rowid"].ToString() });
+
+            }
+            return Json(vendorlist, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetWarehouserByVendor(string rowid)
+        {
+            DataSet ds = WarehouseRepository.GetWarehouserByVendor(rowid);
+            List<SelectListItem> warehouselist = new List<SelectListItem>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+
+                warehouselist.Add(new SelectListItem { Text = dr["name"].ToString(), Value = dr["WarehouseID"].ToString() });
+
+            }
+            return Json(warehouselist, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult CurrentStockList(string fk_entrepot)
+        {
+            //int id = model.fk_product;
+            string JSONresult = string.Empty;
+            try
+            {
+                DataTable dt = WarehouseRepository.CurrentStockData(fk_entrepot);
+                JSONresult = JsonConvert.SerializeObject(dt);
+            }
+            catch { }
+            return Json(JSONresult, 0);
         }
 
     }

@@ -720,6 +720,7 @@
     <Content Include="js\Users\UserLogin.js" />
     <Content Include="js\Users\UserRole.js" />
     <Content Include="js\Users\Users.js" />
+    <Content Include="js\Warehouse\InventoryVendorWarehouse.js" />
     <Content Include="js\Warehouse\updatewarehouse.js" />
     <Content Include="js\Warehouse\vendorwarehouselist.js" />
     <Content Include="js\Warehouse\warehouselist.js" />
@@ -1002,6 +1003,7 @@
     <Content Include="Views\Accounting\AccountLedgerList.cshtml" />
     <Content Include="Views\Bank\BankEntriesAll.cshtml" />
     <Content Include="Views\PaymentInvoice\PartiallyOrderList.cshtml" />
+    <Content Include="Views\Warehouse\InventoryVendorWarehouse.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

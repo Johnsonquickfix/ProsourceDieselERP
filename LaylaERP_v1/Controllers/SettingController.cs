@@ -110,7 +110,7 @@ namespace LaylaERP.Controllers
                 DataTable dt = UTILITIES.UserActivityLog.GetActivityLog(urid, fromdate, todate, model.PageNo, model.PageSize, out TotalRecord);
                 result = JsonConvert.SerializeObject(dt);
             }
-            catch { }
+            catch(Exception ex) { }
             //return Json(JSONresult, 0);
             return Json(new { sEcho = model.sEcho, recordsTotal = TotalRecord, recordsFiltered = TotalRecord, iTotalRecords = TotalRecord, iTotalDisplayRecords = TotalRecord, aaData = result }, 0);
         }

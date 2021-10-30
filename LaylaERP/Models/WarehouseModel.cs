@@ -80,5 +80,6 @@ namespace LaylaERP.Models
         public byte[] ImageFiledata { get; set; }
         public string ImagePath { get; set; }
         public HttpPostedFileBase ImageFile { get; set; }
+        public int vendor_id { get; set; }
     }
 }

@@ -57,7 +57,7 @@ namespace LaylaERP.Controllers
                 return Json(productlist, JsonRequestBehavior.AllowGet);
 
             }
-           
+
 
         }
 
@@ -67,7 +67,7 @@ namespace LaylaERP.Controllers
             string JSONstring = string.Empty; bool b_status = false; long ID = 0;
             try
             {
-            ID = new ReceptionRepository().ReceptionPurchase(model);
+                ID = new ReceptionRepository().ReceptionPurchase(model);
 
                 if (ID > 0)
                 {
@@ -95,7 +95,11 @@ namespace LaylaERP.Controllers
 
                 if (ID > 0)
                 {
-                    b_status = true; JSONstring = "Purchase Record has been Closed successfully!!";
+                    b_status = true;
+                    if (model.fk_status == 6)
+                        JSONstring = "Purchase Record has been Closed successfully!!";
+                    else
+                        JSONstring = "Purchase Record has been Opened successfully!!";
                 }
                 else
                 {
@@ -192,7 +196,7 @@ namespace LaylaERP.Controllers
                 JSONresult = JsonConvert.SerializeObject(ds);
             }
             catch { }
-            return Json(new { add = om.address, name = om.CompanyName , add1 = om.address1, city = om.City, state = om.State, zip = om.postal_code, country = om.Country, phone = om.user_mobile, email = om.email, website = om.website, data = JSONresult }, 0);
+            return Json(new { add = om.address, name = om.CompanyName, add1 = om.address1, city = om.City, state = om.State, zip = om.postal_code, country = om.Country, phone = om.user_mobile, email = om.email, website = om.website, data = JSONresult }, 0);
         }
         [HttpGet]
         public JsonResult GetPurchaseOrder_Rec(SearchModel model)
@@ -216,7 +220,7 @@ namespace LaylaERP.Controllers
         {
             string result = string.Empty;
             try
-            {               
+            {
                 DataTable dt = ReceptionRepository.GetPoClosureOrderDetailsList(model.strValue1, model.strValue2, model.strValue3);
                 result = JsonConvert.SerializeObject(dt, Formatting.Indented);
             }

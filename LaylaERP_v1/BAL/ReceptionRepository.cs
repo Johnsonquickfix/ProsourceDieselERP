@@ -21,7 +21,7 @@ namespace LaylaERP.BAL
                 string strWhr = string.Empty;
 
                 string strSql = "Select p.rowid id, p.ref, p.ref_ext refordervendor,v.SalesRepresentative request_author,v.name vendor_name,v.address,v.town,v.fk_country,v.fk_state,v.zip,v.phone,"
-                                + " DATE_FORMAT(p.date_creation,'%m/%d/%Y') date_creation,DATE_FORMAT(p.date_livraison, '%m/%d/%Y') date_livraison, s.Status,total_ttc,fk_projet from commerce_purchase_order p"
+                                + " CONVERT(VARCHAR(12), p.date_creation, 107)  date_creation,CONVERT(VARCHAR(12), p.date_livraison, 107)  date_livraison, s.Status,total_ttc,fk_projet from commerce_purchase_order p"
                                 + " inner join wp_vendor v on p.fk_supplier = v.rowid inner join wp_StatusMaster s on p.fk_status = s.ID where p.ref_ext <> '' and p.fk_status= 3 and 1 = 1";
                 if (!string.IsNullOrEmpty(searchid))
                 {
@@ -32,9 +32,9 @@ namespace LaylaERP.BAL
                 //{
                 //    strWhr += " and (v.VendorStatus='" + userstatus + "') ";
                 //}
-                strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
+                strSql += strWhr + string.Format(" order by " + SortCol + " " + SortDir + " OFFSET " + (pageno).ToString() + " ROWS FETCH NEXT " + pagesize + " ROWS ONLY; ");
 
-                strSql += "; SELECT ceil(Count(p.rowid)/" + pagesize.ToString() + ") TotalPage,Count(p.rowid) TotalRecord from commerce_purchase_order p inner join wp_vendor v on p.fk_supplier = v.rowid inner join wp_StatusMaster s on p.fk_status = s.ID WHERE p.ref_ext <> '' and p.fk_status= 3 and 1 = 1 " + strWhr.ToString();
+                strSql += "; SELECT Count(p.rowid)/" + pagesize.ToString() + " TotalPage,Count(p.rowid) TotalRecord from commerce_purchase_order p inner join wp_vendor v on p.fk_supplier = v.rowid inner join wp_StatusMaster s on p.fk_status = s.ID WHERE p.ref_ext <> '' and p.fk_status= 3 and 1 = 1 " + strWhr.ToString();
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
@@ -97,7 +97,7 @@ namespace LaylaERP.BAL
                 {
                     searchid = searchid.ToLower();
                     strWhr += " and (lower(p.ref) like '" + searchid + "%' OR lower(p.ref_ext) like '" + searchid + "%' OR lower(v.SalesRepresentative)='" + searchid + "%' OR lower(v.name) like '" + searchid + "%' OR lower(v.fk_state) like '" + searchid + "%' OR lower(v.zip) like '" + searchid + "%')";
-                }               
+                }
                 strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
 
                 strSql += "; SELECT ceil(Count(p.rowid)/" + pagesize.ToString() + ") TotalPage,Count(p.rowid) TotalRecord from commerce_purchase_receive_order p inner join wp_vendor v on p.fk_supplier = v.rowid inner join wp_StatusMaster s on p.fk_status = s.ID WHERE p.fk_status= 6 and 1 = 1 " + strWhr.ToString();
@@ -129,12 +129,11 @@ namespace LaylaERP.BAL
                 //  + " DATE_FORMAT(p.date_creation,'%m/%d/%Y %h:%i %p') dt,DATE_FORMAT(p.date_creation,'%m/%d/%Y %H:%i') date_creation,DATE_FORMAT(p.date_livraison, '%m/%d/%Y') date_livraison, s.Status,total_ttc from commerce_purchase_receive_order p"
                 //  + " inner join wp_vendor v on p.fk_supplier = v.rowid inner join wp_StatusMaster s on p.fk_status = s.ID where p.fk_status= 6 and 1 = 1";
 
+                string strSql = "Select distinct MAX(p.rowid) rowid, p.fk_purchase id, MAX(cpo.ref) ref,MAX(cpo.fk_projet) fk_projet,MAX(v.name) vendor_name,MAX(v.address) address,MAX(v.town) town,MAX(v.fk_country) fk_country,MAX(v.fk_state) fk_state,MAX(v.zip) zip ,MAX(v.phone) phone,MAX(s.Status) Status,max(CONVERT(VARCHAR(12), p.date_livraison, 107)) date_livraison from commerce_purchase_receive_order p  "
+                                 + " inner join commerce_purchase_order cpo on cpo.rowid = p.fk_purchase inner join wp_vendor v on p.fk_supplier = v.rowid inner join wp_StatusMaster s on p.fk_status = s.ID "
+                                 + " where p.fk_status= 6 and 1 = 1  GROUP by p.fk_purchase ";
 
-                string strSql = "Select distinct p.fk_purchase id,(select ref from commerce_purchase_order where rowid = p.fk_purchase) ref,(select fk_projet from commerce_purchase_order where rowid = p.fk_purchase) fk_projet,v.SalesRepresentative request_author,v.name vendor_name,v.address,v.town,v.fk_country,v.fk_state,v.zip,v.phone,DATE_FORMAT(p.date_livraison, '%m/%d/%Y') date_livraison, s.Status from commerce_purchase_receive_order p "
-             + "inner join wp_vendor v on p.fk_supplier = v.rowid "
-             + "inner join wp_StatusMaster s on p.fk_status = s.ID where p.fk_status= 6 and 1 = 1";
-
-                strSql += strWhr + string.Format(" order by p.fk_purchase desc");
+                strSql += strWhr + string.Format(" order by rowid desc");
                 dt = SQLHelper.ExecuteDataTable(strSql);
             }
             catch (Exception ex)
@@ -160,14 +159,14 @@ namespace LaylaERP.BAL
                 //string strSql = "Select p.fk_purchase id,p.rowid RicD, (select ref from commerce_purchase_order where rowid = p.fk_purchase) ref,(select fk_projet from commerce_purchase_order where rowid = p.fk_purchase) fk_projet, p.ref refordervendor,v.SalesRepresentative request_author,v.name vendor_name,v.address,v.town,v.fk_country,v.fk_state,v.zip,v.phone,"
                 //                     + " DATE_FORMAT(p.date_creation,'%m/%d/%Y %h:%i %p') dt,DATE_FORMAT(p.date_creation,'%m/%d/%Y %H:%i') date_creation,DATE_FORMAT(p.date_livraison, '%m/%d/%Y') date_livraison, s.Status,FORMAT(total_ttc,2) total_ttc from commerce_purchase_receive_order p"
                 //                      + " inner join wp_vendor v on p.fk_supplier = v.rowid inner join wp_StatusMaster s on p.fk_status = s.ID where p.fk_purchase = @ref and p.fk_status= 6 and 1 = 1";               
-         
+
                 //strSql += strWhr + string.Format(" order by DATE_FORMAT(p.date_creation,'%m/%d/%Y %H:%i') desc");
 
-                string strSql = "Select p.fk_purchase id,p.rowid RicD,p.ref refordervendor,sum(recqty) Quenty,group_concat(' ',description,' (*',recqty,')') des,DATE_FORMAT(p.date_creation,'%m/%d/%Y %h:%i %p') dtcration,DATE_FORMAT(p.date_creation,'%m/%d/%Y %H:%i') date_creation,"
-                                     + " FORMAT(p.total_ttc,2) total_ttc from commerce_purchase_receive_order p"
-                                      + " inner join commerce_purchase_receive_order_detail pr on pr.fk_purchase_re = p.rowid where p.fk_purchase = @ref and product_type = 0 and p.fk_status= 6 and 1 = 1 ";
+                string strSql = "Select max(p.fk_purchase) id,max(p.rowid) RicD,p.ref refordervendor,sum(recqty) Quenty, string_agg(concat(' ' ,description, ' (*',recqty,')'), ',') des,max(CONVERT(VARCHAR(12), p.date_creation, 107)) dtcration,max(CONVERT(VARCHAR(12), p.date_creation, 107)) date_creation,Cast(CONVERT(DECIMAL(10,2),max(p.total_ttc)) as nvarchar) total_ttc from commerce_purchase_receive_order p "
+                                     + " inner join commerce_purchase_receive_order_detail pr on pr.fk_purchase_re = p.rowid "
+                                      + " where p.fk_purchase = @ref and product_type = 0 and p.fk_status= 6 and 1 = 1 ";
 
-                strSql += strWhr + string.Format("group by  p.ref order by p.rowid desc");
+                strSql += strWhr + string.Format("group by p.ref order by RicD desc");
 
                 dt = SQLHelper.ExecuteDataTable(strSql, parameters);
             }
@@ -179,6 +178,7 @@ namespace LaylaERP.BAL
         }
 
 
+
         public static DataTable GetPartiallyDetailsList(string searchid, string categoryid, string productid)
         {
             DataTable dt = new DataTable();
@@ -188,7 +188,7 @@ namespace LaylaERP.BAL
                 if (!string.IsNullOrEmpty(searchid))
                 {
                     searchid = searchid.ToLower();
-                    strWhr += " and (lower(p.ref) like '" + searchid + "%' OR lower(p.ref_ext) like '" + searchid + "%' OR lower(v.SalesRepresentative)='" + searchid + "%' OR lower(v.name) like '" + searchid + "%' OR lower(v.fk_state) like '" + searchid + "%' OR lower(v.zip) like '" + searchid + "%')";
+                    strWhr += " and (lower(p.ref) like '" + searchid + "%' OR lower(p.ref_ext) like '" + searchid + "%' OR lower(v.name) like '" + searchid + "%' OR lower(v.fk_state) like '" + searchid + "%' OR lower(v.zip) like '" + searchid + "%')";
                 }
 
                 //string strSql = "Select p.fk_purchase id,p.rowid RicD, (select ref from commerce_purchase_order where rowid = p.fk_purchase) ref,(select fk_projet from commerce_purchase_order where rowid = p.fk_purchase) fk_projet, p.ref refordervendor,v.SalesRepresentative request_author,v.name vendor_name,v.address,v.town,v.fk_country,v.fk_state,v.zip,v.phone,"
@@ -200,11 +200,11 @@ namespace LaylaERP.BAL
                 //+ "inner join wp_vendor v on p.fk_supplier = v.rowid "
                 //+ "inner join wp_StatusMaster s on p.fk_status = s.ID where p.fk_status= 5 and 1 = 1";
 
-                string strSql = "Select distinct p.rowid, p.fk_purchase id, cpo.ref ref,cpo.fk_projet fk_projet, v.SalesRepresentative request_author,v.name vendor_name,v.address,v.town,v.fk_country,v.fk_state,v.zip,v.phone,DATE_FORMAT(p.date_livraison, '%m/%d/%Y') date_livraison, s.Status"
-+ " from commerce_purchase_receive_order p inner join commerce_purchase_order cpo on cpo.rowid = p.fk_purchase inner join wp_vendor v on p.fk_supplier = v.rowid inner join wp_StatusMaster s on p.fk_status = s.ID"
-+ " where p.fk_status= 5 and 1 = 1 GROUP by p.fk_purchase ";
+                string strSql = "Select distinct MAX(p.rowid) rowid, p.fk_purchase id, MAX(cpo.ref) ref,MAX(cpo.fk_projet) fk_projet,MAX(v.name) vendor_name,MAX(v.address) address,MAX(v.town) town,MAX(v.fk_country) fk_country,MAX(v.fk_state) fk_state,MAX(v.zip) zip ,MAX(v.phone) phone,MAX(s.Status) Status,max(CONVERT(VARCHAR(12), p.date_livraison, 107)) date_livraison from commerce_purchase_receive_order p  "
+                                + " inner join commerce_purchase_order cpo on cpo.rowid = p.fk_purchase inner join wp_vendor v on p.fk_supplier = v.rowid inner join wp_StatusMaster s on p.fk_status = s.ID "
+                                + " where p.fk_status= 5 and 1 = 1  GROUP by p.fk_purchase ";
 
-                strSql += strWhr + string.Format(" order by p.rowid desc");
+                strSql += strWhr + string.Format(" order by rowid desc");
                 dt = SQLHelper.ExecuteDataTable(strSql);
             }
             catch (Exception ex)
@@ -233,11 +233,11 @@ namespace LaylaERP.BAL
 
                 //strSql += strWhr + string.Format(" order by DATE_FORMAT(p.date_creation,'%m/%d/%Y %H:%i') desc");
 
-                string strSql = "Select p.fk_purchase id,p.rowid RicD,p.ref refordervendor,sum(recqty) Quenty,group_concat(' ',description,' (*',recqty,')') des,DATE_FORMAT(p.date_creation,'%m/%d/%Y %h:%i %p') dtcration,DATE_FORMAT(p.date_creation,'%m/%d/%Y %H:%i') date_creation,"
-                                     + " FORMAT(p.total_ttc,2) total_ttc from commerce_purchase_receive_order p"
-                                      + " inner join commerce_purchase_receive_order_detail pr on pr.fk_purchase_re = p.rowid where p.fk_purchase = @ref and product_type = 0 and p.fk_status= 5 and 1 = 1 ";
+                string strSql = "Select max(p.fk_purchase) id,max(p.rowid) RicD,p.ref refordervendor,sum(recqty) Quenty, string_agg(concat(' ' ,description, ' (*',recqty,')'), ',') des,max(CONVERT(VARCHAR(12), p.date_creation, 107)) dtcration,max(CONVERT(VARCHAR(12), p.date_creation, 107)) date_creation, Cast(CONVERT(DECIMAL(10,2),max(p.total_ttc)) as nvarchar) total_ttc from commerce_purchase_receive_order p "
+                                     + " inner join commerce_purchase_receive_order_detail pr on pr.fk_purchase_re = p.rowid  "
+                                      + " where p.fk_purchase = @ref and product_type = 0 and p.fk_status= 5 and 1 = 1 ";
 
-                strSql += strWhr + string.Format("group by  p.ref order by p.rowid desc");
+                strSql += strWhr + string.Format(" group by  p.ref  order by RicD desc");
 
 
 
@@ -255,13 +255,8 @@ namespace LaylaERP.BAL
             DataSet ds = new DataSet();
             try
             {
-                SqlParameter[] para = { new SqlParameter("@po_id", id), };
-                string strSql = "select rowid,ref,ref_ext,ref_supplier,fk_supplier,fk_warehouse,fk_status,source,fk_payment_term,fk_balance_days,fk_payment_type,DATE_FORMAT(date_livraison,'%m/%d/%Y') date_livraison,"
-                                + " fk_incoterms,location_incoterms,note_private,note_public,fk_user_author,DATE_FORMAT(date_creation,'%m/%d/%Y') date_creation from commerce_purchase_order where rowid = @po_id;"
-                                + " select rowid,fk_purchase,fk_product,ref product_sku,description,qty,(select IFNULL(sum(recqty),0) from  commerce_purchase_receive_order_detail  where fk_purchase = cprd.fk_purchase and fk_product =  cprd.fk_product ) treceved ,qty-(select IFNULL(sum(recqty),0) from  commerce_purchase_receive_order_detail  where fk_purchase = cprd.fk_purchase and fk_product =  cprd.fk_product ) recbal,discount_percent,discount,subprice,total_ht,tva_tx,localtax1_tx,localtax1_type,"
-                                + " localtax2_tx,localtax2_type,total_tva,total_localtax1,total_localtax2,total_ttc,product_type,date_start,date_end,rang"
-                                + " from commerce_purchase_order_detail cprd where product_type = 0 and fk_purchase = @po_id;";
-                ds = SQLHelper.ExecuteDataSet(strSql, para);
+                SqlParameter[] para = { new SqlParameter("@po_id", id), };              
+                ds = SQLHelper.ExecuteDataSet("wp_receiveorderdatabyid", para);
                 ds.Tables[0].TableName = "po"; ds.Tables[1].TableName = "pod";
             }
             catch (Exception ex)
@@ -278,9 +273,9 @@ namespace LaylaERP.BAL
                 SqlParameter[] para = { new SqlParameter("@po_id", id), };
                 string strSql = "select fk_purchase from commerce_purchase_receive_order"
                                 + " where fk_purchase = @po_id;"
-                                + " select cprod.rowid,description,DATE_FORMAT(date_creation,'%m/%d/%Y') date_creation,recqty  from commerce_purchase_receive_order_detail  cprod"
+                                + " select cprod.rowid,description,CONVERT(VARCHAR(12), date_creation, 107) date_creation,recqty  from commerce_purchase_receive_order_detail  cprod"
                                 + " left outer join commerce_purchase_receive_order cpro on cpro.rowid = cprod.fk_purchase_re"
-                                + " where product_type = 0 and cprod.fk_purchase = @po_id;";
+                                + " where product_type = 0 and cprod.fk_purchase = @po_id order by cprod.rowid desc;";
                 ds = SQLHelper.ExecuteDataSet(strSql, para);
                 ds.Tables[0].TableName = "po"; ds.Tables[1].TableName = "pod";
             }
@@ -290,12 +285,14 @@ namespace LaylaERP.BAL
             }
             return ds;
         }
+
+
         public static DataSet Getwarehouse(string Id)
         {
             DataSet DS = new DataSet();
             try
             {
-                string strSQl = "select WarehouseID ID,ref as Name from wp_VendorWarehouse  wvw inner join wp_warehouse ww on  ww.rowid = wvw.WarehouseID where VendorID = "+Id+";";
+                string strSQl = "select WarehouseID ID,ref as Name from wp_VendorWarehouse  wvw inner join wp_warehouse ww on  ww.rowid = wvw.WarehouseID where VendorID = " + Id + ";";
                 DS = SQLHelper.ExecuteDataSet(strSQl);
 
             }
@@ -308,12 +305,12 @@ namespace LaylaERP.BAL
             long result = 0;
             try
             {
-            
+
                 string str_oiid = string.Join(",", model.PurchaseOrderProducts.Select(x => x.rowid.ToString()).ToArray());
                 string strsql = "";
                 string strsqlins = "";
                 string strstock = "";
-               // string strupdate = "";
+                // string strupdate = "";
                 StringBuilder strupdate = new StringBuilder();
                 DateTime cDate = CommonDate.CurrentDate(), cUTFDate = CommonDate.UtcDate();
                 string strPOYearMonth = cDate.ToString("yyMM").PadRight(4);
@@ -351,15 +348,15 @@ namespace LaylaERP.BAL
                     //}
                     //else
                     //{
-                    
-                        strsql += "insert into commerce_purchase_receive_order_detail (fk_purchase_re,fk_purchase,fk_product,ref,description,qty,recqty,discount_percent,discount,subprice,total_ht,total_ttc,product_type,date_start,date_end,rang,tva_tx,localtax1_tx,localtax1_type,localtax2_tx,localtax2_type,total_tva,total_localtax1,total_localtax2) ";
-                        strsql += string.Format(" select '{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}','{16}','{17}','{18}','{19}','{20}','{21}','{22}','{23}';",
-                            model.RowID, model.IDRec, obj.fk_product, obj.product_sku, obj.description, obj.qty, obj.Recqty, obj.discount_percent, obj.discount, obj.subprice, obj.total_ht, obj.total_ttc, obj.product_type, obj.date_start, obj.date_end, obj.rang,
-                            obj.tva_tx, obj.localtax1_tx, obj.localtax1_type, obj.localtax2_tx, obj.localtax2_type, obj.total_tva, obj.total_localtax1, obj.total_localtax2);
-                   
+
+                    strsql += "insert into commerce_purchase_receive_order_detail (fk_purchase_re,fk_purchase,fk_product,ref,description,qty,recqty,discount_percent,discount,subprice,total_ht,total_ttc,product_type,date_start,date_end,rang,tva_tx,localtax1_tx,localtax1_type,localtax2_tx,localtax2_type,total_tva,total_localtax1,total_localtax2) ";
+                    strsql += string.Format(" select '{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}','{16}','{17}','{18}','{19}','{20}','{21}','{22}','{23}';",
+                        model.RowID, model.IDRec, obj.fk_product, obj.product_sku, obj.description, obj.qty, obj.Recqty, obj.discount_percent, obj.discount, obj.subprice, obj.total_ht, obj.total_ttc, obj.product_type, obj.date_start, obj.date_end, obj.rang,
+                        obj.tva_tx, obj.localtax1_tx, obj.localtax1_type, obj.localtax2_tx, obj.localtax2_type, obj.total_tva, obj.total_localtax1, obj.total_localtax2);
+
                     //}
                 }
-              SQLHelper.ExecuteNonQueryWithTrans(strsql);
+                SQLHelper.ExecuteNonQueryWithTrans(strsql);
                 //Add Stock
                 // strsql += "delete from product_stock_register where tran_type = 'PO' and flag = 'O' and tran_id = " + model.RowID + ";"
 
@@ -370,9 +367,26 @@ namespace LaylaERP.BAL
                     {
                         if (obj.fk_product > 0)
                         {
+
                             strstock += "insert into product_stock_register (tran_type,tran_id,product_id,warehouse_id,tran_date,quantity,flag)";
                             strstock += string.Format("select 'PR','{0}','{1}','{2}','{3}','{4}','R' ;",
                                   model.RowID, obj.fk_product, model.WarehouseID, cDate.ToString("yyyy-MM-dd HH:mm:ss"), obj.Recqty);
+
+                            if (obj.qty >= obj.Remqty)
+                            {
+                                strstock += "insert into product_stock_register (tran_type,tran_id,product_id,warehouse_id,tran_date,quantity,flag)";
+                                strstock += string.Format("select 'PR','{0}','{1}','{2}','{3}','{4}','O' ;",
+                                 model.RowID, obj.fk_product, model.WarehousepoID, cDate.ToString("yyyy-MM-dd HH:mm:ss"), obj.Recqty);
+                            }
+                            else
+                            {
+                                if (obj.ItemRemqty > 0)
+                                {
+                                    strstock += "insert into product_stock_register (tran_type,tran_id,product_id,warehouse_id,tran_date,quantity,flag)";
+                                    strstock += string.Format("select 'PR','{0}','{1}','{2}','{3}','{4}','O' ;",
+                                          model.RowID, obj.fk_product, model.WarehousepoID, cDate.ToString("yyyy-MM-dd HH:mm:ss"), obj.ItemRemqty);
+                                }
+                            }
                         }
                         //+" inner join commerce_purchase_receive_order po on po.rowid = pod.fk_purchase_re where fk_purchase_re = " + model.RowID + ";");
                     }
@@ -403,9 +417,9 @@ namespace LaylaERP.BAL
                     }
                 }
                 // if (SQLHelper.ExecuteNonQueryWithTrans(strstock) > 0)
-               // select 'PR',pod.fk_purchase_re,pod.fk_product," + model.WarehouseID + ",po.date_creation,pod.qty,'R' from commerce_purchase_receive_order_detail pod"
-               if(!string.IsNullOrEmpty(strstock))
-                  SQLHelper.ExecuteScalar(strstock, para);
+                // select 'PR',pod.fk_purchase_re,pod.fk_product," + model.WarehouseID + ",po.date_creation,pod.qty,'R' from commerce_purchase_receive_order_detail pod"
+                if (!string.IsNullOrEmpty(strstock))
+                    SQLHelper.ExecuteScalar(strstock, para);
                 result = model.RowID;
             }
             catch (Exception Ex)
@@ -424,8 +438,7 @@ namespace LaylaERP.BAL
                 StringBuilder strupdate = new StringBuilder();
                 strupdate.Append(string.Format("update commerce_purchase_order set fk_status = {0} where rowid = {1}; ", model.fk_status, model.IDRec));
                 strupdate.Append(string.Format("update commerce_purchase_receive_order set fk_status = {0} where fk_purchase = {1} ", model.fk_status, model.IDRec));
-                SQLHelper.ExecuteNonQueryWithTrans(strupdate.ToString());  
-                result = model.RowID;
+                result = SQLHelper.ExecuteNonQueryWithTrans(strupdate.ToString());
             }
             catch (Exception Ex)
             {
@@ -453,34 +466,28 @@ namespace LaylaERP.BAL
                 //ds.Tables[0].TableName = "po"; ds.Tables[1].TableName = "pod";
 
                 SqlParameter[] para = { new SqlParameter("@po_id", id), };
-                string strSql = "select po.rowid,po.ref,po.ref_ext,po.ref_supplier,po.fk_supplier,po.fk_status,po.fk_payment_term,coalesce(pt.PaymentTerm,'') PaymentTerm,po.fk_balance_days,bd.Balance,po.fk_payment_type,"
-                                + " DATE_FORMAT(po.date_livraison, '%m/%d/%Y') date_livraison,po.fk_incoterms,po.location_incoterms,po.note_private,po.note_public,DATE_FORMAT(po.date_creation, '%m/%d/%Y') date_creation,"
-                                + " v.name vendor_name,v.address,COALESCE(v.town,'') town,v.fk_country,v.fk_state,v.zip,COALESCE(v.phone,'') phone,COALESCE(v.email,'') vendor_email"
-                                + " from commerce_purchase_receive_order po inner join wp_vendor v on po.fk_supplier = v.rowid"
-                                + " left outer join PaymentTerms pt on pt.id = po.fk_payment_term"
-                                + " left outer join BalanceDays bd on bd.id = po.fk_balance_days where po.rowid = @po_id;"
-                                + " select rowid,fk_purchase,fk_product,ref product_sku,description,qty,discount_percent,discount,subprice,total_ht,tva_tx,localtax1_tx,localtax1_type,"
-                                + " localtax2_tx,localtax2_type,total_tva,total_localtax1,total_localtax2,total_ttc,product_type,DATE_FORMAT(date_start, '%m/%d/%Y') date_start,DATE_FORMAT(date_end, '%m/%d/%Y') date_end,rang"
-                                + " from commerce_purchase_receive_order_detail where fk_purchase_re = @po_id order by product_type,rowid;";
-                strSql += "select date_format(datec,'%Y%m%d%k%i%s') sn,date_format(datec,'%m/%d/%Y') datec,ep.ref,epi.type,pt.paymenttype,epi.amount,num_payment from erp_payment_invoice epi"
-                                + " inner join erp_payment ep on ep.rowid = epi.fk_payment inner join wp_PaymentType pt on pt.id = ep.fk_payment"
-                                + " where epi.fk_invoice = @po_id and type = 'PO'"
-                                + " union all"
-                                + " select date_format(datec,'%Y%m%d%k%i%s') sn,date_format(datec, '%m/%d/%Y') datec,ep.ref, epi.type,pt.paymenttype,epi.amount,num_payment from commerce_purchase_receive_order_detail rod"
-                                + " inner join erp_payment_invoice epi on rod.fk_purchase_re = epi.fk_invoice"
-                                + " inner join erp_payment ep on ep.rowid = epi.fk_payment inner join wp_PaymentType pt on pt.id = ep.fk_payment"
-                                + " where rod.fk_purchase_re = @po_id and type = 'PR' group by epi.fk_payment,ep.ref;";
+                //string strSql = "select po.rowid,po.ref,po.ref_ext,po.ref_supplier,po.fk_supplier,po.fk_status,po.fk_payment_term,coalesce(pt.PaymentTerm,'') PaymentTerm,po.fk_balance_days,bd.Balance,po.fk_payment_type,"
+                //                + " DATE_FORMAT(po.date_livraison, '%m/%d/%Y') date_livraison,po.fk_incoterms,po.location_incoterms,po.note_private,po.note_public,DATE_FORMAT(po.date_creation, '%m/%d/%Y') date_creation,"
+                //                + " v.name vendor_name,v.address,COALESCE(v.town,'') town,v.fk_country,v.fk_state,v.zip,COALESCE(v.phone,'') phone,COALESCE(v.email,'') vendor_email"
+                //                + " from commerce_purchase_receive_order po inner join wp_vendor v on po.fk_supplier = v.rowid"
+                //                + " left outer join PaymentTerms pt on pt.id = po.fk_payment_term"
+                //                + " left outer join BalanceDays bd on bd.id = po.fk_balance_days where po.rowid = @po_id;"
+                //                + " select rowid,fk_purchase,fk_product,ref product_sku,description,recqty qty,discount_percent,discount,subprice,total_ht,tva_tx,localtax1_tx,localtax1_type,"
+                //                + " localtax2_tx,localtax2_type,total_tva,total_localtax1,total_localtax2,total_ttc,product_type,DATE_FORMAT(date_start, '%m/%d/%Y') date_start,DATE_FORMAT(date_end, '%m/%d/%Y') date_end,rang"
+                //                + " from commerce_purchase_receive_order_detail where fk_purchase_re = @po_id order by product_type,rowid;";
+                //strSql += "select date_format(datec,'%Y%m%d%k%i%s') sn,date_format(datec,'%m/%d/%Y') datec,ep.ref,epi.type,pt.paymenttype,epi.amount,num_payment from erp_payment_invoice epi"
+                //                + " inner join erp_payment ep on ep.rowid = epi.fk_payment inner join wp_PaymentType pt on pt.id = ep.fk_payment"
+                //                + " where epi.fk_invoice = @po_id and type = 'PO'"
+                //                + " union all"
+                //                + " select date_format(datec,'%Y%m%d%k%i%s') sn,date_format(datec, '%m/%d/%Y') datec,ep.ref, epi.type,pt.paymenttype,epi.amount,num_payment from commerce_purchase_receive_order_detail rod"
+                //                + " inner join erp_payment_invoice epi on rod.fk_purchase_re = epi.fk_invoice"
+                //                + " inner join erp_payment ep on ep.rowid = epi.fk_payment inner join wp_PaymentType pt on pt.id = ep.fk_payment"
+                //                + " where rod.fk_purchase_re = @po_id and type = 'PR' group by epi.fk_payment,ep.ref;";
 
-                //strSql += "select ref,ifnull(address,'') address, ifnull(address1,'') address1,ifnull(City,'') City,ifnull(town,'') state, ifnull(zip,'') zip, ifnull( Country,'') Country, ifnull( phone,'') phone, ifnull(email,'') email,"
-                //                + " (select ref from commerce_purchase_order where rowid = (select fk_purchase from commerce_purchase_receive_order_detail where fk_purchase_re = @po_id limit 1)) pono"
-                //                + " from product_stock_register psr"
-                //                 + " inner join wp_warehouse wh on wh.rowid = psr.warehouse_id"
-                //                + " where tran_id = @po_id limit 1;";
-
-                strSql += "select wh.ref,ifnull(address,'') address, ifnull(address1,'') address1,ifnull(City,'') City,ifnull(town,'') state, ifnull(zip,'') zip,"
-                            + " ifnull( Country,'') Country, ifnull( phone,'') phone, ifnull(email,'') email,"
-                            + " (select ref from commerce_purchase_order where rowid = psr.fk_purchase) pono from commerce_purchase_receive_order psr inner join wp_warehouse wh on wh.rowid = psr.fk_warehouse where psr.rowid = @po_id limit 1;";
-                ds = SQLHelper.ExecuteDataSet(strSql, para);
+                //strSql += "select wh.ref,ifnull(address,'') address, ifnull(address1,'') address1,ifnull(City,'') City,ifnull(town,'') state, ifnull(zip,'') zip,"
+                //            + " ifnull( Country,'') Country, ifnull( phone,'') phone, ifnull(email,'') email,"
+                //            + " (select ref from commerce_purchase_order where rowid = psr.fk_purchase) pono from commerce_purchase_receive_order psr inner join wp_warehouse wh on wh.rowid = psr.fk_warehouse where psr.rowid = @po_id limit 1;";
+                ds = SQLHelper.ExecuteDataSet("wp_receiveorderprint", para);
                 ds.Tables[0].TableName = "po"; ds.Tables[1].TableName = "pod"; ds.Tables[2].TableName = "popd"; ds.Tables[3].TableName = "podvadd";
             }
             catch (Exception ex)
@@ -514,7 +521,7 @@ namespace LaylaERP.BAL
             return ds;
         }
 
-        
+
 
         public static List<ProductModelservices> GetfileuploadData(string strValue1, string strValue2)
         {
@@ -534,7 +541,7 @@ namespace LaylaERP.BAL
                 {
                     if (!string.IsNullOrEmpty(strValue1))
                         strWhr += " fk_purchase = " + strValue1;
-                    string strSQl = "SELECT pw.rowid as ID,fk_purchase,Length,FileType,DATE_FORMAT(CreateDate, '%m-%d-%Y') CreateDate,FileName"
+                    string strSQl = "SELECT pw.rowid as ID,fk_purchase,Length,FileType,CONVERT(VARCHAR(12), CreateDate, 107)  CreateDate,FileName"
                                 + " from commerce_purchase_order_linkedfiles pw"
                                 + " WHERE " + strWhr;
 
@@ -563,6 +570,7 @@ namespace LaylaERP.BAL
             { throw ex; }
             return _list;
         }
+
 
 
         public static DataTable GetfileCountdata(int fk_product, string FileName)
@@ -615,5 +623,5 @@ namespace LaylaERP.BAL
 
 
     }
-    
+
 }

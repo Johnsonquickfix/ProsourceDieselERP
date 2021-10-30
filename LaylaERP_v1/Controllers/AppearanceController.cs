@@ -91,14 +91,14 @@ namespace LaylaERP.Controllers
         [HttpPost]
         public JsonResult CreateMenus(Appearance model)
         {
-            if (ModelState.IsValid)
-            {
-                if (model.menu_id > 0)
-                {
+            //if (ModelState.IsValid)
+            //{
+                //if (model.menu_id > 0)
+                //{
 
-                }
-                else
-                {
+                //}
+                //else
+                //{
 
                     int ID = AppearanceRepository.AddNewMenu(model);
                     if (ID > 0)
@@ -110,9 +110,9 @@ namespace LaylaERP.Controllers
                     {
                         return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
                     }
-                }
-            }
-            return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
+                //}
+            //}
+            //return Json(new { status = false, message = "Invalid Details", url = "" }, 0);
         }
 
 

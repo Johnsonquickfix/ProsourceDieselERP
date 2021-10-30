@@ -15,7 +15,7 @@
 </div>
 <div class="page-title">
     <h2 class="page-heading">POs Reception</h2> <a href="../../Reception/NewReceiveOrder" style="display:none" class="btn btn-danger" id="btnAddVendor">New Receive Order</a>
-</div> 
+</div>
 <section class="content section-content table-design customer-section">
 
     <div class="nav-tabs-custom">
@@ -28,21 +28,21 @@
         <div class="tab-content">
             <div class="tab-pane active" id="tab_21">
                 @*<div class="row">
-                    <div class="col-md-12">
-                        <div class="user-top-section">
-                            <div class="tablenav top tablenav-top2">
-                                <div class="alignleft actions">
-                                    <select class="form-control select2" id="ddlSearchStatus" placeholder="Select User">
-                                        <option value="PN">Pending</option>
-                                        <option value="PR">Partially Received</option>
-                                        <option value="PC">PO-Closure</option>
-                                    </select>
-                                    <button type="button" id="btnSearch" class="btn btn-primary btn-flat button">Search</button>
+                        <div class="col-md-12">
+                            <div class="user-top-section">
+                                <div class="tablenav top tablenav-top2">
+                                    <div class="alignleft actions">
+                                        <select class="form-control select2" id="ddlSearchStatus" placeholder="Select User">
+                                            <option value="PN">Pending</option>
+                                            <option value="PR">Partially Received</option>
+                                            <option value="PC">PO-Closure</option>
+                                        </select>
+                                        <button type="button" id="btnSearch" class="btn btn-primary btn-flat button">Search</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>*@
+                    </div>*@
                 <!-- end top-->
                 <div class="row">
                     <div class="col-md-12">
@@ -77,11 +77,12 @@
             <div class="tab-pane" id="tab_22">
                 @Html.Partial("PartiallyOrder")
             </div>
-            <div class="tab-pane" id="tab_23">                .
+            <div class="tab-pane" id="tab_23">
+                .
                 @Html.Partial("POClosureOrder")
             </div>
         </div>
-        </div>
+    </div>
 </section>
 <script src="https://cdn.tiny.cloud/1/qagffr3pkuv17a8on1afax661irst1hbr4e6tbv888sz91jc/tinymce/5.8.2-114/tinymce.min.js"></script>
 <script src="@Url.Content("~/js/Reception/ReceivePrint.js?v="+DateTime.Now.ToString("ddMMyyyymmss")+"")" asp-append-version="true"></script>

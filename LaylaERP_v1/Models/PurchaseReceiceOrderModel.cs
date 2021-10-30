@@ -69,5 +69,7 @@ namespace LaylaERP.Models
         public int rang { get; set; }
         public string date_start { get; set; }
         public string date_end { get; set; }
+        public decimal Remqty { get; set; }
+        public decimal ItemRemqty { get; set; }
     }
 }

@@ -18,8 +18,10 @@ namespace LaylaERP.BAL
             DataTable dtr = new DataTable();
             try
             {
+                
                 //string strquery = "Select menu_id, menu_code, menu_name, menu_url, menu_icon, parent_id,menu_order, if(status= 1, 'Active', 'Inactive') as status from wp_erpmenus order by menu_code;";
-                string strquery = "SELECT m.menu_id, m.menu_code, m.menu_name, m.menu_url, m.menu_icon, m.parent_id,m.menu_order, if(m.status= 1, 'Active', 'Inactive') as status, epr.menu_name as parent_name FROM wp_erpmenus m left join wp_erpmenus epr on m.parent_id = epr.menu_id order by m.menu_code";
+                //string strquery = "SELECT m.menu_id, m.menu_code, m.menu_name, m.menu_url, m.menu_icon, m.parent_id,m.menu_order, iif(m.status= 1, 'Active', 'Inactive') as status, epr.menu_name as parent_name FROM wp_erpmenus m left join wp_erpmenus epr on m.parent_id = epr.menu_id order by m.menu_code";
+                string strquery = "erpmenuslist";
                 dtr = SQLHelper.ExecuteDataTable(strquery);
             }
             catch (Exception ex)
@@ -58,7 +60,7 @@ namespace LaylaERP.BAL
                     new SqlParameter("@menu_url", model.menu_url),
                     new SqlParameter("@menu_icon", model.menu_icon),
                     new SqlParameter("@parent_id", model.parent_id),
-                    new SqlParameter("@menu_order", model.menu_order),
+                    new SqlParameter("@menu_order", model.menu_order ?? (object)DBNull.Value),
                     new SqlParameter("@status", model.status)
             };
                 int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
@@ -75,7 +77,7 @@ namespace LaylaERP.BAL
             
             try
             {
-                string strsql = "insert into wp_erpmenus(menu_code, menu_name, menu_url, menu_icon, parent_id,menu_order, status) values(@menu_code,@menu_name,@menu_url, @menu_icon, @parent_id, @menu_order, @status);SELECT LAST_INSERT_ID();";
+                string strsql = "INSERT into wp_erpmenus(menu_code, menu_name, menu_url, menu_icon, parent_id,menu_order, status) values(@menu_code,@menu_name,@menu_url, @menu_icon, @parent_id, @menu_order, @status); SELECT SCOPE_IDENTITY();";
                 SqlParameter[] para =
                 {
                     new SqlParameter("@menu_code", model.menu_code),
@@ -83,7 +85,7 @@ namespace LaylaERP.BAL
                     new SqlParameter("@menu_url", model.menu_url),
                     new SqlParameter("@menu_icon", model.menu_icon),
                     new SqlParameter("@parent_id", model.parent_id),
-                    new SqlParameter("@menu_order", model.menu_order),
+                    new SqlParameter("@menu_order", model.menu_order ?? (object)DBNull.Value),
                     new SqlParameter("@status", model.status)
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
@@ -99,10 +101,10 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "Insert into wp_erprole_rest(role_id,erpmenu_id,add_,edit_,delete_) values(65,@erpmenu_id,1,1,1);SELECT LAST_INSERT_ID();";
+                string strsql = "INSERT into wp_erprole_rest(role_id,erpmenu_id,add_,edit_,delete_) values(65,@erpmenu_id,1,1,1)";
                 SqlParameter[] para =
                 {
-                    new SqlParameter("@erpmenu_id", erpmenu_id)
+                    new SqlParameter("@erpmenu_id", erpmenu_id),
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
                 return result;

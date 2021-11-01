@@ -28,11 +28,7 @@ function PurchaseOrderGrid() {
         sAjaxSource: "/PurchaseOrder/GetPurchaseOrderList",
         fnServerData: function (sSource, aoData, fnCallback, oSettings) {
             aoData.push({ name: "strValue1", value: urid });
-            var col = 'order_id';
-            if (oSettings.aaSorting.length > 0) {
-                var col = oSettings.aaSorting[0][0] == 2 ? "refordervendor" : oSettings.aaSorting[0][0] == 3 ? "request_author" : oSettings.aaSorting[0][0] == 4 ? "vendor_name" : oSettings.aaSorting[0][0] == 5 ? "city" : oSettings.aaSorting[0][0] == 6 ? "zip" : oSettings.aaSorting[0][0] == 6 ? "date_livraison" : oSettings.aaSorting[0][0] == 7 ? "Status" : "ref";
-                aoData.push({ name: "sSortColName", value: col });
-            }
+            if (oSettings.aaSorting.length > 0) { aoData.push({ name: "sSortColName", value: oSettings.aoColumns[oSettings.aaSorting[0][0]].data }); }
             //console.log(aoData);
             oSettings.jqXHR = $.ajax({
                 dataType: 'json', type: "GET", url: sSource, data: aoData,
@@ -69,7 +65,7 @@ function PurchaseOrderGrid() {
             },
             { data: 'vendor_name', title: 'Vendor Name', sWidth: "15%" },
             {
-                data: 'city', title: 'Address', sWidth: "20%", render: function (data, type, dtrow) {
+                data: 'address', title: 'Address', sWidth: "20%", render: function (data, type, dtrow) {
                     let val = dtrow.address + ', ' + dtrow.town + ', ' + dtrow.fk_state + ' ' + dtrow.zip;
                     return val;
                 }

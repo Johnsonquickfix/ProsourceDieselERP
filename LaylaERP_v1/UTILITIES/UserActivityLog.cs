@@ -79,7 +79,7 @@
             {
                 string strWhr = string.Empty;
 
-                string strSql = "SELECT  " + (pageno - pageno).ToString() + " + ROW_NUMBER() OVER(Order BY log_date DESC) ROWNUM,ual.user_id,User_Login,user_email,cast(log_date as date) log_date_on,DATE_FORMAT(log_date, '%a %b %e %Y %H:%i') log_date,ip_address,mac_id,module_name,description,log_type_id,"
+                string strSql = "SELECT  " + (pageno - pageno).ToString() + " + ROW_NUMBER() OVER(Order BY log_date DESC) ROWNUM,ual.user_id,User_Login,user_email,cast(log_date as date) log_date_on, cast(log_date as datetime) log_date,ip_address,mac_id,module_name,description,log_type_id,"
                             + " CASE log_type_id WHEN 0 THEN 'Other' WHEN 1 THEN 'Log In' WHEN 2 THEN 'Log Out' WHEN 3 THEN 'Access' WHEN 4 THEN 'Added' WHEN 5 THEN 'Delete' WHEN 6 THEN 'Modify' WHEN 7 THEN 'Submit' END log_type"
                             + " FROM wp_users_activitylog ual INNER JOIN wp_users ur ON ur.id = ual.user_id WHERE 1 = 1";
                 if (userid > 0)
@@ -87,16 +87,17 @@
                 strWhr += " and cast(log_date as date) >= cast('" + fromdate.ToString("yyyy-MM-dd") + "' as date) ";
                 strWhr += " and cast(log_date as date) <= cast('" + todate.ToString("yyyy-MM-dd") + "' as date) ";
 
-                strSql += strWhr + " order by log_date DESC  LIMIT " + (pageno).ToString() + ", " + pagesize.ToString();
+                //strSql += strWhr + " order by log_date DESC  LIMIT " + (pageno).ToString() + ", " + pagesize.ToString();
+                strSql += strWhr + string.Format(" order by log_date DESC OFFSET " + (pageno).ToString() + " ROWS FETCH NEXT " + pagesize + " ROWS ONLY; ");
 
-                strSql += "; SELECT ceil(Count(ual.user_id)/" + pagesize.ToString() + ") TotalPage,Count(ual.user_id) TotalRecord FROM wp_users_activitylog ual INNER JOIN wp_users ur ON ur.id = ual.user_id WHERE 1 = 1 " + strWhr.ToString();
+                strSql += "; SELECT (Count(ual.user_id)/" + pagesize.ToString() + ") TotalPage,Count(ual.user_id) TotalRecord FROM wp_users_activitylog ual INNER JOIN wp_users ur ON ur.id = ual.user_id WHERE 1 = 1 " + strWhr.ToString();
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
                 if (ds.Tables[1].Rows.Count > 0)
                     totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
             }
-            catch { }
+            catch(Exception ex) { }
             return dt;
         }
 

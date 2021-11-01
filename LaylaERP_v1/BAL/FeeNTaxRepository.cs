@@ -17,11 +17,10 @@ namespace LaylaERP.BAL
             try
             {
                 //string strsql = "INSERT INTO wp_usermeta(user_id,meta_key,meta_value) VALUES(@user_id,@meta_key,@meta_value)";
-
-                string strsql = "INSERT INTO wp_staterecyclefee( staterecyclefee, item_parent_id, item_name, city, state, zip, country, is_taxable, is_active) VALUES (@staterecyclefee,@item_parent_id,@item_name,@city,@state,@zip,@country,@is_taxable,@is_active)";
+                //string strsql = "INSERT INTO wp_staterecyclefee( staterecyclefee, item_parent_id, item_name, city, state, zip, country, is_taxable, is_active) VALUES (@staterecyclefee,@item_parent_id,@item_name,@city,@state,@zip,@country,@is_taxable,@is_active)";
+                string strsql = "staterecycletaxinsert";
                 SqlParameter[] para =
                 {
-
                     new SqlParameter("@staterecyclefee", model.staterecyclefee),
                     new SqlParameter("@item_parent_id", model.item_parent_id),
                     new SqlParameter("@item_name", model.item_name),
@@ -46,7 +45,8 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "update wp_staterecyclefee set staterecyclefee= @staterecyclefee,item_parent_id=@item_parent_id,item_name=@item_name,city=@city,state=@state,zip=@zip,country=@country, is_taxable=@is_taxable, is_active=@is_active where id=@id ";
+                //string strsql = "update wp_staterecyclefee set staterecyclefee= @staterecyclefee,item_parent_id=@item_parent_id,item_name=@item_name,city=@city,state=@state,zip=@zip,country=@country, is_taxable=@is_taxable, is_active=@is_active where id=@id ";
+                string strsql = "staterecycletaxupdate";
                 SqlParameter[] para =
                 {
                      new SqlParameter("@staterecyclefee", model.staterecyclefee),
@@ -112,15 +112,18 @@ namespace LaylaERP.BAL
 
         public static void GetFeeNTaxList(string status)
         {
+            SqlParameter[] para = { new SqlParameter("@status", status), };
 
             try
             {
                 FeeNTaxlist.Clear();
                 DataSet ds1 = new DataSet();
                 //string sqlquery = "SELECT id, staterecyclefee, item_parent_id, concat(item_parent_id,' - ',item_name) as item_name, city, state, zip, country, if(is_taxable=0,'No','Yes') as is_taxable, if(is_active=1,'Active','Inactive') as is_active FROM wp_staterecyclefee WHERE is_active='"+status+"'";
-                string sqlquery = "SELECT e.id,e.staterecyclefee, e.item_parent_id, concat(e.item_parent_id,' - ',p.post_title) as item_name, e.city, e.state, e.zip, e.country, if(e.is_taxable=0,'No','Yes') as is_taxable, if(e.is_active=1,'Active','Inactive') as is_active FROM wp_staterecyclefee e"
-                                  + " left join wp_posts p on p.ID = e.item_parent_id where is_active='" + status + "'";
-                ds1 = DAL.SQLHelper.ExecuteDataSet(sqlquery);
+                //string sqlquery = "SELECT e.id,e.staterecyclefee, e.item_parent_id, concat(e.item_parent_id,' - ',p.post_title) as item_name, e.city, e.state, e.zip, e.country, iif(e.is_taxable=0,'No','Yes') as is_taxable, iif(e.is_active=1,'Active','Inactive') as is_active FROM wp_staterecyclefee e"
+                //                  + " left join wp_posts p on p.ID = e.item_parent_id where is_active=@status";
+
+                string sqlquery = "staterecycletax";
+                ds1 = DAL.SQLHelper.ExecuteDataSet(sqlquery,para);
                 string result = string.Empty;
 
                 for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
@@ -181,7 +184,7 @@ namespace LaylaERP.BAL
             DataTable DT = new DataTable();
             try
             {
-                DT = SQLHelper.ExecuteDataTable("select distinct State, StateFullName,StateFullName from ZIPCodes1 where State like '" + strSearch + "%' or StateFullName like '" + strSearch + "%' order by StateFullName limit 50;");
+                DT = SQLHelper.ExecuteDataTable("SELECT distinct State,StateFullName from ZIPCodes1 where State like '" + strSearch + "%' or StateFullName like '" + strSearch + "%' order by StateFullName");
             }
             catch (Exception ex)
             { throw ex; }
@@ -200,6 +203,18 @@ namespace LaylaERP.BAL
             catch (Exception ex)
             { throw ex; }
             return DS;
+        }
+
+        public static DataTable GetCity(string strSearch)
+        {
+            DataTable DT = new DataTable();
+            try
+            {
+                DT = SQLHelper.ExecuteDataTable("SELECT distinct City from ZIPCodes1 where City like '" + strSearch + "%' order by City");
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DT;
         }
     }
 }

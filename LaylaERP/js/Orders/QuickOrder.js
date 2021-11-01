@@ -39,8 +39,10 @@
         else { $('.releasedate').empty(); }
     });
     $(document).on("click", "#btnApplyCoupon", function (t) { t.preventDefault(); CouponModal(); });
+    $(document).on("click", "#btnApplyGiftCard", function (t) { t.preventDefault(); GiftCardModal(); });
     //$("#billModal").on("keypress", function (e) { if (e.which == 13 && e.target.type != "textarea") { $("#btnCouponAdd").click(); } });
     $("#billModal").on("click", "#btnCouponAdd", function (t) { t.preventDefault(); ApplyCoupon(); });
+    $("#billModal").on("click", "#btnGiftCardAdd", function (t) { t.preventDefault(); ApplyGiftCard(); });
     $(document).on("blur", "#txtbillzipcode", function (t) { t.preventDefault(); GetCityByZip($(this).val(), $("#txtbillcity"), $("#ddlbillstate"), $("#ddlbillcountry")); });
     $(document).on("blur", "#txtshipzipcode", function (t) { t.preventDefault(); $("#loader").show(); GetCityByZip($(this).val(), $("#txtshipcity"), $("#ddlshipstate"), $("#ddlshipcountry")); });
     $(document).on("click", "#btnCheckout", function (t) { t.preventDefault(); saveCO(); });
@@ -738,7 +740,7 @@ function getOrderItemList(oid) {
     //let coupon_list = [];
     ajaxFunction('/Orders/GetOrderProductList', option, beforeSendFun, function (data) {
         let itemHtml = '', recyclingfeeHtml = '', feeHtml = '', shippingHtml = '', refundHtml = '', couponHtml = '';
-        let zQty = 0.00, zGAmt = 0.00, zTDiscount = 0.00, zTotalTax = 0.00, zShippingAmt = 0.00, zStateRecyclingAmt = 0.00, zFeeAmt = 0.00, zRefundAmt = 0.00;
+        let zQty = 0.00, zGAmt = 0.00, zTDiscount = 0.00, zTotalTax = 0.00, zShippingAmt = 0.00, zStateRecyclingAmt = 0.00, zFeeAmt = 0.00, zRefundAmt = 0.00, zGiftCardAmt=0.00;
         //for (var i = 0; i < data.length; i++) {
         $.each(data, function (i, row) {
             let orderitemid = parseInt(row.order_item_id) || 0;
@@ -831,6 +833,14 @@ function getOrderItemList(oid) {
                 zShippingAmt = zShippingAmt + (parseFloat(row.total) || 0.00);
                 $("#shippingTotal").data("orderitemid", orderitemid);
             }
+            else if (row.product_type == 'gift_card') {
+                shippingHtml += '<tr id="tritemId_' + orderitemid + '" data-orderitemid="' + orderitemid + '" data-pname="' + row.product_name + '">';
+                shippingHtml += '<td class="text-center item-action"><i class="fa fa-shipping-fast"></i></td>';
+                shippingHtml += '<td>' + row.product_name + '</td><td></td><td></td><td class="TotalAmount text-right">' + row.total.toFixed(2) + '</td><td></td><td></td>';
+                shippingHtml += '</tr>';
+                zGiftCardAmt = zGiftCardAmt + (parseFloat(row.total) || 0.00);
+                $("#GiftCardTotal").data("orderitemid", orderitemid);
+            }
             else if (row.product_type == 'refund') {
                 refundHtml += '<tr id="tritemId_' + orderitemid + '" data-orderitemid="' + orderitemid + '" data-pname="' + row.product_name + '">';
                 //refundHtml += '<td class="text-center item-action"><button class="btn menu-icon-gr text-red btnDeleteItem billinfo" tabitem_itemid="' + orderitemid + '" onclick="removeItemsInTable(\'' + orderitemid + '\');"> <i class="glyphicon glyphicon-trash"></i></button></td>';
@@ -854,7 +864,10 @@ function getOrderItemList(oid) {
         $("#shippingTotal").text(zShippingAmt.toFixed(2));
         $("#stateRecyclingFeeTotal").text(zStateRecyclingAmt.toFixed(2));
         $("#feeTotal").text(zFeeAmt.toFixed(2));
-        $("#orderTotal").html((zGAmt - zTDiscount + zShippingAmt + zTotalTax + zStateRecyclingAmt + zFeeAmt).toFixed(2));
+       
+      //  zGiftCardAmt = parseFloat($(".giftCard").data("giftamt")) || 0.00;
+        $("#GiftCardTotal").text(zGiftCardAmt.toFixed(2));
+        $("#orderTotal").html(((zGAmt - zTDiscount + zShippingAmt + zTotalTax + zStateRecyclingAmt + zFeeAmt) - (zGiftCardAmt)).toFixed(2));
         $("#refundedTotal").text(zRefundAmt.toFixed(2));
         $("#netPaymentTotal").text(((zGAmt - zTDiscount + zShippingAmt + zTotalTax + zStateRecyclingAmt + zFeeAmt) + zRefundAmt).toFixed(2));
         if (zRefundAmt != 0) $(".refund-total").removeClass('hidden'); else $(".refund-total").addClass('hidden');
@@ -993,7 +1006,7 @@ function removeItemsInTable(id) {
 function calcFinalTotals() {
     //calculateStateRecyclingFee();
     let tax_rate = parseFloat($('#hfTaxRate').val()) || 0.00, is_freighttax = $('#hfFreighttaxable').val();
-    let zQty = 0.00, zDiscQty = 0.00, zGAmt = 0.00, zTDiscount = 0.00, zTotalTax = 0.00, zShippingAmt = 0.00, zStateRecyclingAmt = 0.00, zFeeAmt = 0.00;
+    let zQty = 0.00, zDiscQty = 0.00, zGAmt = 0.00, zTDiscount = 0.00, zTotalTax = 0.00, zShippingAmt = 0.00, zStateRecyclingAmt = 0.00, zFeeAmt = 0.00, zGiftCardAmt = 0.00;
     $("#order_line_items > tr").each(function (index, tr) {
         let rQty = (parseFloat($(tr).find("[name=txt_ItemQty]").val()) || 0.00);
         zQty += rQty;
@@ -1015,7 +1028,9 @@ function calcFinalTotals() {
     $("#shippingTotal").text(zShippingAmt.toFixed(2)); $('#order_shipping_line_items').find(".TotalAmount").text(zShippingAmt.toFixed(2));
     CalculateFee();
     zFeeAmt = parseFloat($("#feeTotal").text()) || 0.00;
-    $("#orderTotal").html((zGAmt - zTDiscount + zShippingAmt + zTotalTax + zStateRecyclingAmt + zFeeAmt).toFixed(2));
+    zGiftCardAmt = parseFloat($(".giftCard").data("giftamt")) || 0.00;
+    $("#GiftCardTotal").text(zGiftCardAmt.toFixed(2));
+    $("#orderTotal").html(((zGAmt - zTDiscount + zShippingAmt + zTotalTax + zStateRecyclingAmt + zFeeAmt) - (zGiftCardAmt)).toFixed(2));
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Add Item Meta ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function AddItemMetaModal(id, itemid, meta_list) {
@@ -1147,6 +1162,25 @@ function CouponModal() {
     myHtml += '</div>';
     $("#billModal").empty().html(myHtml);
     $("#billModal").modal({ backdrop: 'static', keyboard: false }); $("#txt_Coupon").focus();
+}
+function GiftCardModal() {
+    var myHtml = '';
+    //header
+    myHtml += '<div class="modal-dialog">';
+    myHtml += '<div class="modal-content">';
+    myHtml += '<div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button>';
+    myHtml += '<h4 class="modal-title" id="myModalLabel">Apply Gift Card</h4>';
+    myHtml += '</div>';
+    myHtml += '<div class="modal-body">Enter a Gift Card code to apply.';
+    myHtml += '<input class="form-control" type="text" id="txt_GiftCard" name="txt_GiftCard" placeholder="Gift Card Code" maxlength="25">';
+    myHtml += '<div class="font-weight-bold text-danger alert-coupon"></div>';
+    myHtml += '</div>';
+    myHtml += '<div class="modal-footer"><button type="button" class="btn btn-danger" id="btnGiftCardAdd">Add</button></div>';
+    myHtml += '</div>';
+    myHtml += '</div>';
+    $("#billModal").empty().html(myHtml);
+    $("#billModal").modal({ backdrop: 'static', keyboard: false });
+    $("#txt_GiftCard").focus();
 }
 function Coupon_get_discount_amount(id, parent_id, coupon_code, coupon_amt, item_qty, reg_price, sale_price) {
     coupon_code = coupon_code.toString().toLowerCase();
@@ -1476,6 +1510,47 @@ function ApplyCoupon() {
     });
     //$("#billModal").modal({ backdrop: 'static' }); $("#txt_Coupon").focus();
 }
+function ApplyGiftCard() {
+    let giftcard_code = $("#txt_GiftCard").val().toLowerCase().trim();
+    if ($('#li_' + giftcard_code).length > 0) { swal('Alert!', 'Gift Card Code already applied!', "error").then((result) => { $('#txt_GiftCard').focus(); return false; }); return false; };
+    if (giftcard_code == '') { swal('Alert!', 'Please Enter a Gift Card Code.', "error").then((result) => { $('#txt_GiftCard').focus(); return false; }); return false; }
+  
+    let billing_email = $("#txtbillemail").val().toLowerCase();
+    let add_giftcard_count = 0;
+    $('#billCoupon li').each(function (index, li) {
+        if ($(li).data('type') == 'add_giftcard') { add_giftcard_count += 1; }
+    });
+    if (add_giftcard_count > 0) { swal('Alert!', 'Cannot add any other Gift Card.', "error").then((result) => { $('#txt_GiftCard').focus(); return false; }); return false; };
+
+    let obj = { strValue1: giftcard_code };
+    $.ajax({
+        type: "POST", url: '/Orders/GetGiftCardAmount', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
+        success: function (result) {
+          
+            var data = JSON.parse(result);
+            if (data.length == 0) { swal('Alert!', 'Invalid code entered. Please try again.', "error").then((result) => { $('#txt_GiftCard').focus(); return false; }); return false; }
+            if (data[0].GiftCard_Amount <= 0) { swal('Invalid!', 'This gift card code is not valid.', "error").then((result) => { $('#txt_GiftCard').focus(); return false; }); return false; }
+            data[0].GiftCard_Amount = parseFloat(data[0].GiftCard_Amount) || 0.00;
+            console.log($("#orderTotal").text());
+            if ($("#orderTotal").text() <= 0 ) {
+                swal('Error!', 'Please add product in your cart', "error").then((result) => { $('#txt_GiftCard').focus(); return false; }); return false;
+            }
+            else if ($("#orderTotal").text() > 0 && $("#orderTotal").text() >= data[0].GiftCard_Amount) {
+                $("#GiftCardTotal").val(data[0].GiftCard_Amount);
+                bindGiftCardList(data);
+            }
+            else if ($("#orderTotal").text() > 0 && data[0].GiftCard_Amount >= $("#orderTotal").text()) {
+                data[0].GiftCard_Amount = $("#orderTotal").text();
+                console.log(data[0].GiftCard_Amount);
+                $("#GiftCardTotal").val(data[0].GiftCard_Amount);
+                bindGiftCardList(data);
+            }
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
+        async: false
+    });
+    //$("#billModal").modal({ backdrop: 'static' }); $("#txt_Coupon").focus();
+}
 function bindCouponList(data) {
     var layoutHtml = '';
     if (data.length > 0) {
@@ -1534,6 +1609,55 @@ function bindCouponList(data) {
             }
         }
         calculateDiscountAcount();
+        $("#billModal").modal('hide');
+    }
+    //else {
+    //    var msg = 'Coupon "' + code + '" does not exist!';
+    //    swal('Alert!', msg, "info");
+    //}
+}
+function bindGiftCardList(data) {
+    var layoutHtml = '';
+    if (data.length > 0) {
+        for (var i = 0; i < data.length; i++) {
+            if ($('#li_' + data[i].code).length <= 0) {
+                let gift_amt = parseFloat(data[i].GiftCard_Amount) || 0.00;
+                layoutHtml = '<li id="li_' + data[i].code.toString().toLowerCase() + '" class="giftCard" data-GiftCard= "' + data[i].code + '" data-gc_ID= "' + data[i].id + '" data-giftamt= "' + data[i].GiftCard_Amount + '" data-type= "' + data[i].type + '" data-orderitemid="0">';
+                layoutHtml += '<a href="javascript:void(0);">';
+                layoutHtml += '<i class="fa fa-gift"></i>';
+                layoutHtml += '<span>' + data[i].code.toString().toLowerCase() + '</span>';
+                layoutHtml += '<div class="pull-right">';
+
+                if (data[0].type == 'add_giftcard') {
+                    layoutHtml += '$<span id="gift_discamt">' + gift_amt.toFixed(2) + '</span>';
+                    layoutHtml += '<button type="button" class="btn btn-box-tool pull-right" onclick="deleteAllCoupons(\'' + data[i].code.toString().toLowerCase() + '\');">';
+                    layoutHtml += '<i class="fa fa-times"></i>';
+                    layoutHtml += '</button>';
+                }
+                else {
+                    layoutHtml += '$<span id="gift_discamt" style ="margin-right: 20px;">' + gift_amt.toFixed(2) + '</span>';
+                }
+                layoutHtml += '</div>';
+                layoutHtml += '</a>';
+                layoutHtml += '</li>';
+                $('#billCoupon').append(layoutHtml);
+            }
+            else {
+                if (data[0].type == 'add_giftcard') {
+                    swal('Alert!', 'Gift card code already applied!', "info").then((result) => { $('#txt_GiftCard').focus(); return false; }); return false;
+                }
+                //else if (data[i].type == 'diff') {
+                //    let rq_prd_ids = [];
+                //    if ($('#li_' + data[i].code).data('rqprdids') != "" && $('#li_' + data[i].code).data('rqprdids') != null) {
+                //        rq_prd_ids = $('#li_' + data[i].code).data('rqprdids').split(",").map((el) => parseInt(el));
+                //    }
+                //    rq_prd_ids.push(data[i].product_ids);
+                //    $('#li_' + data[i].code).data('rqprdids', rq_prd_ids.join(','));
+                //    //swal('Alert!', 'Coupon code already applied!', "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false;
+                //}
+            }
+        }
+        calcFinalTotals();
         $("#billModal").modal('hide');
     }
     //else {
@@ -1853,8 +1977,12 @@ function createOtherItemsList() {
     var oid = parseInt($('#hfOrderNo').val()) || 0;
     var otherItemsxml = [];
     $('#billCoupon li').each(function (index) {
+        
         let cou_amt = parseFloat($(this).find("#cou_discamt").text()) || 0.00;
+        let gift_amt = parseFloat($(this).find("#gift_discamt").text()) || 0.00;
         if (cou_amt > 0) otherItemsxml.push({ order_item_id: parseInt($(this).data('orderitemid')), order_id: oid, item_name: $(this).data('coupon'), item_type: 'coupon', amount: parseFloat($(this).find("#cou_discamt").text()) || 0.00 });
+        
+        else if (gift_amt > 0) otherItemsxml.push({ order_item_id: parseInt($(this).data('orderitemid')), giftcard_id: parseInt($(this).data('gc_id')), order_id: oid, item_name: $(this).data('giftcard'), item_type: 'gift_card', amount: parseFloat($(this).find("#gift_discamt").text()) || 0.00 });
     });
     //Add Fee
     $('#order_fee_line_items > tr').each(function (index, tr) {
@@ -1927,6 +2055,7 @@ function saveCO() {
         data: JSON.stringify(obj), dataType: "json", beforeSend: function () { $("#loader").show(); },
         success: function (data) {
             if (data.status == true) {
+                console.log(data);
                 $('#order_line_items,#order_state_recycling_fee_line_items,#order_fee_line_items,#order_shipping_line_items,#order_refunds,#billCoupon,.refund-action').empty();
                 getOrderItemList(oid);
                 //swal('Alert!', data.message, "success");
@@ -2328,6 +2457,7 @@ function successModal(paymode, id, is_mail) {
     myHtml += '<tr ><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">Tax:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">$' + $('#salesTaxTotal').text() + '</td></tr>';
     myHtml += '<tr ><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">State Recycling Fee:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">$' + $('#stateRecyclingFeeTotal').text() + '</td></tr>';
     myHtml += '<tr ><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">Fee:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">$' + $('#feeTotal').text() + '</td></tr>';
+    myHtml += '<tr ><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">GiftCard:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">-$' + $("#GiftCardTotal").text() + '</td></tr>';
     myHtml += '<tr ><th style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;">Total:</th><td style="font-weight: 700; border-top: 1px solid rgba(0, 0, 0, 0.1);padding: 9px 12px; vertical-align: middle;"><span>$' + $('#orderTotal').text() + '</span></td></tr>';
     myHtml += '</tfoot>';
     myHtml += '</table>';

@@ -375,7 +375,7 @@ namespace LaylaERP.Controllers
             myModel.ID = null;
 
             //myModel.user_email = null;
-            DataTable dt = BAL.Users.GetDetailsUser(id);
+            DataTable dt = BAL.Users.GetDetailsUserS(id);
             myModel.ID = id;
             myModel.User_Image = dt.Rows[0]["User_Image"];
             myModel.user_email = dt.Rows[0]["user_email"];
@@ -570,7 +570,7 @@ namespace LaylaERP.Controllers
             string[] varFieldsValue = new string[7] { model.address, model.country, model.phone, model.billing_address_2, model.billing_city, model.billing_state, model.billing_postcode };
             for (int n = 0; n < 7; n++)
             {
-                UsersRepositry.AddUserMoreMeta(model, id, varFieldsName[n], varFieldsValue[n]);
+                UsersRepositry.AddUserMetaData(model, id, varFieldsName[n], varFieldsValue[n]);
             }
         }
 
@@ -592,7 +592,7 @@ namespace LaylaERP.Controllers
             string[] varFieldsValue = new string[7] { model.address, model.country, model.phone, model.billing_address_2, model.billing_city, model.billing_state, model.billing_postcode };
             for (int n = 0; n < 7; n++)
             {
-                UsersRepositry.UpdateUserMoreMeta(model, id, varFieldsName[n], varFieldsValue[n]);
+                UsersRepositry.UpdateUserMetaData(model, id, varFieldsName[n], varFieldsValue[n]);
             }
         }
 

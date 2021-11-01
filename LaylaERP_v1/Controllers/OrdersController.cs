@@ -360,9 +360,7 @@
                 System.Xml.XmlDocument order_statsXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.order_statsXML + "}", "Items");
                 System.Xml.XmlDocument postmetaXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.postmetaXML + "}", "Items");
                 System.Xml.XmlDocument order_itemsXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.order_itemsXML + "}", "Items");
-                //System.Xml.XmlDocument order_otheritemsXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.order_otheritemsXML + "}", "Items");
-                //System.Xml.XmlDocument order_taxitemsXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.order_taxitemsXML + "}", "Items");
-                System.Xml.XmlDocument order_itemmetaXML = JsonConvert.DeserializeXmlNode("{\"Data\":[]}", "Items");
+                System.Xml.XmlDocument order_itemmetaXML = JsonConvert.DeserializeXmlNode("{\"Data\":[{ post_id: " + model.order_id + ", meta_key: '_customer_ip_address', meta_value: '" + Net.Ip + "' }, { post_id: " + model.order_id + ", meta_key: '_customer_user_agent', meta_value: '" + Net.BrowserInfo + "' }]}", "Items");
 
                 JSONresult = JsonConvert.SerializeObject(OrderRepository.AddOrdersPost(model.order_id, "U", om.UserID, om.UserName, postsXML, order_statsXML, postmetaXML, order_itemsXML, order_itemmetaXML));
             }

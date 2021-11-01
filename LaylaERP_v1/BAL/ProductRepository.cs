@@ -2368,13 +2368,14 @@ namespace LaylaERP.BAL
             try
             {
                 string strWhr = string.Empty;
-                string strSql = "Select tx.term_id ID, t.name,t.slug,tx.taxonomy,tx.description,tx.parent,tx.count," +
-                    "max(case when tm.meta_key = 'thumbnail_id' then meta_value end) ThumbnailID, max(case when tm.meta_key = 'display_type' then meta_value end) DisplayType," +
-                    "(Select p.post_title from wp_posts p where p.id = max(case when tm.meta_key = 'thumbnail_id' then meta_value end)) ImagePath from wp_terms t " +
-                    "left join wp_term_taxonomy tx on tx.term_id = t.term_id left join wp_termmeta tm on t.term_id = tm.term_id  where taxonomy = 'product_cat' and t.term_id = '" + id + "' and 1=1 group by t.name,t.slug,tx.taxonomy,tx.description,tx.parent,tx.count;";
-                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                string strSql = "erp_ProductCategory";
+                SqlParameter[] para =
+               {
+                    new SqlParameter("@Flag", "getProductCategoryByID"),
+                    new SqlParameter("@term_id", id)
+                    };
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql, para);
                 dt = ds.Tables[0];
-
             }
             catch (Exception ex)
             {
@@ -2420,11 +2421,11 @@ namespace LaylaERP.BAL
             try
             {
                 string strsql = "";
-                strsql = "update wp_posts set post_author=@post_author,post_title=@post_title,post_status=@post_status,comment_status=@comment_status," +
-                    "ping_status = @ping_status,post_name = @post_name,guid = @guid,post_type = @post_type,post_mime_type = @post_mime_type," +
-                    "post_modified = current_timestamp(),post_modified_gmt = current_timestamp()  where ID=" + metaid + " ;";
+                strsql = "erp_ProductCategory";
                 SqlParameter[] para =
                {
+                    new SqlParameter("@Flag", "EditProductImage"),
+                    new SqlParameter("@meta_id", metaid),
                     new SqlParameter("@post_author", "8"),
                     new SqlParameter("@post_title", FileName=="" ? "default.png" : FileName),
                     new SqlParameter("@post_status", "inherit"),
@@ -2471,11 +2472,10 @@ namespace LaylaERP.BAL
             try
             {
                 string strsql = "";
-                strsql = "Update wp_posts set guid=@guid,post_title=@post_title,post_name=@post_name where ID=@post_id;" +
-                    "Update wp_postmeta set meta_value =@guid where post_id=@post_id and  meta_key='_wp_attached_file'; " +
-                    "Update wp_postmeta set meta_value = @guid where post_id = @post_id and meta_key = '_wp_attachment_metadata'; ";
+                strsql = "erp_ProductCategory";
                 SqlParameter[] para =
                {
+                    new SqlParameter("@Flag", "EditProductCategoryImageMetaData"),
                     new SqlParameter("@post_id", post_id),
                     new SqlParameter("@guid", FilePath),
                     new SqlParameter("@post_title", FileName=="" ? "default.png" : FileName),

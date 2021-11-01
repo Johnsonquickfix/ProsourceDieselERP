@@ -383,13 +383,13 @@ namespace LaylaERP.BAL
                         //            + "  left outer join wp_posts wp on wp.ID = p.fk_product"
                         //            + " WHERE " + strWhr;
 
-                    //    strWhr += " fk_product_fils = " + strValue1;
-                    //string strSQl = "SELECT distinct case when wp.post_parent = 0 then wp.ID else post_parent end ID,wp.post_title,post_title title,qty"
-                    //            + " FROM product_association p"
-                    //            + "  left outer join wp_posts wp on wp.ID = p.fk_product"
-                    //            + " WHERE " + strWhr;
+                        //    strWhr += " fk_product_fils = " + strValue1;
+                        //string strSQl = "SELECT distinct case when wp.post_parent = 0 then wp.ID else post_parent end ID,wp.post_title,post_title title,qty"
+                        //            + " FROM product_association p"
+                        //            + "  left outer join wp_posts wp on wp.ID = p.fk_product"
+                        //            + " WHERE " + strWhr;
 
-                    strWhr += " free_product_id = " + strValue1;
+                        strWhr += " free_product_id = " + strValue1;
                     string strSQl = "SELECT distinct case when wp.post_parent = 0 then wp.ID else post_parent end ID,wp.post_title,post_title title,free_quantity qty"
                                 + " FROM wp_product_free p"
                                 + "  left outer join wp_posts wp on wp.ID = p.product_id"
@@ -2038,8 +2038,12 @@ namespace LaylaERP.BAL
             try
             {
 
-                string strSQl = "sp_ProductCategory";
-                DS = SQLHelper.ExecuteDataTable(strSQl);
+                string strSQl = "erp_ProductCategory";
+                SqlParameter[] para =
+                {
+                    new SqlParameter("@Flag", "CategoryList")
+                };
+                DS = SQLHelper.ExecuteDataTable(strSQl, para);
             }
             catch (Exception ex)
             { throw ex; }
@@ -2127,7 +2131,7 @@ namespace LaylaERP.BAL
                 if (FileName == "")
                     FileName = "default.png";
                 StringBuilder strSql = new StringBuilder();
-                strSql.Append(string.Format("insert into wp_image (id,thumbnails,image) values ({0},'{1}','{2}'); ", metaid, "default.png",FileName));
+                strSql.Append(string.Format("insert into wp_image (id,thumbnails,image) values ({0},'{1}','{2}'); ", metaid, "default.png", FileName));
                 result = SQLHelper.ExecuteNonQuery(strSql.ToString());
             }
             catch (Exception ex)
@@ -2167,7 +2171,7 @@ namespace LaylaERP.BAL
             return result;
         }
 
-        public static int UpdateBothImage(string thumbFileName,string FileName, long metaid )
+        public static int UpdateBothImage(string thumbFileName, string FileName, long metaid)
         {
             int result = 0;
             try
@@ -2175,7 +2179,7 @@ namespace LaylaERP.BAL
                 //if (FileName == "")
                 //    FileName = "default.png";
                 StringBuilder strSql = new StringBuilder();
-                strSql.Append(string.Format("update wp_image set thumbnails = '{0}', image = '{1}' where id = {2} ", thumbFileName,FileName, metaid));
+                strSql.Append(string.Format("update wp_image set thumbnails = '{0}', image = '{1}' where id = {2} ", thumbFileName, FileName, metaid));
                 result = SQLHelper.ExecuteNonQuery(strSql.ToString());
             }
             catch (Exception ex)
@@ -2187,9 +2191,10 @@ namespace LaylaERP.BAL
             try
             {
                 string strsql = "";
-                strsql = "insert into wp_terms(name,slug) values(@name,@slug); SELECT LAST_INSERT_ID();";
+                strsql = "erp_ProductCategory";
                 SqlParameter[] para =
                 {
+                    new SqlParameter("@Flag", "AddProductCategory"),
                     new SqlParameter("@name", name),
                     new SqlParameter("@slug",  Regex.Replace(slug, @"\s+", "-")),
                 };
@@ -2207,7 +2212,7 @@ namespace LaylaERP.BAL
             try
             {
                 string strSQl = "select id from wp_image"
-                                + " WHERE id = " + ID + " "; 
+                                + " WHERE id = " + ID + " ";
                 dt = SQLHelper.ExecuteDataTable(strSQl);
             }
             catch (Exception ex)
@@ -2284,22 +2289,13 @@ namespace LaylaERP.BAL
             totalrows = 0;
             try
             {
-                string strWhr = string.Empty;
+                string strSQl = "erp_ProductCategory";
+                SqlParameter[] para =
+                {
+                    new SqlParameter("@Flag", "CategoryListWithParameter")
+                };
+                dt = SQLHelper.ExecuteDataTable(strSQl, para);
 
-                //string strSql = "sp_ProductCategoryByPara;";
-                string strSQl = "sp_ProductCategoryByPara";
-                dt = SQLHelper.ExecuteDataTable(strSQl);
-               // SqlParameter[] para =
-               //{
-               //     new SqlParameter("?pagesize", pagesize.ToString()),
-               //     new SqlParameter("?pageno", pageno),
-               //     new SqlParameter("?searchid", searchid is null ? "" : searchid),
-               // };
-
-               // DataSet ds = SQLHelper.ExecuteDataSet(strSql, para);
-               // dt = ds.Tables[0];
-               // if (ds.Tables[1].Rows.Count > 0)
-               //     totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
             }
             catch (Exception ex)
             {
@@ -2596,26 +2592,17 @@ namespace LaylaERP.BAL
                 for (int i = 0; i <= value.Length - 1; i++)
                 {
                     var termID = value[i].ToString();
-                    string parent = GetParent(termID).ToString();
                     string strSQl = "";
-                    if (parent == "0")
-                    {
-                        strSQl = "sp_getTermID";
-                    }
-                    else
-                    {
-                        strSQl = "SELECT group_concat(c.term_id) as term_id FROM wp_terms t " +
-                    "inner join wp_term_taxonomy c on t.term_id = c.term_id " +
-                    "left join wp_termmeta tm_a on tm_a.term_id = t.term_id and tm_a.meta_key = 'Is_Active' " +
-                    "where coalesce(tm_a.meta_value,'1') = '1' and t.term_id in (" + termID + ")";
-                    }
+                    strSQl = "erp_ProductCategory";
                     SqlParameter[] para =
                     {
+                    new SqlParameter("@Flag", "getTermID"),
                     new SqlParameter("@Userterm_ID", termID)
+
                    };
                     ds = SQLHelper.ExecuteDataSet(strSQl, para);
 
-                    if (ds.Tables[0].Rows.Count > 0)
+                    if (!string.IsNullOrEmpty(ds.Tables[0].Rows[0]["term_id"].ToString()))
                         result += ds.Tables[0].Rows[0]["term_id"].ToString() + ",";
                     else
                         result = "0";
@@ -2650,46 +2637,6 @@ namespace LaylaERP.BAL
             }
             return result;
         }
-        public string GetParent(string ID)
-        {
-            string result = "";
-            DataSet ds = new DataSet();
-            try
-            {
-                string strSQl = "Select parent from wp_term_taxonomy where term_id=" + ID + "";
-                ds = SQLHelper.ExecuteDataSet(strSQl);
-                result = ds.Tables[0].Rows[0]["parent"].ToString();
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            return result;
-        }
-
-        //public string GetProductID(string ID)
-        //{
-        //    string result = "";
-        //    DataSet dt = new DataSet();
-        //    try
-        //    {
-        //        string strSQl = "sp_getProductID";
-        //        SqlParameter[] para =
-        //             {
-        //                   new SqlParameter("@Userterm_ID", ID)
-        //             };
-        //        DataSet ds = SQLHelper.ExecuteDataSet(strSQl,para);
-        //        if (ds.Tables[0].Rows.Count > 0)
-        //            result = ds.Tables[0].Rows[0]["object_id"].ToString();
-        //        else
-        //            result = "0";
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw ex;
-        //    }
-        //    return result;
-        //}
         public string GetProductID(string ID)
         {
             string result = "";
@@ -2700,26 +2647,15 @@ namespace LaylaERP.BAL
                 for (int i = 0; i <= value.Length - 1; i++)
                 {
                     var termID = value[i].ToString();
-                    string parent = GetParent(termID).ToString();
                     string strSQl = "";
-                    if (parent == "0")
-                    {
-                        strSQl = "sp_getProductID";
-                    }
-                    else
-                    {
-                        strSQl = "SELECT GROUP_CONCAT(tr.object_id) object_id FROM wp_terms t " +
-                    "inner join wp_term_taxonomy c on t.term_id = c.term_id " +
-                    "inner join wp_term_relationships tr on tr.term_taxonomy_id = t.term_id " +
-                    "left join wp_termmeta tm_a on tm_a.term_id = t.term_id and tm_a.meta_key = 'Is_Active' " +
-                    "where coalesce(tm_a.meta_value,'1') = '1' and t.term_id in (" + ID + ")";
-                    }
+                    strSQl = "erp_ProductCategory";
                     SqlParameter[] para =
-                   {
-                    new SqlParameter("@Userterm_ID", termID)
-                   };
+                       {
+                        new SqlParameter("@Flag", "getProductID"),
+                        new SqlParameter("@Userterm_ID", termID)
+                       };
                     DataSet ds = SQLHelper.ExecuteDataSet(strSQl, para);
-                    if (ds.Tables[0].Rows.Count > 0)
+                    if (!string.IsNullOrEmpty(ds.Tables[0].Rows[0]["object_id"].ToString()))
                         result = ds.Tables[0].Rows[0]["object_id"].ToString() + ",";
                     else
                         result = "0";

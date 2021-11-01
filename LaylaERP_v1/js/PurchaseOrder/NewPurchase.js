@@ -536,7 +536,7 @@ function createItemsList() {
         _list.push({
             rowid: $(row).data('rowid'), rang: _rang, product_type: 0, fk_product: $(row).data('pid'), description: $(row).data('pname'), product_sku: $(row).data('psku'),
             qty: rQty, subprice: rPrice, discount_percent: rDisPer, discount: rDisAmt, tva_tx: 0, localtax1_tx: rTax1, localtax1_type: 'F', localtax2_tx: rTax2, localtax2_type: 'F',
-            total_ht: rGrossAmt, total_tva: 0, total_localtax1: rTax_Amt1, total_localtax2: rTax_Amt2, total_ttc: rNetAmt, date_start: '0000/00/00', date_end: '0000/00/00'
+            total_ht: rGrossAmt, total_tva: 0, total_localtax1: rTax_Amt1, total_localtax2: rTax_Amt2, total_ttc: rNetAmt, date_start: '1900-01-01', date_end: '1900-01-01'
         });
     });
     //other item
@@ -547,7 +547,7 @@ function createItemsList() {
         rDisPer = parseFloat($(row).find("[name=txt_itemdisc]").val()) || 0.00;
         rGrossAmt = rPrice * rQty; rDisAmt = rGrossAmt * (rDisPer / 100);
         rNetAmt = (rGrossAmt - rDisAmt) + rTax1;
-        let rSDate = isNullAndUndef($(row).data('proc_fromdate')) ? moment($(row).data('proc_fromdate'), 'MM/DD/YYYY').format('YYYY-MM-DD') : '0000-00-00', rEDate = isNullAndUndef($(row).data('proc_todate')) ? moment($(row).data('proc_todate'), 'MM/DD/YYYY').format('YYYY-MM-DD') : '0000-00-00';
+        let rSDate = isNullAndUndef($(row).data('proc_fromdate')) ? moment($(row).data('proc_fromdate'), 'MM/DD/YYYY').format('YYYY-MM-DD') : '1900-01-01', rEDate = isNullAndUndef($(row).data('proc_todate')) ? moment($(row).data('proc_todate'), 'MM/DD/YYYY').format('YYYY-MM-DD') : '1900-01-01';
         //console.log(rSDate, rEDate);
         _rang += 1;
         _list.push({
@@ -567,7 +567,7 @@ function saveVendorPO() {
     let payment_term = parseInt($("#ddlPaymentTerms").val()) || 0;
     let balance_days = parseInt($("#ddlBalancedays").val()) || 0;
     let payment_type = parseInt($("#ddlPaymentType").val()) || 0;
-    let date_livraison = $("#txtPlanneddateofdelivery").val().split('/');
+    let date_livraison = $("#txtPlanneddateofdelivery").val();
     let wh_id = parseInt($("#ddlWarehouse").val()) || 0;
     let incoterms = parseInt($("#ddlIncoTerms").val()) || 0;
     let location_incoterms = $("#txtIncoTerms").val();
@@ -580,55 +580,54 @@ function saveVendorPO() {
     else if (date_livraison == "") { swal('alert', 'Please Select Planned date of delivery', 'error').then(function () { swal.close(); $('#txtPlanneddateofdelivery').focus(); }) }
     else if (_list.length <= 0) { swal('Alert!', 'Please add product.', "error").then((result) => { $('#ddlProduct').select2('open'); return false; }); return false; }
     else {
-        if (date_livraison.length > 0) date_livraison = date_livraison[2] + '/' + date_livraison[0] + '/' + date_livraison[1];
-        let option = {
+        //if (date_livraison.length > 0) date_livraison = date_livraison[2] + '/' + date_livraison[0] + '/' + date_livraison[1];
+        let _order = {
             RowID: id, VendorID: vendorid, PONo: '', VendorBillNo: ref_vendor, fk_warehouse: wh_id, PaymentTerms: payment_term, Balancedays: balance_days, PaymentType: payment_type,
             Planneddateofdelivery: date_livraison, IncotermType: incoterms, Incoterms: location_incoterms, NotePublic: note_public, NotePrivate: note_private,
             total_tva: 0, localtax1: parseFloat($("#salesTaxTotal").text()), localtax2: parseFloat($("#shippingTotal").text()), total_ht: parseFloat($("#SubTotal").text()),
-            discount: parseFloat($("#discountTotal").text()), total_ttc: parseFloat($("#orderTotal").text()), PurchaseOrderProducts: _list
+            discount: parseFloat($("#discountTotal").text()), total_ttc: parseFloat($("#orderTotal").text())
         }
+        let option = { strValue1: id, strValue2: JSON.stringify(_order), strValue3: JSON.stringify(_list)}
         //console.log(option);
-        $.ajax({
-            url: '/PurchaseOrder/NewPurchase', dataType: 'json', type: 'post', contentType: "application/json; charset=utf-8",
-            data: JSON.stringify(option),
-            beforeSend: function () { $("#loader").show(); },
-            success: function (data) {
-                if (data.status == true) {
-                    $('#lblPoNo').data('id', data.id);
-                    getPurchaseOrderInfo();
-                    swal('Success', data.message, 'success');
-                    //swal('Success', data.message, 'success').then(function () { swal.close(); getPurchaseOrderPrint(id, true); });
-                }
-                else {
-                    swal('Alert!', data.message, 'error')
-                }
-            },
-            complete: function () { $("#loader").hide(); isEdit(false); },
-            error: function (error) { swal('Error!', 'something went wrong', 'error'); },
-        });
+        swal.queue([{
+            title: 'Alert!', confirmButtonText: 'Yes, Update it!', text: "Do you want to save your order?",
+            showLoaderOnConfirm: true, showCancelButton: true,
+            preConfirm: function () {
+                return new Promise(function (resolve) {
+                    $.post('/PurchaseOrder/NewPurchase', option).done(function (result) {
+                        result = JSON.parse(result);
+                        if (result[0].Response == "Success") {
+                            $('#lblPoNo').data('id', result[0].id); getPurchaseOrderInfo();
+                            swal('Success', 'Purchase Order has been saved successfully.', "success"); getOrderInfo();
+                        }
+                        else { swal('Error', 'Something went wrong, please try again.', "error"); }
+                    }).catch(err => { swal('Error!', 'Something went wrong, please try again.', 'error'); });
+                });
+            }
+        }]);
     }
 }
 function orderStatusUpdate(oid) {
-    let obj = { Search: oid, Status: '3' }
-    $.ajax({
-        url: '/PurchaseOrder/UpdatePurchaseOrderStatus', dataType: 'JSON', type: 'get',
-        contentType: "application/json; charset=utf-8",
-        data: obj,
-        beforeSend: function () { $("#loader").show(); },
-        success: function (data) {
-            if (data.status == true) {
-                swal('Success', data.message, 'success').then((result) => {
-                    $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List">Back to List</a><button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button>');
-                    $(".top-action").empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Purchase Order"><i class="fas fa-print"></i> Print</button> <button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button>');
-                    getPurchaseOrderPrint(oid, true);
-                    //window.location.href = window.location.origin + "/PurchaseOrder/PurchaseOrderList";
-                });
-            }
-            else { swal('alert', 'something went wrong!', 'success'); }
-        },
-        complete: function () { $("#loader").hide(); },
-        error: function (error) { swal('Error!', 'something went wrong', 'error'); }
-    });
+    let option = { Search: oid, Status: '3' }
+    swal.queue([{
+        title: 'Alert!', confirmButtonText: 'Yes, Update it!', text: "Do you want to update your order status?",
+        showLoaderOnConfirm: true, showCancelButton: true,
+        preConfirm: function () {
+            return new Promise(function (resolve) {
+                $.get('/PurchaseOrder/UpdatePurchaseOrderStatus', option).done(function (result) {
+                    result = JSON.parse(result);
+                    if (result[0].Response == "Success") {
+                        $('#lblPoNo').data('id', result[0].id); 
+                        $('.footer-finalbutton').empty().append('<a class="btn btn-danger pull-left" href="/PurchaseOrder/PurchaseOrderList" data-toggle="tooltip" title="Back to List">Back to List</a><button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button>');
+                        $(".top-action").empty().append('<button type="button" class="btn btn-danger" id="btnPrintPdf" data-toggle="tooltip" title="Print Purchase Order"><i class="fas fa-print"></i> Print</button> <button type="button" class="btn btn-danger btnEdit" data-toggle="tooltip" title="Edit"><i class="far fa-edit"></i> Edit</button>');
+                        swal('Success', 'Purchase Order has been updated successfully.', "success"); getPurchaseOrderPrint(oid, true);
+                    }
+                    else { swal('Error', 'Something went wrong, please try again.', "error"); }
+                    resolve();
+                }).catch(err => { swal('Error!', 'Something went wrong, please try again.', 'error'); });
+            });
+        }
+    }]);
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Purchase Order File Upload ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function Adduploade() {

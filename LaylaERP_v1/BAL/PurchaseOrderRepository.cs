@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Web;
+using System.Xml;
 
 namespace LaylaERP.BAL
 {
@@ -180,99 +181,46 @@ namespace LaylaERP.BAL
             return dt;
         }
         //Save and update Purchase order
-        public long AddNewPurchase(PurchaseOrderModel model)
+        public static DataTable AddNewPurchase(long Pkey, string qFlag, long UserID, XmlDocument orderXML, XmlDocument orderdetailsXML)
         {
-            long result = 0;
+            var dt = new DataTable();
             try
             {
-                string str_oiid = string.Join(",", model.PurchaseOrderProducts.Select(x => x.rowid.ToString()).ToArray());
-                string strsql = "";
-                DateTime cDate = CommonDate.CurrentDate(), cUTFDate = CommonDate.UtcDate();
-                string strPOYearMonth = cDate.ToString("yyMM").PadRight(4);
-                SqlParameter[] para = { };
-                if (model.RowID > 0)
+                long id = Pkey;
+                SqlParameter[] parameters =
                 {
-                    strsql = string.Format("delete from commerce_purchase_order_detail where fk_purchase = '{0}' and rowid not in ({1});", model.RowID, str_oiid);
-                    strsql += string.Format("update commerce_purchase_order set fk_status='1',ref_supplier='{0}',fk_supplier='{1}',fk_payment_term='{2}',fk_balance_days='{3}',fk_incoterms='{4}',location_incoterms='{5}',"
-                            + "fk_payment_type='{6}',date_livraison='{7}',note_private='{8}',note_public='{9}',discount='{10}',total_tva='{11}',localtax1='{12}',localtax2='{13}',total_ht='{14}',total_ttc='{15}',fk_warehouse='{16}',fk_user_modif='{17}' where rowid='{18}';",
-                            model.VendorBillNo, model.VendorID, model.PaymentTerms, model.Balancedays, model.IncotermType, model.Incoterms, model.PaymentType, model.Planneddateofdelivery, model.NotePrivate, model.NotePublic,
-                            model.discount, model.total_tva, model.localtax1, model.localtax2, model.total_ht, model.total_ttc, model.fk_warehouse, model.LoginID, model.RowID);
-                }
-                else
-                {
-                    strsql = "insert into commerce_purchase_order(ref,ref_ext,ref_supplier,fk_supplier,fk_status,source,fk_payment_term,fk_balance_days,fk_payment_type,date_livraison,fk_incoterms,location_incoterms,note_private,note_public,fk_user_author,date_creation,discount,total_tva,localtax1,localtax2,total_ht,total_ttc,fk_warehouse) "
-                        + string.Format("select concat('PO" + strPOYearMonth + "-',lpad(coalesce(max(right(ref,5)),0) + 1,5,'0')) ref,'','{0}','{1}','1','0','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}','{16}','{17}','{18}' from commerce_purchase_order where lpad(ref,6,0) = 'PO" + strPOYearMonth + "';select LAST_INSERT_ID();",
-                                model.VendorBillNo, model.VendorID, model.PaymentTerms, model.Balancedays, model.PaymentType, model.Planneddateofdelivery, model.IncotermType, model.Incoterms, model.NotePrivate, model.NotePublic, model.LoginID, cDate.ToString("yyyy-MM-dd HH:mm:ss"), model.discount, model.total_tva, model.localtax1, model.localtax2, model.total_ht, model.total_ttc, model.fk_warehouse);
-
-                    model.RowID = Convert.ToInt64(SQLHelper.ExecuteScalar(strsql, para));
-                    strsql = "";
-                }
-               
-                /// step 2 : commerce_purchase_order_detail
-                foreach (PurchaseOrderProductsModel obj in model.PurchaseOrderProducts)
-                {
-                    if (obj.rowid > 0)
-                    {
-                        strsql += string.Format("update commerce_purchase_order_detail set ref='{0}',description='{1}',qty='{2}',discount_percent='{3}',discount='{4}',subprice='{5}',total_ht='{6}',total_ttc='{7}',date_start='{8}',date_end='{9}',rang='{10}',"
-                            + " tva_tx='{11}',localtax1_tx='{12}',localtax1_type='{13}',localtax2_tx='{14}',localtax2_type='{15}',total_tva='{16}',total_localtax1='{17}',total_localtax2='{18}' where rowid='{19}';",
-                            obj.product_sku, obj.description, obj.qty, obj.discount_percent, obj.discount, obj.subprice, obj.total_ht, obj.total_ttc, obj.date_start, obj.date_end, obj.rang,
-                            obj.tva_tx, obj.localtax1_tx, obj.localtax1_type, obj.localtax2_tx, obj.localtax2_type, obj.total_tva, obj.total_localtax1, obj.total_localtax2, obj.rowid);
-                    }
-                    else
-                    {
-                        strsql += "insert into commerce_purchase_order_detail (fk_purchase,fk_product,ref,description,qty,discount_percent,discount,subprice,total_ht,total_ttc,product_type,date_start,date_end,rang,tva_tx,localtax1_tx,localtax1_type,localtax2_tx,localtax2_type,total_tva,total_localtax1,total_localtax2) ";
-                        strsql += string.Format(" select '{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}','{16}','{17}','{18}','{19}','{20}','{21}';",
-                            model.RowID, obj.fk_product, obj.product_sku, obj.description, obj.qty, obj.discount_percent, obj.discount, obj.subprice, obj.total_ht, obj.total_ttc, obj.product_type, obj.date_start, obj.date_end, obj.rang,
-                            obj.tva_tx, obj.localtax1_tx, obj.localtax1_type, obj.localtax2_tx, obj.localtax2_type, obj.total_tva, obj.total_localtax1, obj.total_localtax2);
-                    }
-                }
-
-                //Add Stock
-                strsql += "delete from product_stock_register where tran_type = 'PO' and flag = 'O' and tran_id = " + model.RowID + ";"
-                        + " insert into product_stock_register (tran_type,tran_id,product_id,warehouse_id,tran_date,quantity,flag)"
-                        + " select 'PO',pod.fk_purchase,pod.fk_product,po.fk_warehouse warehouse_id,po.date_creation,pod.qty,'O' from commerce_purchase_order_detail pod"
-                        + " inner join commerce_purchase_order po on po.rowid = pod.fk_purchase where pod.fk_product > 0 and fk_purchase = " + model.RowID + ";";
-
-                if (SQLHelper.ExecuteNonQueryWithTrans(strsql) > 0)
-                    result = model.RowID;
+                    new SqlParameter("@pkey", Pkey),
+                    new SqlParameter("@qflag", qFlag),
+                    new SqlParameter("@userid", UserID),
+                    new SqlParameter("@orderXML", orderXML.OuterXml),
+                    new SqlParameter("@orderdetailsXML", orderdetailsXML.OuterXml)
+                };
+                dt = SQLHelper.ExecuteDataTable("erp_purchase_order_iud", parameters);
             }
-            catch (Exception Ex)
+            catch (Exception ex)
             {
-                throw Ex;
+                throw new Exception(ex.Message);
             }
-            return result;
+            return dt;
         }
-        public long UpdatePurchaseStatus(PurchaseOrderModel model)
+        public static DataTable UpdatePurchaseStatus(PurchaseOrderModel model)
         {
-            long result = 0;
+            var dt = new DataTable();
             try
             {
-                string strsql = "";
-                DateTime cDate = CommonDate.CurrentDate(), cUTFDate = CommonDate.UtcDate();
-                string strPOYearMonth = cDate.ToString("yyMM").PadRight(4);
-                if (model.Status == 1)
-                    strsql += string.Format("update commerce_purchase_order set fk_status='{0}',ref_ext='',billed='0' where rowid in ({1});", model.Status, model.Search);
-                else if (model.Status == 3) 
+                SqlParameter[] parameters =
                 {
-                    strsql += string.Format("update commerce_purchase_order set fk_status='{0}',ref_ext=REPLACE(ref,'PO','PI'),billed='1',fk_user_approve='{1}' where rowid in ({2});", model.Status, model.LoginID, model.Search);
-                    strsql += "delete from erp_accounting_bookkeeping where inv_num = " + model.Search + ";";
-                    strsql += "insert into erp_accounting_bookkeeping (entity,inv_num,doc_date,doc_type,doc_ref,PO_SO_ref,fk_doc,fk_docdet,thirdparty_code,subledger_account,subledger_label,inv_complete,label_complete,label_operation,debit,credit,invtotal,senstag,fk_user_author,date_creation,code_journal,journal_label,fk_bank)"
-                               + " select 1,cpo.rowid,'" + cDate.ToString("yyyy-MM-dd HH:mm:ss") + "','PO',ref_ext,ref,1,0,ref_supplier,'5010',name vname,'5010',(select label from erp_accounting_account where account_number = 5010),Concat(name,' -> ',ref_supplier,' -> Subledger account') lb_opration,'0.00',total_ttc,total_ttc,'C','1','" + cDate.ToString("yyyy-MM-dd HH:mm:ss") + "','AC','Purchase journal','0' from commerce_purchase_order cpo inner join wp_vendor wpvn on wpvn.rowid = cpo.fk_supplier and VendorStatus=1 where cpo.rowid = " + model.Search + ""
-                               + " Union all select 1,cpo.rowid,'" + cDate.ToString("yyyy-MM-dd HH:mm:ss") + "','PO',ref_ext,ref,1,0,ref_supplier,'','','5950',(select label from erp_accounting_account where account_number = 5950),Concat(name,' -> ',ref_supplier,' -> ' ,(select label from erp_accounting_account where account_number = 5950)) lb_opration,'0.00',cpo.discount,cpo.discount,'C','1','" + cDate.ToString("yyyy-MM-dd HH:mm:ss") + "','AC','Purchase journal','0' from commerce_purchase_order cpo inner join wp_vendor wpvn on wpvn.rowid = cpo.fk_supplier and VendorStatus=1 where cpo.discount > 0 and cpo.rowid = " + model.Search + ""
-                               + " Union all select 1,cpo.rowid,'" + cDate.ToString("yyyy-MM-dd HH:mm:ss") + "','PO',ref_ext,ref,1,0,ref_supplier,'','','5010',(select label from erp_accounting_account where account_number = 5010),Concat(name,' -> ',ref_supplier,' -> ' ,(select label from erp_accounting_account where account_number = 5010)) lb_opration,total_ht,'0.00',total_ht,'D','1','" + cDate.ToString("yyyy-MM-dd HH:mm:ss") + "','AC','Purchase journal','0' from commerce_purchase_order cpo inner join wp_vendor wpvn on wpvn.rowid = cpo.fk_supplier and VendorStatus=1 where cpo.rowid = " + model.Search + ""
-                               + " Union all select 1,cpo.rowid,'" + cDate.ToString("yyyy-MM-dd HH:mm:ss") + "','PO',ref_ext,ref,1,0,ref_supplier,'','','1234',(select label from erp_accounting_account where account_number = 1234),Concat(name,' -> ',ref_supplier,' -> ' ,(select label from erp_accounting_account where account_number = 1234)) lb_opration,localtax1,'0.00',localtax1,'D','1','" + cDate.ToString("yyyy-MM-dd HH:mm:ss") + "','AC','Purchase journal','0' from commerce_purchase_order cpo inner join wp_vendor wpvn on wpvn.rowid = cpo.fk_supplier and VendorStatus=1 where localtax1 > 0 and cpo.rowid = " + model.Search + ""
-                               + " Union all select 1,cpo.rowid,'" + cDate.ToString("yyyy-MM-dd HH:mm:ss") + "','PO',cpo.ref_ext,cpo.ref,1,0,ref_supplier,'','','5800',(select label from erp_accounting_account where account_number = 5800),Concat(name,' -> ',ref_supplier,' -> ',(select label from erp_accounting_account where account_number = 5800)) lb_opration,COALESCE(sum(cpod.total_ttc) , 0.00),'0.00',COALESCE(sum(cpod.total_ttc) , 0.00),'D','1','" + cDate.ToString("yyyy-MM-dd HH:mm:ss") + "','AC','Purchase journal','0' from commerce_purchase_order_detail cpod inner join commerce_purchase_order cpo on cpo.rowid  = cpod.fk_purchase inner join wp_vendor wpvn on wpvn.rowid = cpo.fk_supplier and VendorStatus=1  where product_type in (3) and cpod.fk_purchase = " + model.Search + " group by cpod.total_ttc"
-                               + " Union all select 1,cpo.rowid,'" + cDate.ToString("yyyy-MM-dd HH:mm:ss") + "','PO',ref_ext,ref,1,0,ref_supplier,'','','5800',(select label from erp_accounting_account where account_number = 5800),Concat(name,' -> ',ref_supplier,' -> ',(select label from erp_accounting_account where account_number = 5800)) lb_opration,localtax2,'0.00',localtax2,'D','1','" + cDate.ToString("yyyy-MM-dd HH:mm:ss") + "','AC','Purchase journal','0' from commerce_purchase_order cpo inner join wp_vendor wpvn on wpvn.rowid = cpo.fk_supplier and VendorStatus=1 where localtax2 > 0 and cpo.rowid = " + model.Search + "";
-                }
-                else
-                    strsql += string.Format("update commerce_purchase_order set fk_status='{0}' where rowid in ({1});", model.Status, model.Search);
-                result = SQLHelper.ExecuteNonQueryWithTrans(strsql);
+                    new SqlParameter("@pkeys", model.Search),
+                    new SqlParameter("@qflag", "POA"),
+                    new SqlParameter("@status", model.Status),
+                };
+                dt = SQLHelper.ExecuteDataTable("erp_purchase_order_iud", parameters);
             }
             catch (Exception Ex)
             {
                 throw Ex;
             }
-            return result;
+            return dt;
         }
         //Get Purchase order
         public static DataSet GetPurchaseOrderByID(long id)

@@ -2226,18 +2226,19 @@ namespace LaylaERP.BAL
             try
             {
                 string strsql = "";
-                strsql = "Insert into wp_term_taxonomy(term_id,taxonomy,description,parent) values(@term_id,@taxonomy,@description,@parent); INSERT INTO wp_termmeta(term_id,meta_key,meta_value) VALUES(@term_id, 'order', 0),(@term_id, 'display_type', @display_type),(@term_id, 'thumbnail_id', @thumbnail_id),(@term_id,'Is_Active','1'); Update wp_terms set term_order=@term_id where term_id=@term_id;  SELECT LAST_INSERT_ID();";
+                strsql = "erp_ProductCategory";
                 SqlParameter[] para =
                 {
+                    new SqlParameter("@Flag", "AddProductCategoryDescription"),
                     new SqlParameter("@term_id", term_id),
                     new SqlParameter("@taxonomy", "product_cat"),
                     new SqlParameter("@parent", model.parent),
                     new SqlParameter("@description", model.description == null ? "" : model.description),
-                    new SqlParameter("@display_type", model.display_type),
+                    new SqlParameter("@display_type", model.display_type.ToString()),
                     new SqlParameter("@thumbnail_id",thumbnail_id),
 
                 };
-                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
                 return result;
             }
             catch (Exception Ex)
@@ -2386,10 +2387,10 @@ namespace LaylaERP.BAL
             try
             {
                 string strsql = "";
-                strsql = "Insert into wp_posts(post_author,post_content,post_title,post_excerpt,post_status,comment_status,ping_status,post_name,to_ping,pinged,guid,post_type,post_mime_type,post_date,post_date_gmt,post_content_filtered,post_modified,post_modified_gmt) " +
-                    "values(@post_author,@post_content, @post_title,@post_excerpt, @post_status, @comment_status, @ping_status, @post_name,@to_ping,pinged, @guid, @post_type, @post_mime_type,current_timestamp(),current_timestamp(),@post_content_filtered,current_timestamp(),current_timestamp()); SELECT LAST_INSERT_ID();";
+                strsql = "erp_ProductCategory";
                 SqlParameter[] para =
                {
+                    new SqlParameter("@Flag", "AddProductImage"),
                     new SqlParameter("@post_author", "8"),
                     new SqlParameter("@post_content", ""),
                     new SqlParameter("@post_title", FileName=="" ? "default.png" : FileName),
@@ -2447,9 +2448,10 @@ namespace LaylaERP.BAL
             try
             {
                 string strsql = "";
-                strsql = "Insert into wp_postmeta(post_id, meta_key, meta_value) values(@post_id,'_wp_attached_file', @_wp_attached_file),(@post_id, '_wp_attachment_metadata', @_wp_attachment_metadata); SELECT LAST_INSERT_ID();";
+                strsql = "erp_ProductCategory";
                 SqlParameter[] para =
                {
+                    new SqlParameter("@Flag", "AddProductCategoryImageMetaData"),
                     new SqlParameter("@post_id", post_id),
                     new SqlParameter("@_wp_attached_file", FilePath),
                     new SqlParameter("@_wp_attachment_metadata", FilePath),

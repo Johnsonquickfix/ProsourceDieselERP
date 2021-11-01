@@ -66,7 +66,7 @@
                         { data: 'id', title: 'Id', sWidth: "10%" },
                         { data: 'AOV_Range1', title: 'AOV Range1', sWidth: "10%" },
                         { data: 'AOV_Range2', title: 'AOV Range2', sWidth: "20%" },
-                        { data: 'Comm_Rate', title: 'Commission Rate (%)', sWidth: "20%" },
+                        { data: 'Comm_Rate', title: 'Commission Rate (%)', sWidth: "20%", render: $.fn.dataTable.render.number('', '.', 2, '') },
                         {
                             'data': 'id', sWidth: "10%",
                             'render': function (id, type, full, meta) {

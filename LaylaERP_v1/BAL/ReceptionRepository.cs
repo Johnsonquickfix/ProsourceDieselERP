@@ -584,7 +584,7 @@ namespace LaylaERP.BAL
             {
                 string strSQl = "select FileName from commerce_purchase_order_linkedfiles"
                                 + " WHERE fk_purchase in (" + fk_product + ") and FileName = '" + FileName + "' "
-                                + " limit 10;";
+                                + " ";
                 dt = SQLHelper.ExecuteDataTable(strSQl);
             }
             catch (Exception ex)
@@ -600,7 +600,7 @@ namespace LaylaERP.BAL
             try
             {
                 StringBuilder strSql = new StringBuilder();
-                strSql.Append(string.Format("Insert into commerce_purchase_order_linkedfiles(fk_purchase,FileName,Length,FileType,FilePath) values(" + fk_product + ",'" + FileName + "','" + Length + "','" + FileType + "','" + FilePath + "');SELECT LAST_INSERT_ID();"));
+                strSql.Append(string.Format("Insert into commerce_purchase_order_linkedfiles(fk_purchase,FileName,Length,FileType,FilePath) values(" + fk_product + ",'" + FileName + "','" + Length + "','" + FileType + "','" + FilePath + "');select SCOPE_IDENTITY();"));
                 result = SQLHelper.ExecuteNonQuery(strSql.ToString());
                 return result;
             }

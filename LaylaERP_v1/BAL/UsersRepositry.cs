@@ -421,11 +421,12 @@ namespace LaylaERP.BAL
         {
             try
             {
-
+                DataTable dt = new DataTable();
                 model.password = EncryptedPwd(model.password);
-                string strsql = "insert into wp_users(user_login,user_pass,user_nicename, user_email, user_registered, display_name, user_image) values(@user_login,@user_pass,@user_nicename, @user_email, @user_registered, @display_name, @user_image);SELECT LAST_INSERT_ID();";
+                //string strsql = "insert into wp_users(user_login,user_pass,user_nicename, user_email, user_registered, display_name, user_image) values(@user_login,@user_pass,@user_nicename, @user_email, @user_registered, @display_name, @user_image);SELECT LAST_INSERT_ID();";
                 SqlParameter[] para =
                 {
+                    new SqlParameter("@qflag", "I"),
                     new SqlParameter("@user_login", model.user_nicename),
                     new SqlParameter("@user_pass", model.password),
                     new SqlParameter("@user_nicename", model.user_nicename),
@@ -434,7 +435,9 @@ namespace LaylaERP.BAL
                     new SqlParameter("@display_name", model.user_nicename),
                     new SqlParameter("@user_image", model.User_Image),
                 };
-                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
+                dt = SQLHelper.ExecuteDataTable("erp_user_iud", para);
+                int result = Convert.ToInt32(dt.Rows[0]["id"]);
+                //  int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
                 return result;
             }
             catch (Exception Ex)
@@ -502,9 +505,11 @@ namespace LaylaERP.BAL
             {
 
 
-                string strsql = "update wp_users set user_login=@user_login,user_nicename=@user_nicename,user_email=@user_email,display_name=@display_name,user_image=@user_image, user_status=@user_status where ID in(" + model.ID + ")";
+                string strsql = "erp_user_iud";
                 SqlParameter[] para =
                 {
+                    new SqlParameter("@qflag", "U"),
+                    new SqlParameter("@id", model.ID),
                     new SqlParameter("@user_login", model.user_nicename),
                     new SqlParameter("@user_nicename", model.user_nicename),
                     new SqlParameter("@user_email", model.user_email),
@@ -525,9 +530,10 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "INSERT INTO wp_usermeta(user_id,meta_key,meta_value) VALUES(@user_id,@meta_key,@meta_value); select LAST_INSERT_ID() as ID;";
+                string strsql = "erp_user_iud";
                 SqlParameter[] para =
                 {
+                     new SqlParameter("@qflag", "IM"),
                     new SqlParameter("@user_id", id),
                     new SqlParameter("@meta_key", varFieldsName),
                     new SqlParameter("@meta_value", varFieldsValue),
@@ -544,9 +550,10 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "update wp_usermeta set meta_value=@meta_value where user_id=@user_id and meta_key=@meta_key";
+                string strsql = "erp_user_iud";
                 SqlParameter[] para =
                 {
+                    new SqlParameter("@qflag", "UM"),
                     new SqlParameter("@user_id", id),
                     new SqlParameter("@meta_key", varFieldsName),
                     new SqlParameter("@meta_value", varFieldsValue),

@@ -84,8 +84,8 @@
                             + " FROM wp_users_activitylog ual INNER JOIN wp_users ur ON ur.id = ual.user_id WHERE 1 = 1";
                 if (userid > 0)
                     strWhr += " and ur.id = " + userid.ToString();
-                strWhr += " and cast(log_date as date) >= cast('" + fromdate.ToString("yyyy-MM-dd") + "' as date) ";
-                strWhr += " and cast(log_date as date) <= cast('" + todate.ToString("yyyy-MM-dd") + "' as date) ";
+                strWhr += " and convert(date,log_date) >= convert(date,'" + fromdate.ToString("yyyy-MM-dd") + "') ";
+                strWhr += " and convert(date,log_date) <= convert(date,'" + todate.ToString("yyyy-MM-dd") + "') ";
 
                 strSql += strWhr + " order by log_date DESC  LIMIT " + (pageno).ToString() + ", " + pagesize.ToString();
 
@@ -96,7 +96,7 @@
                 if (ds.Tables[1].Rows.Count > 0)
                     totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
             }
-            catch { }
+            catch(Exception ex) { }
             return dt;
         }
 

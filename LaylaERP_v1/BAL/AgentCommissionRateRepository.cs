@@ -16,7 +16,8 @@ namespace LaylaERP.BAL
             DataTable dtr = new DataTable();
             try
             {
-                string strquery = "Select id, AOV_Range1, AOV_Range2,Format(Comm_Rate,2) as Comm_Rate from wp_agent_commission order by id;";
+                //string strquery = "SELECT id, AOV_Range1, AOV_Range2,cast(Comm_Rate as decimal(10,2)) as Comm_Rate from wp_agent_commission order by id";
+                string strquery = "agentcommissionrate";
                 dtr = SQLHelper.ExecuteDataTable(strquery);
             }
             catch (Exception ex)
@@ -28,7 +29,7 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "insert into wp_agent_commission(AOV_Range1, AOV_Range2, Comm_Rate) values(@AOV_Range1,@AOV_Range2,@Comm_Rate);SELECT LAST_INSERT_ID();";
+                string strsql = "insert into wp_agent_commission(AOV_Range1, AOV_Range2, Comm_Rate) values(@AOV_Range1,@AOV_Range2,@Comm_Rate); SELECT SCOPE_IDENTITY();";
                 SqlParameter[] para =
                 {
                     new SqlParameter("@AOV_Range1", model.AOV_Range1),
@@ -51,7 +52,7 @@ namespace LaylaERP.BAL
             try
             {
 
-                string strSql = "SELECT id, AOV_Range1, AOV_Range2, Format(Comm_Rate,2) as Comm_Rate from wp_agent_commission where id =" + id + "";
+                string strSql = "SELECT id, AOV_Range1, AOV_Range2, cast(Comm_Rate as decimal(10,2)) as Comm_Rate from wp_agent_commission where id =" + id + "";
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
 
@@ -67,13 +68,15 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "update wp_agent_commission set AOV_Range1=@AOV_Range1, AOV_Range2=@AOV_Range2, Comm_Rate=@Comm_Rate where id in(" + model.id + ")";
+                //string strsql = "update wp_agent_commission set AOV_Range1=@AOV_Range1, AOV_Range2=@AOV_Range2, Comm_Rate=@Comm_Rate where id in (@id)";
+                string strsql = "agentcommissionupdate";
                 SqlParameter[] para =
                 {
                     new SqlParameter("@AOV_Range1", model.AOV_Range1),
                     new SqlParameter("@AOV_Range2", model.AOV_Range2),
                     new SqlParameter("@Comm_Rate", model.Comm_Rate),
-                   
+                    new SqlParameter("@id", model.id),
+
             };
                 int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
                 return result;

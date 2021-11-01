@@ -123,47 +123,33 @@ namespace LaylaERP.Controllers
             return Json(result, 0);
         }
         [HttpPost]
-        public JsonResult NewPurchase(PurchaseOrderModel model)
+        public JsonResult NewPurchase(SearchModel model)
         {
-            string JSONstring = string.Empty; bool b_status = false; long ID = 0;
+            string JSONresult = string.Empty;
             try
             {
-                model.LoginID = CommanUtilities.Provider.GetCurrent().UserID;
-                ID = new PurchaseOrderRepository().AddNewPurchase(model);
+                long id = 0, u_id = 0;
+                if (!string.IsNullOrEmpty(model.strValue1)) id = Convert.ToInt64(model.strValue1);
+                u_id = CommanUtilities.Provider.GetCurrent().UserID;
+                System.Xml.XmlDocument orderXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.strValue2 + "}", "Items");
+                System.Xml.XmlDocument orderdetailsXML = JsonConvert.DeserializeXmlNode("{\"Data\":" + model.strValue3 + "}", "Items");
+                JSONresult = JsonConvert.SerializeObject(PurchaseOrderRepository.AddNewPurchase(id, "I", u_id, orderXML, orderdetailsXML));
 
-                if (ID > 0)
-                {
-                    b_status = true; JSONstring = "Purchase Record has been updated successfully!!";
-                }
-                else
-                {
-                    b_status = false; JSONstring = "Invalid Details.";
-                }
             }
-            catch (Exception Ex)
-            {
-                b_status = false; JSONstring = Ex.Message;
-            }
-            return Json(new { status = b_status, message = JSONstring, id = ID }, 0);
+            catch { }
+            return Json(JSONresult, JsonRequestBehavior.AllowGet);
         }
         [HttpGet]
         public JsonResult UpdatePurchaseOrderStatus(PurchaseOrderModel model)
         {
-            string JSONstring = string.Empty; bool b_status = false;
+            string JSONresult = string.Empty;
             try
             {
                 model.LoginID = CommanUtilities.Provider.GetCurrent().UserID;
-                if (new PurchaseOrderRepository().UpdatePurchaseStatus(model) > 0)
-                { b_status = true; JSONstring = "Purchase Record has been updated successfully!!"; }
-                else
-                { b_status = false; JSONstring = "Invalid Details."; }
+                JSONresult = JsonConvert.SerializeObject(PurchaseOrderRepository.UpdatePurchaseStatus(model));
             }
-            catch (Exception Ex)
-            {
-                b_status = false; JSONstring = Ex.Message;
-            }
-            return Json(new { status = b_status, message = JSONstring }, 0);
-
+            catch { }
+            return Json(JSONresult, JsonRequestBehavior.AllowGet);
         }
         public JsonResult GetPurchaseOrderList(JqDataTableModel model)
         {

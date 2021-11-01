@@ -1,9 +1,7 @@
 ﻿$(document).ready(function () {
     $("#loader").hide(); $('.select2').select2();
     PurchaseOrderGrid();
-    $('#btnSearch').click(function () {
-        PurchaseOrderGrid();
-    });
+    $('#btnSearch').click(function () { PurchaseOrderGrid(); });
     $(document).on('click', '#btnChange', function () { orderStatus(); });
 });
 function PurchaseOrderGrid() {
@@ -106,8 +104,8 @@ function orderStatus() {
     let status = $('#ddlOrderStatus').val();
 
     if (id == "") { swal('alert', 'Please select a Purchase order.', 'error'); return false; }
-    if (status == "") { swal('alert', 'Please select status.', 'error'); return false;}
-    
+    if (status == "") { swal('alert', 'Please select status.', 'error'); return false; }
+
     swal.queue([{
         title: 'Alert!', confirmButtonText: 'Yes, Update it!', text: "Do you want to update your status?",
         showLoaderOnConfirm: true, showCancelButton: true, icon: "question",
@@ -116,14 +114,12 @@ function orderStatus() {
                 let obj = { Search: id, Status: status };
                 $.get('/PurchaseOrder/UpdatePurchaseOrderStatus', obj)
                     .done(function (data) {
-                        if (data.status) {
-                            swal.insertQueueStep(data.message);
-                            PurchaseOrderGrid();
-                        }
+                        data = JSON.parse(data);
+                        if (data[0].Response == "Success") { swal.insertQueueStep(data.message); PurchaseOrderGrid(); }
                         else { swal.insertQueueStep('something went wrong!'); }
                         resolve();
-                    })
-            })
+                    });
+            });
         }
     }]);
 }

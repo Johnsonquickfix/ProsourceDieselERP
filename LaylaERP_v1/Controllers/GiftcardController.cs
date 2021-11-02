@@ -50,7 +50,7 @@ namespace LaylaERP.Controllers
             }
             GiftCardModel model = new GiftCardModel
             {
-                amount = Convert.ToDouble(giftamount),
+                amount = Convert.ToDecimal(giftamount),
                 recipient = GiftToMultiple,
                 sender_email = senderemail,
                 message = collection["GiftMessage"],

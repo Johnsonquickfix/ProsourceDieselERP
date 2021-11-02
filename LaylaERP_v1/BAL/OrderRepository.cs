@@ -774,12 +774,24 @@
                     strSql.Append(string.Format(" union all select order_item_id,'_refunded_item_id',refunded_item_id from wp_wc_order_product_lookup where order_id = {0}", n_orderid));
                     strSql.Append(string.Format(" union all select order_item_id,'_line_tax_data','0' from wp_wc_order_product_lookup where order_id = {0};", n_orderid));
                     /// step 5 : wp_woocommerce_order_items
+
+                    string ID = Guid.NewGuid().ToString("N");
+                    string gid = ID.Substring(0, 4) + "-" + ID.Substring(4, 4) + "-" + ID.Substring(8, 4) + "-" + ID.Substring(12, 4);
+                    string code = gid.ToUpper();
                     foreach (OrderOtherItemsModel obj in model.OrderOtherItems)
                     {
                         if (obj.amount != 0)
                         {
                             strSql.Append(string.Format(" insert into wp_woocommerce_order_items(order_item_name,order_item_type,order_id) value('{0}','{1}','{2}');", obj.item_name, obj.item_type, n_orderid));
-                            if (obj.item_type == "fee")
+
+                            if (obj.item_type == "gift_card")
+                            {
+                                strSql.Append(string.Format(" insert into wp_woocommerce_order_items(order_item_name,order_item_type,order_id) value('{0}','{1}','{2}');", code, obj.item_type, n_orderid));
+
+                                strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select max(order_item_id),'cost','-{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}'", obj.amount, n_orderid, obj.item_type));
+                                strSql.Append(string.Format(" union all select max(order_item_id),'_refunded_item_id','{0}' from wp_woocommerce_order_items where order_id = {1} and order_item_type = '{2}'; ", obj.order_item_id, n_orderid, obj.item_type));
+                            }
+                            else if (obj.item_type == "fee")
                             {
                                 strSql.Append(string.Format(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) select max(order_item_id),'tax_status','{0}' from wp_woocommerce_order_items where order_id={1} and order_item_type='{2}'", "taxable", n_orderid, obj.item_type));
                                 strSql.Append(string.Format(" union all select max(order_item_id),'_line_total','-{0}' from wp_woocommerce_order_items where order_id={1} and order_item_type='{2}'", obj.amount, n_orderid, obj.item_type));
@@ -807,6 +819,115 @@
             }
             catch { }
             return result;
+        }
+        public static int UpdateRefundedGiftCard(OrderModel model)
+        {
+            int result = 0;
+            try
+            {
+                long order_item_id = 0; string order_item_name = ""; string order_item_type = "";
+                string Userid = CommanUtilities.Provider.GetCurrent().UserID.ToString();
+                DataTable dt = OrderRepository.GiftCardDetails(model.order_id);
+                StringBuilder strSql = new StringBuilder();
+                foreach (DataRow dr in dt.Rows)
+                {
+                    order_item_id = Convert.ToInt64(dr["order_item_id"]);
+                    order_item_name = dr["order_item_name"].ToString();
+                    order_item_type = dr["order_item_type"].ToString();
+                    DataTable dtMeta = OrderRepository.GiftCardMetaItem(order_item_id);
+                    if (dtMeta.Rows.Count > 0)
+                    {
+                        int metaAmount = Convert.ToInt32(dtMeta.Rows[0]["meta_value"]);
+                        int metaID = Convert.ToInt32(dtMeta.Rows[0]["meta_id"]);
+                        decimal RefundAmount = 0;
+                        if (model.NetTotal > metaAmount && metaAmount > 0 && model.NetTotal > 0)
+                        {
+                            RefundAmount = metaAmount;
+
+                            strSql.Append(string.Format("Update wp_woocommerce_order_itemmeta set meta_value=meta_value-{0} where meta_id={1}; ", RefundAmount, metaID));
+                            strSql.Append(string.Format("Update wp_woocommerce_gc_cards set  is_active='on',remaining=remaining + {0} where order_item_id={1};", RefundAmount, order_item_id));
+                            strSql.Append(string.Format("Insert into wp_woocommerce_gc_activity(type,user_id,user_email,object_id,gc_id,gc_code,amount,date,note) " +
+                                "Select 'refunded', {1}, user_email, object_id, gc_id, gc_code, {2}, UNIX_TIMESTAMP(now()), note from wp_woocommerce_gc_activity where object_id = {0} and type = 'used'; ", order_item_id, Userid, RefundAmount));
+
+                            SendGiftCardMailInvoice(order_item_id, RefundAmount);
+                            model.NetTotal = model.NetTotal - metaAmount;
+                        }
+                        else if (model.NetTotal > 0 && metaAmount > 0)
+                        {
+                            strSql.Append(string.Format("Update wp_woocommerce_order_itemmeta set meta_value=meta_value-{0} where meta_id={1}; ", model.NetTotal, metaID));
+                            strSql.Append(string.Format("Update wp_woocommerce_gc_cards set is_active='on', remaining=remaining + {0} where order_item_id={1};", model.NetTotal, order_item_id));
+                            strSql.Append(string.Format("Insert into wp_woocommerce_gc_activity(type,user_id,user_email,object_id,gc_id,gc_code,amount,date,note) " +
+                               "Select 'refunded', {1}, user_email, object_id, gc_id, gc_code, {2}, UNIX_TIMESTAMP(now()), note from wp_woocommerce_gc_activity where object_id = {0} and type = 'used'; ", order_item_id, Userid, model.NetTotal));
+
+                            SendGiftCardMailInvoice(order_item_id, model.NetTotal);
+                            model.NetTotal = model.NetTotal - model.NetTotal;
+                        }
+                        else { strSql.Append(""); };
+                    }
+                }
+                result = SQLHelper.ExecuteNonQuery(strSql.ToString());
+            }
+            catch (Exception Ex) { throw Ex; }
+            return result;
+        }
+        public static DataTable GiftCardMetaItem(long OrderItemID)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@OrderItemID", OrderItemID)
+                };
+                string strSQl = "Select * from wp_woocommerce_order_itemmeta where order_item_id=@OrderItemID and meta_key='amount';";
+                dt = SQLHelper.ExecuteDataTable(strSQl, parameters);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dt;
+        }
+        public static DataTable SendGiftCardMailInvoice(long order_item_id, decimal NetTotal)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@order_item_id", order_item_id)
+                };
+                string strSQl = "Select * from wp_woocommerce_gc_cards where order_item_id=@order_item_id;";
+                dt = SQLHelper.ExecuteDataTable(strSQl, parameters);
+                if (dt.Rows.Count > 0)
+                {
+                    GiftCardModel model = new GiftCardModel();
+                    model.amount = NetTotal;
+                    model.code = dt.Rows[0]["code"].ToString();
+                    model.sender = dt.Rows[0]["sender"].ToString();
+                    model.order_id = Convert.ToInt64(dt.Rows[0]["order_id"]);
+                    String renderedHTML = Controllers.EmailNotificationsController.RenderViewToString("EmailNotifications", "Giftcard", model);
+                    SendEmail.SendEmails(dt.Rows[0]["recipient"].ToString(), "You have received a $" + NetTotal + " Gift Card from " + model.sender + "", renderedHTML);
+                }
+
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dt;
+        }
+        public static DataTable GiftCardDetails(long OrderID)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@order_id", OrderID)
+                };
+                string strSQl = "Select order_item_id,order_item_name,order_item_type,order_id from wp_woocommerce_order_items where order_id=@order_id and order_item_type='gift_card'";
+                dt = SQLHelper.ExecuteDataTable(strSQl, parameters);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dt;
         }
 
         public int ChangeOrderStatus(OrderPostStatusModel model, string ID)
@@ -885,49 +1006,12 @@
             List<OrderProductsModel> _list = new List<OrderProductsModel>();
             try
             {
-                string base_path = "http://40.114.51.80" + "/Content/Product/";
                 OrderProductsModel productsModel = new OrderProductsModel();
                 SqlParameter[] parameters =
                 {
                     new SqlParameter("@flag", "OITEM"),
                     new SqlParameter("order_id", OrderID)
                 };
-                //string strSQl = "select oi.order_id,oi.order_item_id,oi.order_item_name,oi.order_item_type,max(case meta_key when '_product_id' then meta_value else '' end) p_id,max(case meta_key when '_variation_id' then meta_value else '' end) v_id,"
-                //            + " max(case meta_key when '_qty' then meta_value else '' end) qty,max(case meta_key when '_line_subtotal' then meta_value else '' end) line_subtotal,"
-                //            + " max(case meta_key when '_line_total' then meta_value else '' end) line_total,max(case meta_key when '_line_tax' then meta_value else '' end) tax,"
-                //            + " max(case meta_key when 'discount_amount' then meta_value else '' end) discount_amount,max(case meta_key when 'cost' then meta_value else '' end) shipping_amount,"
-                //            + " (select COALESCE(psr.meta_value, 0) sale_price from wp_postmeta psr where psr.meta_key = '_price' "
-                //            + "         and psr.post_id = (case when max(case oim.meta_key when '_variation_id' then oim.meta_value else '' end) != '0' then max(case oim.meta_key when '_variation_id' then oim.meta_value else '' end)"
-                //            + "             else max(case oim.meta_key when '_product_id' then oim.meta_value else '' end) end)) sale_price,"
-                //            + " (select concat('{',group_concat(concat('\"',free_product_id,'\": \"',free_quantity,'\"') separator ','),'}') from wp_product_free free_it"
-                //            + " where free_it.product_id = max(case oim.meta_key when '_product_id' then oim.meta_value else '0' end) or free_it.product_id = max(case oim.meta_key when '_variation_id' then oim.meta_value else '0' end)) as meta_data,"
-                //            + " (select COALESCE(p.image, '') sale_price from wp_image p where p.id = (case when max(case oim.meta_key when '_variation_id' then oim.meta_value else '' end) != '0' then max(case oim.meta_key when '_variation_id' then oim.meta_value else '' end)"
-                //            + "             else max(case oim.meta_key when '_product_id' then oim.meta_value else '' end) end)) p_img"
-                //            + " from wp_woocommerce_order_items oi inner join wp_woocommerce_order_itemmeta oim on oim.order_item_id = oi.order_item_id"
-                //            + " where oi.order_id = @order_id and oi.order_item_type!='coupon' group by oi.order_id,oi.order_item_id,oi.order_item_name,oi.order_item_type "
-                //            + " union all "
-                //            + " Select oi.order_id,oi.order_item_id,oi.order_item_name,oi.order_item_type,0 p_id,0 v_id,0 qty,0 line_subtotal,0 line_total,0 tax,oim.meta_value discount_amount,0 shipping_amount,0 sale_price,concat('{', group_concat(concat('\"', pm.meta_key, '\": \"', pm.meta_value, '\"') separator ','), '}') as meta_data,'' p_img"
-                //            + " from wp_woocommerce_order_items oi inner join wp_woocommerce_order_itemmeta oim on oim.order_item_id = oi.order_item_id and oim.meta_key = 'discount_amount'"
-                //            + " left outer join wp_posts p on lower(p.post_title) = lower(oi.order_item_name) and p.post_type = 'shop_coupon'"
-                //            + " left outer join wp_postmeta pm on pm.post_id = p.id and pm.meta_key in ('coupon_amount','discount_type', 'product_ids', 'exclude_product_ids')"
-                //            + " where oi.order_id = @order_id and oi.order_item_type = 'coupon' group by oi.order_id,oi.order_item_id,oi.order_item_name,oi.order_item_type,oim.meta_value"
-                //            + " union all "
-                //            + " select p.post_parent order_id,p_oim.meta_value order_item_id,oi.order_item_type order_item_name,'refund_items' order_item_type,0 p_id,0 v_id,"
-                //            + " sum(case oim.meta_key when '_qty' then oim.meta_value else '' end) qty,0 line_subtotal,sum(case oim.meta_key when '_line_total' then oim.meta_value else '' end) line_total,"
-                //            + " sum(case oim.meta_key when '_line_tax' then oim.meta_value when 'tax_amount' then oim.meta_value else '' end) tax,0 discount_amount,sum(case oim.meta_key when 'cost' then oim.meta_value else '' end) shipping_amount,0 sale_price,'{}' as meta_data,'' p_img"
-                //            + " from wp_posts p left outer join wp_woocommerce_order_items oi on oi.order_id = p.id"
-                //            + " left outer join wp_woocommerce_order_itemmeta p_oim on p_oim.order_item_id = oi.order_item_id and p_oim.meta_key = '_refunded_item_id'"
-                //            + " left outer join wp_woocommerce_order_itemmeta oim on oim.order_item_id = p_oim.order_item_id and oim.meta_key in ('_qty', '_line_total', '_line_tax', 'tax_amount', 'cost')"
-                //            + " where p.post_parent = @order_id group by p.post_parent,oi.order_item_type,p_oim.meta_key,p_oim.meta_value"
-                //            + " union all "
-                //            + " select p.id order_id,p.id order_item_id,concat('Refund #',p.id,' - ',DATE_FORMAT(p.post_date,'%b %e, %Y, %h:%i'),' by ',ur.user_nicename,'</br>',"
-                //            + " coalesce(group_concat(concat(oi.order_item_name, ' x ', oim.meta_value) ORDER BY oi.order_item_name separator '</br>'),'')) order_item_name,'refund' order_item_type,"
-                //            + " 0 p_id,0 v_id,0 qty,pm.meta_value line_subtotal, pm.meta_value line_total,0 tax,0 discount_amount,0 shipping_amount,0 sale_price,'{}' as meta_data,'' p_img"
-                //            + " from wp_posts p inner join wp_postmeta pm on pm.post_id = p.id and pm.meta_key = '_order_total'"
-                //            + " inner join wp_postmeta pmur on pmur.post_id = p.id and pmur.meta_key = '_refunded_by' inner join wp_users ur on ur.id = pmur.meta_value"
-                //            + " left outer join wp_woocommerce_order_items oi on oi.order_id = p.id and oi.order_item_type = 'line_item'"
-                //            + " left outer join wp_woocommerce_order_itemmeta oim on oim.order_item_id = oi.order_item_id and oim.meta_key = '_qty'"
-                //            + " where p.post_parent = @order_id group by p.id,p.post_date,ur.user_nicename,pm.meta_value order by order_id desc";
                 SqlDataReader sdr = SQLHelper.ExecuteReader("wp_posts_order_search", parameters);
                 while (sdr.Read())
                 {
@@ -942,7 +1026,7 @@
 
                     if (productsModel.product_type == "line_item")
                     {
-                        productsModel.product_img = (sdr["p_img"] != Convert.DBNull) ? base_path + sdr["p_img"].ToString() : "";
+                        productsModel.product_img = (sdr["p_img"] != Convert.DBNull) ? sdr["p_img"].ToString() : "";
                         if (sdr["p_id"] != DBNull.Value && !string.IsNullOrWhiteSpace(sdr["p_id"].ToString().Trim()))
                             productsModel.product_id = Convert.ToInt64(sdr["p_id"]);
                         else

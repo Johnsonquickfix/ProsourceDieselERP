@@ -33,13 +33,15 @@ function getOrderInfo() {
     if (oid > 0) {
         $('#ddlStatus').prop("disabled", true);
         $('#lblOrderNo').text('Order #' + oid + ' detail '); $('#hfOrderNo').val(oid);
-        $('#order_line_items,#order_state_recycling_fee_line_items,#order_fee_line_items,#order_shipping_line_items,#order_refunds,#billCoupon,.refund-action').empty();
+        $('#order_line_items,#order_state_recycling_fee_line_items,#order_fee_line_items,#order_shipping_line_items,#gift_card_line_items,#order_refunds,#billCoupon,.refund-action').empty();
         $('#btnCheckout').remove(); $('.box-tools,.footer-finalbutton').empty().append('<button type="button" class="btn btn-danger btnRefundOrder"><i class="far fa-edit"></i> Refund</button>');
         var opt = { strValue1: oid };
         ajaxFunc('/Orders/GetOrderInfo', opt, beforeSendFun, function (result) {
             var data = JSON.parse(result);
             if (data.length > 0) {
                 $('#lblOrderNo').data('pay_by', data[0].payment_method);
+                $('#lblOrderNo').data('pay_gift', data[0].IsGift);
+                $('#lblOrderNo').data('pay_giftCardAmount', data[0].giftCardAmount);
                 if (data[0].payment_method == 'ppec_paypal') $('#lblOrderNo').data('pay_id', data[0].paypal_id);
                 else if (data[0].payment_method == 'podium') { $('#lblOrderNo').data('pay_id', data[0].podium_id); $('#lblOrderNo').data('payment_uid', data[0].podium_payment_uid); }
                 else $('#lblOrderNo').data('pay_id', '');
@@ -83,8 +85,8 @@ function getOrderItemList(oid) {
     var option = { strValue1: oid };
     //let coupon_list = [];
     ajaxFunc('/Orders/GetOrderProductList', option, beforeSendFun, function (data) {
-        let itemHtml = '', recyclingfeeHtml = '', feeHtml = '', shippingHtml = '', refundHtml = '', couponHtml = '';
-        let zQty = 0.00, zGAmt = 0.00, zTDiscount = 0.00, zTotalTax = 0.00, zShippingAmt = 0.00, zStateRecyclingAmt = 0.00, zFeeAmt = 0.00, zRefundAmt = 0.00;
+        let itemHtml = '', recyclingfeeHtml = '', feeHtml = '', shippingHtml = '', giftCardHtml = '', refundHtml = '', couponHtml = '';
+        let zQty = 0.00, zGAmt = 0.00, zTDiscount = 0.00, zTotalTax = 0.00, zShippingAmt = 0.00, zGiftCardAmt = 0.00, zStateRecyclingAmt = 0.00, zFeeAmt = 0.00, zRefundAmt = 0.00;
         for (var i = 0; i < data.length; i++) {
             let orderitemid = parseInt(data[i].order_item_id) || 0;
             if (data[i].product_type == 'line_item') {
@@ -177,6 +179,15 @@ function getOrderItemList(oid) {
                 $("#shippingTotal").data("orderitemid", orderitemid);
                 $('#order_shipping_line_items').append(shippingHtml);
             }
+            else if (data[i].product_type == 'gift_card') {
+                giftCardHtml = '<tr id="tritemId_' + orderitemid + '" data-orderitemid="' + orderitemid + '" data-pname="' + data[i].product_name + '">';
+                giftCardHtml += '<td class="text-center item-action"><i class="fa fa-gift"></i></td>';
+                giftCardHtml += '<td>' + data[i].product_name + '</td><td></td><td class="text-right row-refuntamt"></td><td class="RefundAmount text-right"></td><td class="TotalAmount text-right">' + data[i].total.toFixed(2) + '</td><td></td><td></td>';
+                giftCardHtml += '</tr>';
+                zGiftCardAmt = zGiftCardAmt + (parseFloat(data[i].total) || 0.00);
+                $("#giftCardTotal").data("orderitemid", orderitemid);
+                $('#gift_card_line_items').append(giftCardHtml);
+            }
             else if (data[i].product_type == 'refund') {
                 refundHtml = '<tr id="tritemId_' + orderitemid + '" data-orderitemid="' + orderitemid + '" data-pname="' + data[i].product_name + '">';
                 refundHtml += '<td class="text-center item-action"><i class="fas fa-retweet"></i></td>';
@@ -215,12 +226,13 @@ function getOrderItemList(oid) {
         $("#SubTotal").text(zGAmt.toFixed(2));
         $("#discountTotal").text(zTDiscount.toFixed(2));
         $("#salesTaxTotal").text(zTotalTax.toFixed(2));
+        $("#giftCardTotal").text(zGiftCardAmt.toFixed(2));
         $("#shippingTotal").text(zShippingAmt.toFixed(2));
         $("#stateRecyclingFeeTotal").text(zStateRecyclingAmt.toFixed(2));
         $("#feeTotal").text(zFeeAmt.toFixed(2));
-        $("#orderTotal").html((zGAmt - zTDiscount + zShippingAmt + zTotalTax + zStateRecyclingAmt + zFeeAmt).toFixed(2));
+        $("#orderTotal").html((zGAmt - zTDiscount - zGiftCardAmt + zShippingAmt + zTotalTax + zStateRecyclingAmt + zFeeAmt).toFixed(2));
         $("#refundedTotal").text(zRefundAmt.toFixed(2));
-        $("#netPaymentTotal").text(((zGAmt - zTDiscount + zShippingAmt + zTotalTax + zStateRecyclingAmt + zFeeAmt) + zRefundAmt).toFixed(2));
+        $("#netPaymentTotal").text(((zGAmt - zTDiscount - zGiftCardAmt + zShippingAmt + zTotalTax + zStateRecyclingAmt + zFeeAmt) + zRefundAmt).toFixed(2));
         //if (zRefundAmt != 0) $(".refund-total").removeClass('hidden'); else $(".refund-total").addClass('hidden');
         $("#order_line_items,#order_fee_line_items").find(".rowCalulate").change(function () { calculateRefunAmount(); });
     }, completeFun, errorFun);
@@ -292,10 +304,13 @@ function getStateRecyclingCharge() {
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Current Refund Calculate ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function freeQtyUpdate() {
     $("#order_line_items > tr.free_item").each(function (index, row) {
-        let zQty = 0.00, pid = parseInt($(this).data("pid")) || 0;
+        let zQty = 0.00, pid = parseInt($(this).data("pid")) || 0, vid = parseInt($(this).data("vid")) || 0;
         $("#order_line_items  > tr.paid_item").each(function (pindex, prow) {
             if ($(prow).data('freeitems')[pid] != undefined) {
                 zQty += parseFloat($(prow).find("[name=txt_RefundQty]").val()) * parseFloat($(prow).data('freeitems')[pid]);
+            }
+            else if ($(prow).data('freeitems')[vid] != undefined) {
+                zQty += parseFloat($(prow).find("[name=txt_RefundQty]").val()) * parseFloat($(prow).data('freeitems')[vid]);
             }
         });
         $(row).find("[name=txt_RefundQty]").val(zQty.toFixed(0));
@@ -307,8 +322,11 @@ function calculateRefunAmount() {
     let _items = createItemsList();
     //getStateRecyclingCharge();
     $.each(_items, function (key, item) {
-        qty += item.refundqty; subtotal += item.total; shippingtotal += item.shipping_amount;
-        taxtotal += item.tax_amount; total += (item.total - item.discount + item.tax_amount + item.shipping_amount);
+        console.log(key, item);
+        if (item.product_type == 'line_item') {
+            qty += item.refundqty; subtotal += item.total; shippingtotal += item.shipping_amount;
+            taxtotal += item.tax_amount; total += (item.total - item.discount + item.tax_amount + item.shipping_amount);
+        }
     });
     // Fee
     $('#order_fee_line_items > tr').each(function (index, tr) {
@@ -356,32 +374,11 @@ function createPostStatus() {
     };
     return postStatus;
 }
-function createOtherItemsList() {
-    let oid = 0, otherItemsxml = [];
-    //State Recycling Fee
-    $('#order_state_recycling_fee_line_items > tr').each(function (index, tr) {
-        otherItemsxml.push({ order_item_id: parseInt($(tr).data('orderitemid')), order_id: oid, item_name: $(tr).data('pname'), item_type: 'fee', amount: parseFloat($(tr).find(".RefundAmount").text()) || 0.00 });
-    });
-    //other fee
-    $('#order_fee_line_items > tr').each(function (index, tr) {
-        otherItemsxml.push({ order_item_id: parseInt($(tr).data('orderitemid')), order_id: oid, item_name: $(tr).data('pname'), item_type: 'fee', amount: parseFloat($(tr).find("[name=txt_FeeAmt]").val()) || 0.00 });
-    });
-    //Add Shipping
-    $('#order_shipping_line_items > tr').each(function (index, tr) {
-        otherItemsxml.push({ order_item_id: parseInt($(tr).data('orderitemid')), order_id: oid, item_name: '', item_type: 'shipping', amount: parseFloat($(tr).find(".RefundAmount").text()) || 0.00 });
-    });
-    return otherItemsxml;
-}
-function createTaxItemsList() {
-    let taxItemsxml = [];
-    taxItemsxml.push({ order_item_id: parseInt($('#salesTaxTotal').data('orderitemid')), order_id: 0, tax_rate_country: '', tax_rate_state: '', tax_rate: 0, amount: parseFloat($('.btnRefundOk').data('tax')) || 0.00 });
-    return taxItemsxml;
-}
 function createItemsList() {
     let oid = parseInt($('#hfOrderNo').val()) || 0, cid = parseInt($('#ddlUser').val()) || 0;
-    let itemsDetails = [];
+    let _itmes = [];
     $('#order_line_items > tr').each(function (index, tr) {
-        let qty = parseFloat($(tr).data('qty')) || 0.00;
+        let oi_id = parseInt($(this).data('orderitemid')) || 0, qty = parseFloat($(tr).data('qty')) || 0.00;
         let refundqty = parseFloat($(tr).find("[name=txt_RefundQty]").val()) || 0.00;
         let rate = parseFloat($(tr).find(".TotalAmount").data('regprice')) || 0.00;
         let grossAmount = parseFloat($(tr).find(".TotalAmount").data('amount')) || 0.00;
@@ -394,72 +391,89 @@ function createItemsList() {
             discountAmount = discountAmount > 0 ? (discountAmount / qty) * refundqty : 0;
             taxAmount = taxAmount > 0 ? (taxAmount / qty) * refundqty : 0;
             shippinAmount = shippinAmount > 0 ? (shippinAmount / qty) * refundqty : 0;
-            itemsDetails.push({
-                order_item_id: $(this).data('orderitemid'),
-                PKey: index,
-                order_id: oid,
-                customer_id: cid,
-                product_id: $(tr).data('pid'),
-                variation_id: $(tr).data('vid'),
-                product_name: $(tr).data('pname'),
-                quantity: refundqty,
-                sale_rate: rate,
-                total: grossAmount,
-                discount: discountAmount,
-                tax_amount: taxAmount,
-                shipping_amount: shippinAmount,
-                shipping_tax_amount: 0
+            _itmes.push({
+                order_item_id: oi_id, product_type: 'line_item', PKey: index, order_id: oid, customer_id: cid,
+                product_id: $(tr).data('pid'), variation_id: $(tr).data('vid'), product_name: $(tr).data('pname'),
+                quantity: refundqty, sale_rate: rate, total: grossAmount, discount: discountAmount,
+                tax_amount: taxAmount, shipping_amount: shippinAmount, shipping_tax_amount: 0
             });
         }
         else if (refundamt > 0) {
             grossAmount = refundamt, discountAmount = 0, taxAmount = 0, shippinAmount = 0;
-            itemsDetails.push({
-                order_item_id: $(this).data('orderitemid'),
-                PKey: index,
-                order_id: oid,
-                customer_id: cid,
-                product_id: $(tr).data('pid'),
-                variation_id: $(tr).data('vid'),
-                product_name: $(tr).data('pname'),
-                quantity: refundqty,
-                sale_rate: rate,
-                total: grossAmount,
-                discount: discountAmount,
-                tax_amount: taxAmount,
-                shipping_amount: shippinAmount,
-                shipping_tax_amount: 0
+            _itmes.push({
+                order_item_id: oi_id, product_type: 'line_item', PKey: index, order_id: oid, customer_id: cid,
+                product_id: $(tr).data('pid'), variation_id: $(tr).data('vid'), product_name: $(tr).data('pname'),
+                quantity: refundqty, sale_rate: rate, total: grossAmount, discount: discountAmount,
+                tax_amount: taxAmount, shipping_amount: shippinAmount, shipping_tax_amount: 0
             });
         }
     });
-    return itemsDetails;
+    let _amt = 0.00;
+    //State Recycling Fee
+    $('#order_state_recycling_fee_line_items > tr').each(function (index, tr) {
+        _amt = parseFloat($(tr).find(".RefundAmount").text()) || 0.00;
+        if (_amt != 0) _itmes.push({ order_item_id: parseInt($(tr).data('orderitemid')), order_id: oid, product_name: $(tr).data('pname'), product_type: 'fee', total: -_amt });
+    });
+    //other fee
+    $('#order_fee_line_items > tr').each(function (index, tr) {
+        _amt = parseFloat($(tr).find("[name=txt_FeeAmt]").val()) || 0.00;
+        if (_amt != 0) _itmes.push({ order_item_id: parseInt($(tr).data('orderitemid')), order_id: oid, product_name: $(tr).data('pname'), product_type: 'fee', total: -_amt });
+    });
+    //Add Shipping
+    $('#order_shipping_line_items > tr').each(function (index, tr) {
+        _amt = parseFloat($(tr).find(".RefundAmount").text()) || 0.00;
+        if (_amt != 0) _itmes.push({ order_item_id: parseInt($(tr).data('orderitemid')), order_id: oid, product_name: '', product_type: 'shipping', total: -_amt });
+    });
+    //Add Tax
+    _amt = parseFloat($('.btnRefundOk').data('tax')) || 0.00;
+    if (_amt != 0) _itmes.push({ order_item_id: parseInt($('#salesTaxTotal').data('orderitemid')), order_id: 0, product_name: '', product_type: 'tax', tax_amount: 0, total: -_amt });
+    return _itmes;
 }
 function saveCO() {
-    let oid = parseInt($('#hfOrderNo').val()) || 0, pay_by = $('#lblOrderNo').data('pay_by').trim();
-    //if (!ValidateData()) { $("#loader").hide(); return false };    
-    let postMeta = createPostMeta(), postStatus = createPostStatus(), otherItems = createOtherItemsList(), taxItems = createTaxItemsList(), itemsDetails = createItemsList();
+    let oid = parseInt($('#hfOrderNo').val()) || 0, pay_by = $('#lblOrderNo').data('pay_by').trim(), pay_gift = ($('#lblOrderNo').data('pay_gift') || ''), pay_giftCardAmount = ($('#lblOrderNo').data('pay_giftCardAmount') || 0.00), net_total = (parseFloat($('.btnRefundOk').data('nettotal')) || 0.00);
+    let postMeta = createPostMeta(), postStatus = createPostStatus(), itemsDetails = createItemsList();
 
     if (itemsDetails.length <= 0) { swal('Alert!', 'Please add product.', "error"); return false; }
-    var obj = { OrderPostMeta: postMeta, OrderProducts: itemsDetails, OrderPostStatus: postStatus, OrderOtherItems: otherItems, OrderTaxItems: taxItems };
+    let obj = { order_id: oid, order_statsXML: JSON.stringify(postStatus), postmetaXML: JSON.stringify(postMeta), order_itemsXML: JSON.stringify(itemsDetails) };
 
-    //console.log(obj);
     $.ajax({
         type: "POST", contentType: "application/json; charset=utf-8",
         url: "/Orders/SaveCustomerOrderRefund",
         data: JSON.stringify(obj), dataType: "json", beforeSend: function () { $("#loader").show(); },
         success: function (data) {
-            if (data.status == true) {
-                if (pay_by == 'ppec_paypal') PaypalPaymentRefunds();
-                else if (pay_by == 'podium') PodiumPaymentRefunds();
-                else if (pay_by == 'authorize_net_cim_credit_card') AuthorizeNetPaymentRefunds();
+            data = JSON.parse(data);
+            if (data[0].Response == "Success") {
+                if (pay_gift == '') {
+                    if (pay_by == 'ppec_paypal') PaypalPaymentRefunds();
+                    else if (pay_by == 'podium') PodiumPaymentRefunds();
+                    else if (pay_by == 'authorize_net_cim_credit_card') AuthorizeNetPaymentRefunds();
+                    else '';
+                }
+                else if (pay_gift == 'gift_card') {
+                    if (pay_giftCardAmount >= net_total) {
+                        $('#lblOrderNo').data('giftCardAmount', net_total);
+                        GiftCardPaymentRefunds();
+                    }
+                    else if (pay_giftCardAmount < net_total) {
+                        let total = net_total - pay_giftCardAmount;
+                        $('#lblOrderNo').data('giftCardAmount', pay_giftCardAmount);
+                        GiftCardPaymentRefunds();
+                        //partial refund by gift card and gateway
+                        $('.btnRefundOk').data('nettotal', total);
+                        if (pay_by == 'ppec_paypal') PaypalPaymentRefunds();
+                        else if (pay_by == 'podium') PodiumPaymentRefunds();
+                        else if (pay_by == 'authorize_net_cim_credit_card') AuthorizeNetPaymentRefunds();
+                        else '';
+                    }
+                    else '';
+                }
                 else '';
-
                 $('.box-tools,.footer-finalbutton').empty().append('<button type="button" class="btn btn-danger btnRefundOrder"><i class="far fa-edit"></i> Refund</button>');
-                $('#order_line_items,#order_state_recycling_fee_line_items,#order_fee_line_items,#order_shipping_line_items,#order_refunds,#billCoupon,.refund-action').empty();
+                $('#order_line_items,#order_state_recycling_fee_line_items,#order_fee_line_items,#gift_card_line_items,#order_shipping_line_items,#order_refunds,#billCoupon,.refund-action').empty();
                 $('.billinfo').prop("disabled", true);
-                swal('Alert!', data.message, "success");
-                setTimeout(function () { getOrderItemList(oid); getOrderNotesList(oid); $('.billinfo').prop("disabled", true); }, 50);
+                swal('Alert!', data[0].Response, "success").then(function () { getOrderItemList(oid); getOrderNotesList(oid); $('.billinfo').prop("disabled", true); }, 50);
             }
-            else { swal('Alert!', data.message, "error").then((result) => { return false; }); }
+            else { swal('Alert!', data[0].Response, "error").then((result) => { return false; }); }
         },
         error: function (xhr, status, err) { $("#loader").hide(); alert(err); },
         complete: function () { $("#loader").hide(); isEdit(false); },
@@ -532,7 +546,7 @@ function PaypalPaymentRefunds() {
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Authorize.Net Payment Return ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function AuthorizeNetPaymentRefunds() {
     let oid = parseInt($('#hfOrderNo').val()) || 0, invoice_amt = (parseFloat($('.btnRefundOk').data('nettotal')) || 0.00);
-    let option = { order_id: oid, NetTotal: invoice_amt }; 
+    let option = { order_id: oid, NetTotal: invoice_amt };
     swal.queue([{
         title: 'Authorize.Net Payment Processing.', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,
         onOpen: () => {
@@ -559,6 +573,25 @@ function AmazonPayPaymentRefunds() {
                 console.log('Amazon Pay ', response);
                 if (response.status) {
                     swal('Alert!', 'Order placed successfully.', "success"); getOrderNotesList(oid);
+                }
+            }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', err, 'error'); }).always(function () { swal.hideLoading(); });
+        }
+    }]);
+}
+
+///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Gift Card Payment Return ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+function GiftCardPaymentRefunds() {
+    let oid = parseInt($('#hfOrderNo').val()) || 0, invoice_amt = (parseFloat($('#lblOrderNo').data('giftCardAmount')) || 0.00);
+    let option = { order_id: oid, NetTotal: invoice_amt };
+    swal.queue([{
+        title: 'Gift Card Payment Processing.', allowOutsideClick: false, allowEscapeKey: false, showConfirmButton: false, showCloseButton: false, showCancelButton: false,
+        onOpen: () => {
+            swal.showLoading();
+            $.post('/Orders/UpdateGitCardPaymentRefund', option).then(response => {
+                console.log('Gift Card ', response);
+                if (response.status) {
+                    swal('Alert!', 'Refund Amount Added in gift card successfully.', "success");
+                    getOrderNotesList(oid); getOrderItemList(oid);
                 }
             }).catch(err => { console.log(err); swal.hideLoading(); swal('Error!', err, 'error'); }).always(function () { swal.hideLoading(); });
         }

@@ -182,7 +182,7 @@ function getOrderItemList(oid) {
             }
             else if (data[i].product_type == 'gift_card') {                
                 giftCardHtml = '<tr id="tritemId_' + orderitemid + '" data-orderitemid="' + orderitemid + '" data-pname="' + data[i].product_name + '">';
-                giftCardHtml += '<td class="text-center item-action"><i class="fa fa-gift"></i></td>';
+                giftCardHtml += '<td class="text-center item-action"><i class="glyphicon glyphicon-gift"></i></td>';
                 giftCardHtml += '<td>' + data[i].product_name + '</td><td></td><td class="text-right row-refuntamt"></td><td class="RefundAmount text-right"></td><td class="TotalAmount text-right">' + data[i].total.toFixed(2) + '</td><td></td><td></td>';
                 giftCardHtml += '</tr>';
                 zGiftCardAmt = zGiftCardAmt + (parseFloat(data[i].total) || 0.00);

@@ -1520,7 +1520,7 @@ function ApplyGiftCard() {
     $('#billCoupon li').each(function (index, li) {
         if ($(li).data('type') == 'add_giftcard') { add_giftcard_count += 1; }
     });
-    if (add_giftcard_count > 0) { swal('Alert!', 'Cannot add any other Gift Card.', "error").then((result) => { $('#txt_GiftCard').focus(); return false; }); return false; };
+  
 
     let obj = { strValue1: giftcard_code };
     $.ajax({
@@ -1529,21 +1529,27 @@ function ApplyGiftCard() {
           
             var data = JSON.parse(result);
             if (data.length == 0) { swal('Alert!', 'Invalid code entered. Please try again.', "error").then((result) => { $('#txt_GiftCard').focus(); return false; }); return false; }
-            if (data[0].GiftCard_Amount <= 0) { swal('Invalid!', 'This gift card code is not valid.', "error").then((result) => { $('#txt_GiftCard').focus(); return false; }); return false; }
-            data[0].GiftCard_Amount = parseFloat(data[0].GiftCard_Amount) || 0.00;
-            console.log($("#orderTotal").text());
-            if ($("#orderTotal").text() <= 0 ) {
-                swal('Error!', 'Please add product in your cart', "error").then((result) => { $('#txt_GiftCard').focus(); return false; }); return false;
+            if (data[0].GiftCard_Amount >= 0) {
+
+                data[0].GiftCard_Amount = parseFloat(data[0].GiftCard_Amount) || 0.00;
+
+                if ($("#orderTotal").text() <= 0) {
+                    swal('Error!', 'Please add product in your cart', "error").then((result) => { $('#txt_GiftCard').focus(); return false; }); return false;
+                }
+                else if ($("#orderTotal").text() > 0 && $("#orderTotal").text() >= data[0].GiftCard_Amount) {
+                    $("#GiftCardTotal").val(data[0].GiftCard_Amount);
+                    bindGiftCardList(data);
+                }
+                else if ($("#orderTotal").text() > 0 && data[0].GiftCard_Amount >= $("#orderTotal").text()) {
+                    data[0].GiftCard_Amount = $("#orderTotal").text();
+
+                    $("#GiftCardTotal").val(data[0].GiftCard_Amount);
+                    bindGiftCardList(data);
+                }
             }
-            else if ($("#orderTotal").text() > 0 && $("#orderTotal").text() >= data[0].GiftCard_Amount) {
-                $("#GiftCardTotal").val(data[0].GiftCard_Amount);
-                bindGiftCardList(data);
-            }
-            else if ($("#orderTotal").text() > 0 && data[0].GiftCard_Amount >= $("#orderTotal").text()) {
-                data[0].GiftCard_Amount = $("#orderTotal").text();
-                console.log(data[0].GiftCard_Amount);
-                $("#GiftCardTotal").val(data[0].GiftCard_Amount);
-                bindGiftCardList(data);
+            else {
+                swal('Invalid!', 'This gift card code is not valid.', "error").then((result) => { $('#txt_GiftCard').focus(); return false; }); return false;
+
             }
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
@@ -1619,18 +1625,22 @@ function bindCouponList(data) {
 function bindGiftCardList(data) {
     var layoutHtml = '';
     if (data.length > 0) {
+
+        var totalGiftAmt = "";
         for (var i = 0; i < data.length; i++) {
             if ($('#li_' + data[i].code).length <= 0) {
                 let gift_amt = parseFloat(data[i].GiftCard_Amount) || 0.00;
-                layoutHtml = '<li id="li_' + data[i].code.toString().toLowerCase() + '" class="giftCard" data-GiftCard= "' + data[i].code + '" data-gc_ID= "' + data[i].id + '" data-giftamt= "' + data[i].GiftCard_Amount + '" data-type= "' + data[i].type + '" data-orderitemid="0">';
+                let giftcard_amt = $(".giftCard").data("giftamt") || 0.00;
+                totalGiftAmt = giftcard_amt + gift_amt;
+                layoutHtml = '<li id="li_' + data[i].code.toString().toUpperCase() + '" class="giftCard" data-GiftCard= "' + data[i].code + '" data-gc_ID= "' + data[i].id + '" data-giftamt= "' + data[i].GiftCard_Amount + '" data-type= "' + data[i].type + '" data-orderitemid="0">';
                 layoutHtml += '<a href="javascript:void(0);">';
                 layoutHtml += '<i class="fa fa-gift"></i>';
-                layoutHtml += '<span>' + data[i].code.toString().toLowerCase() + '</span>';
+                layoutHtml += '<span>' + data[i].code.toString().toUpperCase() + '</span>';
                 layoutHtml += '<div class="pull-right">';
 
                 if (data[0].type == 'add_giftcard') {
                     layoutHtml += '$<span id="gift_discamt">' + gift_amt.toFixed(2) + '</span>';
-                    layoutHtml += '<button type="button" class="btn btn-box-tool pull-right" onclick="deleteAllCoupons(\'' + data[i].code.toString().toLowerCase() + '\');">';
+                    layoutHtml += '<button type="button" class="btn btn-box-tool pull-right" onclick="deleteAllCoupons(\'' + data[i].code.toString().toUpperCase() + '\');">';
                     layoutHtml += '<i class="fa fa-times"></i>';
                     layoutHtml += '</button>';
                 }
@@ -1641,6 +1651,7 @@ function bindGiftCardList(data) {
                 layoutHtml += '</a>';
                 layoutHtml += '</li>';
                 $('#billCoupon').append(layoutHtml);
+              
             }
             else {
                 if (data[0].type == 'add_giftcard') {
@@ -1656,7 +1667,10 @@ function bindGiftCardList(data) {
                 //    //swal('Alert!', 'Coupon code already applied!', "info").then((result) => { $('#txt_Coupon').focus(); return false; }); return false;
                 //}
             }
+            
         }
+        $(".giftCard").data("giftamt", totalGiftAmt);
+        console.log(totalGiftAmt);
         calcFinalTotals();
         $("#billModal").modal('hide');
     }
@@ -1849,7 +1863,7 @@ function calculateDiscountAcount() {
                 zSalePrice = parseFloat($(row).find(".TotalAmount").data("salerate")) || 0.00;
                 zGrossAmount = zRegPrice * zQty;
                 $(row).find(".TotalAmount").data("amount", zGrossAmount.toFixed(2)); $(row).find(".TotalAmount").text(zGrossAmount.toFixed(2));
-                console.log(is_sales);
+            
                 ////Coupun Type 'diff' and DiscType not equal '2x_percent' (CouponAmt = RegPrice - SalePrice)
                 if (zType == 'diff' && is_sales == 0) {
                     if (zDiscType != '2x_percent') zCouponAmt = (zRegPrice - zSalePrice) > 0 ? (zRegPrice - zSalePrice) : 0.00;

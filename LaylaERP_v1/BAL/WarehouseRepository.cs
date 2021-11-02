@@ -11,6 +11,7 @@ namespace LaylaERP.BAL
 {
     public class WarehouseRepository
     {
+        
         public static DataTable GetWarehouseDetail(SearchModel model)
         {
             string strwhr = " where is_system=0 and status= '" + model.strValue1 + "'";
@@ -36,26 +37,26 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "insert into wp_warehouse(ref,datec,lieu,description,address,zip,town,country,phone,fax,statut,address1,city,status,warehouse_type,email)" +
-                    " values(@ref,@datec,@lieu,@description,@address,@zip,@town,@country,@phone,@fax,@statut,@address1,@city,@status,@warehouse_type,@email);SELECT LAST_INSERT_ID();";
+                string strsql = "INSERT into wp_warehouse(ref,datec,lieu,description,address,zip,town,country,phone,fax,statut,address1,city,status,warehouse_type,email)" +
+                    " values(@ref,@datec,@lieu,@description,@address,@zip,@town,@country,@phone,@fax,@statut,@address1,@city,@status,@warehouse_type,@email);SELECT SCOPE_IDENTITY();";
                 SqlParameter[] para =
                 {
-                    new SqlParameter("@ref", model.reff),
+                    new SqlParameter("@ref", model.reff ?? (object)DBNull.Value),
                     new SqlParameter("@datec",Convert.ToDateTime(DateTime.UtcNow.ToString("yyyy-MM-dd"))),
-                    new SqlParameter("@lieu", model.lieu),
-                    new SqlParameter("@description", model.description),
-                    new SqlParameter("@address", model.address),
-                    new SqlParameter("@zip", model.zip),
-                    new SqlParameter("@town", model.town),
-                    new SqlParameter("@country", model.country),
-                    new SqlParameter("@phone", model.phone),
-                    new SqlParameter("@fax", model.fax),
+                    new SqlParameter("@lieu", model.lieu ?? (object)DBNull.Value),
+                    new SqlParameter("@description", model.description ?? (object)DBNull.Value),
+                    new SqlParameter("@address", model.address ?? (object)DBNull.Value),
+                    new SqlParameter("@zip", model.zip ?? (object)DBNull.Value),
+                    new SqlParameter("@town", model.town ?? (object)DBNull.Value),
+                    new SqlParameter("@country", model.country ?? (object)DBNull.Value),
+                    new SqlParameter("@phone", model.phone ?? (object)DBNull.Value),
+                    new SqlParameter("@fax", model.fax ?? (object)DBNull.Value),
                     new SqlParameter("@statut", model.statut),
-                    new SqlParameter("@address1", model.address1),
-                    new SqlParameter("@city", model.city),
+                    new SqlParameter("@address1", model.address1 ?? (object)DBNull.Value),
+                    new SqlParameter("@city", model.city ?? (object)DBNull.Value),
                     new SqlParameter("@status",model.status),
-                    new SqlParameter("@warehouse_type",model.warehouse_type),
-                    new SqlParameter("@email",model.email),
+                    new SqlParameter("@warehouse_type",model.warehouse_type ?? (object)DBNull.Value),
+                    new SqlParameter("@email",model.email ?? (object)DBNull.Value),
 
                     //Additional Info
 
@@ -87,7 +88,7 @@ namespace LaylaERP.BAL
             try
             {
 
-                string strSql = "SELECT rowid,ref,entity,description,lieu,phone,fax,if(statut=0,'Close','Open')as statut, address, zip, " +
+                string strSql = "SELECT rowid,ref,entity,description,lieu,phone,fax,iif(statut=0,'Close','Open')as statut, address, zip, " +
                     "town, country, address1, city, status, warehouse_type, cor_phone, cor_address, cor_address1, cor_city, cor_state, cor_zip," +
                     "cor_country, note_public, note_private, email FROM wp_warehouse where rowid=" + rowid + "";
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
@@ -105,26 +106,28 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "update wp_warehouse set ref=@ref, lieu=@lieu, description=@description, address=@address, zip=@zip, town=@town, country=@country, phone=@phone, fax=@fax, statut=@statut," +
+                /*string strsql = "update wp_warehouse set ref=@ref, lieu=@lieu, description=@description, address=@address, zip=@zip, town=@town, country=@country, phone=@phone, fax=@fax, statut=@statut," +
                     " address1=@address1, city=@city, status=@status, warehouse_type=@warehouse_type, " +
-                    " email=@email  where rowid in(" + model.rowid + ")";
+                    " email=@email  where rowid in(" + model.rowid + ")";*/
+                string strsql = "warehouseupdate";
                 SqlParameter[] para =
                 {
-                    new SqlParameter("@ref", model.reff),
-                    new SqlParameter("@lieu", model.lieu),
-                    new SqlParameter("@description", model.description),
-                    new SqlParameter("@address", model.address),
-                    new SqlParameter("@zip", model.zip),
-                    new SqlParameter("@town", model.town),
+                    new SqlParameter("@ref", model.reff ?? (object)DBNull.Value),
+                    new SqlParameter("@lieu", model.lieu ?? (object)DBNull.Value),
+                    new SqlParameter("@description", model.description ?? (object)DBNull.Value),
+                    new SqlParameter("@address", model.address ?? (object)DBNull.Value),
+                    new SqlParameter("@zip", model.zip ?? (object)DBNull.Value),
+                    new SqlParameter("@town", model.town ?? (object)DBNull.Value),
                     new SqlParameter("@country", model.country),
-                    new SqlParameter("@phone", model.phone),
-                    new SqlParameter("@fax", model.fax),
+                    new SqlParameter("@phone", model.phone ?? (object)DBNull.Value),
+                    new SqlParameter("@fax", model.fax ?? (object)DBNull.Value),
                     new SqlParameter("@statut", model.statut),
-                    new SqlParameter("@address1", model.address1),
-                    new SqlParameter("@city", model.city),
+                    new SqlParameter("@address1", model.address1 ?? (object)DBNull.Value),
+                    new SqlParameter("@city", model.city ?? (object)DBNull.Value),
                     new SqlParameter("@status",model.status),
-                    new SqlParameter("@warehouse_type",model.warehouse_type),
-                     new SqlParameter("@email",model.email),
+                    new SqlParameter("@warehouse_type",model.warehouse_type ?? (object)DBNull.Value),
+                    new SqlParameter("@email",model.email ?? (object)DBNull.Value),
+                    new SqlParameter("@rowid",model.rowid),
                     //additional info
                     //new SqlParameter("@cor_phone", model.cor_phone),
                     //new SqlParameter("@cor_address", model.cor_address),
@@ -298,20 +301,25 @@ namespace LaylaERP.BAL
 
         public static DataTable Getvendorwarehouse(SearchModel model)
         {
-            string strWhr = " where w.rowid='" + model.strValue1 + "'";
+            //string strWhr = " where w.rowid='" + model.strValue1 + "'";
             DataTable dtr = new DataTable();
             try
             {
-
+                /*
                 string strSql = "SELECT v.rowid as rowid, v.name as vname, w.ref as wname, concat(v.address,',',' ',v.town,',',' ',v.fk_state,',',' ',v.zip,',',' ',v.fk_country) as Vaddress, v.phone as phone FROM wp_VendorWarehouse vs"
                                + " inner JOIN wp_warehouse w on vs.WarehouseID = w.rowid"
                               + " inner join wp_vendor v on v.rowid = vs.VendorID";
                 if (!string.IsNullOrEmpty(model.strValue1))
                 {
                     strSql += strWhr;
-                }
+                }*/
 
-                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                SqlParameter[] para =
+                {
+                    new SqlParameter("@warehouseid", model.strValue1),
+                };
+                string strSql = "warehousevendor";
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql, para);
                 dtr = ds.Tables[0];
 
             }
@@ -611,7 +619,8 @@ namespace LaylaERP.BAL
                 //+ " inner join wp_warehouse ws on ws.rowid = pw.fk_warehouse"
                 //+ " WHERE post.post_type = 'product' AND post.post_status = 'publish' AND CONCAT(post.post_title, ' (' , COALESCE(psku.meta_value, '') , ') - ' ,LTRIM(REPLACE(REPLACE(COALESCE(ps.post_excerpt, ''), 'Size:', ''), 'Color:', ''))) like '%%%'"
                 //+ " ORDER BY post.ID";
-                string strquery = "select p.id,p.post_type,p.post_title ,max(case when p.id = s.post_id and s.meta_key = '_sku' then s.meta_value else '' end) sku, COALESCE(format(psi.purchase_price,2),0) buy_price,"
+                //~~~~~~~~~~~~~~~~~~~~~~~for Mysql
+                /*string strquery = "select p.id,p.post_type,p.post_title ,max(case when p.id = s.post_id and s.meta_key = '_sku' then s.meta_value else '' end) sku, COALESCE(format(psi.purchase_price,2),0) buy_price,"
                                  + " COALESCE(format(max(case when p.id = s.post_id and s.meta_key = '_regular_price' then s.meta_value else '' end),2),0) reg_price, "
                                  + " COALESCE(format(max(case when p.id = s.post_id and s.meta_key = '_sale_price' then s.meta_value else '' end),2),0) sale_price, "
                                  + " (select (coalesce(sum(case when pwr.flag = 'R' then quantity end),0) - coalesce(sum(case when pwr.flag = 'I' then quantity end),0)) from product_stock_register pwr where pwr.product_id = p.id and pwr.warehouse_id = pw.fk_warehouse) stock,"
@@ -621,8 +630,23 @@ namespace LaylaERP.BAL
                                  + "  left join Product_Purchase_Items psi on psi.fk_product = pw.fk_product"
                                  + "  left join product_stock_register psr on psr.product_id = pw.fk_product"
                                  + " where pw.fk_warehouse = '" + getwarehouseid + "' and p.post_type in ('product', 'product_variation') and p.post_status != 'draft'  group by p.id order by p_id";
-
-                DataSet ds = SQLHelper.ExecuteDataSet(strquery);
+                                 */
+                SqlParameter[] para =
+                {
+                new SqlParameter("@warehouseid", getwarehouseid),
+                };
+                //string strquery = "select p.id,p.post_type,p.post_title ,max(case when p.id = s.post_id and s.meta_key = '_sku' then s.meta_value else '' end) sku, COALESCE((psi.purchase_price),0) buy_price,"
+                //                 + " COALESCE((max(case when p.id = s.post_id and s.meta_key = '_regular_price' then s.meta_value else '' end)),0) reg_price, "
+                //                 + " COALESCE((max(case when p.id = s.post_id and s.meta_key = '_sale_price' then s.meta_value else '' end)),0) sale_price, "
+                //                 + " (select (coalesce(sum(case when pwr.flag = 'R' then quantity end),0) - coalesce(sum(case when pwr.flag = 'I' then quantity end),0)) from product_stock_register pwr where pwr.product_id = p.id and pwr.warehouse_id = pw.fk_warehouse) stock,"
+                //                 + " (case when p.post_parent = 0 then p.id else p.post_parent end) p_id,p.post_parent,p.post_status FROM wp_posts as p"
+                //                 + " left join wp_postmeta as s on p.id = s.post_id"
+                //                 + " left join product_warehouse pw on pw.fk_product = p.ID"
+                //                 + " left join Product_Purchase_Items psi on psi.fk_product = pw.fk_product"
+                //                 + " left join product_stock_register psr on psr.product_id = pw.fk_product"
+                //                 + " where pw.fk_warehouse = @warehouseid and p.post_type in ('product', 'product_variation') and p.post_status != 'draft'  group by p.id,p.post_title,p.post_type,psi.purchase_price, pw.fk_warehouse, p.post_parent, p.post_status order by p_id";
+                string strquery = "warehouseproductlist";
+                DataSet ds = SQLHelper.ExecuteDataSet(strquery, para);
                 dtr = ds.Tables[0];
             }
             catch (Exception ex)
@@ -734,8 +758,7 @@ namespace LaylaERP.BAL
             try
             {
                 string strsql = "";
-                strsql = "insert into erp_WarehouseLinkedFiles(WarehouseID, FileName, FileSize, FileType, FilePath) values(@BankID, @FileName, @FileSize, @FileType, @FilePath); SELECT LAST_INSERT_ID();";
-
+                strsql = "INSERT into erp_WarehouseLinkedFiles(WarehouseID, FileName, FileSize, FileType, FilePath) values(@BankID, @FileName, @FileSize, @FileType, @FilePath); SELECT SCOPE_IDENTITY();";
                 SqlParameter[] para =
                {
                     new SqlParameter("@BankID", WarehouseID),
@@ -746,8 +769,6 @@ namespace LaylaERP.BAL
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
                 return result;
-
-
             }
             catch (Exception Ex)
             {
@@ -763,7 +784,7 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "select ID,WarehouseID,FileName,concat(FileSize,' KB') FileSize,FileType,FilePath,DATE_FORMAT(CreatedDate, '%m-%d-%Y') Date from erp_WarehouseLinkedFiles where WarehouseID='" + id + "' and 1=1 ";
+                string strSql = "select ID,WarehouseID,FileName,concat(FileSize,' KB') FileSize,FileType,FilePath,CONVERT(varchar(12), CreatedDate, 101) Date from erp_WarehouseLinkedFiles where WarehouseID='" + id + "' and 1=1 ";
                 if (!string.IsNullOrEmpty(searchid))
                 {
                     strWhr += " and (FileName like '%" + searchid + "%' OR FileSize='%" + searchid + "%' OR Date='%" + searchid + "%' OR Date like '%" + searchid + "%')";
@@ -772,9 +793,9 @@ namespace LaylaERP.BAL
                 {
                     strWhr += " and (FileName='" + userstatus + "') ";
                 }
-                strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
-
-                strSql += "; SELECT ceil(Count(ID)/" + pagesize.ToString() + ") TotalPage,Count(ID) TotalRecord from erp_WarehouseLinkedFiles  WHERE WarehouseID='" + id + "' and 1 = 1 " + strWhr.ToString();
+                //strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
+                strSql += strWhr + string.Format(" order by " + SortCol + " " + SortDir + " OFFSET " + (pageno).ToString() + " ROWS FETCH NEXT " + pagesize + " ROWS ONLY ");
+                strSql += "; SELECT (Count(ID)/" + pagesize.ToString() + ") TotalPage,Count(ID) TotalRecord from erp_WarehouseLinkedFiles  WHERE WarehouseID='" + id + "' and 1 = 1 " + strWhr.ToString();
 
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
@@ -918,6 +939,147 @@ namespace LaylaERP.BAL
             };
                
                 int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql + strsql1, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+        public static DataTable GetWarehouseDetailNew(string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                string strWhr = string.Empty;
+
+                string strSql = "SELECT rowid as id, ref,entity,description,lieu,concat(address,',',' ',town,',',' ',country,' ',zip)as address,Replace(Replace(Replace(Replace(phone,')',''),'(',''),'-',''),' ','') as phone,fax,iif(status=0,'Inactive','Active')as status,warehouse_type,concat(cor_address,' ',cor_city,' ',cor_country,' ',cor_zip)as addressinfo FROM wp_warehouse where 1=1 and is_system=0 ";
+                if (!string.IsNullOrEmpty(searchid))
+                {
+                    strWhr += " and (rowid like '%" + searchid + "%' OR ref like '%" + searchid + "%')";
+                }
+                if (userstatus != null)
+                {
+                    strWhr += " and (status='" + userstatus + "') ";
+                }
+                strSql += strWhr + string.Format(" order by " + SortCol + " " + SortDir + " OFFSET " + (pageno).ToString() + " ROWS FETCH NEXT " + pagesize + " ROWS ONLY ");
+
+                strSql += "; SELECT (Count(rowid)/" + pagesize.ToString() + ") TotalPage,Count(rowid) TotalRecord from wp_warehouse where 1=1 and is_system=0 " + strWhr.ToString();
+
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dt = ds.Tables[0];
+                if (ds.Tables[1].Rows.Count > 0)
+                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static DataTable WarehouseAddressInfoList(string id, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                string strWhr = string.Empty;
+
+                string strSql = "SELECT rowid as id, concat(address,',',' ',state,',',' ',country,' ',zip)as address, Replace(Replace(Replace(Replace(phone,')',''),'(',''),'-',''),' ','') as phone from erp_warehousecontacts where warehouse_id='" + id + "'";
+                if (!string.IsNullOrEmpty(searchid))
+                {
+                    strWhr += " and (address like '%" + searchid + "%' OR state like '%" + searchid + "%' OR country like '%" + searchid + "%' OR zip like '%" + searchid + "%' OR phone like '%" + searchid + "%') ";
+                }
+                if (userstatus != null)
+                {
+                    //strWhr += " and (is_active='" + userstatus + "') ";
+                }
+                //strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
+                strSql += strWhr + string.Format(" order by " + SortCol + " " + SortDir + " OFFSET " + (pageno).ToString() + " ROWS FETCH NEXT " + pagesize + " ROWS ONLY ");
+                strSql += "; SELECT (Count(rowid)/" + pagesize.ToString() + ") TotalPage,Count(rowid) TotalRecord FROM erp_warehousecontacts where warehouse_id='" + id + "' " + strWhr.ToString();
+
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dt = ds.Tables[0];
+                if (ds.Tables[1].Rows.Count > 0)
+                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static int Addwarehousesinfo(WarehouseModel model)
+        {
+            try
+            {
+
+                string strsql = "INSERT into erp_warehousecontacts(warehouse_id, phone, address, address1, city, state, zip, country,note)" +
+                    " values(@warehouseid, @cor_phone, @cor_address, @cor_address1, @cor_city, @cor_state, @cor_zip, @cor_country, @note_public); SELECT SCOPE_IDENTITY();";
+                SqlParameter[] para =
+               {
+                    //additional info
+                    new SqlParameter("@warehouseid",model.warehouse_id),
+                    new SqlParameter("@cor_phone", model.cor_phone ?? (object)DBNull.Value),
+                    new SqlParameter("@cor_address", model.cor_address ?? (object)DBNull.Value),
+                    new SqlParameter("@cor_address1", model.cor_address1 ?? (object)DBNull.Value),
+                    new SqlParameter("@cor_city", model.cor_city ?? (object)DBNull.Value),
+                    new SqlParameter("@cor_state", model.cor_state ?? (object)DBNull.Value),
+                    new SqlParameter("@cor_zip", model.cor_zip ?? (object)DBNull.Value),
+                    new SqlParameter("@cor_country", model.cor_country ?? (object)DBNull.Value),
+                    new SqlParameter("@note_public", model.note_public ?? (object)DBNull.Value),
+            };
+                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
+                return result;
+            }
+            catch (Exception Ex)
+            {
+                throw Ex;
+            }
+        }
+
+        public static DataTable SelectAddressByID(SearchModel model)
+        {
+            DataTable dtr = new DataTable();
+            try
+            {
+                string strquery = "SELECT rowid, address, address1, city, state, phone, zip, country, note from erp_warehousecontacts where rowid='" + model.strValue1 + "'";
+
+
+                DataSet ds = SQLHelper.ExecuteDataSet(strquery);
+                dtr = ds.Tables[0];
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dtr;
+        }
+
+        public static int Editwarehousesinfo(WarehouseModel model)
+        {
+            try
+            {
+                /*string strsql = "UPDATE erp_warehousecontacts set " +
+                    "phone=@cor_phone, address=@cor_address," +
+                    "address1=@cor_address1, city=@cor_city, state=@cor_state, zip=@cor_zip, country=@cor_country, note=@note_public  where rowid =" + model.address_id + "";*/
+                string strsql = "warehouseaddinfoupdate";
+                SqlParameter[] para =
+               {
+                    //additional info
+                    new SqlParameter("@cor_phone", model.cor_phone ?? (object)DBNull.Value),
+                    new SqlParameter("@cor_address", model.cor_address ?? (object)DBNull.Value),
+                    new SqlParameter("@cor_address1", model.cor_address1 ?? (object)DBNull.Value),
+                    new SqlParameter("@cor_city", model.cor_city ?? (object)DBNull.Value),
+                    new SqlParameter("@cor_state", model.cor_state ?? (object)DBNull.Value),
+                    new SqlParameter("@cor_zip", model.cor_zip ?? (object)DBNull.Value),
+                    new SqlParameter("@cor_country", model.cor_country ?? (object)DBNull.Value),
+                    new SqlParameter("@note_public", model.note_public ?? (object)DBNull.Value),
+                    new SqlParameter("@address_id", model.address_id),
+            };
+                int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
                 return result;
             }
             catch (Exception Ex)

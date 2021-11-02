@@ -5,7 +5,7 @@ using System.Web;
 
 namespace LaylaERP.Models
 {
-    public class WarehouseModel: PaggingModel
+    public class WarehouseModel : PaggingModel
     {
         public int rowid { get; set; }
         public string reff { get; set; }
@@ -66,7 +66,8 @@ namespace LaylaERP.Models
         public string cor_country { get; set; }
         public string note_public { get; set; }
         public string note_private { get; set; }
-
+        public int warehouse_id { get; set; }
+        public int address_id { get; set; }
         //value
         public int searchid { get; set; }
         public int searchtransferid { get; set; }
@@ -79,5 +80,6 @@ namespace LaylaERP.Models
         public byte[] ImageFiledata { get; set; }
         public string ImagePath { get; set; }
         public HttpPostedFileBase ImageFile { get; set; }
+        public int vendor_id { get; set; }
     }
 }

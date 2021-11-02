@@ -104,7 +104,7 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "SELECT rowid ID,fk_vendor,purchase_price,cost_price,minpurchasequantity,salestax,taxrate,discount,remark,taglotserialno,shipping_price,Misc_Costs from Product_Purchase_Items"
+                string strSql = "SELECT rowid ID,fk_vendor,Cast(CONVERT(DECIMAL(10,2),purchase_price) as nvarchar) purchase_price,Cast(CONVERT(DECIMAL(10,2),cost_price) as nvarchar) cost_price,minpurchasequantity,salestax,taxrate,discount,remark,taglotserialno,Cast(CONVERT(DECIMAL(10,2),shipping_price) as nvarchar) shipping_price,Misc_Costs from Product_Purchase_Items"
                              + " WHERE rowid = " + model.strVal + " ";
 
 
@@ -932,7 +932,7 @@ namespace LaylaERP.BAL
                 //////+ " WHERE p.post_type in('product') and p.post_status != 'draft' and tt.taxonomy IN('product_cat','product_type') " + strWhr;
 
 
-                string strSql = "select max(t.term_id) term_id,p.id,max(p.post_type)post_type,max(p.post_title)post_title,max(post_date_gmt)post_date_gmt, CONVERT(VARCHAR(12), max(p.post_date_gmt), 107) Date,  CONVERT(VARCHAR(12), max(p.post_modified), 107) publishDate ,case when guid = '' then 'default.png' else isnull(guid,'default.png') end guid,isnull(thumbnails,'default.png') thumbnails,"
+                string strSql = "select max(t.term_id) term_id,p.id,max(p.post_type)post_type,max(p.post_title)post_title,max(post_date_gmt)post_date_gmt, CONVERT(VARCHAR(12), max(p.post_date_gmt), 107) Date,  CONVERT(VARCHAR(12), max(p.post_modified), 107) publishDate ,isnull(thumbnails,'default.png') thumbnails,"
               + " (select string_agg(ui.name,',') from wp_terms ui join wp_term_taxonomy uim on uim.term_id = ui.term_id and uim.taxonomy IN('product_cat') JOIN wp_term_relationships AS trp ON trp.object_id = p.ID and trp.term_taxonomy_id = uim.term_taxonomy_id) itemname , "
              // + " STUFF((SELECT ',' + ui.name FROM dbo.wp_terms ui join wp_term_taxonomy uim on uim.term_id = ui.term_id and uim.taxonomy IN('product_cat') JOIN wp_term_relationships AS trp ON trp.object_id = p.ID and trp.term_taxonomy_id = uim.term_taxonomy_id FOR XML PATH('')), 1, 1, '') as metadetails, "
               + " case when p.post_status = 'trash' then 'InActive' else 'Active' end Activestatus,max(case when p.id = s.post_id and s.meta_key = '_sku' then s.meta_value else '' end) sku,"
@@ -946,7 +946,7 @@ namespace LaylaERP.BAL
                + " left join wp_image wpimg on wpimg.id = p.ID"
               + " WHERE p.post_type in ('product', 'product_variation') and p.post_status != 'draft' " + strWhr
               + " GROUP BY p.ID,guid,thumbnails,post_status,post_parent"
-               + " order by p_id";
+               + " order by p_id,post_type,p.id";
                 //+ " order by p_id" + " limit " + (pageno).ToString() + ", " + pagesize + "";
 
                 strSql += "; SELECT count(distinct p.ID) TotalRecord FROM wp_posts p"
@@ -1032,7 +1032,7 @@ namespace LaylaERP.BAL
                 string strSQl = "select p.id, CONCAT(p.post_title,'(',MAX(CASE WHEN pm1.meta_key = '_sku' then pm1.meta_value else null end) , ')') as Name"
                             + " FROM wp_posts p LEFT JOIN wp_postmeta pm1 ON pm1.post_id = p.ID and pm1.meta_key = '_sku'"
                             + " WHERE p.post_type in('product') and pm1.meta_value is not NULL and CONCAT(p.post_title, pm1.meta_value) like '%" + strSearch + "%' "
-                            + " GROUP BY p.ID limit 50;";
+                            + " GROUP BY p.ID,post_title";
                 DT = SQLHelper.ExecuteDataTable(strSQl);
             }
             catch (Exception ex)
@@ -1045,9 +1045,11 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "Insert into wp_posts(post_date,post_date_gmt,post_content,post_excerpt,post_title,post_name,post_status,post_type,to_ping, pinged,post_content_filtered,post_mime_type,post_parent,ping_status,comment_status) values(@post_date,@post_date_gmt,@post_content,@post_excerpt,@post_title,@post_name,@post_status,@post_type,@to_ping, @pinged,@post_content_filtered,@post_mime_type,@post_parent,'closed',@comment_status);SELECT LAST_INSERT_ID();";
+                DataTable dt = new DataTable();
+                string strsql = "";
                 SqlParameter[] para =
                 {
+                    new SqlParameter("@qflag", "IA"),
                     new SqlParameter("@post_date", DateTime.Now),
                     new SqlParameter("@post_date_gmt", DateTime.UtcNow),
                     new SqlParameter("@post_content", model.post_content),
@@ -1063,7 +1065,9 @@ namespace LaylaERP.BAL
                     new SqlParameter("@post_parent", model.post_parent),
                     new SqlParameter("@comment_status", model.comment_status),
                 };
-                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
+                dt = SQLHelper.ExecuteDataTable("erp_product_iud", para);
+                int result = Convert.ToInt32(dt.Rows[0]["id"]);
+                //int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
                 return result;
             }
             catch (Exception Ex)
@@ -1075,10 +1079,11 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "Insert into wp_posts(post_date,post_date_gmt,post_content,post_excerpt,post_title,post_name,post_status,post_type,to_ping, pinged,post_content_filtered,post_mime_type,post_parent,ping_status,comment_status,post_modified) values(@post_date,@post_date_gmt,@post_content,@post_excerpt,@post_title,@post_name,@post_status,@post_type,@to_ping, @pinged,@post_content_filtered,@post_mime_type,@post_parent,'closed',@comment_status,@post_modified);SELECT LAST_INSERT_ID();";
-
+                DataTable dt = new DataTable();
+                
                 SqlParameter[] para =
                 {
+                     new SqlParameter("@qflag", "I"),
                     new SqlParameter("@post_date", DateTime.Now),
                     new SqlParameter("@post_date_gmt", DateTime.UtcNow),
                     new SqlParameter("@post_content", model.post_content),
@@ -1096,7 +1101,9 @@ namespace LaylaERP.BAL
                     new SqlParameter("@post_modified",model.PublishDate),
 
                 };
-                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
+                dt = SQLHelper.ExecuteDataTable("erp_product_iud", para);
+                int result = Convert.ToInt32(dt.Rows[0]["id"]);
+                //int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
                 return result;
             }
             catch (Exception Ex)
@@ -1142,9 +1149,11 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "update wp_posts set post_title=@post_title,post_name=@post_name, post_content=@post_content,post_type='product',post_status='publish',post_modified=@post_modified where ID =" + ID + "";
+                string strsql = "erp_product_iud";
                 SqlParameter[] para =
                 {
+                    new SqlParameter("@qflag", "U"),
+                    new SqlParameter("@id", ID),
                     new SqlParameter("@post_content", model.post_content),
                     new SqlParameter("@post_title", model.post_title),
                     new SqlParameter("@post_name", model.post_name),
@@ -1507,9 +1516,10 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "Insert into wp_postmeta(post_id,meta_key,meta_value) values(@post_id,@meta_key,@meta_value); select LAST_INSERT_ID() as ID;";
+                string strsql = "erp_product_iud";
                 SqlParameter[] para =
-                {
+                {  
+                     new SqlParameter("@qflag", "IM"),
                     new SqlParameter("@post_id", id),
                     new SqlParameter("@meta_key", varFieldsName),
                     new SqlParameter("@meta_value", varFieldsValue),
@@ -1525,13 +1535,14 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "Insert into wp_postmeta(post_id,meta_key,meta_value) values(@post_id,@meta_key,@meta_value); select LAST_INSERT_ID() as ID;";
+                string strsql = "erp_product_iud";
                 SqlParameter[] para =
                 {
-                     new SqlParameter("@post_id", id),
-                     new SqlParameter("@meta_key", varFieldsName),
-                     new SqlParameter("@meta_value", varFieldsValue),
-                 };
+                     new SqlParameter("@qflag", "IM"),
+                    new SqlParameter("@post_id", id),
+                    new SqlParameter("@meta_key", varFieldsName),
+                    new SqlParameter("@meta_value", varFieldsValue),
+                };
                 SQLHelper.ExecuteNonQuery(strsql, para);
             }
             catch (Exception Ex)
@@ -1594,7 +1605,7 @@ namespace LaylaERP.BAL
                 foreach (ProductModelItemModel obj in model)
                 {
                     strSql.Append("delete from Shipping_Product where fk_productid=" + obj.object_id + ";");
-                    strSql.Append("Insert into Shipping_Product(fk_productid,fk_shippingID) values(" + obj.object_id + "," + obj.term_taxonomy_id + ");SELECT LAST_INSERT_ID();");
+                    strSql.Append("Insert into Shipping_Product(fk_productid,fk_shippingID) values(" + obj.object_id + "," + obj.term_taxonomy_id + ");");
 
                     // strSql_insert += (strSql_insert.Length > 0 ? " union all " : "") + string.Format("select '{0}' post_id,'{1}' meta_key,'{2}' meta_value", obj.post_id, obj.meta_key, obj.meta_value);
                     //strSql.Append(string.Format("update wp_postmeta set meta_value = '{0}' where post_id = '{1}' and meta_key = '{2}' ; ", obj.meta_value, obj.post_id, obj.meta_key));
@@ -1662,7 +1673,7 @@ namespace LaylaERP.BAL
                 foreach (ProductModelPriceModel obj in model)
                 {
 
-                    strSql.Append("Insert into wp_postmeta(post_id,meta_key,meta_value) values(" + obj.post_id + ",'" + obj.meta_key + "','" + obj.meta_value + "');SELECT LAST_INSERT_ID();");
+                    strSql.Append("Insert into wp_postmeta(post_id,meta_key,meta_value) values(" + obj.post_id + ",'" + obj.meta_key + "','" + obj.meta_value + "');");
                     // strSql_insert += (strSql_insert.Length > 0 ? " union all " : "") + string.Format("select '{0}' post_id,'{1}' meta_key,'{2}' meta_value", obj.post_id, obj.meta_key, obj.meta_value);
                     //strSql.Append(string.Format("update wp_postmeta set meta_value = '{0}' where post_id = '{1}' and meta_key = '{2}' ; ", obj.meta_value, obj.post_id, obj.meta_key));
                 }
@@ -1733,16 +1744,16 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "Insert into wp_term_relationships(object_id,term_taxonomy_id,term_order) values(@object_id,@term_taxonomy_id,@term_order);SELECT LAST_INSERT_ID();";
+                string strsql = "erp_product_iud";
                 SqlParameter[] para =
                 {
+                    new SqlParameter("@qflag", "IT"),
                     new SqlParameter("@object_id", ID),
                     new SqlParameter("@term_taxonomy_id", TermID),
                     new SqlParameter("@term_order", "0")
 
-                };
-                int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
-
+                };            
+                SQLHelper.ExecuteScalar(strsql, para);
             }
             catch (Exception Ex)
             {
@@ -1756,10 +1767,19 @@ namespace LaylaERP.BAL
             int result = 0;
             try
             {
-                string strSql_insert = string.Empty;
-                StringBuilder strSql = new StringBuilder();
-                strSql.Append(string.Format("update wp_term_taxonomy set count = count-1 where term_taxonomy_id = {0} ; ", TermID));
-                result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
+                //string strSql_insert = string.Empty;
+                //StringBuilder strSql = new StringBuilder();
+                //strSql.Append(string.Format("update wp_term_taxonomy set count = count-1 where term_taxonomy_id = {0} ; ", TermID));
+                //result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
+
+                string strsql = "erp_product_iud";
+                SqlParameter[] para =
+                {
+                    new SqlParameter("@qflag", "DC"),
+                    new SqlParameter("@TermID", TermID)
+
+                };
+                SQLHelper.ExecuteScalar(strsql, para);
             }
             catch { }
             return result;
@@ -1769,11 +1789,21 @@ namespace LaylaERP.BAL
         {
             int result = 0;
             try
-            {
-                string strSql_insert = string.Empty;
-                StringBuilder strSql = new StringBuilder();
-                strSql.Append(string.Format("update wp_term_taxonomy set count = count+1 where term_taxonomy_id = {0} ; ", TermID));
-                result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
+             {
+            //    string strSql_insert = string.Empty;
+            //    StringBuilder strSql = new StringBuilder();
+            //    strSql.Append(string.Format("update wp_term_taxonomy set count = count+1 where term_taxonomy_id = {0} ; ", TermID));
+            //    result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
+
+                string strsql = "erp_product_iud";
+                SqlParameter[] para =
+                {
+                    new SqlParameter("@qflag", "UC"),
+                    new SqlParameter("@TermID", TermID)
+
+                };
+                SQLHelper.ExecuteScalar(strsql, para);
+
             }
             catch { }
             return result;
@@ -1783,22 +1813,21 @@ namespace LaylaERP.BAL
         {
             try
             {
-                //string strsql = "Insert into wp_term_relationships(object_id,term_taxonomy_id,term_order) values(@object_id,@term_taxonomy_id,@term_order);SELECT LAST_INSERT_ID();";
-                //SqlParameter[] para =
-                //{
-                //    new SqlParameter("@object_id", ID),
-                //    new SqlParameter("@term_taxonomy_id", TermID),
-                //    new SqlParameter("@term_order", "0")
+                string strsql = "erp_product_iud";
+                SqlParameter[] para =
+                {
+                    new SqlParameter("@qflag", "IS"),
+                    new SqlParameter("@fkTermID", ID),
+                    new SqlParameter("@TermID", TermID)                    
 
-                //};
-                //int result = Convert.ToInt32(SQLHelper.ExecuteScalar(strsql, para));
-
-                StringBuilder strSql = new StringBuilder();
-                strSql.Append("delete from Shipping_Product where fk_productid=" + ID + ";");
-                strSql.Append("Insert into Shipping_Product(fk_productid,fk_shippingID) values(" + ID + "," + TermID + ");SELECT LAST_INSERT_ID();");
+                };
+                 SQLHelper.ExecuteScalar(strsql, para);
 
 
-                int result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
+                //StringBuilder strSql = new StringBuilder();
+                //strSql.Append("delete from Shipping_Product where fk_productid=" + ID + ";");
+                //strSql.Append("Insert into Shipping_Product(fk_productid,fk_shippingID) values(" + ID + "," + TermID + ");");
+                //int result = SQLHelper.ExecuteNonQueryWithTrans(strSql.ToString());
 
             }
             catch (Exception Ex)
@@ -1810,10 +1839,11 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "delete from wp_term_relationships where object_id=@object_id";
+                string strsql = "erp_product_iud";
                 SqlParameter[] para =
                  {
-                    new SqlParameter("@object_id", ID)
+                      new SqlParameter("@qflag", "D"),
+                    new SqlParameter("@id", ID)
                      };
                 int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
 
@@ -1827,9 +1857,10 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "update wp_postmeta set meta_value=@meta_value where post_id=@post_id and meta_key=@meta_key";
+                string strsql = "erp_product_iud";
                 SqlParameter[] para =
                 {
+                    new SqlParameter("@qflag", "UM"),
                     new SqlParameter("@post_id", id),
                     new SqlParameter("@meta_key", varFieldsName),
                     new SqlParameter("@meta_value", varFieldsValue),
@@ -2439,7 +2470,7 @@ namespace LaylaERP.BAL
             DataTable dt = new DataTable();
             try
             {
-                string strSQl = "select group_concat(tm. term_taxonomy_id) ID from wp_term_relationships tr inner join wp_term_taxonomy tm on tm. term_taxonomy_id = tr.term_taxonomy_id  and taxonomy = 'product_cat'  WHERE object_id =" + PostID + "; ";
+                string strSQl = "select string_agg(tm. term_taxonomy_id,',') ID from wp_term_relationships tr inner join wp_term_taxonomy tm on tm. term_taxonomy_id = tr.term_taxonomy_id  and taxonomy = 'product_cat'  WHERE object_id =" + PostID + "; ";
                 result = SQLHelper.ExecuteScalar(strSQl).ToString();
                 //return result;
             }

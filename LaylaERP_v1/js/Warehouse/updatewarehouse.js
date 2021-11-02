@@ -1,7 +1,10 @@
-﻿productbywarehouse();
+﻿//productbywarehouse();
 ProductWarehouseGrid();
 BankLinkedFiles();
 //targetwarehouse();
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Correct stock
+/*
 function Addcurrentstock() {
     debugger
     var fk_entrepot = $("#hfid").val();
@@ -94,8 +97,8 @@ function reset() {
     //$("#ddlProduct").val("");
     $('#ddlProduct').val(null).trigger('change');
 }
-
-
+//~~~~~~~~~~~~~~~~~~~End correct stock
+*/
 
 function AddWarehouseinfo() {
     debugger
@@ -246,7 +249,7 @@ function AddWarehouse() {
 
 }
 
-
+/*
 function targetwarehouse() {
     $.get('/Warehouse/Gettargetwarehouse', function (data) {
         var items = "";
@@ -336,7 +339,7 @@ $('#ddlProduct').change(function () {
         },
         error: function (jqXHR, textStatus, errorThrown) { swal('Error!', errorThrown, "error"); }
     });
-});
+});  */
 
 //function productbywarehouse() {
 //    var fk_product = $("#hfid").val();
@@ -377,6 +380,8 @@ function productbywarehouse() {
     });
 }
 */
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~STOCK~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/*
 function AddTransferStock() {
     debugger
     var fk_entrepot = $("#hfid").val();
@@ -959,9 +964,9 @@ function resettransferstock() {
     
 }
 
+*/
 
-
-
+//~~~~~~~~~~~~~~~~~~~~~~~End Stock~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
     /*rowid = $("#hfstockid").val();
@@ -1007,7 +1012,8 @@ function resettransferstock() {
         error: function (error) { swal('Error!', 'something went wrong', 'error'); },
     }) */
 
-
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~warehouse product~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/*
 function productbywarehouse() {
     var warehouseid = $("#hfid").val();
     var obj = {
@@ -1032,8 +1038,8 @@ function productbywarehouse() {
         error: function (error) { swal('Error!', 'something went wrong', 'error'); },
     })
 
-}
-
+} */
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~End product~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function ProductWarehouseGrid() {
     var id = $("#hfid").val();
     var obj = { getwarehouseid:id}
@@ -1054,21 +1060,15 @@ function ProductWarehouseGrid() {
                     { data: 'post_title', title: 'Product Name', sWidth: "25%", class: 'text-left' },
                     {
                         data: 'reg_price', title: 'Regular Price', sWidth: "25%",
-                        'render': function (reg_price) {
-                            return '$' + reg_price;
-                        } 
+                        render: $.fn.dataTable.render.number('', '.', 2, '$')
                     },
                     {
                         data: 'sale_price', title: 'Sale Price', sWidth: "25%",
-                        'render': function (sale_price) {
-                            return '$' + sale_price;
-                        } 
+                        render: $.fn.dataTable.render.number('', '.', 2, '$')
                     },
                     {
                         data: 'buy_price', title: 'Buying price', sWidth: "25%",
-                        'render': function (buy_price) {
-                            return '$' + buy_price;
-                        } 
+                        render: $.fn.dataTable.render.number('', '.', 2, '$')
                     },
 
                     {
@@ -1204,6 +1204,8 @@ function DeleteBankLinkedFiles(id) {
 
 
 //----------------Damage Stock Portion------------------
+
+/*
 function AddDamagestock() {
     debugger
     var fk_entrepot = $("#hfid").val();
@@ -1481,4 +1483,177 @@ function resetdamagestock() {
     $("#txtdamageprice").val('');
     $("#txtdamageunit").val('');
     $("#hfdamagetransid").val('');
+}
+
+*/
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~End Damgage~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+WarehouseAddressInfoList();
+function WarehouseAddressInfoList() {
+    var ID = $("#hfid").val();
+    var table_EL = $('#additionalinfo').DataTable({
+        columnDefs: [{ "orderable": true, "targets": 1 }, { 'visible': true, 'targets': [0] }], order: [[0, "desc"]],
+        destroy: true, bProcessing: true, bServerSide: true, bAutoWidth: false, searching: true,
+        responsive: true, lengthMenu: [[10, 20, 50], [10, 20, 50]],
+        language: {
+            lengthMenu: "_MENU_ per page",
+            zeroRecords: "Sorry no records found",
+            info: "Showing _START_ to _END_ of _TOTAL_ entries",
+            infoFiltered: "",
+            infoEmpty: "No records found",
+            processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
+        },
+        initComplete: function () {
+            $('#additionalinfo_filter input').unbind();
+            $('#additionalinfo_filter input').bind('keyup', function (e) {
+                var code = e.keyCode || e.which;
+                if (code == 13) { table_EL.search(this.value).draw(); }
+            });
+        },
+
+        sAjaxSource: "/Warehouse/WarehouseAddressInfoList",
+        fnServerData: function (sSource, aoData, fnCallback, oSettings) {
+            aoData.push({ name: "strValue2", value: ID });
+            var col = 'id';
+            if (oSettings.aaSorting.length >= 0) {
+                var col = oSettings.aaSorting[0][0] == 0 ? "phone" : oSettings.aaSorting[0][0] == 1 ? "Address" : "id";
+                aoData.push({ name: "sSortColName", value: col });
+            }
+            oSettings.jqXHR = $.ajax({
+                dataType: 'json', type: "GET", url: sSource, data: aoData,
+                "success": function (data) {
+                    var dtOption = { sEcho: data.sEcho, recordsTotal: data.recordsTotal, recordsFiltered: data.recordsFiltered, aaData: JSON.parse(data.aaData) };
+                    return fnCallback(dtOption);
+                }
+            });
+        },
+        aoColumns: [
+            { data: 'address', title: 'Address', sWidth: "25%" },
+            {
+                data: 'phone', title: 'Phone', sWidth: "15%", render: function (toFormat) {
+                    var tPhone = '';
+                    if (toFormat != null) {
+                        tPhone = toFormat.toString();
+                        tPhone = '(' + tPhone.substring(0, 3) + ') ' + tPhone.substring(3, 6) + ' ' + tPhone.substring(6, 10);
+                    }
+                    return tPhone
+                }
+            },
+            {
+                'data': 'id',
+                'sortable': false,
+                'searchable': false,
+                sWidth: "10%",
+                'render': function (id, type, full, meta) {
+                    return '<span title="Click Here To Edit Address Details" data-placement="bottom" data-toggle="tooltip"><a href="#" onclick="EditSelectAddress(' + id + ');"><i class="glyphicon glyphicon-pencil"></i></a></span>';
+                }
+            },
+        ],
+    });
+}
+
+function EditSelectAddress(id) {
+    var obj = { strValue1: id }
+    $.ajax({
+        url: '/Warehouse/SelectAddressByID/',
+        datatype: 'json',
+        type: 'Post',
+        contentType: "application/json;charset=utf-8",
+        data: JSON.stringify(obj),
+        success: function (data) {
+            var jobj = JSON.parse(data);
+            console.log(jobj[0].rowid);
+            $("#hfaddressid").val(jobj[0].rowid);
+            $('#txtCorContact').val(jobj[0].phone);
+            $('#txtCorAddress').val(jobj[0].address);
+            $("#txtCorAddress1").val(jobj[0].address1);
+            $("#txtCorCity").val(jobj[0].city);
+            $("#txtCorState").val(jobj[0].state);
+            $("#txtCorZipCode").val(jobj[0].zip);
+            $("#txtCorCountry").val(jobj[0].country).trigger('change');
+            $("#txtpublic").val(jobj[0].note);
+
+            $("#btnSaveinfo").hide();
+            $("#btnUpdateinfo").show();
+            $("#btnResetinfo").show();
+        },
+        complete: function () { $("#loader").hide(); },
+        error: function (error) { swal('Error!', 'something went wrong', 'error'); },
+    })
+}
+
+function resetaddressinfo() {
+    $("#hfaddressid").val('');
+    $('#txtCorContact').val('');
+    $('#txtCorAddress').val('');
+    $("#txtCorAddress1").val('');
+    $("#txtCorCity").val('');
+    $("#txtCorState").val('');
+    $("#txtCorZipCode").val('');
+    $("#txtpublic").val('');
+    $("#btnSaveinfo").show();
+    $("#btnUpdateinfo").hide();
+    $("#btnResetinfo").show();
+}
+
+
+function EditWarehouseinfo() {
+    //Additional info
+    rowid = $("#hfaddressid").val();
+    corphone = $("#txtCorContact").val();
+    coraddress = $("#txtCorAddress").val();
+    coraddress1 = $("#txtCorAddress1").val();
+    corcity = $("#txtCorCity").val();
+    corstate = $("#txtCorState").val();
+    corzip = $("#txtCorZipCode").val();
+    corcountry = $("#txtCorCountry").val();
+    publicnote = $("#txtpublic").val();
+
+    if (coraddress == "") {
+        swal('Alert', 'Please Enter Address', 'error').then(function () { swal.close(); $('#txtCorAddress').focus(); });
+    }
+    else if (corcity == "") {
+        swal('Alert', 'Please Enter City', 'error').then(function () { swal.close(); $('#txtCorCity').focus(); });
+    }
+    else if (corstate == "") {
+        swal('Alert', 'Please Enter State', 'error').then(function () { swal.close(); $('#txtCorState').focus(); });
+    }
+    else if (corzip == "") {
+        swal('Alert', 'Please Enter Zip Code', 'error').then(function () { swal.close(); $('#txtCorZipCode').focus(); });
+    }
+
+    else {
+
+        var obj = {
+            address_id: rowid,
+            cor_phone: corphone,
+            cor_address: coraddress,
+            cor_address1: coraddress1,
+            cor_city: corcity,
+            cor_state: corstate,
+            cor_zip: corzip,
+            cor_country: corcountry,
+            note_public: publicnote,
+        }
+        $.ajax({
+            url: '/Warehouse/Editwarehousesinfo/', dataType: 'json', type: 'Post',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(obj),
+            dataType: "json",
+            beforeSend: function () { $("#loader").show(); },
+            success: function (data) {
+                if (data.status == true) {
+                    swal('Alert!', data.message, 'success');
+                    resetaddressinfo();
+                    WarehouseAddressInfoList();
+                }
+                else {
+                    swal('Alert!', data.message, 'error');
+                }
+            },
+            complete: function () { $("#loader").hide(); },
+            error: function (error) { swal('Error!', 'something went wrong', 'error'); },
+        })
+    }
 }

@@ -1066,7 +1066,7 @@ namespace LaylaERP.Controllers
                 ModelState.Clear();
                 for (int y = 0; y < attributeheader.Length; y++)
                 {
-                    varFieldsName = "attribute_" + attributeheader[y].Trim();
+                    varFieldsName = "attribute_" +  attributeheader[y].Trim().ToLower();
                     ProductRepository.AddProductsMetaVariation(Convert.ToInt64(ID), varFieldsName, "");
                 }
                 return Json(new { status = true, message = "Product Attributes has been saved successfully!!", ID = ID }, 0);

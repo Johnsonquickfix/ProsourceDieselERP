@@ -21,18 +21,18 @@
 </div>
 <div class="page-title">
     <h2 class="page-heading">Update Warehouse&nbsp;&nbsp;(<span>@Model.reff</span>)</h2>
-    
-        <span title="Click Here To Back To Warehouse List" data-placement="bottom" data-toggle="tooltip">@Html.ActionLink("Back to List", "Warehouse", null, new { @class = "btn btn-danger" }) </span>
 
-    
+    <span title="Click Here To Back To Warehouse List" data-placement="bottom" data-toggle="tooltip">@Html.ActionLink("Back to List", "Warehouse", null, new { @class = "btn btn-danger" }) </span>
+
+
 </div>
 <div class="nav-tabs-custom">
     <ul class="nav nav-tabs" id="mytabs" role="tablist">
         <li class="active"><a href="#tab_1" data-toggle="tab"><span title="Warehouse Basic Information" data-placement="bottom" data-toggle="tooltip">Warehouse</span></a></li>
         <li><a href="#tab_2" data-toggle="tab"><span title="Warehouse Additional Contact/Address" data-placement="bottom" data-toggle="tooltip">Additional Info</span></a></li>
-        <li><a href="#tab_3" data-toggle="tab"><span title="Warehouse Correct Stock" data-placement="bottom" data-toggle="tooltip">Correct Stock</span></a></li>
-        <li><a href="#tab_4" data-toggle="tab"><span title="Warehouse Transfer Stock" data-placement="bottom" data-toggle="tooltip">Transfer Stock</span></a></li>
-        <li><a href="#tab_8" data-toggle="tab"><span title="Warehouse Damage Stock" data-placement="bottom" data-toggle="tooltip">Damage Stock</span></a></li>
+        @*<li><a href="#tab_3" data-toggle="tab"><span title="Warehouse Correct Stock" data-placement="bottom" data-toggle="tooltip">Correct Stock</span></a></li>
+            <li><a href="#tab_4" data-toggle="tab"><span title="Warehouse Transfer Stock" data-placement="bottom" data-toggle="tooltip">Transfer Stock</span></a></li>
+            <li><a href="#tab_8" data-toggle="tab"><span title="Warehouse Damage Stock" data-placement="bottom" data-toggle="tooltip">Damage Stock</span></a></li>*@
         <li><a href="#tab_5" data-toggle="tab"><span title="Warehouse Product List" data-placement="bottom" data-toggle="tooltip">Product List</span></a></li>
         <li><a href="#tab_6" data-toggle="tab"><span title="Warehouse Vendor List" data-placement="bottom" data-toggle="tooltip">Vendor List</span></a></li>
         <li><a href="#tab_7" data-toggle="tab"><span title="Warehouse Linked Files" data-placement="bottom" data-toggle="tooltip">Linked Files</span></a></li>
@@ -163,7 +163,7 @@
                                         var selectedstatut1 = "";
                                         var selectedstatut2 = "";
                                         var selectedstatut3 = "";
-                                        if (Model.warehouse_type == "Public")
+                                        if (Model.warehouse_type == "External")
                                         {
                                             selectedstatut = "selected=selected";
                                         }
@@ -171,7 +171,7 @@
                                         {
                                             selectedstatut = "";
                                         }
-                                        if (Model.warehouse_type == "Private")
+                                        if (Model.warehouse_type == "Internal")
                                         {
                                             selectedstatut1 = "selected=selected";
                                         }
@@ -179,22 +179,22 @@
                                         {
                                             selectedstatut1 = "";
                                         }
-                                        if (Model.warehouse_type == "Climate controlled")
-                                        {
-                                            selectedstatut2 = "selected=selected";
-                                        }
-                                        else
-                                        {
-                                            selectedstatut2 = "";
-                                        }
-                                        if (Model.warehouse_type == "Distribution center")
-                                        {
-                                            selectedstatut3 = "selected=selected";
-                                        }
-                                        else
-                                        {
-                                            selectedstatut3 = "";
-                                        }
+                                        //if (Model.warehouse_type == "Climate controlled")
+                                        //{
+                                        //    selectedstatut2 = "selected=selected";
+                                        //}
+                                        //else
+                                        //{
+                                        //    selectedstatut2 = "";
+                                        //}
+                                        //if (Model.warehouse_type == "Distribution center")
+                                        //{
+                                        //    selectedstatut3 = "selected=selected";
+                                        //}
+                                        //else
+                                        //{
+                                        //    selectedstatut3 = "";
+                                        //}
                                         if (string.IsNullOrEmpty(Model.warehouse_type))
                                         {
                                             selectedstatut = "selected=selected";
@@ -207,10 +207,8 @@
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Warehouse Type<span style="color:red">*</span></label>
                                         <select class="form-control" id="warehousetype">
-                                            <option @selectedstatut value="Public">Public</option>
-                                            <option @selectedstatut1 value="Private">Private</option>
-                                            <option @selectedstatut2 value="Climate controlled">Climate controlled</option>
-                                            <option @selectedstatut3 value="Distribution center">Distribution center</option>
+                                            <option @selectedstatut value="External">External</option>
+                                            <option @selectedstatut1 value="Internal">Internal</option>
                                         </select>
                                     </div>
 
@@ -261,34 +259,34 @@
             <div class="createuser-section section_wrapper">
                 <div class="create-user-box">
                     <!-- /.col -->
-
+                    <input type="hidden" id="hfaddressid" />
                     <div class="row">
                         <div class="col-sm-4">
                             <div class="box box-primary">
                                 <div class="box-body">
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Contact Number</label>
-                                        <input type="text" class="form-control" id="txtCorContact" placeholder="Enter Contact Number" value="@Model.cor_phone">
+                                        <input type="text" class="form-control" id="txtCorContact" placeholder="Enter Contact Number">
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="exampleInputEmail1">Address </label>
-                                        <input type="text" class="form-control" id="txtCorAddress" placeholder="Enter Address " value="@Model.cor_address">
+                                        <label for="exampleInputEmail1">Address<span style="color:red">*</span></label>
+                                        <input type="text" class="form-control" id="txtCorAddress" placeholder="Enter Address ">
                                     </div>
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Address1</label>
-                                        <input type="text" class="form-control" id="txtCorAddress1" placeholder="Enter Address1 " value="@Model.cor_address1">
+                                        <input type="text" class="form-control" id="txtCorAddress1" placeholder="Enter Address1 ">
                                     </div>
 
 
                                     <div class="form-group">
-                                        <label for="exampleInputEmail1">City</label>
-                                        <input type="text" id="txtCorCity" class="form-control" placeholder="Enter City" value="@Model.cor_city" />
+                                        <label for="exampleInputEmail1">City<span style="color:red">*</span></label>
+                                        <input type="text" id="txtCorCity" class="form-control" placeholder="Enter City" />
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="exampleInputEmail1">State</label>
-                                        <input type="text" id="txtCorState" class="form-control" placeholder="Enter State" value="@Model.cor_state" />
+                                        <label for="exampleInputEmail1">State<span style="color:red">*</span></label>
+                                        <input type="text" id="txtCorState" class="form-control" placeholder="Enter State" />
                                     </div>
                                 </div>
                             </div>
@@ -299,65 +297,55 @@
                                 <div class="box-body">
 
                                     <div class="form-group">
-                                        <label class="control-label" for="Zip Code">Zip Code</label>
+                                        <label class="control-label" for="Zip Code">Zip Code<span style="color:red">*</span></label>
                                         <div class="">
-                                            <input type="text" id="txtCorZipCode" class="form-control" placeholder="Enter Zip Code" value="@Model.cor_zip">
+                                            <input type="text" id="txtCorZipCode" class="form-control" placeholder="Enter Zip Code">
                                         </div>
                                     </div>
 
                                     <div class="form-group">
-                                        @{
-                                            var selectedus = "";
-                                            var selectedca = "";
-                                            object value12 = Model.cor_country;
-                                            if (value12 != DBNull.Value)
-                                            {
-                                                if (String.Compare(Model.cor_country, "US") == 0)
-                                                {
-                                                    selectedus = "selected=selected";
-                                                }
-                                                else
-                                                {
-                                                    selectedus = "";
-                                                }
-                                                if (Model.cor_country == "CA")
-                                                {
-                                                    selectedca = "selected=selected";
-                                                }
-                                                else
-                                                {
-                                                    selectedca = "";
-                                                }
-                                            }
-                                        }
-
                                         <label for="exampleInputEmail1">Country</label>
                                         <select class="form-control" id="txtCorCountry">
-                                            <option @selectedus value="US">US - United States</option>
-                                            <option @selectedca value="CA">CA - Canada</option>
+                                            <option value="US">US - United States</option>
+                                            <option value="CA">CA - Canada</option>
                                         </select>
                                     </div>
 
                                     <div class="form-group">
                                         <div><label>Note</label></div>
-                                        <textarea class="form-control" id="txtpublic">@Model.note_public</textarea>
+                                        <textarea class="form-control" id="txtpublic"></textarea>
                                     </div>
                                     <div class="form-group" style="display:none;">
                                         <div><label>Note</label></div>
-                                        <textarea class="form-control" id="txtprivate">@Model.note_private</textarea>
+                                        <textarea class="form-control" id="txtprivate"></textarea>
                                     </div>
 
                                     <div class="box-footer">
                                         <div class="text-right">
                                             <a href="#" class="btn btn-danger" id="btnSaveinfo"><span title="Click here to save record" data-placement="bottom" data-toggle="tooltip"><b>Save</b></span></a>
-
-
+                                            <a href="#" class="btn btn-danger" id="btnUpdateinfo"><span title="Click here to save record" data-placement="bottom" data-toggle="tooltip"><b>Update</b></span></a>
+                                            <a href="#" class="btn btn-danger" id="btnResetinfo"><span title="Click here to save record" data-placement="bottom" data-toggle="tooltip"><b>Reset</b></span></a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        <div class="col-sm-12">
+                            <div class="box box-primary">
+                                <div class="box-body">
+                                    <table id="additionalinfo" class="table-blue table check-table table-bordered table-striped dataTable " width="100%">
+                                        <thead>
+                                            <tr>
+                                                <th>Address</th>
+                                                <th>Phone</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
 
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -384,9 +372,9 @@
                                         </select>
                                     </div>
                                     @*<div class="form-group">
-                                        <label for="exampleInputEmail1">Stock</label>
-                                        <input type="text" id="txtstock" class="form-control" />
-                                    </div>*@
+                                            <label for="exampleInputEmail1">Stock</label>
+                                            <input type="text" id="txtstock" class="form-control" />
+                                        </div>*@
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Unit purchase price<span style="color:red">*</span></label>
                                         <input type="text" id="txtprice" class="form-control" placeholder="Enter Unit purchase price" readonly>
@@ -421,10 +409,10 @@
                                     </div>
 
                                     <!--<div class="form-group">
-                                    <label for="exampleInputEmail1">Sale by date<span style="color:red">*</span></label>
+                                        <label for="exampleInputEmail1">Sale by date<span style="color:red">*</span></label>
 
-                                    <input class="form-control" type="text" id="txtsalebydate" placeholder="Enter Sale by date" /><span class="even-space"></span>
-                                </div>-->
+                                        <input class="form-control" type="text" id="txtsalebydate" placeholder="Enter Sale by date" /><span class="even-space"></span>
+                                    </div>-->
 
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Label of movement<span style="color:red">*</span></label>
@@ -540,10 +528,10 @@
 
                                     <!-- <div class="form-group">
 
-                                    <label for="exampleInputEmail1">Sale by date<span style="color:red">*</span></label>
+                                        <label for="exampleInputEmail1">Sale by date<span style="color:red">*</span></label>
 
-                                    <input class="form-control" type="text" id="txttransfersalebydate" placeholder="Enter Sale by date" /><span class="even-space"></span>
-                                </div>-->
+                                        <input class="form-control" type="text" id="txttransfersalebydate" placeholder="Enter Sale by date" /><span class="even-space"></span>
+                                    </div>-->
 
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Label of movement<span style="color:red">*</span></label>
@@ -621,9 +609,9 @@
                                         </select>
                                     </div>
                                     @*<div class="form-group">
-                                        <label for="exampleInputEmail1">Stock</label>
-                                        <input type="text" id="txtstock" class="form-control" />
-                                    </div>*@
+                                            <label for="exampleInputEmail1">Stock</label>
+                                            <input type="text" id="txtstock" class="form-control" />
+                                        </div>*@
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Unit purchase price<span style="color:red">*</span></label>
                                         <input type="text" id="txtdamageprice" class="form-control" placeholder="Enter Unit purchase price" readonly>
@@ -667,7 +655,7 @@
                                             <a href="#" class="btn btn-danger" id="btnDamageStock"><span title="Click Here To Add Damage Stock" data-placement="bottom" data-toggle="tooltip"><b>Save</b></span></a>
                                             <a href="#" class="btn btn-danger" id="btnDamageStockUpdate"><span title="Click Here To Update Damage Stock" data-placement="bottom" data-toggle="tooltip"><b>Update</b></span></a>
                                             <a href="#" class="btn btn-danger" id="btnDamageStockCancel"><span title="Click Here To Reset" data-placement="bottom" data-toggle="tooltip"><b>Reset</b></span></a>
-                                            
+
 
                                         </div>
                                     </div>
@@ -744,13 +732,13 @@
         <div class="tab-pane" id="tab_6">
 
             @*<div class="user-top-section">
-                <div class="tablenav top tablenav-top2">
-                    <div class="alignleft actions bulkactions">
-                        <select class="form-control" id="ddlWarehouse"></select>
+                    <div class="tablenav top tablenav-top2">
+                        <div class="alignleft actions bulkactions">
+                            <select class="form-control" id="ddlWarehouse"></select>
+                        </div>
+                        <button type="button" id="btnSearchVendor" class="btn btn-primary btn-flat button">Search</button>
                     </div>
-                    <button type="button" id="btnSearchVendor" class="btn btn-primary btn-flat button">Search</button>
-                </div>
-            </div>*@
+                </div>*@
 
             <div class="userrole_section section_wrapper appearance-menu-section">
 
@@ -798,7 +786,7 @@
                                     </div>
                                     <div class="col-md-6 left">
                                         <span title="Click Here To Upload File" data-placement="bottom" data-toggle="tooltip"><input type="button" id="btnupload" class="btn btn-danger" value="Upload" /></span>
-</div>
+                                    </div>
 
                                 </div>
                             </div>
@@ -827,48 +815,48 @@
                 </div>
             </div>
             @*<div id="linkWarehouse">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="box-body">
-                            <label class="control-label col-sm-1">Warehouse</label>
-                            <div class="form-group col-sm-6">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="box-body">
+                                <label class="control-label col-sm-1">Warehouse</label>
+                                <div class="form-group col-sm-6">
 
-                                <select class="form-control" id="ddlWarehouseList"></select>
+                                    <select class="form-control" id="ddlWarehouseList"></select>
+                                </div>
+
+                                <button type="button" id="btnLinkWarehouse" class="btn btn-danger ">Add</button>
+
                             </div>
-
-                            <button type="button" id="btnLinkWarehouse" class="btn btn-danger ">Add</button>
-
                         </div>
                     </div>
-                </div>
 
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="box box-primary">
-                            <div class="box-header">
-                                <div class="row">
-                                    <div class="col-sm-12">
-                                        <table id="Warehousedata" class="inventory-table table-blue table check-table table-bordered table-striped dataTable" style="width:100%;">
-                                            <thead>
-                                                <tr style="text-align:center;">
-                                                    <th>Vendor Name</th>
-                                                    <th>Warehouse</th>
-                                                    <th>Action</th>
-                                                </tr>
-                                            </thead>
-                                        </table>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="box box-primary">
+                                <div class="box-header">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <table id="Warehousedata" class="inventory-table table-blue table check-table table-bordered table-striped dataTable" style="width:100%;">
+                                                <thead>
+                                                    <tr style="text-align:center;">
+                                                        <th>Vendor Name</th>
+                                                        <th>Warehouse</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="box-footer">
-                    <div class="text-right">
-                        @Html.ActionLink("Back to List", "VendorList", null, new { @class = "btn btn-danger" })
+                    <div class="box-footer">
+                        <div class="text-right">
+                            @Html.ActionLink("Back to List", "VendorList", null, new { @class = "btn btn-danger" })
+                        </div>
                     </div>
-                </div>
-            </div>*@
+                </div>*@
         </div>
 
 
@@ -878,16 +866,13 @@
 <script>
     var strength = 1;
     $(document).ready(function () {
-        //var d = $("#txttransfereatbydate").text(dout.toString('yyyy-M-d')); 
+        //var d = $("#txttransfereatbydate").text(dout.toString('yyyy-M-d'));
         //alert(d);
-
         $("#loader").hide();
-        getTargetWarehoue();
-        CorrectStockGrid();
-        StockTransferGrid();
         $("#btnStockUpdate").hide();
         $("#btnTransferStockUpdate").hide();
         $("#btnDamageStockUpdate").hide();
+        $("#btnUpdateinfo").hide();
 
         $("#btnStockCancel").click(function () {
             $("#btnStock").show();
@@ -903,13 +888,16 @@
             //$("#btnStockCancel").hide();
             resettransferstock();
         });
-        
+
         $("#btnDamageStockCancel").click(function () {
             $("#btnDamageStock").show();
             $("#btnDamageStockUpdate").hide();
             resetdamagestock();
         });
 
+        $("#btnResetinfo").click(function () {
+            resetaddressinfo();
+        });
 
         $(document).on('click', "#btnSave", function () {
             AddWarehouse();
@@ -963,7 +951,11 @@
 
         $('#ddltransferProduct').change(function () {
             $("#txtstock1").val("");
-            
+
+        });
+
+        $("#btnUpdateinfo").click(function () {
+            EditWarehouseinfo();
         });
 
         datecode();
@@ -996,31 +988,31 @@
             }
         });
 
-/*
-        var warehouseid = $("#hfid").val();
-        $('#ddlProduct').select2({
-            allowClear: true, minimumInputLength: 3, placeholder: "Search Product",
-            ajax: {
-                url: '/Warehouse/GetProductForWarehouse/', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
-                data: function (params) { var obj = { strValue5: params.term, warehouseid: warehouseid }; return JSON.stringify(obj); },
-                processResults: function (data) { var jobj = JSON.parse(data); console.log(data); return { results: $.map(jobj, function (item) { return { text: item.post_title, name: item.post_title, id: item.pr_id } }) }; },
-                error: function (xhr, status, err) { }, cache: true
-               
-            }
-        });
+        /*
+                var warehouseid = $("#hfid").val();
+                $('#ddlProduct').select2({
+                    allowClear: true, minimumInputLength: 3, placeholder: "Search Product",
+                    ajax: {
+                        url: '/Warehouse/GetProductForWarehouse/', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+                        data: function (params) { var obj = { strValue5: params.term, warehouseid: warehouseid }; return JSON.stringify(obj); },
+                        processResults: function (data) { var jobj = JSON.parse(data); console.log(data); return { results: $.map(jobj, function (item) { return { text: item.post_title, name: item.post_title, id: item.pr_id } }) }; },
+                        error: function (xhr, status, err) { }, cache: true
 
-        var transferwarehouseid = $("#hfid").val();
-        $('#ddltransferProduct').select2({
-            allowClear: true, minimumInputLength: 3, placeholder: "Search Product",
-            ajax: {
-                url: '/Warehouse/GetProductForWarehouse/', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
-                data: function (params) { var obj = { strValue5: params.term, warehouseid: transferwarehouseid }; return JSON.stringify(obj); },
-                processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.post_title, name: item.post_title, id: item.pr_id } }) }; },
-                error: function (xhr, status, err) { }, cache: true
+                    }
+                });
 
-            }
-        });  */
-        
+                var transferwarehouseid = $("#hfid").val();
+                $('#ddltransferProduct').select2({
+                    allowClear: true, minimumInputLength: 3, placeholder: "Search Product",
+                    ajax: {
+                        url: '/Warehouse/GetProductForWarehouse/', type: "POST", contentType: "application/json; charset=utf-8", dataType: 'json', delay: 250,
+                        data: function (params) { var obj = { strValue5: params.term, warehouseid: transferwarehouseid }; return JSON.stringify(obj); },
+                        processResults: function (data) { var jobj = JSON.parse(data); return { results: $.map(jobj, function (item) { return { text: item.post_title, name: item.post_title, id: item.pr_id } }) }; },
+                        error: function (xhr, status, err) { }, cache: true
+
+                    }
+                });  */
+
         //Select 2 javascript end
 
         //For zip code javascript
@@ -1184,9 +1176,9 @@
     function datecode() {
         var dt2 = new Date();
         var dt3 = ("0" + (dt2.getMonth() + 1)).slice(-2) + '-' + ("0" + (dt2.getDate())).slice(-2) + '-' + dt2.getFullYear();
-        
+
         document.getElementById("txteatbydate").value = dt3;
-        document.getElementById("txttransfereatbydate").value = dt3; 
+        document.getElementById("txttransfereatbydate").value = dt3;
     }
 
 </script>

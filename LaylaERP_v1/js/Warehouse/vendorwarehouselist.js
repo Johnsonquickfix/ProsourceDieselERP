@@ -16,7 +16,7 @@ function VendorWarehouseGrid() {
                 data: JSON.parse(data),
                 "columns": [
                     //{ data: 'wname', title: 'Warehouse Name', sWidth: "25%" },
-                    { data: 'vname', title: 'Vendor Name', sWidth: "25%" },
+                    { data: 'vname', title: 'Vendor Name', sWidth: "25%", class:'text-left' },
                     { data: 'Vaddress', title: 'Vendor Address', sWidth: "25%" },
                     {
                         data: 'phone', title: 'Vendor Phone', sWidth: "25%", render: function (toFormat) {

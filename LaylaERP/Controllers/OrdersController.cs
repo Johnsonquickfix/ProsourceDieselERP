@@ -406,7 +406,7 @@
                     status = true; JSONresult = "Order placed successfully.";
                     OrderNotesModel note_model = new OrderNotesModel();
                     note_model.post_ID = model.order_id;
-                    note_model.comment_content = string.Format("Gift card Issued for ${0:0.00}. The Gift Card will be send on your mail in 5 to 10 days.", NotesAmount);
+                    note_model.comment_content = string.Format("Gift card Issued for ${0:0.00}. The Gift Card will be send on your mail.", NotesAmount);
                     note_model.is_customer_note = string.Empty;
                     note_model.is_customer_note = string.Empty;
 

@@ -1520,8 +1520,6 @@ function ApplyGiftCard() {
     $('#billCoupon li').each(function (index, li) {
         if ($(li).data('type') == 'add_giftcard') { add_giftcard_count += 1; }
     });
-  
-
     let obj = { strValue1: giftcard_code };
     $.ajax({
         type: "POST", url: '/Orders/GetGiftCardAmount', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),

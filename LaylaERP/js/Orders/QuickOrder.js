@@ -1529,21 +1529,27 @@ function ApplyGiftCard() {
           
             var data = JSON.parse(result);
             if (data.length == 0) { swal('Alert!', 'Invalid code entered. Please try again.', "error").then((result) => { $('#txt_GiftCard').focus(); return false; }); return false; }
-            if (data[0].GiftCard_Amount <= 0) { swal('Invalid!', 'This gift card code is not valid.', "error").then((result) => { $('#txt_GiftCard').focus(); return false; }); return false; }
-            data[0].GiftCard_Amount = parseFloat(data[0].GiftCard_Amount) || 0.00;
-           
-            if ($("#orderTotal").text() <= 0 ) {
-                swal('Error!', 'Please add product in your cart', "error").then((result) => { $('#txt_GiftCard').focus(); return false; }); return false;
+            if (data[0].GiftCard_Amount >= 0) {
+
+                data[0].GiftCard_Amount = parseFloat(data[0].GiftCard_Amount) || 0.00;
+
+                if ($("#orderTotal").text() <= 0) {
+                    swal('Error!', 'Please add product in your cart', "error").then((result) => { $('#txt_GiftCard').focus(); return false; }); return false;
+                }
+                else if ($("#orderTotal").text() > 0 && $("#orderTotal").text() >= data[0].GiftCard_Amount) {
+                    $("#GiftCardTotal").val(data[0].GiftCard_Amount);
+                    bindGiftCardList(data);
+                }
+                else if ($("#orderTotal").text() > 0 && data[0].GiftCard_Amount >= $("#orderTotal").text()) {
+                    data[0].GiftCard_Amount = $("#orderTotal").text();
+
+                    $("#GiftCardTotal").val(data[0].GiftCard_Amount);
+                    bindGiftCardList(data);
+                }
             }
-            else if ($("#orderTotal").text() > 0 && $("#orderTotal").text() >= data[0].GiftCard_Amount) {
-                $("#GiftCardTotal").val(data[0].GiftCard_Amount);
-                bindGiftCardList(data);
-            }
-            else if ($("#orderTotal").text() > 0 && data[0].GiftCard_Amount >= $("#orderTotal").text()) {
-                data[0].GiftCard_Amount = $("#orderTotal").text();
-              
-                $("#GiftCardTotal").val(data[0].GiftCard_Amount);
-                bindGiftCardList(data);
+            else {
+                swal('Invalid!', 'This gift card code is not valid.', "error").then((result) => { $('#txt_GiftCard').focus(); return false; }); return false;
+
             }
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },

@@ -631,7 +631,7 @@
                             strSqlG.Append(" insert into wp_woocommerce_order_itemmeta(order_item_id,meta_key,meta_value) Select " + order_item_id + ",'gift_card_debited','yes';");
                             strSqlG.Append(string.Format("Update wp_woocommerce_gc_cards set remaining=remaining - {0} where id=({1});", amount[0], giftcard_id[0]));
                             strSqlG.Append(string.Format("Insert into wp_woocommerce_gc_activity(type,user_id,user_email,object_id,gc_id,gc_code,amount,date,note) " +
-                                "Select 'used', {1}, user_email, object_id, gc_id, gc_code, {2}, UNIX_TIMESTAMP(now()), note from wp_woocommerce_gc_activity where gc_code ='{0}' and type='issued'; ", order_item_name, Userid, amount[0]));
+                                "Select 'used', {1}, user_email, {3}, gc_id, gc_code, {2}, UNIX_TIMESTAMP(now()), note from wp_woocommerce_gc_activity where gc_code ='{0}' and type='issued'; ", order_item_name, Userid, amount[0], order_item_id));
                         }
                     }
                     resultG = SQLHelper.ExecuteNonQuery(strSqlG.ToString());
@@ -1038,7 +1038,8 @@
                     DataTable dtMeta = OrderRepository.GiftCardMetaItem(order_item_id);
                     if (dtMeta.Rows.Count > 0)
                     {
-                        int metaAmount = Convert.ToInt32(dtMeta.Rows[0]["meta_value"]);
+                        int metaAmount = Convert.ToInt32(dtMeta.Rows[0]["amount"]);
+                        int gcid = Convert.ToInt32(dtMeta.Rows[0]["giftcard_id"]);
                         int metaID = Convert.ToInt32(dtMeta.Rows[0]["meta_id"]);
                         decimal RefundAmount = 0;
                         if (model.NetTotal > metaAmount && metaAmount > 0 && model.NetTotal > 0)
@@ -1046,7 +1047,7 @@
                             RefundAmount = metaAmount;
 
                             strSql.Append(string.Format("Update wp_woocommerce_order_itemmeta set meta_value=meta_value-{0} where meta_id={1}; ", RefundAmount, metaID));
-                            strSql.Append(string.Format("Update wp_woocommerce_gc_cards set  is_active='on',remaining=remaining + {0} where order_item_id={1};", RefundAmount, order_item_id));
+                            strSql.Append(string.Format("Update wp_woocommerce_gc_cards set  is_active='on',remaining=remaining + {0} where id={1};", RefundAmount, gcid));
                             strSql.Append(string.Format("Insert into wp_woocommerce_gc_activity(type,user_id,user_email,object_id,gc_id,gc_code,amount,date,note) " +
                                 "Select 'refunded', {1}, user_email, object_id, gc_id, gc_code, {2}, UNIX_TIMESTAMP(now()), note from wp_woocommerce_gc_activity where object_id = {0} and type = 'used'; ", order_item_id, Userid, RefundAmount));
 
@@ -1056,7 +1057,7 @@
                         else if (model.NetTotal > 0 && metaAmount > 0)
                         {
                             strSql.Append(string.Format("Update wp_woocommerce_order_itemmeta set meta_value=meta_value-{0} where meta_id={1}; ", model.NetTotal, metaID));
-                            strSql.Append(string.Format("Update wp_woocommerce_gc_cards set is_active='on', remaining=remaining + {0} where order_item_id={1};", model.NetTotal, order_item_id));
+                            strSql.Append(string.Format("Update wp_woocommerce_gc_cards set is_active='on', remaining=remaining + {0} where id={1};", model.NetTotal, gcid));
                             strSql.Append(string.Format("Insert into wp_woocommerce_gc_activity(type,user_id,user_email,object_id,gc_id,gc_code,amount,date,note) " +
                                "Select 'refunded', {1}, user_email, object_id, gc_id, gc_code, {2}, UNIX_TIMESTAMP(now()), note from wp_woocommerce_gc_activity where object_id = {0} and type = 'used'; ", order_item_id, Userid, model.NetTotal));
 
@@ -1080,7 +1081,8 @@
                 {
                     new MySqlParameter("@OrderItemID", OrderItemID)
                 };
-                string strSQl = "Select * from wp_woocommerce_order_itemmeta where order_item_id=@OrderItemID and meta_key='amount';";
+                string strSQl = "Select max(case when meta_key = 'amount' then meta_id else '' end) meta_id, max(case when meta_key = 'giftcard_id' then meta_value else '' end) giftcard_id,max(case when meta_key = 'amount' then meta_value else '' end) amount " +
+                    "from wp_woocommerce_order_itemmeta where order_item_id=@OrderItemID;";
                 dt = SQLHelper.ExecuteDataTable(strSQl, parameters);
             }
             catch (Exception ex)

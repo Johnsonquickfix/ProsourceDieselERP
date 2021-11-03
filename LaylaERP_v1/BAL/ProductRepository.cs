@@ -1360,7 +1360,7 @@ namespace LaylaERP.BAL
             {
                 string strSQl = "select fk_product from Product_Purchase_Items"
                                 + " WHERE fk_product = " + model.fk_product + " and fk_vendor in (" + model.fk_vendor + ") "
-                                + " limit 10;";
+                                + " ";
                 dt = SQLHelper.ExecuteDataTable(strSQl);
             }
             catch (Exception ex)
@@ -1376,7 +1376,7 @@ namespace LaylaERP.BAL
             {
                 string strSQl = "select fk_warehouse from product_warehouse "
                                 + " WHERE fk_product = " + model.fk_product + " and fk_warehouse in (select WarehouseID from wp_VendorWarehouse where VendorID = " + model.fk_vendor + ") "
-                                + " limit 10;";
+                                + " ";
                 dt = SQLHelper.ExecuteDataTable(strSQl);
             }
             catch (Exception ex)

@@ -85,7 +85,7 @@ function getOrderItemList(oid) {
     var option = { strValue1: oid };
     //let coupon_list = [];
     ajaxFunc('/Orders/GetOrderProductList', option, beforeSendFun, function (data) {
-        let itemHtml = '', recyclingfeeHtml = '', feeHtml = '', shippingHtml = '', giftCardHtml = '', refundHtml = '', couponHtml = '';
+        let itemHtml = '', recyclingfeeHtml = '', feeHtml = '', shippingHtml = '', giftcardHtml = '', refundHtml = '', couponHtml = '';
         let zQty = 0.00, zGAmt = 0.00, zTDiscount = 0.00, zTotalTax = 0.00, zShippingAmt = 0.00, zGiftCardAmt = 0.00, zStateRecyclingAmt = 0.00, zFeeAmt = 0.00, zRefundAmt = 0.00;
         for (var i = 0; i < data.length; i++) {
             let orderitemid = parseInt(data[i].order_item_id) || 0;
@@ -180,15 +180,16 @@ function getOrderItemList(oid) {
                 $('#order_shipping_line_items').append(shippingHtml);
             }
             else if (data[i].product_type == 'gift_card') {
-
-                giftCardHtml = '<tr id="tritemId_' + orderitemid + '" data-orderitemid="' + orderitemid + '" data-pname="' + data[i].product_name + '">';
-                giftCardHtml += '<td class="text-center item-action"><i class="fa fa-gift"></i></td>';
-                giftCardHtml += '<td>' + data[i].product_name + '</td><td></td><td class="text-right row-refuntamt"></td><td class="RefundAmount text-right"></td><td class="TotalAmount text-right">' + data[i].total.toFixed(2) + '</td><td></td><td></td>';
-                giftCardHtml += '</tr>';
+                giftcardHtml += '<li id="li_' + data[i].product_name.toString().toLowerCase().replaceAll(' ', '_') + '" data-orderitemid="' + orderitemid + '">';
+                giftcardHtml += '<a href="javascript:void(0);">';
+                giftcardHtml += '<i class="glyphicon glyphicon-gift"></i><span>' + data[i].product_name + '</span>';
+                giftcardHtml += '<div class="pull-right">$<span id="cou_discamt">' + data[i].total.toFixed(2) + '</span><button type="button" class="btn btn-box-tool pull-right billinfo" onclick="$(\'#li_' + data[i].product_name.toString().toLowerCase() + '\').remove()"><i class="fa fa-times"></i></button></div>';
+                giftcardHtml += '</a>';
+                giftcardHtml += '</li>';
                 zGiftCardAmt = zGiftCardAmt + (parseFloat(data[i].total) || 0.00);
-                $("#giftCardTotal").data("orderitemid", orderitemid);
-                $('#gift_card_line_items').append(giftCardHtml);
             }
+
+           
             else if (data[i].product_type == 'refund') {
                 refundHtml = '<tr id="tritemId_' + orderitemid + '" data-orderitemid="' + orderitemid + '" data-pname="' + data[i].product_name + '">';
                 refundHtml += '<td class="text-center item-action"><i class="fas fa-retweet"></i></td>';
@@ -222,6 +223,7 @@ function getOrderItemList(oid) {
         $('.refund-action').append('<button type="button" id="btnAddFee" class="btn btn-danger billinfo">Add Fee</button> ');
         //$('.refund-action').append('<button type="button" id="btnRefundItem" class="btn btn-danger billinfo">Refund</button>');
         $('#billCoupon').append(couponHtml);
+        $('#billGiftCard').append(giftcardHtml);
         //Calculate Final
         $("#totalQty").text(zQty.toFixed(0)); $("#totalQty").data('qty', zQty.toFixed(0));
         $("#SubTotal").text(zGAmt.toFixed(2));
@@ -472,18 +474,27 @@ function saveCO() {
         data: JSON.stringify(obj), dataType: "json", beforeSend: function () { $("#loader").show(); },
         success: function (data) {
             if (data.status == true) {
-                if (pay_gift == '') {
+                console.log(pay_gift)
+                if (pay_gift == '' ) {
                     if (pay_by == 'ppec_paypal') PaypalPaymentRefunds();
                     else if (pay_by == 'podium') PodiumPaymentRefunds();
                     else if (pay_by == 'authorize_net_cim_credit_card') AuthorizeNetPaymentRefunds();
                     else '';
                 }
-                else if (pay_gift == 'gift_card') {
-                    if (pay_giftCardAmount >= net_total) {
+                else if (pay_giftCardAmount > 0 && pay_gift == 'gift_card') {
+                    if (pay_giftCardAmount == 0) {
+
+                        $('.btnRefundOk').data('nettotal', total);
+                        if (pay_by == 'ppec_paypal') PaypalPaymentRefunds();
+                        else if (pay_by == 'podium') PodiumPaymentRefunds();
+                        else if (pay_by == 'authorize_net_cim_credit_card') AuthorizeNetPaymentRefunds();
+                        else '';
+                    }
+                    else if (pay_giftCardAmount >= net_total) {
                         $('#lblOrderNo').data('giftCardAmount', net_total);
                         GiftCardPaymentRefunds();
                     }
-                    else if (pay_giftCardAmount < net_total) {
+                    else if (pay_giftCardAmount > 0 && pay_giftCardAmount < net_total) {
                         let total = net_total - pay_giftCardAmount;
                         $('#lblOrderNo').data('giftCardAmount', pay_giftCardAmount);
                         GiftCardPaymentRefunds();
@@ -494,6 +505,7 @@ function saveCO() {
                         else if (pay_by == 'authorize_net_cim_credit_card') AuthorizeNetPaymentRefunds();
                         else '';
                     }
+                   
                     else '';
                 }
                 else '';

@@ -127,6 +127,9 @@
     $(document).on("click", "#btnAddFee", function (t) { t.preventDefault(); AddFeeModal(0, ''); });
     $(document).on("click", "#btnApplyFee", function (t) { t.preventDefault(); $("#loader").show(); ApplyFee($(this).data('orderitemid'), $('#txt_FeeAmt').val()); });
     /*End Return Items*/
+    /*Start Gift Card*/
+    $(document).on("click", "#btnApplyGiftCard", function (t) { t.preventDefault(); GiftCardModal(); });
+    /*End Gift Card*/
     $(document).on("click", "#btnAddnote", function (t) {
         t.preventDefault(); let $btn = $(this), oid = parseInt($('#hfOrderNo').val()) || 0;
         let option = { post_ID: oid, comment_content: $('#add_order_note').val(), is_customer_note: $('#order_note_type').val() };
@@ -670,7 +673,7 @@ function getOrderInfo() {
         $('#ddlStatus,#btnSearch').prop("disabled", true);
         $('.page-heading').text('Edit Order ').append('<a class="btn btn-danger" href="/Orders/OrdersHistory" data-toggle="tooltip" title="Go to Order List">Back to List</a>');
         $('#lblOrderNo').text('Order #' + oid + ' detail '); $('#hfOrderNo').val(oid);
-        $('#order_line_items,#order_state_recycling_fee_line_items,#order_fee_line_items,#order_shipping_line_items,#order_refunds,#billCoupon,.refund-action').empty();
+        $('#order_line_items,#order_state_recycling_fee_line_items,#order_fee_line_items,#order_shipping_line_items,#order_refunds,#billCoupon,#billGiftCard,.refund-action').empty();
         $('#btnCheckout').remove();
         var opt = { strValue1: oid };
         ajaxFunction('/Orders/GetOrderInfo', opt, beforeSendFun, function (result) {
@@ -827,12 +830,13 @@ function getOrderItemList(oid) {
                 $("#shippingTotal").data("orderitemid", orderitemid);
             }
             else if (row.product_type == 'gift_card') {
-                giftcardHtml += '<tr id="tritemId_' + orderitemid + '" data-orderitemid="' + orderitemid + '" data-pname="' + row.product_name + '">';
-                giftcardHtml += '<td class="text-center item-action"><i class="glyphicon glyphicon-gift"></i></td>';
-                giftcardHtml += '<td>' + row.product_name + '</td><td></td><td></td><td class="TotalAmount text-right">' + row.total.toFixed(2) + '</td><td></td><td></td>';
-                giftcardHtml += '</tr>';
+                giftcardHtml += '<li id="li_' + row.product_name.toString().toLowerCase().replaceAll(' ', '_') + '" data-orderitemid="' + orderitemid + '">';
+                giftcardHtml += '<a href="javascript:void(0);">';
+                giftcardHtml += '<i class="glyphicon glyphicon-gift"></i><span>' + row.product_name + '</span>';
+                giftcardHtml += '<div class="pull-right">$<span id="cou_discamt">' + row.total.toFixed(2) + '</span><button type="button" class="btn btn-box-tool pull-right billinfo" onclick="$(\'#li_' + row.product_name.toString().toLowerCase() + '\').remove()"><i class="fa fa-times"></i></button></div>';
+                giftcardHtml += '</a>';
+                giftcardHtml += '</li>';
                 zGiftCardAmt = zGiftCardAmt + (parseFloat(row.total) || 0.00);
-                //$("#GiftCardTotal").data("orderitemid", orderitemid);
             }
             else if (row.product_type == 'refund') {
                 refundHtml += '<tr id="tritemId_' + orderitemid + '" data-orderitemid="' + orderitemid + '" data-pname="' + row.product_name + '">';
@@ -846,7 +850,7 @@ function getOrderItemList(oid) {
                 $("#salesTaxTotal").data("orderitemid", orderitemid);
             }
         });
-        $('#order_line_items').append(itemHtml); $('#order_state_recycling_fee_line_items').append(recyclingfeeHtml); $('#order_fee_line_items').append(feeHtml); $('#order_shipping_line_items').append(shippingHtml); $('#order_giftcard_line_items').append(giftcardHtml); $('#order_refunds').append(refundHtml);
+        $('#order_line_items').append(itemHtml); $('#order_state_recycling_fee_line_items').append(recyclingfeeHtml); $('#order_fee_line_items').append(feeHtml); $('#order_shipping_line_items').append(shippingHtml); $('#billGiftCard').append(giftcardHtml); $('#order_refunds').append(refundHtml);
         $('.refund-action').append('<button type="button" id="btnAddFee" class="btn btn-danger billinfo">Add Fee</button> ');
         $('#billCoupon').append(couponHtml);
         //Calculate Final
@@ -1123,6 +1127,70 @@ function CalculateFee() {
         zFeeAmt += zAmt;
     });
     $("#feeTotal").text(zFeeAmt.toFixed(2));
+}
+///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Gift Card Modal ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+function GiftCardModal() {
+    var myHtml = '';
+    //header
+    myHtml += '<div class="modal-dialog">';
+    myHtml += '<div class="modal-content">';
+    myHtml += '<div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button>';
+    myHtml += '<h4 class="modal-title" id="myModalLabel">Apply Gift Card</h4>';
+    myHtml += '</div>';
+    myHtml += '<div class="modal-body">Enter a Gift Card code to apply.';
+    myHtml += '<input class="form-control" type="text" id="txt_GiftCard" name="txt_GiftCard" placeholder="Gift Card Code" maxlength="25">';
+    myHtml += '<div class="font-weight-bold text-danger alert-coupon"></div>';
+    myHtml += '</div>';
+    myHtml += '<div class="modal-footer"><button type="button" class="btn btn-danger" id="btnGiftCardAdd">Add</button></div>';
+    myHtml += '</div>';
+    myHtml += '</div>';
+    $("#billModal").empty().html(myHtml);
+    $("#billModal").modal({ backdrop: 'static', keyboard: false }); $("#txt_GiftCard").focus();
+}
+function ApplyGiftCard() {
+    let giftcard_code = $("#txt_GiftCard").val().toLowerCase().trim();
+    if ($('#li_' + giftcard_code).length > 0) { swal('Alert!', 'Gift Card Code already applied!', "error").then((result) => { $('#txt_GiftCard').focus(); return false; }); return false; };
+    if (giftcard_code == '') { swal('Alert!', 'Please Enter a Gift Card Code.', "error").then((result) => { $('#txt_GiftCard').focus(); return false; }); return false; }
+
+    let billing_email = $("#txtbillemail").val().toLowerCase();
+    let add_giftcard_count = 0;
+    $('#billCoupon li').each(function (index, li) {
+        if ($(li).data('type') == 'add_giftcard') { add_giftcard_count += 1; }
+    });
+    let obj = { strValue1: giftcard_code };
+    $.ajax({
+        type: "POST", url: '/Orders/GetGiftCardAmount', contentType: "application/json; charset=utf-8", dataType: "json", data: JSON.stringify(obj),
+        success: function (result) {
+
+            var data = JSON.parse(result);
+            if (data.length == 0) { swal('Alert!', 'Invalid code entered. Please try again.', "error").then((result) => { $('#txt_GiftCard').focus(); return false; }); return false; }
+            if (data[0].GiftCard_Amount >= 0) {
+
+                data[0].GiftCard_Amount = parseFloat(data[0].GiftCard_Amount) || 0.00;
+
+                if ($("#orderTotal").text() <= 0) {
+                    swal('Error!', 'Please add product in your cart', "error").then((result) => { $('#txt_GiftCard').focus(); return false; }); return false;
+                }
+                else if ($("#orderTotal").text() > 0 && $("#orderTotal").text() >= data[0].GiftCard_Amount) {
+                    $("#GiftCardTotal").val(data[0].GiftCard_Amount);
+                    bindGiftCardList(data);
+                }
+                else if ($("#orderTotal").text() > 0 && data[0].GiftCard_Amount >= $("#orderTotal").text()) {
+                    data[0].GiftCard_Amount = $("#orderTotal").text();
+
+                    $("#GiftCardTotal").val(data[0].GiftCard_Amount);
+                    bindGiftCardList(data);
+                }
+            }
+            else {
+                swal('Invalid!', 'This gift card code is not valid.', "error").then((result) => { $('#txt_GiftCard').focus(); return false; }); return false;
+
+            }
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) { swal('Alert!', errorThrown, "error"); },
+        async: false
+    });
+    //$("#billModal").modal({ backdrop: 'static' }); $("#txt_Coupon").focus();
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Coupon and Product Modal ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function CouponModal() {

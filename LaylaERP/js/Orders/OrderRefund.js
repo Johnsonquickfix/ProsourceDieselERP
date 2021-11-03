@@ -342,8 +342,20 @@ function calculateRefunAmount() {
 }
 ///~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Save Details ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function createPostMeta() {
+    let pay_giftCardAmount = ($('#lblOrderNo').data('pay_giftCardAmount') || 0.00), net_total = parseFloat($('.btnRefundOk').data('nettotal')) || 0.00;
     let oid = 0, postMetaxml = [];
-    let total = parseFloat($('.btnRefundOk').data('total')) || 0.00, tax = parseFloat($('.btnRefundOk').data('tax')) || 0.00;
+    let total = 0.00;
+    if (pay_giftCardAmount >= net_total) {
+        total = 0.00;
+    }
+    else if (pay_giftCardAmount < net_total) {
+        total = net_total - pay_giftCardAmount;
+    }
+    else {
+        total = parseFloat($('.btnRefundOk').data('total')) || 0.00;
+    }
+    let tax = parseFloat($('.btnRefundOk').data('tax')) || 0.00;
+
     postMetaxml.push(
         { post_id: oid, meta_key: '_order_currency', meta_value: 'USD' }, { post_id: oid, meta_key: '_refund_reason', meta_value: '' },//Customer Cancelled
         { post_id: oid, meta_key: '_cart_discount', meta_value: 0 }, { post_id: oid, meta_key: '_cart_discount_tax', meta_value: 0 },

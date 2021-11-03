@@ -15,7 +15,7 @@ namespace LaylaERP.BAL
             {
                 string strsql = "";
                 strsql = "insert into wp_vendor(vendor_type,code_vendor,name,name_alias,fournisseur,status,address,address1,zip,town,fk_country,fk_state,StateName,phone,fax,email,url,Workinghours,VendorStatus,NatureofJournal) " +
-                    "values(@vendor_type, @code_vendor, @name, @name_alias, @fournisseur, @status, @address, @address1, @zip, @town, @fk_country, @fk_state,@StateName, @phone, @fax, @email, @url, @Workinghours, @VendorStatus,@NatureofJournal);  SELECT LAST_INSERT_ID();";
+                    "values(@vendor_type, @code_vendor, @name, @name_alias, @fournisseur, @status, @address, @address1, @zip, @town, @fk_country, @fk_state,@StateName, @phone, @fax, @email, @url, @Workinghours, @VendorStatus,@NatureofJournal); SELECT SCOPE_IDENTITY();";
                 SqlParameter[] para =
                 {
                     new SqlParameter("@vendor_type", model.vendor_type),
@@ -52,7 +52,7 @@ namespace LaylaERP.BAL
             try
             {
                 string strsql = "";
-                strsql = "Insert into erp_accounting_journal(code,label,nature,active,VendorID) values(@code,@label,@nature,@active,@VendorID); SELECT LAST_INSERT_ID();";
+                strsql = "Insert into erp_accounting_journal(code,label,nature,active,VendorID) values(@code,@label,@nature,@active,@VendorID); SELECT SCOPE_IDENTITY();";
                 SqlParameter[] para =
                 {
                     new SqlParameter("@code", model.VendorCode),
@@ -138,17 +138,17 @@ namespace LaylaERP.BAL
                 SqlParameter[] para =
                 {
                      new SqlParameter("@rowid", model.rowid),
-                    new SqlParameter("@CorAddress1", model.CorAddress1),
-                    new SqlParameter("@CorAddress2", model.CorAddress2),
-                    new SqlParameter("@CorCity", model.CorCity),
-                    new SqlParameter("@CorState", model.CorState),
-                    new SqlParameter("@CorZipCode",model.CorZipCode),
-                    new SqlParameter("@CorCountry", model.CorCountry),
-                    new SqlParameter("@CorPhone", model.CorPhone),
-                    new SqlParameter("@fk_workforce", model.Workforce),
-                    new SqlParameter("@fk_business_entity", model.BusinessEntityType),
-                    new SqlParameter("@note_public", model.NotePublic),
-                    new SqlParameter("@note_private", model.NotePrivate),
+                    new SqlParameter("@CorAddress1", model.CorAddress1 ?? (object)DBNull.Value),
+                    new SqlParameter("@CorAddress2", model.CorAddress2 ?? (object)DBNull.Value),
+                    new SqlParameter("@CorCity", model.CorCity ?? (object)DBNull.Value),
+                    new SqlParameter("@CorState", model.CorState ?? (object)DBNull.Value),
+                    new SqlParameter("@CorZipCode",model.CorZipCode ?? (object)DBNull.Value),
+                    new SqlParameter("@CorCountry", model.CorCountry ?? (object)DBNull.Value),
+                    new SqlParameter("@CorPhone", model.CorPhone ?? (object)DBNull.Value),
+                    new SqlParameter("@fk_workforce", model.Workforce ?? (object)DBNull.Value),
+                    new SqlParameter("@fk_business_entity", model.BusinessEntityType ?? (object)DBNull.Value),
+                    new SqlParameter("@note_public", model.NotePublic ?? (object)DBNull.Value),
+                    new SqlParameter("@note_private", model.NotePrivate ?? (object)DBNull.Value),
                 };
                 int result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql, para));
                 return result;
@@ -204,7 +204,7 @@ namespace LaylaERP.BAL
                     "@USPSPriorityMailExpress, @USPSPriorityMailExpressHoldforPickup, @USPSPriorityMailExpressSundayHoliday, @USPSPriorityMailTitle, @USPSPriorityMail, @USPSPriorityMailHoldForPickup," +
                     "@USPSPriorityMailKeysandIDs, @USPSPriorityMailRegionalRateBoxA, @USPSPriorityMailRegionalRateBoxAHoldForPickup, @USPSPriorityMailRegionalRateBoxB," +
                     "@USPSPriorityMailRegionalRateBoxBHoldForPickup, @FirstClassMailTitle, @FirstClassMailPostcards, @FirstClassMailLetter, @FirstClassMailLargeEnvelope," +
-                    "@FirstClassMailParcel, @FirstClassMailLargePostcards, @FirstClassMailKeysandIDs, @FirstClassMailPackageService, @FirstClassMailPackageServiceHoldForPickup,@FirstClassMailMeteredLetter); SELECT LAST_INSERT_ID();";
+                    "@FirstClassMailParcel, @FirstClassMailLargePostcards, @FirstClassMailKeysandIDs, @FirstClassMailPackageService, @FirstClassMailPackageServiceHoldForPickup,@FirstClassMailMeteredLetter); SELECT SCOPE_IDENTITY();";
                 SqlParameter[] para =
                 {
                     new SqlParameter("@VendorID", model.rowid),
@@ -414,7 +414,7 @@ namespace LaylaERP.BAL
                     "PaypalIPNEmailNotification,PaypalReceiverEmail,PaypalIdentitytoken,PaypalPaymentAction,PaypalAPIUserName,PaypalAPIPassword,PaypalAPISignature) " +
                     "Values(" + model.rowid + ", @Paymentmethod, @BankAccountName, @BankAccountNumber, @BankName, @BankRoutingNumber, @BankIBAN, @BankSwift, @ChequeTitle, @ChequeDescription, @ChequeInstructions," +
                     "@PaypalInvoiceAPIUsername, @PaypalInvoiceAPIPassword, @PaypalInvoiceAPISignature, @PaypalTitle, @PaypalDescription, @PaypalEmail, @PaypalProduction," +
-                    "@PaypalIPNEmailNotification, @PaypalReceiverEmail, @PaypalIdentitytoken, @PaypalPaymentAction, @PaypalAPIUserName, @PaypalAPIPassword, @PaypalAPISignature);  SELECT LAST_INSERT_ID();";
+                    "@PaypalIPNEmailNotification, @PaypalReceiverEmail, @PaypalIdentitytoken, @PaypalPaymentAction, @PaypalAPIUserName, @PaypalAPIPassword, @PaypalAPISignature); SELECT SCOPE_IDENTITY();";
                 SqlParameter[] para =
                 {
                     new SqlParameter("@Paymentmethod", model.Paymentmethod),
@@ -454,11 +454,12 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "";
-                strsql = "Insert into erp_VendorContacts(VendorID,Name,Title,Email,Office,Ext,Mobile,Notes,Fax,Address,City,State,ZipCode,Country) " +
-                    "values(@VendorID, @Name, @Title, @Email, @Office, @Ext, @Mobile, @Notes, @Fax, @Address, @City, @State, @ZipCode,@Country); SELECT LAST_INSERT_ID();";
+                string strsql = "vendorcontactupdate";
+                /*strsql = "Insert into erp_VendorContacts(VendorID,Name,Title,Email,Office,Ext,Mobile,Notes,Fax,Address,City,State,ZipCode,Country) " +
+                    "values(@VendorID, @Name, @Title, @Email, @Office, @Ext, @Mobile, @Notes, @Fax, @Address, @City, @State, @ZipCode,@Country); SELECT SCOPE_IDENTITY();";*/
                 SqlParameter[] para =
                 {
+                    new SqlParameter("@qflag", "I"),
                     new SqlParameter("@VendorID", model.rowid),
                     new SqlParameter("@Name", model.ContactName),
                     new SqlParameter("@Title", model.ContactTitle),
@@ -488,7 +489,7 @@ namespace LaylaERP.BAL
             try
             {
                 string strsql = "";
-                strsql = "insert into wp_VendorWarehouse(VendorID,WarehouseID) Values (@VendorID,@WarehouseID); SELECT LAST_INSERT_ID();";
+                strsql = "insert into wp_VendorWarehouse(VendorID,WarehouseID) Values (@VendorID,@WarehouseID); SELECT SCOPE_IDENTITY();";
                 SqlParameter[] para =
                 {
                     new SqlParameter("@VendorID", model.rowid),
@@ -544,9 +545,11 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "Update erp_VendorContacts set Name=@Name,Title=@Title,Email=@Email,Office=@Office,Ext=@Ext,Mobile=@Mobile,Notes=@Notes,Fax = @Fax,Address = @Address,City = @City,State = @State,StateName=@StateName,ZipCode = @ZipCode,Country = @Country where ID = @ID; ";
+                //string strsql = "Update erp_VendorContacts set Name=@Name,Title=@Title,Email=@Email,Office=@Office,Ext=@Ext,Mobile=@Mobile,Notes=@Notes,Fax = @Fax,Address = @Address,City = @City,State = @State,StateName=@StateName,ZipCode = @ZipCode,Country = @Country where ID = @ID; ";
+                string strsql = "vendorcontactupdate";
                 SqlParameter[] para =
                 {
+                    new SqlParameter("@qflag", "U"),
                     new SqlParameter("@ID", model.ContactID),
                     new SqlParameter("@VendorID", model.rowid),
                     new SqlParameter("@Name", model.ContactName),
@@ -633,7 +636,7 @@ namespace LaylaERP.BAL
                 }
                 else
                 {
-                    DT = SQLHelper.ExecuteDataTable("select distinct StateFullName,StateFullName,State from ZIPCodes1 where StateFullName like '" + strSearch + "%' or State like '" + strSearch + "%' order by StateFullName");
+                    DT = SQLHelper.ExecuteDataTable("select distinct StateFullName,State from ZIPCodes1 where StateFullName like '" + strSearch + "%' or State like '" + strSearch + "%' order by StateFullName");
                 }
             }
             catch (Exception ex)
@@ -762,7 +765,9 @@ namespace LaylaERP.BAL
             DataTable DT = new DataTable();
             try
             {
-                DT = SQLHelper.ExecuteDataTable("SELECT CONCAT('SU', DATE_FORMAT(CURDATE(),'%y%m'),'-',if(max(LPAD(rowid+1 ,5,0)) is null,'00001',max(LPAD(rowid+1 ,5,0))))  as Code from wp_vendor;");
+                //SELECT CONCAT('SU', RIGHT('0' + RTRIM(YEAR(GETDATE())), 2), RIGHT('0' + RTRIM(MONTH(GETDATE())), 2),'-','0000',MAX(rowid + 1)) FROM wp_vendor;
+                //DT = SQLHelper.ExecuteDataTable("SELECT CONCAT('SU', DATE_FORMAT(CURDATE(),'%y%m'),'-',if(max(LPAD(rowid+1 ,5,0)) is null,'00001',max(LPAD(rowid+1 ,5,0))))  as Code from wp_vendor;");
+                DT = SQLHelper.ExecuteDataTable("SELECT CONCAT('SU', RIGHT('0' + RTRIM(YEAR(GETDATE())), 2), RIGHT('0' + RTRIM(MONTH(GETDATE())), 2),'-', MAX(RIGHT(REPLICATE(0, 5) + LEFT(rowid+1, 5),5))) as Code FROM wp_vendor");
             }
             catch (Exception ex)
             { throw ex; }
@@ -957,7 +962,7 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "select ID,VendorID,FileName,concat(FileSize,' KB') FileSize,FileType,FilePath, CONVERT(varchar(12),CreatedDate,110) Date from erp_VendorLinkedFiles where VendorID='" + id + "' and 1=1 ";
+                string strSql = "select ID,VendorID,FileName,concat(FileSize,' KB') FileSize,FileType,FilePath, CONVERT(varchar(12),CreatedDate,101) Date from erp_VendorLinkedFiles where VendorID='" + id + "' and 1=1 ";
                 if (!string.IsNullOrEmpty(searchid))
                 {
                     strWhr += " and (FileName like '%" + searchid + "%' OR FileSize like '%" + searchid + "%' OR CreatedDate like '%" + searchid + "%')";
@@ -1052,7 +1057,7 @@ namespace LaylaERP.BAL
             try
             {
                 string strsql = "";
-                strsql = "insert into erp_VendorLinkedFiles(VendorID, FileName, FileSize, FileType, FilePath) values(@VendorID, @FileName, @FileSize, @FileType, @FilePath); SELECT LAST_INSERT_ID();";
+                strsql = "insert into erp_VendorLinkedFiles(VendorID, FileName, FileSize, FileType, FilePath) values(@VendorID, @FileName, @FileSize, @FileType, @FilePath); SELECT SCOPE_IDENTITY();";
                 //strSql.Append(string.Format("insert into erp_VendorLinkedFiles(VendorID,FileName,FileSize,FileType,FilePath) values(@VendorID,@FileName,@FileSize,@FileType,@FilePath);SELECT LAST_INSERT_ID();"));
                  SqlParameter[] para =
                 {
@@ -1080,8 +1085,11 @@ namespace LaylaERP.BAL
             {
                 string strWhr = string.Empty;
 
-                string strSql = "Select p.rowid id, p.ref, p.ref_ext refordervendor,v.SalesRepresentative request_author,v.name vendor_name,v.address,v.town,v.fk_country,v.fk_state,v.zip,v.phone,"
+                /*string strSql = "Select p.rowid id, p.ref, p.ref_ext refordervendor,v.SalesRepresentative request_author,v.name vendor_name,v.address,v.town,v.fk_country,v.fk_state,v.zip,v.phone,"
                                 + " (p.date_creation) date_creation,(p.date_livraison) date_livraison,s.id StatusID, s.Status,total_ttc from commerce_purchase_order p"
+                                + " inner join wp_vendor v on p.fk_supplier = v.rowid inner join wp_StatusMaster s on p.fk_status = s.ID where v.rowid=" + VendorID + " and 1 = 1";*/
+                string strSql = "Select p.rowid id, p.ref refordervendor, p.ref_ext, v.SalesRepresentative request_author,v.name vendor_name,v.address,v.town,v.fk_country,v.fk_state,v.zip,v.phone,"
+                                + " (p.date_creation) date_creation, CONVERT(VARCHAR(12),p.date_livraison,101) date_livraison,s.id StatusID, s.Status,total_ttc from commerce_purchase_order p"
                                 + " inner join wp_vendor v on p.fk_supplier = v.rowid inner join wp_StatusMaster s on p.fk_status = s.ID where v.rowid=" + VendorID + " and 1 = 1";
                 if (!string.IsNullOrEmpty(searchid))
                 {
@@ -1161,7 +1169,7 @@ namespace LaylaERP.BAL
             DataTable dt = new DataTable();
             try
             {
-                string strSql = "SELECT cast(COALESCE(sum(case when senstag = 'C' then credit end), 0) as decimal(10,2)) credit, cast(COALESCE(sum(case when senstag = 'D' then debit end), 0) as decimal(10,2)) debit, cast((COALESCE(sum(CASE WHEN senstag = 'C' then credit end), 0) + invtotal) - (invtotal - COALESCE(sum(CASE WHEN senstag = 'D' then credit end), 0)) as decimal(10,2)) as balance FROM erp_accounting_bookkeeping where thirdparty_code='"+ vendorcode + "'";
+                string strSql = "SELECT cast(COALESCE(sum(case when senstag = 'C' then credit end), 0) as decimal(10,2)) credit, cast(COALESCE(sum(case when senstag = 'D' then debit end), 0) as decimal(10,2)) debit, cast((COALESCE(sum(CASE WHEN senstag = 'C' then credit end), 0) + sum(invtotal)) - (sum(invtotal) - COALESCE(sum(CASE WHEN senstag = 'D' then credit end), 0)) as decimal(10,2)) as balance FROM erp_accounting_bookkeeping where thirdparty_code='"+ vendorcode + "'";
                 DataSet ds = SQLHelper.ExecuteDataSet(strSql);
                 dt = ds.Tables[0];
             }

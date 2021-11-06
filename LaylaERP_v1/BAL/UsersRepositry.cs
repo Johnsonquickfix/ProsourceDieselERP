@@ -727,7 +727,7 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "insert into wp_user_classification(User_Type,User_Value)values(@User_Type,@User_Value);SELECT LAST_INSERT_ID();";
+                string strsql = "insert into wp_user_classification(User_Type,User_Value)values(@User_Type,@User_Value);SELECT SCOPE_IDENTITY();";
                 SqlParameter[] para =
                 {
                     new SqlParameter("@User_Type", model.User_Type),

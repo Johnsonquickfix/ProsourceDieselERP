@@ -115,7 +115,7 @@
         if (roletype.toUpperCase() != "65") {
             CheckRolePermissions("#btnAddRole,#btnCopyRole", "#btnApprove", "", loc);
             setTimeout(function () { $('#userrole').val(roletype).trigger('change'); }, 3000);
-            //setTimeout(function () { fillCheckMenu(); }, 3000); lblcopyrole
+            //setTimeout(function () { fillCheckMenu(); }, 3000); lblcopyrole 
        
             $("#userrole").prop("disabled", true);
             $("#ddlCopyRole").hide();
@@ -125,7 +125,7 @@
             CopyRoles();
             CheckRolePermissions("#btnAddRole,#btnCopyRole", "#btnApprove", "", loc);
             setTimeout(function () { $('#userrole').val(roletype).trigger('change'); }, 3000);
-            //setTimeout(function () { fillCheckMenu(); }, 3000);     
+            //setTimeout(function () { fillCheckMenu(); }, 3000);      
         }
 
     

@@ -532,7 +532,7 @@ namespace LaylaERP.BAL
             {
                 string strsql = "erp_user_iud";
                 SqlParameter[] para =
-                {
+                { 
                      new SqlParameter("@qflag", "IM"),
                     new SqlParameter("@user_id", id),
                     new SqlParameter("@meta_key", varFieldsName),
@@ -572,7 +572,7 @@ namespace LaylaERP.BAL
         {
             try
             {
-                string strsql = "INSERT INTO wp_usermeta(user_id,meta_key,meta_value) VALUES(@user_id,@meta_key,@meta_value); select LAST_INSERT_ID() as ID;";
+                string strsql = "INSERT INTO wp_usermeta(user_id,meta_key,meta_value) VALUES(@user_id,@meta_key,@meta_value);";
                 SqlParameter[] para =
                 {
                     new SqlParameter("@user_id", id),

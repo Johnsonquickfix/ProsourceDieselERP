@@ -483,5 +483,224 @@ namespace LaylaERP.BAL
             }
             return dt;
         }
+
+        //Start journals
+        public static DataTable AccountJournalList(string sMonths, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                string strWhr = string.Empty;
+
+                string strSql = "SELECT eab.rowid as id, inv_num, PO_SO_ref, inv_complete, code_journal, date_format(doc_date,'%m-%d-%Y') as datecreation, if(debit=0,'',debit) as debit, if(credit=0,'',credit) as credit, label_operation, v.name FROM erp_accounting_bookkeeping"
+                                + " eab left join wp_vendor v on v.code_vendor = eab.thirdparty_code where 1=1 ";
+                if (!string.IsNullOrEmpty(searchid))
+                {
+                    strWhr += " and (inv_complete like '%" + searchid + "%' OR code_journal like '%" + searchid + "%' OR credit like '%" + searchid + "%' OR debit like '%" + searchid + "%' OR v.name like '%" + searchid + "%') ";
+                }
+                if (userstatus != null)
+                {
+                    strWhr += " and (thirdparty_code ='" + userstatus + "') ";
+                }
+                if (sMonths != null)
+                {
+                    strWhr += " and cast(doc_date as date) BETWEEN " + sMonths;
+                }
+                strSql += strWhr + string.Format(" order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
+
+                strSql += "; SELECT ceil(Count(eab.rowid)/" + pagesize.ToString() + ") TotalPage,Count(eab.rowid) TotalRecord FROM erp_accounting_bookkeeping eab left join wp_vendor v on v.code_vendor = eab.thirdparty_code where 1=1 " + strWhr.ToString();
+
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dt = ds.Tables[0];
+                if (ds.Tables[1].Rows.Count > 0)
+                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+        //End Journals
+
+        public static DataTable AccountLedgerList(string id, string userstatus, string searchid, int pageno, int pagesize, out int totalrows, string SortCol = "id", string SortDir = "DESC")
+        {
+            DataTable dt = new DataTable();
+            totalrows = 0;
+            try
+            {
+                string strWhr = string.Empty;
+
+                string strSql = "SELECT eab.rowid as id, inv_complete, code_journal, date_format(date_creation,'%m-%d-%Y') as datecreation, debit, credit, label_operation, v.name FROM erp_accounting_bookkeeping"
+                                + " eab left join wp_vendor v on v.code_vendor = eab.thirdparty_code where 1=1 ";
+                if (!string.IsNullOrEmpty(searchid))
+                {
+                    strWhr += " and (inv_complete like '%" + searchid + "%' OR code_journal like '%" + searchid + "%' OR credit like '%" + searchid + "%' OR debit like '%" + searchid + "%' OR v.name like '%" + searchid + "%') ";
+                }
+                if (userstatus != null)
+                {
+                    //strWhr += " and (is_active='" + userstatus + "') ";
+                }
+                strSql += strWhr + string.Format(" group by inv_complete, eab.rowid order by {0} {1} LIMIT {2}, {3}", SortCol, SortDir, pageno.ToString(), pagesize.ToString());
+
+                strSql += "; SELECT ceil(Count(eab.rowid)/" + pagesize.ToString() + ") TotalPage,Count(eab.rowid) TotalRecord FROM erp_accounting_bookkeeping eab left join wp_vendor v on v.code_vendor = eab.thirdparty_code where 1=1 " + strWhr.ToString();
+
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dt = ds.Tables[0];
+                if (ds.Tables[1].Rows.Count > 0)
+                    totalrows = Convert.ToInt32(ds.Tables[1].Rows[0]["TotalRecord"].ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+
+        public static DataTable GrandTotal()
+        {
+            DataTable dtr = new DataTable();
+            try
+            {
+                string strSql = "SELECT replace(format(sum(debit),2),',','') as debit, replace(format(sum(credit),2),',','') as credit, replace(format(sum(credit)-sum(debit),2),',','') as balance from erp_accounting_bookkeeping";
+                DataSet ds = SQLHelper.ExecuteDataSet(strSql);
+                dtr = ds.Tables[0];
+
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dtr;
+        }
+
+        public static DataTable JournalDatewithVendoreTotal(string sMonths, string searchid, string productid)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                string strWhr = string.Empty;
+                if (!string.IsNullOrEmpty(searchid))
+                {
+                    strWhr += " and thirdparty_code = '" + searchid + "'";
+                }
+                if (sMonths != null)
+                {
+                    strWhr += " and cast(doc_date as date) BETWEEN " + sMonths;
+                }
+                string strSql = "SELECT replace(format(sum(debit),2),',','')  as debit, replace(format(sum(credit),2),',','') as credit,replace(format(sum(debit)-sum(credit),2),',','') as balance from erp_accounting_bookkeeping"
+                                + " where 1 = 1 ";
+                strSql += strWhr;
+                dt = SQLHelper.ExecuteDataTable(strSql);
+
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dt;
+        }
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Account Ledger~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        public static DataTable GetAccountLedgerDetailsList(string sMonths, string searchid, string productid)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                string strWhr = string.Empty;
+                //if (!string.IsNullOrEmpty(searchid))
+                //{
+                //    searchid = searchid.ToLower();
+                //    strWhr += " and (lower(p.inv_complete) like '" + searchid + "%' OR lower(p.inv_complete) like '" + searchid + "%' OR lower(p.label_complete)='" + searchid + "%' OR lower(p.label_complete) like '" + searchid + "%')";
+                //}
+                if (!string.IsNullOrEmpty(searchid))
+                {
+                    strWhr += " and thirdparty_code = '" + searchid + "'";
+                }
+                if (sMonths != null)
+                {
+                    strWhr += " and cast(p.doc_date as date) BETWEEN " + sMonths;
+                }
+                string strSql = "select ROW_NUMBER() OVER ( ORDER BY inv_complete ) row_num, concat(inv_complete,' : ',label_complete) Acctext,inv_complete rowid,format(sum(debit),2)  as debit, format(sum(credit),2) as credit from erp_accounting_bookkeeping p "
+                + " where 1 = 1 ";
+                strSql += strWhr + string.Format(" group by inv_complete  order by inv_complete");
+                dt = SQLHelper.ExecuteDataTable(strSql);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+        public static DataTable GetDetailsLedger(string searchid, string vid, string sMonths)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                string strWhr = string.Empty;
+                //MySqlParameter[] parameters =
+                // {
+                //    new MySqlParameter("@inv_complete", searchid)
+                //};
+                if (!string.IsNullOrEmpty(searchid))
+                {
+                    strWhr += " and inv_complete = '" + searchid + "'";
+                }
+                if (!string.IsNullOrEmpty(vid))
+                {
+                    strWhr += " and thirdparty_code = '" + vid + "'";
+                }
+                if (sMonths != null)
+                {
+                    strWhr += " and cast(doc_date as date) BETWEEN " + sMonths;
+                }
+                string strSql = "select inv_complete,inv_num,code_journal,PO_SO_ref,label_operation,case when debit = '0.00000000' then '' else format(debit,2) end debit,case when credit = '0.00000000' then '' else format(credit,2) end credit,DATE_FORMAT(p.doc_date,'%m/%d/%Y %h:%i %p') doc_date,"
+                                 + " (select format(sum(debit),2) from erp_accounting_bookkeeping where 1=1 " + strWhr + ") totalDebit, "
+                                 + " (select format(sum(credit),2) from erp_accounting_bookkeeping where 1=1 " + strWhr + ") totalcredit,(select format(sum(debit)-sum(credit),2)  from erp_accounting_bookkeeping where 1=1 " + strWhr + ") totalbal"
+                                 + " from erp_accounting_bookkeeping p"
+                                      //   + " where inv_complete = @inv_complete ";
+                                      + " where 1=1 ";
+                strSql += strWhr + string.Format("order by doc_date desc");
+                //dt = SQLHelper.ExecuteDataTable(strSql, parameters);
+                dt = SQLHelper.ExecuteDataTable(strSql);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return dt;
+        }
+        public static DataSet GetVendor()
+        {
+            DataSet DS = new DataSet();
+            try
+            {
+                string strSQl = "select code_vendor as ID, concat(name,' (',code_vendor,')') as Name from wp_vendor where VendorStatus=1 order by code_vendor desc;";
+                DS = SQLHelper.ExecuteDataSet(strSQl);
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return DS;
+        }
+        public static DataTable DatewithVendoreTotal(string sMonths, string searchid, string productid)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                string strWhr = string.Empty;
+                if (!string.IsNullOrEmpty(searchid))
+                {
+                    strWhr += " and thirdparty_code = '" + searchid + "'";
+                }
+                if (sMonths != null)
+                {
+                    strWhr += " and cast(doc_date as date) BETWEEN " + sMonths;
+                }
+                string strSql = "SELECT format(sum(debit),2)  as debit, format(sum(credit),2) as credit,format(sum(debit)-sum(credit),2) as balance from erp_accounting_bookkeeping"
+                                + " where 1 = 1 ";
+                strSql += strWhr;
+                dt = SQLHelper.ExecuteDataTable(strSql);
+
+            }
+            catch (Exception ex)
+            { throw ex; }
+            return dt;
+        }
     }
 }

@@ -633,6 +633,9 @@
     <Content Include="Images\varient_pic.png" />
     <Content Include="js\Accounting\AccountBalanceList.js" />
     <Content Include="js\Accounting\AccountingJournal.js" />
+    <Content Include="js\Accounting\AccountJournalList.js" />
+    <Content Include="js\Accounting\AccountLedger.js" />
+    <Content Include="js\Accounting\AccountLedgerList.js" />
     <Content Include="js\Accounting\ChartOfAccounts.js" />
     <Content Include="js\Accounting\ProductAccounts.js" />
     <Content Include="js\app.js" />
@@ -977,6 +980,9 @@
     <Content Include="Views\Warehouse\Warehouse.cshtml" />
     <Content Include="Scripts\jquery-3.4.1.min.map" />
     <Content Include="Scripts\jquery-3.4.1.slim.min.map" />
+    <Content Include="Views\Accounting\AccountJournal.cshtml" />
+    <Content Include="Views\Accounting\AccountLedger.cshtml" />
+    <Content Include="Views\Accounting\AccountLedgerList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

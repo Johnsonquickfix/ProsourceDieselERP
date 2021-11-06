@@ -1235,25 +1235,85 @@ function AddNotes() {
 }
 
 
+
+//$(document).on('click', "#btnuploade", function () {
+//    Adduploade();
+//})
+
+//function Adduploade() {
+
+//    var formData = new FormData();
+//    var file = document.getElementById("ImageFile").files[0];
+//    formData.append("ImageFile", file); 
+
+//    var Name = $('#ddlproductchild').val().trim()
+//    formData.append("Name", Name);
+
+//    if (Name == "") {
+//        swal('Alert', 'Please Enter Product', 'error').then(function () { swal.close(); $('#ddlproductchild').focus(); });
+//    }
+//    else if (file == "") {
+//        swal('Alert', 'Please upload files', 'error').then(function () { swal.close(); $('#txtPrivate').focus(); });
+//    }
+//    else {
+
+//        $.ajax({
+//            type: "POST",
+//            url: '/Product/FileUploade/',
+//            data: formData,
+//            processData: false,
+//            contentType: false,
+//            beforeSend: function () {
+//                $("#loader1").show();
+//            },
+//            success: function (data) {
+//                if (data.status == true) {
+//                    if (data.url == "Manage") {
+//                        swal('Alert!', data.message, 'success');
+//                        bindfileuploade();
+//                    }
+//                    else {
+//                        // $('#fetch_results > input:text').val('');
+//                        swal('Alert!', data.message, 'success');
+//                    }
+//                    //$('#ddlProduct').val(null).trigger('change');
+//                    //clear_fetch();
+
+//                }
+//                else {
+//                    swal('Alert!', data.message, 'error')
+//                }
+//            },
+//            complete: function () {
+//                $("#loader1").hide();
+//                //location.href = '/Users/Users/';
+//                //window.location.href = '/Users/Users/';
+
+//            },
+//            error: function (error) {
+//                swal('Error!', 'something went wrong', 'error');
+//            },
+//        })
+//    }
+//}
+
+
 $(document).on('click', "#btnuploade", function () {
     Adduploade();
 })
 
 function Adduploade() {
     debugger
-     
-    var formData = new FormData();
-    var file = document.getElementById("ImageFile").files[0];
-    formData.append("ImageFile", file);
 
-    var Name = $('#ddlproductchild').val().trim()
+    var formData = new FormData();
+    var file = document.getElementById("ImageFileproductlink").files[0];
+    formData.append("ImageFileproductlink", file);
+
+    var Name = $('#ddlproductchild').val();
     formData.append("Name", Name);
 
-    if (Name == "") {
-        swal('Alert', 'Please Enter Product', 'error').then(function () { swal.close(); $('#ddlproductchild').focus(); });
-    }
-    else if (file == "") {
-        swal('Alert', 'Please upload files', 'error').then(function () { swal.close(); $('#txtPrivate').focus(); });
+    if (file == "") {
+        swal('Alert', 'Please upload files', 'error').then(function () { swal.close(); });
     }
     else {
 
@@ -1264,31 +1324,24 @@ function Adduploade() {
             processData: false,
             contentType: false,
             beforeSend: function () {
-                $("#loader1").show();
+                $("#loader").show();
             },
             success: function (data) {
                 if (data.status == true) {
                     if (data.url == "Manage") {
-                        swal('Alert!', data.message, 'success');
+                        swal('Success!', data.message, 'success');
                         bindfileuploade();
                     }
                     else {
-                        // $('#fetch_results > input:text').val('');
-                        swal('Alert!', data.message, 'success');
+                        swal('Success!', data.message, 'success');
                     }
-                    //$('#ddlProduct').val(null).trigger('change');
-                    //clear_fetch();
-
                 }
                 else {
                     swal('Alert!', data.message, 'error')
                 }
             },
             complete: function () {
-                $("#loader1").hide();
-                //location.href = '/Users/Users/';
-                //window.location.href = '/Users/Users/';
-
+                $("#loader").hide();
             },
             error: function (error) {
                 swal('Error!', 'something went wrong', 'error');

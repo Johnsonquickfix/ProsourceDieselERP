@@ -782,7 +782,7 @@ namespace LaylaERP.BAL
                 DeletePermission(roleto);
                 int result = 0;
                   
-                    string strsql = "insert into wp_erprole_rest(role_id,erpmenu_id,add_,edit_,delete_) Select " + roleto + ",erpmenu_id,add_,edit_,delete_ from wp_erprole_rest where role_id=" + role_id + ";";
+                    string strsql = "insert into wp_erprole_rest(role_id,erpmenu_id,add_,edit_,delete_,flag) Select " + roleto + ",erpmenu_id,add_,edit_,delete_,'C' from wp_erprole_rest where role_id=" + role_id + ";";
                     result = Convert.ToInt32(SQLHelper.ExecuteNonQuery(strsql));
                 
                 return result;
